@@ -55,6 +55,8 @@ interface AssembleTeamPublicStateInput {
   entryFetchedAt: string;
   picksBytes: Uint8Array;
   picksFetchedAt: string;
+  stateSourceBytes: Uint8Array;
+  stateSourceFetchedAt: string;
   stateAsOf: string;
 }
 
@@ -63,11 +65,15 @@ export function assembleTeamPublicState({
   entryFetchedAt,
   picksBytes,
   picksFetchedAt,
+  stateSourceBytes,
+  stateSourceFetchedAt,
   stateAsOf,
 }: AssembleTeamPublicStateInput): PublicTeamState {
   const validatedStateAsOf = timestampSchema.parse(stateAsOf);
   const validatedEntryFetchedAt = timestampSchema.parse(entryFetchedAt);
   const validatedPicksFetchedAt = timestampSchema.parse(picksFetchedAt);
+  const validatedStateSourceFetchedAt =
+    timestampSchema.parse(stateSourceFetchedAt);
   if (Date.parse(validatedEntryFetchedAt) < Date.parse(validatedStateAsOf)) {
     throw new TeamPublicStateContractError(
       "entry evidence cannot predate stateAsOf",
@@ -76,6 +82,13 @@ export function assembleTeamPublicState({
   if (Date.parse(validatedPicksFetchedAt) < Date.parse(validatedStateAsOf)) {
     throw new TeamPublicStateContractError(
       "picks evidence cannot predate stateAsOf",
+    );
+  }
+  if (
+    Date.parse(validatedStateSourceFetchedAt) < Date.parse(validatedStateAsOf)
+  ) {
+    throw new TeamPublicStateContractError(
+      "deadline evidence cannot predate stateAsOf",
     );
   }
   const entry = parseJsonBytes(entryBytes, entrySchema, "entry");
@@ -109,11 +122,15 @@ export function assembleTeamPublicState({
     })),
     stateAsOf: validatedStateAsOf,
     dataAvailableAt: latestTimestamp(
-      validatedEntryFetchedAt,
-      validatedPicksFetchedAt,
+      latestTimestamp(validatedEntryFetchedAt, validatedPicksFetchedAt),
+      validatedStateSourceFetchedAt,
     ),
     evidenceLevel: "observed",
-    sourceHashes: [hashBytes(entryBytes), hashBytes(picksBytes)].sort(),
+    sourceHashes: [
+      hashBytes(entryBytes),
+      hashBytes(picksBytes),
+      hashBytes(stateSourceBytes),
+    ].sort(),
   });
 }
 

@@ -1,0 +1,170 @@
+import { describe, expect, it, vi } from "vitest";
+
+import { createTeamPublicStateResponse } from "../../../../api/_lib/team-public-state-response";
+
+const fetchedAt = "2026-09-12T12:30:00.000Z";
+
+function bootstrapResponse(): Response {
+  return jsonResponse({
+    events: [
+      {
+        id: 5,
+        deadline_time: "2026-09-12T10:30:00Z",
+      },
+    ],
+  });
+}
+
+function entryResponse(currentEvent: number | null = 5): Response {
+  return jsonResponse({
+    id: 123,
+    name: "Public XI",
+    started_event: 1,
+    current_event: currentEvent,
+    last_deadline_bank: currentEvent === null ? null : 17,
+    last_deadline_value: currentEvent === null ? null : 1004,
+    last_deadline_total_transfers: 4,
+  });
+}
+
+function picksResponse(): Response {
+  return jsonResponse({
+    active_chip: null,
+    entry_history: {
+      event: 5,
+      bank: 17,
+      value: 1004,
+      event_transfers: 1,
+      event_transfers_cost: 0,
+    },
+    picks: Array.from({ length: 15 }, (_, index) => ({
+      element: 101 + index,
+      position: index + 1,
+      multiplier: index === 0 ? 2 : index > 10 ? 0 : 1,
+      is_captain: index === 0,
+      is_vice_captain: index === 1,
+    })),
+  });
+}
+
+function jsonResponse(payload: unknown, status = 200): Response {
+  return new Response(JSON.stringify(payload), {
+    status,
+    headers: { "Content-Type": "application/json" },
+  });
+}
+
+describe("public team state response", () => {
+  it("fetches entry, official deadline, and processed picks into ready state", async () => {
+    const fetchUpstream = vi
+      .fn<typeof fetch>()
+      .mockImplementation(async (input) => {
+        const url = String(input);
+        if (url.endsWith("/bootstrap-static/")) return bootstrapResponse();
+        if (url.endsWith("/entry/123/")) return entryResponse();
+        if (url.endsWith("/entry/123/event/5/picks/")) return picksResponse();
+        throw new Error(`unexpected URL: ${url}`);
+      });
+
+    const response = await createTeamPublicStateResponse(123, "GET", {
+      fetchUpstream,
+      now: () => Date.parse(fetchedAt),
+    });
+
+    expect(response.status).toBe(200);
+    expect(response.headers.get("Cache-Control")).toBe("private, no-store");
+    await expect(response.json()).resolves.toMatchObject({
+      status: "ready",
+      state: {
+        entryId: 123,
+        event: 5,
+        stateAsOf: "2026-09-12T10:30:00Z",
+        dataAvailableAt: fetchedAt,
+      },
+    });
+    expect(fetchUpstream).toHaveBeenCalledTimes(3);
+  });
+
+  it("returns unavailable before picks when the entry has no processed event", async () => {
+    const fetchUpstream = vi
+      .fn<typeof fetch>()
+      .mockImplementation(async (input) => {
+        const url = String(input);
+        return url.endsWith("/entry/123/")
+          ? entryResponse(null)
+          : bootstrapResponse();
+      });
+
+    const response = await createTeamPublicStateResponse(123, "GET", {
+      fetchUpstream,
+      now: () => Date.parse(fetchedAt),
+    });
+
+    expect(response.status).toBe(200);
+    await expect(response.json()).resolves.toEqual({
+      status: "unavailable",
+      reason: "no_processed_event",
+    });
+    expect(fetchUpstream).toHaveBeenCalledTimes(2);
+  });
+
+  it("returns unavailable without guessing why public picks are missing", async () => {
+    const fetchUpstream = vi
+      .fn<typeof fetch>()
+      .mockImplementation(async (input) => {
+        const url = String(input);
+        if (url.endsWith("/bootstrap-static/")) return bootstrapResponse();
+        if (url.endsWith("/entry/123/")) return entryResponse();
+        return jsonResponse({ detail: "Not found." }, 404);
+      });
+
+    const response = await createTeamPublicStateResponse(123, "GET", {
+      fetchUpstream,
+      now: () => Date.parse(fetchedAt),
+    });
+
+    expect(response.status).toBe(200);
+    await expect(response.json()).resolves.toEqual({
+      status: "unavailable",
+      reason: "picks_unavailable",
+      event: 5,
+    });
+  });
+
+  it("returns degraded when a required FPL source cannot be reached", async () => {
+    let time = Date.parse(fetchedAt);
+    const fetchUpstream = vi.fn<typeof fetch>().mockImplementation(async () => {
+      time += 3_000;
+      throw new TypeError("network unavailable");
+    });
+
+    const response = await createTeamPublicStateResponse(123, "GET", {
+      fetchUpstream,
+      now: () => time,
+      sleep: vi.fn().mockResolvedValue(undefined),
+      random: () => 0.5,
+    });
+
+    expect(response.status).toBe(503);
+    await expect(response.json()).resolves.toEqual({
+      status: "degraded",
+      reason: "fpl_unreachable",
+    });
+  });
+
+  it("rejects invalid IDs and methods before contacting FPL", async () => {
+    const fetchUpstream = vi.fn<typeof fetch>();
+
+    const invalidId = await createTeamPublicStateResponse(0, "GET", {
+      fetchUpstream,
+    });
+    const invalidMethod = await createTeamPublicStateResponse(123, "POST", {
+      fetchUpstream,
+    });
+
+    expect(invalidId.status).toBe(400);
+    expect(invalidMethod.status).toBe(405);
+    expect(invalidMethod.headers.get("Allow")).toBe("GET");
+    expect(fetchUpstream).not.toHaveBeenCalled();
+  });
+});

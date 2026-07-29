@@ -11,6 +11,9 @@ import {
 const encoder = new TextEncoder();
 const fetchedAt = "2026-09-12T12:30:00Z";
 const stateAsOf = "2026-09-12T10:30:00Z";
+const deadlineBytes = encoder.encode(
+  JSON.stringify({ events: [{ id: 5, deadline_time: stateAsOf }] }),
+);
 
 function entryBytes(): Uint8Array {
   return encoder.encode(
@@ -63,6 +66,8 @@ describe("public team state assembler", () => {
       entryFetchedAt: fetchedAt,
       picksBytes: rawPicks,
       picksFetchedAt: fetchedAt,
+      stateSourceBytes: deadlineBytes,
+      stateSourceFetchedAt: fetchedAt,
       stateAsOf,
     });
 
@@ -81,7 +86,7 @@ describe("public team state assembler", () => {
     });
     expect(state.picks).toHaveLength(15);
     expect(state.sourceHashes).toEqual(
-      [rawEntry, rawPicks]
+      [rawEntry, rawPicks, deadlineBytes]
         .map(
           (bytes) =>
             `sha256:${createHash("sha256").update(bytes).digest("hex")}`,
@@ -101,6 +106,8 @@ describe("public team state assembler", () => {
         entryFetchedAt: fetchedAt,
         picksBytes: picksBytes(payload),
         picksFetchedAt: fetchedAt,
+        stateSourceBytes: deadlineBytes,
+        stateSourceFetchedAt: fetchedAt,
         stateAsOf,
       }),
     ).toThrowError(
@@ -118,6 +125,8 @@ describe("public team state assembler", () => {
         entryFetchedAt: fetchedAt,
         picksBytes: picksBytes(payload),
         picksFetchedAt: fetchedAt,
+        stateSourceBytes: deadlineBytes,
+        stateSourceFetchedAt: fetchedAt,
         stateAsOf,
       }),
     ).toThrow("exactly 15 picks");
@@ -128,6 +137,8 @@ describe("public team state assembler", () => {
         entryFetchedAt: "2026-09-12T10:29:59Z",
         picksBytes: picksBytes(),
         picksFetchedAt: fetchedAt,
+        stateSourceBytes: deadlineBytes,
+        stateSourceFetchedAt: fetchedAt,
         stateAsOf,
       }),
     ).toThrow("cannot predate stateAsOf");

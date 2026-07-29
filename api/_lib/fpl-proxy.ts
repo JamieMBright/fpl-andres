@@ -4,7 +4,7 @@ const FPL_USER_AGENT =
   "FPLAndres/0.4 (+https://github.com/JamieMBright/fpl-andres)";
 const DEFAULT_LIMIT_BYTES = 5 * 1024 * 1024;
 const BOOTSTRAP_LIMIT_BYTES = 8 * 1024 * 1024;
-const TOTAL_BUDGET_MS = 8_500;
+export const FPL_PROXY_BUDGET_MS = 8_500;
 const PER_ATTEMPT_TIMEOUT_MS = 4_000;
 const MIN_ATTEMPT_BUDGET_MS = 250;
 const MAX_ATTEMPTS = 3;
@@ -20,6 +20,7 @@ export async function createFplProxyResponse(
   sleep: Sleep = defaultSleep,
   random: () => number = Math.random,
   now: () => number = Date.now,
+  deadline: number = now() + FPL_PROXY_BUDGET_MS,
 ): Promise<Response> {
   if (method !== "GET") {
     return jsonError("Only GET is supported by the FPL proxy.", 405, {
@@ -43,7 +44,7 @@ export async function createFplProxyResponse(
     sleep,
     random,
     now,
-    now() + TOTAL_BUDGET_MS,
+    deadline,
   );
   if (!upstreamResponse) {
     return jsonError(
