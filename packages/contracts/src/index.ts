@@ -9,6 +9,87 @@ export const evidenceLevelSchema = z.enum([
 
 export type EvidenceLevel = z.infer<typeof evidenceLevelSchema>;
 
+const listedPositionSchema = z.enum(["GKP", "DEF", "MID", "FWD"]);
+const observedRoleSchema = z.enum([
+  "goalkeeper",
+  "centre_back",
+  "full_back",
+  "wing_back",
+  "defensive_midfield",
+  "central_midfield",
+  "attacking_midfield",
+  "wide_forward",
+  "striker",
+]);
+
+export const deploymentSignalSchema = z
+  .object({
+    season: z.string().regex(/^20[0-9]{2}-[0-9]{2}$/),
+    predictionEvent: z.int().min(1).max(38),
+    elementId: z.int().positive(),
+    fplScoringPosition: listedPositionSchema,
+    observedRole: observedRoleSchema,
+    classification: z.enum([
+      "attacking_oop",
+      "aligned",
+      "reverse_oop",
+      "unavailable",
+    ]),
+    effectName: z.literal("lord_lundstram_effect").nullable(),
+    watchlistEligible: z.boolean(),
+    evidenceLevel: evidenceLevelSchema,
+    reasonCodes: z.array(z.string().min(1)).min(1),
+    dataAvailableAt: z.iso.datetime(),
+    sourceHashes: z.array(z.string().regex(/^sha256:[a-f0-9]{64}$/)).min(1),
+  })
+  .strict()
+  .superRefine((signal, context) => {
+    if (
+      signal.watchlistEligible !==
+      (signal.classification === "attacking_oop")
+    ) {
+      context.addIssue({
+        code: "custom",
+        message:
+          "watchlist eligibility must match attacking OOP classification",
+      });
+    }
+    const expectedLundstram =
+      signal.fplScoringPosition === "DEF" &&
+      signal.classification === "attacking_oop";
+    if ((signal.effectName !== null) !== expectedLundstram) {
+      context.addIssue({
+        code: "custom",
+        message:
+          "Lord Lundstram effect must identify every attacking OOP defender",
+      });
+    }
+    if (
+      signal.classification === "unavailable" &&
+      signal.evidenceLevel !== "unavailable"
+    ) {
+      context.addIssue({
+        code: "custom",
+        message: "unavailable deployment must have unavailable evidence",
+      });
+    }
+    const sortedUniqueHashes = [...new Set(signal.sourceHashes)].sort();
+    if (
+      sortedUniqueHashes.length !== signal.sourceHashes.length ||
+      sortedUniqueHashes.some(
+        (hash, index) => hash !== signal.sourceHashes[index],
+      )
+    ) {
+      context.addIssue({
+        code: "custom",
+        message: "source hashes must be sorted and unique",
+        path: ["sourceHashes"],
+      });
+    }
+  });
+
+export type DeploymentSignal = z.infer<typeof deploymentSignalSchema>;
+
 export const sourceSnapshotSchema = z
   .object({
     source: z.enum(["fpl", "vaastav", "derived"]),

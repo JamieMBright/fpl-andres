@@ -1,10 +1,12 @@
 import { describe, expect, it } from "vitest";
 
+import deploymentCases from "../fixtures/deployment-signal-cases.json";
 import entryCases from "../fixtures/fpl-entry-cases.json";
 import teamStateCases from "../fixtures/public-team-state-cases.json";
 import sourceCases from "../fixtures/source-snapshot-cases.json";
 import overrideCases from "../fixtures/team-state-overrides-cases.json";
 import {
+  deploymentSignalSchema,
   fplEntrySchema,
   parseSourceSnapshot,
   publicTeamStateSchema,
@@ -133,5 +135,14 @@ describe("shared FPL contracts", () => {
         currentSquad: valid.currentSquad.slice(0, 14),
       }),
     ).toThrow("exactly 15 players");
+  });
+
+  it("matches the shared Lord Lundstram and reverse-OOP signal corpus", () => {
+    for (const valid of deploymentCases.valid) {
+      expect(() => deploymentSignalSchema.parse(valid)).not.toThrow();
+    }
+    for (const invalid of deploymentCases.invalid) {
+      expect(() => deploymentSignalSchema.parse(invalid)).toThrow();
+    }
   });
 });

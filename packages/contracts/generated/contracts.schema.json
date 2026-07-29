@@ -2,6 +2,117 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "generatedFrom": "@fpl-andres/contracts",
   "schemas": {
+    "DeploymentSignal": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "season": {
+          "type": "string",
+          "pattern": "^20[0-9]{2}-[0-9]{2}$"
+        },
+        "predictionEvent": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 38
+        },
+        "elementId": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "maximum": 9007199254740991
+        },
+        "fplScoringPosition": {
+          "type": "string",
+          "enum": [
+            "GKP",
+            "DEF",
+            "MID",
+            "FWD"
+          ]
+        },
+        "observedRole": {
+          "type": "string",
+          "enum": [
+            "goalkeeper",
+            "centre_back",
+            "full_back",
+            "wing_back",
+            "defensive_midfield",
+            "central_midfield",
+            "attacking_midfield",
+            "wide_forward",
+            "striker"
+          ]
+        },
+        "classification": {
+          "type": "string",
+          "enum": [
+            "attacking_oop",
+            "aligned",
+            "reverse_oop",
+            "unavailable"
+          ]
+        },
+        "effectName": {
+          "anyOf": [
+            {
+              "type": "string",
+              "const": "lord_lundstram_effect"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "watchlistEligible": {
+          "type": "boolean"
+        },
+        "evidenceLevel": {
+          "type": "string",
+          "enum": [
+            "observed",
+            "inferred",
+            "experimental",
+            "unavailable"
+          ]
+        },
+        "reasonCodes": {
+          "minItems": 1,
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "dataAvailableAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
+        },
+        "sourceHashes": {
+          "minItems": 1,
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^sha256:[a-f0-9]{64}$"
+          }
+        }
+      },
+      "required": [
+        "season",
+        "predictionEvent",
+        "elementId",
+        "fplScoringPosition",
+        "observedRole",
+        "classification",
+        "effectName",
+        "watchlistEligible",
+        "evidenceLevel",
+        "reasonCodes",
+        "dataAvailableAt",
+        "sourceHashes"
+      ],
+      "additionalProperties": false
+    },
     "EvidenceLevel": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "type": "string",

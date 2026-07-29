@@ -5,6 +5,7 @@ import { fileURLToPath } from "node:url";
 import { z } from "zod";
 
 import {
+  deploymentSignalSchema,
   evidenceLevelSchema,
   fplEntrySchema,
   managerTeamPlayerSchema,
@@ -22,6 +23,7 @@ const schemaBundle = {
   $schema: "https://json-schema.org/draft/2020-12/schema",
   generatedFrom: "@fpl-andres/contracts",
   schemas: {
+    DeploymentSignal: z.toJSONSchema(deploymentSignalSchema),
     EvidenceLevel: z.toJSONSchema(evidenceLevelSchema),
     FplEntry: z.toJSONSchema(fplEntrySchema),
     ManagerTeamPlayer: z.toJSONSchema(managerTeamPlayerSchema),

@@ -11,6 +11,7 @@ from fpl_andres.contracts import (
     TeamStateOverrides,
     parse_source_snapshot,
 )
+from fpl_andres.models.deployment import DeploymentSignal
 
 CASES_PATH = (
     Path(__file__).resolve().parents[2]
@@ -40,6 +41,13 @@ OVERRIDE_CASES_PATH = (
     / "fixtures"
     / "team-state-overrides-cases.json"
 )
+DEPLOYMENT_CASES_PATH = (
+    Path(__file__).resolve().parents[2]
+    / "packages"
+    / "contracts"
+    / "fixtures"
+    / "deployment-signal-cases.json"
+)
 
 
 def contract_cases() -> dict[str, list[dict[str, object]]]:
@@ -56,6 +64,10 @@ def team_state_cases() -> dict[str, list[dict[str, object]]]:
 
 def override_cases() -> dict[str, list[dict[str, object]]]:
     return json.loads(OVERRIDE_CASES_PATH.read_text(encoding="utf-8"))
+
+
+def deployment_cases() -> dict[str, list[dict[str, object]]]:
+    return json.loads(DEPLOYMENT_CASES_PATH.read_text(encoding="utf-8"))
 
 
 @pytest.mark.parametrize("case", contract_cases()["valid"])
@@ -116,3 +128,16 @@ def test_python_accepts_shared_valid_override_cases(case: dict[str, object]) -> 
 def test_python_rejects_shared_invalid_override_cases(case: dict[str, object]) -> None:
     with pytest.raises(ValidationError):
         TeamStateOverrides.model_validate_json(json.dumps(case))
+
+
+@pytest.mark.parametrize("case", deployment_cases()["valid"])
+def test_python_accepts_shared_valid_deployment_cases(case: dict[str, object]) -> None:
+    signal = DeploymentSignal.model_validate_json(json.dumps(case))
+
+    assert signal.model_dump(by_alias=True, mode="json") == case
+
+
+@pytest.mark.parametrize("case", deployment_cases()["invalid"])
+def test_python_rejects_shared_invalid_deployment_cases(case: dict[str, object]) -> None:
+    with pytest.raises(ValidationError):
+        DeploymentSignal.model_validate_json(json.dumps(case))

@@ -1,0 +1,60 @@
+{
+  "valid": [
+    {
+      "season": "2026-27",
+      "predictionEvent": 6,
+      "elementId": 101,
+      "fplScoringPosition": "DEF",
+      "observedRole": "central_midfield",
+      "classification": "attacking_oop",
+      "effectName": "lord_lundstram_effect",
+      "watchlistEligible": true,
+      "evidenceLevel": "observed",
+      "reasonCodes": [
+        "lord_lundstram_effect",
+        "attacking_oop",
+        "defender_scoring_position_retained",
+        "role_starts=4"
+      ],
+      "dataAvailableAt": "2026-09-12T09:00:00Z",
+      "sourceHashes": [
+        "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      ]
+    },
+    {
+      "season": "2026-27",
+      "predictionEvent": 6,
+      "elementId": 102,
+      "fplScoringPosition": "MID",
+      "observedRole": "full_back",
+      "classification": "reverse_oop",
+      "effectName": null,
+      "watchlistEligible": false,
+      "evidenceLevel": "inferred",
+      "reasonCodes": ["reverse_oop", "role_starts=5"],
+      "dataAvailableAt": "2026-09-12T08:00:00Z",
+      "sourceHashes": [
+        "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+      ]
+    }
+  ],
+  "invalid": [
+    {},
+    {
+      "season": "2026-27",
+      "predictionEvent": 6,
+      "elementId": 101,
+      "fplScoringPosition": "DEF",
+      "observedRole": "central_midfield",
+      "classification": "attacking_oop",
+      "effectName": null,
+      "watchlistEligible": false,
+      "evidenceLevel": "observed",
+      "reasonCodes": ["attacking_oop"],
+      "dataAvailableAt": "2026-09-12T09:00:00Z",
+      "sourceHashes": [
+        "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      ]
+    }
+  ]
+}
