@@ -15,7 +15,7 @@ from pydantic import ValidationError
 from fpl_andres.contracts import FetchedPayload, FplEntry, SourceSnapshot
 
 FPL_API_BASE = "https://fantasy.premierleague.com/api/"
-FPL_USER_AGENT = "FPLAndres/0.2 (+https://github.com/JamieMBright/fpl-andres)"
+FPL_USER_AGENT = "FPLAndres/0.4 (+https://github.com/JamieMBright/fpl-andres)"
 BOOTSTRAP_LIMIT_BYTES = 8 * 1024 * 1024
 DEFAULT_LIMIT_BYTES = 5 * 1024 * 1024
 MAX_PUBLIC_ID = 4_294_967_295
