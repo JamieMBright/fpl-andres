@@ -1,0 +1,42 @@
+{
+  "valid": [
+    {
+      "source": "fpl",
+      "fetchedAt": "2026-07-29T18:00:00Z",
+      "dataAvailableAt": "2026-07-29T17:59:00Z",
+      "contentHash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "upstreamReference": "https://fantasy.premierleague.com/api/bootstrap-static/"
+    }
+  ],
+  "invalid": [
+    {
+      "source": "fpl",
+      "fetchedAt": "2026-07-29T18:00:00Z",
+      "dataAvailableAt": "2026-07-29T18:01:00Z",
+      "contentHash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "upstreamReference": "https://fantasy.premierleague.com/api/bootstrap-static/"
+    },
+    {
+      "source": "fpl",
+      "fetchedAt": "2026-07-29T18:00:00Z",
+      "dataAvailableAt": "2026-07-29T17:59:00Z",
+      "contentHash": "sha256:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+      "upstreamReference": "https://fantasy.premierleague.com/api/bootstrap-static/"
+    },
+    {
+      "source": "fpl",
+      "fetchedAt": "2026-07-29T18:00:00Z",
+      "dataAvailableAt": "2026-07-29T17:59:00Z",
+      "contentHash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "upstreamReference": "https://fantasy.premierleague.com/api/bootstrap-static/",
+      "unknown": true
+    },
+    {
+      "source": "fpl",
+      "fetchedAt": "2026-07-29T18:00:00",
+      "dataAvailableAt": "2026-07-29T17:59:00Z",
+      "contentHash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "upstreamReference": "https://fantasy.premierleague.com/api/bootstrap-static/"
+    }
+  ]
+}

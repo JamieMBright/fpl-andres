@@ -2,6 +2,9 @@ from pathlib import Path
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
 FOUNDATION_MIGRATION = REPOSITORY_ROOT / "supabase" / "migrations" / "20260729180000_foundation.sql"
+EVIDENCE_MIGRATION = (
+    REPOSITORY_ROOT / "supabase" / "migrations" / "20260729183000_evidence_snapshots.sql"
+)
 
 
 def test_foundation_table_is_explicitly_protected_by_rls() -> None:
@@ -11,3 +14,17 @@ def test_foundation_table_is_explicitly_protected_by_rls() -> None:
     assert "alter table public.workflow_runs enable row level security" in sql
     assert "grant " not in sql
     assert "create policy" not in sql
+
+
+def test_evidence_snapshots_are_immutable_and_default_deny() -> None:
+    sql = EVIDENCE_MIGRATION.read_text(encoding="utf-8").lower()
+
+    assert "create table public.source_snapshots" in sql
+    assert "create table public.rules_snapshots" in sql
+    assert "unique (source, content_hash)" in sql
+    assert "data_available_at <= fetched_at" in sql
+    for table in ("source_snapshots", "rules_snapshots"):
+        assert f"alter table public.{table} enable row level security" in sql
+        assert f"alter table public.{table} force row level security" in sql
+    assert "create policy" not in sql
+    assert "grant " not in sql
