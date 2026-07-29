@@ -32,21 +32,21 @@ After pressing **Run**, wait for a successful result before continuing. If any f
 fails, stop immediately, keep the full error text, and tell Copilot which numbered step
 failed. Do not edit the SQL in the Dashboard and do not continue to later files.
 
-1. [ ] Run
+1. [x] Run
        [`20260729180000_foundation.sql`](../supabase/migrations/20260729180000_foundation.sql).
        This creates `workflow_runs` and the `pgcrypto` dependency used by later files.
-2. [ ] Run
+2. [x] Run
        [`20260729183000_evidence_snapshots.sql`](../supabase/migrations/20260729183000_evidence_snapshots.sql).
        This creates immutable source/rules evidence tables and the `private` schema.
-3. [ ] Run
+3. [x] Run
        [`20260730120000_projection_artifacts.sql`](../supabase/migrations/20260730120000_projection_artifacts.sql).
        This creates projection and model-promotion artifacts plus the immutable-model
        trigger function used by the final file.
-4. [ ] Run
+4. [x] Run
        [`20260731120000_optimization_artifacts.sql`](../supabase/migrations/20260731120000_optimization_artifacts.sql).
        This creates immutable optimization runs/event plans and database-level array
        integrity helpers.
-5. [ ] Open one final SQL Editor query, run the verification query below, and confirm
+5. [x] Open one final SQL Editor query, run the verification query below, and confirm
        every `exists` value is `true`:
 
 ```sql
@@ -65,7 +65,7 @@ from (
 order by expected_object;
 ```
 
-6. [ ] Run this RLS verification query and confirm every row shows
+6. [x] Run this RLS verification query and confirm every row shows
        `rls_enabled = true` and `rls_forced = true`:
 
 ```sql
@@ -89,8 +89,8 @@ where n.nspname = 'public'
 order by c.relname;
 ```
 
-7. [ ] Tell Copilot only: `All four SQL files succeeded; table and RLS verification
- passed.` Do not paste any key, password or database row.
+7. [x] Confirm to Copilot that all four SQL files succeeded and table/RLS verification
+       passed. No key, password or database row was shared.
 
 **Migration-history warning:** SQL Editor executes the schema but does not record these
 files in the Supabase CLI migration ledger. Do not run `supabase db push` against this
