@@ -14,55 +14,94 @@ issue, a pull request or a committed file.
 - [x] The free-plan deployment uses this one hosted production project. There is no
       hosted staging project. Migrations must pass the local policy tests and Linux CI
       Supabase reset/lint before they touch production.
-- [x] The repository contains a project-scoped connector at `.vscode/mcp.json`. It can
-      access only this project and only the Supabase `database`, `docs`, `development`
-      and `debugging` tool groups. Account management, Functions, Storage and paid
-      branching are excluded.
+- [x] VS Code MCP is disabled by organization policy. Production bootstrap therefore
+      uses the Supabase Dashboard SQL Editor steps below; no editor setting or policy
+      bypass is required.
 
 The project ref and API URL are identifiers, not credentials. They may be recorded in
-the repository. The OAuth grant and all keys remain outside the repository.
+the repository. All keys remain outside the repository.
 
-## Do now: authorize the Supabase migration connector
+## Do now: bootstrap production in Supabase SQL Editor
 
-The connector uses Supabase browser OAuth. It does **not** need a personal access token,
-database password, publishable key, secret key or `.env` entry.
+No API key, database password, PAT or application secret is needed for these manual
+steps. Sign in to Supabase Dashboard, open project `fpl-andres-production`, then open
+**SQL Editor > New query**.
 
-1. [ ] In VS Code, open the Command Palette with `Ctrl+Shift+P`.
-2. [ ] Run `MCP: List Servers`.
-3. [ ] Select `supabase-production-migrations` and choose **Start**. If VS Code asks
-       whether to trust the server, review the URL and approve the official
-       `https://mcp.supabase.com` server.
-4. [ ] Complete the browser OAuth flow with the Supabase account that owns
-       `fpl-andres-production`. Choose the organization containing project ref
-       `qpmlfbuouporvwebjxhk` if prompted.
-5. [ ] Return to VS Code. Run `MCP: List Servers` again and confirm the server is
-       running. Use **Show Output** there if authentication failed.
-6. [ ] Keep per-tool confirmation enabled. This connector is intentionally write-enabled
-       so it can call `apply_migration` against the only hosted project.
-7. [ ] Tell Copilot: `Supabase MCP is authenticated; verify project and migrations.`
-       Do not include any token or key.
+Run each complete file in the order below. Use a fresh SQL Editor query for each file.
+After pressing **Run**, wait for a successful result before continuing. If any file
+fails, stop immediately, keep the full error text, and tell Copilot which numbered step
+failed. Do not edit the SQL in the Dashboard and do not continue to later files.
 
-After authorization, Copilot owns the verification sequence:
+1. [ ] Run
+       [`20260729180000_foundation.sql`](../supabase/migrations/20260729180000_foundation.sql).
+       This creates `workflow_runs` and the `pgcrypto` dependency used by later files.
+2. [ ] Run
+       [`20260729183000_evidence_snapshots.sql`](../supabase/migrations/20260729183000_evidence_snapshots.sql).
+       This creates immutable source/rules evidence tables and the `private` schema.
+3. [ ] Run
+       [`20260730120000_projection_artifacts.sql`](../supabase/migrations/20260730120000_projection_artifacts.sql).
+       This creates projection and model-promotion artifacts plus the immutable-model
+       trigger function used by the final file.
+4. [ ] Run
+       [`20260731120000_optimization_artifacts.sql`](../supabase/migrations/20260731120000_optimization_artifacts.sql).
+       This creates immutable optimization runs/event plans and database-level array
+       integrity helpers.
+5. [ ] Open one final SQL Editor query, run the verification query below, and confirm
+       every `exists` value is `true`:
 
-1. Confirm the connector reports project URL
-   `https://qpmlfbuouporvwebjxhk.supabase.co`.
-2. List remote migrations and tables before writing anything.
-3. Compare the remote migration ledger with tracked files under
-   `supabase/migrations`.
-4. Apply only missing, reviewed repository migrations in timestamp order with
-   `apply_migration`; do not paste ad hoc schema changes into production.
-5. Re-list migrations and tables, then run Supabase security/performance advisors.
-6. Record the applied migration names without logging database rows or credentials.
+```sql
+select expected_object, to_regclass(expected_object) is not null as exists
+from (
+    values
+        ('public.workflow_runs'),
+        ('public.source_snapshots'),
+        ('public.rules_snapshots'),
+        ('public.projection_runs'),
+        ('public.team_goal_projections'),
+        ('public.model_promotion_decisions'),
+        ('public.optimization_runs'),
+        ('public.optimization_event_plans')
+) as expected(expected_object)
+order by expected_object;
+```
 
-Because this connector targets production, disable it between migration sessions once
-real subscriber data exists. Routine production reads should later use a separate
-`read_only=true` connector; automated deployments should use a controlled workflow,
-not a permanently open interactive write connector.
+6. [ ] Run this RLS verification query and confirm every row shows
+       `rls_enabled = true` and `rls_forced = true`:
 
-The official Supabase `supabase` and `supabase-postgres-best-practices` agent skills are
-installed project-locally under `.agents/skills` and pinned by `skills-lock.json`. The
-repository rule above overrides their generic development advice: do not use
-`execute_sql` for iterative schema work against this production-only project.
+```sql
+select
+    c.relname as table_name,
+    c.relrowsecurity as rls_enabled,
+    c.relforcerowsecurity as rls_forced
+from pg_catalog.pg_class as c
+join pg_catalog.pg_namespace as n on n.oid = c.relnamespace
+where n.nspname = 'public'
+  and c.relname in (
+      'workflow_runs',
+      'source_snapshots',
+      'rules_snapshots',
+      'projection_runs',
+      'team_goal_projections',
+      'model_promotion_decisions',
+      'optimization_runs',
+      'optimization_event_plans'
+  )
+order by c.relname;
+```
+
+7. [ ] Tell Copilot only: `All four SQL files succeeded; table and RLS verification
+ passed.` Do not paste any key, password or database row.
+
+**Migration-history warning:** SQL Editor executes the schema but does not record these
+files in the Supabase CLI migration ledger. Do not run `supabase db push` against this
+project after the manual bootstrap. Copilot will add a controlled migration-history
+reconciliation/deployment workflow before the next production schema change, so these
+four files are not applied twice.
+
+The official Supabase `supabase` and `supabase-postgres-best-practices` agent skills
+remain installed project-locally under `.agents/skills` and pinned by
+`skills-lock.json`; they are still useful for local migration, RLS and schema review
+without MCP.
 
 ## Supabase app values: add only when requested by the runtime milestone
 
@@ -73,13 +112,13 @@ Find runtime values in the Supabase dashboard under the production project's API
 API settings. Enter secrets directly into provider dashboards; never copy them into
 chat. Use the variable names already declared in `.env.example`.
 
-| Value                      | Secret?        | Destination                                                                         | When needed                                                             |
-| -------------------------- | -------------- | ----------------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
-| `SUPABASE_URL`             | No             | Vercel Production and GitHub `production` environment                               | When server APIs or scheduled workers first connect to Supabase         |
-| `SUPABASE_SECRET_KEY`      | Yes            | Vercel Production server environment; later GitHub `production` environment secrets | Private server writes and scheduled jobs only                           |
-| `SUPABASE_PUBLISHABLE_KEY` | No, but scoped | Do not add yet                                                                      | Only if a future approved browser/public Supabase flow requires it      |
-| `SUPABASE_ACCESS_TOKEN`    | Yes            | Do not create or add now                                                            | Only if a future automated Supabase CLI deployment workflow is approved |
-| Database password          | Yes            | Do not add now                                                                      | Only if a future controlled CLI workflow proves it is required          |
+| Value                      | Secret?        | Destination                                                                         | When needed                                                        |
+| -------------------------- | -------------- | ----------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| `SUPABASE_URL`             | No             | Vercel Production and GitHub `production` environment                               | When server APIs or scheduled workers first connect to Supabase    |
+| `SUPABASE_SECRET_KEY`      | Yes            | Vercel Production server environment; later GitHub `production` environment secrets | Private server writes and scheduled jobs only                      |
+| `SUPABASE_PUBLISHABLE_KEY` | No, but scoped | Do not add yet                                                                      | Only if a future approved browser/public Supabase flow requires it |
+| `SUPABASE_ACCESS_TOKEN`    | Yes            | Do not create or add now                                                            | Future controlled migration-history/deployment workflow only       |
+| Database password          | Yes            | Do not add now                                                                      | Future controlled migration-history/deployment workflow only       |
 
 `SUPABASE_SECRET_KEY` must never have a `VITE_` prefix, appear in browser code, or be
 stored in repository settings files. The current architecture keeps browser code away

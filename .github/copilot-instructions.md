@@ -6,11 +6,11 @@
 - Keep `EvidenceLevel` and source timestamps attached to recommendations.
 - Do not copy optimizer code from external FPL solvers.
 - Never expose a Supabase secret, Resend key or subscriber email to browser code or logs.
-- The hosted Supabase connector targets the sole production project. Never use MCP
-  `execute_sql` to iterate on its schema or inspect application rows. Apply only tracked
-  migrations that already pass local policy tests and Linux CI, then run advisors.
-- Keep MCP tool confirmation enabled. Do not enable Supabase account, Functions,
-  Storage or branching tools unless a reviewed milestone requires them.
+- The sole hosted Supabase project is production. VS Code MCP is disabled by organization
+  policy; do not bypass that policy or add alternate interactive database connectors.
+- Apply only tracked migrations that pass local policy tests and Linux CI. The initial
+  production bootstrap is the ordered SQL Editor checklist in `docs/OWNER_SETUP.md`.
+  Never iterate directly on production schema or inspect application rows through AI tools.
 - Keep manual team-state overrides separate from public last-deadline state.
 - Use the repository's design skills and `DESIGN.md` for frontend work.
 - Preserve the two original untracked strategist documents unless the owner explicitly
