@@ -1,0 +1,34 @@
+{
+  "name": "fpl-andres",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@9.15.9",
+  "engines": {
+    "node": ">=20.19.0"
+  },
+  "scripts": {
+    "build": "corepack pnpm -r --if-present build",
+    "check": "corepack pnpm lint && corepack pnpm typecheck && corepack pnpm test && corepack pnpm build && python -m ruff check python && python -m ruff format --check python && python -m mypy && python -m pytest",
+    "dev": "corepack pnpm --filter @fpl-andres/web dev",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "eslint .",
+    "test": "corepack pnpm -r --if-present test",
+    "test:e2e": "corepack pnpm --filter @fpl-andres/web test:e2e",
+    "typecheck": "corepack pnpm -r --if-present typecheck && tsc --noEmit -p tsconfig.api.json"
+  },
+  "devDependencies": {
+    "@eslint/js": "9.39.5",
+    "@types/node": "20.19.43",
+    "@vercel/node": "5.9.0",
+    "eslint": "9.39.5",
+    "eslint-plugin-jsx-a11y": "6.10.2",
+    "eslint-plugin-react-hooks": "7.1.1",
+    "globals": "17.8.0",
+    "prettier": "3.9.6",
+    "supabase": "2.110.0",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.65.0"
+  }
+}
