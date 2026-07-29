@@ -69,6 +69,13 @@ def test_optimization_artifacts_hash_private_state_and_remain_default_deny() -> 
     assert "overrides_updated_at <= prediction_cutoff" in sql
     assert "cardinality(source_hashes) > 0" in sql
     assert "cardinality(squad_element_ids)" in sql
+    assert "price_scenario = 'current_prices'" in sql
+    assert "price_scenario = 'provided_event_prices'" in sql
+    assert "chip_scenario = 'none'" in sql
+    assert "private.positive_unique_bigint_array" in sql
+    assert "private.unique_sha256_array" in sql
+    assert "private.bigint_array_is_subset" in sql
+    assert "private.bigint_arrays_are_disjoint" in sql
     for forbidden in (
         "override_json",
         "available_free_transfers",
