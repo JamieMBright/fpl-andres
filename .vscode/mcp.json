@@ -1,0 +1,8 @@
+{
+  "servers": {
+    "supabase-production-migrations": {
+      "type": "http",
+      "url": "https://mcp.supabase.com/mcp?project_ref=qpmlfbuouporvwebjxhk&features=database,docs,development,debugging"
+    }
+  }
+}

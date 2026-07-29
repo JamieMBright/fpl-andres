@@ -32,3 +32,19 @@ coding agents and are not part of the application runtime bundle.
 - Modifications: none to the vendored reference or license. The project-authored
   `.github/skills/web-design-guidelines/SKILL.md` wrapper reads the local reference
   instead of fetching mutable instructions at review time.
+
+## Supabase Agent Skills
+
+- Source: `https://github.com/supabase/agent-skills`
+- Revision: `1ad9aaeb49caafd9e95c0a91116f71890eebbc53`
+- Paths: `skills/supabase`, `skills/supabase-postgres-best-practices`
+- Versions: `0.1.5`, `1.4.0`
+- License: MIT
+- Local files: `.agents/skills/supabase/**`,
+  `.agents/skills/supabase-postgres-best-practices/**`,
+  `.agents/skills/SUPABASE_AGENT_SKILLS_LICENSE.txt`, `skills-lock.json`
+- Installation: copied project-locally for GitHub Copilot with
+  `npx skills add supabase/agent-skills --agent github-copilot --skill supabase supabase-postgres-best-practices --copy --yes`.
+- Modifications: none to vendored skill files. Repository instructions override generic
+  iterative-development advice because this free-plan deployment has one hosted
+  production database and no hosted staging project.
