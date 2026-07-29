@@ -54,6 +54,29 @@ a {
   color: inherit;
 }
 
+.skip-link {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  z-index: 20;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  color: var(--paper);
+  background: var(--navy);
+  white-space: nowrap;
+}
+
+.skip-link:focus-visible {
+  width: auto;
+  height: auto;
+  padding: 10px 14px;
+  overflow: visible;
+  clip-path: none;
+}
+
 .app-shell {
   width: min(1180px, 100%);
   min-height: 100vh;
@@ -162,7 +185,7 @@ a {
 
 .section-index {
   align-self: start;
-  color: var(--signal-blue);
+  color: var(--navy);
 }
 
 .eyebrow {
@@ -358,8 +381,12 @@ a:focus-visible {
   background: rgb(56 99 76 / 6%);
 }
 
+.evidence-banner-loading {
+  color: var(--navy);
+  background: rgb(79 145 194 / 8%);
+}
+
 .evidence-banner-stale,
-.evidence-banner-loading,
 .evidence-banner-unavailable {
   color: var(--amber);
   background: rgb(184 117 45 / 7%);
@@ -641,7 +668,7 @@ a:focus-visible {
 }
 
 .evidence-chip-manager {
-  color: var(--signal-blue);
+  color: var(--navy);
 }
 
 .correction-saved {
@@ -666,6 +693,16 @@ a:focus-visible {
 
 .correction-saved small {
   color: var(--ink-soft);
+}
+
+.correction-saved:focus-visible {
+  outline: 3px solid var(--signal-blue);
+  outline-offset: 3px;
+}
+
+.correction-hint {
+  max-width: 720px;
+  margin: 0 0 24px;
 }
 
 .correction-form > fieldset {
@@ -718,6 +755,11 @@ a:focus-visible {
 .correction-field input:focus-visible {
   outline: 3px solid var(--signal-blue);
   outline-offset: 2px;
+}
+
+.correction-field input[aria-invalid="true"] {
+  border-color: var(--danger);
+  box-shadow: inset 4px 0 0 var(--danger);
 }
 
 .correction-empty {
@@ -828,6 +870,32 @@ a:focus-visible {
   background: var(--danger);
 }
 
+.inline-confirmation {
+  max-width: 760px;
+  margin-top: 22px;
+  padding: 18px 0 18px 16px;
+  border-block: 1px solid var(--rule);
+  border-left: 4px solid var(--danger);
+}
+
+.inline-confirmation > strong {
+  display: block;
+  font-family: "Newsreader", serif;
+  font-size: 22px;
+}
+
+.inline-confirmation > p {
+  margin: 8px 0 16px;
+  color: var(--ink-soft);
+  line-height: 1.55;
+}
+
+.inline-confirmation > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
 .primary-command:focus-visible,
 .danger-command:focus-visible,
 .icon-command:focus-visible,
@@ -871,6 +939,11 @@ a:focus-visible {
   display: flex;
   min-height: 70px;
   align-items: center;
+}
+
+.analysis-result:focus-visible {
+  outline: 3px solid var(--signal-blue);
+  outline-offset: 5px;
 }
 
 .analysis-note,
@@ -957,11 +1030,18 @@ a:focus-visible {
   }
 
   .site-header {
-    min-height: 76px;
+    flex-wrap: wrap;
+    gap: 10px;
+    min-height: 0;
+    padding: 12px 0;
   }
 
-  .site-header nav a:first-child {
-    display: none;
+  .site-header nav {
+    width: 100%;
+    justify-content: flex-end;
+    gap: 20px;
+    padding-top: 10px;
+    border-top: 1px solid var(--rule);
   }
 
   .deadline-strip {
@@ -1049,6 +1129,14 @@ a:focus-visible {
   .correction-actions > button {
     width: 100%;
   }
+
+  .inline-confirmation > div {
+    display: grid;
+  }
+
+  .inline-confirmation button {
+    width: 100%;
+  }
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -1079,9 +1167,14 @@ a:focus-visible {
 }
 
 @media (forced-colors: active) {
-  .briefing-icon,
-  .evidence-chip {
-    forced-color-adjust: none;
+  .briefing-icon {
+    color: HighlightText;
     background: Highlight;
+  }
+
+  .evidence-chip {
+    color: CanvasText;
+    background: Canvas;
+    border-color: CanvasText;
   }
 }

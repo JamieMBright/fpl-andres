@@ -47,7 +47,7 @@ describe("team analysis entry", () => {
 
     expect(
       screen.getByRole("heading", {
-        name: "What should your next FPL move be?",
+        name: "What did FPL last record for your squad?",
       }),
     ).not.toHaveFocus();
     await user.type(screen.getByLabelText("FPL team ID"), "123456");
@@ -72,6 +72,22 @@ describe("team analysis entry", () => {
     expect(
       screen.getByText(firstSourceHash, { exact: false }),
     ).toBeInTheDocument();
+  });
+
+  it("offers keyboard bypass and describes only available analysis", () => {
+    renderApplication();
+
+    expect(
+      screen.getByRole("link", { name: "Skip to content" }),
+    ).toHaveAttribute("href", "#main-content");
+    expect(screen.getByRole("main")).toHaveAttribute("id", "main-content");
+    expect(screen.getByRole("link", { name: "Method" })).toBeVisible();
+    expect(screen.getByText("Observed state first")).toBeVisible();
+    expect(screen.getByText("Deadline-bound updates")).toBeVisible();
+    expect(
+      screen.queryByText(/captain and bench calls/i),
+    ).not.toBeInTheDocument();
+    expect(screen.queryByText(/chip roadmap/i)).not.toBeInTheDocument();
   });
 
   it("explains why a malformed team ID cannot be analysed", async () => {
@@ -165,8 +181,22 @@ describe("team analysis entry", () => {
       screen.getByRole("button", { name: "Retry analysis" }),
     );
 
+    expect(
+      screen.getByRole("region", { name: "Analysis result" }),
+    ).toHaveFocus();
     expect(await screen.findByText("Observed snapshot ready")).toBeVisible();
     expect(fetchApi).toHaveBeenCalledTimes(2);
+  });
+
+  it("renders a recoverable page for unknown routes", () => {
+    renderApplication("/not-a-real-page");
+
+    expect(
+      screen.getByRole("heading", { name: "Page Not Found" }),
+    ).toBeVisible();
+    expect(
+      screen.getByRole("link", { name: "Return to Team ID entry" }),
+    ).toHaveAttribute("href", "/");
   });
 
   it("stores manager corrections separately against the public deadline", async () => {
@@ -232,6 +262,23 @@ describe("team analysis entry", () => {
     expect(error).toHaveFocus();
   });
 
+  it("marks and focuses the first invalid correction field", async () => {
+    const user = userEvent.setup();
+    renderApplication(`/team/${readyState.entryId}`);
+    await screen.findByText("Observed snapshot ready");
+
+    await user.click(screen.getByText("Correct Current State"));
+    const bank = screen.getByLabelText("Current bank (£m)");
+    await user.type(bank, "1.23");
+    await user.click(screen.getByRole("button", { name: "Save corrections" }));
+
+    expect(await screen.findByRole("alert")).toHaveTextContent(
+      "Current bank must be a non-negative amount with at most 1 decimal place.",
+    );
+    expect(bank).toHaveAttribute("aria-invalid", "true");
+    expect(bank).toHaveFocus();
+  });
+
   it("removes saved manager corrections after confirmation", async () => {
     saveTeamStateOverrides(localStorage, readyState.entryId, {
       source: "manager",
@@ -243,7 +290,6 @@ describe("team analysis entry", () => {
       queuedTransfers: null,
       availableChips: null,
     });
-    const confirm = vi.spyOn(window, "confirm").mockReturnValue(true);
     const user = userEvent.setup();
     renderApplication(`/team/${readyState.entryId}`);
     await screen.findByText("Observed snapshot ready");
@@ -253,7 +299,33 @@ describe("team analysis entry", () => {
       screen.getByRole("button", { name: "Remove saved corrections" }),
     );
 
-    expect(confirm).toHaveBeenCalledOnce();
+    expect(
+      screen.getByRole("alertdialog", { name: "Remove saved corrections?" }),
+    ).toBeVisible();
+    expect(
+      screen.getByRole("button", { name: "Keep corrections" }),
+    ).toHaveFocus();
+    expect(
+      loadTeamStateOverrides(
+        localStorage,
+        readyState.entryId,
+        readyState.stateAsOf,
+      ),
+    ).not.toBeNull();
+    await user.click(screen.getByRole("button", { name: "Keep corrections" }));
+    expect(
+      screen.queryByRole("alertdialog", { name: "Remove saved corrections?" }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Remove saved corrections" }),
+    ).toHaveFocus();
+    await user.click(
+      screen.getByRole("button", { name: "Remove saved corrections" }),
+    );
+    await user.click(
+      screen.getByRole("button", { name: "Remove corrections now" }),
+    );
+
     expect(
       screen.getByRole("status", { name: "Manager correction status" }),
     ).toHaveTextContent("Manager corrections removed");

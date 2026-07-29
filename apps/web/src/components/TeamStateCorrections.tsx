@@ -11,7 +11,7 @@ import {
   Trash2,
   X,
 } from "lucide-react";
-import { useId, useRef, useState, type FormEvent } from "react";
+import { useEffect, useId, useRef, useState, type FormEvent } from "react";
 import { ZodError } from "zod";
 
 import {
@@ -34,12 +34,34 @@ interface TransferDraft {
 
 type TransferField = Exclude<keyof TransferDraft, "key">;
 
-class CorrectionInputError extends Error {}
+interface CorrectionError {
+  message: string;
+  fieldId?: string;
+}
+
+class CorrectionInputError extends Error {
+  constructor(
+    message: string,
+    readonly fieldId?: string,
+  ) {
+    super(message);
+    this.name = "CorrectionInputError";
+  }
+}
 
 export function TeamStateCorrections({ state }: TeamStateCorrectionsProps) {
   const formId = useId();
+  const bankId = `${formId}-bank`;
+  const freeTransfersId = `${formId}-free-transfers`;
+  const chipsId = `${formId}-chips`;
+  const errorId = `${formId}-error`;
+  const hintId = `${formId}-hint`;
   const errorRef = useRef<HTMLParagraphElement>(null);
-  const existing = useRef(loadExistingOverrides(state)).current;
+  const keepCorrectionsRef = useRef<HTMLButtonElement>(null);
+  const removeCorrectionsRef = useRef<HTMLButtonElement>(null);
+  const removedStatusRef = useRef<HTMLDivElement>(null);
+  const returnToRemoveTrigger = useRef(false);
+  const [existing] = useState(() => loadExistingOverrides(state));
   const nextTransferKey = useRef(existing?.queuedTransfers?.length ?? 0);
   const [bank, setBank] = useState(() =>
     existing?.bankTenths === null || existing?.bankTenths === undefined
@@ -68,9 +90,32 @@ export function TeamStateCorrections({ state }: TeamStateCorrectionsProps) {
     useState<TeamStateOverrides | null>(existing);
   const [savedThisSession, setSavedThisSession] = useState(false);
   const [removedThisSession, setRemovedThisSession] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [confirmingRemoval, setConfirmingRemoval] = useState(false);
+  const [error, setError] = useState<CorrectionError | null>(null);
+
+  useEffect(() => {
+    if (!error) return;
+    const target = error.fieldId
+      ? document.getElementById(error.fieldId)
+      : errorRef.current;
+    target?.focus();
+  }, [error]);
+
+  useEffect(() => {
+    if (confirmingRemoval) {
+      keepCorrectionsRef.current?.focus();
+    } else if (returnToRemoveTrigger.current) {
+      returnToRemoveTrigger.current = false;
+      removeCorrectionsRef.current?.focus();
+    }
+  }, [confirmingRemoval]);
+
+  useEffect(() => {
+    if (removedThisSession) removedStatusRef.current?.focus();
+  }, [removedThisSession]);
 
   function addTransfer() {
+    setError(null);
     const key = nextTransferKey.current;
     nextTransferKey.current += 1;
     setTransfers((current) => [
@@ -86,6 +131,7 @@ export function TeamStateCorrections({ state }: TeamStateCorrectionsProps) {
   }
 
   function updateTransfer(key: number, field: TransferField, value: string) {
+    setError(null);
     setTransfers((current) =>
       current.map((transfer) =>
         transfer.key === key ? { ...transfer, [field]: value } : transfer,
@@ -94,6 +140,7 @@ export function TeamStateCorrections({ state }: TeamStateCorrectionsProps) {
   }
 
   function removeTransfer(key: number) {
+    setError(null);
     setTransfers((current) =>
       current.filter((transfer) => transfer.key !== key),
     );
@@ -106,34 +153,28 @@ export function TeamStateCorrections({ state }: TeamStateCorrectionsProps) {
         source: "manager",
         basedOnStateAsOf: state.stateAsOf,
         updatedAt: new Date().toISOString(),
-        bankTenths: parseOptionalTenths(bank, "Current bank"),
+        bankTenths: parseOptionalTenths(bank, "Current bank", bankId),
         availableFreeTransfers: parseOptionalInteger(
           freeTransfers,
           "Available free transfers",
+          freeTransfersId,
         ),
         currentSquad: null,
-        queuedTransfers: parseTransfers(transfers),
-        availableChips: parseAvailableChips(availableChips),
+        queuedTransfers: parseTransfers(transfers, formId),
+        availableChips: parseAvailableChips(availableChips, chipsId),
       });
       setSavedOverrides(overrides);
       setSavedThisSession(true);
       setRemovedThisSession(false);
+      setConfirmingRemoval(false);
       setError(null);
     } catch (caught) {
       setSavedThisSession(false);
-      setError(correctionErrorMessage(caught));
-      queueMicrotask(() => errorRef.current?.focus());
+      setError(correctionError(caught));
     }
   }
 
   function removeCorrections() {
-    if (
-      !window.confirm(
-        "Remove the manager corrections saved for this team and public deadline?",
-      )
-    ) {
-      return;
-    }
     try {
       removeTeamStateOverrides(localStorage, state.entryId, state.stateAsOf);
       setBank("");
@@ -143,13 +184,18 @@ export function TeamStateCorrections({ state }: TeamStateCorrectionsProps) {
       nextTransferKey.current = 0;
       setSavedOverrides(null);
       setSavedThisSession(false);
+      setConfirmingRemoval(false);
       setRemovedThisSession(true);
       setError(null);
     } catch (caught) {
       setRemovedThisSession(false);
-      setError(correctionErrorMessage(caught));
-      queueMicrotask(() => errorRef.current?.focus());
+      setError(correctionError(caught));
     }
+  }
+
+  function cancelRemoval() {
+    returnToRemoveTrigger.current = true;
+    setConfirmingRemoval(false);
   }
 
   return (
@@ -186,7 +232,9 @@ export function TeamStateCorrections({ state }: TeamStateCorrectionsProps) {
           <div
             aria-label="Manager correction status"
             className="correction-saved"
+            ref={removedStatusRef}
             role="status"
+            tabIndex={-1}
           >
             <CheckCircle2 aria-hidden="true" size={18} />
             <span>
@@ -210,22 +258,33 @@ export function TeamStateCorrections({ state }: TeamStateCorrectionsProps) {
         ) : null}
 
         <form
-          aria-describedby={error ? `${formId}-error` : undefined}
+          aria-describedby={error ? `${hintId} ${errorId}` : hintId}
           className="correction-form"
           noValidate
           onSubmit={saveCorrections}
         >
+          <p className="field-hint correction-hint" id={hintId}>
+            Provide at least 1 balance, available chip or queued transfer to
+            save a correction.
+          </p>
           <fieldset>
             <legend>Current Balances</legend>
             <div className="correction-field-grid">
-              <CorrectionField id={`${formId}-bank`} label="Current bank (£m)">
+              <CorrectionField id={bankId} label="Current bank (£m)">
                 <input
+                  aria-describedby={
+                    error?.fieldId === bankId ? errorId : undefined
+                  }
+                  aria-invalid={error?.fieldId === bankId}
                   autoComplete="off"
-                  id={`${formId}-bank`}
+                  id={bankId}
                   inputMode="decimal"
                   min="0"
                   name="current-bank"
-                  onChange={(event) => setBank(event.target.value)}
+                  onChange={(event) => {
+                    setBank(event.target.value);
+                    setError(null);
+                  }}
                   placeholder="1.2…"
                   step="0.1"
                   type="number"
@@ -233,28 +292,42 @@ export function TeamStateCorrections({ state }: TeamStateCorrectionsProps) {
                 />
               </CorrectionField>
               <CorrectionField
-                id={`${formId}-free-transfers`}
+                id={freeTransfersId}
                 label="Available free transfers"
               >
                 <input
+                  aria-describedby={
+                    error?.fieldId === freeTransfersId ? errorId : undefined
+                  }
+                  aria-invalid={error?.fieldId === freeTransfersId}
                   autoComplete="off"
-                  id={`${formId}-free-transfers`}
+                  id={freeTransfersId}
                   inputMode="numeric"
                   min="0"
                   name="available-free-transfers"
-                  onChange={(event) => setFreeTransfers(event.target.value)}
+                  onChange={(event) => {
+                    setFreeTransfers(event.target.value);
+                    setError(null);
+                  }}
                   placeholder="2…"
                   step="1"
                   type="number"
                   value={freeTransfers}
                 />
               </CorrectionField>
-              <CorrectionField id={`${formId}-chips`} label="Available chips">
+              <CorrectionField id={chipsId} label="Available chips">
                 <input
+                  aria-describedby={
+                    error?.fieldId === chipsId ? errorId : undefined
+                  }
+                  aria-invalid={error?.fieldId === chipsId}
                   autoComplete="off"
-                  id={`${formId}-chips`}
+                  id={chipsId}
                   name="available-chips"
-                  onChange={(event) => setAvailableChips(event.target.value)}
+                  onChange={(event) => {
+                    setAvailableChips(event.target.value);
+                    setError(null);
+                  }}
                   placeholder="wildcard, bench_boost…"
                   spellCheck={false}
                   type="text"
@@ -288,6 +361,8 @@ export function TeamStateCorrections({ state }: TeamStateCorrectionsProps) {
                       index={index}
                       label="Player out"
                       onChange={updateTransfer}
+                      error={error}
+                      errorId={errorId}
                       transfer={transfer}
                     />
                     <TransferInput
@@ -296,6 +371,8 @@ export function TeamStateCorrections({ state }: TeamStateCorrectionsProps) {
                       index={index}
                       label="Player in"
                       onChange={updateTransfer}
+                      error={error}
+                      errorId={errorId}
                       transfer={transfer}
                     />
                     <TransferInput
@@ -304,6 +381,8 @@ export function TeamStateCorrections({ state }: TeamStateCorrectionsProps) {
                       index={index}
                       label="Selling price (£m)"
                       onChange={updateTransfer}
+                      error={error}
+                      errorId={errorId}
                       transfer={transfer}
                     />
                     <TransferInput
@@ -312,6 +391,8 @@ export function TeamStateCorrections({ state }: TeamStateCorrectionsProps) {
                       index={index}
                       label="Purchase price (£m)"
                       onChange={updateTransfer}
+                      error={error}
+                      errorId={errorId}
                       transfer={transfer}
                     />
                   </fieldset>
@@ -330,12 +411,12 @@ export function TeamStateCorrections({ state }: TeamStateCorrectionsProps) {
           {error ? (
             <p
               className="field-error correction-error"
-              id={`${formId}-error`}
+              id={errorId}
               ref={errorRef}
               role="alert"
               tabIndex={-1}
             >
-              {error}
+              {error.message}
             </p>
           ) : null}
 
@@ -343,16 +424,50 @@ export function TeamStateCorrections({ state }: TeamStateCorrectionsProps) {
             <button className="primary-command" type="submit">
               <Save aria-hidden="true" size={18} /> Save corrections
             </button>
-            {savedOverrides ? (
+            {savedOverrides && !confirmingRemoval ? (
               <button
                 className="danger-command"
-                onClick={removeCorrections}
+                onClick={() => setConfirmingRemoval(true)}
+                ref={removeCorrectionsRef}
                 type="button"
               >
                 <Trash2 aria-hidden="true" size={17} /> Remove saved corrections
               </button>
             ) : null}
           </div>
+          {savedOverrides && confirmingRemoval ? (
+            <div
+              aria-describedby={`${formId}-remove-description`}
+              aria-labelledby={`${formId}-remove-title`}
+              className="inline-confirmation"
+              role="alertdialog"
+            >
+              <strong id={`${formId}-remove-title`}>
+                Remove saved corrections?
+              </strong>
+              <p id={`${formId}-remove-description`}>
+                This removes only the local manager record for this team and
+                public deadline. The observed FPL snapshot stays unchanged.
+              </p>
+              <div>
+                <button
+                  className="secondary-command"
+                  onClick={cancelRemoval}
+                  ref={keepCorrectionsRef}
+                  type="button"
+                >
+                  Keep corrections
+                </button>
+                <button
+                  className="danger-command"
+                  onClick={removeCorrections}
+                  type="button"
+                >
+                  <Trash2 aria-hidden="true" size={17} /> Remove corrections now
+                </button>
+              </div>
+            </div>
+          ) : null}
         </form>
       </div>
     </details>
@@ -375,6 +490,8 @@ function CorrectionField({ children, id, label }: CorrectionFieldProps) {
 }
 
 interface TransferInputProps {
+  error: CorrectionError | null;
+  errorId: string;
   field: TransferField;
   formId: string;
   index: number;
@@ -384,6 +501,8 @@ interface TransferInputProps {
 }
 
 function TransferInput({
+  error,
+  errorId,
   field,
   formId,
   index,
@@ -397,15 +516,18 @@ function TransferInput({
     <div className="correction-field">
       <label htmlFor={id}>{label}</label>
       <input
+        aria-describedby={error?.fieldId === id ? errorId : undefined}
+        aria-invalid={error?.fieldId === id}
         autoComplete="off"
         id={id}
         inputMode={isPrice ? "decimal" : "numeric"}
-        min={isPrice ? "0" : "1"}
+        min={isPrice ? "0" : undefined}
         name={`queued-transfer-${index + 1}-${field}`}
         onChange={(event) => onChange(transfer.key, field, event.target.value)}
         placeholder={isPrice ? "6.5…" : "123…"}
-        step={isPrice ? "0.1" : "1"}
-        type="number"
+        pattern={isPrice ? undefined : "[0-9]*"}
+        step={isPrice ? "0.1" : undefined}
+        type={isPrice ? "number" : "text"}
         value={transfer[field]}
       />
     </div>
@@ -422,97 +544,141 @@ function loadExistingOverrides(
   }
 }
 
-function parseOptionalTenths(value: string, label: string): number | null {
+function parseOptionalTenths(
+  value: string,
+  label: string,
+  fieldId?: string,
+): number | null {
   const normalized = value.trim();
   if (normalized === "") return null;
   const match = /^(\d+)(?:\.(\d))?$/.exec(normalized);
   if (!match) {
     throw new CorrectionInputError(
       `${label} must be a non-negative amount with at most 1 decimal place.`,
+      fieldId,
     );
   }
   const whole = Number(match[1]);
   const decimal = Number(match[2] ?? "0");
   const tenths = whole * 10 + decimal;
   if (!Number.isSafeInteger(tenths)) {
-    throw new CorrectionInputError(`${label} is outside the supported range.`);
+    throw new CorrectionInputError(
+      `${label} is outside the supported range.`,
+      fieldId,
+    );
   }
   return tenths;
 }
 
-function parseOptionalInteger(value: string, label: string): number | null {
+function parseOptionalInteger(
+  value: string,
+  label: string,
+  fieldId?: string,
+): number | null {
   const normalized = value.trim();
   if (normalized === "") return null;
   if (!/^\d+$/.test(normalized)) {
-    throw new CorrectionInputError(`${label} must be a non-negative integer.`);
+    throw new CorrectionInputError(
+      `${label} must be a non-negative integer.`,
+      fieldId,
+    );
   }
   const parsed = Number(normalized);
   if (!Number.isSafeInteger(parsed)) {
-    throw new CorrectionInputError(`${label} is outside the supported range.`);
-  }
-  return parsed;
-}
-
-function parseRequiredInteger(value: string, label: string): number {
-  const parsed = parseOptionalInteger(value, label);
-  if (parsed === null || parsed < 1 || parsed > 4_294_967_295) {
     throw new CorrectionInputError(
-      `${label} must be a positive FPL element ID.`,
+      `${label} is outside the supported range.`,
+      fieldId,
     );
   }
   return parsed;
 }
 
-function parseRequiredTenths(value: string, label: string): number {
-  const parsed = parseOptionalTenths(value, label);
+function parseRequiredInteger(
+  value: string,
+  label: string,
+  fieldId: string,
+): number {
+  const parsed = parseOptionalInteger(value, label, fieldId);
+  if (parsed === null || parsed < 1 || parsed > 4_294_967_295) {
+    throw new CorrectionInputError(
+      `${label} must be a positive FPL element ID.`,
+      fieldId,
+    );
+  }
+  return parsed;
+}
+
+function parseRequiredTenths(
+  value: string,
+  label: string,
+  fieldId: string,
+): number {
+  const parsed = parseOptionalTenths(value, label, fieldId);
   if (parsed === null) {
-    throw new CorrectionInputError(`${label} is required for each transfer.`);
+    throw new CorrectionInputError(
+      `${label} is required for each transfer.`,
+      fieldId,
+    );
   }
   return parsed;
 }
 
 function parseTransfers(
   transfers: TransferDraft[],
+  formId: string,
 ): TeamStateOverrides["queuedTransfers"] {
   if (transfers.length === 0) return null;
   return transfers.map((transfer, index) => ({
     elementOutId: parseRequiredInteger(
       transfer.elementOutId,
       `Transfer ${index + 1} player out`,
+      `${formId}-transfer-${transfer.key}-elementOutId`,
     ),
     elementInId: parseRequiredInteger(
       transfer.elementInId,
       `Transfer ${index + 1} player in`,
+      `${formId}-transfer-${transfer.key}-elementInId`,
     ),
     sellingPriceTenths: parseRequiredTenths(
       transfer.sellingPrice,
       `Transfer ${index + 1} selling price`,
+      `${formId}-transfer-${transfer.key}-sellingPrice`,
     ),
     purchasePriceTenths: parseRequiredTenths(
       transfer.purchasePrice,
       `Transfer ${index + 1} purchase price`,
+      `${formId}-transfer-${transfer.key}-purchasePrice`,
     ),
   }));
 }
 
-function parseAvailableChips(value: string): string[] | null {
+function parseAvailableChips(value: string, fieldId: string): string[] | null {
   const chips = value
     .split(",")
     .map((chip) => chip.trim())
     .filter(Boolean);
   if (chips.length === 0) return null;
   if (new Set(chips).size !== chips.length) {
-    throw new CorrectionInputError("List each available chip once.");
+    throw new CorrectionInputError("List each available chip once.", fieldId);
   }
   return chips.sort();
 }
 
-function correctionErrorMessage(caught: unknown): string {
-  if (caught instanceof CorrectionInputError) return caught.message;
-  if (caught instanceof ZodError) {
-    return caught.issues[0]?.message ?? "Review the manager corrections.";
+function correctionError(caught: unknown): CorrectionError {
+  if (caught instanceof CorrectionInputError) {
+    return caught.fieldId
+      ? { message: caught.message, fieldId: caught.fieldId }
+      : { message: caught.message };
   }
-  return "Corrections could not be saved in this browser. Check storage access and try again.";
+  if (caught instanceof ZodError) {
+    return {
+      message: caught.issues[0]?.message ?? "Review the manager corrections.",
+    };
+  }
+  return {
+    message:
+      "Corrections could not be saved in this browser. Check storage access and try again.",
+  };
 }
 
 function formatTenthsInput(value: number): string {

@@ -93,11 +93,14 @@ function ApplicationFrame() {
 
   return (
     <div className="app-shell">
+      <a className="skip-link" href="#main-content">
+        Skip to content
+      </a>
       <header className="site-header">
         <Link aria-label="FPL Andres home" className="brand" to="/">
           <DossierMark />
           <span>
-            <strong>FPL Andres</strong>
+            <strong translate="no">FPL Andres</strong>
             <small>Decision desk</small>
           </span>
         </Link>
@@ -106,12 +109,12 @@ function ApplicationFrame() {
           <Link to="/calibration">Calibration</Link>
         </nav>
       </header>
-      <main>
+      <main id="main-content" tabIndex={-1}>
         <Outlet />
       </main>
       <footer className="site-footer">
         <p>Independent analysis. Not affiliated with Fantasy Premier League.</p>
-        <p className="mono">Public data · version 0.2</p>
+        <p className="mono">Observed state · local corrections</p>
       </footer>
     </div>
   );
@@ -138,13 +141,11 @@ function HomePage() {
 
   return (
     <>
-      <section className="deadline-strip" aria-label="Analysis scope">
+      <section className="deadline-strip" aria-label="Current capability">
         <span>
-          <Clock3 aria-hidden="true" size={17} /> Next-deadline analysis
+          <Clock3 aria-hidden="true" size={17} /> Public state review
         </span>
-        <span className="mono">
-          Public FPL state · manual corrections supported
-        </span>
+        <span className="mono">Last-deadline evidence · local corrections</span>
       </section>
 
       <section className="analysis-entry">
@@ -152,13 +153,12 @@ function HomePage() {
           01 / IDENTIFY
         </div>
         <div className="entry-copy">
-          <p className="eyebrow">
-            Your squad, as the last deadline recorded it
-          </p>
-          <RouteHeading>What should your next FPL move be?</RouteHeading>
+          <p className="eyebrow">Your squad at the last processed deadline</p>
+          <RouteHeading>What did FPL last record for your squad?</RouteHeading>
           <p className="lede">
-            Enter a public Team ID. Andres will attach the numbers, uncertainty,
-            and source freshness to every recommendation.
+            Enter a public Team ID to inspect its validated squad, bank,
+            transfers, freshness and exact source trail. Add local corrections
+            for changes made since the deadline.
           </p>
         </div>
 
@@ -175,7 +175,7 @@ function HomePage() {
               inputMode="numeric"
               maxLength={10}
               onChange={(event) => setTeamId(event.target.value)}
-              placeholder="e.g. 123456"
+              placeholder="e.g. 212279…"
               value={teamId}
             />
             <button type="submit">
@@ -201,20 +201,22 @@ function HomePage() {
           <div className="briefing-icon">
             <FileSearch aria-hidden="true" size={21} />
           </div>
-          <p className="eyebrow">Decision</p>
-          <h2>One move first</h2>
+          <p className="eyebrow">Public record</p>
+          <h2>Observed state first</h2>
           <p>
-            Bank, buy, sell, captain and bench calls ordered for deadline use.
+            Squad, captaincy, bank and transfer history shown only after the
+            source contract passes.
           </p>
         </article>
         <article>
           <div className="briefing-icon">
             <Clock3 aria-hidden="true" size={21} />
           </div>
-          <p className="eyebrow">Horizon</p>
-          <h2>Six to eight weeks</h2>
+          <p className="eyebrow">Since deadline</p>
+          <h2>Deadline-bound updates</h2>
           <p>
-            A rolling path, plus a fixture and chip roadmap that can change.
+            Manager-supplied bank, free transfers, queued moves and chips stay
+            local and separate.
           </p>
         </article>
         <article>
@@ -222,9 +224,10 @@ function HomePage() {
             <ShieldCheck aria-hidden="true" size={21} />
           </div>
           <p className="eyebrow">Evidence</p>
-          <h2>No invented certainty</h2>
+          <h2>Exact source trail</h2>
           <p>
-            Observed, inferred, experimental and unavailable are shown plainly.
+            Timestamps and content hashes remain attached; unavailable data is
+            never replaced by a guess.
           </p>
         </article>
       </section>
@@ -240,6 +243,7 @@ function TeamAnalysisPage() {
     initialTeamAnalysisState,
   );
   const [refreshAttempt, setRefreshAttempt] = useState(0);
+  const resultRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (entryId === null) return;
@@ -280,10 +284,21 @@ function TeamAnalysisPage() {
       </div>
       <p className="eyebrow">Public team snapshot</p>
       <RouteHeading>Analysis for team {entryId}</RouteHeading>
-      <AnalysisResult
-        analysis={analysis}
-        onRetry={() => setRefreshAttempt((attempt) => attempt + 1)}
-      />
+      <div
+        aria-label="Analysis result"
+        className="analysis-result"
+        ref={resultRef}
+        role="region"
+        tabIndex={-1}
+      >
+        <AnalysisResult
+          analysis={analysis}
+          onRetry={() => {
+            resultRef.current?.focus();
+            setRefreshAttempt((attempt) => attempt + 1);
+          }}
+        />
+      </div>
       <nav aria-label="Analysis actions" className="analysis-actions">
         <Link className="text-command" to="/">
           Analyse another team
@@ -446,12 +461,13 @@ function SnapshotDossier({ state }: { state: PublicTeamState }) {
             <p className="eyebrow">Formation sheet</p>
             <h2 id="squad-title">Last-Deadline Squad</h2>
           </div>
-          <span className="mono">15 public picks</span>
+          <span className="mono">{state.picks.length} public picks</span>
         </div>
         <div
           aria-label="Scrollable last-deadline squad"
           className="squad-table-wrap"
           role="region"
+          // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- Keyboard users must be able to scroll this table horizontally.
           tabIndex={0}
         >
           <table aria-label="Last-deadline squad">
@@ -467,7 +483,9 @@ function SnapshotDossier({ state }: { state: PublicTeamState }) {
               {state.picks.map((pick) => (
                 <tr key={pick.squadPosition}>
                   <td className="mono">{pick.squadPosition}</td>
-                  <th scope="row">FPL element {pick.elementId}</th>
+                  <th scope="row" translate="no">
+                    FPL element {pick.elementId}
+                  </th>
                   <td>{pickAssignment(pick)}</td>
                   <td className="mono">{pick.multiplier}×</td>
                 </tr>
@@ -497,7 +515,7 @@ function SnapshotDossier({ state }: { state: PublicTeamState }) {
           <ol>
             {state.sourceHashes.map((hash) => (
               <li key={hash}>
-                <code>{hash}</code>
+                <code translate="no">{hash}</code>
               </li>
             ))}
           </ol>
@@ -632,6 +650,19 @@ function CalibrationPage() {
   );
 }
 
+function NotFoundPage() {
+  return (
+    <section className="text-page">
+      <p className="eyebrow">Route unavailable</p>
+      <RouteHeading>Page Not Found</RouteHeading>
+      <p>The requested page does not exist in this decision desk.</p>
+      <Link className="text-command" to="/">
+        Return to Team ID entry
+      </Link>
+    </section>
+  );
+}
+
 export const routes: RouteObject[] = [
   {
     path: "/",
@@ -641,6 +672,7 @@ export const routes: RouteObject[] = [
       { path: "team/:teamId", element: <TeamAnalysisPage /> },
       { path: "methodology", element: <MethodPage /> },
       { path: "calibration", element: <CalibrationPage /> },
+      { path: "*", element: <NotFoundPage /> },
     ],
   },
 ];
