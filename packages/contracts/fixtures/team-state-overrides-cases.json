@@ -1,0 +1,113 @@
+{
+  "valid": [
+    {
+      "source": "manager",
+      "basedOnStateAsOf": "2026-09-12T10:30:00Z",
+      "updatedAt": "2026-09-12T13:30:00Z",
+      "bankTenths": 12,
+      "availableFreeTransfers": 1,
+      "currentSquad": [
+        {
+          "elementId": 201,
+          "squadPosition": 1,
+          "purchasePriceTenths": 65,
+          "sellingPriceTenths": 65
+        },
+        {
+          "elementId": 102,
+          "squadPosition": 2,
+          "purchasePriceTenths": 50,
+          "sellingPriceTenths": 50
+        },
+        {
+          "elementId": 103,
+          "squadPosition": 3,
+          "purchasePriceTenths": 50,
+          "sellingPriceTenths": 50
+        },
+        {
+          "elementId": 104,
+          "squadPosition": 4,
+          "purchasePriceTenths": 50,
+          "sellingPriceTenths": 50
+        },
+        {
+          "elementId": 105,
+          "squadPosition": 5,
+          "purchasePriceTenths": 50,
+          "sellingPriceTenths": 50
+        },
+        {
+          "elementId": 106,
+          "squadPosition": 6,
+          "purchasePriceTenths": 50,
+          "sellingPriceTenths": 50
+        },
+        {
+          "elementId": 107,
+          "squadPosition": 7,
+          "purchasePriceTenths": 50,
+          "sellingPriceTenths": 50
+        },
+        {
+          "elementId": 108,
+          "squadPosition": 8,
+          "purchasePriceTenths": 50,
+          "sellingPriceTenths": 50
+        },
+        {
+          "elementId": 109,
+          "squadPosition": 9,
+          "purchasePriceTenths": 50,
+          "sellingPriceTenths": 50
+        },
+        {
+          "elementId": 110,
+          "squadPosition": 10,
+          "purchasePriceTenths": 50,
+          "sellingPriceTenths": 50
+        },
+        {
+          "elementId": 111,
+          "squadPosition": 11,
+          "purchasePriceTenths": 50,
+          "sellingPriceTenths": 50
+        },
+        {
+          "elementId": 112,
+          "squadPosition": 12,
+          "purchasePriceTenths": 50,
+          "sellingPriceTenths": 50
+        },
+        {
+          "elementId": 113,
+          "squadPosition": 13,
+          "purchasePriceTenths": 50,
+          "sellingPriceTenths": 50
+        },
+        {
+          "elementId": 114,
+          "squadPosition": 14,
+          "purchasePriceTenths": 50,
+          "sellingPriceTenths": 50
+        },
+        {
+          "elementId": 115,
+          "squadPosition": 15,
+          "purchasePriceTenths": 50,
+          "sellingPriceTenths": 50
+        }
+      ],
+      "queuedTransfers": [
+        {
+          "elementOutId": 101,
+          "elementInId": 201,
+          "sellingPriceTenths": 60,
+          "purchasePriceTenths": 65
+        }
+      ],
+      "availableChips": ["bench_boost", "wildcard"]
+    }
+  ],
+  "invalid": [{}]
+}

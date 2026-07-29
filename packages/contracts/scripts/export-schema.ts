@@ -7,7 +7,12 @@ import { z } from "zod";
 import {
   evidenceLevelSchema,
   fplEntrySchema,
+  managerTeamPlayerSchema,
+  publicTeamPickSchema,
+  publicTeamStateSchema,
+  queuedTransferSchema,
   sourceSnapshotSchema,
+  teamStateOverridesSchema,
 } from "../src/index";
 
 const packageRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
@@ -19,7 +24,12 @@ const schemaBundle = {
   schemas: {
     EvidenceLevel: z.toJSONSchema(evidenceLevelSchema),
     FplEntry: z.toJSONSchema(fplEntrySchema),
+    ManagerTeamPlayer: z.toJSONSchema(managerTeamPlayerSchema),
+    PublicTeamPick: z.toJSONSchema(publicTeamPickSchema),
+    PublicTeamState: z.toJSONSchema(publicTeamStateSchema),
+    QueuedTransfer: z.toJSONSchema(queuedTransferSchema),
     SourceSnapshot: z.toJSONSchema(sourceSnapshotSchema),
+    TeamStateOverrides: z.toJSONSchema(teamStateOverridesSchema),
   },
 };
 const serialized = `${JSON.stringify(schemaBundle, null, 2)}\n`;

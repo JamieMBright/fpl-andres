@@ -1,11 +1,15 @@
 import { describe, expect, it } from "vitest";
 
 import entryCases from "../fixtures/fpl-entry-cases.json";
+import teamStateCases from "../fixtures/public-team-state-cases.json";
 import sourceCases from "../fixtures/source-snapshot-cases.json";
+import overrideCases from "../fixtures/team-state-overrides-cases.json";
 import {
   fplEntrySchema,
   parseSourceSnapshot,
+  publicTeamStateSchema,
   sourceSnapshotSchema,
+  teamStateOverridesSchema,
 } from "./index";
 
 describe("shared FPL contracts", () => {
@@ -73,5 +77,61 @@ describe("shared FPL contracts", () => {
         dataAvailableAt: "2026-07-29T18:01:00Z",
       }),
     ).toThrow("dataAvailableAt cannot be later than fetchedAt");
+  });
+
+  it("matches the shared public team-state corpus", () => {
+    for (const valid of teamStateCases.valid) {
+      expect(() => publicTeamStateSchema.parse(valid)).not.toThrow();
+    }
+    for (const invalid of teamStateCases.invalid) {
+      expect(() => publicTeamStateSchema.parse(invalid)).toThrow();
+    }
+  });
+
+  it("rejects malformed public squads and private-current fields", () => {
+    const valid = teamStateCases.valid[0];
+    expect(() =>
+      publicTeamStateSchema.parse({
+        ...valid,
+        availableFreeTransfers: 2,
+      }),
+    ).toThrow();
+    expect(() =>
+      publicTeamStateSchema.parse({
+        ...valid,
+        picks: valid.picks.slice(0, 14),
+      }),
+    ).toThrow("exactly 15 picks");
+    expect(() =>
+      publicTeamStateSchema.parse({
+        ...valid,
+        dataAvailableAt: "2026-09-12T10:29:59Z",
+      }),
+    ).toThrow("cannot predate stateAsOf");
+  });
+
+  it("matches the shared manager override corpus", () => {
+    for (const valid of overrideCases.valid) {
+      expect(() => teamStateOverridesSchema.parse(valid)).not.toThrow();
+    }
+    for (const invalid of overrideCases.invalid) {
+      expect(() => teamStateOverridesSchema.parse(invalid)).toThrow();
+    }
+  });
+
+  it("rejects stale or malformed manager overrides", () => {
+    const valid = overrideCases.valid[0];
+    expect(() =>
+      teamStateOverridesSchema.parse({
+        ...valid,
+        updatedAt: "2026-09-12T10:29:59Z",
+      }),
+    ).toThrow("cannot predate basedOnStateAsOf");
+    expect(() =>
+      teamStateOverridesSchema.parse({
+        ...valid,
+        currentSquad: valid.currentSquad.slice(0, 14),
+      }),
+    ).toThrow("exactly 15 players");
   });
 });

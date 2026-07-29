@@ -1,0 +1,129 @@
+{
+  "valid": [
+    {
+      "entryId": 123,
+      "event": 5,
+      "bankTenths": 17,
+      "squadValueTenths": 1004,
+      "eventTransfers": 1,
+      "eventTransferCostPoints": 0,
+      "totalTransfers": 4,
+      "activeChip": null,
+      "picks": [
+        {
+          "elementId": 101,
+          "squadPosition": 1,
+          "multiplier": 2,
+          "isCaptain": true,
+          "isViceCaptain": false
+        },
+        {
+          "elementId": 102,
+          "squadPosition": 2,
+          "multiplier": 1,
+          "isCaptain": false,
+          "isViceCaptain": true
+        },
+        {
+          "elementId": 103,
+          "squadPosition": 3,
+          "multiplier": 1,
+          "isCaptain": false,
+          "isViceCaptain": false
+        },
+        {
+          "elementId": 104,
+          "squadPosition": 4,
+          "multiplier": 1,
+          "isCaptain": false,
+          "isViceCaptain": false
+        },
+        {
+          "elementId": 105,
+          "squadPosition": 5,
+          "multiplier": 1,
+          "isCaptain": false,
+          "isViceCaptain": false
+        },
+        {
+          "elementId": 106,
+          "squadPosition": 6,
+          "multiplier": 1,
+          "isCaptain": false,
+          "isViceCaptain": false
+        },
+        {
+          "elementId": 107,
+          "squadPosition": 7,
+          "multiplier": 1,
+          "isCaptain": false,
+          "isViceCaptain": false
+        },
+        {
+          "elementId": 108,
+          "squadPosition": 8,
+          "multiplier": 1,
+          "isCaptain": false,
+          "isViceCaptain": false
+        },
+        {
+          "elementId": 109,
+          "squadPosition": 9,
+          "multiplier": 1,
+          "isCaptain": false,
+          "isViceCaptain": false
+        },
+        {
+          "elementId": 110,
+          "squadPosition": 10,
+          "multiplier": 1,
+          "isCaptain": false,
+          "isViceCaptain": false
+        },
+        {
+          "elementId": 111,
+          "squadPosition": 11,
+          "multiplier": 1,
+          "isCaptain": false,
+          "isViceCaptain": false
+        },
+        {
+          "elementId": 112,
+          "squadPosition": 12,
+          "multiplier": 0,
+          "isCaptain": false,
+          "isViceCaptain": false
+        },
+        {
+          "elementId": 113,
+          "squadPosition": 13,
+          "multiplier": 0,
+          "isCaptain": false,
+          "isViceCaptain": false
+        },
+        {
+          "elementId": 114,
+          "squadPosition": 14,
+          "multiplier": 0,
+          "isCaptain": false,
+          "isViceCaptain": false
+        },
+        {
+          "elementId": 115,
+          "squadPosition": 15,
+          "multiplier": 0,
+          "isCaptain": false,
+          "isViceCaptain": false
+        }
+      ],
+      "stateAsOf": "2026-09-12T10:30:00Z",
+      "dataAvailableAt": "2026-09-12T12:30:00Z",
+      "evidenceLevel": "observed",
+      "sourceHashes": [
+        "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+      ]
+    }
+  ],
+  "invalid": [{}]
+}
