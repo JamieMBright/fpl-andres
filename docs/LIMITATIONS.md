@@ -54,6 +54,14 @@ choices and does not alter player projections in v1.
 The product returns a next-deadline action, a rolling 6–8 gameweek path and a season
 fixture/chip roadmap. It does not present an exact 38-gameweek transfer script.
 
+## Team goal projections
+
+The current candidates use completed scores, venue and recency. They do not yet include
+player availability, likely lineups, tactical events, bookmaker markets or licensed
+event data. A successful numerical fit does not make a candidate production-ready.
+Candidates remain `experimental` until a chronological, leakage-controlled paired
+evaluation clears the declared sample floor and confidence gate.
+
 ## Execution
 
 FPL Andres never logs into an FPL account and never executes transfers or chips.

@@ -10,11 +10,12 @@ Premier League, Leeds United, or any player or club.
 
 ## Current status
 
-Contracts and ingestion development is in progress. The application currently
-provides the Team-ID entry experience, strict published-rules ingestion, bounded
-same-origin FPL proxying, pinned historical parsing with leakage controls, immutable
-evidence migrations, and a secret-free live schema canary. Recommendations are not
-yet live.
+Projection-engine development is in progress. The application currently provides the
+Team-ID entry experience, strict published-rules ingestion, bounded same-origin FPL
+proxying, pinned historical parsing with leakage controls, immutable evidence and model
+artifact migrations, chronological backtest splits, baseline goal-rate models, and an
+experimental Dixon-Coles candidate behind a paired promotion gate. Recommendations are
+not yet live, and no candidate model is promoted.
 
 ## Evidence policy
 
@@ -29,7 +30,8 @@ yet live.
 
 See [docs/LIMITATIONS.md](docs/LIMITATIONS.md) for the binding capability boundary.
 See [docs/DATA_CONTRACTS.md](docs/DATA_CONTRACTS.md) for source and normalization
-contracts.
+contracts. See [docs/MODEL_CARDS.md](docs/MODEL_CARDS.md) for projection identities,
+inputs, failure modes and promotion rules.
 
 ## Architecture
 

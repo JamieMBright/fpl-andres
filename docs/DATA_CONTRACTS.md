@@ -99,3 +99,11 @@ Raw bytes are intended for a private, content-addressed storage path. Postgres
 `source_snapshots` and `rules_snapshots` hold immutable metadata and normalized rules.
 Both tables use forced RLS with no anonymous/authenticated policy. Update/delete
 triggers prevent provenance from being rewritten after use.
+
+`projection_runs`, `team_goal_projections` and `model_promotion_decisions` apply the
+same forced-RLS and immutability policy to derived artifacts. Predictions retain their
+run cutoff, evidence level, latest evidence timestamp, source hashes and reason codes.
+Promotion decisions retain paired interval values and every controlling bootstrap
+parameter. Postgres rejects prediction evidence newer than its run cutoff and rejects
+a promoted decision unless its sample floor is met and its paired lower confidence
+bound is strictly positive.
