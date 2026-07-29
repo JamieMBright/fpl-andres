@@ -1,0 +1,1 @@
+-- Local development starts empty. Tests own their deterministic fixtures.

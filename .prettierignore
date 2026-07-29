@@ -1,0 +1,11 @@
+apps/web/dist/
+coverage/
+node_modules/
+playwright-report/
+test-results/
+.github/skills/frontend-design/**
+.github/skills/web-design-guidelines/references/**
+
+# Original discovery documents are preserved verbatim until deliberately adopted.
+fpl-strategist-prompt.md
+fpl-strategist-ux-flow.md
