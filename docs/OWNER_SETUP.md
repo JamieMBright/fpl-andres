@@ -12,6 +12,9 @@ in chat, issues or pull requests.
       environments. Share only project refs, URLs and regions.
 - [ ] Import `JamieMBright/fpl-andres` into Vercel after the scaffold is pushed.
       Share only the Vercel project/team IDs and generated URL.
+- [ ] Before enabling heatmap-derived OOP inference, provide a rights-cleared role/event
+      data source or confirm that the feature should remain unavailable. Do not send
+      provider credentials in chat.
 
 ## Before real email
 

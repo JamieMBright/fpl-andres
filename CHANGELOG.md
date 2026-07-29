@@ -24,3 +24,12 @@ The project follows Semantic Versioning once milestone tags begin.
   gates.
 - Immutable projection, prediction and model-promotion persistence with forced RLS.
 - Projection model cards, evidence labels and explicit capability limits.
+- Strict public team state with separate, locally stored manager corrections.
+- Provenance-bound single-event and rolling HiGHS optimizers with free-transfer and bank
+  state flow.
+- Bounded TypeScript quick solver with independently verified regret fixtures and a
+  representative full-squad benchmark.
+- Immutable optimization run/event persistence with default-deny RLS and database-level
+  integrity checks.
+- Evidence-gated Lord Lundstram attacking-OOP and reverse-OOP signals, including
+  rights-cleared heatmap role evidence.

@@ -82,9 +82,30 @@ Raw entry payloads are normalized into `FplEntry`. Manager first/last name and r
 fields are deliberately dropped. Pre-season `current_event`, bank and value may be
 explicitly null; a missing key is different and fails the source contract.
 
-Public state still reflects the last processed deadline. Private current transfers and
-bank are corrected through a separate `TeamStateOverrides` contract in a later
-milestone.
+`PublicTeamState` combines entry and picks only when event, bank and value agree and
+both exact endpoint snapshots are attached. It preserves public captaincy and squad
+state but deliberately has no free-transfer balance or player purchase/selling prices.
+
+Private current state is represented by a separate `TeamStateOverrides` object. The
+manager supplies a priced current squad, bank, free transfers, queued moves and chips
+against an exact `stateAsOf`. Resolution rejects stale bases, unreconciled player IDs,
+price deltas and bank arithmetic. Browser persistence is local and deadline-scoped.
+Plans carry public hashes and a canonical manager-override hash, not raw private state.
+
+## Deployment and OOP evidence
+
+`DeploymentRoleEvidence` keeps official FPL scoring position separate from observed
+on-pitch role. A deterministic classifier emits `attacking_oop`, `aligned`,
+`reverse_oop` or `unavailable`. An attacking-OOP defender is labelled the
+`lord_lundstram_effect`: the official defender position still controls goal and clean
+sheet scoring, while the advanced role is an attacking-potential/watchlist signal.
+
+Role evidence must end before the prediction event, be available by the prediction
+cutoff and meet an explicit starts floor. `heatmap_cluster` evidence requires a
+rights-cleared source, role-model version and confidence, and cannot be labelled
+observed. Manager role observations are inferred. The signal does not add a fixed
+points bonus; promoted attacking projections must absorb role effects without double
+counting xG/xA or other involvement features.
 
 ## Historical archive
 
@@ -107,3 +128,9 @@ Promotion decisions retain paired interval values and every controlling bootstra
 parameter. Postgres rejects prediction evidence newer than its run cutoff and rejects
 a promoted decision unless its sample floor is met and its paired lower confidence
 bound is strictly positive.
+
+`optimization_runs` and `optimization_event_plans` are also immutable and forced-RLS.
+They store cutoffs, explicit objective/price/chip scenarios, public evidence hashes,
+manager override hash and structured decisions. They do not store raw override JSON,
+purchase prices or selling prices. Database checks independently validate evidence
+chronology, hashes, squad partitions, captaincy and transfer accounting.

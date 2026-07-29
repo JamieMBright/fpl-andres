@@ -16,6 +16,17 @@ The approved public sources do not establish exact flank assignments, natural fo
 sprint speed, tracking runs, touch heatmaps, individual marking, aerial weakness or
 high-line exposure. FPL Andres may use team, position and role evidence with a label;
 it may not claim a specific player-v-player matchup without licensed event data.
+Heatmap-derived role inference is accepted only from rights-cleared data with model
+version, confidence, sample size and timestamps. Screenshots and unlicensed heat maps
+are not scraped.
+
+## Out of position
+
+The Lord Lundstram effect identifies an officially listed defender with evidence of a
+midfield/attacking deployment. The official FPL position retains defender goal and
+clean-sheet scoring; the observed role is a separate attacking-potential signal.
+Reverse-OOP is also recorded. No role is inferred from listed position alone, and OOP
+does not receive an arbitrary points bonus that would double-count attacking features.
 
 ## Defensive contributions
 
@@ -53,6 +64,12 @@ choices and does not alter player projections in v1.
 
 The product returns a next-deadline action, a rolling 6–8 gameweek path and a season
 fixture/chip roadmap. It does not present an exact 38-gameweek transfer script.
+
+Current solvers support expected value only and require `chip_scenario=none`.
+Protect/chase utilities remain unavailable until calibrated outcome distributions
+exist. Chip optimization remains unavailable until authoritative multiplier, bench and
+transfer behavior is sourced. Rolling plans use provided event prices and conservatively
+forbid reselling players acquired inside the horizon.
 
 ## Team goal projections
 

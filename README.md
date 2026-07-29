@@ -10,12 +10,12 @@ Premier League, Leeds United, or any player or club.
 
 ## Current status
 
-Projection-engine development is in progress. The application currently provides the
-Team-ID entry experience, strict published-rules ingestion, bounded same-origin FPL
-proxying, pinned historical parsing with leakage controls, immutable evidence and model
-artifact migrations, chronological backtest splits, baseline goal-rate models, and an
-experimental Dixon-Coles candidate behind a paired promotion gate. Recommendations are
-not yet live, and no candidate model is promoted.
+Team-state and optimizer development is complete for the current milestone. The
+application now has strict public last-deadline state, separate local manager
+corrections, optimal single-event and rolling HiGHS solvers, a bounded TypeScript quick
+solver with measured regret/latency, immutable plan artifacts, and an evidence-gated
+Lord Lundstram out-of-position signal. Recommendations are not yet live, no projection
+candidate is promoted, and unsupported objective/chip modes fail closed.
 
 ## Evidence policy
 
@@ -31,7 +31,9 @@ not yet live, and no candidate model is promoted.
 See [docs/LIMITATIONS.md](docs/LIMITATIONS.md) for the binding capability boundary.
 See [docs/DATA_CONTRACTS.md](docs/DATA_CONTRACTS.md) for source and normalization
 contracts. See [docs/MODEL_CARDS.md](docs/MODEL_CARDS.md) for projection identities,
-inputs, failure modes and promotion rules.
+inputs, failure modes and promotion rules. See
+[docs/OPTIMIZER.md](docs/OPTIMIZER.md) for team-state, solver, benchmark and audit
+contracts.
 
 ## Architecture
 
@@ -44,6 +46,7 @@ GitHub Actions -> Python projections + optimizer -> Supabase -> Resend
 - `apps/web`: Vite, React and TypeScript product.
 - `api`: same-origin Vercel functions.
 - `packages/contracts`: shared runtime schemas.
+- `packages/quick-solver`: bounded interactive next-deadline solver.
 - `python/fpl_andres`: rules, ingestion, models, backtests and optimizer.
 - `supabase`: local configuration and forward-only migrations.
 

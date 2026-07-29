@@ -21,6 +21,7 @@ newest `data_available_at` timestamp and the unique content hashes of all traini
 | `league_venue_mean/1` | Required benchmark     | `inferred`     | Backtest baseline only |
 | `team_venue_rates/1`  | Transparent candidate  | `experimental` | Not promoted           |
 | `dixon_coles/1`       | Time-decayed candidate | `experimental` | Not promoted           |
+| `deployment_signal/1` | OOP role classifier    | source-bound   | Context/watchlist only |
 
 ### League venue mean / 1
 
@@ -69,6 +70,27 @@ There is no silent fallback to a candidate estimate.
 **Known limits.** The model sees scores, venue and recency only. It has no player,
 injury, lineup, tactical, event or market features. Bounds stabilize optimization but
 do not establish calibration. A successful fit is not evidence of predictive gain.
+
+### Deployment signal / 1
+
+**Purpose.** Compare official FPL scoring position with a sourced on-pitch role. A
+defender deployed in a midfield/forward role emits `lord_lundstram_effect`; movement in
+the other direction emits `reverse_oop`. The output is a watchlist/context signal, not
+a direct points adjustment.
+
+**Inputs.** Historical role window, starts observed, explicit minimum starts, source
+reference/hash, availability cutoff and method. Declared lineup roles may be observed.
+Manager observations are inferred. Heatmap clusters require rights-cleared data,
+confidence and model version and remain inferred/experimental.
+
+**Scoring behavior.** Official FPL position remains the scoring position. The role can
+inform attacking-event probabilities, while listed-position goal and clean-sheet rules
+are applied once by the scoring engine. A fixed OOP bonus is prohibited because it
+would double-count role effects already present in attacking projections.
+
+**Failure behavior.** Late/current-event evidence raises a leakage error. Samples below
+the explicit starts floor emit `unavailable`. Missing source/method metadata fails the
+contract.
 
 ## Walk-forward evaluation
 
