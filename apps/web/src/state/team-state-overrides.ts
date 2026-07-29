@@ -57,3 +57,11 @@ export function loadTeamStateOverrides(
     return null;
   }
 }
+
+export function removeTeamStateOverrides(
+  storage: Storage,
+  entryId: number,
+  deadline: string,
+): void {
+  storage.removeItem(teamStateOverridesStorageKey(entryId, deadline));
+}

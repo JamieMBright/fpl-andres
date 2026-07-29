@@ -27,6 +27,7 @@ import {
   type RouteObject,
 } from "react-router-dom";
 
+import { TeamStateCorrections } from "./components/TeamStateCorrections";
 import {
   initialTeamAnalysisState,
   loadCachedPublicTeamState,
@@ -502,6 +503,7 @@ function SnapshotDossier({ state }: { state: PublicTeamState }) {
           </ol>
         </div>
       </details>
+      <TeamStateCorrections state={state} />
     </div>
   );
 }

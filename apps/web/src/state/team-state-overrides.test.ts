@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, it } from "vitest";
 import overrideCases from "../../../../packages/contracts/fixtures/team-state-overrides-cases.json";
 import {
   loadTeamStateOverrides,
+  removeTeamStateOverrides,
   saveTeamStateOverrides,
   teamStateOverridesStorageKey,
 } from "./team-state-overrides";
@@ -50,5 +51,14 @@ describe("manager team-state override storage", () => {
     expect(() => teamStateOverridesStorageKey(1.5, DEADLINE)).toThrow(
       "entry ID",
     );
+  });
+
+  it("removes only the correction bound to the requested deadline", () => {
+    const overrides = overrideCases.valid[0];
+    saveTeamStateOverrides(localStorage, ENTRY_ID, overrides);
+
+    removeTeamStateOverrides(localStorage, ENTRY_ID, DEADLINE);
+
+    expect(loadTeamStateOverrides(localStorage, ENTRY_ID, DEADLINE)).toBeNull();
   });
 });
