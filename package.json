@@ -20,6 +20,10 @@
     "test:e2e": "corepack pnpm --filter @fpl-andres/web test:e2e",
     "typecheck": "corepack pnpm -r --if-present typecheck && tsc --noEmit -p tsconfig.api.json"
   },
+  "dependencies": {
+    "@fpl-andres/contracts": "workspace:*",
+    "zod": "4.4.3"
+  },
   "devDependencies": {
     "@eslint/js": "9.39.5",
     "@types/node": "20.19.43",
