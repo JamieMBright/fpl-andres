@@ -114,6 +114,21 @@ describe("team analysis state machine", () => {
     expect(result).toEqual({ status: "error", reason: "invalid_response" });
   });
 
+  it("rejects a valid snapshot bound to a different Team ID", async () => {
+    const result = await refreshTeamAnalysis(ENTRY_ID, null, {
+      fetchApi: vi.fn<typeof fetch>().mockResolvedValue(
+        Response.json({
+          status: "ready",
+          state: { ...readyState, entryId: ENTRY_ID + 1 },
+        }),
+      ),
+      storage: localStorage,
+    });
+
+    expect(result).toEqual({ status: "error", reason: "invalid_response" });
+    expect(localStorage.length).toBe(0);
+  });
+
   it("rejects invalid IDs before storage or network access", async () => {
     const fetchApi = vi.fn<typeof fetch>();
 

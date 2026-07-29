@@ -1,6 +1,18 @@
-import { ArrowRight, Clock3, FileSearch, ShieldCheck } from "lucide-react";
+import type { PublicTeamState } from "@fpl-andres/contracts";
+import {
+  AlertTriangle,
+  ArrowRight,
+  CheckCircle2,
+  ChevronDown,
+  Clock3,
+  Database,
+  FileSearch,
+  RefreshCw,
+  ShieldCheck,
+} from "lucide-react";
 import {
   useEffect,
+  useReducer,
   useRef,
   useState,
   type FormEvent,
@@ -14,6 +26,32 @@ import {
   useParams,
   type RouteObject,
 } from "react-router-dom";
+
+import {
+  initialTeamAnalysisState,
+  loadCachedPublicTeamState,
+  reduceTeamAnalysis,
+  refreshTeamAnalysis,
+  type TeamAnalysisState,
+} from "./state/team-analysis";
+
+const MAX_PUBLIC_ID = 4_294_967_295;
+const moneyFormatter = new Intl.NumberFormat("en-GB", {
+  style: "currency",
+  currency: "GBP",
+  minimumFractionDigits: 1,
+  maximumFractionDigits: 1,
+});
+const integerFormatter = new Intl.NumberFormat("en-GB");
+const timestampFormatter = new Intl.DateTimeFormat("en-GB", {
+  day: "numeric",
+  month: "short",
+  year: "numeric",
+  hour: "2-digit",
+  minute: "2-digit",
+  timeZone: "Europe/London",
+  timeZoneName: "short",
+});
 
 function DossierMark() {
   return (
@@ -87,7 +125,8 @@ function HomePage() {
     event.preventDefault();
     const normalized = teamId.trim();
 
-    if (!/^[1-9]\d{0,8}$/.test(normalized)) {
+    const parsedTeamId = Number(normalized);
+    if (!/^[1-9]\d{0,9}$/.test(normalized) || parsedTeamId > MAX_PUBLIC_ID) {
       setError("Enter a numeric FPL team ID.");
       return;
     }
@@ -133,7 +172,7 @@ function HomePage() {
               autoComplete="off"
               id="team-id"
               inputMode="numeric"
-              maxLength={9}
+              maxLength={10}
               onChange={(event) => setTeamId(event.target.value)}
               placeholder="e.g. 123456"
               value={teamId}
@@ -194,8 +233,35 @@ function HomePage() {
 
 function TeamAnalysisPage() {
   const { teamId } = useParams();
+  const entryId = parseTeamId(teamId);
+  const [analysis, dispatch] = useReducer(
+    reduceTeamAnalysis,
+    initialTeamAnalysisState,
+  );
+  const [refreshAttempt, setRefreshAttempt] = useState(0);
 
-  if (!teamId) {
+  useEffect(() => {
+    if (entryId === null) return;
+
+    let active = true;
+    const controller = new AbortController();
+    dispatch({ type: "load" });
+    const cached = loadCachedPublicTeamState(localStorage, entryId);
+
+    void refreshTeamAnalysis(entryId, cached, {
+      storage: localStorage,
+      signal: controller.signal,
+    }).then((state) => {
+      if (active) dispatch({ type: "resolved", state });
+    });
+
+    return () => {
+      active = false;
+      controller.abort();
+    };
+  }, [entryId, refreshAttempt]);
+
+  if (entryId === null) {
     return (
       <section className="analysis-page">
         <RouteHeading>Team ID unavailable</RouteHeading>
@@ -212,21 +278,330 @@ function TeamAnalysisPage() {
         02 / ANALYSE
       </div>
       <p className="eyebrow">Public team snapshot</p>
-      <RouteHeading>Analysis for team {teamId}</RouteHeading>
-      <div className="status-rule" role="status">
-        <span className="status-pulse" />
-        Connecting the rules, squad state and latest source snapshots.
-      </div>
-      <p className="analysis-note">
-        Public team data reflects the last processed deadline. Before a plan is
-        finalized, you will be able to correct current transfers, bank and chip
-        state.
-      </p>
-      <Link className="text-command" to="/">
-        Analyse another team
-      </Link>
+      <RouteHeading>Analysis for team {entryId}</RouteHeading>
+      <AnalysisResult
+        analysis={analysis}
+        onRetry={() => setRefreshAttempt((attempt) => attempt + 1)}
+      />
+      <nav aria-label="Analysis actions" className="analysis-actions">
+        <Link className="text-command" to="/">
+          Analyse another team
+        </Link>
+      </nav>
     </section>
   );
+}
+
+interface AnalysisResultProps {
+  analysis: TeamAnalysisState;
+  onRetry: () => void;
+}
+
+function AnalysisResult({ analysis, onRetry }: AnalysisResultProps) {
+  if (analysis.status === "idle" || analysis.status === "loading") {
+    return (
+      <div
+        aria-label="Evidence status"
+        className="evidence-banner evidence-banner-loading"
+        role="status"
+      >
+        <RefreshCw aria-hidden="true" className="loading-mark" size={20} />
+        <div>
+          <strong>Loading public team state…</strong>
+          <span>Checking exact FPL source snapshots and their timestamps.</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (analysis.status === "ready" || analysis.status === "stale") {
+    return (
+      <>
+        <EvidenceBanner analysis={analysis} />
+        <SnapshotDossier state={analysis.state} />
+      </>
+    );
+  }
+
+  const message = terminalStateMessage(analysis);
+  return (
+    <>
+      <div
+        aria-label="Evidence status"
+        className={`evidence-banner evidence-banner-${message.tone}`}
+        role={analysis.status === "unavailable" ? "status" : "alert"}
+      >
+        <AlertTriangle aria-hidden="true" size={20} />
+        <div>
+          <strong>{message.title}</strong>
+          <span>{message.detail}</span>
+        </div>
+      </div>
+      <section
+        className="terminal-state"
+        aria-labelledby="terminal-state-title"
+      >
+        <h2 id="terminal-state-title">{message.heading}</h2>
+        <p>{message.nextStep}</p>
+        <button className="secondary-command" onClick={onRetry} type="button">
+          <RefreshCw aria-hidden="true" size={17} /> Retry analysis
+        </button>
+      </section>
+    </>
+  );
+}
+
+function EvidenceBanner({
+  analysis,
+}: {
+  analysis: Extract<TeamAnalysisState, { status: "ready" | "stale" }>;
+}) {
+  const isStale = analysis.status === "stale";
+  return (
+    <div
+      aria-label="Evidence status"
+      className={`evidence-banner evidence-banner-${isStale ? "stale" : "ready"}`}
+      role="status"
+    >
+      {isStale ? (
+        <AlertTriangle aria-hidden="true" size={20} />
+      ) : (
+        <CheckCircle2 aria-hidden="true" size={20} />
+      )}
+      <div>
+        <strong>
+          {isStale
+            ? "Showing a stale verified snapshot"
+            : "Observed snapshot ready"}
+        </strong>
+        <span>
+          {isStale
+            ? staleReason(analysis.reason)
+            : "The values below passed the public-state contract."}
+        </span>
+      </div>
+    </div>
+  );
+}
+
+function SnapshotDossier({ state }: { state: PublicTeamState }) {
+  return (
+    <div className="dossier">
+      <section className="dossier-section" aria-labelledby="snapshot-title">
+        <div className="dossier-heading">
+          <div>
+            <p className="eyebrow">Decision input · observed</p>
+            <h2 id="snapshot-title">Last-Deadline State</h2>
+          </div>
+          <span className="evidence-chip">
+            <CheckCircle2 aria-hidden="true" size={15} /> Observed
+          </span>
+        </div>
+        <p className="dossier-qualification">
+          This is what FPL recorded at the Gameweek {state.event} deadline. It
+          does not reveal transfers, prices or chips changed since then.
+        </p>
+        <dl className="dossier-metrics">
+          <div>
+            <dt>Bank</dt>
+            <dd>{formatFplMoney(state.bankTenths)}</dd>
+          </div>
+          <div>
+            <dt>Squad value</dt>
+            <dd>{formatFplMoney(state.squadValueTenths)}</dd>
+          </div>
+          <div>
+            <dt>GW transfers</dt>
+            <dd>{integerFormatter.format(state.eventTransfers)}</dd>
+          </div>
+          <div>
+            <dt>GW transfer cost</dt>
+            <dd>
+              {integerFormatter.format(state.eventTransferCostPoints)} pts
+            </dd>
+          </div>
+        </dl>
+        <dl className="evidence-metadata">
+          <div>
+            <dt>State as of</dt>
+            <dd>{timestampFormatter.format(new Date(state.stateAsOf))}</dd>
+          </div>
+          <div>
+            <dt>Evidence available</dt>
+            <dd>
+              {timestampFormatter.format(new Date(state.dataAvailableAt))}
+            </dd>
+          </div>
+          <div>
+            <dt>Active chip</dt>
+            <dd>{state.activeChip ?? "None recorded"}</dd>
+          </div>
+        </dl>
+      </section>
+
+      <section className="dossier-section" aria-labelledby="squad-title">
+        <div className="dossier-heading dossier-heading-compact">
+          <div>
+            <p className="eyebrow">Formation sheet</p>
+            <h2 id="squad-title">Last-Deadline Squad</h2>
+          </div>
+          <span className="mono">15 public picks</span>
+        </div>
+        <div
+          aria-label="Scrollable last-deadline squad"
+          className="squad-table-wrap"
+          role="region"
+          tabIndex={0}
+        >
+          <table aria-label="Last-deadline squad">
+            <thead>
+              <tr>
+                <th scope="col">Slot</th>
+                <th scope="col">Player reference</th>
+                <th scope="col">Assignment</th>
+                <th scope="col">Multiplier</th>
+              </tr>
+            </thead>
+            <tbody>
+              {state.picks.map((pick) => (
+                <tr key={pick.squadPosition}>
+                  <td className="mono">{pick.squadPosition}</td>
+                  <th scope="row">FPL element {pick.elementId}</th>
+                  <td>{pickAssignment(pick)}</td>
+                  <td className="mono">{pick.multiplier}×</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <details className="source-trail">
+        <summary>
+          <span>
+            <Database aria-hidden="true" size={18} /> Inspect{" "}
+            {state.sourceHashes.length} source hashes
+          </span>
+          <ChevronDown
+            aria-hidden="true"
+            className="disclosure-mark"
+            size={18}
+          />
+        </summary>
+        <div className="source-trail-body">
+          <p>
+            These hashes identify the exact entry, picks and deadline bytes used
+            for this snapshot.
+          </p>
+          <ol>
+            {state.sourceHashes.map((hash) => (
+              <li key={hash}>
+                <code>{hash}</code>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </details>
+    </div>
+  );
+}
+
+function parseTeamId(value: string | undefined): number | null {
+  if (!value || !/^[1-9]\d{0,9}$/.test(value)) return null;
+  const parsed = Number(value);
+  return parsed <= MAX_PUBLIC_ID ? parsed : null;
+}
+
+function formatFplMoney(valueTenths: number): string {
+  return `${moneyFormatter.format(valueTenths / 10)}m`;
+}
+
+function pickAssignment(pick: PublicTeamState["picks"][number]): string {
+  if (pick.isCaptain) return "Captain";
+  if (pick.isViceCaptain) return "Vice-captain";
+  return pick.multiplier === 0 ? "Bench" : "Starting XI";
+}
+
+function staleReason(
+  reason: Extract<TeamAnalysisState, { status: "stale" }>["reason"],
+): string {
+  const reasons: Record<typeof reason, string> = {
+    fpl_unreachable:
+      "FPL is temporarily unreachable. The last verified state remains visible.",
+    fpl_source_failed:
+      "FPL returned a failed source response. The last verified state remains visible.",
+    source_contract_failed:
+      "FPL source fields changed or disagreed. The last verified state remains visible.",
+    network_error:
+      "The refresh request could not connect. The last verified state remains visible.",
+    invalid_response:
+      "The refresh response failed validation. The last verified state remains visible.",
+  };
+  return reasons[reason];
+}
+
+function terminalStateMessage(
+  analysis: Exclude<
+    TeamAnalysisState,
+    { status: "idle" | "loading" | "ready" | "stale" }
+  >,
+) {
+  if (analysis.status === "unavailable") {
+    const unavailable = {
+      entry_unavailable: {
+        heading: "Team Not Available",
+        nextStep:
+          "Check the Team ID on your official FPL points-page URL, then try again.",
+      },
+      no_processed_event: {
+        heading: "No processed gameweek yet",
+        nextStep:
+          "Try again after FPL publishes the first processed event for this team.",
+      },
+      picks_unavailable: {
+        heading: "Gameweek Picks Not Available",
+        nextStep: `FPL has no public picks for Gameweek ${analysis.event ?? "this event"}. Try again after processing completes.`,
+      },
+    }[analysis.reason];
+    return {
+      tone: "unavailable",
+      title: "Public state unavailable",
+      detail: "No squad snapshot has been inferred or substituted.",
+      ...unavailable,
+    };
+  }
+
+  const failure = {
+    fpl_unreachable: {
+      heading: "FPL Cannot Be Reached",
+      nextStep: "Wait a moment, then retry the analysis.",
+    },
+    fpl_source_failed: {
+      heading: "FPL Source Request Failed",
+      nextStep:
+        "Retry after FPL has recovered. No partial source data was used.",
+    },
+    source_contract_failed: {
+      heading: "FPL Source Data Changed",
+      nextStep:
+        "Retry later while the source contract is reviewed. No incompatible data was used.",
+    },
+    network_error: {
+      heading: "Network Request Failed",
+      nextStep: "Check your connection, then retry the analysis.",
+    },
+    invalid_response: {
+      heading: "Analysis Response Failed Validation",
+      nextStep:
+        "Retry later. No unvalidated response has been displayed or cached.",
+    },
+  }[analysis.reason];
+  return {
+    tone: "error",
+    title: "No verified snapshot available",
+    detail: "The analysis stopped instead of manufacturing team state.",
+    ...failure,
+  };
 }
 
 function MethodPage() {

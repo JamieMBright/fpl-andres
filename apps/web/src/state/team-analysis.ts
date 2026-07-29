@@ -112,12 +112,18 @@ export async function refreshTeamAnalysis(
   }
 
   if (envelope.status === "ready") {
-    const state = saveCachedPublicTeamState(
-      dependencies.storage,
-      entryId,
-      envelope.state,
-    );
-    return { status: "ready", state };
+    try {
+      const state = saveCachedPublicTeamState(
+        dependencies.storage,
+        entryId,
+        envelope.state,
+      );
+      return { status: "ready", state };
+    } catch {
+      return previous
+        ? { status: "stale", state: previous, reason: "invalid_response" }
+        : { status: "error", reason: "invalid_response" };
+    }
   }
   if (envelope.status === "degraded") {
     return previous
