@@ -33,3 +33,11 @@ The project follows Semantic Versioning once milestone tags begin.
   integrity checks.
 - Evidence-gated Lord Lundstram attacking-OOP and reverse-OOP signals, including
   rights-cleared heatmap role evidence.
+- Same-origin public Team-ID API with bounded transport, exact-byte provenance and
+  typed ready/degraded/unavailable responses.
+- Evidence-labelled browser dossier with validated local cache, stale-state retention,
+  source timestamps and expandable content hashes.
+- Deadline-bound manager correction workflow for bank, free transfers, queued moves and
+  available chips, stored separately in the browser.
+- Keyboard, 360 px, 200%-equivalent reflow, reduced-motion, forced-colors and axe
+  browser validation across ready, stale, unavailable and error states.

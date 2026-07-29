@@ -1,7 +1,7 @@
 import { FplPathError, resolveFplUpstreamUrl } from "./fpl-path";
 
 const FPL_USER_AGENT =
-  "FPLAndres/0.4 (+https://github.com/JamieMBright/fpl-andres)";
+  "FPLAndres/0.5 (+https://github.com/JamieMBright/fpl-andres)";
 const DEFAULT_LIMIT_BYTES = 5 * 1024 * 1024;
 const BOOTSTRAP_LIMIT_BYTES = 8 * 1024 * 1024;
 export const FPL_PROXY_BUDGET_MS = 8_500;

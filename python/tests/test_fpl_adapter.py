@@ -66,7 +66,7 @@ async def test_bootstrap_fetch_attaches_exact_source_provenance() -> None:
     assert route.called
     request = route.calls.last.request
     assert request.headers["Accept"] == "application/json"
-    assert "FPLAndres/0.4" in request.headers["User-Agent"]
+    assert "FPLAndres/0.5" in request.headers["User-Agent"]
 
 
 @pytest.mark.asyncio

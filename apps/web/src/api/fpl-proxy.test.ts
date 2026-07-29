@@ -26,7 +26,7 @@ describe("FPL proxy transport", () => {
     );
     const headers = new Headers(init?.headers);
     expect(headers.get("Accept")).toBe("application/json");
-    expect(headers.get("User-Agent")).toContain("FPLAndres/0.4");
+    expect(headers.get("User-Agent")).toContain("FPLAndres/0.5");
     expect(headers.has("Authorization")).toBe(false);
     expect(headers.has("Cookie")).toBe(false);
   });
