@@ -1,0 +1,22 @@
+{
+  "name": "@fpl-andres/quick-solver",
+  "version": "0.3.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "benchmark": "tsx scripts/benchmark.ts",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "zod": "4.4.3"
+  },
+  "devDependencies": {
+    "@types/node": "20.19.43",
+    "tsx": "4.21.0",
+    "vitest": "4.1.10"
+  }
+}

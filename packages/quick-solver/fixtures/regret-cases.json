@@ -1,0 +1,198 @@
+{
+  "cases": [
+    {
+      "name": "prefer one free upgrade over two-transfer hit",
+      "input": {
+        "season": "2026-27",
+        "event": 6,
+        "predictionCutoff": "2026-09-12T09:00:00Z",
+        "players": [
+          {
+            "elementId": 1,
+            "teamId": 1,
+            "positionId": 1,
+            "buyPriceTenths": 50,
+            "expectedPoints": 2,
+            "evidenceLevel": "experimental",
+            "dataAvailableAt": "2026-09-12T09:00:00Z",
+            "sourceHashes": [
+              "sha256:0000000000000000000000000000000000000000000000000000000000000001"
+            ]
+          },
+          {
+            "elementId": 2,
+            "teamId": 2,
+            "positionId": 1,
+            "buyPriceTenths": 50,
+            "expectedPoints": 1,
+            "evidenceLevel": "experimental",
+            "dataAvailableAt": "2026-09-12T09:00:00Z",
+            "sourceHashes": [
+              "sha256:0000000000000000000000000000000000000000000000000000000000000002"
+            ]
+          },
+          {
+            "elementId": 3,
+            "teamId": 1,
+            "positionId": 2,
+            "buyPriceTenths": 50,
+            "expectedPoints": 2,
+            "evidenceLevel": "experimental",
+            "dataAvailableAt": "2026-09-12T09:00:00Z",
+            "sourceHashes": [
+              "sha256:0000000000000000000000000000000000000000000000000000000000000003"
+            ]
+          },
+          {
+            "elementId": 4,
+            "teamId": 2,
+            "positionId": 2,
+            "buyPriceTenths": 50,
+            "expectedPoints": 1,
+            "evidenceLevel": "experimental",
+            "dataAvailableAt": "2026-09-12T09:00:00Z",
+            "sourceHashes": [
+              "sha256:0000000000000000000000000000000000000000000000000000000000000004"
+            ]
+          },
+          {
+            "elementId": 5,
+            "teamId": 3,
+            "positionId": 1,
+            "buyPriceTenths": 50,
+            "expectedPoints": 5,
+            "evidenceLevel": "experimental",
+            "dataAvailableAt": "2026-09-12T09:00:00Z",
+            "sourceHashes": [
+              "sha256:0000000000000000000000000000000000000000000000000000000000000005"
+            ]
+          },
+          {
+            "elementId": 6,
+            "teamId": 3,
+            "positionId": 2,
+            "buyPriceTenths": 50,
+            "expectedPoints": 6,
+            "evidenceLevel": "experimental",
+            "dataAvailableAt": "2026-09-12T09:00:00Z",
+            "sourceHashes": [
+              "sha256:0000000000000000000000000000000000000000000000000000000000000006"
+            ]
+          }
+        ],
+        "currentSquad": [
+          { "elementId": 1, "sellingPriceTenths": 50 },
+          { "elementId": 2, "sellingPriceTenths": 50 },
+          { "elementId": 3, "sellingPriceTenths": 50 },
+          { "elementId": 4, "sellingPriceTenths": 50 }
+        ],
+        "bankTenths": 0,
+        "availableFreeTransfers": 1,
+        "rules": {
+          "squadSize": 4,
+          "lineupSize": 2,
+          "clubLimit": 2,
+          "transferCap": 4,
+          "transferCostPoints": 4,
+          "weeklyFreeTransfers": 1,
+          "maximumFreeTransfers": 2,
+          "transferRulesSourceReference": "https://fantasy.premierleague.com/help/rules",
+          "positions": [
+            {
+              "positionId": 1,
+              "squadCount": 2,
+              "lineupMinimum": 1,
+              "lineupMaximum": 1
+            },
+            {
+              "positionId": 2,
+              "squadCount": 2,
+              "lineupMinimum": 1,
+              "lineupMaximum": 1
+            }
+          ],
+          "publishedRulesHash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "transferRulesHash": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "dataAvailableAt": "2026-09-11T09:00:00Z"
+        }
+      },
+      "highsOptimalNetPoints": 14,
+      "maxAllowedRegret": 0
+    },
+    {
+      "name": "take paid transfer only above sourced cost",
+      "input": {
+        "season": "2026-27",
+        "event": 6,
+        "predictionCutoff": "2026-09-12T09:00:00Z",
+        "players": [
+          {
+            "elementId": 1,
+            "teamId": 1,
+            "positionId": 1,
+            "buyPriceTenths": 50,
+            "expectedPoints": 10,
+            "evidenceLevel": "inferred",
+            "dataAvailableAt": "2026-09-12T09:00:00Z",
+            "sourceHashes": [
+              "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+            ]
+          },
+          {
+            "elementId": 2,
+            "teamId": 2,
+            "positionId": 1,
+            "buyPriceTenths": 50,
+            "expectedPoints": 1,
+            "evidenceLevel": "inferred",
+            "dataAvailableAt": "2026-09-12T09:00:00Z",
+            "sourceHashes": [
+              "sha256:2222222222222222222222222222222222222222222222222222222222222222"
+            ]
+          },
+          {
+            "elementId": 3,
+            "teamId": 3,
+            "positionId": 1,
+            "buyPriceTenths": 50,
+            "expectedPoints": 5.1,
+            "evidenceLevel": "inferred",
+            "dataAvailableAt": "2026-09-12T09:00:00Z",
+            "sourceHashes": [
+              "sha256:3333333333333333333333333333333333333333333333333333333333333333"
+            ]
+          }
+        ],
+        "currentSquad": [
+          { "elementId": 1, "sellingPriceTenths": 50 },
+          { "elementId": 2, "sellingPriceTenths": 50 }
+        ],
+        "bankTenths": 0,
+        "availableFreeTransfers": 0,
+        "rules": {
+          "squadSize": 2,
+          "lineupSize": 2,
+          "clubLimit": 2,
+          "transferCap": 2,
+          "transferCostPoints": 4,
+          "weeklyFreeTransfers": 1,
+          "maximumFreeTransfers": 2,
+          "transferRulesSourceReference": "https://fantasy.premierleague.com/help/rules",
+          "positions": [
+            {
+              "positionId": 1,
+              "squadCount": 2,
+              "lineupMinimum": 2,
+              "lineupMaximum": 2
+            }
+          ],
+          "publishedRulesHash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "transferRulesHash": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "dataAvailableAt": "2026-09-11T09:00:00Z"
+        }
+      },
+      "highsOptimalNetPoints": 21.1,
+      "maxAllowedRegret": 0
+    }
+  ]
+}

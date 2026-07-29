@@ -1,0 +1,645 @@
+import { z } from "zod";
+
+const sourceHashSchema = z.string().regex(/^sha256:[a-f0-9]{64}$/);
+const sourceHashesSchema = z
+  .array(sourceHashSchema)
+  .min(1)
+  .refine(
+    (hashes) =>
+      hashes.length === new Set(hashes).size &&
+      hashes.every((hash, index) => hash === [...hashes].sort()[index]),
+    "source hashes must be sorted and unique",
+  );
+
+const quickPlayerSchema = z
+  .object({
+    elementId: z.int().positive(),
+    teamId: z.int().positive(),
+    positionId: z.int().positive(),
+    buyPriceTenths: z.int().nonnegative(),
+    expectedPoints: z.number().finite(),
+    evidenceLevel: z.enum(["inferred", "experimental"]),
+    dataAvailableAt: z.iso.datetime(),
+    sourceHashes: sourceHashesSchema,
+  })
+  .strict();
+
+const currentPlayerSchema = z
+  .object({
+    elementId: z.int().positive(),
+    sellingPriceTenths: z.int().nonnegative(),
+  })
+  .strict();
+
+const positionRuleSchema = z
+  .object({
+    positionId: z.int().positive(),
+    squadCount: z.int().positive(),
+    lineupMinimum: z.int().nonnegative(),
+    lineupMaximum: z.int().nonnegative(),
+  })
+  .strict()
+  .refine(
+    ({ lineupMaximum, lineupMinimum, squadCount }) =>
+      lineupMinimum <= lineupMaximum && lineupMaximum <= squadCount,
+    "invalid position lineup bounds",
+  );
+
+const quickRulesSchema = z
+  .object({
+    squadSize: z.int().positive(),
+    lineupSize: z.int().min(2),
+    clubLimit: z.int().positive(),
+    transferCap: z.int().positive(),
+    transferCostPoints: z.int().positive(),
+    weeklyFreeTransfers: z.int().positive(),
+    maximumFreeTransfers: z.int().positive(),
+    transferRulesSourceReference: z.string().trim().min(1),
+    positions: z.array(positionRuleSchema).min(1),
+    publishedRulesHash: sourceHashSchema,
+    transferRulesHash: sourceHashSchema,
+    dataAvailableAt: z.iso.datetime(),
+  })
+  .strict()
+  .superRefine((rules, context) => {
+    if (rules.maximumFreeTransfers < rules.weeklyFreeTransfers) {
+      context.addIssue({
+        code: "custom",
+        message: "maximum free transfers cannot be below the weekly award",
+      });
+    }
+    if (
+      new Set(rules.positions.map(({ positionId }) => positionId)).size !==
+      rules.positions.length
+    ) {
+      context.addIssue({
+        code: "custom",
+        message: "position IDs must be unique",
+      });
+    }
+    if (
+      rules.positions.reduce(
+        (total, position) => total + position.squadCount,
+        0,
+      ) !== rules.squadSize
+    ) {
+      context.addIssue({
+        code: "custom",
+        message: "position counts must equal squad size",
+      });
+    }
+    if (
+      rules.positions.reduce(
+        (total, position) => total + position.lineupMinimum,
+        0,
+      ) > rules.lineupSize ||
+      rules.positions.reduce(
+        (total, position) => total + position.lineupMaximum,
+        0,
+      ) < rules.lineupSize
+    ) {
+      context.addIssue({
+        code: "custom",
+        message: "position bounds cannot form a lineup",
+      });
+    }
+  });
+
+export const quickSolverInputSchema = z
+  .object({
+    season: z.string().regex(/^20[0-9]{2}-[0-9]{2}$/),
+    event: z.int().min(1).max(38),
+    predictionCutoff: z.iso.datetime(),
+    players: z.array(quickPlayerSchema).min(1),
+    currentSquad: z.array(currentPlayerSchema).min(1),
+    bankTenths: z.int().nonnegative(),
+    availableFreeTransfers: z.int().nonnegative(),
+    rules: quickRulesSchema,
+  })
+  .strict()
+  .superRefine((input, context) => {
+    if (
+      Date.parse(input.rules.dataAvailableAt) >
+      Date.parse(input.predictionCutoff)
+    ) {
+      context.addIssue({
+        code: "custom",
+        message: "rules became available after the prediction cutoff",
+        path: ["rules", "dataAvailableAt"],
+      });
+    }
+    if (
+      input.players.some(
+        ({ dataAvailableAt }) =>
+          Date.parse(dataAvailableAt) > Date.parse(input.predictionCutoff),
+      )
+    ) {
+      context.addIssue({
+        code: "custom",
+        message: "player evidence became available after the prediction cutoff",
+        path: ["players"],
+      });
+    }
+    if (input.players.length < input.rules.squadSize) {
+      context.addIssue({
+        code: "custom",
+        message: "candidate pool is smaller than the squad",
+      });
+    }
+    const playerIds = input.players.map(({ elementId }) => elementId);
+    if (new Set(playerIds).size !== playerIds.length) {
+      context.addIssue({
+        code: "custom",
+        message: "candidate element IDs must be unique",
+      });
+    }
+    const currentIds = input.currentSquad.map(({ elementId }) => elementId);
+    if (
+      currentIds.length !== input.rules.squadSize ||
+      new Set(currentIds).size !== currentIds.length
+    ) {
+      context.addIssue({
+        code: "custom",
+        message: "current squad must contain unique elements",
+      });
+    }
+    if (currentIds.some((elementId) => !playerIds.includes(elementId))) {
+      context.addIssue({
+        code: "custom",
+        message: "current squad requires candidate forecasts",
+      });
+    }
+    if (input.availableFreeTransfers > input.rules.maximumFreeTransfers) {
+      context.addIssue({
+        code: "custom",
+        message: "free transfers exceed the sourced maximum",
+      });
+    }
+    const positions = new Set(
+      input.rules.positions.map(({ positionId }) => positionId),
+    );
+    if (input.players.some(({ positionId }) => !positions.has(positionId))) {
+      context.addIssue({
+        code: "custom",
+        message: "candidate position is absent from rules",
+      });
+    }
+    const players = new Map(
+      input.players.map((player) => [player.elementId, player]),
+    );
+    if (
+      currentIds.every((elementId) => players.has(elementId)) &&
+      !isStructurallyValid(new Set(currentIds), players, input.rules)
+    ) {
+      context.addIssue({
+        code: "custom",
+        message: "current squad violates optimizer rules",
+      });
+    }
+  });
+
+const quickSolverLimitsSchema = z
+  .object({
+    beamWidth: z.int().min(1).max(500),
+    candidateLimitPerPosition: z.int().min(1).max(50),
+    maxTransfers: z.int().min(0).max(5),
+  })
+  .strict();
+
+export type QuickSolverInput = z.infer<typeof quickSolverInputSchema>;
+export type QuickSolverLimits = z.infer<typeof quickSolverLimitsSchema>;
+type QuickPlayer = QuickSolverInput["players"][number];
+type QuickRules = QuickSolverInput["rules"];
+
+export interface QuickSolverResult {
+  solver: "quick-beam";
+  solverStatus: "bounded";
+  squadElementIds: number[];
+  starterElementIds: number[];
+  benchElementIds: number[];
+  captainElementId: number;
+  viceCaptainElementId: number;
+  transfersIn: number[];
+  transfersOut: number[];
+  paidTransfers: number;
+  transferCostPoints: number;
+  projectedPointsBeforeCost: number;
+  netExpectedPoints: number;
+  bankAfterTenths: number;
+  evidenceLevel: "inferred" | "experimental";
+  dataAvailableAt: string;
+  sourceHashes: string[];
+  reasonCodes: string[];
+  diagnostics: {
+    beamWidth: number;
+    candidateLimitPerPosition: number;
+    maxTransfers: number;
+    candidatePoolSize: number;
+    statesEvaluated: number;
+    maximumFrontierSize: number;
+    deepestTransferCount: number;
+    truncated: boolean;
+  };
+}
+
+interface EvaluatedState {
+  squadElementIds: number[];
+  starterElementIds: number[];
+  benchElementIds: number[];
+  captainElementId: number;
+  viceCaptainElementId: number;
+  transfersIn: number[];
+  transfersOut: number[];
+  paidTransfers: number;
+  transferCostPoints: number;
+  projectedPointsBeforeCost: number;
+  netExpectedPoints: number;
+  bankAfterTenths: number;
+  squadQuality: number;
+}
+
+interface LineupEvaluation {
+  elementIds: number[];
+  captainElementId: number;
+  viceCaptainElementId: number;
+  projectedPoints: number;
+}
+
+export function solveQuickPlan(
+  inputValue: unknown,
+  limitsValue: unknown,
+): QuickSolverResult {
+  const input = quickSolverInputSchema.parse(inputValue);
+  const limits = quickSolverLimitsSchema.parse(limitsValue);
+  const players = new Map(
+    [...input.players]
+      .sort((left, right) => left.elementId - right.elementId)
+      .map((player) => [player.elementId, player]),
+  );
+  const current = new Map(
+    input.currentSquad.map((player) => [player.elementId, player]),
+  );
+  const currentIds = new Set(current.keys());
+  const { candidateIds, omittedCandidates } = boundedCandidates(
+    input,
+    currentIds,
+    players,
+    limits,
+  );
+  const maximumTransfers = Math.min(
+    limits.maxTransfers,
+    input.rules.transferCap,
+  );
+  let truncated =
+    omittedCandidates || maximumTransfers < input.rules.transferCap;
+  let statesEvaluated = 0;
+  let maximumFrontierSize = 1;
+  let deepestTransferCount = 0;
+
+  const initial = evaluateSquad(new Set(currentIds), input, players, current);
+  if (initial === null) {
+    throw new Error("current squad cannot produce a valid lineup");
+  }
+  statesEvaluated += 1;
+  let best = initial;
+  let frontier = [initial];
+
+  for (let depth = 1; depth <= maximumTransfers; depth += 1) {
+    const expanded = new Map<string, EvaluatedState>();
+    for (const state of frontier) {
+      const selected = new Set(state.squadElementIds);
+      for (const outgoing of state.squadElementIds.filter((elementId) =>
+        currentIds.has(elementId),
+      )) {
+        const outgoingPlayer = requiredPlayer(players, outgoing);
+        for (const incoming of candidateIds) {
+          if (selected.has(incoming) || currentIds.has(incoming)) continue;
+          const incomingPlayer = requiredPlayer(players, incoming);
+          if (incomingPlayer.positionId !== outgoingPlayer.positionId) continue;
+          const next = new Set(selected);
+          next.delete(outgoing);
+          next.add(incoming);
+          const key = [...next].sort((left, right) => left - right).join(",");
+          if (expanded.has(key)) continue;
+          const evaluated = evaluateSquad(next, input, players, current);
+          statesEvaluated += 1;
+          if (evaluated !== null && evaluated.transfersIn.length === depth) {
+            expanded.set(key, evaluated);
+          }
+        }
+      }
+    }
+    const ordered = [...expanded.values()].sort(compareStates);
+    if (ordered.length > limits.beamWidth) truncated = true;
+    frontier = ordered.slice(0, limits.beamWidth);
+    maximumFrontierSize = Math.max(maximumFrontierSize, frontier.length);
+    if (frontier.length === 0) break;
+    deepestTransferCount = depth;
+    if (compareStates(frontier[0]!, best) < 0) best = frontier[0]!;
+  }
+
+  const sourceHashes = [
+    input.rules.publishedRulesHash,
+    input.rules.transferRulesHash,
+    ...input.players.flatMap(({ sourceHashes }) => sourceHashes),
+  ];
+  const dataAvailableAt = [
+    input.rules.dataAvailableAt,
+    ...input.players.map(({ dataAvailableAt }) => dataAvailableAt),
+  ]
+    .sort((left, right) => Date.parse(left) - Date.parse(right))
+    .at(-1)!;
+  const reasonCodes = ["quick_beam_plan"];
+  if (truncated) reasonCodes.push("bounded_search_truncated");
+
+  return {
+    solver: "quick-beam",
+    solverStatus: "bounded",
+    squadElementIds: best.squadElementIds,
+    starterElementIds: best.starterElementIds,
+    benchElementIds: best.benchElementIds,
+    captainElementId: best.captainElementId,
+    viceCaptainElementId: best.viceCaptainElementId,
+    transfersIn: best.transfersIn,
+    transfersOut: best.transfersOut,
+    paidTransfers: best.paidTransfers,
+    transferCostPoints: best.transferCostPoints,
+    projectedPointsBeforeCost: best.projectedPointsBeforeCost,
+    netExpectedPoints: best.netExpectedPoints,
+    bankAfterTenths: best.bankAfterTenths,
+    evidenceLevel: input.players.some(
+      ({ evidenceLevel }) => evidenceLevel === "experimental",
+    )
+      ? "experimental"
+      : "inferred",
+    dataAvailableAt,
+    sourceHashes: [...new Set(sourceHashes)].sort(),
+    reasonCodes,
+    diagnostics: {
+      beamWidth: limits.beamWidth,
+      candidateLimitPerPosition: limits.candidateLimitPerPosition,
+      maxTransfers: maximumTransfers,
+      candidatePoolSize: candidateIds.length,
+      statesEvaluated,
+      maximumFrontierSize,
+      deepestTransferCount,
+      truncated,
+    },
+  };
+}
+
+function boundedCandidates(
+  input: QuickSolverInput,
+  currentIds: Set<number>,
+  players: Map<number, QuickPlayer>,
+  limits: QuickSolverLimits,
+): { candidateIds: number[]; omittedCandidates: boolean } {
+  const selected = new Set(currentIds);
+  let omittedCandidates = false;
+  for (const position of input.rules.positions) {
+    const candidates = [...players.values()]
+      .filter(
+        ({ elementId, positionId }) =>
+          positionId === position.positionId && !currentIds.has(elementId),
+      )
+      .sort(
+        (left, right) =>
+          right.expectedPoints - left.expectedPoints ||
+          left.buyPriceTenths - right.buyPriceTenths ||
+          left.elementId - right.elementId,
+      );
+    if (candidates.length > limits.candidateLimitPerPosition)
+      omittedCandidates = true;
+    for (const player of candidates.slice(
+      0,
+      limits.candidateLimitPerPosition,
+    )) {
+      selected.add(player.elementId);
+    }
+  }
+  return {
+    candidateIds: [...selected].sort((left, right) => left - right),
+    omittedCandidates,
+  };
+}
+
+function evaluateSquad(
+  squad: Set<number>,
+  input: QuickSolverInput,
+  players: Map<number, QuickPlayer>,
+  current: Map<number, QuickSolverInput["currentSquad"][number]>,
+): EvaluatedState | null {
+  if (!isStructurallyValid(squad, players, input.rules)) return null;
+  const currentIds = new Set(current.keys());
+  const transfersIn = [...squad]
+    .filter((elementId) => !currentIds.has(elementId))
+    .sort((left, right) => left - right);
+  const transfersOut = [...currentIds]
+    .filter((elementId) => !squad.has(elementId))
+    .sort((left, right) => left - right);
+  if (transfersIn.length > input.rules.transferCap) return null;
+  const bankAfterTenths =
+    input.bankTenths +
+    transfersOut.reduce(
+      (total, elementId) =>
+        total + requiredCurrent(current, elementId).sellingPriceTenths,
+      0,
+    ) -
+    transfersIn.reduce(
+      (total, elementId) =>
+        total + requiredPlayer(players, elementId).buyPriceTenths,
+      0,
+    );
+  if (bankAfterTenths < 0) return null;
+
+  const squadElementIds = [...squad].sort((left, right) => left - right);
+  const lineup = bestLineup(squadElementIds, players, input.rules);
+  if (lineup === null) return null;
+  const paidTransfers = Math.max(
+    0,
+    transfersIn.length - input.availableFreeTransfers,
+  );
+  const transferCostPoints = paidTransfers * input.rules.transferCostPoints;
+  const starterSet = new Set(lineup.elementIds);
+  return {
+    squadElementIds,
+    starterElementIds: lineup.elementIds,
+    benchElementIds: squadElementIds
+      .filter((elementId) => !starterSet.has(elementId))
+      .sort(
+        (left, right) =>
+          requiredPlayer(players, right).expectedPoints -
+            requiredPlayer(players, left).expectedPoints || left - right,
+      ),
+    captainElementId: lineup.captainElementId,
+    viceCaptainElementId: lineup.viceCaptainElementId,
+    transfersIn,
+    transfersOut,
+    paidTransfers,
+    transferCostPoints,
+    projectedPointsBeforeCost: lineup.projectedPoints,
+    netExpectedPoints: lineup.projectedPoints - transferCostPoints,
+    bankAfterTenths,
+    squadQuality: squadElementIds.reduce(
+      (total, elementId) =>
+        total + requiredPlayer(players, elementId).expectedPoints,
+      0,
+    ),
+  };
+}
+
+function isStructurallyValid(
+  squad: Set<number>,
+  players: Map<number, QuickPlayer>,
+  rules: QuickRules,
+): boolean {
+  if (squad.size !== rules.squadSize) return false;
+  for (const position of rules.positions) {
+    if (
+      [...squad].filter(
+        (elementId) =>
+          requiredPlayer(players, elementId).positionId === position.positionId,
+      ).length !== position.squadCount
+    ) {
+      return false;
+    }
+  }
+  const clubs = new Map<number, number>();
+  for (const elementId of squad) {
+    const teamId = requiredPlayer(players, elementId).teamId;
+    clubs.set(teamId, (clubs.get(teamId) ?? 0) + 1);
+  }
+  return [...clubs.values()].every((count) => count <= rules.clubLimit);
+}
+
+function bestLineup(
+  squad: number[],
+  players: Map<number, QuickPlayer>,
+  rules: QuickRules,
+): LineupEvaluation | null {
+  const positions = [...rules.positions].sort(
+    (left, right) => left.positionId - right.positionId,
+  );
+  const byPosition = new Map(
+    positions.map((position) => [
+      position.positionId,
+      squad
+        .filter(
+          (elementId) =>
+            requiredPlayer(players, elementId).positionId ===
+            position.positionId,
+        )
+        .sort(
+          (left, right) =>
+            requiredPlayer(players, right).expectedPoints -
+              requiredPlayer(players, left).expectedPoints || left - right,
+        ),
+    ]),
+  );
+  let best: LineupEvaluation | null = null;
+  const selected: number[] = [];
+
+  const visit = (positionIndex: number, remaining: number): void => {
+    if (positionIndex === positions.length) {
+      if (remaining !== 0) return;
+      const scored = scoreLineup(selected, players);
+      if (
+        best === null ||
+        scored.projectedPoints > best.projectedPoints + 1e-10 ||
+        (Math.abs(scored.projectedPoints - best.projectedPoints) <= 1e-10 &&
+          compareIds(scored.elementIds, best.elementIds) < 0)
+      ) {
+        best = scored;
+      }
+      return;
+    }
+    const position = positions[positionIndex]!;
+    const candidates = byPosition.get(position.positionId)!;
+    const following = positions.slice(positionIndex + 1);
+    const followingMinimum = following.reduce(
+      (total, rule) => total + rule.lineupMinimum,
+      0,
+    );
+    const followingMaximum = following.reduce(
+      (total, rule) => total + rule.lineupMaximum,
+      0,
+    );
+    const minimum = Math.max(
+      position.lineupMinimum,
+      remaining - followingMaximum,
+    );
+    const maximum = Math.min(
+      position.lineupMaximum,
+      candidates.length,
+      remaining - followingMinimum,
+    );
+    for (let count = minimum; count <= maximum; count += 1) {
+      selected.push(...candidates.slice(0, count));
+      visit(positionIndex + 1, remaining - count);
+      selected.splice(selected.length - count, count);
+    }
+  };
+
+  visit(0, rules.lineupSize);
+  return best;
+}
+
+function scoreLineup(
+  lineup: number[],
+  players: Map<number, QuickPlayer>,
+): LineupEvaluation {
+  const ranked = [...lineup].sort(
+    (left, right) =>
+      requiredPlayer(players, right).expectedPoints -
+        requiredPlayer(players, left).expectedPoints || left - right,
+  );
+  const captainElementId = ranked[0]!;
+  return {
+    elementIds: [...lineup].sort((left, right) => left - right),
+    captainElementId,
+    viceCaptainElementId: ranked[1]!,
+    projectedPoints:
+      lineup.reduce(
+        (total, elementId) =>
+          total + requiredPlayer(players, elementId).expectedPoints,
+        0,
+      ) + requiredPlayer(players, captainElementId).expectedPoints,
+  };
+}
+
+function compareStates(left: EvaluatedState, right: EvaluatedState): number {
+  return (
+    right.netExpectedPoints - left.netExpectedPoints ||
+    left.transfersIn.length - right.transfersIn.length ||
+    right.squadQuality - left.squadQuality ||
+    compareIds(left.squadElementIds, right.squadElementIds)
+  );
+}
+
+function compareIds(left: number[], right: number[]): number {
+  for (let index = 0; index < Math.min(left.length, right.length); index += 1) {
+    const difference = left[index]! - right[index]!;
+    if (difference !== 0) return difference;
+  }
+  return left.length - right.length;
+}
+
+function requiredPlayer(
+  players: Map<number, QuickPlayer>,
+  elementId: number,
+): QuickPlayer {
+  const player = players.get(elementId);
+  if (player === undefined)
+    throw new Error(`missing candidate forecast for element ${elementId}`);
+  return player;
+}
+
+function requiredCurrent(
+  current: Map<number, QuickSolverInput["currentSquad"][number]>,
+  elementId: number,
+): QuickSolverInput["currentSquad"][number] {
+  const player = current.get(elementId);
+  if (player === undefined)
+    throw new Error(`missing current squad price for element ${elementId}`);
+  return player;
+}

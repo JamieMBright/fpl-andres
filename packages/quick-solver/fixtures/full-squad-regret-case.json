@@ -1,0 +1,78 @@
+{
+  "name": "representative full FPL squad with two free transfers",
+  "season": "2026-27",
+  "event": 6,
+  "predictionCutoff": "2026-09-12T09:00:00Z",
+  "dataAvailableAt": "2026-09-12T09:00:00Z",
+  "evidenceLevel": "experimental",
+  "buyPriceTenths": 50,
+  "sellingPriceTenths": 50,
+  "playerRows": [
+    [1, 1, 1, 4],
+    [2, 2, 1, 3],
+    [3, 3, 2, 4],
+    [4, 4, 2, 3.5],
+    [5, 5, 2, 3],
+    [6, 6, 2, 2.5],
+    [7, 7, 2, 2],
+    [8, 8, 3, 6],
+    [9, 1, 3, 5.5],
+    [10, 2, 3, 5],
+    [11, 3, 3, 4.5],
+    [12, 4, 3, 4],
+    [13, 5, 4, 6],
+    [14, 6, 4, 5],
+    [15, 7, 4, 4],
+    [16, 8, 1, 5],
+    [17, 1, 2, 6],
+    [18, 2, 2, 5.5],
+    [19, 3, 3, 8],
+    [20, 4, 3, 7],
+    [21, 5, 4, 8],
+    [22, 6, 4, 7]
+  ],
+  "currentElementIds": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+  "bankTenths": 0,
+  "availableFreeTransfers": 2,
+  "rules": {
+    "squadSize": 15,
+    "lineupSize": 11,
+    "clubLimit": 3,
+    "transferCap": 15,
+    "transferCostPoints": 4,
+    "weeklyFreeTransfers": 1,
+    "maximumFreeTransfers": 5,
+    "transferRulesSourceReference": "https://fantasy.premierleague.com/help/rules",
+    "positions": [
+      {
+        "positionId": 1,
+        "squadCount": 2,
+        "lineupMinimum": 1,
+        "lineupMaximum": 1
+      },
+      {
+        "positionId": 2,
+        "squadCount": 5,
+        "lineupMinimum": 3,
+        "lineupMaximum": 5
+      },
+      {
+        "positionId": 3,
+        "squadCount": 5,
+        "lineupMinimum": 2,
+        "lineupMaximum": 5
+      },
+      {
+        "positionId": 4,
+        "squadCount": 3,
+        "lineupMinimum": 1,
+        "lineupMaximum": 3
+      }
+    ],
+    "publishedRulesHash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "transferRulesHash": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "dataAvailableAt": "2026-09-11T09:00:00Z"
+  },
+  "highsOptimalNetPoints": 66,
+  "maxAllowedRegret": 0
+}
