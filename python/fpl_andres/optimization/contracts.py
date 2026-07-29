@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import math
 from datetime import datetime, timedelta
+from itertools import pairwise
 from typing import Annotated, Literal, Protocol
 
 from pydantic import BaseModel, ConfigDict, Field, StringConstraints, model_validator
@@ -223,6 +224,210 @@ class OptimizationResult(BaseModel):
             raise ValueError("net expected points must include the transfer cost")
         if not self.reason_codes:
             raise ValueError("optimizer result requires reason codes")
+        return self
+
+
+class HorizonPlayerForecast(OptimizationPlayer):
+    sell_price_tenths: NonNegativeInt
+
+
+class HorizonEvent(BaseModel):
+    model_config = ConfigDict(extra="forbid", frozen=True, strict=True)
+
+    event: Annotated[int, Field(ge=1, le=38)]
+    prediction_cutoff: datetime
+    objective_weight: float
+
+    @model_validator(mode="after")
+    def validate_event(self) -> HorizonEvent:
+        _require_utc(self.prediction_cutoff, "prediction_cutoff")
+        if not math.isfinite(self.objective_weight) or self.objective_weight <= 0:
+            raise ValueError("objective_weight must be finite and positive")
+        return self
+
+
+class HorizonOptimizationRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid", frozen=True, strict=True)
+
+    events: tuple[HorizonEvent, ...]
+    forecasts: tuple[HorizonPlayerForecast, ...]
+    current_squad: tuple[CurrentSquadPlayer, ...]
+    bank_tenths: NonNegativeInt
+    available_free_transfers: NonNegativeInt
+    price_scenario: Literal["provided_event_prices"]
+    objective: Literal["expected_value"]
+    rules: OptimizationRules
+
+    @model_validator(mode="after")
+    def validate_horizon(self) -> HorizonOptimizationRequest:
+        if len(self.events) < 2:
+            raise ValueError("rolling optimization requires at least two events")
+        if any(
+            current.event >= following.event
+            or current.prediction_cutoff >= following.prediction_cutoff
+            for current, following in pairwise(self.events)
+        ):
+            raise ValueError("horizon events and cutoffs must be strictly increasing")
+        if self.available_free_transfers > self.rules.transfer_rules.maximum_free_transfers:
+            raise ValueError("available free transfers exceed the sourced season maximum")
+        event_by_id = {event.event: event for event in self.events}
+        if len(event_by_id) != len(self.events):
+            raise ValueError("horizon event IDs must be unique")
+        if self.rules.data_available_at > self.events[0].prediction_cutoff:
+            raise ValueError("rules became available after the first prediction cutoff")
+
+        forecasts_by_event: dict[int, list[HorizonPlayerForecast]] = {
+            event.event: [] for event in self.events
+        }
+        for forecast in self.forecasts:
+            event = event_by_id.get(forecast.event)
+            if event is None:
+                raise ValueError("forecast event is outside the optimization horizon")
+            if forecast.data_available_at > event.prediction_cutoff:
+                raise ValueError("forecast became available after its prediction cutoff")
+            if forecast.season != self.rules.season:
+                raise ValueError("forecast season must match optimizer rules")
+            forecasts_by_event[forecast.event].append(forecast)
+
+        first_event = self.events[0].event
+        first_ids = tuple(
+            sorted(forecast.element_id for forecast in forecasts_by_event[first_event])
+        )
+        if len(first_ids) < self.rules.squad_size or len(set(first_ids)) != len(first_ids):
+            raise ValueError("each event requires a unique candidate pool large enough for a squad")
+        identity = {
+            forecast.element_id: (forecast.team_id, forecast.position_id)
+            for forecast in forecasts_by_event[first_event]
+        }
+        for event in self.events[1:]:
+            event_forecasts = forecasts_by_event[event.event]
+            event_ids = tuple(sorted(forecast.element_id for forecast in event_forecasts))
+            if event_ids != first_ids:
+                raise ValueError("all horizon events must contain the same candidate elements")
+            if any(
+                identity[forecast.element_id] != (forecast.team_id, forecast.position_id)
+                for forecast in event_forecasts
+            ):
+                raise ValueError(
+                    "candidate team and position must remain stable across the horizon"
+                )
+
+        current_ids = tuple(player.element_id for player in self.current_squad)
+        if len(current_ids) != self.rules.squad_size or len(set(current_ids)) != len(current_ids):
+            raise ValueError("current squad must contain the required number of unique elements")
+        if not set(current_ids) <= set(first_ids):
+            raise ValueError("every current squad element requires horizon forecasts")
+        first_forecasts = {
+            forecast.element_id: forecast for forecast in forecasts_by_event[first_event]
+        }
+        if any(
+            first_forecasts[player.element_id].sell_price_tenths != player.selling_price_tenths
+            for player in self.current_squad
+        ):
+            raise ValueError("first-event sell prices must match current squad selling prices")
+        return self
+
+    def first_event_request(self) -> OptimizationRequest:
+        first_event = self.events[0]
+        return OptimizationRequest(
+            event=first_event.event,
+            prediction_cutoff=first_event.prediction_cutoff,
+            players=tuple(
+                OptimizationPlayer.model_validate(
+                    forecast.model_dump(exclude={"sell_price_tenths"})
+                )
+                for forecast in self.forecasts
+                if forecast.event == first_event.event
+            ),
+            current_squad=self.current_squad,
+            bank_tenths=self.bank_tenths,
+            available_free_transfers=self.available_free_transfers,
+            rules=self.rules,
+        )
+
+
+class HorizonEventPlan(BaseModel):
+    model_config = ConfigDict(extra="forbid", frozen=True, strict=True)
+
+    event: Annotated[int, Field(ge=1, le=38)]
+    objective_weight: float
+    squad_element_ids: tuple[int, ...]
+    starter_element_ids: tuple[int, ...]
+    bench_element_ids: tuple[int, ...]
+    captain_element_id: PositiveInt
+    vice_captain_element_id: PositiveInt
+    transfers_in: tuple[int, ...]
+    transfers_out: tuple[int, ...]
+    free_transfers_before: NonNegativeInt
+    free_transfers_used: NonNegativeInt
+    paid_transfers: NonNegativeInt
+    free_transfers_next_event: NonNegativeInt
+    transfer_cost_points: NonNegativeInt
+    projected_points_before_cost: float
+    net_expected_points: float
+    bank_after_tenths: NonNegativeInt
+
+    @model_validator(mode="after")
+    def validate_plan(self) -> HorizonEventPlan:
+        squad = set(self.squad_element_ids)
+        starters = set(self.starter_element_ids)
+        bench = set(self.bench_element_ids)
+        if starters & bench or starters | bench != squad:
+            raise ValueError("starters and bench must partition the event squad")
+        if (
+            self.captain_element_id not in starters
+            or self.vice_captain_element_id not in starters
+            or self.captain_element_id == self.vice_captain_element_id
+        ):
+            raise ValueError("captain and vice-captain must be distinct starters")
+        if len(self.transfers_in) != len(self.transfers_out):
+            raise ValueError("event transfers must balance")
+        if self.free_transfers_used + self.paid_transfers != len(self.transfers_in):
+            raise ValueError("free and paid transfers must account for all transfers")
+        if self.free_transfers_used > self.free_transfers_before:
+            raise ValueError("used free transfers cannot exceed the available balance")
+        if not math.isclose(
+            self.net_expected_points,
+            self.projected_points_before_cost - self.transfer_cost_points,
+            abs_tol=1e-8,
+        ):
+            raise ValueError("event net points must include transfer cost")
+        return self
+
+
+class HorizonOptimizationResult(BaseModel):
+    model_config = ConfigDict(extra="forbid", frozen=True, strict=True)
+
+    solver: Literal["scipy-highs"]
+    solver_status: Literal["optimal"]
+    objective: Literal["expected_value"]
+    price_scenario: Literal["provided_event_prices"]
+    events: tuple[HorizonEventPlan, ...]
+    weighted_net_expected_points: float
+    evidence_level: Literal["inferred", "experimental"]
+    data_available_at: datetime
+    source_hashes: tuple[Hash, ...]
+    reason_codes: tuple[str, ...]
+
+    @model_validator(mode="after")
+    def validate_result(self) -> HorizonOptimizationResult:
+        _require_utc(self.data_available_at, "data_available_at")
+        _require_sorted_hashes(self.source_hashes)
+        if not self.events:
+            raise ValueError("horizon result requires event plans")
+        if any(current.event >= following.event for current, following in pairwise(self.events)):
+            raise ValueError("horizon result events must be strictly increasing")
+        expected_total = sum(
+            event.objective_weight * event.net_expected_points for event in self.events
+        )
+        if not math.isclose(
+            self.weighted_net_expected_points,
+            expected_total,
+            abs_tol=1e-7,
+        ):
+            raise ValueError("weighted horizon total must match the event plans")
+        if not self.reason_codes:
+            raise ValueError("horizon result requires reason codes")
         return self
 
 
