@@ -235,6 +235,46 @@ export const publicTeamStateSchema = z
 
 export type PublicTeamState = z.infer<typeof publicTeamStateSchema>;
 
+export const publicTeamDegradedReasonSchema = z.enum([
+  "fpl_unreachable",
+  "fpl_source_failed",
+  "source_contract_failed",
+]);
+
+export type PublicTeamDegradedReason = z.infer<
+  typeof publicTeamDegradedReasonSchema
+>;
+
+export const publicTeamResponseSchema = z.union([
+  z
+    .object({
+      status: z.literal("ready"),
+      state: publicTeamStateSchema,
+    })
+    .strict(),
+  z
+    .object({
+      status: z.literal("unavailable"),
+      reason: z.enum(["entry_unavailable", "no_processed_event"]),
+    })
+    .strict(),
+  z
+    .object({
+      status: z.literal("unavailable"),
+      reason: z.literal("picks_unavailable"),
+      event: eventIdSchema,
+    })
+    .strict(),
+  z
+    .object({
+      status: z.literal("degraded"),
+      reason: publicTeamDegradedReasonSchema,
+    })
+    .strict(),
+]);
+
+export type PublicTeamResponse = z.infer<typeof publicTeamResponseSchema>;
+
 export const managerTeamPlayerSchema = z
   .object({
     elementId: z.int().positive(),

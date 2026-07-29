@@ -9,6 +9,7 @@ import {
   deploymentSignalSchema,
   fplEntrySchema,
   parseSourceSnapshot,
+  publicTeamResponseSchema,
   publicTeamStateSchema,
   sourceSnapshotSchema,
   teamStateOverridesSchema,
@@ -88,6 +89,32 @@ describe("shared FPL contracts", () => {
     for (const invalid of teamStateCases.invalid) {
       expect(() => publicTeamStateSchema.parse(invalid)).toThrow();
     }
+  });
+
+  it("accepts typed public-team terminal states and rejects invented reasons", () => {
+    const state = teamStateCases.valid[0];
+    expect(() =>
+      publicTeamResponseSchema.parse({ status: "ready", state }),
+    ).not.toThrow();
+    expect(() =>
+      publicTeamResponseSchema.parse({
+        status: "unavailable",
+        reason: "picks_unavailable",
+        event: 5,
+      }),
+    ).not.toThrow();
+    expect(() =>
+      publicTeamResponseSchema.parse({
+        status: "degraded",
+        reason: "fpl_unreachable",
+      }),
+    ).not.toThrow();
+    expect(() =>
+      publicTeamResponseSchema.parse({
+        status: "degraded",
+        reason: "probably_fine",
+      }),
+    ).toThrow();
   });
 
   it("rejects malformed public squads and private-current fields", () => {

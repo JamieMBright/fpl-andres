@@ -263,6 +263,219 @@
       ],
       "additionalProperties": false
     },
+    "PublicTeamResponse": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "string",
+              "const": "ready"
+            },
+            "state": {
+              "type": "object",
+              "properties": {
+                "entryId": {
+                  "type": "integer",
+                  "exclusiveMinimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "event": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 38
+                },
+                "bankTenths": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "squadValueTenths": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "eventTransfers": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "eventTransferCostPoints": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "totalTransfers": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "activeChip": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 50
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "picks": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "elementId": {
+                        "type": "integer",
+                        "exclusiveMinimum": 0,
+                        "maximum": 9007199254740991
+                      },
+                      "squadPosition": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 15
+                      },
+                      "multiplier": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 3
+                      },
+                      "isCaptain": {
+                        "type": "boolean"
+                      },
+                      "isViceCaptain": {
+                        "type": "boolean"
+                      }
+                    },
+                    "required": [
+                      "elementId",
+                      "squadPosition",
+                      "multiplier",
+                      "isCaptain",
+                      "isViceCaptain"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "stateAsOf": {
+                  "type": "string",
+                  "format": "date-time",
+                  "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
+                },
+                "dataAvailableAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
+                },
+                "evidenceLevel": {
+                  "type": "string",
+                  "const": "observed"
+                },
+                "sourceHashes": {
+                  "minItems": 1,
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "pattern": "^sha256:[a-f0-9]{64}$"
+                  }
+                }
+              },
+              "required": [
+                "entryId",
+                "event",
+                "bankTenths",
+                "squadValueTenths",
+                "eventTransfers",
+                "eventTransferCostPoints",
+                "totalTransfers",
+                "activeChip",
+                "picks",
+                "stateAsOf",
+                "dataAvailableAt",
+                "evidenceLevel",
+                "sourceHashes"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "status",
+            "state"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "string",
+              "const": "unavailable"
+            },
+            "reason": {
+              "type": "string",
+              "enum": [
+                "entry_unavailable",
+                "no_processed_event"
+              ]
+            }
+          },
+          "required": [
+            "status",
+            "reason"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "string",
+              "const": "unavailable"
+            },
+            "reason": {
+              "type": "string",
+              "const": "picks_unavailable"
+            },
+            "event": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 38
+            }
+          },
+          "required": [
+            "status",
+            "reason",
+            "event"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "string",
+              "const": "degraded"
+            },
+            "reason": {
+              "type": "string",
+              "enum": [
+                "fpl_unreachable",
+                "fpl_source_failed",
+                "source_contract_failed"
+              ]
+            }
+          },
+          "required": [
+            "status",
+            "reason"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
     "PublicTeamState": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "type": "object",
