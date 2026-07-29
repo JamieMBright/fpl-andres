@@ -10,9 +10,11 @@ Premier League, Leeds United, or any player or club.
 
 ## Current status
 
-Foundation development is in progress. The application currently provides the
-Team-ID entry experience, strict season-rules ingestion, a same-origin health API,
-and a deny-by-default local database migration. Recommendations are not yet live.
+Contracts and ingestion development is in progress. The application currently
+provides the Team-ID entry experience, strict published-rules ingestion, bounded
+same-origin FPL proxying, pinned historical parsing with leakage controls, immutable
+evidence migrations, and a secret-free live schema canary. Recommendations are not
+yet live.
 
 ## Evidence policy
 
@@ -26,6 +28,8 @@ and a deny-by-default local database migration. Recommendations are not yet live
   unsupported by its sources.
 
 See [docs/LIMITATIONS.md](docs/LIMITATIONS.md) for the binding capability boundary.
+See [docs/DATA_CONTRACTS.md](docs/DATA_CONTRACTS.md) for source and normalization
+contracts.
 
 ## Architecture
 

@@ -1,0 +1,61 @@
+{
+  "valid": [
+    {
+      "id": 1,
+      "name": "First Entry",
+      "startedEvent": 1,
+      "currentEvent": null,
+      "lastDeadlineBank": null,
+      "lastDeadlineValue": null,
+      "lastDeadlineTotalTransfers": 0
+    },
+    {
+      "id": 123456,
+      "name": "Mid-season Entry",
+      "startedEvent": 1,
+      "currentEvent": 5,
+      "lastDeadlineBank": 15,
+      "lastDeadlineValue": 1035,
+      "lastDeadlineTotalTransfers": 7
+    }
+  ],
+  "invalid": [
+    {
+      "id": 0,
+      "name": "Zero ID",
+      "startedEvent": 1,
+      "currentEvent": null,
+      "lastDeadlineBank": null,
+      "lastDeadlineValue": null,
+      "lastDeadlineTotalTransfers": 0
+    },
+    {
+      "id": 2,
+      "name": "Negative Bank",
+      "startedEvent": 1,
+      "currentEvent": 5,
+      "lastDeadlineBank": -1,
+      "lastDeadlineValue": 1000,
+      "lastDeadlineTotalTransfers": 1
+    },
+    {
+      "id": 3,
+      "name": "Unknown Field",
+      "startedEvent": 1,
+      "currentEvent": null,
+      "lastDeadlineBank": null,
+      "lastDeadlineValue": null,
+      "lastDeadlineTotalTransfers": 0,
+      "secret": "not allowed"
+    },
+    {
+      "id": 4,
+      "name": "Bad Event",
+      "startedEvent": 39,
+      "currentEvent": null,
+      "lastDeadlineBank": null,
+      "lastDeadlineValue": null,
+      "lastDeadlineTotalTransfers": 0
+    }
+  ]
+}

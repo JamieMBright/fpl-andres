@@ -72,7 +72,7 @@ function ApplicationFrame() {
       </main>
       <footer className="site-footer">
         <p>Independent analysis. Not affiliated with Fantasy Premier League.</p>
-        <p className="mono">Public data · version 0.1</p>
+        <p className="mono">Public data · version 0.2</p>
       </footer>
     </div>
   );
