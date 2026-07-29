@@ -10,12 +10,16 @@ Premier League, Leeds United, or any player or club.
 
 ## Current status
 
-Team-state and optimizer development is complete for the current milestone. The
-application now has strict public last-deadline state, separate local manager
-corrections, optimal single-event and rolling HiGHS solvers, a bounded TypeScript quick
-solver with measured regret/latency, immutable plan artifacts, and an evidence-gated
-Lord Lundstram out-of-position signal. Recommendations are not yet live, no projection
-candidate is promoted, and unsupported objective/chip modes fail closed.
+The public Team-ID workflow is complete for the current milestone. A bounded same-origin
+API now assembles exact-byte entry, picks and deadline evidence into strict public
+last-deadline state. The browser renders ready, stale, unavailable, degraded and error
+states, preserves only validated cache entries, exposes source timestamps/hashes, and
+stores manager corrections locally against the exact team and public deadline.
+
+The repository also contains optimal single-event and rolling HiGHS solvers, a bounded
+TypeScript quick solver with measured regret/latency, immutable plan artifacts, and an
+evidence-gated Lord Lundstram out-of-position signal. Recommendations are not yet live,
+no projection candidate is promoted, and unsupported objective/chip modes fail closed.
 
 ## Evidence policy
 
@@ -65,6 +69,14 @@ Run the complete available validation suite:
 
 ```powershell
 corepack pnpm check
+```
+
+Run the deterministic browser matrix separately. It covers desktop/mobile Chromium,
+360 px reflow, keyboard navigation, reduced motion, forced colors, stale/error states,
+and automated axe checks without calling live FPL:
+
+```powershell
+corepack pnpm test:e2e
 ```
 
 Start Supabase after Docker Desktop is running:

@@ -155,10 +155,12 @@ isolated local Supabase instance.
 
 - [x] Team ID `212279` may be used in controlled live canaries and production smoke
       tests. An FPL Team ID is public and is not an account credential.
-- [ ] Before the first live smoke, confirm the ID still resolves through the public FPL
-      API. Live calls stay out of ordinary pull-request tests.
+- [x] Controlled live canary confirmed the ID resolves through the public FPL API. On
+      2026-07-29 it returned the valid preseason result `no_processed_event`; live calls
+      remain outside ordinary pull-request tests.
 - [ ] Review the first rendered team snapshot and confirm that public last-deadline
-      state is clearly separated from private current corrections.
+      state is clearly separated from private current corrections once FPL has processed
+      an event.
 
 ## Before heatmap-derived OOP is enabled
 
