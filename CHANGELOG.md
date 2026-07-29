@@ -18,3 +18,9 @@ The project follows Semantic Versioning once milestone tags begin.
 - Cross-language Zod/Pydantic contract corpus and deterministic JSON Schema drift gate.
 - Pinned vaastav CSV parsing with same-gameweek `xP` exclusion and cutoff checks.
 - Immutable source/rules snapshot persistence and a live FPL contract canary.
+- Provenance-bearing team goal-rate baselines and an experimental time-decayed
+  Dixon-Coles candidate.
+- Deterministic walk-forward leakage rejection and paired-bootstrap model promotion
+  gates.
+- Immutable projection, prediction and model-promotion persistence with forced RLS.
+- Projection model cards, evidence labels and explicit capability limits.
