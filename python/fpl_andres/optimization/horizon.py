@@ -260,6 +260,15 @@ class HighsHorizonOptimizer:
                 lower=maximum_free - big_m,
             )
 
+        for element_id, index in player_index.items():
+            add_constraint(
+                {
+                    variable(transfer_out_offset, event_index, index): 1.0
+                    for event_index in range(event_count)
+                },
+                upper=1.0 if element_id in current else 0.0,
+            )
+
         add_constraint(
             {free_offset: 1.0},
             lower=request.available_free_transfers,
@@ -450,6 +459,7 @@ class HighsHorizonOptimizer:
             solver_status="optimal",
             objective=request.objective,
             price_scenario=request.price_scenario,
+            chip_scenario=request.chip_scenario,
             events=tuple(plans),
             weighted_net_expected_points=sum(
                 plan.objective_weight * plan.net_expected_points for plan in plans

@@ -24,6 +24,9 @@ describe("bounded quick solver", () => {
       );
       expect(result.solver).toBe("quick-beam");
       expect(result.solverStatus).toBe("bounded");
+      expect(result.objective).toBe("expected_value");
+      expect(result.priceScenario).toBe("current_prices");
+      expect(result.chipScenario).toBe("none");
       expect(result.captainElementId).not.toBe(result.viceCaptainElementId);
       expect(result.starterElementIds).toContain(result.captainElementId);
       expect(result.starterElementIds).toContain(result.viceCaptainElementId);
@@ -61,6 +64,38 @@ describe("bounded quick solver", () => {
     expect(result.reasonCodes).toContain("bounded_search_truncated");
   });
 
+  it("ranks truncated candidates by feasible squad gain under the club cap", () => {
+    const base = regretCases[1]!.input;
+    const input = {
+      ...base,
+      players: [
+        { ...base.players[0]!, teamId: 1, expectedPoints: 10 },
+        { ...base.players[1]!, teamId: 2, expectedPoints: 1 },
+        { ...base.players[2]!, teamId: 1, expectedPoints: 9 },
+        {
+          ...base.players[2]!,
+          elementId: 4,
+          teamId: 3,
+          expectedPoints: 8,
+          sourceHashes: [
+            "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+          ],
+        },
+      ],
+      availableFreeTransfers: 1,
+      rules: { ...base.rules, clubLimit: 1 },
+    };
+
+    const result = solveQuickPlan(input, {
+      beamWidth: 4,
+      candidateLimitPerPosition: 1,
+      maxTransfers: 1,
+    });
+
+    expect(result.transfersIn).toEqual([4]);
+    expect(result.transfersOut).toEqual([2]);
+  });
+
   it("rejects late evidence and missing controlling transfer cost", () => {
     const input = regretCases[0]!.input;
     expect(() =>
@@ -74,10 +109,17 @@ describe("bounded quick solver", () => {
       }),
     ).toThrow("prediction cutoff");
 
-    const { transferCostPoints: _, ...incompleteRules } = input.rules;
+    const { transferCostPoints: _transferCostPoints, ...incompleteRules } =
+      input.rules;
     expect(() =>
       quickSolverInputSchema.parse({ ...input, rules: incompleteRules }),
     ).toThrow();
+
+    const { objective: _objective, ...missingObjective } = input;
+    expect(() => quickSolverInputSchema.parse(missingObjective)).toThrow();
+
+    const { chipScenario: _chipScenario, ...missingChipScenario } = input;
+    expect(() => quickSolverInputSchema.parse(missingChipScenario)).toThrow();
 
     expect(() =>
       quickSolverInputSchema.parse({

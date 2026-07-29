@@ -146,6 +146,9 @@ class OptimizationRequest(BaseModel):
 
     event: Annotated[int, Field(ge=1, le=38)]
     prediction_cutoff: datetime
+    objective: Literal["expected_value"]
+    price_scenario: Literal["current_prices"]
+    chip_scenario: Literal["none"]
     players: tuple[OptimizationPlayer, ...]
     current_squad: tuple[CurrentSquadPlayer, ...]
     bank_tenths: NonNegativeInt
@@ -192,6 +195,9 @@ class OptimizationResult(BaseModel):
 
     solver: Literal["scipy-highs"]
     solver_status: Literal["optimal"]
+    objective: Literal["expected_value"]
+    price_scenario: Literal["current_prices"]
+    chip_scenario: Literal["none"]
     squad_element_ids: tuple[int, ...]
     starter_element_ids: tuple[int, ...]
     bench_element_ids: tuple[int, ...]
@@ -288,6 +294,7 @@ class HorizonOptimizationRequest(BaseModel):
     state_evidence: OptimizationStateEvidence
     price_scenario: Literal["provided_event_prices"]
     objective: Literal["expected_value"]
+    chip_scenario: Literal["none"]
     rules: OptimizationRules
 
     @model_validator(mode="after")
@@ -368,6 +375,9 @@ class HorizonOptimizationRequest(BaseModel):
         return OptimizationRequest(
             event=first_event.event,
             prediction_cutoff=first_event.prediction_cutoff,
+            objective="expected_value",
+            price_scenario="current_prices",
+            chip_scenario=self.chip_scenario,
             players=tuple(
                 OptimizationPlayer.model_validate(
                     forecast.model_dump(exclude={"sell_price_tenths"})
@@ -439,6 +449,7 @@ class HorizonOptimizationResult(BaseModel):
     solver_status: Literal["optimal"]
     objective: Literal["expected_value"]
     price_scenario: Literal["provided_event_prices"]
+    chip_scenario: Literal["none"]
     events: tuple[HorizonEventPlan, ...]
     weighted_net_expected_points: float
     evidence_level: Literal["inferred", "experimental"]
@@ -465,6 +476,11 @@ class HorizonOptimizationResult(BaseModel):
             raise ValueError("weighted horizon total must match the event plans")
         if not self.reason_codes:
             raise ValueError("horizon result requires reason codes")
+        acquired: set[int] = set()
+        for event in self.events:
+            if acquired & set(event.transfers_out):
+                raise ValueError("horizon cannot resell a player acquired inside the plan")
+            acquired.update(event.transfers_in)
         return self
 
 

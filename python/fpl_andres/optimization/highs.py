@@ -246,6 +246,9 @@ class HighsOptimizer:
         return OptimizationResult(
             solver="scipy-highs",
             solver_status="optimal",
+            objective=request.objective,
+            price_scenario=request.price_scenario,
+            chip_scenario=request.chip_scenario,
             squad_element_ids=tuple(sorted(selected_ids)),
             starter_element_ids=tuple(sorted(player.element_id for player in starters)),
             bench_element_ids=tuple(player.element_id for player in bench),

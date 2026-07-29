@@ -66,6 +66,7 @@ def horizon_request() -> HorizonOptimizationRequest:
         state_evidence=state_evidence(),
         price_scenario="provided_event_prices",
         objective="expected_value",
+        chip_scenario="none",
         rules=rules(
             squad_size=2,
             lineup_size=2,
@@ -98,6 +99,7 @@ def test_horizon_banks_transfer_when_it_beats_greedy_first_event() -> None:
     assert second.squad_element_ids == (4, 5)
     assert result.weighted_net_expected_points == 45.0
     assert result.price_scenario == "provided_event_prices"
+    assert result.chip_scenario == "none"
     assert result.evidence_level == "experimental"
 
 
@@ -116,6 +118,30 @@ def test_horizon_free_transfers_never_exceed_sourced_cap() -> None:
 
     assert all(event.free_transfers_before <= 2 for event in result.events)
     assert all(event.free_transfers_next_event <= 2 for event in result.events)
+
+
+def test_horizon_does_not_resell_players_acquired_inside_plan() -> None:
+    request = horizon_request()
+    points = {
+        6: (1.0, 1.0, 10.0, 0.0, 0.0),
+        7: (1.0, 1.0, 0.0, 12.0, 11.0),
+    }
+    request = HorizonOptimizationRequest.model_validate(
+        {
+            **request.model_dump(),
+            "forecasts": tuple(
+                row.model_copy(update={"expected_points": points[row.event][row.element_id - 1]})
+                for row in request.forecasts
+            ),
+        }
+    )
+
+    result = HighsHorizonOptimizer(time_limit_seconds=5.0).solve(request)
+
+    acquired: set[int] = set()
+    for event in result.events:
+        assert acquired.isdisjoint(event.transfers_out)
+        acquired.update(event.transfers_in)
 
 
 def test_horizon_rejects_future_or_inconsistent_forecasts() -> None:
@@ -187,18 +213,21 @@ def exhaustive_horizon(request: HorizonOptimizationRequest) -> float:
             tuple(sorted(player.element_id for player in request.current_squad)),
             request.bank_tenths,
             request.available_free_transfers,
+            tuple(sorted(player.element_id for player in request.current_squad)),
         ): 0.0
     }
     for event in request.events:
-        next_states: dict[tuple[tuple[int, ...], int, int], float] = {}
+        next_states: dict[tuple[tuple[int, ...], int, int, tuple[int, ...]], float] = {}
         candidates = by_event[event.event]
-        for (current_ids, bank, free_transfers), accumulated in states.items():
+        for (current_ids, bank, free_transfers, sellable_ids), accumulated in states.items():
             current_sale = {
                 element_id: candidates[element_id].sell_price_tenths for element_id in current_ids
             }
             for squad_ids in combinations(candidates, request.rules.squad_size):
                 incoming = set(squad_ids) - set(current_ids)
                 outgoing = set(current_ids) - set(squad_ids)
+                if not outgoing <= set(sellable_ids):
+                    continue
                 if len(incoming) > request.rules.transfer_cap:
                     continue
                 bank_after = (
@@ -219,7 +248,8 @@ def exhaustive_horizon(request: HorizonOptimizationRequest) -> float:
                 net = event.objective_weight * (
                     points - paid * request.rules.transfer_rules.transfer_cost_points
                 )
-                key = (tuple(sorted(squad_ids)), bank_after, next_free)
+                next_sellable = tuple(sorted(set(sellable_ids) - outgoing))
+                key = (tuple(sorted(squad_ids)), bank_after, next_free, next_sellable)
                 next_states[key] = max(next_states.get(key, -inf), accumulated + net)
         states = next_states
     return max(states.values())

@@ -139,6 +139,9 @@ export const quickSolverInputSchema = z
   .object({
     season: z.string().regex(/^20[0-9]{2}-[0-9]{2}$/),
     event: z.int().min(1).max(38),
+    objective: z.literal("expected_value"),
+    priceScenario: z.literal("current_prices"),
+    chipScenario: z.literal("none"),
     predictionCutoff: z.iso.datetime(),
     players: z.array(quickPlayerSchema).min(1),
     currentSquad: z.array(currentPlayerSchema).min(1),
@@ -266,6 +269,9 @@ type QuickRules = QuickSolverInput["rules"];
 export interface QuickSolverResult {
   solver: "quick-beam";
   solverStatus: "bounded";
+  objective: "expected_value";
+  priceScenario: "current_prices";
+  chipScenario: "none";
   squadElementIds: number[];
   starterElementIds: number[];
   benchElementIds: number[];
@@ -411,6 +417,9 @@ export function solveQuickPlan(
   return {
     solver: "quick-beam",
     solverStatus: "bounded",
+    objective: input.objective,
+    priceScenario: input.priceScenario,
+    chipScenario: input.chipScenario,
     squadElementIds: best.squadElementIds,
     starterElementIds: best.starterElementIds,
     benchElementIds: best.benchElementIds,
@@ -451,6 +460,9 @@ function boundedCandidates(
   limits: QuickSolverLimits,
 ): { candidateIds: number[]; omittedCandidates: boolean } {
   const selected = new Set(currentIds);
+  const current = new Map(
+    input.currentSquad.map((player) => [player.elementId, player]),
+  );
   let omittedCandidates = false;
   for (const position of input.rules.positions) {
     const candidates = [...players.values()]
@@ -460,6 +472,8 @@ function boundedCandidates(
       )
       .sort(
         (left, right) =>
+          bestOneTransferValue(right, currentIds, input, players, current) -
+            bestOneTransferValue(left, currentIds, input, players, current) ||
           right.expectedPoints - left.expectedPoints ||
           left.buyPriceTenths - right.buyPriceTenths ||
           left.elementId - right.elementId,
@@ -477,6 +491,26 @@ function boundedCandidates(
     candidateIds: [...selected].sort((left, right) => left - right),
     omittedCandidates,
   };
+}
+
+function bestOneTransferValue(
+  incoming: QuickPlayer,
+  currentIds: Set<number>,
+  input: QuickSolverInput,
+  players: Map<number, QuickPlayer>,
+  current: Map<number, QuickSolverInput["currentSquad"][number]>,
+): number {
+  let best = Number.NEGATIVE_INFINITY;
+  for (const outgoing of currentIds) {
+    if (requiredPlayer(players, outgoing).positionId !== incoming.positionId)
+      continue;
+    const squad = new Set(currentIds);
+    squad.delete(outgoing);
+    squad.add(incoming.elementId);
+    const evaluated = evaluateSquad(squad, input, players, current);
+    if (evaluated !== null) best = Math.max(best, evaluated.netExpectedPoints);
+  }
+  return best;
 }
 
 function evaluateSquad(

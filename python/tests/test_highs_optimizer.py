@@ -109,6 +109,9 @@ def test_highs_matches_independent_exhaustive_oracle() -> None:
     request = OptimizationRequest(
         event=6,
         prediction_cutoff=CUTOFF,
+        objective="expected_value",
+        price_scenario="current_prices",
+        chip_scenario="none",
         players=(
             player(1, team_id=1, position_id=1, points=2.0),
             player(2, team_id=2, position_id=1, points=1.0),
@@ -139,6 +142,9 @@ def test_highs_matches_independent_exhaustive_oracle() -> None:
     assert result.paid_transfers == 0
     assert result.bank_after_tenths == 0
     assert result.evidence_level == "experimental"
+    assert result.objective == "expected_value"
+    assert result.price_scenario == "current_prices"
+    assert result.chip_scenario == "none"
     assert HASH_A in result.source_hashes
     assert HASH_B in result.source_hashes
     assert HASH_C in result.source_hashes
@@ -168,6 +174,9 @@ def test_paid_transfer_requires_gain_above_explicit_hit_cost(
     request = OptimizationRequest(
         event=6,
         prediction_cutoff=CUTOFF,
+        objective="expected_value",
+        price_scenario="current_prices",
+        chip_scenario="none",
         players=(
             player(1, team_id=1, position_id=1, points=10.0),
             player(2, team_id=2, position_id=1, points=1.0),
@@ -193,6 +202,9 @@ def test_request_rejects_forecast_available_after_cutoff() -> None:
         OptimizationRequest(
             event=6,
             prediction_cutoff=CUTOFF,
+            objective="expected_value",
+            price_scenario="current_prices",
+            chip_scenario="none",
             players=(
                 player(
                     1,
@@ -319,6 +331,9 @@ def test_highs_matches_exhaustive_oracle_across_generated_points(
     request = OptimizationRequest(
         event=6,
         prediction_cutoff=CUTOFF,
+        objective="expected_value",
+        price_scenario="current_prices",
+        chip_scenario="none",
         players=tuple(
             player(
                 element_id,
@@ -353,6 +368,9 @@ def compact_request(points: tuple[float, float, float]) -> OptimizationRequest:
     return OptimizationRequest(
         event=6,
         prediction_cutoff=CUTOFF,
+        objective="expected_value",
+        price_scenario="current_prices",
+        chip_scenario="none",
         players=(
             player(1, team_id=1, position_id=1, points=points[0]),
             player(2, team_id=2, position_id=1, points=points[1]),

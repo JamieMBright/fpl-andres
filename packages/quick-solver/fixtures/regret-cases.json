@@ -5,6 +5,9 @@
       "input": {
         "season": "2026-27",
         "event": 6,
+        "objective": "expected_value",
+        "priceScenario": "current_prices",
+        "chipScenario": "none",
         "predictionCutoff": "2026-09-12T09:00:00Z",
         "players": [
           {
@@ -133,6 +136,9 @@
       "input": {
         "season": "2026-27",
         "event": 6,
+        "objective": "expected_value",
+        "priceScenario": "current_prices",
+        "chipScenario": "none",
         "predictionCutoff": "2026-09-12T09:00:00Z",
         "players": [
           {

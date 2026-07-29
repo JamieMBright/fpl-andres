@@ -13,6 +13,9 @@ export interface RegretCase {
 const fullSquadInput = quickSolverInputSchema.parse({
   season: fullSquadCase.season,
   event: fullSquadCase.event,
+  objective: fullSquadCase.objective,
+  priceScenario: fullSquadCase.priceScenario,
+  chipScenario: fullSquadCase.chipScenario,
   predictionCutoff: fullSquadCase.predictionCutoff,
   players: z
     .array(

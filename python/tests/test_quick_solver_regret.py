@@ -38,6 +38,9 @@ def regret_cases() -> list[dict[str, Any]]:
     full_input = {
         "season": full["season"],
         "event": full["event"],
+        "objective": full["objective"],
+        "priceScenario": full["priceScenario"],
+        "chipScenario": full["chipScenario"],
         "predictionCutoff": full["predictionCutoff"],
         "players": [
             {
@@ -135,6 +138,9 @@ def test_stored_quick_solver_reference_is_highs_optimum(case: dict[str, Any]) ->
         {
             "event": input_value["event"],
             "prediction_cutoff": parse_timestamp(input_value["predictionCutoff"]),
+            "objective": input_value["objective"],
+            "price_scenario": input_value["priceScenario"],
+            "chip_scenario": input_value["chipScenario"],
             "players": players,
             "current_squad": tuple(
                 CurrentSquadPlayer(
