@@ -12,6 +12,7 @@ const MAX_PUBLIC_ID = 4_294_967_295;
 export type TeamAnalysisState =
   | { status: "idle" }
   | { status: "loading" }
+  | { status: "refreshing"; state: PublicTeamState }
   | { status: "ready"; state: PublicTeamState }
   | {
       status: "stale";
@@ -27,7 +28,8 @@ export type TeamAnalysisState =
     };
 
 export type TeamAnalysisAction =
-  { type: "load" } | { type: "resolved"; state: TeamAnalysisState };
+  | { type: "load"; state: PublicTeamState | null }
+  | { type: "resolved"; state: TeamAnalysisState };
 
 interface RefreshDependencies {
   fetchApi?: typeof fetch;
@@ -41,7 +43,10 @@ export function reduceTeamAnalysis(
   _current: TeamAnalysisState,
   action: TeamAnalysisAction,
 ): TeamAnalysisState {
-  return action.type === "load" ? { status: "loading" } : action.state;
+  if (action.type === "resolved") return action.state;
+  return action.state
+    ? { status: "refreshing", state: action.state }
+    : { status: "loading" };
 }
 
 export function teamPublicStateStorageKey(entryId: number): string {

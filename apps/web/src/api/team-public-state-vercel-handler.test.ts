@@ -4,7 +4,10 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import teamPublicStateHandler from "../../../../api/team/[id]";
 
 describe("Vercel public team handler", () => {
-  afterEach(() => vi.unstubAllGlobals());
+  afterEach(() => {
+    vi.restoreAllMocks();
+    vi.unstubAllGlobals();
+  });
 
   it("normalizes the route ID and forwards a ready JSON response", async () => {
     const fetchUpstream = vi
@@ -64,6 +67,7 @@ describe("Vercel public team handler", () => {
       state: { entryId: 123, event: 5 },
     });
     expect(headers.get("cache-control")).toBe("private, no-store");
+    expect(headers.get("content-type")).toContain("application/json");
     expect(fetchUpstream).toHaveBeenCalledTimes(3);
   });
 

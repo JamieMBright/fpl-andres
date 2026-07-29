@@ -16,7 +16,11 @@ function bootstrapResponse(): Response {
 }
 
 function entryResponse(currentEvent: number | null = 5): Response {
-  return jsonResponse({
+  return jsonResponse(entryDocument(currentEvent));
+}
+
+function entryDocument(currentEvent: number | null = 5) {
+  return {
     id: 123,
     name: "Public XI",
     started_event: 1,
@@ -24,7 +28,7 @@ function entryResponse(currentEvent: number | null = 5): Response {
     last_deadline_bank: currentEvent === null ? null : 17,
     last_deadline_value: currentEvent === null ? null : 1004,
     last_deadline_total_transfers: 4,
-  });
+  };
 }
 
 function picksResponse(): Response {
@@ -128,6 +132,123 @@ describe("public team state response", () => {
       status: "unavailable",
       reason: "picks_unavailable",
       event: 5,
+    });
+  });
+
+  it("returns unavailable when the public entry does not exist", async () => {
+    const fetchUpstream = vi
+      .fn<typeof fetch>()
+      .mockImplementation(async (input) =>
+        String(input).endsWith("/entry/123/")
+          ? jsonResponse({ detail: "Not found." }, 404)
+          : bootstrapResponse(),
+      );
+
+    const response = await createTeamPublicStateResponse(123, "GET", {
+      fetchUpstream,
+      now: () => Date.parse(fetchedAt),
+    });
+
+    expect(response.status).toBe(404);
+    await expect(response.json()).resolves.toEqual({
+      status: "unavailable",
+      reason: "entry_unavailable",
+    });
+  });
+
+  it("degrades when a required FPL source returns a non-success status", async () => {
+    const fetchUpstream = vi
+      .fn<typeof fetch>()
+      .mockImplementation(async (input) =>
+        String(input).endsWith("/entry/123/")
+          ? jsonResponse({ detail: "Upstream failed." }, 500)
+          : bootstrapResponse(),
+      );
+
+    const response = await createTeamPublicStateResponse(123, "GET", {
+      fetchUpstream,
+      now: () => Date.parse(fetchedAt),
+      sleep: vi.fn().mockResolvedValue(undefined),
+      random: () => 0.5,
+    });
+
+    expect(response.status).toBe(503);
+    await expect(response.json()).resolves.toEqual({
+      status: "degraded",
+      reason: "fpl_source_failed",
+    });
+  });
+
+  it("degrades when FPL substitutes a different entry ID", async () => {
+    const fetchUpstream = vi
+      .fn<typeof fetch>()
+      .mockImplementation(async (input) => {
+        const url = String(input);
+        if (url.endsWith("/bootstrap-static/")) return bootstrapResponse();
+        if (url.endsWith("/entry/123/")) {
+          return jsonResponse({ ...entryDocument(), id: 456 });
+        }
+        throw new Error(`unexpected URL: ${url}`);
+      });
+
+    const response = await createTeamPublicStateResponse(123, "GET", {
+      fetchUpstream,
+      now: () => Date.parse(fetchedAt),
+    });
+
+    expect(response.status).toBe(503);
+    await expect(response.json()).resolves.toEqual({
+      status: "degraded",
+      reason: "source_contract_failed",
+    });
+    expect(fetchUpstream).toHaveBeenCalledTimes(2);
+  });
+
+  it("degrades when the processed event has no official deadline", async () => {
+    const fetchUpstream = vi
+      .fn<typeof fetch>()
+      .mockImplementation(async (input) =>
+        String(input).endsWith("/entry/123/")
+          ? entryResponse()
+          : jsonResponse({ events: [] }),
+      );
+
+    const response = await createTeamPublicStateResponse(123, "GET", {
+      fetchUpstream,
+      now: () => Date.parse(fetchedAt),
+    });
+
+    expect(response.status).toBe(503);
+    await expect(response.json()).resolves.toEqual({
+      status: "degraded",
+      reason: "source_contract_failed",
+    });
+    expect(fetchUpstream).toHaveBeenCalledTimes(2);
+  });
+
+  it("degrades when entry and picks evidence contradict each other", async () => {
+    const fetchUpstream = vi
+      .fn<typeof fetch>()
+      .mockImplementation(async (input) => {
+        const url = String(input);
+        if (url.endsWith("/bootstrap-static/")) return bootstrapResponse();
+        if (url.endsWith("/entry/123/")) return entryResponse();
+        const picks = await picksResponse().json();
+        return jsonResponse({
+          ...picks,
+          entry_history: { ...picks.entry_history, bank: 18 },
+        });
+      });
+
+    const response = await createTeamPublicStateResponse(123, "GET", {
+      fetchUpstream,
+      now: () => Date.parse(fetchedAt),
+    });
+
+    expect(response.status).toBe(503);
+    await expect(response.json()).resolves.toEqual({
+      status: "degraded",
+      reason: "source_contract_failed",
     });
   });
 

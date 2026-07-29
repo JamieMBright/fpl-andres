@@ -250,8 +250,8 @@ function TeamAnalysisPage() {
 
     let active = true;
     const controller = new AbortController();
-    dispatch({ type: "load" });
     const cached = loadCachedPublicTeamState(localStorage, entryId);
+    dispatch({ type: "load", state: cached });
 
     void refreshTeamAnalysis(entryId, cached, {
       storage: localStorage,
@@ -327,6 +327,28 @@ function AnalysisResult({ analysis, onRetry }: AnalysisResultProps) {
           <span>Checking exact FPL source snapshots and their timestamps.</span>
         </div>
       </div>
+    );
+  }
+
+  if (analysis.status === "refreshing") {
+    return (
+      <>
+        <div
+          aria-label="Evidence status"
+          className="evidence-banner evidence-banner-loading"
+          role="status"
+        >
+          <RefreshCw aria-hidden="true" className="loading-mark" size={20} />
+          <div>
+            <strong>Refreshing a verified snapshot</strong>
+            <span>
+              The last contract-validated state remains visible while fresh
+              source evidence is checked.
+            </span>
+          </div>
+        </div>
+        <SnapshotDossier state={analysis.state} />
+      </>
     );
   }
 
@@ -563,7 +585,7 @@ function staleReason(
 function terminalStateMessage(
   analysis: Exclude<
     TeamAnalysisState,
-    { status: "idle" | "loading" | "ready" | "stale" }
+    { status: "idle" | "loading" | "refreshing" | "ready" | "stale" }
   >,
 ) {
   if (analysis.status === "unavailable") {

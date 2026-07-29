@@ -1,7 +1,11 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
 
-const sourceHashes = [`sha256:${"a".repeat(64)}`, `sha256:${"b".repeat(64)}`];
+const sourceHashes = [
+  `sha256:${"a".repeat(64)}`,
+  `sha256:${"b".repeat(64)}`,
+  `sha256:${"c".repeat(64)}`,
+];
 
 function publicTeamState(entryId = 212279) {
   return {

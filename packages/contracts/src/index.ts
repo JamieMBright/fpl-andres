@@ -158,7 +158,7 @@ const sourceHashSchema = z.string().regex(/^sha256:[a-f0-9]{64}$/);
 
 export const publicTeamStateSchema = z
   .object({
-    entryId: z.int().positive(),
+    entryId: z.int().min(1).max(4_294_967_295),
     event: eventIdSchema,
     bankTenths: z.int().nonnegative(),
     squadValueTenths: z.int().nonnegative(),

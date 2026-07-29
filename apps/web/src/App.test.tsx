@@ -15,6 +15,10 @@ const readyState = {
   ...teamStateCases.valid[0]!,
   stateAsOf: "2026-07-20T10:30:00Z",
   dataAvailableAt: "2026-07-20T12:30:00Z",
+  sourceHashes: [
+    ...teamStateCases.valid[0]!.sourceHashes,
+    `sha256:${"c".repeat(64)}`,
+  ],
 };
 const firstSourceHash = readyState.sourceHashes[0]!;
 
@@ -68,7 +72,7 @@ describe("team analysis entry", () => {
     ).toBeInTheDocument();
     expect(screen.getAllByRole("row")).toHaveLength(16);
 
-    await user.click(screen.getByText(/Inspect 2 source hashes/));
+    await user.click(screen.getByText(/Inspect 3 source hashes/));
     expect(
       screen.getByText(firstSourceHash, { exact: false }),
     ).toBeInTheDocument();
@@ -133,6 +137,30 @@ describe("team analysis entry", () => {
       screen.getByRole("table", { name: "Last-deadline squad" }),
     ).toBeInTheDocument();
     expect(screen.getByText(/FPL is temporarily unreachable/i)).toBeVisible();
+  });
+
+  it("keeps a validated snapshot visible while refresh is in flight", async () => {
+    saveCachedPublicTeamState(localStorage, readyState.entryId, readyState);
+    let resolveFetch!: (response: Response) => void;
+    const pendingResponse = new Promise<Response>((resolve) => {
+      resolveFetch = resolve;
+    });
+    vi.stubGlobal(
+      "fetch",
+      vi.fn<typeof fetch>().mockReturnValue(pendingResponse),
+    );
+
+    renderApplication(`/team/${readyState.entryId}`);
+
+    expect(
+      await screen.findByText("Refreshing a verified snapshot"),
+    ).toBeVisible();
+    expect(
+      screen.getByRole("table", { name: "Last-deadline squad" }),
+    ).toBeVisible();
+
+    resolveFetch(Response.json({ status: "ready", state: readyState }));
+    expect(await screen.findByText("Observed snapshot ready")).toBeVisible();
   });
 
   it("explains a valid unavailable result without inventing state", async () => {

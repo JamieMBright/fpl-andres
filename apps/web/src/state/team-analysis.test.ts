@@ -1,3 +1,4 @@
+import { publicTeamStateSchema } from "@fpl-andres/contracts";
 import teamStateCases from "../../../../packages/contracts/fixtures/public-team-state-cases.json";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -11,7 +12,7 @@ import {
 } from "./team-analysis";
 
 const ENTRY_ID = 123;
-const readyState = teamStateCases.valid[0];
+const readyState = publicTeamStateSchema.parse(teamStateCases.valid[0]);
 
 describe("team analysis state machine", () => {
   beforeEach(() => localStorage.clear());
@@ -19,8 +20,15 @@ describe("team analysis state machine", () => {
   it("moves idle to loading to ready and caches only validated state", async () => {
     const loading = reduceTeamAnalysis(initialTeamAnalysisState, {
       type: "load",
+      state: null,
     });
     expect(loading).toEqual({ status: "loading" });
+
+    const refreshing = reduceTeamAnalysis(
+      { status: "ready", state: readyState },
+      { type: "load", state: readyState },
+    );
+    expect(refreshing).toEqual({ status: "refreshing", state: readyState });
 
     const fetchApi = vi
       .fn<typeof fetch>()
@@ -134,6 +142,12 @@ describe("team analysis state machine", () => {
 
     await expect(
       refreshTeamAnalysis(0, null, { fetchApi, storage: localStorage }),
+    ).rejects.toThrow("Team ID");
+    await expect(
+      refreshTeamAnalysis(4_294_967_296, null, {
+        fetchApi,
+        storage: localStorage,
+      }),
     ).rejects.toThrow("Team ID");
     expect(() => teamPublicStateStorageKey(1.5)).toThrow("Team ID");
     expect(fetchApi).not.toHaveBeenCalled();

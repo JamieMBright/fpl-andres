@@ -122,6 +122,12 @@ describe("shared FPL contracts", () => {
     expect(() =>
       publicTeamStateSchema.parse({
         ...valid,
+        entryId: 4_294_967_296,
+      }),
+    ).toThrow();
+    expect(() =>
+      publicTeamStateSchema.parse({
+        ...valid,
         availableFreeTransfers: 2,
       }),
     ).toThrow();
