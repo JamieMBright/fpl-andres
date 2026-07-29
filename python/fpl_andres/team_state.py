@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import hashlib
+import json
 from collections.abc import Mapping
 from datetime import datetime, timedelta
 from typing import Any
@@ -162,6 +164,7 @@ def resolve_team_state(
         public_state_as_of=public.state_as_of,
         public_data_available_at=public.data_available_at,
         overrides_updated_at=overrides.updated_at,
+        manager_overrides_hash=_manager_overrides_hash(overrides),
         public_source_hashes=public.source_hashes,
     )
 
@@ -193,3 +196,13 @@ def _required_override[ValueT](value: ValueT | None, field_name: str) -> ValueT:
     if value is None:
         raise TeamStateResolutionError(f"manager override must provide {field_name}")
     return value
+
+
+def _manager_overrides_hash(overrides: TeamStateOverrides) -> str:
+    canonical = json.dumps(
+        overrides.model_dump(by_alias=True, mode="json"),
+        ensure_ascii=True,
+        separators=(",", ":"),
+        sort_keys=True,
+    ).encode()
+    return f"sha256:{hashlib.sha256(canonical).hexdigest()}"

@@ -7,6 +7,7 @@ from typing import Annotated, Literal, Protocol
 
 from pydantic import BaseModel, ConfigDict, Field, StringConstraints, model_validator
 
+from fpl_andres.contracts import PlanningTeamState
 from fpl_andres.rules import RulesSnapshot
 
 Hash = Annotated[str, Field(pattern=r"^sha256:[a-f0-9]{64}$")]
@@ -115,6 +116,31 @@ class CurrentSquadPlayer(BaseModel):
     selling_price_tenths: NonNegativeInt
 
 
+class OptimizationStateEvidence(BaseModel):
+    model_config = ConfigDict(extra="forbid", frozen=True, strict=True)
+
+    public_state_as_of: datetime
+    public_data_available_at: datetime
+    overrides_updated_at: datetime
+    public_source_hashes: tuple[Hash, ...]
+    manager_overrides_hash: Hash
+
+    @model_validator(mode="after")
+    def validate_evidence(self) -> OptimizationStateEvidence:
+        for label, value in (
+            ("public_state_as_of", self.public_state_as_of),
+            ("public_data_available_at", self.public_data_available_at),
+            ("overrides_updated_at", self.overrides_updated_at),
+        ):
+            _require_utc(value, label)
+        if self.public_data_available_at < self.public_state_as_of:
+            raise ValueError("public data cannot predate public state")
+        if self.overrides_updated_at < self.public_state_as_of:
+            raise ValueError("manager overrides cannot predate public state")
+        _require_sorted_hashes(self.public_source_hashes)
+        return self
+
+
 class OptimizationRequest(BaseModel):
     model_config = ConfigDict(extra="forbid", frozen=True, strict=True)
 
@@ -124,6 +150,7 @@ class OptimizationRequest(BaseModel):
     current_squad: tuple[CurrentSquadPlayer, ...]
     bank_tenths: NonNegativeInt
     available_free_transfers: NonNegativeInt
+    state_evidence: OptimizationStateEvidence
     rules: OptimizationRules
 
     @model_validator(mode="after")
@@ -131,6 +158,10 @@ class OptimizationRequest(BaseModel):
         _require_utc(self.prediction_cutoff, "prediction_cutoff")
         if self.rules.data_available_at > self.prediction_cutoff:
             raise ValueError("rules became available after prediction_cutoff")
+        if self.state_evidence.public_data_available_at > self.prediction_cutoff:
+            raise ValueError("public team state became available after prediction_cutoff")
+        if self.state_evidence.overrides_updated_at > self.prediction_cutoff:
+            raise ValueError("manager state became available after prediction_cutoff")
         if len(self.players) < self.rules.squad_size:
             raise ValueError("candidate pool is smaller than the required squad")
         player_ids = tuple(player.element_id for player in self.players)
@@ -254,6 +285,7 @@ class HorizonOptimizationRequest(BaseModel):
     current_squad: tuple[CurrentSquadPlayer, ...]
     bank_tenths: NonNegativeInt
     available_free_transfers: NonNegativeInt
+    state_evidence: OptimizationStateEvidence
     price_scenario: Literal["provided_event_prices"]
     objective: Literal["expected_value"]
     rules: OptimizationRules
@@ -275,6 +307,10 @@ class HorizonOptimizationRequest(BaseModel):
             raise ValueError("horizon event IDs must be unique")
         if self.rules.data_available_at > self.events[0].prediction_cutoff:
             raise ValueError("rules became available after the first prediction cutoff")
+        if self.state_evidence.public_data_available_at > self.events[0].prediction_cutoff:
+            raise ValueError("public team state became available after the first cutoff")
+        if self.state_evidence.overrides_updated_at > self.events[0].prediction_cutoff:
+            raise ValueError("manager state became available after the first cutoff")
 
         forecasts_by_event: dict[int, list[HorizonPlayerForecast]] = {
             event.event: [] for event in self.events
@@ -342,6 +378,7 @@ class HorizonOptimizationRequest(BaseModel):
             current_squad=self.current_squad,
             bank_tenths=self.bank_tenths,
             available_free_transfers=self.available_free_transfers,
+            state_evidence=self.state_evidence,
             rules=self.rules,
         )
 
@@ -433,6 +470,18 @@ class HorizonOptimizationResult(BaseModel):
 
 class OptimizerPort(Protocol):
     def solve(self, request: OptimizationRequest) -> OptimizationResult: ...
+
+
+def optimization_state_evidence_from_team_state(
+    state: PlanningTeamState,
+) -> OptimizationStateEvidence:
+    return OptimizationStateEvidence(
+        public_state_as_of=state.public_state_as_of,
+        public_data_available_at=state.public_data_available_at,
+        overrides_updated_at=state.overrides_updated_at,
+        public_source_hashes=state.public_source_hashes,
+        manager_overrides_hash=state.manager_overrides_hash,
+    )
 
 
 def optimization_rules_from_snapshot(

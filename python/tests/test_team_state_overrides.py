@@ -9,6 +9,7 @@ from fpl_andres.contracts import (
     QueuedTransfer,
     TeamStateOverrides,
 )
+from fpl_andres.optimization.contracts import optimization_state_evidence_from_team_state
 from fpl_andres.team_state import TeamStateResolutionError, resolve_team_state
 
 STATE_AS_OF = datetime(2026, 9, 12, 10, 30, tzinfo=UTC)
@@ -90,6 +91,26 @@ def test_resolves_exact_manager_state_without_mutating_public_snapshot() -> None
     assert resolved.public_state_as_of == STATE_AS_OF
     assert resolved.overrides_updated_at == STATE_AS_OF + timedelta(hours=3)
     assert resolved.public_source_hashes == public.source_hashes
+    assert resolved.manager_overrides_hash.startswith("sha256:")
+    assert (
+        resolved.manager_overrides_hash
+        == resolve_team_state(
+            public,
+            overrides(),
+        ).manager_overrides_hash
+    )
+
+    evidence = optimization_state_evidence_from_team_state(resolved)
+    assert evidence.public_state_as_of == resolved.public_state_as_of
+    assert evidence.public_source_hashes == resolved.public_source_hashes
+    assert evidence.manager_overrides_hash == resolved.manager_overrides_hash
+    assert (
+        resolved.manager_overrides_hash
+        != resolve_team_state(
+            public,
+            overrides(bank_tenths=None),
+        ).manager_overrides_hash
+    )
 
 
 def test_resolution_refuses_to_default_missing_private_state() -> None:

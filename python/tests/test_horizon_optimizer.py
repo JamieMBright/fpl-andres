@@ -6,7 +6,7 @@ import pytest
 from hypothesis import given, settings
 from hypothesis import strategies as st
 from pydantic import ValidationError
-from test_highs_optimizer import CUTOFF, rules
+from test_highs_optimizer import CUTOFF, rules, state_evidence
 
 from fpl_andres.optimization.contracts import (
     CurrentSquadPlayer,
@@ -63,6 +63,7 @@ def horizon_request() -> HorizonOptimizationRequest:
         ),
         bank_tenths=0,
         available_free_transfers=1,
+        state_evidence=state_evidence(),
         price_scenario="provided_event_prices",
         objective="expected_value",
         rules=rules(

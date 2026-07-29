@@ -435,6 +435,8 @@ class HighsHorizonOptimizer:
                 {
                     request.rules.published_rules_hash,
                     request.rules.transfer_rules.source_hash,
+                    request.state_evidence.manager_overrides_hash,
+                    *request.state_evidence.public_source_hashes,
                     *(
                         source_hash
                         for forecast in request.forecasts
@@ -455,6 +457,8 @@ class HighsHorizonOptimizer:
             evidence_level=evidence_level,
             data_available_at=max(
                 request.rules.data_available_at,
+                request.state_evidence.public_data_available_at,
+                request.state_evidence.overrides_updated_at,
                 *(forecast.data_available_at for forecast in request.forecasts),
             ),
             source_hashes=source_hashes,

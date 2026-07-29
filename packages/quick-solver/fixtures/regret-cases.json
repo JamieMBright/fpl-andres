@@ -88,6 +88,15 @@
         ],
         "bankTenths": 0,
         "availableFreeTransfers": 1,
+        "stateEvidence": {
+          "publicStateAsOf": "2026-09-05T09:00:00Z",
+          "publicDataAvailableAt": "2026-09-12T07:00:00Z",
+          "overridesUpdatedAt": "2026-09-12T08:00:00Z",
+          "publicSourceHashes": [
+            "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+          ],
+          "managerOverridesHash": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+        },
         "rules": {
           "squadSize": 4,
           "lineupSize": 2,
@@ -169,6 +178,15 @@
         ],
         "bankTenths": 0,
         "availableFreeTransfers": 0,
+        "stateEvidence": {
+          "publicStateAsOf": "2026-09-05T09:00:00Z",
+          "publicDataAvailableAt": "2026-09-12T07:00:00Z",
+          "overridesUpdatedAt": "2026-09-12T08:00:00Z",
+          "publicSourceHashes": [
+            "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+          ],
+          "managerOverridesHash": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+        },
         "rules": {
           "squadSize": 2,
           "lineupSize": 2,

@@ -40,6 +40,7 @@ const fullSquadInput = quickSolverInputSchema.parse({
   })),
   bankTenths: fullSquadCase.bankTenths,
   availableFreeTransfers: fullSquadCase.availableFreeTransfers,
+  stateEvidence: fullSquadCase.stateEvidence,
   rules: fullSquadCase.rules,
 });
 

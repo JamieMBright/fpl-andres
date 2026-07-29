@@ -232,6 +232,8 @@ class HighsOptimizer:
                 {
                     request.rules.published_rules_hash,
                     request.rules.transfer_rules.source_hash,
+                    request.state_evidence.manager_overrides_hash,
+                    *request.state_evidence.public_source_hashes,
                     *(source_hash for player in players for source_hash in player.source_hashes),
                 }
             )
@@ -259,6 +261,8 @@ class HighsOptimizer:
             evidence_level=evidence_level,
             data_available_at=max(
                 request.rules.data_available_at,
+                request.state_evidence.public_data_available_at,
+                request.state_evidence.overrides_updated_at,
                 *(player.data_available_at for player in players),
             ),
             source_hashes=source_hashes,

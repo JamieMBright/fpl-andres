@@ -10,6 +10,7 @@ from fpl_andres.optimization.contracts import (
     OptimizationPlayer,
     OptimizationRequest,
     OptimizationRules,
+    OptimizationStateEvidence,
     PositionConstraint,
     TransferRulesAddendum,
 )
@@ -60,6 +61,7 @@ def regret_cases() -> list[dict[str, Any]]:
         ],
         "bankTenths": full["bankTenths"],
         "availableFreeTransfers": full["availableFreeTransfers"],
+        "stateEvidence": full["stateEvidence"],
         "rules": full["rules"],
     }
     cases.append(
@@ -77,6 +79,7 @@ def regret_cases() -> list[dict[str, Any]]:
 def test_stored_quick_solver_reference_is_highs_optimum(case: dict[str, Any]) -> None:
     input_value = case["input"]
     rule_value = input_value["rules"]
+    state_value = input_value["stateEvidence"]
     transfer_rules = TransferRulesAddendum.model_validate(
         {
             "season": input_value["season"],
@@ -142,6 +145,13 @@ def test_stored_quick_solver_reference_is_highs_optimum(case: dict[str, Any]) ->
             ),
             "bank_tenths": input_value["bankTenths"],
             "available_free_transfers": input_value["availableFreeTransfers"],
+            "state_evidence": OptimizationStateEvidence(
+                public_state_as_of=parse_timestamp(state_value["publicStateAsOf"]),
+                public_data_available_at=parse_timestamp(state_value["publicDataAvailableAt"]),
+                overrides_updated_at=parse_timestamp(state_value["overridesUpdatedAt"]),
+                public_source_hashes=tuple(state_value["publicSourceHashes"]),
+                manager_overrides_hash=state_value["managerOverridesHash"],
+            ),
             "rules": rules,
         }
     )

@@ -31,6 +31,36 @@ const currentPlayerSchema = z
   })
   .strict();
 
+const stateEvidenceSchema = z
+  .object({
+    publicStateAsOf: z.iso.datetime(),
+    publicDataAvailableAt: z.iso.datetime(),
+    overridesUpdatedAt: z.iso.datetime(),
+    publicSourceHashes: sourceHashesSchema,
+    managerOverridesHash: sourceHashSchema,
+  })
+  .strict()
+  .superRefine((evidence, context) => {
+    if (
+      Date.parse(evidence.publicDataAvailableAt) <
+      Date.parse(evidence.publicStateAsOf)
+    ) {
+      context.addIssue({
+        code: "custom",
+        message: "public data cannot predate public state",
+      });
+    }
+    if (
+      Date.parse(evidence.overridesUpdatedAt) <
+      Date.parse(evidence.publicStateAsOf)
+    ) {
+      context.addIssue({
+        code: "custom",
+        message: "manager overrides cannot predate public state",
+      });
+    }
+  });
+
 const positionRuleSchema = z
   .object({
     positionId: z.int().positive(),
@@ -114,6 +144,7 @@ export const quickSolverInputSchema = z
     currentSquad: z.array(currentPlayerSchema).min(1),
     bankTenths: z.int().nonnegative(),
     availableFreeTransfers: z.int().nonnegative(),
+    stateEvidence: stateEvidenceSchema,
     rules: quickRulesSchema,
   })
   .strict()
@@ -126,6 +157,27 @@ export const quickSolverInputSchema = z
         code: "custom",
         message: "rules became available after the prediction cutoff",
         path: ["rules", "dataAvailableAt"],
+      });
+    }
+    if (
+      Date.parse(input.stateEvidence.publicDataAvailableAt) >
+      Date.parse(input.predictionCutoff)
+    ) {
+      context.addIssue({
+        code: "custom",
+        message:
+          "public team state became available after the prediction cutoff",
+        path: ["stateEvidence", "publicDataAvailableAt"],
+      });
+    }
+    if (
+      Date.parse(input.stateEvidence.overridesUpdatedAt) >
+      Date.parse(input.predictionCutoff)
+    ) {
+      context.addIssue({
+        code: "custom",
+        message: "manager state became available after the prediction cutoff",
+        path: ["stateEvidence", "overridesUpdatedAt"],
       });
     }
     if (
@@ -341,10 +393,14 @@ export function solveQuickPlan(
   const sourceHashes = [
     input.rules.publishedRulesHash,
     input.rules.transferRulesHash,
+    input.stateEvidence.managerOverridesHash,
+    ...input.stateEvidence.publicSourceHashes,
     ...input.players.flatMap(({ sourceHashes }) => sourceHashes),
   ];
   const dataAvailableAt = [
     input.rules.dataAvailableAt,
+    input.stateEvidence.publicDataAvailableAt,
+    input.stateEvidence.overridesUpdatedAt,
     ...input.players.map(({ dataAvailableAt }) => dataAvailableAt),
   ]
     .sort((left, right) => Date.parse(left) - Date.parse(right))

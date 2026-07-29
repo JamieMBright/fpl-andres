@@ -27,6 +27,10 @@ describe("bounded quick solver", () => {
       expect(result.captainElementId).not.toBe(result.viceCaptainElementId);
       expect(result.starterElementIds).toContain(result.captainElementId);
       expect(result.starterElementIds).toContain(result.viceCaptainElementId);
+      expect(result.sourceHashes).toContain(
+        fixture.input.stateEvidence.managerOverridesHash,
+      );
+      expect(result.dataAvailableAt).toBe(fixture.input.predictionCutoff);
     }
   });
 
@@ -74,5 +78,15 @@ describe("bounded quick solver", () => {
     expect(() =>
       quickSolverInputSchema.parse({ ...input, rules: incompleteRules }),
     ).toThrow();
+
+    expect(() =>
+      quickSolverInputSchema.parse({
+        ...input,
+        stateEvidence: {
+          ...input.stateEvidence,
+          overridesUpdatedAt: "2026-09-12T09:00:01Z",
+        },
+      }),
+    ).toThrow("manager state");
   });
 });

@@ -280,6 +280,7 @@ class PlanningTeamState(BaseModel):
     public_state_as_of: datetime
     public_data_available_at: datetime
     overrides_updated_at: datetime
+    manager_overrides_hash: Annotated[str, Field(pattern=r"^sha256:[a-f0-9]{64}$")]
     public_source_hashes: tuple[Annotated[str, Field(pattern=r"^sha256:[a-f0-9]{64}$")], ...]
 
     @model_validator(mode="after")

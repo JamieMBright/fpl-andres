@@ -15,6 +15,7 @@ from fpl_andres.optimization.contracts import (
     OptimizationRequest,
     OptimizationResult,
     OptimizationRules,
+    OptimizationStateEvidence,
     PositionConstraint,
     TransferRulesAddendum,
     optimization_rules_from_snapshot,
@@ -25,6 +26,8 @@ from fpl_andres.rules import RulesSnapshot
 CUTOFF = datetime(2026, 9, 12, 9, tzinfo=UTC)
 HASH_A = f"sha256:{'a' * 64}"
 HASH_B = f"sha256:{'b' * 64}"
+HASH_C = f"sha256:{'c' * 64}"
+HASH_D = f"sha256:{'d' * 64}"
 FIXTURE_PATH = Path(__file__).parent / "fixtures" / "fpl" / "bootstrap_rules_2026_27.json"
 
 
@@ -63,6 +66,18 @@ def rules(
         published_rules_hash=HASH_A,
         data_available_at=CUTOFF - timedelta(days=1),
     )
+
+
+def state_evidence(**updates: object) -> OptimizationStateEvidence:
+    values: dict[str, object] = {
+        "public_state_as_of": CUTOFF - timedelta(days=7),
+        "public_data_available_at": CUTOFF - timedelta(hours=2),
+        "overrides_updated_at": CUTOFF - timedelta(hours=1),
+        "public_source_hashes": (HASH_C,),
+        "manager_overrides_hash": HASH_D,
+    }
+    values.update(updates)
+    return OptimizationStateEvidence.model_validate(values)
 
 
 def player(
@@ -108,6 +123,7 @@ def test_highs_matches_independent_exhaustive_oracle() -> None:
         ),
         bank_tenths=0,
         available_free_transfers=1,
+        state_evidence=state_evidence(),
         rules=rules(),
     )
 
@@ -125,6 +141,8 @@ def test_highs_matches_independent_exhaustive_oracle() -> None:
     assert result.evidence_level == "experimental"
     assert HASH_A in result.source_hashes
     assert HASH_B in result.source_hashes
+    assert HASH_C in result.source_hashes
+    assert HASH_D in result.source_hashes
 
 
 @pytest.mark.parametrize(
@@ -161,6 +179,7 @@ def test_paid_transfer_requires_gain_above_explicit_hit_cost(
         ),
         bank_tenths=0,
         available_free_transfers=0,
+        state_evidence=state_evidence(),
         rules=compact_rules,
     )
 
@@ -190,6 +209,7 @@ def test_request_rejects_forecast_available_after_cutoff() -> None:
             ),
             bank_tenths=0,
             available_free_transfers=1,
+            state_evidence=state_evidence(),
             rules=rules(
                 squad_size=2,
                 lineup_size=2,
@@ -211,6 +231,16 @@ def test_transfer_cost_is_required_source_contract() -> None:
 
     with pytest.raises(ValidationError, match="transfer_cost_points"):
         TransferRulesAddendum.model_validate(values)
+
+
+def test_request_rejects_manager_state_updated_after_cutoff() -> None:
+    invalid = compact_request((10.0, 1.0, 6.0)).model_copy(
+        update={
+            "state_evidence": state_evidence(overrides_updated_at=CUTOFF + timedelta(seconds=1))
+        }
+    )
+    with pytest.raises(ValidationError, match="manager state became available"):
+        OptimizationRequest.model_validate(invalid.model_dump())
 
 
 def test_builds_optimizer_rules_from_exact_published_and_addendum_sources() -> None:
@@ -304,6 +334,7 @@ def test_highs_matches_exhaustive_oracle_across_generated_points(
         ),
         bank_tenths=0,
         available_free_transfers=1,
+        state_evidence=state_evidence(),
         rules=rules(),
     )
 
@@ -333,6 +364,7 @@ def compact_request(points: tuple[float, float, float]) -> OptimizationRequest:
         ),
         bank_tenths=0,
         available_free_transfers=0,
+        state_evidence=state_evidence(),
         rules=rules(
             squad_size=2,
             lineup_size=2,
