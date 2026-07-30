@@ -41,6 +41,19 @@ the repository.
 
 ## Open owner items
 
+### Apply the v0.5.1 foreign-key index migration
+
+- [ ] Open Supabase Dashboard for `fpl-andres-production`, open a new SQL Editor
+      query and paste the contents of
+      [`20260730130000_foreign_key_indexes.sql`](../supabase/migrations/20260730130000_foreign_key_indexes.sql).
+      Every statement uses `CREATE INDEX CONCURRENTLY IF NOT EXISTS`, so the
+      operation is non-blocking and safe to re-run. It covers four foreign-key
+      columns (`rules_snapshots.source_snapshot_id`,
+      `projection_runs.workflow_run_id`,
+      `model_promotion_decisions.workflow_run_id`,
+      `optimization_runs.workflow_run_id`) that would otherwise force sequential
+      scans on cascade and reverse joins.
+
 ### Ready to verify once FPL processes a live gameweek
 
 - [ ] Open the rendered team snapshot for team `212279` and confirm that public
@@ -82,6 +95,41 @@ forecasts. Ship the initial-squad and transfer workflows without them.
       `unavailable` when the recent run disagrees with the prior window. The free
       StatsBomb corpora validate the classifier on completed seasons; the live path
       still requires the recency contract on the ingest side.
+
+### Design direction — dark marketing landing proposal (2026-07-30)
+
+An inspiration image was supplied showing a dark navy background, a bright emerald
+accent, a full-bleed "DATA DRIVEN. POINTS PROVEN." hero and a stylised football
+silhouette in a green/white striped shirt. Every one of those decisions conflicts
+with the current `DESIGN.md` contract:
+
+- `DESIGN.md` fixes a paper (`#f7f8f2`) surface with an ink primary and a
+  `#38634c` field-green accent. The inspiration wants an inverted dark surface
+  and a much brighter emerald.
+- `DESIGN.md` requires the root to be the working Team-ID experience, never a
+  promotional landing page, and explicitly lists oversized marketing copy that
+  delays the actual tool as a rejected pattern.
+- `DESIGN.md` blocks a player-pose mark until its source and derivative-use
+  route are documented; the inspiration's kit and pose read as a specific club
+  and player and would trigger the existing "no traced press photograph, no kit
+  recreation, no club heraldry" rules.
+- The inspiration's "TOP RECOMMENDATIONS" panel labelling (STRONG BUY /
+  CONSIDER) with point projections is decorative statistics until forecasts
+  pass the promotion contract, which is another rejected pattern.
+
+The agent did not adopt the inspiration wholesale because the design contract is
+authoritative. Choose one path before the visual work restarts:
+
+- [ ] Accept an in-contract evolution: keep the paper surface and field-green
+      accent, sharpen the type scale, tighten the hero verdict, and introduce
+      an evidence-gated "top calls" preview panel that only populates once
+      forecasts are promoted. No dark palette flip, no marketing hero, no
+      player pose.
+- [ ] Update `DESIGN.md` explicitly to a dark marketing landing brief, including
+      a new palette, a marketing hero above the tool, and a bespoke abstract
+      mark that is not a traced player. Provide or approve the mark before it
+      ships and confirm the "Top calls" panel will only display promoted
+      evidence.
 
 ### Before real email
 

@@ -464,6 +464,10 @@ export function TeamStateCorrections({ state }: TeamStateCorrectionsProps) {
             ) : null}
           </div>
           {savedOverrides && confirmingRemoval ? (
+            // The div is interactive by ARIA (role="alertdialog"), which the
+            // jsx-a11y rule does not detect. Escape + Tab trap live at the
+            // dialog root because both buttons must receive them.
+            // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
             <div
               aria-describedby={`${formId}-remove-description`}
               aria-labelledby={`${formId}-remove-title`}

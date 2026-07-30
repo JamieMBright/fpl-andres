@@ -52,18 +52,8 @@ _DEPLOYMENT_CLASSIFICATION: dict[tuple[ListedPosition, ObservedRole], Deployment
         if _ROLE_GROUP[observed] < _POSITION_GROUP[listed]
         else "aligned"
     )
-    for listed in ("GKP", "DEF", "MID", "FWD")
-    for observed in (
-        "goalkeeper",
-        "centre_back",
-        "full_back",
-        "wing_back",
-        "defensive_midfield",
-        "central_midfield",
-        "attacking_midfield",
-        "wide_forward",
-        "striker",
-    )
+    for listed in _POSITION_GROUP
+    for observed in _ROLE_GROUP
 }
 
 

@@ -171,9 +171,7 @@ def _validate_parameters(
     if not metric_name:
         raise ValueError("metric_name must be non-empty")
     if metric_direction not in ("lower_is_better", "higher_is_better"):
-        raise ValueError(
-            "metric_direction must be 'lower_is_better' or 'higher_is_better'"
-        )
+        raise ValueError("metric_direction must be 'lower_is_better' or 'higher_is_better'")
     if isinstance(resamples, bool) or not isinstance(resamples, int) or resamples < 1:
         raise ValueError("resamples must be a positive integer")
     if isinstance(seed, bool) or not isinstance(seed, int):
@@ -188,9 +186,7 @@ def _validate_parameters(
         raise ValueError("minimum_sample_size must be a positive integer")
 
 
-def _improvement(
-    baseline: float, candidate: float, direction: MetricDirection
-) -> float:
+def _improvement(baseline: float, candidate: float, direction: MetricDirection) -> float:
     return baseline - candidate if direction == "lower_is_better" else candidate - baseline
 
 
