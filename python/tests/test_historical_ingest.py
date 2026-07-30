@@ -391,6 +391,100 @@ def test_a_missing_archive_file_raises_rather_than_writing_partial_state() -> No
 
 
 @respx.mock
+def test_a_gameweek_the_archive_never_published_is_skipped_not_fatal() -> None:
+    """Seasons differ in length: 2019/20 ran to 47, most run to 38."""
+    _mock_archive()
+    routes = _mock_supabase()
+    respx.get(f"{ARCHIVE_ROOT}/gws/gw39.csv").mock(return_value=httpx.Response(404))
+
+    with SupabaseRestClient(_credentials()) as client, httpx.Client() as http:
+        result = HistoricalIngest(client=client, fetcher=ArchiveFetcher(http)).ingest_season(
+            VaastavRevision(commit_sha=COMMIT, season=SEASON),
+            gameweeks=(1, 39),
+            data_available_at=datetime(2025, 6, 1, tzinfo=UTC),
+        )
+
+    assert result.gameweeks == {1: 2}
+    assert routes["stats"].call_count == 1
+
+
+@respx.mock
+def test_a_double_gameweek_keeps_one_row_per_fixture() -> None:
+    """A shared key would collapse the second fixture and break the upsert."""
+    double = GW1_CSV + (
+        b"11,1,62,7,1,0,0,1,0,0,0,0,0,0,1,28,100,False,9,4,2024-08-19T19:00:00Z,1,"
+        b"3500000,120000,4000,30.1,12.0,24.0,6.6,0.41,0.10,0.51,0.90,5.0\n"
+    )
+    _mock_archive(gw1_csv=double)
+    routes = _mock_supabase()
+
+    with SupabaseRestClient(_credentials()) as client, httpx.Client() as http:
+        result = HistoricalIngest(client=client, fetcher=ArchiveFetcher(http)).ingest_season(
+            VaastavRevision(commit_sha=COMMIT, season=SEASON),
+            gameweeks=(1,),
+            data_available_at=datetime(2025, 6, 1, tzinfo=UTC),
+        )
+
+    assert result.gameweeks == {1: 3}
+    written = json.loads(routes["stats"].calls[0].request.content)
+    element_11 = [row for row in written if row["element_id"] == 11]
+    assert len(element_11) == 2
+    assert {row["fixture_id"] for row in element_11} == {1, 9}
+
+    # The conflict target must include the fixture or the upsert fails 21000.
+    assert (
+        routes["stats"].calls[0].request.url.params["on_conflict"]
+        == "season,gameweek,element_id,fixture_id"
+    )
+
+
+@respx.mock
+def test_a_gameweek_row_without_a_fixture_is_rejected() -> None:
+    missing = GW1_CSV.replace(b",fixture,", b",", 1).replace(b",True,1,2,", b",True,2,", 1)
+
+    with pytest.raises(ColumnMappingError, match="fixture"):
+        normalise_gameweek_stats(
+            missing,
+            season=SEASON,
+            gameweek=1,
+            element_codes={11: 118748, 12: 154043},
+            source_snapshot_id="snap-1",
+        )
+
+
+def test_a_verbatim_duplicate_row_is_collapsed() -> None:
+    """The archive repeats some elements with byte-identical stats."""
+    saka_row = GW1_CSV.split(b"\n")[1]
+    doubled = GW1_CSV + saka_row + b"\n"
+
+    rows = normalise_gameweek_stats(
+        doubled,
+        season=SEASON,
+        gameweek=1,
+        element_codes={11: 118748, 12: 154043},
+        source_snapshot_id="snap-1",
+    )
+
+    assert len(rows) == 2
+
+
+def test_a_duplicate_key_with_different_values_is_rejected() -> None:
+    """Picking a winner would be an invented fact, so this must fail loudly."""
+    saka_row = GW1_CSV.split(b"\n")[1]
+    conflicting = saka_row.replace(b",90,13,", b",90,99,", 1)
+    doubled = GW1_CSV + conflicting + b"\n"
+
+    with pytest.raises(ColumnMappingError, match="conflicting values"):
+        normalise_gameweek_stats(
+            doubled,
+            season=SEASON,
+            gameweek=1,
+            element_codes={11: 118748, 12: 154043},
+            source_snapshot_id="snap-1",
+        )
+
+
+@respx.mock
 def test_defcon_columns_survive_all_the_way_into_the_write_payload() -> None:
     """Guards the whole path, not just the normaliser.
 

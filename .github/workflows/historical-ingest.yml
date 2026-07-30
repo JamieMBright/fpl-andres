@@ -20,9 +20,9 @@ on:
         default: "all"
         type: string
       gameweeks:
-        description: "Gameweek selection, e.g. 1-38 or 1,2,7"
+        description: "Gameweek selection, e.g. 1-47 or 1,2,7. Unpublished weeks are skipped."
         required: false
-        default: "1-38"
+        default: "1-47"
         type: string
       data_available_at:
         description: "ISO-8601 UTC timestamp the revision became public (blank = now)"

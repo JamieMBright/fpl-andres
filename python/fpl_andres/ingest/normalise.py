@@ -34,6 +34,7 @@ class ColumnMappingError(ValueError):
 # Columns that must exist in every supported season of a gameweek file.
 _GAMEWEEK_REQUIRED: Final = (
     "element",
+    "fixture",
     "round",
     "minutes",
     "total_points",
@@ -181,7 +182,9 @@ def normalise_gameweek_stats(
             "gameweek": gameweek,
             "element_id": element_id,
             "element_code": code,
-            "fixture_id": _int(row.get("fixture")),
+            # Double and triple gameweeks put a player in more than one fixture
+            # per gameweek, so the fixture is part of the row's identity.
+            "fixture_id": _required_int(row, "fixture"),
             "opponent_team": _int(row.get("opponent_team")),
             "was_home": _bool(row.get("was_home")),
             "kickoff_time": _timestamp(row.get("kickoff_time")),
@@ -217,7 +220,32 @@ def normalise_gameweek_stats(
             record[column] = _float(row.get(column))
         normalised.append(record)
 
-    return normalised
+    return _drop_identical_duplicates(normalised, season=season, gameweek=gameweek)
+
+
+def _drop_identical_duplicates(
+    rows: list[dict[str, Any]], *, season: str, gameweek: int
+) -> list[dict[str, Any]]:
+    """Collapse rows the archive repeats verbatim.
+
+    Some elements are emitted twice per gameweek with byte-identical stats, so
+    keeping one is lossless. A repeated key carrying *different* values is a
+    real upstream conflict and is raised rather than silently resolved, because
+    picking a winner would be an invented fact.
+    """
+    kept: dict[tuple[int, int], dict[str, Any]] = {}
+    for row in rows:
+        key = (row["element_id"], row["fixture_id"])
+        existing = kept.get(key)
+        if existing is None:
+            kept[key] = row
+            continue
+        if existing != row:
+            raise ColumnMappingError(
+                f"{season} gw{gameweek} repeats element {key[0]} in fixture {key[1]} "
+                "with conflicting values"
+            )
+    return list(kept.values())
 
 
 def normalise_players(

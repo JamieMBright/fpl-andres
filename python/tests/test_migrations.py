@@ -10,6 +10,7 @@ PLAN_MIGRATION = MIGRATIONS_DIR / "20260731120000_optimization_artifacts.sql"
 FOREIGN_KEY_INDEX_MIGRATION = MIGRATIONS_DIR / "20260731130000_foreign_key_indexes.sql"
 HISTORY_MIGRATION = MIGRATIONS_DIR / "20260801120000_history_corpus.sql"
 DEFENSIVE_COMPONENTS_MIGRATION = MIGRATIONS_DIR / "20260801130000_defensive_components.sql"
+FIXTURE_GRAIN_MIGRATION = MIGRATIONS_DIR / "20260801140000_fixture_grain_and_event_range.sql"
 
 _CREATE_TABLE = re.compile(r"create table (?:if not exists )?public\.(\w+)")
 _INDEX_TARGET = re.compile(
@@ -181,3 +182,25 @@ def test_defensive_components_are_additive_idempotent_and_nullable() -> None:
         assert f"{column} integer not null" not in sql
     assert "create policy" not in sql
     assert "grant " not in sql
+
+
+def test_gameweek_stats_are_keyed_per_fixture_not_per_gameweek() -> None:
+    raw = FIXTURE_GRAIN_MIGRATION.read_text(encoding="utf-8").lower()
+    sql = " ".join(raw.split())
+
+    # Double and triple gameweeks put a player in more than one fixture per
+    # gameweek, so the fixture belongs in the key.
+    assert "primary key (season, gameweek, element_id, fixture_id)" in sql
+    assert "alter column fixture_id set not null" in sql
+    assert "create table" not in sql
+    assert "create policy" not in sql
+    assert "grant " not in sql
+
+
+def test_the_gameweek_range_covers_a_disrupted_season() -> None:
+    raw = FIXTURE_GRAIN_MIGRATION.read_text(encoding="utf-8").lower()
+    sql = " ".join(raw.split())
+
+    # 2019/20 was suspended and resumed; its fixtures run to event 47.
+    assert "event between 1 and 47" in sql
+    assert "gameweek between 1 and 47" in sql

@@ -25,6 +25,9 @@ from fpl_andres.persistence.workflow import open_run
 
 WORKFLOW_NAME = "historical-ingest"
 
+# 2019/20 was suspended and resumed, running to gameweek 47.
+MAX_GAMEWEEK = 47
+
 # The archive only publishes teams.csv and fixtures.csv from 2019-20 onward.
 # Earlier seasons cannot satisfy the schema's foreign keys, so they are refused
 # rather than partially ingested.
@@ -56,7 +59,7 @@ def parse_gameweeks(spec: str) -> tuple[int, ...]:
             selected.add(int(chunk))
     if not selected:
         raise ValueError("no gameweeks selected")
-    out_of_range = sorted(week for week in selected if not 1 <= week <= 38)
+    out_of_range = sorted(week for week in selected if not 1 <= week <= MAX_GAMEWEEK)
     if out_of_range:
         raise ValueError(f"gameweeks out of range: {out_of_range}")
     return tuple(sorted(selected))
@@ -78,8 +81,12 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--commit", required=True, help="40-character archive commit SHA")
     parser.add_argument(
         "--gameweeks",
-        default="1-38",
-        help="gameweek selection such as 1-38 or 1,2,7 (default: 1-38)",
+        default=f"1-{MAX_GAMEWEEK}",
+        help=(
+            f"gameweek selection such as 1-{MAX_GAMEWEEK} or 1,2,7 "
+            f"(default: 1-{MAX_GAMEWEEK}). Gameweeks the archive does not "
+            "publish for a season are skipped."
+        ),
     )
     parser.add_argument(
         "--data-available-at",

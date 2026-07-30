@@ -32,6 +32,14 @@ class ArchiveFetchError(RuntimeError):
     """Raised when the pinned archive cannot be retrieved."""
 
 
+class ArchiveFileNotPublished(ArchiveFetchError):
+    """Raised when the archive simply does not carry a file.
+
+    Distinct from a transport failure: seasons differ in length, so a missing
+    gameweek file is expected, whereas a missing teams file is fatal.
+    """
+
+
 @dataclass(frozen=True)
 class FetchedFile:
     url: str
@@ -65,7 +73,7 @@ class ArchiveFetcher:
     def fetch(self, url: str) -> FetchedFile:
         response = self._client.get(url)
         if response.status_code == 404:
-            raise ArchiveFetchError(f"archive file not published: {url}")
+            raise ArchiveFileNotPublished(f"archive file not published: {url}")
         if response.status_code >= 400:
             raise ArchiveFetchError(f"archive fetch failed with {response.status_code}: {url}")
         return FetchedFile(url=url, content=response.content, fetched_at=datetime.now(UTC))
@@ -122,7 +130,11 @@ class HistoricalIngest:
 
         written: dict[int, int] = {}
         for gameweek in gameweeks:
-            stats_file = self._fetcher.fetch(revision.gameweek_url(gameweek))
+            try:
+                stats_file = self._fetcher.fetch(revision.gameweek_url(gameweek))
+            except ArchiveFileNotPublished:
+                # Seasons differ in length; 2019/20 ran to 47, most run to 38.
+                continue
             stats_snapshot = self._record_snapshot(stats_file, data_available_at)
             stats = normalise_gameweek_stats(
                 stats_file.content,
@@ -134,7 +146,7 @@ class HistoricalIngest:
             self._client.upsert(
                 "element_gameweek_stats",
                 stats,
-                on_conflict="season,gameweek,element_id",
+                on_conflict="season,gameweek,element_id,fixture_id",
             )
             written[gameweek] = len(stats)
 
@@ -185,6 +197,7 @@ class HistoricalIngest:
 __all__ = [
     "ArchiveFetchError",
     "ArchiveFetcher",
+    "ArchiveFileNotPublished",
     "FetchedFile",
     "HistoricalIngest",
     "SeasonIngestResult",

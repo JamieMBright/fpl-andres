@@ -29,8 +29,9 @@ class VaastavRevision:
             raise ValueError("season must use the YYYY-YY archive format")
 
     def gameweek_url(self, gameweek: int) -> str:
-        if isinstance(gameweek, bool) or not 1 <= gameweek <= 38:
-            raise ValueError("gameweek must be between 1 and 38")
+        # 2019/20 was suspended and resumed, running to gameweek 47.
+        if isinstance(gameweek, bool) or not 1 <= gameweek <= 47:
+            raise ValueError("gameweek must be between 1 and 47")
         return f"{self._season_root()}/gws/gw{gameweek}.csv"
 
     def players_url(self) -> str:
