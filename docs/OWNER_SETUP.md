@@ -46,13 +46,16 @@ the repository.
 - [ ] Open Supabase Dashboard for `fpl-andres-production`, open a new SQL Editor
       query and paste the contents of
       [`20260730130000_foreign_key_indexes.sql`](../supabase/migrations/20260730130000_foreign_key_indexes.sql).
-      Every statement uses `CREATE INDEX CONCURRENTLY IF NOT EXISTS`, so the
-      operation is non-blocking and safe to re-run. It covers four foreign-key
-      columns (`rules_snapshots.source_snapshot_id`,
+      Every statement uses `CREATE INDEX IF NOT EXISTS`, so the file is safe to
+      re-run and does not require the SQL Editor to disable its implicit
+      transaction wrapper. It covers four foreign-key columns
+      (`rules_snapshots.source_snapshot_id`,
       `projection_runs.workflow_run_id`,
       `model_promotion_decisions.workflow_run_id`,
-      `optimization_runs.workflow_run_id`) that would otherwise force sequential
-      scans on cascade and reverse joins.
+      `optimization_runs.workflow_run_id`) that would otherwise force
+      sequential scans on cascade and reverse joins. The tables are immutable
+      workflow-metadata tables, so the brief ACCESS EXCLUSIVE lock completes
+      in milliseconds and never blocks user traffic.
 
 ### Ready to verify once FPL processes a live gameweek
 
@@ -96,40 +99,26 @@ forecasts. Ship the initial-squad and transfer workflows without them.
       StatsBomb corpora validate the classifier on completed seasons; the live path
       still requires the recency contract on the ingest side.
 
-### Design direction — dark marketing landing proposal (2026-07-30)
+### Design direction — 90s UK football nostalgia (2026-07-30)
 
-An inspiration image was supplied showing a dark navy background, a bright emerald
-accent, a full-bleed "DATA DRIVEN. POINTS PROVEN." hero and a stylised football
-silhouette in a green/white striped shirt. Every one of those decisions conflicts
-with the current `DESIGN.md` contract:
+Resolved. `DESIGN.md` was amended to a dark-first palette drawn from the 1994
+Leeds third kit with a light toggle drawn from the 1994 home kit, plus a
+Subbuteo / Teletext / loud-goalkeeper-kit motif language and a Bielsa-bucket
+mark. Kit references and the bucket reference are dropped into
+[`docs/design/inspiration/`](design/inspiration/README.md) as the owner adds
+them; provisional hex values sit in `DESIGN.md` until then.
 
-- `DESIGN.md` fixes a paper (`#f7f8f2`) surface with an ink primary and a
-  `#38634c` field-green accent. The inspiration wants an inverted dark surface
-  and a much brighter emerald.
-- `DESIGN.md` requires the root to be the working Team-ID experience, never a
-  promotional landing page, and explicitly lists oversized marketing copy that
-  delays the actual tool as a rejected pattern.
-- `DESIGN.md` blocks a player-pose mark until its source and derivative-use
-  route are documented; the inspiration's kit and pose read as a specific club
-  and player and would trigger the existing "no traced press photograph, no kit
-  recreation, no club heraldry" rules.
-- The inspiration's "TOP RECOMMENDATIONS" panel labelling (STRONG BUY /
-  CONSIDER) with point projections is decorative statistics until forecasts
-  pass the promotion contract, which is another rejected pattern.
+Remaining owner items on this direction:
 
-The agent did not adopt the inspiration wholesale because the design contract is
-authoritative. Choose one path before the visual work restarts:
-
-- [ ] Accept an in-contract evolution: keep the paper surface and field-green
-      accent, sharpen the type scale, tighten the hero verdict, and introduce
-      an evidence-gated "top calls" preview panel that only populates once
-      forecasts are promoted. No dark palette flip, no marketing hero, no
-      player pose.
-- [ ] Update `DESIGN.md` explicitly to a dark marketing landing brief, including
-      a new palette, a marketing hero above the tool, and a bespoke abstract
-      mark that is not a traced player. Provide or approve the mark before it
-      ships and confirm the "Top calls" panel will only display promoted
-      evidence.
+- [x] Drop `kit-third-1994.png`, `kit-home-1994.png`, `keeper-home-1994.png`
+      and `logo.png` into `docs/design/inspiration/` and log a one-line source
+      note per file in
+      [`docs/design/inspiration/SOURCES.md`](design/inspiration/SOURCES.md).
+- [ ] Pick one of the three mockup depths under
+      [`docs/design/mockups/`](design/mockups/README.md): Newsprint,
+      Matchday Programme or Ceefax Third Kit.
+- [ ] Confirm the shipping paywall stance in
+      [`docs/PAYWALL.md`](PAYWALL.md).
 
 ### Before real email
 
