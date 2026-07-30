@@ -1,0 +1,104 @@
+[
+  {
+    "team_id": 1,
+    "team_name": "Blues",
+    "lineup": [
+      {
+        "player_id": 10,
+        "player_name": "Alice Keeper",
+        "positions": [
+          {
+            "position_id": 1,
+            "position": "Goalkeeper",
+            "from": "00:00",
+            "to": "90:00",
+            "from_period": 1,
+            "to_period": 2,
+            "start_reason": "Starting XI",
+            "end_reason": "Final Whistle"
+          }
+        ]
+      },
+      {
+        "player_id": 11,
+        "player_name": "Bob Lundstram",
+        "positions": [
+          {
+            "position_id": 20,
+            "position": "Center Attacking Midfield",
+            "from": "00:00",
+            "to": "90:00",
+            "from_period": 1,
+            "to_period": 2,
+            "start_reason": "Starting XI",
+            "end_reason": "Final Whistle"
+          }
+        ]
+      },
+      {
+        "player_id": 12,
+        "player_name": "Cara Withdraw",
+        "positions": [
+          {
+            "position_id": 3,
+            "position": "Right Center Back",
+            "from": "00:00",
+            "to": "50:00",
+            "from_period": 1,
+            "to_period": 2,
+            "start_reason": "Starting XI",
+            "end_reason": "Tactical"
+          }
+        ]
+      },
+      {
+        "player_id": 13,
+        "player_name": "Dan Latesub",
+        "positions": [
+          {
+            "position_id": 23,
+            "position": "Center Forward",
+            "from": "70:00",
+            "to": "90:00",
+            "from_period": 2,
+            "to_period": 2,
+            "start_reason": "Substitution",
+            "end_reason": "Final Whistle"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "team_id": 2,
+    "team_name": "Reds",
+    "lineup": [
+      {
+        "player_id": 20,
+        "player_name": "Erin Reverse",
+        "positions": [
+          {
+            "position_id": 6,
+            "position": "Left Back",
+            "from": "00:00",
+            "to": "45:00",
+            "from_period": 1,
+            "to_period": 1,
+            "start_reason": "Starting XI",
+            "end_reason": "Half End"
+          },
+          {
+            "position_id": 6,
+            "position": "Left Wing Back",
+            "from": "45:00",
+            "to": "90:00",
+            "from_period": 2,
+            "to_period": 2,
+            "start_reason": "Half Start",
+            "end_reason": "Final Whistle"
+          }
+        ]
+      }
+    ]
+  }
+]
