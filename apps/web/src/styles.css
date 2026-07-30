@@ -1,19 +1,75 @@
+/* Ceefax Third Kit palette. See DESIGN.md.
+   Two layers: --fa-* are the design tokens; the semantic names beneath them are
+   what the rest of this stylesheet consumes, so re-theming happens here alone.
+   Every foreground/background pair below is verified at WCAG 2.2 AA against
+   surface, surface-deep and surface-rise. */
 :root {
-  color: #13263a;
-  background: #e9eee8;
-  font-family: "IBM Plex Sans", sans-serif;
+  color-scheme: dark;
+
+  /* Dark — 1994 Leeds third kit */
+  --fa-surface: #16123a;
+  --fa-surface-deep: #0d0a26;
+  --fa-surface-rise: #221a55;
+  --fa-stripe-a: #00a13e;
+  --fa-stripe-b: #2b2065;
+  --fa-ink: #f6f4ea;
+  --fa-ink-deep: #d5cfba;
+  --fa-brand: #3ddc6f;
+  --fa-focus: #2ec9c0;
+  --fa-amber: #e5a02a;
+  --fa-red: #ff6b6b;
+  --fa-rule: #3b357e;
+
+  /* Keeper kit — reserved for the Teletext strip and GKP surfaces */
+  --fa-gk-lime: #e7f24a;
+  --fa-gk-hot: #e6338c;
+  --fa-gk-teal: #2ec9c0;
+  --fa-gk-purple: #5b2ca8;
+  --fa-gk-black: #0a0a0a;
+  --fa-gk-white: #fff;
+
+  /* Bucket mark holds its own hue in both themes */
+  --fa-bucket: #5308dc;
+
+  --fa-body: "IBM Plex Mono", ui-monospace, monospace;
+  --fa-display: "Space Grotesk", "IBM Plex Sans", sans-serif;
+  --fa-stripe-width: 88px;
+
+  /* Semantic layer consumed by the rest of the sheet */
+  --paper: var(--fa-surface);
+  --paper-deep: var(--fa-surface-deep);
+  --ink: var(--fa-ink);
+  --ink-soft: var(--fa-ink-deep);
+  --navy: var(--fa-ink);
+  --field-green: var(--fa-brand);
+  --signal-blue: var(--fa-focus);
+  --amber: var(--fa-amber);
+  --danger: var(--fa-red);
+  --rule: var(--fa-rule);
+
+  color: var(--ink);
+  background: var(--paper-deep);
+  font-family: var(--fa-body);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
-  --paper: #f7f8f2;
-  --paper-deep: #e9eee8;
-  --ink: #13263a;
-  --ink-soft: #4b5a63;
-  --navy: #142d4c;
-  --field-green: #38634c;
-  --signal-blue: #4f91c2;
-  --amber: #b8752d;
-  --danger: #a2433b;
-  --rule: #aebbb2;
+}
+
+/* Light — 1994 Leeds home kit */
+:root[data-theme="light"] {
+  color-scheme: light;
+
+  --fa-surface: #f7f5ea;
+  --fa-surface-deep: #fff;
+  --fa-surface-rise: #fff;
+  --fa-stripe-a: #e4e3eb;
+  --fa-stripe-b: #e5da15;
+  --fa-ink: #4a008e;
+  --fa-ink-deep: #6a3aa8;
+  --fa-brand: #4a008e;
+  --fa-focus: #4a008e;
+  --fa-amber: #7e4912;
+  --fa-red: #a2433b;
+  --fa-rule: #c9c4de;
 }
 
 * {
@@ -29,13 +85,50 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  background-color: var(--paper-deep);
-  background-image: repeating-linear-gradient(
-    0deg,
-    transparent,
-    transparent 31px,
-    rgb(20 45 76 / 4%) 32px
+  background: var(--fa-stripes-deep);
+}
+
+/* Alternating kit stripes: third-kit green/blue in dark, home-kit
+   silver/yellow in light. Each band is mixed with the opaque surface rather
+   than with transparent, so it reads at full strength instead of washing out
+   against whatever sits behind it. */
+:root {
+  --fa-stripes: repeating-linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--fa-stripe-a) 20%, var(--fa-surface)) 0,
+    color-mix(in srgb, var(--fa-stripe-a) 20%, var(--fa-surface))
+      var(--fa-stripe-width),
+    color-mix(in srgb, var(--fa-stripe-b) 30%, var(--fa-surface))
+      var(--fa-stripe-width),
+    color-mix(in srgb, var(--fa-stripe-b) 30%, var(--fa-surface))
+      calc(var(--fa-stripe-width) * 2)
   );
+  --fa-stripes-deep: repeating-linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--fa-stripe-a) 20%, var(--fa-surface-deep)) 0,
+    color-mix(in srgb, var(--fa-stripe-a) 20%, var(--fa-surface-deep))
+      var(--fa-stripe-width),
+    color-mix(in srgb, var(--fa-stripe-b) 30%, var(--fa-surface-deep))
+      var(--fa-stripe-width),
+    color-mix(in srgb, var(--fa-stripe-b) 30%, var(--fa-surface-deep))
+      calc(var(--fa-stripe-width) * 2)
+  );
+}
+
+/* Silver on cream needs more of the stripe colour to register than green on
+   navy, but the yellow saturates fast, so it is held well below the silver. */
+:root[data-theme="light"] {
+  --fa-stripes: repeating-linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--fa-stripe-a) 45%, var(--fa-surface)) 0,
+    color-mix(in srgb, var(--fa-stripe-a) 45%, var(--fa-surface))
+      var(--fa-stripe-width),
+    color-mix(in srgb, var(--fa-stripe-b) 14%, var(--fa-surface))
+      var(--fa-stripe-width),
+    color-mix(in srgb, var(--fa-stripe-b) 14%, var(--fa-surface))
+      calc(var(--fa-stripe-width) * 2)
+  );
+  --fa-stripes-deep: var(--fa-stripes);
 }
 
 button,
@@ -82,8 +175,8 @@ a {
   min-height: 100vh;
   margin: 0 auto;
   padding: 0 clamp(18px, 4vw, 54px);
-  background: color-mix(in srgb, var(--paper) 94%, transparent);
-  border-inline: 1px solid rgb(20 45 76 / 12%);
+  background: var(--fa-stripes);
+  border-inline: 1px solid var(--rule);
 }
 
 .site-header {
@@ -113,7 +206,7 @@ a {
 }
 
 .brand strong {
-  font-family: "Newsreader", serif;
+  font-family: var(--fa-display);
   font-size: 22px;
   line-height: 1;
 }
@@ -201,7 +294,7 @@ p {
 
 h1,
 h2 {
-  font-family: "Newsreader", serif;
+  font-family: var(--fa-display);
   letter-spacing: 0;
   text-wrap: balance;
 }
@@ -245,7 +338,7 @@ h1 {
   min-width: 0;
   padding: 13px 14px;
   color: var(--ink);
-  background: #fff;
+  background: var(--fa-surface-deep);
   border: 1px solid var(--navy);
   border-right: 0;
   border-radius: 0;
@@ -484,7 +577,7 @@ a:focus-visible {
 
 .dossier-metrics dd {
   margin: 7px 0 0;
-  font-family: "Newsreader", serif;
+  font-family: var(--fa-display);
   font-size: 29px;
   font-variant-numeric: tabular-nums;
   font-weight: 650;
@@ -508,6 +601,8 @@ a:focus-visible {
 .squad-table-wrap {
   max-width: 100%;
   overflow-x: auto;
+  /* Opaque: DESIGN.md forbids the stripe motif behind tabular content. */
+  background: var(--paper);
   border-block: 1px solid var(--rule);
 }
 
@@ -745,7 +840,7 @@ a:focus-visible {
   min-height: 46px;
   padding: 10px 12px;
   color: var(--ink);
-  background: #fff;
+  background: var(--fa-surface-deep);
   border: 1px solid var(--navy);
   border-radius: 0;
   font-family: "IBM Plex Mono", monospace;
@@ -880,7 +975,7 @@ a:focus-visible {
 
 .inline-confirmation > strong {
   display: block;
-  font-family: "Newsreader", serif;
+  font-family: var(--fa-display);
   font-size: 22px;
 }
 
@@ -1177,4 +1272,135 @@ a:focus-visible {
     background: Canvas;
     border-color: CanvasText;
   }
+
+  .teletext-strip span {
+    border: 1px solid CanvasText;
+  }
+}
+
+/* --- Ceefax signature elements --- */
+
+/* Teletext strip: six keeper-kit hues anchoring the top of every page.
+   Text colour per swatch is whichever of black/white clears AA on it. */
+.teletext-strip {
+  display: flex;
+  width: 100%;
+  overflow: hidden;
+  font-family: var(--fa-body);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.teletext-strip span {
+  flex: 1 1 0;
+  padding: 5px 4px;
+  color: var(--fa-gk-black);
+  text-align: center;
+  white-space: nowrap;
+}
+
+.teletext-strip span:nth-child(1) {
+  background: var(--fa-gk-lime);
+}
+
+.teletext-strip span:nth-child(2) {
+  background: var(--fa-gk-hot);
+}
+
+.teletext-strip span:nth-child(3) {
+  background: var(--fa-gk-teal);
+}
+
+.teletext-strip span:nth-child(4) {
+  color: var(--fa-gk-white);
+  background: var(--fa-gk-purple);
+}
+
+.teletext-strip span:nth-child(5) {
+  color: var(--fa-gk-white);
+  background: var(--fa-bucket);
+}
+
+.teletext-strip span:nth-child(6) {
+  color: var(--fa-gk-white);
+  background: var(--fa-gk-black);
+}
+
+@media (width <= 640px) {
+  .teletext-strip span:nth-child(n + 5) {
+    display: none;
+  }
+}
+
+/* Bielsa bucket mark. Holds --fa-bucket in both themes. */
+.brand-mark {
+  width: 46px;
+  height: auto;
+  color: var(--fa-bucket);
+  flex: 0 0 auto;
+}
+
+.brand strong {
+  font-family: var(--fa-display);
+}
+
+.theme-toggle {
+  padding: 7px 13px;
+  color: var(--ink);
+  font-family: var(--fa-body);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: transparent;
+  border: 2px solid var(--ink);
+  border-radius: 0;
+  cursor: pointer;
+}
+
+.theme-toggle:hover,
+.theme-toggle:focus-visible {
+  color: var(--paper);
+  background: var(--ink);
+}
+
+.header-controls {
+  display: flex;
+  gap: clamp(14px, 3vw, 28px);
+  align-items: center;
+}
+
+.social-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.social-links a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  color: var(--ink-soft);
+  border: 1px solid var(--rule);
+}
+
+.social-links a:hover,
+.social-links a:focus-visible {
+  color: var(--paper);
+  background: var(--ink);
+  border-color: var(--ink);
+}
+
+.social-links svg {
+  width: 18px;
+  height: 18px;
+  fill: currentcolor;
 }

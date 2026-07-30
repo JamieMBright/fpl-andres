@@ -14,6 +14,9 @@ PLAN_MIGRATION = (
 HISTORY_MIGRATION = (
     REPOSITORY_ROOT / "supabase" / "migrations" / "20260801120000_history_corpus.sql"
 )
+DEFENSIVE_COMPONENTS_MIGRATION = (
+    REPOSITORY_ROOT / "supabase" / "migrations" / "20260801130000_defensive_components.sql"
+)
 
 HISTORY_TABLES = (
     "seasons",
@@ -135,3 +138,19 @@ def test_history_corpus_is_upsertable_rather_than_immutable() -> None:
     # immutability trigger. Provenance lives in source_snapshots instead.
     for table in HISTORY_TABLES:
         assert f"create trigger {table}_are_immutable" not in sql
+
+
+def test_defensive_components_are_additive_idempotent_and_nullable() -> None:
+    raw = DEFENSIVE_COMPONENTS_MIGRATION.read_text(encoding="utf-8").lower()
+    sql = " ".join(raw.split())
+
+    # The corpus migration is already applied to the hosted project, so this
+    # one must alter rather than create, and must be safe to re-run.
+    assert "create table" not in sql
+    for column in ("clearances_blocks_interceptions", "tackles", "recoveries"):
+        assert f"add column if not exists {column} integer" in sql
+        assert f"{column} is null or {column} >= 0" in sql
+        # A NOT NULL default would be indistinguishable from an observed zero.
+        assert f"{column} integer not null" not in sql
+    assert "create policy" not in sql
+    assert "grant " not in sql

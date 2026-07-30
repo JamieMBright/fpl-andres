@@ -79,8 +79,21 @@ _TEAMS_REQUIRED: Final = ("id", "code", "name", "short_name")
 _FIXTURES_REQUIRED: Final = ("id", "team_h", "team_a")
 
 
+def _decode(raw_csv: bytes) -> str:
+    """Decode an archive CSV, tolerating the older seasons' encoding.
+
+    Seasons before 2019/20 are cp1252, later ones UTF-8. cp1252 maps all 256
+    byte values so it cannot itself fail; trying UTF-8 first means a genuine
+    UTF-8 file is never mis-decoded.
+    """
+    try:
+        return raw_csv.decode("utf-8-sig")
+    except UnicodeDecodeError:
+        return raw_csv.decode("cp1252")
+
+
 def _rows(raw_csv: bytes) -> tuple[list[dict[str, str]], tuple[str, ...]]:
-    reader = csv.DictReader(io.StringIO(raw_csv.decode("utf-8-sig"), newline=""))
+    reader = csv.DictReader(io.StringIO(_decode(raw_csv), newline=""))
     if reader.fieldnames is None:
         raise ColumnMappingError("archive CSV must include a header")
     header = tuple(reader.fieldnames)
@@ -191,7 +204,13 @@ def normalise_gameweek_stats(
             "selected": _int(row.get("selected")),
             "transfers_in": _int(row.get("transfers_in")),
             "transfers_out": _int(row.get("transfers_out")),
+            # Observed defensive-contribution labels begin in 2025/26.
             "defensive_contribution": _int(row.get("defensive_contribution")),
+            # Components behind that label. Defenders qualify on CBIT,
+            # midfielders and forwards on CBIRT, so the split is required.
+            "clearances_blocks_interceptions": _int(row.get("clearances_blocks_interceptions")),
+            "tackles": _int(row.get("tackles")),
+            "recoveries": _int(row.get("recoveries")),
             "source_snapshot_id": source_snapshot_id,
         }
         for column in _GAMEWEEK_OPTIONAL_NUMERIC:

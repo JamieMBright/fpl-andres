@@ -24,7 +24,7 @@ Honest state of the codebase today:
 | Backtest               | primitives exist; **no driver, never run**                         |
 | Optimizer              | MILP solves; **nothing constructs a real request**                 |
 | Team dossier           | renders real bank/value/picks as `"FPL element 101"`               |
-| FPL50 / p100           | **none**                                                           |
+| FPL100 / groupthink    | **none**                                                           |
 
 The gap between "scaffold" and "product" is roughly: one persistence layer, one
 historical corpus, six models, one backtest harness, one optimizer wiring, and
@@ -270,17 +270,33 @@ This is what answers "does any of it work?"
 
 ### M13 — Manager simulation (v0.8.3)
 
-**The answer to "where are the backtest results for my team ID?"**
+**The answer to "where are the backtest results for my team ID?"** — with one
+constraint discovered by probing the live API.
 
-- Take a real team's actual opening squad in a past season, then simulate the
-  full season: each GW, the algo picks transfers and captain under real
-  constraints (bank, free transfers, hit costs, price changes).
-- Compare against: the manager's actual score, the overall average, and a
-  "no transfers, captain highest-owned" control.
-- Report per-GW: what it would have done, what it scored, where it diverged.
+FPL wipes manager state at season rollover: `entry/{id}/event/{gw}/picks/`
+returns 404 for every gameweek of a completed season. A past season therefore
+**cannot** be replayed from a manager's real squads. Only the season summary
+survives, via `entry/{id}/history/` → `past`, giving `total_points` and `rank`.
 
-**Output**: a reproducible report artifact per team per season, and the
-`/calibration` route stops being a placeholder.
+The simulation is therefore cold-start, which is also the cleaner measurement:
+
+- Build an optimal GW1 squad from the real player pool, prices and fixtures
+  available at that season's GW1 deadline, then simulate all 38 gameweeks under
+  real constraints (bank, free transfers, hit costs, price changes).
+- Compare against: the manager's actual season total and rank from `past`, a
+  "no transfers, captain highest-owned" control, and the field.
+- Report per-GW what it would have done, what it scored, and where it diverged.
+
+Anchoring to a human's real squad would have measured a hybrid of human and
+model anyway; cold start measures the model.
+
+**Prospective**: from 2026/27 GW1 the ingest snapshots the owner's picks weekly,
+so a genuine personal replay becomes possible next season. Per
+`LIMITATIONS.md`, a personal replay of any earlier season renders `unavailable`
+rather than substituting a proxy.
+
+**Output**: a reproducible report artifact per season, and the `/calibration`
+route stops being a placeholder.
 
 ---
 
@@ -309,30 +325,60 @@ transfer behaviour are not published in `bootstrap`). Once sourced, the
 `chip_scenario` literal expands across the three optimizer contracts and the
 quick solver. Until then every chip path fails closed, by design.
 
-### M17 — Groupthink: crowd signal and rival cohorts (pulled forward to v0.7.3)
+### M17 — Crowd signal, FPL100 and groupthink (crowd signal pulled forward to v0.7.3)
 
-Two distinct sources with two different availability windows. Conflating them
-would breach `LIMITATIONS.md`.
+Three distinct sources with three different availability windows and three
+different legal positions. Conflating them would breach `LIMITATIONS.md`.
 
-**Aggregate crowd signal — available pre-deadline, including GW1.** Ownership
-share and event transfer counts ship in the public bootstrap before the
-deadline. This is the signal that matters most at GW1, when carried-forward
-projections are weakest, so it ships with M9a rather than at v0.9.
+**(a) Aggregate crowd signal — available pre-deadline, including GW1.**
+Ownership share and event transfer counts ship in the public bootstrap before
+the deadline. This is the signal that matters most at GW1, when carried-forward
+projections are weakest, so it ships with M9a rather than at v0.9. The official
+API also publishes `most_captained`, `most_vice_captained`,
+`most_transferred_in`, `chip_plays` and `average_entry_score` per event.
 
 - Ownership share, event transfers in/out, and transfer momentum.
 - Template detection: the near-universal picks that define the field.
-- Presented as revealed crowd behaviour with its own timestamp. It never
-  silently modifies a projection.
+- Presented as revealed crowd behaviour with its own timestamp.
 
-**Rival cohorts — post-deadline only.**
+**(b) FPL100 — what the top 100 ranked teams did. Post-deadline only.**
 
-- `standings` ingest for the top-N overall cohort (FPL50, p100).
+- `standings` ingest for the top 100 overall cohort, then their picks.
+- Cohort ownership, captaincy split and transfer flow.
 - Effective ownership and template divergence versus that cohort.
-- Contextual view that does **not** alter projections in v1.
+- Contextual. Does **not** alter projections in v1.
+
+**(c) Groupthink — what people are saying.**
+
+Sentiment, not content. Only from sources that permit automated access:
+the Reddit API, the YouTube Data API, and RSS feeds publishers choose to
+offer. Stored as aggregate signals — mention counts, sentiment scores,
+momentum — never as republished text. Sites whose terms prohibit automated
+access are out of scope, and paywalled content is never reproduced.
+
+- Contextual. Does **not** alter projections in v1.
 
 **Test**: a pre-deadline GW1 request surfaces aggregate ownership but renders
-rival cohort panels `unavailable`. No code path reads individual picks before a
+FPL100 panels `unavailable`. No code path reads individual picks before a
 deadline has been processed.
+
+### M17a — Divergence and track record (v0.9.4)
+
+The milestone that makes M17 worth paying for. A recommendation that matches
+the field is worth little; one that beats it, with a measured record, is the
+product.
+
+- Per recommendation, the delta between our projection and each of the three
+  sources: crowd, FPL100, groupthink.
+- Historical hit rate on past disagreements, computed through the M12 backtest
+  harness: when we diverged from the field, how often were we right, and by how
+  many points.
+- Rendered as "we say X, the field says Y, here is our record when we have
+  disagreed before".
+
+**Gate**: per `LIMITATIONS.md`, an unmeasured claim to know better than the
+field is not shipped. Until the backtest produces a divergence record, the
+panel renders `unavailable` rather than an unbacked boast.
 
 ---
 
@@ -349,13 +395,15 @@ The Ceefax direction currently lives only in a static mockup.
 
 ### M19 — Recommendation surfaces (v0.9.5)
 
-Captaincy, transfers, fixture planner, DefCon beasts, OOP flags, FPL50 context.
+Captaincy, transfers, fixture planner, DefCon beasts, OOP flags, FPL100 and
+groupthink context, and the divergence panel.
 Every verdict carries its evidence chip and an expandable source trail.
 
 ### M20 — Paywall (v1.0.0)
 
 Per [`PAYWALL.md`](PAYWALL.md): beta open, then free tier (context-less advice,
-`+1 GW`) versus paid (`£3` — planner, OOP, DefCon, FPL50, p100, groupthink).
+`+1 GW`) versus paid (`£3` — planner, OOP, DefCon, FPL100, groupthink,
+divergence).
 Gating shim ships last so nothing is gated before it works.
 
 ---

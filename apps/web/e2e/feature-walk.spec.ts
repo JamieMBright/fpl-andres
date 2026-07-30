@@ -207,6 +207,54 @@ test.describe("feature walk", () => {
     expect(scan.violations).toEqual([]);
   });
 
+  test("kit toggle names the kit in use and repaints both themes", async ({
+    page,
+  }) => {
+    await page.goto("/");
+
+    const toggle = page.getByRole("button", { name: /kit$/i });
+    const shell = page.locator(".app-shell");
+
+    // The label states the kit currently applied, not the one it switches to.
+    await expect(toggle).toHaveText("Third kit");
+    await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+    const thirdKit = await shell.evaluate(
+      (node) => getComputedStyle(node).backgroundImage,
+    );
+
+    await toggle.click();
+
+    await expect(toggle).toHaveText("Home kit");
+    await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+    const homeKit = await shell.evaluate(
+      (node) => getComputedStyle(node).backgroundImage,
+    );
+
+    // Both kits must actually paint stripes, and they must differ.
+    expect(thirdKit).toContain("repeating-linear-gradient");
+    expect(homeKit).toContain("repeating-linear-gradient");
+    expect(homeKit).not.toEqual(thirdKit);
+  });
+
+  test("the chosen kit survives a reload", async ({ page }) => {
+    await page.goto("/");
+    await page.getByRole("button", { name: /kit$/i }).click();
+    await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+
+    await page.reload();
+
+    await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+  });
+
+  test("home kit passes automated axe scans", async ({ page }) => {
+    await page.goto("/");
+    await page.getByRole("button", { name: /kit$/i }).click();
+    await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+
+    const scan = await new AxeBuilder({ page }).analyze();
+    expect(scan.violations).toEqual([]);
+  });
+
   test("degraded state passes automated axe scans", async ({ page }) => {
     await page.route("**/api/team/*", async (route) => {
       await route.fulfill({

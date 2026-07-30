@@ -2,17 +2,22 @@ name: Historical Ingest
 
 # Manual dispatch only. Writes to the single hosted production project, so a run
 # is deliberate: it names the exact archive commit it pins to.
+#
+# Defaults to every supported season in one click. The archive only publishes
+# teams.csv and fixtures.csv from 2019-20 onward and the schema's foreign keys
+# require both, so earlier seasons are refused rather than partially ingested.
 
 on:
   workflow_dispatch:
     inputs:
-      season:
-        description: "Archive season, e.g. 2024-25"
-        required: true
-        type: string
       commit:
         description: "40-character vaastav archive commit SHA to pin to"
         required: true
+        type: string
+      seasons:
+        description: "'all' for 2019-20..2025-26, or a comma-separated list"
+        required: false
+        default: "all"
         type: string
       gameweeks:
         description: "Gameweek selection, e.g. 1-38 or 1,2,7"
@@ -29,13 +34,13 @@ permissions:
   contents: read
 
 concurrency:
-  group: historical-ingest-${{ inputs.season }}
+  group: historical-ingest
   cancel-in-progress: false
 
 jobs:
   ingest:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 120
     environment: production
     steps:
       - name: Check out repository
@@ -50,13 +55,22 @@ jobs:
       - name: Install engine
         run: python -m pip install -e .
 
-      - name: Ingest season
+      - name: Ingest seasons
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          # Passed as env rather than inlined, so no input reaches the shell as code.
+          INGEST_COMMIT: ${{ inputs.commit }}
+          INGEST_SEASONS: ${{ inputs.seasons }}
+          INGEST_GAMEWEEKS: ${{ inputs.gameweeks }}
+          INGEST_AVAILABLE_AT: ${{ inputs.data_available_at }}
         run: |
+          extra=()
+          if [ -n "$INGEST_AVAILABLE_AT" ]; then
+            extra+=(--data-available-at "$INGEST_AVAILABLE_AT")
+          fi
           python -m fpl_andres.cli.ingest_historical \
-            --season "${{ inputs.season }}" \
-            --commit "${{ inputs.commit }}" \
-            --gameweeks "${{ inputs.gameweeks }}" \
-            ${{ inputs.data_available_at && format('--data-available-at "{0}"', inputs.data_available_at) || '' }}
+            --commit "$INGEST_COMMIT" \
+            --seasons "$INGEST_SEASONS" \
+            --gameweeks "$INGEST_GAMEWEEKS" \
+            "${extra[@]}"

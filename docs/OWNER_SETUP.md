@@ -46,7 +46,7 @@ key or webhook secret through chat, an issue, a PR or a committed file.
 Documented in [`docs/PAYWALL.md`](PAYWALL.md): beta ships everything open;
 post-beta free tier is context-less advice + `+1 GW ahead`; paid tier is
 "buy me half a pint at the stadium" £3/month for planner, OOP, DefCon,
-FPL50, p100 stats and groupthink.
+FPL100 and groupthink.
 
 - [ x] CONFIRMED. Do not proceed to paywall without my explicit say so. I might leave it free for a year. Confirm. Not blocking — the gating shim ships last, at v1.0.0.
 

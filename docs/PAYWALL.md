@@ -48,16 +48,18 @@ Content unlocked at the paid tier:
   DefCon returns per £, over a rolling window. Requires a promoted
   DefCon model, which depends on 2025/26+ observed defensive-actions
   data (see [`docs/LIMITATIONS.md`](LIMITATIONS.md)).
-- **FPL50.** A curated view of the revealed public choices of the top 50
-  managers post-deadline. Contextual, not a projection input — surfaces
-  what the sharpest revealed portfolios did, without altering the tool's
-  own player projections.
-- **Generic p100 stats.** Aggregate ownership and captaincy across the
-  top 100 overall rank managers, still context-less about the current
-  user's team. Enables "what does the top 100 look like right now"
-  reading.
-- **Groupthink.** Effective-ownership and template-drift readings
-  computed against a chosen manager cohort (top 10k, top 100k, overall).
+- **FPL100.** What the top 100 ranked teams are actually doing: revealed
+  ownership, captaincy and transfers across that cohort, post-deadline.
+  Contextual, not a projection input. Answers "what does the top 100 look
+  like right now" without altering the tool's own player projections.
+- **Groupthink.** What people are _saying_ - the prevailing community and
+  pundit opinion, as a sentiment reading rather than republished content.
+  Distinct from FPL100, which is what people actually _did_.
+- **Divergence and track record.** The panel that makes the other two worth
+  paying for: where our projection disagrees with FPL100 and with
+  groupthink, and our historical hit rate on those disagreements. A
+  recommendation that matches the field is worth little; a recommendation
+  that beats it, with a measured record, is the product.
 
 Each paid panel must still respect the promotion contract:
 
@@ -83,9 +85,11 @@ Each paid panel must still respect the promotion contract:
 3. **v0.8.0 — Fixture planner + OOP paid panels.** Multi-gameweek roll
    and the recency-weighted deployment classifier consume live per-event
    observations.
-4. **v0.9.0 — FPL50, p100 and groupthink.** Requires the FPL50 post-
-   deadline pull, plus league-wide manager cohort ingest. All three go
-   live together once the ingest is stable.
+4. **v0.9.0 — FPL100, groupthink and divergence.** FPL100 requires the
+   post-deadline top-100 cohort pull. Groupthink requires the Reddit and
+   YouTube API adapters. Divergence requires both, plus a backtest
+   record of past disagreements, and renders `unavailable` until that
+   record exists.
 5. **v0.10.0 — DefCon beasts.** Reachable once the 2025/26 DefCon
    corpus has enough games to promote at least one model.
 6. **v1.0.0 — Gating shim.** Auth and entitlement come last. Until

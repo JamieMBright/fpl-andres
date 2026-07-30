@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from datetime import UTC, datetime
 
 import httpx
@@ -7,7 +8,7 @@ import pytest
 import respx
 
 from fpl_andres.adapters.vaastav import VaastavRevision
-from fpl_andres.cli.ingest_historical import parse_gameweeks
+from fpl_andres.cli.ingest_historical import SUPPORTED_SEASONS, parse_gameweeks, parse_seasons
 from fpl_andres.ingest.historical import ArchiveFetcher, ArchiveFetchError, HistoricalIngest
 from fpl_andres.ingest.normalise import (
     ColumnMappingError,
@@ -126,6 +127,47 @@ def test_defensive_contribution_is_read_when_the_season_publishes_it() -> None:
     assert [row["defensive_contribution"] for row in rows] == [11, 3]
 
 
+def test_defensive_contribution_components_are_captured_when_published() -> None:
+    csv_2025 = (
+        GW1_CSV.replace(
+            b",xP\n",
+            b",xP,defensive_contribution,clearances_blocks_interceptions,tackles,recoveries\n",
+        )
+        .replace(b",6.1\n", b",6.1,21,20,1,4\n")
+        .replace(b",4.2\n", b",4.2,20,7,3,10\n")
+    )
+
+    rows = normalise_gameweek_stats(
+        csv_2025,
+        season="2025-26",
+        gameweek=1,
+        element_codes={11: 118748, 12: 154043},
+        source_snapshot_id="snap-1",
+    )
+
+    # Defenders qualify on CBIT, midfielders and forwards on CBIRT, so the
+    # label alone cannot be modelled per position.
+    assert rows[0]["clearances_blocks_interceptions"] == 20
+    assert rows[0]["tackles"] == 1
+    assert rows[0]["recoveries"] == 4
+    assert rows[1]["recoveries"] == 10
+
+
+def test_defensive_components_are_null_in_seasons_that_omit_them() -> None:
+    rows = normalise_gameweek_stats(
+        GW1_CSV,
+        season=SEASON,
+        gameweek=1,
+        element_codes={11: 118748, 12: 154043},
+        source_snapshot_id="snap-1",
+    )
+
+    for row in rows:
+        assert row["clearances_blocks_interceptions"] is None
+        assert row["tackles"] is None
+        assert row["recoveries"] is None
+
+
 def test_a_missing_required_column_fails_loudly_rather_than_defaulting() -> None:
     broken = GW1_CSV.replace(b"minutes,", b"", 1)
 
@@ -167,6 +209,23 @@ def test_a_gameweek_file_holding_another_round_is_rejected() -> None:
     assert "round 1" in str(error.value)
 
 
+def test_pre_2019_seasons_decode_as_cp1252_rather_than_crashing() -> None:
+    """Archive seasons before 2019/20 are cp1252, not UTF-8.
+
+    A player name carrying an accent (0xe9 here) raises UnicodeDecodeError
+    under a strict UTF-8 read, which would abort the whole season.
+    """
+    latin_players = (
+        b"id,code,first_name,second_name,web_name,element_type,team,now_cost\n"
+        b"11,118748,Bukayo,Saka,Saka,3,1,100\n"
+        b"12,154043,Rub\xe9n,Neves,Neves,3,2,90\n"
+    )
+
+    rows = normalise_players(latin_players, season="2016-17", source_snapshot_id="snap-p")
+
+    assert rows[1]["first_name"] == "Rubén"
+
+
 def test_players_and_teams_normalise_into_schema_rows() -> None:
     teams = normalise_teams(TEAMS_CSV, season=SEASON, source_snapshot_id="snap-t")
     elements = normalise_players(PLAYERS_CSV, season=SEASON, source_snapshot_id="snap-p")
@@ -190,6 +249,28 @@ def test_fixtures_normalise_and_keep_score_pairing_consistent() -> None:
     assert unplayed["finished"] is False
 
 
+def test_season_selection_defaults_to_every_supported_season() -> None:
+    assert parse_seasons("all") == SUPPORTED_SEASONS
+    assert SUPPORTED_SEASONS[0] == "2019-20"
+    assert SUPPORTED_SEASONS[-1] == "2025-26"
+    assert len(SUPPORTED_SEASONS) == 7
+
+
+def test_season_selection_accepts_an_explicit_list() -> None:
+    assert parse_seasons("2024-25,2025-26") == ("2024-25", "2025-26")
+    assert parse_seasons(" 2023-24 , 2024-25 ") == ("2023-24", "2024-25")
+
+
+def test_seasons_the_archive_cannot_serve_are_refused() -> None:
+    # 2016-17 to 2018-19 publish no teams.csv, so the schema's foreign keys
+    # cannot be satisfied. Refusing beats a partial ingest.
+    with pytest.raises(ValueError, match="unsupported seasons"):
+        parse_seasons("2016-17")
+
+    with pytest.raises(ValueError, match="no seasons selected"):
+        parse_seasons("")
+
+
 def test_gameweek_selection_parses_ranges_and_lists() -> None:
     assert parse_gameweeks("1-3") == (1, 2, 3)
     assert parse_gameweeks("5,1,5") == (1, 5)
@@ -203,15 +284,18 @@ def test_gameweek_selection_parses_ranges_and_lists() -> None:
         parse_gameweeks("")
 
 
-def _mock_archive() -> None:
-    respx.get(f"{ARCHIVE_ROOT}/teams.csv").mock(return_value=httpx.Response(200, content=TEAMS_CSV))
-    respx.get(f"{ARCHIVE_ROOT}/players_raw.csv").mock(
-        return_value=httpx.Response(200, content=PLAYERS_CSV)
+def _archive_root(season: str) -> str:
+    return (
+        f"https://raw.githubusercontent.com/vaastav/Fantasy-Premier-League/{COMMIT}/data/{season}"
     )
-    respx.get(f"{ARCHIVE_ROOT}/fixtures.csv").mock(
-        return_value=httpx.Response(200, content=FIXTURES_CSV)
-    )
-    respx.get(f"{ARCHIVE_ROOT}/gws/gw1.csv").mock(return_value=httpx.Response(200, content=GW1_CSV))
+
+
+def _mock_archive(season: str = SEASON, gw1_csv: bytes = GW1_CSV) -> None:
+    root = _archive_root(season)
+    respx.get(f"{root}/teams.csv").mock(return_value=httpx.Response(200, content=TEAMS_CSV))
+    respx.get(f"{root}/players_raw.csv").mock(return_value=httpx.Response(200, content=PLAYERS_CSV))
+    respx.get(f"{root}/fixtures.csv").mock(return_value=httpx.Response(200, content=FIXTURES_CSV))
+    respx.get(f"{root}/gws/gw1.csv").mock(return_value=httpx.Response(200, content=gw1_csv))
 
 
 def _mock_supabase() -> dict[str, respx.Route]:
@@ -304,3 +388,36 @@ def test_a_missing_archive_file_raises_rather_than_writing_partial_state() -> No
             gameweeks=(1,),
             data_available_at=datetime(2025, 6, 1, tzinfo=UTC),
         )
+
+
+@respx.mock
+def test_defcon_columns_survive_all_the_way_into_the_write_payload() -> None:
+    """Guards the whole path, not just the normaliser.
+
+    DefCon is the reason 2025/26 is ingested at all, so a regression that
+    dropped these columns between normalisation and the POST would be silent
+    and would cost a full re-ingest to discover.
+    """
+    defcon_csv = (
+        GW1_CSV.replace(
+            b",xP\n",
+            b",xP,defensive_contribution,clearances_blocks_interceptions,tackles,recoveries\n",
+        )
+        .replace(b",6.1\n", b",6.1,21,20,1,4\n")
+        .replace(b",4.2\n", b",4.2,12,5,3,4\n")
+    )
+    _mock_archive(season="2025-26", gw1_csv=defcon_csv)
+    routes = _mock_supabase()
+
+    with SupabaseRestClient(_credentials()) as client, httpx.Client() as http:
+        HistoricalIngest(client=client, fetcher=ArchiveFetcher(http)).ingest_season(
+            VaastavRevision(commit_sha=COMMIT, season="2025-26"),
+            gameweeks=(1,),
+            data_available_at=datetime(2026, 6, 1, tzinfo=UTC),
+        )
+
+    written = json.loads(routes["stats"].calls[0].request.content)
+    assert [row["defensive_contribution"] for row in written] == [21, 12]
+    assert [row["clearances_blocks_interceptions"] for row in written] == [20, 5]
+    assert [row["tackles"] for row in written] == [1, 3]
+    assert [row["recoveries"] for row in written] == [4, 4]

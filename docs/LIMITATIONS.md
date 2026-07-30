@@ -54,6 +54,31 @@ the walk-forward runner.
 
 FPL Andres does not crawl Understat directly.
 
+## Historical manager state
+
+FPL does not retain manager state across a season rollover. Verified against the
+live API: `entry/{id}/event/{gw}/picks/` returns 404 for every gameweek of a
+completed season, and `leagues-classic/314/standings/` serves only the current
+season, returning zero results in preseason.
+
+Two consequences, both permanent for seasons already gone:
+
+- A manager's own gameweek-by-gameweek squad history cannot be replayed. Only
+  the season summary in `entry/{id}/history/` survives, which carries
+  `season_name`, `total_points` and `rank` per past season.
+- The final top-100 finishers of a completed season cannot be reconstructed.
+  There is no endpoint that enumerates them, and 11 million entry ids cannot be
+  swept to find them.
+
+Neither limit affects player-level backtesting, which depends only on the
+per-gameweek player corpus and is unimpaired. What is lost is replaying a
+specific manager's past decisions and reconstructing historical rival cohorts.
+
+Both become available prospectively by snapshotting them while a season is live.
+Squad snapshots and the end-of-season top-100 are therefore captured from
+2026/27 onward, and any cohort or personal-replay feature that depends on an
+earlier season renders `unavailable` rather than substituting a proxy.
+
 ## Injuries
 
 The primary evidence is FPL's status, chance of playing, news timestamp and official
@@ -92,16 +117,30 @@ the point the declared sample floor is met, the prior no longer contributes.
 
 ## Rivals and consensus
 
-Individual rival picks are used only after a deadline. Banked free transfers and
-pre-deadline intentions are not public. FPL50 is a separate contextual view of
-revealed public choices and does not alter player projections in v1.
+Three distinct things, deliberately never merged.
 
-Aggregate crowd signal is a different source with a different availability window.
-Ownership share and event transfer counts are published in the public bootstrap
-before the deadline and may be used pre-deadline, including for gameweek 1, where
-carried-forward projections are at their weakest. It is presented as revealed crowd
-behaviour with its own timestamp. It never silently modifies a projection, and it is
-never described as an individual manager's pick.
+**FPL100** is what the top 100 ranked teams actually did: revealed ownership,
+captaincy and transfers within that cohort. Individual rival picks are used only
+after a deadline. Banked free transfers and pre-deadline intentions are not
+public. FPL100 is a contextual view and does not alter player projections in v1.
+
+**Groupthink** is what people are saying: prevailing community and pundit
+opinion. It is a sentiment reading derived from sources that permit automated
+access, stored as aggregate signals rather than republished text. FPL Andres
+does not scrape sites whose terms prohibit it, and never reproduces paywalled
+content. Groupthink does not alter player projections in v1.
+
+**Aggregate crowd signal** is a third source with a different availability
+window. Ownership share and event transfer counts are published in the public
+bootstrap before the deadline and may be used pre-deadline, including for
+gameweek 1, where carried-forward projections are at their weakest. It is
+presented as revealed crowd behaviour with its own timestamp. It never silently
+modifies a projection, and it is never described as an individual manager's
+pick.
+
+Where the product compares its own projection against any of the three, the
+comparison must carry a measured historical hit rate on past disagreements. An
+unmeasured claim to know better than the field is not shipped.
 
 ## Planning horizon
 

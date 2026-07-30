@@ -1,0 +1,18 @@
+{
+  "name": "FPL Andres",
+  "short_name": "FPL Andres",
+  "description": "Evidence-labelled Fantasy Premier League decisions.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#0d0a26",
+  "theme_color": "#16123a",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "type": "image/svg+xml",
+      "sizes": "any",
+      "purpose": "any"
+    }
+  ]
+}
