@@ -92,6 +92,17 @@ would double-count role effects already present in attacking projections.
 the explicit starts floor emit `unavailable`. Missing source/method metadata fails the
 contract.
 
+**Recency requirement (blocks live OOP).** The current fixed-window classifier is a v0
+approximation and must be superseded before live OOP evidence fires. The v1 contract
+requires per-event role observations across the decision window carrying kickoff
+timestamp, minutes played and role probability. Weighted starts apply an exponential
+decay whose half-life is sourced (for example, two played gameweeks), so the last few
+played events dominate the classification. A regime-change check compares the most
+recent contiguous role run to the prior window; a decisive reversion downgrades the
+signal to `unavailable` rather than emitting a stale `attacking_oop` or `reverse_oop`.
+Historical open-data corpora used only to validate the classifier are exempt from the
+recency check because they cover completed seasons rather than the live sequence.
+
 ## Walk-forward evaluation
 
 Each UTC prediction cutoff creates three deterministic buckets:

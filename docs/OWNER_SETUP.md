@@ -50,43 +50,38 @@ the repository.
 
 ### Optional — live out-of-position (OOP) evidence
 
-**Recommendation:** ship the initial-squad and transfer workflows without paid
-tracking data. Heatmaps are optional enrichment, not a pre-GW1 dependency. Use
-[SkillCorner Open Data](https://github.com/SkillCorner/opendata) to validate the role
-clustering pipeline, then buy a live feed only if OOP evidence materially improves
-walk-forward results.
+**Free source selected for the prototype.** Hudl StatsBomb Open Data
+(https://github.com/hudl/open-data) exposes JSON events with pitch coordinates, lineup
+tactics and (for a subset of matches) 360 freeze frames. Its published Premier League
+coverage is the completed 2003/04 and 2015/16 seasons. That is enough to build and
+validate the OOP classifier and event-location heatmaps without any subscription;
+attribution to StatsBomb with their logo is required for anything published from it.
+SkillCorner Open Data
+([`SkillCorner/opendata`](https://github.com/SkillCorner/opendata)) adds ten
+MIT-licensed A-League 2024/25 matches with true 10 Hz tracking for cross-checking
+position heatmaps. Neither dataset covers live 2026/27 Premier League, so live OOP
+evidence remains `unavailable` until a purchased provider is signed off.
 
-Researched options (checked 2026-07-30):
+**Deferred until v2.** Paid live tracking or event-plus-location subscriptions
+(SkillCorner commercial, Hudl StatsBomb 360, Opta Vision) are useful only if
+walk-forward evaluation on the free corpora shows OOP materially improves promoted
+forecasts. Ship the initial-squad and transfer workflows without them.
 
-- **Sportmonks — pragmatic declared-role option.** Premier League lineups,
-  formations, events and expected lineups; plans start at €29/month. Its terms allow
-  building and monetising apps but prohibit reselling the raw feed. This can support
-  `declared_lineup` evidence, not heatmap clustering. Ask support to confirm that
-  public derived role labels and retained source hashes are permitted.
-- **SkillCorner commercial — best true-tracking fit.** Continuous player/ball XY
-  tracking, off-camera extrapolation and game-intelligence data across 120+
-  competitions. Pricing and public-product rights require a sales agreement.
-- **Hudl StatsBomb 360 — best event-plus-location fit.** 3,400+ events per match and
-  player-location freeze frames across 40+ key leagues. It is sampled location data,
-  not continuous tracking; pricing and redistribution rights are sales-only.
-- **Opta Vision — enterprise continuous tracking.** Synchronized events and
-  uninterrupted XY locations for all 22 players across 80+ competitions. Pricing and
-  public-product rights are sales-only.
-- **Prototype-only sources.** SkillCorner Open Data is MIT-licensed and includes ten
-  tracked A-League 2024/25 matches. Hudl StatsBomb Open Data includes events, lineups
-  and selected 360 frames under attribution terms. Neither covers current Premier
-  League production evidence. Metrica's three anonymized sample matches have no clear
-  repository licence, so do not adopt them without written permission.
-
-- [ ] Confirm either **defer paid live OOP data for v1** (recommended) or select a
-      provider and budget.
-- [ ] Before purchase, obtain written permission for Premier League coverage, model
-      training, stored source hashes, public derived role labels, required attribution
-      and retention after cancellation. Raw events, coordinates, logos and images will
-      not be republished.
-- [ ] After a reviewed server adapter exists, enter the provider credential directly
+- [ ] Confirm the free-source prototype path (recommended) or, when evaluation
+      justifies it, select a paid provider and budget.
+- [ ] Any paid provider must permit Premier League coverage, model training, stored
+      source hashes, public derived role labels, required attribution and retention
+      after cancellation. Raw events, coordinates, logos and images are never
+      republished.
+- [ ] After a reviewed server adapter exists, enter any paid credential directly
       into the approved server/worker environment. Screenshots and unlicensed heatmaps
       are never scraped.
+- [ ] Before live OOP fires, the deployment classifier must satisfy the recency
+      contract in `docs/LIMITATIONS.md` and `docs/MODEL_CARDS.md`: per-event role
+      observations, exponential recency decay and a regime-change check that emits
+      `unavailable` when the recent run disagrees with the prior window. The free
+      StatsBomb corpora validate the classifier on completed seasons; the live path
+      still requires the recency contract on the ingest side.
 
 ### Before real email
 

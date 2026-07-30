@@ -28,6 +28,18 @@ clean-sheet scoring; the observed role is a separate attacking-potential signal.
 Reverse-OOP is also recorded. No role is inferred from listed position alone, and OOP
 does not receive an arbitrary points bonus that would double-count attacking features.
 
+Live OOP evidence must be recency-weighted. Tactics change between gameweeks, so a
+player deployed OOP last week may revert this week. The deployment classifier
+therefore treats role evidence as a sequence of per-event observations with an
+exponential recency decay, not a fixed-window average. The last few played gameweeks
+dominate the weighted starts count. If the most recent contiguous run of role
+observations disagrees with the prior window (for example, three consecutive
+in-position starts after a spell of attacking-OOP starts), the classifier emits
+`unavailable` rather than the older classification. The exact decay half-life and
+regime-change threshold are sourced parameters, not agent defaults. Historical
+open-data corpora used only to validate the classifier are exempt because they cover
+completed seasons rather than the live sequence.
+
 ## Defensive contributions
 
 Observed defensive-contribution labels begin in 2025/26. Older public archives do not
