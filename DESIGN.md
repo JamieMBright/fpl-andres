@@ -50,44 +50,44 @@ frontend picks them up from `--fa-*` custom properties.
 
 ### Dark (default) — after the 1994 third kit
 
-| Token           | Value       | Use                                          |
-| --------------- | ----------- | -------------------------------------------- |
-| Surface         | `#16123a`   | App frame background                         |
-| Surface deep    | `#0d0a26`   | Ruled ground behind stripes                  |
-| Surface rise    | `#221a55`   | Elevated surfaces and ruled headers          |
-| Stripe green    | `#00a13e`   | Third-kit stripe A, brand accent, ready      |
-| Stripe blue     | `#2b2065`   | Third-kit stripe B, structural rules         |
-| Cream           | `#f6f4ea`   | Primary copy                                 |
-| Cream deep      | `#d5cfba`   | Secondary copy                               |
-| Focus blue      | `#3b357e`   | Focus rings, links, mark bucket body         |
-| Amber           | `#e5a02a`   | Stale and watch states                       |
-| Red             | `#d64545`   | Errors and negative outcomes only            |
+| Token        | Value     | Use                                     |
+| ------------ | --------- | --------------------------------------- |
+| Surface      | `#16123a` | App frame background                    |
+| Surface deep | `#0d0a26` | Ruled ground behind stripes             |
+| Surface rise | `#221a55` | Elevated surfaces and ruled headers     |
+| Stripe green | `#00a13e` | Third-kit stripe A, brand accent, ready |
+| Stripe blue  | `#2b2065` | Third-kit stripe B, structural rules    |
+| Cream        | `#f6f4ea` | Primary copy                            |
+| Cream deep   | `#d5cfba` | Secondary copy                          |
+| Focus blue   | `#3b357e` | Focus rings, links, mark bucket body    |
+| Amber        | `#e5a02a` | Stale and watch states                  |
+| Red          | `#d64545` | Errors and negative outcomes only       |
 
 ### Light (toggle) — after the 1994 home kit
 
-| Token           | Value       | Use                                          |
-| --------------- | ----------- | -------------------------------------------- |
-| Paper           | `#f7f5ea`   | App frame background (warm off-white)        |
-| Paper deep      | `#ffffff`   | Elevated surfaces (tables, panels)           |
-| Paper rise      | `#ffffff`   | Elevated surfaces and ruled headers          |
-| Stripe silver   | `#e4e3eb`   | Home-kit stripe A (owner-specified white)    |
-| Stripe yellow   | `#e5da15`   | Home-kit stripe B                            |
-| Home blue       | `#4a008e`   | Primary copy, structural rules, buttons      |
-| Home blue rise  | `#6a3aa8`   | Hover / focus tint on the blue accent        |
-| Slate deep      | `#6a3aa8`   | Secondary copy                               |
-| Amber           | `#a6621b`   | Stale and watch states                       |
-| Red             | `#a2433b`   | Errors and negative outcomes only            |
+| Token          | Value     | Use                                       |
+| -------------- | --------- | ----------------------------------------- |
+| Paper          | `#f7f5ea` | App frame background (warm off-white)     |
+| Paper deep     | `#ffffff` | Elevated surfaces (tables, panels)        |
+| Paper rise     | `#ffffff` | Elevated surfaces and ruled headers       |
+| Stripe silver  | `#e4e3eb` | Home-kit stripe A (owner-specified white) |
+| Stripe yellow  | `#e5da15` | Home-kit stripe B                         |
+| Home blue      | `#4a008e` | Primary copy, structural rules, buttons   |
+| Home blue rise | `#6a3aa8` | Hover / focus tint on the blue accent     |
+| Slate deep     | `#6a3aa8` | Secondary copy                            |
+| Amber          | `#a6621b` | Stale and watch states                    |
+| Red            | `#a2433b` | Errors and negative outcomes only         |
 
 ### Brand mark (both modes)
 
 The Bielsa bucket sits outside both kit palettes and holds its own hue so the
 mark reads identically in every theme.
 
-| Token           | Value       | Use                                          |
-| --------------- | ----------- | -------------------------------------------- |
-| Bucket purple   | `#5308DC`   | Bucket body (`--fa-bucket`)                  |
-| Plate cream     | `#f8f6ea`   | Fixed sponsor-plate background               |
-| Plate ink       | `#4a008e`   | Fixed sponsor-plate `@fpl_andres` wordmark   |
+| Token         | Value     | Use                                        |
+| ------------- | --------- | ------------------------------------------ |
+| Bucket purple | `#5308DC` | Bucket body (`--fa-bucket`)                |
+| Plate cream   | `#f8f6ea` | Fixed sponsor-plate background             |
+| Plate ink     | `#4a008e` | Fixed sponsor-plate `@fpl_andres` wordmark |
 
 ### Goalkeeper-kit signature (both modes)
 
@@ -96,14 +96,14 @@ colour system. Reserved for the GKP row, the paid "DefCon beasts" heading, and
 the six-hue Teletext strip that anchors the top of every page. Never used for
 semantic state or for outfield content.
 
-| Token           | Value       | Use                                          |
-| --------------- | ----------- | -------------------------------------------- |
-| Keeper lime     | `#e7f24a`   | Teletext strip primary; ready alt on GKP     |
-| Keeper hot      | `#e6338c`   | Teletext strip primary; GKP row accent       |
-| Keeper teal     | `#2ec9c0`   | Teletext strip primary                       |
-| Keeper purple   | `#5b2ca8`   | Teletext strip primary                       |
-| Keeper black    | `#0a0a0a`   | Teletext strip ground                        |
-| Keeper white    | `#ffffff`   | Teletext strip contrast text                 |
+| Token         | Value     | Use                                      |
+| ------------- | --------- | ---------------------------------------- |
+| Keeper lime   | `#e7f24a` | Teletext strip primary; ready alt on GKP |
+| Keeper hot    | `#e6338c` | Teletext strip primary; GKP row accent   |
+| Keeper teal   | `#2ec9c0` | Teletext strip primary                   |
+| Keeper purple | `#5b2ca8` | Teletext strip primary                   |
+| Keeper black  | `#0a0a0a` | Teletext strip ground                    |
+| Keeper white  | `#ffffff` | Teletext strip contrast text             |
 
 Every semantic state also carries text or an icon. Green/red alone never carries
 meaning. Contrast pairs are validated at WCAG 2.2 AA against the tokens above; if a

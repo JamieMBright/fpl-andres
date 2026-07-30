@@ -26,8 +26,8 @@
 
         --fa-body: "IBM Plex Sans", system-ui, -apple-system, sans-serif;
         --fa-display: "IBM Plex Serif", "Newsreader", Georgia, serif;
-        --fa-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo,
-          monospace;
+        --fa-mono:
+          "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
 
         color-scheme: dark;
       }
@@ -198,7 +198,9 @@
         height: 14px;
         border-radius: 50%;
         background: var(--dot-fill);
-        box-shadow: 0 0 0 2px var(--fa-base-deep), 0 0 0 3px var(--ring);
+        box-shadow:
+          0 0 0 2px var(--fa-base-deep),
+          0 0 0 3px var(--ring);
       }
 
       /* Ruled sections */
@@ -307,14 +309,30 @@
     <div class="frame">
       <header>
         <a class="brand-mark" href="#" aria-label="FPL Andres — @fpl_andres">
-          <svg viewBox="0 0 220 90" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true">
+          <svg
+            viewBox="0 0 220 90"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="3"
+            aria-hidden="true"
+          >
             <g stroke-linejoin="round" stroke-linecap="round">
               <path d="M15 15 L205 15 L192 62 L28 62 Z" />
               <line x1="15" y1="22" x2="205" y2="22" />
               <line x1="30" y1="60" x2="190" y2="60" />
               <path d="M50 15 Q 50 5 60 5 L 78 5 Q 88 5 88 15" />
             </g>
-            <text x="110" y="82" text-anchor="middle" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="12" fill="currentColor" letter-spacing="1">@fpl_andres</text>
+            <text
+              x="110"
+              y="82"
+              text-anchor="middle"
+              font-family="IBM Plex Mono, ui-monospace, monospace"
+              font-size="12"
+              fill="currentColor"
+              letter-spacing="1"
+            >
+              @fpl_andres
+            </text>
           </svg>
           <strong>FPL Andres</strong>
         </a>
@@ -402,15 +420,19 @@
             in the meantime.
           </p>
           <span class="unavailable-tag">
-            <span class="subbuteo-dot" style="--dot-fill: var(--fa-amber); --ring: var(--fa-amber);" aria-hidden="true"></span>
+            <span
+              class="subbuteo-dot"
+              style="--dot-fill: var(--fa-amber); --ring: var(--fa-amber)"
+              aria-hidden="true"
+            ></span>
             unavailable — awaiting promoted xPTS model
           </span>
         </div>
       </section>
 
       <footer>
-        Mockup — Newsprint · palette from `docs/design/inspiration/`
-        provisional until kit refs arrive.
+        Mockup — Newsprint · palette from `docs/design/inspiration/` provisional
+        until kit refs arrive.
       </footer>
     </div>
   </body>

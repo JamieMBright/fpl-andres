@@ -194,8 +194,12 @@ async function fetchSource(
     deadline,
   );
   if (response.status === 502) {
-    const parsed = await response.clone().json().catch(() => null);
-    const reason = parsed && typeof parsed.reason === "string" ? parsed.reason : null;
+    const parsed = await response
+      .clone()
+      .json()
+      .catch(() => null);
+    const reason =
+      parsed && typeof parsed.reason === "string" ? parsed.reason : null;
     if (reason === "unexpected_format" || reason === "oversize") {
       return { kind: "source_failed" };
     }

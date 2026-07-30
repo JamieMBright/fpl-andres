@@ -377,7 +377,9 @@ describe("team analysis entry", () => {
     renderApplication(`/team/${teamA}`);
     await screen.findByRole("heading", { name: `Analysis for team ${teamA}` });
 
-    await user.click(screen.getByRole("link", { name: "Analyse another team" }));
+    await user.click(
+      screen.getByRole("link", { name: "Analyse another team" }),
+    );
     await user.type(screen.getByLabelText("FPL team ID"), String(teamB));
     await user.click(screen.getByRole("button", { name: "Analyse team" }));
 

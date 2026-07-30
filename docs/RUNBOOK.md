@@ -7,10 +7,10 @@ or the design contract — the runbook is a fast index into them.
 
 ## Environments
 
-| Environment | Where                                             | Purpose                                                                                        |
-| ----------- | ------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
-| Production  | Vercel project `prj_SVGVMksXtLPebuLfEH8Xh1CJyIGz` | Sole hosted deployment for `main`. Free-plan Supabase `fpl-andres-production` sits behind it.  |
-| Preview     | Vercel per-PR                                     | Ephemeral, driven off feature branches. Reads no private state.                                |
+| Environment | Where                                             | Purpose                                                                                         |
+| ----------- | ------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| Production  | Vercel project `prj_SVGVMksXtLPebuLfEH8Xh1CJyIGz` | Sole hosted deployment for `main`. Free-plan Supabase `fpl-andres-production` sits behind it.   |
+| Preview     | Vercel per-PR                                     | Ephemeral, driven off feature branches. Reads no private state.                                 |
 | Local dev   | `pnpm dev`                                        | Vite dev server + Vercel functions via `vercel dev` if required. Uses local Supabase CLI stack. |
 
 The production Supabase project ref is `qpmlfbuouporvwebjxhk` and the URL is

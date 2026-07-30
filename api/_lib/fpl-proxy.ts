@@ -279,6 +279,4 @@ function jsonError(
 }
 
 export type FplProxyErrorReason =
-  | "unreachable"
-  | "unexpected_format"
-  | "oversize";
+  "unreachable" | "unexpected_format" | "oversize";

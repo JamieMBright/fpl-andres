@@ -81,9 +81,9 @@ describe("manager team-state override storage", () => {
     expect(
       loadTeamStateOverrides(localStorage, ENTRY_ID, oldDeadline),
     ).toBeNull();
-    expect(
-      loadTeamStateOverrides(localStorage, ENTRY_ID, newDeadline),
-    ).toEqual(newOverrides);
+    expect(loadTeamStateOverrides(localStorage, ENTRY_ID, newDeadline)).toEqual(
+      newOverrides,
+    );
     expect(loadTeamStateOverrides(localStorage, 456, oldDeadline)).toEqual(
       oldOverrides,
     );

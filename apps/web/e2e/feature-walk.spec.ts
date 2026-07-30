@@ -45,7 +45,9 @@ async function fulfillReady(page: Page) {
 }
 
 test.describe("feature walk", () => {
-  test("saves, persists and confirms removal of manager corrections", async ({ page }) => {
+  test("saves, persists and confirms removal of manager corrections", async ({
+    page,
+  }) => {
     await fulfillReady(page);
     await page.goto("/team/212279");
     await page.getByText("Observed snapshot ready").waitFor();
@@ -81,9 +83,7 @@ test.describe("feature walk", () => {
     await page
       .getByRole("button", { name: "Remove saved corrections" })
       .click();
-    await page
-      .getByRole("button", { name: "Remove corrections now" })
-      .click();
+    await page.getByRole("button", { name: "Remove corrections now" }).click();
     await expect(
       page.getByRole("status", { name: "Manager correction status" }),
     ).toContainText("Manager corrections removed");
@@ -122,15 +122,11 @@ test.describe("feature walk", () => {
 
     await page.getByRole("link", { name: "Method" }).click();
     await expect(page).toHaveURL(/\/methodology$/);
-    await expect(
-      page.getByRole("heading", { level: 1 }).first(),
-    ).toBeFocused();
+    await expect(page.getByRole("heading", { level: 1 }).first()).toBeFocused();
 
     await page.getByRole("link", { name: "Calibration" }).click();
     await expect(page).toHaveURL(/\/calibration$/);
-    await expect(
-      page.getByRole("heading", { level: 1 }).first(),
-    ).toBeFocused();
+    await expect(page.getByRole("heading", { level: 1 }).first()).toBeFocused();
   });
 
   test("renders every unavailable envelope variant with a distinct heading", async ({
@@ -138,7 +134,10 @@ test.describe("feature walk", () => {
   }) => {
     const variants = [
       {
-        payload: { status: "unavailable", reason: "entry_unavailable" as const },
+        payload: {
+          status: "unavailable",
+          reason: "entry_unavailable" as const,
+        },
         heading: "Team Not Available",
       },
       {

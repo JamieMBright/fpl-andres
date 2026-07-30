@@ -10,10 +10,10 @@ refreshed with palette hexes eyedropped from `docs/design/inspiration/` and now
 carries a working dark/light toggle. The two other mockups are kept as
 historical reference at the earlier provisional palette.
 
-| Mockup                                     | Depth of nostalgia | What signals it                                                                                                     |
-| ------------------------------------------ | ------------------ | ------------------------------------------------------------------------------------------------------------------- |
-| [`mockup-newsprint.html`](mockup-newsprint.html) | Subtle             | Clean scouting dossier on the third-kit palette; Subbuteo ring on the evidence chip; monospace Teletext numerics.   |
-| [`mockup-matchday.html`](mockup-matchday.html) | Medium             | Adds a chunky programme-cover display face, a green/blue stripe rhythm behind the hero, and a loud GKP keeper accent. |
+| Mockup                                                    | Depth of nostalgia | What signals it                                                                                                                             |
+| --------------------------------------------------------- | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`mockup-newsprint.html`](mockup-newsprint.html)          | Subtle             | Clean scouting dossier on the third-kit palette; Subbuteo ring on the evidence chip; monospace Teletext numerics.                           |
+| [`mockup-matchday.html`](mockup-matchday.html)            | Medium             | Adds a chunky programme-cover display face, a green/blue stripe rhythm behind the hero, and a loud GKP keeper accent.                       |
 | [`mockup-ceefax.html`](mockup-ceefax.html) — **selected** | Bold               | Teletext keeper-kit primary strip; third-kit stripes across the whole content area; toggle between third-kit dark and home-kit light modes. |
 
 ## What's the same across all three

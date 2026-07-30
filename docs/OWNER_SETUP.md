@@ -1,145 +1,94 @@
-# Owner Setup — Remaining Checklist
+# Owner Setup — Outstanding
 
-Completed account, OAuth, DNS and secret-entry steps have been removed. This file now
-tracks only what still needs an owner decision. Never send a password, access token,
-database password, secret key or webhook secret in chat, an issue, a pull request or a
-committed file.
+Only items still needing an owner decision or action live in this file. Completed
+work is pruned. Never send a password, access token, database password, secret
+key or webhook secret through chat, an issue, a PR or a committed file.
 
-## Confirmed project facts
+## Baseline (do not edit)
 
-- [x] Public smoke-test FPL Team ID: `212279`.
-- [x] Hosted Supabase project: `fpl-andres-production` (ref `qpmlfbuouporvwebjxhk`,
-      URL `https://qpmlfbuouporvwebjxhk.supabase.co`).
-- [x] The free-plan deployment uses this one hosted production project. There is no
-      hosted staging project. Migrations must pass local policy tests and Linux CI
-      Supabase reset/lint before they touch production.
-- [x] VS Code MCP remains disabled by organization policy. Any future schema change
-      goes through a controlled migration-history/deployment workflow, not the
-      Dashboard SQL Editor.
-- [x] Vercel project imported (`prj_SVGVMksXtLPebuLfEH8Xh1CJyIGz`), production branch
-      `main`, Framework Preset `Other`, Root Directory empty, Node.js 24.x.
-- [x] `SUPABASE_URL` and `SUPABASE_SECRET_KEY` present in Vercel Production and the
-      GitHub `production` environment.
-- [x] Foundation, evidence, projection and optimization migrations applied to the
-      hosted project via SQL Editor. Table and RLS verification passed.
+- Public smoke-test FPL Team ID: `212279`.
+- Hosted Supabase project: `fpl-andres-production` (ref `qpmlfbuouporvwebjxhk`).
+- One hosted project only. No staging. Migrations must pass local policy tests
+  and Linux CI before touching production.
+- Vercel project `prj_SVGVMksXtLPebuLfEH8Xh1CJyIGz`, production branch `main`,
+  Framework Preset `Other`, Node.js 24.x.
+- `SUPABASE_URL` and `SUPABASE_SECRET_KEY` present in Vercel Production, the
+  GitHub `production` environment, and GitHub Actions repository secrets.
+- Foundation, evidence, projection, optimization and FK-index migrations applied
+  to the hosted project. RLS forced; no browser policy.
 
-The project ref and API URL are identifiers, not credentials. All keys remain outside
-the repository.
+## Decisions taken (2026-07-30)
 
-## Ongoing security constraints
+- **Historical source**: [vaastav/Fantasy-Premier-League](https://github.com/vaastav/Fantasy-Premier-League),
+  pinned commit SHAs. No paid provider for the beta.
+- **Ingest window**: 2023/24 + 2024/25 + 2025/26.
+- **Ingest execution**: GitHub Actions manual dispatch (`historical-ingest.yml`),
+  reading the `production` environment. No local key handling.
+- **Model promotion**: auto-promote a candidate that beats its baseline at
+  paired-bootstrap `p < 0.05` on the 2024/25 holdout. No manual override during
+  the beta.
 
-- Never introduce a `VITE_`-prefixed Supabase, Resend or upstream secret name.
-  Anything named `VITE_*` is inlined into the browser bundle at build time.
-- Server routes and scheduled jobs read `SUPABASE_URL` and `SUPABASE_SECRET_KEY`
-  unprefixed via `process.env`. The publishable key is not needed while browser code
-  stays away from private tables.
-- Do not run `supabase db push` against the hosted project. The four applied
-  migrations were manually bootstrapped and are not in the CLI ledger. A controlled
-  migration-history reconciliation/deployment workflow will be added before the next
-  production schema change; `SUPABASE_ACCESS_TOKEN` and the database password will be
-  entered directly into that workflow's environment at that point, not sooner.
+## Security constraints (unchanged)
 
-## Open owner items
+- Never introduce a `VITE_`-prefixed secret name. `VITE_*` is inlined into the
+  browser bundle at build time.
+- Server routes and jobs read unprefixed `SUPABASE_URL` and
+  `SUPABASE_SECRET_KEY` via `process.env`.
+- Do not run `supabase db push` against the hosted project. Migrations go
+  through a controlled deployment workflow (not yet built).
 
-### Apply the v0.5.1 foreign-key index migration
+---
 
-- [ ] Open Supabase Dashboard for `fpl-andres-production`, open a new SQL Editor
-      query and paste the contents of
-      [`20260730130000_foreign_key_indexes.sql`](../supabase/migrations/20260730130000_foreign_key_indexes.sql).
-      Every statement uses `CREATE INDEX IF NOT EXISTS`, so the file is safe to
-      re-run and does not require the SQL Editor to disable its implicit
-      transaction wrapper. It covers four foreign-key columns
-      (`rules_snapshots.source_snapshot_id`,
-      `projection_runs.workflow_run_id`,
-      `model_promotion_decisions.workflow_run_id`,
-      `optimization_runs.workflow_run_id`) that would otherwise force
-      sequential scans on cascade and reverse joins. The tables are immutable
-      workflow-metadata tables, so the brief ACCESS EXCLUSIVE lock completes
-      in milliseconds and never blocks user traffic.
+## Open decisions
 
-### Ready to verify once FPL processes a live gameweek
+### Paywall stance for the beta
 
-- [ ] Open the rendered team snapshot for team `212279` and confirm that public
-      last-deadline state is clearly separated from private current corrections.
-      This can only be exercised once FPL has processed at least one event; the
-      preseason canary correctly returned `no_processed_event`.
+Documented in [`docs/PAYWALL.md`](PAYWALL.md): beta ships everything open;
+post-beta free tier is context-less advice + `+1 GW ahead`; paid tier is
+"buy me half a pint at the stadium" £3/month for planner, OOP, DefCon,
+FPL50, p100 stats and groupthink.
 
-### Optional — live out-of-position (OOP) evidence
+- [ ] Confirm. Not blocking — the gating shim ships last, at v1.0.0.
 
-**Free source selected for the prototype.** Hudl StatsBomb Open Data
-(https://github.com/hudl/open-data) exposes JSON events with pitch coordinates, lineup
-tactics and (for a subset of matches) 360 freeze frames. Its published Premier League
-coverage is the completed 2003/04 and 2015/16 seasons. That is enough to build and
-validate the OOP classifier and event-location heatmaps without any subscription;
-attribution to StatsBomb with their logo is required for anything published from it.
-SkillCorner Open Data
-([`SkillCorner/opendata`](https://github.com/SkillCorner/opendata)) adds ten
-MIT-licensed A-League 2024/25 matches with true 10 Hz tracking for cross-checking
-position heatmaps. Neither dataset covers live 2026/27 Premier League, so live OOP
-evidence remains `unavailable` until a purchased provider is signed off.
+---
 
-**Deferred until v2.** Paid live tracking or event-plus-location subscriptions
-(SkillCorner commercial, Hudl StatsBomb 360, Opta Vision) are useful only if
-walk-forward evaluation on the free corpora shows OOP materially improves promoted
-forecasts. Ship the initial-squad and transfer workflows without them.
+## Waiting for external gate (no action needed until then)
 
-- [ ] Confirm the free-source prototype path (recommended) or, when evaluation
-      justifies it, select a paid provider and budget.
-- [ ] Any paid provider must permit Premier League coverage, model training, stored
-      source hashes, public derived role labels, required attribution and retention
-      after cancellation. Raw events, coordinates, logos and images are never
-      republished.
-- [ ] After a reviewed server adapter exists, enter any paid credential directly
-      into the approved server/worker environment. Screenshots and unlicensed heatmaps
-      are never scraped.
-- [ ] Before live OOP fires, the deployment classifier must satisfy the recency
-      contract in `docs/LIMITATIONS.md` and `docs/MODEL_CARDS.md`: per-event role
-      observations, exponential recency decay and a regime-change check that emits
-      `unavailable` when the recent run disagrees with the prior window. The free
-      StatsBomb corpora validate the classifier on completed seasons; the live path
-      still requires the recency contract on the ingest side.
+### Live smoke test once FPL processes GW1
 
-### Design direction — 90s UK football nostalgia (2026-07-30)
+- [ ] Open the rendered team snapshot for `212279` after GW1 has been
+      processed. Confirm public last-deadline state is clearly separated from
+      any private corrections you have entered.
 
-Resolved. `DESIGN.md` was amended to a dark-first palette drawn from the 1994
-Leeds third kit with a light toggle drawn from the 1994 home kit, plus a
-Subbuteo / Teletext / loud-goalkeeper-kit motif language and a Bielsa-bucket
-mark. Kit references and the bucket reference are dropped into
-[`docs/design/inspiration/`](design/inspiration/README.md) as the owner adds
-them; provisional hex values sit in `DESIGN.md` until then.
+### Live OOP evidence source
 
-Remaining owner items on this direction:
+Free prototype selected (Hudl StatsBomb Open Data + SkillCorner). Neither
+covers live 2026/27 Premier League, so live OOP stays `unavailable` until a
+paid provider is signed off. Deferred; not blocking.
 
-- [x] Drop `kit-third-1994.png`, `kit-home-1994.png`, `keeper-home-1994.png`
-      and `logo.png` into `docs/design/inspiration/` and log a one-line source
-      note per file in
-      [`docs/design/inspiration/SOURCES.md`](design/inspiration/SOURCES.md).
-- [x] Pick one of the three mockup depths under
-      [`docs/design/mockups/`](design/mockups/README.md): Newsprint,
-      Matchday Programme or Ceefax Third Kit.
-      Ceefax wins the day here. but modification needed: done that. i quite like the ceefax concept. but i want more nod to my dark and light colour scheme based on the leeds home and away kits, and draw the bright colours from the goalie kit
-- [ ] Confirm the shipping paywall stance in
-      [`docs/PAYWALL.md`](PAYWALL.md).
+---
 
-### Before real email
+## Before real email
+
+Not blocking algo work. Do these when the mailing list matters.
 
 1. [ ] Choose or register the public domain and a sending subdomain such as
        `updates.<domain>`.
-2. [ ] Create the Resend account, add that subdomain and copy Resend's DNS records
-       at the registrar.
-3. [ ] After verification, create a domain-scoped send-only key.
-4. [ ] Enter `RESEND_API_KEY` directly into Vercel Production when the email route
-       is ready.
-5. [ ] After the webhook route exists, enter `RESEND_WEBHOOK_SECRET` directly into
-       Vercel Production.
+2. [ ] Create the Resend account, verify the subdomain via DNS.
+3. [ ] Create a domain-scoped send-only key.
+4. [ ] Enter `RESEND_API_KEY` into Vercel Production when the email route ships.
+5. [ ] Enter `RESEND_WEBHOOK_SECRET` into Vercel Production when the webhook
+       ships.
 6. [ ] Never put either Resend value in a `VITE_` variable or Git-tracked file.
 
-### Before public release
+## Before public v1.0.0
 
-- [ ] Choose the source-code license before `v1.0.0`.
-- [ ] Approve the first production model promotion after the release-candidate
-      report passes. Until then, candidate models remain experimental/unavailable.
+- [ ] Choose the source-code license.
+- [ ] Approve the first production model promotion after its release-candidate
+      report passes.
 
-Everything else — SQL authoring, migration ordering, RLS, CI, tests, runtime code,
-deployment configuration, monitoring, backups and release mechanics — remains
-implementation work.
+---
+
+Everything else — SQL authoring, migration ordering, RLS, CI, tests, runtime
+code, deployment configuration, monitoring, backups, release mechanics —
+remains implementation work owned by the agent.

@@ -35,14 +35,14 @@
         --fa-gk-white: #ffffff;
 
         /* Bucket mark — owner-specified brand purple, holds in both themes. */
-        --fa-bucket: #5308DC;
+        --fa-bucket: #5308dc;
 
         /* Stripe rhythm — the actual third-kit bars */
         --fa-stripe-width: 88px;
         --fa-stripe-opacity: 0.14;
 
-        --fa-body: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo,
-          monospace;
+        --fa-body:
+          "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
         --fa-display: "Space Grotesk", ui-monospace, monospace;
       }
 
@@ -137,12 +137,28 @@
         text-align: center;
       }
 
-      .teletext-strip span:nth-child(1) { background: var(--fa-gk-hot); color: var(--fa-gk-white); }
-      .teletext-strip span:nth-child(2) { background: var(--fa-gk-lime); }
-      .teletext-strip span:nth-child(3) { background: var(--fa-gk-teal); }
-      .teletext-strip span:nth-child(4) { background: var(--fa-gk-purple); color: var(--fa-gk-white); }
-      .teletext-strip span:nth-child(5) { background: var(--fa-gk-white); }
-      .teletext-strip span:nth-child(6) { background: var(--fa-gk-black); color: var(--fa-gk-lime); border-left: 2px solid var(--fa-gk-white); }
+      .teletext-strip span:nth-child(1) {
+        background: var(--fa-gk-hot);
+        color: var(--fa-gk-white);
+      }
+      .teletext-strip span:nth-child(2) {
+        background: var(--fa-gk-lime);
+      }
+      .teletext-strip span:nth-child(3) {
+        background: var(--fa-gk-teal);
+      }
+      .teletext-strip span:nth-child(4) {
+        background: var(--fa-gk-purple);
+        color: var(--fa-gk-white);
+      }
+      .teletext-strip span:nth-child(5) {
+        background: var(--fa-gk-white);
+      }
+      .teletext-strip span:nth-child(6) {
+        background: var(--fa-gk-black);
+        color: var(--fa-gk-lime);
+        border-left: 2px solid var(--fa-gk-white);
+      }
 
       /* Header */
       header {
@@ -436,13 +452,28 @@
         font-weight: 700;
       }
 
-      tbody tr.def td:first-child { color: var(--fa-stripe-b); font-weight: 700; }
-      tbody tr.mid td:first-child { color: var(--fa-brand); font-weight: 700; }
-      tbody tr.fwd td:first-child { color: var(--fa-amber); font-weight: 700; }
+      tbody tr.def td:first-child {
+        color: var(--fa-stripe-b);
+        font-weight: 700;
+      }
+      tbody tr.mid td:first-child {
+        color: var(--fa-brand);
+        font-weight: 700;
+      }
+      tbody tr.fwd td:first-child {
+        color: var(--fa-amber);
+        font-weight: 700;
+      }
 
-      html[data-theme="dark"] tbody tr.def td:first-child { color: var(--fa-gk-teal); }
-      html[data-theme="dark"] tbody tr.mid td:first-child { color: var(--fa-gk-lime); }
-      html[data-theme="dark"] tbody tr.fwd td:first-child { color: var(--fa-amber); }
+      html[data-theme="dark"] tbody tr.def td:first-child {
+        color: var(--fa-gk-teal);
+      }
+      html[data-theme="dark"] tbody tr.mid td:first-child {
+        color: var(--fa-gk-lime);
+      }
+      html[data-theme="dark"] tbody tr.fwd td:first-child {
+        color: var(--fa-amber);
+      }
 
       /* Paid preview */
       .paid-preview {
@@ -510,20 +541,72 @@
         <a class="brand-mark" href="#" aria-label="FPL Andres — @fpl_andres">
           <!-- Bielsa bucket silhouette traced from docs/design/inspiration/mask.png.
                Narrow arched top (sit-surface), wide bottom (cooler lid on the grass), bowed sides. -->
-          <svg viewBox="0 0 260 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <svg
+            viewBox="0 0 260 200"
+            xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true"
+          >
             <defs>
               <linearGradient id="bucketShade" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0" stop-color="#000" stop-opacity="0"/>
-                <stop offset="1" stop-color="#000" stop-opacity="0.22"/>
+                <stop offset="0" stop-color="#000" stop-opacity="0" />
+                <stop offset="1" stop-color="#000" stop-opacity="0.22" />
               </linearGradient>
             </defs>
-            <ellipse cx="130" cy="186" rx="104" ry="6" fill="var(--fa-surface-deep)" opacity="0.32"/>
-            <path d="M 84 30 Q 130 24 176 30 Q 188 30 192 42 C 214 82 226 128 226 168 Q 226 178 216 178 Q 130 184 44 178 Q 34 178 34 168 C 34 128 46 82 68 42 Q 72 30 84 30 Z" fill="currentColor"/>
-            <path d="M 84 30 Q 130 24 176 30 Q 188 30 192 42 C 214 82 226 128 226 168 Q 226 178 216 178 Q 130 184 44 178 Q 34 178 34 168 C 34 128 46 82 68 42 Q 72 30 84 30 Z" fill="url(#bucketShade)"/>
-            <path d="M 88 32 Q 130 26 172 32" fill="none" stroke="#fff" stroke-opacity="0.35" stroke-width="1.4" stroke-linecap="round"/>
-            <rect x="58" y="104" width="144" height="36" rx="3" fill="#f8f6ea"/>
-            <rect x="58" y="104" width="144" height="36" rx="3" fill="none" stroke="#000" stroke-opacity="0.14" stroke-width="1"/>
-            <text x="130" y="128" text-anchor="middle" font-family="'IBM Plex Mono', ui-monospace, monospace" font-size="18" font-weight="700" letter-spacing="0.4" fill="#4a008e">@fpl_andres</text>
+            <ellipse
+              cx="130"
+              cy="186"
+              rx="104"
+              ry="6"
+              fill="var(--fa-surface-deep)"
+              opacity="0.32"
+            />
+            <path
+              d="M 84 30 Q 130 24 176 30 Q 188 30 192 42 C 214 82 226 128 226 168 Q 226 178 216 178 Q 130 184 44 178 Q 34 178 34 168 C 34 128 46 82 68 42 Q 72 30 84 30 Z"
+              fill="currentColor"
+            />
+            <path
+              d="M 84 30 Q 130 24 176 30 Q 188 30 192 42 C 214 82 226 128 226 168 Q 226 178 216 178 Q 130 184 44 178 Q 34 178 34 168 C 34 128 46 82 68 42 Q 72 30 84 30 Z"
+              fill="url(#bucketShade)"
+            />
+            <path
+              d="M 88 32 Q 130 26 172 32"
+              fill="none"
+              stroke="#fff"
+              stroke-opacity="0.35"
+              stroke-width="1.4"
+              stroke-linecap="round"
+            />
+            <rect
+              x="58"
+              y="104"
+              width="144"
+              height="36"
+              rx="3"
+              fill="#f8f6ea"
+            />
+            <rect
+              x="58"
+              y="104"
+              width="144"
+              height="36"
+              rx="3"
+              fill="none"
+              stroke="#000"
+              stroke-opacity="0.14"
+              stroke-width="1"
+            />
+            <text
+              x="130"
+              y="128"
+              text-anchor="middle"
+              font-family="'IBM Plex Mono', ui-monospace, monospace"
+              font-size="18"
+              font-weight="700"
+              letter-spacing="0.4"
+              fill="#4a008e"
+            >
+              @fpl_andres
+            </text>
           </svg>
           <span class="brand-wordmark">FPL Andres</span>
         </a>
@@ -537,7 +620,14 @@
             class="theme-toggle"
             type="button"
             aria-pressed="false"
-            onclick="const h=document.documentElement; const next=h.getAttribute('data-theme')==='dark'?'light':'dark'; h.setAttribute('data-theme',next); this.setAttribute('aria-pressed', next==='light'); this.textContent = next==='dark' ? 'Home kit' : 'Third kit';"
+            onclick="
+              const h = document.documentElement;
+              const next =
+                h.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+              h.setAttribute('data-theme', next);
+              this.setAttribute('aria-pressed', next === 'light');
+              this.textContent = next === 'dark' ? 'Home kit' : 'Third kit';
+            "
           >
             Home kit
           </button>
@@ -615,13 +705,16 @@
         <div class="paid-preview">
           <h3>Top DefCon per £</h3>
           <p>
-            Players with the highest probability of stable DefCon returns per
-            £, over a rolling window. Opens once a promoted DefCon model
-            arrives (needs 2025/26+ observed defensive-actions data per
-            LIMITATIONS).
+            Players with the highest probability of stable DefCon returns per £,
+            over a rolling window. Opens once a promoted DefCon model arrives
+            (needs 2025/26+ observed defensive-actions data per LIMITATIONS).
           </p>
           <span class="unavailable-tag">
-            <span class="subbuteo-dot" style="--dot-fill: var(--fa-gk-black); --ring: var(--fa-gk-white);" aria-hidden="true"></span>
+            <span
+              class="subbuteo-dot"
+              style="--dot-fill: var(--fa-gk-black); --ring: var(--fa-gk-white)"
+              aria-hidden="true"
+            ></span>
             unavailable — awaiting promoted DefCon model
           </span>
         </div>
