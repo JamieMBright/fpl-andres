@@ -1,0 +1,417 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>FPL Andres — Newsprint mockup</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@400;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --fa-base: #0f1e3d;
+        --fa-base-deep: #0a1428;
+        --fa-base-rise: #1a2e55;
+        --fa-cream: #f2eddc;
+        --fa-cream-deep: #c8c2a8;
+        --fa-third-green: #0f4d3a;
+        --fa-third-rise: #1b7a56;
+        --fa-trim-blue: #2d5aa0;
+        --fa-keeper-hot: #e63274;
+        --fa-amber: #e5a02a;
+        --fa-red: #d64545;
+
+        --fa-body: "IBM Plex Sans", system-ui, -apple-system, sans-serif;
+        --fa-display: "IBM Plex Serif", "Newsreader", Georgia, serif;
+        --fa-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo,
+          monospace;
+
+        color-scheme: dark;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background: var(--fa-base);
+        color: var(--fa-cream);
+        font-family: var(--fa-body);
+        font-size: 16px;
+        line-height: 1.55;
+      }
+
+      .frame {
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 24px 32px 96px;
+      }
+
+      /* Header */
+      header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+        padding-block: 12px;
+        border-bottom: 1px solid var(--fa-base-rise);
+      }
+
+      .brand-mark {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: var(--fa-cream);
+      }
+
+      .brand-mark svg {
+        width: 96px;
+        height: auto;
+      }
+
+      .brand-mark strong {
+        font-family: var(--fa-display);
+        font-size: 20px;
+        letter-spacing: 0.02em;
+      }
+
+      nav {
+        display: flex;
+        gap: 20px;
+        font-size: 14px;
+      }
+
+      nav a {
+        color: var(--fa-cream-deep);
+        text-decoration: none;
+        border-bottom: 1px solid transparent;
+        padding-block: 2px;
+      }
+
+      nav a:hover,
+      nav a:focus-visible {
+        color: var(--fa-cream);
+        border-color: var(--fa-third-rise);
+        outline: none;
+      }
+
+      /* Hero */
+      .eyebrow {
+        margin: 32px 0 8px;
+        font-family: var(--fa-mono);
+        font-size: 12px;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: var(--fa-cream-deep);
+      }
+
+      h1 {
+        margin: 0 0 20px;
+        font-family: var(--fa-display);
+        font-size: clamp(32px, 4vw, 44px);
+        font-weight: 600;
+        line-height: 1.15;
+        letter-spacing: -0.01em;
+      }
+
+      .hero-lede {
+        max-width: 62ch;
+        color: var(--fa-cream-deep);
+      }
+
+      form.team-form {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin: 24px 0 16px;
+        align-items: end;
+      }
+
+      label {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        font-size: 14px;
+        color: var(--fa-cream-deep);
+        font-family: var(--fa-mono);
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      input[type="text"] {
+        min-width: 220px;
+        padding: 10px 14px;
+        font-family: var(--fa-mono);
+        font-size: 18px;
+        color: var(--fa-cream);
+        background: var(--fa-base-deep);
+        border: 1px solid var(--fa-base-rise);
+        border-radius: 2px;
+      }
+
+      input[type="text"]:focus-visible {
+        outline: 2px solid var(--fa-trim-blue);
+        outline-offset: 2px;
+      }
+
+      button.command {
+        padding: 12px 20px;
+        font-family: var(--fa-body);
+        font-size: 15px;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+        color: var(--fa-cream);
+        background: var(--fa-third-green);
+        border: 1px solid var(--fa-third-rise);
+        border-radius: 2px;
+        cursor: pointer;
+      }
+
+      button.command:hover,
+      button.command:focus-visible {
+        background: var(--fa-third-rise);
+        outline: none;
+      }
+
+      /* Evidence chip — Subbuteo base ring */
+      .evidence-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 6px 14px 6px 12px;
+        font-size: 13px;
+        font-family: var(--fa-body);
+        border: 1px solid var(--fa-base-rise);
+        border-radius: 999px;
+        background: var(--fa-base-deep);
+      }
+
+      .subbuteo-dot {
+        --dot-fill: var(--fa-third-rise);
+        --ring: var(--fa-cream-deep);
+        position: relative;
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        background: var(--dot-fill);
+        box-shadow: 0 0 0 2px var(--fa-base-deep), 0 0 0 3px var(--ring);
+      }
+
+      /* Ruled sections */
+      section {
+        margin-top: 48px;
+        padding-top: 24px;
+        border-top: 1px solid var(--fa-base-rise);
+      }
+
+      section > h2 {
+        margin: 0 0 16px;
+        font-family: var(--fa-display);
+        font-size: 22px;
+        font-weight: 600;
+      }
+
+      /* Squad table */
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+      }
+
+      thead th {
+        text-align: left;
+        padding: 8px 12px;
+        font-family: var(--fa-mono);
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--fa-cream-deep);
+        border-bottom: 1px solid var(--fa-base-rise);
+      }
+
+      tbody td {
+        padding: 10px 12px;
+        border-bottom: 1px solid rgba(200, 194, 168, 0.12);
+      }
+
+      tbody td.num {
+        font-family: var(--fa-mono);
+        font-variant-numeric: tabular-nums;
+      }
+
+      tbody tr.gkp td:first-child::before {
+        content: "";
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--fa-keeper-hot);
+        margin-right: 8px;
+        vertical-align: baseline;
+      }
+
+      /* Paid preview */
+      .paid-preview {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 16px;
+        padding: 20px;
+        border: 1px solid var(--fa-base-rise);
+        border-radius: 2px;
+        background: var(--fa-base-deep);
+      }
+
+      .paid-preview h3 {
+        margin: 0;
+        font-family: var(--fa-display);
+        font-size: 18px;
+      }
+
+      .paid-preview p {
+        margin: 0;
+        color: var(--fa-cream-deep);
+        font-size: 14px;
+      }
+
+      .unavailable-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 4px 10px;
+        font-family: var(--fa-mono);
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--fa-amber);
+        border: 1px solid var(--fa-amber);
+        border-radius: 2px;
+      }
+
+      /* Footer */
+      footer {
+        margin-top: 64px;
+        padding-top: 16px;
+        border-top: 1px solid var(--fa-base-rise);
+        font-size: 12px;
+        color: var(--fa-cream-deep);
+        font-family: var(--fa-mono);
+        letter-spacing: 0.05em;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="frame">
+      <header>
+        <a class="brand-mark" href="#" aria-label="FPL Andres — @fpl_andres">
+          <svg viewBox="0 0 220 90" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true">
+            <g stroke-linejoin="round" stroke-linecap="round">
+              <path d="M15 15 L205 15 L192 62 L28 62 Z" />
+              <line x1="15" y1="22" x2="205" y2="22" />
+              <line x1="30" y1="60" x2="190" y2="60" />
+              <path d="M50 15 Q 50 5 60 5 L 78 5 Q 88 5 88 15" />
+            </g>
+            <text x="110" y="82" text-anchor="middle" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="12" fill="currentColor" letter-spacing="1">@fpl_andres</text>
+          </svg>
+          <strong>FPL Andres</strong>
+        </a>
+        <nav>
+          <a href="#">Analyse</a>
+          <a href="#">Method</a>
+          <a href="#">Calibration</a>
+          <a href="#">Paid tier</a>
+        </nav>
+      </header>
+
+      <p class="eyebrow">01 / Analyse</p>
+      <h1>What did FPL last record for your squad?</h1>
+      <p class="hero-lede">
+        Enter a Team ID. The tool returns the public snapshot from the last
+        processed deadline and separates it from any private corrections you
+        make on top.
+      </p>
+
+      <form class="team-form" onsubmit="event.preventDefault()">
+        <label>
+          FPL team ID
+          <input type="text" placeholder="e.g. 212279" />
+        </label>
+        <button class="command" type="submit">Analyse team</button>
+      </form>
+
+      <span class="evidence-chip">
+        <span class="subbuteo-dot" aria-hidden="true"></span>
+        Observed snapshot ready · state_as_of 2026-07-20T10:30Z
+      </span>
+
+      <section aria-labelledby="squad-heading">
+        <h2 id="squad-heading">Last-deadline squad</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Position</th>
+              <th>Element</th>
+              <th>Multiplier</th>
+              <th>xPTS</th>
+              <th>Price</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="gkp">
+              <td>GKP</td>
+              <td>Element 101</td>
+              <td class="num">1×</td>
+              <td class="num">4.6</td>
+              <td class="num">£5.0m</td>
+            </tr>
+            <tr>
+              <td>DEF</td>
+              <td>Element 104</td>
+              <td class="num">1×</td>
+              <td class="num">5.1</td>
+              <td class="num">£5.5m</td>
+            </tr>
+            <tr>
+              <td>MID</td>
+              <td>Element 108</td>
+              <td class="num">2×</td>
+              <td class="num">7.8</td>
+              <td class="num">£9.0m</td>
+            </tr>
+            <tr>
+              <td>FWD</td>
+              <td>Element 112</td>
+              <td class="num">1×</td>
+              <td class="num">6.9</td>
+              <td class="num">£8.5m</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section aria-labelledby="paid-heading">
+        <h2 id="paid-heading">Paid tier · aggregate views</h2>
+        <div class="paid-preview">
+          <h3>Top xPTS per £</h3>
+          <p>
+            Ranked view arrives once the xPTS candidate clears its walk-forward
+            evaluation and paired-improvement gate. No teaser numbers are shown
+            in the meantime.
+          </p>
+          <span class="unavailable-tag">
+            <span class="subbuteo-dot" style="--dot-fill: var(--fa-amber); --ring: var(--fa-amber);" aria-hidden="true"></span>
+            unavailable — awaiting promoted xPTS model
+          </span>
+        </div>
+      </section>
+
+      <footer>
+        Mockup — Newsprint · palette from `docs/design/inspiration/`
+        provisional until kit refs arrive.
+      </footer>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,70 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 240 180"
+  role="img"
+  aria-label="FPL Andres — the bucket, @fpl_andres"
+>
+  <!--
+    Derived from docs/design/inspiration/bucket.webp — Bielsa's blue plastic
+    drinks cooler. Simplified to a bucket silhouette (no photo trace, no
+    grass, no dugout). The Wish sponsor plate and Leeds crest are replaced
+    with a plain sponsor plate carrying the @fpl_andres wordmark; no club
+    heraldry is retained. currentColor drives the bucket body so the design
+    tokens set the hue.
+  -->
+
+  <!-- Bucket body -->
+  <path
+    d="M 60 40 L 180 40 L 200 150 L 40 150 Z"
+    fill="currentColor"
+    stroke="currentColor"
+    stroke-width="4"
+    stroke-linejoin="round"
+  />
+
+  <!-- Top opening — inset ellipse suggests the open drinks-cooler rim -->
+  <ellipse
+    cx="120"
+    cy="40"
+    rx="60"
+    ry="8"
+    fill="var(--fa-base-deep, #050a18)"
+    stroke="currentColor"
+    stroke-width="3"
+  />
+
+  <!-- Bottom rim highlight -->
+  <line
+    x1="46"
+    y1="138"
+    x2="194"
+    y2="138"
+    stroke="var(--fa-cream, #f2eddc)"
+    stroke-width="2"
+    opacity="0.35"
+  />
+
+  <!-- Sponsor plate -->
+  <rect
+    x="52"
+    y="72"
+    width="136"
+    height="30"
+    rx="3"
+    fill="var(--fa-cream, #f2eddc)"
+  />
+
+  <!-- Wordmark — replaces the removed sponsor and crest -->
+  <text
+    x="120"
+    y="93"
+    text-anchor="middle"
+    font-family="'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace"
+    font-size="16"
+    font-weight="700"
+    letter-spacing="0.5"
+    fill="currentColor"
+  >
+    @fpl_andres
+  </text>
+</svg>

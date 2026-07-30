@@ -114,9 +114,10 @@ Remaining owner items on this direction:
       and `logo.png` into `docs/design/inspiration/` and log a one-line source
       note per file in
       [`docs/design/inspiration/SOURCES.md`](design/inspiration/SOURCES.md).
-- [ ] Pick one of the three mockup depths under
+- [x] Pick one of the three mockup depths under
       [`docs/design/mockups/`](design/mockups/README.md): Newsprint,
       Matchday Programme or Ceefax Third Kit.
+      Ceefax wins the day here. but modification needed: done that. i quite like the ceefax concept. but i want more nod to my dark and light colour scheme based on the leeds home and away kits, and draw the bright colours from the goalie kit
 - [ ] Confirm the shipping paywall stance in
       [`docs/PAYWALL.md`](PAYWALL.md).
 
@@ -135,8 +136,6 @@ Remaining owner items on this direction:
 
 ### Before public release
 
-- [ ] Provide the requested player-pose reference and confirm either licensed
-      derivative brand use or an independently constructed original pose.
 - [ ] Choose the source-code license before `v1.0.0`.
 - [ ] Approve the first production model promotion after the release-candidate
       report passes. Until then, candidate models remain experimental/unavailable.

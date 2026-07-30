@@ -1,0 +1,452 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>FPL Andres — Matchday Programme mockup</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --fa-base: #0f1e3d;
+        --fa-base-deep: #0a1428;
+        --fa-base-rise: #1a2e55;
+        --fa-cream: #f2eddc;
+        --fa-cream-deep: #c8c2a8;
+        --fa-third-green: #0f4d3a;
+        --fa-third-rise: #1b7a56;
+        --fa-trim-blue: #2d5aa0;
+        --fa-keeper-hot: #e63274;
+        --fa-amber: #e5a02a;
+        --fa-red: #d64545;
+
+        --fa-body: "IBM Plex Sans", system-ui, -apple-system, sans-serif;
+        --fa-display: "Bebas Neue", "Impact", "Oswald", system-ui, sans-serif;
+        --fa-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo,
+          monospace;
+
+        color-scheme: dark;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background: var(--fa-base);
+        color: var(--fa-cream);
+        font-family: var(--fa-body);
+        font-size: 16px;
+        line-height: 1.5;
+      }
+
+      /* Stripe rhythm behind the hero — 6 vertical bars alternating green/blue
+         at 8% opacity. Sits behind the hero only. */
+      .hero-band {
+        position: relative;
+        isolation: isolate;
+      }
+
+      .hero-band::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: repeating-linear-gradient(
+          to right,
+          var(--fa-third-green) 0,
+          var(--fa-third-green) 80px,
+          var(--fa-trim-blue) 80px,
+          var(--fa-trim-blue) 160px
+        );
+        opacity: 0.09;
+        z-index: -1;
+        pointer-events: none;
+      }
+
+      .frame {
+        max-width: 1040px;
+        margin: 0 auto;
+        padding: 24px 32px 96px;
+      }
+
+      /* Header */
+      header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+        padding-block: 16px 20px;
+        border-bottom: 2px solid var(--fa-third-rise);
+      }
+
+      .brand-mark {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        color: var(--fa-cream);
+        text-decoration: none;
+      }
+
+      .brand-mark svg {
+        width: 104px;
+        height: auto;
+      }
+
+      .brand-mark strong {
+        font-family: var(--fa-display);
+        font-size: 26px;
+        letter-spacing: 0.06em;
+      }
+
+      nav {
+        display: flex;
+        gap: 24px;
+        font-family: var(--fa-mono);
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+      }
+
+      nav a {
+        color: var(--fa-cream-deep);
+        text-decoration: none;
+        padding-block: 4px;
+        border-bottom: 2px solid transparent;
+      }
+
+      nav a:hover,
+      nav a:focus-visible {
+        color: var(--fa-cream);
+        border-bottom-color: var(--fa-keeper-hot);
+        outline: none;
+      }
+
+      /* Hero */
+      .eyebrow {
+        margin: 32px 0 8px;
+        font-family: var(--fa-mono);
+        font-size: 12px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--fa-third-rise);
+      }
+
+      h1 {
+        margin: 0 0 20px;
+        font-family: var(--fa-display);
+        font-size: clamp(44px, 6vw, 68px);
+        font-weight: 400;
+        line-height: 1.02;
+        letter-spacing: 0.02em;
+      }
+
+      .hero-lede {
+        max-width: 62ch;
+        color: var(--fa-cream-deep);
+      }
+
+      form.team-form {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin: 28px 0 20px;
+        align-items: end;
+      }
+
+      label {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        font-family: var(--fa-mono);
+        font-size: 12px;
+        color: var(--fa-cream);
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+
+      input[type="text"] {
+        min-width: 240px;
+        padding: 12px 16px;
+        font-family: var(--fa-mono);
+        font-size: 18px;
+        color: var(--fa-cream);
+        background: var(--fa-base-deep);
+        border: 2px solid var(--fa-base-rise);
+        border-radius: 0;
+      }
+
+      input[type="text"]:focus-visible {
+        outline: none;
+        border-color: var(--fa-third-rise);
+        box-shadow: 0 0 0 3px rgba(45, 90, 160, 0.35);
+      }
+
+      button.command {
+        padding: 14px 24px;
+        font-family: var(--fa-display);
+        font-size: 20px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--fa-cream);
+        background: var(--fa-third-green);
+        border: 2px solid var(--fa-third-rise);
+        border-radius: 0;
+        cursor: pointer;
+      }
+
+      button.command:hover,
+      button.command:focus-visible {
+        background: var(--fa-third-rise);
+        outline: none;
+      }
+
+      /* Evidence chip — Subbuteo base ring, more prominent */
+      .evidence-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        padding: 8px 16px 8px 14px;
+        font-size: 14px;
+        font-family: var(--fa-body);
+        border: 2px solid var(--fa-base-rise);
+        background: var(--fa-base-deep);
+      }
+
+      .subbuteo-dot {
+        --dot-fill: var(--fa-third-rise);
+        --ring: var(--fa-cream);
+        position: relative;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: var(--dot-fill);
+        box-shadow: 0 0 0 3px var(--fa-base-deep), 0 0 0 5px var(--ring);
+      }
+
+      /* Ruled sections */
+      section {
+        margin-top: 56px;
+        padding-top: 24px;
+        border-top: 2px solid var(--fa-base-rise);
+      }
+
+      section > h2 {
+        margin: 0 0 20px;
+        font-family: var(--fa-display);
+        font-size: 32px;
+        font-weight: 400;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+
+      /* Squad table */
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 15px;
+      }
+
+      thead th {
+        text-align: left;
+        padding: 10px 12px;
+        font-family: var(--fa-mono);
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.14em;
+        color: var(--fa-cream-deep);
+        border-bottom: 2px solid var(--fa-third-rise);
+      }
+
+      tbody td {
+        padding: 12px;
+        border-bottom: 1px solid rgba(200, 194, 168, 0.14);
+      }
+
+      tbody td.num {
+        font-family: var(--fa-mono);
+        font-size: 17px;
+        font-variant-numeric: tabular-nums;
+      }
+
+      tbody tr.gkp {
+        background: linear-gradient(
+          to right,
+          rgba(230, 50, 116, 0.18),
+          transparent 50%
+        );
+      }
+
+      tbody tr.gkp td:first-child {
+        color: var(--fa-keeper-hot);
+        font-weight: 600;
+      }
+
+      /* Paid preview */
+      .paid-preview {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 12px;
+        padding: 24px;
+        border: 2px solid var(--fa-third-rise);
+        background: var(--fa-base-deep);
+      }
+
+      .paid-preview h3 {
+        margin: 0;
+        font-family: var(--fa-display);
+        font-size: 24px;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+
+      .paid-preview p {
+        margin: 0;
+        color: var(--fa-cream-deep);
+        font-size: 15px;
+      }
+
+      .unavailable-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 12px;
+        font-family: var(--fa-mono);
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        color: var(--fa-amber);
+        border: 2px solid var(--fa-amber);
+      }
+
+      /* Footer */
+      footer {
+        margin-top: 72px;
+        padding-top: 16px;
+        border-top: 2px solid var(--fa-third-rise);
+        font-size: 12px;
+        color: var(--fa-cream-deep);
+        font-family: var(--fa-mono);
+        letter-spacing: 0.05em;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="frame">
+      <header>
+        <a class="brand-mark" href="#" aria-label="FPL Andres — @fpl_andres">
+          <svg viewBox="0 0 220 90" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true">
+            <g stroke-linejoin="round" stroke-linecap="round">
+              <path d="M15 15 L205 15 L192 62 L28 62 Z" />
+              <line x1="15" y1="22" x2="205" y2="22" />
+              <line x1="30" y1="60" x2="190" y2="60" />
+              <path d="M50 15 Q 50 5 60 5 L 78 5 Q 88 5 88 15" />
+            </g>
+            <text x="110" y="82" text-anchor="middle" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="12" fill="currentColor" letter-spacing="1">@fpl_andres</text>
+          </svg>
+          <strong>FPL Andres</strong>
+        </a>
+        <nav>
+          <a href="#">Analyse</a>
+          <a href="#">Method</a>
+          <a href="#">Calibration</a>
+          <a href="#">Paid tier</a>
+        </nav>
+      </header>
+
+      <div class="hero-band">
+        <p class="eyebrow">01 · Analyse</p>
+        <h1>What did FPL last record for your squad?</h1>
+        <p class="hero-lede">
+          Enter a Team ID. The tool returns the public snapshot from the last
+          processed deadline and separates it from any private corrections you
+          make on top.
+        </p>
+
+        <form class="team-form" onsubmit="event.preventDefault()">
+          <label>
+            FPL team ID
+            <input type="text" placeholder="e.g. 212279" />
+          </label>
+          <button class="command" type="submit">Analyse team</button>
+        </form>
+
+        <span class="evidence-chip">
+          <span class="subbuteo-dot" aria-hidden="true"></span>
+          Observed snapshot ready · state_as_of 2026-07-20T10:30Z
+        </span>
+      </div>
+
+      <section aria-labelledby="squad-heading">
+        <h2 id="squad-heading">Last-deadline squad</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Position</th>
+              <th>Element</th>
+              <th>Multiplier</th>
+              <th>xPTS</th>
+              <th>Price</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="gkp">
+              <td>GKP</td>
+              <td>Element 101</td>
+              <td class="num">1×</td>
+              <td class="num">4.6</td>
+              <td class="num">£5.0m</td>
+            </tr>
+            <tr>
+              <td>DEF</td>
+              <td>Element 104</td>
+              <td class="num">1×</td>
+              <td class="num">5.1</td>
+              <td class="num">£5.5m</td>
+            </tr>
+            <tr>
+              <td>MID</td>
+              <td>Element 108</td>
+              <td class="num">2×</td>
+              <td class="num">7.8</td>
+              <td class="num">£9.0m</td>
+            </tr>
+            <tr>
+              <td>FWD</td>
+              <td>Element 112</td>
+              <td class="num">1×</td>
+              <td class="num">6.9</td>
+              <td class="num">£8.5m</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section aria-labelledby="paid-heading">
+        <h2 id="paid-heading">Paid tier · aggregate views</h2>
+        <div class="paid-preview">
+          <h3>OOP player rankings</h3>
+          <p>
+            Ranked view of players with a promoted `lord_lundstram_effect`
+            signal, sorted by xPTS per £. Enabled once the recency-weighted
+            deployment classifier accepts a live per-event feed and the
+            attacking-return projection promotes.
+          </p>
+          <span class="unavailable-tag">
+            <span class="subbuteo-dot" style="--dot-fill: var(--fa-amber); --ring: var(--fa-amber);" aria-hidden="true"></span>
+            unavailable — awaiting promoted OOP evidence
+          </span>
+        </div>
+      </section>
+
+      <footer>
+        Mockup — Matchday Programme · palette from `docs/design/inspiration/`
+        provisional until kit refs arrive.
+      </footer>
+    </div>
+  </body>
+</html>
