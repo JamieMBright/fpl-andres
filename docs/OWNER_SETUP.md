@@ -48,52 +48,70 @@ post-beta free tier is context-less advice + `+1 GW ahead`; paid tier is
 "buy me half a pint at the stadium" £3/month for planner, OOP, DefCon,
 FPL100 and groupthink.
 
-- [ x] CONFIRMED. Do not proceed to paywall without my explicit say so. I might leave it free for a year. Confirm. Not blocking — the gating shim ships last, at v1.0.0.
+- [x] **Confirmed, with a hard condition: no paywall ships without the owner's
+      explicit instruction.** It may stay free indefinitely. The gating shim is
+      built last and stays dormant until told otherwise.
 
 ---
 
-## Next action — dispatch the historical ingest
+## Your queue
 
-The ingest code, schema and workflow are built and tested. Nothing has written a
-real row yet because the workflow has never been dispatched. Two steps:
+Exactly one job is outstanding.
 
-### 1. Apply the history migration
+### Dispatch the historical ingest
 
-- [ ] Open the Supabase SQL Editor for `fpl-andres-production` and run
-      [`20260801120000_history_corpus.sql`](../supabase/migrations/20260801120000_history_corpus.sql).
-      Creates `seasons`, `teams`, `elements`, `fixtures`,
-      `element_gameweek_stats` and `element_price_observations`. All forced RLS,
-      no policy, no grant. Safe to run once; it has no `IF NOT EXISTS` guards, so
-      re-running will error rather than duplicate.
+Both migrations are applied. The ingest is one dispatch, not one per season.
 
-### 2. Dispatch the ingest, one season at a time
+- [ ] **Actions → Historical Ingest → Run workflow**, with `commit` =
+      `f2090d378ebd1b0c3d14884770dde95f38c50a0d` and everything else left at its
+      default (`seasons` = `all`, `gameweeks` = `1-38`, `data_available_at`
+      blank).
+- [ ] Paste back the per-season OK/FAIL list the job prints, or the failure
+      text, so the column map can be extended if a season drifted.
 
-- [ ] Find the current commit SHA of
-      [vaastav/Fantasy-Premier-League](https://github.com/vaastav/Fantasy-Premier-League)
-      (Actions → any commit → copy the full 40-character SHA). Pinning is what
-      makes the ingest reproducible.
-- [ ] Run **Actions → Historical Ingest → Run workflow** once per season, with
-      `gameweeks` left at `1-38`, for `2023-24`, then `2024-25` (the holdout
-      season the promotion gate uses), then `2025-26` (the first season carrying
-      DefCon labels).
-- [ ] Report back the row counts the job prints, or the failure text. Header
-      drift between archive seasons is expected and the ingest deliberately
-      fails loudly on it rather than defaulting a column; if a season errors
-      with a missing-column message, paste it and the column map gets extended.
-
+The run covers 2019-20 through 2025-26, roughly 180k player-gameweek rows. Each
+season opens its own `workflow_runs` row, so a season that fails can be re-run
+alone without redoing the others.
 ---
+
+## Waiting on an external gate
+
+Nothing to do until the gate opens.
 
 ### Live smoke test once FPL processes GW1
 
 - [ ] Open the rendered team snapshot for `212279` after GW1 has been
       processed. Confirm public last-deadline state is clearly separated from
-      any private corrections you have entered.
+      any private corrections you have entered. GW1 deadline is
+      2026-08-21T17:30Z.
 
 ### Live OOP evidence source
 
 Free prototype selected (Hudl StatsBomb Open Data + SkillCorner). Neither
 covers live 2026/27 Premier League, so live OOP stays `unavailable` until a
 paid provider is signed off. Deferred; not blocking.
+
+---
+
+## Agent backlog — no owner action
+
+Listed so the queue is visible, not because anything is needed from you. None
+of these require a credential, a click or a decision.
+
+- **FPL100, two cohorts.** Live top-100 from the overall league post-deadline,
+  plus a proven cohort built from `entry/{id}/history` past ranks. Both blocked
+  until GW1 populates standings.
+- **Groupthink, Tier 1.** Official crowd signal only: ownership share, transfer
+  momentum, `most_captained`. No third-party credential needed. Tier 2
+  (Reddit/YouTube sentiment) would need free API keys and is **not** planned
+  unless you ask for it.
+- **Scheduled snapshot jobs.** Weekly squad picks and the end-of-season top 100. These are `schedule:`-triggered, so they use the built-in Actions token
+  and need no PAT. They are the compounding assets that make a genuine personal
+  replay possible next season.
+- **Player enrichment.** Replace `"FPL element 101"` in the dossier with real
+  names, prices, positions and clubs.
+- **Model promotion run** once the corpus lands, under the confirmed
+  auto-promotion policy.
 
 ---
 

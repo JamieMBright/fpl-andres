@@ -1,22 +1,22 @@
+import re
 from pathlib import Path
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
-FOUNDATION_MIGRATION = REPOSITORY_ROOT / "supabase" / "migrations" / "20260729180000_foundation.sql"
-EVIDENCE_MIGRATION = (
-    REPOSITORY_ROOT / "supabase" / "migrations" / "20260729183000_evidence_snapshots.sql"
+MIGRATIONS_DIR = REPOSITORY_ROOT / "supabase" / "migrations"
+FOUNDATION_MIGRATION = MIGRATIONS_DIR / "20260729180000_foundation.sql"
+EVIDENCE_MIGRATION = MIGRATIONS_DIR / "20260729183000_evidence_snapshots.sql"
+PROJECTION_MIGRATION = MIGRATIONS_DIR / "20260730120000_projection_artifacts.sql"
+PLAN_MIGRATION = MIGRATIONS_DIR / "20260731120000_optimization_artifacts.sql"
+FOREIGN_KEY_INDEX_MIGRATION = MIGRATIONS_DIR / "20260731130000_foreign_key_indexes.sql"
+HISTORY_MIGRATION = MIGRATIONS_DIR / "20260801120000_history_corpus.sql"
+DEFENSIVE_COMPONENTS_MIGRATION = MIGRATIONS_DIR / "20260801130000_defensive_components.sql"
+
+_CREATE_TABLE = re.compile(r"create table (?:if not exists )?public\.(\w+)")
+_INDEX_TARGET = re.compile(
+    r"create index (?:concurrently )?(?:if not exists )?\w+\s+on public\.(\w+)"
 )
-PROJECTION_MIGRATION = (
-    REPOSITORY_ROOT / "supabase" / "migrations" / "20260730120000_projection_artifacts.sql"
-)
-PLAN_MIGRATION = (
-    REPOSITORY_ROOT / "supabase" / "migrations" / "20260731120000_optimization_artifacts.sql"
-)
-HISTORY_MIGRATION = (
-    REPOSITORY_ROOT / "supabase" / "migrations" / "20260801120000_history_corpus.sql"
-)
-DEFENSIVE_COMPONENTS_MIGRATION = (
-    REPOSITORY_ROOT / "supabase" / "migrations" / "20260801130000_defensive_components.sql"
-)
+_ALTER_TARGET = re.compile(r"alter table (?:only )?public\.(\w+)")
+_REFERENCES_TARGET = re.compile(r"references public\.(\w+)")
 
 HISTORY_TABLES = (
     "seasons",
@@ -26,6 +26,33 @@ HISTORY_TABLES = (
     "element_gameweek_stats",
     "element_price_observations",
 )
+
+
+def test_every_migration_only_touches_tables_that_already_exist() -> None:
+    """Migrations apply in filename order, so a table must precede its use.
+
+    Regression guard: the foreign-key index migration once sorted before the
+    migration creating `optimization_runs`, so every clean `supabase db reset`
+    failed with 42P01 while already-migrated environments stayed green.
+    """
+    created: set[str] = set()
+    problems: list[str] = []
+
+    for path in sorted(MIGRATIONS_DIR.glob("*.sql")):
+        sql = " ".join(path.read_text(encoding="utf-8").lower().split())
+        # A migration may reference anything it creates itself.
+        created.update(_CREATE_TABLE.findall(sql))
+
+        for pattern, kind in (
+            (_INDEX_TARGET, "indexes"),
+            (_ALTER_TARGET, "alters"),
+            (_REFERENCES_TARGET, "references"),
+        ):
+            for table in pattern.findall(sql):
+                if table not in created:
+                    problems.append(f"{path.name} {kind} public.{table} before it is created")
+
+    assert problems == []
 
 
 def test_foundation_table_is_explicitly_protected_by_rls() -> None:
