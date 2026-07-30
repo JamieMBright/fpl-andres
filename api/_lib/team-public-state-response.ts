@@ -1,10 +1,10 @@
 import { z } from "zod";
 
-import { createFplProxyResponse, FPL_PROXY_BUDGET_MS } from "./fpl-proxy";
+import { createFplProxyResponse, FPL_PROXY_BUDGET_MS } from "./fpl-proxy.js";
 import {
   assembleTeamPublicState,
   TeamPublicStateContractError,
-} from "./team-public-state";
+} from "./team-public-state.js";
 
 const MAX_PUBLIC_ID = 4_294_967_295;
 

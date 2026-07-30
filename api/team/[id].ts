@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 
-import { createTeamPublicStateResponse } from "../_lib/team-public-state-response";
+import { createTeamPublicStateResponse } from "../_lib/team-public-state-response.js";
 
 export default async function teamPublicStateHandler(
   request: VercelRequest,

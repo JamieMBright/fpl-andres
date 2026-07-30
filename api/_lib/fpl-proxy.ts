@@ -1,4 +1,4 @@
-import { FplPathError, resolveFplUpstreamUrl } from "./fpl-path";
+import { FplPathError, resolveFplUpstreamUrl } from "./fpl-path.js";
 
 const FPL_USER_AGENT =
   "FPLAndres/0.5 (+https://github.com/JamieMBright/fpl-andres)";

@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 
-import { normalizeVercelProxyUrl } from "../_lib/fpl-path";
-import { createFplProxyResponse } from "../_lib/fpl-proxy";
+import { normalizeVercelProxyUrl } from "../_lib/fpl-path.js";
+import { createFplProxyResponse } from "../_lib/fpl-proxy.js";
 
 export default async function fplProxyHandler(
   request: VercelRequest,

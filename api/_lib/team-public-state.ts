@@ -48,6 +48,13 @@ const timestampSchema = z.iso.datetime();
 
 export class TeamPublicStateContractError extends Error {
   override name = "TeamPublicStateContractError";
+  override readonly cause?: unknown;
+  constructor(message: string, options?: { cause?: unknown }) {
+    super(message);
+    if (options?.cause !== undefined) {
+      this.cause = options.cause;
+    }
+  }
 }
 
 interface AssembleTeamPublicStateInput {
