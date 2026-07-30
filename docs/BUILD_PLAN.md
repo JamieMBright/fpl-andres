@@ -189,6 +189,34 @@ Spearman versus realised points, per position, versus two baselines: FPL's own
 
 **This is the first milestone where the product has something to say.**
 
+### M9a — Season-start carry-forward and cold start (v0.7.3)
+
+Gameweek 1 has no current-season evidence, so nothing may be speculated. GW1
+projections carry forward the prior season's observed per-90 rates, minutes and
+start patterns, at a reduced `EvidenceLevel` naming the source season.
+
+- Cross-season player resolution (M3 already resolves identity; this consumes it)
+  so a player's prior-season record follows them through a transfer.
+- Player rates carry forward; **team context does not** — a player who changed
+  club inherits the new club's team-level projection.
+- Promoted clubs get the league-level prior, never a carried-forward strength.
+- Hard `unavailable` for players with no comparable prior observation: promoted
+  club debutants, arrivals from outside the Premier League, academy promotions,
+  and anyone below the prior-season minutes floor.
+- Progressive blend: current-season observations displace the prior as fixtures
+  accumulate, with the blend weight a sourced parameter. Once the sample floor
+  is met the prior contributes nothing.
+
+**Test**: a GW1 projection for a returning player cites the prior season and
+carries the reduced evidence level. A promoted-club debutant renders
+`unavailable` rather than a number. A transferred player's rates follow them
+while their clean-sheet context tracks the new club. Backtest GW1 of 2024/25
+and 2025/26 using only prior-season data.
+
+**Pairs with M17** — at GW1 the projections are at their weakest, so the
+aggregate crowd signal carries the most weight it will ever have. M17 is
+therefore pulled forward to ship alongside this milestone.
+
 ### M10 — DefCon (v0.8.0)
 
 - 2025/26+ `defensive_contribution` ingest already landed in M3.
@@ -265,13 +293,30 @@ transfer behaviour are not published in `bootstrap`). Once sourced, the
 `chip_scenario` literal expands across the three optimizer contracts and the
 quick solver. Until then every chip path fails closed, by design.
 
-### M17 — FPL50 / p100 / groupthink (v0.9.3)
+### M17 — Groupthink: crowd signal and rival cohorts (pulled forward to v0.7.3)
 
-Post-deadline only, per `LIMITATIONS.md`.
+Two distinct sources with two different availability windows. Conflating them
+would breach `LIMITATIONS.md`.
 
-- `standings` ingest for the top-N overall cohort.
-- Effective ownership and template divergence.
+**Aggregate crowd signal — available pre-deadline, including GW1.** Ownership
+share and event transfer counts ship in the public bootstrap before the
+deadline. This is the signal that matters most at GW1, when carried-forward
+projections are weakest, so it ships with M9a rather than at v0.9.
+
+- Ownership share, event transfers in/out, and transfer momentum.
+- Template detection: the near-universal picks that define the field.
+- Presented as revealed crowd behaviour with its own timestamp. It never
+  silently modifies a projection.
+
+**Rival cohorts — post-deadline only.**
+
+- `standings` ingest for the top-N overall cohort (FPL50, p100).
+- Effective ownership and template divergence versus that cohort.
 - Contextual view that does **not** alter projections in v1.
+
+**Test**: a pre-deadline GW1 request surfaces aggregate ownership but renders
+rival cohort panels `unavailable`. No code path reads individual picks before a
+deadline has been processed.
 
 ---
 

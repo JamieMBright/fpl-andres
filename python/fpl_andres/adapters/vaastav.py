@@ -31,9 +31,21 @@ class VaastavRevision:
     def gameweek_url(self, gameweek: int) -> str:
         if isinstance(gameweek, bool) or not 1 <= gameweek <= 38:
             raise ValueError("gameweek must be between 1 and 38")
+        return f"{self._season_root()}/gws/gw{gameweek}.csv"
+
+    def players_url(self) -> str:
+        return f"{self._season_root()}/players_raw.csv"
+
+    def teams_url(self) -> str:
+        return f"{self._season_root()}/teams.csv"
+
+    def fixtures_url(self) -> str:
+        return f"{self._season_root()}/fixtures.csv"
+
+    def _season_root(self) -> str:
         return (
             "https://raw.githubusercontent.com/vaastav/Fantasy-Premier-League/"
-            f"{self.commit_sha}/data/{self.season}/gws/gw{gameweek}.csv"
+            f"{self.commit_sha}/data/{self.season}"
         )
 
 

@@ -66,11 +66,42 @@ FPL does not publish the exact price-change mechanism. Outputs are calibrated mo
 probabilities backed by timestamped transfer and price observations. Exact thresholds,
 reset rules and protection claims are excluded.
 
+## Season start and cold start
+
+Before a ball is kicked there is no current-season evidence. Gameweek 1 projections
+therefore carry forward the previous season's observed per-90 rates, minutes and
+start patterns rather than speculating on the new season. Carry-forward is evidence,
+not prophecy, and it is labelled as such: every gameweek 1 projection is emitted at a
+reduced `EvidenceLevel` that names the source season.
+
+Carry-forward is only valid where a comparable prior observation exists. It is
+unavailable, not estimated, for:
+
+- players at promoted clubs with no Premier League minutes,
+- signings arriving from outside the Premier League,
+- debutants and academy promotions,
+- any player whose prior-season minutes fall below the declared sample floor.
+
+A player who changed club retains their own per-90 rates but inherits the new club's
+team-level context. Team strength is never carried forward for a promoted side; that
+side's baseline comes from the league-level prior until observed fixtures exist.
+
+Current-season observations replace carried-forward priors progressively as fixtures
+accumulate. The blend weight is a sourced model parameter, not an agent default. By
+the point the declared sample floor is met, the prior no longer contributes.
+
 ## Rivals and consensus
 
-Rival picks are used only after a deadline. Banked free transfers and pre-deadline
-intentions are not public. FPL50 is a separate contextual view of revealed public
-choices and does not alter player projections in v1.
+Individual rival picks are used only after a deadline. Banked free transfers and
+pre-deadline intentions are not public. FPL50 is a separate contextual view of
+revealed public choices and does not alter player projections in v1.
+
+Aggregate crowd signal is a different source with a different availability window.
+Ownership share and event transfer counts are published in the public bootstrap
+before the deadline and may be used pre-deadline, including for gameweek 1, where
+carried-forward projections are at their weakest. It is presented as revealed crowd
+behaviour with its own timestamp. It never silently modifies a projection, and it is
+never described as an individual manager's pick.
 
 ## Planning horizon
 

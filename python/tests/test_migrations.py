@@ -11,6 +11,18 @@ PROJECTION_MIGRATION = (
 PLAN_MIGRATION = (
     REPOSITORY_ROOT / "supabase" / "migrations" / "20260731120000_optimization_artifacts.sql"
 )
+HISTORY_MIGRATION = (
+    REPOSITORY_ROOT / "supabase" / "migrations" / "20260801120000_history_corpus.sql"
+)
+
+HISTORY_TABLES = (
+    "seasons",
+    "teams",
+    "elements",
+    "fixtures",
+    "element_gameweek_stats",
+    "element_price_observations",
+)
 
 
 def test_foundation_table_is_explicitly_protected_by_rls() -> None:
@@ -85,3 +97,41 @@ def test_optimization_artifacts_hash_private_state_and_remain_default_deny() -> 
         assert forbidden not in sql
     assert "create policy" not in sql
     assert "grant " not in sql
+
+
+def test_history_corpus_is_default_deny_and_traces_every_row_to_a_snapshot() -> None:
+    sql = HISTORY_MIGRATION.read_text(encoding="utf-8").lower()
+
+    for table in HISTORY_TABLES:
+        assert f"create table public.{table}" in sql
+        assert f"alter table public.{table} enable row level security" in sql
+        assert f"alter table public.{table} force row level security" in sql
+
+    assert "create policy" not in sql
+    assert "grant " not in sql
+
+
+def test_history_rows_carry_provenance_and_stable_cross_season_identity() -> None:
+    sql = HISTORY_MIGRATION.read_text(encoding="utf-8").lower()
+
+    # Every observation table must point at the immutable snapshot it came from.
+    for table in ("teams", "elements", "fixtures", "element_gameweek_stats"):
+        assert table in sql
+    assert sql.count("source_snapshot_id uuid not null references public.source_snapshots(id)") == 5
+
+    # element_id is season-scoped; code is the cross-season join key.
+    assert "element_code integer not null" in sql
+    assert "element_gameweek_stats_code_idx" in sql
+
+    # DefCon labels only exist from 2025/26, so the column must stay nullable.
+    assert "defensive_contribution integer check" in sql
+    assert "defensive_contribution is null or defensive_contribution >= 0" in sql
+
+
+def test_history_corpus_is_upsertable_rather_than_immutable() -> None:
+    sql = HISTORY_MIGRATION.read_text(encoding="utf-8").lower()
+
+    # FPL revises in-season data, so these tables intentionally carry no
+    # immutability trigger. Provenance lives in source_snapshots instead.
+    for table in HISTORY_TABLES:
+        assert f"create trigger {table}_are_immutable" not in sql
