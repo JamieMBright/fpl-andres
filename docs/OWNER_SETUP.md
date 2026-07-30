@@ -72,14 +72,10 @@ real row yet because the workflow has never been dispatched. Two steps:
       [vaastav/Fantasy-Premier-League](https://github.com/vaastav/Fantasy-Premier-League)
       (Actions → any commit → copy the full 40-character SHA). Pinning is what
       makes the ingest reproducible.
-- [ ] Run **Actions → Historical Ingest → Run workflow** three times:
-
-      | season  | gameweeks | note                          |
-          | ------- | --------- | ----------------------------- |
-          | 2023-24 | 1-38      |                               |
-          | 2024-25 | 1-38      | holdout season for promotion  |
-          | 2025-26 | 1-38      | first DefCon labels           |
-
+- [ ] Run **Actions → Historical Ingest → Run workflow** once per season, with
+      `gameweeks` left at `1-38`, for `2023-24`, then `2024-25` (the holdout
+      season the promotion gate uses), then `2025-26` (the first season carrying
+      DefCon labels).
 - [ ] Report back the row counts the job prints, or the failure text. Header
       drift between archive seasons is expected and the ingest deliberately
       fails loudly on it rather than defaulting a column; if a season errors
