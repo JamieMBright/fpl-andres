@@ -1,69 +1,82 @@
 <svg
   xmlns="http://www.w3.org/2000/svg"
-  viewBox="0 0 240 180"
+  viewBox="0 0 260 200"
   role="img"
   aria-label="FPL Andres — the bucket, @fpl_andres"
 >
   <!--
-    Derived from docs/design/inspiration/bucket.webp — Bielsa's blue plastic
-    drinks cooler. Simplified to a bucket silhouette (no photo trace, no
-    grass, no dugout). The Wish sponsor plate and Leeds crest are replaced
-    with a plain sponsor plate carrying the @fpl_andres wordmark; no club
-    heraldry is retained. currentColor drives the bucket body so the design
-    tokens set the hue.
+    Attempt 2. Derived from docs/design/inspiration/bucket.webp — the Bielsa
+    plastic drinks cooler. Truncated cone (wider at bottom than top), no
+    handles, subtle base plinth, small dark top rim, sponsor plate positioned
+    at ~55% height where the Wish sticker actually sat. Wordmark is
+    @fpl_andres; the Leeds crest sticker is deliberately not carried over.
+    currentColor drives the bucket body so design tokens set the hue.
   -->
 
-  <!-- Bucket body -->
+  <!-- Base shadow -->
+  <ellipse
+    cx="130"
+    cy="182"
+    rx="112"
+    ry="4"
+    fill="var(--fa-surface-deep, #050a18)"
+    opacity="0.28"
+  />
+
+  <!-- Bucket body: truncated cone -->
   <path
-    d="M 60 40 L 180 40 L 200 150 L 40 150 Z"
+    d="M 68 32
+       L 192 32
+       L 232 172
+       L 28 172
+       Z"
     fill="currentColor"
     stroke="currentColor"
-    stroke-width="4"
+    stroke-width="2"
     stroke-linejoin="round"
   />
 
-  <!-- Top opening — inset ellipse suggests the open drinks-cooler rim -->
+  <!-- Base plinth: subtle horizontal band suggesting the moulded bottom rim -->
+  <rect
+    x="28"
+    y="164"
+    width="204"
+    height="8"
+    fill="var(--fa-surface-deep, #050a18)"
+    opacity="0.18"
+  />
+
+  <!-- Top rim: small dark ellipse showing the drinks-cooler opening -->
   <ellipse
-    cx="120"
-    cy="40"
-    rx="60"
-    ry="8"
-    fill="var(--fa-base-deep, #050a18)"
-    stroke="currentColor"
-    stroke-width="3"
+    cx="130"
+    cy="32"
+    rx="62"
+    ry="5"
+    fill="var(--fa-surface-deep, #050a18)"
+    opacity="0.5"
   />
 
-  <!-- Bottom rim highlight -->
-  <line
-    x1="46"
-    y1="138"
-    x2="194"
-    y2="138"
-    stroke="var(--fa-cream, #f2eddc)"
-    stroke-width="2"
-    opacity="0.35"
-  />
-
-  <!-- Sponsor plate -->
+  <!-- Sponsor plate: white sticker at ~55% height, replaces the Wish tag -->
   <rect
     x="52"
-    y="72"
-    width="136"
-    height="30"
-    rx="3"
-    fill="var(--fa-cream, #f2eddc)"
+    y="100"
+    width="156"
+    height="36"
+    rx="4"
+    fill="#f8f6ea"
   />
 
-  <!-- Wordmark — replaces the removed sponsor and crest -->
+  <!-- Wordmark: fixed purple so it reads on the fixed off-white plate,
+       independent of the surrounding bucket / theme hue -->
   <text
-    x="120"
-    y="93"
+    x="130"
+    y="125"
     text-anchor="middle"
     font-family="'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace"
-    font-size="16"
+    font-size="19"
     font-weight="700"
-    letter-spacing="0.5"
-    fill="currentColor"
+    letter-spacing="-0.3"
+    fill="#4a008e"
   >
     @fpl_andres
   </text>

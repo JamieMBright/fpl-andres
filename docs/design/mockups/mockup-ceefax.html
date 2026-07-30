@@ -44,8 +44,8 @@
       }
 
       html[data-theme="light"] {
-        --fa-surface: #ffffff;
-        --fa-surface-deep: #e4e3eb;
+        --fa-surface: #f7f5ea;
+        --fa-surface-deep: #ffffff;
         --fa-surface-rise: #ffffff;
         --fa-stripe-a: #e4e3eb;
         --fa-stripe-b: #e5da15;
@@ -99,16 +99,17 @@
       }
 
       html[data-theme="light"] .frame {
-        /* Home kit stripes: silver #e4e3eb pairs with pale yellow over the
-           pure white base so the alternating rhythm reads as the shirt's
-           chest band without overwhelming the tabular content. */
+        /* Home kit stripes: silver #e4e3eb next to pale yellow, over the
+           warm off-white base. Reads as the shirt's chest band pairing, not
+           a lavender wash. */
         background: repeating-linear-gradient(
           to right,
-          var(--fa-stripe-a) 0,
-          var(--fa-stripe-a) var(--fa-stripe-width),
-          color-mix(in srgb, var(--fa-stripe-b) 55%, var(--fa-surface))
+          color-mix(in srgb, var(--fa-stripe-a) 65%, var(--fa-surface)) 0,
+          color-mix(in srgb, var(--fa-stripe-a) 65%, var(--fa-surface))
             var(--fa-stripe-width),
-          color-mix(in srgb, var(--fa-stripe-b) 55%, var(--fa-surface))
+          color-mix(in srgb, var(--fa-stripe-b) 45%, var(--fa-surface))
+            var(--fa-stripe-width),
+          color-mix(in srgb, var(--fa-stripe-b) 45%, var(--fa-surface))
             calc(var(--fa-stripe-width) * 2)
         );
       }
@@ -252,6 +253,14 @@
 
       html[data-theme="dark"] h1 em {
         color: var(--fa-gk-lime);
+      }
+
+      html[data-theme="light"] h1 em {
+        background: var(--fa-stripe-b);
+        color: var(--fa-ink);
+        padding: 0 10px;
+        -webkit-box-decoration-break: clone;
+        box-decoration-break: clone;
       }
 
       .hero-lede {
@@ -496,12 +505,13 @@
 
       <header>
         <a class="brand-mark" href="#" aria-label="FPL Andres — @fpl_andres">
-          <svg viewBox="0 0 240 180" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-            <path d="M 60 40 L 180 40 L 200 150 L 40 150 Z" fill="currentColor" stroke="currentColor" stroke-width="4" stroke-linejoin="round"/>
-            <ellipse cx="120" cy="40" rx="60" ry="8" fill="var(--fa-surface-deep)" stroke="currentColor" stroke-width="3"/>
-            <line x1="46" y1="138" x2="194" y2="138" stroke="var(--fa-ink)" stroke-width="2" opacity="0.35"/>
-            <rect x="52" y="72" width="136" height="30" rx="3" fill="var(--fa-ink)"/>
-            <text x="120" y="93" text-anchor="middle" font-family="'IBM Plex Mono', ui-monospace, monospace" font-size="16" font-weight="700" letter-spacing="0.5" fill="currentColor">@fpl_andres</text>
+          <svg viewBox="0 0 260 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <ellipse cx="130" cy="182" rx="112" ry="4" fill="var(--fa-surface-deep)" opacity="0.28"/>
+            <path d="M 68 32 L 192 32 L 232 172 L 28 172 Z" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+            <rect x="28" y="164" width="204" height="8" fill="var(--fa-surface-deep)" opacity="0.18"/>
+            <ellipse cx="130" cy="32" rx="62" ry="5" fill="var(--fa-surface-deep)" opacity="0.5"/>
+            <rect x="52" y="100" width="156" height="36" rx="4" fill="#f8f6ea"/>
+            <text x="130" y="125" text-anchor="middle" font-family="'IBM Plex Mono', ui-monospace, monospace" font-size="19" font-weight="700" letter-spacing="-0.3" fill="#4a008e">@fpl_andres</text>
           </svg>
           <span class="brand-wordmark">FPL Andres</span>
         </a>

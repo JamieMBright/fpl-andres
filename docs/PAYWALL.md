@@ -1,101 +1,116 @@
 # Paywall Plan
 
-FPL Andres is fully free today. This document names the intended free vs paid
-shelves, the evidence gates each shelf must respect, and the shipping order.
-No gating shim exists in code yet; every listed feature ships as `unavailable`
-with an evidence chip that explains what is still missing until the underlying
-evidence promotes.
+FPL Andres is in **beta**. Every feature listed on this page is fully open
+today. This document is the forward plan for what happens when the beta
+label comes off — three tiers, each gated by evidence rather than by an
+arbitrary lock.
 
-## Shelves
+## Beta (current)
 
-The tool splits into three shelves. A shelf is the surface the user is on, not
-the subscription tier.
+- All features free, all shelves open to everyone.
+- No entitlement check, no upgrade prompt, no paywall label anywhere in
+  the UI.
+- Every future paid feature ships first as `unavailable` behind an
+  evidence chip so the layout can settle while the underlying model
+  progresses through the promotion contract.
 
-### Tool — always free with a Team ID
+## Free tier (post-beta)
 
-The public snapshot dossier and browser-local corrections. This is the
-existing v0.5.x experience:
+Context-less advice and short-horizon planning that never needs a Team ID.
+Fast to compute, cheap to serve, honest about its limits.
 
-- Team-ID entry and analysis dossier.
-- Manager corrections (bank, free transfers, queued moves, chips) held only in
-  the browser.
-- Methodology, calibration and source-trail disclosures.
+- **Context-less top calls.** League-wide xPTS/£ tables for outfield
+  players and goalkeepers, filtered by position, availability and fixture
+  window. Nothing about the manager's private state is consumed.
+- **+1 GW ahead strategy.** A single-gameweek-ahead recommendation
+  layered on the tool: "given your current public snapshot, here is the
+  captain, one transfer and lineup call for next deadline." Explicitly
+  bounded to one gameweek; the multi-gameweek roll is paid.
 
-No paywall applies here. It is the working tool.
+## Paid tier — "buy me half a pint at the stadium" (post-beta)
 
-### Free tier — planned, context-less
+The tier name and price are the product's own voice. Owner writes the
+copy verbatim on any pricing surface:
 
-League-wide rankings that do not need a Team ID. These require nothing about
-the manager's private state and can be computed once and served to everyone.
+> **Buy me half a pint at the stadium — £3/month.**
 
-- **Top xPTS per £.** All eligible outfield players ranked by promoted
-  expected points per unit price, filtered by position, availability and
-  fixture window.
-- **Top xPTS per £ for goalkeepers.** Same, restricted to GKP.
+Content unlocked at the paid tier:
 
-### Paid tier — planned, evidence-gated aggregate views
+- **Full future fixture planner.** The multi-gameweek rolling plan the
+  optimiser is already capable of producing, exposed to the user with
+  bank and free-transfer flow across the horizon.
+- **OOP player analysis.** Ranked view of players with a promoted
+  `lord_lundstram_effect` or `reverse_oop` signal, sorted by xPTS/£ over
+  the promoted attacking projection. Requires the per-event recency
+  contract in
+  [`docs/MODEL_CARDS.md`](MODEL_CARDS.md#deployment-signal--1).
+- **DefCon beasts.** Players with the highest probability of stable
+  DefCon returns per £, over a rolling window. Requires a promoted
+  DefCon model, which depends on 2025/26+ observed defensive-actions
+  data (see [`docs/LIMITATIONS.md`](LIMITATIONS.md)).
+- **FPL50.** A curated view of the revealed public choices of the top 50
+  managers post-deadline. Contextual, not a projection input — surfaces
+  what the sharpest revealed portfolios did, without altering the tool's
+  own player projections.
+- **Generic p100 stats.** Aggregate ownership and captaincy across the
+  top 100 overall rank managers, still context-less about the current
+  user's team. Enables "what does the top 100 look like right now"
+  reading.
+- **Groupthink.** Effective-ownership and template-drift readings
+  computed against a chosen manager cohort (top 10k, top 100k, overall).
 
-Aggregate analytical panels that layer promoted evidence on top of the free
-rankings. These do not consume a Team ID either, but their inputs are more
-expensive to generate and require additional evidence promotion.
+Each paid panel must still respect the promotion contract:
 
-- **OOP player rankings.** Ranked view of players with a `lord_lundstram_effect`
-  or `reverse_oop` signal that has passed the promotion contract, sorted by
-  xPTS per £ over the promoted attacking projection. Requires per-event role
-  observations, the recency contract in
-  [`docs/MODEL_CARDS.md`](MODEL_CARDS.md#deployment-signal--1), and a promoted
-  attacking-return projection.
-- **DefCon beasts.** Players with the highest probability of stable DefCon
-  returns per £, over a rolling window. Requires promoted DefCon models
-  (which are unavailable today because they rely on 2025/26+ observed defensive
-  actions per [`docs/LIMITATIONS.md`](LIMITATIONS.md)).
-
-## Evidence gates each paid panel must clear
-
-Before a paid panel is enabled, every entry must:
-
-1. Cite an underlying promoted model. Experimental or unpromoted forecasts are
-   never surfaced under the paid shelf.
-2. Attach source hashes and evidence timestamps in the same way the current
-   dossier does.
-3. Show `unavailable` for players who do not clear the sample floor or whose
-   recency contract emits a regime change (per the deployment classifier).
-4. Refuse to invent placeholder ranks. If no player clears the gate, the panel
-   ships an honest `no eligible players yet` message.
+1. Cite an underlying promoted model. Experimental or unpromoted
+   forecasts are never surfaced under the paid shelf.
+2. Attach source hashes and evidence timestamps in the same way the
+   current dossier does.
+3. Show `unavailable` for players who do not clear the sample floor or
+   whose recency contract emits a regime change.
+4. Refuse to invent placeholder ranks. If no player clears the gate, the
+   panel ships an honest `no eligible players yet` message rather than
+   filler entries.
 
 ## Shipping order (proposed)
 
-1. **v0.6.0 — Free tier layout.** Ship the top xPTS/£ panels behind an
-   evidence chip that says `unavailable — awaiting promoted xPTS model`. No
-   real data yet; the surface is present so the paywall design can settle.
+1. **v0.6.0 — Free-tier layout.** Ship the context-less top-calls
+   panels and the +1 GW panel behind an evidence chip that says
+   `unavailable — awaiting promoted xPTS model`. Layout only, no numbers.
 2. **v0.7.0 — Promoted xPTS model.** Once the xPTS candidate clears its
-   walk-forward evaluation and paired-improvement gate, the free tier panels
-   flip from `unavailable` to `observed` and paid panels become buildable.
-3. **v0.8.0 — OOP paid panel.** Recency-weighted deployment classifier
-   consumes live per-event observations, promoted attacking projections
-   attach, panel opens.
-4. **v0.9.0 — DefCon paid panel.** Only reachable after the 2025/26 DefCon
+   walk-forward evaluation and paired-improvement gate, the free-tier
+   panels flip from `unavailable` to `observed`. Paid-tier panels remain
+   in preview.
+3. **v0.8.0 — Fixture planner + OOP paid panels.** Multi-gameweek roll
+   and the recency-weighted deployment classifier consume live per-event
+   observations.
+4. **v0.9.0 — FPL50, p100 and groupthink.** Requires the FPL50 post-
+   deadline pull, plus league-wide manager cohort ingest. All three go
+   live together once the ingest is stable.
+5. **v0.10.0 — DefCon beasts.** Reachable once the 2025/26 DefCon
    corpus has enough games to promote at least one model.
-5. **v1.0.0 — Gating shim.** Auth and entitlement come last. Until then, both
-   free and paid shelves are visible to everyone; the paywall label warns
-   users that access will change at a stated future date.
+6. **v1.0.0 — Gating shim.** Auth and entitlement come last. Until
+   then, both free and paid shelves remain visible to everyone; the paid
+   surface shows a `beta — free during beta` label with the intended
+   post-beta pricing so users are not surprised at cutover.
 
-## What is deliberately out of scope
+## Explicitly out of scope
 
-- Any teaser number, price or rank that would appear on the paid shelf before
-  its underlying model has promoted. The design contract already rejects
-  "decorative statistics without a decision consequence".
-- Any per-user recommendation on the free or paid shelf. Both shelves are
-  league-wide; per-Team-ID recommendations remain the Tool shelf and do not
-  paywall.
-- Ownership of past predictions inside a paid archive. Owner has not asked
-  for it yet.
+- Any teaser number, price or rank that would appear on the paid shelf
+  before its underlying model has promoted. The design contract already
+  rejects "decorative statistics without a decision consequence".
+- Per-user tailored recommendations on the free or paid shelf other than
+  the +1 GW panel. Deep Team-ID recommendations remain the Tool shelf
+  and do not paywall.
+- Ownership of past predictions inside a paid archive. Owner has not
+  asked for it yet.
+- Monthly billing beyond the £3 line while beta is active. Payment
+  provider selection and billing model land in v1.0.0.
 
 ## Owner decisions still open
 
-- Pricing tier structure (monthly, seasonal, single-payment, none). Not
-  needed until v1.0.0.
-- Payments provider. Not needed until v1.0.0.
-- Whether the paid shelf shows on the Team-ID dossier as inline sidebars or
-  as a separate route. Design will pin this once the mockup direction is
-  chosen (see [`docs/design/mockups/`](design/mockups/README.md)).
+- Payments provider (Stripe Checkout, GoCardless, Buy Me a Coffee /
+  Ko-fi for a lower-friction "half a pint" flow, etc.). Not needed until
+  v1.0.0.
+- Whether the paid shelf shows on the Team-ID dossier as inline sidebars
+  or as a separate route. Design will pin this once the mockup direction
+  is chosen (see [`docs/design/mockups/`](design/mockups/README.md)).

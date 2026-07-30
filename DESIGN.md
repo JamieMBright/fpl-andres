@@ -62,10 +62,10 @@ frontend picks them up from `--fa-*` custom properties.
 
 | Token           | Value       | Use                                          |
 | --------------- | ----------- | -------------------------------------------- |
-| Paper           | `#e4e3eb`   | App frame background (silver-white)          |
-| Paper deep      | `#ffffff`   | Ruled ground (pure white surfaces)           |
-| Paper rise      | `#ffffff`   | Elevated surfaces                            |
-| Stripe white    | `#ffffff`   | Home-kit stripe A                            |
+| Paper           | `#f7f5ea`   | App frame background (warm off-white)        |
+| Paper deep      | `#ffffff`   | Elevated surfaces (tables, panels)           |
+| Paper rise      | `#ffffff`   | Elevated surfaces and ruled headers          |
+| Stripe silver   | `#e4e3eb`   | Home-kit stripe A (owner-specified white)    |
 | Stripe yellow   | `#e5da15`   | Home-kit stripe B                            |
 | Home blue       | `#4a008e`   | Primary copy, structural rules, buttons      |
 | Home blue rise  | `#6a3aa8`   | Hover / focus tint on the blue accent        |
