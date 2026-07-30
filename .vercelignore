@@ -1,0 +1,30 @@
+# Files not needed by the Vercel build. Trims the deployment tarball and
+# avoids Vercel walking directories it does not need to hash.
+
+# Python source, tests and virtualenvs — Vercel builds the web app only.
+python/
+*.pyc
+__pycache__/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+
+# Docs and specs — not needed by the runtime.
+docs/
+CHANGELOG.md
+
+# Test artefacts.
+coverage/
+playwright-report/
+test-results/
+
+# Editor and local tooling.
+.vscode/
+.idea/
+
+# Local strategist working documents — owner-only, untracked in git anyway.
+fpl-strategist-*.md
+
+# Local env overrides.
+.env.local
+.env.*.local

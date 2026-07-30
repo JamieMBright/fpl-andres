@@ -127,15 +127,32 @@ from private Supabase tables, so the publishable key is not needed today.
 ## When Phase 5 requests Vercel setup
 
 1. [ ] Import `JamieMBright/fpl-andres` into Vercel.
-2. [ ] Confirm the production branch is `main`, framework preset is Vite, and Vercel
-       reads the committed `vercel.json`.
-3. [ ] Share only the Vercel project/team IDs and generated deployment URL in chat.
-4. [ ] In **Project Settings > Environment Variables**, add `SUPABASE_URL` for
+2. [ ] Confirm the production branch is `main`.
+3. [ ] In **Project Settings > General**, set:
+       - **Framework Preset**: `Other` (not `Vite`). This monorepo owns its build
+         command; the Vite preset would override `outputDirectory` and misread
+         the workspace root.
+       - **Root Directory**: leave empty (repo root). The workspace's
+         `vercel.json` handles `installCommand`, `buildCommand` and
+         `outputDirectory: apps/web/dist`. A non-empty Root Directory hides the
+         other workspace packages (`@fpl-andres/contracts`, `@fpl-andres/quick-solver`)
+         and installs would fail with unresolved workspace protocol deps.
+       - **Node.js Version**: `22.x`. The repo's `.npmrc` sets
+         `engine-strict=true` and root `package.json` requires
+         `node: ">=20.19.0"`; Node 22.x satisfies both and matches the local
+         development pin. Older 20.x images (< 20.19) or Node 18 will fail
+         install with `ERR_PNPM_UNSUPPORTED_ENGINE`.
+       - **Install Command**, **Build Command**, **Output Directory**: leave
+         all blank so Vercel reads `vercel.json`.
+4. [ ] Share only the Vercel project/team IDs and generated deployment URL in chat.
+5. [ ] In **Project Settings > Environment Variables**, add `SUPABASE_URL` for
        **Production** when requested.
-5. [ ] Add `SUPABASE_SECRET_KEY` for **Production** only when a reviewed server route
+6. [ ] Add `SUPABASE_SECRET_KEY` for **Production** only when a reviewed server route
        first requires private database access. Enter it directly in Vercel.
-6. [ ] Do not create `VITE_SUPABASE_SECRET_KEY` or expose the secret to Preview/browser
-       builds.
+7. [ ] Never create `VITE_SUPABASE_SECRET_KEY`, `VITE_SUPABASE_URL` or any other
+       `VITE_`-prefixed Supabase name. Anything named `VITE_*` is inlined into the
+       browser bundle at build time and would leak the service_role key to every
+       visitor. Server routes read the unprefixed names via `process.env`.
 
 ## When scheduled production jobs are added
 
