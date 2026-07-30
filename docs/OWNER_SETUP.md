@@ -48,14 +48,45 @@ the repository.
       This can only be exercised once FPL has processed at least one event; the
       preseason canary correctly returned `no_processed_event`.
 
-### Optional — heatmap-derived out-of-position (OOP)
+### Optional — live out-of-position (OOP) evidence
 
-- [ ] Provide a rights-cleared role/event or heatmap data source, or confirm that
-      heatmap inference should remain unavailable.
-- [ ] Enter any provider credential directly into the approved server/worker
-      environment.
-- [ ] Confirm the licence permits derived role classifications such as the
-      Lord Lundstram effect. Screenshots and unlicensed heat maps are not scraped.
+**Recommendation:** ship the initial-squad and transfer workflows without paid
+tracking data. Heatmaps are optional enrichment, not a pre-GW1 dependency. Use
+[SkillCorner Open Data](https://github.com/SkillCorner/opendata) to validate the role
+clustering pipeline, then buy a live feed only if OOP evidence materially improves
+walk-forward results.
+
+Researched options (checked 2026-07-30):
+
+- **Sportmonks — pragmatic declared-role option.** Premier League lineups,
+  formations, events and expected lineups; plans start at €29/month. Its terms allow
+  building and monetising apps but prohibit reselling the raw feed. This can support
+  `declared_lineup` evidence, not heatmap clustering. Ask support to confirm that
+  public derived role labels and retained source hashes are permitted.
+- **SkillCorner commercial — best true-tracking fit.** Continuous player/ball XY
+  tracking, off-camera extrapolation and game-intelligence data across 120+
+  competitions. Pricing and public-product rights require a sales agreement.
+- **Hudl StatsBomb 360 — best event-plus-location fit.** 3,400+ events per match and
+  player-location freeze frames across 40+ key leagues. It is sampled location data,
+  not continuous tracking; pricing and redistribution rights are sales-only.
+- **Opta Vision — enterprise continuous tracking.** Synchronized events and
+  uninterrupted XY locations for all 22 players across 80+ competitions. Pricing and
+  public-product rights are sales-only.
+- **Prototype-only sources.** SkillCorner Open Data is MIT-licensed and includes ten
+  tracked A-League 2024/25 matches. Hudl StatsBomb Open Data includes events, lineups
+  and selected 360 frames under attribution terms. Neither covers current Premier
+  League production evidence. Metrica's three anonymized sample matches have no clear
+  repository licence, so do not adopt them without written permission.
+
+- [ ] Confirm either **defer paid live OOP data for v1** (recommended) or select a
+      provider and budget.
+- [ ] Before purchase, obtain written permission for Premier League coverage, model
+      training, stored source hashes, public derived role labels, required attribution
+      and retention after cancellation. Raw events, coordinates, logos and images will
+      not be republished.
+- [ ] After a reviewed server adapter exists, enter the provider credential directly
+      into the approved server/worker environment. Screenshots and unlicensed heatmaps
+      are never scraped.
 
 ### Before real email
 

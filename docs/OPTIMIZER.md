@@ -18,6 +18,28 @@ and namespaced by team ID plus public deadline. A canonical SHA-256 identifies t
 validated override object; persisted plans store this hash and timestamps, not the raw
 override JSON or priced squad.
 
+## Pre-GW1 initial squad
+
+FPL Andres must support an initial-squad recommendation before FPL has processed the
+first deadline. This mode does not accept or require a Team ID because no public picks
+snapshot exists yet. It is a squad-construction problem, not a transfer problem.
+
+An initial-squad request must supply:
+
+- the official FPL player list, prices, listed positions, clubs and availability fields;
+- the published fixture schedule and an explicit prediction cutoff;
+- promoted, timestamped player forecasts for every event in the requested opening
+  horizon;
+- a season-specific rules snapshot containing the initial budget, squad/formation
+  counts and club limit; and
+- explicit event weights and horizon rather than a hidden default.
+
+The solver chooses the 15-player squad, GW1 starting XI, captain and vice-captain while
+enforcing those sourced rules. It must attach forecast evidence levels, source hashes
+and timestamps to the result. Missing role or heatmap evidence only disables the OOP
+signal; it does not block initial-squad construction. A recommendation remains
+unavailable until its player forecasts pass the promotion contract.
+
 ## Single-event HiGHS
 
 The SciPy/HiGHS MILP chooses the final squad, starting XI and captain while enforcing:
