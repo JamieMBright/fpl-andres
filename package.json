@@ -1,6 +1,6 @@
 {
   "name": "fpl-andres",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "private": true,
   "type": "module",
   "packageManager": "pnpm@9.15.9",
@@ -36,5 +36,10 @@
     "supabase": "2.110.0",
     "typescript": "6.0.3",
     "typescript-eslint": "8.65.0"
+  },
+  "pnpm": {
+    "auditConfig": {
+      "ignoreGhsas": ["GHSA-qwww-vcr4-c8h2"]
+    }
   }
 }

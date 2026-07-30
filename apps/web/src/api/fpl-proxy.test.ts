@@ -78,6 +78,7 @@ describe("FPL proxy transport", () => {
     expect(response.status).toBe(502);
     await expect(response.json()).resolves.toEqual({
       error: "FPL returned a response larger than the allowed limit.",
+      reason: "oversize",
     });
   });
 
@@ -164,6 +165,77 @@ describe("FPL proxy transport", () => {
     expect(response.status).toBe(503);
     expect(upstreamFetch).toHaveBeenCalledTimes(1);
     expect(sleep).not.toHaveBeenCalled();
+  });
+
+  it("returns fpl_source_failed diagnostic when upstream Content-Type is not JSON", async () => {
+    const upstreamFetch = vi.fn<typeof fetch>().mockResolvedValue(
+      new Response("<html>maintenance</html>", {
+        status: 200,
+        headers: { "Content-Type": "text/html" },
+      }),
+    );
+
+    const response = await createFplProxyResponse(
+      "/api/fpl/bootstrap-static/",
+      "GET",
+      upstreamFetch,
+    );
+
+    expect(response.status).toBe(502);
+    await expect(response.json()).resolves.toEqual({
+      error: "FPL returned an unexpected response format.",
+      reason: "unexpected_format",
+    });
+  });
+
+  it("resolves with fpl_unreachable when the response body stream errors mid-read", async () => {
+    const failingBody = new ReadableStream<Uint8Array>({
+      start(controller) {
+        controller.enqueue(new TextEncoder().encode('{"partial'));
+        controller.error(new TypeError("mid-stream connection reset"));
+      },
+    });
+    const upstreamFetch = vi.fn<typeof fetch>().mockResolvedValue(
+      new Response(failingBody, {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      }),
+    );
+
+    const response = await createFplProxyResponse(
+      "/api/fpl/entry/1/",
+      "GET",
+      upstreamFetch,
+    );
+
+    expect(response.status).toBe(502);
+    await expect(response.json()).resolves.toEqual({
+      error: "FPL could not be reached within the request budget.",
+      reason: "unreachable",
+    });
+  });
+
+  it("classifies an upstream 500 as fpl_source_failed rather than unreachable", async () => {
+    const upstreamFetch = vi.fn<typeof fetch>().mockResolvedValue(
+      new Response(JSON.stringify({ detail: "internal error" }), {
+        status: 500,
+        headers: { "Content-Type": "application/json" },
+      }),
+    );
+    const sleep = vi
+      .fn<(milliseconds: number) => Promise<void>>()
+      .mockResolvedValue();
+
+    const response = await createFplProxyResponse(
+      "/api/fpl/entry/1/",
+      "GET",
+      upstreamFetch,
+      sleep,
+      () => 0.5,
+    );
+
+    expect(response.status).toBe(500);
+    expect(upstreamFetch).toHaveBeenCalledTimes(3);
   });
 
   it("cancels a chunked response as soon as its body exceeds the limit", async () => {

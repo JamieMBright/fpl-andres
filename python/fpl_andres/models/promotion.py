@@ -4,8 +4,10 @@ import math
 import random
 from collections.abc import Callable, Sequence
 from dataclasses import dataclass
+from typing import Literal
 
 Metric = Callable[[Sequence[float], Sequence[float]], float]
+MetricDirection = Literal["lower_is_better", "higher_is_better"]
 
 
 @dataclass(frozen=True)
@@ -51,6 +53,7 @@ def evaluate_promotion(
     *,
     metric_name: str,
     metric: Metric,
+    metric_direction: MetricDirection,
     resamples: int,
     seed: int,
     confidence: float,
@@ -59,6 +62,7 @@ def evaluate_promotion(
     _validate_parameters(
         triplets,
         metric_name=metric_name,
+        metric_direction=metric_direction,
         resamples=resamples,
         seed=seed,
         confidence=confidence,
@@ -69,7 +73,7 @@ def evaluate_promotion(
     observed_values = tuple(row.observed for row in triplets)
     baseline_point = metric(baseline_values, observed_values)
     candidate_point = metric(candidate_values, observed_values)
-    improvement_point = baseline_point - candidate_point
+    improvement_point = _improvement(baseline_point, candidate_point, metric_direction)
     sample_size = len(triplets)
 
     if sample_size < minimum_sample_size:
@@ -103,7 +107,9 @@ def evaluate_promotion(
         candidate_metric = metric(sampled_candidate, sampled_observed)
         baseline_samples.append(baseline_metric)
         candidate_samples.append(candidate_metric)
-        improvement_samples.append(baseline_metric - candidate_metric)
+        improvement_samples.append(
+            _improvement(baseline_metric, candidate_metric, metric_direction)
+        )
 
     baseline_result = _bootstrap_result(
         metric_name,
@@ -154,6 +160,7 @@ def _validate_parameters(
     triplets: Sequence[TripletPrediction],
     *,
     metric_name: str,
+    metric_direction: MetricDirection,
     resamples: int,
     seed: int,
     confidence: float,
@@ -163,6 +170,8 @@ def _validate_parameters(
         raise ValueError("promotion evaluation requires at least one prediction")
     if not metric_name:
         raise ValueError("metric_name must be non-empty")
+    if metric_direction not in ("lower_is_better", "higher_is_better"):
+        raise ValueError("metric_direction must be 'lower_is_better' or 'higher_is_better'")
     if isinstance(resamples, bool) or not isinstance(resamples, int) or resamples < 1:
         raise ValueError("resamples must be a positive integer")
     if isinstance(seed, bool) or not isinstance(seed, int):
@@ -175,6 +184,10 @@ def _validate_parameters(
         or minimum_sample_size < 1
     ):
         raise ValueError("minimum_sample_size must be a positive integer")
+
+
+def _improvement(baseline: float, candidate: float, direction: MetricDirection) -> float:
+    return baseline - candidate if direction == "lower_is_better" else candidate - baseline
 
 
 def _bootstrap_result(

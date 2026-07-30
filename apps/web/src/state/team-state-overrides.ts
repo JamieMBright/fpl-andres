@@ -30,8 +30,27 @@ export function saveTeamStateOverrides(
 ): TeamStateOverrides {
   const overrides = teamStateOverridesSchema.parse(input);
   const key = teamStateOverridesStorageKey(entryId, overrides.basedOnStateAsOf);
+  pruneOtherOverridesForEntry(storage, entryId, key);
   storage.setItem(key, JSON.stringify(overrides));
   return overrides;
+}
+
+function pruneOtherOverridesForEntry(
+  storage: Storage,
+  entryId: number,
+  keepKey: string,
+): void {
+  const parsedEntryId = publicIdSchema.safeParse(entryId);
+  if (!parsedEntryId.success) return;
+  const prefix = `${STORAGE_PREFIX}:${parsedEntryId.data}:`;
+  const staleKeys: string[] = [];
+  for (let index = 0; index < storage.length; index += 1) {
+    const candidate = storage.key(index);
+    if (candidate === null) continue;
+    if (candidate === keepKey) continue;
+    if (candidate.startsWith(prefix)) staleKeys.push(candidate);
+  }
+  for (const stale of staleKeys) storage.removeItem(stale);
 }
 
 export function loadTeamStateOverrides(

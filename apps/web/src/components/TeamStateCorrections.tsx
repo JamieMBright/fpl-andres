@@ -11,7 +11,14 @@ import {
   Trash2,
   X,
 } from "lucide-react";
-import { useEffect, useId, useRef, useState, type FormEvent } from "react";
+import {
+  useEffect,
+  useId,
+  useRef,
+  useState,
+  type FormEvent,
+  type KeyboardEvent as ReactKeyboardEvent,
+} from "react";
 import { ZodError } from "zod";
 
 import {
@@ -58,6 +65,7 @@ export function TeamStateCorrections({ state }: TeamStateCorrectionsProps) {
   const hintId = `${formId}-hint`;
   const errorRef = useRef<HTMLParagraphElement>(null);
   const keepCorrectionsRef = useRef<HTMLButtonElement>(null);
+  const removeConfirmRef = useRef<HTMLButtonElement>(null);
   const removeCorrectionsRef = useRef<HTMLButtonElement>(null);
   const removedStatusRef = useRef<HTMLDivElement>(null);
   const returnToRemoveTrigger = useRef(false);
@@ -198,6 +206,25 @@ export function TeamStateCorrections({ state }: TeamStateCorrectionsProps) {
     setConfirmingRemoval(false);
   }
 
+  function handleDialogKeyDown(event: ReactKeyboardEvent<HTMLDivElement>) {
+    if (event.key === "Escape") {
+      event.preventDefault();
+      cancelRemoval();
+      return;
+    }
+    if (event.key !== "Tab") return;
+    const first = keepCorrectionsRef.current;
+    const last = removeConfirmRef.current;
+    if (!first || !last) return;
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  }
+
   return (
     <details className="correction-panel">
       <summary>
@@ -232,7 +259,6 @@ export function TeamStateCorrections({ state }: TeamStateCorrectionsProps) {
           <div
             aria-label="Manager correction status"
             className="correction-saved"
-            ref={removedStatusRef}
             role="status"
             tabIndex={-1}
           >
@@ -247,7 +273,9 @@ export function TeamStateCorrections({ state }: TeamStateCorrectionsProps) {
           <div
             aria-label="Manager correction status"
             className="correction-saved"
+            ref={removedStatusRef}
             role="status"
+            tabIndex={-1}
           >
             <CheckCircle2 aria-hidden="true" size={18} />
             <span>
@@ -436,10 +464,15 @@ export function TeamStateCorrections({ state }: TeamStateCorrectionsProps) {
             ) : null}
           </div>
           {savedOverrides && confirmingRemoval ? (
+            // The div is interactive by ARIA (role="alertdialog"), which the
+            // jsx-a11y rule does not detect. Escape + Tab trap live at the
+            // dialog root because both buttons must receive them.
+            // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
             <div
               aria-describedby={`${formId}-remove-description`}
               aria-labelledby={`${formId}-remove-title`}
               className="inline-confirmation"
+              onKeyDown={handleDialogKeyDown}
               role="alertdialog"
             >
               <strong id={`${formId}-remove-title`}>
@@ -461,6 +494,7 @@ export function TeamStateCorrections({ state }: TeamStateCorrectionsProps) {
                 <button
                   className="danger-command"
                   onClick={removeCorrections}
+                  ref={removeConfirmRef}
                   type="button"
                 >
                   <Trash2 aria-hidden="true" size={17} /> Remove corrections now

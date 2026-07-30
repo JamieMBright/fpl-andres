@@ -41,6 +41,22 @@ the repository.
 
 ## Open owner items
 
+### Apply the v0.5.1 foreign-key index migration
+
+- [ ] Open Supabase Dashboard for `fpl-andres-production`, open a new SQL Editor
+      query and paste the contents of
+      [`20260730130000_foreign_key_indexes.sql`](../supabase/migrations/20260730130000_foreign_key_indexes.sql).
+      Every statement uses `CREATE INDEX IF NOT EXISTS`, so the file is safe to
+      re-run and does not require the SQL Editor to disable its implicit
+      transaction wrapper. It covers four foreign-key columns
+      (`rules_snapshots.source_snapshot_id`,
+      `projection_runs.workflow_run_id`,
+      `model_promotion_decisions.workflow_run_id`,
+      `optimization_runs.workflow_run_id`) that would otherwise force
+      sequential scans on cascade and reverse joins. The tables are immutable
+      workflow-metadata tables, so the brief ACCESS EXCLUSIVE lock completes
+      in milliseconds and never blocks user traffic.
+
 ### Ready to verify once FPL processes a live gameweek
 
 - [ ] Open the rendered team snapshot for team `212279` and confirm that public
@@ -83,6 +99,28 @@ forecasts. Ship the initial-squad and transfer workflows without them.
       StatsBomb corpora validate the classifier on completed seasons; the live path
       still requires the recency contract on the ingest side.
 
+### Design direction — 90s UK football nostalgia (2026-07-30)
+
+Resolved. `DESIGN.md` was amended to a dark-first palette drawn from the 1994
+Leeds third kit with a light toggle drawn from the 1994 home kit, plus a
+Subbuteo / Teletext / loud-goalkeeper-kit motif language and a Bielsa-bucket
+mark. Kit references and the bucket reference are dropped into
+[`docs/design/inspiration/`](design/inspiration/README.md) as the owner adds
+them; provisional hex values sit in `DESIGN.md` until then.
+
+Remaining owner items on this direction:
+
+- [x] Drop `kit-third-1994.png`, `kit-home-1994.png`, `keeper-home-1994.png`
+      and `logo.png` into `docs/design/inspiration/` and log a one-line source
+      note per file in
+      [`docs/design/inspiration/SOURCES.md`](design/inspiration/SOURCES.md).
+- [x] Pick one of the three mockup depths under
+      [`docs/design/mockups/`](design/mockups/README.md): Newsprint,
+      Matchday Programme or Ceefax Third Kit.
+      Ceefax wins the day here. but modification needed: done that. i quite like the ceefax concept. but i want more nod to my dark and light colour scheme based on the leeds home and away kits, and draw the bright colours from the goalie kit
+- [ ] Confirm the shipping paywall stance in
+      [`docs/PAYWALL.md`](PAYWALL.md).
+
 ### Before real email
 
 1. [ ] Choose or register the public domain and a sending subdomain such as
@@ -98,8 +136,6 @@ forecasts. Ship the initial-squad and transfer workflows without them.
 
 ### Before public release
 
-- [ ] Provide the requested player-pose reference and confirm either licensed
-      derivative brand use or an independently constructed original pose.
 - [ ] Choose the source-code license before `v1.0.0`.
 - [ ] Approve the first production model promotion after the release-candidate
       report passes. Until then, candidate models remain experimental/unavailable.

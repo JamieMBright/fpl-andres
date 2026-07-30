@@ -23,6 +23,11 @@ interface FetchedSource {
   status: number;
 }
 
+type FetchSourceOutcome =
+  | { kind: "ok"; source: FetchedSource }
+  | { kind: "unreachable" }
+  | { kind: "source_failed" };
+
 const entrySummarySchema = z
   .object({
     id: z.int().min(1).max(MAX_PUBLIC_ID),
@@ -66,7 +71,7 @@ export async function createTeamPublicStateResponse(
   }
 
   const deadline = now() + FPL_PROXY_BUDGET_MS;
-  const [entrySource, bootstrapSource] = await Promise.all([
+  const [entryOutcome, bootstrapOutcome] = await Promise.all([
     fetchSource(
       `/api/fpl/entry/${entryId}/`,
       fetchUpstream,
@@ -84,14 +89,17 @@ export async function createTeamPublicStateResponse(
       deadline,
     ),
   ]);
-  if (!entrySource || !bootstrapSource) {
-    return degradedResponse("fpl_unreachable");
+  const preliminaryOutcome = worstOutcome(entryOutcome, bootstrapOutcome);
+  if (preliminaryOutcome) {
+    return degradedResponse(preliminaryOutcome);
   }
+  if (entryOutcome.kind !== "ok" || bootstrapOutcome.kind !== "ok") {
+    return degradedResponse("fpl_source_failed");
+  }
+  const entrySource = entryOutcome.source;
+  const bootstrapSource = bootstrapOutcome.source;
   if (entrySource.status === 404) {
-    return jsonResponse(
-      { status: "unavailable", reason: "entry_unavailable" },
-      404,
-    );
+    return jsonResponse({ status: "unavailable", reason: "entry_unavailable" });
   }
   if (!isSuccessful(entrySource) || !isSuccessful(bootstrapSource)) {
     return degradedResponse("fpl_source_failed");
@@ -119,7 +127,7 @@ export async function createTeamPublicStateResponse(
     return degradedResponse("source_contract_failed");
   }
 
-  const picksSource = await fetchSource(
+  const picksOutcome = await fetchSource(
     `/api/fpl/entry/${entryId}/event/${entry.current_event}/picks/`,
     fetchUpstream,
     sleep,
@@ -127,9 +135,14 @@ export async function createTeamPublicStateResponse(
     now,
     deadline,
   );
-  if (!picksSource) {
-    return degradedResponse("fpl_unreachable");
+  if (picksOutcome.kind !== "ok") {
+    return degradedResponse(
+      picksOutcome.kind === "unreachable"
+        ? "fpl_unreachable"
+        : "fpl_source_failed",
+    );
   }
+  const picksSource = picksOutcome.source;
   if (picksSource.status === 404) {
     return jsonResponse({
       status: "unavailable",
@@ -170,7 +183,7 @@ async function fetchSource(
   random: () => number,
   now: () => number,
   deadline: number,
-): Promise<FetchedSource | null> {
+): Promise<FetchSourceOutcome> {
   const response = await createFplProxyResponse(
     requestUrl,
     "GET",
@@ -180,12 +193,34 @@ async function fetchSource(
     now,
     deadline,
   );
-  if (response.status === 502) return null;
+  if (response.status === 502) {
+    const parsed = await response.clone().json().catch(() => null);
+    const reason = parsed && typeof parsed.reason === "string" ? parsed.reason : null;
+    if (reason === "unexpected_format" || reason === "oversize") {
+      return { kind: "source_failed" };
+    }
+    return { kind: "unreachable" };
+  }
   return {
-    body: new Uint8Array(await response.arrayBuffer()),
-    fetchedAt: new Date(now()).toISOString(),
-    status: response.status,
+    kind: "ok",
+    source: {
+      body: new Uint8Array(await response.arrayBuffer()),
+      fetchedAt: new Date(now()).toISOString(),
+      status: response.status,
+    },
   };
+}
+
+function worstOutcome(
+  ...outcomes: FetchSourceOutcome[]
+): "fpl_source_failed" | "fpl_unreachable" | null {
+  if (outcomes.some((outcome) => outcome.kind === "source_failed")) {
+    return "fpl_source_failed";
+  }
+  if (outcomes.some((outcome) => outcome.kind === "unreachable")) {
+    return "fpl_unreachable";
+  }
+  return null;
 }
 
 function parseSource<Schema extends z.ZodType>(

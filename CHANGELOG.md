@@ -4,7 +4,77 @@ All notable changes to FPL Andres will be documented here.
 
 The project follows Semantic Versioning once milestone tags begin.
 
-## Unreleased
+## [0.5.1] — 2026-07-30
+
+### Fixed
+
+- FPL transport now returns a typed `reason` (`unreachable`, `unexpected_format`,
+  `oversize`) on every 502 and no longer rejects the promise when a body stream
+  errors mid-read.
+- The composite team-state route translates transport reasons into
+  `fpl_unreachable` versus `fpl_source_failed` instead of collapsing both to
+  unreachable.
+- `entry_unavailable` responses now return HTTP 200 so browsers stop treating a
+  valid envelope as an error.
+- Vercel deployment: added `.js` extensions to every relative import in
+  `api/*.ts`, gave `TeamPublicStateContractError` an explicit constructor that
+  accepts an ES2022 `cause` option, and tightened `tsconfig.api.json` to
+  `NodeNext` so CI catches the same errors locally.
+- Vercel dashboard direction corrected in the owner setup: Framework Preset
+  `Other`, empty Root Directory, Node.js 22.x or newer.
+- Team analysis route now keys `TeamAnalysisPage` on the URL parameter, so
+  navigating from one team to another never renders the previous snapshot for a
+  frame; the heading is marked `translate="no"` to keep the Team ID stable.
+- `refreshTeamAnalysis` distinguishes storage `QuotaExceededError` from schema
+  failure and still surfaces valid state instead of reporting `invalid_response`.
+- Manager corrections dialog: the "remove" alert dialog closes on Escape,
+  traps focus between its two buttons, and restores focus to the button that
+  opened it. The removal-confirmed status region now receives focus.
+- Saving a manager correction prunes any older correction for the same team so
+  browser storage stays bounded.
+- Deployment classification replaces its ordinal comparison with an explicit
+  36-cell `(listed_position, observed_role) → classification` table.
+- HiGHS optimizer applies deterministic lineup and captain tie-break terms so
+  identical inputs always produce the same captain and starting XI.
+- Promotion evaluator requires an explicit `metric_direction` and computes
+  `paired improvement` accordingly, so higher-is-better metrics can promote.
+
+### Added
+
+- Recency-weighted OOP contract: `DeploymentRoleObservation` records
+  per-event roles, kickoffs and minutes; `classify_deployment` applies an
+  exponential decay to weighted starts and emits `unavailable` when the recent
+  run reverses the prior window.
+- StatsBomb Open Data ingest adapter: maps their 26 position labels to our
+  nine observed roles, aggregates minutes per player, and produces
+  `DeploymentRoleObservation` records with a deterministic sha256 payload
+  hash.
+- Forward-only migration adding foreign-key indexes to `rules_snapshots`,
+  `projection_runs`, `model_promotion_decisions` and `optimization_runs`.
+- Playwright feature-walk suite covering corrections save/remove/Escape,
+  cross-team route navigation, methodology/calibration focus, all unavailable
+  envelope variants, degraded rendering and axe scans on home + degraded
+  screens.
+- Dependabot, CodeQL and dependency-review workflows; a `pnpm.auditConfig`
+  ignore for the React Router RSC-only advisory `GHSA-qwww-vcr4-c8h2`, which
+  does not affect this SPA.
+- `.vercelignore` to trim the Vercel bundle.
+- `docs/RUNBOOK.md` capturing the deploy and incident response steps that were
+  learned during the v0.5.0 → v0.5.1 turnaround.
+
+### Documentation
+
+- `LIMITATIONS.md` and `MODEL_CARDS.md` codify the recency requirement that
+  blocks live OOP evidence until per-event observations, exponential decay and
+  a regime-change check are attached.
+- `OPTIMIZER.md` introduces a `pre-GW1 initial squad` mode with no Team ID; the
+  bootstrap requires promoted player forecasts and sourced initial rules.
+- `OWNER_SETUP.md` records the completed Vercel/Supabase steps, selects
+  StatsBomb Open Data as the free prototype source for OOP, and captures the
+  design-direction conflict raised by the dark landing inspiration for an
+  owner decision.
+
+## [0.5.0] — 2026-07-29
 
 ### Added
 
@@ -41,3 +111,10 @@ The project follows Semantic Versioning once milestone tags begin.
   available chips, stored separately in the browser.
 - Keyboard, 360 px, 200%-equivalent reflow, reduced-motion, forced-colors and axe
   browser validation across ready, stale, unavailable and error states.
+
+### Earlier milestone tags — 2026-07-29
+
+Milestones `v0.1.0` through `v0.5.0` were tagged in sequence on 2026-07-29 as part
+of an autonomous overnight build. Their scope is captured by the annotated tag
+messages in git; the aggregate "Added" list above is what shipped by `v0.5.0`.
+`v0.5.1` records the delta relative to `v0.5.0`.

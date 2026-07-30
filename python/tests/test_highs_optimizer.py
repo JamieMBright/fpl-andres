@@ -151,6 +151,39 @@ def test_highs_matches_independent_exhaustive_oracle() -> None:
     assert HASH_D in result.source_hashes
 
 
+def test_captain_and_lineup_are_deterministic_when_points_tie() -> None:
+    request = OptimizationRequest(
+        event=6,
+        prediction_cutoff=CUTOFF,
+        objective="expected_value",
+        price_scenario="current_prices",
+        chip_scenario="none",
+        players=(
+            player(11, team_id=1, position_id=1, points=8.0),
+            player(12, team_id=2, position_id=1, points=8.0),
+            player(13, team_id=1, position_id=2, points=8.0),
+            player(14, team_id=2, position_id=2, points=8.0),
+        ),
+        current_squad=tuple(
+            CurrentSquadPlayer(element_id=element_id, selling_price_tenths=50)
+            for element_id in (11, 12, 13, 14)
+        ),
+        bank_tenths=0,
+        available_free_transfers=0,
+        state_evidence=state_evidence(),
+        rules=rules(),
+    )
+
+    solver = HighsOptimizer(time_limit_seconds=5.0)
+    first = solver.solve(request)
+    second = solver.solve(request)
+
+    assert first.captain_element_id == second.captain_element_id
+    assert first.vice_captain_element_id == second.vice_captain_element_id
+    assert first.starter_element_ids == second.starter_element_ids
+    assert first.captain_element_id == min(first.starter_element_ids)
+
+
 @pytest.mark.parametrize(
     ("candidate_points", "expected_transfer"),
     ((4.9, ()), (5.1, (3,))),

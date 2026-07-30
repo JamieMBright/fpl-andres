@@ -1,0 +1,9 @@
+# Product-photo binaries and auto-traced pixel dumps stay local.
+# Only owner-authored / agent-derived original artwork (SVG) and the docs are
+# tracked, because product photos may carry third-party rights and never ship
+# in any deployed bundle (see docs/design/inspiration/SOURCES.md).
+*.png
+*.webp
+*.jpg
+*.jpeg
+bucket.svg

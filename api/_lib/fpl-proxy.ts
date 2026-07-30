@@ -1,7 +1,7 @@
 import { FplPathError, resolveFplUpstreamUrl } from "./fpl-path.js";
 
 const FPL_USER_AGENT =
-  "FPLAndres/0.5 (+https://github.com/JamieMBright/fpl-andres)";
+  "FPLAndres/0.5.1 (+https://github.com/JamieMBright/fpl-andres)";
 const DEFAULT_LIMIT_BYTES = 5 * 1024 * 1024;
 const BOOTSTRAP_LIMIT_BYTES = 8 * 1024 * 1024;
 export const FPL_PROXY_BUDGET_MS = 8_500;
@@ -50,6 +50,8 @@ export async function createFplProxyResponse(
     return jsonError(
       "FPL could not be reached within the request budget.",
       502,
+      {},
+      "unreachable",
     );
   }
 
@@ -64,20 +66,39 @@ export async function createFplProxyResponse(
     return jsonError(
       "FPL returned a response larger than the allowed limit.",
       502,
+      {},
+      "oversize",
     );
   }
 
   const contentType = upstreamResponse.headers.get("Content-Type") ?? "";
   if (!contentType.toLowerCase().includes("application/json")) {
     await upstreamResponse.body?.cancel();
-    return jsonError("FPL returned an unexpected response format.", 502);
+    return jsonError(
+      "FPL returned an unexpected response format.",
+      502,
+      {},
+      "unexpected_format",
+    );
   }
 
-  const body = await readBoundedBody(upstreamResponse, limit);
+  let body: Uint8Array | null;
+  try {
+    body = await readBoundedBody(upstreamResponse, limit);
+  } catch {
+    return jsonError(
+      "FPL could not be reached within the request budget.",
+      502,
+      {},
+      "unreachable",
+    );
+  }
   if (!body) {
     return jsonError(
       "FPL returned a response larger than the allowed limit.",
       502,
+      {},
+      "oversize",
     );
   }
 
@@ -244,15 +265,20 @@ function jsonError(
   message: string,
   status: number,
   additionalHeaders: Record<string, string> = {},
+  reason?: FplProxyErrorReason,
 ): Response {
-  return Response.json(
-    { error: message },
-    {
-      status,
-      headers: {
-        "Cache-Control": "no-store",
-        ...additionalHeaders,
-      },
+  const body: Record<string, string> = { error: message };
+  if (reason) body.reason = reason;
+  return Response.json(body, {
+    status,
+    headers: {
+      "Cache-Control": "no-store",
+      ...additionalHeaders,
     },
-  );
+  });
 }
+
+export type FplProxyErrorReason =
+  | "unreachable"
+  | "unexpected_format"
+  | "oversize";

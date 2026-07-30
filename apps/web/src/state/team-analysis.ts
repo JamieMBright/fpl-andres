@@ -117,18 +117,28 @@ export async function refreshTeamAnalysis(
   }
 
   if (envelope.status === "ready") {
+    let state: PublicTeamState;
     try {
-      const state = saveCachedPublicTeamState(
-        dependencies.storage,
-        entryId,
-        envelope.state,
-      );
-      return { status: "ready", state };
+      const parsed = publicTeamStateSchema.parse(envelope.state);
+      if (parsed.entryId !== entryId) {
+        throw new TypeError("Cached public state does not match the Team ID");
+      }
+      state = parsed;
     } catch {
       return previous
         ? { status: "stale", state: previous, reason: "invalid_response" }
         : { status: "error", reason: "invalid_response" };
     }
+    try {
+      dependencies.storage.setItem(
+        teamPublicStateStorageKey(entryId),
+        JSON.stringify(state),
+      );
+    } catch {
+      // Storage failure (quota, private mode, disabled) does not invalidate
+      // the response. The current session still surfaces the fresh snapshot.
+    }
+    return { status: "ready", state };
   }
   if (envelope.status === "degraded") {
     return previous

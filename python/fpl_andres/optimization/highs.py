@@ -186,7 +186,12 @@ class HighsOptimizer:
 
         squad_quality_objective = np.zeros(variable_count, dtype=np.float64)
         for index, player in enumerate(players):
+            # Squad tie-break dominates: prefer lower element indices among tied optima.
             squad_quality_objective[squad_offset + index] = -player.expected_points + index * 1e-9
+            # Then lineup tie-break: prefer lower element indices among tied starters.
+            squad_quality_objective[lineup_offset + index] = index * 1e-11
+            # Then captain tie-break: prefer lower element indices when captains tie.
+            squad_quality_objective[captain_offset + index] = index * 1e-13
         solution = optimize(squad_quality_objective, "squad-quality")
 
         selected = _selected(players, solution, squad_offset)

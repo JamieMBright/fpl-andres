@@ -1,0 +1,637 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>FPL Andres — Ceefax Third Kit mockup (v2)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=IBM+Plex+Mono:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        /* Dark palette — 1994 Leeds third kit */
+        --fa-surface: #16123a;
+        --fa-surface-deep: #0d0a26;
+        --fa-surface-rise: #221a55;
+        --fa-stripe-a: #00a13e;
+        --fa-stripe-b: #2b2065;
+        --fa-ink: #f6f4ea;
+        --fa-ink-deep: #d5cfba;
+        --fa-focus: #3b357e;
+        --fa-brand: #00a13e;
+        --fa-brand-rise: #12c04e;
+        --fa-amber: #e5a02a;
+        --fa-red: #d64545;
+
+        /* Keeper kit accents — 1994 Leeds home GK */
+        --fa-gk-lime: #e7f24a;
+        --fa-gk-hot: #e6338c;
+        --fa-gk-teal: #2ec9c0;
+        --fa-gk-purple: #5b2ca8;
+        --fa-gk-black: #0a0a0a;
+        --fa-gk-white: #ffffff;
+
+        /* Bucket mark — owner-specified brand purple, holds in both themes. */
+        --fa-bucket: #5308DC;
+
+        /* Stripe rhythm — the actual third-kit bars */
+        --fa-stripe-width: 88px;
+        --fa-stripe-opacity: 0.14;
+
+        --fa-body: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo,
+          monospace;
+        --fa-display: "Space Grotesk", ui-monospace, monospace;
+      }
+
+      html[data-theme="light"] {
+        --fa-surface: #f7f5ea;
+        --fa-surface-deep: #ffffff;
+        --fa-surface-rise: #ffffff;
+        --fa-stripe-a: #e4e3eb;
+        --fa-stripe-b: #e5da15;
+        --fa-ink: #4a008e;
+        --fa-ink-deep: #6a3aa8;
+        --fa-focus: #4a008e;
+        --fa-brand: #4a008e;
+        --fa-brand-rise: #6a3aa8;
+        --fa-amber: #a6621b;
+        --fa-red: #a2433b;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        color-scheme: dark;
+      }
+
+      html[data-theme="light"] {
+        color-scheme: light;
+      }
+
+      /* Vertical stripes — the third-kit signature. Each bar is blended with
+         the surface colour at the CSS level so tabular content stays legible
+         over it; no separate overlay is needed. */
+      body {
+        margin: 0;
+        background-color: var(--fa-surface);
+        color: var(--fa-ink);
+        font-family: var(--fa-body);
+        font-size: 15px;
+        line-height: 1.5;
+      }
+
+      .frame {
+        max-width: 1040px;
+        margin: 0 auto;
+        padding: 24px 32px 96px;
+        background: repeating-linear-gradient(
+          to right,
+          color-mix(in srgb, var(--fa-stripe-a) 22%, var(--fa-surface)) 0,
+          color-mix(in srgb, var(--fa-stripe-a) 22%, var(--fa-surface))
+            var(--fa-stripe-width),
+          color-mix(in srgb, var(--fa-stripe-b) 32%, var(--fa-surface))
+            var(--fa-stripe-width),
+          color-mix(in srgb, var(--fa-stripe-b) 32%, var(--fa-surface))
+            calc(var(--fa-stripe-width) * 2)
+        );
+      }
+
+      html[data-theme="light"] .frame {
+        /* Home kit stripes: silver #e4e3eb next to pale yellow, over the
+           warm off-white base. Reads as the shirt's chest band pairing, not
+           a lavender wash. */
+        background: repeating-linear-gradient(
+          to right,
+          color-mix(in srgb, var(--fa-stripe-a) 65%, var(--fa-surface)) 0,
+          color-mix(in srgb, var(--fa-stripe-a) 65%, var(--fa-surface))
+            var(--fa-stripe-width),
+          color-mix(in srgb, var(--fa-stripe-b) 45%, var(--fa-surface))
+            var(--fa-stripe-width),
+          color-mix(in srgb, var(--fa-stripe-b) 45%, var(--fa-surface))
+            calc(var(--fa-stripe-width) * 2)
+        );
+      }
+
+      /* Teletext strip — six keeper-kit primaries on black. */
+      .teletext-strip {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 0;
+        margin-bottom: 16px;
+        border: 3px solid var(--fa-gk-white);
+        background: var(--fa-gk-black);
+      }
+
+      .teletext-strip span {
+        padding: 10px 12px;
+        font-family: var(--fa-body);
+        font-weight: 700;
+        font-size: 17px;
+        letter-spacing: 0.08em;
+        color: var(--fa-gk-black);
+        text-align: center;
+      }
+
+      .teletext-strip span:nth-child(1) { background: var(--fa-gk-hot); color: var(--fa-gk-white); }
+      .teletext-strip span:nth-child(2) { background: var(--fa-gk-lime); }
+      .teletext-strip span:nth-child(3) { background: var(--fa-gk-teal); }
+      .teletext-strip span:nth-child(4) { background: var(--fa-gk-purple); color: var(--fa-gk-white); }
+      .teletext-strip span:nth-child(5) { background: var(--fa-gk-white); }
+      .teletext-strip span:nth-child(6) { background: var(--fa-gk-black); color: var(--fa-gk-lime); border-left: 2px solid var(--fa-gk-white); }
+
+      /* Header */
+      header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+        padding-block: 14px 20px;
+        border-bottom: 3px double var(--fa-ink);
+      }
+
+      .brand-mark {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        color: var(--fa-bucket);
+        text-decoration: none;
+      }
+
+      .brand-mark svg {
+        width: 112px;
+        height: auto;
+      }
+
+      .brand-wordmark {
+        color: var(--fa-ink);
+        font-family: var(--fa-display);
+        font-size: 22px;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+      }
+
+      .header-controls {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+      }
+
+      nav {
+        display: flex;
+        gap: 20px;
+        font-family: var(--fa-body);
+        font-weight: 700;
+        font-size: 15px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+
+      nav a {
+        color: var(--fa-ink-deep);
+        text-decoration: none;
+        padding-block: 4px;
+        border-bottom: 2px solid transparent;
+      }
+
+      nav a:hover,
+      nav a:focus-visible {
+        color: var(--fa-ink);
+        border-bottom-color: var(--fa-gk-hot);
+        outline: none;
+      }
+
+      button.theme-toggle {
+        padding: 8px 14px;
+        font-family: var(--fa-body);
+        font-weight: 700;
+        font-size: 12px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--fa-ink);
+        background: transparent;
+        border: 2px solid var(--fa-ink);
+        cursor: pointer;
+      }
+
+      button.theme-toggle:hover,
+      button.theme-toggle:focus-visible {
+        color: var(--fa-surface);
+        background: var(--fa-ink);
+        outline: none;
+      }
+
+      /* Hero */
+      .eyebrow {
+        margin: 32px 0 8px;
+        font-family: var(--fa-body);
+        font-weight: 700;
+        font-size: 15px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--fa-brand);
+      }
+
+      html[data-theme="dark"] .eyebrow {
+        color: var(--fa-gk-lime);
+      }
+
+      h1 {
+        margin: 0 0 20px;
+        font-family: var(--fa-display);
+        font-size: clamp(40px, 6vw, 60px);
+        font-weight: 700;
+        line-height: 1.02;
+        letter-spacing: -0.02em;
+      }
+
+      h1 em {
+        font-style: normal;
+        color: var(--fa-brand);
+      }
+
+      html[data-theme="dark"] h1 em {
+        color: var(--fa-gk-lime);
+      }
+
+      html[data-theme="light"] h1 em {
+        background: var(--fa-stripe-b);
+        color: var(--fa-ink);
+        padding: 0 10px;
+        -webkit-box-decoration-break: clone;
+        box-decoration-break: clone;
+      }
+
+      .hero-lede {
+        max-width: 60ch;
+        color: var(--fa-ink-deep);
+      }
+
+      form.team-form {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin: 28px 0 24px;
+        align-items: end;
+      }
+
+      label {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        font-family: var(--fa-body);
+        font-weight: 700;
+        font-size: 13px;
+        color: var(--fa-ink);
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      input[type="text"] {
+        min-width: 260px;
+        padding: 12px 16px;
+        font-family: var(--fa-body);
+        font-weight: 500;
+        font-size: 20px;
+        color: var(--fa-ink);
+        background: var(--fa-surface-deep);
+        border: 3px solid var(--fa-ink);
+        border-radius: 0;
+      }
+
+      input[type="text"]:focus-visible {
+        outline: none;
+        border-color: var(--fa-gk-lime);
+        box-shadow: 0 0 0 3px var(--fa-focus);
+      }
+
+      button.command {
+        padding: 12px 24px;
+        font-family: var(--fa-display);
+        font-size: 20px;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--fa-gk-black);
+        background: var(--fa-gk-lime);
+        border: 3px solid var(--fa-ink);
+        border-radius: 0;
+        cursor: pointer;
+      }
+
+      button.command:hover,
+      button.command:focus-visible {
+        background: var(--fa-gk-white);
+        outline: none;
+      }
+
+      html[data-theme="light"] button.command {
+        color: var(--fa-gk-white);
+        background: var(--fa-brand);
+      }
+
+      html[data-theme="light"] button.command:hover,
+      html[data-theme="light"] button.command:focus-visible {
+        background: var(--fa-brand-rise);
+      }
+
+      /* Evidence chip — biggest Subbuteo ring, in a keeper block. */
+      .evidence-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 14px;
+        padding: 10px 18px 10px 16px;
+        font-family: var(--fa-body);
+        font-weight: 500;
+        font-size: 17px;
+        color: var(--fa-gk-black);
+        background: var(--fa-gk-lime);
+        border: 3px solid var(--fa-ink);
+      }
+
+      .subbuteo-dot {
+        --dot-fill: var(--fa-gk-black);
+        --ring: var(--fa-gk-white);
+        position: relative;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: var(--dot-fill);
+        box-shadow:
+          0 0 0 3px var(--fa-gk-lime),
+          0 0 0 5px var(--ring);
+      }
+
+      /* Ruled sections */
+      section {
+        margin-top: 56px;
+        padding-top: 24px;
+        border-top: 3px double var(--fa-ink);
+      }
+
+      section > h2 {
+        margin: 0 0 20px;
+        font-family: var(--fa-display);
+        font-size: 30px;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+
+      section > h2 em {
+        font-style: normal;
+        color: var(--fa-brand);
+      }
+
+      html[data-theme="dark"] section > h2 em {
+        color: var(--fa-gk-lime);
+      }
+
+      /* Squad table */
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: var(--fa-body);
+        font-size: 17px;
+        background: var(--fa-surface);
+      }
+
+      thead th {
+        text-align: left;
+        padding: 12px;
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.14em;
+        color: var(--fa-gk-white);
+        background: var(--fa-stripe-b);
+        border-bottom: 3px solid var(--fa-ink);
+      }
+
+      html[data-theme="light"] thead th {
+        color: var(--fa-gk-white);
+        background: var(--fa-brand);
+      }
+
+      tbody td {
+        padding: 12px;
+        border-bottom: 2px solid var(--fa-surface-rise);
+      }
+
+      tbody td.num {
+        font-variant-numeric: tabular-nums;
+        font-weight: 700;
+      }
+
+      tbody tr.gkp {
+        background: color-mix(in srgb, var(--fa-gk-hot) 24%, transparent);
+        border-left: 6px solid var(--fa-gk-hot);
+      }
+
+      tbody tr.gkp td:first-child {
+        color: var(--fa-gk-hot);
+        font-weight: 700;
+      }
+
+      tbody tr.def td:first-child { color: var(--fa-stripe-b); font-weight: 700; }
+      tbody tr.mid td:first-child { color: var(--fa-brand); font-weight: 700; }
+      tbody tr.fwd td:first-child { color: var(--fa-amber); font-weight: 700; }
+
+      html[data-theme="dark"] tbody tr.def td:first-child { color: var(--fa-gk-teal); }
+      html[data-theme="dark"] tbody tr.mid td:first-child { color: var(--fa-gk-lime); }
+      html[data-theme="dark"] tbody tr.fwd td:first-child { color: var(--fa-amber); }
+
+      /* Paid preview */
+      .paid-preview {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 14px;
+        padding: 28px;
+        border: 3px double var(--fa-ink);
+        background: var(--fa-surface-deep);
+      }
+
+      .paid-preview h3 {
+        margin: 0;
+        font-family: var(--fa-display);
+        font-size: 24px;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+
+      .paid-preview p {
+        margin: 0;
+        color: var(--fa-ink-deep);
+        font-size: 16px;
+      }
+
+      .unavailable-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 14px;
+        font-family: var(--fa-body);
+        font-weight: 700;
+        font-size: 14px;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        color: var(--fa-gk-black);
+        background: var(--fa-amber);
+        border: 3px solid var(--fa-ink);
+      }
+
+      /* Footer */
+      footer {
+        margin-top: 72px;
+        padding-top: 20px;
+        border-top: 3px double var(--fa-ink);
+        font-family: var(--fa-body);
+        font-size: 13px;
+        color: var(--fa-ink-deep);
+        letter-spacing: 0.06em;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="frame">
+      <div class="teletext-strip" aria-hidden="true">
+        <span>P100</span>
+        <span>ANDRES</span>
+        <span>xPTS</span>
+        <span>OOP</span>
+        <span>DEFCON</span>
+        <span>@FPL_ANDRES</span>
+      </div>
+
+      <header>
+        <a class="brand-mark" href="#" aria-label="FPL Andres — @fpl_andres">
+          <!-- Bielsa bucket silhouette traced from docs/design/inspiration/mask.png.
+               Narrow arched top (sit-surface), wide bottom (cooler lid on the grass), bowed sides. -->
+          <svg viewBox="0 0 260 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <defs>
+              <linearGradient id="bucketShade" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#000" stop-opacity="0"/>
+                <stop offset="1" stop-color="#000" stop-opacity="0.22"/>
+              </linearGradient>
+            </defs>
+            <ellipse cx="130" cy="186" rx="104" ry="6" fill="var(--fa-surface-deep)" opacity="0.32"/>
+            <path d="M 84 30 Q 130 24 176 30 Q 188 30 192 42 C 214 82 226 128 226 168 Q 226 178 216 178 Q 130 184 44 178 Q 34 178 34 168 C 34 128 46 82 68 42 Q 72 30 84 30 Z" fill="currentColor"/>
+            <path d="M 84 30 Q 130 24 176 30 Q 188 30 192 42 C 214 82 226 128 226 168 Q 226 178 216 178 Q 130 184 44 178 Q 34 178 34 168 C 34 128 46 82 68 42 Q 72 30 84 30 Z" fill="url(#bucketShade)"/>
+            <path d="M 88 32 Q 130 26 172 32" fill="none" stroke="#fff" stroke-opacity="0.35" stroke-width="1.4" stroke-linecap="round"/>
+            <rect x="58" y="104" width="144" height="36" rx="3" fill="#f8f6ea"/>
+            <rect x="58" y="104" width="144" height="36" rx="3" fill="none" stroke="#000" stroke-opacity="0.14" stroke-width="1"/>
+            <text x="130" y="128" text-anchor="middle" font-family="'IBM Plex Mono', ui-monospace, monospace" font-size="18" font-weight="700" letter-spacing="0.4" fill="#4a008e">@fpl_andres</text>
+          </svg>
+          <span class="brand-wordmark">FPL Andres</span>
+        </a>
+        <div class="header-controls">
+          <nav>
+            <a href="#">Analyse</a>
+            <a href="#">Method</a>
+            <a href="#">Paid</a>
+          </nav>
+          <button
+            class="theme-toggle"
+            type="button"
+            aria-pressed="false"
+            onclick="const h=document.documentElement; const next=h.getAttribute('data-theme')==='dark'?'light':'dark'; h.setAttribute('data-theme',next); this.setAttribute('aria-pressed', next==='light'); this.textContent = next==='dark' ? 'Home kit' : 'Third kit';"
+          >
+            Home kit
+          </button>
+        </div>
+      </header>
+
+      <p class="eyebrow">01 · Analyse</p>
+      <h1>What did FPL <em>last record</em> for your squad?</h1>
+      <p class="hero-lede">
+        Enter a Team ID. The tool returns the public snapshot from the last
+        processed deadline and keeps it separate from any private corrections
+        you make on top.
+      </p>
+
+      <form class="team-form" onsubmit="event.preventDefault()">
+        <label>
+          FPL team ID
+          <input type="text" placeholder="e.g. 212279" />
+        </label>
+        <button class="command" type="submit">Analyse team</button>
+      </form>
+
+      <span class="evidence-chip">
+        <span class="subbuteo-dot" aria-hidden="true"></span>
+        Observed snapshot ready · state_as_of 2026-07-20T10:30Z
+      </span>
+
+      <section aria-labelledby="squad-heading">
+        <h2 id="squad-heading">Last-deadline <em>squad</em></h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Position</th>
+              <th>Element</th>
+              <th>Multiplier</th>
+              <th>xPTS</th>
+              <th>Price</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="gkp">
+              <td>GKP</td>
+              <td>Element 101</td>
+              <td class="num">1×</td>
+              <td class="num">4.6</td>
+              <td class="num">£5.0m</td>
+            </tr>
+            <tr class="def">
+              <td>DEF</td>
+              <td>Element 104</td>
+              <td class="num">1×</td>
+              <td class="num">5.1</td>
+              <td class="num">£5.5m</td>
+            </tr>
+            <tr class="mid">
+              <td>MID</td>
+              <td>Element 108</td>
+              <td class="num">2×</td>
+              <td class="num">7.8</td>
+              <td class="num">£9.0m</td>
+            </tr>
+            <tr class="fwd">
+              <td>FWD</td>
+              <td>Element 112</td>
+              <td class="num">1×</td>
+              <td class="num">6.9</td>
+              <td class="num">£8.5m</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section aria-labelledby="paid-heading">
+        <h2 id="paid-heading">Paid tier · <em>DefCon beasts</em></h2>
+        <div class="paid-preview">
+          <h3>Top DefCon per £</h3>
+          <p>
+            Players with the highest probability of stable DefCon returns per
+            £, over a rolling window. Opens once a promoted DefCon model
+            arrives (needs 2025/26+ observed defensive-actions data per
+            LIMITATIONS).
+          </p>
+          <span class="unavailable-tag">
+            <span class="subbuteo-dot" style="--dot-fill: var(--fa-gk-black); --ring: var(--fa-gk-white);" aria-hidden="true"></span>
+            unavailable — awaiting promoted DefCon model
+          </span>
+        </div>
+      </section>
+
+      <footer>
+        Mockup — Ceefax Third Kit v2 · palette eyedropped from
+        <code>docs/design/inspiration/</code>. Toggle the header button to swap
+        between third-kit dark and home-kit light modes.
+      </footer>
+    </div>
+  </body>
+</html>

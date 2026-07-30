@@ -61,4 +61,31 @@ describe("manager team-state override storage", () => {
 
     expect(loadTeamStateOverrides(localStorage, ENTRY_ID, DEADLINE)).toBeNull();
   });
+
+  it("prunes older overrides for the same team when a newer deadline is saved", () => {
+    const oldDeadline = "2026-08-15T10:30:00Z";
+    const newDeadline = "2026-09-12T10:30:00Z";
+    const oldOverrides = {
+      ...overrideCases.valid[0],
+      basedOnStateAsOf: oldDeadline,
+    };
+    const newOverrides = {
+      ...overrideCases.valid[0],
+      basedOnStateAsOf: newDeadline,
+    };
+    saveTeamStateOverrides(localStorage, ENTRY_ID, oldOverrides);
+    saveTeamStateOverrides(localStorage, 456, oldOverrides);
+
+    saveTeamStateOverrides(localStorage, ENTRY_ID, newOverrides);
+
+    expect(
+      loadTeamStateOverrides(localStorage, ENTRY_ID, oldDeadline),
+    ).toBeNull();
+    expect(
+      loadTeamStateOverrides(localStorage, ENTRY_ID, newDeadline),
+    ).toEqual(newOverrides);
+    expect(loadTeamStateOverrides(localStorage, 456, oldDeadline)).toEqual(
+      oldOverrides,
+    );
+  });
 });

@@ -365,4 +365,61 @@ describe("team analysis entry", () => {
       ),
     ).toBeNull();
   });
+
+  it("does not render team A's snapshot after navigating to team B", async () => {
+    const teamA = readyState.entryId;
+    const teamB = teamA === 123456 ? 654321 : 123456;
+    saveCachedPublicTeamState(localStorage, teamA, {
+      ...readyState,
+      entryId: teamA,
+    });
+    const user = userEvent.setup();
+    renderApplication(`/team/${teamA}`);
+    await screen.findByRole("heading", { name: `Analysis for team ${teamA}` });
+
+    await user.click(screen.getByRole("link", { name: "Analyse another team" }));
+    await user.type(screen.getByLabelText("FPL team ID"), String(teamB));
+    await user.click(screen.getByRole("button", { name: "Analyse team" }));
+
+    const analysisHeading = await screen.findByRole("heading", {
+      name: `Analysis for team ${teamB}`,
+    });
+    expect(analysisHeading).toHaveAttribute("translate", "no");
+    expect(
+      screen.queryByRole("heading", { name: `Analysis for team ${teamA}` }),
+    ).not.toBeInTheDocument();
+  });
+
+  it("closes the remove-corrections dialog with Escape and restores focus", async () => {
+    saveTeamStateOverrides(localStorage, readyState.entryId, {
+      source: "manager",
+      basedOnStateAsOf: readyState.stateAsOf,
+      updatedAt: "2026-07-29T20:00:00Z",
+      bankTenths: 12,
+      availableFreeTransfers: null,
+      currentSquad: null,
+      queuedTransfers: null,
+      availableChips: null,
+    });
+    const user = userEvent.setup();
+    renderApplication(`/team/${readyState.entryId}`);
+    await screen.findByText("Observed snapshot ready");
+
+    await user.click(screen.getByText("Correct Current State"));
+    await user.click(
+      screen.getByRole("button", { name: "Remove saved corrections" }),
+    );
+    expect(
+      screen.getByRole("alertdialog", { name: "Remove saved corrections?" }),
+    ).toBeVisible();
+
+    await user.keyboard("{Escape}");
+
+    expect(
+      screen.queryByRole("alertdialog", { name: "Remove saved corrections?" }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Remove saved corrections" }),
+    ).toHaveFocus();
+  });
 });
