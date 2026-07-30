@@ -1,83 +1,62 @@
-<svg
-  xmlns="http://www.w3.org/2000/svg"
-  viewBox="0 0 260 200"
-  role="img"
-  aria-label="FPL Andres — the bucket, @fpl_andres"
->
-  <!--
-    Attempt 2. Derived from docs/design/inspiration/bucket.webp — the Bielsa
-    plastic drinks cooler. Truncated cone (wider at bottom than top), no
-    handles, subtle base plinth, small dark top rim, sponsor plate positioned
-    at ~55% height where the Wish sticker actually sat. Wordmark is
-    @fpl_andres; the Leeds crest sticker is deliberately not carried over.
-    currentColor drives the bucket body so design tokens set the hue.
-  -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 200" role="img" aria-label="FPL Andres bucket mark">
+  <!-- Silhouette traced from docs/design/inspiration/mask.png (Coleman-style drinks cooler / dugout bucket).
+       Key shape facts (untracked reference stays in-repo but out of git):
+       - Wider at the top than at the bottom (opposite of a plant pot).
+       - Sides bulge OUTWARD subtly at mid-height (the "belly").
+       - Slight arch on the top edge; rounded top and bottom corners.
+       - Rounded bottom (mild convex arc, not a flat line).
+       Uses currentColor so the design tokens set the bucket hue. -->
+  <defs>
+    <linearGradient id="bucketShade" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#000" stop-opacity="0"/>
+      <stop offset="1" stop-color="#000" stop-opacity="0.18"/>
+    </linearGradient>
+  </defs>
 
-  <!-- Base shadow -->
-  <ellipse
-    cx="130"
-    cy="182"
-    rx="112"
-    ry="4"
-    fill="var(--fa-surface-deep, #050a18)"
-    opacity="0.28"
-  />
+  <!-- Cast shadow at the base -->
+  <ellipse cx="130" cy="182" rx="86" ry="6" fill="#000" opacity="0.16"/>
 
-  <!-- Bucket body: truncated cone -->
-  <path
-    d="M 68 32
-       L 192 32
-       L 232 172
-       L 28 172
-       Z"
-    fill="currentColor"
-    stroke="currentColor"
-    stroke-width="2"
-    stroke-linejoin="round"
-  />
+  <!-- Bucket body -->
+  <path d="
+    M 62 24
+    Q 130 18 198 24
+    Q 212 24 212 38
+    C 224 74 224 132 194 168
+    Q 194 178 184 178
+    Q 130 184 76 178
+    Q 66 178 66 168
+    C 36 132 36 74 48 38
+    Q 48 24 62 24
+    Z"
+    fill="currentColor"/>
 
-  <!-- Base plinth: subtle horizontal band suggesting the moulded bottom rim -->
-  <rect
-    x="28"
-    y="164"
-    width="204"
-    height="8"
-    fill="var(--fa-surface-deep, #050a18)"
-    opacity="0.18"
-  />
+  <!-- Subtle shading for depth -->
+  <path d="
+    M 62 24
+    Q 130 18 198 24
+    Q 212 24 212 38
+    C 224 74 224 132 194 168
+    Q 194 178 184 178
+    Q 130 184 76 178
+    Q 66 178 66 168
+    C 36 132 36 74 48 38
+    Q 48 24 62 24
+    Z"
+    fill="url(#bucketShade)"/>
 
-  <!-- Top rim: small dark ellipse showing the drinks-cooler opening -->
-  <ellipse
-    cx="130"
-    cy="32"
-    rx="62"
-    ry="5"
-    fill="var(--fa-surface-deep, #050a18)"
-    opacity="0.5"
-  />
+  <!-- Top-edge highlight (a hairline sheen on the lid arch) -->
+  <path d="M 66 26 Q 130 20 194 26"
+    fill="none" stroke="#fff" stroke-opacity="0.35" stroke-width="1.4" stroke-linecap="round"/>
 
-  <!-- Sponsor plate: white sticker at ~55% height, replaces the Wish tag -->
-  <rect
-    x="52"
-    y="100"
-    width="156"
-    height="36"
-    rx="4"
-    fill="#f8f6ea"
-  />
-
-  <!-- Wordmark: fixed purple so it reads on the fixed off-white plate,
-       independent of the surrounding bucket / theme hue -->
-  <text
-    x="130"
-    y="125"
+  <!-- Sponsor plate: fixed white background + fixed home-kit purple text
+       so the wordmark stays readable on any bucket colour. -->
+  <rect x="60" y="98" width="140" height="34" rx="3" fill="#f8f6ea"/>
+  <rect x="60" y="98" width="140" height="34" rx="3" fill="none" stroke="#000" stroke-opacity="0.14" stroke-width="1"/>
+  <text x="130" y="121"
     text-anchor="middle"
-    font-family="'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace"
-    font-size="19"
+    font-family="'IBM Plex Mono', 'JetBrains Mono', ui-monospace, monospace"
     font-weight="700"
-    letter-spacing="-0.3"
-    fill="#4a008e"
-  >
-    @fpl_andres
-  </text>
+    font-size="17"
+    letter-spacing="0.4"
+    fill="#4a008e">@fpl_andres</text>
 </svg>

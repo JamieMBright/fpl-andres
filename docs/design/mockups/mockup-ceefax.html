@@ -505,13 +505,22 @@
 
       <header>
         <a class="brand-mark" href="#" aria-label="FPL Andres — @fpl_andres">
+          <!-- Silhouette traced from docs/design/inspiration/mask.png.
+               Wider at top than bottom, subtle outward belly, rounded top+bottom, arched lid. -->
           <svg viewBox="0 0 260 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-            <ellipse cx="130" cy="182" rx="112" ry="4" fill="var(--fa-surface-deep)" opacity="0.28"/>
-            <path d="M 68 32 L 192 32 L 232 172 L 28 172 Z" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-            <rect x="28" y="164" width="204" height="8" fill="var(--fa-surface-deep)" opacity="0.18"/>
-            <ellipse cx="130" cy="32" rx="62" ry="5" fill="var(--fa-surface-deep)" opacity="0.5"/>
-            <rect x="52" y="100" width="156" height="36" rx="4" fill="#f8f6ea"/>
-            <text x="130" y="125" text-anchor="middle" font-family="'IBM Plex Mono', ui-monospace, monospace" font-size="19" font-weight="700" letter-spacing="-0.3" fill="#4a008e">@fpl_andres</text>
+            <defs>
+              <linearGradient id="bucketShade" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#000" stop-opacity="0"/>
+                <stop offset="1" stop-color="#000" stop-opacity="0.2"/>
+              </linearGradient>
+            </defs>
+            <ellipse cx="130" cy="182" rx="86" ry="6" fill="var(--fa-surface-deep)" opacity="0.32"/>
+            <path d="M 62 24 Q 130 18 198 24 Q 212 24 212 38 C 224 74 224 132 194 168 Q 194 178 184 178 Q 130 184 76 178 Q 66 178 66 168 C 36 132 36 74 48 38 Q 48 24 62 24 Z" fill="currentColor"/>
+            <path d="M 62 24 Q 130 18 198 24 Q 212 24 212 38 C 224 74 224 132 194 168 Q 194 178 184 178 Q 130 184 76 178 Q 66 178 66 168 C 36 132 36 74 48 38 Q 48 24 62 24 Z" fill="url(#bucketShade)"/>
+            <path d="M 66 26 Q 130 20 194 26" fill="none" stroke="#fff" stroke-opacity="0.35" stroke-width="1.4" stroke-linecap="round"/>
+            <rect x="60" y="98" width="140" height="34" rx="3" fill="#f8f6ea"/>
+            <rect x="60" y="98" width="140" height="34" rx="3" fill="none" stroke="#000" stroke-opacity="0.14" stroke-width="1"/>
+            <text x="130" y="121" text-anchor="middle" font-family="'IBM Plex Mono', ui-monospace, monospace" font-size="17" font-weight="700" letter-spacing="0.4" fill="#4a008e">@fpl_andres</text>
           </svg>
           <span class="brand-wordmark">FPL Andres</span>
         </a>
