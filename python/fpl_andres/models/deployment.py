@@ -44,6 +44,29 @@ _ROLE_GROUP: dict[ObservedRole, int] = {
     "wide_forward": 3,
     "striker": 3,
 }
+_DEPLOYMENT_CLASSIFICATION: dict[
+    tuple[ListedPosition, ObservedRole], DeploymentClassification
+] = {
+    (listed, observed): (
+        "attacking_oop"
+        if _ROLE_GROUP[observed] > _POSITION_GROUP[listed]
+        else "reverse_oop"
+        if _ROLE_GROUP[observed] < _POSITION_GROUP[listed]
+        else "aligned"
+    )
+    for listed in ("GKP", "DEF", "MID", "FWD")
+    for observed in (
+        "goalkeeper",
+        "centre_back",
+        "full_back",
+        "wing_back",
+        "defensive_midfield",
+        "central_midfield",
+        "attacking_midfield",
+        "wide_forward",
+        "striker",
+    )
+}
 
 
 class FutureRoleEvidenceError(ValueError):
@@ -180,14 +203,9 @@ def classify_deployment(
             ),
         )
 
-    listed_group = _POSITION_GROUP[evidence.listed_position]
-    observed_group = _ROLE_GROUP[evidence.observed_role]
-    if observed_group > listed_group:
-        classification: DeploymentClassification = "attacking_oop"
-    elif observed_group < listed_group:
-        classification = "reverse_oop"
-    else:
-        classification = "aligned"
+    classification: DeploymentClassification = _DEPLOYMENT_CLASSIFICATION[
+        (evidence.listed_position, evidence.observed_role)
+    ]
 
     effect_name: Literal["lord_lundstram_effect"] | None = None
     reasons: list[str] = []

@@ -74,8 +74,15 @@ function DossierMark() {
   );
 }
 
-function RouteHeading({ children }: PropsWithChildren) {
-  return <h1 tabIndex={-1}>{children}</h1>;
+function RouteHeading({
+  children,
+  translate,
+}: PropsWithChildren<{ translate?: "yes" | "no" }>) {
+  return (
+    <h1 tabIndex={-1} translate={translate}>
+      {children}
+    </h1>
+  );
 }
 
 function ApplicationFrame() {
@@ -235,6 +242,11 @@ function HomePage() {
   );
 }
 
+function TeamAnalysisRoute() {
+  const { teamId } = useParams();
+  return <TeamAnalysisPage key={teamId ?? "no-team"} />;
+}
+
 function TeamAnalysisPage() {
   const { teamId } = useParams();
   const entryId = parseTeamId(teamId);
@@ -283,7 +295,7 @@ function TeamAnalysisPage() {
         02 / ANALYSE
       </div>
       <p className="eyebrow">Public team snapshot</p>
-      <RouteHeading>Analysis for team {entryId}</RouteHeading>
+      <RouteHeading translate="no">Analysis for team {entryId}</RouteHeading>
       <div
         aria-label="Analysis result"
         className="analysis-result"
@@ -691,7 +703,7 @@ export const routes: RouteObject[] = [
     element: <ApplicationFrame />,
     children: [
       { index: true, element: <HomePage /> },
-      { path: "team/:teamId", element: <TeamAnalysisPage /> },
+      { path: "team/:teamId", element: <TeamAnalysisRoute /> },
       { path: "methodology", element: <MethodPage /> },
       { path: "calibration", element: <CalibrationPage /> },
       { path: "*", element: <NotFoundPage /> },

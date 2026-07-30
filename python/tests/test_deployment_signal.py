@@ -142,3 +142,86 @@ def test_manager_role_claim_cannot_be_labelled_observed() -> None:
 def test_heatmap_role_requires_model_version_and_confidence() -> None:
     with pytest.raises(ValidationError, match="heatmap role evidence"):
         evidence(evidence_method="heatmap_cluster", evidence_level="experimental")
+
+
+LISTED_POSITIONS = ("GKP", "DEF", "MID", "FWD")
+OBSERVED_ROLES = (
+    "goalkeeper",
+    "centre_back",
+    "full_back",
+    "wing_back",
+    "defensive_midfield",
+    "central_midfield",
+    "attacking_midfield",
+    "wide_forward",
+    "striker",
+)
+DEPLOYMENT_TRUTH_TABLE: dict[tuple[str, str], str] = {
+    # GKP row: keeper aligned; anything else is attacking_oop (fielder-out-of-net).
+    ("GKP", "goalkeeper"): "aligned",
+    ("GKP", "centre_back"): "attacking_oop",
+    ("GKP", "full_back"): "attacking_oop",
+    ("GKP", "wing_back"): "attacking_oop",
+    ("GKP", "defensive_midfield"): "attacking_oop",
+    ("GKP", "central_midfield"): "attacking_oop",
+    ("GKP", "attacking_midfield"): "attacking_oop",
+    ("GKP", "wide_forward"): "attacking_oop",
+    ("GKP", "striker"): "attacking_oop",
+    # DEF row: DEF-tier aligned; wing_back and midfield tiers attacking_oop;
+    # forward-tier attacking_oop; goalkeeper reverse_oop.
+    ("DEF", "goalkeeper"): "reverse_oop",
+    ("DEF", "centre_back"): "aligned",
+    ("DEF", "full_back"): "aligned",
+    ("DEF", "wing_back"): "attacking_oop",
+    ("DEF", "defensive_midfield"): "attacking_oop",
+    ("DEF", "central_midfield"): "attacking_oop",
+    ("DEF", "attacking_midfield"): "attacking_oop",
+    ("DEF", "wide_forward"): "attacking_oop",
+    ("DEF", "striker"): "attacking_oop",
+    # MID row: mid tiers aligned; defender tiers reverse_oop; forward tiers attacking_oop.
+    ("MID", "goalkeeper"): "reverse_oop",
+    ("MID", "centre_back"): "reverse_oop",
+    ("MID", "full_back"): "reverse_oop",
+    ("MID", "wing_back"): "aligned",
+    ("MID", "defensive_midfield"): "aligned",
+    ("MID", "central_midfield"): "aligned",
+    ("MID", "attacking_midfield"): "aligned",
+    ("MID", "wide_forward"): "attacking_oop",
+    ("MID", "striker"): "attacking_oop",
+    # FWD row: forward tier aligned; everything below reverse_oop.
+    ("FWD", "goalkeeper"): "reverse_oop",
+    ("FWD", "centre_back"): "reverse_oop",
+    ("FWD", "full_back"): "reverse_oop",
+    ("FWD", "wing_back"): "reverse_oop",
+    ("FWD", "defensive_midfield"): "reverse_oop",
+    ("FWD", "central_midfield"): "reverse_oop",
+    ("FWD", "attacking_midfield"): "reverse_oop",
+    ("FWD", "wide_forward"): "aligned",
+    ("FWD", "striker"): "aligned",
+}
+
+
+@pytest.mark.parametrize(
+    ("listed_position", "observed_role", "expected_classification"),
+    [
+        (listed, observed, DEPLOYMENT_TRUTH_TABLE[(listed, observed)])
+        for listed in LISTED_POSITIONS
+        for observed in OBSERVED_ROLES
+    ],
+)
+def test_deployment_classification_matches_explicit_truth_table(
+    listed_position: str,
+    observed_role: str,
+    expected_classification: str,
+) -> None:
+    signal = classify_deployment(
+        evidence(listed_position=listed_position, observed_role=observed_role),
+        prediction_event=6,
+        prediction_cutoff=CUTOFF,
+        minimum_starts=3,
+    )
+
+    assert signal.classification == expected_classification, (
+        f"({listed_position}, {observed_role}) should be {expected_classification} "
+        f"but classifier returned {signal.classification}"
+    )

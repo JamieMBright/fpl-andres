@@ -149,7 +149,7 @@ describe("public team state response", () => {
       now: () => Date.parse(fetchedAt),
     });
 
-    expect(response.status).toBe(404);
+    expect(response.status).toBe(200);
     await expect(response.json()).resolves.toEqual({
       status: "unavailable",
       reason: "entry_unavailable",
@@ -270,6 +270,57 @@ describe("public team state response", () => {
     await expect(response.json()).resolves.toEqual({
       status: "degraded",
       reason: "fpl_unreachable",
+    });
+  });
+
+  it("degrades as fpl_source_failed when upstream Content-Type is not JSON", async () => {
+    const fetchUpstream = vi
+      .fn<typeof fetch>()
+      .mockImplementation(async (input) =>
+        String(input).endsWith("/entry/123/")
+          ? new Response("<html>maintenance</html>", {
+              status: 200,
+              headers: { "Content-Type": "text/html" },
+            })
+          : bootstrapResponse(),
+      );
+
+    const response = await createTeamPublicStateResponse(123, "GET", {
+      fetchUpstream,
+      now: () => Date.parse(fetchedAt),
+    });
+
+    expect(response.status).toBe(503);
+    await expect(response.json()).resolves.toEqual({
+      status: "degraded",
+      reason: "fpl_source_failed",
+    });
+  });
+
+  it("degrades as fpl_source_failed when upstream exceeds the size limit", async () => {
+    const fetchUpstream = vi
+      .fn<typeof fetch>()
+      .mockImplementation(async (input) =>
+        String(input).endsWith("/entry/123/")
+          ? new Response("{}", {
+              status: 200,
+              headers: {
+                "Content-Type": "application/json",
+                "Content-Length": String(6 * 1024 * 1024),
+              },
+            })
+          : bootstrapResponse(),
+      );
+
+    const response = await createTeamPublicStateResponse(123, "GET", {
+      fetchUpstream,
+      now: () => Date.parse(fetchedAt),
+    });
+
+    expect(response.status).toBe(503);
+    await expect(response.json()).resolves.toEqual({
+      status: "degraded",
+      reason: "fpl_source_failed",
     });
   });
 

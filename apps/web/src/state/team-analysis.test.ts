@@ -152,4 +152,31 @@ describe("team analysis state machine", () => {
     expect(() => teamPublicStateStorageKey(1.5)).toThrow("Team ID");
     expect(fetchApi).not.toHaveBeenCalled();
   });
+
+  it("surfaces a valid snapshot as ready when persistence throws QuotaExceededError", async () => {
+    const storage: Storage = {
+      get length() {
+        return 0;
+      },
+      clear: vi.fn(),
+      getItem: vi.fn().mockReturnValue(null),
+      key: vi.fn().mockReturnValue(null),
+      removeItem: vi.fn(),
+      setItem: vi.fn(() => {
+        const error = new Error("Quota exceeded");
+        error.name = "QuotaExceededError";
+        throw error;
+      }),
+    };
+    const fetchApi = vi
+      .fn<typeof fetch>()
+      .mockResolvedValue(Response.json({ status: "ready", state: readyState }));
+
+    const result = await refreshTeamAnalysis(ENTRY_ID, null, {
+      fetchApi,
+      storage,
+    });
+
+    expect(result).toEqual({ status: "ready", state: readyState });
+  });
 });
