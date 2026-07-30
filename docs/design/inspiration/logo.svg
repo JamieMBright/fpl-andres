@@ -1,62 +1,62 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 200" role="img" aria-label="FPL Andres bucket mark">
-  <!-- Silhouette traced from docs/design/inspiration/mask.png (Coleman-style drinks cooler / dugout bucket).
-       Key shape facts (untracked reference stays in-repo but out of git):
-       - Wider at the top than at the bottom (opposite of a plant pot).
-       - Sides bulge OUTWARD subtly at mid-height (the "belly").
-       - Slight arch on the top edge; rounded top and bottom corners.
-       - Rounded bottom (mild convex arc, not a flat line).
+  <!-- Silhouette traced from docs/design/inspiration/mask.png (Bielsa's inverted Coleman cooler / dugout bucket).
+       Because the cooler is flipped upside-down and sat on, the visible silhouette is:
+       - NARROW at the top (the cooler's actual base, sat on).
+       - WIDE at the bottom (the cooler's actual lid, on the grass).
+       - Sides slope outward (roughly trapezoidal) with a subtle belly at mid-height.
+       - Slight arch on the top edge; rounded corners top and bottom.
        Uses currentColor so the design tokens set the bucket hue. -->
   <defs>
     <linearGradient id="bucketShade" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0" stop-color="#000" stop-opacity="0"/>
-      <stop offset="1" stop-color="#000" stop-opacity="0.18"/>
+      <stop offset="1" stop-color="#000" stop-opacity="0.22"/>
     </linearGradient>
   </defs>
 
   <!-- Cast shadow at the base -->
-  <ellipse cx="130" cy="182" rx="86" ry="6" fill="#000" opacity="0.16"/>
+  <ellipse cx="130" cy="186" rx="104" ry="6" fill="#000" opacity="0.18"/>
 
-  <!-- Bucket body -->
+  <!-- Bucket body: narrow arched top, wide flat-ish bottom, gently bowed sides -->
   <path d="
-    M 62 24
-    Q 130 18 198 24
-    Q 212 24 212 38
-    C 224 74 224 132 194 168
-    Q 194 178 184 178
-    Q 130 184 76 178
-    Q 66 178 66 168
-    C 36 132 36 74 48 38
-    Q 48 24 62 24
+    M 84 30
+    Q 130 24 176 30
+    Q 188 30 192 42
+    C 214 82 226 128 226 168
+    Q 226 178 216 178
+    Q 130 184 44 178
+    Q 34 178 34 168
+    C 34 128 46 82 68 42
+    Q 72 30 84 30
     Z"
     fill="currentColor"/>
 
-  <!-- Subtle shading for depth -->
+  <!-- Subtle vertical shading for depth -->
   <path d="
-    M 62 24
-    Q 130 18 198 24
-    Q 212 24 212 38
-    C 224 74 224 132 194 168
-    Q 194 178 184 178
-    Q 130 184 76 178
-    Q 66 178 66 168
-    C 36 132 36 74 48 38
-    Q 48 24 62 24
+    M 84 30
+    Q 130 24 176 30
+    Q 188 30 192 42
+    C 214 82 226 128 226 168
+    Q 226 178 216 178
+    Q 130 184 44 178
+    Q 34 178 34 168
+    C 34 128 46 82 68 42
+    Q 72 30 84 30
     Z"
     fill="url(#bucketShade)"/>
 
-  <!-- Top-edge highlight (a hairline sheen on the lid arch) -->
-  <path d="M 66 26 Q 130 20 194 26"
+  <!-- Top-edge highlight (hairline sheen on the small arched sit-surface) -->
+  <path d="M 88 32 Q 130 26 172 32"
     fill="none" stroke="#fff" stroke-opacity="0.35" stroke-width="1.4" stroke-linecap="round"/>
 
-  <!-- Sponsor plate: fixed white background + fixed home-kit purple text
-       so the wordmark stays readable on any bucket colour. -->
-  <rect x="60" y="98" width="140" height="34" rx="3" fill="#f8f6ea"/>
-  <rect x="60" y="98" width="140" height="34" rx="3" fill="none" stroke="#000" stroke-opacity="0.14" stroke-width="1"/>
-  <text x="130" y="121"
+  <!-- Sponsor plate on the wider lower half of the bucket, where the real sponsor prints.
+       Fixed white background + fixed home-kit purple text so the wordmark reads on any bucket colour. -->
+  <rect x="58" y="104" width="144" height="36" rx="3" fill="#f8f6ea"/>
+  <rect x="58" y="104" width="144" height="36" rx="3" fill="none" stroke="#000" stroke-opacity="0.14" stroke-width="1"/>
+  <text x="130" y="128"
     text-anchor="middle"
     font-family="'IBM Plex Mono', 'JetBrains Mono', ui-monospace, monospace"
     font-weight="700"
-    font-size="17"
+    font-size="18"
     letter-spacing="0.4"
     fill="#4a008e">@fpl_andres</text>
 </svg>

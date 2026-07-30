@@ -20,10 +20,15 @@ endorsement may appear.
 The durable signature is a recommendation dossier in which every verdict has a
 visible evidence state and an expandable source trail. The visual signature is the
 **Bielsa bucket** — an original, owner-authored abstract mark evoking the
-upturned bucket the Argentine manager famously sat on during matches, paired with
-the `@fpl_andres` handle. The mark is not traced from any specific photograph and
-does not carry a club crest, sponsor or kit graphic. The mark links to the owner's
-social handles. Any earlier player-pose mark proposal is retired.
+upturned drinks cooler the Argentine manager famously sat on during matches,
+paired with the `@fpl_andres` handle. The silhouette is traced from the local
+reference in `docs/design/inspiration/mask.png`: narrow arched top (the base
+the manager sits on), wide bottom (the cooler's actual lid resting on the
+grass), gently bowed sides. The bucket body is locked to the owner-specified
+brand purple `#5308DC` in both themes so the mark reads identically regardless
+of kit toggle. The sponsor plate is a fixed off-white rectangle with the
+home-kit deep purple wordmark. The mark links to the owner's social handles.
+Any earlier player-pose or teal-tinted mark proposal is retired.
 
 Secondary signature elements the tool leans on:
 
@@ -73,6 +78,17 @@ frontend picks them up from `--fa-*` custom properties.
 | Amber           | `#a6621b`   | Stale and watch states                       |
 | Red             | `#a2433b`   | Errors and negative outcomes only            |
 
+### Brand mark (both modes)
+
+The Bielsa bucket sits outside both kit palettes and holds its own hue so the
+mark reads identically in every theme.
+
+| Token           | Value       | Use                                          |
+| --------------- | ----------- | -------------------------------------------- |
+| Bucket purple   | `#5308DC`   | Bucket body (`--fa-bucket`)                  |
+| Plate cream     | `#f8f6ea`   | Fixed sponsor-plate background               |
+| Plate ink       | `#4a008e`   | Fixed sponsor-plate `@fpl_andres` wordmark   |
+
 ### Goalkeeper-kit signature (both modes)
 
 Drawn from the 1994 Leeds home keeper kit — the loudest surface in the whole
@@ -84,7 +100,7 @@ semantic state or for outfield content.
 | --------------- | ----------- | -------------------------------------------- |
 | Keeper lime     | `#e7f24a`   | Teletext strip primary; ready alt on GKP     |
 | Keeper hot      | `#e6338c`   | Teletext strip primary; GKP row accent       |
-| Keeper teal     | `#2ec9c0`   | Teletext strip primary; bucket logo default  |
+| Keeper teal     | `#2ec9c0`   | Teletext strip primary                       |
 | Keeper purple   | `#5b2ca8`   | Teletext strip primary                       |
 | Keeper black    | `#0a0a0a`   | Teletext strip ground                        |
 | Keeper white    | `#ffffff`   | Teletext strip contrast text                 |
