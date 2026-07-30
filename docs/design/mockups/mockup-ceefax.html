@@ -44,19 +44,18 @@
       }
 
       html[data-theme="light"] {
-        --fa-surface: #f6f4ea;
-        --fa-surface-deep: #ede8d3;
-        --fa-surface-rise: #fbf9f0;
-        --fa-stripe-a: #f2c33a;
-        --fa-stripe-b: #3b357e;
-        --fa-ink: #2b2065;
-        --fa-ink-deep: #4a4a6b;
-        --fa-focus: #3b357e;
-        --fa-brand: #3b357e;
-        --fa-brand-rise: #5748b2;
+        --fa-surface: #ffffff;
+        --fa-surface-deep: #e4e3eb;
+        --fa-surface-rise: #ffffff;
+        --fa-stripe-a: #e4e3eb;
+        --fa-stripe-b: #e5da15;
+        --fa-ink: #4a008e;
+        --fa-ink-deep: #6a3aa8;
+        --fa-focus: #4a008e;
+        --fa-brand: #4a008e;
+        --fa-brand-rise: #6a3aa8;
         --fa-amber: #a6621b;
         --fa-red: #a2433b;
-        --fa-stripe-opacity: 0.18;
       }
 
       * {
@@ -95,6 +94,21 @@
           color-mix(in srgb, var(--fa-stripe-b) 32%, var(--fa-surface))
             var(--fa-stripe-width),
           color-mix(in srgb, var(--fa-stripe-b) 32%, var(--fa-surface))
+            calc(var(--fa-stripe-width) * 2)
+        );
+      }
+
+      html[data-theme="light"] .frame {
+        /* Home kit stripes: silver #e4e3eb pairs with pale yellow over the
+           pure white base so the alternating rhythm reads as the shirt's
+           chest band without overwhelming the tabular content. */
+        background: repeating-linear-gradient(
+          to right,
+          var(--fa-stripe-a) 0,
+          var(--fa-stripe-a) var(--fa-stripe-width),
+          color-mix(in srgb, var(--fa-stripe-b) 55%, var(--fa-surface))
+            var(--fa-stripe-width),
+          color-mix(in srgb, var(--fa-stripe-b) 55%, var(--fa-surface))
             calc(var(--fa-stripe-width) * 2)
         );
       }

@@ -62,13 +62,14 @@ frontend picks them up from `--fa-*` custom properties.
 
 | Token           | Value       | Use                                          |
 | --------------- | ----------- | -------------------------------------------- |
-| Paper           | `#f6f4ea`   | App frame background                         |
-| Paper deep      | `#ede8d3`   | Ruled ground                                 |
-| Paper rise      | `#fbf9f0`   | Elevated surfaces and ruled headers          |
-| Home yellow     | `#f2c33a`   | Home-kit stripe A, brand accent              |
-| Home blue       | `#3b357e`   | Home-kit stripe B, structural rules, ink     |
-| Slate           | `#2b2065`   | Primary copy                                 |
-| Slate deep      | `#4a4a6b`   | Secondary copy                               |
+| Paper           | `#e4e3eb`   | App frame background (silver-white)          |
+| Paper deep      | `#ffffff`   | Ruled ground (pure white surfaces)           |
+| Paper rise      | `#ffffff`   | Elevated surfaces                            |
+| Stripe white    | `#ffffff`   | Home-kit stripe A                            |
+| Stripe yellow   | `#e5da15`   | Home-kit stripe B                            |
+| Home blue       | `#4a008e`   | Primary copy, structural rules, buttons      |
+| Home blue rise  | `#6a3aa8`   | Hover / focus tint on the blue accent        |
+| Slate deep      | `#6a3aa8`   | Secondary copy                               |
 | Amber           | `#a6621b`   | Stale and watch states                       |
 | Red             | `#a2433b`   | Errors and negative outcomes only            |
 
