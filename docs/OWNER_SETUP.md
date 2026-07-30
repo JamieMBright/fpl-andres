@@ -52,7 +52,40 @@ FPL50, p100 stats and groupthink.
 
 ---
 
-## Waiting for external gate (no action needed until then)
+## Next action — dispatch the historical ingest
+
+The ingest code, schema and workflow are built and tested. Nothing has written a
+real row yet because the workflow has never been dispatched. Two steps:
+
+### 1. Apply the history migration
+
+- [ ] Open the Supabase SQL Editor for `fpl-andres-production` and run
+      [`20260801120000_history_corpus.sql`](../supabase/migrations/20260801120000_history_corpus.sql).
+      Creates `seasons`, `teams`, `elements`, `fixtures`,
+      `element_gameweek_stats` and `element_price_observations`. All forced RLS,
+      no policy, no grant. Safe to run once; it has no `IF NOT EXISTS` guards, so
+      re-running will error rather than duplicate.
+
+### 2. Dispatch the ingest, one season at a time
+
+- [ ] Find the current commit SHA of
+      [vaastav/Fantasy-Premier-League](https://github.com/vaastav/Fantasy-Premier-League)
+      (Actions → any commit → copy the full 40-character SHA). Pinning is what
+      makes the ingest reproducible.
+- [ ] Run **Actions → Historical Ingest → Run workflow** three times:
+
+      | season  | gameweeks | note                          |
+          | ------- | --------- | ----------------------------- |
+          | 2023-24 | 1-38      |                               |
+          | 2024-25 | 1-38      | holdout season for promotion  |
+          | 2025-26 | 1-38      | first DefCon labels           |
+
+- [ ] Report back the row counts the job prints, or the failure text. Header
+      drift between archive seasons is expected and the ingest deliberately
+      fails loudly on it rather than defaulting a column; if a season errors
+      with a missing-column message, paste it and the column map gets extended.
+
+---
 
 ### Live smoke test once FPL processes GW1
 

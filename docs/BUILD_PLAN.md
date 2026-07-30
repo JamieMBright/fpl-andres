@@ -30,6 +30,22 @@ The gap between "scaffold" and "product" is roughly: one persistence layer, one
 historical corpus, six models, one backtest harness, one optimizer wiring, and
 the surfaces.
 
+## Shipped so far
+
+| Milestone                | State                                             |
+| ------------------------ | ------------------------------------------------- |
+| M1 persistence layer     | **shipped** — `fpl_andres/persistence/`           |
+| M2 history schema        | **shipped** — `20260801120000_history_corpus.sql` |
+| M3 historical ingest     | **shipped, not yet run** — needs a dispatch       |
+| M5 minutes               | **shipped** — `models/minutes.py`                 |
+| M7 rates + carry-forward | **shipped** — `models/player_rates.py`            |
+| M9 xPTS assembly         | **shipped** — `models/expected_points.py`         |
+| M12 backtest harness     | **shipped, no corpus yet** — `models/backtest.py` |
+
+Everything above is unit-tested against fixtures. **None of it has seen a real
+row**, because the corpus does not exist until the ingest workflow is
+dispatched. That dispatch is the single next action.
+
 ---
 
 ## Phase 1 — Data foundation
