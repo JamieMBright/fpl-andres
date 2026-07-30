@@ -1278,7 +1278,104 @@ a:focus-visible {
   }
 }
 
-/* --- Ceefax signature elements --- */
+/* Method strip: a Teletext page rather than three paragraphs of prose.
+   Numerals sit in keeper-kit blocks, matching the strip at the top of the page. */
+.method-strip {
+  padding-block: clamp(30px, 5vw, 52px);
+  border-bottom: 3px solid var(--ink);
+}
+
+.method-strip-title {
+  margin: 0 0 20px;
+  color: var(--ink-soft);
+  font-family: var(--fa-body);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.method-strip ol {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  background: var(--rule);
+  border: 2px solid var(--ink);
+}
+
+.method-strip li {
+  display: grid;
+  grid-template-rows: auto auto 1fr;
+  gap: 8px;
+  padding: 16px 18px 20px;
+  background: var(--paper);
+}
+
+.method-step {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 28px;
+  color: var(--fa-gk-black);
+  font-family: var(--fa-body);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.method-strip li:nth-child(1) .method-step {
+  background: var(--fa-gk-lime);
+}
+
+.method-strip li:nth-child(2) .method-step {
+  background: var(--fa-gk-teal);
+}
+
+.method-strip li:nth-child(3) .method-step {
+  background: var(--fa-gk-hot);
+}
+
+.method-strip li:nth-child(4) .method-step {
+  color: var(--fa-gk-white);
+  background: var(--fa-gk-purple);
+}
+
+.method-strip h3 {
+  margin: 0;
+  color: var(--ink);
+  font-family: var(--fa-display);
+  font-size: clamp(17px, 2vw, 20px);
+  line-height: 1.15;
+}
+
+.method-strip p {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+/* Step four is not earned yet, and the page should say so plainly.
+   Signalled with a rule and a marker rather than opacity, which would dim the
+   text below the contrast floor. */
+.method-pending {
+  border-top: 3px solid var(--amber);
+}
+
+.method-pending h3::after {
+  content: " — not yet";
+  color: var(--amber);
+  font-family: var(--fa-body);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
 
 /* Teletext strip: six keeper-kit hues anchoring the top of every page.
    Text colour per swatch is whichever of black/white clears AA on it. */

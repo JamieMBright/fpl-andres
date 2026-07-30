@@ -86,8 +86,10 @@ describe("team analysis entry", () => {
     ).toHaveAttribute("href", "#main-content");
     expect(screen.getByRole("main")).toHaveAttribute("id", "main-content");
     expect(screen.getByRole("link", { name: "Method" })).toBeVisible();
-    expect(screen.getByText(/I show you what FPL recorded/)).toBeVisible();
-    expect(screen.getByText(/you tell me/)).toBeVisible();
+    expect(screen.getByRole("heading", { name: "Your team ID" })).toBeVisible();
+    expect(screen.getByRole("heading", { name: "I crunch" })).toBeVisible();
+    // Step four has not been earned yet and must say so.
+    expect(screen.getByText(/when the models have earned it/)).toBeVisible();
     expect(
       screen.queryByText(/captain and bench calls/i),
     ).not.toBeInTheDocument();

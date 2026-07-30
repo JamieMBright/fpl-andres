@@ -6,9 +6,7 @@ import {
   ChevronDown,
   Clock3,
   Database,
-  FileSearch,
   RefreshCw,
-  ShieldCheck,
 } from "lucide-react";
 import {
   useEffect,
@@ -318,40 +316,40 @@ function HomePage() {
         </form>
       </section>
 
-      <section className="briefing-grid" aria-label="How I work">
-        <article>
-          <div className="briefing-icon">
-            <FileSearch aria-hidden="true" size={21} />
-          </div>
-          <p className="eyebrow">The record</p>
-          <h2>I show you what FPL recorded</h2>
-          <p>
-            Your squad, captain, bank and transfers as they stood at the last
-            deadline. Nothing appears until the source checks out.
-          </p>
-        </article>
-        <article>
-          <div className="briefing-icon">
-            <Clock3 aria-hidden="true" size={21} />
-          </div>
-          <p className="eyebrow">Your corrections</p>
-          <h2>What&rsquo;s changed since, you tell me</h2>
-          <p>
-            FPL won&rsquo;t show me your moves until the next deadline. Yours
-            stay on your machine, and I keep them apart from the public record.
-          </p>
-        </article>
-        <article>
-          <div className="briefing-icon">
-            <ShieldCheck aria-hidden="true" size={21} />
-          </div>
-          <p className="eyebrow">My working</p>
-          <h2>Every number, sourced</h2>
-          <p>
-            Timestamps and hashes stay attached to everything I show you. Where
-            I can&rsquo;t source it, I say so rather than fill the gap.
-          </p>
-        </article>
+      <section className="method-strip" aria-label="How I work">
+        <h2 className="method-strip-title">How I work</h2>
+        <ol>
+          <li>
+            <span className="method-step" aria-hidden="true">
+              01
+            </span>
+            <h3>Your team ID</h3>
+            <p>I read what FPL made public. Nothing more.</p>
+          </li>
+          <li>
+            <span className="method-step" aria-hidden="true">
+              02
+            </span>
+            <h3>Your changes</h3>
+            <p>
+              Tell me what FPL can&rsquo;t see yet. It stays on your machine.
+            </p>
+          </li>
+          <li>
+            <span className="method-step" aria-hidden="true">
+              03
+            </span>
+            <h3>I crunch</h3>
+            <p>Ten seasons of it. Numbers, not opinions.</p>
+          </li>
+          <li className="method-pending">
+            <span className="method-step" aria-hidden="true">
+              04
+            </span>
+            <h3>The verdict</h3>
+            <p>It arrives when the models have earned it.</p>
+          </li>
+        </ol>
       </section>
     </>
   );
