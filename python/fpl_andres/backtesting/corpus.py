@@ -54,6 +54,9 @@ class ElementRow:
     price_tenths: int | None
     selected: int | None
     kickoff_time: datetime
+    clean_sheets: int = 0
+    saves: int = 0
+    bonus: int = 0
 
 
 @dataclass
@@ -143,6 +146,9 @@ def load_season(client: SupabaseRestClient, season: str) -> SeasonCorpus:
                 price_tenths=_optional_int(row.get("value")),
                 selected=_optional_int(row.get("selected")),
                 kickoff_time=_kickoff(row.get("kickoff_time"), gameweek),
+                clean_sheets=int(row.get("clean_sheets") or 0),
+                saves=int(row.get("saves") or 0),
+                bonus=int(row.get("bonus") or 0),
             )
         )
 

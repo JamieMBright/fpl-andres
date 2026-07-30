@@ -27,6 +27,10 @@ from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from fpl_andres.models.contracts import EvidenceLevel
 
+# A season can exceed 38 events when it is disrupted: 2019/20 was suspended
+# and resumed, running to 47. The history schema already allows this.
+MAX_EVENT = 47
+
 _MINUTES_PER_90 = 90.0
 
 
@@ -40,7 +44,7 @@ class RateObservation(BaseModel):
     model_config = ConfigDict(extra="forbid", frozen=True, strict=True)
 
     season: Annotated[str, Field(pattern=r"^20[0-9]{2}-[0-9]{2}$")]
-    event_id: Annotated[int, Field(ge=1, le=38)]
+    event_id: Annotated[int, Field(ge=1, le=MAX_EVENT)]
     minutes: Annotated[int, Field(ge=0, le=120)]
     goals: Annotated[int, Field(ge=0)]
     assists: Annotated[int, Field(ge=0)]
@@ -72,7 +76,7 @@ class PlayerRateEvidence(BaseModel):
 
     element_code: Annotated[int, Field(gt=0)]
     season: Annotated[str, Field(pattern=r"^20[0-9]{2}-[0-9]{2}$")]
-    prediction_event: Annotated[int, Field(ge=1, le=38)]
+    prediction_event: Annotated[int, Field(ge=1, le=MAX_EVENT)]
 
     current_season_observations: tuple[RateObservation, ...] = ()
     prior_season_observations: tuple[RateObservation, ...] = ()
@@ -117,7 +121,7 @@ class PlayerRateProjection(BaseModel):
 
     element_code: Annotated[int, Field(gt=0)]
     season: Annotated[str, Field(pattern=r"^20[0-9]{2}-[0-9]{2}$")]
-    event: Annotated[int, Field(ge=1, le=38)]
+    event: Annotated[int, Field(ge=1, le=MAX_EVENT)]
     goals_per_90: Annotated[float, Field(ge=0.0)]
     assists_per_90: Annotated[float, Field(ge=0.0)]
     current_season_minutes: Annotated[float, Field(ge=0.0)]

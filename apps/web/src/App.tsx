@@ -26,6 +26,7 @@ import {
 } from "react-router-dom";
 
 import { TeamStateCorrections } from "./components/TeamStateCorrections";
+import { ValidationReport } from "./components/ValidationReport";
 import {
   initialTeamAnalysisState,
   loadCachedPublicTeamState,
@@ -808,18 +809,14 @@ function MethodPage() {
 
 function CalibrationPage() {
   return (
-    <section className="text-page">
+    <section className="text-page validation-page">
       <p className="eyebrow">Calibration</p>
       <RouteHeading>I keep score on myself.</RouteHeading>
       <p>
-        Nothing to show you yet. No model has been promoted, so there are no
-        results worth putting my name to.
+        All forecasts are wrong. Some are useful. Below is every test I have run
+        against completed seasons, including the ones I lose.
       </p>
-      <p>
-        When there are, this is where they go: how often I was right, by how
-        much, and where I was worst. Including the times I disagreed with the
-        crowd and the crowd was right.
-      </p>
+      <ValidationReport />
     </section>
   );
 }

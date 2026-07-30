@@ -1,0 +1,382 @@
+{
+  "generatedAt": "2026-07-30T21:34:51.800945+00:00",
+  "seasons": [
+    {
+      "season": "2019-20",
+      "rows": 22560,
+      "gameweeks": 38,
+      "elements": 666,
+      "firstScoredGameweek": 7,
+      "methods": [
+        {
+          "label": "model",
+          "scored": 11873,
+          "meanAbsoluteError": 1.814,
+          "rootMeanSquaredError": 2.659,
+          "bias": 0.064,
+          "spearman": 0.486,
+          "topNHitRate": 0.194,
+          "byPosition": {
+            "DEF": 0.448,
+            "FWD": 0.522,
+            "GKP": 0.569,
+            "MID": 0.504
+          }
+        },
+        {
+          "label": "recent_mean",
+          "scored": 18364,
+          "meanAbsoluteError": 1.257,
+          "rootMeanSquaredError": 2.333,
+          "bias": 0.042,
+          "spearman": 0.664,
+          "topNHitRate": 0.139,
+          "byPosition": {
+            "DEF": 0.421,
+            "FWD": 0.497,
+            "GKP": 0.522,
+            "MID": 0.473
+          }
+        },
+        {
+          "label": "ownership",
+          "scored": 0,
+          "meanAbsoluteError": null,
+          "rootMeanSquaredError": null,
+          "bias": null,
+          "spearman": 0.45,
+          "topNHitRate": 0.161,
+          "byPosition": {
+            "DEF": 0.234,
+            "FWD": 0.338,
+            "GKP": 0.404,
+            "MID": 0.265
+          }
+        }
+      ],
+      "league": {
+        "advisedMean": 1618,
+        "zombieMean": 1425,
+        "advisedBest": 1708,
+        "zombieBest": 1639,
+        "advisedWins": 5,
+        "leaguesPlayed": 5
+      }
+    },
+    {
+      "season": "2020-21",
+      "rows": 24365,
+      "gameweeks": 38,
+      "elements": 713,
+      "firstScoredGameweek": 7,
+      "methods": [
+        {
+          "label": "model",
+          "scored": 11538,
+          "meanAbsoluteError": 1.915,
+          "rootMeanSquaredError": 2.848,
+          "bias": -0.023,
+          "spearman": 0.483,
+          "topNHitRate": 0.172,
+          "byPosition": {
+            "DEF": 0.464,
+            "FWD": 0.497,
+            "GKP": 0.444,
+            "MID": 0.492
+          }
+        },
+        {
+          "label": "recent_mean",
+          "scored": 19513,
+          "meanAbsoluteError": 1.258,
+          "rootMeanSquaredError": 2.391,
+          "bias": -0.005,
+          "spearman": 0.672,
+          "topNHitRate": 0.139,
+          "byPosition": {
+            "DEF": 0.45,
+            "FWD": 0.482,
+            "GKP": 0.442,
+            "MID": 0.48
+          }
+        },
+        {
+          "label": "ownership",
+          "scored": 0,
+          "meanAbsoluteError": null,
+          "rootMeanSquaredError": null,
+          "bias": null,
+          "spearman": 0.445,
+          "topNHitRate": 0.173,
+          "byPosition": {
+            "DEF": 0.234,
+            "FWD": 0.317,
+            "GKP": 0.274,
+            "MID": 0.275
+          }
+        }
+      ],
+      "league": {
+        "advisedMean": 1579,
+        "zombieMean": 1437,
+        "advisedBest": 1715,
+        "zombieBest": 1697,
+        "advisedWins": 5,
+        "leaguesPlayed": 5
+      }
+    },
+    {
+      "season": "2021-22",
+      "rows": 25447,
+      "gameweeks": 38,
+      "elements": 737,
+      "firstScoredGameweek": 7,
+      "methods": [
+        {
+          "label": "model",
+          "scored": 11138,
+          "meanAbsoluteError": 1.977,
+          "rootMeanSquaredError": 2.982,
+          "bias": -0.056,
+          "spearman": 0.457,
+          "topNHitRate": 0.156,
+          "byPosition": {
+            "DEF": 0.431,
+            "FWD": 0.418,
+            "GKP": 0.583,
+            "MID": 0.484
+          }
+        },
+        {
+          "label": "recent_mean",
+          "scored": 19591,
+          "meanAbsoluteError": 1.279,
+          "rootMeanSquaredError": 2.486,
+          "bias": -0.017,
+          "spearman": 0.652,
+          "topNHitRate": 0.148,
+          "byPosition": {
+            "DEF": 0.39,
+            "FWD": 0.397,
+            "GKP": 0.534,
+            "MID": 0.454
+          }
+        },
+        {
+          "label": "ownership",
+          "scored": 0,
+          "meanAbsoluteError": null,
+          "rootMeanSquaredError": null,
+          "bias": null,
+          "spearman": 0.475,
+          "topNHitRate": 0.167,
+          "byPosition": {
+            "DEF": 0.234,
+            "FWD": 0.227,
+            "GKP": 0.491,
+            "MID": 0.302
+          }
+        }
+      ],
+      "league": {
+        "advisedMean": 1651,
+        "zombieMean": 1493,
+        "advisedBest": 1766,
+        "zombieBest": 1686,
+        "advisedWins": 5,
+        "leaguesPlayed": 5
+      }
+    },
+    {
+      "season": "2022-23",
+      "rows": 26505,
+      "gameweeks": 37,
+      "elements": 778,
+      "firstScoredGameweek": 7,
+      "methods": [
+        {
+          "label": "model",
+          "scored": 11470,
+          "meanAbsoluteError": 1.823,
+          "rootMeanSquaredError": 2.814,
+          "bias": -0.23,
+          "spearman": 0.457,
+          "topNHitRate": 0.132,
+          "byPosition": {
+            "DEF": 0.411,
+            "FWD": 0.482,
+            "GKP": 0.537,
+            "MID": 0.537
+          }
+        },
+        {
+          "label": "recent_mean",
+          "scored": 21224,
+          "meanAbsoluteError": 1.152,
+          "rootMeanSquaredError": 2.24,
+          "bias": -0.005,
+          "spearman": 0.69,
+          "topNHitRate": 0.147,
+          "byPosition": {
+            "DEF": 0.365,
+            "FWD": 0.471,
+            "GKP": 0.485,
+            "MID": 0.507
+          }
+        },
+        {
+          "label": "ownership",
+          "scored": 0,
+          "meanAbsoluteError": null,
+          "rootMeanSquaredError": null,
+          "bias": null,
+          "spearman": 0.463,
+          "topNHitRate": 0.174,
+          "byPosition": {
+            "DEF": 0.22,
+            "FWD": 0.332,
+            "GKP": 0.315,
+            "MID": 0.312
+          }
+        }
+      ],
+      "league": {
+        "advisedMean": 1586,
+        "zombieMean": 1427,
+        "advisedBest": 1658,
+        "zombieBest": 1699,
+        "advisedWins": 4,
+        "leaguesPlayed": 5
+      }
+    },
+    {
+      "season": "2023-24",
+      "rows": 29725,
+      "gameweeks": 38,
+      "elements": 865,
+      "firstScoredGameweek": 7,
+      "methods": [
+        {
+          "label": "model",
+          "scored": 12175,
+          "meanAbsoluteError": 1.815,
+          "rootMeanSquaredError": 2.774,
+          "bias": -0.004,
+          "spearman": 0.481,
+          "topNHitRate": 0.178,
+          "byPosition": {
+            "DEF": 0.416,
+            "FWD": 0.515,
+            "GKP": 0.505,
+            "MID": 0.543
+          }
+        },
+        {
+          "label": "recent_mean",
+          "scored": 24519,
+          "meanAbsoluteError": 1.015,
+          "rootMeanSquaredError": 2.126,
+          "bias": -0.012,
+          "spearman": 0.689,
+          "topNHitRate": 0.156,
+          "byPosition": {
+            "DEF": 0.385,
+            "FWD": 0.476,
+            "GKP": 0.484,
+            "MID": 0.518
+          }
+        },
+        {
+          "label": "ownership",
+          "scored": 0,
+          "meanAbsoluteError": null,
+          "rootMeanSquaredError": null,
+          "bias": null,
+          "spearman": 0.452,
+          "topNHitRate": 0.17,
+          "byPosition": {
+            "DEF": 0.193,
+            "FWD": 0.342,
+            "GKP": 0.221,
+            "MID": 0.284
+          }
+        }
+      ],
+      "league": {
+        "advisedMean": 1622,
+        "zombieMean": 1505,
+        "advisedBest": 1764,
+        "zombieBest": 1692,
+        "advisedWins": 4,
+        "leaguesPlayed": 5
+      }
+    },
+    {
+      "season": "2024-25",
+      "rows": 27605,
+      "gameweeks": 38,
+      "elements": 804,
+      "firstScoredGameweek": 7,
+      "methods": [
+        {
+          "label": "model",
+          "scored": 12175,
+          "meanAbsoluteError": 1.759,
+          "rootMeanSquaredError": 2.639,
+          "bias": 0.008,
+          "spearman": 0.492,
+          "topNHitRate": 0.17,
+          "byPosition": {
+            "DEF": 0.471,
+            "FWD": 0.515,
+            "GKP": 0.608,
+            "MID": 0.502
+          }
+        },
+        {
+          "label": "recent_mean",
+          "scored": 23216,
+          "meanAbsoluteError": 1.1,
+          "rootMeanSquaredError": 2.207,
+          "bias": -0.001,
+          "spearman": 0.699,
+          "topNHitRate": 0.169,
+          "byPosition": {
+            "DEF": 0.436,
+            "FWD": 0.465,
+            "GKP": 0.591,
+            "MID": 0.47
+          }
+        },
+        {
+          "label": "ownership",
+          "scored": 0,
+          "meanAbsoluteError": null,
+          "rootMeanSquaredError": null,
+          "bias": null,
+          "spearman": 0.436,
+          "topNHitRate": 0.147,
+          "byPosition": {
+            "DEF": 0.254,
+            "FWD": 0.372,
+            "GKP": 0.479,
+            "MID": 0.273
+          }
+        }
+      ],
+      "league": {
+        "advisedMean": 1659,
+        "zombieMean": 1578,
+        "advisedBest": 1797,
+        "zombieBest": 1808,
+        "advisedWins": 2,
+        "leaguesPlayed": 5
+      }
+    }
+  ],
+  "league": {
+    "managers": 20,
+    "advisedShare": 0.25,
+    "seeds": [1, 2, 3, 4, 5]
+  }
+}

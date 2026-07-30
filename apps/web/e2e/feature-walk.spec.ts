@@ -255,6 +255,39 @@ test.describe("feature walk", () => {
     expect(scan.violations).toEqual([]);
   });
 
+  test("the calibration page reports results it lost as well as won", async ({
+    page,
+  }) => {
+    await page.goto("/calibration");
+
+    await expect(
+      page.getByRole("heading", { name: "Can I rank players?" }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Does following me actually help?" }),
+    ).toBeVisible();
+
+    // The page must state plainly where the naive baseline wins.
+    await expect(
+      page.getByText(/ranks better than my projection in every season/),
+    ).toBeVisible();
+
+    await expect(
+      page.getByRole("table", {
+        name: "Rank correlation by season and method",
+      }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("table", { name: "Mini-league outcomes by season" }),
+    ).toBeVisible();
+  });
+
+  test("calibration passes automated axe scans", async ({ page }) => {
+    await page.goto("/calibration");
+    const scan = await new AxeBuilder({ page }).analyze();
+    expect(scan.violations).toEqual([]);
+  });
+
   test("degraded state passes automated axe scans", async ({ page }) => {
     await page.route("**/api/team/*", async (route) => {
       await route.fulfill({

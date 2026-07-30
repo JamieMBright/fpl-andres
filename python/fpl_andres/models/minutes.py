@@ -20,6 +20,10 @@ from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from fpl_andres.models.contracts import EvidenceLevel
 
+# A season can exceed 38 events when it is disrupted: 2019/20 was suspended
+# and resumed, running to 47. The history schema already allows this.
+MAX_EVENT = 47
+
 # FPL publishes availability as a single status character.
 AvailabilityStatus = Literal["a", "d", "i", "s", "u", "n"]
 
@@ -39,7 +43,7 @@ class AppearanceObservation(BaseModel):
 
     model_config = ConfigDict(extra="forbid", frozen=True, strict=True)
 
-    event_id: Annotated[int, Field(ge=1, le=38)]
+    event_id: Annotated[int, Field(ge=1, le=MAX_EVENT)]
     minutes: Annotated[int, Field(ge=0, le=120)]
     started: bool
     kickoff_time: datetime
@@ -77,7 +81,7 @@ class MinutesEvidence(BaseModel):
 
     element_code: Annotated[int, Field(gt=0)]
     season: Annotated[str, Field(pattern=r"^20[0-9]{2}-[0-9]{2}$")]
-    prediction_event: Annotated[int, Field(ge=1, le=38)]
+    prediction_event: Annotated[int, Field(ge=1, le=MAX_EVENT)]
     observations: tuple[AppearanceObservation, ...]
     availability: AvailabilityEvidence | None = None
 
@@ -111,7 +115,7 @@ class MinutesProjection(BaseModel):
 
     element_code: Annotated[int, Field(gt=0)]
     season: Annotated[str, Field(pattern=r"^20[0-9]{2}-[0-9]{2}$")]
-    event: Annotated[int, Field(ge=1, le=38)]
+    event: Annotated[int, Field(ge=1, le=MAX_EVENT)]
     probability_start: Annotated[float, Field(ge=0.0, le=1.0)]
     probability_appear: Annotated[float, Field(ge=0.0, le=1.0)]
     probability_sixty_minutes: Annotated[float, Field(ge=0.0, le=1.0)]

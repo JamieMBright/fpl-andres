@@ -43,6 +43,9 @@ _ASSIST_PRIOR: Mapping[int, float] = {1: 0.00, 2: 0.06, 3: 0.13, 4: 0.12}
 # team-goal model. Stated here so the number is never mistaken for full xPTS.
 _GOAL_POINTS: Mapping[int, int] = {1: 10, 2: 6, 3: 5, 4: 4}
 _ASSIST_POINTS = 3
+_CLEAN_SHEET_POINTS: Mapping[int, int] = {1: 4, 2: 4, 3: 1, 4: 0}
+_SAVES_PER_POINT = 3
+_GOALKEEPER = 1
 
 
 @dataclass(frozen=True)
@@ -107,19 +110,49 @@ def project_gameweek(
         attacking = ninety * (
             rates.goals_per_90 * _GOAL_POINTS[position] + rates.assists_per_90 * _ASSIST_POINTS
         )
+        # Clean sheets, saves and bonus are priced from the player's own
+        # observed rate rather than a team model. That is a weaker signal than a
+        # promoted goals-conceded model, but it is directly observed, and
+        # omitting it made every projection under-predict.
+        supporting = _supporting_points(rows, position, minutes)
 
         projections.append(
             ElementProjection(
                 element_id=element_id,
                 position=position,
                 expected_minutes=minutes.expected_minutes,
-                expected_points=appearance + attacking,
+                expected_points=appearance + attacking + supporting,
                 minutes=minutes,
                 rates=rates,
             )
         )
 
     return projections
+
+
+def _supporting_points(
+    rows: Sequence[ElementRow], position: int, minutes: MinutesProjection
+) -> float:
+    """Clean sheet, saves and bonus, from this player's own history."""
+    appearances = [row for row in rows if row.minutes > 0]
+    if not appearances:
+        return 0.0
+
+    played = len(appearances)
+    ninety = minutes.expected_minutes / _MINUTES_PER_90
+
+    clean_sheet_rate = sum(row.clean_sheets for row in appearances) / played
+    clean_sheet = (
+        minutes.probability_sixty_minutes * clean_sheet_rate * _CLEAN_SHEET_POINTS.get(position, 0)
+    )
+
+    bonus = ninety * (sum(row.bonus for row in appearances) / played)
+
+    saves = 0.0
+    if position == _GOALKEEPER:
+        saves = ninety * (sum(row.saves for row in appearances) / played) / _SAVES_PER_POINT
+
+    return clean_sheet + bonus + saves
 
 
 def _cutoff_for(corpus: SeasonCorpus, gameweek: int, history: Sequence[ElementRow]) -> datetime:
