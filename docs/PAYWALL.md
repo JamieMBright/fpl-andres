@@ -5,6 +5,23 @@ today. This document is the forward plan for what happens when the beta
 label comes off — three tiers, each gated by evidence rather than by an
 arbitrary lock.
 
+## Owner decision (2026-07-30): nothing is charged for in 2026/27
+
+No paid element ships during the 2026/27 season. The only circumstance that
+would revisit this is the product going viral, which is not expected before the
+social accounts are properly linked and weekly content is actually being
+produced.
+
+Consequences for the build:
+
+- The gating shim is written last and stays dormant. Nothing is gated until the
+  owner says so explicitly, and it may stay free indefinitely.
+- Every tier below is a layout and evidence contract, not a billing plan. Paid
+  panels ship visible and free, labelled `beta — free during beta`.
+- No payment provider, entitlement store or upgrade prompt is integrated until
+  that instruction arrives. Building one now would be speculative work against a
+  decision that has not been taken.
+
 ## Beta (current)
 
 - All features free, all shelves open to everyone.
