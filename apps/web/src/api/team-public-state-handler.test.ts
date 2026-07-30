@@ -5,14 +5,35 @@ import { createTeamPublicStateResponse } from "../../../../api/_lib/team-public-
 const fetchedAt = "2026-09-12T12:30:00.000Z";
 
 function bootstrapResponse(): Response {
-  return jsonResponse({
+  return jsonResponse(bootstrapDocument());
+}
+
+function bootstrapDocument() {
+  return {
     events: [
       {
         id: 5,
         deadline_time: "2026-09-12T10:30:00Z",
       },
     ],
-  });
+    element_types: [
+      { id: 1, singular_name_short: "GKP" },
+      { id: 2, singular_name_short: "DEF" },
+      { id: 3, singular_name_short: "MID" },
+      { id: 4, singular_name_short: "FWD" },
+    ],
+    teams: [
+      { id: 1, short_name: "ARS" },
+      { id: 2, short_name: "AVL" },
+    ],
+    elements: Array.from({ length: 15 }, (_, index) => ({
+      id: 101 + index,
+      web_name: `Player ${101 + index}`,
+      element_type: ((index % 4) + 1) as 1 | 2 | 3 | 4,
+      team: (index % 2) + 1,
+      now_cost: 45 + index,
+    })),
+  };
 }
 
 function entryResponse(currentEvent: number | null = 5): Response {
@@ -87,6 +108,61 @@ describe("public team state response", () => {
       },
     });
     expect(fetchUpstream).toHaveBeenCalledTimes(3);
+  });
+
+  it("resolves each pick to a named player from the bootstrap tables", async () => {
+    const fetchUpstream = vi
+      .fn<typeof fetch>()
+      .mockImplementation(async (input) => {
+        const url = String(input);
+        if (url.endsWith("/bootstrap-static/")) return bootstrapResponse();
+        if (url.endsWith("/entry/123/")) return entryResponse();
+        if (url.endsWith("/entry/123/event/5/picks/")) return picksResponse();
+        throw new Error(`unexpected URL: ${url}`);
+      });
+
+    const response = await createTeamPublicStateResponse(123, "GET", {
+      fetchUpstream,
+      now: () => Date.parse(fetchedAt),
+    });
+    const body = (await response.json()) as {
+      state: { picks: { elementId: number; identity: unknown }[] };
+    };
+
+    expect(body.state.picks.at(0)?.identity).toEqual({
+      webName: "Player 101",
+      positionCode: "GKP",
+      teamShortName: "ARS",
+      priceTenths: 45,
+    });
+    expect(body.state.picks.every((pick) => pick.identity !== null)).toBe(true);
+  });
+
+  it("leaves a pick opaque when the bootstrap cannot resolve it", async () => {
+    const fetchUpstream = vi
+      .fn<typeof fetch>()
+      .mockImplementation(async (input) => {
+        const url = String(input);
+        if (url.endsWith("/bootstrap-static/")) {
+          // An element whose club is absent must not be half-named.
+          const document = bootstrapDocument();
+          document.teams = [{ id: 99, short_name: "XXX" }];
+          return jsonResponse(document);
+        }
+        if (url.endsWith("/entry/123/")) return entryResponse();
+        if (url.endsWith("/entry/123/event/5/picks/")) return picksResponse();
+        throw new Error(`unexpected URL: ${url}`);
+      });
+
+    const response = await createTeamPublicStateResponse(123, "GET", {
+      fetchUpstream,
+      now: () => Date.parse(fetchedAt),
+    });
+    const body = (await response.json()) as {
+      state: { picks: { identity: unknown }[] };
+    };
+
+    expect(body.state.picks.every((pick) => pick.identity === null)).toBe(true);
   });
 
   it("returns unavailable before picks when the entry has no processed event", async () => {

@@ -252,6 +252,50 @@
         },
         "isViceCaptain": {
           "type": "boolean"
+        },
+        "identity": {
+          "default": null,
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "webName": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 100
+                },
+                "positionCode": {
+                  "type": "string",
+                  "enum": [
+                    "GKP",
+                    "DEF",
+                    "MID",
+                    "FWD"
+                  ]
+                },
+                "teamShortName": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 10
+                },
+                "priceTenths": {
+                  "type": "integer",
+                  "exclusiveMinimum": 0,
+                  "maximum": 9007199254740991
+                }
+              },
+              "required": [
+                "webName",
+                "positionCode",
+                "teamShortName",
+                "priceTenths"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
         }
       },
       "required": [
@@ -259,7 +303,8 @@
         "squadPosition",
         "multiplier",
         "isCaptain",
-        "isViceCaptain"
+        "isViceCaptain",
+        "identity"
       ],
       "additionalProperties": false
     },
@@ -348,6 +393,50 @@
                       },
                       "isViceCaptain": {
                         "type": "boolean"
+                      },
+                      "identity": {
+                        "default": null,
+                        "anyOf": [
+                          {
+                            "type": "object",
+                            "properties": {
+                              "webName": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 100
+                              },
+                              "positionCode": {
+                                "type": "string",
+                                "enum": [
+                                  "GKP",
+                                  "DEF",
+                                  "MID",
+                                  "FWD"
+                                ]
+                              },
+                              "teamShortName": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 10
+                              },
+                              "priceTenths": {
+                                "type": "integer",
+                                "exclusiveMinimum": 0,
+                                "maximum": 9007199254740991
+                              }
+                            },
+                            "required": [
+                              "webName",
+                              "positionCode",
+                              "teamShortName",
+                              "priceTenths"
+                            ],
+                            "additionalProperties": false
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
                       }
                     },
                     "required": [
@@ -355,7 +444,8 @@
                       "squadPosition",
                       "multiplier",
                       "isCaptain",
-                      "isViceCaptain"
+                      "isViceCaptain",
+                      "identity"
                     ],
                     "additionalProperties": false
                   }
@@ -552,6 +642,50 @@
               },
               "isViceCaptain": {
                 "type": "boolean"
+              },
+              "identity": {
+                "default": null,
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "webName": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 100
+                      },
+                      "positionCode": {
+                        "type": "string",
+                        "enum": [
+                          "GKP",
+                          "DEF",
+                          "MID",
+                          "FWD"
+                        ]
+                      },
+                      "teamShortName": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 10
+                      },
+                      "priceTenths": {
+                        "type": "integer",
+                        "exclusiveMinimum": 0,
+                        "maximum": 9007199254740991
+                      }
+                    },
+                    "required": [
+                      "webName",
+                      "positionCode",
+                      "teamShortName",
+                      "priceTenths"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
               }
             },
             "required": [
@@ -559,7 +693,8 @@
               "squadPosition",
               "multiplier",
               "isCaptain",
-              "isViceCaptain"
+              "isViceCaptain",
+              "identity"
             ],
             "additionalProperties": false
           }

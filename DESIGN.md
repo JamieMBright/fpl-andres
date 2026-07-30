@@ -40,6 +40,89 @@ Secondary signature elements the tool leans on:
   strictly for GKP surfaces and the goalkeeper row in tables. It never appears on
   outfield content and never carries semantic meaning outside the keeper role.
 
+## Voice
+
+Every string on the site is Andres speaking. He is the product's only narrator,
+so copy is written in his voice or not written at all.
+
+### Who he is
+
+An analyst who was pulled into the spotlight under Bielsa, picked for the job
+because he happened to speak Spanish. He knew it was luck, took the chance, and
+repaid it: his analysis helped a Championship-quality squad finish ninth in the
+Premier League.
+
+That backstory sets the register. He is confident because the work earned it,
+never because of the title. He assumes you are clever and busy. He is cheeky.
+He likes a Leeds reference and keeps it so subtle most readers miss it — an
+allusion to intensity, to being underestimated, to going again. Never a chant,
+never a slogan, never "MOT".
+
+### How he writes
+
+- **First person.** "I've pulled your squad", not "the system retrieved".
+- **Short.** Most sentences under twelve words. A verdict comes before its
+  reasoning, never after.
+- **The number leads.** "Salah, 6.4 xPTS. Captain him." Not "our model suggests
+  that Salah may represent a strong captaincy option."
+- **A glint, not a routine.** Personality lives in the phrasing, never in extra
+  words. If a joke costs clarity, it goes.
+- **He never hedges to protect himself.** He hedges only when the evidence
+  genuinely does not support a claim, and then he says exactly why.
+
+### Saying "I don't know"
+
+This product renders `unavailable` constantly and by design, so admitting
+ignorance is one of Andres's most frequent jobs. He treats it as the credential
+it is, never as an apology.
+
+His anchor line, used sparingly and never more than once per screen:
+
+> All forecasts are wrong. Some are useful.
+
+Around it he states the gap plainly and what would close it: "No DefCon read
+yet. One season of labels is not enough, and I would rather say nothing than
+guess." He never says "coming soon", never apologises, never pads.
+
+### The reference bank
+
+A closed set. Andres draws on these and nothing else, so the world stays small
+and consistent rather than becoming a stream of Leeds trivia.
+
+| Reference                                                   | What it means when he reaches for it            |
+| ----------------------------------------------------------- | ----------------------------------------------- |
+| A pint in **The Peacock** before kick-off                   | Steadying the nerves before a big call          |
+| Walking out through the **Lowfields** tunnel                | Anticipation; the moment before a deadline      |
+| **The Square Ball**                                         | Received wisdom, what the crowd is saying       |
+| **Moylan's blisters by Sycamore Gap**                       | Something genuinely painful and self-inflicted  |
+| **Batty in the Cheese Wedge**, kicking lumps out of Ronaldo | Defensive contribution before anyone counted it |
+
+Rules:
+
+- **At most one per screen, and most screens carry none.** Aim for roughly one
+  in ten strings. They are seasoning.
+- **Never explained.** No parenthetical gloss, no tooltip. If you know, you
+  know; if you don't, the sentence still reads.
+- **Never at the cost of clarity.** A number, a verdict or a warning is never
+  wrapped in one.
+- **Never in an error, an empty state, or anything a stuck user is reading.**
+
+Batty is the exception worth leaning on: he is the natural shorthand for
+defensive contribution, and the DefCon surfaces may lean on him more than the
+one-in-ten rule allows.
+
+### Banned
+
+- FPL-Twitter filler: "differential", "set and forget", "bandwagon", "punt",
+  "eyeing up", "must-have", "essential".
+- Machine register: "delve", "leverage", "unlock", "seamless", "utilise",
+  "robust", "powerful", "revolutionise".
+- System-speak in user-facing copy: "observed state", "public state review",
+  "deadline-bound updates", "source contract". These are correct internally and
+  meaningless to a reader.
+- Stacked labels that restate each other. One idea per line.
+- Exclamation marks.
+
 ## Tokens
 
 Two palettes ship, toggled by user preference and defaulting to dark. Both derive

@@ -2,6 +2,7 @@ import { createHash } from "node:crypto";
 
 import {
   publicTeamStateSchema,
+  type PlayerIdentity,
   type PublicTeamState,
 } from "@fpl-andres/contracts";
 import { z } from "zod";
@@ -65,6 +66,7 @@ interface AssembleTeamPublicStateInput {
   stateSourceBytes: Uint8Array;
   stateSourceFetchedAt: string;
   stateAsOf: string;
+  identities?: ReadonlyMap<number, PlayerIdentity>;
 }
 
 export function assembleTeamPublicState({
@@ -75,6 +77,7 @@ export function assembleTeamPublicState({
   stateSourceBytes,
   stateSourceFetchedAt,
   stateAsOf,
+  identities,
 }: AssembleTeamPublicStateInput): PublicTeamState {
   const validatedStateAsOf = timestampSchema.parse(stateAsOf);
   const validatedEntryFetchedAt = timestampSchema.parse(entryFetchedAt);
@@ -126,6 +129,7 @@ export function assembleTeamPublicState({
       multiplier: pick.multiplier,
       isCaptain: pick.is_captain,
       isViceCaptain: pick.is_vice_captain,
+      identity: identities?.get(pick.element) ?? null,
     })),
     stateAsOf: validatedStateAsOf,
     dataAvailableAt: latestTimestamp(

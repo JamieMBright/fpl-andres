@@ -17,6 +17,20 @@ describe("Vercel public team handler", () => {
         if (url.endsWith("/bootstrap-static/")) {
           return jsonResponse({
             events: [{ id: 5, deadline_time: "2026-09-12T10:30:00Z" }],
+            element_types: [
+              { id: 1, singular_name_short: "GKP" },
+              { id: 2, singular_name_short: "DEF" },
+              { id: 3, singular_name_short: "MID" },
+              { id: 4, singular_name_short: "FWD" },
+            ],
+            teams: [{ id: 1, short_name: "ARS" }],
+            elements: Array.from({ length: 15 }, (_, index) => ({
+              id: 101 + index,
+              web_name: `Player ${101 + index}`,
+              element_type: (index % 4) + 1,
+              team: 1,
+              now_cost: 45 + index,
+            })),
           });
         }
         if (url.endsWith("/entry/123/")) {

@@ -59,12 +59,12 @@ test("opens a verified public team dossier from the working first screen", async
   await page.goto("/");
 
   const homeHeading = page.getByRole("heading", {
-    name: "What did FPL last record for your squad?",
+    name: "Let me look at your squad.",
   });
   await expect(homeHeading).toBeVisible();
   await expect(homeHeading).not.toBeFocused();
-  await page.getByLabel("FPL team ID").fill("123456");
-  await page.getByRole("button", { name: "Analyse team" }).click();
+  await page.getByLabel("Your FPL team ID").fill("123456");
+  await page.getByRole("button", { name: "Analyse my squad" }).click();
 
   await expect(page).toHaveURL(/\/team\/123456$/);
   await expect(
@@ -114,8 +114,8 @@ test("passes automated accessibility scans on entry and dossier", async ({
   const entryScan = await new AxeBuilder({ page }).analyze();
   expect(entryScan.violations).toEqual([]);
 
-  await page.getByLabel("FPL team ID").fill("212279");
-  await page.getByRole("button", { name: "Analyse team" }).click();
+  await page.getByLabel("Your FPL team ID").fill("212279");
+  await page.getByRole("button", { name: "Analyse my squad" }).click();
   await page.getByText("Observed snapshot ready").waitFor();
   await page.getByText("Correct Current State").click();
 
@@ -229,11 +229,11 @@ test("keeps the dossier inside a 360 pixel mobile viewport", async ({
   await expectNoPageOverflow(page);
   await expect(
     page.getByRole("heading", {
-      name: "What did FPL last record for your squad?",
+      name: "Let me look at your squad.",
     }),
   ).toBeVisible();
-  await page.getByLabel("FPL team ID").fill("212279");
-  await page.getByRole("button", { name: "Analyse team" }).click();
+  await page.getByLabel("Your FPL team ID").fill("212279");
+  await page.getByRole("button", { name: "Analyse my squad" }).click();
   await page.getByText("Observed snapshot ready").waitFor();
 
   await expectNoPageOverflow(page);

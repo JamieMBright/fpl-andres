@@ -199,7 +199,7 @@ function ApplicationFrame() {
           <BielsaBucket />
           <span>
             <strong translate="no">FPL Andres</strong>
-            <small>Decision desk</small>
+            <small>Analysis, not opinion</small>
           </span>
         </Link>
         <div className="header-controls">
@@ -238,7 +238,7 @@ function ApplicationFrame() {
             </li>
           ))}
         </ul>
-        <p className="mono">Observed state · local corrections</p>
+        <p className="mono">I only read what FPL makes public.</p>
       </footer>
     </div>
   );
@@ -267,27 +267,27 @@ function HomePage() {
     <>
       <section className="deadline-strip" aria-label="Current capability">
         <span>
-          <Clock3 aria-hidden="true" size={17} /> Public state review
+          <Clock3 aria-hidden="true" size={17} /> Reading the public record
         </span>
-        <span className="mono">Last-deadline evidence · local corrections</span>
+        <span className="mono">All forecasts are wrong. Some are useful.</span>
       </section>
 
       <section className="analysis-entry">
         <div className="section-index" aria-hidden="true">
-          01 / IDENTIFY
+          01 / TEAM ID
         </div>
         <div className="entry-copy">
-          <p className="eyebrow">Your squad at the last processed deadline</p>
-          <RouteHeading>What did FPL last record for your squad?</RouteHeading>
+          <RouteHeading>Let me look at your squad.</RouteHeading>
           <p className="lede">
-            Enter a public Team ID to inspect its validated squad, bank,
-            transfers, freshness and exact source trail. Add local corrections
-            for changes made since the deadline.
+            Give me your Team ID and I&rsquo;ll pull what FPL last recorded —
+            squad, captain, bank, transfers — and show you exactly where each
+            number came from. Changed something since the deadline? Tell me. I
+            won&rsquo;t guess.
           </p>
         </div>
 
         <form className="team-form" noValidate onSubmit={analyseTeam}>
-          <label htmlFor="team-id">FPL team ID</label>
+          <label htmlFor="team-id">Your FPL team ID</label>
           <div className="input-command">
             <input
               aria-describedby={
@@ -303,11 +303,12 @@ function HomePage() {
               value={teamId}
             />
             <button type="submit">
-              Analyse team <ArrowRight aria-hidden="true" size={19} />
+              Analyse my squad <ArrowRight aria-hidden="true" size={19} />
             </button>
           </div>
           <p className="field-hint" id="team-id-hint">
-            Find it in the URL on your FPL points page. No login or password.
+            It&rsquo;s in the URL on your FPL points page. No login, no password
+            — I only read what&rsquo;s already public.
           </p>
           {error ? (
             <p className="field-error" id="team-id-error" role="alert">
@@ -317,41 +318,38 @@ function HomePage() {
         </form>
       </section>
 
-      <section
-        className="briefing-grid"
-        aria-label="What the analysis provides"
-      >
+      <section className="briefing-grid" aria-label="How I work">
         <article>
           <div className="briefing-icon">
             <FileSearch aria-hidden="true" size={21} />
           </div>
-          <p className="eyebrow">Public record</p>
-          <h2>Observed state first</h2>
+          <p className="eyebrow">The record</p>
+          <h2>I show you what FPL recorded</h2>
           <p>
-            Squad, captaincy, bank and transfer history shown only after the
-            source contract passes.
+            Your squad, captain, bank and transfers as they stood at the last
+            deadline. Nothing appears until the source checks out.
           </p>
         </article>
         <article>
           <div className="briefing-icon">
             <Clock3 aria-hidden="true" size={21} />
           </div>
-          <p className="eyebrow">Since deadline</p>
-          <h2>Deadline-bound updates</h2>
+          <p className="eyebrow">Your corrections</p>
+          <h2>What&rsquo;s changed since, you tell me</h2>
           <p>
-            Manager-supplied bank, free transfers, queued moves and chips stay
-            local and separate.
+            FPL won&rsquo;t show me your moves until the next deadline. Yours
+            stay on your machine, and I keep them apart from the public record.
           </p>
         </article>
         <article>
           <div className="briefing-icon">
             <ShieldCheck aria-hidden="true" size={21} />
           </div>
-          <p className="eyebrow">Evidence</p>
-          <h2>Exact source trail</h2>
+          <p className="eyebrow">My working</p>
+          <h2>Every number, sourced</h2>
           <p>
-            Timestamps and content hashes remain attached; unavailable data is
-            never replaced by a guess.
+            Timestamps and hashes stay attached to everything I show you. Where
+            I can&rsquo;t source it, I say so rather than fill the gap.
           </p>
         </article>
       </section>
@@ -609,10 +607,10 @@ function SnapshotDossier({ state }: { state: PublicTeamState }) {
       <section className="dossier-section" aria-labelledby="squad-title">
         <div className="dossier-heading dossier-heading-compact">
           <div>
-            <p className="eyebrow">Formation sheet</p>
-            <h2 id="squad-title">Last-Deadline Squad</h2>
+            <p className="eyebrow">As it stood</p>
+            <h2 id="squad-title">Your last-deadline squad</h2>
           </div>
-          <span className="mono">{state.picks.length} public picks</span>
+          <span className="mono">{state.picks.length} picks</span>
         </div>
         <div
           aria-label="Scrollable last-deadline squad"
@@ -625,7 +623,10 @@ function SnapshotDossier({ state }: { state: PublicTeamState }) {
             <thead>
               <tr>
                 <th scope="col">Slot</th>
-                <th scope="col">Player reference</th>
+                <th scope="col">Player</th>
+                <th scope="col">Pos</th>
+                <th scope="col">Club</th>
+                <th scope="col">Price</th>
                 <th scope="col">Assignment</th>
                 <th scope="col">Multiplier</th>
               </tr>
@@ -635,8 +636,21 @@ function SnapshotDossier({ state }: { state: PublicTeamState }) {
                 <tr key={pick.squadPosition}>
                   <td className="mono">{pick.squadPosition}</td>
                   <th scope="row" translate="no">
-                    FPL element {pick.elementId}
+                    {pick.identity
+                      ? pick.identity.webName
+                      : `FPL element ${pick.elementId}`}
                   </th>
+                  <td className="mono">
+                    {pick.identity ? pick.identity.positionCode : "—"}
+                  </td>
+                  <td className="mono" translate="no">
+                    {pick.identity ? pick.identity.teamShortName : "—"}
+                  </td>
+                  <td className="mono">
+                    {pick.identity
+                      ? formatFplMoney(pick.identity.priceTenths)
+                      : "—"}
+                  </td>
                   <td>{pickAssignment(pick)}</td>
                   <td className="mono">{pick.multiplier}×</td>
                 </tr>
@@ -649,8 +663,8 @@ function SnapshotDossier({ state }: { state: PublicTeamState }) {
       <details className="source-trail">
         <summary>
           <span>
-            <Database aria-hidden="true" size={18} /> Inspect{" "}
-            {state.sourceHashes.length} source hashes
+            <Database aria-hidden="true" size={18} /> Check my working (
+            {state.sourceHashes.length} sources)
           </span>
           <ChevronDown
             aria-hidden="true"
@@ -660,8 +674,8 @@ function SnapshotDossier({ state }: { state: PublicTeamState }) {
         </summary>
         <div className="source-trail-body">
           <p>
-            These hashes identify the exact entry, picks and deadline bytes used
-            for this snapshot.
+            These are the exact bytes I read for your entry, your picks and the
+            deadline. Same hashes, same answer — every time.
           </p>
           <ol>
             {state.sourceHashes.map((hash) => (
@@ -778,11 +792,17 @@ function terminalStateMessage(
 function MethodPage() {
   return (
     <section className="text-page">
-      <p className="eyebrow">Methodology</p>
-      <RouteHeading>Evidence before confidence.</RouteHeading>
+      <p className="eyebrow">Method</p>
+      <RouteHeading>How I work.</RouteHeading>
       <p>
-        Every active model must beat or calibrate better than its documented
-        baseline.
+        All forecasts are wrong. Some are useful. A model only goes live here
+        once it has beaten its baseline on seasons it never saw during training
+        — and I show you that margin rather than asking you to take my word for
+        it.
+      </p>
+      <p>
+        Where the evidence isn&rsquo;t there, I say nothing. That will happen
+        more often than you&rsquo;d like early on.
       </p>
     </section>
   );
@@ -792,10 +812,15 @@ function CalibrationPage() {
   return (
     <section className="text-page">
       <p className="eyebrow">Calibration</p>
-      <RouteHeading>The analyst keeps score.</RouteHeading>
+      <RouteHeading>I keep score on myself.</RouteHeading>
       <p>
-        Live sample sizes and walk-forward results will appear here as models
-        are promoted.
+        Nothing to show you yet. No model has been promoted, so there are no
+        results worth putting my name to.
+      </p>
+      <p>
+        When there are, this is where they go: how often I was right, by how
+        much, and where I was worst. Including the times I disagreed with the
+        crowd and the crowd was right.
       </p>
     </section>
   );
@@ -804,11 +829,11 @@ function CalibrationPage() {
 function NotFoundPage() {
   return (
     <section className="text-page">
-      <p className="eyebrow">Route unavailable</p>
-      <RouteHeading>Page Not Found</RouteHeading>
-      <p>The requested page does not exist in this decision desk.</p>
+      <p className="eyebrow">Wrong turn</p>
+      <RouteHeading>Nothing here.</RouteHeading>
+      <p>That page doesn&rsquo;t exist. Let&rsquo;s start again.</p>
       <Link className="text-command" to="/">
-        Return to Team ID entry
+        Back to the Team ID
       </Link>
     </section>
   );

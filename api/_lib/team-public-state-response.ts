@@ -1,3 +1,4 @@
+import { playerIdentitySchema } from "@fpl-andres/contracts";
 import { z } from "zod";
 
 import { createFplProxyResponse, FPL_PROXY_BUDGET_MS } from "./fpl-proxy.js";
@@ -42,6 +43,33 @@ const bootstrapSchema = z
         .object({
           id: z.int().min(1).max(38),
           deadline_time: z.iso.datetime(),
+        })
+        .passthrough(),
+    ),
+    elements: z.array(
+      z
+        .object({
+          id: z.int().positive(),
+          web_name: z.string().min(1),
+          element_type: z.int().min(1).max(5),
+          team: z.int().positive(),
+          now_cost: z.int().positive(),
+        })
+        .passthrough(),
+    ),
+    element_types: z.array(
+      z
+        .object({
+          id: z.int().min(1).max(5),
+          singular_name_short: z.string().min(1),
+        })
+        .passthrough(),
+    ),
+    teams: z.array(
+      z
+        .object({
+          id: z.int().positive(),
+          short_name: z.string().min(1),
         })
         .passthrough(),
     ),
@@ -155,6 +183,31 @@ export async function createTeamPublicStateResponse(
   }
 
   try {
+    const positionCodes = new Map(
+      bootstrap.element_types.map((type) => [
+        type.id,
+        type.singular_name_short,
+      ]),
+    );
+    const teamShortNames = new Map(
+      bootstrap.teams.map((team) => [team.id, team.short_name]),
+    );
+    const identities = new Map(
+      bootstrap.elements.flatMap((element) => {
+        // Validated through the contract rather than cast: an unrecognised
+        // position or missing club leaves the pick opaque rather than half-named.
+        const candidate = playerIdentitySchema.safeParse({
+          webName: element.web_name,
+          positionCode: positionCodes.get(element.element_type),
+          teamShortName: teamShortNames.get(element.team),
+          priceTenths: element.now_cost,
+        });
+        return candidate.success
+          ? ([[element.id, candidate.data]] as const)
+          : ([] as const);
+      }),
+    );
+
     const state = assembleTeamPublicState({
       entryBytes: entrySource.body,
       entryFetchedAt: entrySource.fetchedAt,
@@ -163,6 +216,7 @@ export async function createTeamPublicStateResponse(
       stateSourceBytes: bootstrapSource.body,
       stateSourceFetchedAt: bootstrapSource.fetchedAt,
       stateAsOf: event.deadline_time,
+      identities,
     });
     return jsonResponse({ status: "ready", state });
   } catch (error) {

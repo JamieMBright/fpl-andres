@@ -51,11 +51,11 @@ describe("team analysis entry", () => {
 
     expect(
       screen.getByRole("heading", {
-        name: "What did FPL last record for your squad?",
+        name: "Let me look at your squad.",
       }),
     ).not.toHaveFocus();
-    await user.type(screen.getByLabelText("FPL team ID"), "123456");
-    await user.click(screen.getByRole("button", { name: "Analyse team" }));
+    await user.type(screen.getByLabelText("Your FPL team ID"), "123456");
+    await user.click(screen.getByRole("button", { name: "Analyse my squad" }));
 
     const analysisHeading = await screen.findByRole("heading", {
       name: "Analysis for team 123456",
@@ -72,7 +72,7 @@ describe("team analysis entry", () => {
     ).toBeInTheDocument();
     expect(screen.getAllByRole("row")).toHaveLength(16);
 
-    await user.click(screen.getByText(/Inspect 3 source hashes/));
+    await user.click(screen.getByText(/Check my working/));
     expect(
       screen.getByText(firstSourceHash, { exact: false }),
     ).toBeInTheDocument();
@@ -86,8 +86,8 @@ describe("team analysis entry", () => {
     ).toHaveAttribute("href", "#main-content");
     expect(screen.getByRole("main")).toHaveAttribute("id", "main-content");
     expect(screen.getByRole("link", { name: "Method" })).toBeVisible();
-    expect(screen.getByText("Observed state first")).toBeVisible();
-    expect(screen.getByText("Deadline-bound updates")).toBeVisible();
+    expect(screen.getByText(/I show you what FPL recorded/)).toBeVisible();
+    expect(screen.getByText(/you tell me/)).toBeVisible();
     expect(
       screen.queryByText(/captain and bench calls/i),
     ).not.toBeInTheDocument();
@@ -98,13 +98,13 @@ describe("team analysis entry", () => {
     const user = userEvent.setup();
     const router = renderApplication();
 
-    await user.type(screen.getByLabelText("FPL team ID"), "abc");
-    await user.click(screen.getByRole("button", { name: "Analyse team" }));
+    await user.type(screen.getByLabelText("Your FPL team ID"), "abc");
+    await user.click(screen.getByRole("button", { name: "Analyse my squad" }));
 
     expect(screen.getByRole("alert")).toHaveTextContent(
       "Enter a numeric FPL team ID.",
     );
-    expect(screen.getByLabelText("FPL team ID")).toHaveAttribute(
+    expect(screen.getByLabelText("Your FPL team ID")).toHaveAttribute(
       "aria-invalid",
       "true",
     );
@@ -220,10 +220,10 @@ describe("team analysis entry", () => {
     renderApplication("/not-a-real-page");
 
     expect(
-      screen.getByRole("heading", { name: "Page Not Found" }),
+      screen.getByRole("heading", { name: "Nothing here." }),
     ).toBeVisible();
     expect(
-      screen.getByRole("link", { name: "Return to Team ID entry" }),
+      screen.getByRole("link", { name: "Back to the Team ID" }),
     ).toHaveAttribute("href", "/");
   });
 
@@ -380,8 +380,8 @@ describe("team analysis entry", () => {
     await user.click(
       screen.getByRole("link", { name: "Analyse another team" }),
     );
-    await user.type(screen.getByLabelText("FPL team ID"), String(teamB));
-    await user.click(screen.getByRole("button", { name: "Analyse team" }));
+    await user.type(screen.getByLabelText("Your FPL team ID"), String(teamB));
+    await user.click(screen.getByRole("button", { name: "Analyse my squad" }));
 
     const analysisHeading = await screen.findByRole("heading", {
       name: `Analysis for team ${teamB}`,

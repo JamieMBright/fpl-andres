@@ -139,6 +139,17 @@ export const fplEntrySchema = z
 
 export type FplEntry = z.infer<typeof fplEntrySchema>;
 
+export const playerIdentitySchema = z
+  .object({
+    webName: z.string().min(1).max(100),
+    positionCode: z.enum(["GKP", "DEF", "MID", "FWD"]),
+    teamShortName: z.string().min(1).max(10),
+    priceTenths: z.int().positive(),
+  })
+  .strict();
+
+export type PlayerIdentity = z.infer<typeof playerIdentitySchema>;
+
 export const publicTeamPickSchema = z
   .object({
     elementId: z.int().positive(),
@@ -146,6 +157,8 @@ export const publicTeamPickSchema = z
     multiplier: z.int().min(0).max(3),
     isCaptain: z.boolean(),
     isViceCaptain: z.boolean(),
+    // All-or-nothing: a half-resolved player would be worse than an opaque id.
+    identity: playerIdentitySchema.nullable().default(null),
   })
   .strict()
   .refine(({ isCaptain, isViceCaptain }) => !(isCaptain && isViceCaptain), {

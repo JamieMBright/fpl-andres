@@ -100,8 +100,8 @@ test.describe("feature walk", () => {
     await page.getByText("Observed snapshot ready").waitFor();
 
     await page.getByRole("link", { name: "Analyse another team" }).click();
-    await page.getByLabel("FPL team ID").fill("222222");
-    await page.getByRole("button", { name: "Analyse team" }).click();
+    await page.getByLabel("Your FPL team ID").fill("222222");
+    await page.getByRole("button", { name: "Analyse my squad" }).click();
 
     await expect(
       page.getByRole("heading", { name: "Analysis for team 222222" }),
