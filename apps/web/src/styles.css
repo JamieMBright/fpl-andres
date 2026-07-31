@@ -1063,6 +1063,63 @@ a:focus-visible {
   font-size: 14px;
 }
 
+.pool-page {
+  max-width: none;
+}
+
+.pool-basis,
+.pool-footnote,
+.pool-truncated {
+  max-width: 68ch;
+  color: var(--ink-soft);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.pool-state {
+  padding: 18px 0;
+  color: var(--ink-soft);
+}
+
+.pool-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin: 20px 0 10px;
+}
+
+.pool-controls label {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.pool-controls select {
+  border: 2px solid var(--rule);
+  padding: 7px 9px;
+  color: var(--ink);
+  background: var(--paper);
+  font-family: var(--fa-body);
+  font-size: 14px;
+}
+
+.pool-controls select:focus-visible {
+  outline: 3px solid var(--signal-blue);
+  outline-offset: 2px;
+}
+
+.pool-count {
+  margin: 0 0 10px;
+  color: var(--ink-soft);
+}
+
+.pool-flag {
+  color: var(--amber);
+}
+
 .pitch-chip-role {
   margin: 0;
   color: var(--amber);

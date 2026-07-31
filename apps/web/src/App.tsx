@@ -28,6 +28,7 @@ import {
 import { ManagerHistory } from "./components/ManagerHistory";
 import { Methodology } from "./components/Methodology";
 import { PitchView } from "./components/PitchView";
+import { PlayerPoolTable } from "./components/PlayerPoolTable";
 import { SquadRecord } from "./components/SquadRecord";
 import { TeamStateCorrections } from "./components/TeamStateCorrections";
 import { TransferPlanPanel } from "./components/TransferPlanPanel";
@@ -210,6 +211,7 @@ function ApplicationFrame() {
         </Link>
         <div className="header-controls">
           <nav aria-label="Primary navigation">
+            <Link to="/players">Players</Link>
             <Link to="/methodology">Method</Link>
             <Link to="/calibration">Calibration</Link>
           </nav>
@@ -426,6 +428,7 @@ function TeamAnalysisPage() {
       >
         <AnalysisResult
           analysis={analysis}
+          entryId={entryId}
           onRetry={() => {
             resultRef.current?.focus();
             setRefreshAttempt((attempt) => attempt + 1);
@@ -443,10 +446,11 @@ function TeamAnalysisPage() {
 
 interface AnalysisResultProps {
   analysis: TeamAnalysisState;
+  entryId: number;
   onRetry: () => void;
 }
 
-function AnalysisResult({ analysis, onRetry }: AnalysisResultProps) {
+function AnalysisResult({ analysis, entryId, onRetry }: AnalysisResultProps) {
   if (analysis.status === "idle" || analysis.status === "loading") {
     return (
       <div
@@ -518,6 +522,13 @@ function AnalysisResult({ analysis, onRetry }: AnalysisResultProps) {
           <RefreshCw aria-hidden="true" size={17} /> Retry analysis
         </button>
       </section>
+      {analysis.status === "unavailable" &&
+      analysis.reason === "no_processed_event" ? (
+        <>
+          <ManagerHistory entryId={entryId} />
+          <TransferPlanPanel firstDeadline={FIRST_DEADLINE_2026_27} />
+        </>
+      ) : null}
     </>
   );
 }
@@ -755,9 +766,11 @@ function terminalStateMessage(
           "Check the Team ID on your official FPL points-page URL, then try again.",
       },
       no_processed_event: {
-        heading: "No processed gameweek yet",
+        heading: "The season hasn\u2019t started",
         nextStep:
-          "Try again after FPL publishes the first processed event for this team.",
+          "FPL wipes every squad between seasons, so there is nothing to read " +
+          "until the first deadline passes. Your record is below in the " +
+          "meantime, and it is the real thing rather than a placeholder.",
       },
       picks_unavailable: {
         heading: "Gameweek Picks Not Available",
@@ -815,6 +828,16 @@ function MethodPage() {
   );
 }
 
+function PlayerPoolPage() {
+  return (
+    <section className="text-page pool-page">
+      <p className="eyebrow">The market</p>
+      <RouteHeading>Everyone in the game, and what they cost.</RouteHeading>
+      <PlayerPoolTable />
+    </section>
+  );
+}
+
 function CalibrationPage() {
   return (
     <section className="text-page validation-page">
@@ -849,6 +872,7 @@ export const routes: RouteObject[] = [
     children: [
       { index: true, element: <HomePage /> },
       { path: "team/:teamId", element: <TeamAnalysisRoute /> },
+      { path: "players", element: <PlayerPoolPage /> },
       { path: "methodology", element: <MethodPage /> },
       { path: "calibration", element: <CalibrationPage /> },
       { path: "*", element: <NotFoundPage /> },

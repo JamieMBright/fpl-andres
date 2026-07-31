@@ -31,8 +31,49 @@ function publicTeamState(entryId = 212279) {
   };
 }
 
+function bootstrapDocument() {
+  return {
+    events: [{ id: 1, deadline_time: "2026-08-21T17:30:00Z" }],
+    element_types: [
+      { id: 1, singular_name_short: "GKP" },
+      { id: 2, singular_name_short: "DEF" },
+      { id: 3, singular_name_short: "MID" },
+      { id: 4, singular_name_short: "FWD" },
+    ],
+    teams: [{ id: 1, short_name: "MUN", name: "Man Utd" }],
+    elements: [
+      {
+        id: 1,
+        // Bruno Fernandes, whose record is in the published artifact.
+        code: 141746,
+        web_name: "B.Fernandes",
+        element_type: 3,
+        team: 1,
+        now_cost: 120,
+        status: "a",
+      },
+      {
+        id: 2,
+        code: 999_999_999,
+        web_name: "Debutant",
+        element_type: 4,
+        team: 1,
+        now_cost: 55,
+        status: "a",
+      },
+    ],
+  };
+}
+
 async function mockManagerHistory(page: Page) {
   await page.route("**/api/fpl/**", async (route) => {
+    if (route.request().url().includes("bootstrap-static")) {
+      await route.fulfill({
+        body: JSON.stringify(bootstrapDocument()),
+        contentType: "application/json",
+      });
+      return;
+    }
     await route.fulfill({
       body: JSON.stringify({
         past: [
@@ -144,6 +185,33 @@ test.describe("feature walk", () => {
     await expect(page.getByRole("heading", { level: 1 }).first()).toBeFocused();
   });
 
+  test("prices the 2026/27 pool against last season and admits the gaps", async ({
+    page,
+  }) => {
+    await fulfillReady(page);
+    await page.goto("/");
+
+    await page.getByRole("link", { name: "Players" }).click();
+    await expect(page).toHaveURL(/\/players$/);
+
+    const rows = page.getByRole("table", {
+      name: /2026\/27 players against last season/,
+    });
+    await expect(rows).toBeVisible();
+    // This season's price, last season's record, and the ratio of the two.
+    await expect(rows.getByRole("row", { name: /B\.Fernandes/ })).toContainText(
+      "£12.0m",
+    );
+    await expect(rows.getByRole("row", { name: /B\.Fernandes/ })).toContainText(
+      "5.19",
+    );
+    // A player with no Premier League record is listed, and left blank.
+    await expect(rows.getByRole("row", { name: /Debutant/ })).toContainText(
+      "—",
+    );
+    await expect(page.getByText(/1 in the game with no record/)).toBeVisible();
+  });
+
   test("renders every unavailable envelope variant with a distinct heading", async ({
     page,
   }) => {
@@ -153,14 +221,14 @@ test.describe("feature walk", () => {
           status: "unavailable",
           reason: "entry_unavailable" as const,
         },
-        heading: "Team Not Available",
+        heading: /^Team Not Available$/,
       },
       {
         payload: {
           status: "unavailable",
           reason: "no_processed_event" as const,
         },
-        heading: "No processed gameweek yet",
+        heading: /season hasn.t started/,
       },
       {
         payload: {
@@ -168,7 +236,7 @@ test.describe("feature walk", () => {
           reason: "picks_unavailable" as const,
           event: 12,
         },
-        heading: "Gameweek Picks Not Available",
+        heading: /^Gameweek Picks Not Available$/,
       },
     ];
 

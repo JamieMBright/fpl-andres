@@ -184,16 +184,19 @@ describe("team analysis entry", () => {
     renderApplication("/team/123");
 
     expect(
-      await screen.findByRole("heading", { name: "No processed gameweek yet" }),
+      await screen.findByRole("heading", { name: /season hasn.t started/i }),
     ).toBeVisible();
     expect(
-      screen.getByText(
-        /Try again after FPL publishes the first processed event/i,
-      ),
+      screen.getByText(/FPL wipes every squad between seasons/i),
     ).toBeVisible();
     expect(
       screen.queryByRole("list", { name: "Substitutes in order" }),
     ).not.toBeInTheDocument();
+    // The page must still be worth landing on: the manager's own record and
+    // the plan that follows it are both real, and neither needs a live squad.
+    expect(
+      await screen.findByRole("heading", { name: /transfer plan/i }),
+    ).toBeVisible();
   });
 
   it("recovers from a network error when the user retries", async () => {
