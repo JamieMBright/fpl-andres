@@ -99,6 +99,43 @@ def validate_squad(squad: Sequence[Candidate], rules: SquadRules) -> None:
         raise SquadSelectionError(f"club limit exceeded: {over}")
 
 
+def clubs_over_limit(squad: Sequence[Candidate], rules: SquadRules) -> dict[int, int]:
+    """Clubs a held squad is over-represented in.
+
+    A squad can legally hold more than the limit without ever having selected
+    it: when a player moves between clubs mid-season, FPL leaves the manager
+    holding four and requires the next transfer to put it right. Selecting four
+    remains impossible, so `validate_squad` stays strict and this reports the
+    transitional state instead.
+    """
+    counts: dict[int, int] = {}
+    for player in squad:
+        counts[player.team_id] = counts.get(player.team_id, 0) + 1
+    return {team: count for team, count in counts.items() if count > rules.club_limit}
+
+
+def transfer_respects_club_limit(
+    squad: Sequence[Candidate],
+    outgoing: Candidate,
+    incoming: Candidate,
+    rules: SquadRules,
+) -> bool:
+    """Whether one swap is allowed under the club limit.
+
+    A squad already over the limit must come back under it: the correction is
+    compulsory, not optional, so a transfer that leaves the breach standing is
+    refused even when it changes nothing about that club.
+    """
+    after = [player for player in squad if player.element_id != outgoing.element_id]
+    after.append(incoming)
+    breaches_before = clubs_over_limit(squad, rules)
+    breaches_after = clubs_over_limit(after, rules)
+
+    if not breaches_before:
+        return not breaches_after
+    return sum(breaches_after.values()) < sum(breaches_before.values())
+
+
 def build_ranked_squad(
     pool: Sequence[Candidate],
     rules: SquadRules,

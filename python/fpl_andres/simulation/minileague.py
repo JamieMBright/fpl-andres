@@ -39,6 +39,7 @@ from fpl_andres.simulation.squad import (
     SquadSelectionError,
     build_ranked_squad,
     build_squad,
+    transfer_respects_club_limit,
 )
 from fpl_andres.simulation.valuation import Portfolio
 
@@ -672,10 +673,6 @@ def _best_replacement(
 ) -> Candidate | None:
     """First affordable, eligible upgrade in a list already sorted by ranking."""
     held = {player.element_id for player in manager.squad}
-    clubs: dict[int, int] = {}
-    for player in manager.squad:
-        clubs[player.team_id] = clubs.get(player.team_id, 0) + 1
-
     budget = manager.portfolio.affordable(outgoing.element_id, prices)
     current = ranking.get(outgoing.element_id, 0.0)
 
@@ -686,9 +683,8 @@ def _best_replacement(
         cost = prices.get(candidate.element_id, candidate.price_tenths)
         if candidate.element_id in held or cost > budget:
             continue
-        if (
-            candidate.team_id != outgoing.team_id
-            and clubs.get(candidate.team_id, 0) >= settings.squad_rules.club_limit
+        if not transfer_respects_club_limit(
+            manager.squad, outgoing, candidate, settings.squad_rules
         ):
             continue
         return candidate

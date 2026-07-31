@@ -248,6 +248,13 @@ that was. Nothing treats a promoted club as average.
 
 ## Rules that changed under us
 
+- **The club limit binds differently on selection and on holding.** You can
+  never select a fourth player from a club, but a player moving between clubs
+  mid-season can leave you holding four, and the next transfer must correct it.
+  Encoded in `transfer_respects_club_limit`: while a squad is over the limit,
+  any transfer that leaves the breach standing is refused, because the
+  correction is compulsory rather than optional. Sourced from the owner, who
+  plays the game; not yet checked against the published rules text.
 - **Assistant Manager is gone for 2026/27.** The live bootstrap publishes four
   positions, not five, and zero players of `element_type` 5. Historical
   reconstruction of 2024/25 still has to account for it; forward planning must
