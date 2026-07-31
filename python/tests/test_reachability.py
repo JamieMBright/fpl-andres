@@ -79,8 +79,6 @@ KNOWN_ORPHANS = {
     "parse_lineup_role_observations": "StatsBomb adapter; no ingest path exists",
     "hash_statsbomb_bytes": "StatsBomb adapter; no ingest path exists",
     "require_gameweeks": "corpus guard, used by scripts",
-    "bench_value": "chip valuation, orphaned when timing moved to the fixture plan",
-    "triple_captain_value": "chip valuation, orphaned when timing moved to fixtures",
 }
 
 KNOWN_ORPHAN_MODULES = {

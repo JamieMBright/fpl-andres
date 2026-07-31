@@ -24,16 +24,14 @@ claim about what was knowable in August.
 from __future__ import annotations
 
 import random
-from collections.abc import Mapping, Sequence
+from collections.abc import Mapping
 from dataclasses import dataclass, field
 from typing import Literal
 
 __all__ = [
     "ChipName",
     "ChipState",
-    "bench_value",
     "plan_chips",
-    "triple_captain_value",
 ]
 
 ChipName = Literal["wildcard", "free_hit", "triple_captain", "bench_boost"]
@@ -132,15 +130,3 @@ def plan_chips(
             plan[rng.choice(open_weeks)] = "wildcard"
 
     return plan
-
-
-def bench_value(bench: Sequence[int], projected: Mapping[int, float]) -> float:
-    """What the substitutes are projected to score if they all counted."""
-    return sum(projected.get(element_id, 0.0) for element_id in bench)
-
-
-def triple_captain_value(starters: Sequence[int], projected: Mapping[int, float]) -> float:
-    """The extra a third multiplier buys, over the double already applied."""
-    if not starters:
-        return 0.0
-    return max(projected.get(element_id, 0.0) for element_id in starters)

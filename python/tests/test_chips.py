@@ -4,14 +4,7 @@ from __future__ import annotations
 
 import random
 
-import pytest
-
-from fpl_andres.simulation.chips import (
-    ChipState,
-    bench_value,
-    plan_chips,
-    triple_captain_value,
-)
+from fpl_andres.simulation.chips import ChipState, plan_chips
 
 
 def plan(
@@ -114,16 +107,3 @@ def test_no_gameweek_is_given_two_chips() -> None:
     dated = plan(fixtures, star)
 
     assert len(dated) == len(set(dated))
-
-
-def test_bench_value_sums_only_the_substitutes() -> None:
-    projected = {1: 5.0, 2: 4.0, 3: 3.0, 4: 2.0, 5: 100.0}
-
-    assert bench_value([1, 2, 3, 4], projected) == pytest.approx(14.0)
-
-
-def test_triple_captain_value_is_the_best_starter() -> None:
-    projected = {1: 5.0, 2: 9.0, 3: 3.0}
-
-    assert triple_captain_value([1, 2, 3], projected) == pytest.approx(9.0)
-    assert triple_captain_value([], projected) == 0.0
