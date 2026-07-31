@@ -107,6 +107,23 @@ specific capability.
       it with the verification attached, or replace it with a cohort built from
       the live top-100 once standings populate after gameweek 1.
 
+### Building a real proven cohort, and why it takes seasons
+
+- [ ] **Approve the season-end capture, or say no.** Scraping every manager is
+      not on: FPL had 2,399,644 entries registered for 2026/27 before a ball was
+      kicked and around eleven million by season end, so one request each is
+      about four months of continuous polling. Nobody should do that.
+- [ ] The cheap route is the Overall league, id 314, paginated fifty at a time.
+      The top ten thousand is **200 requests**, and their histories another
+      10,000 — roughly three hours at one a second, which is polite and
+      practical.
+- [ ] **The catch is that it cannot be done retroactively.** FPL keeps standings
+      for the current season only, so there is no way to discover who finished
+      top ten thousand in 2022/23. A cohort of managers with _several_ top-10k
+      finishes therefore needs capturing at the end of each season from now on,
+      and is two or three seasons away from meaning anything. That is precisely
+      why a scraped Reddit list was being used instead, and it does not verify.
+
 ### Accept the mapping risk, or ask me to tighten it
 
 - [ ] FPL, FBref and Understat use different player ids and there is no official

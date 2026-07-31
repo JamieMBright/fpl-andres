@@ -18,6 +18,18 @@ class OptimizationError(RuntimeError):
     """Raised when the optimizer cannot prove an optimal valid squad."""
 
 
+# HiGHS proves a MIP optimum only to its own feasibility tolerance, which
+# defaults to 1e-6. Pinning a follow-up solve tighter than that lets it declare
+# infeasible against an optimum it produced itself, which is what happened on
+# the generated case (0.0, 2.0, 7.0, 1e-07, 0.0, 8.125).
+_MIP_FEASIBILITY_TOLERANCE = 1e-6
+
+
+def _optimum_slack(optimum: float) -> float:
+    """Slack for re-solving against a proven optimum, scaled to its magnitude."""
+    return max(_MIP_FEASIBILITY_TOLERANCE, abs(optimum) * 1e-9)
+
+
 class HighsOptimizer:
     def __init__(self, *, time_limit_seconds: float) -> None:
         if not math.isfinite(time_limit_seconds) or time_limit_seconds <= 0:
@@ -170,7 +182,7 @@ class HighsOptimizer:
                 for index, coefficient in enumerate(objective)
                 if coefficient != 0
             },
-            upper=primary_optimum + 1e-8,
+            upper=primary_optimum + _optimum_slack(primary_optimum),
         )
 
         transfer_objective = np.zeros(variable_count, dtype=np.float64)
