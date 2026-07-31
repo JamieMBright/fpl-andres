@@ -26,7 +26,9 @@ import {
 } from "react-router-dom";
 
 import { ManagerHistory } from "./components/ManagerHistory";
+import { Methodology } from "./components/Methodology";
 import { PitchView } from "./components/PitchView";
+import { SquadRecord } from "./components/SquadRecord";
 import { TeamStateCorrections } from "./components/TeamStateCorrections";
 import { TransferPlanPanel } from "./components/TransferPlanPanel";
 import { ValidationReport } from "./components/ValidationReport";
@@ -668,6 +670,8 @@ function SnapshotDossier({ state }: { state: PublicTeamState }) {
         </details>
       </section>
 
+      <SquadRecord picks={state.picks} />
+
       <ManagerHistory entryId={state.entryId} />
 
       <TransferPlanPanel firstDeadline={FIRST_DEADLINE_2026_27} />
@@ -803,19 +807,10 @@ function terminalStateMessage(
 
 function MethodPage() {
   return (
-    <section className="text-page">
+    <section className="text-page method-page">
       <p className="eyebrow">Method</p>
       <RouteHeading>How I work.</RouteHeading>
-      <p>
-        All forecasts are wrong. Some are useful. A model only goes live here
-        once it has beaten its baseline on seasons it never saw during training
-        — and I show you that margin rather than asking you to take my word for
-        it.
-      </p>
-      <p>
-        Where the evidence isn&rsquo;t there, I say nothing. That will happen
-        more often than you&rsquo;d like early on.
-      </p>
+      <Methodology />
     </section>
   );
 }

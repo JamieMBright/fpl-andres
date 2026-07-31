@@ -29,6 +29,7 @@ function bootstrapDocument() {
     elements: Array.from({ length: 15 }, (_, index) => ({
       id: 101 + index,
       web_name: `Player ${101 + index}`,
+      code: 900_000 + index,
       element_type: ((index % 4) + 1) as 1 | 2 | 3 | 4,
       team: (index % 2) + 1,
       now_cost: 45 + index,
@@ -134,6 +135,7 @@ describe("public team state response", () => {
       positionCode: "GKP",
       teamShortName: "ARS",
       priceTenths: 45,
+      code: 900_000,
     });
     expect(body.state.picks.every((pick) => pick.identity !== null)).toBe(true);
   });

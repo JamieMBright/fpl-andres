@@ -23,6 +23,7 @@ function pick(
       positionCode,
       teamShortName: "TST",
       priceTenths: 50 + squadPosition,
+      code: 900_000 + squadPosition,
     },
     ...extra,
   };

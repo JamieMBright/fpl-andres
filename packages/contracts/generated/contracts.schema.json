@@ -282,13 +282,19 @@
                   "type": "integer",
                   "exclusiveMinimum": 0,
                   "maximum": 9007199254740991
+                },
+                "code": {
+                  "type": "integer",
+                  "exclusiveMinimum": 0,
+                  "maximum": 9007199254740991
                 }
               },
               "required": [
                 "webName",
                 "positionCode",
                 "teamShortName",
-                "priceTenths"
+                "priceTenths",
+                "code"
               ],
               "additionalProperties": false
             },
@@ -423,13 +429,19 @@
                                 "type": "integer",
                                 "exclusiveMinimum": 0,
                                 "maximum": 9007199254740991
+                              },
+                              "code": {
+                                "type": "integer",
+                                "exclusiveMinimum": 0,
+                                "maximum": 9007199254740991
                               }
                             },
                             "required": [
                               "webName",
                               "positionCode",
                               "teamShortName",
-                              "priceTenths"
+                              "priceTenths",
+                              "code"
                             ],
                             "additionalProperties": false
                           },
@@ -672,13 +684,19 @@
                         "type": "integer",
                         "exclusiveMinimum": 0,
                         "maximum": 9007199254740991
+                      },
+                      "code": {
+                        "type": "integer",
+                        "exclusiveMinimum": 0,
+                        "maximum": 9007199254740991
                       }
                     },
                     "required": [
                       "webName",
                       "positionCode",
                       "teamShortName",
-                      "priceTenths"
+                      "priceTenths",
+                      "code"
                     ],
                     "additionalProperties": false
                   },

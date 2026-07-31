@@ -27,6 +27,7 @@ describe("Vercel public team handler", () => {
             elements: Array.from({ length: 15 }, (_, index) => ({
               id: 101 + index,
               web_name: `Player ${101 + index}`,
+              code: 900_000 + index,
               element_type: (index % 4) + 1,
               team: 1,
               now_cost: 45 + index,

@@ -221,6 +221,94 @@ def _latest_price(rows: Sequence[ElementRow]) -> int | None:
     return None
 
 
+@dataclass(frozen=True)
+class MatchProjection:
+    """One player's expected points in a single match against an average side.
+
+    Between seasons there is no fixture list to lean on and no current-season
+    form to measure, so the only honest projection is a per-match rate against a
+    neutral opponent. It answers "what did this footballer return, per match, on
+    the evidence of the season just finished" and nothing more. It is not a
+    gameweek forecast and must never be presented as one.
+    """
+
+    code: int
+    element_id: int
+    position: int
+    web_name: str
+    price_tenths: int | None
+    expected_minutes: float
+    expected_points: float
+    shape: PointsShape
+    minutes: MinutesProjection
+    rates: PlayerRateProjection
+
+
+def project_next_match(
+    corpus: SeasonCorpus,
+    *,
+    settings: ProjectionSettings | None = None,
+) -> list[MatchProjection]:
+    """Project every player's next match from a completed season, fixture-free.
+
+    Deliberately excludes fixture difficulty and recent form: neither exists
+    before a ball is kicked. A player without enough minutes is left out rather
+    than projected from a prior alone.
+    """
+    config = settings or ProjectionSettings()
+    gameweek = corpus.last_event + 1
+    history = corpus.before(gameweek)
+    if not history:
+        return []
+
+    by_element: dict[int, list[ElementRow]] = {}
+    for row in history:
+        by_element.setdefault(row.element_id, []).append(row)
+
+    cutoff = _cutoff_for(corpus, gameweek, history)
+    league = _league_rates(history, corpus.position_by_element)
+    prior_nineties = config.prior_strength_minutes / _MINUTES_PER_90
+    projections: list[MatchProjection] = []
+
+    for element_id, rows in by_element.items():
+        position = corpus.position_by_element.get(element_id)
+        code = corpus.code_by_element.get(element_id)
+        if position is None or position not in _GOAL_PRIOR or code is None:
+            continue
+
+        minutes = _project_minutes(element_id, corpus.season, gameweek, rows, cutoff, config)
+        if minutes.evidence_level == "unavailable":
+            continue
+        rates = _project_rates(element_id, corpus.season, gameweek, rows, cutoff, config, position)
+        if rates.evidence_level == "unavailable":
+            continue
+
+        projections.append(
+            MatchProjection(
+                code=code,
+                element_id=element_id,
+                position=position,
+                web_name=corpus.name_by_element.get(element_id, ""),
+                price_tenths=_latest_price(rows),
+                expected_minutes=minutes.expected_minutes,
+                expected_points=_fixture_points(
+                    rows,
+                    position,
+                    minutes,
+                    rates,
+                    league,
+                    prior_nineties,
+                    _NEUTRAL_ADJUSTMENT,
+                ),
+                shape=describe_shape(rows),
+                minutes=minutes,
+                rates=rates,
+            )
+        )
+
+    return projections
+
+
 def project_gameweek(
     corpus: SeasonCorpus,
     gameweek: int,

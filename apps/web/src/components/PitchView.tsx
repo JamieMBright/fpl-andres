@@ -1,5 +1,7 @@
 import type { PublicTeamPick } from "@fpl-andres/contracts";
 
+import { projectionFor } from "../state/squad-projection";
+
 const POSITION_ROWS = [
   { code: "GKP", label: "Goalkeeper" },
   { code: "DEF", label: "Defenders" },
@@ -40,6 +42,7 @@ function Jersey({ position }: { position: PositionCode | null }) {
 function PlayerChip({ pick }: { pick: PublicTeamPick }) {
   const { identity } = pick;
   const armband = pick.isCaptain ? "C" : pick.isViceCaptain ? "V" : null;
+  const projection = projectionFor(identity?.code);
   return (
     <div className="pitch-chip">
       <div className="pitch-chip-shirt">
@@ -57,6 +60,21 @@ function PlayerChip({ pick }: { pick: PublicTeamPick }) {
         <span translate="no">{identity ? identity.teamShortName : "—"}</span>
         <span aria-hidden="true"> · </span>
         <span>{identity ? money(identity.priceTenths) : "—"}</span>
+      </p>
+      <p className="pitch-chip-points mono">
+        {projection ? (
+          <>
+            <span aria-hidden="true">
+              {projection.expectedPoints.toFixed(1)}
+            </span>
+            <span className="visually-hidden">
+              {projection.expectedPoints.toFixed(1)} points per match last
+              season
+            </span>
+          </>
+        ) : (
+          <span className="pitch-chip-unknown">no record</span>
+        )}
       </p>
       {armband ? (
         <p className="pitch-chip-role">
@@ -91,6 +109,11 @@ export function PitchView({ picks }: { picks: readonly PublicTeamPick[] }) {
           {resolved ? formation : "formation unavailable"}
         </p>
       </div>
+      <p className="pitch-legend">
+        The figure on each shirt is that player&rsquo;s points per match last
+        season, against an average opponent. It is a record, not a forecast for
+        a fixture nobody has played.
+      </p>
 
       <div className="pitch">
         {POSITION_ROWS.map(({ code, label }) => {

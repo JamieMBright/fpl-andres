@@ -211,6 +211,18 @@ a {
   line-height: 1;
 }
 
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  border: 0;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
 .brand small,
 .mono {
   font-family: "IBM Plex Mono", monospace;
@@ -948,6 +960,107 @@ a:focus-visible {
   margin: 0;
   color: var(--ink-soft);
   font-size: 11px;
+}
+
+.pitch-chip-points {
+  margin: 2px 0 0;
+  color: var(--field-green);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.pitch-chip-unknown {
+  color: var(--ink-soft);
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.pitch-legend {
+  max-width: 62ch;
+  margin: 0 0 14px;
+  color: var(--ink-soft);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.squad-record {
+  margin-top: 26px;
+  border-top: 1px solid var(--rule);
+  padding-top: 22px;
+}
+
+.squad-record-basis,
+.squad-record-missing,
+.squad-record-footnote {
+  max-width: 68ch;
+  color: var(--ink-soft);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.squad-record-footnote {
+  font-size: 13px;
+}
+
+.squad-record-total {
+  margin: 0 0 12px;
+  color: var(--field-green);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.squad-record-empty {
+  color: var(--ink-soft);
+}
+
+.squad-record-missing strong {
+  color: var(--amber);
+}
+
+.method-body {
+  max-width: 68ch;
+}
+
+.method-body section {
+  margin-top: 34px;
+  border-top: 1px solid var(--rule);
+  padding-top: 20px;
+}
+
+.method-body h2 {
+  margin: 0 0 12px;
+  font-family: var(--fa-display);
+  font-size: 21px;
+  line-height: 1.25;
+}
+
+.method-body p {
+  margin: 0 0 14px;
+  line-height: 1.65;
+}
+
+.method-proof {
+  border-left: 3px solid var(--field-green);
+  padding-left: 14px;
+}
+
+.method-losses {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.method-losses li {
+  margin-bottom: 12px;
+  line-height: 1.65;
+}
+
+.method-footnote {
+  margin-top: 30px;
+  color: var(--ink-soft);
+  font-size: 14px;
 }
 
 .pitch-chip-role {

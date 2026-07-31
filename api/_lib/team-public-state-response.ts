@@ -51,6 +51,7 @@ const bootstrapSchema = z
         .object({
           id: z.int().positive(),
           web_name: z.string().min(1),
+          code: z.int().positive(),
           element_type: z.int().min(1).max(5),
           team: z.int().positive(),
           now_cost: z.int().positive(),
@@ -201,6 +202,7 @@ export async function createTeamPublicStateResponse(
           positionCode: positionCodes.get(element.element_type),
           teamShortName: teamShortNames.get(element.team),
           priceTenths: element.now_cost,
+          code: element.code,
         });
         return candidate.success
           ? ([[element.id, candidate.data]] as const)

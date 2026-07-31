@@ -145,6 +145,9 @@ export const playerIdentitySchema = z
     positionCode: z.enum(["GKP", "DEF", "MID", "FWD"]),
     teamShortName: z.string().min(1).max(10),
     priceTenths: z.int().positive(),
+    // FPL reissues element ids every season; the code follows the player for
+    // life. Anything joining across seasons must join on this.
+    code: z.int().positive(),
   })
   .strict();
 
