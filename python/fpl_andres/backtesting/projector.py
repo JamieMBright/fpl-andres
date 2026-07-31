@@ -15,7 +15,7 @@ from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 
-from fpl_andres.backtesting.corpus import ElementRow, SeasonCorpus
+from fpl_andres.backtesting.corpus import CorpusLoadError, ElementRow, SeasonCorpus
 from fpl_andres.backtesting.fixtures import (
     RouteAdjustment,
     TeamStrength,
@@ -24,6 +24,7 @@ from fpl_andres.backtesting.fixtures import (
 )
 from fpl_andres.backtesting.reliability import PointsShape, describe_shape
 from fpl_andres.models.minutes import (
+    MAX_EVENT,
     AppearanceObservation,
     MinutesEvidence,
     MinutesProjection,
@@ -225,19 +226,43 @@ def project_gameweek(
     gameweek: int,
     *,
     settings: ProjectionSettings | None = None,
+    previous: SeasonCorpus | None = None,
 ) -> list[ElementProjection]:
-    """Project every element with enough history, using only earlier gameweeks."""
+    """Project every element with enough history, using only earlier gameweeks.
+
+    ``previous`` supplies last season's record so an opening gameweek can be
+    projected at all. A footballer with no Premier League history under either
+    season is skipped rather than guessed at: promoted-club debutants and
+    arrivals from other leagues have no evidence, and inventing some would be
+    the silent default this product refuses. Players who have left simply do not
+    appear in the current season's element list.
+    """
     config = settings or ProjectionSettings()
     history = corpus.before(gameweek)
-    if not history:
+    carried = _carried_history(corpus, previous)
+    if not history and not carried:
         return []
 
     by_element: dict[int, list[ElementRow]] = {}
     for row in history:
         by_element.setdefault(row.element_id, []).append(row)
+    # Every current-season player gets an entry, even with no rows yet, so an
+    # opening gameweek can still be projected from what they did last year.
+    for element_id in corpus.position_by_element:
+        if element_id in carried:
+            by_element.setdefault(element_id, [])
 
-    cutoff = _cutoff_for(corpus, gameweek, history)
-    league = _league_rates(history, corpus.position_by_element)
+    cutoff = _cutoff_for(corpus, gameweek, history, previous)
+    if history:
+        league = _league_rates(history, corpus.position_by_element)
+    elif previous is not None:
+        # Element ids are reassigned each season, so last season's rows must be
+        # read against last season's position map.
+        league = _league_rates(
+            previous.before(previous.last_event + 1), previous.position_by_element
+        )
+    else:
+        league = _league_rates((), {})
     prior_nineties = config.prior_strength_minutes / _MINUTES_PER_90
     form = baseline_recent_mean(corpus, gameweek, window=config.recent_form_window)
     projections: list[ElementProjection] = []
@@ -246,20 +271,35 @@ def project_gameweek(
         position = corpus.position_by_element.get(element_id)
         if position is None or position not in _GOAL_PRIOR:
             continue
+        prior_rows = carried.get(element_id, ())
 
-        minutes = _project_minutes(element_id, corpus.season, gameweek, rows, cutoff, config)
+        minutes = _project_minutes(
+            element_id, corpus.season, gameweek, rows, cutoff, config, prior_rows
+        )
         if minutes.evidence_level == "unavailable":
             continue
 
-        rates = _project_rates(element_id, corpus.season, gameweek, rows, cutoff, config, position)
+        rates = _project_rates(
+            element_id,
+            corpus.season,
+            gameweek,
+            rows,
+            cutoff,
+            config,
+            position,
+            prior_rows,
+            previous.season if previous else None,
+        )
         if rates.evidence_level == "unavailable":
             continue
 
+        # Scoring rates come from whichever season supplied the evidence.
+        scoring_rows = rows or list(prior_rows)
         schedule = _schedule_for(corpus, element_id, gameweek)
         total = 0.0
         for adjustment in schedule:
             total += _fixture_points(
-                rows, position, minutes, rates, league, prior_nineties, adjustment
+                scoring_rows, position, minutes, rates, league, prior_nineties, adjustment
             )
 
         recent = form.get(element_id)
@@ -278,6 +318,25 @@ def project_gameweek(
         )
 
     return projections
+
+
+def _carried_history(
+    corpus: SeasonCorpus, previous: SeasonCorpus | None
+) -> dict[int, tuple[ElementRow, ...]]:
+    """Last season's rows, re-keyed onto this season's element ids."""
+    if previous is None:
+        return {}
+    by_code = previous.rows_by_element_code()
+    carried: dict[int, tuple[ElementRow, ...]] = {}
+    for element_id, code in corpus.code_by_element.items():
+        rows = by_code.get(code)
+        if rows:
+            carried[element_id] = tuple(rows)
+    return carried
+
+
+def _all_carried(carried: Mapping[int, tuple[ElementRow, ...]]) -> list[ElementRow]:
+    return [row for rows in carried.values() for row in rows]
 
 
 def _blend(
@@ -549,12 +608,30 @@ def _defensive_contribution_points(
     return ninety * rate * _DEFCON_POINTS[position] * coverage
 
 
-def _cutoff_for(corpus: SeasonCorpus, gameweek: int, history: Sequence[ElementRow]) -> datetime:
+def _cutoff_for(
+    corpus: SeasonCorpus,
+    gameweek: int,
+    history: Sequence[ElementRow],
+    previous: SeasonCorpus | None = None,
+) -> datetime:
     """The moment a decision for this gameweek had to be made."""
     upcoming = corpus.rows_by_gameweek.get(gameweek, ())
     if upcoming:
         return min(row.kickoff_time for row in upcoming)
-    return max(row.kickoff_time for row in history) + timedelta(days=1)
+    scheduled = [
+        fixture.kickoff_time
+        for fixture in corpus.fixtures_by_event.get(gameweek, ())
+        if fixture.kickoff_time
+    ]
+    if scheduled:
+        return min(scheduled)
+    if history:
+        return max(row.kickoff_time for row in history) + timedelta(days=1)
+    if previous is not None:
+        latest = [row.kickoff_time for rows in previous.rows_by_gameweek.values() for row in rows]
+        if latest:
+            return max(latest) + timedelta(days=1)
+    raise CorpusLoadError(f"{corpus.season} GW{gameweek} has no schedule to date a decision from")
 
 
 def _project_minutes(
@@ -564,11 +641,20 @@ def _project_minutes(
     rows: Sequence[ElementRow],
     cutoff: datetime,
     config: ProjectionSettings,
+    prior_rows: Sequence[ElementRow] = (),
 ) -> MinutesProjection:
     # One appearance per gameweek: a double gameweek's fixtures are combined,
     # because the models reason about events, not matches.
+    source = rows
+    prediction_event = gameweek
+    if not rows and prior_rows:
+        # No football yet this season, so the read is "how did they finish last
+        # season", projected one event past its end.
+        source = prior_rows
+        prediction_event = min(MAX_EVENT, max(row.gameweek for row in prior_rows) + 1)
+
     combined: dict[int, tuple[int, bool, datetime]] = {}
-    for row in rows:
+    for row in source:
         minutes, started, kickoff = combined.get(row.gameweek, (0, False, row.kickoff_time))
         combined[row.gameweek] = (
             min(minutes + row.minutes, 120),
@@ -584,13 +670,13 @@ def _project_minutes(
             kickoff_time=min(kickoff, cutoff),
         )
         for event, (minutes, started, kickoff) in sorted(combined.items())
-        if event < gameweek
+        if event < prediction_event
     )
 
     evidence = MinutesEvidence(
         element_code=element_id,
         season=season,
-        prediction_event=gameweek,
+        prediction_event=prediction_event,
         observations=observations,
         decay_half_life_events=config.decay_half_life_events,
         minimum_observations=config.minimum_observations,
@@ -611,20 +697,16 @@ def _project_rates(
     cutoff: datetime,
     config: ProjectionSettings,
     position: int,
+    prior_rows: Sequence[ElementRow] = (),
+    prior_season: str | None = None,
 ) -> PlayerRateProjection:
     observations = tuple(
-        RateObservation(
-            season=season,
-            event_id=row.gameweek,
-            minutes=min(row.minutes, 120),
-            goals=row.goals,
-            assists=row.assists,
-            expected_goals=row.expected_goals,
-            expected_assists=row.expected_assists,
-            kickoff_time=min(row.kickoff_time, cutoff),
-        )
-        for row in rows
-        if row.gameweek < gameweek
+        _observation(row, season, cutoff) for row in rows if row.gameweek < gameweek
+    )
+    carried = (
+        tuple(_observation(row, prior_season, cutoff) for row in prior_rows)
+        if prior_season and prior_season != season
+        else ()
     )
 
     evidence = PlayerRateEvidence(
@@ -632,6 +714,7 @@ def _project_rates(
         season=season,
         prediction_event=gameweek,
         current_season_observations=observations,
+        prior_season_observations=carried,
         prior=RatePrior(
             goals_per_90=_GOAL_PRIOR[position],
             assists_per_90=_ASSIST_PRIOR[position],
@@ -644,6 +727,19 @@ def _project_rates(
         source_hashes=(_SOURCE_HASH,),
     )
     return project_player_rates(evidence)
+
+
+def _observation(row: ElementRow, season: str, cutoff: datetime) -> RateObservation:
+    return RateObservation(
+        season=season,
+        event_id=row.gameweek,
+        minutes=min(row.minutes, 120),
+        goals=row.goals,
+        assists=row.assists,
+        expected_goals=row.expected_goals,
+        expected_assists=row.expected_assists,
+        kickoff_time=min(row.kickoff_time, cutoff),
+    )
 
 
 def baseline_recent_mean(

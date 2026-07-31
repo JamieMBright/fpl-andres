@@ -220,7 +220,11 @@ describe("team analysis entry", () => {
       screen.getByRole("region", { name: "Analysis result" }),
     ).toHaveFocus();
     expect(await screen.findByText("Observed snapshot ready")).toBeVisible();
-    expect(fetchApi).toHaveBeenCalledTimes(2);
+    // Counts the team endpoint only: the dossier also reads manager history.
+    const teamCalls = fetchApi.mock.calls.filter(([input]) =>
+      String(input).includes(`/api/team/${readyState.entryId}`),
+    );
+    expect(teamCalls).toHaveLength(2);
   });
 
   it("renders a recoverable page for unknown routes", () => {

@@ -598,6 +598,111 @@ a:focus-visible {
   line-height: 1.5;
 }
 
+.manager-history {
+  margin-top: 28px;
+  border-top: 1px solid var(--rule);
+  background: var(--paper);
+  padding: 20px 16px 24px;
+}
+
+.archetype-badge {
+  border: 2px solid var(--amber);
+  padding: 4px 10px;
+  color: var(--amber);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.andres-read {
+  margin: 16px 0 20px;
+  border-left: 3px solid var(--field-green);
+  padding-left: 14px;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.record-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 28px;
+  margin: 0 0 18px;
+}
+
+.record-summary dt {
+  color: var(--ink-soft);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.record-summary dd {
+  margin: 2px 0 0;
+  font-size: 18px;
+}
+
+.record-when {
+  color: var(--ink-soft);
+  font-size: 13px;
+}
+
+.record-seasons {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.record-seasons li {
+  display: grid;
+  grid-template-columns: 62px 1fr auto auto;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+}
+
+.record-season-name {
+  color: var(--ink-soft);
+}
+
+.record-bar {
+  height: 12px;
+  min-width: 2px;
+  /* Blocky, not gradient: this is a Teletext bar, not a chart library. */
+  background: var(--field-green);
+}
+
+.record-rank {
+  min-width: 72px;
+  text-align: right;
+}
+
+.record-points {
+  min-width: 68px;
+  color: var(--ink-soft);
+  text-align: right;
+}
+
+.record-caveat {
+  margin-top: 18px;
+  border-top: 1px solid var(--rule);
+  padding-top: 12px;
+  color: var(--ink-soft);
+  font-size: 13px;
+}
+
+@media (max-width: 480px) {
+  .record-seasons li {
+    grid-template-columns: 56px 1fr auto;
+  }
+
+  .record-points {
+    display: none;
+  }
+}
+
 .transfer-plan {
   margin-top: 28px;
   border-top: 3px solid var(--amber);

@@ -78,6 +78,9 @@ class SeasonCorpus:
     position_by_element: dict[int, int] = field(default_factory=dict)
     team_by_element: dict[int, int] = field(default_factory=dict)
     name_by_element: dict[int, str] = field(default_factory=dict)
+    # FPL reassigns element_id every season; code is the stable identity.
+    code_by_element: dict[int, int] = field(default_factory=dict)
+    price_by_element: dict[int, int] = field(default_factory=dict)
     fixtures_by_event: dict[int, list[Fixture]] = field(default_factory=dict)
     strength_cache: dict[int, dict[int, TeamStrength]] = field(default_factory=dict)
 
@@ -130,13 +133,29 @@ class SeasonCorpus:
             totals[row.element_id] = totals.get(row.element_id, 0) + row.total_points
         return totals
 
+    def rows_by_element_code(self) -> dict[int, list[ElementRow]]:
+        """Every row keyed by the identity that survives a season rollover.
+
+        ``element_id`` is reassigned each season; ``element_code`` is not, so it
+        is the only way to recognise the same footballer a year later.
+        """
+        indexed: dict[int, list[ElementRow]] = {}
+        for gameweek in sorted(self.rows_by_gameweek):
+            for row in self.rows_by_gameweek[gameweek]:
+                indexed.setdefault(row.element_code, []).append(row)
+        return indexed
+
+    @property
+    def last_event(self) -> int:
+        return max(self.rows_by_gameweek, default=0)
+
 
 def load_season(client: SupabaseRestClient, season: str) -> SeasonCorpus:
     """Page a whole season of observations into memory."""
     elements = _page(
         client,
         "elements",
-        columns="element_id,element_type,team_id,web_name",
+        columns="element_id,code,element_type,team_id,web_name,start_cost",
         filters={"season": f"eq.{season}"},
         order="element_id",
     )
@@ -149,6 +168,10 @@ def load_season(client: SupabaseRestClient, season: str) -> SeasonCorpus:
         corpus.position_by_element[element_id] = int(element["element_type"])
         corpus.team_by_element[element_id] = int(element["team_id"])
         corpus.name_by_element[element_id] = str(element["web_name"])
+        corpus.code_by_element[element_id] = int(element["code"])
+        start_cost = _optional_int(element.get("start_cost"))
+        if start_cost is not None:
+            corpus.price_by_element[element_id] = start_cost
 
     stats = _page(
         client,

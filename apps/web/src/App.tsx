@@ -25,6 +25,7 @@ import {
   type RouteObject,
 } from "react-router-dom";
 
+import { ManagerHistory } from "./components/ManagerHistory";
 import { PitchView } from "./components/PitchView";
 import { TeamStateCorrections } from "./components/TeamStateCorrections";
 import { TransferPlanPanel } from "./components/TransferPlanPanel";
@@ -666,6 +667,8 @@ function SnapshotDossier({ state }: { state: PublicTeamState }) {
           </div>
         </details>
       </section>
+
+      <ManagerHistory entryId={state.entryId} />
 
       <TransferPlanPanel firstDeadline={FIRST_DEADLINE_2026_27} />
 
