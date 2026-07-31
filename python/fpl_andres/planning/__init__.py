@@ -1,5 +1,10 @@
 """Multi-gameweek planning over projected points."""
 
+from fpl_andres.planning.effective import (
+    EffectivePoints,
+    RankModel,
+    effective_points,
+)
 from fpl_andres.planning.ownership import (
     EffectiveOwnership,
     PlayerSwing,
@@ -17,11 +22,14 @@ from fpl_andres.planning.transfers import (
 
 __all__ = [
     "EffectiveOwnership",
+    "EffectivePoints",
     "PlannedTransfer",
     "PlayerSwing",
+    "RankModel",
     "TransferPlan",
     "TransferPlanSettings",
     "effective_ownership",
+    "effective_points",
     "mandatory_players",
     "plan_transfers",
     "premium_is_justified",

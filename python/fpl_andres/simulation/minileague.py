@@ -20,7 +20,7 @@ from __future__ import annotations
 
 import random
 from collections.abc import Mapping, Sequence
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from typing import Literal
 
 from fpl_andres.backtesting.corpus import SeasonCorpus
@@ -142,6 +142,8 @@ class LeagueResult:
     season: str
     settings: LeagueSettings
     managers: list[ManagerResult] = field(default_factory=list)
+    # One representative finishing squad per policy, for inspection.
+    squad_snapshots: list[tuple[str, list[tuple[int, int]]]] = field(default_factory=list)
 
     def standings(self) -> list[ManagerResult]:
         return sorted(self.managers, key=lambda manager: -manager.net_points)
@@ -253,15 +255,35 @@ def simulate_league(
                 last_event=last_event,
             )
             if chip == "wildcard":
-                # A wildcard is a free rebuild, so the squad it leaves behind is
-                # the one that persists.
-                manager.squad = list(build_ranked_squad(pool, settings.squad_rules, ranking))
-                manager.portfolio = Portfolio.opening(
-                    [player.element_id for player in manager.squad],
-                    prices,
-                    manager.portfolio.team_value(prices),
-                )
-                manager.chips.record("wildcard", gameweek)
+                # A free rebuild, but only of what the manager can actually
+                # fund: today's prices, against today's team value.
+                budget = manager.portfolio.team_value(prices)
+                repriced = [
+                    replace(player, price_tenths=prices.get(player.element_id, player.price_tenths))
+                    for player in pool
+                ]
+                try:
+                    rebuilt = build_ranked_squad(
+                        repriced,
+                        replace(settings.squad_rules, budget_tenths=budget),
+                        ranking,
+                    )
+                except SquadSelectionError:
+                    # Nothing legal is affordable, so the chip is simply not
+                    # played and the squad and its money are left untouched.
+                    rebuilt = None
+                if rebuilt is not None:
+                    manager.squad = list(rebuilt)
+                    # Priced from the same list the squad was built against, so
+                    # the portfolio can never disagree with the selection.
+                    manager.portfolio = Portfolio.opening(
+                        [player.element_id for player in rebuilt],
+                        {player.element_id: player.price_tenths for player in rebuilt},
+                        budget,
+                    )
+                    manager.chips.record("wildcard", gameweek)
+                else:
+                    chip = None
             else:
                 _take_transfers(
                     manager,
@@ -281,6 +303,18 @@ def simulate_league(
             manager.result.final_team_value_tenths = manager.portfolio.team_value(prices)
             if chip is not None:
                 manager.result.chips_played[chip] = gameweek
+
+    seen: set[str] = set()
+    for manager in managers:
+        if manager.result.policy in seen:
+            continue
+        seen.add(manager.result.policy)
+        outcome.squad_snapshots.append(
+            (
+                manager.result.policy,
+                [(player.element_id, player.price_tenths) for player in manager.squad],
+            )
+        )
 
     return outcome
 

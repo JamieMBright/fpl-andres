@@ -40,7 +40,12 @@ LEAGUE = LeagueSettings(
     ),
     managers=20,
     advised_share=0.25,
+    hold_share=0.25,
+    form_chaser_share=0.25,
+    crowd_share=0.25,
 )
+
+POLICIES = ("advised", "form_chaser", "crowd", "hold")
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -53,6 +58,37 @@ def build_parser() -> argparse.ArgumentParser:
 
 def _round(value: float | None, digits: int = 3) -> float | None:
     return None if value is None else round(value, digits)
+
+
+def _squad_rows(league: object, policy: str, corpus: object) -> list[dict[str, object]]:
+    """The fifteen a policy finished with, named, so the run can be inspected.
+
+    A validation page that only reports totals asks the reader to trust four
+    numbers. Showing the teams is what makes it checkable, and it is how the two
+    worst bugs in this simulation would have been spotted immediately.
+    """
+    from fpl_andres.simulation.minileague import LeagueResult
+
+    if not isinstance(league, LeagueResult):
+        return []
+    holder = next(
+        (entry for entry in league.squad_snapshots if entry[0] == policy),
+        None,
+    )
+    if holder is None:
+        return []
+    names = getattr(corpus, "name_by_element", {})
+    positions = getattr(corpus, "position_by_element", {})
+    codes = {1: "GKP", 2: "DEF", 3: "MID", 4: "FWD"}
+    return [
+        {
+            "elementId": element_id,
+            "name": names.get(element_id, f"#{element_id}"),
+            "position": codes.get(positions.get(element_id, 0), "?"),
+            "priceTenths": price,
+        }
+        for element_id, price in holder[1]
+    ]
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -96,30 +132,51 @@ def main(argv: Sequence[str] | None = None) -> int:
                     }
                 )
 
-            advised: list[int] = []
-            zombie: list[int] = []
-            advised_wins = 0
+            totals: dict[str, list[int]] = {policy: [] for policy in POLICIES}
+            chips: dict[str, dict[str, int]] = {}
+            squads: dict[str, list[dict[str, object]]] = {}
+            value: dict[str, int] = {}
+            wins: dict[str, int] = {policy: 0 for policy in POLICIES}
+            gameweeks_played = 0
+
             for seed in seeds:
                 league = simulate_league(corpus, LEAGUE, seed=seed)
-                advised.extend(manager.net_points for manager in league.by_policy("advised"))
-                zombie.extend(manager.net_points for manager in league.by_policy("zombie"))
-                if league.standings()[0].policy == "advised":
-                    advised_wins += 1
+                for policy in POLICIES:
+                    cohort = league.by_policy(policy)  # type: ignore[arg-type]
+                    totals[policy].extend(manager.net_points for manager in cohort)
+                    if cohort and seed == seeds[0]:
+                        first = cohort[0]
+                        gameweeks_played = len(first.weekly_points)
+                        chips[policy] = dict(first.chips_played)
+                        value[policy] = first.final_team_value_tenths
+                        squads[policy] = _squad_rows(league, policy, corpus)
+                winner = league.standings()[0].policy
+                if winner in wins:
+                    wins[winner] += 1
 
             season_reports.append(
                 {
                     "season": season,
                     "rows": corpus.total_rows,
                     "gameweeks": len(corpus.gameweeks),
+                    "gameweeksPlayed": gameweeks_played,
                     "elements": len(corpus.position_by_element),
                     "firstScoredGameweek": scored.first_scored_gameweek,
                     "methods": methods,
                     "league": {
-                        "advisedMean": round(statistics.mean(advised)),
-                        "zombieMean": round(statistics.mean(zombie)),
-                        "advisedBest": max(advised),
-                        "zombieBest": max(zombie),
-                        "advisedWins": advised_wins,
+                        "policies": {
+                            policy: {
+                                "mean": round(statistics.mean(totals[policy]))
+                                if totals[policy]
+                                else 0,
+                                "best": max(totals[policy]) if totals[policy] else 0,
+                                "wins": wins[policy],
+                                "chips": chips.get(policy, {}),
+                                "teamValueTenths": value.get(policy, 0),
+                                "squad": squads.get(policy, []),
+                            }
+                            for policy in POLICIES
+                        },
                         "leaguesPlayed": len(seeds),
                     },
                 }

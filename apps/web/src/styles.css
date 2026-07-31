@@ -598,6 +598,54 @@ a:focus-visible {
   line-height: 1.5;
 }
 
+.policy-squads {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  margin-top: 12px;
+}
+
+.policy-squad h3 {
+  margin: 0;
+  font-size: 15px;
+}
+
+.policy-meta {
+  margin: 2px 0 0;
+  color: var(--amber);
+  font-size: 13px;
+}
+
+.policy-chips {
+  margin: 4px 0 8px;
+  color: var(--ink-soft);
+  font-size: 12px;
+}
+
+.policy-players {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.policy-players li {
+  display: grid;
+  grid-template-columns: 34px 1fr auto;
+  gap: 6px;
+  font-size: 13px;
+}
+
+.policy-pos {
+  color: var(--ink-soft);
+  font-size: 11px;
+}
+
+.policy-price {
+  color: var(--ink-soft);
+}
+
 .manager-history {
   margin-top: 28px;
   border-top: 1px solid var(--rule);

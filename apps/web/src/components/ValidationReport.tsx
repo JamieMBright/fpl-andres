@@ -11,19 +11,32 @@ type Method = {
   byPosition: Record<string, number | null>;
 };
 
+type SquadPlayer = {
+  elementId: number;
+  name: string;
+  position: string;
+  priceTenths: number;
+};
+
+type PolicyResult = {
+  mean: number;
+  best: number;
+  wins: number;
+  chips: Record<string, number>;
+  teamValueTenths: number;
+  squad: SquadPlayer[];
+};
+
 type SeasonReport = {
   season: string;
   rows: number;
   gameweeks: number;
+  gameweeksPlayed: number;
   elements: number;
   firstScoredGameweek: number;
   methods: Method[];
   league: {
-    advisedMean: number;
-    zombieMean: number;
-    advisedBest: number;
-    zombieBest: number;
-    advisedWins: number;
+    policies: Record<string, PolicyResult>;
     leaguesPlayed: number;
   };
 };
@@ -38,8 +51,24 @@ const report = validation as Report;
 
 const METHOD_NAMES: Record<string, string> = {
   model: "My projection",
+  components: "Components only",
   recent_mean: "Last 5 average",
   ownership: "What the crowd owns",
+};
+
+const POLICY_NAMES: Record<string, string> = {
+  advised: "Me",
+  form_chaser: "Form chaser",
+  crowd: "The crowd",
+  hold: "Never transfers",
+};
+
+const POLICY_ORDER = ["advised", "form_chaser", "crowd", "hold"] as const;
+const CHIP_NAMES: Record<string, string> = {
+  wildcard: "Wildcard",
+  free_hit: "Free Hit",
+  triple_captain: "Triple Captain",
+  bench_boost: "Bench Boost",
 };
 
 const POSITIONS = ["GKP", "DEF", "MID", "FWD"] as const;
@@ -83,7 +112,7 @@ export function ValidationReport() {
     0,
   );
   const advisedWins = report.seasons.reduce(
-    (sum, season) => sum + season.league.advisedWins,
+    (sum, season) => sum + (season.league.policies.advised?.wins ?? 0),
     0,
   );
   const maxRho = Math.max(
@@ -241,15 +270,16 @@ export function ValidationReport() {
         <p>
           {report.league.managers} managers per league, each starting from a
           different random squad. {Math.round(report.league.advisedShare * 100)}
-          % follow my projection. The rest are zombies: they leave the squad
-          alone until someone stops playing, then take the best recent form.
-          Five leagues per season.
+          % follow my projection. The rest play the baselines below. Every
+          policy starts from the same opening squad, so any difference is the
+          policy and not the luck of the draw.
         </p>
         <p>
           Everyone plays by the same rules. The squad carries over week to week,
           one free transfer arrives each gameweek and banks up to five, and any
-          move beyond the bank costs four points. Those four-point hits are
-          deducted from every total below.
+          move beyond the bank costs four points. All four chips are played by
+          every policy. Team value moves with prices, and a risen player sells
+          for only half his profit.
         </p>
         <div
           aria-label="Scrollable mini-league table"
@@ -258,33 +288,39 @@ export function ValidationReport() {
           // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- Keyboard users must be able to scroll this table horizontally.
           tabIndex={0}
         >
-          <table aria-label="Mini-league outcomes by season">
+          <table aria-label="Mini-league outcomes by season and policy">
             <thead>
               <tr>
                 <th scope="col">Season</th>
-                <th scope="col">Advised</th>
-                <th scope="col">Zombie</th>
-                <th scope="col">Margin</th>
-                <th scope="col">Leagues won</th>
+                <th scope="col">Weeks</th>
+                {POLICY_ORDER.map((policy) => (
+                  <th scope="col" key={policy}>
+                    {POLICY_NAMES[policy]}
+                  </th>
+                ))}
+                <th scope="col">vs form</th>
               </tr>
             </thead>
             <tbody>
               {report.seasons.map((season) => {
+                const policies = season.league.policies;
                 const margin =
-                  season.league.advisedMean - season.league.zombieMean;
+                  (policies.advised?.mean ?? 0) -
+                  (policies.form_chaser?.mean ?? 0);
                 return (
                   <tr key={season.season}>
                     <th scope="row" className="mono">
                       {season.season}
                     </th>
-                    <td className="mono">{season.league.advisedMean}</td>
-                    <td className="mono">{season.league.zombieMean}</td>
+                    <td className="mono">{season.gameweeksPlayed}</td>
+                    {POLICY_ORDER.map((policy) => (
+                      <td className="mono" key={policy}>
+                        {policies[policy]?.mean.toLocaleString("en-GB") ?? "—"}
+                      </td>
+                    ))}
                     <td className="mono">
                       {margin > 0 ? "+" : ""}
                       {margin}
-                    </td>
-                    <td className="mono">
-                      {season.league.advisedWins}/{season.league.leaguesPlayed}
                     </td>
                   </tr>
                 );
@@ -293,12 +329,70 @@ export function ValidationReport() {
           </table>
         </div>
         <p className="validation-verdict">
-          Following the projection beat sitting still in all{" "}
-          {report.seasons.length} seasons, winning {advisedWins} of{" "}
-          {leaguesPlayed} leagues under real transfer rules. Ranking every
-          player well and picking a squad well are not the same job, and this is
-          the one that counts.
+          The honest column is the last one. Beating a manager who never
+          transfers proves nothing; beating one who chases form is the real
+          test, and the margin there is small — in 2024-25 the form chaser beat
+          me outright. These totals cover{" "}
+          {report.seasons[0]?.gameweeksPlayed ?? 32} gameweeks of 38, so they
+          are not season totals and should not be read as any.
         </p>
+      </section>
+
+      <section aria-labelledby="squads-title">
+        <h2 id="squads-title">The teams they finished with</h2>
+        <p>
+          Every policy, side by side, as the squad stood at the end of the first
+          simulated league. This is the part that makes the rest checkable: if a
+          team looks wrong, the number above it is wrong too.
+        </p>
+        {report.seasons.map((season) => (
+          <details key={season.season} className="source-trail">
+            <summary>
+              <span className="mono">
+                {season.season} — four squads, chips and final team value
+              </span>
+            </summary>
+            <div className="policy-squads">
+              {POLICY_ORDER.map((policy) => {
+                const entry = season.league.policies[policy];
+                if (!entry) return null;
+                return (
+                  <div className="policy-squad" key={policy}>
+                    <h3>{POLICY_NAMES[policy]}</h3>
+                    <p className="mono policy-meta">
+                      {entry.mean.toLocaleString("en-GB")} pts ·{" "}
+                      {(entry.teamValueTenths / 10).toFixed(1)}m
+                    </p>
+                    <p className="policy-chips">
+                      {Object.entries(entry.chips).length === 0
+                        ? "No chips played"
+                        : Object.entries(entry.chips)
+                            .sort((a, b) => a[1] - b[1])
+                            .map(
+                              ([chip, week]) =>
+                                `${CHIP_NAMES[chip] ?? chip} GW${week}`,
+                            )
+                            .join(", ")}
+                    </p>
+                    <ol className="policy-players">
+                      {entry.squad.map((player) => (
+                        <li key={player.elementId}>
+                          <span className="mono policy-pos">
+                            {player.position}
+                          </span>
+                          <span translate="no">{player.name}</span>
+                          <span className="mono policy-price">
+                            {(player.priceTenths / 10).toFixed(1)}
+                          </span>
+                        </li>
+                      ))}
+                    </ol>
+                  </div>
+                );
+              })}
+            </div>
+          </details>
+        ))}
       </section>
 
       <section aria-labelledby="detail-title">
