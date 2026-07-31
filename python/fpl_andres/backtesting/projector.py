@@ -630,11 +630,15 @@ def _supporting_points(
         return _shrunk_rate(events, nineties_played, prior, prior_nineties)
 
     clean_sheet_rate = sum(row.clean_sheets for row in appearances) / played
+    # The fixture multiplier reaches 2.2, and the best defenders keep a clean
+    # sheet in over half their matches, so the product can exceed one. A
+    # probability cannot, and paying more than four points for one clean sheet
+    # would flatter exactly the premium defenders in the softest fixtures.
+    adjusted_clean_sheet = min(1.0, clean_sheet_rate * adjustment.clean_sheet)
     total = (
         minutes.probability_sixty_minutes
-        * clean_sheet_rate
+        * adjusted_clean_sheet
         * _CLEAN_SHEET_POINTS.get(position, 0)
-        * adjustment.clean_sheet
     )
     total += ninety * (sum(row.bonus for row in appearances) / played)
 
