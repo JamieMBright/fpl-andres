@@ -1,5 +1,6 @@
 import { z } from "zod";
 
+import type { ScheduledFixture } from "./fixture-run";
 import { projectionFor, type PlayerProjection } from "./squad-projection";
 
 /**
@@ -37,6 +38,7 @@ const bootstrapSchema = z.object({
     z
       .object({
         id: z.number().int().positive(),
+        code: z.number().int().positive(),
         short_name: z.string().min(1),
         name: z.string().min(1),
       })
@@ -52,12 +54,23 @@ const bootstrapSchema = z.object({
   ),
 });
 
+const fixtureSchema = z.array(
+  z
+    .object({
+      event: z.number().int().min(1).max(38).nullable(),
+      team_h: z.number().int().positive(),
+      team_a: z.number().int().positive(),
+    })
+    .loose(),
+);
+
 export interface PoolPlayer {
   elementId: number;
   code: number;
   name: string;
   position: string;
   club: string;
+  teamId: number;
   priceTenths: number;
   /** FPL's own availability flag: "a" is available, anything else is not. */
   available: boolean;
@@ -72,10 +85,17 @@ export interface PlayerPool {
   clubs: string[];
   positions: string[];
   firstDeadline: string | null;
+  /** This season's club ids mapped to the code that survives a season change. */
+  clubCodeByTeamId: Map<number, number>;
+  fixtures: ScheduledFixture[];
 }
 
-export function buildPlayerPool(payload: unknown): PlayerPool {
+export function buildPlayerPool(
+  payload: unknown,
+  fixturePayload: unknown = [],
+): PlayerPool {
   const bootstrap = bootstrapSchema.parse(payload);
+  const fixtures = fixtureSchema.parse(fixturePayload);
   const positions = new Map(
     bootstrap.element_types.map((type) => [type.id, type.singular_name_short]),
   );
@@ -97,6 +117,7 @@ export function buildPlayerPool(payload: unknown): PlayerPool {
         name: element.web_name,
         position,
         club,
+        teamId: element.team,
         priceTenths: element.now_cost,
         available: element.status === "a",
         record,
@@ -122,6 +143,10 @@ export function buildPlayerPool(payload: unknown): PlayerPool {
     firstDeadline:
       [...bootstrap.events].sort((left, right) => left.id - right.id).at(0)
         ?.deadline_time ?? null,
+    clubCodeByTeamId: new Map(
+      bootstrap.teams.map((team) => [team.id, team.code]),
+    ),
+    fixtures,
   };
 }
 
@@ -129,14 +154,23 @@ export async function fetchPlayerPool(
   fetchApi: typeof fetch = fetch,
   signal?: AbortSignal,
 ): Promise<PlayerPool> {
-  const response = await fetchApi("/api/fpl/bootstrap-static/", {
+  const init = {
     headers: { Accept: "application/json" },
     signal: signal ?? null,
-  });
-  if (!response.ok) {
-    throw new Error(`FPL returned ${response.status}`);
+  };
+  const [bootstrap, fixtures] = await Promise.all([
+    fetchApi("/api/fpl/bootstrap-static/", init),
+    fetchApi("/api/fpl/fixtures/", init),
+  ]);
+  if (!bootstrap.ok) {
+    throw new Error(`FPL returned ${bootstrap.status}`);
   }
-  return buildPlayerPool(await response.json());
+  // A missing fixture list costs the run column and nothing else, so it is not
+  // worth failing the whole page over.
+  return buildPlayerPool(
+    await bootstrap.json(),
+    fixtures.ok ? await fixtures.json() : [],
+  );
 }
 
 function round(value: number): number {

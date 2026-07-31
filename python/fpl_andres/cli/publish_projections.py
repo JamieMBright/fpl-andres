@@ -22,7 +22,8 @@ from collections.abc import Sequence
 from datetime import UTC, datetime
 from pathlib import Path
 
-from fpl_andres.backtesting.corpus import load_season
+from fpl_andres.backtesting.corpus import SeasonCorpus, load_season
+from fpl_andres.backtesting.fixtures import estimate_strength
 from fpl_andres.backtesting.projector import MatchProjection, project_next_match
 from fpl_andres.persistence.supabase import SupabaseCredentials, SupabaseRestClient
 
@@ -63,6 +64,37 @@ def _entry(projection: MatchProjection) -> dict[str, object]:
     }
 
 
+def _clubs(corpus: SeasonCorpus) -> list[dict[str, object]]:
+    """Attack and defence multipliers per club, keyed by the permanent code.
+
+    Club ids are reassigned every season exactly as player ids are, so the code
+    is the only safe join. A club that was not in the division last season has
+    no entry, and the site must show a blank rather than an average.
+    """
+    played = [
+        fixture
+        for event in sorted(corpus.fixtures_by_event)
+        for fixture in corpus.fixtures_by_event[event]
+    ]
+    strength = estimate_strength(played)
+    clubs: list[dict[str, object]] = []
+    for team_id, measured in sorted(strength.items()):
+        code = corpus.code_by_team.get(team_id)
+        if code is None:
+            continue
+        clubs.append(
+            {
+                "code": code,
+                "shortName": corpus.short_name_by_team.get(team_id, ""),
+                "attackHome": round(measured.attack_home, 3),
+                "attackAway": round(measured.attack_away, 3),
+                "defenceHome": round(measured.defence_home, 3),
+                "defenceAway": round(measured.defence_away, 3),
+            }
+        )
+    return clubs
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
 
@@ -79,18 +111,20 @@ def main(argv: Sequence[str] | None = None) -> int:
         (_entry(projection) for projection in projections),
         key=lambda entry: entry["code"],  # type: ignore[arg-type,return-value]
     )
+    clubs = _clubs(corpus)
     artifact = {
         "generatedAt": datetime.now(UTC).isoformat(),
         "season": corpus.season,
         "throughGameweek": corpus.last_event,
         "basis": "next match against an average opponent, no fixture applied",
         "players": players,
+        "clubs": clubs,
     }
 
     output = Path(args.output)
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(artifact, indent=2) + "\n", encoding="utf-8")
-    print(f"wrote {output} ({len(players)} players)")
+    print(f"wrote {output} ({len(players)} players, {len(clubs)} clubs)")
     return 0
 
 

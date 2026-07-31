@@ -40,7 +40,7 @@ function bootstrapDocument() {
       { id: 3, singular_name_short: "MID" },
       { id: 4, singular_name_short: "FWD" },
     ],
-    teams: [{ id: 1, short_name: "MUN", name: "Man Utd" }],
+    teams: [{ id: 1, code: 1, short_name: "MUN", name: "Man Utd" }],
     elements: [
       {
         id: 1,
@@ -70,6 +70,13 @@ async function mockManagerHistory(page: Page) {
     if (route.request().url().includes("bootstrap-static")) {
       await route.fulfill({
         body: JSON.stringify(bootstrapDocument()),
+        contentType: "application/json",
+      });
+      return;
+    }
+    if (route.request().url().includes("/fixtures/")) {
+      await route.fulfill({
+        body: JSON.stringify([{ event: 1, team_h: 1, team_a: 1 }]),
         contentType: "application/json",
       });
       return;

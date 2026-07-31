@@ -223,6 +223,11 @@ Both halves are facts; neither is a forecast for a match nobody has played.
 A player who moved club in the summer keeps his record here, because the record
 follows the footballer. Nothing adjusts it for the side he has joined.
 
+The opening-run rating uses last season's measured club strength, joined on the
+permanent club code. Three clubs come up every year and have no measurement, so
+any run containing them is rated over the remainder and says how many fixtures
+that was. Nothing treats a promoted club as average.
+
 ## Rules that changed under us
 
 - **Assistant Manager is gone for 2026/27.** The live bootstrap publishes four

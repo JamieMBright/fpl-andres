@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-31T13:41:11.404952+00:00",
+  "generatedAt": "2026-07-31T14:12:33.790765+00:00",
   "season": "2025-26",
   "throughGameweek": 38,
   "basis": "next match against an average opponent, no fixture applied",
@@ -7500,6 +7500,168 @@
       "returnRate": 0.25,
       "blankRate": 0.5,
       "evidence": "observed"
+    }
+  ],
+  "clubs": [
+    {
+      "code": 3,
+      "shortName": "ARS",
+      "attackHome": 1.271,
+      "attackAway": 1.19,
+      "defenceHome": 0.655,
+      "defenceAway": 0.706
+    },
+    {
+      "code": 7,
+      "shortName": "AVL",
+      "attackHome": 1.068,
+      "attackAway": 1.021,
+      "defenceHome": 0.965,
+      "defenceAway": 0.955
+    },
+    {
+      "code": 90,
+      "shortName": "BUR",
+      "attackHome": 0.751,
+      "attackAway": 0.908,
+      "defenceHome": 1.162,
+      "defenceAway": 1.384
+    },
+    {
+      "code": 91,
+      "shortName": "BOU",
+      "attackHome": 1.0,
+      "attackAway": 1.162,
+      "defenceHome": 0.908,
+      "defenceAway": 1.113
+    },
+    {
+      "code": 94,
+      "shortName": "BRE",
+      "attackHome": 1.09,
+      "attackAway": 0.965,
+      "defenceHome": 0.937,
+      "defenceAway": 1.045
+    },
+    {
+      "code": 36,
+      "shortName": "BHA",
+      "attackHome": 1.023,
+      "attackAway": 0.965,
+      "defenceHome": 0.908,
+      "defenceAway": 0.932
+    },
+    {
+      "code": 8,
+      "shortName": "CHE",
+      "attackHome": 0.932,
+      "attackAway": 1.247,
+      "defenceHome": 1.049,
+      "defenceAway": 0.955
+    },
+    {
+      "code": 31,
+      "shortName": "CRY",
+      "attackHome": 0.774,
+      "attackAway": 0.965,
+      "defenceHome": 0.993,
+      "defenceAway": 0.977
+    },
+    {
+      "code": 11,
+      "shortName": "EVE",
+      "attackHome": 0.932,
+      "attackAway": 0.937,
+      "defenceHome": 1.106,
+      "defenceAway": 0.864
+    },
+    {
+      "code": 54,
+      "shortName": "FUL",
+      "attackHome": 1.023,
+      "attackAway": 0.824,
+      "defenceHome": 0.908,
+      "defenceAway": 1.045
+    },
+    {
+      "code": 2,
+      "shortName": "LEE",
+      "attackHome": 1.0,
+      "attackAway": 0.908,
+      "defenceHome": 0.937,
+      "defenceAway": 1.136
+    },
+    {
+      "code": 14,
+      "shortName": "LIV",
+      "attackHome": 1.113,
+      "attackAway": 1.162,
+      "defenceHome": 0.908,
+      "defenceAway": 1.09
+    },
+    {
+      "code": 43,
+      "shortName": "MCI",
+      "attackHome": 1.361,
+      "attackAway": 1.247,
+      "defenceHome": 0.739,
+      "defenceAway": 0.819
+    },
+    {
+      "code": 1,
+      "shortName": "MUN",
+      "attackHome": 1.226,
+      "attackAway": 1.19,
+      "defenceHome": 1.021,
+      "defenceAway": 0.932
+    },
+    {
+      "code": 4,
+      "shortName": "NEW",
+      "attackHome": 1.158,
+      "attackAway": 0.824,
+      "defenceHome": 1.19,
+      "defenceAway": 0.91
+    },
+    {
+      "code": 17,
+      "shortName": "NFO",
+      "attackHome": 0.797,
+      "attackAway": 1.134,
+      "defenceHome": 0.993,
+      "defenceAway": 0.977
+    },
+    {
+      "code": 56,
+      "shortName": "SUN",
+      "attackHome": 0.91,
+      "attackAway": 0.824,
+      "defenceHome": 0.908,
+      "defenceAway": 0.977
+    },
+    {
+      "code": 6,
+      "shortName": "TOT",
+      "attackHome": 0.842,
+      "attackAway": 1.077,
+      "defenceHome": 1.218,
+      "defenceAway": 0.932
+    },
+    {
+      "code": 21,
+      "shortName": "WHU",
+      "attackHome": 0.955,
+      "attackAway": 0.88,
+      "defenceHome": 1.19,
+      "defenceAway": 1.136
+    },
+    {
+      "code": 39,
+      "shortName": "WOL",
+      "attackHome": 0.774,
+      "attackAway": 0.57,
+      "defenceHome": 1.303,
+      "defenceAway": 1.113
     }
   ]
 }

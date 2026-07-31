@@ -1120,6 +1120,21 @@ a:focus-visible {
   color: var(--amber);
 }
 
+.pool-run-good {
+  color: var(--field-green);
+  font-weight: 700;
+}
+
+.pool-run-hard {
+  color: var(--ink);
+}
+
+.pool-partial,
+.pool-unrated {
+  color: var(--ink-soft);
+  font-size: 10px;
+}
+
 .entry-aside {
   max-width: 62ch;
   margin: 22px 0 0;

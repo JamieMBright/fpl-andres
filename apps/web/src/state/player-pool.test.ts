@@ -21,8 +21,8 @@ function bootstrap(
       { id: 5, singular_name_short: "AM" },
     ],
     teams: [
-      { id: 1, short_name: "ARS", name: "Arsenal" },
-      { id: 2, short_name: "MUN", name: "Man Utd" },
+      { id: 1, code: 3, short_name: "ARS", name: "Arsenal" },
+      { id: 2, code: 1, short_name: "MUN", name: "Man Utd" },
     ],
     elements: [
       {
@@ -104,17 +104,43 @@ describe("buildPlayerPool", () => {
 });
 
 describe("fetchPlayerPool", () => {
-  it("reads the proxied bootstrap", async () => {
+  it("reads the proxied bootstrap and fixture list", async () => {
     const fetchApi = vi
       .fn<typeof fetch>()
-      .mockResolvedValue(Response.json(bootstrap()));
+      .mockImplementation((input) =>
+        Promise.resolve(
+          String(input).includes("fixtures")
+            ? Response.json([{ event: 1, team_h: 1, team_a: 2 }])
+            : Response.json(bootstrap()),
+        ),
+      );
 
     const pool = await fetchPlayerPool(fetchApi);
 
-    expect(String(fetchApi.mock.calls[0]?.[0])).toBe(
+    expect(fetchApi.mock.calls.map(([input]) => String(input))).toEqual([
       "/api/fpl/bootstrap-static/",
-    );
+      "/api/fpl/fixtures/",
+    ]);
     expect(pool.players).toHaveLength(2);
+    expect(pool.fixtures).toHaveLength(1);
+    expect(pool.clubCodeByTeamId.get(1)).toBe(3);
+  });
+
+  it("loses the fixture column rather than the page when fixtures fail", async () => {
+    const fetchApi = vi
+      .fn<typeof fetch>()
+      .mockImplementation((input) =>
+        Promise.resolve(
+          String(input).includes("fixtures")
+            ? new Response("", { status: 500 })
+            : Response.json(bootstrap()),
+        ),
+      );
+
+    const pool = await fetchPlayerPool(fetchApi);
+
+    expect(pool.players).toHaveLength(2);
+    expect(pool.fixtures).toEqual([]);
   });
 
   it("fails loudly rather than returning an empty pool", async () => {
