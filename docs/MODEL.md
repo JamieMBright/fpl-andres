@@ -361,7 +361,96 @@ weak.
 
 ---
 
-## 12. What this does not calculate
+## 12. How Understat is meant to change this
+
+Not yet built. Written down so the plan can be argued with before it is, and so
+each stage names the thing it would have to beat.
+
+**The standing rule: nothing ships unless it beats the current model on a
+held-out basis.** More inputs is not the same as more accuracy, and a richer
+model that loses is still a loss.
+
+### Stage 1 — separate penalties from open play
+
+FPL's `expected_goals` **includes penalties**, and a penalty is worth about 0.79
+xG. A designated taker therefore carries an inflated rate that has nothing to do
+with his open-play threat, and the rate persists in the model after he loses the
+job to a new signing or a new manager.
+
+Understat publishes `np_xg` alongside `xg`, so the attacking term splits:
+
+```
+g90 = open_play_rate                     # from np_xG, persists with the player
+    + penalty_share * penalty_conversion # from role, changes overnight
+```
+
+The two behave completely differently and should be shrunk with different
+strengths. Open-play threat is a property of the footballer; being on penalties
+is a property of the team sheet.
+
+**Beats what:** the current single blended rate, on any season where a penalty
+taker changed club or lost the duty.
+
+### Stage 2 — decompose the rate into volume and quality
+
+```
+xG_per_90 = shots_per_90 * xG_per_shot
+```
+
+This matters because the two halves stabilise at very different speeds. Shot
+volume is a high-count signal that settles inside a handful of matches; shot
+quality is a low-count average that needs most of a season. Shrinking them
+**separately**, each toward its own positional league rate, should cut variance
+on exactly the players the current model is worst at — the ones with thin
+recent history.
+
+`key_passes` does the same job for assists, and `xg_chain` / `xg_buildup` capture
+involvement in moves that end in a shot, which `xA` misses because it only counts
+the final pass.
+
+**Beats what:** the current single-rate shrinkage, measured on early-season
+gameweeks where history is thinnest.
+
+### Stage 3 — shot locations, and the positional matchup
+
+This is the one that needs coordinates, and the one nothing currently supports.
+
+Understat publishes every shot with `X`, `Y`, situation and result. Two things
+fall out:
+
+1. **Where a player shoots from.** A striker taking six-yard-box chances and one
+   taking twenty-five-yard efforts can have identical xG per 90 and completely
+   different distributions. Only one of them has a realistic ceiling.
+2. **Where an opponent leaks.** Aggregate xG conceded by pitch zone per club, and
+   a defence that is sound centrally but soft down its left becomes visible.
+
+Combined, the attacking adjustment stops being one number per fixture:
+
+```
+adj.attacking = Σ_zone  player_shot_share[zone] * opponent_concession[zone]
+```
+
+A left-sided forward against a side that leaks down its right gets an uplift the
+current model cannot express, because today every attacker at a club receives the
+identical multiplier.
+
+**Beats what:** the single per-fixture attacking multiplier in §5. This is the
+largest potential gain on the list and also the least certain, because zone
+concession is a thin measurement — twenty clubs times a handful of zones across
+one season is not many shots per cell.
+
+### What Understat cannot fix
+
+- It has no bonus points, no defensive contribution, and no saves, so §4's
+  supporting routes stay on FPL's own columns.
+- It does not cover the Championship, so promoted clubs remain unmeasurable.
+- Its ids need the crosswalk in `cohorts`, which verifies **94.9%** of eligible
+  2025-26 players by corroborating minutes and goals. The remainder are named
+  gaps, not silent ones.
+
+---
+
+## 13. What this does not calculate
 
 - **Shot locations.** Understat publishes shot coordinates. Nothing reads them,
   so there is no flank vulnerability, no shot-quality decomposition beyond xG,
@@ -379,7 +468,7 @@ weak.
 
 ---
 
-## 13. How to check any of this
+## 14. How to check any of this
 
 - Rate basis and weights are in `reason_codes` on every `PlayerRateProjection`.
 - Every published figure lives in a committed artifact, so a number on the site

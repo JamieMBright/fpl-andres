@@ -636,10 +636,12 @@ def _supporting_points(
     total += ninety * (sum(row.bonus for row in appearances) / played)
 
     if position == _GOALKEEPER:
+        # Saves pay one point per three, so the division happens per match and
+        # is averaged after. Dividing the mean instead over-estimates by 0.34
+        # points a start, about thirteen points across a keeper's season.
         total += (
             ninety
-            * (sum(row.saves for row in appearances) / played)
-            / _SAVES_PER_POINT
+            * (sum(row.saves // _SAVES_PER_POINT for row in appearances) / played)
             * adjustment.saves
         )
         total += (
