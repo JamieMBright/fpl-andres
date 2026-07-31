@@ -263,8 +263,11 @@ def project_next_match(
     than projected from a prior alone.
     """
     config = settings or ProjectionSettings()
-    gameweek = corpus.last_event + 1
-    history = corpus.before(gameweek)
+    # 2019-20 ran to gameweek 47 after the shutdown, so the season after the
+    # last one is not always a legal event. History is unaffected: `before`
+    # is inclusive of everything already played.
+    gameweek = min(corpus.last_event + 1, MAX_EVENT)
+    history = corpus.before(corpus.last_event + 1)
     if not history:
         return []
 

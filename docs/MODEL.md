@@ -216,14 +216,23 @@ everywhere it appears.
 Backtested over six consecutive season pairs against next season's opening
 starts, on a common population:
 
-| Predictor                                 | Spearman  | Top-N accuracy |
-| ----------------------------------------- | --------- | -------------- |
-| Season minutes                            | 0.616     | 68.7%          |
-| Season starts                             | 0.620     | 68.5%          |
-| Closing-six minutes                       | 0.605     | 68.9%          |
-| Closing-six starts                        | 0.603     | 68.7%          |
-| Starts × closing role                     | 0.627     | 70.0%          |
-| **Rank blend of season + closing starts** | **0.646** | **70.2%**      |
+| Predictor                               | Spearman  | Beats the model |
+| --------------------------------------- | --------- | --------------- |
+| **The minutes model's own `P(start)`**  | **0.547** | —               |
+| Season minutes                          | 0.513     | 1 of 6          |
+| Season starts                           | 0.514     | 1 of 6          |
+| Closing-six starts                      | 0.505     | 0 of 6          |
+| Rank blend of season and closing starts | 0.559     | 4 of 6          |
+
+The model beats every crude marker. A rank blend edges it by about **0.012**,
+which is real but slight, and it is not wired in.
+
+An earlier version of this table quoted 0.616 against 0.646. Those figures were
+measured across every player rather than the model's own population, so they
+included fringe players whose non-selection is trivially predictable and who
+inflate any correlation. Scoring each method on the population it can actually
+rank is the same trap that once made a naive baseline look better than the
+projection.
 
 No single cutoff is good. A 900-minute floor rejected a keeper who made seven
 appearances and started all six of the closing weeks, while passing a forward who

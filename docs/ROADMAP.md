@@ -221,10 +221,15 @@ Ordered by what would change the answers most, not by effort.
    2019-20 to 2021-22 and 100% from 2022-23, so the rate model silently switches
    basis at that boundary. Any backtest spanning it is scoring two different
    models and must say so.
-3. **Starts beat minutes and the model still uses minutes.** Measured over six
-   season pairs against next season's opening starts: season minutes 0.616,
-   season starts 0.620, a rank blend of season starts with closing starts
-   **0.646**, winning five of six. The blend is not in the minutes model.
+3. **A starts blend edges the minutes model, but only just.** Scored on the
+   population the model will actually speak for: model `P(start)` **0.547**,
+   season minutes 0.513, season starts 0.514, closing-six starts 0.505, and a
+   rank blend of season with closing starts **0.559**, winning four of six
+   season pairs. The model already beats every crude marker; the blend is worth
+   about **+0.012** and is not yet wired. An earlier note in this file claimed
+   0.646 against 0.616, which was measured on everyone rather than on the
+   model's population and so included fringe players who are trivially
+   predictable. That comparison was unfair and the numbers above replace it.
 
 ### Built, tested, and called by nothing
 

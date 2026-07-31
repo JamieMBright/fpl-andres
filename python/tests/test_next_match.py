@@ -120,6 +120,19 @@ class ProjectNextMatchTest(unittest.TestCase):
     def test_an_empty_season_projects_nobody(self) -> None:
         self.assertEqual(project_next_match(SeasonCorpus(season="2025-26")), [])
 
+    def test_a_season_that_ran_past_gameweek_38_still_projects(self) -> None:
+        """2019-20 finished at gameweek 47, so the next event is not a legal one."""
+        corpus = _corpus(with_fixtures=False)
+        overrun = {
+            gameweek + 27: [_row(gameweek + 27, STEADY, minutes=90, points=6) for _ in range(1)]
+            for gameweek in range(1, 21)
+        }
+        corpus.rows_by_gameweek = overrun
+
+        projected = project_next_match(corpus)
+
+        self.assertEqual([entry.code for entry in projected], [STEADY * 1000])
+
 
 if __name__ == "__main__":
     unittest.main()
