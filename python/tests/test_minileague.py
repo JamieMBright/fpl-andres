@@ -20,6 +20,7 @@ from fpl_andres.simulation.minileague import (
 )
 from fpl_andres.simulation.season import LineupRules
 from fpl_andres.simulation.squad import Candidate, SquadRules
+from fpl_andres.simulation.valuation import Portfolio
 
 SQUAD_RULES = SquadRules(budget_tenths=1000, club_limit=3, position_counts={1: 2, 2: 5, 3: 5, 4: 3})
 LINEUP_RULES = LineupRules(
@@ -55,7 +56,17 @@ def build_manager(free_transfers: int) -> _Manager:
         result=ManagerResult(manager_id=0, policy="advised", seed=0),
         squad=squad,
         free_transfers=free_transfers,
+        portfolio=Portfolio.opening(
+            [player.element_id for player in squad],
+            PRICES,
+            SQUAD_RULES.budget_tenths,
+        ),
     )
+
+
+# Every squad member and every replacement costs the same, so affordability
+# never quietly decides a test that is about transfer economics.
+PRICES = {element_id: 40 for element_id in range(1, 200)}
 
 
 def pool_sorted(upgrades: dict[int, float]) -> dict[int, list[Candidate]]:
@@ -80,6 +91,7 @@ def test_a_free_transfer_is_spent_before_any_hit_is_taken() -> None:
         projected=ranking,
         form=ranking,
         minutes={},
+        prices=PRICES,
     )
 
     assert manager.result.transfers_made == 1
@@ -101,6 +113,7 @@ def test_a_marginal_gain_does_not_justify_a_hit() -> None:
         projected=ranking,
         form=ranking,
         minutes={},
+        prices=PRICES,
     )
 
     assert manager.result.transfers_made == 1
@@ -120,6 +133,7 @@ def test_a_large_gain_does_justify_a_hit() -> None:
         projected=ranking,
         form=ranking,
         minutes={},
+        prices=PRICES,
     )
 
     assert manager.result.transfers_made == 2
@@ -138,6 +152,7 @@ def test_free_transfers_bank_but_never_exceed_the_cap() -> None:
         projected=flat,
         form=flat,
         minutes={},
+        prices=PRICES,
     )
 
     assert manager.free_transfers == settings.max_free_transfers
@@ -225,6 +240,7 @@ def tilt_ranking(place: int, places: int) -> dict[int, float]:
             result=ManagerResult(manager_id=index, policy="rank_aware", seed=index),
             squad=[],
             free_transfers=1,
+            portfolio=Portfolio(holdings={}, bank_tenths=0),
         )
         # Net points descend with index, so index 0 leads.
         entry.result.total_points = (places - index) * 100
@@ -259,6 +275,7 @@ def test_neither_tilt_changes_a_player_ranked_against_himself() -> None:
         result=ManagerResult(manager_id=0, policy="rank_aware", seed=0),
         squad=[],
         free_transfers=1,
+        portfolio=Portfolio(holdings={}, bank_tenths=0),
     )
     ranking = _tilted_ranking(
         solo,

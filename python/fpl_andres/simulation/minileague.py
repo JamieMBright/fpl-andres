@@ -40,6 +40,7 @@ from fpl_andres.simulation.squad import (
     build_ranked_squad,
     build_squad,
 )
+from fpl_andres.simulation.valuation import Portfolio
 
 __all__ = [
     "LeagueResult",
@@ -129,6 +130,7 @@ class ManagerResult:
     hit_points: int = 0
     weekly_points: list[int] = field(default_factory=list)
     chips_played: dict[str, int] = field(default_factory=dict)
+    final_team_value_tenths: int = 0
 
     @property
     def net_points(self) -> int:
@@ -157,6 +159,7 @@ class _Manager:
     result: ManagerResult
     squad: list[Candidate]
     free_transfers: int
+    portfolio: Portfolio
     chips: ChipState = field(default_factory=ChipState)
     chip_plan: dict[int, ChipName] = field(default_factory=dict)
 
@@ -186,13 +189,18 @@ def simulate_league(
         result = ManagerResult(manager_id=index, policy=policy, seed=manager_seed)
         outcome.managers.append(result)
         managers.append(
-            # Zero here, not one: the week's free transfer is granted at the top
-            # of _take_transfers, so seeding one as well would hand every
-            # manager an extra move over the season.
+            # Zero free transfers here, not one: the week's transfer is granted
+            # at the top of _take_transfers, so seeding one as well would hand
+            # every manager an extra move over the season.
             _Manager(
                 result=result,
                 squad=squad,
                 free_transfers=0,
+                portfolio=Portfolio.opening(
+                    [player.element_id for player in squad],
+                    {player.element_id: player.price_tenths for player in pool},
+                    settings.squad_rules.budget_tenths,
+                ),
                 chip_plan=_chip_plan(corpus, squad, settings, manager_seed, last_event),
             )
         )
@@ -214,6 +222,7 @@ def simulate_league(
         minutes = _recent_minutes(corpus, gameweek)
         outcomes = _outcomes(corpus, gameweek)
         crowd = crowd_ranking(corpus, gameweek)
+        prices = _prices_at(corpus, gameweek)
 
         rankings: dict[str, Mapping[int, float]] = {
             "advised": projected,
@@ -247,6 +256,11 @@ def simulate_league(
                 # A wildcard is a free rebuild, so the squad it leaves behind is
                 # the one that persists.
                 manager.squad = list(build_ranked_squad(pool, settings.squad_rules, ranking))
+                manager.portfolio = Portfolio.opening(
+                    [player.element_id for player in manager.squad],
+                    prices,
+                    manager.portfolio.team_value(prices),
+                )
                 manager.chips.record("wildcard", gameweek)
             else:
                 _take_transfers(
@@ -256,6 +270,7 @@ def simulate_league(
                     projected=ranking,
                     form=form,
                     minutes=minutes,
+                    prices=prices,
                 )
                 if chip is not None:
                     manager.chips.record(chip, gameweek)
@@ -263,6 +278,7 @@ def simulate_league(
             points = _play(manager, settings, outcomes, ranking, form, chip, pool)
             manager.result.weekly_points.append(points)
             manager.result.total_points += points
+            manager.result.final_team_value_tenths = manager.portfolio.team_value(prices)
             if chip is not None:
                 manager.result.chips_played[chip] = gameweek
 
@@ -428,6 +444,18 @@ def _tilted_ranking(
     }
 
 
+def _prices_at(corpus: SeasonCorpus, gameweek: int) -> dict[int, int]:
+    """Every player's quoted price as of the most recent gameweek before this one."""
+    prices: dict[int, int] = {}
+    for event in sorted(corpus.rows_by_gameweek):
+        if event >= gameweek:
+            break
+        for row in corpus.rows_by_gameweek[event]:
+            if row.price_tenths:
+                prices[row.element_id] = row.price_tenths
+    return prices
+
+
 def _candidate_pool(corpus: SeasonCorpus, gameweek: int) -> list[Candidate]:
     """Prices as they stood at the opening gameweek of the simulation."""
     prices: dict[int, int] = {}
@@ -498,6 +526,7 @@ def _take_transfers(
     projected: Mapping[int, float],
     form: Mapping[int, float],
     minutes: Mapping[int, int],
+    prices: Mapping[int, int],
 ) -> None:
     # The week's free transfer arrives before any decision is taken.
     manager.free_transfers = min(
@@ -513,7 +542,7 @@ def _take_transfers(
         return
 
     if policy == "zombie":
-        _zombie_transfer(manager, settings, by_position, ranking, form, minutes)
+        _zombie_transfer(manager, settings, by_position, ranking, form, minutes, prices)
         return
 
     if policy in _CHASERS:
@@ -522,12 +551,11 @@ def _take_transfers(
         # and the point of the baseline is realism rather than optimality.
         if manager.free_transfers <= 0:
             return
-        swap = _best_swap(manager, settings, by_position, ranking)
+        swap = _best_swap(manager, settings, by_position, ranking, prices)
         if swap is None:
             return
         outgoing, incoming, _ = swap
-        manager.squad[manager.squad.index(outgoing)] = incoming
-        manager.result.transfers_made += 1
+        _settle(manager, outgoing, incoming, prices)
         manager.free_transfers -= 1
         return
 
@@ -535,19 +563,30 @@ def _take_transfers(
     # is close to free, so the bar is a hit's worth of points once the bank is
     # empty; that is the decision the -4 rule actually poses.
     while True:
-        swap = _best_swap(manager, settings, by_position, ranking)
+        swap = _best_swap(manager, settings, by_position, ranking, prices)
         if swap is None:
             return
         outgoing, incoming, gain = swap
         takes_hit = manager.free_transfers <= 0
         if gain <= (_TRANSFER_HIT_POINTS if takes_hit else 0.0):
             return
-        manager.squad[manager.squad.index(outgoing)] = incoming
-        manager.result.transfers_made += 1
+        _settle(manager, outgoing, incoming, prices)
         if takes_hit:
             manager.result.hit_points += _TRANSFER_HIT_POINTS
         else:
             manager.free_transfers -= 1
+
+
+def _settle(
+    manager: _Manager,
+    outgoing: Candidate,
+    incoming: Candidate,
+    prices: Mapping[int, int],
+) -> None:
+    """Make the swap and move the money, keeping squad and portfolio in step."""
+    manager.portfolio.transfer(outgoing.element_id, incoming.element_id, prices)
+    manager.squad[manager.squad.index(outgoing)] = incoming
+    manager.result.transfers_made += 1
 
 
 def _zombie_transfer(
@@ -557,17 +596,17 @@ def _zombie_transfer(
     ranking: Mapping[int, float],
     form: Mapping[int, float],
     minutes: Mapping[int, int],
+    prices: Mapping[int, int],
 ) -> None:
     """Acts only when a player has stopped featuring, and never takes a hit."""
     outgoing = [player for player in manager.squad if minutes.get(player.element_id, 0) == 0]
     if not outgoing or manager.free_transfers <= 0:
         return
     worst = min(outgoing, key=lambda player: form.get(player.element_id, 0.0))
-    replacement = _best_replacement(worst, manager, settings, by_position, ranking)
+    replacement = _best_replacement(worst, manager, settings, by_position, ranking, prices)
     if replacement is None:
         return
-    manager.squad[manager.squad.index(worst)] = replacement
-    manager.result.transfers_made += 1
+    _settle(manager, worst, replacement, prices)
     manager.free_transfers -= 1
 
 
@@ -576,10 +615,11 @@ def _best_swap(
     settings: LeagueSettings,
     by_position: Mapping[int, Sequence[Candidate]],
     ranking: Mapping[int, float],
+    prices: Mapping[int, int],
 ) -> tuple[Candidate, Candidate, float] | None:
     best: tuple[Candidate, Candidate, float] | None = None
     for player in manager.squad:
-        replacement = _best_replacement(player, manager, settings, by_position, ranking)
+        replacement = _best_replacement(player, manager, settings, by_position, ranking, prices)
         if replacement is None:
             continue
         gain = ranking.get(replacement.element_id, 0.0) - ranking.get(player.element_id, 0.0)
@@ -594,6 +634,7 @@ def _best_replacement(
     settings: LeagueSettings,
     by_position: Mapping[int, Sequence[Candidate]],
     ranking: Mapping[int, float],
+    prices: Mapping[int, int],
 ) -> Candidate | None:
     """First affordable, eligible upgrade in a list already sorted by ranking."""
     held = {player.element_id for player in manager.squad}
@@ -601,16 +642,15 @@ def _best_replacement(
     for player in manager.squad:
         clubs[player.team_id] = clubs.get(player.team_id, 0) + 1
 
-    budget = (
-        _squad_value(manager.squad, settings) - _squad_cost(manager.squad) + outgoing.price_tenths
-    )
+    budget = manager.portfolio.affordable(outgoing.element_id, prices)
     current = ranking.get(outgoing.element_id, 0.0)
 
     for candidate in by_position.get(outgoing.position, ()):
         score = ranking.get(candidate.element_id)
         if score is None or score <= current:
             return None
-        if candidate.element_id in held or candidate.price_tenths > budget:
+        cost = prices.get(candidate.element_id, candidate.price_tenths)
+        if candidate.element_id in held or cost > budget:
             continue
         if (
             candidate.team_id != outgoing.team_id
@@ -623,12 +663,6 @@ def _best_replacement(
 
 def _squad_cost(squad: Sequence[Candidate]) -> int:
     return sum(player.price_tenths for player in squad)
-
-
-def _squad_value(squad: Sequence[Candidate], settings: LeagueSettings) -> int:
-    # Selling-price accounting is not modelled; the squad is valued at its
-    # opening budget, which keeps every manager on equal terms.
-    return settings.squad_rules.budget_tenths
 
 
 def _play(
