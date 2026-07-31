@@ -3,7 +3,9 @@ import { useEffect, useMemo, useState } from "react";
 import { rateFixtureRun, type FixtureRun } from "../state/fixture-run";
 import {
   fetchPlayerPool,
+  PlayerPoolError,
   type PlayerPool,
+  type PoolFailure,
   type PoolPlayer,
 } from "../state/player-pool";
 import { projectionSeason } from "../state/squad-projection";
@@ -94,7 +96,7 @@ function sortValue(player: PoolPlayer, key: SortKey, run: FixtureRun): number {
  */
 export function PlayerPoolTable() {
   const [pool, setPool] = useState<PlayerPool | null>(null);
-  const [failed, setFailed] = useState(false);
+  const [failed, setFailed] = useState<PoolFailure | null>(null);
   const [position, setPosition] = useState("ALL");
   const [sort, setSort] = useState<SortKey>("points");
   const [maxPrice, setMaxPrice] = useState(0);
@@ -106,8 +108,13 @@ export function PlayerPoolTable() {
       .then((result) => {
         if (active) setPool(result);
       })
-      .catch(() => {
-        if (active) setFailed(true);
+      .catch((error: unknown) => {
+        if (error instanceof DOMException && error.name === "AbortError")
+          return;
+        if (!active) return;
+        setFailed(
+          error instanceof PlayerPoolError ? error.reason : "unreachable",
+        );
       });
     return () => {
       active = false;
@@ -146,8 +153,11 @@ export function PlayerPoolTable() {
   if (failed) {
     return (
       <p className="pool-state" role="alert">
-        FPL did not answer, so there is no player list to show. Nothing has been
-        substituted for it. Reload to try again.
+        {failed === "source_contract_failed"
+          ? "FPL answered, but not in the shape I expect. Rather than guess at " +
+            "what changed, I am showing you nothing. This one is mine to fix."
+          : "I could not reach the player list. Nothing has been substituted " +
+            "for it. Reload to try again."}
       </p>
     );
   }

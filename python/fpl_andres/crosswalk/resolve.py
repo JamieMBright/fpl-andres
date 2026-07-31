@@ -33,11 +33,11 @@ from fpl_andres.crosswalk.clubs import canonical_club
 from fpl_andres.crosswalk.names import variants
 
 __all__ = [
+    "CrosswalkReport",
     "ForeignPlayer",
     "FplPlayer",
     "MatchOutcome",
     "PlayerMatch",
-    "CrosswalkReport",
     "resolve_crosswalk",
 ]
 

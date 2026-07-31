@@ -150,4 +150,20 @@ describe("fetchPlayerPool", () => {
 
     await expect(fetchPlayerPool(fetchApi)).rejects.toThrow(/503/);
   });
+
+  it("separates a source that broke its contract from one that never answered", async () => {
+    const contract = vi
+      .fn<typeof fetch>()
+      .mockResolvedValue(Response.json({ elements: [] }));
+    await expect(fetchPlayerPool(contract)).rejects.toMatchObject({
+      reason: "source_contract_failed",
+    });
+
+    const offline = vi
+      .fn<typeof fetch>()
+      .mockRejectedValue(new TypeError("network"));
+    await expect(fetchPlayerPool(offline)).rejects.toMatchObject({
+      reason: "unreachable",
+    });
+  });
 });

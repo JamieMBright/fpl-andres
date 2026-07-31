@@ -58,3 +58,8 @@ packages = ["fpl_andres"]
 mypy_path = "python"
 strict = true
 warn_unreachable = true
+
+# Ships no py.typed marker. Confined to one CLI, whose own boundary is typed.
+[[tool.mypy.overrides]]
+module = ["soccerdata.*"]
+ignore_missing_imports = true

@@ -27,9 +27,11 @@ import {
 
 import { ManagerHistory } from "./components/ManagerHistory";
 import { Methodology } from "./components/Methodology";
+import { OpeningSquad } from "./components/OpeningSquad";
 import { PitchView } from "./components/PitchView";
 import { PlayerPoolTable } from "./components/PlayerPoolTable";
 import { SquadRecord } from "./components/SquadRecord";
+import { StatusStrip } from "./components/StatusStrip";
 import { TeamStateCorrections } from "./components/TeamStateCorrections";
 import { TransferPlanPanel } from "./components/TransferPlanPanel";
 import { ValidationReport } from "./components/ValidationReport";
@@ -87,15 +89,6 @@ const SOCIAL_LINKS = [
     href: "https://youtube.com/@fpl_andres",
     path: "M21.6 7.2a2.5 2.5 0 0 0-1.8-1.8C18.2 5 12 5 12 5s-6.2 0-7.8.4a2.5 2.5 0 0 0-1.8 1.8A26 26 0 0 0 2 12a26 26 0 0 0 .4 4.8 2.5 2.5 0 0 0 1.8 1.8C5.8 19 12 19 12 19s6.2 0 7.8-.4a2.5 2.5 0 0 0 1.8-1.8A26 26 0 0 0 22 12a26 26 0 0 0-.4-4.8M10 15V9l5.2 3z",
   },
-] as const;
-
-const TELETEXT_CELLS = [
-  "P100",
-  "ANDRES",
-  "xPTS",
-  "OOP",
-  "DEFCON",
-  "@FPL_ANDRES",
 ] as const;
 
 type ThemeName = "dark" | "light";
@@ -196,11 +189,7 @@ function ApplicationFrame() {
       <a className="skip-link" href="#main-content">
         Skip to content
       </a>
-      <div aria-hidden="true" className="teletext-strip">
-        {TELETEXT_CELLS.map((cell) => (
-          <span key={cell}>{cell}</span>
-        ))}
-      </div>
+      <StatusStrip deadline={FIRST_DEADLINE_2026_27} />
       <header className="site-header">
         <Link aria-label="FPL Andres home" className="brand" to="/">
           <BielsaBucket />
@@ -534,6 +523,7 @@ function AnalysisResult({ analysis, entryId, onRetry }: AnalysisResultProps) {
       analysis.reason === "no_processed_event" ? (
         <>
           <ManagerHistory entryId={entryId} />
+          <OpeningSquad />
           <TransferPlanPanel firstDeadline={FIRST_DEADLINE_2026_27} />
         </>
       ) : null}

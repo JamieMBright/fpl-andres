@@ -1145,6 +1145,42 @@ a:focus-visible {
   line-height: 1.65;
 }
 
+.opening-squad {
+  margin-top: 26px;
+  border-top: 1px solid var(--rule);
+  padding-top: 22px;
+}
+
+.opening-basis {
+  max-width: 68ch;
+  color: var(--ink-soft);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.opening-squad h3 {
+  margin: 24px 0 10px;
+  font-family: var(--fa-display);
+  font-size: 17px;
+}
+
+.opening-caveats {
+  max-width: 68ch;
+  margin: 0;
+  padding-left: 20px;
+}
+
+.opening-caveats li {
+  margin-bottom: 10px;
+  color: var(--ink-soft);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.opening-caveats strong {
+  color: var(--ink);
+}
+
 .pitch-chip-role {
   margin: 0;
   color: var(--amber);

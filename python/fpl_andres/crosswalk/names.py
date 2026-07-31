@@ -25,7 +25,7 @@ _TRANSLITERATIONS = {
     "ð": "d",
     "þ": "th",
     "ł": "l",
-    "ı": "i",
+    "ı": "i",  # noqa: RUF001 - Turkish dotless i, which is the whole point
     "ŋ": "n",
 }
 _PUNCTUATION = re.compile(r"[.'\u2019\-_]")

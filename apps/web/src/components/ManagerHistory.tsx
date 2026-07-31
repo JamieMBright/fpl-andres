@@ -10,6 +10,7 @@ type Loaded = { entryId: number; profile: ManagerProfile | null };
 
 const ARCHETYPE_LABELS: Record<ManagerProfile["archetype"], string> = {
   newcomer: "Newcomer",
+  elite: "Elite",
   contender: "Contender",
   spiker: "One big season",
   climber: "On the way up",
@@ -18,7 +19,14 @@ const ARCHETYPE_LABELS: Record<ManagerProfile["archetype"], string> = {
   regular: "Mid-table regular",
 };
 
-/** Best rank shown as a share of the field it was set in, where known. */
+/** One decimal below ten percent, whole numbers above it. */
+function share(percentile: number): string {
+  return percentile < 10
+    ? `${percentile.toFixed(1)}%`
+    : `${Math.round(percentile)}%`;
+}
+
+/** Fallback bar for records FPL published without a percentage. */
 function rankBar(rank: number, worst: number): number {
   if (worst <= 0) return 0;
   return Math.max(0.02, 1 - rank / worst);
@@ -97,13 +105,19 @@ export function ManagerHistory({ entryId }: { entryId: number }) {
         <div>
           <dt>Best finish</dt>
           <dd className="mono">
-            {profile.bestRank.toLocaleString("en-GB")}
+            {profile.bestPercentile === null
+              ? profile.bestRank.toLocaleString("en-GB")
+              : `top ${share(profile.bestPercentile)}`}
             <span className="record-when"> in {profile.bestSeason}</span>
           </dd>
         </div>
         <div>
           <dt>Typical</dt>
-          <dd className="mono">{profile.medianRank.toLocaleString("en-GB")}</dd>
+          <dd className="mono">
+            {profile.medianPercentile === null
+              ? profile.medianRank.toLocaleString("en-GB")
+              : `top ${share(profile.medianPercentile)}`}
+          </dd>
         </div>
       </dl>
 
@@ -114,12 +128,18 @@ export function ManagerHistory({ entryId }: { entryId: number }) {
             <span
               className="record-bar"
               style={{
-                width: `${rankBar(season.rank, profile.worstRank) * 100}%`,
+                width: `${
+                  season.percentile === null
+                    ? rankBar(season.rank, profile.worstRank) * 100
+                    : Math.max(2, 100 - season.percentile)
+                }%`,
               }}
               aria-hidden="true"
             />
             <span className="mono record-rank">
-              {season.rank.toLocaleString("en-GB")}
+              {season.percentile === null
+                ? season.rank.toLocaleString("en-GB")
+                : `top ${share(season.percentile)}`}
             </span>
             <span className="mono record-points">{season.points} pts</span>
           </li>
@@ -127,9 +147,11 @@ export function ManagerHistory({ entryId }: { entryId: number }) {
       </ol>
 
       <p className="record-caveat">
-        Ranks are not comparable across eras. The player base has grown roughly
-        fivefold since 2010, so an old finish was set against a much smaller
-        field than a recent one.
+        Bars are the share of the field you finished ahead of, so a longer bar
+        is a better season. Raw rank is not comparable across eras — the player
+        base has grown roughly fivefold since 2010, so 100,000th today is a far
+        better performance than 100,000th was then. The percentage is
+        FPL&rsquo;s own.
       </p>
     </section>
   );

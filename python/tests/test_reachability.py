@@ -182,6 +182,7 @@ def test_no_module_is_imported_only_by_its_own_tests() -> None:
         "crosswalk",
         "ingest_historical",
         "live_contracts",
+        "publish_opening_squad",
         "publish_projections",
         "validate",
         "verify_veterans",

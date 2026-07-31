@@ -150,6 +150,18 @@ export function buildPlayerPool(
   };
 }
 
+export type PoolFailure = "unreachable" | "source_contract_failed";
+
+export class PlayerPoolError extends Error {
+  constructor(
+    readonly reason: PoolFailure,
+    message: string,
+  ) {
+    super(message);
+    this.name = "PlayerPoolError";
+  }
+}
+
 export async function fetchPlayerPool(
   fetchApi: typeof fetch = fetch,
   signal?: AbortSignal,
@@ -158,19 +170,40 @@ export async function fetchPlayerPool(
     headers: { Accept: "application/json" },
     signal: signal ?? null,
   };
-  const [bootstrap, fixtures] = await Promise.all([
-    fetchApi("/api/fpl/bootstrap-static/", init),
-    fetchApi("/api/fpl/fixtures/", init),
-  ]);
-  if (!bootstrap.ok) {
-    throw new Error(`FPL returned ${bootstrap.status}`);
+  let bootstrap: Response;
+  let fixtures: Response;
+  try {
+    [bootstrap, fixtures] = await Promise.all([
+      fetchApi("/api/fpl/bootstrap-static/", init),
+      fetchApi("/api/fpl/fixtures/", init),
+    ]);
+  } catch (error) {
+    if (error instanceof DOMException && error.name === "AbortError")
+      throw error;
+    throw new PlayerPoolError(
+      "unreachable",
+      "the player list could not be requested",
+    );
   }
-  // A missing fixture list costs the run column and nothing else, so it is not
-  // worth failing the whole page over.
-  return buildPlayerPool(
-    await bootstrap.json(),
-    fixtures.ok ? await fixtures.json() : [],
-  );
+  if (!bootstrap.ok) {
+    throw new PlayerPoolError(
+      "unreachable",
+      `FPL returned ${bootstrap.status}`,
+    );
+  }
+  try {
+    // A missing fixture list costs the run column and nothing else, so it is
+    // not worth failing the whole page over.
+    return buildPlayerPool(
+      await bootstrap.json(),
+      fixtures.ok ? await fixtures.json() : [],
+    );
+  } catch {
+    throw new PlayerPoolError(
+      "source_contract_failed",
+      "the player list did not match the expected shape",
+    );
+  }
 }
 
 function round(value: number): number {
