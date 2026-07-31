@@ -598,6 +598,70 @@ a:focus-visible {
   line-height: 1.5;
 }
 
+.transfer-plan {
+  margin-top: 28px;
+  border-top: 3px solid var(--amber);
+  background: var(--paper);
+  padding: 20px 16px 24px;
+}
+
+.plan-state {
+  color: var(--amber);
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.transfer-plan h3 {
+  margin: 22px 0 10px;
+  font-size: 15px;
+  letter-spacing: 0.02em;
+}
+
+.plan-deadline {
+  color: var(--amber);
+  font-size: 13px;
+}
+
+.plan-promises {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding-inline-start: 20px;
+}
+
+.plan-promises li {
+  line-height: 1.55;
+}
+
+.plan-promises strong {
+  font-weight: 600;
+}
+
+.plan-footnote {
+  margin-top: 20px;
+  border-top: 1px solid var(--rule);
+  padding-top: 14px;
+  color: var(--ink-soft);
+  font-size: 14px;
+}
+
+.squad-table-disclosure {
+  margin-top: 16px;
+}
+
+.squad-table-disclosure > summary {
+  cursor: pointer;
+  padding: 10px 0;
+  color: var(--ink-soft);
+  font-size: 14px;
+}
+
+.squad-table-disclosure > summary:focus-visible {
+  outline: 3px solid var(--signal-blue);
+  outline-offset: 2px;
+}
+
 .pitch-view {
   background: var(--paper);
   border-block: 1px solid var(--rule);

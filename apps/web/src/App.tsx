@@ -27,6 +27,7 @@ import {
 
 import { PitchView } from "./components/PitchView";
 import { TeamStateCorrections } from "./components/TeamStateCorrections";
+import { TransferPlanPanel } from "./components/TransferPlanPanel";
 import { ValidationReport } from "./components/ValidationReport";
 import {
   initialTeamAnalysisState,
@@ -37,6 +38,8 @@ import {
 } from "./state/team-analysis";
 
 const MAX_PUBLIC_ID = 4_294_967_295;
+// Published by FPL for the 2026/27 opening gameweek.
+const FIRST_DEADLINE_2026_27 = "2026-08-21T17:30:00Z";
 const moneyFormatter = new Intl.NumberFormat("en-GB", {
   style: "currency",
   currency: "GBP",
@@ -663,6 +666,8 @@ function SnapshotDossier({ state }: { state: PublicTeamState }) {
           </div>
         </details>
       </section>
+
+      <TransferPlanPanel firstDeadline={FIRST_DEADLINE_2026_27} />
 
       <details className="source-trail">
         <summary>

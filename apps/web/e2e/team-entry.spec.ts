@@ -123,6 +123,25 @@ test("passes automated accessibility scans on entry and dossier", async ({
   expect(dossierScan.violations).toEqual([]);
 });
 
+test("refuses to invent a transfer plan before a ball is kicked", async ({
+  page,
+}) => {
+  await mockTeamResponse(page, {
+    status: "ready",
+    state: publicTeamState(),
+  });
+  await page.goto("/team/212279");
+  await page.getByText("Observed snapshot ready").waitFor();
+
+  const plan = page.getByRole("region", { name: "Your transfer plan" });
+  await expect(
+    plan.getByRole("heading", { name: "Your transfer plan" }),
+  ).toBeVisible();
+  await expect(plan.getByText("Not yet")).toBeVisible();
+  await expect(plan.getByText(/every player.s form is unknown/i)).toBeVisible();
+  await expect(plan.getByText(/First deadline: 21 August 2026/)).toBeVisible();
+});
+
 test("keeps verified cached state visible when refresh is degraded", async ({
   page,
 }, testInfo) => {
