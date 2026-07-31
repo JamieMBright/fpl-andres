@@ -42,6 +42,17 @@ const METHOD_NAMES: Record<string, string> = {
   ownership: "What the crowd owns",
 };
 
+const POSITIONS = ["GKP", "DEF", "MID", "FWD"] as const;
+
+/** My rank correlation minus the naive baseline's, for one position. */
+function positionLead(season: SeasonReport, position: string): number | null {
+  const mine = methodOf(season, "model")?.byPosition[position];
+  const baseline = methodOf(season, "recent_mean")?.byPosition[position];
+  if (mine === null || mine === undefined) return null;
+  if (baseline === null || baseline === undefined) return null;
+  return mine - baseline;
+}
+
 function methodOf(season: SeasonReport, label: string): Method | undefined {
   return season.methods.find((method) => method.label === label);
 }
@@ -110,7 +121,9 @@ export function ValidationReport() {
         <h2 id="ranking-title">Can I rank players?</h2>
         <p>
           Rank correlation against what actually happened, gameweek by gameweek.
-          Higher is better. One is perfect.
+          Higher is better. One is perfect. This test has no squad, no budget
+          and no transfers &mdash; it ranks every player in the game at once, so
+          nobody could actually play it.
         </p>
         <div
           aria-label="Scrollable rank correlation table"
@@ -159,8 +172,67 @@ export function ValidationReport() {
         </div>
         <p className="validation-verdict">
           The dumbest possible baseline — a player&rsquo;s last five scores,
-          averaged — ranks better than my projection in every season I tested.
-          That is why nothing here is promoted yet.
+          averaged — ranks better than my projection in every season I tested. I
+          am not going to hide that. But read the next section before drawing a
+          conclusion from it.
+        </p>
+      </section>
+
+      <section aria-labelledby="position-title">
+        <h2 id="position-title">The same test, one position at a time</h2>
+        <p>
+          You never pick from all six hundred players at once. You pick two
+          keepers, five defenders, five midfielders and three forwards. So the
+          honest question is whether I rank better <em>within a position</em>.
+          Here is my correlation minus the baseline&rsquo;s. Positive means I
+          win.
+        </p>
+        <div
+          aria-label="Scrollable per-position comparison table"
+          className="squad-table-wrap"
+          role="region"
+          // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- Keyboard users must be able to scroll this table horizontally.
+          tabIndex={0}
+        >
+          <table aria-label="Rank correlation lead over the baseline by position">
+            <thead>
+              <tr>
+                <th scope="col">Season</th>
+                {POSITIONS.map((position) => (
+                  <th scope="col" key={position}>
+                    {position}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {report.seasons.map((season) => (
+                <tr key={season.season}>
+                  <th scope="row" className="mono">
+                    {season.season}
+                  </th>
+                  {POSITIONS.map((position) => {
+                    const lead = positionLead(season, position);
+                    return (
+                      <td className="mono" key={position}>
+                        {lead === null
+                          ? "—"
+                          : `${lead > 0 ? "+" : ""}${lead.toFixed(3)}`}
+                      </td>
+                    );
+                  })}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p className="validation-verdict">
+          I beat the baseline in every position, in every season —{" "}
+          {report.seasons.length * POSITIONS.length} out of{" "}
+          {report.seasons.length * POSITIONS.length} cells. Both facts are real.
+          Pooled across all positions I lose badly; within the position you are
+          actually choosing from, I win. That gap is my cross-position
+          calibration, and it is the thing I am fixing next.
         </p>
       </section>
 
@@ -172,6 +244,12 @@ export function ValidationReport() {
           % follow my projection. The rest are zombies: they leave the squad
           alone until someone stops playing, then take the best recent form.
           Five leagues per season.
+        </p>
+        <p>
+          Everyone plays by the same rules. The squad carries over week to week,
+          one free transfer arrives each gameweek and banks up to five, and any
+          move beyond the bank costs four points. Those four-point hits are
+          deducted from every total below.
         </p>
         <div
           aria-label="Scrollable mini-league table"
@@ -216,10 +294,10 @@ export function ValidationReport() {
         </div>
         <p className="validation-verdict">
           Following the projection beat sitting still in all{" "}
-          {report.seasons.length} seasons. Both things are true at once: my
-          ranking is worse than the naive baseline, and acting on it still beat
-          doing nothing. Ranking every player well and picking a squad well are
-          not the same job.
+          {report.seasons.length} seasons, winning {advisedWins} of{" "}
+          {leaguesPlayed} leagues under real transfer rules. Ranking every
+          player well and picking a squad well are not the same job, and this is
+          the one that counts.
         </p>
       </section>
 

@@ -25,6 +25,7 @@ import {
   type RouteObject,
 } from "react-router-dom";
 
+import { PitchView } from "./components/PitchView";
 import { TeamStateCorrections } from "./components/TeamStateCorrections";
 import { ValidationReport } from "./components/ValidationReport";
 import {
@@ -611,52 +612,56 @@ function SnapshotDossier({ state }: { state: PublicTeamState }) {
           </div>
           <span className="mono">{state.picks.length} picks</span>
         </div>
-        <div
-          aria-label="Scrollable last-deadline squad"
-          className="squad-table-wrap"
-          role="region"
-          // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- Keyboard users must be able to scroll this table horizontally.
-          tabIndex={0}
-        >
-          <table aria-label="Last-deadline squad">
-            <thead>
-              <tr>
-                <th scope="col">Slot</th>
-                <th scope="col">Player</th>
-                <th scope="col">Pos</th>
-                <th scope="col">Club</th>
-                <th scope="col">Price</th>
-                <th scope="col">Assignment</th>
-                <th scope="col">Multiplier</th>
-              </tr>
-            </thead>
-            <tbody>
-              {state.picks.map((pick) => (
-                <tr key={pick.squadPosition}>
-                  <td className="mono">{pick.squadPosition}</td>
-                  <th scope="row" translate="no">
-                    {pick.identity
-                      ? pick.identity.webName
-                      : `FPL element ${pick.elementId}`}
-                  </th>
-                  <td className="mono">
-                    {pick.identity ? pick.identity.positionCode : "—"}
-                  </td>
-                  <td className="mono" translate="no">
-                    {pick.identity ? pick.identity.teamShortName : "—"}
-                  </td>
-                  <td className="mono">
-                    {pick.identity
-                      ? formatFplMoney(pick.identity.priceTenths)
-                      : "—"}
-                  </td>
-                  <td>{pickAssignment(pick)}</td>
-                  <td className="mono">{pick.multiplier}×</td>
+        <PitchView picks={state.picks} />
+        <details className="squad-table-disclosure">
+          <summary>Same squad as a table</summary>
+          <div
+            aria-label="Scrollable last-deadline squad"
+            className="squad-table-wrap"
+            role="region"
+            // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- Keyboard users must be able to scroll this table horizontally.
+            tabIndex={0}
+          >
+            <table aria-label="Last-deadline squad">
+              <thead>
+                <tr>
+                  <th scope="col">Slot</th>
+                  <th scope="col">Player</th>
+                  <th scope="col">Pos</th>
+                  <th scope="col">Club</th>
+                  <th scope="col">Price</th>
+                  <th scope="col">Assignment</th>
+                  <th scope="col">Multiplier</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {state.picks.map((pick) => (
+                  <tr key={pick.squadPosition}>
+                    <td className="mono">{pick.squadPosition}</td>
+                    <th scope="row" translate="no">
+                      {pick.identity
+                        ? pick.identity.webName
+                        : `FPL element ${pick.elementId}`}
+                    </th>
+                    <td className="mono">
+                      {pick.identity ? pick.identity.positionCode : "—"}
+                    </td>
+                    <td className="mono" translate="no">
+                      {pick.identity ? pick.identity.teamShortName : "—"}
+                    </td>
+                    <td className="mono">
+                      {pick.identity
+                        ? formatFplMoney(pick.identity.priceTenths)
+                        : "—"}
+                    </td>
+                    <td>{pickAssignment(pick)}</td>
+                    <td className="mono">{pick.multiplier}×</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </details>
       </section>
 
       <details className="source-trail">

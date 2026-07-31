@@ -124,7 +124,7 @@ def simulate_league(
             _Manager(result=result, squad=squad, free_transfers=settings.free_transfers_per_event)
         )
 
-    by_element = {candidate.element_id: candidate for candidate in pool}
+    sorted_pool: dict[str, Mapping[int, Sequence[Candidate]]] = {}
 
     for gameweek in corpus.gameweeks:
         if gameweek < settings.start_gameweek:
@@ -141,11 +141,19 @@ def simulate_league(
         minutes = _recent_minutes(corpus, gameweek)
         outcomes = _outcomes(corpus, gameweek)
 
+        for policy_name, ranking in (("advised", projected), ("zombie", form)):
+            ordered: dict[int, list[Candidate]] = {}
+            for candidate in pool:
+                ordered.setdefault(candidate.position, []).append(candidate)
+            for entries in ordered.values():
+                entries.sort(key=lambda entry: ranking.get(entry.element_id, 0.0), reverse=True)
+            sorted_pool[policy_name] = ordered
+
         for manager in managers:
             _take_transfers(
                 manager,
                 settings=settings,
-                by_element=by_element,
+                by_position=sorted_pool[manager.result.policy],
                 projected=projected,
                 form=form,
                 minutes=minutes,
@@ -223,81 +231,112 @@ def _take_transfers(
     manager: _Manager,
     *,
     settings: LeagueSettings,
-    by_element: Mapping[int, Candidate],
+    by_position: Mapping[int, Sequence[Candidate]],
     projected: Mapping[int, float],
     form: Mapping[int, float],
     minutes: Mapping[int, int],
 ) -> None:
+    # The week's free transfer arrives before any decision is taken.
+    manager.free_transfers = min(
+        manager.free_transfers + settings.free_transfers_per_event,
+        settings.max_free_transfers,
+    )
     ranking = projected if manager.result.policy == "advised" else form
     if not ranking:
         return
 
     if manager.result.policy == "zombie":
-        # Only acts when a player has stopped featuring.
-        outgoing = [player for player in manager.squad if minutes.get(player.element_id, 0) == 0]
-        if not outgoing:
-            manager.free_transfers = min(
-                manager.free_transfers + settings.free_transfers_per_event,
-                settings.max_free_transfers,
-            )
-            return
-        worst = min(outgoing, key=lambda player: form.get(player.element_id, 0.0))
-    else:
-        worst = min(manager.squad, key=lambda player: ranking.get(player.element_id, 0.0))
+        _zombie_transfer(manager, settings, by_position, ranking, form, minutes)
+        return
 
+    # Keep swapping while the gain clears what the move costs. A free transfer
+    # is close to free, so the bar is a hit's worth of points once the bank is
+    # empty; that is the decision the -4 rule actually poses.
+    while True:
+        swap = _best_swap(manager, settings, by_position, ranking)
+        if swap is None:
+            return
+        outgoing, incoming, gain = swap
+        takes_hit = manager.free_transfers <= 0
+        if gain <= (_TRANSFER_HIT_POINTS if takes_hit else 0.0):
+            return
+        manager.squad[manager.squad.index(outgoing)] = incoming
+        manager.result.transfers_made += 1
+        if takes_hit:
+            manager.result.hit_points += _TRANSFER_HIT_POINTS
+        else:
+            manager.free_transfers -= 1
+
+
+def _zombie_transfer(
+    manager: _Manager,
+    settings: LeagueSettings,
+    by_position: Mapping[int, Sequence[Candidate]],
+    ranking: Mapping[int, float],
+    form: Mapping[int, float],
+    minutes: Mapping[int, int],
+) -> None:
+    """Acts only when a player has stopped featuring, and never takes a hit."""
+    outgoing = [player for player in manager.squad if minutes.get(player.element_id, 0) == 0]
+    if not outgoing or manager.free_transfers <= 0:
+        return
+    worst = min(outgoing, key=lambda player: form.get(player.element_id, 0.0))
+    replacement = _best_replacement(worst, manager, settings, by_position, ranking)
+    if replacement is None:
+        return
+    manager.squad[manager.squad.index(worst)] = replacement
+    manager.result.transfers_made += 1
+    manager.free_transfers -= 1
+
+
+def _best_swap(
+    manager: _Manager,
+    settings: LeagueSettings,
+    by_position: Mapping[int, Sequence[Candidate]],
+    ranking: Mapping[int, float],
+) -> tuple[Candidate, Candidate, float] | None:
+    best: tuple[Candidate, Candidate, float] | None = None
+    for player in manager.squad:
+        replacement = _best_replacement(player, manager, settings, by_position, ranking)
+        if replacement is None:
+            continue
+        gain = ranking.get(replacement.element_id, 0.0) - ranking.get(player.element_id, 0.0)
+        if best is None or gain > best[2]:
+            best = (player, replacement, gain)
+    return best
+
+
+def _best_replacement(
+    outgoing: Candidate,
+    manager: _Manager,
+    settings: LeagueSettings,
+    by_position: Mapping[int, Sequence[Candidate]],
+    ranking: Mapping[int, float],
+) -> Candidate | None:
+    """First affordable, eligible upgrade in a list already sorted by ranking."""
     held = {player.element_id for player in manager.squad}
     clubs: dict[int, int] = {}
     for player in manager.squad:
         clubs[player.team_id] = clubs.get(player.team_id, 0) + 1
 
-    budget = _squad_value(manager.squad, settings) - _squad_cost(manager.squad) + worst.price_tenths
-    replacement = _best_replacement(
-        worst, by_element, ranking, held, clubs, budget, settings.squad_rules.club_limit
+    budget = (
+        _squad_value(manager.squad, settings) - _squad_cost(manager.squad) + outgoing.price_tenths
     )
-    if replacement is None:
-        manager.free_transfers = min(
-            manager.free_transfers + settings.free_transfers_per_event,
-            settings.max_free_transfers,
-        )
-        return
+    current = ranking.get(outgoing.element_id, 0.0)
 
-    manager.squad[manager.squad.index(worst)] = replacement
-    manager.result.transfers_made += 1
-    if manager.free_transfers > 0:
-        manager.free_transfers -= 1
-    else:
-        manager.result.hit_points += _TRANSFER_HIT_POINTS
-    manager.free_transfers = min(
-        manager.free_transfers + settings.free_transfers_per_event,
-        settings.max_free_transfers,
-    )
-
-
-def _best_replacement(
-    outgoing: Candidate,
-    by_element: Mapping[int, Candidate],
-    ranking: Mapping[int, float],
-    held: set[int],
-    clubs: Mapping[int, int],
-    budget: int,
-    club_limit: int,
-) -> Candidate | None:
-    best: Candidate | None = None
-    best_score = ranking.get(outgoing.element_id, 0.0)
-
-    for candidate in by_element.values():
-        if candidate.position != outgoing.position or candidate.element_id in held:
-            continue
-        if candidate.price_tenths > budget:
-            continue
-        if candidate.team_id != outgoing.team_id and clubs.get(candidate.team_id, 0) >= club_limit:
-            continue
+    for candidate in by_position.get(outgoing.position, ()):
         score = ranking.get(candidate.element_id)
-        if score is None or score <= best_score:
+        if score is None or score <= current:
+            return None
+        if candidate.element_id in held or candidate.price_tenths > budget:
             continue
-        best = candidate
-        best_score = score
-    return best
+        if (
+            candidate.team_id != outgoing.team_id
+            and clubs.get(candidate.team_id, 0) >= settings.squad_rules.club_limit
+        ):
+            continue
+        return candidate
+    return None
 
 
 def _squad_cost(squad: Sequence[Candidate]) -> int:

@@ -46,6 +46,19 @@ _ASSIST_POINTS = 3
 _CLEAN_SHEET_POINTS: Mapping[int, int] = {1: 4, 2: 4, 3: 1, 4: 0}
 _SAVES_PER_POINT = 3
 _GOALKEEPER = 1
+# Every remaining scoring route. Verified by reconstructing realised points from
+# component columns: 2025-26 reconciles to 34,383 against an actual 34,382, and
+# 27,353 of 27,605 rows in 2024-25 match exactly, the remainder being managers.
+_CONCEDED_POINTS: Mapping[int, int] = {1: -1, 2: -1, 3: 0, 4: 0}
+_CONCEDED_PER_POINT = 2
+_YELLOW_CARD_POINTS = -1
+_RED_CARD_POINTS = -3
+_OWN_GOAL_POINTS = -2
+_PENALTY_SAVE_POINTS = 5
+_PENALTY_MISS_POINTS = -2
+# Defensive contribution, new for 2025/26. Threshold is on the raw action count.
+_DEFCON_POINTS: Mapping[int, int] = {1: 0, 2: 2, 3: 2, 4: 2}
+_DEFCON_THRESHOLD: Mapping[int, int] = {2: 10, 3: 12, 4: 12}
 
 
 @dataclass(frozen=True)
@@ -88,6 +101,8 @@ def project_gameweek(
         by_element.setdefault(row.element_id, []).append(row)
 
     cutoff = _cutoff_for(corpus, gameweek, history)
+    league = _league_rates(history, corpus.position_by_element)
+    prior_nineties = config.prior_strength_minutes / _MINUTES_PER_90
     projections: list[ElementProjection] = []
 
     for element_id, rows in by_element.items():
@@ -114,7 +129,7 @@ def project_gameweek(
         # observed rate rather than a team model. That is a weaker signal than a
         # promoted goals-conceded model, but it is directly observed, and
         # omitting it made every projection under-predict.
-        supporting = _supporting_points(rows, position, minutes)
+        supporting = _supporting_points(rows, position, minutes, league, prior_nineties)
 
         projections.append(
             ElementProjection(
@@ -130,29 +145,182 @@ def project_gameweek(
     return projections
 
 
-def _supporting_points(
-    rows: Sequence[ElementRow], position: int, minutes: MinutesProjection
+@dataclass(frozen=True)
+class LeagueRates:
+    """Per-position, per-90 route rates measured across every player to date.
+
+    Used as the shrinkage target for thin individual histories. Measured rather
+    than chosen, so a rarely-seen route cannot be given a flattering prior, and
+    computed only from gameweeks earlier than the one being projected.
+    """
+
+    conceded_deductions: Mapping[int, float]
+    yellow_cards: Mapping[int, float]
+    red_cards: Mapping[int, float]
+    own_goals: Mapping[int, float]
+    penalties_saved: Mapping[int, float]
+    penalties_missed: Mapping[int, float]
+    defcon_hits: Mapping[int, float]
+
+
+def _league_rates(
+    rows: Sequence[ElementRow], position_by_element: Mapping[int, int]
+) -> LeagueRates:
+    nineties: dict[int, float] = {}
+    totals: dict[str, dict[int, float]] = {
+        name: {}
+        for name in (
+            "conceded",
+            "yellow",
+            "red",
+            "own_goal",
+            "pen_saved",
+            "pen_missed",
+            "defcon",
+        )
+    }
+    defcon_nineties: dict[int, float] = {}
+
+    for row in rows:
+        if row.minutes <= 0:
+            continue
+        position = position_by_element.get(row.element_id)
+        if position is None:
+            continue
+        played = row.minutes / _MINUTES_PER_90
+        nineties[position] = nineties.get(position, 0.0) + played
+        totals["conceded"][position] = totals["conceded"].get(position, 0.0) + (
+            row.goals_conceded // _CONCEDED_PER_POINT
+        )
+        totals["yellow"][position] = totals["yellow"].get(position, 0.0) + row.yellow_cards
+        totals["red"][position] = totals["red"].get(position, 0.0) + row.red_cards
+        totals["own_goal"][position] = totals["own_goal"].get(position, 0.0) + row.own_goals
+        totals["pen_saved"][position] = totals["pen_saved"].get(position, 0.0) + row.penalties_saved
+        totals["pen_missed"][position] = (
+            totals["pen_missed"].get(position, 0.0) + row.penalties_missed
+        )
+        threshold = _DEFCON_THRESHOLD.get(position)
+        if threshold is not None and row.defensive_contribution is not None:
+            defcon_nineties[position] = defcon_nineties.get(position, 0.0) + played
+            if row.defensive_contribution >= threshold:
+                totals["defcon"][position] = totals["defcon"].get(position, 0.0) + 1
+
+    def per_ninety(name: str, denominator: Mapping[int, float]) -> dict[int, float]:
+        return {
+            position: totals[name].get(position, 0.0) / played
+            for position, played in denominator.items()
+            if played > 0
+        }
+
+    return LeagueRates(
+        conceded_deductions=per_ninety("conceded", nineties),
+        yellow_cards=per_ninety("yellow", nineties),
+        red_cards=per_ninety("red", nineties),
+        own_goals=per_ninety("own_goal", nineties),
+        penalties_saved=per_ninety("pen_saved", nineties),
+        penalties_missed=per_ninety("pen_missed", nineties),
+        defcon_hits=per_ninety("defcon", defcon_nineties),
+    )
+
+
+def _shrunk_rate(
+    events: float, nineties_played: float, prior: float, prior_nineties: float
 ) -> float:
-    """Clean sheet, saves and bonus, from this player's own history."""
+    """Observed rate pulled toward the league rate in proportion to how thin it is."""
+    return (events + prior * prior_nineties) / (nineties_played + prior_nineties)
+
+
+def _supporting_points(
+    rows: Sequence[ElementRow],
+    position: int,
+    minutes: MinutesProjection,
+    league: LeagueRates,
+    prior_nineties: float,
+) -> float:
+    """Every scoring route other than appearance, goals and assists.
+
+    Priced from the player's own observed rate, shrunk toward the league rate for
+    the position. These routes are position-specific, so omitting them shifts
+    whole positions against each other rather than simply adding noise.
+    """
     appearances = [row for row in rows if row.minutes > 0]
     if not appearances:
         return 0.0
 
     played = len(appearances)
     ninety = minutes.expected_minutes / _MINUTES_PER_90
+    nineties_played = sum(row.minutes for row in appearances) / _MINUTES_PER_90
+
+    def rate(events: float, prior: float) -> float:
+        return _shrunk_rate(events, nineties_played, prior, prior_nineties)
 
     clean_sheet_rate = sum(row.clean_sheets for row in appearances) / played
-    clean_sheet = (
+    total = (
         minutes.probability_sixty_minutes * clean_sheet_rate * _CLEAN_SHEET_POINTS.get(position, 0)
     )
+    total += ninety * (sum(row.bonus for row in appearances) / played)
 
-    bonus = ninety * (sum(row.bonus for row in appearances) / played)
-
-    saves = 0.0
     if position == _GOALKEEPER:
-        saves = ninety * (sum(row.saves for row in appearances) / played) / _SAVES_PER_POINT
+        total += ninety * (sum(row.saves for row in appearances) / played) / _SAVES_PER_POINT
+        total += (
+            ninety
+            * rate(
+                sum(row.penalties_saved for row in appearances),
+                league.penalties_saved.get(position, 0.0),
+            )
+            * _PENALTY_SAVE_POINTS
+        )
 
-    return clean_sheet + bonus + saves
+    conceded_points = _CONCEDED_POINTS.get(position, 0)
+    if conceded_points:
+        deductions = sum(row.goals_conceded // _CONCEDED_PER_POINT for row in appearances)
+        total += (
+            ninety
+            * rate(deductions, league.conceded_deductions.get(position, 0.0))
+            * conceded_points
+        )
+
+    routes = (
+        (sum(row.yellow_cards for row in appearances), league.yellow_cards, _YELLOW_CARD_POINTS),
+        (sum(row.red_cards for row in appearances), league.red_cards, _RED_CARD_POINTS),
+        (sum(row.own_goals for row in appearances), league.own_goals, _OWN_GOAL_POINTS),
+        (
+            sum(row.penalties_missed for row in appearances),
+            league.penalties_missed,
+            _PENALTY_MISS_POINTS,
+        ),
+    )
+    for events, league_rate, points in routes:
+        total += ninety * rate(events, league_rate.get(position, 0.0)) * points
+
+    total += _defensive_contribution_points(
+        appearances, position, ninety, league, prior_nineties, nineties_played
+    )
+
+    return total
+
+
+def _defensive_contribution_points(
+    appearances: Sequence[ElementRow],
+    position: int,
+    ninety: float,
+    league: LeagueRates,
+    prior_nineties: float,
+    nineties_played: float,
+) -> float:
+    """Zero before 2025/26, where the column is absent because the route did not exist."""
+    threshold = _DEFCON_THRESHOLD.get(position)
+    if threshold is None:
+        return 0.0
+    observed = [row for row in appearances if row.defensive_contribution is not None]
+    if not observed:
+        return 0.0
+    hits = sum(1 for row in observed if (row.defensive_contribution or 0) >= threshold)
+    seen = sum(row.minutes for row in observed) / _MINUTES_PER_90
+    rate = _shrunk_rate(hits, seen, league.defcon_hits.get(position, 0.0), prior_nineties)
+    # Scaled by the share of the player's history that even had the column.
+    coverage = min(1.0, seen / nineties_played) if nineties_played > 0 else 0.0
+    return ninety * rate * _DEFCON_POINTS[position] * coverage
 
 
 def _cutoff_for(corpus: SeasonCorpus, gameweek: int, history: Sequence[ElementRow]) -> datetime:

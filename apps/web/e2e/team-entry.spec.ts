@@ -72,7 +72,7 @@ test("opens a verified public team dossier from the working first screen", async
   ).toBeFocused();
   await expect(page.getByText("Observed snapshot ready")).toBeVisible();
   await expect(
-    page.getByRole("table", { name: "Last-deadline squad" }),
+    page.getByRole("list", { name: "Substitutes in order" }),
   ).toBeVisible();
   await expect(page.getByText("£100.4m")).toBeVisible();
 });
@@ -144,7 +144,7 @@ test("keeps verified cached state visible when refresh is degraded", async ({
     page.getByText("Showing a stale verified snapshot"),
   ).toBeVisible();
   await expect(
-    page.getByRole("table", { name: "Last-deadline squad" }),
+    page.getByRole("list", { name: "Substitutes in order" }),
   ).toBeVisible();
   await page.screenshot({
     fullPage: true,

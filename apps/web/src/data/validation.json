@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-30T21:34:51.800945+00:00",
+  "generatedAt": "2026-07-31T05:08:40.536552+00:00",
   "seasons": [
     {
       "season": "2019-20",
@@ -11,16 +11,16 @@
         {
           "label": "model",
           "scored": 11873,
-          "meanAbsoluteError": 1.814,
-          "rootMeanSquaredError": 2.659,
-          "bias": 0.064,
-          "spearman": 0.486,
-          "topNHitRate": 0.194,
+          "meanAbsoluteError": 1.735,
+          "rootMeanSquaredError": 2.66,
+          "bias": -0.148,
+          "spearman": 0.494,
+          "topNHitRate": 0.203,
           "byPosition": {
-            "DEF": 0.448,
-            "FWD": 0.522,
-            "GKP": 0.569,
-            "MID": 0.504
+            "DEF": 0.442,
+            "FWD": 0.52,
+            "GKP": 0.568,
+            "MID": 0.502
           }
         },
         {
@@ -55,9 +55,9 @@
         }
       ],
       "league": {
-        "advisedMean": 1618,
+        "advisedMean": 1632,
         "zombieMean": 1425,
-        "advisedBest": 1708,
+        "advisedBest": 1744,
         "zombieBest": 1639,
         "advisedWins": 5,
         "leaguesPlayed": 5
@@ -73,16 +73,16 @@
         {
           "label": "model",
           "scored": 11538,
-          "meanAbsoluteError": 1.915,
-          "rootMeanSquaredError": 2.848,
-          "bias": -0.023,
-          "spearman": 0.483,
-          "topNHitRate": 0.172,
+          "meanAbsoluteError": 1.85,
+          "rootMeanSquaredError": 2.856,
+          "bias": -0.221,
+          "spearman": 0.487,
+          "topNHitRate": 0.175,
           "byPosition": {
-            "DEF": 0.464,
-            "FWD": 0.497,
-            "GKP": 0.444,
-            "MID": 0.492
+            "DEF": 0.456,
+            "FWD": 0.495,
+            "GKP": 0.441,
+            "MID": 0.491
           }
         },
         {
@@ -117,9 +117,9 @@
         }
       ],
       "league": {
-        "advisedMean": 1579,
+        "advisedMean": 1689,
         "zombieMean": 1437,
-        "advisedBest": 1715,
+        "advisedBest": 1798,
         "zombieBest": 1697,
         "advisedWins": 5,
         "leaguesPlayed": 5
@@ -135,15 +135,15 @@
         {
           "label": "model",
           "scored": 11138,
-          "meanAbsoluteError": 1.977,
-          "rootMeanSquaredError": 2.982,
-          "bias": -0.056,
-          "spearman": 0.457,
-          "topNHitRate": 0.156,
+          "meanAbsoluteError": 1.905,
+          "rootMeanSquaredError": 2.991,
+          "bias": -0.27,
+          "spearman": 0.464,
+          "topNHitRate": 0.164,
           "byPosition": {
-            "DEF": 0.431,
-            "FWD": 0.418,
-            "GKP": 0.583,
+            "DEF": 0.421,
+            "FWD": 0.415,
+            "GKP": 0.585,
             "MID": 0.484
           }
         },
@@ -179,9 +179,9 @@
         }
       ],
       "league": {
-        "advisedMean": 1651,
+        "advisedMean": 1692,
         "zombieMean": 1493,
-        "advisedBest": 1766,
+        "advisedBest": 1804,
         "zombieBest": 1686,
         "advisedWins": 5,
         "leaguesPlayed": 5
@@ -197,16 +197,16 @@
         {
           "label": "model",
           "scored": 11470,
-          "meanAbsoluteError": 1.823,
-          "rootMeanSquaredError": 2.814,
-          "bias": -0.23,
-          "spearman": 0.457,
-          "topNHitRate": 0.132,
+          "meanAbsoluteError": 1.754,
+          "rootMeanSquaredError": 2.834,
+          "bias": -0.447,
+          "spearman": 0.476,
+          "topNHitRate": 0.144,
           "byPosition": {
-            "DEF": 0.411,
-            "FWD": 0.482,
-            "GKP": 0.537,
-            "MID": 0.537
+            "DEF": 0.404,
+            "FWD": 0.483,
+            "GKP": 0.524,
+            "MID": 0.538
           }
         },
         {
@@ -241,9 +241,9 @@
         }
       ],
       "league": {
-        "advisedMean": 1586,
+        "advisedMean": 1602,
         "zombieMean": 1427,
-        "advisedBest": 1658,
+        "advisedBest": 1673,
         "zombieBest": 1699,
         "advisedWins": 4,
         "leaguesPlayed": 5
@@ -259,15 +259,15 @@
         {
           "label": "model",
           "scored": 12175,
-          "meanAbsoluteError": 1.815,
-          "rootMeanSquaredError": 2.774,
-          "bias": -0.004,
-          "spearman": 0.481,
-          "topNHitRate": 0.178,
+          "meanAbsoluteError": 1.718,
+          "rootMeanSquaredError": 2.776,
+          "bias": -0.253,
+          "spearman": 0.493,
+          "topNHitRate": 0.163,
           "byPosition": {
-            "DEF": 0.416,
+            "DEF": 0.413,
             "FWD": 0.515,
-            "GKP": 0.505,
+            "GKP": 0.493,
             "MID": 0.543
           }
         },
@@ -303,11 +303,11 @@
         }
       ],
       "league": {
-        "advisedMean": 1622,
+        "advisedMean": 1814,
         "zombieMean": 1505,
-        "advisedBest": 1764,
+        "advisedBest": 1940,
         "zombieBest": 1692,
-        "advisedWins": 4,
+        "advisedWins": 5,
         "leaguesPlayed": 5
       }
     },
@@ -321,16 +321,16 @@
         {
           "label": "model",
           "scored": 12175,
-          "meanAbsoluteError": 1.759,
-          "rootMeanSquaredError": 2.639,
-          "bias": 0.008,
-          "spearman": 0.492,
-          "topNHitRate": 0.17,
+          "meanAbsoluteError": 1.673,
+          "rootMeanSquaredError": 2.645,
+          "bias": -0.225,
+          "spearman": 0.501,
+          "topNHitRate": 0.181,
           "byPosition": {
-            "DEF": 0.471,
-            "FWD": 0.515,
-            "GKP": 0.608,
-            "MID": 0.502
+            "DEF": 0.465,
+            "FWD": 0.517,
+            "GKP": 0.601,
+            "MID": 0.5
           }
         },
         {
@@ -365,11 +365,73 @@
         }
       ],
       "league": {
-        "advisedMean": 1659,
+        "advisedMean": 1815,
         "zombieMean": 1578,
-        "advisedBest": 1797,
+        "advisedBest": 1906,
         "zombieBest": 1808,
-        "advisedWins": 2,
+        "advisedWins": 5,
+        "leaguesPlayed": 5
+      }
+    },
+    {
+      "season": "2025-26",
+      "rows": 29747,
+      "gameweeks": 38,
+      "elements": 841,
+      "firstScoredGameweek": 7,
+      "methods": [
+        {
+          "label": "model",
+          "scored": 12171,
+          "meanAbsoluteError": 1.845,
+          "rootMeanSquaredError": 2.773,
+          "bias": -0.208,
+          "spearman": 0.463,
+          "topNHitRate": 0.142,
+          "byPosition": {
+            "DEF": 0.425,
+            "FWD": 0.543,
+            "GKP": 0.569,
+            "MID": 0.475
+          }
+        },
+        {
+          "label": "recent_mean",
+          "scored": 24909,
+          "meanAbsoluteError": 1.049,
+          "rootMeanSquaredError": 2.12,
+          "bias": 0.002,
+          "spearman": 0.721,
+          "topNHitRate": 0.116,
+          "byPosition": {
+            "DEF": 0.38,
+            "FWD": 0.517,
+            "GKP": 0.564,
+            "MID": 0.436
+          }
+        },
+        {
+          "label": "ownership",
+          "scored": 0,
+          "meanAbsoluteError": null,
+          "rootMeanSquaredError": null,
+          "bias": null,
+          "spearman": 0.474,
+          "topNHitRate": 0.134,
+          "byPosition": {
+            "DEF": 0.239,
+            "FWD": 0.234,
+            "GKP": 0.482,
+            "MID": 0.241
+          }
+        }
+      ],
+      "league": {
+        "advisedMean": 1729,
+        "zombieMean": 1359,
+        "advisedBest": 1801,
+        "zombieBest": 1535,
+        "advisedWins": 5,
         "leaguesPlayed": 5
       }
     }
