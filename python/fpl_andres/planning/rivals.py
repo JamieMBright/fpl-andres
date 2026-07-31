@@ -18,7 +18,17 @@ from typing import Any
 from fpl_andres.adapters.fpl import FplClient, FplPicksUnavailable
 from fpl_andres.planning.ownership import EffectiveOwnership, effective_ownership
 
-__all__ = ["LeagueSnapshot", "RivalSquad", "differentials", "read_league"]
+__all__ = [
+    "OWNER_LEAGUE_IDS",
+    "LeagueSnapshot",
+    "RivalSquad",
+    "differentials",
+    "read_league",
+]
+
+# The leagues the owner actually cares about. Rival picks are only legally
+# readable after a deadline, so nothing here can run before 21 August 2026.
+OWNER_LEAGUE_IDS: tuple[int, ...] = (34555, 393774)
 
 
 @dataclass(frozen=True)

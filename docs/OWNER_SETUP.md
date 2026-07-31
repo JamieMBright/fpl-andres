@@ -59,51 +59,62 @@ FPL100 and groupthink.
 
 ---
 
+## Decisions taken (31 July 2026)
+
+All confirmed by the owner in conversation. Recorded here so the reasoning
+survives the chat.
+
+- **Scraping**: `soccerdata` approved, rate limited and cached, pulling
+  gradually. Understat and FBref only. **No WhoScored scraper** — against their
+  terms, and non-commercial use does not cure that.
+- **`fplcache`** (github.com/Randdalf/fplcache): approved. Six-hourly bootstrap
+  snapshots give retroactive ownership and price history that `crowd_snapshots`
+  can only collect going forward. Not yet built.
+- **Anonymity**: stay anonymous for the first season.
+- **Benchmarks**: compare against the FPL Review free model and the FPL Kiwi
+  free model. Not yet built.
+- **Mini-leagues that matter**: `34555` and `393774`. Rival picks are only
+  legally readable after a deadline, so nothing can run before 21 August.
+- **Bench boost**: play it when all fifteen have a reasonable expectation.
+  Implemented: the chip is dated by the week the _weakest_ of the fifteen is
+  worth most, not by fixture count, because a large double with two players
+  blanking is worth less than an ordinary week where everybody plays.
+- **Club limit**: four from one club is legal only when a player moves clubs
+  mid-season, and the next transfer must correct it. Implemented in
+  `transfer_respects_club_limit`. Not yet checked against the published rules
+  text.
+- **Licence**: all rights reserved, no permission granted. Already in `LICENSE`.
+- **FPL100**: build from `docs/design/fpl.html`, and vet the 84 extracted entry
+  ids for a track record worth following. Verification already run once and the
+  list did **not** survive it — see the open item below.
+
+---
+
 ## Your queue
 
 Nothing mechanical is outstanding. What is left is judgement, and none of it can
 be answered by me. Nothing here blocks the site running; each one blocks a
 specific capability.
 
-### Advanced statistics
+### The FPL100 cohort does not survive verification
 
-- [ ] **Confirm the scraping position.** You have said this is a hobby project
-      and not commercial for at least a year. I have taken that as licence for
-      **Understat** and **FBref** through `soccerdata`, which rate-limits and
-      caches. I have **not** written a WhoScored scraper: you noted yourself it
-      is against their terms, and non-commercial use does not cure that. Say so
-      explicitly if you want that decision revisited.
-- [ ] **Approve `soccerdata` as a dependency.** It is the practical path to
-      FBref and Understat. It is not yet in `pyproject.toml`.
-- [ ] **Accept the mapping risk.** FPL, FBref and Understat use different player
-      ids and there is no official crosswalk. Community maps drift with
-      transfers. A silent mis-map corrupts a player's whole history without
-      erroring, so I will report mapping coverage rather than assume it.
+- [ ] **Decide whether to ship it at all.** Of the 84 entry ids extracted from
+      `fpl.html`, 78 were readable and 6 returned 404. Best confirmable finishes:
+      3 inside the top 1,000, 19 between 1k and 10k, 19 between 10k and 100k, and
+      **35 never better than 100,000**. Entry 3190, credited on the source page
+      with winning FPL, has five seasons from 2021/22 and a best of 51,918.
+      The list does not describe the cohort it claims to. Options: drop it, ship
+      it with the verification attached, or replace it with a cohort built from
+      the live top-100 once standings populate after gameweek 1.
 
-### Data that would change the model most
+### Accept the mapping risk, or ask me to tighten it
 
-- [ ] **`fplcache`** (github.com/Randdalf/fplcache) holds six-hourly bootstrap
-      snapshots. This would retroactively give ownership and price history that
-      my own `crowd_snapshots` table only starts collecting from now. Highest
-      value per unit of effort of anything on this list.
-
-### Benchmarks
-
-- [ ] **Decide whether to benchmark against published projections.** FPL
-      Review's free model and FPL Kiwi both publish. Comparing against them
-      would be the strongest possible validation, and it may not flatter us.
-
-### Mini-league
-
-- [ ] **Supply the mini-league id you actually care about.** Rival ownership is
-      built and tested but has nothing to point at. Individual rival picks are
-      only legal to read after a deadline, so this cannot run before 21 August.
-
-### Chips
-
-- [ ] **Confirm the bench boost rule.** You specified triple captain, free hit
-      and wildcard. Bench boost currently takes the second-largest double
-      gameweek by inference, not by instruction.
+- [ ] FPL, FBref and Understat use different player ids and there is no official
+      crosswalk. The join is now settled by minutes and goals both sites measured
+      independently rather than by name, and it maps 407 of the eligible 2025-26
+      players against Understat, refuses two and mis-maps none that could be
+      found. That is 94.9% coverage, measured rather than assumed. Say if you
+      want the refused ones chased rather than left as gaps.
 
 ---
 

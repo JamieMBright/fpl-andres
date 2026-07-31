@@ -74,6 +74,7 @@ def plan_chips(
     from_gameweek: int,
     last_event: int,
     rng: random.Random,
+    squad_floor_value: Mapping[int, float] | None = None,
 ) -> dict[int, ChipName]:
     """Date every chip once, from the calendar rather than week by week.
 
@@ -81,10 +82,15 @@ def plan_chips(
     option: how leaky the opponent is, times how often he plays. The triple
     captain takes the highest.
 
-    The free hit takes the largest double gameweek and the bench boost the next
-    largest, because both want as many players on the pitch as possible. A season
-    with no double leaves them undated, and the caller plays them before the
-    season runs out rather than wasting them.
+    The free hit takes the largest double gameweek, because it wants as many
+    players on the pitch as possible for one week only.
+
+    The bench boost takes the week where the *weakest* of the fifteen is worth
+    most, supplied as ``squad_floor_value``. The owner's rule, and the right
+    one: the chip pays all fifteen, so it is decided by the worst of them, not
+    by how many fixtures there are. A big double gameweek with two players
+    blanking is worth less than an ordinary week where everybody plays. With no
+    floor supplied it falls back to the next largest double, which is a guess.
 
     Wildcards are placed at random, one per half. Their value is a permanent
     squad improvement rather than a single fixture, so there is no week on the
@@ -101,7 +107,14 @@ def plan_chips(
     )
     if doubles:
         plan[doubles[0]] = "free_hit"
-    if len(doubles) > 1:
+
+    if squad_floor_value:
+        boostable = [week for week in weeks if week not in plan]
+        if boostable:
+            best_floor = max(boostable, key=lambda week: (squad_floor_value.get(week, 0.0), -week))
+            if squad_floor_value.get(best_floor, 0.0) > 0.0:
+                plan[best_floor] = "bench_boost"
+    elif len(doubles) > 1:
         plan[doubles[1]] = "bench_boost"
 
     free = [week for week in weeks if week not in plan]

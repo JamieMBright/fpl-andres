@@ -360,12 +360,29 @@ def _chip_plan(
                 total += strength[opponent].defence(home=False)
             star_value[event] = total
 
+    # The bench boost pays all fifteen, so it is decided by the weakest of them.
+    # A player with no fixture that week scores nothing and sinks the floor,
+    # which is exactly the outcome the chip needs to avoid.
+    floor_value: dict[int, float] = {}
+    for event in range(start, last_event + 1):
+        weakest = None
+        for player in squad:
+            total = 0.0
+            for fixture in corpus.fixtures_for(player.team_id, event):
+                opponent = fixture.opponent_of(player.team_id)
+                if opponent is None or opponent not in strength:
+                    continue
+                total += strength[opponent].defence(home=fixture.is_home(player.team_id))
+            weakest = total if weakest is None else min(weakest, total)
+        floor_value[event] = weakest or 0.0
+
     return plan_chips(
         fixtures_by_event=fixtures_by_event,
         star_fixture_value=star_value,
         from_gameweek=start,
         last_event=last_event,
         rng=random.Random(seed),
+        squad_floor_value=floor_value,
     )
 
 
