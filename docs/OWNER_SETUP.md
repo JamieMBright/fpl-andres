@@ -107,22 +107,34 @@ specific capability.
       it with the verification attached, or replace it with a cohort built from
       the live top-100 once standings populate after gameweek 1.
 
-### Building a real proven cohort, and why it takes seasons
+### Building a real proven cohort
 
-- [ ] **Approve the season-end capture, or say no.** Scraping every manager is
-      not on: FPL had 2,399,644 entries registered for 2026/27 before a ball was
-      kicked and around eleven million by season end, so one request each is
-      about four months of continuous polling. Nobody should do that.
-- [ ] The cheap route is the Overall league, id 314, paginated fifty at a time.
-      The top ten thousand is **200 requests**, and their histories another
-      10,000 — roughly three hours at one a second, which is polite and
-      practical.
-- [ ] **The catch is that it cannot be done retroactively.** FPL keeps standings
-      for the current season only, so there is no way to discover who finished
-      top ten thousand in 2022/23. A cohort of managers with _several_ top-10k
-      finishes therefore needs capturing at the end of each season from now on,
-      and is two or three seasons away from meaning anything. That is precisely
-      why a scraped Reddit list was being used instead, and it does not verify.
+- [ ] **Decide whether a full entry sweep is acceptable load.** I first said this
+      was impossible and I was wrong, so here are measured numbers rather than a
+      guess. Entry ids currently top out around **2,400,000** (2,400,000 exists,
+      2,500,000 does not) and a history call takes **24ms**. A serial sweep is
+      therefore about **16 hours**, not the four months I claimed. The ceiling
+      will rise as more teams register before the deadline.
+- [ ] **A sweep does solve the retroactive problem.** Each
+      `/entry/{id}/history/` returns every completed season for that manager, so
+      one pass reconstructs who has finished top ten thousand repeatedly, going
+      back years. The Overall league only ever shows the current season, which is
+      what led me to say it could not be done.
+- [ ] **But 2.4 million requests is real load on somebody else's service**, with
+      no published rate limit to point at. That is a judgement call and it is
+      yours, not mine. If the answer is yes it should be throttled well below
+      what the server tolerates, resumable, and cached so it never repeats.
+- [ ] **The cheap version needs no sweep at all.** The Overall league, id 314,
+      paginates fifty at a time, so the current top ten thousand is **200
+      requests**. That gives this season's elite immediately; it just cannot tell
+      you who was elite in 2022/23.
+- [ ] **Select on recent seasons, not on a career.** Entry 1 is the case that
+      settles it: 43% and 93% in his first two seasons, then top 4% from
+      2018/19, then five straight seasons at or inside the top 1% including
+      **19th in the world** in 2023/24. A career median would rate him on years
+      that no longer describe him, and the same filter would keep somebody whose
+      good seasons ended in 2016. Whoever is worth following is worth following
+      on the last three or four seasons.
 
 ### Accept the mapping risk, or ask me to tighten it
 

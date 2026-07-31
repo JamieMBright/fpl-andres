@@ -13,6 +13,81 @@ function history(entries: [string, number, number | null][]) {
 }
 
 describe("readManagerProfile", () => {
+  it("reads a career that transformed rather than a consistent one", () => {
+    // Entry 1's real record. Two dreadful seasons, then elite for five.
+    const profile = readManagerProfile({
+      past: [
+        {
+          season_name: "2014/15",
+          total_points: 1726,
+          rank: 1_490_762,
+          rank_percentage: 43,
+        },
+        {
+          season_name: "2015/16",
+          total_points: 1245,
+          rank: 3_467_086,
+          rank_percentage: 93,
+        },
+        {
+          season_name: "2018/19",
+          total_points: 2202,
+          rank: 264_729,
+          rank_percentage: 4,
+        },
+        {
+          season_name: "2019/20",
+          total_points: 2223,
+          rank: 209_937,
+          rank_percentage: 3,
+        },
+        {
+          season_name: "2020/21",
+          total_points: 2306,
+          rank: 339_212,
+          rank_percentage: 4,
+        },
+        {
+          season_name: "2021/22",
+          total_points: 2620,
+          rank: 11_513,
+          rank_percentage: 0.1,
+        },
+        {
+          season_name: "2022/23",
+          total_points: 2613,
+          rank: 7_672,
+          rank_percentage: 0.1,
+        },
+        {
+          season_name: "2023/24",
+          total_points: 2708,
+          rank: 19,
+          rank_percentage: 0.0,
+        },
+        {
+          season_name: "2024/25",
+          total_points: 2502,
+          rank: 120_612,
+          rank_percentage: 1,
+        },
+        {
+          season_name: "2025/26",
+          total_points: 2419,
+          rank: 4_119,
+          rank_percentage: 0.0,
+        },
+      ],
+    });
+
+    expect(profile?.bestRank).toBe(19);
+    expect(profile?.bestPercentile).toBe(0);
+    // Five seasons inside the top one percent is a pattern, never a one-off.
+    expect(profile?.standoutSeasons).toBe(5);
+    expect(profile?.archetype).toBe("elite");
+    expect(commentary(profile!)).toMatch(/top one percent 5 times/);
+  });
+
   it("drops seasons that were never completed rather than scoring them", () => {
     const profile = readManagerProfile(
       history([
