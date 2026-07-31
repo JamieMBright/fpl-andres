@@ -97,6 +97,21 @@ thesis with real mathematics left in it.
 **Proves**: the ExPts claim. **Test**: against a field that all owns one
 premium, the recommendation changes with league position.
 
+### Unmodelled but heavily owned
+
+A marquee signing or a promoted-club player has no Premier League record, so no
+projection is possible and none will be invented. But ownership is published
+from day one, and a player owned by forty percent of the game is a risk whether
+or not we can model him.
+
+These are reported as a **known unknown**: named, with their effective
+ownership, and an explicit statement that no projection exists. Silence would
+imply they are safe to ignore, which is the opposite of true. Once a few
+gameweeks of evidence exist they leave this list and enter the projection
+normally.
+
+**Proves**: absent evidence disables a projection without hiding a risk.
+
 ---
 
 ## T6 — Full backtest
@@ -135,6 +150,32 @@ part of the thesis. The Reddit veterans list did not survive verification
 against the official record, so this ships as "here is what can actually be
 confirmed", with percentile ranks rather than raw ones, because the player base
 has grown roughly fivefold since 2010.
+
+---
+
+## T9 — Full audit
+
+Last, and deliberately adversarial. Every previous milestone claims something
+ships; this one checks whether it is actually reachable.
+
+- **Dead code.** Every public function traced to a caller. Anything reachable
+  only from its own tests is either wired up or deleted. `HighsHorizonOptimizer`
+  sat in that state for weeks while a weaker greedy planner ran in production.
+- **Dead branches.** Every cost path exercised at least once by a test. The
+  four-point hit rule was implemented, tested by inspection, and never executed
+  because the policy could not reach it.
+- **Orphaned data.** Every ingested column consumed by something.
+  `goals_conceded` and `defensive_contribution` were fetched and discarded for
+  weeks.
+- **Stale artifacts.** Published numbers regenerated from the current code and
+  diffed. A committed figure that no longer reproduces is a lie with a
+  timestamp.
+- **Unfair comparisons.** Every baseline scored on the same population and under
+  the same constraints as the method it is judged against.
+- **Config that is never read.** Settings that exist but change no behaviour.
+
+**Output**: a written finding per issue, each either fixed or recorded in
+`LIMITATIONS.md` as a known gap. No issue is closed by asserting it is fine.
 
 ---
 

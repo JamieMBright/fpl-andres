@@ -29,8 +29,8 @@ _STAT_COLUMNS = (
     "goals_scored,assists,clean_sheets,goals_conceded,saves,bonus,bps,"
     "expected_goals,expected_assists,expected_goals_conceded,"
     "defensive_contribution,yellow_cards,red_cards,own_goals,penalties_saved,"
-    "penalties_missed,total_points,value,selected,was_home,opponent_team,"
-    "kickoff_time"
+    "penalties_missed,total_points,value,selected,transfers_in,transfers_out,"
+    "was_home,opponent_team,kickoff_time"
 )
 
 
@@ -67,6 +67,8 @@ class ElementRow:
     penalties_missed: int = 0
     # Raw CBIT/CBIRT count, not the awarded points; absent before 2025/26.
     defensive_contribution: int | None = None
+    transfers_in: int | None = None
+    transfers_out: int | None = None
 
 
 @dataclass
@@ -235,6 +237,8 @@ def load_season(client: SupabaseRestClient, season: str) -> SeasonCorpus:
                 penalties_saved=int(row.get("penalties_saved") or 0),
                 penalties_missed=int(row.get("penalties_missed") or 0),
                 defensive_contribution=_optional_int(row.get("defensive_contribution")),
+                transfers_in=_optional_int(row.get("transfers_in")),
+                transfers_out=_optional_int(row.get("transfers_out")),
             )
         )
 

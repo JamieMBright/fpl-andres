@@ -25,6 +25,7 @@ from typing import Literal
 
 from fpl_andres.backtesting.corpus import SeasonCorpus
 from fpl_andres.backtesting.projector import ProjectionSettings, project_gameweek
+from fpl_andres.simulation.baselines import crowd_ranking
 from fpl_andres.simulation.season import LineupRules, SquadGameweek
 from fpl_andres.simulation.squad import Candidate, SquadRules, build_squad
 
@@ -36,7 +37,13 @@ __all__ = [
     "simulate_league",
 ]
 
-Policy = Literal["advised", "rank_aware", "zombie"]
+Policy = Literal["advised", "rank_aware", "zombie", "hold", "form_chaser", "crowd"]
+
+# Policies that never spend a transfer, so their ranking is only used for team
+# selection and captaincy.
+_PASSIVE: frozenset[str] = frozenset({"hold"})
+# Policies that buy the best available every week they can afford to.
+_CHASERS: frozenset[str] = frozenset({"form_chaser", "crowd"})
 
 _TRANSFER_HIT_POINTS = 4
 _FORM_WINDOW = 4
@@ -52,6 +59,9 @@ class LeagueSettings:
     managers: int = 20
     advised_share: float = 0.25
     rank_aware_share: float = 0.0
+    hold_share: float = 0.0
+    form_chaser_share: float = 0.0
+    crowd_share: float = 0.0
     free_transfers_per_event: int = 1
     max_free_transfers: int = 5
     start_gameweek: int = 7
@@ -65,6 +75,29 @@ class LeagueSettings:
 
     def rank_aware_count(self) -> int:
         return round(self.managers * self.rank_aware_share)
+
+    def policy_roster(self) -> list[Policy]:
+        """One policy per seat, filling any remainder with zombies.
+
+        Zombie is the filler rather than a share of its own: it is the crowd of
+        ordinary managers the named policies are measured against.
+        """
+        seats: list[Policy] = []
+        for name, share in (
+            ("advised", self.advised_share),
+            ("rank_aware", self.rank_aware_share),
+            ("hold", self.hold_share),
+            ("form_chaser", self.form_chaser_share),
+            ("crowd", self.crowd_share),
+        ):
+            count = round(self.managers * share)
+            if name == "advised":
+                count = max(1, count)
+            seats.extend([name] * count)  # type: ignore[list-item]
+        if len(seats) > self.managers:
+            raise ValueError("policy shares exceed the number of managers")
+        seats.extend(["zombie"] * (self.managers - len(seats)))
+        return seats
 
 
 @dataclass
@@ -119,17 +152,11 @@ def simulate_league(
         raise ValueError(f"{corpus.season} has no priced pool at GW{settings.start_gameweek}")
 
     outcome = LeagueResult(season=corpus.season, settings=settings)
-    advised = settings.advised_count()
-    rank_aware = settings.rank_aware_count()
     managers: list[_Manager] = []
+    roster = settings.policy_roster()
 
     for index in range(settings.managers):
-        if index < advised:
-            policy: Policy = "advised"
-        elif index < advised + rank_aware:
-            policy = "rank_aware"
-        else:
-            policy = "zombie"
+        policy = roster[index]
         manager_seed = seed * 1000 + index
         squad = list(build_squad(pool, settings.squad_rules, rng=random.Random(manager_seed)))
         result = ManagerResult(manager_id=index, policy=policy, seed=manager_seed)
@@ -157,26 +184,25 @@ def simulate_league(
         form = _recent_form(corpus, gameweek)
         minutes = _recent_minutes(corpus, gameweek)
         outcomes = _outcomes(corpus, gameweek)
+        crowd = crowd_ranking(corpus, gameweek)
 
-        for policy_name, ranking in (("advised", projected), ("zombie", form)):
-            ordered: dict[int, list[Candidate]] = {}
-            for candidate in pool:
-                ordered.setdefault(candidate.position, []).append(candidate)
-            for entries in ordered.values():
-                entries.sort(key=lambda entry: ranking.get(entry.element_id, 0.0), reverse=True)
-            sorted_pool[policy_name] = ordered
+        rankings: dict[str, Mapping[int, float]] = {
+            "advised": projected,
+            "zombie": form,
+            # Holds never transfer, but still need a basis for captaincy.
+            "hold": form,
+            "form_chaser": form,
+            "crowd": crowd,
+        }
+        sorted_pool = {name: _sorted_by(pool, ranking) for name, ranking in rankings.items()}
 
         ownership = _league_ownership(managers)
         for manager in managers:
-            ranking = projected
-            if manager.result.policy == "rank_aware":
+            policy = manager.result.policy
+            ranking = rankings.get(policy, projected)
+            if policy == "rank_aware":
                 ranking = _tilted_ranking(manager, managers, projected, ownership, settings)
-                ordered = {}
-                for candidate in pool:
-                    ordered.setdefault(candidate.position, []).append(candidate)
-                for entries in ordered.values():
-                    entries.sort(key=lambda entry: ranking.get(entry.element_id, 0.0), reverse=True)
-                by_position: Mapping[int, Sequence[Candidate]] = ordered
+                by_position: Mapping[int, Sequence[Candidate]] = _sorted_by(pool, ranking)
             else:
                 by_position = sorted_pool[manager.result.policy]
 
@@ -193,6 +219,17 @@ def simulate_league(
             manager.result.total_points += points
 
     return outcome
+
+
+def _sorted_by(
+    pool: Sequence[Candidate], ranking: Mapping[int, float]
+) -> dict[int, list[Candidate]]:
+    ordered: dict[int, list[Candidate]] = {}
+    for candidate in pool:
+        ordered.setdefault(candidate.position, []).append(candidate)
+    for entries in ordered.values():
+        entries.sort(key=lambda entry: ranking.get(entry.element_id, 0.0), reverse=True)
+    return ordered
 
 
 def _league_ownership(managers: Sequence[_Manager]) -> dict[int, float]:
@@ -311,12 +348,31 @@ def _take_transfers(
         manager.free_transfers + settings.free_transfers_per_event,
         settings.max_free_transfers,
     )
-    ranking = projected if manager.result.policy == "advised" else form
+    policy = manager.result.policy
+    if policy in _PASSIVE:
+        return
+
+    ranking = projected
     if not ranking:
         return
 
-    if manager.result.policy == "zombie":
+    if policy == "zombie":
         _zombie_transfer(manager, settings, by_position, ranking, form, minutes)
+        return
+
+    if policy in _CHASERS:
+        # Spends its free transfer whenever there is any upgrade at all, and
+        # never pays for a second. This is how the conventional player behaves,
+        # and the point of the baseline is realism rather than optimality.
+        if manager.free_transfers <= 0:
+            return
+        swap = _best_swap(manager, settings, by_position, ranking)
+        if swap is None:
+            return
+        outgoing, incoming, _ = swap
+        manager.squad[manager.squad.index(outgoing)] = incoming
+        manager.result.transfers_made += 1
+        manager.free_transfers -= 1
         return
 
     # Keep swapping while the gain clears what the move costs. A free transfer
