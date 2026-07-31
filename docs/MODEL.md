@@ -237,7 +237,131 @@ minutes.
 
 ---
 
-## 10. What this does not calculate
+## 10. Which seasons are comparable
+
+Two boundaries fall in the same place, which makes 2022-23 a genuine regime
+change rather than a convenient cut.
+
+| Boundary                             | When    | Effect                                                                                   |
+| ------------------------------------ | ------- | ---------------------------------------------------------------------------------------- |
+| Five substitutes replaced three      | 2022-23 | Sub appearances 24.0% → 30.9%, full 90s 60.3% → 48.7%, points per appearance 3.00 → 2.80 |
+| FPL began publishing expected values | 2022-23 | Rate basis switches from `actual` to `expected`                                          |
+| Defensive contribution introduced    | 2025-26 | A new route worth 7.5% of all points                                                     |
+
+The substitution change is permanent and never reverts, so seasons before
+2022-23 describe a different game _and_ are scored by a different model.
+
+**What this means in practice, by use:**
+
+- **Minutes** — pre-2022-23 is actively misleading. A model learning appearance
+  behaviour from three-substitute seasons will systematically over-predict full
+  matches.
+- **Attacking rates** — pre-2022-23 has no expected values at all, so it cannot
+  contribute to an expected-basis fit.
+- **Robustness checks** — old seasons remain useful for exactly one thing:
+  confirming a parameter is not tuned to recent data. The 0.8/0.2 form blend
+  landing between 0.7 and 0.8 in all seven seasons independently is worth more
+  _because_ three of them are a different regime.
+
+**Recommendation, not yet acted on**: fit on 2022-23 onward, and report older
+seasons only as out-of-regime robustness. Anything that quotes a seven-season
+average without saying which side of the boundary it sits on is mixing two
+populations.
+
+---
+
+## 11. The algorithms, end to end
+
+### xPts — expected points for one player, one fixture
+
+`backtesting/projector.py`
+
+```
+xPts(player, fixture):
+
+    # 1. Minutes, from decayed history (4-gameweek half-life)
+    m         = minutes_model(player, cutoff)
+    if m.evidence == unavailable: return NOTHING     # never guessed
+
+    ninety    = m.expected_minutes / 90
+    appear    = (m.P_appear - m.P_60) * 1 + m.P_60 * 2
+
+    # 2. Attacking rate, expected basis where available (§3)
+    basis     = expected if every observation has xG and xA else actual
+    w         = min(1, current_minutes / 900)
+    goals     = w * current_goals(basis) + (1-w) * carried_goals(basis)
+    mins      = w * current_minutes     + (1-w) * carried_minutes
+    g90       = (goals + prior_g90 * 5) / (mins/90 + 5)        # 450 min prior
+    a90       = (assists + prior_a90 * 5) / (mins/90 + 5)
+
+    # 3. Opponent, per route, by venue (§5)
+    adj       = route_adjustment(strength, team, opponent, home)
+
+    attack    = ninety * (g90 * GOAL_POINTS[pos] + a90 * 3) * adj.attacking
+
+    # 4. Everything else, each on its own multiplier
+    support   = clean_sheet(pos, m, adj.clean_sheet)
+              + conceded(pos, m, adj.conceding)
+              + saves(pos, m, adj.saves)
+              + defensive_contribution(pos, m, adj.defcon)
+              + bonus + cards + penalties + own_goals
+
+    components = appear + attack + support
+
+    # 5. Blend against the player's own recent scoring (§6)
+    return 0.8 * components + 0.2 * recent_mean_5
+```
+
+Gameweek xPts is the sum over that player's fixtures in the week: **zero for a
+blank, twice for a double**. Squad xPts is the sum over the best legal eleven,
+plus the captain again.
+
+### ExPts — effective points, which is not the same objective
+
+`planning/effective.py`
+
+xPts asks "how many points". ExPts asks "how many **places**". They are
+different objectives and conflating them is the most common error in this game.
+
+```
+ExPts(player):
+
+    EO     = effective ownership          # share of the field starting him,
+                                          # counting captaincy twice
+    mine   = 1 if I own him else 0
+
+    swing  = (mine - EO) * xPts           # expected points gained on the field
+    cover  = EO * xPts                    # what NOT owning him would cost
+    upside = (1 - EO) * xPts              # what owning him gains on those who don't
+
+    places = rank_of(my_total) - rank_of(my_total + swing)
+```
+
+where rank comes from a normal model of the field:
+
+```
+share_below(points) = Φ((points - field_mean) / field_sd)
+rank_of(points)     = (1 - share_below(points)) * field_size
+```
+
+**The result that matters, and it is counter-intuitive.** Ownership _cancels out
+of a transfer's expected gain_. Swapping player A for player B changes swing by
+`(xPts_B - xPts_A)` regardless of what the field owns, because the `-EO * xPts`
+terms belong to the field whether you hold the player or not.
+
+So **effective ownership is not a return setting, it is a risk setting**. High
+ownership narrows the distribution of outcomes; differentials widen it. Which you
+want depends only on whether you are ahead or behind. The module therefore
+reports `cover` and `upside` separately rather than collapsing them into one
+score that would imply a false certainty.
+
+Measured worth of playing to rank rather than to raw points: **about +16 points
+a season**, and it lost in one season of four. That is weak, and it is stated as
+weak.
+
+---
+
+## 12. What this does not calculate
 
 - **Shot locations.** Understat publishes shot coordinates. Nothing reads them,
   so there is no flank vulnerability, no shot-quality decomposition beyond xG,
@@ -255,7 +379,7 @@ minutes.
 
 ---
 
-## 11. How to check any of this
+## 13. How to check any of this
 
 - Rate basis and weights are in `reason_codes` on every `PlayerRateProjection`.
 - Every published figure lives in a committed artifact, so a number on the site
