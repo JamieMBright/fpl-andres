@@ -80,12 +80,15 @@ class SeasonCorpus:
     position_by_element: dict[int, int] = field(default_factory=dict)
     team_by_element: dict[int, int] = field(default_factory=dict)
     name_by_element: dict[int, str] = field(default_factory=dict)
+    # Given and family name, which foreign sources publish and web_name is not.
+    full_name_by_element: dict[int, str] = field(default_factory=dict)
     # FPL reassigns element_id every season; code is the stable identity.
     code_by_element: dict[int, int] = field(default_factory=dict)
     price_by_element: dict[int, int] = field(default_factory=dict)
     # Club ids are reassigned each season too; the club code is not.
     code_by_team: dict[int, int] = field(default_factory=dict)
     short_name_by_team: dict[int, str] = field(default_factory=dict)
+    name_by_team: dict[int, str] = field(default_factory=dict)
     fixtures_by_event: dict[int, list[Fixture]] = field(default_factory=dict)
     strength_cache: dict[int, dict[int, TeamStrength]] = field(default_factory=dict)
 
@@ -160,7 +163,7 @@ def load_season(client: SupabaseRestClient, season: str) -> SeasonCorpus:
     elements = _page(
         client,
         "elements",
-        columns="element_id,code,element_type,team_id,web_name,start_cost",
+        columns="element_id,code,element_type,team_id,web_name,first_name,second_name,start_cost",
         filters={"season": f"eq.{season}"},
         order="element_id",
     )
@@ -173,6 +176,9 @@ def load_season(client: SupabaseRestClient, season: str) -> SeasonCorpus:
         corpus.position_by_element[element_id] = int(element["element_type"])
         corpus.team_by_element[element_id] = int(element["team_id"])
         corpus.name_by_element[element_id] = str(element["web_name"])
+        corpus.full_name_by_element[element_id] = (
+            f"{element['first_name']} {element['second_name']}".strip()
+        )
         corpus.code_by_element[element_id] = int(element["code"])
         start_cost = _optional_int(element.get("start_cost"))
         if start_cost is not None:
@@ -181,14 +187,14 @@ def load_season(client: SupabaseRestClient, season: str) -> SeasonCorpus:
     for team in _page(
         client,
         "teams",
-        columns="team_id,code,short_name",
+        columns="team_id,code,short_name,name",
         filters={"season": f"eq.{season}"},
         order="team_id",
     ):
         team_id = int(team["team_id"])
         corpus.code_by_team[team_id] = int(team["code"])
         corpus.short_name_by_team[team_id] = str(team["short_name"])
-
+        corpus.name_by_team[team_id] = str(team["name"])
     stats = _page(
         client,
         "element_gameweek_stats",

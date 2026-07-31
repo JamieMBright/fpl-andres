@@ -179,6 +179,7 @@ def test_no_module_is_imported_only_by_its_own_tests() -> None:
     external = {
         "__init__",
         "capture_crowd",
+        "crosswalk",
         "ingest_historical",
         "live_contracts",
         "publish_projections",

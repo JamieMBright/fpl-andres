@@ -16,6 +16,12 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+# Scraped advanced statistics. Optional because the core engine must build and
+# test without a scraper, and because this pulls a native TLS library that has
+# no business in the CI image.
+scrape = [
+    "soccerdata>=1.9,<2",
+]
 dev = [
     "hypothesis>=6.130,<7",
     "mypy>=1.15,<2",

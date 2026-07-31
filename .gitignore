@@ -29,3 +29,6 @@ supabase/.temp/
 .DS_Store
 Thumbs.db
 .idea/
+
+# Scraped source cache. Never redistributed; re-fetched on demand.
+data/soccerdata/
