@@ -185,6 +185,17 @@ and none of them can be answered by me.
       gameweek is played, transfer advice is projected from last season's record
       for returning players only. Promoted-club debutants and new arrivals get
       no projection at all, by design.
+- [ ] **Assistant Manager has been removed for 2026/27.** The live bootstrap
+      now publishes four positions and no `element_type` 5 players. No action
+      needed, but any strategy note that mentions the chip is out of date.
+- [ ] **Republish the projection artifact after the first few gameweeks.** Run
+      `python -m fpl_andres.cli.publish_projections --season 2026-27` once there
+      is enough of the new season to measure. Until then the page correctly
+      shows the 2025-26 record.
+- [ ] **220 of the 564 players in the 2026/27 game have no Premier League
+      record.** They are listed with blank figures. That is the intended
+      behaviour, not a bug, and it is the single thing most likely to be
+      reported as one.
 
 ---
 

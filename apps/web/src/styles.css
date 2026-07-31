@@ -1120,6 +1120,16 @@ a:focus-visible {
   color: var(--amber);
 }
 
+.entry-aside {
+  max-width: 62ch;
+  margin: 22px 0 0;
+  border-top: 1px solid var(--rule);
+  padding-top: 16px;
+  color: var(--ink-soft);
+  font-size: 14px;
+  line-height: 1.65;
+}
+
 .pitch-chip-role {
   margin: 0;
   color: var(--amber);

@@ -324,6 +324,14 @@ function HomePage() {
             </p>
           ) : null}
         </form>
+
+        <p className="entry-aside">
+          Between seasons FPL wipes every squad, so until the first deadline
+          there is nothing of yours to read. What I can price today is the
+          market: <Link to="/players">every player in the 2026/27 game</Link>,
+          at this season&rsquo;s money, against what he actually returned last
+          season.
+        </p>
       </section>
 
       <section className="method-strip" aria-label="How I work">

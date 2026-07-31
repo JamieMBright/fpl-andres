@@ -203,3 +203,32 @@ what exists and what runs.
   reads the final fixture list, so it has more notice than a real manager.
 - The crowd baseline reads published net transfers, which are a lagging signal:
   the crowd buys after the points have been scored.
+
+## Between seasons
+
+FPL resets every squad when a season ends. From the reset until the first
+deadline, `/entry/{id}/` returns `current_event: null` and `/entry/{id}/picks/`
+does not exist, so there is no team to analyse for anybody. Verified live on
+31 July 2026.
+
+What survives the reset, and is therefore what the site reads in the off-season:
+
+- `/entry/{id}/history/` keeps completed seasons, so a manager's record is real.
+- `bootstrap-static` already carries the new season's players, clubs, prices and
+  deadlines.
+
+The Players page joins those published prices to last season's measured record.
+Both halves are facts; neither is a forecast for a match nobody has played.
+
+A player who moved club in the summer keeps his record here, because the record
+follows the footballer. Nothing adjusts it for the side he has joined.
+
+## Rules that changed under us
+
+- **Assistant Manager is gone for 2026/27.** The live bootstrap publishes four
+  positions, not five, and zero players of `element_type` 5. Historical
+  reconstruction of 2024/25 still has to account for it; forward planning must
+  not offer it.
+- **Five substitutes since 2022/23.** Sub appearances went from 24.0% to 30.9%
+  of appearances and full 90-minute games from 60.3% to 48.7%. This is
+  permanent, so seasons before 2022/23 describe a different game.
