@@ -213,3 +213,59 @@ def test_every_manager_is_held_to_the_same_transfer_budget(policy: str) -> None:
 
     for manager in result.by_policy(policy):  # type: ignore[arg-type]
         assert manager.transfers_made <= 6 + manager.hit_points // 4
+
+
+def tilt_ranking(place: int, places: int) -> dict[int, float]:
+    """Rank a widely-owned and a rare player for a manager in a given position."""
+    from fpl_andres.simulation.minileague import ManagerResult, _tilted_ranking
+
+    managers = []
+    for index in range(places):
+        entry = _Manager(
+            result=ManagerResult(manager_id=index, policy="rank_aware", seed=index),
+            squad=[],
+            free_transfers=1,
+        )
+        # Net points descend with index, so index 0 leads.
+        entry.result.total_points = (places - index) * 100
+        managers.append(entry)
+
+    return _tilted_ranking(
+        managers[place],
+        managers,
+        projected={1: 5.0, 2: 5.0},
+        ownership={1: 0.9, 2: 0.05},
+        settings=LeagueSettings(squad_rules=SQUAD_RULES, lineup_rules=LINEUP_RULES),
+    )
+
+
+def test_a_leader_prefers_the_player_the_field_already_owns() -> None:
+    ranking = tilt_ranking(place=0, places=10)
+
+    assert ranking[1] > ranking[2]
+
+
+def test_a_manager_in_last_prefers_the_player_nobody_owns() -> None:
+    ranking = tilt_ranking(place=9, places=10)
+
+    assert ranking[2] > ranking[1]
+
+
+def test_neither_tilt_changes_a_player_ranked_against_himself() -> None:
+    # The tilt is a risk setting, so two equally owned players keep their order.
+    from fpl_andres.simulation.minileague import ManagerResult, _tilted_ranking
+
+    solo = _Manager(
+        result=ManagerResult(manager_id=0, policy="rank_aware", seed=0),
+        squad=[],
+        free_transfers=1,
+    )
+    ranking = _tilted_ranking(
+        solo,
+        [solo],
+        projected={1: 5.0, 2: 9.0},
+        ownership={1: 0.9, 2: 0.05},
+        settings=LeagueSettings(squad_rules=SQUAD_RULES, lineup_rules=LINEUP_RULES),
+    )
+
+    assert ranking[2] > ranking[1]

@@ -5,6 +5,7 @@ from __future__ import annotations
 from datetime import UTC, datetime
 
 from fpl_andres.backtesting.projector import HorizonProjection
+from fpl_andres.backtesting.reliability import PointsShape
 from fpl_andres.models.minutes import MinutesProjection
 from fpl_andres.models.player_rates import PlayerRateProjection
 from fpl_andres.planning import (
@@ -25,10 +26,21 @@ def projection(
         fixtures_by_horizon={1: 1, 5: 5},
         minutes=_MINUTES,
         rates=_RATES,
+        shape=_SHAPE,
     )
 
 
 _AVAILABLE_AT = datetime(2024, 10, 1, 12, 0, tzinfo=UTC)
+
+_SHAPE = PointsShape(
+    appearances=10,
+    floor=2.0,
+    median=5.0,
+    ceiling=12.0,
+    return_rate=0.5,
+    blank_rate=0.2,
+    volatility=3.0,
+)
 
 _MINUTES = MinutesProjection(
     element_code=1,

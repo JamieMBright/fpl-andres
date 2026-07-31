@@ -22,6 +22,7 @@ from fpl_andres.backtesting.fixtures import (
     estimate_strength,
     route_adjustment,
 )
+from fpl_andres.backtesting.reliability import PointsShape, describe_shape
 from fpl_andres.models.minutes import (
     AppearanceObservation,
     MinutesEvidence,
@@ -114,6 +115,7 @@ class HorizonProjection:
     fixtures_by_horizon: Mapping[int, int]
     minutes: MinutesProjection
     rates: PlayerRateProjection
+    shape: PointsShape
 
     def points_over(self, horizon: int) -> float:
         return self.points_by_horizon.get(horizon, 0.0)
@@ -190,6 +192,7 @@ def project_horizon(
                 fixtures_by_horizon=fixtures_by_horizon,
                 minutes=minutes,
                 rates=rates,
+                shape=describe_shape(rows),
             )
         )
 

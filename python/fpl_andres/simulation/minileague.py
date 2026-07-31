@@ -36,7 +36,7 @@ __all__ = [
     "simulate_league",
 ]
 
-Policy = Literal["advised", "zombie"]
+Policy = Literal["advised", "rank_aware", "zombie"]
 
 _TRANSFER_HIT_POINTS = 4
 _FORM_WINDOW = 4
@@ -51,12 +51,20 @@ class LeagueSettings:
     lineup_rules: LineupRules
     managers: int = 20
     advised_share: float = 0.25
+    rank_aware_share: float = 0.0
     free_transfers_per_event: int = 1
     max_free_transfers: int = 5
     start_gameweek: int = 7
+    # How hard a rank-aware manager leans on ownership. Effective ownership
+    # cancels out of the expected gain from a transfer, so it can only ever be a
+    # risk setting: cover the field when ahead, take differentials when behind.
+    risk_weight: float = 0.3
 
     def advised_count(self) -> int:
         return max(1, round(self.managers * self.advised_share))
+
+    def rank_aware_count(self) -> int:
+        return round(self.managers * self.rank_aware_share)
 
 
 @dataclass
@@ -112,10 +120,16 @@ def simulate_league(
 
     outcome = LeagueResult(season=corpus.season, settings=settings)
     advised = settings.advised_count()
+    rank_aware = settings.rank_aware_count()
     managers: list[_Manager] = []
 
     for index in range(settings.managers):
-        policy: Policy = "advised" if index < advised else "zombie"
+        if index < advised:
+            policy: Policy = "advised"
+        elif index < advised + rank_aware:
+            policy = "rank_aware"
+        else:
+            policy = "zombie"
         manager_seed = seed * 1000 + index
         squad = list(build_squad(pool, settings.squad_rules, rng=random.Random(manager_seed)))
         result = ManagerResult(manager_id=index, policy=policy, seed=manager_seed)
@@ -149,20 +163,73 @@ def simulate_league(
                 entries.sort(key=lambda entry: ranking.get(entry.element_id, 0.0), reverse=True)
             sorted_pool[policy_name] = ordered
 
+        ownership = _league_ownership(managers)
         for manager in managers:
+            ranking = projected
+            if manager.result.policy == "rank_aware":
+                ranking = _tilted_ranking(manager, managers, projected, ownership, settings)
+                ordered = {}
+                for candidate in pool:
+                    ordered.setdefault(candidate.position, []).append(candidate)
+                for entries in ordered.values():
+                    entries.sort(key=lambda entry: ranking.get(entry.element_id, 0.0), reverse=True)
+                by_position: Mapping[int, Sequence[Candidate]] = ordered
+            else:
+                by_position = sorted_pool[manager.result.policy]
+
             _take_transfers(
                 manager,
                 settings=settings,
-                by_position=sorted_pool[manager.result.policy],
-                projected=projected,
+                by_position=by_position,
+                projected=ranking,
                 form=form,
                 minutes=minutes,
             )
-            points = _play(manager, settings, outcomes, projected, form)
+            points = _play(manager, settings, outcomes, ranking, form)
             manager.result.weekly_points.append(points)
             manager.result.total_points += points
 
     return outcome
+
+
+def _league_ownership(managers: Sequence[_Manager]) -> dict[int, float]:
+    """Share of the league holding each player, right now."""
+    if not managers:
+        return {}
+    counts: dict[int, int] = {}
+    for manager in managers:
+        for player in manager.squad:
+            counts[player.element_id] = counts.get(player.element_id, 0) + 1
+    return {element_id: count / len(managers) for element_id, count in counts.items()}
+
+
+def _tilted_ranking(
+    manager: _Manager,
+    managers: Sequence[_Manager],
+    projected: Mapping[int, float],
+    ownership: Mapping[int, float],
+    settings: LeagueSettings,
+) -> dict[int, float]:
+    """Bend the projection toward, or away from, what the league already owns.
+
+    A manager who is ahead wants the field's players, because matching them
+    protects the lead. A manager who is behind needs players the field does not
+    have, because matching the field preserves the gap. Neither changes expected
+    points; both change the spread of finishing positions, which is the thing
+    actually being competed for.
+    """
+    standings = sorted(managers, key=lambda entry: -entry.result.net_points)
+    if len(standings) < 2:
+        return dict(projected)
+    place = standings.index(manager)
+    # -1 when leading, +1 when last.
+    tilt = (place / (len(standings) - 1)) * 2 - 1
+
+    return {
+        element_id: points
+        * (1 + settings.risk_weight * tilt * (0.5 - ownership.get(element_id, 0.0)))
+        for element_id, points in projected.items()
+    }
 
 
 def _candidate_pool(corpus: SeasonCorpus, gameweek: int) -> list[Candidate]:
