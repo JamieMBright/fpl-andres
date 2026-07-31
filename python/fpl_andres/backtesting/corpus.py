@@ -13,6 +13,7 @@ from dataclasses import dataclass, field
 from datetime import UTC, datetime, timedelta
 from typing import Any
 
+from fpl_andres.backtesting.fixtures import Fixture, TeamStrength
 from fpl_andres.persistence.supabase import SupabaseRestClient
 
 __all__ = [
@@ -77,6 +78,29 @@ class SeasonCorpus:
     position_by_element: dict[int, int] = field(default_factory=dict)
     team_by_element: dict[int, int] = field(default_factory=dict)
     name_by_element: dict[int, str] = field(default_factory=dict)
+    fixtures_by_event: dict[int, list[Fixture]] = field(default_factory=dict)
+    strength_cache: dict[int, dict[int, TeamStrength]] = field(default_factory=dict)
+
+    def fixtures_before(self, gameweek: int) -> list[Fixture]:
+        """Played fixtures from strictly earlier gameweeks."""
+        earlier: list[Fixture] = []
+        for event in sorted(self.fixtures_by_event):
+            if event >= gameweek:
+                break
+            earlier.extend(self.fixtures_by_event[event])
+        return earlier
+
+    def fixtures_for(self, team_id: int, gameweek: int) -> list[Fixture]:
+        """A team's fixtures in one gameweek: two in a double, none in a blank.
+
+        The schedule is known before the deadline, so reading it forward is not
+        a leak. Only the scores are withheld.
+        """
+        return [
+            fixture
+            for fixture in self.fixtures_by_event.get(gameweek, ())
+            if team_id in (fixture.team_h, fixture.team_a)
+        ]
 
     @property
     def gameweeks(self) -> tuple[int, ...]:
@@ -135,6 +159,29 @@ def load_season(client: SupabaseRestClient, season: str) -> SeasonCorpus:
     )
     if not stats:
         raise CorpusLoadError(f"corpus holds no gameweek rows for {season}")
+
+    for fixture in _page(
+        client,
+        "fixtures",
+        columns=("fixture_id,event,kickoff_time,team_h,team_a,team_h_score,team_a_score,finished"),
+        filters={"season": f"eq.{season}"},
+        order="event,fixture_id",
+    ):
+        event = _optional_int(fixture.get("event"))
+        if event is None:
+            continue
+        corpus.fixtures_by_event.setdefault(event, []).append(
+            Fixture(
+                fixture_id=int(fixture["fixture_id"]),
+                event=event,
+                team_h=int(fixture["team_h"]),
+                team_a=int(fixture["team_a"]),
+                kickoff_time=_optional_kickoff(fixture.get("kickoff_time")),
+                team_h_score=_optional_int(fixture.get("team_h_score")),
+                team_a_score=_optional_int(fixture.get("team_a_score")),
+                finished=bool(fixture.get("finished")),
+            )
+        )
 
     for row in stats:
         gameweek = int(row["gameweek"])
@@ -213,6 +260,10 @@ def _optional_int(value: Any) -> int | None:
 
 def _optional_float(value: Any) -> float | None:
     return None if value is None else float(value)
+
+
+def _optional_kickoff(value: Any) -> datetime | None:
+    return None if not value else datetime.fromisoformat(str(value).replace("Z", "+00:00"))
 
 
 def summarise(corpus: SeasonCorpus) -> str:
