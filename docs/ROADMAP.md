@@ -177,7 +177,35 @@ ships; this one checks whether it is actually reachable.
 **Output**: a written finding per issue, each either fixed or recorded in
 `LIMITATIONS.md` as a known gap. No issue is closed by asserting it is fine.
 
+**Status: done.** `python/tests/test_reachability.py` walks the package AST and
+fails the build on a new orphan, or on a recorded orphan that has quietly been
+wired up. Seventeen functions and seven modules were found and are listed in
+`LIMITATIONS.md` under "Built but not wired". Every ingested column is now
+consumed. Every baseline is scored on a common population.
+
 ---
+
+## Standing state, 31 July 2026
+
+What runs today, before a ball is kicked:
+
+- **Players page.** All 564 players in the 2026/27 game, at published prices,
+  against a per-match record rebuilt from every scoring route across 2025-26,
+  with the opening five rated on measured club strength. 220 have no record and
+  are shown blank.
+- **Team page.** FPL wipes squads between seasons, so it shows the manager's own
+  record and the plan that follows the first deadline. It becomes a squad
+  dossier the moment gameweek 1 is processed.
+- **Calibration page.** Four seasons, four policies, chips on, including the
+  season the method loses.
+- **Methodology page.** How the projection is built and where it fails.
+
+What T3 still blocks: `HighsHorizonOptimizer` cannot be run inside
+`simulate_league`. The request contract needs per-event source hashes and a
+rules snapshot for every historical season, and the model has roughly eleven
+thousand binary variables per solve — twenty managers times three seeds times
+four seasons times thirty-two gameweeks is not a tractable backtest. The live
+single-team path is where it belongs, and that needs a played gameweek.
 
 ## Standing rules
 
