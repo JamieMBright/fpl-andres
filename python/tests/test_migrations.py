@@ -11,6 +11,8 @@ FOREIGN_KEY_INDEX_MIGRATION = MIGRATIONS_DIR / "20260731130000_foreign_key_index
 HISTORY_MIGRATION = MIGRATIONS_DIR / "20260801120000_history_corpus.sql"
 DEFENSIVE_COMPONENTS_MIGRATION = MIGRATIONS_DIR / "20260801130000_defensive_components.sql"
 FIXTURE_GRAIN_MIGRATION = MIGRATIONS_DIR / "20260801140000_fixture_grain_and_event_range.sql"
+BACKTEST_MIGRATION = MIGRATIONS_DIR / "20260801150000_backtest_artifacts.sql"
+CROWD_MIGRATION = MIGRATIONS_DIR / "20260801160000_crowd_snapshots.sql"
 
 _CREATE_TABLE = re.compile(r"create table (?:if not exists )?public\.(\w+)")
 _INDEX_TARGET = re.compile(
@@ -204,3 +206,56 @@ def test_the_gameweek_range_covers_a_disrupted_season() -> None:
     # 2019/20 was suspended and resumed; its fixtures run to event 47.
     assert "event between 1 and 47" in sql
     assert "gameweek between 1 and 47" in sql
+
+
+def test_backtest_artifacts_are_immutable_and_default_deny() -> None:
+    raw = BACKTEST_MIGRATION.read_text(encoding="utf-8").lower()
+    sql = " ".join(raw.split())
+
+    for table in ("backtest_runs", "backtest_predictions"):
+        assert f"create table public.{table}" in sql
+        assert f"alter table public.{table} enable row level security" in sql
+        assert f"alter table public.{table} force row level security" in sql
+        assert f"create trigger {table}_are_immutable" in sql
+    assert "create policy" not in sql
+    assert "grant " not in sql
+
+
+def test_a_backtest_metric_is_attributable_to_the_code_that_produced_it() -> None:
+    raw = BACKTEST_MIGRATION.read_text(encoding="utf-8").lower()
+    sql = " ".join(raw.split())
+
+    # Without a revision, two runs of the same season cannot be compared.
+    assert "code_revision text not null" in sql
+    assert "unique ( season, method, code_revision, first_scored_gameweek )" in sql
+    assert "scored_observations = 0 or spearman is not null" in sql
+    assert "spearman is null or spearman between -1 and 1" in sql
+
+
+def test_backtest_predictions_survive_only_alongside_their_run() -> None:
+    raw = BACKTEST_MIGRATION.read_text(encoding="utf-8").lower()
+    sql = " ".join(raw.split())
+
+    assert "references public.backtest_runs(id) on delete cascade" in sql
+    assert "primary key (run_id, gameweek, element_id)" in sql
+
+
+def test_crowd_snapshots_are_immutable_and_default_deny() -> None:
+    raw = CROWD_MIGRATION.read_text(encoding="utf-8").lower()
+    sql = " ".join(raw.split())
+
+    assert "create table public.crowd_snapshots" in sql
+    assert "alter table public.crowd_snapshots enable row level security" in sql
+    assert "alter table public.crowd_snapshots force row level security" in sql
+    assert "create trigger crowd_snapshots_are_immutable" in sql
+    assert "create policy" not in sql
+    assert "grant " not in sql
+
+
+def test_a_crowd_snapshot_keeps_every_capture_rather_than_overwriting() -> None:
+    raw = CROWD_MIGRATION.read_text(encoding="utf-8").lower()
+    sql = " ".join(raw.split())
+
+    # captured_at is part of the key: movement is the entire point of the table.
+    assert "primary key (season, event, element_id, captured_at)" in sql
+    assert "captained_by is null or total_managers is not null" in sql
