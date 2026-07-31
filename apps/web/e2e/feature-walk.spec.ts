@@ -31,7 +31,22 @@ function publicTeamState(entryId = 212279) {
   };
 }
 
+async function mockManagerHistory(page: Page) {
+  await page.route("**/api/fpl/**", async (route) => {
+    await route.fulfill({
+      body: JSON.stringify({
+        past: [
+          { season_name: "2024/25", total_points: 2308, rank: 1_410_478 },
+          { season_name: "2025/26", total_points: 1858, rank: 6_659_254 },
+        ],
+      }),
+      contentType: "application/json",
+    });
+  });
+}
+
 async function fulfillReady(page: Page) {
+  await mockManagerHistory(page);
   await page.route("**/api/team/*", async (route) => {
     const entryId = Number(route.request().url().split("/").pop());
     await route.fulfill({

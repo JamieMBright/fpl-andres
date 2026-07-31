@@ -32,6 +32,17 @@ function publicTeamState(entryId = 212279) {
 }
 
 async function mockTeamResponse(page: Page, body: unknown, status = 200) {
+  await page.route("**/api/fpl/**", async (route) => {
+    await route.fulfill({
+      body: JSON.stringify({
+        past: [
+          { season_name: "2024/25", total_points: 2308, rank: 1_410_478 },
+          { season_name: "2025/26", total_points: 1858, rank: 6_659_254 },
+        ],
+      }),
+      contentType: "application/json",
+    });
+  });
   await page.route("**/api/team/*", async (route) => {
     await route.fulfill({
       body: JSON.stringify(body),
@@ -287,8 +298,12 @@ test("disables loading and disclosure animation for reduced motion", async ({
   page,
 }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.route("**/api/fpl/**", async (route) => {
+    await route.fulfill({ body: "{}", contentType: "application/json" });
+  });
   await page.route("**/api/team/*", async (route) => {
-    await new Promise((resolve) => setTimeout(resolve, 300));
+    // Long enough that the loading state is reliably observable.
+    await new Promise((resolve) => setTimeout(resolve, 1500));
     await route.fulfill({
       body: JSON.stringify({ status: "ready", state: publicTeamState() }),
       contentType: "application/json",
