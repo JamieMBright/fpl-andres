@@ -193,19 +193,77 @@ What runs today, before a ball is kicked:
   against a per-match record rebuilt from every scoring route across 2025-26,
   with the opening five rated on measured club strength. 220 have no record and
   are shown blank.
+- **Opening squad.** Fifteen players inside the real rules, chosen to maximise
+  the starting eleven with a bench that can actually play.
 - **Team page.** FPL wipes squads between seasons, so it shows the manager's own
-  record and the plan that follows the first deadline. It becomes a squad
-  dossier the moment gameweek 1 is processed.
+  record, the recommended opening squad and the plan that follows the first
+  deadline. It becomes a squad dossier the moment gameweek 1 is processed.
 - **Calibration page.** Four seasons, four policies, chips on, including the
   season the method loses.
 - **Methodology page.** How the projection is built and where it fails.
 
-What T3 still blocks: `HighsHorizonOptimizer` cannot be run inside
-`simulate_league`. The request contract needs per-event source hashes and a
-rules snapshot for every historical season, and the model has roughly eleven
-thousand binary variables per solve — twenty managers times three seeds times
-four seasons times thirty-two gameweeks is not a tractable backtest. The live
-single-team path is where it belongs, and that needs a played gameweek.
+---
+
+## Outstanding
+
+Ordered by what would change the answers most, not by effort.
+
+### Measured, and still not wired
+
+1. **Understat is joined and unused.** The crosswalk verifies 94.9% of eligible
+   2025-26 players against Understat, and that brings xG, npxG, xA, shots, key
+   passes and buildup involvement with it. **None of it feeds a projection.**
+   The scoring model still runs on realised goals and assists alone. This is the
+   largest gap on the list: the data is already on disk.
+2. **Starts beat minutes and the model still uses minutes.** Measured over six
+   season pairs against next season's opening starts: season minutes 0.616,
+   season starts 0.620, a rank blend of season starts with closing starts
+   **0.646**, winning five of six. The blend is not in the minutes model.
+
+### Built, tested, and called by nothing
+
+3. **`project_expected_points`**, the promoted xPTS model. The backtest projector
+   reimplements scoring rather than calling it, so there are two pricings of the
+   same rules and only one is exercised.
+4. **`HighsHorizonOptimizer`.** Plans across events with free-transfer carry and
+   captaincy inside the objective. A greedy swap runs instead. It cannot go in
+   the backtest — eleven thousand binary variables times twenty managers times
+   three seeds times four seasons times thirty-two gameweeks is not tractable,
+   and the request contract wants per-event hashes and a rules snapshot per
+   historical season. It belongs on the live single-team path, which needs a
+   played gameweek.
+5. Fifteen further orphans, listed in `LIMITATIONS.md`. The reachability audit
+   fails the build on any new one.
+
+### Not built
+
+6. **`fplcache`** (approved). Six-hourly bootstrap snapshots would give
+   retroactive ownership and price history that `crowd_snapshots` can only
+   collect forwards. Highest value per unit of effort of anything not started.
+7. **Benchmark against FPL Review and FPL Kiwi** (approved). The strongest
+   validation available, and it may not flatter us.
+8. **Championship minutes for promoted clubs.** Three of twenty come up each
+   year with no Premier League record, so they cannot be ranked or picked.
+   Scoring rates do not transfer across divisions but minutes might, which is
+   exactly what bench cover needs. FBref has it; `soccerdata` does not ship it.
+9. **End-of-season projection and posterior carry (T2).** `project_horizon`
+   stops at seven gameweeks and refits from scratch each week.
+10. **Positional matchups.** One attack and one defence figure per side. Shot
+    coordinates would give flank vulnerability; nothing reads them.
+
+### Waiting on the season
+
+11. **Mini-leagues 34555 and 393774.** Rival picks are only legally readable
+    after a deadline.
+12. **The proven-manager cohort.** A full entry sweep is running; the resulting
+    catalogue is not yet wired to anything.
+13. **Live smoke test** on entry 212279 once gameweek 1 is processed.
+
+### Unverified
+
+14. **The club limit correction rule** came from the owner, not from the
+    published rules text. If FPL allows the correction to wait, the encoding is
+    wrong.
 
 ## Standing rules
 
