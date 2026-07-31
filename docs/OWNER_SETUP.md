@@ -134,6 +134,58 @@ Not blocking algo work. Do these when the mailing list matters.
 - [ ] Approve the first production model promotion after its release-candidate
       report passes.
 
+## Decisions waiting on you (added 31 July 2026)
+
+Nothing below blocks the site running. Each one blocks a specific capability,
+and none of them can be answered by me.
+
+### Advanced statistics
+
+- [ ] **Confirm the scraping position.** You have said this is a hobby project
+      and not commercial for at least a year. I have taken that as licence for
+      **Understat** and **FBref** through `soccerdata`, which rate-limits and
+      caches. I have **not** written a WhoScored scraper: you noted yourself it
+      is against their terms, and non-commercial use does not cure that. Say so
+      explicitly if you want that decision revisited.
+- [ ] **Approve `soccerdata` as a dependency.** It is the practical path to
+      FBref and Understat. It is not yet in `pyproject.toml`.
+- [ ] **Accept the mapping risk.** FPL, FBref and Understat use different player
+      ids and there is no official crosswalk. Community maps drift with
+      transfers. A silent mis-map corrupts a player's whole history without
+      erroring, so I will report mapping coverage rather than assume it.
+
+### Data that would change the model most
+
+- [ ] **`fplcache`** (github.com/Randdalf/fplcache) holds six-hourly bootstrap
+      snapshots. This would retroactively give ownership and price history that
+      my own `crowd_snapshots` table only starts collecting from now. Highest
+      value per unit of effort of anything on this list.
+
+### Benchmarks
+
+- [ ] **Decide whether to benchmark against published projections.** FPL Review's
+      free model and FPL Kiwi both publish. Comparing against them would be the
+      strongest possible validation, and it may not flatter us.
+
+### Mini-league
+
+- [ ] **Supply the mini-league id you actually care about.** Rival ownership is
+      built and tested but has nothing to point at. Individual rival picks are
+      only legal to read after a deadline, so this cannot run before 21 August.
+
+### Chips
+
+- [ ] **Confirm the bench boost rule.** You specified triple captain, free hit
+      and wildcard. Bench boost currently takes the second-largest double
+      gameweek by inference, not by instruction.
+
+### Season start
+
+- [ ] **2026/27 gameweek 1 deadline is 21 August 2026, 17:30 UTC.** Until a
+      gameweek is played, transfer advice is projected from last season's record
+      for returning players only. Promoted-club debutants and new arrivals get
+      no projection at all, by design.
+
 ---
 
 Everything else — SQL authoring, migration ordering, RLS, CI, tests, runtime

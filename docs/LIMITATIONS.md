@@ -164,3 +164,42 @@ evaluation clears the declared sample floor and confidence gate.
 ## Execution
 
 FPL Andres never logs into an FPL account and never executes transfers or chips.
+
+## Built but not wired
+
+Found by `python/tests/test_reachability.py`, which fails the build on any new
+orphan. These are capabilities the codebase has and does not use. Recorded
+rather than hidden, because a reader is entitled to know the difference between
+what exists and what runs.
+
+| Orphan                     | State                                                                  |
+| -------------------------- | ---------------------------------------------------------------------- |
+| `project_expected_points`  | The promoted xPTS model. The backtest projector prices scoring itself. |
+| `HighsHorizonOptimizer`    | MILP planner with free-transfer carry. A greedy planner runs instead.  |
+| `classify_deployment`      | Out-of-position classifier. No live data source.                       |
+| `evaluate_promotion`       | Promotion gate. Nothing promotes a model yet.                          |
+| `iter_walk_forward_slices` | Leak-guard slicing. The corpus enforces the cutoff structurally.       |
+| `simulate_season`          | Single-manager simulation, superseded by the mini-league.              |
+| `dixon_coles`              | Team goals model. The projector estimates strength itself.             |
+| StatsBomb adapter          | Parsers exist; no ingest path.                                         |
+
+## Not modelled at all
+
+- **Positional matchups.** Team strength is one attack and one defence figure
+  per side. A right-sided forward against a weak left side is a real effect with
+  no representation here, and no free source publishes flank splits directly.
+- **Squad restructuring.** Transfers are like-for-like by position. A real
+  manager can change shape; this cannot.
+- **Price change prediction.** Team value moves with observed prices, but
+  nothing forecasts a rise or fall, so no value is farmed deliberately.
+- **Posterior updating.** Models refit on decayed history each week rather than
+  carrying a posterior forward.
+
+## Simulation caveats
+
+- Play begins at gameweek 7, so totals cover 31 or 32 weeks of 38 and are not
+  season totals.
+- Double gameweeks are confirmed in-season as cup runs resolve. Chip timing
+  reads the final fixture list, so it has more notice than a real manager.
+- The crowd baseline reads published net transfers, which are a lagging signal:
+  the crowd buys after the points have been scored.
