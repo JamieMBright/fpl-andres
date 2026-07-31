@@ -124,13 +124,10 @@ def build_ranked_squad(
                 f"pool holds {available} players in position {position}, need {required}"
             )
 
-    cheapest: dict[int, list[int]] = {
-        position: sorted(player.price_tenths for player in players)
-        for position, players in by_position.items()
-    }
     needed = dict(rules.position_counts)
     squad: list[Candidate] = []
     clubs: dict[int, int] = {}
+    taken: set[int] = set()
     spent = 0
 
     ordered = sorted(
@@ -138,14 +135,16 @@ def build_ranked_squad(
         key=lambda player: (-ranking.get(player.element_id, 0.0), player.price_tenths),
     )
     for player in ordered:
-        if needed.get(player.position, 0) <= 0:
+        if needed.get(player.position, 0) <= 0 or player.element_id in taken:
             continue
         if clubs.get(player.team_id, 0) >= rules.club_limit:
             continue
-        floor = _completion_floor(needed, cheapest, player.position)
-        if spent + player.price_tenths + floor > rules.budget_tenths:
+        provisional = {**needed, player.position: needed[player.position] - 1}
+        floor = _completion_floor(provisional, by_position, taken | {player.element_id})
+        if floor is None or spent + player.price_tenths + floor > rules.budget_tenths:
             continue
         squad.append(player)
+        taken.add(player.element_id)
         clubs[player.team_id] = clubs.get(player.team_id, 0) + 1
         needed[player.position] -= 1
         spent += player.price_tenths
@@ -159,16 +158,28 @@ def build_ranked_squad(
 
 
 def _completion_floor(
-    needed: Mapping[int, int], cheapest: Mapping[int, list[int]], taking: int
-) -> int:
-    """Cheapest possible cost of the slots still open after this pick."""
+    needed: Mapping[int, int],
+    by_position: Mapping[int, list[Candidate]],
+    taken: set[int],
+) -> int | None:
+    """Cheapest cost of the slots still open, from players still available.
+
+    Using the pool's global cheapest would understate this as players are taken,
+    letting the greedy overspend early and then fail to field a legal squad.
+    Returns None when a position can no longer be filled at all.
+    """
     total = 0
     for position, count in needed.items():
-        remaining = count - 1 if position == taking else count
-        if remaining <= 0:
+        if count <= 0:
             continue
-        prices = cheapest.get(position, [])
-        total += sum(prices[:remaining])
+        prices = sorted(
+            player.price_tenths
+            for player in by_position.get(position, [])
+            if player.element_id not in taken
+        )
+        if len(prices) < count:
+            return None
+        total += sum(prices[:count])
     return total
 
 

@@ -24,8 +24,14 @@ from dataclasses import dataclass, field
 from typing import Literal
 
 from fpl_andres.backtesting.corpus import SeasonCorpus
+from fpl_andres.backtesting.fixtures import estimate_strength
 from fpl_andres.backtesting.projector import ProjectionSettings, project_gameweek
 from fpl_andres.simulation.baselines import crowd_ranking
+from fpl_andres.simulation.chips import (
+    ChipName,
+    ChipState,
+    plan_chips,
+)
 from fpl_andres.simulation.season import LineupRules, SquadGameweek
 from fpl_andres.simulation.squad import (
     Candidate,
@@ -75,6 +81,13 @@ class LeagueSettings:
     # cancels out of the expected gain from a transfer, so it can only ever be a
     # risk setting: cover the field when ahead, take differentials when behind.
     risk_weight: float = 0.3
+    chips_enabled: bool = True
+    # Floors below which a chip is not worth burning. Expressed in projected
+    # points, so they are comparable to everything else the model produces.
+    triple_captain_floor: float = 7.0
+    bench_boost_floor: float = 12.0
+    wildcard_floor: float = 12.0
+    free_hit_floor: float = 12.0
 
     def advised_count(self) -> int:
         return max(1, round(self.managers * self.advised_share))
@@ -115,6 +128,7 @@ class ManagerResult:
     transfers_made: int = 0
     hit_points: int = 0
     weekly_points: list[int] = field(default_factory=list)
+    chips_played: dict[str, int] = field(default_factory=dict)
 
     @property
     def net_points(self) -> int:
@@ -143,6 +157,8 @@ class _Manager:
     result: ManagerResult
     squad: list[Candidate]
     free_transfers: int
+    chips: ChipState = field(default_factory=ChipState)
+    chip_plan: dict[int, ChipName] = field(default_factory=dict)
 
 
 def simulate_league(
@@ -161,6 +177,7 @@ def simulate_league(
     managers: list[_Manager] = []
     roster = settings.policy_roster()
     opening = _opening_squad(corpus, pool, settings, seed)
+    last_event = max(corpus.gameweeks, default=settings.start_gameweek)
 
     for index in range(settings.managers):
         policy = roster[index]
@@ -172,7 +189,12 @@ def simulate_league(
             # Zero here, not one: the week's free transfer is granted at the top
             # of _take_transfers, so seeding one as well would hand every
             # manager an extra move over the season.
-            _Manager(result=result, squad=squad, free_transfers=0)
+            _Manager(
+                result=result,
+                squad=squad,
+                free_transfers=0,
+                chip_plan=_chip_plan(corpus, squad, settings, manager_seed, last_event),
+            )
         )
 
     sorted_pool: dict[str, Mapping[int, Sequence[Candidate]]] = {}
@@ -213,19 +235,105 @@ def simulate_league(
             else:
                 by_position = sorted_pool[manager.result.policy]
 
-            _take_transfers(
+            chip = _choose_chip(
                 manager,
                 settings=settings,
-                by_position=by_position,
-                projected=ranking,
-                form=form,
-                minutes=minutes,
+                pool=pool,
+                gameweek=gameweek,
+                ranking=ranking,
+                last_event=last_event,
             )
-            points = _play(manager, settings, outcomes, ranking, form)
+            if chip == "wildcard":
+                # A wildcard is a free rebuild, so the squad it leaves behind is
+                # the one that persists.
+                manager.squad = list(build_ranked_squad(pool, settings.squad_rules, ranking))
+                manager.chips.record("wildcard", gameweek)
+            else:
+                _take_transfers(
+                    manager,
+                    settings=settings,
+                    by_position=by_position,
+                    projected=ranking,
+                    form=form,
+                    minutes=minutes,
+                )
+                if chip is not None:
+                    manager.chips.record(chip, gameweek)
+
+            points = _play(manager, settings, outcomes, ranking, form, chip, pool)
             manager.result.weekly_points.append(points)
             manager.result.total_points += points
+            if chip is not None:
+                manager.result.chips_played[chip] = gameweek
 
     return outcome
+
+
+def _chip_plan(
+    corpus: SeasonCorpus,
+    squad: Sequence[Candidate],
+    settings: LeagueSettings,
+    seed: int,
+    last_event: int,
+) -> dict[int, ChipName]:
+    """Date the season's chips from the fixture list.
+
+    The triple captain follows the squad's most expensive player, on the
+    reasoning that price tracks expected returns closely enough to pick a
+    captain by. It wants him at home against a leaky defence, which is a fixture
+    rather than a hunch.
+    """
+    if not settings.chips_enabled:
+        return {}
+
+    start = settings.start_gameweek
+    fixtures_by_event = {
+        event: len(fixtures) for event, fixtures in corpus.fixtures_by_event.items()
+    }
+    strength = estimate_strength(corpus.fixtures_before(start))
+    star = max(squad, key=lambda player: player.price_tenths, default=None)
+
+    star_value: dict[int, float] = {}
+    if star is not None:
+        for event in range(start, last_event + 1):
+            total = 0.0
+            for fixture in corpus.fixtures_for(star.team_id, event):
+                opponent = fixture.opponent_of(star.team_id)
+                if opponent is None or opponent not in strength:
+                    continue
+                home = fixture.is_home(star.team_id)
+                if not home:
+                    # Away captaincy is a worse bet at the same opponent, so an
+                    # away fixture never wins the chip on its own.
+                    continue
+                total += strength[opponent].defence(home=False)
+            star_value[event] = total
+
+    return plan_chips(
+        fixtures_by_event=fixtures_by_event,
+        star_fixture_value=star_value,
+        from_gameweek=start,
+        last_event=last_event,
+        rng=random.Random(seed),
+    )
+
+
+def _choose_chip(
+    manager: _Manager,
+    *,
+    settings: LeagueSettings,
+    pool: Sequence[Candidate],
+    gameweek: int,
+    ranking: Mapping[int, float],
+    last_event: int,
+) -> ChipName | None:
+    """Whatever the season plan dated for this week, if it is still available."""
+    if not settings.chips_enabled or manager.result.policy in _PASSIVE:
+        return None
+    chip = manager.chip_plan.get(gameweek)
+    if chip is None or not manager.chips.available(chip, gameweek):
+        return None
+    return chip
 
 
 def _opening_squad(
@@ -529,20 +637,33 @@ def _play(
     outcomes: Mapping[int, SquadGameweek],
     projected: Mapping[int, float],
     form: Mapping[int, float],
+    chip: ChipName | None = None,
+    pool: Sequence[Candidate] = (),
 ) -> int:
+    squad = manager.squad
+    if chip == "free_hit" and pool:
+        # One week only: the squad played is not the squad kept.
+        squad = list(build_ranked_squad(pool, settings.squad_rules, projected))
+
     available = {
         player.element_id: outcomes.get(player.element_id, SquadGameweek(player.element_id, 0, 0))
-        for player in manager.squad
+        for player in squad
     }
     ranking = projected if manager.result.policy == "advised" else form
 
-    starters = _starting_eleven(manager.squad, ranking, settings.lineup_rules)
-    starters = _autosub(manager.squad, starters, available, settings.lineup_rules)
+    starters = _starting_eleven(squad, ranking, settings.lineup_rules)
+    starters = _autosub(squad, starters, available, settings.lineup_rules)
+    if chip == "bench_boost":
+        # Every one of the fifteen scores, so there is nothing to substitute.
+        starters = [player.element_id for player in squad]
 
     captain = max(starters, key=lambda pid: ranking.get(pid, 0.0), default=None)
     points = sum(available[pid].points for pid in starters)
     if captain is not None:
+        # Captain doubles; the triple captain chip adds a further multiple.
         points += available[captain].points
+        if chip == "triple_captain":
+            points += available[captain].points
     return points
 
 
