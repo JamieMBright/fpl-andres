@@ -25,7 +25,7 @@ interface OpeningSquad {
   withoutRecord: number;
   unavailable: number;
   bitPart: number;
-  minutesFloor: number;
+  startRateFloor: number;
   picks: Pick[];
 }
 
@@ -151,10 +151,16 @@ export function OpeningSquad() {
           </strong>{" "}
           {opening.withoutRecord} have no Premier League record,{" "}
           {opening.unavailable} are flagged injured or unavailable by FPL, and{" "}
-          {opening.bitPart} played under {opening.minutesFloor} minutes last
-          season, which makes them substitutes rather than picks. Some of those
-          will be excellent this year. This is the best of what is{" "}
+          {opening.bitPart} have under a{" "}
+          {Math.round(opening.startRateFloor * 100)}% chance of starting, judged
+          on how the season <em>ended</em> rather than what it averaged. Some of
+          those will be excellent this year. This is the best of what is{" "}
           <em>measurable</em>, which is not the same as the best.
+        </li>
+        <li>
+          <strong>It knows a player started, not why.</strong> A stand-in for an
+          injured first choice reads exactly like a man who won his place. That
+          cuts both ways, and nothing here separates them.
         </li>
         <li>
           <strong>

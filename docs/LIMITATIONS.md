@@ -185,6 +185,24 @@ what exists and what runs.
 
 ## Not modelled at all
 
+- **Starts are a better marker than minutes, and the model still uses minutes.**
+  Measured across six season pairs against next season's opening starts: season
+  minutes score 0.616 on rank correlation, season starts 0.620, and a rank blend
+  of season starts with closing-six starts 0.646, winning five of the six pairs.
+  The minutes model is decay weighted, which captures part of this, but it does
+  not count starts separately from minutes. Wiring the blend in is outstanding.
+- **Why a player is playing.** The model knows a defender started six of the
+  last six. It does not know he started because the first choice was injured,
+  so it cannot tell you the minutes will evaporate the moment that man is fit.
+  Every appearance is treated as evidence of a role, which over-reads a
+  stand-in and under-reads a returning starter.
+- **Promoted clubs have no measurement at all.** Three of the twenty come up
+  every year and their players carry no Premier League record, so they cannot
+  be ranked or picked. Championship minutes exist on FBref but neither
+  `soccerdata` nor Understat ships that competition, and scoring rates do not
+  transfer across the divisions in any case. Minutes might: for bench cover,
+  where the only question is whether a man will be on the pitch, Championship
+  appearances would be the right signal and are not currently read.
 - **Positional matchups.** Team strength is one attack and one defence figure
   per side. A right-sided forward against a weak left side is a real effect with
   no representation here, and no free source publishes flank splits directly.

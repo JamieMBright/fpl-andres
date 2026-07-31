@@ -19,7 +19,12 @@ from dataclasses import dataclass
 
 from fpl_andres.simulation.squad import Candidate, SquadRules, validate_squad
 
-__all__ = ["OpeningSettings", "SquadPlan", "choose_opening_squad"]
+__all__ = [
+    "PLAYABLE_START_RATE",
+    "OpeningSettings",
+    "SquadPlan",
+    "choose_opening_squad",
+]
 
 # How much a bench place is worth against a starting one. A bench player scores
 # when a starter records no minutes, and lets you switch fixture without a
@@ -27,7 +32,11 @@ __all__ = ["OpeningSettings", "SquadPlan", "choose_opening_squad"]
 # season of squad data behind it.
 _BENCH_WEIGHT = 0.25
 # A substitute who never starts cannot cover anything. Below this he is a body.
-_PLAYABLE_START_RATE = 0.35
+# Measured on the decay-weighted chance of an hour, not a season total: Isidor
+# made 32 appearances and started none of the last six, Kinsky made 7 and
+# started all of them.
+PLAYABLE_START_RATE = 0.35
+_PLAYABLE_START_RATE = PLAYABLE_START_RATE
 # Rotating this pair is the point of a cheap goalkeeper pairing.
 _GOALKEEPER = 1
 

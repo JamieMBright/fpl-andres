@@ -24,7 +24,11 @@ from datetime import UTC, datetime
 from pathlib import Path
 
 from fpl_andres.backtesting.fixtures import Fixture, TeamStrength
-from fpl_andres.planning.opening import OpeningSettings, choose_opening_squad
+from fpl_andres.planning.opening import (
+    PLAYABLE_START_RATE,
+    OpeningSettings,
+    choose_opening_squad,
+)
 from fpl_andres.simulation.squad import Candidate, SquadRules
 
 BOOTSTRAP = "https://fantasy.premierleague.com/api/bootstrap-static/"
@@ -38,9 +42,6 @@ POSITION_CODES = {1: "GKP", 2: "DEF", 3: "MID", 4: "FWD"}
 # Long enough to matter to an opening squad, short enough that the sides playing
 # them still resemble the ones named today.
 RUN_WINDOW = 5
-# Roughly a third of a season. Below this a man was a substitute last year, and
-# nothing in this model knows whether that has changed.
-LAST_SEASON_MINUTES_FLOOR = 900
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -151,14 +152,15 @@ def main(argv: Sequence[str] | None = None) -> int:
         if str(element["status"]) != "a":
             unavailable += 1
             continue
-        # This field is last season's total. A man on two hundred minutes was
-        # not a starter then and there is no evidence he is one now.
-        if int(element["minutes"]) < LAST_SEASON_MINUTES_FLOOR:
-            bit_part += 1
-            continue
         record = record_by_code.get(int(element["code"]))
         if record is None:
             unseen += 1
+            continue
+        # A season total says nothing about when the minutes happened. The
+        # projected chance of an hour is decay weighted, so a January signing
+        # who started every remaining match reads as the starter he became.
+        if float(record["probabilityStart"]) < PLAYABLE_START_RATE:
+            bit_part += 1
             continue
         team_id = int(element["team"])
         run, rated_count, fixtures = _run_rating(
@@ -231,7 +233,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                 "withoutRecord": unseen,
                 "unavailable": unavailable,
                 "bitPart": bit_part,
-                "minutesFloor": LAST_SEASON_MINUTES_FLOOR,
+                "startRateFloor": PLAYABLE_START_RATE,
                 "picks": picks,
             },
             indent=2,
@@ -242,8 +244,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     spent = sum(player.price_tenths for player in squad)
     print(
         f"considered {len(rated)}; skipped {unseen} with no record, "
-        f"{unavailable} flagged by FPL, {bit_part} under "
-        f"{LAST_SEASON_MINUTES_FLOOR} minutes last season"
+        f"{unavailable} flagged by FPL, {bit_part} below a "
+        f"{PLAYABLE_START_RATE:.0%} chance of starting"
     )
     print(
         f"spent {spent / 10:.1f}m of {RULES.budget_tenths / 10:.1f}m, "

@@ -53,6 +53,11 @@ def _entry(projection: MatchProjection) -> dict[str, object]:
         "probabilityAppear": round(projection.minutes.probability_appear, 3),
         "probabilityStart": round(projection.minutes.probability_sixty_minutes, 3),
         "appearances": shape.appearances,
+        # The closing stretch, which says what a player's role became rather
+        # than what it averaged. A January arrival reads correctly here.
+        "recentMinutes": projection.recent_minutes,
+        "recentStarts": projection.recent_starts,
+        "recentMatches": projection.recent_matches,
         # Shape is a description of what happened, so it is withheld rather
         # than smoothed when there is too little of it to describe.
         "floor": shape.floor if enough else None,

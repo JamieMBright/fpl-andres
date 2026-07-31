@@ -64,6 +64,29 @@ export function Methodology() {
           probability of appearing sits within 0.07 of the observed rate, and
           the probability of reaching sixty minutes is close to exact.
         </p>
+        <p className="method-proof">
+          <strong>Why there is no minimum-minutes cutoff.</strong> A season
+          total says nothing about <em>when</em> a player played, and minutes
+          conflate two different things: a thousand of them can be eleven full
+          matches or seventeen cameos. Tested across six consecutive season
+          pairs, neither a season total nor end-of-season minutes is a good
+          filter on its own &mdash; they score 0.616 and 0.605 on rank
+          correlation against next season&rsquo;s opening starts. Counting{" "}
+          <em>starts</em> rather than minutes, and combining season-long volume
+          with the role a player finished the season in, does better: 0.646,
+          beating the season total in five of the six pairs. So there is no
+          cutoff. Minutes are weighted by recency with a four-gameweek half-life
+          and the whole history is used.
+        </p>
+        <p className="method-proof">
+          The effect is concentrated where the two markers disagree, which is
+          the case worth catching. Among players a 900-minute filter would
+          reject, those who had started four of the final six went on to start
+          the next season&rsquo;s opening games 42% of the time, against 10% for
+          the rest &mdash; four times the rate, in all six pairs. A January
+          signing who played every remaining match is not a fringe player, and a
+          filter that cannot see the difference will keep saying he is.
+        </p>
       </section>
 
       <section aria-labelledby="method-blend">

@@ -242,12 +242,19 @@ class MatchProjection:
     shape: PointsShape
     minutes: MinutesProjection
     rates: PlayerRateProjection
+    # The closing stretch of the season, which is the best guide to a player's
+    # current role. A January signing who started every remaining match reads
+    # nothing like a squad player with the same season total.
+    recent_minutes: int = 0
+    recent_starts: int = 0
+    recent_matches: int = 0
 
 
 def project_next_match(
     corpus: SeasonCorpus,
     *,
     settings: ProjectionSettings | None = None,
+    recent_window: int = 6,
 ) -> list[MatchProjection]:
     """Project every player's next match from a completed season, fixture-free.
 
@@ -283,6 +290,7 @@ def project_next_match(
         if rates.evidence_level == "unavailable":
             continue
 
+        recent = [row for row in rows if row.gameweek > gameweek - 1 - recent_window]
         projections.append(
             MatchProjection(
                 code=code,
@@ -303,6 +311,9 @@ def project_next_match(
                 shape=describe_shape(rows),
                 minutes=minutes,
                 rates=rates,
+                recent_minutes=sum(row.minutes for row in recent),
+                recent_starts=sum(1 for row in recent if row.minutes >= 60),
+                recent_matches=len(recent),
             )
         )
 
