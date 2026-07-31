@@ -683,11 +683,14 @@ def _supporting_points(
     for events, league_rate, points in routes:
         total += ninety * rate(events, league_rate.get(position, 0.0)) * points
 
-    total += (
-        _defensive_contribution_points(
-            appearances, position, ninety, league, prior_nineties, nineties_played
-        )
-        * adjustment.defensive_contribution
+    total += _defensive_contribution_points(
+        appearances,
+        position,
+        ninety,
+        league,
+        prior_nineties,
+        nineties_played,
+        adjustment.defensive_contribution,
     )
 
     return total
@@ -700,6 +703,7 @@ def _defensive_contribution_points(
     league: LeagueRates,
     prior_nineties: float,
     nineties_played: float,
+    adjustment: float,
 ) -> float:
     """Zero before 2025/26, where the column is absent because the route did not exist."""
     threshold = _DEFCON_THRESHOLD.get(position)
@@ -711,9 +715,12 @@ def _defensive_contribution_points(
     hits = sum(1 for row in observed if (row.defensive_contribution or 0) >= threshold)
     seen = sum(row.minutes for row in observed) / _MINUTES_PER_90
     rate = _shrunk_rate(hits, seen, league.defcon_hits.get(position, 0.0), prior_nineties)
+    # A hit rate is a share of matches, so the fixture multiplier cannot lift it
+    # past one however much pressure the opponent applies.
+    adjusted = min(1.0, rate * adjustment)
     # Scaled by the share of the player's history that even had the column.
     coverage = min(1.0, seen / nineties_played) if nineties_played > 0 else 0.0
-    return ninety * rate * _DEFCON_POINTS[position] * coverage
+    return ninety * adjusted * _DEFCON_POINTS[position] * coverage
 
 
 def _cutoff_for(
