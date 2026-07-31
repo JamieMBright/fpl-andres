@@ -18,6 +18,7 @@ __all__ = [
     "Candidate",
     "SquadRules",
     "SquadSelectionError",
+    "build_ranked_squad",
     "build_squad",
     "validate_squad",
 ]
@@ -96,6 +97,79 @@ def validate_squad(squad: Sequence[Candidate], rules: SquadRules) -> None:
     over = {team: count for team, count in counts.items() if count > rules.club_limit}
     if over:
         raise SquadSelectionError(f"club limit exceeded: {over}")
+
+
+def build_ranked_squad(
+    pool: Sequence[Candidate],
+    rules: SquadRules,
+    ranking: Mapping[int, float],
+) -> tuple[Candidate, ...]:
+    """The best legal squad a greedy pass over ``ranking`` can afford.
+
+    Used to start every policy from the same credible team. A randomly drawn
+    squad is mostly players who never appear, so a simulation begun from one
+    measures recovery from a bad team rather than skill at playing the game.
+
+    Greedy with a feasibility floor: a player is only taken if the remaining
+    budget can still buy the cheapest legal completion of the squad.
+    """
+    by_position: dict[int, list[Candidate]] = {}
+    for player in pool:
+        by_position.setdefault(player.position, []).append(player)
+
+    for position, required in rules.position_counts.items():
+        available = len(by_position.get(position, []))
+        if available < required:
+            raise SquadSelectionError(
+                f"pool holds {available} players in position {position}, need {required}"
+            )
+
+    cheapest: dict[int, list[int]] = {
+        position: sorted(player.price_tenths for player in players)
+        for position, players in by_position.items()
+    }
+    needed = dict(rules.position_counts)
+    squad: list[Candidate] = []
+    clubs: dict[int, int] = {}
+    spent = 0
+
+    ordered = sorted(
+        pool,
+        key=lambda player: (-ranking.get(player.element_id, 0.0), player.price_tenths),
+    )
+    for player in ordered:
+        if needed.get(player.position, 0) <= 0:
+            continue
+        if clubs.get(player.team_id, 0) >= rules.club_limit:
+            continue
+        floor = _completion_floor(needed, cheapest, player.position)
+        if spent + player.price_tenths + floor > rules.budget_tenths:
+            continue
+        squad.append(player)
+        clubs[player.team_id] = clubs.get(player.team_id, 0) + 1
+        needed[player.position] -= 1
+        spent += player.price_tenths
+        if all(count <= 0 for count in needed.values()):
+            break
+
+    if any(count > 0 for count in needed.values()):
+        raise SquadSelectionError("could not complete a legal squad from the ranking")
+    validate_squad(squad, rules)
+    return tuple(squad)
+
+
+def _completion_floor(
+    needed: Mapping[int, int], cheapest: Mapping[int, list[int]], taking: int
+) -> int:
+    """Cheapest possible cost of the slots still open after this pick."""
+    total = 0
+    for position, count in needed.items():
+        remaining = count - 1 if position == taking else count
+        if remaining <= 0:
+            continue
+        prices = cheapest.get(position, [])
+        total += sum(prices[:remaining])
+    return total
 
 
 def build_squad(

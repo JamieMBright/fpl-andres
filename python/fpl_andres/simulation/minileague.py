@@ -27,7 +27,13 @@ from fpl_andres.backtesting.corpus import SeasonCorpus
 from fpl_andres.backtesting.projector import ProjectionSettings, project_gameweek
 from fpl_andres.simulation.baselines import crowd_ranking
 from fpl_andres.simulation.season import LineupRules, SquadGameweek
-from fpl_andres.simulation.squad import Candidate, SquadRules, build_squad
+from fpl_andres.simulation.squad import (
+    Candidate,
+    SquadRules,
+    SquadSelectionError,
+    build_ranked_squad,
+    build_squad,
+)
 
 __all__ = [
     "LeagueResult",
@@ -154,11 +160,12 @@ def simulate_league(
     outcome = LeagueResult(season=corpus.season, settings=settings)
     managers: list[_Manager] = []
     roster = settings.policy_roster()
+    opening = _opening_squad(corpus, pool, settings, seed)
 
     for index in range(settings.managers):
         policy = roster[index]
         manager_seed = seed * 1000 + index
-        squad = list(build_squad(pool, settings.squad_rules, rng=random.Random(manager_seed)))
+        squad = list(opening)
         result = ManagerResult(manager_id=index, policy=policy, seed=manager_seed)
         outcome.managers.append(result)
         managers.append(
@@ -219,6 +226,47 @@ def simulate_league(
             manager.result.total_points += points
 
     return outcome
+
+
+def _opening_squad(
+    corpus: SeasonCorpus,
+    pool: Sequence[Candidate],
+    settings: LeagueSettings,
+    seed: int,
+) -> tuple[Candidate, ...]:
+    """The team every policy starts from.
+
+    All policies share it, so any difference in outcome is the policy rather
+    than the luck of the draw. The seed picks between credible openings instead
+    of drawing at random: a random legal squad is mostly players who never
+    appear, and starting there measures recovery from a bad team.
+    """
+    gameweek = settings.start_gameweek
+    owned = {
+        row.element_id: float(row.selected)
+        for event in range(1, gameweek)
+        for row in corpus.rows_by_gameweek.get(event, ())
+        if row.selected is not None
+    }
+    if not owned:
+        return build_squad(pool, settings.squad_rules, rng=random.Random(seed))
+
+    variants = [owned]
+    prices = {candidate.element_id: candidate.price_tenths for candidate in pool}
+    # Ownership per pound, which is how a budget-conscious template is built.
+    variants.append(
+        {
+            element_id: value / max(1, prices.get(element_id, 1))
+            for element_id, value in owned.items()
+        }
+    )
+    variants.append(_recent_form(corpus, gameweek))
+
+    ranking = variants[seed % len(variants)]
+    try:
+        return build_ranked_squad(pool, settings.squad_rules, ranking)
+    except SquadSelectionError:
+        return build_squad(pool, settings.squad_rules, rng=random.Random(seed))
 
 
 def _sorted_by(
