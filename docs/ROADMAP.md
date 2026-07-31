@@ -211,11 +211,17 @@ Ordered by what would change the answers most, not by effort.
 ### Measured, and still not wired
 
 1. **Understat is joined and unused.** The crosswalk verifies 94.9% of eligible
-   2025-26 players against Understat, and that brings xG, npxG, xA, shots, key
-   passes and buildup involvement with it. **None of it feeds a projection.**
-   The scoring model still runs on realised goals and assists alone. This is the
-   largest gap on the list: the data is already on disk.
-2. **Starts beat minutes and the model still uses minutes.** Measured over six
+   2025-26 players against Understat, and that brings npxG, xA, shots, key
+   passes, shot locations and buildup involvement with it. **None of it feeds a
+   projection.** The attacking rate already uses FPL's own expected goals from
+   2022-23 onward (see [`MODEL.md`](MODEL.md) §3), so the gap is not "no xG" —
+   it is penalty-separated xG, shot volume and shot position. Shot coordinates
+   are what a positional matchup would need.
+2. **FPL published no expected values before 2022-23.** Coverage is 0% for
+   2019-20 to 2021-22 and 100% from 2022-23, so the rate model silently switches
+   basis at that boundary. Any backtest spanning it is scoring two different
+   models and must say so.
+3. **Starts beat minutes and the model still uses minutes.** Measured over six
    season pairs against next season's opening starts: season minutes 0.616,
    season starts 0.620, a rank blend of season starts with closing starts
    **0.646**, winning five of six. The blend is not in the minutes model.
