@@ -135,7 +135,10 @@ def simulate_league(
         result = ManagerResult(manager_id=index, policy=policy, seed=manager_seed)
         outcome.managers.append(result)
         managers.append(
-            _Manager(result=result, squad=squad, free_transfers=settings.free_transfers_per_event)
+            # Zero here, not one: the week's free transfer is granted at the top
+            # of _take_transfers, so seeding one as well would hand every
+            # manager an extra move over the season.
+            _Manager(result=result, squad=squad, free_transfers=0)
         )
 
     sorted_pool: dict[str, Mapping[int, Sequence[Candidate]]] = {}

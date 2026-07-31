@@ -34,6 +34,11 @@ __all__ = [
 _SEASON_NAME = re.compile(r"^\d{4}/\d{2}$")
 # Entry ids appear as bare numbers or inside an FPL URL.
 _ENTRY_URL = re.compile(r"(?:/entry/|team/)(\d{1,10})\b")
+# A saved web page carries far more than the list: navigation, comments and
+# unrelated links all contain digits after a `team/` segment. Only a link to a
+# manager's own history page is unambiguous.
+_ENTRY_HISTORY_URL = re.compile(r"/entry/(\d{1,10})/history")
+_LOOKS_LIKE_MARKUP = re.compile(r"<(?:html|body|table|a\s|div|script)\b", re.I)
 
 
 class CohortError(ValueError):
@@ -125,14 +130,22 @@ def qualifies(record: ManagerRecord, criteria: CohortCriteria) -> bool:
 
 
 def extract_entry_ids(text: str, *, limit: int = 500) -> tuple[int, ...]:
-    """Pull candidate entry ids out of a pasted list.
+    """Pull candidate entry ids out of a pasted list or a saved web page.
 
-    Accepts FPL URLs or bare ids one per line. Order is preserved and
-    duplicates dropped, because the list is only ever a set of candidates to
-    verify against the official API.
+    A pasted list is read permissively: FPL URLs or bare ids, one per line.
+
+    Markup is read strictly, taking only links to a manager's own history page.
+    A saved page carries navigation, comments and unrelated links whose digits
+    would otherwise be swept up as managers, and a contaminated candidate list
+    produces a contaminated cohort even though every id in it verifies cleanly.
     """
     found: list[int] = []
     seen: set[int] = set()
+
+    if _LOOKS_LIKE_MARKUP.search(text):
+        for value in _ENTRY_HISTORY_URL.findall(text):
+            _remember(int(value), found, seen)
+        return tuple(found[:limit])
 
     for match in _ENTRY_URL.finditer(text):
         _remember(int(match.group(1)), found, seen)

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-31T05:47:16.126831+00:00",
+  "generatedAt": "2026-07-31T09:04:41.958842+00:00",
   "seasons": [
     {
       "season": "2019-20",
@@ -10,32 +10,32 @@
       "methods": [
         {
           "label": "model",
-          "scored": 11873,
-          "meanAbsoluteError": 1.74,
-          "rootMeanSquaredError": 2.65,
-          "bias": -0.079,
-          "spearman": 0.495,
-          "topNHitRate": 0.202,
+          "scored": 11338,
+          "meanAbsoluteError": 1.742,
+          "rootMeanSquaredError": 2.638,
+          "bias": -0.031,
+          "spearman": 0.497,
+          "topNHitRate": 0.206,
           "byPosition": {
-            "DEF": 0.449,
-            "FWD": 0.513,
-            "GKP": 0.572,
-            "MID": 0.501
+            "DEF": 0.453,
+            "FWD": 0.524,
+            "GKP": 0.559,
+            "MID": 0.507
           }
         },
         {
           "label": "recent_mean",
-          "scored": 18364,
-          "meanAbsoluteError": 1.257,
-          "rootMeanSquaredError": 2.333,
-          "bias": 0.042,
-          "spearman": 0.664,
-          "topNHitRate": 0.139,
+          "scored": 11338,
+          "meanAbsoluteError": 1.874,
+          "rootMeanSquaredError": 2.868,
+          "bias": 0.116,
+          "spearman": 0.459,
+          "topNHitRate": 0.152,
           "byPosition": {
-            "DEF": 0.421,
+            "DEF": 0.42,
             "FWD": 0.497,
-            "GKP": 0.522,
-            "MID": 0.473
+            "GKP": 0.52,
+            "MID": 0.472
           }
         },
         {
@@ -44,20 +44,20 @@
           "meanAbsoluteError": null,
           "rootMeanSquaredError": null,
           "bias": null,
-          "spearman": 0.45,
-          "topNHitRate": 0.161,
+          "spearman": 0.265,
+          "topNHitRate": 0.174,
           "byPosition": {
             "DEF": 0.234,
             "FWD": 0.338,
-            "GKP": 0.404,
-            "MID": 0.265
+            "GKP": 0.394,
+            "MID": 0.261
           }
         }
       ],
       "league": {
-        "advisedMean": 1623,
+        "advisedMean": 1693,
         "zombieMean": 1425,
-        "advisedBest": 1710,
+        "advisedBest": 1791,
         "zombieBest": 1639,
         "advisedWins": 5,
         "leaguesPlayed": 5
@@ -72,32 +72,32 @@
       "methods": [
         {
           "label": "model",
-          "scored": 11538,
-          "meanAbsoluteError": 1.848,
-          "rootMeanSquaredError": 2.783,
-          "bias": -0.016,
-          "spearman": 0.496,
-          "topNHitRate": 0.186,
+          "scored": 10751,
+          "meanAbsoluteError": 1.832,
+          "rootMeanSquaredError": 2.737,
+          "bias": 0.024,
+          "spearman": 0.51,
+          "topNHitRate": 0.194,
           "byPosition": {
-            "DEF": 0.472,
-            "FWD": 0.509,
-            "GKP": 0.501,
-            "MID": 0.512
+            "DEF": 0.484,
+            "FWD": 0.523,
+            "GKP": 0.505,
+            "MID": 0.524
           }
         },
         {
           "label": "recent_mean",
-          "scored": 19513,
-          "meanAbsoluteError": 1.258,
-          "rootMeanSquaredError": 2.391,
-          "bias": -0.005,
-          "spearman": 0.672,
-          "topNHitRate": 0.139,
+          "scored": 10751,
+          "meanAbsoluteError": 1.945,
+          "rootMeanSquaredError": 2.954,
+          "bias": 0.06,
+          "spearman": 0.479,
+          "topNHitRate": 0.156,
           "byPosition": {
             "DEF": 0.45,
-            "FWD": 0.482,
-            "GKP": 0.442,
-            "MID": 0.48
+            "FWD": 0.484,
+            "GKP": 0.455,
+            "MID": 0.487
           }
         },
         {
@@ -106,8 +106,8 @@
           "meanAbsoluteError": null,
           "rootMeanSquaredError": null,
           "bias": null,
-          "spearman": 0.445,
-          "topNHitRate": 0.173,
+          "spearman": 0.256,
+          "topNHitRate": 0.177,
           "byPosition": {
             "DEF": 0.234,
             "FWD": 0.317,
@@ -117,11 +117,11 @@
         }
       ],
       "league": {
-        "advisedMean": 1632,
+        "advisedMean": 1710,
         "zombieMean": 1437,
-        "advisedBest": 1714,
+        "advisedBest": 1791,
         "zombieBest": 1697,
-        "advisedWins": 4,
+        "advisedWins": 5,
         "leaguesPlayed": 5
       }
     },
@@ -134,32 +134,32 @@
       "methods": [
         {
           "label": "model",
-          "scored": 11138,
-          "meanAbsoluteError": 1.927,
-          "rootMeanSquaredError": 2.911,
-          "bias": 0.018,
-          "spearman": 0.472,
-          "topNHitRate": 0.198,
+          "scored": 10207,
+          "meanAbsoluteError": 1.939,
+          "rootMeanSquaredError": 2.912,
+          "bias": 0.058,
+          "spearman": 0.481,
+          "topNHitRate": 0.211,
           "byPosition": {
-            "DEF": 0.436,
-            "FWD": 0.445,
-            "GKP": 0.611,
-            "MID": 0.506
+            "DEF": 0.443,
+            "FWD": 0.462,
+            "GKP": 0.604,
+            "MID": 0.513
           }
         },
         {
           "label": "recent_mean",
-          "scored": 19591,
-          "meanAbsoluteError": 1.279,
-          "rootMeanSquaredError": 2.486,
-          "bias": -0.017,
-          "spearman": 0.652,
-          "topNHitRate": 0.148,
+          "scored": 10207,
+          "meanAbsoluteError": 2.065,
+          "rootMeanSquaredError": 3.162,
+          "bias": 0.026,
+          "spearman": 0.435,
+          "topNHitRate": 0.167,
           "byPosition": {
-            "DEF": 0.39,
-            "FWD": 0.397,
-            "GKP": 0.534,
-            "MID": 0.454
+            "DEF": 0.394,
+            "FWD": 0.401,
+            "GKP": 0.549,
+            "MID": 0.46
           }
         },
         {
@@ -168,8 +168,8 @@
           "meanAbsoluteError": null,
           "rootMeanSquaredError": null,
           "bias": null,
-          "spearman": 0.475,
-          "topNHitRate": 0.167,
+          "spearman": 0.276,
+          "topNHitRate": 0.169,
           "byPosition": {
             "DEF": 0.234,
             "FWD": 0.227,
@@ -179,9 +179,9 @@
         }
       ],
       "league": {
-        "advisedMean": 1847,
+        "advisedMean": 1735,
         "zombieMean": 1493,
-        "advisedBest": 1928,
+        "advisedBest": 1838,
         "zombieBest": 1686,
         "advisedWins": 5,
         "leaguesPlayed": 5
@@ -196,32 +196,32 @@
       "methods": [
         {
           "label": "model",
-          "scored": 11470,
-          "meanAbsoluteError": 1.744,
-          "rootMeanSquaredError": 2.752,
-          "bias": -0.278,
-          "spearman": 0.483,
-          "topNHitRate": 0.182,
+          "scored": 11079,
+          "meanAbsoluteError": 1.75,
+          "rootMeanSquaredError": 2.716,
+          "bias": -0.188,
+          "spearman": 0.492,
+          "topNHitRate": 0.185,
           "byPosition": {
-            "DEF": 0.419,
-            "FWD": 0.513,
-            "GKP": 0.541,
-            "MID": 0.548
+            "DEF": 0.43,
+            "FWD": 0.521,
+            "GKP": 0.543,
+            "MID": 0.55
           }
         },
         {
           "label": "recent_mean",
-          "scored": 21224,
-          "meanAbsoluteError": 1.152,
-          "rootMeanSquaredError": 2.24,
-          "bias": -0.005,
-          "spearman": 0.69,
-          "topNHitRate": 0.147,
+          "scored": 11079,
+          "meanAbsoluteError": 1.94,
+          "rootMeanSquaredError": 2.925,
+          "bias": 0.04,
+          "spearman": 0.447,
+          "topNHitRate": 0.148,
           "byPosition": {
-            "DEF": 0.365,
-            "FWD": 0.471,
-            "GKP": 0.485,
-            "MID": 0.507
+            "DEF": 0.374,
+            "FWD": 0.47,
+            "GKP": 0.491,
+            "MID": 0.506
           }
         },
         {
@@ -230,8 +230,8 @@
           "meanAbsoluteError": null,
           "rootMeanSquaredError": null,
           "bias": null,
-          "spearman": 0.463,
-          "topNHitRate": 0.174,
+          "spearman": 0.258,
+          "topNHitRate": 0.176,
           "byPosition": {
             "DEF": 0.22,
             "FWD": 0.332,
@@ -241,9 +241,9 @@
         }
       ],
       "league": {
-        "advisedMean": 1753,
+        "advisedMean": 1825,
         "zombieMean": 1427,
-        "advisedBest": 1864,
+        "advisedBest": 1891,
         "zombieBest": 1699,
         "advisedWins": 5,
         "leaguesPlayed": 5
@@ -258,32 +258,32 @@
       "methods": [
         {
           "label": "model",
-          "scored": 12175,
-          "meanAbsoluteError": 1.711,
-          "rootMeanSquaredError": 2.719,
-          "bias": -0.155,
-          "spearman": 0.499,
-          "topNHitRate": 0.2,
+          "scored": 11729,
+          "meanAbsoluteError": 1.722,
+          "rootMeanSquaredError": 2.715,
+          "bias": -0.106,
+          "spearman": 0.507,
+          "topNHitRate": 0.192,
           "byPosition": {
-            "DEF": 0.426,
-            "FWD": 0.52,
-            "GKP": 0.517,
-            "MID": 0.553
+            "DEF": 0.433,
+            "FWD": 0.523,
+            "GKP": 0.529,
+            "MID": 0.56
           }
         },
         {
           "label": "recent_mean",
-          "scored": 24519,
-          "meanAbsoluteError": 1.015,
-          "rootMeanSquaredError": 2.126,
-          "bias": -0.012,
-          "spearman": 0.689,
-          "topNHitRate": 0.156,
+          "scored": 11729,
+          "meanAbsoluteError": 1.871,
+          "rootMeanSquaredError": 2.914,
+          "bias": 0.023,
+          "spearman": 0.463,
+          "topNHitRate": 0.17,
           "byPosition": {
             "DEF": 0.385,
-            "FWD": 0.476,
-            "GKP": 0.484,
-            "MID": 0.518
+            "FWD": 0.474,
+            "GKP": 0.487,
+            "MID": 0.517
           }
         },
         {
@@ -292,8 +292,8 @@
           "meanAbsoluteError": null,
           "rootMeanSquaredError": null,
           "bias": null,
-          "spearman": 0.452,
-          "topNHitRate": 0.17,
+          "spearman": 0.22,
+          "topNHitRate": 0.177,
           "byPosition": {
             "DEF": 0.193,
             "FWD": 0.342,
@@ -303,9 +303,9 @@
         }
       ],
       "league": {
-        "advisedMean": 1797,
+        "advisedMean": 1899,
         "zombieMean": 1505,
-        "advisedBest": 1900,
+        "advisedBest": 1975,
         "zombieBest": 1692,
         "advisedWins": 5,
         "leaguesPlayed": 5
@@ -320,32 +320,32 @@
       "methods": [
         {
           "label": "model",
-          "scored": 12175,
-          "meanAbsoluteError": 1.672,
-          "rootMeanSquaredError": 2.615,
-          "bias": -0.161,
-          "spearman": 0.502,
-          "topNHitRate": 0.181,
+          "scored": 11973,
+          "meanAbsoluteError": 1.676,
+          "rootMeanSquaredError": 2.606,
+          "bias": -0.113,
+          "spearman": 0.507,
+          "topNHitRate": 0.188,
           "byPosition": {
-            "DEF": 0.466,
-            "FWD": 0.509,
-            "GKP": 0.601,
-            "MID": 0.508
+            "DEF": 0.473,
+            "FWD": 0.511,
+            "GKP": 0.618,
+            "MID": 0.512
           }
         },
         {
           "label": "recent_mean",
-          "scored": 23216,
-          "meanAbsoluteError": 1.1,
-          "rootMeanSquaredError": 2.207,
-          "bias": -0.001,
-          "spearman": 0.699,
-          "topNHitRate": 0.169,
+          "scored": 11973,
+          "meanAbsoluteError": 1.816,
+          "rootMeanSquaredError": 2.805,
+          "bias": 0.038,
+          "spearman": 0.466,
+          "topNHitRate": 0.142,
           "byPosition": {
-            "DEF": 0.436,
-            "FWD": 0.465,
-            "GKP": 0.591,
-            "MID": 0.47
+            "DEF": 0.434,
+            "FWD": 0.463,
+            "GKP": 0.597,
+            "MID": 0.469
           }
         },
         {
@@ -354,8 +354,8 @@
           "meanAbsoluteError": null,
           "rootMeanSquaredError": null,
           "bias": null,
-          "spearman": 0.436,
-          "topNHitRate": 0.147,
+          "spearman": 0.237,
+          "topNHitRate": 0.166,
           "byPosition": {
             "DEF": 0.254,
             "FWD": 0.372,
@@ -365,11 +365,11 @@
         }
       ],
       "league": {
-        "advisedMean": 1704,
+        "advisedMean": 1715,
         "zombieMean": 1578,
-        "advisedBest": 1842,
+        "advisedBest": 1827,
         "zombieBest": 1808,
-        "advisedWins": 3,
+        "advisedWins": 4,
         "leaguesPlayed": 5
       }
     },
@@ -382,32 +382,32 @@
       "methods": [
         {
           "label": "model",
-          "scored": 12171,
-          "meanAbsoluteError": 1.848,
-          "rootMeanSquaredError": 2.754,
-          "bias": -0.141,
-          "spearman": 0.464,
-          "topNHitRate": 0.153,
+          "scored": 11952,
+          "meanAbsoluteError": 1.862,
+          "rootMeanSquaredError": 2.758,
+          "bias": -0.101,
+          "spearman": 0.466,
+          "topNHitRate": 0.145,
           "byPosition": {
-            "DEF": 0.427,
-            "FWD": 0.545,
-            "GKP": 0.581,
-            "MID": 0.478
+            "DEF": 0.425,
+            "FWD": 0.553,
+            "GKP": 0.589,
+            "MID": 0.481
           }
         },
         {
           "label": "recent_mean",
-          "scored": 24909,
-          "meanAbsoluteError": 1.049,
-          "rootMeanSquaredError": 2.12,
-          "bias": 0.002,
-          "spearman": 0.721,
+          "scored": 11952,
+          "meanAbsoluteError": 2.006,
+          "rootMeanSquaredError": 2.962,
+          "bias": 0.039,
+          "spearman": 0.422,
           "topNHitRate": 0.116,
           "byPosition": {
-            "DEF": 0.38,
-            "FWD": 0.517,
-            "GKP": 0.564,
-            "MID": 0.436
+            "DEF": 0.377,
+            "FWD": 0.515,
+            "GKP": 0.565,
+            "MID": 0.435
           }
         },
         {
@@ -416,8 +416,8 @@
           "meanAbsoluteError": null,
           "rootMeanSquaredError": null,
           "bias": null,
-          "spearman": 0.474,
-          "topNHitRate": 0.134,
+          "spearman": 0.237,
+          "topNHitRate": 0.136,
           "byPosition": {
             "DEF": 0.239,
             "FWD": 0.234,
@@ -427,9 +427,9 @@
         }
       ],
       "league": {
-        "advisedMean": 1692,
+        "advisedMean": 1665,
         "zombieMean": 1359,
-        "advisedBest": 1798,
+        "advisedBest": 1730,
         "zombieBest": 1535,
         "advisedWins": 5,
         "leaguesPlayed": 5

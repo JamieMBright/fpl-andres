@@ -106,7 +106,7 @@ def score_season(
     """
     config = settings or ProjectionSettings()
     outcome = SeasonScore(season=corpus.season, first_scored_gameweek=minimum_history + 1)
-    for label in ("model", "recent_mean", "ownership"):
+    for label in ("model", "components", "recent_mean", "ownership"):
         outcome.methods[label] = MethodScore(label=label)
 
     for gameweek in corpus.gameweeks:
@@ -120,39 +120,43 @@ def score_season(
         model_ranking = {
             projection.element_id: projection.expected_points for projection in projections
         }
+        component_ranking = {
+            projection.element_id: projection.component_points for projection in projections
+        }
         positions = {
             projection.element_id: _POSITION_NAMES.get(projection.position, "UNK")
             for projection in projections
         }
+        recent = baseline_recent_mean(corpus, gameweek)
+        ownership = baseline_ownership(corpus, gameweek)
 
-        _score(
-            outcome.methods["model"],
-            gameweek,
-            model_ranking,
-            actual,
-            top_n,
-            positions,
-            calibrated=True,
-        )
-        _score(
-            outcome.methods["recent_mean"],
-            gameweek,
-            baseline_recent_mean(corpus, gameweek),
-            actual,
-            top_n,
-            positions,
-            calibrated=True,
-        )
-        _score(
-            outcome.methods["ownership"],
-            gameweek,
-            baseline_ownership(corpus, gameweek),
-            actual,
-            top_n,
-            positions,
+        # Every method is scored on the same players. Left to their own
+        # populations, the naive baseline is handed several hundred fringe
+        # players who never appear and trivially score zero, which inflates a
+        # rank correlation without demonstrating any skill.
+        population = [
+            element
+            for element in model_ranking
+            if element in actual and element in recent and element in ownership
+        ]
+
+        for label, ranking, calibrated in (
+            ("model", model_ranking, True),
+            ("components", component_ranking, True),
+            ("recent_mean", recent, True),
             # Ownership counts are not points, so only its ranking is scored.
-            calibrated=False,
-        )
+            ("ownership", ownership, False),
+        ):
+            _score(
+                outcome.methods[label],
+                gameweek,
+                ranking,
+                actual,
+                top_n,
+                positions,
+                population,
+                calibrated=calibrated,
+            )
 
     return outcome
 
@@ -164,10 +168,11 @@ def _score(
     actual: Mapping[int, int],
     top_n: int,
     positions: Mapping[int, str],
+    population: Sequence[int],
     *,
     calibrated: bool,
 ) -> None:
-    shared = [element for element in ranking if element in actual]
+    shared = [element for element in population if element in ranking]
     if len(shared) < top_n:
         return
 
