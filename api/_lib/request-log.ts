@@ -67,3 +67,119 @@ export function applyFailureHeaders(
 }
 
 export { REQUEST_ID_HEADER };
+
+/**
+ * Timing and upstream outcomes, so a failure is visible before a user reports it.
+ *
+ * Audit items #85, #92 and #93. There was no timing instrumentation and a
+ * contract failure was swallowed without recording what upstream had actually
+ * said, so a spike in 502s or an FPL schema change was invisible until someone
+ * complained, and then not reproducible.
+ *
+ * The sink is stdout and stderr. That is not a limitation: Vercel drains both,
+ * and every hosted log service ingests newline-delimited JSON. Choosing a
+ * vendor is an owner decision; emitting a line an alert can be written against
+ * is not, and it is the part that has to exist first. `docs/OPERATIONS.md`
+ * records the queries.
+ *
+ * Nothing here may carry a payload fragment, an upstream body or a header
+ * value. Status codes, durations, counts and fixed strings only -- the same
+ * rule that produced the opaque request id above.
+ */
+
+/**
+ * A refusal is a signal, not an error. It is logged so the rate of refusals is
+ * visible: a steady trickle is the limit working, and a step change is either
+ * an attack or a limit set too low, which look identical in a 429 count alone.
+ */
+export function logRateLimit({
+  route,
+  scope,
+}: {
+  route: string;
+  scope: "client" | "global";
+}): void {
+  console.warn(
+    JSON.stringify({
+      level: "warn",
+      event: "rate_limited",
+      route,
+      scope,
+    }),
+  );
+}
+
+export type UpstreamOutcome = {
+  requestId: string;
+  route: string;
+  source: string;
+  status: number | null;
+  reason: string | null;
+  durationMs: number;
+  attempts?: number;
+};
+
+export function logUpstreamOutcome({
+  requestId,
+  route,
+  source,
+  status,
+  reason,
+  durationMs,
+  attempts,
+}: UpstreamOutcome): void {
+  const failed = status === null || status >= 500 || reason !== null;
+  const line = JSON.stringify({
+    level: failed ? "warn" : "info",
+    event: "upstream_outcome",
+    requestId,
+    route,
+    source,
+    status,
+    reason,
+    durationMs: Math.round(durationMs),
+    attempts: attempts ?? null,
+  });
+  if (failed) console.warn(line);
+  else console.log(line);
+}
+
+export type HandlerOutcome = {
+  requestId: string;
+  route: string;
+  status: number;
+  reason: string | null;
+  totalMs: number;
+  upstreamMs: number;
+};
+
+/**
+ * The split matters more than the total. A slow handler that spent its time
+ * waiting on FPL is a different problem from one that spent it parsing, and
+ * only one of the two is ours to fix.
+ */
+export function logHandlerOutcome({
+  requestId,
+  route,
+  status,
+  reason,
+  totalMs,
+  upstreamMs,
+}: HandlerOutcome): void {
+  const total = Math.round(totalMs);
+  const upstream = Math.round(upstreamMs);
+  const line = JSON.stringify({
+    level: status >= 500 ? "warn" : "info",
+    event: "handler_outcome",
+    requestId,
+    route,
+    status,
+    reason,
+    totalMs: total,
+    upstreamMs: upstream,
+    // Never negative: a clock that went backwards is not evidence of negative work.
+    localMs: Math.max(0, total - upstream),
+  });
+  if (status >= 500) console.warn(line);
+  else console.log(line);
+}

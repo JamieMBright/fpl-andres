@@ -3,11 +3,28 @@ import { z } from "zod";
 
 import { createFplProxyResponse, FPL_PROXY_BUDGET_MS } from "./fpl-proxy.js";
 import {
+  logHandlerOutcome,
+  logUpstreamOutcome,
+  newRequestId,
+} from "./request-log.js";
+import {
   assembleTeamPublicState,
   TeamPublicStateContractError,
 } from "./team-public-state.js";
 
 const MAX_PUBLIC_ID = 4_294_967_295;
+
+/**
+ * The picks fetch is sequential, not parallel, so it needs its own budget.
+ *
+ * Audit item #88. The two opening fetches share a deadline correctly -- they run
+ * concurrently, so neither consumes the other's wall clock. Picks is different:
+ * it cannot start until the entry response has named the current event, and it
+ * was given whatever remained of the same deadline. A pair that took eight of
+ * the eight and a half seconds left picks a quarter second, and the whole
+ * request degraded on the one fetch that had done nothing wrong.
+ */
+const PICKS_BUDGET_MS = FPL_PROXY_BUDGET_MS;
 
 type Sleep = (milliseconds: number) => Promise<void>;
 
@@ -77,10 +94,54 @@ const bootstrapSchema = z
   })
   .passthrough();
 
+/**
+ * One request's timing and outcome, filled in as the handler proceeds.
+ *
+ * A mutable record rather than a return value because the builder below has a
+ * dozen early returns, and threading a tuple through every one of them would
+ * make the refusals harder to read than the work.
+ */
+interface RequestTrace {
+  requestId: string;
+  startedAt: number;
+  upstreamMs: number;
+  reason: string | null;
+}
+
 export async function createTeamPublicStateResponse(
   entryId: number,
   method: string,
   dependencies: TeamPublicStateDependencies = {},
+): Promise<Response> {
+  const now = dependencies.now ?? Date.now;
+  const trace: RequestTrace = {
+    requestId: newRequestId(),
+    startedAt: now(),
+    upstreamMs: 0,
+    reason: null,
+  };
+  const response = await buildTeamPublicStateResponse(
+    entryId,
+    method,
+    dependencies,
+    trace,
+  );
+  logHandlerOutcome({
+    requestId: trace.requestId,
+    route: "/api/team/:id",
+    status: response.status,
+    reason: trace.reason,
+    totalMs: now() - trace.startedAt,
+    upstreamMs: trace.upstreamMs,
+  });
+  return response;
+}
+
+async function buildTeamPublicStateResponse(
+  entryId: number,
+  method: string,
+  dependencies: TeamPublicStateDependencies,
+  trace: RequestTrace,
 ): Promise<Response> {
   const fetchUpstream = dependencies.fetchUpstream ?? fetch;
   const sleep = dependencies.sleep ?? defaultSleep;
@@ -103,35 +164,39 @@ export async function createTeamPublicStateResponse(
   const [entryOutcome, bootstrapOutcome] = await Promise.all([
     fetchSource(
       `/api/fpl/entry/${entryId}/`,
+      "entry",
       fetchUpstream,
       sleep,
       random,
       now,
       deadline,
+      trace,
     ),
     fetchSource(
       "/api/fpl/bootstrap-static/",
+      "bootstrap",
       fetchUpstream,
       sleep,
       random,
       now,
       deadline,
+      trace,
     ),
   ]);
   const preliminaryOutcome = worstOutcome(entryOutcome, bootstrapOutcome);
   if (preliminaryOutcome) {
-    return degradedResponse(preliminaryOutcome);
+    return degradedResponse(preliminaryOutcome, trace);
   }
   if (entryOutcome.kind !== "ok" || bootstrapOutcome.kind !== "ok") {
-    return degradedResponse("fpl_source_failed");
+    return degradedResponse("fpl_source_failed", trace);
   }
   const entrySource = entryOutcome.source;
   const bootstrapSource = bootstrapOutcome.source;
   if (entrySource.status === 404) {
-    return jsonResponse({ status: "unavailable", reason: "entry_unavailable" });
+    return unavailableResponse("entry_unavailable", trace);
   }
   if (!isSuccessful(entrySource) || !isSuccessful(bootstrapSource)) {
-    return degradedResponse("fpl_source_failed");
+    return degradedResponse("fpl_source_failed", trace);
   }
 
   let entry: z.infer<typeof entrySummarySchema>;
@@ -139,40 +204,56 @@ export async function createTeamPublicStateResponse(
   try {
     entry = parseSource(entrySource, entrySummarySchema);
     bootstrap = parseSource(bootstrapSource, bootstrapSchema);
-  } catch {
-    return degradedResponse("source_contract_failed");
+  } catch (error) {
+    return contractFailure(error, trace, {
+      entry: entrySource.status,
+      bootstrap: bootstrapSource.status,
+    });
   }
   if (entry.id !== entryId) {
-    return degradedResponse("source_contract_failed");
+    return contractFailure(
+      new TeamPublicStateContractError("entry id does not match the request"),
+      trace,
+      { entry: entrySource.status, bootstrap: bootstrapSource.status },
+    );
   }
   if (entry.current_event === null) {
-    return jsonResponse({
-      status: "unavailable",
-      reason: "no_processed_event",
-    });
+    return unavailableResponse("no_processed_event", trace);
   }
   const event = bootstrap.events.find(({ id }) => id === entry.current_event);
   if (!event) {
-    return degradedResponse("source_contract_failed");
+    return contractFailure(
+      new TeamPublicStateContractError(
+        "bootstrap does not describe the current event",
+      ),
+      trace,
+      { entry: entrySource.status, bootstrap: bootstrapSource.status },
+    );
   }
 
   const picksOutcome = await fetchSource(
     `/api/fpl/entry/${entryId}/event/${entry.current_event}/picks/`,
+    "picks",
     fetchUpstream,
     sleep,
     random,
     now,
-    deadline,
+    // Its own budget (#88): picks cannot start until entry has named the event,
+    // so it must not inherit what the opening pair left behind.
+    now() + PICKS_BUDGET_MS,
+    trace,
   );
   if (picksOutcome.kind !== "ok") {
     return degradedResponse(
       picksOutcome.kind === "unreachable"
         ? "fpl_unreachable"
         : "fpl_source_failed",
+      trace,
     );
   }
   const picksSource = picksOutcome.source;
   if (picksSource.status === 404) {
+    trace.reason = "picks_unavailable";
     return jsonResponse({
       status: "unavailable",
       reason: "picks_unavailable",
@@ -180,7 +261,7 @@ export async function createTeamPublicStateResponse(
     });
   }
   if (!isSuccessful(picksSource)) {
-    return degradedResponse("fpl_source_failed");
+    return degradedResponse("fpl_source_failed", trace);
   }
 
   try {
@@ -226,13 +307,89 @@ export async function createTeamPublicStateResponse(
       error instanceof TeamPublicStateContractError ||
       error instanceof z.ZodError
     ) {
-      return degradedResponse("source_contract_failed");
+      return contractFailure(error, trace, {
+        entry: entrySource.status,
+        bootstrap: bootstrapSource.status,
+        picks: picksSource.status,
+      });
     }
     throw error;
   }
 }
 
+/**
+ * Record what upstream said before refusing.
+ *
+ * Audit item #92. This branch used to swallow the error and answer
+ * `source_contract_failed`, which says an FPL payload changed shape but not
+ * which one, nor what status it arrived with. A 200 that fails the contract is
+ * a schema change; a 403 that fails it is a block page that got past the
+ * content-type check. They need different responses from us and were
+ * indistinguishable in the log.
+ *
+ * The exception message is recorded because it is ours -- every
+ * TeamPublicStateContractError message is a fixed string naming a field, and a
+ * ZodError issue path is a field name, not a value. Bodies never appear.
+ */
+function contractFailure(
+  error: unknown,
+  trace: RequestTrace,
+  statuses: Record<string, number>,
+): Response {
+  console.warn(
+    JSON.stringify({
+      level: "warn",
+      event: "source_contract_failed",
+      requestId: trace.requestId,
+      route: "/api/team/:id",
+      upstreamStatuses: statuses,
+      detail:
+        error instanceof z.ZodError
+          ? error.issues
+              .slice(0, 5)
+              .map((issue) => `${issue.path.join(".")}: ${issue.code}`)
+          : error instanceof Error
+            ? error.message
+            : "unknown",
+    }),
+  );
+  return degradedResponse("source_contract_failed", trace);
+}
+
 async function fetchSource(
+  requestUrl: string,
+  source: string,
+  fetchUpstream: typeof fetch,
+  sleep: Sleep,
+  random: () => number,
+  now: () => number,
+  deadline: number,
+  trace: RequestTrace,
+): Promise<FetchSourceOutcome> {
+  const startedAt = now();
+  const outcome = await readSource(
+    requestUrl,
+    fetchUpstream,
+    sleep,
+    random,
+    now,
+    deadline,
+  );
+  // Concurrent sources overlap, so this sums to more than the wall clock. That
+  // is the intended reading: it is time spent waiting on FPL, not elapsed time.
+  trace.upstreamMs += now() - startedAt;
+  logUpstreamOutcome({
+    requestId: trace.requestId,
+    route: "/api/team/:id",
+    source,
+    status: outcome.kind === "ok" ? outcome.source.status : null,
+    reason: outcome.kind === "ok" ? null : outcome.kind,
+    durationMs: now() - startedAt,
+  });
+  return outcome;
+}
+
+async function readSource(
   requestUrl: string,
   fetchUpstream: typeof fetch,
   sleep: Sleep,
@@ -296,8 +453,14 @@ function isSuccessful(source: FetchedSource): boolean {
   return source.status >= 200 && source.status < 300;
 }
 
-function degradedResponse(reason: string): Response {
+function degradedResponse(reason: string, trace: RequestTrace): Response {
+  trace.reason = reason;
   return jsonResponse({ status: "degraded", reason }, 503);
+}
+
+function unavailableResponse(reason: string, trace: RequestTrace): Response {
+  trace.reason = reason;
+  return jsonResponse({ status: "unavailable", reason });
 }
 
 function jsonResponse(
