@@ -529,6 +529,7 @@ class LeagueRates:
     """
 
     conceded_deductions: Mapping[int, float]
+    save_points: Mapping[int, float]
     yellow_cards: Mapping[int, float]
     red_cards: Mapping[int, float]
     own_goals: Mapping[int, float]
@@ -545,6 +546,7 @@ def _league_rates(
         name: {}
         for name in (
             "conceded",
+            "saves",
             "yellow",
             "red",
             "own_goal",
@@ -565,6 +567,9 @@ def _league_rates(
         nineties[position] = nineties.get(position, 0.0) + played
         totals["conceded"][position] = totals["conceded"].get(position, 0.0) + (
             row.goals_conceded // _CONCEDED_PER_POINT
+        )
+        totals["saves"][position] = totals["saves"].get(position, 0.0) + (
+            row.saves // _SAVES_PER_POINT
         )
         totals["yellow"][position] = totals["yellow"].get(position, 0.0) + row.yellow_cards
         totals["red"][position] = totals["red"].get(position, 0.0) + row.red_cards
@@ -588,6 +593,7 @@ def _league_rates(
 
     return LeagueRates(
         conceded_deductions=per_ninety("conceded", nineties),
+        save_points=per_ninety("saves", nineties),
         yellow_cards=per_ninety("yellow", nineties),
         red_cards=per_ninety("red", nineties),
         own_goals=per_ninety("own_goal", nineties),
@@ -646,9 +652,15 @@ def _supporting_points(
         # Saves pay one point per three, so the division happens per match and
         # is averaged after. Dividing the mean instead over-estimates by 0.34
         # points a start, about thirteen points across a keeper's season.
+        # Shrunk like every other route: a keeper with two appearances was
+        # otherwise priced on two appearances, and the thin bucket ranges from
+        # zero to 1.50 save points a match against a league rate near 0.65.
         total += (
             ninety
-            * (sum(row.saves // _SAVES_PER_POINT for row in appearances) / played)
+            * rate(
+                sum(row.saves // _SAVES_PER_POINT for row in appearances),
+                league.save_points.get(position, 0.0),
+            )
             * adjustment.saves
         )
         total += (
