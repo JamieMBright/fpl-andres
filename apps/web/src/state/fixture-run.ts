@@ -1,4 +1,14 @@
 import projections from "../data/projections.json";
+import {
+  PROJECTIONS_SCHEMA_VERSION,
+  requireArtifactVersion,
+} from "./artifact-version";
+
+requireArtifactVersion(
+  "projections.json",
+  projections,
+  PROJECTIONS_SCHEMA_VERSION,
+);
 
 /** Attack and defence multipliers against the league average, by venue. */
 export interface ClubStrength {

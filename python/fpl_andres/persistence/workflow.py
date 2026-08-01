@@ -15,7 +15,11 @@ from datetime import UTC, datetime
 from types import TracebackType
 from typing import Any
 
-from fpl_andres.persistence.supabase import SupabaseRestClient, SupabaseWriteError
+from fpl_andres.persistence.supabase import (
+    UNIQUE_VIOLATION,
+    SupabaseRestClient,
+    SupabaseWriteError,
+)
 
 
 class WorkflowAlreadyRunningError(RuntimeError):
@@ -61,7 +65,7 @@ class WorkflowRunRecorder:
                 ],
             )
         except SupabaseWriteError as error:
-            if "duplicate key" in str(error).lower() or "23505" in str(error):
+            if error.code == UNIQUE_VIOLATION:
                 raise WorkflowAlreadyRunningError(
                     f"{self._run.workflow_name} already recorded for {self._run.idempotency_key}"
                 ) from error

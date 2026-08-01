@@ -22,6 +22,10 @@ from collections.abc import Sequence
 from datetime import UTC, datetime
 from pathlib import Path
 
+from fpl_andres.artifacts import (
+    PROJECTIONS_META_SCHEMA_VERSION,
+    PROJECTIONS_SCHEMA_VERSION,
+)
 from fpl_andres.backtesting.corpus import SeasonCorpus, load_season
 from fpl_andres.backtesting.fixtures import estimate_strength
 from fpl_andres.backtesting.projector import MatchProjection, project_next_match
@@ -119,6 +123,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     )
     clubs = _clubs(corpus)
     artifact = {
+        "schemaVersion": PROJECTIONS_SCHEMA_VERSION,
         "generatedAt": datetime.now(UTC).isoformat(),
         "season": corpus.season,
         "throughGameweek": corpus.last_event,
@@ -136,7 +141,13 @@ def main(argv: Sequence[str] | None = None) -> int:
     meta = output.with_name(output.stem + "-meta.json")
     meta.write_text(
         json.dumps(
-            {key: artifact[key] for key in ("generatedAt", "season", "throughGameweek", "basis")},
+            {
+                "schemaVersion": PROJECTIONS_META_SCHEMA_VERSION,
+                **{
+                    key: artifact[key]
+                    for key in ("generatedAt", "season", "throughGameweek", "basis")
+                },
+            },
             indent=2,
         )
         + "\n",

@@ -1,5 +1,21 @@
 import projections from "../data/projections.json";
 import meta from "../data/projections-meta.json";
+import {
+  PROJECTIONS_META_SCHEMA_VERSION,
+  PROJECTIONS_SCHEMA_VERSION,
+  requireArtifactVersion,
+} from "./artifact-version";
+
+requireArtifactVersion(
+  "projections.json",
+  projections,
+  PROJECTIONS_SCHEMA_VERSION,
+);
+requireArtifactVersion(
+  "projections-meta.json",
+  meta,
+  PROJECTIONS_META_SCHEMA_VERSION,
+);
 
 /** One player's record from the last completed season, as published. */
 export interface PlayerProjection {

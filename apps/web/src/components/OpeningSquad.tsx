@@ -1,5 +1,15 @@
 import squad from "../data/opening-squad.json";
 import { money as sharedMoney } from "../format";
+import {
+  OPENING_SQUAD_SCHEMA_VERSION,
+  requireArtifactVersion,
+} from "../state/artifact-version";
+
+requireArtifactVersion(
+  "opening-squad.json",
+  squad,
+  OPENING_SQUAD_SCHEMA_VERSION,
+);
 
 interface Pick {
   code: number;

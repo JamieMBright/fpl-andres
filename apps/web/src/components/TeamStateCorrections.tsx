@@ -146,20 +146,28 @@ export function TeamStateCorrections({ state }: TeamStateCorrectionsProps) {
   function saveCorrections(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     try {
-      const overrides = saveTeamStateOverrides(localStorage, state.entryId, {
-        source: "manager",
-        basedOnStateAsOf: state.stateAsOf,
-        updatedAt: new Date().toISOString(),
-        bankTenths: parseOptionalTenths(bank, "Current bank", bankId),
-        availableFreeTransfers: parseOptionalInteger(
-          freeTransfers,
-          "Available free transfers",
-          freeTransfersId,
-        ),
-        currentSquad: null,
-        queuedTransfers: parseTransfers(transfers, formId),
-        availableChips: parseAvailableChips(availableChips, chipsId),
-      });
+      const overrides = saveTeamStateOverrides(
+        localStorage,
+        state.entryId,
+        {
+          source: "manager",
+          basedOnStateAsOf: state.stateAsOf,
+          updatedAt: new Date().toISOString(),
+          bankTenths: parseOptionalTenths(bank, "Current bank", bankId),
+          availableFreeTransfers: parseOptionalInteger(
+            freeTransfers,
+            "Available free transfers",
+            freeTransfersId,
+          ),
+          currentSquad: null,
+          queuedTransfers: parseTransfers(transfers, formId),
+          availableChips: parseAvailableChips(availableChips, chipsId),
+        },
+        // What this form was editing. If another tab has written since, the
+        // save is refused rather than overwriting a correction nobody knows
+        // was lost.
+        { expectedUpdatedAt: savedOverrides?.updatedAt ?? null },
+      );
       setSavedOverrides(overrides);
       setSavedThisSession(true);
       setRemovedThisSession(false);

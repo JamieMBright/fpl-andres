@@ -1,6 +1,16 @@
 import openingSquad from "../data/opening-squad.json";
 import { captureDay } from "../format";
+import {
+  OPENING_SQUAD_SCHEMA_VERSION,
+  requireArtifactVersion,
+} from "../state/artifact-version";
 import { projectionSeason } from "../state/projection-meta";
+
+requireArtifactVersion(
+  "opening-squad.json",
+  openingSquad,
+  OPENING_SQUAD_SCHEMA_VERSION,
+);
 
 // Read once at module load. Rendering must stay pure, and a countdown in days
 // has no reason to tick during a session.

@@ -1,6 +1,8 @@
 import type { TeamStateOverrides } from "@fpl-andres/contracts";
 import { ZodError } from "zod";
 
+import { TeamStateOverridesConflictError } from "../../state/team-state-overrides";
+
 /**
  * Parsing and formatting for the manager corrections form.
  *
@@ -168,6 +170,11 @@ export function correctionError(caught: unknown): CorrectionError {
     return caught.fieldId
       ? { message: caught.message, fieldId: caught.fieldId }
       : { message: caught.message };
+  }
+  // Its own message, because this one is actionable and specific: the manager
+  // has to reload before saving, and no other failure here asks that.
+  if (caught instanceof TeamStateOverridesConflictError) {
+    return { message: caught.message };
   }
   if (caught instanceof ZodError) {
     return {

@@ -23,13 +23,55 @@ export function teamStateOverridesStorageKey(
   return `${STORAGE_PREFIX}:${parsedEntryId.data}:${parsedDeadline.data}`;
 }
 
+/**
+ * A later write silently discarded an earlier correction.
+ *
+ * Audit item #66 filed this against a Python module. There is no write path
+ * there -- `team_state.py` only resolves -- but the concern is real and lives
+ * here instead: two tabs open on the same manager, both editing. The second
+ * `setItem` wins, the first tab still shows what it saved, and nothing tells
+ * anyone the two disagree. The loss is invisible precisely because both writes
+ * succeed.
+ *
+ * The precondition is what the writer believed it was editing. Comparing
+ * timestamps instead would not work: the second tab's `updatedAt` is genuinely
+ * newer, so "newer wins" accepts exactly the write that loses the correction.
+ */
+export class TeamStateOverridesConflictError extends Error {
+  override name = "TeamStateOverridesConflictError";
+  constructor(readonly stored: TeamStateOverrides | null) {
+    super(
+      "These corrections were changed in another tab. Reload them before saving.",
+    );
+  }
+}
+
+export interface SavePrecondition {
+  /**
+   * The `updatedAt` of the record this write is based on, or `null` when the
+   * writer believed nothing was stored.
+   */
+  expectedUpdatedAt: string | null;
+}
+
 export function saveTeamStateOverrides(
   storage: Storage,
   entryId: number,
   input: unknown,
+  precondition?: SavePrecondition,
 ): TeamStateOverrides {
   const overrides = teamStateOverridesSchema.parse(input);
   const key = teamStateOverridesStorageKey(entryId, overrides.basedOnStateAsOf);
+  if (precondition !== undefined) {
+    // Read immediately before the write. localStorage is synchronous and
+    // single-threaded within a tab, so nothing can interleave between these two
+    // statements; the race being closed is between tabs, not within one.
+    const stored = readStored(storage, key, overrides.basedOnStateAsOf);
+    const storedUpdatedAt = stored?.updatedAt ?? null;
+    if (storedUpdatedAt !== precondition.expectedUpdatedAt) {
+      throw new TeamStateOverridesConflictError(stored);
+    }
+  }
   pruneOtherOverridesForEntry(storage, entryId, key);
   storage.setItem(key, JSON.stringify(overrides));
   return overrides;
@@ -58,7 +100,23 @@ export function loadTeamStateOverrides(
   entryId: number,
   deadline: string,
 ): TeamStateOverrides | null {
-  const key = teamStateOverridesStorageKey(entryId, deadline);
+  return readStored(
+    storage,
+    teamStateOverridesStorageKey(entryId, deadline),
+    deadline,
+  );
+}
+
+/**
+ * Read one record, discarding anything that no longer parses or no longer
+ * belongs to this deadline. A corrupt or stale record is removed rather than
+ * left to fail the same way on every load.
+ */
+function readStored(
+  storage: Storage,
+  key: string,
+  deadline: string,
+): TeamStateOverrides | null {
   const serialized = storage.getItem(key);
   if (serialized === null) {
     return null;

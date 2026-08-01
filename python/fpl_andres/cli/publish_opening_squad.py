@@ -24,6 +24,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 
 from fpl_andres import timeouts
+from fpl_andres.artifacts import OPENING_SQUAD_SCHEMA_VERSION
 from fpl_andres.backtesting.fixtures import Fixture, TeamStrength
 from fpl_andres.bootstrap import BootstrapElement, parse_elements
 from fpl_andres.jsonio import parse_json, read_json_file
@@ -230,6 +231,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     output.write_text(
         json.dumps(
             {
+                "schemaVersion": OPENING_SQUAD_SCHEMA_VERSION,
                 "generatedAt": datetime.now(UTC).isoformat(),
                 "basis": artifact["season"],
                 "budgetTenths": RULES.budget_tenths,
