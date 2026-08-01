@@ -46,6 +46,11 @@ class PromotionDecision:
     minimum_sample_size: int
     promoted: bool
     reason_codes: tuple[str, ...]
+    # How many independently-seeded bootstraps were run, and how many of them
+    # promoted. A split vote means the evidence is too marginal to act on, not
+    # that the majority is right.
+    seed_replicates: int = 1
+    seeds_promoting: int = 0
 
 
 def evaluate_promotion(
@@ -58,6 +63,7 @@ def evaluate_promotion(
     seed: int,
     confidence: float,
     minimum_sample_size: int,
+    seed_replicates: int = 1,
 ) -> PromotionDecision:
     _validate_parameters(
         triplets,
@@ -67,6 +73,7 @@ def evaluate_promotion(
         seed=seed,
         confidence=confidence,
         minimum_sample_size=minimum_sample_size,
+        seed_replicates=seed_replicates,
     )
     baseline_values = tuple(row.baseline for row in triplets)
     candidate_values = tuple(row.candidate for row in triplets)
@@ -146,6 +153,27 @@ def evaluate_promotion(
     else:
         reasons = ("ci_includes_zero",)
 
+    # Replicate the bootstrap under further seeds and require unanimity. A
+    # 2,000-resample interval carries enough Monte Carlo error that a marginal
+    # candidate promotes on some seeds and not others: measured at 3 of 40 for a
+    # 60-row sample with a small true edge. Promoting on the strength of which
+    # seed was passed in is not a decision about the model.
+    promoting = 1 if promoted else 0
+    for offset in range(1, seed_replicates):
+        replicate = _improvement_interval(
+            triplets,
+            metric=metric,
+            metric_direction=metric_direction,
+            resamples=resamples,
+            seed=seed + offset,
+            confidence=confidence,
+        )
+        if replicate > 0:
+            promoting += 1
+    if promoting != seed_replicates and promoted:
+        promoted = False
+        reasons = ("seed_disagreement",)
+
     return PromotionDecision(
         baseline=baseline_result,
         candidate=candidate_result,
@@ -153,7 +181,38 @@ def evaluate_promotion(
         minimum_sample_size=minimum_sample_size,
         promoted=promoted,
         reason_codes=reasons,
+        seed_replicates=seed_replicates,
+        seeds_promoting=promoting,
     )
+
+
+def _improvement_interval(
+    triplets: Sequence[TripletPrediction],
+    *,
+    metric: Metric,
+    metric_direction: MetricDirection,
+    resamples: int,
+    seed: int,
+    confidence: float,
+) -> float:
+    """Lower bound of the paired improvement interval under one seed."""
+    baseline_values = tuple(row.baseline for row in triplets)
+    candidate_values = tuple(row.candidate for row in triplets)
+    observed_values = tuple(row.observed for row in triplets)
+    sample_size = len(triplets)
+    rng = random.Random(seed)
+    samples: list[float] = []
+    for _ in range(resamples):
+        indices = tuple(rng.randrange(sample_size) for _ in range(sample_size))
+        sampled_observed = tuple(observed_values[index] for index in indices)
+        samples.append(
+            _improvement(
+                metric(tuple(baseline_values[i] for i in indices), sampled_observed),
+                metric(tuple(candidate_values[i] for i in indices), sampled_observed),
+                metric_direction,
+            )
+        )
+    return _quantile(sorted(samples), (1.0 - confidence) / 2.0)
 
 
 def _validate_parameters(
@@ -165,6 +224,7 @@ def _validate_parameters(
     seed: int,
     confidence: float,
     minimum_sample_size: int,
+    seed_replicates: int = 1,
 ) -> None:
     if not triplets:
         raise ValueError("promotion evaluation requires at least one prediction")
@@ -184,6 +244,12 @@ def _validate_parameters(
         or minimum_sample_size < 1
     ):
         raise ValueError("minimum_sample_size must be a positive integer")
+    if (
+        isinstance(seed_replicates, bool)
+        or not isinstance(seed_replicates, int)
+        or seed_replicates < 1
+    ):
+        raise ValueError("seed_replicates must be a positive integer")
 
 
 def _improvement(baseline: float, candidate: float, direction: MetricDirection) -> float:
