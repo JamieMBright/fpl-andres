@@ -375,6 +375,75 @@ weak.
 
 ---
 
+## 11b. Four things carried beside the projection
+
+Audit item #186. These modules exist, are tested, and were documented nowhere.
+None of them changes the expected-points number. All of them change what a
+sensible person does with it, which is why they are carried alongside rather
+than folded in.
+
+### Shot volume and shot quality, separated
+
+`models/shot_profile.py`. Non-penalty xG per 90 is volume times quality: how
+often a player shoots, and how good the chances are. The two behave completely
+differently year to year.
+
+Measured across four Understat seasons, on players with 900+ minutes in both:
+
+| Quantity     | Year-to-year repeat |
+| ------------ | ------------------- |
+| Shot volume  | 0.890               |
+| npxG per 90  | 0.860               |
+| Shot quality | 0.455               |
+
+Volume is the durable part. Quality is noisy, but it is not noise: replacing a
+player's own quality with the league mean makes prediction **worse**, MAE rising
+from 0.0561 to 0.0666. Shrinking quality toward the league in proportion to the
+shots behind it wins, with the optimum near ten shots of prior — measured, not
+chosen.
+
+### Penalty exposure
+
+`models/penalties.py`. FPL's `expected_goals` includes penalties, so projecting a
+player's scoring from it quietly assumes he keeps the duty. Duty moves: between
+seasons, on a transfer, and sometimes after one miss.
+
+Measured on 2025-26, penalties are **5.9% of league xG** — and **44.5% of Cole
+Palmer's**, **38.3% of Bruno Fernandes's**, with 24 regulars above 15%. That is a
+concentrated, nameable risk rather than a rounding error.
+
+Nothing here predicts who will take penalties. It measures exposure to an
+assumption the projection is already making, which is a different and more
+honest job.
+
+### Suspension risk
+
+`models/suspensions.py`. A booking costs one point. The accumulation behind it
+costs a whole gameweek, and for a nailed starter that is the difference between
+five points and none. A model that prices the card and ignores the ban has
+priced the small half.
+
+Thresholds are **sourced, never assumed**. The Premier League resets cautions
+partway through the season and the reset point is a rule of the competition, so
+`SuspensionRules` must be supplied by a caller who has read the handbook.
+Nothing in the module invents one, and it refuses rather than defaulting.
+
+### Return shape
+
+`backtesting/reliability.py`. Two players can share an expected score and be
+completely different holdings. A defender who clears the defensive-contribution
+threshold most weeks banks two points he will almost certainly get. A defender on
+the same expectation who depends on clean sheets is holding a lottery ticket:
+larger when it lands, absent most weeks.
+
+Expected points cannot tell those apart, so the distribution is measured
+separately — floor, median and ceiling at the 20th, 50th and 90th percentiles —
+and kept beside the mean rather than folded into it. Folding it in would produce
+a single number that implies a certainty the evidence does not support, which is
+the same reason §11 reports `cover` and `upside` separately.
+
+---
+
 ## 12. How Understat is meant to change this
 
 Not yet built. Written down so the plan can be argued with before it is, and so
@@ -489,3 +558,24 @@ one season is not many shots per cell.
   traces to the commit that produced it.
 - `python/tests/test_reachability.py` fails the build if any function stops being
   called, so this document cannot quietly describe dead code.
+- `python/tests/test_model_document.py` fails if a model module stops being named
+  below, or if a measurement quoted here stops matching the module that produced
+  it.
+
+### Where each part lives
+
+| Section                               | Module                       |
+| ------------------------------------- | ---------------------------- |
+| §2 Minutes                            | `models/minutes.py`          |
+| §3 Attacking rate, §8 between seasons | `models/player_rates.py`     |
+| §4 Scoring routes priced              | `models/expected_points.py`  |
+| §5 Fixtures change routes             | `backtesting/fixtures.py`    |
+| §11 Team goals                        | `models/dixon_coles.py`      |
+| §11 Out-of-position deployment        | `models/deployment.py`       |
+| §11b Shot volume and quality          | `models/shot_profile.py`     |
+| §11b Penalty exposure                 | `models/penalties.py`        |
+| §11b Suspension risk                  | `models/suspensions.py`      |
+| §11b Return shape                     | `backtesting/reliability.py` |
+
+Parameters and their provenance: `docs/PARAMETERS.md`. What the model actually
+scored: `docs/MODEL_CARDS.md`. The data it scored over: `docs/CORPUS.md`.
