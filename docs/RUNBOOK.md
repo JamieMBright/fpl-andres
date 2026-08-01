@@ -92,6 +92,50 @@ AI tools is also prohibited.
 - Any paid data provider credential goes directly into the approved
   server/worker environment. No provider secret is ever committed.
 
+### Rotation
+
+Rotate on a schedule and immediately on any suspicion of exposure. The order
+matters: create the new secret before revoking the old one, or the scheduled
+workflows fail in the gap.
+
+**`SUPABASE_SECRET_KEY`** — rotate every 90 days.
+
+1. In the Supabase dashboard, under Project Settings → API Keys, generate a new
+   service role key. Both keys are valid at this point.
+2. Update the value in Vercel Production, then in the GitHub `production`
+   environment. Both must change; the web deployment and the scheduled jobs use
+   different copies.
+3. Redeploy so Vercel picks up the new value, and re-run one scheduled workflow
+   manually to confirm it writes.
+4. Revoke the old key in Supabase.
+5. If you are rotating because of a suspected leak, also check
+   `workflow_runs` for rows you do not recognise before revoking, since after
+   revocation you lose the ability to tell what the old key did.
+
+**`RESEND_API_KEY` and `RESEND_WEBHOOK_SECRET`** — rotate every 90 days, or
+immediately if a subscriber address appears anywhere it should not.
+
+1. Create a new key in the Resend dashboard.
+2. Update Vercel Production. Resend keys are not mirrored into GitHub.
+3. Send one test message before deleting the old key.
+4. For the webhook secret, update the value in Resend and in Vercel in the same
+   sitting: a mismatched secret rejects every inbound webhook, and the failure
+   is silent from the sender's side.
+
+**Workflow tokens** (`GITHUB_TOKEN` scopes and any PAT used by a workflow) —
+prefer the built-in `GITHUB_TOKEN`, which rotates per run and needs no
+management. If a PAT exists, rotate it every 90 days and record why a PAT was
+needed at all, since the built-in token covers most cases.
+
+**After any rotation**, confirm the secret has not entered the repository:
+
+```
+git log -p -S'<first 8 characters of the old secret>' -- . | head
+```
+
+An empty result is the expected one. A hit means the old key must be treated as
+public regardless of revocation, and the history rewritten.
+
 ## Release
 
 - Bump the version in `package.json`, mirror it to `apps/web/package.json` and
