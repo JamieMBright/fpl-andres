@@ -51,6 +51,59 @@ jobs:
       - name: Check formatting
         run: pnpm format:check
 
+  # Audit item #78. `.env.example` names several live secrets, and a real one
+  # committed by accident is not undone by deleting it in a later commit -- it
+  # is in the history, and on any clone taken in between. The only fix is
+  # rotation, so the gate has to catch it before the push lands.
+  #
+  # Audit item #143. Schema drift was one step inside `pnpm check`, so a
+  # regenerated-but-uncommitted schema was reported as "Lint, types and unit
+  # tests failed" and someone read four hundred lines of log to find out which.
+  # It runs alone now, and it is the cheapest job in the file.
+  secrets-and-contracts:
+    name: Secret scan and schema drift
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          # Full history: a secret is still a secret in the commit that added
+          # it, even when a later commit removes the line.
+          fetch-depth: 0
+
+      - name: Scan for committed secrets
+        # gitleaks-action v2, resolved to its commit. A moving tag on a
+        # security tool is a supply chain hole in the thing meant to close one.
+        uses: gitleaks/gitleaks-action@ff98106e4c7b2bc287b24eaf42907196329070c7
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITLEAKS_CONFIG: .gitleaks.toml
+
+      - name: Set up Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 20.20.2
+
+      - name: Enable pnpm
+        run: corepack enable && corepack prepare pnpm@9.15.9 --activate
+
+      - name: Cache pnpm store
+        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684
+        with:
+          path: ~/.local/share/pnpm/store
+          key: pnpm-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: pnpm-${{ runner.os }}-
+
+      - name: Install JavaScript dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Check generated schema matches the contracts
+        run: pnpm contracts:check
+
+      - name: Check the contracts version was bumped with the schema
+        run: pnpm contracts:version-gate
+
   checks:
     name: Lint, types and unit tests
     runs-on: ubuntu-latest

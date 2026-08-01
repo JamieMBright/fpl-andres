@@ -53,6 +53,19 @@ export default tseslint.config(
     },
   },
   {
+    // Audit item #144. `api/_lib` is the boundary between the serverless
+    // handlers and everything they call. An inferred return type there is a
+    // contract nobody wrote down: it changes when the implementation changes,
+    // silently, and the caller finds out at runtime.
+    //
+    // Only the exported surface. Inference inside a module is where it earns
+    // its keep, and annotating a two-line local helper is noise.
+    files: ["api/**/*.ts"],
+    rules: {
+      "@typescript-eslint/explicit-module-boundary-types": "error",
+    },
+  },
+  {
     // Test doubles legitimately stand in for shapes they do not implement.
     files: ["**/*.test.{ts,tsx}", "**/e2e/**/*.ts"],
     rules: {

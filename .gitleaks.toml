@@ -1,0 +1,47 @@
+# Secret scanning configuration.
+#
+# Audit item #78. `.env.example` names several live secrets and a real one
+# committed by accident is not undone by deleting it in a later commit: it is
+# in the history, and on any clone taken in between. The only fix is rotation,
+# so the gate has to catch it before the push lands.
+#
+# The default rules are kept in full. Everything below is an exception, and
+# every exception is as narrow as it can be made -- pinned to a path *and* to
+# the shape of the thing being allowed, so that a real secret appearing in the
+# same file is still caught.
+#
+# `condition = "AND"` is not optional. Gitleaks defaults an allowlist with both
+# `paths` and `regexes` to OR, which would exempt the shape everywhere rather
+# than in the one file. Verified: without it, a planted service-role key in an
+# unrelated file was not reported.
+#
+# Verified against the full history with gitleaks 8.28.0 on 2026-08-01: two
+# findings, both listed below, no others.
+
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = """
+A fabricated Supabase service-role key used by the test that proves such a key
+never reaches a log or an exception message. It has to look exactly like a real
+one or the test would not be testing anything. The project it names does not
+exist.
+"""
+condition = "AND"
+paths = ['''python/tests/test_secret_hygiene\.py''']
+regexes = ['''sb_secret_[0-9a-f]{32}''']
+
+[[allowlists]]
+description = """
+A saved copy of an FPL page, kept as a design reference. The value flagged is a
+`site-key`, which is the public half of a bot-check widget -- it is served to
+every visitor's browser by design and is not a credential.
+"""
+condition = "AND"
+paths = ['''docs/design/.*\.html''']
+# Matched against the whole line, not the extracted secret: what identifies
+# this as public is the `site-key` attribute around it, and the value on its
+# own is indistinguishable from a real key.
+regexTarget = "line"
+regexes = ['''site-key="[^"]+"''']

@@ -20,7 +20,7 @@ const limiter = new RateLimiter(TEAM_STATE_POLICY);
 export default async function teamPublicStateHandler(
   request: VercelRequest,
   response: VercelResponse,
-) {
+): Promise<void> {
   const startedAt = performance.now();
   const decision = limiter.check(clientAddress(request.headers));
   for (const [name, value] of Object.entries(

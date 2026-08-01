@@ -24,7 +24,7 @@ const limiter = new RateLimiter(FPL_PROXY_POLICY);
 export default async function fplProxyHandler(
   request: VercelRequest,
   response: VercelResponse,
-) {
+): Promise<void> {
   const startedAt = performance.now();
   const decision = limiter.check(clientAddress(request.headers));
   for (const [name, value] of Object.entries(
