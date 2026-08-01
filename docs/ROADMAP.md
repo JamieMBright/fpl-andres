@@ -290,8 +290,17 @@ Ordered by what would change the answers most, not by effort.
    the backtest — eleven thousand binary variables times twenty managers times
    three seeds times four seasons times thirty-two gameweeks is not tractable,
    and the request contract wants per-event hashes and a rules snapshot per
-   historical season. It belongs on the live single-team path, which needs a
-   played gameweek.
+   historical season.
+
+   **The live path is a different problem, and it is tractable.** One squad,
+   once a week. Measured: a full fifteen-player squad over a hundred candidates
+   and three events solves in **0.23s**; two hundred over three in 0.52s; two
+   hundred over five in 6.30s; four hundred over five in 10.46s. Locked in by
+   `test_horizon_scale.py` so the claim cannot rot. **The blocker is the
+   season, not the solver** — `plan_transfers` is itself not on a page yet and
+   the site's panel honestly refuses, because no gameweek of 2026/27 has been
+   played.
+
 6. Fifteen further orphans, listed in `LIMITATIONS.md`. The reachability audit
    fails the build on any new one.
 
