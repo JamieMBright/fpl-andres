@@ -185,10 +185,12 @@ def project_player_rates(evidence: PlayerRateEvidence) -> PlayerRateProjection:
 
     # Current-season evidence displaces the carried season progressively.
     current_weight = min(1.0, current_minutes / evidence.blend_full_weight_minutes)
-    if not evidence.prior_season_observations:
-        current_weight = 1.0
     if current_minutes <= 0.0:
         current_weight = 0.0
+    # Last, so it cannot be undone: with nothing carried there is nothing for a
+    # carried weight to refer to, and the projection contract rejects one.
+    if not evidence.prior_season_observations:
+        current_weight = 1.0
     carried_weight = 1.0 - current_weight
     reasons.append(f"carried_weight={carried_weight:.3f}")
 

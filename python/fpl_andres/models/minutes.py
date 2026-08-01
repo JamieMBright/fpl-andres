@@ -212,6 +212,10 @@ def project_minutes(evidence: MinutesEvidence) -> MinutesProjection:
     probability_start = (
         weighted_start_rate * effective_sample + evidence.prior_start_rate * prior_strength
     ) / (effective_sample + prior_strength)
+    # How much of the answer is the prior rather than the player. Bounding
+    # prior_strength was never the difficulty: a legal value can still supply
+    # most of the posterior, and without this the projection cannot say so.
+    reasons.append(f"prior_share={prior_strength / (effective_sample + prior_strength):.3f}")
 
     starts = [observation for observation in evidence.observations if observation.started]
     benched = [observation for observation in evidence.observations if not observation.started]
