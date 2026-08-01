@@ -64,7 +64,15 @@ line-length = 100
 target-version = "py312"
 
 [tool.ruff.lint]
-select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
+select = ["E", "F", "I", "UP", "B", "SIM", "RUF", "W", "C90"]
+
+[tool.ruff.lint.mccabe]
+# Set at the current maximum, not an aspiration, so it ratchets: nothing may get
+# worse, and lowering it is a deliberate refactor rather than a broken build.
+# The two at the ceiling are HighsHorizonOptimizer.solve (21) and
+# HorizonOptimizationRequest.validate_horizon (19), both flagged for extraction
+# as improvement #12.
+max-complexity = 21
 
 [tool.ruff.lint.isort]
 known-first-party = ["fpl_andres"]

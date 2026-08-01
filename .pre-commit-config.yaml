@@ -1,0 +1,46 @@
+# Same feedback locally that CI enforces, so a failure costs seconds not a run.
+#
+# Install once:
+#   python -m pip install pre-commit && pre-commit install
+#
+# The heavy gates (mypy, pytest, the browser journeys) are deliberately not here.
+# They belong in `pnpm check` before a milestone, not on every commit.
+repos:
+  - repo: local
+    hooks:
+      - id: ruff-format
+        name: ruff format
+        entry: python -m ruff format
+        language: system
+        types: [python]
+
+      - id: ruff-check
+        name: ruff check
+        entry: python -m ruff check --fix
+        language: system
+        types: [python]
+
+      - id: prettier
+        name: prettier
+        entry: corepack pnpm exec prettier --write
+        language: system
+        types_or: [ts, tsx, javascript, json, yaml, markdown, css]
+
+      - id: no-secrets-in-env
+        name: refuse a committed .env
+        entry: >-
+          bash -c 'git diff --cached --name-only | grep -qxE "\.env|.*/\.env"
+          && { echo "Refusing. A .env must never be committed."; exit 1; }
+          || exit 0'
+        language: system
+        pass_filenames: false
+
+      - id: strategist-docs-stay-untracked
+        name: keep the strategist documents untracked
+        entry: >-
+          bash -c 'git diff --cached --name-only
+          | grep -qE "^fpl-strategist-(prompt|ux-flow)\.md$"
+          && { echo "Refusing. These stay untracked unless the owner adopts them."; exit 1; }
+          || exit 0'
+        language: system
+        pass_filenames: false

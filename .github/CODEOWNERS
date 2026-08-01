@@ -1,0 +1,28 @@
+# Review is required where a mistake is expensive or invisible.
+#
+# Default: the maintainer sees everything.
+* @JamieMBright
+
+# Migrations run against production and cannot be undone by reverting a commit.
+# Filename order is dependency order, and a file referencing a table created by
+# a later-sorting file passes on an already-migrated environment and fails only
+# on a clean reset.
+/supabase/ @JamieMBright
+
+# Public, unauthenticated, and the only code in this repository reachable from
+# the open internet.
+/api/ @JamieMBright
+
+# The FPL scoring rules. A wrong constant here is invisible in every test that
+# uses the same wrong constant, which is why they are asserted against the
+# published snapshot.
+/python/fpl_andres/rules.py @JamieMBright
+/python/fpl_andres/backtesting/projector.py @JamieMBright
+
+# Capability boundaries. Changing these changes what the product is allowed to
+# claim, which is a product decision rather than an implementation one.
+/docs/LIMITATIONS.md @JamieMBright
+/docs/adr/ @JamieMBright
+
+# Supply chain: a compromised workflow is a compromised deployment.
+/.github/workflows/ @JamieMBright
