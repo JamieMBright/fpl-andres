@@ -317,8 +317,20 @@ Ordered by what would change the answers most, not by effort.
    price or an ownership figure is refused, because a zeroed ownership is
    indistinguishable from a genuinely unowned player. **Not yet loaded into
    Supabase or joined to a projection** — the series lands as gitignored JSONL.
-7. **Benchmark against FPL Review and FPL Kiwi** (approved). The strongest
-   validation available, and it may not flatter us.
+7. **Benchmark against FPL Review and FPL Kiwi — harness built, rival column
+   blocked.** The strongest validation available, and it may not flatter us.
+   The arithmetic is done: `models/benchmark.py` and
+   `python -m fpl_andres.cli.benchmark` score both models on the _same_ players
+   against the _same_ realised points, refusing a comparison where the overlap
+   is under twenty or either projection has no spread.
+
+   **What cannot be done here is fetching the rival column.** FPL Review's
+   `robots.txt` carries `User-agent: ClaudeBot / Disallow: /` and
+   `Content-Signal: ai-train=no`, which is an explicit refusal and is respected.
+   `fplkiwi.com` does not resolve at all — DNS failure, not a block. The
+   legitimate route is the owner exporting their own account's projections to a
+   `code,points` CSV and pointing the CLI at it.
+
 8. **Championship minutes for promoted clubs.** Three of twenty come up each
    year with no Premier League record, so they cannot be ranked or picked.
    Scoring rates do not transfer across divisions but minutes might, which is
