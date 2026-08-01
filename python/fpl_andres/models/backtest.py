@@ -95,6 +95,12 @@ class BacktestMetrics(BaseModel):
     spearman: float | None
     top_n: int
     top_n_hit_rate: float | None
+    # An event with fewer than top_n scored players cannot produce a top-N, so it
+    # is skipped. Reported rather than silent: a rate averaged over the full
+    # gameweeks only is a different measurement from one over all of them, and
+    # nothing downstream could previously tell which it had been given.
+    top_n_events_scored: int = 0
+    top_n_events_skipped: int = 0
 
 
 class BacktestReport(BaseModel):
@@ -202,6 +208,7 @@ def _metrics(label: str, outcomes: Sequence[PredictionOutcome], top_n: int) -> B
     mae = sum(abs(error) for error in errors) / count
     rmse = (sum(error * error for error in errors) / count) ** 0.5
     bias = sum(errors) / count
+    hit_rate, scored_events, skipped_events = _top_n_hit_rate(outcomes, top_n)
 
     return BacktestMetrics(
         label=label,
@@ -211,7 +218,9 @@ def _metrics(label: str, outcomes: Sequence[PredictionOutcome], top_n: int) -> B
         bias=bias,
         spearman=_spearman(outcomes),
         top_n=top_n,
-        top_n_hit_rate=_top_n_hit_rate(outcomes, top_n),
+        top_n_hit_rate=hit_rate,
+        top_n_events_scored=scored_events,
+        top_n_events_skipped=skipped_events,
     )
 
 
@@ -230,21 +239,27 @@ def _spearman(outcomes: Sequence[PredictionOutcome]) -> float | None:
     return correlation
 
 
-def _top_n_hit_rate(outcomes: Sequence[PredictionOutcome], top_n: int) -> float | None:
+def _top_n_hit_rate(
+    outcomes: Sequence[PredictionOutcome], top_n: int
+) -> tuple[float | None, int, int]:
     """Share of the top-N predicted that landed in the top-N actual.
 
     Computed per event, because ranking players across different gameweeks is
-    not a question anyone asks.
+    not a question anyone asks. Returns the rate with the number of events that
+    could and could not supply one, so the caller can see the coverage behind
+    the number rather than inferring it.
     """
     if top_n <= 0:
-        return None
+        return None, 0, 0
     by_event: dict[tuple[str, int], list[PredictionOutcome]] = {}
     for outcome in outcomes:
         by_event.setdefault((outcome.season, outcome.event), []).append(outcome)
 
     rates: list[float] = []
+    skipped = 0
     for event_outcomes in by_event.values():
         if len(event_outcomes) < top_n:
+            skipped += 1
             continue
         predicted_top = {
             outcome.element_code
@@ -261,8 +276,8 @@ def _top_n_hit_rate(outcomes: Sequence[PredictionOutcome], top_n: int) -> float 
         rates.append(len(predicted_top & actual_top) / top_n)
 
     if not rates:
-        return None
-    return sum(rates) / len(rates)
+        return None, 0, skipped
+    return sum(rates) / len(rates), len(rates), skipped
 
 
 __all__ = [

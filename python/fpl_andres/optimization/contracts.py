@@ -91,7 +91,9 @@ class OptimizationPlayer(BaseModel):
     season: Annotated[str, Field(pattern=r"^20[0-9]{2}-[0-9]{2}$")]
     event: Annotated[int, Field(ge=1, le=38)]
     element_id: PositiveInt
-    team_id: PositiveInt
+    # Bounded, not merely positive: a wrong id splits one club into two groups
+    # in the three-per-club constraint, and each group gets its own allowance.
+    team_id: Annotated[int, Field(ge=1, le=20)]
     position_id: PositiveInt
     buy_price_tenths: NonNegativeInt
     expected_points: float
