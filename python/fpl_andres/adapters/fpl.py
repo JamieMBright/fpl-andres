@@ -26,6 +26,13 @@ MAX_PAGE = 9_999
 MAX_PHASE = 99
 MAX_ATTEMPTS = 3
 MAX_RETRY_AFTER_SECONDS = 30.0
+# Caps the exponential itself, not just the number of attempts, so raising
+# MAX_ATTEMPTS later cannot silently turn a retry into a minutes-long stall
+# inside an unattended workflow.
+MAX_BACKOFF_SECONDS = 8.0
+# Consecutive upstream failures before the adapter stops asking. A sweeping job
+# should not spend an hour hammering an endpoint that is plainly down.
+CIRCUIT_BREAKER_THRESHOLD = 12
 RETRYABLE_STATUSES = frozenset({408, 425, 429, 500, 502, 503, 504})
 
 Sleep = Callable[[float], Awaitable[None]]
@@ -33,6 +40,10 @@ Sleep = Callable[[float], Awaitable[None]]
 
 class FplContractError(ValueError):
     """Raised when FPL responds with a shape unsafe for downstream use."""
+
+
+class FplUpstreamDown(RuntimeError):
+    """Raised when the adapter has given up on an endpoint that keeps failing."""
 
 
 class FplPicksUnavailable(LookupError):
@@ -74,6 +85,7 @@ class FplClient:
         self._clock = clock
         self._sleep = sleep
         self._random = random
+        self._consecutive_failures = 0
 
     async def fetch_bootstrap(self) -> FetchedPayload[dict[str, Any]]:
         return await self._fetch_json_object(
@@ -223,7 +235,12 @@ class FplClient:
         return payload, snapshot
 
     async def _request_with_retries(self, upstream_reference: str) -> httpx.Response:
-        last_transport_error: httpx.TransportError | None = None
+        if self._consecutive_failures >= CIRCUIT_BREAKER_THRESHOLD:
+            raise FplUpstreamDown(
+                f"stopped asking after {self._consecutive_failures} consecutive "
+                "upstream failures; the endpoint is down, not slow"
+            )
+        transport_errors: list[httpx.TransportError] = []
         for attempt in range(MAX_ATTEMPTS):
             try:
                 request = self._http.build_request(
@@ -238,21 +255,27 @@ class FplClient:
                 )
                 response = await self._http.send(request, stream=True)
             except httpx.TransportError as error:
-                last_transport_error = error
+                transport_errors.append(error)
                 if attempt == MAX_ATTEMPTS - 1:
-                    raise
+                    self._consecutive_failures += 1
+                    raise _joined_transport_error(transport_errors) from error
                 await self._sleep(_retry_delay(None, attempt, self._random))
                 continue
 
             if response.status_code not in RETRYABLE_STATUSES or attempt == MAX_ATTEMPTS - 1:
+                if response.status_code in RETRYABLE_STATUSES:
+                    self._consecutive_failures += 1
+                else:
+                    self._consecutive_failures = 0
                 return response
             await response.aclose()
             await self._sleep(
                 _retry_delay(response.headers.get("Retry-After"), attempt, self._random)
             )
 
-        if last_transport_error:
-            raise last_transport_error
+        self._consecutive_failures += 1
+        if transport_errors:
+            raise _joined_transport_error(transport_errors)
         raise RuntimeError("FPL retry loop ended without a response")
 
 
@@ -273,6 +296,20 @@ async def _read_bounded_content(response: httpx.Response, limit: int) -> bytes:
     return b"".join(chunks)
 
 
+def _joined_transport_error(errors: list[httpx.TransportError]) -> httpx.TransportError:
+    """Keep every attempt's failure, not only the last.
+
+    Three different failures - a DNS miss, a reset, a timeout - say something a
+    single reset does not, and the first two used to be discarded.
+    """
+    if len(errors) == 1:
+        return errors[0]
+    summary = "; ".join(f"{type(error).__name__}: {error}" for error in errors)
+    joined = httpx.TransportError(f"{len(errors)} attempts failed: {summary}")
+    joined.__cause__ = errors[-1]
+    return joined
+
+
 def _retry_delay(
     retry_after: str | None,
     attempt: int,
@@ -282,7 +319,7 @@ def _retry_delay(
         return min(float(retry_after), MAX_RETRY_AFTER_SECONDS)
     exponential: float = 0.5 * float(2**attempt)
     jitter: float = 0.8 + float(random()) * 0.4
-    return exponential * jitter
+    return min(exponential * jitter, MAX_BACKOFF_SECONDS)
 
 
 def _require_id(label: str, value: int, maximum: int) -> None:

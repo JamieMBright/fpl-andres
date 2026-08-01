@@ -17,10 +17,20 @@ from collections.abc import Sequence
 from datetime import UTC, datetime
 
 import httpx
+from pydantic import ValidationError
 
-from fpl_andres.adapters.vaastav import VaastavRevision
-from fpl_andres.ingest.historical import ArchiveFetcher, HistoricalIngest, SeasonIngestResult
-from fpl_andres.persistence.supabase import SupabaseCredentials, SupabaseRestClient
+from fpl_andres.adapters.vaastav import FutureInformationError, VaastavRevision
+from fpl_andres.ingest.historical import (
+    ArchiveFetcher,
+    ArchiveFileNotPublished,
+    HistoricalIngest,
+    SeasonIngestResult,
+)
+from fpl_andres.persistence.supabase import (
+    SupabaseCredentials,
+    SupabaseRestClient,
+    SupabaseWriteError,
+)
 from fpl_andres.persistence.workflow import open_run
 
 WORKFLOW_NAME = "historical-ingest"
@@ -173,7 +183,19 @@ def main(argv: Sequence[str] | None = None) -> int:
                     f"{result.total_stat_rows} gameweek rows",
                     flush=True,
                 )
-            except Exception as error:
+            except (
+                httpx.HTTPError,
+                ArchiveFileNotPublished,
+                FutureInformationError,
+                SupabaseWriteError,
+                ValidationError,
+                ValueError,
+                KeyError,
+            ) as error:
+                # Typed rather than bare: a schema break, a network failure and
+                # a leak guard are three different problems, and one season
+                # failing must not take the rest of the run with it. Anything
+                # outside this set is a defect here and should crash loudly.
                 failures.append((season, f"{type(error).__name__}: {error}"))
                 print(f"  FAIL {season}: {type(error).__name__}: {error}", flush=True)
 
