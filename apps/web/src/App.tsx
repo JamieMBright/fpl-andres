@@ -25,6 +25,7 @@ import {
   type RouteObject,
 } from "react-router-dom";
 
+import { CohortPanel } from "./components/CohortPanel";
 import { ManagerHistory } from "./components/ManagerHistory";
 import { Methodology } from "./components/Methodology";
 import { OpeningSquad } from "./components/OpeningSquad";
@@ -846,6 +847,7 @@ function CalibrationPage() {
         against completed seasons, including the ones I lose.
       </p>
       <ValidationReport />
+      <CohortPanel />
     </section>
   );
 }

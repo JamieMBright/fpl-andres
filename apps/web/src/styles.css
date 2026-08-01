@@ -783,6 +783,30 @@ a:focus-visible {
   letter-spacing: 0.02em;
 }
 
+.cohort-panel {
+  margin-top: 28px;
+  border-top: 3px solid var(--amber);
+  background: var(--paper);
+  padding: 20px 16px 24px;
+}
+
+.cohort-panel h3 {
+  margin: 22px 0 10px;
+  font-size: 15px;
+  letter-spacing: 0.02em;
+}
+
+/* The limitation is the point, so it is set apart rather than buried. */
+.cohort-caveat {
+  margin-top: 22px;
+  border-left: 3px solid var(--amber);
+  padding: 4px 0 4px 14px;
+}
+
+.cohort-caveat h3 {
+  margin-top: 0;
+}
+
 .plan-deadline {
   color: var(--amber);
   font-size: 13px;

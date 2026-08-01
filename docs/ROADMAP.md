@@ -436,8 +436,23 @@ Ordered by what would change the answers most, not by effort.
 
 12. **Mini-leagues 34555 and 393774.** Rival picks are only legally readable
     after a deadline.
-13. **The proven-manager cohort.** A full entry sweep is running; the resulting
-    catalogue is not yet wired to anything.
+13. **The proven-manager cohort — published, with the one thing it cannot say.**
+    `python -m fpl_andres.cli.publish_cohort` writes `cohort.json` and
+    `CohortPanel` shows it. At 2,260,000 entries swept it holds **2,142**
+    managers with two or more top-10k finishes since 2021 (1,935 with two, 190
+    with three, 17 with four), median best finish 2,474. The sweep is still
+    running, so those grow.
+
+    **It cannot measure persistence, and the artifact says so on the page.** The
+    sweep keeps a manager only if they already cleared the bar twice, so the
+    elite group and the group they would be compared against are both
+    pre-selected for the outcome being measured. Run on it anyway, the lift came
+    out **below one** in every recent season pair — 0.67, 0.58, 0.55, 0.60 —
+    against a base rate of 48% to 60%. That is the selection showing through,
+    not evidence that good managers get worse. `repeat_rate` refuses unless
+    handed an unfiltered sweep, and getting one means recording every entry's
+    history rather than only the qualifiers.
+
 14. **Live smoke test** on entry 212279 once gameweek 1 is processed.
 
 ### Unverified

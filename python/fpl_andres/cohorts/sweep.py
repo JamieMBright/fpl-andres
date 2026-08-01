@@ -13,6 +13,7 @@ from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
+from itertools import pairwise
 from typing import Any
 
 __all__ = [
@@ -118,3 +119,57 @@ def summarise(records: Sequence[ManagerRecord], rule: CohortRule) -> dict[str, i
         "withHistory": len(records),
         "qualifying": len(qualifying),
     }
+
+
+class PersistenceNotMeasurable(ValueError):
+    """Raised when a persistence claim would be conditioning on the outcome."""
+
+
+def repeat_rate(
+    records: Sequence[ManagerRecord],
+    *,
+    rank_ceiling: int,
+    unfiltered: bool,
+) -> float:
+    """Share of managers who clear the ceiling again the season after doing so.
+
+    Refuses on a filtered cohort. The sweep only keeps managers who already
+    have two qualifying seasons, so both the elite group and everyone left to
+    compare them against are pre-selected for exactly the outcome being
+    measured. Run on the swept file it produced a *lift below one* in every
+    recent season pair - 0.67, 0.58, 0.55, 0.60 - which is the selection
+    showing through, not evidence that good managers get worse.
+    """
+    if not unfiltered:
+        raise PersistenceNotMeasurable(
+            "a cohort filtered on past rank cannot measure whether past rank "
+            "predicts future rank; sweep every entry, not just qualifiers"
+        )
+
+    by_season: dict[str, dict[int, int]] = {}
+    for record in records:
+        for season in record.seasons:
+            by_season.setdefault(season.season, {})[record.entry_id] = season.rank
+
+    repeats = 0
+    eligible = 0
+    for first, second in pairwise(sorted(by_season)):
+        # Adjacent in the sorted list is not the same as adjacent in the
+        # calendar: a season nobody in the sample played would otherwise make a
+        # multi-year gap look consecutive.
+        if _start_year(second) != _start_year(first) + 1:
+            continue
+        earlier, later = by_season[first], by_season[second]
+        for entry_id, rank in earlier.items():
+            if rank > rank_ceiling or entry_id not in later:
+                continue
+            eligible += 1
+            if later[entry_id] <= rank_ceiling:
+                repeats += 1
+    if eligible == 0:
+        raise PersistenceNotMeasurable("no manager appears in consecutive seasons")
+    return repeats / eligible
+
+
+def _start_year(season: str) -> int:
+    return int(season.split("/", 1)[0])
