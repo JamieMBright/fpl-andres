@@ -315,8 +315,23 @@ Ordered by what would change the answers most, not by effort.
    year with no Premier League record, so they cannot be ranked or picked.
    Scoring rates do not transfer across divisions but minutes might, which is
    exactly what bench cover needs. FBref has it; `soccerdata` does not ship it.
-9. **End-of-season projection and posterior carry (T2).** `project_horizon`
-   stops at seven gameweeks and refits from scratch each week.
+9. **End-of-season projection and posterior carry (T2): mostly a non-issue,
+   measured.** The claim was that `project_horizon` stops at seven gameweeks
+   and refits from scratch each week. Neither is quite a defect. Seven is only
+   the default in `horizons`; any length is accepted, now covered by
+   `test_season_horizon.py`. And refitting on all history each week **is** the
+   posterior update for a conjugate shrinkage model, so nothing is lost by not
+   carrying one explicitly.
+
+   The real worry was frozen form: form is measured once at the projection
+   gameweek and held for every week after, so a hot player would stay hot for
+   thirty-one weeks. Measured against realised totals from GW8 across three
+   seasons, bias per gameweek at a thirty-one week horizon is **+0.197,
+   -0.005 and +0.095** — small and inconsistent in sign, so noise rather than
+   drift. Rank correlation _improves_ with horizon, 0.48-0.51 against 0.24-0.32
+   at one week, because weekly noise averages out. What remains is presentation:
+   no surface asks for a season-long view.
+
 10. **Positional matchups: tested and refused.** The premise was that shot
     coordinates reveal which defences leak down a flank, from distance, or at
     set pieces. It does not survive contact with the data. Splitting each
