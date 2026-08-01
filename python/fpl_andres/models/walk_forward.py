@@ -63,3 +63,10 @@ def _require_utc(value: datetime) -> None:
 
 def _fixture_order(fixture: FixtureResult) -> tuple[datetime, int, int]:
     return fixture.kickoff_time, fixture.home_team_id, fixture.away_team_id
+
+
+__all__ = [
+    "WalkForwardSlice",
+    "iter_walk_forward_slices",
+    "walk_forward_split",
+]

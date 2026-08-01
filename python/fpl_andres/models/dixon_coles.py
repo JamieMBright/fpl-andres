@@ -249,3 +249,9 @@ def _validate_prediction_ids(home_team_id: int, away_team_id: int, event: int) -
         raise ValueError("prediction teams must be distinct positive IDs")
     if not 1 <= event <= 38:
         raise ValueError("prediction event must be between 1 and 38")
+
+
+__all__ = [
+    "DixonColesModel",
+    "ModelFitError",
+]

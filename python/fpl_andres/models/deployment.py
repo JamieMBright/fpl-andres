@@ -436,3 +436,15 @@ def _role_ordinal(role: ObservedRole) -> int:
 
 def _require_utc(value: datetime, label: str) -> None:
     require_utc(value, label)
+
+
+__all__ = [
+    "DeploymentClassification",
+    "DeploymentRoleEvidence",
+    "DeploymentRoleObservation",
+    "DeploymentSignal",
+    "FutureRoleEvidenceError",
+    "ListedPosition",
+    "ObservedRole",
+    "classify_deployment",
+]

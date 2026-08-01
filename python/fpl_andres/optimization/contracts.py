@@ -559,3 +559,26 @@ def _require_sorted_hashes(hashes: tuple[str, ...]) -> None:
         raise ValueError("at least one source hash is required")
     if hashes != tuple(sorted(set(hashes))):
         raise ValueError("source hashes must be sorted and unique")
+
+
+__all__ = [
+    "CurrentSquadPlayer",
+    "Hash",
+    "HorizonEvent",
+    "HorizonEventPlan",
+    "HorizonOptimizationRequest",
+    "HorizonOptimizationResult",
+    "HorizonPlayerForecast",
+    "NonNegativeInt",
+    "OptimizationPlayer",
+    "OptimizationRequest",
+    "OptimizationResult",
+    "OptimizationRules",
+    "OptimizationStateEvidence",
+    "OptimizerPort",
+    "PositionConstraint",
+    "PositiveInt",
+    "TransferRulesAddendum",
+    "optimization_rules_from_snapshot",
+    "optimization_state_evidence_from_team_state",
+]

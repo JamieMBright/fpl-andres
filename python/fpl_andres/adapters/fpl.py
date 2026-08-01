@@ -47,6 +47,13 @@ class FplUpstreamDown(RuntimeError):
 
 
 class FplPicksUnavailable(LookupError):
+    """Raised when an entry's picks for an event are not public.
+
+    Expected, not exceptional: picks stay private until the deadline passes, and
+    a manager who did not play a gameweek never has any. Callers degrade rather
+    than refuse.
+    """
+
     def __init__(self, entry_id: int, event: int) -> None:
         super().__init__(f"picks are unavailable for entry {entry_id}, event {event}")
         self.entry_id = entry_id
@@ -331,3 +338,12 @@ def _required_raw_field(payload: Mapping[str, Any], key: str) -> Any:
     if key not in payload:
         raise FplContractError(f"FPL entry is missing required field: {key}")
     return payload[key]
+
+
+__all__ = [
+    "FplClient",
+    "FplContractError",
+    "FplPicksUnavailable",
+    "FplUpstreamDown",
+    "normalize_entry",
+]

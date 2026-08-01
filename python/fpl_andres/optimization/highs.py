@@ -301,3 +301,9 @@ def _selected(
     offset: int,
 ) -> tuple[OptimizationPlayer, ...]:
     return tuple(player for index, player in enumerate(players) if solution[offset + index] > 0.5)
+
+
+__all__ = [
+    "HighsOptimizer",
+    "OptimizationError",
+]

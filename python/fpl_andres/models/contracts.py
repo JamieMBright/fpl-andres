@@ -50,3 +50,10 @@ class TeamGoalPrediction(BaseModel):
     reason_codes: tuple[str, ...]
     data_available_at: datetime
     source_hashes: tuple[str, ...]
+
+
+__all__ = [
+    "EvidenceLevel",
+    "FixtureResult",
+    "TeamGoalPrediction",
+]

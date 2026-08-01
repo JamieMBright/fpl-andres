@@ -218,3 +218,10 @@ def _known_rate(rate: _Rate | None) -> _Rate:
     if rate is None:
         raise AssertionError("rate must be validated before use")
     return rate
+
+
+__all__ = [
+    "InsufficientHistoryError",
+    "LeagueVenueGoalBaseline",
+    "TeamVenueGoalRateModel",
+]

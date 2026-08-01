@@ -252,3 +252,12 @@ def _degenerate_result(
         seed=seed,
         sample_size=sample_size,
     )
+
+
+__all__ = [
+    "BootstrapResult",
+    "MetricDirection",
+    "PromotionDecision",
+    "TripletPrediction",
+    "evaluate_promotion",
+]

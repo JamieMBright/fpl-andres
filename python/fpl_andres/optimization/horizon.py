@@ -492,3 +492,8 @@ def _selected(
         for index, element_id in enumerate(player_ids)
         if solution[offset + event_index * player_count + index] > 0.5
     )
+
+
+__all__ = [
+    "HighsHorizonOptimizer",
+]

@@ -19,3 +19,8 @@ def _require_aligned(predicted: Sequence[float], observed: Sequence[float]) -> N
         raise ValueError("metric requires at least one observation")
     if len(predicted) != len(observed):
         raise ValueError("predicted and observed values must have the same length")
+
+
+__all__ = [
+    "mean_absolute_error",
+]

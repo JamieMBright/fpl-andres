@@ -172,3 +172,12 @@ def _parse_ms(value: str) -> int:
         return int(minutes_part) * 60 + int(seconds_part)
     except (ValueError, AttributeError) as error:
         raise StatsbombAdapterError(f"invalid mm:ss time value: {value!r}") from error
+
+
+__all__ = [
+    "StatsbombAdapterError",
+    "StatsbombRoleRow",
+    "hash_statsbomb_bytes",
+    "map_statsbomb_position",
+    "parse_lineup_role_observations",
+]

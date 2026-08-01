@@ -308,3 +308,12 @@ def _clip(detail: str) -> str:
     if len(detail) <= _MAX_DETAIL:
         return detail
     return detail[:_MAX_DETAIL] + f"... [truncated, {len(detail)} chars]"
+
+
+__all__ = [
+    "MissingCredentialsError",
+    "Resolution",
+    "SupabaseCredentials",
+    "SupabaseRestClient",
+    "SupabaseWriteError",
+]
