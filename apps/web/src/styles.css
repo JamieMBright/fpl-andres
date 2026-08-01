@@ -1995,6 +1995,14 @@ a:focus-visible {
   background: color-mix(in srgb, var(--field-green) 42%, transparent);
 }
 
+/* In the Leeds kit the fill colour and the body ink are the same purple, so the
+   dark kit's 42% drops the value text to 3.84:1 against its own bar. The bar is
+   decoration and the number is the content, so the bar yields. Found by the
+   both-kits axe sweep; the single-kit sweep never saw it. */
+:root[data-theme="light"] .rho-bar-fill {
+  background: color-mix(in srgb, var(--field-green) 16%, transparent);
+}
+
 .rho-bar-value {
   position: relative;
 }

@@ -30,10 +30,17 @@ database. There is no anon-key path from the browser to a table, so there is no
 policy to get wrong.
 
 **Writes go through the service role only**, from Python jobs that hold
-`SUPABASE_SECRET_KEY`. That key bypasses RLS, which is why the tables are
-`force`d rather than merely `enable`d: forcing means even the table owner is
-subject to policies, so a future migration that accidentally runs as owner
-cannot quietly read rows the posture is meant to deny.
+`SUPABASE_SECRET_KEY`. That key authenticates as the `service_role` Postgres
+role, which carries `BYPASSRLS`, which is why the tables are `force`d rather
+than merely `enable`d: forcing means even the table owner is subject to
+policies, so a future migration that accidentally runs as owner cannot quietly
+read rows the posture is meant to deny. `service_role` is unaffected by
+`force`, because bypassing RLS happens before policies are consulted at all.
+
+**The two client roles reach nothing.** `anon` is the role the browser gets
+from a publishable key; `authenticated` is the role a signed-in user gets.
+Neither has a policy on any table, so both see zero rows on every table,
+whether or not a key ever reaches the browser.
 
 **A missing policy fails closed.** If someone later exposes a table to the anon
 key without writing a policy, the result is an empty result set and a visible
