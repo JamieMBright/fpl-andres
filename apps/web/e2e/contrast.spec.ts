@@ -35,7 +35,11 @@ async function settle(page: Page): Promise<void> {
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
 }
 
-async function applyKit(page: Page, clicks: number, theme: string): Promise<void> {
+async function applyKit(
+  page: Page,
+  clicks: number,
+  theme: string,
+): Promise<void> {
   for (let index = 0; index < clicks; index += 1) {
     await page.getByRole("button", { name: /kit$/i }).click();
   }
@@ -50,7 +54,9 @@ test.describe("both kits meet the contrast standard the design claims", () => {
         await settle(page);
         await applyKit(page, kit.clicks, kit.theme);
 
-        const scan = await new AxeBuilder({ page }).withTags([...WCAG]).analyze();
+        const scan = await new AxeBuilder({ page })
+          .withTags([...WCAG])
+          .analyze();
 
         expect(scan.violations).toEqual([]);
       });
@@ -59,7 +65,10 @@ test.describe("both kits meet the contrast standard the design claims", () => {
     test(`a dossier in the ${kit.name}`, async ({ page }) => {
       await page.route("**/api/team/*", async (route) => {
         await route.fulfill({
-          body: JSON.stringify({ status: "unavailable", reason: "no_processed_event" }),
+          body: JSON.stringify({
+            status: "unavailable",
+            reason: "no_processed_event",
+          }),
           contentType: "application/json",
         });
       });

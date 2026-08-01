@@ -52,10 +52,16 @@ def _declared_exceptions() -> dict[str, str]:
 
 @cache
 def _taxonomy_rows() -> dict[str, str]:
+    """Tolerates the column padding prettier adds when it reformats the tables.
+
+    The first version anchored on single spaces and silently matched nothing
+    after `pnpm format` ran, which turned the coverage assertion into a test
+    that every exception was missing. Padding-tolerant since.
+    """
     text = _TAXONOMY.read_text(encoding="utf-8")
     return {
         match.group(1): match.group(2)
-        for match in re.finditer(r"^\| `(\w+)` \| `([^`]+)` \|", text, re.MULTILINE)
+        for match in re.finditer(r"^\|\s*`(\w+)`\s*\|\s*`([^`]+)`\s*\|", text, re.MULTILINE)
     }
 
 
