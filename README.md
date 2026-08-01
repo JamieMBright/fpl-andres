@@ -85,6 +85,11 @@ Start Supabase after Docker Desktop is running:
 corepack pnpm exec supabase start
 ```
 
+`docs/DEVELOPMENT.md` covers the parts that go wrong: seeding a database that
+starts empty, inspecting local data, debugging an API route that only exists as a
+serverless function in production, and why a build passes locally and fails in
+CI. `docs/TESTING.md` covers the test loops and the seeding strategy.
+
 The Windows Supabase executable may be blocked by local application-control policy.
 CI uses Linux; local SQL policy tests continue to run without the CLI, and the project
 can use the official CLI container where machine policy permits it.

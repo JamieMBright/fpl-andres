@@ -114,6 +114,78 @@ The harness is exercised on every CI run: `db reset`, teardown, `db reset`
 again. A table added without a matching drop fails that job rather than
 failing here.
 
+### Incident: the corpus has ingested wrong data
+
+Symptom: a metric moves and no model changed. Or `validate` reports a season
+whose `missingGameweeks` is non-empty, or whose `rows` count differs sharply
+from its neighbours.
+
+The corpus is deliberately mutable, so a bad ingest overwrites good data rather
+than failing. That is the cost of being able to accept FPL's own corrections.
+
+1. **Do not delete the season.** Re-ingesting is an upsert keyed on
+   `(season, gameweek, element_id, fixture_id)`, so a corrected run replaces the
+   bad rows in place. Deleting first turns a recoverable problem into a gap.
+2. Identify what changed. Every corpus row carries `source_snapshot_id`; the
+   `source_snapshots` row behind it is immutable and holds the content hash and
+   the upstream reference. Two ingests of the same gameweek with different
+   hashes is the archive having been revised, which is legitimate.
+3. Re-dispatch `historical-ingest.yml` for the affected season only, pinning the
+   `--commit` SHA you intend. Leaving it unpinned re-reads whatever the archive
+   holds now, which is how a second wrong ingest happens.
+4. Re-run `validate` and compare `corpusFingerprint` before and after. If it did
+   not change, the ingest did not do what you thought.
+5. Any `backtest_runs` row carrying the old `corpus_fingerprint` was measured
+   over the bad data. It stays — the table is immutable — but it is no longer
+   comparable to anything measured after.
+
+The fingerprint is what makes step 5 possible. Before it existed, a moved metric
+and a moved model were indistinguishable.
+
+### Incident: a promotion decision looks wrong
+
+Symptom: a candidate was promoted and its live behaviour disagrees, or two runs
+of the same comparison disagree with each other.
+
+1. Read the `model_promotion_decisions` row. It carries `code_revision`,
+   `corpus_fingerprint`, `dependency_fingerprint` and `dependency_versions`.
+2. **If `seeds_promoting` is less than `seed_replicates`, the decision was
+   refused** and `reason_codes` says `seed_disagreement`. Nothing was promoted;
+   look elsewhere.
+3. Reproduce it: check out `code_revision`, install the versions in
+   `dependency_versions`, and re-run with the recorded `seed` and `resamples`.
+   A different answer means the corpus moved — compare `corpus_fingerprint`
+   against the current one.
+4. If it reproduces and is still wrong, the metric is wrong, not the decision.
+   The bootstrap only answers the question it was given.
+
+There is no un-promote. The table is immutable and a superseding decision is a
+new row, which is the record you want: what was believed, when, and on what.
+
+### Incident: the site is showing stale public state
+
+Symptom: a dossier shows "Showing a stale verified snapshot", or the published
+projections name a gameweek that has passed.
+
+Two different failures wear the same face.
+
+**The refresh is failing.** The banner is working as designed: the last verified
+snapshot stays visible rather than being replaced by an error. Check
+`/api/health`, then the degraded reason in the response — `fpl_unreachable`,
+`fpl_source_failed` and `source_contract_failed` distinguish FPL being down from
+FPL having changed shape. Only the third needs code.
+
+**The artifacts are stale.** `projections.json` and `opening-squad.json` are
+committed files, so they are exactly as fresh as the last publish commit. Check
+`generatedAt` in `projections-meta.json` against the current gameweek. Republish
+by running the publish CLIs and committing the result; there is no runtime path
+that refreshes them, deliberately, because a claim about a commit belongs in the
+commit.
+
+Nothing here is an emergency. A stale snapshot that says it is stale is the
+system behaving correctly; a stale snapshot presented as current would not be,
+and the evidence banner exists to keep those apart.
+
 ## Secrets
 
 - `SUPABASE_URL` and `SUPABASE_SECRET_KEY` live in Vercel Production and the
