@@ -78,6 +78,33 @@ def test_tables_drop_before_the_functions_their_triggers_use() -> None:
     assert last_table < first_function, "functions are dropped before the tables"
 
 
+def test_no_table_is_dropped_while_something_still_references_it() -> None:
+    """Derived from the real foreign keys rather than asserted by hand.
+
+    Only `backtest_predictions` cascades; every other key is `no action`, so a
+    referrer must go before its target. A hand-maintained order drifts the
+    moment a migration adds a key, and it drifts silently until an incident.
+    """
+    references: dict[str, set[str]] = {}
+    for match in re.finditer(
+        r"create table (?:if not exists )?public\.(\w+) \((.*?)\); ",
+        _migration_sql(),
+        re.DOTALL,
+    ):
+        references[match.group(1)] = set(re.findall(r"references public\.(\w+)", match.group(2)))
+    assert references, "no foreign keys parsed; the regex has drifted from the SQL"
+
+    order = re.findall(r"drop table if exists public\.(\w+)", _rollback_sql())
+    dropped: set[str] = set()
+    violations: list[str] = []
+    for table in order:
+        for other, targets in references.items():
+            if table in targets and other != table and other not in dropped:
+                violations.append(f"{table} is dropped while {other} still references it")
+        dropped.add(table)
+    assert violations == [], violations
+
+
 def test_the_schema_drops_after_the_functions_inside_it() -> None:
     sql = _rollback_sql()
     assert sql.rfind("drop function if exists") < sql.find("drop schema if exists")

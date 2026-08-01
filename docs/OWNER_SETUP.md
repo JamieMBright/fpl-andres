@@ -21,6 +21,45 @@ key or webhook secret through chat, an issue, a PR or a committed file.
   against the hosted project on 2026-07-31. Re-dispatch
   `historical-ingest.yml` only to refresh a season, never to fill a gap.
 
+## Migration checklist
+
+The production bootstrap is this list, pasted into the SQL Editor **in filename
+order**. There is no CLI migration ledger for the hosted project, so this file is
+the ledger.
+
+The migrations are **not idempotent** — 17 `create table`, 26 `create index`,
+10 `create trigger` and 6 `create function` statements are written without a
+guard — so a file cannot be safely re-run after a partial paste. If one fails
+part-way, follow the recovery procedure in `docs/RUNBOOK.md`; it uses
+`supabase/rollback/down.sql` to return to empty before re-applying.
+
+Mark each one applied, with the date, as it lands.
+
+| #   | Migration                                          | Applied                        |
+| --- | -------------------------------------------------- | ------------------------------ |
+| 1   | `20260729180000_foundation.sql`                    | yes                            |
+| 2   | `20260729183000_evidence_snapshots.sql`            | yes                            |
+| 3   | `20260730120000_projection_artifacts.sql`          | yes                            |
+| 4   | `20260731120000_optimization_artifacts.sql`        | yes                            |
+| 5   | `20260731130000_foreign_key_indexes.sql`           | yes                            |
+| 6   | `20260801120000_history_corpus.sql`                | yes — corpus loaded 2026-07-30 |
+| 7   | `20260801130000_defensive_components.sql`          | **owner to confirm**           |
+| 8   | `20260801140000_fixture_grain_and_event_range.sql` | **owner to confirm**           |
+| 9   | `20260801150000_backtest_artifacts.sql`            | **owner to confirm**           |
+| 10  | `20260801160000_crowd_snapshots.sql`               | **owner to confirm**           |
+| 11  | `20260801170000_access_path_indexes.sql`           | no                             |
+| 12  | `20260801180000_backtest_corpus_fingerprint.sql`   | no                             |
+| 13  | `20260801190000_promotion_lineage.sql`             | no                             |
+
+Rows 7–10 are marked for confirmation rather than guessed: this file did not
+list them, so their state was never recorded and cannot be inferred from the
+repository. Check the hosted project's `information_schema.tables` for
+`crowd_snapshots` and `backtest_runs`, and `information_schema.columns` for
+`element_gameweek_stats.clearances_blocks_interceptions`, then update this table.
+
+`python/tests/test_migration_checklist.py` fails if a migration file exists that
+this table does not name.
+
 ## Decisions taken (2026-07-30)
 
 - **Historical source**: [vaastav/Fantasy-Premier-League](https://github.com/vaastav/Fantasy-Premier-League),
