@@ -39,6 +39,7 @@ import {
   refreshTeamAnalysis,
   type TeamAnalysisState,
 } from "./state/team-analysis";
+import { useDocumentTitle } from "./state/use-document-title";
 
 // Split out so the 213KB projection artifact and the 51KB calibration report
 // are fetched by the routes that need them, not by every first paint.
@@ -257,6 +258,10 @@ function HomePage() {
   const navigate = useNavigate();
   const [teamId, setTeamId] = useState("");
   const [error, setError] = useState<string | null>(null);
+  useDocumentTitle(
+    "FPL Andres",
+    "An evidence-first Fantasy Premier League assistant that shows its working and admits what it cannot know.",
+  );
 
   function analyseTeam(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -382,6 +387,10 @@ function TeamAnalysisRoute() {
 function TeamAnalysisPage() {
   const { teamId } = useParams();
   const entryId = parseTeamId(teamId);
+  useDocumentTitle(
+    entryId === null ? "Unknown team" : `Team ${entryId}`,
+    "Your last-deadline squad, your record, and what the evidence supports next.",
+  );
   const [analysis, dispatch] = useReducer(
     reduceTeamAnalysis,
     initialTeamAnalysisState,

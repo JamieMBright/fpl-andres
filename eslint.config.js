@@ -32,10 +32,22 @@ export default tseslint.config(
       ...jsxA11y.flatConfigs.recommended.rules,
       ...reactHooks.configs["recommended-latest"].rules,
       "@typescript-eslint/consistent-type-imports": "error",
+      // `any` disables every other guarantee in this file, and the contracts
+      // package exists precisely so a payload shape is checked at the boundary.
+      "@typescript-eslint/no-explicit-any": "error",
       "@typescript-eslint/no-unused-vars": [
         "error",
         { argsIgnorePattern: "^_", varsIgnorePattern: "^_" },
       ],
+      "no-floating-promises": "off",
+      "@typescript-eslint/require-await": "off",
+    },
+  },
+  {
+    // Test doubles legitimately stand in for shapes they do not implement.
+    files: ["**/*.test.{ts,tsx}", "**/e2e/**/*.ts"],
+    rules: {
+      "@typescript-eslint/no-explicit-any": "off",
     },
   },
 );

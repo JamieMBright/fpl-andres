@@ -41,6 +41,23 @@ addopts = "--strict-config --strict-markers"
 asyncio_mode = "auto"
 pythonpath = ["python"]
 testpaths = ["python/tests"]
+markers = ["slow: takes more than a second; excluded by -m 'not slow'"]
+
+[tool.coverage.run]
+source = ["fpl_andres"]
+branch = true
+
+[tool.coverage.report]
+# Branch coverage measured at 77.85% on 2026-08-01, which is stricter than the
+# 80% line figure. Set just below so the gate ratchets rather than blocking the
+# next commit, and raise it when the number rises.
+fail_under = 77
+show_missing = true
+exclude_also = [
+  "if TYPE_CHECKING:",
+  "raise NotImplementedError",
+  "\\.\\.\\.$",
+]
 
 [tool.ruff]
 line-length = 100

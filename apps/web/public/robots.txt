@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+# A team dossier is generated per Team ID and is worthless to an index: the
+# content is one manager's squad, it changes every deadline, and the id space is
+# unbounded. Crawling it costs the FPL API real requests for no benefit.
+Disallow: /team/
+
+Sitemap: https://fpl-andres.vercel.app/sitemap.xml
