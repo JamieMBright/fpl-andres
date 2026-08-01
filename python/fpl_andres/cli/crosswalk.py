@@ -21,6 +21,7 @@ from collections import defaultdict
 from collections.abc import Sequence
 from datetime import UTC, datetime
 from pathlib import Path
+from typing import Any
 
 from fpl_andres.backtesting.corpus import SeasonCorpus, load_season
 from fpl_andres.crosswalk import (
@@ -29,6 +30,7 @@ from fpl_andres.crosswalk import (
     MatchOutcome,
     resolve_crosswalk,
 )
+from fpl_andres.models.penalties import PenaltyExposure, penalty_exposure
 from fpl_andres.persistence.supabase import SupabaseCredentials, SupabaseRestClient
 
 DEFAULT_OUTPUT = Path("data/crosswalk")
@@ -82,7 +84,8 @@ def _fpl_players(corpus: SeasonCorpus) -> list[FplPlayer]:
     return players
 
 
-def _understat_players(season: str) -> list[ForeignPlayer]:
+def _understat_frame(season: str) -> Any:
+    """soccerdata is an optional extra, so its DataFrame is not typed here."""
     os.environ.setdefault("SOCCERDATA_DIR", str(CACHE_DIR.resolve()))
     try:
         import soccerdata
@@ -91,9 +94,13 @@ def _understat_players(season: str) -> list[ForeignPlayer]:
             'soccerdata is not installed. Run: python -m pip install -e ".[scrape]"'
         ) from error
 
-    frame = soccerdata.Understat(
+    return soccerdata.Understat(
         leagues="ENG-Premier League", seasons=_understat_season(season)
     ).read_player_season_stats()
+
+
+def _understat_players(season: str) -> list[ForeignPlayer]:
+    frame = _understat_frame(season)
     return [
         ForeignPlayer(
             source="understat",
@@ -107,6 +114,20 @@ def _understat_players(season: str) -> list[ForeignPlayer]:
         )
         for row in frame.reset_index().itertuples()
     ]
+
+
+def _penalty_exposures(season: str) -> dict[str, PenaltyExposure]:
+    """Keyed by Understat id, so the crosswalk match can carry it to an FPL code."""
+    exposures: dict[str, PenaltyExposure] = {}
+    for row in _understat_frame(season).reset_index().itertuples():
+        exposures[str(row.player_id)] = penalty_exposure(
+            expected_goals=float(row.xg),
+            non_penalty_expected_goals=float(row.np_xg),
+            goals=int(row.goals),
+            non_penalty_goals=int(row.np_goals),
+            minutes=int(row.minutes),
+        )
+    return exposures
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -131,6 +152,33 @@ def main(argv: Sequence[str] | None = None) -> int:
             names = ", ".join(match.web_name for match in refused)
             print(f"\n  refused as {outcome.value}: {names}")
 
+    exposures = _penalty_exposures(args.season)
+    matched_exposure = {
+        match.code: exposures[match.source_id]
+        for match in report.verified
+        if match.source_id in exposures
+    }
+    ranked = sorted(
+        (
+            (match.web_name, matched_exposure[match.code])
+            for match in report.verified
+            if match.code in matched_exposure
+            and matched_exposure[match.code].penalty_expected_goals > 0
+        ),
+        # By absolute penalty xG, not share: a share is a ratio on whatever
+        # denominator a player happens to have, so one penalty on a total of
+        # 0.98 xG reads as 78% dependent and tells nobody anything.
+        key=lambda pair: -pair[1].penalty_expected_goals,
+    )
+    if ranked:
+        print("\n  most penalty-dependent (by penalty xG, share alongside):")
+        for name, exposure in ranked[:10]:
+            print(
+                f"    {name[:22]:22s} {exposure.penalty_expected_goals:5.2f} penalty xG "
+                f"of {exposure.expected_goals:5.2f} ({exposure.share:5.1%}), "
+                f"{exposure.penalties_scored} scored"
+            )
+
     output = Path(args.output) / f"understat-{args.season}.json"
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(
@@ -142,6 +190,19 @@ def main(argv: Sequence[str] | None = None) -> int:
                 "coverage": round(report.coverage(), 4),
                 "counts": {outcome.value: report.counts[outcome] for outcome in MatchOutcome},
                 "matched": {str(match.code): match.source_id for match in report.verified},
+                "penaltyExposure": {
+                    str(code): {
+                        "expectedGoals": round(exposure.expected_goals, 4),
+                        "nonPenaltyExpectedGoals": round(exposure.non_penalty_expected_goals, 4),
+                        "penaltyExpectedGoals": round(exposure.penalty_expected_goals, 4),
+                        "share": round(exposure.share, 4),
+                        "penaltiesScored": exposure.penalties_scored,
+                        "expectedGoalsAtRiskPer90": round(
+                            exposure.expected_goals_at_risk_per_90(), 4
+                        ),
+                    }
+                    for code, exposure in sorted(matched_exposure.items())
+                },
                 "unmatched": [
                     {"code": match.code, "name": match.web_name, "why": match.outcome.value}
                     for match in report.matches
