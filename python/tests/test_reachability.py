@@ -78,6 +78,11 @@ KNOWN_ORPHANS = {
     "parse_gameweek_csv": "superseded by normalise_gameweek_stats; kept for its leak guard",
     "parse_lineup_role_observations": "StatsBomb adapter; no ingest path exists",
     "hash_statsbomb_bytes": "StatsBomb adapter; no ingest path exists",
+    "implied_probabilities": "odds de-vigging; this network blocks every price source",
+    "overround": "odds de-vigging; this network blocks every price source",
+    "devig_proportional": "odds de-vigging; kept as the biased baseline to argue against",
+    "devig_power": "odds de-vigging; this network blocks every price source",
+    "devig_shin": "odds de-vigging; this network blocks every price source",
     "suspension_risk": "accumulation bans; thresholds are an unsourced rule",
 }
 
@@ -85,6 +90,7 @@ KNOWN_ORPHAN_MODULES = {
     "dixon_coles": "team goals model; the projector uses its own strength estimate",
     "expected_points": "promoted xPTS model, not called by the backtest",
     "metrics": "scoring helpers, superseded",
+    "odds": "bookmaker de-vigging; every price source is blocked from this network",
     "promotion": "promotion gate, nothing promotes yet",
     "statsbomb": "adapter with no ingest path",
     "suspensions": "accumulation bans; thresholds are an unsourced rule",

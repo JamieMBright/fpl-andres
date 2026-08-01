@@ -405,13 +405,14 @@ Ordered by what would change the answers most, not by effort.
 
     Three problems to solve before any of that is worth writing:
 
-    - **The overround has to come out.** Quoted prices are not probabilities.
-      They sum to more than one, typically a few per cent on `1X2` and far more
-      on goalscorer markets, because the margin is the bookmaker's income.
-      Dividing through by the total — the obvious fix — is biased, because the
-      margin is not spread evenly: longshots carry more of it than favourites.
-      Shin's method or a power fit handle that; proportional de-vigging would
-      systematically flatter exactly the cheap differential punts FPL rewards.
+    - **The overround has to come out, and the maths is now built.**
+      `models/odds.py` implements the margin calculation, a power fit and
+      Shin's method, plus the Poisson-zero join from an odds-derived goal
+      expectation to a clean-sheet probability. Proportional de-vigging is
+      included deliberately as the biased baseline to argue against: measured
+      on the implementation, it overprices the longshot by **2.7%** in a mild
+      market, **4.8%** in a medium one and **20.8%** in an extreme one, which
+      is exactly the direction that would flatter cheap differential punts.
     - **The sharp prices arrive too late to act on.** Odds are most accurate at
       kickoff, but the FPL deadline is usually a day or two earlier and team
       news is what moves them. Anything built here must be fitted on prices as
