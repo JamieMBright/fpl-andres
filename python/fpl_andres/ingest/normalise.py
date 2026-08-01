@@ -134,30 +134,52 @@ def _require(header: Sequence[str], required: Iterable[str], label: str) -> None
         raise ColumnMappingError(f"{label} is missing required columns: {', '.join(missing)}")
 
 
-def _int(value: str | None) -> int | None:
+def _int(value: str | None, column: str = "?") -> int | None:
     if value is None or value.strip() == "":
         return None
-    # Some archive rows carry floats in integer columns ("90.0").
-    return int(float(value))
+    try:
+        # Some archive rows carry floats in integer columns ("90.0").
+        return int(float(value))
+    except ValueError as error:
+        raise ColumnMappingError(
+            f"column {column!r} should hold a number and holds {value.strip()!r}"
+        ) from error
 
 
 def _required_int(row: Mapping[str, str], column: str) -> int:
-    parsed = _int(row.get(column))
+    parsed = _int(row.get(column), column)
     if parsed is None:
         raise ColumnMappingError(f"column {column!r} must carry a value on every row")
     return parsed
 
 
-def _float(value: str | None) -> float | None:
+def _float(value: str | None, column: str = "?") -> float | None:
     if value is None or value.strip() == "":
         return None
-    return float(value)
+    try:
+        return float(value)
+    except ValueError as error:
+        raise ColumnMappingError(
+            f"column {column!r} should hold a number and holds {value.strip()!r}"
+        ) from error
 
 
-def _bool(value: str | None) -> bool | None:
+# What the archive has actually used for booleans. Anything else is a format
+# change, not a false: reading an unrecognised value as False would have turned
+# every fixture into an away fixture the day the archive switched to H/A.
+_TRUE = frozenset({"true", "1", "t", "yes"})
+_FALSE = frozenset({"false", "0", "f", "no"})
+
+
+def _bool(value: str | None, column: str = "?") -> bool | None:
     if value is None or value.strip() == "":
         return None
-    return value.strip().casefold() in {"true", "1", "t", "yes"}
+    normalised = value.strip().casefold()
+    if normalised in _TRUE:
+        return True
+    if normalised in _FALSE:
+        return False
+    raise ColumnMappingError(f"column {column!r} should hold a boolean and holds {value.strip()!r}")
 
 
 def _text(value: str | None) -> str:
@@ -209,11 +231,11 @@ def normalise_gameweek_stats(
             # Double and triple gameweeks put a player in more than one fixture
             # per gameweek, so the fixture is part of the row's identity.
             "fixture_id": _required_int(row, "fixture"),
-            "opponent_team": _int(row.get("opponent_team")),
-            "was_home": _bool(row.get("was_home")),
+            "opponent_team": _int(row.get("opponent_team"), "opponent_team"),
+            "was_home": _bool(row.get("was_home"), "was_home"),
             "kickoff_time": _timestamp(row.get("kickoff_time")),
             "minutes": _required_int(row, "minutes"),
-            "starts": _int(row.get("starts")),
+            "starts": _int(row.get("starts"), "starts"),
             "goals_scored": _required_int(row, "goals_scored"),
             "assists": _required_int(row, "assists"),
             "clean_sheets": _required_int(row, "clean_sheets"),
@@ -227,21 +249,25 @@ def normalise_gameweek_stats(
             "bonus": _required_int(row, "bonus"),
             "bps": _required_int(row, "bps"),
             "total_points": _required_int(row, "total_points"),
-            "value": _int(row.get("value")),
-            "selected": _int(row.get("selected")),
-            "transfers_in": _int(row.get("transfers_in")),
-            "transfers_out": _int(row.get("transfers_out")),
+            "value": _int(row.get("value"), "value"),
+            "selected": _int(row.get("selected"), "selected"),
+            "transfers_in": _int(row.get("transfers_in"), "transfers_in"),
+            "transfers_out": _int(row.get("transfers_out"), "transfers_out"),
             # Observed defensive-contribution labels begin in 2025/26.
-            "defensive_contribution": _int(row.get("defensive_contribution")),
+            "defensive_contribution": _int(
+                row.get("defensive_contribution"), "defensive_contribution"
+            ),
             # Components behind that label. Defenders qualify on CBIT,
             # midfielders and forwards on CBIRT, so the split is required.
-            "clearances_blocks_interceptions": _int(row.get("clearances_blocks_interceptions")),
-            "tackles": _int(row.get("tackles")),
-            "recoveries": _int(row.get("recoveries")),
+            "clearances_blocks_interceptions": _int(
+                row.get("clearances_blocks_interceptions"), "clearances_blocks_interceptions"
+            ),
+            "tackles": _int(row.get("tackles"), "tackles"),
+            "recoveries": _int(row.get("recoveries"), "recoveries"),
             "source_snapshot_id": source_snapshot_id,
         }
         for column in _GAMEWEEK_OPTIONAL_NUMERIC:
-            record[column] = _float(row.get(column))
+            record[column] = _float(row.get(column), column)
         normalised.append(record)
 
     return _drop_identical_duplicates(normalised, season=season, gameweek=gameweek)
@@ -296,7 +322,7 @@ def normalise_players(
                 "web_name": _text(row.get("web_name")) or second_name or first_name,
                 "element_type": _required_int(row, "element_type"),
                 "team_id": _required_int(row, "team"),
-                "start_cost": _int(row.get("now_cost")),
+                "start_cost": _int(row.get("now_cost"), "now_cost"),
                 "source_snapshot_id": source_snapshot_id,
             }
         )
@@ -322,13 +348,25 @@ def normalise_teams(
                 "code": _required_int(row, "code"),
                 "name": _text(row.get("name")),
                 "short_name": _text(row.get("short_name")),
-                "strength": _int(row.get("strength")),
-                "strength_overall_home": _int(row.get("strength_overall_home")),
-                "strength_overall_away": _int(row.get("strength_overall_away")),
-                "strength_attack_home": _int(row.get("strength_attack_home")),
-                "strength_attack_away": _int(row.get("strength_attack_away")),
-                "strength_defence_home": _int(row.get("strength_defence_home")),
-                "strength_defence_away": _int(row.get("strength_defence_away")),
+                "strength": _int(row.get("strength"), "strength"),
+                "strength_overall_home": _int(
+                    row.get("strength_overall_home"), "strength_overall_home"
+                ),
+                "strength_overall_away": _int(
+                    row.get("strength_overall_away"), "strength_overall_away"
+                ),
+                "strength_attack_home": _int(
+                    row.get("strength_attack_home"), "strength_attack_home"
+                ),
+                "strength_attack_away": _int(
+                    row.get("strength_attack_away"), "strength_attack_away"
+                ),
+                "strength_defence_home": _int(
+                    row.get("strength_defence_home"), "strength_defence_home"
+                ),
+                "strength_defence_away": _int(
+                    row.get("strength_defence_away"), "strength_defence_away"
+                ),
                 "source_snapshot_id": source_snapshot_id,
             }
         )
@@ -347,25 +385,25 @@ def normalise_fixtures(
 
     normalised: list[dict[str, Any]] = []
     for row in rows:
-        home_score = _int(row.get("team_h_score"))
-        away_score = _int(row.get("team_a_score"))
+        home_score = _int(row.get("team_h_score"), "team_h_score")
+        away_score = _int(row.get("team_a_score"), "team_a_score")
         # The schema requires both scores or neither.
         if (home_score is None) != (away_score is None):
             home_score = None
             away_score = None
-        finished = _bool(row.get("finished")) or False
+        finished = _bool(row.get("finished"), "finished") or False
         normalised.append(
             {
                 "season": season,
                 "fixture_id": _required_int(row, "id"),
-                "event": _int(row.get("event")),
+                "event": _int(row.get("event"), "event"),
                 "kickoff_time": _timestamp(row.get("kickoff_time")),
                 "team_h": _required_int(row, "team_h"),
                 "team_a": _required_int(row, "team_a"),
                 "team_h_score": home_score,
                 "team_a_score": away_score,
-                "team_h_difficulty": _int(row.get("team_h_difficulty")),
-                "team_a_difficulty": _int(row.get("team_a_difficulty")),
+                "team_h_difficulty": _int(row.get("team_h_difficulty"), "team_h_difficulty"),
+                "team_a_difficulty": _int(row.get("team_a_difficulty"), "team_a_difficulty"),
                 "finished": finished and home_score is not None,
                 "source_snapshot_id": source_snapshot_id,
             }

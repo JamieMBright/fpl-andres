@@ -120,25 +120,54 @@ class HistoricalIngest:
         data_available_at: datetime,
     ) -> SeasonIngestResult:
         season = revision.season
+
+        # Every fetch happens before every write. PostgREST has no transaction
+        # spanning requests, so a season cannot be written atomically — but the
+        # failure that actually happens is a dropped connection partway through
+        # thirty-eight downloads, and that used to leave teams and elements
+        # written with no stats. Now it writes nothing.
+        #
+        # Fetching first also makes a re-run cheap rather than merely possible:
+        # every write below is an upsert, so a partial write is repaired by
+        # running the same command again.
+        teams_file = self._fetcher.fetch(revision.teams_url(), season=season)
+        players_file = self._fetcher.fetch(revision.players_url(), season=season)
+        fixtures_file = self._fetcher.fetch(revision.fixtures_url(), season=season)
+
+        stats_files: list[tuple[int, FetchedFile]] = []
+        unavailable: list[int] = []
+        for gameweek in gameweeks:
+            try:
+                stats_files.append(
+                    (
+                        gameweek,
+                        self._fetcher.fetch(
+                            revision.gameweek_url(gameweek),
+                            season=season,
+                            gameweek=gameweek,
+                        ),
+                    )
+                )
+            except ArchiveFileNotPublished:
+                # Seasons differ in length; 2019/20 ran to 47, most run to 38.
+                unavailable.append(gameweek)
+
         self._client.insert_ignoring_duplicates(
             "seasons", [{"season": season}], on_conflict="season"
         )
 
-        teams_file = self._fetcher.fetch(revision.teams_url())
         teams_snapshot = self._record_snapshot(teams_file, data_available_at)
         teams = normalise_teams(
             teams_file.content, season=season, source_snapshot_id=teams_snapshot
         )
         self._client.upsert("teams", teams, on_conflict="season,team_id")
 
-        players_file = self._fetcher.fetch(revision.players_url())
         players_snapshot = self._record_snapshot(players_file, data_available_at)
         elements = normalise_players(
             players_file.content, season=season, source_snapshot_id=players_snapshot
         )
         self._client.upsert("elements", elements, on_conflict="season,element_id")
 
-        fixtures_file = self._fetcher.fetch(revision.fixtures_url())
         fixtures_snapshot = self._record_snapshot(fixtures_file, data_available_at)
         fixtures = normalise_fixtures(
             fixtures_file.content, season=season, source_snapshot_id=fixtures_snapshot
@@ -148,16 +177,7 @@ class HistoricalIngest:
         element_codes = {row["element_id"]: row["code"] for row in elements}
 
         written: dict[int, int] = {}
-        unavailable: list[int] = []
-        for gameweek in gameweeks:
-            try:
-                stats_file = self._fetcher.fetch(
-                    revision.gameweek_url(gameweek), season=season, gameweek=gameweek
-                )
-            except ArchiveFileNotPublished:
-                # Seasons differ in length; 2019/20 ran to 47, most run to 38.
-                unavailable.append(gameweek)
-                continue
+        for gameweek, stats_file in stats_files:
             stats_snapshot = self._record_snapshot(stats_file, data_available_at)
             stats = normalise_gameweek_stats(
                 stats_file.content,
