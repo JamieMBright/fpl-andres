@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 
+import { classifyFetchFailure } from "../state/fetch-failure";
 import {
   commentary,
   readManagerProfile,
@@ -49,7 +50,7 @@ export function ManagerHistory({ entryId }: { entryId: number }) {
         const payload = response?.ok ? await response.json() : null;
         setLoaded({ entryId, profile: readManagerProfile(payload) });
       } catch (error) {
-        if (error instanceof DOMException && error.name === "AbortError") {
+        if (classifyFetchFailure(error).kind === "aborted") {
           return;
         }
         setLoaded({ entryId, profile: null });

@@ -13,6 +13,14 @@ import httpx
 from pydantic import ValidationError
 
 from fpl_andres import timeouts
+from fpl_andres.adapters.payloads import (
+    BootstrapPayload,
+    EntryHistoryPayload,
+    EntryPayload,
+    FixturePayload,
+    PicksPayload,
+    StandingsPayload,
+)
 from fpl_andres.contracts import FetchedPayload, FplEntry, SourceSnapshot
 from fpl_andres.timeguard import is_utc
 from fpl_andres.timeouts import client_timeout
@@ -96,8 +104,9 @@ class FplClient:
         self._random = random
         self._consecutive_failures = 0
 
-    async def fetch_bootstrap(self) -> FetchedPayload[dict[str, Any]]:
+    async def fetch_bootstrap(self) -> FetchedPayload[BootstrapPayload]:
         return await self._fetch_json_object(
+            BootstrapPayload,
             "bootstrap-static/",
             size_limit=BOOTSTRAP_LIMIT_BYTES,
         )
@@ -106,23 +115,25 @@ class FplClient:
         self,
         *,
         event: int | None = None,
-    ) -> FetchedPayload[list[dict[str, Any]]]:
+    ) -> FetchedPayload[list[FixturePayload]]:
         path = "fixtures/"
         if event is not None:
             _require_id("event ID", event, MAX_EVENT_ID)
             path = f"{path}?{urlencode({'event': event})}"
-        return await self._fetch_json_array(path, size_limit=DEFAULT_LIMIT_BYTES)
+        return await self._fetch_json_array(FixturePayload, path, size_limit=DEFAULT_LIMIT_BYTES)
 
-    async def fetch_entry(self, entry_id: int) -> FetchedPayload[dict[str, Any]]:
+    async def fetch_entry(self, entry_id: int) -> FetchedPayload[EntryPayload]:
         _require_id("entry ID", entry_id, MAX_PUBLIC_ID)
         return await self._fetch_json_object(
+            EntryPayload,
             f"entry/{entry_id}/",
             size_limit=DEFAULT_LIMIT_BYTES,
         )
 
-    async def fetch_entry_history(self, entry_id: int) -> FetchedPayload[dict[str, Any]]:
+    async def fetch_entry_history(self, entry_id: int) -> FetchedPayload[EntryHistoryPayload]:
         _require_id("entry ID", entry_id, MAX_PUBLIC_ID)
         return await self._fetch_json_object(
+            EntryHistoryPayload,
             f"entry/{entry_id}/history/",
             size_limit=DEFAULT_LIMIT_BYTES,
         )
@@ -132,11 +143,12 @@ class FplClient:
         entry_id: int,
         *,
         event: int,
-    ) -> FetchedPayload[dict[str, Any]]:
+    ) -> FetchedPayload[PicksPayload]:
         _require_id("entry ID", entry_id, MAX_PUBLIC_ID)
         _require_id("event ID", event, MAX_EVENT_ID)
         try:
             return await self._fetch_json_object(
+                PicksPayload,
                 f"entry/{entry_id}/event/{event}/picks/",
                 size_limit=DEFAULT_LIMIT_BYTES,
             )
@@ -151,6 +163,7 @@ class FplClient:
     ) -> FetchedPayload[dict[str, Any]]:
         _require_id("element ID", element_id, MAX_ELEMENT_ID)
         return await self._fetch_json_object(
+            dict,
             f"element-summary/{element_id}/",
             size_limit=DEFAULT_LIMIT_BYTES,
         )
@@ -162,7 +175,7 @@ class FplClient:
         page_standings: int = 1,
         page_new_entries: int | None = None,
         phase: int | None = None,
-    ) -> FetchedPayload[dict[str, Any]]:
+    ) -> FetchedPayload[StandingsPayload]:
         _require_id("league ID", league_id, MAX_PUBLIC_ID)
         _require_id("standings page", page_standings, MAX_PAGE)
         query: list[tuple[str, int]] = [("page_standings", page_standings)]
@@ -173,30 +186,42 @@ class FplClient:
             _require_id("phase", phase, MAX_PHASE)
             query.append(("phase", phase))
         return await self._fetch_json_object(
+            StandingsPayload,
             f"leagues-classic/{league_id}/standings/?{urlencode(query)}",
             size_limit=DEFAULT_LIMIT_BYTES,
         )
 
-    async def _fetch_json_object(
+    async def _fetch_json_object[PayloadT: Mapping[str, Any]](
         self,
+        _shape: type[PayloadT],
         path: str,
         *,
         size_limit: int,
-    ) -> FetchedPayload[dict[str, Any]]:
+    ) -> FetchedPayload[PayloadT]:
+        """Validate the transport, then hand the caller the shape it asked for.
+
+        ``_shape`` is unused at runtime and carries the type only. The cast is
+        the honest description of what happens: the payload is checked to be a
+        JSON object with string keys, which is all that can be checked here.
+        Whether it holds the fields the TypedDict names is not this layer's
+        question -- ``rules.py``, ``bootstrap.py`` and the Pydantic models
+        answer that, and they refuse rather than assume.
+        """
         payload, snapshot = await self._fetch_json(path, size_limit=size_limit)
         if not isinstance(payload, Mapping) or not all(isinstance(key, str) for key in payload):
             raise FplContractError("FPL response must be a JSON object")
         return FetchedPayload(
-            payload=cast(dict[str, Any], dict(payload)),
+            payload=cast(PayloadT, dict(payload)),
             snapshot=snapshot,
         )
 
-    async def _fetch_json_array(
+    async def _fetch_json_array[ItemT: Mapping[str, Any]](
         self,
+        _shape: type[ItemT],
         path: str,
         *,
         size_limit: int,
-    ) -> FetchedPayload[list[dict[str, Any]]]:
+    ) -> FetchedPayload[list[ItemT]]:
         payload, snapshot = await self._fetch_json(path, size_limit=size_limit)
         if not isinstance(payload, list) or not all(
             isinstance(item, Mapping) and all(isinstance(key, str) for key in item)
@@ -204,7 +229,7 @@ class FplClient:
         ):
             raise FplContractError("FPL response must be an array of JSON objects")
         return FetchedPayload(
-            payload=[cast(dict[str, Any], dict(item)) for item in payload],
+            payload=[cast(ItemT, dict(item)) for item in payload],
             snapshot=snapshot,
         )
 

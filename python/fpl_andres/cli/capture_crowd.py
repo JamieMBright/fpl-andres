@@ -25,6 +25,7 @@ import httpx
 
 from fpl_andres import cliargs
 from fpl_andres.adapters.fpl import FplClient
+from fpl_andres.adapters.payloads import BootstrapPayload
 from fpl_andres.bootstrap import CrowdElement, parse_elements
 from fpl_andres.persistence.supabase import SupabaseCredentials, SupabaseRestClient
 
@@ -48,7 +49,7 @@ def build_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def season_from(bootstrap: dict[str, Any]) -> str | None:
+def season_from(bootstrap: BootstrapPayload) -> str | None:
     """Derive the season label from the earliest published deadline.
 
     A season beginning in August 2026 is 2026-27. Deriving it beats configuring
@@ -68,7 +69,7 @@ def season_from(bootstrap: dict[str, Any]) -> str | None:
     return f"{year}-{str(year + 1)[2:]}"
 
 
-def _current_event(bootstrap: dict[str, Any]) -> int | None:
+def _current_event(bootstrap: BootstrapPayload) -> int | None:
     for event in bootstrap.get("events") or []:
         if event.get("is_current"):
             return int(event["id"])
@@ -81,7 +82,7 @@ def _current_event(bootstrap: dict[str, Any]) -> int | None:
 
 
 def _rows(
-    bootstrap: dict[str, Any],
+    bootstrap: BootstrapPayload,
     *,
     season: str,
     event: int,

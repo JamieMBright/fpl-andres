@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 
+import { classifyFetchFailure } from "../state/fetch-failure";
 import { rateFixtureRun, type FixtureRun } from "../state/fixture-run";
 import {
   fetchPlayerPool,
@@ -103,9 +104,12 @@ export function PlayerPoolTable() {
         if (active) setPool(result);
       })
       .catch((error: unknown) => {
-        if (error instanceof DOMException && error.name === "AbortError")
-          return;
-        if (!active) return;
+        // One place decides what a thrown value was; this decides what to do
+        // about it. Abort is a case rather than an exception to the cases,
+        // because it arrives through the same channel and leaving it out is
+        // how it ends up rendered as an error.
+        const failure = classifyFetchFailure(error);
+        if (failure.kind === "aborted" || !active) return;
         setFailed(
           error instanceof PlayerPoolError ? error.reason : "unreachable",
         );
