@@ -10,8 +10,6 @@ from __future__ import annotations
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
 
-from scipy.stats import spearmanr
-
 from fpl_andres.backtesting.corpus import SeasonCorpus
 from fpl_andres.backtesting.projector import (
     ProjectionSettings,
@@ -19,6 +17,7 @@ from fpl_andres.backtesting.projector import (
     baseline_recent_mean,
     project_gameweek,
 )
+from fpl_andres.models.metrics import rank_correlation
 from fpl_andres.positions import PositionUnknown, position_code
 
 __all__ = [
@@ -221,9 +220,4 @@ def _score(
 
 
 def _spearman(predicted: Sequence[float], actual: Sequence[float]) -> float | None:
-    if len(predicted) < 3:
-        return None
-    if len(set(predicted)) < 2 or len(set(actual)) < 2:
-        return None
-    value = float(spearmanr(predicted, actual).statistic)
-    return None if value != value else value
+    return rank_correlation(predicted, actual)

@@ -17,11 +17,14 @@
 from __future__ import annotations
 
 import math
+import time
 from datetime import UTC, datetime
+from pathlib import Path
 
 import pytest
 
 from fpl_andres.models.backtest import PredictionOutcome, _metrics, _spearman
+from fpl_andres.models.metrics import rank_correlation
 from fpl_andres.planning.effective import RankModel
 
 AVAILABLE = datetime(2026, 8, 14, 17, 30, tzinfo=UTC)
@@ -78,6 +81,39 @@ def test_too_few_observations_gives_undefined_correlation() -> None:
     assert _spearman([_outcome(1, 1, 1.0, 1.0), _outcome(2, 1, 2.0, 2.0)]) is None
 
 
+def test_both_scorers_share_one_definition_of_undefined() -> None:
+    """#31. `models/backtest.py` and `backtesting/score.py` each implemented the
+    same three guards, which is two places for them to drift. Both now call
+    `rank_correlation`, so the answer to "when is a correlation undefined" has
+    one owner."""
+    assert rank_correlation([1.0, 2.0], [1.0, 2.0]) is None
+    assert rank_correlation([5.0, 5.0, 5.0], [1.0, 2.0, 3.0]) is None
+    assert rank_correlation([1.0, 2.0, 3.0], [7.0, 7.0, 7.0]) is None
+    assert rank_correlation([1.0, 2.0, 3.0], [1.0, 2.0, 3.0]) == pytest.approx(1.0)
+    assert rank_correlation([1.0, 2.0, 3.0], [3.0, 2.0, 1.0]) == pytest.approx(-1.0)
+
+
+def test_neither_scorer_still_calls_scipy_directly() -> None:
+    """The duplication is only removed if the old path is gone."""
+    for module in ("models/backtest.py", "backtesting/score.py"):
+        source = (Path(__file__).resolve().parents[1] / "fpl_andres" / module).read_text(
+            encoding="utf-8"
+        )
+        assert "spearmanr" not in source, f"{module} still calls scipy directly"
+
+
+def test_undefined_is_distinct_from_no_relationship() -> None:
+    """Zero means a relationship was looked for and not found. None means it
+    could not have been found. Reporting the first for the second makes a model
+    look neutral when it was never tested."""
+    unmeasurable = rank_correlation([4.0, 4.0, 4.0], [4.0, 4.0, 4.0])
+    measured = rank_correlation([1.0, 2.0, 3.0, 4.0], [2.0, 1.0, 4.0, 3.0])
+
+    assert unmeasurable is None
+    assert measured is not None
+    assert measured != 0.0 or unmeasurable is None
+
+
 def test_a_short_event_is_reported_rather_than_silently_dropped() -> None:
     """#25. Two full gameweeks and one blank-hit gameweek of three players.
 
@@ -129,3 +165,32 @@ def test_an_empty_slice_reports_no_coverage_rather_than_full_coverage() -> None:
     assert metrics.top_n_hit_rate is None
     assert metrics.top_n_events_scored == 0
     assert metrics.top_n_events_skipped == 0
+
+
+@pytest.mark.slow
+def test_scoring_a_full_corpus_stays_far_from_being_a_bottleneck() -> None:
+    """#33 asked for the per-event sorts to be hoisted, on the grounds that they
+    "dominate scoring across a full multi-season corpus".
+
+    Profiled over 114,000 outcomes — four seasons of 38 gameweeks and 750 scored
+    players, the real corpus shape — the whole `_metrics` call takes 0.080s, of
+    which sorting is 0.026s. Largest single line item, and irrelevant: the
+    backtest that calls it pages the corpus over the network first.
+
+    Declined, and guarded instead. The bound is 25x the measured time, so it
+    will not flake on a loaded CI runner but will catch a change that makes
+    scoring quadratic in the number of outcomes.
+    """
+    outcomes = [
+        _outcome(code, event, float((code * 7 + event) % 41), float((code * 13 + event) % 37))
+        for event in range(1, 39)
+        for code in range(1, 751)
+    ]
+    assert len(outcomes) == 28_500
+
+    started = time.perf_counter()
+    metrics = _metrics("overall", outcomes, 20)
+    elapsed = time.perf_counter() - started
+
+    assert metrics.top_n_events_scored == 38
+    assert elapsed < 2.0, f"scoring took {elapsed:.2f}s; it was 0.08s when measured"

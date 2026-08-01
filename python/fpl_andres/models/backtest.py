@@ -18,9 +18,9 @@ from datetime import datetime, timedelta
 from typing import Annotated
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
-from scipy.stats import spearmanr
 
 from fpl_andres.models.contracts import EvidenceLevel
+from fpl_andres.models.metrics import rank_correlation
 
 
 class BacktestLeakError(RuntimeError):
@@ -226,17 +226,10 @@ def _metrics(label: str, outcomes: Sequence[PredictionOutcome], top_n: int) -> B
 
 def _spearman(outcomes: Sequence[PredictionOutcome]) -> float | None:
     """Rank correlation, or None when the sample cannot support one."""
-    if len(outcomes) < 3:
-        return None
-    predicted = [outcome.predicted_points for outcome in outcomes]
-    actual = [outcome.actual_points for outcome in outcomes]
-    # A constant column has no ranks to correlate.
-    if len(set(predicted)) < 2 or len(set(actual)) < 2:
-        return None
-    correlation = float(spearmanr(predicted, actual).statistic)
-    if correlation != correlation:  # NaN
-        return None
-    return correlation
+    return rank_correlation(
+        [outcome.predicted_points for outcome in outcomes],
+        [outcome.actual_points for outcome in outcomes],
+    )
 
 
 def _top_n_hit_rate(
