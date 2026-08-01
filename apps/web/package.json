@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "vite build",
+    "build": "vite build && node scripts/size-budget.mjs",
     "dev": "vite",
     "test": "vitest run",
     "test:e2e": "playwright test",
