@@ -20,6 +20,8 @@ from collections.abc import Sequence
 from datetime import UTC, datetime
 from pathlib import Path
 
+from fpl_andres.jsonio import read_json_file, read_json_lines
+
 SOURCE = Path("data/cohort/managers.jsonl")
 CHECKPOINT = Path("data/cohort/sweep-checkpoint.json")
 DEFAULT_OUTPUT = Path("apps/web/src/data/cohort.json")
@@ -50,9 +52,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         print(f"{source} does not exist; run the sweep first")
         return 1
 
-    records = [
-        json.loads(line) for line in source.read_text(encoding="utf-8").splitlines() if line.strip()
-    ]
+    records = read_json_lines(source)
 
     qualifying_counts: Counter[int] = Counter()
     seasons_seen: Counter[str] = Counter()
@@ -74,7 +74,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     with_history = 0
     missing = 0
     if CHECKPOINT.exists():
-        checkpoint = json.loads(CHECKPOINT.read_text(encoding="utf-8"))
+        checkpoint = read_json_file(CHECKPOINT)
         swept = checkpoint.get("next_id", 1) - 1
         with_history = checkpoint.get("with_history", 0)
         missing = checkpoint.get("missing", 0)

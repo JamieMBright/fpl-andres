@@ -31,6 +31,7 @@ is that the failure stays visible.
 | `FutureMinutesEvidenceError`  | `models/minutes.py`       | Minutes evidence postdates the decision cutoff.                |
 | `FutureRateEvidenceError`     | `models/player_rates.py`  | Rate evidence postdates the decision cutoff.                   |
 | `FutureRoleEvidenceError`     | `models/deployment.py`    | Role evidence was unavailable for the requested decision.      |
+| `MalformedJsonError`          | `jsonio.py`               | JSON cannot be parsed, naming the source that produced it.     |
 | `MissingCredentialsError`     | `persistence/supabase.py` | Service-role credentials are absent or malformed.              |
 | `ModelFitError`               | `models/dixon_coles.py`   | Numerical optimization cannot produce a valid model.           |
 | `OptimizationError`           | `optimization/highs.py`   | The optimizer cannot prove an optimal valid squad.             |

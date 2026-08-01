@@ -29,6 +29,7 @@ from fpl_andres.adapters.fplcache import (
     snapshot_directory,
     snapshot_url,
 )
+from fpl_andres.jsonio import parse_json
 
 DEFAULT_OUTPUT = Path("data/ownership")
 _LISTING = "https://api.github.com/repos/Randdalf/fplcache/contents/cache"
@@ -48,11 +49,13 @@ def _day(value: str) -> datetime:
 
 
 def _files_for(client: httpx.Client, day: datetime) -> list[str]:
-    response = client.get(f"{_LISTING}/{snapshot_directory(day)}")
+    url = f"{_LISTING}/{snapshot_directory(day)}"
+    response = client.get(url)
     if response.status_code == 404:
         return []
     response.raise_for_status()
-    return sorted(entry["name"] for entry in response.json() if entry["name"].endswith(".json.xz"))
+    listing = parse_json(response.text, source=url)
+    return sorted(entry["name"] for entry in listing if entry["name"].endswith(".json.xz"))
 
 
 def main(argv: Sequence[str] | None = None) -> int:

@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import csv
 import io
+from collections import Counter
 from collections.abc import Iterable, Mapping, Sequence
 from typing import Any, Final
 
@@ -98,10 +99,33 @@ def _rows(raw_csv: bytes) -> tuple[list[dict[str, str]], tuple[str, ...]]:
     if reader.fieldnames is None:
         raise ColumnMappingError("archive CSV must include a header")
     header = tuple(reader.fieldnames)
+    _reject_ambiguous_header(header)
     parsed: list[dict[str, str]] = []
     for row in reader:
         parsed.append({key: ("" if value is None else value) for key, value in row.items() if key})
     return parsed, header
+
+
+def _reject_ambiguous_header(header: Sequence[str]) -> None:
+    """Refuse a header that cannot be read unambiguously.
+
+    `csv.DictReader` keys by name, so a repeated column silently keeps only the
+    last occurrence. An archive that published `total_points` twice would ingest
+    one of them with nothing to say which, and the corpus would be wrong in a
+    way no later check could detect.
+
+    Column *order* is deliberately not checked: reading by name makes a
+    reordered header harmless, and rejecting one would break ingestion for a
+    change that cannot affect the data.
+    """
+    duplicates = sorted(name for name, count in Counter(header).items() if count > 1)
+    if duplicates:
+        raise ColumnMappingError(
+            f"archive CSV repeats column(s) {', '.join(duplicates)}; the reader keys "
+            "by name, so only the last of each would survive"
+        )
+    if any(name is None or not name.strip() for name in header):
+        raise ColumnMappingError("archive CSV has an unnamed column in its header")
 
 
 def _require(header: Sequence[str], required: Iterable[str], label: str) -> None:

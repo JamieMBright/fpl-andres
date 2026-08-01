@@ -27,6 +27,7 @@ import httpx
 
 from fpl_andres import timeouts
 from fpl_andres.cohorts.sweep import CohortRule, parse_history, qualifies
+from fpl_andres.jsonio import read_json_file
 from fpl_andres.timeouts import client_timeout
 
 HISTORY_URL = "https://fantasy.premierleague.com/api/entry/{entry_id}/history/"
@@ -80,7 +81,7 @@ def build_parser() -> argparse.ArgumentParser:
 
 def _load_progress(start: int, resume: bool) -> Progress:
     if resume and CHECKPOINT.exists():
-        saved = json.loads(CHECKPOINT.read_text(encoding="utf-8"))
+        saved = read_json_file(CHECKPOINT)
         return Progress(**saved)
     return Progress(next_id=start)
 

@@ -26,6 +26,7 @@ from pathlib import Path
 from fpl_andres import timeouts
 from fpl_andres.backtesting.fixtures import Fixture, TeamStrength
 from fpl_andres.bootstrap import BootstrapElement, parse_elements
+from fpl_andres.jsonio import parse_json, read_json_file
 from fpl_andres.planning.opening import (
     OpeningSettings,
     choose_opening_squad,
@@ -56,7 +57,7 @@ def build_parser() -> argparse.ArgumentParser:
 def _get(url: str) -> object:
     request = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
     with urllib.request.urlopen(request, timeout=timeouts.FPL_API) as response:
-        return json.loads(response.read().decode("utf-8"))
+        return parse_json(response.read().decode("utf-8"), source=url)
 
 
 @dataclass(frozen=True)
@@ -106,7 +107,7 @@ def _run_rating(
 def main(argv: Sequence[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
 
-    artifact = json.loads(Path(args.projections).read_text(encoding="utf-8"))
+    artifact = read_json_file(Path(args.projections))
     record_by_code = {int(row["code"]): row for row in artifact["players"]}
     strength_by_code = {
         int(row["code"]): TeamStrength(
