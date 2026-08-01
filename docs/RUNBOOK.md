@@ -66,12 +66,17 @@ server log under the same id. Steps:
 
 ## Data plane
 
-The production Supabase project was bootstrapped by pasting the four ordered
-files under `supabase/migrations/` into the SQL Editor. There is no CLI
-migration ledger for those files. New migrations must:
+The production Supabase project was bootstrapped by pasting the ordered files
+under `supabase/migrations/` into the SQL Editor. There is no CLI migration
+ledger for those files. New migrations must:
 
-- Be forward-only, idempotent (`CREATE ... IF NOT EXISTS`, `CONCURRENTLY`
-  where applicable) and reviewed on the PR.
+- Be forward-only and reviewed on the PR.
+- Prefer idempotent DDL (`create ... if not exists`, `create or replace`,
+  `drop trigger if exists` before `create trigger`) so a partial paste can be
+  re-run. Most existing migrations predate this and are **not** idempotent:
+  17 `create table`, 26 `create index`, 10 `create trigger` and 6
+  `create function` statements will fail on a second run.
+  `python/tests/test_rollback_harness.py` pins that count.
 - Pass local policy tests and Linux CI (`pnpm exec supabase db reset --local`
   plus `supabase db lint`).
 - Be applied to production via the SQL Editor, then their line-item added to
@@ -80,6 +85,34 @@ migration ledger for those files. New migrations must:
 Do not run `supabase db push` against the hosted project. Do not iterate on
 production schema through AI tools. Row inspection of application rows through
 AI tools is also prohibited.
+
+### Incident: a migration paste failed part-way through
+
+Symptom: the SQL Editor reports an error mid-file, and re-running the file
+fails with `relation "..." already exists` rather than completing.
+
+The migrations are not idempotent, so there is no safe way to resume from the
+middle. Do not hand-edit the file to skip the statements that succeeded: that
+produces a schema no migration in the repository describes, and every later
+`db reset` in CI will diverge from production.
+
+1. Establish whether the failed migration created anything. A `create table`
+   that succeeded before the error is still there.
+2. If the project holds no data you cannot re-ingest — which is the case for
+   every table here, since all of them are rebuilt from FPL and the vaastav
+   archive — run `supabase/rollback/down.sql` in the SQL Editor. It is a single
+   transaction and drops every object the migrations create, in reverse
+   dependency order.
+3. Re-paste the migrations in filename order from the beginning.
+4. Re-run the ingest workflows to repopulate.
+
+If the project does hold data that cannot be re-ingested, stop and take a
+backup before step 2. `down.sql` destroys everything; it is a teardown, not a
+per-migration undo.
+
+The harness is exercised on every CI run: `db reset`, teardown, `db reset`
+again. A table added without a matching drop fails that job rather than
+failing here.
 
 ## Secrets
 
