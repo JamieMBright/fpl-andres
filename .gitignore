@@ -35,3 +35,7 @@ data/soccerdata/
 
 # Swept manager records. Public data, but other people's, and not ours to ship.
 data/cohort/
+
+# Ownership and price series recovered from the fplcache archive. Bulk, and
+# theirs to distribute rather than ours; re-fetched on demand.
+data/ownership/

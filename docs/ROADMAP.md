@@ -306,9 +306,17 @@ Ordered by what would change the answers most, not by effort.
 
 ### Not built
 
-6. **`fplcache`** (approved). Six-hourly bootstrap snapshots would give
-   retroactive ownership and price history that `crowd_snapshots` can only
-   collect forwards. Highest value per unit of effort of anything not started.
+6. **`fplcache` — built.** `adapters/fplcache.py` plus
+   `python -m fpl_andres.cli.ingest_ownership --from --to` recovers ownership
+   and price history backwards, which `crowd_snapshots` can only collect
+   forwards. Verified live 2026-08-01: the archive stores four bootstrap
+   payloads a day at roughly six-hour spacing, LZMA-compressed, ~95KB each,
+   564 elements carrying `code`, `now_cost` and `selected_by_percent`. A
+   three-day run captured twelve snapshots and correctly picked up the squad
+   growing from 563 to 564 mid-day. Nothing defaults: a snapshot missing a
+   price or an ownership figure is refused, because a zeroed ownership is
+   indistinguishable from a genuinely unowned player. **Not yet loaded into
+   Supabase or joined to a projection** — the series lands as gitignored JSONL.
 7. **Benchmark against FPL Review and FPL Kiwi** (approved). The strongest
    validation available, and it may not flatter us.
 8. **Championship minutes for promoted clubs.** Three of twenty come up each

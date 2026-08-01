@@ -180,6 +180,7 @@ def test_no_module_is_imported_only_by_its_own_tests() -> None:
         "capture_crowd",
         "crosswalk",
         "ingest_historical",
+        "ingest_ownership",
         "live_contracts",
         "publish_opening_squad",
         "publish_projections",
