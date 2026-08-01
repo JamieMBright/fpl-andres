@@ -12,8 +12,10 @@ from urllib.parse import urlencode
 import httpx
 from pydantic import ValidationError
 
+from fpl_andres import timeouts
 from fpl_andres.contracts import FetchedPayload, FplEntry, SourceSnapshot
 from fpl_andres.timeguard import is_utc
+from fpl_andres.timeouts import client_timeout
 
 FPL_API_BASE = "https://fantasy.premierleague.com/api/"
 FPL_USER_AGENT = "FPLAndres/0.5 (+https://github.com/JamieMBright/fpl-andres)"
@@ -258,7 +260,7 @@ class FplClient:
                         "Accept-Encoding": "gzip",
                         "User-Agent": FPL_USER_AGENT,
                     },
-                    timeout=httpx.Timeout(20.0, connect=8.0),
+                    timeout=client_timeout(timeouts.FPL_API),
                 )
                 response = await self._http.send(request, stream=True)
             except httpx.TransportError as error:

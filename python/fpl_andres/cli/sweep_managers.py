@@ -25,7 +25,9 @@ from pathlib import Path
 
 import httpx
 
+from fpl_andres import timeouts
 from fpl_andres.cohorts.sweep import CohortRule, parse_history, qualifies
+from fpl_andres.timeouts import client_timeout
 
 HISTORY_URL = "https://fantasy.premierleague.com/api/entry/{entry_id}/history/"
 USER_AGENT = "fpl-andres/0.5 (+https://github.com/JamieMBright/fpl-andres)"
@@ -149,7 +151,7 @@ async def run(args: argparse.Namespace) -> int:
 
     async with httpx.AsyncClient(
         headers={"User-Agent": USER_AGENT},
-        timeout=httpx.Timeout(20.0, connect=8.0),
+        timeout=client_timeout(timeouts.FPL_API),
         follow_redirects=True,
     ) as client:
         with RESULTS.open("a", encoding="utf-8") as sink:

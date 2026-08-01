@@ -37,7 +37,20 @@ class ArchiveFileNotPublished(ArchiveFetchError):
 
     Distinct from a transport failure: seasons differ in length, so a missing
     gameweek file is expected, whereas a missing teams file is fatal.
+
+    Carries the season, gameweek and url so a partial ingest is diagnosable from
+    the log alone. The url on its own left the reader deriving which gameweek of
+    which season had gone missing from a path.
     """
+
+    def __init__(self, url: str, *, season: str | None = None, gameweek: int | None = None) -> None:
+        where = f"{season or 'unknown season'}"
+        if gameweek is not None:
+            where += f" gameweek {gameweek}"
+        super().__init__(f"archive file not published for {where}: {url}")
+        self.url = url
+        self.season = season
+        self.gameweek = gameweek
 
 
 @dataclass(frozen=True)
@@ -58,6 +71,10 @@ class SeasonIngestResult:
     elements: int
     fixtures: int
     gameweeks: dict[int, int]
+    # Requested gameweeks the archive does not publish. Reported rather than
+    # skipped in silence: a season legitimately shorter than the request looks
+    # identical to an archive that has stopped publishing halfway.
+    unavailable_gameweeks: tuple[int, ...] = ()
 
     @property
     def total_stat_rows(self) -> int:
@@ -70,10 +87,12 @@ class ArchiveFetcher:
     def __init__(self, client: httpx.Client) -> None:
         self._client = client
 
-    def fetch(self, url: str) -> FetchedFile:
+    def fetch(
+        self, url: str, *, season: str | None = None, gameweek: int | None = None
+    ) -> FetchedFile:
         response = self._client.get(url)
         if response.status_code == 404:
-            raise ArchiveFileNotPublished(f"archive file not published: {url}")
+            raise ArchiveFileNotPublished(url, season=season, gameweek=gameweek)
         if response.status_code >= 400:
             raise ArchiveFetchError(f"archive fetch failed with {response.status_code}: {url}")
         return FetchedFile(url=url, content=response.content, fetched_at=datetime.now(UTC))
@@ -129,11 +148,15 @@ class HistoricalIngest:
         element_codes = {row["element_id"]: row["code"] for row in elements}
 
         written: dict[int, int] = {}
+        unavailable: list[int] = []
         for gameweek in gameweeks:
             try:
-                stats_file = self._fetcher.fetch(revision.gameweek_url(gameweek))
+                stats_file = self._fetcher.fetch(
+                    revision.gameweek_url(gameweek), season=season, gameweek=gameweek
+                )
             except ArchiveFileNotPublished:
                 # Seasons differ in length; 2019/20 ran to 47, most run to 38.
+                unavailable.append(gameweek)
                 continue
             stats_snapshot = self._record_snapshot(stats_file, data_available_at)
             stats = normalise_gameweek_stats(
@@ -156,6 +179,7 @@ class HistoricalIngest:
             elements=len(elements),
             fixtures=len(fixtures),
             gameweeks=written,
+            unavailable_gameweeks=tuple(unavailable),
         )
 
     def _record_snapshot(self, file: FetchedFile, data_available_at: datetime) -> str:

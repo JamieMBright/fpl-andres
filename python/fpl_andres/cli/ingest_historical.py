@@ -19,6 +19,7 @@ from datetime import UTC, datetime
 import httpx
 from pydantic import ValidationError
 
+from fpl_andres import timeouts
 from fpl_andres.adapters.vaastav import FutureInformationError, VaastavRevision
 from fpl_andres.ingest.historical import (
     ArchiveFetcher,
@@ -149,7 +150,7 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     with (
         SupabaseRestClient(credentials) as client,
-        httpx.Client(timeout=60.0, follow_redirects=True) as http,
+        httpx.Client(timeout=timeouts.ARCHIVE_DOWNLOAD, follow_redirects=True) as http,
     ):
         ingest = HistoricalIngest(client=client, fetcher=ArchiveFetcher(http))
         for season in seasons:
@@ -177,10 +178,16 @@ def main(argv: Sequence[str] | None = None) -> int:
                     run.record_rows("fixtures", result.fixtures)
                     run.record_rows("element_gameweek_stats", result.total_stat_rows)
                 completed.append(result)
+                skipped = (
+                    f", {len(result.unavailable_gameweeks)} not published "
+                    f"({', '.join(str(gw) for gw in result.unavailable_gameweeks)})"
+                    if result.unavailable_gameweeks
+                    else ""
+                )
                 print(
                     f"  OK   {result.season}: {result.teams} teams, "
                     f"{result.elements} elements, {result.fixtures} fixtures, "
-                    f"{result.total_stat_rows} gameweek rows",
+                    f"{result.total_stat_rows} gameweek rows{skipped}",
                     flush=True,
                 )
             except (

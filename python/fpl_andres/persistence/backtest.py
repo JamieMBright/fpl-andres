@@ -16,6 +16,7 @@ from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from datetime import datetime
 
+from fpl_andres import timeouts
 from fpl_andres.backtesting.score import MethodScore
 from fpl_andres.persistence.supabase import SupabaseRestClient
 from fpl_andres.positions import Position
@@ -52,7 +53,7 @@ def current_revision() -> str:
             capture_output=True,
             text=True,
             check=True,
-            timeout=10,
+            timeout=timeouts.SUBPROCESS,
         )
     except (OSError, subprocess.SubprocessError) as error:
         raise RevisionUnavailable("could not read the current git revision") from error

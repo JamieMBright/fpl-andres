@@ -23,6 +23,7 @@ from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
 
+from fpl_andres import timeouts
 from fpl_andres.backtesting.fixtures import Fixture, TeamStrength
 from fpl_andres.bootstrap import BootstrapElement, parse_elements
 from fpl_andres.planning.opening import (
@@ -54,7 +55,7 @@ def build_parser() -> argparse.ArgumentParser:
 
 def _get(url: str) -> object:
     request = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
-    with urllib.request.urlopen(request, timeout=60) as response:
+    with urllib.request.urlopen(request, timeout=timeouts.FPL_API) as response:
         return json.loads(response.read().decode("utf-8"))
 
 

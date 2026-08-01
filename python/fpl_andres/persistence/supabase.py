@@ -17,6 +17,8 @@ from typing import Any, Literal, Self
 
 import httpx
 
+from fpl_andres import timeouts
+
 Resolution = Literal["merge-duplicates", "ignore-duplicates"]
 
 _SECRET_ENV = "SUPABASE_SECRET_KEY"
@@ -79,7 +81,7 @@ class SupabaseRestClient:
         credentials: SupabaseCredentials,
         *,
         transport: httpx.BaseTransport | None = None,
-        timeout: float = 30.0,
+        timeout: float = timeouts.SUPABASE_REST,
     ) -> None:
         self._credentials = credentials
         self._client = httpx.Client(
