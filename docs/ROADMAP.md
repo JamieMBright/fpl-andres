@@ -331,10 +331,30 @@ Ordered by what would change the answers most, not by effort.
    legitimate route is the owner exporting their own account's projections to a
    `code,points` CSV and pointing the CLI at it.
 
-8. **Championship minutes for promoted clubs.** Three of twenty come up each
-   year with no Premier League record, so they cannot be ranked or picked.
-   Scoring rates do not transfer across divisions but minutes might, which is
-   exactly what bench cover needs. FBref has it; `soccerdata` does not ship it.
+8. **Championship minutes: every source is closed, and the question turns out
+   to be smaller than it looked.** Three of twenty clubs come up each year with
+   no Premier League record, and the owner's rule marks their debutants
+   `unavailable`. The plan was to carry minutes across from the second tier.
+
+   **No reachable source has them.** FBref returns 403 behind an active
+   Cloudflare challenge on every request including `robots.txt`, and
+   `soccerdata` drives undetected Chrome to get past it, which is not installed
+   and would be circumventing a bot-protection control regardless. Understat
+   covers five leagues and the Championship is not one. football-data.co.uk is
+   blocked by this network's gambling filter and carries no player minutes
+   anyway. `openfootball/england` is reachable but is match results only —
+   verified, no player-level data.
+
+   **The underlying question is answerable from the corpus alone.** Across six
+   promotion cohorts, promoted-club players who appeared at all took a median
+   **1121** minutes against **1316** for everyone else; p90 **2795** against
+   **2916**; share above 1800 minutes **31.1%** against **36.4%**; mean starts
+   8.55 against 9.41 with an identical median of 3.0. A promoted squad is
+   modestly compressed, not a different species. A measured promoted-club prior
+   would therefore do most of what Championship minutes were wanted for — but
+   it stays unbuilt because the owner's rule says debutants are `unavailable`,
+   and that is a rule, not a gap.
+
 9. **End-of-season projection and posterior carry (T2): mostly a non-issue,
    measured.** The claim was that `project_horizon` stops at seven gameweeks
    and refits from scratch each week. Neither is quite a defect. Seven is only

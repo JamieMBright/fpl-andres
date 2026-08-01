@@ -96,6 +96,20 @@ Nothing mechanical is outstanding. What is left is judgement, and none of it can
 be answered by me. Nothing here blocks the site running; each one blocks a
 specific capability.
 
+### Decide whether promoted-club debutants stay unavailable
+
+- [ ] Your rule marks a promoted club's debutants `unavailable`, and the model
+      obeys it. Measured across six promotion cohorts, that may be stricter than
+      it needs to be: promoted-club players who appeared at all took a median
+      1121 minutes against 1316 for everyone else, p90 2795 against 2916, and
+      an identical median of 3 starts. A promoted squad is modestly compressed,
+      not unpredictable.
+- [ ] If you want them ranked at reduced evidence instead of hidden, say so and
+      the measured prior above can be wired. Nothing has been changed on the
+      strength of this measurement, because the rule is yours.
+
+---
+
 ### Verify the yellow card accumulation rule
 
 - [ ] **I could not source the thresholds, so nothing assumes them.** The
