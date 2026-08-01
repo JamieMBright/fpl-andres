@@ -255,7 +255,21 @@ Ordered by what would change the answers most, not by effort.
    yet and the model refuses to invent them.
 4. **`project_expected_points`**, the promoted xPTS model. The backtest projector
    reimplements scoring rather than calling it, so there are two pricings of the
-   same rules and only one is exercised.
+   same rules and only one is exercised. **Keep it: it is not the weaker of the
+   two.** It prices step-function routes analytically as `E[floor(X/d)]` under
+   Poisson, which is the closed form of exactly the bug that had to be patched
+   out of the projector empirically, and it reads every points value from the
+   rules snapshot instead of hardcoding constants.
+
+   The Poisson assumption was checked rather than trusted. Saves are
+   **overdispersed** — variance over mean is 1.41, 1.24 and 1.09 across
+   2023-24 to 2025-26, where Poisson demands 1.0 — so the assumption is
+   formally wrong. It barely matters: the analytic form lands within 0.0001 to
+   0.0112 points a start of the measured truth, about thirty times smaller than
+   the naive bug it replaces, with a worst per-keeper error of 0.16. Wiring it
+   wholesale is a large refactor with no measured accuracy gain, so it stays
+   unwired on purpose rather than by neglect.
+
 5. **`HighsHorizonOptimizer`.** Plans across events with free-transfer carry and
    captaincy inside the objective. A greedy swap runs instead. It cannot go in
    the backtest — eleven thousand binary variables times twenty managers times
