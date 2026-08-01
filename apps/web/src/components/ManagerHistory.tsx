@@ -36,23 +36,29 @@ export function ManagerHistory({ entryId }: { entryId: number }) {
   const [loaded, setLoaded] = useState<Loaded | null>(null);
 
   useEffect(() => {
-    let cancelled = false;
+    // Aborts rather than just ignoring the result: switching team quickly used
+    // to leave the old request in flight, still consuming a connection and
+    // still costing the proxy an upstream call nobody would read.
+    const controller = new AbortController();
 
     async function read() {
       try {
-        const response = await fetch(`/api/fpl/entry/${entryId}/history/`);
+        const response = await fetch(`/api/fpl/entry/${entryId}/history/`, {
+          signal: controller.signal,
+        });
         const payload = response?.ok ? await response.json() : null;
-        if (!cancelled) {
-          setLoaded({ entryId, profile: readManagerProfile(payload) });
+        setLoaded({ entryId, profile: readManagerProfile(payload) });
+      } catch (error) {
+        if (error instanceof DOMException && error.name === "AbortError") {
+          return;
         }
-      } catch {
-        if (!cancelled) setLoaded({ entryId, profile: null });
+        setLoaded({ entryId, profile: null });
       }
     }
 
     void read();
     return () => {
-      cancelled = true;
+      controller.abort();
     };
   }, [entryId]);
 

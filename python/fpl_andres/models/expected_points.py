@@ -15,6 +15,7 @@ tell the difference between "no bonus expected" and "no bonus model".
 
 from __future__ import annotations
 
+import math
 from collections.abc import Mapping
 from datetime import datetime, timedelta
 from typing import Annotated
@@ -34,8 +35,15 @@ MAX_EVENT = 47
 _MINUTES_PER_90 = 90.0
 _GOALS_CONCEDED_PER_POINT = 2
 _SAVES_PER_POINT = 3
-# Poisson tail beyond this contributes less than floating-point noise.
-_POISSON_TRUNCATION = 15
+# Standard deviations of headroom above the mean before the tail is dropped.
+# Twelve keeps the remaining mass below 1e-12 for every rate this model can be
+# handed; ten was measurably short at low rates, leaving 1.6e-12 at rate 3. The
+# constant this replaces was a flat 15, whose comment claimed the tail was below
+# floating-point noise. Measured, that was false wherever the rate ran high: at
+# 14 saves a match the tail held 0.33 of the mass and cost 1.88 points, and a
+# defensive-contribution rate of 20 cost 5.68.
+_POISSON_SIGMAS = 12.0
+_POISSON_FLOOR = 15
 
 _EVIDENCE_ORDER: dict[EvidenceLevel, int] = {
     "observed": 0,
@@ -248,6 +256,15 @@ def _position_points(mapping: Mapping[str, int], position_code: str) -> int:
     return mapping[position_code]
 
 
+def _poisson_truncation(rate: float) -> int:
+    """Where the tail is safe to drop, for this rate rather than in general.
+
+    A Poisson's spread grows with the square root of its mean, so a fixed cut
+    that is generous at rate 1 is severe at rate 20.
+    """
+    return max(_POISSON_FLOOR, math.ceil(rate + _POISSON_SIGMAS * math.sqrt(rate)))
+
+
 def _expected_floor_divide(rate: float, divisor: int) -> float:
     """E[floor(X / divisor)] for X ~ Poisson(rate)."""
     if rate <= 0.0:
@@ -255,7 +272,7 @@ def _expected_floor_divide(rate: float, divisor: int) -> float:
     return float(
         sum(
             (count // divisor) * poisson.pmf(count, rate)
-            for count in range(_POISSON_TRUNCATION + 1)
+            for count in range(_poisson_truncation(rate) + 1)
         )
     )
 

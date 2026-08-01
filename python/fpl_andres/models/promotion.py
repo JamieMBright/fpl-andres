@@ -201,18 +201,38 @@ def _bootstrap_result(
 ) -> BootstrapResult:
     ordered = sorted(samples)
     tail = (1 - confidence) / 2
-    lower_index = max(0, math.floor(tail * resamples))
-    upper_index = min(resamples - 1, math.ceil((1 - tail) * resamples) - 1)
     return BootstrapResult(
         metric_name=metric_name,
         point_estimate=point_estimate,
-        lower=ordered[lower_index],
-        upper=ordered[upper_index],
+        lower=_quantile(ordered, tail),
+        upper=_quantile(ordered, 1 - tail),
         confidence=confidence,
         resamples=resamples,
         seed=seed,
         sample_size=sample_size,
     )
+
+
+def _quantile(ordered: list[float], fraction: float) -> float:
+    """Linear interpolation between order statistics.
+
+    The previous `ceil(f * n) - 1` indexing snapped to a whole resample, which
+    biases the bound inward and does so hardest when there are fewest resamples
+    - exactly the runs where the interval is doing the most work. At 200
+    resamples the 97.5th percentile landed on sample 194 rather than between
+    195 and 196.
+    """
+    if not ordered:
+        raise ValueError("a quantile needs at least one sample")
+    if len(ordered) == 1:
+        return ordered[0]
+    position = fraction * (len(ordered) - 1)
+    lower = math.floor(position)
+    upper = math.ceil(position)
+    if lower == upper:
+        return ordered[lower]
+    weight = position - lower
+    return ordered[lower] * (1.0 - weight) + ordered[upper] * weight
 
 
 def _degenerate_result(

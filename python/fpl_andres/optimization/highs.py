@@ -273,6 +273,7 @@ class HighsOptimizer:
             vice_captain_element_id=vice.element_id,
             transfers_in=transfers_in,
             transfers_out=transfers_out,
+            free_transfers_available=request.available_free_transfers,
             paid_transfers=paid_transfers,
             transfer_cost_points=transfer_cost,
             projected_points_before_cost=projected_points,

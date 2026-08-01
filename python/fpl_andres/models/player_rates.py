@@ -106,6 +106,16 @@ class PlayerRateEvidence(BaseModel):
             raise ValueError("carried observations must not come from the current season")
         if len(prior_seasons) > 1:
             raise ValueError("carried observations must come from a single prior season")
+        # Two sourced parameters that must agree with each other. If the blend
+        # saturates at or below the floor for projecting at all, then every
+        # player who clears the floor is already at full current-season weight
+        # and the carried season can never contribute anything.
+        if self.blend_full_weight_minutes <= self.minimum_minutes:
+            raise ValueError(
+                f"blend_full_weight_minutes ({self.blend_full_weight_minutes}) must exceed "
+                f"minimum_minutes ({self.minimum_minutes}), or the carried season "
+                "is silently discarded for every player who clears the floor"
+            )
         return self
 
     @property

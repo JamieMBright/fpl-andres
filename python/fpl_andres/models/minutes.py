@@ -39,6 +39,10 @@ class FutureMinutesEvidenceError(ValueError):
     """Raised when minutes evidence postdates the decision cutoff."""
 
 
+class OutOfWindowObservationError(ValueError):
+    """Raised when recency decay has driven an observation's weight to zero."""
+
+
 class AppearanceObservation(BaseModel):
     """One observed appearance, or non-appearance, in a completed event."""
 
@@ -171,6 +175,18 @@ def project_minutes(evidence: MinutesEvidence) -> MinutesProjection:
         ** ((evidence.prediction_event - observation.event_id) / evidence.decay_half_life_events)
         for observation in evidence.observations
     }
+    # A weight that underflows to zero is an observation the model is pretending
+    # to use. It does not move the estimate, but it does count towards the
+    # sample floor, so the caller believes the projection rests on more evidence
+    # than it does. Named rather than dropped quietly.
+    vanished = sorted(event for event, weight in weights.items() if weight <= 0.0)
+    if vanished:
+        raise OutOfWindowObservationError(
+            f"observations from event(s) {vanished} are too far from "
+            f"event {evidence.prediction_event} to carry any weight at a "
+            f"{evidence.decay_half_life_events}-event half-life; "
+            "drop them rather than counting them towards the sample floor"
+        )
     total_weight = sum(weights.values())
     if total_weight <= 0.0:
         reasons.append("recency_weights_vanished")
@@ -346,5 +362,6 @@ __all__ = [
     "FutureMinutesEvidenceError",
     "MinutesEvidence",
     "MinutesProjection",
+    "OutOfWindowObservationError",
     "project_minutes",
 ]

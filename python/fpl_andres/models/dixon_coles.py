@@ -96,7 +96,13 @@ class DixonColesModel:
                     rho=rho,
                 )
                 if adjustment <= 0:
-                    return 1e12
+                    # The low-score correction can go non-positive for extreme
+                    # rho, where the likelihood is genuinely undefined rather
+                    # than merely bad. A large finite sentinel would tell the
+                    # optimiser this point is worse than its neighbours by a
+                    # measurable amount and let it read a gradient off pure
+                    # fiction; infinity says only "not here", which is true.
+                    return math.inf
                 age_days = (as_of - fixture.kickoff_time).total_seconds() / 86_400
                 weight = math.exp(-decay_rate * age_days)
                 log_probability = (

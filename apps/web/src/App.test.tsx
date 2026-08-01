@@ -199,14 +199,26 @@ describe("team analysis entry", () => {
     ).toBeVisible();
   });
 
-  it("recovers from a network error when the user retries", async () => {
+  it("rides out a single dropped connection without troubling the user", async () => {
     const fetchApi = vi
       .fn<typeof fetch>()
       .mockRejectedValueOnce(new TypeError("offline"))
-      .mockResolvedValueOnce(
-        Response.json({ status: "ready", state: readyState }),
-      );
+      .mockResolvedValue(Response.json({ status: "ready", state: readyState }));
     vi.stubGlobal("fetch", fetchApi);
+
+    renderApplication(`/team/${readyState.entryId}`);
+
+    expect(await screen.findByText("Observed snapshot ready")).toBeVisible();
+    expect(
+      screen.queryByRole("heading", { name: "Network Request Failed" }),
+    ).not.toBeInTheDocument();
+  });
+
+  it("recovers from a sustained network error when the user retries", async () => {
+    const offline = vi
+      .fn<typeof fetch>()
+      .mockRejectedValue(new TypeError("offline"));
+    vi.stubGlobal("fetch", offline);
 
     renderApplication(`/team/${readyState.entryId}`);
 
@@ -215,6 +227,14 @@ describe("team analysis entry", () => {
     ).toBeVisible();
     expect(screen.getByText(/Check your connection/i)).toBeVisible();
 
+    vi.stubGlobal(
+      "fetch",
+      vi
+        .fn<typeof fetch>()
+        .mockResolvedValue(
+          Response.json({ status: "ready", state: readyState }),
+        ),
+    );
     await userEvent.click(
       screen.getByRole("button", { name: "Retry analysis" }),
     );
@@ -223,11 +243,6 @@ describe("team analysis entry", () => {
       screen.getByRole("region", { name: "Analysis result" }),
     ).toHaveFocus();
     expect(await screen.findByText("Observed snapshot ready")).toBeVisible();
-    // Counts the team endpoint only: the dossier also reads manager history.
-    const teamCalls = fetchApi.mock.calls.filter(([input]) =>
-      String(input).includes(`/api/team/${readyState.entryId}`),
-    );
-    expect(teamCalls).toHaveLength(2);
   });
 
   it("renders a recoverable page for unknown routes", () => {

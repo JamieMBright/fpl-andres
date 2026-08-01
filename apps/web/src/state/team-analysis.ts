@@ -8,6 +8,10 @@ import {
 
 const STORAGE_PREFIX = "fpl-andres:public-team-state:v1";
 const MAX_PUBLIC_ID = 4_294_967_295;
+// A flaky connection should cost a second, not the whole answer. Bounded so a
+// genuinely dead endpoint still fails fast enough to say so.
+const MAX_ATTEMPTS = 3;
+const RETRY_BASE_MS = 250;
 
 export type TeamAnalysisState =
   | { status: "idle" }
@@ -35,6 +39,8 @@ interface RefreshDependencies {
   fetchApi?: typeof fetch;
   storage: Storage;
   signal?: AbortSignal;
+  /** Injected so tests do not wait out the real backoff. */
+  wait?: (ms: number) => Promise<void>;
 }
 
 export const initialTeamAnalysisState: TeamAnalysisState = { status: "idle" };
@@ -95,13 +101,33 @@ export async function refreshTeamAnalysis(
 ): Promise<TeamAnalysisState> {
   requireEntryId(entryId);
   const fetchApi = dependencies.fetchApi ?? fetch;
-  let response: Response;
-  try {
-    response = await fetchApi(`/api/team/${entryId}`, {
-      headers: { Accept: "application/json" },
-      signal: dependencies.signal ?? new AbortController().signal,
-    });
-  } catch {
+  const wait =
+    dependencies.wait ??
+    ((ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms)));
+  const signal = dependencies.signal ?? new AbortController().signal;
+
+  let response: Response | null = null;
+  for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt += 1) {
+    try {
+      response = await fetchApi(`/api/team/${entryId}`, {
+        headers: { Accept: "application/json" },
+        signal,
+      });
+      break;
+    } catch (error) {
+      // An abort is the caller changing their mind, not a failure to retry.
+      if (error instanceof DOMException && error.name === "AbortError") {
+        throw error;
+      }
+      if (attempt === MAX_ATTEMPTS - 1) {
+        return previous
+          ? { status: "stale", state: previous, reason: "network_error" }
+          : { status: "error", reason: "network_error" };
+      }
+      await wait(RETRY_BASE_MS * 2 ** attempt);
+    }
+  }
+  if (response === null) {
     return previous
       ? { status: "stale", state: previous, reason: "network_error" }
       : { status: "error", reason: "network_error" };

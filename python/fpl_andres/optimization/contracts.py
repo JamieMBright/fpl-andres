@@ -206,6 +206,9 @@ class OptimizationResult(BaseModel):
     vice_captain_element_id: PositiveInt
     transfers_in: tuple[int, ...]
     transfers_out: tuple[int, ...]
+    # Carried onto the result so a reader can tell a deliberate hit from a plan
+    # that had no free transfer to spend. Both produce paid_transfers > 0.
+    free_transfers_available: NonNegativeInt
     paid_transfers: NonNegativeInt
     transfer_cost_points: NonNegativeInt
     projected_points_before_cost: float
@@ -250,6 +253,13 @@ class OptimizationResult(BaseModel):
             raise ValueError("transfers must be unique, disjoint and balanced")
         if self.paid_transfers > len(incoming):
             raise ValueError("paid transfers cannot exceed total transfers")
+        expected_paid = max(0, len(incoming) - self.free_transfers_available)
+        if self.paid_transfers != expected_paid:
+            raise ValueError(
+                f"paid transfers ({self.paid_transfers}) must be the transfers beyond "
+                f"the free allowance ({expected_paid} from {len(incoming)} transfers "
+                f"and {self.free_transfers_available} free)"
+            )
         if not math.isfinite(self.projected_points_before_cost) or not math.isfinite(
             self.net_expected_points
         ):
