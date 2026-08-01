@@ -19,8 +19,22 @@ import {
   type FormEvent,
   type KeyboardEvent as ReactKeyboardEvent,
 } from "react";
-import { ZodError } from "zod";
 
+import {
+  CorrectionField,
+  TransferInput,
+} from "./team-state-corrections/fields";
+import {
+  correctionError,
+  formatTenthsInput,
+  parseAvailableChips,
+  parseOptionalInteger,
+  parseOptionalTenths,
+  parseTransfers,
+  type CorrectionError,
+  type TransferDraft,
+  type TransferField,
+} from "./team-state-corrections/parse";
 import {
   loadTeamStateOverrides,
   removeTeamStateOverrides,
@@ -29,31 +43,6 @@ import {
 
 interface TeamStateCorrectionsProps {
   state: PublicTeamState;
-}
-
-interface TransferDraft {
-  key: number;
-  elementOutId: string;
-  elementInId: string;
-  sellingPrice: string;
-  purchasePrice: string;
-}
-
-type TransferField = Exclude<keyof TransferDraft, "key">;
-
-interface CorrectionError {
-  message: string;
-  fieldId?: string;
-}
-
-class CorrectionInputError extends Error {
-  constructor(
-    message: string,
-    readonly fieldId?: string,
-  ) {
-    super(message);
-    this.name = "CorrectionInputError";
-  }
 }
 
 export function TeamStateCorrections({ state }: TeamStateCorrectionsProps) {
@@ -508,66 +497,6 @@ export function TeamStateCorrections({ state }: TeamStateCorrectionsProps) {
   );
 }
 
-interface CorrectionFieldProps {
-  children: React.ReactNode;
-  id: string;
-  label: string;
-}
-
-function CorrectionField({ children, id, label }: CorrectionFieldProps) {
-  return (
-    <div className="correction-field">
-      <label htmlFor={id}>{label}</label>
-      {children}
-    </div>
-  );
-}
-
-interface TransferInputProps {
-  error: CorrectionError | null;
-  errorId: string;
-  field: TransferField;
-  formId: string;
-  index: number;
-  label: string;
-  onChange: (key: number, field: TransferField, value: string) => void;
-  transfer: TransferDraft;
-}
-
-function TransferInput({
-  error,
-  errorId,
-  field,
-  formId,
-  index,
-  label,
-  onChange,
-  transfer,
-}: TransferInputProps) {
-  const isPrice = field === "sellingPrice" || field === "purchasePrice";
-  const id = `${formId}-transfer-${transfer.key}-${field}`;
-  return (
-    <div className="correction-field">
-      <label htmlFor={id}>{label}</label>
-      <input
-        aria-describedby={error?.fieldId === id ? errorId : undefined}
-        aria-invalid={error?.fieldId === id}
-        autoComplete="off"
-        id={id}
-        inputMode={isPrice ? "decimal" : "numeric"}
-        min={isPrice ? "0" : undefined}
-        name={`queued-transfer-${index + 1}-${field}`}
-        onChange={(event) => onChange(transfer.key, field, event.target.value)}
-        placeholder={isPrice ? "6.5…" : "123…"}
-        pattern={isPrice ? undefined : "[0-9]*"}
-        step={isPrice ? "0.1" : undefined}
-        type={isPrice ? "number" : "text"}
-        value={transfer[field]}
-      />
-    </div>
-  );
-}
-
 function loadExistingOverrides(
   state: PublicTeamState,
 ): TeamStateOverrides | null {
@@ -576,145 +505,4 @@ function loadExistingOverrides(
   } catch {
     return null;
   }
-}
-
-function parseOptionalTenths(
-  value: string,
-  label: string,
-  fieldId?: string,
-): number | null {
-  const normalized = value.trim();
-  if (normalized === "") return null;
-  const match = /^(\d+)(?:\.(\d))?$/.exec(normalized);
-  if (!match) {
-    throw new CorrectionInputError(
-      `${label} must be a non-negative amount with at most 1 decimal place.`,
-      fieldId,
-    );
-  }
-  const whole = Number(match[1]);
-  const decimal = Number(match[2] ?? "0");
-  const tenths = whole * 10 + decimal;
-  if (!Number.isSafeInteger(tenths)) {
-    throw new CorrectionInputError(
-      `${label} is outside the supported range.`,
-      fieldId,
-    );
-  }
-  return tenths;
-}
-
-function parseOptionalInteger(
-  value: string,
-  label: string,
-  fieldId?: string,
-): number | null {
-  const normalized = value.trim();
-  if (normalized === "") return null;
-  if (!/^\d+$/.test(normalized)) {
-    throw new CorrectionInputError(
-      `${label} must be a non-negative integer.`,
-      fieldId,
-    );
-  }
-  const parsed = Number(normalized);
-  if (!Number.isSafeInteger(parsed)) {
-    throw new CorrectionInputError(
-      `${label} is outside the supported range.`,
-      fieldId,
-    );
-  }
-  return parsed;
-}
-
-function parseRequiredInteger(
-  value: string,
-  label: string,
-  fieldId: string,
-): number {
-  const parsed = parseOptionalInteger(value, label, fieldId);
-  if (parsed === null || parsed < 1 || parsed > 4_294_967_295) {
-    throw new CorrectionInputError(
-      `${label} must be a positive FPL element ID.`,
-      fieldId,
-    );
-  }
-  return parsed;
-}
-
-function parseRequiredTenths(
-  value: string,
-  label: string,
-  fieldId: string,
-): number {
-  const parsed = parseOptionalTenths(value, label, fieldId);
-  if (parsed === null) {
-    throw new CorrectionInputError(
-      `${label} is required for each transfer.`,
-      fieldId,
-    );
-  }
-  return parsed;
-}
-
-function parseTransfers(
-  transfers: TransferDraft[],
-  formId: string,
-): TeamStateOverrides["queuedTransfers"] {
-  if (transfers.length === 0) return null;
-  return transfers.map((transfer, index) => ({
-    elementOutId: parseRequiredInteger(
-      transfer.elementOutId,
-      `Transfer ${index + 1} player out`,
-      `${formId}-transfer-${transfer.key}-elementOutId`,
-    ),
-    elementInId: parseRequiredInteger(
-      transfer.elementInId,
-      `Transfer ${index + 1} player in`,
-      `${formId}-transfer-${transfer.key}-elementInId`,
-    ),
-    sellingPriceTenths: parseRequiredTenths(
-      transfer.sellingPrice,
-      `Transfer ${index + 1} selling price`,
-      `${formId}-transfer-${transfer.key}-sellingPrice`,
-    ),
-    purchasePriceTenths: parseRequiredTenths(
-      transfer.purchasePrice,
-      `Transfer ${index + 1} purchase price`,
-      `${formId}-transfer-${transfer.key}-purchasePrice`,
-    ),
-  }));
-}
-
-function parseAvailableChips(value: string, fieldId: string): string[] | null {
-  const chips = value
-    .split(",")
-    .map((chip) => chip.trim())
-    .filter(Boolean);
-  if (chips.length === 0) return null;
-  if (new Set(chips).size !== chips.length) {
-    throw new CorrectionInputError("List each available chip once.", fieldId);
-  }
-  return chips.sort();
-}
-
-function correctionError(caught: unknown): CorrectionError {
-  if (caught instanceof CorrectionInputError) {
-    return caught.fieldId
-      ? { message: caught.message, fieldId: caught.fieldId }
-      : { message: caught.message };
-  }
-  if (caught instanceof ZodError) {
-    return {
-      message: caught.issues[0]?.message ?? "Review the manager corrections.",
-    };
-  }
-  return {
-    message:
-      "Corrections could not be saved in this browser. Check storage access and try again.",
-  };
-}
-
-function formatTenthsInput(value: number): string {
-  return `${Math.floor(value / 10)}.${value % 10}`;
 }
