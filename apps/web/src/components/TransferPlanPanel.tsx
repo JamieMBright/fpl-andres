@@ -1,3 +1,5 @@
+import { deadline as deadlineFormatter } from "../format";
+
 const HORIZONS = [1, 3, 5, 7] as const;
 
 /** What the plan will contain, stated plainly while there is nothing to plan. */
@@ -9,11 +11,7 @@ export function TransferPlanPanel({
   const deadline = firstDeadline ? new Date(firstDeadline) : null;
   const formatted =
     deadline && !Number.isNaN(deadline.getTime())
-      ? new Intl.DateTimeFormat("en-GB", {
-          dateStyle: "long",
-          timeStyle: "short",
-          timeZone: "UTC",
-        }).format(deadline)
+      ? deadlineFormatter.format(deadline)
       : null;
 
   return (

@@ -1,6 +1,7 @@
 import type { PublicTeamPick } from "@fpl-andres/contracts";
 
 import { projectionFor } from "../state/squad-projection";
+import { money as sharedMoney } from "../format";
 
 const POSITION_ROWS = [
   { code: "GKP", label: "Goalkeeper" },
@@ -11,15 +12,8 @@ const POSITION_ROWS = [
 
 type PositionCode = (typeof POSITION_ROWS)[number]["code"];
 
-const moneyFormatter = new Intl.NumberFormat("en-GB", {
-  style: "currency",
-  currency: "GBP",
-  minimumFractionDigits: 1,
-  maximumFractionDigits: 1,
-});
-
 function money(valueTenths: number): string {
-  return `${moneyFormatter.format(valueTenths / 10)}m`;
+  return `${sharedMoney.format(valueTenths / 10)}m`;
 }
 
 /** Ceefax block shirt. Colour keys position, not club: I have no kit source. */

@@ -1,5 +1,6 @@
 import { z } from "zod";
 
+import { dedupedFetch } from "./deduped-fetch";
 import type { ScheduledFixture } from "./fixture-run";
 import { projectionFor, type PlayerProjection } from "./squad-projection";
 
@@ -174,8 +175,8 @@ export async function fetchPlayerPool(
   let fixtures: Response;
   try {
     [bootstrap, fixtures] = await Promise.all([
-      fetchApi("/api/fpl/bootstrap-static/", init),
-      fetchApi("/api/fpl/fixtures/", init),
+      dedupedFetch("/api/fpl/bootstrap-static/", init, fetchApi),
+      dedupedFetch("/api/fpl/fixtures/", init, fetchApi),
     ]);
   } catch (error) {
     if (error instanceof DOMException && error.name === "AbortError")

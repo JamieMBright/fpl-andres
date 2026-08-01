@@ -9,6 +9,7 @@ import {
   type PoolPlayer,
 } from "../state/player-pool";
 import { projectionSeason } from "../state/squad-projection";
+import { money as sharedMoney } from "../format";
 
 type SortKey = "points" | "perMillion" | "price" | "run";
 
@@ -23,15 +24,8 @@ const SORTS: { key: SortKey; label: string }[] = [
 // squads playing them still resemble the ones named today.
 const RUN_WINDOW = 5;
 
-const moneyFormatter = new Intl.NumberFormat("en-GB", {
-  style: "currency",
-  currency: "GBP",
-  minimumFractionDigits: 1,
-  maximumFractionDigits: 1,
-});
-
 function money(valueTenths: number): string {
-  return `${moneyFormatter.format(valueTenths / 10)}m`;
+  return `${sharedMoney.format(valueTenths / 10)}m`;
 }
 
 /**

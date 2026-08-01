@@ -30,6 +30,11 @@ import { ManagerHistory } from "./components/ManagerHistory";
 import { OpeningSquad } from "./components/OpeningSquad";
 import { RouteHeading } from "./components/RouteHeading";
 import { StatusStrip } from "./components/StatusStrip";
+import {
+  integer as sharedInteger,
+  money as sharedMoney,
+  timestamp as sharedTimestamp,
+} from "./format";
 import { TeamStateCorrections } from "./components/TeamStateCorrections";
 import { TransferPlanPanel } from "./components/TransferPlanPanel";
 import {
@@ -81,22 +86,9 @@ function LazyRoute({ children }: PropsWithChildren) {
 const MAX_PUBLIC_ID = 4_294_967_295;
 // Published by FPL for the 2026/27 opening gameweek.
 const FIRST_DEADLINE_2026_27 = "2026-08-21T17:30:00Z";
-const moneyFormatter = new Intl.NumberFormat("en-GB", {
-  style: "currency",
-  currency: "GBP",
-  minimumFractionDigits: 1,
-  maximumFractionDigits: 1,
-});
-const integerFormatter = new Intl.NumberFormat("en-GB");
-const timestampFormatter = new Intl.DateTimeFormat("en-GB", {
-  day: "numeric",
-  month: "short",
-  year: "numeric",
-  hour: "2-digit",
-  minute: "2-digit",
-  timeZone: "Europe/London",
-  timeZoneName: "short",
-});
+const moneyFormatter = sharedMoney;
+const integerFormatter = sharedInteger;
+const timestampFormatter = sharedTimestamp;
 
 const SOCIAL_LINKS = [
   {

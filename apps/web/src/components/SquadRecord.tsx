@@ -1,22 +1,16 @@
 import type { PublicTeamPick } from "@fpl-andres/contracts";
 
+import { money as sharedMoney } from "../format";
 import {
   projectionSeason,
   squadProjection,
   type PlayerProjection,
 } from "../state/squad-projection";
 
-const moneyFormatter = new Intl.NumberFormat("en-GB", {
-  style: "currency",
-  currency: "GBP",
-  minimumFractionDigits: 1,
-  maximumFractionDigits: 1,
-});
-
 function money(valueTenths: number | null): string {
   return valueTenths === null
     ? "—"
-    : `${moneyFormatter.format(valueTenths / 10)}m`;
+    : `${sharedMoney.format(valueTenths / 10)}m`;
 }
 
 function percentage(value: number | null): string {

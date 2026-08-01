@@ -1,4 +1,5 @@
 import cohort from "../data/cohort.json";
+import { integer } from "../format";
 
 type Cohort = {
   generatedAt: string;
@@ -17,7 +18,7 @@ type Cohort = {
 };
 
 const data = cohort as Cohort;
-const number = new Intl.NumberFormat("en-GB");
+const number = integer;
 
 /** The swept cohort, and the one thing it cannot tell you. */
 export function CohortPanel() {

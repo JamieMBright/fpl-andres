@@ -1,4 +1,5 @@
 import squad from "../data/opening-squad.json";
+import { money as sharedMoney } from "../format";
 
 interface Pick {
   code: number;
@@ -32,15 +33,8 @@ interface OpeningSquad {
 const opening = squad as OpeningSquad;
 const ORDER = ["GKP", "DEF", "MID", "FWD"];
 
-const moneyFormatter = new Intl.NumberFormat("en-GB", {
-  style: "currency",
-  currency: "GBP",
-  minimumFractionDigits: 1,
-  maximumFractionDigits: 1,
-});
-
 function money(valueTenths: number): string {
-  return `${moneyFormatter.format(valueTenths / 10)}m`;
+  return `${sharedMoney.format(valueTenths / 10)}m`;
 }
 
 /**

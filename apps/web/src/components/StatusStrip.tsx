@@ -1,4 +1,5 @@
 import openingSquad from "../data/opening-squad.json";
+import { captureDay } from "../format";
 import { projectionSeason } from "../state/projection-meta";
 
 // Read once at module load. Rendering must stay pure, and a countdown in days
@@ -15,11 +16,7 @@ const { consideredPlayers, withoutRecord, unavailable, bitPart } =
 
 const inTheGame = consideredPlayers + withoutRecord + unavailable + bitPart;
 
-const dayFormatter = new Intl.DateTimeFormat("en-GB", {
-  day: "numeric",
-  month: "short",
-  timeZone: "UTC",
-});
+const dayFormatter = captureDay;
 
 /**
  * The status strip, carrying facts rather than slogans.
