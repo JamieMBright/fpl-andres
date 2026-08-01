@@ -17,25 +17,27 @@ The thesis is not that we predict football better than anyone else. It is that
 ## How it is proved
 
 Take any random opening team. Run the planning algorithm, which decides which
-transfers, substitutions and captaincies happen and when. Execute that plan,
+transfers, substitutions, chips and captaincies happen and when. Execute that plan,
 re-planning at every gameweek as new information arrives. Compare the points
 against baselines.
 
 ## Baselines, weakest to strongest
 
-1. **Zombie.** Do nothing. Establishes what skill is worth at all.
+1. **Zombie.** Do nothing. Establishes what skill is worth at all. For fairness, allow them to transfer out 0min or injured players to the highest owned active player of similar cost/position.
 2. **Form chaser.** The conventional non-naive way people actually play:
-   transfer in the highest-form player not already owned. This is the honest
+   transfer in the highest-form player not already owned, transfering out the lowest performing where possible. This is the honest
    comparison, because it is what a competent human does.
 3. **The crowd.** The most-transferred-in player each gameweek, from the
-   published transfer counts. Beating the aggregate decision of eleven million
+   published transfer counts. Trnasferring out the most transferred out player where possible. Beating the aggregate decision of eleven million
    managers is the real bar.
+4. **Real test.** Against actual FPL Managers:
+   Historical data of individual manager gameweeks from season past is not available for simulation, so 2026/27 will be a live test bed.
 
 ## xPts becomes ExPts
 
-Expected points are not the objective. **Effective points** are: the points that
+Expected points (xPts) are not the objective. **Effective points** (ExPts) are: the points that
 actually move you up a ranking, measured against either overall rank or a
-specific mini-league. A haul everyone else also owns moves nobody. The
+specific mini-league. A haul everyone else also owns results in negligible gain. The
 conversion from xPts to ExPts is what separates scoring well from finishing
 well.
 
@@ -49,15 +51,22 @@ and rank climb.
 ## Chips are part of the plan, not an afterthought
 
 - **Wildcard**, one per half-season. Play it when unlimited transfers would
-  dramatically raise ExPts. Every gameweek is a candidate and the optimum is
+  dramatically raise the next 5-10 GWs ExPts. Every gameweek is a candidate and the optimum is
   found by analysis, not feel.
 - **Free Hit**, once per season. Best when at most one free transfer is
   available and a completely different team is wanted for a single gameweek.
   It raises ExPts for the next gameweek only, then the squad reverts, so its
   value is a one-week spike rather than a lasting improvement.
+  It should be played when the ExPts of doing so far outweighs the ExPts of the current team. It should be evaluated against all upcoming gameweeks based on the transfer plan.
 - **Triple Captain**, once per season. Play it on the single highest ExPts
   player-gameweek of the season.
-- **Bench Boost**, once per season. Not yet specified by the owner.
+- **Bench Boost**, once per season. The optimal usage of this is when the
+  ExPts of all 15 players is highest, i.e. the whole bench has
+  high likelihood of returning a haul.
+
+Chips are planned out from now to Gameweek 38 each week, showing optimal usage strategy at any point in time.
+
+A notable rule of the game is only one chip can be used per gameweek.
 
 ## Consequence
 
