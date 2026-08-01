@@ -233,17 +233,22 @@ Ordered by what would change the answers most, not by effort.
 
 ### Built, tested, and called by nothing
 
-3. **`project_expected_points`**, the promoted xPTS model. The backtest projector
+3. **Suspension risk.** `models/suspensions.py` prices the accumulation ban a
+   booking eventually triggers, which is worth far more than the minus one for
+   the card itself: crossing a rung costs a nailed starter a whole gameweek.
+   Not wired, because the thresholds are a controlling rule nobody has sourced
+   yet and the model refuses to invent them.
+4. **`project_expected_points`**, the promoted xPTS model. The backtest projector
    reimplements scoring rather than calling it, so there are two pricings of the
    same rules and only one is exercised.
-4. **`HighsHorizonOptimizer`.** Plans across events with free-transfer carry and
+5. **`HighsHorizonOptimizer`.** Plans across events with free-transfer carry and
    captaincy inside the objective. A greedy swap runs instead. It cannot go in
    the backtest — eleven thousand binary variables times twenty managers times
    three seeds times four seasons times thirty-two gameweeks is not tractable,
    and the request contract wants per-event hashes and a rules snapshot per
    historical season. It belongs on the live single-team path, which needs a
    played gameweek.
-5. Fifteen further orphans, listed in `LIMITATIONS.md`. The reachability audit
+6. Fifteen further orphans, listed in `LIMITATIONS.md`. The reachability audit
    fails the build on any new one.
 
 ### Not built
@@ -261,18 +266,59 @@ Ordered by what would change the answers most, not by effort.
    stops at seven gameweeks and refits from scratch each week.
 10. **Positional matchups.** One attack and one defence figure per side. Shot
     coordinates would give flank vulnerability; nothing reads them.
+11. **Bookmaker odds as a probability source.** Bookmakers price fixtures for a
+    living and are marked to market by people trying to take their money, so
+    their implied probabilities are the strongest freely available estimate of
+    the things this model already guesses at: match outcome, total goals, clean
+    sheets, and — in the goalscorer markets — the chance a named player scores.
+
+    What maps onto what: `1X2` and Asian handicap give relative team strength;
+    over/under 2.5 gives a total-goals expectation that pins both Poisson means
+    once combined with the handicap; "both teams to score" and correct-score
+    markets back out P(clean sheet) directly, which is currently one of the
+    weakest parts of the projector; anytime-goalscorer prices are a per-player
+    goal probability that would be checked against the xG route rather than
+    replace it.
+
+    Three problems to solve before any of that is worth writing:
+
+    - **The overround has to come out.** Quoted prices are not probabilities.
+      They sum to more than one, typically a few per cent on `1X2` and far more
+      on goalscorer markets, because the margin is the bookmaker's income.
+      Dividing through by the total — the obvious fix — is biased, because the
+      margin is not spread evenly: longshots carry more of it than favourites.
+      Shin's method or a power fit handle that; proportional de-vigging would
+      systematically flatter exactly the cheap differential punts FPL rewards.
+    - **The sharp prices arrive too late to act on.** Odds are most accurate at
+      kickoff, but the FPL deadline is usually a day or two earlier and team
+      news is what moves them. Anything built here must be fitted on prices as
+      they stood _at the deadline_, not on closing prices, or the backtest will
+      score information the manager could never have had. This is the same
+      leak the corpus cutoff already guards against elsewhere.
+    - **Sourcing has to be legitimate, and this machine cannot currently reach
+      any of it.** Scraping bookmakers directly is against their terms and is
+      bot-protected in any case. The defensible routes are redistributors and
+      documented APIs: football-data.co.uk publishes free per-season CSVs of
+      multi-bookmaker closing odds with no key, The Odds API documents a free
+      tier, and the Betfair exchange is an open market rather than a bookmaker,
+      so its prices carry commission instead of a margin and are usually the
+      sharpest of the lot. **Measured 1 August 2026: all three domains fail at
+      the TLS handshake from this network while the FPL API and Understat
+      succeed**, which is the signature of a gambling-category content filter
+      rather than an outage. This item therefore cannot be started here without
+      the owner confirming a network that permits it.
 
 ### Waiting on the season
 
-11. **Mini-leagues 34555 and 393774.** Rival picks are only legally readable
+12. **Mini-leagues 34555 and 393774.** Rival picks are only legally readable
     after a deadline.
-12. **The proven-manager cohort.** A full entry sweep is running; the resulting
+13. **The proven-manager cohort.** A full entry sweep is running; the resulting
     catalogue is not yet wired to anything.
-13. **Live smoke test** on entry 212279 once gameweek 1 is processed.
+14. **Live smoke test** on entry 212279 once gameweek 1 is processed.
 
 ### Unverified
 
-14. **The club limit correction rule** came from the owner, not from the
+15. **The club limit correction rule** came from the owner, not from the
     published rules text. If FPL allows the correction to wait, the encoding is
     wrong.
 

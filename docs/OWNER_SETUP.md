@@ -96,6 +96,22 @@ Nothing mechanical is outstanding. What is left is judgement, and none of it can
 be answered by me. Nothing here blocks the site running; each one blocks a
 specific capability.
 
+### Verify the yellow card accumulation rule
+
+- [ ] **I could not source the thresholds, so nothing assumes them.** The
+      suspension model is built and tested, but `SuspensionRules` has no default
+      and refuses to construct without a `source_reference`. That is deliberate:
+      the standing rule here is that a controlling rule which cannot be sourced
+      fails visibly rather than being guessed, and these thresholds have changed
+      before.
+- [ ] What is needed is the ladder from the published handbook: how many
+      cautions trigger a ban, how long each ban lasts, and **the gameweek at
+      which the lower rungs are wiped**. The reset is the part that matters most
+      to a projection, because a player four cards deep in November is a very
+      different proposition from the same player in March.
+
+---
+
 ### The FPL100 cohort does not survive verification
 
 - [ ] **Decide whether to ship it at all.** Of the 84 entry ids extracted from

@@ -79,6 +79,7 @@ KNOWN_ORPHANS = {
     "parse_lineup_role_observations": "StatsBomb adapter; no ingest path exists",
     "hash_statsbomb_bytes": "StatsBomb adapter; no ingest path exists",
     "require_gameweeks": "corpus guard, used by scripts",
+    "suspension_risk": "accumulation bans; thresholds are an unsourced rule",
 }
 
 KNOWN_ORPHAN_MODULES = {
@@ -87,6 +88,7 @@ KNOWN_ORPHAN_MODULES = {
     "metrics": "scoring helpers, superseded",
     "promotion": "promotion gate, nothing promotes yet",
     "statsbomb": "adapter with no ingest path",
+    "suspensions": "accumulation bans; thresholds are an unsourced rule",
     "team_state": "consumed by the TypeScript API",
     "walk_forward": "leak-guard slicing, superseded by the corpus cutoff",
 }
