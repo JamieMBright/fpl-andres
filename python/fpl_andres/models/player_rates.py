@@ -265,6 +265,12 @@ def _total_minutes(observations: tuple[RateObservation, ...]) -> float:
 
 def _shrink(events: float, minutes: float, prior_rate: float, prior: RatePrior) -> float:
     """Shrink an observed per-90 rate toward the prior, weighted by minutes."""
+    # Returns of 90 per 90 otherwise: with no minutes the denominator collapses
+    # to the prior strength while the numerator keeps the events. Unreachable
+    # through the blend, which derives both from the same observations, but a
+    # silent nonsense answer is not what this package does with impossible input.
+    if minutes <= 0.0 and events > 0.0:
+        raise ValueError(f"{events} returns cannot have come from {minutes} minutes")
     prior_events = prior_rate * prior.strength_minutes / _MINUTES_PER_90
     total_minutes = minutes + prior.strength_minutes
     if total_minutes <= 0.0:
