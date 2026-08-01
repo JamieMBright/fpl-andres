@@ -5,6 +5,8 @@ type Cohort = {
   rankCeiling: number;
   sinceSeasonStartYear: number;
   entriesSwept: number;
+  entriesWithHistory: number;
+  entriesMissing: number;
   sweepComplete: boolean;
   managers: number;
   qualifyingSeasonCounts: Record<string, number>;
@@ -40,8 +42,14 @@ export function CohortPanel() {
         {number.format(data.rankCeiling)} at least twice since{" "}
         {data.sinceSeasonStartYear}.
         {data.sweepComplete
-          ? ""
+          ? " That is every id there is: the sweep ran past the end of the range and found nothing but gaps."
           : " The sweep is still running, so these numbers will grow."}
+      </p>
+
+      <p className="mono">
+        {number.format(data.entriesWithHistory)} of those ids belonged to a real
+        manager with a completed season. {number.format(data.entriesMissing)}{" "}
+        returned nothing.
       </p>
 
       {data.bestRankMedian === null ? null : (

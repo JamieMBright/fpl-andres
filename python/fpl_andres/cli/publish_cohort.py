@@ -31,6 +31,11 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--since", type=int, default=2021, help="first season start year")
     parser.add_argument("--source", default=str(SOURCE))
     parser.add_argument("--output", default=str(DEFAULT_OUTPUT))
+    parser.add_argument(
+        "--complete",
+        action="store_true",
+        help="the sweep ran past the end of the entry id space",
+    )
     return parser
 
 
@@ -66,15 +71,22 @@ def main(argv: Sequence[str] | None = None) -> int:
             best_ranks.append(min(season["rank"] for season in recent))
 
     swept = 0
+    with_history = 0
+    missing = 0
     if CHECKPOINT.exists():
-        swept = json.loads(CHECKPOINT.read_text(encoding="utf-8")).get("next_id", 1) - 1
+        checkpoint = json.loads(CHECKPOINT.read_text(encoding="utf-8"))
+        swept = checkpoint.get("next_id", 1) - 1
+        with_history = checkpoint.get("with_history", 0)
+        missing = checkpoint.get("missing", 0)
 
     payload = {
         "generatedAt": datetime.now(UTC).isoformat(),
         "rankCeiling": RANK_CEILING,
         "sinceSeasonStartYear": args.since,
         "entriesSwept": swept,
-        "sweepComplete": False,
+        "entriesWithHistory": with_history,
+        "entriesMissing": missing,
+        "sweepComplete": args.complete,
         "managers": len(records),
         "qualifyingSeasonCounts": {
             str(count): total for count, total in sorted(qualifying_counts.items())
