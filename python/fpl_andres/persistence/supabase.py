@@ -20,6 +20,7 @@ Resolution = Literal["merge-duplicates", "ignore-duplicates"]
 _SECRET_ENV = "SUPABASE_SECRET_KEY"
 _URL_ENV = "SUPABASE_URL"
 _MAX_ROWS_PER_REQUEST = 500
+_MAX_DETAIL = 500
 
 
 class MissingCredentialsError(RuntimeError):
@@ -91,6 +92,10 @@ class SupabaseRestClient:
     def __enter__(self) -> Self:
         return self
 
+    def __repr__(self) -> str:
+        """The default repr would be safe today; this keeps it safe on purpose."""
+        return f"SupabaseRestClient(url={self._credentials.url!r})"
+
     def __exit__(
         self,
         exc_type: type[BaseException] | None,
@@ -135,7 +140,8 @@ class SupabaseRestClient:
             )
             if response.status_code >= 400:
                 raise SupabaseWriteError(
-                    f"{table} write failed with {response.status_code}: {_safe_detail(response)}"
+                    f"{table} write failed with {response.status_code}: "
+                    f"{_safe_detail(response, self._credentials.secret_key)}"
                 )
             if returning and response.content:
                 written.extend(response.json())
@@ -181,7 +187,8 @@ class SupabaseRestClient:
         )
         if response.status_code >= 400:
             raise SupabaseWriteError(
-                f"{table} update failed with {response.status_code}: {_safe_detail(response)}"
+                f"{table} update failed with {response.status_code}: "
+                f"{_safe_detail(response, self._credentials.secret_key)}"
             )
 
     def select(
@@ -203,7 +210,8 @@ class SupabaseRestClient:
         response = self._client.get(f"/{table}", params=params)
         if response.status_code >= 400:
             raise SupabaseWriteError(
-                f"{table} read failed with {response.status_code}: {_safe_detail(response)}"
+                f"{table} read failed with {response.status_code}: "
+                f"{_safe_detail(response, self._credentials.secret_key)}"
             )
         rows: list[dict[str, Any]] = response.json()
         return rows
@@ -213,14 +221,30 @@ def _chunked(rows: Sequence[Mapping[str, Any]], size: int) -> list[Sequence[Mapp
     return [rows[index : index + size] for index in range(0, len(rows), size)]
 
 
-def _safe_detail(response: httpx.Response) -> str:
-    """Return the upstream error without echoing any request payload."""
+def _safe_detail(response: httpx.Response, secret: str) -> str:
+    """Return the upstream error without echoing the payload or our own key.
+
+    A gateway that rejects a request sometimes quotes the offending header back.
+    That would put the service-role key into an exception message and from there
+    into a log, which is why the mask on the credentials repr was not enough.
+    """
     try:
         body = response.json()
     except ValueError:
-        return response.text[:500]
+        return _clip(_scrub(response.text, secret))
     if isinstance(body, dict):
         parts = [str(body[key]) for key in ("message", "details", "hint", "code") if body.get(key)]
         if parts:
-            return " | ".join(parts)[:500]
-    return str(body)[:500]
+            return _clip(_scrub(" | ".join(parts), secret))
+    return _clip(_scrub(str(body), secret))
+
+
+def _scrub(detail: str, secret: str) -> str:
+    return detail.replace(secret, "<redacted>") if secret else detail
+
+
+def _clip(detail: str) -> str:
+    """Say when a message was cut, so a clip is not read as the whole message."""
+    if len(detail) <= _MAX_DETAIL:
+        return detail
+    return detail[:_MAX_DETAIL] + f"... [truncated, {len(detail)} chars]"

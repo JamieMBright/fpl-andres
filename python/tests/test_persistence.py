@@ -151,8 +151,11 @@ def test_idempotency_key_is_order_independent() -> None:
     assert build_idempotency_key({"season": "2024-25", "gameweek": 3}) == build_idempotency_key(
         {"gameweek": 3, "season": "2024-25"}
     )
-    assert (
-        build_idempotency_key({"season": "2024-25", "gameweek": 3}) == "gameweek=3|season=2024-25"
+    # Hashed rather than concatenated: the old "gameweek=3|season=2024-25" form
+    # stored caller values in cleartext and could collide when one contained the
+    # separator. Full coverage of both properties is in test_secret_hygiene.py.
+    assert build_idempotency_key({"season": "2024-25", "gameweek": 3}) == (
+        "3c52f80323bd001a240bd9a2bf53093a7af7b9bb21f85a2bf1db3b7d0a834d07"
     )
 
 

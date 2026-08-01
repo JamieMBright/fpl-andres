@@ -51,13 +51,16 @@ progress. Common causes we have already seen and their fixes:
 ## Incident: `/api/team/{id}` returning HTTP 500 with an empty body
 
 Both handlers under `api/` are wrapped in a top-level `try/catch` that returns a
-schema-valid degraded envelope and sets an `x-fpl-andres-debug` response header
-with the truncated error message. Steps:
+schema-valid degraded envelope. The exception detail is **not** sent to the
+client: it would expose stack paths, upstream hostnames and payload fragments to
+anyone who triggers a 502. Instead the response carries an opaque
+`x-fpl-andres-request-id`, repeated in the JSON body, and the detail goes to the
+server log under the same id. Steps:
 
-1. Curl the endpoint and inspect the `x-fpl-andres-debug` header for the
-   underlying exception.
-2. Check the Vercel function logs for the corresponding `console.error` line
-   (handler name is prefixed).
+1. Ask the reporter for the `requestId` from the response body, or read it from
+   the `x-fpl-andres-request-id` header.
+2. Search the Vercel function logs for that id. Each failure emits one JSON line
+   with `event: "handler_failure"`, the route, status, duration and full stack.
 3. Reproduce locally with `corepack pnpm --filter @fpl-andres/web test -- src/api/team-public-state-handler.test.ts`
    and add a red test case for the observed error before fixing.
 

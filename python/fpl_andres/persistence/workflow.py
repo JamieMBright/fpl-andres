@@ -7,6 +7,8 @@ unique constraint is what makes a re-dispatch safe.
 
 from __future__ import annotations
 
+import hashlib
+import json
 from collections.abc import Mapping
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
@@ -97,9 +99,67 @@ def _redacted_reason(exc: BaseException) -> str:
     return f"{type(exc).__name__}: {str(exc)[:400]}"
 
 
+# Substrings that mark a value as never safe to persist. Deliberately specific:
+# a broad match on "key" would redact "gameweek" and every legitimate id.
+_SECRET_NAME_MARKERS = (
+    "secret",
+    "token",
+    "password",
+    "passwd",
+    "credential",
+    "api_key",
+    "apikey",
+    "access_key",
+    "auth",
+    "bearer",
+    "cookie",
+    "session",
+    "signature",
+)
+# A JSON Web Token always starts this way; a caller pasting one is the most
+# likely accident.
+_JWT_PREFIX = "eyJ"
+_MAX_METADATA_VALUE = 200
+REDACTED = "[redacted]"
+
+
+def redact_metadata(parts: Mapping[str, Any]) -> dict[str, Any]:
+    """Strip anything that looks like a credential before it reaches the row.
+
+    `workflow_runs.metadata` is written from caller-supplied parameters, and
+    nothing stopped a token arriving in one. Redaction is by name and by shape,
+    because a secret can arrive under an innocent key.
+    """
+    redacted: dict[str, Any] = {}
+    for name, value in parts.items():
+        lowered = str(name).lower()
+        if any(marker in lowered for marker in _SECRET_NAME_MARKERS):
+            redacted[name] = REDACTED
+            continue
+        if isinstance(value, str) and (
+            value.startswith(_JWT_PREFIX) or len(value) > _MAX_METADATA_VALUE
+        ):
+            redacted[name] = REDACTED
+            continue
+        redacted[name] = value
+    return redacted
+
+
 def build_idempotency_key(parts: Mapping[str, Any]) -> str:
-    """Deterministic key from the parameters that define a unique run."""
-    return "|".join(f"{key}={parts[key]}" for key in sorted(parts))
+    """Deterministic key from the parameters that define a unique run.
+
+    Hashed rather than concatenated for two reasons: a value containing the
+    separator could otherwise collide with a different set of parts, and the
+    key is stored in cleartext, so a caller-supplied secret would have been
+    persisted verbatim.
+    """
+    canonical = json.dumps(
+        {str(key): parts[key] for key in sorted(parts, key=str)},
+        sort_keys=True,
+        separators=(",", ":"),
+        default=str,
+    )
+    return hashlib.sha256(canonical.encode("utf-8")).hexdigest()
 
 
 def open_run(
@@ -113,15 +173,17 @@ def open_run(
         workflow_name=workflow_name,
         idempotency_key=build_idempotency_key(parts),
         event_id=event_id,
-        metadata=dict(parts),
+        metadata=redact_metadata(parts),
     )
     return WorkflowRunRecorder(client, run)
 
 
 __all__ = [
+    "REDACTED",
     "WorkflowAlreadyRunningError",
     "WorkflowRun",
     "WorkflowRunRecorder",
     "build_idempotency_key",
     "open_run",
+    "redact_metadata",
 ]
