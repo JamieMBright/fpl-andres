@@ -114,6 +114,47 @@ Each UTC prediction cutoff creates three deterministic buckets:
 Cutoffs must be strictly increasing. Equality at the evidence timestamp is available.
 Evaluation pairs baseline and candidate errors on the same holdout observations.
 
+## Measured performance
+
+Audit item #195. Targets were never written down, so the target is the thesis:
+beat the baselines a competent human actually uses. Numbers below are from
+`apps/web/src/data/validation.json`, the artifact the calibration page serves.
+
+Walk-forward across four seasons, ~11,900 scored predictions each. `recent_mean`
+is the form chaser; `ownership` is the crowd.
+
+| Season  | MAE   | vs form | Spearman | vs form | Top-20 hit | form  | crowd | Bias   |
+| ------- | ----- | ------- | -------- | ------- | ---------- | ----- | ----- | ------ |
+| 2022-23 | 1.745 | −10.1%  | 0.492    | +0.045  | 0.187      | 0.148 | 0.176 | −0.202 |
+| 2023-24 | 1.718 | −8.2%   | 0.507    | +0.044  | 0.198      | 0.170 | 0.177 | −0.119 |
+| 2024-25 | 1.670 | −8.0%   | 0.507    | +0.041  | 0.188      | 0.142 | 0.166 | −0.126 |
+| 2025-26 | 1.857 | −7.4%   | 0.465    | +0.043  | 0.148      | 0.116 | 0.136 | −0.114 |
+
+**The model beats the form chaser on all three metrics in all four seasons, and
+beats the crowd's top-20 hit rate in all four.** The margin is stable rather than
+large: 7–10% on error, about 0.04 on rank correlation.
+
+Three things this does not say.
+
+**Bias is negative in every season.** The model under-predicts by 0.11 to 0.20
+points per player per gameweek, consistently. That is a systematic error, not
+noise, and it is the clearest open lead in the calibration: something in the
+scoring composition is not being credited. The form chaser's bias is near zero
+because a mean of recent scores cannot be biased against itself.
+
+**2025-26 is the worst season on every metric.** MAE is 0.19 higher than 2024-25
+and rank correlation 0.04 lower. Defensive contribution points arrived that
+season and the model had no history to fit them against, which is the obvious
+explanation and not a verified one.
+
+**Rank correlation is worst where the squad is largest.** In 2025-26: GKP 0.589,
+FWD 0.553, MID 0.481, DEF 0.425. Defenders are the hardest to rank and there are
+five of them in a squad, so the weakest part of the model carries the most weight
+in a selection.
+
+Reproducing these numbers needs the corpus they were measured over, not just the
+code — see `corpusFingerprint` in the artifact and audit item #153.
+
 ## Promotion contract
 
 Every promotion run supplies its metric, seed, bootstrap resample count, confidence and
