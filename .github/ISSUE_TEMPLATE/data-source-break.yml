@@ -1,0 +1,50 @@
+name: Data source break
+description: A source this project depends on has changed shape, moved or gone away.
+labels: ["data-source"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this when an upstream source is the problem rather than the code.
+        The model refuses to invent values, so a broken source usually shows up
+        as a refusal or a degraded state rather than a wrong number.
+
+  - type: dropdown
+    id: source
+    attributes:
+      label: Which source
+      options:
+        - FPL API (fantasy.premierleague.com)
+        - vaastav historical archive
+        - Understat (via soccerdata)
+        - fplcache bootstrap archive
+        - Supabase
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: symptom
+    attributes:
+      label: What you saw
+      description: The error, the refusal, or the field that changed.
+      placeholder: |
+        e.g. FplContractError: FPL entry is missing required field: last_deadline_bank
+    validations:
+      required: true
+
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence
+      description: >
+        A response body with any personal detail removed, or the commit SHA of
+        the archive revision. Never paste a key or a token.
+    validations:
+      required: true
+
+  - type: input
+    id: first-seen
+    attributes:
+      label: When it started
+      description: Approximate is fine. Helps correlate with an upstream change.

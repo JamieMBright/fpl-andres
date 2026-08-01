@@ -1,0 +1,60 @@
+name: Model regression
+description: A projection or published figure got worse, or looks wrong.
+labels: ["model"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Every published number comes from a committed artifact, so a regression
+        can be traced to the commit that produced it. Please include enough to
+        find that commit.
+
+        A number you disagree with is not automatically a regression. The most
+        useful reports name what the number *should* be and how you know.
+
+  - type: dropdown
+    id: surface
+    attributes:
+      label: Where
+      options:
+        - Player pool table
+        - Team dossier
+        - Calibration page
+        - Opening squad
+        - Manager cohort
+        - Backtest output
+    validations:
+      required: true
+
+  - type: textarea
+    id: observed
+    attributes:
+      label: What it says
+      description: The player, the figure, and the artifact timestamp if visible.
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected, and why
+      description: >
+        The reasoning matters more than the number. "Haaland should be higher"
+        is hard to act on; "his projection fell 30% while his minutes and xG
+        both rose" is a lead.
+    validations:
+      required: true
+
+  - type: input
+    id: artifact
+    attributes:
+      label: Artifact or commit
+      description: The generatedAt timestamp on the page, or the commit SHA.
+
+  - type: checkboxes
+    id: checked
+    attributes:
+      label: Before filing
+      options:
+        - label: I checked `docs/LIMITATIONS.md` in case this is a stated boundary rather than a bug.
+        - label: I checked `docs/MODEL.md` for what this figure is actually measuring.

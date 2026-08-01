@@ -1,5 +1,11 @@
 # Build Plan — scaffold to shipped product
 
+> **Historical.** This plan is superseded by [`ROADMAP.md`](ROADMAP.md), which
+> records what was actually built, what was measured, and what was closed as a
+> negative result. Kept because the milestone ordering and the reasoning behind
+> it are still the clearest statement of how the project was sequenced — but
+> where the two disagree, the roadmap is current and this is not.
+
 Execution contract from the v0.5.1 audit to v1.0.0. Every milestone names what
 ships, the test that proves it, and what it unblocks. Milestones are ordered by
 dependency: nothing later can start before its inputs exist.

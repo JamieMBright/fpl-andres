@@ -1,0 +1,51 @@
+name: Bug report
+description: Something behaves incorrectly.
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        For a security issue, do not open an issue. Use the private advisory
+        route in [SECURITY.md](../blob/main/SECURITY.md).
+
+        For a wrong projection rather than wrong behaviour, use the model
+        regression template instead.
+
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected instead
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Go to /team/212279
+        2. ...
+    validations:
+      required: true
+
+  - type: input
+    id: request-id
+    attributes:
+      label: Request id
+      description: >
+        If you saw a server error, the response body carries a `requestId`.
+        Quoting it lets the failure be found in the logs; the detail is
+        deliberately not in the response.
+
+  - type: input
+    id: environment
+    attributes:
+      label: Browser and OS
+      placeholder: Firefox 141 on Windows 11
