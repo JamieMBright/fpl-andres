@@ -2,11 +2,10 @@
 
 from __future__ import annotations
 
-from collections.abc import Mapping, Sequence
 from datetime import UTC, datetime
-from typing import Any
 
 import pytest
+from tests.builders import RecordingClient
 
 from fpl_andres.backtesting.score import GameweekScore, MethodScore
 from fpl_andres.persistence.backtest import BacktestRecord, persist_backtest
@@ -15,22 +14,8 @@ NOW = datetime(2026, 5, 1, 12, 0, tzinfo=UTC)
 REVISION = "a" * 40
 
 
-class FakeClient:
-    def __init__(self) -> None:
-        self.writes: list[tuple[str, list[Mapping[str, Any]]]] = []
-
-    def insert(
-        self,
-        table: str,
-        rows: Sequence[Mapping[str, Any]],
-        *,
-        returning: bool = False,
-        **_: Any,
-    ) -> list[dict[str, Any]]:
-        self.writes.append((table, list(rows)))
-        if not returning:
-            return []
-        return [{"id": f"run-{index}"} for index, _ in enumerate(rows)]
+class FakeClient(RecordingClient):
+    """Kept as a name so the many call sites below read unchanged."""
 
 
 def score(spearman: float | None = 0.5) -> MethodScore:
@@ -124,9 +109,14 @@ def test_predictions_are_attached_to_the_run_that_produced_them() -> None:
         },
     )
 
+    run_table, run_rows = client.writes[0]
     table, rows = client.writes[1]
+    assert run_table == "backtest_runs"
     assert table == "backtest_predictions"
-    assert rows[0]["run_id"] == "run-0"
+    # The id the run write returned, whatever the double chose to call it. The
+    # assertion is that the prediction was attached to that run, not that the
+    # test double formats ids a particular way.
+    assert rows[0]["run_id"] == f"backtest_runs-{len(run_rows) - 1}"
     assert rows[0]["element_id"] == 1
 
 

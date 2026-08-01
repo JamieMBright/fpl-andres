@@ -10,6 +10,7 @@ from datetime import UTC, datetime, timedelta
 from typing import Any
 
 import pytest
+from tests.builders import RecordingClient
 
 from fpl_andres.lineage import Lineage
 from fpl_andres.models.promotion import BootstrapResult, PromotionDecision
@@ -18,17 +19,6 @@ from fpl_andres.persistence.promotion import persist_promotion_decision
 CUTOFF = datetime(2026, 8, 14, 17, 30, tzinfo=UTC)
 HASH = "sha256:" + "a" * 64
 REVISION = "b" * 40
-
-
-class FakeClient:
-    def __init__(self) -> None:
-        self.writes: list[tuple[str, list[dict[str, Any]]]] = []
-
-    def insert(
-        self, table: str, rows: list[dict[str, Any]], *, returning: bool = False
-    ) -> list[dict[str, Any]]:
-        self.writes.append((table, rows))
-        return [{"id": "00000000-0000-4000-8000-000000000001"}]
 
 
 def _result(name: str = "mae", point: float = 1.0, lower: float = 0.1) -> BootstrapResult:
@@ -66,7 +56,7 @@ def _lineage(corpus: str | None = f"sha256:{'c' * 64}") -> Lineage:
     )
 
 
-def _persist(client: FakeClient, **overrides: Any) -> str:
+def _persist(client: RecordingClient, **overrides: Any) -> str:
     arguments: dict[str, Any] = {
         "workflow_run_id": "00000000-0000-4000-8000-00000000000f",
         "season": "2026-27",
@@ -84,7 +74,7 @@ def _persist(client: FakeClient, **overrides: Any) -> str:
 
 
 def test_a_decision_records_which_code_produced_it() -> None:
-    client = FakeClient()
+    client = RecordingClient()
 
     _persist(client)
 
@@ -95,7 +85,7 @@ def test_a_decision_records_which_code_produced_it() -> None:
 def test_a_decision_records_which_corpus_it_was_measured_over() -> None:
     """The corpus is a mutable table. Without this, a moved metric is
     indistinguishable from a moved model."""
-    client = FakeClient()
+    client = RecordingClient()
 
     _persist(client)
 
@@ -105,7 +95,7 @@ def test_a_decision_records_which_corpus_it_was_measured_over() -> None:
 def test_a_decision_records_the_libraries_that_did_the_arithmetic() -> None:
     """scipy's spearmanr and HiGHS' simplex do not promise bit-identical results
     across versions."""
-    client = FakeClient()
+    client = RecordingClient()
 
     _persist(client)
 
@@ -115,7 +105,7 @@ def test_a_decision_records_the_libraries_that_did_the_arithmetic() -> None:
 
 
 def test_a_decision_records_how_many_seeds_agreed() -> None:
-    client = FakeClient()
+    client = RecordingClient()
 
     _persist(client)
 
@@ -125,7 +115,7 @@ def test_a_decision_records_how_many_seeds_agreed() -> None:
 
 
 def test_the_table_and_the_shape_are_what_the_schema_expects() -> None:
-    client = FakeClient()
+    client = RecordingClient()
 
     _persist(client)
 
@@ -136,7 +126,7 @@ def test_the_table_and_the_shape_are_what_the_schema_expects() -> None:
 
 
 def test_source_hashes_are_sorted_so_two_identical_runs_hash_alike() -> None:
-    client = FakeClient()
+    client = RecordingClient()
     second = "sha256:" + "e" * 64
 
     _persist(client, source_hashes=[second, HASH])
@@ -147,7 +137,7 @@ def test_source_hashes_are_sorted_so_two_identical_runs_hash_alike() -> None:
 def test_the_evaluation_hash_ignores_the_workflow_run() -> None:
     """The same evaluation repeated by a re-triggered workflow is the same
     evaluation. Hashing the run id would hide that."""
-    first, second = FakeClient(), FakeClient()
+    first, second = RecordingClient(), RecordingClient()
 
     _persist(first)
     _persist(second, workflow_run_id="00000000-0000-4000-8000-0000000000ff")
@@ -156,7 +146,7 @@ def test_the_evaluation_hash_ignores_the_workflow_run() -> None:
 
 
 def test_a_different_corpus_changes_the_evaluation_hash() -> None:
-    first, second = FakeClient(), FakeClient()
+    first, second = RecordingClient(), RecordingClient()
 
     _persist(first)
     _persist(second, lineage=_lineage(corpus=f"sha256:{'f' * 64}"))
@@ -166,7 +156,7 @@ def test_a_different_corpus_changes_the_evaluation_hash() -> None:
 
 def test_evidence_arriving_after_the_cutoff_is_refused() -> None:
     """The leakage rule, at the persistence boundary."""
-    client = FakeClient()
+    client = RecordingClient()
 
     with pytest.raises(ValueError, match="after the decision cutoff"):
         _persist(client, data_available_at=CUTOFF + timedelta(minutes=1))
@@ -175,7 +165,7 @@ def test_evidence_arriving_after_the_cutoff_is_refused() -> None:
 
 
 def test_a_decision_citing_no_source_is_refused() -> None:
-    client = FakeClient()
+    client = RecordingClient()
 
     with pytest.raises(ValueError, match="at least one source hash"):
         _persist(client, source_hashes=[])
@@ -183,7 +173,7 @@ def test_a_decision_citing_no_source_is_refused() -> None:
 
 @pytest.mark.parametrize("field", ["decision_cutoff", "data_available_at"])
 def test_a_naive_timestamp_is_refused(field: str) -> None:
-    client = FakeClient()
+    client = RecordingClient()
 
     with pytest.raises(ValueError, match=r"UTC|timezone|aware"):
         _persist(client, **{field: datetime(2026, 8, 14, 17, 30)})

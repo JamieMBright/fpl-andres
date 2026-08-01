@@ -226,7 +226,18 @@ class FplClient:
             if "application/json" not in content_type.lower():
                 raise FplContractError("FPL response was not JSON")
             content = await _read_bounded_content(response, size_limit)
-            payload = cast(object, json.loads(content))
+            try:
+                payload = cast(object, json.loads(content))
+            except json.JSONDecodeError as error:
+                # The status line and the content type both said JSON. A body
+                # that is not is a broken contract, and callers catch that by
+                # name; a bare JSONDecodeError escapes every one of them.
+                # The message deliberately omits the body: an upstream response
+                # can contain a quoted request header, which is how a key
+                # reached the logs once already.
+                raise FplContractError(
+                    f"FPL response claimed JSON and could not be parsed ({len(content)} bytes)"
+                ) from error
         finally:
             await response.aclose()
 
