@@ -5,9 +5,10 @@ import hashlib
 import io
 import re
 from dataclasses import dataclass
-from datetime import datetime, timedelta
+from datetime import datetime
 
 from fpl_andres.contracts import SourceSnapshot
+from fpl_andres.timeguard import require_utc
 
 COMMIT_PATTERN = re.compile(r"^[a-f0-9]{40}$", re.IGNORECASE)
 SEASON_PATTERN = re.compile(r"^\d{4}-\d{2}$")
@@ -108,5 +109,4 @@ def parse_gameweek_csv(
 
 
 def _require_utc(label: str, value: datetime) -> None:
-    if value.tzinfo is None or value.utcoffset() != timedelta(0):
-        raise ValueError(f"{label} must be an aware UTC timestamp")
+    require_utc(value, label)

@@ -1,12 +1,13 @@
 from __future__ import annotations
 
-from datetime import datetime, timedelta
+from datetime import datetime
 from typing import Annotated, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, StringConstraints, model_validator
 from pydantic.alias_generators import to_camel
 
 from fpl_andres.models.contracts import EvidenceLevel
+from fpl_andres.timeguard import require_utc
 
 ListedPosition = Literal["GKP", "DEF", "MID", "FWD"]
 ObservedRole = Literal[
@@ -434,5 +435,4 @@ def _role_ordinal(role: ObservedRole) -> int:
 
 
 def _require_utc(value: datetime, label: str) -> None:
-    if value.tzinfo is None or value.utcoffset() != timedelta(0):
-        raise ValueError(f"{label} must be an aware UTC timestamp")
+    require_utc(value, label)

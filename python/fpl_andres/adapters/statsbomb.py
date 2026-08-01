@@ -3,9 +3,10 @@ from __future__ import annotations
 import hashlib
 import json
 from dataclasses import dataclass
-from datetime import datetime, timedelta
+from datetime import datetime
 
 from fpl_andres.models.deployment import DeploymentRoleObservation, ObservedRole
+from fpl_andres.timeguard import is_utc
 
 _STATSBOMB_POSITION_TO_ROLE: dict[str, ObservedRole] = {
     "Goalkeeper": "goalkeeper",
@@ -64,7 +65,7 @@ def parse_lineup_role_observations(
 ) -> tuple[StatsbombRoleRow, ...]:
     if isinstance(event_id, bool) or not 1 <= event_id <= 38:
         raise StatsbombAdapterError("event_id must be between 1 and 38")
-    if kickoff_time.tzinfo is None or kickoff_time.utcoffset() != timedelta(0):
+    if not is_utc(kickoff_time):
         raise StatsbombAdapterError("kickoff_time must be an aware UTC timestamp")
     if isinstance(minimum_minutes, bool) or minimum_minutes < 1:
         raise StatsbombAdapterError("minimum_minutes must be a positive integer")

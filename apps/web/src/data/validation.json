@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-01T11:11:39.029682+00:00",
+  "generatedAt": "2026-08-01T14:38:55.726824+00:00",
   "seasons": [
     {
       "season": "2022-23",
@@ -9,6 +9,7 @@
       "elements": 778,
       "firstScoredGameweek": 7,
       "expectedGoalsCoverage": 1.0,
+      "missingGameweeks": [7],
       "methods": [
         {
           "label": "model",
@@ -481,6 +482,7 @@
       "elements": 865,
       "firstScoredGameweek": 7,
       "expectedGoalsCoverage": 1.0,
+      "missingGameweeks": [],
       "methods": [
         {
           "label": "model",
@@ -953,6 +955,7 @@
       "elements": 804,
       "firstScoredGameweek": 7,
       "expectedGoalsCoverage": 1.0,
+      "missingGameweeks": [],
       "methods": [
         {
           "label": "model",
@@ -1425,6 +1428,7 @@
       "elements": 841,
       "firstScoredGameweek": 7,
       "expectedGoalsCoverage": 1.0,
+      "missingGameweeks": [],
       "methods": [
         {
           "label": "model",

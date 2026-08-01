@@ -3,7 +3,7 @@ from __future__ import annotations
 import math
 from collections import Counter
 from collections.abc import Sequence
-from datetime import datetime, timedelta
+from datetime import datetime
 
 import numpy as np
 from numpy.typing import NDArray
@@ -11,6 +11,7 @@ from scipy.optimize import minimize
 
 from fpl_andres.models.baselines import InsufficientHistoryError
 from fpl_andres.models.contracts import FixtureResult, TeamGoalPrediction
+from fpl_andres.timeguard import is_utc
 
 
 class ModelFitError(RuntimeError):
@@ -177,7 +178,7 @@ def _validate_training_data(
     minimum_matches: int,
     max_iterations: int,
 ) -> tuple[FixtureResult, ...]:
-    if as_of.tzinfo is None or as_of.utcoffset() != timedelta(0):
+    if not is_utc(as_of):
         raise ValueError("as_of must be an aware UTC timestamp")
     if not math.isfinite(decay_rate) or decay_rate < 0:
         raise ValueError("decay_rate must be finite and non-negative")

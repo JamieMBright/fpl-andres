@@ -1,9 +1,11 @@
 from __future__ import annotations
 
-from datetime import datetime, timedelta
+from datetime import datetime
 from typing import Annotated, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
+
+from fpl_andres.timeguard import require_utc
 
 EvidenceLevel = Literal["observed", "inferred", "experimental", "unavailable"]
 
@@ -29,8 +31,7 @@ class FixtureResult(BaseModel):
             ("kickoff_time", self.kickoff_time),
             ("data_available_at", self.data_available_at),
         ):
-            if value.tzinfo is None or value.utcoffset() != timedelta(0):
-                raise ValueError(f"{label} must be an aware UTC timestamp")
+            require_utc(value, label)
         if self.data_available_at <= self.kickoff_time:
             raise ValueError("result data must become available after kickoff")
         return self

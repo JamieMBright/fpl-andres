@@ -117,6 +117,24 @@ class SeasonCorpus:
         return tuple(sorted(self.rows_by_gameweek))
 
     @property
+    def missing_gameweeks(self) -> tuple[int, ...]:
+        """Gameweeks absent from an otherwise contiguous run.
+
+        A gap changes every aggregate the corpus produces - bias, error, season
+        totals - and does it silently, because nothing downstream counts the
+        weeks it was given. Reported rather than raised: an in-progress season
+        is legitimately short, and only a hole in the middle is a fault.
+        """
+        played = self.gameweeks
+        if len(played) < 2:
+            return ()
+        return tuple(
+            event
+            for event in range(played[0], played[-1] + 1)
+            if event not in self.rows_by_gameweek
+        )
+
+    @property
     def total_rows(self) -> int:
         return sum(len(rows) for rows in self.rows_by_gameweek.values())
 

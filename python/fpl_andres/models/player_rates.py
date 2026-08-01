@@ -20,12 +20,13 @@ keeps their rates and inherits their new club's context by construction.
 
 from __future__ import annotations
 
-from datetime import datetime, timedelta
+from datetime import datetime
 from typing import Annotated
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from fpl_andres.models.contracts import EvidenceLevel
+from fpl_andres.timeguard import require_utc
 
 # A season can exceed 38 events when it is disrupted: 2019/20 was suspended
 # and resumed, running to 47. The history schema already allows this.
@@ -282,8 +283,7 @@ def _reject_future_evidence(evidence: PlayerRateEvidence) -> None:
 
 
 def _require_utc(value: datetime, label: str) -> None:
-    if value.tzinfo is None or value.utcoffset() != timedelta(0):
-        raise ValueError(f"{label} must be an aware UTC timestamp")
+    require_utc(value, label)
 
 
 __all__ = [

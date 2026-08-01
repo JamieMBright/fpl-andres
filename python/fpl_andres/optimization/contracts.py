@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import math
-from datetime import datetime, timedelta
+from datetime import datetime
 from itertools import pairwise
 from typing import Annotated, Literal, Protocol
 
@@ -9,6 +9,7 @@ from pydantic import BaseModel, ConfigDict, Field, StringConstraints, model_vali
 
 from fpl_andres.contracts import PlanningTeamState
 from fpl_andres.rules import RulesSnapshot
+from fpl_andres.timeguard import require_utc
 
 Hash = Annotated[str, Field(pattern=r"^sha256:[a-f0-9]{64}$")]
 PositiveInt = Annotated[int, Field(gt=0)]
@@ -540,8 +541,7 @@ def optimization_rules_from_snapshot(
 
 
 def _require_utc(value: datetime, label: str) -> None:
-    if value.tzinfo is None or value.utcoffset() != timedelta(0):
-        raise ValueError(f"{label} must be an aware UTC timestamp")
+    require_utc(value, label)
 
 
 def _require_sorted_hashes(hashes: tuple[str, ...]) -> None:

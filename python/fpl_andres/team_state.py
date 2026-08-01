@@ -3,7 +3,7 @@ from __future__ import annotations
 import hashlib
 import json
 from collections.abc import Mapping
-from datetime import datetime, timedelta
+from datetime import datetime
 from typing import Any
 
 from pydantic import ValidationError
@@ -16,6 +16,7 @@ from fpl_andres.contracts import (
     SourceSnapshot,
     TeamStateOverrides,
 )
+from fpl_andres.timeguard import is_utc
 
 
 class TeamStateContractError(ValueError):
@@ -34,7 +35,7 @@ def normalize_public_team_state(
     entry_snapshot: SourceSnapshot,
     picks_snapshot: SourceSnapshot,
 ) -> PublicTeamState:
-    if state_as_of.tzinfo is None or state_as_of.utcoffset() != timedelta(0):
+    if not is_utc(state_as_of):
         raise TeamStateContractError("state_as_of must be an aware UTC timestamp")
     if entry.current_event is None:
         raise TeamStateContractError("entry has no processed event")

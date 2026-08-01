@@ -2,9 +2,10 @@ from __future__ import annotations
 
 from collections.abc import Iterator, Sequence
 from dataclasses import dataclass
-from datetime import datetime, timedelta
+from datetime import datetime
 
 from fpl_andres.models.contracts import FixtureResult
+from fpl_andres.timeguard import is_utc
 
 
 @dataclass(frozen=True)
@@ -56,7 +57,7 @@ def iter_walk_forward_slices(
 
 
 def _require_utc(value: datetime) -> None:
-    if value.tzinfo is None or value.utcoffset() != timedelta(0):
+    if not is_utc(value):
         raise ValueError("prediction cutoff must be an aware UTC timestamp")
 
 

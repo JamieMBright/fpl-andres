@@ -177,6 +177,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                     "elements": len(corpus.position_by_element),
                     "firstScoredGameweek": scored.first_scored_gameweek,
                     "expectedGoalsCoverage": _expected_goals_coverage(corpus),
+                    "missingGameweeks": list(corpus.missing_gameweeks),
                     "methods": methods,
                     "league": {
                         "policies": {

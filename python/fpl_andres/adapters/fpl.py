@@ -5,7 +5,7 @@ import hashlib
 import json
 import random as random_module
 from collections.abc import Awaitable, Callable, Mapping
-from datetime import datetime, timedelta
+from datetime import datetime
 from typing import Any, cast
 from urllib.parse import urlencode
 
@@ -13,6 +13,7 @@ import httpx
 from pydantic import ValidationError
 
 from fpl_andres.contracts import FetchedPayload, FplEntry, SourceSnapshot
+from fpl_andres.timeguard import is_utc
 
 FPL_API_BASE = "https://fantasy.premierleague.com/api/"
 FPL_USER_AGENT = "FPLAndres/0.5 (+https://github.com/JamieMBright/fpl-andres)"
@@ -209,7 +210,7 @@ class FplClient:
             await response.aclose()
 
         fetched_at = self._clock()
-        if fetched_at.tzinfo is None or fetched_at.utcoffset() != timedelta(0):
+        if not is_utc(fetched_at):
             raise FplContractError("adapter clock must return an aware UTC timestamp")
 
         snapshot = SourceSnapshot(

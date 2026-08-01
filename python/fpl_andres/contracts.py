@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 from dataclasses import dataclass
-from datetime import datetime, timedelta
+from datetime import datetime
 from typing import Annotated, Literal
 
 from pydantic import (
@@ -14,6 +14,8 @@ from pydantic import (
     model_validator,
 )
 from pydantic.alias_generators import to_camel
+
+from fpl_andres.timeguard import require_utc
 
 
 class SourceSnapshot(BaseModel):
@@ -36,8 +38,7 @@ class SourceSnapshot(BaseModel):
             ("fetchedAt", self.fetched_at),
             ("dataAvailableAt", self.data_available_at),
         ):
-            if value.tzinfo is None or value.utcoffset() != timedelta(0):
-                raise ValueError(f"{label} must be an aware UTC timestamp")
+            require_utc(value, label)
         if self.data_available_at > self.fetched_at:
             raise ValueError("dataAvailableAt cannot be later than fetchedAt")
         return self
@@ -143,8 +144,7 @@ class PublicTeamState(BaseModel):
             ("stateAsOf", self.state_as_of),
             ("dataAvailableAt", self.data_available_at),
         ):
-            if value.tzinfo is None or value.utcoffset() != timedelta(0):
-                raise ValueError(f"{label} must be an aware UTC timestamp")
+            require_utc(value, label)
         if self.data_available_at < self.state_as_of:
             raise ValueError("public team evidence cannot predate stateAsOf")
         if len(self.picks) != 15:
@@ -230,8 +230,7 @@ class TeamStateOverrides(BaseModel):
             ("basedOnStateAsOf", self.based_on_state_as_of),
             ("updatedAt", self.updated_at),
         ):
-            if value.tzinfo is None or value.utcoffset() != timedelta(0):
-                raise ValueError(f"{label} must be an aware UTC timestamp")
+            require_utc(value, label)
         if self.updated_at < self.based_on_state_as_of:
             raise ValueError("updatedAt cannot predate basedOnStateAsOf")
         if all(
@@ -291,8 +290,7 @@ class PlanningTeamState(BaseModel):
             ("publicDataAvailableAt", self.public_data_available_at),
             ("overridesUpdatedAt", self.overrides_updated_at),
         ):
-            if value.tzinfo is None or value.utcoffset() != timedelta(0):
-                raise ValueError(f"{label} must be an aware UTC timestamp")
+            require_utc(value, label)
         if self.public_data_available_at < self.public_state_as_of:
             raise ValueError("public evidence cannot predate publicStateAsOf")
         if self.overrides_updated_at < self.public_state_as_of:
