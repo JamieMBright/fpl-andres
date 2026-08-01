@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <title>FPL Andres</title>
+  <!-- Square, unlike favicon.svg, which is 260x200 and was being distorted by
+       every install surface that took it from the manifest.
+
+       The hat is scaled to the central 62% so it survives a maskable crop: an
+       aggressive circular mask keeps roughly the middle 80%, and this leaves
+       margin on top of that. -->
+  <rect width="512" height="512" fill="#16123a" />
+  <g transform="translate(39.3, 82.7) scale(1.667)">
+    <path
+      d="M 84 30 Q 130 24 176 30 Q 188 30 192 42 C 214 82 226 128 226 168 Q 226 178 216 178 Q 130 184 44 178 Q 34 178 34 168 C 34 128 46 82 68 42 Q 72 30 84 30 Z"
+      fill="#5308dc"
+    />
+    <path
+      d="M 88 32 Q 130 26 172 32"
+      fill="none"
+      stroke="#fff"
+      stroke-opacity="0.4"
+      stroke-width="3"
+      stroke-linecap="round"
+    />
+    <rect x="66" y="96" width="128" height="30" rx="3" fill="#f8f6ea" />
+    <rect x="66" y="134" width="86" height="14" rx="3" fill="#e7f24a" />
+  </g>
+</svg>
