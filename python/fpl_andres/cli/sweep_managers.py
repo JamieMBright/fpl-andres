@@ -102,6 +102,22 @@ class Refused(RuntimeError):
     """Raised when FPL has told us to stop often enough that we should."""
 
 
+MAX_BACKOFF_SECONDS = 60.0
+
+
+def _backoff_seconds(retry_after: str | None, refusals: int) -> float:
+    """How long to wait after a refusal.
+
+    Prefers what the server asked for. `Retry-After` may be delta-seconds or an
+    HTTP date; only the first is handled, because FPL sends delta-seconds and a
+    date parser here would be untested code guessing at a format that has never
+    arrived. An unparseable value falls back to the refusal count, never to zero.
+    """
+    if retry_after is not None and retry_after.strip().isdigit():
+        return min(MAX_BACKOFF_SECONDS, float(retry_after.strip()))
+    return min(MAX_BACKOFF_SECONDS, 2.0 * refusals)
+
+
 async def _fetch(
     client: httpx.AsyncClient,
     throttle: Throttle,
@@ -118,8 +134,10 @@ async def _fetch(
         return entry_id, None, "missing"
     if response.status_code == 429 or response.status_code >= 500:
         refusals.append(entry_id)
-        # Give the server room before anything else goes out.
-        await asyncio.sleep(min(60.0, 2.0 * len(refusals)))
+        # Prefer what the server asked for over what we guessed. Inferring the
+        # pause from a refusal count means backing off too little when the
+        # server wants a minute and too much when it wants a second.
+        await asyncio.sleep(_backoff_seconds(response.headers.get("Retry-After"), len(refusals)))
         return entry_id, None, "error"
     if response.status_code != 200:
         return entry_id, None, "error"
