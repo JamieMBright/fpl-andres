@@ -26,7 +26,6 @@ from pathlib import Path
 from fpl_andres.backtesting.fixtures import Fixture, TeamStrength
 from fpl_andres.bootstrap import BootstrapElement, parse_elements
 from fpl_andres.planning.opening import (
-    PLAYABLE_START_RATE,
     OpeningSettings,
     choose_opening_squad,
 )
@@ -146,6 +145,10 @@ def main(argv: Sequence[str] | None = None) -> int:
     unseen = 0
     unavailable = 0
     bit_part = 0
+    # Built before the filter, not after, so the pre-filter and the selector
+    # agree on the floor. They did not: the filter read the module constant
+    # while the selector read the setting, so an injected floor was half-applied.
+    settings = OpeningSettings(rules=RULES)
     for element in parse_elements(bootstrap["elements"], model=BootstrapElement):
         if element.element_type not in POSITION_CODES:
             continue
@@ -160,7 +163,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         # A season total says nothing about when the minutes happened. The
         # projected chance of an hour is decay weighted, so a January signing
         # who started every remaining match reads as the starter he became.
-        if float(record["probabilityStart"]) < PLAYABLE_START_RATE:
+        if float(record["probabilityStart"]) < settings.playable_start_rate:
             bit_part += 1
             continue
         team_id = element.team
@@ -194,7 +197,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         [entry.candidate for entry in rated],
         ranking,
         {entry.candidate.element_id: entry.start_rate for entry in rated},
-        OpeningSettings(rules=RULES),
+        settings,
     )
     squad = list(plan.squad)
     starting = {player.element_id for player in plan.starters}
@@ -234,7 +237,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                 "withoutRecord": unseen,
                 "unavailable": unavailable,
                 "bitPart": bit_part,
-                "startRateFloor": PLAYABLE_START_RATE,
+                "startRateFloor": settings.playable_start_rate,
                 "picks": picks,
             },
             indent=2,
@@ -246,7 +249,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     print(
         f"considered {len(rated)}; skipped {unseen} with no record, "
         f"{unavailable} flagged by FPL, {bit_part} below a "
-        f"{PLAYABLE_START_RATE:.0%} chance of starting"
+        f"{settings.playable_start_rate:.0%} chance of starting"
     )
     print(
         f"spent {spent / 10:.1f}m of {RULES.budget_tenths / 10:.1f}m, "
