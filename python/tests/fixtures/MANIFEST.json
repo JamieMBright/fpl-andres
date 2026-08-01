@@ -1,0 +1,80 @@
+{
+  "$comment": [
+    "Audit item #160. A fixture is a claim about what upstream sends. Nothing",
+    "recorded where these came from, when, or what they are supposed to prove,",
+    "so a fixture that had drifted away from reality looked exactly like one",
+    "that had not -- and a test passing against a stale fixture is worse than",
+    "no test, because it reports confidence it has not earned.",
+    "",
+    "'digest' is over the canonical JSON (sorted keys, compact separators), not",
+    "the file bytes. Line endings differ between a Windows working tree and a",
+    "Linux runner, and a formatter may reflow the file; neither changes what the",
+    "fixture asserts. A byte hash would fail for both and teach people to",
+    "regenerate it without reading why.",
+    "",
+    "'staleness' is either 'pinned' -- a deliberate point-in-time capture, with",
+    "the reason -- or a 'revalidate_by' date. Editing a fixture changes its",
+    "digest, which fails until this file is updated, which is the point: the",
+    "provenance cannot drift away from the data without someone noticing."
+  ],
+  "fixtures": {
+    "fpl/bootstrap_rules_2026_27.json": {
+      "source": "https://fantasy.premierleague.com/api/bootstrap-static/",
+      "captured_at": "2026-07-29T17:06:32Z",
+      "schema_version": 1,
+      "digest": "sha256:f2e869e7b062178369a2fddd2c5599b8600e5c3b2dda856294a0721647b1ee0e",
+      "proves": [
+        "The scoring table, squad rules and chip definitions the engine reads.",
+        "Trimmed to the fields rules.py validates; the live payload is 1.3 MB."
+      ],
+      "staleness": "pinned",
+      "pinned_because": [
+        "These are the 2026-27 rules as published before the season. The value",
+        "of the fixture is that it does not move: a test asserting the engine",
+        "scores a hat-trick correctly must keep asserting it against the rules",
+        "that were in force, not against whatever is served today.",
+        "Drift against the live endpoint is caught by the Live FPL Contracts",
+        "workflow, which runs daily against the real bootstrap and fails when",
+        "a controlling rule appears, disappears or changes shape. That is a",
+        "better staleness check than a date, because it asks upstream rather",
+        "than asking a calendar."
+      ]
+    },
+    "fpl/entry_preseason.json": {
+      "source": "https://fantasy.premierleague.com/api/entry/{id}/",
+      "captured_at": "2026-07-29T17:06:32Z",
+      "schema_version": 1,
+      "digest": "sha256:cdc1e3a33d02d5f77a483e8dc8a6921ce48b591f3d29352bbff522b71c25f8e9",
+      "proves": [
+        "An entry before a ball is kicked: current_event is null and there is",
+        "no picks endpoint yet. The engine must answer 'no processed event'",
+        "rather than treating the manager as having an empty squad.",
+        "Identifying fields are replaced; no real manager is described."
+      ],
+      "staleness": "pinned",
+      "pinned_because": [
+        "The pre-season state exists for about three weeks a year and cannot",
+        "be recaptured outside that window. Losing this fixture would mean",
+        "losing the only test of the state the site opens in."
+      ]
+    },
+    "statsbomb/lineups_sample.json": {
+      "source": "constructed, not captured",
+      "captured_at": "2026-07-29T00:00:00Z",
+      "schema_version": 1,
+      "digest": "sha256:fd1dc8ad70b959c2129b5a7b38421698c0b89ae7dc3bb8eb1a5a97aac19e5905",
+      "proves": [
+        "The shape of a StatsBomb lineups document: two teams, each with a",
+        "lineup of players carrying positions and substitution windows.",
+        "Player and club names are invented."
+      ],
+      "staleness": "pinned",
+      "pinned_because": [
+        "Constructed rather than captured, so there is nothing upstream to be",
+        "stale against. It describes a format, and the format is versioned by",
+        "StatsBomb rather than dated. If schema_version here stops matching",
+        "what the adapter expects, that is the signal, not the age."
+      ]
+    }
+  }
+}
