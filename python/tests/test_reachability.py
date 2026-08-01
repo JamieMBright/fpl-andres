@@ -34,6 +34,8 @@ ENTRY_POINTS = {
     "read_league": "mini-league surface, not yet on a page",
     "differentials": "mini-league surface, not yet on a page",
     "persist_backtest": "backtest persistence, called by scripts",
+    "persist_promotion_decision": "promotion persistence, called by scripts",
+    "capture_lineage": "read at the top of a promotion run, called by scripts",
     "current_revision": "backtest persistence",
     "plan_transfers": "planning surface, not yet on a page",
     "premium_is_justified": "planning surface, not yet on a page",
