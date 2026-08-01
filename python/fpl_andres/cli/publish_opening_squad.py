@@ -29,6 +29,7 @@ from fpl_andres.planning.opening import (
     OpeningSettings,
     choose_opening_squad,
 )
+from fpl_andres.positions import Position
 from fpl_andres.simulation.squad import Candidate, SquadRules
 
 BOOTSTRAP = "https://fantasy.premierleague.com/api/bootstrap-static/"
@@ -38,7 +39,7 @@ PROJECTIONS = Path("apps/web/src/data/projections.json")
 DEFAULT_OUTPUT = Path("apps/web/src/data/opening-squad.json")
 
 RULES = SquadRules(budget_tenths=1000, club_limit=3, position_counts={1: 2, 2: 5, 3: 5, 4: 3})
-POSITION_CODES = {1: "GKP", 2: "DEF", 3: "MID", 4: "FWD"}
+POSITION_CODES = {position.value: position.code for position in Position}
 # Long enough to matter to an opening squad, short enough that the sides playing
 # them still resemble the ones named today.
 RUN_WINDOW = 5

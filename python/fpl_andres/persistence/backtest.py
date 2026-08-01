@@ -18,6 +18,7 @@ from datetime import datetime
 
 from fpl_andres.backtesting.score import MethodScore
 from fpl_andres.persistence.supabase import SupabaseRestClient
+from fpl_andres.positions import Position
 
 __all__ = ["BacktestRecord", "current_revision", "persist_backtest"]
 
@@ -61,7 +62,7 @@ def current_revision() -> str:
 def _positions(score: MethodScore) -> dict[str, float | None]:
     by_position = score.position_spearman()
     return {
-        f"spearman_{code.lower()}": by_position.get(code) for code in ("GKP", "DEF", "MID", "FWD")
+        f"spearman_{position.code.lower()}": by_position.get(position.code) for position in Position
     }
 
 

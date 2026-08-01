@@ -23,6 +23,7 @@ from pathlib import Path
 from fpl_andres.backtesting.corpus import SeasonCorpus, load_season
 from fpl_andres.backtesting.score import score_season
 from fpl_andres.persistence.supabase import SupabaseCredentials, SupabaseRestClient
+from fpl_andres.positions import Position
 from fpl_andres.simulation.minileague import LeagueSettings, simulate_league
 from fpl_andres.simulation.season import LineupRules
 from fpl_andres.simulation.squad import SquadRules
@@ -79,7 +80,7 @@ def _squad_rows(league: object, policy: str, corpus: object) -> list[dict[str, o
         return []
     names = getattr(corpus, "name_by_element", {})
     positions = getattr(corpus, "position_by_element", {})
-    codes = {1: "GKP", 2: "DEF", 3: "MID", 4: "FWD"}
+    codes = {position.value: position.code for position in Position}
     return [
         {
             "elementId": element_id,

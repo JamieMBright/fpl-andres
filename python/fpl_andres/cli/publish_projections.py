@@ -26,9 +26,10 @@ from fpl_andres.backtesting.corpus import SeasonCorpus, load_season
 from fpl_andres.backtesting.fixtures import estimate_strength
 from fpl_andres.backtesting.projector import MatchProjection, project_next_match
 from fpl_andres.persistence.supabase import SupabaseCredentials, SupabaseRestClient
+from fpl_andres.positions import Position
 
 DEFAULT_OUTPUT = Path("apps/web/src/data/projections.json")
-POSITION_CODES = {1: "GKP", 2: "DEF", 3: "MID", 4: "FWD"}
+POSITION_CODES = {position.value: position.code for position in Position}
 # Below this the shape statistics describe a cameo, not a season.
 MINIMUM_APPEARANCES = 4
 

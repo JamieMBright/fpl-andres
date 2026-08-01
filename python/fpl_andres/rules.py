@@ -5,6 +5,8 @@ from dataclasses import dataclass
 from types import MappingProxyType
 from typing import Any, Literal
 
+from fpl_andres.positions import Position
+
 
 class RulesContractError(ValueError):
     """Raised when the live FPL payload cannot define a complete rules model."""
@@ -389,7 +391,7 @@ def _required_position_points(
     values = _required_mapping(payload, key, parent)
     path = f"{parent}.{key}"
     return MappingProxyType(
-        {code: _required_int(values, code, path) for code in ("GKP", "DEF", "MID", "FWD")}
+        {position.code: _required_int(values, position.code, path) for position in Position}
     )
 
 

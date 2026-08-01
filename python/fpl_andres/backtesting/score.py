@@ -19,6 +19,7 @@ from fpl_andres.backtesting.projector import (
     baseline_recent_mean,
     project_gameweek,
 )
+from fpl_andres.positions import PositionUnknown, position_code
 
 __all__ = [
     "GameweekScore",
@@ -27,7 +28,19 @@ __all__ = [
     "score_season",
 ]
 
-_POSITION_NAMES = {1: "GKP", 2: "DEF", 3: "MID", 4: "FWD"}
+
+def _position_label(element_type: int) -> str:
+    """A backtest spans seasons whose element types this package may not know.
+
+    Assistant Manager was element_type 5 in 2024/25 and was removed for 2026/27,
+    so a historical corpus legitimately contains one. Scoring labels it rather
+    than refusing the whole season, which is the one place a placeholder is
+    correct: it groups the rows instead of pricing them.
+    """
+    try:
+        return position_code(element_type)
+    except PositionUnknown:
+        return "UNK"
 
 
 @dataclass
@@ -124,7 +137,7 @@ def score_season(
             projection.element_id: projection.component_points for projection in projections
         }
         positions = {
-            projection.element_id: _POSITION_NAMES.get(projection.position, "UNK")
+            projection.element_id: _position_label(projection.position)
             for projection in projections
         }
         recent = baseline_recent_mean(corpus, gameweek)
