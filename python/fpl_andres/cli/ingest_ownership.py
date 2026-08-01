@@ -23,6 +23,7 @@ from pathlib import Path
 
 import httpx
 
+from fpl_andres import timeouts
 from fpl_andres.adapters.fplcache import (
     FplCacheUnavailable,
     parse_snapshot,
@@ -33,7 +34,6 @@ from fpl_andres.jsonio import parse_json
 
 DEFAULT_OUTPUT = Path("data/ownership")
 _LISTING = "https://api.github.com/repos/Randdalf/fplcache/contents/cache"
-_TIMEOUT = 60.0
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -72,7 +72,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     captured = 0
     refused: list[str] = []
     with (
-        httpx.Client(timeout=_TIMEOUT, follow_redirects=True) as client,
+        httpx.Client(timeout=timeouts.ARCHIVE_DOWNLOAD, follow_redirects=True) as client,
         series.open("w", encoding="utf-8") as sink,
     ):
         day = start

@@ -49,15 +49,22 @@ def test_the_budgets_are_ordered_by_the_work_they_cover() -> None:
 
 
 def test_no_module_hardcodes_a_network_timeout() -> None:
-    """Fails if a seventh scattered constant appears."""
+    """Fails if a seventh scattered constant appears.
+
+    Matches a module-level name as well as a literal: the first version required
+    a digit after `timeout=`, and `cli/ingest_ownership.py` kept its own
+    `_TIMEOUT = 60.0` behind that gap for a whole commit.
+    """
     literal = re.compile(r"timeout\s*=\s*(?:httpx\.Timeout\()?\d")
+    named = re.compile(r"^_?TIMEOUT\w*\s*[:=]", re.MULTILINE)
     offenders = sorted(
         path.relative_to(_PACKAGE).as_posix()
         for path in _PACKAGE.rglob("*.py")
-        if path.name != "timeouts.py" and literal.search(path.read_text(encoding="utf-8"))
+        if path.name != "timeouts.py"
+        and (literal.search(text := path.read_text(encoding="utf-8")) or named.search(text))
     )
-    assert offenders == [], (
-        "these set a timeout from a literal; import fpl_andres.timeouts: " + ", ".join(offenders)
+    assert offenders == [], "these set a timeout outside fpl_andres.timeouts: " + ", ".join(
+        offenders
     )
 
 
