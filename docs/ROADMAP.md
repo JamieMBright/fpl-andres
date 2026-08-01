@@ -238,6 +238,9 @@ Ordered by what would change the answers most, not by effort.
    a season**. Measured, real, and not on its own a reason to move the
    projector off FPL's own expected goals.
 
+   **Stage 3 is closed as a negative result** — see item 10. Shot context does
+   not persist at team level, so the coordinates stay unread on purpose.
+
 2. **FPL published no expected values before 2022-23.** Verified against the
    corpus: 0% coverage for 2019-20, 2020-21 and 2021-22, 100% from 2022-23
    onward. All seven seasons are ingested, so the boundary is reachable rather
@@ -305,8 +308,23 @@ Ordered by what would change the answers most, not by effort.
    exactly what bench cover needs. FBref has it; `soccerdata` does not ship it.
 9. **End-of-season projection and posterior carry (T2).** `project_horizon`
    stops at seven gameweeks and refits from scratch each week.
-10. **Positional matchups.** One attack and one defence figure per side. Shot
-    coordinates would give flank vulnerability; nothing reads them.
+10. **Positional matchups: tested and refused.** The premise was that shot
+    coordinates reveal which defences leak down a flank, from distance, or at
+    set pieces. It does not survive contact with the data. Splitting each
+    team's season in half across all four seasons and correlating the first
+    half's concession profile against the second gives, for flank share, +0.04,
+    +0.04, +0.16, +0.26; for close-range share +0.16, +0.21, +0.08, +0.05; for
+    long-range share +0.70, +0.53, **-0.05**, **-0.20**; and for set-piece
+    share +0.07, -0.01, **-0.23**, **-0.29**.
+
+    The control is the point. **Total xG conceded persists at +0.57, +0.75,
+    +0.71 and +0.49**, so the method detects a real team property when one is
+    there. The context shares do not: long range looked convincing for two
+    seasons and then flipped sign, and set-piece share is mostly negative.
+    **One defence figure per side is the right granularity.** The shot
+    coordinates are not worth reading for this. Recorded so nobody spends the
+    effort twice.
+
 11. **Bookmaker odds as a probability source.** Bookmakers price fixtures for a
     living and are marked to market by people trying to take their money, so
     their implied probabilities are the strongest freely available estimate of
