@@ -5,8 +5,14 @@
   "outputDirectory": "apps/web/dist",
   "regions": ["lhr1"],
   "functions": {
-    "api/**/*.ts": {
-      "maxDuration": 10
+    "api/health.ts": {
+      "maxDuration": 5
+    },
+    "api/fpl/[...path].ts": {
+      "maxDuration": 15
+    },
+    "api/team/[id].ts": {
+      "maxDuration": 15
     }
   },
   "rewrites": [{ "source": "/((?!api/).*)", "destination": "/index.html" }],

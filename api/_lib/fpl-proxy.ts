@@ -121,6 +121,8 @@ async function fetchWithRetries(
   now: () => number,
   deadline: number,
 ): Promise<Response | null> {
+  const trace = globalThis.crypto.randomUUID();
+  const attemptFailures: string[] = [];
   for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt += 1) {
     const remaining = deadline - now();
     if (remaining < MIN_ATTEMPT_BUDGET_MS) {
@@ -159,12 +161,41 @@ async function fetchWithRetries(
       }
       await response.body?.cancel();
       await sleep(delay);
-    } catch {
+    } catch (error) {
+      // A request that succeeds on attempt three used to leave no evidence that
+      // the first two failed, so a degrading upstream looked healthy. One line
+      // per attempt, correlated by trace, and a timeout named as a timeout
+      // rather than collapsed into 'unreachable'.
+      attemptFailures.push(
+        error instanceof DOMException && error.name === "TimeoutError"
+          ? "timeout"
+          : `${error instanceof Error ? error.name : "unknown"}`,
+      );
       if (attempt === MAX_ATTEMPTS - 1) {
+        console.warn(
+          JSON.stringify({
+            level: "warn",
+            event: "upstream_exhausted",
+            trace,
+            url: upstreamUrl,
+            attempts: MAX_ATTEMPTS,
+            failures: attemptFailures,
+          }),
+        );
         return null;
       }
       const delay = retryDelay(null, attempt, random, now);
       if (delay + MIN_ATTEMPT_BUDGET_MS > deadline - now()) {
+        console.warn(
+          JSON.stringify({
+            level: "warn",
+            event: "upstream_budget_exhausted",
+            trace,
+            url: upstreamUrl,
+            attempts: attempt + 1,
+            failures: attemptFailures,
+          }),
+        );
         return null;
       }
       await sleep(delay);
