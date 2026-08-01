@@ -10,6 +10,12 @@ source contract visibly rather than default a value.
 
 Impact key: **H** high, **M** medium, **L** low.
 
+Each table below is an index. Every numbered item has a full work order in
+[`docs/improvements/`](docs/improvements/) giving the verified files and line
+ranges, the problem, the implementation steps, the constraints, the tests to
+write first, the acceptance criteria and the validation command — enough for one
+agent to pick up a single item and finish it without further discovery.
+
 Contents:
 
 1. [Correctness and modelling](#1-correctness-and-modelling)
@@ -30,6 +36,8 @@ Contents:
 ---
 
 ## 1. Correctness and modelling
+
+Work orders for items 1–18: [`docs/improvements/01-correctness-and-modelling.md`](docs/improvements/01-correctness-and-modelling.md)
 
 | #   | Impact | Improvement                                                                                                                                                                                                                                                         |
 | --- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -54,6 +62,8 @@ Contents:
 
 ## 2. Numerical and statistical rigour
 
+Work orders for items 19–32: [`docs/improvements/02-numerical-and-statistical-rigour.md`](docs/improvements/02-numerical-and-statistical-rigour.md)
+
 | #   | Impact | Improvement                                                                                                                                                                                                                   |
 | --- | ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 19  | H      | Replace the `1e12` penalty return in `models/dixon_coles.py` (~lines 97–98) with an explicit infeasibility signal; feeding a sentinel into the optimiser objective distorts the search surface near the boundary.             |
@@ -73,6 +83,8 @@ Contents:
 
 ## 3. Python performance and scalability
 
+Work orders for items 33–40: [`docs/improvements/03-python-performance-and-scalability.md`](docs/improvements/03-python-performance-and-scalability.md)
+
 | #   | Impact | Improvement                                                                                                                                                                   |
 | --- | ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 33  | M      | Pre-sort event outcomes once instead of re-sorting per event in `models/backtest.py` (~lines 250–261); the repeated sorts dominate scoring across a full multi-season corpus. |
@@ -85,6 +97,8 @@ Contents:
 | 40  | L      | Split `simulation/minileague.py` (813 lines) so the season loop, rival policies and scoring are independently profilable.                                                     |
 
 ## 4. Ingestion, adapters and network robustness
+
+Work orders for items 41–57: [`docs/improvements/04-ingestion-adapters-and-network-robustness.md`](docs/improvements/04-ingestion-adapters-and-network-robustness.md)
 
 | #   | Impact | Improvement                                                                                                                                                                                          |
 | --- | ------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -108,6 +122,8 @@ Contents:
 
 ## 5. Persistence, idempotency and data integrity
 
+Work orders for items 58–69: [`docs/improvements/05-persistence-idempotency-and-data-integrity.md`](docs/improvements/05-persistence-idempotency-and-data-integrity.md)
+
 | #   | Impact | Improvement                                                                                                                                                                                   |
 | --- | ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 58  | H      | Validate that every `on_conflict` column is present in the payload before an upsert in `persistence/supabase.py` (~lines 144–158); a mismatch turns an update into a silent duplicate insert. |
@@ -124,6 +140,8 @@ Contents:
 | 69  | L      | Round-trip validate ISO timestamps written by `team_state.py` (~lines 99–102) to guarantee UTC normalisation on read-back.                                                                    |
 
 ## 6. Security and secret handling
+
+Work orders for items 70–82: [`docs/improvements/06-security-and-secret-handling.md`](docs/improvements/06-security-and-secret-handling.md)
 
 | #   | Impact | Improvement                                                                                                                                                                                                      |
 | --- | ------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -142,6 +160,8 @@ Contents:
 | 82  | L      | Reduce version detail in the outbound `FPL_USER_AGENT` (`adapters/fpl.py` ~line 18) to a stable contact string.                                                                                                  |
 
 ## 7. API and serverless functions
+
+Work orders for items 83–96: [`docs/improvements/07-api-and-serverless-functions.md`](docs/improvements/07-api-and-serverless-functions.md)
 
 | #   | Impact | Improvement                                                                                                                                                                                               |
 | --- | ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -162,6 +182,8 @@ Contents:
 
 ## 8. Database schema and migrations
 
+Work orders for items 97–108: [`docs/improvements/08-database-schema-and-migrations.md`](docs/improvements/08-database-schema-and-migrations.md)
+
 | #   | Impact | Improvement                                                                                                                                                                                                                                                              |
 | --- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | 97  | H      | Document the deliberate deny-all RLS posture, and add explicit named policies before any browser-readable table is introduced. Every table is `enable`/`force row level security` with no policy, which is correct today but undocumented (`supabase/migrations/*.sql`). |
@@ -178,6 +200,8 @@ Contents:
 | 108 | L      | Document naming conventions for tables, indexes, constraints and triggers so future migrations stay uniform.                                                                                                                                                             |
 
 ## 9. Frontend architecture and performance
+
+Work orders for items 109–125: [`docs/improvements/09-frontend-architecture-and-performance.md`](docs/improvements/09-frontend-architecture-and-performance.md)
 
 | #   | Impact | Improvement                                                                                                                                                                    |
 | --- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -201,6 +225,8 @@ Contents:
 
 ## 10. Frontend accessibility, UX and SEO
 
+Work orders for items 126–137: [`docs/improvements/10-frontend-accessibility-ux-and-seo.md`](docs/improvements/10-frontend-accessibility-ux-and-seo.md)
+
 | #   | Impact | Improvement                                                                                                                                                                               |
 | --- | ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 126 | H      | Add automated contrast and a11y checks (axe-core) to the browser journeys for both themes; `DESIGN.md` claims a contrast standard that nothing enforces (`styles.css` ~lines 58–72).      |
@@ -218,6 +244,8 @@ Contents:
 
 ## 11. Contracts, typing and API surface
 
+Work orders for items 138–148: [`docs/improvements/11-contracts-typing-and-api-surface.md`](docs/improvements/11-contracts-typing-and-api-surface.md)
+
 | #   | Impact | Improvement                                                                                                                                                                     |
 | --- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 138 | H      | Enable `@typescript-eslint/no-explicit-any` in `eslint.config.js`; the config currently adds only `consistent-type-imports` and `no-unused-vars` on top of the recommended set. |
@@ -233,6 +261,8 @@ Contents:
 | 148 | L      | Reduce the remaining `Any` annotations across `persistence/` and `cli/` where the shape is in fact known.                                                                       |
 
 ## 12. Testing and reproducibility
+
+Work orders for items 149–167: [`docs/improvements/12-testing-and-reproducibility.md`](docs/improvements/12-testing-and-reproducibility.md)
 
 | #   | Impact | Improvement                                                                                                                                                                         |
 | --- | ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -258,6 +288,8 @@ Contents:
 
 ## 13. CI/CD, tooling and developer experience
 
+Work orders for items 168–184: [`docs/improvements/13-ci-cd-tooling-and-developer-experience.md`](docs/improvements/13-ci-cd-tooling-and-developer-experience.md)
+
 | #   | Impact | Improvement                                                                                                                                                                              |
 | --- | ------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 168 | H      | Cache the pnpm store and the Playwright browser download in `.github/workflows/ci.yml`; only pip is cached today, so every run reinstalls the JavaScript toolchain and Chromium.         |
@@ -279,6 +311,8 @@ Contents:
 | 184 | L      | Document why runtime dependencies are pinned exactly (zod, TypeScript, `@vercel/node`) so future contributors do not loosen them by mistake.                                             |
 
 ## 14. Documentation and governance
+
+Work orders for items 185–204: [`docs/improvements/14-documentation-and-governance.md`](docs/improvements/14-documentation-and-governance.md)
 
 | #   | Impact | Improvement                                                                                                                                                                                                   |
 | --- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
