@@ -453,6 +453,11 @@ function TeamAnalysisPage() {
           }}
         />
       </div>
+      {/* Announces the transition only. Marking the result region live would
+          re-read the whole squad every time the state changed. */}
+      <p aria-live="polite" className="visually-hidden" role="status">
+        {analysisAnnouncement(analysis, entryId)}
+      </p>
       <nav aria-label="Analysis actions" className="analysis-actions">
         <Link className="text-command" to="/">
           Analyse another team
@@ -773,6 +778,28 @@ function staleReason(
       "The refresh response failed validation. The last verified state remains visible.",
   };
   return reasons[reason];
+}
+
+function analysisAnnouncement(
+  analysis: TeamAnalysisState,
+  entryId: number,
+): string {
+  switch (analysis.status) {
+    case "idle":
+      return "";
+    case "loading":
+      return `Loading the verified snapshot for team ${entryId}.`;
+    case "refreshing":
+      return "Checking for a newer verified snapshot.";
+    case "ready":
+      return `Verified snapshot ready for team ${entryId}, gameweek ${analysis.state.event}.`;
+    case "stale":
+      return "Refresh failed. Showing the last verified snapshot, which may be out of date.";
+    default:
+      // Unavailable and degraded already render a heading and a next step; the
+      // announcement names the outcome so it is not just a silent repaint.
+      return `Analysis unavailable for team ${entryId}. ${terminalStateMessage(analysis).heading}.`;
+  }
 }
 
 function terminalStateMessage(
