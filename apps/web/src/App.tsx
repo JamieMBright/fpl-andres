@@ -9,6 +9,8 @@ import {
   RefreshCw,
 } from "lucide-react";
 import {
+  lazy,
+  Suspense,
   useEffect,
   useReducer,
   useRef,
@@ -19,23 +21,17 @@ import {
 import {
   Link,
   Outlet,
-  useLocation,
   useNavigate,
   useParams,
   type RouteObject,
 } from "react-router-dom";
 
-import { CohortPanel } from "./components/CohortPanel";
 import { ManagerHistory } from "./components/ManagerHistory";
-import { Methodology } from "./components/Methodology";
 import { OpeningSquad } from "./components/OpeningSquad";
-import { PitchView } from "./components/PitchView";
-import { PlayerPoolTable } from "./components/PlayerPoolTable";
-import { SquadRecord } from "./components/SquadRecord";
+import { RouteHeading } from "./components/RouteHeading";
 import { StatusStrip } from "./components/StatusStrip";
 import { TeamStateCorrections } from "./components/TeamStateCorrections";
 import { TransferPlanPanel } from "./components/TransferPlanPanel";
-import { ValidationReport } from "./components/ValidationReport";
 import {
   initialTeamAnalysisState,
   loadCachedPublicTeamState,
@@ -43,6 +39,43 @@ import {
   refreshTeamAnalysis,
   type TeamAnalysisState,
 } from "./state/team-analysis";
+
+// Split out so the 213KB projection artifact and the 51KB calibration report
+// are fetched by the routes that need them, not by every first paint.
+const MethodPage = lazy(() => import("./pages/MethodPage"));
+const PlayerPoolPage = lazy(() => import("./pages/PlayerPoolPage"));
+const CalibrationPage = lazy(() => import("./pages/CalibrationPage"));
+
+// These two read the projection artifact, so they carry it into whichever chunk
+// they land in. Only a dossier needs them.
+const PitchView = lazy(() =>
+  import("./components/PitchView").then((module) => ({
+    default: module.PitchView,
+  })),
+);
+const SquadRecord = lazy(() =>
+  import("./components/SquadRecord").then((module) => ({
+    default: module.SquadRecord,
+  })),
+);
+
+function LazyRoute({ children }: PropsWithChildren) {
+  return (
+    <Suspense
+      fallback={
+        // Carries its own h1: while the chunk is in flight this is the whole
+        // page, and a page without a heading is one a screen reader cannot
+        // orient in.
+        <section className="text-page" aria-busy="true">
+          <p className="eyebrow">Loading</p>
+          <h1 tabIndex={-1}>Fetching this page.</h1>
+        </section>
+      }
+    >
+      {children}
+    </Suspense>
+  );
+}
 
 const MAX_PUBLIC_ID = 4_294_967_295;
 // Published by FPL for the 2026/27 opening gameweek.
@@ -151,20 +184,7 @@ function BielsaBucket() {
   );
 }
 
-function RouteHeading({
-  children,
-  translate,
-}: PropsWithChildren<{ translate?: "yes" | "no" }>) {
-  return (
-    <h1 tabIndex={-1} translate={translate}>
-      {children}
-    </h1>
-  );
-}
-
 function ApplicationFrame() {
-  const location = useLocation();
-  const previousPath = useRef(location.pathname);
   const [theme, setTheme] = useState<ThemeName>(readStoredTheme);
 
   useEffect(() => {
@@ -175,15 +195,6 @@ function ApplicationFrame() {
       // Preference is cosmetic; failing to persist it is not an error.
     }
   }, [theme]);
-
-  useEffect(() => {
-    if (previousPath.current === location.pathname) {
-      return;
-    }
-
-    previousPath.current = location.pathname;
-    document.querySelector<HTMLElement>("main h1")?.focus();
-  }, [location.pathname]);
 
   return (
     <div className="app-shell">
@@ -628,7 +639,9 @@ function SnapshotDossier({ state }: { state: PublicTeamState }) {
           </div>
           <span className="mono">{state.picks.length} picks</span>
         </div>
-        <PitchView picks={state.picks} />
+        <LazyRoute>
+          <PitchView picks={state.picks} />
+        </LazyRoute>
         <details className="squad-table-disclosure">
           <summary>Same squad as a table</summary>
           <div
@@ -680,7 +693,9 @@ function SnapshotDossier({ state }: { state: PublicTeamState }) {
         </details>
       </section>
 
-      <SquadRecord picks={state.picks} />
+      <LazyRoute>
+        <SquadRecord picks={state.picks} />
+      </LazyRoute>
 
       <ManagerHistory entryId={state.entryId} />
 
@@ -817,41 +832,6 @@ function terminalStateMessage(
   };
 }
 
-function MethodPage() {
-  return (
-    <section className="text-page method-page">
-      <p className="eyebrow">Method</p>
-      <RouteHeading>How I work.</RouteHeading>
-      <Methodology />
-    </section>
-  );
-}
-
-function PlayerPoolPage() {
-  return (
-    <section className="text-page pool-page">
-      <p className="eyebrow">The market</p>
-      <RouteHeading>Everyone in the game, and what they cost.</RouteHeading>
-      <PlayerPoolTable />
-    </section>
-  );
-}
-
-function CalibrationPage() {
-  return (
-    <section className="text-page validation-page">
-      <p className="eyebrow">Calibration</p>
-      <RouteHeading>I keep score on myself.</RouteHeading>
-      <p>
-        All forecasts are wrong. Some are useful. Below is every test I have run
-        against completed seasons, including the ones I lose.
-      </p>
-      <ValidationReport />
-      <CohortPanel />
-    </section>
-  );
-}
-
 function NotFoundPage() {
   return (
     <section className="text-page">
@@ -872,9 +852,30 @@ export const routes: RouteObject[] = [
     children: [
       { index: true, element: <HomePage /> },
       { path: "team/:teamId", element: <TeamAnalysisRoute /> },
-      { path: "players", element: <PlayerPoolPage /> },
-      { path: "methodology", element: <MethodPage /> },
-      { path: "calibration", element: <CalibrationPage /> },
+      {
+        path: "players",
+        element: (
+          <LazyRoute>
+            <PlayerPoolPage />
+          </LazyRoute>
+        ),
+      },
+      {
+        path: "methodology",
+        element: (
+          <LazyRoute>
+            <MethodPage />
+          </LazyRoute>
+        ),
+      },
+      {
+        path: "calibration",
+        element: (
+          <LazyRoute>
+            <CalibrationPage />
+          </LazyRoute>
+        ),
+      },
       { path: "*", element: <NotFoundPage /> },
     ],
   },

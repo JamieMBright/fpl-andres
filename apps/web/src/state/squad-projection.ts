@@ -1,4 +1,5 @@
 import projections from "../data/projections.json";
+import meta from "../data/projections-meta.json";
 
 /** One player's record from the last completed season, as published. */
 export interface PlayerProjection {
@@ -31,8 +32,8 @@ const artifact = projections as Artifact;
 
 const byCode = new Map(artifact.players.map((player) => [player.code, player]));
 
-export const projectionSeason = artifact.season;
-export const projectionGeneratedAt = artifact.generatedAt;
+export const projectionSeason = meta.season;
+export const projectionGeneratedAt = meta.generatedAt;
 
 /** The published record for a player, or null when there is no evidence. */
 export function projectionFor(

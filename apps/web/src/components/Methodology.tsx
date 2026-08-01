@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-import { projectionSeason } from "../state/squad-projection";
+import { projectionSeason } from "../state/projection-meta";
 
 /**
  * How the projection is built, in enough detail to be argued with.

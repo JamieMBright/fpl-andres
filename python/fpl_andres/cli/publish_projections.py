@@ -129,7 +129,20 @@ def main(argv: Sequence[str] | None = None) -> int:
     output = Path(args.output)
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(artifact, indent=2) + "\n", encoding="utf-8")
+
+    # The header alone, so a component that only needs the season label does not
+    # pull two hundred kilobytes of players into the first paint.
+    meta = output.with_name(output.stem + "-meta.json")
+    meta.write_text(
+        json.dumps(
+            {key: artifact[key] for key in ("generatedAt", "season", "throughGameweek", "basis")},
+            indent=2,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
     print(f"wrote {output} ({len(players)} players, {len(clubs)} clubs)")
+    print(f"wrote {meta}")
     return 0
 
 

@@ -1,5 +1,5 @@
 import openingSquad from "../data/opening-squad.json";
-import { projectionSeason } from "../state/squad-projection";
+import { projectionSeason } from "../state/projection-meta";
 
 // Read once at module load. Rendering must stay pure, and a countdown in days
 // has no reason to tick during a session.

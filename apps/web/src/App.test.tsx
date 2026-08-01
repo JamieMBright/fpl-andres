@@ -68,7 +68,7 @@ describe("team analysis entry", () => {
     expect(screen.getByText("£1.7m")).toBeInTheDocument();
     expect(screen.getByText("£100.4m")).toBeInTheDocument();
     expect(
-      screen.getByRole("list", { name: "Substitutes in order" }),
+      await screen.findByRole("list", { name: "Substitutes in order" }),
     ).toBeInTheDocument();
 
     await user.click(screen.getByText("Same squad as a table"));
@@ -141,7 +141,7 @@ describe("team analysis entry", () => {
       screen.getByRole("status", { name: "Evidence status" }),
     ).toHaveTextContent("Showing a stale verified snapshot");
     expect(
-      screen.getByRole("list", { name: "Substitutes in order" }),
+      await screen.findByRole("list", { name: "Substitutes in order" }),
     ).toBeInTheDocument();
     expect(screen.getByText(/FPL is temporarily unreachable/i)).toBeVisible();
   });
@@ -163,7 +163,7 @@ describe("team analysis entry", () => {
       await screen.findByText("Refreshing a verified snapshot"),
     ).toBeVisible();
     expect(
-      screen.getByRole("list", { name: "Substitutes in order" }),
+      await screen.findByRole("list", { name: "Substitutes in order" }),
     ).toBeVisible();
 
     resolveFetch(Response.json({ status: "ready", state: readyState }));
