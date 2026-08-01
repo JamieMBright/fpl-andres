@@ -8,7 +8,6 @@ spread across dozens of queries.
 
 from __future__ import annotations
 
-from collections.abc import Sequence
 from dataclasses import dataclass, field
 from datetime import UTC, datetime, timedelta
 from typing import Any
@@ -318,12 +317,3 @@ def summarise(corpus: SeasonCorpus) -> str:
         f"{corpus.season}: {corpus.total_rows:,} rows across "
         f"{len(corpus.gameweeks)} gameweeks, {len(corpus.position_by_element):,} elements"
     )
-
-
-def require_gameweeks(corpus: SeasonCorpus, minimum: int) -> Sequence[int]:
-    gameweeks = corpus.gameweeks
-    if len(gameweeks) < minimum:
-        raise CorpusLoadError(
-            f"{corpus.season} holds {len(gameweeks)} gameweeks, need at least {minimum}"
-        )
-    return gameweeks

@@ -74,11 +74,10 @@ KNOWN_ORPHANS = {
     "optimization_rules_from_snapshot": "MILP builder; optimiser unwired",
     "normalize_public_team_state": "consumed by the TypeScript API, not by Python",
     "resolve_team_state": "consumed by the TypeScript API, not by Python",
-    "parse_source_snapshot": "contract helper used across the boundary",
-    "parse_gameweek_csv": "vaastav adapter, called through the ingest CLI",
+    "parse_source_snapshot": "contract helper; parity-tested against the TypeScript side",
+    "parse_gameweek_csv": "superseded by normalise_gameweek_stats; kept for its leak guard",
     "parse_lineup_role_observations": "StatsBomb adapter; no ingest path exists",
     "hash_statsbomb_bytes": "StatsBomb adapter; no ingest path exists",
-    "require_gameweeks": "corpus guard, used by scripts",
     "suspension_risk": "accumulation bans; thresholds are an unsourced rule",
 }
 
