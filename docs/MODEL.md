@@ -113,8 +113,13 @@ his own record and the positional prior. Priors by position:
 | -------- | -------- | ---------- |
 | GKP      | 0.00     | 0.00       |
 | DEF      | 0.05     | 0.06       |
-| MID      | 0.10     | 0.13       |
-| FWD      | 0.22     | 0.12       |
+| MID      | 0.12     | 0.13       |
+| FWD      | 0.28     | 0.12       |
+
+This table listed MID at 0.10 and FWD at 0.22 until 2026-08-01, against the
+code's 0.12 and 0.28. Nothing compared the two, so it had been describing a
+different model from the one running. `docs/PARAMETERS.md` records where every
+number comes from, and a test now fails if this table and the code disagree.
 
 **Floor.** Below `minimum_minutes = 180` across both seasons the rate is
 `unavailable` and the player is not projected at all, rather than being given a
