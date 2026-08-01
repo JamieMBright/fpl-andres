@@ -66,6 +66,43 @@ def test_a_run_carries_the_revision_that_produced_it() -> None:
     assert rows[0]["season"] == "2024-25"
 
 
+def test_a_run_carries_the_corpus_it_was_measured_over() -> None:
+    """#153. code_revision answered which code ran; nothing answered over which
+    data. The corpus is a mutable table, so without this a moved metric is
+    indistinguishable from a moved model."""
+    client = FakeClient()
+    fingerprint = f"sha256:{'a' * 64}"
+
+    persist_backtest(  # type: ignore[arg-type]
+        client,
+        [
+            BacktestRecord(
+                season="2024-25",
+                method="model",
+                first_scored_gameweek=7,
+                score=score(),
+                data_available_at=NOW,
+                corpus_fingerprint=fingerprint,
+            )
+        ],
+        revision=REVISION,
+    )
+
+    _, rows = client.writes[0]
+    assert rows[0]["corpus_fingerprint"] == fingerprint
+
+
+def test_a_run_that_cannot_name_its_corpus_says_null_rather_than_guessing() -> None:
+    """Rows written before the column existed genuinely do not know their
+    corpus, and a plausible wrong hash is worse than an honest gap."""
+    client = FakeClient()
+
+    persist_backtest(client, [record()], revision=REVISION)  # type: ignore[arg-type]
+
+    _, rows = client.writes[0]
+    assert rows[0]["corpus_fingerprint"] is None
+
+
 def test_nothing_is_written_for_an_empty_run_list() -> None:
     client = FakeClient()
 

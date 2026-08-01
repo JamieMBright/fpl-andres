@@ -8,6 +8,7 @@ spread across dozens of queries.
 
 from __future__ import annotations
 
+import hashlib
 from dataclasses import dataclass, field
 from datetime import UTC, datetime, timedelta
 from typing import Any
@@ -137,6 +138,67 @@ class SeasonCorpus:
     @property
     def total_rows(self) -> int:
         return sum(len(rows) for rows in self.rows_by_gameweek.values())
+
+    @property
+    def fingerprint(self) -> str:
+        """A content hash of everything a backtest can read from this corpus.
+
+        Audit item #153. A backtest score is only meaningful next to the data
+        that produced it, and the corpus is a mutable Supabase table: a
+        re-ingest that corrects one fixture changes every metric derived from
+        it, with nothing in the artifact to say so. Recording this alongside a
+        score turns "the number moved" into "the number moved and the corpus
+        did not", which is the only version worth acting on.
+
+        Covers the observation rows and the fixture results. Deliberately not
+        the name and price lookups: those are display and squad-cost detail
+        that no score depends on, and including them would make the fingerprint
+        change for reasons that cannot affect the number it is guarding.
+        """
+        digest = hashlib.sha256()
+        digest.update(self.season.encode("utf-8"))
+        for gameweek in sorted(self.rows_by_gameweek):
+            digest.update(f"|gw{gameweek}".encode())
+            rows = sorted(
+                self.rows_by_gameweek[gameweek],
+                key=lambda row: (row.element_id, row.fixture_id),
+            )
+            for row in rows:
+                digest.update(
+                    "|".join(
+                        str(part)
+                        for part in (
+                            row.element_id,
+                            row.element_code,
+                            row.fixture_id,
+                            row.minutes,
+                            row.started,
+                            row.goals,
+                            row.assists,
+                            row.expected_goals,
+                            row.expected_assists,
+                            row.total_points,
+                            row.clean_sheets,
+                            row.saves,
+                            row.bonus,
+                            row.goals_conceded,
+                            row.yellow_cards,
+                            row.red_cards,
+                            row.own_goals,
+                            row.penalties_saved,
+                            row.penalties_missed,
+                            row.defensive_contribution,
+                        )
+                    ).encode("utf-8")
+                )
+        for event in sorted(self.fixtures_by_event):
+            digest.update(f"|fx{event}".encode())
+            for fixture in sorted(self.fixtures_by_event[event], key=lambda f: f.fixture_id):
+                digest.update(
+                    f"|{fixture.fixture_id},{fixture.team_h},{fixture.team_a},"
+                    f"{fixture.team_h_score},{fixture.team_a_score},{fixture.finished}".encode()
+                )
+        return f"sha256:{digest.hexdigest()}"
 
     def before(self, gameweek: int) -> list[ElementRow]:
         """Every row from strictly earlier gameweeks.

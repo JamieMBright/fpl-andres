@@ -13,6 +13,7 @@ DEFENSIVE_COMPONENTS_MIGRATION = MIGRATIONS_DIR / "20260801130000_defensive_comp
 FIXTURE_GRAIN_MIGRATION = MIGRATIONS_DIR / "20260801140000_fixture_grain_and_event_range.sql"
 BACKTEST_MIGRATION = MIGRATIONS_DIR / "20260801150000_backtest_artifacts.sql"
 CROWD_MIGRATION = MIGRATIONS_DIR / "20260801160000_crowd_snapshots.sql"
+CORPUS_FINGERPRINT_MIGRATION = MIGRATIONS_DIR / "20260801180000_backtest_corpus_fingerprint.sql"
 
 _CREATE_TABLE = re.compile(r"create table (?:if not exists )?public\.(\w+)")
 _INDEX_TARGET = re.compile(
@@ -238,6 +239,25 @@ def test_backtest_predictions_survive_only_alongside_their_run() -> None:
 
     assert "references public.backtest_runs(id) on delete cascade" in sql
     assert "primary key (run_id, gameweek, element_id)" in sql
+
+
+def test_a_backtest_metric_names_the_corpus_it_was_measured_over() -> None:
+    """code_revision says which code ran; nothing said over which data.
+
+    The corpus is a mutable table, so a re-ingest correcting one fixture moves
+    every metric derived from it. Without the fingerprint, that is
+    indistinguishable from a model change.
+    """
+    sql = " ".join(CORPUS_FINGERPRINT_MIGRATION.read_text(encoding="utf-8").lower().split())
+
+    assert "add column if not exists corpus_fingerprint text" in sql
+    # Nullable on purpose: rows predating the column do not know their corpus,
+    # and a backfilled guess would be worse than an honest gap.
+    assert "corpus_fingerprint text not null" not in sql
+    assert "corpus_fingerprint is null or corpus_fingerprint ~ '^sha256:[0-9a-f]{64}$'" in sql
+    assert "backtest_runs_corpus_method_idx" in sql
+    assert "create policy" not in sql
+    assert "grant " not in sql
 
 
 def test_crowd_snapshots_are_immutable_and_default_deny() -> None:

@@ -179,6 +179,9 @@ def main(argv: Sequence[str] | None = None) -> int:
                     "firstScoredGameweek": scored.first_scored_gameweek,
                     "expectedGoalsCoverage": _expected_goals_coverage(corpus),
                     "missingGameweeks": list(corpus.missing_gameweeks),
+                    # Names the corpus state every metric below was measured
+                    # over, so a moved number can be told from a moved model.
+                    "corpusFingerprint": corpus.fingerprint,
                     "methods": methods,
                     "league": {
                         "policies": {

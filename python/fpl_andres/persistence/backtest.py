@@ -34,6 +34,10 @@ class BacktestRecord:
     first_scored_gameweek: int
     score: MethodScore
     data_available_at: datetime
+    # Which corpus state the score was measured over. Optional so a caller that
+    # genuinely cannot determine it says so, rather than writing a plausible
+    # wrong hash; the column refuses a malformed one either way.
+    corpus_fingerprint: str | None = None
 
 
 def current_revision() -> str:
@@ -95,6 +99,7 @@ def persist_backtest(
             "top_n_hit_rate": record.score.top_n_hit_rate,
             **_positions(record.score),
             "code_revision": revision,
+            "corpus_fingerprint": record.corpus_fingerprint,
             "data_available_at": record.data_available_at.isoformat(),
         }
         for record in records
