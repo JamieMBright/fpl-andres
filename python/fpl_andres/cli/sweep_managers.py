@@ -25,7 +25,7 @@ from pathlib import Path
 
 import httpx
 
-from fpl_andres import timeouts
+from fpl_andres import cliargs, timeouts
 from fpl_andres.cohorts.sweep import CohortRule, parse_history, qualifies
 from fpl_andres.jsonio import read_json_file
 from fpl_andres.timeouts import client_timeout
@@ -68,13 +68,15 @@ class Throttle:
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="sweep-managers")
-    parser.add_argument("--rate", type=float, default=25.0, help="requests a second")
-    parser.add_argument("--concurrency", type=int, default=8)
-    parser.add_argument("--start", type=int, default=1)
-    parser.add_argument("--until", type=int, default=2_500_000)
-    parser.add_argument("--since-start-year", type=int, default=2021)
-    parser.add_argument("--rank-ceiling", type=int, default=10_000)
-    parser.add_argument("--minimum-seasons", type=int, default=2)
+    parser.add_argument(
+        "--rate", type=cliargs.positive_float, default=25.0, help="requests a second"
+    )
+    parser.add_argument("--concurrency", type=cliargs.positive_int, default=8)
+    parser.add_argument("--start", type=cliargs.positive_int, default=1)
+    parser.add_argument("--until", type=cliargs.positive_int, default=2_500_000)
+    parser.add_argument("--since-start-year", type=cliargs.positive_int, default=2021)
+    parser.add_argument("--rank-ceiling", type=cliargs.positive_int, default=10_000)
+    parser.add_argument("--minimum-seasons", type=cliargs.positive_int, default=2)
     parser.add_argument("--resume", action="store_true")
     return parser
 

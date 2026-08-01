@@ -177,6 +177,11 @@ def test_no_module_is_imported_only_by_its_own_tests() -> None:
         for node in ast.walk(tree):
             if isinstance(node, ast.ImportFrom) and node.module:
                 imported.add(node.module.rsplit(".", 1)[-1])
+                # `from fpl_andres import cliargs` puts the module name in the
+                # alias, not in node.module. Reading only node.module recorded
+                # "fpl_andres" and reported cliargs as imported by nothing.
+                for alias in node.names:
+                    imported.add(alias.name.rsplit(".", 1)[-1])
             elif isinstance(node, ast.Import):
                 for alias in node.names:
                     imported.add(alias.name.rsplit(".", 1)[-1])

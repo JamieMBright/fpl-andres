@@ -24,6 +24,7 @@ import sys
 from collections.abc import Sequence
 from pathlib import Path
 
+from fpl_andres import cliargs
 from fpl_andres.backtesting.corpus import load_season
 from fpl_andres.backtesting.projector import project_horizon
 from fpl_andres.models.benchmark import BenchmarkUnavailable, compare_projections
@@ -32,12 +33,12 @@ from fpl_andres.persistence.supabase import SupabaseCredentials, SupabaseRestCli
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="benchmark")
-    parser.add_argument("--season", required=True)
-    parser.add_argument("--gameweek", type=int, required=True)
+    parser.add_argument("--season", type=cliargs.season, required=True)
+    parser.add_argument("--gameweek", type=cliargs.event_id, required=True)
     parser.add_argument("--rival", required=True, help="CSV of code,points")
     parser.add_argument("--code-column", default="code")
     parser.add_argument("--points-column", default="points")
-    parser.add_argument("--top-n", type=int, default=30)
+    parser.add_argument("--top-n", type=cliargs.positive_int, default=30)
     return parser
 
 

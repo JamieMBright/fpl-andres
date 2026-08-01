@@ -23,6 +23,7 @@ from typing import Any
 
 import httpx
 
+from fpl_andres import cliargs
 from fpl_andres.adapters.fpl import FplClient
 from fpl_andres.bootstrap import CrowdElement, parse_elements
 from fpl_andres.persistence.supabase import SupabaseCredentials, SupabaseRestClient
@@ -39,7 +40,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         "--event",
-        type=int,
+        type=cliargs.event_id,
         default=None,
         help="Gameweek to label the capture with. Defaults to the current event.",
     )

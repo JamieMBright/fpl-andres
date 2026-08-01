@@ -20,6 +20,7 @@ from collections.abc import Sequence
 from datetime import UTC, datetime
 from pathlib import Path
 
+from fpl_andres import cliargs
 from fpl_andres.jsonio import read_json_file, read_json_lines
 
 SOURCE = Path("data/cohort/managers.jsonl")
@@ -30,7 +31,9 @@ RANK_CEILING = 10_000
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="publish-cohort")
-    parser.add_argument("--since", type=int, default=2021, help="first season start year")
+    parser.add_argument(
+        "--since", type=cliargs.positive_int, default=2021, help="first season start year"
+    )
     parser.add_argument("--source", default=str(SOURCE))
     parser.add_argument("--output", default=str(DEFAULT_OUTPUT))
     parser.add_argument(

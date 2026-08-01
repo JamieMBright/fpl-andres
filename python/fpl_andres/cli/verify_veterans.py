@@ -20,6 +20,7 @@ from pathlib import Path
 
 import httpx
 
+from fpl_andres import cliargs
 from fpl_andres.adapters.fpl import FplClient
 from fpl_andres.cohorts.veterans import (
     CohortCriteria,
@@ -40,10 +41,10 @@ _REQUEST_PAUSE_SECONDS = 0.4
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="verify-veterans")
     parser.add_argument("--source", required=True, help="File holding candidate entry ids")
-    parser.add_argument("--elite-rank", type=int, default=10_000)
-    parser.add_argument("--minimum-elite-seasons", type=int, default=3)
-    parser.add_argument("--minimum-seasons", type=int, default=5)
-    parser.add_argument("--limit", type=int, default=500)
+    parser.add_argument("--elite-rank", type=cliargs.positive_int, default=10_000)
+    parser.add_argument("--minimum-elite-seasons", type=cliargs.positive_int, default=3)
+    parser.add_argument("--minimum-seasons", type=cliargs.positive_int, default=5)
+    parser.add_argument("--limit", type=cliargs.positive_int, default=500)
     parser.add_argument("--output", default=None)
     return parser
 
