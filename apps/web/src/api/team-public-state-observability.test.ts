@@ -1,6 +1,9 @@
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { createTeamPublicStateResponse } from "../../../../api/_lib/team-public-state-response";
+import {
+  createTeamPublicStateResponse,
+  resetSourceCache,
+} from "../../../../api/_lib/team-public-state-response";
 
 /**
  * Audit items #85, #88, #92 and #93.
@@ -120,6 +123,13 @@ function upstream(overrides: Overrides = {}) {
     throw new Error(`unexpected URL: ${url}`);
   });
 }
+
+beforeEach(() => {
+  // A warm instance reusing bootstrap between managers is intended; a test
+  // file reusing it between cases is not, since each describes a different
+  // upstream.
+  resetSourceCache();
+});
 
 afterEach(() => {
   vi.restoreAllMocks();

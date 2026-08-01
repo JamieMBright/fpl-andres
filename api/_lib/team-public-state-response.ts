@@ -7,6 +7,7 @@ import {
   logUpstreamOutcome,
   newRequestId,
 } from "./request-log.js";
+import { SourceCache, sourceTtlMs } from "./source-cache.js";
 import {
   assembleTeamPublicState,
   TeamPublicStateContractError,
@@ -33,6 +34,8 @@ interface TeamPublicStateDependencies {
   sleep?: Sleep;
   random?: () => number;
   now?: () => number;
+  /** Test seam: a cache that outlived a test would answer the next one. */
+  cache?: SourceCache<FetchSourceOutcome>;
 }
 
 interface FetchedSource {
@@ -45,6 +48,21 @@ type FetchSourceOutcome =
   | { kind: "ok"; source: FetchedSource }
   | { kind: "unreachable" }
   | { kind: "source_failed" };
+
+/**
+ * Module scope, so it survives between invocations of a warm instance. That is
+ * the only place a per-instance cache can do any good.
+ */
+const defaultCache = new SourceCache<FetchSourceOutcome>();
+
+/**
+ * Test seam. A warm instance reusing bootstrap between two managers is the
+ * intended behaviour; a test file reusing it between two cases is not, because
+ * each case wants to describe a different upstream.
+ */
+export function resetSourceCache(): void {
+  defaultCache.clear();
+}
 
 const entrySummarySchema = z
   .object({
@@ -147,6 +165,7 @@ async function buildTeamPublicStateResponse(
   const sleep = dependencies.sleep ?? defaultSleep;
   const random = dependencies.random ?? Math.random;
   const now = dependencies.now ?? Date.now;
+  const cache = dependencies.cache ?? defaultCache;
 
   if (method !== "GET") {
     return jsonResponse({ error: "Only GET is supported." }, 405, {
@@ -171,6 +190,7 @@ async function buildTeamPublicStateResponse(
       now,
       deadline,
       trace,
+      cache,
     ),
     fetchSource(
       "/api/fpl/bootstrap-static/",
@@ -181,6 +201,7 @@ async function buildTeamPublicStateResponse(
       now,
       deadline,
       trace,
+      cache,
     ),
   ]);
   const preliminaryOutcome = worstOutcome(entryOutcome, bootstrapOutcome);
@@ -242,6 +263,7 @@ async function buildTeamPublicStateResponse(
     // so it must not inherit what the opening pair left behind.
     now() + PICKS_BUDGET_MS,
     trace,
+    cache,
   );
   if (picksOutcome.kind !== "ok") {
     return degradedResponse(
@@ -365,15 +387,19 @@ async function fetchSource(
   now: () => number,
   deadline: number,
   trace: RequestTrace,
+  cache: SourceCache<FetchSourceOutcome>,
 ): Promise<FetchSourceOutcome> {
   const startedAt = now();
-  const outcome = await readSource(
+  // Keyed by the request URL rather than by the source name: two managers'
+  // picks are different requests and must never share an entry.
+  const { value: outcome, reused } = await cache.resolve(
     requestUrl,
-    fetchUpstream,
-    sleep,
-    random,
-    now,
-    deadline,
+    sourceTtlMs(source),
+    () => readSource(requestUrl, fetchUpstream, sleep, random, now, deadline),
+    // A failed read resolves with a failure outcome rather than rejecting, so
+    // the cache has to be told. Holding one would serve the outage for a
+    // minute after upstream recovered.
+    (candidate) => candidate.kind === "ok" && isSuccessful(candidate.source),
   );
   // Concurrent sources overlap, so this sums to more than the wall clock. That
   // is the intended reading: it is time spent waiting on FPL, not elapsed time.
@@ -385,6 +411,9 @@ async function fetchSource(
     status: outcome.kind === "ok" ? outcome.source.status : null,
     reason: outcome.kind === "ok" ? null : outcome.kind,
     durationMs: now() - startedAt,
+    // Without this, a cache hit counts as a successful fetch and inflates the
+    // success ratio the upstream-failure alert is measured against.
+    reused,
   });
   return outcome;
 }

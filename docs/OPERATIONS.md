@@ -47,7 +47,13 @@ different problem from one that spent it parsing, and only the second is ours.
 ### `upstream_outcome`
 
 One per upstream source (`entry`, `bootstrap`, `picks`), with `status`,
-`reason` and `durationMs`. `level` is `warn` when the source could not be read.
+`reason`, `durationMs` and `reused`. `level` is `warn` when the source could
+not be read.
+
+`reused` is true when nothing was fetched — the response came from the source
+cache or from a flight already in progress. Any alert measuring a failure
+_ratio_ must exclude these, or a warm cache will quietly inflate the success
+rate and hide a real failure rate underneath it.
 
 ### `source_contract_failed`
 
@@ -156,6 +162,38 @@ the limiter sweeps expired windows first; if the table is still full it keeps
 serving and says so, leaving the global ceiling as the only limit in force.
 Refusing instead would turn a memory bound into an outage for whoever arrived
 last.
+
+---
+
+## The source cache
+
+Every call to `/api/team/:id` fans out to three upstream requests. One of them
+is the bootstrap document: 1.3 MB, identical for every caller, unchanged for
+minutes at a time. Ten people looking up their teams in the same second used to
+pull it ten times.
+
+Two mechanisms, answering different questions.
+
+**Coalescing** asks "is this same request already in flight?" It applies to
+every source, including per-manager ones, because two concurrent requests for
+the same manager's picks would receive the same bytes anyway.
+
+**Caching** asks "did we fetch this recently enough?" It applies only where the
+answer does not depend on who is asking. Bootstrap is held for 60 seconds — the
+same number `fpl-proxy.ts` already tells a CDN it may hold the document for,
+because two layers disagreeing about how stale the same bytes may be would be a
+bug nobody could see. Entry and picks have a TTL of zero: coalesced, never
+held. A new source has to be named to become shared, so adding one makes it
+uncacheable rather than shared.
+
+A failed read is never held. That needed saying explicitly in code, because an
+upstream failure here resolves with a failure outcome rather than rejecting, so
+"did the promise reject" is the wrong question. A cache that remembers failures
+serves the outage for a minute after upstream has recovered.
+
+The table is capped at 32 entries, sweeping expired ones before evicting a live
+one. Per-instance, with the same limitation as the request budget: a cold
+instance starts empty.
 
 ---
 

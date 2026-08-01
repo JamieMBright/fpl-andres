@@ -1,6 +1,9 @@
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { createTeamPublicStateResponse } from "../../../../api/_lib/team-public-state-response";
+import {
+  createTeamPublicStateResponse,
+  resetSourceCache,
+} from "../../../../api/_lib/team-public-state-response";
 
 const fetchedAt = "2026-09-12T12:30:00.000Z";
 
@@ -81,6 +84,12 @@ function jsonResponse(payload: unknown, status = 200): Response {
 }
 
 describe("public team state response", () => {
+  beforeEach(() => {
+    // Each case describes a different upstream; a cache carried between them
+    // would answer with the previous one.
+    resetSourceCache();
+  });
+
   it("fetches entry, official deadline, and processed picks into ready state", async () => {
     const fetchUpstream = vi
       .fn<typeof fetch>()

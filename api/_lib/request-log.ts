@@ -117,6 +117,8 @@ export type UpstreamOutcome = {
   reason: string | null;
   durationMs: number;
   attempts?: number;
+  /** True when nothing was fetched: served from cache or a shared flight. */
+  reused?: boolean;
 };
 
 export function logUpstreamOutcome({
@@ -127,6 +129,7 @@ export function logUpstreamOutcome({
   reason,
   durationMs,
   attempts,
+  reused,
 }: UpstreamOutcome): void {
   const failed = status === null || status >= 500 || reason !== null;
   const line = JSON.stringify({
@@ -139,6 +142,7 @@ export function logUpstreamOutcome({
     reason,
     durationMs: Math.round(durationMs),
     attempts: attempts ?? null,
+    reused: reused ?? false,
   });
   if (failed) console.warn(line);
   else console.log(line);
