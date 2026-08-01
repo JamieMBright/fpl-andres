@@ -9,6 +9,8 @@ from __future__ import annotations
 
 import unittest
 
+import pytest
+
 from fpl_andres.planning.opening import (
     OpeningSettings,
     best_eleven,
@@ -102,6 +104,8 @@ class ChooseOpeningSquadTest(unittest.TestCase):
         for standout in standouts:
             self.assertIn(standout, starting, f"{standout} should be picked and started")
 
+    # Runs the HiGHS solver over a full candidate pool.
+    @pytest.mark.slow
     def test_produces_a_legal_squad_inside_the_budget(self) -> None:
         pool = _pool()
         points = {member.element_id: float(member.element_id % 7) for member in pool}

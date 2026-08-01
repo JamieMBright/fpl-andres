@@ -9,6 +9,12 @@ on:
 permissions:
   contents: read
 
+# Pinned so set iteration order is identical on every run. A test that passes
+# on one hash seed and fails on another fails in CI once a fortnight and cannot
+# be reproduced locally.
+env:
+  PYTHONHASHSEED: "0"
+
 concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true

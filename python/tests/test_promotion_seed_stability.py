@@ -21,6 +21,10 @@ import pytest
 from fpl_andres.models.metrics import mean_absolute_error
 from fpl_andres.models.promotion import TripletPrediction, evaluate_promotion
 
+# Every test here runs hundreds of bootstrap resamples, several of them twenty
+# times over to compare seeds. Genuinely slow rather than accidentally slow.
+pytestmark = pytest.mark.slow
+
 
 def _triplets(count: int, edge: float, noise_seed: int = 99) -> tuple[TripletPrediction, ...]:
     """Synthetic paired predictions where the candidate is `edge` less noisy."""

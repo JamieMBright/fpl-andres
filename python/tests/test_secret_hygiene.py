@@ -14,6 +14,7 @@ import traceback
 import unittest
 
 import httpx
+import pytest
 
 from fpl_andres.persistence.supabase import (
     SupabaseCredentials,
@@ -71,6 +72,10 @@ class ClientTest(unittest.TestCase):
 
         self.assertNotIn(SECRET, str(caught.exception))
 
+    # Sleeps for real: a 500 exhausts the three-attempt retry loop, and the
+    # 0.5s base backoff means 1.5s of genuine waiting. Kept rather than mocked
+    # because the point is that the retry path does not leak the key either.
+    @pytest.mark.slow
     def test_a_traceback_does_not_carry_the_secret(self) -> None:
         def handler(request: httpx.Request) -> httpx.Response:
             return httpx.Response(500, json={"message": "boom"})
