@@ -42,15 +42,17 @@ the surfaces.
 | ------------------------ | ------------------------------------------------- |
 | M1 persistence layer     | **shipped** — `fpl_andres/persistence/`           |
 | M2 history schema        | **shipped** — `20260801120000_history_corpus.sql` |
-| M3 historical ingest     | **shipped, not yet run** — needs a dispatch       |
+| M3 historical ingest     | **shipped and run** — dispatched 2026-07-30       |
 | M5 minutes               | **shipped** — `models/minutes.py`                 |
 | M7 rates + carry-forward | **shipped** — `models/player_rates.py`            |
 | M9 xPTS assembly         | **shipped** — `models/expected_points.py`         |
-| M12 backtest harness     | **shipped, no corpus yet** — `models/backtest.py` |
+| M12 backtest harness     | **shipped and scored** — `models/backtest.py`     |
 
-Everything above is unit-tested against fixtures. **None of it has seen a real
-row**, because the corpus does not exist until the ingest workflow is
-dispatched. That dispatch is the single next action.
+The corpus exists: seven seasons and 185,954 player-gameweek rows, loaded
+2026-07-30 and verified 2026-07-31. This table said "not yet run" and "none of
+it has seen a real row" for two days after that stopped being true, which is why
+`docs/ROADMAP.md` supersedes this file. `docs/CORPUS.md` records what was loaded
+and how to reproduce it; `docs/MODEL_CARDS.md` records what the backtest scored.
 
 ---
 
