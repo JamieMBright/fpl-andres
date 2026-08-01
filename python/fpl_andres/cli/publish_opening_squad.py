@@ -24,6 +24,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 
 from fpl_andres.backtesting.fixtures import Fixture, TeamStrength
+from fpl_andres.bootstrap import BootstrapElement, parse_elements
 from fpl_andres.planning.opening import (
     PLAYABLE_START_RATE,
     OpeningSettings,
@@ -145,15 +146,14 @@ def main(argv: Sequence[str] | None = None) -> int:
     unseen = 0
     unavailable = 0
     bit_part = 0
-    for element in bootstrap["elements"]:
-        position = int(element["element_type"])
-        if position not in POSITION_CODES:
+    for element in parse_elements(bootstrap["elements"], model=BootstrapElement):
+        if element.element_type not in POSITION_CODES:
             continue
         # FPL's own flag. Injured, suspended and departed players are not picks.
-        if str(element["status"]) != "a":
+        if not element.is_available:
             unavailable += 1
             continue
-        record = record_by_code.get(int(element["code"]))
+        record = record_by_code.get(element.code)
         if record is None:
             unseen += 1
             continue
@@ -163,20 +163,20 @@ def main(argv: Sequence[str] | None = None) -> int:
         if float(record["probabilityStart"]) < PLAYABLE_START_RATE:
             bit_part += 1
             continue
-        team_id = int(element["team"])
+        team_id = element.team
         run, rated_count, fixtures = _run_rating(
-            team_id, position, by_team.get(team_id, ()), strength
+            team_id, element.element_type, by_team.get(team_id, ()), strength
         )
         points = float(record["expectedPoints"])
         rated.append(
             Rated(
                 candidate=Candidate(
-                    element_id=int(element["id"]),
-                    element_code=int(element["code"]),
-                    position=position,
+                    element_id=element.id,
+                    element_code=element.code,
+                    position=element.element_type,
                     team_id=team_id,
-                    price_tenths=int(element["now_cost"]),
-                    web_name=str(element["web_name"]),
+                    price_tenths=element.now_cost,
+                    web_name=element.web_name,
                 ),
                 club=str(clubs[team_id]["short_name"]),
                 record=points,

@@ -22,6 +22,7 @@ is that the failure stays visible.
 | Exception | Module | Raised when |
 | --- | --- | --- |
 | `BacktestLeakError` | `models/backtest.py` | A prediction depends on evidence from after its cutoff. |
+| `BootstrapElementError` | `bootstrap.py` | bootstrap-static carries an element this package cannot read. |
 | `CohortError` | `cohorts/veterans.py` | A history payload cannot support a cohort decision. |
 | `ColumnMappingError` | `ingest/normalise.py` | An archive CSV lacks a column the schema depends on. |
 | `CorpusLoadError` | `backtesting/corpus.py` | The corpus cannot supply a usable season. |

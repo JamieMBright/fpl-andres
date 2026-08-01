@@ -24,6 +24,7 @@ from typing import Any
 import httpx
 
 from fpl_andres.adapters.fpl import FplClient
+from fpl_andres.bootstrap import CrowdElement, parse_elements
 from fpl_andres.persistence.supabase import SupabaseCredentials, SupabaseRestClient
 
 __all__ = ["build_parser", "main"]
@@ -88,16 +89,16 @@ def _rows(
 ) -> list[dict[str, Any]]:
     total_managers = bootstrap.get("total_players")
     rows: list[dict[str, Any]] = []
-    for element in bootstrap.get("elements") or []:
+    for element in parse_elements(bootstrap.get("elements") or [], model=CrowdElement):
         rows.append(
             {
                 "season": season,
                 "event": event,
-                "element_id": int(element["id"]),
+                "element_id": element.id,
                 "captured_at": captured_at.isoformat(),
-                "selected_by_percent": float(element["selected_by_percent"]),
-                "transfers_in_event": _optional_int(element.get("transfers_in_event")),
-                "transfers_out_event": _optional_int(element.get("transfers_out_event")),
+                "selected_by_percent": element.selected_by_percent,
+                "transfers_in_event": element.transfers_in_event,
+                "transfers_out_event": element.transfers_out_event,
                 "total_managers": _optional_int(total_managers),
                 "source_snapshot_id": snapshot_id,
             }

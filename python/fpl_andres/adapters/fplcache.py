@@ -20,6 +20,10 @@ from dataclasses import dataclass
 from datetime import UTC, datetime
 from typing import Any
 
+from pydantic import ValidationError
+
+from fpl_andres.bootstrap import OwnershipElement
+
 __all__ = [
     "CachedSnapshot",
     "FplCacheUnavailable",
@@ -108,16 +112,17 @@ def _captured_at(day: datetime, file_name: str, source_url: str) -> datetime:
 def _row(element: Any, source_url: str) -> OwnershipRow:
     try:
         # selected_by_percent arrives as a string like "30.4".
-        ownership = float(element["selected_by_percent"])
-        return OwnershipRow(
-            element_code=int(element["code"]),
-            element_id=int(element["id"]),
-            now_cost_tenths=int(element["now_cost"]),
-            selected_by_percent=ownership,
-            transfers_in_event=int(element["transfers_in_event"]),
-            transfers_out_event=int(element["transfers_out_event"]),
-        )
-    except (KeyError, TypeError, ValueError) as error:
+        parsed = OwnershipElement.model_validate(element)
+    except ValidationError as error:
         raise FplCacheUnavailable(
-            f"{source_url} has an element missing a price or ownership: {error}"
+            f"{source_url} has an element missing a price or ownership: "
+            f"{error.errors(include_url=False)}"
         ) from error
+    return OwnershipRow(
+        element_code=parsed.code,
+        element_id=parsed.id,
+        now_cost_tenths=parsed.now_cost,
+        selected_by_percent=parsed.selected_by_percent,
+        transfers_in_event=parsed.transfers_in_event,
+        transfers_out_event=parsed.transfers_out_event,
+    )
