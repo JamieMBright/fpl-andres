@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-01T11:01:30.376957+00:00",
+  "generatedAt": "2026-08-01T12:03:03.367485+00:00",
   "season": "2025-26",
   "source": "understat",
   "coverage": 0.9487,
@@ -3675,6 +3675,3264 @@
       "share": 0.0,
       "penaltiesScored": 0,
       "expectedGoalsAtRiskPer90": 0.0
+    }
+  },
+  "shotProfile": {
+    "15157": {
+      "shots": 8,
+      "shotsPer90": 0.9519,
+      "expectedGoalsPerShot": 0.0774,
+      "rawExpectedGoalsPerShot": 0.0273,
+      "qualityWeight": 0.4444,
+      "expectedGoalsPer90": 0.0737
+    },
+    "17761": {
+      "shots": 20,
+      "shotsPer90": 0.6001,
+      "expectedGoalsPerShot": 0.1348,
+      "rawExpectedGoalsPerShot": 0.1435,
+      "qualityWeight": 0.6667,
+      "expectedGoalsPer90": 0.0809
+    },
+    "50175": {
+      "shots": 56,
+      "shotsPer90": 2.0978,
+      "expectedGoalsPerShot": 0.1759,
+      "rawExpectedGoalsPerShot": 0.1863,
+      "qualityWeight": 0.8485,
+      "expectedGoalsPer90": 0.369
+    },
+    "54469": {
+      "shots": 0,
+      "shotsPer90": 0.1136,
+      "expectedGoalsPerShot": 0.1175,
+      "rawExpectedGoalsPerShot": 0.0,
+      "qualityWeight": 0.0,
+      "expectedGoalsPer90": 0.0133
+    },
+    "56979": {
+      "shots": 6,
+      "shotsPer90": 0.3647,
+      "expectedGoalsPerShot": 0.1079,
+      "rawExpectedGoalsPerShot": 0.0919,
+      "qualityWeight": 0.375,
+      "expectedGoalsPer90": 0.0393
+    },
+    "57328": {
+      "shots": 3,
+      "shotsPer90": 0.51,
+      "expectedGoalsPerShot": 0.1111,
+      "rawExpectedGoalsPerShot": 0.0901,
+      "qualityWeight": 0.2308,
+      "expectedGoalsPer90": 0.0567
+    },
+    "58621": {
+      "shots": 4,
+      "shotsPer90": 0.218,
+      "expectedGoalsPerShot": 0.0905,
+      "rawExpectedGoalsPerShot": 0.0233,
+      "qualityWeight": 0.2857,
+      "expectedGoalsPer90": 0.0197
+    },
+    "59735": {
+      "shots": 0,
+      "shotsPer90": 0.1136,
+      "expectedGoalsPerShot": 0.1175,
+      "rawExpectedGoalsPerShot": 0.0,
+      "qualityWeight": 0.0,
+      "expectedGoalsPer90": 0.0133
+    },
+    "60307": {
+      "shots": 18,
+      "shotsPer90": 1.0053,
+      "expectedGoalsPerShot": 0.0867,
+      "rawExpectedGoalsPerShot": 0.0696,
+      "qualityWeight": 0.6429,
+      "expectedGoalsPer90": 0.0872
+    },
+    "60689": {
+      "shots": 23,
+      "shotsPer90": 2.1541,
+      "expectedGoalsPerShot": 0.1376,
+      "rawExpectedGoalsPerShot": 0.1463,
+      "qualityWeight": 0.697,
+      "expectedGoalsPer90": 0.2963
+    },
+    "61256": {
+      "shots": 52,
+      "shotsPer90": 1.7036,
+      "expectedGoalsPerShot": 0.125,
+      "rawExpectedGoalsPerShot": 0.1265,
+      "qualityWeight": 0.8387,
+      "expectedGoalsPer90": 0.213
+    },
+    "67089": {
+      "shots": 0,
+      "shotsPer90": 0.1136,
+      "expectedGoalsPerShot": 0.1175,
+      "rawExpectedGoalsPerShot": 0.0,
+      "qualityWeight": 0.0,
+      "expectedGoalsPer90": 0.0133
+    },
+    "72147": {
+      "shots": 0,
+      "shotsPer90": 0.1136,
+      "expectedGoalsPerShot": 0.1175,
+      "rawExpectedGoalsPerShot": 0.0,
+      "qualityWeight": 0.0,
+      "expectedGoalsPer90": 0.0133
+    },
+    "75115": {
+      "shots": 38,
+      "shotsPer90": 2.618,
+      "expectedGoalsPerShot": 0.1829,
+      "rawExpectedGoalsPerShot": 0.2001,
+      "qualityWeight": 0.7917,
+      "expectedGoalsPer90": 0.4787
+    },
+    "76357": {
+      "shots": 17,
+      "shotsPer90": 1.9569,
+      "expectedGoalsPerShot": 0.0736,
+      "rawExpectedGoalsPerShot": 0.0478,
+      "qualityWeight": 0.6296,
+      "expectedGoalsPer90": 0.144
+    },
+    "77794": {
+      "shots": 2,
+      "shotsPer90": 0.2144,
+      "expectedGoalsPerShot": 0.1059,
+      "rawExpectedGoalsPerShot": 0.0479,
+      "qualityWeight": 0.1667,
+      "expectedGoalsPer90": 0.0227
+    },
+    "78916": {
+      "shots": 10,
+      "shotsPer90": 0.4809,
+      "expectedGoalsPerShot": 0.1048,
+      "rawExpectedGoalsPerShot": 0.0921,
+      "qualityWeight": 0.5,
+      "expectedGoalsPer90": 0.0504
+    },
+    "79602": {
+      "shots": 0,
+      "shotsPer90": 0.1136,
+      "expectedGoalsPerShot": 0.1175,
+      "rawExpectedGoalsPerShot": 0.0,
+      "qualityWeight": 0.0,
+      "expectedGoalsPer90": 0.0133
+    },
+    "80201": {
+      "shots": 0,
+      "shotsPer90": 0.1136,
+      "expectedGoalsPerShot": 0.1175,
+      "rawExpectedGoalsPerShot": 0.0,
+      "qualityWeight": 0.0,
+      "expectedGoalsPer90": 0.0133
+    },
+    "80801": {
+      "shots": 29,
+      "shotsPer90": 1.2216,
+      "expectedGoalsPerShot": 0.0792,
+      "rawExpectedGoalsPerShot": 0.066,
+      "qualityWeight": 0.7436,
+      "expectedGoalsPer90": 0.0967
+    },
+    "83299": {
+      "shots": 23,
+      "shotsPer90": 0.7716,
+      "expectedGoalsPerShot": 0.0761,
+      "rawExpectedGoalsPerShot": 0.0581,
+      "qualityWeight": 0.697,
+      "expectedGoalsPer90": 0.0587
+    },
+    "84182": {
+      "shots": 0,
+      "shotsPer90": 0.1136,
+      "expectedGoalsPerShot": 0.1175,
+      "rawExpectedGoalsPerShot": 0.0,
+      "qualityWeight": 0.0,
+      "expectedGoalsPer90": 0.0133
+    },
+    "84450": {
+      "shots": 21,
+      "shotsPer90": 0.7009,
+      "expectedGoalsPerShot": 0.0639,
+      "rawExpectedGoalsPerShot": 0.0384,
+      "qualityWeight": 0.6774,
+      "expectedGoalsPer90": 0.0448
+    },
+    "85633": {
+      "shots": 0,
+      "shotsPer90": 0.1136,
+      "expectedGoalsPerShot": 0.1175,
+      "rawExpectedGoalsPerShot": 0.0,
+      "qualityWeight": 0.0,
+      "expectedGoalsPer90": 0.0133
+    },
+    "87835": {
+      "shots": 3,
+      "shotsPer90": 0.4092,
+      "expectedGoalsPerShot": 0.0967,
+      "rawExpectedGoalsPerShot": 0.0274,
+      "qualityWeight": 0.2308,
+      "expectedGoalsPer90": 0.0396
+    },
+    "88248": {
+      "shots": 0,
+      "shotsPer90": 0.1136,
+      "expectedGoalsPerShot": 0.1175,
+      "rawExpectedGoalsPerShot": 0.0,
+      "qualityWeight": 0.0,
+      "expectedGoalsPer90": 0.0133
+    },
+    "88894": {
+      "shots": 18,
+      "shotsPer90": 1.896,
+      "expectedGoalsPerShot": 0.1103,
+      "rawExpectedGoalsPerShot": 0.1063,
+      "qualityWeight": 0.6429,
+      "expectedGoalsPer90": 0.2091
+    },
+    "91889": {
+      "shots": 9,
+      "shotsPer90": 1.866,
+      "expectedGoalsPerShot": 0.1136,
+      "rawExpectedGoalsPerShot": 0.1092,
+      "qualityWeight": 0.4737,
+      "expectedGoalsPer90": 0.2119
+    },
+    "95658": {
+      "shots": 14,
+      "shotsPer90": 0.7942,
+      "expectedGoalsPerShot": 0.098,
+      "rawExpectedGoalsPerShot": 0.084,
+      "qualityWeight": 0.5833,
+      "expectedGoalsPer90": 0.0778
+    },
+    "97032": {
+      "shots": 30,
+      "shotsPer90": 0.8241,
+      "expectedGoalsPerShot": 0.1516,
+      "rawExpectedGoalsPerShot": 0.163,
+      "qualityWeight": 0.75,
+      "expectedGoalsPer90": 0.125
+    },
+    "97299": {
+      "shots": 0,
+      "shotsPer90": 0.1136,
+      "expectedGoalsPerShot": 0.1175,
+      "rawExpectedGoalsPerShot": 0.0,
+      "qualityWeight": 0.0,
+      "expectedGoalsPer90": 0.0133
+    },
+    "98747": {
+      "shots": 1,
+      "shotsPer90": 0.147,
+      "expectedGoalsPerShot": 0.1187,
+      "rawExpectedGoalsPerShot": 0.1315,
+      "qualityWeight": 0.0909,
+      "expectedGoalsPer90": 0.0175
+    },
+    "98980": {
+      "shots": 0,
+      "shotsPer90": 0.1136,
+      "expectedGoalsPerShot": 0.1175,
+      "rawExpectedGoalsPerShot": 0.0,
+      "qualityWeight": 0.0,
+      "expectedGoalsPer90": 0.0133
+    },
+    "101178": {
+      "shots": 5,
+      "shotsPer90": 0.4879,
+      "expectedGoalsPerShot": 0.0904,
+      "rawExpectedGoalsPerShot": 0.0362,
+      "qualityWeight": 0.3333,
+      "expectedGoalsPer90": 0.0441
+    },
+    "101188": {
+      "shots": 14,
+      "shotsPer90": 0.7242,
+      "expectedGoalsPerShot": 0.0782,
+      "rawExpectedGoalsPerShot": 0.0502,
+      "qualityWeight": 0.5833,
+      "expectedGoalsPer90": 0.0567
+    },
+    "101982": {
+      "shots": 0,
+      "shotsPer90": 0.1136,
+      "expectedGoalsPerShot": 0.1175,
+      "rawExpectedGoalsPerShot": 0.0,
+      "qualityWeight": 0.0,
+      "expectedGoalsPer90": 0.0133
+    },
+    "106611": {
+      "shots": 26,
+      "shotsPer90": 0.928,
+      "expectedGoalsPerShot": 0.1318,
+      "rawExpectedGoalsPerShot": 0.1373,
+      "qualityWeight": 0.7222,
+      "expectedGoalsPer90": 0.1223
+    },
+    "106760": {
+      "shots": 10,
+      "shotsPer90": 0.3613,
+      "expectedGoalsPerShot": 0.0887,
+      "rawExpectedGoalsPerShot": 0.0599,
+      "qualityWeight": 0.5,
+      "expectedGoalsPer90": 0.032
+    },
+    "108413": {
+      "shots": 17,
+      "shotsPer90": 0.9923,
+      "expectedGoalsPerShot": 0.091,
+      "rawExpectedGoalsPerShot": 0.0754,
+      "qualityWeight": 0.6296,
+      "expectedGoalsPer90": 0.0903
+    },
+    "109646": {
+      "shots": 2,
+      "shotsPer90": 0.3184,
+      "expectedGoalsPerShot": 0.1039,
+      "rawExpectedGoalsPerShot": 0.0362,
+      "qualityWeight": 0.1667,
+      "expectedGoalsPer90": 0.0331
+    },
+    "110504": {
+      "shots": 12,
+      "shotsPer90": 1.5536,
+      "expectedGoalsPerShot": 0.0818,
+      "rawExpectedGoalsPerShot": 0.0521,
+      "qualityWeight": 0.5455,
+      "expectedGoalsPer90": 0.1271
+    },
+    "111234": {
+      "shots": 0,
+      "shotsPer90": 0.1136,
+      "expectedGoalsPerShot": 0.1175,
+      "rawExpectedGoalsPerShot": 0.0,
+      "qualityWeight": 0.0,
+      "expectedGoalsPer90": 0.0133
+    },
+    "111317": {
+      "shots": 48,
+      "shotsPer90": 3.378,
+      "expectedGoalsPerShot": 0.133,
+      "rawExpectedGoalsPerShot": 0.1363,
+      "qualityWeight": 0.8276,
+      "expectedGoalsPer90": 0.4493
+    },
+    "111478": {
+      "shots": 4,
+      "shotsPer90": 0.4297,
+      "expectedGoalsPerShot": 0.1599,
+      "rawExpectedGoalsPerShot": 0.2661,
+      "qualityWeight": 0.2857,
+      "expectedGoalsPer90": 0.0687
+    },
+    "114243": {
+      "shots": 42,
+      "shotsPer90": 2.2007,
+      "expectedGoalsPerShot": 0.0826,
+      "rawExpectedGoalsPerShot": 0.0743,
+      "qualityWeight": 0.8077,
+      "expectedGoalsPer90": 0.1817
+    },
+    "114283": {
+      "shots": 26,
+      "shotsPer90": 1.3938,
+      "expectedGoalsPerShot": 0.1183,
+      "rawExpectedGoalsPerShot": 0.1187,
+      "qualityWeight": 0.7222,
+      "expectedGoalsPer90": 0.1649
+    },
+    "116216": {
+      "shots": 53,
+      "shotsPer90": 2.2325,
+      "expectedGoalsPerShot": 0.1258,
+      "rawExpectedGoalsPerShot": 0.1274,
+      "qualityWeight": 0.8413,
+      "expectedGoalsPer90": 0.2809
+    },
+    "116535": {
+      "shots": 0,
+      "shotsPer90": 0.1136,
+      "expectedGoalsPerShot": 0.1175,
+      "rawExpectedGoalsPerShot": 0.0,
+      "qualityWeight": 0.0,
+      "expectedGoalsPer90": 0.0133
+    },
+    "118748": {
+      "shots": 67,
+      "shotsPer90": 2.6226,
+      "expectedGoalsPerShot": 0.1201,
+      "rawExpectedGoalsPerShot": 0.1205,
+      "qualityWeight": 0.8701,
+      "expectedGoalsPer90": 0.3151
+    },
+    "119471": {
+      "shots": 17,
+      "shotsPer90": 1.37,
+      "expectedGoalsPerShot": 0.0792,
+      "rawExpectedGoalsPerShot": 0.0567,
+      "qualityWeight": 0.6296,
+      "expectedGoalsPer90": 0.1085
+    },
+    "122798": {
+      "shots": 10,
+      "shotsPer90": 0.8118,
+      "expectedGoalsPerShot": 0.1111,
+      "rawExpectedGoalsPerShot": 0.1047,
+      "qualityWeight": 0.5,
+      "expectedGoalsPer90": 0.0902
+    },
+    "122806": {
+      "shots": 28,
+      "shotsPer90": 1.1347,
+      "expectedGoalsPerShot": 0.1098,
+      "rawExpectedGoalsPerShot": 0.1071,
+      "qualityWeight": 0.7368,
+      "expectedGoalsPer90": 0.1246
+    },
+    "126184": {
+      "shots": 7,
+      "shotsPer90": 0.9462,
+      "expectedGoalsPerShot": 0.1336,
+      "rawExpectedGoalsPerShot": 0.1566,
+      "qualityWeight": 0.4118,
+      "expectedGoalsPer90": 0.1264
+    },
+    "135720": {
+      "shots": 11,
+      "shotsPer90": 0.712,
+      "expectedGoalsPerShot": 0.0809,
+      "rawExpectedGoalsPerShot": 0.0477,
+      "qualityWeight": 0.5238,
+      "expectedGoalsPer90": 0.0576
+    },
+    "141746": {
+      "shots": 85,
+      "shotsPer90": 2.3475,
+      "expectedGoalsPerShot": 0.0899,
+      "rawExpectedGoalsPerShot": 0.0866,
+      "qualityWeight": 0.8947,
+      "expectedGoalsPer90": 0.211
+    },
+    "149065": {
+      "shots": 0,
+      "shotsPer90": 0.1136,
+      "expectedGoalsPerShot": 0.1175,
+      "rawExpectedGoalsPerShot": 0.0,
+      "qualityWeight": 0.0,
+      "expectedGoalsPer90": 0.0133
+    },
+    "149484": {
+      "shots": 9,
+      "shotsPer90": 0.6684,
+      "expectedGoalsPerShot": 0.1404,
+      "rawExpectedGoalsPerShot": 0.1658,
+      "qualityWeight": 0.4737,
+      "expectedGoalsPer90": 0.0938
+    },
+    "152551": {
+      "shots": 19,
+      "shotsPer90": 1.0226,
+      "expectedGoalsPerShot": 0.1167,
+      "rawExpectedGoalsPerShot": 0.1162,
+      "qualityWeight": 0.6552,
+      "expectedGoalsPer90": 0.1193
+    },
+    "153133": {
+      "shots": 39,
+      "shotsPer90": 1.391,
+      "expectedGoalsPerShot": 0.073,
+      "rawExpectedGoalsPerShot": 0.0616,
+      "qualityWeight": 0.7959,
+      "expectedGoalsPer90": 0.1016
+    },
+    "153682": {
+      "shots": 78,
+      "shotsPer90": 2.4102,
+      "expectedGoalsPerShot": 0.0788,
+      "rawExpectedGoalsPerShot": 0.0738,
+      "qualityWeight": 0.8864,
+      "expectedGoalsPer90": 0.1899
+    },
+    "154561": {
+      "shots": 0,
+      "shotsPer90": 0.1136,
+      "expectedGoalsPerShot": 0.1175,
+      "rawExpectedGoalsPerShot": 0.0,
+      "qualityWeight": 0.0,
+      "expectedGoalsPer90": 0.0133
+    },
+    "154566": {
+      "shots": 20,
+      "shotsPer90": 1.7516,
+      "expectedGoalsPerShot": 0.1587,
+      "rawExpectedGoalsPerShot": 0.1793,
+      "qualityWeight": 0.6667,
+      "expectedGoalsPer90": 0.278
+    },
+    "155408": {
+      "shots": 3,
+      "shotsPer90": 0.4025,
+      "expectedGoalsPerShot": 0.0949,
+      "rawExpectedGoalsPerShot": 0.0199,
+      "qualityWeight": 0.2308,
+      "expectedGoalsPer90": 0.0382
+    },
+    "155511": {
+      "shots": 18,
+      "shotsPer90": 1.3597,
+      "expectedGoalsPerShot": 0.1151,
+      "rawExpectedGoalsPerShot": 0.1137,
+      "qualityWeight": 0.6429,
+      "expectedGoalsPer90": 0.1565
+    },
+    "158499": {
+      "shots": 25,
+      "shotsPer90": 2.2632,
+      "expectedGoalsPerShot": 0.0847,
+      "rawExpectedGoalsPerShot": 0.0716,
+      "qualityWeight": 0.7143,
+      "expectedGoalsPer90": 0.1918
+    },
+    "158534": {
+      "shots": 5,
+      "shotsPer90": 0.4103,
+      "expectedGoalsPerShot": 0.1575,
+      "rawExpectedGoalsPerShot": 0.2376,
+      "qualityWeight": 0.3333,
+      "expectedGoalsPer90": 0.0646
+    },
+    "159506": {
+      "shots": 12,
+      "shotsPer90": 0.723,
+      "expectedGoalsPerShot": 0.072,
+      "rawExpectedGoalsPerShot": 0.0341,
+      "qualityWeight": 0.5455,
+      "expectedGoalsPer90": 0.0521
+    },
+    "165809": {
+      "shots": 30,
+      "shotsPer90": 0.9466,
+      "expectedGoalsPerShot": 0.1019,
+      "rawExpectedGoalsPerShot": 0.0967,
+      "qualityWeight": 0.75,
+      "expectedGoalsPer90": 0.0964
+    },
+    "166477": {
+      "shots": 14,
+      "shotsPer90": 0.7269,
+      "expectedGoalsPerShot": 0.1102,
+      "rawExpectedGoalsPerShot": 0.105,
+      "qualityWeight": 0.5833,
+      "expectedGoalsPer90": 0.0801
+    },
+    "166989": {
+      "shots": 24,
+      "shotsPer90": 1.1582,
+      "expectedGoalsPerShot": 0.0887,
+      "rawExpectedGoalsPerShot": 0.0767,
+      "qualityWeight": 0.7059,
+      "expectedGoalsPer90": 0.1027
+    },
+    "167074": {
+      "shots": 16,
+      "shotsPer90": 0.8316,
+      "expectedGoalsPerShot": 0.0732,
+      "rawExpectedGoalsPerShot": 0.0455,
+      "qualityWeight": 0.6154,
+      "expectedGoalsPer90": 0.0609
+    },
+    "167512": {
+      "shots": 4,
+      "shotsPer90": 0.6963,
+      "expectedGoalsPerShot": 0.0989,
+      "rawExpectedGoalsPerShot": 0.0525,
+      "qualityWeight": 0.2857,
+      "expectedGoalsPer90": 0.0689
+    },
+    "167887": {
+      "shots": 15,
+      "shotsPer90": 0.82,
+      "expectedGoalsPerShot": 0.0887,
+      "rawExpectedGoalsPerShot": 0.0696,
+      "qualityWeight": 0.6,
+      "expectedGoalsPer90": 0.0728
+    },
+    "169528": {
+      "shots": 6,
+      "shotsPer90": 0.4411,
+      "expectedGoalsPerShot": 0.0869,
+      "rawExpectedGoalsPerShot": 0.036,
+      "qualityWeight": 0.375,
+      "expectedGoalsPer90": 0.0383
+    },
+    "171287": {
+      "shots": 4,
+      "shotsPer90": 0.6751,
+      "expectedGoalsPerShot": 0.0982,
+      "rawExpectedGoalsPerShot": 0.0499,
+      "qualityWeight": 0.2857,
+      "expectedGoalsPer90": 0.0663
+    },
+    "171314": {
+      "shots": 10,
+      "shotsPer90": 0.4917,
+      "expectedGoalsPerShot": 0.0806,
+      "rawExpectedGoalsPerShot": 0.0437,
+      "qualityWeight": 0.5,
+      "expectedGoalsPer90": 0.0396
+    },
+    "172567": {
+      "shots": 11,
+      "shotsPer90": 0.6948,
+      "expectedGoalsPerShot": 0.1042,
+      "rawExpectedGoalsPerShot": 0.0922,
+      "qualityWeight": 0.5238,
+      "expectedGoalsPer90": 0.0724
+    },
+    "172649": {
+      "shots": 0,
+      "shotsPer90": 0.1136,
+      "expectedGoalsPerShot": 0.1175,
+      "rawExpectedGoalsPerShot": 0.0,
+      "qualityWeight": 0.0,
+      "expectedGoalsPer90": 0.0133
+    },
+    "173879": {
+      "shots": 9,
+      "shotsPer90": 2.995,
+      "expectedGoalsPerShot": 0.1696,
+      "rawExpectedGoalsPerShot": 0.2276,
+      "qualityWeight": 0.4737,
+      "expectedGoalsPer90": 0.5081
+    },
+    "174592": {
+      "shots": 23,
+      "shotsPer90": 1.8811,
+      "expectedGoalsPerShot": 0.1048,
+      "rawExpectedGoalsPerShot": 0.0993,
+      "qualityWeight": 0.697,
+      "expectedGoalsPer90": 0.1971
+    },
+    "174594": {
+      "shots": 30,
+      "shotsPer90": 2.3719,
+      "expectedGoalsPerShot": 0.1758,
+      "rawExpectedGoalsPerShot": 0.1952,
+      "qualityWeight": 0.75,
+      "expectedGoalsPer90": 0.4169
+    },
+    "174874": {
+      "shots": 16,
+      "shotsPer90": 0.5633,
+      "expectedGoalsPerShot": 0.109,
+      "rawExpectedGoalsPerShot": 0.1037,
+      "qualityWeight": 0.6154,
+      "expectedGoalsPer90": 0.0614
+    },
+    "177815": {
+      "shots": 73,
+      "shotsPer90": 2.2779,
+      "expectedGoalsPerShot": 0.1933,
+      "rawExpectedGoalsPerShot": 0.2036,
+      "qualityWeight": 0.8795,
+      "expectedGoalsPer90": 0.4402
+    },
+    "178186": {
+      "shots": 79,
+      "shotsPer90": 1.9868,
+      "expectedGoalsPerShot": 0.0976,
+      "rawExpectedGoalsPerShot": 0.0951,
+      "qualityWeight": 0.8876,
+      "expectedGoalsPer90": 0.1939
+    },
+    "178301": {
+      "shots": 83,
+      "shotsPer90": 2.4255,
+      "expectedGoalsPerShot": 0.2151,
+      "rawExpectedGoalsPerShot": 0.2268,
+      "qualityWeight": 0.8925,
+      "expectedGoalsPer90": 0.5217
+    },
+    "179268": {
+      "shots": 20,
+      "shotsPer90": 0.7105,
+      "expectedGoalsPerShot": 0.102,
+      "rawExpectedGoalsPerShot": 0.0943,
+      "qualityWeight": 0.6667,
+      "expectedGoalsPer90": 0.0725
+    },
+    "179458": {
+      "shots": 17,
+      "shotsPer90": 1.4864,
+      "expectedGoalsPerShot": 0.0965,
+      "rawExpectedGoalsPerShot": 0.0842,
+      "qualityWeight": 0.6296,
+      "expectedGoalsPer90": 0.1435
+    },
+    "180135": {
+      "shots": 16,
+      "shotsPer90": 1.4109,
+      "expectedGoalsPerShot": 0.0982,
+      "rawExpectedGoalsPerShot": 0.0861,
+      "qualityWeight": 0.6154,
+      "expectedGoalsPer90": 0.1385
+    },
+    "180736": {
+      "shots": 16,
+      "shotsPer90": 0.5796,
+      "expectedGoalsPerShot": 0.116,
+      "rawExpectedGoalsPerShot": 0.1151,
+      "qualityWeight": 0.6154,
+      "expectedGoalsPer90": 0.0672
+    },
+    "180804": {
+      "shots": 2,
+      "shotsPer90": 0.2476,
+      "expectedGoalsPerShot": 0.1444,
+      "rawExpectedGoalsPerShot": 0.2791,
+      "qualityWeight": 0.1667,
+      "expectedGoalsPer90": 0.0357
+    },
+    "180974": {
+      "shots": 32,
+      "shotsPer90": 1.4374,
+      "expectedGoalsPerShot": 0.0798,
+      "rawExpectedGoalsPerShot": 0.0681,
+      "qualityWeight": 0.7619,
+      "expectedGoalsPer90": 0.1148
+    },
+    "184029": {
+      "shots": 22,
+      "shotsPer90": 1.4365,
+      "expectedGoalsPerShot": 0.0748,
+      "rawExpectedGoalsPerShot": 0.0554,
+      "qualityWeight": 0.6875,
+      "expectedGoalsPer90": 0.1075
+    },
+    "184254": {
+      "shots": 0,
+      "shotsPer90": 0.1136,
+      "expectedGoalsPerShot": 0.1175,
+      "rawExpectedGoalsPerShot": 0.0,
+      "qualityWeight": 0.0,
+      "expectedGoalsPer90": 0.0133
+    },
+    "184341": {
+      "shots": 19,
+      "shotsPer90": 1.6209,
+      "expectedGoalsPerShot": 0.1007,
+      "rawExpectedGoalsPerShot": 0.0918,
+      "qualityWeight": 0.6552,
+      "expectedGoalsPer90": 0.1632
+    },
+    "184349": {
+      "shots": 16,
+      "shotsPer90": 0.8218,
+      "expectedGoalsPerShot": 0.124,
+      "rawExpectedGoalsPerShot": 0.128,
+      "qualityWeight": 0.6154,
+      "expectedGoalsPer90": 0.1019
+    },
+    "184667": {
+      "shots": 3,
+      "shotsPer90": 0.3726,
+      "expectedGoalsPerShot": 0.1024,
+      "rawExpectedGoalsPerShot": 0.052,
+      "qualityWeight": 0.2308,
+      "expectedGoalsPer90": 0.0381
+    },
+    "184754": {
+      "shots": 19,
+      "shotsPer90": 1.1612,
+      "expectedGoalsPerShot": 0.106,
+      "rawExpectedGoalsPerShot": 0.1,
+      "qualityWeight": 0.6552,
+      "expectedGoalsPer90": 0.1231
+    },
+    "191866": {
+      "shots": 10,
+      "shotsPer90": 0.5613,
+      "expectedGoalsPerShot": 0.1114,
+      "rawExpectedGoalsPerShot": 0.1054,
+      "qualityWeight": 0.5,
+      "expectedGoalsPer90": 0.0625
+    },
+    "194010": {
+      "shots": 5,
+      "shotsPer90": 0.4216,
+      "expectedGoalsPerShot": 0.088,
+      "rawExpectedGoalsPerShot": 0.0291,
+      "qualityWeight": 0.3333,
+      "expectedGoalsPer90": 0.0371
+    },
+    "195384": {
+      "shots": 22,
+      "shotsPer90": 1.892,
+      "expectedGoalsPerShot": 0.1998,
+      "rawExpectedGoalsPerShot": 0.2372,
+      "qualityWeight": 0.6875,
+      "expectedGoalsPer90": 0.378
+    },
+    "195546": {
+      "shots": 49,
+      "shotsPer90": 2.3458,
+      "expectedGoalsPerShot": 0.0841,
+      "rawExpectedGoalsPerShot": 0.0772,
+      "qualityWeight": 0.8305,
+      "expectedGoalsPer90": 0.1972
+    },
+    "198869": {
+      "shots": 5,
+      "shotsPer90": 0.6897,
+      "expectedGoalsPerShot": 0.0972,
+      "rawExpectedGoalsPerShot": 0.0566,
+      "qualityWeight": 0.3333,
+      "expectedGoalsPer90": 0.067
+    },
+    "199598": {
+      "shots": 26,
+      "shotsPer90": 0.7864,
+      "expectedGoalsPerShot": 0.0867,
+      "rawExpectedGoalsPerShot": 0.0749,
+      "qualityWeight": 0.7222,
+      "expectedGoalsPer90": 0.0682
+    },
+    "199796": {
+      "shots": 30,
+      "shotsPer90": 0.9129,
+      "expectedGoalsPerShot": 0.0598,
+      "rawExpectedGoalsPerShot": 0.0406,
+      "qualityWeight": 0.75,
+      "expectedGoalsPer90": 0.0546
+    },
+    "199798": {
+      "shots": 11,
+      "shotsPer90": 0.407,
+      "expectedGoalsPerShot": 0.1071,
+      "rawExpectedGoalsPerShot": 0.0976,
+      "qualityWeight": 0.5238,
+      "expectedGoalsPer90": 0.0436
+    },
+    "200089": {
+      "shots": 17,
+      "shotsPer90": 1.5201,
+      "expectedGoalsPerShot": 0.0948,
+      "rawExpectedGoalsPerShot": 0.0815,
+      "qualityWeight": 0.6296,
+      "expectedGoalsPer90": 0.1442
+    },
+    "200617": {
+      "shots": 14,
+      "shotsPer90": 2.2214,
+      "expectedGoalsPerShot": 0.0823,
+      "rawExpectedGoalsPerShot": 0.0571,
+      "qualityWeight": 0.5833,
+      "expectedGoalsPer90": 0.1827
+    },
+    "200720": {
+      "shots": 0,
+      "shotsPer90": 0.1136,
+      "expectedGoalsPerShot": 0.1175,
+      "rawExpectedGoalsPerShot": 0.0,
+      "qualityWeight": 0.0,
+      "expectedGoalsPer90": 0.0133
+    },
+    "200785": {
+      "shots": 10,
+      "shotsPer90": 0.5623,
+      "expectedGoalsPerShot": 0.1052,
+      "rawExpectedGoalsPerShot": 0.0929,
+      "qualityWeight": 0.5,
+      "expectedGoalsPer90": 0.0591
+    },
+    "200834": {
+      "shots": 26,
+      "shotsPer90": 0.8676,
+      "expectedGoalsPerShot": 0.1098,
+      "rawExpectedGoalsPerShot": 0.1069,
+      "qualityWeight": 0.7222,
+      "expectedGoalsPer90": 0.0953
+    },
+    "201595": {
+      "shots": 0,
+      "shotsPer90": 0.1136,
+      "expectedGoalsPerShot": 0.1175,
+      "rawExpectedGoalsPerShot": 0.0,
+      "qualityWeight": 0.0,
+      "expectedGoalsPer90": 0.0133
+    },
+    "201658": {
+      "shots": 70,
+      "shotsPer90": 2.1539,
+      "expectedGoalsPerShot": 0.1131,
+      "rawExpectedGoalsPerShot": 0.1125,
+      "qualityWeight": 0.875,
+      "expectedGoalsPer90": 0.2437
+    },
+    "201666": {
+      "shots": 58,
+      "shotsPer90": 2.5265,
+      "expectedGoalsPerShot": 0.1357,
+      "rawExpectedGoalsPerShot": 0.1388,
+      "qualityWeight": 0.8529,
+      "expectedGoalsPer90": 0.3428
+    },
+    "201895": {
+      "shots": 24,
+      "shotsPer90": 0.8059,
+      "expectedGoalsPerShot": 0.08,
+      "rawExpectedGoalsPerShot": 0.0644,
+      "qualityWeight": 0.7059,
+      "expectedGoalsPer90": 0.0645
+    },
+    "202993": {
+      "shots": 13,
+      "shotsPer90": 0.6589,
+      "expectedGoalsPerShot": 0.0936,
+      "rawExpectedGoalsPerShot": 0.0752,
+      "qualityWeight": 0.5652,
+      "expectedGoalsPer90": 0.0616
+    },
+    "204120": {
+      "shots": 1,
+      "shotsPer90": 0.2147,
+      "expectedGoalsPerShot": 0.1087,
+      "rawExpectedGoalsPerShot": 0.0207,
+      "qualityWeight": 0.0909,
+      "expectedGoalsPer90": 0.0233
+    },
+    "204480": {
+      "shots": 40,
+      "shotsPer90": 1.155,
+      "expectedGoalsPerShot": 0.0979,
+      "rawExpectedGoalsPerShot": 0.093,
+      "qualityWeight": 0.8,
+      "expectedGoalsPer90": 0.1131
+    },
+    "204580": {
+      "shots": 12,
+      "shotsPer90": 0.7976,
+      "expectedGoalsPerShot": 0.0875,
+      "rawExpectedGoalsPerShot": 0.0625,
+      "qualityWeight": 0.5455,
+      "expectedGoalsPer90": 0.0698
+    },
+    "204646": {
+      "shots": 26,
+      "shotsPer90": 3.6236,
+      "expectedGoalsPerShot": 0.1643,
+      "rawExpectedGoalsPerShot": 0.1823,
+      "qualityWeight": 0.7222,
+      "expectedGoalsPer90": 0.5952
+    },
+    "204716": {
+      "shots": 12,
+      "shotsPer90": 0.4238,
+      "expectedGoalsPerShot": 0.1424,
+      "rawExpectedGoalsPerShot": 0.1632,
+      "qualityWeight": 0.5455,
+      "expectedGoalsPer90": 0.0604
+    },
+    "204936": {
+      "shots": 0,
+      "shotsPer90": 0.1136,
+      "expectedGoalsPerShot": 0.1175,
+      "rawExpectedGoalsPerShot": 0.0,
+      "qualityWeight": 0.0,
+      "expectedGoalsPer90": 0.0133
+    },
+    "204968": {
+      "shots": 9,
+      "shotsPer90": 1.439,
+      "expectedGoalsPerShot": 0.0973,
+      "rawExpectedGoalsPerShot": 0.075,
+      "qualityWeight": 0.4737,
+      "expectedGoalsPer90": 0.1401
+    },
+    "205533": {
+      "shots": 15,
+      "shotsPer90": 3.1817,
+      "expectedGoalsPerShot": 0.1247,
+      "rawExpectedGoalsPerShot": 0.1295,
+      "qualityWeight": 0.6,
+      "expectedGoalsPer90": 0.3968
+    },
+    "205651": {
+      "shots": 19,
+      "shotsPer90": 4.0098,
+      "expectedGoalsPerShot": 0.1776,
+      "rawExpectedGoalsPerShot": 0.2093,
+      "qualityWeight": 0.6552,
+      "expectedGoalsPer90": 0.7122
+    },
+    "206325": {
+      "shots": 4,
+      "shotsPer90": 1.0473,
+      "expectedGoalsPerShot": 0.0894,
+      "rawExpectedGoalsPerShot": 0.0192,
+      "qualityWeight": 0.2857,
+      "expectedGoalsPer90": 0.0936
+    },
+    "206915": {
+      "shots": 22,
+      "shotsPer90": 1.0466,
+      "expectedGoalsPerShot": 0.1119,
+      "rawExpectedGoalsPerShot": 0.1094,
+      "qualityWeight": 0.6875,
+      "expectedGoalsPer90": 0.1171
+    },
+    "207189": {
+      "shots": 14,
+      "shotsPer90": 0.4999,
+      "expectedGoalsPerShot": 0.105,
+      "rawExpectedGoalsPerShot": 0.0962,
+      "qualityWeight": 0.5833,
+      "expectedGoalsPer90": 0.0525
+    },
+    "207283": {
+      "shots": 29,
+      "shotsPer90": 1.1539,
+      "expectedGoalsPerShot": 0.0708,
+      "rawExpectedGoalsPerShot": 0.0548,
+      "qualityWeight": 0.7436,
+      "expectedGoalsPer90": 0.0817
+    },
+    "208912": {
+      "shots": 1,
+      "shotsPer90": 0.283,
+      "expectedGoalsPerShot": 0.1102,
+      "rawExpectedGoalsPerShot": 0.0381,
+      "qualityWeight": 0.0909,
+      "expectedGoalsPer90": 0.0312
+    },
+    "209041": {
+      "shots": 6,
+      "shotsPer90": 1.1367,
+      "expectedGoalsPerShot": 0.0855,
+      "rawExpectedGoalsPerShot": 0.0322,
+      "qualityWeight": 0.375,
+      "expectedGoalsPer90": 0.0972
+    },
+    "209046": {
+      "shots": 30,
+      "shotsPer90": 1.4221,
+      "expectedGoalsPerShot": 0.1032,
+      "rawExpectedGoalsPerShot": 0.0984,
+      "qualityWeight": 0.75,
+      "expectedGoalsPer90": 0.1467
+    },
+    "209243": {
+      "shots": 10,
+      "shotsPer90": 1.0554,
+      "expectedGoalsPerShot": 0.0972,
+      "rawExpectedGoalsPerShot": 0.0769,
+      "qualityWeight": 0.5,
+      "expectedGoalsPer90": 0.1026
+    },
+    "209244": {
+      "shots": 55,
+      "shotsPer90": 2.2523,
+      "expectedGoalsPerShot": 0.121,
+      "rawExpectedGoalsPerShot": 0.1216,
+      "qualityWeight": 0.8462,
+      "expectedGoalsPer90": 0.2725
+    },
+    "209365": {
+      "shots": 11,
+      "shotsPer90": 0.8751,
+      "expectedGoalsPerShot": 0.119,
+      "rawExpectedGoalsPerShot": 0.1203,
+      "qualityWeight": 0.5238,
+      "expectedGoalsPer90": 0.1041
+    },
+    "209400": {
+      "shots": 19,
+      "shotsPer90": 0.9135,
+      "expectedGoalsPerShot": 0.0918,
+      "rawExpectedGoalsPerShot": 0.0783,
+      "qualityWeight": 0.6552,
+      "expectedGoalsPer90": 0.0838
+    },
+    "210156": {
+      "shots": 15,
+      "shotsPer90": 2.8687,
+      "expectedGoalsPerShot": 0.2209,
+      "rawExpectedGoalsPerShot": 0.2898,
+      "qualityWeight": 0.6,
+      "expectedGoalsPer90": 0.6336
+    },
+    "210462": {
+      "shots": 16,
+      "shotsPer90": 0.7275,
+      "expectedGoalsPerShot": 0.1056,
+      "rawExpectedGoalsPerShot": 0.0981,
+      "qualityWeight": 0.6154,
+      "expectedGoalsPer90": 0.0768
+    },
+    "212314": {
+      "shots": 18,
+      "shotsPer90": 0.9559,
+      "expectedGoalsPerShot": 0.1255,
+      "rawExpectedGoalsPerShot": 0.13,
+      "qualityWeight": 0.6429,
+      "expectedGoalsPer90": 0.12
+    },
+    "212319": {
+      "shots": 61,
+      "shotsPer90": 2.679,
+      "expectedGoalsPerShot": 0.1555,
+      "rawExpectedGoalsPerShot": 0.1617,
+      "qualityWeight": 0.8592,
+      "expectedGoalsPer90": 0.4166
+    },
+    "214048": {
+      "shots": 7,
+      "shotsPer90": 0.4789,
+      "expectedGoalsPerShot": 0.1377,
+      "rawExpectedGoalsPerShot": 0.1667,
+      "qualityWeight": 0.4118,
+      "expectedGoalsPer90": 0.066
+    },
+    "214225": {
+      "shots": 18,
+      "shotsPer90": 0.6071,
+      "expectedGoalsPerShot": 0.1079,
+      "rawExpectedGoalsPerShot": 0.1026,
+      "qualityWeight": 0.6429,
+      "expectedGoalsPer90": 0.0655
+    },
+    "214590": {
+      "shots": 0,
+      "shotsPer90": 0.1136,
+      "expectedGoalsPerShot": 0.1175,
+      "rawExpectedGoalsPerShot": 0.0,
+      "qualityWeight": 0.0,
+      "expectedGoalsPer90": 0.0133
+    },
+    "215059": {
+      "shots": 0,
+      "shotsPer90": 0.1136,
+      "expectedGoalsPerShot": 0.1175,
+      "rawExpectedGoalsPerShot": 0.0,
+      "qualityWeight": 0.0,
+      "expectedGoalsPer90": 0.0133
+    },
+    "215136": {
+      "shots": 46,
+      "shotsPer90": 1.2769,
+      "expectedGoalsPerShot": 0.0544,
+      "rawExpectedGoalsPerShot": 0.0407,
+      "qualityWeight": 0.8214,
+      "expectedGoalsPer90": 0.0694
+    },
+    "215379": {
+      "shots": 44,
+      "shotsPer90": 1.1842,
+      "expectedGoalsPerShot": 0.0714,
+      "rawExpectedGoalsPerShot": 0.061,
+      "qualityWeight": 0.8148,
+      "expectedGoalsPer90": 0.0846
+    },
+    "215413": {
+      "shots": 39,
+      "shotsPer90": 1.3061,
+      "expectedGoalsPerShot": 0.1123,
+      "rawExpectedGoalsPerShot": 0.111,
+      "qualityWeight": 0.7959,
+      "expectedGoalsPer90": 0.1467
+    },
+    "215439": {
+      "shots": 25,
+      "shotsPer90": 1.0315,
+      "expectedGoalsPerShot": 0.1825,
+      "rawExpectedGoalsPerShot": 0.2086,
+      "qualityWeight": 0.7143,
+      "expectedGoalsPer90": 0.1883
+    },
+    "215711": {
+      "shots": 8,
+      "shotsPer90": 1.5964,
+      "expectedGoalsPerShot": 0.1046,
+      "rawExpectedGoalsPerShot": 0.0884,
+      "qualityWeight": 0.4444,
+      "expectedGoalsPer90": 0.1669
+    },
+    "216051": {
+      "shots": 24,
+      "shotsPer90": 0.8573,
+      "expectedGoalsPerShot": 0.0991,
+      "rawExpectedGoalsPerShot": 0.0914,
+      "qualityWeight": 0.7059,
+      "expectedGoalsPer90": 0.0849
+    },
+    "216055": {
+      "shots": 13,
+      "shotsPer90": 0.6042,
+      "expectedGoalsPerShot": 0.0962,
+      "rawExpectedGoalsPerShot": 0.0799,
+      "qualityWeight": 0.5652,
+      "expectedGoalsPer90": 0.0581
+    },
+    "216094": {
+      "shots": 10,
+      "shotsPer90": 0.9023,
+      "expectedGoalsPerShot": 0.0844,
+      "rawExpectedGoalsPerShot": 0.0514,
+      "qualityWeight": 0.5,
+      "expectedGoalsPer90": 0.0762
+    },
+    "216646": {
+      "shots": 13,
+      "shotsPer90": 2.2538,
+      "expectedGoalsPerShot": 0.1919,
+      "rawExpectedGoalsPerShot": 0.2491,
+      "qualityWeight": 0.5652,
+      "expectedGoalsPer90": 0.4324
+    },
+    "218328": {
+      "shots": 25,
+      "shotsPer90": 2.0385,
+      "expectedGoalsPerShot": 0.1002,
+      "rawExpectedGoalsPerShot": 0.0933,
+      "qualityWeight": 0.7143,
+      "expectedGoalsPer90": 0.2043
+    },
+    "219168": {
+      "shots": 17,
+      "shotsPer90": 2.0341,
+      "expectedGoalsPerShot": 0.1637,
+      "rawExpectedGoalsPerShot": 0.1909,
+      "qualityWeight": 0.6296,
+      "expectedGoalsPer90": 0.333
+    },
+    "219847": {
+      "shots": 18,
+      "shotsPer90": 2.6187,
+      "expectedGoalsPerShot": 0.2168,
+      "rawExpectedGoalsPerShot": 0.272,
+      "qualityWeight": 0.6429,
+      "expectedGoalsPer90": 0.5677
+    },
+    "219924": {
+      "shots": 2,
+      "shotsPer90": 0.3136,
+      "expectedGoalsPerShot": 0.1347,
+      "rawExpectedGoalsPerShot": 0.2208,
+      "qualityWeight": 0.1667,
+      "expectedGoalsPer90": 0.0422
+    },
+    "220237": {
+      "shots": 15,
+      "shotsPer90": 0.7732,
+      "expectedGoalsPerShot": 0.109,
+      "rawExpectedGoalsPerShot": 0.1034,
+      "qualityWeight": 0.6,
+      "expectedGoalsPer90": 0.0843
+    },
+    "220362": {
+      "shots": 5,
+      "shotsPer90": 0.4355,
+      "expectedGoalsPerShot": 0.1504,
+      "rawExpectedGoalsPerShot": 0.2161,
+      "qualityWeight": 0.3333,
+      "expectedGoalsPer90": 0.0655
+    },
+    "220627": {
+      "shots": 24,
+      "shotsPer90": 1.1394,
+      "expectedGoalsPerShot": 0.1099,
+      "rawExpectedGoalsPerShot": 0.1068,
+      "qualityWeight": 0.7059,
+      "expectedGoalsPer90": 0.1252
+    },
+    "221466": {
+      "shots": 16,
+      "shotsPer90": 0.5065,
+      "expectedGoalsPerShot": 0.1164,
+      "rawExpectedGoalsPerShot": 0.1157,
+      "qualityWeight": 0.6154,
+      "expectedGoalsPer90": 0.0589
+    },
+    "221632": {
+      "shots": 17,
+      "shotsPer90": 0.8468,
+      "expectedGoalsPerShot": 0.1116,
+      "rawExpectedGoalsPerShot": 0.1081,
+      "qualityWeight": 0.6296,
+      "expectedGoalsPer90": 0.0945
+    },
+    "221820": {
+      "shots": 5,
+      "shotsPer90": 0.4464,
+      "expectedGoalsPerShot": 0.0859,
+      "rawExpectedGoalsPerShot": 0.0227,
+      "qualityWeight": 0.3333,
+      "expectedGoalsPer90": 0.0383
+    },
+    "222531": {
+      "shots": 83,
+      "shotsPer90": 2.2533,
+      "expectedGoalsPerShot": 0.1299,
+      "rawExpectedGoalsPerShot": 0.1315,
+      "qualityWeight": 0.8925,
+      "expectedGoalsPer90": 0.2928
+    },
+    "222683": {
+      "shots": 17,
+      "shotsPer90": 1.5879,
+      "expectedGoalsPerShot": 0.1284,
+      "rawExpectedGoalsPerShot": 0.1349,
+      "qualityWeight": 0.6296,
+      "expectedGoalsPer90": 0.204
+    },
+    "222694": {
+      "shots": 31,
+      "shotsPer90": 0.9676,
+      "expectedGoalsPerShot": 0.101,
+      "rawExpectedGoalsPerShot": 0.0957,
+      "qualityWeight": 0.7561,
+      "expectedGoalsPer90": 0.0978
+    },
+    "223094": {
+      "shots": 125,
+      "shotsPer90": 3.5124,
+      "expectedGoalsPerShot": 0.1994,
+      "rawExpectedGoalsPerShot": 0.206,
+      "qualityWeight": 0.9259,
+      "expectedGoalsPer90": 0.7005
+    },
+    "223340": {
+      "shots": 71,
+      "shotsPer90": 2.6821,
+      "expectedGoalsPerShot": 0.1125,
+      "rawExpectedGoalsPerShot": 0.1118,
+      "qualityWeight": 0.8765,
+      "expectedGoalsPer90": 0.3018
+    },
+    "223827": {
+      "shots": 25,
+      "shotsPer90": 1.0585,
+      "expectedGoalsPerShot": 0.1391,
+      "rawExpectedGoalsPerShot": 0.1478,
+      "qualityWeight": 0.7143,
+      "expectedGoalsPer90": 0.1473
+    },
+    "224117": {
+      "shots": 55,
+      "shotsPer90": 2.0892,
+      "expectedGoalsPerShot": 0.1963,
+      "rawExpectedGoalsPerShot": 0.2107,
+      "qualityWeight": 0.8462,
+      "expectedGoalsPer90": 0.4102
+    },
+    "224967": {
+      "shots": 9,
+      "shotsPer90": 0.3596,
+      "expectedGoalsPerShot": 0.0764,
+      "rawExpectedGoalsPerShot": 0.0308,
+      "qualityWeight": 0.4737,
+      "expectedGoalsPer90": 0.0275
+    },
+    "225321": {
+      "shots": 0,
+      "shotsPer90": 0.1136,
+      "expectedGoalsPerShot": 0.1175,
+      "rawExpectedGoalsPerShot": 0.0,
+      "qualityWeight": 0.0,
+      "expectedGoalsPer90": 0.0133
+    },
+    "225796": {
+      "shots": 22,
+      "shotsPer90": 1.0383,
+      "expectedGoalsPerShot": 0.0751,
+      "rawExpectedGoalsPerShot": 0.0558,
+      "qualityWeight": 0.6875,
+      "expectedGoalsPer90": 0.078
+    },
+    "226182": {
+      "shots": 18,
+      "shotsPer90": 0.6302,
+      "expectedGoalsPerShot": 0.1095,
+      "rawExpectedGoalsPerShot": 0.1051,
+      "qualityWeight": 0.6429,
+      "expectedGoalsPer90": 0.069
+    },
+    "226597": {
+      "shots": 27,
+      "shotsPer90": 0.9094,
+      "expectedGoalsPerShot": 0.1574,
+      "rawExpectedGoalsPerShot": 0.1722,
+      "qualityWeight": 0.7297,
+      "expectedGoalsPer90": 0.1431
+    },
+    "226944": {
+      "shots": 7,
+      "shotsPer90": 0.509,
+      "expectedGoalsPerShot": 0.131,
+      "rawExpectedGoalsPerShot": 0.1503,
+      "qualityWeight": 0.4118,
+      "expectedGoalsPer90": 0.0667
+    },
+    "227127": {
+      "shots": 5,
+      "shotsPer90": 0.7678,
+      "expectedGoalsPerShot": 0.0925,
+      "rawExpectedGoalsPerShot": 0.0425,
+      "qualityWeight": 0.3333,
+      "expectedGoalsPer90": 0.071
+    },
+    "227444": {
+      "shots": 15,
+      "shotsPer90": 0.4752,
+      "expectedGoalsPerShot": 0.0674,
+      "rawExpectedGoalsPerShot": 0.034,
+      "qualityWeight": 0.6,
+      "expectedGoalsPer90": 0.032
+    },
+    "230001": {
+      "shots": 5,
+      "shotsPer90": 0.5227,
+      "expectedGoalsPerShot": 0.0914,
+      "rawExpectedGoalsPerShot": 0.0394,
+      "qualityWeight": 0.3333,
+      "expectedGoalsPer90": 0.0478
+    },
+    "230046": {
+      "shots": 11,
+      "shotsPer90": 1.0655,
+      "expectedGoalsPerShot": 0.0894,
+      "rawExpectedGoalsPerShot": 0.0639,
+      "qualityWeight": 0.5238,
+      "expectedGoalsPer90": 0.0952
+    },
+    "230376": {
+      "shots": 16,
+      "shotsPer90": 1.2504,
+      "expectedGoalsPerShot": 0.1718,
+      "rawExpectedGoalsPerShot": 0.2058,
+      "qualityWeight": 0.6154,
+      "expectedGoalsPer90": 0.2149
+    },
+    "231057": {
+      "shots": 21,
+      "shotsPer90": 1.455,
+      "expectedGoalsPerShot": 0.0659,
+      "rawExpectedGoalsPerShot": 0.0414,
+      "qualityWeight": 0.6774,
+      "expectedGoalsPer90": 0.096
+    },
+    "231065": {
+      "shots": 1,
+      "shotsPer90": 0.359,
+      "expectedGoalsPerShot": 0.1076,
+      "rawExpectedGoalsPerShot": 0.0092,
+      "qualityWeight": 0.0909,
+      "expectedGoalsPer90": 0.0386
+    },
+    "231416": {
+      "shots": 28,
+      "shotsPer90": 0.8347,
+      "expectedGoalsPerShot": 0.0841,
+      "rawExpectedGoalsPerShot": 0.0721,
+      "qualityWeight": 0.7368,
+      "expectedGoalsPer90": 0.0702
+    },
+    "231480": {
+      "shots": 10,
+      "shotsPer90": 0.4313,
+      "expectedGoalsPerShot": 0.1585,
+      "rawExpectedGoalsPerShot": 0.1995,
+      "qualityWeight": 0.5,
+      "expectedGoalsPer90": 0.0684
+    },
+    "231747": {
+      "shots": 63,
+      "shotsPer90": 2.407,
+      "expectedGoalsPerShot": 0.1933,
+      "rawExpectedGoalsPerShot": 0.2053,
+      "qualityWeight": 0.863,
+      "expectedGoalsPer90": 0.4652
+    },
+    "232112": {
+      "shots": 13,
+      "shotsPer90": 1.3524,
+      "expectedGoalsPerShot": 0.0875,
+      "rawExpectedGoalsPerShot": 0.0645,
+      "qualityWeight": 0.5652,
+      "expectedGoalsPer90": 0.1183
+    },
+    "232185": {
+      "shots": 48,
+      "shotsPer90": 1.8962,
+      "expectedGoalsPerShot": 0.1799,
+      "rawExpectedGoalsPerShot": 0.1929,
+      "qualityWeight": 0.8276,
+      "expectedGoalsPer90": 0.3411
+    },
+    "232413": {
+      "shots": 63,
+      "shotsPer90": 2.7604,
+      "expectedGoalsPerShot": 0.0819,
+      "rawExpectedGoalsPerShot": 0.0763,
+      "qualityWeight": 0.863,
+      "expectedGoalsPer90": 0.2262
+    },
+    "232653": {
+      "shots": 16,
+      "shotsPer90": 1.0256,
+      "expectedGoalsPerShot": 0.0918,
+      "rawExpectedGoalsPerShot": 0.0757,
+      "qualityWeight": 0.6154,
+      "expectedGoalsPer90": 0.0941
+    },
+    "232787": {
+      "shots": 11,
+      "shotsPer90": 0.8385,
+      "expectedGoalsPerShot": 0.128,
+      "rawExpectedGoalsPerShot": 0.1375,
+      "qualityWeight": 0.5238,
+      "expectedGoalsPer90": 0.1073
+    },
+    "232826": {
+      "shots": 48,
+      "shotsPer90": 2.1729,
+      "expectedGoalsPerShot": 0.1318,
+      "rawExpectedGoalsPerShot": 0.1348,
+      "qualityWeight": 0.8276,
+      "expectedGoalsPer90": 0.2865
+    },
+    "232859": {
+      "shots": 13,
+      "shotsPer90": 0.6228,
+      "expectedGoalsPerShot": 0.1004,
+      "rawExpectedGoalsPerShot": 0.0873,
+      "qualityWeight": 0.5652,
+      "expectedGoalsPer90": 0.0625
+    },
+    "232892": {
+      "shots": 11,
+      "shotsPer90": 0.4667,
+      "expectedGoalsPerShot": 0.1126,
+      "rawExpectedGoalsPerShot": 0.1083,
+      "qualityWeight": 0.5238,
+      "expectedGoalsPer90": 0.0526
+    },
+    "232928": {
+      "shots": 45,
+      "shotsPer90": 1.1803,
+      "expectedGoalsPerShot": 0.0591,
+      "rawExpectedGoalsPerShot": 0.0461,
+      "qualityWeight": 0.8182,
+      "expectedGoalsPer90": 0.0697
+    },
+    "233963": {
+      "shots": 23,
+      "shotsPer90": 0.8534,
+      "expectedGoalsPerShot": 0.1202,
+      "rawExpectedGoalsPerShot": 0.1214,
+      "qualityWeight": 0.697,
+      "expectedGoalsPer90": 0.1026
+    },
+    "242880": {
+      "shots": 0,
+      "shotsPer90": 0.1136,
+      "expectedGoalsPerShot": 0.1175,
+      "rawExpectedGoalsPerShot": 0.0,
+      "qualityWeight": 0.0,
+      "expectedGoalsPer90": 0.0133
+    },
+    "242882": {
+      "shots": 1,
+      "shotsPer90": 0.177,
+      "expectedGoalsPerShot": 0.108,
+      "rawExpectedGoalsPerShot": 0.0139,
+      "qualityWeight": 0.0909,
+      "expectedGoalsPer90": 0.0191
+    },
+    "242898": {
+      "shots": 23,
+      "shotsPer90": 1.2037,
+      "expectedGoalsPerShot": 0.1142,
+      "rawExpectedGoalsPerShot": 0.1128,
+      "qualityWeight": 0.697,
+      "expectedGoalsPer90": 0.1374
+    },
+    "243016": {
+      "shots": 52,
+      "shotsPer90": 1.6835,
+      "expectedGoalsPerShot": 0.0846,
+      "rawExpectedGoalsPerShot": 0.0783,
+      "qualityWeight": 0.8387,
+      "expectedGoalsPer90": 0.1424
+    },
+    "243298": {
+      "shots": 87,
+      "shotsPer90": 2.6687,
+      "expectedGoalsPerShot": 0.1134,
+      "rawExpectedGoalsPerShot": 0.1129,
+      "qualityWeight": 0.8969,
+      "expectedGoalsPer90": 0.3027
+    },
+    "243526": {
+      "shots": 18,
+      "shotsPer90": 0.6623,
+      "expectedGoalsPerShot": 0.0733,
+      "rawExpectedGoalsPerShot": 0.0488,
+      "qualityWeight": 0.6429,
+      "expectedGoalsPer90": 0.0485
+    },
+    "244042": {
+      "shots": 32,
+      "shotsPer90": 2.703,
+      "expectedGoalsPerShot": 0.1362,
+      "rawExpectedGoalsPerShot": 0.142,
+      "qualityWeight": 0.7619,
+      "expectedGoalsPer90": 0.3681
+    },
+    "244723": {
+      "shots": 19,
+      "shotsPer90": 0.5859,
+      "expectedGoalsPerShot": 0.1089,
+      "rawExpectedGoalsPerShot": 0.1045,
+      "qualityWeight": 0.6552,
+      "expectedGoalsPer90": 0.0638
+    },
+    "244850": {
+      "shots": 84,
+      "shotsPer90": 2.1748,
+      "expectedGoalsPerShot": 0.0885,
+      "rawExpectedGoalsPerShot": 0.0851,
+      "qualityWeight": 0.8936,
+      "expectedGoalsPer90": 0.1925
+    },
+    "244851": {
+      "shots": 64,
+      "shotsPer90": 2.6965,
+      "expectedGoalsPerShot": 0.0928,
+      "rawExpectedGoalsPerShot": 0.0889,
+      "qualityWeight": 0.8649,
+      "expectedGoalsPer90": 0.2502
+    },
+    "244954": {
+      "shots": 9,
+      "shotsPer90": 0.5478,
+      "expectedGoalsPerShot": 0.1451,
+      "rawExpectedGoalsPerShot": 0.1758,
+      "qualityWeight": 0.4737,
+      "expectedGoalsPer90": 0.0795
+    },
+    "247348": {
+      "shots": 26,
+      "shotsPer90": 0.9849,
+      "expectedGoalsPerShot": 0.12,
+      "rawExpectedGoalsPerShot": 0.121,
+      "qualityWeight": 0.7222,
+      "expectedGoalsPer90": 0.1182
+    },
+    "247412": {
+      "shots": 44,
+      "shotsPer90": 1.6282,
+      "expectedGoalsPerShot": 0.1142,
+      "rawExpectedGoalsPerShot": 0.1135,
+      "qualityWeight": 0.8148,
+      "expectedGoalsPer90": 0.1859
+    },
+    "247632": {
+      "shots": 46,
+      "shotsPer90": 1.5106,
+      "expectedGoalsPerShot": 0.1129,
+      "rawExpectedGoalsPerShot": 0.1119,
+      "qualityWeight": 0.8214,
+      "expectedGoalsPer90": 0.1706
+    },
+    "247670": {
+      "shots": 50,
+      "shotsPer90": 2.9457,
+      "expectedGoalsPerShot": 0.1382,
+      "rawExpectedGoalsPerShot": 0.1424,
+      "qualityWeight": 0.8333,
+      "expectedGoalsPer90": 0.4072
+    },
+    "247693": {
+      "shots": 20,
+      "shotsPer90": 1.0643,
+      "expectedGoalsPerShot": 0.1292,
+      "rawExpectedGoalsPerShot": 0.135,
+      "qualityWeight": 0.6667,
+      "expectedGoalsPer90": 0.1375
+    },
+    "247955": {
+      "shots": 11,
+      "shotsPer90": 0.6506,
+      "expectedGoalsPerShot": 0.0958,
+      "rawExpectedGoalsPerShot": 0.0761,
+      "qualityWeight": 0.5238,
+      "expectedGoalsPer90": 0.0623
+    },
+    "248056": {
+      "shots": 17,
+      "shotsPer90": 1.1489,
+      "expectedGoalsPerShot": 0.1249,
+      "rawExpectedGoalsPerShot": 0.1293,
+      "qualityWeight": 0.6296,
+      "expectedGoalsPer90": 0.1435
+    },
+    "248857": {
+      "shots": 25,
+      "shotsPer90": 1.7388,
+      "expectedGoalsPerShot": 0.0906,
+      "rawExpectedGoalsPerShot": 0.0799,
+      "qualityWeight": 0.7143,
+      "expectedGoalsPer90": 0.1575
+    },
+    "248875": {
+      "shots": 39,
+      "shotsPer90": 1.8853,
+      "expectedGoalsPerShot": 0.1056,
+      "rawExpectedGoalsPerShot": 0.1026,
+      "qualityWeight": 0.7959,
+      "expectedGoalsPer90": 0.1991
+    },
+    "249231": {
+      "shots": 31,
+      "shotsPer90": 1.4019,
+      "expectedGoalsPerShot": 0.1071,
+      "rawExpectedGoalsPerShot": 0.1037,
+      "qualityWeight": 0.7561,
+      "expectedGoalsPer90": 0.1501
+    },
+    "250199": {
+      "shots": 18,
+      "shotsPer90": 1.3185,
+      "expectedGoalsPerShot": 0.0781,
+      "rawExpectedGoalsPerShot": 0.0562,
+      "qualityWeight": 0.6429,
+      "expectedGoalsPer90": 0.103
+    },
+    "424876": {
+      "shots": 70,
+      "shotsPer90": 1.8657,
+      "expectedGoalsPerShot": 0.0642,
+      "rawExpectedGoalsPerShot": 0.0566,
+      "qualityWeight": 0.875,
+      "expectedGoalsPer90": 0.1198
+    },
+    "427623": {
+      "shots": 15,
+      "shotsPer90": 0.5446,
+      "expectedGoalsPerShot": 0.1182,
+      "rawExpectedGoalsPerShot": 0.1188,
+      "qualityWeight": 0.6,
+      "expectedGoalsPer90": 0.0644
+    },
+    "427637": {
+      "shots": 46,
+      "shotsPer90": 1.5939,
+      "expectedGoalsPerShot": 0.126,
+      "rawExpectedGoalsPerShot": 0.1279,
+      "qualityWeight": 0.8214,
+      "expectedGoalsPer90": 0.2008
+    },
+    "430871": {
+      "shots": 90,
+      "shotsPer90": 3.0226,
+      "expectedGoalsPerShot": 0.0825,
+      "rawExpectedGoalsPerShot": 0.0786,
+      "qualityWeight": 0.9,
+      "expectedGoalsPer90": 0.2494
+    },
+    "431248": {
+      "shots": 21,
+      "shotsPer90": 0.8268,
+      "expectedGoalsPerShot": 0.0935,
+      "rawExpectedGoalsPerShot": 0.0821,
+      "qualityWeight": 0.6774,
+      "expectedGoalsPer90": 0.0773
+    },
+    "431639": {
+      "shots": 52,
+      "shotsPer90": 2.4601,
+      "expectedGoalsPerShot": 0.1485,
+      "rawExpectedGoalsPerShot": 0.1545,
+      "qualityWeight": 0.8387,
+      "expectedGoalsPer90": 0.3653
+    },
+    "432422": {
+      "shots": 37,
+      "shotsPer90": 1.2725,
+      "expectedGoalsPerShot": 0.0551,
+      "rawExpectedGoalsPerShot": 0.0383,
+      "qualityWeight": 0.7872,
+      "expectedGoalsPer90": 0.0702
+    },
+    "432714": {
+      "shots": 4,
+      "shotsPer90": 1.3455,
+      "expectedGoalsPerShot": 0.0982,
+      "rawExpectedGoalsPerShot": 0.0499,
+      "qualityWeight": 0.2857,
+      "expectedGoalsPer90": 0.1321
+    },
+    "432720": {
+      "shots": 0,
+      "shotsPer90": 0.1136,
+      "expectedGoalsPerShot": 0.1175,
+      "rawExpectedGoalsPerShot": 0.0,
+      "qualityWeight": 0.0,
+      "expectedGoalsPer90": 0.0133
+    },
+    "432830": {
+      "shots": 20,
+      "shotsPer90": 0.6598,
+      "expectedGoalsPerShot": 0.1364,
+      "rawExpectedGoalsPerShot": 0.1459,
+      "qualityWeight": 0.6667,
+      "expectedGoalsPer90": 0.09
+    },
+    "433036": {
+      "shots": 49,
+      "shotsPer90": 2.5307,
+      "expectedGoalsPerShot": 0.1023,
+      "rawExpectedGoalsPerShot": 0.0992,
+      "qualityWeight": 0.8305,
+      "expectedGoalsPer90": 0.2589
+    },
+    "433154": {
+      "shots": 24,
+      "shotsPer90": 1.7555,
+      "expectedGoalsPerShot": 0.0776,
+      "rawExpectedGoalsPerShot": 0.061,
+      "qualityWeight": 0.7059,
+      "expectedGoalsPer90": 0.1362
+    },
+    "433312": {
+      "shots": 14,
+      "shotsPer90": 1.4276,
+      "expectedGoalsPerShot": 0.1256,
+      "rawExpectedGoalsPerShot": 0.1314,
+      "qualityWeight": 0.5833,
+      "expectedGoalsPer90": 0.1793
+    },
+    "434399": {
+      "shots": 4,
+      "shotsPer90": 0.2777,
+      "expectedGoalsPerShot": 0.096,
+      "rawExpectedGoalsPerShot": 0.0425,
+      "qualityWeight": 0.2857,
+      "expectedGoalsPer90": 0.0267
+    },
+    "434752": {
+      "shots": 15,
+      "shotsPer90": 0.7547,
+      "expectedGoalsPerShot": 0.0757,
+      "rawExpectedGoalsPerShot": 0.0479,
+      "qualityWeight": 0.6,
+      "expectedGoalsPer90": 0.0571
+    },
+    "435973": {
+      "shots": 20,
+      "shotsPer90": 1.2917,
+      "expectedGoalsPerShot": 0.1589,
+      "rawExpectedGoalsPerShot": 0.1796,
+      "qualityWeight": 0.6667,
+      "expectedGoalsPer90": 0.2052
+    },
+    "435997": {
+      "shots": 35,
+      "shotsPer90": 1.8943,
+      "expectedGoalsPerShot": 0.166,
+      "rawExpectedGoalsPerShot": 0.1799,
+      "qualityWeight": 0.7778,
+      "expectedGoalsPer90": 0.3145
+    },
+    "437499": {
+      "shots": 25,
+      "shotsPer90": 0.7681,
+      "expectedGoalsPerShot": 0.1195,
+      "rawExpectedGoalsPerShot": 0.1203,
+      "qualityWeight": 0.7143,
+      "expectedGoalsPer90": 0.0918
+    },
+    "437505": {
+      "shots": 43,
+      "shotsPer90": 3.1635,
+      "expectedGoalsPerShot": 0.1282,
+      "rawExpectedGoalsPerShot": 0.1307,
+      "qualityWeight": 0.8113,
+      "expectedGoalsPer90": 0.4055
+    },
+    "437738": {
+      "shots": 1,
+      "shotsPer90": 0.2985,
+      "expectedGoalsPerShot": 0.1187,
+      "rawExpectedGoalsPerShot": 0.1317,
+      "qualityWeight": 0.0909,
+      "expectedGoalsPer90": 0.0354
+    },
+    "438234": {
+      "shots": 30,
+      "shotsPer90": 3.6201,
+      "expectedGoalsPerShot": 0.1235,
+      "rawExpectedGoalsPerShot": 0.1255,
+      "qualityWeight": 0.75,
+      "expectedGoalsPer90": 0.4471
+    },
+    "440089": {
+      "shots": 30,
+      "shotsPer90": 1.279,
+      "expectedGoalsPerShot": 0.1037,
+      "rawExpectedGoalsPerShot": 0.0991,
+      "qualityWeight": 0.75,
+      "expectedGoalsPer90": 0.1327
+    },
+    "440323": {
+      "shots": 16,
+      "shotsPer90": 1.6902,
+      "expectedGoalsPerShot": 0.142,
+      "rawExpectedGoalsPerShot": 0.1573,
+      "qualityWeight": 0.6154,
+      "expectedGoalsPer90": 0.24
+    },
+    "440993": {
+      "shots": 43,
+      "shotsPer90": 1.3553,
+      "expectedGoalsPerShot": 0.1094,
+      "rawExpectedGoalsPerShot": 0.1075,
+      "qualityWeight": 0.8113,
+      "expectedGoalsPer90": 0.1482
+    },
+    "441164": {
+      "shots": 32,
+      "shotsPer90": 1.0343,
+      "expectedGoalsPerShot": 0.0614,
+      "rawExpectedGoalsPerShot": 0.0438,
+      "qualityWeight": 0.7619,
+      "expectedGoalsPer90": 0.0635
+    },
+    "441191": {
+      "shots": 3,
+      "shotsPer90": 0.2972,
+      "expectedGoalsPerShot": 0.1021,
+      "rawExpectedGoalsPerShot": 0.0508,
+      "qualityWeight": 0.2308,
+      "expectedGoalsPer90": 0.0303
+    },
+    "441264": {
+      "shots": 36,
+      "shotsPer90": 1.6143,
+      "expectedGoalsPerShot": 0.1801,
+      "rawExpectedGoalsPerShot": 0.1976,
+      "qualityWeight": 0.7826,
+      "expectedGoalsPer90": 0.2908
+    },
+    "441266": {
+      "shots": 38,
+      "shotsPer90": 1.1368,
+      "expectedGoalsPerShot": 0.0564,
+      "rawExpectedGoalsPerShot": 0.0403,
+      "qualityWeight": 0.7917,
+      "expectedGoalsPer90": 0.0641
+    },
+    "441271": {
+      "shots": 1,
+      "shotsPer90": 0.2989,
+      "expectedGoalsPerShot": 0.1076,
+      "rawExpectedGoalsPerShot": 0.0092,
+      "qualityWeight": 0.0909,
+      "expectedGoalsPer90": 0.0322
+    },
+    "441302": {
+      "shots": 20,
+      "shotsPer90": 1.1344,
+      "expectedGoalsPerShot": 0.0825,
+      "rawExpectedGoalsPerShot": 0.065,
+      "qualityWeight": 0.6667,
+      "expectedGoalsPer90": 0.0936
+    },
+    "444102": {
+      "shots": 72,
+      "shotsPer90": 2.189,
+      "expectedGoalsPerShot": 0.1586,
+      "rawExpectedGoalsPerShot": 0.1643,
+      "qualityWeight": 0.878,
+      "expectedGoalsPer90": 0.3472
+    },
+    "444145": {
+      "shots": 29,
+      "shotsPer90": 2.4053,
+      "expectedGoalsPerShot": 0.1675,
+      "rawExpectedGoalsPerShot": 0.1847,
+      "qualityWeight": 0.7436,
+      "expectedGoalsPer90": 0.4028
+    },
+    "444180": {
+      "shots": 55,
+      "shotsPer90": 1.7178,
+      "expectedGoalsPerShot": 0.1037,
+      "rawExpectedGoalsPerShot": 0.1012,
+      "qualityWeight": 0.8462,
+      "expectedGoalsPer90": 0.1781
+    },
+    "444463": {
+      "shots": 8,
+      "shotsPer90": 0.4849,
+      "expectedGoalsPerShot": 0.0953,
+      "rawExpectedGoalsPerShot": 0.0675,
+      "qualityWeight": 0.4444,
+      "expectedGoalsPer90": 0.0462
+    },
+    "444765": {
+      "shots": 23,
+      "shotsPer90": 0.7891,
+      "expectedGoalsPerShot": 0.1366,
+      "rawExpectedGoalsPerShot": 0.1449,
+      "qualityWeight": 0.697,
+      "expectedGoalsPer90": 0.1078
+    },
+    "445122": {
+      "shots": 25,
+      "shotsPer90": 0.9317,
+      "expectedGoalsPerShot": 0.1487,
+      "rawExpectedGoalsPerShot": 0.1612,
+      "qualityWeight": 0.7143,
+      "expectedGoalsPer90": 0.1386
+    },
+    "446008": {
+      "shots": 73,
+      "shotsPer90": 2.3232,
+      "expectedGoalsPerShot": 0.1745,
+      "rawExpectedGoalsPerShot": 0.1823,
+      "qualityWeight": 0.8795,
+      "expectedGoalsPer90": 0.4054
+    },
+    "448047": {
+      "shots": 72,
+      "shotsPer90": 1.9656,
+      "expectedGoalsPerShot": 0.1411,
+      "rawExpectedGoalsPerShot": 0.1444,
+      "qualityWeight": 0.878,
+      "expectedGoalsPer90": 0.2773
+    },
+    "448104": {
+      "shots": 3,
+      "shotsPer90": 0.2496,
+      "expectedGoalsPerShot": 0.1221,
+      "rawExpectedGoalsPerShot": 0.1375,
+      "qualityWeight": 0.2308,
+      "expectedGoalsPer90": 0.0305
+    },
+    "449027": {
+      "shots": 0,
+      "shotsPer90": 0.1136,
+      "expectedGoalsPerShot": 0.1175,
+      "rawExpectedGoalsPerShot": 0.0,
+      "qualityWeight": 0.0,
+      "expectedGoalsPer90": 0.0133
+    },
+    "449434": {
+      "shots": 17,
+      "shotsPer90": 1.1818,
+      "expectedGoalsPerShot": 0.0973,
+      "rawExpectedGoalsPerShot": 0.0855,
+      "qualityWeight": 0.6296,
+      "expectedGoalsPer90": 0.115
+    },
+    "449871": {
+      "shots": 19,
+      "shotsPer90": 0.9719,
+      "expectedGoalsPerShot": 0.1361,
+      "rawExpectedGoalsPerShot": 0.1459,
+      "qualityWeight": 0.6552,
+      "expectedGoalsPer90": 0.1323
+    },
+    "450070": {
+      "shots": 54,
+      "shotsPer90": 1.8569,
+      "expectedGoalsPerShot": 0.1074,
+      "rawExpectedGoalsPerShot": 0.1055,
+      "qualityWeight": 0.8438,
+      "expectedGoalsPer90": 0.1994
+    },
+    "451302": {
+      "shots": 0,
+      "shotsPer90": 0.1136,
+      "expectedGoalsPerShot": 0.1175,
+      "rawExpectedGoalsPerShot": 0.0,
+      "qualityWeight": 0.0,
+      "expectedGoalsPer90": 0.0133
+    },
+    "451340": {
+      "shots": 32,
+      "shotsPer90": 1.6179,
+      "expectedGoalsPerShot": 0.142,
+      "rawExpectedGoalsPerShot": 0.1497,
+      "qualityWeight": 0.7619,
+      "expectedGoalsPer90": 0.2297
+    },
+    "456512": {
+      "shots": 15,
+      "shotsPer90": 1.1397,
+      "expectedGoalsPerShot": 0.0939,
+      "rawExpectedGoalsPerShot": 0.0782,
+      "qualityWeight": 0.6,
+      "expectedGoalsPer90": 0.107
+    },
+    "457569": {
+      "shots": 0,
+      "shotsPer90": 0.1136,
+      "expectedGoalsPerShot": 0.1175,
+      "rawExpectedGoalsPerShot": 0.0,
+      "qualityWeight": 0.0,
+      "expectedGoalsPer90": 0.0133
+    },
+    "458249": {
+      "shots": 25,
+      "shotsPer90": 3.6476,
+      "expectedGoalsPerShot": 0.1435,
+      "rawExpectedGoalsPerShot": 0.1539,
+      "qualityWeight": 0.7143,
+      "expectedGoalsPer90": 0.5233
+    },
+    "460842": {
+      "shots": 26,
+      "shotsPer90": 1.449,
+      "expectedGoalsPerShot": 0.0982,
+      "rawExpectedGoalsPerShot": 0.0909,
+      "qualityWeight": 0.7222,
+      "expectedGoalsPer90": 0.1424
+    },
+    "461188": {
+      "shots": 9,
+      "shotsPer90": 0.5735,
+      "expectedGoalsPerShot": 0.0895,
+      "rawExpectedGoalsPerShot": 0.0585,
+      "qualityWeight": 0.4737,
+      "expectedGoalsPer90": 0.0513
+    },
+    "461195": {
+      "shots": 1,
+      "shotsPer90": 0.3732,
+      "expectedGoalsPerShot": 0.1128,
+      "rawExpectedGoalsPerShot": 0.0664,
+      "qualityWeight": 0.0909,
+      "expectedGoalsPer90": 0.0421
+    },
+    "461199": {
+      "shots": 7,
+      "shotsPer90": 1.646,
+      "expectedGoalsPerShot": 0.1087,
+      "rawExpectedGoalsPerShot": 0.0962,
+      "qualityWeight": 0.4118,
+      "expectedGoalsPer90": 0.1789
+    },
+    "462116": {
+      "shots": 2,
+      "shotsPer90": 0.2022,
+      "expectedGoalsPerShot": 0.1525,
+      "rawExpectedGoalsPerShot": 0.328,
+      "qualityWeight": 0.1667,
+      "expectedGoalsPer90": 0.0309
+    },
+    "462424": {
+      "shots": 5,
+      "shotsPer90": 0.2688,
+      "expectedGoalsPerShot": 0.1835,
+      "rawExpectedGoalsPerShot": 0.3156,
+      "qualityWeight": 0.3333,
+      "expectedGoalsPer90": 0.0493
+    },
+    "463034": {
+      "shots": 36,
+      "shotsPer90": 2.8542,
+      "expectedGoalsPerShot": 0.1349,
+      "rawExpectedGoalsPerShot": 0.1397,
+      "qualityWeight": 0.7826,
+      "expectedGoalsPer90": 0.385
+    },
+    "463067": {
+      "shots": 42,
+      "shotsPer90": 2.0205,
+      "expectedGoalsPerShot": 0.079,
+      "rawExpectedGoalsPerShot": 0.0698,
+      "qualityWeight": 0.8077,
+      "expectedGoalsPer90": 0.1596
+    },
+    "463936": {
+      "shots": 10,
+      "shotsPer90": 1.8938,
+      "expectedGoalsPerShot": 0.1034,
+      "rawExpectedGoalsPerShot": 0.0892,
+      "qualityWeight": 0.5,
+      "expectedGoalsPer90": 0.1957
+    },
+    "463981": {
+      "shots": 12,
+      "shotsPer90": 0.5764,
+      "expectedGoalsPerShot": 0.0966,
+      "rawExpectedGoalsPerShot": 0.0792,
+      "qualityWeight": 0.5455,
+      "expectedGoalsPer90": 0.0557
+    },
+    "465247": {
+      "shots": 0,
+      "shotsPer90": 0.1136,
+      "expectedGoalsPerShot": 0.1175,
+      "rawExpectedGoalsPerShot": 0.0,
+      "qualityWeight": 0.0,
+      "expectedGoalsPer90": 0.0133
+    },
+    "465351": {
+      "shots": 7,
+      "shotsPer90": 0.3115,
+      "expectedGoalsPerShot": 0.1088,
+      "rawExpectedGoalsPerShot": 0.0965,
+      "qualityWeight": 0.4118,
+      "expectedGoalsPer90": 0.0339
+    },
+    "465527": {
+      "shots": 19,
+      "shotsPer90": 1.3438,
+      "expectedGoalsPerShot": 0.0664,
+      "rawExpectedGoalsPerShot": 0.0395,
+      "qualityWeight": 0.6552,
+      "expectedGoalsPer90": 0.0892
+    },
+    "465642": {
+      "shots": 28,
+      "shotsPer90": 0.8777,
+      "expectedGoalsPerShot": 0.1861,
+      "rawExpectedGoalsPerShot": 0.2106,
+      "qualityWeight": 0.7368,
+      "expectedGoalsPer90": 0.1634
+    },
+    "465730": {
+      "shots": 13,
+      "shotsPer90": 0.8593,
+      "expectedGoalsPerShot": 0.1268,
+      "rawExpectedGoalsPerShot": 0.134,
+      "qualityWeight": 0.5652,
+      "expectedGoalsPer90": 0.109
+    },
+    "466052": {
+      "shots": 55,
+      "shotsPer90": 2.5996,
+      "expectedGoalsPerShot": 0.0895,
+      "rawExpectedGoalsPerShot": 0.0844,
+      "qualityWeight": 0.8462,
+      "expectedGoalsPer90": 0.2326
+    },
+    "466075": {
+      "shots": 32,
+      "shotsPer90": 1.5905,
+      "expectedGoalsPerShot": 0.1106,
+      "rawExpectedGoalsPerShot": 0.1084,
+      "qualityWeight": 0.7619,
+      "expectedGoalsPer90": 0.1759
+    },
+    "466525": {
+      "shots": 55,
+      "shotsPer90": 1.9745,
+      "expectedGoalsPerShot": 0.063,
+      "rawExpectedGoalsPerShot": 0.0531,
+      "qualityWeight": 0.8462,
+      "expectedGoalsPer90": 0.1244
+    },
+    "467189": {
+      "shots": 0,
+      "shotsPer90": 0.1136,
+      "expectedGoalsPerShot": 0.1175,
+      "rawExpectedGoalsPerShot": 0.0,
+      "qualityWeight": 0.0,
+      "expectedGoalsPer90": 0.0133
+    },
+    "467779": {
+      "shots": 18,
+      "shotsPer90": 0.8722,
+      "expectedGoalsPerShot": 0.1108,
+      "rawExpectedGoalsPerShot": 0.1071,
+      "qualityWeight": 0.6429,
+      "expectedGoalsPer90": 0.0966
+    },
+    "469142": {
+      "shots": 23,
+      "shotsPer90": 0.6932,
+      "expectedGoalsPerShot": 0.1374,
+      "rawExpectedGoalsPerShot": 0.146,
+      "qualityWeight": 0.697,
+      "expectedGoalsPer90": 0.0952
+    },
+    "469272": {
+      "shots": 23,
+      "shotsPer90": 1.5828,
+      "expectedGoalsPerShot": 0.0737,
+      "rawExpectedGoalsPerShot": 0.0547,
+      "qualityWeight": 0.697,
+      "expectedGoalsPer90": 0.1167
+    },
+    "470313": {
+      "shots": 32,
+      "shotsPer90": 1.4408,
+      "expectedGoalsPerShot": 0.2066,
+      "rawExpectedGoalsPerShot": 0.2344,
+      "qualityWeight": 0.7619,
+      "expectedGoalsPer90": 0.2976
+    },
+    "470315": {
+      "shots": 0,
+      "shotsPer90": 0.1136,
+      "expectedGoalsPerShot": 0.1175,
+      "rawExpectedGoalsPerShot": 0.0,
+      "qualityWeight": 0.0,
+      "expectedGoalsPer90": 0.0133
+    },
+    "472713": {
+      "shots": 6,
+      "shotsPer90": 0.8411,
+      "expectedGoalsPerShot": 0.1078,
+      "rawExpectedGoalsPerShot": 0.0916,
+      "qualityWeight": 0.375,
+      "expectedGoalsPer90": 0.0907
+    },
+    "472769": {
+      "shots": 41,
+      "shotsPer90": 1.3687,
+      "expectedGoalsPerShot": 0.1549,
+      "rawExpectedGoalsPerShot": 0.1641,
+      "qualityWeight": 0.8039,
+      "expectedGoalsPer90": 0.2121
+    },
+    "475168": {
+      "shots": 73,
+      "shotsPer90": 2.3052,
+      "expectedGoalsPerShot": 0.2036,
+      "rawExpectedGoalsPerShot": 0.2154,
+      "qualityWeight": 0.8795,
+      "expectedGoalsPer90": 0.4693
+    },
+    "476887": {
+      "shots": 9,
+      "shotsPer90": 1.4247,
+      "expectedGoalsPerShot": 0.1021,
+      "rawExpectedGoalsPerShot": 0.0849,
+      "qualityWeight": 0.4737,
+      "expectedGoalsPer90": 0.1454
+    },
+    "477064": {
+      "shots": 3,
+      "shotsPer90": 0.7382,
+      "expectedGoalsPerShot": 0.1009,
+      "rawExpectedGoalsPerShot": 0.0455,
+      "qualityWeight": 0.2308,
+      "expectedGoalsPer90": 0.0745
+    },
+    "477424": {
+      "shots": 17,
+      "shotsPer90": 1.1157,
+      "expectedGoalsPerShot": 0.1124,
+      "rawExpectedGoalsPerShot": 0.1095,
+      "qualityWeight": 0.6296,
+      "expectedGoalsPer90": 0.1255
+    },
+    "477555": {
+      "shots": 12,
+      "shotsPer90": 1.0428,
+      "expectedGoalsPerShot": 0.1183,
+      "rawExpectedGoalsPerShot": 0.1191,
+      "qualityWeight": 0.5455,
+      "expectedGoalsPer90": 0.1234
+    },
+    "477717": {
+      "shots": 10,
+      "shotsPer90": 0.3885,
+      "expectedGoalsPerShot": 0.0813,
+      "rawExpectedGoalsPerShot": 0.0452,
+      "qualityWeight": 0.5,
+      "expectedGoalsPer90": 0.0316
+    },
+    "478969": {
+      "shots": 6,
+      "shotsPer90": 0.4281,
+      "expectedGoalsPerShot": 0.1114,
+      "rawExpectedGoalsPerShot": 0.1014,
+      "qualityWeight": 0.375,
+      "expectedGoalsPer90": 0.0477
+    },
+    "480455": {
+      "shots": 6,
+      "shotsPer90": 0.8262,
+      "expectedGoalsPerShot": 0.0928,
+      "rawExpectedGoalsPerShot": 0.0517,
+      "qualityWeight": 0.375,
+      "expectedGoalsPer90": 0.0767
+    },
+    "481655": {
+      "shots": 27,
+      "shotsPer90": 0.833,
+      "expectedGoalsPerShot": 0.1113,
+      "rawExpectedGoalsPerShot": 0.109,
+      "qualityWeight": 0.7297,
+      "expectedGoalsPer90": 0.0927
+    },
+    "482442": {
+      "shots": 17,
+      "shotsPer90": 1.1358,
+      "expectedGoalsPerShot": 0.1193,
+      "rawExpectedGoalsPerShot": 0.1204,
+      "qualityWeight": 0.6296,
+      "expectedGoalsPer90": 0.1355
+    },
+    "482609": {
+      "shots": 12,
+      "shotsPer90": 0.5351,
+      "expectedGoalsPerShot": 0.1417,
+      "rawExpectedGoalsPerShot": 0.1618,
+      "qualityWeight": 0.5455,
+      "expectedGoalsPer90": 0.0758
+    },
+    "482973": {
+      "shots": 70,
+      "shotsPer90": 2.4969,
+      "expectedGoalsPerShot": 0.0952,
+      "rawExpectedGoalsPerShot": 0.092,
+      "qualityWeight": 0.875,
+      "expectedGoalsPer90": 0.2376
+    },
+    "483081": {
+      "shots": 21,
+      "shotsPer90": 1.9022,
+      "expectedGoalsPerShot": 0.1116,
+      "rawExpectedGoalsPerShot": 0.1088,
+      "qualityWeight": 0.6774,
+      "expectedGoalsPer90": 0.2123
+    },
+    "484420": {
+      "shots": 36,
+      "shotsPer90": 1.101,
+      "expectedGoalsPerShot": 0.0739,
+      "rawExpectedGoalsPerShot": 0.0618,
+      "qualityWeight": 0.7826,
+      "expectedGoalsPer90": 0.0813
+    },
+    "485047": {
+      "shots": 5,
+      "shotsPer90": 0.4174,
+      "expectedGoalsPerShot": 0.204,
+      "rawExpectedGoalsPerShot": 0.3771,
+      "qualityWeight": 0.3333,
+      "expectedGoalsPer90": 0.0851
+    },
+    "485055": {
+      "shots": 0,
+      "shotsPer90": 0.1136,
+      "expectedGoalsPerShot": 0.1175,
+      "rawExpectedGoalsPerShot": 0.0,
+      "qualityWeight": 0.0,
+      "expectedGoalsPer90": 0.0133
+    },
+    "485711": {
+      "shots": 61,
+      "shotsPer90": 3.1337,
+      "expectedGoalsPerShot": 0.1927,
+      "rawExpectedGoalsPerShot": 0.205,
+      "qualityWeight": 0.8592,
+      "expectedGoalsPer90": 0.6037
+    },
+    "486385": {
+      "shots": 43,
+      "shotsPer90": 2.3578,
+      "expectedGoalsPerShot": 0.2287,
+      "rawExpectedGoalsPerShot": 0.2546,
+      "qualityWeight": 0.8113,
+      "expectedGoalsPer90": 0.5393
+    },
+    "486520": {
+      "shots": 7,
+      "shotsPer90": 0.5464,
+      "expectedGoalsPerShot": 0.1123,
+      "rawExpectedGoalsPerShot": 0.1048,
+      "qualityWeight": 0.4118,
+      "expectedGoalsPer90": 0.0613
+    },
+    "486672": {
+      "shots": 27,
+      "shotsPer90": 0.8916,
+      "expectedGoalsPerShot": 0.0731,
+      "rawExpectedGoalsPerShot": 0.0567,
+      "qualityWeight": 0.7297,
+      "expectedGoalsPer90": 0.0652
+    },
+    "487053": {
+      "shots": 4,
+      "shotsPer90": 0.355,
+      "expectedGoalsPerShot": 0.0995,
+      "rawExpectedGoalsPerShot": 0.0546,
+      "qualityWeight": 0.2857,
+      "expectedGoalsPer90": 0.0353
+    },
+    "487676": {
+      "shots": 34,
+      "shotsPer90": 1.0192,
+      "expectedGoalsPerShot": 0.0882,
+      "rawExpectedGoalsPerShot": 0.0796,
+      "qualityWeight": 0.7727,
+      "expectedGoalsPer90": 0.0899
+    },
+    "487838": {
+      "shots": 25,
+      "shotsPer90": 1.0493,
+      "expectedGoalsPerShot": 0.0704,
+      "rawExpectedGoalsPerShot": 0.0515,
+      "qualityWeight": 0.7143,
+      "expectedGoalsPer90": 0.0738
+    },
+    "488213": {
+      "shots": 46,
+      "shotsPer90": 2.8593,
+      "expectedGoalsPerShot": 0.14,
+      "rawExpectedGoalsPerShot": 0.1449,
+      "qualityWeight": 0.8214,
+      "expectedGoalsPer90": 0.4003
+    },
+    "489639": {
+      "shots": 0,
+      "shotsPer90": 0.1136,
+      "expectedGoalsPerShot": 0.1175,
+      "rawExpectedGoalsPerShot": 0.0,
+      "qualityWeight": 0.0,
+      "expectedGoalsPer90": 0.0133
+    },
+    "489706": {
+      "shots": 13,
+      "shotsPer90": 1.4955,
+      "expectedGoalsPerShot": 0.1156,
+      "rawExpectedGoalsPerShot": 0.1142,
+      "qualityWeight": 0.5652,
+      "expectedGoalsPer90": 0.1729
+    },
+    "489888": {
+      "shots": 20,
+      "shotsPer90": 1.6773,
+      "expectedGoalsPerShot": 0.1583,
+      "rawExpectedGoalsPerShot": 0.1787,
+      "qualityWeight": 0.6667,
+      "expectedGoalsPer90": 0.2655
+    },
+    "490094": {
+      "shots": 12,
+      "shotsPer90": 0.7633,
+      "expectedGoalsPerShot": 0.0766,
+      "rawExpectedGoalsPerShot": 0.0426,
+      "qualityWeight": 0.5455,
+      "expectedGoalsPer90": 0.0585
+    },
+    "490142": {
+      "shots": 3,
+      "shotsPer90": 0.3245,
+      "expectedGoalsPerShot": 0.1067,
+      "rawExpectedGoalsPerShot": 0.0709,
+      "qualityWeight": 0.2308,
+      "expectedGoalsPer90": 0.0346
+    },
+    "491279": {
+      "shots": 16,
+      "shotsPer90": 0.5386,
+      "expectedGoalsPerShot": 0.1395,
+      "rawExpectedGoalsPerShot": 0.1533,
+      "qualityWeight": 0.6154,
+      "expectedGoalsPer90": 0.0751
+    },
+    "492777": {
+      "shots": 6,
+      "shotsPer90": 0.6188,
+      "expectedGoalsPerShot": 0.0872,
+      "rawExpectedGoalsPerShot": 0.0366,
+      "qualityWeight": 0.375,
+      "expectedGoalsPer90": 0.0539
+    },
+    "492859": {
+      "shots": 10,
+      "shotsPer90": 1.7566,
+      "expectedGoalsPerShot": 0.0806,
+      "rawExpectedGoalsPerShot": 0.0438,
+      "qualityWeight": 0.5,
+      "expectedGoalsPer90": 0.1416
+    },
+    "493105": {
+      "shots": 33,
+      "shotsPer90": 2.1937,
+      "expectedGoalsPerShot": 0.1229,
+      "rawExpectedGoalsPerShot": 0.1246,
+      "qualityWeight": 0.7674,
+      "expectedGoalsPer90": 0.2697
+    },
+    "493125": {
+      "shots": 4,
+      "shotsPer90": 0.7451,
+      "expectedGoalsPerShot": 0.0987,
+      "rawExpectedGoalsPerShot": 0.0519,
+      "qualityWeight": 0.2857,
+      "expectedGoalsPer90": 0.0736
+    },
+    "493362": {
+      "shots": 42,
+      "shotsPer90": 2.0378,
+      "expectedGoalsPerShot": 0.0748,
+      "rawExpectedGoalsPerShot": 0.0647,
+      "qualityWeight": 0.8077,
+      "expectedGoalsPer90": 0.1525
+    },
+    "494521": {
+      "shots": 16,
+      "shotsPer90": 0.4958,
+      "expectedGoalsPerShot": 0.1217,
+      "rawExpectedGoalsPerShot": 0.1243,
+      "qualityWeight": 0.6154,
+      "expectedGoalsPer90": 0.0603
+    },
+    "494595": {
+      "shots": 51,
+      "shotsPer90": 1.8164,
+      "expectedGoalsPerShot": 0.1435,
+      "rawExpectedGoalsPerShot": 0.1486,
+      "qualityWeight": 0.8361,
+      "expectedGoalsPer90": 0.2606
+    },
+    "494960": {
+      "shots": 9,
+      "shotsPer90": 0.5091,
+      "expectedGoalsPerShot": 0.0817,
+      "rawExpectedGoalsPerShot": 0.0419,
+      "qualityWeight": 0.4737,
+      "expectedGoalsPer90": 0.0416
+    },
+    "496221": {
+      "shots": 32,
+      "shotsPer90": 1.112,
+      "expectedGoalsPerShot": 0.0554,
+      "rawExpectedGoalsPerShot": 0.036,
+      "qualityWeight": 0.7619,
+      "expectedGoalsPer90": 0.0616
+    },
+    "496661": {
+      "shots": 4,
+      "shotsPer90": 1.075,
+      "expectedGoalsPerShot": 0.0937,
+      "rawExpectedGoalsPerShot": 0.0344,
+      "qualityWeight": 0.2857,
+      "expectedGoalsPer90": 0.1008
+    },
+    "497949": {
+      "shots": 3,
+      "shotsPer90": 0.343,
+      "expectedGoalsPerShot": 0.0967,
+      "rawExpectedGoalsPerShot": 0.0275,
+      "qualityWeight": 0.2308,
+      "expectedGoalsPer90": 0.0332
+    },
+    "498016": {
+      "shots": 0,
+      "shotsPer90": 0.1136,
+      "expectedGoalsPerShot": 0.1175,
+      "rawExpectedGoalsPerShot": 0.0,
+      "qualityWeight": 0.0,
+      "expectedGoalsPer90": 0.0133
+    },
+    "499169": {
+      "shots": 2,
+      "shotsPer90": 0.3568,
+      "expectedGoalsPerShot": 0.1084,
+      "rawExpectedGoalsPerShot": 0.0628,
+      "qualityWeight": 0.1667,
+      "expectedGoalsPer90": 0.0387
+    },
+    "499604": {
+      "shots": 28,
+      "shotsPer90": 2.0926,
+      "expectedGoalsPerShot": 0.1011,
+      "rawExpectedGoalsPerShot": 0.0953,
+      "qualityWeight": 0.7368,
+      "expectedGoalsPer90": 0.2116
+    },
+    "500040": {
+      "shots": 1,
+      "shotsPer90": 0.1966,
+      "expectedGoalsPerShot": 0.1146,
+      "rawExpectedGoalsPerShot": 0.0859,
+      "qualityWeight": 0.0909,
+      "expectedGoalsPer90": 0.0225
+    },
+    "500151": {
+      "shots": 5,
+      "shotsPer90": 0.5045,
+      "expectedGoalsPerShot": 0.1607,
+      "rawExpectedGoalsPerShot": 0.2471,
+      "qualityWeight": 0.3333,
+      "expectedGoalsPer90": 0.0811
+    },
+    "501837": {
+      "shots": 30,
+      "shotsPer90": 1.2417,
+      "expectedGoalsPerShot": 0.1035,
+      "rawExpectedGoalsPerShot": 0.0989,
+      "qualityWeight": 0.75,
+      "expectedGoalsPer90": 0.1285
+    },
+    "502500": {
+      "shots": 84,
+      "shotsPer90": 2.1804,
+      "expectedGoalsPerShot": 0.2023,
+      "rawExpectedGoalsPerShot": 0.2124,
+      "qualityWeight": 0.8936,
+      "expectedGoalsPer90": 0.441
+    },
+    "502697": {
+      "shots": 20,
+      "shotsPer90": 2.4924,
+      "expectedGoalsPerShot": 0.0728,
+      "rawExpectedGoalsPerShot": 0.0504,
+      "qualityWeight": 0.6667,
+      "expectedGoalsPer90": 0.1814
+    },
+    "503139": {
+      "shots": 44,
+      "shotsPer90": 1.3362,
+      "expectedGoalsPerShot": 0.0866,
+      "rawExpectedGoalsPerShot": 0.0795,
+      "qualityWeight": 0.8148,
+      "expectedGoalsPer90": 0.1157
+    },
+    "503301": {
+      "shots": 25,
+      "shotsPer90": 1.3305,
+      "expectedGoalsPerShot": 0.0958,
+      "rawExpectedGoalsPerShot": 0.0871,
+      "qualityWeight": 0.7143,
+      "expectedGoalsPer90": 0.1274
+    },
+    "503714": {
+      "shots": 22,
+      "shotsPer90": 0.8539,
+      "expectedGoalsPerShot": 0.1187,
+      "rawExpectedGoalsPerShot": 0.1192,
+      "qualityWeight": 0.6875,
+      "expectedGoalsPer90": 0.1013
+    },
+    "508479": {
+      "shots": 0,
+      "shotsPer90": 0.1136,
+      "expectedGoalsPerShot": 0.1175,
+      "rawExpectedGoalsPerShot": 0.0,
+      "qualityWeight": 0.0,
+      "expectedGoalsPer90": 0.0133
+    },
+    "509291": {
+      "shots": 15,
+      "shotsPer90": 0.5533,
+      "expectedGoalsPerShot": 0.0676,
+      "rawExpectedGoalsPerShot": 0.0344,
+      "qualityWeight": 0.6,
+      "expectedGoalsPer90": 0.0374
+    },
+    "509416": {
+      "shots": 41,
+      "shotsPer90": 1.8451,
+      "expectedGoalsPerShot": 0.0646,
+      "rawExpectedGoalsPerShot": 0.0517,
+      "qualityWeight": 0.8039,
+      "expectedGoalsPer90": 0.1191
+    },
+    "510281": {
+      "shots": 19,
+      "shotsPer90": 2.0567,
+      "expectedGoalsPerShot": 0.1532,
+      "rawExpectedGoalsPerShot": 0.1721,
+      "qualityWeight": 0.6552,
+      "expectedGoalsPer90": 0.3152
+    },
+    "510362": {
+      "shots": 5,
+      "shotsPer90": 0.3954,
+      "expectedGoalsPerShot": 0.1416,
+      "rawExpectedGoalsPerShot": 0.19,
+      "qualityWeight": 0.3333,
+      "expectedGoalsPer90": 0.056
+    },
+    "510663": {
+      "shots": 65,
+      "shotsPer90": 2.9828,
+      "expectedGoalsPerShot": 0.1748,
+      "rawExpectedGoalsPerShot": 0.1836,
+      "qualityWeight": 0.8667,
+      "expectedGoalsPer90": 0.5213
+    },
+    "511499": {
+      "shots": 35,
+      "shotsPer90": 2.2548,
+      "expectedGoalsPerShot": 0.0889,
+      "rawExpectedGoalsPerShot": 0.0808,
+      "qualityWeight": 0.7778,
+      "expectedGoalsPer90": 0.2005
+    },
+    "512462": {
+      "shots": 13,
+      "shotsPer90": 0.4483,
+      "expectedGoalsPerShot": 0.1079,
+      "rawExpectedGoalsPerShot": 0.1005,
+      "qualityWeight": 0.5652,
+      "expectedGoalsPer90": 0.0484
+    },
+    "513418": {
+      "shots": 57,
+      "shotsPer90": 1.7738,
+      "expectedGoalsPerShot": 0.1828,
+      "rawExpectedGoalsPerShot": 0.1942,
+      "qualityWeight": 0.8507,
+      "expectedGoalsPer90": 0.3242
+    },
+    "513433": {
+      "shots": 16,
+      "shotsPer90": 1.9236,
+      "expectedGoalsPerShot": 0.1133,
+      "rawExpectedGoalsPerShot": 0.1108,
+      "qualityWeight": 0.6154,
+      "expectedGoalsPer90": 0.218
+    },
+    "513466": {
+      "shots": 11,
+      "shotsPer90": 1.4843,
+      "expectedGoalsPerShot": 0.0825,
+      "rawExpectedGoalsPerShot": 0.0508,
+      "qualityWeight": 0.5238,
+      "expectedGoalsPer90": 0.1225
+    },
+    "514254": {
+      "shots": 42,
+      "shotsPer90": 1.6698,
+      "expectedGoalsPerShot": 0.146,
+      "rawExpectedGoalsPerShot": 0.1528,
+      "qualityWeight": 0.8077,
+      "expectedGoalsPer90": 0.2438
+    },
+    "514356": {
+      "shots": 3,
+      "shotsPer90": 0.7775,
+      "expectedGoalsPerShot": 0.1116,
+      "rawExpectedGoalsPerShot": 0.0922,
+      "qualityWeight": 0.2308,
+      "expectedGoalsPer90": 0.0868
+    },
+    "515046": {
+      "shots": 0,
+      "shotsPer90": 0.1136,
+      "expectedGoalsPerShot": 0.1175,
+      "rawExpectedGoalsPerShot": 0.0,
+      "qualityWeight": 0.0,
+      "expectedGoalsPer90": 0.0133
+    },
+    "515597": {
+      "shots": 0,
+      "shotsPer90": 0.1136,
+      "expectedGoalsPerShot": 0.1175,
+      "rawExpectedGoalsPerShot": 0.0,
+      "qualityWeight": 0.0,
+      "expectedGoalsPer90": 0.0133
+    },
+    "515621": {
+      "shots": 4,
+      "shotsPer90": 0.6901,
+      "expectedGoalsPerShot": 0.1039,
+      "rawExpectedGoalsPerShot": 0.07,
+      "qualityWeight": 0.2857,
+      "expectedGoalsPer90": 0.0717
+    },
+    "516895": {
+      "shots": 13,
+      "shotsPer90": 0.7624,
+      "expectedGoalsPerShot": 0.0736,
+      "rawExpectedGoalsPerShot": 0.0398,
+      "qualityWeight": 0.5652,
+      "expectedGoalsPer90": 0.0561
+    },
+    "516939": {
+      "shots": 10,
+      "shotsPer90": 0.8546,
+      "expectedGoalsPerShot": 0.0811,
+      "rawExpectedGoalsPerShot": 0.0447,
+      "qualityWeight": 0.5,
+      "expectedGoalsPer90": 0.0693
+    },
+    "518030": {
+      "shots": 0,
+      "shotsPer90": 0.1136,
+      "expectedGoalsPerShot": 0.1175,
+      "rawExpectedGoalsPerShot": 0.0,
+      "qualityWeight": 0.0,
+      "expectedGoalsPer90": 0.0133
+    },
+    "523705": {
+      "shots": 3,
+      "shotsPer90": 0.2469,
+      "expectedGoalsPerShot": 0.0985,
+      "rawExpectedGoalsPerShot": 0.0352,
+      "qualityWeight": 0.2308,
+      "expectedGoalsPer90": 0.0243
+    },
+    "530335": {
+      "shots": 12,
+      "shotsPer90": 1.2652,
+      "expectedGoalsPerShot": 0.1181,
+      "rawExpectedGoalsPerShot": 0.1186,
+      "qualityWeight": 0.5455,
+      "expectedGoalsPer90": 0.1494
+    },
+    "532529": {
+      "shots": 37,
+      "shotsPer90": 1.8039,
+      "expectedGoalsPerShot": 0.1263,
+      "rawExpectedGoalsPerShot": 0.1287,
+      "qualityWeight": 0.7872,
+      "expectedGoalsPer90": 0.2279
+    },
+    "532605": {
+      "shots": 11,
+      "shotsPer90": 0.8457,
+      "expectedGoalsPerShot": 0.1776,
+      "rawExpectedGoalsPerShot": 0.2323,
+      "qualityWeight": 0.5238,
+      "expectedGoalsPer90": 0.1502
+    },
+    "533463": {
+      "shots": 56,
+      "shotsPer90": 2.0832,
+      "expectedGoalsPerShot": 0.1495,
+      "rawExpectedGoalsPerShot": 0.1553,
+      "qualityWeight": 0.8485,
+      "expectedGoalsPer90": 0.3115
+    },
+    "535301": {
+      "shots": 20,
+      "shotsPer90": 1.071,
+      "expectedGoalsPerShot": 0.0583,
+      "rawExpectedGoalsPerShot": 0.0287,
+      "qualityWeight": 0.6667,
+      "expectedGoalsPer90": 0.0624
+    },
+    "535818": {
+      "shots": 6,
+      "shotsPer90": 0.8444,
+      "expectedGoalsPerShot": 0.0944,
+      "rawExpectedGoalsPerShot": 0.0559,
+      "qualityWeight": 0.375,
+      "expectedGoalsPer90": 0.0797
+    },
+    "536109": {
+      "shots": 3,
+      "shotsPer90": 0.479,
+      "expectedGoalsPerShot": 0.1087,
+      "rawExpectedGoalsPerShot": 0.0796,
+      "qualityWeight": 0.2308,
+      "expectedGoalsPer90": 0.0521
+    },
+    "536661": {
+      "shots": 7,
+      "shotsPer90": 1.4798,
+      "expectedGoalsPerShot": 0.1224,
+      "rawExpectedGoalsPerShot": 0.1294,
+      "qualityWeight": 0.4118,
+      "expectedGoalsPer90": 0.1811
+    },
+    "538207": {
+      "shots": 23,
+      "shotsPer90": 2.5112,
+      "expectedGoalsPerShot": 0.1845,
+      "rawExpectedGoalsPerShot": 0.2137,
+      "qualityWeight": 0.697,
+      "expectedGoalsPer90": 0.4634
+    },
+    "544877": {
+      "shots": 9,
+      "shotsPer90": 0.4346,
+      "expectedGoalsPerShot": 0.1352,
+      "rawExpectedGoalsPerShot": 0.1548,
+      "qualityWeight": 0.4737,
+      "expectedGoalsPer90": 0.0587
+    },
+    "547027": {
+      "shots": 26,
+      "shotsPer90": 1.603,
+      "expectedGoalsPerShot": 0.1018,
+      "rawExpectedGoalsPerShot": 0.0958,
+      "qualityWeight": 0.7222,
+      "expectedGoalsPer90": 0.1632
+    },
+    "547701": {
+      "shots": 11,
+      "shotsPer90": 0.7088,
+      "expectedGoalsPerShot": 0.1316,
+      "rawExpectedGoalsPerShot": 0.1444,
+      "qualityWeight": 0.5238,
+      "expectedGoalsPer90": 0.0933
+    },
+    "547719": {
+      "shots": 12,
+      "shotsPer90": 0.7748,
+      "expectedGoalsPerShot": 0.1159,
+      "rawExpectedGoalsPerShot": 0.1147,
+      "qualityWeight": 0.5455,
+      "expectedGoalsPer90": 0.0898
+    },
+    "549329": {
+      "shots": 16,
+      "shotsPer90": 1.0453,
+      "expectedGoalsPerShot": 0.0799,
+      "rawExpectedGoalsPerShot": 0.0564,
+      "qualityWeight": 0.6154,
+      "expectedGoalsPer90": 0.0835
+    },
+    "549912": {
+      "shots": 25,
+      "shotsPer90": 1.415,
+      "expectedGoalsPerShot": 0.1,
+      "rawExpectedGoalsPerShot": 0.093,
+      "qualityWeight": 0.7143,
+      "expectedGoalsPer90": 0.1414
+    },
+    "550839": {
+      "shots": 21,
+      "shotsPer90": 1.9117,
+      "expectedGoalsPerShot": 0.1173,
+      "rawExpectedGoalsPerShot": 0.1172,
+      "qualityWeight": 0.6774,
+      "expectedGoalsPer90": 0.2241
+    },
+    "550864": {
+      "shots": 9,
+      "shotsPer90": 0.5335,
+      "expectedGoalsPerShot": 0.1275,
+      "rawExpectedGoalsPerShot": 0.1386,
+      "qualityWeight": 0.4737,
+      "expectedGoalsPer90": 0.068
+    },
+    "551210": {
+      "shots": 4,
+      "shotsPer90": 0.4,
+      "expectedGoalsPerShot": 0.1081,
+      "rawExpectedGoalsPerShot": 0.0846,
+      "qualityWeight": 0.2857,
+      "expectedGoalsPer90": 0.0432
+    },
+    "551226": {
+      "shots": 28,
+      "shotsPer90": 0.8586,
+      "expectedGoalsPerShot": 0.0788,
+      "rawExpectedGoalsPerShot": 0.0651,
+      "qualityWeight": 0.7368,
+      "expectedGoalsPer90": 0.0677
+    },
+    "554197": {
+      "shots": 12,
+      "shotsPer90": 1.3597,
+      "expectedGoalsPerShot": 0.0898,
+      "rawExpectedGoalsPerShot": 0.0667,
+      "qualityWeight": 0.5455,
+      "expectedGoalsPer90": 0.122
+    },
+    "560262": {
+      "shots": 52,
+      "shotsPer90": 2.5796,
+      "expectedGoalsPerShot": 0.1371,
+      "rawExpectedGoalsPerShot": 0.1409,
+      "qualityWeight": 0.8387,
+      "expectedGoalsPer90": 0.3537
+    },
+    "560552": {
+      "shots": 25,
+      "shotsPer90": 2.1345,
+      "expectedGoalsPerShot": 0.0717,
+      "rawExpectedGoalsPerShot": 0.0534,
+      "qualityWeight": 0.7143,
+      "expectedGoalsPer90": 0.153
+    },
+    "564406": {
+      "shots": 13,
+      "shotsPer90": 1.5365,
+      "expectedGoalsPerShot": 0.1385,
+      "rawExpectedGoalsPerShot": 0.1547,
+      "qualityWeight": 0.5652,
+      "expectedGoalsPer90": 0.2128
+    },
+    "564940": {
+      "shots": 7,
+      "shotsPer90": 0.6945,
+      "expectedGoalsPerShot": 0.1055,
+      "rawExpectedGoalsPerShot": 0.0885,
+      "qualityWeight": 0.4118,
+      "expectedGoalsPer90": 0.0733
+    },
+    "570526": {
+      "shots": 12,
+      "shotsPer90": 1.1303,
+      "expectedGoalsPerShot": 0.1186,
+      "rawExpectedGoalsPerShot": 0.1195,
+      "qualityWeight": 0.5455,
+      "expectedGoalsPer90": 0.134
+    },
+    "575458": {
+      "shots": 3,
+      "shotsPer90": 0.5669,
+      "expectedGoalsPerShot": 0.1276,
+      "rawExpectedGoalsPerShot": 0.1616,
+      "qualityWeight": 0.2308,
+      "expectedGoalsPer90": 0.0724
+    },
+    "575476": {
+      "shots": 11,
+      "shotsPer90": 0.5315,
+      "expectedGoalsPerShot": 0.0843,
+      "rawExpectedGoalsPerShot": 0.0542,
+      "qualityWeight": 0.5238,
+      "expectedGoalsPer90": 0.0448
+    },
+    "577016": {
+      "shots": 4,
+      "shotsPer90": 0.6067,
+      "expectedGoalsPerShot": 0.1318,
+      "rawExpectedGoalsPerShot": 0.1677,
+      "qualityWeight": 0.2857,
+      "expectedGoalsPer90": 0.08
+    },
+    "577669": {
+      "shots": 19,
+      "shotsPer90": 0.6417,
+      "expectedGoalsPerShot": 0.0963,
+      "rawExpectedGoalsPerShot": 0.0852,
+      "qualityWeight": 0.6552,
+      "expectedGoalsPer90": 0.0618
+    },
+    "577725": {
+      "shots": 26,
+      "shotsPer90": 1.7261,
+      "expectedGoalsPerShot": 0.1382,
+      "rawExpectedGoalsPerShot": 0.1461,
+      "qualityWeight": 0.7222,
+      "expectedGoalsPer90": 0.2385
+    },
+    "578153": {
+      "shots": 7,
+      "shotsPer90": 0.5126,
+      "expectedGoalsPerShot": 0.1087,
+      "rawExpectedGoalsPerShot": 0.0961,
+      "qualityWeight": 0.4118,
+      "expectedGoalsPer90": 0.0557
+    },
+    "586309": {
+      "shots": 38,
+      "shotsPer90": 1.7159,
+      "expectedGoalsPerShot": 0.2151,
+      "rawExpectedGoalsPerShot": 0.2408,
+      "qualityWeight": 0.7917,
+      "expectedGoalsPer90": 0.369
+    },
+    "592031": {
+      "shots": 41,
+      "shotsPer90": 1.4916,
+      "expectedGoalsPerShot": 0.1162,
+      "rawExpectedGoalsPerShot": 0.1159,
+      "qualityWeight": 0.8039,
+      "expectedGoalsPer90": 0.1733
+    },
+    "596777": {
+      "shots": 25,
+      "shotsPer90": 1.5237,
+      "expectedGoalsPerShot": 0.1189,
+      "rawExpectedGoalsPerShot": 0.1195,
+      "qualityWeight": 0.7143,
+      "expectedGoalsPer90": 0.1812
+    },
+    "606745": {
+      "shots": 3,
+      "shotsPer90": 0.3768,
+      "expectedGoalsPerShot": 0.1069,
+      "rawExpectedGoalsPerShot": 0.0717,
+      "qualityWeight": 0.2308,
+      "expectedGoalsPer90": 0.0403
+    },
+    "607464": {
+      "shots": 9,
+      "shotsPer90": 0.3358,
+      "expectedGoalsPerShot": 0.1234,
+      "rawExpectedGoalsPerShot": 0.1299,
+      "qualityWeight": 0.4737,
+      "expectedGoalsPer90": 0.0414
+    },
+    "609873": {
+      "shots": 5,
+      "shotsPer90": 0.8924,
+      "expectedGoalsPerShot": 0.1076,
+      "rawExpectedGoalsPerShot": 0.0878,
+      "qualityWeight": 0.3333,
+      "expectedGoalsPer90": 0.096
+    },
+    "611922": {
+      "shots": 16,
+      "shotsPer90": 2.6301,
+      "expectedGoalsPerShot": 0.0922,
+      "rawExpectedGoalsPerShot": 0.0763,
+      "qualityWeight": 0.6154,
+      "expectedGoalsPer90": 0.2424
+    },
+    "613804": {
+      "shots": 18,
+      "shotsPer90": 0.6514,
+      "expectedGoalsPerShot": 0.0619,
+      "rawExpectedGoalsPerShot": 0.0311,
+      "qualityWeight": 0.6429,
+      "expectedGoalsPer90": 0.0403
+    },
+    "620487": {
+      "shots": 1,
+      "shotsPer90": 0.3367,
+      "expectedGoalsPerShot": 0.1393,
+      "rawExpectedGoalsPerShot": 0.3574,
+      "qualityWeight": 0.0909,
+      "expectedGoalsPer90": 0.0469
+    },
+    "624773": {
+      "shots": 28,
+      "shotsPer90": 2.7693,
+      "expectedGoalsPerShot": 0.1329,
+      "rawExpectedGoalsPerShot": 0.1384,
+      "qualityWeight": 0.7368,
+      "expectedGoalsPer90": 0.3679
+    },
+    "647671": {
+      "shots": 41,
+      "shotsPer90": 1.9751,
+      "expectedGoalsPerShot": 0.0617,
+      "rawExpectedGoalsPerShot": 0.0481,
+      "qualityWeight": 0.8039,
+      "expectedGoalsPer90": 0.1219
+    },
+    "647850": {
+      "shots": 21,
+      "shotsPer90": 5.6184,
+      "expectedGoalsPerShot": 0.1107,
+      "rawExpectedGoalsPerShot": 0.1075,
+      "qualityWeight": 0.6774,
+      "expectedGoalsPer90": 0.6219
+    },
+    "651426": {
+      "shots": 7,
+      "shotsPer90": 0.5386,
+      "expectedGoalsPerShot": 0.1612,
+      "rawExpectedGoalsPerShot": 0.2237,
+      "qualityWeight": 0.4118,
+      "expectedGoalsPer90": 0.0868
     }
   },
   "unmatched": [

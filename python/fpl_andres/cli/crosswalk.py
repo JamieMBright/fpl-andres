@@ -31,6 +31,7 @@ from fpl_andres.crosswalk import (
     resolve_crosswalk,
 )
 from fpl_andres.models.penalties import PenaltyExposure, penalty_exposure
+from fpl_andres.models.shot_profile import ShotProfile, league_shot_quality, shot_profile
 from fpl_andres.persistence.supabase import SupabaseCredentials, SupabaseRestClient
 
 DEFAULT_OUTPUT = Path("data/crosswalk")
@@ -130,6 +131,24 @@ def _penalty_exposures(season: str) -> dict[str, PenaltyExposure]:
     return exposures
 
 
+def _shot_profiles(season: str) -> dict[str, ShotProfile]:
+    """Keyed by Understat id. League quality is pooled over the same season."""
+    rows = list(_understat_frame(season).reset_index().itertuples())
+    quality = league_shot_quality([(float(r.np_xg), int(r.shots)) for r in rows])
+    played = [r for r in rows if int(r.minutes) > 0]
+    league_volume = sum(int(r.shots) for r in played) / (sum(int(r.minutes) for r in played) / 90.0)
+    return {
+        str(r.player_id): shot_profile(
+            shots=int(r.shots),
+            minutes=int(r.minutes),
+            non_penalty_expected_goals=float(r.np_xg),
+            league_quality=quality,
+            league_shots_per_90=league_volume,
+        )
+        for r in played
+    }
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
 
@@ -153,10 +172,16 @@ def main(argv: Sequence[str] | None = None) -> int:
             print(f"\n  refused as {outcome.value}: {names}")
 
     exposures = _penalty_exposures(args.season)
+    profiles = _shot_profiles(args.season)
     matched_exposure = {
         match.code: exposures[match.source_id]
         for match in report.verified
         if match.source_id in exposures
+    }
+    matched_profile = {
+        match.code: profiles[match.source_id]
+        for match in report.verified
+        if match.source_id in profiles
     }
     ranked = sorted(
         (
@@ -202,6 +227,17 @@ def main(argv: Sequence[str] | None = None) -> int:
                         ),
                     }
                     for code, exposure in sorted(matched_exposure.items())
+                },
+                "shotProfile": {
+                    str(code): {
+                        "shots": profile.shots,
+                        "shotsPer90": round(profile.shots_per_90, 4),
+                        "expectedGoalsPerShot": round(profile.expected_goals_per_shot, 4),
+                        "rawExpectedGoalsPerShot": round(profile.raw_expected_goals_per_shot, 4),
+                        "qualityWeight": round(profile.quality_weight, 4),
+                        "expectedGoalsPer90": round(profile.expected_goals_per_90, 4),
+                    }
+                    for code, profile in sorted(matched_profile.items())
                 },
                 "unmatched": [
                     {"code": match.code, "name": match.web_name, "why": match.outcome.value}

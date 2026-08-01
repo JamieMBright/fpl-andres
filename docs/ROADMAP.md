@@ -226,6 +226,18 @@ Ordered by what would change the answers most, not by effort.
    projector still prices from total xG**, because only one Understat season is
    cached and a basis change cannot be backtested on one season.
 
+   **Stage 2 is done and measured, and the honest answer is "small".**
+   `models/shot_profile.py` splits npxG/90 into shots/90 times npxG/shot.
+   Across four seasons and 553 season pairs, volume repeats at **0.890** year
+   to year against 0.860 for npxG/90, while quality repeats at only **0.455**.
+   Volume is the durable part — but quality is noisy, not noise: replacing it
+   with the league mean makes prediction _worse_, MAE 0.0561 to 0.0666.
+   Shrinking it by shot count wins, optimum near ten shots of prior, plus a
+   10% regression on volume. The win is **MAE 0.05608 to 0.05417, 3.4%**,
+   which is 0.0076 FPL points a 90 for a forward or about **0.29 points across
+   a season**. Measured, real, and not on its own a reason to move the
+   projector off FPL's own expected goals.
+
 2. **FPL published no expected values before 2022-23.** Verified against the
    corpus: 0% coverage for 2019-20, 2020-21 and 2021-22, 100% from 2022-23
    onward. All seven seasons are ingested, so the boundary is reachable rather
