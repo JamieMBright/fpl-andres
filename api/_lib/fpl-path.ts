@@ -42,7 +42,36 @@ export function resolveFplUpstreamUrl(requestUrl: string): URL {
   const endpointKind = validateEndpointPath(endpointPath);
   const query = validateQuery(endpointKind, rawQuery);
 
-  return new URL(`${endpointPath}${query}`, FPL_API_ORIGIN);
+  const upstreamUrl = new URL(`${endpointPath}${query}`, FPL_API_ORIGIN);
+  requireUnchangedByResolution(upstreamUrl, endpointPath, query);
+  return upstreamUrl;
+}
+
+/**
+ * Refuse anything the URL parser did not leave exactly as the allow-list saw it.
+ *
+ * Audit item #74. The allow-list matches a string; `fetch` sends a resolved URL.
+ * Everywhere those two can differ is a place where a request is approved in one
+ * form and issued in another: a dot segment collapsed, a percent-escape
+ * decoded, a backslash treated as a separator, a `@` reinterpreted as userinfo
+ * and the origin moved somewhere else entirely.
+ *
+ * `rejectUnsafePath` and the anchored patterns already close every variant we
+ * know of, and the tests below try them. This closes the ones we do not: rather
+ * than enumerate the tricks, compare the resolved URL against the only string
+ * that could have been approved. If they differ at all, the request never
+ * leaves.
+ */
+function requireUnchangedByResolution(
+  upstreamUrl: URL,
+  endpointPath: string,
+  query: string,
+): void {
+  if (upstreamUrl.href !== `${FPL_API_ORIGIN}${endpointPath}${query}`) {
+    throw new FplPathError(
+      "request path changed under URL resolution and was not sent",
+    );
+  }
 }
 
 function rejectUnsafePath(rawPath: string, endpointPath: string): void {

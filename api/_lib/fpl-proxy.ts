@@ -71,8 +71,7 @@ export async function createFplProxyResponse(
     );
   }
 
-  const contentType = upstreamResponse.headers.get("Content-Type") ?? "";
-  if (!contentType.toLowerCase().includes("application/json")) {
+  if (!isJsonMediaType(upstreamResponse.headers.get("Content-Type"))) {
     await upstreamResponse.body?.cancel();
     return jsonError(
       "FPL returned an unexpected response format.",
@@ -279,6 +278,33 @@ function parseContentLength(rawValue: string | null): number | null {
   return Number.isSafeInteger(value) ? value : null;
 }
 
+/**
+ * Match the media type, not the whole header.
+ *
+ * Audit item #75 reported this check as missing. It was not: the presence and
+ * value were already checked. It was checked with `includes`, though, which
+ * accepts `text/html; charset=application/json` -- contrived, but the strict
+ * form costs nothing. Only the part before the first `;` is the media type, and
+ * only `application/json` or an `+json` suffix is JSON.
+ */
+function isJsonMediaType(rawValue: string | null): boolean {
+  if (rawValue === null) return false;
+  const mediaType = rawValue.split(";", 1)[0]?.trim().toLowerCase() ?? "";
+  return mediaType === "application/json" || mediaType.endsWith("+json");
+}
+
+/**
+ * Only the endpoints whose response is the same for every caller are public.
+ *
+ * Audit item #76 asked for entry-specific responses to be distinguished from
+ * public ones. They already were, by construction: this is an allow-list of two
+ * shapes and everything else -- every `entry/`, `picks/` and `leagues-classic/`
+ * path -- falls through to `private, no-store`. A shared CDN is never offered
+ * one manager's state to hold, so it cannot hand it to another.
+ *
+ * The default is the safe one deliberately. A new allowlisted endpoint in
+ * `fpl-path.ts` becomes uncacheable rather than becoming public.
+ */
 function cachePolicyFor(pathname: string): string {
   if (
     pathname.endsWith("/bootstrap-static/") ||
