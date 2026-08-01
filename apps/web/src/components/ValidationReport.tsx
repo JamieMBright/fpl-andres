@@ -34,6 +34,7 @@ type SeasonReport = {
   gameweeksPlayed: number;
   elements: number;
   firstScoredGameweek: number;
+  expectedGoalsCoverage: number;
   methods: Method[];
   league: {
     policies: Record<string, PolicyResult>;
@@ -407,6 +408,9 @@ export function ValidationReport() {
               <span className="mono">
                 {season.season} — {season.rows.toLocaleString("en-GB")}{" "}
                 observations, scored from GW{season.firstScoredGameweek}
+                {season.expectedGoalsCoverage < 1
+                  ? ` — expected goals on ${Math.round(season.expectedGoalsCoverage * 100)}% of rows, so this season is scored on actuals`
+                  : ""}
               </span>
             </summary>
             <div className="source-trail-body">

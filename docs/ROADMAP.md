@@ -210,17 +210,32 @@ Ordered by what would change the answers most, not by effort.
 
 ### Measured, and still not wired
 
-1. **Understat is joined and unused.** The crosswalk verifies 94.9% of eligible
-   2025-26 players against Understat, and that brings npxG, xA, shots, key
-   passes, shot locations and buildup involvement with it. **None of it feeds a
-   projection.** The attacking rate already uses FPL's own expected goals from
-   2022-23 onward (see [`MODEL.md`](MODEL.md) §3), so the gap is not "no xG" —
-   it is penalty-separated xG, shot volume and shot position. Shot coordinates
-   are what a positional matchup would need.
-2. **FPL published no expected values before 2022-23.** Coverage is 0% for
-   2019-20 to 2021-22 and 100% from 2022-23, so the rate model silently switches
-   basis at that boundary. Any backtest spanning it is scoring two different
-   models and must say so.
+1. **Understat is joined and barely used.** The crosswalk verifies 94.9% of
+   eligible 2025-26 players against Understat, and that brings npxG, xA, shots,
+   key passes, shot locations and buildup involvement with it. Only the penalty
+   split now feeds anything. The attacking rate still uses FPL's own expected
+   goals from 2022-23 onward (see [`MODEL.md`](MODEL.md) §3), so the remaining
+   gap is shot volume and shot position. Shot coordinates are what a positional
+   matchup would need.
+
+   **Stage 1 is done and measured.** `models/penalties.py` splits penalty from
+   open-play xG and the crosswalk CLI carries the exposure per FPL code.
+   Penalties are 5.9% of league xG but 44.5% of Cole Palmer's and 38.3% of
+   Bruno Fernandes's, with 24 regulars above 15%; losing the duty would cost
+   Palmer about 0.82 FPL points a 90. **The exposure is measured but the
+   projector still prices from total xG**, because only one Understat season is
+   cached and a basis change cannot be backtested on one season.
+
+2. **FPL published no expected values before 2022-23.** Verified against the
+   corpus: 0% coverage for 2019-20, 2020-21 and 2021-22, 100% from 2022-23
+   onward. All seven seasons are ingested, so the boundary is reachable rather
+   than hypothetical. Two guards now exist: the rate model already refuses to
+   blend bases and falls back to actuals when either season is incomplete, and
+   the validation artifact carries `expectedGoalsCoverage` per season with the
+   site saying so when it is below one. **The published span is 2022-23 to
+   2025-26, all at 100%**, so nothing on the site currently mixes regimes. What
+   is still missing is a refusal: a backtest spanning the boundary reports two
+   different models and only warns.
 3. **A starts blend edges the minutes model, but only just.** Scored on the
    population the model will actually speak for: model `P(start)` **0.547**,
    season minutes 0.513, season starts 0.514, closing-six starts 0.505, and a

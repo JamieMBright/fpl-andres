@@ -20,7 +20,7 @@ from collections.abc import Sequence
 from datetime import UTC, datetime
 from pathlib import Path
 
-from fpl_andres.backtesting.corpus import load_season
+from fpl_andres.backtesting.corpus import SeasonCorpus, load_season
 from fpl_andres.backtesting.score import score_season
 from fpl_andres.persistence.supabase import SupabaseCredentials, SupabaseRestClient
 from fpl_andres.simulation.minileague import LeagueSettings, simulate_league
@@ -50,7 +50,7 @@ POLICIES = ("advised", "form_chaser", "crowd", "hold")
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="validate")
-    parser.add_argument("--seasons", default="2022-23,2023-24,2024-25")
+    parser.add_argument("--seasons", default="2022-23,2023-24,2024-25,2025-26")
     parser.add_argument("--seeds", default="1,2,3,4,5")
     parser.add_argument("--output", default=str(DEFAULT_OUTPUT))
     return parser
@@ -89,6 +89,20 @@ def _squad_rows(league: object, policy: str, corpus: object) -> list[dict[str, o
         }
         for element_id, price in holder[1]
     ]
+
+
+def _expected_goals_coverage(corpus: SeasonCorpus) -> float:
+    """FPL published no expected values before 2022-23.
+
+    Coverage is 0.0 for those seasons and 1.0 after, so a reader comparing
+    across the boundary is comparing two different models. Reported rather
+    than assumed, because the rate model silently falls back to actuals.
+    """
+    rows = [row for block in corpus.rows_by_gameweek.values() for row in block]
+    if not rows:
+        return 0.0
+    with_expected = sum(1 for row in rows if row.expected_goals is not None)
+    return round(with_expected / len(rows), 4)
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -162,6 +176,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                     "gameweeksPlayed": gameweeks_played,
                     "elements": len(corpus.position_by_element),
                     "firstScoredGameweek": scored.first_scored_gameweek,
+                    "expectedGoalsCoverage": _expected_goals_coverage(corpus),
                     "methods": methods,
                     "league": {
                         "policies": {
