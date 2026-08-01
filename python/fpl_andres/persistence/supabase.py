@@ -7,8 +7,10 @@ and auditable.
 
 from __future__ import annotations
 
+import functools
 import json
-from collections.abc import Mapping, Sequence
+import time
+from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass
 from types import TracebackType
 from typing import Any, Literal, Self
@@ -21,6 +23,9 @@ _SECRET_ENV = "SUPABASE_SECRET_KEY"
 _URL_ENV = "SUPABASE_URL"
 _MAX_ROWS_PER_REQUEST = 500
 _MAX_DETAIL = 500
+# A scheduled run is unattended, so a blip should cost seconds, not the job.
+_MAX_ATTEMPTS = 3
+_RETRY_BASE_SECONDS = 0.5
 
 
 class MissingCredentialsError(RuntimeError):
@@ -96,6 +101,30 @@ class SupabaseRestClient:
         """The default repr would be safe today; this keeps it safe on purpose."""
         return f"SupabaseRestClient(url={self._credentials.url!r})"
 
+    def _send(self, call: Callable[[], httpx.Response]) -> httpx.Response:
+        """Retry a transient upstream failure before giving up on the run.
+
+        A single 5xx or dropped connection used to fail a whole scheduled job.
+        Only server-side and transport failures are retried: a 4xx is our fault
+        and will fail identically however many times it is sent.
+        """
+        delay = _RETRY_BASE_SECONDS
+        last_error: httpx.HTTPError | None = None
+        for attempt in range(_MAX_ATTEMPTS):
+            try:
+                response = call()
+            except httpx.HTTPError as error:
+                last_error = error
+            else:
+                if response.status_code < 500 or attempt == _MAX_ATTEMPTS - 1:
+                    return response
+            if attempt < _MAX_ATTEMPTS - 1:
+                time.sleep(delay)
+                delay *= 2
+        raise SupabaseWriteError(
+            f"gave up after {_MAX_ATTEMPTS} attempts: {type(last_error).__name__}"
+        ) from last_error
+
     def __exit__(
         self,
         exc_type: type[BaseException] | None,
@@ -124,6 +153,9 @@ class SupabaseRestClient:
         if not rows:
             return []
 
+        if on_conflict:
+            _require_conflict_columns(table, rows, on_conflict)
+
         prefer = [f"return={'representation' if returning else 'minimal'}"]
         if resolution is not None:
             prefer.append(f"resolution={resolution}")
@@ -132,11 +164,15 @@ class SupabaseRestClient:
 
         written: list[dict[str, Any]] = []
         for chunk in _chunked(rows, _MAX_ROWS_PER_REQUEST):
-            response = self._client.post(
-                f"/{table}",
-                params=params,
-                headers={"Prefer": ",".join(prefer)},
-                content=json.dumps(list(chunk), separators=(",", ":"), default=str),
+            body = json.dumps(list(chunk), separators=(",", ":"), default=str)
+            response = self._send(
+                functools.partial(
+                    self._client.post,
+                    f"/{table}",
+                    params=params,
+                    headers={"Prefer": ",".join(prefer)},
+                    content=body,
+                )
             )
             if response.status_code >= 400:
                 raise SupabaseWriteError(
@@ -179,11 +215,13 @@ class SupabaseRestClient:
         *,
         filters: Mapping[str, str],
     ) -> None:
-        response = self._client.patch(
-            f"/{table}",
-            params=dict(filters),
-            headers={"Prefer": "return=minimal"},
-            content=json.dumps(dict(values), separators=(",", ":"), default=str),
+        response = self._send(
+            lambda: self._client.patch(
+                f"/{table}",
+                params=dict(filters),
+                headers={"Prefer": "return=minimal"},
+                content=json.dumps(dict(values), separators=(",", ":"), default=str),
+            )
         )
         if response.status_code >= 400:
             raise SupabaseWriteError(
@@ -207,7 +245,7 @@ class SupabaseRestClient:
             params["order"] = order
         if limit is not None:
             params["limit"] = str(limit)
-        response = self._client.get(f"/{table}", params=params)
+        response = self._send(lambda: self._client.get(f"/{table}", params=params))
         if response.status_code >= 400:
             raise SupabaseWriteError(
                 f"{table} read failed with {response.status_code}: "
@@ -241,6 +279,28 @@ def _safe_detail(response: httpx.Response, secret: str) -> str:
 
 def _scrub(detail: str, secret: str) -> str:
     return detail.replace(secret, "<redacted>") if secret else detail
+
+
+def _require_conflict_columns(
+    table: str, rows: Sequence[Mapping[str, Any]], on_conflict: str
+) -> None:
+    """Every conflict column must be present in every row.
+
+    PostgREST cannot match a conflict target it was not given, so a payload
+    missing one of these columns silently inserts a duplicate instead of
+    updating the existing row. The failure is invisible until the table has two
+    of something that should be unique.
+    """
+    required = {column.strip() for column in on_conflict.split(",") if column.strip()}
+    if not required:
+        return
+    for index, row in enumerate(rows):
+        missing = sorted(required - set(row))
+        if missing:
+            raise SupabaseWriteError(
+                f"{table} upsert row {index} is missing on_conflict column(s) "
+                f"{missing}; this would insert a duplicate rather than update"
+            )
 
 
 def _clip(detail: str) -> str:

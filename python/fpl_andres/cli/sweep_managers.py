@@ -84,8 +84,15 @@ def _load_progress(start: int, resume: bool) -> Progress:
 
 
 def _save_progress(progress: Progress) -> None:
+    """Write via a temp file and rename, so a crash cannot truncate the resume state.
+
+    The sweep runs for hours. A partial write here would leave unparseable JSON
+    and lose the position, which is the one thing the file exists to protect.
+    """
     CHECKPOINT.parent.mkdir(parents=True, exist_ok=True)
-    CHECKPOINT.write_text(json.dumps(progress.__dict__, indent=2), encoding="utf-8")
+    temporary = CHECKPOINT.with_suffix(CHECKPOINT.suffix + ".tmp")
+    temporary.write_text(json.dumps(progress.__dict__, indent=2), encoding="utf-8")
+    temporary.replace(CHECKPOINT)
 
 
 class Refused(RuntimeError):
