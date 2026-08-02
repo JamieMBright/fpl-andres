@@ -119,19 +119,28 @@ def _defined_functions() -> dict[str, Path]:
 
 
 def _called_names(paths: list[Path]) -> set[str]:
-    called: set[str] = set()
+    """Every name the package refers to, however it refers to it.
+
+    Bare `Name` loads count, not only calls. A function put into a dispatch
+    table, passed as a callback or registered in a decorator is referenced --
+    `PER_EVENT_BLOCKS = (squad_composition, ...)` reaches every one of them --
+    and reporting those as orphans would push people to add exemptions for
+    code that is very much alive.
+
+    Audit item #12 exposed this: nine constraint builders were reported as
+    unreachable while being called on every solve. One of the nine escaped by
+    coincidence, because `rules.club_limit` happens to be an attribute with the
+    same name, which is a fair indication of how loose the previous rule was.
+    """
+    referenced: set[str] = set()
     for path in paths:
         tree = ast.parse(path.read_text(encoding="utf-8"))
         for node in ast.walk(tree):
-            if isinstance(node, ast.Call):
-                func = node.func
-                if isinstance(func, ast.Name):
-                    called.add(func.id)
-                elif isinstance(func, ast.Attribute):
-                    called.add(func.attr)
-            elif isinstance(node, ast.Attribute):
-                called.add(node.attr)
-    return called
+            if isinstance(node, ast.Attribute):
+                referenced.add(node.attr)
+            elif isinstance(node, ast.Name) and isinstance(node.ctx, ast.Load):
+                referenced.add(node.id)
+    return referenced
 
 
 def test_every_public_function_is_reachable_from_the_package() -> None:

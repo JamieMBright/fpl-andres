@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import math
-from collections import defaultdict
 from typing import Literal
 
 import numpy as np
@@ -14,6 +13,7 @@ from fpl_andres.optimization.contracts import (
     HorizonOptimizationResult,
 )
 from fpl_andres.optimization.highs import OptimizationError
+from fpl_andres.optimization.horizon_model import HorizonModel, build_constraints
 
 
 class HighsHorizonOptimizer:
@@ -23,6 +23,10 @@ class HighsHorizonOptimizer:
         self._time_limit_seconds = time_limit_seconds
 
     def solve(self, request: HorizonOptimizationRequest) -> HorizonOptimizationResult:
+        # Audit item #12. The layout and every constraint block live in
+        # `horizon_model`, one function per rule of the game. What remains here
+        # is the three-stage solve, which is the part that is about
+        # optimisation rather than about Fantasy Premier League.
         events = request.events
         event_count = len(events)
         player_ids = tuple(
@@ -33,70 +37,32 @@ class HighsHorizonOptimizer:
             )
         )
         player_count = len(player_ids)
-        player_index = {element_id: index for index, element_id in enumerate(player_ids)}
         forecasts = {
             (forecast.event, forecast.element_id): forecast for forecast in request.forecasts
         }
-        block_size = event_count * player_count
-        squad_offset = 0
-        lineup_offset = block_size
-        captain_offset = 2 * block_size
-        transfer_in_offset = 3 * block_size
-        transfer_out_offset = 4 * block_size
-        paid_offset = 5 * block_size
-        free_offset = paid_offset + event_count
-        free_used_offset = free_offset + event_count + 1
-        free_compare_offset = free_used_offset + event_count
-        cap_compare_offset = free_compare_offset + event_count
-        bank_offset = cap_compare_offset + event_count
-        variable_count = bank_offset + event_count + 1
-        current = {player.element_id: player for player in request.current_squad}
+        model = HorizonModel(request=request, player_ids=player_ids, forecasts=forecasts)
+        build_constraints(model)
 
-        def variable(offset: int, event_index: int, player: int) -> int:
-            return offset + event_index * player_count + player
-
-        # Audit item #34. Built as (row, column, value) triples rather than as
-        # dense rows. Every constraint here names a handful of variables out of
-        # thousands -- a squad-size row touches one player per column, a club
-        # limit touches three -- so a dense row is almost entirely zeros, and
-        # the matrix grows as players squared.
-        #
-        # Measured on the real shape before changing it, dense:
-        #
-        #    60 players, 2 events      2.9 MB
-        #   120 players, 2 events     10.8 MB
-        #   240 players, 2 events     41.4 MB
-        #   480 players, 2 events    161.9 MB
-        #   240 players, 5 events    241.8 MB
-        #
-        # Doubling the pool quadruples the matrix. The real FPL pool is about
-        # 700 players, which extrapolates to roughly 360 MB over two events and
-        # 2.1 GB over five -- a ceiling reached by planning further ahead, not
-        # by anything going wrong.
-        #
-        # `add_constraint` already took a coefficient dict, so the sparse form
-        # was the input all along; only the storage was dense.
-        constraint_rows: list[int] = []
-        constraint_columns: list[int] = []
-        constraint_values: list[float] = []
-        constraint_count = 0
-        lower_bounds: list[float] = []
-        upper_bounds: list[float] = []
-
-        def add_constraint(
-            coefficients: dict[int, float],
-            *,
-            lower: float = -np.inf,
-            upper: float = np.inf,
-        ) -> None:
-            nonlocal constraint_count
-            for index, coefficient in coefficients.items():
-                constraint_rows.append(constraint_count)
-                constraint_columns.append(index)
-                constraint_values.append(coefficient)
-            constraint_count += 1
-            lower_bounds.append(lower)
-            upper_bounds.append(upper)
+        player_index = model.player_index
+        variable_count = model.variable_count
+        block_size = model.block_size
+        squad_offset = model.squad_offset
+        lineup_offset = model.lineup_offset
+        captain_offset = model.captain_offset
+        transfer_in_offset = model.transfer_in_offset
+        transfer_out_offset = model.transfer_out_offset
+        paid_offset = model.paid_offset
+        free_offset = model.free_offset
+        free_used_offset = model.free_used_offset
+        free_compare_offset = model.free_compare_offset
+        bank_offset = model.bank_offset
+        variable = model.variable
+        add_constraint = model.add
+        constraint_rows = model.rows
+        constraint_columns = model.columns
+        constraint_values = model.values
+        lower_bounds = model.lower_bounds
+        upper_bounds = model.upper_bounds
 
         objective = np.zeros(variable_count, dtype=np.float64)
         for event_index, event in enumerate(events):
@@ -111,201 +77,6 @@ class HighsHorizonOptimizer:
             objective[paid_offset + event_index] = (
                 event.objective_weight * request.rules.transfer_rules.transfer_cost_points
             )
-
-        for event_index, event in enumerate(events):
-            add_constraint(
-                {variable(squad_offset, event_index, index): 1.0 for index in range(player_count)},
-                lower=request.rules.squad_size,
-                upper=request.rules.squad_size,
-            )
-            add_constraint(
-                {variable(lineup_offset, event_index, index): 1.0 for index in range(player_count)},
-                lower=request.rules.lineup_size,
-                upper=request.rules.lineup_size,
-            )
-            add_constraint(
-                {
-                    variable(captain_offset, event_index, index): 1.0
-                    for index in range(player_count)
-                },
-                lower=1.0,
-                upper=1.0,
-            )
-            for element_id, index in player_index.items():
-                squad_variable = variable(squad_offset, event_index, index)
-                lineup_variable = variable(lineup_offset, event_index, index)
-                captain_variable = variable(captain_offset, event_index, index)
-                incoming_variable = variable(transfer_in_offset, event_index, index)
-                outgoing_variable = variable(transfer_out_offset, event_index, index)
-                add_constraint(
-                    {lineup_variable: 1.0, squad_variable: -1.0},
-                    upper=0.0,
-                )
-                add_constraint(
-                    {captain_variable: 1.0, lineup_variable: -1.0},
-                    upper=0.0,
-                )
-                flow = {
-                    squad_variable: 1.0,
-                    incoming_variable: -1.0,
-                    outgoing_variable: 1.0,
-                }
-                if event_index == 0:
-                    current_value = 1.0 if element_id in current else 0.0
-                    add_constraint(flow, lower=current_value, upper=current_value)
-                else:
-                    flow[variable(squad_offset, event_index - 1, index)] = -1.0
-                    add_constraint(flow, lower=0.0, upper=0.0)
-                add_constraint(
-                    {incoming_variable: 1.0, outgoing_variable: 1.0},
-                    upper=1.0,
-                )
-
-            for position in request.rules.positions:
-                position_indices = [
-                    index
-                    for element_id, index in player_index.items()
-                    if forecasts[(event.event, element_id)].position_id == position.position_id
-                ]
-                add_constraint(
-                    {variable(squad_offset, event_index, index): 1.0 for index in position_indices},
-                    lower=position.squad_count,
-                    upper=position.squad_count,
-                )
-                add_constraint(
-                    {
-                        variable(lineup_offset, event_index, index): 1.0
-                        for index in position_indices
-                    },
-                    lower=position.lineup_minimum,
-                    upper=position.lineup_maximum,
-                )
-
-            team_indices: defaultdict[int, list[int]] = defaultdict(list)
-            for element_id, index in player_index.items():
-                team_indices[forecasts[(event.event, element_id)].team_id].append(index)
-            for indices in team_indices.values():
-                add_constraint(
-                    {variable(squad_offset, event_index, index): 1.0 for index in indices},
-                    upper=request.rules.club_limit,
-                )
-
-            incoming_variables = {
-                variable(transfer_in_offset, event_index, index): 1.0
-                for index in range(player_count)
-            }
-            outgoing_variables = {
-                variable(transfer_out_offset, event_index, index): 1.0
-                for index in range(player_count)
-            }
-            add_constraint(
-                incoming_variables,
-                upper=request.rules.transfer_cap,
-            )
-            add_constraint(
-                {
-                    **incoming_variables,
-                    **{key: -value for key, value in outgoing_variables.items()},
-                },
-                lower=0.0,
-                upper=0.0,
-            )
-
-            bank_flow = {
-                bank_offset + event_index + 1: 1.0,
-                bank_offset + event_index: -1.0,
-            }
-            for element_id, index in player_index.items():
-                event_forecast = forecasts[(event.event, element_id)]
-                bank_flow[
-                    variable(transfer_out_offset, event_index, index)
-                ] = -event_forecast.sell_price_tenths
-                bank_flow[variable(transfer_in_offset, event_index, index)] = (
-                    event_forecast.buy_price_tenths
-                )
-            add_constraint(bank_flow, lower=0.0, upper=0.0)
-
-            free_before = free_offset + event_index
-            free_after = free_offset + event_index + 1
-            free_used = free_used_offset + event_index
-            free_compare = free_compare_offset + event_index
-            cap_compare = cap_compare_offset + event_index
-            paid = paid_offset + event_index
-            transfer_count = incoming_variables
-            big_m = float(
-                request.rules.transfer_cap
-                + request.rules.transfer_rules.maximum_free_transfers
-                + request.rules.transfer_rules.weekly_free_transfers
-            )
-            add_constraint(
-                {free_used: 1.0, **{key: -value for key, value in transfer_count.items()}},
-                upper=0.0,
-            )
-            add_constraint({free_used: 1.0, free_before: -1.0}, upper=0.0)
-            add_constraint(
-                {
-                    free_used: 1.0,
-                    **{key: -value for key, value in transfer_count.items()},
-                    free_compare: big_m,
-                },
-                lower=0.0,
-            )
-            add_constraint(
-                {
-                    free_used: 1.0,
-                    free_before: -1.0,
-                    free_compare: -big_m,
-                },
-                lower=-big_m,
-            )
-            add_constraint(
-                {
-                    paid: 1.0,
-                    free_used: 1.0,
-                    **{key: -value for key, value in transfer_count.items()},
-                },
-                lower=0.0,
-                upper=0.0,
-            )
-            weekly_award = request.rules.transfer_rules.weekly_free_transfers
-            maximum_free = request.rules.transfer_rules.maximum_free_transfers
-            add_constraint(
-                {free_after: 1.0, free_before: -1.0, free_used: 1.0},
-                upper=weekly_award,
-            )
-            add_constraint(
-                {
-                    free_after: 1.0,
-                    free_before: -1.0,
-                    free_used: 1.0,
-                    cap_compare: big_m,
-                },
-                lower=weekly_award,
-            )
-            add_constraint(
-                {free_after: 1.0, cap_compare: -big_m},
-                lower=maximum_free - big_m,
-            )
-
-        for element_id, index in player_index.items():
-            add_constraint(
-                {
-                    variable(transfer_out_offset, event_index, index): 1.0
-                    for event_index in range(event_count)
-                },
-                upper=1.0 if element_id in current else 0.0,
-            )
-
-        add_constraint(
-            {free_offset: 1.0},
-            lower=request.available_free_transfers,
-            upper=request.available_free_transfers,
-        )
-        add_constraint(
-            {bank_offset: 1.0},
-            lower=request.bank_tenths,
-            upper=request.bank_tenths,
-        )
 
         lower_variable_bounds = np.zeros(variable_count, dtype=np.float64)
         upper_variable_bounds = np.full(variable_count, np.inf, dtype=np.float64)
@@ -332,7 +103,7 @@ class HighsHorizonOptimizer:
                         np.asarray(constraint_columns, dtype=np.int64),
                     ),
                 ),
-                shape=(constraint_count, variable_count),
+                shape=(model.constraint_count, variable_count),
             ).tocsr()
             result = milp(
                 stage_objective,
