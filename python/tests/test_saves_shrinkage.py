@@ -13,7 +13,8 @@ from datetime import UTC, datetime, timedelta
 
 from fpl_andres.backtesting.corpus import ElementRow
 from fpl_andres.backtesting.fixtures import RouteAdjustment
-from fpl_andres.backtesting.projector import _league_rates, _supporting_points
+from fpl_andres.backtesting.rates import league_rates
+from fpl_andres.backtesting.scoring import supporting_points
 
 KICKOFF = datetime(2025, 8, 16, 14, 0, tzinfo=UTC)
 GOALKEEPER = 1
@@ -54,8 +55,8 @@ class _Minutes:
 def _save_points(own: list[int], league_rows: list[ElementRow]) -> float:
     rows = _rows(own)
     positions = {row.element_id: GOALKEEPER for row in [*rows, *league_rows]}
-    league = _league_rates([*rows, *league_rows], positions)
-    return _supporting_points(
+    league = league_rates([*rows, *league_rows], positions)
+    return supporting_points(
         rows,
         GOALKEEPER,
         _Minutes(),  # type: ignore[arg-type]

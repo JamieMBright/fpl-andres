@@ -22,20 +22,21 @@ from fpl_andres.backtesting.fixtures import (
     estimate_strength,
     route_adjustment,
 )
+from fpl_andres.backtesting.rates import (
+    _GOAL_PRIOR,
+    _MINUTES_PER_90,
+    league_rates,
+    project_element_minutes,
+    project_element_rates,
+)
 from fpl_andres.backtesting.reliability import PointsShape, describe_shape
+from fpl_andres.backtesting.scoring import _NEUTRAL_ADJUSTMENT, fixture_points
 from fpl_andres.models.minutes import (
     MAX_EVENT,
-    AppearanceObservation,
-    MinutesEvidence,
     MinutesProjection,
-    project_minutes,
 )
 from fpl_andres.models.player_rates import (
-    PlayerRateEvidence,
     PlayerRateProjection,
-    RateObservation,
-    RatePrior,
-    project_player_rates,
 )
 
 __all__ = [
@@ -47,33 +48,6 @@ __all__ = [
 ]
 
 _SOURCE_HASH = "sha256:" + "0" * 64
-_MINUTES_PER_90 = 90.0
-
-# Position priors, expressed per 90. Sourced from league-wide long-run rates
-# rather than tuned, so the backtest cannot flatter itself by fitting them.
-_GOAL_PRIOR: Mapping[int, float] = {1: 0.00, 2: 0.05, 3: 0.12, 4: 0.28}
-_ASSIST_PRIOR: Mapping[int, float] = {1: 0.00, 2: 0.06, 3: 0.13, 4: 0.12}
-# Appearance points only; the full scoring composition arrives with a promoted
-# team-goal model. Stated here so the number is never mistaken for full xPTS.
-_GOAL_POINTS: Mapping[int, int] = {1: 10, 2: 6, 3: 5, 4: 4}
-_ASSIST_POINTS = 3
-_CLEAN_SHEET_POINTS: Mapping[int, int] = {1: 4, 2: 4, 3: 1, 4: 0}
-_SAVES_PER_POINT = 3
-_GOALKEEPER = 1
-_NEUTRAL_ADJUSTMENT = RouteAdjustment(1.0, 1.0, 1.0, 1.0, 1.0)
-# Every remaining scoring route. Verified by reconstructing realised points from
-# component columns: 2025-26 reconciles to 34,383 against an actual 34,382, and
-# 27,353 of 27,605 rows in 2024-25 match exactly, the remainder being managers.
-_CONCEDED_POINTS: Mapping[int, int] = {1: -1, 2: -1, 3: 0, 4: 0}
-_CONCEDED_PER_POINT = 2
-_YELLOW_CARD_POINTS = -1
-_RED_CARD_POINTS = -3
-_OWN_GOAL_POINTS = -2
-_PENALTY_SAVE_POINTS = 5
-_PENALTY_MISS_POINTS = -2
-# Defensive contribution, new for 2025/26. Threshold is on the raw action count.
-_DEFCON_POINTS: Mapping[int, int] = {1: 0, 2: 2, 3: 2, 4: 2}
-_DEFCON_THRESHOLD: Mapping[int, int] = {2: 10, 3: 12, 4: 12}
 
 
 @dataclass(frozen=True)
@@ -162,7 +136,7 @@ def project_horizon(
         by_element.setdefault(row.element_id, []).append(row)
 
     cutoff = _cutoff_for(corpus, gameweek, history)
-    league = _league_rates(history, corpus.position_by_element)
+    league = league_rates(history, corpus.position_by_element)
     prior_nineties = config.prior_strength_minutes / _MINUTES_PER_90
     strength = estimate_strength(corpus.fixtures_before(gameweek))
     form = baseline_recent_mean(corpus, gameweek, window=config.recent_form_window)
@@ -174,10 +148,12 @@ def project_horizon(
         if position is None or position not in _GOAL_PRIOR:
             continue
 
-        minutes = _project_minutes(element_id, corpus.season, gameweek, rows, cutoff, config)
+        minutes = project_element_minutes(element_id, corpus.season, gameweek, rows, cutoff, config)
         if minutes.evidence_level == "unavailable":
             continue
-        rates = _project_rates(element_id, corpus.season, gameweek, rows, cutoff, config, position)
+        rates = project_element_rates(
+            element_id, corpus.season, gameweek, rows, cutoff, config, position
+        )
         if rates.evidence_level == "unavailable":
             continue
 
@@ -189,7 +165,7 @@ def project_horizon(
         for offset in range(longest):
             event = gameweek + offset
             for adjustment in _adjustments_for(corpus, element_id, event, strength):
-                component = _fixture_points(
+                component = fixture_points(
                     rows, position, minutes, rates, league, prior_nineties, adjustment
                 )
                 running += _blend(component, recent, 1, config)
@@ -276,7 +252,7 @@ def project_next_match(
         by_element.setdefault(row.element_id, []).append(row)
 
     cutoff = _cutoff_for(corpus, gameweek, history)
-    league = _league_rates(history, corpus.position_by_element)
+    league = league_rates(history, corpus.position_by_element)
     prior_nineties = config.prior_strength_minutes / _MINUTES_PER_90
     projections: list[MatchProjection] = []
 
@@ -286,10 +262,12 @@ def project_next_match(
         if position is None or position not in _GOAL_PRIOR or code is None:
             continue
 
-        minutes = _project_minutes(element_id, corpus.season, gameweek, rows, cutoff, config)
+        minutes = project_element_minutes(element_id, corpus.season, gameweek, rows, cutoff, config)
         if minutes.evidence_level == "unavailable":
             continue
-        rates = _project_rates(element_id, corpus.season, gameweek, rows, cutoff, config, position)
+        rates = project_element_rates(
+            element_id, corpus.season, gameweek, rows, cutoff, config, position
+        )
         if rates.evidence_level == "unavailable":
             continue
 
@@ -302,7 +280,7 @@ def project_next_match(
                 web_name=corpus.name_by_element.get(element_id, ""),
                 price_tenths=_latest_price(rows),
                 expected_minutes=minutes.expected_minutes,
-                expected_points=_fixture_points(
+                expected_points=fixture_points(
                     rows,
                     position,
                     minutes,
@@ -356,15 +334,15 @@ def project_gameweek(
 
     cutoff = _cutoff_for(corpus, gameweek, history, previous)
     if history:
-        league = _league_rates(history, corpus.position_by_element)
+        league = league_rates(history, corpus.position_by_element)
     elif previous is not None:
         # Element ids are reassigned each season, so last season's rows must be
         # read against last season's position map.
-        league = _league_rates(
+        league = league_rates(
             previous.before(previous.last_event + 1), previous.position_by_element
         )
     else:
-        league = _league_rates((), {})
+        league = league_rates((), {})
     prior_nineties = config.prior_strength_minutes / _MINUTES_PER_90
     form = baseline_recent_mean(corpus, gameweek, window=config.recent_form_window)
     projections: list[ElementProjection] = []
@@ -375,13 +353,13 @@ def project_gameweek(
             continue
         prior_rows = carried.get(element_id, ())
 
-        minutes = _project_minutes(
+        minutes = project_element_minutes(
             element_id, corpus.season, gameweek, rows, cutoff, config, prior_rows
         )
         if minutes.evidence_level == "unavailable":
             continue
 
-        rates = _project_rates(
+        rates = project_element_rates(
             element_id,
             corpus.season,
             gameweek,
@@ -400,7 +378,7 @@ def project_gameweek(
         schedule = _schedule_for(corpus, element_id, gameweek)
         total = 0.0
         for adjustment in schedule:
-            total += _fixture_points(
+            total += fixture_points(
                 scoring_rows, position, minutes, rates, league, prior_nineties, adjustment
             )
 
@@ -497,244 +475,6 @@ def _adjustments_for(
     return adjustments
 
 
-def _fixture_points(
-    rows: Sequence[ElementRow],
-    position: int,
-    minutes: MinutesProjection,
-    rates: PlayerRateProjection,
-    league: LeagueRates,
-    prior_nineties: float,
-    adjustment: RouteAdjustment,
-) -> float:
-    ninety = minutes.expected_minutes / _MINUTES_PER_90
-    appearance = (
-        minutes.probability_appear - minutes.probability_sixty_minutes
-    ) + minutes.probability_sixty_minutes * 2
-    attacking = (
-        ninety
-        * (rates.goals_per_90 * _GOAL_POINTS[position] + rates.assists_per_90 * _ASSIST_POINTS)
-        * adjustment.attacking
-    )
-    supporting = _supporting_points(rows, position, minutes, league, prior_nineties, adjustment)
-    return appearance + attacking + supporting
-
-
-@dataclass(frozen=True)
-class LeagueRates:
-    """Per-position, per-90 route rates measured across every player to date.
-
-    Used as the shrinkage target for thin individual histories. Measured rather
-    than chosen, so a rarely-seen route cannot be given a flattering prior, and
-    computed only from gameweeks earlier than the one being projected.
-    """
-
-    conceded_deductions: Mapping[int, float]
-    save_points: Mapping[int, float]
-    yellow_cards: Mapping[int, float]
-    red_cards: Mapping[int, float]
-    own_goals: Mapping[int, float]
-    penalties_saved: Mapping[int, float]
-    penalties_missed: Mapping[int, float]
-    defcon_hits: Mapping[int, float]
-
-
-def _league_rates(
-    rows: Sequence[ElementRow], position_by_element: Mapping[int, int]
-) -> LeagueRates:
-    nineties: dict[int, float] = {}
-    totals: dict[str, dict[int, float]] = {
-        name: {}
-        for name in (
-            "conceded",
-            "saves",
-            "yellow",
-            "red",
-            "own_goal",
-            "pen_saved",
-            "pen_missed",
-            "defcon",
-        )
-    }
-    defcon_nineties: dict[int, float] = {}
-
-    for row in rows:
-        if row.minutes <= 0:
-            continue
-        position = position_by_element.get(row.element_id)
-        if position is None:
-            continue
-        played = row.minutes / _MINUTES_PER_90
-        nineties[position] = nineties.get(position, 0.0) + played
-        totals["conceded"][position] = totals["conceded"].get(position, 0.0) + (
-            row.goals_conceded // _CONCEDED_PER_POINT
-        )
-        totals["saves"][position] = totals["saves"].get(position, 0.0) + (
-            row.saves // _SAVES_PER_POINT
-        )
-        totals["yellow"][position] = totals["yellow"].get(position, 0.0) + row.yellow_cards
-        totals["red"][position] = totals["red"].get(position, 0.0) + row.red_cards
-        totals["own_goal"][position] = totals["own_goal"].get(position, 0.0) + row.own_goals
-        totals["pen_saved"][position] = totals["pen_saved"].get(position, 0.0) + row.penalties_saved
-        totals["pen_missed"][position] = (
-            totals["pen_missed"].get(position, 0.0) + row.penalties_missed
-        )
-        threshold = _DEFCON_THRESHOLD.get(position)
-        if threshold is not None and row.defensive_contribution is not None:
-            defcon_nineties[position] = defcon_nineties.get(position, 0.0) + played
-            if row.defensive_contribution >= threshold:
-                totals["defcon"][position] = totals["defcon"].get(position, 0.0) + 1
-
-    def per_ninety(name: str, denominator: Mapping[int, float]) -> dict[int, float]:
-        return {
-            position: totals[name].get(position, 0.0) / played
-            for position, played in denominator.items()
-            if played > 0
-        }
-
-    return LeagueRates(
-        conceded_deductions=per_ninety("conceded", nineties),
-        save_points=per_ninety("saves", nineties),
-        yellow_cards=per_ninety("yellow", nineties),
-        red_cards=per_ninety("red", nineties),
-        own_goals=per_ninety("own_goal", nineties),
-        penalties_saved=per_ninety("pen_saved", nineties),
-        penalties_missed=per_ninety("pen_missed", nineties),
-        defcon_hits=per_ninety("defcon", defcon_nineties),
-    )
-
-
-def _shrunk_rate(
-    events: float, nineties_played: float, prior: float, prior_nineties: float
-) -> float:
-    """Observed rate pulled toward the league rate in proportion to how thin it is."""
-    return (events + prior * prior_nineties) / (nineties_played + prior_nineties)
-
-
-def _supporting_points(
-    rows: Sequence[ElementRow],
-    position: int,
-    minutes: MinutesProjection,
-    league: LeagueRates,
-    prior_nineties: float,
-    adjustment: RouteAdjustment,
-) -> float:
-    """Every scoring route other than appearance, goals and assists.
-
-    Priced from the player's own observed rate, shrunk toward the league rate for
-    the position. These routes are position-specific, so omitting them shifts
-    whole positions against each other rather than simply adding noise.
-    """
-    appearances = [row for row in rows if row.minutes > 0]
-    if not appearances:
-        return 0.0
-
-    played = len(appearances)
-    ninety = minutes.expected_minutes / _MINUTES_PER_90
-    nineties_played = sum(row.minutes for row in appearances) / _MINUTES_PER_90
-
-    def rate(events: float, prior: float) -> float:
-        return _shrunk_rate(events, nineties_played, prior, prior_nineties)
-
-    clean_sheet_rate = sum(row.clean_sheets for row in appearances) / played
-    # The fixture multiplier reaches 2.2, and the best defenders keep a clean
-    # sheet in over half their matches, so the product can exceed one. A
-    # probability cannot, and paying more than four points for one clean sheet
-    # would flatter exactly the premium defenders in the softest fixtures.
-    adjusted_clean_sheet = min(1.0, clean_sheet_rate * adjustment.clean_sheet)
-    total = (
-        minutes.probability_sixty_minutes
-        * adjusted_clean_sheet
-        * _CLEAN_SHEET_POINTS.get(position, 0)
-    )
-    total += ninety * (sum(row.bonus for row in appearances) / played)
-
-    if position == _GOALKEEPER:
-        # Saves pay one point per three, so the division happens per match and
-        # is averaged after. Dividing the mean instead over-estimates by 0.34
-        # points a start, about thirteen points across a keeper's season.
-        # Shrunk like every other route: a keeper with two appearances was
-        # otherwise priced on two appearances, and the thin bucket ranges from
-        # zero to 1.50 save points a match against a league rate near 0.65.
-        total += (
-            ninety
-            * rate(
-                sum(row.saves // _SAVES_PER_POINT for row in appearances),
-                league.save_points.get(position, 0.0),
-            )
-            * adjustment.saves
-        )
-        total += (
-            ninety
-            * rate(
-                sum(row.penalties_saved for row in appearances),
-                league.penalties_saved.get(position, 0.0),
-            )
-            * _PENALTY_SAVE_POINTS
-        )
-
-    conceded_points = _CONCEDED_POINTS.get(position, 0)
-    if conceded_points:
-        deductions = sum(row.goals_conceded // _CONCEDED_PER_POINT for row in appearances)
-        total += (
-            ninety
-            * rate(deductions, league.conceded_deductions.get(position, 0.0))
-            * conceded_points
-            * adjustment.conceding
-        )
-
-    routes = (
-        (sum(row.yellow_cards for row in appearances), league.yellow_cards, _YELLOW_CARD_POINTS),
-        (sum(row.red_cards for row in appearances), league.red_cards, _RED_CARD_POINTS),
-        (sum(row.own_goals for row in appearances), league.own_goals, _OWN_GOAL_POINTS),
-        (
-            sum(row.penalties_missed for row in appearances),
-            league.penalties_missed,
-            _PENALTY_MISS_POINTS,
-        ),
-    )
-    for events, league_rate, points in routes:
-        total += ninety * rate(events, league_rate.get(position, 0.0)) * points
-
-    total += _defensive_contribution_points(
-        appearances,
-        position,
-        ninety,
-        league,
-        prior_nineties,
-        nineties_played,
-        adjustment.defensive_contribution,
-    )
-
-    return total
-
-
-def _defensive_contribution_points(
-    appearances: Sequence[ElementRow],
-    position: int,
-    ninety: float,
-    league: LeagueRates,
-    prior_nineties: float,
-    nineties_played: float,
-    adjustment: float,
-) -> float:
-    """Zero before 2025/26, where the column is absent because the route did not exist."""
-    threshold = _DEFCON_THRESHOLD.get(position)
-    if threshold is None:
-        return 0.0
-    observed = [row for row in appearances if row.defensive_contribution is not None]
-    if not observed:
-        return 0.0
-    hits = sum(1 for row in observed if (row.defensive_contribution or 0) >= threshold)
-    seen = sum(row.minutes for row in observed) / _MINUTES_PER_90
-    rate = _shrunk_rate(hits, seen, league.defcon_hits.get(position, 0.0), prior_nineties)
-    # A hit rate is a share of matches, so the fixture multiplier cannot lift it
-    # past one however much pressure the opponent applies.
-    adjusted = min(1.0, rate * adjustment)
-    # Scaled by the share of the player's history that even had the column.
-    coverage = min(1.0, seen / nineties_played) if nineties_played > 0 else 0.0
-    return ninety * adjusted * _DEFCON_POINTS[position] * coverage
-
-
 def _cutoff_for(
     corpus: SeasonCorpus,
     gameweek: int,
@@ -759,114 +499,6 @@ def _cutoff_for(
         if latest:
             return max(latest) + timedelta(days=1)
     raise CorpusLoadError(f"{corpus.season} GW{gameweek} has no schedule to date a decision from")
-
-
-def _project_minutes(
-    element_id: int,
-    season: str,
-    gameweek: int,
-    rows: Sequence[ElementRow],
-    cutoff: datetime,
-    config: ProjectionSettings,
-    prior_rows: Sequence[ElementRow] = (),
-) -> MinutesProjection:
-    # One appearance per gameweek: a double gameweek's fixtures are combined,
-    # because the models reason about events, not matches.
-    source = rows
-    prediction_event = gameweek
-    if not rows and prior_rows:
-        # No football yet this season, so the read is "how did they finish last
-        # season", projected one event past its end.
-        source = prior_rows
-        prediction_event = min(MAX_EVENT, max(row.gameweek for row in prior_rows) + 1)
-
-    combined: dict[int, tuple[int, bool, datetime]] = {}
-    for row in source:
-        minutes, started, kickoff = combined.get(row.gameweek, (0, False, row.kickoff_time))
-        combined[row.gameweek] = (
-            min(minutes + row.minutes, 120),
-            started or row.started or row.minutes >= 60,
-            min(kickoff, row.kickoff_time),
-        )
-
-    observations = tuple(
-        AppearanceObservation(
-            event_id=event,
-            minutes=minutes,
-            started=started and minutes > 0,
-            kickoff_time=min(kickoff, cutoff),
-        )
-        for event, (minutes, started, kickoff) in sorted(combined.items())
-        if event < prediction_event
-    )
-
-    evidence = MinutesEvidence(
-        element_code=element_id,
-        season=season,
-        prediction_event=prediction_event,
-        observations=observations,
-        decay_half_life_events=config.decay_half_life_events,
-        minimum_observations=config.minimum_observations,
-        prior_start_rate=config.prior_start_rate,
-        prior_strength_events=config.prior_strength_events,
-        prediction_cutoff=cutoff,
-        data_available_at=cutoff,
-        source_hashes=(_SOURCE_HASH,),
-    )
-    return project_minutes(evidence)
-
-
-def _project_rates(
-    element_id: int,
-    season: str,
-    gameweek: int,
-    rows: Sequence[ElementRow],
-    cutoff: datetime,
-    config: ProjectionSettings,
-    position: int,
-    prior_rows: Sequence[ElementRow] = (),
-    prior_season: str | None = None,
-) -> PlayerRateProjection:
-    observations = tuple(
-        _observation(row, season, cutoff) for row in rows if row.gameweek < gameweek
-    )
-    carried = (
-        tuple(_observation(row, prior_season, cutoff) for row in prior_rows)
-        if prior_season and prior_season != season
-        else ()
-    )
-
-    evidence = PlayerRateEvidence(
-        element_code=element_id,
-        season=season,
-        prediction_event=gameweek,
-        current_season_observations=observations,
-        prior_season_observations=carried,
-        prior=RatePrior(
-            goals_per_90=_GOAL_PRIOR[position],
-            assists_per_90=_ASSIST_PRIOR[position],
-            strength_minutes=config.prior_strength_minutes,
-        ),
-        minimum_minutes=config.minimum_minutes,
-        blend_full_weight_minutes=config.blend_full_weight_minutes,
-        prediction_cutoff=cutoff,
-        data_available_at=cutoff,
-        source_hashes=(_SOURCE_HASH,),
-    )
-    return project_player_rates(evidence)
-
-
-def _observation(row: ElementRow, season: str, cutoff: datetime) -> RateObservation:
-    return RateObservation(
-        season=season,
-        event_id=row.gameweek,
-        minutes=min(row.minutes, 120),
-        goals=row.goals,
-        assists=row.assists,
-        expected_goals=row.expected_goals,
-        expected_assists=row.expected_assists,
-        kickoff_time=min(row.kickoff_time, cutoff),
-    )
 
 
 def baseline_recent_mean(

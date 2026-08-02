@@ -1,7 +1,7 @@
 """The projector hardcodes scoring values; the rules snapshot publishes them.
 
 Two pricings of the same rules exist. `expected_points.py` reads every value
-from the snapshot and fails visibly on a rule change. `projector.py` is the
+from the snapshot and fails visibly on a rule change. `scoring.py` is the
 live path and hardcodes them, so a rule change would leave it quietly doing
 stale arithmetic. This is the guard that makes that impossible.
 
@@ -16,7 +16,7 @@ import unittest
 from datetime import UTC, datetime
 from pathlib import Path
 
-from fpl_andres.backtesting import projector
+from fpl_andres.backtesting import scoring as projector
 from fpl_andres.rules import RulesSnapshot, ScoringRules
 
 FIXTURE = Path(__file__).resolve().parent / "fixtures" / "fpl" / "bootstrap_rules_2026_27.json"

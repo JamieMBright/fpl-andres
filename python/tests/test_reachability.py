@@ -231,7 +231,13 @@ def test_every_scoring_route_reaches_the_projection() -> None:
     and dropped on the floor for weeks, which cost roughly eight percent of the
     game's points.
     """
-    projector = (PACKAGE / "backtesting" / "projector.py").read_text(encoding="utf-8")
+    # Audit item #13 split the projector: pricing lives in `scoring.py`, rate
+    # estimation in `rates.py`. Both are read, because a route priced in one
+    # and estimated in neither is still a route nobody scores.
+    priced = "\n".join(
+        (PACKAGE / "backtesting" / name).read_text(encoding="utf-8")
+        for name in ("projector.py", "scoring.py", "rates.py")
+    )
     routes = (
         "goals_conceded",
         "defensive_contribution",
@@ -244,7 +250,7 @@ def test_every_scoring_route_reaches_the_projection() -> None:
         "saves",
         "bonus",
     )
-    missing = [route for route in routes if route not in projector]
+    missing = [route for route in routes if route not in priced]
 
     assert missing == [], f"these scoring routes are never priced: {missing}"
 

@@ -20,7 +20,8 @@ from pathlib import Path
 
 import pytest
 
-from fpl_andres.backtesting.projector import _ASSIST_PRIOR, _GOAL_PRIOR, ProjectionSettings
+from fpl_andres.backtesting.projector import ProjectionSettings
+from fpl_andres.backtesting.rates import _ASSIST_PRIOR, _GOAL_PRIOR
 from fpl_andres.planning.opening import PLAYABLE_START_RATE
 
 _ROOT = Path(__file__).resolve().parents[2]
