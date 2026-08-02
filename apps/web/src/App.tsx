@@ -29,6 +29,7 @@ import {
 import { ManagerHistory } from "./components/ManagerHistory";
 import { OpeningSquad } from "./components/OpeningSquad";
 import { RouteHeading } from "./components/RouteHeading";
+import { OfflineBanner } from "./components/OfflineBanner";
 import { StatusStrip } from "./components/StatusStrip";
 import {
   integer as sharedInteger,
@@ -195,6 +196,7 @@ function ApplicationFrame() {
         Skip to content
       </a>
       <StatusStrip deadline={FIRST_DEADLINE_2026_27} />
+      <OfflineBanner />
       <header className="site-header">
         <Link aria-label="FPL Andres home" className="brand" to="/">
           <BielsaBucket />

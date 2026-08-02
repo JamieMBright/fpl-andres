@@ -170,6 +170,40 @@ a {
   clip-path: none;
 }
 
+/*
+ * Offline notice. Audit item #120.
+ *
+ * Amber, not red: nothing has failed, the network is simply absent, and most
+ * of the site works without it. Reserving red for real failure is what keeps
+ * red meaning something.
+ *
+ * Full-bleed inside the shell and above the header, because it explains
+ * everything below it rather than any one panel.
+ */
+.offline-banner {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 10px clamp(12px, 2vw, 18px);
+  color: var(--ink);
+  background: color-mix(in srgb, var(--amber) 18%, var(--paper));
+  border-block-end: 1px solid var(--amber);
+  border-inline-start: 4px solid var(--amber);
+}
+
+.offline-banner svg {
+  flex: none;
+  margin-block-start: 2px;
+  stroke: var(--amber);
+}
+
+.offline-banner p {
+  margin: 0;
+  font-size: 0.86rem;
+  line-height: 1.45;
+  text-wrap: pretty;
+}
+
 .app-shell {
   width: min(1180px, 100%);
   min-height: 100vh;
