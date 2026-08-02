@@ -3,8 +3,8 @@
 -- CI validated `supabase db reset` but never exercised undoing anything, so
 -- nothing proved the schema could be torn down and rebuilt. That matters here
 -- more than in most projects: the production bootstrap is an ordered SQL Editor
--- checklist, not `db push`, and 17 `create table`, 26 `create index`, 10
--- `create trigger` and 6 `create function` statements across the migration set
+-- checklist, not `db push`, and 18 `create table`, 28 `create index`, 12
+-- `create trigger` and 7 `create function` statements across the migration set
 -- are written without `if not exists`. A file re-run after a partial paste
 -- fails on the first object that already exists. This is the escape hatch: drop
 -- to empty, then re-apply the migrations in order.
@@ -39,9 +39,11 @@ drop table if exists public.teams;
 drop table if exists public.seasons;
 drop table if exists public.rules_snapshots;
 drop table if exists public.source_snapshots;
+drop table if exists public.workflow_run_events;
 drop table if exists public.workflow_runs;
 
 -- After the tables, because the immutability triggers depend on them.
+drop function if exists private.record_workflow_run_transition();
 drop function if exists private.reject_immutable_model_artifact_mutation();
 drop function if exists private.reject_immutable_snapshot_mutation();
 drop function if exists private.bigint_array_is_subset(bigint[], bigint[]);

@@ -28,8 +28,34 @@ because a run that started and then finished is one run, not two.
 - **Grain**: one workflow execution
 - **Mutable**: yes — status transitions
 - **Referenced by**: `projection_runs`, `model_promotion_decisions`,
-  `optimization_runs`
+  `optimization_runs`, `workflow_run_events`
 - **Notable**: `event_id` bounded 1..47, matching the longest season FPL has run
+
+### `workflow_run_events`
+
+Every status transition, appended. `workflow_runs` is the current state; this is
+what happened to get there.
+
+The row above is overwritten as a run proceeds, so by the time anyone looks it
+says `failed` and when it began, and everything between is gone: whether it ran
+once or was retried, how long it spent running, whether an earlier attempt had
+already succeeded. That is the shape of question asked during an incident and it
+was unanswerable.
+
+Written by a trigger rather than by the application. The Python recorder is a
+context manager, and a process killed between the status update and a separate
+insert would move the state without recording it. In the trigger they are the
+same transaction by construction, and a second writer — a manual correction in
+the SQL editor, a future job in another language — is recorded whether or not it
+knows the table exists.
+
+- **Grain**: one status transition
+- **Mutable**: no — immutable by trigger
+- **References**: `workflow_runs` (`on delete cascade`)
+- **Notable**: `from_status` is null on the first event only; a transition to
+  the same status is refused, so a retry loop cannot become an unbounded write.
+  `failure_reason` is only permitted on a terminal status, and is a copy that
+  survives the run row being overwritten by a later attempt.
 
 ---
 
