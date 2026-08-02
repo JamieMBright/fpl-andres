@@ -20,26 +20,33 @@ from __future__ import annotations
 
 import random
 from collections.abc import Mapping, Sequence
-from dataclasses import dataclass, field, replace
-from typing import Literal
+from dataclasses import replace
 
 from fpl_andres.backtesting.corpus import SeasonCorpus
 from fpl_andres.backtesting.fixtures import estimate_strength
 from fpl_andres.backtesting.projector import ProjectionSettings, project_gameweek
 from fpl_andres.simulation.baselines import crowd_ranking
-from fpl_andres.simulation.chips import (
-    ChipName,
-    ChipState,
-    plan_chips,
+from fpl_andres.simulation.chips import ChipName, plan_chips
+from fpl_andres.simulation.minileague_policies import (
+    _take_transfers,
 )
-from fpl_andres.simulation.season import LineupRules, SquadGameweek
+from fpl_andres.simulation.minileague_scoring import _play
+from fpl_andres.simulation.minileague_state import (
+    _DROPPED_THRESHOLD,
+    _FORM_WINDOW,
+    _PASSIVE,
+    LeagueResult,
+    LeagueSettings,
+    ManagerResult,
+    Policy,
+    _Manager,
+)
+from fpl_andres.simulation.season import SquadGameweek
 from fpl_andres.simulation.squad import (
     Candidate,
-    SquadRules,
     SquadSelectionError,
     build_ranked_squad,
     build_squad,
-    transfer_respects_club_limit,
 )
 from fpl_andres.simulation.valuation import Portfolio
 
@@ -50,126 +57,6 @@ __all__ = [
     "Policy",
     "simulate_league",
 ]
-
-Policy = Literal["advised", "rank_aware", "zombie", "hold", "form_chaser", "crowd"]
-
-# Policies that never spend a transfer, so their ranking is only used for team
-# selection and captaincy.
-_PASSIVE: frozenset[str] = frozenset({"hold"})
-# Policies that buy the best available every week they can afford to.
-_CHASERS: frozenset[str] = frozenset({"form_chaser", "crowd"})
-
-_TRANSFER_HIT_POINTS = 4
-_FORM_WINDOW = 4
-_DROPPED_THRESHOLD = 3
-
-
-@dataclass(frozen=True)
-class LeagueSettings:
-    """Sourced league rules and policy mix."""
-
-    squad_rules: SquadRules
-    lineup_rules: LineupRules
-    managers: int = 20
-    advised_share: float = 0.25
-    rank_aware_share: float = 0.0
-    hold_share: float = 0.0
-    form_chaser_share: float = 0.0
-    crowd_share: float = 0.0
-    free_transfers_per_event: int = 1
-    max_free_transfers: int = 5
-    start_gameweek: int = 7
-    # How hard a rank-aware manager leans on ownership. Effective ownership
-    # cancels out of the expected gain from a transfer, so it can only ever be a
-    # risk setting: cover the field when ahead, take differentials when behind.
-    risk_weight: float = 0.3
-    chips_enabled: bool = True
-    # Floors below which a chip is not worth burning. Expressed in projected
-    # points, so they are comparable to everything else the model produces.
-    triple_captain_floor: float = 7.0
-    bench_boost_floor: float = 12.0
-    wildcard_floor: float = 12.0
-    free_hit_floor: float = 12.0
-
-    def advised_count(self) -> int:
-        return max(1, round(self.managers * self.advised_share))
-
-    def rank_aware_count(self) -> int:
-        return round(self.managers * self.rank_aware_share)
-
-    def policy_roster(self) -> list[Policy]:
-        """One policy per seat, filling any remainder with zombies.
-
-        Zombie is the filler rather than a share of its own: it is the crowd of
-        ordinary managers the named policies are measured against.
-        """
-        seats: list[Policy] = []
-        # Audit item #181. Annotated, so the literals are checked against
-        # `Policy` here rather than silenced at the `extend` below. A share
-        # added for a policy that does not exist is now a type error instead of
-        # a seat nobody fills.
-        shares: tuple[tuple[Policy, float], ...] = (
-            ("advised", self.advised_share),
-            ("rank_aware", self.rank_aware_share),
-            ("hold", self.hold_share),
-            ("form_chaser", self.form_chaser_share),
-            ("crowd", self.crowd_share),
-        )
-        for name, share in shares:
-            count = round(self.managers * share)
-            if name == "advised":
-                count = max(1, count)
-            seats.extend([name] * count)
-        if len(seats) > self.managers:
-            raise ValueError("policy shares exceed the number of managers")
-        seats.extend(["zombie"] * (self.managers - len(seats)))
-        return seats
-
-
-@dataclass
-class ManagerResult:
-    manager_id: int
-    policy: Policy
-    seed: int
-    total_points: int = 0
-    transfers_made: int = 0
-    hit_points: int = 0
-    weekly_points: list[int] = field(default_factory=list)
-    chips_played: dict[str, int] = field(default_factory=dict)
-    final_team_value_tenths: int = 0
-
-    @property
-    def net_points(self) -> int:
-        return self.total_points - self.hit_points
-
-
-@dataclass
-class LeagueResult:
-    season: str
-    settings: LeagueSettings
-    managers: list[ManagerResult] = field(default_factory=list)
-    # One representative finishing squad per policy, for inspection.
-    squad_snapshots: list[tuple[str, list[tuple[int, int]]]] = field(default_factory=list)
-
-    def standings(self) -> list[ManagerResult]:
-        return sorted(self.managers, key=lambda manager: -manager.net_points)
-
-    def by_policy(self, policy: Policy) -> list[ManagerResult]:
-        return [manager for manager in self.managers if manager.policy == policy]
-
-    def mean_net(self, policy: Policy) -> float:
-        cohort = self.by_policy(policy)
-        return sum(manager.net_points for manager in cohort) / len(cohort) if cohort else 0.0
-
-
-@dataclass
-class _Manager:
-    result: ManagerResult
-    squad: list[Candidate]
-    free_transfers: int
-    portfolio: Portfolio
-    chips: ChipState = field(default_factory=ChipState)
-    chip_plan: dict[int, ChipName] = field(default_factory=dict)
 
 
 def simulate_league(
@@ -573,246 +460,3 @@ def _recent_minutes(corpus: SeasonCorpus, gameweek: int) -> dict[int, int]:
         for row in corpus.rows_by_gameweek.get(event, ()):
             totals[row.element_id] = totals.get(row.element_id, 0) + row.minutes
     return totals
-
-
-def _take_transfers(
-    manager: _Manager,
-    *,
-    settings: LeagueSettings,
-    by_position: Mapping[int, Sequence[Candidate]],
-    projected: Mapping[int, float],
-    form: Mapping[int, float],
-    minutes: Mapping[int, int],
-    prices: Mapping[int, int],
-) -> None:
-    # The week's free transfer arrives before any decision is taken.
-    manager.free_transfers = min(
-        manager.free_transfers + settings.free_transfers_per_event,
-        settings.max_free_transfers,
-    )
-    policy = manager.result.policy
-    if policy in _PASSIVE:
-        return
-
-    ranking = projected
-    if not ranking:
-        return
-
-    if policy == "zombie":
-        _zombie_transfer(manager, settings, by_position, ranking, form, minutes, prices)
-        return
-
-    if policy in _CHASERS:
-        # Spends its free transfer whenever there is any upgrade at all, and
-        # never pays for a second. This is how the conventional player behaves,
-        # and the point of the baseline is realism rather than optimality.
-        if manager.free_transfers <= 0:
-            return
-        swap = _best_swap(manager, settings, by_position, ranking, prices)
-        if swap is None:
-            return
-        outgoing, incoming, _ = swap
-        _settle(manager, outgoing, incoming, prices)
-        manager.free_transfers -= 1
-        return
-
-    # Keep swapping while the gain clears what the move costs. A free transfer
-    # is close to free, so the bar is a hit's worth of points once the bank is
-    # empty; that is the decision the -4 rule actually poses.
-    while True:
-        swap = _best_swap(manager, settings, by_position, ranking, prices)
-        if swap is None:
-            return
-        outgoing, incoming, gain = swap
-        takes_hit = manager.free_transfers <= 0
-        if gain <= (_TRANSFER_HIT_POINTS if takes_hit else 0.0):
-            return
-        _settle(manager, outgoing, incoming, prices)
-        if takes_hit:
-            manager.result.hit_points += _TRANSFER_HIT_POINTS
-        else:
-            manager.free_transfers -= 1
-
-
-def _settle(
-    manager: _Manager,
-    outgoing: Candidate,
-    incoming: Candidate,
-    prices: Mapping[int, int],
-) -> None:
-    """Make the swap and move the money, keeping squad and portfolio in step."""
-    manager.portfolio.transfer(outgoing.element_id, incoming.element_id, prices)
-    manager.squad[manager.squad.index(outgoing)] = incoming
-    manager.result.transfers_made += 1
-
-
-def _zombie_transfer(
-    manager: _Manager,
-    settings: LeagueSettings,
-    by_position: Mapping[int, Sequence[Candidate]],
-    ranking: Mapping[int, float],
-    form: Mapping[int, float],
-    minutes: Mapping[int, int],
-    prices: Mapping[int, int],
-) -> None:
-    """Acts only when a player has stopped featuring, and never takes a hit."""
-    outgoing = [player for player in manager.squad if minutes.get(player.element_id, 0) == 0]
-    if not outgoing or manager.free_transfers <= 0:
-        return
-    worst = min(outgoing, key=lambda player: form.get(player.element_id, 0.0))
-    replacement = _best_replacement(worst, manager, settings, by_position, ranking, prices)
-    if replacement is None:
-        return
-    _settle(manager, worst, replacement, prices)
-    manager.free_transfers -= 1
-
-
-def _best_swap(
-    manager: _Manager,
-    settings: LeagueSettings,
-    by_position: Mapping[int, Sequence[Candidate]],
-    ranking: Mapping[int, float],
-    prices: Mapping[int, int],
-) -> tuple[Candidate, Candidate, float] | None:
-    best: tuple[Candidate, Candidate, float] | None = None
-    for player in manager.squad:
-        replacement = _best_replacement(player, manager, settings, by_position, ranking, prices)
-        if replacement is None:
-            continue
-        gain = ranking.get(replacement.element_id, 0.0) - ranking.get(player.element_id, 0.0)
-        if best is None or gain > best[2]:
-            best = (player, replacement, gain)
-    return best
-
-
-def _best_replacement(
-    outgoing: Candidate,
-    manager: _Manager,
-    settings: LeagueSettings,
-    by_position: Mapping[int, Sequence[Candidate]],
-    ranking: Mapping[int, float],
-    prices: Mapping[int, int],
-) -> Candidate | None:
-    """First affordable, eligible upgrade in a list already sorted by ranking."""
-    held = {player.element_id for player in manager.squad}
-    budget = manager.portfolio.affordable(outgoing.element_id, prices)
-    current = ranking.get(outgoing.element_id, 0.0)
-
-    for candidate in by_position.get(outgoing.position, ()):
-        score = ranking.get(candidate.element_id)
-        if score is None or score <= current:
-            return None
-        cost = prices.get(candidate.element_id, candidate.price_tenths)
-        if candidate.element_id in held or cost > budget:
-            continue
-        if not transfer_respects_club_limit(
-            manager.squad, outgoing, candidate, settings.squad_rules
-        ):
-            continue
-        return candidate
-    return None
-
-
-def _squad_cost(squad: Sequence[Candidate]) -> int:
-    return sum(player.price_tenths for player in squad)
-
-
-def _play(
-    manager: _Manager,
-    settings: LeagueSettings,
-    outcomes: Mapping[int, SquadGameweek],
-    projected: Mapping[int, float],
-    form: Mapping[int, float],
-    chip: ChipName | None = None,
-    pool: Sequence[Candidate] = (),
-) -> int:
-    squad = manager.squad
-    if chip == "free_hit" and pool:
-        # One week only: the squad played is not the squad kept.
-        squad = list(build_ranked_squad(pool, settings.squad_rules, projected))
-
-    available = {
-        player.element_id: outcomes.get(player.element_id, SquadGameweek(player.element_id, 0, 0))
-        for player in squad
-    }
-    ranking = projected if manager.result.policy == "advised" else form
-
-    starters = _starting_eleven(squad, ranking, settings.lineup_rules)
-    starters = _autosub(squad, starters, available, settings.lineup_rules)
-    if chip == "bench_boost":
-        # Every one of the fifteen scores, so there is nothing to substitute.
-        starters = [player.element_id for player in squad]
-
-    captain = max(starters, key=lambda pid: ranking.get(pid, 0.0), default=None)
-    points = sum(available[pid].points for pid in starters)
-    if captain is not None:
-        # Captain doubles; the triple captain chip adds a further multiple.
-        points += available[captain].points
-        if chip == "triple_captain":
-            points += available[captain].points
-    return points
-
-
-def _starting_eleven(
-    squad: Sequence[Candidate], ranking: Mapping[int, float], rules: LineupRules
-) -> list[int]:
-    ordered = sorted(squad, key=lambda player: ranking.get(player.element_id, 0.0), reverse=True)
-    chosen: list[int] = []
-    counts: dict[int, int] = {}
-
-    for position, minimum in rules.minimum_by_position.items():
-        for player in ordered:
-            if counts.get(position, 0) >= minimum:
-                break
-            if player.position == position and player.element_id not in chosen:
-                chosen.append(player.element_id)
-                counts[position] = counts.get(position, 0) + 1
-
-    for player in ordered:
-        if len(chosen) >= rules.starting_size:
-            break
-        if player.element_id in chosen:
-            continue
-        if counts.get(player.position, 0) >= rules.maximum_by_position.get(
-            player.position, rules.starting_size
-        ):
-            continue
-        chosen.append(player.element_id)
-        counts[player.position] = counts.get(player.position, 0) + 1
-    return chosen
-
-
-def _autosub(
-    squad: Sequence[Candidate],
-    starters: list[int],
-    outcomes: Mapping[int, SquadGameweek],
-    rules: LineupRules,
-) -> list[int]:
-    positions = {player.element_id: player.position for player in squad}
-    bench = [
-        player.element_id
-        for player in squad
-        if player.element_id not in starters and outcomes[player.element_id].minutes > 0
-    ]
-    final = list(starters)
-    used: set[int] = set()
-
-    for blank in [pid for pid in starters if outcomes[pid].minutes == 0]:
-        for candidate in bench:
-            if candidate in used:
-                continue
-            if (positions[blank] == 1) != (positions[candidate] == 1):
-                continue
-            counts: dict[int, int] = {}
-            for pid in final:
-                position = positions[pid] if pid != blank else positions[candidate]
-                counts[position] = counts.get(position, 0) + 1
-            if any(
-                counts.get(position, 0) < minimum
-                for position, minimum in rules.minimum_by_position.items()
-            ):
-                continue
-            final[final.index(blank)] = candidate
-            used.add(candidate)
-            break
-    return final
