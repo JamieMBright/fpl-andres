@@ -21,6 +21,7 @@ import sys
 from collections.abc import Sequence
 from datetime import UTC, datetime
 from pathlib import Path
+from typing import TypedDict
 
 from fpl_andres.artifacts import (
     PROJECTIONS_META_SCHEMA_VERSION,
@@ -45,7 +46,41 @@ def build_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def _entry(projection: MatchProjection) -> dict[str, object]:
+class ProjectionEntry(TypedDict):
+    """One player's row in `projections.json`.
+
+    Audit items #147 and #181. `_entry` returned `dict[str, object]`, so
+    `entry["code"]` was an `object` and sorting by it needed
+    `# type: ignore[arg-type,return-value]` -- which also silenced the check
+    that would have caught the key being renamed.
+
+    Named here rather than in the contracts package because this is a published
+    artifact, not a boundary two languages agree on: the web app reads it
+    through `apps/web/src/state/squad-projection.ts`, and the schema version in
+    `artifacts.py` is what keeps the two in step.
+    """
+
+    code: int
+    name: str
+    position: str
+    priceTenths: int | None
+    expectedPoints: float
+    expectedMinutes: float
+    probabilityAppear: float
+    probabilityStart: float
+    appearances: int
+    recentMinutes: int
+    recentStarts: int
+    recentMatches: int
+    floor: float | None
+    median: float | None
+    ceiling: float | None
+    returnRate: float | None
+    blankRate: float | None
+    evidence: str
+
+
+def _entry(projection: MatchProjection) -> ProjectionEntry:
     shape = projection.shape
     enough = shape.appearances >= MINIMUM_APPEARANCES
     return {
@@ -119,7 +154,7 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     players = sorted(
         (_entry(projection) for projection in projections),
-        key=lambda entry: entry["code"],  # type: ignore[arg-type,return-value]
+        key=lambda entry: entry["code"],
     )
     clubs = _clubs(corpus)
     artifact = {

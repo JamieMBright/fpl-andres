@@ -24,7 +24,7 @@ from fpl_andres.backtesting.corpus import SeasonCorpus, load_season
 from fpl_andres.backtesting.score import score_season
 from fpl_andres.persistence.supabase import SupabaseCredentials, SupabaseRestClient
 from fpl_andres.positions import Position
-from fpl_andres.simulation.minileague import LeagueSettings, simulate_league
+from fpl_andres.simulation.minileague import LeagueSettings, Policy, simulate_league
 from fpl_andres.simulation.season import LineupRules
 from fpl_andres.simulation.squad import SquadRules
 
@@ -46,7 +46,11 @@ LEAGUE = LeagueSettings(
     crowd_share=0.25,
 )
 
-POLICIES = ("advised", "form_chaser", "crowd", "hold")
+# Audit item #181. Annotated rather than inferred: a bare tuple of strings
+# widens to `tuple[str, ...]`, so `league.by_policy(policy)` needed a
+# `# type: ignore[arg-type]` -- which also silenced the check that a policy
+# named here actually exists. Misspell one now and mypy says so.
+POLICIES: tuple[Policy, ...] = ("advised", "form_chaser", "crowd", "hold")
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -157,7 +161,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             for seed in seeds:
                 league = simulate_league(corpus, LEAGUE, seed=seed)
                 for policy in POLICIES:
-                    cohort = league.by_policy(policy)  # type: ignore[arg-type]
+                    cohort = league.by_policy(policy)
                     totals[policy].extend(manager.net_points for manager in cohort)
                     if cohort and seed == seeds[0]:
                         first = cohort[0]

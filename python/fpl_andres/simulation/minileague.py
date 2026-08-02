@@ -104,17 +104,22 @@ class LeagueSettings:
         ordinary managers the named policies are measured against.
         """
         seats: list[Policy] = []
-        for name, share in (
+        # Audit item #181. Annotated, so the literals are checked against
+        # `Policy` here rather than silenced at the `extend` below. A share
+        # added for a policy that does not exist is now a type error instead of
+        # a seat nobody fills.
+        shares: tuple[tuple[Policy, float], ...] = (
             ("advised", self.advised_share),
             ("rank_aware", self.rank_aware_share),
             ("hold", self.hold_share),
             ("form_chaser", self.form_chaser_share),
             ("crowd", self.crowd_share),
-        ):
+        )
+        for name, share in shares:
             count = round(self.managers * share)
             if name == "advised":
                 count = max(1, count)
-            seats.extend([name] * count)  # type: ignore[list-item]
+            seats.extend([name] * count)
         if len(seats) > self.managers:
             raise ValueError("policy shares exceed the number of managers")
         seats.extend(["zombie"] * (self.managers - len(seats)))
