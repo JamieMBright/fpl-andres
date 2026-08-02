@@ -414,24 +414,48 @@ def _required_value(payload: Mapping[str, Any], key: str, parent: str) -> Any:
     return payload[key]
 
 
+def _rule_path(parent: str, key: str) -> str:
+    """Audit item #18: one spelling of a rule's path.
+
+    `_required_value` already handled an empty parent and the type checks below
+    did not, so a top-level rule failed with a message beginning in a full stop.
+    """
+    return f"{parent}.{key}" if parent else key
+
+
+def _wrong_type(parent: str, key: str, value: Any, expected: str) -> RulesContractError:
+    """One wording for one class of failure.
+
+    Audit item #18. "must be an integer" and "must be numeric" described the
+    same thing two ways, so a reader could not tell whether they were different
+    checks. They are not, and the message now names what arrived as well as what
+    was wanted -- an FPL payload that starts sending "15" instead of 15 is a
+    real change, and a message that says only "must be an integer" sends
+    somebody to look at the wrong thing.
+    """
+    return RulesContractError(
+        f"{_rule_path(parent, key)} must be {expected}, not {type(value).__name__}"
+    )
+
+
 def _required_int(payload: Mapping[str, Any], key: str, parent: str) -> int:
     value = _required_value(payload, key, parent)
     if not isinstance(value, int) or isinstance(value, bool):
-        raise RulesContractError(f"{parent}.{key} must be an integer")
+        raise _wrong_type(parent, key, value, "an integer")
     return value
 
 
 def _required_number(payload: Mapping[str, Any], key: str, parent: str) -> float:
     value = _required_value(payload, key, parent)
     if not isinstance(value, (int, float)) or isinstance(value, bool):
-        raise RulesContractError(f"{parent}.{key} must be numeric")
+        raise _wrong_type(parent, key, value, "a number")
     return float(value)
 
 
 def _required_bool(payload: Mapping[str, Any], key: str, parent: str) -> bool:
     value = _required_value(payload, key, parent)
     if not isinstance(value, bool):
-        raise RulesContractError(f"{parent}.{key} must be a boolean")
+        raise _wrong_type(parent, key, value, "a boolean")
     return value
 
 
@@ -440,7 +464,7 @@ def _required_nullable_int(payload: Mapping[str, Any], key: str, parent: str) ->
     if value is None:
         return None
     if not isinstance(value, int) or isinstance(value, bool):
-        raise RulesContractError(f"{parent}.{key} must be an integer or null")
+        raise _wrong_type(parent, key, value, "an integer or null")
     return value
 
 

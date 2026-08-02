@@ -276,11 +276,40 @@ def _has_complete_expected(observations: tuple[RateObservation, ...]) -> bool:
     )
 
 
+class InconsistentObservationBasis(ValueError):
+    """Raised when expected values are asked for and one is absent.
+
+    Audit item #32. `_totals` used ``observation.expected_goals or 0.0``, which
+    reads as a default for a missing value and is not one: the caller only
+    reaches that branch after `_has_complete_expected` has confirmed every
+    observation carries both columns.
+
+    The substitution was therefore unreachable, and that is the problem with it.
+    A silent zero standing thirty lines from the guarantee that makes it
+    unreachable is a zero somebody will one day reach, by relaxing the guarantee
+    without noticing what depended on it -- and the failure would be a player
+    credited with no expected goals rather than an error.
+    """
+
+
 def _totals(observations: tuple[RateObservation, ...], use_expected: bool) -> tuple[float, float]:
-    """Total goal and assist credit on the chosen measurement basis."""
+    """Total goal and assist credit on the chosen measurement basis.
+
+    The basis is decided once across both seasons, so a set reaching here with
+    ``use_expected`` set has already been checked complete. This states that
+    rather than assuming it.
+    """
     if use_expected:
-        goals = sum(observation.expected_goals or 0.0 for observation in observations)
-        assists = sum(observation.expected_assists or 0.0 for observation in observations)
+        goals = 0.0
+        assists = 0.0
+        for observation in observations:
+            if observation.expected_goals is None or observation.expected_assists is None:
+                raise InconsistentObservationBasis(
+                    f"event {observation.event_id} in {observation.season} has no expected "
+                    "values, but the expected basis was chosen for this set"
+                )
+            goals += observation.expected_goals
+            assists += observation.expected_assists
         return goals, assists
     goals = float(sum(observation.goals for observation in observations))
     assists = float(sum(observation.assists for observation in observations))

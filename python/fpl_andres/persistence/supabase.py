@@ -188,7 +188,18 @@ class SupabaseRestClient:
         self.close()
 
     def close(self) -> None:
-        self._client.close()
+        """Safe to call twice, and safe before ``__init__`` finished.
+
+        Audit item #68. ``self._client.close()`` raises ``AttributeError`` if
+        the constructor failed before assigning it -- which a ``finally`` block
+        around a partially built client will do, replacing the real error with
+        a meaningless one at exactly the moment somebody is trying to read it.
+
+        httpx's own ``close`` is already idempotent, so the second call is free.
+        """
+        client = getattr(self, "_client", None)
+        if client is not None:
+            client.close()
 
     def insert(
         self,

@@ -1,7 +1,22 @@
 import { FplPathError, resolveFplUpstreamUrl } from "./fpl-path.js";
 
+/**
+ * Audit item #82. Name and a contact URL, and a version that does not move on
+ * every release.
+ *
+ * A patch-level version is a fingerprint: it changes with each deploy, so an
+ * upstream log can distinguish one build of this project from another and, over
+ * time, watch it. The minor version is enough for anyone who needs to tell a
+ * behaviour change from a client, and the URL is the part that actually
+ * matters -- it is how the Premier League would reach somebody if this client
+ * were doing something it should not.
+ *
+ * Kept identical to `FPL_USER_AGENT` in `adapters/fpl.py`, because the two
+ * clients speak to the same upstream and two spellings would look like two
+ * projects.
+ */
 const FPL_USER_AGENT =
-  "FPLAndres/0.5.1 (+https://github.com/JamieMBright/fpl-andres)";
+  "FPLAndres/0.5 (+https://github.com/JamieMBright/fpl-andres)";
 const DEFAULT_LIMIT_BYTES = 5 * 1024 * 1024;
 const BOOTSTRAP_LIMIT_BYTES = 8 * 1024 * 1024;
 export const FPL_PROXY_BUDGET_MS = 8_500;
@@ -81,7 +96,7 @@ export async function createFplProxyResponse(
     );
   }
 
-  let body: Uint8Array | null;
+  let body: ArrayBuffer | null;
   try {
     body = await readBoundedBody(upstreamResponse, limit);
   } catch {
@@ -101,9 +116,10 @@ export async function createFplProxyResponse(
     );
   }
 
-  const responseBody = new ArrayBuffer(body.byteLength);
-  new Uint8Array(responseBody).set(body);
-  return new Response(responseBody, {
+  // Audit item #94. The body was copied into a fresh ArrayBuffer before being
+  // returned. `readBoundedBody` now assembles into one directly, so the copy
+  // is gone -- it duplicated up to eight megabytes of bootstrap per request.
+  return new Response(body, {
     status: upstreamResponse.status,
     headers: {
       "Cache-Control": cachePolicyFor(upstreamUrl.pathname),
@@ -229,9 +245,9 @@ function retryDelay(
 async function readBoundedBody(
   response: Response,
   limit: number,
-): Promise<Uint8Array | null> {
+): Promise<ArrayBuffer | null> {
   if (!response.body) {
-    return new Uint8Array();
+    return new ArrayBuffer(0);
   }
 
   const reader = response.body.getReader();
@@ -254,13 +270,22 @@ async function readBoundedBody(
     reader.releaseLock();
   }
 
-  const body = new Uint8Array(total);
+  // Audit item #94. Allocated as an ArrayBuffer rather than as a Uint8Array,
+  // so the caller can hand it to `Response` without a second copy.
+  //
+  // The copy that used to be there was not superstition: `Uint8Array.buffer`
+  // is typed `ArrayBufferLike`, which includes SharedArrayBuffer, and
+  // `BodyInit` does not accept a shared one. Assembling into an ArrayBuffer
+  // here makes the type honest instead of asserting past it, and removes a
+  // duplication of up to eight megabytes of bootstrap per request.
+  const buffer = new ArrayBuffer(total);
+  const body = new Uint8Array(buffer);
   let offset = 0;
   for (const chunk of chunks) {
     body.set(chunk, offset);
     offset += chunk.byteLength;
   }
-  return body;
+  return buffer;
 }
 
 function defaultSleep(milliseconds: number): Promise<void> {

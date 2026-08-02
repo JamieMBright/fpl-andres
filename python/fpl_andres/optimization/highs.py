@@ -24,10 +24,47 @@ class OptimizationError(RuntimeError):
 # the generated case (0.0, 2.0, 7.0, 1e-07, 0.0, 8.125).
 _MIP_FEASIBILITY_TOLERANCE = 1e-6
 
+# Audit item #15. Lexicographic tie-breaks, expressed as a single objective.
+#
+# When several squads score identically the solver may return any of them, and
+# "any of them" means a different squad on a different machine or a different
+# HiGHS build. That is unacceptable here: the same evidence must produce the
+# same recommendation, or nothing downstream can be reproduced.
+#
+# The fix is a penalty on the element index, small enough that it can never
+# outrank a real points difference. Three scales, because the tie-breaks are
+# ordered: squad membership is decided first, then who starts, then who wears
+# the armband. Each is a hundred times smaller than the one above it, so no
+# accumulation of lower-priority terms can overturn a higher-priority one --
+# fifteen players at 1e-11 sum to 1.5e-10, well under a single 1e-9 step.
+#
+# All three are far below _MIP_FEASIBILITY_TOLERANCE, so none of them can move
+# a solution the solver would otherwise consider optimal.
+_SQUAD_TIE_BREAK = 1e-9
+_LINEUP_TIE_BREAK = 1e-11
+_CAPTAIN_TIE_BREAK = 1e-13
+
 
 def _optimum_slack(optimum: float) -> float:
-    """Slack for re-solving against a proven optimum, scaled to its magnitude."""
-    return max(_MIP_FEASIBILITY_TOLERANCE, abs(optimum) * 1e-9)
+    """Slack for re-solving against a proven optimum, scaled to its magnitude.
+
+    Audit item #16. Load-bearing for every optimality proof, and previously
+    uncommented.
+
+    The three-stage solve pins each stage against the previous stage's optimum.
+    Pinning it exactly cannot work: HiGHS proved that optimum only to its own
+    feasibility tolerance, so re-imposing it as an equality asks the solver to
+    hit a number more precisely than it claimed to know it, and it answers
+    infeasible against its own answer.
+
+    Relative *and* absolute, because neither alone is right across the range.
+    An absolute tolerance is far too loose for an objective near zero -- a
+    bench-boost margin of 0.4 points would be swamped -- and far too tight for
+    one in the hundreds, where 1e-6 is below the float spacing of the number
+    itself. The max of the two tracks the magnitude and never drops below what
+    the solver guarantees.
+    """
+    return max(_MIP_FEASIBILITY_TOLERANCE, abs(optimum) * _SQUAD_TIE_BREAK)
 
 
 class HighsOptimizer:
@@ -39,18 +76,23 @@ class HighsOptimizer:
     def solve(self, request: OptimizationRequest) -> OptimizationResult:
         players = tuple(sorted(request.players, key=lambda player: player.element_id))
         player_count = len(players)
+        # Audit item #17. `*_offset` is the first column of a block, and a
+        # player's column within it is `offset + index`. `paid_transfer_column`
+        # is a single column, not the start of a block, and was previously
+        # named `paid_transfer_index` -- which read like a player index and sat
+        # in the same arithmetic as one.
         squad_offset = 0
         lineup_offset = player_count
         captain_offset = 2 * player_count
-        paid_transfer_index = 3 * player_count
-        variable_count = paid_transfer_index + 1
+        paid_transfer_column = 3 * player_count
+        variable_count = paid_transfer_column + 1
         current = {player.element_id: player for player in request.current_squad}
 
         objective = np.zeros(variable_count, dtype=np.float64)
         for index, player in enumerate(players):
             objective[lineup_offset + index] = -player.expected_points
             objective[captain_offset + index] = -player.expected_points
-        objective[paid_transfer_index] = request.rules.transfer_rules.transfer_cost_points
+        objective[paid_transfer_column] = request.rules.transfer_rules.transfer_cost_points
 
         rows: list[np.ndarray] = []
         lower_bounds: list[float] = []
@@ -138,7 +180,7 @@ class HighsOptimizer:
             index for index, player in enumerate(players) if player.element_id not in current
         ]
         transfer_coefficients = {squad_offset + index: 1.0 for index in incoming_indices}
-        transfer_coefficients[paid_transfer_index] = -1.0
+        transfer_coefficients[paid_transfer_column] = -1.0
         add_constraint(
             transfer_coefficients,
             upper=request.available_free_transfers,
@@ -150,7 +192,7 @@ class HighsOptimizer:
 
         lower_variable_bounds = np.zeros(variable_count, dtype=np.float64)
         upper_variable_bounds = np.ones(variable_count, dtype=np.float64)
-        upper_variable_bounds[paid_transfer_index] = request.rules.transfer_cap
+        upper_variable_bounds[paid_transfer_column] = request.rules.transfer_cap
 
         def optimize(stage_objective: np.ndarray, stage: str) -> np.ndarray:
             result = milp(
@@ -198,12 +240,14 @@ class HighsOptimizer:
 
         squad_quality_objective = np.zeros(variable_count, dtype=np.float64)
         for index, player in enumerate(players):
-            # Squad tie-break dominates: prefer lower element indices among tied optima.
-            squad_quality_objective[squad_offset + index] = -player.expected_points + index * 1e-9
-            # Then lineup tie-break: prefer lower element indices among tied starters.
-            squad_quality_objective[lineup_offset + index] = index * 1e-11
-            # Then captain tie-break: prefer lower element indices when captains tie.
-            squad_quality_objective[captain_offset + index] = index * 1e-13
+            # Lexicographic, highest priority first. See the constants: each
+            # scale is a hundred times smaller than the one above it, so no
+            # accumulation of lower-priority terms can overturn a higher one.
+            squad_quality_objective[squad_offset + index] = (
+                -player.expected_points + index * _SQUAD_TIE_BREAK
+            )
+            squad_quality_objective[lineup_offset + index] = index * _LINEUP_TIE_BREAK
+            squad_quality_objective[captain_offset + index] = index * _CAPTAIN_TIE_BREAK
         solution = optimize(squad_quality_objective, "squad-quality")
 
         selected = _selected(players, solution, squad_offset)
