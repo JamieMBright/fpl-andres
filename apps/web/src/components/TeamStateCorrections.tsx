@@ -466,7 +466,7 @@ export function TeamStateCorrections({ state }: TeamStateCorrectionsProps) {
             // dialog root because both buttons must receive them.
             // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
             <div
-              aria-describedby={`${formId}-remove-description`}
+              aria-describedby={`${formId}-remove-description ${formId}-remove-keys`}
               aria-labelledby={`${formId}-remove-title`}
               className="inline-confirmation"
               onKeyDown={handleDialogKeyDown}
@@ -478,6 +478,15 @@ export function TeamStateCorrections({ state }: TeamStateCorrectionsProps) {
               <p id={`${formId}-remove-description`}>
                 This removes only the local manager record for this team and
                 public deadline. The observed FPL snapshot stays unchanged.
+              </p>
+              {/* Audit item #136. The Escape key and the focus trap were
+                  exercised only by a Playwright journey, so the behaviour was
+                  documented to the test suite and to nobody using the site.
+                  Stated here, in the dialog it applies to, and read out by a
+                  screen reader as part of the description. */}
+              <p className="keyboard-hint mono" id={`${formId}-remove-keys`}>
+                <kbd>Esc</kbd> keeps the corrections. <kbd>Tab</kbd> stays
+                inside this prompt until you choose.
               </p>
               <div>
                 <button

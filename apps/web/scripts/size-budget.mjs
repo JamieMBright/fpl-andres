@@ -46,6 +46,30 @@ for (const budget of BUDGETS) {
 console.log("Bundle sizes:");
 console.log(report.sort().join("\n"));
 
+/*
+ * Audit item #125: chunk names must stay legible.
+ *
+ * Vite already names a lazy chunk after the module that produced it, so the
+ * report above reads "CalibrationPage-DzpDSLNJ.js" rather than "chunk-4a1f.js".
+ * That is the whole of what the item asked for, and it is true by default --
+ * which is exactly why it is worth guarding. Adding a `manualChunks` function
+ * that returns "vendor" or an index is a one-line change that would make every
+ * line of this report meaningless, and nothing else would complain.
+ */
+const anonymous = files.filter(
+  (file) =>
+    file.endsWith(".js") && /^(chunk|vendor)-[A-Za-z0-9_-]+\.js$/.test(file),
+);
+if (anonymous.length > 0) {
+  console.error(
+    "\nThese chunks are not named after anything:\n" +
+      anonymous.map((file) => `  ${file}`).join("\n") +
+      "\n\nA bundle report of hashes cannot be read. Name the chunk after its\n" +
+      "entry module, or remove the manualChunks rule that produced this.",
+  );
+  process.exit(1);
+}
+
 if (failures.length > 0) {
   console.error("\nSize budget exceeded:");
   for (const failure of failures) console.error(`  ${failure}`);

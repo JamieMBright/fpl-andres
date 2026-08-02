@@ -28,6 +28,49 @@
       rel="stylesheet"
     />
     <title>FPL Andres</title>
+    <!--
+      Audit item #137. Structured data, so a search result describes the site
+      rather than guessing from the first paragraph it finds.
+
+      Deliberately only what is true of every page. This is a single-page app,
+      so the document head is the same on every route; per-route breadcrumbs
+      would have to be injected at runtime, which means a search crawler that
+      does not execute JavaScript would read the home page's breadcrumb on
+      every URL. Wrong structured data is worse than none, because it is
+      trusted.
+
+      No `aggregateRating`, no `Review`, no `Organization` with a fake address.
+      Every property below is checkable against the page it describes.
+    -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebSite",
+            "@id": "https://fpl-andres.vercel.app/#website",
+            "name": "FPL Andres",
+            "description": "Evidence-labelled Fantasy Premier League decisions from public data.",
+            "inLanguage": "en-GB",
+            "isFamilyFriendly": true
+          },
+          {
+            "@type": "WebApplication",
+            "name": "FPL Andres",
+            "applicationCategory": "SportsApplication",
+            "operatingSystem": "Any browser",
+            "browserRequirements": "Requires JavaScript.",
+            "isAccessibleForFree": true,
+            "offers": {
+              "@type": "Offer",
+              "price": "0",
+              "priceCurrency": "GBP"
+            },
+            "isPartOf": { "@id": "https://fpl-andres.vercel.app/#website" }
+          }
+        ]
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>

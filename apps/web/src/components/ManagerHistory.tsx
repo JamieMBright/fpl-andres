@@ -68,9 +68,19 @@ export function ManagerHistory({ entryId }: { entryId: number }) {
 
   if (!ready) {
     return (
-      <section className="manager-history" aria-labelledby="record-title">
+      <section
+        className="manager-history"
+        aria-labelledby="record-title"
+        aria-busy="true"
+      >
         <h2 id="record-title">Your record</h2>
-        <p className="mono">Reading your history…</p>
+        {/* Audit item #135. Every other loading and empty state on the site is
+            a status region; these two were plain paragraphs, so a screen
+            reader was told nothing when the record arrived or turned out not
+            to exist. */}
+        <p className="mono" role="status">
+          Reading your history…
+        </p>
       </section>
     );
   }
@@ -79,7 +89,7 @@ export function ManagerHistory({ entryId }: { entryId: number }) {
     return (
       <section className="manager-history" aria-labelledby="record-title">
         <h2 id="record-title">Your record</h2>
-        <p>
+        <p role="status">
           FPL has no completed season on record for this team, so there is
           nothing for me to read. That is not a judgement — everyone starts
           somewhere.
