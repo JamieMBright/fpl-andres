@@ -79,6 +79,38 @@ as such rather than silently skipped.
 - No optimizer code copied from another FPL solver.
 - No published number without the artifact that produced it.
 
+## Dependencies are pinned exactly
+
+Audit item #184. Every entry in every `package.json` is an exact version — no
+`^`, no `~`. That is deliberate and it is not the npm default, so it will look
+like an oversight to anyone who has not read this.
+
+Three reasons, in order of how much they cost when ignored:
+
+**`zod` validates the contract shared with Python.** The schemas in
+`packages/contracts` are the browser half of a contract whose other half is a
+Pydantic model, and `python/tests/test_contract_round_trip.py` asserts the two
+agree. A caret range means a `zod` minor release can change coercion behaviour
+on a Friday deploy and the two halves stop agreeing, with the Python suite still
+green because nothing there moved.
+
+**`typescript` decides whether the code compiles.** A minor release adds
+inference rules and new errors. With a range, a build that passed this morning
+fails this afternoon on a commit that touched nothing, and the first person to
+notice is whoever is trying to ship something unrelated.
+
+**`@vercel/node` is the runtime contract for `api/`.** The handler signature and
+the request and response types come from it. A range means the deployed runtime
+can differ from the one the types were checked against.
+
+The tradeoff is real: exact pins mean Dependabot opens more PRs, and each needs
+a human to look at it. That is the intended trade. Renovate-style auto-merge on
+a range makes the upgrade invisible; a PR makes it a decision.
+
+**To upgrade:** change the exact version, run `corepack pnpm check`, and say in
+the commit message what the release notes claimed and what you verified. If it
+is `zod`, run the round-trip test specifically and say so.
+
 ## Commit messages
 
 Say what changed and why it was wrong before. Include the measurement. A reader

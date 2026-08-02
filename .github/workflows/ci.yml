@@ -242,3 +242,15 @@ jobs:
           name: playwright-report
           path: apps/web/test-results
           retention-days: 7
+
+      # Uploaded on success too. A run that passed on the second attempt is
+      # exactly the run worth inspecting, and `if: failure()` would never
+      # collect it.
+      - name: Upload the flake record
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: playwright-results
+          path: apps/web/playwright-report/results.json
+          retention-days: 30
+          if-no-files-found: ignore

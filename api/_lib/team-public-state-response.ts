@@ -123,8 +123,16 @@ interface RequestTrace {
   requestId: string;
   startedAt: number;
   upstreamMs: number;
+  // Audit item #132. The browser makes one request, so it cannot see the three
+  // upstream calls behind it and a slow entry fetch looks exactly like a slow
+  // bootstrap fetch. Recorded per stage so the log can tell them apart after
+  // the fact, which is the only place the distinction can be drawn without
+  // streaming a partial response.
+  stageMs: Record<UpstreamStage, number>;
   reason: string | null;
 }
+
+export type UpstreamStage = "entry" | "bootstrap" | "picks";
 
 export async function createTeamPublicStateResponse(
   entryId: number,
@@ -136,6 +144,7 @@ export async function createTeamPublicStateResponse(
     requestId: newRequestId(),
     startedAt: now(),
     upstreamMs: 0,
+    stageMs: { entry: 0, bootstrap: 0, picks: 0 },
     reason: null,
   };
   const response = await buildTeamPublicStateResponse(
@@ -151,6 +160,7 @@ export async function createTeamPublicStateResponse(
     reason: trace.reason,
     totalMs: now() - trace.startedAt,
     upstreamMs: trace.upstreamMs,
+    stageMs: trace.stageMs,
   });
   return response;
 }
@@ -380,7 +390,7 @@ function contractFailure(
 
 async function fetchSource(
   requestUrl: string,
-  source: string,
+  source: UpstreamStage,
   fetchUpstream: typeof fetch,
   sleep: Sleep,
   random: () => number,
@@ -403,7 +413,9 @@ async function fetchSource(
   );
   // Concurrent sources overlap, so this sums to more than the wall clock. That
   // is the intended reading: it is time spent waiting on FPL, not elapsed time.
-  trace.upstreamMs += now() - startedAt;
+  const elapsed = now() - startedAt;
+  trace.upstreamMs += elapsed;
+  trace.stageMs[source] += elapsed;
   logUpstreamOutcome({
     requestId: trace.requestId,
     route: "/api/team/:id",

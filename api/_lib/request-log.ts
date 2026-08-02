@@ -155,6 +155,8 @@ export type HandlerOutcome = {
   reason: string | null;
   totalMs: number;
   upstreamMs: number;
+  /** Optional: only the team route has more than one upstream stage. */
+  stageMs?: Record<string, number>;
 };
 
 /**
@@ -169,6 +171,7 @@ export function logHandlerOutcome({
   reason,
   totalMs,
   upstreamMs,
+  stageMs,
 }: HandlerOutcome): void {
   const total = Math.round(totalMs);
   const upstream = Math.round(upstreamMs);
@@ -181,6 +184,19 @@ export function logHandlerOutcome({
     reason,
     totalMs: total,
     upstreamMs: upstream,
+    // Which upstream call was slow. The browser makes one request and cannot
+    // see the three behind it, so this is the only place a slow entry fetch
+    // becomes distinguishable from a slow bootstrap fetch.
+    ...(stageMs
+      ? {
+          stageMs: Object.fromEntries(
+            Object.entries(stageMs).map(([stage, ms]) => [
+              stage,
+              Math.round(ms),
+            ]),
+          ),
+        }
+      : {}),
     // Never negative: a clock that went backwards is not evidence of negative work.
     localMs: Math.max(0, total - upstream),
   });

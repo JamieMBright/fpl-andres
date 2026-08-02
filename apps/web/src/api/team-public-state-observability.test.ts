@@ -227,6 +227,49 @@ describe("handler outcome line", () => {
     expect(Number(outcome?.localMs)).toBeGreaterThanOrEqual(0);
   });
 
+  it("names which upstream stage was slow", async () => {
+    // Audit item #132. The browser makes one request and cannot see the three
+    // behind it, so a slow entry fetch and a slow bootstrap fetch look
+    // identical from the client. This is where they become distinguishable.
+    const log = captured();
+    let clock = Date.parse("2026-09-12T12:30:00.000Z");
+    await createTeamPublicStateResponse(123, "GET", {
+      fetchUpstream: upstream(),
+      now: () => {
+        clock += 100;
+        return clock;
+      },
+    });
+
+    const outcome = log.all().find((line) => line.event === "handler_outcome");
+    const stages = outcome?.stageMs as Record<string, number> | undefined;
+
+    expect(stages).toBeDefined();
+    expect(Object.keys(stages ?? {}).sort()).toEqual([
+      "bootstrap",
+      "entry",
+      "picks",
+    ]);
+    for (const stage of ["bootstrap", "entry", "picks"]) {
+      expect(stages?.[stage]).toBeGreaterThan(0);
+    }
+  });
+
+  it("attributes nothing to a stage that never ran", async () => {
+    // A refusal before the picks call must not report picks time, or the log
+    // implies a fetch that did not happen.
+    const log = captured();
+    await createTeamPublicStateResponse(123, "GET", {
+      fetchUpstream: upstream({ entry: () => json({ detail: "gone" }, 404) }),
+      now: () => Date.parse("2026-09-12T12:30:00.000Z"),
+    });
+
+    const outcome = log.all().find((line) => line.event === "handler_outcome");
+    const stages = outcome?.stageMs as Record<string, number> | undefined;
+
+    expect(stages?.picks).toBe(0);
+  });
+
   it("carries the refusal reason, so an alert can group by cause", async () => {
     const log = captured();
     const response = await createTeamPublicStateResponse(123, "GET", {

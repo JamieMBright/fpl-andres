@@ -78,3 +78,45 @@ that is how a suite becomes something people stop running.
 is a floor to stop regressions, not a target: the number that matters is whether
 the failure modes in `docs/ERRORS.md` are exercised, and coverage cannot see
 that.
+
+## Does the suite actually catch anything?
+
+Coverage says which lines ran. It does not say whether anything would have
+noticed if they ran wrongly. Audit item #166 asked for the stronger measurement.
+
+```bash
+python scripts/mutation_trial.py
+python scripts/mutation_trial.py --module python/fpl_andres/rules.py
+```
+
+The script changes one operator at a time — `>` to `>=`, `and` to `or`, `True`
+to `False` — runs the suite, and reports whether anything failed. A surviving
+mutant is a change no test objects to, which is either a gap or a line that does
+not matter.
+
+**Result, 2026-08-02: 63 mutants across `rules.py` and `backtesting/score.py`,
+63 killed. A 100% kill rate.**
+
+Not `mutmut` or `cosmic-ray`. Both are good tools and both are a dependency, a
+config file and a cache directory to maintain, for a question asked once a year.
+The script is sixty lines and answers it.
+
+Re-run it after substantially reworking either module. A kill rate below 90%
+means the suite is executing that code rather than testing it.
+
+## Browser journeys and flakes
+
+`retries: 2` on CI, deliberately: these drive a real browser against a real dev
+server, and a cold first paint on a loaded runner is an environmental failure
+rather than a defect. Zero retries makes CI a coin flip; more than two hides a
+test that fails half the time.
+
+A retry that passes is still recorded. `playwright-report/results.json` carries
+every attempt and CI uploads it on success as well as failure — a run that
+passed on the second attempt is exactly the one worth inspecting, and
+`if: failure()` would never collect it.
+
+**The policy:** a test that appears in the flaky list twice in a fortnight is a
+broken test, not an unlucky one. Fix it or delete it. A journey nobody trusts is
+worse than no journey, because it trains people to re-run CI without reading the
+failure.
