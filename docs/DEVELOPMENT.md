@@ -9,6 +9,75 @@ only exists as a serverless function in production.
 
 ---
 
+## First contribution
+
+Audit item #203. Read these four, in this order. They take about twenty minutes
+together and they are the four that make the rest of the repository make sense.
+
+| Read                  | Why it is on the list                                          |
+| --------------------- | -------------------------------------------------------------- |
+| `docs/THESIS.md`      | What the project claims and how it intends to prove it.        |
+| `docs/LIMITATIONS.md` | What it refuses to do. This is a hard boundary, not a backlog. |
+| `CONTRIBUTING.md`     | Test first, measure before asserting, never default a rule.    |
+| `docs/ERRORS.md`      | Refuse, degrade or retry — the decision behind every failure.  |
+
+Then prove your environment works:
+
+```powershell
+corepack pnpm check
+```
+
+That single command exercises everything: contract drift, lint, typecheck, all
+four test suites, the production build with its size budget, ruff, mypy and
+coverage. It takes about a minute. If it passes, your environment is correct and
+you can ignore every other setup instruction until something breaks.
+
+If it does not pass, the FAQ below covers what it is usually.
+
+---
+
+## Setup FAQ
+
+Audit item #201. These are the failures that stop someone before they have
+written anything.
+
+**`corepack: command not found`, or pnpm runs the wrong version.**
+Corepack ships with Node but is disabled by default on some installs. Run
+`corepack enable`. If the pinned pnpm still does not activate, run
+`corepack prepare pnpm@9.15.9 --activate` — the version is pinned in
+`package.json` under `packageManager` and CI uses exactly that one.
+
+**`pnpm install` fails on a frozen lockfile.**
+`pnpm install --frozen-lockfile` refuses when `package.json` and
+`pnpm-lock.yaml` disagree. That is the point: it means someone edited a
+dependency without committing the lock. Run a plain `pnpm install` locally and
+commit the lockfile change with the reason.
+
+**`supabase start` hangs or fails to pull an image.**
+It needs Docker running, and the first start pulls several gigabytes. On Windows
+that means Docker Desktop with the WSL2 backend actually started, not just
+installed. `docker ps` should answer without error before you try.
+
+**`supabase db reset` fails with `42P01: relation does not exist`.**
+A migration references a table created by a later-sorting file. Migrations apply
+in filename order, so the timestamp prefix is load-bearing.
+`python/tests/test_migrations.py` catches this without a database.
+
+**The Python commands cannot find `fpl_andres`.**
+`pythonpath = ["python"]` is set in `pyproject.toml` for pytest, but not for a
+bare `python -c`. Run from the repository root, or use `python -m pytest`.
+
+**mypy or ruff behave differently from CI.**
+Both read their config from `pyproject.toml`, so the usual cause is a different
+interpreter. CI pins the Python version; check yours matches.
+
+**Everything passes locally and CI fails.**
+Almost always a case-sensitive path, or a directory that exists on your machine
+because something created it at runtime. CI is Linux and starts from a clean
+clone.
+
+---
+
 ## The loop
 
 ```powershell
@@ -121,6 +190,83 @@ In order of likelihood:
 ```powershell
 $env:PYTHONHASHSEED = "0"; corepack pnpm check
 ```
+
+---
+
+## Measuring performance
+
+Audit item #204. `CONTRIBUTING.md` says measure before you assert. This is how,
+for the three things anyone is tempted to optimise.
+
+Every number below was measured on this repository. They are here so the next
+person does not have to re-derive them before deciding an optimisation is not
+worth it — which, four times out of five so far, it was not.
+
+### The projector and the scorer
+
+```powershell
+python -c "import cProfile, pstats; cProfile.run('...', 'out'); pstats.Stats('out').sort_stats('tottime').print_stats(10)"
+```
+
+Scoring 114,000 outcomes — four seasons of 38 gameweeks and 750 players, the
+real corpus shape — takes **0.080 s**, of which sorting is 0.026 s. The backtest
+that calls it pages the corpus over the network first, so the sort is not the
+thing to fix. Guarded by a slow-marked test bounded at 2.0 s, which catches a
+change that makes scoring quadratic without flaking on a loaded runner.
+
+### The solvers
+
+```powershell
+python -m pytest python/tests/test_horizon_scale.py -q
+```
+
+The constraint matrix was dense and grew quadratically: 700 players over 5
+events would have been roughly **2.1 GB**. Built sparsely it grows linearly.
+That one was worth doing, and the test that measures it is the reason it stays
+done.
+
+Rebuilding the player index per solve costs microseconds against a HiGHS solve
+of hundreds of milliseconds. Per-player dictionary lookups over a 700-player
+pool: **0.103 ms**, against 0.059 ms for a pre-join. Neither is worth the
+change.
+
+### API latency
+
+The handler log carries the split, per request:
+
+```json
+{
+  "event": "handler_outcome",
+  "totalMs": 412,
+  "upstreamMs": 380,
+  "localMs": 32,
+  "stageMs": { "entry": 180, "bootstrap": 200, "picks": 0 }
+}
+```
+
+`localMs` is ours to fix; `upstreamMs` is FPL's. `stageMs` says which of the
+three upstream calls was slow, which the browser cannot see because it makes one
+request. A stage that never ran reports zero rather than being omitted, so the
+log never implies a fetch that did not happen.
+
+### The bundle
+
+```powershell
+corepack pnpm --filter @fpl-andres/web build
+```
+
+Prints every chunk against its budget. The entry chunk is **126 kB gzipped**
+against a 150 kB budget; the stylesheet is 6.3 kB against 8 kB. The build fails
+if either is exceeded, so raising a budget is a deliberate edit with a number
+attached.
+
+### The rendering
+
+Measured in jsdom, which is slower than a browser: the whole 15-chip pitch
+renders in **4.3 ms** and a 200-row table in **7.4 ms**. Memoisation and
+virtualisation were both declined on those numbers, and the tests that record
+them assert a ratio against a baseline rather than a wall clock, so they do not
+flake under a parallel run.
 
 ---
 

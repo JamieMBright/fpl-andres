@@ -269,6 +269,62 @@ Every remote surface implements idle, loading, ready, stale, degraded and error.
 - Full pastiche of a Teletext page, a Subbuteo board or a matchday programme: the
   motifs are recognisable nods, not recreations.
 
+## Component inventory
+
+Audit item #202. Nineteen components in `apps/web/src/components`. The column
+that matters is the last one: what a browser journey already proves about each,
+so a review knows what it does not have to check by hand.
+
+| Component              | Responsibility                                   | Asserted by                             |
+| ---------------------- | ------------------------------------------------ | --------------------------------------- |
+| `ApplicationFrame`     | Shell, skip link, kit toggle, offline banner     | `feature-walk`, `contrast`              |
+| `RouteHeading`         | The single `h1`, focused on navigation           | `route-metadata`                        |
+| `LazyRoute`            | Suspense fallback that still carries an `h1`     | `contrast` (axe `page-has-heading-one`) |
+| `ErrorBoundary`        | Last resort, keeps the shell rendering           | unit                                    |
+| `OfflineBanner`        | Says the connection dropped, not that data broke | unit                                    |
+| `StatusStrip`          | Corpus freshness and pool size                   | `feature-walk`                          |
+| `AnalysisResult`       | Dispatches on the seven analysis states          | `failure-states`                        |
+| `SnapshotDossier`      | The verified squad, evidence and provenance      | `team-entry`                            |
+| `PitchView`            | Formation, chips, captaincy                      | `feature-walk`, unit render cost        |
+| `SquadRecord`          | Per-player projection table                      | `feature-walk`                          |
+| `ManagerHistory`       | Past seasons, including the empty case           | `team-entry`, unit                      |
+| `TeamStateCorrections` | Manager overrides, parsing and conflict          | unit (`parse.test.ts`)                  |
+| `TransferPlanPanel`    | What the plan will contain, and the deadline     | unit (`format.test.ts`)                 |
+| `OpeningSquad`         | The published opening fifteen                    | `feature-walk`                          |
+| `PlayerPoolTable`      | Sortable, filterable pool                        | `feature-walk`, unit render cost        |
+| `ValidationReport`     | Backtest metrics against baselines               | `feature-walk`, `contrast`              |
+| `CohortPanel`          | The veteran cohort and its coverage              | `feature-walk`                          |
+| `Methodology`          | How the projection is built                      | `route-metadata`                        |
+| `BielsaBucket`         | The mark                                         | —                                       |
+
+## Accessibility checklist
+
+Everything here is asserted by a test rather than checked by eye. The point of
+writing it down is that a new component has a list to satisfy, not that a
+reviewer has one to work through.
+
+| Rule                                                           | Enforced by                    |
+| -------------------------------------------------------------- | ------------------------------ |
+| Every page has exactly one `h1`, including a Suspense fallback | `contrast.spec.ts`             |
+| Every route meets WCAG 2.1 AA in **both** kits                 | `contrast.spec.ts`             |
+| The contrast scan is not vacuous — an injected 1.6:1 fails     | `contrast.spec.ts`             |
+| Every icon is `aria-hidden` or has an accessible name          | `static-accessibility.test.ts` |
+| Every scrollable region is focusable, named and outlined       | `static-accessibility.test.ts` |
+| State transitions are announced politely, without re-reading   | `static-accessibility.test.ts` |
+| No horizontal overflow at 360, 600, 680, 768 or 1440 px        | `responsive.spec.ts`           |
+| The `h1` stays at 20 px or more at 360 px                      | `responsive.spec.ts`           |
+| Tap targets clear the WCAG 2.2 AA 24 px minimum                | `responsive.spec.ts`           |
+| Keyboard bypass and disclosure controls work                   | `team-entry.spec.ts`           |
+
+Two rules that are deliberately **not** enforced, and why:
+
+- **Colour is never the only signal.** No test can check this, because "the
+  chip is red" and "the chip says unavailable" are indistinguishable to a DOM
+  query. It stays a review item.
+- **Motion respects `prefers-reduced-motion`.** The stylesheet gates every
+  animation behind it, but a test asserting the gate exists would pass on a CSS
+  rule nobody applied.
+
 ## Review gates
 
 Before a frontend milestone merges, run the local frontend-design and
