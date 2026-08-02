@@ -16,6 +16,69 @@ corpus row records the immutable `source_snapshots` row it came from.
 Every table has `enable row level security` **and** `force row level security`,
 and there are no policies. See `docs/adr/0001-forced-rls-with-no-policies.md`.
 
+## The shape of it
+
+Audit item #107. The arrows are the foreign keys; everything else is prose
+below.
+
+```mermaid
+erDiagram
+    workflow_runs ||--o{ workflow_run_events : "records"
+
+    source_snapshots ||--o{ rules_snapshots : "cites"
+    source_snapshots ||--o{ projection_runs : "cites"
+    source_snapshots ||--o{ crowd_snapshots : "cites"
+    source_snapshots ||--o{ seasons : "cites"
+    source_snapshots ||--o{ teams : "cites"
+    source_snapshots ||--o{ elements : "cites"
+    source_snapshots ||--o{ fixtures : "cites"
+    source_snapshots ||--o{ element_gameweek_stats : "cites"
+    source_snapshots ||--o{ element_price_observations : "cites"
+
+    projection_runs ||--o{ team_goal_projections : "produces"
+    optimization_runs ||--o{ optimization_event_plans : "plans"
+    backtest_runs ||--o{ backtest_predictions : "explains"
+
+    seasons ||--o{ teams : "scopes"
+    seasons ||--o{ elements : "scopes"
+    seasons ||--o{ fixtures : "scopes"
+    seasons ||--o{ element_gameweek_stats : "scopes"
+    seasons ||--o{ element_price_observations : "scopes"
+
+    model_promotion_decisions {
+        text decision
+        text corpus_fingerprint
+    }
+```
+
+Three shapes to notice. `source_snapshots` is the hub: nine tables cite it, and
+that is what makes the mutable corpus auditable despite being mutable. The three
+`_runs` tables each own a detail table that cascades on delete, so a run and its
+output cannot become separated. And `model_promotion_decisions` stands alone,
+because a promotion is a judgement about two models rather than a row derived
+from evidence.
+
+## Naming
+
+Audit item #108. These are descriptive rather than aspirational — every
+migration in the tree already follows them, and a test enforces it.
+
+| Object     | Pattern                      | Example                                         |
+| ---------- | ---------------------------- | ----------------------------------------------- |
+| Table      | plural snake_case            | `element_gameweek_stats`                        |
+| Index      | `<table>_<columns>_idx`      | `backtest_runs_season_method_idx`               |
+| Constraint | `<table>_<claim being made>` | `crowd_snapshots_captaincy_needs_a_denominator` |
+| Trigger    | `<table>_<verb phrase>`      | `source_snapshots_are_immutable`                |
+| Function   | `private.<verb>_<noun>`      | `private.reject_immutable_snapshot_mutation`    |
+
+Constraint names are read in error messages by whoever is holding the failing
+insert, so they are written as the claim they enforce rather than as a code.
+`crowd_snapshots_captaincy_needs_a_denominator` says what to fix;
+`crowd_snapshots_check_3` would not.
+
+Helper functions live in `private` rather than `public` because nothing outside
+the schema should call them, and `public` is the schema PostgREST exposes.
+
 ---
 
 ## Job state

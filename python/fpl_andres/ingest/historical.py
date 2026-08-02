@@ -106,11 +106,9 @@ class HistoricalIngest:
         *,
         client: SupabaseRestClient,
         fetcher: ArchiveFetcher,
-        storage_prefix: str = "vaastav",
     ) -> None:
         self._client = client
         self._fetcher = fetcher
-        self._storage_prefix = storage_prefix
 
     def ingest_season(
         self,
@@ -210,7 +208,10 @@ class HistoricalIngest:
             "fetched_at": file.fetched_at.isoformat(),
             "data_available_at": data_available_at.isoformat(),
             "content_hash": file.content_hash,
-            "storage_path": f"{self._storage_prefix}/{file.content_hash.removeprefix('sha256:')}",
+            # Derived from _SOURCE rather than an injectable prefix: the two
+            # must agree or `source_snapshots_path_matches_hash` refuses the
+            # row, and nothing ever passed a different prefix anyway.
+            "storage_path": f"{_SOURCE}/{file.content_hash.removeprefix('sha256:')}",
             "compressed_bytes": max(len(file.content), 1),
             "metadata": {"bytes": len(file.content)},
         }
