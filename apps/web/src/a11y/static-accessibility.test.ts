@@ -110,33 +110,37 @@ describe("focusable scroll regions", () => {
 });
 
 describe("analysis state announcements", () => {
-  const app = read(join(SOURCE, "App.tsx"));
+  // Audit item #115 split App.tsx apart: the live region lives with the page
+  // that owns the state, and the sentences with the messages module. Reading
+  // both keeps this checking the behaviour rather than a file name.
+  const page = read(join(SOURCE, "pages", "TeamAnalysisPage.tsx"));
+  const messages = read(join(SOURCE, "state", "team-analysis-messages.ts"));
 
   it("has a polite live region for the analysis state", () => {
-    expect(app).toContain('aria-live="polite"');
-    expect(app).toContain('role="status"');
+    expect(page).toContain('aria-live="polite"');
+    expect(page).toContain('role="status"');
   });
 
   it("keeps the live region out of the visual layout", () => {
-    const live = app.slice(
-      app.indexOf('aria-live="polite"') - 200,
-      app.indexOf('aria-live="polite"') + 200,
+    const live = page.slice(
+      page.indexOf('aria-live="polite"') - 200,
+      page.indexOf('aria-live="polite"') + 200,
     );
     expect(live).toContain("visually-hidden");
   });
 
   it("does not mark the whole result region live", () => {
     // That would re-read the entire squad on every transition.
-    const region = app.slice(
-      app.indexOf('aria-label="Analysis result"'),
-      app.indexOf('aria-label="Analysis result"') + 300,
+    const region = page.slice(
+      page.indexOf('aria-label="Analysis result"'),
+      page.indexOf('aria-label="Analysis result"') + 300,
     );
     expect(region).not.toContain("aria-live");
   });
 
   it("announces every state the reducer can produce", () => {
     for (const status of ["loading", "refreshing", "ready", "stale"]) {
-      expect(app).toContain(`case "${status}":`);
+      expect(messages).toContain(`case "${status}":`);
     }
   });
 });
