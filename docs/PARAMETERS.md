@@ -44,6 +44,7 @@ describes.
 | `RatePrior.strength_minutes`                | `PlayerRateEvidence`                   |
 | `minimum_minutes`                           | `PlayerRateEvidence`                   |
 | `blend_full_weight_minutes`                 | `PlayerRateEvidence`                   |
+| `carried_context_weight`                    | `PlayerRateEvidence`                   |
 | `decay_rate`, `minimum_matches`             | `DixonColesModel.fit`                  |
 | `thresholds`, `source_reference`            | `SuspensionRules` — "no default"       |
 | `budget_tenths`, `club_limit`               | `SquadRules` — "never inferred"        |
@@ -104,10 +105,11 @@ a fitted value.
 
 ### Flagged as assumed in the code already
 
-| Parameter             | Value | Where                 | Note                                                                                      |
-| --------------------- | ----- | --------------------- | ----------------------------------------------------------------------------------------- |
-| `_BENCH_WEIGHT`       | 0.25  | `planning/opening.py` | "Assumed, not measured: the one number here that wants a season of squad data behind it." |
-| `PLAYABLE_START_RATE` | 0.35  | `planning/opening.py` | Reasoned from two examples, not fitted.                                                   |
+| Parameter                | Value | Where                      | Note                                                                                                                                                                                                                                                                                                                                                                     |
+| ------------------------ | ----- | -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `_BENCH_WEIGHT`          | 0.25  | `planning/opening.py`      | "Assumed, not measured: the one number here that wants a season of squad data behind it."                                                                                                                                                                                                                                                                                |
+| `PLAYABLE_START_RATE`    | 0.35  | `planning/opening.py`      | Reasoned from two examples, not fitted.                                                                                                                                                                                                                                                                                                                                  |
+| `carried_context_weight` | 0.6   | `backtesting/projector.py` | Audit #29. How much of a carried season survives a change of club or role. A **Caller** field on `PlayerRateEvidence` with no default; this is the value the backtester passes. A move changes the service, the set pieces and the penalty order, but the player does not become a different player. Applied only when the change is known, never on an unknown context. |
 
 ### Not flagged anywhere until now
 

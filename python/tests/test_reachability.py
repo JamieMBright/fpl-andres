@@ -66,6 +66,7 @@ ENTRY_POINTS = {
 # finding, not an excuse: the list is a ratchet, so it may shrink but a new
 # orphan fails the build. Recorded in LIMITATIONS.md.
 KNOWN_ORPHANS = {
+    "swing_risk": "audit #28; needs a measured covariance no source supplies yet",
     "project_expected_points": "promoted xPTS model; the projector prices scoring itself",
     "run_backtest": "original harness, superseded by backtesting/score.py",
     "classify_deployment": "out-of-position classifier; no live data source",

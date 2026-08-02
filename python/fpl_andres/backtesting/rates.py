@@ -206,12 +206,26 @@ def project_element_rates(
     position: int,
     prior_rows: Sequence[ElementRow] = (),
     prior_season: str | None = None,
+    team_id: int | None = None,
+    prior_team_id: int | None = None,
+    prior_position: int | None = None,
 ) -> PlayerRateProjection:
     observations = tuple(
-        observation(row, season, cutoff) for row in rows if row.gameweek < gameweek
+        observation(row, season, cutoff, team_id=team_id, position_id=position)
+        for row in rows
+        if row.gameweek < gameweek
     )
     carried = (
-        tuple(observation(row, prior_season, cutoff) for row in prior_rows)
+        tuple(
+            observation(
+                row,
+                prior_season,
+                cutoff,
+                team_id=prior_team_id,
+                position_id=prior_position,
+            )
+            for row in prior_rows
+        )
         if prior_season and prior_season != season
         else ()
     )
@@ -229,6 +243,7 @@ def project_element_rates(
         ),
         minimum_minutes=config.minimum_minutes,
         blend_full_weight_minutes=config.blend_full_weight_minutes,
+        carried_context_weight=config.carried_context_weight,
         prediction_cutoff=cutoff,
         data_available_at=cutoff,
         source_hashes=(_SOURCE_HASH,),
@@ -236,7 +251,20 @@ def project_element_rates(
     return project_player_rates(evidence)
 
 
-def observation(row: ElementRow, season: str, cutoff: datetime) -> RateObservation:
+def observation(
+    row: ElementRow,
+    season: str,
+    cutoff: datetime,
+    *,
+    team_id: int | None = None,
+    position_id: int | None = None,
+) -> RateObservation:
+    """Audit item #29: club and role travel with the return, when they are known.
+
+    Both default to None rather than to a guess. A carried season whose club is
+    unknown is reported as unknown by `project_player_rates`, which is not the
+    same as reported as unchanged -- and the difference is the whole point.
+    """
     return RateObservation(
         season=season,
         event_id=row.gameweek,
@@ -246,6 +274,8 @@ def observation(row: ElementRow, season: str, cutoff: datetime) -> RateObservati
         expected_goals=row.expected_goals,
         expected_assists=row.expected_assists,
         kickoff_time=min(row.kickoff_time, cutoff),
+        team_id=team_id,
+        position_id=position_id,
     )
 
 

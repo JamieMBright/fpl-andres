@@ -69,6 +69,18 @@ class ProjectionSettings:
     # seasons it is reported against.
     recent_form_weight: float = 0.2
     recent_form_window: int = 5
+    # How much of a carried season survives a change of club or role.
+    #
+    # Audit item #29. Assumed, not measured: nothing in the corpus has been
+    # used to fit it, and it is recorded as assumed in docs/PARAMETERS.md
+    # rather than dressed up. 0.6 says a move costs roughly a third of what the
+    # previous season told us -- the service, the set pieces and the penalty
+    # order all change, but the player does not become a different player.
+    #
+    # Applied only when club or role is known to have changed. An unknown
+    # context is left alone and reported, because discounting on a suspicion is
+    # as wrong as ignoring one.
+    carried_context_weight: float = 0.6
 
 
 @dataclass(frozen=True)

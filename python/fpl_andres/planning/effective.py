@@ -23,11 +23,16 @@ from __future__ import annotations
 import math
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
+from typing import Protocol
 
 __all__ = [
+    "CovarianceUnavailable",
     "EffectivePoints",
+    "PointsCovariance",
     "RankModel",
+    "SwingRisk",
     "effective_points",
+    "swing_risk",
 ]
 
 
@@ -118,3 +123,116 @@ def effective_points(
         ),
         key=lambda entry: -entry.swing,
     )
+
+
+class CovarianceUnavailable(RuntimeError):
+    """Raised when the spread of a squad's swing cannot be stated honestly.
+
+    Audit item #28. The module docstring already said that what ownership
+    changes is the *spread* of outcomes, and then reported only expected values.
+    This is the missing half, and it is only correct with a covariance that
+    somebody measured.
+
+    Refusing rather than assuming zero, for the reason that makes the whole item
+    worth doing: two Arsenal defenders do not return independently. A clean
+    sheet pays both, and a defeat pays neither. Treating them as independent
+    understates the variance of a squad built around one defence -- which is the
+    exact shape of squad this game rewards and punishes -- and would report a
+    narrow spread for the riskiest thing a manager can do.
+    """
+
+
+class PointsCovariance(Protocol):
+    """Covariance of two players' returns in one gameweek.
+
+    Supplied by the caller because nothing here can derive it. A same-club pair
+    covaries through the team's clean sheet and goals; a cross-club pair covaries
+    through the gameweek's overall scoring. Both are measurable from the corpus,
+    and neither is a number this module may invent.
+    """
+
+    def between(self, first: int, second: int) -> float | None:
+        """Covariance, or None when it has not been measured for this pair."""
+        ...
+
+
+@dataclass(frozen=True)
+class SwingRisk:
+    """The spread of the swing a squad carries into a gameweek."""
+
+    expected_swing: float
+    variance: float
+
+    def __post_init__(self) -> None:
+        if self.variance < 0:
+            # Only reachable from an inconsistent covariance -- one that is not
+            # positive semi-definite. That is a fault in the measurement, and
+            # rounding it up to zero would hide it.
+            raise ValueError("a variance cannot be negative; the covariance is inconsistent")
+
+    @property
+    def standard_deviation(self) -> float:
+        return math.sqrt(self.variance)
+
+    def interval(self, model: RankModel, current_points: float) -> tuple[float, float]:
+        """Rank at one standard deviation either side of the expected swing.
+
+        Returned best-first, so the pair reads as a range rather than as two
+        numbers whose order has to be worked out. Note the asymmetry is real:
+        the rank curve is steepest in the middle of the field, so equal points
+        either way are not equal places.
+        """
+        low = model.rank_of(current_points + self.expected_swing - self.standard_deviation)
+        high = model.rank_of(current_points + self.expected_swing + self.standard_deviation)
+        return (min(low, high), max(low, high))
+
+
+def swing_risk(
+    entries: Sequence[EffectivePoints],
+    covariance: PointsCovariance,
+) -> SwingRisk:
+    """Expected swing and its variance across a squad, correlation included.
+
+    Each player contributes his return weighted by the gap between owning him
+    and the field owning him, so the total swing is
+
+        sum over i of (mine_i - owned_by_field_i) * points_i
+
+    and its variance is the full double sum
+
+        sum over i, j of w_i * w_j * cov(i, j)
+
+    which is where correlation enters. Dropping the off-diagonal terms -- which
+    is what treating players as independent means -- removes exactly the effect
+    that makes a squad built on one defence risky.
+
+    The weights are not random: ownership is published and the holding is a
+    decision. All the uncertainty is in the returns, which is why the covariance
+    is over points alone.
+    """
+    weights = {
+        entry.element_id: (1.0 if entry.owned else 0.0) - entry.effective_ownership
+        for entry in entries
+    }
+    expected = sum(weights[entry.element_id] * entry.expected_points for entry in entries)
+
+    variance = 0.0
+    missing: list[tuple[int, int]] = []
+    for first in entries:
+        for second in entries:
+            pair = covariance.between(first.element_id, second.element_id)
+            if pair is None:
+                missing.append((first.element_id, second.element_id))
+                continue
+            variance += weights[first.element_id] * weights[second.element_id] * pair
+
+    if missing:
+        # Named rather than counted: the caller has to know which measurement to
+        # go and take, and a bare count sends them to look at all of them.
+        shown = ", ".join(f"{one}/{other}" for one, other in sorted(set(missing))[:5])
+        raise CovarianceUnavailable(
+            f"{len(set(missing))} player pair(s) have no measured covariance, "
+            f"so the spread of this squad's swing cannot be stated: {shown}"
+        )
+
+    return SwingRisk(expected_swing=expected, variance=variance)

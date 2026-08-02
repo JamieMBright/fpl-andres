@@ -19,30 +19,31 @@ was not entitled to see.** Nothing may be published for the affected subject.
 Do not substitute a default, a zero, or a last-known-good value: the whole point
 is that the failure stays visible.
 
-| Exception                     | Module                    | Raised when                                                    |
-| ----------------------------- | ------------------------- | -------------------------------------------------------------- |
-| `BacktestLeakError`           | `models/backtest.py`      | A prediction depends on evidence from after its cutoff.        |
-| `BootstrapElementError`       | `bootstrap.py`            | bootstrap-static carries an element this package cannot read.  |
-| `CohortError`                 | `cohorts/veterans.py`     | A history payload cannot support a cohort decision.            |
-| `ColumnMappingError`          | `ingest/normalise.py`     | An archive CSV lacks a column the schema depends on.           |
-| `CorpusLoadError`             | `backtesting/corpus.py`   | The corpus cannot supply a usable season.                      |
-| `FplContractError`            | `adapters/fpl.py`         | FPL responds with a shape unsafe for downstream use.           |
-| `FutureInformationError`      | `adapters/vaastav.py`     | Historical evidence was unavailable at decision time.          |
-| `FutureMinutesEvidenceError`  | `models/minutes.py`       | Minutes evidence postdates the decision cutoff.                |
-| `FutureRateEvidenceError`     | `models/player_rates.py`  | Rate evidence postdates the decision cutoff.                   |
-| `FutureRoleEvidenceError`     | `models/deployment.py`    | Role evidence was unavailable for the requested decision.      |
-| `MalformedJsonError`          | `jsonio.py`               | JSON cannot be parsed, naming the source that produced it.     |
-| `MissingCredentialsError`     | `persistence/supabase.py` | Service-role credentials are absent or malformed.              |
-| `ModelFitError`               | `models/dixon_coles.py`   | Numerical optimization cannot produce a valid model.           |
-| `OptimizationError`           | `optimization/highs.py`   | The optimizer cannot prove an optimal valid squad.             |
-| `OutOfWindowObservationError` | `models/minutes.py`       | Recency decay has driven an observation's weight to zero.      |
-| `PersistenceNotMeasurable`    | `cohorts/sweep.py`        | A persistence claim would be conditioning on the outcome.      |
-| `PositionUnknown`             | `positions.py`            | An element type or code is not one of the four positions.      |
-| `RevisionUnavailable`         | `persistence/backtest.py` | The code revision cannot be determined.                        |
-| `RulesContractError`          | `rules.py`                | The live FPL payload cannot define a complete rules model.     |
-| `StatsbombAdapterError`       | `adapters/statsbomb.py`   | A StatsBomb payload does not match the expected shape.         |
-| `TeamStateContractError`      | `team_state.py`           | Public entry evidence cannot form a safe planning snapshot.    |
-| `TeamStateResolutionError`    | `team_state.py`           | Manager overrides cannot produce exact current planning state. |
+| Exception                     | Module                    | Raised when                                                      |
+| ----------------------------- | ------------------------- | ---------------------------------------------------------------- |
+| `BacktestLeakError`           | `models/backtest.py`      | A prediction depends on evidence from after its cutoff.          |
+| `BootstrapElementError`       | `bootstrap.py`            | bootstrap-static carries an element this package cannot read.    |
+| `CohortError`                 | `cohorts/veterans.py`     | A history payload cannot support a cohort decision.              |
+| `ColumnMappingError`          | `ingest/normalise.py`     | An archive CSV lacks a column the schema depends on.             |
+| `CorpusLoadError`             | `backtesting/corpus.py`   | The corpus cannot supply a usable season.                        |
+| `CovarianceUnavailable`       | `planning/effective.py`   | A squad's spread cannot be stated without a measured covariance. |
+| `FplContractError`            | `adapters/fpl.py`         | FPL responds with a shape unsafe for downstream use.             |
+| `FutureInformationError`      | `adapters/vaastav.py`     | Historical evidence was unavailable at decision time.            |
+| `FutureMinutesEvidenceError`  | `models/minutes.py`       | Minutes evidence postdates the decision cutoff.                  |
+| `FutureRateEvidenceError`     | `models/player_rates.py`  | Rate evidence postdates the decision cutoff.                     |
+| `FutureRoleEvidenceError`     | `models/deployment.py`    | Role evidence was unavailable for the requested decision.        |
+| `MalformedJsonError`          | `jsonio.py`               | JSON cannot be parsed, naming the source that produced it.       |
+| `MissingCredentialsError`     | `persistence/supabase.py` | Service-role credentials are absent or malformed.                |
+| `ModelFitError`               | `models/dixon_coles.py`   | Numerical optimization cannot produce a valid model.             |
+| `OptimizationError`           | `optimization/highs.py`   | The optimizer cannot prove an optimal valid squad.               |
+| `OutOfWindowObservationError` | `models/minutes.py`       | Recency decay has driven an observation's weight to zero.        |
+| `PersistenceNotMeasurable`    | `cohorts/sweep.py`        | A persistence claim would be conditioning on the outcome.        |
+| `PositionUnknown`             | `positions.py`            | An element type or code is not one of the four positions.        |
+| `RevisionUnavailable`         | `persistence/backtest.py` | The code revision cannot be determined.                          |
+| `RulesContractError`          | `rules.py`                | The live FPL payload cannot define a complete rules model.       |
+| `StatsbombAdapterError`       | `adapters/statsbomb.py`   | A StatsBomb payload does not match the expected shape.           |
+| `TeamStateContractError`      | `team_state.py`           | Public entry evidence cannot form a safe planning snapshot.      |
+| `TeamStateResolutionError`    | `team_state.py`           | Manager overrides cannot produce exact current planning state.   |
 
 `OptimizationError` and `ModelFitError` are in this class rather than _Degrade_
 on purpose. A squad the solver could not prove optimal, and a fit that did not

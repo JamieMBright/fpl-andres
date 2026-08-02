@@ -51,6 +51,7 @@ def _evidence(
     prediction_event: int = 1,
     minimum_minutes: float = 180.0,
     blend_full_weight_minutes: float = 900.0,
+    carried_context_weight: float = 1.0,
 ) -> PlayerRateEvidence:
     return PlayerRateEvidence(
         element_code=118748,
@@ -61,6 +62,7 @@ def _evidence(
         prior=PRIOR,
         minimum_minutes=minimum_minutes,
         blend_full_weight_minutes=blend_full_weight_minutes,
+        carried_context_weight=carried_context_weight,
         prediction_cutoff=CUTOFF,
         data_available_at=CUTOFF - timedelta(hours=3),
         source_hashes=(HASH,),
@@ -127,6 +129,7 @@ def test_current_season_minutes_progressively_displace_the_carried_season() -> N
                 carried=carried,
                 prediction_event=played + 1,
                 blend_full_weight_minutes=900.0,
+                carried_context_weight=1.0,
             )
         )
         weights.append(projection.carried_weight)
@@ -145,6 +148,7 @@ def test_the_prior_season_stops_contributing_once_the_sample_floor_is_met() -> N
             carried=carried,
             prediction_event=11,
             blend_full_weight_minutes=900.0,
+            carried_context_weight=1.0,
         )
     )
 
@@ -229,6 +233,7 @@ def test_evidence_from_after_the_cutoff_is_rejected() -> None:
         prior=PRIOR,
         minimum_minutes=180.0,
         blend_full_weight_minutes=900.0,
+        carried_context_weight=1.0,
         prediction_cutoff=CUTOFF,
         data_available_at=CUTOFF + timedelta(seconds=1),
         source_hashes=(HASH,),
@@ -268,6 +273,7 @@ def test_evidence_must_cite_a_source() -> None:
             prior=PRIOR,
             minimum_minutes=180.0,
             blend_full_weight_minutes=900.0,
+            carried_context_weight=1.0,
             prediction_cutoff=CUTOFF,
             data_available_at=CUTOFF,
             source_hashes=(),

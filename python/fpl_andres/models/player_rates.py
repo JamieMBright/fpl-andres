@@ -52,6 +52,12 @@ class RateObservation(BaseModel):
     expected_goals: Annotated[float, Field(ge=0.0)] | None = None
     expected_assists: Annotated[float, Field(ge=0.0)] | None = None
     kickoff_time: datetime
+    # Audit item #29. The context the return was produced in, so a carried
+    # season can be discounted when it was produced somewhere else. Optional
+    # because not every source records them, and a source that does not is
+    # reported as unknown rather than assumed unchanged.
+    team_id: Annotated[int, Field(ge=1, le=20)] | None = None
+    position_id: Annotated[int, Field(ge=1, le=4)] | None = None
 
     @model_validator(mode="after")
     def validate_observation(self) -> RateObservation:
@@ -87,6 +93,18 @@ class PlayerRateEvidence(BaseModel):
     minimum_minutes: Annotated[float, Field(ge=0.0, le=10_000.0)]
     # Sourced. The current-season minutes at which the carried season stops contributing.
     blend_full_weight_minutes: Annotated[float, Field(gt=0.0, le=10_000.0)]
+    # Caller. How much of a carried season survives a change of club or role.
+    #
+    # Audit item #29. The blend weighted the carried season by minutes alone,
+    # so a striker's twenty goals for a relegated side counted exactly as a
+    # striker's twenty goals for the same side he still plays for. A move
+    # changes the service, the set pieces and the penalty order; a move to a
+    # deeper role changes what the position prior should even be.
+    #
+    # No default, because nothing here can measure it and a number invented at
+    # this layer would be indistinguishable from one somebody checked. 1.0
+    # keeps the previous behaviour, and says so at the call site.
+    carried_context_weight: Annotated[float, Field(ge=0.0, le=1.0)]
 
     prediction_cutoff: datetime
     data_available_at: datetime
@@ -192,6 +210,16 @@ def project_player_rates(evidence: PlayerRateEvidence) -> PlayerRateProjection:
     if not evidence.prior_season_observations:
         current_weight = 1.0
     carried_weight = 1.0 - current_weight
+
+    # Audit item #29. A carried season produced somewhere else is worth less
+    # than the same minutes produced here. The discount is applied to the
+    # carried share rather than to the minutes, so it cannot push the blend
+    # below the minutes floor that already decided the projection was possible.
+    context = _carried_context(evidence)
+    reasons.append(f"carried_context={context}")
+    if context == "changed" and carried_weight > 0.0:
+        carried_weight *= evidence.carried_context_weight
+        current_weight = 1.0 - carried_weight
     reasons.append(f"carried_weight={carried_weight:.3f}")
 
     # Decide the measurement basis once, across both sets. Blending expected
@@ -261,6 +289,41 @@ def _totals(observations: tuple[RateObservation, ...], use_expected: bool) -> tu
 
 def _total_minutes(observations: tuple[RateObservation, ...]) -> float:
     return float(sum(observation.minutes for observation in observations))
+
+
+def _carried_context(evidence: PlayerRateEvidence) -> str:
+    """Whether the carried season was produced in the same club and role.
+
+    Audit item #29. Three answers, and the third matters as much as the others.
+
+    "same"      the carried season is directly comparable
+    "changed"   a different club or a different role, so discount it
+    "unknown"   the source did not record club or role
+
+    Unknown is not treated as same. A source that cannot say is a source that
+    cannot rule out a move, and silently reading it as "unchanged" would apply
+    the optimistic answer exactly where there is no evidence for it. The reason
+    code carries it forward so a projection built on an incomplete source is
+    distinguishable from one built on a complete one.
+
+    Determined from the most recent observation on each side rather than from a
+    majority: a player who moved in January is described by where he plays now,
+    and averaging the two halves of his season describes nowhere.
+    """
+    carried = evidence.prior_season_observations
+    current = evidence.current_season_observations
+    if not carried or not current:
+        return "unknown"
+
+    last_carried = max(carried, key=lambda observation: observation.kickoff_time)
+    last_current = max(current, key=lambda observation: observation.kickoff_time)
+    pairs = (
+        (last_carried.team_id, last_current.team_id),
+        (last_carried.position_id, last_current.position_id),
+    )
+    if any(before is None or after is None for before, after in pairs):
+        return "unknown"
+    return "same" if all(before == after for before, after in pairs) else "changed"
 
 
 def _shrink(events: float, minutes: float, prior_rate: float, prior: RatePrior) -> float:
