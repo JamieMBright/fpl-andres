@@ -6,6 +6,7 @@ from typing import Literal
 
 import numpy as np
 from scipy.optimize import Bounds, LinearConstraint, milp
+from scipy.sparse import coo_array
 
 from fpl_andres.optimization.contracts import (
     HorizonEventPlan,
@@ -54,7 +55,31 @@ class HighsHorizonOptimizer:
         def variable(offset: int, event_index: int, player: int) -> int:
             return offset + event_index * player_count + player
 
-        rows: list[np.ndarray] = []
+        # Audit item #34. Built as (row, column, value) triples rather than as
+        # dense rows. Every constraint here names a handful of variables out of
+        # thousands -- a squad-size row touches one player per column, a club
+        # limit touches three -- so a dense row is almost entirely zeros, and
+        # the matrix grows as players squared.
+        #
+        # Measured on the real shape before changing it, dense:
+        #
+        #    60 players, 2 events      2.9 MB
+        #   120 players, 2 events     10.8 MB
+        #   240 players, 2 events     41.4 MB
+        #   480 players, 2 events    161.9 MB
+        #   240 players, 5 events    241.8 MB
+        #
+        # Doubling the pool quadruples the matrix. The real FPL pool is about
+        # 700 players, which extrapolates to roughly 360 MB over two events and
+        # 2.1 GB over five -- a ceiling reached by planning further ahead, not
+        # by anything going wrong.
+        #
+        # `add_constraint` already took a coefficient dict, so the sparse form
+        # was the input all along; only the storage was dense.
+        constraint_rows: list[int] = []
+        constraint_columns: list[int] = []
+        constraint_values: list[float] = []
+        constraint_count = 0
         lower_bounds: list[float] = []
         upper_bounds: list[float] = []
 
@@ -64,10 +89,12 @@ class HighsHorizonOptimizer:
             lower: float = -np.inf,
             upper: float = np.inf,
         ) -> None:
-            row = np.zeros(variable_count, dtype=np.float64)
+            nonlocal constraint_count
             for index, coefficient in coefficients.items():
-                row[index] = coefficient
-            rows.append(row)
+                constraint_rows.append(constraint_count)
+                constraint_columns.append(index)
+                constraint_values.append(coefficient)
+            constraint_count += 1
             lower_bounds.append(lower)
             upper_bounds.append(upper)
 
@@ -293,12 +320,26 @@ class HighsHorizonOptimizer:
         upper_variable_bounds[free_compare_offset:bank_offset] = 1.0
 
         def optimize(stage_objective: np.ndarray, stage: str) -> np.ndarray:
+            # Rebuilt per stage rather than hoisted: later stages append
+            # constraints, and a matrix built once would silently solve the
+            # earlier problem. Assembling from triples is cheap; getting this
+            # wrong would not be visible in the answer.
+            matrix = coo_array(
+                (
+                    np.asarray(constraint_values, dtype=np.float64),
+                    (
+                        np.asarray(constraint_rows, dtype=np.int64),
+                        np.asarray(constraint_columns, dtype=np.int64),
+                    ),
+                ),
+                shape=(constraint_count, variable_count),
+            ).tocsr()
             result = milp(
                 stage_objective,
                 integrality=np.ones(variable_count, dtype=np.int32),
                 bounds=Bounds(lower_variable_bounds, upper_variable_bounds),
                 constraints=LinearConstraint(
-                    np.vstack(rows),
+                    matrix,
                     np.asarray(lower_bounds),
                     np.asarray(upper_bounds),
                 ),
