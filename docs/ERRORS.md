@@ -39,6 +39,7 @@ is that the failure stays visible.
 | `OptimizationError`            | `optimization/highs.py`   | The optimizer cannot prove an optimal valid squad.               |
 | `OutOfWindowObservationError`  | `models/minutes.py`       | Recency decay has driven an observation's weight to zero.        |
 | `PersistenceNotMeasurable`     | `cohorts/sweep.py`        | A persistence claim would be conditioning on the outcome.        |
+| `CoverageTooLow`               | `cohorts/portfolio.py`    | Too little of the cohort answered to publish a portfolio.        |
 | `PositionUnknown`              | `positions.py`            | An element type or code is not one of the four positions.        |
 | `RevisionUnavailable`          | `persistence/backtest.py` | The code revision cannot be determined.                          |
 | `RulesContractError`           | `rules.py`                | The live FPL payload cannot define a complete rules model.       |

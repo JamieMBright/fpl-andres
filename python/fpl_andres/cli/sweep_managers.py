@@ -39,6 +39,11 @@ RESULTS = OUTPUT_DIR / "managers.jsonl"
 BLOCK = 2_000
 # Consecutive rejections that mean stop rather than push on.
 REFUSAL_LIMIT = 25
+# Entry ids are handed out in order, so past the newest registration everything
+# 404s. Gaps exist — 13,323 in the first 2.5M, about half a percent — but never
+# this many in a row, so three empty blocks is the end of the register rather
+# than a hole in it.
+EMPTY_BLOCKS_TO_STOP = 3
 
 
 @dataclass
@@ -48,6 +53,10 @@ class Progress:
     qualifying: int = 0
     missing: int = 0
     errors: int = 0
+    # Set once the sweep has walked off the end of the register. A later run
+    # picks up from `next_id` regardless, because by then more people have
+    # signed up and the end has moved.
+    reached_end_at: int | None = None
 
 
 class Throttle:
@@ -73,7 +82,18 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument("--concurrency", type=cliargs.positive_int, default=8)
     parser.add_argument("--start", type=cliargs.positive_int, default=1)
-    parser.add_argument("--until", type=cliargs.positive_int, default=2_500_000)
+    parser.add_argument(
+        "--until",
+        type=cliargs.positive_int,
+        default=20_000_000,
+        help="hard ceiling; the sweep normally stops earlier, when ids run out",
+    )
+    parser.add_argument(
+        "--max-seconds",
+        type=cliargs.positive_float,
+        default=None,
+        help="stop cleanly after this long so a scheduled run is bounded; resume later",
+    )
     parser.add_argument("--since-start-year", type=cliargs.positive_int, default=2021)
     parser.add_argument("--rank-ceiling", type=cliargs.positive_int, default=10_000)
     parser.add_argument("--minimum-seasons", type=cliargs.positive_int, default=2)
@@ -176,9 +196,11 @@ async def run(args: argparse.Namespace) -> int:
         follow_redirects=True,
     ) as client:
         with RESULTS.open("a", encoding="utf-8") as sink:
+            empty_blocks = 0
             while progress.next_id <= args.until:
                 stop = min(progress.next_id + BLOCK, args.until + 1)
                 block = range(progress.next_id, stop)
+                found_in_block = 0
 
                 async def one(
                     entry_id: int,
@@ -195,6 +217,7 @@ async def run(args: argparse.Namespace) -> int:
                     if outcome == "error" or payload is None:
                         progress.errors += 1
                         continue
+                    found_in_block += 1
                     record = parse_history(entry_id, payload)
                     if record is None:
                         continue
@@ -240,6 +263,24 @@ async def run(args: argparse.Namespace) -> int:
                         f"FPL refused {len(refusals)} requests in a row; stopping at "
                         f"{progress.next_id:,}. Resume with --resume once it is happy."
                     )
+
+                empty_blocks = empty_blocks + 1 if found_in_block == 0 else 0
+                if empty_blocks >= EMPTY_BLOCKS_TO_STOP:
+                    progress.reached_end_at = progress.next_id
+                    _save_progress(progress)
+                    print(
+                        f"\n{empty_blocks * BLOCK:,} consecutive ids with no history: "
+                        f"the register ends around {progress.next_id:,}. "
+                        f"Rerun with --resume when more managers have signed up."
+                    )
+                    break
+
+                if args.max_seconds is not None and elapsed >= args.max_seconds:
+                    print(
+                        f"\nreached the {args.max_seconds:g}s budget at "
+                        f"{progress.next_id:,}. Resume with --resume."
+                    )
+                    break
 
     print(f"\ndone. {progress.qualifying:,} managers written to {RESULTS}")
     return 0
