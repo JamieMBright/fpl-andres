@@ -36,8 +36,16 @@ Thumbs.db
 # Scraped source cache. Never redistributed; re-fetched on demand.
 data/soccerdata/
 
-# Swept manager records. Public data, but other people's, and not ours to ship.
-data/cohort/
+# The swept manager catalogue is tracked: FPL500 is derived from it, and a
+# derived ranking whose input is not in the repository cannot be reproduced or
+# reviewed. It holds entry ids, season ranks and points — the same fields FPL
+# publishes on a public league table, and no name, email or team name.
+# The raw sweep working files stay out; only the catalogue and its checkpoint
+# are kept.
+data/cohort/*
+!data/cohort/managers.jsonl
+!data/cohort/sweep-checkpoint.json
+!data/cohort/fpl500.json
 
 # Ownership and price series recovered from the fplcache archive. Bulk, and
 # theirs to distribute rather than ours; re-fetched on demand.

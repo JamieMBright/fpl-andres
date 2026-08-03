@@ -209,6 +209,7 @@ def test_no_module_is_imported_only_by_its_own_tests() -> None:
         "live_contracts",
         "publish_opening_squad",
         "publish_cohort",
+        "publish_fpl500",
         "publish_projections",
         "publish_season_plan",
         "sweep_managers",

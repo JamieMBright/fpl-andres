@@ -1,0 +1,4539 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-08-03T08:54:21.347474Z",
+  "catalogueSize": 2207,
+  "sweptTo": 2500001,
+  "size": 500,
+  "settings": {
+    "decayPerSeason": 0.78,
+    "preRulesChangeWeight": 0.6,
+    "rulesChangedIn": 2025,
+    "shrinkageWeight": 2.0,
+    "priorPercentile": 0.5,
+    "minimumSeasons": 3
+  },
+  "estimatedEntriesBySeason": {
+    "2006/07": 1145524,
+    "2007/08": 1604261,
+    "2008/09": 1922104,
+    "2009/10": 2315458,
+    "2010/11": 2453819,
+    "2011/12": 2769461,
+    "2012/13": 2606001,
+    "2013/14": 3181024,
+    "2014/15": 3452724,
+    "2015/16": 3699549,
+    "2016/17": 4416768,
+    "2017/18": 5869259,
+    "2018/19": 6252612,
+    "2019/20": 7610940,
+    "2020/21": 8146065,
+    "2021/22": 9096748,
+    "2022/23": 11181362,
+    "2023/24": 10667485,
+    "2024/25": 8646267,
+    "2025/26": 12986346
+  },
+  "managers": [
+    {
+      "entryId": 429,
+      "score": 0.80238,
+      "seasons": 20,
+      "weight": 3.1083,
+      "bestPercentile": 0.999687,
+      "latestPercentile": 0.999375,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 398,
+      "score": 0.801723,
+      "seasons": 20,
+      "weight": 3.1083,
+      "bestPercentile": 0.999785,
+      "latestPercentile": 0.998262,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 35543,
+      "score": 0.801333,
+      "seasons": 19,
+      "weight": 3.103,
+      "bestPercentile": 0.999975,
+      "latestPercentile": 0.998242,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 53517,
+      "score": 0.801323,
+      "seasons": 19,
+      "weight": 3.103,
+      "bestPercentile": 0.999949,
+      "latestPercentile": 0.995841,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 515217,
+      "score": 0.801107,
+      "seasons": 16,
+      "weight": 3.0761,
+      "bestPercentile": 0.999952,
+      "latestPercentile": 0.999424,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 4783,
+      "score": 0.801014,
+      "seasons": 19,
+      "weight": 3.103,
+      "bestPercentile": 0.999601,
+      "latestPercentile": 0.997917,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 46949,
+      "score": 0.80092,
+      "seasons": 17,
+      "weight": 3.0873,
+      "bestPercentile": 0.999774,
+      "latestPercentile": 0.999774,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 2086,
+      "score": 0.800763,
+      "seasons": 17,
+      "weight": 3.0873,
+      "bestPercentile": 0.999968,
+      "latestPercentile": 0.999673,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 41,
+      "score": 0.800426,
+      "seasons": 16,
+      "weight": 3.0761,
+      "bestPercentile": 0.999955,
+      "latestPercentile": 0.999955,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 22856,
+      "score": 0.800298,
+      "seasons": 20,
+      "weight": 3.1083,
+      "bestPercentile": 0.999531,
+      "latestPercentile": 0.999518,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 211374,
+      "score": 0.80025,
+      "seasons": 20,
+      "weight": 3.1083,
+      "bestPercentile": 0.999953,
+      "latestPercentile": 0.995545,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 35372,
+      "score": 0.800226,
+      "seasons": 17,
+      "weight": 3.0873,
+      "bestPercentile": 0.999938,
+      "latestPercentile": 0.999687,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 36935,
+      "score": 0.800147,
+      "seasons": 17,
+      "weight": 3.0873,
+      "bestPercentile": 0.999747,
+      "latestPercentile": 0.999741,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 35093,
+      "score": 0.799988,
+      "seasons": 16,
+      "weight": 3.0761,
+      "bestPercentile": 0.999365,
+      "latestPercentile": 0.998874,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 112860,
+      "score": 0.79993,
+      "seasons": 18,
+      "weight": 3.0961,
+      "bestPercentile": 0.99997,
+      "latestPercentile": 0.992801,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 5133,
+      "score": 0.799911,
+      "seasons": 16,
+      "weight": 3.0761,
+      "bestPercentile": 0.999999,
+      "latestPercentile": 0.999935,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 49480,
+      "score": 0.799877,
+      "seasons": 20,
+      "weight": 3.1083,
+      "bestPercentile": 0.999973,
+      "latestPercentile": 0.999245,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 200876,
+      "score": 0.799866,
+      "seasons": 17,
+      "weight": 3.0817,
+      "bestPercentile": 0.999932,
+      "latestPercentile": 0.999502,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 236,
+      "score": 0.799864,
+      "seasons": 17,
+      "weight": 3.0873,
+      "bestPercentile": 0.999741,
+      "latestPercentile": 0.996912,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 53543,
+      "score": 0.799855,
+      "seasons": 16,
+      "weight": 3.0761,
+      "bestPercentile": 0.999824,
+      "latestPercentile": 0.999717,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 3130,
+      "score": 0.799722,
+      "seasons": 16,
+      "weight": 3.0761,
+      "bestPercentile": 0.999876,
+      "latestPercentile": 0.996194,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 20896,
+      "score": 0.799613,
+      "seasons": 15,
+      "weight": 3.0616,
+      "bestPercentile": 0.999962,
+      "latestPercentile": 0.996509,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 308328,
+      "score": 0.7996,
+      "seasons": 16,
+      "weight": 3.0761,
+      "bestPercentile": 0.999897,
+      "latestPercentile": 0.99707,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 18311,
+      "score": 0.799518,
+      "seasons": 20,
+      "weight": 3.1083,
+      "bestPercentile": 0.999848,
+      "latestPercentile": 0.999394,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 18203,
+      "score": 0.799509,
+      "seasons": 17,
+      "weight": 3.0873,
+      "bestPercentile": 0.999925,
+      "latestPercentile": 0.999506,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 2269320,
+      "score": 0.799486,
+      "seasons": 20,
+      "weight": 3.1083,
+      "bestPercentile": 0.999932,
+      "latestPercentile": 0.999147,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 14488,
+      "score": 0.799196,
+      "seasons": 18,
+      "weight": 3.0942,
+      "bestPercentile": 0.999787,
+      "latestPercentile": 0.994751,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 58548,
+      "score": 0.799137,
+      "seasons": 15,
+      "weight": 3.0616,
+      "bestPercentile": 0.999577,
+      "latestPercentile": 0.998989,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 20422,
+      "score": 0.799115,
+      "seasons": 16,
+      "weight": 3.0761,
+      "bestPercentile": 0.999762,
+      "latestPercentile": 0.998052,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 2194,
+      "score": 0.799096,
+      "seasons": 17,
+      "weight": 3.0873,
+      "bestPercentile": 0.999016,
+      "latestPercentile": 0.993437,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 121,
+      "score": 0.799091,
+      "seasons": 18,
+      "weight": 3.0961,
+      "bestPercentile": 0.999737,
+      "latestPercentile": 0.998725,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 195822,
+      "score": 0.798979,
+      "seasons": 17,
+      "weight": 3.0873,
+      "bestPercentile": 0.999919,
+      "latestPercentile": 0.998023,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 108990,
+      "score": 0.798918,
+      "seasons": 20,
+      "weight": 3.1083,
+      "bestPercentile": 0.999786,
+      "latestPercentile": 0.999786,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 810,
+      "score": 0.798896,
+      "seasons": 15,
+      "weight": 3.0616,
+      "bestPercentile": 0.999826,
+      "latestPercentile": 0.996194,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 3247,
+      "score": 0.798866,
+      "seasons": 19,
+      "weight": 3.103,
+      "bestPercentile": 0.999965,
+      "latestPercentile": 0.996402,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 366192,
+      "score": 0.798853,
+      "seasons": 20,
+      "weight": 3.1083,
+      "bestPercentile": 0.999721,
+      "latestPercentile": 0.988663,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 5439,
+      "score": 0.798794,
+      "seasons": 16,
+      "weight": 3.0232,
+      "bestPercentile": 0.999994,
+      "latestPercentile": 0.999807,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 15309,
+      "score": 0.798788,
+      "seasons": 18,
+      "weight": 3.0961,
+      "bestPercentile": 0.999971,
+      "latestPercentile": 0.99949,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 57492,
+      "score": 0.798756,
+      "seasons": 20,
+      "weight": 3.1083,
+      "bestPercentile": 0.999749,
+      "latestPercentile": 0.994242,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 84233,
+      "score": 0.798713,
+      "seasons": 19,
+      "weight": 3.103,
+      "bestPercentile": 0.99985,
+      "latestPercentile": 0.99947,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 20706,
+      "score": 0.798702,
+      "seasons": 20,
+      "weight": 3.1083,
+      "bestPercentile": 0.999991,
+      "latestPercentile": 0.999717,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 1527,
+      "score": 0.798619,
+      "seasons": 13,
+      "weight": 3.0194,
+      "bestPercentile": 0.999574,
+      "latestPercentile": 0.999442,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 2394022,
+      "score": 0.798577,
+      "seasons": 18,
+      "weight": 3.0961,
+      "bestPercentile": 0.999885,
+      "latestPercentile": 0.999673,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 35602,
+      "score": 0.798564,
+      "seasons": 14,
+      "weight": 3.0431,
+      "bestPercentile": 0.999737,
+      "latestPercentile": 0.999527,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 262813,
+      "score": 0.798549,
+      "seasons": 14,
+      "weight": 3.0431,
+      "bestPercentile": 0.999855,
+      "latestPercentile": 0.999855,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 25452,
+      "score": 0.798524,
+      "seasons": 13,
+      "weight": 3.0194,
+      "bestPercentile": 0.999934,
+      "latestPercentile": 0.998633,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 105958,
+      "score": 0.798385,
+      "seasons": 17,
+      "weight": 3.0849,
+      "bestPercentile": 0.999978,
+      "latestPercentile": 0.999848,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 244337,
+      "score": 0.798355,
+      "seasons": 20,
+      "weight": 3.1083,
+      "bestPercentile": 0.999948,
+      "latestPercentile": 0.999593,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 466630,
+      "score": 0.798299,
+      "seasons": 15,
+      "weight": 3.0616,
+      "bestPercentile": 0.999876,
+      "latestPercentile": 0.999876,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 47394,
+      "score": 0.798251,
+      "seasons": 18,
+      "weight": 3.0961,
+      "bestPercentile": 0.999995,
+      "latestPercentile": 0.999995,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 28376,
+      "score": 0.798234,
+      "seasons": 14,
+      "weight": 3.0431,
+      "bestPercentile": 0.999878,
+      "latestPercentile": 0.996717,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 3315,
+      "score": 0.798021,
+      "seasons": 16,
+      "weight": 3.0761,
+      "bestPercentile": 0.999516,
+      "latestPercentile": 0.985154,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 16499,
+      "score": 0.798014,
+      "seasons": 12,
+      "weight": 2.989,
+      "bestPercentile": 0.999953,
+      "latestPercentile": 0.999717,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 650296,
+      "score": 0.797914,
+      "seasons": 18,
+      "weight": 3.0942,
+      "bestPercentile": 0.99998,
+      "latestPercentile": 0.996932,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 231149,
+      "score": 0.797901,
+      "seasons": 14,
+      "weight": 3.0431,
+      "bestPercentile": 0.999947,
+      "latestPercentile": 0.999448,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 237960,
+      "score": 0.797863,
+      "seasons": 19,
+      "weight": 3.103,
+      "bestPercentile": 0.999946,
+      "latestPercentile": 0.999765,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 1209028,
+      "score": 0.79783,
+      "seasons": 13,
+      "weight": 3.0194,
+      "bestPercentile": 0.999901,
+      "latestPercentile": 0.995818,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 823548,
+      "score": 0.797775,
+      "seasons": 17,
+      "weight": 3.0873,
+      "bestPercentile": 0.999781,
+      "latestPercentile": 0.999272,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 2244,
+      "score": 0.797714,
+      "seasons": 14,
+      "weight": 3.0431,
+      "bestPercentile": 0.999484,
+      "latestPercentile": 0.999484,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 13930,
+      "score": 0.797709,
+      "seasons": 17,
+      "weight": 3.0873,
+      "bestPercentile": 0.999994,
+      "latestPercentile": 0.999506,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 23308,
+      "score": 0.797665,
+      "seasons": 20,
+      "weight": 3.1083,
+      "bestPercentile": 0.999962,
+      "latestPercentile": 0.999191,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 26575,
+      "score": 0.797656,
+      "seasons": 18,
+      "weight": 3.0961,
+      "bestPercentile": 0.999957,
+      "latestPercentile": 0.975561,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 9614,
+      "score": 0.797653,
+      "seasons": 19,
+      "weight": 3.1015,
+      "bestPercentile": 0.999984,
+      "latestPercentile": 0.992695,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 517589,
+      "score": 0.797586,
+      "seasons": 19,
+      "weight": 3.103,
+      "bestPercentile": 0.999077,
+      "latestPercentile": 0.995143,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 1223027,
+      "score": 0.797479,
+      "seasons": 19,
+      "weight": 3.103,
+      "bestPercentile": 0.999751,
+      "latestPercentile": 0.996613,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 12548,
+      "score": 0.797458,
+      "seasons": 19,
+      "weight": 3.103,
+      "bestPercentile": 0.999931,
+      "latestPercentile": 0.994147,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 265475,
+      "score": 0.797435,
+      "seasons": 13,
+      "weight": 3.0194,
+      "bestPercentile": 0.999812,
+      "latestPercentile": 0.999771,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 11349,
+      "score": 0.797382,
+      "seasons": 18,
+      "weight": 3.0961,
+      "bestPercentile": 0.999926,
+      "latestPercentile": 0.987739,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 22069,
+      "score": 0.79737,
+      "seasons": 14,
+      "weight": 3.0431,
+      "bestPercentile": 0.999354,
+      "latestPercentile": 0.999354,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 4156,
+      "score": 0.797345,
+      "seasons": 12,
+      "weight": 2.989,
+      "bestPercentile": 0.999979,
+      "latestPercentile": 0.997987,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 19222,
+      "score": 0.797328,
+      "seasons": 14,
+      "weight": 3.0431,
+      "bestPercentile": 0.999968,
+      "latestPercentile": 0.993852,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 5250,
+      "score": 0.797264,
+      "seasons": 20,
+      "weight": 3.1083,
+      "bestPercentile": 0.999514,
+      "latestPercentile": 0.984278,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 94333,
+      "score": 0.797228,
+      "seasons": 14,
+      "weight": 3.0431,
+      "bestPercentile": 0.999835,
+      "latestPercentile": 0.996717,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 82335,
+      "score": 0.797227,
+      "seasons": 14,
+      "weight": 3.0431,
+      "bestPercentile": 0.999943,
+      "latestPercentile": 0.992295,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 1032470,
+      "score": 0.797137,
+      "seasons": 17,
+      "weight": 3.0817,
+      "bestPercentile": 0.999974,
+      "latestPercentile": 0.999866,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 1619702,
+      "score": 0.797127,
+      "seasons": 20,
+      "weight": 3.1083,
+      "bestPercentile": 0.999897,
+      "latestPercentile": 0.999897,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 1380,
+      "score": 0.797112,
+      "seasons": 17,
+      "weight": 3.0873,
+      "bestPercentile": 0.999781,
+      "latestPercentile": 0.996252,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 12822,
+      "score": 0.796963,
+      "seasons": 14,
+      "weight": 3.0431,
+      "bestPercentile": 0.999681,
+      "latestPercentile": 0.998103,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 9279,
+      "score": 0.796939,
+      "seasons": 20,
+      "weight": 3.1083,
+      "bestPercentile": 0.999563,
+      "latestPercentile": 0.98933,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 2045568,
+      "score": 0.796931,
+      "seasons": 20,
+      "weight": 3.1083,
+      "bestPercentile": 0.999496,
+      "latestPercentile": 0.990071,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 488958,
+      "score": 0.796894,
+      "seasons": 20,
+      "weight": 3.1083,
+      "bestPercentile": 0.999972,
+      "latestPercentile": 0.992253,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 134817,
+      "score": 0.796858,
+      "seasons": 16,
+      "weight": 3.0761,
+      "bestPercentile": 0.999987,
+      "latestPercentile": 0.997685,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 8980,
+      "score": 0.796779,
+      "seasons": 15,
+      "weight": 3.0616,
+      "bestPercentile": 0.999946,
+      "latestPercentile": 0.981157,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 39324,
+      "score": 0.796771,
+      "seasons": 12,
+      "weight": 2.989,
+      "bestPercentile": 0.999656,
+      "latestPercentile": 0.998512,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 339434,
+      "score": 0.796765,
+      "seasons": 18,
+      "weight": 3.0826,
+      "bestPercentile": 0.99995,
+      "latestPercentile": 0.999375,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 2796,
+      "score": 0.796638,
+      "seasons": 17,
+      "weight": 3.0873,
+      "bestPercentile": 0.999851,
+      "latestPercentile": 0.989597,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 63316,
+      "score": 0.796624,
+      "seasons": 14,
+      "weight": 3.0431,
+      "bestPercentile": 0.999273,
+      "latestPercentile": 0.99629,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 331886,
+      "score": 0.796609,
+      "seasons": 16,
+      "weight": 3.0761,
+      "bestPercentile": 0.999584,
+      "latestPercentile": 0.999448,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 564,
+      "score": 0.796605,
+      "seasons": 15,
+      "weight": 3.0616,
+      "bestPercentile": 0.999797,
+      "latestPercentile": 0.994303,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 7328,
+      "score": 0.796599,
+      "seasons": 16,
+      "weight": 3.0761,
+      "bestPercentile": 0.999557,
+      "latestPercentile": 0.999442,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 137378,
+      "score": 0.79656,
+      "seasons": 12,
+      "weight": 2.989,
+      "bestPercentile": 0.999965,
+      "latestPercentile": 0.999512,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 6098,
+      "score": 0.796526,
+      "seasons": 15,
+      "weight": 3.0544,
+      "bestPercentile": 0.999966,
+      "latestPercentile": 0.999641,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 82,
+      "score": 0.796505,
+      "seasons": 13,
+      "weight": 3.0194,
+      "bestPercentile": 0.999933,
+      "latestPercentile": 0.997117,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 1979,
+      "score": 0.796412,
+      "seasons": 16,
+      "weight": 3.0729,
+      "bestPercentile": 0.99962,
+      "latestPercentile": 0.985871,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 82578,
+      "score": 0.796407,
+      "seasons": 17,
+      "weight": 3.0873,
+      "bestPercentile": 0.999997,
+      "latestPercentile": 0.999997,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 471088,
+      "score": 0.79639,
+      "seasons": 13,
+      "weight": 3.0194,
+      "bestPercentile": 0.999836,
+      "latestPercentile": 0.999687,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 12322,
+      "score": 0.796365,
+      "seasons": 15,
+      "weight": 3.0616,
+      "bestPercentile": 0.999717,
+      "latestPercentile": 0.999515,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 6050,
+      "score": 0.796363,
+      "seasons": 14,
+      "weight": 3.0431,
+      "bestPercentile": 0.99997,
+      "latestPercentile": 0.992801,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 295788,
+      "score": 0.796363,
+      "seasons": 13,
+      "weight": 3.0194,
+      "bestPercentile": 0.999931,
+      "latestPercentile": 0.9873,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 5656,
+      "score": 0.796344,
+      "seasons": 20,
+      "weight": 3.1083,
+      "bestPercentile": 0.999748,
+      "latestPercentile": 0.999633,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 19968,
+      "score": 0.796297,
+      "seasons": 15,
+      "weight": 3.0616,
+      "bestPercentile": 0.999615,
+      "latestPercentile": 0.999599,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 198158,
+      "score": 0.796252,
+      "seasons": 16,
+      "weight": 3.0761,
+      "bestPercentile": 0.999614,
+      "latestPercentile": 0.999413,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 5531,
+      "score": 0.796251,
+      "seasons": 13,
+      "weight": 3.0194,
+      "bestPercentile": 0.999837,
+      "latestPercentile": 0.987669,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 1265,
+      "score": 0.796235,
+      "seasons": 14,
+      "weight": 3.0431,
+      "bestPercentile": 0.999837,
+      "latestPercentile": 0.999272,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 8203,
+      "score": 0.796209,
+      "seasons": 20,
+      "weight": 3.1083,
+      "bestPercentile": 0.999954,
+      "latestPercentile": 0.999954,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 2057873,
+      "score": 0.796066,
+      "seasons": 18,
+      "weight": 3.0961,
+      "bestPercentile": 0.999632,
+      "latestPercentile": 0.972618,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 13758,
+      "score": 0.796057,
+      "seasons": 19,
+      "weight": 3.0995,
+      "bestPercentile": 0.999982,
+      "latestPercentile": 0.997609,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 2005247,
+      "score": 0.795995,
+      "seasons": 19,
+      "weight": 3.103,
+      "bestPercentile": 0.999994,
+      "latestPercentile": 0.99753,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 3781,
+      "score": 0.795918,
+      "seasons": 14,
+      "weight": 3.0431,
+      "bestPercentile": 0.999916,
+      "latestPercentile": 0.999518,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 706408,
+      "score": 0.79591,
+      "seasons": 20,
+      "weight": 3.1083,
+      "bestPercentile": 0.999866,
+      "latestPercentile": 0.999625,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 515289,
+      "score": 0.795891,
+      "seasons": 15,
+      "weight": 3.0616,
+      "bestPercentile": 0.999785,
+      "latestPercentile": 0.999389,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 21792,
+      "score": 0.795876,
+      "seasons": 18,
+      "weight": 3.0961,
+      "bestPercentile": 0.999893,
+      "latestPercentile": 0.988584,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 91160,
+      "score": 0.795844,
+      "seasons": 19,
+      "weight": 3.103,
+      "bestPercentile": 0.999711,
+      "latestPercentile": 0.995691,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 66261,
+      "score": 0.795836,
+      "seasons": 20,
+      "weight": 3.1083,
+      "bestPercentile": 0.999479,
+      "latestPercentile": 0.982719,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 12885,
+      "score": 0.795829,
+      "seasons": 20,
+      "weight": 3.1083,
+      "bestPercentile": 0.999877,
+      "latestPercentile": 0.968827,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 307296,
+      "score": 0.795825,
+      "seasons": 17,
+      "weight": 3.0724,
+      "bestPercentile": 0.999707,
+      "latestPercentile": 0.992737,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 276048,
+      "score": 0.795824,
+      "seasons": 18,
+      "weight": 3.0961,
+      "bestPercentile": 0.999915,
+      "latestPercentile": 0.97353,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 1428,
+      "score": 0.795792,
+      "seasons": 15,
+      "weight": 3.0616,
+      "bestPercentile": 0.999777,
+      "latestPercentile": 0.999549,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 2042268,
+      "score": 0.795756,
+      "seasons": 19,
+      "weight": 3.103,
+      "bestPercentile": 0.999577,
+      "latestPercentile": 0.999478,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 223898,
+      "score": 0.795744,
+      "seasons": 17,
+      "weight": 3.0873,
+      "bestPercentile": 0.999991,
+      "latestPercentile": 0.988103,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 130,
+      "score": 0.795713,
+      "seasons": 20,
+      "weight": 3.1083,
+      "bestPercentile": 0.999916,
+      "latestPercentile": 0.998359,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 1865755,
+      "score": 0.795674,
+      "seasons": 20,
+      "weight": 3.1083,
+      "bestPercentile": 0.999992,
+      "latestPercentile": 0.991632,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 15549,
+      "score": 0.795652,
+      "seasons": 13,
+      "weight": 3.0194,
+      "bestPercentile": 0.999945,
+      "latestPercentile": 0.987876,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 1001885,
+      "score": 0.795635,
+      "seasons": 14,
+      "weight": 3.0431,
+      "bestPercentile": 0.999764,
+      "latestPercentile": 0.999764,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 45340,
+      "score": 0.795607,
+      "seasons": 15,
+      "weight": 3.0616,
+      "bestPercentile": 0.999598,
+      "latestPercentile": 0.993687,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 95876,
+      "score": 0.795541,
+      "seasons": 15,
+      "weight": 3.0616,
+      "bestPercentile": 0.999769,
+      "latestPercentile": 0.98076,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 68189,
+      "score": 0.795532,
+      "seasons": 16,
+      "weight": 3.0761,
+      "bestPercentile": 0.999657,
+      "latestPercentile": 0.996269,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 72703,
+      "score": 0.795526,
+      "seasons": 13,
+      "weight": 3.0194,
+      "bestPercentile": 0.999406,
+      "latestPercentile": 0.999406,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 138098,
+      "score": 0.795391,
+      "seasons": 19,
+      "weight": 3.103,
+      "bestPercentile": 0.999876,
+      "latestPercentile": 0.995143,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 196231,
+      "score": 0.795373,
+      "seasons": 16,
+      "weight": 3.0761,
+      "bestPercentile": 0.999829,
+      "latestPercentile": 0.98057,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 143148,
+      "score": 0.79535,
+      "seasons": 17,
+      "weight": 3.0873,
+      "bestPercentile": 0.999988,
+      "latestPercentile": 0.979613,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 449246,
+      "score": 0.795283,
+      "seasons": 14,
+      "weight": 3.0431,
+      "bestPercentile": 0.999941,
+      "latestPercentile": 0.991355,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 1572,
+      "score": 0.79527,
+      "seasons": 19,
+      "weight": 3.103,
+      "bestPercentile": 0.999704,
+      "latestPercentile": 0.981157,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 51673,
+      "score": 0.79526,
+      "seasons": 17,
+      "weight": 3.0873,
+      "bestPercentile": 0.999887,
+      "latestPercentile": 0.999887,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 23724,
+      "score": 0.79522,
+      "seasons": 15,
+      "weight": 3.0616,
+      "bestPercentile": 0.999888,
+      "latestPercentile": 0.996194,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 833,
+      "score": 0.795203,
+      "seasons": 18,
+      "weight": 3.0961,
+      "bestPercentile": 0.999588,
+      "latestPercentile": 0.976212,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 72301,
+      "score": 0.795139,
+      "seasons": 12,
+      "weight": 2.989,
+      "bestPercentile": 0.999793,
+      "latestPercentile": 0.993852,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 6155,
+      "score": 0.795124,
+      "seasons": 19,
+      "weight": 3.103,
+      "bestPercentile": 0.999452,
+      "latestPercentile": 0.999292,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 1519295,
+      "score": 0.795016,
+      "seasons": 10,
+      "weight": 2.8999,
+      "bestPercentile": 0.999874,
+      "latestPercentile": 0.999152,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 590366,
+      "score": 0.794866,
+      "seasons": 19,
+      "weight": 3.103,
+      "bestPercentile": 0.999801,
+      "latestPercentile": 0.972466,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 193698,
+      "score": 0.794856,
+      "seasons": 20,
+      "weight": 3.1083,
+      "bestPercentile": 0.999307,
+      "latestPercentile": 0.999307,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 55016,
+      "score": 0.794839,
+      "seasons": 19,
+      "weight": 3.103,
+      "bestPercentile": 0.999925,
+      "latestPercentile": 0.969018,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 88810,
+      "score": 0.794829,
+      "seasons": 13,
+      "weight": 3.0194,
+      "bestPercentile": 0.999838,
+      "latestPercentile": 0.999838,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 806,
+      "score": 0.794811,
+      "seasons": 11,
+      "weight": 2.9499,
+      "bestPercentile": 0.999982,
+      "latestPercentile": 0.999263,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 35632,
+      "score": 0.794799,
+      "seasons": 17,
+      "weight": 3.0873,
+      "bestPercentile": 0.999877,
+      "latestPercentile": 0.993287,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 1850682,
+      "score": 0.794735,
+      "seasons": 17,
+      "weight": 3.0873,
+      "bestPercentile": 0.99965,
+      "latestPercentile": 0.99965,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 148329,
+      "score": 0.794698,
+      "seasons": 16,
+      "weight": 3.0761,
+      "bestPercentile": 0.999225,
+      "latestPercentile": 0.984398,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 46827,
+      "score": 0.794689,
+      "seasons": 13,
+      "weight": 3.0194,
+      "bestPercentile": 0.999996,
+      "latestPercentile": 0.999159,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 290680,
+      "score": 0.794663,
+      "seasons": 12,
+      "weight": 2.989,
+      "bestPercentile": 0.999893,
+      "latestPercentile": 0.999232,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 53571,
+      "score": 0.794649,
+      "seasons": 20,
+      "weight": 3.1083,
+      "bestPercentile": 0.999731,
+      "latestPercentile": 0.999731,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 384383,
+      "score": 0.794635,
+      "seasons": 14,
+      "weight": 3.0312,
+      "bestPercentile": 0.999839,
+      "latestPercentile": 0.999522,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 103403,
+      "score": 0.794578,
+      "seasons": 13,
+      "weight": 3.0194,
+      "bestPercentile": 0.999554,
+      "latestPercentile": 0.999554,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 468717,
+      "score": 0.794561,
+      "seasons": 11,
+      "weight": 2.9499,
+      "bestPercentile": 0.999866,
+      "latestPercentile": 0.999442,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 340240,
+      "score": 0.794548,
+      "seasons": 17,
+      "weight": 3.0873,
+      "bestPercentile": 0.999983,
+      "latestPercentile": 0.981749,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 3236,
+      "score": 0.794547,
+      "seasons": 16,
+      "weight": 3.0761,
+      "bestPercentile": 0.999882,
+      "latestPercentile": 0.982192,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 246146,
+      "score": 0.794535,
+      "seasons": 14,
+      "weight": 3.0431,
+      "bestPercentile": 0.999792,
+      "latestPercentile": 0.995691,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 19397,
+      "score": 0.794504,
+      "seasons": 19,
+      "weight": 3.103,
+      "bestPercentile": 0.999401,
+      "latestPercentile": 0.979934,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 2421,
+      "score": 0.794504,
+      "seasons": 10,
+      "weight": 2.8999,
+      "bestPercentile": 0.999797,
+      "latestPercentile": 0.999797,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 2285187,
+      "score": 0.794496,
+      "seasons": 17,
+      "weight": 3.0873,
+      "bestPercentile": 0.999782,
+      "latestPercentile": 0.985465,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 173078,
+      "score": 0.794442,
+      "seasons": 11,
+      "weight": 2.9499,
+      "bestPercentile": 0.999879,
+      "latestPercentile": 0.997818,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 25188,
+      "score": 0.794431,
+      "seasons": 19,
+      "weight": 3.103,
+      "bestPercentile": 0.999945,
+      "latestPercentile": 0.974221,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 613029,
+      "score": 0.794421,
+      "seasons": 18,
+      "weight": 3.0725,
+      "bestPercentile": 0.999492,
+      "latestPercentile": 0.998895,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 2052262,
+      "score": 0.794412,
+      "seasons": 11,
+      "weight": 2.9499,
+      "bestPercentile": 0.999687,
+      "latestPercentile": 0.999687,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 12377,
+      "score": 0.794363,
+      "seasons": 20,
+      "weight": 3.1083,
+      "bestPercentile": 0.999859,
+      "latestPercentile": 0.969759,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 7408,
+      "score": 0.79436,
+      "seasons": 14,
+      "weight": 3.0431,
+      "bestPercentile": 0.999574,
+      "latestPercentile": 0.999574,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 31534,
+      "score": 0.794312,
+      "seasons": 13,
+      "weight": 3.0194,
+      "bestPercentile": 0.999952,
+      "latestPercentile": 0.992341,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 248527,
+      "score": 0.794283,
+      "seasons": 14,
+      "weight": 3.0431,
+      "bestPercentile": 0.999458,
+      "latestPercentile": 0.996314,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 84100,
+      "score": 0.794248,
+      "seasons": 13,
+      "weight": 3.0194,
+      "bestPercentile": 0.999671,
+      "latestPercentile": 0.999279,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 32558,
+      "score": 0.794235,
+      "seasons": 20,
+      "weight": 3.1083,
+      "bestPercentile": 0.99992,
+      "latestPercentile": 0.999424,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 23754,
+      "score": 0.794225,
+      "seasons": 17,
+      "weight": 3.0873,
+      "bestPercentile": 0.999549,
+      "latestPercentile": 0.999549,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 24077,
+      "score": 0.794203,
+      "seasons": 15,
+      "weight": 3.0616,
+      "bestPercentile": 0.999912,
+      "latestPercentile": 0.999379,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 61983,
+      "score": 0.794147,
+      "seasons": 15,
+      "weight": 2.9939,
+      "bestPercentile": 0.99995,
+      "latestPercentile": 0.996132,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 171518,
+      "score": 0.794143,
+      "seasons": 11,
+      "weight": 2.9499,
+      "bestPercentile": 0.999984,
+      "latestPercentile": 0.999533,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 150266,
+      "score": 0.79413,
+      "seasons": 12,
+      "weight": 2.989,
+      "bestPercentile": 0.999837,
+      "latestPercentile": 0.99934,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 1831123,
+      "score": 0.794111,
+      "seasons": 18,
+      "weight": 3.0961,
+      "bestPercentile": 0.999625,
+      "latestPercentile": 0.982266,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 62762,
+      "score": 0.794072,
+      "seasons": 15,
+      "weight": 3.0616,
+      "bestPercentile": 0.999946,
+      "latestPercentile": 0.998978,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 485455,
+      "score": 0.794061,
+      "seasons": 10,
+      "weight": 2.8999,
+      "bestPercentile": 0.999926,
+      "latestPercentile": 0.999926,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 3382,
+      "score": 0.794054,
+      "seasons": 19,
+      "weight": 3.0995,
+      "bestPercentile": 0.999788,
+      "latestPercentile": 0.99563,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 12212,
+      "score": 0.794048,
+      "seasons": 20,
+      "weight": 3.1083,
+      "bestPercentile": 0.999601,
+      "latestPercentile": 0.99927,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 616,
+      "score": 0.794001,
+      "seasons": 15,
+      "weight": 3.0616,
+      "bestPercentile": 0.999998,
+      "latestPercentile": 0.999976,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 169982,
+      "score": 0.793985,
+      "seasons": 13,
+      "weight": 3.0127,
+      "bestPercentile": 0.999359,
+      "latestPercentile": 0.995008,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 45277,
+      "score": 0.793948,
+      "seasons": 18,
+      "weight": 3.0902,
+      "bestPercentile": 0.999905,
+      "latestPercentile": 0.998356,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 151694,
+      "score": 0.793926,
+      "seasons": 19,
+      "weight": 3.103,
+      "bestPercentile": 0.999998,
+      "latestPercentile": 0.999304,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 91725,
+      "score": 0.793911,
+      "seasons": 18,
+      "weight": 3.0961,
+      "bestPercentile": 0.99984,
+      "latestPercentile": 0.99984,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 1540613,
+      "score": 0.793909,
+      "seasons": 13,
+      "weight": 3.0194,
+      "bestPercentile": 0.999944,
+      "latestPercentile": 0.998414,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 13178,
+      "score": 0.793854,
+      "seasons": 13,
+      "weight": 3.0194,
+      "bestPercentile": 0.999531,
+      "latestPercentile": 0.979946,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 25221,
+      "score": 0.793841,
+      "seasons": 20,
+      "weight": 3.1083,
+      "bestPercentile": 0.999623,
+      "latestPercentile": 0.992272,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 6661,
+      "score": 0.793825,
+      "seasons": 20,
+      "weight": 3.1083,
+      "bestPercentile": 0.999394,
+      "latestPercentile": 0.999394,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 19797,
+      "score": 0.793808,
+      "seasons": 12,
+      "weight": 2.989,
+      "bestPercentile": 0.999994,
+      "latestPercentile": 0.999909,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 466879,
+      "score": 0.79365,
+      "seasons": 20,
+      "weight": 3.1083,
+      "bestPercentile": 0.999844,
+      "latestPercentile": 0.984595,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 142389,
+      "score": 0.793643,
+      "seasons": 10,
+      "weight": 2.8999,
+      "bestPercentile": 0.999836,
+      "latestPercentile": 0.996595,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 34413,
+      "score": 0.793594,
+      "seasons": 11,
+      "weight": 2.9499,
+      "bestPercentile": 0.999789,
+      "latestPercentile": 0.989166,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 1124339,
+      "score": 0.793589,
+      "seasons": 14,
+      "weight": 3.0431,
+      "bestPercentile": 0.999995,
+      "latestPercentile": 0.997206,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 3403,
+      "score": 0.793473,
+      "seasons": 15,
+      "weight": 3.0616,
+      "bestPercentile": 0.999834,
+      "latestPercentile": 0.999834,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 666724,
+      "score": 0.793455,
+      "seasons": 17,
+      "weight": 3.0873,
+      "bestPercentile": 0.999805,
+      "latestPercentile": 0.970728,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 26748,
+      "score": 0.793453,
+      "seasons": 13,
+      "weight": 3.0034,
+      "bestPercentile": 0.999347,
+      "latestPercentile": 0.999314,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 267,
+      "score": 0.793393,
+      "seasons": 14,
+      "weight": 3.0431,
+      "bestPercentile": 0.999787,
+      "latestPercentile": 0.986124,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 837555,
+      "score": 0.793323,
+      "seasons": 19,
+      "weight": 3.103,
+      "bestPercentile": 0.999799,
+      "latestPercentile": 0.983924,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 102597,
+      "score": 0.793136,
+      "seasons": 15,
+      "weight": 3.0616,
+      "bestPercentile": 0.999557,
+      "latestPercentile": 0.995818,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 382287,
+      "score": 0.793133,
+      "seasons": 13,
+      "weight": 3.0194,
+      "bestPercentile": 0.999644,
+      "latestPercentile": 0.998487,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 25449,
+      "score": 0.793125,
+      "seasons": 14,
+      "weight": 3.0431,
+      "bestPercentile": 0.99957,
+      "latestPercentile": 0.982719,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 44147,
+      "score": 0.793123,
+      "seasons": 16,
+      "weight": 3.0761,
+      "bestPercentile": 0.999807,
+      "latestPercentile": 0.995008,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 9797,
+      "score": 0.793109,
+      "seasons": 15,
+      "weight": 3.0616,
+      "bestPercentile": 0.999834,
+      "latestPercentile": 0.985002,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 32015,
+      "score": 0.793073,
+      "seasons": 12,
+      "weight": 2.9804,
+      "bestPercentile": 0.999436,
+      "latestPercentile": 0.999436,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 805,
+      "score": 0.793069,
+      "seasons": 19,
+      "weight": 3.103,
+      "bestPercentile": 0.999999,
+      "latestPercentile": 0.996013,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 359009,
+      "score": 0.793065,
+      "seasons": 13,
+      "weight": 3.0075,
+      "bestPercentile": 0.999506,
+      "latestPercentile": 0.9992,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 26331,
+      "score": 0.793031,
+      "seasons": 11,
+      "weight": 2.9499,
+      "bestPercentile": 0.999874,
+      "latestPercentile": 0.989792,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 141,
+      "score": 0.793017,
+      "seasons": 10,
+      "weight": 2.8999,
+      "bestPercentile": 0.999959,
+      "latestPercentile": 0.994455,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 21390,
+      "score": 0.792892,
+      "seasons": 20,
+      "weight": 3.1083,
+      "bestPercentile": 0.999751,
+      "latestPercentile": 0.960402,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 564882,
+      "score": 0.792878,
+      "seasons": 12,
+      "weight": 2.989,
+      "bestPercentile": 0.999352,
+      "latestPercentile": 0.994147,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 42,
+      "score": 0.792874,
+      "seasons": 20,
+      "weight": 3.1083,
+      "bestPercentile": 0.999694,
+      "latestPercentile": 0.995916,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 2007532,
+      "score": 0.792848,
+      "seasons": 10,
+      "weight": 2.8999,
+      "bestPercentile": 0.999893,
+      "latestPercentile": 0.99868,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 352996,
+      "score": 0.792847,
+      "seasons": 15,
+      "weight": 3.0616,
+      "bestPercentile": 0.999775,
+      "latestPercentile": 0.994331,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 1854640,
+      "score": 0.792836,
+      "seasons": 20,
+      "weight": 3.1083,
+      "bestPercentile": 0.999627,
+      "latestPercentile": 0.992988,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 208543,
+      "score": 0.792826,
+      "seasons": 11,
+      "weight": 2.9499,
+      "bestPercentile": 0.999383,
+      "latestPercentile": 0.994331,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 1531224,
+      "score": 0.792797,
+      "seasons": 13,
+      "weight": 3.0194,
+      "bestPercentile": 0.999442,
+      "latestPercentile": 0.995916,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 25598,
+      "score": 0.79279,
+      "seasons": 18,
+      "weight": 3.0885,
+      "bestPercentile": 0.999581,
+      "latestPercentile": 0.993852,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 47973,
+      "score": 0.792786,
+      "seasons": 18,
+      "weight": 3.0961,
+      "bestPercentile": 0.999768,
+      "latestPercentile": 0.960351,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 369356,
+      "score": 0.792759,
+      "seasons": 13,
+      "weight": 3.0194,
+      "bestPercentile": 0.999647,
+      "latestPercentile": 0.999647,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 484485,
+      "score": 0.792735,
+      "seasons": 20,
+      "weight": 3.1083,
+      "bestPercentile": 0.99978,
+      "latestPercentile": 0.997958,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 3054,
+      "score": 0.792672,
+      "seasons": 10,
+      "weight": 2.8999,
+      "bestPercentile": 0.999954,
+      "latestPercentile": 0.997941,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 76787,
+      "score": 0.792669,
+      "seasons": 20,
+      "weight": 3.1083,
+      "bestPercentile": 0.99954,
+      "latestPercentile": 0.999232,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 1766498,
+      "score": 0.792642,
+      "seasons": 20,
+      "weight": 3.1083,
+      "bestPercentile": 0.999793,
+      "latestPercentile": 0.999298,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 125263,
+      "score": 0.792526,
+      "seasons": 15,
+      "weight": 3.0523,
+      "bestPercentile": 0.999661,
+      "latestPercentile": 0.991355,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 89926,
+      "score": 0.792503,
+      "seasons": 13,
+      "weight": 3.0194,
+      "bestPercentile": 0.999461,
+      "latestPercentile": 0.992988,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 1165900,
+      "score": 0.792472,
+      "seasons": 16,
+      "weight": 3.0761,
+      "bestPercentile": 0.999757,
+      "latestPercentile": 0.99184,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 111567,
+      "score": 0.792461,
+      "seasons": 14,
+      "weight": 3.0219,
+      "bestPercentile": 0.999512,
+      "latestPercentile": 0.999512,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 13834,
+      "score": 0.79241,
+      "seasons": 12,
+      "weight": 2.989,
+      "bestPercentile": 0.999795,
+      "latestPercentile": 0.982224,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 743355,
+      "score": 0.792408,
+      "seasons": 20,
+      "weight": 3.1083,
+      "bestPercentile": 0.999786,
+      "latestPercentile": 0.999786,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 11490,
+      "score": 0.792397,
+      "seasons": 12,
+      "weight": 2.989,
+      "bestPercentile": 0.999999,
+      "latestPercentile": 0.998906,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 214755,
+      "score": 0.792386,
+      "seasons": 15,
+      "weight": 3.0616,
+      "bestPercentile": 0.999829,
+      "latestPercentile": 0.992106,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 1779292,
+      "score": 0.792378,
+      "seasons": 12,
+      "weight": 2.989,
+      "bestPercentile": 0.999389,
+      "latestPercentile": 0.997206,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 2306378,
+      "score": 0.792363,
+      "seasons": 13,
+      "weight": 3.0194,
+      "bestPercentile": 0.999737,
+      "latestPercentile": 0.995303,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 1117078,
+      "score": 0.792356,
+      "seasons": 17,
+      "weight": 3.0873,
+      "bestPercentile": 0.999209,
+      "latestPercentile": 0.974929,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 77750,
+      "score": 0.792343,
+      "seasons": 9,
+      "weight": 2.8358,
+      "bestPercentile": 0.999959,
+      "latestPercentile": 0.999321,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 1982627,
+      "score": 0.792309,
+      "seasons": 13,
+      "weight": 3.0194,
+      "bestPercentile": 0.999394,
+      "latestPercentile": 0.983599,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 321139,
+      "score": 0.792287,
+      "seasons": 13,
+      "weight": 3.0194,
+      "bestPercentile": 0.999987,
+      "latestPercentile": 0.995463,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 598415,
+      "score": 0.79221,
+      "seasons": 10,
+      "weight": 2.8999,
+      "bestPercentile": 0.999352,
+      "latestPercentile": 0.996194,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 17602,
+      "score": 0.792111,
+      "seasons": 11,
+      "weight": 2.9499,
+      "bestPercentile": 0.999978,
+      "latestPercentile": 0.991928,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 282161,
+      "score": 0.792069,
+      "seasons": 12,
+      "weight": 2.989,
+      "bestPercentile": 0.999439,
+      "latestPercentile": 0.993108,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 588030,
+      "score": 0.792064,
+      "seasons": 19,
+      "weight": 3.103,
+      "bestPercentile": 0.999998,
+      "latestPercentile": 0.980594,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 5474,
+      "score": 0.792028,
+      "seasons": 15,
+      "weight": 3.0616,
+      "bestPercentile": 0.999174,
+      "latestPercentile": 0.996839,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 1844609,
+      "score": 0.792025,
+      "seasons": 16,
+      "weight": 3.0761,
+      "bestPercentile": 0.99962,
+      "latestPercentile": 0.98715,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 56056,
+      "score": 0.792024,
+      "seasons": 10,
+      "weight": 2.8999,
+      "bestPercentile": 0.999561,
+      "latestPercentile": 0.999498,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 90801,
+      "score": 0.792006,
+      "seasons": 12,
+      "weight": 2.989,
+      "bestPercentile": 0.999909,
+      "latestPercentile": 0.975561,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 1201,
+      "score": 0.791992,
+      "seasons": 20,
+      "weight": 3.1083,
+      "bestPercentile": 0.999708,
+      "latestPercentile": 0.99934,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 39296,
+      "score": 0.791864,
+      "seasons": 18,
+      "weight": 3.0961,
+      "bestPercentile": 0.999971,
+      "latestPercentile": 0.991438,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 710873,
+      "score": 0.79183,
+      "seasons": 15,
+      "weight": 3.0616,
+      "bestPercentile": 0.999888,
+      "latestPercentile": 0.999331,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 51697,
+      "score": 0.791805,
+      "seasons": 12,
+      "weight": 2.989,
+      "bestPercentile": 0.999751,
+      "latestPercentile": 0.981659,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 61111,
+      "score": 0.791787,
+      "seasons": 10,
+      "weight": 2.8999,
+      "bestPercentile": 0.999942,
+      "latestPercentile": 0.999942,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 258001,
+      "score": 0.791766,
+      "seasons": 19,
+      "weight": 3.103,
+      "bestPercentile": 0.999658,
+      "latestPercentile": 0.999658,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 9875,
+      "score": 0.791712,
+      "seasons": 15,
+      "weight": 3.0616,
+      "bestPercentile": 0.999227,
+      "latestPercentile": 0.985315,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 57515,
+      "score": 0.791695,
+      "seasons": 12,
+      "weight": 2.989,
+      "bestPercentile": 0.999643,
+      "latestPercentile": 0.987835,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 227336,
+      "score": 0.791498,
+      "seasons": 18,
+      "weight": 3.0961,
+      "bestPercentile": 0.999424,
+      "latestPercentile": 0.999424,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 81099,
+      "score": 0.791486,
+      "seasons": 19,
+      "weight": 3.103,
+      "bestPercentile": 0.999995,
+      "latestPercentile": 0.989302,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 118212,
+      "score": 0.791484,
+      "seasons": 19,
+      "weight": 3.103,
+      "bestPercentile": 0.999708,
+      "latestPercentile": 0.966072,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 112520,
+      "score": 0.791432,
+      "seasons": 19,
+      "weight": 3.103,
+      "bestPercentile": 0.99992,
+      "latestPercentile": 0.974046,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 256430,
+      "score": 0.791424,
+      "seasons": 17,
+      "weight": 3.0814,
+      "bestPercentile": 0.999991,
+      "latestPercentile": 0.98022,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 228212,
+      "score": 0.791388,
+      "seasons": 12,
+      "weight": 2.989,
+      "bestPercentile": 0.999757,
+      "latestPercentile": 0.999191,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 3804,
+      "score": 0.791378,
+      "seasons": 12,
+      "weight": 2.989,
+      "bestPercentile": 0.999821,
+      "latestPercentile": 0.999821,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 612792,
+      "score": 0.791366,
+      "seasons": 11,
+      "weight": 2.9499,
+      "bestPercentile": 0.999932,
+      "latestPercentile": 0.998103,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 2035455,
+      "score": 0.791353,
+      "seasons": 12,
+      "weight": 2.989,
+      "bestPercentile": 0.999887,
+      "latestPercentile": 0.999887,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 2041419,
+      "score": 0.791334,
+      "seasons": 15,
+      "weight": 3.0616,
+      "bestPercentile": 0.999999,
+      "latestPercentile": 0.9779,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 1536058,
+      "score": 0.791259,
+      "seasons": 11,
+      "weight": 2.9499,
+      "bestPercentile": 0.999839,
+      "latestPercentile": 0.998633,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 60046,
+      "score": 0.791219,
+      "seasons": 19,
+      "weight": 3.103,
+      "bestPercentile": 0.999962,
+      "latestPercentile": 0.999758,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 269,
+      "score": 0.791194,
+      "seasons": 15,
+      "weight": 3.0616,
+      "bestPercentile": 0.999815,
+      "latestPercentile": 0.992039,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 8514,
+      "score": 0.791175,
+      "seasons": 17,
+      "weight": 3.0873,
+      "bestPercentile": 0.999848,
+      "latestPercentile": 0.964343,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 15103,
+      "score": 0.791092,
+      "seasons": 12,
+      "weight": 2.989,
+      "bestPercentile": 0.999704,
+      "latestPercentile": 0.985267,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 389943,
+      "score": 0.791089,
+      "seasons": 14,
+      "weight": 3.0431,
+      "bestPercentile": 0.99942,
+      "latestPercentile": 0.971104,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 743943,
+      "score": 0.790937,
+      "seasons": 13,
+      "weight": 3.0194,
+      "bestPercentile": 0.99998,
+      "latestPercentile": 0.99998,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 50342,
+      "score": 0.790937,
+      "seasons": 11,
+      "weight": 2.9499,
+      "bestPercentile": 0.999982,
+      "latestPercentile": 0.999897,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 16087,
+      "score": 0.790904,
+      "seasons": 12,
+      "weight": 2.989,
+      "bestPercentile": 0.999892,
+      "latestPercentile": 0.986087,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 717001,
+      "score": 0.790895,
+      "seasons": 19,
+      "weight": 3.103,
+      "bestPercentile": 0.999562,
+      "latestPercentile": 0.987932,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 679476,
+      "score": 0.790883,
+      "seasons": 14,
+      "weight": 3.0431,
+      "bestPercentile": 0.999936,
+      "latestPercentile": 0.999936,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 175054,
+      "score": 0.790864,
+      "seasons": 12,
+      "weight": 2.989,
+      "bestPercentile": 0.999716,
+      "latestPercentile": 0.993983,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 1694316,
+      "score": 0.790828,
+      "seasons": 18,
+      "weight": 3.0927,
+      "bestPercentile": 0.999763,
+      "latestPercentile": 0.9994,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 12151,
+      "score": 0.790782,
+      "seasons": 12,
+      "weight": 2.989,
+      "bestPercentile": 0.999998,
+      "latestPercentile": 0.999279,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 2742,
+      "score": 0.790774,
+      "seasons": 14,
+      "weight": 3.0431,
+      "bestPercentile": 0.999937,
+      "latestPercentile": 0.961456,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 330541,
+      "score": 0.790761,
+      "seasons": 11,
+      "weight": 2.9499,
+      "bestPercentile": 0.999902,
+      "latestPercentile": 0.978803,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 1529257,
+      "score": 0.79076,
+      "seasons": 10,
+      "weight": 2.8999,
+      "bestPercentile": 0.999764,
+      "latestPercentile": 0.999673,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 530380,
+      "score": 0.790739,
+      "seasons": 18,
+      "weight": 3.0961,
+      "bestPercentile": 0.999831,
+      "latestPercentile": 0.976008,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 55980,
+      "score": 0.790679,
+      "seasons": 9,
+      "weight": 2.8358,
+      "bestPercentile": 0.999847,
+      "latestPercentile": 0.998906,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 2448338,
+      "score": 0.790603,
+      "seasons": 19,
+      "weight": 3.103,
+      "bestPercentile": 0.999773,
+      "latestPercentile": 0.999549,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 25402,
+      "score": 0.7906,
+      "seasons": 18,
+      "weight": 3.0961,
+      "bestPercentile": 0.999549,
+      "latestPercentile": 0.999232,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 742925,
+      "score": 0.790595,
+      "seasons": 19,
+      "weight": 3.0995,
+      "bestPercentile": 0.999739,
+      "latestPercentile": 0.999448,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 183561,
+      "score": 0.790561,
+      "seasons": 13,
+      "weight": 3.0194,
+      "bestPercentile": 0.99997,
+      "latestPercentile": 0.997206,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 632,
+      "score": 0.790548,
+      "seasons": 16,
+      "weight": 3.0761,
+      "bestPercentile": 0.999961,
+      "latestPercentile": 0.993462,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 3098,
+      "score": 0.790545,
+      "seasons": 9,
+      "weight": 2.8358,
+      "bestPercentile": 0.999636,
+      "latestPercentile": 0.996269,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 31839,
+      "score": 0.790533,
+      "seasons": 15,
+      "weight": 3.0616,
+      "bestPercentile": 0.999818,
+      "latestPercentile": 0.999206,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 152507,
+      "score": 0.790512,
+      "seasons": 14,
+      "weight": 2.987,
+      "bestPercentile": 0.999932,
+      "latestPercentile": 0.995691,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 881,
+      "score": 0.790493,
+      "seasons": 19,
+      "weight": 3.103,
+      "bestPercentile": 0.999987,
+      "latestPercentile": 0.999588,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 568178,
+      "score": 0.790447,
+      "seasons": 10,
+      "weight": 2.8999,
+      "bestPercentile": 0.999665,
+      "latestPercentile": 0.99349,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 16414,
+      "score": 0.790444,
+      "seasons": 9,
+      "weight": 2.8358,
+      "bestPercentile": 0.999585,
+      "latestPercentile": 0.997971,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 35453,
+      "score": 0.79044,
+      "seasons": 12,
+      "weight": 2.989,
+      "bestPercentile": 0.999884,
+      "latestPercentile": 0.990665,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 20933,
+      "score": 0.790436,
+      "seasons": 10,
+      "weight": 2.8999,
+      "bestPercentile": 0.999892,
+      "latestPercentile": 0.999285,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 52301,
+      "score": 0.790417,
+      "seasons": 12,
+      "weight": 2.989,
+      "bestPercentile": 0.999935,
+      "latestPercentile": 0.99946,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 1820,
+      "score": 0.790394,
+      "seasons": 13,
+      "weight": 3.0194,
+      "bestPercentile": 0.999379,
+      "latestPercentile": 0.99349,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 6932,
+      "score": 0.790366,
+      "seasons": 16,
+      "weight": 2.9801,
+      "bestPercentile": 0.999891,
+      "latestPercentile": 0.994303,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 56051,
+      "score": 0.790327,
+      "seasons": 14,
+      "weight": 3.0431,
+      "bestPercentile": 0.999894,
+      "latestPercentile": 0.9779,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 389,
+      "score": 0.790323,
+      "seasons": 15,
+      "weight": 3.0616,
+      "bestPercentile": 0.999263,
+      "latestPercentile": 0.999263,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 227051,
+      "score": 0.790292,
+      "seasons": 9,
+      "weight": 2.8358,
+      "bestPercentile": 0.999683,
+      "latestPercentile": 0.99843,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 6306,
+      "score": 0.790288,
+      "seasons": 16,
+      "weight": 3.0761,
+      "bestPercentile": 0.999533,
+      "latestPercentile": 0.999533,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 859357,
+      "score": 0.790278,
+      "seasons": 11,
+      "weight": 2.9499,
+      "bestPercentile": 0.999881,
+      "latestPercentile": 0.999881,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 817560,
+      "score": 0.790277,
+      "seasons": 15,
+      "weight": 3.0616,
+      "bestPercentile": 0.999389,
+      "latestPercentile": 0.999389,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 79464,
+      "score": 0.790274,
+      "seasons": 9,
+      "weight": 2.8358,
+      "bestPercentile": 0.999391,
+      "latestPercentile": 0.998989,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 679388,
+      "score": 0.790266,
+      "seasons": 14,
+      "weight": 3.0431,
+      "bestPercentile": 0.999698,
+      "latestPercentile": 0.993108,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 21541,
+      "score": 0.790228,
+      "seasons": 18,
+      "weight": 3.0942,
+      "bestPercentile": 0.999943,
+      "latestPercentile": 0.999403,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 6778,
+      "score": 0.790211,
+      "seasons": 12,
+      "weight": 2.989,
+      "bestPercentile": 0.999988,
+      "latestPercentile": 0.994482,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 67,
+      "score": 0.790196,
+      "seasons": 13,
+      "weight": 3.0075,
+      "bestPercentile": 0.999816,
+      "latestPercentile": 0.981304,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 1149746,
+      "score": 0.790191,
+      "seasons": 15,
+      "weight": 3.0616,
+      "bestPercentile": 0.999787,
+      "latestPercentile": 0.999375,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 136634,
+      "score": 0.790161,
+      "seasons": 13,
+      "weight": 3.0194,
+      "bestPercentile": 0.999983,
+      "latestPercentile": 0.99599,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 674604,
+      "score": 0.790155,
+      "seasons": 9,
+      "weight": 2.8358,
+      "bestPercentile": 0.999583,
+      "latestPercentile": 0.996383,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 1522,
+      "score": 0.790121,
+      "seasons": 17,
+      "weight": 3.0873,
+      "bestPercentile": 0.999409,
+      "latestPercentile": 0.976575,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 96228,
+      "score": 0.790114,
+      "seasons": 11,
+      "weight": 2.9499,
+      "bestPercentile": 0.999976,
+      "latestPercentile": 0.995545,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 13951,
+      "score": 0.790092,
+      "seasons": 11,
+      "weight": 2.9499,
+      "bestPercentile": 0.999501,
+      "latestPercentile": 0.996383,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 204,
+      "score": 0.790082,
+      "seasons": 16,
+      "weight": 3.0761,
+      "bestPercentile": 0.999512,
+      "latestPercentile": 0.999512,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 271942,
+      "score": 0.790065,
+      "seasons": 20,
+      "weight": 3.1083,
+      "bestPercentile": 0.999391,
+      "latestPercentile": 0.999092,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 226,
+      "score": 0.790042,
+      "seasons": 18,
+      "weight": 3.0902,
+      "bestPercentile": 0.999818,
+      "latestPercentile": 0.999424,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 381580,
+      "score": 0.790023,
+      "seasons": 9,
+      "weight": 2.8358,
+      "bestPercentile": 0.99999,
+      "latestPercentile": 0.999868,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 179892,
+      "score": 0.78996,
+      "seasons": 12,
+      "weight": 2.989,
+      "bestPercentile": 0.999731,
+      "latestPercentile": 0.98335,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 541024,
+      "score": 0.78993,
+      "seasons": 9,
+      "weight": 2.8358,
+      "bestPercentile": 0.99993,
+      "latestPercentile": 0.9919,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 12139,
+      "score": 0.789924,
+      "seasons": 14,
+      "weight": 3.0431,
+      "bestPercentile": 0.999302,
+      "latestPercentile": 0.997393,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 20687,
+      "score": 0.789917,
+      "seasons": 10,
+      "weight": 2.8999,
+      "bestPercentile": 0.999688,
+      "latestPercentile": 0.994411,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 289023,
+      "score": 0.789893,
+      "seasons": 9,
+      "weight": 2.8358,
+      "bestPercentile": 0.999855,
+      "latestPercentile": 0.998821,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 395607,
+      "score": 0.78989,
+      "seasons": 19,
+      "weight": 2.9732,
+      "bestPercentile": 0.99955,
+      "latestPercentile": 0.999498,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 83291,
+      "score": 0.789871,
+      "seasons": 18,
+      "weight": 3.0961,
+      "bestPercentile": 0.999723,
+      "latestPercentile": 0.964034,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 1179358,
+      "score": 0.789854,
+      "seasons": 12,
+      "weight": 2.9804,
+      "bestPercentile": 0.99993,
+      "latestPercentile": 0.999752,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 306872,
+      "score": 0.789851,
+      "seasons": 18,
+      "weight": 3.0961,
+      "bestPercentile": 0.999289,
+      "latestPercentile": 0.977548,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 19167,
+      "score": 0.789845,
+      "seasons": 15,
+      "weight": 3.0616,
+      "bestPercentile": 0.9994,
+      "latestPercentile": 0.9994,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 2442,
+      "score": 0.789819,
+      "seasons": 15,
+      "weight": 3.0616,
+      "bestPercentile": 0.999849,
+      "latestPercentile": 0.99945,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 73667,
+      "score": 0.789695,
+      "seasons": 14,
+      "weight": 3.0116,
+      "bestPercentile": 0.999495,
+      "latestPercentile": 0.999448,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 25176,
+      "score": 0.789649,
+      "seasons": 17,
+      "weight": 3.0873,
+      "bestPercentile": 0.999955,
+      "latestPercentile": 0.999955,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 51096,
+      "score": 0.789626,
+      "seasons": 11,
+      "weight": 2.9499,
+      "bestPercentile": 0.999744,
+      "latestPercentile": 0.999744,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 1061809,
+      "score": 0.789615,
+      "seasons": 17,
+      "weight": 3.0873,
+      "bestPercentile": 0.99978,
+      "latestPercentile": 0.99978,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 339759,
+      "score": 0.789609,
+      "seasons": 10,
+      "weight": 2.8999,
+      "bestPercentile": 0.999983,
+      "latestPercentile": 0.998864,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 2151990,
+      "score": 0.789604,
+      "seasons": 11,
+      "weight": 2.9248,
+      "bestPercentile": 0.999846,
+      "latestPercentile": 0.991562,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 148495,
+      "score": 0.789582,
+      "seasons": 13,
+      "weight": 3.0194,
+      "bestPercentile": 0.99965,
+      "latestPercentile": 0.994705,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 102984,
+      "score": 0.78954,
+      "seasons": 17,
+      "weight": 3.0873,
+      "bestPercentile": 0.999615,
+      "latestPercentile": 0.967299,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 362901,
+      "score": 0.789479,
+      "seasons": 10,
+      "weight": 2.8999,
+      "bestPercentile": 0.999878,
+      "latestPercentile": 0.977605,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 3803,
+      "score": 0.789469,
+      "seasons": 19,
+      "weight": 3.103,
+      "bestPercentile": 0.999966,
+      "latestPercentile": 0.999512,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 2457791,
+      "score": 0.789436,
+      "seasons": 14,
+      "weight": 3.0431,
+      "bestPercentile": 0.999756,
+      "latestPercentile": 0.999613,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 9748,
+      "score": 0.789423,
+      "seasons": 12,
+      "weight": 2.989,
+      "bestPercentile": 0.999875,
+      "latestPercentile": 0.990904,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 65809,
+      "score": 0.789394,
+      "seasons": 13,
+      "weight": 3.0194,
+      "bestPercentile": 0.999695,
+      "latestPercentile": 0.980514,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 20063,
+      "score": 0.789373,
+      "seasons": 13,
+      "weight": 3.0194,
+      "bestPercentile": 0.999812,
+      "latestPercentile": 0.97817,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 8304,
+      "score": 0.789369,
+      "seasons": 16,
+      "weight": 3.0761,
+      "bestPercentile": 0.999862,
+      "latestPercentile": 0.998895,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 70957,
+      "score": 0.789364,
+      "seasons": 20,
+      "weight": 3.1083,
+      "bestPercentile": 0.999881,
+      "latestPercentile": 0.999512,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 168076,
+      "score": 0.789352,
+      "seasons": 14,
+      "weight": 3.0431,
+      "bestPercentile": 0.999746,
+      "latestPercentile": 0.999394,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 122162,
+      "score": 0.789345,
+      "seasons": 14,
+      "weight": 3.0431,
+      "bestPercentile": 0.999942,
+      "latestPercentile": 0.976636,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 1153098,
+      "score": 0.789327,
+      "seasons": 9,
+      "weight": 2.8358,
+      "bestPercentile": 0.99957,
+      "latestPercentile": 0.999055,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 16046,
+      "score": 0.789283,
+      "seasons": 12,
+      "weight": 2.9272,
+      "bestPercentile": 0.999299,
+      "latestPercentile": 0.992862,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 53545,
+      "score": 0.789239,
+      "seasons": 20,
+      "weight": 3.1083,
+      "bestPercentile": 0.999817,
+      "latestPercentile": 0.956839,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 221552,
+      "score": 0.789231,
+      "seasons": 10,
+      "weight": 2.8999,
+      "bestPercentile": 0.999997,
+      "latestPercentile": 0.999935,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 50624,
+      "score": 0.789224,
+      "seasons": 9,
+      "weight": 2.8358,
+      "bestPercentile": 0.99953,
+      "latestPercentile": 0.992255,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 4127,
+      "score": 0.789203,
+      "seasons": 9,
+      "weight": 2.8358,
+      "bestPercentile": 0.999977,
+      "latestPercentile": 0.999821,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 592135,
+      "score": 0.789197,
+      "seasons": 19,
+      "weight": 3.103,
+      "bestPercentile": 0.999949,
+      "latestPercentile": 0.953516,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 1054157,
+      "score": 0.789173,
+      "seasons": 12,
+      "weight": 2.989,
+      "bestPercentile": 0.999917,
+      "latestPercentile": 0.999285,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 530243,
+      "score": 0.789155,
+      "seasons": 12,
+      "weight": 2.989,
+      "bestPercentile": 0.999615,
+      "latestPercentile": 0.992234,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 179777,
+      "score": 0.789123,
+      "seasons": 8,
+      "weight": 2.7536,
+      "bestPercentile": 0.999968,
+      "latestPercentile": 0.999065,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 263,
+      "score": 0.78911,
+      "seasons": 18,
+      "weight": 3.0961,
+      "bestPercentile": 0.999821,
+      "latestPercentile": 0.999821,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 28319,
+      "score": 0.789106,
+      "seasons": 16,
+      "weight": 3.0761,
+      "bestPercentile": 0.999961,
+      "latestPercentile": 0.999708,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 128167,
+      "score": 0.789069,
+      "seasons": 20,
+      "weight": 3.1083,
+      "bestPercentile": 0.999907,
+      "latestPercentile": 0.997879,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 75271,
+      "score": 0.789063,
+      "seasons": 11,
+      "weight": 2.9499,
+      "bestPercentile": 0.999735,
+      "latestPercentile": 0.999358,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 530624,
+      "score": 0.78903,
+      "seasons": 16,
+      "weight": 3.0761,
+      "bestPercentile": 0.999857,
+      "latestPercentile": 0.999857,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 837394,
+      "score": 0.789027,
+      "seasons": 20,
+      "weight": 3.1083,
+      "bestPercentile": 0.999759,
+      "latestPercentile": 0.991002,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 330848,
+      "score": 0.789003,
+      "seasons": 18,
+      "weight": 3.0961,
+      "bestPercentile": 0.999937,
+      "latestPercentile": 0.999516,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 7189,
+      "score": 0.788986,
+      "seasons": 13,
+      "weight": 3.0194,
+      "bestPercentile": 0.999937,
+      "latestPercentile": 0.984055,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 535803,
+      "score": 0.788983,
+      "seasons": 13,
+      "weight": 3.0194,
+      "bestPercentile": 0.999891,
+      "latestPercentile": 0.99935,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 477949,
+      "score": 0.788937,
+      "seasons": 12,
+      "weight": 2.989,
+      "bestPercentile": 0.999477,
+      "latestPercentile": 0.98553,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 3746,
+      "score": 0.788936,
+      "seasons": 20,
+      "weight": 3.1083,
+      "bestPercentile": 0.999412,
+      "latestPercentile": 0.984692,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 764441,
+      "score": 0.788921,
+      "seasons": 12,
+      "weight": 2.9804,
+      "bestPercentile": 0.999839,
+      "latestPercentile": 0.994632,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 183814,
+      "score": 0.788916,
+      "seasons": 18,
+      "weight": 3.0961,
+      "bestPercentile": 0.999683,
+      "latestPercentile": 0.956364,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 300130,
+      "score": 0.788913,
+      "seasons": 10,
+      "weight": 2.8999,
+      "bestPercentile": 0.999859,
+      "latestPercentile": 0.999859,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 212506,
+      "score": 0.788909,
+      "seasons": 10,
+      "weight": 2.8999,
+      "bestPercentile": 0.999582,
+      "latestPercentile": 0.983638,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 1569673,
+      "score": 0.788897,
+      "seasons": 12,
+      "weight": 2.989,
+      "bestPercentile": 0.999778,
+      "latestPercentile": 0.996966,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 20135,
+      "score": 0.788895,
+      "seasons": 12,
+      "weight": 2.989,
+      "bestPercentile": 0.999827,
+      "latestPercentile": 0.996314,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 1743,
+      "score": 0.788835,
+      "seasons": 10,
+      "weight": 2.8999,
+      "bestPercentile": 0.999874,
+      "latestPercentile": 0.986511,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 488854,
+      "score": 0.788743,
+      "seasons": 12,
+      "weight": 2.9804,
+      "bestPercentile": 0.999963,
+      "latestPercentile": 0.999963,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 2322504,
+      "score": 0.788742,
+      "seasons": 18,
+      "weight": 3.0961,
+      "bestPercentile": 0.999793,
+      "latestPercentile": 0.982165,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 40911,
+      "score": 0.788658,
+      "seasons": 12,
+      "weight": 2.989,
+      "bestPercentile": 0.999733,
+      "latestPercentile": 0.999733,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 267148,
+      "score": 0.788648,
+      "seasons": 19,
+      "weight": 3.103,
+      "bestPercentile": 0.999717,
+      "latestPercentile": 0.999717,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 24544,
+      "score": 0.788616,
+      "seasons": 13,
+      "weight": 3.0194,
+      "bestPercentile": 0.99949,
+      "latestPercentile": 0.99949,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 119387,
+      "score": 0.78852,
+      "seasons": 10,
+      "weight": 2.8999,
+      "bestPercentile": 0.999516,
+      "latestPercentile": 0.993358,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 45,
+      "score": 0.788499,
+      "seasons": 12,
+      "weight": 2.989,
+      "bestPercentile": 0.999637,
+      "latestPercentile": 0.976522,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 857063,
+      "score": 0.788456,
+      "seasons": 17,
+      "weight": 3.0873,
+      "bestPercentile": 0.999923,
+      "latestPercentile": 0.983599,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 31696,
+      "score": 0.788418,
+      "seasons": 13,
+      "weight": 3.0194,
+      "bestPercentile": 0.999491,
+      "latestPercentile": 0.980834,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 5210,
+      "score": 0.788416,
+      "seasons": 10,
+      "weight": 2.8999,
+      "bestPercentile": 0.999784,
+      "latestPercentile": 0.997627,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 292518,
+      "score": 0.788415,
+      "seasons": 17,
+      "weight": 3.0873,
+      "bestPercentile": 0.999965,
+      "latestPercentile": 0.999965,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 668719,
+      "score": 0.788398,
+      "seasons": 12,
+      "weight": 2.9685,
+      "bestPercentile": 0.99957,
+      "latestPercentile": 0.971155,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 41023,
+      "score": 0.788296,
+      "seasons": 13,
+      "weight": 3.0194,
+      "bestPercentile": 0.999764,
+      "latestPercentile": 0.999375,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 134552,
+      "score": 0.788288,
+      "seasons": 19,
+      "weight": 3.103,
+      "bestPercentile": 0.999831,
+      "latestPercentile": 0.999653,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 6350,
+      "score": 0.788276,
+      "seasons": 10,
+      "weight": 2.8999,
+      "bestPercentile": 0.999928,
+      "latestPercentile": 0.999871,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 591779,
+      "score": 0.788276,
+      "seasons": 11,
+      "weight": 2.89,
+      "bestPercentile": 0.999881,
+      "latestPercentile": 0.999554,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 915996,
+      "score": 0.788266,
+      "seasons": 18,
+      "weight": 3.0961,
+      "bestPercentile": 0.999934,
+      "latestPercentile": 0.981484,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 1455086,
+      "score": 0.788257,
+      "seasons": 10,
+      "weight": 2.8999,
+      "bestPercentile": 0.999596,
+      "latestPercentile": 0.993519,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 2369305,
+      "score": 0.788255,
+      "seasons": 18,
+      "weight": 3.0792,
+      "bestPercentile": 0.999952,
+      "latestPercentile": 0.999952,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 10757,
+      "score": 0.78825,
+      "seasons": 20,
+      "weight": 3.1083,
+      "bestPercentile": 0.999741,
+      "latestPercentile": 0.999741,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 760977,
+      "score": 0.788214,
+      "seasons": 10,
+      "weight": 2.8999,
+      "bestPercentile": 0.999657,
+      "latestPercentile": 0.994751,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 24549,
+      "score": 0.788185,
+      "seasons": 14,
+      "weight": 3.0431,
+      "bestPercentile": 0.999804,
+      "latestPercentile": 0.999804,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 366270,
+      "score": 0.788129,
+      "seasons": 13,
+      "weight": 3.0194,
+      "bestPercentile": 0.999766,
+      "latestPercentile": 0.993138,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 591345,
+      "score": 0.78812,
+      "seasons": 14,
+      "weight": 3.0431,
+      "bestPercentile": 0.999418,
+      "latestPercentile": 0.999304,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 17333,
+      "score": 0.788091,
+      "seasons": 20,
+      "weight": 3.1083,
+      "bestPercentile": 0.999843,
+      "latestPercentile": 0.999605,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 583091,
+      "score": 0.788012,
+      "seasons": 16,
+      "weight": 3.0685,
+      "bestPercentile": 0.999166,
+      "latestPercentile": 0.961489,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 87907,
+      "score": 0.788006,
+      "seasons": 15,
+      "weight": 3.0576,
+      "bestPercentile": 0.999955,
+      "latestPercentile": 0.998023,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 2150442,
+      "score": 0.787996,
+      "seasons": 9,
+      "weight": 2.8358,
+      "bestPercentile": 0.999866,
+      "latestPercentile": 0.99888,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 21930,
+      "score": 0.787996,
+      "seasons": 15,
+      "weight": 3.0616,
+      "bestPercentile": 0.999897,
+      "latestPercentile": 0.999527,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 60192,
+      "score": 0.787934,
+      "seasons": 20,
+      "weight": 3.1083,
+      "bestPercentile": 0.999716,
+      "latestPercentile": 0.946384,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 47420,
+      "score": 0.78792,
+      "seasons": 10,
+      "weight": 2.8748,
+      "bestPercentile": 0.999933,
+      "latestPercentile": 0.999844,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 23979,
+      "score": 0.787864,
+      "seasons": 14,
+      "weight": 3.0379,
+      "bestPercentile": 0.999841,
+      "latestPercentile": 0.999841,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 1034642,
+      "score": 0.7878,
+      "seasons": 12,
+      "weight": 2.989,
+      "bestPercentile": 0.999928,
+      "latestPercentile": 0.995715,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 589724,
+      "score": 0.78778,
+      "seasons": 15,
+      "weight": 3.0616,
+      "bestPercentile": 0.999365,
+      "latestPercentile": 0.98702,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 651,
+      "score": 0.787762,
+      "seasons": 17,
+      "weight": 3.0873,
+      "bestPercentile": 0.999992,
+      "latestPercentile": 0.992234,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 1151,
+      "score": 0.78774,
+      "seasons": 17,
+      "weight": 3.0873,
+      "bestPercentile": 0.99986,
+      "latestPercentile": 0.988365,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 238345,
+      "score": 0.787721,
+      "seasons": 14,
+      "weight": 3.0431,
+      "bestPercentile": 0.99978,
+      "latestPercentile": 0.995818,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 272447,
+      "score": 0.787667,
+      "seasons": 13,
+      "weight": 3.0194,
+      "bestPercentile": 0.999668,
+      "latestPercentile": 0.997117,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 95036,
+      "score": 0.787646,
+      "seasons": 11,
+      "weight": 2.9184,
+      "bestPercentile": 0.999874,
+      "latestPercentile": 0.987492,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 156995,
+      "score": 0.787624,
+      "seasons": 17,
+      "weight": 3.0645,
+      "bestPercentile": 0.999763,
+      "latestPercentile": 0.999722,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 55442,
+      "score": 0.787598,
+      "seasons": 19,
+      "weight": 3.0971,
+      "bestPercentile": 0.999787,
+      "latestPercentile": 0.997514,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 312744,
+      "score": 0.787564,
+      "seasons": 13,
+      "weight": 3.0127,
+      "bestPercentile": 0.999934,
+      "latestPercentile": 0.999389,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 24853,
+      "score": 0.787448,
+      "seasons": 12,
+      "weight": 2.989,
+      "bestPercentile": 0.999957,
+      "latestPercentile": 0.998761,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 2231526,
+      "score": 0.787442,
+      "seasons": 11,
+      "weight": 2.9499,
+      "bestPercentile": 0.999182,
+      "latestPercentile": 0.989086,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 194,
+      "score": 0.787395,
+      "seasons": 11,
+      "weight": 2.9499,
+      "bestPercentile": 0.999698,
+      "latestPercentile": 0.997297,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 496967,
+      "score": 0.787389,
+      "seasons": 14,
+      "weight": 3.0431,
+      "bestPercentile": 0.99949,
+      "latestPercentile": 0.99949,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 404825,
+      "score": 0.787368,
+      "seasons": 15,
+      "weight": 3.0616,
+      "bestPercentile": 0.999915,
+      "latestPercentile": 0.999418,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 1574290,
+      "score": 0.787349,
+      "seasons": 16,
+      "weight": 3.0761,
+      "bestPercentile": 0.999717,
+      "latestPercentile": 0.996314,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 350626,
+      "score": 0.787308,
+      "seasons": 11,
+      "weight": 2.9499,
+      "bestPercentile": 0.999875,
+      "latestPercentile": 0.999875,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 2828,
+      "score": 0.787307,
+      "seasons": 8,
+      "weight": 2.7536,
+      "bestPercentile": 0.999769,
+      "latestPercentile": 0.999478,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 2239548,
+      "score": 0.78727,
+      "seasons": 12,
+      "weight": 2.989,
+      "bestPercentile": 0.999537,
+      "latestPercentile": 0.999537,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 474259,
+      "score": 0.787209,
+      "seasons": 20,
+      "weight": 3.1083,
+      "bestPercentile": 0.999976,
+      "latestPercentile": 0.999484,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 1194882,
+      "score": 0.787204,
+      "seasons": 15,
+      "weight": 3.0616,
+      "bestPercentile": 0.999933,
+      "latestPercentile": 0.997278,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 820065,
+      "score": 0.787145,
+      "seasons": 15,
+      "weight": 3.0616,
+      "bestPercentile": 0.99994,
+      "latestPercentile": 0.99994,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 15753,
+      "score": 0.787104,
+      "seasons": 20,
+      "weight": 3.1083,
+      "bestPercentile": 0.999949,
+      "latestPercentile": 0.969895,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 12492,
+      "score": 0.787048,
+      "seasons": 13,
+      "weight": 3.0194,
+      "bestPercentile": 0.999777,
+      "latestPercentile": 0.982719,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 1359,
+      "score": 0.787019,
+      "seasons": 14,
+      "weight": 3.0431,
+      "bestPercentile": 0.999962,
+      "latestPercentile": 0.977467,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 2365406,
+      "score": 0.787013,
+      "seasons": 14,
+      "weight": 3.0431,
+      "bestPercentile": 0.999452,
+      "latestPercentile": 0.962844,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 32058,
+      "score": 0.78701,
+      "seasons": 9,
+      "weight": 2.8358,
+      "bestPercentile": 0.999908,
+      "latestPercentile": 0.999868,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 63377,
+      "score": 0.786959,
+      "seasons": 14,
+      "weight": 3.0312,
+      "bestPercentile": 0.999758,
+      "latestPercentile": 0.999019,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 1845743,
+      "score": 0.786955,
+      "seasons": 10,
+      "weight": 2.8999,
+      "bestPercentile": 0.99987,
+      "latestPercentile": 0.989365,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 8147,
+      "score": 0.786905,
+      "seasons": 14,
+      "weight": 3.0431,
+      "bestPercentile": 0.999938,
+      "latestPercentile": 0.999897,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 15963,
+      "score": 0.786839,
+      "seasons": 13,
+      "weight": 3.0194,
+      "bestPercentile": 0.999876,
+      "latestPercentile": 0.977099,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 6609,
+      "score": 0.786796,
+      "seasons": 14,
+      "weight": 3.0431,
+      "bestPercentile": 0.999669,
+      "latestPercentile": 0.970018,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 17463,
+      "score": 0.786795,
+      "seasons": 8,
+      "weight": 2.7536,
+      "bestPercentile": 0.999897,
+      "latestPercentile": 0.997462,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 39421,
+      "score": 0.78676,
+      "seasons": 11,
+      "weight": 2.9499,
+      "bestPercentile": 0.999612,
+      "latestPercentile": 0.985267,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 788908,
+      "score": 0.786754,
+      "seasons": 11,
+      "weight": 2.9499,
+      "bestPercentile": 0.999797,
+      "latestPercentile": 0.999797,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 219335,
+      "score": 0.786739,
+      "seasons": 11,
+      "weight": 2.9499,
+      "bestPercentile": 0.99997,
+      "latestPercentile": 0.999852,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 5277,
+      "score": 0.786719,
+      "seasons": 13,
+      "weight": 3.0075,
+      "bestPercentile": 0.999983,
+      "latestPercentile": 0.998184,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 31177,
+      "score": 0.786698,
+      "seasons": 12,
+      "weight": 2.989,
+      "bestPercentile": 0.999993,
+      "latestPercentile": 0.988408,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 2625,
+      "score": 0.78668,
+      "seasons": 17,
+      "weight": 3.0873,
+      "bestPercentile": 0.999849,
+      "latestPercentile": 0.999549,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 6780,
+      "score": 0.786641,
+      "seasons": 14,
+      "weight": 3.0187,
+      "bestPercentile": 0.999336,
+      "latestPercentile": 0.986124,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 33058,
+      "score": 0.786627,
+      "seasons": 9,
+      "weight": 2.8358,
+      "bestPercentile": 0.999967,
+      "latestPercentile": 0.999967,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 157195,
+      "score": 0.786616,
+      "seasons": 16,
+      "weight": 3.0761,
+      "bestPercentile": 0.999901,
+      "latestPercentile": 0.960845,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 94276,
+      "score": 0.786596,
+      "seasons": 13,
+      "weight": 3.0194,
+      "bestPercentile": 0.999755,
+      "latestPercentile": 0.957764,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 1880027,
+      "score": 0.786595,
+      "seasons": 11,
+      "weight": 2.9499,
+      "bestPercentile": 0.999845,
+      "latestPercentile": 0.999249,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 168934,
+      "score": 0.786588,
+      "seasons": 8,
+      "weight": 2.7536,
+      "bestPercentile": 0.999877,
+      "latestPercentile": 0.999263,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 100660,
+      "score": 0.786585,
+      "seasons": 9,
+      "weight": 2.8358,
+      "bestPercentile": 0.99996,
+      "latestPercentile": 0.999764,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 808368,
+      "score": 0.786574,
+      "seasons": 11,
+      "weight": 2.9499,
+      "bestPercentile": 0.999801,
+      "latestPercentile": 0.999574,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 690181,
+      "score": 0.786572,
+      "seasons": 15,
+      "weight": 3.0616,
+      "bestPercentile": 0.999791,
+      "latestPercentile": 0.994147,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 846555,
+      "score": 0.786555,
+      "seasons": 12,
+      "weight": 2.9553,
+      "bestPercentile": 0.999941,
+      "latestPercentile": 0.968699,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 565537,
+      "score": 0.786536,
+      "seasons": 20,
+      "weight": 3.1083,
+      "bestPercentile": 0.999554,
+      "latestPercentile": 0.970234,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 31353,
+      "score": 0.786518,
+      "seasons": 14,
+      "weight": 3.0431,
+      "bestPercentile": 0.999637,
+      "latestPercentile": 0.989481,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 109870,
+      "score": 0.786506,
+      "seasons": 9,
+      "weight": 2.8358,
+      "bestPercentile": 0.999838,
+      "latestPercentile": 0.988492,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 17033,
+      "score": 0.786499,
+      "seasons": 16,
+      "weight": 3.042,
+      "bestPercentile": 0.999975,
+      "latestPercentile": 0.994917,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 166005,
+      "score": 0.786492,
+      "seasons": 14,
+      "weight": 3.0431,
+      "bestPercentile": 0.999939,
+      "latestPercentile": 0.986021,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 477645,
+      "score": 0.786443,
+      "seasons": 20,
+      "weight": 3.1083,
+      "bestPercentile": 0.999886,
+      "latestPercentile": 0.993138,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 121856,
+      "score": 0.786401,
+      "seasons": 12,
+      "weight": 2.989,
+      "bestPercentile": 0.999635,
+      "latestPercentile": 0.949171,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 11874,
+      "score": 0.786361,
+      "seasons": 8,
+      "weight": 2.7536,
+      "bestPercentile": 0.999971,
+      "latestPercentile": 0.999971,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 2412174,
+      "score": 0.786322,
+      "seasons": 18,
+      "weight": 3.0961,
+      "bestPercentile": 0.999465,
+      "latestPercentile": 0.992548,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 668188,
+      "score": 0.786314,
+      "seasons": 15,
+      "weight": 3.0616,
+      "bestPercentile": 0.999912,
+      "latestPercentile": 0.954255,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 6745,
+      "score": 0.786285,
+      "seasons": 14,
+      "weight": 3.0379,
+      "bestPercentile": 0.999924,
+      "latestPercentile": 0.957923,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 6935,
+      "score": 0.786225,
+      "seasons": 15,
+      "weight": 3.0616,
+      "bestPercentile": 0.999944,
+      "latestPercentile": 0.996194,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 341142,
+      "score": 0.786169,
+      "seasons": 10,
+      "weight": 2.8999,
+      "bestPercentile": 0.999552,
+      "latestPercentile": 0.994892,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 614664,
+      "score": 0.786159,
+      "seasons": 14,
+      "weight": 3.0431,
+      "bestPercentile": 0.999967,
+      "latestPercentile": 0.999967,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 338432,
+      "score": 0.786145,
+      "seasons": 8,
+      "weight": 2.7536,
+      "bestPercentile": 0.999903,
+      "latestPercentile": 0.999903,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 10400,
+      "score": 0.786145,
+      "seasons": 10,
+      "weight": 2.8999,
+      "bestPercentile": 0.999657,
+      "latestPercentile": 0.988663,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 108017,
+      "score": 0.786138,
+      "seasons": 14,
+      "weight": 3.0379,
+      "bestPercentile": 0.999743,
+      "latestPercentile": 0.999743,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 212742,
+      "score": 0.786121,
+      "seasons": 8,
+      "weight": 2.7536,
+      "bestPercentile": 0.999991,
+      "latestPercentile": 0.999991,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 2290,
+      "score": 0.786108,
+      "seasons": 18,
+      "weight": 3.0961,
+      "bestPercentile": 0.99988,
+      "latestPercentile": 0.944148,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 29603,
+      "score": 0.786097,
+      "seasons": 16,
+      "weight": 3.0761,
+      "bestPercentile": 0.999994,
+      "latestPercentile": 0.961429,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 149311,
+      "score": 0.786089,
+      "seasons": 8,
+      "weight": 2.7536,
+      "bestPercentile": 0.999975,
+      "latestPercentile": 0.999868,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 35478,
+      "score": 0.786087,
+      "seasons": 14,
+      "weight": 3.0431,
+      "bestPercentile": 0.99962,
+      "latestPercentile": 0.997671,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 274964,
+      "score": 0.786039,
+      "seasons": 9,
+      "weight": 2.8358,
+      "bestPercentile": 0.999966,
+      "latestPercentile": 0.994081,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 480360,
+      "score": 0.786028,
+      "seasons": 11,
+      "weight": 2.9499,
+      "bestPercentile": 0.999642,
+      "latestPercentile": 0.999476,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 729871,
+      "score": 0.785968,
+      "seasons": 17,
+      "weight": 3.0873,
+      "bestPercentile": 0.999617,
+      "latestPercentile": 0.989866,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 21624,
+      "score": 0.785935,
+      "seasons": 8,
+      "weight": 2.7536,
+      "bestPercentile": 0.999702,
+      "latestPercentile": 0.989597,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 1817,
+      "score": 0.785914,
+      "seasons": 13,
+      "weight": 3.0194,
+      "bestPercentile": 0.999965,
+      "latestPercentile": 0.99934,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 209144,
+      "score": 0.785912,
+      "seasons": 17,
+      "weight": 3.0873,
+      "bestPercentile": 0.999473,
+      "latestPercentile": 0.960462,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 25047,
+      "score": 0.78588,
+      "seasons": 13,
+      "weight": 3.0194,
+      "bestPercentile": 0.999759,
+      "latestPercentile": 0.984556,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 62727,
+      "score": 0.785875,
+      "seasons": 9,
+      "weight": 2.8358,
+      "bestPercentile": 0.999777,
+      "latestPercentile": 0.999741,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 3342,
+      "score": 0.785826,
+      "seasons": 17,
+      "weight": 3.0849,
+      "bestPercentile": 0.999995,
+      "latestPercentile": 0.999593,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 31941,
+      "score": 0.785817,
+      "seasons": 9,
+      "weight": 2.8358,
+      "bestPercentile": 0.999957,
+      "latestPercentile": 0.999957,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 1747883,
+      "score": 0.785814,
+      "seasons": 8,
+      "weight": 2.7536,
+      "bestPercentile": 0.999744,
+      "latestPercentile": 0.993852,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 7306,
+      "score": 0.785811,
+      "seasons": 9,
+      "weight": 2.8358,
+      "bestPercentile": 0.999769,
+      "latestPercentile": 0.999749,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 1228754,
+      "score": 0.785795,
+      "seasons": 11,
+      "weight": 2.9499,
+      "bestPercentile": 0.999973,
+      "latestPercentile": 0.966665,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 434888,
+      "score": 0.78578,
+      "seasons": 19,
+      "weight": 3.103,
+      "bestPercentile": 0.999711,
+      "latestPercentile": 0.979827,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 10945,
+      "score": 0.785765,
+      "seasons": 13,
+      "weight": 3.0194,
+      "bestPercentile": 0.999678,
+      "latestPercentile": 0.999678,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 910110,
+      "score": 0.785748,
+      "seasons": 10,
+      "weight": 2.8999,
+      "bestPercentile": 0.99989,
+      "latestPercentile": 0.983773,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 691758,
+      "score": 0.785735,
+      "seasons": 17,
+      "weight": 3.0873,
+      "bestPercentile": 0.9995,
+      "latestPercentile": 0.970124,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 6853,
+      "score": 0.785725,
+      "seasons": 20,
+      "weight": 3.1083,
+      "bestPercentile": 0.999562,
+      "latestPercentile": 0.974431,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 4662,
+      "score": 0.785709,
+      "seasons": 12,
+      "weight": 2.989,
+      "bestPercentile": 0.999971,
+      "latestPercentile": 0.995593,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 10027,
+      "score": 0.785703,
+      "seasons": 11,
+      "weight": 2.9499,
+      "bestPercentile": 0.999785,
+      "latestPercentile": 0.96211,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 672113,
+      "score": 0.785697,
+      "seasons": 10,
+      "weight": 2.8999,
+      "bestPercentile": 0.999484,
+      "latestPercentile": 0.998383,
+      "latestSeason": "2025/26"
+    }
+  ]
+}
