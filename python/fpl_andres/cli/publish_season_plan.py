@@ -193,31 +193,34 @@ def _data_gaps(
 # the second. FPL resets the set at the halfway point, so a chip unplayed by
 # gameweek nineteen is simply lost.
 FIRST_HALF_LAST_EVENT = 19
-# What a chip is expected to be worth before it is worth planning around. Below
-# this the plan still plays it, because an unplayed chip scores nothing at all,
-# but it says so rather than presenting a thin week as a masterstroke.
+# What a chip wants to be worth on the afternoon it pays off. Expected points
+# are the average; a chip is played for the upside, so the bar is the ceiling.
 CHIP_TARGET_POINTS = 20.0
-# How far a wildcard's rebuild is credited forward. A wildcard keeps its squad,
-# so the gain persists; eight weeks is the horizon the plan itself commits to.
+# Below this the number is noise from the squad chooser rather than a finding,
+# and presenting it as a plan would be dressing up a rounding error.
+NEGLIGIBLE_CHIP_POINTS = 2.0
+
+# A wildcard rebuilds a squad. Before a ball is kicked the squad was chosen
+# freely, and one transfer later it has barely moved, so there is nothing to
+# rebuild. Playing one here throws the chip away.
+WILDCARD_EARLIEST_EVENT = 4
+# A free hit swaps the squad for one week and hands it back. In gameweek one
+# there is no squad to escape: the eleven on the pitch is the eleven that was
+# picked for it.
+FREE_HIT_EARLIEST_EVENT = 2
+# The two unlimited-transfer chips must not sit on top of each other. A free hit
+# reverts to the squad a wildcard would just have built, so playing one straight
+# after the other spends two chips to do the work of one.
+UNLIMITED_CHIP_SEPARATION = 3
+# How long one free transfer a week takes to close a gap a wildcard closes at
+# once. A squad is usually three to five moves from optimal, so beyond this the
+# wildcard has bought nothing that patience would not.
+FREE_TRANSFER_CATCHUP = 5
+# How far a wildcard's rebuild is credited forward.
 WILDCARD_HORIZON = 8
-
-
-def _upside(record: Mapping[str, Any] | None) -> float:
-    """How much better a player's best week is than his ordinary one.
-
-    Zero means his ceiling is his median: nothing to gain by trebling him over
-    someone steadier. Derived from the published shape rather than assumed, and
-    returns zero where the shape was withheld for want of appearances.
-    """
-    if record is None:
-        return 0.0
-    ceiling = record.get("ceiling")
-    median = record.get("median")
-    if not isinstance(ceiling, (int, float)) or not isinstance(median, (int, float)):
-        return 0.0
-    if ceiling <= 0:
-        return 0.0
-    return max(0.0, (float(ceiling) - float(median)) / float(ceiling))
+# The window a free hit's week is judged against. A gap that persists is a
+# wildcard's job; a free hit is for the week that collapses on its own.
+FREE_HIT_CONTEXT = 4
 
 
 def _chip_plan(
@@ -227,29 +230,37 @@ def _chip_plan(
     peak: Mapping[tuple[int, int], float] | None = None,
     code_of: Mapping[int, int] | None = None,
 ) -> list[dict[str, object]]:
-    """When to play all eight chips: four in each half of the season.
+    """When to play all eight chips, from what each one actually buys.
 
-    Each rule is the chip's own definition turned into a measurement of what
-    playing it *adds*, which is not the same as what the week scores.
+    The four are not variations on "a good week". Each removes a different
+    constraint, and the statistic that finds it has to be the one that measures
+    that constraint biting.
 
-    - **Triple Captain** turns a double into a treble, so it adds one more
-      copy of the captain.
-    - **Bench Boost** scores the bench, so it adds exactly the bench.
-    - **Free Hit** buys one week of unlimited transfers and hands the squad
-      back, so it adds the gap between the best eleven money could buy and the
-      eleven the plan actually fields.
-    - **Wildcard** buys unlimited transfers and keeps them, so the same gap
-      counts for every week it persists rather than only the week it is played.
+    - **Triple Captain** removes the cap on one player: he scores three times
+      instead of twice. It wants the week where one player's *best* afternoon is
+      worth the most, because trebling a man who returns his average has spent a
+      chip to gain his average.
+    - **Bench Boost** removes the eleven-player limit: all fifteen score. It
+      wants the week the bench is worth most, and it is the one chip that can be
+      built toward, because the bench is chosen weeks in advance.
+    - **Free Hit** removes the transfer limit for one week and then *takes the
+      squad back*. That last part is what makes it different: it buys one week
+      and nothing after it. So it is worth playing only where a single week is
+      unusually bad for the squad being held -- a blank, or a fixture pile-up --
+      and not where the squad is simply behind, which is a wildcard's problem.
+    - **Wildcard** removes the transfer limit and *keeps* the new squad. Its
+      value is not the gap it closes but the gap it closes **sooner than one
+      free transfer a week would have closed it anyway**. Charging it the full
+      gap credits it for points patience would have collected for nothing.
 
-    Every chip is scored twice. Expected points are the average being aimed at;
-    the ceiling is the case the chip is actually played for. Trebling a captain
-    who returns his average is a wasted chip -- it pays when he takes a goal, a
-    clean sheet and a defensive contribution in the same afternoon, which is his
-    ceiling and not his mean. So the target is judged on the ceiling, and both
-    numbers are published rather than the flattering one.
+    That reading also rules some weeks out entirely. A wildcard in gameweek one
+    rebuilds a squad that was chosen freely days earlier; a free hit in gameweek
+    one escapes an eleven picked for that very week. And a free hit next door to
+    a wildcard reverts to the squad the wildcard just built, so the two are kept
+    apart.
 
-    Chip *interaction* is not solved: playing one changes what the others are
-    worth, and these are eight independent answers to eight separate questions.
+    Chip *interaction* beyond that separation is not solved: playing one changes
+    what the others are worth, and these are eight independent answers.
     """
     if not gameweeks:
         return []
@@ -259,15 +270,29 @@ def _chip_plan(
     chips: list[dict[str, object]] = []
     taken: set[int] = set()
 
-    shortfall = {
-        week["event"]: max(0.0, (ceiling or {}).get(week["event"], 0.0) - week["projectedPoints"])
+    shortfall: dict[int, float] = {
+        int(week["event"]): max(
+            0.0, (ceiling or {}).get(week["event"], 0.0) - week["projectedPoints"]
+        )
         for week in gameweeks
     }
+    index_of = {int(week["event"]): index for index, week in enumerate(gameweeks)}
 
-    def free(weeks: Sequence[dict[str, Any]]) -> list[dict[str, Any]]:
-        return [week for week in weeks if week["event"] not in taken]
+    def free(weeks: Sequence[dict[str, Any]], earliest: int = 0) -> list[dict[str, Any]]:
+        return [week for week in weeks if week["event"] not in taken and week["event"] >= earliest]
 
     def verdict(best: float) -> str:
+        if best < NEGLIGIBLE_CHIP_POINTS:
+            # Worth saying plainly: this is a statement about the model, not
+            # about the chip. Squads drift because of injuries, form, price
+            # moves and blank gameweeks, and none of those exist in a projection
+            # built from a completed season's per-match rates.
+            return (
+                "worth almost nothing here, because this projection has no injuries, "
+                "no form and no blank gameweeks, so the squad never drifts far enough "
+                "from optimal for unlimited transfers to rescue it. Play it against "
+                "real news rather than against this number"
+            )
         return (
             f"clears the {CHIP_TARGET_POINTS:.0f} points a chip wants to return"
             if best >= CHIP_TARGET_POINTS
@@ -286,7 +311,6 @@ def _chip_plan(
         return float(mean), float(best)
 
     def treble(week: dict[str, Any]) -> tuple[float, float, int]:
-        """The best player to treble that week, at his mean and at his best."""
         candidates = [
             (
                 peak_of(week["event"], element),
@@ -300,13 +324,38 @@ def _chip_plan(
         best, mean, element = max(candidates, key=lambda entry: entry[0])
         return float(mean), float(best), element
 
-    index_of = {week["event"]: index for index, week in enumerate(gameweeks)}
+    def spike(week: dict[str, Any]) -> float:
+        """How much worse this week is than the weeks either side of it.
+
+        A free hit buys one week. A squad that is behind every week is not a
+        free-hit problem, so only the excess over its own neighbourhood counts.
+        """
+        centre = index_of[week["event"]]
+        low = max(0, centre - FREE_HIT_CONTEXT)
+        high = min(len(gameweeks), centre + FREE_HIT_CONTEXT + 1)
+        around = [
+            shortfall[each["event"]]
+            for position, each in enumerate(gameweeks[low:high], start=low)
+            if position != centre
+        ]
+        if not around:
+            return float(shortfall[week["event"]])
+        typical = sorted(around)[len(around) // 2]
+        return max(0.0, float(shortfall[week["event"]]) - typical)
 
     def persisting(week: dict[str, Any]) -> float:
+        """The gap a rebuild closes sooner than free transfers would have.
+
+        Full credit in the week it is played, none by the time one transfer a
+        week would have caught up. Without that taper a wildcard is credited for
+        points that were arriving anyway.
+        """
         start = index_of[week["event"]]
-        return float(
-            sum(shortfall[each["event"]] for each in gameweeks[start : start + WILDCARD_HORIZON])
-        )
+        total = 0.0
+        for offset, each in enumerate(gameweeks[start : start + WILDCARD_HORIZON]):
+            earned = max(0.0, 1.0 - offset / FREE_TRANSFER_CATCHUP)
+            total += shortfall[each["event"]] * earned
+        return total
 
     halves = (
         ("first", [week for week in gameweeks if week["event"] <= FIRST_HALF_LAST_EVENT]),
@@ -359,11 +408,16 @@ def _chip_plan(
                 }
             )
 
-        candidates = free(weeks)
+        # The free hit picks first. It is the sharper instrument -- it only ever
+        # scores a week that collapses on its own -- so letting the wildcard go
+        # first would let a rebuild swallow the one week a rebuild cannot fix.
+        free_hit_event: int | None = None
+        candidates = free(weeks, FREE_HIT_EARLIEST_EVENT)
         if candidates:
-            chosen = max(candidates, key=lambda week: shortfall[week["event"]])
-            gain = shortfall[chosen["event"]]
+            chosen = max(candidates, key=spike)
+            gain = spike(chosen)
             taken.add(chosen["event"])
+            free_hit_event = int(chosen["event"])
             chips.append(
                 {
                     "event": chosen["event"],
@@ -372,13 +426,19 @@ def _chip_plan(
                     "gain": round(gain, 2),
                     "ceiling": round(gain, 2),
                     "note": (
-                        f"one week of unlimited transfers adds {gain:.1f}, the largest "
-                        f"one-week gap in the {half} half, which {verdict(gain)}"
+                        f"this week is {gain:.1f} worse for the held squad than the weeks "
+                        f"around it, the sharpest one-week drop of the {half} half, which "
+                        f"{verdict(gain)}"
                     ),
                 }
             )
 
-        candidates = free(weeks)
+        candidates = [
+            week
+            for week in free(weeks, WILDCARD_EARLIEST_EVENT)
+            if free_hit_event is None
+            or abs(int(week["event"]) - free_hit_event) >= UNLIMITED_CHIP_SEPARATION
+        ]
         if candidates:
             chosen = max(candidates, key=persisting)
             gain = persisting(chosen)
@@ -391,8 +451,9 @@ def _chip_plan(
                     "gain": round(gain, 2),
                     "ceiling": round(gain, 2),
                     "note": (
-                        f"rebuilding here recovers {gain:.1f} across the following "
-                        f"{WILDCARD_HORIZON} gameweeks, which {verdict(gain)}"
+                        f"rebuilding here is worth {gain:.1f} over the next "
+                        f"{WILDCARD_HORIZON} gameweeks once the points one free transfer a "
+                        f"week would have recovered anyway are taken off, which {verdict(gain)}"
                     ),
                 }
             )

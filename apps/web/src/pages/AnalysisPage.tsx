@@ -78,6 +78,15 @@ export default function AnalysisPage() {
     [data, view],
   );
 
+  // A pin on a player the filters have since removed is a row in the comparison
+  // for a mark that is not on the chart, which reads as a bug.
+  useEffect(() => {
+    if (!selection || view.pinned.length === 0) return;
+    const plotted = new Set(selection.points.map((point) => point.player.code));
+    const kept = view.pinned.filter((code) => plotted.has(code));
+    if (kept.length !== view.pinned.length) update({ pinned: kept });
+  }, [selection, view.pinned, update]);
+
   const togglePin = useCallback(
     (code: number) => {
       const already = view.pinned.includes(code);
@@ -255,7 +264,8 @@ function AnalysisBody({
         selection={selection}
         pinned={view.pinned}
         onTogglePin={onTogglePin}
-        rankBy="y"
+        rankBy={view.tableMetric}
+        onRankBy={(tableMetric) => onChange({ tableMetric })}
       />
     </>
   );

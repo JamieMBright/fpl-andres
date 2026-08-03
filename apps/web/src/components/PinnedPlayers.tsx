@@ -1,6 +1,7 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 
 import { CeefaxShirt } from "./CeefaxShirt";
+import { FixtureBreakdown } from "./FixtureBreakdown";
 import { PlayerAvatar } from "./PlayerAvatar";
 import { DEFCON_THRESHOLD, type AnalysisPlayer } from "../state/analysis-pool";
 import { rateFixtureRun, type ScheduledFixture } from "../state/fixture-run";
@@ -48,6 +49,7 @@ export function PinnedPlayers({
     () => comparePinned(chosen, players, view),
     [chosen, players, view],
   );
+  const [breakdown, setBreakdown] = useState<AnalysisPlayer | null>(null);
 
   if (chosen.length === 0) {
     return (
@@ -93,11 +95,23 @@ export function PinnedPlayers({
               leading={column === 0 && comparison.players.length > 1}
               clubCodeByTeamId={clubCodeByTeamId}
               fixtures={fixtures}
+              onFixtures={setBreakdown}
               onUnpin={onUnpin}
             />
           ))}
         </ul>
       </div>
+
+      {breakdown ? (
+        <FixtureBreakdown
+          clubCodeByTeamId={clubCodeByTeamId}
+          fixtures={fixtures}
+          onClose={() => {
+            setBreakdown(null);
+          }}
+          player={breakdown}
+        />
+      ) : null}
     </div>
   );
 }
@@ -109,6 +123,7 @@ function PinnedCard({
   leading,
   clubCodeByTeamId,
   fixtures,
+  onFixtures,
   onUnpin,
 }: {
   player: AnalysisPlayer;
@@ -117,6 +132,7 @@ function PinnedCard({
   leading: boolean;
   clubCodeByTeamId: ReadonlyMap<number, number>;
   fixtures: readonly ScheduledFixture[];
+  onFixtures: (player: AnalysisPlayer) => void;
   onUnpin: (code: number) => void;
 }) {
   const run = rateFixtureRun(
@@ -187,7 +203,11 @@ function PinnedCard({
           </div>
         ))}
         <div>
-          <dt>Next {FIXTURE_WINDOW}</dt>
+          <dt
+            title={`His next ${String(FIXTURE_WINDOW)} fixtures, rated on the route that matters for his position: what those opponents score if he defends, what they concede if he attacks. One is an average opponent, so above one is a soft run for an attacker and below one is a soft run for a defender.`}
+          >
+            Next {FIXTURE_WINDOW}
+          </dt>
           <dd>
             {run.rating === null ? (
               <span
@@ -197,7 +217,16 @@ function PinnedCard({
                 unrated
               </span>
             ) : (
-              run.rating.toFixed(2)
+              <button
+                className="pinned-fixtures-open"
+                onClick={() => {
+                  onFixtures(player);
+                }}
+                title="Show every fixture and last season's match-by-match record"
+                type="button"
+              >
+                {run.rating.toFixed(2)}
+              </button>
             )}
           </dd>
         </div>

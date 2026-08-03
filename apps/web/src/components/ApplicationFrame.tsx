@@ -80,10 +80,7 @@ export function ApplicationFrame() {
         <Link aria-label="FPL Andres home" className="brand" to="/">
           <BielsaBucket />
           <span className="brand-words">
-            <strong translate="no">
-              <span className="brand-fpl">FPL</span>
-              <span className="brand-andres">ANDRES</span>
-            </strong>
+            <strong translate="no">FPL Andres</strong>
             <small>Analysis, not opinion</small>
           </span>
         </Link>

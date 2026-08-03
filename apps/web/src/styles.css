@@ -272,7 +272,10 @@ a {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 16px;
   min-height: 88px;
+  /* The stripes belong to the shell, but they fight the coloured cells. */
+  background: var(--paper);
   border-bottom: 1px solid var(--navy);
 }
 
@@ -294,30 +297,19 @@ a {
   display: grid;
 }
 
-/* Teletext set the page title in double-height letters, each word a different
-   colour on a black cell. That is the whole look, and it costs one font. */
+/* Teletext set the page title in a solid coloured cell. One wide block for the
+   masthead, then one cell per destination, in the strip palette. */
 .brand strong {
-  display: flex;
-  gap: 4px;
-  align-items: stretch;
+  display: block;
+  padding: 9px 16px 10px;
+  color: var(--fa-gk-black);
+  background: var(--fa-gk-lime);
   font-family: var(--fa-display);
-  font-size: 26px;
+  font-size: clamp(19px, 2.4vw, 26px);
   line-height: 1;
-  letter-spacing: 0.04em;
-}
-
-.brand-fpl,
-.brand-andres {
-  padding: 4px 7px 5px;
-  background: #000;
-}
-
-.brand-fpl {
-  color: #ff0;
-}
-
-.brand-andres {
-  color: #0ff;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  white-space: nowrap;
 }
 
 .visually-hidden {
@@ -351,52 +343,50 @@ a {
   gap: clamp(18px, 3vw, 34px);
 }
 
-/* The navigation is the coloured strip now: one teletext cell per destination,
-   in the order they run across a Ceefax index page. */
+/* The navigation is the coloured strip: one filled teletext cell per
+   destination, in the same palette as the status line beneath it. */
 .site-header nav.ceefax-nav {
-  gap: 3px;
+  gap: 2px;
 }
 
 .ceefax-nav a {
-  padding: 5px 10px 6px;
-  background: #000;
-  font-family: "IBM Plex Mono", monospace;
-  font-size: 12px;
+  padding: 7px 12px 8px;
+  color: var(--fa-gk-black);
+  font-family: var(--fa-body);
+  font-size: 11px;
   font-weight: 700;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   text-decoration: none;
 }
 
 .ceefax-nav a:nth-child(1) {
-  color: #0f0;
+  background: var(--fa-gk-lime);
 }
 
 .ceefax-nav a:nth-child(2) {
-  color: #ff0;
+  background: var(--fa-gk-hot);
 }
 
 .ceefax-nav a:nth-child(3) {
-  color: #0ff;
+  background: var(--fa-gk-teal);
 }
 
 .ceefax-nav a:nth-child(4) {
-  color: #f0f;
+  color: var(--fa-gk-white);
+  background: var(--fa-gk-purple);
 }
 
 .ceefax-nav a:nth-child(5) {
-  color: #fff;
+  color: var(--fa-gk-white);
+  background: var(--fa-bucket);
 }
 
 .ceefax-nav a:hover,
 .ceefax-nav a[aria-current="page"] {
-  color: #000;
-  background: currentcolor;
+  color: var(--fa-gk-white);
+  background: var(--fa-gk-black);
   text-decoration: none;
-}
-
-.ceefax-nav a:hover {
-  filter: invert(1);
 }
 
 .ceefax-nav a:focus-visible {
@@ -3223,6 +3213,110 @@ a:focus-visible {
   font-weight: 700;
 }
 
+.pinned-fixtures-open {
+  padding: 0;
+  border: 0;
+  border-bottom: 1px dotted currentcolor;
+  color: inherit;
+  background: none;
+  font: inherit;
+  cursor: pointer;
+}
+
+.pinned-fixtures-open:focus-visible {
+  outline: 2px solid var(--signal-blue);
+  outline-offset: 2px;
+}
+
+.fixture-breakdown {
+  margin-top: 18px;
+}
+
+.fixture-breakdown h3 {
+  margin: 0 0 8px;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.fixture-breakdown-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(74px, 1fr));
+  gap: 5px;
+  padding: 0;
+  margin: 0 0 10px;
+  list-style: none;
+}
+
+.fixture-breakdown-list li {
+  display: flex;
+  gap: 5px;
+  justify-content: space-between;
+  padding: 4px 6px;
+  border: 1px solid var(--rule);
+  font-size: 11px;
+}
+
+.fixture-breakdown-record {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+  gap: 6px;
+  margin: 0 0 10px;
+}
+
+.fixture-breakdown-record > div {
+  padding: 5px 7px;
+  border: 1px solid var(--rule);
+}
+
+.fixture-breakdown-record dt {
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.fixture-breakdown-record dd {
+  margin: 2px 0 0;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.fixture-breakdown p {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.readout-rank {
+  margin-left: 8px;
+  padding: 3px 7px;
+  border: 2px solid var(--rule);
+  color: var(--ink);
+  background: var(--paper);
+  font-family: inherit;
+  font-size: inherit;
+}
+
+.scatter-number {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.scatter-number input {
+  width: 5ch;
+  padding: 5px 6px;
+  border: 2px solid var(--rule);
+  color: var(--ink);
+  background: var(--paper);
+  font-family: inherit;
+}
+
 .player-detail-stats {
   display: grid;
   gap: 0;
@@ -3700,22 +3794,44 @@ a:focus-visible {
 
 .scatter-controls {
   padding: 0;
-  border: 1px solid var(--rule);
+  border: 2px solid var(--ink);
   background: var(--paper);
   font-size: 13px;
 }
 
 .scatter-controls-summary {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
   gap: 10px;
   padding: 12px 16px;
+  color: var(--paper);
+  background: var(--ink);
   font-family: "IBM Plex Mono", monospace;
   font-size: 11px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   cursor: pointer;
+  list-style: none;
+}
+
+/* The platform marker is a small grey triangle that reads as decoration. This
+   is a caret that says "there is more under here". */
+.scatter-controls-summary::-webkit-details-marker {
+  display: none;
+}
+
+.scatter-controls-summary::after {
+  content: "\25be Show";
+  margin-left: auto;
+  padding: 3px 9px 4px;
+  color: var(--ink);
+  background: var(--paper);
+  font-weight: 700;
+}
+
+.scatter-controls[open] .scatter-controls-summary::after {
+  content: "\25b4 Hide";
 }
 
 .scatter-controls-summary:focus-visible {
@@ -3724,11 +3840,12 @@ a:focus-visible {
 }
 
 .scatter-controls[open] .scatter-controls-summary {
-  border-bottom: 1px solid var(--rule);
+  border-bottom: 2px solid var(--ink);
 }
 
 .scatter-controls-count {
-  color: var(--ink-soft);
+  color: var(--paper);
+  opacity: 0.75;
 }
 
 .scatter-controls-body {

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-03T20:03:03.312107Z",
+  "generatedAt": "2026-08-03T20:55:57.414106Z",
   "season": "2026-27",
   "recordSeason": "2025-26",
   "basis": "opening squad, fixture-adjusted projections, solved in overlapping windows and committed 38 gameweeks deep",
@@ -15,20 +15,12 @@
   "netExpectedPoints": 2148.46,
   "chips": [
     {
-      "event": 1,
+      "event": 2,
       "chip": "Free Hit",
       "half": "first",
-      "gain": 2.77,
-      "ceiling": 2.77,
-      "note": "one week of unlimited transfers adds 2.8, the largest one-week gap in the first half, which under the 20 points that makes a chip worth building around, but an unplayed chip expires at nothing"
-    },
-    {
-      "event": 2,
-      "chip": "Wildcard",
-      "half": "first",
-      "gain": 2.47,
-      "ceiling": 2.47,
-      "note": "rebuilding here recovers 2.5 across the following 8 gameweeks, which under the 20 points that makes a chip worth building around, but an unplayed chip expires at nothing"
+      "gain": 1.98,
+      "ceiling": 1.98,
+      "note": "this week is 2.0 worse for the held squad than the weeks around it, the sharpest one-week drop of the first half, which worth almost nothing here, because this projection has no injuries, no form and no blank gameweeks, so the squad never drifts far enough from optimal for unlimited transfers to rescue it. Play it against real news rather than against this number"
     },
     {
       "event": 14,
@@ -39,6 +31,14 @@
       "note": "a third copy of Gabriel: 7.3 if he returns his average, 17.8 on the sort of afternoon the chip is played for, which under the 20 points that makes a chip worth building around, but an unplayed chip expires at nothing"
     },
     {
+      "event": 15,
+      "chip": "Wildcard",
+      "half": "first",
+      "gain": 0.02,
+      "ceiling": 0.02,
+      "note": "rebuilding here is worth 0.0 over the next 8 gameweeks once the points one free transfer a week would have recovered anyway are taken off, which worth almost nothing here, because this projection has no injuries, no form and no blank gameweeks, so the squad never drifts far enough from optimal for unlimited transfers to rescue it. Play it against real news rather than against this number"
+    },
+    {
       "event": 16,
       "chip": "Bench Boost",
       "half": "first",
@@ -47,12 +47,12 @@
       "note": "the bench averages 8.7 and reaches 30.3 if all four have the sort of week they are capable of, the best bench of the first half, which clears the 20 points a chip wants to return"
     },
     {
-      "event": 26,
+      "event": 24,
       "chip": "Wildcard",
       "half": "second",
-      "gain": 0.43,
-      "ceiling": 0.43,
-      "note": "rebuilding here recovers 0.4 across the following 8 gameweeks, which under the 20 points that makes a chip worth building around, but an unplayed chip expires at nothing"
+      "gain": 0.14,
+      "ceiling": 0.14,
+      "note": "rebuilding here is worth 0.1 over the next 8 gameweeks once the points one free transfer a week would have recovered anyway are taken off, which worth almost nothing here, because this projection has no injuries, no form and no blank gameweeks, so the squad never drifts far enough from optimal for unlimited transfers to rescue it. Play it against real news rather than against this number"
     },
     {
       "event": 27,
@@ -60,7 +60,7 @@
       "half": "second",
       "gain": 0.36,
       "ceiling": 0.36,
-      "note": "one week of unlimited transfers adds 0.4, the largest one-week gap in the second half, which under the 20 points that makes a chip worth building around, but an unplayed chip expires at nothing"
+      "note": "this week is 0.4 worse for the held squad than the weeks around it, the sharpest one-week drop of the second half, which worth almost nothing here, because this projection has no injuries, no form and no blank gameweeks, so the squad never drifts far enough from optimal for unlimited transfers to rescue it. Play it against real news rather than against this number"
     },
     {
       "event": 29,

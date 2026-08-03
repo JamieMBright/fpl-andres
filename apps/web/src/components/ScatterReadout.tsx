@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 
+import { METRICS, metric as metricById } from "../state/analysis-metrics";
 import { DEFCON_THRESHOLD } from "../state/analysis-pool";
 import type { PlottedPlayer, Selection } from "../state/scatter-select";
 
@@ -19,8 +20,9 @@ export interface ScatterReadoutProps {
   selection: Selection;
   pinned: readonly number[];
   onTogglePin: (code: number) => void;
-  /** Rank by this axis rather than the vertical one. */
-  rankBy: "x" | "y";
+  /** Empty follows the y-axis, so changing the chart moves the table with it. */
+  rankBy: string;
+  onRankBy: (id: string) => void;
 }
 
 export function ScatterReadout({
@@ -28,14 +30,19 @@ export function ScatterReadout({
   pinned,
   onTogglePin,
   rankBy,
+  onRankBy,
 }: ScatterReadoutProps) {
-  const metric = rankBy === "x" ? selection.x : selection.y;
+  const chosen = rankBy === "" ? null : metricById(rankBy);
+  const rankMetric = chosen ?? selection.y;
 
   const rows = useMemo(() => {
     const sorted = [...selection.points].sort((left, right) => {
-      const a = rankBy === "x" ? left.x : left.y;
-      const b = rankBy === "x" ? right.x : right.y;
-      return metric.higherIsBetter ? b - a : a - b;
+      const a = rankMetric.value(left.player);
+      const b = rankMetric.value(right.player);
+      // A player the statistic does not apply to goes last rather than to zero.
+      if (a === null) return 1;
+      if (b === null) return -1;
+      return rankMetric.higherIsBetter ? b - a : a - b;
     });
     // Anything pinned stays visible even when it ranks nowhere, because the
     // table is also how a pinned player is compared.
@@ -46,7 +53,9 @@ export function ScatterReadout({
         !top.some((entry) => entry.player.code === point.player.code),
     );
     return [...top, ...missing];
-  }, [selection.points, rankBy, metric.higherIsBetter, pinned]);
+  }, [selection.points, rankMetric, pinned]);
+
+  const metric = rankMetric;
 
   const defconAxis =
     selection.x.group === "Defence" || selection.y.group === "Defence";
@@ -66,7 +75,19 @@ export function ScatterReadout({
       aria-labelledby="scatter-readout-heading"
     >
       <h2 id="scatter-readout-heading">
-        Top {Math.min(ROWS, rows.length)} by {metric.label}
+        Top {Math.min(ROWS, rows.length)} by
+        <select
+          aria-label="Rank the table by"
+          className="readout-rank"
+          onChange={(event) => onRankBy(event.target.value)}
+          value={chosen ? chosen.id : selection.y.id}
+        >
+          {METRICS.map((entry) => (
+            <option key={entry.id} value={entry.id}>
+              {entry.label}
+            </option>
+          ))}
+        </select>
       </h2>
       <p className="readout-explains">{metric.explains}</p>
 

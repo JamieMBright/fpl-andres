@@ -138,13 +138,13 @@ def test_a_blank_needs_no_special_case_because_it_is_already_worth_zero() -> Non
 def test_a_chip_is_still_played_when_it_gains_nothing() -> None:
     """It expires at the half. A chip worth little beats a chip worth nothing,
     and the note says which of the two this is."""
-    weeks = [_week(index, expected={"1": 4.0}, bench=[], projected=50.0) for index in range(1, 7)]
-    ceiling = {index: 50.0 for index in range(1, 7)}
+    weeks = [_week(index, expected={"1": 4.0}, bench=[], projected=50.0) for index in range(1, 14)]
+    ceiling = {index: 50.0 for index in range(1, 14)}
 
     chip = _plan(weeks, ceiling)["Free Hit:first"]
 
     assert chip["event"] is not None
-    assert "expires at nothing" in str(chip["note"])
+    assert "worth almost nothing here" in str(chip["note"])
 
 
 def test_only_one_chip_lands_in_any_gameweek() -> None:
@@ -155,13 +155,67 @@ def test_only_one_chip_lands_in_any_gameweek() -> None:
 
 
 def test_wildcard_takes_the_run_where_the_squad_is_furthest_behind() -> None:
-    # A wildcard keeps its squad, so a long shortfall beats a single deep one.
+    """A wildcard keeps its squad, so a long shortfall beats a single deep one.
+    It lands on the first week of the run rather than the week before it: the
+    credit tapers as one free transfer a week catches up, so a leading week of
+    nothing is dead weight at full weight."""
     weeks = [_week(index, expected={"1": 1.0}, bench=[], projected=40.0) for index in range(1, 13)]
     ceiling = {index: 40.0 for index in range(1, 13)}
     for index in range(6, 13):
         ceiling[index] = 45.0
 
-    assert _plan(weeks, ceiling)["Wildcard:first"]["event"] == 5
+    assert _plan(weeks, ceiling)["Wildcard:first"]["event"] == 6
+
+
+def test_a_wildcard_is_never_played_before_the_squad_can_have_drifted() -> None:
+    """Gameweeks one to three rebuild a squad that was chosen freely days ago."""
+    weeks = [_week(index, expected={"1": 1.0}, bench=[], projected=10.0) for index in range(1, 13)]
+    ceiling = {index: 90.0 for index in range(1, 13)}
+
+    event = _plan(weeks, ceiling)["Wildcard:first"]["event"]
+
+    assert isinstance(event, int)
+    assert event >= 4
+
+
+def test_a_free_hit_is_never_played_in_the_opening_week() -> None:
+    """There is no squad to escape: the eleven on the pitch was picked for it."""
+    weeks = [_week(index, expected={"1": 1.0}, bench=[], projected=10.0) for index in range(1, 13)]
+    ceiling = {index: 90.0 for index in range(1, 13)}
+
+    assert _plan(weeks, ceiling)["Free Hit:first"]["event"] != 1
+
+
+def test_the_two_unlimited_transfer_chips_are_kept_apart() -> None:
+    """A free hit next door to a wildcard hands back the squad the wildcard just
+    built, which spends two chips to do the work of one."""
+    weeks = [_week(index, expected={"1": 1.0}, bench=[], projected=10.0) for index in range(1, 20)]
+    ceiling = {index: 90.0 for index in range(1, 20)}
+
+    chips = _plan(weeks, ceiling)
+    wildcard = chips["Wildcard:first"]["event"]
+    free_hit = chips["Free Hit:first"]["event"]
+
+    assert isinstance(wildcard, int)
+    assert isinstance(free_hit, int)
+    assert abs(wildcard - free_hit) >= 3
+
+
+def test_a_flat_shortfall_is_not_a_free_hit_problem() -> None:
+    """A squad behind every week wants rebuilding, not one borrowed afternoon,
+    so the free hit scores it at nothing."""
+    weeks = [_week(index, expected={"1": 1.0}, bench=[], projected=40.0) for index in range(1, 20)]
+    ceiling = {index: 50.0 for index in range(1, 20)}
+
+    assert _plan(weeks, ceiling)["Free Hit:first"]["gain"] == 0.0
+
+
+def test_a_single_collapsed_week_is_exactly_a_free_hit_problem() -> None:
+    weeks = [_week(index, expected={"1": 1.0}, bench=[], projected=50.0) for index in range(1, 20)]
+    ceiling = {index: 50.0 for index in range(1, 20)}
+    ceiling[11] = 90.0
+
+    assert _plan(weeks, ceiling)["Free Hit:first"]["event"] == 11
 
 
 def test_every_chip_is_offered_once_in_each_half() -> None:
