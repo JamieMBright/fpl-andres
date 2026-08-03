@@ -54,12 +54,13 @@ export const TEAM_KITS: readonly TeamKit[] = [
     code: 3,
     shortName: "ARS",
     name: "Arsenal",
-    // White sleeves, and a collar dithered from the two club colours.
+    // White sleeves and shoulder, and a collar dithered from the club colours.
     paint: {
       base: "red",
       sleeves: "white",
       collar: ["red"],
       collarDither: ["black", "red"],
+      shoulder: ["white"],
     },
   },
   {
@@ -82,7 +83,7 @@ export const TEAM_KITS: readonly TeamKit[] = [
     code: 94,
     shortName: "BRE",
     name: "Brentford",
-    paint: solid("red", ["yellow", "black", "black"], {
+    paint: solid("red", ["yellow", "black"], {
       stripes: ["red", "red", "white", "white"],
       cuffs: ["yellow", "black"],
     }),
@@ -92,7 +93,7 @@ export const TEAM_KITS: readonly TeamKit[] = [
     shortName: "BHA",
     name: "Brighton",
     // The white stripes are much thinner than the blue.
-    paint: solid("blue", ["white", "white", "blue"], {
+    paint: solid("blue", ["white", "blue"], {
       stripes: ["blue", "blue", "white"],
     }),
   },
@@ -125,29 +126,30 @@ export const TEAM_KITS: readonly TeamKit[] = [
     code: 11,
     shortName: "EVE",
     name: "Everton",
-    paint: solid("blue", ["yellow", "blue", "blue"]),
+    paint: solid("blue", ["yellow", "blue"]),
   },
   {
     code: 54,
     shortName: "FUL",
     name: "Fulham",
-    paint: solid("white", ["red", "black", "black"]),
+    paint: solid("white", ["red", "black"]),
   },
   {
     code: 88,
     shortName: "HUL",
     name: "Hull City",
-    // Three bars: black centre, amber either side, one cell of black outline.
+    // Three bars: a four-cell black centre, amber either side, and a black
+    // outline one cell wide.
     paint: solid("yellow", ["black"], {
       stripes: [
         "black",
         "yellow",
         "yellow",
         "yellow",
-        "yellow",
         "black",
         "black",
-        "yellow",
+        "black",
+        "black",
         "yellow",
         "yellow",
         "yellow",
@@ -159,7 +161,7 @@ export const TEAM_KITS: readonly TeamKit[] = [
     code: 40,
     shortName: "IPS",
     name: "Ipswich Town",
-    paint: solid("blue", ["white", "blue", "blue"], { cuffs: ["black"] }),
+    paint: solid("blue", ["white", "blue"], { cuffs: ["black"] }),
   },
   {
     code: 2,
@@ -173,7 +175,7 @@ export const TEAM_KITS: readonly TeamKit[] = [
     code: 14,
     shortName: "LIV",
     name: "Liverpool",
-    paint: solid("red", ["white", "red", "red"]),
+    paint: solid("red", ["white", "red"]),
   },
   {
     code: 43,
@@ -188,7 +190,10 @@ export const TEAM_KITS: readonly TeamKit[] = [
     code: 1,
     shortName: "MUN",
     name: "Manchester United",
-    paint: solid("red", ["black"], { cuffs: ["white"] }),
+    paint: solid("red", ["black", "white"], {
+      cuffs: ["white"],
+      shoulder: ["white"],
+    }),
   },
   {
     code: 4,
@@ -222,7 +227,7 @@ export const TEAM_KITS: readonly TeamKit[] = [
     code: 56,
     shortName: "SUN",
     name: "Sunderland",
-    paint: solid("red", ["white", "red", "red"], {
+    paint: solid("red", ["white", "red"], {
       stripes: ["red", "red", "white", "white"],
     }),
   },

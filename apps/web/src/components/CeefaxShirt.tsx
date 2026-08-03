@@ -19,25 +19,35 @@ import { inkOn, TELETEXT_PALETTE, type TeletextColor } from "../kit/teletext";
  */
 
 const COLS = 16;
-const ROWS = 16;
+const ROWS = 14;
 const CELL = 4;
 
 const BODY_X = 2;
 const BODY_W = 12;
-const BODY_Y = 3;
+const BODY_Y = 2;
 const BODY_H = ROWS - BODY_Y;
 
 const SLEEVE_W = 2;
 const SLEEVE_H = 5;
 
-const COLLAR_X = 6;
-const COLLAR_W = 4;
+// Two rows, six wide. Three rows of four read as a chimney on a twelve-wide
+// body rather than as a collar.
+const COLLAR_X = 5;
+const COLLAR_W = 6;
+const COLLAR_H = 2;
 
-/** Ordered dither, so a fade steps in visible bands rather than smoothing. */
-const BAYER = [
-  [0, 2],
-  [3, 1],
-];
+/**
+ * Deterministic value noise per cell.
+ *
+ * An ordered dither lays a visible lattice across a fade, which reads as a
+ * texture rather than as one colour becoming another. Scattering the cells
+ * instead looks like the fade it is meant to be, and hashing the coordinates
+ * keeps the component pure.
+ */
+function noise(row: number, column: number): number {
+  const mixed = Math.sin(row * 127.1 + column * 311.7) * 43758.5453;
+  return mixed - Math.floor(mixed);
+}
 
 type Grid = (TeletextColor | null)[][];
 
@@ -107,14 +117,16 @@ function buildGrid(spec: KitPaint): Grid {
       const height = 1 - row / Math.max(1, BODY_H - 1);
       const density = Math.min(1, height / Math.max(0.01, solidBy));
       for (let column = 0; column < BODY_W; column += 1) {
-        const threshold = (BAYER[row % 2]![column % 2]! + 0.5) / 4;
+        // The hem stays one solid row, so the fade has somewhere to start from
+        // rather than beginning already speckled.
+        const hem = row === BODY_H - 1;
         paint(
           grid,
           BODY_X + column,
           BODY_Y + row,
           1,
           1,
-          density > threshold ? to : from,
+          !hem && density > noise(row, column) ? to : from,
         );
       }
     }
@@ -142,9 +154,12 @@ function buildGrid(spec: KitPaint): Grid {
   });
 
   if (spec.sideLine) {
-    const height = Math.round(BODY_H * 0.66);
-    paint(grid, BODY_X, BODY_Y, 1, height, spec.sideLine);
-    paint(grid, BODY_X + BODY_W - 1, BODY_Y, 1, height, spec.sideLine);
+    // Below the sleeve, not beside it: starting at the shoulder draws a line
+    // between sleeve and torso instead of down the side seam.
+    const top = BODY_Y + SLEEVE_H;
+    const bottom = BODY_Y + Math.round(BODY_H * 0.8);
+    paint(grid, BODY_X, top, 1, bottom - top, spec.sideLine);
+    paint(grid, BODY_X + BODY_W - 1, top, 1, bottom - top, spec.sideLine);
   }
 
   spec.cuffs?.forEach((colour, depth) => {
@@ -154,7 +169,7 @@ function buildGrid(spec: KitPaint): Grid {
 
   if (spec.collarDither) {
     const [first, second] = spec.collarDither;
-    for (let row = 0; row < BODY_Y; row += 1) {
+    for (let row = 0; row < COLLAR_H; row += 1) {
       for (let column = 0; column < COLLAR_W; column += 1) {
         paint(
           grid,
@@ -167,7 +182,7 @@ function buildGrid(spec: KitPaint): Grid {
       }
     }
   } else {
-    for (let row = 0; row < BODY_Y; row += 1) {
+    for (let row = 0; row < COLLAR_H; row += 1) {
       const colour = spec.collar[Math.min(row, spec.collar.length - 1)];
       if (colour) paint(grid, COLLAR_X, row, COLLAR_W, 1, colour);
     }
