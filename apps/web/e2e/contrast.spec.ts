@@ -23,6 +23,7 @@ const ROUTES = [
   { name: "season plan", path: "/plan" },
   { name: "method", path: "/methodology" },
   { name: "player pool", path: "/players" },
+  { name: "analysis", path: "/analysis" },
   { name: "calibration", path: "/calibration" },
 ] as const;
 

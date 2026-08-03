@@ -63,9 +63,9 @@ describe("buildPlayerPool", () => {
     const bruno = pool.players.find((player) => player.code === KNOWN_CODE);
 
     expect(bruno?.priceTenths).toBe(100);
-    expect(bruno?.record?.expectedPoints).toBe(5.19);
-    // 5.19 points per match at £10.0m.
-    expect(bruno?.perMillion).toBeCloseTo(0.52, 2);
+    expect(bruno?.record?.expectedPoints).toBe(5.05);
+    // 5.05 points per match at £10.0m.
+    expect(bruno?.perMillion).toBeCloseTo(0.51, 2);
   });
 
   it("keeps a player with no record rather than dropping him", () => {

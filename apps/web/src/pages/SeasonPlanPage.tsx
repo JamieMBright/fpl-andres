@@ -1,8 +1,9 @@
-import { ArrowRight, ChevronDown } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
 import { CeefaxShirt } from "../components/CeefaxShirt";
+import { PlayerDetail } from "../components/PlayerDetail";
 import { RouteHeading } from "../components/RouteHeading";
 import { deadlineDay, money } from "../format";
 import { kitForShortName } from "../kit/team-kits";
@@ -15,7 +16,14 @@ import type {
   PlanGameweek,
   PlanPlayer,
 } from "../state/season-plan";
-import { CONFIDENCE_NOTE, readSeasonPlan } from "../state/season-plan";
+import { readSeasonPlan } from "../state/season-plan";
+import {
+  chipReason,
+  confidenceReason,
+  fixtureReason,
+  moneyLines,
+  moveReason,
+} from "../state/plan-reasons";
 import { useDocumentTitle } from "../state/use-document-title";
 
 /**
@@ -31,7 +39,30 @@ function Shirt({ club }: { club: string }) {
   );
 }
 
-function TeamSheet({ week }: { week: PlanGameweek }) {
+/**
+ * Home in capitals, away in lower case. A column of "(H)" and "(A)" is four
+ * more characters on every line to say one bit of information.
+ */
+function venue(fixtures: readonly string[]): string {
+  if (fixtures.length === 0) return "—";
+  return fixtures
+    .map((fixture) => {
+      const [club, side] = fixture.split(" ");
+      if (!club) return fixture;
+      return side === "(H)" ? club.toUpperCase() : club.toLowerCase();
+    })
+    .join(" ");
+}
+
+function TeamSheet({
+  benchCounts,
+  onOpen,
+  week,
+}: {
+  benchCounts: boolean;
+  onOpen: (player: PlanPlayer) => void;
+  week: PlanGameweek;
+}) {
   const role = (player: PlanPlayer) => {
     if (player.code === week.captain.code) return "C";
     if (player.code === week.viceCaptain.code) return "V";
@@ -40,28 +71,52 @@ function TeamSheet({ week }: { week: PlanGameweek }) {
 
   const line = (player: PlanPlayer, benched: boolean) => {
     const badge = role(player);
-    const against = week.opponents[player.club] ?? [];
-    const points = week.expected[String(player.code)] ?? 0;
+    const captain = player.code === week.captain.code;
+    const raw = week.expected[String(player.code)] ?? 0;
+    // The armband doubles the score, so the line shows what he actually returns.
+    const points = captain ? raw * 2 : raw;
+    const scores = !benched || benchCounts;
+    const rating = week.difficulty[player.club] ?? null;
 
     return (
       <li key={player.code}>
         <Shirt club={player.club} />
-        <span className="plan-name">{player.name}</span>
-        {badge ? (
-          <span className={`plan-role plan-role-${badge.toLowerCase()}`}>
-            {badge}
-          </span>
-        ) : (
-          <span className="plan-role-gap" aria-hidden="true" />
-        )}
+        <span className="plan-name">
+          <button
+            className="plan-open"
+            onClick={() => {
+              onOpen(player);
+            }}
+            type="button"
+          >
+            {player.name}
+            {badge ? ` (${badge})` : ""}
+          </button>
+        </span>
         <span className="plan-price mono">
           {money.format(player.priceTenths / 10)}
         </span>
         <span className="plan-against mono">
-          {against.length === 0 ? "blank" : against.join(" ")}
+          {venue(week.opponents[player.club] ?? [])}
         </span>
-        <span className="plan-points mono">
-          {benched ? `(${points.toFixed(1)})` : points.toFixed(1)}
+        <span
+          className={`plan-fdr mono plan-fdr-${rating === null ? "none" : String(rating)}`}
+          title={
+            rating === null
+              ? "No fixture, or no measured record for the opponent"
+              : `Fixture difficulty ${String(rating)} of 5`
+          }
+        >
+          {rating ?? "\u2014"}
+        </span>
+        <span
+          className={
+            captain
+              ? "plan-points mono plan-points-captain"
+              : "plan-points mono"
+          }
+        >
+          {scores ? points.toFixed(1) : `(${points.toFixed(1)})`}
         </span>
       </li>
     );
@@ -69,6 +124,14 @@ function TeamSheet({ week }: { week: PlanGameweek }) {
 
   return (
     <div className="plan-sheet">
+      <p className="plan-sheet-head mono" aria-hidden="true">
+        <span />
+        <span>Player</span>
+        <span>Price</span>
+        <span>Opponent</span>
+        <span>FDR</span>
+        <span>xPts</span>
+      </p>
       <ol className="plan-eleven">
         {week.starters.map((player) => line(player, false))}
       </ol>
@@ -83,18 +146,9 @@ function Move({ week }: { week: PlanGameweek }) {
   if (week.transfersIn.length === 0) {
     return (
       <p className="plan-move plan-move-roll">
-        {week.event === 1 ? (
-          <>
-            <span className="mono">Opening squad</span> — no transfer exists to
-            spend before the first deadline. Captain{" "}
-            <strong>{week.captain.name}</strong>.
-          </>
-        ) : (
-          <>
-            <span className="mono">Roll</span> — bank the transfer, captain{" "}
-            <strong>{week.captain.name}</strong>.
-          </>
-        )}
+        <span className="mono">
+          {week.event === 1 ? "Opening squad" : "Roll the free transfer"}
+        </span>
       </p>
     );
   }
@@ -118,60 +172,64 @@ function Move({ week }: { week: PlanGameweek }) {
 }
 
 function Why({ week, chip }: { week: PlanGameweek; chip: ChipCall | null }) {
-  const cost =
-    week.transferCostPoints > 0
-      ? `Takes a ${week.transferCostPoints}-point hit.`
-      : "No hit: inside the free transfer.";
-  const benched =
-    week.bench.reduce((total, player) => total + player.priceTenths, 0) / 10;
+  const fixtures = fixtureReason(week);
 
   return (
-    <div className="plan-why">
-      <p>
-        {week.transfersIn.length === 0
-          ? week.event === 1
-            ? "The opening squad, picked before a ball is kicked."
-            : "Nothing available gains more than holding, so the transfer banks for a week when it does."
-          : cost}{" "}
-        Projected <strong>{week.projectedPoints.toFixed(1)}</strong> before
-        cost, <strong>{week.netExpectedPoints.toFixed(1)}</strong> after.
-      </p>
-      <p>
-        {CONFIDENCE_NOTE[week.confidence]} Bank after this move{" "}
-        {money.format(week.bankAfterTenths / 10)}.
-      </p>
-      <p className="plan-bench-note">
-        {money.format(benched)} is on the bench, which scores nothing unless a
-        starter does not play. Bench order is by expected points, not by
-        FPL&rsquo;s substitution rules — those depend on the formation left
-        behind, which is not solved here.
-      </p>
-      {chip ? (
-        <p className="plan-chip-note">
-          <strong>{chip.chip}:</strong> {chip.note}.
-        </p>
+    <dl className="plan-why">
+      <dt>Move</dt>
+      <dd>{moveReason(week)}</dd>
+
+      <dt>Money</dt>
+      <dd>
+        <ul className="plan-money">
+          {moneyLines(week).map((line) => (
+            <li key={line}>{line}</li>
+          ))}
+        </ul>
+      </dd>
+
+      {fixtures ? (
+        <>
+          <dt>Fixtures</dt>
+          <dd>{fixtures}</dd>
+        </>
       ) : null}
-    </div>
+
+      <dt>Confidence</dt>
+      <dd>{confidenceReason(week)}</dd>
+
+      <dt>Chip</dt>
+      <dd>{chipReason(chip)}</dd>
+    </dl>
   );
 }
 
 function GameweekCard({
-  week,
   chip,
-  open,
-  onToggle,
+  onOpen,
+  week,
 }: {
-  week: PlanGameweek;
   chip: ChipCall | null;
-  open: boolean;
-  onToggle: () => void;
+  onOpen: (player: PlanPlayer) => void;
+  week: PlanGameweek;
 }) {
   const deadline = new Date(week.deadline);
-  const value =
-    [...week.starters, ...week.bench].reduce(
-      (total, player) => total + player.priceTenths,
+  const boosted = chip?.chip === "Bench Boost";
+
+  // What the card actually returns: the eleven, the armband again, and the
+  // bench only when a boost is paying for it.
+  const haul =
+    week.starters.reduce(
+      (total, player) => total + (week.expected[String(player.code)] ?? 0),
       0,
-    ) / 10;
+    ) +
+    (week.expected[String(week.captain.code)] ?? 0) +
+    (boosted
+      ? week.bench.reduce(
+          (total, player) => total + (week.expected[String(player.code)] ?? 0),
+          0,
+        )
+      : 0);
 
   return (
     <li className={`plan-card plan-${week.confidence}`}>
@@ -182,22 +240,16 @@ function GameweekCard({
       </div>
 
       <Move week={week} />
-      <TeamSheet week={week} />
+      <TeamSheet benchCounts={boosted} onOpen={onOpen} week={week} />
 
-      <p className="plan-value mono">
-        Squad {money.format(value)} · bank{" "}
-        {money.format(week.bankAfterTenths / 10)}
+      <p className="plan-haul mono">
+        EXPECTED HAUL {haul.toFixed(1)}
+        {week.transferCostPoints > 0
+          ? ` − ${week.transferCostPoints} hit = ${(haul - week.transferCostPoints).toFixed(1)}`
+          : null}
       </p>
 
-      <button
-        aria-expanded={open}
-        className="plan-toggle"
-        onClick={onToggle}
-        type="button"
-      >
-        Why <ChevronDown aria-hidden="true" size={14} />
-      </button>
-      {open ? <Why week={week} chip={chip} /> : null}
+      <Why chip={chip} week={week} />
     </li>
   );
 }
@@ -215,6 +267,7 @@ function asPlanGameweek(week: SolvedGameweek): PlanGameweek {
     transfersIn: week.transfersIn,
     transfersOut: week.transfersOut,
     opponents: week.opponents,
+    difficulty: week.difficulty,
     expected: week.expected,
     freeTransfersBefore: week.freeTransfersBefore,
     paidTransfers: week.paidTransfers,
@@ -227,10 +280,8 @@ function asPlanGameweek(week: SolvedGameweek): PlanGameweek {
 
 export default function SeasonPlanPage() {
   const plan = useMemo(() => readSeasonPlan(), []);
+  const [selected, setSelected] = useState<PlanPlayer | null>(null);
   const [params] = useSearchParams();
-  const [open, setOpen] = useState<number | null>(
-    plan.gameweeks[0]?.event ?? null,
-  );
   const chips = useMemo(() => {
     const byEvent = new Map<number, ChipCall>();
     for (const chip of plan.chips) {
@@ -320,6 +371,33 @@ export default function SeasonPlanPage() {
         </p>
       )}
 
+      <dl className="plan-key">
+        <div>
+          <dt>xPts</dt>
+          <dd>
+            Expected FPL points from one match: appearance, goals and assists at
+            his own decayed per-90 rates, plus clean sheets, saves, cards and
+            defensive contribution, scaled by this opponent. A good starter is
+            four to six; anything above seven is a genuinely strong fixture.
+          </dd>
+        </div>
+        <div>
+          <dt>Opponent</dt>
+          <dd>
+            Capitals are home, lower case away.{" "}
+            <span className="mono">HUL</span> is at home to Hull;{" "}
+            <span className="mono">hul</span> is away at Hull.
+          </dd>
+        </div>
+        <div>
+          <dt>Captain</dt>
+          <dd>
+            Shown <strong>doubled</strong>, because that is what he returns.
+            Bench figures are bracketed unless a Bench Boost is paying for them.
+          </dd>
+        </div>
+      </dl>
+
       {solve.status === "solving" ? (
         <p className="plan-progress" role="status">
           <span
@@ -345,12 +423,20 @@ export default function SeasonPlanPage() {
           <GameweekCard
             chip={chips.get(week.event) ?? null}
             key={week.event}
-            onToggle={() => setOpen(open === week.event ? null : week.event)}
-            open={open === week.event}
+            onOpen={setSelected}
             week={week}
           />
         ))}
       </ul>
+
+      {selected ? (
+        <PlayerDetail
+          onClose={() => {
+            setSelected(null);
+          }}
+          player={selected}
+        />
+      ) : null}
 
       <p className="plan-basis mono">
         {plan.basis}. Records from {plan.recordSeason}. Transfer rules:{" "}
@@ -376,6 +462,13 @@ export default function SeasonPlanPage() {
             {plan.dataGaps.clubsInLeague} clubs are represented.
           </li>
           <li>
+            <strong>It cannot see price changes.</strong> Players rise and fall
+            through the season and this plan holds today&rsquo;s prices for all
+            thirty-eight gameweeks. A transfer eleven weeks out may simply be
+            unaffordable by the time you reach it, and a squad that banks value
+            early can afford things this plan says it cannot.
+          </li>
+          <li>
             <strong>It does not yet adjust week to week.</strong> A real plan
             moves with form, minutes, injuries and price changes, and against
             what your mini-league already owns. None of that is in here: this is
@@ -387,6 +480,14 @@ export default function SeasonPlanPage() {
             failure of the plan, it is what a plan is for. Read the shape — the
             weeks worth a chip, the runs worth holding through — and expect the
             names past the next month or so to be replaced.
+          </li>
+          <li>
+            <strong>No Haaland, and that is the model talking.</strong> He is
+            projected at 4.40 points a match against Thiago&rsquo;s 4.41 for
+            half the price, because his decayed start rate is 0.68 against
+            Thiago&rsquo;s 0.90. Spend the difference on the eleven and the
+            eleven wins. If you think 0.68 understates him, that is the number
+            to argue with, not the optimiser.
           </li>
         </ol>
       </section>

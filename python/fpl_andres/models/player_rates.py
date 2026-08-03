@@ -124,17 +124,19 @@ class PlayerRateEvidence(BaseModel):
             raise ValueError("carried observations must not come from the current season")
         if len(prior_seasons) > 1:
             raise ValueError("carried observations must come from a single prior season")
-        # Rates are sums over observations, so a repeated gameweek double-counts
-        # its minutes and its returns into the per-90 figure. Runs after the
-        # season checks, because "these came from two seasons" is the more
-        # fundamental complaint about a list holding event 5 twice.
+        # Rates are sums over observations, so the same match counted twice
+        # doubles its minutes and its returns into the per-90 figure. A match is
+        # identified by its event *and its kickoff*: a double gameweek is two
+        # matches in one event, and both of them really happened.
         for label, observations in (
             ("current-season", self.current_season_observations),
             ("carried", self.prior_season_observations),
         ):
-            event_ids = [observation.event_id for observation in observations]
-            if len(set(event_ids)) != len(event_ids):
-                raise ValueError(f"{label} observations must not repeat an event")
+            matches = [
+                (observation.event_id, observation.kickoff_time) for observation in observations
+            ]
+            if len(set(matches)) != len(matches):
+                raise ValueError(f"{label} observations must not repeat a match")
         # Two sourced parameters that must agree with each other. If the blend
         # saturates at or below the floor for projecting at all, then every
         # player who clears the floor is already at full current-season weight

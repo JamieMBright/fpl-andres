@@ -24,6 +24,7 @@ const bootstrapSchema = z.object({
         team: z.number().int().positive(),
         now_cost: z.number().int().positive(),
         status: z.string().min(1),
+        squad_number: z.number().int().positive().max(99).nullable().optional(),
       })
       .loose(),
   ),
@@ -72,6 +73,8 @@ export interface PoolPlayer {
   position: string;
   club: string;
   teamId: number;
+  /** The number on his back, where FPL has published one. */
+  squadNumber: number | null;
   priceTenths: number;
   /** FPL's own availability flag: "a" is available, anything else is not. */
   available: boolean;
@@ -119,6 +122,7 @@ export function buildPlayerPool(
         position,
         club,
         teamId: element.team,
+        squadNumber: element.squad_number ?? null,
         priceTenths: element.now_cost,
         available: element.status === "a",
         record,

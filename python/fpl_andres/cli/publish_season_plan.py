@@ -22,7 +22,7 @@ import json
 import sys
 import urllib.request
 from collections.abc import Mapping, Sequence
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
@@ -39,7 +39,12 @@ from fpl_andres.optimization.contracts import (
     PositionConstraint,
     TransferRulesAddendum,
 )
-from fpl_andres.planning.opening import OpeningSettings, choose_opening_squad
+from fpl_andres.planning.fixture_routes import fixture_difficulty, fixture_multiplier
+from fpl_andres.planning.opening import (
+    PLAYABLE_START_RATE,
+    OpeningSettings,
+    choose_opening_squad,
+)
 from fpl_andres.planning.season_plan import (
     plan_season,
 )
@@ -126,37 +131,35 @@ class Candidate:
     price_tenths: int
     record: float
     squad_number: int | None
+    # What `record` is made of, so a fixture can be applied to each route.
+    routes: Mapping[str, float] = field(default_factory=dict)
 
 
 def _opponent_multiplier(
     *,
-    position: int,
+    candidate: Candidate,
     opponent: int,
     home: bool,
     strength: Mapping[int, TeamStrength],
 ) -> float:
     """How much this fixture is worth to this player, against an average one.
 
-    The two routes run in opposite directions and it matters enormously.
-
-    An attacker scores more against a leaky defence, and `defence()` is already
-    a leakiness multiplier — above one means that side concedes more than
-    average — so it multiplies directly.
-
-    A defender scores *less* against a strong attack, because his points come
-    from a clean sheet. `attack()` is a strength multiplier, so it has to be
-    inverted. Multiplying by it directly said Gabriel's best fixture of the
-    season was away at Manchester City, whose 1.361 is the highest attack
-    multiplier in the league, and the plan triple-captained him for it.
+    Each published scoring route is bent by what the fixture does to *it*, then
+    the lot is expressed as a ratio against the neutral projection. One blended
+    difficulty number cannot do this: the same hard away tie suppresses clean
+    sheets and raises saves, so it is good for the keeper and bad for the
+    defender in front of him.
     """
-    measured = strength.get(opponent)
-    if measured is None:
+    if opponent not in strength or candidate.team_id not in strength:
         return 1.0
-    defensive = position in (1, 2)
-    if not defensive:
-        return measured.defence(home=not home)
-    opposing_attack = measured.attack(home=not home)
-    return 1.0 / opposing_attack if opposing_attack > 0 else 1.0
+    return fixture_multiplier(
+        candidate.routes,
+        neutral_points=candidate.record,
+        team_id=candidate.team_id,
+        opponent_id=opponent,
+        home=home,
+        strength=strength,
+    )
 
 
 def _data_gaps(
@@ -230,7 +233,8 @@ def _chip_plan(
             "event": triple["event"],
             "chip": "Triple Captain",
             "note": (
-                f"{named[int(best_code)].name} is worth {best_points:.1f}, his best of the season"
+                f"{named[int(best_code)].name} is expected to score {best_points:.1f}, the most "
+                f"any single player is expected to score in any week this season"
             ),
         }
     )
@@ -246,7 +250,10 @@ def _chip_plan(
             {
                 "event": boost["event"],
                 "chip": "Bench Boost",
-                "note": f"the bench is worth {bench_points(boost):.1f}, its best",
+                "note": (
+                    f"the bench is worth {bench_points(boost):.1f} that week, the most "
+                    f"any bench is expected to score all season"
+                ),
             }
         )
 
@@ -364,6 +371,12 @@ def main(argv: Sequence[str] | None = None) -> int:
         record = record_by_code.get(element.code)
         if record is None:
             continue
+        # The same floor the opening squad applies. Without it the plan happily
+        # transferred in a fringe forward who has not started a match: his
+        # per-match record looks fine because it is measured over the handful of
+        # matches he did play.
+        if float(record["probabilityStart"]) < PLAYABLE_START_RATE:
+            continue
         candidates.append(
             Candidate(
                 element_id=element.id,
@@ -374,6 +387,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                 club=str(clubs[element.team]["short_name"]),
                 price_tenths=element.now_cost,
                 record=float(record["expectedPoints"]),
+                routes=record.get("routes", {}),
                 squad_number=element.squad_number,
             )
         )
@@ -436,7 +450,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                 expected = sum(
                     candidate.record
                     * _opponent_multiplier(
-                        position=candidate.position,
+                        candidate=candidate,
                         opponent=opponent,
                         home=home,
                         strength=strength,
@@ -465,7 +479,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             for opponent, home in schedule.get((event, candidate.team_id), ()):
                 weights.append(
                     _opponent_multiplier(
-                        position=3, opponent=opponent, home=home, strength=strength
+                        candidate=candidate, opponent=opponent, home=home, strength=strength
                     )
                 )
         # Higher multiplier means an easier opponent, so invert it to read as
@@ -542,14 +556,19 @@ def main(argv: Sequence[str] | None = None) -> int:
         # the club whose shirt is already drawn beside the player. A double
         # gameweek gets both.
         opponents: dict[str, list[str]] = {}
+        # One to five for the same tie, so a card can show how hard the week is
+        # without the reader working it out from club names.
+        week_difficulty: dict[str, int | None] = {}
         for element_id in squad:
             candidate = detail[element_id]
             if candidate.club in opponents:
                 continue
+            games = schedule.get((planned.event, candidate.team_id), ())
             opponents[candidate.club] = [
                 f"{clubs[opponent]['short_name']} ({'H' if home else 'A'})"
-                for opponent, home in schedule.get((planned.event, candidate.team_id), ())
+                for opponent, home in games
             ]
+            week_difficulty[candidate.club] = fixture_difficulty(games, candidate.team_id, strength)
 
         gameweeks.append(
             {
@@ -566,6 +585,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                 "transfersIn": [ref(pid) for pid in event_plan.transfers_in],
                 "transfersOut": [ref(pid) for pid in event_plan.transfers_out],
                 "opponents": opponents,
+                "difficulty": week_difficulty,
                 "expected": {
                     str(detail[element_id].code): expected_by[(planned.event, element_id)]
                     for element_id in squad
@@ -606,7 +626,12 @@ def main(argv: Sequence[str] | None = None) -> int:
             )
         except ValueError:
             continue
-        ceiling[event] = sum(points[p.element_id] for p in free_squad.starters)
+        # The armband too, because the plan's own `projectedPoints` counts it.
+        # Comparing an eleven against an eleven-plus-captain made the ceiling
+        # look lower than the plan every week, so the shortfall was always zero
+        # and the Free Hit and Wildcard were never played.
+        starting = [points[player.element_id] for player in free_squad.starters]
+        ceiling[event] = sum(starting) + max(starting, default=0.0)
 
     chips = _chip_plan(gameweeks, named, ceiling)
 

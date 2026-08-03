@@ -14,7 +14,7 @@ from datetime import UTC, datetime, timedelta
 from fpl_andres.backtesting.corpus import ElementRow
 from fpl_andres.backtesting.fixtures import RouteAdjustment
 from fpl_andres.backtesting.rates import league_rates
-from fpl_andres.backtesting.scoring import supporting_points
+from fpl_andres.backtesting.scoring import supporting_breakdown
 
 KICKOFF = datetime(2025, 8, 16, 14, 0, tzinfo=UTC)
 DEFENDER = 2
@@ -55,14 +55,14 @@ class _Minutes:
 def _points(clean_sheets: list[int], multiplier: float) -> float:
     rows = _rows(clean_sheets)
     league = league_rates(rows, {1: DEFENDER})
-    return supporting_points(
+    return supporting_breakdown(
         rows,
         DEFENDER,
         _Minutes(),  # type: ignore[arg-type]
         league,
         5.0,
         RouteAdjustment(1.0, multiplier, 1.0, 1.0, 1.0),
-    )
+    ).total
 
 
 class CleanSheetBoundTest(unittest.TestCase):

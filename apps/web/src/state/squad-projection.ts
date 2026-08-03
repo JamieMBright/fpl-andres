@@ -33,6 +33,21 @@ export interface PlayerProjection {
   ceiling: number | null;
   returnRate: number | null;
   blankRate: number | null;
+  /** Yellow cards last season, the input to the suspension derate. */
+  yellowCards: number;
+  /** What the suspension risk costs him, as a share of his points kept. */
+  suspensionMultiplier: number;
+  /** What `expectedPoints` is made of, before the derate. */
+  routes: {
+    appearance: number;
+    attacking: number;
+    cleanSheet: number;
+    bonus: number;
+    saves: number;
+    conceding: number;
+    discipline: number;
+    defensiveContribution: number;
+  };
   evidence: string;
 }
 

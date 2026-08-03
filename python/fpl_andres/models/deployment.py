@@ -152,8 +152,9 @@ class DeploymentRoleEvidence(BaseModel):
         if len(self.role_observations) != self.starts_observed:
             raise ValueError("role_observations count must equal starts_observed")
         event_ids = [obs.event_id for obs in self.role_observations]
-        if len(set(event_ids)) != len(event_ids):
-            raise ValueError("role_observations must not repeat an event")
+        matches = [(obs.event_id, obs.kickoff_time) for obs in self.role_observations]
+        if len(set(matches)) != len(matches):
+            raise ValueError("role_observations must not repeat a match")
         if min(event_ids) < self.window_start_event:
             raise ValueError("role_observations extend before window_start_event")
         if max(event_ids) > self.window_end_event:

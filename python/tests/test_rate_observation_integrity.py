@@ -78,16 +78,35 @@ def _current(events: tuple[int, ...], *, goals_on: int) -> tuple[RateObservation
     )
 
 
-def test_current_season_observations_reject_a_repeated_event() -> None:
+def test_current_season_observations_reject_a_repeated_match() -> None:
     honest = _current(tuple(range(1, 11)), goals_on=3)
-    with pytest.raises(ValidationError, match="must not repeat an event"):
+    with pytest.raises(ValidationError, match="must not repeat a match"):
         _evidence(current=(*honest, _observation(SEASON, 3, goals=1)))
 
 
-def test_carried_season_observations_reject_a_repeated_event() -> None:
+def test_a_double_gameweek_is_two_matches_not_a_repeat() -> None:
+    """Two fixtures in one event is a real thing the Premier League does after a
+    postponement, and both of them earned him minutes. Rejecting the second
+    would throw away half of what he played that week."""
+    honest = _current(tuple(range(1, 11)), goals_on=3)
+    second = RateObservation(
+        season=SEASON,
+        event_id=3,
+        minutes=90,
+        goals=1,
+        assists=0,
+        # Same event, midweek instead of the weekend.
+        kickoff_time=datetime(2024, 8, 1, tzinfo=UTC) + timedelta(days=24),
+    )
+    evidence = _evidence(current=(*honest, second))
+
+    assert len(evidence.current_season_observations) == 11
+
+
+def test_carried_season_observations_reject_a_repeated_match() -> None:
     """The carried season is summed the same way, so it needs the same guard."""
     carried = tuple(_observation(PRIOR_SEASON, event) for event in range(1, 11))
-    with pytest.raises(ValidationError, match="must not repeat an event"):
+    with pytest.raises(ValidationError, match="must not repeat a match"):
         _evidence(carried=(*carried, _observation(PRIOR_SEASON, 4)))
 
 
@@ -114,7 +133,7 @@ def test_order_does_not_change_the_projection() -> None:
     assert forward.evidence_level == backward.evidence_level
 
 
-def test_minutes_evidence_already_rejected_repeats() -> None:
+def test_minutes_evidence_also_rejects_a_repeated_match() -> None:
     """#6 claimed this was missing in minutes.py as well. It was not."""
     observations = tuple(
         AppearanceObservation(
@@ -125,7 +144,7 @@ def test_minutes_evidence_already_rejected_repeats() -> None:
         )
         for event in range(1, 6)
     )
-    with pytest.raises(ValidationError, match="must not repeat an event"):
+    with pytest.raises(ValidationError, match="must not repeat a match"):
         MinutesEvidence(
             element_code=118748,
             season=SEASON,

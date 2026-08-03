@@ -20,6 +20,7 @@ from fpl_andres.backtesting.corpus import ElementRow
 from fpl_andres.cliargs import MAX_EVENT
 from fpl_andres.models.minutes import (
     AppearanceObservation,
+    AvailabilityEvidence,
     MinutesEvidence,
     MinutesProjection,
     project_minutes,
@@ -149,6 +150,7 @@ def project_element_minutes(
     cutoff: datetime,
     config: ProjectionSettings,
     prior_rows: Sequence[ElementRow] = (),
+    availability: AvailabilityEvidence | None = None,
 ) -> MinutesProjection:
     # One appearance per gameweek: a double gameweek's fixtures are combined,
     # because the models reason about events, not matches.
@@ -185,6 +187,7 @@ def project_element_minutes(
         season=season,
         prediction_event=prediction_event,
         observations=observations,
+        availability=availability,
         decay_half_life_events=config.decay_half_life_events,
         minimum_observations=config.minimum_observations,
         prior_start_rate=config.prior_start_rate,

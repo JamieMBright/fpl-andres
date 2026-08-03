@@ -14,7 +14,7 @@ from datetime import UTC, datetime, timedelta
 from fpl_andres.backtesting.corpus import ElementRow
 from fpl_andres.backtesting.fixtures import RouteAdjustment
 from fpl_andres.backtesting.rates import league_rates
-from fpl_andres.backtesting.scoring import supporting_points
+from fpl_andres.backtesting.scoring import supporting_breakdown
 
 KICKOFF = datetime(2025, 8, 16, 14, 0, tzinfo=UTC)
 GOALKEEPER = 1
@@ -56,7 +56,7 @@ def _save_points(own: list[int], league_rows: list[ElementRow]) -> float:
     rows = _rows(own)
     positions = {row.element_id: GOALKEEPER for row in [*rows, *league_rows]}
     league = league_rates([*rows, *league_rows], positions)
-    return supporting_points(
+    return supporting_breakdown(
         rows,
         GOALKEEPER,
         _Minutes(),  # type: ignore[arg-type]
@@ -69,7 +69,7 @@ def _save_points(own: list[int], league_rows: list[ElementRow]) -> float:
             saves=1.0,
             defensive_contribution=1.0,
         ),
-    )
+    ).total
 
 
 class SavesShrinkageTest(unittest.TestCase):

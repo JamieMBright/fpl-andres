@@ -23,13 +23,13 @@ __all__ = [
     "PLAYABLE_START_RATE",
     "OpeningSettings",
     "SquadPlan",
+    "bench_weights",
     "choose_opening_squad",
 ]
 
-# How much a bench place is worth against a starting one. A bench player scores
-# when a starter records no minutes, and lets you switch fixture without a
-# transfer. Assumed, not measured: it is the one number here that wants a
-# season of squad data behind it.
+# How much a bench place is worth against a starting one, where the squad's own
+# appearance chances are not known. Assumed, not measured; `bench_weights`
+# derives it properly and is what the publishers use.
 _BENCH_WEIGHT = 0.25
 # A substitute who never starts cannot cover anything. Below this he is a body.
 # Measured on the decay-weighted chance of an hour, not a season total: Isidor
@@ -39,6 +39,72 @@ PLAYABLE_START_RATE = 0.35
 _PLAYABLE_START_RATE = PLAYABLE_START_RATE
 # Rotating this pair is the point of a cheap goalkeeper pairing.
 _GOALKEEPER = 1
+
+
+def _blank_tail(blanks: Sequence[float]) -> list[float]:
+    """P(at least one blank), P(at least two), ... from independent chances.
+
+    A Poisson binomial, built up one starter at a time. Ten starters is small
+    enough that the exact distribution is cheaper than reasoning about which
+    approximation would have been close enough.
+    """
+    # distribution[k] is P(exactly k blanks) among the starters seen so far.
+    distribution = [1.0]
+    for blank in blanks:
+        updated = [0.0] * (len(distribution) + 1)
+        for count, probability in enumerate(distribution):
+            updated[count] += probability * (1.0 - blank)
+            updated[count + 1] += probability * blank
+        distribution = updated
+    tail: list[float] = []
+    running = 1.0
+    for count in range(len(distribution) - 1):
+        running -= distribution[count]
+        tail.append(max(0.0, min(1.0, running)))
+    return tail
+
+
+def bench_weights(
+    starters: Sequence[Candidate],
+    bench: Sequence[Candidate],
+    appear: Mapping[int, float],
+) -> list[float]:
+    """What each bench place is worth, in the order the subs would come on.
+
+    A substitute scores only when a starter records no minutes and the auto-sub
+    fires, so his worth is the chance he is needed: the first outfield sub comes
+    on if at least one outfield starter blanks, the second if at least two, and
+    so on. The reserve keeper is separate, because he can only replace the one
+    who started.
+
+    This replaces a flat 0.25 applied to every bench place, which was assumed
+    rather than measured and valued the fourth substitute exactly as highly as
+    the first.
+    """
+    outfield_blanks = [
+        1.0 - appear.get(player.element_id, 0.0)
+        for player in starters
+        if player.position != _GOALKEEPER
+    ]
+    tail = _blank_tail(outfield_blanks)
+    keeper_blank = next(
+        (
+            1.0 - appear.get(player.element_id, 0.0)
+            for player in starters
+            if player.position == _GOALKEEPER
+        ),
+        0.0,
+    )
+
+    weights: list[float] = []
+    used = 0
+    for player in bench:
+        if player.position == _GOALKEEPER:
+            weights.append(keeper_blank)
+            continue
+        weights.append(tail[used] if used < len(tail) else 0.0)
+        used += 1
+    return weights
 
 
 @dataclass(frozen=True)
@@ -105,15 +171,24 @@ def _value(
     squad: Sequence[Candidate],
     points: Mapping[int, float],
     settings: OpeningSettings,
+    appear: Mapping[int, float] | None = None,
 ) -> float:
     starters, total = best_eleven(squad, points, settings)
     if not starters:
         return float("-inf")
     starting = {player.element_id for player in starters}
-    bench = sum(
-        points.get(player.element_id, 0.0) for player in squad if player.element_id not in starting
+    benched = [player for player in squad if player.element_id not in starting]
+    if appear is None:
+        return total + settings.bench_weight * sum(
+            points.get(player.element_id, 0.0) for player in benched
+        )
+    # Ordered by points, because that is the order the auto-subs are tried in.
+    benched.sort(key=lambda player: points.get(player.element_id, 0.0), reverse=True)
+    weights = bench_weights(starters, benched, appear)
+    return total + sum(
+        weight * points.get(player.element_id, 0.0)
+        for player, weight in zip(benched, weights, strict=True)
     )
-    return total + settings.bench_weight * bench
 
 
 def _legal(squad: Sequence[Candidate], settings: OpeningSettings) -> bool:
@@ -129,11 +204,16 @@ def choose_opening_squad(
     points: Mapping[int, float],
     start_rate: Mapping[int, float],
     settings: OpeningSettings,
+    appear: Mapping[int, float] | None = None,
 ) -> SquadPlan:
     """Greedy on value per pound, then improved by swaps until nothing helps.
 
     Every player must clear the playable floor, bench included: a squad that
     cannot field a substitute has spent four of its fifteen places on nothing.
+
+    `appear` is each player's chance of recording any minutes. Given it, the
+    bench is valued by how often its cover is actually needed rather than by a
+    flat weight.
     """
     playable = [
         player
@@ -148,7 +228,7 @@ def choose_opening_squad(
     improved = True
     while improved:
         improved = False
-        current = _value(squad, points, settings)
+        current = _value(squad, points, settings, appear)
         spent = sum(player.price_tenths for player in squad)
         for index, outgoing in enumerate(squad):
             for incoming in playable:
@@ -163,7 +243,7 @@ def choose_opening_squad(
                 candidate[index] = incoming
                 if not _legal(candidate, settings):
                     continue
-                if _value(candidate, points, settings) > current + 1e-9:
+                if _value(candidate, points, settings, appear) > current + 1e-9:
                     squad = candidate
                     improved = True
                     break

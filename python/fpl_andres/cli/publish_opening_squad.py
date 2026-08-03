@@ -28,6 +28,7 @@ from fpl_andres.artifacts import OPENING_SQUAD_SCHEMA_VERSION
 from fpl_andres.backtesting.fixtures import Fixture, TeamStrength
 from fpl_andres.bootstrap import BootstrapElement, parse_elements
 from fpl_andres.jsonio import parse_json, read_json_file
+from fpl_andres.planning.fixture_routes import fixture_multiplier
 from fpl_andres.planning.opening import (
     OpeningSettings,
     choose_opening_squad,
@@ -71,16 +72,24 @@ class Rated:
     rated_fixtures: int
     fixtures: int
     start_rate: float
+    # Any minutes at all, which is what decides whether an auto-sub fires.
+    appear_rate: float
 
 
 def _run_rating(
     team_id: int,
-    position: int,
+    routes: Mapping[str, float],
+    neutral_points: float,
     fixtures: Sequence[Fixture],
     strength: Mapping[int, TeamStrength],
 ) -> tuple[float | None, int, int]:
-    """Mean opponent multiplier on the route that matters for this position."""
-    defensive = position in (1, 2)
+    """Mean fixture multiplier over the run, applied route by route.
+
+    Each published scoring route responds to a fixture differently, so the
+    multiplier is built from the player's own mix of them rather than from one
+    blended difficulty number that has to be right for a keeper and a striker
+    at the same time.
+    """
     events = sorted({fixture.event for fixture in fixtures if fixture.event})[:RUN_WINDOW]
     horizon = set(events)
 
@@ -93,17 +102,18 @@ def _run_rating(
         if opponent is None:
             continue
         played += 1
-        measured = strength.get(opponent)
-        if measured is None:
+        if opponent not in strength or team_id not in strength:
             continue
-        home = fixture.is_home(team_id)
-        if defensive:
-            # A clean sheet gets harder as the opponent's attack gets stronger,
-            # so the strength multiplier is inverted rather than applied.
-            opposing_attack = measured.attack(home=not home)
-            multipliers.append(1.0 / opposing_attack if opposing_attack > 0 else 1.0)
-        else:
-            multipliers.append(measured.defence(home=not home))
+        multipliers.append(
+            fixture_multiplier(
+                routes,
+                neutral_points=neutral_points,
+                team_id=team_id,
+                opponent_id=opponent,
+                home=fixture.is_home(team_id),
+                strength=strength,
+            )
+        )
     if not multipliers:
         return None, 0, played
     return sum(multipliers) / len(multipliers), len(multipliers), played
@@ -174,10 +184,10 @@ def main(argv: Sequence[str] | None = None) -> int:
             bit_part += 1
             continue
         team_id = element.team
-        run, rated_count, fixtures = _run_rating(
-            team_id, element.element_type, by_team.get(team_id, ()), strength
-        )
         points = float(record["expectedPoints"])
+        run, rated_count, fixtures = _run_rating(
+            team_id, record.get("routes", {}), points, by_team.get(team_id, ()), strength
+        )
         rated.append(
             Rated(
                 candidate=Candidate(
@@ -196,6 +206,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                 rated_fixtures=rated_count,
                 fixtures=fixtures,
                 start_rate=float(record["probabilityStart"]),
+                appear_rate=float(record["probabilityAppear"]),
             )
         )
 
@@ -205,6 +216,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         ranking,
         {entry.candidate.element_id: entry.start_rate for entry in rated},
         settings,
+        {entry.candidate.element_id: entry.appear_rate for entry in rated},
     )
     squad = list(plan.squad)
     starting = {player.element_id for player in plan.starters}

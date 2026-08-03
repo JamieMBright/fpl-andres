@@ -107,9 +107,13 @@ class MinutesEvidence(BaseModel):
         if not self.source_hashes:
             raise ValueError("minutes evidence must cite at least one source hash")
 
-        event_ids = [observation.event_id for observation in self.observations]
-        if len(set(event_ids)) != len(event_ids):
-            raise ValueError("observations must not repeat an event")
+        # A match, not a gameweek: a double gameweek is two real appearances in
+        # one event, and rejecting it would throw away half of what he played.
+        matches = [
+            (observation.event_id, observation.kickoff_time) for observation in self.observations
+        ]
+        if len(set(matches)) != len(matches):
+            raise ValueError("observations must not repeat a match")
         return self
 
 

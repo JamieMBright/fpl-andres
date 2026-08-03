@@ -89,6 +89,7 @@ export function ApplicationFrame() {
           <nav aria-label="Primary navigation">
             <Link to="/plan">Plan</Link>
             <Link to="/players">Players</Link>
+            <Link to="/analysis">Analysis</Link>
             <Link to="/methodology">Method</Link>
             <Link to="/calibration">Calibration</Link>
           </nav>

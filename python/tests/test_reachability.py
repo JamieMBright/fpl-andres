@@ -87,11 +87,9 @@ KNOWN_ORPHANS = {
     "devig_proportional": "odds de-vigging; kept as the biased baseline to argue against",
     "devig_power": "odds de-vigging; this network blocks every price source",
     "devig_shin": "odds de-vigging; this network blocks every price source",
-    "suspension_risk": "accumulation bans; thresholds are an unsourced rule",
 }
 
 KNOWN_ORPHAN_MODULES = {
-    "dixon_coles": "team goals model; the projector uses its own strength estimate",
     "expected_points": "promoted xPTS model, not called by the backtest",
     "metrics": "scoring helpers, superseded",
     "odds": "bookmaker de-vigging; every price source is blocked from this network",
@@ -211,6 +209,7 @@ def test_no_module_is_imported_only_by_its_own_tests() -> None:
         "publish_cohort",
         "publish_fpl500",
         "publish_projections",
+        "publish_understat",
         "publish_season_inputs",
         "publish_season_plan",
         "sweep_managers",

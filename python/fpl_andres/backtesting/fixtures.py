@@ -15,9 +15,11 @@ applies to a given scoring route, not for one blended figure.
 
 from __future__ import annotations
 
-from collections.abc import Mapping, Sequence
+from collections.abc import Iterable, Mapping, Sequence
 from dataclasses import dataclass
 from datetime import datetime
+
+from fpl_andres.models.dixon_coles import DixonColesModel
 
 __all__ = [
     "Fixture",
@@ -152,6 +154,72 @@ def estimate_strength(fixtures: Sequence[Fixture]) -> dict[int, TeamStrength]:
             ),
         )
         for team_id in teams
+    }
+
+
+def strength_from_goal_model(
+    model: DixonColesModel,
+    teams: Sequence[int],
+) -> dict[int, TeamStrength]:
+    """Turn a fitted Dixon-Coles model into venue strength multipliers.
+
+    `estimate_strength` averages goals for and against and shrinks toward the
+    league. That charges a side for the fixtures it happened to draw: a team who
+    played the top four early looks leakier than it is. Dixon-Coles separates
+    attack, defence and home advantage by fitting them jointly, so the strength
+    is against an average opponent rather than against the ones already faced.
+
+    Each multiplier is the model's expected goals for that team at that venue,
+    averaged over every possible opponent, divided by the same average across
+    the league. `defence` stays a leakiness multiplier, as the rest of this
+    module expects: above one means that side concedes more than average.
+
+    Normalising within a venue matches `estimate_strength`, so the two are
+    interchangeable. One consequence is visible in the output: Dixon-Coles fits
+    a single home advantage shared by every club, so a club's home and away
+    multipliers come out equal. That is the model's claim, not a defect — it
+    says clubs differ in how good they are, not in how much a home crowd is
+    worth, and nineteen home matches is too thin to argue otherwise.
+    """
+    known = [team for team in teams if team in model.teams]
+    if len(known) < 2:
+        return {}
+
+    scored: dict[tuple[int, bool], float] = {}
+    conceded: dict[tuple[int, bool], float] = {}
+    for team in known:
+        opponents = [other for other in known if other != team]
+        for home in (True, False):
+            predictions = [
+                model.predict(
+                    home_team_id=team if home else other,
+                    away_team_id=other if home else team,
+                    event=1,
+                )
+                for other in opponents
+            ]
+            mine = [p.home_expected_goals if home else p.away_expected_goals for p in predictions]
+            theirs = [p.away_expected_goals if home else p.home_expected_goals for p in predictions]
+            scored[(team, home)] = sum(mine) / len(mine)
+            conceded[(team, home)] = sum(theirs) / len(theirs)
+
+    def mean(values: Iterable[float]) -> float:
+        collected = list(values)
+        return sum(collected) / len(collected) if collected else 1.0
+
+    scored_home = mean(scored[(team, True)] for team in known)
+    scored_away = mean(scored[(team, False)] for team in known)
+    conceded_home = mean(conceded[(team, True)] for team in known)
+    conceded_away = mean(conceded[(team, False)] for team in known)
+
+    return {
+        team: TeamStrength(
+            attack_home=_bounded(scored[(team, True)] / scored_home),
+            attack_away=_bounded(scored[(team, False)] / scored_away),
+            defence_home=_bounded(conceded[(team, True)] / conceded_home),
+            defence_away=_bounded(conceded[(team, False)] / conceded_away),
+        )
+        for team in known
     }
 
 

@@ -34,7 +34,7 @@ describe("SquadRecord", () => {
     expect(
       screen.getByRole("table", { name: /last season record/i }),
     ).toBeInTheDocument();
-    expect(screen.getByText("5.19")).toBeInTheDocument();
+    expect(screen.getByText("5.05")).toBeInTheDocument();
   });
 
   it("names the players it has no record for rather than inventing one", () => {

@@ -27,15 +27,17 @@ from datetime import UTC, datetime
 from pathlib import Path
 
 from fpl_andres import timeouts
-from fpl_andres.backtesting.fixtures import TeamStrength
+from fpl_andres.backtesting.fixtures import TeamStrength, route_adjustment
 from fpl_andres.bootstrap import BootstrapElement, parse_elements
 from fpl_andres.jsonio import parse_json, read_json_file
+from fpl_andres.planning.fixture_routes import fixture_difficulty
 from fpl_andres.positions import Position
 
 BOOTSTRAP = "https://fantasy.premierleague.com/api/bootstrap-static/"
 FIXTURES = "https://fantasy.premierleague.com/api/fixtures/"
 USER_AGENT = "fpl-andres/0.5 (+https://github.com/JamieMBright/fpl-andres)"
 PROJECTIONS = Path("apps/web/src/data/projections.json")
+OPENING_SQUAD = Path("apps/web/src/data/opening-squad.json")
 DEFAULT_OUTPUT = Path("apps/web/src/data/season-inputs.json")
 
 SCHEMA_VERSION = 1
@@ -48,6 +50,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="publish-season-inputs")
     parser.add_argument("--output", default=str(DEFAULT_OUTPUT))
     parser.add_argument("--projections", default=str(PROJECTIONS))
+    parser.add_argument("--opening-squad", default=str(OPENING_SQUAD))
     return parser
 
 
@@ -55,6 +58,12 @@ def _get(url: str) -> object:
     request = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
     with urllib.request.urlopen(request, timeout=timeouts.FPL_API) as response:
         return parse_json(response.read().decode("utf-8"), source=url)
+
+
+# Where the measured tie sits on the published one-to-five scale. A fixture is
+# rated on both halves of it: what this side is likely to score and what it is
+# likely to concede, at the venue it is played. Blanks are None, not three:
+# there is no fixture to be difficult.
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -105,28 +114,31 @@ def main(argv: Sequence[str] | None = None) -> int:
     # "HUL (A)" per club per gameweek, so a solved card can name the opponent
     # rather than repeat the club whose shirt is already drawn beside the player.
     opponents: dict[str, list[list[str]]] = {}
+    # One to five per club per gameweek, the published difficulty of the tie.
+    ratings: dict[str, list[int | None]] = {}
     for team_id, team in clubs.items():
         defensive: list[float] = []
         attacking: list[float] = []
+        difficulty: list[int | None] = []
         against: list[list[str]] = []
         for event in ordered:
             games = schedule.get((event, team_id), ())
             back = 0.0
             front = 0.0
             for opponent, home in games:
-                measured = strength.get(opponent)
-                if measured is None:
+                if opponent not in strength or team_id not in strength:
                     back += 1.0
                     front += 1.0
                     continue
-                # A defender scores less against a strong attack, so the
-                # strength multiplier is inverted; an attacker scores more
-                # against a leaky defence, which `defence()` already measures.
-                opposing_attack = measured.attack(home=not home)
-                back += 1.0 / opposing_attack if opposing_attack > 0 else 1.0
-                front += measured.defence(home=not home)
+                # The backtested per-route multipliers, rather than a hand-rolled
+                # inversion here. `clean_sheet` and `attacking` both account for
+                # this club's own strength as well as the opponent's.
+                adjustment = route_adjustment(strength, team_id, opponent, home=home)
+                back += adjustment.clean_sheet
+                front += adjustment.attacking
             defensive.append(round(back, 4))
             attacking.append(round(front, 4))
+            difficulty.append(fixture_difficulty(games, team_id, strength))
             against.append(
                 [
                     f"{clubs[opponent]['short_name']} ({'H' if home else 'A'})"
@@ -137,6 +149,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             "defensive": defensive,
             "attacking": attacking,
         }
+        ratings[str(team["short_name"])] = difficulty
         opponents[str(team["short_name"])] = against
 
     players: list[tuple[int, float, dict[str, object]]] = []
@@ -167,13 +180,25 @@ def main(argv: Sequence[str] | None = None) -> int:
             )
         )
 
+    # The browser solve starts from the published opening squad, so every one of
+    # its fifteen has to be here. A cheap bench enabler is chosen for what he
+    # costs, not what he scores, and would never survive a top-forty cut.
+    opening = read_json_file(Path(args.opening_squad))
+    required = {int(pick["code"]) for pick in opening["picks"]}
+
     trimmed: list[dict[str, object]] = []
     for position in sorted(POSITION_CODES):
         ranked = sorted(
             (row for row in players if row[0] == position),
             key=lambda row: -row[1],
         )
-        trimmed.extend(payload for _, _, payload in ranked[:POOL_PER_POSITION])
+        chosen = ranked[:POOL_PER_POSITION]
+        chosen.extend(row for row in ranked[POOL_PER_POSITION:] if row[2]["code"] in required)
+        trimmed.extend(payload for _, _, payload in chosen)
+
+    absent = required - {int(str(payload["code"])) for payload in trimmed}
+    if absent:
+        raise ValueError(f"opening squad players missing from the solver pool: {sorted(absent)}")
 
     payload = {
         "schemaVersion": SCHEMA_VERSION,
@@ -189,6 +214,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         ),
         "poolPerPosition": POOL_PER_POSITION,
         "fixtureLadder": ladder,
+        "fixtureDifficulty": ratings,
         "opponents": opponents,
         "players": trimmed,
     }

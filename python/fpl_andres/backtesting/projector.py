@@ -30,14 +30,21 @@ from fpl_andres.backtesting.rates import (
     project_element_rates,
 )
 from fpl_andres.backtesting.reliability import PointsShape, describe_shape
-from fpl_andres.backtesting.scoring import _NEUTRAL_ADJUSTMENT, fixture_points
+from fpl_andres.backtesting.scoring import (
+    _NEUTRAL_ADJUSTMENT,
+    PointsBreakdown,
+    fixture_points,
+    fixture_points_breakdown,
+)
 from fpl_andres.models.minutes import (
     MAX_EVENT,
+    AvailabilityEvidence,
     MinutesProjection,
 )
 from fpl_andres.models.player_rates import (
     PlayerRateProjection,
 )
+from fpl_andres.models.suspension_risk import SEASON_MATCHES, suspension_risk
 
 __all__ = [
     "ElementProjection",
@@ -48,6 +55,11 @@ __all__ = [
 ]
 
 _SOURCE_HASH = "sha256:" + "0" * 64
+
+# How many league-average matches a player's own card record is weighed against.
+# Assumed, not measured: half a season is enough that a full campaign dominates
+# its own rate, while a handful of appearances cannot claim a discipline record.
+_BOOKING_PRIOR_MATCHES = 19.0
 
 
 @dataclass(frozen=True)
@@ -230,12 +242,18 @@ class MatchProjection:
     shape: PointsShape
     minutes: MinutesProjection
     rates: PlayerRateProjection
+    # What `expected_points` is made of, before the suspension derate. A scalar
+    # cannot be checked; these can, and a fixture moves each of them differently.
+    breakdown: PointsBreakdown
     # The closing stretch of the season, which is the best guide to a player's
     # current role. A January signing who started every remaining match reads
     # nothing like a squad player with the same season total.
     recent_minutes: int = 0
     recent_starts: int = 0
     recent_matches: int = 0
+    # How much an accumulation ban is expected to cost him. One means no risk.
+    suspension_multiplier: float = 1.0
+    yellow_cards: int = 0
 
 
 def project_next_match(
@@ -243,18 +261,26 @@ def project_next_match(
     *,
     settings: ProjectionSettings | None = None,
     recent_window: int = 6,
+    availability: Mapping[int, AvailabilityEvidence] | None = None,
 ) -> list[MatchProjection]:
     """Project every player's next match from a completed season, fixture-free.
 
     Deliberately excludes fixture difficulty and recent form: neither exists
     before a ball is kicked. A player without enough minutes is left out rather
     than projected from a prior alone.
+
+    `availability` is FPL's own published status, keyed by element code. Without
+    it the projection reads an injured player's history and reports the minutes
+    he used to play, which is how a ruled-out player kept a full projection.
     """
     config = settings or ProjectionSettings()
     # 2019-20 ran to gameweek 47 after the shutdown, so the season after the
     # last one is not always a legal event. History is unaffected: `before`
     # is inclusive of everything already played.
     gameweek = min(corpus.last_event + 1, MAX_EVENT)
+    # When the next event runs past the end of a season, the next match a player
+    # actually plays is match one of the next one, with a clean card record.
+    season_over = corpus.last_event + 1 > SEASON_MATCHES
     history = corpus.before(corpus.last_event + 1)
     if not history:
         return []
@@ -265,6 +291,12 @@ def project_next_match(
 
     cutoff = _cutoff_for(corpus, gameweek, history)
     league = league_rates(history, corpus.position_by_element)
+    # The league's own booking rate, to shrink thin records toward. Two yellows
+    # in five matches is not a rate of 0.4 a match; it is five matches.
+    league_matches = len({(row.element_id, row.gameweek) for row in history if row.minutes > 0})
+    league_booking_rate = (
+        sum(row.yellow_cards for row in history) / league_matches if league_matches else 0.0
+    )
     prior_nineties = config.prior_strength_minutes / _MINUTES_PER_90
     projections: list[MatchProjection] = []
 
@@ -274,7 +306,15 @@ def project_next_match(
         if position is None or position not in _GOAL_PRIOR or code is None:
             continue
 
-        minutes = project_element_minutes(element_id, corpus.season, gameweek, rows, cutoff, config)
+        minutes = project_element_minutes(
+            element_id,
+            corpus.season,
+            gameweek,
+            rows,
+            cutoff,
+            config,
+            availability=(availability or {}).get(code),
+        )
         if minutes.evidence_level == "unavailable":
             continue
         rates = project_element_rates(
@@ -284,6 +324,31 @@ def project_next_match(
             continue
 
         recent = [row for row in rows if row.gameweek > gameweek - 1 - recent_window]
+        # A player one booking from a ban is worth less than his rate says, and
+        # the accumulation thresholds are published rules rather than a guess.
+        # The tally resets each season, so what carries across is the rate he
+        # gets booked at, not the count he ended on.
+        played = len({row.gameweek for row in rows if row.minutes > 0})
+        yellows = sum(row.yellow_cards for row in rows)
+        first_match = 1 if season_over else gameweek
+        booking_rate = (yellows + league_booking_rate * _BOOKING_PRIOR_MATCHES) / (
+            played + _BOOKING_PRIOR_MATCHES
+        )
+        ban = suspension_risk(
+            yellows=0 if first_match == 1 else yellows,
+            matches_played=played,
+            match=first_match,
+            booking_rate=booking_rate,
+        )
+        breakdown = fixture_points_breakdown(
+            rows,
+            position,
+            minutes,
+            rates,
+            league,
+            prior_nineties,
+            _NEUTRAL_ADJUSTMENT,
+        )
         projections.append(
             MatchProjection(
                 code=code,
@@ -292,15 +357,10 @@ def project_next_match(
                 web_name=corpus.name_by_element.get(element_id, ""),
                 price_tenths=_latest_price(rows),
                 expected_minutes=minutes.expected_minutes,
-                expected_points=fixture_points(
-                    rows,
-                    position,
-                    minutes,
-                    rates,
-                    league,
-                    prior_nineties,
-                    _NEUTRAL_ADJUSTMENT,
-                ),
+                expected_points=breakdown.total * ban.multiplier,
+                breakdown=breakdown,
+                suspension_multiplier=ban.multiplier,
+                yellow_cards=yellows,
                 shape=describe_shape(rows),
                 minutes=minutes,
                 rates=rates,

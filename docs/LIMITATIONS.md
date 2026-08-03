@@ -7,24 +7,24 @@ it never licenses a plausible estimate.
 
 What each limit costs you, so a missing feature can be told from a bug.
 
-| Limit                       | What it disables or downgrades                                                                                  |
-| --------------------------- | --------------------------------------------------------------------------------------------------------------- |
-| Public team state           | No live draft. Bank, free transfers and chips are as of the last deadline.                                      |
-| Matchups                    | One attack and one defence figure per side. No flank or set-piece splitting — [tested and refused](ROADMAP.md). |
-| Out of position             | No fixed OOP bonus. An attacking defender is flagged, not repriced.                                             |
-| Defensive contributions     | Nothing before 2025/26: the route did not exist, so the column is absent rather than zero.                      |
-| Historical data             | Backtests span 2019-20 onward; expected values exist only from 2022-23.                                         |
-| Historical manager state    | No past bank or chip state, so a replayed season cannot honour real budgets.                                    |
-| Injuries                    | Availability comes from FPL's own flags. No scraped team news.                                                  |
-| Prices                      | No live price-change prediction. Ownership history only from the archive.                                       |
-| Season start and cold start | Promoted-club debutants are `unavailable`, not estimated.                                                       |
-| Rivals and consensus        | Individual rival picks are post-deadline only. Aggregate ownership is legal earlier.                            |
-| Planning horizon            | Seven gameweeks by default. Longer works but no surface asks for it.                                            |
-| Team goal projections       | The projector uses its own strength estimate; Dixon-Coles is unwired.                                           |
-| Execution                   | No automated transfers. Every recommendation is advisory.                                                       |
-| Suspensions                 | Modelled but unwired: the accumulation thresholds could not be sourced.                                         |
-| Bookmaker odds              | De-vigging is built; no price source is reachable from the build network.                                       |
-| Rate limiting               | The public proxies are unmetered per client.                                                                    |
+| Limit                       | What it disables or downgrades                                                                                              |
+| --------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| Public team state           | No live draft. Bank, free transfers and chips are as of the last deadline.                                                  |
+| Matchups                    | Five scoring routes, each bent separately by a fixture. No flank or set-piece splitting — [tested and refused](ROADMAP.md). |
+| Out of position             | No fixed OOP bonus. An attacking defender is flagged, not repriced.                                                         |
+| Defensive contributions     | Nothing before 2025/26: the route did not exist, so the column is absent rather than zero.                                  |
+| Historical data             | Backtests span 2019-20 onward; expected values exist only from 2022-23.                                                     |
+| Historical manager state    | No past bank or chip state, so a replayed season cannot honour real budgets.                                                |
+| Injuries                    | Availability comes from FPL's own flags. No scraped team news.                                                              |
+| Prices                      | No live price-change prediction. Ownership history only from the archive.                                                   |
+| Season start and cold start | Promoted-club debutants are `unavailable`, not estimated.                                                                   |
+| Rivals and consensus        | Individual rival picks are post-deadline only. Aggregate ownership is legal earlier.                                        |
+| Planning horizon            | Seven gameweeks by default. Longer works but no surface asks for it.                                                        |
+| Team goal projections       | Dixon-Coles, fitted on the completed season. A single home advantage shared by every club.                                  |
+| Execution                   | No automated transfers. Every recommendation is advisory.                                                                   |
+| Suspensions                 | Accumulation bans are priced. A disciplinary hearing at twenty yellows is a judgement, so it is not modelled.               |
+| Bookmaker odds              | De-vigging is built; no price source is reachable from the build network.                                                   |
+| Rate limiting               | The public proxies are unmetered per client.                                                                                |
 
 Each is expanded below.
 
@@ -188,11 +188,17 @@ conservatively forbid reselling players acquired inside the horizon.
 
 ## Team goal projections
 
-The current candidates use completed scores, venue and recency. They do not yet include
-player availability, likely lineups, tactical events, bookmaker markets or licensed
-event data. A successful numerical fit does not make a candidate production-ready.
-Candidates remain `experimental` until a chronological, leakage-controlled paired
-evaluation clears the declared sample floor and confidence gate.
+Club strength comes from a Dixon-Coles fit on the completed season, which
+separates attack, defence and home advantage rather than charging a side for the
+fixtures it happened to draw. It fits a single home advantage shared by every
+club, so a club's home and away multipliers come out equal: it says clubs differ
+in how good they are, not in how much a home crowd is worth.
+
+It does not include player availability, likely lineups, tactical events,
+bookmaker markets or licensed event data. A successful numerical fit does not
+make a candidate production-ready. Candidates remain `experimental` until a
+chronological, leakage-controlled paired evaluation clears the declared sample
+floor and confidence gate.
 
 ## Execution
 
@@ -213,7 +219,6 @@ what exists and what runs.
 | `evaluate_promotion`       | Promotion gate. Nothing promotes a model yet.                          |
 | `iter_walk_forward_slices` | Leak-guard slicing. The corpus enforces the cutoff structurally.       |
 | `simulate_season`          | Single-manager simulation, superseded by the mini-league.              |
-| `dixon_coles`              | Team goals model. The projector estimates strength itself.             |
 | StatsBomb adapter          | Parsers exist; no ingest path.                                         |
 
 ## Not modelled at all

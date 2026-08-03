@@ -271,7 +271,7 @@ Every remote surface implements idle, loading, ready, stale, degraded and error.
 
 ## Component inventory
 
-Audit item #202. Twenty-one components in `apps/web/src/components`. The column
+Audit item #202. Twenty-five components in `apps/web/src/components`. The column
 that matters is the last one: what a browser journey already proves about each,
 so a review knows what it does not have to check by hand.
 
@@ -288,12 +288,18 @@ so a review knows what it does not have to check by hand.
 | `PitchView`            | Formation, chips, captaincy                      | `feature-walk`, unit render cost        |
 | `CeefaxShirt`          | Club kit as a teletext block graphic             | `contrast` (`/kits`), unit (palette)    |
 | `PlayerAvatar`         | Lazy headshot, silhouette when there is none     | `contrast` (`/kits`)                    |
+| `PlayerDetail`         | One player in full, with what each number means  | `feature-walk`                          |
 | `SquadRecord`          | Per-player projection table                      | `feature-walk`                          |
 | `ManagerHistory`       | Past seasons, including the empty case           | `team-entry`, unit                      |
 | `TeamStateCorrections` | Manager overrides, parsing and conflict          | unit (`parse.test.ts`)                  |
 | `TransferPlanPanel`    | What the plan will contain, and the deadline     | unit (`format.test.ts`)                 |
 | `OpeningSquad`         | The published opening fifteen                    | `feature-walk`                          |
 | `PlayerPoolTable`      | Sortable, filterable pool                        | `feature-walk`, unit render cost        |
+| `PlayerScatter`        | Configurable two-axis scatter, drawn by hand     | unit render cost                        |
+| `ScatterControls`      | Axis, filter and reference-line pickers          | unit                                    |
+| `ScatterLegend`        | What shape, colour and disc size each mean       | `feature-walk`                          |
+| `ScatterReadout`       | The scatter as a ranked, pinnable table          | unit                                    |
+| `PinnedPlayers`        | Up to four players compared side by side         | unit                                    |
 | `ValidationReport`     | Backtest metrics against baselines               | `feature-walk`, `contrast`              |
 | `CohortPanel`          | The veteran cohort and its coverage              | `feature-walk`                          |
 | `Methodology`          | How the projection is built                      | `route-metadata`                        |

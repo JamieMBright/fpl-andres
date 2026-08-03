@@ -29,8 +29,12 @@ PROJECTIONS_META_SCHEMA_VERSION: Final = 1
 #: The opening-squad plan.
 OPENING_SQUAD_SCHEMA_VERSION: Final = 1
 
+#: Understat shot quality and penalty exposure, keyed by FPL code.
+UNDERSTAT_SCHEMA_VERSION: Final = 1
+
 __all__ = [
     "OPENING_SQUAD_SCHEMA_VERSION",
     "PROJECTIONS_META_SCHEMA_VERSION",
     "PROJECTIONS_SCHEMA_VERSION",
+    "UNDERSTAT_SCHEMA_VERSION",
 ]

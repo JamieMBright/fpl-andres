@@ -82,3 +82,46 @@ def test_dixon_coles_fails_closed_for_unseen_team() -> None:
 
     with pytest.raises(InsufficientHistoryError, match="team 99"):
         model.predict(home_team_id=99, away_team_id=2, event=7)
+
+
+def test_a_full_season_produces_sides_that_differ() -> None:
+    """The regression this pins: the objective used to return infinity where the
+    low-score correction went out of bounds. A numerical gradient cannot be read
+    off infinity, so L-BFGS-B stopped at its starting point and reported success,
+    and a full 2025-26 season came back rating all twenty clubs identically."""
+    results: list[FixtureResult] = []
+    index = 0
+    # Twelve clubs, each playing each other home and away. Club id orders
+    # strength, so the fit has something real to find.
+    for home in range(1, 13):
+        for away in range(1, 13):
+            if home == away:
+                continue
+            results.append(
+                FixtureResult(
+                    season="2026-27",
+                    event=index % 38 + 1,
+                    home_team_id=home,
+                    away_team_id=away,
+                    home_goals=max(0, (13 - home) // 3),
+                    away_goals=max(0, (13 - away) // 4),
+                    kickoff_time=START + timedelta(days=2 * index),
+                    data_available_at=START + timedelta(days=2 * index, hours=3),
+                    source_hash=f"sha256:{index + 500:064x}",
+                )
+            )
+            index += 1
+
+    model = DixonColesModel.fit(
+        results,
+        season="2026-27",
+        as_of=results[-1].data_available_at,
+        decay_rate=0.002,
+        minimum_matches=5,
+        max_iterations=500,
+    )
+
+    strongest = model.predict(home_team_id=1, away_team_id=12, event=1)
+    weakest = model.predict(home_team_id=12, away_team_id=1, event=1)
+
+    assert strongest.home_expected_goals > weakest.home_expected_goals

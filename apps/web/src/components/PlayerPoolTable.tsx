@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 
+import { PlayerDetail } from "./PlayerDetail";
 import { classifyFetchFailure } from "../state/fetch-failure";
 import { rateFixtureRun, type FixtureRun } from "../state/fixture-run";
 import {
@@ -12,13 +13,80 @@ import {
 import { projectionSeason } from "../state/squad-projection";
 import { money as sharedMoney } from "../format";
 
-type SortKey = "points" | "perMillion" | "price" | "run";
+type SortKey =
+  | "points"
+  | "perMillion"
+  | "price"
+  | "run"
+  | "returned"
+  | "ceiling"
+  | "apps"
+  | "name"
+  | "position"
+  | "club";
 
-const SORTS: { key: SortKey; label: string }[] = [
-  { key: "points", label: "Points per match" },
-  { key: "perMillion", label: "Points per \u00a31m" },
-  { key: "price", label: "Price" },
-  { key: "run", label: "Opening five" },
+interface Column {
+  key: SortKey;
+  label: string;
+  /** What the number means. Shown on hover and to assistive technology. */
+  explains: string;
+  /** Text sorts A to Z; numbers sort high to low. */
+  text?: boolean;
+}
+
+const COLUMNS: Column[] = [
+  {
+    key: "name",
+    label: "Player",
+    explains: "FPL's short name. A flag means FPL has news on him.",
+    text: true,
+  },
+  {
+    key: "position",
+    label: "Pos",
+    explains: "Goalkeeper, defender, midfielder or forward.",
+    text: true,
+  },
+  { key: "club", label: "Club", explains: "Who he plays for now.", text: true },
+  {
+    key: "price",
+    label: "Price",
+    explains: "What FPL charges for him in 2026/27, today.",
+  },
+  {
+    key: "points",
+    label: "Pts / match",
+    explains:
+      "Expected FPL points in one match against an average opponent, from last season's per-90 rates and minutes. Four to six is a good starter.",
+  },
+  {
+    key: "perMillion",
+    label: "Per \u00a31m",
+    explains:
+      "Points per match divided by price. The cheapest route to a point, ignoring that you only field eleven.",
+  },
+  {
+    key: "returned",
+    label: "Returned",
+    explains:
+      "Share of his appearances with a goal or an assist. High means he delivers often; it says nothing about how much.",
+  },
+  {
+    key: "ceiling",
+    label: "Ceiling",
+    explains: "His best single-match haul last season.",
+  },
+  {
+    key: "apps",
+    label: "Apps",
+    explains: "Matches he appeared in last season.",
+  },
+  {
+    key: "run",
+    label: "Next 5",
+    explains:
+      "His next five fixtures, rated on the route that matters for his position: what opponents score if he defends, what they concede if he attacks. One is average.",
+  },
 ];
 
 // Five gameweeks: long enough to matter to a transfer, short enough that the
@@ -70,6 +138,9 @@ function FixtureRunCell({
 function sortValue(player: PoolPlayer, key: SortKey, run: FixtureRun): number {
   if (key === "price") return player.priceTenths;
   if (key === "perMillion") return player.perMillion ?? -1;
+  if (key === "returned") return player.record?.returnRate ?? -1;
+  if (key === "ceiling") return player.record?.ceiling ?? -1;
+  if (key === "apps") return player.record?.appearances ?? -1;
   if (key === "run") {
     if (run.rating === null) return -Infinity;
     // A defender wants opponents who score little; an attacker wants opponents
@@ -79,6 +150,22 @@ function sortValue(player: PoolPlayer, key: SortKey, run: FixtureRun): number {
     return defensive ? 1 - run.rating : run.rating - 1;
   }
   return player.record?.expectedPoints ?? -1;
+}
+
+function textValue(player: PoolPlayer, key: SortKey): string {
+  if (key === "position") return player.position;
+  if (key === "club") return player.club;
+  return player.name;
+}
+
+const TEXT_KEYS = new Set<SortKey>(["name", "position", "club"]);
+
+/** Fold accents so searching "saliba" finds "Salib\u00e1". */
+function fold(value: string): string {
+  return value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase();
 }
 
 /**
@@ -94,7 +181,21 @@ export function PlayerPoolTable() {
   const [failed, setFailed] = useState<PoolFailure | null>(null);
   const [position, setPosition] = useState("ALL");
   const [sort, setSort] = useState<SortKey>("points");
+  const [descending, setDescending] = useState(true);
   const [maxPrice, setMaxPrice] = useState(0);
+  const [search, setSearch] = useState("");
+  const [selected, setSelected] = useState<PoolPlayer | null>(null);
+
+  // Clicking a column sorts by it; clicking it again turns the order around.
+  // Numbers start high, names start at A, because that is what each is for.
+  const reorder = (key: SortKey) => {
+    if (key === sort) {
+      setDescending((was) => !was);
+      return;
+    }
+    setSort(key);
+    setDescending(!TEXT_KEYS.has(key));
+  };
 
   useEffect(() => {
     const controller = new AbortController();
@@ -137,16 +238,35 @@ export function PlayerPoolTable() {
       return run;
     };
 
+    const needle = fold(search.trim());
+    const direction = descending ? -1 : 1;
+
     return pool.players
       .filter((player) => position === "ALL" || player.position === position)
       .filter((player) => maxPrice === 0 || player.priceTenths <= maxPrice)
+      .filter(
+        (player) =>
+          needle === "" ||
+          fold(player.name).includes(needle) ||
+          fold(player.club).includes(needle),
+      )
       .map((player) => ({ player, run: runFor(player) }))
-      .sort(
-        (left, right) =>
-          sortValue(right.player, sort, right.run) -
-          sortValue(left.player, sort, left.run),
-      );
-  }, [pool, position, sort, maxPrice]);
+      .sort((left, right) => {
+        if (TEXT_KEYS.has(sort)) {
+          return (
+            direction *
+            -textValue(left.player, sort).localeCompare(
+              textValue(right.player, sort),
+            )
+          );
+        }
+        return (
+          direction *
+          (sortValue(left.player, sort, left.run) -
+            sortValue(right.player, sort, right.run))
+        );
+      });
+  }, [pool, position, sort, descending, maxPrice, search]);
 
   if (failed) {
     return (
@@ -198,17 +318,13 @@ export function PlayerPoolTable() {
           </select>
         </label>
         <label>
-          Sort by
-          <select
-            onChange={(event) => setSort(event.target.value as SortKey)}
-            value={sort}
-          >
-            {SORTS.map(({ key, label }) => (
-              <option key={key} value={key}>
-                {label}
-              </option>
-            ))}
-          </select>
+          Search
+          <input
+            onChange={(event) => setSearch(event.target.value)}
+            placeholder="Name or club"
+            type="search"
+            value={search}
+          />
         </label>
         <label>
           Max price
@@ -240,23 +356,48 @@ export function PlayerPoolTable() {
         <table aria-label="2026/27 players against last season's record">
           <thead>
             <tr>
-              <th scope="col">Player</th>
-              <th scope="col">Pos</th>
-              <th scope="col">Club</th>
-              <th scope="col">Price</th>
-              <th scope="col">Pts / match</th>
-              <th scope="col">Per £1m</th>
-              <th scope="col">Returned</th>
-              <th scope="col">Ceiling</th>
-              <th scope="col">Apps</th>
-              <th scope="col">Opening five</th>
+              {COLUMNS.map((column) => (
+                <th
+                  aria-sort={
+                    sort === column.key
+                      ? descending
+                        ? "descending"
+                        : "ascending"
+                      : "none"
+                  }
+                  key={column.key}
+                  scope="col"
+                >
+                  <button
+                    className="pool-sort"
+                    onClick={() => reorder(column.key)}
+                    title={column.explains}
+                    type="button"
+                  >
+                    {column.label}
+                    <span aria-hidden="true" className="pool-arrow">
+                      {sort === column.key
+                        ? descending
+                          ? "\u25be"
+                          : "\u25b4"
+                        : ""}
+                    </span>
+                  </button>
+                </th>
+              ))}
             </tr>
           </thead>
           <tbody>
             {shown.slice(0, 200).map(({ player, run }) => (
               <tr key={player.code}>
                 <th scope="row" translate="no">
-                  {player.name}
+                  <button
+                    className="pool-open"
+                    onClick={() => setSelected(player)}
+                    type="button"
+                  >
+                    {player.name}
+                  </button>
                   {player.available ? null : (
                     <span className="pool-flag" title="Flagged by FPL">
                       {" "}
@@ -307,7 +448,7 @@ export function PlayerPoolTable() {
       </p>
 
       <p className="pool-footnote">
-        <strong>Opening five</strong> rates the next five gameweeks against the
+        <strong>Next 5</strong> rates the next five gameweeks against the
         opponents&rsquo; measured strength, at the venue each match is played.
         For a goalkeeper or defender it is what those opponents <em>score</em>,
         so below one is good. For a midfielder or forward it is what they{" "}
@@ -317,6 +458,17 @@ export function PlayerPoolTable() {
         clubs I have never measured; blanks count as no fixture and doubles
         count twice.
       </p>
+
+      {selected ? (
+        <PlayerDetail
+          onClose={() => setSelected(null)}
+          player={selected}
+          run={
+            shown.find(({ player }) => player.code === selected.code)?.run ??
+            null
+          }
+        />
+      ) : null}
     </>
   );
 }

@@ -23,6 +23,7 @@ const PlayerPoolPage = lazy(() => import("./pages/PlayerPoolPage"));
 const CalibrationPage = lazy(() => import("./pages/CalibrationPage"));
 const SeasonPlanPage = lazy(() => import("./pages/SeasonPlanPage"));
 const KitPreviewPage = lazy(() => import("./pages/KitPreviewPage"));
+const AnalysisPage = lazy(() => import("./pages/AnalysisPage"));
 
 export const routes: RouteObject[] = [
   {
@@ -44,6 +45,14 @@ export const routes: RouteObject[] = [
         element: (
           <LazyRoute>
             <PlayerPoolPage />
+          </LazyRoute>
+        ),
+      },
+      {
+        path: "analysis",
+        element: (
+          <LazyRoute>
+            <AnalysisPage />
           </LazyRoute>
         ),
       },

@@ -66,6 +66,16 @@ describe("season inputs artifact", () => {
       expect(Number.isNaN(Date.parse(deadline))).toBe(false);
     }
   });
+
+  it("contains every player in the published opening squad", () => {
+    // The browser solve starts from that squad. A cheap bench enabler is picked
+    // for what he costs, not what he scores, so a top-forty-by-points pool drops
+    // him and the solve begins with fourteen men and a validation error.
+    const codes = new Set(SEASON_PLAYERS.map((player) => player.code));
+    const absent = openingSquad.picks.filter((pick) => !codes.has(pick.code));
+
+    expect(absent.map((pick) => pick.name)).toEqual([]);
+  });
 });
 
 describe("solveSeason", () => {

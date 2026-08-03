@@ -29,6 +29,8 @@ export interface PlanGameweek {
   transfersOut: readonly PlanPlayer[];
   /** Club short name to who they play, as "HUL (A)". Empty on a blank. */
   opponents: Readonly<Record<string, readonly string[]>>;
+  /** Club short name to how hard the week is, one to five. Null on a blank. */
+  difficulty: Readonly<Record<string, number | null>>;
   /** Player code to what he is worth this gameweek. */
   expected: Readonly<Record<string, number>>;
   freeTransfersBefore: number;
@@ -132,6 +134,7 @@ export function readSeasonPlan(): SeasonPlan {
       transfersIn: resolveAll(week.transfersIn),
       transfersOut: resolveAll(week.transfersOut),
       opponents: week.opponents,
+      difficulty: week.difficulty,
       expected: week.expected,
       freeTransfersBefore: week.freeTransfersBefore,
       paidTransfers: week.paidTransfers,

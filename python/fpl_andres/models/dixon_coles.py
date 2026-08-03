@@ -18,6 +18,16 @@ class ModelFitError(RuntimeError):
     """Raised when numerical optimization cannot produce a valid model."""
 
 
+# Below this the low-score correction is treated as out of bounds. Small enough
+# that a real fit never approaches it, large enough that its logarithm is a
+# number rather than a way of writing minus infinity.
+_MINIMUM_ADJUSTMENT = 1e-6
+# How steeply the objective climbs once the correction has gone out of bounds.
+# Only its sign and scale matter: it has to dominate the likelihood so the
+# optimiser turns round, without being so large it overflows.
+_BARRIER_SLOPE = 1e4
+
+
 class DixonColesModel:
     def __init__(
         self,
@@ -42,6 +52,11 @@ class DixonColesModel:
         self._decay_rate = decay_rate
         self._minimum_matches = minimum_matches
         self._observed = observed
+
+    @property
+    def teams(self) -> tuple[int, ...]:
+        """Team ids the fit actually saw. Anything else cannot be predicted."""
+        return self._teams
 
     @classmethod
     def fit(
@@ -95,14 +110,27 @@ class DixonColesModel:
                     away_rate=away_rate,
                     rho=rho,
                 )
-                if adjustment <= 0:
-                    # The low-score correction can go non-positive for extreme
-                    # rho, where the likelihood is genuinely undefined rather
-                    # than merely bad. A large finite sentinel would tell the
-                    # optimiser this point is worse than its neighbours by a
-                    # measurable amount and let it read a gradient off pure
-                    # fiction; infinity says only "not here", which is true.
-                    return math.inf
+                if adjustment <= _MINIMUM_ADJUSTMENT:
+                    # The low-score correction has left the region where the
+                    # likelihood is defined. Infinity is the truthful value
+                    # there, and this used to return it — but a numerical
+                    # gradient cannot be read off infinity. `inf - inf` is NaN,
+                    # L-BFGS-B reads NaN as a zero gradient, declares
+                    # convergence at the starting point and reports success. The
+                    # caller then gets a model that rates every side identically
+                    # and is never told the fit did not move. Measured on
+                    # 2025-26: 380 fixtures, one iteration, zero movement.
+                    #
+                    # So instead the objective stays finite and slopes back the
+                    # way it came. This is not a gradient read off fiction: the
+                    # further the correction is out of bounds the worse the
+                    # point genuinely is, and the direction of improvement is
+                    # genuinely inward.
+                    log_adjustment = math.log(_MINIMUM_ADJUSTMENT) - _BARRIER_SLOPE * (
+                        _MINIMUM_ADJUSTMENT - adjustment
+                    )
+                else:
+                    log_adjustment = math.log(adjustment)
                 age_days = (as_of - fixture.kickoff_time).total_seconds() / 86_400
                 weight = math.exp(-decay_rate * age_days)
                 log_probability = (
@@ -112,7 +140,7 @@ class DixonColesModel:
                     + fixture.away_goals * math.log(away_rate)
                     - away_rate
                     - math.lgamma(fixture.away_goals + 1)
-                    + math.log(adjustment)
+                    + log_adjustment
                 )
                 negative_log_likelihood -= weight * log_probability
             return negative_log_likelihood
@@ -126,6 +154,14 @@ class DixonColesModel:
         )
         if not result.success or not np.all(np.isfinite(result.x)):
             raise ModelFitError(f"Dixon-Coles optimization failed: {result.message}")
+        # A fit that never left its starting point is not a fit. L-BFGS-B can
+        # report success without moving, and the starting point is every team
+        # equal, which is a claim about football rather than a measurement of it.
+        if np.array_equal(result.x, initial):
+            raise ModelFitError(
+                "Dixon-Coles optimization did not move from its starting point, "
+                "which would rate every side identically"
+            )
         attacks, defences, home_advantage, rho = _decode(result.x, team_count)
         return cls(
             season=season,

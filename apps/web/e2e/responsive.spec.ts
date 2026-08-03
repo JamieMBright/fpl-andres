@@ -23,6 +23,7 @@ const ROUTES = [
   "/plan",
   "/methodology",
   "/players",
+  "/analysis",
   "/calibration",
 ] as const;
 

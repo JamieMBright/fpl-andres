@@ -85,6 +85,8 @@ def _run(tmp_path: Path, elements: list[dict[str, Any]]) -> dict[str, Any]:
     bootstrap = {**BOOTSTRAP, "elements": elements}
     projections = tmp_path / "projections.json"
     projections.write_text(json.dumps(PROJECTIONS), encoding="utf-8")
+    opening = tmp_path / "opening-squad.json"
+    opening.write_text(json.dumps({"picks": []}), encoding="utf-8")
     output = tmp_path / "season-inputs.json"
 
     def fake_get(url: str) -> Any:
@@ -92,7 +94,14 @@ def _run(tmp_path: Path, elements: list[dict[str, Any]]) -> dict[str, Any]:
 
     with patch.object(publish_season_inputs, "_get", fake_get):
         code = publish_season_inputs.main(
-            ["--output", str(output), "--projections", str(projections)]
+            [
+                "--output",
+                str(output),
+                "--projections",
+                str(projections),
+                "--opening-squad",
+                str(opening),
+            ]
         )
 
     assert code == 0
@@ -122,20 +131,21 @@ def test_an_attacker_is_rated_against_the_opponents_defence(tmp_path: Path) -> N
     payload = _run(tmp_path, [_element()])
     arsenal = payload["fixtureLadder"]["ARS"]
 
-    # Gameweek 1: Arsenal at home to Liverpool, so the attacking rung is
-    # Liverpool's away defence — how leaky they are.
-    assert arsenal["attacking"][0] == pytest.approx(1.0)
+    # Gameweek 1: Arsenal at home to Liverpool. Goals flow from Arsenal's home
+    # attack meeting Liverpool's away leakiness, so 1.2 x 1.0.
+    assert arsenal["attacking"][0] == pytest.approx(1.2)
 
 
 def test_a_defender_is_rated_inversely_to_the_opponents_attack(tmp_path: Path) -> None:
     payload = _run(tmp_path, [_element()])
     arsenal = payload["fixtureLadder"]["ARS"]
 
-    # A clean sheet gets *harder* as the opponent's attack gets stronger, so the
-    # strength multiplier is inverted. Applied directly it said a defender's
-    # best fixture was against the league's best attack, and the plan
+    # A clean sheet gets *harder* as the pressure on it rises, so it is the
+    # inverse of Liverpool's away attack meeting Arsenal's home leakiness:
+    # 1 / (1.1 x 0.9). Applied the other way round it said a defender's best
+    # fixture was against the league's best attack, and the plan
     # triple-captained Gabriel away at Manchester City for it.
-    assert arsenal["defensive"][0] == pytest.approx(1.0 / 1.1, abs=1e-4)
+    assert arsenal["defensive"][0] == pytest.approx(1.0 / (1.1 * 0.9), abs=1e-4)
 
 
 def test_a_double_gameweek_sums_both_fixtures(tmp_path: Path) -> None:
@@ -143,7 +153,8 @@ def test_a_double_gameweek_sums_both_fixtures(tmp_path: Path) -> None:
     arsenal = payload["fixtureLadder"]["ARS"]
 
     # Gameweek 2 gives Arsenal two games: away then home. A double is worth both.
-    assert arsenal["attacking"][1] == pytest.approx(0.8 + 1.0)
+    # Away, 1.0 x 0.8; at home, 1.2 x 1.0.
+    assert arsenal["attacking"][1] == pytest.approx(0.8 + 1.2)
 
 
 def test_a_fixture_with_no_gameweek_is_left_out(tmp_path: Path) -> None:
@@ -151,7 +162,7 @@ def test_a_fixture_with_no_gameweek_is_left_out(tmp_path: Path) -> None:
 
     # Fixture 4 has event None — postponed, not yet rescheduled. Counting it
     # against any gameweek would invent a game.
-    assert payload["fixtureLadder"]["ARS"]["attacking"][0] == pytest.approx(1.0)
+    assert payload["fixtureLadder"]["ARS"]["attacking"][0] == pytest.approx(1.2)
 
 
 def test_players_without_a_scoring_record_are_dropped(tmp_path: Path) -> None:
@@ -198,3 +209,76 @@ def test_the_pool_is_trimmed_and_says_so(tmp_path: Path) -> None:
     assert payload["poolPerPosition"] == publish_season_inputs.POOL_PER_POSITION
     assert payload["schemaVersion"] == publish_season_inputs.SCHEMA_VERSION
     assert payload["recordSeason"] == "2025-26"
+
+
+def test_the_opening_squad_survives_the_trim(tmp_path: Path) -> None:
+    """The browser solve starts from the published squad, so a cheap bench
+    enabler who would never make a top-forty-by-points cut still has to be in
+    the pool. Leaving him out started the solve with fourteen men."""
+    bootstrap = {**BOOTSTRAP, "elements": [_element(), _element(id=12, code=1002)]}
+    projections = tmp_path / "projections.json"
+    projections.write_text(
+        json.dumps(
+            {
+                **PROJECTIONS,
+                "players": [
+                    {"code": 1001, "expectedPoints": 5.0, "probabilityStart": 0.9},
+                    {"code": 1002, "expectedPoints": 0.1, "probabilityStart": 0.4},
+                ],
+            }
+        ),
+        encoding="utf-8",
+    )
+    opening = tmp_path / "opening-squad.json"
+    opening.write_text(json.dumps({"picks": [{"code": 1002}]}), encoding="utf-8")
+    output = tmp_path / "season-inputs.json"
+
+    def fake_get(url: str) -> Any:
+        return bootstrap if "bootstrap" in url else FIXTURES
+
+    with (
+        patch.object(publish_season_inputs, "_get", fake_get),
+        patch.object(publish_season_inputs, "POOL_PER_POSITION", 1),
+    ):
+        assert (
+            publish_season_inputs.main(
+                [
+                    "--output",
+                    str(output),
+                    "--projections",
+                    str(projections),
+                    "--opening-squad",
+                    str(opening),
+                ]
+            )
+            == 0
+        )
+
+    payload = json.loads(output.read_text(encoding="utf-8"))
+    assert {player["code"] for player in payload["players"]} == {1001, 1002}
+
+
+def test_an_opening_squad_player_the_game_no_longer_lists_is_refused(tmp_path: Path) -> None:
+    opening = tmp_path / "opening-squad.json"
+    opening.write_text(json.dumps({"picks": [{"code": 424242}]}), encoding="utf-8")
+    projections = tmp_path / "projections.json"
+    projections.write_text(json.dumps(PROJECTIONS), encoding="utf-8")
+    bootstrap = {**BOOTSTRAP, "elements": [_element()]}
+
+    def fake_get(url: str) -> Any:
+        return bootstrap if "bootstrap" in url else FIXTURES
+
+    with (
+        patch.object(publish_season_inputs, "_get", fake_get),
+        pytest.raises(ValueError, match="missing from the solver pool"),
+    ):
+        publish_season_inputs.main(
+            [
+                "--output",
+                str(tmp_path / "out.json"),
+                "--projections",
+                str(projections),
+                "--opening-squad",
+                str(opening),
+            ]
+        )

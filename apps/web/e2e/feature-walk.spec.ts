@@ -210,13 +210,35 @@ test.describe("feature walk", () => {
       "£12.0m",
     );
     await expect(rows.getByRole("row", { name: /B\.Fernandes/ })).toContainText(
-      "5.19",
+      "5.05",
     );
     // A player with no Premier League record is listed, and left blank.
     await expect(rows.getByRole("row", { name: /Debutant/ })).toContainText(
       "—",
     );
     await expect(page.getByText(/1 in the game with no record/)).toBeVisible();
+  });
+
+  test("opens one player in full and says where his points come from", async ({
+    page,
+  }) => {
+    await fulfillReady(page);
+    await page.goto("/players");
+
+    await page
+      .getByRole("button", { name: "B.Fernandes", exact: true })
+      .click();
+
+    const card = page.getByRole("dialog");
+    await expect(card).toBeVisible();
+    await expect(card).toContainText("Where the points come from");
+    await expect(card).toContainText("Goals and assists");
+    // The published routes add back up to the figure in the table.
+    await expect(card).toContainText("Points per match");
+    await expect(card).toContainText("Suspension derate");
+
+    await card.getByRole("button", { name: "Close" }).click();
+    await expect(card).toBeHidden();
   });
 
   test("renders every unavailable envelope variant with a distinct heading", async ({

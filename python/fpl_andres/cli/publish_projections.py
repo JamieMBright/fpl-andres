@@ -18,25 +18,47 @@ import argparse
 import json
 import os
 import sys
+import urllib.error
+import urllib.request
 from collections.abc import Sequence
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
-from typing import TypedDict
+from typing import TypedDict, cast, get_args
 
+from fpl_andres import timeouts
 from fpl_andres.artifacts import (
     PROJECTIONS_META_SCHEMA_VERSION,
     PROJECTIONS_SCHEMA_VERSION,
 )
 from fpl_andres.backtesting.corpus import SeasonCorpus, load_season
-from fpl_andres.backtesting.fixtures import estimate_strength
+from fpl_andres.backtesting.fixtures import (
+    Fixture,
+    TeamStrength,
+    estimate_strength,
+    strength_from_goal_model,
+)
 from fpl_andres.backtesting.projector import MatchProjection, project_next_match
+from fpl_andres.backtesting.scoring import PointsBreakdown
+from fpl_andres.bootstrap import BootstrapElement, parse_elements
+from fpl_andres.jsonio import MalformedJsonError, parse_json
+from fpl_andres.models.baselines import InsufficientHistoryError
+from fpl_andres.models.contracts import FixtureResult
+from fpl_andres.models.dixon_coles import DixonColesModel, ModelFitError
+from fpl_andres.models.minutes import AvailabilityEvidence, AvailabilityStatus
 from fpl_andres.persistence.supabase import SupabaseCredentials, SupabaseRestClient
 from fpl_andres.positions import Position
 
+BOOTSTRAP = "https://fantasy.premierleague.com/api/bootstrap-static/"
+USER_AGENT = "fpl-andres/0.5 (+https://github.com/JamieMBright/fpl-andres)"
 DEFAULT_OUTPUT = Path("apps/web/src/data/projections.json")
 POSITION_CODES = {position.value: position.code for position in Position}
 # Below this the shape statistics describe a cameo, not a season.
 MINIMUM_APPEARANCES = 4
+# Dixon-Coles fit. Half-weight at roughly a season's distance, so the fit leans
+# on recent form without discarding the rest of the year.
+DECAY_RATE_PER_DAY = 0.002
+MINIMUM_MATCHES = 5
+MAX_ITERATIONS = 200
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -44,6 +66,25 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--season", default="2025-26")
     parser.add_argument("--output", default=str(DEFAULT_OUTPUT))
     return parser
+
+
+class RouteEntry(TypedDict):
+    """What `expectedPoints` is made of, before the suspension derate.
+
+    Published because a single number cannot be argued with. The parts also
+    respond to a fixture differently -- a hard away tie suppresses clean sheets
+    while raising saves -- so anything applying a fixture to a scalar is
+    applying it to the wrong thing.
+    """
+
+    appearance: float
+    attacking: float
+    cleanSheet: float
+    bonus: float
+    saves: float
+    conceding: float
+    discipline: float
+    defensiveContribution: float
 
 
 class ProjectionEntry(TypedDict):
@@ -72,12 +113,28 @@ class ProjectionEntry(TypedDict):
     recentMinutes: int
     recentStarts: int
     recentMatches: int
+    yellowCards: int
+    suspensionMultiplier: float
+    routes: RouteEntry
     floor: float | None
     median: float | None
     ceiling: float | None
     returnRate: float | None
     blankRate: float | None
     evidence: str
+
+
+def _routes(breakdown: PointsBreakdown) -> RouteEntry:
+    return {
+        "appearance": round(breakdown.appearance, 3),
+        "attacking": round(breakdown.attacking, 3),
+        "cleanSheet": round(breakdown.clean_sheet, 3),
+        "bonus": round(breakdown.bonus, 3),
+        "saves": round(breakdown.saves, 3),
+        "conceding": round(breakdown.conceding, 3),
+        "discipline": round(breakdown.discipline, 3),
+        "defensiveContribution": round(breakdown.defensive_contribution, 3),
+    }
 
 
 def _entry(projection: MatchProjection) -> ProjectionEntry:
@@ -98,6 +155,11 @@ def _entry(projection: MatchProjection) -> ProjectionEntry:
         "recentMinutes": projection.recent_minutes,
         "recentStarts": projection.recent_starts,
         "recentMatches": projection.recent_matches,
+        # Already applied to expectedPoints; published so a reader can see why
+        # a booked player is rated below his rate.
+        "yellowCards": projection.yellow_cards,
+        "suspensionMultiplier": round(projection.suspension_multiplier, 3),
+        "routes": _routes(projection.breakdown),
         # Shape is a description of what happened, so it is withheld rather
         # than smoothed when there is too little of it to describe.
         "floor": shape.floor if enough else None,
@@ -107,6 +169,55 @@ def _entry(projection: MatchProjection) -> ProjectionEntry:
         "blankRate": round(shape.blank_rate, 3) if enough else None,
         "evidence": projection.minutes.evidence_level,
     }
+
+
+def _strength(corpus: SeasonCorpus, played: Sequence[Fixture]) -> dict[int, TeamStrength]:
+    """Club strength, from Dixon-Coles where it fits and goal averages where it does not.
+
+    Goal averaging charges a side for the fixtures it happened to draw: a team
+    who played the top four early looks leakier than it is. Dixon-Coles fits
+    attack, defence and home advantage jointly, so the strength is against an
+    average opponent rather than against the ones already faced.
+
+    It is a fit, so it can fail on thin or degenerate data. When it does the
+    averages still work, and a slightly worse strength beats no artifact.
+    """
+    results = [
+        FixtureResult(
+            season=corpus.season,
+            event=fixture.event or 1,
+            home_team_id=fixture.team_h,
+            away_team_id=fixture.team_a,
+            home_goals=fixture.team_h_score,
+            away_goals=fixture.team_a_score,
+            kickoff_time=fixture.kickoff_time,
+            data_available_at=fixture.kickoff_time + timedelta(hours=3),
+            source_hash=f"sha256:{fixture.fixture_id:064x}",
+        )
+        for fixture in played
+        if fixture.team_h_score is not None
+        and fixture.team_a_score is not None
+        and fixture.kickoff_time is not None
+        and fixture.event is not None
+    ]
+
+    if results:
+        try:
+            model = DixonColesModel.fit(
+                results,
+                season=corpus.season,
+                as_of=max(result.data_available_at for result in results),
+                decay_rate=DECAY_RATE_PER_DAY,
+                minimum_matches=MINIMUM_MATCHES,
+                max_iterations=MAX_ITERATIONS,
+            )
+            fitted = strength_from_goal_model(model, sorted(model.teams))
+            if fitted:
+                return fitted
+        except (ModelFitError, InsufficientHistoryError, ValueError) as error:
+            print(f"Dixon-Coles did not fit, using goal averages: {error}", file=sys.stderr)
+
+    return estimate_strength(played)
 
 
 def _clubs(corpus: SeasonCorpus) -> list[dict[str, object]]:
@@ -121,7 +232,7 @@ def _clubs(corpus: SeasonCorpus) -> list[dict[str, object]]:
         for event in sorted(corpus.fixtures_by_event)
         for fixture in corpus.fixtures_by_event[event]
     ]
-    strength = estimate_strength(played)
+    strength = _strength(corpus, played)
     clubs: list[dict[str, object]] = []
     for team_id, measured in sorted(strength.items()):
         code = corpus.code_by_team.get(team_id)
@@ -140,6 +251,44 @@ def _clubs(corpus: SeasonCorpus) -> list[dict[str, object]]:
     return clubs
 
 
+def _published_availability() -> dict[int, AvailabilityEvidence]:
+    """FPL's own status per player code, for the upcoming event.
+
+    Without this the projection reads an injured player's history and reports
+    the minutes he used to play. The flag is free, already published, and the
+    difference between "this player is good" and "this player is good and
+    playing".
+
+    A failure here is not fatal: availability sharpens a projection rather than
+    defining it, and refusing to publish at all because a second endpoint was
+    briefly unreachable would be the worse trade.
+    """
+    request = urllib.request.Request(BOOTSTRAP, headers={"User-Agent": USER_AGENT})
+    try:
+        with urllib.request.urlopen(request, timeout=timeouts.FPL_API) as response:
+            payload = parse_json(response.read().decode("utf-8"), source=BOOTSTRAP)
+    except (urllib.error.URLError, TimeoutError, MalformedJsonError) as error:
+        print(f"availability unavailable, projecting without it: {error}", file=sys.stderr)
+        return {}
+
+    assert isinstance(payload, dict)
+    published: dict[int, AvailabilityEvidence] = {}
+    for element in parse_elements(payload["elements"], model=BootstrapElement):
+        status = element.status
+        if status not in get_args(AvailabilityStatus):
+            continue
+        chance = element.chance_of_playing_next_round
+        # A doubtful status without a published chance cannot be modelled, and
+        # inventing one would be the guess this whole contract exists to stop.
+        if status == "d" and chance is None:
+            continue
+        published[element.code] = AvailabilityEvidence(
+            status=cast(AvailabilityStatus, status),
+            chance_of_playing=chance,
+        )
+    return published
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
 
@@ -147,7 +296,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     with SupabaseRestClient(credentials) as client:
         corpus = load_season(client, args.season)
 
-    projections = project_next_match(corpus)
+    availability = _published_availability()
+    projections = project_next_match(corpus, availability=availability)
     if not projections:
         print(f"no projections for {args.season}", file=sys.stderr)
         return 1
@@ -162,7 +312,10 @@ def main(argv: Sequence[str] | None = None) -> int:
         "generatedAt": datetime.now(UTC).isoformat(),
         "season": corpus.season,
         "throughGameweek": corpus.last_event,
-        "basis": "next match against an average opponent, no fixture applied",
+        "basis": (
+            "next match against an average opponent, no fixture applied; "
+            f"availability read for {len(availability)} players"
+        ),
         "players": players,
         "clubs": clubs,
     }

@@ -15,9 +15,12 @@ import { join } from "node:path";
 const DIST = join(import.meta.dirname, "..", "dist", "assets");
 
 const BUDGETS = [
-  // Measured 6.47 kB. The whole design system ships on first paint by design:
-  // it is one stylesheet and splitting it would cost a round trip to save 6 kB.
-  { match: /\.css$/, name: "stylesheet", gzipKb: 8 },
+  // Measured 9.18 kB, raised from 8 kB when the analysis page landed: the
+  // scatter, its control panel and the pinned cards are a page's worth of new
+  // surface, and the marker palette carries a light-kit override for every
+  // colour. The whole design system still ships on first paint by design, so
+  // splitting it would cost a round trip to save nine kilobytes.
+  { match: /\.css$/, name: "stylesheet", gzipKb: 11 },
   // Measured 129.20 kB. Router, zod, lucide and the shell.
   { match: /^index-.*\.js$/, name: "entry chunk", gzipKb: 150 },
   // Measured 19.51 kB, the largest lazy chunk.

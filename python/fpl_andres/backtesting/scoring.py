@@ -12,6 +12,7 @@ reconciles to 34,383 against an actual 34,382, and 27,353 of 27,605 rows in
 from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
+from dataclasses import dataclass
 
 from fpl_andres.backtesting.corpus import ElementRow
 from fpl_andres.backtesting.fixtures import RouteAdjustment
@@ -48,6 +49,38 @@ _DEFCON_POINTS: Mapping[int, int] = {1: 0, 2: 2, 3: 2, 4: 2}
 _DEFCON_THRESHOLD: Mapping[int, int] = {2: 10, 3: 12, 4: 12}
 
 
+@dataclass(frozen=True)
+class PointsBreakdown:
+    """Expected points by route, in one match.
+
+    A single expected-points number cannot be checked and cannot be argued with.
+    These are the parts it is made of, and each responds to a fixture
+    differently: a hard away tie suppresses clean sheets while raising saves.
+    """
+
+    appearance: float
+    attacking: float
+    clean_sheet: float
+    bonus: float
+    saves: float
+    conceding: float
+    discipline: float
+    defensive_contribution: float
+
+    @property
+    def total(self) -> float:
+        return (
+            self.appearance
+            + self.attacking
+            + self.clean_sheet
+            + self.bonus
+            + self.saves
+            + self.conceding
+            + self.discipline
+            + self.defensive_contribution
+        )
+
+
 def fixture_points(
     rows: Sequence[ElementRow],
     position: int,
@@ -57,6 +90,20 @@ def fixture_points(
     prior_nineties: float,
     adjustment: RouteAdjustment,
 ) -> float:
+    return fixture_points_breakdown(
+        rows, position, minutes, rates, league, prior_nineties, adjustment
+    ).total
+
+
+def fixture_points_breakdown(
+    rows: Sequence[ElementRow],
+    position: int,
+    minutes: MinutesProjection,
+    rates: PlayerRateProjection,
+    league: LeagueRates,
+    prior_nineties: float,
+    adjustment: RouteAdjustment,
+) -> PointsBreakdown:
     ninety = minutes.expected_minutes / _MINUTES_PER_90
     appearance = (
         minutes.probability_appear - minutes.probability_sixty_minutes
@@ -66,27 +113,37 @@ def fixture_points(
         * (rates.goals_per_90 * _GOAL_POINTS[position] + rates.assists_per_90 * _ASSIST_POINTS)
         * adjustment.attacking
     )
-    supporting = supporting_points(rows, position, minutes, league, prior_nineties, adjustment)
-    return appearance + attacking + supporting
+    supporting = supporting_breakdown(rows, position, minutes, league, prior_nineties, adjustment)
+    return PointsBreakdown(
+        appearance=appearance,
+        attacking=attacking,
+        clean_sheet=supporting.clean_sheet,
+        bonus=supporting.bonus,
+        saves=supporting.saves,
+        conceding=supporting.conceding,
+        discipline=supporting.discipline,
+        defensive_contribution=supporting.defensive_contribution,
+    )
 
 
-def supporting_points(
+def supporting_breakdown(
     rows: Sequence[ElementRow],
     position: int,
     minutes: MinutesProjection,
     league: LeagueRates,
     prior_nineties: float,
     adjustment: RouteAdjustment,
-) -> float:
+) -> PointsBreakdown:
     """Every scoring route other than appearance, goals and assists.
 
     Priced from the player's own observed rate, shrunk toward the league rate for
     the position. These routes are position-specific, so omitting them shifts
     whole positions against each other rather than simply adding noise.
     """
+    empty = PointsBreakdown(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
     appearances = [row for row in rows if row.minutes > 0]
     if not appearances:
-        return 0.0
+        return empty
 
     played = len(appearances)
     ninety = minutes.expected_minutes / _MINUTES_PER_90
@@ -101,13 +158,14 @@ def supporting_points(
     # probability cannot, and paying more than four points for one clean sheet
     # would flatter exactly the premium defenders in the softest fixtures.
     adjusted_clean_sheet = min(1.0, clean_sheet_rate * adjustment.clean_sheet)
-    total = (
+    clean_sheet = (
         minutes.probability_sixty_minutes
         * adjusted_clean_sheet
         * _CLEAN_SHEET_POINTS.get(position, 0)
     )
-    total += ninety * (sum(row.bonus for row in appearances) / played)
+    bonus = ninety * (sum(row.bonus for row in appearances) / played)
 
+    saves = 0.0
     if position == _GOALKEEPER:
         # Saves pay one point per three, so the division happens per match and
         # is averaged after. Dividing the mean instead over-estimates by 0.34
@@ -115,7 +173,7 @@ def supporting_points(
         # Shrunk like every other route: a keeper with two appearances was
         # otherwise priced on two appearances, and the thin bucket ranges from
         # zero to 1.50 save points a match against a league rate near 0.65.
-        total += (
+        saves += (
             ninety
             * rate(
                 sum(row.saves // _SAVES_PER_POINT for row in appearances),
@@ -123,7 +181,7 @@ def supporting_points(
             )
             * adjustment.saves
         )
-        total += (
+        saves += (
             ninety
             * rate(
                 sum(row.penalties_saved for row in appearances),
@@ -132,10 +190,11 @@ def supporting_points(
             * _PENALTY_SAVE_POINTS
         )
 
+    conceding = 0.0
     conceded_points = _CONCEDED_POINTS.get(position, 0)
     if conceded_points:
         deductions = sum(row.goals_conceded // _CONCEDED_PER_POINT for row in appearances)
-        total += (
+        conceding = (
             ninety
             * rate(deductions, league.conceded_deductions.get(position, 0.0))
             * conceded_points
@@ -152,20 +211,29 @@ def supporting_points(
             _PENALTY_MISS_POINTS,
         ),
     )
-    for events, league_rate, points in routes:
-        total += ninety * rate(events, league_rate.get(position, 0.0)) * points
-
-    total += defensive_contribution_points(
-        appearances,
-        position,
-        ninety,
-        league,
-        prior_nineties,
-        nineties_played,
-        adjustment.defensive_contribution,
+    discipline = sum(
+        ninety * rate(events, league_rate.get(position, 0.0)) * points
+        for events, league_rate, points in routes
     )
 
-    return total
+    return PointsBreakdown(
+        appearance=0.0,
+        attacking=0.0,
+        clean_sheet=clean_sheet,
+        bonus=bonus,
+        saves=saves,
+        conceding=conceding,
+        discipline=discipline,
+        defensive_contribution=defensive_contribution_points(
+            appearances,
+            position,
+            ninety,
+            league,
+            prior_nineties,
+            nineties_played,
+            adjustment.defensive_contribution,
+        ),
+    )
 
 
 def defensive_contribution_points(
@@ -198,5 +266,5 @@ def defensive_contribution_points(
 __all__ = [
     "defensive_contribution_points",
     "fixture_points",
-    "supporting_points",
+    "supporting_breakdown",
 ]

@@ -74,6 +74,10 @@ interface FixtureLadder {
 
 const LADDER = inputs.fixtureLadder as Record<string, FixtureLadder>;
 const OPPONENTS = inputs.opponents as Record<string, string[][]>;
+const DIFFICULTY = inputs.fixtureDifficulty as Record<
+  string,
+  (number | null)[]
+>;
 const PLAYERS = inputs.players as SolverPlayer[];
 const EVENTS = inputs.events as number[];
 const DEADLINES = inputs.deadlines as string[];
@@ -122,6 +126,7 @@ export interface SolvedGameweek {
   transfersIn: SolverPlayer[];
   transfersOut: SolverPlayer[];
   opponents: Record<string, string[]>;
+  difficulty: Record<string, number | null>;
   expected: Record<string, number>;
   paidTransfers: number;
   transferCostPoints: number;
@@ -249,9 +254,11 @@ export function* solveSeason(
 
     const squadNow = solved.squadElementIds.map(look);
     const opponents: Record<string, string[]> = {};
+    const difficulty: Record<string, number | null> = {};
     const expected: Record<string, number> = {};
     for (const player of squadNow) {
       opponents[player.club] ??= OPPONENTS[player.club]?.[index] ?? [];
+      difficulty[player.club] ??= DIFFICULTY[player.club]?.[index] ?? null;
       expected[String(player.code)] =
         Math.round(pointsAt(player, index) * 100) / 100;
     }
@@ -267,6 +274,7 @@ export function* solveSeason(
       transfersIn: solved.transfersIn.map(look),
       transfersOut: solved.transfersOut.map(look),
       opponents,
+      difficulty,
       expected,
       paidTransfers: solved.paidTransfers,
       transferCostPoints: solved.transferCostPoints,
