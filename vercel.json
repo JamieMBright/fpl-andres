@@ -8,10 +8,10 @@
     "api/health.ts": {
       "maxDuration": 5
     },
-    "api/fpl/[...path].ts": {
+    "api/fpl/*.ts": {
       "maxDuration": 15
     },
-    "api/team/[id].ts": {
+    "api/team/*.ts": {
       "maxDuration": 15
     }
   },

@@ -64,6 +64,27 @@ server log under the same id. Steps:
 3. Reproduce locally with `corepack pnpm --filter @fpl-andres/web test -- src/api/team-public-state-handler.test.ts`
    and add a red test case for the observed error before fixing.
 
+### If the body says `FUNCTION_INVOCATION_FAILED` instead
+
+That is Vercel's own error page, not the handler's. The handler never ran, so
+there is no `requestId` to search for and the `try/catch` above is irrelevant.
+
+Check `vercel.json` first. The `functions` keys are **globs**, and a
+Next-style `[param]` filename is a glob character class: `[id]` matches one of
+`i` or `d`, `[...path]` matches one of `.path`. Neither matches the file it is
+named after.
+
+That exact mistake shipped on 2026-07-28 and ran for six days. `/api/fpl/*`
+returned 404 and `/api/team/*` returned 500 while `/api/health` answered
+normally — because `api/health.ts` is the one route with no brackets in its
+name, so its key matched and it kept its configuration.
+
+Nothing caught it: the tests mock upstream and never load `vercel.json`, and the
+browser journeys run against the dev server. `python/tests/test_vercel_functions.py`
+now asserts every key matches a real file and every handler is covered by a
+budget, and `.github/workflows/canary.yml` probes the deployed endpoints every
+twenty minutes.
+
 ## Data plane
 
 The production Supabase project was bootstrapped by pasting the ordered files

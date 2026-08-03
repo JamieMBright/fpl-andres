@@ -1,0 +1,155 @@
+name: Production canary
+
+# Audit item #85. The alerting layer, using infrastructure this project already
+# has rather than a service someone has to sign up to and remember to pay for.
+#
+# This covers the two failures worth waking up for: the site is down, and the
+# FPL contract broke in a way that makes every dossier degrade. It does not
+# cover the rate-based alerts in docs/OPERATIONS.md -- those need log search,
+# which needs a log sink, which is the part that does need an account.
+#
+# Failure opens one issue and keeps commenting on it, rather than opening a new
+# issue every twenty minutes. An alert that floods is an alert people mute.
+
+on:
+  schedule:
+    - cron: "*/20 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: canary
+  cancel-in-progress: false
+
+env:
+  SITE: https://fpl-andres.vercel.app
+  # A public FPL Team ID, not a credential. Preseason it returns
+  # `no_processed_event`, which is a pass: this is a network and shape check.
+  CANARY_TEAM: "212279"
+
+jobs:
+  probe:
+    name: Probe production
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      failure: ${{ steps.probe.outputs.failure }}
+    steps:
+      - name: Probe health and the team route
+        id: probe
+        run: |
+          set +e
+          failures=""
+
+          health=$(curl -sS -m 20 -w '\n%{http_code}' "$SITE/api/health")
+          health_code=$(printf '%s' "$health" | tail -n1)
+          health_body=$(printf '%s' "$health" | sed '$d')
+          if [ "$health_code" != "200" ]; then
+            failures="${failures}- /api/health returned ${health_code}\n"
+          elif ! printf '%s' "$health_body" | grep -q '"status":"ok"'; then
+            failures="${failures}- /api/health did not report ok: ${health_body}\n"
+          fi
+
+          team=$(curl -sS -m 30 -w '\n%{http_code}' "$SITE/api/team/$CANARY_TEAM")
+          team_code=$(printf '%s' "$team" | tail -n1)
+          team_body=$(printf '%s' "$team" | sed '$d')
+          if [ "$team_code" != "200" ]; then
+            failures="${failures}- /api/team returned ${team_code}\n"
+          # ready, unavailable and degraded are all valid contract outcomes.
+          # A body carrying none of them means the shape changed.
+          elif ! printf '%s' "$team_body" | grep -qE '"status":"(ready|unavailable|degraded)"'; then
+            failures="${failures}- /api/team returned an unrecognised shape: ${team_body}\n"
+          fi
+
+          # A degraded response is FPL being unreachable, which is worth
+          # knowing but is not this deployment failing. Reported, not alarmed.
+          if printf '%s' "$team_body" | grep -q '"status":"degraded"'; then
+            echo "note: /api/team is degraded -- $team_body"
+          fi
+
+          if [ -n "$failures" ]; then
+            printf 'FAILED:\n%b' "$failures"
+            {
+              echo "failure<<EOF"
+              printf '%b' "$failures"
+              echo "EOF"
+            } >> "$GITHUB_OUTPUT"
+            exit 1
+          fi
+          echo "health ${health_code}, team ${team_code}"
+
+      - name: Open or update the incident issue
+        if: failure()
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b
+        with:
+          script: |
+            const label = "canary";
+            const title = "Production canary is failing";
+            const detail = process.env.PROBE_FAILURE || "See the workflow run.";
+            const body = [
+              `Canary failed at ${new Date().toISOString()}.`,
+              "",
+              detail,
+              "",
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              "",
+              "Triage is in `docs/RUNBOOK.md`.",
+            ].join("\n");
+
+            const open = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: "open",
+              labels: label,
+            });
+
+            if (open.data.length > 0) {
+              // Comment rather than open another. A new issue every twenty
+              // minutes is how an alert becomes noise.
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: open.data[0].number,
+                body,
+              });
+              return;
+            }
+
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title,
+              body,
+              labels: [label],
+            });
+        env:
+          PROBE_FAILURE: ${{ steps.probe.outputs.failure }}
+
+      - name: Close the incident issue once it recovers
+        if: success()
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b
+        with:
+          script: |
+            const open = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: "open",
+              labels: "canary",
+            });
+            for (const issue of open.data) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                body: `Canary recovered at ${new Date().toISOString()}.`,
+              });
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                state: "closed",
+              });
+            }
