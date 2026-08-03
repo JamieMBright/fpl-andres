@@ -1248,14 +1248,26 @@ a:focus-visible {
   font-size: 10px;
 }
 
+/*
+ * Fourth child of the three-column .analysis-entry grid, so it must be told to
+ * span. Left to itself it wraps into column one at minmax(100px, 0.3fr) and
+ * renders as a ~120px ribbon of text beside an empty row.
+ */
 .entry-aside {
-  max-width: 62ch;
-  margin: 22px 0 0;
-  border-top: 1px solid var(--rule);
-  padding-top: 16px;
-  color: var(--ink-soft);
-  font-size: 14px;
-  line-height: 1.65;
+  grid-column: 1 / -1;
+  max-width: none;
+  margin: 8px 0 0;
+  border: 2px solid var(--field-green);
+  border-left-width: 6px;
+  padding: 16px 20px;
+  color: var(--ink);
+  background: var(--paper);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.entry-aside a {
+  color: inherit;
 }
 
 .opening-squad {

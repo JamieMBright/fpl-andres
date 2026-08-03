@@ -92,6 +92,34 @@ directory — CI is Linux.
 
 ---
 
+## Where code runs
+
+Two places, and no third:
+
+|            | Runs                                      | Serves    |
+| ---------- | ----------------------------------------- | --------- |
+| Local      | `pnpm dev` (Vite) + local Docker Postgres | Nobody    |
+| Production | Vercel, on push to `main`                 | Everybody |
+
+There is no staging, no preview environment and no dev deployment. A merge to
+`main` is a release.
+
+The gap that matters: **Vite does not read `vercel.json`.** Headers, rewrites,
+function budgets and the Content-Security-Policy are all inert locally, so a
+mistake in that file cannot fail on your machine — it can only fail in front of
+users. Two outages have come from exactly this. The defence is that
+`python/tests/test_vercel_functions.py` and
+`apps/web/src/deployment-config.test.ts` parse `vercel.json` in the normal test
+run and assert it against the files it claims to configure, so the gate catches
+what the dev server cannot.
+
+The same reasoning covers dependencies: a package that is installed in your
+environment transitively is not a declared dependency, and CI installs from the
+manifest. `python/tests/test_declared_dependencies.py` walks every import and
+fails on anything absent from `pyproject.toml`.
+
+---
+
 ## The local database
 
 The hosted project is production and there is no staging. Everything below is

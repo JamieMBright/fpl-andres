@@ -95,6 +95,34 @@ test.describe("the breakpoints actually do something", () => {
     expect(size).toBeGreaterThanOrEqual(20);
   });
 
+  test("no paragraph is squeezed into a ribbon on a wide screen", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto("/");
+    await settle(page);
+
+    // An element added as an extra child of a fixed-column grid wraps into the
+    // first column, which is often the narrow one. The page still passes an
+    // overflow check — nothing is clipped — while a paragraph renders as a
+    // vertical ribbon beside an empty half-screen. That is how `.entry-aside`
+    // shipped at ~120px wide.
+    const ribbons = await page.evaluate(() =>
+      [...document.querySelectorAll<HTMLElement>("main p")]
+        .filter((node) => (node.textContent ?? "").trim().length > 100)
+        .map((node) => ({
+          width: Math.round(node.getBoundingClientRect().width),
+          text: (node.textContent ?? "").trim().slice(0, 60),
+        }))
+        .filter((entry) => entry.width > 0 && entry.width < 240),
+    );
+
+    expect(
+      ribbons,
+      "long prose in a column too narrow to read at 1440px",
+    ).toEqual([]);
+  });
+
   test("tap targets on the home screen are large enough to hit", async ({
     page,
   }) => {
