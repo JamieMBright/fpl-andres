@@ -1520,6 +1520,35 @@ a:focus-visible {
   font-size: 11px;
 }
 
+.plan-progress {
+  position: relative;
+  margin: 14px 0 0;
+  border: 1px solid var(--rule);
+  padding: 8px 12px;
+  font-size: 13px;
+}
+
+.plan-progress-bar {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  z-index: -1;
+  background: var(--field-green);
+  opacity: 0.18;
+  transition: inline-size 200ms linear;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .plan-progress-bar {
+    transition: none;
+  }
+}
+
+.plan-progress-failed {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
 /* ---- Kit preview (QA) --------------------------------------------------- */
 
 .kit-preview {
@@ -1588,16 +1617,27 @@ a:focus-visible {
   font-weight: 700;
 }
 
-.player-avatar img,
-.player-avatar-fallback {
+.player-avatar img {
   display: block;
   width: 88px;
   height: 112px;
 }
 
-.player-avatar-fallback {
+.player-avatar-shirt {
+  display: block;
+  width: 88px;
+  height: 112px;
   shape-rendering: crispEdges;
-  fill: var(--ink-soft);
+}
+
+.player-avatar-unknown {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 88px;
+  height: 112px;
+  color: var(--ink-soft);
+  font-size: 28px;
 }
 
 .player-avatar-empty {

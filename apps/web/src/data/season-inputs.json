@@ -1,0 +1,2063 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-08-03T11:47:57.433714Z",
+  "recordSeason": "2025-26",
+  "events": [
+    1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
+    22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38
+  ],
+  "deadlines": [
+    "2026-08-21T17:30:00Z",
+    "2026-08-28T17:30:00Z",
+    "2026-09-04T17:30:00Z",
+    "2026-09-12T12:30:00Z",
+    "2026-09-18T17:30:00Z",
+    "2026-10-10T12:30:00Z",
+    "2026-10-17T12:30:00Z",
+    "2026-10-24T12:30:00Z",
+    "2026-10-31T13:30:00Z",
+    "2026-11-07T13:30:00Z",
+    "2026-11-21T13:30:00Z",
+    "2026-11-28T13:30:00Z",
+    "2026-12-02T18:30:00Z",
+    "2026-12-05T13:30:00Z",
+    "2026-12-12T13:30:00Z",
+    "2026-12-19T13:30:00Z",
+    "2026-12-26T13:30:00Z",
+    "2026-12-30T18:30:00Z",
+    "2027-01-02T13:30:00Z",
+    "2027-01-06T18:30:00Z",
+    "2027-01-16T13:30:00Z",
+    "2027-01-23T13:30:00Z",
+    "2027-01-30T13:30:00Z",
+    "2027-02-06T13:30:00Z",
+    "2027-02-10T18:30:00Z",
+    "2027-02-20T13:30:00Z",
+    "2027-02-27T13:30:00Z",
+    "2027-03-03T18:30:00Z",
+    "2027-03-13T13:30:00Z",
+    "2027-03-20T13:30:00Z",
+    "2027-04-10T12:30:00Z",
+    "2027-04-17T12:30:00Z",
+    "2027-04-24T12:30:00Z",
+    "2027-05-01T12:30:00Z",
+    "2027-05-08T12:30:00Z",
+    "2027-05-15T12:30:00Z",
+    "2027-05-23T12:30:00Z",
+    "2027-05-30T13:30:00Z"
+  ],
+  "basis": "base projection per player, multiplied by the club's fixture multiplier for the gameweek; blanks are zero and doubles are summed",
+  "poolPerPosition": 40,
+  "fixtureLadder": {
+    "ARS": {
+      "defensive": [
+        1.0, 1.068, 1.247, 0.91, 1.023, 0.908, 0.797, 0.937, 1.113, 1.0, 1.158,
+        1.247, 1.09, 0.842, 1.162, 1.19, 0.774, 1.023, 1.0, 0.965, 1.0, 0.824,
+        1.361, 1.162, 1.0, 0.824, 1.226, 0.965, 0.932, 0.824, 1.0, 1.021, 1.0,
+        1.077, 1.0, 1.134, 0.932, 0.965
+      ],
+      "attacking": [
+        1.0, 0.965, 0.955, 0.908, 0.908, 1.136, 0.993, 0.864, 0.908, 1.0, 1.19,
+        0.819, 0.937, 1.218, 1.113, 0.932, 0.993, 0.908, 1.0, 1.045, 1.0, 0.91,
+        0.739, 1.09, 1.0, 1.045, 1.021, 0.977, 1.049, 0.977, 1.0, 0.955, 0.908,
+        0.932, 0.937, 0.977, 1.106, 0.932
+      ]
+    },
+    "AVL": {
+      "defensive": [
+        1.023, 1.19, 1.0, 1.134, 0.842, 0.965, 1.158, 1.247, 0.824, 1.226,
+        0.824, 1.0, 0.937, 0.965, 1.0, 0.932, 0.908, 1.162, 1.0, 0.932, 1.19,
+        1.023, 1.0, 0.91, 1.162, 1.0, 1.247, 1.113, 1.0, 0.797, 0.965, 1.271,
+        1.0, 0.774, 1.09, 0.824, 1.361, 1.077
+      ],
+      "attacking": [
+        0.908, 0.706, 1.0, 0.977, 1.218, 1.045, 1.19, 0.819, 1.045, 1.021,
+        0.977, 1.0, 0.864, 0.977, 1.0, 1.049, 1.136, 1.09, 0.908, 1.106, 0.932,
+        0.908, 1.0, 0.908, 1.113, 0.937, 0.955, 0.908, 1.0, 0.993, 0.932, 0.655,
+        1.0, 0.993, 0.937, 0.91, 0.739, 0.932
+      ]
+    },
+    "BOU": {
+      "defensive": [
+        1.361, 0.937, 1.158, 0.965, 1.162, 0.932, 0.824, 1.226, 0.908, 1.0,
+        1.134, 1.023, 0.965, 1.0, 1.271, 1.0, 0.842, 0.774, 1.021, 1.023, 1.0,
+        0.797, 0.824, 1.0, 1.068, 0.965, 1.0, 1.077, 0.824, 1.09, 1.247, 0.932,
+        1.19, 1.0, 1.19, 0.91, 1.247, 1.113
+      ],
+      "attacking": [
+        0.739, 0.864, 1.19, 1.045, 1.09, 1.049, 0.977, 1.021, 1.136, 1.0, 0.977,
+        0.908, 0.932, 1.0, 0.655, 1.0, 1.218, 0.993, 0.955, 0.908, 1.0, 0.993,
+        1.045, 0.937, 0.965, 0.977, 1.0, 0.932, 0.91, 0.937, 0.819, 1.106,
+        0.706, 1.0, 0.932, 0.908, 0.955, 0.908
+      ]
+    },
+    "BRE": {
+      "defensive": [
+        1.077, 1.0, 0.824, 1.0, 1.247, 1.068, 1.162, 1.0, 1.134, 1.023, 0.937,
+        1.226, 1.19, 1.247, 1.023, 0.824, 1.0, 1.0, 0.965, 1.271, 0.965, 0.932,
+        1.19, 0.797, 0.774, 1.0, 1.158, 1.0, 0.91, 1.162, 0.842, 0.908, 0.824,
+        1.361, 1.021, 1.113, 1.0, 0.932
+      ],
+      "attacking": [
+        0.932, 0.937, 0.977, 0.908, 0.955, 0.965, 1.09, 1.0, 0.977, 0.908,
+        0.864, 1.021, 0.706, 0.819, 0.908, 0.91, 1.0, 1.0, 0.977, 0.655, 0.932,
+        1.106, 0.932, 0.993, 0.993, 1.0, 1.19, 1.0, 0.908, 1.113, 1.218, 1.136,
+        1.045, 0.739, 0.955, 0.908, 1.0, 1.049
+      ]
+    },
+    "BHA": {
+      "defensive": [
+        1.021, 0.932, 0.908, 1.0, 1.19, 0.91, 0.965, 1.113, 1.361, 0.965, 1.0,
+        0.824, 1.0, 0.797, 0.937, 1.0, 1.023, 0.842, 1.19, 1.162, 1.09, 1.247,
+        1.158, 1.0, 1.226, 1.077, 1.0, 0.824, 1.0, 1.0, 1.068, 1.247, 0.932,
+        1.134, 0.824, 0.774, 1.162, 1.271
+      ],
+      "attacking": [
+        0.955, 1.049, 1.136, 1.0, 0.706, 0.908, 0.977, 0.908, 0.739, 1.045, 1.0,
+        0.91, 0.908, 0.993, 0.864, 1.0, 0.908, 1.218, 0.932, 1.113, 0.937,
+        0.819, 1.19, 1.0, 1.021, 0.932, 1.0, 1.045, 0.937, 1.0, 0.965, 0.955,
+        1.106, 0.977, 0.977, 0.993, 1.09, 0.655
+      ]
+    },
+    "CHE": {
+      "defensive": [
+        1.023, 0.965, 1.271, 1.0, 1.09, 1.162, 0.932, 1.077, 1.19, 0.91, 0.908,
+        0.797, 0.965, 1.162, 1.361, 1.021, 1.0, 1.0, 0.824, 0.774, 0.824, 1.0,
+        1.134, 1.226, 1.158, 1.0, 1.068, 1.0, 1.19, 1.0, 0.824, 1.023, 1.247,
+        1.113, 0.842, 0.937, 1.0, 0.965
+      ],
+      "attacking": [
+        0.908, 0.932, 0.655, 1.0, 0.937, 1.113, 1.106, 0.932, 0.932, 0.908,
+        1.136, 0.993, 0.977, 1.09, 0.739, 0.955, 1.0, 1.0, 0.91, 0.993, 0.977,
+        0.937, 0.977, 1.021, 1.19, 1.0, 0.965, 1.0, 0.706, 1.0, 1.045, 0.908,
+        0.819, 0.908, 1.218, 0.864, 0.908, 1.045
+      ]
+    },
+    "COV": {
+      "defensive": [
+        1.271, 1.0, 1.361, 0.965, 0.797, 0.824, 0.842, 0.824, 0.824, 0.932,
+        0.965, 1.0, 1.0, 1.226, 1.021, 1.0, 1.247, 0.965, 1.113, 1.0, 0.937,
+        0.91, 0.908, 0.774, 1.162, 1.09, 1.162, 0.932, 1.247, 1.023, 1.19, 1.0,
+        1.068, 1.19, 1.158, 1.077, 1.023, 1.134
+      ],
+      "attacking": [
+        0.655, 1.0, 0.739, 0.932, 0.993, 0.91, 1.218, 1.045, 0.977, 1.106,
+        0.977, 0.937, 1.0, 1.021, 0.955, 0.908, 0.955, 1.045, 0.908, 1.0, 0.864,
+        0.908, 1.136, 0.993, 1.09, 0.937, 1.113, 1.049, 0.819, 0.908, 0.706,
+        1.0, 0.965, 0.932, 1.19, 0.932, 0.908, 0.977
+      ]
+    },
+    "CRY": {
+      "defensive": [
+        0.932, 1.247, 1.023, 1.0, 1.0, 1.134, 1.023, 0.824, 0.842, 1.162, 1.0,
+        1.0, 0.932, 1.068, 1.19, 0.91, 1.19, 1.162, 1.09, 1.247, 1.113, 1.077,
+        1.0, 1.0, 0.965, 1.0, 0.824, 1.271, 0.824, 1.0, 0.937, 1.361, 1.226,
+        1.021, 0.797, 0.965, 1.158, 0.908
+      ],
+      "attacking": [
+        1.106, 0.819, 0.908, 1.0, 0.937, 0.977, 0.908, 0.91, 1.218, 1.09, 1.0,
+        1.0, 1.049, 0.965, 0.932, 0.908, 0.706, 1.113, 0.937, 0.955, 0.908,
+        0.932, 1.0, 1.0, 1.045, 0.908, 0.977, 0.655, 1.045, 1.0, 0.864, 0.739,
+        1.021, 0.955, 0.993, 0.932, 1.19, 1.136
+      ]
+    },
+    "EVE": {
+      "defensive": [
+        0.965, 1.0, 1.19, 0.842, 1.0, 1.0, 1.247, 1.271, 1.158, 1.0, 1.09,
+        1.162, 1.068, 0.824, 1.023, 0.797, 0.824, 1.247, 1.0, 1.021, 1.0, 0.965,
+        1.113, 0.824, 0.908, 0.91, 1.134, 1.361, 1.226, 1.077, 0.774, 1.162,
+        0.965, 1.023, 1.0, 0.932, 1.19, 1.0
+      ],
+      "attacking": [
+        0.977, 0.908, 0.932, 1.218, 1.0, 1.0, 0.955, 0.655, 1.19, 1.0, 0.937,
+        1.09, 0.965, 1.045, 0.908, 0.993, 0.977, 0.819, 0.937, 0.955, 1.0,
+        1.045, 0.908, 0.91, 1.136, 0.908, 0.977, 0.739, 1.021, 0.932, 0.993,
+        1.113, 0.932, 0.908, 1.0, 1.049, 0.706, 1.0
+      ]
+    },
+    "FUL": {
+      "defensive": [
+        1.247, 0.91, 0.965, 1.113, 1.19, 1.0, 1.0, 1.0, 1.068, 0.824, 1.361,
+        1.162, 0.842, 0.932, 0.965, 1.0, 0.965, 1.19, 0.797, 1.077, 1.158,
+        1.021, 1.0, 1.247, 1.134, 1.271, 0.908, 1.023, 0.774, 1.162, 0.932,
+        0.824, 1.09, 0.937, 1.0, 1.0, 1.0, 1.226
+      ],
+      "attacking": [
+        0.955, 0.908, 0.977, 0.908, 0.932, 1.0, 1.0, 1.0, 0.965, 0.91, 0.739,
+        1.113, 1.218, 1.106, 1.045, 0.937, 0.932, 0.706, 0.993, 0.932, 1.19,
+        0.955, 0.908, 0.819, 0.977, 0.655, 1.136, 0.908, 0.993, 1.09, 1.049,
+        0.977, 0.937, 0.864, 1.0, 1.0, 1.0, 1.021
+      ]
+    },
+    "HUL": {
+      "defensive": [
+        1.19, 1.0, 1.021, 0.932, 1.158, 0.937, 1.023, 0.965, 1.0, 1.271, 0.965,
+        0.774, 1.134, 1.0, 1.077, 1.361, 1.162, 0.908, 0.91, 0.797, 1.19, 1.0,
+        0.965, 1.023, 0.824, 1.113, 1.247, 1.0, 1.068, 1.247, 1.226, 1.0, 0.842,
+        1.162, 0.932, 0.824, 1.09, 0.824
+      ],
+      "attacking": [
+        0.932, 1.0, 0.955, 1.049, 1.19, 0.864, 0.908, 1.045, 1.0, 0.655, 0.932,
+        0.993, 0.977, 0.908, 0.932, 0.739, 1.09, 1.136, 0.908, 0.993, 0.706,
+        1.0, 0.977, 0.908, 0.977, 0.908, 0.819, 0.937, 0.965, 0.955, 1.021, 1.0,
+        1.218, 1.113, 1.106, 1.045, 0.937, 0.91
+      ]
+    },
+    "IPS": {
+      "defensive": [
+        0.824, 1.226, 1.162, 0.774, 0.932, 0.824, 1.361, 1.134, 1.0, 1.162,
+        0.842, 1.021, 1.0, 1.0, 0.824, 1.023, 0.965, 1.247, 1.271, 1.0, 1.0,
+        1.0, 1.068, 1.077, 1.19, 0.932, 0.965, 1.09, 1.113, 0.965, 0.91, 1.19,
+        1.158, 0.908, 1.023, 1.247, 0.797, 0.937
+      ],
+      "attacking": [
+        0.977, 1.021, 1.09, 0.993, 1.106, 1.045, 0.739, 0.977, 1.0, 1.113,
+        1.218, 0.955, 1.0, 0.937, 0.91, 0.908, 1.045, 0.955, 0.655, 1.0, 0.908,
+        1.0, 0.965, 0.932, 0.706, 1.049, 0.932, 0.937, 0.908, 0.977, 0.908,
+        0.932, 1.19, 1.136, 0.908, 0.819, 0.993, 0.864
+      ]
+    },
+    "LEE": {
+      "defensive": [
+        0.797, 0.965, 1.023, 0.824, 0.965, 1.271, 1.19, 0.91, 1.0, 1.077, 0.932,
+        1.0, 1.361, 1.0, 1.113, 0.824, 1.068, 1.0, 0.937, 1.247, 0.842, 1.247,
+        1.0, 1.162, 0.932, 1.021, 1.023, 1.0, 0.965, 1.158, 1.134, 1.09, 1.162,
+        1.0, 1.19, 1.226, 0.824, 0.774
+      ],
+      "attacking": [
+        0.993, 1.045, 0.908, 0.91, 0.977, 0.655, 0.932, 0.908, 0.908, 0.932,
+        1.049, 1.0, 0.739, 1.0, 0.908, 1.045, 0.965, 1.0, 0.864, 0.819, 1.218,
+        0.955, 1.0, 1.113, 1.106, 0.955, 0.908, 1.0, 0.932, 1.19, 0.977, 0.937,
+        1.09, 1.0, 0.706, 1.021, 0.977, 0.993
+      ]
+    },
+    "LIV": {
+      "defensive": [
+        1.158, 1.134, 1.0, 0.824, 1.0, 1.247, 1.09, 0.965, 1.19, 0.774, 1.19,
+        0.932, 0.824, 0.932, 0.908, 1.077, 1.0, 1.068, 1.0, 0.91, 0.965, 1.226,
+        0.937, 1.271, 1.0, 1.0, 0.842, 1.021, 1.0, 1.023, 0.824, 0.797, 1.0,
+        1.247, 1.361, 0.965, 1.023, 1.162
+      ],
+      "attacking": [
+        1.19, 0.977, 1.0, 1.045, 0.908, 0.819, 0.937, 0.932, 0.706, 0.993,
+        0.932, 1.106, 0.977, 1.049, 1.136, 0.932, 1.0, 0.965, 1.0, 0.908, 0.977,
+        1.021, 0.864, 0.655, 1.0, 1.0, 1.218, 0.955, 1.0, 0.908, 0.91, 0.993,
+        0.937, 0.955, 0.739, 1.045, 0.908, 1.113
+      ]
+    },
+    "MCI": {
+      "defensive": [
+        1.162, 0.774, 1.0, 1.226, 0.824, 1.113, 1.0, 1.068, 0.965, 0.797, 0.824,
+        1.271, 0.908, 1.09, 1.247, 1.0, 1.158, 0.932, 1.077, 1.0, 1.134, 1.023,
+        1.19, 1.023, 0.842, 0.824, 1.0, 0.937, 1.0, 1.19, 1.0, 0.965, 0.932,
+        0.965, 1.162, 1.0, 1.021, 0.91
+      ],
+      "attacking": [
+        1.113, 0.993, 1.0, 1.021, 0.977, 0.908, 1.0, 0.965, 0.932, 0.993, 1.045,
+        0.655, 1.136, 0.937, 0.955, 1.0, 1.19, 1.106, 0.932, 0.937, 0.977,
+        0.908, 0.706, 0.908, 1.218, 0.91, 1.0, 0.864, 1.0, 0.932, 0.908, 0.977,
+        1.049, 1.045, 1.09, 1.0, 0.955, 0.908
+      ]
+    },
+    "MUN": {
+      "defensive": [
+        1.0, 1.0, 0.932, 1.247, 1.023, 1.077, 1.0, 1.162, 0.932, 1.021, 1.113,
+        0.965, 1.158, 1.0, 0.774, 1.271, 1.134, 0.824, 1.023, 0.824, 1.068,
+        1.162, 1.09, 1.247, 0.965, 0.797, 1.19, 0.91, 0.937, 1.361, 1.0, 1.0,
+        0.965, 1.0, 1.0, 0.908, 0.842, 0.824
+      ],
+      "attacking": [
+        1.0, 1.0, 1.106, 0.819, 0.908, 0.932, 0.937, 1.113, 1.049, 0.955, 0.908,
+        1.045, 1.19, 1.0, 0.993, 0.655, 0.977, 0.977, 0.908, 0.91, 0.965, 1.09,
+        0.937, 0.955, 0.932, 0.993, 0.706, 0.908, 0.864, 0.739, 1.0, 1.0, 0.977,
+        1.0, 0.908, 1.136, 1.218, 1.045
+      ]
+    },
+    "NEW": {
+      "defensive": [
+        1.162, 0.842, 1.162, 1.0, 1.0, 1.0, 1.021, 0.774, 0.937, 1.023, 1.19,
+        1.023, 1.19, 0.824, 1.0, 1.09, 1.247, 1.134, 0.932, 1.226, 0.824, 1.271,
+        0.965, 0.932, 1.247, 1.361, 0.965, 0.797, 1.0, 0.908, 1.113, 1.077, 1.0,
+        0.91, 1.0, 1.068, 0.965, 1.0
+      ],
+      "attacking": [
+        1.09, 1.218, 1.113, 0.937, 1.0, 1.0, 0.955, 0.993, 0.864, 0.908, 0.706,
+        0.908, 0.932, 0.977, 1.0, 0.937, 0.819, 0.977, 1.049, 1.021, 1.045,
+        0.655, 0.932, 1.106, 0.955, 0.739, 1.045, 0.993, 0.908, 1.136, 0.908,
+        0.932, 1.0, 0.908, 1.0, 0.965, 0.977, 1.0
+      ]
+    },
+    "NFO": {
+      "defensive": [
+        0.908, 1.113, 1.077, 1.068, 1.0, 0.774, 1.19, 1.0, 1.09, 1.247, 1.0,
+        1.247, 1.0, 0.965, 0.91, 0.937, 1.226, 1.158, 0.824, 1.0, 1.361, 1.162,
+        0.932, 0.965, 1.023, 1.19, 0.932, 0.824, 0.842, 1.021, 1.0, 1.162,
+        0.824, 1.023, 0.965, 1.271, 1.0, 1.0
+      ],
+      "attacking": [
+        1.136, 0.908, 0.932, 0.965, 1.0, 0.993, 0.706, 1.0, 0.937, 0.819, 0.908,
+        0.955, 1.0, 0.932, 0.908, 0.864, 1.021, 1.19, 1.045, 1.0, 0.739, 1.113,
+        1.049, 1.045, 0.908, 0.932, 1.106, 0.91, 1.218, 0.955, 0.937, 1.09,
+        0.977, 0.908, 0.977, 0.655, 1.0, 1.0
+      ]
+    },
+    "TOT": {
+      "defensive": [
+        1.09, 0.824, 0.797, 0.937, 1.021, 1.226, 1.0, 0.932, 0.965, 1.0, 1.0,
+        0.91, 0.824, 1.19, 1.0, 1.113, 1.162, 0.965, 1.361, 1.023, 0.908, 0.774,
+        0.824, 1.0, 1.247, 1.023, 1.162, 1.0, 1.134, 0.932, 0.965, 1.158, 1.0,
+        1.271, 1.247, 1.0, 1.19, 1.068
+      ],
+      "attacking": [
+        0.937, 0.91, 0.993, 0.864, 0.955, 1.021, 1.0, 1.049, 0.977, 0.937, 1.0,
+        0.908, 1.045, 0.706, 1.0, 0.908, 1.113, 0.932, 0.739, 0.908, 1.136,
+        0.993, 0.977, 1.0, 0.819, 0.908, 1.09, 0.908, 0.977, 1.106, 1.045, 1.19,
+        1.0, 0.655, 0.955, 1.0, 0.932, 0.965
+      ]
+    },
+    "SUN": {
+      "defensive": [
+        1.0, 0.824, 1.09, 1.19, 1.361, 0.965, 1.0, 0.908, 1.0, 1.247, 1.068,
+        1.077, 1.113, 1.158, 1.134, 0.965, 0.932, 1.226, 1.0, 1.162, 0.932, 1.0,
+        0.842, 1.021, 1.0, 0.937, 0.774, 1.19, 0.965, 1.271, 1.0, 1.023, 0.797,
+        0.824, 1.023, 1.162, 1.0, 1.247
+      ],
+      "attacking": [
+        1.0, 1.045, 0.937, 0.706, 0.739, 0.932, 0.908, 1.136, 1.0, 0.955, 0.965,
+        0.932, 0.908, 1.19, 0.977, 0.977, 1.106, 1.021, 1.0, 1.09, 1.049, 1.0,
+        1.218, 0.955, 1.0, 0.864, 0.993, 0.932, 1.045, 0.655, 1.0, 0.908, 0.993,
+        0.91, 0.908, 1.113, 0.937, 0.819
+      ]
+    }
+  },
+  "players": [
+    {
+      "id": 82,
+      "code": 200720,
+      "name": "Kelleher",
+      "position": "GKP",
+      "positionId": 1,
+      "club": "BRE",
+      "teamId": 4,
+      "priceTenths": 50,
+      "basePoints": 3.38,
+      "startRate": 0.88
+    },
+    {
+      "id": 1,
+      "code": 154561,
+      "name": "Raya",
+      "position": "GKP",
+      "positionId": 1,
+      "club": "ARS",
+      "teamId": 1,
+      "priceTenths": 60,
+      "basePoints": 3.33,
+      "startRate": 0.757
+    },
+    {
+      "id": 226,
+      "code": 111234,
+      "name": "Pickford",
+      "position": "GKP",
+      "positionId": 1,
+      "club": "EVE",
+      "teamId": 9,
+      "priceTenths": 55,
+      "basePoints": 3.23,
+      "startRate": 0.904
+    },
+    {
+      "id": 529,
+      "code": 498016,
+      "name": "Roefs",
+      "position": "GKP",
+      "positionId": 1,
+      "club": "SUN",
+      "teamId": 20,
+      "priceTenths": 50,
+      "basePoints": 3.09,
+      "startRate": 0.801
+    },
+    {
+      "id": 412,
+      "code": 465247,
+      "name": "Lammens",
+      "position": "GKP",
+      "positionId": 1,
+      "club": "MUN",
+      "teamId": 16,
+      "priceTenths": 50,
+      "basePoints": 3.08,
+      "startRate": 0.902
+    },
+    {
+      "id": 109,
+      "code": 489639,
+      "name": "Verbruggen",
+      "position": "GKP",
+      "positionId": 1,
+      "club": "BHA",
+      "teamId": 5,
+      "priceTenths": 45,
+      "basePoints": 3.07,
+      "startRate": 0.896
+    },
+    {
+      "id": 198,
+      "code": 172649,
+      "name": "Henderson",
+      "position": "GKP",
+      "positionId": 1,
+      "club": "CRY",
+      "teamId": 8,
+      "priceTenths": 50,
+      "basePoints": 3.07,
+      "startRate": 0.863
+    },
+    {
+      "id": 384,
+      "code": 204936,
+      "name": "Donnarumma",
+      "position": "GKP",
+      "positionId": 1,
+      "club": "MCI",
+      "teamId": 15,
+      "priceTenths": 55,
+      "basePoints": 2.96,
+      "startRate": 0.738
+    },
+    {
+      "id": 57,
+      "code": 457569,
+      "name": "Petrovi\u0107",
+      "position": "GKP",
+      "positionId": 1,
+      "club": "BOU",
+      "teamId": 3,
+      "priceTenths": 45,
+      "basePoints": 2.94,
+      "startRate": 0.896
+    },
+    {
+      "id": 250,
+      "code": 80201,
+      "name": "Leno",
+      "position": "GKP",
+      "positionId": 1,
+      "club": "FUL",
+      "teamId": 10,
+      "priceTenths": 45,
+      "basePoints": 2.91,
+      "startRate": 0.904
+    },
+    {
+      "id": 467,
+      "code": 85633,
+      "name": "Sels",
+      "position": "GKP",
+      "positionId": 1,
+      "club": "NFO",
+      "teamId": 18,
+      "priceTenths": 50,
+      "basePoints": 2.83,
+      "startRate": 0.818
+    },
+    {
+      "id": 28,
+      "code": 98980,
+      "name": "Martinez",
+      "position": "GKP",
+      "positionId": 1,
+      "club": "AVL",
+      "teamId": 2,
+      "priceTenths": 50,
+      "basePoints": 2.59,
+      "startRate": 0.707
+    },
+    {
+      "id": 140,
+      "code": 215059,
+      "name": "S\u00e1nchez",
+      "position": "GKP",
+      "positionId": 1,
+      "club": "CHE",
+      "teamId": 6,
+      "priceTenths": 50,
+      "basePoints": 2.42,
+      "startRate": 0.756
+    },
+    {
+      "id": 442,
+      "code": 98747,
+      "name": "Pope",
+      "position": "GKP",
+      "positionId": 1,
+      "club": "NEW",
+      "teamId": 17,
+      "priceTenths": 50,
+      "basePoints": 2.35,
+      "startRate": 0.679
+    },
+    {
+      "id": 496,
+      "code": 485055,
+      "name": "Kinsky",
+      "position": "GKP",
+      "positionId": 1,
+      "club": "TOT",
+      "teamId": 19,
+      "priceTenths": 45,
+      "basePoints": 1.97,
+      "startRate": 0.651
+    },
+    {
+      "id": 497,
+      "code": 67089,
+      "name": "Dubravka",
+      "position": "GKP",
+      "positionId": 1,
+      "club": "TOT",
+      "teamId": 19,
+      "priceTenths": 40,
+      "basePoints": 1.45,
+      "startRate": 0.526
+    },
+    {
+      "id": 350,
+      "code": 116535,
+      "name": "A.Becker",
+      "position": "GKP",
+      "positionId": 1,
+      "club": "LIV",
+      "teamId": 14,
+      "priceTenths": 55,
+      "basePoints": 1.39,
+      "startRate": 0.395
+    },
+    {
+      "id": 351,
+      "code": 449027,
+      "name": "Mamardashvili",
+      "position": "GKP",
+      "positionId": 1,
+      "club": "LIV",
+      "teamId": 14,
+      "priceTenths": 50,
+      "basePoints": 1.26,
+      "startRate": 0.347
+    },
+    {
+      "id": 494,
+      "code": 184254,
+      "name": "Vicario",
+      "position": "GKP",
+      "positionId": 1,
+      "club": "TOT",
+      "teamId": 19,
+      "priceTenths": 45,
+      "basePoints": 0.9,
+      "startRate": 0.304
+    },
+    {
+      "id": 531,
+      "code": 515046,
+      "name": "Ellborg",
+      "position": "GKP",
+      "positionId": 1,
+      "club": "SUN",
+      "teamId": 20,
+      "priceTenths": 45,
+      "basePoints": 0.81,
+      "startRate": 0.169
+    },
+    {
+      "id": 385,
+      "code": 432720,
+      "name": "Trafford",
+      "position": "GKP",
+      "positionId": 1,
+      "club": "MCI",
+      "teamId": 15,
+      "priceTenths": 50,
+      "basePoints": 0.67,
+      "startRate": 0.212
+    },
+    {
+      "id": 29,
+      "code": 72147,
+      "name": "M.Bizot",
+      "position": "GKP",
+      "positionId": 1,
+      "club": "AVL",
+      "teamId": 2,
+      "priceTenths": 45,
+      "basePoints": 0.62,
+      "startRate": 0.241
+    },
+    {
+      "id": 141,
+      "code": 508479,
+      "name": "J\u00f6rgensen",
+      "position": "GKP",
+      "positionId": 1,
+      "club": "CHE",
+      "teamId": 6,
+      "priceTenths": 50,
+      "basePoints": 0.51,
+      "startRate": 0.196
+    },
+    {
+      "id": 352,
+      "code": 155503,
+      "name": "Woodman",
+      "position": "GKP",
+      "positionId": 1,
+      "club": "LIV",
+      "teamId": 14,
+      "priceTenths": 40,
+      "basePoints": 0.51,
+      "startRate": 0.2
+    },
+    {
+      "id": 326,
+      "code": 201595,
+      "name": "Perri",
+      "position": "GKP",
+      "positionId": 1,
+      "club": "LEE",
+      "teamId": 13,
+      "priceTenths": 45,
+      "basePoints": 0.28,
+      "startRate": 0.1
+    },
+    {
+      "id": 468,
+      "code": 221389,
+      "name": "John",
+      "position": "GKP",
+      "positionId": 1,
+      "club": "NFO",
+      "teamId": 18,
+      "priceTenths": 45,
+      "basePoints": 0.19,
+      "startRate": 0.074
+    },
+    {
+      "id": 413,
+      "code": 451302,
+      "name": "Bayindir",
+      "position": "GKP",
+      "positionId": 1,
+      "club": "MUN",
+      "teamId": 16,
+      "priceTenths": 45,
+      "basePoints": 0.11,
+      "startRate": 0.054
+    },
+    {
+      "id": 4,
+      "code": 226597,
+      "name": "Gabriel",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "ARS",
+      "teamId": 1,
+      "priceTenths": 80,
+      "basePoints": 5.06,
+      "startRate": 0.738
+    },
+    {
+      "id": 498,
+      "code": 221466,
+      "name": "Senesi",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "TOT",
+      "teamId": 19,
+      "priceTenths": 60,
+      "basePoints": 4.3,
+      "startRate": 0.894
+    },
+    {
+      "id": 229,
+      "code": 17761,
+      "name": "Tarkowski",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "EVE",
+      "teamId": 9,
+      "priceTenths": 60,
+      "basePoints": 3.93,
+      "startRate": 0.87
+    },
+    {
+      "id": 356,
+      "code": 97032,
+      "name": "Virgil",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "LIV",
+      "teamId": 14,
+      "priceTenths": 65,
+      "basePoints": 3.81,
+      "startRate": 0.904
+    },
+    {
+      "id": 61,
+      "code": 494521,
+      "name": "Truffert",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "BOU",
+      "teamId": 3,
+      "priceTenths": 55,
+      "basePoints": 3.74,
+      "startRate": 0.896
+    },
+    {
+      "id": 388,
+      "code": 209036,
+      "name": "Gu\u00e9hi",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "MCI",
+      "teamId": 15,
+      "priceTenths": 60,
+      "basePoints": 3.71,
+      "startRate": 0.727
+    },
+    {
+      "id": 60,
+      "code": 463981,
+      "name": "Hill",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "BOU",
+      "teamId": 3,
+      "priceTenths": 55,
+      "basePoints": 3.61,
+      "startRate": 0.87
+    },
+    {
+      "id": 153,
+      "code": 220362,
+      "name": "Disasi",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "CHE",
+      "teamId": 6,
+      "priceTenths": 45,
+      "basePoints": 3.57,
+      "startRate": 0.889
+    },
+    {
+      "id": 445,
+      "code": 465642,
+      "name": "Thiaw",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "NEW",
+      "teamId": 17,
+      "priceTenths": 50,
+      "basePoints": 3.53,
+      "startRate": 0.855
+    },
+    {
+      "id": 112,
+      "code": 469142,
+      "name": "Van Hecke",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "TOT",
+      "teamId": 19,
+      "priceTenths": 50,
+      "basePoints": 3.53,
+      "startRate": 0.877
+    },
+    {
+      "id": 387,
+      "code": 472769,
+      "name": "O'Reilly",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "MCI",
+      "teamId": 15,
+      "priceTenths": 65,
+      "basePoints": 3.46,
+      "startRate": 0.681
+    },
+    {
+      "id": 84,
+      "code": 432830,
+      "name": "Collins",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "BRE",
+      "teamId": 4,
+      "priceTenths": 55,
+      "basePoints": 3.31,
+      "startRate": 0.814
+    },
+    {
+      "id": 113,
+      "code": 231416,
+      "name": "F.Kad\u0131o\u011flu",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "BHA",
+      "teamId": 5,
+      "priceTenths": 45,
+      "basePoints": 3.26,
+      "startRate": 0.896
+    },
+    {
+      "id": 332,
+      "code": 220627,
+      "name": "Justin",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "LEE",
+      "teamId": 13,
+      "priceTenths": 45,
+      "basePoints": 3.23,
+      "startRate": 0.858
+    },
+    {
+      "id": 533,
+      "code": 200834,
+      "name": "Mukiele",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "SUN",
+      "teamId": 20,
+      "priceTenths": 55,
+      "basePoints": 3.21,
+      "startRate": 0.755
+    },
+    {
+      "id": 200,
+      "code": 437499,
+      "name": "Lacroix",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "CHE",
+      "teamId": 6,
+      "priceTenths": 60,
+      "basePoints": 3.1,
+      "startRate": 0.679
+    },
+    {
+      "id": 327,
+      "code": 434752,
+      "name": "Bijol",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "LEE",
+      "teamId": 13,
+      "priceTenths": 50,
+      "basePoints": 3.1,
+      "startRate": 0.763
+    },
+    {
+      "id": 203,
+      "code": 651426,
+      "name": "Canvot",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "CRY",
+      "teamId": 8,
+      "priceTenths": 50,
+      "basePoints": 3.08,
+      "startRate": 0.667
+    },
+    {
+      "id": 447,
+      "code": 220237,
+      "name": "Botman",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "NEW",
+      "teamId": 17,
+      "priceTenths": 50,
+      "basePoints": 3.08,
+      "startRate": 0.738
+    },
+    {
+      "id": 469,
+      "code": 215136,
+      "name": "N.Williams",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "NFO",
+      "teamId": 18,
+      "priceTenths": 50,
+      "basePoints": 3.08,
+      "startRate": 0.771
+    },
+    {
+      "id": 499,
+      "code": 441164,
+      "name": "Pedro Porro",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "TOT",
+      "teamId": 19,
+      "priceTenths": 55,
+      "basePoints": 3.07,
+      "startRate": 0.828
+    },
+    {
+      "id": 257,
+      "code": 232892,
+      "name": "Bassey",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "FUL",
+      "teamId": 10,
+      "priceTenths": 45,
+      "basePoints": 3.02,
+      "startRate": 0.832
+    },
+    {
+      "id": 418,
+      "code": 95658,
+      "name": "Maguire",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "MUN",
+      "teamId": 16,
+      "priceTenths": 50,
+      "basePoints": 3.02,
+      "startRate": 0.758
+    },
+    {
+      "id": 231,
+      "code": 106611,
+      "name": "Keane",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "EVE",
+      "teamId": 9,
+      "priceTenths": 50,
+      "basePoints": 2.97,
+      "startRate": 0.704
+    },
+    {
+      "id": 389,
+      "code": 465351,
+      "name": "Matheus N.",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "MCI",
+      "teamId": 15,
+      "priceTenths": 60,
+      "basePoints": 2.94,
+      "startRate": 0.706
+    },
+    {
+      "id": 471,
+      "code": 227444,
+      "name": "Milenkovi\u0107",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "NFO",
+      "teamId": 18,
+      "priceTenths": 55,
+      "basePoints": 2.9,
+      "startRate": 0.823
+    },
+    {
+      "id": 201,
+      "code": 247348,
+      "name": "Mu\u00f1oz",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "CRY",
+      "teamId": 8,
+      "priceTenths": 55,
+      "basePoints": 2.88,
+      "startRate": 0.549
+    },
+    {
+      "id": 88,
+      "code": 607464,
+      "name": "Kayode",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "BRE",
+      "teamId": 4,
+      "priceTenths": 45,
+      "basePoints": 2.85,
+      "startRate": 0.884
+    },
+    {
+      "id": 85,
+      "code": 444765,
+      "name": "Van den Berg",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "BRE",
+      "teamId": 4,
+      "priceTenths": 50,
+      "basePoints": 2.82,
+      "startRate": 0.653
+    },
+    {
+      "id": 232,
+      "code": 512462,
+      "name": "O'Brien",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "EVE",
+      "teamId": 9,
+      "priceTenths": 50,
+      "basePoints": 2.78,
+      "startRate": 0.883
+    },
+    {
+      "id": 423,
+      "code": 106760,
+      "name": "Shaw",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "MUN",
+      "teamId": 16,
+      "priceTenths": 45,
+      "basePoints": 2.73,
+      "startRate": 0.879
+    },
+    {
+      "id": 204,
+      "code": 244723,
+      "name": "Mitchell",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "CRY",
+      "teamId": 8,
+      "priceTenths": 45,
+      "basePoints": 2.72,
+      "startRate": 0.596
+    },
+    {
+      "id": 233,
+      "code": 224967,
+      "name": "Mykolenko",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "EVE",
+      "teamId": 9,
+      "priceTenths": 45,
+      "basePoints": 2.72,
+      "startRate": 0.871
+    },
+    {
+      "id": 535,
+      "code": 201895,
+      "name": "Alderete",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "SUN",
+      "teamId": 20,
+      "priceTenths": 50,
+      "basePoints": 2.66,
+      "startRate": 0.641
+    },
+    {
+      "id": 202,
+      "code": 427623,
+      "name": "Richards",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "CRY",
+      "teamId": 8,
+      "priceTenths": 50,
+      "basePoints": 2.65,
+      "startRate": 0.531
+    },
+    {
+      "id": 254,
+      "code": 169528,
+      "name": "Robinson",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "FUL",
+      "teamId": 10,
+      "priceTenths": 45,
+      "basePoints": 2.6,
+      "startRate": 0.678
+    },
+    {
+      "id": 328,
+      "code": 222694,
+      "name": "Struijk",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "BHA",
+      "teamId": 5,
+      "priceTenths": 50,
+      "basePoints": 2.58,
+      "startRate": 0.641
+    },
+    {
+      "id": 329,
+      "code": 214225,
+      "name": "Rodon",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "LEE",
+      "teamId": 13,
+      "priceTenths": 45,
+      "basePoints": 2.57,
+      "startRate": 0.767
+    },
+    {
+      "id": 503,
+      "code": 491279,
+      "name": "Van de Ven",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "TOT",
+      "teamId": 19,
+      "priceTenths": 50,
+      "basePoints": 2.57,
+      "startRate": 0.783
+    },
+    {
+      "id": 501,
+      "code": 135720,
+      "name": "Danso",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "TOT",
+      "teamId": 19,
+      "priceTenths": 50,
+      "basePoints": 2.55,
+      "startRate": 0.726
+    },
+    {
+      "id": 426,
+      "code": 141746,
+      "name": "B.Fernandes",
+      "position": "MID",
+      "positionId": 3,
+      "club": "MUN",
+      "teamId": 16,
+      "priceTenths": 120,
+      "basePoints": 5.19,
+      "startRate": 0.885
+    },
+    {
+      "id": 154,
+      "code": 244851,
+      "name": "Palmer",
+      "position": "MID",
+      "positionId": 3,
+      "club": "CHE",
+      "teamId": 6,
+      "priceTenths": 95,
+      "basePoints": 4.22,
+      "startRate": 0.866
+    },
+    {
+      "id": 481,
+      "code": 215379,
+      "name": "Anderson",
+      "position": "MID",
+      "positionId": 3,
+      "club": "MCI",
+      "teamId": 15,
+      "priceTenths": 65,
+      "basePoints": 4.02,
+      "startRate": 0.823
+    },
+    {
+      "id": 155,
+      "code": 448047,
+      "name": "Enzo",
+      "position": "MID",
+      "positionId": 3,
+      "club": "CHE",
+      "teamId": 6,
+      "priceTenths": 70,
+      "basePoints": 4.01,
+      "startRate": 0.84
+    },
+    {
+      "id": 68,
+      "code": 201658,
+      "name": "Tavernier",
+      "position": "MID",
+      "positionId": 3,
+      "club": "BOU",
+      "teamId": 3,
+      "priceTenths": 60,
+      "basePoints": 3.78,
+      "startRate": 0.815
+    },
+    {
+      "id": 368,
+      "code": 424876,
+      "name": "Szoboszlai",
+      "position": "MID",
+      "positionId": 3,
+      "club": "LIV",
+      "teamId": 14,
+      "priceTenths": 70,
+      "basePoints": 3.73,
+      "startRate": 0.883
+    },
+    {
+      "id": 124,
+      "code": 60307,
+      "name": "Gro\u00df",
+      "position": "MID",
+      "positionId": 3,
+      "club": "BHA",
+      "teamId": 5,
+      "priceTenths": 55,
+      "basePoints": 3.71,
+      "startRate": 0.883
+    },
+    {
+      "id": 427,
+      "code": 446008,
+      "name": "Mbeumo",
+      "position": "MID",
+      "positionId": 3,
+      "club": "MUN",
+      "teamId": 16,
+      "priceTenths": 80,
+      "basePoints": 3.7,
+      "startRate": 0.734
+    },
+    {
+      "id": 236,
+      "code": 215413,
+      "name": "Dewsbury-Hall",
+      "position": "MID",
+      "positionId": 3,
+      "club": "EVE",
+      "teamId": 9,
+      "priceTenths": 65,
+      "basePoints": 3.65,
+      "startRate": 0.856
+    },
+    {
+      "id": 237,
+      "code": 440993,
+      "name": "Ndiaye",
+      "position": "MID",
+      "positionId": 3,
+      "club": "EVE",
+      "teamId": 9,
+      "priceTenths": 60,
+      "basePoints": 3.65,
+      "startRate": 0.869
+    },
+    {
+      "id": 542,
+      "code": 484420,
+      "name": "E.Le F\u00e9e",
+      "position": "MID",
+      "positionId": 3,
+      "club": "SUN",
+      "teamId": 20,
+      "priceTenths": 60,
+      "basePoints": 3.65,
+      "startRate": 0.829
+    },
+    {
+      "id": 367,
+      "code": 243298,
+      "name": "Gakpo",
+      "position": "MID",
+      "positionId": 3,
+      "club": "LIV",
+      "teamId": 14,
+      "priceTenths": 70,
+      "basePoints": 3.62,
+      "startRate": 0.884
+    },
+    {
+      "id": 95,
+      "code": 533463,
+      "name": "O.Dango",
+      "position": "MID",
+      "positionId": 3,
+      "club": "BRE",
+      "teamId": 4,
+      "priceTenths": 65,
+      "basePoints": 3.61,
+      "startRate": 0.708
+    },
+    {
+      "id": 13,
+      "code": 204480,
+      "name": "Rice",
+      "position": "MID",
+      "positionId": 3,
+      "club": "ARS",
+      "teamId": 1,
+      "priceTenths": 75,
+      "basePoints": 3.6,
+      "startRate": 0.751
+    },
+    {
+      "id": 67,
+      "code": 499604,
+      "name": "Rayan",
+      "position": "MID",
+      "positionId": 3,
+      "club": "BOU",
+      "teamId": 3,
+      "priceTenths": 65,
+      "basePoints": 3.48,
+      "startRate": 0.868
+    },
+    {
+      "id": 338,
+      "code": 199598,
+      "name": "Ampadu",
+      "position": "MID",
+      "positionId": 3,
+      "club": "LEE",
+      "teamId": 13,
+      "priceTenths": 55,
+      "basePoints": 3.47,
+      "startRate": 0.889
+    },
+    {
+      "id": 480,
+      "code": 222531,
+      "name": "Gibbs-White",
+      "position": "MID",
+      "positionId": 3,
+      "club": "NFO",
+      "teamId": 18,
+      "priceTenths": 80,
+      "basePoints": 3.43,
+      "startRate": 0.727
+    },
+    {
+      "id": 525,
+      "code": 551226,
+      "name": "Fernandes",
+      "position": "MID",
+      "positionId": 3,
+      "club": "TOT",
+      "teamId": 19,
+      "priceTenths": 60,
+      "basePoints": 3.42,
+      "startRate": 0.902
+    },
+    {
+      "id": 397,
+      "code": 437730,
+      "name": "Semenyo",
+      "position": "MID",
+      "positionId": 3,
+      "club": "MCI",
+      "teamId": 15,
+      "priceTenths": 85,
+      "basePoints": 3.41,
+      "startRate": 0.589
+    },
+    {
+      "id": 208,
+      "code": 232185,
+      "name": "Sarr",
+      "position": "MID",
+      "positionId": 3,
+      "club": "CRY",
+      "teamId": 8,
+      "priceTenths": 65,
+      "basePoints": 3.39,
+      "startRate": 0.508
+    },
+    {
+      "id": 399,
+      "code": 466052,
+      "name": "Cherki",
+      "position": "MID",
+      "positionId": 3,
+      "club": "MCI",
+      "teamId": 15,
+      "priceTenths": 75,
+      "basePoints": 3.38,
+      "startRate": 0.487
+    },
+    {
+      "id": 94,
+      "code": 513418,
+      "name": "Schade",
+      "position": "MID",
+      "positionId": 3,
+      "club": "BRE",
+      "teamId": 4,
+      "priceTenths": 60,
+      "basePoints": 3.28,
+      "startRate": 0.72
+    },
+    {
+      "id": 97,
+      "code": 207283,
+      "name": "Jensen",
+      "position": "MID",
+      "positionId": 3,
+      "club": "BRE",
+      "teamId": 4,
+      "priceTenths": 55,
+      "basePoints": 3.25,
+      "startRate": 0.889
+    },
+    {
+      "id": 123,
+      "code": 532529,
+      "name": "Hinshelwood",
+      "position": "MID",
+      "positionId": 3,
+      "club": "BHA",
+      "teamId": 5,
+      "priceTenths": 60,
+      "basePoints": 3.22,
+      "startRate": 0.832
+    },
+    {
+      "id": 69,
+      "code": 503139,
+      "name": "Scott",
+      "position": "MID",
+      "positionId": 3,
+      "club": "BOU",
+      "teamId": 3,
+      "priceTenths": 60,
+      "basePoints": 3.12,
+      "startRate": 0.743
+    },
+    {
+      "id": 86,
+      "code": 249231,
+      "name": "Lewis-Potter",
+      "position": "MID",
+      "positionId": 3,
+      "club": "BRE",
+      "teamId": 4,
+      "priceTenths": 55,
+      "basePoints": 3.1,
+      "startRate": 0.78
+    },
+    {
+      "id": 105,
+      "code": 444180,
+      "name": "Anthony",
+      "position": "MID",
+      "positionId": 3,
+      "club": "BRE",
+      "teamId": 4,
+      "priceTenths": 60,
+      "basePoints": 3.03,
+      "startRate": 0.868
+    },
+    {
+      "id": 544,
+      "code": 84450,
+      "name": "Xhaka",
+      "position": "MID",
+      "positionId": 3,
+      "club": "SUN",
+      "teamId": 20,
+      "priceTenths": 55,
+      "basePoints": 2.99,
+      "startRate": 0.802
+    },
+    {
+      "id": 159,
+      "code": 486672,
+      "name": "Caicedo",
+      "position": "MID",
+      "positionId": 3,
+      "club": "CHE",
+      "teamId": 6,
+      "priceTenths": 55,
+      "basePoints": 2.95,
+      "startRate": 0.877
+    },
+    {
+      "id": 40,
+      "code": 244850,
+      "name": "Rogers",
+      "position": "MID",
+      "positionId": 3,
+      "club": "CHE",
+      "teamId": 6,
+      "priceTenths": 75,
+      "basePoints": 2.94,
+      "startRate": 0.768
+    },
+    {
+      "id": 371,
+      "code": 441266,
+      "name": "Gravenberch",
+      "position": "MID",
+      "positionId": 3,
+      "club": "LIV",
+      "teamId": 14,
+      "priceTenths": 60,
+      "basePoints": 2.94,
+      "startRate": 0.756
+    },
+    {
+      "id": 452,
+      "code": 208706,
+      "name": "Bruno G.",
+      "position": "MID",
+      "positionId": 3,
+      "club": "NEW",
+      "teamId": 17,
+      "priceTenths": 70,
+      "basePoints": 2.89,
+      "startRate": 0.627
+    },
+    {
+      "id": 260,
+      "code": 153682,
+      "name": "Wilson",
+      "position": "MID",
+      "positionId": 3,
+      "club": "LEE",
+      "teamId": 13,
+      "priceTenths": 65,
+      "basePoints": 2.85,
+      "startRate": 0.622
+    },
+    {
+      "id": 372,
+      "code": 243016,
+      "name": "Mac Allister",
+      "position": "MID",
+      "positionId": 3,
+      "club": "LIV",
+      "teamId": 14,
+      "priceTenths": 55,
+      "basePoints": 2.84,
+      "startRate": 0.77
+    },
+    {
+      "id": 431,
+      "code": 493250,
+      "name": "Amad",
+      "position": "MID",
+      "positionId": 3,
+      "club": "MUN",
+      "teamId": 16,
+      "priceTenths": 60,
+      "basePoints": 2.82,
+      "startRate": 0.591
+    },
+    {
+      "id": 337,
+      "code": 427637,
+      "name": "Aaronson",
+      "position": "MID",
+      "positionId": 3,
+      "club": "LEE",
+      "teamId": 13,
+      "priceTenths": 55,
+      "basePoints": 2.81,
+      "startRate": 0.628
+    },
+    {
+      "id": 400,
+      "code": 248875,
+      "name": "Doku",
+      "position": "MID",
+      "positionId": 3,
+      "club": "MCI",
+      "teamId": 15,
+      "priceTenths": 75,
+      "basePoints": 2.78,
+      "startRate": 0.532
+    },
+    {
+      "id": 96,
+      "code": 440089,
+      "name": "Damsgaard",
+      "position": "MID",
+      "positionId": 3,
+      "club": "BRE",
+      "teamId": 4,
+      "priceTenths": 55,
+      "basePoints": 2.77,
+      "startRate": 0.575
+    },
+    {
+      "id": 122,
+      "code": 592031,
+      "name": "Minteh",
+      "position": "MID",
+      "positionId": 3,
+      "club": "BHA",
+      "teamId": 5,
+      "priceTenths": 60,
+      "basePoints": 2.77,
+      "startRate": 0.582
+    },
+    {
+      "id": 428,
+      "code": 430871,
+      "name": "Cunha",
+      "position": "MID",
+      "positionId": 3,
+      "club": "MUN",
+      "teamId": 16,
+      "priceTenths": 80,
+      "basePoints": 2.76,
+      "startRate": 0.677
+    },
+    {
+      "id": 106,
+      "code": 502500,
+      "name": "Thiago",
+      "position": "FWD",
+      "positionId": 4,
+      "club": "BRE",
+      "teamId": 4,
+      "priceTenths": 80,
+      "basePoints": 4.41,
+      "startRate": 0.902
+    },
+    {
+      "id": 411,
+      "code": 223094,
+      "name": "Haaland",
+      "position": "FWD",
+      "positionId": 4,
+      "club": "MCI",
+      "teamId": 15,
+      "priceTenths": 155,
+      "basePoints": 4.4,
+      "startRate": 0.679
+    },
+    {
+      "id": 346,
+      "code": 177815,
+      "name": "Calvert-Lewin",
+      "position": "FWD",
+      "positionId": 4,
+      "club": "LEE",
+      "teamId": 13,
+      "priceTenths": 60,
+      "basePoints": 3.92,
+      "startRate": 0.867
+    },
+    {
+      "id": 55,
+      "code": 178301,
+      "name": "Watkins",
+      "position": "FWD",
+      "positionId": 4,
+      "club": "AVL",
+      "teamId": 2,
+      "priceTenths": 80,
+      "basePoints": 3.83,
+      "startRate": 0.768
+    },
+    {
+      "id": 165,
+      "code": 475168,
+      "name": "Jo\u00e3o Pedro",
+      "position": "FWD",
+      "positionId": 4,
+      "club": "CHE",
+      "teamId": 6,
+      "priceTenths": 75,
+      "basePoints": 3.29,
+      "startRate": 0.682
+    },
+    {
+      "id": 136,
+      "code": 50175,
+      "name": "Welbeck",
+      "position": "FWD",
+      "positionId": 4,
+      "club": "BHA",
+      "teamId": 5,
+      "priceTenths": 60,
+      "basePoints": 3.2,
+      "startRate": 0.665
+    },
+    {
+      "id": 79,
+      "code": 444102,
+      "name": "Evanilson",
+      "position": "FWD",
+      "positionId": 4,
+      "club": "BOU",
+      "teamId": 3,
+      "priceTenths": 60,
+      "basePoints": 3.04,
+      "startRate": 0.731
+    },
+    {
+      "id": 491,
+      "code": 482973,
+      "name": "Igor Jesus",
+      "position": "FWD",
+      "positionId": 4,
+      "club": "NFO",
+      "teamId": 18,
+      "priceTenths": 60,
+      "basePoints": 2.86,
+      "startRate": 0.723
+    },
+    {
+      "id": 465,
+      "code": 538207,
+      "name": "Osula",
+      "position": "FWD",
+      "positionId": 4,
+      "club": "NEW",
+      "teamId": 17,
+      "priceTenths": 60,
+      "basePoints": 2.85,
+      "startRate": 0.652
+    },
+    {
+      "id": 527,
+      "code": 212319,
+      "name": "Richarlison",
+      "position": "FWD",
+      "positionId": 4,
+      "club": "TOT",
+      "teamId": 19,
+      "priceTenths": 60,
+      "basePoints": 2.8,
+      "startRate": 0.626
+    },
+    {
+      "id": 552,
+      "code": 441264,
+      "name": "Brobbey",
+      "position": "FWD",
+      "positionId": 4,
+      "club": "SUN",
+      "teamId": 20,
+      "priceTenths": 60,
+      "basePoints": 2.73,
+      "startRate": 0.834
+    },
+    {
+      "id": 25,
+      "code": 224117,
+      "name": "Gy\u00f6keres",
+      "position": "FWD",
+      "positionId": 4,
+      "club": "ARS",
+      "teamId": 1,
+      "priceTenths": 75,
+      "basePoints": 2.59,
+      "startRate": 0.393
+    },
+    {
+      "id": 248,
+      "code": 486385,
+      "name": "Beto",
+      "position": "FWD",
+      "positionId": 4,
+      "club": "EVE",
+      "teamId": 9,
+      "priceTenths": 55,
+      "basePoints": 2.59,
+      "startRate": 0.582
+    },
+    {
+      "id": 222,
+      "code": 247412,
+      "name": "Strand Larsen",
+      "position": "FWD",
+      "positionId": 4,
+      "club": "CRY",
+      "teamId": 8,
+      "priceTenths": 60,
+      "basePoints": 2.26,
+      "startRate": 0.643
+    },
+    {
+      "id": 347,
+      "code": 174594,
+      "name": "Nmecha",
+      "position": "FWD",
+      "positionId": 4,
+      "club": "LEE",
+      "teamId": 13,
+      "priceTenths": 55,
+      "basePoints": 2.25,
+      "startRate": 0.268
+    },
+    {
+      "id": 223,
+      "code": 231747,
+      "name": "Mateta",
+      "position": "FWD",
+      "positionId": 4,
+      "club": "CRY",
+      "teamId": 8,
+      "priceTenths": 65,
+      "basePoints": 2.22,
+      "startRate": 0.288
+    },
+    {
+      "id": 463,
+      "code": 470313,
+      "name": "Woltemade",
+      "position": "FWD",
+      "positionId": 4,
+      "club": "NEW",
+      "teamId": 17,
+      "priceTenths": 60,
+      "basePoints": 2.18,
+      "startRate": 0.507
+    },
+    {
+      "id": 249,
+      "code": 586309,
+      "name": "Barry",
+      "position": "FWD",
+      "positionId": 4,
+      "club": "EVE",
+      "teamId": 9,
+      "priceTenths": 55,
+      "basePoints": 2.16,
+      "startRate": 0.371
+    },
+    {
+      "id": 271,
+      "code": 244042,
+      "name": "Muniz",
+      "position": "FWD",
+      "positionId": 4,
+      "club": "FUL",
+      "teamId": 10,
+      "priceTenths": 55,
+      "basePoints": 2.09,
+      "startRate": 0.544
+    },
+    {
+      "id": 108,
+      "code": 75115,
+      "name": "Wilson",
+      "position": "FWD",
+      "positionId": 4,
+      "club": "BRE",
+      "teamId": 4,
+      "priceTenths": 55,
+      "basePoints": 1.94,
+      "startRate": 0.171
+    },
+    {
+      "id": 26,
+      "code": 219847,
+      "name": "Havertz",
+      "position": "FWD",
+      "positionId": 4,
+      "club": "ARS",
+      "teamId": 1,
+      "priceTenths": 75,
+      "basePoints": 1.93,
+      "startRate": 0.277
+    },
+    {
+      "id": 490,
+      "code": 60689,
+      "name": "Wood",
+      "position": "FWD",
+      "positionId": 4,
+      "club": "NFO",
+      "teamId": 18,
+      "priceTenths": 60,
+      "basePoints": 1.9,
+      "startRate": 0.429
+    },
+    {
+      "id": 492,
+      "code": 210156,
+      "name": "Awoniyi",
+      "position": "FWD",
+      "positionId": 4,
+      "club": "NFO",
+      "teamId": 18,
+      "priceTenths": 55,
+      "basePoints": 1.74,
+      "startRate": 0.228
+    },
+    {
+      "id": 167,
+      "code": 463034,
+      "name": "Delap",
+      "position": "FWD",
+      "positionId": 4,
+      "club": "CHE",
+      "teamId": 6,
+      "priceTenths": 55,
+      "basePoints": 1.66,
+      "startRate": 0.27
+    },
+    {
+      "id": 125,
+      "code": 463067,
+      "name": "Georginio",
+      "position": "FWD",
+      "positionId": 4,
+      "club": "BHA",
+      "teamId": 5,
+      "priceTenths": 55,
+      "basePoints": 1.48,
+      "startRate": 0.194
+    },
+    {
+      "id": 401,
+      "code": 438234,
+      "name": "Marmoush",
+      "position": "FWD",
+      "positionId": 4,
+      "club": "MCI",
+      "teamId": 15,
+      "priceTenths": 70,
+      "basePoints": 1.36,
+      "startRate": 0.205
+    },
+    {
+      "id": 526,
+      "code": 154566,
+      "name": "Solanke",
+      "position": "FWD",
+      "positionId": 4,
+      "club": "TOT",
+      "teamId": 19,
+      "priceTenths": 60,
+      "basePoints": 1.28,
+      "startRate": 0.327
+    },
+    {
+      "id": 80,
+      "code": 168636,
+      "name": "Enes \u00dcnal",
+      "position": "FWD",
+      "positionId": 4,
+      "club": "BOU",
+      "teamId": 3,
+      "priceTenths": 55,
+      "basePoints": 1.25,
+      "startRate": 0.056
+    },
+    {
+      "id": 440,
+      "code": 458249,
+      "name": "Zirkzee",
+      "position": "FWD",
+      "positionId": 4,
+      "club": "MUN",
+      "teamId": 16,
+      "priceTenths": 55,
+      "basePoints": 1.23,
+      "startRate": 0.151
+    },
+    {
+      "id": 464,
+      "code": 216646,
+      "name": "Wissa",
+      "position": "FWD",
+      "positionId": 4,
+      "club": "NEW",
+      "teamId": 17,
+      "priceTenths": 60,
+      "basePoints": 1.22,
+      "startRate": 0.087
+    },
+    {
+      "id": 553,
+      "code": 437505,
+      "name": "Isidor",
+      "position": "FWD",
+      "positionId": 4,
+      "club": "SUN",
+      "teamId": 20,
+      "priceTenths": 55,
+      "basePoints": 1.14,
+      "startRate": 0.046
+    },
+    {
+      "id": 138,
+      "code": 647850,
+      "name": "Kostoulas",
+      "position": "FWD",
+      "positionId": 4,
+      "club": "BHA",
+      "teamId": 5,
+      "priceTenths": 55,
+      "basePoints": 1.12,
+      "startRate": 0.078
+    },
+    {
+      "id": 27,
+      "code": 205651,
+      "name": "G.Jesus",
+      "position": "FWD",
+      "positionId": 4,
+      "club": "ARS",
+      "teamId": 1,
+      "priceTenths": 60,
+      "basePoints": 1.01,
+      "startRate": 0.188
+    },
+    {
+      "id": 379,
+      "code": 219168,
+      "name": "Isak",
+      "position": "FWD",
+      "positionId": 4,
+      "club": "LIV",
+      "teamId": 14,
+      "priceTenths": 90,
+      "basePoints": 0.86,
+      "startRate": 0.184
+    },
+    {
+      "id": 348,
+      "code": 235826,
+      "name": "Piroe",
+      "position": "FWD",
+      "positionId": 4,
+      "club": "LEE",
+      "teamId": 13,
+      "priceTenths": 50,
+      "basePoints": 0.68,
+      "startRate": 0.026
+    },
+    {
+      "id": 168,
+      "code": 499309,
+      "name": "Marc Guiu",
+      "position": "FWD",
+      "positionId": 4,
+      "club": "CHE",
+      "teamId": 6,
+      "priceTenths": 50,
+      "basePoints": 0.3,
+      "startRate": 0.057
+    },
+    {
+      "id": 224,
+      "code": 205533,
+      "name": "Nketiah",
+      "position": "FWD",
+      "positionId": 4,
+      "club": "CRY",
+      "teamId": 8,
+      "priceTenths": 55,
+      "basePoints": 0.23,
+      "startRate": 0.061
+    }
+  ]
+}

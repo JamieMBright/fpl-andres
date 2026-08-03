@@ -1,14 +1,13 @@
 import { describe, expect, it } from "vitest";
 
 import plan from "../data/season-plan.json";
-import { nearestTeletextColor, TELETEXT_PALETTE } from "./teletext";
 import {
   kitForCode,
   kitForShortName,
-  kitSignature,
   signatureKey,
   TEAM_KITS,
 } from "./team-kits";
+import { TELETEXT_PALETTE } from "./teletext";
 
 /**
  * These kits are hardcoded because nothing publishes them. That makes them the
@@ -19,6 +18,25 @@ import {
  * The first version of this file had Burnley, West Ham and Wolves in it. The
  * 2026/27 league has Coventry, Hull and Ipswich.
  */
+
+const PALETTE = new Set(Object.keys(TELETEXT_PALETTE));
+
+function coloursOf(kit: (typeof TEAM_KITS)[number]): string[] {
+  const { paint } = kit;
+  return [
+    paint.base,
+    paint.sleeves,
+    ...paint.collar,
+    ...(paint.collarDither ?? []),
+    ...(paint.stripes ?? []),
+    ...(paint.hoops ?? []),
+    ...(paint.sash ?? []),
+    ...(paint.shoulder ?? []),
+    ...(paint.cuffs ?? []),
+    ...(paint.sideLine ? [paint.sideLine] : []),
+    ...(paint.fade ? [paint.fade.from, paint.fade.to] : []),
+  ];
+}
 
 describe("the kit list", () => {
   it("has exactly the twenty clubs, keyed uniquely", () => {
@@ -38,10 +56,10 @@ describe("the kit list", () => {
     }
   });
 
-  it("parses every colour it declares", () => {
+  it("uses only colours a teletext page had", () => {
     for (const kit of TEAM_KITS) {
-      for (const colour of [kit.primary, kit.secondary, kit.trim]) {
-        expect(() => nearestTeletextColor(colour)).not.toThrow();
+      for (const colour of coloursOf(kit)) {
+        expect(PALETTE, `${kit.shortName} uses ${colour}`).toContain(colour);
       }
     }
   });
@@ -55,18 +73,24 @@ describe("the kit list", () => {
     expect(kitForCode(999999)).toBeNull();
     expect(kitForShortName("ZZZ")).toBeNull();
   });
+
+  it("gives every kit a collar, because a bare neck reads as unfinished", () => {
+    for (const kit of TEAM_KITS) {
+      expect(kit.paint.collar.length, kit.shortName).toBeGreaterThan(0);
+    }
+  });
 });
 
 describe("what the eight-colour palette costs", () => {
   it("keeps every club distinguishable", () => {
-    const keys = TEAM_KITS.map((kit) => signatureKey(kitSignature(kit)));
+    const keys = TEAM_KITS.map(signatureKey);
     expect(new Set(keys).size).toBe(TEAM_KITS.length);
   });
 
   it("names any pair that would render identically", () => {
     const byKey = new Map<string, string[]>();
     for (const kit of TEAM_KITS) {
-      const key = signatureKey(kitSignature(kit));
+      const key = signatureKey(kit);
       byKey.set(key, [...(byKey.get(key) ?? []), kit.shortName]);
     }
 
@@ -80,39 +104,19 @@ describe("what the eight-colour palette costs", () => {
     expect(collisions).toEqual([]);
   });
 
-  it("separates the three red clubs on the collar alone", () => {
-    const reds = ["LIV", "MUN", "NFO"].map((short) => {
-      const kit = kitForShortName(short);
-      if (!kit) throw new Error(`${short} has no kit`);
-      return kitSignature(kit);
-    });
+  it("separates the red clubs on details rather than on colour", () => {
+    const reds = ["ARS", "BOU", "BRE", "LIV", "MUN", "NFO", "SUN"].map(
+      (short) => {
+        const kit = kitForShortName(short);
+        if (!kit) throw new Error(`${short} has no kit`);
+        return kit;
+      },
+    );
 
-    expect(new Set(reds.map((signature) => signature.primary)).size).toBe(1);
-    expect(new Set(reds.map(signatureKey)).size).toBe(3);
-  });
-
-  it("overrides the snap only where it is stated, and to a real palette colour", () => {
-    const palette = new Set(Object.keys(TELETEXT_PALETTE));
-    const overridden = TEAM_KITS.filter((kit) => kit.teletext);
-
-    // Villa's claret is the case this exists for. If the list grows, the doc
-    // comment explaining why should have grown with it.
-    expect(overridden.map((kit) => kit.shortName)).toEqual(["AVL"]);
-    for (const kit of overridden) {
-      for (const colour of Object.values(kit.teletext ?? {})) {
-        expect(palette).toContain(colour);
-      }
-    }
-  });
-
-  it("dithers only where the palette has no name for the colour", () => {
-    const dithered = TEAM_KITS.filter((kit) => kit.dither);
-
-    // Mode 7 has no orange; Hull is the only amber club in this league.
-    expect(dithered.map((kit) => kit.shortName)).toEqual(["HUL"]);
-    for (const kit of dithered) {
-      expect(kit.dither).toHaveLength(2);
-      expect(kit.dither?.[0]).not.toBe(kit.dither?.[1]);
-    }
+    // Every one of them is a red shirt. Seven of twenty.
+    expect(new Set(reds.map((kit) => kit.paint.base))).toEqual(
+      new Set(["red"]),
+    );
+    expect(new Set(reds.map(signatureKey)).size).toBe(reds.length);
   });
 });

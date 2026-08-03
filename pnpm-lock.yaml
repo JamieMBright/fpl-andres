@@ -53,6 +53,9 @@ importers:
       "@fpl-andres/contracts":
         specifier: workspace:*
         version: link:../../packages/contracts
+      "@fpl-andres/quick-solver":
+        specifier: workspace:*
+        version: link:../../packages/quick-solver
       lucide-react:
         specifier: 1.27.0
         version: 1.27.0(react@19.2.8)

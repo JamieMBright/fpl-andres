@@ -3,7 +3,7 @@ import { useState } from "react";
 import { CeefaxShirt } from "../components/CeefaxShirt";
 import { PlayerAvatar } from "../components/PlayerAvatar";
 import { RouteHeading } from "../components/RouteHeading";
-import { kitSignature, signatureKey, TEAM_KITS } from "../kit/team-kits";
+import { signatureKey, TEAM_KITS } from "../kit/team-kits";
 import { useDocumentTitle } from "../state/use-document-title";
 
 /**
@@ -15,9 +15,10 @@ import { useDocumentTitle } from "../state/use-document-title";
  */
 
 const SAMPLE_PHOTOS = [
-  { code: 118748, name: "Mohamed Salah" },
-  { code: 154561, name: "David Raya" },
-  { code: 99999999, name: "Nobody at all" },
+  { code: 118748, name: "Mohamed Salah", club: "LIV", squadNumber: 11 },
+  { code: 154561, name: "David Raya", club: "ARS", squadNumber: 22 },
+  { code: 99999999, name: "Nobody at all", club: "NEW", squadNumber: 9 },
+  { code: 99999998, name: "Nobody, no club", club: null, squadNumber: null },
 ];
 
 export default function KitPreviewPage() {
@@ -30,7 +31,7 @@ export default function KitPreviewPage() {
 
   const collisions = new Map<string, string[]>();
   for (const kit of TEAM_KITS) {
-    const key = signatureKey(kitSignature(kit));
+    const key = signatureKey(kit);
     collisions.set(key, [...(collisions.get(key) ?? []), kit.shortName]);
   }
   const groups = [...collisions.values()].filter((clubs) => clubs.length > 1);
@@ -78,7 +79,7 @@ export default function KitPreviewPage() {
               squadNumber={numbers ? (index % 11) + 1 : null}
             />
             <span className="kit-name">{kit.shortName}</span>
-            <span className="kit-pattern mono">{kit.pattern}</span>
+            <span className="kit-pattern mono">{kit.paint.base}</span>
             {clashing.has(kit.shortName) ? (
               <span className="kit-clash mono">clash</span>
             ) : null}
@@ -88,15 +89,22 @@ export default function KitPreviewPage() {
 
       <h2>Photographs</h2>
       <p className="lede">
-        Lazy-loaded from the official media host, with a blocky silhouette when
-        there is not one. A missing photo returns 403 rather than 404, so the
-        fallback reacts to the load failing rather than to a status code.
+        Lazy-loaded from the official media host. Where there is no photograph
+        the player wears his club shirt with his number, which still says who he
+        plays for — a silhouette only says the image failed. A missing photo
+        returns 403 rather than 404, so the fallback reacts to the load failing
+        rather than to a status code.
       </p>
 
       <ul className="kit-faces">
         {SAMPLE_PHOTOS.map((player) => (
           <li key={player.code}>
-            <PlayerAvatar name={player.name} playerCode={player.code} />
+            <PlayerAvatar
+              club={player.club}
+              name={player.name}
+              playerCode={player.code}
+              squadNumber={player.squadNumber}
+            />
             <span className="kit-name">{player.name}</span>
           </li>
         ))}

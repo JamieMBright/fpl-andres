@@ -1,10 +1,14 @@
 import { ArrowRight, ChevronDown } from "lucide-react";
 import { useMemo, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 
 import { CeefaxShirt } from "../components/CeefaxShirt";
 import { RouteHeading } from "../components/RouteHeading";
 import { deadlineDay, money } from "../format";
 import { kitForShortName } from "../kit/team-kits";
+import type { SolvedGameweek } from "../state/season-solver";
+import { startFromCodes } from "../state/season-solver";
+import { useSeasonSolve } from "../state/use-season-solve";
 import {
   CONFIDENCE_NOTE,
   readSeasonPlan,
@@ -165,12 +169,61 @@ function GameweekCard({
   );
 }
 
+/** The solved shape carries everything the published one does, plus ids. */
+function asPlanGameweek(week: SolvedGameweek): PlanGameweek {
+  return {
+    event: week.event,
+    deadline: week.deadline,
+    confidence: week.confidence,
+    starters: week.starters,
+    bench: week.bench,
+    captain: week.captain,
+    viceCaptain: week.viceCaptain,
+    transfersIn: week.transfersIn,
+    transfersOut: week.transfersOut,
+    freeTransfersBefore: week.freeTransfersBefore,
+    paidTransfers: week.paidTransfers,
+    transferCostPoints: week.transferCostPoints,
+    projectedPoints: week.projectedPoints,
+    netExpectedPoints: week.netExpectedPoints,
+    bankAfterTenths: week.bankAfterTenths,
+  };
+}
+
 export default function SeasonPlanPage() {
   const plan = useMemo(() => readSeasonPlan(), []);
+  const [params] = useSearchParams();
   const [open, setOpen] = useState<number | null>(
     plan.gameweeks[0]?.event ?? null,
   );
   const chips = useMemo(() => new Set(plan.chipWindows), [plan.chipWindows]);
+
+  /*
+   * Nothing to solve until a manager has a squad. Between seasons FPL wipes
+   * them all, so the published plan really is everyone's plan — it is what
+   * Andres thinks the optimal opening squad does with the whole season. From
+   * the first deadline it stops being true for anybody, and the solve below
+   * takes over.
+   */
+  const fromEvent = Number(params.get("from") ?? "");
+  const live = useMemo(() => {
+    if (!Number.isInteger(fromEvent) || fromEvent < 1 || fromEvent > 38) {
+      return null;
+    }
+    const opening = plan.gameweeks[0];
+    if (!opening) return null;
+
+    return startFromCodes(
+      [...opening.starters, ...opening.bench].map((player) => player.code),
+      { bankTenths: 0, availableFreeTransfers: 1, fromEvent },
+    );
+  }, [fromEvent, plan.gameweeks]);
+
+  const solve = useSeasonSolve(live);
+  const solving = live !== null;
+  const gameweeks = solving
+    ? solve.gameweeks.map(asPlanGameweek)
+    : plan.gameweeks;
 
   useDocumentTitle(
     "The season plan",
@@ -180,11 +233,11 @@ export default function SeasonPlanPage() {
 
   const bands = useMemo(() => {
     const counted = new Map<Confidence, number>();
-    for (const week of plan.gameweeks) {
+    for (const week of gameweeks) {
       counted.set(week.confidence, (counted.get(week.confidence) ?? 0) + 1);
     }
     return counted;
-  }, [plan.gameweeks]);
+  }, [gameweeks]);
 
   return (
     <section className="season-plan" aria-label="The season plan">
@@ -195,25 +248,59 @@ export default function SeasonPlanPage() {
       <RouteHeading>Every gameweek to the end.</RouteHeading>
 
       <p className="lede">
-        Gameweek {plan.gameweeks[0]?.event} to{" "}
-        {plan.gameweeks[plan.gameweeks.length - 1]?.event}: the squad, the
-        eleven, the captain and the transfer, for all of it.{" "}
-        <strong>{plan.netExpectedPoints.toFixed(0)}</strong> net points from the
-        opening squad.
+        Gameweek {gameweeks[0]?.event} to{" "}
+        {gameweeks[gameweeks.length - 1]?.event}: the squad, the eleven, the
+        captain and the transfer, for all of it.{" "}
+        {solving ? null : (
+          <>
+            <strong>{plan.netExpectedPoints.toFixed(0)}</strong> net points from
+            the opening squad.
+          </>
+        )}
       </p>
 
-      <p className="plan-honesty">
-        It gets less reliable the further out you read, and it says so on every
-        card. {bands.get("firm") ?? 0} gameweek is firm,{" "}
-        {bands.get("projected") ?? 0} are projected,{" "}
-        {bands.get("provisional") ?? 0} are provisional. A single optimal
-        38-gameweek solve does not return, so this is {plan.windowsSolved}{" "}
-        overlapping windows chained together from a pool of {plan.poolSize}{" "}
-        players — a good plan, not a proof.
-      </p>
+      {solving ? (
+        <p className="plan-honesty">
+          Solved on your machine, not on a server: the plan depends on your
+          squad, your bank and your free transfers, so it cannot be precomputed,
+          and thirty-eight gameweeks does not fit in a fifteen-second function.
+          Nothing about your team is sent anywhere to produce it.
+        </p>
+      ) : (
+        <p className="plan-honesty">
+          Between seasons FPL wipes every squad, so this one plan really is
+          everyone&rsquo;s — it is what the opening fifteen does with the whole
+          season. {bands.get("firm") ?? 0} gameweek is firm,{" "}
+          {bands.get("projected") ?? 0} are projected,{" "}
+          {bands.get("provisional") ?? 0} are provisional. A single optimal
+          38-gameweek solve does not return, so this is {plan.windowsSolved}{" "}
+          overlapping windows chained together from a pool of {plan.poolSize}{" "}
+          players — a good plan, not a proof.
+        </p>
+      )}
+
+      {solve.status === "solving" ? (
+        <p className="plan-progress" role="status">
+          <span
+            aria-hidden="true"
+            className="plan-progress-bar"
+            style={{
+              inlineSize: `${Math.round((solve.progress ?? 0) * 100)}%`,
+            }}
+          />
+          Solved {solve.gameweeks.length} of {38 - fromEvent + 1} gameweeks…
+        </p>
+      ) : null}
+
+      {solve.status === "failed" ? (
+        <p className="plan-progress plan-progress-failed" role="alert">
+          The solver stopped: {solve.reason}. The published opening-squad plan
+          is still below.
+        </p>
+      ) : null}
 
       <ul className="plan-rail">
-        {plan.gameweeks.map((week) => (
+        {gameweeks.map((week) => (
           <GameweekCard
             chip={chips.has(week.event)}
             key={week.event}

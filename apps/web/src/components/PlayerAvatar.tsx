@@ -1,13 +1,19 @@
 import { useState } from "react";
 
+import { kitForShortName } from "../kit/team-kits";
 import {
   getPlayerPhotoUrl,
   isPhotoKnownMissing,
   markPhotoMissing,
 } from "../kit/player-photo";
+import { CeefaxShirt } from "./CeefaxShirt";
 
 /**
- * A player headshot, or a silhouette when there is not one.
+ * A player headshot, or his club shirt when there is not one.
+ *
+ * The shirt beats a generic silhouette because it still says something true:
+ * who he plays for, and which number he wears. A silhouette says only that we
+ * failed to load an image.
  *
  * Falls back on the `error` event rather than on a status code: a missing photo
  * returns 403 from the media host, not 404, and the browser does not expose the
@@ -20,34 +26,22 @@ import {
 const WIDTH = 110;
 const HEIGHT = 140;
 
-/** Ceefax-flavoured: blocky, one colour, no gradient. */
-function Silhouette() {
-  return (
-    <svg
-      aria-hidden="true"
-      className="player-avatar-fallback"
-      focusable="false"
-      viewBox="0 0 11 14"
-    >
-      <rect x={4} y={2} width={3} height={3} />
-      <rect x={3} y={6} width={5} height={5} />
-      <rect x={2} y={8} width={1} height={3} />
-      <rect x={8} y={8} width={1} height={3} />
-    </svg>
-  );
-}
-
 export interface PlayerAvatarProps {
   /** FPL element code. Stable across seasons, unlike the element id. */
   playerCode: number | null | undefined;
   /** The player's name, for the accessible name. */
   name: string;
+  /** Club short name, so the fallback can wear the right shirt. */
+  club?: string | null;
+  squadNumber?: number | null;
   className?: string;
 }
 
 export function PlayerAvatar({
   playerCode,
   name,
+  club,
+  squadNumber = null,
   className,
 }: PlayerAvatarProps) {
   const usable = typeof playerCode === "number" && playerCode > 0;
@@ -59,14 +53,26 @@ export function PlayerAvatar({
 
   const wrapper = className ? `player-avatar ${className}` : "player-avatar";
 
-  if (!usable || failed) {
+  if (failed) {
+    const kit = kitForShortName(club);
     return (
-      <span
-        className={`${wrapper} player-avatar-empty`}
-        role="img"
-        aria-label={`${name}, no photograph`}
-      >
-        <Silhouette />
+      <span className={`${wrapper} player-avatar-empty`}>
+        {kit ? (
+          <CeefaxShirt
+            className="player-avatar-shirt"
+            kit={kit}
+            label={`${name}, no photograph — ${kit.name} shirt`}
+            squadNumber={squadNumber}
+          />
+        ) : (
+          <span
+            className="player-avatar-unknown"
+            role="img"
+            aria-label={`${name}, no photograph`}
+          >
+            ?
+          </span>
+        )}
       </span>
     );
   }

@@ -1,0 +1,185 @@
+import { describe, expect, it } from "vitest";
+
+import openingSquad from "./data/opening-squad.json";
+import inputs from "./data/season-inputs.json";
+import {
+  solveSeason,
+  SEASON_EVENTS,
+  SEASON_PLAYERS,
+} from "./state/season-solver";
+
+/**
+ * The season solver runs in the browser against the manager's own state, so
+ * there is no offline artifact to inspect afterwards. These check it produces a
+ * legal season from a realistic start, and that the chaining actually chains.
+ */
+
+function openingStart() {
+  const byCode = new Map(SEASON_PLAYERS.map((player) => [player.code, player]));
+  const squad = openingSquad.picks
+    .map((pick) => byCode.get(pick.code))
+    .filter((player): player is NonNullable<typeof player> => Boolean(player))
+    .map((player) => ({
+      elementId: player.id,
+      sellingPriceTenths: player.priceTenths,
+    }));
+
+  return {
+    squad,
+    bankTenths: 0,
+    availableFreeTransfers: 1,
+    fromEvent: SEASON_EVENTS[0] as number,
+  };
+}
+
+/** A full season solve is seconds, not milliseconds, against a 5s default. */
+const SOLVE_TIMEOUT = 40_000;
+
+/** One full season solve, shared. Each is a few seconds; eight is a slow suite. */
+let cached: ReturnType<typeof solveSeason> extends Generator<infer T>
+  ? T[] | null
+  : never = null;
+
+function season() {
+  cached ??= [...solveSeason(openingStart())];
+  return cached;
+}
+
+describe("season inputs artifact", () => {
+  it("carries a fixture ladder for every club a player belongs to", () => {
+    const clubs = new Set(SEASON_PLAYERS.map((player) => player.club));
+    for (const club of clubs) {
+      expect(inputs.fixtureLadder).toHaveProperty(club);
+    }
+  });
+
+  it("has one ladder rung per gameweek", () => {
+    for (const [club, ladder] of Object.entries(inputs.fixtureLadder)) {
+      expect(ladder.defensive, club).toHaveLength(inputs.events.length);
+      expect(ladder.attacking, club).toHaveLength(inputs.events.length);
+    }
+  });
+
+  it("ships a deadline for every gameweek", () => {
+    expect(inputs.deadlines).toHaveLength(inputs.events.length);
+    for (const deadline of inputs.deadlines) {
+      expect(Number.isNaN(Date.parse(deadline))).toBe(false);
+    }
+  });
+});
+
+describe("solveSeason", () => {
+  it(
+    "plans every gameweek from the one it was given",
+    () => {
+      const solved = season();
+
+      expect(solved).toHaveLength(SEASON_EVENTS.length);
+      expect(solved.map((week) => week.event)).toEqual(SEASON_EVENTS);
+    },
+    SOLVE_TIMEOUT,
+  );
+
+  it("fields a legal squad in every gameweek", () => {
+    for (const week of season()) {
+      expect(week.starters).toHaveLength(11);
+      expect(week.bench).toHaveLength(4);
+      expect(
+        new Set([...week.starters, ...week.bench].map((p) => p.id)).size,
+      ).toBe(15);
+      expect(week.starters.map((p) => p.id)).toContain(week.captain.id);
+      expect(week.captain.id).not.toBe(week.viceCaptain.id);
+      expect(week.starters.filter((p) => p.position === "GKP")).toHaveLength(1);
+    }
+  });
+
+  it("never fields four players from one club", () => {
+    for (const week of season()) {
+      const counts = new Map<string, number>();
+      for (const player of [...week.starters, ...week.bench]) {
+        counts.set(player.club, (counts.get(player.club) ?? 0) + 1);
+      }
+      for (const [club, count] of counts) {
+        expect(count, `${club} in gameweek ${week.event}`).toBeLessThanOrEqual(
+          3,
+        );
+      }
+    }
+  });
+
+  it("carries the squad forward instead of restarting it", () => {
+    const solved = season();
+
+    solved.forEach((week, index) => {
+      const before = solved[index - 1];
+      if (!before) return;
+
+      const previous = new Set(
+        [...before.starters, ...before.bench].map((p) => p.id),
+      );
+      for (const player of week.transfersOut)
+        expect(previous).toContain(player.id);
+
+      const expected = new Set(previous);
+      for (const player of week.transfersOut) expected.delete(player.id);
+      for (const player of week.transfersIn) expected.add(player.id);
+      expect(
+        new Set([...week.starters, ...week.bench].map((p) => p.id)),
+      ).toEqual(expected);
+    });
+  });
+
+  it("balances transfers and never spends money it does not have", () => {
+    for (const week of season()) {
+      expect(week.transfersIn).toHaveLength(week.transfersOut.length);
+      expect(week.bankAfterTenths).toBeGreaterThanOrEqual(0);
+    }
+  });
+
+  it(
+    "starts from a mid-season gameweek when given one",
+    () => {
+      const start = { ...openingStart(), fromEvent: 12 };
+      const solved = [...solveSeason(start)];
+
+      // The whole reason this runs client-side: a manager arriving in gameweek 12
+      // has a squad nobody could have precomputed a plan for.
+      expect(solved[0]?.event).toBe(12);
+      expect(solved.at(-1)?.event).toBe(SEASON_EVENTS.at(-1));
+      expect(solved[0]?.confidence).toBe("firm");
+    },
+    SOLVE_TIMEOUT,
+  );
+
+  it("degrades confidence with distance and never regains it", () => {
+    const order = { firm: 0, projected: 1, provisional: 2 };
+    const bands = season().map((week) => order[week.confidence]);
+
+    bands.forEach((band, index) => {
+      const previous = bands[index - 1];
+      if (previous !== undefined) expect(band).toBeGreaterThanOrEqual(previous);
+    });
+  });
+
+  it("refuses a gameweek that is not in the published season", () => {
+    expect(() => [
+      ...solveSeason({ ...openingStart(), fromEvent: 99 }),
+    ]).toThrow(/not in the published season/);
+  });
+
+  it(
+    "solves a whole season fast enough to be worth doing on a phone",
+    () => {
+      const started = performance.now();
+      const solved = [...solveSeason(openingStart())];
+      const elapsed = performance.now() - started;
+
+      // Generous against a desktop measurement so a slow CI box cannot flake it,
+      // while still failing if the solve stops being interactive. This is the one
+      // test that must not reuse the shared solve.
+      expect(solved).toHaveLength(SEASON_EVENTS.length);
+      expect(elapsed).toBeLessThan(20_000);
+    },
+    SOLVE_TIMEOUT,
+  );
+});
