@@ -195,10 +195,11 @@ export const TEAM_KITS: readonly TeamKit[] = [
     code: 1,
     shortName: "MUN",
     name: "Manchester United",
-    // The notch narrows down the collar, which reads as a folded-over V.
+    // Even widths, because the collar is six cells wide: three would sit a
+    // half-cell off centre. Four then two narrows into a folded-over V.
     paint: solid("red", ["black", "white"], {
       cuffs: ["white"],
-      collarNotch: { colour: "red", widths: [3, 1] },
+      collarNotch: { colour: "red", widths: [4, 2] },
     }),
   },
   {

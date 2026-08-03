@@ -147,6 +147,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                     "priceTenths": element.now_cost,
                     "basePoints": base_points,
                     "startRate": round(float(record["probabilityStart"]), 3),
+                    "squadNumber": element.squad_number,
                 },
             )
         )

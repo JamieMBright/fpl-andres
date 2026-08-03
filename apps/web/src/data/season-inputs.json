@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-03T11:47:57.433714Z",
+  "generatedAt": "2026-08-03T12:40:28.978178Z",
   "recordSeason": "2025-26",
   "events": [
     1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
@@ -341,7 +341,8 @@
       "teamId": 4,
       "priceTenths": 50,
       "basePoints": 3.38,
-      "startRate": 0.88
+      "startRate": 0.88,
+      "squadNumber": null
     },
     {
       "id": 1,
@@ -353,7 +354,8 @@
       "teamId": 1,
       "priceTenths": 60,
       "basePoints": 3.33,
-      "startRate": 0.757
+      "startRate": 0.757,
+      "squadNumber": null
     },
     {
       "id": 226,
@@ -365,7 +367,8 @@
       "teamId": 9,
       "priceTenths": 55,
       "basePoints": 3.23,
-      "startRate": 0.904
+      "startRate": 0.904,
+      "squadNumber": null
     },
     {
       "id": 529,
@@ -377,7 +380,8 @@
       "teamId": 20,
       "priceTenths": 50,
       "basePoints": 3.09,
-      "startRate": 0.801
+      "startRate": 0.801,
+      "squadNumber": null
     },
     {
       "id": 412,
@@ -389,7 +393,8 @@
       "teamId": 16,
       "priceTenths": 50,
       "basePoints": 3.08,
-      "startRate": 0.902
+      "startRate": 0.902,
+      "squadNumber": null
     },
     {
       "id": 109,
@@ -401,7 +406,8 @@
       "teamId": 5,
       "priceTenths": 45,
       "basePoints": 3.07,
-      "startRate": 0.896
+      "startRate": 0.896,
+      "squadNumber": null
     },
     {
       "id": 198,
@@ -413,7 +419,8 @@
       "teamId": 8,
       "priceTenths": 50,
       "basePoints": 3.07,
-      "startRate": 0.863
+      "startRate": 0.863,
+      "squadNumber": null
     },
     {
       "id": 384,
@@ -425,7 +432,8 @@
       "teamId": 15,
       "priceTenths": 55,
       "basePoints": 2.96,
-      "startRate": 0.738
+      "startRate": 0.738,
+      "squadNumber": null
     },
     {
       "id": 57,
@@ -437,7 +445,8 @@
       "teamId": 3,
       "priceTenths": 45,
       "basePoints": 2.94,
-      "startRate": 0.896
+      "startRate": 0.896,
+      "squadNumber": null
     },
     {
       "id": 250,
@@ -449,7 +458,8 @@
       "teamId": 10,
       "priceTenths": 45,
       "basePoints": 2.91,
-      "startRate": 0.904
+      "startRate": 0.904,
+      "squadNumber": null
     },
     {
       "id": 467,
@@ -461,7 +471,8 @@
       "teamId": 18,
       "priceTenths": 50,
       "basePoints": 2.83,
-      "startRate": 0.818
+      "startRate": 0.818,
+      "squadNumber": null
     },
     {
       "id": 28,
@@ -473,7 +484,8 @@
       "teamId": 2,
       "priceTenths": 50,
       "basePoints": 2.59,
-      "startRate": 0.707
+      "startRate": 0.707,
+      "squadNumber": null
     },
     {
       "id": 140,
@@ -485,7 +497,8 @@
       "teamId": 6,
       "priceTenths": 50,
       "basePoints": 2.42,
-      "startRate": 0.756
+      "startRate": 0.756,
+      "squadNumber": null
     },
     {
       "id": 442,
@@ -497,7 +510,8 @@
       "teamId": 17,
       "priceTenths": 50,
       "basePoints": 2.35,
-      "startRate": 0.679
+      "startRate": 0.679,
+      "squadNumber": null
     },
     {
       "id": 496,
@@ -509,7 +523,8 @@
       "teamId": 19,
       "priceTenths": 45,
       "basePoints": 1.97,
-      "startRate": 0.651
+      "startRate": 0.651,
+      "squadNumber": null
     },
     {
       "id": 497,
@@ -521,7 +536,8 @@
       "teamId": 19,
       "priceTenths": 40,
       "basePoints": 1.45,
-      "startRate": 0.526
+      "startRate": 0.526,
+      "squadNumber": null
     },
     {
       "id": 350,
@@ -533,7 +549,8 @@
       "teamId": 14,
       "priceTenths": 55,
       "basePoints": 1.39,
-      "startRate": 0.395
+      "startRate": 0.395,
+      "squadNumber": null
     },
     {
       "id": 351,
@@ -545,7 +562,8 @@
       "teamId": 14,
       "priceTenths": 50,
       "basePoints": 1.26,
-      "startRate": 0.347
+      "startRate": 0.347,
+      "squadNumber": null
     },
     {
       "id": 494,
@@ -557,7 +575,8 @@
       "teamId": 19,
       "priceTenths": 45,
       "basePoints": 0.9,
-      "startRate": 0.304
+      "startRate": 0.304,
+      "squadNumber": null
     },
     {
       "id": 531,
@@ -569,7 +588,8 @@
       "teamId": 20,
       "priceTenths": 45,
       "basePoints": 0.81,
-      "startRate": 0.169
+      "startRate": 0.169,
+      "squadNumber": null
     },
     {
       "id": 385,
@@ -581,7 +601,8 @@
       "teamId": 15,
       "priceTenths": 50,
       "basePoints": 0.67,
-      "startRate": 0.212
+      "startRate": 0.212,
+      "squadNumber": null
     },
     {
       "id": 29,
@@ -593,7 +614,8 @@
       "teamId": 2,
       "priceTenths": 45,
       "basePoints": 0.62,
-      "startRate": 0.241
+      "startRate": 0.241,
+      "squadNumber": null
     },
     {
       "id": 141,
@@ -605,7 +627,8 @@
       "teamId": 6,
       "priceTenths": 50,
       "basePoints": 0.51,
-      "startRate": 0.196
+      "startRate": 0.196,
+      "squadNumber": null
     },
     {
       "id": 352,
@@ -617,7 +640,8 @@
       "teamId": 14,
       "priceTenths": 40,
       "basePoints": 0.51,
-      "startRate": 0.2
+      "startRate": 0.2,
+      "squadNumber": null
     },
     {
       "id": 326,
@@ -629,7 +653,8 @@
       "teamId": 13,
       "priceTenths": 45,
       "basePoints": 0.28,
-      "startRate": 0.1
+      "startRate": 0.1,
+      "squadNumber": null
     },
     {
       "id": 468,
@@ -641,7 +666,8 @@
       "teamId": 18,
       "priceTenths": 45,
       "basePoints": 0.19,
-      "startRate": 0.074
+      "startRate": 0.074,
+      "squadNumber": null
     },
     {
       "id": 413,
@@ -653,7 +679,8 @@
       "teamId": 16,
       "priceTenths": 45,
       "basePoints": 0.11,
-      "startRate": 0.054
+      "startRate": 0.054,
+      "squadNumber": null
     },
     {
       "id": 4,
@@ -665,7 +692,8 @@
       "teamId": 1,
       "priceTenths": 80,
       "basePoints": 5.06,
-      "startRate": 0.738
+      "startRate": 0.738,
+      "squadNumber": null
     },
     {
       "id": 498,
@@ -677,7 +705,8 @@
       "teamId": 19,
       "priceTenths": 60,
       "basePoints": 4.3,
-      "startRate": 0.894
+      "startRate": 0.894,
+      "squadNumber": null
     },
     {
       "id": 229,
@@ -689,7 +718,8 @@
       "teamId": 9,
       "priceTenths": 60,
       "basePoints": 3.93,
-      "startRate": 0.87
+      "startRate": 0.87,
+      "squadNumber": null
     },
     {
       "id": 356,
@@ -701,7 +731,8 @@
       "teamId": 14,
       "priceTenths": 65,
       "basePoints": 3.81,
-      "startRate": 0.904
+      "startRate": 0.904,
+      "squadNumber": null
     },
     {
       "id": 61,
@@ -713,7 +744,8 @@
       "teamId": 3,
       "priceTenths": 55,
       "basePoints": 3.74,
-      "startRate": 0.896
+      "startRate": 0.896,
+      "squadNumber": null
     },
     {
       "id": 388,
@@ -725,7 +757,8 @@
       "teamId": 15,
       "priceTenths": 60,
       "basePoints": 3.71,
-      "startRate": 0.727
+      "startRate": 0.727,
+      "squadNumber": null
     },
     {
       "id": 60,
@@ -737,7 +770,8 @@
       "teamId": 3,
       "priceTenths": 55,
       "basePoints": 3.61,
-      "startRate": 0.87
+      "startRate": 0.87,
+      "squadNumber": null
     },
     {
       "id": 153,
@@ -749,7 +783,8 @@
       "teamId": 6,
       "priceTenths": 45,
       "basePoints": 3.57,
-      "startRate": 0.889
+      "startRate": 0.889,
+      "squadNumber": null
     },
     {
       "id": 445,
@@ -761,7 +796,8 @@
       "teamId": 17,
       "priceTenths": 50,
       "basePoints": 3.53,
-      "startRate": 0.855
+      "startRate": 0.855,
+      "squadNumber": null
     },
     {
       "id": 112,
@@ -773,7 +809,8 @@
       "teamId": 19,
       "priceTenths": 50,
       "basePoints": 3.53,
-      "startRate": 0.877
+      "startRate": 0.877,
+      "squadNumber": null
     },
     {
       "id": 387,
@@ -785,7 +822,8 @@
       "teamId": 15,
       "priceTenths": 65,
       "basePoints": 3.46,
-      "startRate": 0.681
+      "startRate": 0.681,
+      "squadNumber": null
     },
     {
       "id": 84,
@@ -797,7 +835,8 @@
       "teamId": 4,
       "priceTenths": 55,
       "basePoints": 3.31,
-      "startRate": 0.814
+      "startRate": 0.814,
+      "squadNumber": null
     },
     {
       "id": 113,
@@ -809,7 +848,8 @@
       "teamId": 5,
       "priceTenths": 45,
       "basePoints": 3.26,
-      "startRate": 0.896
+      "startRate": 0.896,
+      "squadNumber": null
     },
     {
       "id": 332,
@@ -821,7 +861,8 @@
       "teamId": 13,
       "priceTenths": 45,
       "basePoints": 3.23,
-      "startRate": 0.858
+      "startRate": 0.858,
+      "squadNumber": null
     },
     {
       "id": 533,
@@ -833,7 +874,8 @@
       "teamId": 20,
       "priceTenths": 55,
       "basePoints": 3.21,
-      "startRate": 0.755
+      "startRate": 0.755,
+      "squadNumber": null
     },
     {
       "id": 200,
@@ -845,7 +887,8 @@
       "teamId": 6,
       "priceTenths": 60,
       "basePoints": 3.1,
-      "startRate": 0.679
+      "startRate": 0.679,
+      "squadNumber": null
     },
     {
       "id": 327,
@@ -857,7 +900,8 @@
       "teamId": 13,
       "priceTenths": 50,
       "basePoints": 3.1,
-      "startRate": 0.763
+      "startRate": 0.763,
+      "squadNumber": null
     },
     {
       "id": 203,
@@ -869,7 +913,8 @@
       "teamId": 8,
       "priceTenths": 50,
       "basePoints": 3.08,
-      "startRate": 0.667
+      "startRate": 0.667,
+      "squadNumber": null
     },
     {
       "id": 447,
@@ -881,7 +926,8 @@
       "teamId": 17,
       "priceTenths": 50,
       "basePoints": 3.08,
-      "startRate": 0.738
+      "startRate": 0.738,
+      "squadNumber": null
     },
     {
       "id": 469,
@@ -893,7 +939,8 @@
       "teamId": 18,
       "priceTenths": 50,
       "basePoints": 3.08,
-      "startRate": 0.771
+      "startRate": 0.771,
+      "squadNumber": null
     },
     {
       "id": 499,
@@ -905,7 +952,8 @@
       "teamId": 19,
       "priceTenths": 55,
       "basePoints": 3.07,
-      "startRate": 0.828
+      "startRate": 0.828,
+      "squadNumber": null
     },
     {
       "id": 257,
@@ -917,7 +965,8 @@
       "teamId": 10,
       "priceTenths": 45,
       "basePoints": 3.02,
-      "startRate": 0.832
+      "startRate": 0.832,
+      "squadNumber": null
     },
     {
       "id": 418,
@@ -929,7 +978,8 @@
       "teamId": 16,
       "priceTenths": 50,
       "basePoints": 3.02,
-      "startRate": 0.758
+      "startRate": 0.758,
+      "squadNumber": null
     },
     {
       "id": 231,
@@ -941,7 +991,8 @@
       "teamId": 9,
       "priceTenths": 50,
       "basePoints": 2.97,
-      "startRate": 0.704
+      "startRate": 0.704,
+      "squadNumber": null
     },
     {
       "id": 389,
@@ -953,7 +1004,8 @@
       "teamId": 15,
       "priceTenths": 60,
       "basePoints": 2.94,
-      "startRate": 0.706
+      "startRate": 0.706,
+      "squadNumber": null
     },
     {
       "id": 471,
@@ -965,7 +1017,8 @@
       "teamId": 18,
       "priceTenths": 55,
       "basePoints": 2.9,
-      "startRate": 0.823
+      "startRate": 0.823,
+      "squadNumber": null
     },
     {
       "id": 201,
@@ -977,7 +1030,8 @@
       "teamId": 8,
       "priceTenths": 55,
       "basePoints": 2.88,
-      "startRate": 0.549
+      "startRate": 0.549,
+      "squadNumber": null
     },
     {
       "id": 88,
@@ -989,7 +1043,8 @@
       "teamId": 4,
       "priceTenths": 45,
       "basePoints": 2.85,
-      "startRate": 0.884
+      "startRate": 0.884,
+      "squadNumber": null
     },
     {
       "id": 85,
@@ -1001,7 +1056,8 @@
       "teamId": 4,
       "priceTenths": 50,
       "basePoints": 2.82,
-      "startRate": 0.653
+      "startRate": 0.653,
+      "squadNumber": null
     },
     {
       "id": 232,
@@ -1013,7 +1069,8 @@
       "teamId": 9,
       "priceTenths": 50,
       "basePoints": 2.78,
-      "startRate": 0.883
+      "startRate": 0.883,
+      "squadNumber": null
     },
     {
       "id": 423,
@@ -1025,7 +1082,8 @@
       "teamId": 16,
       "priceTenths": 45,
       "basePoints": 2.73,
-      "startRate": 0.879
+      "startRate": 0.879,
+      "squadNumber": null
     },
     {
       "id": 204,
@@ -1037,7 +1095,8 @@
       "teamId": 8,
       "priceTenths": 45,
       "basePoints": 2.72,
-      "startRate": 0.596
+      "startRate": 0.596,
+      "squadNumber": null
     },
     {
       "id": 233,
@@ -1049,7 +1108,8 @@
       "teamId": 9,
       "priceTenths": 45,
       "basePoints": 2.72,
-      "startRate": 0.871
+      "startRate": 0.871,
+      "squadNumber": null
     },
     {
       "id": 535,
@@ -1061,7 +1121,8 @@
       "teamId": 20,
       "priceTenths": 50,
       "basePoints": 2.66,
-      "startRate": 0.641
+      "startRate": 0.641,
+      "squadNumber": null
     },
     {
       "id": 202,
@@ -1073,7 +1134,8 @@
       "teamId": 8,
       "priceTenths": 50,
       "basePoints": 2.65,
-      "startRate": 0.531
+      "startRate": 0.531,
+      "squadNumber": null
     },
     {
       "id": 254,
@@ -1085,7 +1147,8 @@
       "teamId": 10,
       "priceTenths": 45,
       "basePoints": 2.6,
-      "startRate": 0.678
+      "startRate": 0.678,
+      "squadNumber": null
     },
     {
       "id": 328,
@@ -1097,7 +1160,8 @@
       "teamId": 5,
       "priceTenths": 50,
       "basePoints": 2.58,
-      "startRate": 0.641
+      "startRate": 0.641,
+      "squadNumber": null
     },
     {
       "id": 329,
@@ -1109,7 +1173,8 @@
       "teamId": 13,
       "priceTenths": 45,
       "basePoints": 2.57,
-      "startRate": 0.767
+      "startRate": 0.767,
+      "squadNumber": null
     },
     {
       "id": 503,
@@ -1121,7 +1186,8 @@
       "teamId": 19,
       "priceTenths": 50,
       "basePoints": 2.57,
-      "startRate": 0.783
+      "startRate": 0.783,
+      "squadNumber": null
     },
     {
       "id": 501,
@@ -1133,7 +1199,8 @@
       "teamId": 19,
       "priceTenths": 50,
       "basePoints": 2.55,
-      "startRate": 0.726
+      "startRate": 0.726,
+      "squadNumber": null
     },
     {
       "id": 426,
@@ -1145,7 +1212,8 @@
       "teamId": 16,
       "priceTenths": 120,
       "basePoints": 5.19,
-      "startRate": 0.885
+      "startRate": 0.885,
+      "squadNumber": null
     },
     {
       "id": 154,
@@ -1157,7 +1225,8 @@
       "teamId": 6,
       "priceTenths": 95,
       "basePoints": 4.22,
-      "startRate": 0.866
+      "startRate": 0.866,
+      "squadNumber": null
     },
     {
       "id": 481,
@@ -1169,7 +1238,8 @@
       "teamId": 15,
       "priceTenths": 65,
       "basePoints": 4.02,
-      "startRate": 0.823
+      "startRate": 0.823,
+      "squadNumber": null
     },
     {
       "id": 155,
@@ -1181,7 +1251,8 @@
       "teamId": 6,
       "priceTenths": 70,
       "basePoints": 4.01,
-      "startRate": 0.84
+      "startRate": 0.84,
+      "squadNumber": null
     },
     {
       "id": 68,
@@ -1193,7 +1264,8 @@
       "teamId": 3,
       "priceTenths": 60,
       "basePoints": 3.78,
-      "startRate": 0.815
+      "startRate": 0.815,
+      "squadNumber": null
     },
     {
       "id": 368,
@@ -1205,7 +1277,8 @@
       "teamId": 14,
       "priceTenths": 70,
       "basePoints": 3.73,
-      "startRate": 0.883
+      "startRate": 0.883,
+      "squadNumber": null
     },
     {
       "id": 124,
@@ -1217,7 +1290,8 @@
       "teamId": 5,
       "priceTenths": 55,
       "basePoints": 3.71,
-      "startRate": 0.883
+      "startRate": 0.883,
+      "squadNumber": null
     },
     {
       "id": 427,
@@ -1229,7 +1303,8 @@
       "teamId": 16,
       "priceTenths": 80,
       "basePoints": 3.7,
-      "startRate": 0.734
+      "startRate": 0.734,
+      "squadNumber": null
     },
     {
       "id": 236,
@@ -1241,7 +1316,8 @@
       "teamId": 9,
       "priceTenths": 65,
       "basePoints": 3.65,
-      "startRate": 0.856
+      "startRate": 0.856,
+      "squadNumber": null
     },
     {
       "id": 237,
@@ -1253,7 +1329,8 @@
       "teamId": 9,
       "priceTenths": 60,
       "basePoints": 3.65,
-      "startRate": 0.869
+      "startRate": 0.869,
+      "squadNumber": null
     },
     {
       "id": 542,
@@ -1265,7 +1342,8 @@
       "teamId": 20,
       "priceTenths": 60,
       "basePoints": 3.65,
-      "startRate": 0.829
+      "startRate": 0.829,
+      "squadNumber": null
     },
     {
       "id": 367,
@@ -1277,7 +1355,8 @@
       "teamId": 14,
       "priceTenths": 70,
       "basePoints": 3.62,
-      "startRate": 0.884
+      "startRate": 0.884,
+      "squadNumber": null
     },
     {
       "id": 95,
@@ -1289,7 +1368,8 @@
       "teamId": 4,
       "priceTenths": 65,
       "basePoints": 3.61,
-      "startRate": 0.708
+      "startRate": 0.708,
+      "squadNumber": null
     },
     {
       "id": 13,
@@ -1301,7 +1381,8 @@
       "teamId": 1,
       "priceTenths": 75,
       "basePoints": 3.6,
-      "startRate": 0.751
+      "startRate": 0.751,
+      "squadNumber": null
     },
     {
       "id": 67,
@@ -1313,7 +1394,8 @@
       "teamId": 3,
       "priceTenths": 65,
       "basePoints": 3.48,
-      "startRate": 0.868
+      "startRate": 0.868,
+      "squadNumber": null
     },
     {
       "id": 338,
@@ -1325,7 +1407,8 @@
       "teamId": 13,
       "priceTenths": 55,
       "basePoints": 3.47,
-      "startRate": 0.889
+      "startRate": 0.889,
+      "squadNumber": null
     },
     {
       "id": 480,
@@ -1337,7 +1420,8 @@
       "teamId": 18,
       "priceTenths": 80,
       "basePoints": 3.43,
-      "startRate": 0.727
+      "startRate": 0.727,
+      "squadNumber": null
     },
     {
       "id": 525,
@@ -1349,7 +1433,8 @@
       "teamId": 19,
       "priceTenths": 60,
       "basePoints": 3.42,
-      "startRate": 0.902
+      "startRate": 0.902,
+      "squadNumber": null
     },
     {
       "id": 397,
@@ -1361,7 +1446,8 @@
       "teamId": 15,
       "priceTenths": 85,
       "basePoints": 3.41,
-      "startRate": 0.589
+      "startRate": 0.589,
+      "squadNumber": null
     },
     {
       "id": 208,
@@ -1373,7 +1459,8 @@
       "teamId": 8,
       "priceTenths": 65,
       "basePoints": 3.39,
-      "startRate": 0.508
+      "startRate": 0.508,
+      "squadNumber": null
     },
     {
       "id": 399,
@@ -1385,7 +1472,8 @@
       "teamId": 15,
       "priceTenths": 75,
       "basePoints": 3.38,
-      "startRate": 0.487
+      "startRate": 0.487,
+      "squadNumber": null
     },
     {
       "id": 94,
@@ -1397,7 +1485,8 @@
       "teamId": 4,
       "priceTenths": 60,
       "basePoints": 3.28,
-      "startRate": 0.72
+      "startRate": 0.72,
+      "squadNumber": null
     },
     {
       "id": 97,
@@ -1409,7 +1498,8 @@
       "teamId": 4,
       "priceTenths": 55,
       "basePoints": 3.25,
-      "startRate": 0.889
+      "startRate": 0.889,
+      "squadNumber": null
     },
     {
       "id": 123,
@@ -1421,7 +1511,8 @@
       "teamId": 5,
       "priceTenths": 60,
       "basePoints": 3.22,
-      "startRate": 0.832
+      "startRate": 0.832,
+      "squadNumber": null
     },
     {
       "id": 69,
@@ -1433,7 +1524,8 @@
       "teamId": 3,
       "priceTenths": 60,
       "basePoints": 3.12,
-      "startRate": 0.743
+      "startRate": 0.743,
+      "squadNumber": null
     },
     {
       "id": 86,
@@ -1445,7 +1537,8 @@
       "teamId": 4,
       "priceTenths": 55,
       "basePoints": 3.1,
-      "startRate": 0.78
+      "startRate": 0.78,
+      "squadNumber": null
     },
     {
       "id": 105,
@@ -1457,7 +1550,8 @@
       "teamId": 4,
       "priceTenths": 60,
       "basePoints": 3.03,
-      "startRate": 0.868
+      "startRate": 0.868,
+      "squadNumber": null
     },
     {
       "id": 544,
@@ -1469,7 +1563,8 @@
       "teamId": 20,
       "priceTenths": 55,
       "basePoints": 2.99,
-      "startRate": 0.802
+      "startRate": 0.802,
+      "squadNumber": null
     },
     {
       "id": 159,
@@ -1481,7 +1576,8 @@
       "teamId": 6,
       "priceTenths": 55,
       "basePoints": 2.95,
-      "startRate": 0.877
+      "startRate": 0.877,
+      "squadNumber": null
     },
     {
       "id": 40,
@@ -1493,7 +1589,8 @@
       "teamId": 6,
       "priceTenths": 75,
       "basePoints": 2.94,
-      "startRate": 0.768
+      "startRate": 0.768,
+      "squadNumber": null
     },
     {
       "id": 371,
@@ -1505,7 +1602,8 @@
       "teamId": 14,
       "priceTenths": 60,
       "basePoints": 2.94,
-      "startRate": 0.756
+      "startRate": 0.756,
+      "squadNumber": null
     },
     {
       "id": 452,
@@ -1517,7 +1615,8 @@
       "teamId": 17,
       "priceTenths": 70,
       "basePoints": 2.89,
-      "startRate": 0.627
+      "startRate": 0.627,
+      "squadNumber": null
     },
     {
       "id": 260,
@@ -1529,7 +1628,8 @@
       "teamId": 13,
       "priceTenths": 65,
       "basePoints": 2.85,
-      "startRate": 0.622
+      "startRate": 0.622,
+      "squadNumber": null
     },
     {
       "id": 372,
@@ -1541,7 +1641,8 @@
       "teamId": 14,
       "priceTenths": 55,
       "basePoints": 2.84,
-      "startRate": 0.77
+      "startRate": 0.77,
+      "squadNumber": null
     },
     {
       "id": 431,
@@ -1553,7 +1654,8 @@
       "teamId": 16,
       "priceTenths": 60,
       "basePoints": 2.82,
-      "startRate": 0.591
+      "startRate": 0.591,
+      "squadNumber": null
     },
     {
       "id": 337,
@@ -1565,7 +1667,8 @@
       "teamId": 13,
       "priceTenths": 55,
       "basePoints": 2.81,
-      "startRate": 0.628
+      "startRate": 0.628,
+      "squadNumber": null
     },
     {
       "id": 400,
@@ -1577,7 +1680,8 @@
       "teamId": 15,
       "priceTenths": 75,
       "basePoints": 2.78,
-      "startRate": 0.532
+      "startRate": 0.532,
+      "squadNumber": null
     },
     {
       "id": 96,
@@ -1589,7 +1693,8 @@
       "teamId": 4,
       "priceTenths": 55,
       "basePoints": 2.77,
-      "startRate": 0.575
+      "startRate": 0.575,
+      "squadNumber": null
     },
     {
       "id": 122,
@@ -1601,7 +1706,8 @@
       "teamId": 5,
       "priceTenths": 60,
       "basePoints": 2.77,
-      "startRate": 0.582
+      "startRate": 0.582,
+      "squadNumber": null
     },
     {
       "id": 428,
@@ -1613,7 +1719,8 @@
       "teamId": 16,
       "priceTenths": 80,
       "basePoints": 2.76,
-      "startRate": 0.677
+      "startRate": 0.677,
+      "squadNumber": null
     },
     {
       "id": 106,
@@ -1625,7 +1732,8 @@
       "teamId": 4,
       "priceTenths": 80,
       "basePoints": 4.41,
-      "startRate": 0.902
+      "startRate": 0.902,
+      "squadNumber": null
     },
     {
       "id": 411,
@@ -1637,7 +1745,8 @@
       "teamId": 15,
       "priceTenths": 155,
       "basePoints": 4.4,
-      "startRate": 0.679
+      "startRate": 0.679,
+      "squadNumber": null
     },
     {
       "id": 346,
@@ -1649,7 +1758,8 @@
       "teamId": 13,
       "priceTenths": 60,
       "basePoints": 3.92,
-      "startRate": 0.867
+      "startRate": 0.867,
+      "squadNumber": null
     },
     {
       "id": 55,
@@ -1661,7 +1771,8 @@
       "teamId": 2,
       "priceTenths": 80,
       "basePoints": 3.83,
-      "startRate": 0.768
+      "startRate": 0.768,
+      "squadNumber": null
     },
     {
       "id": 165,
@@ -1673,7 +1784,8 @@
       "teamId": 6,
       "priceTenths": 75,
       "basePoints": 3.29,
-      "startRate": 0.682
+      "startRate": 0.682,
+      "squadNumber": null
     },
     {
       "id": 136,
@@ -1685,7 +1797,8 @@
       "teamId": 5,
       "priceTenths": 60,
       "basePoints": 3.2,
-      "startRate": 0.665
+      "startRate": 0.665,
+      "squadNumber": null
     },
     {
       "id": 79,
@@ -1697,7 +1810,8 @@
       "teamId": 3,
       "priceTenths": 60,
       "basePoints": 3.04,
-      "startRate": 0.731
+      "startRate": 0.731,
+      "squadNumber": null
     },
     {
       "id": 491,
@@ -1709,7 +1823,8 @@
       "teamId": 18,
       "priceTenths": 60,
       "basePoints": 2.86,
-      "startRate": 0.723
+      "startRate": 0.723,
+      "squadNumber": null
     },
     {
       "id": 465,
@@ -1721,7 +1836,8 @@
       "teamId": 17,
       "priceTenths": 60,
       "basePoints": 2.85,
-      "startRate": 0.652
+      "startRate": 0.652,
+      "squadNumber": null
     },
     {
       "id": 527,
@@ -1733,7 +1849,8 @@
       "teamId": 19,
       "priceTenths": 60,
       "basePoints": 2.8,
-      "startRate": 0.626
+      "startRate": 0.626,
+      "squadNumber": null
     },
     {
       "id": 552,
@@ -1745,7 +1862,8 @@
       "teamId": 20,
       "priceTenths": 60,
       "basePoints": 2.73,
-      "startRate": 0.834
+      "startRate": 0.834,
+      "squadNumber": null
     },
     {
       "id": 25,
@@ -1757,7 +1875,8 @@
       "teamId": 1,
       "priceTenths": 75,
       "basePoints": 2.59,
-      "startRate": 0.393
+      "startRate": 0.393,
+      "squadNumber": null
     },
     {
       "id": 248,
@@ -1769,7 +1888,8 @@
       "teamId": 9,
       "priceTenths": 55,
       "basePoints": 2.59,
-      "startRate": 0.582
+      "startRate": 0.582,
+      "squadNumber": null
     },
     {
       "id": 222,
@@ -1781,7 +1901,8 @@
       "teamId": 8,
       "priceTenths": 60,
       "basePoints": 2.26,
-      "startRate": 0.643
+      "startRate": 0.643,
+      "squadNumber": null
     },
     {
       "id": 347,
@@ -1793,7 +1914,8 @@
       "teamId": 13,
       "priceTenths": 55,
       "basePoints": 2.25,
-      "startRate": 0.268
+      "startRate": 0.268,
+      "squadNumber": null
     },
     {
       "id": 223,
@@ -1805,7 +1927,8 @@
       "teamId": 8,
       "priceTenths": 65,
       "basePoints": 2.22,
-      "startRate": 0.288
+      "startRate": 0.288,
+      "squadNumber": null
     },
     {
       "id": 463,
@@ -1817,7 +1940,8 @@
       "teamId": 17,
       "priceTenths": 60,
       "basePoints": 2.18,
-      "startRate": 0.507
+      "startRate": 0.507,
+      "squadNumber": null
     },
     {
       "id": 249,
@@ -1829,7 +1953,8 @@
       "teamId": 9,
       "priceTenths": 55,
       "basePoints": 2.16,
-      "startRate": 0.371
+      "startRate": 0.371,
+      "squadNumber": null
     },
     {
       "id": 271,
@@ -1841,7 +1966,8 @@
       "teamId": 10,
       "priceTenths": 55,
       "basePoints": 2.09,
-      "startRate": 0.544
+      "startRate": 0.544,
+      "squadNumber": null
     },
     {
       "id": 108,
@@ -1853,7 +1979,8 @@
       "teamId": 4,
       "priceTenths": 55,
       "basePoints": 1.94,
-      "startRate": 0.171
+      "startRate": 0.171,
+      "squadNumber": null
     },
     {
       "id": 26,
@@ -1865,7 +1992,8 @@
       "teamId": 1,
       "priceTenths": 75,
       "basePoints": 1.93,
-      "startRate": 0.277
+      "startRate": 0.277,
+      "squadNumber": null
     },
     {
       "id": 490,
@@ -1877,7 +2005,8 @@
       "teamId": 18,
       "priceTenths": 60,
       "basePoints": 1.9,
-      "startRate": 0.429
+      "startRate": 0.429,
+      "squadNumber": null
     },
     {
       "id": 492,
@@ -1889,7 +2018,8 @@
       "teamId": 18,
       "priceTenths": 55,
       "basePoints": 1.74,
-      "startRate": 0.228
+      "startRate": 0.228,
+      "squadNumber": null
     },
     {
       "id": 167,
@@ -1901,7 +2031,8 @@
       "teamId": 6,
       "priceTenths": 55,
       "basePoints": 1.66,
-      "startRate": 0.27
+      "startRate": 0.27,
+      "squadNumber": null
     },
     {
       "id": 125,
@@ -1913,7 +2044,8 @@
       "teamId": 5,
       "priceTenths": 55,
       "basePoints": 1.48,
-      "startRate": 0.194
+      "startRate": 0.194,
+      "squadNumber": null
     },
     {
       "id": 401,
@@ -1925,7 +2057,8 @@
       "teamId": 15,
       "priceTenths": 70,
       "basePoints": 1.36,
-      "startRate": 0.205
+      "startRate": 0.205,
+      "squadNumber": null
     },
     {
       "id": 526,
@@ -1937,7 +2070,8 @@
       "teamId": 19,
       "priceTenths": 60,
       "basePoints": 1.28,
-      "startRate": 0.327
+      "startRate": 0.327,
+      "squadNumber": null
     },
     {
       "id": 80,
@@ -1949,7 +2083,8 @@
       "teamId": 3,
       "priceTenths": 55,
       "basePoints": 1.25,
-      "startRate": 0.056
+      "startRate": 0.056,
+      "squadNumber": null
     },
     {
       "id": 440,
@@ -1961,7 +2096,8 @@
       "teamId": 16,
       "priceTenths": 55,
       "basePoints": 1.23,
-      "startRate": 0.151
+      "startRate": 0.151,
+      "squadNumber": null
     },
     {
       "id": 464,
@@ -1973,7 +2109,8 @@
       "teamId": 17,
       "priceTenths": 60,
       "basePoints": 1.22,
-      "startRate": 0.087
+      "startRate": 0.087,
+      "squadNumber": null
     },
     {
       "id": 553,
@@ -1985,7 +2122,8 @@
       "teamId": 20,
       "priceTenths": 55,
       "basePoints": 1.14,
-      "startRate": 0.046
+      "startRate": 0.046,
+      "squadNumber": null
     },
     {
       "id": 138,
@@ -1997,7 +2135,8 @@
       "teamId": 5,
       "priceTenths": 55,
       "basePoints": 1.12,
-      "startRate": 0.078
+      "startRate": 0.078,
+      "squadNumber": null
     },
     {
       "id": 27,
@@ -2009,7 +2148,8 @@
       "teamId": 1,
       "priceTenths": 60,
       "basePoints": 1.01,
-      "startRate": 0.188
+      "startRate": 0.188,
+      "squadNumber": null
     },
     {
       "id": 379,
@@ -2021,7 +2161,8 @@
       "teamId": 14,
       "priceTenths": 90,
       "basePoints": 0.86,
-      "startRate": 0.184
+      "startRate": 0.184,
+      "squadNumber": null
     },
     {
       "id": 348,
@@ -2033,7 +2174,8 @@
       "teamId": 13,
       "priceTenths": 50,
       "basePoints": 0.68,
-      "startRate": 0.026
+      "startRate": 0.026,
+      "squadNumber": null
     },
     {
       "id": 168,
@@ -2045,7 +2187,8 @@
       "teamId": 6,
       "priceTenths": 50,
       "basePoints": 0.3,
-      "startRate": 0.057
+      "startRate": 0.057,
+      "squadNumber": null
     },
     {
       "id": 224,
@@ -2057,7 +2200,8 @@
       "teamId": 8,
       "priceTenths": 55,
       "basePoints": 0.23,
-      "startRate": 0.061
+      "startRate": 0.061,
+      "squadNumber": null
     }
   ]
 }

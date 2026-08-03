@@ -1631,20 +1631,17 @@ a:focus-visible {
 }
 
 .player-avatar-unknown {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: block;
   width: 88px;
   height: 112px;
-  color: var(--ink-soft);
-  font-size: 28px;
+  shape-rendering: crispEdges;
+  fill: var(--ink-soft);
 }
 
 .player-avatar-empty {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--paper-deep);
 }
 
 .opening-squad {

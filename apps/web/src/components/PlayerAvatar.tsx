@@ -26,6 +26,40 @@ import { CeefaxShirt } from "./CeefaxShirt";
 const WIDTH = 110;
 const HEIGHT = 140;
 
+/**
+ * A question mark built from blocks, for a player with no photograph and no
+ * club to dress him in. Drawn rather than typed so it matches the shirts beside
+ * it instead of arriving in whatever the body font is.
+ */
+function BlockQuestionMark({ label }: { label: string }) {
+  // One rect per run, on an 8 x 11 grid.
+  const runs = [
+    [2, 0, 4, 1],
+    [1, 1, 1, 1],
+    [6, 1, 1, 1],
+    [6, 2, 1, 2],
+    [5, 4, 2, 1],
+    [4, 5, 2, 1],
+    [3, 6, 2, 1],
+    [3, 7, 2, 1],
+    [3, 9, 2, 2],
+  ];
+
+  return (
+    <svg
+      aria-label={label}
+      className="player-avatar-unknown"
+      focusable="false"
+      role="img"
+      viewBox="0 0 8 11"
+    >
+      {runs.map(([x, y, width, height]) => (
+        <rect key={`${x}-${y}`} x={x} y={y} width={width} height={height} />
+      ))}
+    </svg>
+  );
+}
+
 export interface PlayerAvatarProps {
   /** FPL element code. Stable across seasons, unlike the element id. */
   playerCode: number | null | undefined;
@@ -65,13 +99,7 @@ export function PlayerAvatar({
             squadNumber={squadNumber}
           />
         ) : (
-          <span
-            className="player-avatar-unknown"
-            role="img"
-            aria-label={`${name}, no photograph`}
-          >
-            ?
-          </span>
+          <BlockQuestionMark label={`${name}, no photograph`} />
         )}
       </span>
     );

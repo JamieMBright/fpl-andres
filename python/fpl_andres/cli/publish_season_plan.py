@@ -111,6 +111,7 @@ class Candidate:
     club: str
     price_tenths: int
     record: float
+    squad_number: int | None
 
 
 def _opponent_multiplier(
@@ -190,6 +191,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                 club=str(clubs[element.team]["short_name"]),
                 price_tenths=element.now_cost,
                 record=float(record["expectedPoints"]),
+                squad_number=element.squad_number,
             )
         )
 
@@ -391,6 +393,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                 "position": POSITION_CODES[candidate.position],
                 "club": candidate.club,
                 "priceTenths": candidate.price_tenths,
+                "squadNumber": candidate.squad_number,
             }
             for code, candidate in sorted(named.items())
         },

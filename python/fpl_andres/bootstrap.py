@@ -85,6 +85,10 @@ class BootstrapElement(OwnershipElement):
     web_name: Annotated[str, Field(min_length=1, max_length=100)]
     # a=available, d=doubtful, i=injured, s=suspended, u=unavailable, n=not in squad
     status: Annotated[str, Field(min_length=1, max_length=1)]
+    # Published but empty until clubs register their squads: null on all 564
+    # elements on 2026-08-03. Optional so a shirt shows no number rather than an
+    # invented one.
+    squad_number: Annotated[int, Field(gt=0, le=99)] | None = None
 
     @property
     def position(self) -> Position:
