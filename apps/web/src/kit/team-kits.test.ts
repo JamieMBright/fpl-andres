@@ -35,6 +35,7 @@ function coloursOf(kit: (typeof TEAM_KITS)[number]): string[] {
     ...(paint.cuffs ?? []),
     ...(paint.sideLine ? [paint.sideLine] : []),
     ...(paint.fade ? [paint.fade.from, paint.fade.to] : []),
+    ...(paint.collarNotch ? [paint.collarNotch.colour] : []),
   ];
 }
 

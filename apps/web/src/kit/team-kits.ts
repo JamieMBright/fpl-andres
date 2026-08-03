@@ -138,12 +138,12 @@ export const TEAM_KITS: readonly TeamKit[] = [
     code: 88,
     shortName: "HUL",
     name: "Hull City",
-    // Three bars: a four-cell black centre, amber either side, and a black
-    // outline one cell wide.
+    // Three bars: a four-cell black centre, amber either side, and two-cell
+    // black edges.
     paint: solid("yellow", ["black"], {
       stripes: [
         "black",
-        "yellow",
+        "black",
         "yellow",
         "yellow",
         "black",
@@ -152,7 +152,7 @@ export const TEAM_KITS: readonly TeamKit[] = [
         "black",
         "yellow",
         "yellow",
-        "yellow",
+        "black",
         "black",
       ],
     }),
@@ -181,18 +181,24 @@ export const TEAM_KITS: readonly TeamKit[] = [
     code: 43,
     shortName: "MCI",
     name: "Manchester City",
-    // White at the hem fading up into sky blue, solid by two thirds.
+    // White at the hem thinning into sky blue: a solid row, then four parts
+    // white to one blue, then three, two, one, a half, and blue from there.
     paint: solid("cyan", ["white"], {
-      fade: { from: "white", to: "cyan", solidBy: 0.66 },
+      fade: {
+        from: "white",
+        to: "cyan",
+        ladder: [0, 1 / 5, 1 / 4, 1 / 3, 1 / 2, 2 / 3, 1],
+      },
     }),
   },
   {
     code: 1,
     shortName: "MUN",
     name: "Manchester United",
+    // The notch narrows down the collar, which reads as a folded-over V.
     paint: solid("red", ["black", "white"], {
       cuffs: ["white"],
-      shoulder: ["white"],
+      collarNotch: { colour: "red", widths: [3, 1] },
     }),
   },
   {

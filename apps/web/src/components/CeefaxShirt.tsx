@@ -37,16 +37,24 @@ const COLLAR_W = 6;
 const COLLAR_H = 2;
 
 /**
- * Deterministic value noise per cell.
+ * Which columns of a row take the second colour, spread as evenly as the row
+ * allows and shifted per row so they do not stack into vertical lines.
  *
- * An ordered dither lays a visible lattice across a fade, which reads as a
- * texture rather than as one colour becoming another. Scattering the cells
- * instead looks like the fade it is meant to be, and hashing the coordinates
- * keeps the component pure.
+ * Five is coprime with the twelve-cell body, so successive rows land on
+ * different columns rather than repeating every other row.
  */
-function noise(row: number, column: number): number {
-  const mixed = Math.sin(row * 127.1 + column * 311.7) * 43758.5453;
-  return mixed - Math.floor(mixed);
+function scatter(count: number, width: number, row: number): Set<number> {
+  const chosen = new Set<number>();
+  if (count <= 0) return chosen;
+  if (count >= width) {
+    for (let column = 0; column < width; column += 1) chosen.add(column);
+    return chosen;
+  }
+  for (let index = 0; index < count; index += 1) {
+    const spaced = Math.floor(((index + 0.5) * width) / count);
+    chosen.add((spaced + row * 5) % width);
+  }
+  return chosen;
 }
 
 type Grid = (TeletextColor | null)[][];
@@ -66,9 +74,15 @@ export interface KitPaint {
   shoulder?: readonly TeletextColor[];
   /** Sleeve cuffs, outermost column first. */
   cuffs?: readonly TeletextColor[];
-  /** One cell wide down both seams, armpit to two thirds down. */
+  /** One cell wide down both seams, below the sleeve to four fifths down. */
   sideLine?: TeletextColor;
-  fade?: { from: TeletextColor; to: TeletextColor; solidBy: number };
+  /**
+   * A fade up the body. `ladder` is the share of each row taking `to`, counted
+   * from the hem up; rows above the ladder are solid `to`.
+   */
+  fade?: { from: TeletextColor; to: TeletextColor; ladder: readonly number[] };
+  /** A notch cut into the collar, one width per row, to suggest a fold. */
+  collarNotch?: { colour: TeletextColor; widths: readonly number[] };
 }
 
 function paint(
@@ -112,21 +126,19 @@ function buildGrid(spec: KitPaint): Grid {
   }
 
   if (spec.fade) {
-    const { from, to, solidBy } = spec.fade;
+    const { from, to, ladder } = spec.fade;
     for (let row = 0; row < BODY_H; row += 1) {
-      const height = 1 - row / Math.max(1, BODY_H - 1);
-      const density = Math.min(1, height / Math.max(0.01, solidBy));
+      const fromHem = BODY_H - 1 - row;
+      const share = ladder[fromHem] ?? 1;
+      const chosen = scatter(Math.round(share * BODY_W), BODY_W, fromHem);
       for (let column = 0; column < BODY_W; column += 1) {
-        // The hem stays one solid row, so the fade has somewhere to start from
-        // rather than beginning already speckled.
-        const hem = row === BODY_H - 1;
         paint(
           grid,
           BODY_X + column,
           BODY_Y + row,
           1,
           1,
-          !hem && density > noise(row, column) ? to : from,
+          chosen.has(column) ? to : from,
         );
       }
     }
@@ -187,6 +199,13 @@ function buildGrid(spec: KitPaint): Grid {
       if (colour) paint(grid, COLLAR_X, row, COLLAR_W, 1, colour);
     }
   }
+
+  // Drawn last so it cuts through whatever the collar laid down.
+  spec.collarNotch?.widths.forEach((width, row) => {
+    if (width <= 0 || row >= COLLAR_H) return;
+    const start = COLLAR_X + Math.floor((COLLAR_W - width) / 2);
+    paint(grid, start, row, width, 1, spec.collarNotch!.colour);
+  });
 
   return grid;
 }
