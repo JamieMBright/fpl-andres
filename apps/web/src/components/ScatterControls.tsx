@@ -3,6 +3,7 @@ import { useId } from "react";
 import { METRICS, type MetricGroup } from "../state/analysis-metrics";
 import type { AnalysisPool } from "../state/analysis-pool";
 import type { ColourBy, ScatterView } from "../state/scatter-view";
+import { MAX_BINS, MIN_BINS, NO_SIZE } from "../state/scatter-view";
 
 /**
  * Everything that changes what the chart shows, in one panel.
@@ -37,9 +38,9 @@ export function ScatterControls({
 }: ScatterControlsProps) {
   const ids = useId();
   // A `details` rather than state: the platform gives the disclosure, the
-  // keyboard behaviour and the open-by-default in one attribute.
+  // keyboard behaviour and the closed-by-default in one attribute.
   return (
-    <details className="scatter-controls" open>
+    <details className="scatter-controls">
       <summary className="scatter-controls-summary">
         <span>Configuration</span>
         <span className="scatter-controls-count mono">{plotted} plotted</span>
@@ -48,7 +49,7 @@ export function ScatterControls({
         <div className="scatter-control-row">
           <AxisPicker
             id={`${ids}-x`}
-            label="Across"
+            label="x-axis (along the bottom)"
             value={view.x}
             onChange={(x) => onChange({ x })}
           />
@@ -58,12 +59,20 @@ export function ScatterControls({
             checked={view.logX}
             onChange={(logX) => onChange({ logX })}
           />
+          <label className="scatter-check">
+            <input
+              checked={view.invertX}
+              onChange={() => onChange({ invertX: !view.invertX })}
+              type="checkbox"
+            />
+            Invert
+          </label>
         </div>
 
         <div className="scatter-control-row">
           <AxisPicker
             id={`${ids}-y`}
-            label="Up"
+            label="y-axis (up the side)"
             value={view.y}
             onChange={(y) => onChange({ y })}
           />
@@ -73,10 +82,19 @@ export function ScatterControls({
             checked={view.logY}
             onChange={(logY) => onChange({ logY })}
           />
+          <label className="scatter-check">
+            <input
+              checked={view.invertY}
+              onChange={() => onChange({ invertY: !view.invertY })}
+              type="checkbox"
+            />
+            Invert
+          </label>
         </div>
 
         <div className="scatter-control-row">
           <AxisPicker
+            allowNone
             id={`${ids}-size`}
             label="Bubble size"
             value={view.size}
@@ -86,7 +104,7 @@ export function ScatterControls({
 
         <fieldset className="scatter-fieldset">
           <legend>Colour by</legend>
-          {(["position", "club"] as ColourBy[]).map((mode) => (
+          {(["club", "position", "metric"] as ColourBy[]).map((mode) => (
             <label key={mode} className="scatter-radio">
               <input
                 type="radio"
@@ -94,10 +112,38 @@ export function ScatterControls({
                 checked={view.colourBy === mode}
                 onChange={() => onChange({ colourBy: mode })}
               />
-              {mode === "position" ? "Position" : "Club"}
+              {mode === "position"
+                ? "Position"
+                : mode === "club"
+                  ? "Club"
+                  : "A statistic"}
             </label>
           ))}
         </fieldset>
+
+        {view.colourBy === "metric" ? (
+          <div className="scatter-control-row">
+            <AxisPicker
+              id={`${ids}-cmetric`}
+              label="Colour statistic"
+              value={view.colourMetric}
+              onChange={(colourMetric) => onChange({ colourMetric })}
+            />
+            <label className="scatter-number" htmlFor={`${ids}-bins`}>
+              Bins
+              <input
+                id={`${ids}-bins`}
+                max={MAX_BINS}
+                min={MIN_BINS}
+                onChange={(event) =>
+                  onChange({ bins: Number(event.target.value) })
+                }
+                type="number"
+                value={view.bins}
+              />
+            </label>
+          </div>
+        ) : null}
 
         <fieldset className="scatter-fieldset">
           <legend>Positions</legend>
@@ -105,9 +151,17 @@ export function ScatterControls({
             <label key={code} className="scatter-check">
               <input
                 type="checkbox"
-                checked={view.positions.includes(code)}
+                checked={
+                  view.positions.length === 0 || view.positions.includes(code)
+                }
                 onChange={() =>
-                  onChange({ positions: toggle(view.positions, code) })
+                  onChange({
+                    positions: togglePosition(
+                      view.positions,
+                      code,
+                      pool.positions,
+                    ),
+                  })
                 }
               />
               {code}
@@ -235,11 +289,13 @@ export function ScatterControls({
 }
 
 function AxisPicker({
+  allowNone = false,
   id,
   label,
   value,
   onChange,
 }: {
+  allowNone?: boolean;
   id: string;
   label: string;
   value: string;
@@ -253,6 +309,7 @@ function AxisPicker({
         value={value}
         onChange={(event) => onChange(event.target.value)}
       >
+        {allowNone ? <option value={NO_SIZE}>None, all the same</option> : null}
         {GROUP_ORDER.map((group) => (
           <optgroup key={group} label={group}>
             {METRICS.filter((entry) => entry.group === group).map((entry) => (
@@ -298,4 +355,19 @@ function toggle(values: string[], entry: string): string[] {
   return values.includes(entry)
     ? values.filter((value) => value !== entry)
     : [...values, entry];
+}
+
+/**
+ * Empty means every position, and the boxes render checked to say so. Unticking
+ * one from that state has to start from all of them, or the first click would
+ * select a position rather than remove it.
+ */
+function togglePosition(
+  selected: string[],
+  code: string,
+  all: readonly string[],
+): string[] {
+  const from = selected.length === 0 ? [...all] : selected;
+  const next = toggle(from, code);
+  return next.length === all.length ? [] : next;
 }

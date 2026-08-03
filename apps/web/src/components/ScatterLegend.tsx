@@ -100,11 +100,6 @@ export function ScatterLegend({
                 </li>
               ))}
             </ul>
-            <p>
-              Taken from the shirt: the base colour fills the mark and the first
-              accent outlines it. Seven clubs play in red, so where two still
-              land on the same pair the outline is dashed to separate them.
-            </p>
           </>
         ) : (
           <p>
@@ -122,7 +117,7 @@ export function ScatterLegend({
               const value =
                 sizeRange.low + ratio * (sizeRange.high - sizeRange.low);
               // Area tracks the value, so the radius is its square root.
-              const r = Math.sqrt(2.6 ** 2 + ratio * (17 ** 2 - 2.6 ** 2));
+              const r = Math.sqrt(5 ** 2 + ratio * (18 ** 2 - 5 ** 2));
               return (
                 <li key={ratio}>
                   <svg
@@ -143,10 +138,6 @@ export function ScatterLegend({
               );
             })}
           </ul>
-          <p>
-            Area, not width, tracks the number: a disc twice as wide is four
-            times the quantity, which is not what the figure said.
-          </p>
         </section>
       ) : null}
     </div>

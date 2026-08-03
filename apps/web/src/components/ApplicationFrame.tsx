@@ -75,18 +75,20 @@ export function ApplicationFrame() {
       <a className="skip-link" href="#main-content">
         Skip to content
       </a>
-      <StatusStrip deadline={FIRST_DEADLINE_2026_27} />
       <OfflineBanner />
       <header className="site-header">
         <Link aria-label="FPL Andres home" className="brand" to="/">
           <BielsaBucket />
-          <span>
-            <strong translate="no">FPL Andres</strong>
+          <span className="brand-words">
+            <strong translate="no">
+              <span className="brand-fpl">FPL</span>
+              <span className="brand-andres">ANDRES</span>
+            </strong>
             <small>Analysis, not opinion</small>
           </span>
         </Link>
         <div className="header-controls">
-          <nav aria-label="Primary navigation">
+          <nav aria-label="Primary navigation" className="ceefax-nav">
             <Link to="/plan">Plan</Link>
             <Link to="/players">Players</Link>
             <Link to="/analysis">Analysis</Link>
@@ -103,6 +105,7 @@ export function ApplicationFrame() {
           </button>
         </div>
       </header>
+      <StatusStrip deadline={FIRST_DEADLINE_2026_27} />
       <main id="main-content" tabIndex={-1}>
         <Outlet />
       </main>

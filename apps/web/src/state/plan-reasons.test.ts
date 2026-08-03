@@ -176,6 +176,8 @@ describe("chipReason", () => {
       chipReason({
         event: 5,
         chip: "Bench Boost",
+        half: "first",
+        gain: 13.1,
         note: "the bench is worth 13.1",
       }),
     ).toBe("Bench Boost — the bench is worth 13.1.");

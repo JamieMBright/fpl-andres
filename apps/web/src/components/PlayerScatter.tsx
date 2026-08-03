@@ -3,7 +3,9 @@ import { memo, useCallback, useMemo, useRef, useState } from "react";
 import { CeefaxShirt } from "./CeefaxShirt";
 import { clubMarker } from "../kit/club-markers";
 import { kitForShortName } from "../kit/team-kits";
-import { defconThresholdFor } from "../state/analysis-metrics";
+import { defconThresholdFor, metric } from "../state/analysis-metrics";
+import type { AnalysisPlayer } from "../state/analysis-pool";
+import { binOf, binsFor, sweetSpot } from "../state/scatter-regions";
 import {
   quadrantCaption,
   type PlottedPlayer,
@@ -34,8 +36,23 @@ const PLOT_HEIGHT = HEIGHT - MARGIN.top - MARGIN.bottom;
 
 // A wide spread, because the point of the third encoding is to be seen. The
 // largest disc is about fourteen times the area of the smallest.
-const MIN_RADIUS = 2.6;
-const MAX_RADIUS = 17;
+// Big enough to hit with a mouse and to see against the grid; the old floor of
+// 2.6 disappeared on a dense chart.
+const MIN_RADIUS = 5;
+const MAX_RADIUS = 18;
+
+// Teletext's own ramp, dark to light, so a higher bin reads as a brighter mark
+// and the whole thing still belongs to the rest of the site.
+const BIN_RAMP = [
+  "#0a1a4d",
+  "#0d3b8c",
+  "#1f7ac2",
+  "#22a6a6",
+  "#2fb84a",
+  "#c8d400",
+  "#ff8c1a",
+  "#ff3b3b",
+];
 const TICKS = 5;
 
 export interface PlayerScatterProps {
@@ -137,19 +154,19 @@ export const PlayerScatter = memo(function PlayerScatter({
     () =>
       makeScale(
         points.map((point) => point.x),
-        [0, PLOT_WIDTH],
+        view.invertX ? [PLOT_WIDTH, 0] : [0, PLOT_WIDTH],
         view.logX,
       ),
-    [points, view.logX],
+    [points, view.logX, view.invertX],
   );
   const yScale = useMemo(
     () =>
       makeScale(
         points.map((point) => point.y),
-        [PLOT_HEIGHT, 0],
+        view.invertY ? [0, PLOT_HEIGHT] : [PLOT_HEIGHT, 0],
         view.logY,
       ),
-    [points, view.logY],
+    [points, view.logY, view.invertY],
   );
 
   const sizeBounds = useMemo(() => {
@@ -162,8 +179,9 @@ export const PlayerScatter = memo(function PlayerScatter({
   }, [points]);
 
   const radius = (value: number | null): number => {
+    // No size metric, or nothing to separate: one readable disc for everyone.
     if (!sizeBounds || value === null || sizeBounds.high === sizeBounds.low) {
-      return (MIN_RADIUS + MAX_RADIUS) / 2;
+      return MIN_RADIUS * 1.6;
     }
     // Area, not radius, tracks the value: a disc twice the radius reads as four
     // times the quantity, which is not what the number said.
@@ -174,6 +192,43 @@ export const PlayerScatter = memo(function PlayerScatter({
   };
 
   const pinnedSet = useMemo(() => new Set(pinned), [pinned]);
+
+  // Equal-width bins across the observed range, so a step of colour means the
+  // same amount everywhere along the ramp.
+  const colourMetric = metric(view.colourMetric);
+  const bins = useMemo(
+    () =>
+      view.colourBy === "metric" && colourMetric
+        ? binsFor(
+            points.map((point) => point.player),
+            colourMetric,
+            view.bins,
+          )
+        : [],
+    [view.colourBy, view.bins, colourMetric, points],
+  );
+
+  const binMarker = (player: AnalysisPlayer) => {
+    if (!colourMetric || bins.length === 0) return null;
+    const index = binOf(player, colourMetric, bins);
+    if (index === null) return null;
+    return {
+      fill: BIN_RAMP[index] ?? BIN_RAMP.at(-1) ?? "#888",
+      stroke: "#111",
+      dash: undefined as string | undefined,
+    };
+  };
+
+  // Where the good players are, from each metric's own declared direction.
+  const spot = useMemo(
+    () =>
+      sweetSpot(
+        points.map((point) => point.player),
+        xMetric,
+        yMetric,
+      ),
+    [points, xMetric, yMetric],
+  );
 
   const handleEnter = useCallback((point: PlottedPlayer) => {
     setHovered(point);
@@ -285,13 +340,34 @@ export const PlayerScatter = memo(function PlayerScatter({
             />
           ) : null}
 
+          {spot ? (
+            <ellipse
+              className="scatter-sweet-spot"
+              cx={xScale(spot.centreX)}
+              cy={yScale(spot.centreY)}
+              rx={Math.abs(
+                xScale(spot.centreX + spot.radiusX) - xScale(spot.centreX),
+              )}
+              ry={Math.abs(
+                yScale(spot.centreY + spot.radiusY) - yScale(spot.centreY),
+              )}
+            >
+              <title>{spot.caption}</title>
+            </ellipse>
+          ) : null}
+
           <g className="scatter-marks">
             {points.map((point) => {
               const isPinned = pinnedSet.has(point.player.code);
-              // Colouring by club overrides the position palette. The shape
-              // still carries the position, so nothing is lost by it.
+              // Colouring by club or by a binned statistic overrides the
+              // position palette. The shape still carries the position, so
+              // nothing is lost by it.
               const mark =
-                view.colourBy === "club" ? clubMarker(point.player.club) : null;
+                view.colourBy === "club"
+                  ? clubMarker(point.player.club)
+                  : view.colourBy === "metric"
+                    ? binMarker(point.player)
+                    : null;
               const classes = [
                 "scatter-mark",
                 `scatter-mark-${point.player.position.toLowerCase()}`,

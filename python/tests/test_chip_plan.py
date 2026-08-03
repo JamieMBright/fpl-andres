@@ -1,11 +1,14 @@
-"""Chip timing, and the hole the promoted clubs leave.
+"""Chip timing across a season that hands out every chip twice.
 
-Each chip rule is its own definition turned into a measurement, so each is
-checked against a case where the right answer is obvious by construction.
+FPL resets the set at the halfway point: four chips are available in gameweeks
+1 to 19 and a fresh four from 20 to 38, and whatever is unplayed when the half
+ends is simply lost. Each rule is the chip's own definition turned into a
+measurement, so each is checked against a case where the right answer is obvious
+by construction.
 
 `ceiling` is the best eleven the whole budget could buy that week ignoring
 transfers. Both unlimited-transfer chips are priced off the gap between it and
-what the plan actually fields — Free Hit for one week, Wildcard for the run.
+what the plan actually fields -- Free Hit for one week, Wildcard for the run.
 """
 
 from __future__ import annotations
@@ -25,6 +28,7 @@ def _candidate(code: int, name: str, club: str = "ARS") -> Candidate:
         club=club,
         price_tenths=100,
         record=5.0,
+        best_match=12.0,
         squad_number=None,
     )
 
@@ -40,11 +44,34 @@ def _week(
         "event": event,
         "expected": expected,
         "bench": bench,
+        "squadElementIds": sorted(int(code) for code in expected),
+        "benchElementIds": list(bench),
         "projectedPoints": projected,
     }
 
 
 NAMED = {1: _candidate(1, "Salah"), 2: _candidate(2, "Haaland")}
+CODES = {1: 1, 2: 2}
+
+
+def _peak(weeks: list[dict[str, Any]], scale: float = 2.0) -> dict[tuple[int, int], float]:
+    """A ceiling for every player in every week, at a fixed multiple of the mean."""
+    return {
+        (week["event"], int(code)): value * scale
+        for week in weeks
+        for code, value in week["expected"].items()
+    }
+
+
+def _plan(
+    weeks: list[dict[str, Any]],
+    ceiling: dict[int, float] | None = None,
+) -> dict[str, dict[str, Any]]:
+    """Chips keyed by name and half, since every chip now appears twice."""
+    return {
+        f"{chip['chip']}:{chip['half']}": chip
+        for chip in _chip_plan(weeks, NAMED, ceiling, _peak(weeks), CODES)
+    }
 
 
 def test_triple_captain_lands_on_the_best_single_player_week() -> None:
@@ -54,10 +81,21 @@ def test_triple_captain_lands_on_the_best_single_player_week() -> None:
         _week(3, expected={"1": 5.0, "2": 5.0}, bench=[]),
     ]
 
-    chips = {chip["chip"]: chip for chip in _chip_plan(weeks, NAMED)}
+    chips = _plan(weeks)
 
-    assert chips["Triple Captain"]["event"] == 2
-    assert "Salah" in str(chips["Triple Captain"]["note"])
+    assert chips["Triple Captain:first"]["event"] == 2
+    assert "Salah" in str(chips["Triple Captain:first"]["note"])
+
+
+def test_the_triple_captain_is_judged_on_the_ceiling_not_the_average() -> None:
+    """A chip is played for the afternoon he takes a goal, a clean sheet and a
+    defensive contribution, not for his mean."""
+    weeks = [_week(1, expected={"1": 6.0}, bench=[])]
+
+    chip = _plan(weeks)["Triple Captain:first"]
+
+    assert chip["gain"] == 6.0
+    assert chip["ceiling"] == 12.0
 
 
 def test_bench_boost_follows_the_bench_not_the_squad() -> None:
@@ -68,26 +106,20 @@ def test_bench_boost_follows_the_bench_not_the_squad() -> None:
         _week(3, expected={"1": 5.0, "2": 8.0}, bench=[2]),
     ]
 
-    chips = {chip["chip"]: chip for chip in _chip_plan(weeks, NAMED)}
-
-    assert chips["Bench Boost"]["event"] == 3
+    assert _plan(weeks)["Bench Boost:first"]["event"] == 3
 
 
 def test_free_hit_takes_the_largest_one_week_gain() -> None:
     weeks = [
-        # Best single player, so the triple captain takes this one.
         _week(1, expected={"1": 9.0, "2": 1.0}, bench=[2], projected=50.0),
         _week(2, expected={"1": 1.0, "2": 1.0}, bench=[2], projected=30.0),
-        # Best bench, so the bench boost takes this one.
         _week(3, expected={"1": 1.0, "2": 8.0}, bench=[2], projected=48.0),
     ]
     # Gameweek 2 is where the planned eleven falls furthest short of what the
     # budget could buy, which is exactly what one week of free transfers buys.
     ceiling = {1: 52.0, 2: 60.0, 3: 49.0}
 
-    chips = {chip["chip"]: chip for chip in _chip_plan(weeks, NAMED, ceiling)}
-
-    assert chips["Free Hit"]["event"] == 2
+    assert _plan(weeks, ceiling)["Free Hit:first"]["event"] == 2
 
 
 def test_a_blank_needs_no_special_case_because_it_is_already_worth_zero() -> None:
@@ -100,21 +132,26 @@ def test_a_blank_needs_no_special_case_because_it_is_already_worth_zero() -> Non
     ]
     ceiling = {1: 51.0, 2: 40.0, 3: 50.0}
 
-    chips = {chip["chip"]: chip for chip in _chip_plan(weeks, NAMED, ceiling)}
-
-    assert chips["Free Hit"]["event"] == 2
+    assert _plan(weeks, ceiling)["Free Hit:first"]["event"] == 2
 
 
-def test_free_hit_is_refused_when_the_plan_already_fields_the_best_eleven() -> None:
-    weeks = [
-        _week(1, expected={"1": 4.0}, bench=[], projected=50.0),
-        _week(2, expected={"1": 5.0}, bench=[], projected=50.0),
-    ]
-    ceiling = {1: 50.0, 2: 50.0}
+def test_a_chip_is_still_played_when_it_gains_nothing() -> None:
+    """It expires at the half. A chip worth little beats a chip worth nothing,
+    and the note says which of the two this is."""
+    weeks = [_week(index, expected={"1": 4.0}, bench=[], projected=50.0) for index in range(1, 7)]
+    ceiling = {index: 50.0 for index in range(1, 7)}
 
-    chips = {chip["chip"]: chip for chip in _chip_plan(weeks, NAMED, ceiling)}
+    chip = _plan(weeks, ceiling)["Free Hit:first"]
 
-    assert chips["Free Hit"]["event"] is None
+    assert chip["event"] is not None
+    assert "expires at nothing" in str(chip["note"])
+
+
+def test_only_one_chip_lands_in_any_gameweek() -> None:
+    # Four chips and three weeks, so one of them has nowhere left to go.
+    weeks = [_week(index, expected={"1": 4.0}, bench=[], projected=50.0) for index in range(1, 4)]
+
+    assert len(_chip_plan(weeks, NAMED, {}, _peak(weeks), CODES)) == 3
 
 
 def test_wildcard_takes_the_run_where_the_squad_is_furthest_behind() -> None:
@@ -124,30 +161,58 @@ def test_wildcard_takes_the_run_where_the_squad_is_furthest_behind() -> None:
     for index in range(6, 13):
         ceiling[index] = 45.0
 
-    chips = {chip["chip"]: chip for chip in _chip_plan(weeks, NAMED, ceiling)}
-
-    assert chips["Wildcard"]["event"] == 5
+    assert _plan(weeks, ceiling)["Wildcard:first"]["event"] == 5
 
 
-def test_wildcard_is_refused_when_the_plan_never_falls_behind() -> None:
-    weeks = [_week(index, expected={"1": 1.0}, bench=[], projected=40.0) for index in range(1, 6)]
-    ceiling = {index: 40.0 for index in range(1, 6)}
+def test_every_chip_is_offered_once_in_each_half() -> None:
+    weeks = [
+        _week(index, expected={"1": 9.0, "2": 9.0}, bench=[2], projected=10.0)
+        for index in range(1, 39)
+    ]
+    ceiling = {index: 90.0 for index in range(1, 39)}
 
-    chips = {chip["chip"]: chip for chip in _chip_plan(weeks, NAMED, ceiling)}
+    chips = _chip_plan(weeks, NAMED, ceiling, _peak(weeks), CODES)
+    pairs = sorted((str(chip["chip"]), str(chip["half"])) for chip in chips)
 
-    assert chips["Wildcard"]["event"] is None
+    assert len(chips) == 8
+    assert pairs == sorted(
+        (chip, half)
+        for chip in ("Bench Boost", "Free Hit", "Triple Captain", "Wildcard")
+        for half in ("first", "second")
+    )
+
+
+def test_a_first_half_chip_never_lands_in_the_second() -> None:
+    weeks = [
+        _week(index, expected={"1": 9.0, "2": 9.0}, bench=[2], projected=10.0)
+        for index in range(1, 39)
+    ]
+    ceiling = {index: 90.0 for index in range(1, 39)}
+
+    for chip in _chip_plan(weeks, NAMED, ceiling, _peak(weeks), CODES):
+        event = int(str(chip["event"]))
+        if chip["half"] == "first":
+            assert event <= 19
+        else:
+            assert event > 19
 
 
 def test_two_chips_never_land_on_the_same_gameweek() -> None:
     weeks = [
         _week(index, expected={"1": 9.0, "2": 9.0}, bench=[2], projected=10.0)
-        for index in range(1, 6)
+        for index in range(1, 39)
     ]
-    ceiling = {index: 90.0 for index in range(1, 6)}
+    ceiling = {index: 90.0 for index in range(1, 39)}
 
-    events = [chip["event"] for chip in _chip_plan(weeks, NAMED, ceiling) if chip["event"]]
+    events = [chip["event"] for chip in _chip_plan(weeks, NAMED, ceiling, _peak(weeks), CODES)]
 
     assert len(events) == len(set(events))
+
+
+def test_a_season_with_only_a_first_half_plans_only_four() -> None:
+    weeks = [_week(index, expected={"1": 5.0}, bench=[], projected=40.0) for index in range(1, 10)]
+
+    assert len(_chip_plan(weeks, NAMED, {}, _peak(weeks), CODES)) == 4
 
 
 def test_an_empty_season_plans_no_chips() -> None:
@@ -165,8 +230,6 @@ def test_the_clubs_with_no_record_are_named() -> None:
 
     gaps = _data_gaps(pool, clubs)
 
-    # A promoted club has no players in last season's record, so it is missing
-    # from the pool entirely and its fixtures are rated as merely average.
     assert gaps["clubsWithoutRecord"] == ["COV", "HUL"]
     assert gaps["clubsInPool"] == 2
     assert gaps["clubsInLeague"] == 4

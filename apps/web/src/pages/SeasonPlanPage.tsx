@@ -26,6 +26,9 @@ import {
 } from "../state/plan-reasons";
 import { useDocumentTitle } from "../state/use-document-title";
 
+/** What a chip should return before it is worth planning a season around. */
+const CHIP_TARGET = 20;
+
 /**
  * The club shirt. Silent to assistive technology because the short name is
  * printed beside it, and three pairs of clubs render identically anyway.
@@ -278,6 +281,58 @@ function asPlanGameweek(week: SolvedGameweek): PlanGameweek {
   };
 }
 
+/**
+ * All eight chips at once, because they are a season-long budget rather than
+ * eight separate decisions. FPL hands the set out twice: whatever is unplayed
+ * by gameweek nineteen expires, and a fresh set arrives for the second half.
+ */
+function ChipStrategy({ chips }: { chips: readonly ChipCall[] }) {
+  if (chips.length === 0) return null;
+  const halves = [
+    ["first", "First half, gameweeks 1 to 19"],
+    ["second", "Second half, gameweeks 20 to 38"],
+  ] as const;
+
+  return (
+    <section aria-label="Chip strategy" className="plan-chips">
+      <h2>Eight chips, two of each</h2>
+      <p>
+        Every chip comes twice a season and the first set expires at gameweek
+        nineteen, so an unplayed chip is worth nothing rather than saved. Each
+        is placed where it adds most, and the figure is what playing it adds
+        over not playing it — not what the week scores.
+      </p>
+      {halves.map(([half, label]) => (
+        <div className="plan-chip-half" key={half}>
+          <h3>{label}</h3>
+          <ul>
+            {chips
+              .filter((chip) => chip.half === half)
+              .map((chip) => (
+                <li key={`${chip.chip}-${half}`}>
+                  <span className="plan-chip-when mono">
+                    {chip.event === null ? "—" : `GW${String(chip.event)}`}
+                  </span>
+                  <span className="plan-chip-name">{chip.chip}</span>
+                  <span
+                    className={
+                      chip.gain >= CHIP_TARGET
+                        ? "plan-chip-gain mono plan-chip-hit"
+                        : "plan-chip-gain mono"
+                    }
+                  >
+                    +{chip.gain.toFixed(1)}
+                  </span>
+                  <span className="plan-chip-note">{chip.note}.</span>
+                </li>
+              ))}
+          </ul>
+        </div>
+      ))}
+    </section>
+  );
+}
+
 export default function SeasonPlanPage() {
   const plan = useMemo(() => readSeasonPlan(), []);
   const [selected, setSelected] = useState<PlanPlayer | null>(null);
@@ -417,6 +472,8 @@ export default function SeasonPlanPage() {
           is still below.
         </p>
       ) : null}
+
+      <ChipStrategy chips={plan.chips} />
 
       <ul className="plan-rail">
         {gameweeks.map((week) => (

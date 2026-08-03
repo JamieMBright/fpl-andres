@@ -195,12 +195,21 @@ export function PlayerDetail({
 
         <header className="player-detail-head">
           {kit ? (
-            <CeefaxShirt
-              className="player-detail-shirt"
-              kit={kit}
-              label={null}
-              squadNumber={player.squadNumber ?? null}
-            />
+            <span
+              className="player-detail-kit"
+              title={
+                player.squadNumber === null || player.squadNumber === undefined
+                  ? "FPL publishes a squad number field but leaves it empty, so there is no number to print."
+                  : `Squad number ${String(player.squadNumber)}`
+              }
+            >
+              <CeefaxShirt
+                className="player-detail-shirt"
+                kit={kit}
+                label={null}
+                squadNumber={player.squadNumber ?? null}
+              />
+            </span>
           ) : (
             <span aria-hidden="true" className="player-detail-shirt" />
           )}

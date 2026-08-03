@@ -45,6 +45,10 @@ export interface ChipCall {
   /** Null when nothing in the season justifies playing it. */
   event: number | null;
   chip: string;
+  /** Which half of the season this copy belongs to. Every chip comes twice. */
+  half: string;
+  /** Expected points playing it adds, over not playing it. */
+  gain: number;
   note: string;
 }
 

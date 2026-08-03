@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-03T19:18:25.037822Z",
+  "generatedAt": "2026-08-03T20:03:03.312107Z",
   "season": "2026-27",
   "recordSeason": "2025-26",
   "basis": "opening squad, fixture-adjusted projections, solved in overlapping windows and committed 38 gameweeks deep",
@@ -17,22 +17,66 @@
     {
       "event": 1,
       "chip": "Free Hit",
-      "note": "unlimited transfers would add 2.8 that week, the season's largest one-week gain"
+      "half": "first",
+      "gain": 2.77,
+      "ceiling": 2.77,
+      "note": "one week of unlimited transfers adds 2.8, the largest one-week gap in the first half, which under the 20 points that makes a chip worth building around, but an unplayed chip expires at nothing"
     },
     {
       "event": 2,
       "chip": "Wildcard",
-      "note": "the plan falls 3.0 short of the best affordable squad across the next eight gameweeks"
+      "half": "first",
+      "gain": 2.47,
+      "ceiling": 2.47,
+      "note": "rebuilding here recovers 2.5 across the following 8 gameweeks, which under the 20 points that makes a chip worth building around, but an unplayed chip expires at nothing"
     },
     {
       "event": 14,
       "chip": "Triple Captain",
-      "note": "Gabriel is expected to score 7.3, the most any single player is expected to score in any week this season"
+      "half": "first",
+      "gain": 7.3,
+      "ceiling": 17.77,
+      "note": "a third copy of Gabriel: 7.3 if he returns his average, 17.8 on the sort of afternoon the chip is played for, which under the 20 points that makes a chip worth building around, but an unplayed chip expires at nothing"
     },
     {
-      "event": 23,
+      "event": 16,
       "chip": "Bench Boost",
-      "note": "the bench is worth 13.1 that week, the most any bench is expected to score all season"
+      "half": "first",
+      "gain": 8.68,
+      "ceiling": 30.29,
+      "note": "the bench averages 8.7 and reaches 30.3 if all four have the sort of week they are capable of, the best bench of the first half, which clears the 20 points a chip wants to return"
+    },
+    {
+      "event": 26,
+      "chip": "Wildcard",
+      "half": "second",
+      "gain": 0.43,
+      "ceiling": 0.43,
+      "note": "rebuilding here recovers 0.4 across the following 8 gameweeks, which under the 20 points that makes a chip worth building around, but an unplayed chip expires at nothing"
+    },
+    {
+      "event": 27,
+      "chip": "Free Hit",
+      "half": "second",
+      "gain": 0.36,
+      "ceiling": 0.36,
+      "note": "one week of unlimited transfers adds 0.4, the largest one-week gap in the second half, which under the 20 points that makes a chip worth building around, but an unplayed chip expires at nothing"
+    },
+    {
+      "event": 29,
+      "chip": "Bench Boost",
+      "half": "second",
+      "gain": 10.82,
+      "ceiling": 33.74,
+      "note": "the bench averages 10.8 and reaches 33.7 if all four have the sort of week they are capable of, the best bench of the second half, which clears the 20 points a chip wants to return"
+    },
+    {
+      "event": 34,
+      "chip": "Triple Captain",
+      "half": "second",
+      "gain": 7.3,
+      "ceiling": 17.77,
+      "note": "a third copy of Gabriel: 7.3 if he returns his average, 17.8 on the sort of afternoon the chip is played for, which under the 20 points that makes a chip worth building around, but an unplayed chip expires at nothing"
     }
   ],
   "dataGaps": {
@@ -281,6 +325,10 @@
         "TOT": 4,
         "CHE": 2
       },
+      "squadElementIds": [
+        1, 4, 13, 46, 154, 229, 248, 249, 271, 338, 384, 387, 388, 426, 498
+      ],
+      "benchElementIds": [1, 46, 249, 271],
       "expected": {
         "204936": 3.34,
         "154561": 3.29,
@@ -340,6 +388,10 @@
         "TOT": 4,
         "CHE": 3
       },
+      "squadElementIds": [
+        1, 4, 13, 46, 154, 229, 248, 249, 271, 338, 384, 387, 388, 426, 498
+      ],
+      "benchElementIds": [384, 46, 249, 271],
       "expected": {
         "204936": 4.03,
         "154561": 4.54,
@@ -399,6 +451,10 @@
         "LEE": 4,
         "TOT": 4
       },
+      "squadElementIds": [
+        1, 4, 13, 46, 68, 106, 229, 248, 249, 338, 384, 387, 388, 426, 498
+      ],
+      "benchElementIds": [384, 248, 46, 249],
       "expected": {
         "204936": 2.84,
         "154561": 4.59,
@@ -458,6 +514,10 @@
         "LEE": 3,
         "TOT": 4
       },
+      "squadElementIds": [
+        1, 4, 13, 46, 68, 106, 229, 248, 249, 338, 384, 387, 388, 426, 498
+      ],
+      "benchElementIds": [384, 248, 46, 249],
       "expected": {
         "204936": 3.11,
         "154561": 5.16,
@@ -515,6 +575,10 @@
         "AVL": 1,
         "TOT": 5
       },
+      "squadElementIds": [
+        1, 4, 13, 46, 68, 106, 229, 248, 249, 387, 388, 426, 427, 497, 498
+      ],
+      "benchElementIds": [248, 46, 249, 497],
       "expected": {
         "154561": 4.86,
         "472769": 4.84,
@@ -572,6 +636,10 @@
         "AVL": 3,
         "TOT": 5
       },
+      "squadElementIds": [
+        1, 4, 13, 46, 68, 106, 229, 248, 249, 387, 388, 426, 427, 497, 498
+      ],
+      "benchElementIds": [248, 46, 249, 497],
       "expected": {
         "154561": 4.94,
         "472769": 4.21,
@@ -631,6 +699,10 @@
         "CHE": 3,
         "SUN": 4
       },
+      "squadElementIds": [
+        1, 4, 13, 68, 106, 155, 229, 248, 249, 388, 426, 427, 497, 498, 539
+      ],
+      "benchElementIds": [248, 249, 497, 539],
       "expected": {
         "154561": 4.89,
         "226597": 6.88,
@@ -690,6 +762,10 @@
         "CHE": 2,
         "SUN": 3
       },
+      "squadElementIds": [
+        1, 4, 13, 68, 106, 155, 248, 249, 387, 388, 426, 427, 497, 498, 539
+      ],
+      "benchElementIds": [248, 249, 497, 539],
       "expected": {
         "154561": 5.08,
         "472769": 4.33,
@@ -749,6 +825,10 @@
         "CHE": 5,
         "SUN": null
       },
+      "squadElementIds": [
+        1, 4, 68, 106, 155, 248, 249, 387, 388, 426, 427, 481, 497, 498, 539
+      ],
+      "benchElementIds": [248, 249, 497, 539],
       "expected": {
         "154561": 4.24,
         "215379": 4.14,
@@ -810,6 +890,10 @@
         "LEE": 2,
         "CHE": 2
       },
+      "squadElementIds": [
+        1, 4, 68, 106, 155, 248, 346, 387, 388, 426, 427, 481, 497, 498, 539
+      ],
+      "benchElementIds": [68, 248, 497, 539],
       "expected": {
         "154561": 3.29,
         "215379": 4.22,
@@ -871,6 +955,10 @@
         "LEE": 4,
         "CHE": 2
       },
+      "squadElementIds": [
+        1, 4, 68, 106, 155, 248, 346, 387, 388, 426, 427, 481, 497, 498, 539
+      ],
+      "benchElementIds": [346, 248, 497, 539],
       "expected": {
         "154561": 4.69,
         "215379": 4.22,
@@ -934,6 +1022,10 @@
         "LEE": null,
         "CHE": 3
       },
+      "squadElementIds": [
+        1, 4, 68, 106, 155, 248, 346, 356, 388, 426, 427, 481, 497, 498, 539
+      ],
+      "benchElementIds": [388, 248, 497, 539],
       "expected": {
         "154561": 3.83,
         "215379": 3.82,
@@ -995,6 +1087,10 @@
         "LEE": 5,
         "CHE": 2
       },
+      "squadElementIds": [
+        1, 4, 68, 106, 155, 248, 346, 387, 388, 426, 427, 481, 497, 498, 539
+      ],
+      "benchElementIds": [346, 248, 497, 539],
       "expected": {
         "154561": 4.6,
         "215379": 4.32,
@@ -1056,6 +1152,10 @@
         "LEE": null,
         "CHE": 4
       },
+      "squadElementIds": [
+        1, 4, 13, 106, 155, 248, 346, 368, 387, 388, 426, 481, 497, 498, 539
+      ],
+      "benchElementIds": [498, 248, 497, 539],
       "expected": {
         "154561": 5.17,
         "215379": 4.27,
@@ -1117,6 +1217,10 @@
         "LEE": 4,
         "CHE": 5
       },
+      "squadElementIds": [
+        1, 4, 13, 106, 155, 248, 346, 368, 387, 388, 426, 481, 497, 498, 539
+      ],
+      "benchElementIds": [155, 248, 497, 539],
       "expected": {
         "154561": 4.42,
         "215379": 4.31,
@@ -1178,6 +1282,10 @@
         "LEE": 3,
         "CHE": 3
       },
+      "squadElementIds": [
+        1, 4, 13, 106, 155, 248, 346, 368, 387, 388, 426, 481, 497, 498, 539
+      ],
+      "benchElementIds": [387, 248, 539, 497],
       "expected": {
         "154561": 4.03,
         "215379": 3.88,
@@ -1237,6 +1345,10 @@
         "LEE": 4,
         "SUN": 3
       },
+      "squadElementIds": [
+        1, 4, 13, 68, 106, 248, 346, 387, 388, 426, 427, 481, 497, 498, 539
+      ],
+      "benchElementIds": [346, 248, 497, 539],
       "expected": {
         "154561": 5.16,
         "215379": 4.35,
@@ -1296,6 +1408,10 @@
         "LEE": null,
         "SUN": 5
       },
+      "squadElementIds": [
+        1, 4, 13, 68, 106, 248, 346, 387, 388, 426, 427, 481, 497, 498, 539
+      ],
+      "benchElementIds": [346, 248, 497, 539],
       "expected": {
         "154561": 5.17,
         "215379": 4.24,
@@ -1357,6 +1473,10 @@
         "LEE": 3,
         "CHE": 3
       },
+      "squadElementIds": [
+        1, 4, 46, 82, 106, 155, 248, 346, 387, 388, 426, 427, 481, 498, 539
+      ],
+      "benchElementIds": [1, 248, 46, 539],
       "expected": {
         "154561": 3.29,
         "215379": 4.38,
@@ -1416,6 +1536,10 @@
         "CHE": 2,
         "LEE": 5
       },
+      "squadElementIds": [
+        1, 4, 46, 82, 106, 153, 155, 248, 346, 387, 388, 426, 427, 481, 498
+      ],
+      "benchElementIds": [82, 346, 248, 46],
       "expected": {
         "154561": 4.6,
         "215379": 4.32,
@@ -1475,6 +1599,10 @@
         "CHE": 2,
         "LEE": 2
       },
+      "squadElementIds": [
+        1, 4, 46, 82, 106, 153, 155, 248, 346, 387, 388, 426, 427, 481, 498
+      ],
+      "benchElementIds": [153, 1, 248, 46],
       "expected": {
         "154561": 3.29,
         "215379": 4.22,
@@ -1534,6 +1662,10 @@
         "CHE": 2,
         "LEE": 4
       },
+      "squadElementIds": [
+        1, 4, 46, 82, 106, 153, 155, 248, 346, 387, 388, 426, 427, 481, 498
+      ],
+      "benchElementIds": [153, 82, 248, 46],
       "expected": {
         "154561": 4.69,
         "215379": 4.14,
@@ -1593,6 +1725,10 @@
         "CHE": 3,
         "LEE": null
       },
+      "squadElementIds": [
+        1, 4, 61, 68, 82, 106, 153, 155, 248, 346, 388, 426, 427, 481, 498
+      ],
+      "benchElementIds": [388, 153, 82, 248],
       "expected": {
         "154561": 3.83,
         "215379": 3.82,
@@ -1652,6 +1788,10 @@
         "EVE": 3,
         "LEE": 4
       },
+      "squadElementIds": [
+        1, 4, 46, 61, 68, 82, 106, 248, 346, 387, 388, 426, 427, 481, 498
+      ],
+      "benchElementIds": [346, 82, 248, 46],
       "expected": {
         "154561": 4.24,
         "215379": 4.22,
@@ -1711,6 +1851,10 @@
         "EVE": 3,
         "LEE": 3
       },
+      "squadElementIds": [
+        1, 4, 46, 61, 68, 82, 106, 248, 346, 387, 388, 426, 427, 481, 498
+      ],
+      "benchElementIds": [61, 1, 248, 46],
       "expected": {
         "154561": 3.29,
         "215379": 4.38,
@@ -1770,6 +1914,10 @@
         "EVE": 3,
         "LEE": 4
       },
+      "squadElementIds": [
+        1, 4, 46, 61, 68, 82, 106, 248, 346, 387, 388, 426, 427, 481, 498
+      ],
+      "benchElementIds": [346, 82, 46, 248],
       "expected": {
         "154561": 5.17,
         "215379": 4.35,
@@ -1831,6 +1979,10 @@
         "EVE": 3,
         "LEE": 3
       },
+      "squadElementIds": [
+        1, 4, 13, 46, 68, 106, 248, 346, 356, 387, 388, 426, 481, 497, 498
+      ],
+      "benchElementIds": [387, 46, 248, 497],
       "expected": {
         "154561": 4.03,
         "215379": 3.88,
@@ -1892,6 +2044,10 @@
         "LEE": null,
         "BHA": 2
       },
+      "squadElementIds": [
+        1, 4, 13, 68, 106, 124, 248, 346, 356, 387, 388, 426, 481, 497, 498
+      ],
+      "benchElementIds": [356, 124, 248, 497],
       "expected": {
         "154561": 5.16,
         "215379": 4.24,
@@ -1953,6 +2109,10 @@
         "LEE": 4,
         "BHA": 2
       },
+      "squadElementIds": [
+        1, 4, 13, 68, 106, 124, 248, 346, 356, 387, 388, 426, 481, 497, 498
+      ],
+      "benchElementIds": [388, 387, 248, 497],
       "expected": {
         "154561": 4.59,
         "215379": 3.88,
@@ -2012,6 +2172,10 @@
         "LEE": 3,
         "BHA": null
       },
+      "squadElementIds": [
+        1, 4, 13, 68, 106, 124, 229, 248, 346, 387, 388, 426, 481, 497, 498
+      ],
+      "benchElementIds": [346, 124, 248, 497],
       "expected": {
         "154561": 5.16,
         "215379": 4.23,
@@ -2073,6 +2237,10 @@
         "CHE": 2,
         "BHA": 3
       },
+      "squadElementIds": [
+        1, 4, 106, 124, 155, 229, 248, 346, 368, 387, 388, 426, 481, 497, 498
+      ],
+      "benchElementIds": [346, 124, 248, 497],
       "expected": {
         "154561": 3.29,
         "215379": 4.29,
@@ -2134,6 +2302,10 @@
         "CHE": 3,
         "BHA": 3
       },
+      "squadElementIds": [
+        1, 4, 106, 124, 155, 229, 248, 346, 368, 387, 388, 426, 481, 497, 498
+      ],
+      "benchElementIds": [229, 124, 248, 497],
       "expected": {
         "154561": 4.54,
         "215379": 4.31,
@@ -2195,6 +2367,10 @@
         "CHE": 5,
         "BHA": 2
       },
+      "squadElementIds": [
+        1, 4, 106, 124, 155, 229, 248, 346, 368, 387, 388, 426, 481, 497, 498
+      ],
+      "benchElementIds": [124, 155, 248, 497],
       "expected": {
         "154561": 4.42,
         "215379": 4.31,
@@ -2256,6 +2432,10 @@
         "LEE": null,
         "CHE": 4
       },
+      "squadElementIds": [
+        1, 4, 13, 106, 155, 248, 346, 368, 387, 388, 426, 481, 497, 498, 539
+      ],
+      "benchElementIds": [498, 248, 497, 539],
       "expected": {
         "154561": 5.17,
         "215379": 4.27,
@@ -2317,6 +2497,10 @@
         "LEE": 5,
         "CHE": 2
       },
+      "squadElementIds": [
+        1, 4, 13, 68, 106, 155, 248, 346, 387, 388, 426, 481, 497, 498, 539
+      ],
+      "benchElementIds": [346, 248, 497, 539],
       "expected": {
         "154561": 4.94,
         "215379": 4.31,
@@ -2378,6 +2562,10 @@
         "LEE": 5,
         "CHE": 3
       },
+      "squadElementIds": [
+        1, 4, 13, 61, 68, 106, 155, 248, 346, 388, 426, 427, 497, 498, 539
+      ],
+      "benchElementIds": [388, 248, 497, 539],
       "expected": {
         "154561": 4.89,
         "226597": 6.88,
@@ -2439,6 +2627,10 @@
         "LEE": 3,
         "CHE": 3
       },
+      "squadElementIds": [
+        1, 4, 13, 61, 68, 106, 155, 248, 346, 387, 388, 426, 427, 497, 539
+      ],
+      "benchElementIds": [346, 248, 497, 539],
       "expected": {
         "154561": 5.08,
         "472769": 4.33,
@@ -2498,6 +2690,10 @@
         "LEE": 2,
         "SUN": 5
       },
+      "squadElementIds": [
+        1, 4, 13, 61, 68, 106, 248, 346, 387, 388, 426, 427, 481, 497, 539
+      ],
+      "benchElementIds": [61, 248, 497, 539],
       "expected": {
         "154561": 4.86,
         "215379": 4.22,

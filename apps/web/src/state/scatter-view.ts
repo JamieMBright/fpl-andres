@@ -17,7 +17,14 @@ import type { CentreMode } from "./scatter-stats";
  * is user input, and an unrecognised metric id must not become a selected axis.
  */
 
-export type ColourBy = "position" | "club";
+export type ColourBy = "position" | "club" | "metric";
+
+/** Bubble size is optional: "none" draws every player the same. */
+export const NO_SIZE = "none";
+
+/** Most bins a reader can tell apart at a glance. */
+export const MAX_BINS = 8;
+export const MIN_BINS = 2;
 
 export interface ScatterView {
   x: string;
@@ -25,7 +32,13 @@ export interface ScatterView {
   size: string;
   logX: boolean;
   logY: boolean;
+  /** Turns an axis round, so the good end can be put wherever it reads best. */
+  invertX: boolean;
+  invertY: boolean;
   colourBy: ColourBy;
+  /** The statistic the colour bins, when colouring by one. */
+  colourMetric: string;
+  bins: number;
   positions: string[];
   clubs: string[];
   minMinutes: number;
@@ -36,6 +49,8 @@ export interface ScatterView {
   overlookedCeiling: number;
   pinned: number[];
   search: string;
+  /** What the table underneath ranks by. Follows the y-axis until changed. */
+  tableMetric: string;
 }
 
 const POSITIONS = ["GKP", "DEF", "MID", "FWD"];
@@ -50,26 +65,41 @@ export const DEFAULT_VIEW: ScatterView = {
   size: DEFAULT_SIZE_METRIC,
   logX: false,
   logY: false,
+  invertX: false,
+  invertY: false,
   colourBy: "club",
+  colourMetric: DEFAULT_Y_METRIC,
+  bins: 5,
   positions: [],
   clubs: [],
-  minMinutes: 450,
+  // A season and a half of football. Below this a per-90 rate is a small
+  // sample wearing a big number, and the chart fills with players nobody can
+  // pick anyway.
+  minMinutes: 1500,
   centreMode: "median",
   trend: false,
   overlooked: false,
   overlookedCeiling: 5,
   pinned: [],
   search: "",
+  tableMetric: "",
 };
 
 export function readScatterView(params: URLSearchParams): ScatterView {
   return {
     x: metricId(params.get("x"), DEFAULT_VIEW.x),
     y: metricId(params.get("y"), DEFAULT_VIEW.y),
-    size: metricId(params.get("size"), DEFAULT_VIEW.size),
+    size:
+      params.get("size") === NO_SIZE
+        ? NO_SIZE
+        : metricId(params.get("size"), DEFAULT_VIEW.size),
     logX: flag(params.get("logx")),
     logY: flag(params.get("logy")),
-    colourBy: params.get("colour") === "position" ? "position" : "club",
+    invertX: flag(params.get("invx")),
+    invertY: flag(params.get("invy")),
+    colourBy: colourBy(params.get("colour")),
+    colourMetric: metricId(params.get("cmetric"), DEFAULT_VIEW.colourMetric),
+    bins: bounded(params.get("bins"), DEFAULT_VIEW.bins, MIN_BINS, MAX_BINS),
     positions: list(params.get("pos")).filter((code) =>
       POSITIONS.includes(code),
     ),
@@ -94,6 +124,9 @@ export function readScatterView(params: URLSearchParams): ScatterView {
       .filter((code) => Number.isInteger(code) && code > 0)
       .slice(0, MAX_PINNED),
     search: (params.get("q") ?? "").slice(0, MAX_SEARCH),
+    // Empty means "whatever the y-axis is", resolved by the reader rather than
+    // frozen here, so changing the axis moves the table with it.
+    tableMetric: metricId(params.get("table"), ""),
   };
 }
 
@@ -108,7 +141,13 @@ export function writeScatterView(view: ScatterView): string {
   put("size", view.size, DEFAULT_VIEW.size);
   if (view.logX) params.set("logx", "1");
   if (view.logY) params.set("logy", "1");
+  if (view.invertX) params.set("invx", "1");
+  if (view.invertY) params.set("invy", "1");
   put("colour", view.colourBy, DEFAULT_VIEW.colourBy);
+  if (view.colourBy === "metric") {
+    put("cmetric", view.colourMetric, DEFAULT_VIEW.colourMetric);
+    put("bins", String(view.bins), String(DEFAULT_VIEW.bins));
+  }
   if (view.positions.length > 0) params.set("pos", view.positions.join(","));
   if (view.clubs.length > 0) params.set("club", view.clubs.join(","));
   put("mins", String(view.minMinutes), String(DEFAULT_VIEW.minMinutes));
@@ -124,8 +163,13 @@ export function writeScatterView(view: ScatterView): string {
     params.set("pin", view.pinned.slice(0, MAX_PINNED).join(","));
   }
   put("q", view.search, DEFAULT_VIEW.search);
+  put("table", view.tableMetric, DEFAULT_VIEW.tableMetric);
 
   return params.toString();
+}
+
+function colourBy(raw: string | null): ColourBy {
+  return raw === "position" || raw === "metric" ? raw : "club";
 }
 
 function metricId(raw: string | null, fallback: string): string {

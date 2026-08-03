@@ -130,6 +130,8 @@ class Candidate:
     club: str
     price_tenths: int
     record: float
+    # His best single match last season. What a chip is played hoping for.
+    best_match: float
     squad_number: int | None
     # What `record` is made of, so a fixture can be applied to each route.
     routes: Mapping[str, float] = field(default_factory=dict)
@@ -187,136 +189,213 @@ def _data_gaps(
     }
 
 
+# Every chip is available twice: once in the first half of the season, once in
+# the second. FPL resets the set at the halfway point, so a chip unplayed by
+# gameweek nineteen is simply lost.
+FIRST_HALF_LAST_EVENT = 19
+# What a chip is expected to be worth before it is worth planning around. Below
+# this the plan still plays it, because an unplayed chip scores nothing at all,
+# but it says so rather than presenting a thin week as a masterstroke.
+CHIP_TARGET_POINTS = 20.0
+# How far a wildcard's rebuild is credited forward. A wildcard keeps its squad,
+# so the gain persists; eight weeks is the horizon the plan itself commits to.
+WILDCARD_HORIZON = 8
+
+
+def _upside(record: Mapping[str, Any] | None) -> float:
+    """How much better a player's best week is than his ordinary one.
+
+    Zero means his ceiling is his median: nothing to gain by trebling him over
+    someone steadier. Derived from the published shape rather than assumed, and
+    returns zero where the shape was withheld for want of appearances.
+    """
+    if record is None:
+        return 0.0
+    ceiling = record.get("ceiling")
+    median = record.get("median")
+    if not isinstance(ceiling, (int, float)) or not isinstance(median, (int, float)):
+        return 0.0
+    if ceiling <= 0:
+        return 0.0
+    return max(0.0, (float(ceiling) - float(median)) / float(ceiling))
+
+
 def _chip_plan(
     gameweeks: Sequence[dict[str, Any]],
     named: Mapping[int, Candidate],
     ceiling: Mapping[int, float] | None = None,
+    peak: Mapping[tuple[int, int], float] | None = None,
+    code_of: Mapping[int, int] | None = None,
 ) -> list[dict[str, object]]:
-    """When to play each chip, from what the plan already knows.
+    """When to play all eight chips: four in each half of the season.
 
-    Each rule is the chip's own definition turned into a measurement.
+    Each rule is the chip's own definition turned into a measurement of what
+    playing it *adds*, which is not the same as what the week scores.
 
-    - **Triple Captain** trebles one player, so it wants the gameweek where a
-      single player is worth the most.
-    - **Bench Boost** scores the bench, so it wants the gameweek where the bench
-      is worth the most.
-    - **Free Hit** buys unlimited transfers for one week and takes the squad
-      back, so it wants the week where the best eleven money could buy most
-      exceeds the eleven the plan actually fields.
-    - **Wildcard** buys unlimited transfers and keeps them, so the same
-      shortfall matters but it persists: it wants the week where the gap summed
-      over the following weeks is largest.
+    - **Triple Captain** turns a double into a treble, so it adds one more
+      copy of the captain.
+    - **Bench Boost** scores the bench, so it adds exactly the bench.
+    - **Free Hit** buys one week of unlimited transfers and hands the squad
+      back, so it adds the gap between the best eleven money could buy and the
+      eleven the plan actually fields.
+    - **Wildcard** buys unlimited transfers and keeps them, so the same gap
+      counts for every week it persists rather than only the week it is played.
 
-    Blank and double gameweeks need no special case. A blank is a player worth
-    zero and a double is a player worth more, which the ceiling already sees.
+    Every chip is scored twice. Expected points are the average being aimed at;
+    the ceiling is the case the chip is actually played for. Trebling a captain
+    who returns his average is a wasted chip -- it pays when he takes a goal, a
+    clean sheet and a defensive contribution in the same afternoon, which is his
+    ceiling and not his mean. So the target is judged on the ceiling, and both
+    numbers are published rather than the flattering one.
 
-    Chip *interaction* is not solved — playing one changes what the others are
-    worth — so these are four independent answers.
+    Chip *interaction* is not solved: playing one changes what the others are
+    worth, and these are eight independent answers to eight separate questions.
     """
     if not gameweeks:
         return []
 
+    peak_by = peak or {}
+    code_for = code_of or {}
     chips: list[dict[str, object]] = []
     taken: set[int] = set()
 
-    def free(weeks: Sequence[dict[str, Any]]) -> list[dict[str, Any]]:
-        return [week for week in weeks if week["event"] not in taken]
-
-    triple = max(
-        gameweeks,
-        key=lambda week: max(week["expected"].values(), default=0.0),
-    )
-    best_code, best_points = max(triple["expected"].items(), key=lambda pair: pair[1])
-    taken.add(triple["event"])
-    chips.append(
-        {
-            "event": triple["event"],
-            "chip": "Triple Captain",
-            "note": (
-                f"{named[int(best_code)].name} is expected to score {best_points:.1f}, the most "
-                f"any single player is expected to score in any week this season"
-            ),
-        }
-    )
-
-    def bench_points(week: dict[str, Any]) -> float:
-        return float(sum(week["expected"].get(str(code), 0.0) for code in week["bench"]))
-
-    boost_candidates = free(gameweeks)
-    if boost_candidates:
-        boost = max(boost_candidates, key=bench_points)
-        taken.add(boost["event"])
-        chips.append(
-            {
-                "event": boost["event"],
-                "chip": "Bench Boost",
-                "note": (
-                    f"the bench is worth {bench_points(boost):.1f} that week, the most "
-                    f"any bench is expected to score all season"
-                ),
-            }
-        )
-
-    # How far short of the best affordable eleven the plan falls that week.
     shortfall = {
         week["event"]: max(0.0, (ceiling or {}).get(week["event"], 0.0) - week["projectedPoints"])
         for week in gameweeks
     }
 
-    best_hit = max(free(gameweeks), key=lambda week: shortfall[week["event"]], default=None)
-    if best_hit is not None and shortfall[best_hit["event"]] > 0:
-        taken.add(best_hit["event"])
-        chips.append(
-            {
-                "event": best_hit["event"],
-                "chip": "Free Hit",
-                "note": (
-                    f"unlimited transfers would add "
-                    f"{shortfall[best_hit['event']]:.1f} that week, the season's "
-                    f"largest one-week gain"
-                ),
-            }
-        )
-    else:
-        chips.append(
-            {
-                "event": None,
-                "chip": "Free Hit",
-                "note": "no week where a freely bought eleven beats the planned one",
-            }
+    def free(weeks: Sequence[dict[str, Any]]) -> list[dict[str, Any]]:
+        return [week for week in weeks if week["event"] not in taken]
+
+    def verdict(best: float) -> str:
+        return (
+            f"clears the {CHIP_TARGET_POINTS:.0f} points a chip wants to return"
+            if best >= CHIP_TARGET_POINTS
+            else (
+                f"under the {CHIP_TARGET_POINTS:.0f} points that makes a chip worth "
+                f"building around, but an unplayed chip expires at nothing"
+            )
         )
 
-    # A wildcard keeps its squad, so the same shortfall counts for every week it
-    # would have persisted rather than only the week it is played.
-    def persisting(index: int) -> float:
-        return float(sum(shortfall[each["event"]] for each in gameweeks[index : index + 8]))
+    def peak_of(event: int, element_id: int) -> float:
+        return float(peak_by.get((event, element_id), 0.0))
 
-    ranked = sorted(
-        ((persisting(index), week) for index, week in enumerate(gameweeks)),
-        key=lambda pair: -pair[0],
+    def bench_points(week: dict[str, Any]) -> tuple[float, float]:
+        mean = sum(week["expected"].get(str(code), 0.0) for code in week["bench"])
+        best = sum(peak_of(week["event"], element) for element in week["benchElementIds"])
+        return float(mean), float(best)
+
+    def treble(week: dict[str, Any]) -> tuple[float, float, int]:
+        """The best player to treble that week, at his mean and at his best."""
+        candidates = [
+            (
+                peak_of(week["event"], element),
+                week["expected"].get(str(code_for.get(element, 0)), 0.0),
+                element,
+            )
+            for element in week["squadElementIds"]
+        ]
+        if not candidates:
+            return 0.0, 0.0, 0
+        best, mean, element = max(candidates, key=lambda entry: entry[0])
+        return float(mean), float(best), element
+
+    index_of = {week["event"]: index for index, week in enumerate(gameweeks)}
+
+    def persisting(week: dict[str, Any]) -> float:
+        start = index_of[week["event"]]
+        return float(
+            sum(shortfall[each["event"]] for each in gameweeks[start : start + WILDCARD_HORIZON])
+        )
+
+    halves = (
+        ("first", [week for week in gameweeks if week["event"] <= FIRST_HALF_LAST_EVENT]),
+        ("second", [week for week in gameweeks if week["event"] > FIRST_HALF_LAST_EVENT]),
     )
-    for gain, week in ranked:
-        if week["event"] in taken or gain <= 0:
+
+    for half, weeks in halves:
+        if not weeks:
             continue
-        chips.append(
-            {
-                "event": week["event"],
-                "chip": "Wildcard",
-                "note": (
-                    f"the plan falls {gain:.1f} short of the best affordable squad "
-                    f"across the next eight gameweeks"
-                ),
-            }
-        )
-        break
-    else:
-        chips.append(
-            {
-                "event": None,
-                "chip": "Wildcard",
-                "note": "the plan never falls far enough behind to be worth rebuilding",
-            }
-        )
+
+        candidates = free(weeks)
+        if candidates:
+            chosen = max(candidates, key=lambda week: treble(week)[1])
+            mean, best, element = treble(chosen)
+            taken.add(chosen["event"])
+            code = code_for.get(element, 0)
+            name = named[code].name if code in named else "the captain"
+            chips.append(
+                {
+                    "event": chosen["event"],
+                    "chip": "Triple Captain",
+                    "half": half,
+                    "gain": round(mean, 2),
+                    "ceiling": round(best, 2),
+                    "note": (
+                        f"a third copy of {name}: {mean:.1f} if he returns his average, "
+                        f"{best:.1f} on the sort of afternoon the chip is played for, which "
+                        f"{verdict(best)}"
+                    ),
+                }
+            )
+
+        candidates = free(weeks)
+        if candidates:
+            chosen = max(candidates, key=lambda week: bench_points(week)[1])
+            mean, best = bench_points(chosen)
+            taken.add(chosen["event"])
+            chips.append(
+                {
+                    "event": chosen["event"],
+                    "chip": "Bench Boost",
+                    "half": half,
+                    "gain": round(mean, 2),
+                    "ceiling": round(best, 2),
+                    "note": (
+                        f"the bench averages {mean:.1f} and reaches {best:.1f} if all four "
+                        f"have the sort of week they are capable of, the best bench of the "
+                        f"{half} half, which {verdict(best)}"
+                    ),
+                }
+            )
+
+        candidates = free(weeks)
+        if candidates:
+            chosen = max(candidates, key=lambda week: shortfall[week["event"]])
+            gain = shortfall[chosen["event"]]
+            taken.add(chosen["event"])
+            chips.append(
+                {
+                    "event": chosen["event"],
+                    "chip": "Free Hit",
+                    "half": half,
+                    "gain": round(gain, 2),
+                    "ceiling": round(gain, 2),
+                    "note": (
+                        f"one week of unlimited transfers adds {gain:.1f}, the largest "
+                        f"one-week gap in the {half} half, which {verdict(gain)}"
+                    ),
+                }
+            )
+
+        candidates = free(weeks)
+        if candidates:
+            chosen = max(candidates, key=persisting)
+            gain = persisting(chosen)
+            taken.add(chosen["event"])
+            chips.append(
+                {
+                    "event": chosen["event"],
+                    "chip": "Wildcard",
+                    "half": half,
+                    "gain": round(gain, 2),
+                    "ceiling": round(gain, 2),
+                    "note": (
+                        f"rebuilding here recovers {gain:.1f} across the following "
+                        f"{WILDCARD_HORIZON} gameweeks, which {verdict(gain)}"
+                    ),
+                }
+            )
 
     return sorted(chips, key=lambda chip: (chip["event"] is None, chip["event"] or 0))
 
@@ -387,6 +466,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                 club=str(clubs[element.team]["short_name"]),
                 price_tenths=element.now_cost,
                 record=float(record["expectedPoints"]),
+                best_match=float(record.get("ceiling") or record["expectedPoints"]),
                 routes=record.get("routes", {}),
                 squad_number=element.squad_number,
             )
@@ -437,6 +517,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     # (event, element id) -> points, so a card can show what the shirt is worth
     # that week rather than only the squad total.
     expected_by: dict[tuple[int, int], float] = {}
+    # The same week priced at each player's best match rather than his average.
+    # A chip is played for the upside, so this is what it is judged on.
+    ceiling_by: dict[tuple[int, int], float] = {}
     now = datetime.now(UTC)
     for event in ordered_events:
         weights: list[float] = []
@@ -446,10 +529,10 @@ def main(argv: Sequence[str] | None = None) -> int:
                 # A blank gameweek is zero, not an average week. Nothing is a
                 # more honest projection for a player who is not playing.
                 expected = 0.0
+                peak = 0.0
             else:
-                expected = sum(
-                    candidate.record
-                    * _opponent_multiplier(
+                multiplier = sum(
+                    _opponent_multiplier(
                         candidate=candidate,
                         opponent=opponent,
                         home=home,
@@ -457,7 +540,10 @@ def main(argv: Sequence[str] | None = None) -> int:
                     )
                     for opponent, home in games
                 )
+                expected = candidate.record * multiplier
+                peak = candidate.best_match * multiplier
             expected_by[(event, candidate.element_id)] = round(expected, 2)
+            ceiling_by[(event, candidate.element_id)] = round(peak, 2)
             forecasts.append(
                 HorizonPlayerForecast(
                     season=season,
@@ -586,6 +672,10 @@ def main(argv: Sequence[str] | None = None) -> int:
                 "transfersOut": [ref(pid) for pid in event_plan.transfers_out],
                 "opponents": opponents,
                 "difficulty": week_difficulty,
+                # Element ids alongside the published codes, so the chip planner
+                # can price a week without re-deriving the mapping.
+                "squadElementIds": sorted(squad),
+                "benchElementIds": list(event_plan.bench_element_ids),
                 "expected": {
                     str(detail[element_id].code): expected_by[(planned.event, element_id)]
                     for element_id in squad
@@ -601,6 +691,10 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     # The best eleven the whole budget could buy that week, ignoring transfers.
     # A chip is only worth playing to the extent the plan falls short of it.
+    #
+    # Drawn from every candidate rather than the trimmed planning pool: a Free
+    # Hit can buy anyone in the game for a week, so measuring it against the
+    # eighty-five players the plan already shops from said it was worth nothing.
     ceiling: dict[int, float] = {}
     candidate_for = {
         candidate.element_id: SquadCandidate(
@@ -611,11 +705,21 @@ def main(argv: Sequence[str] | None = None) -> int:
             price_tenths=candidate.price_tenths,
             web_name=candidate.name,
         )
-        for candidate in pool
+        for candidate in candidates
     }
     for event in ordered_events:
         points = {
-            candidate.element_id: expected_by[(event, candidate.element_id)] for candidate in pool
+            candidate.element_id: sum(
+                candidate.record
+                * _opponent_multiplier(
+                    candidate=candidate,
+                    opponent=opponent,
+                    home=home,
+                    strength=strength,
+                )
+                for opponent, home in schedule.get((event, candidate.team_id), ())
+            )
+            for candidate in candidates
         }
         try:
             free_squad = choose_opening_squad(
@@ -633,7 +737,13 @@ def main(argv: Sequence[str] | None = None) -> int:
         starting = [points[player.element_id] for player in free_squad.starters]
         ceiling[event] = sum(starting) + max(starting, default=0.0)
 
-    chips = _chip_plan(gameweeks, named, ceiling)
+    chips = _chip_plan(
+        gameweeks,
+        named,
+        ceiling,
+        ceiling_by,
+        {candidate.element_id: candidate.code for candidate in pool},
+    )
 
     payload = {
         "schemaVersion": SCHEMA_VERSION,

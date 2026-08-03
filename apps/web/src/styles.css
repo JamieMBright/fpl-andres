@@ -294,10 +294,30 @@ a {
   display: grid;
 }
 
+/* Teletext set the page title in double-height letters, each word a different
+   colour on a black cell. That is the whole look, and it costs one font. */
 .brand strong {
+  display: flex;
+  gap: 4px;
+  align-items: stretch;
   font-family: var(--fa-display);
-  font-size: 22px;
+  font-size: 26px;
   line-height: 1;
+  letter-spacing: 0.04em;
+}
+
+.brand-fpl,
+.brand-andres {
+  padding: 4px 7px 5px;
+  background: #000;
+}
+
+.brand-fpl {
+  color: #ff0;
+}
+
+.brand-andres {
+  color: #0ff;
 }
 
 .visually-hidden {
@@ -329,6 +349,59 @@ a {
   display: flex;
   flex-wrap: wrap;
   gap: clamp(18px, 3vw, 34px);
+}
+
+/* The navigation is the coloured strip now: one teletext cell per destination,
+   in the order they run across a Ceefax index page. */
+.site-header nav.ceefax-nav {
+  gap: 3px;
+}
+
+.ceefax-nav a {
+  padding: 5px 10px 6px;
+  background: #000;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+.ceefax-nav a:nth-child(1) {
+  color: #0f0;
+}
+
+.ceefax-nav a:nth-child(2) {
+  color: #ff0;
+}
+
+.ceefax-nav a:nth-child(3) {
+  color: #0ff;
+}
+
+.ceefax-nav a:nth-child(4) {
+  color: #f0f;
+}
+
+.ceefax-nav a:nth-child(5) {
+  color: #fff;
+}
+
+.ceefax-nav a:hover,
+.ceefax-nav a[aria-current="page"] {
+  color: #000;
+  background: currentcolor;
+  text-decoration: none;
+}
+
+.ceefax-nav a:hover {
+  filter: invert(1);
+}
+
+.ceefax-nav a:focus-visible {
+  outline: 3px solid var(--signal-blue);
+  outline-offset: 2px;
 }
 
 .site-header nav a,
@@ -1591,6 +1664,79 @@ a:focus-visible {
 
 .plan-money li {
   margin-bottom: 2px;
+}
+
+.plan-chips {
+  max-width: 78ch;
+  margin: 26px 0 0;
+  border-top: 3px solid var(--rule);
+  padding-top: 16px;
+}
+
+.plan-chips h2 {
+  margin: 0 0 8px;
+  font-size: 18px;
+}
+
+.plan-chips > p {
+  margin: 0 0 14px;
+  color: var(--ink-soft);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.plan-chip-half h3 {
+  margin: 0 0 6px;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.plan-chip-half ul {
+  padding: 0;
+  margin: 0 0 16px;
+  list-style: none;
+  border-top: 1px solid var(--rule);
+}
+
+.plan-chip-half li {
+  display: grid;
+  grid-template-columns: 46px 96px 46px minmax(0, 1fr);
+  gap: 10px;
+  align-items: baseline;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--rule);
+  font-size: 12px;
+}
+
+.plan-chip-name {
+  font-weight: 700;
+}
+
+.plan-chip-gain {
+  color: var(--ink-soft);
+  text-align: right;
+}
+
+/* Cleared the bar a chip is expected to return. */
+.plan-chip-hit {
+  color: var(--field-green);
+  font-weight: 700;
+}
+
+.plan-chip-note {
+  color: var(--ink-soft);
+  line-height: 1.45;
+}
+
+@media (width <= 640px) {
+  .plan-chip-half li {
+    grid-template-columns: 46px 1fr 46px;
+  }
+
+  .plan-chip-note {
+    grid-column: 1 / -1;
+  }
 }
 
 .plan-caveats {
@@ -3037,6 +3183,11 @@ a:focus-visible {
   font-size: 13px;
 }
 
+.player-detail-kit {
+  display: flex;
+  flex: 0 0 auto;
+}
+
 .player-detail-shirt {
   flex: 0 0 auto;
   width: 56px;
@@ -3319,14 +3470,26 @@ a:focus-visible {
   fill-opacity: 0.08;
 }
 
+/* A heavy green ring. Amber at 2.5 was lost among the club colours, and this
+   is the one flag on the chart that says "look here". */
 .scatter-mark-overlooked {
-  stroke: var(--amber);
-  stroke-width: 2.5;
+  stroke: #00c853 !important;
+  stroke-width: 4 !important;
+  paint-order: stroke;
 }
 
 .scatter-mark-pinned {
   stroke: var(--ink);
   stroke-width: 3;
+}
+
+/* Where both axes are at their good end, from each metric's own direction. */
+.scatter-sweet-spot {
+  fill: #00c85312;
+  stroke: #00c853;
+  stroke-width: 2;
+  stroke-dasharray: 7 5;
+  pointer-events: none;
 }
 
 .scatter-axis text {

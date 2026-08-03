@@ -17,6 +17,7 @@ What each limit costs you, so a missing feature can be told from a bug.
 | Historical manager state    | No past bank or chip state, so a replayed season cannot honour real budgets.                                                |
 | Injuries                    | Availability comes from FPL's own flags. No scraped team news.                                                              |
 | Prices                      | No live price-change prediction. Ownership history only from the archive.                                                   |
+| Squad numbers               | FPL publishes the field and leaves it empty for all 567 players, so every shirt is blank.                                   |
 | Season start and cold start | Promoted-club debutants are `unavailable`, not estimated.                                                                   |
 | Rivals and consensus        | Individual rival picks are post-deadline only. Aggregate ownership is legal earlier.                                        |
 | Planning horizon            | Seven gameweeks by default. Longer works but no surface asks for it.                                                        |
@@ -115,6 +116,14 @@ injury lists.
 FPL does not publish the exact price-change mechanism. Outputs are calibrated movement
 probabilities backed by timestamped transfer and price observations. Exact thresholds,
 reset rules and protection claims are excluded.
+
+## Squad numbers
+
+FPL's bootstrap carries a `squad_number` field on every element and leaves it null.
+Measured 2026-08-03: 0 of 567 players have one. The field is read and published where
+it exists, so a shirt prints the number the day FPL starts filling it in; until then
+every shirt is blank. No other approved source publishes squad numbers, and putting a
+number on a shirt that the source does not give would be inventing one.
 
 ## Season start and cold start
 
