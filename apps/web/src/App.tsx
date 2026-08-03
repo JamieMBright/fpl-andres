@@ -22,6 +22,7 @@ const MethodPage = lazy(() => import("./pages/MethodPage"));
 const PlayerPoolPage = lazy(() => import("./pages/PlayerPoolPage"));
 const CalibrationPage = lazy(() => import("./pages/CalibrationPage"));
 const SeasonPlanPage = lazy(() => import("./pages/SeasonPlanPage"));
+const KitPreviewPage = lazy(() => import("./pages/KitPreviewPage"));
 
 export const routes: RouteObject[] = [
   {
@@ -51,6 +52,14 @@ export const routes: RouteObject[] = [
         element: (
           <LazyRoute>
             <MethodPage />
+          </LazyRoute>
+        ),
+      },
+      {
+        path: "kits",
+        element: (
+          <LazyRoute>
+            <KitPreviewPage />
           </LazyRoute>
         ),
       },

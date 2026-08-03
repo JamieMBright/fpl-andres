@@ -1,8 +1,10 @@
 import { ArrowRight, ChevronDown } from "lucide-react";
 import { useMemo, useState } from "react";
 
+import { CeefaxShirt } from "../components/CeefaxShirt";
 import { RouteHeading } from "../components/RouteHeading";
 import { deadlineDay, money } from "../format";
+import { kitForShortName } from "../kit/team-kits";
 import {
   CONFIDENCE_NOTE,
   readSeasonPlan,
@@ -11,6 +13,19 @@ import {
   type PlanPlayer,
 } from "../state/season-plan";
 import { useDocumentTitle } from "../state/use-document-title";
+
+/**
+ * The club shirt. Silent to assistive technology because the short name is
+ * printed beside it, and three pairs of clubs render identically anyway.
+ */
+function Shirt({ club }: { club: string }) {
+  const kit = kitForShortName(club);
+  return kit ? (
+    <CeefaxShirt className="plan-shirt" kit={kit} label={null} />
+  ) : (
+    <span className="plan-shirt" aria-hidden="true" />
+  );
+}
 
 function TeamSheet({ week }: { week: PlanGameweek }) {
   const role = (player: PlanPlayer) => {
@@ -24,7 +39,7 @@ function TeamSheet({ week }: { week: PlanGameweek }) {
       <ol className="plan-eleven">
         {week.starters.map((player) => (
           <li key={player.code}>
-            <span className="plan-pos mono">{player.position}</span>
+            <Shirt club={player.club} />
             <span className="plan-name">{player.name}</span>
             <span className="plan-club mono">{player.club}</span>
             {role(player) ? (
@@ -38,9 +53,9 @@ function TeamSheet({ week }: { week: PlanGameweek }) {
         ))}
       </ol>
       <ol className="plan-bench" aria-label="Bench in order">
-        {week.bench.map((player, index) => (
+        {week.bench.map((player) => (
           <li key={player.code}>
-            <span className="plan-pos mono">{index + 1}</span>
+            <Shirt club={player.club} />
             <span className="plan-name">{player.name}</span>
             <span className="plan-club mono">{player.club}</span>
           </li>
@@ -66,8 +81,10 @@ function Move({ week }: { week: PlanGameweek }) {
         const outgoing = week.transfersOut[index];
         return (
           <li key={incoming.code}>
-            <span className="plan-out">{outgoing?.name ?? "—"}</span>
+            {outgoing ? <Shirt club={outgoing.club} /> : null}
+            <span className="plan-out">{outgoing?.name ?? "\u2014"}</span>
             <ArrowRight aria-label="replaced by" size={15} />
+            <Shirt club={incoming.club} />
             <span className="plan-in">{incoming.name}</span>
           </li>
         );

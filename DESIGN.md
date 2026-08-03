@@ -271,7 +271,7 @@ Every remote surface implements idle, loading, ready, stale, degraded and error.
 
 ## Component inventory
 
-Audit item #202. Nineteen components in `apps/web/src/components`. The column
+Audit item #202. Twenty-one components in `apps/web/src/components`. The column
 that matters is the last one: what a browser journey already proves about each,
 so a review knows what it does not have to check by hand.
 
@@ -286,6 +286,8 @@ so a review knows what it does not have to check by hand.
 | `AnalysisResult`       | Dispatches on the seven analysis states          | `failure-states`                        |
 | `SnapshotDossier`      | The verified squad, evidence and provenance      | `team-entry`                            |
 | `PitchView`            | Formation, chips, captaincy                      | `feature-walk`, unit render cost        |
+| `CeefaxShirt`          | Club kit as a teletext block graphic             | `contrast` (`/kits`), unit (palette)    |
+| `PlayerAvatar`         | Lazy headshot, silhouette when there is none     | `contrast` (`/kits`)                    |
 | `SquadRecord`          | Per-player projection table                      | `feature-walk`                          |
 | `ManagerHistory`       | Past seasons, including the empty case           | `team-entry`, unit                      |
 | `TeamStateCorrections` | Manager overrides, parsing and conflict          | unit (`parse.test.ts`)                  |

@@ -1421,11 +1421,22 @@ a:focus-visible {
 .plan-eleven li,
 .plan-bench li {
   display: grid;
-  grid-template-columns: 26px 1fr auto auto;
+  grid-template-columns: 16px 1fr auto auto;
   gap: 6px;
-  align-items: baseline;
+  align-items: center;
   font-size: 12px;
   line-height: 1.7;
+}
+
+.plan-shirt {
+  width: 16px;
+  height: 18px;
+  shape-rendering: crispEdges;
+}
+
+.plan-move .plan-shirt {
+  width: 14px;
+  height: 16px;
 }
 
 .plan-pos {
@@ -1507,6 +1518,93 @@ a:focus-visible {
   margin: 18px 0 0;
   color: var(--ink-soft);
   font-size: 11px;
+}
+
+/* ---- Kit preview (QA) --------------------------------------------------- */
+
+.kit-preview {
+  padding: clamp(34px, 5vw, 62px) 0 clamp(40px, 6vw, 70px);
+}
+
+.kit-toggle {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  min-height: 44px;
+  font-size: 13px;
+}
+
+.kit-grid,
+.kit-faces {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+  gap: 16px;
+  margin: 18px 0 34px;
+  padding: 0;
+  list-style: none;
+}
+
+.kit-grid li,
+.kit-faces li {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: center;
+  border: 1px solid var(--rule);
+  padding: 12px 6px;
+  text-align: center;
+}
+
+.kit-large {
+  width: 56px;
+  height: 64px;
+  shape-rendering: crispEdges;
+}
+
+.kit-name {
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.kit-pattern {
+  color: var(--ink-soft);
+  font-size: 10px;
+}
+
+.kit-clash {
+  border: 1px solid var(--amber);
+  padding: 0 4px;
+  color: var(--amber);
+  font-size: 10px;
+}
+
+.kit-faces {
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+}
+
+.ceefax-shirt-number {
+  font-family: var(--fa-body);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.player-avatar img,
+.player-avatar-fallback {
+  display: block;
+  width: 88px;
+  height: 112px;
+}
+
+.player-avatar-fallback {
+  shape-rendering: crispEdges;
+  fill: var(--ink-soft);
+}
+
+.player-avatar-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--paper-deep);
 }
 
 .opening-squad {
