@@ -87,6 +87,7 @@ export function ApplicationFrame() {
         </Link>
         <div className="header-controls">
           <nav aria-label="Primary navigation">
+            <Link to="/plan">Plan</Link>
             <Link to="/players">Players</Link>
             <Link to="/methodology">Method</Link>
             <Link to="/calibration">Calibration</Link>

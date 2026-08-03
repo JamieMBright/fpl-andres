@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 import { deadline as deadlineFormatter } from "../format";
 
 const HORIZONS = [1, 3, 5, 7] as const;
@@ -28,6 +30,12 @@ export function TransferPlanPanel({
         I will not show you a transfer plan built on nothing. No gameweek of the
         2026/27 season has been played, so every player&rsquo;s form is unknown
         and any ranking I produced today would be invented.
+      </p>
+      <p>
+        What I can do without your squad is plan the season from the opening one
+        everybody starts with: <Link to="/plan">gameweek 1 to 38</Link>, every
+        eleven, captain and transfer, with the confidence falling away the
+        further out it reaches.
       </p>
       {formatted ? (
         <p className="mono plan-deadline">First deadline: {formatted} UTC</p>

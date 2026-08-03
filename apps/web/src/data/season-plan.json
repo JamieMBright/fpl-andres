@@ -1,0 +1,967 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-08-03T07:23:57.236420Z",
+  "season": "2026-27",
+  "recordSeason": "2025-26",
+  "basis": "opening squad, fixture-adjusted projections, solved in overlapping windows and committed 38 gameweeks deep",
+  "rulesReference": "FPL rules page, Transfers section, read 2026-08-03",
+  "weeklyFreeTransfers": 1,
+  "maximumFreeTransfers": 5,
+  "transferCostPoints": 4,
+  "firstEvent": 1,
+  "lastEvent": 38,
+  "windowsSolved": 12,
+  "poolSize": 71,
+  "netExpectedPoints": 2012.25,
+  "chipWindows": [17, 25],
+  "players": {
+    "17761": {
+      "name": "Tarkowski",
+      "position": "DEF",
+      "club": "EVE",
+      "priceTenths": 60
+    },
+    "60307": {
+      "name": "Gro\u00df",
+      "position": "MID",
+      "club": "BHA",
+      "priceTenths": 55
+    },
+    "85633": {
+      "name": "Sels",
+      "position": "GKP",
+      "club": "NFO",
+      "priceTenths": 50
+    },
+    "97032": {
+      "name": "Virgil",
+      "position": "DEF",
+      "club": "LIV",
+      "priceTenths": 65
+    },
+    "111234": {
+      "name": "Pickford",
+      "position": "GKP",
+      "club": "EVE",
+      "priceTenths": 55
+    },
+    "141746": {
+      "name": "B.Fernandes",
+      "position": "MID",
+      "club": "MUN",
+      "priceTenths": 120
+    },
+    "154561": {
+      "name": "Raya",
+      "position": "GKP",
+      "club": "ARS",
+      "priceTenths": 60
+    },
+    "172649": {
+      "name": "Henderson",
+      "position": "GKP",
+      "club": "CRY",
+      "priceTenths": 50
+    },
+    "177815": {
+      "name": "Calvert-Lewin",
+      "position": "FWD",
+      "club": "LEE",
+      "priceTenths": 60
+    },
+    "178301": {
+      "name": "Watkins",
+      "position": "FWD",
+      "club": "AVL",
+      "priceTenths": 80
+    },
+    "200720": {
+      "name": "Kelleher",
+      "position": "GKP",
+      "club": "BRE",
+      "priceTenths": 50
+    },
+    "201658": {
+      "name": "Tavernier",
+      "position": "MID",
+      "club": "BOU",
+      "priceTenths": 60
+    },
+    "209036": {
+      "name": "Gu\u00e9hi",
+      "position": "DEF",
+      "club": "MCI",
+      "priceTenths": 60
+    },
+    "215379": {
+      "name": "Anderson",
+      "position": "MID",
+      "club": "MCI",
+      "priceTenths": 65
+    },
+    "220362": {
+      "name": "Disasi",
+      "position": "DEF",
+      "club": "CHE",
+      "priceTenths": 45
+    },
+    "221466": {
+      "name": "Senesi",
+      "position": "DEF",
+      "club": "TOT",
+      "priceTenths": 60
+    },
+    "226597": {
+      "name": "Gabriel",
+      "position": "DEF",
+      "club": "ARS",
+      "priceTenths": 80
+    },
+    "243298": {
+      "name": "Gakpo",
+      "position": "MID",
+      "club": "LIV",
+      "priceTenths": 70
+    },
+    "424876": {
+      "name": "Szoboszlai",
+      "position": "MID",
+      "club": "LIV",
+      "priceTenths": 70
+    },
+    "446008": {
+      "name": "Mbeumo",
+      "position": "MID",
+      "club": "MUN",
+      "priceTenths": 80
+    },
+    "448047": {
+      "name": "Enzo",
+      "position": "MID",
+      "club": "CHE",
+      "priceTenths": 70
+    },
+    "463981": {
+      "name": "Hill",
+      "position": "DEF",
+      "club": "BOU",
+      "priceTenths": 55
+    },
+    "465247": {
+      "name": "Lammens",
+      "position": "GKP",
+      "club": "MUN",
+      "priceTenths": 50
+    },
+    "465642": {
+      "name": "Thiaw",
+      "position": "DEF",
+      "club": "NEW",
+      "priceTenths": 50
+    },
+    "469142": {
+      "name": "Van Hecke",
+      "position": "DEF",
+      "club": "TOT",
+      "priceTenths": 50
+    },
+    "484420": {
+      "name": "E.Le F\u00e9e",
+      "position": "MID",
+      "club": "SUN",
+      "priceTenths": 60
+    },
+    "486385": {
+      "name": "Beto",
+      "position": "FWD",
+      "club": "EVE",
+      "priceTenths": 55
+    },
+    "489639": {
+      "name": "Verbruggen",
+      "position": "GKP",
+      "club": "BHA",
+      "priceTenths": 45
+    },
+    "494521": {
+      "name": "Truffert",
+      "position": "DEF",
+      "club": "BOU",
+      "priceTenths": 55
+    },
+    "502500": {
+      "name": "Thiago",
+      "position": "FWD",
+      "club": "BRE",
+      "priceTenths": 80
+    },
+    "533463": {
+      "name": "O.Dango",
+      "position": "MID",
+      "club": "BRE",
+      "priceTenths": 65
+    }
+  },
+  "gameweeks": [
+    {
+      "event": 1,
+      "deadline": "2026-08-21T17:30:00Z",
+      "confidence": "firm",
+      "starters": [
+        226597, 463981, 494521, 200720, 502500, 177815, 243298, 424876, 141746,
+        215379, 221466
+      ],
+      "bench": [17761, 154561, 201658, 486385],
+      "captain": 141746,
+      "viceCaptain": 494521,
+      "transfersIn": [],
+      "transfersOut": [],
+      "freeTransfersBefore": 1,
+      "paidTransfers": 0,
+      "transferCostPoints": 0,
+      "projectedPoints": 54.99,
+      "netExpectedPoints": 54.99,
+      "bankAfterTenths": 0
+    },
+    {
+      "event": 2,
+      "deadline": "2026-08-28T17:30:00Z",
+      "confidence": "projected",
+      "starters": [
+        154561, 226597, 494521, 502500, 60307, 17761, 177815, 424876, 141746,
+        215379, 221466
+      ],
+      "bench": [463981, 200720, 201658, 486385],
+      "captain": 226597,
+      "viceCaptain": 141746,
+      "transfersIn": [60307],
+      "transfersOut": [243298],
+      "freeTransfersBefore": 2,
+      "paidTransfers": 0,
+      "transferCostPoints": 0,
+      "projectedPoints": 50.29,
+      "netExpectedPoints": 50.29,
+      "bankAfterTenths": 15
+    },
+    {
+      "event": 3,
+      "deadline": "2026-09-04T17:30:00Z",
+      "confidence": "projected",
+      "starters": [
+        154561, 226597, 463981, 494521, 201658, 502500, 60307, 220362, 17761,
+        141746, 215379
+      ],
+      "bench": [424876, 177815, 200720, 486385],
+      "captain": 226597,
+      "viceCaptain": 141746,
+      "transfersIn": [220362],
+      "transfersOut": [221466],
+      "freeTransfersBefore": 2,
+      "paidTransfers": 0,
+      "transferCostPoints": 0,
+      "projectedPoints": 57.28,
+      "netExpectedPoints": 57.28,
+      "bankAfterTenths": 30
+    },
+    {
+      "event": 4,
+      "deadline": "2026-09-12T12:30:00Z",
+      "confidence": "projected",
+      "starters": [
+        226597, 494521, 201658, 502500, 60307, 220362, 424876, 465247, 141746,
+        215379, 221466
+      ],
+      "bench": [177815, 200720, 17761, 486385],
+      "captain": 226597,
+      "viceCaptain": 141746,
+      "transfersIn": [465247, 221466],
+      "transfersOut": [154561, 463981],
+      "freeTransfersBefore": 2,
+      "paidTransfers": 0,
+      "transferCostPoints": 0,
+      "projectedPoints": 48.18,
+      "netExpectedPoints": 48.18,
+      "bankAfterTenths": 35
+    },
+    {
+      "event": 5,
+      "deadline": "2026-09-18T17:30:00Z",
+      "confidence": "projected",
+      "starters": [
+        226597, 178301, 494521, 201658, 200720, 502500, 220362, 17761, 141746,
+        215379, 221466
+      ],
+      "bench": [424876, 465247, 60307, 486385],
+      "captain": 226597,
+      "viceCaptain": 141746,
+      "transfersIn": [178301],
+      "transfersOut": [177815],
+      "freeTransfersBefore": 1,
+      "paidTransfers": 0,
+      "transferCostPoints": 0,
+      "projectedPoints": 52.76,
+      "netExpectedPoints": 52.76,
+      "bankAfterTenths": 15
+    },
+    {
+      "event": 6,
+      "deadline": "2026-10-10T12:30:00Z",
+      "confidence": "projected",
+      "starters": [
+        226597, 178301, 201658, 200720, 502500, 220362, 448047, 17761, 141746,
+        215379, 221466
+      ],
+      "bench": [494521, 60307, 465247, 486385],
+      "captain": 221466,
+      "viceCaptain": 141746,
+      "transfersIn": [448047],
+      "transfersOut": [424876],
+      "freeTransfersBefore": 1,
+      "paidTransfers": 0,
+      "transferCostPoints": 0,
+      "projectedPoints": 52.0,
+      "netExpectedPoints": 52.0,
+      "bankAfterTenths": 15
+    },
+    {
+      "event": 7,
+      "deadline": "2026-10-17T12:30:00Z",
+      "confidence": "projected",
+      "starters": [
+        226597, 178301, 201658, 502500, 60307, 448047, 111234, 17761, 141746,
+        215379, 221466
+      ],
+      "bench": [200720, 220362, 494521, 486385],
+      "captain": 17761,
+      "viceCaptain": 141746,
+      "transfersIn": [111234],
+      "transfersOut": [465247],
+      "freeTransfersBefore": 1,
+      "paidTransfers": 0,
+      "transferCostPoints": 0,
+      "projectedPoints": 52.16,
+      "netExpectedPoints": 52.16,
+      "bankAfterTenths": 10
+    },
+    {
+      "event": 8,
+      "deadline": "2026-10-24T12:30:00Z",
+      "confidence": "projected",
+      "starters": [
+        226597, 494521, 201658, 502500, 220362, 448047, 111234, 17761, 141746,
+        215379, 221466
+      ],
+      "bench": [489639, 60307, 178301, 486385],
+      "captain": 141746,
+      "viceCaptain": 17761,
+      "transfersIn": [489639],
+      "transfersOut": [200720],
+      "freeTransfersBefore": 1,
+      "paidTransfers": 0,
+      "transferCostPoints": 0,
+      "projectedPoints": 53.72,
+      "netExpectedPoints": 53.72,
+      "bankAfterTenths": 15
+    },
+    {
+      "event": 9,
+      "deadline": "2026-10-31T13:30:00Z",
+      "confidence": "provisional",
+      "starters": [
+        226597, 178301, 201658, 502500, 489639, 220362, 17761, 97032, 141746,
+        215379, 221466
+      ],
+      "bench": [111234, 448047, 486385, 60307],
+      "captain": 226597,
+      "viceCaptain": 141746,
+      "transfersIn": [97032],
+      "transfersOut": [494521],
+      "freeTransfersBefore": 1,
+      "paidTransfers": 0,
+      "transferCostPoints": 0,
+      "projectedPoints": 54.72,
+      "netExpectedPoints": 54.72,
+      "bankAfterTenths": 5
+    },
+    {
+      "event": 10,
+      "deadline": "2026-11-07T13:30:00Z",
+      "confidence": "provisional",
+      "starters": [
+        226597, 178301, 201658, 502500, 60307, 111234, 17761, 177815, 141746,
+        215379, 221466
+      ],
+      "bench": [448047, 220362, 489639, 97032],
+      "captain": 226597,
+      "viceCaptain": 141746,
+      "transfersIn": [177815],
+      "transfersOut": [486385],
+      "freeTransfersBefore": 1,
+      "paidTransfers": 0,
+      "transferCostPoints": 0,
+      "projectedPoints": 49.75,
+      "netExpectedPoints": 49.75,
+      "bankAfterTenths": 0
+    },
+    {
+      "event": 11,
+      "deadline": "2026-11-21T13:30:00Z",
+      "confidence": "provisional",
+      "starters": [
+        226597, 178301, 502500, 448047, 111234, 17761, 177815, 97032, 141746,
+        215379, 221466
+      ],
+      "bench": [60307, 201658, 220362, 489639],
+      "captain": 226597,
+      "viceCaptain": 141746,
+      "transfersIn": [],
+      "transfersOut": [],
+      "freeTransfersBefore": 1,
+      "paidTransfers": 0,
+      "transferCostPoints": 0,
+      "projectedPoints": 53.49,
+      "netExpectedPoints": 53.49,
+      "bankAfterTenths": 0
+    },
+    {
+      "event": 12,
+      "deadline": "2026-11-28T13:30:00Z",
+      "confidence": "provisional",
+      "starters": [
+        226597, 178301, 201658, 200720, 502500, 448047, 17761, 177815, 209036,
+        141746, 221466
+      ],
+      "bench": [60307, 220362, 215379, 489639],
+      "captain": 226597,
+      "viceCaptain": 141746,
+      "transfersIn": [200720, 209036],
+      "transfersOut": [111234, 97032],
+      "freeTransfersBefore": 2,
+      "paidTransfers": 0,
+      "transferCostPoints": 0,
+      "projectedPoints": 55.05,
+      "netExpectedPoints": 55.05,
+      "bankAfterTenths": 10
+    },
+    {
+      "event": 13,
+      "deadline": "2026-12-02T18:30:00Z",
+      "confidence": "provisional",
+      "starters": [
+        226597, 178301, 201658, 200720, 60307, 220362, 448047, 17761, 141746,
+        215379, 221466
+      ],
+      "bench": [209036, 502500, 489639, 177815],
+      "captain": 141746,
+      "viceCaptain": 226597,
+      "transfersIn": [],
+      "transfersOut": [],
+      "freeTransfersBefore": 1,
+      "paidTransfers": 0,
+      "transferCostPoints": 0,
+      "projectedPoints": 51.76,
+      "netExpectedPoints": 51.76,
+      "bankAfterTenths": 10
+    },
+    {
+      "event": 14,
+      "deadline": "2026-12-05T13:30:00Z",
+      "confidence": "provisional",
+      "starters": [
+        226597, 201658, 200720, 220362, 448047, 177815, 209036, 141746, 215379,
+        221466, 484420
+      ],
+      "bench": [178301, 494521, 502500, 489639],
+      "captain": 141746,
+      "viceCaptain": 221466,
+      "transfersIn": [494521, 484420],
+      "transfersOut": [60307, 17761],
+      "freeTransfersBefore": 2,
+      "paidTransfers": 0,
+      "transferCostPoints": 0,
+      "projectedPoints": 52.35,
+      "netExpectedPoints": 52.35,
+      "bankAfterTenths": 10
+    },
+    {
+      "event": 15,
+      "deadline": "2026-12-12T13:30:00Z",
+      "confidence": "provisional",
+      "starters": [
+        226597, 178301, 494521, 200720, 502500, 220362, 424876, 209036, 141746,
+        215379, 221466
+      ],
+      "bench": [484420, 177815, 489639, 201658],
+      "captain": 226597,
+      "viceCaptain": 141746,
+      "transfersIn": [424876],
+      "transfersOut": [448047],
+      "freeTransfersBefore": 1,
+      "paidTransfers": 0,
+      "transferCostPoints": 0,
+      "projectedPoints": 54.82,
+      "netExpectedPoints": 54.82,
+      "bankAfterTenths": 10
+    },
+    {
+      "event": 16,
+      "deadline": "2026-12-19T13:30:00Z",
+      "confidence": "provisional",
+      "starters": [
+        226597, 178301, 494521, 201658, 502500, 489639, 177815, 209036, 465642,
+        215379, 221466
+      ],
+      "bench": [484420, 424876, 141746, 200720],
+      "captain": 226597,
+      "viceCaptain": 221466,
+      "transfersIn": [465642],
+      "transfersOut": [220362],
+      "freeTransfersBefore": 1,
+      "paidTransfers": 0,
+      "transferCostPoints": 0,
+      "projectedPoints": 51.12,
+      "netExpectedPoints": 51.12,
+      "bankAfterTenths": 5
+    },
+    {
+      "event": 17,
+      "deadline": "2026-12-26T13:30:00Z",
+      "confidence": "provisional",
+      "starters": [
+        226597, 178301, 201658, 200720, 502500, 209036, 141746, 465642, 215379,
+        221466, 484420
+      ],
+      "bench": [177815, 424876, 17761, 489639],
+      "captain": 141746,
+      "viceCaptain": 221466,
+      "transfersIn": [17761],
+      "transfersOut": [494521],
+      "freeTransfersBefore": 1,
+      "paidTransfers": 0,
+      "transferCostPoints": 0,
+      "projectedPoints": 53.32,
+      "netExpectedPoints": 53.32,
+      "bankAfterTenths": 0
+    },
+    {
+      "event": 18,
+      "deadline": "2026-12-30T18:30:00Z",
+      "confidence": "provisional",
+      "starters": [
+        226597, 178301, 200720, 502500, 60307, 17761, 177815, 141746, 465642,
+        215379, 221466
+      ],
+      "bench": [484420, 424876, 209036, 489639],
+      "captain": 226597,
+      "viceCaptain": 141746,
+      "transfersIn": [60307],
+      "transfersOut": [201658],
+      "freeTransfersBefore": 1,
+      "paidTransfers": 0,
+      "transferCostPoints": 0,
+      "projectedPoints": 53.33,
+      "netExpectedPoints": 53.33,
+      "bankAfterTenths": 5
+    },
+    {
+      "event": 19,
+      "deadline": "2027-01-02T13:30:00Z",
+      "confidence": "provisional",
+      "starters": [
+        226597, 502500, 489639, 469142, 17761, 424876, 209036, 141746, 215379,
+        221466, 484420
+      ],
+      "bench": [178301, 60307, 177815, 200720],
+      "captain": 221466,
+      "viceCaptain": 226597,
+      "transfersIn": [469142],
+      "transfersOut": [465642],
+      "freeTransfersBefore": 1,
+      "paidTransfers": 0,
+      "transferCostPoints": 0,
+      "projectedPoints": 53.3,
+      "netExpectedPoints": 53.3,
+      "bankAfterTenths": 5
+    },
+    {
+      "event": 20,
+      "deadline": "2027-01-06T18:30:00Z",
+      "confidence": "provisional",
+      "starters": [
+        226597, 178301, 200720, 60307, 448047, 17761, 209036, 141746, 215379,
+        221466, 484420
+      ],
+      "bench": [469142, 489639, 177815, 502500],
+      "captain": 226597,
+      "viceCaptain": 141746,
+      "transfersIn": [448047],
+      "transfersOut": [424876],
+      "freeTransfersBefore": 1,
+      "paidTransfers": 0,
+      "transferCostPoints": 0,
+      "projectedPoints": 51.0,
+      "netExpectedPoints": 51.0,
+      "bankAfterTenths": 5
+    },
+    {
+      "event": 21,
+      "deadline": "2027-01-16T13:30:00Z",
+      "confidence": "provisional",
+      "starters": [
+        226597, 502500, 448047, 17761, 177815, 209036, 141746, 85633, 215379,
+        221466, 484420
+      ],
+      "bench": [178301, 60307, 489639, 469142],
+      "captain": 226597,
+      "viceCaptain": 141746,
+      "transfersIn": [85633],
+      "transfersOut": [200720],
+      "freeTransfersBefore": 1,
+      "paidTransfers": 0,
+      "transferCostPoints": 0,
+      "projectedPoints": 51.58,
+      "netExpectedPoints": 51.58,
+      "bankAfterTenths": 5
+    },
+    {
+      "event": 22,
+      "deadline": "2027-01-23T13:30:00Z",
+      "confidence": "provisional",
+      "starters": [
+        226597, 502500, 489639, 448047, 17761, 177815, 209036, 141746, 465642,
+        215379, 484420
+      ],
+      "bench": [178301, 85633, 60307, 469142],
+      "captain": 141746,
+      "viceCaptain": 502500,
+      "transfersIn": [465642],
+      "transfersOut": [221466],
+      "freeTransfersBefore": 1,
+      "paidTransfers": 0,
+      "transferCostPoints": 0,
+      "projectedPoints": 51.06,
+      "netExpectedPoints": 51.06,
+      "bankAfterTenths": 15
+    },
+    {
+      "event": 23,
+      "deadline": "2027-01-30T13:30:00Z",
+      "confidence": "provisional",
+      "starters": [
+        154561, 226597, 178301, 502500, 60307, 448047, 17761, 177815, 209036,
+        141746, 484420
+      ],
+      "bench": [489639, 465642, 469142, 215379],
+      "captain": 226597,
+      "viceCaptain": 141746,
+      "transfersIn": [154561],
+      "transfersOut": [85633],
+      "freeTransfersBefore": 1,
+      "paidTransfers": 0,
+      "transferCostPoints": 0,
+      "projectedPoints": 56.6,
+      "netExpectedPoints": 56.6,
+      "bankAfterTenths": 5
+    },
+    {
+      "event": 24,
+      "deadline": "2027-02-06T13:30:00Z",
+      "confidence": "provisional",
+      "starters": [
+        154561, 226597, 502500, 469142, 60307, 448047, 177815, 97032, 209036,
+        141746, 215379
+      ],
+      "bench": [484420, 178301, 465642, 489639],
+      "captain": 226597,
+      "viceCaptain": 141746,
+      "transfersIn": [97032],
+      "transfersOut": [17761],
+      "freeTransfersBefore": 1,
+      "paidTransfers": 0,
+      "transferCostPoints": 0,
+      "projectedPoints": 52.95,
+      "netExpectedPoints": 52.95,
+      "bankAfterTenths": 0
+    },
+    {
+      "event": 25,
+      "deadline": "2027-02-10T18:30:00Z",
+      "confidence": "provisional",
+      "starters": [
+        226597, 178301, 502500, 489639, 469142, 448047, 177815, 141746, 465642,
+        215379, 221466
+      ],
+      "bench": [97032, 60307, 484420, 154561],
+      "captain": 221466,
+      "viceCaptain": 226597,
+      "transfersIn": [221466],
+      "transfersOut": [209036],
+      "freeTransfersBefore": 1,
+      "paidTransfers": 0,
+      "transferCostPoints": 0,
+      "projectedPoints": 55.84,
+      "netExpectedPoints": 55.84,
+      "bankAfterTenths": 0
+    },
+    {
+      "event": 26,
+      "deadline": "2027-02-20T13:30:00Z",
+      "confidence": "provisional",
+      "starters": [
+        226597, 502500, 489639, 469142, 448047, 177815, 97032, 141746, 465642,
+        215379, 221466
+      ],
+      "bench": [178301, 60307, 484420, 154561],
+      "captain": 141746,
+      "viceCaptain": 465642,
+      "transfersIn": [],
+      "transfersOut": [],
+      "freeTransfersBefore": 1,
+      "paidTransfers": 0,
+      "transferCostPoints": 0,
+      "projectedPoints": 50.23,
+      "netExpectedPoints": 50.23,
+      "bankAfterTenths": 0
+    },
+    {
+      "event": 27,
+      "deadline": "2027-02-27T13:30:00Z",
+      "confidence": "provisional",
+      "starters": [
+        154561, 226597, 533463, 502500, 469142, 60307, 448047, 17761, 141746,
+        215379, 221466
+      ],
+      "bench": [178301, 177815, 465642, 489639],
+      "captain": 226597,
+      "viceCaptain": 502500,
+      "transfersIn": [533463, 17761],
+      "transfersOut": [97032, 484420],
+      "freeTransfersBefore": 2,
+      "paidTransfers": 0,
+      "transferCostPoints": 0,
+      "projectedPoints": 54.86,
+      "netExpectedPoints": 54.86,
+      "bankAfterTenths": 0
+    },
+    {
+      "event": 28,
+      "deadline": "2027-03-03T18:30:00Z",
+      "confidence": "provisional",
+      "starters": [
+        226597, 533463, 502500, 469142, 60307, 448047, 111234, 17761, 177815,
+        141746, 221466
+      ],
+      "bench": [178301, 215379, 465642, 489639],
+      "captain": 17761,
+      "viceCaptain": 226597,
+      "transfersIn": [111234],
+      "transfersOut": [154561],
+      "freeTransfersBefore": 1,
+      "paidTransfers": 0,
+      "transferCostPoints": 0,
+      "projectedPoints": 52.35,
+      "netExpectedPoints": 52.35,
+      "bankAfterTenths": 5
+    },
+    {
+      "event": 29,
+      "deadline": "2027-03-13T13:30:00Z",
+      "confidence": "provisional",
+      "starters": [
+        226597, 178301, 502500, 469142, 220362, 111234, 17761, 177815, 141746,
+        215379, 221466
+      ],
+      "bench": [60307, 533463, 489639, 448047],
+      "captain": 221466,
+      "viceCaptain": 17761,
+      "transfersIn": [220362],
+      "transfersOut": [465642],
+      "freeTransfersBefore": 1,
+      "paidTransfers": 0,
+      "transferCostPoints": 0,
+      "projectedPoints": 51.49,
+      "netExpectedPoints": 51.49,
+      "bankAfterTenths": 10
+    },
+    {
+      "event": 30,
+      "deadline": "2027-03-20T13:30:00Z",
+      "confidence": "provisional",
+      "starters": [
+        226597, 178301, 533463, 502500, 448047, 17761, 177815, 465247, 141746,
+        215379, 221466
+      ],
+      "bench": [60307, 220362, 111234, 469142],
+      "captain": 502500,
+      "viceCaptain": 177815,
+      "transfersIn": [465247],
+      "transfersOut": [489639],
+      "freeTransfersBefore": 1,
+      "paidTransfers": 0,
+      "transferCostPoints": 0,
+      "projectedPoints": 50.5,
+      "netExpectedPoints": 50.5,
+      "bankAfterTenths": 5
+    },
+    {
+      "event": 31,
+      "deadline": "2027-04-10T12:30:00Z",
+      "confidence": "provisional",
+      "starters": [
+        226597, 494521, 533463, 502500, 60307, 448047, 177815, 465247, 141746,
+        215379, 221466
+      ],
+      "bench": [178301, 17761, 220362, 111234],
+      "captain": 502500,
+      "viceCaptain": 141746,
+      "transfersIn": [494521],
+      "transfersOut": [469142],
+      "freeTransfersBefore": 1,
+      "paidTransfers": 0,
+      "transferCostPoints": 0,
+      "projectedPoints": 52.53,
+      "netExpectedPoints": 52.53,
+      "bankAfterTenths": 0
+    },
+    {
+      "event": 32,
+      "deadline": "2027-04-17T12:30:00Z",
+      "confidence": "provisional",
+      "starters": [
+        226597, 533463, 502500, 220362, 448047, 172649, 17761, 177815, 141746,
+        215379, 221466
+      ],
+      "bench": [111234, 60307, 494521, 178301],
+      "captain": 141746,
+      "viceCaptain": 226597,
+      "transfersIn": [172649],
+      "transfersOut": [465247],
+      "freeTransfersBefore": 1,
+      "paidTransfers": 0,
+      "transferCostPoints": 0,
+      "projectedPoints": 53.27,
+      "netExpectedPoints": 53.27,
+      "bankAfterTenths": 0
+    },
+    {
+      "event": 33,
+      "deadline": "2027-04-24T12:30:00Z",
+      "confidence": "provisional",
+      "starters": [
+        226597, 178301, 494521, 502500, 60307, 220362, 172649, 177815, 141746,
+        215379, 221466
+      ],
+      "bench": [17761, 533463, 448047, 111234],
+      "captain": 141746,
+      "viceCaptain": 226597,
+      "transfersIn": [],
+      "transfersOut": [],
+      "freeTransfersBefore": 1,
+      "paidTransfers": 0,
+      "transferCostPoints": 0,
+      "projectedPoints": 53.2,
+      "netExpectedPoints": 53.2,
+      "bankAfterTenths": 0
+    },
+    {
+      "event": 34,
+      "deadline": "2027-05-01T12:30:00Z",
+      "confidence": "provisional",
+      "starters": [
+        226597, 178301, 494521, 200720, 220362, 448047, 177815, 97032, 141746,
+        215379, 221466
+      ],
+      "bench": [60307, 502500, 172649, 533463],
+      "captain": 221466,
+      "viceCaptain": 226597,
+      "transfersIn": [200720, 97032],
+      "transfersOut": [111234, 17761],
+      "freeTransfersBefore": 2,
+      "paidTransfers": 0,
+      "transferCostPoints": 0,
+      "projectedPoints": 54.2,
+      "netExpectedPoints": 54.2,
+      "bankAfterTenths": 0
+    },
+    {
+      "event": 35,
+      "deadline": "2027-05-08T12:30:00Z",
+      "confidence": "provisional",
+      "starters": [
+        226597, 178301, 494521, 200720, 502500, 60307, 448047, 97032, 141746,
+        215379, 221466
+      ],
+      "bench": [533463, 220362, 177815, 172649],
+      "captain": 221466,
+      "viceCaptain": 97032,
+      "transfersIn": [],
+      "transfersOut": [],
+      "freeTransfersBefore": 1,
+      "paidTransfers": 0,
+      "transferCostPoints": 0,
+      "projectedPoints": 54.28,
+      "netExpectedPoints": 54.28,
+      "bankAfterTenths": 0
+    },
+    {
+      "event": 36,
+      "deadline": "2027-05-15T12:30:00Z",
+      "confidence": "provisional",
+      "starters": [
+        226597, 200720, 502500, 60307, 448047, 177815, 97032, 141746, 446008,
+        215379, 221466
+      ],
+      "bench": [494521, 220362, 172649, 486385],
+      "captain": 141746,
+      "viceCaptain": 226597,
+      "transfersIn": [486385, 446008],
+      "transfersOut": [178301, 533463],
+      "freeTransfersBefore": 2,
+      "paidTransfers": 0,
+      "transferCostPoints": 0,
+      "projectedPoints": 52.65,
+      "netExpectedPoints": 52.65,
+      "bankAfterTenths": 10
+    },
+    {
+      "event": 37,
+      "deadline": "2027-05-23T12:30:00Z",
+      "confidence": "provisional",
+      "starters": [
+        226597, 463981, 494521, 502500, 60307, 172649, 97032, 141746, 446008,
+        215379, 221466
+      ],
+      "bench": [177815, 448047, 200720, 486385],
+      "captain": 141746,
+      "viceCaptain": 221466,
+      "transfersIn": [463981],
+      "transfersOut": [220362],
+      "freeTransfersBefore": 1,
+      "paidTransfers": 0,
+      "transferCostPoints": 0,
+      "projectedPoints": 55.89,
+      "netExpectedPoints": 55.89,
+      "bankAfterTenths": 0
+    },
+    {
+      "event": 38,
+      "deadline": "2027-05-30T13:30:00Z",
+      "confidence": "provisional",
+      "starters": [
+        226597, 463981, 494521, 502500, 489639, 448047, 177815, 97032, 141746,
+        446008, 221466
+      ],
+      "bench": [215379, 200720, 486385, 60307],
+      "captain": 141746,
+      "viceCaptain": 226597,
+      "transfersIn": [489639],
+      "transfersOut": [172649],
+      "freeTransfersBefore": 1,
+      "paidTransfers": 0,
+      "transferCostPoints": 0,
+      "projectedPoints": 53.41,
+      "netExpectedPoints": 53.41,
+      "bankAfterTenths": 5
+    }
+  ]
+}

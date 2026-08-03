@@ -18,7 +18,13 @@ const WIDTHS = [
   { name: "desktop", width: 1440, height: 900 },
 ] as const;
 
-const ROUTES = ["/", "/methodology", "/players", "/calibration"] as const;
+const ROUTES = [
+  "/",
+  "/plan",
+  "/methodology",
+  "/players",
+  "/calibration",
+] as const;
 
 async function settle(page: Page): Promise<void> {
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();

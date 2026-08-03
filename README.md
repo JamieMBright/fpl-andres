@@ -2,8 +2,9 @@
 
 FPL Andres is an evidence-gated Fantasy Premier League analyst. It is being built
 to answer the next deadline's practical questions first: whether to transfer or bank,
-who to captain, how to order the bench, and how today's move affects a rolling
-6–8 gameweek plan.
+who to captain, how to order the bench, and how today's move affects the rest of
+the season — a full gameweek 1 to 38 plan, with confidence that falls off as it
+reaches further out.
 
 The project is independent and is not affiliated with Fantasy Premier League, the
 Premier League, Leeds United, or any player or club.

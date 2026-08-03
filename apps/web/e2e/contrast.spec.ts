@@ -20,6 +20,7 @@ const WCAG = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"];
 
 const ROUTES = [
   { name: "landing", path: "/" },
+  { name: "season plan", path: "/plan" },
   { name: "method", path: "/methodology" },
   { name: "player pool", path: "/players" },
   { name: "calibration", path: "/calibration" },

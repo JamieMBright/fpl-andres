@@ -169,14 +169,22 @@ unmeasured claim to know better than the field is not shipped.
 
 ## Planning horizon
 
-The product returns a next-deadline action, a rolling 6–8 gameweek path and a season
-fixture/chip roadmap. It does not present an exact 38-gameweek transfer script.
+The product returns a next-deadline action and a full 1–38 gameweek plan: squad,
+starting eleven, captain, vice-captain, bench order, transfers and chip windows
+for every remaining gameweek of the season.
+
+The plan is a projection, not a prediction, and the further out it reaches the
+less it is worth. Confidence is therefore attached to every gameweek rather than
+implied by the fact that a row exists, and the basis for the decline is stated
+where a reader can check it. A plan that presents gameweek 34 with the same
+authority as gameweek 2 is lying about what it knows.
 
 Current solvers support expected value only and require `chip_scenario=none`.
 Protect/chase utilities remain unavailable until calibrated outcome distributions
 exist. Chip optimization remains unavailable until authoritative multiplier, bench and
-transfer behavior is sourced. Rolling plans use provided event prices and conservatively
-forbid reselling players acquired inside the horizon.
+transfer behavior is sourced, so chip placement is presented as a fixture-derived
+window rather than a solved decision. Rolling plans use provided event prices and
+conservatively forbid reselling players acquired inside the horizon.
 
 ## Team goal projections
 

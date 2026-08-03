@@ -327,6 +327,7 @@ a {
 
 .site-header nav {
   display: flex;
+  flex-wrap: wrap;
   gap: clamp(18px, 3vw, 34px);
 }
 
@@ -1270,6 +1271,244 @@ a:focus-visible {
   color: inherit;
 }
 
+/* ---- Season plan -------------------------------------------------------- */
+
+.season-plan {
+  padding: clamp(34px, 5vw, 62px) 0 clamp(40px, 6vw, 70px);
+}
+
+.plan-honesty {
+  max-width: 68ch;
+  margin: 16px 0 0;
+  border-left: 4px solid var(--amber);
+  padding-left: 14px;
+  color: var(--ink-soft);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/*
+ * A horizontal rail. Thirty-eight cards is too many to stack, and scrolling
+ * sideways through a season reads the way a season does.
+ */
+.plan-rail {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(252px, 1fr);
+  gap: 14px;
+  margin: 26px 0 0;
+  padding: 4px 4px 18px;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x proximity;
+  list-style: none;
+}
+
+.plan-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border: 2px solid var(--rule);
+  padding: 12px 13px 14px;
+  background: var(--paper);
+  scroll-snap-align: start;
+}
+
+/* Confidence is a border weight as well as a word, so it survives greyscale. */
+.plan-card.plan-firm {
+  border-color: var(--field-green);
+  border-top-width: 6px;
+}
+
+.plan-card.plan-projected {
+  border-top-width: 4px;
+  border-top-color: var(--ink-soft);
+}
+
+.plan-card.plan-provisional {
+  border-style: dashed;
+  color: var(--ink-soft);
+}
+
+.plan-card-head {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.plan-gw {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.plan-date {
+  color: var(--ink-soft);
+  font-size: 11px;
+}
+
+.plan-chip {
+  margin-left: auto;
+  border: 1px solid var(--amber);
+  padding: 1px 5px;
+  color: var(--amber);
+  font-size: 10px;
+}
+
+.plan-move {
+  margin: 0;
+  padding: 0;
+  font-size: 13px;
+  list-style: none;
+}
+
+.plan-move li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 0;
+}
+
+.plan-move svg {
+  flex: none;
+  color: var(--field-green);
+}
+
+.plan-out {
+  color: var(--ink-soft);
+  text-decoration: line-through;
+}
+
+.plan-in {
+  font-weight: 700;
+}
+
+.plan-move-roll {
+  color: var(--ink-soft);
+}
+
+.plan-sheet {
+  border-top: 1px solid var(--rule);
+  padding-top: 8px;
+}
+
+.plan-eleven,
+.plan-bench {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/*
+ * No opacity here. Fading already-soft ink to 72% lands at 3.73:1 on the light
+ * kit, which fails AA on ten-pixel text. The dashed rule and the label carry
+ * the distinction instead.
+ */
+.plan-bench {
+  margin-top: 6px;
+  border-top: 1px dashed var(--rule);
+  padding-top: 6px;
+}
+
+.plan-bench::before {
+  content: "BENCH";
+  display: block;
+  margin-bottom: 2px;
+  color: var(--ink-soft);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+}
+
+.plan-eleven li,
+.plan-bench li {
+  display: grid;
+  grid-template-columns: 26px 1fr auto auto;
+  gap: 6px;
+  align-items: baseline;
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.plan-pos {
+  color: var(--ink-soft);
+  font-size: 10px;
+}
+
+.plan-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.plan-club {
+  color: var(--ink-soft);
+  font-size: 10px;
+}
+
+.plan-role {
+  min-width: 15px;
+  border: 1px solid currentcolor;
+  font-size: 10px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.plan-role-c {
+  color: var(--field-green);
+}
+
+.plan-role-v {
+  color: var(--ink-soft);
+}
+
+.plan-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-height: 34px;
+  margin-top: auto;
+  border: 1px solid var(--rule);
+  color: var(--ink);
+  background: none;
+  font-family: var(--fa-body);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.plan-toggle:focus-visible {
+  outline: 3px solid var(--signal-blue);
+  outline-offset: 2px;
+}
+
+.plan-toggle[aria-expanded="true"] svg {
+  transform: rotate(180deg);
+}
+
+.plan-why {
+  border-top: 1px solid var(--rule);
+  padding-top: 8px;
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.plan-why p {
+  margin: 0 0 6px;
+}
+
+.plan-chip-note {
+  color: var(--amber);
+}
+
+.plan-bench-note {
+  color: var(--ink-soft);
+}
+
+.plan-basis {
+  margin: 18px 0 0;
+  color: var(--ink-soft);
+  font-size: 11px;
+}
+
 .opening-squad {
   margin-top: 26px;
   border-top: 1px solid var(--rule);
@@ -1895,7 +2134,7 @@ a:focus-visible {
   .site-header nav {
     width: 100%;
     justify-content: flex-end;
-    gap: 20px;
+    gap: 16px;
     padding-top: 10px;
     border-top: 1px solid var(--rule);
   }
@@ -2329,6 +2568,7 @@ a:focus-visible {
 
 .header-controls {
   display: flex;
+  flex-wrap: wrap;
   gap: clamp(14px, 3vw, 28px);
   align-items: center;
 }

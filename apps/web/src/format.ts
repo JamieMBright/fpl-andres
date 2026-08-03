@@ -57,3 +57,13 @@ export const captureDay = new Intl.DateTimeFormat("en-GB", {
   month: "short",
   timeZone: "UTC",
 });
+
+/**
+ * A deadline reduced to a date, for the season plan rail where thirty-eight of
+ * them appear at once. UK time for the same reason the full formatter uses it.
+ */
+export const deadlineDay = new Intl.DateTimeFormat("en-GB", {
+  day: "numeric",
+  month: "short",
+  timeZone: "Europe/London",
+});

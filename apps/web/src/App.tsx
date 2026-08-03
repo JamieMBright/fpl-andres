@@ -21,6 +21,7 @@ import TeamAnalysisRoute from "./pages/TeamAnalysisPage";
 const MethodPage = lazy(() => import("./pages/MethodPage"));
 const PlayerPoolPage = lazy(() => import("./pages/PlayerPoolPage"));
 const CalibrationPage = lazy(() => import("./pages/CalibrationPage"));
+const SeasonPlanPage = lazy(() => import("./pages/SeasonPlanPage"));
 
 export const routes: RouteObject[] = [
   {
@@ -29,6 +30,14 @@ export const routes: RouteObject[] = [
     children: [
       { index: true, element: <HomePage /> },
       { path: "team/:teamId", element: <TeamAnalysisRoute /> },
+      {
+        path: "plan",
+        element: (
+          <LazyRoute>
+            <SeasonPlanPage />
+          </LazyRoute>
+        ),
+      },
       {
         path: "players",
         element: (
