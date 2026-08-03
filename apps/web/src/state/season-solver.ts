@@ -36,6 +36,15 @@ import inputs from "../data/season-inputs.json";
 const LOOKAHEAD = 5;
 const LOOKAHEAD_DECAY = 0.75;
 
+const WEEKLY_FREE_TRANSFERS = 1;
+const MAX_FREE_TRANSFERS = 5;
+/**
+ * The opening gameweek is squad selection, not a transfer window: there is
+ * nothing to spend and nothing to roll, and the first award lands for gameweek
+ * two. A plan starting at gameweek one must not reach gameweek two holding two.
+ */
+const SEASON_OPENER = 1;
+
 type PositionCode = "GKP" | "DEF" | "MID" | "FWD";
 
 const SQUAD_SHAPE = [
@@ -64,6 +73,7 @@ interface FixtureLadder {
 }
 
 const LADDER = inputs.fixtureLadder as Record<string, FixtureLadder>;
+const OPPONENTS = inputs.opponents as Record<string, string[][]>;
 const PLAYERS = inputs.players as SolverPlayer[];
 const EVENTS = inputs.events as number[];
 const DEADLINES = inputs.deadlines as string[];
@@ -111,6 +121,8 @@ export interface SolvedGameweek {
   viceCaptain: SolverPlayer;
   transfersIn: SolverPlayer[];
   transfersOut: SolverPlayer[];
+  opponents: Record<string, string[]>;
+  expected: Record<string, number>;
   paidTransfers: number;
   transferCostPoints: number;
   projectedPoints: number;
@@ -167,7 +179,8 @@ export function* solveSeason(
 
   let squad = start.squad.map((held) => ({ ...held }));
   let bank = start.bankTenths;
-  let free = start.availableFreeTransfers;
+  let free =
+    start.fromEvent === SEASON_OPENER ? 0 : start.availableFreeTransfers;
 
   for (let index = firstIndex; index < EVENTS.length; index += 1) {
     const event = EVENTS[index];
@@ -234,6 +247,15 @@ export function* solveSeason(
       starters.reduce((total, player) => total + pointsAt(player, index), 0) +
       pointsAt(captain, index);
 
+    const squadNow = solved.squadElementIds.map(look);
+    const opponents: Record<string, string[]> = {};
+    const expected: Record<string, number> = {};
+    for (const player of squadNow) {
+      opponents[player.club] ??= OPPONENTS[player.club]?.[index] ?? [];
+      expected[String(player.code)] =
+        Math.round(pointsAt(player, index) * 100) / 100;
+    }
+
     yield {
       event,
       deadline,
@@ -244,6 +266,8 @@ export function* solveSeason(
       viceCaptain: look(solved.viceCaptainElementId),
       transfersIn: solved.transfersIn.map(look),
       transfersOut: solved.transfersOut.map(look),
+      opponents,
+      expected,
       paidTransfers: solved.paidTransfers,
       transferCostPoints: solved.transferCostPoints,
       projectedPoints: Math.round(gameweekPoints * 100) / 100,
@@ -261,7 +285,18 @@ export function* solveSeason(
       sellingPriceTenths: priceOf.get(elementId) ?? 0,
     }));
     bank = solved.bankAfterTenths;
-    free = Math.min(5, Math.max(0, free - solved.transfersIn.length) + 1);
+    // Gameweek 1 is squad selection, not a transfer window: FPL charges nothing
+    // for it and awards the first free transfer for gameweek 2. Carrying the
+    // opening allowance forward would hand the plan free transfers it never
+    // earned.
+    free =
+      event === SEASON_OPENER
+        ? WEEKLY_FREE_TRANSFERS
+        : Math.min(
+            MAX_FREE_TRANSFERS,
+            Math.max(0, free - solved.transfersIn.length) +
+              WEEKLY_FREE_TRANSFERS,
+          );
   }
 }
 

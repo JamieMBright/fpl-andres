@@ -21,7 +21,6 @@ from fpl_andres.optimization.contracts import (
 )
 from fpl_andres.planning.season_plan import (
     COMMIT_EVENTS,
-    chip_windows,
     confidence_for,
     plan_season,
 )
@@ -224,12 +223,6 @@ def test_a_missing_gameweek_forecast_is_named_rather_than_skipped() -> None:
         assert "3" in str(error)
     else:
         raise AssertionError("a gameweek with no forecasts should fail loudly")
-
-
-def test_chip_windows_pick_the_easiest_runs() -> None:
-    difficulty = {1: 3.0, 2: 2.0, 3: 4.5, 4: 1.2, 5: 3.8}
-    assert chip_windows(difficulty, count=2) == (2, 4)
-    assert chip_windows({}) == ()
 
 
 def test_the_commit_stride_is_smaller_than_the_window() -> None:

@@ -47,11 +47,11 @@ from fpl_andres.optimization.horizon import HighsHorizonOptimizer
 
 __all__ = [
     "COMMIT_EVENTS",
+    "SEASON_OPENER",
     "WINDOW_EVENTS",
     "Confidence",
     "PlannedEvent",
     "SeasonPlan",
-    "chip_windows",
     "confidence_for",
     "plan_season",
 ]
@@ -61,6 +61,10 @@ __all__ = [
 # on a fifty-player pool, so the whole season is well inside a publish step.
 WINDOW_EVENTS = 5
 COMMIT_EVENTS = 3
+
+# Before the first deadline a manager may change the whole squad at no cost, so
+# the opening gameweek is not a transfer window and nothing is "rolled" into it.
+SEASON_OPENER = 1
 
 Confidence = Literal["firm", "projected", "provisional"]
 
@@ -154,7 +158,12 @@ def plan_season(
     optimizer = HighsHorizonOptimizer(time_limit_seconds=time_limit_seconds)
     squad = list(opening_squad)
     bank = bank_tenths
-    available = free_transfers
+    weekly_free_transfers = rules.transfer_rules.weekly_free_transfers
+    # The opening gameweek is squad selection, not a transfer window. There is
+    # nothing to spend and nothing to roll, and the first award lands for
+    # gameweek 2 — so a plan that starts at gameweek 1 must not reach gameweek 2
+    # holding two.
+    available = 0 if ordered[0] == SEASON_OPENER else free_transfers
     committed: list[PlannedEvent] = []
     windows = _windows(ordered)
 
@@ -208,27 +217,18 @@ def plan_season(
                     for element_id in event_plan.squad_element_ids
                 ]
                 bank = event_plan.bank_after_tenths
-                available = event_plan.free_transfers_next_event
+                # Gameweek 1 is squad selection, not a transfer window: FPL
+                # charges nothing for it and awards the first free transfer for
+                # gameweek 2. Carrying the opening allowance forward would hand
+                # the plan a dozen free transfers it never earned.
+                available = (
+                    weekly_free_transfers
+                    if event_plan.event == SEASON_OPENER
+                    else event_plan.free_transfers_next_event
+                )
 
     return SeasonPlan(
         events=tuple(committed),
         windows_solved=len(windows),
         pool_size=len({forecast.element_id for forecast in forecasts}),
     )
-
-
-def chip_windows(
-    difficulty_by_event: Mapping[int, float],
-    *,
-    count: int = 2,
-) -> tuple[int, ...]:
-    """The easiest runs, as candidate gameweeks for an attacking chip.
-
-    Fixture difficulty only. Chip optimisation needs multiplier, bench and
-    transfer behaviour that is not sourced, so this is a window to look at
-    rather than a decision, and the artifact labels it that way.
-    """
-    if not difficulty_by_event:
-        return ()
-    ranked = sorted(difficulty_by_event.items(), key=lambda pair: (pair[1], pair[0]))
-    return tuple(sorted(event for event, _ in ranked[:count]))

@@ -27,12 +27,29 @@ export interface PlanGameweek {
   viceCaptain: PlanPlayer;
   transfersIn: readonly PlanPlayer[];
   transfersOut: readonly PlanPlayer[];
+  /** Club short name to who they play, as "HUL (A)". Empty on a blank. */
+  opponents: Readonly<Record<string, readonly string[]>>;
+  /** Player code to what he is worth this gameweek. */
+  expected: Readonly<Record<string, number>>;
   freeTransfersBefore: number;
   paidTransfers: number;
   transferCostPoints: number;
   projectedPoints: number;
   netExpectedPoints: number;
   bankAfterTenths: number;
+}
+
+export interface ChipCall {
+  /** Null when nothing in the season justifies playing it. */
+  event: number | null;
+  chip: string;
+  note: string;
+}
+
+export interface DataGaps {
+  clubsWithoutRecord: readonly string[];
+  clubsInPool: number;
+  clubsInLeague: number;
 }
 
 export interface SeasonPlan {
@@ -46,13 +63,20 @@ export interface SeasonPlan {
   poolSize: number;
   windowsSolved: number;
   netExpectedPoints: number;
-  chipWindows: readonly number[];
+  chips: readonly ChipCall[];
+  dataGaps: DataGaps;
   gameweeks: readonly PlanGameweek[];
 }
 
 const PLAYERS = plan.players as Record<
   string,
-  { name: string; position: string; club: string; priceTenths: number }
+  {
+    name: string;
+    position: string;
+    club: string;
+    priceTenths: number;
+    squadNumber: number | null;
+  }
 >;
 
 function resolve(code: number): PlanPlayer {
@@ -93,7 +117,8 @@ export function readSeasonPlan(): SeasonPlan {
     poolSize: plan.poolSize,
     windowsSolved: plan.windowsSolved,
     netExpectedPoints: plan.netExpectedPoints,
-    chipWindows: plan.chipWindows,
+    chips: plan.chips,
+    dataGaps: plan.dataGaps,
     gameweeks: plan.gameweeks.map((week) => ({
       event: week.event,
       deadline: week.deadline,
@@ -106,6 +131,8 @@ export function readSeasonPlan(): SeasonPlan {
       viceCaptain: resolve(week.viceCaptain),
       transfersIn: resolveAll(week.transfersIn),
       transfersOut: resolveAll(week.transfersOut),
+      opponents: week.opponents,
+      expected: week.expected,
       freeTransfersBefore: week.freeTransfersBefore,
       paidTransfers: week.paidTransfers,
       transferCostPoints: week.transferCostPoints,

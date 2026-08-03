@@ -102,9 +102,13 @@ def main(argv: Sequence[str] | None = None) -> int:
     # keeping goals out, one for players who score by putting them in. A blank
     # gameweek is zero, and a double is the sum of both fixtures.
     ladder: dict[str, dict[str, list[float]]] = {}
+    # "HUL (A)" per club per gameweek, so a solved card can name the opponent
+    # rather than repeat the club whose shirt is already drawn beside the player.
+    opponents: dict[str, list[list[str]]] = {}
     for team_id, team in clubs.items():
         defensive: list[float] = []
         attacking: list[float] = []
+        against: list[list[str]] = []
         for event in ordered:
             games = schedule.get((event, team_id), ())
             back = 0.0
@@ -119,10 +123,17 @@ def main(argv: Sequence[str] | None = None) -> int:
                 front += measured.defence(home=not home)
             defensive.append(round(back, 4))
             attacking.append(round(front, 4))
+            against.append(
+                [
+                    f"{clubs[opponent]['short_name']} ({'H' if home else 'A'})"
+                    for opponent, home in games
+                ]
+            )
         ladder[str(team["short_name"])] = {
             "defensive": defensive,
             "attacking": attacking,
         }
+        opponents[str(team["short_name"])] = against
 
     players: list[tuple[int, float, dict[str, object]]] = []
     for element in parse_elements(bootstrap["elements"], model=BootstrapElement):
@@ -174,6 +185,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         ),
         "poolPerPosition": POOL_PER_POSITION,
         "fixtureLadder": ladder,
+        "opponents": opponents,
         "players": trimmed,
     }
 

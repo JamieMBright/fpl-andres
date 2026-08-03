@@ -9,13 +9,13 @@ import { kitForShortName } from "../kit/team-kits";
 import type { SolvedGameweek } from "../state/season-solver";
 import { startFromCodes } from "../state/season-solver";
 import { useSeasonSolve } from "../state/use-season-solve";
-import {
-  CONFIDENCE_NOTE,
-  readSeasonPlan,
-  type Confidence,
-  type PlanGameweek,
-  type PlanPlayer,
+import type {
+  ChipCall,
+  Confidence,
+  PlanGameweek,
+  PlanPlayer,
 } from "../state/season-plan";
+import { CONFIDENCE_NOTE, readSeasonPlan } from "../state/season-plan";
 import { useDocumentTitle } from "../state/use-document-title";
 
 /**
@@ -38,32 +38,42 @@ function TeamSheet({ week }: { week: PlanGameweek }) {
     return null;
   };
 
+  const line = (player: PlanPlayer, benched: boolean) => {
+    const badge = role(player);
+    const against = week.opponents[player.club] ?? [];
+    const points = week.expected[String(player.code)] ?? 0;
+
+    return (
+      <li key={player.code}>
+        <Shirt club={player.club} />
+        <span className="plan-name">{player.name}</span>
+        {badge ? (
+          <span className={`plan-role plan-role-${badge.toLowerCase()}`}>
+            {badge}
+          </span>
+        ) : (
+          <span className="plan-role-gap" aria-hidden="true" />
+        )}
+        <span className="plan-price mono">
+          {money.format(player.priceTenths / 10)}
+        </span>
+        <span className="plan-against mono">
+          {against.length === 0 ? "blank" : against.join(" ")}
+        </span>
+        <span className="plan-points mono">
+          {benched ? `(${points.toFixed(1)})` : points.toFixed(1)}
+        </span>
+      </li>
+    );
+  };
+
   return (
     <div className="plan-sheet">
       <ol className="plan-eleven">
-        {week.starters.map((player) => (
-          <li key={player.code}>
-            <Shirt club={player.club} />
-            <span className="plan-name">{player.name}</span>
-            <span className="plan-club mono">{player.club}</span>
-            {role(player) ? (
-              <span
-                className={`plan-role plan-role-${role(player)?.toLowerCase()}`}
-              >
-                {role(player)}
-              </span>
-            ) : null}
-          </li>
-        ))}
+        {week.starters.map((player) => line(player, false))}
       </ol>
       <ol className="plan-bench" aria-label="Bench in order">
-        {week.bench.map((player) => (
-          <li key={player.code}>
-            <Shirt club={player.club} />
-            <span className="plan-name">{player.name}</span>
-            <span className="plan-club mono">{player.club}</span>
-          </li>
-        ))}
+        {week.bench.map((player) => line(player, true))}
       </ol>
     </div>
   );
@@ -73,8 +83,18 @@ function Move({ week }: { week: PlanGameweek }) {
   if (week.transfersIn.length === 0) {
     return (
       <p className="plan-move plan-move-roll">
-        <span className="mono">Roll</span> — bank the transfer, captain{" "}
-        <strong>{week.captain.name}</strong>.
+        {week.event === 1 ? (
+          <>
+            <span className="mono">Opening squad</span> — no transfer exists to
+            spend before the first deadline. Captain{" "}
+            <strong>{week.captain.name}</strong>.
+          </>
+        ) : (
+          <>
+            <span className="mono">Roll</span> — bank the transfer, captain{" "}
+            <strong>{week.captain.name}</strong>.
+          </>
+        )}
       </p>
     );
   }
@@ -97,17 +117,21 @@ function Move({ week }: { week: PlanGameweek }) {
   );
 }
 
-function Why({ week, chip }: { week: PlanGameweek; chip: boolean }) {
+function Why({ week, chip }: { week: PlanGameweek; chip: ChipCall | null }) {
   const cost =
     week.transferCostPoints > 0
       ? `Takes a ${week.transferCostPoints}-point hit.`
       : "No hit: inside the free transfer.";
+  const benched =
+    week.bench.reduce((total, player) => total + player.priceTenths, 0) / 10;
 
   return (
     <div className="plan-why">
       <p>
         {week.transfersIn.length === 0
-          ? "Nothing available gains more than holding, so the transfer banks for a week when it does."
+          ? week.event === 1
+            ? "The opening squad, picked before a ball is kicked."
+            : "Nothing available gains more than holding, so the transfer banks for a week when it does."
           : cost}{" "}
         Projected <strong>{week.projectedPoints.toFixed(1)}</strong> before
         cost, <strong>{week.netExpectedPoints.toFixed(1)}</strong> after.
@@ -117,15 +141,14 @@ function Why({ week, chip }: { week: PlanGameweek; chip: boolean }) {
         {money.format(week.bankAfterTenths / 10)}.
       </p>
       <p className="plan-bench-note">
-        Bench is ordered by expected points, not by FPL&rsquo;s substitution
-        rules — those depend on the formation left behind when someone does not
-        play, which is not solved here.
+        {money.format(benched)} is on the bench, which scores nothing unless a
+        starter does not play. Bench order is by expected points, not by
+        FPL&rsquo;s substitution rules — those depend on the formation left
+        behind, which is not solved here.
       </p>
       {chip ? (
         <p className="plan-chip-note">
-          One of the two easiest fixture runs of the season. A chip window on
-          fixture difficulty alone — chip timing is not solved, because the
-          multiplier and bench behaviour it needs is not published.
+          <strong>{chip.chip}:</strong> {chip.note}.
         </p>
       ) : null}
     </div>
@@ -139,22 +162,32 @@ function GameweekCard({
   onToggle,
 }: {
   week: PlanGameweek;
-  chip: boolean;
+  chip: ChipCall | null;
   open: boolean;
   onToggle: () => void;
 }) {
   const deadline = new Date(week.deadline);
+  const value =
+    [...week.starters, ...week.bench].reduce(
+      (total, player) => total + player.priceTenths,
+      0,
+    ) / 10;
 
   return (
     <li className={`plan-card plan-${week.confidence}`}>
       <div className="plan-card-head">
         <span className="plan-gw mono">GW{week.event}</span>
         <span className="plan-date mono">{deadlineDay.format(deadline)}</span>
-        {chip ? <span className="plan-chip mono">CHIP</span> : null}
+        {chip ? <span className="plan-chip mono">{chip.chip}</span> : null}
       </div>
 
       <Move week={week} />
       <TeamSheet week={week} />
+
+      <p className="plan-value mono">
+        Squad {money.format(value)} · bank{" "}
+        {money.format(week.bankAfterTenths / 10)}
+      </p>
 
       <button
         aria-expanded={open}
@@ -181,6 +214,8 @@ function asPlanGameweek(week: SolvedGameweek): PlanGameweek {
     viceCaptain: week.viceCaptain,
     transfersIn: week.transfersIn,
     transfersOut: week.transfersOut,
+    opponents: week.opponents,
+    expected: week.expected,
     freeTransfersBefore: week.freeTransfersBefore,
     paidTransfers: week.paidTransfers,
     transferCostPoints: week.transferCostPoints,
@@ -196,7 +231,13 @@ export default function SeasonPlanPage() {
   const [open, setOpen] = useState<number | null>(
     plan.gameweeks[0]?.event ?? null,
   );
-  const chips = useMemo(() => new Set(plan.chipWindows), [plan.chipWindows]);
+  const chips = useMemo(() => {
+    const byEvent = new Map<number, ChipCall>();
+    for (const chip of plan.chips) {
+      if (chip.event !== null) byEvent.set(chip.event, chip);
+    }
+    return byEvent;
+  }, [plan.chips]);
 
   /*
    * Nothing to solve until a manager has a squad. Between seasons FPL wipes
@@ -302,7 +343,7 @@ export default function SeasonPlanPage() {
       <ul className="plan-rail">
         {gameweeks.map((week) => (
           <GameweekCard
-            chip={chips.has(week.event)}
+            chip={chips.get(week.event) ?? null}
             key={week.event}
             onToggle={() => setOpen(open === week.event ? null : week.event)}
             open={open === week.event}
@@ -315,6 +356,40 @@ export default function SeasonPlanPage() {
         {plan.basis}. Records from {plan.recordSeason}. Transfer rules:{" "}
         {plan.rulesReference}.
       </p>
+
+      <section className="plan-caveats" aria-label="What this plan cannot know">
+        <h2>Three things to hold against it</h2>
+        <ol>
+          <li>
+            <strong>The promoted clubs have no record.</strong> Every projection
+            here comes from {plan.recordSeason}, a season{" "}
+            {plan.dataGaps.clubsWithoutRecord.length > 0 ? (
+              <>
+                {plan.dataGaps.clubsWithoutRecord.join(" and ")} did not play in
+              </>
+            ) : (
+              <>the promoted clubs did not play in</>
+            )}
+            . Their players are missing from the pool entirely, and fixtures
+            against them are rated as exactly average because there is no
+            measured strength to rate them by. {plan.dataGaps.clubsInPool} of{" "}
+            {plan.dataGaps.clubsInLeague} clubs are represented.
+          </li>
+          <li>
+            <strong>It does not yet adjust week to week.</strong> A real plan
+            moves with form, minutes, injuries and price changes, and against
+            what your mini-league already owns. None of that is in here: this is
+            last season&rsquo;s scoring record scaled by this season&rsquo;s
+            fixtures, and nothing else.
+          </li>
+          <li>
+            <strong>It will change every gameweek.</strong> That is not a
+            failure of the plan, it is what a plan is for. Read the shape — the
+            weeks worth a chip, the runs worth holding through — and expect the
+            names past the next month or so to be replaced.
+          </li>
+        </ol>
+      </section>
     </section>
   );
 }

@@ -25,6 +25,7 @@ from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
+from typing import Any
 
 from fpl_andres import timeouts
 from fpl_andres.backtesting.fixtures import TeamStrength
@@ -39,7 +40,6 @@ from fpl_andres.optimization.contracts import (
     TransferRulesAddendum,
 )
 from fpl_andres.planning.season_plan import (
-    chip_windows,
     plan_season,
 )
 from fpl_andres.positions import Position
@@ -61,6 +61,15 @@ LINEUP_RANGE = {1: (1, 1), 2: (3, 5), 3: (2, 5), 4: (1, 3)}
 # a plan; the artifact records the size so the trim is visible rather than
 # implied.
 POOL_PER_POSITION = 14
+# Cheapest playable options per position, on top of the best ones.
+#
+# A pool ranked only by expected points contains no bench fodder, and a squad
+# must still field fifteen: the solver was forced to spend a mean of 23.4 of the
+# 100 million on players who score nothing, once benching a 12.0 million
+# midfielder. The bench scores zero outside a Bench Boost, so every pound parked
+# there is a pound not in the eleven, and the fix is to make cheap players
+# available rather than to penalise expensive ones.
+ENABLERS_PER_POSITION = 6
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -129,6 +138,146 @@ def _opponent_multiplier(
     # A defender's return depends on the opponent's attack; an attacker's on
     # their defence. The opponent's home/away is the inverse of the player's.
     return measured.attack(home=not home) if defensive else measured.defence(home=not home)
+
+
+def _data_gaps(
+    pool: Sequence[Candidate],
+    clubs: Mapping[int, Mapping[str, Any]],
+) -> dict[str, object]:
+    """Which clubs the previous season cannot say anything about.
+
+    The record season is the last Premier League season, so the three promoted
+    clubs have almost no players in it and no measured strength at all. Their
+    fixtures are therefore rated as exactly average, which is a guess wearing
+    the same clothes as a measurement. Counting it here means the page can say
+    how big the hole is rather than implying there is not one.
+    """
+    represented = {candidate.club for candidate in pool}
+    absent = sorted(
+        str(team["short_name"])
+        for team in clubs.values()
+        if str(team["short_name"]) not in represented
+    )
+    return {
+        "clubsWithoutRecord": absent,
+        "clubsInPool": len(represented),
+        "clubsInLeague": len(clubs),
+    }
+
+
+def _chip_plan(
+    gameweeks: Sequence[dict[str, Any]],
+    named: Mapping[int, Candidate],
+) -> list[dict[str, object]]:
+    """When to play each chip, from what the plan already knows.
+
+    Each rule is the chip's own definition turned into a measurement, so it can
+    be checked rather than trusted:
+
+    - **Triple Captain** trebles one player, so it wants the gameweek where a
+      single player is worth the most.
+    - **Bench Boost** scores the bench, so it wants the gameweek where the bench
+      is worth the most — not where the whole squad is, which is a different
+      week and the one this first got wrong.
+    - **Free Hit** buys one week of unlimited transfers, so it wants the week the
+      squad is least able to field itself: the most blanks.
+    - **Wildcard** buys unlimited transfers permanently, so it wants the point
+      where the plan is about to spend a lot of them anyway. Five is the number
+      because that is where a wildcard beats banking.
+
+    Chip *interaction* is still not solved — playing one changes what the others
+    are worth — so these are four independent answers, and the artifact says so.
+    """
+    if not gameweeks:
+        return []
+
+    chips: list[dict[str, object]] = []
+    taken: set[int] = set()
+
+    def free(weeks: Sequence[dict[str, Any]]) -> list[dict[str, Any]]:
+        return [week for week in weeks if week["event"] not in taken]
+
+    triple = max(
+        gameweeks,
+        key=lambda week: max(week["expected"].values(), default=0.0),
+    )
+    best_code, best_points = max(triple["expected"].items(), key=lambda pair: pair[1])
+    taken.add(triple["event"])
+    chips.append(
+        {
+            "event": triple["event"],
+            "chip": "Triple Captain",
+            "note": (
+                f"{named[int(best_code)].name} is worth {best_points:.1f}, his best of the season"
+            ),
+        }
+    )
+
+    def bench_points(week: dict[str, Any]) -> float:
+        return float(sum(week["expected"].get(str(code), 0.0) for code in week["bench"]))
+
+    boost_candidates = free(gameweeks)
+    if boost_candidates:
+        boost = max(boost_candidates, key=bench_points)
+        taken.add(boost["event"])
+        chips.append(
+            {
+                "event": boost["event"],
+                "chip": "Bench Boost",
+                "note": f"the bench is worth {bench_points(boost):.1f}, its best",
+            }
+        )
+
+    def blanks(week: dict[str, Any]) -> int:
+        return sum(1 for points in week["expected"].values() if points == 0.0)
+
+    hit_candidates = [week for week in free(gameweeks) if blanks(week) > 0]
+    if hit_candidates:
+        free_hit = max(hit_candidates, key=blanks)
+        taken.add(free_hit["event"])
+        chips.append(
+            {
+                "event": free_hit["event"],
+                "chip": "Free Hit",
+                "note": f"{blanks(free_hit)} of the fifteen are not playing",
+            }
+        )
+    else:
+        chips.append(
+            {
+                "event": None,
+                "chip": "Free Hit",
+                "note": (
+                    "no blank gameweek is scheduled yet, so nothing yet justifies "
+                    "one week of unlimited transfers"
+                ),
+            }
+        )
+
+    # Where the plan is about to spend five transfers inside five gameweeks, a
+    # wildcard delivers them at once and keeps the free ones.
+    for index, week in enumerate(gameweeks):
+        ahead = gameweeks[index : index + 5]
+        wanted = sum(len(each["transfersIn"]) for each in ahead)
+        if wanted >= 5 and week["event"] not in taken:
+            chips.append(
+                {
+                    "event": week["event"],
+                    "chip": "Wildcard",
+                    "note": (f"{wanted} transfers wanted across the next {len(ahead)} gameweeks"),
+                }
+            )
+            break
+    else:
+        chips.append(
+            {
+                "event": None,
+                "chip": "Wildcard",
+                "note": "the plan never wants five transfers inside five gameweeks",
+            }
+        )
+
+    return sorted(chips, key=lambda chip: (chip["event"] is None, chip["event"] or 0))
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -207,15 +356,20 @@ def main(argv: Sequence[str] | None = None) -> int:
         )
         return 1
 
-    # Keep the squad, plus the strongest of everyone else, position by position.
+    # Keep the squad, the strongest of everyone else, and the cheapest players
+    # worth a bench place, position by position.
     held = {by_code[code].element_id for code in squad_codes}
     pool: list[Candidate] = [by_code[code] for code in squad_codes]
     for position in SQUAD_SHAPE:
-        ranked = sorted(
-            (c for c in candidates if c.position == position and c.element_id not in held),
-            key=lambda c: -c.record,
-        )
-        pool.extend(ranked[:POOL_PER_POSITION])
+        available = [c for c in candidates if c.position == position and c.element_id not in held]
+        best = sorted(available, key=lambda c: -c.record)[:POOL_PER_POSITION]
+        chosen = {c.element_id for c in best}
+        cheapest = sorted(
+            (c for c in available if c.element_id not in chosen),
+            key=lambda c: (c.price_tenths, -c.record),
+        )[:ENABLERS_PER_POSITION]
+        pool.extend(best)
+        pool.extend(cheapest)
 
     ordered_events = sorted(events)
     cutoffs = {
@@ -232,6 +386,9 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     forecasts: list[HorizonPlayerForecast] = []
     difficulty: dict[int, float] = {}
+    # (event, element id) -> points, so a card can show what the shirt is worth
+    # that week rather than only the squad total.
+    expected_by: dict[tuple[int, int], float] = {}
     now = datetime.now(UTC)
     for event in ordered_events:
         weights: list[float] = []
@@ -252,6 +409,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                     )
                     for opponent, home in games
                 )
+            expected_by[(event, candidate.element_id)] = round(expected, 2)
             forecasts.append(
                 HorizonPlayerForecast(
                     season=season,
@@ -345,6 +503,20 @@ def main(argv: Sequence[str] | None = None) -> int:
     gameweeks = []
     for planned in plan.events:
         event_plan = planned.plan
+        squad = set(event_plan.squad_element_ids)
+        # "HUL (A)" per club, so a card can name the opponent rather than repeat
+        # the club whose shirt is already drawn beside the player. A double
+        # gameweek gets both.
+        opponents: dict[str, list[str]] = {}
+        for element_id in squad:
+            candidate = detail[element_id]
+            if candidate.club in opponents:
+                continue
+            opponents[candidate.club] = [
+                f"{clubs[opponent]['short_name']} ({'H' if home else 'A'})"
+                for opponent, home in schedule.get((planned.event, candidate.team_id), ())
+            ]
+
         gameweeks.append(
             {
                 "event": planned.event,
@@ -359,6 +531,11 @@ def main(argv: Sequence[str] | None = None) -> int:
                 "viceCaptain": ref(event_plan.vice_captain_element_id),
                 "transfersIn": [ref(pid) for pid in event_plan.transfers_in],
                 "transfersOut": [ref(pid) for pid in event_plan.transfers_out],
+                "opponents": opponents,
+                "expected": {
+                    str(detail[element_id].code): expected_by[(planned.event, element_id)]
+                    for element_id in squad
+                },
                 "freeTransfersBefore": event_plan.free_transfers_before,
                 "paidTransfers": event_plan.paid_transfers,
                 "transferCostPoints": event_plan.transfer_cost_points,
@@ -367,6 +544,8 @@ def main(argv: Sequence[str] | None = None) -> int:
                 "bankAfterTenths": event_plan.bank_after_tenths,
             }
         )
+
+    chips = _chip_plan(gameweeks, named)
 
     payload = {
         "schemaVersion": SCHEMA_VERSION,
@@ -386,7 +565,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         "windowsSolved": plan.windows_solved,
         "poolSize": plan.pool_size,
         "netExpectedPoints": round(plan.net_expected_points, 2),
-        "chipWindows": list(chip_windows(difficulty, count=2)),
+        "chips": chips,
+        "dataGaps": _data_gaps(pool, clubs),
         "players": {
             str(code): {
                 "name": candidate.name,
