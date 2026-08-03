@@ -68,6 +68,21 @@ function bodyBlocks(
       return blocks;
     }
 
+    case "hoops": {
+      // Horizontal bands, one grid row each, the full length of the shirt.
+      const blocks: Block[] = [];
+      for (let row = 0; row < ROWS - SHOULDER_Y; row += 1) {
+        blocks.push({
+          x: BODY_X,
+          y: SHOULDER_Y + row,
+          width: BODY_W,
+          height: 1,
+          fill: row % 2 === 0 ? primary : secondary,
+        });
+      }
+      return blocks;
+    }
+
     case "halves":
       return [
         { ...full, width: BODY_W / 2 },
@@ -116,17 +131,29 @@ function CeefaxShirtImpl({
   label,
   className,
 }: CeefaxShirtProps) {
-  const primaryName = nearestTeletextColor(kit.primary);
-  const secondaryName = nearestTeletextColor(kit.secondary);
-  const trimName = nearestTeletextColor(kit.trim);
+  const primaryName =
+    kit.teletext?.primary ?? nearestTeletextColor(kit.primary);
+  const secondaryName =
+    kit.teletext?.secondary ?? nearestTeletextColor(kit.secondary);
+  const trimName = kit.teletext?.trim ?? nearestTeletextColor(kit.trim);
 
   const primary = TELETEXT_PALETTE[primaryName];
   const secondary = TELETEXT_PALETTE[secondaryName];
   const trim = TELETEXT_PALETTE[trimName];
+  const trimUpper =
+    kit.trimUpper === undefined
+      ? null
+      : TELETEXT_PALETTE[nearestTeletextColor(kit.trimUpper)];
 
   // Contrast sleeves are a kit feature, not a pattern applied to the body.
   const sleeveFill = kit.pattern === "sleeves" ? secondary : primary;
   const blocks = bodyBlocks(kit.pattern, primary, secondary);
+  const dither = kit.dither
+    ? ([
+        TELETEXT_PALETTE[kit.dither[0]],
+        TELETEXT_PALETTE[kit.dither[1]],
+      ] as const)
+    : null;
 
   const accessibleName = label === null ? null : (label ?? `${kit.name} shirt`);
 
@@ -167,13 +194,44 @@ function CeefaxShirtImpl({
         />
       ))}
 
+      {dither === null
+        ? null
+        : /* Checkerboard only the body colour, so Hull's black stripes survive
+             being turned amber. One cell per square, and the eye mixes two
+             palette colours into a third the palette does not have. */
+          blocks
+            .filter((block) => block.fill === primary)
+            .flatMap((block) =>
+              Array.from({ length: block.height }, (_, row) =>
+                Array.from({ length: block.width }, (_, column) => (
+                  <rect
+                    key={`dither-${block.x + column}-${block.y + row}`}
+                    x={(block.x + column) * CELL}
+                    y={(block.y + row) * CELL}
+                    width={CELL}
+                    height={CELL}
+                    fill={dither[(block.y + row + block.x + column) % 2]}
+                  />
+                )),
+              ),
+            )}
+
       <rect
         x={(BODY_X + 2) * CELL}
-        y={0}
+        y={trimUpper === null ? 0 : CELL}
         width={(BODY_W - 4) * CELL}
-        height={SHOULDER_Y * CELL}
+        height={(trimUpper === null ? SHOULDER_Y : SHOULDER_Y - 1) * CELL}
         fill={trim}
       />
+      {trimUpper === null ? null : (
+        <rect
+          x={(BODY_X + 2) * CELL}
+          y={0}
+          width={(BODY_W - 4) * CELL}
+          height={CELL}
+          fill={trimUpper}
+        />
+      )}
 
       {squadNumber === null ? null : (
         <>

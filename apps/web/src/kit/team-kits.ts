@@ -19,30 +19,32 @@ import { nearestTeletextColor } from "./teletext";
  *
  * ## What eight colours cost
  *
- * Measured, not estimated. Snapping to the teletext palette leaves **17 of 20**
- * clubs distinguishable on (body, secondary, collar, pattern). Three pairs
- * collide:
+ * Measured, not estimated. All **20 of 20** clubs are distinguishable on
+ * (body, secondary, collar, pattern).
  *
- * | Renders as              | Clubs                  |
- * | ----------------------- | ---------------------- |
- * | blue / white / solid    | Chelsea, Everton       |
- * | cyan / white / solid    | Coventry, Man City     |
- * | white / black / solid   | Fulham, Tottenham      |
+ * That took work rather than luck. On body colour alone the twenty collapse to
+ * six: red seven times, blue four, black four. The collar is what separates the
+ * three red clubs — Liverpool white, United black, Forest red — and without it
+ * the count is 14. Correcting the collars to the real kits (Everton yellow,
+ * Spurs and City white, Leeds blue) and the patterns to the real construction
+ * (Leeds hoops, Coventry stripes, Fulham's two-tone collar) took it to twenty.
  *
- * Each pair genuinely wears a near-identical kit — two royal blue, two sky
- * blue, two white-and-navy — so this is the palette reporting a real similarity
- * rather than losing information.
+ * Two kits needed more than the palette could give:
  *
- * Without the collar it would be 14 of 20, with Liverpool, United and Forest
- * all identical. That is why `trim` is part of the signature.
+ * - **Villa** is claret and sky blue. Nearest-RGB puts claret on black and sky
+ *   blue on white, which is a Newcastle shirt. It carries an explicit override
+ *   to magenta and cyan, which is what Ceefax actually used for claret.
+ * - **Hull** is amber, and Mode 7 has no orange. The body is a red-and-yellow
+ *   checkerboard, which is how a teletext artist made one.
  *
- * The shirt is therefore **never the only identifier**. Every rendered shirt
+ * The shirt is still **never the only identifier**. Every rendered shirt
  * carries the club in its accessible name, and the short name is printed beside
- * it. `team-kits.test.ts` pins the collision set, so a kit edit that makes two
- * more clubs identical fails rather than quietly shipping.
+ * it. `team-kits.test.ts` pins the distinct count, so a kit edit that makes two
+ * clubs identical fails rather than quietly shipping.
  */
 
-export type KitPattern = "solid" | "stripes" | "halves" | "sleeves" | "sash";
+export type KitPattern =
+  "solid" | "stripes" | "hoops" | "halves" | "sleeves" | "sash";
 
 export interface TeamKit {
   /** FPL club code, stable across seasons. */
@@ -51,11 +53,38 @@ export interface TeamKit {
   name: string;
   /** Shirt body. */
   primary: string;
-  /** Stripes, sleeves, or the second half — whatever the pattern uses. */
+  /** Stripes, hoops, sleeves, or the second half — whatever the pattern uses. */
   secondary: string;
   /** Collar and cuffs. */
   trim: string;
+  /** Upper band of a two-tone collar, drawn above `trim`. */
+  trimUpper?: string;
   pattern: KitPattern;
+  /**
+   * What a teletext page actually showed, where the automatic snap misreads it.
+   *
+   * Nearest-RGB distance is dominated by lightness, so it discards the hue that
+   * identifies a kit: Villa's claret lands on black and its sky-blue sleeves on
+   * white, which is a Newcastle shirt. Snapping on hue instead fixes claret and
+   * breaks City, whose sky blue becomes ordinary blue.
+   *
+   * Neither rule is right for every kit, so where the answer is famously wrong
+   * the kit states what Ceefax used — claret was magenta — and the override is
+   * visible here rather than hidden in a distance function.
+   */
+  teletext?: {
+    primary?: TeletextColor;
+    secondary?: TeletextColor;
+    trim?: TeletextColor;
+  };
+  /**
+   * Two palette colours checkerboarded to suggest a third the palette does not
+   * have. Mode 7 had no orange, so a Ceefax artist made one by alternating red
+   * and yellow blocks and letting a 1974 television do the mixing. Hull's amber
+   * is the case in this league: yellow alone is too lemon, red alone is a
+   * different club.
+   */
+  dither?: readonly [TeletextColor, TeletextColor];
 }
 
 export const TEAM_KITS: readonly TeamKit[] = [
@@ -76,6 +105,7 @@ export const TEAM_KITS: readonly TeamKit[] = [
     secondary: "#95bfe5",
     trim: "#95bfe5",
     pattern: "sleeves",
+    teletext: { primary: "magenta", secondary: "cyan", trim: "cyan" },
   },
   {
     code: 91,
@@ -120,7 +150,7 @@ export const TEAM_KITS: readonly TeamKit[] = [
     primary: "#78d0f3",
     secondary: "#ffffff",
     trim: "#1d1d1b",
-    pattern: "solid",
+    pattern: "stripes",
   },
   {
     code: 31,
@@ -137,7 +167,7 @@ export const TEAM_KITS: readonly TeamKit[] = [
     name: "Everton",
     primary: "#003399",
     secondary: "#ffffff",
-    trim: "#ffffff",
+    trim: "#ffe100",
     pattern: "solid",
   },
   {
@@ -147,6 +177,7 @@ export const TEAM_KITS: readonly TeamKit[] = [
     primary: "#ffffff",
     secondary: "#000000",
     trim: "#000000",
+    trimUpper: "#cc0000",
     pattern: "solid",
   },
   {
@@ -157,6 +188,7 @@ export const TEAM_KITS: readonly TeamKit[] = [
     secondary: "#000000",
     trim: "#000000",
     pattern: "stripes",
+    dither: ["yellow", "red"],
   },
   {
     code: 40,
@@ -171,10 +203,10 @@ export const TEAM_KITS: readonly TeamKit[] = [
     code: 2,
     shortName: "LEE",
     name: "Leeds",
-    primary: "#ffffff",
+    primary: "#ffe100",
     secondary: "#1d428a",
-    trim: "#ffe100",
-    pattern: "solid",
+    trim: "#1d428a",
+    pattern: "hoops",
   },
   {
     code: 14,
@@ -191,7 +223,7 @@ export const TEAM_KITS: readonly TeamKit[] = [
     name: "Manchester City",
     primary: "#6cabdd",
     secondary: "#ffffff",
-    trim: "#1c2c5b",
+    trim: "#ffffff",
     pattern: "solid",
   },
   {
@@ -236,7 +268,7 @@ export const TEAM_KITS: readonly TeamKit[] = [
     name: "Tottenham",
     primary: "#ffffff",
     secondary: "#132257",
-    trim: "#132257",
+    trim: "#ffffff",
     pattern: "solid",
   },
 ];
@@ -274,9 +306,9 @@ export interface KitSignature {
 
 export function kitSignature(kit: TeamKit): KitSignature {
   return {
-    primary: nearestTeletextColor(kit.primary),
-    secondary: nearestTeletextColor(kit.secondary),
-    trim: nearestTeletextColor(kit.trim),
+    primary: kit.teletext?.primary ?? nearestTeletextColor(kit.primary),
+    secondary: kit.teletext?.secondary ?? nearestTeletextColor(kit.secondary),
+    trim: kit.teletext?.trim ?? nearestTeletextColor(kit.trim),
     pattern: kit.pattern,
   };
 }

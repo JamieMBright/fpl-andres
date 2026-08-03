@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import plan from "../data/season-plan.json";
-import { nearestTeletextColor } from "./teletext";
+import { nearestTeletextColor, TELETEXT_PALETTE } from "./teletext";
 import {
   kitForCode,
   kitForShortName,
@@ -58,12 +58,12 @@ describe("the kit list", () => {
 });
 
 describe("what the eight-colour palette costs", () => {
-  it("keeps seventeen of twenty clubs distinguishable", () => {
+  it("keeps every club distinguishable", () => {
     const keys = TEAM_KITS.map((kit) => signatureKey(kitSignature(kit)));
-    expect(new Set(keys).size).toBe(17);
+    expect(new Set(keys).size).toBe(TEAM_KITS.length);
   });
 
-  it("collides only on the pairs that genuinely wear the same kit", () => {
+  it("names any pair that would render identically", () => {
     const byKey = new Map<string, string[]>();
     for (const kit of TEAM_KITS) {
       const key = signatureKey(kitSignature(kit));
@@ -75,9 +75,9 @@ describe("what the eight-colour palette costs", () => {
       .map((clubs) => clubs.sort().join("+"))
       .sort();
 
-    // Pinned. A kit edit that makes a third pair identical is a regression in
-    // how much the shirt tells you, and should have to be argued for.
-    expect(collisions).toEqual(["CHE+EVE", "COV+MCI", "FUL+TOT"]);
+    // Pinned empty. Losing a club to a collision is a regression in how much
+    // the shirt tells you, and should have to be argued for.
+    expect(collisions).toEqual([]);
   });
 
   it("separates the three red clubs on the collar alone", () => {
@@ -89,5 +89,30 @@ describe("what the eight-colour palette costs", () => {
 
     expect(new Set(reds.map((signature) => signature.primary)).size).toBe(1);
     expect(new Set(reds.map(signatureKey)).size).toBe(3);
+  });
+
+  it("overrides the snap only where it is stated, and to a real palette colour", () => {
+    const palette = new Set(Object.keys(TELETEXT_PALETTE));
+    const overridden = TEAM_KITS.filter((kit) => kit.teletext);
+
+    // Villa's claret is the case this exists for. If the list grows, the doc
+    // comment explaining why should have grown with it.
+    expect(overridden.map((kit) => kit.shortName)).toEqual(["AVL"]);
+    for (const kit of overridden) {
+      for (const colour of Object.values(kit.teletext ?? {})) {
+        expect(palette).toContain(colour);
+      }
+    }
+  });
+
+  it("dithers only where the palette has no name for the colour", () => {
+    const dithered = TEAM_KITS.filter((kit) => kit.dither);
+
+    // Mode 7 has no orange; Hull is the only amber club in this league.
+    expect(dithered.map((kit) => kit.shortName)).toEqual(["HUL"]);
+    for (const kit of dithered) {
+      expect(kit.dither).toHaveLength(2);
+      expect(kit.dither?.[0]).not.toBe(kit.dither?.[1]);
+    }
   });
 });
