@@ -97,9 +97,13 @@ def _run_rating(
         if measured is None:
             continue
         home = fixture.is_home(team_id)
-        multipliers.append(
-            measured.attack(home=not home) if defensive else measured.defence(home=not home)
-        )
+        if defensive:
+            # A clean sheet gets harder as the opponent's attack gets stronger,
+            # so the strength multiplier is inverted rather than applied.
+            opposing_attack = measured.attack(home=not home)
+            multipliers.append(1.0 / opposing_attack if opposing_attack > 0 else 1.0)
+        else:
+            multipliers.append(measured.defence(home=not home))
     if not multipliers:
         return None, 0, played
     return sum(multipliers) / len(multipliers), len(multipliers), played

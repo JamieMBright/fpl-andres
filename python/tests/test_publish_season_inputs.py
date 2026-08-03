@@ -123,10 +123,19 @@ def test_an_attacker_is_rated_against_the_opponents_defence(tmp_path: Path) -> N
     arsenal = payload["fixtureLadder"]["ARS"]
 
     # Gameweek 1: Arsenal at home to Liverpool, so the attacking rung is
-    # Liverpool's away defence.
+    # Liverpool's away defence — how leaky they are.
     assert arsenal["attacking"][0] == pytest.approx(1.0)
-    # And the defensive rung is Liverpool's away attack.
-    assert arsenal["defensive"][0] == pytest.approx(1.1)
+
+
+def test_a_defender_is_rated_inversely_to_the_opponents_attack(tmp_path: Path) -> None:
+    payload = _run(tmp_path, [_element()])
+    arsenal = payload["fixtureLadder"]["ARS"]
+
+    # A clean sheet gets *harder* as the opponent's attack gets stronger, so the
+    # strength multiplier is inverted. Applied directly it said a defender's
+    # best fixture was against the league's best attack, and the plan
+    # triple-captained Gabriel away at Manchester City for it.
+    assert arsenal["defensive"][0] == pytest.approx(1.0 / 1.1, abs=1e-4)
 
 
 def test_a_double_gameweek_sums_both_fixtures(tmp_path: Path) -> None:

@@ -39,11 +39,16 @@ from fpl_andres.optimization.contracts import (
     PositionConstraint,
     TransferRulesAddendum,
 )
+from fpl_andres.planning.opening import OpeningSettings, choose_opening_squad
 from fpl_andres.planning.season_plan import (
     plan_season,
 )
 from fpl_andres.positions import Position
 from fpl_andres.rules import RulesSnapshot
+from fpl_andres.simulation.squad import Candidate as SquadCandidate
+from fpl_andres.simulation.squad import SquadRules
+
+SQUAD_RULES = SquadRules(budget_tenths=1000, club_limit=3, position_counts={1: 2, 2: 5, 3: 5, 4: 3})
 
 BOOTSTRAP = "https://fantasy.premierleague.com/api/bootstrap-static/"
 FIXTURES = "https://fantasy.premierleague.com/api/fixtures/"
@@ -130,14 +135,28 @@ def _opponent_multiplier(
     home: bool,
     strength: Mapping[int, TeamStrength],
 ) -> float:
-    """How much this fixture is worth to this player, against an average one."""
+    """How much this fixture is worth to this player, against an average one.
+
+    The two routes run in opposite directions and it matters enormously.
+
+    An attacker scores more against a leaky defence, and `defence()` is already
+    a leakiness multiplier — above one means that side concedes more than
+    average — so it multiplies directly.
+
+    A defender scores *less* against a strong attack, because his points come
+    from a clean sheet. `attack()` is a strength multiplier, so it has to be
+    inverted. Multiplying by it directly said Gabriel's best fixture of the
+    season was away at Manchester City, whose 1.361 is the highest attack
+    multiplier in the league, and the plan triple-captained him for it.
+    """
     measured = strength.get(opponent)
     if measured is None:
         return 1.0
     defensive = position in (1, 2)
-    # A defender's return depends on the opponent's attack; an attacker's on
-    # their defence. The opponent's home/away is the inverse of the player's.
-    return measured.attack(home=not home) if defensive else measured.defence(home=not home)
+    if not defensive:
+        return measured.defence(home=not home)
+    opposing_attack = measured.attack(home=not home)
+    return 1.0 / opposing_attack if opposing_attack > 0 else 1.0
 
 
 def _data_gaps(
@@ -168,25 +187,28 @@ def _data_gaps(
 def _chip_plan(
     gameweeks: Sequence[dict[str, Any]],
     named: Mapping[int, Candidate],
+    ceiling: Mapping[int, float] | None = None,
 ) -> list[dict[str, object]]:
     """When to play each chip, from what the plan already knows.
 
-    Each rule is the chip's own definition turned into a measurement, so it can
-    be checked rather than trusted:
+    Each rule is the chip's own definition turned into a measurement.
 
     - **Triple Captain** trebles one player, so it wants the gameweek where a
       single player is worth the most.
     - **Bench Boost** scores the bench, so it wants the gameweek where the bench
-      is worth the most — not where the whole squad is, which is a different
-      week and the one this first got wrong.
-    - **Free Hit** buys one week of unlimited transfers, so it wants the week the
-      squad is least able to field itself: the most blanks.
-    - **Wildcard** buys unlimited transfers permanently, so it wants the point
-      where the plan is about to spend a lot of them anyway. Five is the number
-      because that is where a wildcard beats banking.
+      is worth the most.
+    - **Free Hit** buys unlimited transfers for one week and takes the squad
+      back, so it wants the week where the best eleven money could buy most
+      exceeds the eleven the plan actually fields.
+    - **Wildcard** buys unlimited transfers and keeps them, so the same
+      shortfall matters but it persists: it wants the week where the gap summed
+      over the following weeks is largest.
 
-    Chip *interaction* is still not solved — playing one changes what the others
-    are worth — so these are four independent answers, and the artifact says so.
+    Blank and double gameweeks need no special case. A blank is a player worth
+    zero and a double is a player worth more, which the ceiling already sees.
+
+    Chip *interaction* is not solved — playing one changes what the others are
+    worth — so these are four independent answers.
     """
     if not gameweeks:
         return []
@@ -228,18 +250,24 @@ def _chip_plan(
             }
         )
 
-    def blanks(week: dict[str, Any]) -> int:
-        return sum(1 for points in week["expected"].values() if points == 0.0)
+    # How far short of the best affordable eleven the plan falls that week.
+    shortfall = {
+        week["event"]: max(0.0, (ceiling or {}).get(week["event"], 0.0) - week["projectedPoints"])
+        for week in gameweeks
+    }
 
-    hit_candidates = [week for week in free(gameweeks) if blanks(week) > 0]
-    if hit_candidates:
-        free_hit = max(hit_candidates, key=blanks)
-        taken.add(free_hit["event"])
+    best_hit = max(free(gameweeks), key=lambda week: shortfall[week["event"]], default=None)
+    if best_hit is not None and shortfall[best_hit["event"]] > 0:
+        taken.add(best_hit["event"])
         chips.append(
             {
-                "event": free_hit["event"],
+                "event": best_hit["event"],
                 "chip": "Free Hit",
-                "note": f"{blanks(free_hit)} of the fifteen are not playing",
+                "note": (
+                    f"unlimited transfers would add "
+                    f"{shortfall[best_hit['event']]:.1f} that week, the season's "
+                    f"largest one-week gain"
+                ),
             }
         )
     else:
@@ -247,33 +275,39 @@ def _chip_plan(
             {
                 "event": None,
                 "chip": "Free Hit",
-                "note": (
-                    "no blank gameweek is scheduled yet, so nothing yet justifies "
-                    "one week of unlimited transfers"
-                ),
+                "note": "no week where a freely bought eleven beats the planned one",
             }
         )
 
-    # Where the plan is about to spend five transfers inside five gameweeks, a
-    # wildcard delivers them at once and keeps the free ones.
-    for index, week in enumerate(gameweeks):
-        ahead = gameweeks[index : index + 5]
-        wanted = sum(len(each["transfersIn"]) for each in ahead)
-        if wanted >= 5 and week["event"] not in taken:
-            chips.append(
-                {
-                    "event": week["event"],
-                    "chip": "Wildcard",
-                    "note": (f"{wanted} transfers wanted across the next {len(ahead)} gameweeks"),
-                }
-            )
-            break
+    # A wildcard keeps its squad, so the same shortfall counts for every week it
+    # would have persisted rather than only the week it is played.
+    def persisting(index: int) -> float:
+        return float(sum(shortfall[each["event"]] for each in gameweeks[index : index + 8]))
+
+    ranked = sorted(
+        ((persisting(index), week) for index, week in enumerate(gameweeks)),
+        key=lambda pair: -pair[0],
+    )
+    for gain, week in ranked:
+        if week["event"] in taken or gain <= 0:
+            continue
+        chips.append(
+            {
+                "event": week["event"],
+                "chip": "Wildcard",
+                "note": (
+                    f"the plan falls {gain:.1f} short of the best affordable squad "
+                    f"across the next eight gameweeks"
+                ),
+            }
+        )
+        break
     else:
         chips.append(
             {
                 "event": None,
                 "chip": "Wildcard",
-                "note": "the plan never wants five transfers inside five gameweeks",
+                "note": "the plan never falls far enough behind to be worth rebuilding",
             }
         )
 
@@ -545,7 +579,36 @@ def main(argv: Sequence[str] | None = None) -> int:
             }
         )
 
-    chips = _chip_plan(gameweeks, named)
+    # The best eleven the whole budget could buy that week, ignoring transfers.
+    # A chip is only worth playing to the extent the plan falls short of it.
+    ceiling: dict[int, float] = {}
+    candidate_for = {
+        candidate.element_id: SquadCandidate(
+            element_id=candidate.element_id,
+            element_code=candidate.code,
+            position=candidate.position,
+            team_id=candidate.team_id,
+            price_tenths=candidate.price_tenths,
+            web_name=candidate.name,
+        )
+        for candidate in pool
+    }
+    for event in ordered_events:
+        points = {
+            candidate.element_id: expected_by[(event, candidate.element_id)] for candidate in pool
+        }
+        try:
+            free_squad = choose_opening_squad(
+                list(candidate_for.values()),
+                points,
+                {element_id: 1.0 for element_id in candidate_for},
+                OpeningSettings(rules=SQUAD_RULES, bench_weight=0.0),
+            )
+        except ValueError:
+            continue
+        ceiling[event] = sum(points[p.element_id] for p in free_squad.starters)
+
+    chips = _chip_plan(gameweeks, named, ceiling)
 
     payload = {
         "schemaVersion": SCHEMA_VERSION,

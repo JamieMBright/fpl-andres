@@ -119,7 +119,11 @@ def main(argv: Sequence[str] | None = None) -> int:
                     back += 1.0
                     front += 1.0
                     continue
-                back += measured.attack(home=not home)
+                # A defender scores less against a strong attack, so the
+                # strength multiplier is inverted; an attacker scores more
+                # against a leaky defence, which `defence()` already measures.
+                opposing_attack = measured.attack(home=not home)
+                back += 1.0 / opposing_attack if opposing_attack > 0 else 1.0
                 front += measured.defence(home=not home)
             defensive.append(round(back, 4))
             attacking.append(round(front, 4))
