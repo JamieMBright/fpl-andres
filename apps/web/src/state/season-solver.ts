@@ -340,7 +340,11 @@ export function startFromCodes(
   return squad.length === codes.length ? { ...options, squad } : null;
 }
 
-const BY_ELEMENT_ID = new Map(PLAYERS.map((player) => [player.id, player]));
+/** Element id to player, for anything that has to name a squad FPL published. */
+export const PLAYERS_BY_ELEMENT_ID = new Map(
+  PLAYERS.map((player) => [player.id, player]),
+);
+const BY_ELEMENT_ID = PLAYERS_BY_ELEMENT_ID;
 
 /**
  * The same, from a manager's own squad.

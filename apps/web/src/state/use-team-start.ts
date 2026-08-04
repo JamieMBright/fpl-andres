@@ -2,6 +2,11 @@ import { useEffect, useState } from "react";
 
 import type { SolveStart } from "./season-solver";
 import { startFromElementIds } from "./season-solver";
+import {
+  readDeclaredTransfers,
+  squadAfterDeclared,
+  type DeclaredTransfer,
+} from "./declared-transfers";
 import { refreshTeamAnalysis } from "./team-analysis";
 
 /**
@@ -20,7 +25,12 @@ import { refreshTeamAnalysis } from "./team-analysis";
 export type TeamStartStatus =
   | { status: "idle" }
   | { status: "loading" }
-  | { status: "ready"; start: SolveStart; event: number }
+  | {
+      status: "ready";
+      start: SolveStart;
+      event: number;
+      declared: readonly DeclaredTransfer[];
+    }
   | { status: "failed"; reason: TeamStartFailure };
 
 export type TeamStartFailure =
@@ -29,7 +39,11 @@ export type TeamStartFailure =
   | "no_processed_event"
   | "squad_not_recognised";
 
-export function useTeamStart(raw: string | null): TeamStartStatus {
+export function useTeamStart(
+  raw: string | null,
+  /** Bumped by the caller when a transfer is declared, to read the squad again. */
+  declaredAt = 0,
+): TeamStartStatus {
   // Derived, not stored: a blank box and a nonsense box are both answerable
   // without asking FPL anything, and putting them in state would mean a render
   // pass to say so.
@@ -68,8 +82,19 @@ export function useTeamStart(raw: string | null): TeamStartStatus {
         const team = result.state;
         // His picks are the gameweek just gone, so the plan starts at the next.
         const fromEvent = team.event + 1;
+        // Anything he has told us about that FPL has not published yet. Read
+        // from his own browser, so it can only ever be his claim about his own
+        // squad — a Team ID is public, and a server copy could be forged.
+        const declared = readDeclaredTransfers(
+          window.localStorage,
+          entryId,
+          fromEvent,
+        );
         const start = startFromElementIds(
-          team.picks.map((pick) => pick.elementId),
+          squadAfterDeclared(
+            team.picks.map((pick) => pick.elementId),
+            declared,
+          ),
           {
             bankTenths: team.bankTenths,
             availableFreeTransfers: 1,
@@ -78,7 +103,7 @@ export function useTeamStart(raw: string | null): TeamStartStatus {
         );
         setFetched(
           start
-            ? { status: "ready", start, event: fromEvent }
+            ? { status: "ready", start, event: fromEvent, declared }
             : { status: "failed", reason: "squad_not_recognised" },
         );
       })
@@ -94,7 +119,7 @@ export function useTeamStart(raw: string | null): TeamStartStatus {
       // A new team id must not show the previous one's answer.
       if (!settled) setFetched(null);
     };
-  }, [entryId, usable]);
+  }, [entryId, usable, declaredAt]);
 
   if (raw === null) return { status: "idle" };
   if (!usable) return { status: "failed", reason: "not_a_team_id" };

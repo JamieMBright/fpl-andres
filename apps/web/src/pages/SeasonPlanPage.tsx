@@ -3,6 +3,7 @@ import { useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
 import { CeefaxShirt } from "../components/CeefaxShirt";
+import { DeclaredTransferForm } from "../components/DeclaredTransferForm";
 import { PlayerDetail } from "../components/PlayerDetail";
 import { RouteHeading } from "../components/RouteHeading";
 import { deadlineDay, money } from "../format";
@@ -89,7 +90,10 @@ function TeamEntry({
         {team.status === "loading"
           ? "Reading your squad."
           : team.status === "ready"
-            ? `Your fifteen, solved from gameweek ${String(team.event)}.`
+            ? `Your fifteen, solved from gameweek ${String(team.event)}.` +
+              (team.declared.length > 0
+                ? ` ${String(team.declared.length)} transfer${team.declared.length === 1 ? "" : "s"} you told me about applied on top.`
+                : "")
             : team.status === "failed"
               ? TEAM_FAILURE[team.reason]
               : "Leave it blank for the optimal opening squad's season."}
@@ -430,6 +434,8 @@ export default function SeasonPlanPage() {
   const plan = useMemo(() => readSeasonPlan(), []);
   const [selected, setSelected] = useState<PlanPlayer | null>(null);
   const [params, setParams] = useSearchParams();
+  // Bumped when a transfer is declared, so the squad is read again with it.
+  const [declaredAt, setDeclaredAt] = useState(0);
   const chips = useMemo(() => {
     const byEvent = new Map<number, ChipCall>();
     for (const chip of plan.chips) {
@@ -446,7 +452,10 @@ export default function SeasonPlanPage() {
    * takes over.
    */
   const fromEvent = Number(params.get("from") ?? "");
-  const team = useTeamStart(params.get("team"));
+  const teamParam = params.get("team");
+  const teamId =
+    teamParam !== null && /^\d+$/.test(teamParam) ? Number(teamParam) : null;
+  const team = useTeamStart(teamParam, declaredAt);
   const live = useMemo(() => {
     // His own fifteen beats a gameweek number, because it is his season either
     // way and only one of the two knows what he owns.
@@ -492,6 +501,17 @@ export default function SeasonPlanPage() {
       <RouteHeading>Every gameweek to the end.</RouteHeading>
 
       <TeamEntry team={team} params={params} onChange={setParams} />
+
+      {team.status === "ready" && teamId !== null ? (
+        <DeclaredTransferForm
+          entryId={teamId}
+          event={team.event}
+          season={plan.season}
+          onDeclared={() => {
+            setDeclaredAt(Date.now());
+          }}
+        />
+      ) : null}
 
       <details className="scatter-controls plan-preamble">
         <summary className="scatter-controls-summary">

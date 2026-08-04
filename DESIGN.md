@@ -293,6 +293,7 @@ so a review knows what it does not have to check by hand.
 | `Countdown`            | Deadline cell at the end of the index bar        | `feature-walk`                          |
 | `RangeSlider`          | One track, two thumbs, for a band                | `feature-walk` (ownership band)         |
 | `HighlightPicker`      | Typeahead for names and clubs, chosen as chips   | `feature-walk`                          |
+| `DeclaredTransferForm` | A swap FPL has not published yet, kept locally   | unit (`declared-transfers.test.ts`)     |
 | `SquadRecord`          | Per-player projection table                      | `feature-walk`                          |
 | `ManagerHistory`       | Past seasons, including the empty case           | `team-entry`, unit                      |
 | `TeamStateCorrections` | Manager overrides, parsing and conflict          | unit (`parse.test.ts`)                  |

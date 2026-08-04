@@ -1670,6 +1670,28 @@ a:focus-visible {
   font-size: 11px;
 }
 
+/* One swap at a time, because a transfer is a pair. */
+.plan-declared-form {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 6px 8px;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.plan-declared-form label:not(.scatter-check) {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.plan-declared-form .scatter-check,
+.plan-declared-form button {
+  grid-column: 1 / -1;
+  justify-self: start;
+}
+
 .plan-preamble {
   margin-top: 22px;
 }

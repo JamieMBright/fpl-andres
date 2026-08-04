@@ -13,6 +13,9 @@
     },
     "api/team/*.ts": {
       "maxDuration": 15
+    },
+    "api/analysis-request.ts": {
+      "maxDuration": 10
     }
   },
   "rewrites": [{ "source": "/((?!api/).*)", "destination": "/index.html" }],
