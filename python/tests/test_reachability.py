@@ -199,6 +199,7 @@ def test_no_module_is_imported_only_by_its_own_tests() -> None:
     # Modules that are legitimately reached only from outside the package.
     external = {
         "__init__",
+        "backtest_ceiling",
         "capture_cohort_picks",
         "capture_crowd",
         "crosswalk",

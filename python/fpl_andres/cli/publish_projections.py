@@ -106,6 +106,8 @@ class ProjectionEntry(TypedDict):
     position: str
     priceTenths: int | None
     expectedPoints: float
+    expectedCeiling: float
+    ceilingRatio: float
     expectedMinutes: float
     probabilityAppear: float
     probabilityStart: float
@@ -146,6 +148,10 @@ def _entry(projection: MatchProjection) -> ProjectionEntry:
         "position": POSITION_CODES[projection.position],
         "priceTenths": projection.price_tenths,
         "expectedPoints": round(projection.expected_points, 2),
+        # The same match on his best afternoon, and the multiple that produced
+        # it. A chip or an armband is played for this number, not the mean.
+        "expectedCeiling": round(projection.expected_ceiling, 2),
+        "ceilingRatio": round(shape.ceiling_ratio, 3),
         "expectedMinutes": round(projection.expected_minutes, 1),
         "probabilityAppear": round(projection.minutes.probability_appear, 3),
         "probabilityStart": round(projection.minutes.probability_sixty_minutes, 3),

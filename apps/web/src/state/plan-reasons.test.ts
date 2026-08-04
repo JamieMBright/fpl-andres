@@ -40,6 +40,9 @@ function week(overrides: Partial<PlanGameweek> = {}): PlanGameweek {
     expected: Object.fromEntries(
       [...ELEVEN, ...BENCH].map((each) => [String(each.code), 4]),
     ),
+    ceiling: Object.fromEntries(
+      [...ELEVEN, ...BENCH].map((each) => [String(each.code), 9]),
+    ),
     freeTransfersBefore: 1,
     paidTransfers: 0,
     transferCostPoints: 0,

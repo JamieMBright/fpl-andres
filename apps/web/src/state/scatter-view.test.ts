@@ -33,7 +33,7 @@ describe("readScatterView", () => {
       ownedFrom: 1.5,
       ownedTo: 12,
       pinned: [154561, 226597],
-      search: "wieffer",
+      highlights: ["ARS", "#154561"],
     };
 
     expect(
@@ -73,7 +73,8 @@ describe("readScatterView", () => {
     expect(round("pin=1,abc,-4,2").pinned).toEqual([1, 2]);
   });
 
-  it("bounds the search term rather than carrying an essay", () => {
-    expect(round(`q=${"a".repeat(200)}`).search).toHaveLength(40);
+  it("bounds the highlight list rather than carrying an essay", () => {
+    const many = Array.from({ length: 40 }, (_, index) => `C${String(index)}`);
+    expect(round(`hl=${many.join(",")}`).highlights).toHaveLength(12);
   });
 });

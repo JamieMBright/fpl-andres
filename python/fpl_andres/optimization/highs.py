@@ -44,6 +44,15 @@ _SQUAD_TIE_BREAK = 1e-9
 _LINEUP_TIE_BREAK = 1e-11
 _CAPTAIN_TIE_BREAK = 1e-13
 
+# How much of the armband's value is read off the ceiling rather than the mean.
+# Assumed, not fitted: it is a statement about what you are playing for, not a
+# measurement. Measured on 2025-26 by `cli/backtest_ceiling.py`, a player beats
+# his own published ceiling in 13.6% of appearances, so the ceiling is a real
+# number rather than a flourish -- but how much to chase it is a strategy.
+# A third leans the armband toward a haul without handing it to a lottery
+# ticket who averages nothing.
+CAPTAIN_CEILING_WEIGHT = 1.0 / 3.0
+
 
 def _optimum_slack(optimum: float) -> float:
     """Slack for re-solving against a proven optimum, scaled to its magnitude.
@@ -91,7 +100,17 @@ class HighsOptimizer:
         objective = np.zeros(variable_count, dtype=np.float64)
         for index, player in enumerate(players):
             objective[lineup_offset + index] = -player.expected_points
-            objective[captain_offset + index] = -player.expected_points
+            # The armband is the one pick where upside matters more than the
+            # average. Doubling a steady four-point return gains four points;
+            # doubling a man capable of fifteen is what wins a mini-league, and
+            # a season of averages finishes mid-table. So the *extra* copy the
+            # captaincy buys is valued partly at his ceiling.
+            ceiling = player.expected_ceiling
+            objective[captain_offset + index] = -(
+                player.expected_points * (1.0 - CAPTAIN_CEILING_WEIGHT)
+                + (ceiling if ceiling is not None else player.expected_points)
+                * CAPTAIN_CEILING_WEIGHT
+            )
         objective[paid_transfer_column] = request.rules.transfer_rules.transfer_cost_points
 
         rows: list[np.ndarray] = []

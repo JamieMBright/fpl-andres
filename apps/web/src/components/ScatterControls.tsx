@@ -1,6 +1,7 @@
 import { useId } from "react";
 
 import { METRICS, type MetricGroup } from "../state/analysis-metrics";
+import { HighlightPicker } from "./HighlightPicker";
 import { RangeSlider } from "./RangeSlider";
 import type { AnalysisPool } from "../state/analysis-pool";
 import type { ColourBy, ScatterView } from "../state/scatter-view";
@@ -223,13 +224,10 @@ export function ScatterControls({
         </div>
 
         <div className="scatter-control-row">
-          <label htmlFor={`${ids}-search`}>Find a player</label>
-          <input
-            id={`${ids}-search`}
-            type="search"
-            value={view.search}
-            placeholder="Name or club"
-            onChange={(event) => onChange({ search: event.target.value })}
+          <HighlightPicker
+            highlights={view.highlights}
+            onChange={(highlights) => onChange({ highlights })}
+            players={pool.players}
           />
         </div>
 

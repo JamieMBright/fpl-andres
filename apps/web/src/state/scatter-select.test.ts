@@ -177,17 +177,30 @@ describe("selectPlotted", () => {
     });
   });
 
-  it("dims everyone the search does not match, without removing them", () => {
+  it("dims everyone not highlighted, without removing them", () => {
     const selection = selectPlotted(
       [
         player({ code: 1, name: "Wieffer" }),
         player({ code: 2, name: "Gomes" }),
       ],
-      { ...view, search: "wief" },
+      { ...view, highlights: ["#1"] },
     )!;
 
     expect(selection.points).toHaveLength(2);
     expect(selection.points.filter((point) => point.matched)).toHaveLength(1);
+  });
+
+  it("highlights a whole club at once", () => {
+    const selection = selectPlotted(
+      [
+        player({ code: 1, club: "LEE" }),
+        player({ code: 2, club: "ARS" }),
+        player({ code: 3, club: "LEE" }),
+      ],
+      { ...view, highlights: ["LEE"] },
+    )!;
+
+    expect(selection.points.filter((point) => point.matched)).toHaveLength(2);
   });
 
   it("has no centre and no fit when everything is filtered away", () => {

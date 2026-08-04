@@ -15,16 +15,18 @@ import { join } from "node:path";
 const DIST = join(import.meta.dirname, "..", "dist", "assets");
 
 const BUDGETS = [
-  // Measured 9.18 kB, raised from 8 kB when the analysis page landed: the
-  // scatter, its control panel and the pinned cards are a page's worth of new
-  // surface, and the marker palette carries a light-kit override for every
-  // colour. The whole design system still ships on first paint by design, so
-  // splitting it would cost a round trip to save nine kilobytes.
-  { match: /\.css$/, name: "stylesheet", gzipKb: 11 },
-  // Measured 129.20 kB. Router, zod, lucide and the shell.
+  // Measured 11.04 kB, raised from 11 kB when the ownership range slider, the
+  // highlight typeahead and the three matching disclosures landed. The whole
+  // design system still ships on first paint by design, so splitting it would
+  // cost a round trip to save eleven kilobytes.
+  { match: /\.css$/, name: "stylesheet", gzipKb: 12 },
+  // Measured 128.26 kB. Router, zod, lucide and the shell.
   { match: /^index-.*\.js$/, name: "entry chunk", gzipKb: 150 },
-  // Measured 19.51 kB, the largest lazy chunk.
-  { match: /^(?!index-).*\.js$/, name: "lazy chunk", gzipKb: 32 },
+  // Measured 33.64 kB for squad-projection, raised from 32 kB: every player now
+  // carries his eight route components, his ceiling and the multiple it came
+  // from. That is the artifact the whole plan is argued from, so it is bytes
+  // spent on evidence rather than on decoration.
+  { match: /^(?!index-).*\.js$/, name: "lazy chunk", gzipKb: 36 },
 ];
 
 const files = readdirSync(DIST);

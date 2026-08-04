@@ -239,6 +239,11 @@ class MatchProjection:
     price_tenths: int | None
     expected_minutes: float
     expected_points: float
+    # What the same match looks like on his best afternoon. Not a separate
+    # forecast: the projection scaled by the shape of his own scoring, so a
+    # defender who plays ninety and does nothing keeps a modest ceiling and a
+    # striker who either scores or vanishes keeps a wide one.
+    expected_ceiling: float
     shape: PointsShape
     minutes: MinutesProjection
     rates: PlayerRateProjection
@@ -349,6 +354,8 @@ def project_next_match(
             prior_nineties,
             _NEUTRAL_ADJUSTMENT,
         )
+        shape = describe_shape(rows)
+        expected = breakdown.total * ban.multiplier
         projections.append(
             MatchProjection(
                 code=code,
@@ -357,11 +364,12 @@ def project_next_match(
                 web_name=corpus.name_by_element.get(element_id, ""),
                 price_tenths=_latest_price(rows),
                 expected_minutes=minutes.expected_minutes,
-                expected_points=breakdown.total * ban.multiplier,
+                expected_points=expected,
+                expected_ceiling=expected * shape.ceiling_ratio,
                 breakdown=breakdown,
                 suspension_multiplier=ban.multiplier,
                 yellow_cards=yellows,
-                shape=describe_shape(rows),
+                shape=shape,
                 minutes=minutes,
                 rates=rates,
                 recent_minutes=sum(row.minutes for row in recent),

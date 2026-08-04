@@ -24,6 +24,10 @@ export interface PlayerProjection {
   position: string;
   priceTenths: number | null;
   expectedPoints: number;
+  /** The same match on his best afternoon. */
+  expectedCeiling: number;
+  /** How many times his ordinary afternoon his best one is. */
+  ceilingRatio: number;
   expectedMinutes: number;
   probabilityAppear: number;
   probabilityStart: number;

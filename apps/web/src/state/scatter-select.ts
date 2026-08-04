@@ -125,7 +125,8 @@ export function selectPlotted(
         };
 
   const fit = view.trend ? leastSquaresFit(kept) : null;
-  const needle = view.search.trim().toLowerCase();
+  // A club short name matches everyone at that club; `#code` matches one man.
+  const highlighted = new Set(view.highlights);
 
   const points = kept.map<PlottedPlayer>((entry) => {
     const quadrant = centres
@@ -142,9 +143,9 @@ export function selectPlotted(
       // "strong and unowned" is the whole chart rather than a subset of it.
       overlooked: inStrongQuadrant(quadrant, x, y),
       matched:
-        needle.length === 0 ||
-        entry.player.name.toLowerCase().includes(needle) ||
-        entry.player.club.toLowerCase().includes(needle),
+        highlighted.size === 0 ||
+        highlighted.has(entry.player.club) ||
+        highlighted.has(`#${String(entry.player.code)}`),
     };
   });
 

@@ -37,6 +37,7 @@ _SHAPE = PointsShape(
     floor=2.0,
     median=5.0,
     ceiling=12.0,
+    mean=5.5,
     return_rate=0.5,
     blank_rate=0.2,
     volatility=3.0,

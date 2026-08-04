@@ -76,8 +76,10 @@ function TeamSheet({
     const badge = role(player);
     const captain = player.code === week.captain.code;
     const raw = week.expected[String(player.code)] ?? 0;
+    const peak = week.ceiling[String(player.code)] ?? raw;
     // The armband doubles the score, so the line shows what he actually returns.
     const points = captain ? raw * 2 : raw;
+    const best = captain ? peak * 2 : peak;
     const scores = !benched || benchCounts;
     const rating = week.difficulty[player.club] ?? null;
 
@@ -121,6 +123,12 @@ function TeamSheet({
         >
           {scores ? points.toFixed(1) : `(${points.toFixed(1)})`}
         </span>
+        <span
+          className="plan-ceiling mono"
+          title="What the same match is worth on his best afternoon"
+        >
+          {scores ? best.toFixed(1) : `(${best.toFixed(1)})`}
+        </span>
       </li>
     );
   };
@@ -134,6 +142,7 @@ function TeamSheet({
         <span>Opponent</span>
         <span>FDR</span>
         <span>xPts</span>
+        <span>xCeil</span>
       </p>
       <ol className="plan-eleven">
         {week.starters.map((player) => line(player, false))}
@@ -272,6 +281,7 @@ function asPlanGameweek(week: SolvedGameweek): PlanGameweek {
     opponents: week.opponents,
     difficulty: week.difficulty,
     expected: week.expected,
+    ceiling: week.expected,
     freeTransfersBefore: week.freeTransfersBefore,
     paidTransfers: week.paidTransfers,
     transferCostPoints: week.transferCostPoints,

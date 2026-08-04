@@ -97,6 +97,10 @@ class OptimizationPlayer(BaseModel):
     position_id: PositiveInt
     buy_price_tenths: NonNegativeInt
     expected_points: float
+    # What the same match is worth on his best afternoon. Defaults to the mean,
+    # which claims no upside, so a caller who has not measured one is not
+    # silently given one.
+    expected_ceiling: float | None = None
     evidence_level: Literal["inferred", "experimental"]
     model_name: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1)]
     model_version: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1)]
@@ -108,6 +112,11 @@ class OptimizationPlayer(BaseModel):
         _require_utc(self.data_available_at, "data_available_at")
         if not math.isfinite(self.expected_points):
             raise ValueError("expected_points must be finite")
+        if self.expected_ceiling is not None:
+            if not math.isfinite(self.expected_ceiling):
+                raise ValueError("expected_ceiling must be finite")
+            if self.expected_ceiling < self.expected_points:
+                raise ValueError("a ceiling below the mean is not a ceiling")
         _require_sorted_hashes(self.source_hashes)
         return self
 

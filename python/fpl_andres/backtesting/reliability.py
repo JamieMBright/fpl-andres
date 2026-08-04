@@ -35,6 +35,7 @@ class PointsShape:
     floor: float
     median: float
     ceiling: float
+    mean: float
     return_rate: float
     blank_rate: float
     volatility: float
@@ -42,6 +43,23 @@ class PointsShape:
     @property
     def is_measured(self) -> bool:
         return self.appearances >= _MINIMUM_APPEARANCES
+
+    @property
+    def ceiling_ratio(self) -> float:
+        """How many times his ordinary afternoon his best one is.
+
+        This is the part of a player's shape worth carrying into a new season.
+        The *level* he scores at will change -- a new club, a new role, a year
+        older -- but a centre-half who plays ninety minutes and does nothing
+        will still have a ceiling near twice his mean, and a striker who either
+        scores or vanishes will still have one near three times it.
+
+        One when there is nothing to measure, which claims no upside rather
+        than inventing some.
+        """
+        if not self.is_measured or self.mean <= 0:
+            return 1.0
+        return max(1.0, self.ceiling / self.mean)
 
 
 def _percentile(ordered: Sequence[int], share: float) -> float:
@@ -62,7 +80,7 @@ def describe_shape(rows: Sequence[ElementRow]) -> PointsShape:
     """
     scores = sorted(row.total_points for row in rows if row.minutes > 0)
     if not scores:
-        return PointsShape(0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+        return PointsShape(0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
 
     returns = sum(1 for score in scores if score >= _RETURN_THRESHOLD)
     blanks = sum(1 for score in scores if score <= _BLANK_CEILING)
@@ -71,6 +89,7 @@ def describe_shape(rows: Sequence[ElementRow]) -> PointsShape:
         floor=_percentile(scores, 0.2),
         median=_percentile(scores, 0.5),
         ceiling=_percentile(scores, 0.9),
+        mean=statistics.fmean(scores),
         return_rate=returns / len(scores),
         blank_rate=blanks / len(scores),
         volatility=statistics.pstdev(scores) if len(scores) > 1 else 0.0,

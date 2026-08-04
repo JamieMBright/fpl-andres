@@ -33,6 +33,8 @@ export interface PlanGameweek {
   difficulty: Readonly<Record<string, number | null>>;
   /** Player code to what he is worth this gameweek. */
   expected: Readonly<Record<string, number>>;
+  /** The same week on his best afternoon. */
+  ceiling: Readonly<Record<string, number>>;
   freeTransfersBefore: number;
   paidTransfers: number;
   transferCostPoints: number;
@@ -140,6 +142,7 @@ export function readSeasonPlan(): SeasonPlan {
       opponents: week.opponents,
       difficulty: week.difficulty,
       expected: week.expected,
+      ceiling: week.ceiling,
       freeTransfersBefore: week.freeTransfersBefore,
       paidTransfers: week.paidTransfers,
       transferCostPoints: week.transferCostPoints,

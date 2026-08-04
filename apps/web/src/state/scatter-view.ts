@@ -52,7 +52,8 @@ export interface ScatterView {
   ownedFrom: number;
   ownedTo: number;
   pinned: number[];
-  search: string;
+  /** Club short names, and player codes prefixed with `#`, to highlight. */
+  highlights: string[];
   /** What the table underneath ranks by. Follows the y-axis until changed. */
   tableMetric: string;
 }
@@ -61,7 +62,7 @@ const POSITIONS = ["GKP", "DEF", "MID", "FWD"];
 // 38 matches plus stoppage. A threshold above this can never match anyone.
 const MAX_SEASON_MINUTES = 4560;
 const MAX_PINNED = 4;
-const MAX_SEARCH = 40;
+const MAX_HIGHLIGHTS = 12;
 /** Nobody is owned by more than everyone. */
 export const OWNERSHIP_CAP = 100;
 
@@ -91,7 +92,7 @@ export const DEFAULT_VIEW: ScatterView = {
   ownedFrom: 0.1,
   ownedTo: 8,
   pinned: [],
-  search: "",
+  highlights: [],
   tableMetric: "",
 };
 
@@ -142,7 +143,7 @@ export function readScatterView(params: URLSearchParams): ScatterView {
       .map(Number)
       .filter((code) => Number.isInteger(code) && code > 0)
       .slice(0, MAX_PINNED),
-    search: (params.get("q") ?? "").slice(0, MAX_SEARCH),
+    highlights: list(params.get("hl")).slice(0, MAX_HIGHLIGHTS),
     // Empty means "whatever the y-axis is", resolved by the reader rather than
     // frozen here, so changing the axis moves the table with it.
     tableMetric: metricId(params.get("table"), ""),
@@ -179,7 +180,9 @@ export function writeScatterView(view: ScatterView): string {
   if (view.pinned.length > 0) {
     params.set("pin", view.pinned.slice(0, MAX_PINNED).join(","));
   }
-  put("q", view.search, DEFAULT_VIEW.search);
+  if (view.highlights.length > 0) {
+    params.set("hl", view.highlights.slice(0, MAX_HIGHLIGHTS).join(","));
+  }
   put("table", view.tableMetric, DEFAULT_VIEW.tableMetric);
 
   return params.toString();

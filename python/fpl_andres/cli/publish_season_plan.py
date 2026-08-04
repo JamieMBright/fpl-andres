@@ -527,7 +527,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                 club=str(clubs[element.team]["short_name"]),
                 price_tenths=element.now_cost,
                 record=float(record["expectedPoints"]),
-                best_match=float(record.get("ceiling") or record["expectedPoints"]),
+                best_match=float(record.get("expectedCeiling") or record["expectedPoints"]),
                 routes=record.get("routes", {}),
                 squad_number=element.squad_number,
             )
@@ -615,6 +615,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                     buy_price_tenths=candidate.price_tenths,
                     sell_price_tenths=candidate.price_tenths,
                     expected_points=round(expected, 3),
+                    expected_ceiling=round(max(expected, peak), 3),
                     evidence_level="inferred",
                     model_name="season-plan",
                     model_version=str(SCHEMA_VERSION),
@@ -739,6 +740,12 @@ def main(argv: Sequence[str] | None = None) -> int:
                 "benchElementIds": list(event_plan.bench_element_ids),
                 "expected": {
                     str(detail[element_id].code): expected_by[(planned.event, element_id)]
+                    for element_id in squad
+                },
+                # The same week on his best afternoon, so a card can show what
+                # it is hoping for as well as what it is expecting.
+                "ceiling": {
+                    str(detail[element_id].code): ceiling_by[(planned.event, element_id)]
                     for element_id in squad
                 },
                 "freeTransfersBefore": event_plan.free_transfers_before,

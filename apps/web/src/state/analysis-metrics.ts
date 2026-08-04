@@ -1,4 +1,5 @@
 import { DEFCON_THRESHOLD, type AnalysisPlayer } from "./analysis-pool";
+import { projectionFor } from "./squad-projection";
 
 /**
  * Every axis the scatter can plot, and what each one is worth knowing.
@@ -65,6 +66,42 @@ export const METRICS: Metric[] = [
     vintage: "record",
     explains: "His rate, so a squad player is judged beside an ever-present.",
     value: (player) => per90(player.totalPoints, player.ninetiesPlayed),
+    format: two,
+    higherIsBetter: true,
+    allowLog: false,
+  },
+  {
+    id: "xPts",
+    label: "xPts per match",
+    group: "Points",
+    vintage: "record",
+    explains:
+      "What the projector expects him to score in one match against an average opponent.",
+    value: (player) => projectionFor(player.code)?.expectedPoints ?? null,
+    format: two,
+    higherIsBetter: true,
+    allowLog: false,
+  },
+  {
+    id: "xCeil",
+    label: "xCeil per match",
+    group: "Points",
+    vintage: "record",
+    explains:
+      "The same match on his best afternoon. What an armband or a chip is played for.",
+    value: (player) => projectionFor(player.code)?.expectedCeiling ?? null,
+    format: two,
+    higherIsBetter: true,
+    allowLog: false,
+  },
+  {
+    id: "ceilingRatio",
+    label: "Ceiling multiple",
+    group: "Points",
+    vintage: "record",
+    explains:
+      "How many times his ordinary afternoon his best one is. Two is a defender, three a streaky striker.",
+    value: (player) => projectionFor(player.code)?.ceilingRatio ?? null,
     format: two,
     higherIsBetter: true,
     allowLog: false,

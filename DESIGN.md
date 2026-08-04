@@ -292,6 +292,7 @@ so a review knows what it does not have to check by hand.
 | `FixtureBreakdown`     | Every fixture ahead, and last season's totals    | unit (via `PinnedPlayers`)              |
 | `Countdown`            | Deadline cell at the end of the index bar        | `feature-walk`                          |
 | `RangeSlider`          | One track, two thumbs, for a band                | `feature-walk` (ownership band)         |
+| `HighlightPicker`      | Typeahead for names and clubs, chosen as chips   | `feature-walk`                          |
 | `SquadRecord`          | Per-player projection table                      | `feature-walk`                          |
 | `ManagerHistory`       | Past seasons, including the empty case           | `team-entry`, unit                      |
 | `TeamStateCorrections` | Manager overrides, parsing and conflict          | unit (`parse.test.ts`)                  |
