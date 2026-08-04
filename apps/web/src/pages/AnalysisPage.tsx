@@ -19,6 +19,7 @@ import {
   type AnalysisData,
   type AnalysisFailure,
 } from "../state/analysis-pool";
+import { retryingFetch } from "../state/retrying-fetch";
 import { downloadBlob, scatterToPngBlob } from "../state/scatter-export";
 import { readChart } from "../state/scatter-reading";
 import { binsFor } from "../state/scatter-regions";
@@ -71,7 +72,7 @@ export default function AnalysisPage() {
 
   useEffect(() => {
     const controller = new AbortController();
-    fetchAnalysisPool(fetch, controller.signal)
+    fetchAnalysisPool(retryingFetch(), controller.signal)
       .then(setData)
       .catch((error: unknown) => {
         if (error instanceof DOMException && error.name === "AbortError")
@@ -91,7 +92,7 @@ export default function AnalysisPage() {
   useEffect(() => {
     if (view.season === LIVE_SEASON || archive || archiveFailed) return;
     const controller = new AbortController();
-    fetchArchivedSeasons(fetch, controller.signal)
+    fetchArchivedSeasons(retryingFetch(), controller.signal)
       .then(setArchive)
       .catch((error: unknown) => {
         if (error instanceof DOMException && error.name === "AbortError")

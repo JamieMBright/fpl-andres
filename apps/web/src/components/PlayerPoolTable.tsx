@@ -10,6 +10,7 @@ import {
   type PoolFailure,
   type PoolPlayer,
 } from "../state/player-pool";
+import { retryingFetch } from "../state/retrying-fetch";
 import { projectionSeason } from "../state/squad-projection";
 import { money as sharedMoney } from "../format";
 
@@ -200,7 +201,7 @@ export function PlayerPoolTable() {
   useEffect(() => {
     const controller = new AbortController();
     let active = true;
-    fetchPlayerPool(fetch, controller.signal)
+    fetchPlayerPool(retryingFetch(), controller.signal)
       .then((result) => {
         if (active) setPool(result);
       })
