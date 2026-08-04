@@ -290,6 +290,8 @@ so a review knows what it does not have to check by hand.
 | `PlayerAvatar`         | Lazy headshot, silhouette when there is none     | `contrast` (`/kits`)                    |
 | `PlayerDetail`         | One player in full, with what each number means  | `feature-walk`                          |
 | `FixtureBreakdown`     | Every fixture ahead, and last season's totals    | unit (via `PinnedPlayers`)              |
+| `Countdown`            | Deadline cell at the end of the index bar        | `feature-walk`                          |
+| `RangeSlider`          | One track, two thumbs, for a band                | `feature-walk` (ownership band)         |
 | `SquadRecord`          | Per-player projection table                      | `feature-walk`                          |
 | `ManagerHistory`       | Past seasons, including the empty case           | `team-entry`, unit                      |
 | `TeamStateCorrections` | Manager overrides, parsing and conflict          | unit (`parse.test.ts`)                  |

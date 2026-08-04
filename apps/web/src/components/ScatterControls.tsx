@@ -1,9 +1,15 @@
 import { useId } from "react";
 
 import { METRICS, type MetricGroup } from "../state/analysis-metrics";
+import { RangeSlider } from "./RangeSlider";
 import type { AnalysisPool } from "../state/analysis-pool";
 import type { ColourBy, ScatterView } from "../state/scatter-view";
-import { MAX_BINS, MIN_BINS, NO_SIZE } from "../state/scatter-view";
+import {
+  MAX_BINS,
+  MIN_BINS,
+  NO_SIZE,
+  OWNERSHIP_CAP,
+} from "../state/scatter-view";
 
 /**
  * Everything that changes what the chart shows, in one panel.
@@ -42,7 +48,7 @@ export function ScatterControls({
   return (
     <details className="scatter-controls">
       <summary className="scatter-controls-summary">
-        <span>Configuration</span>
+        <span>Plot configuration</span>
         <span className="scatter-controls-count mono">{plotted} plotted</span>
       </summary>
       <div className="scatter-controls-body">
@@ -248,32 +254,41 @@ export function ScatterControls({
             />
             Trend line
           </label>
-        </fieldset>
-
-        <fieldset className="scatter-fieldset">
-          <legend>Overlooked</legend>
           <label className="scatter-check">
             <input
               type="checkbox"
-              checked={view.overlooked}
-              onChange={() => onChange({ overlooked: !view.overlooked })}
+              checked={view.sweetSpot}
+              onChange={() => onChange({ sweetSpot: !view.sweetSpot })}
             />
-            Ring the strong quadrant nobody owns
+            Ring the best corner
           </label>
-          <label htmlFor={`${ids}-owned`}>
-            Owned by under
-            <span className="scatter-value">{view.overlookedCeiling}%</span>
+          <label className="scatter-check">
+            <input
+              type="checkbox"
+              checked={view.frontier}
+              onChange={() => onChange({ frontier: !view.frontier })}
+            />
+            Frontier curve
           </label>
-          <input
-            id={`${ids}-owned`}
-            type="range"
-            min={1}
-            max={50}
-            step={1}
-            value={view.overlookedCeiling}
-            onChange={(event) =>
-              onChange({ overlookedCeiling: Number(event.target.value) })
+        </fieldset>
+
+        <fieldset className="scatter-fieldset">
+          <legend>Ownership band</legend>
+          <p className="scatter-hint">
+            Only players owned inside this range are drawn. Narrow it to hunt a
+            differential; widen it to see the whole market.
+          </p>
+          <RangeSlider
+            format={(value) => `${value.toFixed(1)}%`}
+            from={view.ownedFrom}
+            label="Ownership"
+            max={OWNERSHIP_CAP}
+            min={0}
+            onChange={({ from, to }) =>
+              onChange({ ownedFrom: from, ownedTo: to })
             }
+            step={0.1}
+            to={view.ownedTo}
           />
         </fieldset>
 

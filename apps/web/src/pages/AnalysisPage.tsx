@@ -7,6 +7,7 @@ import { RouteHeading } from "../components/RouteHeading";
 import { ScatterControls } from "../components/ScatterControls";
 import { ScatterLegend } from "../components/ScatterLegend";
 import { ScatterReadout } from "../components/ScatterReadout";
+import { metric } from "../state/analysis-metrics";
 import {
   fetchAnalysisPool,
   type AnalysisData,
@@ -14,6 +15,7 @@ import {
 } from "../state/analysis-pool";
 import { downloadBlob, scatterToPngBlob } from "../state/scatter-export";
 import { readChart } from "../state/scatter-reading";
+import { binsFor } from "../state/scatter-regions";
 import { selectPlotted } from "../state/scatter-select";
 import {
   readScatterView,
@@ -101,8 +103,8 @@ export default function AnalysisPage() {
 
   return (
     <section className="text-page analysis-page">
-      <p className="eyebrow">The market</p>
-      <RouteHeading>Two numbers, every player, and where he sits.</RouteHeading>
+      <p className="eyebrow">Football analytics</p>
+      <RouteHeading>Find the best player, statistically speaking.</RouteHeading>
 
       {failed ? (
         <p className="analysis-failure" role="status">
@@ -167,6 +169,16 @@ function AnalysisBody({
   const clubsInPlay = [
     ...new Set(selection.points.map((point) => point.player.club)),
   ];
+  // The legend has to bin exactly what the chart binned, so both read it here.
+  const colourMetric =
+    view.colourBy === "metric" ? (metric(view.colourMetric) ?? null) : null;
+  const colourBins = colourMetric
+    ? binsFor(
+        selection.points.map((point) => point.player),
+        colourMetric,
+        view.bins,
+      )
+    : [];
   const sizeValues = selection.points
     .map((point) => point.size)
     .filter((value): value is number => value !== null);
@@ -196,13 +208,17 @@ function AnalysisBody({
         />
 
         <div className="analysis-chart" ref={chartRef}>
-          <div className="analysis-reading">
-            <h2>How to read this</h2>
-            <p>{reading.corner}</p>
-            {reading.relationship ? <p>{reading.relationship}</p> : null}
-            {reading.standout ? <p>{reading.standout}</p> : null}
-            {reading.size ? <p>{reading.size}</p> : null}
-          </div>
+          <details className="scatter-controls analysis-reading">
+            <summary className="scatter-controls-summary">
+              <span>How to read this</span>
+            </summary>
+            <div className="scatter-controls-body">
+              <p>{reading.corner}</p>
+              {reading.relationship ? <p>{reading.relationship}</p> : null}
+              {reading.standout ? <p>{reading.standout}</p> : null}
+              {reading.size ? <p>{reading.size}</p> : null}
+            </div>
+          </details>
 
           <PlayerScatter
             selection={selection}
@@ -212,7 +228,9 @@ function AnalysisBody({
           />
 
           <ScatterLegend
+            bins={colourBins}
             clubsInPlay={clubsInPlay}
+            colourMetric={colourMetric}
             sizeMetric={selection.size}
             sizeRange={sizeRange}
             view={view}

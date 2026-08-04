@@ -64,55 +64,62 @@ export function PinnedPlayers({
   }
 
   return (
-    <div className="pinned-panel">
-      <div className="pinned-head">
-        <h3>Comparing {chosen.length} of 4</h3>
-        <button type="button" onClick={onClear} className="pinned-clear">
-          Clear all
-        </button>
+    <details className="scatter-controls pinned-panel">
+      <summary className="scatter-controls-summary">
+        <span>Compare players</span>
+        <span className="scatter-controls-count mono">
+          {chosen.length} of 4 pinned
+        </span>
+      </summary>
+      <div className="scatter-controls-body">
+        <div className="pinned-head">
+          <button type="button" onClick={onClear} className="pinned-clear">
+            Clear all
+          </button>
+        </div>
+
+        <p className="pinned-order">
+          Ordered by where they sit on the two axes you are plotting, best
+          first. Rows are ordered by how far apart these players actually are,
+          so the difference that decides it is at the top.
+        </p>
+
+        <div
+          aria-label="Scrollable comparison of pinned players, side by side"
+          className="squad-table-wrap pinned-scroller"
+          role="region"
+          // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- Keyboard users must be able to scroll this comparison sideways.
+          tabIndex={0}
+        >
+          <ul className="pinned-list">
+            {comparison.players.map((player, column) => (
+              <PinnedCard
+                key={player.code}
+                player={player}
+                rows={comparison.rows}
+                column={column}
+                leading={column === 0 && comparison.players.length > 1}
+                clubCodeByTeamId={clubCodeByTeamId}
+                fixtures={fixtures}
+                onFixtures={setBreakdown}
+                onUnpin={onUnpin}
+              />
+            ))}
+          </ul>
+        </div>
+
+        {breakdown ? (
+          <FixtureBreakdown
+            clubCodeByTeamId={clubCodeByTeamId}
+            fixtures={fixtures}
+            onClose={() => {
+              setBreakdown(null);
+            }}
+            player={breakdown}
+          />
+        ) : null}
       </div>
-
-      <p className="pinned-order">
-        Ordered by where they sit on the two axes you are plotting, best first.
-        Rows are ordered by how far apart these players actually are, so the
-        difference that decides it is at the top.
-      </p>
-
-      <div
-        aria-label="Scrollable comparison of pinned players, side by side"
-        className="squad-table-wrap pinned-scroller"
-        role="region"
-        // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- Keyboard users must be able to scroll this comparison sideways.
-        tabIndex={0}
-      >
-        <ul className="pinned-list">
-          {comparison.players.map((player, column) => (
-            <PinnedCard
-              key={player.code}
-              player={player}
-              rows={comparison.rows}
-              column={column}
-              leading={column === 0 && comparison.players.length > 1}
-              clubCodeByTeamId={clubCodeByTeamId}
-              fixtures={fixtures}
-              onFixtures={setBreakdown}
-              onUnpin={onUnpin}
-            />
-          ))}
-        </ul>
-      </div>
-
-      {breakdown ? (
-        <FixtureBreakdown
-          clubCodeByTeamId={clubCodeByTeamId}
-          fixtures={fixtures}
-          onClose={() => {
-            setBreakdown(null);
-          }}
-          player={breakdown}
-        />
-      ) : null}
-    </div>
+    </details>
   );
 }
 

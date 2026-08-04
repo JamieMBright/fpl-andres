@@ -109,10 +109,12 @@ export function readChart(selection: Selection, view: ScatterView): Reading {
 
   const sizeNote = size
     ? `Each disc is sized by ${size.label.toLowerCase()}, by area. ` +
-      (view.overlooked
-        ? "Marks ringed in amber are the ones almost nobody owns."
-        : "Turn on the overlooked filter to ring the ones almost nobody owns.")
-    : null;
+      `Only players owned by between ${String(view.ownedFrom)}% and ` +
+      `${String(view.ownedTo)}% are drawn, and the ones ringed in green are in ` +
+      `the good corner of both axes.`
+    : `Only players owned by between ${String(view.ownedFrom)}% and ` +
+      `${String(view.ownedTo)}% are drawn, and the ones ringed in green are in ` +
+      `the good corner of both axes.`;
 
   return { corner, relationship, standout, size: sizeNote };
 }

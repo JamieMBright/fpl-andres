@@ -133,18 +133,18 @@ describe("selectPlotted", () => {
       }),
     ];
 
-    it("rings only the strong quadrant that nobody owns", () => {
+    it("rings the strong quadrant of whatever the band left in", () => {
       const selection = selectPlotted(pool, {
         ...view,
-        overlooked: true,
-        overlookedCeiling: 5,
+        ownedFrom: 0,
+        ownedTo: 5,
       })!;
       const flagged = selection.points
         .filter((point) => point.overlooked)
         .map((point) => point.player.code);
 
-      // 1 is strong on both and unowned. 2 is strong but owned, 3 is weak
-      // defensively, 4 offers nothing going forward.
+      // The band drops anyone owned above five per cent, so what is left and
+      // strong on both axes is what gets ringed.
       expect(flagged).toEqual([1]);
     });
 
@@ -164,8 +164,8 @@ describe("selectPlotted", () => {
           ...view,
           x: "ownership",
           y: "xGIPer90",
-          overlooked: true,
-          overlookedCeiling: 5,
+          ownedFrom: 0,
+          ownedTo: 100,
         },
       )!;
 

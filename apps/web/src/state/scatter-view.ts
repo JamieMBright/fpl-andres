@@ -44,9 +44,13 @@ export interface ScatterView {
   minMinutes: number;
   centreMode: CentreMode;
   trend: boolean;
-  /** Highlights strong players almost nobody owns. */
-  overlooked: boolean;
-  overlookedCeiling: number;
+  /** Rings the corner where both axes are at their good end. */
+  sweetSpot: boolean;
+  /** The best-available curve: nobody is above and to the good side of it. */
+  frontier: boolean;
+  /** Only players owned inside this band are drawn. */
+  ownedFrom: number;
+  ownedTo: number;
   pinned: number[];
   search: string;
   /** What the table underneath ranks by. Follows the y-axis until changed. */
@@ -58,6 +62,8 @@ const POSITIONS = ["GKP", "DEF", "MID", "FWD"];
 const MAX_SEASON_MINUTES = 4560;
 const MAX_PINNED = 4;
 const MAX_SEARCH = 40;
+/** Nobody is owned by more than everyone. */
+export const OWNERSHIP_CAP = 100;
 
 export const DEFAULT_VIEW: ScatterView = {
   x: DEFAULT_X_METRIC,
@@ -78,8 +84,12 @@ export const DEFAULT_VIEW: ScatterView = {
   minMinutes: 1500,
   centreMode: "median",
   trend: false,
-  overlooked: false,
-  overlookedCeiling: 5,
+  sweetSpot: false,
+  frontier: false,
+  // A differential is roughly anything under ten per cent owned; the floor
+  // drops the hundreds of players nobody has heard of who own nothing.
+  ownedFrom: 0.1,
+  ownedTo: 8,
   pinned: [],
   search: "",
   tableMetric: "",
@@ -112,12 +122,21 @@ export function readScatterView(params: URLSearchParams): ScatterView {
     ),
     centreMode: params.get("centre") === "mean" ? "mean" : "median",
     trend: flag(params.get("trend")),
-    overlooked: flag(params.get("overlooked")),
-    overlookedCeiling: bounded(
-      params.get("owned"),
-      DEFAULT_VIEW.overlookedCeiling,
+    sweetSpot: flag(params.get("ring")),
+    frontier: flag(params.get("front")),
+    ownedFrom: bounded(
+      params.get("from"),
+      DEFAULT_VIEW.ownedFrom,
       0,
-      100,
+      OWNERSHIP_CAP,
+      1,
+    ),
+    ownedTo: bounded(
+      params.get("to"),
+      DEFAULT_VIEW.ownedTo,
+      0,
+      OWNERSHIP_CAP,
+      1,
     ),
     pinned: list(params.get("pin"))
       .map(Number)
@@ -153,12 +172,10 @@ export function writeScatterView(view: ScatterView): string {
   put("mins", String(view.minMinutes), String(DEFAULT_VIEW.minMinutes));
   put("centre", view.centreMode, DEFAULT_VIEW.centreMode);
   if (view.trend) params.set("trend", "1");
-  if (view.overlooked) params.set("overlooked", "1");
-  put(
-    "owned",
-    String(view.overlookedCeiling),
-    String(DEFAULT_VIEW.overlookedCeiling),
-  );
+  if (view.sweetSpot) params.set("ring", "1");
+  if (view.frontier) params.set("front", "1");
+  put("from", String(view.ownedFrom), String(DEFAULT_VIEW.ownedFrom));
+  put("to", String(view.ownedTo), String(DEFAULT_VIEW.ownedTo));
   if (view.pinned.length > 0) {
     params.set("pin", view.pinned.slice(0, MAX_PINNED).join(","));
   }
@@ -192,9 +209,12 @@ function bounded(
   fallback: number,
   low: number,
   high: number,
+  /** Ownership is read to a tenth of a per cent; minutes are whole. */
+  decimals = 0,
 ): number {
   if (raw === null) return fallback;
   const parsed = Number(raw);
   if (!Number.isFinite(parsed)) return fallback;
-  return Math.min(high, Math.max(low, Math.round(parsed)));
+  const step = 10 ** decimals;
+  return Math.min(high, Math.max(low, Math.round(parsed * step) / step));
 }

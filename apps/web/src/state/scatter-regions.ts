@@ -107,6 +107,46 @@ export function sweetSpot(
   };
 }
 
+/**
+ * The best-available curve: nobody sits beyond it on both axes at once.
+ *
+ * Every point on it is a player no other player beats outright. Anyone below
+ * the line is dominated — there is someone at least as good on both counts —
+ * and choosing them means paying for something the chart is not showing.
+ */
+export function frontier(
+  players: readonly AnalysisPlayer[],
+  x: Metric,
+  y: Metric,
+): { x: number; y: number }[] {
+  const points = players
+    .map((player) => ({ x: x.value(player), y: y.value(player) }))
+    .filter(
+      (point): point is { x: number; y: number } =>
+        point.x !== null && point.y !== null,
+    );
+  if (points.length < 4) return [];
+
+  // Walk along the x-axis in the good direction, keeping anyone who improves on
+  // the best y seen so far. What survives is the non-dominated set.
+  const along = [...points].sort((left, right) =>
+    x.higherIsBetter ? left.x - right.x : right.x - left.x,
+  );
+  const kept: { x: number; y: number }[] = [];
+  let best = y.higherIsBetter ? -Infinity : Infinity;
+  // Backwards, because the best x is at the end of a run sorted the good way.
+  for (let index = along.length - 1; index >= 0; index -= 1) {
+    const point = along[index];
+    if (!point) continue;
+    const better = y.higherIsBetter ? point.y > best : point.y < best;
+    if (better) {
+      best = point.y;
+      kept.push(point);
+    }
+  }
+  return kept.reverse();
+}
+
 export interface Bin {
   /** Inclusive lower edge in data units. */
   from: number;
@@ -114,6 +154,22 @@ export interface Bin {
   to: number;
   label: string;
 }
+
+/**
+ * Teletext's own ramp, dark to bright, so a higher bin reads as a hotter mark.
+ * Shared with the legend, because a key that disagrees with the chart is worse
+ * than no key at all.
+ */
+export const BIN_RAMP = [
+  "#0a1a4d",
+  "#0d3b8c",
+  "#1f7ac2",
+  "#22a6a6",
+  "#2fb84a",
+  "#c8d400",
+  "#ff8c1a",
+  "#ff3b3b",
+];
 
 /**
  * Equal-width bins across the observed range.

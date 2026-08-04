@@ -54,6 +54,24 @@
   text-rendering: optimizeLegibility;
 }
 
+/* Away — 1994 Leeds away kit, yellow and blue in vertical bars */
+:root[data-theme="away"] {
+  color-scheme: dark;
+
+  --fa-surface: #12225c;
+  --fa-surface-deep: #0b1740;
+  --fa-surface-rise: #1b3080;
+  --fa-stripe-a: #f2d51a;
+  --fa-stripe-b: #12225c;
+  --fa-ink: #fdfbe8;
+  --fa-ink-deep: #efe6a8;
+  --fa-brand: #f2d51a;
+  --fa-focus: #6fd0ff;
+  --fa-amber: #f2d51a;
+  --fa-red: #ff8b7a;
+  --fa-rule: #2c4699;
+}
+
 /* Light — 1994 Leeds home kit */
 :root[data-theme="light"] {
   color-scheme: light;
@@ -270,25 +288,31 @@ a {
 
 .site-header {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
-  min-height: 88px;
-  /* The stripes belong to the shell, but they fight the coloured cells. */
-  background: var(--paper);
-  border-bottom: 1px solid var(--navy);
+  gap: 12px 20px;
+  padding: 16px 0 12px;
+}
+
+.brand-words {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 10px;
+  align-items: baseline;
+  min-width: 0;
 }
 
 .brand {
   display: inline-flex;
-  gap: 12px;
+  gap: 10px;
   align-items: center;
   text-decoration: none;
 }
 
 .brand-mark {
-  width: 40px;
-  height: 40px;
+  width: 32px;
+  height: 32px;
   color: var(--field-green);
   flex: 0 0 auto;
 }
@@ -300,15 +324,10 @@ a {
 /* Teletext set the page title in a solid coloured cell. One wide block for the
    masthead, then one cell per destination, in the strip palette. */
 .brand strong {
-  display: block;
-  padding: 9px 16px 10px;
-  color: var(--fa-gk-black);
-  background: var(--fa-gk-lime);
   font-family: var(--fa-display);
-  font-size: clamp(19px, 2.4vw, 26px);
+  font-size: clamp(26px, 4vw, 40px);
   line-height: 1;
-  letter-spacing: 0.03em;
-  text-transform: uppercase;
+  letter-spacing: 0.01em;
   white-space: nowrap;
 }
 
@@ -333,65 +352,8 @@ a {
 }
 
 .brand small {
-  margin-top: 4px;
+  margin-top: 0;
   color: var(--ink-soft);
-}
-
-.site-header nav {
-  display: flex;
-  flex-wrap: wrap;
-  gap: clamp(18px, 3vw, 34px);
-}
-
-/* The navigation is the coloured strip: one filled teletext cell per
-   destination, in the same palette as the status line beneath it. */
-.site-header nav.ceefax-nav {
-  gap: 2px;
-}
-
-.ceefax-nav a {
-  padding: 7px 12px 8px;
-  color: var(--fa-gk-black);
-  font-family: var(--fa-body);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  text-decoration: none;
-}
-
-.ceefax-nav a:nth-child(1) {
-  background: var(--fa-gk-lime);
-}
-
-.ceefax-nav a:nth-child(2) {
-  background: var(--fa-gk-hot);
-}
-
-.ceefax-nav a:nth-child(3) {
-  background: var(--fa-gk-teal);
-}
-
-.ceefax-nav a:nth-child(4) {
-  color: var(--fa-gk-white);
-  background: var(--fa-gk-purple);
-}
-
-.ceefax-nav a:nth-child(5) {
-  color: var(--fa-gk-white);
-  background: var(--fa-bucket);
-}
-
-.ceefax-nav a:hover,
-.ceefax-nav a[aria-current="page"] {
-  color: var(--fa-gk-white);
-  background: var(--fa-gk-black);
-  text-decoration: none;
-}
-
-.ceefax-nav a:focus-visible {
-  outline: 3px solid var(--signal-blue);
-  outline-offset: 2px;
 }
 
 .site-header nav a,
@@ -3001,37 +2963,50 @@ a:focus-visible {
   text-transform: uppercase;
 }
 
-.teletext-strip span {
+.teletext-strip span,
+.teletext-strip a {
   flex: 1 1 0;
-  padding: 5px 4px;
+  padding: 8px 4px;
   color: var(--fa-gk-black);
   text-align: center;
+  text-decoration: none;
   white-space: nowrap;
 }
 
-.teletext-strip span:nth-child(1) {
+.teletext-strip a:hover,
+.teletext-strip a[aria-current="page"] {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.teletext-strip a:focus-visible {
+  outline: 3px solid var(--signal-blue);
+  outline-offset: -3px;
+}
+
+.teletext-strip > :nth-child(1) {
   background: var(--fa-gk-lime);
 }
 
-.teletext-strip span:nth-child(2) {
+.teletext-strip > :nth-child(2) {
   background: var(--fa-gk-hot);
 }
 
-.teletext-strip span:nth-child(3) {
+.teletext-strip > :nth-child(3) {
   background: var(--fa-gk-teal);
 }
 
-.teletext-strip span:nth-child(4) {
+.teletext-strip > :nth-child(4) {
   color: var(--fa-gk-white);
   background: var(--fa-gk-purple);
 }
 
-.teletext-strip span:nth-child(5) {
+.teletext-strip > :nth-child(5) {
   color: var(--fa-gk-white);
   background: var(--fa-bucket);
 }
 
-.teletext-strip span:nth-child(6) {
+.teletext-strip > :nth-child(6) {
   color: var(--fa-gk-white);
   background: var(--fa-gk-black);
 }
@@ -3077,8 +3052,18 @@ a:focus-visible {
 .header-controls {
   display: flex;
   flex-wrap: wrap;
-  gap: clamp(14px, 3vw, 28px);
+  gap: 10px 14px;
   align-items: center;
+}
+
+/* The shell's stripes read as noise between the coloured cells, so the nav
+   sits on its own solid band the way a teletext index row does. */
+.teletext-strip {
+  background: var(--fa-gk-black);
+}
+
+.teletext-countdown {
+  font-variant-numeric: tabular-nums;
 }
 
 .social-links {
@@ -3289,16 +3274,6 @@ a:focus-visible {
   line-height: 1.45;
 }
 
-.readout-rank {
-  margin-left: 8px;
-  padding: 3px 7px;
-  border: 2px solid var(--rule);
-  color: var(--ink);
-  background: var(--paper);
-  font-family: inherit;
-  font-size: inherit;
-}
-
 .scatter-number {
   display: flex;
   flex-direction: column;
@@ -3309,12 +3284,149 @@ a:focus-visible {
 }
 
 .scatter-number input {
-  width: 5ch;
-  padding: 5px 6px;
+  width: 8ch;
+  padding: 6px 8px;
   border: 2px solid var(--rule);
   color: var(--ink);
   background: var(--paper);
   font-family: inherit;
+  font-size: 14px;
+}
+
+/* The shape key carries shape alone, so it is grey the way the size key is.
+   Colouring it would claim a second encoding the row does not hold. */
+.scatter-legend-shape {
+  fill: var(--ink-soft);
+  fill-opacity: 0.55;
+  stroke: var(--ink-soft);
+  stroke-width: 1.5;
+}
+
+.scatter-legend-bins {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.scatter-legend-bins li {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  font-size: 11px;
+}
+
+.scatter-legend-swatch {
+  width: 16px;
+  height: 16px;
+  border: 1px solid var(--rule);
+}
+
+.scatter-watermark {
+  fill: var(--ink-soft);
+  fill-opacity: 0.55;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+}
+
+/* One track, two thumbs. The inputs sit on top of each other with transparent
+   tracks, so the only thing the reader sees is the bar underneath and the two
+   handles they can drag. */
+.range-slider {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+}
+
+.range-slider-value {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 12px;
+}
+
+.range-slider-track {
+  position: relative;
+  height: 26px;
+}
+
+.range-slider-track::before {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  top: 11px;
+  height: 4px;
+  background: var(--rule);
+}
+
+.range-slider-fill {
+  position: absolute;
+  top: 11px;
+  left: var(--range-start);
+  width: calc(var(--range-end) - var(--range-start));
+  height: 4px;
+  background: var(--field-green);
+}
+
+.range-slider-track input[type="range"] {
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  width: 100%;
+  height: 26px;
+  margin: 0;
+  background: none;
+  appearance: none;
+  /* The track is drawn above; only the handles should catch a pointer. */
+  pointer-events: none;
+}
+
+.range-slider-track input[type="range"]::-webkit-slider-thumb {
+  width: 18px;
+  height: 18px;
+  border: 3px solid var(--paper);
+  border-radius: 50%;
+  background: var(--ink);
+  appearance: none;
+  pointer-events: auto;
+  cursor: grab;
+}
+
+.range-slider-track input[type="range"]::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border: 3px solid var(--paper);
+  border-radius: 50%;
+  background: var(--ink);
+  pointer-events: auto;
+  cursor: grab;
+}
+
+.range-slider-track input[type="range"]:focus-visible {
+  outline: none;
+}
+
+.range-slider-track input[type="range"]:focus-visible::-webkit-slider-thumb {
+  outline: 3px solid var(--signal-blue);
+  outline-offset: 2px;
+}
+
+.range-slider-track input[type="range"]:focus-visible::-moz-range-thumb {
+  outline: 3px solid var(--signal-blue);
+  outline-offset: 2px;
+}
+
+.readout-rank {
+  margin-left: 8px;
+  padding: 3px 7px;
+  border: 2px solid var(--rule);
+  color: var(--ink);
+  background: var(--paper);
+  font-family: inherit;
+  font-size: inherit;
 }
 
 .player-detail-stats {
@@ -3586,6 +3698,15 @@ a:focus-visible {
   pointer-events: none;
 }
 
+/* Nobody sits beyond this on both axes at once. */
+.scatter-frontier {
+  fill: none;
+  stroke: var(--signal-blue);
+  stroke-width: 2.5;
+  stroke-linejoin: round;
+  pointer-events: none;
+}
+
 .scatter-axis text {
   fill: var(--ink-soft);
   font-size: 11px;
@@ -3805,8 +3926,6 @@ a:focus-visible {
   justify-content: space-between;
   gap: 10px;
   padding: 12px 16px;
-  color: var(--paper);
-  background: var(--ink);
   font-family: "IBM Plex Mono", monospace;
   font-size: 11px;
   letter-spacing: 0.08em;
@@ -3825,8 +3944,8 @@ a:focus-visible {
   content: "\25be Show";
   margin-left: auto;
   padding: 3px 9px 4px;
-  color: var(--ink);
-  background: var(--paper);
+  color: var(--paper);
+  background: var(--ink);
   font-weight: 700;
 }
 
@@ -3844,8 +3963,26 @@ a:focus-visible {
 }
 
 .scatter-controls-count {
-  color: var(--paper);
-  opacity: 0.75;
+  color: var(--ink-soft);
+}
+
+.scatter-number {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.scatter-number input {
+  width: 8ch;
+  padding: 6px 8px;
+  border: 2px solid var(--rule);
+  color: var(--ink);
+  background: var(--paper);
+  font-family: inherit;
+  font-size: 14px;
 }
 
 .scatter-controls-body {

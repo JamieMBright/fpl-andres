@@ -28,7 +28,10 @@ describe("readScatterView", () => {
       minMinutes: 900,
       centreMode: "mean" as const,
       trend: true,
-      overlooked: true,
+      sweetSpot: true,
+      frontier: true,
+      ownedFrom: 1.5,
+      ownedTo: 12,
       pinned: [154561, 226597],
       search: "wieffer",
     };

@@ -70,65 +70,67 @@ export function ScatterReadout({
   }
 
   return (
-    <section
-      className="scatter-readout"
-      aria-labelledby="scatter-readout-heading"
-    >
-      <h2 id="scatter-readout-heading">
-        Top {Math.min(ROWS, rows.length)} by
-        <select
-          aria-label="Rank the table by"
-          className="readout-rank"
-          onChange={(event) => onRankBy(event.target.value)}
-          value={chosen ? chosen.id : selection.y.id}
-        >
-          {METRICS.map((entry) => (
-            <option key={entry.id} value={entry.id}>
-              {entry.label}
-            </option>
-          ))}
-        </select>
-      </h2>
-      <p className="readout-explains">{metric.explains}</p>
-
-      <div
-        aria-label="Scrollable table of the plotted players, ranked"
-        className="squad-table-wrap"
-        role="region"
-        // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- Keyboard users must be able to scroll this table horizontally.
-        tabIndex={0}
-      >
-        <table className="readout-table">
-          <thead>
-            <tr>
-              <th scope="col">Player</th>
-              <th scope="col">Club</th>
-              <th scope="col">Pos</th>
-              <th scope="col">Price</th>
-              <th scope="col">Owned</th>
-              <th scope="col">{selection.x.label}</th>
-              <th scope="col">{selection.y.label}</th>
-              {defconAxis ? <th scope="col">Bar</th> : null}
-              <th scope="col">
-                <span className="visually-hidden">Pin</span>
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((point) => (
-              <ReadoutRow
-                key={point.player.code}
-                point={point}
-                selection={selection}
-                defconAxis={defconAxis}
-                pinned={pinned.includes(point.player.code)}
-                onTogglePin={onTogglePin}
-              />
+    <details className="scatter-controls scatter-readout">
+      <summary className="scatter-controls-summary">
+        <span>Top {Math.min(ROWS, rows.length)}</span>
+      </summary>
+      <div className="scatter-controls-body">
+        <h2 id="scatter-readout-heading">
+          Ranked by
+          <select
+            aria-label="Rank the table by"
+            className="readout-rank"
+            onChange={(event) => onRankBy(event.target.value)}
+            value={chosen ? chosen.id : selection.y.id}
+          >
+            {METRICS.map((entry) => (
+              <option key={entry.id} value={entry.id}>
+                {entry.label}
+              </option>
             ))}
-          </tbody>
-        </table>
+          </select>
+        </h2>
+        <p className="readout-explains">{metric.explains}</p>
+
+        <div
+          aria-label="Scrollable table of the plotted players, ranked"
+          className="squad-table-wrap"
+          role="region"
+          // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- Keyboard users must be able to scroll this table horizontally.
+          tabIndex={0}
+        >
+          <table className="readout-table">
+            <thead>
+              <tr>
+                <th scope="col">Player</th>
+                <th scope="col">Club</th>
+                <th scope="col">Pos</th>
+                <th scope="col">Price</th>
+                <th scope="col">Owned</th>
+                <th scope="col">{selection.x.label}</th>
+                <th scope="col">{selection.y.label}</th>
+                {defconAxis ? <th scope="col">Bar</th> : null}
+                <th scope="col">
+                  <span className="visually-hidden">Pin</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((point) => (
+                <ReadoutRow
+                  key={point.player.code}
+                  point={point}
+                  selection={selection}
+                  defconAxis={defconAxis}
+                  pinned={pinned.includes(point.player.code)}
+                  onTogglePin={onTogglePin}
+                />
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
-    </section>
+    </details>
   );
 }
 

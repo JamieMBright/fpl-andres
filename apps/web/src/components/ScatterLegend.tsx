@@ -2,6 +2,8 @@ import { memo, useMemo } from "react";
 
 import { clubMarkers } from "../kit/club-markers";
 import type { Metric } from "../state/analysis-metrics";
+import type { Bin } from "../state/scatter-regions";
+import { BIN_RAMP } from "../state/scatter-regions";
 import type { ScatterView } from "../state/scatter-view";
 
 /**
@@ -37,12 +39,17 @@ export function ScatterLegend({
   sizeRange,
   view,
   clubsInPlay,
+  colourMetric,
+  bins,
 }: {
   sizeMetric: Metric | null;
   /** Smallest and largest plotted value, so the swatches quote real numbers. */
   sizeRange: { low: number; high: number } | null;
   view: ScatterView;
   clubsInPlay: readonly string[];
+  /** The statistic the colour bins, when colouring by one. */
+  colourMetric: Metric | null;
+  bins: readonly Bin[];
 }) {
   const byClub = view.colourBy === "club";
   const shown = useMemo(() => {
@@ -64,10 +71,10 @@ export function ScatterLegend({
                 viewBox={`0 0 ${SWATCH} ${SWATCH}`}
                 width={SWATCH}
               >
-                <path
-                  className={`scatter-mark scatter-mark-${code.toLowerCase()}`}
-                  d={markPath(code, 7)}
-                />
+                {/* Grey, like the size key: this row is about shape, and
+                    colouring it would claim a second encoding it does not
+                    carry. */}
+                <path className="scatter-legend-shape" d={markPath(code, 7)} />
               </svg>
               {label}
             </li>
@@ -76,36 +83,67 @@ export function ScatterLegend({
       </section>
 
       <section>
-        <h3>{byClub ? "Colour is the club kit" : "Colour is the position"}</h3>
+        <h3>
+          {byClub
+            ? "Colour is the club kit"
+            : view.colourBy === "metric" && colourMetric
+              ? `Colour is ${colourMetric.label.toLowerCase()}`
+              : "Colour is the position"}
+        </h3>
         {byClub ? (
-          <>
-            <ul className="scatter-legend-clubs">
-              {shown.map((mark) => (
-                <li key={mark.shortName}>
-                  <svg
-                    aria-hidden="true"
-                    height={SWATCH}
-                    viewBox={`0 0 ${SWATCH} ${SWATCH}`}
-                    width={SWATCH}
-                  >
-                    <path
-                      d={markPath("GKP", 7)}
-                      fill={mark.fill}
-                      stroke={mark.stroke}
-                      strokeWidth={2.5}
-                      {...(mark.dash ? { strokeDasharray: mark.dash } : {})}
-                    />
-                  </svg>
-                  <span translate="no">{mark.shortName}</span>
-                </li>
-              ))}
-            </ul>
-          </>
+          <ul className="scatter-legend-clubs">
+            {shown.map((mark) => (
+              <li key={mark.shortName}>
+                <svg
+                  aria-hidden="true"
+                  height={SWATCH}
+                  viewBox={`0 0 ${SWATCH} ${SWATCH}`}
+                  width={SWATCH}
+                >
+                  <path
+                    d={markPath("GKP", 7)}
+                    fill={mark.fill}
+                    stroke={mark.stroke}
+                    strokeWidth={2.5}
+                    {...(mark.dash ? { strokeDasharray: mark.dash } : {})}
+                  />
+                </svg>
+                <span translate="no">{mark.shortName}</span>
+              </li>
+            ))}
+          </ul>
+        ) : view.colourBy === "metric" && colourMetric ? (
+          <ul className="scatter-legend-bins">
+            {bins.map((bin, index) => (
+              <li key={bin.label}>
+                <span
+                  aria-hidden="true"
+                  className="scatter-legend-swatch"
+                  style={{ background: BIN_RAMP[index] ?? "#888" }}
+                />
+                {bin.label}
+              </li>
+            ))}
+          </ul>
         ) : (
-          <p>
-            One colour per position, matched to the shape beside it, so neither
-            is doing the work alone.
-          </p>
+          <ul className="scatter-legend-clubs">
+            {POSITIONS.map(({ code, label }) => (
+              <li key={code}>
+                <svg
+                  aria-hidden="true"
+                  height={SWATCH}
+                  viewBox={`0 0 ${SWATCH} ${SWATCH}`}
+                  width={SWATCH}
+                >
+                  <path
+                    className={`scatter-mark scatter-mark-${code.toLowerCase()}`}
+                    d={markPath(code, 7)}
+                  />
+                </svg>
+                {label}
+              </li>
+            ))}
+          </ul>
         )}
       </section>
 

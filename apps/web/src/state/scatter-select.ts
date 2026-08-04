@@ -37,6 +37,7 @@ export interface Exclusions {
   minutes: number;
   position: number;
   club: number;
+  ownership: number;
   noValue: number;
 }
 
@@ -65,6 +66,7 @@ export function selectPlotted(
     minutes: 0,
     position: 0,
     club: 0,
+    ownership: 0,
     noValue: 0,
   };
   const unmeasured: string[] = [];
@@ -84,6 +86,10 @@ export function selectPlotted(
     }
     if (player.minutes < view.minMinutes) {
       excluded.minutes += 1;
+      continue;
+    }
+    if (player.ownership < view.ownedFrom || player.ownership > view.ownedTo) {
+      excluded.ownership += 1;
       continue;
     }
 
@@ -132,10 +138,9 @@ export function selectPlotted(
       size: size ? size.value(entry.player) : null,
       quadrant,
       residual: fit ? residualOf(entry, fit) : null,
-      overlooked:
-        view.overlooked &&
-        entry.player.ownership <= view.overlookedCeiling &&
-        inStrongQuadrant(quadrant, x, y),
+      // Everything drawn is inside the ownership band now, so the old flag for
+      // "strong and unowned" is the whole chart rather than a subset of it.
+      overlooked: inStrongQuadrant(quadrant, x, y),
       matched:
         needle.length === 0 ||
         entry.player.name.toLowerCase().includes(needle) ||

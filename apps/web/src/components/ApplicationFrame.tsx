@@ -3,8 +3,8 @@ import { useEffect, useState } from "react";
 
 import { FIRST_DEADLINE_2026_27 } from "../public-ids";
 import { BielsaBucket } from "./BielsaBucket";
+import { Countdown } from "./Countdown";
 import { OfflineBanner } from "./OfflineBanner";
-import { StatusStrip } from "./StatusStrip";
 
 /**
  * The shell every route renders inside: skip link, header, theme, footer.
@@ -43,15 +43,29 @@ const SOCIAL_LINKS = [
   },
 ] as const;
 
-type ThemeName = "dark" | "light";
+/** `dark` is the third kit, green and blue; it is the default. */
+type ThemeName = "light" | "away" | "dark";
+
+/** Home, away, third, then round again. */
+const NEXT_KIT: Record<ThemeName, ThemeName> = {
+  light: "away",
+  away: "dark",
+  dark: "light",
+};
+
+/** The button names the kit it will switch *to*, which is what a kit button does. */
+const KIT_LABEL: Record<ThemeName, string> = {
+  light: "Away kit",
+  away: "Third kit",
+  dark: "Home kit",
+};
 
 const THEME_STORAGE_KEY = "fpl-andres:theme";
 
 function readStoredTheme(): ThemeName {
   try {
-    return window.localStorage.getItem(THEME_STORAGE_KEY) === "light"
-      ? "light"
-      : "dark";
+    const stored = window.localStorage.getItem(THEME_STORAGE_KEY);
+    return stored === "light" || stored === "away" ? stored : "dark";
   } catch {
     // A blocked storage partition must not stop the page rendering.
     return "dark";
@@ -84,25 +98,24 @@ export function ApplicationFrame() {
             <small>Analysis, not opinion</small>
           </span>
         </Link>
-        <div className="header-controls">
-          <nav aria-label="Primary navigation" className="ceefax-nav">
-            <Link to="/plan">Plan</Link>
-            <Link to="/players">Players</Link>
-            <Link to="/analysis">Analysis</Link>
-            <Link to="/methodology">Method</Link>
-            <Link to="/calibration">Calibration</Link>
-          </nav>
-          <button
-            aria-pressed={theme === "light"}
-            className="theme-toggle"
-            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            type="button"
-          >
-            {theme === "dark" ? "Third kit" : "Home kit"}
-          </button>
-        </div>
+        <button
+          className="theme-toggle"
+          onClick={() => {
+            setTheme(NEXT_KIT[theme]);
+          }}
+          type="button"
+        >
+          {KIT_LABEL[theme]}
+        </button>
       </header>
-      <StatusStrip deadline={FIRST_DEADLINE_2026_27} />
+      <nav aria-label="Primary navigation" className="teletext-strip">
+        <Link to="/plan">Plan</Link>
+        <Link to="/players">Players</Link>
+        <Link to="/analysis">Analysis</Link>
+        <Link to="/methodology">Method</Link>
+        <Link to="/calibration">Calibration</Link>
+        <Countdown deadline={FIRST_DEADLINE_2026_27} />
+      </nav>
       <main id="main-content" tabIndex={-1}>
         <Outlet />
       </main>

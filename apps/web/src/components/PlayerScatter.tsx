@@ -5,7 +5,13 @@ import { clubMarker } from "../kit/club-markers";
 import { kitForShortName } from "../kit/team-kits";
 import { defconThresholdFor, metric } from "../state/analysis-metrics";
 import type { AnalysisPlayer } from "../state/analysis-pool";
-import { binOf, binsFor, sweetSpot } from "../state/scatter-regions";
+import {
+  BIN_RAMP,
+  binOf,
+  binsFor,
+  frontier,
+  sweetSpot,
+} from "../state/scatter-regions";
 import {
   quadrantCaption,
   type PlottedPlayer,
@@ -40,19 +46,6 @@ const PLOT_HEIGHT = HEIGHT - MARGIN.top - MARGIN.bottom;
 // 2.6 disappeared on a dense chart.
 const MIN_RADIUS = 5;
 const MAX_RADIUS = 18;
-
-// Teletext's own ramp, dark to light, so a higher bin reads as a brighter mark
-// and the whole thing still belongs to the rest of the site.
-const BIN_RAMP = [
-  "#0a1a4d",
-  "#0d3b8c",
-  "#1f7ac2",
-  "#22a6a6",
-  "#2fb84a",
-  "#c8d400",
-  "#ff8c1a",
-  "#ff3b3b",
-];
 const TICKS = 5;
 
 export interface PlayerScatterProps {
@@ -222,12 +215,26 @@ export const PlayerScatter = memo(function PlayerScatter({
   // Where the good players are, from each metric's own declared direction.
   const spot = useMemo(
     () =>
-      sweetSpot(
-        points.map((point) => point.player),
-        xMetric,
-        yMetric,
-      ),
-    [points, xMetric, yMetric],
+      view.sweetSpot
+        ? sweetSpot(
+            points.map((point) => point.player),
+            xMetric,
+            yMetric,
+          )
+        : null,
+    [points, xMetric, yMetric, view.sweetSpot],
+  );
+
+  const edge = useMemo(
+    () =>
+      view.frontier
+        ? frontier(
+            points.map((point) => point.player),
+            xMetric,
+            yMetric,
+          )
+        : [],
+    [points, xMetric, yMetric, view.frontier],
   );
 
   const handleEnter = useCallback((point: PlottedPlayer) => {
@@ -340,6 +347,23 @@ export const PlayerScatter = memo(function PlayerScatter({
             />
           ) : null}
 
+          {edge.length > 1 ? (
+            <polyline
+              className="scatter-frontier"
+              points={edge
+                .map(
+                  (point) =>
+                    `${String(xScale(point.x))},${String(yScale(point.y))}`,
+                )
+                .join(" ")}
+            >
+              <title>
+                The best available on both axes at once. Anyone below this line
+                is beaten outright by somebody on the line.
+              </title>
+            </polyline>
+          ) : null}
+
           {spot ? (
             <ellipse
               className="scatter-sweet-spot"
@@ -444,6 +468,11 @@ export const PlayerScatter = memo(function PlayerScatter({
           textAnchor="middle"
         >
           {yMetric.label}
+        </text>
+        {/* Survives the PNG export, which is the point of putting it here
+            rather than in the surrounding HTML. */}
+        <text className="scatter-watermark" x={6} y={HEIGHT - 8}>
+          @fpl_andres
         </text>
       </svg>
 
