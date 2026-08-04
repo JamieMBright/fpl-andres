@@ -52,7 +52,7 @@ Mark each one applied, with the date, as it lands.
 | 13  | `20260801190000_promotion_lineage.sql`                        | no                             |
 | 14  | `20260801200000_workflow_run_audit.sql`                       | no                             |
 | 15  | `20260802120000_snapshot_path_integrity.sql`                  | no                             |
-| 16  | `20260804120000_analysis_requests_and_declared_transfers.sql` | no                             |
+| 16  | `20260804120000_analysis_requests_and_declared_transfers.sql` | yes — applied 2026-08-04       |
 
 Rows 7–10 are marked for confirmation rather than guessed: this file did not
 list them, so their state was never recorded and cannot be inferred from the
