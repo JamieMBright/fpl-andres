@@ -1,6 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "corepack pnpm --filter @fpl-andres/web build",
+  "buildCommand": "corepack pnpm --filter @fpl-andres/contracts build && corepack pnpm --filter @fpl-andres/web build",
   "installCommand": "corepack pnpm install --frozen-lockfile",
   "outputDirectory": "apps/web/dist",
   "regions": ["lhr1"],

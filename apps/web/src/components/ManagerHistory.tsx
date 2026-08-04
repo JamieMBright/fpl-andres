@@ -44,7 +44,7 @@ export function ManagerHistory({ entryId }: { entryId: number }) {
 
     async function read() {
       try {
-        const response = await fetch(`/api/fpl/entry/${entryId}/history/`, {
+        const response = await fetch(`/api/fpl/entry/${entryId}/history`, {
           signal: controller.signal,
         });
         const payload = response?.ok ? await response.json() : null;

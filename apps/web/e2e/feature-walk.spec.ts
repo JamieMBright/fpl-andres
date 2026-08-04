@@ -74,7 +74,9 @@ async function mockManagerHistory(page: Page) {
       });
       return;
     }
-    if (route.request().url().includes("/fixtures/")) {
+    // Slash-insensitive: Vercel's catch-all route refuses a trailing slash, so
+    // the app asks for `/api/fpl/fixtures` and the proxy restores it upstream.
+    if (/\/fixtures\/?($|\?)/.test(route.request().url())) {
       await route.fulfill({
         body: JSON.stringify([{ event: 1, team_h: 1, team_a: 1 }]),
         contentType: "application/json",

@@ -268,8 +268,8 @@ export async function fetchAnalysisPool(
   let fixtures: Response;
   try {
     [bootstrap, fixtures] = await Promise.all([
-      dedupedFetch("/api/fpl/bootstrap-static/", init, fetchApi),
-      dedupedFetch("/api/fpl/fixtures/", init, fetchApi),
+      dedupedFetch("/api/fpl/bootstrap-static", init, fetchApi),
+      dedupedFetch("/api/fpl/fixtures", init, fetchApi),
     ]);
   } catch (error) {
     if (error instanceof DOMException && error.name === "AbortError")

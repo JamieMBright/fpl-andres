@@ -118,8 +118,8 @@ describe("fetchPlayerPool", () => {
     const pool = await fetchPlayerPool(fetchApi);
 
     expect(fetchApi.mock.calls.map(([input]) => String(input))).toEqual([
-      "/api/fpl/bootstrap-static/",
-      "/api/fpl/fixtures/",
+      "/api/fpl/bootstrap-static",
+      "/api/fpl/fixtures",
     ]);
     expect(pool.players).toHaveLength(2);
     expect(pool.fixtures).toHaveLength(1);

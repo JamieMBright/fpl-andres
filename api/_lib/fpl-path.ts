@@ -39,11 +39,20 @@ export function resolveFplUpstreamUrl(requestUrl: string): URL {
 
   const endpointPath = rawPath.slice(PROXY_PREFIX.length);
   rejectUnsafePath(rawPath, endpointPath);
-  const endpointKind = validateEndpointPath(endpointPath);
+  // Vercel's catch-all route does not match a request path ending in a slash:
+  // `/api/fpl/bootstrap-static/` was answered 404 by the edge without the
+  // function running at all. FPL's own endpoints require that slash, so the
+  // browser asks without one and it is restored here. The allow-list still sees
+  // exactly the anchored form it always did, so nothing new becomes reachable.
+  const canonicalPath =
+    endpointPath === "" || endpointPath.endsWith("/")
+      ? endpointPath
+      : `${endpointPath}/`;
+  const endpointKind = validateEndpointPath(canonicalPath);
   const query = validateQuery(endpointKind, rawQuery);
 
-  const upstreamUrl = new URL(`${endpointPath}${query}`, FPL_API_ORIGIN);
-  requireUnchangedByResolution(upstreamUrl, endpointPath, query);
+  const upstreamUrl = new URL(`${canonicalPath}${query}`, FPL_API_ORIGIN);
+  requireUnchangedByResolution(upstreamUrl, canonicalPath, query);
   return upstreamUrl;
 }
 

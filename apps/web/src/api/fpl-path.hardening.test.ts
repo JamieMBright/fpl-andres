@@ -35,6 +35,16 @@ describe("resolveFplUpstreamUrl", () => {
       "/api/fpl/leagues-classic/314/standings/?page_standings=2",
       `${ORIGIN}leagues-classic/314/standings/?page_standings=2`,
     ],
+    // Vercel's catch-all route does not match a path ending in a slash, so this
+    // is the form the browser actually sends. It must reach the same endpoint.
+    ["/api/fpl/bootstrap-static", `${ORIGIN}bootstrap-static/`],
+    ["/api/fpl/fixtures", `${ORIGIN}fixtures/`],
+    ["/api/fpl/fixtures?event=7", `${ORIGIN}fixtures/?event=7`],
+    ["/api/fpl/entry/12345/history", `${ORIGIN}entry/12345/history/`],
+    [
+      "/api/fpl/entry/12345/event/7/picks",
+      `${ORIGIN}entry/12345/event/7/picks/`,
+    ],
   ])("resolves %s", (request, expected) => {
     expect(resolveFplUpstreamUrl(request).href).toBe(expected);
   });
@@ -70,7 +80,9 @@ describe("path traversal and encoding variants", () => {
     ["outside the proxy prefix", "/api/team/1"],
     ["prefix only", "/api/fpl/"],
     ["unlisted endpoint", "/api/fpl/me/"],
-    ["trailing slash missing", "/api/fpl/bootstrap-static"],
+    // Restoring a missing trailing slash must not turn an unlisted endpoint
+    // into a listed one.
+    ["unlisted endpoint without a slash", "/api/fpl/me"],
     ["semicolon parameter", "/api/fpl/entry/1;evil/"],
     ["newline", "/api/fpl/entry/1/\nHost: evil"],
     ["whitespace", "/api/fpl/entry/ 1/"],
