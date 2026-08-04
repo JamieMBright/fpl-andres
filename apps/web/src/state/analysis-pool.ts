@@ -113,7 +113,12 @@ export interface AnalysisPlayer {
   teamCode: number;
   available: boolean;
   priceTenths: number;
-  ownership: number;
+  /**
+   * Null on an archived season. FPL publishes ownership as a live figure only,
+   * so what a player was owned by in 2022-23 is not recoverable, and a zero
+   * would read as "nobody owned him" rather than "nobody recorded it".
+   */
+  ownership: number | null;
   minutes: number;
   ninetiesPlayed: number;
   totalPoints: number;
@@ -121,12 +126,14 @@ export interface AnalysisPlayer {
   expectedGoals: number;
   expectedAssists: number;
   expectedGoalInvolvements: number;
-  ictIndex: number;
-  influence: number;
-  creativity: number;
-  threat: number;
-  defensiveContribution: number;
-  defensiveContributionPer90: number;
+  /** Null on an archived season: the corpus does not carry the ICT split. */
+  ictIndex: number | null;
+  influence: number | null;
+  creativity: number | null;
+  threat: number | null;
+  /** Null before 2025-26: FPL did not record it, and zero would read as none. */
+  defensiveContribution: number | null;
+  defensiveContributionPer90: number | null;
   /**
    * Defensive contributions per 90 as a share of the bar he has to clear.
    *

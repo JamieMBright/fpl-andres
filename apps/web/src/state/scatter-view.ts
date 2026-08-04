@@ -26,6 +26,22 @@ export const NO_SIZE = "none";
 export const MAX_BINS = 8;
 export const MIN_BINS = 2;
 
+/** The live season, which is the bootstrap rather than the archive. */
+export const LIVE_SEASON = "";
+
+/** A season is thirty-eight gameweeks, and the window is closed at both ends. */
+export const FIRST_EVENT = 1;
+export const LAST_EVENT = 38;
+
+/** Seasons the archive carries, newest last so the select reads forwards. */
+export const ARCHIVED_SEASONS = [
+  "2021-22",
+  "2022-23",
+  "2023-24",
+  "2024-25",
+  "2025-26",
+] as const;
+
 export interface ScatterView {
   x: string;
   y: string;
@@ -56,6 +72,11 @@ export interface ScatterView {
   highlights: string[];
   /** What the table underneath ranks by. Follows the y-axis until changed. */
   tableMetric: string;
+  /** A completed season from the archive, or the empty string for the live one. */
+  season: string;
+  /** The gameweek window totals are re-summed over. Ignored on the live season. */
+  fromEvent: number;
+  toEvent: number;
 }
 
 const POSITIONS = ["GKP", "DEF", "MID", "FWD"];
@@ -94,6 +115,9 @@ export const DEFAULT_VIEW: ScatterView = {
   pinned: [],
   highlights: [],
   tableMetric: "",
+  season: LIVE_SEASON,
+  fromEvent: FIRST_EVENT,
+  toEvent: LAST_EVENT,
 };
 
 export function readScatterView(params: URLSearchParams): ScatterView {
@@ -147,6 +171,19 @@ export function readScatterView(params: URLSearchParams): ScatterView {
     // Empty means "whatever the y-axis is", resolved by the reader rather than
     // frozen here, so changing the axis moves the table with it.
     tableMetric: metricId(params.get("table"), ""),
+    season: season(params.get("season")),
+    fromEvent: bounded(
+      params.get("gwfrom"),
+      DEFAULT_VIEW.fromEvent,
+      FIRST_EVENT,
+      LAST_EVENT,
+    ),
+    toEvent: bounded(
+      params.get("gwto"),
+      DEFAULT_VIEW.toEvent,
+      FIRST_EVENT,
+      LAST_EVENT,
+    ),
   };
 }
 
@@ -184,12 +221,25 @@ export function writeScatterView(view: ScatterView): string {
     params.set("hl", view.highlights.slice(0, MAX_HIGHLIGHTS).join(","));
   }
   put("table", view.tableMetric, DEFAULT_VIEW.tableMetric);
+  put("season", view.season, DEFAULT_VIEW.season);
+  // The window only means something against an archived season, so it is left
+  // out of a live URL even when it has been moved.
+  if (view.season !== LIVE_SEASON) {
+    put("gwfrom", String(view.fromEvent), String(DEFAULT_VIEW.fromEvent));
+    put("gwto", String(view.toEvent), String(DEFAULT_VIEW.toEvent));
+  }
 
   return params.toString();
 }
 
 function colourBy(raw: string | null): ColourBy {
   return raw === "position" || raw === "metric" ? raw : "club";
+}
+
+function season(raw: string | null): string {
+  return raw && (ARCHIVED_SEASONS as readonly string[]).includes(raw)
+    ? raw
+    : LIVE_SEASON;
 }
 
 function metricId(raw: string | null, fallback: string): string {

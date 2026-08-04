@@ -339,3 +339,31 @@ export function startFromCodes(
 
   return squad.length === codes.length ? { ...options, squad } : null;
 }
+
+const BY_ELEMENT_ID = new Map(PLAYERS.map((player) => [player.id, player]));
+
+/**
+ * The same, from a manager's own squad.
+ *
+ * FPL's team endpoint returns element ids, not codes, so this is the door a
+ * real manager comes through. A squad the solver does not recognise in full
+ * yields null rather than a solve for fourteen players.
+ */
+export function startFromElementIds(
+  elementIds: readonly number[],
+  options: {
+    bankTenths: number;
+    availableFreeTransfers: number;
+    fromEvent: number;
+  },
+): SolveStart | null {
+  const squad = elementIds
+    .map((elementId) => BY_ELEMENT_ID.get(elementId))
+    .filter((player): player is SolverPlayer => player !== undefined)
+    .map((player) => ({
+      elementId: player.id,
+      sellingPriceTenths: player.priceTenths,
+    }));
+
+  return squad.length === elementIds.length ? { ...options, squad } : null;
+}

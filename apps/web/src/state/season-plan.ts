@@ -41,6 +41,12 @@ export interface PlanGameweek {
   projectedPoints: number;
   netExpectedPoints: number;
   bankAfterTenths: number;
+  /** Set when a chip rewrote this week's fifteen. */
+  chip?: string | undefined;
+  /** True when the squad is handed back afterwards, as on a Free Hit. */
+  revertsAfter?: boolean | undefined;
+  /** The fifteen the plan resumes from once a reverting chip has been played. */
+  revertsTo?: readonly PlanPlayer[] | undefined;
 }
 
 export interface ChipCall {
@@ -149,6 +155,9 @@ export function readSeasonPlan(): SeasonPlan {
       projectedPoints: week.projectedPoints,
       netExpectedPoints: week.netExpectedPoints,
       bankAfterTenths: week.bankAfterTenths,
+      chip: week.chip,
+      revertsAfter: week.revertsAfter,
+      revertsTo: week.revertsTo ? resolveAll(week.revertsTo) : undefined,
     })),
   };
 }

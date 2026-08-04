@@ -95,7 +95,7 @@ ledger for those files. New migrations must:
 - Prefer idempotent DDL (`create ... if not exists`, `create or replace`,
   `drop trigger if exists` before `create trigger`) so a partial paste can be
   re-run. Most existing migrations predate this and are **not** idempotent:
-  18 `create table`, 28 `create index`, 12 `create trigger` and 6
+  20 `create table`, 34 `create index`, 12 `create trigger` and 6
   `create function` statements will fail on a second run.
   `python/tests/test_rollback_harness.py` pins that count.
 - Pass local policy tests and Linux CI (`pnpm exec supabase db reset --local`

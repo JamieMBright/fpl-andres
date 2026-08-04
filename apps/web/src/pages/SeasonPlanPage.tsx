@@ -11,6 +11,11 @@ import type { SolvedGameweek } from "../state/season-solver";
 import { startFromCodes } from "../state/season-solver";
 import { useSeasonSolve } from "../state/use-season-solve";
 import type {
+  TeamStartFailure,
+  TeamStartStatus,
+} from "../state/use-team-start";
+import { useTeamStart } from "../state/use-team-start";
+import type {
   ChipCall,
   Confidence,
   PlanGameweek,
@@ -28,6 +33,70 @@ import { useDocumentTitle } from "../state/use-document-title";
 
 /** What a chip should return before it is worth planning a season around. */
 const CHIP_TARGET = 20;
+
+const TEAM_FAILURE: Record<TeamStartFailure, string> = {
+  not_a_team_id: "That is not a Team ID. It is the number in your FPL URL.",
+  unreachable: "I could not reach FPL for that squad, so I am not guessing it.",
+  no_processed_event:
+    "FPL has not processed a gameweek for that squad yet, so there are no picks to read.",
+  squad_not_recognised:
+    "That squad has a player I do not carry, so I will not solve fourteen fifteenths of it.",
+};
+
+/**
+ * Your season, not the opening squad's.
+ *
+ * The plan below is what the optimal opening squad does with the year, which is
+ * nobody's season after the first deadline. A Team ID replaces it with the same
+ * solve run on your own fifteen.
+ */
+function TeamEntry({
+  team,
+  params,
+  onChange,
+}: {
+  team: TeamStartStatus;
+  params: URLSearchParams;
+  onChange: (next: URLSearchParams, options?: { replace: boolean }) => void;
+}) {
+  const [entered, setEntered] = useState(params.get("team") ?? "");
+
+  const submit = (event: React.FormEvent) => {
+    event.preventDefault();
+    const next = new URLSearchParams(params);
+    const trimmed = entered.trim();
+    if (trimmed) next.set("team", trimmed);
+    else next.delete("team");
+    onChange(next, { replace: true });
+  };
+
+  return (
+    <form className="plan-team" onSubmit={submit}>
+      <label htmlFor="plan-team-id">Your Team ID</label>
+      <input
+        id="plan-team-id"
+        name="team"
+        type="text"
+        inputMode="numeric"
+        pattern="[0-9]*"
+        autoComplete="off"
+        placeholder="1234567"
+        value={entered}
+        onChange={(event) => setEntered(event.target.value)}
+      />
+      <button type="submit">Plan my season</button>
+      <p className="plan-team-note" role="status">
+        {team.status === "loading"
+          ? "Reading your squad."
+          : team.status === "ready"
+            ? `Your fifteen, solved from gameweek ${String(team.event)}.`
+            : team.status === "failed"
+              ? TEAM_FAILURE[team.reason]
+              : "Leave it blank for the optimal opening squad's season."}
+      </p>
+    </form>
+  );
+}
 
 /**
  * The club shirt. Silent to assistive technology because the short name is
@@ -138,8 +207,8 @@ function TeamSheet({
       <p className="plan-sheet-head mono" aria-hidden="true">
         <span />
         <span>Player</span>
-        <span>Price</span>
-        <span>Opponent</span>
+        <span>£</span>
+        <span>Opp</span>
         <span>FDR</span>
         <span>xPts</span>
         <span>xCeil</span>
@@ -166,20 +235,27 @@ function Move({ week }: { week: PlanGameweek }) {
   }
 
   return (
-    <ul className="plan-move">
-      {week.transfersIn.map((incoming, index) => {
-        const outgoing = week.transfersOut[index];
-        return (
-          <li key={incoming.code}>
-            {outgoing ? <Shirt club={outgoing.club} /> : null}
-            <span className="plan-out">{outgoing?.name ?? "\u2014"}</span>
-            <ArrowRight aria-label="replaced by" size={15} />
-            <Shirt club={incoming.club} />
-            <span className="plan-in">{incoming.name}</span>
-          </li>
-        );
-      })}
-    </ul>
+    <>
+      {week.chip ? (
+        <p className="plan-move-chip mono">
+          {week.chip} · {week.transfersIn.length} free
+        </p>
+      ) : null}
+      <ul className="plan-move">
+        {week.transfersIn.map((incoming, index) => {
+          const outgoing = week.transfersOut[index];
+          return (
+            <li key={incoming.code}>
+              {outgoing ? <Shirt club={outgoing.club} /> : null}
+              <span className="plan-out">{outgoing?.name ?? "\u2014"}</span>
+              <ArrowRight aria-label="replaced by" size={15} />
+              <Shirt club={incoming.club} />
+              <span className="plan-in">{incoming.name}</span>
+            </li>
+          );
+        })}
+      </ul>
+    </>
   );
 }
 
@@ -188,10 +264,10 @@ function Why({ week, chip }: { week: PlanGameweek; chip: ChipCall | null }) {
 
   return (
     <dl className="plan-why">
-      <dt>Move</dt>
+      <dt data-label="move">Move</dt>
       <dd>{moveReason(week)}</dd>
 
-      <dt>Money</dt>
+      <dt data-label="money">Money</dt>
       <dd>
         <ul className="plan-money">
           {moneyLines(week).map((line) => (
@@ -202,15 +278,15 @@ function Why({ week, chip }: { week: PlanGameweek; chip: ChipCall | null }) {
 
       {fixtures ? (
         <>
-          <dt>Fixtures</dt>
+          <dt data-label="fixtures">Fixtures</dt>
           <dd>{fixtures}</dd>
         </>
       ) : null}
 
-      <dt>Confidence</dt>
+      <dt data-label="confidence">Confidence</dt>
       <dd>{confidenceReason(week)}</dd>
 
-      <dt>Chip</dt>
+      <dt data-label="chip">Chip</dt>
       <dd>{chipReason(chip)}</dd>
     </dl>
   );
@@ -304,49 +380,56 @@ function ChipStrategy({ chips }: { chips: readonly ChipCall[] }) {
   ] as const;
 
   return (
-    <section aria-label="Chip strategy" className="plan-chips">
-      <h2>Eight chips, two of each</h2>
-      <p>
-        Every chip comes twice a season and the first set expires at gameweek
-        nineteen, so an unplayed chip is worth nothing rather than saved. Each
-        is placed where it adds most, and the figure is what playing it adds
-        over not playing it — not what the week scores.
-      </p>
-      {halves.map(([half, label]) => (
-        <div className="plan-chip-half" key={half}>
-          <h3>{label}</h3>
-          <ul>
-            {chips
-              .filter((chip) => chip.half === half)
-              .map((chip) => (
-                <li key={`${chip.chip}-${half}`}>
-                  <span className="plan-chip-when mono">
-                    {chip.event === null ? "—" : `GW${String(chip.event)}`}
-                  </span>
-                  <span className="plan-chip-name">{chip.chip}</span>
-                  <span
-                    className={
-                      chip.gain >= CHIP_TARGET
-                        ? "plan-chip-gain mono plan-chip-hit"
-                        : "plan-chip-gain mono"
-                    }
-                  >
-                    +{chip.gain.toFixed(1)}
-                  </span>
-                  <span className="plan-chip-note">{chip.note}.</span>
-                </li>
-              ))}
-          </ul>
-        </div>
-      ))}
-    </section>
+    <details className="scatter-controls plan-chips">
+      <summary className="scatter-controls-summary">
+        <span>Eight chips, two of each</span>
+        <span className="scatter-controls-count mono">
+          {chips.filter((chip) => chip.event !== null).length} placed
+        </span>
+      </summary>
+      <div className="scatter-controls-body">
+        <p>
+          Every chip comes twice a season and the first set expires at gameweek
+          nineteen, so an unplayed chip is worth nothing rather than saved. Each
+          is placed where it adds most, and the figure is what playing it adds
+          over not playing it — not what the week scores.
+        </p>
+        {halves.map(([half, label]) => (
+          <div className="plan-chip-half" key={half}>
+            <h3>{label}</h3>
+            <ul>
+              {chips
+                .filter((chip) => chip.half === half)
+                .map((chip) => (
+                  <li key={`${chip.chip}-${half}`}>
+                    <span className="plan-chip-when mono">
+                      {chip.event === null ? "—" : `GW${String(chip.event)}`}
+                    </span>
+                    <span className="plan-chip-name">{chip.chip}</span>
+                    <span
+                      className={
+                        chip.gain >= CHIP_TARGET
+                          ? "plan-chip-gain mono plan-chip-hit"
+                          : "plan-chip-gain mono"
+                      }
+                    >
+                      +{chip.gain.toFixed(1)}
+                    </span>
+                    <span className="plan-chip-note">{chip.note}.</span>
+                  </li>
+                ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </details>
   );
 }
 
 export default function SeasonPlanPage() {
   const plan = useMemo(() => readSeasonPlan(), []);
   const [selected, setSelected] = useState<PlanPlayer | null>(null);
-  const [params] = useSearchParams();
+  const [params, setParams] = useSearchParams();
   const chips = useMemo(() => {
     const byEvent = new Map<number, ChipCall>();
     for (const chip of plan.chips) {
@@ -363,7 +446,11 @@ export default function SeasonPlanPage() {
    * takes over.
    */
   const fromEvent = Number(params.get("from") ?? "");
+  const team = useTeamStart(params.get("team"));
   const live = useMemo(() => {
+    // His own fifteen beats a gameweek number, because it is his season either
+    // way and only one of the two knows what he owns.
+    if (team.status === "ready") return team.start;
     if (!Number.isInteger(fromEvent) || fromEvent < 1 || fromEvent > 38) {
       return null;
     }
@@ -374,7 +461,7 @@ export default function SeasonPlanPage() {
       [...opening.starters, ...opening.bench].map((player) => player.code),
       { bankTenths: 0, availableFreeTransfers: 1, fromEvent },
     );
-  }, [fromEvent, plan.gameweeks]);
+  }, [fromEvent, plan.gameweeks, team]);
 
   const solve = useSeasonSolve(live);
   const solving = live !== null;
@@ -404,64 +491,99 @@ export default function SeasonPlanPage() {
 
       <RouteHeading>Every gameweek to the end.</RouteHeading>
 
-      <p className="lede">
-        Gameweek {gameweeks[0]?.event} to{" "}
-        {gameweeks[gameweeks.length - 1]?.event}: the squad, the eleven, the
-        captain and the transfer, for all of it.{" "}
-        {solving ? null : (
-          <>
-            <strong>{plan.netExpectedPoints.toFixed(0)}</strong> net points from
-            the opening squad.
-          </>
-        )}
-      </p>
+      <TeamEntry team={team} params={params} onChange={setParams} />
 
-      {solving ? (
-        <p className="plan-honesty">
-          Solved on your machine, not on a server: the plan depends on your
-          squad, your bank and your free transfers, so it cannot be precomputed,
-          and thirty-eight gameweeks does not fit in a fifteen-second function.
-          Nothing about your team is sent anywhere to produce it.
-        </p>
-      ) : (
-        <p className="plan-honesty">
-          Between seasons FPL wipes every squad, so this one plan really is
-          everyone&rsquo;s — it is what the opening fifteen does with the whole
-          season. {bands.get("firm") ?? 0} gameweek is firm,{" "}
-          {bands.get("projected") ?? 0} are projected,{" "}
-          {bands.get("provisional") ?? 0} are provisional. A single optimal
-          38-gameweek solve does not return, so this is {plan.windowsSolved}{" "}
-          overlapping windows chained together from a pool of {plan.poolSize}{" "}
-          players — a good plan, not a proof.
-        </p>
-      )}
+      <details className="scatter-controls plan-preamble">
+        <summary className="scatter-controls-summary">
+          <span>What this is, and how to read it</span>
+          <span className="scatter-controls-count mono">
+            GW{gameweeks[0]?.event}–{gameweeks[gameweeks.length - 1]?.event}
+            {solving ? null : ` · ${plan.netExpectedPoints.toFixed(0)} NET`}
+          </span>
+        </summary>
+        <div className="scatter-controls-body">
+          <p className="lede">
+            Gameweek {gameweeks[0]?.event} to{" "}
+            {gameweeks[gameweeks.length - 1]?.event}: the squad, the eleven, the
+            captain and the transfer, for all of it.{" "}
+            {solving ? null : (
+              <>
+                <strong>{plan.netExpectedPoints.toFixed(0)}</strong> net points
+                from the opening squad.
+              </>
+            )}
+          </p>
 
-      <dl className="plan-key">
-        <div>
-          <dt>xPts</dt>
-          <dd>
-            Expected FPL points from one match: appearance, goals and assists at
-            his own decayed per-90 rates, plus clean sheets, saves, cards and
-            defensive contribution, scaled by this opponent. A good starter is
-            four to six; anything above seven is a genuinely strong fixture.
-          </dd>
+          {solving ? (
+            <p className="plan-honesty">
+              Solved on your machine, not on a server: the plan depends on your
+              squad, your bank and your free transfers, so it cannot be
+              precomputed, and thirty-eight gameweeks does not fit in a
+              fifteen-second function. Nothing about your team is sent anywhere
+              to produce it.
+            </p>
+          ) : (
+            <p className="plan-honesty">
+              Between seasons FPL wipes every squad, so this one plan really is
+              everyone&rsquo;s — it is what the opening fifteen does with the
+              whole season. {bands.get("firm") ?? 0} gameweek is firm,{" "}
+              {bands.get("projected") ?? 0} are projected,{" "}
+              {bands.get("provisional") ?? 0} are provisional. A single optimal
+              38-gameweek solve does not return, so this is {plan.windowsSolved}{" "}
+              overlapping windows chained together from a pool of{" "}
+              {plan.poolSize} players — a good plan, not a proof.
+            </p>
+          )}
+
+          <dl className="plan-key">
+            <div>
+              <dt>xPts</dt>
+              <dd>
+                Expected FPL points from one match: appearance, goals and
+                assists at his own decayed per-90 rates, plus clean sheets,
+                saves, cards and defensive contribution, scaled by this
+                opponent. A good starter is four to six; anything above seven is
+                a genuinely strong fixture.
+              </dd>
+            </div>
+            <div>
+              <dt>xCeil</dt>
+              <dd>
+                The same match on his best afternoon: xPts multiplied by how far
+                his ninetieth-percentile score sat above his average last
+                season. A centre-half who plays ninety and does nothing lands
+                near twice his xPts; a striker who either scores or vanishes
+                nearer three times it. An armband and a chip are played for this
+                number, not the first one.
+              </dd>
+            </div>
+            <div>
+              <dt>FDR</dt>
+              <dd>
+                One to five, from the measured strength of both sides at the
+                venue the match is played. One is the softest tie, five the
+                hardest, and a dash means a blank or an opponent with no record.
+              </dd>
+            </div>
+            <div>
+              <dt>Opponent</dt>
+              <dd>
+                Capitals are home, lower case away.{" "}
+                <span className="mono">HUL</span> is at home to Hull;{" "}
+                <span className="mono">hul</span> is away at Hull.
+              </dd>
+            </div>
+            <div>
+              <dt>Captain</dt>
+              <dd>
+                Shown <strong>doubled</strong>, because that is what he returns.
+                Bench figures are bracketed unless a Bench Boost is paying for
+                them.
+              </dd>
+            </div>
+          </dl>
         </div>
-        <div>
-          <dt>Opponent</dt>
-          <dd>
-            Capitals are home, lower case away.{" "}
-            <span className="mono">HUL</span> is at home to Hull;{" "}
-            <span className="mono">hul</span> is away at Hull.
-          </dd>
-        </div>
-        <div>
-          <dt>Captain</dt>
-          <dd>
-            Shown <strong>doubled</strong>, because that is what he returns.
-            Bench figures are bracketed unless a Bench Boost is paying for them.
-          </dd>
-        </div>
-      </dl>
+      </details>
 
       {solve.status === "solving" ? (
         <p className="plan-progress" role="status">

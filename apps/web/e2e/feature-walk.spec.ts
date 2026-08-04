@@ -327,8 +327,9 @@ test.describe("feature walk", () => {
     const toggle = page.getByRole("button", { name: /kit$/i });
     const shell = page.locator(".app-shell");
 
-    // The label states the kit currently applied, not the one it switches to.
-    await expect(toggle).toHaveText("Third kit");
+    // The label names the kit the button switches *to*, which is what a kit
+    // button does. The third kit is the default, so it offers the home one.
+    await expect(toggle).toHaveText("Home kit");
     await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
     const thirdKit = await shell.evaluate(
       (node) => getComputedStyle(node).backgroundImage,
@@ -336,7 +337,7 @@ test.describe("feature walk", () => {
 
     await toggle.click();
 
-    await expect(toggle).toHaveText("Home kit");
+    await expect(toggle).toHaveText("Away kit");
     await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
     const homeKit = await shell.evaluate(
       (node) => getComputedStyle(node).backgroundImage,

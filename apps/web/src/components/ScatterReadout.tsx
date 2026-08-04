@@ -166,7 +166,11 @@ function ReadoutRow({
       <td className="readout-number">
         &pound;{(player.priceTenths / 10).toFixed(1)}m
       </td>
-      <td className="readout-number">{player.ownership.toFixed(1)}%</td>
+      <td className="readout-number">
+        {player.ownership === null
+          ? "\u2014"
+          : `${player.ownership.toFixed(1)}%`}
+      </td>
       <td className="readout-number">{selection.x.format(point.x)}</td>
       <td className="readout-number">{selection.y.format(point.y)}</td>
       {defconAxis ? (
@@ -180,7 +184,7 @@ function ReadoutRow({
               className={
                 player.defconBarRatio >= 1 ? "readout-over" : "readout-under"
               }
-              title={`${player.defensiveContributionPer90.toFixed(1)} per 90 against a bar of ${threshold}`}
+              title={`${(player.defensiveContributionPer90 ?? 0).toFixed(1)} per 90 against a bar of ${threshold}`}
             >
               {player.defconBarRatio.toFixed(2)}
             </span>

@@ -32,7 +32,11 @@ OPENING_SQUAD_SCHEMA_VERSION: Final = 1
 #: Understat shot quality and penalty exposure, keyed by FPL code.
 UNDERSTAT_SCHEMA_VERSION: Final = 1
 
+# Season aggregates for the analysis scatter, one entry per season held.
+ANALYSIS_SEASONS_SCHEMA_VERSION: Final = 1
+
 __all__ = [
+    "ANALYSIS_SEASONS_SCHEMA_VERSION",
     "OPENING_SQUAD_SCHEMA_VERSION",
     "PROJECTIONS_META_SCHEMA_VERSION",
     "PROJECTIONS_SCHEMA_VERSION",

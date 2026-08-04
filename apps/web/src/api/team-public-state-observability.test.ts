@@ -346,8 +346,13 @@ describe("contract failure diagnostics", () => {
       .all()
       .find((line) => line.event === "source_contract_failed");
     expect(failure).toBeDefined();
-    expect(JSON.stringify(failure)).not.toContain("Secret Manager Name");
-    expect(JSON.stringify(failure)).not.toContain("999");
+    // The request id is a random uuid, so any three digits will eventually
+    // appear inside it. Searching the whole line for a payload value fails
+    // roughly one run in a few hundred for a reason that is not a leak.
+    const { requestId, ...rest } = failure ?? {};
+    expect(requestId).toEqual(expect.any(String));
+    expect(JSON.stringify(rest)).not.toContain("Secret Manager Name");
+    expect(JSON.stringify(rest)).not.toContain("999");
   });
 
   it("still answers source_contract_failed to the caller", async () => {

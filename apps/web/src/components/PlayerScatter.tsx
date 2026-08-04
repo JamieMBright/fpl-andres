@@ -574,7 +574,7 @@ function ScatterTooltip({
           <dt>Minutes</dt>
           <dd>{player.minutes.toLocaleString("en-GB")}</dd>
         </div>
-        {sizeLabel === "Ownership" ? null : (
+        {sizeLabel === "Ownership" || player.ownership === null ? null : (
           <div>
             <dt>Owned</dt>
             <dd>{player.ownership.toFixed(1)}%</dd>

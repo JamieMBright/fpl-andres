@@ -6,6 +6,10 @@ import { RangeSlider } from "./RangeSlider";
 import type { AnalysisPool } from "../state/analysis-pool";
 import type { ColourBy, ScatterView } from "../state/scatter-view";
 import {
+  ARCHIVED_SEASONS,
+  FIRST_EVENT,
+  LAST_EVENT,
+  LIVE_SEASON,
   MAX_BINS,
   MIN_BINS,
   NO_SIZE,
@@ -53,6 +57,52 @@ export function ScatterControls({
         <span className="scatter-controls-count mono">{plotted} plotted</span>
       </summary>
       <div className="scatter-controls-body">
+        <fieldset className="scatter-fieldset">
+          <legend>Season</legend>
+          <div className="scatter-control-row">
+            <label htmlFor={`${ids}-season`}>Which season</label>
+            <select
+              id={`${ids}-season`}
+              value={view.season}
+              onChange={(event) => onChange({ season: event.target.value })}
+            >
+              <option value={LIVE_SEASON}>This season, as it stands</option>
+              {[...ARCHIVED_SEASONS].reverse().map((season) => (
+                <option key={season} value={season}>
+                  {season}
+                </option>
+              ))}
+            </select>
+          </div>
+          {view.season === LIVE_SEASON ? (
+            <p className="scatter-hint">
+              Live figures from FPL, including ownership and shot quality. A
+              past season is downloaded on request and carries neither.
+            </p>
+          ) : (
+            <>
+              <RangeSlider
+                format={(value) => `GW${value.toFixed(0)}`}
+                from={view.fromEvent}
+                label="Gameweek window"
+                max={LAST_EVENT}
+                min={FIRST_EVENT}
+                onChange={({ from, to }) =>
+                  onChange({ fromEvent: from, toEvent: to })
+                }
+                step={1}
+                to={view.toEvent}
+              />
+              <p className="scatter-hint">
+                Points, minutes and price are re-totalled over the window, and
+                the price is what he closed it at. Expected goals and defensive
+                contributions are published as season totals, so those stay
+                whole however narrow the window is.
+              </p>
+            </>
+          )}
+        </fieldset>
+
         <div className="scatter-control-row">
           <AxisPicker
             id={`${ids}-x`}

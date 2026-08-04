@@ -54,6 +54,17 @@ export function isPremium(player: PlanPlayer): boolean {
  * explains the accounting and not the decision.
  */
 export function moveReason(week: PlanGameweek): string {
+  if (week.chip) {
+    const changes = week.transfersIn.length;
+    const revert = week.revertsAfter
+      ? " The squad goes back to what it was for the following week."
+      : " The squad is kept from here on.";
+    return (
+      `${week.chip}: ${changes} ${changes === 1 ? "change" : "changes"}, ` +
+      `no transfer charged and no free transfer spent.${revert}`
+    );
+  }
+
   if (week.transfersIn.length === 0) {
     return week.event === 1
       ? "Opening squad."

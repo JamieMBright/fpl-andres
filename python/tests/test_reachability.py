@@ -206,6 +206,7 @@ def test_no_module_is_imported_only_by_its_own_tests() -> None:
         "ingest_historical",
         "ingest_ownership",
         "live_contracts",
+        "publish_analysis_seasons",
         "publish_opening_squad",
         "publish_cohort",
         "publish_fpl500",

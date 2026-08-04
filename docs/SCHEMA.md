@@ -1,6 +1,6 @@
 # Schema reference
 
-Audit item #192. Thirteen migrations define seventeen tables, and reading them in
+Audit item #192. Sixteen migrations define twenty tables, and reading them in
 order is the only way to see the model. This is that view.
 
 The organising rule, which is not obvious from any single migration:
@@ -44,6 +44,10 @@ erDiagram
     seasons ||--o{ fixtures : "scopes"
     seasons ||--o{ element_gameweek_stats : "scopes"
     seasons ||--o{ element_price_observations : "scopes"
+    seasons ||--o{ analysis_requests : "scopes"
+    seasons ||--o{ declared_transfers : "scopes"
+    source_snapshots ||--o{ analysis_requests : "cites"
+    elements ||--o{ declared_transfers : "moves"
 
     model_promotion_decisions {
         text decision
@@ -240,6 +244,38 @@ across seasons must use the code.
 
 Growth is measured and deliberately unpartitioned: see
 `docs/adr/0005-no-partitioning-for-the-history-corpus.md`.
+
+---
+
+## Manager-supplied state
+
+What a manager tells us that FPL has not published. Both tables hold private
+team state, so both are forced-RLS with no policy: `service_role` only, and the
+browser key cannot reach them.
+
+### `analysis_requests`
+
+One row per plan generated for a manager, so a rate limit and a "you last looked
+at this on ..." line have something to read, and a bug report can be tied to the
+inputs that produced it.
+
+- **Grain**: one request
+- **References**: `seasons`, `source_snapshots`
+- The `event` recorded is the gameweek planned **from**, which differs from the
+  gameweek the request was made in either side of a deadline.
+
+### `declared_transfers`
+
+A manager's picks are private until the deadline passes, so between a transfer
+and the deadline the public API still shows the old squad — and planning from it
+recommends a transfer already made. The manager tells us instead.
+
+- **Grain**: one swap, one gameweek
+- **References**: `seasons`, `elements` twice — out and in
+- Stored as a pair, because a half-entered swap would reach the planner as a
+  fourteen-player squad.
+- `superseded_at` is set once the public API catches up, so the override is not
+  applied twice.
 
 ---
 

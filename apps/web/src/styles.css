@@ -1526,10 +1526,10 @@ a:focus-visible {
 .plan-eleven li,
 .plan-bench li {
   display: grid;
-  /* Shirt, name, price, opponent, difficulty, points. The opponent column is a
-     minimum rather than auto because a double gameweek names two clubs. */
-  grid-template-columns: 14px minmax(0, 1fr) 42px minmax(48px, auto) 15px 32px;
-  gap: 6px;
+  /* Shirt, name, price, opponent, difficulty, points, ceiling. The name takes
+     whatever is left after the columns that must not wrap. */
+  grid-template-columns: 13px minmax(0, 1fr) 38px 42px 14px 27px 27px;
+  gap: 5px;
   align-items: center;
   font-size: 11px;
   line-height: 1.7;
@@ -1543,9 +1543,16 @@ a:focus-visible {
   text-transform: uppercase;
 }
 
-.plan-sheet-head span:nth-child(3),
-.plan-sheet-head span:nth-child(5),
-.plan-sheet-head span:nth-child(6) {
+/* Every column but the name is a figure, and figures line up on the right. */
+.plan-sheet-head span:not(:nth-child(2)) {
+  overflow: hidden;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.plan-points,
+.plan-ceiling,
+.plan-fdr {
   text-align: right;
 }
 
@@ -1570,6 +1577,7 @@ a:focus-visible {
 /* The opponent list is cased to carry the venue, so nothing may re-case it. */
 .plan-against {
   overflow: hidden;
+  text-align: right;
   text-transform: none;
   text-overflow: ellipsis;
 }
@@ -1586,7 +1594,6 @@ a:focus-visible {
   text-align: center;
   border-radius: 2px;
 }
-
 .plan-fdr-1,
 .plan-fdr-2 {
   color: var(--paper);
@@ -1620,21 +1627,51 @@ a:focus-visible {
 
 .plan-chips {
   max-width: 78ch;
-  margin: 26px 0 0;
-  border-top: 3px solid var(--rule);
-  padding-top: 16px;
+  margin: 18px 0 0;
 }
 
-.plan-chips h2 {
-  margin: 0 0 8px;
-  font-size: 18px;
-}
-
-.plan-chips > p {
+.plan-chips p {
   margin: 0 0 14px;
   color: var(--ink-soft);
   font-size: 13px;
   line-height: 1.5;
+}
+
+/* The disclosures under the heading are bordered boxes, so they need air above
+   them or the descender of the heading sits on the border. */
+/* Your season rather than the opening squad's, asked for in one line. */
+.plan-team {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 18px;
+  border: 2px solid var(--rule);
+  padding: 10px 12px;
+}
+
+.plan-team label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.plan-team input {
+  width: 9ch;
+  font: inherit;
+  font-size: 13px;
+}
+
+.plan-team-note {
+  flex: 1 1 100%;
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 11px;
+}
+
+.plan-preamble {
+  margin-top: 22px;
 }
 
 .plan-chip-half h3 {
@@ -1786,6 +1823,18 @@ a:focus-visible {
   transform: rotate(180deg);
 }
 
+/* The chip that paid for the turnover, named above it. */
+.plan-move-chip {
+  margin: 6px 0 0;
+  padding: 1px 4px;
+  color: #000;
+  background: #ff0;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
 .plan-why {
   margin: 8px 0 0;
   border-top: 1px solid var(--rule);
@@ -1795,15 +1844,40 @@ a:focus-visible {
 }
 
 .plan-why dt {
-  margin-top: 5px;
-  color: var(--ink-soft);
+  display: inline-block;
+  margin-top: 6px;
+  padding: 1px 4px;
+  color: #000;
   font-size: 9px;
+  font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
 }
 
+/* Teletext ran its labels as solid blocks of colour, one per row. */
+.plan-why dt[data-label="move"] {
+  background: #0f0;
+}
+
+.plan-why dt[data-label="money"] {
+  background: #0ff;
+}
+
+.plan-why dt[data-label="fixtures"] {
+  background: #ff0;
+}
+
+.plan-why dt[data-label="confidence"] {
+  background: #f0f;
+}
+
+.plan-why dt[data-label="chip"] {
+  background: #fff;
+  box-shadow: inset 0 0 0 1px var(--rule);
+}
+
 .plan-why dd {
-  margin: 1px 0 0;
+  margin: 3px 0 0;
 }
 
 .plan-haul {

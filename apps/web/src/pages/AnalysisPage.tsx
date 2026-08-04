@@ -9,6 +9,11 @@ import { ScatterLegend } from "../components/ScatterLegend";
 import { ScatterReadout } from "../components/ScatterReadout";
 import { metric } from "../state/analysis-metrics";
 import {
+  fetchArchivedSeasons,
+  type ArchivedSeason,
+} from "../state/analysis-archive";
+import { poolFromArchive } from "../state/analysis-archive-pool";
+import {
   fetchAnalysisPool,
   type AnalysisData,
   type AnalysisFailure,
@@ -20,6 +25,7 @@ import { selectPlotted } from "../state/scatter-select";
 import {
   readScatterView,
   writeScatterView,
+  LIVE_SEASON,
   type ScatterView,
 } from "../state/scatter-view";
 import { useDocumentTitle } from "../state/use-document-title";
@@ -42,6 +48,8 @@ export default function AnalysisPage() {
 
   const [searchParams, setSearchParams] = useSearchParams();
   const [data, setData] = useState<AnalysisData | null>(null);
+  const [archive, setArchive] = useState<ArchivedSeason[] | null>(null);
+  const [archiveFailed, setArchiveFailed] = useState(false);
   const [failed, setFailed] = useState<AnalysisFailure | null>(null);
   const chartRef = useRef<HTMLDivElement>(null);
 
@@ -75,9 +83,38 @@ export default function AnalysisPage() {
     return () => controller.abort();
   }, []);
 
+  // A megabyte and a half, so it is fetched the first time a reader asks for a
+  // past season and never on first paint.
+  useEffect(() => {
+    if (view.season === LIVE_SEASON || archive || archiveFailed) return;
+    const controller = new AbortController();
+    fetchArchivedSeasons(fetch, controller.signal)
+      .then(setArchive)
+      .catch((error: unknown) => {
+        if (error instanceof DOMException && error.name === "AbortError")
+          return;
+        setArchiveFailed(true);
+      });
+    return () => controller.abort();
+  }, [view.season, archive, archiveFailed]);
+
+  const shown = useMemo(() => {
+    if (!data) return null;
+    if (view.season === LIVE_SEASON) return data;
+    const season = archive?.find((entry) => entry.season === view.season);
+    if (!season) return null;
+    const teamCodes = new Map(
+      data.pool.players.map((player) => [player.club, player.teamCode]),
+    );
+    return {
+      ...data,
+      pool: poolFromArchive(season, view.fromEvent, view.toEvent, teamCodes),
+    };
+  }, [data, archive, view.season, view.fromEvent, view.toEvent]);
+
   const selection = useMemo(
-    () => (data ? selectPlotted(data.pool.players, view) : null),
-    [data, view],
+    () => (shown ? selectPlotted(shown.pool.players, view) : null),
+    [shown, view],
   );
 
   // A pin on a player the filters have since removed is a row in the comparison
@@ -114,9 +151,16 @@ export default function AnalysisPage() {
         </p>
       ) : null}
 
-      {data && selection ? (
+      {archiveFailed ? (
+        <p className="analysis-failure" role="status">
+          I could not download the past-season archive, so I am staying on this
+          season rather than plotting an empty chart.
+        </p>
+      ) : null}
+
+      {shown && selection ? (
         <AnalysisBody
-          data={data}
+          data={shown}
           view={view}
           selection={selection}
           onChange={update}
@@ -126,7 +170,9 @@ export default function AnalysisPage() {
         />
       ) : failed ? null : (
         <p className="analysis-loading" role="status">
-          Pulling the player list.
+          {view.season === LIVE_SEASON
+            ? "Pulling the player list."
+            : `Downloading ${view.season}.`}
         </p>
       )}
     </section>
@@ -189,14 +235,28 @@ function AnalysisBody({
 
   return (
     <>
-      <p className="analysis-vintage">
-        Plotting the <strong>{vintage.season}</strong> record
-        {vintage.state === "previous_season"
-          ? ", the last completed season"
-          : `, ${vintage.completedGameweeks} gameweeks in`}
-        . Price and ownership are today&rsquo;s. Shot quality is Understat,
-        joined to {(data.pool.understatCoverage * 100).toFixed(0)}% of the pool.
-      </p>
+      {view.season === LIVE_SEASON ? (
+        <p className="analysis-vintage">
+          Plotting the <strong>{vintage.season}</strong> record
+          {vintage.state === "previous_season"
+            ? ", the last completed season"
+            : `, ${vintage.completedGameweeks} gameweeks in`}
+          . Price and ownership are today&rsquo;s. Shot quality is Understat,
+          joined to {(data.pool.understatCoverage * 100).toFixed(0)}% of the
+          pool.
+        </p>
+      ) : (
+        <p className="analysis-vintage">
+          Plotting <strong>{view.season}</strong>, gameweeks {view.fromEvent} to{" "}
+          {view.toEvent}. Price is what he closed the window at, not what he
+          costs now. Ownership was never recorded for a past season and shot
+          quality is not in the archive, so both are blank
+          {view.season < "2025-26"
+            ? ", and defensive contributions did not exist yet"
+            : ""}
+          .
+        </p>
+      )}
 
       <div className="analysis-layout">
         <ScatterControls

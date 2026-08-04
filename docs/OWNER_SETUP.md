@@ -35,23 +35,24 @@ part-way, follow the recovery procedure in `docs/RUNBOOK.md`; it uses
 
 Mark each one applied, with the date, as it lands.
 
-| #   | Migration                                          | Applied                        |
-| --- | -------------------------------------------------- | ------------------------------ |
-| 1   | `20260729180000_foundation.sql`                    | yes                            |
-| 2   | `20260729183000_evidence_snapshots.sql`            | yes                            |
-| 3   | `20260730120000_projection_artifacts.sql`          | yes                            |
-| 4   | `20260731120000_optimization_artifacts.sql`        | yes                            |
-| 5   | `20260731130000_foreign_key_indexes.sql`           | yes                            |
-| 6   | `20260801120000_history_corpus.sql`                | yes — corpus loaded 2026-07-30 |
-| 7   | `20260801130000_defensive_components.sql`          | **owner to confirm**           |
-| 8   | `20260801140000_fixture_grain_and_event_range.sql` | **owner to confirm**           |
-| 9   | `20260801150000_backtest_artifacts.sql`            | **owner to confirm**           |
-| 10  | `20260801160000_crowd_snapshots.sql`               | **owner to confirm**           |
-| 11  | `20260801170000_access_path_indexes.sql`           | no                             |
-| 12  | `20260801180000_backtest_corpus_fingerprint.sql`   | no                             |
-| 13  | `20260801190000_promotion_lineage.sql`             | no                             |
-| 14  | `20260801200000_workflow_run_audit.sql`            | no                             |
-| 15  | `20260802120000_snapshot_path_integrity.sql`       | no                             |
+| #   | Migration                                                     | Applied                        |
+| --- | ------------------------------------------------------------- | ------------------------------ |
+| 1   | `20260729180000_foundation.sql`                               | yes                            |
+| 2   | `20260729183000_evidence_snapshots.sql`                       | yes                            |
+| 3   | `20260730120000_projection_artifacts.sql`                     | yes                            |
+| 4   | `20260731120000_optimization_artifacts.sql`                   | yes                            |
+| 5   | `20260731130000_foreign_key_indexes.sql`                      | yes                            |
+| 6   | `20260801120000_history_corpus.sql`                           | yes — corpus loaded 2026-07-30 |
+| 7   | `20260801130000_defensive_components.sql`                     | **owner to confirm**           |
+| 8   | `20260801140000_fixture_grain_and_event_range.sql`            | **owner to confirm**           |
+| 9   | `20260801150000_backtest_artifacts.sql`                       | **owner to confirm**           |
+| 10  | `20260801160000_crowd_snapshots.sql`                          | **owner to confirm**           |
+| 11  | `20260801170000_access_path_indexes.sql`                      | no                             |
+| 12  | `20260801180000_backtest_corpus_fingerprint.sql`              | no                             |
+| 13  | `20260801190000_promotion_lineage.sql`                        | no                             |
+| 14  | `20260801200000_workflow_run_audit.sql`                       | no                             |
+| 15  | `20260802120000_snapshot_path_integrity.sql`                  | no                             |
+| 16  | `20260804120000_analysis_requests_and_declared_transfers.sql` | no                             |
 
 Rows 7–10 are marked for confirmation rather than guessed: this file did not
 list them, so their state was never recorded and cannot be inferred from the

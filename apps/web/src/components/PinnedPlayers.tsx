@@ -182,7 +182,9 @@ function PinnedCard({
           </span>
           <span className="pinned-price">
             &pound;{(player.priceTenths / 10).toFixed(1)}m &middot;{" "}
-            {player.ownership.toFixed(1)}% owned
+            {player.ownership === null
+              ? "ownership not recorded"
+              : `${player.ownership.toFixed(1)}% owned`}
           </span>
         </div>
         <button
@@ -242,6 +244,10 @@ function PinnedCard({
       {threshold === undefined ? (
         <p className="pinned-defcon pinned-defcon-none">
           No defensive-contribution route for a goalkeeper.
+        </p>
+      ) : player.defensiveContributionPer90 === null ? (
+        <p className="pinned-defcon pinned-defcon-none">
+          Defensive contributions were not recorded this season.
         </p>
       ) : (
         <p className="pinned-defcon">

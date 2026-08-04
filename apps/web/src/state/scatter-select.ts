@@ -88,7 +88,12 @@ export function selectPlotted(
       excluded.minutes += 1;
       continue;
     }
-    if (player.ownership < view.ownedFrom || player.ownership > view.ownedTo) {
+    // An archived season records no ownership, so the band cannot judge him.
+    // Filtering on a figure that was never taken would empty the chart.
+    if (
+      player.ownership !== null &&
+      (player.ownership < view.ownedFrom || player.ownership > view.ownedTo)
+    ) {
       excluded.ownership += 1;
       continue;
     }

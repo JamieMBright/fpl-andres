@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-04T06:00:29.814670Z",
+  "generatedAt": "2026-08-04T08:13:43.004832Z",
   "season": "2026-27",
   "recordSeason": "2025-26",
   "basis": "opening squad, fixture-adjusted projections, solved in overlapping windows and committed 38 gameweeks deep",
@@ -12,7 +12,7 @@
   "lastEvent": 38,
   "windowsSolved": 12,
   "poolSize": 85,
-  "netExpectedPoints": 2148.46,
+  "netExpectedPoints": 2150.79,
   "chips": [
     {
       "event": 2,
@@ -39,20 +39,20 @@
       "note": "a third copy of Gabriel: 7.3 if he returns his average, 13.4 on the sort of afternoon the chip is played for, which under the 20 points that makes a chip worth building around, but an unplayed chip expires at nothing"
     },
     {
-      "event": 16,
+      "event": null,
       "chip": "Wildcard",
       "half": "first",
-      "gain": 0.02,
+      "gain": 0.0,
       "ceiling": 0.02,
-      "note": "rebuilding here is worth 0.0 over the next 8 gameweeks once the points one free transfer a week would have recovered anyway are taken off, which worth almost nothing here, because this projection has no injuries, no form and no blank gameweeks, so the squad never drifts far enough from optimal for unlimited transfers to rescue it. Play it against real news rather than against this number"
+      "note": "Rebuilding in gameweek 16 and re-solving what follows scored 6.2 points fewer than carrying on with one transfer a week, so the model will not claim a week for it."
     },
     {
-      "event": 23,
+      "event": null,
       "chip": "Wildcard",
       "half": "second",
-      "gain": 0.07,
+      "gain": 0.0,
       "ceiling": 0.07,
-      "note": "rebuilding here is worth 0.1 over the next 8 gameweeks once the points one free transfer a week would have recovered anyway are taken off, which worth almost nothing here, because this projection has no injuries, no form and no blank gameweeks, so the squad never drifts far enough from optimal for unlimited transfers to rescue it. Play it against real news rather than against this number"
+      "note": "Rebuilding in gameweek 23 and re-solving what follows scored 2.1 points fewer than carrying on with one transfer a week, so the model will not claim a week for it."
     },
     {
       "event": 24,
@@ -127,6 +127,13 @@
       "priceTenths": 120,
       "squadNumber": null
     },
+    "152551": {
+      "name": "Lerma",
+      "position": "MID",
+      "club": "CRY",
+      "priceTenths": 50,
+      "squadNumber": null
+    },
     "154561": {
       "name": "Raya",
       "position": "GKP",
@@ -146,6 +153,13 @@
       "position": "FWD",
       "club": "LEE",
       "priceTenths": 60,
+      "squadNumber": null
+    },
+    "178301": {
+      "name": "Watkins",
+      "position": "FWD",
+      "club": "AVL",
+      "priceTenths": 80,
       "squadNumber": null
     },
     "199598": {
@@ -190,6 +204,13 @@
       "priceTenths": 60,
       "squadNumber": null
     },
+    "209400": {
+      "name": "Kamada",
+      "position": "MID",
+      "club": "CRY",
+      "priceTenths": 50,
+      "squadNumber": null
+    },
     "215379": {
       "name": "Anderson",
       "position": "MID",
@@ -216,6 +237,20 @@
       "position": "DEF",
       "club": "ARS",
       "priceTenths": 80,
+      "squadNumber": null
+    },
+    "231416": {
+      "name": "F.Kad\u0131o\u011flu",
+      "position": "DEF",
+      "club": "BHA",
+      "priceTenths": 45,
+      "squadNumber": null
+    },
+    "243298": {
+      "name": "Gakpo",
+      "position": "MID",
+      "club": "LIV",
+      "priceTenths": 70,
       "squadNumber": null
     },
     "244042": {
@@ -253,6 +288,20 @@
       "priceTenths": 70,
       "squadNumber": null
     },
+    "457569": {
+      "name": "Petrovi\u0107",
+      "position": "GKP",
+      "club": "BOU",
+      "priceTenths": 45,
+      "squadNumber": null
+    },
+    "465351": {
+      "name": "Matheus N.",
+      "position": "DEF",
+      "club": "MCI",
+      "priceTenths": 60,
+      "squadNumber": null
+    },
     "472769": {
       "name": "O'Reilly",
       "position": "DEF",
@@ -265,6 +314,13 @@
       "position": "FWD",
       "club": "EVE",
       "priceTenths": 55,
+      "squadNumber": null
+    },
+    "489639": {
+      "name": "Verbruggen",
+      "position": "GKP",
+      "club": "BHA",
+      "priceTenths": 45,
       "squadNumber": null
     },
     "494521": {
@@ -375,80 +431,88 @@
       "deadline": "2026-08-28T17:30:00Z",
       "confidence": "projected",
       "starters": [
-        154561, 226597, 204480, 244851, 17761, 486385, 199598, 472769, 209036,
-        141746, 221466
+        154561, 226597, 209036, 472769, 141746, 244851, 177815, 221466, 204480,
+        465351, 201658
       ],
-      "bench": [204936, 88894, 586309, 244042],
+      "bench": [457569, 152551, 586309, 244042],
       "captain": 226597,
       "viceCaptain": 209036,
-      "transfersIn": [],
-      "transfersOut": [],
+      "transfersIn": [457569, 201658, 152551, 177815, 465351],
+      "transfersOut": [88894, 17761, 486385, 199598, 204936],
       "opponents": {
-        "MCI": ["CRY (A)"],
         "ARS": ["AVL (A)"],
+        "MCI": ["CRY (A)"],
+        "BOU": ["EVE (H)"],
         "EVE": ["BOU (A)"],
         "MUN": ["IPS (H)"],
-        "AVL": ["ARS (H)"],
-        "FUL": ["SUN (A)"],
         "LEE": ["BRE (H)"],
+        "FUL": ["SUN (A)"],
         "TOT": ["NEW (H)"],
+        "CRY": ["MCI (H)"],
         "CHE": ["BHA (H)"]
       },
       "difficulty": {
-        "MCI": 1,
         "ARS": 1,
+        "MCI": 1,
+        "BOU": 2,
         "EVE": 4,
         "MUN": null,
-        "AVL": 5,
-        "FUL": 3,
         "LEE": 4,
+        "FUL": 3,
         "TOT": 4,
+        "CRY": 5,
         "CHE": 3
       },
       "squadElementIds": [
-        1, 4, 13, 46, 154, 229, 248, 249, 271, 338, 384, 387, 388, 426, 498
+        1, 4, 13, 57, 68, 154, 213, 249, 271, 346, 387, 388, 389, 426, 498
       ],
-      "benchElementIds": [384, 46, 249, 271],
+      "benchElementIds": [57, 213, 249, 271],
       "expected": {
-        "204936": 4.03,
         "154561": 4.54,
         "472769": 5.01,
         "226597": 6.52,
-        "17761": 3.8,
         "209036": 5.09,
-        "141746": 5.05,
-        "204480": 4.01,
-        "88894": 2.11,
-        "244042": 1.96,
-        "199598": 3.47,
-        "221466": 4.16,
-        "486385": 2.5,
+        "465351": 3.99,
+        "201658": 3.94,
         "586309": 2.09,
+        "141746": 5.05,
+        "177815": 3.82,
+        "204480": 4.01,
+        "244042": 1.96,
+        "221466": 4.16,
+        "152551": 1.78,
+        "457569": 3.03,
         "244851": 4.08
       },
       "ceiling": {
-        "204936": 7.09,
         "154561": 7.26,
         "472769": 11.71,
         "226597": 12.0,
-        "17761": 7.43,
         "209036": 9.93,
-        "141746": 9.77,
-        "204480": 8.64,
-        "88894": 4.74,
-        "244042": 2.28,
-        "199598": 7.26,
-        "221466": 7.91,
-        "486385": 6.23,
+        "465351": 9.69,
+        "201658": 9.79,
         "586309": 5.02,
+        "141746": 9.77,
+        "177815": 8.46,
+        "204480": 8.64,
+        "244042": 2.28,
+        "221466": 7.91,
+        "152551": 3.99,
+        "457569": 5.57,
         "244851": 8.37
       },
       "freeTransfersBefore": 1,
       "paidTransfers": 0,
       "transferCostPoints": 0,
-      "projectedPoints": 54.77,
-      "netExpectedPoints": 54.77,
-      "bankAfterTenths": 0
+      "projectedPoints": 56.75,
+      "netExpectedPoints": 56.75,
+      "bankAfterTenths": 0,
+      "chip": "Free Hit",
+      "revertsAfter": true,
+      "revertsTo": [
+        17761, 88894, 141746, 154561, 199598, 204480, 204936, 209036, 221466,
+        226597, 244042, 244851, 472769, 486385, 586309
+      ]
     },
     {
       "event": 3,
@@ -2389,82 +2453,92 @@
       "deadline": "2027-02-27T13:30:00Z",
       "confidence": "provisional",
       "starters": [
-        154561, 226597, 204480, 201658, 502500, 177815, 97032, 209036, 141746,
-        215379, 221466
+        154561, 226597, 97032, 221466, 141746, 244851, 177815, 243298, 424876,
+        17761, 494521
       ],
-      "bench": [472769, 88894, 486385, 67089],
+      "bench": [457569, 152551, 586309, 244042],
       "captain": 226597,
-      "viceCaptain": 502500,
-      "transfersIn": [204480, 97032, 67089],
-      "transfersOut": [494521, 200720, 446008],
+      "viceCaptain": 141746,
+      "transfersIn": [
+        457569, 494521, 244851, 152551, 17761, 586309, 244042, 243298, 424876
+      ],
+      "transfersOut": [
+        204480, 88894, 201658, 502500, 486385, 472769, 209036, 215379, 67089
+      ],
       "opponents": {
         "ARS": ["MUN (A)"],
-        "MCI": ["HUL (A)"],
-        "BOU": ["COV (A)"],
         "LIV": ["TOT (A)"],
-        "BRE": ["NEW (A)"],
-        "MUN": ["ARS (H)"],
-        "AVL": ["CHE (H)"],
-        "TOT": ["LIV (H)"],
         "EVE": ["NFO (H)"],
-        "LEE": ["FUL (A)"]
+        "MUN": ["ARS (H)"],
+        "LEE": ["FUL (A)"],
+        "FUL": ["LEE (H)"],
+        "TOT": ["LIV (H)"],
+        "CRY": ["SUN (H)"],
+        "BOU": ["COV (A)"],
+        "CHE": ["AVL (A)"]
       },
       "difficulty": {
         "ARS": 1,
-        "MCI": null,
-        "BOU": null,
         "LIV": 1,
-        "BRE": 2,
-        "MUN": 5,
-        "AVL": 3,
-        "TOT": 5,
         "EVE": 3,
-        "LEE": 3
+        "MUN": 5,
+        "LEE": 3,
+        "FUL": 3,
+        "TOT": 5,
+        "CRY": 4,
+        "BOU": null,
+        "CHE": 3
       },
       "squadElementIds": [
-        1, 4, 13, 46, 68, 106, 248, 346, 356, 387, 388, 426, 481, 497, 498
+        1, 4, 57, 61, 154, 213, 229, 249, 271, 346, 356, 367, 368, 426, 498
       ],
-      "benchElementIds": [387, 46, 248, 497],
+      "benchElementIds": [57, 213, 249, 271],
       "expected": {
         "154561": 4.03,
-        "215379": 3.88,
-        "472769": 3.36,
-        "226597": 5.95,
-        "201658": 3.66,
         "97032": 4.14,
-        "209036": 3.59,
-        "502500": 4.71,
+        "226597": 5.95,
+        "17761": 3.93,
+        "586309": 2.06,
         "141746": 4.5,
-        "204480": 3.88,
-        "88894": 2.49,
-        "67089": 1.41,
+        "177815": 3.73,
+        "243298": 4.14,
+        "424876": 4.09,
+        "244042": 2.02,
         "221466": 4.01,
-        "486385": 2.46,
-        "177815": 3.73
+        "152551": 1.87,
+        "457569": 2.89,
+        "244851": 4.29,
+        "494521": 3.64
       },
       "ceiling": {
         "154561": 6.45,
-        "215379": 7.37,
-        "472769": 7.85,
-        "226597": 10.94,
-        "201658": 9.08,
         "97032": 8.1,
-        "209036": 7.01,
-        "502500": 12.86,
+        "226597": 10.94,
+        "17761": 7.68,
+        "586309": 4.93,
         "141746": 8.71,
-        "204480": 8.35,
-        "88894": 5.59,
-        "67089": 3.11,
+        "177815": 8.27,
+        "243298": 7.96,
+        "424876": 10.12,
+        "244042": 2.36,
         "221466": 7.63,
-        "486385": 6.12,
-        "177815": 8.27
+        "152551": 4.21,
+        "457569": 5.31,
+        "244851": 8.79,
+        "494521": 7.55
       },
       "freeTransfersBefore": 3,
       "paidTransfers": 0,
       "transferCostPoints": 0,
-      "projectedPoints": 52.04,
-      "netExpectedPoints": 52.04,
-      "bankAfterTenths": 5
+      "projectedPoints": 52.4,
+      "netExpectedPoints": 52.4,
+      "bankAfterTenths": 0,
+      "chip": "Free Hit",
+      "revertsAfter": true,
+      "revertsTo": [
+        67089, 88894, 97032, 141746, 154561, 177815, 201658, 204480, 209036,
+        215379, 221466, 226597, 472769, 486385, 502500
+      ]
     },
     {
       "event": 28,

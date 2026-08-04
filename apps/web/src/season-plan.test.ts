@@ -44,18 +44,26 @@ describe("season plan artifact", () => {
   });
 
   it("carries the squad across gameweeks rather than restarting it", () => {
-    weeks.forEach((week, index) => {
-      const before = weeks[index - 1];
-      if (!before) return;
-
-      const previous = new Set([...before.starters, ...before.bench]);
-      for (const code of week.transfersOut) expect(previous).toContain(code);
-
-      const expected = new Set(previous);
-      for (const code of week.transfersOut) expected.delete(code);
-      for (const code of week.transfersIn) expected.add(code);
-      expect(new Set([...week.starters, ...week.bench])).toEqual(expected);
-    });
+    // A Free Hit is the one break in the chain: it fields fifteen for the
+    // afternoon and hands them back, so the plan resumes from the squad it
+    // publishes as `revertsTo` rather than the eleven and four it fielded.
+    let held: Set<number> | null = null;
+    for (const week of weeks) {
+      const fielded = new Set([...week.starters, ...week.bench]);
+      if (held && !week.revertsAfter) {
+        for (const code of week.transfersOut) expect(held).toContain(code);
+        const expected = new Set(held);
+        for (const code of week.transfersOut) expected.delete(code);
+        for (const code of week.transfersIn) expected.add(code);
+        expect(fielded).toEqual(expected);
+      }
+      if (week.revertsAfter) {
+        expect(week.revertsTo).toHaveLength(15);
+        held = new Set(week.revertsTo);
+      } else {
+        held = fielded;
+      }
+    }
   });
 
   it("names every player it references", () => {
