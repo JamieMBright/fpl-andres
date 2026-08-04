@@ -4,10 +4,9 @@ import {
   requireArtifactVersion,
   UNDERSTAT_SCHEMA_VERSION,
 } from "./artifact-version";
-import { dedupedFetch } from "./deduped-fetch";
 import type { ScheduledFixture } from "./fixture-run";
-import { readSeasonVintage, type SeasonVintage } from "./season-vintage";
-import understatArtifact from "../data/understat.json";
+import { retryingFetch } from "./retrying-fetch";
+import { readSeasonVintage, type SeasonVintage } from "./season-vintage";import understatArtifact from "../data/understat.json";
 
 requireArtifactVersion(
   "understat.json",
@@ -268,8 +267,8 @@ export async function fetchAnalysisPool(
   let fixtures: Response;
   try {
     [bootstrap, fixtures] = await Promise.all([
-      dedupedFetch("/api/fpl/bootstrap-static", init, fetchApi),
-      dedupedFetch("/api/fpl/fixtures", init, fetchApi),
+      retryingFetch("/api/fpl/bootstrap-static", init, fetchApi),
+      retryingFetch("/api/fpl/fixtures", init, fetchApi),
     ]);
   } catch (error) {
     if (error instanceof DOMException && error.name === "AbortError")

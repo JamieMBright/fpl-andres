@@ -151,6 +151,24 @@ describe("fetchPlayerPool", () => {
     await expect(fetchPlayerPool(fetchApi)).rejects.toThrow(/503/);
   });
 
+  it("survives one transient failure rather than asking the reader to refresh", async () => {
+    let bootstrapCalls = 0;
+    const fetchApi = vi.fn<typeof fetch>().mockImplementation((input) => {
+      if (String(input).includes("fixtures")) {
+        return Promise.resolve(Response.json([]));
+      }
+      bootstrapCalls += 1;
+      return bootstrapCalls === 1
+        ? Promise.reject(new TypeError("network"))
+        : Promise.resolve(Response.json(bootstrap()));
+    });
+
+    const pool = await fetchPlayerPool(fetchApi);
+
+    expect(bootstrapCalls).toBe(2);
+    expect(pool.players).toHaveLength(2);
+  });
+
   it("separates a source that broke its contract from one that never answered", async () => {
     const contract = vi
       .fn<typeof fetch>()
