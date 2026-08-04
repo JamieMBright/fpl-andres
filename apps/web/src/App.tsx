@@ -24,6 +24,8 @@ const CalibrationPage = lazy(() => import("./pages/CalibrationPage"));
 const SeasonPlanPage = lazy(() => import("./pages/SeasonPlanPage"));
 const KitPreviewPage = lazy(() => import("./pages/KitPreviewPage"));
 const AnalysisPage = lazy(() => import("./pages/AnalysisPage"));
+/** An operator tool, kept out of the navigation and out of the first paint. */
+const DiagnosticsPage = lazy(() => import("./pages/DiagnosticsPage"));
 
 export const routes: RouteObject[] = [
   {
@@ -77,6 +79,14 @@ export const routes: RouteObject[] = [
         element: (
           <LazyRoute>
             <CalibrationPage />
+          </LazyRoute>
+        ),
+      },
+      {
+        path: "diagnostics",
+        element: (
+          <LazyRoute>
+            <DiagnosticsPage />
           </LazyRoute>
         ),
       },

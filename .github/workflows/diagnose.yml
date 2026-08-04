@@ -1,0 +1,121 @@
+name: Diagnose production
+
+# Run this from a phone when something is broken and there is no terminal to
+# hand: Actions -> Diagnose production -> Run workflow.
+#
+# The canary answers "is it broken?" every twenty minutes. This answers "why?",
+# on demand, and writes the answer into the run summary rather than burying it
+# in log output that a mobile browser will not let you search.
+#
+# Read-only. It sends four GETs and reports what came back.
+
+on:
+  workflow_dispatch:
+    inputs:
+      site:
+        description: "Deployment to probe. Blank uses production."
+        required: false
+        default: ""
+        type: string
+      team:
+        description: "Public FPL Team ID for the team-route probe."
+        required: false
+        default: "212279"
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: diagnose-production
+  cancel-in-progress: false
+
+jobs:
+  diagnose:
+    name: Probe and explain
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Probe every route and classify the result
+        env:
+          SITE: ${{ inputs.site || 'https://fpl-andres.vercel.app' }}
+          TEAM: ${{ inputs.team || '212279' }}
+        run: |
+          set -u
+
+          site="${SITE%/}"
+          printf '# Production diagnosis\n\n' >> "$GITHUB_STEP_SUMMARY"
+          printf 'Probing `%s` at %s.\n\n' "$site" "$(date -u +%FT%TZ)" >> "$GITHUB_STEP_SUMMARY"
+
+          # `bootstrap-static` carries no trailing slash on purpose: Vercel's
+          # catch-all route does not match a path ending in one, so the browser
+          # asks without it and the proxy restores it before validating.
+          probe() {
+            label="$1"
+            path="$2"
+
+            headers=$(mktemp)
+            body=$(mktemp)
+            code=$(curl -sS -m 30 -o "$body" -D "$headers" -w '%{http_code}' \
+              -H 'Accept: application/json' "${site}${path}" || echo "000")
+
+            content_type=$(grep -i '^content-type:' "$headers" | tail -n1 | cut -d' ' -f2- | tr -d '\r')
+            vercel_error=$(grep -i '^x-vercel-error:' "$headers" | tail -n1 | cut -d' ' -f2- | tr -d '\r')
+            request_id=$(grep -i '^x-fpl-andres-request-id:' "$headers" | tail -n1 | cut -d' ' -f2- | tr -d '\r')
+            reason=$(grep -o '"reason":"[a-z_]*"' "$body" | head -n1 | cut -d'"' -f4)
+            sample=$(head -c 300 "$body" | tr -d '\r' | tr '\n' ' ')
+
+            # Classification mirrors apps/web/src/state/diagnostics.ts. The two
+            # exist because one runs where the operator is and the other runs
+            # where the operator is not.
+            if [ "$code" = "000" ]; then
+              verdict="COULD NOT CONNECT"
+              advice="The request never completed. DNS, TLS or the deployment is gone."
+            elif [ -n "$vercel_error" ] || [ "$code" = "500" ]; then
+              verdict="FUNCTION CRASHED"
+              advice="Vercel could not run the function. This is a build or module-load problem, not FPL being down. Check that every package the route imports emits JavaScript rather than raw TypeScript, and that the build ordering in vercel.json builds it first."
+            elif [ "$code" = "404" ] || printf '%s' "$content_type" | grep -qi 'text/html'; then
+              verdict="NOT ROUTED"
+              advice="The request fell through to the single-page rewrite, so no function is deployed at this path. Compare the functions globs in vercel.json against the files under api/, and check the Functions tab of the deployment."
+            elif [ "$code" = "429" ]; then
+              verdict="RATE LIMITED"
+              advice="Our own limiter refused this. Wait a minute and run again."
+            elif [ "$reason" = "unexpected_format" ]; then
+              verdict="FPL BLOCKED US"
+              advice="The function reached FPL and FPL answered with something that is not JSON, almost always a bot-protection page served to the datacentre IP. This is the classic works-locally-fails-deployed cause."
+            elif [ "$reason" = "unreachable" ]; then
+              verdict="FPL UNREACHABLE"
+              advice="The function could not finish the FPL fetch inside its 8.5s budget, or every attempt threw. Search the Vercel logs for upstream_exhausted; a failures list full of timeouts means the budget is too tight for a cold instance."
+            elif [ "$code" -ge 400 ] 2>/dev/null; then
+              verdict="REFUSED (${code})"
+              advice="The function ran and refused the request."
+            else
+              verdict="OK"
+              advice=""
+            fi
+
+            {
+              printf '## %s\n\n' "$label"
+              printf '| Field | Value |\n| --- | --- |\n'
+              printf '| Verdict | **%s** |\n' "$verdict"
+              printf '| Path | `%s` |\n' "$path"
+              printf '| Status | %s |\n' "$code"
+              [ -n "$content_type" ] && printf '| Content type | %s |\n' "$content_type"
+              [ -n "$vercel_error" ] && printf '| Vercel error | `%s` |\n' "$vercel_error"
+              [ -n "$reason" ] && printf '| Reason | `%s` |\n' "$reason"
+              [ -n "$request_id" ] && printf '| Request id | `%s` |\n' "$request_id"
+              printf '\n'
+              [ -n "$advice" ] && printf '%s\n\n' "$advice"
+              printf '<details><summary>First 300 bytes of the body</summary>\n\n```\n%s\n```\n\n</details>\n\n' "$sample"
+            } >> "$GITHUB_STEP_SUMMARY"
+
+            echo "${label}: ${verdict} (${code})"
+            rm -f "$headers" "$body"
+          }
+
+          probe "Health" "/api/health"
+          probe "Player list (analysis tab)" "/api/fpl/bootstrap-static"
+          probe "Fixture list (analysis tab)" "/api/fpl/fixtures"
+          probe "Team lookup" "/api/team/${TEAM}"
+
+          printf 'Triage is in `docs/RUNBOOK.md`.\n' >> "$GITHUB_STEP_SUMMARY"
