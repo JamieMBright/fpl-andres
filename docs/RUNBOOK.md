@@ -85,6 +85,33 @@ now asserts every key matches a real file and every handler is covered by a
 budget, and `.github/workflows/canary.yml` probes the deployed endpoints every
 twenty minutes.
 
+## Diagnosing production without a terminal
+
+Two tools answer "why is it broken?" when the canary has said "it is broken".
+Both classify the same five causes, because a 502 on the analysis tab has
+unrelated causes and the fix differs for each: a crashed function, a function
+that is not routed and is answered by the single-page rewrite, FPL blocking the
+datacentre IP, FPL exceeding the request budget, and our own rate limiter.
+
+- **`/diagnostics`** on the deployment. Runs the four calls the analysis tab
+  makes on first paint, from the browser, and names the cause. Not linked from
+  the navigation — type the path. Works on a phone.
+- **The `Diagnose production` workflow.** Actions → _Diagnose production_ → _Run
+  workflow_, which the GitHub mobile app can do. Writes a table per route into
+  the run summary, including status, content type, `x-vercel-error`, our
+  `reason` field, the correlation id and the first 300 bytes of the body.
+  Takes an optional deployment URL so a preview can be probed too.
+
+Reading the verdict:
+
+| Verdict            | Meaning                                                   | Fix                                                                         |
+| ------------------ | --------------------------------------------------------- | --------------------------------------------------------------------------- |
+| `FUNCTION CRASHED` | Vercel could not run the function; no `requestId` exists. | A build or module-load fault. See the `FUNCTION_INVOCATION_FAILED` section. |
+| `NOT ROUTED`       | The app shell answered, so no function matched the path.  | Check the `functions` globs in `vercel.json` against the files in `api/`.   |
+| `FPL BLOCKED US`   | FPL answered with non-JSON, typically a bot-check page.   | An IP-reputation problem; retrying does not help.                           |
+| `FPL UNREACHABLE`  | The fetch did not finish inside `FPL_PROXY_BUDGET_MS`.    | Search logs for `upstream_exhausted`; check the `failures` list.            |
+| `RATE LIMITED`     | Our own limiter refused the probe.                        | Wait and re-run.                                                            |
+
 ## Data plane
 
 The production Supabase project was bootstrapped by pasting the ordered files

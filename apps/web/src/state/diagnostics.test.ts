@@ -162,15 +162,18 @@ describe("probe", () => {
 describe("probeAll", () => {
   it("probes every target in order, so a shared rate limit is not self-inflicted", async () => {
     const seen: string[] = [];
-    const results = await probeAll((input) => {
-      seen.push(String(input));
-      return Promise.resolve(
-        new Response('{"elements":[1]}', {
-          status: 200,
-          headers: { "content-type": "application/json" },
-        }),
-      );
-    }, PROBE_TARGETS.slice(0, 2) as ProbeTarget[]);
+    const results = await probeAll(
+      (input) => {
+        seen.push(String(input));
+        return Promise.resolve(
+          new Response('{"elements":[1]}', {
+            status: 200,
+            headers: { "content-type": "application/json" },
+          }),
+        );
+      },
+      PROBE_TARGETS.slice(0, 2) as ProbeTarget[],
+    );
 
     expect(seen).toEqual(["/api/health", "/api/fpl/bootstrap-static"]);
     expect(results).toHaveLength(2);

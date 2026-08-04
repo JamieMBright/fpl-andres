@@ -57,7 +57,20 @@ jobs:
           team_code=$(printf '%s' "$team" | tail -n1)
           team_body=$(printf '%s' "$team" | sed '$d')
           if [ "$team_code" != "200" ]; then
-            failures="${failures}- /api/team returned ${team_code}\n"
+            # A status on its own does not say what to fix. A 500 is Vercel
+            # failing to run the function, which is a build problem; a 503
+            # carrying `unexpected_format` is FPL blocking the datacentre IP.
+            # Both used to arrive here as the same one-line alert.
+            team_reason=$(printf '%s' "$team_body" | grep -o '"reason":"[a-z_]*"' | head -n1 | cut -d'"' -f4)
+            if [ "$team_code" = "500" ]; then
+              team_cause=" -- the function failed to run, which is a build or module-load problem rather than FPL being down"
+            elif [ -n "$team_reason" ]; then
+              team_cause=" -- reason ${team_reason}"
+            else
+              team_cause=""
+            fi
+            failures="${failures}- /api/team returned ${team_code}${team_cause}. Body: $(printf '%s' "$team_body" | head -c 200)\n"
+            failures="${failures}  Run the 'Diagnose production' workflow for a full classification.\n"
           # ready, unavailable and degraded are all valid contract outcomes.
           # A body carrying none of them means the shape changed.
           elif ! printf '%s' "$team_body" | grep -qE '"status":"(ready|unavailable|degraded)"'; then
