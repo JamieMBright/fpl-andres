@@ -283,7 +283,11 @@ public regardless of revocation, and the history rewritten.
 - Dependabot proposes weekly updates for npm, pip and GitHub Actions.
 - CodeQL scans on every PR and every Monday morning.
 - `actions/dependency-review-action` fails PRs that introduce high-severity
-  advisories, with the same allowlist.
+  advisories, with the same allowlist. The workflow first probes the
+  `dependency-graph/compare` API; if the dependency graph is disabled (or
+  Advanced Security is off on a private repository) the review step is skipped
+  with a warning instead of failing the PR. Re-enable it at
+  `Settings > Code security and analysis` to restore enforcement.
 
 ## Live canary
 

@@ -20,7 +20,31 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
 
+      # The dependency review API needs the dependency graph (plus Advanced
+      # Security on private repositories). When it is unavailable the action
+      # hard-fails with "Dependency review is not supported on this
+      # repository", which says nothing about the dependencies in the PR.
+      # Probe first so an unsupported repository skips instead of failing,
+      # while real advisories still block the PR.
+      - name: Check dependency review availability
+        id: probe
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BASEHEAD: ${{ github.event.pull_request.base.sha }}...${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          status=$(gh api \
+            "repos/${GITHUB_REPOSITORY}/dependency-graph/compare/${BASEHEAD}" \
+            --silent --include 2>/dev/null | head -n 1 || true)
+          if printf '%s' "$status" | grep -q ' 200 '; then
+            echo "supported=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "supported=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::Dependency review API unavailable; skipping. Enable the dependency graph at https://github.com/${GITHUB_REPOSITORY}/settings/security_analysis"
+          fi
+
       - name: Review dependency changes
+        if: steps.probe.outputs.supported == 'true'
         uses: actions/dependency-review-action@67d4f4bd7a9b17a0db54d2a7519187c65e339de8
         with:
           fail-on-severity: high
