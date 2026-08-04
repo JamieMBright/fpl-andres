@@ -12,6 +12,7 @@ per-route multipliers to the measured per-route points instead.
 
 from __future__ import annotations
 
+import math
 from collections.abc import Mapping, Sequence
 from typing import Any
 
@@ -24,34 +25,75 @@ __all__ = [
     "fixture_points_from_routes",
 ]
 
-# Where a measured tie sits on the published one-to-five scale. Chosen so the
-# twenty clubs spread across all five bands rather than piling into the middle.
-DIFFICULTY_BANDS = (0.72, 0.90, 1.11, 1.39)
+# A newly promoted side has no Premier League record, so there is nothing to
+# rate it on. Rather than drop the fixture — which reported "no fixture" for a
+# tie that is plainly being played — it is assumed soft until its own results
+# arrive: below-average attack, above-average leakiness. Promoted sides have
+# finished bottom three in most recent seasons, so this is the honest prior
+# rather than a flattering one. `_data_gaps` names every club it applies to.
+PROMOTED_ATTACK = 0.80
+PROMOTED_DEFENCE = 1.25
+PROMOTED_STRENGTH = TeamStrength(
+    attack_home=PROMOTED_ATTACK,
+    attack_away=PROMOTED_ATTACK,
+    defence_home=PROMOTED_DEFENCE,
+    defence_away=PROMOTED_DEFENCE,
+)
+
+# Difficulty is a ratio, so it is read on a log scale: twice as easy and half as
+# easy sit the same distance either side of even. The scale is chosen so a tie
+# two and a half times easier than average lands on 1 and the reverse lands on
+# 5, which is the full published range.
+DIFFICULTY_LOG_SCALE = 2.18
+DIFFICULTY_MIDPOINT = 3.0
+DIFFICULTY_HARDEST = 5.0
+DIFFICULTY_EASIEST = 1.0
 
 
 def fixture_difficulty(
     games: Sequence[tuple[int, bool]],
     team_id: int,
     strength: Mapping[int, TeamStrength],
-) -> int | None:
-    """One to five, where one is the softest tie and five the hardest.
+) -> float | None:
+    """Where this tie sits between one and five, to a tenth.
 
     Rated on both halves of the fixture, at the venue it is played: what this
     side is likely to score against that opponent, over what it is likely to
     concede. A blank is None rather than three, because there is no fixture to
     be difficult.
+
+    Continuous rather than banded. Five buckets threw away most of what the
+    route model had measured and made a run of fixtures look flat when it was
+    not: every Arsenal tie came out a 1 because the whole top of the range
+    collapsed into one number.
     """
+    if team_id not in strength:
+        return None
     rated = [
-        route_adjustment(strength, team_id, opponent, home=home)
+        route_adjustment(
+            strength,
+            team_id,
+            opponent,
+            home=home,
+        )
+        if opponent in strength
+        else route_adjustment(
+            {**strength, opponent: PROMOTED_STRENGTH},
+            team_id,
+            opponent,
+            home=home,
+        )
         for opponent, home in games
-        if opponent in strength and team_id in strength
     ]
     if not rated:
         return None
     # A double gameweek averages its fixtures rather than summing them: two hard
     # games are still hard, not twice as hard.
     ease = sum(adjustment.attacking / adjustment.conceding for adjustment in rated) / len(rated)
-    return 5 - sum(1 for band in DIFFICULTY_BANDS if ease >= band)
+    if ease <= 0:
+        return DIFFICULTY_HARDEST
+    rating = DIFFICULTY_MIDPOINT - DIFFICULTY_LOG_SCALE * math.log(ease)
+    return round(min(DIFFICULTY_HARDEST, max(DIFFICULTY_EASIEST, rating)), 1)
 
 
 # The published route names, and whether a fixture moves them at all. Appearance

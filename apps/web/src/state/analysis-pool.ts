@@ -240,6 +240,9 @@ export class AnalysisPoolError extends Error {
   constructor(
     readonly reason: AnalysisFailure,
     message: string,
+    /** What the proxy said, so a production failure can be diagnosed from the
+     *  page rather than only from the platform logs. */
+    readonly detail: string | null = null,
   ) {
     super(message);
     this.name = "AnalysisPoolError";
@@ -278,9 +281,11 @@ export async function fetchAnalysisPool(
   }
 
   if (!bootstrap.ok) {
+    const requestId = bootstrap.headers.get("x-fpl-andres-request-id");
     throw new AnalysisPoolError(
       "unreachable",
       `FPL returned ${bootstrap.status}`,
+      `HTTP ${String(bootstrap.status)}${requestId ? ` \u00b7 ${requestId}` : ""}`,
     );
   }
 

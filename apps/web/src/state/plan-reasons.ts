@@ -129,7 +129,9 @@ export function moneyLines(week: PlanGameweek): string[] {
  * The fixtures, rated, with the hard ones named.
  *
  * Returns null where no club in the squad has a rating, which happens when
- * every opponent is a promoted club with no measured record.
+ * every one of them is newly promoted and has no measured record of its own. A
+ * promoted *opponent* is rated: the tie is being played, so it is assumed soft
+ * until that club's own results arrive.
  */
 export function fixtureReason(week: PlanGameweek): string | null {
   const rated = week.starters

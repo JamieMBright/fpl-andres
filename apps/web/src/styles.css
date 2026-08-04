@@ -1528,8 +1528,8 @@ a:focus-visible {
   display: grid;
   /* Shirt, name, price, opponent, difficulty, points, ceiling. The name takes
      whatever is left after the columns that must not wrap. */
-  grid-template-columns: 13px minmax(0, 1fr) 38px 42px 14px 27px 27px;
-  gap: 5px;
+  grid-template-columns: 13px minmax(0, 1fr) 38px 42px 22px 27px 27px;
+  gap: 4px;
   align-items: center;
   font-size: 11px;
   line-height: 1.7;
@@ -1587,7 +1587,7 @@ a:focus-visible {
   text-align: right;
 }
 
-/* One to five, coloured so a run of hard weeks is visible down the card. */
+/* Measured, so it carries a decimal rather than one of five buckets. */
 .plan-fdr {
   font-size: 9px;
   font-weight: 700;

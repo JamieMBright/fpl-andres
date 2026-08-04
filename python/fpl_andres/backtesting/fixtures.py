@@ -27,11 +27,16 @@ __all__ = [
     "TeamStrength",
     "estimate_strength",
     "route_adjustment",
+    "venue_tilt",
+    "with_venue_tilt",
 ]
 
 # Shrinkage target. A side with few matches played is treated as average until
 # the record says otherwise; ten matches is roughly when the split stabilises.
 _PRIOR_MATCHES = 10.0
+# A club plays nineteen at home. Half weight at one full season, because a
+# fortress and a lucky run look identical over that many matches.
+_VENUE_PRIOR_MATCHES = 19.0
 _NEUTRAL = 1.0
 # Bounds keep an early-season freak run from producing absurd multipliers.
 _MIN_MULTIPLIER = 0.4
@@ -115,8 +120,12 @@ def estimate_strength(fixtures: Sequence[Fixture]) -> dict[int, TeamStrength]:
 
     home_goals = sum(fixture.team_h_score or 0 for fixture in played)
     away_goals = sum(fixture.team_a_score or 0 for fixture in played)
-    home_mean = home_goals / len(played)
-    away_mean = away_goals / len(played)
+    # One baseline for both venues, for the reason given in
+    # `strength_from_goal_model`: a per-venue baseline divides out the very
+    # ratio home advantage lives in.
+    league_mean = (home_goals + away_goals) / (2 * len(played))
+    home_mean = league_mean
+    away_mean = league_mean
 
     scored_home: dict[int, float] = {}
     scored_away: dict[int, float] = {}
@@ -157,6 +166,117 @@ def estimate_strength(fixtures: Sequence[Fixture]) -> dict[int, TeamStrength]:
     }
 
 
+def venue_tilt(played: Sequence[Fixture]) -> dict[int, tuple[float, float, float, float]]:
+    """Each club's own home and away tilt, measured from its own fixtures.
+
+    Dixon-Coles fits one home advantage for the whole league, which says every
+    club gains the same from playing at home. Clubs plainly differ: some are a
+    fortress and travel badly, some barely notice. So the venue split is
+    measured per club rather than assumed, and shrunk toward the league's own
+    split because nineteen home matches is a thin sample to argue from.
+
+    Returned as four multipliers against that club's *own* two-venue average:
+    attack at home, attack away, goals conceded at home, conceded away. A club
+    with no measured tilt comes back all ones, which is the league's shape.
+    """
+    scored: dict[tuple[int, bool], float] = {}
+    conceded: dict[tuple[int, bool], float] = {}
+    matches: dict[tuple[int, bool], float] = {}
+    for fixture in played:
+        if fixture.team_h_score is None or fixture.team_a_score is None:
+            continue
+        home_goals = float(fixture.team_h_score)
+        away_goals = float(fixture.team_a_score)
+        for team, home, mine, theirs in (
+            (fixture.team_h, True, home_goals, away_goals),
+            (fixture.team_a, False, away_goals, home_goals),
+        ):
+            scored[(team, home)] = scored.get((team, home), 0.0) + mine
+            conceded[(team, home)] = conceded.get((team, home), 0.0) + theirs
+            matches[(team, home)] = matches.get((team, home), 0.0) + 1
+
+    teams = sorted({team for team, _ in matches})
+    if not teams:
+        return {}
+
+    def rate(store: dict[tuple[int, bool], float], team: int, home: bool) -> float | None:
+        played_here = matches.get((team, home), 0.0)
+        return store.get((team, home), 0.0) / played_here if played_here else None
+
+    def league(store: dict[tuple[int, bool], float], home: bool) -> float:
+        rates = [value for team in teams if (value := rate(store, team, home)) is not None]
+        return sum(rates) / len(rates) if rates else 0.0
+
+    league_rates = {
+        ("scored", True): league(scored, True),
+        ("scored", False): league(scored, False),
+        ("conceded", True): league(conceded, True),
+        ("conceded", False): league(conceded, False),
+    }
+    scored_overall = (league_rates[("scored", True)] + league_rates[("scored", False)]) / 2
+    conceded_overall = (league_rates[("conceded", True)] + league_rates[("conceded", False)]) / 2
+
+    def tilt(
+        store: dict[tuple[int, bool], float],
+        team: int,
+        home: bool,
+        key: str,
+        league_overall: float,
+    ) -> float:
+        """This club's rate at this venue over its own two-venue average."""
+        if league_overall <= 0:
+            return _NEUTRAL
+        league_tilt = league_rates[(key, home)] / league_overall
+        here = rate(store, team, home)
+        there = rate(store, team, not home)
+        played_here = matches.get((team, home), 0.0)
+        if here is None or there is None or here + there <= 0:
+            return _bounded(league_tilt)
+        own = here / ((here + there) / 2)
+        # Shrunk toward the league's split, because a club's own nineteen home
+        # matches cannot separate a fortress from a lucky run.
+        weight = played_here / (played_here + _VENUE_PRIOR_MATCHES)
+        return _bounded(own * weight + league_tilt * (1 - weight))
+
+    return {
+        team: (
+            tilt(scored, team, True, "scored", scored_overall),
+            tilt(scored, team, False, "scored", scored_overall),
+            tilt(conceded, team, True, "conceded", conceded_overall),
+            tilt(conceded, team, False, "conceded", conceded_overall),
+        )
+        for team in teams
+    }
+
+
+def with_venue_tilt(
+    base: Mapping[int, TeamStrength],
+    played: Sequence[Fixture],
+) -> dict[int, TeamStrength]:
+    """Replace a shared home advantage with each club's measured one.
+
+    `base` carries opponent-adjusted quality, which is what Dixon-Coles is for
+    and what a goal average gets wrong. The venue split is the one thing the fit
+    deliberately shares across the league, so it is measured separately here and
+    multiplied back in around each club's own two-venue average.
+    """
+    tilts = venue_tilt(played)
+    adjusted: dict[int, TeamStrength] = {}
+    for team, strength in base.items():
+        attack = (strength.attack_home + strength.attack_away) / 2
+        defence = (strength.defence_home + strength.defence_away) / 2
+        attack_tilt_home, attack_tilt_away, defence_tilt_home, defence_tilt_away = tilts.get(
+            team, (_NEUTRAL, _NEUTRAL, _NEUTRAL, _NEUTRAL)
+        )
+        adjusted[team] = TeamStrength(
+            attack_home=_bounded(attack * attack_tilt_home),
+            attack_away=_bounded(attack * attack_tilt_away),
+            defence_home=_bounded(defence * defence_tilt_home),
+            defence_away=_bounded(defence * defence_tilt_away),
+        )
+    return adjusted
+
+
 def strength_from_goal_model(
     model: DixonColesModel,
     teams: Sequence[int],
@@ -174,12 +294,13 @@ def strength_from_goal_model(
     the league. `defence` stays a leakiness multiplier, as the rest of this
     module expects: above one means that side concedes more than average.
 
-    Normalising within a venue matches `estimate_strength`, so the two are
-    interchangeable. One consequence is visible in the output: Dixon-Coles fits
-    a single home advantage shared by every club, so a club's home and away
-    multipliers come out equal. That is the model's claim, not a defect — it
-    says clubs differ in how good they are, not in how much a home crowd is
-    worth, and nineteen home matches is too thin to argue otherwise.
+    Both venues are normalised against **one** league baseline, the goals a side
+    scores in an average match at either venue. Dividing each venue by its own
+    baseline instead is arithmetically the same as deleting home advantage: the
+    ratio it lives in is exactly the ratio being divided out. That is what this
+    function used to do, and it left every club with identical home and away
+    multipliers, so `route_adjustment` graded a fixture on the opponent alone
+    and the same tie projected identically home and away.
     """
     known = [team for team in teams if team in model.teams]
     if len(known) < 2:
@@ -207,17 +328,21 @@ def strength_from_goal_model(
         collected = list(values)
         return sum(collected) / len(collected) if collected else 1.0
 
-    scored_home = mean(scored[(team, True)] for team in known)
-    scored_away = mean(scored[(team, False)] for team in known)
-    conceded_home = mean(conceded[(team, True)] for team in known)
-    conceded_away = mean(conceded[(team, False)] for team in known)
+    # One baseline for both venues. By symmetry the average goals scored and the
+    # average goals conceded across the league are the same number, so attack
+    # and defence share it.
+    league = mean(
+        value for team in known for value in (scored[(team, True)], scored[(team, False)])
+    )
+    if league <= 0:
+        return {}
 
     return {
         team: TeamStrength(
-            attack_home=_bounded(scored[(team, True)] / scored_home),
-            attack_away=_bounded(scored[(team, False)] / scored_away),
-            defence_home=_bounded(conceded[(team, True)] / conceded_home),
-            defence_away=_bounded(conceded[(team, False)] / conceded_away),
+            attack_home=_bounded(scored[(team, True)] / league),
+            attack_away=_bounded(scored[(team, False)] / league),
+            defence_home=_bounded(conceded[(team, True)] / league),
+            defence_away=_bounded(conceded[(team, False)] / league),
         )
         for team in known
     }

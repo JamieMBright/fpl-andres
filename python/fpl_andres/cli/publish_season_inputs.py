@@ -114,12 +114,12 @@ def main(argv: Sequence[str] | None = None) -> int:
     # "HUL (A)" per club per gameweek, so a solved card can name the opponent
     # rather than repeat the club whose shirt is already drawn beside the player.
     opponents: dict[str, list[list[str]]] = {}
-    # One to five per club per gameweek, the published difficulty of the tie.
-    ratings: dict[str, list[int | None]] = {}
+    # One to five per club per gameweek, to a tenth, the measured difficulty.
+    ratings: dict[str, list[float | None]] = {}
     for team_id, team in clubs.items():
         defensive: list[float] = []
         attacking: list[float] = []
-        difficulty: list[int | None] = []
+        difficulty: list[float | None] = []
         against: list[list[str]] = []
         for event in ordered:
             games = schedule.get((event, team_id), ())

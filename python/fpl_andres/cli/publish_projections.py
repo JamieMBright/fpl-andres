@@ -36,6 +36,7 @@ from fpl_andres.backtesting.fixtures import (
     TeamStrength,
     estimate_strength,
     strength_from_goal_model,
+    with_venue_tilt,
 )
 from fpl_andres.backtesting.projector import MatchProjection, project_next_match
 from fpl_andres.backtesting.scoring import PointsBreakdown
@@ -219,7 +220,9 @@ def _strength(corpus: SeasonCorpus, played: Sequence[Fixture]) -> dict[int, Team
             )
             fitted = strength_from_goal_model(model, sorted(model.teams))
             if fitted:
-                return fitted
+                # Dixon-Coles shares one home advantage across the league. Each
+                # club's own split is measured from its own fixtures instead.
+                return with_venue_tilt(fitted, played)
         except (ModelFitError, InsufficientHistoryError, ValueError) as error:
             print(f"Dixon-Coles did not fit, using goal averages: {error}", file=sys.stderr)
 

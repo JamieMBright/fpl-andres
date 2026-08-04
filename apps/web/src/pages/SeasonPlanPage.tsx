@@ -174,14 +174,14 @@ function TeamSheet({
           {venue(week.opponents[player.club] ?? [])}
         </span>
         <span
-          className={`plan-fdr mono plan-fdr-${rating === null ? "none" : String(rating)}`}
+          className={`plan-fdr mono plan-fdr-${rating === null ? "none" : String(Math.round(rating))}`}
           title={
             rating === null
-              ? "No fixture, or no measured record for the opponent"
-              : `Fixture difficulty ${String(rating)} of 5`
+              ? "No fixture, or no measured record for this club"
+              : `Fixture difficulty ${rating.toFixed(1)} of 5`
           }
         >
-          {rating ?? "\u2014"}
+          {rating === null ? "\u2014" : rating.toFixed(1)}
         </span>
         <span
           className={

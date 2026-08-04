@@ -88,6 +88,9 @@ def _run(weeks: dict[int, dict[str, Any]], points: dict[int, float]) -> _ChipRun
         clubs=CLUBS,
         strength={},
         budget_tenths=1000,
+        opening_squad=HELD,
+        opening_bank_tenths=0,
+        opening_free_transfers=1,
         week_dict=lambda planned: {},  # type: ignore[arg-type,misc]
         ref=ref,
     )

@@ -15,6 +15,7 @@ import {
 import { poolFromArchive } from "../state/analysis-archive-pool";
 import {
   fetchAnalysisPool,
+  AnalysisPoolError,
   type AnalysisData,
   type AnalysisFailure,
 } from "../state/analysis-pool";
@@ -51,6 +52,7 @@ export default function AnalysisPage() {
   const [archive, setArchive] = useState<ArchivedSeason[] | null>(null);
   const [archiveFailed, setArchiveFailed] = useState(false);
   const [failed, setFailed] = useState<AnalysisFailure | null>(null);
+  const [failureDetail, setFailureDetail] = useState<string | null>(null);
   const chartRef = useRef<HTMLDivElement>(null);
 
   const view = useMemo(() => readScatterView(searchParams), [searchParams]);
@@ -74,11 +76,12 @@ export default function AnalysisPage() {
       .catch((error: unknown) => {
         if (error instanceof DOMException && error.name === "AbortError")
           return;
-        setFailed(
-          error instanceof Error && "reason" in error
-            ? (error.reason as AnalysisFailure)
-            : "unreachable",
-        );
+        if (error instanceof AnalysisPoolError) {
+          setFailed(error.reason);
+          setFailureDetail(error.detail);
+          return;
+        }
+        setFailed("unreachable");
       });
     return () => controller.abort();
   }, []);
@@ -148,6 +151,12 @@ export default function AnalysisPage() {
           {failed === "unreachable"
             ? "I could not reach FPL for the player list. Nothing here is worth showing without it."
             : "FPL sent back a player list I do not recognise, so I am not plotting it."}
+          {failureDetail ? (
+            <>
+              {" "}
+              <span className="mono">{failureDetail}</span>
+            </>
+          ) : null}
         </p>
       ) : null}
 
