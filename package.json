@@ -20,6 +20,7 @@
     "lint": "eslint .",
     "test": "corepack pnpm -r --if-present test",
     "test:e2e": "corepack pnpm --filter @fpl-andres/web test:e2e",
+    "test:deployed": "corepack pnpm --filter @fpl-andres/web test:deployed",
     "typecheck": "corepack pnpm -r --if-present typecheck && tsc --noEmit -p tsconfig.api.json"
   },
   "dependencies": {

@@ -8,6 +8,7 @@
     "dev": "vite",
     "test": "vitest run",
     "test:e2e": "playwright test",
+    "test:deployed": "playwright test --config playwright.deployed.config.ts",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
