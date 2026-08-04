@@ -33,12 +33,22 @@ export function retryingFetch(
   options: RetryingFetchOptions = {},
 ): typeof fetch {
   const fetchApi = options.fetchApi ?? fetch;
-  const wait =
-    options.wait ??
-    ((ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms)));
+  const wait = options.wait;
   const attempts = options.attempts ?? MAX_ATTEMPTS;
+  if (!Number.isInteger(attempts) || attempts < 1) {
+    throw new RangeError(`attempts must be a positive integer (got ${attempts})`);
+  }
 
   return async function fetchWithRetries(input, init) {
+    const method = (init?.method ?? "GET").toUpperCase();
+    if (method !== "GET") {
+      throw new TypeError(
+        `retryingFetch only wraps idempotent GET requests (got ${method})`,
+      );
+    }
+
+    const signal = init?.signal instanceof AbortSignal ? init.signal : null;
+
     let lastError: unknown = null;
     for (let attempt = 0; attempt < attempts; attempt += 1) {
       try {
@@ -60,7 +70,27 @@ export function retryingFetch(
         if (attempt === attempts - 1) throw error;
         lastError = error;
       }
-      await wait(RETRY_BASE_MS * 2 ** attempt);
+      // Make the backoff delay abortable so navigation/unmount fails fast.
+      const delayMs = RETRY_BASE_MS * 2 ** attempt;
+      if (wait) {
+        await wait(delayMs);
+      } else {
+        await new Promise<void>((resolve, reject) => {
+          const id = setTimeout(resolve, delayMs);
+          if (signal) {
+            signal.addEventListener(
+              "abort",
+              () => {
+                clearTimeout(id);
+                reject(
+                  new DOMException("The operation was aborted.", "AbortError"),
+                );
+              },
+              { once: true },
+            );
+          }
+        });
+      }
     }
     // Unreachable: the final attempt either returns or throws above. Kept
     // honest rather than asserted away.
