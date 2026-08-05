@@ -26,11 +26,11 @@ Allow-listed read-through proxy to `https://fantasy.premierleague.com/api/`.
 The path is matched against an allow-list **before** any upstream request is
 made; an unrecognised path never reaches FPL.
 
-| Status | Meaning                                                                                     |
-| ------ | ------------------------------------------------------------------------------------------- |
-| 200    | Upstream returned JSON and it was within the size limit, **or** a retained copy was served. |
-| 400    | The path is not allow-listed, or a query parameter is not permitted.                        |
-| 502    | A JSON error envelope. For deliberate proxy failures (e.g. upstream unreachable with no retained copy) the body is `{ error, reason }`; for unexpected handler failures the body additionally carries `requestId`.                                  |
+| Status | Meaning                                                                                                                                                                                                            |
+| ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 200    | Upstream returned JSON and it was within the size limit, **or** a retained copy was served.                                                                                                                        |
+| 400    | The path is not allow-listed, or a query parameter is not permitted.                                                                                                                                               |
+| 502    | A JSON error envelope. For deliberate proxy failures (e.g. upstream unreachable with no retained copy) the body is `{ error, reason }`; for unexpected handler failures the body additionally carries `requestId`. |
 
 ### Retained copies
 
