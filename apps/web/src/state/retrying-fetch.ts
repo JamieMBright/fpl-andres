@@ -36,7 +36,9 @@ export function retryingFetch(
   const wait = options.wait;
   const attempts = options.attempts ?? MAX_ATTEMPTS;
   if (!Number.isInteger(attempts) || attempts < 1) {
-    throw new RangeError(`attempts must be a positive integer (got ${attempts})`);
+    throw new RangeError(
+      `attempts must be a positive integer (got ${attempts})`,
+    );
   }
 
   return async function fetchWithRetries(input, init) {
