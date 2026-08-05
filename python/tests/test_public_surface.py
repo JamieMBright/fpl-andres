@@ -92,7 +92,7 @@ class TestResponseAssembly:
         # megabytes of bootstrap for no reason.
         source = PROXY.read_text(encoding="utf-8")
         assert "new ArrayBuffer(body.byteLength)" not in source
-        assert "new Response(body, {" in source
+        assert "new Response(outcome.body, {" in source
 
     def test_the_size_bound_is_still_enforced(self) -> None:
         # Removing the copy must not remove the reason it looked necessary.
