@@ -282,8 +282,12 @@ public regardless of revocation, and the history rewritten.
 - `pip-audit` runs against the Python environment before every release.
 - Dependabot proposes weekly updates for npm, pip and GitHub Actions.
 - CodeQL scans on every PR and every Monday morning.
-- `actions/dependency-review-action` fails PRs that introduce high-severity
-  advisories, with the same allowlist.
+- The Dependency Review workflow runs `pnpm audit --prod --audit-level high`
+  on every PR, so a high-severity advisory in a production dependency fails the
+  PR under the same allowlist. It does not use
+  `actions/dependency-review-action`: that action requires the Dependency graph
+  plus GitHub Advanced Security, which this repository does not have, and it
+  errors on every run instead of reporting.
 
 ## Live canary
 
