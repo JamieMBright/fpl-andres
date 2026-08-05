@@ -4550,3 +4550,8 @@ a:focus-visible {
 .pool-retry:hover {
   border-color: var(--ink);
 }
+
+.pool-retry:focus-visible {
+  outline: 3px solid var(--signal-blue);
+  outline-offset: 3px;
+}

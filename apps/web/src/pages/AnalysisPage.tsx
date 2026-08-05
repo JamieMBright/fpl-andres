@@ -93,6 +93,7 @@ export default function AnalysisPage() {
         if (error instanceof AnalysisPoolError) {
           setFailed(error.reason);
           setFailureDetail(error.detail);
+          setData(null);
           return;
         }
         setFailed("unreachable");

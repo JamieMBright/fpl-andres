@@ -281,7 +281,7 @@ export function PlayerPoolTable() {
       });
   }, [pool, position, sort, descending, maxPrice, search]);
 
-  if (failed && !pool) {
+  if (failed && (failed === "source_contract_failed" || !pool)) {
     return (
       <div className="pool-state" role="alert">
         <p>
