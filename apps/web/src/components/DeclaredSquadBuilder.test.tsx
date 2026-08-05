@@ -78,7 +78,9 @@ describe("DeclaredSquadBuilder", () => {
     expect(
       readDeclaredSquad(window.localStorage, 42, 1)?.elementIds,
     ).toHaveLength(15);
-    expect(screen.getByText(/now starts from these fifteen/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/now starts from these fifteen/i),
+    ).toBeInTheDocument();
   });
 
   it("refuses a squad that breaks a published rule and stores nothing", async () => {

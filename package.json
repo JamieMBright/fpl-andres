@@ -9,7 +9,7 @@
   },
   "scripts": {
     "build": "corepack pnpm -r --if-present build",
-    "check": "corepack pnpm contracts:check && corepack pnpm lint && corepack pnpm typecheck && corepack pnpm test && corepack pnpm build && python -m ruff check python && python -m ruff format --check python && python -m mypy && python -m pytest --cov=fpl_andres --cov-report=term-missing:skip-covered",
+    "check": "corepack pnpm format:check && corepack pnpm contracts:check && corepack pnpm lint && corepack pnpm typecheck && corepack pnpm test && corepack pnpm build && python -m ruff check python && python -m ruff format --check python && python -m mypy && python -m pytest --cov=fpl_andres --cov-report=term-missing:skip-covered",
     "contracts:check": "corepack pnpm --filter @fpl-andres/contracts schema:check",
     "contracts:generate": "corepack pnpm --filter @fpl-andres/contracts schema:generate",
     "contracts:version-gate": "node scripts/contracts-version-gate.mjs",
@@ -18,6 +18,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint": "eslint .",
+    "prepare": "node scripts/install-git-hooks.mjs",
     "test": "corepack pnpm -r --if-present test",
     "test:e2e": "corepack pnpm --filter @fpl-andres/web test:e2e",
     "test:deployed": "corepack pnpm --filter @fpl-andres/web test:deployed",

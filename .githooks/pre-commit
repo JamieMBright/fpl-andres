@@ -1,0 +1,21 @@
+#!/bin/sh
+# Formatting failures in CI are cheap to prevent and tedious to chase, so the
+# commit itself is the gate: staged files are formatted in place and restaged.
+set -e
+
+staged=$(git diff --cached --name-only --diff-filter=ACMR)
+[ -n "$staged" ] || exit 0
+
+formatted=$(printf '%s\n' "$staged" | while IFS= read -r file; do
+  [ -f "$file" ] || continue
+  case "$file" in
+  *.js | *.jsx | *.mjs | *.cjs | *.ts | *.tsx | *.json | *.jsonc | *.css | *.scss | *.html | *.md | *.yml | *.yaml)
+    printf '%s\n' "$file"
+    ;;
+  esac
+done)
+[ -n "$formatted" ] || exit 0
+
+# Ignored paths are listed by prettier rather than reimplemented here.
+printf '%s\n' "$formatted" | xargs corepack pnpm exec prettier --ignore-unknown --write
+printf '%s\n' "$formatted" | xargs git add --

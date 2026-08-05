@@ -16,10 +16,16 @@ corepack pnpm format:check
 corepack pnpm test:e2e
 ```
 
-`pnpm check` runs contract drift, lint, types, unit tests, the build, ruff,
-mypy and pytest with a coverage floor. It does **not** run prettier or the
-browser journeys; CI runs those separately, so a green `check` is necessary and
-not sufficient.
+`pnpm check` runs prettier, contract drift, lint, types, unit tests, the build,
+ruff, mypy and pytest with a coverage floor. It does **not** run the browser
+journeys; CI runs those separately, so a green `check` is necessary and not
+sufficient.
+
+Formatting is also fixed before it can reach a commit. `pnpm install` points
+`core.hooksPath` at `.githooks`, whose `pre-commit` runs prettier over the
+staged files and restages them. If another tool already owns `core.hooksPath`
+the install says so and leaves it alone; run `corepack pnpm format` yourself in
+that case.
 
 ## Test first
 
