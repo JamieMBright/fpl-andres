@@ -35,6 +35,22 @@ function pounds(tenths: number): string {
   return `${money.format(tenths / 10)}m`;
 }
 
+function declaredSquadAnnouncement(
+  chosenCount: number,
+  saved: boolean,
+  validation: SquadValidation | null,
+): string {
+  if (validation === null) {
+    return `${String(chosenCount)} of 15 picked.`;
+  }
+  if (validation.valid) {
+    return saved
+      ? "Squad locked in for gameweek 1."
+      : "Squad is legal and ready to lock in.";
+  }
+  return `Squad has ${String(validation.problems.length)} problem${validation.problems.length === 1 ? "" : "s"}.`;
+}
+
 export function DeclaredSquadBuilder({
   entryId,
   event = 1,
@@ -172,7 +188,10 @@ export function DeclaredSquadBuilder({
         </div>
       </form>
 
-      <div aria-live="polite" className="declared-squad-report" role="status">
+      <p aria-live="polite" className="visually-hidden" role="status">
+        {declaredSquadAnnouncement(chosen.length, saved, validation)}
+      </p>
+      <div className="declared-squad-report">
         {validation === null ? (
           <p>
             {String(chosen.length)} of 15 picked. Nothing is stored, and no
