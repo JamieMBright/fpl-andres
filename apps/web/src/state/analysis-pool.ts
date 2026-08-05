@@ -6,6 +6,7 @@ import {
 } from "./artifact-version";
 import { dedupedFetch } from "./deduped-fetch";
 import type { ScheduledFixture } from "./fixture-run";
+import { freshnessOf, LastGood, leastFresh, type Freshness } from "./freshness";
 import { readSeasonVintage, type SeasonVintage } from "./season-vintage";
 import understatArtifact from "../data/understat.json";
 
@@ -253,6 +254,22 @@ export interface AnalysisData {
   pool: AnalysisPool;
   fixtures: ScheduledFixture[];
   clubCodeByTeamId: Map<number, number>;
+  /** How current this is. See `freshness.ts` for why it is never optional. */
+  freshness: Freshness;
+}
+
+/** As in `player-pool.ts`: an older chart beats no chart, provided it says so. */
+const lastGood = new LastGood<AnalysisData>();
+
+/** Test seam. Production code has no reason to call this. */
+export function forgetLastGoodAnalysis(): void {
+  lastGood.forget();
+}
+
+function fallbackOrFail(message: string, detail: string | null): AnalysisData {
+  const held = lastGood.recall();
+  if (held) return { ...held.value, freshness: held.freshness };
+  throw new AnalysisPoolError("unreachable", message, detail);
 }
 
 export async function fetchAnalysisPool(
@@ -274,17 +291,13 @@ export async function fetchAnalysisPool(
   } catch (error) {
     if (error instanceof DOMException && error.name === "AbortError")
       throw error;
-    throw new AnalysisPoolError(
-      "unreachable",
-      "the player list could not be requested",
-    );
+    return fallbackOrFail("the player list could not be requested", null);
   }
 
   if (!bootstrap.ok) {
     const requestId = bootstrap.headers.get("x-fpl-andres-request-id");
-    throw new AnalysisPoolError(
-      "unreachable",
-      `FPL returned ${bootstrap.status}`,
+    return fallbackOrFail(
+      `FPL returned ${String(bootstrap.status)}`,
       `HTTP ${String(bootstrap.status)}${requestId ? ` \u00b7 ${requestId}` : ""}`,
     );
   }
@@ -294,7 +307,7 @@ export async function fetchAnalysisPool(
       teams: { id: number; code: number }[];
     };
     const pool = buildAnalysisPool(payload);
-    return {
+    const data: AnalysisData = {
       pool,
       // A missing fixture list costs the fixture column on a pinned card and
       // nothing else.
@@ -304,7 +317,13 @@ export async function fetchAnalysisPool(
       clubCodeByTeamId: new Map(
         payload.teams.map((team) => [team.id, team.code]),
       ),
+      freshness: leastFresh([
+        freshnessOf(bootstrap),
+        ...(fixtures.ok ? [freshnessOf(fixtures)] : []),
+      ]),
     };
+    if (!data.freshness.stale) lastGood.remember(data);
+    return data;
   } catch (error) {
     if (error instanceof DOMException && error.name === "AbortError")
       throw error;

@@ -19,6 +19,7 @@ import {
   type AnalysisData,
   type AnalysisFailure,
 } from "../state/analysis-pool";
+import { describeFreshness } from "../state/freshness";
 import { retryingFetch } from "../state/retrying-fetch";
 import { downloadBlob, scatterToPngBlob } from "../state/scatter-export";
 import { readChart } from "../state/scatter-reading";
@@ -54,6 +55,18 @@ export default function AnalysisPage() {
   const [archiveFailed, setArchiveFailed] = useState(false);
   const [failed, setFailed] = useState<AnalysisFailure | null>(null);
   const [failureDetail, setFailureDetail] = useState<string | null>(null);
+  // Bumping this re-runs the load, so a reader retries with a button rather
+  // than by reloading the page by hand.
+  const [attempt, setAttempt] = useState(0);
+
+  // Clearing the previous failure belongs to the click, not to the effect: a
+  // setState in an effect body costs a cascading render for a value only this
+  // button ever changes.
+  const retry = useCallback(() => {
+    setFailed(null);
+    setFailureDetail(null);
+    setAttempt((previous) => previous + 1);
+  }, []);
   const chartRef = useRef<HTMLDivElement>(null);
 
   const view = useMemo(() => readScatterView(searchParams), [searchParams]);
@@ -85,7 +98,7 @@ export default function AnalysisPage() {
         setFailed("unreachable");
       });
     return () => controller.abort();
-  }, []);
+  }, [attempt]);
 
   // A megabyte and a half, so it is fetched the first time a reader asks for a
   // past season and never on first paint.
@@ -150,7 +163,7 @@ export default function AnalysisPage() {
       {failed ? (
         <p className="analysis-failure" role="status">
           {failed === "unreachable"
-            ? "I could not reach FPL for the player list. Nothing here is worth showing without it."
+            ? "FPL is not answering, and I have no earlier copy of the player list to plot instead."
             : "FPL sent back a player list I do not recognise, so I am not plotting it."}
           {failureDetail ? (
             <>
@@ -158,6 +171,23 @@ export default function AnalysisPage() {
               <span className="mono">{failureDetail}</span>
             </>
           ) : null}
+          {failed === "unreachable" ? (
+            <>
+              {" "}
+              <button className="pool-retry" onClick={retry} type="button">
+                Try again
+              </button>
+            </>
+          ) : null}
+        </p>
+      ) : null}
+
+      {data && data.freshness.stale ? (
+        <p className="analysis-unavailable" role="status">
+          {describeFreshness(data.freshness)}{" "}
+          <button className="pool-retry" onClick={retry} type="button">
+            Try again
+          </button>
         </p>
       ) : null}
 

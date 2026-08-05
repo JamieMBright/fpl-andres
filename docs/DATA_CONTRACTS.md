@@ -42,8 +42,11 @@ fail before a network request.
 
 Responses must be JSON and remain below 8 MiB for bootstrap or 5 MiB otherwise.
 Transient 408/425/429/5xx responses and transport failures retry at most 3 times with
-bounded exponential jitter. Vercel proxy attempts share an 8.5-second total budget
-inside the 10-second function lifetime. Ordinary 4xx responses do not retry. Picks 404s become a
+bounded exponential jitter. Vercel proxy attempts share a 12-second total budget
+inside the 15-second function lifetime, and a retry only starts if its backoff plus a
+usable attempt window both still fit. Ordinary 4xx responses do not retry. When every
+attempt fails, a public document falls back to the last retained copy, served with
+`X-FPL-Stale` and its capture time so it can never be read as current. Picks 404s become a
 typed `FplPicksUnavailable` fact without guessing whether the cause is future data or an
 invalid entry.
 

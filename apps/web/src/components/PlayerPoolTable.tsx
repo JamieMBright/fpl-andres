@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { PlayerDetail } from "./PlayerDetail";
 import { classifyFetchFailure } from "../state/fetch-failure";
@@ -10,6 +10,7 @@ import {
   type PoolFailure,
   type PoolPlayer,
 } from "../state/player-pool";
+import { describeFreshness } from "../state/freshness";
 import { retryingFetch } from "../state/retrying-fetch";
 import { projectionSeason } from "../state/squad-projection";
 import { money as sharedMoney } from "../format";
@@ -186,6 +187,17 @@ export function PlayerPoolTable() {
   const [maxPrice, setMaxPrice] = useState(0);
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState<PoolPlayer | null>(null);
+  // Bumping this re-runs the load. A reader who is told to reload the page is
+  // being asked to perform the retry by hand.
+  const [attempt, setAttempt] = useState(0);
+
+  // Clearing the previous failure belongs to the click rather than to the
+  // effect: a setState in an effect body costs a cascading render for a value
+  // only this button ever changes.
+  const retry = useCallback(() => {
+    setFailed(null);
+    setAttempt((previous) => previous + 1);
+  }, []);
 
   // Clicking a column sorts by it; clicking it again turns the order around.
   // Numbers start high, names start at A, because that is what each is for.
@@ -220,7 +232,7 @@ export function PlayerPoolTable() {
       active = false;
       controller.abort();
     };
-  }, []);
+  }, [attempt]);
 
   const shown = useMemo(() => {
     if (!pool) return [];
@@ -269,15 +281,23 @@ export function PlayerPoolTable() {
       });
   }, [pool, position, sort, descending, maxPrice, search]);
 
-  if (failed) {
+  if (failed && !pool) {
     return (
-      <p className="pool-state" role="alert">
-        {failed === "source_contract_failed"
-          ? "FPL answered, but not in the shape I expect. Rather than guess at " +
-            "what changed, I am showing you nothing. This one is mine to fix."
-          : "I could not reach the player list. Nothing has been substituted " +
-            "for it. Reload to try again."}
-      </p>
+      <div className="pool-state" role="alert">
+        <p>
+          {failed === "source_contract_failed"
+            ? "FPL answered, but not in the shape I expect. Rather than guess " +
+              "at what changed, I am showing you nothing. This one is mine to " +
+              "fix."
+            : "FPL is not answering, and I have no earlier copy of the player " +
+              "list to fall back on. Nothing has been substituted for it."}
+        </p>
+        {failed === "unreachable" ? (
+          <button className="pool-retry" onClick={retry} type="button">
+            Try again
+          </button>
+        ) : null}
+      </div>
     );
   }
 
@@ -293,8 +313,19 @@ export function PlayerPoolTable() {
     (player) => player.record === null,
   ).length;
 
+  const staleness = describeFreshness(pool.freshness);
+
   return (
     <>
+      {staleness ? (
+        <p className="pool-stale" role="status">
+          {staleness}{" "}
+          <button className="pool-retry" onClick={retry} type="button">
+            Try again
+          </button>
+        </p>
+      ) : null}
+
       <p className="pool-basis">
         Prices are the ones FPL has published for 2026/27. The points figure is
         what each player actually returned per match in {projectionSeason},
