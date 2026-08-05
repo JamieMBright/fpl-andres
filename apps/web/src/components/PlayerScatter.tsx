@@ -1,4 +1,4 @@
-import { memo, useCallback, useMemo, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { CeefaxShirt } from "./CeefaxShirt";
 import { clubMarker } from "../kit/club-markers";
@@ -53,7 +53,24 @@ export interface PlayerScatterProps {
   view: ScatterView;
   pinned: readonly number[];
   onTogglePin: (code: number) => void;
+  /** Told what the overlays could or could not draw, so the page can say it. */
+  onOverlays?: (notes: OverlayNotes) => void;
 }
+
+/** What the two optional overlays managed, in the words the page prints. */
+export interface OverlayNotes {
+  ring: string | null;
+  frontier: string | null;
+}
+
+/**
+ * Printed into the chart itself, bottom left.
+ *
+ * The export already carries it, but an export is not how a chart travels --
+ * somebody screenshots the page. Bottom left is the corner a crop keeps,
+ * because the eye and the mouse both start top left.
+ */
+const WATERMARK = "FPL ANDRES  \u00b7  @fpl_andres";
 
 interface Scale {
   (value: number): number;
@@ -131,6 +148,7 @@ export const PlayerScatter = memo(function PlayerScatter({
   view,
   pinned,
   onTogglePin,
+  onOverlays,
 }: PlayerScatterProps) {
   const svgRef = useRef<SVGSVGElement>(null);
   const [hovered, setHovered] = useState<PlottedPlayer | null>(null);
@@ -233,8 +251,22 @@ export const PlayerScatter = memo(function PlayerScatter({
             xMetric,
             yMetric,
           )
-        : [],
+        : null,
     [points, xMetric, yMetric, view.frontier],
+  );
+
+  // The page prints whichever overlay could not be drawn and why. Reported
+  // rather than returned, because the chart is the thing that knows.
+  useEffect(() => {
+    onOverlays?.({
+      ring: spot?.reason ?? null,
+      frontier: edge?.reason ?? null,
+    });
+  }, [onOverlays, spot, edge]);
+
+  const pioneers = useMemo(
+    () => new Set(edge?.drawn?.pioneers.map((entry) => entry.code) ?? []),
+    [edge],
   );
 
   const handleEnter = useCallback((point: PlottedPlayer) => {
@@ -347,10 +379,10 @@ export const PlayerScatter = memo(function PlayerScatter({
             />
           ) : null}
 
-          {edge.length > 1 ? (
+          {edge?.drawn ? (
             <polyline
               className="scatter-frontier"
-              points={edge
+              points={edge.drawn.curve
                 .map(
                   (point) =>
                     `${String(xScale(point.x))},${String(yScale(point.y))}`,
@@ -358,25 +390,30 @@ export const PlayerScatter = memo(function PlayerScatter({
                 .join(" ")}
             >
               <title>
-                The best available on both axes at once. Anyone below this line
-                is beaten outright by somebody on the line.
+                What the best available looks like once the staircase of
+                unbeaten players is smoothed.{" "}
+                {edge.drawn.pioneers.length === 0
+                  ? "Nobody clears it."
+                  : `${String(edge.drawn.pioneers.length)} players clear it; they are doing something the rest of the pool does not explain.`}
               </title>
             </polyline>
           ) : null}
 
-          {spot ? (
+          {spot?.drawn ? (
             <ellipse
               className="scatter-sweet-spot"
-              cx={xScale(spot.centreX)}
-              cy={yScale(spot.centreY)}
+              cx={xScale(spot.drawn.centreX)}
+              cy={yScale(spot.drawn.centreY)}
               rx={Math.abs(
-                xScale(spot.centreX + spot.radiusX) - xScale(spot.centreX),
+                xScale(spot.drawn.centreX + spot.drawn.radiusX) -
+                  xScale(spot.drawn.centreX),
               )}
               ry={Math.abs(
-                yScale(spot.centreY + spot.radiusY) - yScale(spot.centreY),
+                yScale(spot.drawn.centreY + spot.drawn.radiusY) -
+                  yScale(spot.drawn.centreY),
               )}
             >
-              <title>{spot.caption}</title>
+              <title>{spot.drawn.caption}</title>
             </ellipse>
           ) : null}
 
@@ -398,6 +435,7 @@ export const PlayerScatter = memo(function PlayerScatter({
                 mark ? "scatter-mark-club" : "",
                 point.matched ? "" : "scatter-mark-dimmed",
                 point.overlooked ? "scatter-mark-overlooked" : "",
+                pioneers.has(point.player.code) ? "scatter-mark-pioneer" : "",
                 isPinned ? "scatter-mark-pinned" : "",
               ]
                 .filter(Boolean)
@@ -469,10 +507,14 @@ export const PlayerScatter = memo(function PlayerScatter({
         >
           {yMetric.label}
         </text>
-        {/* Survives the PNG export, which is the point of putting it here
-            rather than in the surrounding HTML. */}
-        <text className="scatter-watermark" x={6} y={HEIGHT - 8}>
-          @fpl_andres
+        {/* Inside the plot, not under it. A screenshot is how a chart
+            actually travels, and the crop that keeps the data keeps this. */}
+        <text
+          className="scatter-watermark"
+          x={MARGIN.left + 10}
+          y={MARGIN.top + PLOT_HEIGHT - 10}
+        >
+          {WATERMARK}
         </text>
       </svg>
 

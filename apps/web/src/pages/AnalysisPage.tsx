@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
 import { PinnedPlayers } from "../components/PinnedPlayers";
-import { PlayerScatter } from "../components/PlayerScatter";
+import { PlayerScatter, type OverlayNotes } from "../components/PlayerScatter";
 import { RouteHeading } from "../components/RouteHeading";
 import { ScatterControls } from "../components/ScatterControls";
 import { ScatterLegend } from "../components/ScatterLegend";
@@ -238,6 +238,10 @@ function AnalysisBody({
   chartRef: React.RefObject<HTMLDivElement | null>;
 }) {
   const { vintage } = data.pool;
+  const [overlays, setOverlays] = useState<OverlayNotes>({
+    ring: null,
+    frontier: null,
+  });
 
   if (vintage.state === "unavailable") {
     return (
@@ -300,14 +304,6 @@ function AnalysisBody({
       )}
 
       <div className="analysis-layout">
-        <ScatterControls
-          pool={data.pool}
-          view={view}
-          onChange={onChange}
-          onReset={onReset}
-          plotted={selection.points.length}
-        />
-
         <div className="analysis-chart" ref={chartRef}>
           <details className="scatter-controls analysis-reading">
             <summary className="scatter-controls-summary">
@@ -326,6 +322,7 @@ function AnalysisBody({
             view={view}
             pinned={view.pinned}
             onTogglePin={onTogglePin}
+            onOverlays={setOverlays}
           />
 
           <ScatterLegend
@@ -336,6 +333,19 @@ function AnalysisBody({
             sizeRange={sizeRange}
             view={view}
           />
+
+          {/* An overlay that was asked for and could not be drawn says why.
+              Silence reads as a broken checkbox. */}
+          {view.sweetSpot && overlays.ring ? (
+            <p className="analysis-overlay-note" role="status">
+              No ring: {overlays.ring}
+            </p>
+          ) : null}
+          {view.frontier && overlays.frontier ? (
+            <p className="analysis-overlay-note" role="status">
+              No frontier: {overlays.frontier}
+            </p>
+          ) : null}
 
           <div className="analysis-actions">
             <ExportButton chartRef={chartRef} view={view} />
@@ -367,6 +377,14 @@ function AnalysisBody({
             </p>
           ) : null}
         </div>
+
+        <ScatterControls
+          pool={data.pool}
+          view={view}
+          onChange={onChange}
+          onReset={onReset}
+          plotted={selection.points.length}
+        />
 
         <PinnedPlayers
           players={data.pool.players}

@@ -53,7 +53,7 @@ export function PinnedPlayers({
 
   if (chosen.length === 0) {
     return (
-      <div className="pinned-empty">
+      <div className="pinned-empty analysis-pinned">
         <h3>Nobody pinned</h3>
         <p>
           Click a point to pin it. Four at a time, so you can put a shortlist
@@ -64,7 +64,7 @@ export function PinnedPlayers({
   }
 
   return (
-    <details className="scatter-controls pinned-panel">
+    <details className="scatter-controls pinned-panel analysis-pinned">
       <summary className="scatter-controls-summary">
         <span>Compare players</span>
         <span className="scatter-controls-count mono">

@@ -1,4 +1,4 @@
-/* Ceefax Third Kit palette. See DESIGN.md.
+/* Ceefax kit palettes. See DESIGN.md.
    Two layers: --fa-* are the design tokens; the semantic names beneath them are
    what the rest of this stylesheet consumes, so re-theming happens here alone.
    Every foreground/background pair below is verified at WCAG 2.2 AA against
@@ -6,7 +6,7 @@
 :root {
   color-scheme: dark;
 
-  /* Dark — 1994 Leeds third kit */
+  /* Dark — 1994 Leeds away kit, green and navy vertical stripes */
   --fa-surface: #16123a;
   --fa-surface-deep: #0d0a26;
   --fa-surface-rise: #221a55;
@@ -54,8 +54,8 @@
   text-rendering: optimizeLegibility;
 }
 
-/* Away — 1994 Leeds away kit, yellow and blue in vertical bars */
-:root[data-theme="away"] {
+/* Third — 1994 Leeds third kit, yellow and blue in vertical bars */
+:root[data-theme="third"] {
   color-scheme: dark;
 
   --fa-surface: #12225c;
@@ -106,7 +106,7 @@ body {
   background: var(--fa-stripes-deep);
 }
 
-/* Alternating kit stripes: third-kit green/blue in dark, home-kit
+/* Alternating kit stripes: away-kit green/navy in dark, home-kit
    silver/yellow in light.
 
    Audit item #123. This was four near-identical gradient declarations that
@@ -2991,10 +2991,13 @@ a:focus-visible {
 }
 
 /* In the Leeds kit the fill colour and the body ink are the same purple, so the
-   dark kit's 42% drops the value text to 3.84:1 against its own bar. The bar is
-   decoration and the number is the content, so the bar yields. Found by the
-   both-kits axe sweep; the single-kit sweep never saw it. */
-:root[data-theme="light"] .rho-bar-fill {
+   dark kit's 42% drops the value text to 3.84:1 against its own bar. The third
+   kit fails the same way for the opposite reason: its brand is yellow and its
+   ink is cream, which measured 4.48:1 at 42%. The bar is decoration and the
+   number is the content, so the bar yields. Found by the all-kits axe sweep;
+   the two-kit sweep never scanned the third. */
+:root[data-theme="light"] .rho-bar-fill,
+:root[data-theme="third"] .rho-bar-fill {
   background: color-mix(in srgb, var(--field-green) 16%, transparent);
 }
 
@@ -3326,6 +3329,19 @@ a:focus-visible {
 .player-detail-kit {
   display: flex;
   flex: 0 0 auto;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+/* FPL ships the field and leaves it null for every player, so the card says
+   that rather than showing a blank shirt and letting the reader guess. */
+.player-detail-nonumber {
+  max-width: 84px;
+  color: var(--ink-soft);
+  font-size: 10px;
+  line-height: 1.3;
+  text-align: center;
 }
 
 .player-detail-shirt {
@@ -3490,11 +3506,14 @@ a:focus-visible {
 }
 
 .scatter-watermark {
-  fill: var(--ink-soft);
-  fill-opacity: 0.55;
+  fill: var(--ink);
+  fill-opacity: 0.34;
   font-family: "IBM Plex Mono", monospace;
-  font-size: 11px;
-  letter-spacing: 0.04em;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  pointer-events: none;
+  user-select: none;
 }
 
 /* One track, two thumbs. The inputs sit on top of each other with transparent
@@ -3820,13 +3839,27 @@ a:focus-visible {
 
 .analysis-layout {
   display: grid;
-  grid-template-columns: minmax(210px, 250px) minmax(0, 1fr) minmax(
-      230px,
-      300px
-    );
+  grid-template-columns: minmax(0, 1fr) minmax(230px, 300px);
+  /* The pickers belong under the axes they move, not beside them: a control
+     to the left of a chart is read before anyone knows what it would change. */
+  grid-template-areas:
+    "chart pinned"
+    "controls pinned";
   gap: 24px;
   align-items: start;
   margin-top: 24px;
+}
+
+.analysis-chart {
+  grid-area: chart;
+}
+
+.analysis-controls {
+  grid-area: controls;
+}
+
+.analysis-pinned {
+  grid-area: pinned;
 }
 
 .analysis-vintage,
@@ -3840,6 +3873,17 @@ a:focus-visible {
 
 .analysis-unmeasured {
   font-style: italic;
+}
+
+/* A ticked box that changed nothing has to account for itself. */
+.analysis-overlay-note {
+  padding: 8px 10px;
+  border-left: 4px solid var(--amber);
+  margin: 10px 0 0;
+  background: var(--paper);
+  color: var(--ink-soft);
+  font-size: 13px;
+  line-height: 1.5;
 }
 
 .analysis-unavailable,
@@ -3945,6 +3989,13 @@ a:focus-visible {
 .scatter-mark-pinned {
   stroke: var(--ink);
   stroke-width: 3;
+}
+
+/* Beyond the smoothed frontier: doing something the pool does not explain. */
+.scatter-mark-pioneer {
+  stroke: var(--signal-blue) !important;
+  stroke-width: 4 !important;
+  paint-order: stroke;
 }
 
 /* Where both axes are at their good end, from each metric's own direction. */
@@ -4583,11 +4634,10 @@ a:focus-visible {
 @media (max-width: 1100px) {
   .analysis-layout {
     grid-template-columns: minmax(0, 1fr);
-  }
-
-  /* The chart leads on a narrow screen; the pickers fold beneath it. */
-  .analysis-chart {
-    order: -1;
+    grid-template-areas:
+      "chart"
+      "controls"
+      "pinned";
   }
 }
 

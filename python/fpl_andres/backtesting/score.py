@@ -10,6 +10,7 @@ from __future__ import annotations
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
 
+from fpl_andres.backtesting.captaincy import CaptaincyScore, score_captaincy
 from fpl_andres.backtesting.corpus import SeasonCorpus
 from fpl_andres.backtesting.projector import (
     ProjectionSettings,
@@ -21,11 +22,18 @@ from fpl_andres.models.metrics import rank_correlation
 from fpl_andres.positions import PositionUnknown, position_code
 
 __all__ = [
+    "METHOD_LABELS",
     "GameweekScore",
     "MethodScore",
     "SeasonScore",
     "score_season",
 ]
+
+#: Every ranking scored, in the order a reader should read them. ``components``
+#: is the model with the recent-form blend removed, so the two together say how
+#: much of the model's lead is its own pricing and how much is the naive term it
+#: carries. Publishing only ``model`` hid that.
+METHOD_LABELS = ("model", "components", "recent_mean", "ownership")
 
 
 def _position_label(element_type: int) -> str:
@@ -101,6 +109,7 @@ class SeasonScore:
     season: str
     first_scored_gameweek: int
     methods: dict[str, MethodScore] = field(default_factory=dict)
+    captaincy: dict[str, CaptaincyScore] = field(default_factory=dict)
 
 
 def score_season(
@@ -118,8 +127,9 @@ def score_season(
     """
     config = settings or ProjectionSettings()
     outcome = SeasonScore(season=corpus.season, first_scored_gameweek=minimum_history + 1)
-    for label in ("model", "components", "recent_mean", "ownership"):
+    for label in METHOD_LABELS:
         outcome.methods[label] = MethodScore(label=label)
+        outcome.captaincy[label] = CaptaincyScore(label=label)
 
     for gameweek in corpus.gameweeks:
         if gameweek <= minimum_history:
@@ -169,6 +179,20 @@ def score_season(
                 population,
                 calibrated=calibrated,
             )
+
+        # The one decision that gets multiplied. Scored from the crowd's own
+        # holdings so every method picks from a squad somebody could have had.
+        score_captaincy(
+            {
+                "model": model_ranking,
+                "components": component_ranking,
+                "recent_mean": recent,
+                "ownership": ownership,
+            },
+            ownership,
+            actual,
+            outcome.captaincy,
+        )
 
     return outcome
 

@@ -330,9 +330,17 @@ test.describe("feature walk", () => {
     const shell = page.locator(".app-shell");
 
     // The label names the kit the button switches *to*, which is what a kit
-    // button does. The third kit is the default, so it offers the home one.
-    await expect(toggle).toHaveText("Home kit");
+    // button does. The away kit is the default, so it offers the third.
+    await expect(toggle).toHaveText("Third kit");
     await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+    const awayKit = await shell.evaluate(
+      (node) => getComputedStyle(node).backgroundImage,
+    );
+
+    await toggle.click();
+
+    await expect(toggle).toHaveText("Home kit");
+    await expect(page.locator("html")).toHaveAttribute("data-theme", "third");
     const thirdKit = await shell.evaluate(
       (node) => getComputedStyle(node).backgroundImage,
     );
@@ -345,25 +353,29 @@ test.describe("feature walk", () => {
       (node) => getComputedStyle(node).backgroundImage,
     );
 
-    // Both kits must actually paint stripes, and they must differ.
+    // Every kit must actually paint stripes, and they must differ.
+    expect(awayKit).toContain("repeating-linear-gradient");
     expect(thirdKit).toContain("repeating-linear-gradient");
     expect(homeKit).toContain("repeating-linear-gradient");
-    expect(homeKit).not.toEqual(thirdKit);
+    expect(homeKit).not.toEqual(awayKit);
+    expect(thirdKit).not.toEqual(awayKit);
   });
 
   test("the chosen kit survives a reload", async ({ page }) => {
     await page.goto("/");
     await page.getByRole("button", { name: /kit$/i }).click();
-    await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+    await expect(page.locator("html")).toHaveAttribute("data-theme", "third");
 
     await page.reload();
 
-    await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+    await expect(page.locator("html")).toHaveAttribute("data-theme", "third");
   });
 
   test("home kit passes automated axe scans", async ({ page }) => {
     await page.goto("/");
-    await page.getByRole("button", { name: /kit$/i }).click();
+    const toggle = page.getByRole("button", { name: /kit$/i });
+    await toggle.click();
+    await toggle.click();
     await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
 
     const scan = await new AxeBuilder({ page }).analyze();
@@ -382,9 +394,14 @@ test.describe("feature walk", () => {
       page.getByRole("heading", { name: "Does following me actually help?" }),
     ).toBeVisible();
 
-    // The page must state plainly where the naive baseline wins.
     await expect(
-      page.getByText(/ranks better than my projection in every season/),
+      page.getByRole("heading", { name: "Who would I have captained?" }),
+    ).toBeVisible();
+
+    // The verdicts are derived from the artifact, so the page states whichever
+    // way the measurement fell rather than a sentence somebody typed once.
+    await expect(
+      page.getByText(/last-five average in (all )?\d+( of \d+)? seasons/),
     ).toBeVisible();
 
     await expect(

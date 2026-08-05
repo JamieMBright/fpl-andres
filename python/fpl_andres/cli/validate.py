@@ -21,7 +21,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 
 from fpl_andres.backtesting.corpus import SeasonCorpus, load_season
-from fpl_andres.backtesting.score import score_season
+from fpl_andres.backtesting.score import METHOD_LABELS, score_season
 from fpl_andres.persistence.supabase import SupabaseCredentials, SupabaseRestClient
 from fpl_andres.positions import Position
 from fpl_andres.simulation.minileague import LeagueSettings, Policy, simulate_league
@@ -133,7 +133,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             scored = score_season(corpus)
 
             methods = []
-            for label in ("model", "recent_mean", "ownership"):
+            for label in METHOD_LABELS:
                 method = scored.methods[label]
                 methods.append(
                     {
@@ -150,6 +150,20 @@ def main(argv: Sequence[str] | None = None) -> int:
                         },
                     }
                 )
+
+            captaincy = [
+                {
+                    "label": label,
+                    "gameweeks": pick.gameweeks,
+                    "meanPoints": _round(pick.mean_points),
+                    "meanBestPoints": _round(pick.mean_best_points),
+                    "regret": _round(pick.regret),
+                    "shareOfCeiling": _round(pick.share_of_ceiling),
+                    "perfectWeeks": pick.perfect_weeks,
+                    "blankRate": _round(pick.blank_rate),
+                }
+                for label, pick in ((label, scored.captaincy[label]) for label in METHOD_LABELS)
+            ]
 
             totals: dict[str, list[int]] = {policy: [] for policy in POLICIES}
             chips: dict[str, dict[str, int]] = {}
@@ -187,6 +201,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                     # over, so a moved number can be told from a moved model.
                     "corpusFingerprint": corpus.fingerprint,
                     "methods": methods,
+                    "captaincy": captaincy,
                     "league": {
                         "policies": {
                             policy: {

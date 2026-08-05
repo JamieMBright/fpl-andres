@@ -125,26 +125,26 @@ one-in-ten rule allows.
 
 ## Tokens
 
-Two palettes ship, toggled by user preference and defaulting to dark. Both derive
-their green + blue values from period Leeds kits held in
-[`docs/design/inspiration/`](docs/design/inspiration/README.md); the hex values
-below are provisional until owner-provided kit references land, at which point the
-frontend picks them up from `--fa-*` custom properties.
+Three palettes ship, toggled by user preference and defaulting to dark. They derive
+their values from period Leeds kits held in
+[`docs/design/inspiration/`](docs/design/inspiration/README.md). The green and navy
+shirt in that folder is the **away** kit — the yellow and blue one is the third,
+which the toggle used to have the wrong way round.
 
-### Dark (default) — after the 1994 third kit
+### Dark (default) — after the 1994 away kit
 
-| Token        | Value     | Use                                     |
-| ------------ | --------- | --------------------------------------- |
-| Surface      | `#16123a` | App frame background                    |
-| Surface deep | `#0d0a26` | Ruled ground behind stripes             |
-| Surface rise | `#221a55` | Elevated surfaces and ruled headers     |
-| Stripe green | `#00a13e` | Third-kit stripe A, brand accent, ready |
-| Stripe blue  | `#2b2065` | Third-kit stripe B, structural rules    |
-| Cream        | `#f6f4ea` | Primary copy                            |
-| Cream deep   | `#d5cfba` | Secondary copy                          |
-| Focus blue   | `#3b357e` | Focus rings, links, mark bucket body    |
-| Amber        | `#e5a02a` | Stale and watch states                  |
-| Red          | `#d64545` | Errors and negative outcomes only       |
+| Token        | Value     | Use                                    |
+| ------------ | --------- | -------------------------------------- |
+| Surface      | `#16123a` | App frame background                   |
+| Surface deep | `#0d0a26` | Ruled ground behind stripes            |
+| Surface rise | `#221a55` | Elevated surfaces and ruled headers    |
+| Stripe green | `#00a13e` | Away-kit stripe A, brand accent, ready |
+| Stripe navy  | `#2b2065` | Away-kit stripe B, structural rules    |
+| Cream        | `#f6f4ea` | Primary copy                           |
+| Cream deep   | `#d5cfba` | Secondary copy                         |
+| Focus blue   | `#3b357e` | Focus rings, links, mark bucket body   |
+| Amber        | `#e5a02a` | Stale and watch states                 |
+| Red          | `#d64545` | Errors and negative outcomes only      |
 
 ### Light (toggle) — after the 1994 home kit
 
@@ -195,7 +195,7 @@ the token itself is changed rather than exemption granted.
 
 ### Stripe motif
 
-Vertical green + blue stripes drawn from the third kit form a background rhythm on
+Vertical green + navy stripes drawn from the away kit form a background rhythm on
 the hero region only, at 6–10% opacity, and never overlay tabular content. On
 light mode, the stripes swap to yellow + blue but retain the same rhythm and
 opacity ceiling. Stripes are decorative, not structural: they are

@@ -16,6 +16,46 @@ The project follows Semantic Versioning once milestone tags begin.
   played in gameweek 1, and `/plan?team=` solves gameweeks 1 to 38 from it. Like a
   declared transfer, it lives only in the manager's own browser and is labelled as
   his claim rather than observed state.
+- Captaincy is backtested on its own (`backtesting/captaincy.py`). Every method
+  captains from the same shortlist — the 25 most-owned players going into the
+  gameweek — and is scored on mean captain return, regret against the shortlist
+  ceiling, weeks it picked the best available, and blank rate. The captain
+  doubles, so this is the repeating decision with the most leverage in the game
+  and nothing here had ever measured it.
+- The backtest publishes `components`, the projection with the recent-form blend
+  removed. `recent_mean` is both the naive baseline and 20% of the projection, so
+  the headline comparison was a superset against its own component; `components`
+  is the number that says whether the fourteen-route pricing carries itself. It
+  was computed on every run and discarded before it reached the artifact.
+- The frontier overlay fits a local regression under the non-dominated set
+  instead of joining it dot to dot. The staircase passes through every extreme
+  point by construction, so nobody could ever be above it and the line said only
+  "these players exist". Players who clear the smoothed curve are marked.
+
+### Fixed
+
+- The calibration page claimed the naive last-five average "ranks better than my
+  projection in every season I tested". The shipped artifact has the model ahead
+  on rank correlation, mean absolute error and top-20 hit rate in all four
+  seasons, and has done since the fixture and defensive-contribution work landed.
+  Both verdicts are now derived from the artifact, with a test that fails if the
+  prose and the numbers disagree again.
+- The away and third kits were swapped. The green and navy shirt in
+  `docs/design/inspiration/` is the 1994 away kit; the yellow and blue is the
+  third. The default palette is unchanged — only its name and the toggle order.
+- The plot configuration sits under the chart rather than beside it.
+- "Ring the best corner" and the frontier now say why they drew nothing when they
+  cannot draw. Both returned `null` for four different reasons and the chart drew
+  nothing for all of them, which reads as a broken checkbox.
+- The analysis season picker named the live option "This season, as it stands"
+  while plotting last season's totals. Between seasons FPL keeps those totals
+  under the same column names; the option now names the vintage it is showing and
+  flips on its own when a gameweek is scored.
+- The player card says FPL publishes no squad number rather than showing a blank
+  shirt and a tooltip nobody hovers. Measured 2026-08-05: 0 of 570 elements carry
+  one.
+- The chart watermark moved inside the plot area, bottom left, so a screenshot
+  that keeps the data keeps the mark.
 
 ## [0.5.1] — 2026-07-30
 

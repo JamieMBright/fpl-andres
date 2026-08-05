@@ -1,4 +1,9 @@
 import validation from "../data/validation.json";
+import {
+  pooledVerdict,
+  positionVerdict,
+  type VerdictSeason,
+} from "../state/validation-verdict";
 
 type Method = {
   label: string;
@@ -36,10 +41,23 @@ type SeasonReport = {
   firstScoredGameweek: number;
   expectedGoalsCoverage: number;
   methods: Method[];
+  /** Absent from artifacts generated before captaincy was scored. */
+  captaincy?: CaptaincyScore[];
   league: {
     policies: Record<string, PolicyResult>;
     leaguesPlayed: number;
   };
+};
+
+type CaptaincyScore = {
+  label: string;
+  gameweeks: number;
+  meanPoints: number | null;
+  meanBestPoints: number | null;
+  regret: number | null;
+  shareOfCeiling: number | null;
+  perfectWeeks: number;
+  blankRate: number | null;
 };
 
 type Report = {
@@ -73,6 +91,9 @@ const CHIP_NAMES: Record<string, string> = {
 };
 
 const POSITIONS = ["GKP", "DEF", "MID", "FWD"] as const;
+
+/** Matches `SHORTLIST_SIZE` in `backtesting/captaincy.py`. */
+const CAPTAIN_SHORTLIST = 25;
 
 /** My rank correlation minus the naive baseline's, for one position. */
 function positionLead(season: SeasonReport, position: string): number | null {
@@ -120,6 +141,9 @@ export function ValidationReport() {
     ...report.seasons.flatMap((season) =>
       season.methods.map((method) => method.spearman ?? 0),
     ),
+  );
+  const captaincySeasons = report.seasons.filter(
+    (season) => (season.captaincy ?? []).length > 0,
   );
 
   return (
@@ -201,10 +225,7 @@ export function ValidationReport() {
           </table>
         </div>
         <p className="validation-verdict">
-          The dumbest possible baseline — a player&rsquo;s last five scores,
-          averaged — ranks better than my projection in every season I tested. I
-          am not going to hide that. But read the next section before drawing a
-          conclusion from it.
+          {pooledVerdict(report.seasons as VerdictSeason[]).sentence}
         </p>
       </section>
 
@@ -257,12 +278,76 @@ export function ValidationReport() {
           </table>
         </div>
         <p className="validation-verdict">
-          I beat the baseline in every position, in every season —{" "}
-          {report.seasons.length * POSITIONS.length} out of{" "}
-          {report.seasons.length * POSITIONS.length} cells. Both facts are real.
-          Pooled across all positions I lose badly; within the position you are
-          actually choosing from, I win. That gap is my cross-position
-          calibration, and it is the thing I am fixing next.
+          {
+            positionVerdict(report.seasons as VerdictSeason[], POSITIONS)
+              .sentence
+          }
+        </p>
+      </section>
+
+      <section aria-labelledby="captaincy-title">
+        <h2 id="captaincy-title">Who would I have captained?</h2>
+        <p>
+          The captain doubles, so this one call swings two to three times what a
+          routine transfer does. Every method picks from the same shortlist
+          &mdash; the {CAPTAIN_SHORTLIST} most-owned players going into that
+          gameweek, which is roughly the pool a real squad draws from. Picking
+          from the whole league would be grading hindsight. The ceiling is the
+          best captain <em>in that shortlist</em>, so the regret is a call
+          somebody could have made.
+        </p>
+        {captaincySeasons.length === 0 ? (
+          <p className="validation-verdict">
+            This artifact predates the captaincy score, so there is nothing
+            measured to show. It appears the next time{" "}
+            <span className="mono">fpl_andres.cli.validate</span> runs.
+          </p>
+        ) : (
+          <div
+            aria-label="Scrollable captaincy table"
+            className="squad-table-wrap"
+            role="region"
+            // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- Keyboard users must be able to scroll this table horizontally.
+            tabIndex={0}
+          >
+            <table aria-label="Captain returns by season and method">
+              <thead>
+                <tr>
+                  <th scope="col">Season</th>
+                  <th scope="col">Method</th>
+                  <th scope="col">Weeks</th>
+                  <th scope="col">Captain scored</th>
+                  <th scope="col">Best available</th>
+                  <th scope="col">Left behind</th>
+                  <th scope="col">Nailed it</th>
+                </tr>
+              </thead>
+              <tbody>
+                {captaincySeasons.flatMap((season) =>
+                  (season.captaincy ?? []).map((pick) => (
+                    <tr key={`${season.season}-${pick.label}`}>
+                      <th scope="row" className="mono">
+                        {season.season}
+                      </th>
+                      <td>{METHOD_NAMES[pick.label] ?? pick.label}</td>
+                      <td className="mono">{pick.gameweeks}</td>
+                      <td className="mono">{show(pick.meanPoints, 2)}</td>
+                      <td className="mono">{show(pick.meanBestPoints, 2)}</td>
+                      <td className="mono">{show(pick.regret, 2)}</td>
+                      <td className="mono">
+                        {pick.perfectWeeks}/{pick.gameweeks}
+                      </td>
+                    </tr>
+                  )),
+                )}
+              </tbody>
+            </table>
+          </div>
+        )}
+        <p className="validation-verdict">
+          Figures are the player&rsquo;s own score, not the doubled one. The
+          doubling is a constant on every row, so it changes no ordering &mdash;
+          but over a season a gap here is worth twice what it reads.
         </p>
       </section>
 

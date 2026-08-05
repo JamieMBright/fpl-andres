@@ -32,6 +32,24 @@ const GROUP_ORDER: MetricGroup[] = [
   "Market",
 ];
 
+/**
+ * What the live option is actually showing.
+ *
+ * Between seasons FPL keeps last season's totals under the same column names,
+ * so "this season, as it stands" was a label for 2025/26 numbers. The option
+ * names the vintage instead, and flips on its own when a gameweek is scored.
+ */
+function liveSeasonLabel(pool: AnalysisPool): string {
+  const { vintage } = pool;
+  if (vintage.state === "previous_season") {
+    return `${vintage.season ?? "Last season"} record, prices as they are today`;
+  }
+  if (vintage.state === "live_season") {
+    return `${vintage.season ?? "This season"}, ${String(vintage.completedGameweeks)} gameweeks in`;
+  }
+  return "Nothing measured yet";
+}
+
 export interface ScatterControlsProps {
   pool: AnalysisPool;
   view: ScatterView;
@@ -51,7 +69,7 @@ export function ScatterControls({
   // A `details` rather than state: the platform gives the disclosure, the
   // keyboard behaviour and the closed-by-default in one attribute.
   return (
-    <details className="scatter-controls">
+    <details className="scatter-controls analysis-controls">
       <summary className="scatter-controls-summary">
         <span>Plot configuration</span>
         <span className="scatter-controls-count mono">{plotted} plotted</span>
@@ -66,7 +84,7 @@ export function ScatterControls({
               value={view.season}
               onChange={(event) => onChange({ season: event.target.value })}
             >
-              <option value={LIVE_SEASON}>This season, as it stands</option>
+              <option value={LIVE_SEASON}>{liveSeasonLabel(pool)}</option>
               {[...ARCHIVED_SEASONS].reverse().map((season) => (
                 <option key={season} value={season}>
                   {season}
@@ -76,8 +94,9 @@ export function ScatterControls({
           </div>
           {view.season === LIVE_SEASON ? (
             <p className="scatter-hint">
-              Live figures from FPL, including ownership and shot quality. A
-              past season is downloaded on request and carries neither.
+              {pool.vintage.state === "previous_season"
+                ? `2026/27 has not kicked off, so FPL's season totals are still ${pool.vintage.season ?? "last season"}'s. That is what is plotted. Ownership and price are today's.`
+                : "Live figures from FPL, including ownership and shot quality. A past season is downloaded on request and carries neither."}
             </p>
           ) : (
             <>

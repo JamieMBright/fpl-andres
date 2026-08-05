@@ -195,20 +195,22 @@ export function PlayerDetail({
 
         <header className="player-detail-head">
           {kit ? (
-            <span
-              className="player-detail-kit"
-              title={
-                player.squadNumber === null || player.squadNumber === undefined
-                  ? "FPL publishes a squad number field but leaves it empty, so there is no number to print."
-                  : `Squad number ${String(player.squadNumber)}`
-              }
-            >
+            <span className="player-detail-kit">
               <CeefaxShirt
                 className="player-detail-shirt"
                 kit={kit}
                 label={null}
                 squadNumber={player.squadNumber ?? null}
               />
+              {player.squadNumber === null ||
+              player.squadNumber === undefined ? (
+                // Said out loud rather than hidden in a tooltip. FPL ships a
+                // `squad_number` field and leaves it null for all 570 players,
+                // so a blank shirt is the source being empty, not a bug here.
+                <small className="player-detail-nonumber">
+                  FPL publishes no squad number
+                </small>
+              ) : null}
             </span>
           ) : (
             <span aria-hidden="true" className="player-detail-shirt" />

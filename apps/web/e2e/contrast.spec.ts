@@ -28,8 +28,9 @@ const ROUTES = [
 ] as const;
 
 const KITS = [
-  { name: "third kit", theme: "dark", clicks: 0 },
-  { name: "home kit", theme: "light", clicks: 1 },
+  { name: "away kit", theme: "dark", clicks: 0 },
+  { name: "third kit", theme: "third", clicks: 1 },
+  { name: "home kit", theme: "light", clicks: 2 },
 ] as const;
 
 /** Waits for the lazy route chunk, so axe never scans a Suspense fallback. */
@@ -127,7 +128,7 @@ test.describe("the contrast check is real, not vacuous", () => {
       });
 
     const dark = await readSurface();
-    await applyKit(page, 1, "light");
+    await applyKit(page, 2, "light");
     const light = await readSurface();
 
     expect(light).not.toEqual(dark);

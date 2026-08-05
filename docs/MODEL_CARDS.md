@@ -155,6 +155,85 @@ in a selection.
 Reproducing these numbers needs the corpus they were measured over, not just the
 code — see `corpusFingerprint` in the artifact and audit item #153.
 
+### The unblended projection is scored separately
+
+`recent_mean` is both the naive baseline and 20% of the projection, so the
+comparison above is a superset against its own component and cannot fully fail.
+`backtesting/score.py` therefore scores a fourth ranking, `components`: the same
+projection with `_blend` removed. If `components` does not beat `recent_mean`,
+the fourteen-route pricing is not carrying itself and the lead above is the naive
+term the model is wrapped around.
+
+The method was computed and discarded before it reached the artifact until
+2026-08-05. Artifacts generated before that date carry three methods, not four,
+and the calibration page says so rather than showing a blank column.
+
+### Captaincy
+
+`backtesting/captaincy.py`. The captain doubles, so one call per gameweek carries
+two to three times the expected-value impact of a routine transfer — the
+reasoning is standard across the practitioner literature and is why it is scored
+on its own rather than folded into the pooled rank correlation.
+
+Every method captains from the same shortlist: the 25 most-owned players going
+into that gameweek, from ownership at the previous gameweek. Captaining from the
+whole pool would grade a decision nobody faces. The ceiling is the best captain
+_inside that shortlist_, so the reported regret is a call a manager could have
+made.
+
+Reported per season and per method: gameweeks scored, mean realised points of the
+captain, mean points of the best available, regret per gameweek, share of the
+ceiling, weeks the pick was the best available, and blank rate (two points or
+fewer). Figures are the player's own score, not the doubled one — doubling is a
+constant on every method and on the ceiling, so it changes no ordering, and a gap
+is worth twice what it reads over a season.
+
+No numbers are quoted here yet. The scorer landed 2026-08-05 and the artifact is
+refreshed by `python -m fpl_andres.cli.validate`, which needs the history corpus
+and therefore Supabase credentials. It has not been re-run since.
+
+### What the backtest grades that the live path does not, and the reverse
+
+Named because it is a real gap, not because it is fixed.
+
+| Feature                          | Backtest (`score_season`) | Live (`publish_projections`) |
+| -------------------------------- | ------------------------- | ---------------------------- |
+| Fourteen-route component pricing | Yes                       | Yes                          |
+| Fixture-aware route adjustment   | Yes                       | Not applied (next match)     |
+| Team strength                    | Goal averages             | Dixon-Coles + venue tilt     |
+| Recent-form blend                | Yes                       | No                           |
+| Suspension multiplier            | No                        | Yes                          |
+| Live availability                | Structurally impossible   | Yes                          |
+
+The strength row is the one that matters: the backtest grades a **weaker**
+strength model than the one that ships. Closing it means fitting Dixon-Coles once
+per scored gameweek across four seasons, which has not been costed, so it is
+recorded rather than done. Until it is, the measured performance above is a floor
+on what the shipped projection does, not an estimate of it.
+
+### Where the method came from
+
+The evaluation design draws on published work rather than being invented here.
+
+- Ramezani and Dinh, _A data-driven framework for team selection in Fantasy
+  Premier League_, [arXiv:2505.02170](https://arxiv.org/abs/2505.02170). Source
+  of three things used directly: that recency-weighted averages and low-order
+  ARIMA are the baselines worth beating, that a hybrid weighted toward the model
+  beats one weighted toward realised points, and that captaincy is normally
+  handled outside the optimiser and should not be.
+- FPL Oracle, _FPL Captaincy Logic_. Source of the shortlist framing: build two
+  to four candidates on expected points first, then separate them on effective
+  ownership and rank situation. Our shortlist is the crowd's holdings for the
+  same reason — it is the pool the decision is actually made from.
+- FPL360, _FPL Captaincy Strategy_. Source of the blank-rate column: the cost of
+  a captaincy call is felt on the weeks it returns nothing, which a mean hides.
+
+What was **not** taken: FPL360's "never captain a player with form below 2.0" and
+its form-first ordering. Form is realised points, and this project already
+measures that as the baseline it is trying to beat. Neither source publishes a
+measurement of its own framework, so nothing from either is treated as evidence —
+only as a design input whose value has to show up in our own backtest.
+
 ## Promotion contract
 
 Every promotion run supplies its metric, seed, bootstrap resample count, confidence and
