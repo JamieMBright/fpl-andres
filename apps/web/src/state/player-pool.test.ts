@@ -1,6 +1,10 @@
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { buildPlayerPool, fetchPlayerPool } from "./player-pool";
+import {
+  buildPlayerPool,
+  fetchPlayerPool,
+  forgetLastGoodPool,
+} from "./player-pool";
 
 // Bruno Fernandes, present in the published record.
 const KNOWN_CODE = 141746;
@@ -141,6 +145,78 @@ describe("fetchPlayerPool", () => {
 
     expect(pool.players).toHaveLength(2);
     expect(pool.fixtures).toEqual([]);
+  });
+
+  beforeEach(() => {
+    // The last-good pool outlives a component by design, so it has to be
+    // cleared between tests or one test's success answers the next one's
+    // failure.
+    forgetLastGoodPool();
+  });
+
+  it("keeps showing the last pool, labelled stale, when FPL stops answering", async () => {
+    const working = vi
+      .fn<typeof fetch>()
+      .mockImplementation((input) =>
+        Promise.resolve(
+          String(input).includes("fixtures")
+            ? Response.json([])
+            : Response.json(bootstrap()),
+        ),
+      );
+    const live = await fetchPlayerPool(working);
+    expect(live.freshness.stale).toBe(false);
+
+    const broken = vi
+      .fn<typeof fetch>()
+      .mockRejectedValue(new TypeError("network"));
+    const fallback = await fetchPlayerPool(broken);
+
+    expect(fallback.players).toHaveLength(live.players.length);
+    expect(fallback.freshness.stale).toBe(true);
+  });
+
+  it("carries the staleness the proxy declared", async () => {
+    const fetchApi = vi.fn<typeof fetch>().mockImplementation((input) =>
+      Promise.resolve(
+        String(input).includes("fixtures")
+          ? Response.json([])
+          : Response.json(bootstrap(), {
+              headers: {
+                "X-FPL-Stale": "1",
+                "X-FPL-Stale-Age": "240",
+                "X-FPL-Captured-At": new Date(
+                  Date.now() - 240_000,
+                ).toISOString(),
+              },
+            }),
+      ),
+    );
+
+    const pool = await fetchPlayerPool(fetchApi);
+
+    expect(pool.freshness.stale).toBe(true);
+    expect(pool.freshness.ageSeconds).toBe(240);
+  });
+
+  it("does not answer a broken contract with an older pool", async () => {
+    const working = vi
+      .fn<typeof fetch>()
+      .mockImplementation((input) =>
+        Promise.resolve(
+          String(input).includes("fixtures")
+            ? Response.json([])
+            : Response.json(bootstrap()),
+        ),
+      );
+    await fetchPlayerPool(working);
+
+    const changed = vi
+      .fn<typeof fetch>()
+      .mockResolvedValue(Response.json({ elements: [] }));
+    await expect(fetchPlayerPool(changed)).rejects.toMatchObject({
+      reason: "source_contract_failed",
+    });
   });
 
   it("fails loudly rather than returning an empty pool", async () => {

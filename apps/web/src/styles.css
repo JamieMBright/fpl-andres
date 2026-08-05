@@ -4521,3 +4521,37 @@ a:focus-visible {
     order: -1;
   }
 }
+
+/*
+ * A stale player list has to look different from a live one. Same amber the
+ * analysis page uses for a degraded-but-usable state -- it is not an error, and
+ * dressing it as one would train a reader to ignore the real ones.
+ */
+.pool-stale {
+  padding: 14px 16px;
+  margin: 18px 0;
+  border-left: 3px solid var(--amber);
+  background: var(--paper);
+  color: var(--ink-soft);
+  font-size: 14px;
+  line-height: 1.55;
+  max-width: 68ch;
+}
+
+.pool-retry {
+  border: 1px solid var(--rule);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  padding: 4px 12px;
+  cursor: pointer;
+}
+
+.pool-retry:hover {
+  border-color: var(--ink);
+}
+
+.pool-retry:focus-visible {
+  outline: 3px solid var(--signal-blue);
+  outline-offset: 3px;
+}
