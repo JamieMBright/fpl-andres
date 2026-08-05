@@ -2081,6 +2081,75 @@ a:focus-visible {
   padding-top: 22px;
 }
 
+.declared-squad {
+  margin-top: 26px;
+  border-top: 1px solid var(--rule);
+  padding-top: 22px;
+}
+
+.declared-squad > p {
+  max-width: 68ch;
+  color: var(--ink-soft);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.declared-squad-form {
+  display: grid;
+  gap: 16px;
+  margin-top: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+}
+
+.declared-squad-form fieldset {
+  border: 1px solid var(--rule);
+  padding: 12px 14px 14px;
+  margin: 0;
+}
+
+.declared-squad-form legend {
+  font-family: var(--fa-display);
+  font-size: 14px;
+  padding: 0 6px;
+}
+
+.declared-squad-slot {
+  display: grid;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.declared-squad-slot label {
+  font-size: 12px;
+  color: var(--ink-soft);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.declared-squad-slot select {
+  inline-size: 100%;
+}
+
+.declared-squad-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  grid-column: 1 / -1;
+}
+
+.declared-squad-report {
+  margin-top: 16px;
+  max-width: 68ch;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.declared-squad-problems {
+  margin: 8px 0 0;
+  padding-left: 20px;
+}
+
 .opening-basis {
   max-width: 68ch;
   color: var(--ink-soft);
