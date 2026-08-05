@@ -4,6 +4,19 @@ All notable changes to FPL Andres will be documented here.
 
 The project follows Semantic Versioning once milestone tags begin.
 
+## [Unreleased]
+
+### Added
+
+- Pre-season Team ID entry is no longer a dead end. Before the first deadline the
+  team page shows the manager's historical record and a rule-checked builder for
+  the fifteen he is starting with: squad shape, one-hundred-million budget and the
+  three-per-club limit are all enforced, every broken rule is listed at once, and
+  nothing is stored until the squad is legal. A locked-in squad is held as though
+  played in gameweek 1, and `/plan?team=` solves gameweeks 1 to 38 from it. Like a
+  declared transfer, it lives only in the manager's own browser and is labelled as
+  his claim rather than observed state.
+
 ## [0.5.1] — 2026-07-30
 
 ### Fixed
