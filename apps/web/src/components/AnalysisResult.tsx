@@ -6,6 +6,7 @@ import {
   staleReason,
   terminalStateMessage,
 } from "../state/team-analysis-messages";
+import { DeclaredSquadBuilder } from "./DeclaredSquadBuilder";
 import { ManagerHistory } from "./ManagerHistory";
 import { OpeningSquad } from "./OpeningSquad";
 import { SnapshotDossier } from "./SnapshotDossier";
@@ -106,6 +107,7 @@ export function AnalysisResult({
       analysis.reason === "no_processed_event" ? (
         <>
           <ManagerHistory entryId={entryId} />
+          <DeclaredSquadBuilder entryId={entryId} />
           <OpeningSquad />
           <TransferPlanPanel firstDeadline={FIRST_DEADLINE_2026_27} />
         </>

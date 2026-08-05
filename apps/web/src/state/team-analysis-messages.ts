@@ -67,9 +67,12 @@ export function terminalStateMessage(
       no_processed_event: {
         heading: "The season hasn\u2019t started",
         nextStep:
-          "FPL wipes every squad between seasons, so there is nothing to read " +
-          "until the first deadline passes. Your record is below in the " +
-          "meantime, and it is the real thing rather than a placeholder.",
+          "FPL wipes every squad between seasons, so there is nothing public " +
+          "to read until the first deadline passes. That is not an error. " +
+          "Your record is below, and it is the real thing rather than a " +
+          "placeholder \u2014 and you can build the fifteen you are starting " +
+          "with, which I will hold as played in gameweek 1 and plan the rest " +
+          "of the season around.",
       },
       picks_unavailable: {
         heading: "Gameweek Picks Not Available",
