@@ -39,7 +39,7 @@ const TEAM_FAILURE: Record<TeamStartFailure, string> = {
   not_a_team_id: "That is not a Team ID. It is the number in your FPL URL.",
   unreachable: "I could not reach FPL for that squad, so I am not guessing it.",
   no_processed_event:
-    "FPL has not processed a gameweek for that squad yet, so there are no picks to read.",
+    "FPL has not processed a gameweek for that squad yet, so there are no picks to read. Build your fifteen on your team page and I will plan from it.",
   squad_not_recognised:
     "That squad has a player I do not carry, so I will not solve fourteen fifteenths of it.",
 };
@@ -90,7 +90,9 @@ function TeamEntry({
         {team.status === "loading"
           ? "Reading your squad."
           : team.status === "ready"
-            ? `Your fifteen, solved from gameweek ${String(team.event)}.` +
+            ? (team.source === "declared"
+                ? `The fifteen you told me you are starting with, held as played and solved from gameweek ${String(team.event)}.`
+                : `Your fifteen, solved from gameweek ${String(team.event)}.`) +
               (team.declared.length > 0
                 ? ` ${String(team.declared.length)} transfer${team.declared.length === 1 ? "" : "s"} you told me about applied on top.`
                 : "")
@@ -502,7 +504,9 @@ export default function SeasonPlanPage() {
 
       <TeamEntry team={team} params={params} onChange={setParams} />
 
-      {team.status === "ready" && teamId !== null ? (
+      {team.status === "ready" &&
+      team.source === "published" &&
+      teamId !== null ? (
         <DeclaredTransferForm
           entryId={teamId}
           event={team.event}
