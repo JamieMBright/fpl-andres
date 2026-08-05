@@ -21,8 +21,8 @@ importers:
         specifier: 20.19.43
         version: 20.19.43
       "@vercel/node":
-        specifier: 5.9.0
-        version: 5.9.0(rollup@4.62.3)
+        specifier: 5.9.3
+        version: 5.9.3(rollup@4.62.3)
       eslint:
         specifier: 9.39.5
         version: 9.39.5
@@ -39,8 +39,8 @@ importers:
         specifier: 3.9.6
         version: 3.9.6
       supabase:
-        specifier: 2.110.0
-        version: 2.110.0
+        specifier: 2.111.0
+        version: 2.111.0
       typescript:
         specifier: 6.0.3
         version: 6.0.3
@@ -57,8 +57,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/quick-solver
       lucide-react:
-        specifier: 1.27.0
-        version: 1.27.0(react@19.2.8)
+        specifier: 1.28.0
+        version: 1.28.0(react@19.2.8)
       react:
         specifier: 19.2.8
         version: 19.2.8
@@ -1119,66 +1119,66 @@ packages:
         integrity: sha512-l2aFy5jALhniG5HgqrD6jXLi/rUWrKvqN/qJx6yoJsgKhblVd+iqqU4RCXavm/jPityDo5TCvKMnpjKnOriy0w==,
       }
 
-  "@supabase/cli-darwin-arm64@2.110.0":
+  "@supabase/cli-darwin-arm64@2.111.0":
     resolution:
       {
-        integrity: sha512-VC+3vipRUtLrZKVYuxfRtP1gUPwUa+oZSeOJTRPSjLYN1FlnXIFcVDp/Xe21tZLYbVZBx3zJmy50OG2vTeNL3Q==,
+        integrity: sha512-H1ucZ+9Z37Ha7uqYrKHfAy1vXWMVsN4gNlKaOpjKUYoHwDEbueEHVIDA1/PBIUd4HX+usJfpq+R+gWqzM/FKqQ==,
       }
     cpu: [arm64]
     os: [darwin]
 
-  "@supabase/cli-darwin-x64@2.110.0":
+  "@supabase/cli-darwin-x64@2.111.0":
     resolution:
       {
-        integrity: sha512-PtDmolyEXqm6hpsNOTBB15xWadhbFOelaKaxBTflk1TBJO1Hugrzw4xophbi8hg4vG9HXh4GNc7TY24BA93zqA==,
+        integrity: sha512-4iMYm/XaAZJ8YzdJ2HBRVc7i9SRIwE6VQrnSt968WTt83M1y6knC7UENCKjMtO+As4QeZkICpUk50CeathqxbA==,
       }
     cpu: [x64]
     os: [darwin]
 
-  "@supabase/cli-linux-arm64-musl@2.110.0":
+  "@supabase/cli-linux-arm64-musl@2.111.0":
     resolution:
       {
-        integrity: sha512-RyPgJr7hAdyhlxwUR36+s6P6rENupfN+meN+3+c/9XYT5cRwGuaJRnM4nsh9s1fs33lu7v22oy2N7IHZfgujew==,
+        integrity: sha512-RnvbVlJ4TX/UIwLiglBVQ2eL4GAl9SfWZmM5LENXyIaohBcRZHDva5t2OyK+BPGBtngjVGpb3QyfLdvkt9yJcw==,
       }
     cpu: [arm64]
     os: [linux]
 
-  "@supabase/cli-linux-arm64@2.110.0":
+  "@supabase/cli-linux-arm64@2.111.0":
     resolution:
       {
-        integrity: sha512-FHSVK7sR5quvAfDqwoA850ci3EP0hu6tjL1MDMWokkSwvILaHYp2AWq6jzZwa78dk+/SGeVPl8andkfyvH2qeg==,
+        integrity: sha512-2KSHITFMXe2u5yALupBWHGeQ1IY4C8GkcIWPWgNFdtAPo03pgs1hLWgL1eeqSh/a0wB/6rgUlM1fQR/hAgCyCA==,
       }
     cpu: [arm64]
     os: [linux]
 
-  "@supabase/cli-linux-x64-musl@2.110.0":
+  "@supabase/cli-linux-x64-musl@2.111.0":
     resolution:
       {
-        integrity: sha512-GLYhJhOhQmkkH3gygZy8x0VLmnGuLk0giSGAc19FtA12qfXdVsVeTiZWBzIEFvrJ4nK8NWqf0K4HIe2C4sBFqg==,
+        integrity: sha512-2QVpsy/3v+TzqE5GgTCPruoxTlF3d8QPGirjcnah8hP66nxXStB9yTvxmJq+LtO3gwMt1Kpm7is0roZVkV55Pw==,
       }
     cpu: [x64]
     os: [linux]
 
-  "@supabase/cli-linux-x64@2.110.0":
+  "@supabase/cli-linux-x64@2.111.0":
     resolution:
       {
-        integrity: sha512-mShXx1+8yQfpxEzVyBxH8plbrHoXE/6j/8jIzQXmzuOFbVyaJzJU3HMmuEUsptcgwj/FpWoE1HrI77TmzWrJ/w==,
+        integrity: sha512-NwwNhiZZT4WYEPDXAbgZL+l77z/hoJ+w5t+52WBN1VlmoxwDmf2NP+UERM8wuCGFe/tmBlUuFE1eJYZfab0/qA==,
       }
     cpu: [x64]
     os: [linux]
 
-  "@supabase/cli-windows-arm64@2.110.0":
+  "@supabase/cli-windows-arm64@2.111.0":
     resolution:
       {
-        integrity: sha512-gLiQLv9geh3TV3t/uAd2GhNfLMJW/l8jyBclc2sPiljM5wosIKsxm8Uf9e97mgVVHgGLrRR1igXtru1YU+n8AQ==,
+        integrity: sha512-twawKY5xfU2dNOnZrKDmrudxRG/XIKcBxOb6X2lMGJU3N1Hd+8oWpI9TwM5Qv+eXehtlsKDmUvbitStXvJr/xQ==,
       }
     cpu: [arm64]
     os: [win32]
 
-  "@supabase/cli-windows-x64@2.110.0":
+  "@supabase/cli-windows-x64@2.111.0":
     resolution:
       {
-        integrity: sha512-J4dXRahjAEQy3w0cTtJsvwCuoMY7OHAYPaR81Gxac0315HvSf+8Cf2cEpwAkUKpAhUpCE0pa1Gl3BrmKtd7qaw==,
+        integrity: sha512-1F+X5tAYxAGx93ZZoIQBnIQ2Q2NnplKqjpigAS/zpTsNaWAjNi7EnxmuQKaEoAdqOHKbLhegVVDiw1+us3ZVpA==,
       }
     cpu: [x64]
     os: [win32]
@@ -1399,10 +1399,10 @@ packages:
       }
     engines: { node: ^18.18.0 || ^20.9.0 || >=21.1.0 }
 
-  "@vercel/build-utils@13.36.0":
+  "@vercel/build-utils@13.36.3":
     resolution:
       {
-        integrity: sha512-5Az1XAzro80WJDuANR2UpDWyYnMi2S4Ms1tYvg1YfwiruipyRr0FUf8s0WG8ErBZTBWf95nfZfofpcRJIBDV5w==,
+        integrity: sha512-2f6RhmPYLiQjAJltaq9WPsRNdnzos0bWShL/AbYLXoydBVszlX8H/5w9rJ23nqPmtGjbDfZ9kLLGuAdyftvcTA==,
       }
 
   "@vercel/error-utils@2.2.0":
@@ -1419,10 +1419,10 @@ packages:
     engines: { node: ">=20" }
     hasBin: true
 
-  "@vercel/node@5.9.0":
+  "@vercel/node@5.9.3":
     resolution:
       {
-        integrity: sha512-uuN9OTSOqhzszonUC7gpOqoaLvPIMffCp3Xsmnb+jWWn1chVQvW0X59yUkx+pVFgT6HA+CIp89PNA3IY08ITHA==,
+        integrity: sha512-KkAYFVyrRVm9nYLdk5zVIbAra4H9ZUmLyjDnMNe3+yy5GUtC/jmBVp1fl9cf1CejMNMBu7apcrRN5nX0lhj2xw==,
       }
 
   "@vercel/python-analysis@0.12.0":
@@ -2807,10 +2807,10 @@ packages:
       }
     hasBin: true
 
-  js-yaml@4.3.0:
+  js-yaml@4.3.1:
     resolution:
       {
-        integrity: sha512-1td788aAnnZ5qs7V2QIRl1owjtYpbKt749Y3xauqQgwIIGF/xXWz1wMTEBx5O3LK3lXLVuqXPdPxj2BoFHaW9Q==,
+        integrity: sha512-CY6crGq313MX8GkwvB7tzgp99vjQxY1++5y10/BKN/GUfHqWaOGQMNZkBvqSzsZKWk/ijwHlWzzkLulsGHhjWQ==,
       }
     hasBin: true
 
@@ -3043,10 +3043,10 @@ packages:
         integrity: sha512-KpNARQA3Iwv+jTA0utUVVbrh+Jlrr1Fv0e56GGzAFOXN7dk/FviaDW8LHmK52DlcH4WP2n6gI8vN1aesBFgo9w==,
       }
 
-  lucide-react@1.27.0:
+  lucide-react@1.28.0:
     resolution:
       {
-        integrity: sha512-rJicGl/3Fly/E0rOH1YmPZ6e49JCnKknh1ox1vpHnkfjujAkKA6sqUZvH3MTAaXXjgexyUwgNwTJzTtYuAFYJw==,
+        integrity: sha512-fARAFJULsGuDDydjp6+6blekG/sBIM29TerzLjc9bQUKAcEfrSc4ZQKb25KRz4OMKd87cZTb5dgq0w/T6KufVg==,
       }
     peerDependencies:
       react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
@@ -3774,10 +3774,10 @@ packages:
       }
     engines: { node: ">=8" }
 
-  supabase@2.110.0:
+  supabase@2.111.0:
     resolution:
       {
-        integrity: sha512-63QKsdLSVOFKTqABIAeOpg12daBZb9WYqc1NeMNimDP+gFGY8YsIh7VOJawUENXhIWWRlWNprHCOmafCc3LD7Q==,
+        integrity: sha512-0cjCRdYNV1h2XXa0wm04mdct7QuDU7sMul/NwETRJmN3+HCsdEu6u5n0oygL97fdf6sDrGmnAdBh8E4wsv1ayg==,
       }
     hasBin: true
 
@@ -4560,7 +4560,7 @@ snapshots:
       globals: 14.0.0
       ignore: 5.3.2
       import-fresh: 3.3.1
-      js-yaml: 4.3.0
+      js-yaml: 4.3.1
       minimatch: 3.1.5
       strip-json-comments: 3.1.1
     transitivePeerDependencies:
@@ -4752,28 +4752,28 @@ snapshots:
 
   "@standard-schema/spec@1.1.0": {}
 
-  "@supabase/cli-darwin-arm64@2.110.0":
+  "@supabase/cli-darwin-arm64@2.111.0":
     optional: true
 
-  "@supabase/cli-darwin-x64@2.110.0":
+  "@supabase/cli-darwin-x64@2.111.0":
     optional: true
 
-  "@supabase/cli-linux-arm64-musl@2.110.0":
+  "@supabase/cli-linux-arm64-musl@2.111.0":
     optional: true
 
-  "@supabase/cli-linux-arm64@2.110.0":
+  "@supabase/cli-linux-arm64@2.111.0":
     optional: true
 
-  "@supabase/cli-linux-x64-musl@2.110.0":
+  "@supabase/cli-linux-x64-musl@2.111.0":
     optional: true
 
-  "@supabase/cli-linux-x64@2.110.0":
+  "@supabase/cli-linux-x64@2.111.0":
     optional: true
 
-  "@supabase/cli-windows-arm64@2.110.0":
+  "@supabase/cli-windows-arm64@2.111.0":
     optional: true
 
-  "@supabase/cli-windows-x64@2.110.0":
+  "@supabase/cli-windows-x64@2.111.0":
     optional: true
 
   "@testing-library/dom@10.4.1":
@@ -4958,7 +4958,7 @@ snapshots:
       "@typescript-eslint/types": 8.65.0
       eslint-visitor-keys: 5.0.1
 
-  "@vercel/build-utils@13.36.0":
+  "@vercel/build-utils@13.36.3":
     dependencies:
       "@vercel/python-analysis": 0.12.0
       cjs-module-lexer: 1.2.3
@@ -4985,13 +4985,13 @@ snapshots:
       - rollup
       - supports-color
 
-  "@vercel/node@5.9.0(rollup@4.62.3)":
+  "@vercel/node@5.9.3(rollup@4.62.3)":
     dependencies:
       "@edge-runtime/node-utils": 2.3.0
       "@edge-runtime/primitives": 4.1.0
       "@edge-runtime/vm": 3.2.0
       "@types/node": 20.11.0
-      "@vercel/build-utils": 13.36.0
+      "@vercel/build-utils": 13.36.3
       "@vercel/error-utils": 2.2.0
       "@vercel/nft": 1.10.0(rollup@4.62.3)
       "@vercel/static-config": 3.4.0
@@ -5941,7 +5941,7 @@ snapshots:
     dependencies:
       argparse: 2.0.1
 
-  js-yaml@4.3.0:
+  js-yaml@4.3.1:
     dependencies:
       argparse: 2.0.1
 
@@ -6080,7 +6080,7 @@ snapshots:
     dependencies:
       yallist: 3.1.1
 
-  lucide-react@1.27.0(react@19.2.8):
+  lucide-react@1.28.0(react@19.2.8):
     dependencies:
       react: 19.2.8
 
@@ -6506,19 +6506,19 @@ snapshots:
 
   strip-json-comments@3.1.1: {}
 
-  supabase@2.110.0:
+  supabase@2.111.0:
     dependencies:
       eciesjs: 0.5.0
       jose: 6.2.4
     optionalDependencies:
-      "@supabase/cli-darwin-arm64": 2.110.0
-      "@supabase/cli-darwin-x64": 2.110.0
-      "@supabase/cli-linux-arm64": 2.110.0
-      "@supabase/cli-linux-arm64-musl": 2.110.0
-      "@supabase/cli-linux-x64": 2.110.0
-      "@supabase/cli-linux-x64-musl": 2.110.0
-      "@supabase/cli-windows-arm64": 2.110.0
-      "@supabase/cli-windows-x64": 2.110.0
+      "@supabase/cli-darwin-arm64": 2.111.0
+      "@supabase/cli-darwin-x64": 2.111.0
+      "@supabase/cli-linux-arm64": 2.111.0
+      "@supabase/cli-linux-arm64-musl": 2.111.0
+      "@supabase/cli-linux-x64": 2.111.0
+      "@supabase/cli-linux-x64-musl": 2.111.0
+      "@supabase/cli-windows-arm64": 2.111.0
+      "@supabase/cli-windows-x64": 2.111.0
 
   supports-color@7.2.0:
     dependencies:
