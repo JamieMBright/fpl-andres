@@ -1,6 +1,13 @@
 import { z } from "zod";
 
 import { dedupedFetch } from "./deduped-fetch";
+import {
+  freshnessOf,
+  LastGood,
+  leastFresh,
+  LIVE,
+  type Freshness,
+} from "./freshness";
 import type { ScheduledFixture } from "./fixture-run";
 import { projectionFor, type PlayerProjection } from "./squad-projection";
 
@@ -92,11 +99,17 @@ export interface PlayerPool {
   /** This season's club ids mapped to the code that survives a season change. */
   clubCodeByTeamId: Map<number, number>;
   fixtures: ScheduledFixture[];
+  /**
+   * How current this is. Never omitted, because a pool built from a retained
+   * copy renders identically to a live one and a manager acts on the prices.
+   */
+  freshness: Freshness;
 }
 
 export function buildPlayerPool(
   payload: unknown,
   fixturePayload: unknown = [],
+  freshness: Freshness = LIVE,
 ): PlayerPool {
   const bootstrap = bootstrapSchema.parse(payload);
   const fixtures = fixtureSchema.parse(fixturePayload);
@@ -152,6 +165,7 @@ export function buildPlayerPool(
       bootstrap.teams.map((team) => [team.id, team.code]),
     ),
     fixtures,
+    freshness,
   };
 }
 
@@ -165,6 +179,21 @@ export class PlayerPoolError extends Error {
     super(message);
     this.name = "PlayerPoolError";
   }
+}
+
+/**
+ * The last pool that was built successfully, for the length of the tab.
+ *
+ * The proxy's retained copy dies with its serverless instance, so a cold start
+ * during an outage still leaves the browser with nothing from that direction.
+ * This is the second line: a reader who already has the list on screen does not
+ * lose it because a later request failed.
+ */
+const lastGood = new LastGood<PlayerPool>();
+
+/** Test seam. Production code has no reason to call this. */
+export function forgetLastGoodPool(): void {
+  lastGood.forget();
 }
 
 export async function fetchPlayerPool(
@@ -185,30 +214,44 @@ export async function fetchPlayerPool(
   } catch (error) {
     if (error instanceof DOMException && error.name === "AbortError")
       throw error;
-    throw new PlayerPoolError(
-      "unreachable",
-      "the player list could not be requested",
-    );
+    return fallbackOrFail("the player list could not be requested");
   }
   if (!bootstrap.ok) {
-    throw new PlayerPoolError(
-      "unreachable",
-      `FPL returned ${bootstrap.status}`,
-    );
+    return fallbackOrFail(`FPL returned ${String(bootstrap.status)}`);
   }
   try {
     // A missing fixture list costs the run column and nothing else, so it is
     // not worth failing the whole page over.
-    return buildPlayerPool(
+    const pool = buildPlayerPool(
       await bootstrap.json(),
       fixtures.ok ? await fixtures.json() : [],
+      leastFresh([
+        freshnessOf(bootstrap),
+        ...(fixtures.ok ? [freshnessOf(fixtures)] : []),
+      ]),
     );
+    // Only a live pool is worth remembering. Retaining a stale one would let
+    // its age reset every time it was served back to itself.
+    if (!pool.freshness.stale) lastGood.remember(pool);
+    return pool;
   } catch {
+    // A shape this code cannot read is not an outage, and an older pool would
+    // hide a contract change that is this project's to fix.
     throw new PlayerPoolError(
       "source_contract_failed",
       "the player list did not match the expected shape",
     );
   }
+}
+
+/**
+ * An older list, labelled, beats an empty page. Nothing at all is still an
+ * error -- the reader is told, rather than shown a blank table.
+ */
+function fallbackOrFail(message: string): PlayerPool {
+  const held = lastGood.recall();
+  if (held) return { ...held.value, freshness: held.freshness };
+  throw new PlayerPoolError("unreachable", message);
 }
 
 function round(value: number): number {

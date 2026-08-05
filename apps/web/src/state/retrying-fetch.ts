@@ -18,15 +18,46 @@
  */
 
 const MAX_ATTEMPTS = 3;
-const RETRY_BASE_MS = 250;
+
+/**
+ * 250ms then 500ms was too short to outlive anything that actually happens.
+ * A cold serverless instance takes seconds to come up and FPL sheds load for
+ * longer than that, so the old schedule reliably spent all three attempts
+ * inside the same bad second and reported the outage anyway.
+ *
+ * The jitter is not decoration. Every reader whose page failed at the same
+ * moment retried on the same fixed schedule, so the retries arrived together
+ * and the recovering upstream met a second synchronised wave.
+ */
+const RETRY_BASE_MS = 1_000;
+const JITTER_RATIO = 0.4;
 
 /** Statuses the proxy itself emits when the failure is worth asking again. */
 const RETRYABLE_STATUSES = new Set([408, 425, 429, 500, 502, 503, 504]);
+
+/**
+ * A 502 whose body names `unreachable` is the proxy reporting that it already
+ * made three upstream attempts with backoff and had none of them answer. An
+ * immediate retry here does not add a chance of success; it adds three more
+ * upstream fetches of a multi-megabyte document to an upstream that is already
+ * failing. The client's job at that point is to stop and say so.
+ */
+async function isExhaustedProxyFailure(response: Response): Promise<boolean> {
+  if (response.status !== 502) return false;
+  try {
+    const payload = (await response.clone().json()) as { reason?: unknown };
+    return payload.reason === "unreachable";
+  } catch {
+    return false;
+  }
+}
 
 export interface RetryingFetchOptions {
   fetchApi?: typeof fetch;
   wait?: (milliseconds: number) => Promise<void>;
   attempts?: number;
+  /** Seam for the jitter, so a test can pin the schedule. */
+  random?: () => number;
 }
 
 export function retryingFetch(
@@ -35,6 +66,7 @@ export function retryingFetch(
   const fetchApi = options.fetchApi ?? fetch;
   const wait = options.wait;
   const attempts = options.attempts ?? MAX_ATTEMPTS;
+  const random = options.random ?? Math.random;
   if (!Number.isInteger(attempts) || attempts < 1) {
     throw new RangeError(
       `attempts must be a positive integer (got ${attempts})`,
@@ -57,7 +89,8 @@ export function retryingFetch(
         const response = await fetchApi(input, init);
         if (
           !RETRYABLE_STATUSES.has(response.status) ||
-          attempt === attempts - 1
+          attempt === attempts - 1 ||
+          (await isExhaustedProxyFailure(response))
         ) {
           return response;
         }
@@ -73,7 +106,11 @@ export function retryingFetch(
         lastError = error;
       }
       // Make the backoff delay abortable so navigation/unmount fails fast.
-      const delayMs = RETRY_BASE_MS * 2 ** attempt;
+      const delayMs = Math.round(
+        RETRY_BASE_MS *
+          2 ** attempt *
+          (1 - JITTER_RATIO / 2 + random() * JITTER_RATIO),
+      );
       if (wait) {
         await wait(delayMs);
       } else {

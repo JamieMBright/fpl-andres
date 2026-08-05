@@ -26,11 +26,37 @@ Allow-listed read-through proxy to `https://fantasy.premierleague.com/api/`.
 The path is matched against an allow-list **before** any upstream request is
 made; an unrecognised path never reaches FPL.
 
-| Status | Meaning                                                              |
-| ------ | -------------------------------------------------------------------- |
-| 200    | Upstream returned JSON and it was within the size limit.             |
-| 400    | The path is not allow-listed, or a query parameter is not permitted. |
-| 502    | The handler threw. Body carries `requestId`; nothing else.           |
+| Status | Meaning                                                                                     |
+| ------ | ------------------------------------------------------------------------------------------- |
+| 200    | Upstream returned JSON and it was within the size limit, **or** a retained copy was served. |
+| 400    | The path is not allow-listed, or a query parameter is not permitted.                        |
+| 502    | A JSON error envelope. For deliberate proxy failures (e.g. upstream unreachable with no retained copy) the body is `{ error, reason }`; for unexpected handler failures the body additionally carries `requestId`.                                  |
+
+### Retained copies
+
+A public document — `bootstrap-static/`, `fixtures/`, `element-summary/` — is
+the same for every caller and changes a handful of times an hour, so the proxy
+holds two things per warm instance: a short-TTL copy that suppresses duplicate
+upstream reads, and the last copy that was known to be good. When FPL does not
+answer, the retained copy is served instead of a 502.
+
+It is never disguised as current. A retained copy carries:
+
+- `X-FPL-Stale: 1`
+- `X-FPL-Stale-Age` — seconds since capture
+- `X-FPL-Captured-At` — ISO 8601 capture instant
+- `Cache-Control: public, s-maxage=30, stale-while-revalidate=600`
+
+The site reads these and says, in words, that the list is not current. A per-manager
+path (`entry/`, `picks/`, `leagues-classic/`) is never retained and never shared:
+it fails as before.
+
+Only a 200 is retained. An error status is never held, so one bad second does
+not become a minute of served failure.
+
+Each request logs an `fpl_proxy_tier` line naming which tier answered —
+`fresh`, `reused`, `stale` or `failed` — because a page rendered from a
+retained copy is indistinguishable from a healthy one from the outside.
 
 Response headers on a failure:
 
@@ -39,7 +65,7 @@ Response headers on a failure:
 - `Cache-Control: no-store`
 - `X-Content-Type-Options: nosniff`
 
-`maxDuration` is 15 seconds against an internal budget of 8.5 seconds, so the
+`maxDuration` is 15 seconds against an internal budget of 12 seconds, so the
 function returns its own degraded envelope rather than being killed mid-flight
 by the platform. A platform kill produces no envelope and no log line.
 
