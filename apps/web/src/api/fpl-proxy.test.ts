@@ -138,7 +138,9 @@ describe("FPL proxy transport", () => {
   it("does not start a retry after the total function budget is exhausted", async () => {
     let currentTime = 0;
     const upstreamFetch = vi.fn<typeof fetch>().mockImplementation(async () => {
-      currentTime = 8_200;
+      // Past the point where a retry's backoff plus a usable attempt window
+      // still fit inside FPL_PROXY_BUDGET_MS.
+      currentTime = 11_400;
       return new Response(
         JSON.stringify({ detail: "temporarily unavailable" }),
         {

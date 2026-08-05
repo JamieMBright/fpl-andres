@@ -17,3 +17,5 @@
   asks to adopt them into Git.
 - Run focused validation immediately after each substantive edit and `pnpm check`
   before committing a milestone.
+- Never hand-format a file prettier owns. Run `corepack pnpm format` and commit its
+  output; if prettier will not run, say so instead of guessing the column widths.

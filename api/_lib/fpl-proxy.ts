@@ -1,4 +1,6 @@
+import type { FplDocumentStore } from "./fpl-document-store.js";
 import { FplPathError, resolveFplUpstreamUrl } from "./fpl-path.js";
+import type { SourceCache } from "./source-cache.js";
 
 /**
  * Audit item #82. Name and a contact URL, and a version that does not move on
@@ -19,14 +21,99 @@ const FPL_USER_AGENT =
   "FPLAndres/0.5 (+https://github.com/JamieMBright/fpl-andres)";
 const DEFAULT_LIMIT_BYTES = 5 * 1024 * 1024;
 const BOOTSTRAP_LIMIT_BYTES = 8 * 1024 * 1024;
-export const FPL_PROXY_BUDGET_MS = 8_500;
+
+/**
+ * The whole-request budget.
+ *
+ * `vercel.json` allows this function fifteen seconds. It used to stop itself at
+ * eight and a half, which meant a cold instance reading a three-megabyte
+ * bootstrap over a fresh connection could run out of budget while the upstream
+ * was still answering perfectly well -- a self-inflicted 502 with six unused
+ * seconds left on the clock. Twelve keeps a three-second margin, so the proxy
+ * still returns a described error rather than being killed mid-flight.
+ */
+export const FPL_PROXY_BUDGET_MS = 12_000;
+
+/**
+ * Bootstrap is not like the other endpoints: it is megabytes rather than
+ * kilobytes, and a first read on a cold connection legitimately takes longer
+ * than four seconds. Giving it the same per-attempt timeout as a fixture list
+ * turned a slow success into three cancelled attempts and a 502.
+ */
 const PER_ATTEMPT_TIMEOUT_MS = 4_000;
+const BOOTSTRAP_ATTEMPT_TIMEOUT_MS = 7_000;
 const MIN_ATTEMPT_BUDGET_MS = 250;
+
+/**
+ * A retry is only worth starting if there is time for it to finish. Checking
+ * only that the backoff fits meant the proxy could sleep, fire a second
+ * attempt with two hundred milliseconds left, and abort it -- spending the
+ * remaining budget to guarantee a failure. The delay and a usable attempt
+ * window both have to fit.
+ */
+const MIN_RETRY_ATTEMPT_MS = 1_500;
 const MAX_ATTEMPTS = 3;
 const MAX_RETRY_AFTER_MS = 30_000;
 const RETRYABLE_STATUSES = new Set([408, 425, 429, 500, 502, 503, 504]);
 
+/**
+ * How long a public document may be reused without asking FPL again.
+ *
+ * The numbers match `cachePolicyFor` below, because two layers disagreeing
+ * about how stale the same bytes are allowed to be is a bug waiting to be
+ * found in production. Zero means "never reuse": every per-manager path falls
+ * here by default, so a new allowlisted endpoint in `fpl-path.ts` is private
+ * until somebody names it public, rather than the other way round.
+ */
+export function publicTtlMsFor(pathname: string): number {
+  if (
+    pathname.endsWith("/bootstrap-static/") ||
+    pathname.endsWith("/fixtures/")
+  ) {
+    return 60_000;
+  }
+  if (pathname.includes("/element-summary/")) {
+    return 300_000;
+  }
+  return 0;
+}
+
 type Sleep = (milliseconds: number) => Promise<void>;
+
+/**
+ * Which tier answered. Logged so that a working fallback cannot hide a
+ * degrading upstream: a page that renders from a six-minute-old bootstrap
+ * looks identical to a healthy one from the outside.
+ */
+export type FplProxyTier = "fresh" | "reused" | "stale" | "failed";
+
+/**
+ * The result of one upstream read, in a form that can be shared between
+ * callers. Not a `Response`: its body can only be read once, and coalescing
+ * exists precisely so that several callers read the same bytes.
+ */
+export type FplProxyOutcome =
+  | { kind: "ok"; status: number; body: ArrayBuffer }
+  | {
+      kind: "error";
+      status: number;
+      message: string;
+      reason: FplProxyErrorReason;
+    };
+
+export interface FplProxyDependencies {
+  /** Coalesces concurrent identical reads and holds public ones for their TTL. */
+  cache?: SourceCache<FplProxyOutcome>;
+  /** The last known-good copy of each public document. */
+  store?: FplDocumentStore;
+  /** Called once per request with the tier that answered. */
+  onOutcome?: (event: {
+    url: string;
+    tier: FplProxyTier;
+    status: number;
+    staleAgeMs: number | null;
+  }) => void;
+}
 
 export async function createFplProxyResponse(
   requestUrl: string,
@@ -36,6 +123,7 @@ export async function createFplProxyResponse(
   random: () => number = Math.random,
   now: () => number = Date.now,
   deadline: number = now() + FPL_PROXY_BUDGET_MS,
+  dependencies: FplProxyDependencies = {},
 ): Promise<Response> {
   if (method !== "GET") {
     return jsonError("Only GET is supported by the FPL proxy.", 405, {
@@ -53,6 +141,96 @@ export async function createFplProxyResponse(
     throw error;
   }
 
+  const { cache, store, onOutcome } = dependencies;
+  const ttlMs = publicTtlMsFor(upstreamUrl.pathname);
+  const key = upstreamUrl.href;
+  const read = () =>
+    readUpstream(upstreamUrl, fetchUpstream, sleep, random, now, deadline);
+
+  let outcome: FplProxyOutcome;
+  let reused = false;
+  if (cache) {
+    const resolved = await cache.resolve(
+      key,
+      ttlMs,
+      read,
+      // Only a document is worth holding. An error, or a 404 that will become a
+      // 200 the moment FPL finishes deploying, is not -- caching either would
+      // mean serving one bad second for a whole minute.
+      (value) => value.kind === "ok" && value.status === 200,
+    );
+    outcome = resolved.value;
+    reused = resolved.reused;
+  } else {
+    outcome = await read();
+  }
+
+  if (outcome.kind === "ok") {
+    if (store && ttlMs > 0 && outcome.status === 200) {
+      store.put(key, outcome.body);
+    }
+    onOutcome?.({
+      url: key,
+      tier: reused ? "reused" : "fresh",
+      status: outcome.status,
+      staleAgeMs: null,
+    });
+    // Audit item #94. The body was copied into a fresh ArrayBuffer before being
+    // returned. `readBoundedBody` now assembles into one directly, so the copy
+    // is gone -- it duplicated up to eight megabytes of bootstrap per request.
+    return new Response(outcome.body, {
+      status: outcome.status,
+      headers: {
+        "Cache-Control": cachePolicyFor(upstreamUrl.pathname),
+        "Content-Type": "application/json; charset=utf-8",
+      },
+    });
+  }
+
+  // FPL did not answer. For a document that is the same for every caller, a
+  // copy from a few minutes ago answers the reader's question; a 502 answers
+  // nothing. The copy goes out labelled, never disguised as current.
+  const retained = ttlMs > 0 ? (store?.get(key) ?? null) : null;
+  if (retained) {
+    const staleAgeMs = Math.max(0, now() - retained.capturedAt);
+    onOutcome?.({ url: key, tier: "stale", status: 200, staleAgeMs });
+    return new Response(retained.body, {
+      status: 200,
+      headers: {
+        "Cache-Control": "public, s-maxage=30, stale-while-revalidate=600",
+        "Content-Type": "application/json; charset=utf-8",
+        "X-FPL-Stale": "1",
+        "X-FPL-Stale-Age": String(Math.round(staleAgeMs / 1_000)),
+        "X-FPL-Captured-At": new Date(retained.capturedAt).toISOString(),
+      },
+    });
+  }
+
+  onOutcome?.({
+    url: key,
+    tier: "failed",
+    status: outcome.status,
+    staleAgeMs: null,
+  });
+  return jsonError(outcome.message, outcome.status, {}, outcome.reason);
+}
+
+/**
+ * One upstream read, reduced to bytes or to a named failure.
+ *
+ * Split out of `createFplProxyResponse` so that the same read can be shared by
+ * coalesced callers and retained as a last-known-good copy. A `Response` could
+ * be neither.
+ */
+async function readUpstream(
+  upstreamUrl: URL,
+  fetchUpstream: typeof fetch,
+  sleep: Sleep,
+  random: () => number,
+  now: () => number,
+  deadline: number,
+): Promise<FplProxyOutcome> {
+  const isBootstrap = upstreamUrl.pathname.endsWith("/bootstrap-static/");
   const upstreamResponse = await fetchWithRetries(
     upstreamUrl,
     fetchUpstream,
@@ -60,72 +238,60 @@ export async function createFplProxyResponse(
     random,
     now,
     deadline,
+    isBootstrap ? BOOTSTRAP_ATTEMPT_TIMEOUT_MS : PER_ATTEMPT_TIMEOUT_MS,
   );
   if (!upstreamResponse) {
-    return jsonError(
-      "FPL could not be reached within the request budget.",
-      502,
-      {},
-      "unreachable",
-    );
+    return unreachableOutcome();
   }
 
-  const limit = upstreamUrl.pathname.endsWith("/bootstrap-static/")
-    ? BOOTSTRAP_LIMIT_BYTES
-    : DEFAULT_LIMIT_BYTES;
+  const limit = isBootstrap ? BOOTSTRAP_LIMIT_BYTES : DEFAULT_LIMIT_BYTES;
   const declaredLength = parseContentLength(
     upstreamResponse.headers.get("Content-Length"),
   );
   if (declaredLength !== null && declaredLength > limit) {
     await upstreamResponse.body?.cancel();
-    return jsonError(
-      "FPL returned a response larger than the allowed limit.",
-      502,
-      {},
-      "oversize",
-    );
+    return oversizeOutcome();
   }
 
   if (!isJsonMediaType(upstreamResponse.headers.get("Content-Type"))) {
     await upstreamResponse.body?.cancel();
-    return jsonError(
-      "FPL returned an unexpected response format.",
-      502,
-      {},
-      "unexpected_format",
-    );
+    return {
+      kind: "error",
+      status: 502,
+      message: "FPL returned an unexpected response format.",
+      reason: "unexpected_format",
+    };
   }
 
   let body: ArrayBuffer | null;
   try {
     body = await readBoundedBody(upstreamResponse, limit);
   } catch {
-    return jsonError(
-      "FPL could not be reached within the request budget.",
-      502,
-      {},
-      "unreachable",
-    );
+    return unreachableOutcome();
   }
   if (!body) {
-    return jsonError(
-      "FPL returned a response larger than the allowed limit.",
-      502,
-      {},
-      "oversize",
-    );
+    return oversizeOutcome();
   }
 
-  // Audit item #94. The body was copied into a fresh ArrayBuffer before being
-  // returned. `readBoundedBody` now assembles into one directly, so the copy
-  // is gone -- it duplicated up to eight megabytes of bootstrap per request.
-  return new Response(body, {
-    status: upstreamResponse.status,
-    headers: {
-      "Cache-Control": cachePolicyFor(upstreamUrl.pathname),
-      "Content-Type": "application/json; charset=utf-8",
-    },
-  });
+  return { kind: "ok", status: upstreamResponse.status, body };
+}
+
+function unreachableOutcome(): FplProxyOutcome {
+  return {
+    kind: "error",
+    status: 502,
+    message: "FPL could not be reached within the request budget.",
+    reason: "unreachable",
+  };
+}
+
+function oversizeOutcome(): FplProxyOutcome {
+  return {
+    kind: "error",
+    status: 502,
+    message: "FPL returned a response larger than the allowed limit.",
+    reason: "oversize",
+  };
 }
 
 async function fetchWithRetries(
@@ -135,6 +301,7 @@ async function fetchWithRetries(
   random: () => number,
   now: () => number,
   deadline: number,
+  attemptTimeoutMs: number,
 ): Promise<Response | null> {
   const trace = globalThis.crypto.randomUUID();
   const attemptFailures: string[] = [];
@@ -154,7 +321,7 @@ async function fetchWithRetries(
         },
         redirect: "error",
         signal: AbortSignal.timeout(
-          Math.max(1, Math.min(PER_ATTEMPT_TIMEOUT_MS, remaining)),
+          Math.max(1, Math.min(attemptTimeoutMs, remaining)),
         ),
       });
 
@@ -171,7 +338,7 @@ async function fetchWithRetries(
         random,
         now,
       );
-      if (delay + MIN_ATTEMPT_BUDGET_MS > deadline - now()) {
+      if (delay + MIN_RETRY_ATTEMPT_MS > deadline - now()) {
         return response;
       }
       await response.body?.cancel();
@@ -200,7 +367,7 @@ async function fetchWithRetries(
         return null;
       }
       const delay = retryDelay(null, attempt, random, now);
-      if (delay + MIN_ATTEMPT_BUDGET_MS > deadline - now()) {
+      if (delay + MIN_RETRY_ATTEMPT_MS > deadline - now()) {
         console.warn(
           JSON.stringify({
             level: "warn",

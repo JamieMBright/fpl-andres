@@ -12,14 +12,14 @@ corepack pnpm --filter @fpl-andres/web test -- --run thing
 
 # Everything, before you commit
 corepack pnpm check
-corepack pnpm format:check
 corepack pnpm test:e2e
 ```
 
-`pnpm check` runs contract drift, lint, types, unit tests, the build, ruff,
-mypy and pytest with a coverage floor. It does **not** run prettier or the
-browser journeys; CI runs those separately, so a green `check` is necessary and
-not sufficient.
+`pnpm check` runs prettier, contract drift, lint, types, unit tests, the build,
+ruff, mypy and pytest with a coverage floor. Prettier is the first step because
+it is the cheapest and the one most often forgotten. `pnpm check` does **not**
+run the browser journeys; CI runs those separately, so a green `check` is
+necessary and not sufficient.
 
 ## Test first
 
