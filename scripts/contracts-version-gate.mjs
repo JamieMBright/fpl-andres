@@ -62,7 +62,14 @@ if (base === null) {
 }
 
 const mergeBase = tryGit("merge-base", base, "HEAD") ?? base;
-const schemaBefore = tryGit("show", `${mergeBase}:${SCHEMA_PATH}`);
+// On a push straight to main the base ref IS the commit being checked, so the
+// merge base is HEAD and nothing ever looks changed. Compare against the
+// preceding commit instead. Same hole as the model version gate had.
+const against =
+  tryGit("rev-parse", mergeBase) === tryGit("rev-parse", "HEAD")
+    ? (tryGit("rev-parse", "--verify", "HEAD^") ?? mergeBase)
+    : mergeBase;
+const schemaBefore = tryGit("show", `${against}:${SCHEMA_PATH}`);
 const schemaNow = readFileSync(SCHEMA_PATH, "utf8");
 
 if (schemaBefore !== null && schemaBefore.trim() === schemaNow.trim()) {
@@ -70,7 +77,7 @@ if (schemaBefore !== null && schemaBefore.trim() === schemaNow.trim()) {
   process.exit(0);
 }
 
-const manifestBefore = tryGit("show", `${mergeBase}:${MANIFEST_PATH}`);
+const manifestBefore = tryGit("show", `${against}:${MANIFEST_PATH}`);
 const versionNow = JSON.parse(readFileSync(MANIFEST_PATH, "utf8")).version;
 const versionBefore =
   manifestBefore === null ? null : JSON.parse(manifestBefore).version;

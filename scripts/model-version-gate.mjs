@@ -69,8 +69,16 @@ if (base === null) {
 }
 
 const mergeBase = tryGit("merge-base", base, "HEAD") ?? base;
+// On a push straight to main the base ref IS the commit being checked, so the
+// merge base is HEAD and the diff is always empty -- the gate passed on every
+// push without looking at anything. The owner works directly on main, so that
+// was most of its job. Compare against the preceding commit instead.
+const against =
+  tryGit("rev-parse", mergeBase) === tryGit("rev-parse", "HEAD")
+    ? (tryGit("rev-parse", "--verify", "HEAD^") ?? mergeBase)
+    : mergeBase;
 const changed = (
-  tryGit("diff", "--name-only", mergeBase, "--", ...MODEL_PATHS) ?? ""
+  tryGit("diff", "--name-only", against, "--", ...MODEL_PATHS) ?? ""
 )
   .split("\n")
   .map((line) => line.trim())
@@ -89,7 +97,7 @@ if (versionNow === null) {
   process.exit(1);
 }
 
-const before = tryGit("show", `${mergeBase}:${VERSION_PATH}`);
+const before = tryGit("show", `${against}:${VERSION_PATH}`);
 const versionBefore = before === null ? null : versionIn(before);
 
 if (versionBefore !== null && versionBefore === versionNow) {

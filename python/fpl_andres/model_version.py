@@ -29,11 +29,17 @@ from __future__ import annotations
 
 __all__ = ["MODEL_VERSION"]
 
-#: 2.3 stops ranking the captaincy theses and starts testing them. A table of
+#: 2.4 is the first version that actually produces the intervals 2.3 promised.
+#: 2.3 refused to score a gameweek where the captain lost points -- a red card
+#: or an own goal -- so the backtest raised before writing anything. Nothing
+#: 2.3 claimed was ever measured, which is why this is a version and not a
+#: patch: the two are not comparable, because one of them has no numbers.
+#:
+#: 2.3 stopped ranking the captaincy theses and started testing them. A table of
 #: ten means always produces a winner, whether or not one exists, and the 2.2
 #: ordering inverted on a single arithmetic fix -- which is what a lead inside
 #: the noise looks like. Every thesis is now paired week for week against the
 #: projection and resampled, so a gap that does not clear zero is reported as
 #: not clearing zero. No projection changed; what changed is what may be
 #: claimed from it.
-MODEL_VERSION = "2.3"
+MODEL_VERSION = "2.4"
