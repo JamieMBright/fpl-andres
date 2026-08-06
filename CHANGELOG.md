@@ -8,6 +8,24 @@ The project follows Semantic Versioning once milestone tags begin.
 
 ### Added
 
+- The captaincy theses are tested rather than ranked
+  (`backtesting/captain_significance.py`). Ten policies is ten chances to top a
+  table by accident, and the 2.2 ordering inverted on a single arithmetic fix —
+  which is what a lead inside the noise looks like from outside. Each thesis is
+  now paired against the projection week for week across every scored gameweek
+  of all four seasons and the differences resampled 2,000 times; a thesis is
+  reported as better only when the whole 95% interval clears zero. Paired rather
+  than pooled, because both rules face the same fixtures in the same weeks. The
+  calibration page draws it as a dot-and-whisker against zero, which is the only
+  chart on the page that can return "no".
+- Groundwork for reading the elite cohort's armband
+  (`cohorts/captain_agreement.py`, `cli.cohort_captains`). Scores each thesis on
+  how often it names the same captain the top-500 named, which is a different
+  question from which thesis scores best and is kept separate from it: the
+  cohort is selected on final rank, so agreement describes elite behaviour and
+  cannot measure it. Reports contested weeks first — a week where 90% of the
+  cohort captains the same player separates no two theses, and if almost every
+  week looks like that then the armband is not where their edge lives.
 - The backtest runs itself. `.github/workflows/validate-model.yml` reruns
   `fpl_andres.cli.validate` on every change to the projection that lands on
   main, appends a row to `model-history.json`, commits both back, and prints a

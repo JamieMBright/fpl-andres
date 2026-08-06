@@ -1,5 +1,11 @@
 import validation from "../data/validation.json";
-import { BarChart, SeasonLines, type BarDatum } from "./CalibrationCharts";
+import {
+  BarChart,
+  IntervalChart,
+  SeasonLines,
+  type BarDatum,
+  type IntervalDatum,
+} from "./CalibrationCharts";
 import {
   pooledVerdict,
   positionVerdict,
@@ -63,10 +69,25 @@ type CaptaincyScore = {
   blankRate: number | null;
 };
 
+/** One thesis measured against the incumbent projection, week for week. */
+type Significance = {
+  label: string;
+  weeks: number;
+  meanPoints: number | null;
+  baselineMeanPoints: number | null;
+  improvement: number | null;
+  lower: number | null;
+  upper: number | null;
+  better: boolean;
+  reasonCodes: string[];
+};
+
 type Report = {
   generatedAt: string;
   seasons: SeasonReport[];
   league: { managers: number; advisedShare: number; seeds: number[] };
+  /** Absent from artifacts generated before the theses were tested. */
+  captainSignificance?: Significance[];
 };
 
 const report = validation as Report;
@@ -155,6 +176,23 @@ function policyAverages(seasons: readonly SeasonReport[]): BarDatum[] {
   return averaged(seasons, (season) => season.captainPolicies);
 }
 
+/** Drops any verdict the bootstrap could not resolve into a real interval. */
+function intervals(entries: readonly Significance[]): IntervalDatum[] {
+  return entries.flatMap((entry) =>
+    entry.improvement === null || entry.lower === null || entry.upper === null
+      ? []
+      : [
+          {
+            label: entry.label,
+            improvement: entry.improvement,
+            lower: entry.lower,
+            upper: entry.upper,
+            better: entry.better,
+          },
+        ],
+  );
+}
+
 function show(value: number | null | undefined, digits = 3): string {
   return value === null || value === undefined ? "—" : value.toFixed(digits);
 }
@@ -175,6 +213,9 @@ export function ValidationReport() {
   const captaincySeasons = report.seasons.filter(
     (season) => (season.captaincy ?? []).length > 0,
   );
+  const significance = report.captainSignificance ?? [];
+  const verdicts = intervals(significance);
+  const pooledWeeks = significance[0]?.weeks ?? 0;
 
   return (
     <>
@@ -313,6 +354,11 @@ export function ValidationReport() {
               title="Competing captaincy theses"
               caption="Nine rules from the practitioner literature, each maximising something different, all picking from the same shortlist in the same weeks."
               data={policyAverages(report.seasons)}
+            />
+            <IntervalChart
+              title="Which of those leads are real?"
+              caption={`Each rule against my projection, paired week by week across all ${String(pooledWeeks)} scored gameweeks, then resampled 2,000 times. The dot is the mean gap; the whisker is the 95% interval. A whisker touching the rule means the ranking above cannot tell those two apart, so the order it happened to land in is noise.`}
+              data={verdicts}
             />
           </>
         )}

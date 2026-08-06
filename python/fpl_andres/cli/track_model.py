@@ -224,15 +224,40 @@ def render_policies(report: dict[str, Any]) -> str:
     if not totals:
         return "Not yet measured."
 
+    # The paired bootstrap, keyed by thesis, so the table can say which of the
+    # leads above survive an interval. A mean and a season count still let a
+    # reader crown the top row; the verdict column is what refuses.
+    verdicts = {str(entry.get("label")): entry for entry in report.get("captainSignificance", [])}
+
     seasons = max(len(values) for values in totals.values())
     rows = [
-        f"| Thesis | Mean captain points | Seasons won (of {seasons}) |",
-        "| ------ | ------------------- | -------------------------- |",
+        f"| Thesis | Mean captain points | Seasons won (of {seasons}) | vs projection (95% CI) |",
+        "| ------ | ------------------- | -------------------------- | ---------------------- |",
     ]
     for label in sorted(totals, key=lambda key: -sum(totals[key]) / len(totals[key])):
         values = totals[label]
-        rows.append(f"| `{label}` | {sum(values) / len(values):.2f} | {wins.get(label, 0)} |")
+        rows.append(
+            f"| `{label}` | {sum(values) / len(values):.2f} | "
+            f"{wins.get(label, 0)} | {_verdict(verdicts.get(label))} |"
+        )
     return "\n".join(rows)
+
+
+def _verdict(entry: dict[str, Any] | None) -> str:
+    """One cell: the gap, its interval, and whether it clears zero."""
+    if entry is None:
+        return "baseline"
+    lower = entry.get("lower")
+    upper = entry.get("upper")
+    improvement = entry.get("improvement")
+    if not isinstance(lower, (int, float)):
+        return "not measured"
+    if not isinstance(upper, (int, float)):
+        return "not measured"
+    if not isinstance(improvement, (int, float)):
+        return "not measured"
+    mark = " **yes**" if entry.get("better") else ""
+    return f"{float(improvement):+.2f} [{float(lower):+.2f}, {float(upper):+.2f}]{mark}"
 
 
 def replace_between(text: str, markers: tuple[str, str], body: str) -> str:

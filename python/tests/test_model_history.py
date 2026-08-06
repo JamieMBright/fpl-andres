@@ -236,7 +236,7 @@ class TestPolicyTable:
     """Nine theses is nine chances to win by luck, so the card counts seasons."""
 
     def _report(self, *seasons: dict[str, float]) -> dict[str, Any]:
-        return {
+        report: dict[str, Any] = {
             "seasons": [
                 {
                     "season": f"20{20 + index}-{21 + index}",
@@ -247,6 +247,7 @@ class TestPolicyTable:
                 for index, season in enumerate(seasons)
             ]
         }
+        return report
 
     def test_a_thesis_that_wins_once_is_not_reported_as_the_winner(self) -> None:
         # `lucky` tops one season by a mile and loses the other three. Ranking
@@ -259,8 +260,54 @@ class TestPolicyTable:
         )
         table = render_policies(report)
         rows = {line.split("|")[1].strip(): line for line in table.splitlines() if "`" in line}
-        assert rows["`steady`"].strip().endswith("3 |")
-        assert rows["`lucky`"].strip().endswith("1 |")
+        assert rows["`steady`"].split("|")[3].strip() == "3"
+        assert rows["`lucky`"].split("|")[3].strip() == "1"
+
+    def test_a_lead_the_bootstrap_cannot_separate_is_printed_with_its_interval(
+        self,
+    ) -> None:
+        # The card is where a reader decides what to captain, so a mean that
+        # tops the table without clearing zero has to say so in the same row.
+        report = self._report({"expected_points": 6.0, "noisy": 7.0})
+        report["captainSignificance"] = [
+            {
+                "label": "noisy",
+                "improvement": 1.0,
+                "lower": -0.4,
+                "upper": 2.3,
+                "better": False,
+            }
+        ]
+        rows = {
+            line.split("|")[1].strip(): line
+            for line in render_policies(report).splitlines()
+            if "`" in line
+        }
+        assert rows["`noisy`"].split("|")[4].strip() == "+1.00 [-0.40, +2.30]"
+        assert "yes" not in rows["`noisy`"]
+        # The incumbent is the thing everything else is measured against, so it
+        # has no gap of its own to report.
+        assert rows["`expected_points`"].split("|")[4].strip() == "baseline"
+
+    def test_a_lead_that_clears_zero_is_marked(self) -> None:
+        report = self._report({"expected_points": 6.0, "real": 7.0})
+        report["captainSignificance"] = [
+            {
+                "label": "real",
+                "improvement": 1.0,
+                "lower": 0.4,
+                "upper": 1.6,
+                "better": True,
+            }
+        ]
+        assert "+1.00 [+0.40, +1.60] **yes**" in render_policies(report)
+
+    def test_an_artifact_without_intervals_says_so_rather_than_implying_a_tie(
+        self,
+    ) -> None:
+        table = render_policies(self._report({"a": 5.0, "b": 4.0}))
+        assert "not measured" not in table
+        assert table.count("baseline") == 2
 
     def test_the_header_names_how_many_seasons_were_scored(self) -> None:
         assert "of 2" in render_policies(self._report({"a": 5.0, "b": 4.0}, {"a": 5.0, "b": 4.0}))

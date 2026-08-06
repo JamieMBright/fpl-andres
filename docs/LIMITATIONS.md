@@ -226,7 +226,6 @@ what exists and what runs.
 | `project_expected_points`  | The promoted xPTS model. The backtest projector prices scoring itself. |
 | `HighsHorizonOptimizer`    | MILP planner with free-transfer carry. A greedy planner runs instead.  |
 | `classify_deployment`      | Out-of-position classifier. No live data source.                       |
-| `evaluate_promotion`       | Promotion gate. Nothing promotes a model yet.                          |
 | `iter_walk_forward_slices` | Leak-guard slicing. The corpus enforces the cutoff structurally.       |
 | `simulate_season`          | Single-manager simulation, superseded by the mini-league.              |
 | StatsBomb adapter          | Parsers exist; no ingest path.                                         |

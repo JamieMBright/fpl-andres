@@ -267,6 +267,27 @@ best player on the shortlist when he is also the most owned, and only
 `differential` declines — a framework that could never captain Haaland would be
 answering a different question.
 
+#### Why the table below has an interval column
+
+A ranked table of ten means always produces a winner, whether or not one exists.
+Model 2.2 fixed a single arithmetic error in the ownership term and the top of
+the order changed — which is what a lead inside the noise looks like from the
+outside.
+
+So every thesis is now paired against the projection week for week across all
+scored gameweeks of every season, and the differences are resampled 2,000 times
+(`backtesting/captain_significance.py`). The interval is the 95% percentile
+interval on the mean paired difference. A thesis is only reported as better when
+the whole interval sits above zero; `better` is not set by placing first.
+
+Paired rather than pooled, because the two policies play the same fixtures in
+the same weeks: a blank gameweek depresses both, and comparing unpaired means
+would charge that to whichever one happened to be measured over more of them.
+
+The bootstrap refuses fewer than 32 paired weeks rather than returning a narrow
+interval from a short series, and it refuses two series of different lengths
+rather than truncating one to fit.
+
 <!-- captain-policies:start -->
 
 | Thesis                  | Mean captain points | Seasons won (of 4) |
@@ -283,6 +304,64 @@ answering a different question.
 | `form`                  | 5.38                | 0                  |
 
 <!-- captain-policies:end -->
+
+#### Why the rule is chosen from a list rather than learned
+
+The obvious next step is to stop picking between ten hand-written rules and fit
+the weights instead. It is not taken, and the reason is arithmetic rather than
+taste.
+
+The captaincy decision produces **one** graded observation per gameweek. Four
+seasons is about 127 of them. A learned policy over the same features the ten
+theses use — projection, deviation, start probability, ownership, ceiling,
+fixture — is fitting six or more parameters to 127 points whose week-to-week
+standard deviation is larger than the entire spread between best and worst
+thesis in the table above. Any such fit will report an in-sample lead. It will
+report one on shuffled labels too.
+
+The instrument also cannot resolve what would be learned. The whole measured
+range from `template` to `form` is under two points a gameweek, and the paired
+interval on a single thesis is wider than most of the gaps inside it. Fitting
+inside a band the test cannot separate is fitting noise with extra steps.
+
+This is not a permanent refusal. The conditions under which it changes are
+written down so the decision can be revisited rather than re-argued:
+
+- a learned policy enters as one more candidate in `CAPTAIN_POLICIES`, scored on
+  the same shortlist, in the same weeks, by the same paired bootstrap;
+- it is fit on seasons it is not scored on, walk-forward, never on all four;
+- it is only adopted if its interval clears zero against `expected_points` —
+  the same bar every hand-written thesis is held to.
+
+Until then the honest position is that the ceiling is the thing worth chasing,
+not the ranking. The best captain available on the shortlist averages 15.45; the
+best thesis takes 7.12. Nobody is leaving less than half of it on the table, and
+no reweighting of these features closes a gap that size.
+
+### Studying the elite cohort's armband
+
+`cohorts/captain_agreement.py`. A separate question from the one above, and it
+is kept separate on purpose: the backtest asks which rule **scores** best, this
+asks which rule best **describes** what the top-500 actually captained.
+
+Worth asking because the backtest can only compare rules that were written down
+first. A week where all ten theses pick one player and most of the cohort
+captained another is evidence that the list of ideas is short, and the residual
+names the player to go and look at.
+
+It is not a score, and the module will not be read as one. The cohort is
+selected on final rank; selecting on the outcome and then measuring the outcome
+is the trap `data/cohort/fpl500.json` already records. A high agreement rate
+says a thesis resembles elite behaviour — not that the thesis scores well, and
+not that the cohort's captaincy is what made them elite.
+
+The measurement that decides whether the study is worth running at all is
+`contestedWeeks`. Captaincy in a top-500 cohort is close to unanimous most
+weeks, and a week where 90% of the cohort captains the same player separates no
+two theses. Only weeks where the plurality is at or below 50% carry information,
+so the agreement rate is reported over those separately. If that count stays
+near zero, the honest conclusion is that the armband is not where the cohort's
+edge lives, and the study stops.
 
 ### What the backtest grades that the live path does not, and the reverse
 

@@ -1,7 +1,7 @@
 import { render } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
-import { BarChart, SeasonLines } from "./CalibrationCharts";
+import { BarChart, IntervalChart, SeasonLines } from "./CalibrationCharts";
 
 /**
  * The charts replaced tables, so they have to carry what a table carried.
@@ -172,5 +172,80 @@ describe("SeasonLines", () => {
     expect(
       container.querySelector(".calibration-series-label")?.textContent,
     ).toBe("model");
+  });
+});
+
+describe("IntervalChart", () => {
+  const data = [
+    { label: "clear", improvement: 0.8, lower: 0.3, upper: 1.2, better: true },
+    {
+      label: "noise",
+      improvement: 0.4,
+      lower: -0.2,
+      upper: 1.0,
+      better: false,
+    },
+    {
+      label: "worse",
+      improvement: -0.6,
+      lower: -1.1,
+      upper: -0.1,
+      better: false,
+    },
+  ];
+
+  it("ranks by the mean gap so the eye starts at the best claim", () => {
+    const { container } = render(
+      <IntervalChart title="t" caption="c" data={data} />,
+    );
+    const labels = [...container.querySelectorAll(".calibration-label")].map(
+      (node) => node.textContent,
+    );
+    expect(labels).toEqual(["clear", "noise", "worse"]);
+  });
+
+  it("marks only the rule whose whole interval clears zero", () => {
+    // The whole point of the chart: second place has the larger raw gap of the
+    // two unmarked rows and still does not qualify.
+    const { container } = render(
+      <IntervalChart title="t" caption="c" data={data} />,
+    );
+    expect(
+      container.querySelectorAll(".calibration-whisker-better"),
+    ).toHaveLength(1);
+    expect(container.querySelectorAll(".calibration-dot-better")).toHaveLength(
+      1,
+    );
+  });
+
+  it("puts zero in the middle so a loss reads as a loss", () => {
+    const { container } = render(
+      <IntervalChart title="t" caption="c" data={data} />,
+    );
+    const zero = Number(
+      container.querySelector(".calibration-zero")?.getAttribute("x1"),
+    );
+    const whiskers = [...container.querySelectorAll(".calibration-whisker")];
+    expect(Number(whiskers[2]?.getAttribute("x2"))).toBeLessThan(zero);
+    expect(Number(whiskers[0]?.getAttribute("x1"))).toBeGreaterThan(zero);
+  });
+
+  it("signs the gap, because an unsigned 0.60 reads as a win", () => {
+    const { container } = render(
+      <IntervalChart title="t" caption="c" data={data} />,
+    );
+    const values = [...container.querySelectorAll(".calibration-value")].map(
+      (node) => node.textContent,
+    );
+    expect(values[0]).toContain("+0.80");
+    expect(values[2]).toContain("-0.60");
+  });
+
+  it("says it is unmeasured rather than drawing an empty axis", () => {
+    const { container } = render(
+      <IntervalChart title="t" caption="c" data={[]} />,
+    );
+    expect(container.querySelector(".calibration-empty")).not.toBeNull();
+    expect(container.querySelector("svg")).toBeNull();
   });
 });

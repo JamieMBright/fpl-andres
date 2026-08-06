@@ -267,6 +267,38 @@ export function Methodology() {
           coefficient is unavoidable it is the one its source proposed, used
           once and never swept.
         </p>
+        <p>
+          A ranked table still produces a winner whether or not one exists, so
+          the ranking is not the verdict. Each thesis is paired against the
+          projection week for week across every scored gameweek of all four
+          seasons and the differences are resampled two thousand times. A thesis
+          is reported as better only when the whole 95% interval sits above
+          zero. Paired rather than pooled because both rules face the same
+          fixtures in the same weeks; a blank gameweek depresses both, and
+          comparing unpaired means would charge that to whichever was measured
+          over more of them.
+        </p>
+        <p>
+          <strong>So which one should you use?</strong> Whichever the interval
+          on the calibration page marks as clearing zero &mdash; and if none of
+          them does, the honest answer is the projection, because a lead the
+          test cannot separate is not a reason to change what you do. That is a
+          less disappointing answer than it sounds: the best captain available
+          on the shortlist averages 15.45 points and the best thesis takes 7.12,
+          so the whole argument between the ten is worth under two points a week
+          while more than eight sit untouched. The gap that matters is not
+          between the rules.
+        </p>
+        <p>
+          <strong>Then learn the rule instead?</strong> Captaincy yields one
+          graded observation per gameweek &mdash; about 127 across four seasons.
+          Fitting six feature weights to 127 points whose week-to-week spread
+          exceeds the entire range between best and worst thesis will report a
+          lead in sample, and would report one on shuffled labels too. If a
+          learned policy is ever added it enters as one more candidate, fit on
+          seasons it is not scored on, and it has to clear the same interval
+          every hand-written thesis is held to.
+        </p>
         <p className="method-proof">
           <strong>One correction, on the record.</strong> The first run reported
           the two ownership rules as tested. They were not. The corpus stores

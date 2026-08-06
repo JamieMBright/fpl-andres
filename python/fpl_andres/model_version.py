@@ -29,9 +29,11 @@ from __future__ import annotations
 
 __all__ = ["MODEL_VERSION"]
 
-#: 2.2 rescales ownership for the rank policies and adds the ceiling-against-
-#: fixture thesis. 2.1's `template` and `differential` were never really tested:
-#: ownership reached them as a manager count rather than a percentage, so the
-#: term swamped every projection and reduced both to "captain the most owned"
-#: and "captain the least owned". The projection itself is still 2.0's.
-MODEL_VERSION = "2.2"
+#: 2.3 stops ranking the captaincy theses and starts testing them. A table of
+#: ten means always produces a winner, whether or not one exists, and the 2.2
+#: ordering inverted on a single arithmetic fix -- which is what a lead inside
+#: the noise looks like. Every thesis is now paired week for week against the
+#: projection and resampled, so a gap that does not clear zero is reported as
+#: not clearing zero. No projection changed; what changed is what may be
+#: claimed from it.
+MODEL_VERSION = "2.3"

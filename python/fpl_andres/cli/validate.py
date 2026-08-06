@@ -16,10 +16,11 @@ import json
 import os
 import statistics
 import sys
-from collections.abc import Sequence
+from collections.abc import Mapping, Sequence
 from datetime import UTC, datetime
 from pathlib import Path
 
+from fpl_andres.backtesting.captain_significance import compare_policies
 from fpl_andres.backtesting.corpus import SeasonCorpus, load_season
 from fpl_andres.backtesting.score import METHOD_LABELS, score_season
 from fpl_andres.model_version import MODEL_VERSION
@@ -97,6 +98,26 @@ def _squad_rows(league: object, policy: str, corpus: object) -> list[dict[str, o
     ]
 
 
+def _significance_rows(weekly: Mapping[str, Sequence[int]]) -> list[dict[str, object]]:
+    """The paired-bootstrap verdicts, in the shape the artifact publishes."""
+    if len(weekly) < 2:
+        return []
+    return [
+        {
+            "label": verdict.label,
+            "weeks": verdict.weeks,
+            "meanPoints": _round(verdict.mean),
+            "baselineMeanPoints": _round(verdict.baseline_mean),
+            "improvement": _round(verdict.improvement),
+            "lower": _round(verdict.lower),
+            "upper": _round(verdict.upper),
+            "better": verdict.better,
+            "reasonCodes": list(verdict.reason_codes),
+        }
+        for verdict in compare_policies(weekly)
+    ]
+
+
 def _expected_goals_coverage(corpus: SeasonCorpus) -> float:
     """FPL published no expected values before 2022-23.
 
@@ -130,6 +151,11 @@ def main(argv: Sequence[str] | None = None) -> int:
         },
     }
     season_reports: list[dict[str, object]] = []
+    # Every scored gameweek from every season, in order, per policy. A single
+    # season is ~35 paired weeks, which is barely more than the floor the
+    # bootstrap will accept. Pooled, the same comparison has four times the
+    # weeks and is the only one worth quoting.
+    pooled_weekly: dict[str, list[int]] = {}
 
     with SupabaseRestClient(credentials) as client:
         for season in seasons:
@@ -183,6 +209,15 @@ def main(argv: Sequence[str] | None = None) -> int:
                 for label, pick in scored.captain_policies.items()
             ]
 
+            # A table of ten means is ten chances to top it by accident. The
+            # paired bootstrap says which gaps survive an interval.
+            weekly = {
+                label: pick.weekly for label, pick in scored.captain_policies.items() if pick.weekly
+            }
+            for label, series in weekly.items():
+                pooled_weekly.setdefault(label, []).extend(series)
+            captain_significance = _significance_rows(weekly)
+
             totals: dict[str, list[int]] = {policy: [] for policy in POLICIES}
             chips: dict[str, dict[str, int]] = {}
             squads: dict[str, list[dict[str, object]]] = {}
@@ -221,6 +256,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                     "methods": methods,
                     "captaincy": captaincy,
                     "captainPolicies": captain_policies,
+                    "captainSignificance": captain_significance,
                     "league": {
                         "policies": {
                             policy: {
@@ -242,6 +278,8 @@ def main(argv: Sequence[str] | None = None) -> int:
             print(f"scored {season}", flush=True)
 
     report["seasons"] = season_reports
+    # The headline comparison: every scored week of every season, paired.
+    report["captainSignificance"] = _significance_rows(pooled_weekly)
 
     output = Path(args.output)
     output.parent.mkdir(parents=True, exist_ok=True)

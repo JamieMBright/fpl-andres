@@ -151,12 +151,141 @@ export function BarChart({
   );
 }
 
+export interface IntervalDatum {
+  label: string;
+  /** The paired mean difference against the incumbent. */
+  improvement: number;
+  lower: number;
+  upper: number;
+  /** True only when the whole interval sits above zero. */
+  better: boolean;
+}
+
+export interface IntervalChartProps {
+  title: string;
+  caption: string;
+  data: readonly IntervalDatum[];
+}
+
+const INTERVAL_ROW = 24;
+const INTERVAL_TRACK = 260;
+const INTERVAL_LABEL = 150;
+const INTERVAL_VALUE = 88;
+
+/**
+ * Dot-and-whisker against zero: does this rule actually beat the incumbent?
+ *
+ * The bar chart above ranks ten means, and a rank always produces a winner
+ * whether or not one exists. This is the chart that can say no: any whisker
+ * crossing the zero rule is a policy the evidence does not separate from the
+ * projection, however far up the table it sorted.
+ */
+export function IntervalChart({ title, caption, data }: IntervalChartProps) {
+  const titleId = useId();
+  if (data.length === 0) {
+    return (
+      <figure className="calibration-chart">
+        <figcaption>{title}</figcaption>
+        <p className="calibration-empty">Not measured yet.</p>
+      </figure>
+    );
+  }
+
+  const reach = Math.max(
+    ...data.flatMap((entry) => [
+      Math.abs(entry.lower),
+      Math.abs(entry.upper),
+      Math.abs(entry.improvement),
+    ]),
+    0.001,
+  );
+  const ordered = [...data].sort(
+    (left, right) => right.improvement - left.improvement,
+  );
+  const height = ordered.length * INTERVAL_ROW + 18;
+  const width = INTERVAL_LABEL + INTERVAL_TRACK + INTERVAL_VALUE;
+  const zero = INTERVAL_LABEL + INTERVAL_TRACK / 2;
+  const x = (value: number) => zero + (value / reach) * (INTERVAL_TRACK / 2);
+
+  return (
+    <figure className="calibration-chart">
+      <figcaption id={titleId}>{title}</figcaption>
+      <svg
+        className="calibration-svg"
+        viewBox={`0 0 ${width} ${height}`}
+        role="img"
+        aria-labelledby={titleId}
+      >
+        <line
+          className="calibration-zero"
+          x1={zero}
+          y1={0}
+          x2={zero}
+          y2={ordered.length * INTERVAL_ROW}
+        />
+        {ordered.map((entry, index) => {
+          const y = index * INTERVAL_ROW + INTERVAL_ROW / 2;
+          const shape = entry.better
+            ? "calibration-whisker calibration-whisker-better"
+            : "calibration-whisker";
+          return (
+            <g key={entry.label}>
+              <text
+                className="calibration-label"
+                x={INTERVAL_LABEL - 8}
+                y={y + 4}
+                textAnchor="end"
+              >
+                {entry.label}
+              </text>
+              <line
+                className={shape}
+                x1={x(entry.lower)}
+                y1={y}
+                x2={x(entry.upper)}
+                y2={y}
+              />
+              <circle
+                className={
+                  entry.better
+                    ? "calibration-dot calibration-dot-better"
+                    : "calibration-dot"
+                }
+                cx={x(entry.improvement)}
+                cy={y}
+                r={3.5}
+              />
+              <text
+                className="calibration-value"
+                x={INTERVAL_LABEL + INTERVAL_TRACK + 6}
+                y={y + 4}
+              >
+                {entry.improvement > 0 ? "+" : ""}
+                {entry.improvement.toFixed(2)}
+                {entry.better ? " \u2713" : ""}
+              </text>
+            </g>
+          );
+        })}
+        <text
+          className="calibration-axis"
+          x={zero}
+          y={ordered.length * INTERVAL_ROW + 12}
+          textAnchor="middle"
+        >
+          no difference
+        </text>
+      </svg>
+      <p className="calibration-caption">{caption}</p>
+    </figure>
+  );
+}
+
 export interface SeasonSeries {
   label: string;
   points: readonly (number | null)[];
   mine?: boolean;
 }
-
 export interface SeasonLinesProps {
   title: string;
   caption: string;

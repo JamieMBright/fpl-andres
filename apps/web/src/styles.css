@@ -3064,6 +3064,34 @@ a:focus-visible {
   stroke-width: 3;
 }
 
+/* Dot-and-whisker against zero. The rule is the claim being tested, so it is
+   drawn harder than the whiskers rather than as a background gridline. */
+.calibration-zero {
+  stroke: var(--ink);
+  stroke-width: 2;
+  stroke-dasharray: 3 3;
+}
+
+.calibration-whisker {
+  stroke: var(--ink-soft);
+  stroke-width: 2;
+  stroke-linecap: round;
+  opacity: 0.55;
+}
+
+.calibration-whisker-better {
+  stroke: var(--field-green);
+  opacity: 1;
+}
+
+.calibration-dot {
+  fill: var(--ink-soft);
+}
+
+.calibration-dot-better {
+  fill: var(--field-green);
+}
+
 .calibration-caption,
 .calibration-empty {
   margin: 10px 0 0;
