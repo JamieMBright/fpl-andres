@@ -243,6 +243,20 @@ from the source that proposed it, once, and never swept.
 | `crowd`                 | ownership                        | the template; Bhatt 2019          |
 | `differential`          | projection − 1.5 per 100% owned  | Oracle step 3, climbing           |
 | `template`              | projection + 1.5 per 100% owned  | Oracle step 3, protecting         |
+| `ceiling_and_fixture`   | ceiling × fixture multiplier     | the owner's own rule              |
+
+`ceiling_and_fixture` is a product rather than a filter: a big enough ceiling
+tolerates a harder fixture, an ordinary one needs a kind draw. No separate home
+term is applied, because venue is already measured inside the attacking
+multiplier and adding it twice would outrank the ceiling it is meant to modify.
+
+Ownership reaches a policy rescaled to 0–100 against the most-owned player of
+that gameweek. Model 2.1 handed it the raw `selected` count — of the order of a
+million — so the ownership term swamped every projection and `template` reduced
+to `crowd` while `differential` reduced to "captain the least owned of the
+twenty-five". Both scored, both were reported, and neither was the thesis it
+claimed to be. `test_the_rank_policies_have_not_collapsed_into_the_crowd` now
+fails if either does it again.
 
 Both halves of the rank rule are scored because the backtest has no rank to
 condition on. A policy that is right only for managers in one league position

@@ -71,8 +71,12 @@ class CaptainCandidate:
     recent_deviation: float
     #: Chance he starts, from the minutes model.
     probability_start: float
-    #: Share of managers holding him, going into this gameweek.
+    #: Share of managers holding him, rescaled to 0-100 against the most owned.
     ownership: float
+    #: His ninetieth-percentile afternoon, not his ordinary one.
+    ceiling_points: float = 0.0
+    #: Attacking multiplier for this gameweek's fixtures. Venue is inside it.
+    fixture_ease: float = 1.0
 
 
 #: Oracle's rule of thumb: a differential is worth taking when the projections
@@ -202,6 +206,21 @@ def _template(candidates: Sequence[CaptainCandidate]) -> int | None:
     )
 
 
+def _ceiling_and_fixture(candidates: Sequence[CaptainCandidate]) -> int | None:
+    """The owner's own rule: the biggest ceiling against the kindest fixture.
+
+    Stated as "xCeil against the easiest fixture, at home, or away if the
+    fixture is easy enough" -- which is a product, not a filter: a huge ceiling
+    tolerates a harder fixture and an ordinary one needs a kind draw.
+
+    No separate home term is applied. Venue is already inside the attacking
+    multiplier, which is measured per club and per side, so a home bonus on top
+    would price the same fact twice and quietly outrank the ceiling it is
+    supposed to modify.
+    """
+    return _highest(candidates, lambda entry: entry.ceiling_points * entry.fixture_ease)
+
+
 #: Keyed by the label that reaches the artifact and the calibration page.
 CAPTAIN_POLICIES: Mapping[str, Callable[[Sequence[CaptainCandidate]], int | None]] = {
     "expected_points": _expected_points,
@@ -213,6 +232,7 @@ CAPTAIN_POLICIES: Mapping[str, Callable[[Sequence[CaptainCandidate]], int | None
     "crowd": _crowd,
     "differential": _differential,
     "template": _template,
+    "ceiling_and_fixture": _ceiling_and_fixture,
 }
 
 

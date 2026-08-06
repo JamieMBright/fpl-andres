@@ -221,7 +221,16 @@ def _captain_candidates(
 
     Built here rather than inside the policies so no policy can reach past this
     boundary into the corpus and see the gameweek it is deciding.
+
+    Ownership is rescaled to 0-100 against the most-owned player of the week.
+    The corpus stores `selected` as a count of managers, which is of the order
+    of a million, and the two rank policies price ownership in points per
+    percentage point. Handed the raw count they were arithmetic rather than
+    theses: the template term swamped every projection and reduced to "captain
+    the most owned", and the differential term to "captain the least owned",
+    which is how a policy that nobody proposed scored 3.3 points a week.
     """
+    most_owned = max(ownership.values(), default=0.0)
     candidates: list[CaptainCandidate] = []
     for projection in projections:
         element = projection.element_id  # type: ignore[attr-defined]
@@ -235,7 +244,10 @@ def _captain_candidates(
                 recent_points=recent.get(element),
                 recent_deviation=deviation.get(element, 0.0),
                 probability_start=projection.minutes.probability_start,  # type: ignore[attr-defined]
-                ownership=ownership[element],
+                ownership=100.0 * ownership[element] / most_owned if most_owned else 0.0,
+                ceiling_points=projection.expected_points  # type: ignore[attr-defined]
+                * projection.ceiling_ratio,  # type: ignore[attr-defined]
+                fixture_ease=projection.attacking_multiplier,  # type: ignore[attr-defined]
             )
         )
     return candidates

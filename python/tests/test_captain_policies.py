@@ -184,3 +184,29 @@ class TestTheComparisonIsFair:
             "actual" in field or "realised" in field
             for field in CaptainCandidate.__dataclass_fields__
         )
+
+    def test_the_rank_policies_have_not_collapsed_into_the_crowd(self) -> None:
+        # Both scored identically to `crowd` in all four seasons on the first
+        # run, because ownership arrived as a manager count rather than a
+        # percentage and the term swamped every projection. Two theses were
+        # reported that had never been tested, and the table looked fine.
+        candidates = [
+            _candidate(1, expected=7.0, ownership=90.0),
+            _candidate(2, expected=6.6, ownership=20.0),
+        ]
+        assert CAPTAIN_POLICIES["crowd"](candidates) == 1
+        # A 0.4 projection gap against 70 points of ownership: at Oracle's
+        # price of 1.5 per 100 that is 1.05, so the differential takes it and
+        # the template does not.
+        assert CAPTAIN_POLICIES["differential"](candidates) == 2
+        assert CAPTAIN_POLICIES["template"](candidates) == 1
+
+    def test_a_clear_projection_gap_survives_the_ownership_term(self) -> None:
+        # Oracle's own rule: two points ahead and you captain him regardless.
+        # If ownership can overturn that, the coefficient is wrong.
+        candidates = [
+            _candidate(1, expected=9.0, ownership=95.0),
+            _candidate(2, expected=6.5, ownership=2.0),
+        ]
+        assert CAPTAIN_POLICIES["differential"](candidates) == 1
+        assert CAPTAIN_POLICIES["template"](candidates) == 1

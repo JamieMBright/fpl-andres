@@ -107,6 +107,12 @@ class ElementProjection:
     # The pure component reconstruction, before recent points are blended in.
     component_points: float = 0.0
     recent_points: float | None = None
+    # How many times his ordinary afternoon his best one is. One where there is
+    # nothing measured, which claims no upside rather than inventing some.
+    ceiling_ratio: float = 1.0
+    # Mean attacking multiplier across his fixtures this gameweek. Venue is
+    # already inside it, so nothing downstream should add a home term.
+    attacking_multiplier: float = 1.0
 
 
 @dataclass(frozen=True)
@@ -463,6 +469,7 @@ def project_gameweek(
             )
 
         recent = form.get(element_id)
+        shape = describe_shape(scoring_rows)
         projections.append(
             ElementProjection(
                 element_id=element_id,
@@ -474,6 +481,12 @@ def project_gameweek(
                 fixture_count=len(schedule),
                 component_points=total,
                 recent_points=recent,
+                ceiling_ratio=shape.ceiling_ratio,
+                attacking_multiplier=(
+                    sum(adjustment.attacking for adjustment in schedule) / len(schedule)
+                    if schedule
+                    else 1.0
+                ),
             )
         )
 

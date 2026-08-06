@@ -29,8 +29,9 @@ from __future__ import annotations
 
 __all__ = ["MODEL_VERSION"]
 
-#: 2.1 adds the competing captaincy policies to the backtest. The projection
-#: itself is unchanged from 2.0 — the gate watches everything under
-#: `backtesting/`, and a version that moves for a measurement-only change is
-#: cheaper than one that has to be argued about.
-MODEL_VERSION = "2.1"
+#: 2.2 rescales ownership for the rank policies and adds the ceiling-against-
+#: fixture thesis. 2.1's `template` and `differential` were never really tested:
+#: ownership reached them as a manager count rather than a percentage, so the
+#: term swamped every projection and reduced both to "captain the most owned"
+#: and "captain the least owned". The projection itself is still 2.0's.
+MODEL_VERSION = "2.2"
