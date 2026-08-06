@@ -255,7 +255,17 @@ answering a different question.
 
 <!-- captain-policies:start -->
 
-Not yet measured.
+| Thesis                  | Mean captain points | Seasons won (of 4) |
+| ----------------------- | ------------------- | ------------------ |
+| `availability_adjusted` | 7.08                | 3                  |
+| `expected_points`       | 6.97                | 0                  |
+| `components`            | 6.62                | 1                  |
+| `crowd`                 | 6.37                | 0                  |
+| `template`              | 6.37                | 0                  |
+| `robust`                | 6.11                | 0                  |
+| `upside`                | 5.77                | 0                  |
+| `form`                  | 5.38                | 0                  |
+| `differential`          | 3.31                | 0                  |
 
 <!-- captain-policies:end -->
 

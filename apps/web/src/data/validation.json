@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-08-06T07:21:52.856512+00:00",
-  "modelVersion": "2.0",
+  "generatedAt": "2026-08-06T07:49:17.559081+00:00",
+  "modelVersion": "2.1",
   "seasons": [
     {
       "season": "2022-23",
@@ -107,6 +107,98 @@
         },
         {
           "label": "ownership",
+          "gameweeks": 31,
+          "meanPoints": 6.742,
+          "meanBestPoints": 15.452,
+          "regret": 8.71,
+          "shareOfCeiling": 0.436,
+          "perfectWeeks": 2,
+          "blankRate": 0.387
+        }
+      ],
+      "captainPolicies": [
+        {
+          "label": "expected_points",
+          "gameweeks": 31,
+          "meanPoints": 7.613,
+          "meanBestPoints": 15.452,
+          "regret": 7.839,
+          "shareOfCeiling": 0.493,
+          "perfectWeeks": 3,
+          "blankRate": 0.29
+        },
+        {
+          "label": "components",
+          "gameweeks": 31,
+          "meanPoints": 6.903,
+          "meanBestPoints": 15.452,
+          "regret": 8.548,
+          "shareOfCeiling": 0.447,
+          "perfectWeeks": 3,
+          "blankRate": 0.29
+        },
+        {
+          "label": "availability_adjusted",
+          "gameweeks": 31,
+          "meanPoints": 7.742,
+          "meanBestPoints": 15.452,
+          "regret": 7.71,
+          "shareOfCeiling": 0.501,
+          "perfectWeeks": 3,
+          "blankRate": 0.258
+        },
+        {
+          "label": "upside",
+          "gameweeks": 31,
+          "meanPoints": 6.774,
+          "meanBestPoints": 15.452,
+          "regret": 8.677,
+          "shareOfCeiling": 0.438,
+          "perfectWeeks": 4,
+          "blankRate": 0.29
+        },
+        {
+          "label": "robust",
+          "gameweeks": 31,
+          "meanPoints": 6.806,
+          "meanBestPoints": 15.452,
+          "regret": 8.645,
+          "shareOfCeiling": 0.441,
+          "perfectWeeks": 3,
+          "blankRate": 0.258
+        },
+        {
+          "label": "form",
+          "gameweeks": 31,
+          "meanPoints": 5.032,
+          "meanBestPoints": 15.452,
+          "regret": 10.419,
+          "shareOfCeiling": 0.326,
+          "perfectWeeks": 2,
+          "blankRate": 0.419
+        },
+        {
+          "label": "crowd",
+          "gameweeks": 31,
+          "meanPoints": 6.742,
+          "meanBestPoints": 15.452,
+          "regret": 8.71,
+          "shareOfCeiling": 0.436,
+          "perfectWeeks": 2,
+          "blankRate": 0.387
+        },
+        {
+          "label": "differential",
+          "gameweeks": 31,
+          "meanPoints": 4.065,
+          "meanBestPoints": 15.452,
+          "regret": 11.387,
+          "shareOfCeiling": 0.263,
+          "perfectWeeks": 2,
+          "blankRate": 0.581
+        },
+        {
+          "label": "template",
           "gameweeks": 31,
           "meanPoints": 6.742,
           "meanBestPoints": 15.452,
@@ -647,6 +739,98 @@
           "blankRate": 0.469
         }
       ],
+      "captainPolicies": [
+        {
+          "label": "expected_points",
+          "gameweeks": 32,
+          "meanPoints": 6.094,
+          "meanBestPoints": 15.406,
+          "regret": 9.312,
+          "shareOfCeiling": 0.396,
+          "perfectWeeks": 3,
+          "blankRate": 0.375
+        },
+        {
+          "label": "components",
+          "gameweeks": 32,
+          "meanPoints": 5.312,
+          "meanBestPoints": 15.406,
+          "regret": 10.094,
+          "shareOfCeiling": 0.345,
+          "perfectWeeks": 2,
+          "blankRate": 0.375
+        },
+        {
+          "label": "availability_adjusted",
+          "gameweeks": 32,
+          "meanPoints": 6.219,
+          "meanBestPoints": 15.406,
+          "regret": 9.188,
+          "shareOfCeiling": 0.404,
+          "perfectWeeks": 3,
+          "blankRate": 0.344
+        },
+        {
+          "label": "upside",
+          "gameweeks": 32,
+          "meanPoints": 5.438,
+          "meanBestPoints": 15.406,
+          "regret": 9.969,
+          "shareOfCeiling": 0.353,
+          "perfectWeeks": 1,
+          "blankRate": 0.312
+        },
+        {
+          "label": "robust",
+          "gameweeks": 32,
+          "meanPoints": 4.812,
+          "meanBestPoints": 15.406,
+          "regret": 10.594,
+          "shareOfCeiling": 0.312,
+          "perfectWeeks": 2,
+          "blankRate": 0.406
+        },
+        {
+          "label": "form",
+          "gameweeks": 32,
+          "meanPoints": 5.562,
+          "meanBestPoints": 15.406,
+          "regret": 9.844,
+          "shareOfCeiling": 0.361,
+          "perfectWeeks": 2,
+          "blankRate": 0.438
+        },
+        {
+          "label": "crowd",
+          "gameweeks": 32,
+          "meanPoints": 5.812,
+          "meanBestPoints": 15.406,
+          "regret": 9.594,
+          "shareOfCeiling": 0.377,
+          "perfectWeeks": 4,
+          "blankRate": 0.469
+        },
+        {
+          "label": "differential",
+          "gameweeks": 32,
+          "meanPoints": 3.438,
+          "meanBestPoints": 15.406,
+          "regret": 11.969,
+          "shareOfCeiling": 0.223,
+          "perfectWeeks": 2,
+          "blankRate": 0.594
+        },
+        {
+          "label": "template",
+          "gameweeks": 32,
+          "meanPoints": 5.812,
+          "meanBestPoints": 15.406,
+          "regret": 9.594,
+          "shareOfCeiling": 0.377,
+          "perfectWeeks": 4,
+          "blankRate": 0.469
+        }
+      ],
       "league": {
         "policies": {
           "advised": {
@@ -1178,6 +1362,98 @@
           "blankRate": 0.375
         }
       ],
+      "captainPolicies": [
+        {
+          "label": "expected_points",
+          "gameweeks": 32,
+          "meanPoints": 8.75,
+          "meanBestPoints": 14.531,
+          "regret": 5.781,
+          "shareOfCeiling": 0.602,
+          "perfectWeeks": 9,
+          "blankRate": 0.281
+        },
+        {
+          "label": "components",
+          "gameweeks": 32,
+          "meanPoints": 9.25,
+          "meanBestPoints": 14.531,
+          "regret": 5.281,
+          "shareOfCeiling": 0.637,
+          "perfectWeeks": 11,
+          "blankRate": 0.219
+        },
+        {
+          "label": "availability_adjusted",
+          "gameweeks": 32,
+          "meanPoints": 8.719,
+          "meanBestPoints": 14.531,
+          "regret": 5.812,
+          "shareOfCeiling": 0.6,
+          "perfectWeeks": 9,
+          "blankRate": 0.281
+        },
+        {
+          "label": "upside",
+          "gameweeks": 32,
+          "meanPoints": 7.031,
+          "meanBestPoints": 14.531,
+          "regret": 7.5,
+          "shareOfCeiling": 0.484,
+          "perfectWeeks": 6,
+          "blankRate": 0.25
+        },
+        {
+          "label": "robust",
+          "gameweeks": 32,
+          "meanPoints": 8.5,
+          "meanBestPoints": 14.531,
+          "regret": 6.031,
+          "shareOfCeiling": 0.585,
+          "perfectWeeks": 9,
+          "blankRate": 0.344
+        },
+        {
+          "label": "form",
+          "gameweeks": 32,
+          "meanPoints": 7.25,
+          "meanBestPoints": 14.531,
+          "regret": 7.281,
+          "shareOfCeiling": 0.499,
+          "perfectWeeks": 6,
+          "blankRate": 0.312
+        },
+        {
+          "label": "crowd",
+          "gameweeks": 32,
+          "meanPoints": 7.781,
+          "meanBestPoints": 14.531,
+          "regret": 6.75,
+          "shareOfCeiling": 0.535,
+          "perfectWeeks": 8,
+          "blankRate": 0.375
+        },
+        {
+          "label": "differential",
+          "gameweeks": 32,
+          "meanPoints": 2.312,
+          "meanBestPoints": 14.531,
+          "regret": 12.219,
+          "shareOfCeiling": 0.159,
+          "perfectWeeks": 0,
+          "blankRate": 0.75
+        },
+        {
+          "label": "template",
+          "gameweeks": 32,
+          "meanPoints": 7.781,
+          "meanBestPoints": 14.531,
+          "regret": 6.75,
+          "shareOfCeiling": 0.535,
+          "perfectWeeks": 8,
+          "blankRate": 0.375
+        }
+      ],
       "league": {
         "policies": {
           "advised": {
@@ -1700,6 +1976,98 @@
         },
         {
           "label": "ownership",
+          "gameweeks": 32,
+          "meanPoints": 5.156,
+          "meanBestPoints": 13.5,
+          "regret": 8.344,
+          "shareOfCeiling": 0.382,
+          "perfectWeeks": 6,
+          "blankRate": 0.531
+        }
+      ],
+      "captainPolicies": [
+        {
+          "label": "expected_points",
+          "gameweeks": 32,
+          "meanPoints": 5.406,
+          "meanBestPoints": 13.5,
+          "regret": 8.094,
+          "shareOfCeiling": 0.4,
+          "perfectWeeks": 4,
+          "blankRate": 0.438
+        },
+        {
+          "label": "components",
+          "gameweeks": 32,
+          "meanPoints": 5.031,
+          "meanBestPoints": 13.5,
+          "regret": 8.469,
+          "shareOfCeiling": 0.373,
+          "perfectWeeks": 4,
+          "blankRate": 0.5
+        },
+        {
+          "label": "availability_adjusted",
+          "gameweeks": 32,
+          "meanPoints": 5.625,
+          "meanBestPoints": 13.5,
+          "regret": 7.875,
+          "shareOfCeiling": 0.417,
+          "perfectWeeks": 5,
+          "blankRate": 0.406
+        },
+        {
+          "label": "upside",
+          "gameweeks": 32,
+          "meanPoints": 3.844,
+          "meanBestPoints": 13.5,
+          "regret": 9.656,
+          "shareOfCeiling": 0.285,
+          "perfectWeeks": 2,
+          "blankRate": 0.562
+        },
+        {
+          "label": "robust",
+          "gameweeks": 32,
+          "meanPoints": 4.312,
+          "meanBestPoints": 13.5,
+          "regret": 9.188,
+          "shareOfCeiling": 0.319,
+          "perfectWeeks": 3,
+          "blankRate": 0.562
+        },
+        {
+          "label": "form",
+          "gameweeks": 32,
+          "meanPoints": 3.688,
+          "meanBestPoints": 13.5,
+          "regret": 9.812,
+          "shareOfCeiling": 0.273,
+          "perfectWeeks": 2,
+          "blankRate": 0.562
+        },
+        {
+          "label": "crowd",
+          "gameweeks": 32,
+          "meanPoints": 5.156,
+          "meanBestPoints": 13.5,
+          "regret": 8.344,
+          "shareOfCeiling": 0.382,
+          "perfectWeeks": 6,
+          "blankRate": 0.531
+        },
+        {
+          "label": "differential",
+          "gameweeks": 32,
+          "meanPoints": 3.406,
+          "meanBestPoints": 13.5,
+          "regret": 10.094,
+          "shareOfCeiling": 0.252,
+          "perfectWeeks": 1,
+          "blankRate": 0.562
+        },
+        {
+          "label": "template",
           "gameweeks": 32,
           "meanPoints": 5.156,
           "meanBestPoints": 13.5,
