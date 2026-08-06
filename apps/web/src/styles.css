@@ -2987,34 +2987,89 @@ a:focus-visible {
   font-variant-numeric: tabular-nums;
 }
 
-/* Correlation bar: the number stays legible, the bar is decoration behind it. */
-.rho-bar {
-  position: relative;
+/* Calibration charts. The page was five tables; a table is the right shape for
+   looking a number up and the wrong one for a comparison, which is what every
+   question on this page actually is. */
+.calibration-chart {
+  margin: 20px 0 0;
+  padding: 14px 16px;
+  border: 2px solid var(--ink);
+  background: var(--paper);
+}
+
+.calibration-chart figcaption {
+  margin-bottom: 10px;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.calibration-svg {
   display: block;
-  min-width: 96px;
-  padding: 3px 6px;
-  background: color-mix(in srgb, var(--rule) 45%, transparent);
+  width: 100%;
+  height: auto;
 }
 
-.rho-bar-fill {
-  position: absolute;
-  inset: 0 auto 0 0;
-  background: color-mix(in srgb, var(--field-green) 42%, transparent);
+.calibration-track {
+  fill: color-mix(in srgb, var(--rule) 35%, transparent);
 }
 
-/* In the Leeds kit the fill colour and the body ink are the same purple, so the
-   dark kit's 42% drops the value text to 3.84:1 against its own bar. The third
-   kit fails the same way for the opposite reason: its brand is yellow and its
-   ink is cream, which measured 4.48:1 at 42%. The bar is decoration and the
-   number is the content, so the bar yields. Found by the all-kits axe sweep;
-   the two-kit sweep never scanned the third. */
-:root[data-theme="light"] .rho-bar-fill,
-:root[data-theme="third"] .rho-bar-fill {
-  background: color-mix(in srgb, var(--field-green) 16%, transparent);
+.calibration-bar {
+  fill: color-mix(in srgb, var(--ink-soft) 55%, transparent);
 }
 
-.rho-bar-value {
-  position: relative;
+/* This project's own row, so the eye finds it without reading the labels. */
+.calibration-bar-mine {
+  fill: var(--field-green);
+}
+
+/* The bar nobody reached. Drawn as a rule rather than a bar so it cannot be
+   mistaken for another competitor. */
+.calibration-reference {
+  stroke: var(--amber);
+  stroke-width: 2;
+}
+
+.calibration-label,
+.calibration-value,
+.calibration-axis,
+.calibration-series-label {
+  fill: var(--ink);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 11px;
+}
+
+.calibration-axis,
+.calibration-series-label {
+  fill: var(--ink-soft);
+  font-size: 10px;
+}
+
+.calibration-value {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.calibration-line {
+  fill: none;
+  stroke: var(--ink-soft);
+  stroke-width: 2;
+  stroke-linejoin: round;
+}
+
+.calibration-line-mine {
+  stroke: var(--field-green);
+  stroke-width: 3;
+}
+
+.calibration-caption,
+.calibration-empty {
+  margin: 10px 0 0;
+  color: var(--ink-soft);
+  font-size: 12px;
+  line-height: 1.5;
 }
 
 .validation-verdict {

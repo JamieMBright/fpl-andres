@@ -271,7 +271,7 @@ Every remote surface implements idle, loading, ready, stale, degraded and error.
 
 ## Component inventory
 
-Audit item #202. Twenty-five components in `apps/web/src/components`. The column
+Audit item #202. Twenty-six components in `apps/web/src/components`. The column
 that matters is the last one: what a browser journey already proves about each,
 so a review knows what it does not have to check by hand.
 
@@ -307,6 +307,7 @@ so a review knows what it does not have to check by hand.
 | `ScatterReadout`       | The scatter as a ranked, pinnable table          | unit                                    |
 | `PinnedPlayers`        | Up to four players compared side by side         | unit                                    |
 | `ValidationReport`     | Backtest metrics against baselines               | `feature-walk`, `contrast`              |
+| `CalibrationCharts`    | Ranked bars and season lines, drawn by hand      | unit, `contrast`                        |
 | `CohortPanel`          | The veteran cohort and its coverage              | `feature-walk`                          |
 | `Methodology`          | How the projection is built                      | `route-metadata`                        |
 | `BielsaBucket`         | The mark                                         | —                                       |

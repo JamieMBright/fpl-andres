@@ -215,6 +215,7 @@ def test_no_module_is_imported_only_by_its_own_tests() -> None:
         "publish_understat",
         "publish_season_inputs",
         "publish_season_plan",
+        "reconcile",
         "sweep_managers",
         "track_model",
         "validate",

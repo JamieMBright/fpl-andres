@@ -1,4 +1,5 @@
 import validation from "../data/validation.json";
+import { BarChart, SeasonLines, type BarDatum } from "./CalibrationCharts";
 import {
   pooledVerdict,
   positionVerdict,
@@ -43,6 +44,8 @@ type SeasonReport = {
   methods: Method[];
   /** Absent from artifacts generated before captaincy was scored. */
   captaincy?: CaptaincyScore[];
+  /** Absent from artifacts generated before the theses were scored. */
+  captainPolicies?: CaptaincyScore[];
   league: {
     policies: Record<string, PolicyResult>;
     leaguesPlayed: number;
@@ -108,20 +111,52 @@ function methodOf(season: SeasonReport, label: string): Method | undefined {
   return season.methods.find((method) => method.label === label);
 }
 
-function show(value: number | null | undefined, digits = 3): string {
-  return value === null || value === undefined ? "—" : value.toFixed(digits);
+/** Averaged across seasons, because one season of 32 weeks decides nothing. */
+function averaged(
+  seasons: readonly SeasonReport[],
+  pick: (season: SeasonReport) => readonly CaptaincyScore[] | undefined,
+  names: Record<string, string> = {},
+): BarDatum[] {
+  const totals = new Map<string, number[]>();
+  const ceilings = new Map<string, number[]>();
+  for (const season of seasons) {
+    for (const entry of pick(season) ?? []) {
+      if (entry.meanPoints === null) continue;
+      totals.set(entry.label, [
+        ...(totals.get(entry.label) ?? []),
+        entry.meanPoints,
+      ]);
+      if (entry.meanBestPoints !== null) {
+        ceilings.set(entry.label, [
+          ...(ceilings.get(entry.label) ?? []),
+          entry.meanBestPoints,
+        ]);
+      }
+    }
+  }
+  const mean = (values: number[]) =>
+    values.reduce((sum, value) => sum + value, 0) / values.length;
+  return [...totals].map(([label, values]) => {
+    const ceiling = ceilings.get(label);
+    return {
+      label: names[label] ?? label,
+      value: mean(values),
+      mine: label === "model" || label === "expected_points",
+      ...(ceiling && ceiling.length > 0 ? { reference: mean(ceiling) } : {}),
+    };
+  });
 }
 
-/** Bar scaled against the strongest correlation on the page. */
-function Bar({ value, max }: { value: number | null; max: number }) {
-  if (value === null) return <span className="mono">—</span>;
-  const share = Math.max(0, Math.min(1, value / max));
-  return (
-    <span className="rho-bar">
-      <span className="rho-bar-fill" style={{ width: `${share * 100}%` }} />
-      <span className="rho-bar-value mono">{value.toFixed(3)}</span>
-    </span>
-  );
+function captaincyAverages(seasons: readonly SeasonReport[]): BarDatum[] {
+  return averaged(seasons, (season) => season.captaincy, METHOD_NAMES);
+}
+
+function policyAverages(seasons: readonly SeasonReport[]): BarDatum[] {
+  return averaged(seasons, (season) => season.captainPolicies);
+}
+
+function show(value: number | null | undefined, digits = 3): string {
+  return value === null || value === undefined ? "—" : value.toFixed(digits);
 }
 
 export function ValidationReport() {
@@ -136,11 +171,6 @@ export function ValidationReport() {
   const advisedWins = report.seasons.reduce(
     (sum, season) => sum + (season.league.policies.advised?.wins ?? 0),
     0,
-  );
-  const maxRho = Math.max(
-    ...report.seasons.flatMap((season) =>
-      season.methods.map((method) => method.spearman ?? 0),
-    ),
   );
   const captaincySeasons = report.seasons.filter(
     (season) => (season.captaincy ?? []).length > 0,
@@ -179,51 +209,20 @@ export function ValidationReport() {
           and no transfers &mdash; it ranks every player in the game at once, so
           nobody could actually play it.
         </p>
-        <div
-          aria-label="Scrollable rank correlation table"
-          className="squad-table-wrap"
-          role="region"
-          // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- Keyboard users must be able to scroll this table horizontally.
-          tabIndex={0}
-        >
-          <table aria-label="Rank correlation by season and method">
-            <thead>
-              <tr>
-                <th scope="col">Season</th>
-                <th scope="col">My projection</th>
-                <th scope="col">Last 5 average</th>
-                <th scope="col">Crowd ownership</th>
-              </tr>
-            </thead>
-            <tbody>
-              {report.seasons.map((season) => (
-                <tr key={season.season}>
-                  <th scope="row" className="mono">
-                    {season.season}
-                  </th>
-                  <td>
-                    <Bar
-                      value={methodOf(season, "model")?.spearman ?? null}
-                      max={maxRho}
-                    />
-                  </td>
-                  <td>
-                    <Bar
-                      value={methodOf(season, "recent_mean")?.spearman ?? null}
-                      max={maxRho}
-                    />
-                  </td>
-                  <td>
-                    <Bar
-                      value={methodOf(season, "ownership")?.spearman ?? null}
-                      max={maxRho}
-                    />
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <SeasonLines
+          title="Rank correlation, season by season"
+          caption="Each line is one method. What matters is whether the gap holds, not the level in any single season."
+          seasons={report.seasons.map((season) => season.season)}
+          series={["model", "components", "recent_mean", "ownership"].map(
+            (label) => ({
+              label: METHOD_NAMES[label] ?? label,
+              mine: label === "model",
+              points: report.seasons.map(
+                (season) => methodOf(season, label)?.spearman ?? null,
+              ),
+            }),
+          )}
+        />
         <p className="validation-verdict">
           {pooledVerdict(report.seasons as VerdictSeason[]).sentence}
         </p>
@@ -303,46 +302,19 @@ export function ValidationReport() {
             <span className="mono">fpl_andres.cli.validate</span> runs.
           </p>
         ) : (
-          <div
-            aria-label="Scrollable captaincy table"
-            className="squad-table-wrap"
-            role="region"
-            // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- Keyboard users must be able to scroll this table horizontally.
-            tabIndex={0}
-          >
-            <table aria-label="Captain returns by season and method">
-              <thead>
-                <tr>
-                  <th scope="col">Season</th>
-                  <th scope="col">Method</th>
-                  <th scope="col">Weeks</th>
-                  <th scope="col">Captain scored</th>
-                  <th scope="col">Best available</th>
-                  <th scope="col">Left behind</th>
-                  <th scope="col">Nailed it</th>
-                </tr>
-              </thead>
-              <tbody>
-                {captaincySeasons.flatMap((season) =>
-                  (season.captaincy ?? []).map((pick) => (
-                    <tr key={`${season.season}-${pick.label}`}>
-                      <th scope="row" className="mono">
-                        {season.season}
-                      </th>
-                      <td>{METHOD_NAMES[pick.label] ?? pick.label}</td>
-                      <td className="mono">{pick.gameweeks}</td>
-                      <td className="mono">{show(pick.meanPoints, 2)}</td>
-                      <td className="mono">{show(pick.meanBestPoints, 2)}</td>
-                      <td className="mono">{show(pick.regret, 2)}</td>
-                      <td className="mono">
-                        {pick.perfectWeeks}/{pick.gameweeks}
-                      </td>
-                    </tr>
-                  )),
-                )}
-              </tbody>
-            </table>
-          </div>
+          <>
+            <BarChart
+              title="Captain points per gameweek, averaged across every season"
+              caption="Bars are the captain's own score, not the doubled one. The tick is the best captain available on the same shortlist — the gap to it is what every method leaves behind."
+              referenceLabel="Nobody gets close to it."
+              data={captaincyAverages(captaincySeasons)}
+            />
+            <BarChart
+              title="Competing captaincy theses"
+              caption="Nine rules from the practitioner literature, each maximising something different, all picking from the same shortlist in the same weeks."
+              data={policyAverages(report.seasons)}
+            />
+          </>
         )}
         <p className="validation-verdict">
           Figures are the player&rsquo;s own score, not the doubled one. The

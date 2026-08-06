@@ -48,6 +48,23 @@ _PENALTY_MISS_POINTS = -2
 _DEFCON_POINTS: Mapping[int, int] = {1: 0, 2: 2, 3: 2, 4: 2}
 _DEFCON_THRESHOLD: Mapping[int, int] = {2: 10, 3: 12, 4: 12}
 
+# Public names for the same table. `backtesting/reconcile.py` prices realised
+# gameweeks from it to check this project's scoring against FPL's own, and a
+# second copy of the constants would make that check vacuous.
+GOAL_POINTS = _GOAL_POINTS
+ASSIST_POINTS = _ASSIST_POINTS
+CLEAN_SHEET_POINTS = _CLEAN_SHEET_POINTS
+CONCEDED_POINTS = _CONCEDED_POINTS
+CONCEDED_PER_POINT = _CONCEDED_PER_POINT
+SAVES_PER_POINT = _SAVES_PER_POINT
+YELLOW_CARD_POINTS = _YELLOW_CARD_POINTS
+RED_CARD_POINTS = _RED_CARD_POINTS
+OWN_GOAL_POINTS = _OWN_GOAL_POINTS
+PENALTY_SAVE_POINTS = _PENALTY_SAVE_POINTS
+PENALTY_MISS_POINTS = _PENALTY_MISS_POINTS
+DEFCON_POINTS = _DEFCON_POINTS
+DEFCON_THRESHOLD = _DEFCON_THRESHOLD
+
 
 @dataclass(frozen=True)
 class PointsBreakdown:

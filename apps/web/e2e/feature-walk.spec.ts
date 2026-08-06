@@ -404,10 +404,10 @@ test.describe("feature walk", () => {
       page.getByText(/last-five average in (all )?\d+( of \d+)? seasons/),
     ).toBeVisible();
 
+    // The rank comparison is a chart now, not a table: the question is always
+    // whether a lead holds across seasons, which is a shape.
     await expect(
-      page.getByRole("table", {
-        name: "Rank correlation by season and method",
-      }),
+      page.getByRole("img", { name: "Rank correlation, season by season" }),
     ).toBeVisible();
     await expect(
       page.getByRole("table", { name: "Mini-league outcomes by season" }),
