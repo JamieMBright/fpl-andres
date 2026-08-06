@@ -1,0 +1,97 @@
+name: Model validation
+
+# The backtest needs the history corpus, which lives in Supabase, so it cannot
+# run on a developer's machine and has never run automatically. That left the
+# published numbers pinned to whenever somebody last remembered to refresh them
+# -- which is how the calibration page came to claim the naive baseline was
+# winning months after it had stopped.
+#
+# So it runs here, on every change to the projection that lands on main. The
+# refreshed artifact and one appended history row are committed back, and the
+# summary prints what moved.
+on:
+  push:
+    branches: [main]
+    paths:
+      - python/fpl_andres/models/**
+      - python/fpl_andres/backtesting/**
+      - python/fpl_andres/rules.py
+      - python/fpl_andres/model_version.py
+      - python/fpl_andres/cli/validate.py
+      - python/fpl_andres/cli/track_model.py
+      - .github/workflows/validate-model.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# Never two runs writing the artifact at once, and never cancel one midway: a
+# half-written history file is worse than a late one.
+concurrency:
+  group: validate-model
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    name: Backtest the projection
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    environment: production
+    permissions:
+      # The refreshed artifact and the appended history row are pushed back.
+      contents: write
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install engine
+        run: python -m pip install -e .
+
+      - name: Record the numbers being replaced
+        run: cp apps/web/src/data/validation.json "$RUNNER_TEMP/before.json"
+
+      - name: Run the backtest
+        timeout-minutes: 40
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+        run: python -m fpl_andres.cli.validate
+
+      - name: Append the run to the model history
+        run: |
+          python -m fpl_andres.cli.track_model --code-revision "$GITHUB_SHA"
+
+      - name: Report what moved
+        env:
+          BEFORE: ${{ runner.temp }}/before.json
+        run: python -m fpl_andres.cli.compare_validation --before "$BEFORE" >> "$GITHUB_STEP_SUMMARY"
+
+      # Uploaded whatever happens to the commit below, so a run whose push is
+      # rejected has still produced something a human can read.
+      - name: Upload the refreshed artifact
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: validation
+          path: |
+            apps/web/src/data/validation.json
+            apps/web/src/data/model-history.json
+          retention-days: 30
+
+      - name: Commit the refreshed artifact
+        run: |
+          if git diff --quiet -- apps/web/src/data/validation.json apps/web/src/data/model-history.json; then
+            echo "Nothing moved."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add apps/web/src/data/validation.json apps/web/src/data/model-history.json
+          git commit -m "chore: refresh the backtest for the model on $GITHUB_SHA"
+          git push

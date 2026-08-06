@@ -22,6 +22,7 @@ from pathlib import Path
 
 from fpl_andres.backtesting.corpus import SeasonCorpus, load_season
 from fpl_andres.backtesting.score import METHOD_LABELS, score_season
+from fpl_andres.model_version import MODEL_VERSION
 from fpl_andres.persistence.supabase import SupabaseCredentials, SupabaseRestClient
 from fpl_andres.positions import Position
 from fpl_andres.simulation.minileague import LeagueSettings, Policy, simulate_league
@@ -118,6 +119,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     credentials = SupabaseCredentials.from_env(os.environ)
     report: dict[str, object] = {
         "generatedAt": datetime.now(UTC).isoformat(),
+        # Two runs are only comparable if something says whether the model
+        # between them moved. `scripts/model-version-gate.mjs` keeps it honest.
+        "modelVersion": MODEL_VERSION,
         "seasons": [],
         "league": {
             "managers": LEAGUE.managers,

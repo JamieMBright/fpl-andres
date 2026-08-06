@@ -104,6 +104,9 @@ jobs:
       - name: Check the contracts version was bumped with the schema
         run: pnpm contracts:version-gate
 
+      - name: Check the model version was bumped with the projection
+        run: pnpm model:version-gate
+
   checks:
     name: Lint, types and unit tests
     runs-on: ubuntu-latest

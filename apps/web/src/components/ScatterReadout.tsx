@@ -60,13 +60,11 @@ export function ScatterReadout({
   const defconAxis =
     selection.x.group === "Defence" || selection.y.group === "Defence";
 
+  // The chart says so on its own axes, which is where a reader who has just
+  // moved a slider is looking. Repeating it under an empty table said it twice
+  // and in the wrong place.
   if (rows.length === 0) {
-    return (
-      <p className="readout-empty">
-        Nothing survives these filters. Drop the minutes threshold or widen the
-        positions.
-      </p>
-    );
+    return null;
   }
 
   return (

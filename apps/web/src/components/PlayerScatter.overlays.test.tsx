@@ -42,7 +42,7 @@ function pool(count: number): AnalysisPlayer[] {
 }
 
 describe("scatter overlays", () => {
-  it("draws the ring when it is asked for", () => {
+  it("shades the good corner when it is asked to", () => {
     const view = { ...DEFAULT_VIEW, sweetSpot: true };
     const selection = selectPlotted(pool(200), view)!;
     const { container } = render(
@@ -54,7 +54,40 @@ describe("scatter overlays", () => {
       />,
     );
     expect(selection.points.length).toBeGreaterThan(20);
-    expect(container.querySelector(".scatter-sweet-spot")).not.toBeNull();
+    // Two gradients, one per axis. Shading is a property of the reference
+    // lines, so unlike the ring it draws whatever the axes happen to be.
+    expect(container.querySelectorAll(".scatter-shade")).toHaveLength(2);
+    expect(container.querySelectorAll("linearGradient")).toHaveLength(2);
+  });
+
+  it("leaves the chart unshaded when it is not asked to", () => {
+    const selection = selectPlotted(pool(200), DEFAULT_VIEW)!;
+    const { container } = render(
+      <PlayerScatter
+        selection={selection}
+        view={DEFAULT_VIEW}
+        pinned={[]}
+        onTogglePin={() => {}}
+      />,
+    );
+    expect(container.querySelector(".scatter-shade")).toBeNull();
+  });
+
+  it("says so on the axes when the filters leave nobody", () => {
+    const view = { ...DEFAULT_VIEW, minMinutes: 4000 };
+    const selection = selectPlotted(pool(200), view)!;
+    const { container } = render(
+      <PlayerScatter
+        selection={selection}
+        view={view}
+        pinned={[]}
+        onTogglePin={() => {}}
+      />,
+    );
+    expect(selection.points).toHaveLength(0);
+    expect(container.querySelector(".scatter-empty-title")?.textContent).toBe(
+      "Nothing survives these filters",
+    );
   });
 
   it("draws the frontier when it is asked for", () => {

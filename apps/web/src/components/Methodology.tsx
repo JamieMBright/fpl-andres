@@ -13,146 +13,122 @@ export function Methodology() {
   return (
     <div className="method-body">
       <p className="lede">
-        All forecasts are wrong. Some are useful. This page says exactly how
-        mine is built, what it was tested against, and where it loses — so you
-        can decide whether it is useful to you rather than taking my word for
-        it.
+        All forecasts are wrong. Some are useful. Here is how this one is built,
+        what it was measured against, and the seasons it loses.
       </p>
 
       <section aria-labelledby="method-points">
-        <h2 id="method-points">Every way a point is scored</h2>
+        <h2 id="method-points">Fourteen scoring routes, all priced</h2>
         <p>
-          Most public models price goals, assists, clean sheets and appearances,
-          then stop. That misses roughly a fifth of the points in the game. I
-          price all fourteen routes: appearances, goals, assists, clean sheets,
-          goals conceded, saves, penalties saved, penalties missed, own goals,
-          yellow cards, red cards, bonus, and the defensive-contribution points
-          introduced for 2025/26.
+          Most public models price goals, assists, clean sheets and appearances.
+          That is four routes out of fourteen and roughly a fifth of the points
+          in the game left on the floor. Saves, cards, own goals, penalties
+          saved and missed, goals conceded, bonus and defensive contribution are
+          all priced here.
         </p>
         <p>
-          Defensive contribution alone was <strong>7.5%</strong> of all points
-          scored in {projectionSeason}. A model that ignores it does not
-          slightly misprice defenders; it misprices the whole position.
+          Defensive contribution alone was <strong>7.5%</strong> of every point
+          awarded in {projectionSeason} — more than assists. A model that skips
+          it does not slightly misprice defenders. It misprices the position.
         </p>
         <p className="method-proof">
-          <strong>How I know the pricing is right.</strong> I rebuilt every
-          player&rsquo;s realised points from the component columns alone and
-          compared the total against what FPL actually awarded. For{" "}
-          {projectionSeason} the reconstruction came to <strong>34,383</strong>{" "}
-          against an actual <strong>34,382</strong> — a one-point discrepancy
-          across a whole season. For 2024/25, 27,353 of 27,605 player-gameweeks
-          match exactly; every remaining row is an Assistant Manager, which is a
-          chip and not a footballer.
+          <strong>Proof the pricing is right.</strong> Rebuilding every
+          player&rsquo;s realised points from the component columns alone gives{" "}
+          <strong>34,383</strong> for {projectionSeason} against an actual{" "}
+          <strong>34,382</strong>. One point, across a season. In 2024/25,
+          27,353 of 27,605 player-gameweeks reconcile exactly; every remaining
+          row is an Assistant Manager, which is a chip and not a footballer.
         </p>
       </section>
 
       <section aria-labelledby="method-minutes">
-        <h2 id="method-minutes">Minutes first, points second</h2>
+        <h2 id="method-minutes">Minutes first</h2>
         <p>
           A player who does not play scores nothing, so minutes are modelled
-          before anything else: the probability of appearing at all, and the
-          probability of lasting an hour. Scoring rates are then applied per
-          ninety minutes and scaled by the minutes expected.
+          before anything else: the chance of appearing, and the chance of
+          lasting an hour. Rates are then applied per ninety and scaled by the
+          minutes expected, shrunk toward the positional average in proportion
+          to how little a player has actually played. Two hundred minutes and
+          two goals does not project as a goal a game.
         </p>
         <p>
-          Rates are shrunk toward the league average for that position, weighted
-          by how much the player has actually played. A striker with two hundred
-          minutes and two goals is not projected at a goal a game.
-        </p>
-        <p>
-          The minutes model is calibrated: across the corpus, the predicted
-          probability of appearing sits within 0.07 of the observed rate, and
+          It is calibrated. Across the corpus, predicted probability of
+          appearing sits within <strong>0.07</strong> of the observed rate, and
           the probability of reaching sixty minutes is close to exact.
         </p>
         <p className="method-proof">
-          <strong>Why there is no minimum-minutes cutoff.</strong> A season
-          total says nothing about <em>when</em> a player played, and minutes
-          conflate two different things: a thousand of them can be eleven full
-          matches or seventeen cameos. Tested across six consecutive season
-          pairs, neither a season total nor end-of-season minutes is a good
-          filter on its own &mdash; they score 0.616 and 0.605 on rank
-          correlation against next season&rsquo;s opening starts. Counting{" "}
-          <em>starts</em> rather than minutes, and combining season-long volume
-          with the role a player finished the season in, does better: 0.646,
-          beating the season total in five of the six pairs. So there is no
-          cutoff. Minutes are weighted by recency with a four-gameweek half-life
-          and the whole history is used.
-        </p>
-        <p className="method-proof">
-          The effect is concentrated where the two markers disagree, which is
-          the case worth catching. Among players a 900-minute filter would
-          reject, those who had started four of the final six went on to start
-          the next season&rsquo;s opening games 42% of the time, against 10% for
-          the rest &mdash; four times the rate, in all six pairs. A January
-          signing who played every remaining match is not a fringe player, and a
-          filter that cannot see the difference will keep saying he is.
+          <strong>No minimum-minutes cutoff, and that was measured too.</strong>{" "}
+          A thousand minutes is eleven full matches or seventeen cameos, and the
+          season total cannot tell you which. Across six consecutive season
+          pairs, season minutes and end-of-season minutes rank next
+          season&rsquo;s opening starters at 0.616 and 0.605. Counting{" "}
+          <em>starts</em>, and combining season-long volume with the role a
+          player finished in, scores <strong>0.646</strong> and wins five of the
+          six pairs. Among players a 900-minute filter would throw out, those
+          who started four of the final six went on to start the next
+          season&rsquo;s opening games <strong>42%</strong> of the time against{" "}
+          <strong>10%</strong> for the rest — four times the rate, in all six
+          pairs. A January signing who then played every match is not a fringe
+          player. So there is no cutoff: minutes are recency-weighted on a
+          four-gameweek half-life and the whole history is used.
         </p>
       </section>
 
       <section aria-labelledby="method-blend">
-        <h2 id="method-blend">Two views, blended</h2>
+        <h2 id="method-blend">Two views, blended 0.8 to 0.2</h2>
         <p>
-          The component reconstruction is indirect: it accumulates a little
-          error across fourteen routes. A player&rsquo;s recent scoring is
-          direct but noisy. Neither alone is best. I weight the components at{" "}
-          <strong>0.8</strong> and the last five gameweeks at{" "}
+          The component reconstruction is indirect and accumulates a little
+          error across fourteen routes. Recent scoring is direct and noisy.
+          Components take <strong>0.8</strong>, the last five gameweeks{" "}
           <strong>0.2</strong>.
         </p>
         <p>
-          That weight was tested independently in each of seven seasons and came
-          out between 0.7 and 0.8 every time, including in the three seasons
-          held back from the original fit. It is not tuned to the seasons it is
-          reported against.
+          That weight was fitted independently in each of seven seasons and
+          landed between 0.7 and 0.8 every time, including the three held back
+          from the original fit.
         </p>
       </section>
 
       <section aria-labelledby="method-fixtures">
-        <h2 id="method-fixtures">Fixtures change routes, not totals</h2>
+        <h2 id="method-fixtures">Fixtures move routes, not totals</h2>
         <p>
-          A hard fixture does not scale a player down uniformly. It makes a
-          clean sheet less likely, and it makes saves and defensive actions{" "}
-          <em>more</em> likely. Each scoring route carries its own adjustment,
-          so a goalkeeper facing the champions is not simply written off.
-        </p>
-        <p>
-          Team strength is estimated from results already played, shrunk toward
-          the league mean with a ten-match prior, and clamped so no single
-          fixture can swing a projection more than a factor of about two.
+          One difficulty number is wrong. A hard fixture makes a clean sheet
+          less likely and makes saves and defensive actions <em>more</em>{" "}
+          likely, so every route carries its own multiplier and a keeper facing
+          the champions is not written off. Team strength comes from results
+          already played, shrunk toward the league mean on a ten-match prior and
+          clamped so no single fixture swings a projection by more than about a
+          factor of two.
         </p>
       </section>
 
       <section aria-labelledby="method-horizon">
-        <h2 id="method-horizon">Planning further than Saturday</h2>
+        <h2 id="method-horizon">Seven weeks out, not one</h2>
         <p>
-          A transfer is a commitment. Projections are produced at one, three,
-          five and seven gameweeks ahead, from one fixed reading of form —
-          projecting future form from future results would be a leak, so only
-          the fixture list varies across the ladder.
-        </p>
-        <p>
-          The ladder measurably beats repeating a one-week projection: rank
-          correlation improves by 0.012 at three weeks, 0.019 at five, and 0.020
-          at seven. It matters less than you might hope, because 83% of the top
-          thirty is the same either way.
+          A transfer is a commitment, so projections run at one, three, five and
+          seven gameweeks from a single fixed reading of form — only the fixture
+          list varies, because projecting form from future results is a leak.
+          The ladder beats repeating a one-week view by 0.012, 0.019 and 0.020
+          on rank correlation at three, five and seven weeks. The gain is real
+          and small: 83% of the top thirty is the same either way.
         </p>
       </section>
 
       <section aria-labelledby="method-fair">
-        <h2 id="method-fair">Testing it fairly</h2>
+        <h2 id="method-fair">The first test I ran was rigged, in my favour</h2>
         <p>
-          The first time I scored the model against a simple &ldquo;last five
-          gameweeks&rdquo; baseline, the baseline won. That result was an
-          artefact. Each method was being scored on the players <em>it</em>{" "}
-          could rank, and the baseline could rank around 730 players — including
-          some 350 fringe players who trivially score zero — while the model,
-          which refuses to project without evidence, could rank 380. Ranking
+          Scored against a &ldquo;last five gameweeks&rdquo; baseline, the
+          baseline won. The result was an artefact: each method was graded on
+          the players <em>it</em> could rank, so the baseline got 730 players
+          including some 350 fringe names who trivially score zero, while the
+          model — which refuses to project without evidence — got 380. Ranking
           obvious zeroes correctly inflates a correlation.
         </p>
         <p>
-          Every method is now scored on the identical population: only players
-          all four methods can rank. On that basis the model beats the baseline
-          in all four seasons tested. The bug is described here rather than
-          quietly fixed because the first number I published was wrong.
+          Every method is now graded on one identical population. On that basis
+          the model wins all four seasons on error, rank correlation and top-20
+          hit rate. The bug is on this page because the first number published
+          was the wrong one.
         </p>
       </section>
 
@@ -160,24 +136,24 @@ export function Methodology() {
         <h2 id="method-loses">Where it loses</h2>
         <ul className="method-losses">
           <li>
-            In a simulated mini-league over 2024/25, a manager who simply chased
-            recent form <strong>beat</strong> the advised policy by 38 points.
-            It won the other three seasons tested; it does not win every season.
+            In a simulated 2024/25 mini-league, a manager chasing recent form{" "}
+            <strong>beat</strong> the advised policy by 38 points. Advised won
+            the other three seasons. It does not win every season.
           </li>
           <li>
-            Playing to your mini-league rank rather than to raw points is worth
-            about sixteen points a season, and lost in one season of four. It is
-            a weak effect, and I say so rather than dressing it up as an edge.
+            Playing to mini-league rank rather than raw points is worth about
+            sixteen points a season and lost in one season of four. That is a
+            weak effect, not an edge.
           </li>
           <li>
-            The simulation starts at gameweek seven, because earlier gameweeks
-            have too little evidence. Its totals cover 31 or 32 weeks, not 38,
-            and should never be read as season scores.
+            The model under-predicts in every season, by 0.11 to 0.20 points per
+            player per gameweek. That is systematic, not noise, and it is the
+            clearest open fault in the calibration.
           </li>
           <li>
-            Chip timing reads the final fixture list, which confirms double
-            gameweeks earlier than a real manager would know them. The simulated
-            chips are therefore better timed than yours could be.
+            Simulations start at gameweek seven and cover 31 or 32 weeks. They
+            are not season scores. Chip timing there reads the final fixture
+            list, so the simulated chips are better timed than yours could be.
           </li>
         </ul>
       </section>
@@ -185,21 +161,21 @@ export function Methodology() {
       <section aria-labelledby="method-silent">
         <h2 id="method-silent">Where it says nothing</h2>
         <p>
-          A promoted-club debutant, or an arrival from another league, has no
-          Premier League evidence. I leave them out. A positional average would
-          look like knowledge and would not be knowledge.
+          A promoted-club debutant or an arrival from another league has no
+          Premier League evidence, so he is left out. A positional average would
+          look like knowledge without being any.
         </p>
         <p>
-          The same applies between seasons. Until a gameweek of 2026/27 has been
-          played there is no form to measure and no fixture to weight, so the
-          only figure I publish is what each player returned per match last
-          season, labelled as exactly that.
+          Between seasons the same rule applies. Until a gameweek of 2026/27 is
+          played there is no form to read and no fixture to weight, so the only
+          figure published is what each player returned per match last season,
+          labelled as exactly that.
         </p>
       </section>
 
       <p className="method-footnote">
-        The full scoring record, season by season and including the seasons I
-        lose, is <Link to="/calibration">kept score of here</Link>.
+        Every season scored, including the ones lost,{" "}
+        <Link to="/calibration">is kept here</Link>.
       </p>
     </div>
   );

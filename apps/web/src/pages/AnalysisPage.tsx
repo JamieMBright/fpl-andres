@@ -116,6 +116,16 @@ export default function AnalysisPage() {
     return () => controller.abort();
   }, [view.season, archive, archiveFailed]);
 
+  // The controls live inside the body, and the body needs a pool. A failed
+  // archive download therefore took the season picker away with it, leaving
+  // the reader on a season that would never load and no way back. The page
+  // says it is staying on this season, so it has to actually do that.
+  useEffect(() => {
+    if (archiveFailed && view.season !== LIVE_SEASON) {
+      update({ season: LIVE_SEASON });
+    }
+  }, [archiveFailed, view.season, update]);
+
   const shown = useMemo(() => {
     if (!data) return null;
     if (view.season === LIVE_SEASON) return data;
@@ -194,8 +204,15 @@ export default function AnalysisPage() {
 
       {archiveFailed ? (
         <p className="analysis-failure" role="status">
-          I could not download the past-season archive, so I am staying on this
-          season rather than plotting an empty chart.
+          I could not download the past-season archive, so I have put you back
+          on this season rather than leaving you on an empty chart.{" "}
+          <button
+            className="pool-retry"
+            onClick={() => setArchiveFailed(false)}
+            type="button"
+          >
+            Try again
+          </button>
         </p>
       ) : null}
 
@@ -211,9 +228,20 @@ export default function AnalysisPage() {
         />
       ) : failed ? null : (
         <p className="analysis-loading" role="status">
-          {view.season === LIVE_SEASON
-            ? "Pulling the player list."
-            : `Downloading ${view.season}.`}
+          {view.season === LIVE_SEASON ? (
+            "Pulling the player list."
+          ) : (
+            <>
+              {`Downloading ${view.season}. It is a megabyte and a half. `}
+              <button
+                className="pool-retry"
+                onClick={() => update({ season: LIVE_SEASON })}
+                type="button"
+              >
+                Back to this season
+              </button>
+            </>
+          )}
         </p>
       )}
     </section>
@@ -305,18 +333,6 @@ function AnalysisBody({
 
       <div className="analysis-layout">
         <div className="analysis-chart" ref={chartRef}>
-          <details className="scatter-controls analysis-reading">
-            <summary className="scatter-controls-summary">
-              <span>How to read this</span>
-            </summary>
-            <div className="scatter-controls-body">
-              <p>{reading.corner}</p>
-              {reading.relationship ? <p>{reading.relationship}</p> : null}
-              {reading.standout ? <p>{reading.standout}</p> : null}
-              {reading.size ? <p>{reading.size}</p> : null}
-            </div>
-          </details>
-
           <PlayerScatter
             selection={selection}
             view={view}
@@ -336,14 +352,9 @@ function AnalysisBody({
 
           {/* An overlay that was asked for and could not be drawn says why.
               Silence reads as a broken checkbox. */}
-          {view.sweetSpot && overlays.ring ? (
-            <p className="analysis-overlay-note" role="status">
-              No ring: {overlays.ring}
-            </p>
-          ) : null}
           {view.frontier && overlays.frontier ? (
             <p className="analysis-overlay-note" role="status">
-              No frontier: {overlays.frontier}
+              No curve: {overlays.frontier}
             </p>
           ) : null}
 
@@ -378,23 +389,37 @@ function AnalysisBody({
           ) : null}
         </div>
 
-        <ScatterControls
-          pool={data.pool}
-          view={view}
-          onChange={onChange}
-          onReset={onReset}
-          plotted={selection.points.length}
-        />
+        <div className="analysis-panels">
+          <details className="scatter-controls analysis-reading">
+            <summary className="scatter-controls-summary">
+              <span>How to read this</span>
+            </summary>
+            <div className="scatter-controls-body">
+              <p>{reading.corner}</p>
+              {reading.relationship ? <p>{reading.relationship}</p> : null}
+              {reading.standout ? <p>{reading.standout}</p> : null}
+              {reading.size ? <p>{reading.size}</p> : null}
+            </div>
+          </details>
 
-        <PinnedPlayers
-          players={data.pool.players}
-          pinned={view.pinned}
-          clubCodeByTeamId={data.clubCodeByTeamId}
-          fixtures={data.fixtures}
-          onUnpin={onTogglePin}
-          onClear={() => onChange({ pinned: [] })}
-          view={view}
-        />
+          <ScatterControls
+            pool={data.pool}
+            view={view}
+            onChange={onChange}
+            onReset={onReset}
+            plotted={selection.points.length}
+          />
+
+          <PinnedPlayers
+            players={data.pool.players}
+            pinned={view.pinned}
+            clubCodeByTeamId={data.clubCodeByTeamId}
+            fixtures={data.fixtures}
+            onUnpin={onTogglePin}
+            onClear={() => onChange({ pinned: [] })}
+            view={view}
+          />
+        </div>
       </div>
 
       <ScatterReadout

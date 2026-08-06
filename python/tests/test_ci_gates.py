@@ -146,6 +146,33 @@ class TestContractsVersionGate:
         assert "process.exit(0)" in source
 
 
+class TestModelVersionGate:
+    """A projection change must come with a version, or the history is unreadable."""
+
+    def test_the_gate_runs_in_ci(self, workflow: dict[str, object]) -> None:
+        assert "model:version-gate" in _run_lines(workflow, "secrets-and-contracts")
+
+    def test_the_script_the_gate_names_exists(self) -> None:
+        manifest = json.loads((REPO_ROOT / "package.json").read_text(encoding="utf-8"))
+        script = manifest["scripts"]["model:version-gate"].split()[-1]
+        assert (REPO_ROOT / script).is_file(), f"{script} is referenced but missing"
+
+    def test_the_gate_watches_everything_that_moves_a_projection(self) -> None:
+        source = (REPO_ROOT / "scripts" / "model-version-gate.mjs").read_text(encoding="utf-8")
+        for path in ("python/fpl_andres/models/", "python/fpl_andres/backtesting/"):
+            assert path in source, f"{path} can move a projection and is not watched"
+
+    def test_the_version_the_gate_parses_is_the_one_the_artifact_carries(self) -> None:
+        # The gate reads the constant by regex and the CLI imports it. If those
+        # ever name different things the gate passes while the artifact lies.
+        gate = (REPO_ROOT / "scripts" / "model-version-gate.mjs").read_text(encoding="utf-8")
+        assert "python/fpl_andres/model_version.py" in gate
+        validate = (REPO_ROOT / "python" / "fpl_andres" / "cli" / "validate.py").read_text(
+            encoding="utf-8"
+        )
+        assert "MODEL_VERSION" in validate
+
+
 class TestBoundaryTypes:
     """#144: an inferred return type at a boundary is a contract nobody wrote."""
 

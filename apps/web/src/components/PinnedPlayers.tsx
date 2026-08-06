@@ -53,13 +53,18 @@ export function PinnedPlayers({
 
   if (chosen.length === 0) {
     return (
-      <div className="pinned-empty analysis-pinned">
-        <h3>Nobody pinned</h3>
-        <p>
-          Click a point to pin it. Four at a time, so you can put a shortlist
-          beside each other rather than remembering the last one.
-        </p>
-      </div>
+      <details className="scatter-controls analysis-pinned">
+        <summary className="scatter-controls-summary">
+          <span>Compare players</span>
+          <span className="scatter-controls-count mono">nobody pinned</span>
+        </summary>
+        <div className="scatter-controls-body">
+          <p>
+            Click a point to pin it. Four at a time, so you can put a shortlist
+            beside each other rather than remembering the last one.
+          </p>
+        </div>
+      </details>
     );
   }
 

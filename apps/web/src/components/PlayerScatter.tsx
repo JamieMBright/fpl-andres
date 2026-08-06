@@ -1,17 +1,19 @@
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  memo,
+  useCallback,
+  useEffect,
+  useId,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
 import { CeefaxShirt } from "./CeefaxShirt";
 import { clubMarker } from "../kit/club-markers";
 import { kitForShortName } from "../kit/team-kits";
 import { defconThresholdFor, metric } from "../state/analysis-metrics";
 import type { AnalysisPlayer } from "../state/analysis-pool";
-import {
-  BIN_RAMP,
-  binOf,
-  binsFor,
-  frontier,
-  sweetSpot,
-} from "../state/scatter-regions";
+import { BIN_RAMP, binOf, binsFor, frontier } from "../state/scatter-regions";
 import {
   quadrantCaption,
   type PlottedPlayer,
@@ -39,6 +41,11 @@ const HEIGHT = 520;
 const MARGIN = { top: 28, right: 22, bottom: 56, left: 68 };
 const PLOT_WIDTH = WIDTH - MARGIN.left - MARGIN.right;
 const PLOT_HEIGHT = HEIGHT - MARGIN.top - MARGIN.bottom;
+
+// Kept clear at the foot of the plot so the watermark never lands on a mark.
+// Small: it costs a little vertical resolution and buys a legible mark on
+// every screenshot, including the dense bottom-left of a price chart.
+const WATERMARK_GUTTER = 26;
 
 // A wide spread, because the point of the third encoding is to be seen. The
 // largest disc is about fourteen times the area of the smallest.
@@ -71,6 +78,11 @@ export interface OverlayNotes {
  * because the eye and the mouse both start top left.
  */
 const WATERMARK = "FPL ANDRES  \u00b7  @fpl_andres";
+
+/** Muted enough to sit under five hundred marks without competing with them. */
+const SHADE_GOOD = "#00c853";
+const SHADE_BAD = "#d64545";
+const SHADE_ALPHA = 0.13;
 
 interface Scale {
   (value: number): number;
@@ -151,6 +163,7 @@ export const PlayerScatter = memo(function PlayerScatter({
   onOverlays,
 }: PlayerScatterProps) {
   const svgRef = useRef<SVGSVGElement>(null);
+  const gradientId = useId();
   const [hovered, setHovered] = useState<PlottedPlayer | null>(null);
   const {
     points,
@@ -174,7 +187,9 @@ export const PlayerScatter = memo(function PlayerScatter({
     () =>
       makeScale(
         points.map((point) => point.y),
-        view.invertY ? [0, PLOT_HEIGHT] : [PLOT_HEIGHT, 0],
+        view.invertY
+          ? [0, PLOT_HEIGHT - WATERMARK_GUTTER]
+          : [PLOT_HEIGHT - WATERMARK_GUTTER, 0],
         view.logY,
       ),
     [points, view.logY, view.invertY],
@@ -231,17 +246,34 @@ export const PlayerScatter = memo(function PlayerScatter({
   };
 
   // Where the good players are, from each metric's own declared direction.
-  const spot = useMemo(
-    () =>
-      view.sweetSpot
-        ? sweetSpot(
-            points.map((point) => point.player),
-            xMetric,
-            yMetric,
-          )
-        : null,
-    [points, xMetric, yMetric, view.sweetSpot],
-  );
+  // Two overlaid gradients rather than a shape: one along each axis, each
+  // fading to nothing at that axis's reference line, so the good corner ends
+  // up green, the bad corner red and the two mixed corners cancel to neutral.
+  const shading = useMemo(() => {
+    if (!view.sweetSpot) return null;
+    const centreX = centres ? xScale(centres.x) : PLOT_WIDTH / 2;
+    const centreY = centres ? yScale(centres.y) : PLOT_HEIGHT / 2;
+    const goodRight =
+      xScale(xMetric.higherIsBetter ? xScale.domain[1] : xScale.domain[0]) >
+      centreX;
+    const goodUp =
+      yScale(yMetric.higherIsBetter ? yScale.domain[1] : yScale.domain[0]) <
+      centreY;
+    const clamp = (value: number, span: number) =>
+      Math.min(0.98, Math.max(0.02, value / span));
+    return {
+      x: {
+        stop: clamp(centreX, PLOT_WIDTH),
+        from: goodRight ? SHADE_BAD : SHADE_GOOD,
+        to: goodRight ? SHADE_GOOD : SHADE_BAD,
+      },
+      y: {
+        stop: clamp(centreY, PLOT_HEIGHT),
+        from: goodUp ? SHADE_GOOD : SHADE_BAD,
+        to: goodUp ? SHADE_BAD : SHADE_GOOD,
+      },
+    };
+  }, [view.sweetSpot, centres, xScale, yScale, xMetric, yMetric]);
 
   const edge = useMemo(
     () =>
@@ -258,11 +290,8 @@ export const PlayerScatter = memo(function PlayerScatter({
   // The page prints whichever overlay could not be drawn and why. Reported
   // rather than returned, because the chart is the thing that knows.
   useEffect(() => {
-    onOverlays?.({
-      ring: spot?.reason ?? null,
-      frontier: edge?.reason ?? null,
-    });
-  }, [onOverlays, spot, edge]);
+    onOverlays?.({ ring: null, frontier: edge?.reason ?? null });
+  }, [onOverlays, edge]);
 
   const pioneers = useMemo(
     () => new Set(edge?.drawn?.pioneers.map((entry) => entry.code) ?? []),
@@ -287,7 +316,6 @@ export const PlayerScatter = memo(function PlayerScatter({
     (centres
       ? `Reference lines at the ${view.centreMode} of each.`
       : "No reference lines: nothing is plotted.");
-
   return (
     <div className="scatter-frame">
       <svg
@@ -299,6 +327,54 @@ export const PlayerScatter = memo(function PlayerScatter({
         data-testid="player-scatter"
         onMouseLeave={() => setHovered(null)}
       >
+        {shading ? (
+          <defs>
+            <linearGradient id={`${gradientId}-x`} x1="0" x2="1" y1="0" y2="0">
+              <stop
+                offset="0"
+                stopColor={shading.x.from}
+                stopOpacity={SHADE_ALPHA}
+              />
+              <stop
+                offset={shading.x.stop}
+                stopColor={shading.x.from}
+                stopOpacity={0}
+              />
+              <stop
+                offset={shading.x.stop}
+                stopColor={shading.x.to}
+                stopOpacity={0}
+              />
+              <stop
+                offset="1"
+                stopColor={shading.x.to}
+                stopOpacity={SHADE_ALPHA}
+              />
+            </linearGradient>
+            <linearGradient id={`${gradientId}-y`} x1="0" x2="0" y1="0" y2="1">
+              <stop
+                offset="0"
+                stopColor={shading.y.from}
+                stopOpacity={SHADE_ALPHA}
+              />
+              <stop
+                offset={shading.y.stop}
+                stopColor={shading.y.from}
+                stopOpacity={0}
+              />
+              <stop
+                offset={shading.y.stop}
+                stopColor={shading.y.to}
+                stopOpacity={0}
+              />
+              <stop
+                offset="1"
+                stopColor={shading.y.to}
+                stopOpacity={SHADE_ALPHA}
+              />
+            </linearGradient>
+          </defs>
+        ) : null}
         <rect
           className="scatter-plot-bg"
           x={MARGIN.left}
@@ -308,6 +384,35 @@ export const PlayerScatter = memo(function PlayerScatter({
         />
 
         <g transform={`translate(${MARGIN.left} ${MARGIN.top})`}>
+          {shading ? (
+            <>
+              <rect
+                className="scatter-shade"
+                x={0}
+                y={0}
+                width={PLOT_WIDTH}
+                height={PLOT_HEIGHT}
+                fill={`url(#${gradientId}-x)`}
+              >
+                <title>
+                  Green is the good end of {xMetric.label.toLowerCase()} and of{" "}
+                  {yMetric.label.toLowerCase()}, fading to nothing at the{" "}
+                  {view.centreMode}. Both shades are on at once, so the corner
+                  that is good on both reads greenest and the mixed corners
+                  cancel out.
+                </title>
+              </rect>
+              <rect
+                className="scatter-shade"
+                x={0}
+                y={0}
+                width={PLOT_WIDTH}
+                height={PLOT_HEIGHT}
+                fill={`url(#${gradientId}-y)`}
+              />
+            </>
+          ) : null}
+
           {xScale.ticks.map((tick) => (
             <line
               key={`gx-${tick}`}
@@ -390,31 +495,15 @@ export const PlayerScatter = memo(function PlayerScatter({
                 .join(" ")}
             >
               <title>
-                What the best available looks like once the staircase of
-                unbeaten players is smoothed.{" "}
+                {edge.drawn.sigma} standard deviations above the average{" "}
+                {yMetric.label.toLowerCase()} of the players around the same{" "}
+                {xMetric.label.toLowerCase()}, measured in{" "}
+                {edge.drawn.bins.length} slices of the x-axis.{" "}
                 {edge.drawn.pioneers.length === 0
                   ? "Nobody clears it."
-                  : `${String(edge.drawn.pioneers.length)} players clear it; they are doing something the rest of the pool does not explain.`}
+                  : `${String(edge.drawn.pioneers.length)} players clear it.`}
               </title>
             </polyline>
-          ) : null}
-
-          {spot?.drawn ? (
-            <ellipse
-              className="scatter-sweet-spot"
-              cx={xScale(spot.drawn.centreX)}
-              cy={yScale(spot.drawn.centreY)}
-              rx={Math.abs(
-                xScale(spot.drawn.centreX + spot.drawn.radiusX) -
-                  xScale(spot.drawn.centreX),
-              )}
-              ry={Math.abs(
-                yScale(spot.drawn.centreY + spot.drawn.radiusY) -
-                  yScale(spot.drawn.centreY),
-              )}
-            >
-              <title>{spot.drawn.caption}</title>
-            </ellipse>
           ) : null}
 
           <g className="scatter-marks">
@@ -467,6 +556,30 @@ export const PlayerScatter = memo(function PlayerScatter({
               );
             })}
           </g>
+
+          {/* Said on the axes, because a reader who has just moved a slider is
+              looking at the chart and not at a table underneath it. */}
+          {points.length === 0 ? (
+            <>
+              <text
+                className="scatter-empty-title"
+                x={PLOT_WIDTH / 2}
+                y={PLOT_HEIGHT / 2 - 8}
+                textAnchor="middle"
+              >
+                Nothing survives these filters
+              </text>
+              <text
+                className="scatter-empty-hint"
+                x={PLOT_WIDTH / 2}
+                y={PLOT_HEIGHT / 2 + 18}
+                textAnchor="middle"
+              >
+                Drop the minutes threshold, widen the ownership band, or put a
+                position back.
+              </text>
+            </>
+          ) : null}
         </g>
 
         <g className="scatter-axis">

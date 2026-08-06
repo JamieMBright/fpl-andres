@@ -2,61 +2,29 @@ import type { Metric } from "./analysis-metrics";
 import type { AnalysisPlayer } from "./analysis-pool";
 
 /**
- * Where the good players are, drawn as a ring.
+ * The overlays the chart can draw over the cloud.
  *
- * Every metric declares which end of it is the good one, so the chart already
- * knows which corner is desirable without anyone naming it. This finds the
- * players who are in the top slice of *both* axes and rings them, so the eye
- * goes to the corner that matters rather than to whichever dot is biggest.
+ * The two originals were shapes fitted to individual players, and both were
+ * wrong for the same reason. The ring enclosed whoever was in the top fifth of
+ * both axes, which on uncorrelated axes is nobody, so the checkbox did nothing.
+ * The frontier joined the non-dominated set dot to dot, which by construction
+ * passes through the single highest x and the single highest y — usually two
+ * anomalies — and guarantees nobody can be above it.
+ *
+ * Neither was a statement about the distribution. What replaced them is
+ * background shading read straight off the reference lines, and a curve fitted
+ * to the spread inside x-slices rather than to whoever is furthest out.
  */
-
-export interface SweetSpot {
-  /** Centre and radii in data units, before any scale is applied. */
-  centreX: number;
-  centreY: number;
-  radiusX: number;
-  radiusY: number;
-  /** Player codes inside the ring, so the table can agree with the picture. */
-  codes: number[];
-  /** What the ring is claiming, in one line. */
-  caption: string;
-}
 
 /**
  * A drawn overlay, or the reason there is not one.
  *
- * The ring used to return `null` for four different situations and the chart
- * drew nothing for all of them, so a reader who ticked the box saw the box tick
- * and the chart not move. An overlay that cannot be drawn has to say so.
+ * Returning `null` for four different situations and drawing nothing for all of
+ * them is indistinguishable from a broken checkbox.
  */
 export interface Overlay<T> {
   drawn: T | null;
   reason: string | null;
-}
-
-/** The slice of each axis counted as "the good end". */
-const STANDOUT_QUANTILE = 0.8;
-/** Below this there is no distribution to speak of and a ring would be noise. */
-const MINIMUM_PLAYERS = 12;
-/** Padding so the ring encloses its members rather than clipping them. */
-const MARGIN = 1.18;
-
-function quantile(sorted: number[], fraction: number): number {
-  if (sorted.length === 0) return 0;
-  const index = Math.min(
-    sorted.length - 1,
-    Math.max(0, Math.round((sorted.length - 1) * fraction)),
-  );
-  return sorted[index] ?? 0;
-}
-
-/** True where the value is in the desirable tail of its own metric. */
-function standsOut(
-  value: number,
-  cut: number,
-  higherIsBetter: boolean,
-): boolean {
-  return higherIsBetter ? value >= cut : value <= cut;
 }
 
 /** "1 player" but "12 players". A count in prose has to read like prose. */
@@ -64,98 +32,29 @@ function players(count: number): string {
   return count === 1 ? "1 player is" : `${String(count)} players are`;
 }
 
-export function sweetSpot(
-  players_: readonly AnalysisPlayer[],
-  x: Metric,
-  y: Metric,
-): Overlay<SweetSpot> {
-  const points = players_
-    .map((player) => ({
-      player,
-      x: x.value(player),
-      y: y.value(player),
-    }))
-    .filter(
-      (point): point is { player: AnalysisPlayer; x: number; y: number } =>
-        point.x !== null && point.y !== null,
-    );
-  if (points.length < MINIMUM_PLAYERS) {
-    return {
-      drawn: null,
-      reason:
-        `Only ${players(points.length)} on these axes. ` +
-        `A top fifth of fewer than ${String(MINIMUM_PLAYERS)} is not a corner, it is a handful of dots. ` +
-        "Widen the ownership band or drop the minutes floor.",
-    };
-  }
-
-  const xs = points.map((point) => point.x).sort((a, b) => a - b);
-  const ys = points.map((point) => point.y).sort((a, b) => a - b);
-  const xCut = quantile(
-    xs,
-    x.higherIsBetter ? STANDOUT_QUANTILE : 1 - STANDOUT_QUANTILE,
-  );
-  const yCut = quantile(
-    ys,
-    y.higherIsBetter ? STANDOUT_QUANTILE : 1 - STANDOUT_QUANTILE,
-  );
-
-  const inside = points.filter(
-    (point) =>
-      standsOut(point.x, xCut, x.higherIsBetter) &&
-      standsOut(point.y, yCut, y.higherIsBetter),
-  );
-  // One player is a dot, not a region, and two is a line.
-  if (inside.length < 3) {
-    return {
-      drawn: null,
-      reason:
-        `Only ${players(inside.length)} in the top fifth of both ` +
-        `${x.label.toLowerCase()} and ${y.label.toLowerCase()} at once, so there is no corner to ring. ` +
-        "The two axes disagree about who is good, which is itself the finding.",
-    };
-  }
-
-  const centreX =
-    inside.reduce((total, point) => total + point.x, 0) / inside.length;
-  const centreY =
-    inside.reduce((total, point) => total + point.y, 0) / inside.length;
-  const radiusX =
-    Math.max(...inside.map((point) => Math.abs(point.x - centreX))) * MARGIN;
-  const radiusY =
-    Math.max(...inside.map((point) => Math.abs(point.y - centreY))) * MARGIN;
-
-  const better = (metric: Metric) => (metric.higherIsBetter ? "more" : "less");
-
-  return {
-    drawn: {
-      centreX,
-      centreY,
-      radiusX: radiusX || Math.abs(centreX) * 0.05 || 1,
-      radiusY: radiusY || Math.abs(centreY) * 0.05 || 1,
-      codes: inside.map((point) => point.player.code),
-      caption:
-        `${String(inside.length)} players in the top fifth of both axes: ` +
-        `${better(x)} ${x.label.toLowerCase()} and ${better(y)} ${y.label.toLowerCase()} ` +
-        `are both the good direction, so this corner is where the value is.`,
-    },
-    reason: null,
-  };
-}
-
-/** Points on the smoothed curve, and who cleared it. */
+/** Points on the curve, and who cleared it. */
 export interface Frontier {
-  /** The non-dominated set, in plotting order. Kept for the tooltip. */
-  hull: { x: number; y: number }[];
-  /** The smoothed curve, sampled densely enough to draw as one stroke. */
+  /** The curve, sampled densely enough to draw as one stroke. */
   curve: { x: number; y: number }[];
-  /** Players strictly beyond the smoothed curve, best first. */
+  /** The slice centres the curve was fitted to. */
+  bins: { x: number; y: number; members: number }[];
+  /** Players beyond the curve, furthest first. */
   pioneers: { code: number; name: string; margin: number }[];
+  /** How many standard deviations above the local mean the curve sits. */
+  sigma: number;
 }
 
-/** Fewer than this and a local regression is fitting noise to noise. */
-const MINIMUM_HULL = 4;
-/** Share of the frontier's x-range inside one local fit. */
+/** Below this there is no distribution to describe. */
+const MINIMUM_PLAYERS = 12;
+/** Slices of the x-range the spread is measured inside. */
+const BIN_COUNT = 10;
+/** A mean and a standard deviation over fewer than this is a rumour. */
+const MINIMUM_PER_BIN = 6;
+/** Usable slices needed before a curve can be drawn through them. */
+const MINIMUM_BINS = 3;
+/** How far above the local mean the bar sits. Two is the conventional outlier. */
+const SIGMA = 2;
+/** Share of the x-range inside one local fit, so the slices join smoothly. */
 const SPAN = 0.55;
 /** Sampled positions along the curve. Enough that the polyline reads as smooth. */
 const SAMPLES = 48;
@@ -206,24 +105,25 @@ function localFit(
 }
 
 /**
- * The best-available curve, smoothed, so somebody can be above it.
+ * What "unusually good for his x" looks like, as a curve.
  *
- * The non-dominated set is a staircase: it passes through every extreme point
- * by construction, so nobody is ever beyond it and the line says only "these
- * players exist". Joining those points dot to dot draws that staircase and
- * calls it a frontier.
+ * The x-range is cut into equal slices and the mean and standard deviation of y
+ * are measured inside each. The curve runs two standard deviations above the
+ * mean in the good direction, so it describes the spread of the pool rather
+ * than the position of its two furthest members. A slice holding too few
+ * players is dropped rather than given a standard deviation it has not earned.
  *
- * A local regression through the same points is a curve the pool as a whole
- * supports, and the players who clear it are the ones doing something the rest
- * of the distribution does not explain. Those are the pioneers, and they are
- * what a reader is actually looking for.
+ * Roughly one player in forty clears a two-sigma bar under a normal spread, and
+ * these distributions have fatter tails than that, so the crossing set stays
+ * small. Those are the pioneers: doing something at their price, minutes or
+ * defensive load that the rest of the pool at the same x does not.
  */
 export function frontier(
-  players_: readonly AnalysisPlayer[],
+  pool: readonly AnalysisPlayer[],
   x: Metric,
   y: Metric,
 ): Overlay<Frontier> {
-  const points = players_
+  const points = pool
     .map((player) => ({
       player,
       x: x.value(player),
@@ -237,44 +137,61 @@ export function frontier(
     return {
       drawn: null,
       reason:
-        `Only ${players(points.length)} on these axes, which is too few to say ` +
-        "what the best available looks like.",
+        `Only ${players(points.length)} on these axes, which is too few to measure ` +
+        "a spread inside.",
     };
   }
 
-  // Walk along the x-axis in the good direction, keeping anyone who improves on
-  // the best y seen so far. What survives is the non-dominated set.
-  const along = [...points].sort((left, right) =>
-    x.higherIsBetter ? left.x - right.x : right.x - left.x,
-  );
-  const kept: { x: number; y: number }[] = [];
-  let best = y.higherIsBetter ? -Infinity : Infinity;
-  // Backwards, because the best x is at the end of a run sorted the good way.
-  for (let index = along.length - 1; index >= 0; index -= 1) {
-    const point = along[index];
-    if (!point) continue;
-    const better = y.higherIsBetter ? point.y > best : point.y < best;
-    if (better) {
-      best = point.y;
-      kept.push({ x: point.x, y: point.y });
-    }
-  }
-  const hull = kept.reverse();
-  if (hull.length < MINIMUM_HULL) {
+  const lowX = Math.min(...points.map((point) => point.x));
+  const highX = Math.max(...points.map((point) => point.x));
+  if (highX <= lowX) {
     return {
       drawn: null,
       reason:
-        `Only ${players(hull.length)} unbeaten on both axes, so there is nothing to ` +
-        "smooth. One or two dominant players is a fact about them, not a curve.",
+        "Every player reads the same on this x-axis, so there are no slices to " +
+        "compare across.",
     };
   }
 
-  const lowX = Math.min(...hull.map((point) => point.x));
-  const highX = Math.max(...hull.map((point) => point.x));
-  const bandwidth = (highX - lowX) * SPAN;
+  const width = (highX - lowX) / BIN_COUNT;
+  const buckets: number[][] = Array.from({ length: BIN_COUNT }, () => []);
+  for (const point of points) {
+    const index = Math.min(BIN_COUNT - 1, Math.floor((point.x - lowX) / width));
+    buckets[index]?.push(point.y);
+  }
+
+  const bins: { x: number; y: number; members: number }[] = [];
+  for (const [index, values] of buckets.entries()) {
+    if (values.length < MINIMUM_PER_BIN) continue;
+    const mean =
+      values.reduce((total, value) => total + value, 0) / values.length;
+    const deviation = Math.sqrt(
+      values.reduce((total, value) => total + (value - mean) ** 2, 0) /
+        values.length,
+    );
+    bins.push({
+      x: lowX + width * (index + 0.5),
+      y: y.higherIsBetter ? mean + SIGMA * deviation : mean - SIGMA * deviation,
+      members: values.length,
+    });
+  }
+
+  if (bins.length < MINIMUM_BINS) {
+    return {
+      drawn: null,
+      reason:
+        `Only ${String(bins.length)} of ${String(BIN_COUNT)} slices of this x-axis hold ` +
+        `${String(MINIMUM_PER_BIN)} players or more, so there is no spread to measure ` +
+        "across it. Widen the ownership band or drop the minutes floor.",
+    };
+  }
+
+  const firstBin = bins[0]!;
+  const lastBin = bins.at(-1)!;
+  const bandwidth = (lastBin.x - firstBin.x) * SPAN;
   const curve = Array.from({ length: SAMPLES }, (_, index) => {
-    const at = lowX + ((highX - lowX) * index) / (SAMPLES - 1);
-    return { x: at, y: localFit(hull, at, bandwidth) };
+    const at = firstBin.x + ((lastBin.x - firstBin.x) * index) / (SAMPLES - 1);
+    return { x: at, y: localFit(bins, at, bandwidth) };
   });
 
   const above = (value: number, reference: number) =>
@@ -289,7 +206,7 @@ export function frontier(
     .filter((entry) => entry.margin > 0)
     .sort((left, right) => right.margin - left.margin);
 
-  return { drawn: { hull, curve, pioneers }, reason: null };
+  return { drawn: { curve, bins, pioneers, sigma: SIGMA }, reason: null };
 }
 
 /** The curve's y at an arbitrary x, clamped to its ends. */
@@ -343,11 +260,11 @@ export const BIN_RAMP = [
  * colour ramp and expects the steps to mean the same thing all the way along.
  */
 export function binsFor(
-  players: readonly AnalysisPlayer[],
+  pool: readonly AnalysisPlayer[],
   metric: Metric,
   count: number,
 ): Bin[] {
-  const values = players
+  const values = pool
     .map((player) => metric.value(player))
     .filter((value): value is number => value !== null);
   if (values.length === 0) return [];

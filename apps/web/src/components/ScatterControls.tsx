@@ -327,7 +327,7 @@ export function ScatterControls({
               checked={view.sweetSpot}
               onChange={() => onChange({ sweetSpot: !view.sweetSpot })}
             />
-            Ring the best corner
+            Shade the good corner
           </label>
           <label className="scatter-check">
             <input
@@ -335,7 +335,7 @@ export function ScatterControls({
               checked={view.frontier}
               onChange={() => onChange({ frontier: !view.frontier })}
             />
-            Frontier curve
+            Two-sigma curve
           </label>
         </fieldset>
 

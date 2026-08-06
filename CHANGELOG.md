@@ -8,6 +8,19 @@ The project follows Semantic Versioning once milestone tags begin.
 
 ### Added
 
+- The backtest runs itself. `.github/workflows/validate-model.yml` reruns
+  `fpl_andres.cli.validate` on every change to the projection that lands on
+  main, appends a row to `model-history.json`, commits both back, and prints a
+  before/after table of every headline metric that moved. The corpus lives in
+  Supabase, so this had never run anywhere but by hand — which is how the
+  calibration page came to claim the naive baseline was winning months after it
+  had stopped.
+- The projection carries a version. `MODEL_VERSION` is stamped into the
+  artifact, and `scripts/model-version-gate.mjs` fails the build if anything
+  under `models/`, `backtesting/` or `rules.py` moves without it. Two runs a
+  month apart were otherwise indistinguishable from one model measured over two
+  corpora.
+
 - Pre-season Team ID entry is no longer a dead end. Before the first deadline the
   team page shows the manager's historical record and a rule-checked builder for
   the fifteen he is starting with: squad shape, one-hundred-million budget and the
@@ -27,10 +40,12 @@ The project follows Semantic Versioning once milestone tags begin.
   the headline comparison was a superset against its own component; `components`
   is the number that says whether the fourteen-route pricing carries itself. It
   was computed on every run and discarded before it reached the artifact.
-- The frontier overlay fits a local regression under the non-dominated set
-  instead of joining it dot to dot. The staircase passes through every extreme
-  point by construction, so nobody could ever be above it and the line said only
-  "these players exist". Players who clear the smoothed curve are marked.
+- The frontier is fitted to the distribution rather than to individuals. The
+  x-range is cut into ten slices, the mean and standard deviation of y are
+  measured inside each, and the curve runs two standard deviations above the
+  mean. The old non-dominated staircase passed through the single highest x and
+  the single highest y — usually two anomalies — and guaranteed nobody could be
+  above it. Players who clear the new curve are marked as pioneers.
 
 ### Fixed
 
@@ -43,10 +58,23 @@ The project follows Semantic Versioning once milestone tags begin.
 - The away and third kits were swapped. The green and navy shirt in
   `docs/design/inspiration/` is the 1994 away kit; the yellow and blue is the
   third. The default palette is unchanged — only its name and the toggle order.
-- The plot configuration sits under the chart rather than beside it.
-- "Ring the best corner" and the frontier now say why they drew nothing when they
-  cannot draw. Both returned `null` for four different reasons and the chart drew
-  nothing for all of them, which reads as a broken checkbox.
+- The plot configuration, how-to-read and compare panels are collapsed boxes
+  stacked under the chart at the chart's own width, instead of a three-column
+  grid of three different widths.
+- "Ring the best corner" is now "Shade the good corner", and it shades. The ring
+  enclosed whoever was in the top fifth of both axes, which on the opening axes
+  is one player, so the checkbox did nothing. Two overlaid gradients — one per
+  axis, each fading to nothing at that axis's median or mean line — leave the
+  good corner green, the bad corner red and the mixed corners neutral.
+- The empty-filter message moved onto the axes, where a reader who has just
+  moved a slider is looking, rather than under a table that is also empty.
+- The y-axis reserves a little space at its foot so the watermark always lands
+  on clear background.
+- Switching to a past season and failing to download it left the reader with no
+  season picker, because the picker lives inside the body and the body needs a
+  pool. The page now does what it says and puts you back on this season, and
+  offers a way back while the download is in flight.
+- The methodology page is about a third shorter, with the numbers leading.
 - The analysis season picker named the live option "This season, as it stands"
   while plotting last season's totals. Between seasons FPL keeps those totals
   under the same column names; the option now names the vintage it is showing and

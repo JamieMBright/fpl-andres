@@ -565,6 +565,18 @@ a:focus-visible {
   max-width: 800px;
 }
 
+/* A chart page is a Teletext page: the title is set in the body mono at a size
+   that leads the content instead of competing with it. The display face is for
+   the landing page, where the headline is the whole screen. */
+.analysis-page h1 {
+  max-width: 720px;
+  font-family: var(--fa-body);
+  font-size: clamp(20px, 2.4vw, 28px);
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  line-height: 1.2;
+}
+
 .evidence-banner {
   display: flex;
   gap: 12px;
@@ -3839,27 +3851,18 @@ a:focus-visible {
 
 .analysis-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(230px, 300px);
-  /* The pickers belong under the axes they move, not beside them: a control
-     to the left of a chart is read before anyone knows what it would change. */
-  grid-template-areas:
-    "chart pinned"
-    "controls pinned";
+  /* One column, so the chart and every panel under it are the same width.
+     Pickers beside a chart get read before anyone knows what they change, and
+     three boxes of three widths reads as three unrelated things. */
+  grid-template-columns: minmax(0, 1fr);
   gap: 24px;
   align-items: start;
   margin-top: 24px;
 }
 
-.analysis-chart {
-  grid-area: chart;
-}
-
-.analysis-controls {
-  grid-area: controls;
-}
-
-.analysis-pinned {
-  grid-area: pinned;
+.analysis-panels {
+  display: grid;
+  gap: 12px;
 }
 
 .analysis-vintage,
@@ -3999,12 +4002,30 @@ a:focus-visible {
 }
 
 /* Where both axes are at their good end, from each metric's own direction. */
-.scatter-sweet-spot {
-  fill: #00c85312;
-  stroke: #00c853;
-  stroke-width: 2;
-  stroke-dasharray: 7 5;
+/* Two overlaid gradients, one per axis, each fading out at that axis's
+   reference line. Decoration under five hundred marks, so it must never take a
+   pointer event or carry meaning on its own. */
+.scatter-shade {
   pointer-events: none;
+}
+
+.scatter-shade:first-of-type {
+  pointer-events: auto;
+}
+
+/* Said on the axes, where a reader who just moved a slider is looking. */
+.scatter-empty-title {
+  fill: var(--ink);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.scatter-empty-hint {
+  fill: var(--ink-soft);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 12px;
 }
 
 /* Nobody sits beyond this on both axes at once. */
@@ -4634,10 +4655,6 @@ a:focus-visible {
 @media (max-width: 1100px) {
   .analysis-layout {
     grid-template-columns: minmax(0, 1fr);
-    grid-template-areas:
-      "chart"
-      "controls"
-      "pinned";
   }
 }
 
