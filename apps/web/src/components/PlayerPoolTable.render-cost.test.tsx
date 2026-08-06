@@ -43,6 +43,13 @@ import { rateFixtureRun, type FixtureRun } from "../state/fixture-run";
  * Linearity is also the property that actually decides the question: a table
  * costing proportionally more per row as rows are added is one where a cap is
  * load-bearing. This one is not.
+ *
+ * The two sides of the ratio are measured INTERLEAVED rather than one after the
+ * other. Measuring all the small samples and then all the large ones only
+ * divides out load that is steady for the whole run: a burst arriving during
+ * the second block lands entirely in the numerator, and the ratio blows past
+ * the bound on a table whose scaling never changed. Alternating them puts any
+ * burst on both sides, which is what makes the division work.
  */
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -106,22 +113,45 @@ function Table({ data }: { data: Row[] }) {
 }
 
 /** Median rather than mean: one scheduler hiccup should not move the answer. */
-function medianRerenderMs(count: number, samples: number): number {
-  const data = rows(count);
-  const { rerender, unmount } = render(<Table data={data} />);
-  rerender(<Table data={[...data]} />);
+function median(values: number[]): number {
+  const sorted = [...values].sort((one, other) => one - other);
+  return sorted[Math.floor(sorted.length / 2)] ?? 0;
+}
 
-  const timings: number[] = [];
+/**
+ * Re-render both table sizes the same number of times, alternating.
+ *
+ * Returns the median cost of each. Both are mounted before either is timed, so
+ * neither pays the other's warm-up.
+ */
+function interleavedRerenderMs(
+  small: number,
+  large: number,
+  samples: number,
+): { small: number; large: number } {
+  const smallData = rows(small);
+  const largeData = rows(large);
+  const smallView = render(<Table data={smallData} />);
+  const largeView = render(<Table data={largeData} />);
+  smallView.rerender(<Table data={[...smallData]} />);
+  largeView.rerender(<Table data={[...largeData]} />);
+
+  const smallTimings: number[] = [];
+  const largeTimings: number[] = [];
   for (let index = 0; index < samples; index += 1) {
-    const startedAt = performance.now();
     // A fresh array each time, which is what an unrelated parent state change
     // actually produces.
-    rerender(<Table data={[...data]} />);
-    timings.push(performance.now() - startedAt);
+    const smallStartedAt = performance.now();
+    smallView.rerender(<Table data={[...smallData]} />);
+    smallTimings.push(performance.now() - smallStartedAt);
+
+    const largeStartedAt = performance.now();
+    largeView.rerender(<Table data={[...largeData]} />);
+    largeTimings.push(performance.now() - largeStartedAt);
   }
-  unmount();
-  timings.sort((one, other) => one - other);
-  return timings[Math.floor(timings.length / 2)] ?? 0;
+  smallView.unmount();
+  largeView.unmount();
+  return { small: median(smallTimings), large: median(largeTimings) };
 }
 
 describe("player pool table render cost", () => {
@@ -129,8 +159,7 @@ describe("player pool table render cost", () => {
     // 3.5x the rows should cost about 3.5x the time. Anything superlinear --
     // an O(n^2) layout, a per-row scan of the whole list -- is the shape that
     // makes a cap load-bearing and virtualisation worth its cost.
-    const small = medianRerenderMs(200, 15);
-    const large = medianRerenderMs(700, 10);
+    const { small, large } = interleavedRerenderMs(200, 700, 15);
 
     expect(small).toBeGreaterThan(0);
     // 3.5x rows, allowed up to 7x the time before this is called superlinear.
