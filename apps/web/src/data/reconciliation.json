@@ -1,0 +1,282 @@
+{
+  "generatedAt": "2026-08-06T10:55:13.246973+00:00",
+  "modelVersion": "2.2",
+  "seasons": [
+    {
+      "season": "2022-23",
+      "rows": 26505,
+      "exact": 26505,
+      "exactShare": 1.0,
+      "awarded": 31724,
+      "rebuilt": 31724,
+      "residual": 0,
+      "absoluteResidual": 0,
+      "byPosition": {},
+      "worst": []
+    },
+    {
+      "season": "2023-24",
+      "rows": 29725,
+      "exact": 29725,
+      "exactShare": 1.0,
+      "awarded": 31271,
+      "rebuilt": 31271,
+      "residual": 0,
+      "absoluteResidual": 0,
+      "byPosition": {},
+      "worst": []
+    },
+    {
+      "season": "2024-25",
+      "rows": 27605,
+      "exact": 27354,
+      "exactShare": 0.99091,
+      "awarded": 33151,
+      "rebuilt": 31290,
+      "residual": -1861,
+      "absoluteResidual": 1861,
+      "byPosition": {
+        "type-5": -1861
+      },
+      "worst": [
+        {
+          "gameweek": 25,
+          "name": "Hürzeler",
+          "position": "type-5",
+          "awarded": 21,
+          "rebuilt": 0,
+          "residual": -21,
+          "routes": {}
+        },
+        {
+          "gameweek": 24,
+          "name": "Pereira",
+          "position": "type-5",
+          "awarded": 20,
+          "rebuilt": 0,
+          "residual": -20,
+          "routes": {}
+        },
+        {
+          "gameweek": 26,
+          "name": "Glasner",
+          "position": "type-5",
+          "awarded": 20,
+          "rebuilt": 0,
+          "residual": -20,
+          "routes": {}
+        },
+        {
+          "gameweek": 27,
+          "name": "Glasner",
+          "position": "type-5",
+          "awarded": 20,
+          "rebuilt": 0,
+          "residual": -20,
+          "routes": {}
+        },
+        {
+          "gameweek": 34,
+          "name": "Frank",
+          "position": "type-5",
+          "awarded": 20,
+          "rebuilt": 0,
+          "residual": -20,
+          "routes": {}
+        },
+        {
+          "gameweek": 38,
+          "name": "Amorim",
+          "position": "type-5",
+          "awarded": 20,
+          "rebuilt": 0,
+          "residual": -20,
+          "routes": {}
+        },
+        {
+          "gameweek": 23,
+          "name": "Moyes",
+          "position": "type-5",
+          "awarded": 19,
+          "rebuilt": 0,
+          "residual": -19,
+          "routes": {}
+        },
+        {
+          "gameweek": 26,
+          "name": "Potter",
+          "position": "type-5",
+          "awarded": 19,
+          "rebuilt": 0,
+          "residual": -19,
+          "routes": {}
+        },
+        {
+          "gameweek": 26,
+          "name": "Pereira",
+          "position": "type-5",
+          "awarded": 19,
+          "rebuilt": 0,
+          "residual": -19,
+          "routes": {}
+        },
+        {
+          "gameweek": 31,
+          "name": "Silva",
+          "position": "type-5",
+          "awarded": 19,
+          "rebuilt": 0,
+          "residual": -19,
+          "routes": {}
+        },
+        {
+          "gameweek": 32,
+          "name": "Moyes",
+          "position": "type-5",
+          "awarded": 19,
+          "rebuilt": 0,
+          "residual": -19,
+          "routes": {}
+        },
+        {
+          "gameweek": 37,
+          "name": "Hürzeler",
+          "position": "type-5",
+          "awarded": 19,
+          "rebuilt": 0,
+          "residual": -19,
+          "routes": {}
+        },
+        {
+          "gameweek": 38,
+          "name": "Moyes",
+          "position": "type-5",
+          "awarded": 19,
+          "rebuilt": 0,
+          "residual": -19,
+          "routes": {}
+        },
+        {
+          "gameweek": 24,
+          "name": "Silva",
+          "position": "type-5",
+          "awarded": 18,
+          "rebuilt": 0,
+          "residual": -18,
+          "routes": {}
+        },
+        {
+          "gameweek": 25,
+          "name": "Silva",
+          "position": "type-5",
+          "awarded": 18,
+          "rebuilt": 0,
+          "residual": -18,
+          "routes": {}
+        },
+        {
+          "gameweek": 30,
+          "name": "McKenna",
+          "position": "type-5",
+          "awarded": 18,
+          "rebuilt": 0,
+          "residual": -18,
+          "routes": {}
+        },
+        {
+          "gameweek": 35,
+          "name": "Iraola",
+          "position": "type-5",
+          "awarded": 18,
+          "rebuilt": 0,
+          "residual": -18,
+          "routes": {}
+        },
+        {
+          "gameweek": 24,
+          "name": "Nuno",
+          "position": "type-5",
+          "awarded": 15,
+          "rebuilt": 0,
+          "residual": -15,
+          "routes": {}
+        },
+        {
+          "gameweek": 23,
+          "name": "Iraola",
+          "position": "type-5",
+          "awarded": 13,
+          "rebuilt": 0,
+          "residual": -13,
+          "routes": {}
+        },
+        {
+          "gameweek": 32,
+          "name": "Howe",
+          "position": "type-5",
+          "awarded": 13,
+          "rebuilt": 0,
+          "residual": -13,
+          "routes": {}
+        },
+        {
+          "gameweek": 24,
+          "name": "Moyes",
+          "position": "type-5",
+          "awarded": 12,
+          "rebuilt": 0,
+          "residual": -12,
+          "routes": {}
+        },
+        {
+          "gameweek": 25,
+          "name": "Guardiola",
+          "position": "type-5",
+          "awarded": 12,
+          "rebuilt": 0,
+          "residual": -12,
+          "routes": {}
+        },
+        {
+          "gameweek": 26,
+          "name": "Hürzeler",
+          "position": "type-5",
+          "awarded": 12,
+          "rebuilt": 0,
+          "residual": -12,
+          "routes": {}
+        },
+        {
+          "gameweek": 26,
+          "name": "Frank",
+          "position": "type-5",
+          "awarded": 12,
+          "rebuilt": 0,
+          "residual": -12,
+          "routes": {}
+        },
+        {
+          "gameweek": 27,
+          "name": "Maresca",
+          "position": "type-5",
+          "awarded": 12,
+          "rebuilt": 0,
+          "residual": -12,
+          "routes": {}
+        }
+      ]
+    },
+    {
+      "season": "2025-26",
+      "rows": 29747,
+      "exact": 29747,
+      "exactShare": 1.0,
+      "awarded": 34382,
+      "rebuilt": 34382,
+      "residual": 0,
+      "absoluteResidual": 0,
+      "byPosition": {},
+      "worst": []
+    }
+  ]
+}
