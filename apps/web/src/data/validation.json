@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-08-06T07:49:17.559081+00:00",
-  "modelVersion": "2.1",
+  "generatedAt": "2026-08-06T09:53:34.437529+00:00",
+  "modelVersion": "2.2",
   "seasons": [
     {
       "season": "2022-23",
@@ -190,22 +190,32 @@
         {
           "label": "differential",
           "gameweeks": 31,
-          "meanPoints": 4.065,
+          "meanPoints": 6.258,
           "meanBestPoints": 15.452,
-          "regret": 11.387,
-          "shareOfCeiling": 0.263,
-          "perfectWeeks": 2,
-          "blankRate": 0.581
+          "regret": 9.194,
+          "shareOfCeiling": 0.405,
+          "perfectWeeks": 1,
+          "blankRate": 0.323
         },
         {
           "label": "template",
           "gameweeks": 31,
-          "meanPoints": 6.742,
+          "meanPoints": 7.968,
           "meanBestPoints": 15.452,
-          "regret": 8.71,
-          "shareOfCeiling": 0.436,
+          "regret": 7.484,
+          "shareOfCeiling": 0.516,
           "perfectWeeks": 2,
-          "blankRate": 0.387
+          "blankRate": 0.29
+        },
+        {
+          "label": "ceiling_and_fixture",
+          "gameweeks": 31,
+          "meanPoints": 6.935,
+          "meanBestPoints": 15.452,
+          "regret": 8.516,
+          "shareOfCeiling": 0.449,
+          "perfectWeeks": 4,
+          "blankRate": 0.258
         }
       ],
       "league": {
@@ -813,22 +823,32 @@
         {
           "label": "differential",
           "gameweeks": 32,
-          "meanPoints": 3.438,
+          "meanPoints": 7.0,
           "meanBestPoints": 15.406,
-          "regret": 11.969,
-          "shareOfCeiling": 0.223,
-          "perfectWeeks": 2,
-          "blankRate": 0.594
+          "regret": 8.406,
+          "shareOfCeiling": 0.454,
+          "perfectWeeks": 4,
+          "blankRate": 0.25
         },
         {
           "label": "template",
           "gameweeks": 32,
-          "meanPoints": 5.812,
+          "meanPoints": 6.125,
           "meanBestPoints": 15.406,
-          "regret": 9.594,
-          "shareOfCeiling": 0.377,
-          "perfectWeeks": 4,
-          "blankRate": 0.469
+          "regret": 9.281,
+          "shareOfCeiling": 0.398,
+          "perfectWeeks": 2,
+          "blankRate": 0.375
+        },
+        {
+          "label": "ceiling_and_fixture",
+          "gameweeks": 32,
+          "meanPoints": 5.312,
+          "meanBestPoints": 15.406,
+          "regret": 10.094,
+          "shareOfCeiling": 0.345,
+          "perfectWeeks": 1,
+          "blankRate": 0.406
         }
       ],
       "league": {
@@ -1436,22 +1456,32 @@
         {
           "label": "differential",
           "gameweeks": 32,
-          "meanPoints": 2.312,
+          "meanPoints": 8.469,
           "meanBestPoints": 14.531,
-          "regret": 12.219,
-          "shareOfCeiling": 0.159,
-          "perfectWeeks": 0,
-          "blankRate": 0.75
+          "regret": 6.062,
+          "shareOfCeiling": 0.583,
+          "perfectWeeks": 9,
+          "blankRate": 0.281
         },
         {
           "label": "template",
           "gameweeks": 32,
-          "meanPoints": 7.781,
+          "meanPoints": 8.719,
           "meanBestPoints": 14.531,
-          "regret": 6.75,
-          "shareOfCeiling": 0.535,
-          "perfectWeeks": 8,
-          "blankRate": 0.375
+          "regret": 5.812,
+          "shareOfCeiling": 0.6,
+          "perfectWeeks": 9,
+          "blankRate": 0.281
+        },
+        {
+          "label": "ceiling_and_fixture",
+          "gameweeks": 32,
+          "meanPoints": 6.875,
+          "meanBestPoints": 14.531,
+          "regret": 7.656,
+          "shareOfCeiling": 0.473,
+          "perfectWeeks": 6,
+          "blankRate": 0.312
         }
       ],
       "league": {
@@ -2059,22 +2089,32 @@
         {
           "label": "differential",
           "gameweeks": 32,
-          "meanPoints": 3.406,
+          "meanPoints": 5.344,
           "meanBestPoints": 13.5,
-          "regret": 10.094,
-          "shareOfCeiling": 0.252,
-          "perfectWeeks": 1,
-          "blankRate": 0.562
+          "regret": 8.156,
+          "shareOfCeiling": 0.396,
+          "perfectWeeks": 4,
+          "blankRate": 0.438
         },
         {
           "label": "template",
           "gameweeks": 32,
-          "meanPoints": 5.156,
+          "meanPoints": 5.656,
           "meanBestPoints": 13.5,
-          "regret": 8.344,
-          "shareOfCeiling": 0.382,
-          "perfectWeeks": 6,
-          "blankRate": 0.531
+          "regret": 7.844,
+          "shareOfCeiling": 0.419,
+          "perfectWeeks": 5,
+          "blankRate": 0.406
+        },
+        {
+          "label": "ceiling_and_fixture",
+          "gameweeks": 32,
+          "meanPoints": 4.719,
+          "meanBestPoints": 13.5,
+          "regret": 8.781,
+          "shareOfCeiling": 0.35,
+          "perfectWeeks": 3,
+          "blankRate": 0.438
         }
       ],
       "league": {
