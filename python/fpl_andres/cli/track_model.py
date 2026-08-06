@@ -47,6 +47,7 @@ PERFORMANCE_MARKERS = (
     "<!-- measured-performance:end -->",
 )
 CAPTAINCY_MARKERS = ("<!-- captaincy:start -->", "<!-- captaincy:end -->")
+POLICY_MARKERS = ("<!-- captain-policies:start -->", "<!-- captain-policies:end -->")
 
 #: U+2212, because a hyphen in front of a number is not a minus sign.
 MINUS = "\u2212"
@@ -198,8 +199,43 @@ def render_captaincy(report: dict[str, Any]) -> str:
     return "\n".join(rows)
 
 
+def render_policies(report: dict[str, Any]) -> str:
+    """Every captaincy thesis, averaged over the seasons it was scored on.
+
+    Per-season rows would be nine policies times four seasons and nobody would
+    read them; the artifact keeps those. What the card needs is the season count
+    a policy won, because a thesis that wins once and loses three times is a
+    thesis that got lucky.
+    """
+    totals: dict[str, list[float]] = {}
+    wins: dict[str, int] = {}
+    for season in report.get("seasons", []):
+        entries = season.get("captainPolicies", [])
+        scored = [entry for entry in entries if isinstance(entry.get("meanPoints"), (int, float))]
+        if not scored:
+            continue
+        best = max(float(entry["meanPoints"]) for entry in scored)
+        for entry in scored:
+            label = str(entry.get("label"))
+            totals.setdefault(label, []).append(float(entry["meanPoints"]))
+            wins.setdefault(label, 0)
+            if float(entry["meanPoints"]) == best:
+                wins[label] += 1
+    if not totals:
+        return "Not yet measured."
+
+    seasons = max(len(values) for values in totals.values())
+    rows = [
+        f"| Thesis | Mean captain points | Seasons won (of {seasons}) |",
+        "| ------ | ------------------- | -------------------------- |",
+    ]
+    for label in sorted(totals, key=lambda key: -sum(totals[key]) / len(totals[key])):
+        values = totals[label]
+        rows.append(f"| `{label}` | {sum(values) / len(values):.2f} | {wins.get(label, 0)} |")
+    return "\n".join(rows)
+
+
 def replace_between(text: str, markers: tuple[str, str], body: str) -> str:
-    """Swap what sits between two markers, keeping the markers themselves."""
     start, end = markers
     if start not in text or end not in text:
         raise ValueError(f"{start} and {end} must both appear in the document")
@@ -223,6 +259,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     card = args.card.read_text(encoding="utf-8")
     card = replace_between(card, PERFORMANCE_MARKERS, render_performance(report))
     card = replace_between(card, CAPTAINCY_MARKERS, render_captaincy(report))
+    card = replace_between(card, POLICY_MARKERS, render_policies(report))
     args.card.write_text(card, encoding="utf-8")
     print(f"model card: tables rewritten in {args.card}.")
 

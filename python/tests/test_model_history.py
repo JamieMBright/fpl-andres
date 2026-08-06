@@ -19,6 +19,7 @@ from fpl_andres.cli.track_model import (
     merge_history,
     render_captaincy,
     render_performance,
+    render_policies,
     replace_between,
 )
 from fpl_andres.model_version import MODEL_VERSION
@@ -229,3 +230,58 @@ class TestCardTables:
         assert "`model`" in table
         assert "8.75" in table
         assert "14.53" in table
+
+
+class TestPolicyTable:
+    """Nine theses is nine chances to win by luck, so the card counts seasons."""
+
+    def _report(self, *seasons: dict[str, float]) -> dict[str, Any]:
+        return {
+            "seasons": [
+                {
+                    "season": f"20{20 + index}-{21 + index}",
+                    "captainPolicies": [
+                        {"label": label, "meanPoints": mean} for label, mean in season.items()
+                    ],
+                }
+                for index, season in enumerate(seasons)
+            ]
+        }
+
+    def test_a_thesis_that_wins_once_is_not_reported_as_the_winner(self) -> None:
+        # `lucky` tops one season by a mile and loses the other three. Ranking
+        # on the mean alone would crown it; the season count is what stops that.
+        report = self._report(
+            {"steady": 7.0, "lucky": 20.0},
+            {"steady": 7.0, "lucky": 1.0},
+            {"steady": 7.0, "lucky": 1.0},
+            {"steady": 7.0, "lucky": 1.0},
+        )
+        table = render_policies(report)
+        rows = {line.split("|")[1].strip(): line for line in table.splitlines() if "`" in line}
+        assert rows["`steady`"].strip().endswith("3 |")
+        assert rows["`lucky`"].strip().endswith("1 |")
+
+    def test_the_header_names_how_many_seasons_were_scored(self) -> None:
+        assert "of 2" in render_policies(self._report({"a": 5.0, "b": 4.0}, {"a": 5.0, "b": 4.0}))
+
+    def test_an_unscored_policy_set_says_so(self) -> None:
+        assert render_policies({"seasons": [{"season": "2024-25"}]}) == "Not yet measured."
+
+    def test_a_policy_with_no_mean_is_left_out_rather_than_counted_as_zero(
+        self,
+    ) -> None:
+        report = {
+            "seasons": [
+                {
+                    "season": "2024-25",
+                    "captainPolicies": [
+                        {"label": "scored", "meanPoints": 6.0},
+                        {"label": "silent", "meanPoints": None},
+                    ],
+                }
+            ]
+        }
+        table = render_policies(report)
+        assert "`scored`" in table
+        assert "`silent`" not in table

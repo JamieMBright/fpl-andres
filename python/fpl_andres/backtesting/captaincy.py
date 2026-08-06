@@ -34,10 +34,13 @@ from __future__ import annotations
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
 
+from fpl_andres.backtesting.captain_policies import CAPTAIN_POLICIES, CaptainCandidate
+
 __all__ = [
     "SHORTLIST_SIZE",
     "CaptaincyScore",
     "score_captaincy",
+    "score_policies",
 ]
 
 # How many of the most-owned players a captain is picked from. Twenty-five is
@@ -85,6 +88,36 @@ class CaptaincyScore:
         return self.blank_weeks / self.gameweeks if self.gameweeks else None
 
 
+def score_policies(
+    candidates: Sequence[CaptainCandidate],
+    actual: Mapping[int, int],
+    scores: Mapping[str, CaptaincyScore],
+    *,
+    shortlist_size: int = SHORTLIST_SIZE,
+) -> None:
+    """Score every competing captaincy thesis on the same gameweek.
+
+    The shortlist is the most-owned players who have a realised score, exactly
+    as for the ranking methods, so a policy that likes differentials is still
+    choosing from a squad somebody could plausibly have owned. Left to the whole
+    pool it would captain the week's cheapest hat-trick and report skill.
+    """
+    ranked = sorted(candidates, key=lambda entry: (-entry.ownership, entry.element_id))
+    shortlist = [entry for entry in ranked if entry.element_id in actual][:shortlist_size]
+    if not shortlist:
+        return
+
+    best = max(actual[entry.element_id] for entry in shortlist)
+    for label, policy in CAPTAIN_POLICIES.items():
+        score = scores.get(label)
+        if score is None:
+            continue
+        pick = policy(shortlist)
+        if pick is None or pick not in actual:
+            continue
+        _record(score, actual[pick], best)
+
+
 def score_captaincy(
     methods: Mapping[str, Mapping[int, float]],
     ownership: Mapping[int, float],
@@ -115,17 +148,20 @@ def score_captaincy(
         pick = _pick(shortlist, ranking)
         if pick is None:
             continue
-        returned = actual[pick]
-        score.gameweeks += 1
-        score.captain_points += returned
-        score.best_points += best
-        score.weekly.append(returned)
-        if returned == best:
-            score.perfect_weeks += 1
-        if returned <= 2:
-            # Two points is an appearance and nothing else. Doubling it is the
-            # week a captaincy call is remembered for.
-            score.blank_weeks += 1
+        _record(score, actual[pick], best)
+
+
+def _record(score: CaptaincyScore, returned: int, best: int) -> None:
+    score.gameweeks += 1
+    score.captain_points += returned
+    score.best_points += best
+    score.weekly.append(returned)
+    if returned == best:
+        score.perfect_weeks += 1
+    if returned <= 2:
+        # Two points is an appearance and nothing else. Doubling it is the week
+        # a captaincy call is remembered for.
+        score.blank_weeks += 1
 
 
 def _shortlist(

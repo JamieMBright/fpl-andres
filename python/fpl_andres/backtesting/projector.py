@@ -594,6 +594,31 @@ def baseline_recent_mean(
     }
 
 
+def baseline_recent_deviation(
+    corpus: SeasonCorpus, gameweek: int, *, window: int = 5
+) -> dict[int, float]:
+    """Spread of the same window the recent mean averages.
+
+    Two captaincy theses pull in opposite directions on it -- one wants the
+    ceiling, one wants the certainty -- so both read the same number rather
+    than each computing its own and disagreeing about what it measured.
+    """
+    totals: dict[int, list[int]] = {}
+    for event in range(max(1, gameweek - window), gameweek):
+        for element_id, points in corpus.actual_points(event).items():
+            totals.setdefault(element_id, []).append(points)
+    spread: dict[int, float] = {}
+    for element_id, scored in totals.items():
+        if len(scored) < 2:
+            # One observation has no spread. Zero says "unknown", which both
+            # policies then treat as "no adjustment".
+            spread[element_id] = 0.0
+            continue
+        mean = sum(scored) / len(scored)
+        spread[element_id] = (sum((value - mean) ** 2 for value in scored) / len(scored)) ** 0.5
+    return spread
+
+
 def baseline_ownership(corpus: SeasonCorpus, gameweek: int) -> dict[int, float]:
     """Ownership at the previous gameweek. The crowd's own answer."""
     previous = gameweek - 1

@@ -169,6 +169,20 @@ def main(argv: Sequence[str] | None = None) -> int:
                 for label, pick in ((label, scored.captaincy[label]) for label in METHOD_LABELS)
             ]
 
+            captain_policies = [
+                {
+                    "label": label,
+                    "gameweeks": pick.gameweeks,
+                    "meanPoints": _round(pick.mean_points),
+                    "meanBestPoints": _round(pick.mean_best_points),
+                    "regret": _round(pick.regret),
+                    "shareOfCeiling": _round(pick.share_of_ceiling),
+                    "perfectWeeks": pick.perfect_weeks,
+                    "blankRate": _round(pick.blank_rate),
+                }
+                for label, pick in scored.captain_policies.items()
+            ]
+
             totals: dict[str, list[int]] = {policy: [] for policy in POLICIES}
             chips: dict[str, dict[str, int]] = {}
             squads: dict[str, list[dict[str, object]]] = {}
@@ -206,6 +220,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                     "corpusFingerprint": corpus.fingerprint,
                     "methods": methods,
                     "captaincy": captaincy,
+                    "captainPolicies": captain_policies,
                     "league": {
                         "policies": {
                             policy: {

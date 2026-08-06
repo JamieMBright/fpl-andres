@@ -218,6 +218,47 @@ is worth twice what it reads over a season.
 
 <!-- captaincy:end -->
 
+### Competing captaincy theses
+
+`backtesting/captain_policies.py`. The practitioner sources agree that taking
+the highest projected scorer is not how the decision is made, and agree on
+almost nothing else: one says take the form, one the crowd's pick, one the
+differential, one shrinks a score by its own uncertainty. Each is stated without
+a measurement, so all of them are scored on the same weeks and the same
+shortlist.
+
+Nine policies, each a different family rather than a variant. Tuning a
+coefficient inside one and calling the result a new thesis would be fitting four
+seasons of about 127 gameweeks; where a coefficient is unavoidable it is taken
+from the source that proposed it, once, and never swept.
+
+| Thesis                  | Maximises                        | Source                            |
+| ----------------------- | -------------------------------- | --------------------------------- |
+| `expected_points`       | the projection                   | what this project already did     |
+| `components`            | the projection without the blend | the unblended control             |
+| `availability_adjusted` | projection × P(start)            | Oracle step 5, rotation risk      |
+| `upside`                | projection + one deviation       | the multiplier is a tail bet      |
+| `robust`                | projection − one deviation       | Ramezani and Dinh, robust variant |
+| `form`                  | recent scoring, floor at 2.0     | FPL360                            |
+| `crowd`                 | ownership                        | the template; Bhatt 2019          |
+| `differential`          | projection − 1.5 per 100% owned  | Oracle step 3, climbing           |
+| `template`              | projection + 1.5 per 100% owned  | Oracle step 3, protecting         |
+
+Both halves of the rank rule are scored because the backtest has no rank to
+condition on. A policy that is right only for managers in one league position
+must not be reported as right in general.
+
+Nothing here excludes a premium the whole field owns. Seven of the nine take the
+best player on the shortlist when he is also the most owned, and only
+`differential` declines — a framework that could never captain Haaland would be
+answering a different question.
+
+<!-- captain-policies:start -->
+
+Not yet measured.
+
+<!-- captain-policies:end -->
+
 ### What the backtest grades that the live path does not, and the reverse
 
 Named because it is a real gap, not because it is fixed.

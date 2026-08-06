@@ -29,8 +29,8 @@ from __future__ import annotations
 
 __all__ = ["MODEL_VERSION"]
 
-#: 2.0 is the first version under the gate. The projection it names is the one
-#: measured in `apps/web/src/data/validation.json`: fourteen priced routes, a
-#: minutes-first reconstruction, route-specific fixture adjustment, and an
-#: 0.8/0.2 blend with the last five gameweeks.
-MODEL_VERSION = "2.0"
+#: 2.1 adds the competing captaincy policies to the backtest. The projection
+#: itself is unchanged from 2.0 — the gate watches everything under
+#: `backtesting/`, and a version that moves for a measurement-only change is
+#: cheaper than one that has to be argued about.
+MODEL_VERSION = "2.1"

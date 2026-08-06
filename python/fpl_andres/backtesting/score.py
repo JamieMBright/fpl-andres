@@ -10,11 +10,13 @@ from __future__ import annotations
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
 
-from fpl_andres.backtesting.captaincy import CaptaincyScore, score_captaincy
+from fpl_andres.backtesting.captain_policies import CaptainCandidate, policy_names
+from fpl_andres.backtesting.captaincy import CaptaincyScore, score_captaincy, score_policies
 from fpl_andres.backtesting.corpus import SeasonCorpus
 from fpl_andres.backtesting.projector import (
     ProjectionSettings,
     baseline_ownership,
+    baseline_recent_deviation,
     baseline_recent_mean,
     project_gameweek,
 )
@@ -110,6 +112,8 @@ class SeasonScore:
     first_scored_gameweek: int
     methods: dict[str, MethodScore] = field(default_factory=dict)
     captaincy: dict[str, CaptaincyScore] = field(default_factory=dict)
+    #: One entry per competing captaincy thesis, keyed by policy name.
+    captain_policies: dict[str, CaptaincyScore] = field(default_factory=dict)
 
 
 def score_season(
@@ -130,6 +134,8 @@ def score_season(
     for label in METHOD_LABELS:
         outcome.methods[label] = MethodScore(label=label)
         outcome.captaincy[label] = CaptaincyScore(label=label)
+    for label in policy_names():
+        outcome.captain_policies[label] = CaptaincyScore(label=label)
 
     for gameweek in corpus.gameweeks:
         if gameweek <= minimum_history:
@@ -150,6 +156,7 @@ def score_season(
             for projection in projections
         }
         recent = baseline_recent_mean(corpus, gameweek)
+        deviation = baseline_recent_deviation(corpus, gameweek)
         ownership = baseline_ownership(corpus, gameweek)
 
         # Every method is scored on the same players. Left to their own
@@ -194,7 +201,44 @@ def score_season(
             outcome.captaincy,
         )
 
+        # The competing theses, on the same weeks and the same shortlist.
+        score_policies(
+            _captain_candidates(projections, recent, deviation, ownership),
+            actual,
+            outcome.captain_policies,
+        )
+
     return outcome
+
+
+def _captain_candidates(
+    projections: Sequence[object],
+    recent: Mapping[int, float],
+    deviation: Mapping[int, float],
+    ownership: Mapping[int, float],
+) -> list[CaptainCandidate]:
+    """Everything a policy is allowed to read, and nothing it is not.
+
+    Built here rather than inside the policies so no policy can reach past this
+    boundary into the corpus and see the gameweek it is deciding.
+    """
+    candidates: list[CaptainCandidate] = []
+    for projection in projections:
+        element = projection.element_id  # type: ignore[attr-defined]
+        if element not in ownership:
+            continue
+        candidates.append(
+            CaptainCandidate(
+                element_id=element,
+                expected_points=projection.expected_points,  # type: ignore[attr-defined]
+                component_points=projection.component_points,  # type: ignore[attr-defined]
+                recent_points=recent.get(element),
+                recent_deviation=deviation.get(element, 0.0),
+                probability_start=projection.minutes.probability_start,  # type: ignore[attr-defined]
+                ownership=ownership[element],
+            )
+        )
+    return candidates
 
 
 def _score(
