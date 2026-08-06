@@ -292,16 +292,16 @@ rather than truncating one to fit.
 
 | Thesis                  | Mean captain points | Seasons won (of 4) | vs projection (95% CI) |
 | ----------------------- | ------------------- | ------------------ | ---------------------- |
-| `template`              | 7.12                | 2                  | not measured           |
-| `availability_adjusted` | 7.08                | 0                  | not measured           |
+| `template`              | 7.12                | 2                  | +0.15 [-0.34, +0.69]   |
+| `availability_adjusted` | 7.08                | 0                  | +0.11 [-0.28, +0.54]   |
 | `expected_points`       | 6.97                | 0                  | baseline               |
-| `differential`          | 6.77                | 1                  | not measured           |
-| `components`            | 6.62                | 1                  | not measured           |
-| `crowd`                 | 6.37                | 0                  | not measured           |
-| `robust`                | 6.11                | 0                  | not measured           |
-| `ceiling_and_fixture`   | 5.96                | 0                  | not measured           |
-| `upside`                | 5.77                | 0                  | not measured           |
-| `form`                  | 5.38                | 0                  | not measured           |
+| `differential`          | 6.77                | 1                  | -0.19 [-0.94, +0.54]   |
+| `components`            | 6.62                | 1                  | -0.34 [-1.02, +0.29]   |
+| `crowd`                 | 6.37                | 0                  | -0.59 [-1.55, +0.35]   |
+| `robust`                | 6.11                | 0                  | -0.86 [-1.85, +0.14]   |
+| `ceiling_and_fixture`   | 5.96                | 0                  | -1.01 [-2.10, +0.09]   |
+| `upside`                | 5.77                | 0                  | -1.20 [-2.35, -0.13]   |
+| `form`                  | 5.38                | 0                  | -1.57 [-2.55, -0.68]   |
 
 <!-- captain-policies:end -->
 

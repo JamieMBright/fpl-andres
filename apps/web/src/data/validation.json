@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-08-06T10:51:05.760946+00:00",
-  "modelVersion": "2.2",
+  "generatedAt": "2026-08-06T13:06:49.378393+00:00",
+  "modelVersion": "2.3",
   "seasons": [
     {
       "season": "2022-23",
@@ -216,6 +216,107 @@
           "shareOfCeiling": 0.449,
           "perfectWeeks": 4,
           "blankRate": 0.258
+        }
+      ],
+      "captainSignificance": [
+        {
+          "label": "template",
+          "weeks": 31,
+          "meanPoints": 7.968,
+          "baselineMeanPoints": 7.613,
+          "improvement": 0.355,
+          "lower": 0.355,
+          "upper": 0.355,
+          "better": false,
+          "reasonCodes": ["insufficient_sample"]
+        },
+        {
+          "label": "availability_adjusted",
+          "weeks": 31,
+          "meanPoints": 7.742,
+          "baselineMeanPoints": 7.613,
+          "improvement": 0.129,
+          "lower": 0.129,
+          "upper": 0.129,
+          "better": false,
+          "reasonCodes": ["insufficient_sample"]
+        },
+        {
+          "label": "ceiling_and_fixture",
+          "weeks": 31,
+          "meanPoints": 6.935,
+          "baselineMeanPoints": 7.613,
+          "improvement": -0.677,
+          "lower": -0.677,
+          "upper": -0.677,
+          "better": false,
+          "reasonCodes": ["insufficient_sample"]
+        },
+        {
+          "label": "components",
+          "weeks": 31,
+          "meanPoints": 6.903,
+          "baselineMeanPoints": 7.613,
+          "improvement": -0.71,
+          "lower": -0.71,
+          "upper": -0.71,
+          "better": false,
+          "reasonCodes": ["insufficient_sample"]
+        },
+        {
+          "label": "robust",
+          "weeks": 31,
+          "meanPoints": 6.806,
+          "baselineMeanPoints": 7.613,
+          "improvement": -0.806,
+          "lower": -0.806,
+          "upper": -0.806,
+          "better": false,
+          "reasonCodes": ["insufficient_sample"]
+        },
+        {
+          "label": "upside",
+          "weeks": 31,
+          "meanPoints": 6.774,
+          "baselineMeanPoints": 7.613,
+          "improvement": -0.839,
+          "lower": -0.839,
+          "upper": -0.839,
+          "better": false,
+          "reasonCodes": ["insufficient_sample"]
+        },
+        {
+          "label": "crowd",
+          "weeks": 31,
+          "meanPoints": 6.742,
+          "baselineMeanPoints": 7.613,
+          "improvement": -0.871,
+          "lower": -0.871,
+          "upper": -0.871,
+          "better": false,
+          "reasonCodes": ["insufficient_sample"]
+        },
+        {
+          "label": "differential",
+          "weeks": 31,
+          "meanPoints": 6.258,
+          "baselineMeanPoints": 7.613,
+          "improvement": -1.355,
+          "lower": -1.355,
+          "upper": -1.355,
+          "better": false,
+          "reasonCodes": ["insufficient_sample"]
+        },
+        {
+          "label": "form",
+          "weeks": 31,
+          "meanPoints": 5.032,
+          "baselineMeanPoints": 7.613,
+          "improvement": -2.581,
+          "lower": -2.581,
+          "upper": -2.581,
+          "better": false,
+          "reasonCodes": ["insufficient_sample"]
         }
       ],
       "league": {
@@ -851,6 +952,107 @@
           "blankRate": 0.406
         }
       ],
+      "captainSignificance": [
+        {
+          "label": "differential",
+          "weeks": 32,
+          "meanPoints": 7.0,
+          "baselineMeanPoints": 6.094,
+          "improvement": 0.906,
+          "lower": -0.812,
+          "upper": 2.781,
+          "better": false,
+          "reasonCodes": ["ci_includes_zero"]
+        },
+        {
+          "label": "availability_adjusted",
+          "weeks": 32,
+          "meanPoints": 6.219,
+          "baselineMeanPoints": 6.094,
+          "improvement": 0.125,
+          "lower": 0.0,
+          "upper": 0.375,
+          "better": false,
+          "reasonCodes": ["ci_includes_zero"]
+        },
+        {
+          "label": "template",
+          "weeks": 32,
+          "meanPoints": 6.125,
+          "baselineMeanPoints": 6.094,
+          "improvement": 0.031,
+          "lower": -1.188,
+          "upper": 1.188,
+          "better": false,
+          "reasonCodes": ["ci_includes_zero"]
+        },
+        {
+          "label": "crowd",
+          "weeks": 32,
+          "meanPoints": 5.812,
+          "baselineMeanPoints": 6.094,
+          "improvement": -0.281,
+          "lower": -2.938,
+          "upper": 2.125,
+          "better": false,
+          "reasonCodes": ["no_improvement"]
+        },
+        {
+          "label": "form",
+          "weeks": 32,
+          "meanPoints": 5.562,
+          "baselineMeanPoints": 6.094,
+          "improvement": -0.531,
+          "lower": -2.844,
+          "upper": 1.688,
+          "better": false,
+          "reasonCodes": ["no_improvement"]
+        },
+        {
+          "label": "upside",
+          "weeks": 32,
+          "meanPoints": 5.438,
+          "baselineMeanPoints": 6.094,
+          "improvement": -0.656,
+          "lower": -3.5,
+          "upper": 1.751,
+          "better": false,
+          "reasonCodes": ["no_improvement"]
+        },
+        {
+          "label": "components",
+          "weeks": 32,
+          "meanPoints": 5.312,
+          "baselineMeanPoints": 6.094,
+          "improvement": -0.781,
+          "lower": -2.188,
+          "upper": 0.125,
+          "better": false,
+          "reasonCodes": ["no_improvement"]
+        },
+        {
+          "label": "ceiling_and_fixture",
+          "weeks": 32,
+          "meanPoints": 5.312,
+          "baselineMeanPoints": 6.094,
+          "improvement": -0.781,
+          "lower": -2.594,
+          "upper": 1.031,
+          "better": false,
+          "reasonCodes": ["no_improvement"]
+        },
+        {
+          "label": "robust",
+          "weeks": 32,
+          "meanPoints": 4.812,
+          "baselineMeanPoints": 6.094,
+          "improvement": -1.281,
+          "lower": -3.783,
+          "upper": 1.125,
+          "better": false,
+          "reasonCodes": ["no_improvement"]
+        }
+      ],
       "league": {
         "policies": {
           "advised": {
@@ -1482,6 +1684,107 @@
           "shareOfCeiling": 0.473,
           "perfectWeeks": 6,
           "blankRate": 0.312
+        }
+      ],
+      "captainSignificance": [
+        {
+          "label": "components",
+          "weeks": 32,
+          "meanPoints": 9.25,
+          "baselineMeanPoints": 8.75,
+          "improvement": 0.5,
+          "lower": 0.0,
+          "upper": 1.125,
+          "better": false,
+          "reasonCodes": ["ci_includes_zero"]
+        },
+        {
+          "label": "availability_adjusted",
+          "weeks": 32,
+          "meanPoints": 8.719,
+          "baselineMeanPoints": 8.75,
+          "improvement": -0.031,
+          "lower": -0.094,
+          "upper": 0.0,
+          "better": false,
+          "reasonCodes": ["no_improvement"]
+        },
+        {
+          "label": "template",
+          "weeks": 32,
+          "meanPoints": 8.719,
+          "baselineMeanPoints": 8.75,
+          "improvement": -0.031,
+          "lower": -0.094,
+          "upper": 0.0,
+          "better": false,
+          "reasonCodes": ["no_improvement"]
+        },
+        {
+          "label": "robust",
+          "weeks": 32,
+          "meanPoints": 8.5,
+          "baselineMeanPoints": 8.75,
+          "improvement": -0.25,
+          "lower": -1.938,
+          "upper": 1.406,
+          "better": false,
+          "reasonCodes": ["no_improvement"]
+        },
+        {
+          "label": "differential",
+          "weeks": 32,
+          "meanPoints": 8.469,
+          "baselineMeanPoints": 8.75,
+          "improvement": -0.281,
+          "lower": -1.656,
+          "upper": 0.812,
+          "better": false,
+          "reasonCodes": ["no_improvement"]
+        },
+        {
+          "label": "crowd",
+          "weeks": 32,
+          "meanPoints": 7.781,
+          "baselineMeanPoints": 8.75,
+          "improvement": -0.969,
+          "lower": -2.095,
+          "upper": 0.0,
+          "better": false,
+          "reasonCodes": ["no_improvement"]
+        },
+        {
+          "label": "form",
+          "weeks": 32,
+          "meanPoints": 7.25,
+          "baselineMeanPoints": 8.75,
+          "improvement": -1.5,
+          "lower": -3.781,
+          "upper": 0.157,
+          "better": false,
+          "reasonCodes": ["no_improvement"]
+        },
+        {
+          "label": "upside",
+          "weeks": 32,
+          "meanPoints": 7.031,
+          "baselineMeanPoints": 8.75,
+          "improvement": -1.719,
+          "lower": -3.782,
+          "upper": 0.25,
+          "better": false,
+          "reasonCodes": ["no_improvement"]
+        },
+        {
+          "label": "ceiling_and_fixture",
+          "weeks": 32,
+          "meanPoints": 6.875,
+          "baselineMeanPoints": 8.75,
+          "improvement": -1.875,
+          "lower": -3.688,
+          "upper": -0.188,
+          "better": false,
+          "reasonCodes": ["no_improvement"]
         }
       ],
       "league": {
@@ -2117,6 +2420,107 @@
           "blankRate": 0.438
         }
       ],
+      "captainSignificance": [
+        {
+          "label": "template",
+          "weeks": 32,
+          "meanPoints": 5.656,
+          "baselineMeanPoints": 5.406,
+          "improvement": 0.25,
+          "lower": -0.594,
+          "upper": 1.25,
+          "better": false,
+          "reasonCodes": ["ci_includes_zero"]
+        },
+        {
+          "label": "availability_adjusted",
+          "weeks": 32,
+          "meanPoints": 5.625,
+          "baselineMeanPoints": 5.406,
+          "improvement": 0.219,
+          "lower": -0.594,
+          "upper": 1.188,
+          "better": false,
+          "reasonCodes": ["ci_includes_zero"]
+        },
+        {
+          "label": "differential",
+          "weeks": 32,
+          "meanPoints": 5.344,
+          "baselineMeanPoints": 5.406,
+          "improvement": -0.062,
+          "lower": -0.688,
+          "upper": 0.531,
+          "better": false,
+          "reasonCodes": ["no_improvement"]
+        },
+        {
+          "label": "crowd",
+          "weeks": 32,
+          "meanPoints": 5.156,
+          "baselineMeanPoints": 5.406,
+          "improvement": -0.25,
+          "lower": -1.688,
+          "upper": 1.095,
+          "better": false,
+          "reasonCodes": ["no_improvement"]
+        },
+        {
+          "label": "components",
+          "weeks": 32,
+          "meanPoints": 5.031,
+          "baselineMeanPoints": 5.406,
+          "improvement": -0.375,
+          "lower": -1.375,
+          "upper": 0.345,
+          "better": false,
+          "reasonCodes": ["no_improvement"]
+        },
+        {
+          "label": "ceiling_and_fixture",
+          "weeks": 32,
+          "meanPoints": 4.719,
+          "baselineMeanPoints": 5.406,
+          "improvement": -0.688,
+          "lower": -2.469,
+          "upper": 0.969,
+          "better": false,
+          "reasonCodes": ["no_improvement"]
+        },
+        {
+          "label": "robust",
+          "weeks": 32,
+          "meanPoints": 4.312,
+          "baselineMeanPoints": 5.406,
+          "improvement": -1.094,
+          "lower": -2.312,
+          "upper": 0.031,
+          "better": false,
+          "reasonCodes": ["no_improvement"]
+        },
+        {
+          "label": "upside",
+          "weeks": 32,
+          "meanPoints": 3.844,
+          "baselineMeanPoints": 5.406,
+          "improvement": -1.562,
+          "lower": -2.75,
+          "upper": -0.5,
+          "better": false,
+          "reasonCodes": ["no_improvement"]
+        },
+        {
+          "label": "form",
+          "weeks": 32,
+          "meanPoints": 3.688,
+          "baselineMeanPoints": 5.406,
+          "improvement": -1.719,
+          "lower": -2.875,
+          "upper": -0.719,
+          "better": false,
+          "reasonCodes": ["no_improvement"]
+        }
+      ],
       "league": {
         "policies": {
           "advised": {
@@ -2539,5 +2943,106 @@
     "managers": 20,
     "advisedShare": 0.25,
     "seeds": [1, 2, 3, 4, 5]
-  }
+  },
+  "captainSignificance": [
+    {
+      "label": "template",
+      "weeks": 127,
+      "meanPoints": 7.11,
+      "baselineMeanPoints": 6.961,
+      "improvement": 0.15,
+      "lower": -0.339,
+      "upper": 0.685,
+      "better": false,
+      "reasonCodes": ["ci_includes_zero"]
+    },
+    {
+      "label": "availability_adjusted",
+      "weeks": 127,
+      "meanPoints": 7.071,
+      "baselineMeanPoints": 6.961,
+      "improvement": 0.11,
+      "lower": -0.276,
+      "upper": 0.543,
+      "better": false,
+      "reasonCodes": ["ci_includes_zero"]
+    },
+    {
+      "label": "differential",
+      "weeks": 127,
+      "meanPoints": 6.772,
+      "baselineMeanPoints": 6.961,
+      "improvement": -0.189,
+      "lower": -0.937,
+      "upper": 0.536,
+      "better": false,
+      "reasonCodes": ["no_improvement"]
+    },
+    {
+      "label": "components",
+      "weeks": 127,
+      "meanPoints": 6.622,
+      "baselineMeanPoints": 6.961,
+      "improvement": -0.339,
+      "lower": -1.024,
+      "upper": 0.291,
+      "better": false,
+      "reasonCodes": ["no_improvement"]
+    },
+    {
+      "label": "crowd",
+      "weeks": 127,
+      "meanPoints": 6.37,
+      "baselineMeanPoints": 6.961,
+      "improvement": -0.591,
+      "lower": -1.551,
+      "upper": 0.347,
+      "better": false,
+      "reasonCodes": ["no_improvement"]
+    },
+    {
+      "label": "robust",
+      "weeks": 127,
+      "meanPoints": 6.102,
+      "baselineMeanPoints": 6.961,
+      "improvement": -0.858,
+      "lower": -1.851,
+      "upper": 0.142,
+      "better": false,
+      "reasonCodes": ["no_improvement"]
+    },
+    {
+      "label": "ceiling_and_fixture",
+      "weeks": 127,
+      "meanPoints": 5.953,
+      "baselineMeanPoints": 6.961,
+      "improvement": -1.008,
+      "lower": -2.102,
+      "upper": 0.094,
+      "better": false,
+      "reasonCodes": ["no_improvement"]
+    },
+    {
+      "label": "upside",
+      "weeks": 127,
+      "meanPoints": 5.764,
+      "baselineMeanPoints": 6.961,
+      "improvement": -1.197,
+      "lower": -2.354,
+      "upper": -0.134,
+      "better": false,
+      "reasonCodes": ["no_improvement"]
+    },
+    {
+      "label": "form",
+      "weeks": 127,
+      "meanPoints": 5.386,
+      "baselineMeanPoints": 6.961,
+      "improvement": -1.575,
+      "lower": -2.551,
+      "upper": -0.677,
+      "better": false,
+      "reasonCodes": ["no_improvement"]
+    }
+  ]
 }
