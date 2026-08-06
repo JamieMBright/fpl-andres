@@ -279,15 +279,23 @@ export function Methodology() {
           over more of them.
         </p>
         <p>
-          <strong>So which one should you use?</strong> Whichever the interval
-          on the calibration page marks as clearing zero &mdash; and if none of
-          them does, the honest answer is the projection, because a lead the
-          test cannot separate is not a reason to change what you do. That is a
-          less disappointing answer than it sounds: the best captain available
+          <strong>So which one should you use?</strong> Measured over 127 paired
+          gameweeks: <em>none of them</em>. Not one interval clears zero. The
+          rule that tops the table beats the projection by 0.15 points a week
+          with an interval running from &minus;0.34 to +0.69, so the
+          table&rsquo;s own ordering sits inside its own noise. Two are
+          measurably <em>worse</em> &mdash; captaining the biggest ceiling costs
+          1.20 a week and chasing form costs 1.57, both with intervals entirely
+          below zero. Those are the only findings here, and they are both
+          negative.
+        </p>
+        <p>
+          That is less disappointing than it sounds. The best captain available
           on the shortlist averages 15.45 points and the best thesis takes 7.12,
           so the whole argument between the ten is worth under two points a week
           while more than eight sit untouched. The gap that matters is not
-          between the rules.
+          between the rules. Until something closes it, take the highest
+          projected scorer and spend the attention elsewhere.
         </p>
         <p>
           <strong>Then learn the rule instead?</strong> Captaincy yields one
@@ -296,8 +304,8 @@ export function Methodology() {
           exceeds the entire range between best and worst thesis will report a
           lead in sample, and would report one on shuffled labels too. If a
           learned policy is ever added it enters as one more candidate, fit on
-          seasons it is not scored on, and it has to clear the same interval
-          every hand-written thesis is held to.
+          seasons it is not scored on, and it has to clear the same interval all
+          ten have now failed to clear.
         </p>
         <p className="method-proof">
           <strong>One correction, on the record.</strong> The first run reported

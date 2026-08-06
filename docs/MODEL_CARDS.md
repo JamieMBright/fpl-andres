@@ -288,6 +288,22 @@ The bootstrap refuses fewer than 32 paired weeks rather than returning a narrow
 interval from a short series, and it refuses two series of different lengths
 rather than truncating one to fit.
 
+**The measured result, over 127 paired gameweeks: nothing beats the
+projection.** Not one interval clears zero. `template` tops the table by 0.15
+points a week on an interval of −0.34 to +0.69, so the ordering is inside its
+own noise and the two seasons it won are two coin flips. The only findings that
+survive are negative: `upside` costs 1.20 a week and `form` 1.57, both with
+intervals entirely below zero. Maximising the ceiling and chasing form are
+measurably worse than taking the highest projected scorer.
+
+A captain's return can be negative — a red card is −3, an own goal −2 — and
+`TripletPrediction` refuses a negative row because the metrics it was built for
+are error magnitudes. Both series are therefore lifted by one constant before
+the bootstrap. That is exact rather than a workaround: the verdict is built
+from a paired difference of means, and a shift common to both cancels out of
+the point estimate, the resamples and the interval alike. Only the two reported
+means move, by exactly the offset, and they are moved back.
+
 <!-- captain-policies:start -->
 
 | Thesis                  | Mean captain points | Seasons won (of 4) | vs projection (95% CI) |
@@ -331,7 +347,7 @@ written down so the decision can be revisited rather than re-argued:
   the same shortlist, in the same weeks, by the same paired bootstrap;
 - it is fit on seasons it is not scored on, walk-forward, never on all four;
 - it is only adopted if its interval clears zero against `expected_points` —
-  the same bar every hand-written thesis is held to.
+  the same bar all ten hand-written theses have now failed to clear.
 
 Until then the honest position is that the ceiling is the thing worth chasing,
 not the ranking. The best captain available on the shortlist averages 15.45; the

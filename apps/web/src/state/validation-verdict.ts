@@ -148,3 +148,38 @@ export function positionVerdict(
       "no budget in it.",
   };
 }
+
+export interface SeparableInterval {
+  label: string;
+  upper: number;
+  /** True only when the whole interval sits above zero. */
+  better: boolean;
+}
+
+/**
+ * Which captaincy theses the bootstrap could separate from the projection.
+ *
+ * Counted rather than written down, for the same reason as everything else in
+ * this file: a sentence naming which rules won is exactly the sentence that
+ * goes stale the next time CI reruns the backtest.
+ */
+export function separableVerdict(
+  verdicts: readonly SeparableInterval[],
+): string {
+  if (verdicts.length === 0) return "";
+  const better = verdicts.filter((entry) => entry.better);
+  const worse = verdicts.filter((entry) => !entry.better && entry.upper < 0);
+  if (better.length === 0 && worse.length === 0) {
+    return "Nothing here is separable from the projection.";
+  }
+  const clauses: string[] = [];
+  if (better.length > 0) clauses.push(`${nameList(better)} beat it`);
+  if (worse.length > 0) clauses.push(`${nameList(worse)} lose to it`);
+  return `Only ${clauses.join(", and ")}.`;
+}
+
+function nameList(entries: readonly SeparableInterval[]): string {
+  const names = entries.map((entry) => entry.label);
+  if (names.length === 1) return names[0] ?? "";
+  return `${names.slice(0, -1).join(", ")} and ${names[names.length - 1] ?? ""}`;
+}

@@ -218,6 +218,26 @@ describe("IntervalChart", () => {
     );
   });
 
+  it("marks a rule that is measurably worse, which is also a result", () => {
+    // Drawn like an inconclusive row it would read as "no finding", and on the
+    // real data these are the only findings there are.
+    const { container } = render(
+      <IntervalChart title="t" caption="c" data={data} />,
+    );
+    const worse = container.querySelectorAll(".calibration-whisker-worse");
+    expect(worse).toHaveLength(1);
+    expect(
+      container.querySelectorAll(".calibration-whisker-unresolved"),
+    ).toHaveLength(1);
+    const values = [...container.querySelectorAll(".calibration-value")].map(
+      (node) => node.textContent,
+    );
+    expect(values[0]).toContain("✓");
+    expect(values[2]).toContain("✗");
+    expect(values[1]).not.toContain("✓");
+    expect(values[1]).not.toContain("✗");
+  });
+
   it("puts zero in the middle so a loss reads as a loss", () => {
     const { container } = render(
       <IntervalChart title="t" caption="c" data={data} />,

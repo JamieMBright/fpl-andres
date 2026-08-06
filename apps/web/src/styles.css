@@ -3076,12 +3076,19 @@ a:focus-visible {
   stroke: var(--ink-soft);
   stroke-width: 2;
   stroke-linecap: round;
-  opacity: 0.55;
+}
+
+/* Crosses the rule: the evidence does not separate this from the projection. */
+.calibration-whisker-unresolved {
+  opacity: 0.5;
 }
 
 .calibration-whisker-better {
   stroke: var(--field-green);
-  opacity: 1;
+}
+
+.calibration-whisker-worse {
+  stroke: var(--amber);
 }
 
 .calibration-dot {
@@ -3090,6 +3097,10 @@ a:focus-visible {
 
 .calibration-dot-better {
   fill: var(--field-green);
+}
+
+.calibration-dot-worse {
+  fill: var(--amber);
 }
 
 .calibration-caption,

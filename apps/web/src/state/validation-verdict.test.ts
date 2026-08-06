@@ -4,6 +4,7 @@ import validation from "../data/validation.json";
 import {
   pooledVerdict,
   positionVerdict,
+  separableVerdict,
   type VerdictSeason,
 } from "./validation-verdict";
 
@@ -125,5 +126,56 @@ describe("verdicts on artifacts that do not exist yet", () => {
     );
     expect(verdict.cells).toBe(3);
     expect(verdict.modelWins).toBe(2);
+  });
+});
+
+describe("which captaincy theses the bootstrap separated", () => {
+  const interval = (label: string, upper: number, better = false) => ({
+    label,
+    upper,
+    better,
+  });
+
+  it("says nothing separated when nothing did", () => {
+    // The important case, and the one a hand-written sentence would never
+    // admit to: ten rules measured, no winner.
+    expect(
+      separableVerdict([interval("a", 0.7), interval("b", 0.3)]),
+    ).toContain("Nothing here is separable");
+  });
+
+  it("names a rule that is measurably worse, not only one that is better", () => {
+    const sentence = separableVerdict([
+      interval("fine", 0.7),
+      interval("bad", -0.1),
+    ]);
+    expect(sentence).toBe("Only bad lose to it.");
+  });
+
+  it("names both sides when both exist", () => {
+    const sentence = separableVerdict([
+      interval("good", 1.2, true),
+      interval("fine", 0.7),
+      interval("bad", -0.1),
+      interval("worse", -0.4),
+    ]);
+    expect(sentence).toBe("Only good beat it, and bad and worse lose to it.");
+  });
+
+  it("says nothing at all when nothing was measured", () => {
+    // An artifact predating the bootstrap. Silence, not a claim of a tie.
+    expect(separableVerdict([])).toBe("");
+  });
+
+  it("describes the shipped artifact", () => {
+    const shipped = (validation as { captainSignificance?: unknown[] })
+      .captainSignificance as
+      { label: string; upper: number; better: boolean }[] | undefined;
+    if (shipped === undefined || shipped.length === 0) return;
+    const sentence = separableVerdict(shipped);
+    for (const entry of shipped) {
+      const separated = entry.better || entry.upper < 0;
+      expect(sentence.includes(entry.label)).toBe(separated);
+    }
   });
 });

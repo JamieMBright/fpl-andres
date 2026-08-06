@@ -9,6 +9,7 @@ import {
 import {
   pooledVerdict,
   positionVerdict,
+  separableVerdict,
   type VerdictSeason,
 } from "../state/validation-verdict";
 
@@ -357,7 +358,7 @@ export function ValidationReport() {
             />
             <IntervalChart
               title="Which of those leads are real?"
-              caption={`Each rule against my projection, paired week by week across all ${String(pooledWeeks)} scored gameweeks, then resampled 2,000 times. The dot is the mean gap; the whisker is the 95% interval. A whisker touching the rule means the ranking above cannot tell those two apart, so the order it happened to land in is noise.`}
+              caption={`Each rule against my projection, paired week by week across all ${String(pooledWeeks)} scored gameweeks, then resampled 2,000 times. The dot is the mean gap; the whisker is the 95% interval. A whisker touching the rule means the ranking above cannot tell those two apart, so the order it happened to land in is noise. A whisker clear of it on either side is a finding. ${separableVerdict(verdicts)}`}
               data={verdicts}
             />
           </>

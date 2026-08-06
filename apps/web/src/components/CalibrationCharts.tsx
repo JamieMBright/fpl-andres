@@ -178,7 +178,9 @@ const INTERVAL_VALUE = 88;
  * The bar chart above ranks ten means, and a rank always produces a winner
  * whether or not one exists. This is the chart that can say no: any whisker
  * crossing the zero rule is a policy the evidence does not separate from the
- * projection, however far up the table it sorted.
+ * projection, however far up the table it sorted. A whisker wholly on either
+ * side is a result, and both sides are marked -- a rule measurably worse than
+ * the projection is as much a finding as one measurably better.
  */
 export function IntervalChart({ title, caption, data }: IntervalChartProps) {
   const titleId = useId();
@@ -225,9 +227,15 @@ export function IntervalChart({ title, caption, data }: IntervalChartProps) {
         />
         {ordered.map((entry, index) => {
           const y = index * INTERVAL_ROW + INTERVAL_ROW / 2;
-          const shape = entry.better
-            ? "calibration-whisker calibration-whisker-better"
-            : "calibration-whisker";
+          // A whole interval below zero is a result, not an absence of one, and
+          // rendering it like an inconclusive row hides the only findings this
+          // chart has produced.
+          const worse = entry.upper < 0;
+          const state = entry.better
+            ? "better"
+            : worse
+              ? "worse"
+              : "unresolved";
           return (
             <g key={entry.label}>
               <text
@@ -239,18 +247,14 @@ export function IntervalChart({ title, caption, data }: IntervalChartProps) {
                 {entry.label}
               </text>
               <line
-                className={shape}
+                className={`calibration-whisker calibration-whisker-${state}`}
                 x1={x(entry.lower)}
                 y1={y}
                 x2={x(entry.upper)}
                 y2={y}
               />
               <circle
-                className={
-                  entry.better
-                    ? "calibration-dot calibration-dot-better"
-                    : "calibration-dot"
-                }
+                className={`calibration-dot calibration-dot-${state}`}
                 cx={x(entry.improvement)}
                 cy={y}
                 r={3.5}
@@ -262,7 +266,7 @@ export function IntervalChart({ title, caption, data }: IntervalChartProps) {
               >
                 {entry.improvement > 0 ? "+" : ""}
                 {entry.improvement.toFixed(2)}
-                {entry.better ? " \u2713" : ""}
+                {entry.better ? " \u2713" : worse ? " \u2717" : ""}
               </text>
             </g>
           );
