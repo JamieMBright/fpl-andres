@@ -25,11 +25,31 @@ from typing import Any
 
 from fpl_andres.jsonio import read_json_file
 
-__all__ = ["build_parser", "main", "merge_history"]
+__all__ = [
+    "build_parser",
+    "main",
+    "merge_history",
+    "render_captaincy",
+    "render_performance",
+    "replace_between",
+]
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_VALIDATION = REPO_ROOT / "apps" / "web" / "src" / "data" / "validation.json"
 DEFAULT_HISTORY = REPO_ROOT / "apps" / "web" / "src" / "data" / "model-history.json"
+DEFAULT_CARD = REPO_ROOT / "docs" / "MODEL_CARDS.md"
+
+# The card quoted the numbers by hand, so the first automated refresh moved the
+# artifact and left the document behind -- which is the exact drift the guard in
+# `test_measured_performance.py` exists to catch, arriving by a new route.
+PERFORMANCE_MARKERS = (
+    "<!-- measured-performance:start -->",
+    "<!-- measured-performance:end -->",
+)
+CAPTAINCY_MARKERS = ("<!-- captaincy:start -->", "<!-- captaincy:end -->")
+
+#: U+2212, because a hyphen in front of a number is not a minus sign.
+MINUS = "\u2212"
 
 #: Enough to compare two runs, and nothing a reader would have to scroll past.
 CARRIED_METRICS = (
@@ -44,6 +64,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--validation", type=Path, default=DEFAULT_VALIDATION)
     parser.add_argument("--history", type=Path, default=DEFAULT_HISTORY)
+    parser.add_argument("--card", type=Path, default=DEFAULT_CARD)
     parser.add_argument(
         "--code-revision",
         default="",
@@ -108,6 +129,85 @@ def merge_history(
     return [*existing, row], True
 
 
+def _signed(value: float, digits: int = 3) -> str:
+    text = f"{abs(value):.{digits}f}"
+    return f"{MINUS}{text}" if value < 0 else f"+{text}"
+
+
+def _cell(value: Any, digits: int = 3) -> str:
+    if not isinstance(value, (int, float)):
+        return "—"
+    text = f"{abs(float(value)):.{digits}f}"
+    return f"{MINUS}{text}" if float(value) < 0 else text
+
+
+def render_performance(report: dict[str, Any]) -> str:
+    """The measured-performance table, in the column order the guard parses."""
+    rows = [
+        "| Season  | MAE   | vs form | Spearman | vs form | Top-20 hit | form  | crowd | Bias   |",
+        "| ------- | ----- | ------- | -------- | ------- | ---------- | ----- | ----- | ------ |",
+    ]
+    for season in report.get("seasons", []):
+        methods = {entry["label"]: entry for entry in season.get("methods", [])}
+        model = methods.get("model", {})
+        form = methods.get("recent_mean", {})
+        crowd = methods.get("ownership", {})
+        mae, form_mae = model.get("meanAbsoluteError"), form.get("meanAbsoluteError")
+        error_gap = (
+            f"{MINUS}{abs((mae - form_mae) / form_mae) * 100:.1f}%"
+            if isinstance(mae, (int, float))
+            and isinstance(form_mae, (int, float))
+            and form_mae
+            and mae < form_mae
+            else "—"
+        )
+        rho, form_rho = model.get("spearman"), form.get("spearman")
+        rho_gap = (
+            _signed(rho - form_rho)
+            if isinstance(rho, (int, float)) and isinstance(form_rho, (int, float))
+            else "—"
+        )
+        rows.append(
+            f"| {season.get('season')} | {_cell(mae)} | {error_gap} | {_cell(rho)} | "
+            f"{rho_gap} | {_cell(model.get('topNHitRate'))} | {_cell(form.get('topNHitRate'))} | "
+            f"{_cell(crowd.get('topNHitRate'))} | {_cell(model.get('bias'))} |"
+        )
+    return "\n".join(rows)
+
+
+def render_captaincy(report: dict[str, Any]) -> str:
+    """Captain returns per season and method, or a line saying it was not scored."""
+    rows = [
+        "| Season | Method | Weeks | Captain | Best available | Left behind | Nailed it |"
+        " Blanked |",
+        "| ------ | ------ | ----- | ------- | -------------- | ----------- | --------- |"
+        " ------- |",
+    ]
+    scored = False
+    for season in report.get("seasons", []):
+        for entry in season.get("captaincy", []):
+            scored = True
+            rows.append(
+                f"| {season.get('season')} | `{entry.get('label')}` | "
+                f"{entry.get('gameweeks')} | {_cell(entry.get('meanPoints'), 2)} | "
+                f"{_cell(entry.get('meanBestPoints'), 2)} | {_cell(entry.get('regret'), 2)} | "
+                f"{entry.get('perfectWeeks')} | {_cell(entry.get('blankRate'), 2)} |"
+            )
+    if not scored:
+        return "Not yet measured."
+    return "\n".join(rows)
+
+
+def replace_between(text: str, markers: tuple[str, str], body: str) -> str:
+    """Swap what sits between two markers, keeping the markers themselves."""
+    start, end = markers
+    if start not in text or end not in text:
+        raise ValueError(f"{start} and {end} must both appear in the document")
+    head, _, rest = text.partition(start)
+    _, _, tail = rest.partition(end)
+    return f"{head}{start}\n\n{body}\n\n{end}{tail}"
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
 
@@ -119,6 +219,12 @@ def main(argv: Sequence[str] | None = None) -> int:
     except ValueError as error:
         print(f"model history: {error}", file=sys.stderr)
         return 1
+
+    card = args.card.read_text(encoding="utf-8")
+    card = replace_between(card, PERFORMANCE_MARKERS, render_performance(report))
+    card = replace_between(card, CAPTAINCY_MARKERS, render_captaincy(report))
+    args.card.write_text(card, encoding="utf-8")
+    print(f"model card: tables rewritten in {args.card}.")
 
     if not changed:
         print("model history: this model has already been scored on this corpus.")

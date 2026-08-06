@@ -10,9 +10,7 @@
       "elements": 778,
       "firstScoredGameweek": 7,
       "expectedGoalsCoverage": 1.0,
-      "missingGameweeks": [
-        7
-      ],
+      "missingGameweeks": [7],
       "corpusFingerprint": "sha256:e4fc5653db80f9ec8497fd6d40a99c8aeadca2d4e243210fc374765986ce68a4",
       "methods": [
         {
@@ -2132,12 +2130,6 @@
   "league": {
     "managers": 20,
     "advisedShare": 0.25,
-    "seeds": [
-      1,
-      2,
-      3,
-      4,
-      5
-    ]
+    "seeds": [1, 2, 3, 4, 5]
   }
 }

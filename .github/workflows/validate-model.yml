@@ -44,6 +44,17 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
 
+      - name: Set up Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: 20.20.2
+
+      - name: Enable pnpm
+        run: corepack enable && corepack prepare pnpm@9.15.9 --activate
+
+      - name: Install JavaScript dependencies
+        run: pnpm install --frozen-lockfile
+
       - name: Set up Python
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
         with:
@@ -51,7 +62,7 @@ jobs:
           cache: pip
 
       - name: Install engine
-        run: python -m pip install -e .
+        run: python -m pip install -e ".[dev]"
 
       - name: Record the numbers being replaced
         run: cp apps/web/src/data/validation.json "$RUNNER_TEMP/before.json"
@@ -66,6 +77,18 @@ jobs:
       - name: Append the run to the model history
         run: |
           python -m fpl_andres.cli.track_model --code-revision "$GITHUB_SHA"
+
+      # Python writes the artifact and prettier owns the file. Without this the
+      # refresh commit is format-clean nowhere and reddens main on arrival.
+      - name: Format what is about to be committed
+        run: |
+          pnpm exec prettier --write \
+            apps/web/src/data/validation.json \
+            apps/web/src/data/model-history.json \
+            docs/MODEL_CARDS.md
+
+      - name: Prove the document agrees with the artifact
+        run: python -m pytest python/tests/test_measured_performance.py -q
 
       - name: Report what moved
         env:
@@ -86,12 +109,13 @@ jobs:
 
       - name: Commit the refreshed artifact
         run: |
-          if git diff --quiet -- apps/web/src/data/validation.json apps/web/src/data/model-history.json; then
+          paths="apps/web/src/data/validation.json apps/web/src/data/model-history.json docs/MODEL_CARDS.md"
+          if git diff --quiet -- $paths; then
             echo "Nothing moved."
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add apps/web/src/data/validation.json apps/web/src/data/model-history.json
+          git add $paths
           git commit -m "chore: refresh the backtest for the model on $GITHUB_SHA"
           git push

@@ -9,12 +9,18 @@ regression instead of burying it in a JSON diff.
 
 from __future__ import annotations
 
+import re
 from typing import Any
 
 import pytest
 
 from fpl_andres.cli.compare_validation import compare
-from fpl_andres.cli.track_model import merge_history
+from fpl_andres.cli.track_model import (
+    merge_history,
+    render_captaincy,
+    render_performance,
+    replace_between,
+)
 from fpl_andres.model_version import MODEL_VERSION
 
 
@@ -123,3 +129,103 @@ class TestComparison:
         before = {"modelVersion": "2.0", "seasons": []}
         after = self._report("2.1", spearman=0.5)
         assert "new" in compare(before, after)
+
+
+class TestCardTables:
+    """The card quoted its numbers by hand, so the first automated refresh
+    moved the artifact and left the document behind. They move together now."""
+
+    def test_the_table_is_written_between_the_markers_only(self) -> None:
+        text = "before\n<!-- a -->\nold\n<!-- b -->\nafter"
+        out = replace_between(text, ("<!-- a -->", "<!-- b -->"), "new")
+        assert "old" not in out
+        assert out.startswith("before")
+        assert out.endswith("after")
+        assert "new" in out
+
+    def test_a_document_missing_a_marker_is_refused(self) -> None:
+        with pytest.raises(ValueError, match="must both appear"):
+            replace_between("nothing here", ("<!-- a -->", "<!-- b -->"), "new")
+
+    def test_rewriting_twice_changes_nothing_the_second_time(self) -> None:
+        text = "<!-- a -->\nold\n<!-- b -->"
+        once = replace_between(text, ("<!-- a -->", "<!-- b -->"), "new")
+        twice = replace_between(once, ("<!-- a -->", "<!-- b -->"), "new")
+        assert once == twice
+
+    def test_the_generated_row_is_what_the_guard_parses(self) -> None:
+        # `test_measured_performance.py` reads season, MAE, spearman and top-N
+        # by regex out of this exact column order.
+        report = {
+            "seasons": [
+                {
+                    "season": "2024-25",
+                    "methods": [
+                        {
+                            "label": "model",
+                            "meanAbsoluteError": 1.67,
+                            "spearman": 0.507,
+                            "topNHitRate": 0.189,
+                            "bias": -0.127,
+                        },
+                        {
+                            "label": "recent_mean",
+                            "meanAbsoluteError": 1.816,
+                            "spearman": 0.466,
+                            "topNHitRate": 0.142,
+                        },
+                        {"label": "ownership", "topNHitRate": 0.166},
+                    ],
+                }
+            ]
+        }
+        row = render_performance(report).splitlines()[-1]
+        match = re.match(
+            r"^\|\s*(20\d\d-\d\d)\s*\|\s*([\d.]+)\s*\|[^|]*\|\s*([\d.]+)\s*\|[^|]*\|\s*([\d.]+)\s*\|",
+            row,
+        )
+        assert match is not None, row
+        assert match.group(1) == "2024-25"
+        assert float(match.group(2)) == 1.670
+        assert float(match.group(3)) == 0.507
+        assert float(match.group(4)) == 0.189
+
+    def test_a_negative_number_carries_a_minus_sign_not_a_hyphen(self) -> None:
+        report = {
+            "seasons": [
+                {
+                    "season": "2024-25",
+                    "methods": [{"label": "model", "bias": -0.127}],
+                }
+            ]
+        }
+        assert "\u22120.127" in render_performance(report)
+
+    def test_an_unscored_captaincy_says_so_rather_than_drawing_an_empty_table(
+        self,
+    ) -> None:
+        assert render_captaincy({"seasons": [{"season": "2024-25"}]}) == "Not yet measured."
+
+    def test_captaincy_rows_name_the_method_and_the_ceiling(self) -> None:
+        report = {
+            "seasons": [
+                {
+                    "season": "2024-25",
+                    "captaincy": [
+                        {
+                            "label": "model",
+                            "gameweeks": 32,
+                            "meanPoints": 8.75,
+                            "meanBestPoints": 14.531,
+                            "regret": 5.781,
+                            "perfectWeeks": 9,
+                            "blankRate": 0.281,
+                        }
+                    ],
+                }
+            ]
+        }
+        table = render_captaincy(report)
+        assert "`model`" in table
+        assert "8.75" in table
+        assert "14.53" in table
