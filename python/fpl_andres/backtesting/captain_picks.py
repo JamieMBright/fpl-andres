@@ -20,12 +20,16 @@ when his club is not playing and he was picked anyway.
 from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
+from types import MappingProxyType
 from typing import Any
 
+from fpl_andres.backtesting.captain_policies import CaptainCandidate
 from fpl_andres.backtesting.captaincy import CaptaincyScore
 from fpl_andres.backtesting.corpus import SeasonCorpus
 
-__all__ = ["opponent_labels", "picks_payload"]
+__all__ = ["MATHS_FIELDS", "opponent_labels", "picks_payload"]
+
+MAPPING_PROXY_EMPTY: Mapping[int, Sequence[CaptainCandidate]] = MappingProxyType({})
 
 
 def opponent_labels(corpus: SeasonCorpus, gameweek: int) -> dict[int, str]:
@@ -52,6 +56,7 @@ def opponent_labels(corpus: SeasonCorpus, gameweek: int) -> dict[int, str]:
 def picks_payload(
     corpus: SeasonCorpus,
     rows: Sequence[tuple[str, str, CaptaincyScore]],
+    shortlists: Mapping[int, Sequence[CaptainCandidate]] = MAPPING_PROXY_EMPTY,
 ) -> dict[str, Any]:
     """The per-gameweek armbands, indexed rather than repeated.
 
@@ -60,6 +65,9 @@ def picks_payload(
     make every refresh look like a change. A sequence rather than a mapping
     because ``components`` is the name of both a ranking method and a thesis:
     keyed by label alone the two collide and one is silently dropped.
+
+    ``shortlists`` is the pool each armband was chosen from. It is what turns a
+    surprising pick from something to be defended into something to be read.
     """
     gameweeks = sorted({pick.gameweek for _, _, score in rows for pick in score.picks})
     if not gameweeks:
@@ -93,13 +101,92 @@ def picks_payload(
             ]
         table.append({"group": group, "label": label, "picks": cells})
 
+    picked_by_gameweek: dict[int, set[int]] = {}
+    for _, _, score in rows:
+        for pick in score.picks:
+            picked_by_gameweek.setdefault(pick.gameweek, set()).add(pick.element_id)
+
+    maths = _maths(shortlists, picked_by_gameweek, gameweeks)
+    for week_entries in maths:
+        for key in week_entries:
+            element = int(key)
+            team = corpus.team_by_element.get(element)
+            club_code = corpus.code_by_team.get(team) if team is not None else None
+            if club_code is not None:
+                clubs[str(club_code)] = corpus.short_name_by_team.get(team or 0, "")
+            players.setdefault(
+                key,
+                [corpus.name_by_element.get(element, f"#{element}"), club_code],
+            )
+
     return {
         "gameweeks": gameweeks,
         "clubs": clubs,
         "players": players,
         "ceiling": _ceilings(rows, gameweeks, column),
         "rows": table,
+        "maths": maths,
     }
+
+
+#: How many of the best-projected candidates are published per gameweek. Enough
+#: to show what a pick was chosen *over*, few enough that 127 gameweeks of them
+#: still fit in a lazily loaded chunk.
+RIVALS_PER_GAMEWEEK = 6
+
+#: The order the numbers appear in a published row. Read by the web app.
+MATHS_FIELDS = (
+    "expectedPoints",
+    "componentPoints",
+    "recentPoints",
+    "probabilityStart",
+    "ownership",
+    "ceilingPoints",
+    "fixtureEase",
+)
+
+
+def _maths(
+    shortlists: Mapping[int, Sequence[CaptainCandidate]],
+    picked_by_gameweek: Mapping[int, set[int]],
+    gameweeks: list[int],
+) -> list[dict[str, list[float | None]]]:
+    """The numbers each policy actually read, per gameweek.
+
+    Restricted to the union of the best-projected few and everybody some policy
+    named. That is exactly the set needed to answer "why him and not the obvious
+    one": the pick is present because it was picked, and the obvious one is
+    present because it projected well.
+
+    Published as bare arrays against ``MATHS_FIELDS`` rather than as objects,
+    because twenty-five thousand keys of ``"probabilityStart"`` is most of the
+    file.
+    """
+    out: list[dict[str, list[float | None]]] = []
+    for week in gameweeks:
+        shortlist = shortlists.get(week, ())
+        if not shortlist:
+            out.append({})
+            continue
+        best = sorted(shortlist, key=lambda entry: -entry.expected_points)
+        keep = {entry.element_id for entry in best[:RIVALS_PER_GAMEWEEK]}
+        keep |= picked_by_gameweek.get(week, set())
+        out.append(
+            {
+                str(entry.element_id): [
+                    round(entry.expected_points, 2),
+                    round(entry.component_points, 2),
+                    None if entry.recent_points is None else round(entry.recent_points, 2),
+                    round(entry.probability_start, 3),
+                    round(entry.ownership, 1),
+                    round(entry.ceiling_points, 2),
+                    round(entry.fixture_ease, 3),
+                ]
+                for entry in best
+                if entry.element_id in keep
+            }
+        )
+    return out
 
 
 def _ceilings(

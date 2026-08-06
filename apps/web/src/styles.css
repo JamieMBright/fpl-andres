@@ -2402,10 +2402,63 @@ a:focus-visible {
 }
 
 .captain-grid-cell {
-  padding: 3px 2px;
+  padding: 0;
   border-left: 1px solid var(--rule);
   text-align: center;
   line-height: 1.25;
+}
+
+/* The whole cell is the control, so hover and keyboard focus reach the same
+   target and the readout below says the same thing for both. */
+.captain-grid-pick {
+  display: block;
+  width: 100%;
+  padding: 3px 2px;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: center;
+  cursor: pointer;
+}
+
+.captain-grid-pick:hover,
+.captain-grid-pick:focus-visible {
+  background: color-mix(in srgb, var(--amber) 22%, transparent);
+  outline: 2px solid var(--amber);
+  outline-offset: -2px;
+}
+
+.captain-grid-readout {
+  margin-top: 14px;
+  padding: 12px 14px;
+  border: 2px solid var(--ink);
+  background: var(--paper);
+}
+
+.captain-grid-readout-idle {
+  color: var(--ink-soft);
+  font-size: 13px;
+}
+
+.captain-grid-readout-title {
+  margin: 0 0 8px;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.captain-grid-chosen th,
+.captain-grid-chosen td {
+  background: color-mix(in srgb, var(--field-green) 20%, transparent);
+}
+
+.captain-grid-chosen-mark {
+  color: var(--field-green);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 10px;
+  text-transform: uppercase;
 }
 
 .captain-grid-cell .grid-shirt {

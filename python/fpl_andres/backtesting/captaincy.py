@@ -34,12 +34,17 @@ from __future__ import annotations
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
 
-from fpl_andres.backtesting.captain_policies import CAPTAIN_POLICIES, CaptainCandidate
+from fpl_andres.backtesting.captain_policies import (
+    CaptainCandidate,
+    CaptainPolicy,
+    build_captain_policies,
+)
 
 __all__ = [
     "SHORTLIST_SIZE",
     "CaptainPick",
     "CaptaincyScore",
+    "captain_shortlist",
     "score_captaincy",
     "score_policies",
 ]
@@ -107,12 +112,28 @@ class CaptaincyScore:
         return self.blank_weeks / self.gameweeks if self.gameweeks else None
 
 
+def captain_shortlist(
+    candidates: Sequence[CaptainCandidate],
+    actual: Mapping[int, int],
+    shortlist_size: int = SHORTLIST_SIZE,
+) -> list[CaptainCandidate]:
+    """The pool every thesis chooses from: most owned first, and playable.
+
+    Shared rather than recomputed so the set that made a decision is the set
+    published to explain it. A shortlist that drifted between the two would
+    produce an explanation for a choice nobody made.
+    """
+    ranked = sorted(candidates, key=lambda entry: (-entry.ownership, entry.element_id))
+    return [entry for entry in ranked if entry.element_id in actual][:shortlist_size]
+
+
 def score_policies(
     candidates: Sequence[CaptainCandidate],
     actual: Mapping[int, int],
     scores: Mapping[str, CaptaincyScore],
     *,
     gameweek: int,
+    policies: Mapping[str, CaptainPolicy] | None = None,
     shortlist_size: int = SHORTLIST_SIZE,
 ) -> None:
     """Score every competing captaincy thesis on the same gameweek.
@@ -121,14 +142,18 @@ def score_policies(
     as for the ranking methods, so a policy that likes differentials is still
     choosing from a squad somebody could plausibly have owned. Left to the whole
     pool it would captain the week's cheapest hat-trick and report skill.
+
+    ``policies`` must be one set held across a whole season: `set_and_forget`
+    remembers who it committed to, and rebuilding it each gameweek would let it
+    change its mind, which is the one thing it is defined not to do.
     """
-    ranked = sorted(candidates, key=lambda entry: (-entry.ownership, entry.element_id))
-    shortlist = [entry for entry in ranked if entry.element_id in actual][:shortlist_size]
+    active = build_captain_policies() if policies is None else policies
+    shortlist = captain_shortlist(candidates, actual, shortlist_size)
     if not shortlist:
         return
 
     best = max(actual[entry.element_id] for entry in shortlist)
-    for label, policy in CAPTAIN_POLICIES.items():
+    for label, policy in active.items():
         score = scores.get(label)
         if score is None:
             continue

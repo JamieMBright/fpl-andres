@@ -29,6 +29,16 @@ from __future__ import annotations
 
 __all__ = ["MODEL_VERSION"]
 
+#: 2.6 adds the set-and-forget baseline -- captain the most-owned player at the
+#: first scored gameweek and never think again, with the armband passing to the
+#: next most owned when he does not play. Written without Haaland's name in it,
+#: because naming him would be hindsight. It is the baseline that matters: no
+#: projection, no form, no fixture, and no decision after the opening week. A
+#: model that cannot beat it is not earning its complexity.
+#:
+#: Also publishes the arithmetic behind every armband, so a surprising pick can
+#: be read rather than defended.
+#:
 #: 2.5 retains the captaincy picks themselves rather than only what they
 #: returned. No projection and no metric should move: the scorers compute
 #: exactly what they always did and now write down which player they named.
@@ -49,4 +59,4 @@ __all__ = ["MODEL_VERSION"]
 #: projection and resampled, so a gap that does not clear zero is reported as
 #: not clearing zero. No projection changed; what changed is what may be
 #: claimed from it.
-MODEL_VERSION = "2.5"
+MODEL_VERSION = "2.6"

@@ -12,6 +12,8 @@ from __future__ import annotations
 from fpl_andres.backtesting.captain_policies import (
     CAPTAIN_POLICIES,
     CaptainCandidate,
+    SetAndForget,
+    build_captain_policies,
     policy_names,
 )
 from fpl_andres.backtesting.captaincy import CaptaincyScore, score_policies
@@ -174,8 +176,76 @@ class TestTheComparisonIsFair:
         assert all(score.gameweeks == 0 for score in scores.values())
 
     def test_the_policy_set_is_ordered_so_two_runs_agree(self) -> None:
-        assert policy_names() == tuple(CAPTAIN_POLICIES)
+        assert policy_names() == tuple(build_captain_policies())
         assert len(set(policy_names())) == len(policy_names())
+        # The stateless mapping is a subset; the full set adds the ones that
+        # carry season state and therefore cannot live at module level.
+        assert set(CAPTAIN_POLICIES) < set(policy_names())
+
+
+class TestTheSetAndForgetBaseline:
+    """The \"just captain Haaland\" rule, written without his name in it."""
+
+    def test_it_commits_to_the_most_owned_and_never_changes_its_mind(self) -> None:
+        # The point of the baseline: week two makes element 2 both the highest
+        # projected and the most owned, and it captains element 1 anyway.
+        policy = SetAndForget()
+        opening = [_candidate(1, ownership=90.0), _candidate(2, ownership=10.0)]
+        later = [
+            _candidate(1, ownership=5.0, expected=1.0),
+            _candidate(2, ownership=95.0, expected=9.0),
+        ]
+
+        assert policy(opening) == 1
+        assert policy(later) == 1
+        assert policy.anchor == 1
+
+    def test_the_armband_passes_to_the_vice_when_the_anchor_is_not_playing(self) -> None:
+        # Not a fudge to keep the week count equal: this is the vice-captain,
+        # which is a real rule and what happens to a real set-and-forget manager.
+        policy = SetAndForget()
+        assert policy([_candidate(1, ownership=90.0), _candidate(2, ownership=50.0)]) == 1
+        assert policy([_candidate(2, ownership=50.0), _candidate(3, ownership=20.0)]) == 2
+
+    def test_the_anchor_survives_a_week_the_captain_missed(self) -> None:
+        policy = SetAndForget()
+        policy([_candidate(1, ownership=90.0), _candidate(2, ownership=50.0)])
+        policy([_candidate(2, ownership=50.0)])
+
+        assert policy([_candidate(1, ownership=1.0), _candidate(2, ownership=99.0)]) == 1
+
+    def test_an_empty_shortlist_does_not_commit_it_to_anybody(self) -> None:
+        # Committing to nothing would burn the one decision it gets to make.
+        policy = SetAndForget()
+        assert policy([]) is None
+        assert policy.anchor is None
+
+    def test_a_fresh_set_is_built_per_season_so_the_anchor_cannot_leak(self) -> None:
+        # The failure this prevents: 2022-23's anchor carried into 2023-24 would
+        # captain a player who had left the league, and it would look like a
+        # modelling result rather than a leak.
+        first = build_captain_policies()["set_and_forget"]
+        first([_candidate(1, ownership=90.0)])
+        second = build_captain_policies()["set_and_forget"]
+
+        assert isinstance(first, SetAndForget)
+        assert isinstance(second, SetAndForget)
+        assert first.anchor == 1
+        assert second.anchor is None
+
+    def test_it_is_scored_alongside_every_other_thesis(self) -> None:
+        scores = _scores()
+        policies = build_captain_policies()
+
+        score_policies(
+            [_candidate(1, ownership=90.0), _candidate(2, ownership=10.0)],
+            {1: 12, 2: 3},
+            scores,
+            gameweek=1,
+            policies=policies,
+        )
+
+        assert scores["set_and_forget"].captain_points == 12
 
     def test_no_policy_can_read_the_outcome_it_is_graded_on(self) -> None:
         # The candidate record is the whole boundary. If a realised-points

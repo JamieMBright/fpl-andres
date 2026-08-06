@@ -396,6 +396,15 @@ export function ValidationReport() {
           week&rsquo;s shortlist, so a haul can be read against what was on
           offer. Scroll sideways; the method names stay put.
         </p>
+        <p>
+          <strong>Point at any pick to see why it was made.</strong> The panel
+          underneath shows the arithmetic every rule read that week &mdash; the
+          projection, the components under it, recent scoring, the chance he
+          started, ownership, his ceiling and how kind the fixture was &mdash;
+          for the player chosen and for the ones he was chosen over, ranked by
+          projection. Tabbing to a cell does the same thing, so the reasoning is
+          not reserved for people using a mouse.
+        </p>
         <CaptainGrid
           mine={["model", "expected_points"]}
           names={METHOD_NAMES}

@@ -46,9 +46,17 @@ from dataclasses import dataclass
 
 __all__ = [
     "CAPTAIN_POLICIES",
+    "STATEFUL_POLICIES",
     "CaptainCandidate",
+    "CaptainPolicy",
+    "SetAndForget",
+    "build_captain_policies",
     "policy_names",
 ]
+
+#: Anything that can name a captain from a shortlist. Stateless functions and
+#: stateful objects both qualify; the scorer does not care which it holds.
+CaptainPolicy = Callable[[Sequence["CaptainCandidate"]], int | None]
 
 
 @dataclass(frozen=True)
@@ -221,7 +229,48 @@ def _ceiling_and_fixture(candidates: Sequence[CaptainCandidate]) -> int | None:
     return _highest(candidates, lambda entry: entry.ceiling_points * entry.fixture_ease)
 
 
+class SetAndForget:
+    """Captain one player all season. Choose him once, never think again.
+
+    The "just captain Haaland" baseline, written without his name in it. Naming
+    him would be hindsight: you only know he was the right anchor because the
+    seasons already happened. So the anchor is whoever the field owns most at
+    the first scored gameweek, which is information a manager had at the time
+    and is, in practice, how that decision is actually made.
+
+    This is the baseline that matters. It requires no projection, no form, no
+    fixture, and no decision after the opening week. A model that cannot beat
+    it is not earning its complexity.
+
+    When the anchor has no realised row -- injured, benched, or his club blanked
+    -- the armband passes to the next most owned. That is not a fudge to keep
+    the series length equal: it is the vice-captain, which is a real rule of the
+    game and exactly what happens to a real set-and-forget manager.
+
+    Stateful, so one instance belongs to one season. `build_captain_policies`
+    returns a fresh set for exactly that reason.
+    """
+
+    def __init__(self) -> None:
+        self._anchor: int | None = None
+
+    @property
+    def anchor(self) -> int | None:
+        """Who this season was committed to, or None before the first week."""
+        return self._anchor
+
+    def __call__(self, candidates: Sequence[CaptainCandidate]) -> int | None:
+        if not candidates:
+            return None
+        if self._anchor is None:
+            self._anchor = _crowd(candidates)
+        if any(entry.element_id == self._anchor for entry in candidates):
+            return self._anchor
+        return _crowd(candidates)
+
+
 #: Keyed by the label that reaches the artifact and the calibration page.
+#: Stateless policies only -- see `build_captain_policies` for the full set.
 CAPTAIN_POLICIES: Mapping[str, Callable[[Sequence[CaptainCandidate]], int | None]] = {
     "expected_points": _expected_points,
     "components": _components,
@@ -238,4 +287,18 @@ CAPTAIN_POLICIES: Mapping[str, Callable[[Sequence[CaptainCandidate]], int | None
 
 def policy_names() -> tuple[str, ...]:
     """Every policy, in a fixed order, so two runs produce the same columns."""
-    return tuple(CAPTAIN_POLICIES)
+    return (*CAPTAIN_POLICIES, *STATEFUL_POLICIES)
+
+
+#: Policies that carry season state and therefore cannot be module-level.
+STATEFUL_POLICIES: tuple[str, ...] = ("set_and_forget",)
+
+
+def build_captain_policies() -> dict[str, CaptainPolicy]:
+    """A fresh policy set for one season.
+
+    Fresh because `SetAndForget` remembers its anchor. A module-level instance
+    would carry 2022-23's anchor into 2023-24 and score a player who had left
+    the league, which would look like a modelling result rather than a leak.
+    """
+    return {**CAPTAIN_POLICIES, "set_and_forget": SetAndForget()}

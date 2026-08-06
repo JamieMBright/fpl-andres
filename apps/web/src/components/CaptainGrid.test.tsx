@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 
@@ -156,5 +156,74 @@ describe("CaptainGrid", () => {
     const region = container.querySelector('[role="region"]');
     expect(region?.getAttribute("tabindex")).toBe("0");
     expect(region?.getAttribute("aria-label")).toContain("Scrollable");
+  });
+});
+
+describe("CaptainGrid reasoning", () => {
+  const WITH_MATHS: SeasonPicks = {
+    ...SEASON,
+    maths: [
+      {
+        // Element 2 projects highest; element 1 was picked anyway. This is the
+        // shape of the real question -- why him and not the obvious one.
+        "1": [6.2, 5.9, 4.0, 0.95, 40, 11.0, 1.3],
+        "2": [5.9, 5.7, 7.0, 0.98, 95, 14.0, 0.9],
+      },
+      {},
+      {},
+    ],
+  };
+
+  it("says nothing until a pick is pointed at", () => {
+    const { container } = render(<CaptainGrid seasons={[WITH_MATHS]} />);
+    expect(
+      container.querySelector(".captain-grid-readout-idle"),
+    ).not.toBeNull();
+  });
+
+  it("explains a pick on hover", async () => {
+    render(<CaptainGrid seasons={[WITH_MATHS]} />);
+    await userEvent.hover(screen.getAllByRole("button", { name: /Salah/ })[0]!);
+    expect(screen.getByText(/Gameweek 1/)).toBeTruthy();
+  });
+
+  it("explains the same pick on keyboard focus, not only on hover", async () => {
+    // Hover alone would put the reasoning out of reach of touch and keyboard.
+    render(<CaptainGrid seasons={[WITH_MATHS]} />);
+    fireEvent.focus(screen.getAllByRole("button", { name: /Salah/ })[0]!);
+    expect(screen.getByText(/Gameweek 1/)).toBeTruthy();
+  });
+
+  it("shows what the pick was chosen over, ranked by projection", async () => {
+    const { container } = render(<CaptainGrid seasons={[WITH_MATHS]} />);
+    await userEvent.hover(screen.getAllByRole("button", { name: /Salah/ })[0]!);
+    const rows = [
+      ...container.querySelectorAll(".captain-grid-readout tbody tr"),
+    ].map((node) => node.querySelector("th")?.textContent);
+    expect(rows[0]).toContain("Salah");
+    expect(rows[1]).toContain("Haaland");
+  });
+
+  it("marks which candidate was chosen", async () => {
+    const { container } = render(<CaptainGrid seasons={[WITH_MATHS]} />);
+    await userEvent.hover(screen.getAllByRole("button", { name: /Salah/ })[0]!);
+    const chosen = container.querySelectorAll(".captain-grid-chosen");
+    expect(chosen).toHaveLength(1);
+    expect(chosen[0]?.textContent).toContain("Salah");
+  });
+
+  it("says the artifact predates the arithmetic rather than inventing it", async () => {
+    render(<CaptainGrid seasons={[SEASON]} />);
+    await userEvent.hover(screen.getAllByRole("button", { name: /Salah/ })[0]!);
+    expect(screen.getByText(/predates the published arithmetic/)).toBeTruthy();
+  });
+
+  it("clears the reasoning when the season changes", async () => {
+    render(<CaptainGrid seasons={[EARLIER, WITH_MATHS]} />);
+    await userEvent.hover(screen.getAllByRole("button", { name: /Salah/ })[0]!);
+    expect(screen.queryByText(/Gameweek 1 —/)).toBeTruthy();
+
+    await userEvent.click(screen.getByRole("button", { name: "2023-24" }));
+    expect(screen.queryByText(/Gameweek 1 —/)).toBeNull();
   });
 });

@@ -230,6 +230,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                     *(("method", label, scored.captaincy[label]) for label in METHOD_LABELS),
                     *(("thesis", label, score) for label, score in scored.captain_policies.items()),
                 ],
+                scored.captain_shortlists,
             )
 
             totals: dict[str, list[int]] = {policy: [] for policy in POLICIES}

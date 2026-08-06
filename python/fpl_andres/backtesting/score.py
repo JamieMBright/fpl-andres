@@ -10,8 +10,17 @@ from __future__ import annotations
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
 
-from fpl_andres.backtesting.captain_policies import CaptainCandidate, policy_names
-from fpl_andres.backtesting.captaincy import CaptaincyScore, score_captaincy, score_policies
+from fpl_andres.backtesting.captain_policies import (
+    CaptainCandidate,
+    build_captain_policies,
+    policy_names,
+)
+from fpl_andres.backtesting.captaincy import (
+    CaptaincyScore,
+    captain_shortlist,
+    score_captaincy,
+    score_policies,
+)
 from fpl_andres.backtesting.corpus import SeasonCorpus
 from fpl_andres.backtesting.projector import (
     ProjectionSettings,
@@ -114,6 +123,9 @@ class SeasonScore:
     captaincy: dict[str, CaptaincyScore] = field(default_factory=dict)
     #: One entry per competing captaincy thesis, keyed by policy name.
     captain_policies: dict[str, CaptaincyScore] = field(default_factory=dict)
+    #: The pool each gameweek's armband was chosen from, kept so a pick can be
+    #: explained by the numbers that produced it rather than defended in prose.
+    captain_shortlists: dict[int, tuple[CaptainCandidate, ...]] = field(default_factory=dict)
 
 
 def score_season(
@@ -136,6 +148,9 @@ def score_season(
         outcome.captaincy[label] = CaptaincyScore(label=label)
     for label in policy_names():
         outcome.captain_policies[label] = CaptaincyScore(label=label)
+    # One set for the whole season: `set_and_forget` holds an anchor, and a
+    # fresh set each gameweek would let it change its mind every week.
+    policies = build_captain_policies()
 
     for gameweek in corpus.gameweeks:
         if gameweek <= minimum_history:
@@ -203,11 +218,14 @@ def score_season(
         )
 
         # The competing theses, on the same weeks and the same shortlist.
+        candidates = _captain_candidates(projections, recent, deviation, ownership)
+        outcome.captain_shortlists[gameweek] = tuple(captain_shortlist(candidates, actual))
         score_policies(
-            _captain_candidates(projections, recent, deviation, ownership),
+            candidates,
             actual,
             outcome.captain_policies,
             gameweek=gameweek,
+            policies=policies,
         )
 
     return outcome
