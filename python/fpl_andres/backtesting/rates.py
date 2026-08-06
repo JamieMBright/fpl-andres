@@ -70,6 +70,11 @@ class LeagueRates:
     penalties_saved: Mapping[int, float]
     penalties_missed: Mapping[int, float]
     defcon_hits: Mapping[int, float]
+    #: Per appearance rather than per ninety: a clean sheet is a property of the
+    #: match, and a substitute who played twenty minutes of one shares it.
+    clean_sheets: Mapping[int, float]
+    #: Per appearance, for the same reason -- bonus is awarded once per match.
+    bonus: Mapping[int, float]
 
 
 def league_rates(rows: Sequence[ElementRow], position_by_element: Mapping[int, int]) -> LeagueRates:
@@ -85,9 +90,12 @@ def league_rates(rows: Sequence[ElementRow], position_by_element: Mapping[int, i
             "pen_saved",
             "pen_missed",
             "defcon",
+            "clean_sheet",
+            "bonus",
         )
     }
     defcon_nineties: dict[int, float] = {}
+    appearances: dict[int, float] = {}
 
     for row in rows:
         if row.minutes <= 0:
@@ -97,6 +105,11 @@ def league_rates(rows: Sequence[ElementRow], position_by_element: Mapping[int, i
             continue
         played = row.minutes / _MINUTES_PER_90
         nineties[position] = nineties.get(position, 0.0) + played
+        appearances[position] = appearances.get(position, 0.0) + 1
+        totals["clean_sheet"][position] = (
+            totals["clean_sheet"].get(position, 0.0) + row.clean_sheets
+        )
+        totals["bonus"][position] = totals["bonus"].get(position, 0.0) + row.bonus
         totals["conceded"][position] = totals["conceded"].get(position, 0.0) + (
             row.goals_conceded // _CONCEDED_PER_POINT
         )
@@ -132,6 +145,8 @@ def league_rates(rows: Sequence[ElementRow], position_by_element: Mapping[int, i
         penalties_saved=per_ninety("pen_saved", nineties),
         penalties_missed=per_ninety("pen_missed", nineties),
         defcon_hits=per_ninety("defcon", defcon_nineties),
+        clean_sheets=per_ninety("clean_sheet", appearances),
+        bonus=per_ninety("bonus", appearances),
     )
 
 

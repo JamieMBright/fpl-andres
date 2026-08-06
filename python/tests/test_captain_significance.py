@@ -128,6 +128,55 @@ class TestTheVerdict:
         assert [verdict.label for verdict in verdicts] == ["large", "small"]
 
 
+class TestTheFamilyCorrection:
+    """Ten chances at a 95% bar is not a 5% chance of a false winner."""
+
+    def test_one_comparison_is_not_widened(self) -> None:
+        verdicts = compare_policies(
+            {"expected_points": _flat(5), "candidate": _flat(8)},
+            resamples=200,
+        )
+
+        assert verdicts[0].family_size == 1
+        assert verdicts[0].confidence == pytest.approx(0.95)
+
+    def test_the_interval_widens_with_the_number_of_theses(self) -> None:
+        # Same pair, same data, measured alone and then inside a family. The
+        # interval has to be wider in the family, or the correction is a label.
+        noisy = [0, 14, 12, 0, 2, 9, 6, 1] * 4
+        rival = [2, 11, 14, 0, 0, 11, 5, 3] * 4
+        alone = compare_policies({"expected_points": noisy, "candidate": rival}, resamples=800)[0]
+        crowded = compare_policies(
+            {
+                "expected_points": noisy,
+                "candidate": rival,
+                "b": rival,
+                "c": rival,
+                "d": rival,
+            },
+            resamples=800,
+        )
+        inside = next(entry for entry in crowded if entry.label == "candidate")
+
+        assert inside.family_size == 4
+        assert inside.confidence > alone.confidence
+        assert inside.upper - inside.lower > alone.upper - alone.lower
+
+    def test_the_point_estimate_does_not_move_with_the_family(self) -> None:
+        # Only the interval is corrected. A gap is a gap however many other
+        # rules were measured beside it.
+        alone = compare_policies(
+            {"expected_points": _flat(5), "candidate": _flat(8)}, resamples=200
+        )[0]
+        crowded = compare_policies(
+            {"expected_points": _flat(5), "candidate": _flat(8), "other": _flat(6)},
+            resamples=200,
+        )
+        inside = next(entry for entry in crowded if entry.label == "candidate")
+
+        assert inside.improvement == pytest.approx(alone.improvement)
+
+
 class TestTheComparisonIsSound:
     def test_a_policy_scored_on_different_weeks_is_refused_not_truncated(self) -> None:
         # Trimming would compare two different populations and call it a

@@ -169,7 +169,19 @@ def supporting_breakdown(
     def rate(events: float, prior: float) -> float:
         return shrunk_rate(events, nineties_played, prior, prior_nineties)
 
-    clean_sheet_rate = sum(row.clean_sheets for row in appearances) / played
+    def per_appearance(events: float, prior: float) -> float:
+        """Shrink a per-match rate. Clean sheets and bonus are awarded per match,
+        not per ninety, so the denominator is appearances rather than 90s."""
+        return shrunk_rate(events, played, prior, prior_nineties)
+
+    # Shrunk like every other route. Left raw, a defender with three matches and
+    # two clean sheets was priced at a 67% rate for the rest of the season, and
+    # a single early three-bonus became one bonus a match forever. Between them
+    # these two routes are a fifth of every point awarded.
+    clean_sheet_rate = per_appearance(
+        sum(row.clean_sheets for row in appearances),
+        league.clean_sheets.get(position, 0.0),
+    )
     # The fixture multiplier reaches 2.2, and the best defenders keep a clean
     # sheet in over half their matches, so the product can exceed one. A
     # probability cannot, and paying more than four points for one clean sheet
@@ -180,7 +192,10 @@ def supporting_breakdown(
         * adjusted_clean_sheet
         * _CLEAN_SHEET_POINTS.get(position, 0)
     )
-    bonus = ninety * (sum(row.bonus for row in appearances) / played)
+    bonus = ninety * per_appearance(
+        sum(row.bonus for row in appearances),
+        league.bonus.get(position, 0.0),
+    )
 
     saves = 0.0
     if position == _GOALKEEPER:

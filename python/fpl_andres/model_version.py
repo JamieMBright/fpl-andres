@@ -29,6 +29,17 @@ from __future__ import annotations
 
 __all__ = ["MODEL_VERSION"]
 
+#: 2.7 fixes two bugs that moved every projected point, so expect the metrics
+#: to move with it. The club-change discount had never fired: no projector call
+#: site passed the club or the role, so a transferred player carried his old
+#: rate at full weight. Clean sheets and bonus were the only supporting routes
+#: with no shrinkage prior, which priced a defender three matches in at whatever
+#: his three matches happened to show. Between them those two routes are a fifth
+#: of every point FPL awards.
+#:
+#: The captaincy intervals are also now widened for the number of theses tested
+#: at once, so a gap has to clear a higher bar than it did in 2.6.
+#:
 #: 2.6 adds the set-and-forget baseline -- captain the most-owned player at the
 #: first scored gameweek and never think again, with the armband passing to the
 #: next most owned when he does not play. Written without Haaland's name in it,
@@ -59,4 +70,4 @@ __all__ = ["MODEL_VERSION"]
 #: projection and resampled, so a gap that does not clear zero is reported as
 #: not clearing zero. No projection changed; what changed is what may be
 #: claimed from it.
-MODEL_VERSION = "2.6"
+MODEL_VERSION = "2.7"

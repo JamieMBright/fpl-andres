@@ -438,6 +438,7 @@ def project_gameweek(
         if position is None or position not in _GOAL_PRIOR:
             continue
         prior_rows = carried.get(element_id, ())
+        prior_team, prior_position = _prior_context(previous, prior_rows)
 
         minutes = project_element_minutes(
             element_id, corpus.season, gameweek, rows, cutoff, config, prior_rows
@@ -455,6 +456,9 @@ def project_gameweek(
             position,
             prior_rows,
             previous.season if previous else None,
+            team_id=corpus.team_by_element.get(element_id),
+            prior_team_id=prior_team,
+            prior_position=prior_position,
         )
         if rates.evidence_level == "unavailable":
             continue
@@ -506,6 +510,25 @@ def _carried_history(
         if rows:
             carried[element_id] = tuple(rows)
     return carried
+
+
+def _prior_context(
+    previous: SeasonCorpus | None, prior_rows: Sequence[ElementRow]
+) -> tuple[int | None, int | None]:
+    """Which club and role last season's rows were produced in.
+
+    Carried rows keep last season's element id, and ids are reassigned every
+    summer, so the lookup has to go through the previous corpus rather than the
+    current one. Without this the carried-context check saw `None` on every
+    projection and the club-change discount never fired.
+    """
+    if previous is None or not prior_rows:
+        return None, None
+    prior_id = prior_rows[0].element_id
+    return (
+        previous.team_by_element.get(prior_id),
+        previous.position_by_element.get(prior_id),
+    )
 
 
 def _all_carried(carried: Mapping[int, tuple[ElementRow, ...]]) -> list[ElementRow]:

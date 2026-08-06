@@ -58,6 +58,30 @@ class PolicyVerdict:
     #: True only when the whole interval clears zero, under every seed.
     better: bool
     reason_codes: tuple[str, ...]
+    #: How many theses were tested at once. The interval is widened for it.
+    family_size: int = 1
+    #: The per-comparison level actually used, after the family correction.
+    confidence: float = CONFIDENCE
+
+
+def _family_confidence(family_size: int, confidence: float = CONFIDENCE) -> float:
+    """The per-comparison level that keeps the family-wise error at `1 - confidence`.
+
+    Ten theses each tested at 95% is not a 5% chance of a false winner, it is
+    ten of them: the family-wise error rate is `1 - 0.95 ** 10`, about 40%. On
+    the current data nothing clears zero on the winning side so nothing false
+    has been published, but an instrument that will eventually manufacture a
+    winner is not one to leave pointed at the page.
+
+    Bonferroni rather than Holm. Holm is more powerful and needs a p-value per
+    comparison; `evaluate_promotion` publishes an interval, and reaching into
+    the model-promotion primitive to extract tail mass is a change to the gate
+    the real model is held to. The cost is power, and nothing measured is close
+    enough to the bar for that to change a verdict.
+    """
+    if family_size <= 1:
+        return confidence
+    return 1.0 - (1.0 - confidence) / family_size
 
 
 def _mean(values: Sequence[float], _observed: Sequence[float]) -> float:
@@ -104,6 +128,8 @@ def compare_policies(
 
     verdicts: list[PolicyVerdict] = []
     offset = _offset(weekly)
+    family = sum(1 for label in weekly if label != baseline)
+    level = _family_confidence(family)
     for label, series in weekly.items():
         if label == baseline:
             continue
@@ -129,7 +155,7 @@ def compare_policies(
             metric_direction="higher_is_better",
             resamples=resamples,
             seed=_SEED,
-            confidence=CONFIDENCE,
+            confidence=level,
             minimum_sample_size=minimum_weeks,
             seed_replicates=SEED_REPLICATES,
         )
@@ -144,6 +170,8 @@ def compare_policies(
                 upper=decision.paired_improvement.upper,
                 better=decision.promoted,
                 reason_codes=decision.reason_codes,
+                family_size=family,
+                confidence=level,
             )
         )
 

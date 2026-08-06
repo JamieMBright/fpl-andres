@@ -114,6 +114,8 @@ def _significance_rows(weekly: Mapping[str, Sequence[int]]) -> list[dict[str, ob
             "upper": _round(verdict.upper),
             "better": verdict.better,
             "reasonCodes": list(verdict.reason_codes),
+            "familySize": verdict.family_size,
+            "confidence": _round(verdict.confidence, 4),
         }
         for verdict in compare_policies(weekly)
     ]
