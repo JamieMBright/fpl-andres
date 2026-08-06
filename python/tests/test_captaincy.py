@@ -25,6 +25,7 @@ def test_each_method_picks_its_own_best_from_the_shared_shortlist() -> None:
         ownership,
         actual,
         scores,
+        gameweek=1,
         shortlist_size=3,
     )
 
@@ -48,6 +49,7 @@ def test_the_shortlist_is_the_most_owned_and_nothing_else() -> None:
         ownership,
         actual,
         scores,
+        gameweek=1,
         shortlist_size=3,
     )
 
@@ -62,7 +64,7 @@ def test_a_player_with_no_realised_row_is_not_captainable() -> None:
     actual = {2: 7}
     scores = _scores("model")
 
-    score_captaincy({"model": {1: 9.0, 2: 1.0}}, ownership, actual, scores)
+    score_captaincy({"model": {1: 9.0, 2: 1.0}}, ownership, actual, scores, gameweek=1)
 
     assert scores["model"].gameweeks == 1
     assert scores["model"].captain_points == 7
@@ -73,7 +75,7 @@ def test_regret_and_ceiling_share_are_measured_against_the_shortlist() -> None:
     actual = {1: 4, 2: 12}
     scores = _scores("model")
 
-    score_captaincy({"model": {1: 8.0, 2: 2.0}}, ownership, actual, scores)
+    score_captaincy({"model": {1: 8.0, 2: 2.0}}, ownership, actual, scores, gameweek=1)
 
     assert scores["model"].regret == 8.0
     assert scores["model"].share_of_ceiling == 4 / 12
@@ -85,7 +87,7 @@ def test_a_perfect_week_is_counted_and_leaves_no_regret() -> None:
     actual = {1: 13, 2: 3}
     scores = _scores("model")
 
-    score_captaincy({"model": {1: 8.0, 2: 2.0}}, ownership, actual, scores)
+    score_captaincy({"model": {1: 8.0, 2: 2.0}}, ownership, actual, scores, gameweek=1)
 
     assert scores["model"].perfect_weeks == 1
     assert scores["model"].regret == 0.0
@@ -97,7 +99,7 @@ def test_an_appearance_and_nothing_else_counts_as_a_blank() -> None:
     actual = {1: 2, 2: 11}
     scores = _scores("model")
 
-    score_captaincy({"model": {1: 8.0, 2: 2.0}}, ownership, actual, scores)
+    score_captaincy({"model": {1: 8.0, 2: 2.0}}, ownership, actual, scores, gameweek=1)
 
     assert scores["model"].blank_weeks == 1
     assert scores["model"].blank_rate == 1.0
@@ -106,7 +108,7 @@ def test_an_appearance_and_nothing_else_counts_as_a_blank() -> None:
 def test_a_gameweek_nobody_can_be_captained_in_is_skipped_not_zeroed() -> None:
     scores = _scores("model")
 
-    score_captaincy({"model": {1: 8.0}}, {}, {1: 9}, scores)
+    score_captaincy({"model": {1: 8.0}}, {}, {1: 9}, scores, gameweek=1)
 
     assert scores["model"].gameweeks == 0
     assert scores["model"].mean_points is None
@@ -125,6 +127,7 @@ def test_a_method_that_rates_nobody_on_the_shortlist_is_not_scored() -> None:
         ownership,
         actual,
         scores,
+        gameweek=1,
     )
 
     assert scores["model"].gameweeks == 1
@@ -137,7 +140,7 @@ def test_ties_in_a_ranking_resolve_the_same_way_every_run() -> None:
     first = _scores("model")
     second = _scores("model")
 
-    score_captaincy({"model": {7: 6.0, 3: 6.0}}, ownership, actual, first)
-    score_captaincy({"model": {3: 6.0, 7: 6.0}}, ownership, actual, second)
+    score_captaincy({"model": {7: 6.0, 3: 6.0}}, ownership, actual, first, gameweek=1)
+    score_captaincy({"model": {3: 6.0, 7: 6.0}}, ownership, actual, second, gameweek=1)
 
     assert first["model"].weekly == second["model"].weekly

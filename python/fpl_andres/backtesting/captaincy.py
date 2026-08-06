@@ -38,6 +38,7 @@ from fpl_andres.backtesting.captain_policies import CAPTAIN_POLICIES, CaptainCan
 
 __all__ = [
     "SHORTLIST_SIZE",
+    "CaptainPick",
     "CaptaincyScore",
     "score_captaincy",
     "score_policies",
@@ -48,6 +49,23 @@ __all__ = [
 # and the model is denied any differential, larger and the shortlist stops
 # resembling anyone's fifteen.
 SHORTLIST_SIZE = 25
+
+
+@dataclass(frozen=True)
+class CaptainPick:
+    """One method's armband in one gameweek, kept so it can be inspected.
+
+    A season mean says a method is worth 6.97 a week and gives a reader no way
+    to disagree with it. The disagreement is the point: two methods differing
+    by a tenth of a point over four seasons still differ on which player, in
+    which week, and that is a claim somebody can check against a scoresheet.
+    """
+
+    gameweek: int
+    element_id: int
+    points: int
+    #: The best return available on the same shortlist, for the regret.
+    best_points: int
 
 
 @dataclass
@@ -63,6 +81,7 @@ class CaptaincyScore:
     #: Times the pick returned nothing at all. The cost a reader feels.
     blank_weeks: int = 0
     weekly: list[int] = field(default_factory=list)
+    picks: list[CaptainPick] = field(default_factory=list)
 
     @property
     def mean_points(self) -> float | None:
@@ -93,6 +112,7 @@ def score_policies(
     actual: Mapping[int, int],
     scores: Mapping[str, CaptaincyScore],
     *,
+    gameweek: int,
     shortlist_size: int = SHORTLIST_SIZE,
 ) -> None:
     """Score every competing captaincy thesis on the same gameweek.
@@ -115,7 +135,7 @@ def score_policies(
         pick = policy(shortlist)
         if pick is None or pick not in actual:
             continue
-        _record(score, actual[pick], best)
+        _record(score, gameweek, pick, actual[pick], best)
 
 
 def score_captaincy(
@@ -124,6 +144,7 @@ def score_captaincy(
     actual: Mapping[int, int],
     scores: Mapping[str, CaptaincyScore],
     *,
+    gameweek: int,
     shortlist_size: int = SHORTLIST_SIZE,
 ) -> None:
     """Add one gameweek's captaincy result to each method's running score.
@@ -148,14 +169,23 @@ def score_captaincy(
         pick = _pick(shortlist, ranking)
         if pick is None:
             continue
-        _record(score, actual[pick], best)
+        _record(score, gameweek, pick, actual[pick], best)
 
 
-def _record(score: CaptaincyScore, returned: int, best: int) -> None:
+def _record(
+    score: CaptaincyScore,
+    gameweek: int,
+    element_id: int,
+    returned: int,
+    best: int,
+) -> None:
     score.gameweeks += 1
     score.captain_points += returned
     score.best_points += best
     score.weekly.append(returned)
+    score.picks.append(
+        CaptainPick(gameweek=gameweek, element_id=element_id, points=returned, best_points=best)
+    )
     if returned == best:
         score.perfect_weeks += 1
     if returned <= 2:

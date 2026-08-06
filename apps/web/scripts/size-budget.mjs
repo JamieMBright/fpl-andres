@@ -15,11 +15,12 @@ import { join } from "node:path";
 const DIST = join(import.meta.dirname, "..", "dist", "assets");
 
 const BUDGETS = [
-  // Measured 11.04 kB, raised from 11 kB when the ownership range slider, the
-  // highlight typeahead and the three matching disclosures landed. The whole
-  // design system still ships on first paint by design, so splitting it would
-  // cost a round trip to save eleven kilobytes.
-  { match: /\.css$/, name: "stylesheet", gzipKb: 12 },
+  // Measured 12.07 kB, raised from 12 kB for the captaincy grid: fourteen rows
+  // across every scored gameweek is five hundred cells, and a dense table needs
+  // sticky columns, a venue casing that nothing may override, and second cues
+  // for the blanks and the hauls. Trimming the repetition first gained 0.01 kB
+  // — gzip had already collapsed it — so this is a real cost, not sloppy CSS.
+  { match: /\.css$/, name: "stylesheet", gzipKb: 14 },
   // Measured 128.26 kB. Router, zod, lucide and the shell.
   { match: /^index-.*\.js$/, name: "entry chunk", gzipKb: 150 },
   // Measured 33.64 kB for squad-projection, raised from 32 kB: every player now

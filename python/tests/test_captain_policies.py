@@ -124,7 +124,7 @@ class TestTheComparisonIsFair:
         actual = {index: index for index in range(1, 11)}
         scores = _scores()
 
-        score_policies(candidates, actual, scores)
+        score_policies(candidates, actual, scores, gameweek=1)
 
         assert {score.gameweeks for score in scores.values()} == {1}
 
@@ -136,7 +136,7 @@ class TestTheComparisonIsFair:
         actual = {1: 3, 2: 17}
         scores = _scores()
 
-        score_policies(candidates, actual, scores)
+        score_policies(candidates, actual, scores, gameweek=1)
 
         assert {score.best_points for score in scores.values()} == {17}
 
@@ -150,7 +150,7 @@ class TestTheComparisonIsFair:
         actual = {1: 2, 2: 2, 3: 2, 99: 24}
         scores = _scores()
 
-        score_policies(candidates, actual, scores, shortlist_size=3)
+        score_policies(candidates, actual, scores, gameweek=1, shortlist_size=3)
 
         assert all(score.captain_points == 2 for score in scores.values())
         assert all(score.best_points == 2 for score in scores.values())
@@ -162,14 +162,14 @@ class TestTheComparisonIsFair:
         ]
         scores = _scores()
 
-        score_policies(candidates, {2: 8}, scores)
+        score_policies(candidates, {2: 8}, scores, gameweek=1)
 
         assert all(score.captain_points == 8 for score in scores.values())
 
     def test_nothing_is_scored_when_the_shortlist_is_empty(self) -> None:
         scores = _scores()
 
-        score_policies([_candidate(1)], {}, scores)
+        score_policies([_candidate(1)], {}, scores, gameweek=1)
 
         assert all(score.gameweeks == 0 for score in scores.values())
 

@@ -20,6 +20,7 @@ from collections.abc import Mapping, Sequence
 from datetime import UTC, datetime
 from pathlib import Path
 
+from fpl_andres.backtesting.captain_picks import picks_payload
 from fpl_andres.backtesting.captain_significance import compare_policies
 from fpl_andres.backtesting.corpus import SeasonCorpus, load_season
 from fpl_andres.backtesting.score import METHOD_LABELS, score_season
@@ -218,6 +219,19 @@ def main(argv: Sequence[str] | None = None) -> int:
                 pooled_weekly.setdefault(label, []).extend(series)
             captain_significance = _significance_rows(weekly)
 
+            # Who each method actually captained, week by week. The means above
+            # say two methods differ by a tenth of a point and give a reader no
+            # way to disagree; the picks are what can be argued with.
+            # `components` names both a ranking method and a thesis, so the two
+            # groups stay separate rather than being merged by label.
+            captain_picks = picks_payload(
+                corpus,
+                [
+                    *(("method", label, scored.captaincy[label]) for label in METHOD_LABELS),
+                    *(("thesis", label, score) for label, score in scored.captain_policies.items()),
+                ],
+            )
+
             totals: dict[str, list[int]] = {policy: [] for policy in POLICIES}
             chips: dict[str, dict[str, int]] = {}
             squads: dict[str, list[dict[str, object]]] = {}
@@ -257,6 +271,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                     "captaincy": captaincy,
                     "captainPolicies": captain_policies,
                     "captainSignificance": captain_significance,
+                    "captainPicks": captain_picks,
                     "league": {
                         "policies": {
                             policy: {

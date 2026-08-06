@@ -29,6 +29,13 @@ from __future__ import annotations
 
 __all__ = ["MODEL_VERSION"]
 
+#: 2.5 retains the captaincy picks themselves rather than only what they
+#: returned. No projection and no metric should move: the scorers compute
+#: exactly what they always did and now write down which player they named.
+#: That is precisely why it gets a version — the scorer signatures changed, so
+#: the run needs a label the CI comparison can hold the previous numbers
+#: against and show that none of them moved.
+#:
 #: 2.4 is the first version that actually produces the intervals 2.3 promised.
 #: 2.3 refused to score a gameweek where the captain lost points -- a red card
 #: or an own goal -- so the backtest raised before writing anything. Nothing
@@ -42,4 +49,4 @@ __all__ = ["MODEL_VERSION"]
 #: projection and resampled, so a gap that does not clear zero is reported as
 #: not clearing zero. No projection changed; what changed is what may be
 #: claimed from it.
-MODEL_VERSION = "2.4"
+MODEL_VERSION = "2.5"

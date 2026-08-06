@@ -1,4 +1,5 @@
 import validation from "../data/validation.json";
+import { CaptainGrid, type SeasonPicks } from "./CaptainGrid";
 import {
   BarChart,
   IntervalChart,
@@ -53,6 +54,8 @@ type SeasonReport = {
   captaincy?: CaptaincyScore[];
   /** Absent from artifacts generated before the theses were scored. */
   captainPolicies?: CaptaincyScore[];
+  /** Absent from artifacts generated before the picks were retained. */
+  captainPicks?: Omit<SeasonPicks, "season">;
   league: {
     policies: Record<string, PolicyResult>;
     leaguesPlayed: number;
@@ -217,6 +220,11 @@ export function ValidationReport() {
   const significance = report.captainSignificance ?? [];
   const verdicts = intervals(significance);
   const pooledWeeks = significance[0]?.weeks ?? 0;
+  const pickSeasons = report.seasons.flatMap((season) =>
+    season.captainPicks === undefined
+      ? []
+      : [{ season: season.season, ...season.captainPicks }],
+  );
 
   return (
     <>
@@ -368,6 +376,31 @@ export function ValidationReport() {
           doubling is a constant on every row, so it changes no ordering &mdash;
           but over a season a gap here is worth twice what it reads.
         </p>
+      </section>
+
+      <section aria-labelledby="picks-title">
+        <h2 id="picks-title">Every armband, week by week</h2>
+        <p>
+          The charts above settle whether one rule beats another by a tenth of a
+          point. They cannot show what the disagreement was about. Two rules
+          separated by 0.15 still differ on which player, in which week &mdash;
+          and that is the part you can check against a scoresheet.
+        </p>
+        <p>
+          Rows are the fourteen methods, columns every scored gameweek. Each
+          cell is the shirt, the player, who he faced and what he returned.
+          Opponents carry the venue in their casing:{" "}
+          <span className="mono">ARS</span> at home,{" "}
+          <span className="mono">ars</span> away, both listed in a double. The
+          number under each gameweek is the best return available on that
+          week&rsquo;s shortlist, so a haul can be read against what was on
+          offer. Scroll sideways; the method names stay put.
+        </p>
+        <CaptainGrid
+          mine={["model", "expected_points"]}
+          names={METHOD_NAMES}
+          seasons={pickSeasons}
+        />
       </section>
 
       <section aria-labelledby="league-title">

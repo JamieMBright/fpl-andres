@@ -199,6 +199,7 @@ def score_season(
             ownership,
             actual,
             outcome.captaincy,
+            gameweek=gameweek,
         )
 
         # The competing theses, on the same weeks and the same shortlist.
@@ -206,6 +207,7 @@ def score_season(
             _captain_candidates(projections, recent, deviation, ownership),
             actual,
             outcome.captain_policies,
+            gameweek=gameweek,
         )
 
     return outcome
