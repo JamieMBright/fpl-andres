@@ -138,6 +138,10 @@ async def _capture(args: argparse.Namespace) -> int:
 
     credentials = SupabaseCredentials.from_env(os.environ)
     with SupabaseRestClient(credentials) as supabase:
+        missing = _unseeded(supabase, season)
+        if missing is not None:
+            print(missing, file=sys.stderr)
+            return 1
         snapshot_id = _record_snapshot(supabase, bootstrap.snapshot)
         rows = _rows(
             bootstrap.payload,
@@ -153,6 +157,33 @@ async def _capture(args: argparse.Namespace) -> int:
         )
     print(f"wrote {len(rows)} crowd rows")
     return 0
+
+
+def _unseeded(client: SupabaseRestClient, season: str) -> str | None:
+    """Why the write is about to fail, said before anything is written.
+
+    `crowd_snapshots.season` references `seasons`, and `(season, element_id)`
+    references `elements`. Both are filled by the historical ingest, which
+    reads a published archive -- and an archive of a season only exists once
+    that season has been played.
+
+    So the live capture depends on a corpus that cannot yet contain the season
+    it is capturing. Every run of this job since it was written has failed on
+    that foreign key, and it failed as an opaque PostgREST status because the
+    check happened inside the database rather than here.
+
+    Checked before `source_snapshots` is written, because the old order left an
+    orphan snapshot row behind on every failed run.
+    """
+    rows = client.select("seasons", columns="season", filters={"season": f"eq.{season}"})
+    if rows:
+        return None
+    return (
+        f"{season} is not in the corpus, so the crowd capture has nothing to "
+        f"reference: crowd_snapshots.season is a foreign key into seasons, and "
+        f"(season, element_id) is one into elements. Ingest the season first. "
+        f"Refusing rather than writing a snapshot row that nothing can point at."
+    )
 
 
 def _record_snapshot(client: SupabaseRestClient, snapshot: Any) -> str:

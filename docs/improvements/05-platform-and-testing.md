@@ -166,6 +166,103 @@ points, which makes them the highest-value targets for generated inputs.
 
 ---
 
+## E9. The canary's stated policy was unimplementable — fixed
+
+**Score 8. Done.** `.github/workflows/canary.yml`
+
+The workflow said, in its own comment:
+
+> A degraded response is FPL being unreachable, which is worth knowing but is
+> not this deployment failing. Reported, not alarmed.
+
+It could not do that. `degradedResponse` in
+`api/_lib/team-public-state-response.ts` serves the envelope with **HTTP 503**,
+and the probe checked the status code first:
+
+```bash
+if [ "$team_code" != "200" ]; then
+  failures="${failures}- /api/team returned ${team_code}\n"
+elif ! printf '%s' "$team_body" | grep -qE '"status":"(ready|unavailable|degraded)"'; then
+```
+
+So a degraded body never reached the branch written to tolerate it. Every FPL
+blip opened an incident: **seven of the first thirty-eight scheduled runs
+failed this way**, at 7–16 seconds each. The workflow's other comment — "an
+alert that floods is an alert people mute" — describes what it did to itself.
+
+**Fixed** by reading the body before the status code, and by splitting the three
+degraded reasons rather than treating them alike. That split also closes the
+other half of [D2](04-data-and-sources.md#d2-the-live-contract-test-does-not-check-the-field-the-site-depends-on):
+
+| Response                                 | Verdict                        |
+| ---------------------------------------- | ------------------------------ |
+| 200 `ready` / `unavailable`              | pass                           |
+| 503 `degraded`, `fpl_unreachable`        | pass, noted — upstream         |
+| 503 `degraded`, `fpl_source_failed`      | pass, noted — upstream         |
+| 503 `degraded`, `source_contract_failed` | **alarm** — FPL changed shape  |
+| any other non-200                        | **alarm** — the site is broken |
+| 200, unrecognised status                 | **alarm** — our shape changed  |
+
+`source_contract_failed` means FPL answered in a shape this deployment does not
+understand, so every dossier degrades until the contract is updated. That is
+ours, and it is the one worth waking up for.
+
+Pinned by `python/tests/test_canary_probe.py`, which asserts against the real
+workflow text — including that the API still serves degraded with a 503, so if
+that ever changes the test says so rather than the canary silently reverting to
+noise.
+
+**Not fixed, and not fixable here:** runs #37 and #38 failed at 15 minutes with
+`The job was not acquired by Runner of type hosted even after multiple
+attempts` and an internal-server-error correlation id. That is GitHub
+infrastructure, not this repository.
+
+---
+
+## E10. The crowd capture has never once succeeded — diagnosed
+
+**Score 8. Owner decision.** `.github/workflows/capture-crowd.yml`,
+`python/fpl_andres/cli/capture_crowd.py`
+
+Three scheduled runs since the job was written. Three failures, each about
+twenty-five seconds. It has never worked.
+
+The read half is fine — `--dry-run` returns 570 elements for 2026-27 GW1. The
+write half hits a foreign key:
+
+```sql
+season text not null references public.seasons(season),
+constraint crowd_snapshots_element_fk
+    foreign key (season, element_id) references public.elements(season, element_id)
+```
+
+`seasons` and `elements` are filled by the historical ingest, which reads a
+published archive — and an archive of a season only exists once that season has
+been played. **A job whose entire purpose is capturing live pre-deadline
+ownership depends on a corpus that cannot yet contain the season it is
+capturing.** The corpus holds 2019-20 to 2025-26; the capture writes 2026-27.
+
+This is a design problem rather than a typo, and the fix is an owner decision
+because every option touches production data:
+
+1. **Seed the season from the live bootstrap.** The bootstrap is the
+   authoritative source for who exists this season, so a small job could insert
+   the `seasons` row and the current `elements` before the first capture. It
+   means live-derived rows land in tables the backtest reads, which needs
+   thinking about.
+2. **Drop the two foreign keys.** Cheapest, and it removes a real integrity
+   guarantee. Not recommended.
+3. **Accept that capture starts once the season is ingested**, and turn the
+   schedule off until then. Loses the pre-season ownership series, which is
+   part of what the table was for.
+
+**What is fixed here:** the failure now says what is wrong, before anything is
+written. It was surfacing as an opaque PostgREST status because the check
+happened inside the database, and the old ordering wrote a `source_snapshots`
+row _before_ the failing insert — leaving an orphan behind on every run.
+
+---
+
 ## E8. Things checked and found sound
 
 Recorded so they are not re-audited.

@@ -8,6 +8,17 @@ name: Production canary
 # cover the rate-based alerts in docs/OPERATIONS.md -- those need log search,
 # which needs a log sink, which is the part that does need an account.
 #
+# The distinction that matters is between FPL being unreachable and FPL having
+# changed shape. Both produce a degraded envelope; only the second is this
+# deployment's problem, and only the second is alarmed. The full table:
+#
+#   200 ready | unavailable                     pass
+#   503 degraded, fpl_unreachable               pass, noted
+#   503 degraded, fpl_source_failed             pass, noted
+#   503 degraded, source_contract_failed        ALARM -- FPL changed shape
+#   any other non-200                           ALARM -- the site is broken
+#   200 with an unrecognised status             ALARM -- our shape changed
+#
 # Failure opens one issue and keeps commenting on it, rather than opening a new
 # issue every twenty minutes. An alert that floods is an alert people mute.
 
@@ -56,18 +67,26 @@ jobs:
           team=$(curl -sS -m 30 -w '\n%{http_code}' "$SITE/api/team/$CANARY_TEAM")
           team_code=$(printf '%s' "$team" | tail -n1)
           team_body=$(printf '%s' "$team" | sed '$d')
-          if [ "$team_code" != "200" ]; then
-            failures="${failures}- /api/team returned ${team_code}\n"
-          # ready, unavailable and degraded are all valid contract outcomes.
-          # A body carrying none of them means the shape changed.
-          elif ! printf '%s' "$team_body" | grep -qE '"status":"(ready|unavailable|degraded)"'; then
-            failures="${failures}- /api/team returned an unrecognised shape: ${team_body}\n"
-          fi
 
-          # A degraded response is FPL being unreachable, which is worth
-          # knowing but is not this deployment failing. Reported, not alarmed.
+          # The degraded envelope is served with 503, so the body has to be read
+          # before the status code. Checking the code first made the branch that
+          # tolerates a degraded response unreachable, and the canary alarmed on
+          # every FPL blip -- which is how this alert became one to ignore.
           if printf '%s' "$team_body" | grep -q '"status":"degraded"'; then
-            echo "note: /api/team is degraded -- $team_body"
+            if printf '%s' "$team_body" | grep -q '"reason":"source_contract_failed"'; then
+              # FPL answered in a shape this deployment does not understand.
+              # Every dossier degrades until the contract is updated, so this
+              # one is ours and it is the failure worth waking up for.
+              failures="${failures}- /api/team: the FPL contract broke: ${team_body}\n"
+            else
+              # FPL being unreachable is worth knowing and is not this
+              # deployment failing. Reported, not alarmed.
+              echo "note: /api/team is degraded upstream -- ${team_body}"
+            fi
+          elif [ "$team_code" != "200" ]; then
+            failures="${failures}- /api/team returned ${team_code}: ${team_body}\n"
+          elif ! printf '%s' "$team_body" | grep -qE '"status":"(ready|unavailable)"'; then
+            failures="${failures}- /api/team returned an unrecognised shape: ${team_body}\n"
           fi
 
           if [ -n "$failures" ]; then
