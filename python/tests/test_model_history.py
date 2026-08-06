@@ -305,9 +305,12 @@ class TestPolicyTable:
     def test_an_artifact_without_intervals_says_so_rather_than_implying_a_tie(
         self,
     ) -> None:
-        table = render_policies(self._report({"a": 5.0, "b": 4.0}))
-        assert "not measured" not in table
-        assert table.count("baseline") == 2
+        # An artifact predating the bootstrap has no entry for anything. Every
+        # thesis but the incumbent must read as unmeasured, not as level with
+        # it, which is what an empty cell or a "baseline" would imply.
+        table = render_policies(self._report({"expected_points": 5.0, "other": 4.0}))
+        assert table.count("not measured") == 1
+        assert table.count("baseline") == 1
 
     def test_the_header_names_how_many_seasons_were_scored(self) -> None:
         assert "of 2" in render_policies(self._report({"a": 5.0, "b": 4.0}, {"a": 5.0, "b": 4.0}))

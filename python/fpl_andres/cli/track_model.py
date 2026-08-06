@@ -23,6 +23,7 @@ from collections.abc import Sequence
 from pathlib import Path
 from typing import Any
 
+from fpl_andres.backtesting.captain_significance import BASELINE_POLICY
 from fpl_andres.jsonio import read_json_file
 
 __all__ = [
@@ -238,15 +239,22 @@ def render_policies(report: dict[str, Any]) -> str:
         values = totals[label]
         rows.append(
             f"| `{label}` | {sum(values) / len(values):.2f} | "
-            f"{wins.get(label, 0)} | {_verdict(verdicts.get(label))} |"
+            f"{wins.get(label, 0)} | {_verdict(label, verdicts.get(label))} |"
         )
     return "\n".join(rows)
 
 
-def _verdict(entry: dict[str, Any] | None) -> str:
-    """One cell: the gap, its interval, and whether it clears zero."""
-    if entry is None:
+def _verdict(label: str, entry: dict[str, Any] | None) -> str:
+    """One cell: the gap, its interval, and whether it clears zero.
+
+    An artifact predating the bootstrap has no entry for any thesis, and that
+    reads as "not measured" rather than as a tie. Only the incumbent is exempt:
+    it has no gap against itself.
+    """
+    if label == BASELINE_POLICY:
         return "baseline"
+    if entry is None:
+        return "not measured"
     lower = entry.get("lower")
     upper = entry.get("upper")
     improvement = entry.get("improvement")

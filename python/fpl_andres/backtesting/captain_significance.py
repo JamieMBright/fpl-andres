@@ -24,6 +24,7 @@ from dataclasses import dataclass
 from fpl_andres.models.promotion import TripletPrediction, evaluate_promotion
 
 __all__ = [
+    "BASELINE_POLICY",
     "CONFIDENCE",
     "MINIMUM_WEEKS",
     "RESAMPLES",
@@ -31,6 +32,8 @@ __all__ = [
     "compare_policies",
 ]
 
+#: The incumbent every thesis is measured against: take the highest projection.
+BASELINE_POLICY = "expected_points"
 #: Enough to place a percentile bound without pretending to more precision.
 RESAMPLES = 2000
 CONFIDENCE = 0.95
@@ -63,10 +66,28 @@ def _mean(values: Sequence[float], _observed: Sequence[float]) -> float:
     return sum(values) / len(values) if values else 0.0
 
 
+def _offset(weekly: Mapping[str, Sequence[int]]) -> float:
+    """How far the worst week has to be lifted to clear zero.
+
+    A captain can lose points: a red card is -3, an own goal -2, and goals
+    conceded take more off a defender. `TripletPrediction` refuses a negative
+    row because the metrics it was built for are error magnitudes, which cannot
+    be. Captain return is not one of those.
+
+    Adding one constant to every series is exact rather than a workaround. The
+    verdict is built from the paired difference of two means, and a shift
+    common to both cancels out of it entirely -- point estimate, bootstrap
+    samples and interval alike. Only the two reported means move, by exactly
+    the offset, and they are moved back.
+    """
+    lowest = min((value for series in weekly.values() for value in series), default=0)
+    return float(-lowest) if lowest < 0 else 0.0
+
+
 def compare_policies(
     weekly: Mapping[str, Sequence[int]],
     *,
-    baseline: str = "expected_points",
+    baseline: str = BASELINE_POLICY,
     resamples: int = RESAMPLES,
     minimum_weeks: int = MINIMUM_WEEKS,
 ) -> list[PolicyVerdict]:
@@ -82,6 +103,7 @@ def compare_policies(
         raise KeyError(f"{baseline} is not among the scored policies")
 
     verdicts: list[PolicyVerdict] = []
+    offset = _offset(weekly)
     for label, series in weekly.items():
         if label == baseline:
             continue
@@ -93,7 +115,11 @@ def compare_policies(
         triplets = [
             # `observed` is unused by a mean, and is the realised return so the
             # record stays interpretable if the metric is ever changed.
-            TripletPrediction(baseline=float(base), candidate=float(value), observed=float(value))
+            TripletPrediction(
+                baseline=float(base) + offset,
+                candidate=float(value) + offset,
+                observed=float(value) + offset,
+            )
             for base, value in zip(reference, series, strict=True)
         ]
         decision = evaluate_promotion(
@@ -111,8 +137,8 @@ def compare_policies(
             PolicyVerdict(
                 label=label,
                 weeks=len(series),
-                mean=decision.candidate.point_estimate,
-                baseline_mean=decision.baseline.point_estimate,
+                mean=decision.candidate.point_estimate - offset,
+                baseline_mean=decision.baseline.point_estimate - offset,
                 improvement=decision.paired_improvement.point_estimate,
                 lower=decision.paired_improvement.lower,
                 upper=decision.paired_improvement.upper,

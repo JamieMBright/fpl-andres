@@ -290,18 +290,18 @@ rather than truncating one to fit.
 
 <!-- captain-policies:start -->
 
-| Thesis                  | Mean captain points | Seasons won (of 4) |
-| ----------------------- | ------------------- | ------------------ |
-| `template`              | 7.12                | 2                  |
-| `availability_adjusted` | 7.08                | 0                  |
-| `expected_points`       | 6.97                | 0                  |
-| `differential`          | 6.77                | 1                  |
-| `components`            | 6.62                | 1                  |
-| `crowd`                 | 6.37                | 0                  |
-| `robust`                | 6.11                | 0                  |
-| `ceiling_and_fixture`   | 5.96                | 0                  |
-| `upside`                | 5.77                | 0                  |
-| `form`                  | 5.38                | 0                  |
+| Thesis                  | Mean captain points | Seasons won (of 4) | vs projection (95% CI) |
+| ----------------------- | ------------------- | ------------------ | ---------------------- |
+| `template`              | 7.12                | 2                  | not measured           |
+| `availability_adjusted` | 7.08                | 0                  | not measured           |
+| `expected_points`       | 6.97                | 0                  | baseline               |
+| `differential`          | 6.77                | 1                  | not measured           |
+| `components`            | 6.62                | 1                  | not measured           |
+| `crowd`                 | 6.37                | 0                  | not measured           |
+| `robust`                | 6.11                | 0                  | not measured           |
+| `ceiling_and_fixture`   | 5.96                | 0                  | not measured           |
+| `upside`                | 5.77                | 0                  | not measured           |
+| `form`                  | 5.38                | 0                  | not measured           |
 
 <!-- captain-policies:end -->
 

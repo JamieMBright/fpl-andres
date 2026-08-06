@@ -42,6 +42,49 @@ class TestTheVerdict:
         assert not verdicts[0].better
         assert verdicts[0].improvement == pytest.approx(-3.0)
 
+    def test_a_captain_who_lost_points_is_scored_rather_than_refused(self) -> None:
+        # This is what broke the first CI run. A red card is -3 and an own goal
+        # -2, so a captain's return goes negative, and the promotion primitive
+        # refuses a negative row because its own metrics are error magnitudes.
+        # Both series are lifted by one constant, which the paired difference
+        # cannot see, and the means are reported unlifted.
+        baseline = _flat(5)
+        candidate = _flat(5)
+        baseline[0] = -3
+        candidate[0] = 4
+
+        verdicts = compare_policies(
+            {"expected_points": baseline, "candidate": candidate},
+            resamples=200,
+        )
+
+        assert verdicts[0].baseline_mean == pytest.approx(sum(baseline) / _WEEKS)
+        assert verdicts[0].mean == pytest.approx(sum(candidate) / _WEEKS)
+        assert verdicts[0].improvement == pytest.approx(7 / _WEEKS)
+
+    def test_lifting_every_week_by_a_constant_changes_no_verdict(self) -> None:
+        # The shift is exact, not an approximation, so the interval measured on
+        # a series containing a red card must equal the one measured after the
+        # whole series is moved into positive territory by hand.
+        baseline = [-3, *_flat(5)[1:]]
+        candidate = [4, *_flat(6)[1:]]
+        signed = compare_policies(
+            {"expected_points": baseline, "candidate": candidate},
+            resamples=200,
+        )[0]
+        lifted = compare_policies(
+            {
+                "expected_points": [value + 10 for value in baseline],
+                "candidate": [value + 10 for value in candidate],
+            },
+            resamples=200,
+        )[0]
+
+        assert signed.improvement == pytest.approx(lifted.improvement)
+        assert signed.lower == pytest.approx(lifted.lower)
+        assert signed.upper == pytest.approx(lifted.upper)
+        assert signed.better == lifted.better
+
     def test_an_identical_policy_is_not_an_improvement(self) -> None:
         verdicts = compare_policies(
             {"expected_points": _flat(6), "candidate": _flat(6)},
