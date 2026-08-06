@@ -1,5 +1,6 @@
 {
-  "generatedAt": "2026-08-01T14:38:55.726824+00:00",
+  "generatedAt": "2026-08-06T06:38:26.918249+00:00",
+  "modelVersion": "2.0",
   "seasons": [
     {
       "season": "2022-23",
@@ -9,21 +10,39 @@
       "elements": 778,
       "firstScoredGameweek": 7,
       "expectedGoalsCoverage": 1.0,
-      "missingGameweeks": [7],
+      "missingGameweeks": [
+        7
+      ],
+      "corpusFingerprint": "sha256:e4fc5653db80f9ec8497fd6d40a99c8aeadca2d4e243210fc374765986ce68a4",
       "methods": [
         {
           "label": "model",
           "scored": 11079,
-          "meanAbsoluteError": 1.745,
-          "rootMeanSquaredError": 2.714,
-          "bias": -0.202,
-          "spearman": 0.492,
-          "topNHitRate": 0.187,
+          "meanAbsoluteError": 1.743,
+          "rootMeanSquaredError": 2.71,
+          "bias": -0.196,
+          "spearman": 0.494,
+          "topNHitRate": 0.189,
           "byPosition": {
-            "DEF": 0.43,
-            "FWD": 0.521,
-            "GKP": 0.541,
-            "MID": 0.55
+            "DEF": 0.433,
+            "FWD": 0.522,
+            "GKP": 0.544,
+            "MID": 0.551
+          }
+        },
+        {
+          "label": "components",
+          "scored": 11079,
+          "meanAbsoluteError": 1.724,
+          "rootMeanSquaredError": 2.732,
+          "bias": -0.295,
+          "spearman": 0.487,
+          "topNHitRate": 0.173,
+          "byPosition": {
+            "DEF": 0.428,
+            "FWD": 0.512,
+            "GKP": 0.549,
+            "MID": 0.545
           }
         },
         {
@@ -57,79 +76,67 @@
           }
         }
       ],
+      "captaincy": [
+        {
+          "label": "model",
+          "gameweeks": 31,
+          "meanPoints": 7.613,
+          "meanBestPoints": 15.452,
+          "regret": 7.839,
+          "shareOfCeiling": 0.493,
+          "perfectWeeks": 3,
+          "blankRate": 0.29
+        },
+        {
+          "label": "components",
+          "gameweeks": 31,
+          "meanPoints": 6.903,
+          "meanBestPoints": 15.452,
+          "regret": 8.548,
+          "shareOfCeiling": 0.447,
+          "perfectWeeks": 3,
+          "blankRate": 0.29
+        },
+        {
+          "label": "recent_mean",
+          "gameweeks": 31,
+          "meanPoints": 5.032,
+          "meanBestPoints": 15.452,
+          "regret": 10.419,
+          "shareOfCeiling": 0.326,
+          "perfectWeeks": 2,
+          "blankRate": 0.419
+        },
+        {
+          "label": "ownership",
+          "gameweeks": 31,
+          "meanPoints": 6.742,
+          "meanBestPoints": 15.452,
+          "regret": 8.71,
+          "shareOfCeiling": 0.436,
+          "perfectWeeks": 2,
+          "blankRate": 0.387
+        }
+      ],
       "league": {
         "policies": {
           "advised": {
-            "mean": 1872,
-            "best": 2019,
+            "mean": 1919,
+            "best": 2024,
             "wins": 5,
             "chips": {
-              "bench_boost": 9,
-              "wildcard": 14,
+              "wildcard": 23,
+              "bench_boost": 15,
               "free_hit": 29,
               "triple_captain": 34
             },
-            "teamValueTenths": 1000,
+            "teamValueTenths": 1015,
             "squad": [
               {
-                "elementId": 80,
-                "name": "Toney",
+                "elementId": 319,
+                "name": "\u00c1lvarez",
                 "position": "FWD",
-                "priceTenths": 71
-              },
-              {
-                "elementId": 366,
-                "name": "Sch\u00e4r",
-                "position": "DEF",
-                "priceTenths": 47
-              },
-              {
-                "elementId": 281,
-                "name": "Alisson",
-                "position": "GKP",
-                "priceTenths": 55
-              },
-              {
-                "elementId": 341,
-                "name": "Wan-Bissaka",
-                "position": "DEF",
-                "priceTenths": 43
-              },
-              {
-                "elementId": 327,
-                "name": "De Gea",
-                "position": "GKP",
-                "priceTenths": 49
-              },
-              {
-                "elementId": 357,
-                "name": "Trippier",
-                "position": "DEF",
-                "priceTenths": 51
-              },
-              {
-                "elementId": 124,
-                "name": "Mitoma",
-                "position": "MID",
-                "priceTenths": 50
-              },
-              {
-                "elementId": 10,
-                "name": "White",
-                "position": "DEF",
-                "priceTenths": 45
-              },
-              {
-                "elementId": 586,
-                "name": "Estupi\u00f1\u00e1n",
-                "position": "DEF",
-                "priceTenths": 45
-              },
-              {
-                "elementId": 318,
-                "name": "Haaland",
-                "position": "FWD",
-                "priceTenths": 119
+                "priceTenths": 62
               },
               {
                 "elementId": 283,
@@ -138,16 +145,46 @@
                 "priceTenths": 130
               },
               {
+                "elementId": 102,
+                "name": "Steele",
+                "position": "GKP",
+                "priceTenths": 40
+              },
+              {
+                "elementId": 80,
+                "name": "Toney",
+                "position": "FWD",
+                "priceTenths": 71
+              },
+              {
                 "elementId": 7,
                 "name": "\u00d8degaard",
                 "position": "MID",
                 "priceTenths": 66
               },
               {
-                "elementId": 335,
-                "name": "Rashford",
-                "position": "MID",
-                "priceTenths": 64
+                "elementId": 327,
+                "name": "De Gea",
+                "position": "GKP",
+                "priceTenths": 49
+              },
+              {
+                "elementId": 358,
+                "name": "Burn",
+                "position": "DEF",
+                "priceTenths": 45
+              },
+              {
+                "elementId": 357,
+                "name": "Trippier",
+                "position": "DEF",
+                "priceTenths": 51
+              },
+              {
+                "elementId": 366,
+                "name": "Sch\u00e4r",
+                "position": "DEF",
+                "priceTenths": 47
               },
               {
                 "elementId": 116,
@@ -156,19 +193,43 @@
                 "priceTenths": 55
               },
               {
-                "elementId": 594,
-                "name": "Isak",
+                "elementId": 124,
+                "name": "Mitoma",
+                "position": "MID",
+                "priceTenths": 50
+              },
+              {
+                "elementId": 427,
+                "name": "Kane",
                 "position": "FWD",
-                "priceTenths": 70
+                "priceTenths": 117
+              },
+              {
+                "elementId": 300,
+                "name": "G\u00fcndogan",
+                "position": "MID",
+                "priceTenths": 76
+              },
+              {
+                "elementId": 285,
+                "name": "Alexander-Arnold",
+                "position": "DEF",
+                "priceTenths": 75
+              },
+              {
+                "elementId": 332,
+                "name": "Shaw",
+                "position": "DEF",
+                "priceTenths": 47
               }
             ]
           },
           "form_chaser": {
-            "mean": 1658,
-            "best": 1761,
+            "mean": 1669,
+            "best": 1778,
             "wins": 0,
             "chips": {
-              "bench_boost": 9,
+              "bench_boost": 15,
               "wildcard": 27,
               "free_hit": 29,
               "triple_captain": 34
@@ -268,12 +329,12 @@
             ]
           },
           "crowd": {
-            "mean": 1714,
-            "best": 1800,
+            "mean": 1695,
+            "best": 1766,
             "wins": 0,
             "chips": {
               "wildcard": 30,
-              "bench_boost": 9,
+              "bench_boost": 15,
               "free_hit": 29,
               "triple_captain": 34
             },
@@ -483,20 +544,36 @@
       "firstScoredGameweek": 7,
       "expectedGoalsCoverage": 1.0,
       "missingGameweeks": [],
+      "corpusFingerprint": "sha256:e53777c1b8878bc0d8c42428d4b94a66e7d4c66e0a32fdf3be6e53f4dfb323fa",
       "methods": [
         {
           "label": "model",
           "scored": 11729,
-          "meanAbsoluteError": 1.718,
-          "rootMeanSquaredError": 2.714,
-          "bias": -0.119,
-          "spearman": 0.507,
-          "topNHitRate": 0.198,
+          "meanAbsoluteError": 1.717,
+          "rootMeanSquaredError": 2.711,
+          "bias": -0.117,
+          "spearman": 0.509,
+          "topNHitRate": 0.203,
           "byPosition": {
-            "DEF": 0.433,
-            "FWD": 0.523,
+            "DEF": 0.435,
+            "FWD": 0.524,
             "GKP": 0.525,
-            "MID": 0.56
+            "MID": 0.562
+          }
+        },
+        {
+          "label": "components",
+          "scored": 11729,
+          "meanAbsoluteError": 1.706,
+          "rootMeanSquaredError": 2.719,
+          "bias": -0.171,
+          "spearman": 0.503,
+          "topNHitRate": 0.205,
+          "byPosition": {
+            "DEF": 0.431,
+            "FWD": 0.518,
+            "GKP": 0.518,
+            "MID": 0.555
           }
         },
         {
@@ -530,19 +607,61 @@
           }
         }
       ],
+      "captaincy": [
+        {
+          "label": "model",
+          "gameweeks": 32,
+          "meanPoints": 6.094,
+          "meanBestPoints": 15.406,
+          "regret": 9.312,
+          "shareOfCeiling": 0.396,
+          "perfectWeeks": 3,
+          "blankRate": 0.375
+        },
+        {
+          "label": "components",
+          "gameweeks": 32,
+          "meanPoints": 5.312,
+          "meanBestPoints": 15.406,
+          "regret": 10.094,
+          "shareOfCeiling": 0.345,
+          "perfectWeeks": 2,
+          "blankRate": 0.375
+        },
+        {
+          "label": "recent_mean",
+          "gameweeks": 32,
+          "meanPoints": 5.562,
+          "meanBestPoints": 15.406,
+          "regret": 9.844,
+          "shareOfCeiling": 0.361,
+          "perfectWeeks": 2,
+          "blankRate": 0.438
+        },
+        {
+          "label": "ownership",
+          "gameweeks": 32,
+          "meanPoints": 5.812,
+          "meanBestPoints": 15.406,
+          "regret": 9.594,
+          "shareOfCeiling": 0.377,
+          "perfectWeeks": 4,
+          "blankRate": 0.469
+        }
+      ],
       "league": {
         "policies": {
           "advised": {
-            "mean": 1918,
-            "best": 2122,
-            "wins": 4,
+            "mean": 1873,
+            "best": 1954,
+            "wins": 2,
             "chips": {
               "wildcard": 35,
               "triple_captain": 25,
               "free_hit": 34,
               "bench_boost": 37
             },
-            "teamValueTenths": 1008,
+            "teamValueTenths": 1009,
             "squad": [
               {
                 "elementId": 362,
@@ -551,22 +670,22 @@
                 "priceTenths": 62
               },
               {
-                "elementId": 516,
-                "name": "Son",
-                "position": "MID",
-                "priceTenths": 100
-              },
-              {
                 "elementId": 211,
                 "name": "N.Jackson",
                 "position": "FWD",
                 "priceTenths": 68
               },
               {
-                "elementId": 450,
-                "name": "Johnson",
+                "elementId": 516,
+                "name": "Son",
                 "position": "MID",
-                "priceTenths": 58
+                "priceTenths": 100
+              },
+              {
+                "elementId": 412,
+                "name": "Gordon",
+                "position": "MID",
+                "priceTenths": 56
               },
               {
                 "elementId": 415,
@@ -581,34 +700,40 @@
                 "priceTenths": 60
               },
               {
-                "elementId": 349,
-                "name": "De Bruyne",
-                "position": "MID",
-                "priceTenths": 102
-              },
-              {
                 "elementId": 373,
                 "name": "B.Fernandes",
                 "position": "MID",
-                "priceTenths": 84
+                "priceTenths": 83
               },
               {
-                "elementId": 5,
-                "name": "Gabriel",
-                "position": "DEF",
+                "elementId": 202,
+                "name": "Gallagher",
+                "position": "MID",
                 "priceTenths": 54
               },
               {
-                "elementId": 687,
-                "name": "Petrovi\u0107",
-                "position": "GKP",
-                "priceTenths": 46
+                "elementId": 506,
+                "name": "Pedro Porro",
+                "position": "DEF",
+                "priceTenths": 59
               },
               {
                 "elementId": 60,
                 "name": "Watkins",
                 "position": "FWD",
                 "priceTenths": 89
+              },
+              {
+                "elementId": 20,
+                "name": "Saliba",
+                "position": "DEF",
+                "priceTenths": 59
+              },
+              {
+                "elementId": 5,
+                "name": "Gabriel",
+                "position": "DEF",
+                "priceTenths": 54
               },
               {
                 "elementId": 263,
@@ -623,23 +748,17 @@
                 "priceTenths": 51
               },
               {
-                "elementId": 407,
-                "name": "Burn",
-                "position": "DEF",
-                "priceTenths": 45
-              },
-              {
-                "elementId": 245,
-                "name": "Branthwaite",
-                "position": "DEF",
-                "priceTenths": 43
+                "elementId": 275,
+                "name": "Leno",
+                "position": "GKP",
+                "priceTenths": 48
               }
             ]
           },
           "form_chaser": {
             "mean": 1815,
             "best": 1934,
-            "wins": 0,
+            "wins": 1,
             "chips": {
               "wildcard": 28,
               "triple_captain": 25,
@@ -743,7 +862,7 @@
           "crowd": {
             "mean": 1772,
             "best": 2003,
-            "wins": 1,
+            "wins": 2,
             "chips": {
               "wildcard": 30,
               "triple_captain": 25,
@@ -956,20 +1075,36 @@
       "firstScoredGameweek": 7,
       "expectedGoalsCoverage": 1.0,
       "missingGameweeks": [],
+      "corpusFingerprint": "sha256:be92bb6614717a5aecfe8faf6e155447e047ba3d8b0e2b9f027a58fb61852ab5",
       "methods": [
         {
           "label": "model",
           "scored": 11973,
           "meanAbsoluteError": 1.67,
           "rootMeanSquaredError": 2.606,
-          "bias": -0.126,
+          "bias": -0.127,
           "spearman": 0.507,
-          "topNHitRate": 0.188,
+          "topNHitRate": 0.189,
           "byPosition": {
             "DEF": 0.473,
-            "FWD": 0.511,
+            "FWD": 0.512,
             "GKP": 0.616,
             "MID": 0.512
+          }
+        },
+        {
+          "label": "components",
+          "scored": 11973,
+          "meanAbsoluteError": 1.659,
+          "rootMeanSquaredError": 2.611,
+          "bias": -0.178,
+          "spearman": 0.503,
+          "topNHitRate": 0.191,
+          "byPosition": {
+            "DEF": 0.466,
+            "FWD": 0.51,
+            "GKP": 0.605,
+            "MID": 0.508
           }
         },
         {
@@ -1003,19 +1138,61 @@
           }
         }
       ],
+      "captaincy": [
+        {
+          "label": "model",
+          "gameweeks": 32,
+          "meanPoints": 8.75,
+          "meanBestPoints": 14.531,
+          "regret": 5.781,
+          "shareOfCeiling": 0.602,
+          "perfectWeeks": 9,
+          "blankRate": 0.281
+        },
+        {
+          "label": "components",
+          "gameweeks": 32,
+          "meanPoints": 9.25,
+          "meanBestPoints": 14.531,
+          "regret": 5.281,
+          "shareOfCeiling": 0.637,
+          "perfectWeeks": 11,
+          "blankRate": 0.219
+        },
+        {
+          "label": "recent_mean",
+          "gameweeks": 32,
+          "meanPoints": 7.25,
+          "meanBestPoints": 14.531,
+          "regret": 7.281,
+          "shareOfCeiling": 0.499,
+          "perfectWeeks": 6,
+          "blankRate": 0.312
+        },
+        {
+          "label": "ownership",
+          "gameweeks": 32,
+          "meanPoints": 7.781,
+          "meanBestPoints": 14.531,
+          "regret": 6.75,
+          "shareOfCeiling": 0.535,
+          "perfectWeeks": 8,
+          "blankRate": 0.375
+        }
+      ],
       "league": {
         "policies": {
           "advised": {
-            "mean": 1677,
-            "best": 1856,
+            "mean": 1646,
+            "best": 1862,
             "wins": 2,
             "chips": {
+              "bench_boost": 7,
               "wildcard": 23,
-              "bench_boost": 14,
               "triple_captain": 18,
               "free_hit": 33
             },
-            "teamValueTenths": 975,
+            "teamValueTenths": 967,
             "squad": [
               {
                 "elementId": 99,
@@ -1036,10 +1213,10 @@
                 "priceTenths": 127
               },
               {
-                "elementId": 417,
-                "name": "Tonali",
+                "elementId": 392,
+                "name": "Barnes",
                 "position": "MID",
-                "priceTenths": 55
+                "priceTenths": 65
               },
               {
                 "elementId": 110,
@@ -1048,28 +1225,10 @@
                 "priceTenths": 59
               },
               {
-                "elementId": 339,
-                "name": "Virgil",
-                "position": "DEF",
-                "priceTenths": 60
-              },
-              {
-                "elementId": 573,
-                "name": "Milenkovi\u0107",
-                "position": "DEF",
-                "priceTenths": 48
-              },
-              {
-                "elementId": 211,
-                "name": "Mu\u00f1oz",
-                "position": "DEF",
-                "priceTenths": 49
-              },
-              {
-                "elementId": 361,
-                "name": "R\u00faben",
-                "position": "DEF",
-                "priceTenths": 55
+                "elementId": 443,
+                "name": "Sels",
+                "position": "GKP",
+                "priceTenths": 45
               },
               {
                 "elementId": 350,
@@ -1078,28 +1237,46 @@
                 "priceTenths": 59
               },
               {
+                "elementId": 211,
+                "name": "Mu\u00f1oz",
+                "position": "DEF",
+                "priceTenths": 49
+              },
+              {
+                "elementId": 580,
+                "name": "Huijsen",
+                "position": "DEF",
+                "priceTenths": 44
+              },
+              {
+                "elementId": 573,
+                "name": "Milenkovi\u0107",
+                "position": "DEF",
+                "priceTenths": 45
+              },
+              {
+                "elementId": 339,
+                "name": "Virgil",
+                "position": "DEF",
+                "priceTenths": 60
+              },
+              {
                 "elementId": 402,
                 "name": "J.Murphy",
                 "position": "MID",
                 "priceTenths": 52
               },
               {
-                "elementId": 106,
-                "name": "Schade",
+                "elementId": 74,
+                "name": "O.Dango",
                 "position": "MID",
-                "priceTenths": 54
+                "priceTenths": 50
               },
               {
                 "elementId": 235,
                 "name": "Pickford",
                 "position": "GKP",
                 "priceTenths": 48
-              },
-              {
-                "elementId": 201,
-                "name": "Henderson",
-                "position": "GKP",
-                "priceTenths": 45
               },
               {
                 "elementId": 252,
@@ -1110,11 +1287,11 @@
             ]
           },
           "form_chaser": {
-            "mean": 1700,
+            "mean": 1710,
             "best": 1827,
             "wins": 2,
             "chips": {
-              "bench_boost": 14,
+              "bench_boost": 7,
               "triple_captain": 18,
               "wildcard": 27,
               "free_hit": 33
@@ -1214,16 +1391,16 @@
             ]
           },
           "crowd": {
-            "mean": 1660,
-            "best": 1789,
+            "mean": 1658,
+            "best": 1780,
             "wins": 1,
             "chips": {
+              "bench_boost": 7,
               "wildcard": 29,
-              "bench_boost": 14,
               "triple_captain": 18,
               "free_hit": 33
             },
-            "teamValueTenths": 1011,
+            "teamValueTenths": 1000,
             "squad": [
               {
                 "elementId": 211,
@@ -1429,20 +1606,36 @@
       "firstScoredGameweek": 7,
       "expectedGoalsCoverage": 1.0,
       "missingGameweeks": [],
+      "corpusFingerprint": "sha256:48bfc0222f49159aac4040f7ead028d65a75880c7ceaa14be4cee9980b170cc1",
       "methods": [
         {
           "label": "model",
           "scored": 11952,
-          "meanAbsoluteError": 1.857,
-          "rootMeanSquaredError": 2.757,
-          "bias": -0.114,
-          "spearman": 0.465,
-          "topNHitRate": 0.148,
+          "meanAbsoluteError": 1.856,
+          "rootMeanSquaredError": 2.755,
+          "bias": -0.111,
+          "spearman": 0.466,
+          "topNHitRate": 0.159,
           "byPosition": {
-            "DEF": 0.425,
-            "FWD": 0.553,
-            "GKP": 0.589,
+            "DEF": 0.426,
+            "FWD": 0.554,
+            "GKP": 0.591,
             "MID": 0.481
+          }
+        },
+        {
+          "label": "components",
+          "scored": 11952,
+          "meanAbsoluteError": 1.844,
+          "rootMeanSquaredError": 2.754,
+          "bias": -0.158,
+          "spearman": 0.463,
+          "topNHitRate": 0.155,
+          "byPosition": {
+            "DEF": 0.424,
+            "FWD": 0.543,
+            "GKP": 0.582,
+            "MID": 0.48
           }
         },
         {
@@ -1476,305 +1669,97 @@
           }
         }
       ],
+      "captaincy": [
+        {
+          "label": "model",
+          "gameweeks": 32,
+          "meanPoints": 5.406,
+          "meanBestPoints": 13.5,
+          "regret": 8.094,
+          "shareOfCeiling": 0.4,
+          "perfectWeeks": 4,
+          "blankRate": 0.438
+        },
+        {
+          "label": "components",
+          "gameweeks": 32,
+          "meanPoints": 5.031,
+          "meanBestPoints": 13.5,
+          "regret": 8.469,
+          "shareOfCeiling": 0.373,
+          "perfectWeeks": 4,
+          "blankRate": 0.5
+        },
+        {
+          "label": "recent_mean",
+          "gameweeks": 32,
+          "meanPoints": 3.688,
+          "meanBestPoints": 13.5,
+          "regret": 9.812,
+          "shareOfCeiling": 0.273,
+          "perfectWeeks": 2,
+          "blankRate": 0.562
+        },
+        {
+          "label": "ownership",
+          "gameweeks": 32,
+          "meanPoints": 5.156,
+          "meanBestPoints": 13.5,
+          "regret": 8.344,
+          "shareOfCeiling": 0.382,
+          "perfectWeeks": 6,
+          "blankRate": 0.531
+        }
+      ],
       "league": {
         "policies": {
           "advised": {
-            "mean": 1677,
-            "best": 1792,
+            "mean": 1697,
+            "best": 1772,
             "wins": 3,
             "chips": {
-              "bench_boost": 20,
+              "bench_boost": 7,
+              "wildcard": 24,
               "triple_captain": 22,
-              "free_hit": 33,
-              "wildcard": 36
+              "free_hit": 33
             },
-            "teamValueTenths": 987,
+            "teamValueTenths": 1005,
             "squad": [
+              {
+                "elementId": 21,
+                "name": "Rice",
+                "position": "MID",
+                "priceTenths": 65
+              },
+              {
+                "elementId": 74,
+                "name": "Truffert",
+                "position": "DEF",
+                "priceTenths": 45
+              },
               {
                 "elementId": 430,
                 "name": "Haaland",
                 "position": "FWD",
-                "priceTenths": 146
+                "priceTenths": 151
+              },
+              {
+                "elementId": 723,
+                "name": "Canvot",
+                "position": "DEF",
+                "priceTenths": 45
               },
               {
                 "elementId": 260,
                 "name": "Gu\u00e9hi",
                 "position": "DEF",
-                "priceTenths": 51
-              },
-              {
-                "elementId": 411,
-                "name": "O'Reilly",
-                "position": "DEF",
-                "priceTenths": 52
-              },
-              {
-                "elementId": 257,
-                "name": "Lacroix",
-                "position": "DEF",
-                "priceTenths": 51
-              },
-              {
-                "elementId": 74,
-                "name": "Truffert",
-                "position": "DEF",
-                "priceTenths": 45
-              },
-              {
-                "elementId": 72,
-                "name": "Senesi",
-                "position": "DEF",
-                "priceTenths": 49
-              },
-              {
-                "elementId": 449,
-                "name": "B.Fernandes",
-                "position": "MID",
-                "priceTenths": 104
-              },
-              {
-                "elementId": 457,
-                "name": "Casemiro",
-                "position": "MID",
-                "priceTenths": 58
-              },
-              {
-                "elementId": 515,
-                "name": "Gibbs-White",
-                "position": "MID",
-                "priceTenths": 76
-              },
-              {
-                "elementId": 1,
-                "name": "Raya",
-                "position": "GKP",
-                "priceTenths": 60
-              },
-              {
-                "elementId": 21,
-                "name": "Rice",
-                "position": "MID",
-                "priceTenths": 72
-              },
-              {
-                "elementId": 691,
-                "name": "Calvert-Lewin",
-                "position": "FWD",
-                "priceTenths": 57
-              },
-              {
-                "elementId": 90,
-                "name": "Scott",
-                "position": "MID",
-                "priceTenths": 51
-              },
-              {
-                "elementId": 178,
-                "name": "Welbeck",
-                "position": "FWD",
-                "priceTenths": 63
-              },
-              {
-                "elementId": 139,
-                "name": "Verbruggen",
-                "position": "GKP",
-                "priceTenths": 45
-              }
-            ]
-          },
-          "form_chaser": {
-            "mean": 1599,
-            "best": 1737,
-            "wins": 0,
-            "chips": {
-              "wildcard": 29,
-              "bench_boost": 20,
-              "triple_captain": 22,
-              "free_hit": 33
-            },
-            "teamValueTenths": 991,
-            "squad": [
-              {
-                "elementId": 74,
-                "name": "Truffert",
-                "position": "DEF",
-                "priceTenths": 45
-              },
-              {
-                "elementId": 515,
-                "name": "Gibbs-White",
-                "position": "MID",
-                "priceTenths": 74
-              },
-              {
-                "elementId": 373,
-                "name": "Virgil",
-                "position": "DEF",
-                "priceTenths": 60
-              },
-              {
-                "elementId": 666,
-                "name": "Gy\u00f6keres",
-                "position": "FWD",
-                "priceTenths": 88
-              },
-              {
-                "elementId": 698,
-                "name": "Okafor",
-                "position": "MID",
-                "priceTenths": 55
-              },
-              {
-                "elementId": 253,
-                "name": "Henderson",
-                "position": "GKP",
-                "priceTenths": 50
-              },
-              {
-                "elementId": 449,
-                "name": "B.Fernandes",
-                "position": "MID",
-                "priceTenths": 90
-              },
-              {
-                "elementId": 82,
-                "name": "Semenyo",
-                "position": "MID",
-                "priceTenths": 81
-              },
-              {
-                "elementId": 72,
-                "name": "Senesi",
-                "position": "DEF",
-                "priceTenths": 49
-              },
-              {
-                "elementId": 418,
-                "name": "Doku",
-                "position": "MID",
-                "priceTenths": 66
-              },
-              {
-                "elementId": 249,
-                "name": "Jo\u00e3o Pedro",
-                "position": "FWD",
-                "priceTenths": 77
-              },
-              {
-                "elementId": 628,
-                "name": "Jos\u00e9 S\u00e1",
-                "position": "GKP",
-                "priceTenths": 42
-              },
-              {
-                "elementId": 681,
-                "name": "\u0160e\u0161ko",
-                "position": "FWD",
-                "priceTenths": 72
-              },
-              {
-                "elementId": 411,
-                "name": "O'Reilly",
-                "position": "DEF",
-                "priceTenths": 49
-              },
-              {
-                "elementId": 606,
-                "name": "Mavropanos",
-                "position": "DEF",
-                "priceTenths": 44
-              }
-            ]
-          },
-          "crowd": {
-            "mean": 1656,
-            "best": 1809,
-            "wins": 2,
-            "chips": {
-              "wildcard": 31,
-              "bench_boost": 20,
-              "triple_captain": 22,
-              "free_hit": 33
-            },
-            "teamValueTenths": 1019,
-            "squad": [
-              {
-                "elementId": 666,
-                "name": "Gy\u00f6keres",
-                "position": "FWD",
-                "priceTenths": 90
-              },
-              {
-                "elementId": 517,
-                "name": "Anderson",
-                "position": "MID",
-                "priceTenths": 55
-              },
-              {
-                "elementId": 72,
-                "name": "Senesi",
-                "position": "DEF",
-                "priceTenths": 50
-              },
-              {
-                "elementId": 417,
-                "name": "Cherki",
-                "position": "MID",
-                "priceTenths": 63
-              },
-              {
-                "elementId": 101,
-                "name": "Kelleher",
-                "position": "GKP",
                 "priceTenths": 48
               },
               {
-                "elementId": 82,
-                "name": "Semenyo",
-                "position": "MID",
-                "priceTenths": 83
-              },
-              {
-                "elementId": 16,
-                "name": "Saka",
-                "position": "MID",
-                "priceTenths": 98
-              },
-              {
-                "elementId": 178,
-                "name": "Welbeck",
-                "position": "FWD",
-                "priceTenths": 63
-              },
-              {
-                "elementId": 684,
-                "name": "Thiaw",
+                "elementId": 5,
+                "name": "Gabriel",
                 "position": "DEF",
-                "priceTenths": 49
-              },
-              {
-                "elementId": 267,
-                "name": "Sarr",
-                "position": "MID",
-                "priceTenths": 63
-              },
-              {
-                "elementId": 411,
-                "name": "O'Reilly",
-                "position": "DEF",
-                "priceTenths": 49
-              },
-              {
-                "elementId": 253,
-                "name": "Henderson",
-                "position": "GKP",
-                "priceTenths": 50
-              },
-              {
-                "elementId": 77,
-                "name": "Hill",
-                "position": "DEF",
-                "priceTenths": 42
+                "priceTenths": 62
               },
               {
                 "elementId": 136,
@@ -1783,10 +1768,260 @@
                 "priceTenths": 72
               },
               {
+                "elementId": 411,
+                "name": "O'Reilly",
+                "position": "DEF",
+                "priceTenths": 49
+              },
+              {
+                "elementId": 1,
+                "name": "Raya",
+                "position": "GKP",
+                "priceTenths": 56
+              },
+              {
+                "elementId": 691,
+                "name": "Calvert-Lewin",
+                "position": "FWD",
+                "priceTenths": 55
+              },
+              {
+                "elementId": 449,
+                "name": "B.Fernandes",
+                "position": "MID",
+                "priceTenths": 90
+              },
+              {
+                "elementId": 303,
+                "name": "Garner",
+                "position": "MID",
+                "priceTenths": 52
+              },
+              {
+                "elementId": 90,
+                "name": "Scott",
+                "position": "MID",
+                "priceTenths": 50
+              },
+              {
+                "elementId": 457,
+                "name": "Casemiro",
+                "position": "MID",
+                "priceTenths": 55
+              },
+              {
+                "elementId": 253,
+                "name": "Henderson",
+                "position": "GKP",
+                "priceTenths": 50
+              }
+            ]
+          },
+          "form_chaser": {
+            "mean": 1609,
+            "best": 1741,
+            "wins": 0,
+            "chips": {
+              "bench_boost": 7,
+              "wildcard": 28,
+              "triple_captain": 22,
+              "free_hit": 33
+            },
+            "teamValueTenths": 985,
+            "squad": [
+              {
+                "elementId": 449,
+                "name": "B.Fernandes",
+                "position": "MID",
+                "priceTenths": 90
+              },
+              {
+                "elementId": 249,
+                "name": "Jo\u00e3o Pedro",
+                "position": "FWD",
+                "priceTenths": 77
+              },
+              {
+                "elementId": 666,
+                "name": "Gy\u00f6keres",
+                "position": "FWD",
+                "priceTenths": 88
+              },
+              {
+                "elementId": 411,
+                "name": "O'Reilly",
+                "position": "DEF",
+                "priceTenths": 49
+              },
+              {
+                "elementId": 373,
+                "name": "Virgil",
+                "position": "DEF",
+                "priceTenths": 59
+              },
+              {
+                "elementId": 77,
+                "name": "Hill",
+                "position": "DEF",
+                "priceTenths": 40
+              },
+              {
+                "elementId": 418,
+                "name": "Doku",
+                "position": "MID",
+                "priceTenths": 66
+              },
+              {
+                "elementId": 515,
+                "name": "Gibbs-White",
+                "position": "MID",
+                "priceTenths": 74
+              },
+              {
+                "elementId": 253,
+                "name": "Henderson",
+                "position": "GKP",
+                "priceTenths": 50
+              },
+              {
+                "elementId": 606,
+                "name": "Mavropanos",
+                "position": "DEF",
+                "priceTenths": 44
+              },
+              {
+                "elementId": 698,
+                "name": "Okafor",
+                "position": "MID",
+                "priceTenths": 55
+              },
+              {
+                "elementId": 72,
+                "name": "Senesi",
+                "position": "DEF",
+                "priceTenths": 49
+              },
+              {
+                "elementId": 67,
+                "name": "Petrovi\u0107",
+                "position": "GKP",
+                "priceTenths": 45
+              },
+              {
+                "elementId": 417,
+                "name": "Cherki",
+                "position": "MID",
+                "priceTenths": 63
+              },
+              {
+                "elementId": 337,
+                "name": "Ra\u00fal",
+                "position": "FWD",
+                "priceTenths": 61
+              }
+            ]
+          },
+          "crowd": {
+            "mean": 1668,
+            "best": 1771,
+            "wins": 2,
+            "chips": {
+              "bench_boost": 7,
+              "wildcard": 30,
+              "triple_captain": 22,
+              "free_hit": 33
+            },
+            "teamValueTenths": 1018,
+            "squad": [
+              {
+                "elementId": 64,
+                "name": "Watkins",
+                "position": "FWD",
+                "priceTenths": 87
+              },
+              {
+                "elementId": 373,
+                "name": "Virgil",
+                "position": "DEF",
+                "priceTenths": 61
+              },
+              {
+                "elementId": 16,
+                "name": "Saka",
+                "position": "MID",
+                "priceTenths": 98
+              },
+              {
+                "elementId": 449,
+                "name": "B.Fernandes",
+                "position": "MID",
+                "priceTenths": 100
+              },
+              {
+                "elementId": 387,
+                "name": "Szoboszlai",
+                "position": "MID",
+                "priceTenths": 69
+              },
+              {
+                "elementId": 417,
+                "name": "Cherki",
+                "position": "MID",
+                "priceTenths": 63
+              },
+              {
+                "elementId": 691,
+                "name": "Calvert-Lewin",
+                "position": "FWD",
+                "priceTenths": 55
+              },
+              {
+                "elementId": 242,
+                "name": "Dewsbury-Hall",
+                "position": "MID",
+                "priceTenths": 50
+              },
+              {
+                "elementId": 666,
+                "name": "Gy\u00f6keres",
+                "position": "FWD",
+                "priceTenths": 90
+              },
+              {
+                "elementId": 684,
+                "name": "Thiaw",
+                "position": "DEF",
+                "priceTenths": 49
+              },
+              {
+                "elementId": 77,
+                "name": "Hill",
+                "position": "DEF",
+                "priceTenths": 41
+              },
+              {
                 "elementId": 5,
                 "name": "Gabriel",
                 "position": "DEF",
-                "priceTenths": 72
+                "priceTenths": 71
+              },
+              {
+                "elementId": 402,
+                "name": "A\u00eft-Nouri",
+                "position": "DEF",
+                "priceTenths": 57
+              },
+              {
+                "elementId": 287,
+                "name": "Pickford",
+                "position": "GKP",
+                "priceTenths": 56
+              },
+              {
+                "elementId": 253,
+                "name": "Henderson",
+                "position": "GKP",
+                "priceTenths": 50
               }
             ]
           },
@@ -1897,6 +2132,12 @@
   "league": {
     "managers": 20,
     "advisedShare": 0.25,
-    "seeds": [1, 2, 3, 4, 5]
+    "seeds": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ]
   }
 }
