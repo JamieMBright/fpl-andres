@@ -1,5 +1,7 @@
 import type { ChipCall, PlanGameweek, PlanPlayer } from "./season-plan";
 import { CONFIDENCE_NOTE } from "./season-plan";
+import validation from "../data/validation.json";
+import { captaincyVerdict } from "./captaincy-verdict";
 
 /**
  * Why the plan did what it did, in words, derived from the plan itself.
@@ -8,6 +10,22 @@ import { CONFIDENCE_NOTE } from "./season-plan";
  * the browser. A card that says "trust me" is not evidence; a card that says
  * which fixture, which price and how many points is.
  */
+
+/**
+ * What the backtest actually found about armbands, in one clause.
+ *
+ * Nine rules were scored against captaining the highest projected scorer and
+ * the page has to report whichever way that came out, because the ordering has
+ * already inverted once on a single arithmetic fix.
+ */
+const CAPTAINCY_VERDICT = (() => {
+  const verdict = captaincyVerdict(validation.captainSignificance);
+  if (verdict.weeks === 0) return "no thesis has been scored against it yet.";
+  const beaten = verdict.better.length;
+  return beaten === 0
+    ? `none of ${String(validation.captainSignificance.length)} published theses beat it over ${String(verdict.weeks)} paired gameweeks.`
+    : `${String(beaten)} of ${String(validation.captainSignificance.length)} published theses did beat it over ${String(verdict.weeks)} paired gameweeks, so this rule is now the weaker one.`;
+})();
 
 /**
  * What counts as paying for a starter, by position. A benched player above the
@@ -198,7 +216,7 @@ export function confidenceReason(week: PlanGameweek): string {
       // asserted, and it is usually a defender because the 2025/26 defensive
       // contribution route pays them for work that never used to score.
       parts.push(
-        `He is picked over ${runnerUp.player.name} by ${points(captain - runnerUp.score)} a match; the model doubles the highest expected score rather than the biggest ceiling, so it will take a steady defender over a streaky forward.`,
+        `He is picked over ${runnerUp.player.name} by ${points(captain - runnerUp.score)} a match on the highest expected score, which is the only armband rule that survived testing: ${CAPTAINCY_VERDICT}`,
       );
     }
   }
@@ -209,6 +227,8 @@ export function confidenceReason(week: PlanGameweek): string {
       `${thin.map((player) => player.name).join(", ")} ${thin.length === 1 ? "is" : "are"} projected under two points and ${thin.length === 1 ? "is" : "are"} in the eleven only because the alternative is worse.`,
     );
   }
+
+  parts.push(...benchedPremiumReasons(week));
 
   const rated = week.starters
     .map((player) => week.difficulty[player.club] ?? null)
@@ -223,6 +243,42 @@ export function confidenceReason(week: PlanGameweek): string {
 
   parts.push(CONFIDENCE_NOTE[week.confidence]);
   return parts.join(" ");
+}
+
+/**
+ * A premium on the bench has to be argued for in numbers, not just noticed.
+ *
+ * The money section already says a benched premium is a lot to leave out. That
+ * is the observation, not the reasoning, and the two were in different sections
+ * so the card raised the objection and never answered it. Price is the gate:
+ * above the line for his position, the card owes the reader the score that
+ * displaced him and the size of the gap.
+ */
+export function benchedPremiumReasons(week: PlanGameweek): string[] {
+  return week.bench.filter(isPremium).map((player) => {
+    const benched = scoreOf(week, player);
+    const fixture = (week.opponents[player.club] ?? []).join(", ");
+    const blank = (week.opponents[player.club] ?? []).length === 0;
+    const picked = week.starters
+      .filter((starter) => starter.position === player.position)
+      .map((starter) => ({ starter, score: scoreOf(week, starter) }))
+      .sort((left, right) => left.score - right.score)[0];
+
+    const opening = `${player.name} costs ${money(player.priceTenths)} and is benched on ${points(benched)} projected`;
+
+    if (blank) {
+      return `${opening}, because he has no fixture this week and scores nothing whatever he is worth.`;
+    }
+    if (!picked) {
+      return `${opening}; no ${player.position} is started ahead of him, so the bench is a squad-rule consequence rather than a call on him.`;
+    }
+    const gap = picked.score - benched;
+    if (gap <= 0) {
+      // Started anyway: the eleven is a formation, not a ranking.
+      return `${opening}, which is ${points(-gap)} above ${picked.starter.name} at ${points(picked.score)}. He is out on formation rather than on projection — the shape that fits the rest of the eleven cannot carry both.`;
+    }
+    return `${opening} against ${picked.starter.name} on ${points(picked.score)}, a gap of ${points(gap)}${fixture ? ` with ${player.name} facing ${fixture}` : ""}. Price does not start a player; the projection does, and paying for him is a judgement about the rest of the season rather than this week.`;
+  });
 }
 
 /** The chip line, or an honest statement that none is due. */

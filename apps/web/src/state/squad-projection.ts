@@ -77,6 +77,11 @@ export function projectionFor(
   return code === undefined ? null : (byCode.get(code) ?? null);
 }
 
+/** Every published record, for comparisons that need a population. */
+export function allProjections(): readonly PlayerProjection[] {
+  return artifact.players;
+}
+
 export interface SquadProjection {
   /** Players in the squad we have a record for, best expectation first. */
   covered: PlayerProjection[];

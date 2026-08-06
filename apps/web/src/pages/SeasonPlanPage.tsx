@@ -1,6 +1,6 @@
 import { ArrowRight } from "lucide-react";
 import { useMemo, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 
 import { CeefaxShirt } from "../components/CeefaxShirt";
 import { DeclaredTransferForm } from "../components/DeclaredTransferForm";
@@ -35,6 +35,26 @@ import { useDocumentTitle } from "../state/use-document-title";
 /** What a chip should return before it is worth planning a season around. */
 const CHIP_TARGET = 20;
 
+/** Kept beside the list below; `plan-caveats.test.tsx` fails if they disagree. */
+const CAVEAT_COUNT = "Five";
+
+/**
+ * The plan's own rating for a player's tie that week.
+ *
+ * The page had this all along in `week.difficulty` and never handed it over, so
+ * every player opened from a card claimed there was no rating for his fixtures
+ * while the card beside him was rating them.
+ */
+function planDifficulty(
+  week: PlanGameweek,
+  player: PlanPlayer,
+): { rating: number; opponents: readonly string[] } | null {
+  const rating = week.difficulty[player.club];
+  return rating === undefined || rating === null
+    ? null
+    : { rating, opponents: week.opponents[player.club] ?? [] };
+}
+
 const TEAM_FAILURE: Record<TeamStartFailure, string> = {
   not_a_team_id: "That is not a Team ID. It is the number in your FPL URL.",
   unreachable: "I could not reach FPL for that squad, so I am not guessing it.",
@@ -51,7 +71,8 @@ const TEAM_FAILURE: Record<TeamStartFailure, string> = {
  * nobody's season after the first deadline. A Team ID replaces it with the same
  * solve run on your own fifteen.
  */
-function TeamEntry({
+/** Exported for test: rendering the whole rail to exercise a form is too slow. */
+export function TeamEntry({
   team,
   params,
   onChange,
@@ -100,6 +121,15 @@ function TeamEntry({
               ? TEAM_FAILURE[team.reason]
               : "Leave it blank for the optimal opening squad's season."}
       </p>
+      {team.status === "failed" && team.reason === "no_processed_event" ? (
+        // The message named a page and gave no way to reach it, which is a dead
+        // end in the one state every manager hits before the season starts.
+        <p className="plan-team-note">
+          <Link to={`/team/${entered.trim()}`}>
+            Build your fifteen for team {entered.trim()}
+          </Link>
+        </p>
+      ) : null}
     </form>
   );
 }
@@ -309,21 +339,30 @@ function GameweekCard({
 }) {
   const deadline = new Date(week.deadline);
   const boosted = chip?.chip === "Bench Boost";
+  // Triple Captain adds a third copy, not a second. Counting it as an ordinary
+  // armband understated the one week the chip is played by a whole captain.
+  const armband = chip?.chip === "Triple Captain" ? 2 : 1;
+
+  const sum = (
+    players: readonly PlanPlayer[],
+    from: Readonly<Record<string, number>>,
+  ) =>
+    players.reduce(
+      (total, player) => total + (from[String(player.code)] ?? 0),
+      0,
+    );
 
   // What the card actually returns: the eleven, the armband again, and the
   // bench only when a boost is paying for it.
-  const haul =
-    week.starters.reduce(
-      (total, player) => total + (week.expected[String(player.code)] ?? 0),
-      0,
-    ) +
-    (week.expected[String(week.captain.code)] ?? 0) +
-    (boosted
-      ? week.bench.reduce(
-          (total, player) => total + (week.expected[String(player.code)] ?? 0),
-          0,
-        )
-      : 0);
+  const total = (from: Readonly<Record<string, number>>) =>
+    sum(week.starters, from) +
+    armband * (from[String(week.captain.code)] ?? 0) +
+    (boosted ? sum(week.bench, from) : 0);
+
+  const haul = total(week.expected);
+  // Empty where the run that produced this week could not measure a spread.
+  const ceiling =
+    Object.keys(week.ceiling).length > 0 ? total(week.ceiling) : null;
 
   return (
     <li className={`plan-card plan-${week.confidence}`}>
@@ -341,6 +380,12 @@ function GameweekCard({
         {week.transferCostPoints > 0
           ? ` − ${week.transferCostPoints} hit = ${(haul - week.transferCostPoints).toFixed(1)}`
           : null}
+        {ceiling === null ? null : (
+          <>
+            <br />
+            COMBINED CEILING {ceiling.toFixed(1)}
+          </>
+        )}
       </p>
 
       <Why chip={chip} week={week} />
@@ -363,7 +408,11 @@ function asPlanGameweek(week: SolvedGameweek): PlanGameweek {
     opponents: week.opponents,
     difficulty: week.difficulty,
     expected: week.expected,
-    ceiling: week.expected,
+    // The solver returns a mean and no spread. Copying the mean in here was a
+    // ceiling that always equalled the expectation, which reads as a measured
+    // claim that the week has no upside. Empty means unmeasured, and the card
+    // prints nothing rather than a number that is really the mean again.
+    ceiling: {},
     freeTransfersBefore: week.freeTransfersBefore,
     paidTransfers: week.paidTransfers,
     transferCostPoints: week.transferCostPoints,
@@ -434,7 +483,10 @@ function ChipStrategy({ chips }: { chips: readonly ChipCall[] }) {
 
 export default function SeasonPlanPage() {
   const plan = useMemo(() => readSeasonPlan(), []);
-  const [selected, setSelected] = useState<PlanPlayer | null>(null);
+  const [selected, setSelected] = useState<{
+    player: PlanPlayer;
+    week: PlanGameweek;
+  } | null>(null);
   const [params, setParams] = useSearchParams();
   // Bumped when a transfer is declared, so the squad is read again with it.
   const [declaredAt, setDeclaredAt] = useState(0);
@@ -492,6 +544,19 @@ export default function SeasonPlanPage() {
       counted.set(week.confidence, (counted.get(week.confidence) ?? 0) + 1);
     }
     return counted;
+  }, [gameweeks]);
+
+  // The costliest name the plan carries and never starts. Read off the weeks so
+  // the caveat below argues about whoever it actually is, rather than the
+  // player who happened to be surprising the day the sentence was typed.
+  const absentPremium = useMemo(() => {
+    const started = new Set<number>();
+    for (const week of gameweeks) {
+      for (const player of week.starters) started.add(player.code);
+    }
+    return [...gameweeks.flatMap((week) => [...week.starters, ...week.bench])]
+      .filter((player) => !started.has(player.code))
+      .sort((left, right) => right.priceTenths - left.priceTenths)[0];
   }, [gameweeks]);
 
   return (
@@ -636,7 +701,9 @@ export default function SeasonPlanPage() {
           <GameweekCard
             chip={chips.get(week.event) ?? null}
             key={week.event}
-            onOpen={setSelected}
+            onOpen={(player) => {
+              setSelected({ player, week });
+            }}
             week={week}
           />
         ))}
@@ -647,7 +714,8 @@ export default function SeasonPlanPage() {
           onClose={() => {
             setSelected(null);
           }}
-          player={selected}
+          player={selected.player}
+          difficulty={planDifficulty(selected.week, selected.player)}
         />
       ) : null}
 
@@ -657,7 +725,7 @@ export default function SeasonPlanPage() {
       </p>
 
       <section className="plan-caveats" aria-label="What this plan cannot know">
-        <h2>Three things to hold against it</h2>
+        <h2>{CAVEAT_COUNT} things to hold against it</h2>
         <ol>
           <li>
             <strong>The promoted clubs have no record.</strong> Every projection
@@ -695,12 +763,26 @@ export default function SeasonPlanPage() {
             names past the next month or so to be replaced.
           </li>
           <li>
-            <strong>No Haaland, and that is the model talking.</strong> He is
-            projected at 4.40 points a match against Thiago&rsquo;s 4.41 for
-            half the price, because his decayed start rate is 0.68 against
-            Thiago&rsquo;s 0.90. Spend the difference on the eleven and the
-            eleven wins. If you think 0.68 understates him, that is the number
-            to argue with, not the optimiser.
+            <strong>
+              {absentPremium
+                ? `No ${absentPremium.name}, and that is the model talking.`
+                : "The expensive names are in on projection, not reputation."}
+            </strong>{" "}
+            {absentPremium ? (
+              <>
+                He is the most expensive player in the pool at{" "}
+                {money.format(absentPremium.priceTenths / 10)} and the plan
+                never starts him. Spend the difference across the eleven and the
+                eleven wins. If you think that understates him, the projection
+                is the number to argue with, not the optimiser.
+              </>
+            ) : (
+              <>
+                Every player above the premium line for his position appears in
+                at least one eleven, so the plan is not quietly avoiding the
+                expensive end of the pool.
+              </>
+            )}
           </li>
         </ol>
       </section>

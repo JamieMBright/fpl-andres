@@ -304,10 +304,13 @@ def project_next_match(
     league = league_rates(history, corpus.position_by_element)
     # The league's own booking rate, to shrink thin records toward. Two yellows
     # in five matches is not a rate of 0.4 a match; it is five matches.
-    league_matches = len({(row.element_id, row.gameweek) for row in history if row.minutes > 0})
-    league_booking_rate = (
-        sum(row.yellow_cards for row in history) / league_matches if league_matches else 0.0
-    )
+    #
+    # Per position, because defenders are booked several times as often as
+    # forwards and the prior carries half a season of weight. Pooled, it lifted
+    # every forward's clean record toward a defender's risk and pulled every
+    # defender's toward a forward's. Every other route in `league_rates` is
+    # already split this way.
+    league_booking_rate = _booking_rates(history, corpus.position_by_element)
     prior_nineties = config.prior_strength_minutes / _MINUTES_PER_90
     projections: list[MatchProjection] = []
 
@@ -342,9 +345,9 @@ def project_next_match(
         played = len({row.gameweek for row in rows if row.minutes > 0})
         yellows = sum(row.yellow_cards for row in rows)
         first_match = 1 if season_over else gameweek
-        booking_rate = (yellows + league_booking_rate * _BOOKING_PRIOR_MATCHES) / (
-            played + _BOOKING_PRIOR_MATCHES
-        )
+        booking_rate = (
+            yellows + league_booking_rate.get(position, 0.0) * _BOOKING_PRIOR_MATCHES
+        ) / (played + _BOOKING_PRIOR_MATCHES)
         ban = suspension_risk(
             yellows=0 if first_match == 1 else yellows,
             matches_played=played,
@@ -510,6 +513,25 @@ def _carried_history(
         if rows:
             carried[element_id] = tuple(rows)
     return carried
+
+
+def _booking_rates(
+    history: Sequence[ElementRow], position_by_element: Mapping[int, int]
+) -> dict[int, float]:
+    """Yellow cards per match played, per position."""
+    cards: dict[int, int] = {}
+    matches: dict[int, int] = {}
+    for row in history:
+        if row.minutes <= 0:
+            continue
+        position = position_by_element.get(row.element_id)
+        if position is None:
+            continue
+        matches[position] = matches.get(position, 0) + 1
+        cards[position] = cards.get(position, 0) + row.yellow_cards
+    return {
+        position: cards.get(position, 0) / count for position, count in matches.items() if count
+    }
 
 
 def _prior_context(

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 from dataclasses import dataclass
+from itertools import pairwise
 from types import MappingProxyType
 from typing import Any, Literal
 
@@ -371,6 +372,138 @@ def validate_published_bootstrap_contract(bootstrap: Mapping[str, Any]) -> None:
         _required_nullable_int(overrides, "pick_multiplier", overrides_path)
 
 
+def validate_published_squad_contract(bootstrap: Mapping[str, Any]) -> None:
+    """The clubs, players and gameweeks a live bootstrap must also carry.
+
+    Audit item D2. Kept separate from the rules contract because they answer to
+    different sources. The rules are a snapshot that an archived rules-only
+    document legitimately satisfies on its own; the squad is the live roster,
+    checked when this package talks to FPL rather than when it reads a stored
+    rule set.
+
+    Needs the rules contract's position ids, so it re-reads `element_types`
+    rather than assuming a caller ran the two in order.
+    """
+    position_ids = {
+        _required_int(payload, "id", f"element_types[{index}]")
+        for index, payload in enumerate(_required_list(bootstrap, "element_types"))
+    }
+    team_ids = _validate_teams(bootstrap)
+    _validate_elements(bootstrap, team_ids=team_ids, position_ids=position_ids)
+    _validate_events(bootstrap)
+
+
+def _validate_teams(bootstrap: Mapping[str, Any]) -> frozenset[int]:
+    """The twenty clubs, and the short name three publishers key dictionaries by.
+
+    Audit item D2. `publish_season_inputs` builds `ladder[short_name]`,
+    `ratings[short_name]` and `opponents[short_name]`. Two clubs sharing a short
+    name do not raise; the second silently overwrites the first, and a published
+    fixture ladder loses a club without saying so. `code` has the same problem
+    one step earlier: strength is joined by code, so a duplicate code assigns one
+    club's strength to another.
+    """
+    ids: set[int] = set()
+    codes: set[int] = set()
+    short_names: set[str] = set()
+    for index, payload in enumerate(_required_list(bootstrap, "teams")):
+        path = f"teams[{index}]"
+        team_id = _required_int(payload, "id", path)
+        if team_id in ids:
+            raise RulesContractError(f"duplicate team id: {team_id}")
+        ids.add(team_id)
+
+        code = _required_int(payload, "code", path)
+        if code in codes:
+            raise RulesContractError(f"duplicate team code: {code}")
+        codes.add(code)
+
+        short_name = _required_str(payload, "short_name", path)
+        if short_name in short_names:
+            raise RulesContractError(f"duplicate team short name: {short_name}")
+        short_names.add(short_name)
+
+        _required_str(payload, "name", path)
+
+    if len(ids) != 20:
+        raise RulesContractError(f"expected 20 teams, found {len(ids)}")
+    return frozenset(ids)
+
+
+def _validate_elements(
+    bootstrap: Mapping[str, Any],
+    *,
+    team_ids: frozenset[int],
+    position_ids: set[int],
+) -> None:
+    """Every player points at a club and a position that exist.
+
+    Audit item D2. `bootstrap.py` validates a player's own fields, but a
+    per-row model cannot see the rest of the payload: it cannot tell that
+    `team=21` names no club, or that `element_type=5` is a position this package
+    has no scoring rules for. Both resolve later as a `KeyError` inside a
+    publisher, or -- worse -- as a player dropped from a squad by a filter that
+    was only meant to skip the unavailable.
+
+    Unknown element types are not refused. FPL shipped Assistant Manager in
+    2024/25 and the publishers deliberately skip a type they cannot score; this
+    only insists the type was declared in `element_types` so the skip is a
+    decision rather than an accident.
+    """
+    ids: set[int] = set()
+    codes: set[int] = set()
+    for index, payload in enumerate(_required_list(bootstrap, "elements")):
+        path = f"elements[{index}]"
+        element_id = _required_int(payload, "id", path)
+        if element_id in ids:
+            raise RulesContractError(f"duplicate element id: {element_id}")
+        ids.add(element_id)
+
+        code = _required_int(payload, "code", path)
+        if code in codes:
+            raise RulesContractError(f"duplicate element code: {code}")
+        codes.add(code)
+
+        team = _required_int(payload, "team", path)
+        if team not in team_ids:
+            raise RulesContractError(f"{path}.team names no club: {team}")
+
+        element_type = _required_int(payload, "element_type", path)
+        if element_type not in position_ids:
+            raise RulesContractError(f"{path}.element_type is undeclared: {element_type}")
+
+    if not ids:
+        raise RulesContractError("bootstrap carries no elements")
+
+
+def _validate_events(bootstrap: Mapping[str, Any]) -> None:
+    """Thirty-eight gameweeks, in order, each with a deadline.
+
+    Audit item D2. `publish_season_inputs` publishes
+    `str(events[event]["deadline_time"]).replace("+00:00", "Z")`. A missing
+    deadline publishes the string `None`; an out-of-order one silently reorders
+    a season plan. Neither raises anywhere.
+    """
+    ids: set[int] = set()
+    deadlines: list[tuple[int, str]] = []
+    for index, payload in enumerate(_required_list(bootstrap, "events")):
+        path = f"events[{index}]"
+        event_id = _required_int(payload, "id", path)
+        if event_id in ids:
+            raise RulesContractError(f"duplicate event id: {event_id}")
+        ids.add(event_id)
+        deadlines.append((event_id, _required_str(payload, "deadline_time", path)))
+        _required_bool(payload, "finished", path)
+
+    if len(ids) != 38:
+        raise RulesContractError(f"expected 38 events, found {len(ids)}")
+
+    ordered = sorted(deadlines)
+    for (earlier_id, earlier), (later_id, later) in pairwise(ordered):
+        if earlier >= later:
+            raise RulesContractError(f"event {later_id} does not deadline after event {earlier_id}")
+
+
 def _required_mapping(
     payload: Mapping[str, Any],
     key: str,
@@ -521,4 +654,5 @@ __all__ = [
     "RulesSnapshot",
     "ScoringRules",
     "validate_published_bootstrap_contract",
+    "validate_published_squad_contract",
 ]

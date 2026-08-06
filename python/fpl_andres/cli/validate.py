@@ -24,6 +24,7 @@ from fpl_andres.backtesting.captain_picks import picks_payload
 from fpl_andres.backtesting.captain_significance import compare_policies
 from fpl_andres.backtesting.corpus import SeasonCorpus, load_season
 from fpl_andres.backtesting.score import METHOD_LABELS, score_season
+from fpl_andres.holdout import HOLDOUT_SEASON, SCORED_SEASONS
 from fpl_andres.model_version import MODEL_VERSION
 from fpl_andres.persistence.supabase import SupabaseCredentials, SupabaseRestClient
 from fpl_andres.positions import Position
@@ -58,7 +59,7 @@ POLICIES: tuple[Policy, ...] = ("advised", "form_chaser", "crowd", "hold")
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="validate")
-    parser.add_argument("--seasons", default="2022-23,2023-24,2024-25,2025-26")
+    parser.add_argument("--seasons", default=",".join(SCORED_SEASONS))
     parser.add_argument("--seeds", default="1,2,3,4,5")
     parser.add_argument("--output", default=str(DEFAULT_OUTPUT))
     return parser
@@ -260,6 +261,9 @@ def main(argv: Sequence[str] | None = None) -> int:
             season_reports.append(
                 {
                     "season": season,
+                    # Tuned against, or kept back. A number from a development
+                    # season is a number the constants were chosen to fit.
+                    "holdout": season == HOLDOUT_SEASON,
                     "rows": corpus.total_rows,
                     "gameweeks": len(corpus.gameweeks),
                     "gameweeksPlayed": gameweeks_played,

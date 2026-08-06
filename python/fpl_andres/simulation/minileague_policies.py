@@ -103,7 +103,13 @@ def _zombie_transfer(
     prices: Mapping[int, int],
 ) -> None:
     """Acts only when a player has stopped featuring, and never takes a hit."""
-    outgoing = [player for player in manager.squad if minutes.get(player.element_id, 0) == 0]
+    # Absent from the window and playing nothing in it are different facts. A
+    # new signing has no rows yet, and reading that as zero minutes sold him.
+    outgoing = [
+        player
+        for player in manager.squad
+        if player.element_id in minutes and minutes[player.element_id] == 0
+    ]
     if not outgoing or manager.free_transfers <= 0:
         return
     worst = min(outgoing, key=lambda player: form.get(player.element_id, 0.0))
@@ -143,7 +149,12 @@ def _best_replacement(
     """First affordable, eligible upgrade in a list already sorted by ranking."""
     held = {player.element_id for player in manager.squad}
     budget = manager.portfolio.affordable(outgoing.element_id, prices)
-    current = ranking.get(outgoing.element_id, 0.0)
+    # An unranked outgoing player used to default to zero, which made every
+    # ranked candidate an "upgrade" and bought a full-price replacement for no
+    # measured gain. Nothing is known about him, so nothing is claimed.
+    current = ranking.get(outgoing.element_id)
+    if current is None:
+        return None
 
     for candidate in by_position.get(outgoing.position, ()):
         score = ranking.get(candidate.element_id)

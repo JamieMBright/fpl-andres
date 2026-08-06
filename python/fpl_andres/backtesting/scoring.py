@@ -262,7 +262,6 @@ def supporting_breakdown(
             ninety,
             league,
             prior_nineties,
-            nineties_played,
             adjustment.defensive_contribution,
         ),
     )
@@ -274,7 +273,6 @@ def defensive_contribution_points(
     ninety: float,
     league: LeagueRates,
     prior_nineties: float,
-    nineties_played: float,
     adjustment: float,
 ) -> float:
     """Zero before 2025/26, where the column is absent because the route did not exist."""
@@ -286,13 +284,18 @@ def defensive_contribution_points(
         return 0.0
     hits = sum(1 for row in observed if (row.defensive_contribution or 0) >= threshold)
     seen = sum(row.minutes for row in observed) / _MINUTES_PER_90
+    # `seen` is the evidence that exists, and `shrunk_rate` already pulls a thin
+    # sample toward the league rate in proportion to how thin it is. A coverage
+    # term on top charged the same missing data twice: a defender with five
+    # hundred of his three thousand minutes in 2025/26 was shrunk for having
+    # five hundred, then scaled by a sixth for not having the other twenty-five
+    # hundred -- hardest against the established defenders whose defcon record
+    # is best evidenced.
     rate = shrunk_rate(hits, seen, league.defcon_hits.get(position, 0.0), prior_nineties)
     # A hit rate is a share of matches, so the fixture multiplier cannot lift it
     # past one however much pressure the opponent applies.
     adjusted = min(1.0, rate * adjustment)
-    # Scaled by the share of the player's history that even had the column.
-    coverage = min(1.0, seen / nineties_played) if nineties_played > 0 else 0.0
-    return ninety * adjusted * _DEFCON_POINTS[position] * coverage
+    return ninety * adjusted * _DEFCON_POINTS[position]
 
 
 __all__ = [

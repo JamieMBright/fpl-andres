@@ -407,4 +407,80 @@ describe("picks budget", () => {
     expect(servedPicks).toBe(true);
     expect(response.status).toBe(200);
   });
+
+  it("does not let the two budgets add up past the platform timeout", async () => {
+    // Audit item E5. `vercel.json` gives `api/team/*.ts` a maxDuration of 15 s.
+    // Handing picks a fresh 12 s after the pair had already spent 12 made the
+    // worst case 24 s, so a slow upstream produced a
+    // FUNCTION_INVOCATION_TIMEOUT -- a platform error page -- rather than the
+    // degraded envelope this handler exists to return.
+    captured();
+    let clock = Date.parse("2026-09-12T12:30:00.000Z");
+    const start = clock;
+    let picksDeadline: number | null = null;
+    const fetchUpstream = vi
+      .fn<typeof fetch>()
+      .mockImplementation(async (input) => {
+        const url = String(input);
+        if (url.endsWith("/bootstrap-static/")) {
+          clock += 11_000;
+          return json(bootstrapDocument());
+        }
+        if (url.endsWith("/entry/123/")) return json(entryDocument());
+        if (url.includes("/picks/")) {
+          picksDeadline = clock;
+          return json(picksDocument());
+        }
+        throw new Error(`unexpected URL: ${url}`);
+      });
+
+    await createTeamPublicStateResponse(123, "GET", {
+      fetchUpstream,
+      sleep: async () => {},
+      random: () => 0,
+      now: () => clock,
+    });
+
+    // Picks still ran -- it has 2.5 s of the 13.5 s handler budget left, which
+    // clears the floor -- but it can no longer be granted a further 12.
+    expect(picksDeadline).not.toBeNull();
+    expect((picksDeadline ?? 0) - start).toBeLessThan(15_000);
+  });
+
+  it("answers honestly when there is no time left to ask for picks", async () => {
+    // A fetch that cannot finish inside what the platform will wait for is not
+    // worth starting: it turns a degraded envelope into a killed invocation.
+    captured();
+    let clock = Date.parse("2026-09-12T12:30:00.000Z");
+    let servedPicks = false;
+    const fetchUpstream = vi
+      .fn<typeof fetch>()
+      .mockImplementation(async (input) => {
+        const url = String(input);
+        if (url.endsWith("/bootstrap-static/")) {
+          clock += 13_000;
+          return json(bootstrapDocument());
+        }
+        if (url.endsWith("/entry/123/")) return json(entryDocument());
+        if (url.includes("/picks/")) {
+          servedPicks = true;
+          return json(picksDocument());
+        }
+        throw new Error(`unexpected URL: ${url}`);
+      });
+
+    const response = await createTeamPublicStateResponse(123, "GET", {
+      fetchUpstream,
+      sleep: async () => {},
+      random: () => 0,
+      now: () => clock,
+    });
+
+    expect(servedPicks).toBe(false);
+    expect(response.status).toBe(503);
+    await expect(response.json()).resolves.toMatchObject({
+      status: "degraded",
+      reason: "fpl_unreachable",
+    });
+  });
 });

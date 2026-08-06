@@ -1638,11 +1638,14 @@ a:focus-visible {
 }
 
 .plan-chips {
-  max-width: 78ch;
   margin: 18px 0 0;
 }
 
 .plan-chips p {
+  /* The measure belongs to the paragraph. On the details box it also clamped
+     the collapsed summary bar, which then stopped short of the preamble bar
+     above it and left the row half empty. */
+  max-width: 78ch;
   margin: 0 0 14px;
   color: var(--ink-soft);
   font-size: 13px;
@@ -4039,6 +4042,81 @@ a:focus-visible {
   color: var(--ink-soft);
   font-size: 12px;
   line-height: 1.45;
+}
+
+/* A figure you can open. Underlined because a number that does something has to
+   look like it does something. */
+.peer-open {
+  padding: 0;
+  color: inherit;
+  font: inherit;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-underline-offset: 3px;
+}
+
+.peer-open:hover,
+.peer-open:focus-visible {
+  text-decoration-style: solid;
+}
+
+.peer-spread-band,
+.peer-spread-verdict,
+.peer-spread-more {
+  margin: 0 0 14px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.peer-spread-band {
+  color: var(--ink-soft);
+}
+
+.peer-spread-bars {
+  padding: 0;
+  margin: 0 0 16px;
+  list-style: none;
+  border-top: 1px solid var(--rule);
+}
+
+.peer-bin {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  padding: 4px 6px;
+  border-bottom: 1px solid var(--rule);
+  font-size: 12px;
+}
+
+/* Behind the labels rather than beside them, so the row height does not depend
+   on how many players landed in the bin. */
+.peer-bin-fill {
+  position: absolute;
+  inset-block: 2px;
+  inset-inline-start: 0;
+  background: var(--rule);
+}
+
+.peer-bin-subject .peer-bin-fill {
+  background: var(--field-green);
+}
+
+.peer-bin-label,
+.peer-bin-count {
+  position: relative;
+}
+
+.peer-bin-count {
+  text-align: right;
+}
+
+.peer-bin-subject {
+  font-weight: 700;
 }
 
 .player-detail-empty {

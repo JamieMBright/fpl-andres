@@ -1,8 +1,11 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { CeefaxShirt } from "./CeefaxShirt";
+import { PeerDistribution } from "./PeerDistribution";
 import type { FixtureRun } from "../state/fixture-run";
 import { kitForShortName } from "../kit/team-kits";
+import type { PeerMetric } from "../state/peer-distribution";
+import { peerMetric } from "../state/peer-distribution";
 import type { Band } from "../state/stat-bands";
 import { bandFor } from "../state/stat-bands";
 import { projectionFor, projectionSeason } from "../state/squad-projection";
@@ -154,13 +157,21 @@ export function PlayerDetail({
   onClose,
   player,
   run = null,
+  difficulty = null,
 }: {
   onClose: () => void;
   player: DetailPlayer;
   /** Omitted where the caller has no fixture ratings to hand. */
   run?: FixtureRun | null;
+  /**
+   * The season plan's own rating, one to five, where one is soft. A different
+   * scale from `run`, which is a multiplier around one, so the two are separate
+   * props rather than one that has to be read twice.
+   */
+  difficulty?: { rating: number; opponents: readonly string[] } | null;
 }) {
   const dialog = useRef<HTMLDialogElement>(null);
+  const [peer, setPeer] = useState<PeerMetric | null>(null);
 
   // `showModal` rather than the `open` attribute: it is what gives the platform
   // dialog its focus trap, its Escape handling and its inert backdrop. Writing
@@ -235,13 +246,30 @@ export function PlayerDetail({
           </p>
         ) : (
           <dl className="player-detail-stats">
-            {rows.map(({ term, value, explains, band }) => (
-              <div key={term}>
-                <dt title={explains}>{term}</dt>
-                <dd className={band ? `mono band-${band}` : "mono"}>{value}</dd>
-                <p>{explains}</p>
-              </div>
-            ))}
+            {rows.map(({ term, value, explains, band }) => {
+              const comparable = record === null ? null : peerMetric(term);
+              return (
+                <div key={term}>
+                  <dt title={explains}>{term}</dt>
+                  <dd className={band ? `mono band-${band}` : "mono"}>
+                    {comparable ? (
+                      <button
+                        className="peer-open"
+                        onClick={() => {
+                          setPeer(comparable);
+                        }}
+                        type="button"
+                      >
+                        {value}
+                      </button>
+                    ) : (
+                      value
+                    )}
+                  </dd>
+                  <p>{explains}</p>
+                </div>
+              );
+            })}
           </dl>
         )}
 
@@ -281,8 +309,24 @@ export function PlayerDetail({
         ) : null}
 
         <section className="player-detail-run">
-          <h3>Next five</h3>
-          {run === null || run.rating === null ? (
+          <h3>{difficulty ? "This week's fixture" : "Next five"}</h3>
+          {difficulty ? (
+            <>
+              <ol className="mono">
+                {difficulty.opponents.map((opponent, index) => (
+                  <li key={`${opponent}-${index.toString()}`}>
+                    {opponent || "—"}
+                  </li>
+                ))}
+              </ol>
+              <p>
+                Rated {difficulty.rating.toFixed(1)} out of five on this
+                week&rsquo;s tie, where one is soft and five is very hard. This
+                is the plan&rsquo;s own rating for {player.club}, which is what
+                the projection above is already priced against.
+              </p>
+            </>
+          ) : run === null || run.rating === null ? (
             <p>
               I have no rating for these fixtures, so nothing is shown rather
               than a guess.
@@ -309,6 +353,16 @@ export function PlayerDetail({
           )}
         </section>
       </div>
+
+      {peer && record ? (
+        <PeerDistribution
+          metric={peer}
+          onClose={() => {
+            setPeer(null);
+          }}
+          subject={record}
+        />
+      ) : null}
     </dialog>
   );
 }

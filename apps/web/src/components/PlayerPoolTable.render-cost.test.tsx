@@ -155,17 +155,24 @@ function interleavedRerenderMs(
 }
 
 describe("player pool table render cost", () => {
-  it("scales linearly with rows, so the cap is not holding back a cliff", () => {
-    // 3.5x the rows should cost about 3.5x the time. Anything superlinear --
-    // an O(n^2) layout, a per-row scan of the whole list -- is the shape that
-    // makes a cap load-bearing and virtualisation worth its cost.
-    const { small, large } = interleavedRerenderMs(200, 700, 15);
+  // Thirty renders of up to 700 rows. The assertion is a ratio, so it is
+  // load-independent; the wall clock it runs against is not, and under the full
+  // parallel suite this has hit the default five-second budget.
+  it(
+    "scales linearly with rows, so the cap is not holding back a cliff",
+    { timeout: 30_000 },
+    () => {
+      // 3.5x the rows should cost about 3.5x the time. Anything superlinear --
+      // an O(n^2) layout, a per-row scan of the whole list -- is the shape that
+      // makes a cap load-bearing and virtualisation worth its cost.
+      const { small, large } = interleavedRerenderMs(200, 700, 15);
 
-    expect(small).toBeGreaterThan(0);
-    // 3.5x rows, allowed up to 7x the time before this is called superlinear.
-    // Measured ratio on an idle machine is about 3.4.
-    expect(large / small).toBeLessThan(7);
-  });
+      expect(small).toBeGreaterThan(0);
+      // 3.5x rows, allowed up to 7x the time before this is called superlinear.
+      // Measured ratio on an idle machine is about 3.4.
+      expect(large / small).toBeLessThan(7);
+    },
+  );
 
   it("renders every row, so the measurement is of the whole table", () => {
     // A component that quietly stopped rendering rows would measure faster and

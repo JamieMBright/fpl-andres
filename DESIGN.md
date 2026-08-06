@@ -289,6 +289,7 @@ so a review knows what it does not have to check by hand.
 | `CeefaxShirt`          | Club kit as a teletext block graphic             | `contrast` (`/kits`), unit (palette)    |
 | `PlayerAvatar`         | Lazy headshot, silhouette when there is none     | `contrast` (`/kits`)                    |
 | `PlayerDetail`         | One player in full, with what each number means  | `feature-walk`                          |
+| `PeerDistribution`     | One figure against players of the same price     | unit (`peer-distribution`)              |
 | `FixtureBreakdown`     | Every fixture ahead, and last season's totals    | unit (via `PinnedPlayers`)              |
 | `Countdown`            | Deadline cell at the end of the index bar        | `feature-walk`                          |
 | `RangeSlider`          | One track, two thumbs, for a band                | `feature-walk` (ownership band)         |

@@ -27,6 +27,32 @@ const MAX_PUBLIC_ID = 4_294_967_295;
  */
 const PICKS_BUDGET_MS = FPL_PROXY_BUDGET_MS;
 
+/**
+ * What the platform will actually wait for, minus room to answer.
+ *
+ * Audit item E5. Fixing #88 by handing picks a second full budget made the two
+ * budgets additive: 12 s of opening fetches plus 12 s of picks is 24 s against
+ * a `maxDuration` of 15 on `api/team/*.ts` in `vercel.json`. Vercel kills the
+ * invocation first, so the caller gets `FUNCTION_INVOCATION_TIMEOUT` -- a
+ * platform error page -- instead of the degraded envelope this handler exists
+ * to return. The failure mode the code was written to avoid is the one it
+ * produced.
+ *
+ * 13.5 s leaves 1.5 s to assemble and serialise the response after the last
+ * fetch resolves. Both budgets stay as they are; they are now capped by what
+ * remains rather than granted unconditionally.
+ */
+const HANDLER_BUDGET_MS = 13_500;
+
+/**
+ * Below this, a fetch cannot complete and starting one only delays the answer.
+ *
+ * One attempt against FPL that connects at all takes longer than this, so a
+ * remaining budget under it means the request has already lost. Degrading here
+ * returns the honest envelope while there is still time to send it.
+ */
+const MINIMUM_PICKS_MS = 1_500;
+
 type Sleep = (milliseconds: number) => Promise<void>;
 
 interface TeamPublicStateDependencies {
@@ -190,6 +216,7 @@ async function buildTeamPublicStateResponse(
   }
 
   const deadline = now() + FPL_PROXY_BUDGET_MS;
+  const handlerDeadline = trace.startedAt + HANDLER_BUDGET_MS;
   const [entryOutcome, bootstrapOutcome] = await Promise.all([
     fetchSource(
       `/api/fpl/entry/${entryId}/`,
@@ -262,6 +289,15 @@ async function buildTeamPublicStateResponse(
     );
   }
 
+  // Its own budget (#88), capped by what the function has left (E5): picks
+  // cannot start until entry has named the event, so it must not inherit what
+  // the opening pair left behind -- but nor may the two budgets add up past
+  // the platform's own timeout.
+  const picksBudgetMs = Math.min(PICKS_BUDGET_MS, handlerDeadline - now());
+  if (picksBudgetMs < MINIMUM_PICKS_MS) {
+    return degradedResponse("fpl_unreachable", trace);
+  }
+
   const picksOutcome = await fetchSource(
     `/api/fpl/entry/${entryId}/event/${entry.current_event}/picks/`,
     "picks",
@@ -269,9 +305,7 @@ async function buildTeamPublicStateResponse(
     sleep,
     random,
     now,
-    // Its own budget (#88): picks cannot start until entry has named the event,
-    // so it must not inherit what the opening pair left behind.
-    now() + PICKS_BUDGET_MS,
+    now() + picksBudgetMs,
     trace,
     cache,
   );

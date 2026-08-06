@@ -120,11 +120,12 @@ reset rules and protection claims are excluded.
 ## Squad numbers
 
 FPL's bootstrap carries a `squad_number` field on every element and leaves it null.
-Measured 2026-08-05: 0 of 570 players have one. The field is read and published where
-it exists, so a shirt prints the number the day FPL starts filling it in; until then
-every shirt is blank and the player card says so in words rather than leaving a reader
-to guess. No other approved source publishes squad numbers, and putting a number on a
-shirt that the source does not give would be inventing one.
+Measured 2026-08-06 against the live endpoint: 0 of 572 players have one, with no
+gameweek yet played. The field is read and published where it exists, so a shirt
+prints the number the day FPL starts filling it in; until then every shirt is blank
+and the player card says so in words rather than leaving a reader to guess. No other
+approved source publishes squad numbers, and putting a number on a shirt that the
+source does not give would be inventing one.
 
 ## Season start and cold start
 

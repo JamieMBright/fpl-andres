@@ -29,6 +29,24 @@ from __future__ import annotations
 
 __all__ = ["MODEL_VERSION"]
 
+#: 2.8 closes the rest of the verified input bugs, so every projected point
+#: moves again. Double gameweeks were the worst of them: two fixtures were
+#: merged into one observation, summed, capped at 120 minutes and then spent
+#: per fixture, which both understated a doubled player's ceiling and hid the
+#: second match from the evidence count. Splitting them exposed a latent error
+#: underneath -- the recency weights were keyed by gameweek, so a doubled week
+#: counted once in the denominator and twice in the numerator and a start rate
+#: could exceed one.
+#:
+#: Also: the booking prior was pooled across all four positions, charging
+#: goalkeepers a midfielder's card rate; defensive contribution was shrunk
+#: twice, once by the rate and again by a coverage multiplier; and four places
+#: read a missing value as a confident one. A ruled-out player kept an
+#: "inferred" evidence chip, a player who has never started assumed certainty
+#: about what he does when he starts, a zombie transfer was inferred from an
+#: absent minutes reading, and a replacement was ranked against a player who
+#: had no rank. Each now says what it does not know.
+#:
 #: 2.7 fixes two bugs that moved every projected point, so expect the metrics
 #: to move with it. The club-change discount had never fired: no projector call
 #: site passed the club or the role, so a transferred player carried his old
@@ -70,4 +88,4 @@ __all__ = ["MODEL_VERSION"]
 #: projection and resampled, so a gap that does not clear zero is reported as
 #: not clearing zero. No projection changed; what changed is what may be
 #: claimed from it.
-MODEL_VERSION = "2.7"
+MODEL_VERSION = "2.8"

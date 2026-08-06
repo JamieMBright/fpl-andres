@@ -76,6 +76,35 @@ describe("declared transfers", () => {
     expect(readDeclaredTransfers(storage, 42, 1)).toEqual([]);
   });
 
+  it("clears unparseable storage rather than re-reading it forever", () => {
+    // Audit item E4. Every other reader in this directory removes the key when
+    // the schema refuses it. This one returned [] and left the value in place,
+    // so the same corrupt string was parsed on every render until the next
+    // write happened to overwrite it.
+    storage.setItem("fpl-andres:declared:42", "{ not json");
+    readDeclaredTransfers(storage, 42, 1);
+
+    expect(storage.getItem("fpl-andres:declared:42")).toBeNull();
+  });
+
+  it("clears valid JSON that is not a declaration", () => {
+    storage.setItem(
+      "fpl-andres:declared:42",
+      JSON.stringify({ event: "five" }),
+    );
+    readDeclaredTransfers(storage, 42, 1);
+
+    expect(storage.getItem("fpl-andres:declared:42")).toBeNull();
+  });
+
+  it("leaves a good value alone", () => {
+    saveDeclaredTransfer(storage, 42, SWAP);
+    readDeclaredTransfers(storage, 42, 9);
+
+    // Spent for gameweek 9, but still the manager's record of gameweek 5.
+    expect(storage.getItem("fpl-andres:declared:42")).not.toBeNull();
+  });
+
   it("forgets everything for one manager on request", () => {
     saveDeclaredTransfer(storage, 42, SWAP);
     forgetDeclaredTransfers(storage, 42);

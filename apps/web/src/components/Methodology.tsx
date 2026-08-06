@@ -1,5 +1,11 @@
 import { Link } from "react-router-dom";
 
+import validation from "../data/validation.json";
+import {
+  captaincyVerdict,
+  ceilingSentence,
+  whichThesisVerdict,
+} from "../state/captaincy-verdict";
 import { projectionSeason } from "../state/projection-meta";
 
 /**
@@ -8,8 +14,20 @@ import { projectionSeason } from "../state/projection-meta";
  * Every number quoted here is one this repository measured. Where a method
  * loses, the loss is stated rather than omitted, because a methodology page
  * that only reports wins is marketing.
+ *
+ * The captaincy verdict is derived rather than written, because it is the one
+ * claim on this page that a rerun can invert. See `captaincy-verdict.ts`.
  */
 export function Methodology() {
+  const verdict = captaincyVerdict(
+    validation.captainSignificance,
+    validation.seasons,
+  );
+  const which = whichThesisVerdict(verdict);
+  const ceiling = ceilingSentence(verdict);
+  // Every scored thesis, plus the projection they are all measured against.
+  const thesisCount = validation.captainSignificance.length + 1;
+
   return (
     <div className="method-body">
       <p className="lede">
@@ -145,8 +163,8 @@ export function Methodology() {
           Every published framework says that is wrong. None of them publishes a
           measurement, and they contradict each other, so all of them are
           written down as rules and scored on the same gameweeks, the same
-          shortlist and the same ceiling. Nine theses; a tenth is the
-          owner&rsquo;s own.
+          shortlist and the same ceiling. {thesisCount} theses, one of which is
+          the owner&rsquo;s own, each against the projection as control.
         </p>
 
         <h3>What the sources argue</h3>
@@ -260,12 +278,12 @@ export function Methodology() {
           have made.
         </p>
         <p>
-          Nine rules is nine chances to win by luck, so the record reports the
-          number of seasons a thesis won as well as its mean &mdash; a policy
-          that wins once and loses three times got lucky, and a table sorted on
-          the average alone would crown it. Nothing is tuned: where a
-          coefficient is unavoidable it is the one its source proposed, used
-          once and never swept.
+          {thesisCount} rules is {thesisCount} chances to win by luck, so the
+          record reports the number of seasons a thesis won as well as its mean
+          &mdash; a policy that wins once and loses three times got lucky, and a
+          table sorted on the average alone would crown it. Nothing is tuned:
+          where a coefficient is unavoidable it is the one its source proposed,
+          used once and never swept.
         </p>
         <p>
           A ranked table still produces a winner whether or not one exists, so
@@ -279,33 +297,24 @@ export function Methodology() {
           over more of them.
         </p>
         <p>
-          <strong>So which one should you use?</strong> Measured over 127 paired
-          gameweeks: <em>none of them</em>. Not one interval clears zero. The
-          rule that tops the table beats the projection by 0.15 points a week
-          with an interval running from &minus;0.34 to +0.69, so the
-          table&rsquo;s own ordering sits inside its own noise. Two are
-          measurably <em>worse</em> &mdash; captaining the biggest ceiling costs
-          1.20 a week and chasing form costs 1.57, both with intervals entirely
-          below zero. Those are the only findings here, and they are both
-          negative.
+          <strong>So which one should you use?</strong> {which.lead}
+          <em>{which.headline}</em>
+          {which.detail}
         </p>
         <p>
-          That is less disappointing than it sounds. The best captain available
-          on the shortlist averages 15.45 points and the best thesis takes 7.12,
-          so the whole argument between the ten is worth under two points a week
-          while more than eight sit untouched. The gap that matters is not
-          between the rules. Until something closes it, take the highest
-          projected scorer and spend the attention elsewhere.
+          That is less disappointing than it sounds. {ceiling} Until something
+          closes it, take the highest projected scorer and spend the attention
+          elsewhere.
         </p>
         <p>
           <strong>Then learn the rule instead?</strong> Captaincy yields one
-          graded observation per gameweek &mdash; about 127 across four seasons.
-          Fitting six feature weights to 127 points whose week-to-week spread
-          exceeds the entire range between best and worst thesis will report a
-          lead in sample, and would report one on shuffled labels too. If a
-          learned policy is ever added it enters as one more candidate, fit on
-          seasons it is not scored on, and it has to clear the same interval all
-          ten have now failed to clear.
+          graded observation per gameweek &mdash; about {verdict.weeks} across
+          four seasons. Fitting six feature weights to {verdict.weeks} points
+          whose week-to-week spread exceeds the entire range between best and
+          worst thesis will report a lead in sample, and would report one on
+          shuffled labels too. If a learned policy is ever added it enters as
+          one more candidate, fit on seasons it is not scored on, and it has to
+          clear the same interval every rule here has so far failed to clear.
         </p>
         <p className="method-proof">
           <strong>One correction, on the record.</strong> The first run reported

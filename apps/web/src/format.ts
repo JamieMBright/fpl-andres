@@ -67,3 +67,20 @@ export const deadlineDay = new Intl.DateTimeFormat("en-GB", {
   month: "short",
   timeZone: "Europe/London",
 });
+
+/** A point total to a tenth: minutes, rates, anything read at a glance. */
+export const oneDecimal = new Intl.NumberFormat("en-GB", {
+  minimumFractionDigits: 1,
+  maximumFractionDigits: 1,
+});
+
+/**
+ * A point total to a hundredth, for a difference small enough to need it.
+ *
+ * Trailing zeroes are kept: an interval printed as "-0.34 to +0.6" reads as
+ * less precise on one end than the other when both were measured the same way.
+ */
+export const twoDecimals = new Intl.NumberFormat("en-GB", {
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+});

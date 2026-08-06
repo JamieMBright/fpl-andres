@@ -52,6 +52,10 @@ class AppearanceObservation(BaseModel):
     minutes: Annotated[int, Field(ge=0, le=120)]
     started: bool
     kickoff_time: datetime
+    #: Which match this was. Optional because not every caller has one, but it
+    #: is what makes two fixtures in one event distinguishable when the source
+    #: published no kickoff and the corpus had to synthesise one per gameweek.
+    fixture_id: int | None = None
 
     @model_validator(mode="after")
     def validate_observation(self) -> AppearanceObservation:
@@ -109,8 +113,16 @@ class MinutesEvidence(BaseModel):
 
         # A match, not a gameweek: a double gameweek is two real appearances in
         # one event, and rejecting it would throw away half of what he played.
+        # Keyed on the fixture where one is known, because a synthesised kickoff
+        # is per gameweek and would make a double look like a repeat.
         matches = [
-            (observation.event_id, observation.kickoff_time) for observation in self.observations
+            (
+                observation.event_id,
+                observation.fixture_id
+                if observation.fixture_id is not None
+                else observation.kickoff_time,
+            )
+            for observation in self.observations
         ]
         if len(set(matches)) != len(matches):
             raise ValueError("observations must not repeat a match")
@@ -191,22 +203,27 @@ def project_minutes(evidence: MinutesEvidence) -> MinutesProjection:
             f"{evidence.decay_half_life_events}-event half-life; "
             "drop them rather than counting them towards the sample floor"
         )
-    total_weight = sum(weights.values())
+
+    # One weight per appearance, not per event. Recency decays by event, so two
+    # fixtures in a double gameweek share a factor -- but each is a match that
+    # happened and each has to count. Summing the event map put a double into
+    # the denominator once and into the numerator twice, which let a player who
+    # started both halves of one carry a start rate above 1.
+    weighted = [
+        (observation, weights[observation.event_id]) for observation in evidence.observations
+    ]
+    total_weight = sum(weight for _, weight in weighted)
     if total_weight <= 0.0:
         reasons.append("recency_weights_vanished")
         return _unavailable(evidence, reasons)
 
-    start_weight = sum(
-        weights[observation.event_id]
-        for observation in evidence.observations
-        if observation.started
-    )
+    start_weight = sum(weight for observation, weight in weighted if observation.started)
     weighted_start_rate = start_weight / total_weight
 
     # Kish effective sample size. Recency decay decides how much each observation
     # informs the estimate; it must not pretend the observations never happened,
     # which is what shrinking against the raw weight sum would do.
-    squared_weight = sum(weight * weight for weight in weights.values())
+    squared_weight = sum(weight * weight for _, weight in weighted)
     effective_sample = (total_weight * total_weight) / squared_weight
     reasons.append(f"effective_sample={effective_sample:.2f}")
 
@@ -223,6 +240,20 @@ def project_minutes(evidence: MinutesEvidence) -> MinutesProjection:
 
     starts = [observation for observation in evidence.observations if observation.started]
     benched = [observation for observation in evidence.observations if not observation.started]
+
+    # Both conditionals fall back to a certainty when there is nothing to read:
+    # a player with no observed start is assumed to complete the hour, and one
+    # with no observed benching never to come off it. Those are assumptions, not
+    # measurements, and they multiply a marginal that was carefully shrunk. No
+    # sourced prior exists to shrink them toward, and inventing one here would be
+    # worse than the assumption, so the projection names which it leaned on.
+    assumed = [
+        name
+        for name, empty in (("sixty_given_start", not starts), ("cameo_given_benched", not benched))
+        if empty
+    ]
+    if assumed:
+        reasons.append(f"assumed_conditional={'+'.join(assumed)}")
 
     probability_sixty_given_start = _weighted_share(
         starts, weights, lambda o: o.minutes >= _APPEARANCE_POINT_THRESHOLD, default=1.0
@@ -255,7 +286,11 @@ def project_minutes(evidence: MinutesEvidence) -> MinutesProjection:
         probability_appear *= scale
         probability_sixty *= scale
         expected_minutes *= scale
-        evidence_level = "inferred"
+        # A published zero is a ruled-out player, not a doubtful one. Left as
+        # "inferred" he passed the unavailable filter and reached the ranking
+        # and the captaincy shortlist carrying an evidence chip that claimed an
+        # opinion about somebody the source had already excluded.
+        evidence_level = "unavailable" if chance == 0 else "inferred"
         reasons.append(f"chance_of_playing={chance}")
 
     return _projection(

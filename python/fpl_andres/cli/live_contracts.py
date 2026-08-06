@@ -6,7 +6,10 @@ from datetime import UTC, datetime
 import httpx
 
 from fpl_andres.adapters.fpl import FplClient
-from fpl_andres.rules import validate_published_bootstrap_contract
+from fpl_andres.rules import (
+    validate_published_bootstrap_contract,
+    validate_published_squad_contract,
+)
 
 
 async def validate_live_contracts() -> None:
@@ -14,6 +17,7 @@ async def validate_live_contracts() -> None:
         client = FplClient(http=http, clock=lambda: datetime.now(UTC))
         fetched = await client.fetch_bootstrap()
     validate_published_bootstrap_contract(fetched.payload)
+    validate_published_squad_contract(fetched.payload)
     print(
         "Validated published FPL bootstrap contract "
         f"at {fetched.snapshot.fetched_at.isoformat()} "

@@ -177,24 +177,22 @@ def project_element_minutes(
         source = prior_rows
         prediction_event = min(MAX_EVENT, max(row.gameweek for row in prior_rows) + 1)
 
-    combined: dict[int, tuple[int, bool, datetime]] = {}
-    for row in source:
-        minutes, started, kickoff = combined.get(row.gameweek, (0, False, row.kickoff_time))
-        combined[row.gameweek] = (
-            min(minutes + row.minutes, 120),
-            started or row.started or row.minutes >= 60,
-            min(kickoff, row.kickoff_time),
-        )
-
+    # One observation per match, not per gameweek. `MinutesEvidence` says so
+    # itself -- "a double gameweek is two real appearances in one event" -- and
+    # combining them here contradicted that: two 90-minute matches became one
+    # observation clipped at 120, and `fixture_points` then spent that figure
+    # once per fixture. A player whose history contained doubles was trained
+    # somewhere between 90 and 120 and priced per match on it.
     observations = tuple(
         AppearanceObservation(
-            event_id=event,
-            minutes=minutes,
-            started=started and minutes > 0,
-            kickoff_time=min(kickoff, cutoff),
+            event_id=row.gameweek,
+            minutes=min(row.minutes, 120),
+            started=(row.started or row.minutes >= 60) and row.minutes > 0,
+            kickoff_time=min(row.kickoff_time, cutoff),
+            fixture_id=row.fixture_id,
         )
-        for event, (minutes, started, kickoff) in sorted(combined.items())
-        if event < prediction_event
+        for row in sorted(source, key=lambda entry: (entry.gameweek, entry.fixture_id))
+        if row.gameweek < prediction_event
     )
 
     evidence = MinutesEvidence(
