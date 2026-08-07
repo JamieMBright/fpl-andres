@@ -124,7 +124,16 @@ jobs:
 
       - name: Commit the refreshed artifact
         run: |
-          git add -A apps/web/src/data/fixture-odds.json data/odds
+          # Stage only what this run actually produced. A pathspec matching
+          # nothing is fatal to `git add`, and pre-season the live artifact is
+          # legitimately absent.
+          for path in apps/web/src/data/fixture-odds.json data/odds; do
+            if [ -e "$path" ]; then
+              git add -A -- "$path"
+            else
+              echo "$path not written this run"
+            fi
+          done
           if git diff --cached --quiet; then
             echo "prices unchanged since the last run; nothing to commit"
             exit 0

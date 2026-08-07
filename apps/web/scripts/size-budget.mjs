@@ -15,12 +15,12 @@ import { join } from "node:path";
 const DIST = join(import.meta.dirname, "..", "dist", "assets");
 
 const BUDGETS = [
-  // Measured 12.07 kB, raised from 12 kB for the captaincy grid: fourteen rows
-  // across every scored gameweek is five hundred cells, and a dense table needs
-  // sticky columns, a venue casing that nothing may override, and second cues
-  // for the blanks and the hauls. Trimming the repetition first gained 0.01 kB
-  // — gzip had already collapsed it — so this is a real cost, not sloppy CSS.
-  { match: /\.css$/, name: "stylesheet", gzipKb: 14 },
+  // Measured 14.04 kB, raised from 14 kB. Six new surfaces landed at once: the
+  // season fixture strip, the method-step bar charts, the peer chart in the
+  // card, the squad market and pitch, and the record chart with its key. Dead
+  // rules from the squad builder's old dropdown form were removed first, which
+  // gained 0.03 kB, so what remains is new UI rather than accumulated slack.
+  { match: /\.css$/, name: "stylesheet", gzipKb: 15 },
   // Measured 128.26 kB. Router, zod, lucide and the shell.
   { match: /^index-.*\.js$/, name: "entry chunk", gzipKb: 150 },
   // Measured 33.64 kB for squad-projection, raised from 32 kB: every player now

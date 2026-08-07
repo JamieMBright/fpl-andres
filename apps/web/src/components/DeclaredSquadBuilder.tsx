@@ -4,9 +4,11 @@ import { Link } from "react-router-dom";
 import { CeefaxShirt } from "./CeefaxShirt";
 import type { AnalysisData } from "../state/analysis-pool";
 import { money } from "../format";
+import { fold } from "../state/fold";
 import { kitForShortName } from "../kit/team-kits";
 import {
   forgetDeclaredSquad,
+  LAST_TEAM_KEY,
   readDeclaredSquad,
   saveDeclaredSquad,
   SQUAD_BUDGET_TENTHS,
@@ -122,6 +124,31 @@ function ClubStrip({
   );
 }
 
+type SortKey =
+  | "name"
+  | "club"
+  | "position"
+  | "points"
+  | "perMillion"
+  | "startRate"
+  | "priceTenths";
+
+/** Null where the planner holds no record, so it can be sorted last either way. */
+function sortValue(player: SquadPlayer, key: SortKey): number | null {
+  switch (key) {
+    case "points":
+      return player.points ?? null;
+    case "perMillion":
+      return player.points === undefined
+        ? null
+        : player.points / (player.priceTenths / 10);
+    case "startRate":
+      return player.startRate ?? null;
+    default:
+      return player.priceTenths;
+  }
+}
+
 /** The list you pick from, filtered the way the official transfer page filters. */
 function SquadMarket({
   players,
@@ -138,6 +165,8 @@ function SquadMarket({
   const [club, setClub] = useState("ALL");
   const [maxTenths, setMaxTenths] = useState(155);
   const [search, setSearch] = useState("");
+  const [sort, setSort] = useState<SortKey>("points");
+  const [descending, setDescending] = useState(true);
 
   const clubs = useMemo(
     () => [...new Set(players.map((player) => player.club))].sort(),
@@ -145,7 +174,8 @@ function SquadMarket({
   );
 
   const shown = useMemo(() => {
-    const needle = search.trim().toLowerCase();
+    const needle = fold(search.trim());
+    const direction = descending ? -1 : 1;
     return players
       .filter((player) => position === "ALL" || player.position === position)
       .filter((player) => club === "ALL" || player.club === club)
@@ -153,15 +183,32 @@ function SquadMarket({
       .filter(
         (player) =>
           !needle ||
-          player.name.toLowerCase().includes(needle) ||
-          player.club.toLowerCase().includes(needle),
+          fold(player.name).includes(needle) ||
+          fold(player.club).includes(needle),
       )
-      .sort(
-        (left, right) =>
-          (right.points ?? -1) - (left.points ?? -1) ||
-          right.priceTenths - left.priceTenths,
-      );
-  }, [players, position, club, maxTenths, search]);
+      .sort((left, right) => {
+        if (sort === "name" || sort === "club" || sort === "position") {
+          return direction * -left[sort].localeCompare(right[sort]);
+        }
+        // Unrated players sort last either way: a missing number is not a low
+        // one, and floating them to the top of an ascending sort would say so.
+        const a = sortValue(left, sort);
+        const b = sortValue(right, sort);
+        if (a === null) return 1;
+        if (b === null) return -1;
+        return direction * (a - b) || right.priceTenths - left.priceTenths;
+      });
+  }, [players, position, club, maxTenths, search, sort, descending]);
+
+  const toggle = (key: SortKey) => {
+    if (key === sort) {
+      setDescending(!descending);
+      return;
+    }
+    setSort(key);
+    // Text reads better A-Z; a number you are ranking on reads better best-first.
+    setDescending(key !== "name" && key !== "club" && key !== "position");
+  };
 
   return (
     <div className="squad-market">
@@ -224,65 +271,91 @@ function SquadMarket({
         {shown.length} shown · {pounds(remainingTenths)} left
       </p>
 
-      <div className="squad-market-headings mono" aria-hidden="true">
-        <span>Player</span>
-        <span>Club</span>
-        <span>Pos</span>
-        <span title="Expected points a match">xPts</span>
-        <span title="Expected points per million">/£m</span>
-        <span title="How often he started">Start</span>
-        <span>Price</span>
-        <span />
-      </div>
+      <div className="squad-market-scroll">
+        <div className="squad-market-headings mono">
+          {(
+            [
+              ["name", "Player", "Sort by name"],
+              ["club", "Club", "Sort by club"],
+              ["position", "Pos", "Sort by position"],
+              ["points", "xPts", "Sort by expected points a match"],
+              ["perMillion", "/£m", "Sort by expected points per million"],
+              ["startRate", "Start", "Sort by how often he started"],
+              ["priceTenths", "Price", "Sort by price"],
+            ] as const
+          ).map(([key, label, title]) => (
+            <button
+              aria-sort={
+                sort === key
+                  ? descending
+                    ? "descending"
+                    : "ascending"
+                  : undefined
+              }
+              className={sort === key ? "is-sorted" : undefined}
+              key={key}
+              onClick={() => {
+                toggle(key);
+              }}
+              title={title}
+              type="button"
+            >
+              {label}
+              {sort === key ? (descending ? " ▾" : " ▴") : ""}
+            </button>
+          ))}
+          <span />
+        </div>
 
-      <ol className="squad-market-list">
-        {shown.slice(0, 200).map((player) => {
-          const already = picked.has(player.id);
-          const tooDear = player.priceTenths > remainingTenths;
-          const perMillion =
-            player.points === undefined
-              ? null
-              : (player.points / (player.priceTenths / 10)).toFixed(2);
-          return (
-            <li key={player.id}>
-              <span className="squad-market-name">{player.name}</span>
-              <span className="squad-market-club mono">{player.club}</span>
-              <span className="squad-market-pos mono">{player.position}</span>
-              <span className="squad-market-cell mono">
-                {player.points === undefined ? "—" : player.points.toFixed(2)}
-              </span>
-              <span className="squad-market-cell mono">
-                {perMillion ?? "—"}
-              </span>
-              <span className="squad-market-cell mono">
-                {player.startRate === undefined
-                  ? "—"
-                  : `${Math.round(player.startRate * 100)}%`}
-              </span>
-              <span className="squad-market-price mono">
-                {pounds(player.priceTenths)}
-              </span>
-              <button
-                aria-label={`Add ${player.name}`}
-                disabled={already || tooDear}
-                onClick={() => {
-                  onAdd(player);
-                }}
-                title={
-                  already
-                    ? "Already in your fifteen"
-                    : tooDear
-                      ? "More than you have left"
-                      : "Add"
-                }
-                type="button"
-              >
-                +
-              </button>
-            </li>
-          );
-        })}
-      </ol>
+        <ol className="squad-market-list">
+          {shown.slice(0, 200).map((player) => {
+            const already = picked.has(player.id);
+            const tooDear = player.priceTenths > remainingTenths;
+            const perMillion =
+              player.points === undefined
+                ? null
+                : (player.points / (player.priceTenths / 10)).toFixed(2);
+            return (
+              <li key={player.id}>
+                <span className="squad-market-name">{player.name}</span>
+                <span className="squad-market-club mono">{player.club}</span>
+                <span className="squad-market-pos mono">{player.position}</span>
+                <span className="squad-market-cell mono">
+                  {player.points === undefined ? "—" : player.points.toFixed(2)}
+                </span>
+                <span className="squad-market-cell mono">
+                  {perMillion ?? "—"}
+                </span>
+                <span className="squad-market-cell mono">
+                  {player.startRate === undefined
+                    ? "—"
+                    : `${Math.round(player.startRate * 100)}%`}
+                </span>
+                <span className="squad-market-price mono">
+                  {pounds(player.priceTenths)}
+                </span>
+                <button
+                  aria-label={`Add ${player.name}`}
+                  disabled={already || tooDear}
+                  onClick={() => {
+                    onAdd(player);
+                  }}
+                  title={
+                    already
+                      ? "Already in your fifteen"
+                      : tooDear
+                        ? "More than you have left"
+                        : "Add"
+                  }
+                  type="button"
+                >
+                  +
+                </button>
+              </li>
+            );
+          })}
+        </ol>
+      </div>
     </div>
   );
 }
@@ -410,6 +483,9 @@ export function DeclaredSquadBuilder({
     if (!validation?.valid) return;
     try {
       saveDeclaredSquad(window.localStorage, entryId, event, chosen, roster);
+      // Remembered so the plan page knows whose season to solve without the
+      // team id having to be carried in every link.
+      window.localStorage.setItem(LAST_TEAM_KEY, String(entryId));
       setSaved(true);
       setSaveError(null);
     } catch (error) {

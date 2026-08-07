@@ -23,6 +23,16 @@ const STORAGE_PREFIX = "fpl-andres:declared-squad:v1";
 
 /** FPL squad rules, as published. Not inferred and not adjustable. */
 export const SQUAD_BUDGET_TENTHS = 1000;
+
+/** The last team a squad was locked in for, so the plan page can find it. */
+export const LAST_TEAM_KEY = "fpl-andres:last-team";
+
+/** The remembered team, or null when nothing has been locked in on this browser. */
+export function readLastTeam(storage: Storage): number | null {
+  const raw = storage.getItem(LAST_TEAM_KEY);
+  if (raw === null || !/^[1-9]\d{0,9}$/.test(raw)) return null;
+  return Number(raw);
+}
 export const SQUAD_SIZE = 15;
 export const MAX_PER_CLUB = 3;
 const SHAPE: Record<SolverPlayer["position"], number> = {

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 import type { SolveStart } from "./season-solver";
-import { startFromElementIds } from "./season-solver";
+import { PLAYERS_BY_ELEMENT_ID, startFromElementIds } from "./season-solver";
 import {
   readDeclaredSquad,
   SQUAD_BUDGET_TENTHS,
@@ -55,6 +55,7 @@ export type TeamStartFailure =
   | "not_a_team_id"
   | "unreachable"
   | "no_processed_event"
+  | "squad_not_projectable"
   | "squad_not_recognised";
 
 export function useTeamStart(
@@ -173,6 +174,17 @@ function startFromDeclaredSquad(entryId: number): TeamStartStatus | null {
     PRE_SEASON_EVENT,
   );
   if (!stored) return null;
+
+  // The declaration is made against the whole FPL list; the solver only holds
+  // the players it can project. A squad it cannot price must say so rather than
+  // fall through to the generic plan, which reads as "your squad was ignored".
+  const unprojectable = stored.elementIds.filter(
+    (id) => !PLAYERS_BY_ELEMENT_ID.has(id),
+  );
+  if (unprojectable.length > 0) {
+    return { status: "failed", reason: "squad_not_projectable" };
+  }
+
   const validation = validateDeclaredSquad(stored.elementIds);
   if (!validation.valid) return null;
 

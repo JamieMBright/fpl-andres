@@ -911,9 +911,78 @@ h1[tabindex="-1"]:focus-visible {
   background: var(--field-green);
 }
 
-/* A top-one-percent season is the target, so it is the one worth marking. */
+/* Absolute bands, matching the gridlines, so colour and line never disagree. */
 .record-column-fill.is-elite {
-  background: var(--amber);
+  background: #00e676;
+}
+
+.record-column-fill.is-strong {
+  background: #ffb300;
+}
+
+.record-column-fill.is-fair {
+  background: #ec407a;
+}
+
+.record-column-fill.is-weak {
+  background: #d32f2f;
+}
+
+.record-column-fill.is-unrated {
+  background: repeating-linear-gradient(
+    45deg,
+    rgb(255 255 255 / 28%) 0,
+    rgb(255 255 255 / 28%) 3px,
+    transparent 3px,
+    transparent 6px
+  );
+}
+
+.record-seasons li {
+  cursor: help;
+}
+
+.record-seasons li:hover .record-column-fill {
+  outline: 1px solid var(--ink);
+}
+
+.record-key {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 11px;
+  color: var(--ink-soft);
+}
+
+.record-key li {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.record-swatch {
+  display: inline-block;
+  width: 11px;
+  height: 11px;
+}
+
+.record-swatch.is-elite {
+  background: #00e676;
+}
+
+.record-swatch.is-strong {
+  background: #ffb300;
+}
+
+.record-swatch.is-fair {
+  background: #ec407a;
+}
+
+.record-swatch.is-weak {
+  background: #d32f2f;
 }
 
 .record-season-name {
@@ -2151,42 +2220,6 @@ h1[tabindex="-1"]:focus-visible {
   color: var(--ink-soft);
   font-size: 14px;
   line-height: 1.6;
-}
-
-.declared-squad-form {
-  display: grid;
-  gap: 16px;
-  margin-top: 16px;
-  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-}
-
-.declared-squad-form fieldset {
-  border: 1px solid var(--rule);
-  padding: 12px 14px 14px;
-  margin: 0;
-}
-
-.declared-squad-form legend {
-  font-family: var(--fa-display);
-  font-size: 14px;
-  padding: 0 6px;
-}
-
-.declared-squad-slot {
-  display: grid;
-  gap: 4px;
-  margin-top: 8px;
-}
-
-.declared-squad-slot label {
-  font-size: 12px;
-  color: var(--ink-soft);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-
-.declared-squad-slot select {
-  inline-size: 100%;
 }
 
 .declared-squad-actions {
@@ -4199,43 +4232,72 @@ h1[tabindex="-1"]:focus-visible {
   opacity: 0.75;
 }
 
-.squad-market-list {
+/* Header and rows share one scroll box, so a scrollbar narrows both together.
+   Outside it, the scrollbar shifted the rows and left the headings behind. */
+.squad-market-scroll {
   max-height: 560px;
-  margin: 0;
-  padding: 0;
   overflow-y: auto;
-  list-style: none;
   border-top: 1px solid rgb(255 255 255 / 12%);
 }
 
-/* One row per player, columns aligned. Stacking name over club over stats made
-   every player three rows tall, so a list of six hundred showed about eight. */
-.squad-market-columns,
 .squad-market-headings,
 .squad-market-list li {
   display: grid;
   grid-template-columns:
-    minmax(0, 1fr) 2.6em 2.2em 2.8em 2.6em 2.6em 3.2em
-    22px;
-  gap: 6px;
+    minmax(0, 1fr) 2.8em 2.4em 3em 2.8em 3em 3.6em
+    24px;
+  gap: 8px;
   align-items: center;
+  padding: 2px 6px;
 }
 
 .squad-market-headings {
-  padding: 0 6px 3px;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  padding-bottom: 3px;
   border-bottom: 1px solid rgb(255 255 255 / 20%);
+  /* Opaque, and not via `opacity`: that fades the background too and the rows
+     scroll through the header. Dim the text colour instead. */
+  background: var(--paper);
+  color: var(--ink-soft);
   font-size: 0.6rem;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  opacity: 0.55;
 }
 
-.squad-market-headings span:not(:first-child) {
+.squad-market-headings button:first-child {
+  text-align: left;
+}
+
+.squad-market-headings span:not(:first-child),
+.squad-market-headings button:not(:first-child) {
   text-align: right;
 }
 
+.squad-market-headings button {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  cursor: pointer;
+}
+
+.squad-market-headings button:hover,
+.squad-market-headings button.is-sorted {
+  color: var(--accent, #00e676);
+}
+
+.squad-market-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
 .squad-market-list li {
-  padding: 2px 6px;
   border-bottom: 1px solid rgb(255 255 255 / 8%);
   line-height: 1.3;
 }

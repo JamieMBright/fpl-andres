@@ -4,6 +4,7 @@ import { Link, useSearchParams } from "react-router-dom";
 
 import { CeefaxShirt } from "../components/CeefaxShirt";
 import { DeclaredSquadNote } from "../components/DeclaredSquadNote";
+import { readLastTeam } from "../state/declared-squad";
 import { DeclaredTransferForm } from "../components/DeclaredTransferForm";
 import { PlayerDetail } from "../components/PlayerDetail";
 import { RouteHeading } from "../components/RouteHeading";
@@ -63,6 +64,8 @@ const TEAM_FAILURE: Record<TeamStartFailure, string> = {
     "FPL has not processed a gameweek for that squad yet, so there are no picks to read. Build your fifteen on your team page and I will plan from it.",
   squad_not_recognised:
     "That squad has a player I do not carry, so I will not solve fourteen fifteenths of it.",
+  squad_not_projectable:
+    "Your locked-in fifteen has a player I hold no Premier League record for — a promoted-club debutant or an arrival from abroad. I can hold him in a squad but I cannot project him, so rather than plan a season around a blank I am showing you nothing. Swap him on your team page and the plan becomes yours.",
 };
 
 /**
@@ -507,7 +510,10 @@ export default function SeasonPlanPage() {
    * takes over.
    */
   const fromEvent = Number(params.get("from") ?? "");
-  const teamParam = params.get("team");
+  // A squad locked in on the team page should show up here without the id
+  // having to be threaded through every link that reaches this page.
+  const teamParam =
+    params.get("team") ?? readLastTeam(window.localStorage)?.toString() ?? null;
   const teamId =
     teamParam !== null && /^\d+$/.test(teamParam) ? Number(teamParam) : null;
   const team = useTeamStart(teamParam, declaredAt);

@@ -37,6 +37,21 @@ function rankBar(rank: number, worst: number): number {
 }
 
 /**
+ * Colour band for a finish, on absolute thresholds rather than relative ones.
+ *
+ * Shading against a manager's own best would paint a mediocre career in green.
+ * These are the same lines the chart draws, so the colour and the gridline
+ * always agree.
+ */
+function bandOf(percentile: number | null): string {
+  if (percentile === null) return "is-unrated";
+  if (percentile <= 1) return "is-elite";
+  if (percentile <= 10) return "is-strong";
+  if (percentile <= 25) return "is-fair";
+  return "is-weak";
+}
+
+/**
  * How often the target was hit, and how far the finishes scatter.
  *
  * Spread is the gap between the best and worst quarter of seasons, not between
@@ -246,39 +261,55 @@ export function ManagerHistory({ entryId }: { entryId: number }) {
               season.percentile === null
                 ? `rank ${season.rank.toLocaleString("en-GB")}`
                 : `top ${share(season.percentile)}`;
+            const detail = [
+              season.season,
+              label,
+              `rank ${season.rank.toLocaleString("en-GB")}`,
+              `${String(season.points)} points`,
+            ].join(" · ");
             return (
-              <li
-                key={season.season}
-                title={`${season.season} · ${label} · ${String(season.points)} pts`}
-              >
+              <li key={season.season} title={detail}>
                 <span className="record-column">
                   <span
                     aria-hidden="true"
-                    className={
-                      season.percentile !== null && season.percentile <= 1
-                        ? "record-column-fill is-elite"
-                        : "record-column-fill"
-                    }
+                    className={`record-column-fill ${bandOf(season.percentile)}`}
                     style={{ height: `${Math.max(2, finish).toFixed(1)}%` }}
                   />
                 </span>
                 <span className="mono record-season-name">
-                  {season.season.slice(2, 4)}
+                  {season.season.slice(2)}
                 </span>
-                <span className="visually-hidden">
-                  {season.season}: {label}
-                </span>
+                <span className="visually-hidden">{detail}</span>
               </li>
             );
           })}
         </ol>
       </div>
 
+      <ul className="record-key mono" aria-label="What the colours mean">
+        <li>
+          <span className="record-swatch is-elite" aria-hidden="true" />
+          top 1%
+        </li>
+        <li>
+          <span className="record-swatch is-strong" aria-hidden="true" />
+          top 10%
+        </li>
+        <li>
+          <span className="record-swatch is-fair" aria-hidden="true" />
+          top 25%
+        </li>
+        <li>
+          <span className="record-swatch is-weak" aria-hidden="true" />
+          below
+        </li>
+      </ul>
+
       <p className="record-caveat">
-        One bar per season, oldest first, labelled by its starting year. Height
-        is the share of the field you finished ahead of, so taller is better and
-        the two lines are the top ten percent and the top one percent. Hover a
-        bar for the finish and the points.
+        One bar per season, oldest first. Height is the share of the field you
+        finished ahead of, so taller is better, and the colour is the same
+        threshold the gridlines draw. Hover a bar for the finish, the rank and
+        the points.
       </p>
 
       <p className="record-caveat">
