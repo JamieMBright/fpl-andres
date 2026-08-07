@@ -33,6 +33,19 @@ export interface ScheduledFixture {
   team_a: number;
 }
 
+export interface RunMatch {
+  /** The gameweek the tie is scheduled for. */
+  event: number;
+  /** Opponent short name, an empty string where the club is newly promoted. */
+  opponent: string;
+  home: boolean;
+  /**
+   * The route-specific opponent multiplier, or null where the opponent has no
+   * measured Premier League season to rate.
+   */
+  multiplier: number | null;
+}
+
 export interface FixtureRun {
   /**
    * Mean opponent multiplier over the run, on the route that matters for this
@@ -48,6 +61,8 @@ export interface FixtureRun {
   fixtures: number;
   /** Opponent short names in order, an empty string where the club is new. */
   opponents: string[];
+  /** Every tie in the window, in order, with its own rating. */
+  matches: RunMatch[];
 }
 
 /**
@@ -88,6 +103,7 @@ export function rateFixtureRun(
 
   const multipliers: number[] = [];
   const opponents: string[] = [];
+  const matches: RunMatch[] = [];
 
   for (const fixture of run) {
     const home = fixture.team_h === teamId;
@@ -95,18 +111,31 @@ export function rateFixtureRun(
     const code = clubCodeByTeamId.get(opponentId);
     const opponent = code === undefined ? undefined : clubs.get(code);
     opponents.push(opponent?.shortName ?? "");
-    if (!opponent) continue;
+    if (!opponent) {
+      matches.push({
+        event: fixture.event ?? 0,
+        opponent: "",
+        home,
+        multiplier: null,
+      });
+      continue;
+    }
 
     // The opponent plays the opposite venue to this club.
-    multipliers.push(
-      defensive
-        ? home
-          ? opponent.attackAway
-          : opponent.attackHome
-        : home
-          ? opponent.defenceAway
-          : opponent.defenceHome,
-    );
+    const multiplier = defensive
+      ? home
+        ? opponent.attackAway
+        : opponent.attackHome
+      : home
+        ? opponent.defenceAway
+        : opponent.defenceHome;
+    multipliers.push(multiplier);
+    matches.push({
+      event: fixture.event ?? 0,
+      opponent: opponent.shortName,
+      home,
+      multiplier: round(multiplier),
+    });
   }
 
   return {
@@ -120,6 +149,7 @@ export function rateFixtureRun(
     rated: multipliers.length,
     fixtures: run.length,
     opponents,
+    matches: matches.sort((left, right) => left.event - right.event),
   };
 }
 

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 
 import { CeefaxShirt } from "./CeefaxShirt";
 import { PeerDistribution } from "./PeerDistribution";
+import { SeasonFixtures } from "./SeasonFixtures";
 import type { FixtureRun } from "../state/fixture-run";
 import { kitForShortName } from "../kit/team-kits";
 import type { PeerMetric } from "../state/peer-distribution";
@@ -157,12 +158,18 @@ export function PlayerDetail({
   onClose,
   player,
   run = null,
+  season = null,
   difficulty = null,
 }: {
   onClose: () => void;
   player: DetailPlayer;
   /** Omitted where the caller has no fixture ratings to hand. */
   run?: FixtureRun | null;
+  /**
+   * The same rating carried out to the end of the season, so the card can show
+   * where the good and hard spells fall rather than only the next few weeks.
+   */
+  season?: FixtureRun | null;
   /**
    * The season plan's own rating, one to five, where one is soft. A different
    * scale from `run`, which is a multiplier around one, so the two are separate
@@ -352,6 +359,13 @@ export function PlayerDetail({
             </>
           )}
         </section>
+
+        {season && season.matches.length > 0 ? (
+          <section className="player-detail-season">
+            <h3>The rest of the season</h3>
+            <SeasonFixtures matches={season.matches} defensive={defensive} />
+          </section>
+        ) : null}
       </div>
 
       {peer && record ? (

@@ -95,6 +95,10 @@ const COLUMNS: Column[] = [
 // squads playing them still resemble the ones named today.
 const RUN_WINDOW = 5;
 
+// Every gameweek that remains. A season is thirty-eight, so this asks for all
+// of them and takes whatever the calendar still holds.
+const SEASON_WINDOW = 38;
+
 function money(valueTenths: number): string {
   return `${sharedMoney.format(valueTenths / 10)}m`;
 }
@@ -280,6 +284,23 @@ export function PlayerPoolTable() {
         );
       });
   }, [pool, position, sort, descending, maxPrice, search]);
+
+  // The whole remaining season, computed only for the card that is open. Doing
+  // it for every row would be thirty-eight fixtures times six hundred players
+  // to draw five of them.
+  const seasonRun = useMemo(
+    () =>
+      pool && selected
+        ? rateFixtureRun(
+            pool.clubCodeByTeamId,
+            pool.fixtures,
+            selected.teamId,
+            selected.position,
+            SEASON_WINDOW,
+          )
+        : null,
+    [pool, selected],
+  );
 
   if (failed && (failed === "source_contract_failed" || !pool)) {
     return (
@@ -499,6 +520,7 @@ export function PlayerPoolTable() {
             shown.find(({ player }) => player.code === selected.code)?.run ??
             null
           }
+          season={seasonRun}
         />
       ) : null}
     </>

@@ -291,6 +291,7 @@ so a review knows what it does not have to check by hand.
 | `PlayerDetail`         | One player in full, with what each number means  | `feature-walk`                          |
 | `MethodFlow`           | The pipeline step by step, each step auditable   | unit (static)                           |
 | `PeerDistribution`     | One figure against players of the same price     | unit (`peer-distribution`)              |
+| `SeasonFixtures`       | The run to the end of the season, spells marked  | unit (`SeasonFixtures.test.ts`)         |
 | `FixtureBreakdown`     | Every fixture ahead, and last season's totals    | unit (via `PinnedPlayers`)              |
 | `Countdown`            | Deadline cell at the end of the index bar        | `feature-walk`                          |
 | `RangeSlider`          | One track, two thumbs, for a band                | `feature-walk` (ownership band)         |

@@ -4119,6 +4119,83 @@ a:focus-visible {
   font-weight: 700;
 }
 
+/* The remaining season as one strip, shaded by how the tie rates. */
+.player-detail-season {
+  grid-column: 1 / -1;
+}
+
+.season-fixtures-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 0 0 16px;
+  padding: 0;
+  list-style: none;
+}
+
+.season-fixture {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 58px;
+  padding: 6px 6px 5px;
+  border-radius: 3px;
+  border-bottom: 3px solid transparent;
+  background: rgb(255 255 255 / 5%);
+  text-align: center;
+}
+
+.season-fixture-event {
+  font-size: 0.7rem;
+  opacity: 0.6;
+}
+
+.season-fixture-opponent {
+  font-size: 0.78rem;
+  white-space: nowrap;
+}
+
+.season-fixture.tone-good {
+  background: rgb(0 230 118 / 18%);
+  border-bottom-color: #00e676;
+}
+
+.season-fixture.tone-hard {
+  background: rgb(255 82 82 / 16%);
+  border-bottom-color: #ff5252;
+}
+
+.season-fixture.tone-even {
+  border-bottom-color: rgb(255 255 255 / 20%);
+}
+
+.season-fixture.tone-unrated {
+  background: transparent;
+  border: 1px dashed rgb(255 255 255 / 22%);
+  border-bottom-width: 1px;
+  opacity: 0.65;
+}
+
+.season-spells {
+  margin: 0 0 14px;
+  padding: 0;
+  list-style: none;
+}
+
+.season-spell {
+  padding: 5px 0 5px 10px;
+  border-left: 3px solid transparent;
+  line-height: 1.5;
+}
+
+.season-spell.tone-good {
+  border-left-color: #00e676;
+}
+
+.season-spell.tone-hard {
+  border-left-color: #ff5252;
+}
+
 /* Freshness of the published calibration run, stated before any figure. */
 .validation-freshness {
   margin: 0 0 24px;
