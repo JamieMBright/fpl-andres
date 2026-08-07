@@ -49,6 +49,7 @@ from fpl_andres.planning.opening import (
 )
 from fpl_andres.planning.season_plan import (
     PlannedEvent,
+    confidence_for,
     plan_season,
 )
 from fpl_andres.positions import Position
@@ -707,6 +708,13 @@ def _season_with_wildcards(
         solved = _solve_segment(segment, squad, bank, free_transfers, run)
         if not solved and len(segment) >= 2:
             return None
+        # Each segment is solved as if the season started there, so it labels
+        # its own opening week "firm" -- a gameweek thirteen weeks out claiming
+        # observed prices. Confidence belongs to the distance from the real
+        # first deadline, not from a Wildcard.
+        opening = run.ordered_events[0]
+        for event, week in solved.items():
+            week["confidence"] = confidence_for(event, opening)
         weeks.update(solved)
         if stop is None:
             break

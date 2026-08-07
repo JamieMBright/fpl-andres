@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-04T09:08:28.863481Z",
+  "generatedAt": "2026-08-07T12:46:41.314048Z",
   "recordSeason": "2025-26",
   "events": [
     1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
@@ -2740,6 +2740,19 @@
       "priceTenths": 55,
       "basePoints": 2.69,
       "startRate": 0.696,
+      "squadNumber": null
+    },
+    {
+      "id": 46,
+      "code": 88894,
+      "name": "Barkley",
+      "position": "MID",
+      "positionId": 3,
+      "club": "AVL",
+      "teamId": 2,
+      "priceTenths": 50,
+      "basePoints": 2.36,
+      "startRate": 0.544,
       "squadNumber": null
     },
     {

@@ -46,21 +46,17 @@ def _priced(element_id: int, position: int, *, price: int, points: float) -> Can
 
 
 class TestTheReserveKeeper:
-    def test_he_is_worth_nothing_on_the_bench(self) -> None:
-        # He covers one player, not eleven, and a manager whose keeper is ruled
-        # out transfers him. Pricing him at the chance his starter blanks bought
-        # a premium reserve and left the money out of the eleven.
+    def test_he_is_worth_the_chance_his_starter_blanks(self) -> None:
+        # Not zero. Rotating two cheap keepers to take the softer fixture is a
+        # strategy, and a Bench Boost needs him to score, so this function may
+        # not rule either out by assumption.
         starters = [_player(1, GOALKEEPER), _player(2, 2), _player(3, 3)]
         bench = [_player(10, GOALKEEPER), _player(11, 3)]
-        appear = {1: 0.74, 2: 0.9, 3: 0.9}
+        appear = {1: 0.75, 2: 0.9, 3: 0.9}
 
-        weights = bench_weights(starters, bench, appear)
-
-        assert weights[0] == 0.0
+        assert bench_weights(starters, bench, appear)[0] == pytest.approx(0.25)
 
     def test_an_outfield_substitute_still_earns_his_place(self) -> None:
-        # The auto-sub genuinely fires for outfield blanks, and that weight is
-        # measured rather than assumed. Only the keeper is being changed.
         starters = [_player(1, GOALKEEPER), _player(2, 2), _player(3, 3)]
         bench = [_player(11, 3), _player(12, 3)]
         appear = {1: 0.74, 2: 0.5, 3: 0.5}
@@ -68,18 +64,6 @@ class TestTheReserveKeeper:
         weights = bench_weights(starters, bench, appear)
 
         assert weights[0] > 0.0
-
-    def test_a_blank_prone_starting_keeper_does_not_buy_a_better_reserve(
-        self,
-    ) -> None:
-        # The old weight was 1 - P(starter appears), so a keeper who missed
-        # games last season made his own deputy look valuable. Nothing about the
-        # starter should move the reserve's worth now.
-        bench = [_player(10, GOALKEEPER)]
-        steady = bench_weights([_player(1, GOALKEEPER)], bench, {1: 0.99})
-        rotated = bench_weights([_player(1, GOALKEEPER)], bench, {1: 0.40})
-
-        assert steady == rotated == [0.0]
 
 
 class TestTheTransferHorizon:

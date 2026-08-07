@@ -87,14 +87,14 @@ def bench_weights(
     rather than measured and valued the fourth substitute exactly as highly as
     the first.
 
-    The reserve goalkeeper is worth nothing, which is a different claim and a
-    deliberate one. He can only replace the one keeper who started, so unlike an
-    outfield sub he is not cover for eleven players but for one. A manager whose
-    keeper is ruled out transfers him; nobody carries two million pounds of
-    insurance for the week it fires. Valuing him at the chance his starter
-    blanks bought a premium reserve, and the same rebuild run on a Wildcard --
-    `bench_weight=0.0`, no auto-sub credit -- refused to. Two builds of the same
-    fifteen disagreeing is the bug; this is the half that was wrong.
+    The reserve goalkeeper is the chance the one who started records nothing,
+    because no outfield substitute can replace him.
+
+    He was briefly valued at zero, on the argument that a manager transfers a
+    ruled-out keeper rather than carrying insurance. That was reasoning, not
+    measurement, and it was wrong: it forecloses rotating two cheap keepers to
+    take the softer fixture every week, and it makes a Bench Boost bench a man
+    short. Neither is a strategy this function may rule out by assumption.
     """
     outfield_blanks = [
         1.0 - appear.get(player.element_id, 0.0)
@@ -102,12 +102,20 @@ def bench_weights(
         if player.position != _GOALKEEPER
     ]
     tail = _blank_tail(outfield_blanks)
+    keeper_blank = next(
+        (
+            1.0 - appear.get(player.element_id, 0.0)
+            for player in starters
+            if player.position == _GOALKEEPER
+        ),
+        0.0,
+    )
 
     weights: list[float] = []
     used = 0
     for player in bench:
         if player.position == _GOALKEEPER:
-            weights.append(0.0)
+            weights.append(keeper_blank)
             continue
         weights.append(tail[used] if used < len(tail) else 0.0)
         used += 1
