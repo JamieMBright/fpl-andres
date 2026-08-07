@@ -31,6 +31,13 @@ __all__ = [
 # appearance chances are not known. Assumed, not measured; `bench_weights`
 # derives it properly and is what the publishers use.
 _BENCH_WEIGHT = 0.25
+
+# How many candidates per position a paired swap considers, from each end: the
+# best few because that is what an upgrade buys, and the cheapest few because
+# that is what pays for it. Fifteen slots make 105 pairs, so the search is a
+# few tens of thousands of squads rather than the millions an exhaustive pass
+# over a five-hundred-player pool would be.
+_PAIR_CANDIDATES = 8
 # A substitute who never starts cannot cover anything. Below this he is a body.
 # Measured on the decay-weighted chance of an hour, not a season total: Isidor
 # made 32 appearances and started none of the last six, Kinsky made 7 and
@@ -199,6 +206,67 @@ def _legal(squad: Sequence[Candidate], settings: OpeningSettings) -> bool:
     return best_eleven(squad, {player.element_id: 1.0 for player in squad}, settings)[0] != []
 
 
+def _best_paired_swap(
+    squad: Sequence[Candidate],
+    playable: Sequence[Candidate],
+    points: Mapping[int, float],
+    settings: OpeningSettings,
+    appear: Mapping[int, float] | None,
+    current: float,
+) -> list[Candidate] | None:
+    """Two out, two in, when neither move is worth making alone.
+
+    Bounded rather than exhaustive. Every position keeps its best
+    `_PAIR_CANDIDATES` by points, which is where an upgrade comes from, plus
+    its cheapest few, which is where the money comes from. Anything outside
+    both is neither the player you want nor the one you sell to afford him.
+    """
+    held = {player.element_id for player in squad}
+    by_position: dict[int, list[Candidate]] = {}
+    for player in playable:
+        if player.element_id in held:
+            continue
+        by_position.setdefault(player.position, []).append(player)
+
+    shortlists: dict[int, list[Candidate]] = {}
+    for position, options in by_position.items():
+        best = sorted(options, key=lambda p: -points.get(p.element_id, 0.0))
+        cheap = sorted(options, key=lambda p: p.price_tenths)
+        seen: dict[int, Candidate] = {}
+        for player in [*best[:_PAIR_CANDIDATES], *cheap[:_PAIR_CANDIDATES]]:
+            seen[player.element_id] = player
+        shortlists[position] = list(seen.values())
+
+    spent = sum(player.price_tenths for player in squad)
+    budget = settings.rules.budget_tenths
+    best_squad: list[Candidate] | None = None
+    best_value = current
+
+    for first in range(len(squad)):
+        for second in range(first + 1, len(squad)):
+            out_one, out_two = squad[first], squad[second]
+            freed = spent - out_one.price_tenths - out_two.price_tenths
+            for in_one in shortlists.get(out_one.position, ()):
+                if freed + in_one.price_tenths > budget:
+                    continue
+                for in_two in shortlists.get(out_two.position, ()):
+                    if in_two.element_id == in_one.element_id:
+                        continue
+                    if freed + in_one.price_tenths + in_two.price_tenths > budget:
+                        continue
+                    candidate = list(squad)
+                    candidate[first] = in_one
+                    candidate[second] = in_two
+                    if not _legal(candidate, settings):
+                        continue
+                    value = _value(candidate, points, settings, appear)
+                    if value > best_value + 1e-9:
+                        best_value = value
+                        best_squad = candidate
+
+    return best_squad
+
+
 def choose_opening_squad(
     pool: Sequence[Candidate],
     points: Mapping[int, float],
@@ -249,6 +317,20 @@ def choose_opening_squad(
                     break
             if improved:
                 break
+
+        if improved:
+            continue
+        # Nothing single helps, which is not the same as nothing helping. An
+        # upgrade you cannot afford on its own is bought by selling somewhere
+        # else, and one swap at a time can never express that: the downgrade
+        # loses points immediately and is rejected before the upgrade it pays
+        # for is ever considered. That is what left a premium goalkeeper on the
+        # bench, and what made a Wildcard rebuild score worse than the exact
+        # solve it is compared against.
+        paired = _best_paired_swap(squad, playable, points, settings, appear, current)
+        if paired is not None:
+            squad = paired
+            improved = True
 
     starters, total = best_eleven(squad, points, settings)
     starting = {player.element_id for player in starters}
