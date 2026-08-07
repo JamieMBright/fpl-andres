@@ -87,7 +87,7 @@ class TestTheTransferHorizon:
         # The shape transfers exist to exploit is a run of soft fixtures
         # followed by hard ones. A window of five sees the run and not the
         # cliff, so the planner buys in and is still there when it turns.
-        assert WINDOW_EVENTS >= 8
+        assert WINDOW_EVENTS >= 7
 
     def test_the_commit_stride_is_smaller_than_the_window(self) -> None:
         """Overlap is the whole reason this is not independent solves."""

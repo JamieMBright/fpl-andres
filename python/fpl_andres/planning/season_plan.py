@@ -56,22 +56,22 @@ __all__ = [
     "plan_season",
 ]
 
-# Eight events per solve, committing three, so five weeks of lookahead sit past
+# Seven events per solve, committing three, so four weeks of lookahead sit past
 # the commit boundary.
 #
 # It was five and three, which is two weeks of sight past the weeks a window
 # actually acts on. That is too short for the shape transfers exist to exploit:
 # a club with five soft fixtures and then five hard ones looks uniformly good
 # for the whole of a five-week window, so the planner buys into the run and only
-# discovers the turn while standing in it. Eight covers the good half and the
-# start of the bad one, which is what makes selling before a cliff a decision
-# rather than a reaction.
+# discovers the turn while standing in it. Seven doubles the sight past the
+# commit boundary, which is enough to sell before a cliff rather than after it.
 #
 # Measured on the full-season test, same machine: 6.4 s at five, 23.1 s at
-# eight. The solve is superlinear in the window and that is the trade being
-# made knowingly -- a publish step has minutes, and a planner that cannot see a
-# fixture swing before it arrives is the more expensive problem.
-WINDOW_EVENTS = 8
+# eight. Eight was tried first and withdrawn: it could not prove the third
+# lexicographic stage inside the publisher's solver budget and failed the
+# publish outright, which is worse than a shorter horizon. Seven is the longest
+# window this solver settles reliably.
+WINDOW_EVENTS = 7
 COMMIT_EVENTS = 3
 
 # Before the first deadline a manager may change the whole squad at no cost, so

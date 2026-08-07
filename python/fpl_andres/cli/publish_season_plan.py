@@ -90,7 +90,10 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--output", default=str(DEFAULT_OUTPUT))
     parser.add_argument("--projections", default=str(PROJECTIONS))
     parser.add_argument("--opening-squad", default=str(OPENING_SQUAD))
-    parser.add_argument("--time-limit", type=float, default=30.0)
+    # 30 s was enough for a five-event window and is not enough for eight: the
+    # third lexicographic stage timed out proving its tie-break optimum, which
+    # fails the publish outright. This is an offline step, so it buys the time.
+    parser.add_argument("--time-limit", type=float, default=120.0)
     # FPL publishes neither of these in the bootstrap. `docs/PARAMETERS.md`
     # records them as never inferred, so they are required rather than
     # defaulted: a plan built on a guessed transfer cost is a wrong plan that
@@ -519,11 +522,23 @@ class _ChipRun:
     ref: Callable[[int], int]
 
 
-def _turnover(week: dict[str, Any], starters: list[int], bench: list[int], run: _ChipRun) -> None:
-    """Rewrite a week as the fifteen a chip bought, and price it."""
+def _turnover(
+    week: dict[str, Any],
+    starters: list[int],
+    bench: list[int],
+    run: _ChipRun,
+    replacing: set[int] | None = None,
+) -> None:
+    """Rewrite a week as the fifteen a chip bought, and price it.
+
+    `replacing` is the squad the chip tore up. A Free Hit tears up the week's
+    own fifteen, so it defaults to that. A Wildcard cannot: the segmented solve
+    has already installed the rebuild as this week's squad, so diffing against
+    it reports no transfers at all and the card shows a chip that did nothing.
+    """
     event = int(week["event"])
     points = run.event_points[event]
-    held = set(week["squadElementIds"])
+    held = set(week["squadElementIds"]) if replacing is None else replacing
     fresh = set(starters) | set(bench)
     captain = max(starters, key=lambda element_id: points[element_id])
     vice = max(
@@ -766,7 +781,16 @@ def _place_wildcards(chips: list[dict[str, Any]], run: _ChipRun) -> None:
             continue
         picked = _wildcard_squad(event, run)
         if picked is not None:
-            _turnover(run.by_event[event], picked[0], picked[1], run)
+            # Against the week before, because this week already holds the
+            # rebuild and would otherwise report a chip that moved nobody.
+            index = run.ordered_events.index(event)
+            previous = run.ordered_events[index - 1] if index > 0 else None
+            replaced = (
+                set(run.by_event[previous]["squadElementIds"])
+                if previous is not None and previous in run.by_event
+                else None
+            )
+            _turnover(run.by_event[event], picked[0], picked[1], run, replaced)
         run.by_event[event]["chip"] = "Wildcard"
         chip["gain"] = round(total - baseline, 2)
         gained = total - baseline
