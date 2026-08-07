@@ -11,6 +11,7 @@ import pytest
 
 from fpl_andres.planning.opening import (
     OpeningSettings,
+    _value,
     bench_weights,
     choose_opening_squad,
 )
@@ -66,9 +67,49 @@ class TestTheReserveKeeper:
         assert weights[0] > 0.0
 
 
+class TestRotationIsVisible:
+    """Two players whose good weeks interleave beat one played twice.
+
+    Aggregate points cannot express that: summed over the horizon then picked
+    once, an alternating pair scores exactly what the better of them scores in
+    both weeks. Given the weeks separately, the eleven is chosen in each.
+    """
+
+    def test_the_eleven_is_chosen_in_each_week(self) -> None:
+        squad = [
+            _priced(1, 1, price=45, points=7.0),
+            _priced(2, 1, price=45, points=7.0),
+            _priced(3, 2, price=50, points=4.0),
+            _priced(4, 3, price=50, points=4.0),
+        ]
+        totals = {1: 7.0, 2: 7.0, 3: 4.0, 4: 4.0}
+        weeks = [
+            {1: 6.0, 2: 1.0, 3: 2.0, 4: 2.0},
+            {1: 1.0, 2: 6.0, 3: 2.0, 4: 2.0},
+        ]
+        settings = OpeningSettings(
+            rules=SquadRules(
+                budget_tenths=200,
+                club_limit=3,
+                position_counts={1: 2, 2: 1, 3: 1},
+            ),
+            lineup_size=3,
+            minimum_by_position={1: 1, 2: 1, 3: 1},
+            maximum_by_position={1: 1, 2: 1, 3: 1},
+            bench_weight=0.0,
+            playable_start_rate=0.0,
+        )
+
+        aggregate = _value(squad, totals, settings)
+        rotated = _value(squad, totals, settings, None, weeks)
+
+        # Rotating the keeper takes 6 in both weeks, plus 2 and 2 outfield.
+        assert rotated == pytest.approx(20.0)
+        assert rotated > aggregate
+
+
 class TestTheTransferHorizon:
     def test_the_window_reaches_past_a_five_fixture_run(self) -> None:
-        # The shape transfers exist to exploit is a run of soft fixtures
         # followed by hard ones. A window of five sees the run and not the
         # cliff, so the planner buys in and is still there when it turns.
         assert WINDOW_EVENTS >= 7

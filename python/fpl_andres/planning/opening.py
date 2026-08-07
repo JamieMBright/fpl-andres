@@ -187,7 +187,15 @@ def _value(
     points: Mapping[int, float],
     settings: OpeningSettings,
     appear: Mapping[int, float] | None = None,
+    weekly: Sequence[Mapping[int, float]] | None = None,
 ) -> float:
+    # Scoring the horizon's total and picking one eleven cannot see rotation:
+    # two keepers alternating to take the softer fixture come out identical to
+    # one of them played twice. Given the weeks separately, the eleven is chosen
+    # in each, which is what a manager actually does.
+    if weekly:
+        return sum(_value(squad, week, settings, appear) for week in weekly)
+
     starters, total = best_eleven(squad, points, settings)
     if not starters:
         return float("-inf")
@@ -221,6 +229,7 @@ def _best_paired_swap(
     settings: OpeningSettings,
     appear: Mapping[int, float] | None,
     current: float,
+    weekly: Sequence[Mapping[int, float]] | None = None,
 ) -> list[Candidate] | None:
     """Two out, two in, when neither move is worth making alone.
 
@@ -267,7 +276,7 @@ def _best_paired_swap(
                     candidate[second] = in_two
                     if not _legal(candidate, settings):
                         continue
-                    value = _value(candidate, points, settings, appear)
+                    value = _value(candidate, points, settings, appear, weekly)
                     if value > best_value + 1e-9:
                         best_value = value
                         best_squad = candidate
@@ -281,6 +290,7 @@ def choose_opening_squad(
     start_rate: Mapping[int, float],
     settings: OpeningSettings,
     appear: Mapping[int, float] | None = None,
+    weekly: Sequence[Mapping[int, float]] | None = None,
 ) -> SquadPlan:
     """Greedy on value per pound, then improved by swaps until nothing helps.
 
@@ -290,6 +300,13 @@ def choose_opening_squad(
     `appear` is each player's chance of recording any minutes. Given it, the
     bench is valued by how often its cover is actually needed rather than by a
     flat weight.
+
+    `weekly` is the horizon split into its gameweeks. Given it, the eleven is
+    chosen in each week rather than once over the total, which is the only way
+    rotation is worth anything: two keepers alternating to take the softer
+    fixture beat either of them played twice, and a single aggregate cannot
+    tell the two apart. `points` stays the total, and is what the returned
+    plan reports.
     """
     playable = [
         player
@@ -304,7 +321,7 @@ def choose_opening_squad(
     improved = True
     while improved:
         improved = False
-        current = _value(squad, points, settings, appear)
+        current = _value(squad, points, settings, appear, weekly)
         spent = sum(player.price_tenths for player in squad)
         for index, outgoing in enumerate(squad):
             for incoming in playable:
@@ -319,7 +336,7 @@ def choose_opening_squad(
                 candidate[index] = incoming
                 if not _legal(candidate, settings):
                     continue
-                if _value(candidate, points, settings, appear) > current + 1e-9:
+                if _value(candidate, points, settings, appear, weekly) > current + 1e-9:
                     squad = candidate
                     improved = True
                     break
@@ -335,7 +352,7 @@ def choose_opening_squad(
         # for is ever considered. That is what left a premium goalkeeper on the
         # bench, and what made a Wildcard rebuild score worse than the exact
         # solve it is compared against.
-        paired = _best_paired_swap(squad, playable, points, settings, appear, current)
+        paired = _best_paired_swap(squad, playable, points, settings, appear, current, weekly)
         if paired is not None:
             squad = paired
             improved = True

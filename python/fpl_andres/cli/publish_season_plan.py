@@ -235,6 +235,13 @@ UNLIMITED_CHIP_SEPARATION = 3
 FREE_TRANSFER_CATCHUP = 5
 # How far a wildcard's rebuild is credited forward.
 WILDCARD_HORIZON = 8
+
+# How many rebuild weeks per half are solved exactly rather than trusted to the
+# cheap screen. The screen already scores every legal week; taking only its
+# best meant a week it ranked second was never verified and could never win.
+# Each candidate is a whole season re-plan, so this is the number that decides
+# how long a publish takes.
+WILDCARD_CANDIDATES = 3
 # The window a free hit's week is judged against. A gap that persists is a
 # wildcard's job; a free hit is for the week that collapses on its own.
 FREE_HIT_CONTEXT = 4
@@ -475,7 +482,8 @@ def _chip_plan(
             or abs(int(week["event"]) - free_hit_event) >= UNLIMITED_CHIP_SEPARATION
         ]
         if candidates:
-            chosen = max(candidates, key=persisting)
+            ranked = sorted(candidates, key=persisting, reverse=True)
+            chosen = ranked[0]
             gain = persisting(chosen)
             taken.add(chosen["event"])
             chips.append(
@@ -485,6 +493,13 @@ def _chip_plan(
                     "half": half,
                     "gain": round(gain, 2),
                     "ceiling": round(gain, 2),
+                    # Every legal week is already scored by the cheap screen and
+                    # all but the best was being thrown away, so a rebuild that
+                    # the screen ranked second was never solved exactly and
+                    # never got the chance to win. Carried through to
+                    # `_place_wildcards`, which verifies each properly, and
+                    # popped there before the chip is published.
+                    "_alternatives": [int(week["event"]) for week in ranked[1:WILDCARD_CANDIDATES]],
                     "note": (
                         f"rebuilding here is worth {gain:.1f} over the next "
                         f"{WILDCARD_HORIZON} gameweeks once the points one free transfer a "
@@ -634,6 +649,7 @@ def _wildcard_squad(event: int, run: _ChipRun) -> tuple[list[int], list[int]] | 
             over_horizon,
             {candidate.element_id: 1.0 for candidate in run.pool},
             OpeningSettings(rules=SQUAD_RULES, bench_weight=0.0),
+            weekly=[run.event_points[week] for week in horizon if week in run.event_points],
         )
     except ValueError:
         return None
@@ -749,10 +765,21 @@ def _place_wildcards(chips: list[dict[str, Any]], run: _ChipRun) -> None:
         return
 
     baseline = sum(float(run.by_event[event]["netExpectedPoints"]) for event in run.ordered_events)
-    events = [int(chip["event"]) for chip in proposed]
-    # Both, then each alone. A pair can be worth less than either on its own
-    # when the second rebuild lands too soon after the first.
-    options = [events] if len(events) == 1 else [events, [events[0]], [events[1]]]
+    # Each half offers its best few weeks by the cheap screen, not just its
+    # best one. A week the screen ranked second can still win the exact solve,
+    # and until now it was never given the chance.
+    by_half: list[list[int]] = []
+    for chip in proposed:
+        alternatives = [int(event) for event in chip.pop("_alternatives", [])]
+        by_half.append([int(chip["event"]), *alternatives])
+
+    options: list[list[int]] = []
+    for weeks_for_half in by_half:
+        options.extend([week] for week in weeks_for_half)
+    if len(by_half) == 2:
+        options.extend(
+            [first, second] for first in by_half[0] for second in by_half[1] if first < second
+        )
 
     best: tuple[list[int], dict[int, dict[str, Any]], float] | None = None
     for option in options:
@@ -777,16 +804,20 @@ def _place_wildcards(chips: list[dict[str, Any]], run: _ChipRun) -> None:
 
     kept, weeks, total = best
     run.by_event.update(weeks)
-    for chip in proposed:
-        event = int(chip["event"])
-        if event not in kept:
+    # The winning week may be one the screen ranked below the chip's proposal,
+    # so each half takes back whichever of its own candidates was kept.
+    for chip, offered in zip(proposed, by_half, strict=True):
+        won = [week for week in kept if week in offered]
+        if not won:
             chip["event"] = None
             chip["gain"] = 0.0
             chip["note"] = (
-                f"A rebuild in gameweek {event} was worth less than the one the model kept, "
-                "so this copy of the chip is left unplayed."
+                "Every rebuild week offered for this half was worth less than carrying on "
+                "with one transfer a week, so this copy of the chip is left unplayed."
             )
             continue
+        event = won[0]
+        chip["event"] = event
         picked = _wildcard_squad(event, run)
         if picked is not None:
             # Against the week before, because this week already holds the

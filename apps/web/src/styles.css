@@ -4119,6 +4119,106 @@ a:focus-visible {
   font-weight: 700;
 }
 
+/* The pipeline, one step per row, with the detail folded away. */
+.method-flow {
+  margin: 0 0 40px;
+}
+
+.method-flow-lede {
+  max-width: 78ch;
+  margin: 0 0 22px;
+  color: var(--ink-soft);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.method-flow-list {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.method-flow-step {
+  display: grid;
+  justify-items: start;
+}
+
+.method-flow-step > article {
+  inline-size: 100%;
+  max-width: 78ch;
+  padding: 14px 16px;
+  border: 1px solid var(--rule);
+  background: var(--paper-deep);
+}
+
+.method-flow-step h3 {
+  margin: 0 0 6px;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.method-flow-summary {
+  margin: 0 0 8px;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.method-flow-example {
+  margin: 0 0 10px;
+  padding-inline-start: 10px;
+  border-inline-start: 2px solid var(--field-green);
+  color: var(--ink-soft);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.method-flow-toggle {
+  padding: 0;
+  color: inherit;
+  font: inherit;
+  font-size: 12px;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-underline-offset: 3px;
+}
+
+.method-flow-toggle:hover,
+.method-flow-toggle:focus-visible {
+  text-decoration-style: solid;
+}
+
+.method-flow-detail {
+  margin-block-start: 12px;
+  padding-block-start: 12px;
+  border-block-start: 1px solid var(--rule);
+}
+
+.method-flow-detail p {
+  margin: 0 0 10px;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.method-flow-detail p:last-child {
+  margin-bottom: 0;
+}
+
+.method-flow-caveat {
+  color: var(--ink-soft);
+}
+
+.method-flow-arrow {
+  padding: 4px 0;
+  margin-inline-start: 22px;
+  color: var(--ink-soft);
+  font-size: 16px;
+  line-height: 1;
+}
+
 .player-detail-empty {
   margin: 0 0 18px;
   color: var(--ink-soft);

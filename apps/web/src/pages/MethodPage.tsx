@@ -1,3 +1,4 @@
+import { MethodFlow } from "../components/MethodFlow";
 import { Methodology } from "../components/Methodology";
 import { RouteHeading } from "../components/RouteHeading";
 import { useDocumentTitle } from "../state/use-document-title";
@@ -11,6 +12,7 @@ export default function MethodPage() {
     <section className="text-page method-page">
       <p className="eyebrow">Method</p>
       <RouteHeading>How I work.</RouteHeading>
+      <MethodFlow />
       <Methodology />
     </section>
   );
