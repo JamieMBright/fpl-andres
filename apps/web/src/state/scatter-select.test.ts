@@ -49,6 +49,46 @@ describe("selectPlotted", () => {
     expect(selection.excluded.minutes).toBe(1);
   });
 
+  it("draws the whole market until a price bracket is asked for", () => {
+    const selection = selectPlotted(
+      [
+        player({ code: 1, priceTenths: 40 }),
+        player({ code: 2, priceTenths: 145 }),
+      ],
+      view,
+    )!;
+
+    expect(selection.points).toHaveLength(2);
+    expect(selection.excluded.price).toBe(0);
+  });
+
+  it("keeps only the players inside the price bracket, and counts the rest", () => {
+    // A replacement has to be affordable to be a replacement.
+    const selection = selectPlotted(
+      [
+        player({ code: 1, priceTenths: 45 }),
+        player({ code: 2, priceTenths: 55 }),
+        player({ code: 3, priceTenths: 90 }),
+      ],
+      { ...view, priceFromTenths: 45, priceToTenths: 65 },
+    )!;
+
+    expect(selection.points.map((point) => point.player.code)).toEqual([1, 2]);
+    expect(selection.excluded.price).toBe(1);
+  });
+
+  it("counts the bracket edges as inside it", () => {
+    const selection = selectPlotted(
+      [
+        player({ code: 1, priceTenths: 45 }),
+        player({ code: 2, priceTenths: 65 }),
+      ],
+      { ...view, priceFromTenths: 45, priceToTenths: 65 },
+    )!;
+
+    expect(selection.points).toHaveLength(2);
+  });
+
   /*
    * The reason a DefCon metric returns null for a keeper rather than zero. A
    * keeper plotted on the DefCon axis would sit on the origin looking like the

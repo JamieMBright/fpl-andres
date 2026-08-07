@@ -148,32 +148,62 @@ describe("the metrics offered", () => {
 });
 
 describe("the chart it links to", () => {
+  const link = (over: Partial<PlayerProjection>) =>
+    new URLSearchParams(analysisLinkFor(projection(over)).split("?")[1]);
+
   it("picks the route that decides each position", () => {
-    const axis = (position: string) =>
-      new URLSearchParams(
-        analysisLinkFor(projection({ position })).split("?")[1],
-      ).get("y");
+    const axis = (position: string) => link({ position }).get("x");
 
     expect(axis("DEF")).toBe("defconPer90");
     expect(axis("MID")).toBe("xGIPer90");
     expect(axis("FWD")).toBe("npxGPer90");
-    expect(axis("GKP")).toBe("xPts");
+    // No saves metric exists, and a keeper's return turns on being first
+    // choice, so minutes is the honest x for the position.
+    expect(axis("GKP")).toBe("minutes");
   });
 
-  it("marks the player it came from", () => {
-    const params = new URLSearchParams(
-      analysisLinkFor(projection({ code: 4242 })).split("?")[1],
-    );
-    expect(params.get("hl")).toBe("4242");
+  it("never divides by a price the chart has already fixed", () => {
+    // The band makes everyone on the chart cost about the same, so a
+    // points-per-million axis would divide by a number they share.
+    for (const position of ["GKP", "DEF", "MID", "FWD"]) {
+      const params = link({ position });
+      expect(params.get("x")).not.toBe("pointsPerMillion");
+      expect(params.get("y")).not.toBe("pointsPerMillion");
+    }
+  });
+
+  it("brackets the price a million either side", () => {
+    const params = link({ priceTenths: 55 });
+    expect(params.get("pricefrom")).toBe("45");
+    expect(params.get("priceto")).toBe("65");
+  });
+
+  it("does not ask for a negative price", () => {
+    expect(link({ priceTenths: 4 }).get("pricefrom")).toBe("0");
+  });
+
+  it("clears the filters that would hide the player it came from", () => {
+    // The chart's browsing defaults are 1500 minutes and a 0.1 to 8 per cent
+    // ownership band. A January signing fails the first and anyone the crowd
+    // has found fails the second, so the link dropped the one player it exists
+    // to show.
+    const params = link({});
+    expect(params.get("mins")).toBe("0");
+    expect(params.get("from")).toBe("0");
+    expect(params.get("to")).toBe("100");
+  });
+
+  it("marks the player it came from by code, not by club", () => {
+    // A bare token is read as a club short name, so the chip rendered the raw
+    // number and highlighted nobody.
+    const params = link({ code: 4242 });
+    expect(params.get("hl")).toBe("#4242");
     expect(params.get("pin")).toBe("4242");
     expect(params.get("pos")).toBe("DEF");
   });
 
   it("falls back rather than linking to an axis that does not exist", () => {
-    const params = new URLSearchParams(
-      analysisLinkFor(projection({ position: "MNG" })).split("?")[1],
-    );
-    expect(params.get("y")).toBe("xPts");
+    expect(link({ position: "MNG" }).get("y")).toBe("xPts");
   });
 
   it("names only axes the analysis page actually offers", () => {

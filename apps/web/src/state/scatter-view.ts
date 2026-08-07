@@ -64,9 +64,21 @@ export interface ScatterView {
   sweetSpot: boolean;
   /** The best-available curve: nobody is above and to the good side of it. */
   frontier: boolean;
+  /** Names every plotted point on a short leader line. */
+  labels: boolean;
   /** Only players owned inside this band are drawn. */
   ownedFrom: number;
   ownedTo: number;
+  /**
+   * Only players costing inside this band are drawn, in tenths.
+   *
+   * A replacement has to be affordable to be a replacement, so the honest
+   * comparison is inside a price bracket rather than a points-per-million axis
+   * that puts a £4.0m bench filler beside a £14.0m striker and calls the cheap
+   * one better value.
+   */
+  priceFromTenths: number;
+  priceToTenths: number;
   pinned: number[];
   /** Club short names, and player codes prefixed with `#`, to highlight. */
   highlights: string[];
@@ -86,6 +98,8 @@ const MAX_PINNED = 4;
 const MAX_HIGHLIGHTS = 12;
 /** Nobody is owned by more than everyone. */
 export const OWNERSHIP_CAP = 100;
+/** Nothing has ever cost this much; the squad budget is £100.0m for fifteen. */
+export const PRICE_CAP_TENTHS = 250;
 
 export const DEFAULT_VIEW: ScatterView = {
   x: DEFAULT_X_METRIC,
@@ -108,10 +122,15 @@ export const DEFAULT_VIEW: ScatterView = {
   trend: false,
   sweetSpot: false,
   frontier: false,
+  // Off by default: legible on a filtered chart, illegible on the whole pool.
+  labels: false,
   // A differential is roughly anything under ten per cent owned; the floor
   // drops the hundreds of players nobody has heard of who own nothing.
   ownedFrom: 0.1,
   ownedTo: 8,
+  // The whole market, so the band costs nothing until somebody narrows it.
+  priceFromTenths: 0,
+  priceToTenths: PRICE_CAP_TENTHS,
   pinned: [],
   highlights: [],
   tableMetric: "",
@@ -149,6 +168,7 @@ export function readScatterView(params: URLSearchParams): ScatterView {
     trend: flag(params.get("trend")),
     sweetSpot: flag(params.get("ring")),
     frontier: flag(params.get("front")),
+    labels: flag(params.get("names")),
     ownedFrom: bounded(
       params.get("from"),
       DEFAULT_VIEW.ownedFrom,
@@ -162,6 +182,18 @@ export function readScatterView(params: URLSearchParams): ScatterView {
       0,
       OWNERSHIP_CAP,
       1,
+    ),
+    priceFromTenths: bounded(
+      params.get("pricefrom"),
+      DEFAULT_VIEW.priceFromTenths,
+      0,
+      PRICE_CAP_TENTHS,
+    ),
+    priceToTenths: bounded(
+      params.get("priceto"),
+      DEFAULT_VIEW.priceToTenths,
+      0,
+      PRICE_CAP_TENTHS,
     ),
     pinned: list(params.get("pin"))
       .map(Number)
@@ -212,8 +244,19 @@ export function writeScatterView(view: ScatterView): string {
   if (view.trend) params.set("trend", "1");
   if (view.sweetSpot) params.set("ring", "1");
   if (view.frontier) params.set("front", "1");
+  if (view.labels) params.set("names", "1");
   put("from", String(view.ownedFrom), String(DEFAULT_VIEW.ownedFrom));
   put("to", String(view.ownedTo), String(DEFAULT_VIEW.ownedTo));
+  put(
+    "pricefrom",
+    String(view.priceFromTenths),
+    String(DEFAULT_VIEW.priceFromTenths),
+  );
+  put(
+    "priceto",
+    String(view.priceToTenths),
+    String(DEFAULT_VIEW.priceToTenths),
+  );
   if (view.pinned.length > 0) {
     params.set("pin", view.pinned.slice(0, MAX_PINNED).join(","));
   }

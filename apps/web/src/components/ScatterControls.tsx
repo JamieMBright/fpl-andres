@@ -14,6 +14,7 @@ import {
   MIN_BINS,
   NO_SIZE,
   OWNERSHIP_CAP,
+  PRICE_CAP_TENTHS,
 } from "../state/scatter-view";
 
 /**
@@ -337,6 +338,14 @@ export function ScatterControls({
             />
             Two-sigma curve
           </label>
+          <label className="scatter-check">
+            <input
+              type="checkbox"
+              checked={view.labels}
+              onChange={() => onChange({ labels: !view.labels })}
+            />
+            Name every point
+          </label>
         </fieldset>
 
         <fieldset className="scatter-fieldset">
@@ -356,6 +365,27 @@ export function ScatterControls({
             }
             step={0.1}
             to={view.ownedTo}
+          />
+        </fieldset>
+
+        <fieldset className="scatter-fieldset">
+          <legend>Price bracket</legend>
+          <p className="scatter-hint">
+            Only players costing inside this range are drawn. A replacement has
+            to be affordable to be a replacement, so narrowing here compares
+            players you could actually swap between.
+          </p>
+          <RangeSlider
+            format={(value) => `\u00a3${(value / 10).toFixed(1)}m`}
+            from={view.priceFromTenths}
+            label="Price"
+            max={PRICE_CAP_TENTHS}
+            min={0}
+            onChange={({ from, to }) =>
+              onChange({ priceFromTenths: from, priceToTenths: to })
+            }
+            step={1}
+            to={view.priceToTenths}
           />
         </fieldset>
 

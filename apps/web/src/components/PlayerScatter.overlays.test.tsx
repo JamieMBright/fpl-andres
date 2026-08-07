@@ -73,6 +73,59 @@ describe("scatter overlays", () => {
     expect(container.querySelector(".scatter-shade")).toBeNull();
   });
 
+  it("shades the good corner harder than the bad one", () => {
+    // Equal alpha left the green invisible against the surface while the red
+    // still read, so the shading looked like it only marked bad players.
+    const view = { ...DEFAULT_VIEW, sweetSpot: true };
+    const selection = selectPlotted(pool(200), view)!;
+    const { container } = render(
+      <PlayerScatter
+        selection={selection}
+        view={view}
+        pinned={[]}
+        onTogglePin={() => {}}
+      />,
+    );
+    const opacities = [...container.querySelectorAll("stop")]
+      .map((stop) => Number(stop.getAttribute("stop-opacity")))
+      .filter((value) => value > 0);
+
+    expect(Math.max(...opacities)).toBeGreaterThan(Math.min(...opacities));
+    expect(Math.max(...opacities)).toBeGreaterThan(0.2);
+  });
+
+  it("names every point only when asked", () => {
+    const off = selectPlotted(pool(40), DEFAULT_VIEW)!;
+    const plain = render(
+      <PlayerScatter
+        selection={off}
+        view={DEFAULT_VIEW}
+        pinned={[]}
+        onTogglePin={() => {}}
+      />,
+    );
+    expect(plain.container.querySelectorAll(".scatter-label")).toHaveLength(0);
+    plain.unmount();
+
+    const view = { ...DEFAULT_VIEW, labels: true };
+    const on = selectPlotted(pool(40), view)!;
+    const { container } = render(
+      <PlayerScatter
+        selection={on}
+        view={view}
+        pinned={[]}
+        onTogglePin={() => {}}
+      />,
+    );
+    expect(container.querySelectorAll(".scatter-label")).toHaveLength(
+      on.points.length,
+    );
+    // Each name gets a leader back to its mark, or it belongs to nothing.
+    expect(container.querySelectorAll(".scatter-label-whisker")).toHaveLength(
+      on.points.length,
+    );
+  });
+
   it("says so on the axes when the filters leave nobody", () => {
     const view = { ...DEFAULT_VIEW, minMinutes: 4000 };
     const selection = selectPlotted(pool(200), view)!;

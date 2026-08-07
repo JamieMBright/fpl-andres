@@ -17,6 +17,7 @@
 
 import type { PlayerProjection } from "./squad-projection";
 import { allProjections } from "./squad-projection";
+import { OWNERSHIP_CAP } from "./scatter-view";
 
 /** One price step either side, in FPL's tenths. */
 export const PEER_BAND_TENTHS = 5;
@@ -236,29 +237,61 @@ export function peerDistribution(
  * Ids from `analysis-metrics`, not imported from it: that module pulls in the
  * whole analysis pool, and the player card would carry it for four strings.
  * `peer-distribution.test.ts` fails if any of these stops being a real metric.
+ *
+ * Neither axis is points-per-million. The chart is already filtered to a price
+ * bracket, so everyone on it costs about the same and dividing by a number they
+ * share only adds noise. Inside a bracket the question is who is better, not
+ * who is cheaper.
  */
 export const AXES_BY_POSITION: Readonly<
   Record<string, { x: string; y: string }>
 > = {
-  GKP: { x: "pointsPerMillion", y: "xPts" },
-  DEF: { x: "pointsPerMillion", y: "defconPer90" },
-  MID: { x: "pointsPerMillion", y: "xGIPer90" },
-  FWD: { x: "pointsPerMillion", y: "npxGPer90" },
+  // No saves metric exists, and a keeper's return is dominated by whether he
+  // is first choice, so minutes is the honest x for the position.
+  GKP: { x: "minutes", y: "xPts" },
+  DEF: { x: "defconPer90", y: "xPts" },
+  MID: { x: "xGIPer90", y: "xPts" },
+  FWD: { x: "npxGPer90", y: "xPts" },
 };
 
-export const FALLBACK_AXES = { x: "pointsPerMillion", y: "xPts" };
+export const FALLBACK_AXES = { x: "minutes", y: "xPts" };
 
+/** One million either side, which is two FPL price steps. */
+export const LINK_BAND_TENTHS = 10;
+
+/**
+ * A link that is guaranteed to plot the player it came from.
+ *
+ * The chart's own defaults exist for browsing: 1500 minutes and a 0.1 to 8 per
+ * cent ownership band, which together drop a January signing and anyone the
+ * crowd has found. Both quietly removed the player the reader had just clicked
+ * on, which is the one thing this link exists to show. So it clears them and
+ * narrows on price instead, which is the filter that makes the remaining
+ * players genuine alternatives.
+ */
 export function analysisLinkFor(subject: PlayerProjection): string {
   const axes = AXES_BY_POSITION[subject.position] ?? FALLBACK_AXES;
+  // `#code` is a player; a bare token is read as a club short name.
+  const token = `#${String(subject.code)}`;
   const params = new URLSearchParams({
     x: axes.x,
     y: axes.y,
-    size: "minutes",
+    size: "price",
     colour: "club",
     pos: subject.position,
     trend: "1",
-    hl: String(subject.code),
+    mins: "0",
+    from: "0",
+    to: String(OWNERSHIP_CAP),
+    hl: token,
     pin: String(subject.code),
   });
+  if (subject.priceTenths !== null) {
+    params.set(
+      "pricefrom",
+      String(Math.max(0, subject.priceTenths - LINK_BAND_TENTHS)),
+    );
+    params.set("priceto", String(subject.priceTenths + LINK_BAND_TENTHS));
+  }
   return `/analysis?${params.toString()}`;
 }

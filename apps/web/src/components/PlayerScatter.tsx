@@ -80,9 +80,16 @@ export interface OverlayNotes {
 const WATERMARK = "FPL ANDRES  \u00b7  @fpl_andres";
 
 /** Muted enough to sit under five hundred marks without competing with them. */
-const SHADE_GOOD = "#00c853";
-const SHADE_BAD = "#d64545";
-const SHADE_ALPHA = 0.13;
+const SHADE_GOOD = "#00e676";
+const SHADE_BAD = "#ff5252";
+// Two gradients overlay, so the corner alpha is roughly double the stop alpha.
+// Green needs the larger share: at equal alpha it disappears into the surface
+// while the red still reads, which had the good corner looking unshaded.
+const SHADE_ALPHA_GOOD = 0.26;
+const SHADE_ALPHA_BAD = 0.18;
+
+const GOOD_END = { colour: SHADE_GOOD, alpha: SHADE_ALPHA_GOOD };
+const BAD_END = { colour: SHADE_BAD, alpha: SHADE_ALPHA_BAD };
 
 interface Scale {
   (value: number): number;
@@ -264,13 +271,13 @@ export const PlayerScatter = memo(function PlayerScatter({
     return {
       x: {
         stop: clamp(centreX, PLOT_WIDTH),
-        from: goodRight ? SHADE_BAD : SHADE_GOOD,
-        to: goodRight ? SHADE_GOOD : SHADE_BAD,
+        from: goodRight ? BAD_END : GOOD_END,
+        to: goodRight ? GOOD_END : BAD_END,
       },
       y: {
         stop: clamp(centreY, PLOT_HEIGHT),
-        from: goodUp ? SHADE_GOOD : SHADE_BAD,
-        to: goodUp ? SHADE_BAD : SHADE_GOOD,
+        from: goodUp ? GOOD_END : BAD_END,
+        to: goodUp ? BAD_END : GOOD_END,
       },
     };
   }, [view.sweetSpot, centres, xScale, yScale, xMetric, yMetric]);
@@ -332,45 +339,45 @@ export const PlayerScatter = memo(function PlayerScatter({
             <linearGradient id={`${gradientId}-x`} x1="0" x2="1" y1="0" y2="0">
               <stop
                 offset="0"
-                stopColor={shading.x.from}
-                stopOpacity={SHADE_ALPHA}
+                stopColor={shading.x.from.colour}
+                stopOpacity={shading.x.from.alpha}
               />
               <stop
                 offset={shading.x.stop}
-                stopColor={shading.x.from}
+                stopColor={shading.x.from.colour}
                 stopOpacity={0}
               />
               <stop
                 offset={shading.x.stop}
-                stopColor={shading.x.to}
+                stopColor={shading.x.to.colour}
                 stopOpacity={0}
               />
               <stop
                 offset="1"
-                stopColor={shading.x.to}
-                stopOpacity={SHADE_ALPHA}
+                stopColor={shading.x.to.colour}
+                stopOpacity={shading.x.to.alpha}
               />
             </linearGradient>
             <linearGradient id={`${gradientId}-y`} x1="0" x2="0" y1="0" y2="1">
               <stop
                 offset="0"
-                stopColor={shading.y.from}
-                stopOpacity={SHADE_ALPHA}
+                stopColor={shading.y.from.colour}
+                stopOpacity={shading.y.from.alpha}
               />
               <stop
                 offset={shading.y.stop}
-                stopColor={shading.y.from}
+                stopColor={shading.y.from.colour}
                 stopOpacity={0}
               />
               <stop
                 offset={shading.y.stop}
-                stopColor={shading.y.to}
+                stopColor={shading.y.to.colour}
                 stopOpacity={0}
               />
               <stop
                 offset="1"
-                stopColor={shading.y.to}
-                stopOpacity={SHADE_ALPHA}
+                stopColor={shading.y.to.colour}
+                stopOpacity={shading.y.to.alpha}
               />
             </linearGradient>
           </defs>
@@ -557,6 +564,41 @@ export const PlayerScatter = memo(function PlayerScatter({
             })}
           </g>
 
+          {view.labels ? (
+            <g className="scatter-labels" aria-hidden="true">
+              {points.map((point) => {
+                const px = xScale(point.x);
+                const py = yScale(point.y);
+                const r = radius(point.size);
+                // Leader goes up-left near the right edge and down near the
+                // top, so a name never runs outside the plotting area.
+                const flip = px > PLOT_WIDTH * 0.78;
+                const below = py < 14;
+                const tipX = px + (flip ? -(r + 6) : r + 6);
+                const tipY = py + (below ? r + 6 : -(r + 6));
+                return (
+                  <g key={point.player.code}>
+                    <line
+                      className="scatter-label-whisker"
+                      x1={px + (flip ? -r : r) * 0.7}
+                      x2={tipX}
+                      y1={py + (below ? r : -r) * 0.7}
+                      y2={tipY}
+                    />
+                    <text
+                      className="scatter-label"
+                      textAnchor={flip ? "end" : "start"}
+                      x={tipX + (flip ? -1 : 1)}
+                      y={tipY + (below ? 6 : -1)}
+                    >
+                      {point.player.name}
+                    </text>
+                  </g>
+                );
+              })}
+            </g>
+          ) : null}
+
           {/* Said on the axes, because a reader who has just moved a slider is
               looking at the chart and not at a table underneath it. */}
           {points.length === 0 ? (
@@ -684,12 +726,23 @@ function ScatterTooltip({
 }: TooltipProps) {
   const { player } = point;
   const kit = kitForShortName(player.club);
+  // Open toward whichever side has room. Fixed to the right, a point in the
+  // last third of the chart pushed the box off the edge of the frame.
+  const across =
+    left > WIDTH * 0.62 ? "translateX(calc(-100% - 12px))" : "translateX(12px)";
+  const down =
+    top < HEIGHT * 0.22
+      ? "translateY(0)"
+      : top > HEIGHT * 0.78
+        ? "translateY(-100%)"
+        : "translateY(-50%)";
   return (
     <div
       className="scatter-tooltip"
       style={{
         left: `${(left / WIDTH) * 100}%`,
         top: `${(top / HEIGHT) * 100}%`,
+        transform: `${across} ${down}`,
       }}
       aria-hidden="true"
     >

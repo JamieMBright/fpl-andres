@@ -38,6 +38,7 @@ export interface Exclusions {
   position: number;
   club: number;
   ownership: number;
+  price: number;
   noValue: number;
 }
 
@@ -67,6 +68,7 @@ export function selectPlotted(
     position: 0,
     club: 0,
     ownership: 0,
+    price: 0,
     noValue: 0,
   };
   const unmeasured: string[] = [];
@@ -86,6 +88,13 @@ export function selectPlotted(
     }
     if (player.minutes < view.minMinutes) {
       excluded.minutes += 1;
+      continue;
+    }
+    if (
+      player.priceTenths < view.priceFromTenths ||
+      player.priceTenths > view.priceToTenths
+    ) {
+      excluded.price += 1;
       continue;
     }
     // An archived season records no ownership, so the band cannot judge him.
