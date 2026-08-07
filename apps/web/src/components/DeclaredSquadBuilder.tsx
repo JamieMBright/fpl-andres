@@ -1,7 +1,8 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 
 import { CeefaxShirt } from "./CeefaxShirt";
+import type { AnalysisData } from "../state/analysis-pool";
 import { money } from "../format";
 import { kitForShortName } from "../kit/team-kits";
 import {
@@ -10,6 +11,7 @@ import {
   saveDeclaredSquad,
   SQUAD_BUDGET_TENTHS,
   validateDeclaredSquad,
+  type RosterPlayer,
   type SquadValidation,
 } from "../state/declared-squad";
 import { PLAYERS_BY_ELEMENT_ID } from "../state/season-solver";
@@ -37,9 +39,11 @@ function pounds(tenths: number): string {
   return `${money.format(tenths / 10)}m`;
 }
 
-type SquadPlayer = NonNullable<
-  ReturnType<(typeof PLAYERS_BY_ELEMENT_ID)["get"]>
->;
+type SquadPlayer = RosterPlayer & {
+  /** Expected points a match, absent where the planner holds no record. */
+  points: number | undefined;
+  startRate: number | undefined;
+};
 
 /** One place on the pitch: a shirt and a price, or an empty outline. */
 function SquadSlot({
@@ -83,6 +87,41 @@ function SquadSlot({
   );
 }
 
+/** Clubs as shirts, because a kit is recognised faster than a three-letter code. */
+function ClubStrip({
+  clubs,
+  picked,
+  onPick,
+}: {
+  clubs: readonly string[];
+  picked: string;
+  onPick: (club: string) => void;
+}) {
+  return (
+    <ul className="squad-club-strip">
+      {clubs.map((club) => {
+        const kit = kitForShortName(club);
+        return (
+          <li key={club}>
+            <button
+              aria-pressed={picked === club}
+              className={picked === club ? "is-picked" : undefined}
+              onClick={() => {
+                onPick(picked === club ? "ALL" : club);
+              }}
+              title={club}
+              type="button"
+            >
+              {kit ? <CeefaxShirt kit={kit} label={null} /> : null}
+              <span className="mono">{club}</span>
+            </button>
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
+
 /** The list you pick from, filtered the way the official transfer page filters. */
 function SquadMarket({
   players,
@@ -96,13 +135,20 @@ function SquadMarket({
   onAdd: (player: SquadPlayer) => void;
 }) {
   const [position, setPosition] = useState("ALL");
+  const [club, setClub] = useState("ALL");
   const [maxTenths, setMaxTenths] = useState(155);
   const [search, setSearch] = useState("");
+
+  const clubs = useMemo(
+    () => [...new Set(players.map((player) => player.club))].sort(),
+    [players],
+  );
 
   const shown = useMemo(() => {
     const needle = search.trim().toLowerCase();
     return players
       .filter((player) => position === "ALL" || player.position === position)
+      .filter((player) => club === "ALL" || player.club === club)
       .filter((player) => player.priceTenths <= maxTenths)
       .filter(
         (player) =>
@@ -110,8 +156,12 @@ function SquadMarket({
           player.name.toLowerCase().includes(needle) ||
           player.club.toLowerCase().includes(needle),
       )
-      .sort((left, right) => right.priceTenths - left.priceTenths);
-  }, [players, position, maxTenths, search]);
+      .sort(
+        (left, right) =>
+          (right.points ?? -1) - (left.points ?? -1) ||
+          right.priceTenths - left.priceTenths,
+      );
+  }, [players, position, club, maxTenths, search]);
 
   return (
     <div className="squad-market">
@@ -127,6 +177,20 @@ function SquadMarket({
           {SLOTS.map((slot) => (
             <option key={slot.position} value={slot.position}>
               {slot.label}
+            </option>
+          ))}
+        </select>
+        <select
+          aria-label="Club"
+          onChange={(changed) => {
+            setClub(changed.target.value);
+          }}
+          value={club}
+        >
+          <option value="ALL">All clubs</option>
+          {clubs.map((name) => (
+            <option key={name} value={name}>
+              {name}
             </option>
           ))}
         </select>
@@ -154,19 +218,34 @@ function SquadMarket({
         />
       </div>
 
+      <ClubStrip clubs={clubs} onPick={setClub} picked={club} />
+
       <p className="squad-market-count mono">
         {shown.length} shown · {pounds(remainingTenths)} left
       </p>
 
       <ol className="squad-market-list">
-        {shown.slice(0, 120).map((player) => {
+        {shown.slice(0, 200).map((player) => {
           const already = picked.has(player.id);
           const tooDear = player.priceTenths > remainingTenths;
+          const perMillion =
+            player.points === undefined
+              ? null
+              : (player.points / (player.priceTenths / 10)).toFixed(2);
           return (
             <li key={player.id}>
               <span className="squad-market-name">{player.name}</span>
               <span className="squad-market-club mono">
                 {player.club} {player.position}
+              </span>
+              <span className="squad-market-stats mono">
+                {player.points === undefined
+                  ? "—"
+                  : `${player.points.toFixed(2)} xPts`}
+                {perMillion === null ? "" : ` · ${perMillion}/£m`}
+                {player.startRate === undefined
+                  ? ""
+                  : ` · ${Math.round(player.startRate * 100)}% start`}
               </span>
               <span className="squad-market-price mono">
                 {pounds(player.priceTenths)}
@@ -219,12 +298,66 @@ export function DeclaredSquadBuilder({
   entryId: number;
   event?: number;
 }) {
-  const players = useMemo(
-    () =>
-      [...PLAYERS_BY_ELEMENT_ID.values()].sort((left, right) =>
-        left.name.localeCompare(right.name),
-      ),
-    [],
+  const [pool, setPool] = useState<AnalysisData | null>(null);
+
+  // The live FPL list, not the planning pool. The planner carries 144 players
+  // it holds a record for; the game has around 570, and a manager declaring the
+  // squad he actually picked must be able to name any of them.
+  //
+  // Imported dynamically: statically it drags the whole analysis pool into the
+  // entry chunk, which put the bundle over its budget for a component most
+  // visitors never open.
+  useEffect(() => {
+    const controller = new AbortController();
+    void import("../state/analysis-pool")
+      .then(({ fetchAnalysisPool }) => {
+        // The import resolves after a tick, by which time the component may be
+        // gone. Without this the fetch still leaves, which is a request nobody
+        // will read and, in tests, one that lands in someone else's mock.
+        if (controller.signal.aborted) return null;
+        return fetchAnalysisPool(fetch, controller.signal);
+      })
+      .then((live) => {
+        if (live && !controller.signal.aborted) setPool(live);
+      })
+      .catch(() => {
+        // Aborted means the page moved on, which is not a failure to report.
+      });
+    return () => {
+      controller.abort();
+    };
+  }, []);
+
+  const players: SquadPlayer[] = useMemo(() => {
+    const live = pool?.pool.players ?? [];
+    if (live.length === 0) {
+      return [...PLAYERS_BY_ELEMENT_ID.values()].map((player) => ({
+        id: player.id,
+        name: player.name,
+        position: player.position,
+        club: player.club,
+        priceTenths: player.priceTenths,
+        points: player.basePoints,
+        startRate: player.startRate,
+      }));
+    }
+    return live.map((player) => {
+      const rated = PLAYERS_BY_ELEMENT_ID.get(player.elementId);
+      return {
+        id: player.elementId,
+        name: player.name,
+        position: player.position,
+        club: player.club,
+        priceTenths: player.priceTenths,
+        points: rated?.basePoints,
+        startRate: rated?.startRate,
+      };
+    });
+  }, [pool]);
+
+  const roster = useMemo(
+    () => new Map(players.map((player) => [player.id, player])),
+    [players],
   );
 
   const stored = useMemo(
@@ -243,12 +376,11 @@ export function DeclaredSquadBuilder({
     .filter((elementId) => Number.isInteger(elementId) && elementId > 0);
   const complete = chosen.length === 15;
   const validation: SquadValidation | null = complete
-    ? validateDeclaredSquad(chosen)
+    ? validateDeclaredSquad(chosen, roster)
     : null;
 
   const spentTenths = chosen.reduce(
-    (total, elementId) =>
-      total + (PLAYERS_BY_ELEMENT_ID.get(elementId)?.priceTenths ?? 0),
+    (total, elementId) => total + (roster.get(elementId)?.priceTenths ?? 0),
     0,
   );
 
@@ -317,7 +449,7 @@ export function DeclaredSquadBuilder({
               {Array.from({ length: group.count }, (_unused, offset) => {
                 const index = group.offset + offset;
                 const elementId = Number(picks[index] ?? "");
-                const player = PLAYERS_BY_ELEMENT_ID.get(elementId) ?? null;
+                const player = roster.get(elementId) ?? null;
                 return (
                   <SquadSlot
                     key={index}

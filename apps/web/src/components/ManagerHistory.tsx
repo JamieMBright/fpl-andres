@@ -154,34 +154,40 @@ export function ManagerHistory({ entryId }: { entryId: number }) {
       </dl>
 
       <ol className="record-seasons" aria-label="Season by season finishes">
-        {profile.seasons.map((season) => (
-          <li key={season.season}>
-            <span className="mono record-season-name">{season.season}</span>
-            <span
-              className="record-bar"
-              style={{
-                width: `${
-                  season.percentile === null
-                    ? rankBar(season.rank, profile.worstRank) * 100
-                    : Math.max(2, 100 - season.percentile)
-                }%`,
-              }}
-              aria-hidden="true"
-            />
-            <span className="mono record-rank">
-              {season.percentile === null
-                ? season.rank.toLocaleString("en-GB")
-                : `top ${share(season.percentile)}`}
-            </span>
-            <span className="mono record-points">{season.points} pts</span>
-          </li>
-        ))}
+        {profile.seasons.map((season) => {
+          const finish =
+            season.percentile === null
+              ? rankBar(season.rank, profile.worstRank) * 100
+              : 100 - season.percentile;
+          return (
+            <li key={season.season}>
+              <span className="record-column">
+                <span
+                  aria-hidden="true"
+                  className="record-column-fill"
+                  style={{ height: `${Math.max(2, finish).toFixed(1)}%` }}
+                />
+              </span>
+              <span className="mono record-rank">
+                {season.percentile === null
+                  ? season.rank.toLocaleString("en-GB")
+                  : `top ${share(season.percentile)}`}
+              </span>
+              <span className="mono record-season-name">
+                {season.season.slice(2)}
+              </span>
+            </li>
+          );
+        })}
       </ol>
 
       <p className="record-caveat">
-        Longer bar, better season. Rank is not comparable across eras — the
-        field has grown roughly fivefold since 2010 — so the share is used
-        instead. It is FPL&rsquo;s own figure.
+        Height is the share of the field you finished ahead of, so taller is
+        better. Total points is deliberately not plotted: it moves with the
+        season, not with you — a year with more goals, more clean sheets or a
+        new scoring route lifts everybody at once. Only the share compares
+        across eras, and the field has grown roughly fivefold since 2010. The
+        percentage is FPL&rsquo;s own.
       </p>
     </section>
   );

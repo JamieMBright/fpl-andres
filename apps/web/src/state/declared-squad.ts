@@ -43,11 +43,13 @@ const declaredSquadSchema = z.object({
 export type DeclaredSquad = z.infer<typeof declaredSquadSchema>;
 
 export interface DeclaredSquadSummary {
-  players: SolverPlayer[];
+  players: RosterPlayer[];
   spentTenths: number;
   bankTenths: number;
   /** Fixture-blind expected points for the best legal eleven, before captain. */
   bestElevenPoints: number;
+  /** How many of the fifteen the planner holds a record for. */
+  ratedCount: number;
   clubCounts: { club: string; count: number }[];
 }
 
@@ -74,8 +76,23 @@ export function declaredSquadStorageKey(
  * All problems are reported together: fixing one at a time when three are
  * wrong is the interaction this is meant to avoid.
  */
+export interface RosterPlayer {
+  id: number;
+  name: string;
+  position: string;
+  club: string;
+  priceTenths: number;
+}
+
+/**
+ * `elementIds` are validated against `roster`, which defaults to the planning
+ * pool. The builder passes the live FPL list instead: that pool carries every
+ * player in the game, and a manager declaring the squad he actually picked must
+ * be able to name a promoted-club debutant the planner has no record for.
+ */
 export function validateDeclaredSquad(
   elementIds: readonly number[],
+  roster: ReadonlyMap<number, RosterPlayer> = PLAYERS_BY_ELEMENT_ID,
 ): SquadValidation {
   const problems: string[] = [];
 
@@ -89,10 +106,10 @@ export function validateDeclaredSquad(
     );
   }
 
-  const players: SolverPlayer[] = [];
+  const players: RosterPlayer[] = [];
   const unknown: number[] = [];
   for (const elementId of unique) {
-    const player = PLAYERS_BY_ELEMENT_ID.get(elementId);
+    const player = roster.get(elementId);
     if (player) players.push(player);
     else unknown.push(elementId);
   }
@@ -134,20 +151,28 @@ export function validateDeclaredSquad(
 
   if (problems.length > 0) return { valid: false, problems };
 
+  // Only players the planner carries can be scored. A promoted-club debutant is
+  // a legal pick with no record, so he counts toward the squad and not toward
+  // the eleven's points, and the shortfall is reported rather than hidden.
+  const rated = players
+    .map((player) => PLAYERS_BY_ELEMENT_ID.get(player.id))
+    .filter((player): player is SolverPlayer => player !== undefined);
+
   return {
     valid: true,
     summary: {
       players,
       spentTenths,
       bankTenths,
-      bestElevenPoints: bestElevenPoints(players),
+      bestElevenPoints: bestElevenPoints(rated),
+      ratedCount: rated.length,
       clubCounts,
     },
   };
 }
 
 function countByClub(
-  players: readonly SolverPlayer[],
+  players: readonly RosterPlayer[],
 ): { club: string; count: number }[] {
   const counts = new Map<string, number>();
   for (const player of players) {

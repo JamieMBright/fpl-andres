@@ -1,5 +1,7 @@
 import squad from "../data/opening-squad.json";
+import { CeefaxShirt } from "./CeefaxShirt";
 import { money as sharedMoney } from "../format";
+import { kitForShortName } from "../kit/team-kits";
 import {
   OPENING_SQUAD_SCHEMA_VERSION,
   requireArtifactVersion,
@@ -90,6 +92,35 @@ export function OpeningSquad() {
         one is good; for a midfielder or forward it is what they concede, so
         above one is good.
       </p>
+
+      <div className="squad-pitch opening-pitch">
+        {byPosition.map((group) => (
+          <div className="squad-pitch-row" key={group.position}>
+            {group.picks.map((pick) => {
+              const kit = kitForShortName(pick.club);
+              return (
+                <div
+                  className={
+                    pick.starter ? "squad-slot" : "squad-slot is-bench-slot"
+                  }
+                  key={pick.code}
+                >
+                  <span className="squad-slot-price mono">
+                    {money(pick.priceTenths)}
+                  </span>
+                  {kit ? <CeefaxShirt kit={kit} label={null} /> : null}
+                  <span className="squad-slot-name" translate="no">
+                    {pick.name}
+                  </span>
+                  <span className="squad-slot-club mono">
+                    {pick.club} · {pick.record.toFixed(2)}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        ))}
+      </div>
 
       <div
         aria-label="Scrollable recommended squad"

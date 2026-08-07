@@ -12,11 +12,13 @@ name: Ingest Bookmaker Odds
 
 on:
   schedule:
-    # Thursday morning and Friday evening: after midweek prices settle, and
-    # again close enough to a typical Friday deadline to be worth acting on.
-    # Deliberately off the hour.
-    - cron: "23 8 * * 4"
-    - cron: "23 18 * * 5"
+    # Daily. Fixtures land on every day of the week now, so a twice-weekly grab
+    # would leave a midweek round priced off a stale scrape. Free on a public
+    # repository, and the job commits only when the prices actually moved, so a
+    # quiet day costs one CSV fetch and nothing else.
+    - cron: "23 8 * * *"
+    # Friday evening as well: closest to the usual Saturday-morning deadline.
+    - cron: "23 20 * * 5"
   workflow_dispatch:
     inputs:
       season:

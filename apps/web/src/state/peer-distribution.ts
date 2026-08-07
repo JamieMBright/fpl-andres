@@ -279,7 +279,12 @@ export function analysisLinkFor(subject: PlayerProjection): string {
     size: "price",
     colour: "club",
     pos: subject.position,
-    trend: "1",
+    // The band is a dozen players, so names fit and the good-value shading
+    // reads. The frontier answers "who is undominated here", which is the
+    // question a peer group asks; a median trend line only restates the middle.
+    names: "1",
+    ring: "1",
+    front: "1",
     mins: "0",
     from: "0",
     to: String(OWNERSHIP_CAP),

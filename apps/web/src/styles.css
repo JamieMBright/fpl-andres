@@ -834,42 +834,49 @@ a:focus-visible {
   font-size: 13px;
 }
 
+/* Seasons left to right, finishing share up the side: the only axis that
+   compares across eras. Points totals move with the season, not the manager. */
 .record-seasons {
-  display: grid;
-  gap: 4px;
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
   margin: 0;
   padding: 0;
+  overflow-x: auto;
   list-style: none;
 }
 
 .record-seasons li {
-  display: grid;
-  grid-template-columns: 62px 1fr auto auto;
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
   align-items: center;
-  gap: 10px;
-  font-size: 13px;
+  gap: 3px;
+  min-width: 34px;
+  font-size: 11px;
+}
+
+.record-column {
+  display: flex;
+  align-items: flex-end;
+  width: 100%;
+  height: 132px;
+  background: rgb(255 255 255 / 6%);
+}
+
+.record-column-fill {
+  width: 100%;
+  /* Blocky, not gradient: this is a Teletext bar, not a chart library. */
+  background: var(--field-green);
 }
 
 .record-season-name {
   color: var(--ink-soft);
 }
 
-.record-bar {
-  height: 12px;
-  min-width: 2px;
-  /* Blocky, not gradient: this is a Teletext bar, not a chart library. */
-  background: var(--field-green);
-}
-
 .record-rank {
-  min-width: 72px;
-  text-align: right;
-}
-
-.record-points {
-  min-width: 68px;
-  color: var(--ink-soft);
-  text-align: right;
+  font-size: 10px;
+  white-space: nowrap;
 }
 
 .record-caveat {
@@ -878,16 +885,6 @@ a:focus-visible {
   padding-top: 12px;
   color: var(--ink-soft);
   font-size: 13px;
-}
-
-@media (max-width: 480px) {
-  .record-seasons li {
-    grid-template-columns: 56px 1fr auto;
-  }
-
-  .record-points {
-    display: none;
-  }
 }
 
 .transfer-plan {
@@ -4167,36 +4164,90 @@ a:focus-visible {
 .squad-market-list li {
   display: grid;
   grid-template-columns: 1fr auto auto;
-  grid-template-areas: "name price add" "club price add";
+  grid-template-areas: "name price add" "club price add" "stats price add";
   gap: 0 8px;
   align-items: center;
-  padding: 6px 8px;
+  padding: 3px 6px;
   border-bottom: 1px solid rgb(255 255 255 / 8%);
+  line-height: 1.25;
 }
 
 .squad-market-name {
   grid-area: name;
   font-weight: 600;
+  font-size: 0.82rem;
 }
 
 .squad-market-club {
   grid-area: club;
-  font-size: 0.74rem;
-  opacity: 0.65;
+  font-size: 0.68rem;
+  opacity: 0.6;
+}
+
+.squad-market-stats {
+  grid-area: stats;
+  font-size: 0.68rem;
+  opacity: 0.8;
 }
 
 .squad-market-price {
   grid-area: price;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
 }
 
 .squad-market-list button {
   grid-area: add;
-  width: 28px;
-  height: 28px;
+  width: 22px;
+  height: 22px;
+  padding: 0;
   border-radius: 50%;
-  font-size: 1.1rem;
+  font-size: 0.95rem;
   line-height: 1;
+}
+
+/* The recommended fifteen as a team sheet, before the table that explains it. */
+.opening-pitch {
+  min-height: 0;
+  margin: 16px 0;
+}
+
+.squad-slot.is-bench-slot {
+  opacity: 0.62;
+  border: 1px dashed rgb(255 255 255 / 30%);
+}
+
+/* Clubs as kits: a shirt is recognised faster than a three-letter code. */
+.squad-club-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  margin: 0 0 8px;
+  padding: 0;
+  list-style: none;
+}
+
+.squad-club-strip button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  width: 34px;
+  padding: 2px 1px;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  background: none;
+  font-size: 0.58rem;
+}
+
+.squad-club-strip button.is-picked {
+  border-color: var(--accent, #00e676);
+  background: rgb(0 230 118 / 12%);
+}
+
+.squad-club-strip svg,
+.squad-club-strip img {
+  width: 22px;
+  height: auto;
 }
 
 .squad-market-list button:disabled {

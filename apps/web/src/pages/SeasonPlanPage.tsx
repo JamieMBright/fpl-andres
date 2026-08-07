@@ -9,7 +9,7 @@ import { RouteHeading } from "../components/RouteHeading";
 import { deadlineDay, money } from "../format";
 import { kitForShortName } from "../kit/team-kits";
 import type { SolvedGameweek } from "../state/season-solver";
-import { startFromCodes } from "../state/season-solver";
+import { PLAYERS_BY_ELEMENT_ID, startFromCodes } from "../state/season-solver";
 import { useSeasonSolve } from "../state/use-season-solve";
 import type {
   TeamStartFailure,
@@ -546,15 +546,15 @@ export default function SeasonPlanPage() {
     return counted;
   }, [gameweeks]);
 
-  // The costliest name the plan carries and never starts. Read off the weeks so
-  // the caveat below argues about whoever it actually is, rather than the
-  // player who happened to be surprising the day the sentence was typed.
+  // The costliest name in the whole pool the plan never fields. Read off the
+  // pool rather than the squad: "bought and benched" is a much weaker claim
+  // than "never bought at all", and the second is the one worth defending.
   const absentPremium = useMemo(() => {
     const started = new Set<number>();
     for (const week of gameweeks) {
       for (const player of week.starters) started.add(player.code);
     }
-    return [...gameweeks.flatMap((week) => [...week.starters, ...week.bench])]
+    return [...PLAYERS_BY_ELEMENT_ID.values()]
       .filter((player) => !started.has(player.code))
       .sort((left, right) => right.priceTenths - left.priceTenths)[0];
   }, [gameweeks]);
@@ -770,11 +770,22 @@ export default function SeasonPlanPage() {
             </strong>{" "}
             {absentPremium ? (
               <>
-                He is the most expensive player in the pool at{" "}
+                He is the most expensive player in the game at{" "}
                 {money.format(absentPremium.priceTenths / 10)} and the plan
-                never starts him. Spend the difference across the eleven and the
-                eleven wins. If you think that understates him, the projection
-                is the number to argue with, not the optimiser.
+                never fields him. The reason is points per pound, not doubt
+                about the player. A squad has £100.0m for fifteen, so every
+                extra million on one name is a million removed from the other
+                fourteen. He has to out-score not the striker who replaces him,
+                but that striker <em>plus</em> the upgrades the saving pays for
+                everywhere else — and on the projection he does not.{" "}
+                <Link to="/calibration#captaincy-title">
+                  The captaincy calibration
+                </Link>{" "}
+                closes the other half of the argument: over four seasons nothing
+                beat captaining the highest projection, so owning him for the
+                armband is not a separate reason to buy him. If you think that
+                understates him, the projection is the number to argue with, not
+                the optimiser.
               </>
             ) : (
               <>
