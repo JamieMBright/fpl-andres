@@ -1,6 +1,7 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { Link } from "react-router-dom";
 
+import { PeerChart } from "./PeerChart";
 import {
   analysisLinkFor,
   peerDistribution,
@@ -39,6 +40,7 @@ export function PeerDistribution({
   }, []);
 
   const spread = peerDistribution(subject, metric);
+  const link = useMemo(() => analysisLinkFor(subject), [subject]);
 
   return (
     <dialog
@@ -114,11 +116,12 @@ export function PeerDistribution({
         )}
 
         <p className="peer-spread-more">
-          <Link to={analysisLinkFor(subject)}>
-            Plot every {subject.position} on the chart, with {subject.name}{" "}
-            marked
+          <Link to={link}>
+            Open this chart on the analysis page, where you can change it
           </Link>
         </p>
+
+        <PeerChart link={link} />
       </div>
     </dialog>
   );

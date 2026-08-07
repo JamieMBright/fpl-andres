@@ -275,46 +275,47 @@ Audit item #202. Thirty-five components in `apps/web/src/components`. The column
 that matters is the last one: what a browser journey already proves about each,
 so a review knows what it does not have to check by hand.
 
-| Component              | Responsibility                                   | Asserted by                             |
-| ---------------------- | ------------------------------------------------ | --------------------------------------- |
-| `ApplicationFrame`     | Shell, skip link, kit toggle, offline banner     | `feature-walk`, `contrast`              |
-| `RouteHeading`         | The single `h1`, focused on navigation           | `route-metadata`                        |
-| `LazyRoute`            | Suspense fallback that still carries an `h1`     | `contrast` (axe `page-has-heading-one`) |
-| `ErrorBoundary`        | Last resort, keeps the shell rendering           | unit                                    |
-| `OfflineBanner`        | Says the connection dropped, not that data broke | unit                                    |
-| `StatusStrip`          | Corpus freshness and pool size                   | `feature-walk`                          |
-| `AnalysisResult`       | Dispatches on the seven analysis states          | `failure-states`                        |
-| `SnapshotDossier`      | The verified squad, evidence and provenance      | `team-entry`                            |
-| `PitchView`            | Formation, chips, captaincy                      | `feature-walk`, unit render cost        |
-| `CeefaxShirt`          | Club kit as a teletext block graphic             | `contrast` (`/kits`), unit (palette)    |
-| `PlayerAvatar`         | Lazy headshot, silhouette when there is none     | `contrast` (`/kits`)                    |
-| `PlayerDetail`         | One player in full, with what each number means  | `feature-walk`                          |
-| `MethodFlow`           | The pipeline step by step, each step auditable   | unit (static)                           |
-| `PeerDistribution`     | One figure against players of the same price     | unit (`peer-distribution`)              |
-| `SeasonFixtures`       | The run to the end of the season, spells marked  | unit (`SeasonFixtures.test.ts`)         |
-| `FixtureBreakdown`     | Every fixture ahead, and last season's totals    | unit (via `PinnedPlayers`)              |
-| `Countdown`            | Deadline cell at the end of the index bar        | `feature-walk`                          |
-| `RangeSlider`          | One track, two thumbs, for a band                | `feature-walk` (ownership band)         |
-| `HighlightPicker`      | Typeahead for names and clubs, chosen as chips   | `feature-walk`                          |
-| `DeclaredTransferForm` | A swap FPL has not published yet, kept locally   | unit (`declared-transfers.test.ts`)     |
-| `DeclaredSquadBuilder` | Your pre-season fifteen, rule-checked and locked | unit (`declared-squad.test.ts`)         |
-| `SquadRecord`          | Per-player projection table                      | `feature-walk`                          |
-| `ManagerHistory`       | Past seasons, including the empty case           | `team-entry`, unit                      |
-| `TeamStateCorrections` | Manager overrides, parsing and conflict          | unit (`parse.test.ts`)                  |
-| `TransferPlanPanel`    | What the plan will contain, and the deadline     | unit (`format.test.ts`)                 |
-| `OpeningSquad`         | The published opening fifteen                    | `feature-walk`                          |
-| `PlayerPoolTable`      | Sortable, filterable pool                        | `feature-walk`, unit render cost        |
-| `PlayerScatter`        | Configurable two-axis scatter, drawn by hand     | unit render cost                        |
-| `ScatterControls`      | Axis, filter and reference-line pickers          | unit                                    |
-| `ScatterLegend`        | What shape, colour and disc size each mean       | `feature-walk`                          |
-| `ScatterReadout`       | The scatter as a ranked, pinnable table          | unit                                    |
-| `PinnedPlayers`        | Up to four players compared side by side         | unit                                    |
-| `ValidationReport`     | Backtest metrics against baselines               | `feature-walk`, `contrast`              |
-| `CalibrationCharts`    | Ranked bars and season lines, drawn by hand      | unit, `contrast`                        |
-| `CaptainGrid`          | Every armband, method by gameweek, side-scrolled | unit, `contrast`                        |
-| `CohortPanel`          | The veteran cohort and its coverage              | `feature-walk`                          |
-| `Methodology`          | How the projection is built                      | `route-metadata`                        |
-| `BielsaBucket`         | The mark                                         | —                                       |
+| Component              | Responsibility                                    | Asserted by                             |
+| ---------------------- | ------------------------------------------------- | --------------------------------------- |
+| `ApplicationFrame`     | Shell, skip link, kit toggle, offline banner      | `feature-walk`, `contrast`              |
+| `RouteHeading`         | The single `h1`, focused on navigation            | `route-metadata`                        |
+| `LazyRoute`            | Suspense fallback that still carries an `h1`      | `contrast` (axe `page-has-heading-one`) |
+| `ErrorBoundary`        | Last resort, keeps the shell rendering            | unit                                    |
+| `OfflineBanner`        | Says the connection dropped, not that data broke  | unit                                    |
+| `StatusStrip`          | Corpus freshness and pool size                    | `feature-walk`                          |
+| `AnalysisResult`       | Dispatches on the seven analysis states           | `failure-states`                        |
+| `SnapshotDossier`      | The verified squad, evidence and provenance       | `team-entry`                            |
+| `PitchView`            | Formation, chips, captaincy                       | `feature-walk`, unit render cost        |
+| `CeefaxShirt`          | Club kit as a teletext block graphic              | `contrast` (`/kits`), unit (palette)    |
+| `PlayerAvatar`         | Lazy headshot, silhouette when there is none      | `contrast` (`/kits`)                    |
+| `PlayerDetail`         | One player in full, with what each number means   | `feature-walk`                          |
+| `MethodFlow`           | The pipeline step by step, each step auditable    | unit (static)                           |
+| `PeerDistribution`     | One figure against players of the same price      | unit (`peer-distribution`)              |
+| `PeerChart`            | That peer group plotted, without leaving the card | unit (`peer-distribution`)              |
+| `SeasonFixtures`       | The run to the end of the season, spells marked   | unit (`SeasonFixtures.test.ts`)         |
+| `FixtureBreakdown`     | Every fixture ahead, and last season's totals     | unit (via `PinnedPlayers`)              |
+| `Countdown`            | Deadline cell at the end of the index bar         | `feature-walk`                          |
+| `RangeSlider`          | One track, two thumbs, for a band                 | `feature-walk` (ownership band)         |
+| `HighlightPicker`      | Typeahead for names and clubs, chosen as chips    | `feature-walk`                          |
+| `DeclaredTransferForm` | A swap FPL has not published yet, kept locally    | unit (`declared-transfers.test.ts`)     |
+| `DeclaredSquadBuilder` | Your pre-season fifteen, rule-checked and locked  | unit (`declared-squad.test.ts`)         |
+| `SquadRecord`          | Per-player projection table                       | `feature-walk`                          |
+| `ManagerHistory`       | Past seasons, including the empty case            | `team-entry`, unit                      |
+| `TeamStateCorrections` | Manager overrides, parsing and conflict           | unit (`parse.test.ts`)                  |
+| `TransferPlanPanel`    | What the plan will contain, and the deadline      | unit (`format.test.ts`)                 |
+| `OpeningSquad`         | The published opening fifteen                     | `feature-walk`                          |
+| `PlayerPoolTable`      | Sortable, filterable pool                         | `feature-walk`, unit render cost        |
+| `PlayerScatter`        | Configurable two-axis scatter, drawn by hand      | unit render cost                        |
+| `ScatterControls`      | Axis, filter and reference-line pickers           | unit                                    |
+| `ScatterLegend`        | What shape, colour and disc size each mean        | `feature-walk`                          |
+| `ScatterReadout`       | The scatter as a ranked, pinnable table           | unit                                    |
+| `PinnedPlayers`        | Up to four players compared side by side          | unit                                    |
+| `ValidationReport`     | Backtest metrics against baselines                | `feature-walk`, `contrast`              |
+| `CalibrationCharts`    | Ranked bars and season lines, drawn by hand       | unit, `contrast`                        |
+| `CaptainGrid`          | Every armband, method by gameweek, side-scrolled  | unit, `contrast`                        |
+| `CohortPanel`          | The veteran cohort and its coverage               | `feature-walk`                          |
+| `Methodology`          | How the projection is built                       | `route-metadata`                        |
+| `BielsaBucket`         | The mark                                          | —                                       |
 
 ## Accessibility checklist
 

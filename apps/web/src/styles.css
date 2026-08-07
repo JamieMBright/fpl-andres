@@ -4119,6 +4119,17 @@ a:focus-visible {
   font-weight: 700;
 }
 
+/* The peer group plotted inside the card, rather than a page away. */
+.peer-chart {
+  margin: 12px 0 0;
+  overflow-x: auto;
+}
+
+.peer-chart-state {
+  margin: 12px 0 0;
+  opacity: 0.75;
+}
+
 /* The remaining season as one strip, shaded by how the tie rates. */
 .player-detail-season {
   grid-column: 1 / -1;
