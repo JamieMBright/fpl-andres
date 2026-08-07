@@ -82,18 +82,23 @@ def _run_rating(
     neutral_points: float,
     fixtures: Sequence[Fixture],
     strength: Mapping[int, TeamStrength],
-) -> tuple[float | None, int, int]:
+) -> tuple[float | None, int, int, dict[int, float]]:
     """Mean fixture multiplier over the run, applied route by route.
 
     Each published scoring route responds to a fixture differently, so the
     multiplier is built from the player's own mix of them rather than from one
     blended difficulty number that has to be right for a keeper and a striker
     at the same time.
+
+    The per-gameweek multipliers come back as well as their mean, because a
+    mean cannot express rotation: two players whose good weeks interleave
+    average out to the same as one of them played twice.
     """
     events = sorted({fixture.event for fixture in fixtures if fixture.event})[:RUN_WINDOW]
     horizon = set(events)
 
     multipliers: list[float] = []
+    by_event: dict[int, float] = {}
     played = 0
     for fixture in fixtures:
         if fixture.event not in horizon:
@@ -104,19 +109,21 @@ def _run_rating(
         played += 1
         if opponent not in strength or team_id not in strength:
             continue
-        multipliers.append(
-            fixture_multiplier(
-                routes,
-                neutral_points=neutral_points,
-                team_id=team_id,
-                opponent_id=opponent,
-                home=fixture.is_home(team_id),
-                strength=strength,
-            )
+        multiplier = fixture_multiplier(
+            routes,
+            neutral_points=neutral_points,
+            team_id=team_id,
+            opponent_id=opponent,
+            home=fixture.is_home(team_id),
+            strength=strength,
         )
+        multipliers.append(multiplier)
+        if fixture.event is not None:
+            # A double gameweek stacks rather than replaces.
+            by_event[fixture.event] = by_event.get(fixture.event, 0.0) + multiplier
     if not multipliers:
-        return None, 0, played
-    return sum(multipliers) / len(multipliers), len(multipliers), played
+        return None, 0, played, {}
+    return sum(multipliers) / len(multipliers), len(multipliers), played, by_event
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -159,6 +166,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         by_team.setdefault(fixture.team_a, []).append(fixture)
 
     rated: list[Rated] = []
+    weekly_points: dict[int, dict[int, float]] = {}
     unseen = 0
     unavailable = 0
     bit_part = 0
@@ -185,9 +193,12 @@ def main(argv: Sequence[str] | None = None) -> int:
             continue
         team_id = element.team
         points = float(record["expectedPoints"])
-        run, rated_count, fixtures = _run_rating(
+        run, rated_count, fixtures, by_event = _run_rating(
             team_id, record.get("routes", {}), points, by_team.get(team_id, ()), strength
         )
+        weekly_points[element.id] = {
+            event: points * multiplier for event, multiplier in by_event.items()
+        }
         rated.append(
             Rated(
                 candidate=Candidate(
@@ -211,12 +222,25 @@ def main(argv: Sequence[str] | None = None) -> int:
         )
 
     ranking = {entry.candidate.element_id: entry.adjusted for entry in rated}
+    # One map per gameweek of the run, so the eleven is chosen in each week.
+    # Summing first and choosing once cannot see rotation, which is a strategy
+    # rather than an accident: two keepers alternating to take the softer
+    # fixture beat either of them played twice.
+    run_events = sorted({event for weeks in weekly_points.values() for event in weeks})
+    weekly = [
+        {
+            entry.candidate.element_id: weekly_points[entry.candidate.element_id].get(event, 0.0)
+            for entry in rated
+        }
+        for event in run_events
+    ]
     plan = choose_opening_squad(
         [entry.candidate for entry in rated],
         ranking,
         {entry.candidate.element_id: entry.start_rate for entry in rated},
         settings,
         {entry.candidate.element_id: entry.appear_rate for entry in rated},
+        weekly or None,
     )
     squad = list(plan.squad)
     starting = {player.element_id for player in plan.starters}
