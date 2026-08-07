@@ -1,9 +1,13 @@
 """What a bench place is actually worth.
 
-A substitute scores only when a starter records no minutes and the auto-sub
-fires. That makes his worth the chance he is needed, which depends on the eleven
-in front of him — not a flat weight applied equally to the first substitute and
-the fourth.
+An outfield substitute scores only when a starter records no minutes and the
+auto-sub fires. That makes his worth the chance he is needed, which depends on
+the eleven in front of him -- not a flat weight applied equally to the first
+substitute and the fourth.
+
+The reserve goalkeeper is the exception and is worth nothing. He covers one man
+rather than eleven, and nobody carries two million pounds of insurance for the
+week it fires.
 """
 
 from __future__ import annotations
@@ -57,14 +61,14 @@ def test_the_first_substitute_is_the_chance_anyone_blanks() -> None:
     assert weights[1] == pytest.approx(1 - 0.9**10)
 
 
-def test_the_reserve_keeper_only_covers_the_keeper() -> None:
+def test_the_reserve_keeper_is_worth_nothing_whatever_his_starter_does() -> None:
+    # He used to be priced at the chance the starting keeper blanked, which
+    # bought a premium reserve for a place that never plays. He covers one man
+    # rather than eleven, and a manager whose keeper is ruled out transfers him.
     starters, appear = _eleven(0.9)
     appear[1] = 0.5
 
-    weights = bench_weights(starters, BENCH, appear)
-
-    # The one who started is out half the time, and no outfielder can cover him.
-    assert weights[0] == pytest.approx(0.5)
+    assert bench_weights(starters, BENCH, appear)[0] == pytest.approx(0.0)
 
 
 def test_a_fully_fit_keeper_makes_his_understudy_worth_nothing() -> None:
@@ -76,12 +80,13 @@ def test_a_fully_fit_keeper_makes_his_understudy_worth_nothing() -> None:
 
 def test_a_player_with_no_published_chance_is_treated_as_missing() -> None:
     # Not as fit. An absent record is a gap in the evidence, and the bench is
-    # what covers a gap.
+    # what covers a gap -- for the outfield places, which are the ones an
+    # auto-sub can actually fill.
     starters, _ = _eleven(1.0)
 
     weights = bench_weights(starters, BENCH, {})
 
-    assert weights[0] == pytest.approx(1.0)
+    assert weights[0] == pytest.approx(0.0)
     assert weights[1] == pytest.approx(1.0)
 
 
