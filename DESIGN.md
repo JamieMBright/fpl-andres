@@ -290,6 +290,7 @@ so a review knows what it does not have to check by hand.
 | `PlayerAvatar`         | Lazy headshot, silhouette when there is none      | `contrast` (`/kits`)                    |
 | `PlayerDetail`         | One player in full, with what each number means   | `feature-walk`                          |
 | `MethodFlow`           | The pipeline step by step, each step auditable    | unit (static)                           |
+| `MethodChart`          | A method step's own numbers, drawn as bars        | unit (static)                           |
 | `PeerDistribution`     | One figure against players of the same price      | unit (`peer-distribution`)              |
 | `PeerChart`            | That peer group plotted, without leaving the card | unit (`peer-distribution`)              |
 | `SeasonFixtures`       | The run to the end of the season, spells marked   | unit (`SeasonFixtures.test.ts`)         |

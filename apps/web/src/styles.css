@@ -4119,6 +4119,90 @@ a:focus-visible {
   font-weight: 700;
 }
 
+/* Bars drawn from the numbers a method step actually uses. */
+.method-chart {
+  margin: 0 0 18px;
+  padding: 14px 16px;
+  background: rgb(255 255 255 / 4%);
+  border-radius: 4px;
+}
+
+.method-chart figcaption {
+  margin: 0 0 12px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.method-chart-unit {
+  font-weight: 400;
+  opacity: 0.7;
+}
+
+.method-bars {
+  display: grid;
+  grid-template-columns: minmax(7em, max-content) 1fr max-content;
+  gap: 6px 10px;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.method-bars li {
+  display: contents;
+}
+
+.method-bar-label {
+  font-size: 0.88rem;
+  line-height: 1.3;
+}
+
+.method-bar-track {
+  display: block;
+  min-width: 40px;
+  height: 12px;
+  background: rgb(255 255 255 / 7%);
+  border-radius: 2px;
+}
+
+.method-bar {
+  display: block;
+  height: 100%;
+  background: var(--accent, #00e676);
+  border-radius: 2px;
+}
+
+.method-bar.negative {
+  background: #ff5252;
+}
+
+.method-bar-value {
+  font-size: 0.85rem;
+  text-align: right;
+}
+
+.method-flow-arithmetic {
+  padding: 10px 14px;
+  background: rgb(255 255 255 / 4%);
+  border-left: 3px solid rgb(255 255 255 / 25%);
+  line-height: 1.6;
+}
+
+.method-flow-constants {
+  margin: 14px 0;
+}
+
+.method-flow-constants dt {
+  font-weight: 600;
+  margin-top: 10px;
+}
+
+.method-flow-constants dd {
+  margin: 2px 0 0;
+  opacity: 0.85;
+  line-height: 1.55;
+}
+
 /* The peer group plotted inside the card, rather than a page away. */
 .peer-chart {
   margin: 12px 0 0;
