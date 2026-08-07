@@ -4119,6 +4119,16 @@ a:focus-visible {
   font-weight: 700;
 }
 
+/* Freshness of the published calibration run, stated before any figure. */
+.validation-freshness {
+  margin: 0 0 24px;
+  padding: 12px 16px;
+  border-left: 3px solid var(--accent, #00e676);
+  background: rgb(255 255 255 / 4%);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
 /* The pipeline, one step per row, with the detail folded away. */
 .method-flow {
   margin: 0 0 40px;

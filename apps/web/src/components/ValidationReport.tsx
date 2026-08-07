@@ -1,4 +1,5 @@
 import validation from "../data/validation.json";
+import { timestamp } from "../format";
 import { CaptainGrid, type SeasonPicks } from "./CaptainGrid";
 import {
   BarChart,
@@ -90,6 +91,8 @@ type Significance = {
 
 type Report = {
   generatedAt: string;
+  /** Absent from artifacts published before the model was versioned. */
+  modelVersion?: string;
   seasons: SeasonReport[];
   league: { managers: number; advisedShare: number; seeds: number[] };
   /** Absent from artifacts generated before the theses were tested. */
@@ -97,6 +100,21 @@ type Report = {
 };
 
 const report = validation as Report;
+
+/** How old the published run is, said plainly rather than as a bare date. */
+function freshnessOf(generatedAt: string): {
+  when: string;
+  age: string | null;
+} {
+  const run = new Date(generatedAt);
+  if (Number.isNaN(run.getTime()))
+    return { when: "at an unknown time", age: null };
+  const days = Math.floor((Date.now() - run.getTime()) / 86_400_000);
+  const when = timestamp.format(run);
+  if (days <= 0) return { when, age: "today" };
+  if (days === 1) return { when, age: "yesterday" };
+  return { when, age: `${String(days)} days ago` };
+}
 
 const METHOD_NAMES: Record<string, string> = {
   model: "My projection",
@@ -204,6 +222,7 @@ function show(value: number | null | undefined, digits = 3): string {
 }
 
 export function ValidationReport() {
+  const freshness = freshnessOf(report.generatedAt);
   const totalRows = report.seasons.reduce(
     (sum, season) => sum + season.rows,
     0,
@@ -231,6 +250,16 @@ export function ValidationReport() {
 
   return (
     <>
+      <p className="validation-freshness">
+        <strong>Last run {freshness.when}</strong>
+        {freshness.age === null ? null : <> · {freshness.age}</>}
+        {report.modelVersion === undefined ? null : (
+          <> · model {report.modelVersion}</>
+        )}
+        . Every figure below comes from that run and nothing on this page is
+        typed by hand.
+      </p>
+
       <section className="validation-summary" aria-label="What I tested">
         <dl>
           <div>
