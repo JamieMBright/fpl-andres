@@ -66,8 +66,10 @@ answer.
 | `CardRateUnavailable`      | `models/suspensions.py`     | Too little evidence to estimate a booking rate.          |
 | `FplPicksUnavailable`      | `adapters/fpl.py`           | An entry's picks for an event are not public.            |
 | `InsufficientHistoryError` | `models/baselines.py`       | A team-aware estimate lacks its declared sample floor.   |
+| `OddsArtifactError`        | `models/fixture_odds.py`    | The published odds artifact is missing or misshapen.     |
 | `OddsContractError`        | `adapters/football_data.py` | The odds feed is not the shape the parser expects.       |
 | `OddsIngestError`          | `cli/ingest_odds.py`        | The odds feed could not be reached or carried no market. |
+| `UnknownClubError`         | `cli/ingest_odds.py`        | The feed named a club with no FPL code in the crosswalk. |
 | `OddsUnavailable`          | `models/odds.py`            | Quoted prices cannot be read as a market.                |
 | `PenaltySplitUnavailable`  | `models/penalties.py`       | The penalty and open-play split cannot be trusted.       |
 | `ShotProfileUnavailable`   | `models/shot_profile.py`    | Too little shooting to read a profile from.              |

@@ -4994,12 +4994,18 @@ a:focus-visible {
   font-weight: 700;
 }
 
-.scatter-tooltip-hint {
-  padding-top: 4px;
+/* The one interactive part of an otherwise inert tooltip. Without it a tap on
+   the tooltip passes through and pins whichever mark happens to sit behind. */
+.scatter-tooltip-pin {
   margin-top: 3px;
-  border-top: 1px solid var(--rule);
-  color: var(--ink-soft);
+  padding: 6px 8px;
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  background: none;
+  color: var(--ink);
   font-size: 11px;
+  pointer-events: auto;
+  cursor: pointer;
 }
 
 .scatter-quadrant-note {

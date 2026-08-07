@@ -82,6 +82,29 @@ jobs:
           echo "season: $season"
           python -m fpl_andres.cli.ingest_odds --season "$season"
 
+      - name: Verify the artifact joins onto FPL clubs
+        # A green fetch proves nothing on its own. This reads the artifact back
+        # through the same loader the model uses, so a run that passes has
+        # exercised fetch, parse, de-vig, fit and join end to end.
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from fpl_andres.models.fixture_odds import club_views, load_fixture_odds
+
+          fixtures = load_fixture_odds(Path("apps/web/src/data/fixture-odds.json"))
+          views = club_views(fixtures)
+          if not views:
+              raise SystemExit("artifact joined onto no clubs")
+          print(f"{len(fixtures)} fixtures across {len(views)} clubs")
+          for club in sorted(views)[:5]:
+              first = views[club][0]
+              print(
+                  f"  {club} v {first.opponent} "
+                  f"xG {first.expected_goals:.2f} "
+                  f"clean sheet {first.clean_sheet:.3f}"
+              )
+          PY
+
       - name: Commit the refreshed artifact
         run: |
           if git diff --quiet -- apps/web/src/data/fixture-odds.json; then

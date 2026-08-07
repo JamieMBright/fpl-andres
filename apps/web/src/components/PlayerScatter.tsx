@@ -688,6 +688,8 @@ export const PlayerScatter = memo(function PlayerScatter({
           }
           left={MARGIN.left + xScale(hovered.x)}
           top={MARGIN.top + yScale(hovered.y)}
+          pinned={pinnedSet.has(hovered.player.code)}
+          onTogglePin={onTogglePin}
         />
       ) : null}
 
@@ -711,6 +713,8 @@ interface TooltipProps {
   sizeText: string | null;
   left: number;
   top: number;
+  pinned: boolean;
+  onTogglePin: (code: number) => void;
 }
 
 function ScatterTooltip({
@@ -723,6 +727,8 @@ function ScatterTooltip({
   sizeText,
   left,
   top,
+  pinned,
+  onTogglePin,
 }: TooltipProps) {
   const { player } = point;
   const kit = kitForShortName(player.club);
@@ -744,7 +750,6 @@ function ScatterTooltip({
         top: `${(top / HEIGHT) * 100}%`,
         transform: `${across} ${down}`,
       }}
-      aria-hidden="true"
     >
       <span className="scatter-tooltip-head">
         {kit ? (
@@ -790,7 +795,15 @@ function ScatterTooltip({
         )}
       </dl>
 
-      <span className="scatter-tooltip-hint">Click to pin for comparison</span>
+      <button
+        className="scatter-tooltip-pin"
+        onClick={() => {
+          onTogglePin(player.code);
+        }}
+        type="button"
+      >
+        {pinned ? "Unpin" : "Pin for comparison"}
+      </button>
     </div>
   );
 }

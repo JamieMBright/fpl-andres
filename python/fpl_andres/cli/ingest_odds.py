@@ -34,6 +34,7 @@ from fpl_andres.adapters.football_data import (
     parse_odds_csv,
     season_url,
 )
+from fpl_andres.models.fixture_odds import club_views, load_fixture_odds
 from fpl_andres.models.goal_expectation import GoalExpectation, fit_goal_expectation
 from fpl_andres.models.odds import OddsUnavailable
 from fpl_andres.timeouts import ODDS_FEED
@@ -43,25 +44,43 @@ DEFAULT_OUTPUT = Path("apps/web/src/data/fixture-odds.json")
 #: Bumped when the published shape changes, so a stale artifact is detectable.
 ODDS_SCHEMA_VERSION = 1
 
-#: football-data.co.uk names against FPL names. Only the disagreements are
-#: listed; anything absent is expected to match exactly, and a name that matches
-#: neither is reported rather than dropped, because a silently missing fixture
-#: is a fixture priced as if it had no market.
-TEAM_NAMES: dict[str, str] = {
-    "Man United": "Man Utd",
-    "Man City": "Man City",
-    "Tottenham": "Spurs",
-    "Newcastle": "Newcastle",
-    "Nott'm Forest": "Nott'm Forest",
-    "Sheffield United": "Sheffield Utd",
-    "Wolves": "Wolves",
-    "Leicester": "Leicester",
-    "Leeds": "Leeds",
-    "Brighton": "Brighton",
-    "West Ham": "West Ham",
-    "West Brom": "West Brom",
-    "Bournemouth": "Bournemouth",
-    "Crystal Palace": "Crystal Palace",
+#: football-data.co.uk club names against FPL short codes, which is the key
+#: every other artifact in this repository joins on. A name that is not here is
+#: reported and its fixture refused, because a silently dropped fixture is a
+#: fixture priced as if it had no market -- the one failure mode that would be
+#: invisible downstream.
+TEAM_CODES: dict[str, str] = {
+    "Arsenal": "ARS",
+    "Aston Villa": "AVL",
+    "Bournemouth": "BOU",
+    "Brentford": "BRE",
+    "Brighton": "BHA",
+    "Burnley": "BUR",
+    "Chelsea": "CHE",
+    "Coventry": "COV",
+    "Coventry City": "COV",
+    "Crystal Palace": "CRY",
+    "Everton": "EVE",
+    "Fulham": "FUL",
+    "Hull": "HUL",
+    "Hull City": "HUL",
+    "Ipswich": "IPS",
+    "Leeds": "LEE",
+    "Leicester": "LEI",
+    "Liverpool": "LIV",
+    "Man City": "MCI",
+    "Man United": "MUN",
+    "Newcastle": "NEW",
+    "Norwich": "NOR",
+    "Nott'm Forest": "NFO",
+    "Sheffield United": "SHU",
+    "Southampton": "SOU",
+    "Sunderland": "SUN",
+    "Tottenham": "TOT",
+    "Watford": "WAT",
+    "West Brom": "WBA",
+    "West Ham": "WHU",
+    "Wolves": "WOL",
 }
 
 
@@ -109,11 +128,20 @@ def _priced(row: FixtureOdds) -> GoalExpectation:
     )
 
 
+class UnknownClubError(OddsIngestError):
+    """Raised when the feed names a club this crosswalk does not carry."""
+
+
 def _entry(row: FixtureOdds, fit: GoalExpectation) -> dict[str, object]:
+    home = TEAM_CODES.get(row.home_team)
+    away = TEAM_CODES.get(row.away_team)
+    if home is None or away is None:
+        missing = row.home_team if home is None else row.away_team
+        raise UnknownClubError(f"no FPL code for {missing!r}; add it to TEAM_CODES")
     return {
         "kickoff": None if row.kickoff is None else row.kickoff.isoformat(),
-        "home": TEAM_NAMES.get(row.home_team, row.home_team),
-        "away": TEAM_NAMES.get(row.away_team, row.away_team),
+        "home": home,
+        "away": away,
         "homeExpectedGoals": round(fit.home, 4),
         "awayExpectedGoals": round(fit.away, 4),
         "homeCleanSheet": round(fit.home_clean_sheet, 4),
@@ -131,7 +159,7 @@ def _read(batch: OddsBatch) -> tuple[list[dict[str, object]], list[tuple[str, st
     for row in batch.rows:
         try:
             entries.append(_entry(row, _priced(row)))
-        except (OddsUnavailable, ValueError) as error:
+        except (OddsUnavailable, UnknownClubError, ValueError) as error:
             refused.append((f"{row.home_team} v {row.away_team}", str(error)))
     return entries, refused
 
@@ -183,7 +211,17 @@ def main(argv: Sequence[str] | None = None) -> int:
     output = Path(args.output)
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(artifact, indent=2) + "\n", encoding="utf-8")
-    print(f"wrote {len(entries)} priced fixtures to {output}, refused {len(refused)}")
+
+    # Read it straight back through the loader the model uses. A file that
+    # cannot be joined onto clubs is worse than no file: it looks like evidence.
+    views = club_views(load_fixture_odds(output))
+    if not views:
+        raise OddsIngestError(f"{output} joined onto no clubs; refusing to call it good")
+
+    print(
+        f"wrote {len(entries)} priced fixtures across {len(views)} clubs to "
+        f"{output}, refused {len(refused)}"
+    )
     return 0
 
 

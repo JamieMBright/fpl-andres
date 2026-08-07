@@ -43,11 +43,23 @@ const STAGES: Stage[] = [
     id: "sources",
     title: "1 · Where the numbers come from",
     summary:
-      "Two sources. FPL for prices, squads and fixtures. Understat for shot quality.",
+      "Three sources. FPL for prices, squads and fixtures. Understat for shot quality. Bookmakers for what a match is expected to look like.",
     example:
       "James Trafford arrives with four Premier League appearances to his name. That is the whole of his record here — not a small sample of a bigger one, the entire thing.",
     detail:
-      "Only what FPL publishes, plus Understat joined on a crosswalk checked by hand rather than matched on name. Prices and availability are today's. The scoring record is last completed season. Nothing is scraped from another FPL site and no projection from another model is used as an input, so an error here is mine and traceable.",
+      "What FPL publishes, plus Understat joined on a crosswalk checked by hand rather than matched on name, plus free multi-bookmaker prices from football-data.co.uk. Prices and availability are today's. The scoring record is last completed season. Nothing is scraped from another FPL site and no projection from another model is used as an input, so an error here is mine and traceable.",
+    constants: [
+      {
+        name: "Odds refresh",
+        value: "daily, plus Friday evening",
+        why: "Fixtures now land on every day of the week, so a twice-weekly grab would price a midweek round off a stale scrape. It runs on a hosted runner rather than my machine, because this network blocks every price host at the TLS handshake.",
+      },
+      {
+        name: "Odds used",
+        value: "pre-match, never closing",
+        why: "Closing prices are sharper and unusable: the FPL deadline falls 90 minutes before the first kickoff, and team news moves prices after it. Fitting on closing prices would score information no manager could have had.",
+      },
+    ],
     caveat:
       "A player with no Premier League record at all — a promoted-club debutant, an arrival from abroad — gets no row. He is left out rather than given a positional average, so the pool this model chooses from is smaller than the game. You will not see him suggested, and that is a limitation rather than a judgement on him.",
   },
@@ -137,6 +149,8 @@ const STAGES: Stage[] = [
     },
     detail:
       "Opponent strength is measured from matches already played, shrunk toward the league mean on a ten-match prior, and then clamped so no single fixture can move a projection by more than about a factor of two. The clamp matters: an unclamped ratio built on a handful of matches will happily claim a fixture is six times harder than average, which is never true.",
+    arithmetic:
+      "The bookmaker feed is a second, independent route to the same quantity, refreshed daily and joined onto clubs by FPL code. A correct-score market would give the clean sheet directly, and nobody sells one free — so it is reconstructed. The sum of two independent Poissons is Poisson, so total goals is Poisson in the sum of the two sides' expected goals, and the over/under 2.5 market pins that sum exactly. The 1X2 market then splits it, fitted on the ratio of home wins to away wins rather than through the draw. Both means in hand, the clean sheet is the Poisson zero: P(0 conceded) = e raised to minus the opponent's expected goals. Every scoreline follows too, so the market that could not be bought is reconstructed.",
     constants: [
       {
         name: "Opponent prior",
@@ -148,9 +162,14 @@ const STAGES: Stage[] = [
         value: "0.5× to 2.0×",
         why: "The widest genuine best-against-worst, home-or-away swing measured in the corpus. Beyond it the number is an artefact of a small sample rather than a property of the fixture.",
       },
+      {
+        name: "Draw residual",
+        value: "published per fixture",
+        why: "Independent Poisson under-prices draws, which is what Dixon-Coles exists to correct. Rather than apply a correction I have not measured on this corpus, the gap between the market's draw price and the fitted model's is published. A large one is the size of the correction being forgone.",
+      },
     ],
     caveat:
-      "A promoted club has no measured Premier League strength, so fixtures against them are currently rated as average. That is a guess wearing the costume of a measurement, and it is the largest soft spot in the fixture model. Three of twenty clubs are promoted every year, so it touches roughly a seventh of all fixtures.",
+      "A promoted club has no measured Premier League strength, so the history route rates fixtures against them as average. That is a guess wearing the costume of a measurement, and it is the largest soft spot in the fixture model — three of twenty clubs are promoted every year, so it touches roughly a seventh of all fixtures. The bookmaker route is the intended fix, because a market prices a promoted club on evidence I do not have. It is ingested, joined and published; what it does not yet do is override the history route in the projection, and it should not until it has beaten it on four seasons of backtest.",
   },
   {
     id: "points",
