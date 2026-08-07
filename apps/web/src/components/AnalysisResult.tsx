@@ -108,7 +108,7 @@ export function AnalysisResult({
         <>
           <ManagerHistory entryId={entryId} />
           <DeclaredSquadBuilder entryId={entryId} />
-          <OpeningSquad />
+          <OpeningSquad entryId={entryId} />
           <TransferPlanPanel firstDeadline={FIRST_DEADLINE_2026_27} />
         </>
       ) : null}

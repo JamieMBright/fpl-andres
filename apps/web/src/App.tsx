@@ -1,4 +1,3 @@
-import { lazy } from "react";
 import type { RouteObject } from "react-router-dom";
 
 import { ApplicationFrame } from "./components/ApplicationFrame";
@@ -6,6 +5,7 @@ import { LazyRoute } from "./components/LazyRoute";
 import HomePage from "./pages/HomePage";
 import NotFoundPage from "./pages/NotFoundPage";
 import TeamAnalysisRoute from "./pages/TeamAnalysisPage";
+import { lazyRoute } from "./state/lazy-route";
 
 /**
  * The route table, and nothing else.
@@ -18,12 +18,12 @@ import TeamAnalysisRoute from "./pages/TeamAnalysisPage";
  * calibration report are fetched by the routes that need them, not by every
  * first paint.
  */
-const MethodPage = lazy(() => import("./pages/MethodPage"));
-const PlayerPoolPage = lazy(() => import("./pages/PlayerPoolPage"));
-const CalibrationPage = lazy(() => import("./pages/CalibrationPage"));
-const SeasonPlanPage = lazy(() => import("./pages/SeasonPlanPage"));
-const KitPreviewPage = lazy(() => import("./pages/KitPreviewPage"));
-const AnalysisPage = lazy(() => import("./pages/AnalysisPage"));
+const MethodPage = lazyRoute(() => import("./pages/MethodPage"));
+const PlayerPoolPage = lazyRoute(() => import("./pages/PlayerPoolPage"));
+const CalibrationPage = lazyRoute(() => import("./pages/CalibrationPage"));
+const SeasonPlanPage = lazyRoute(() => import("./pages/SeasonPlanPage"));
+const KitPreviewPage = lazyRoute(() => import("./pages/KitPreviewPage"));
+const AnalysisPage = lazyRoute(() => import("./pages/AnalysisPage"));
 
 export const routes: RouteObject[] = [
   {

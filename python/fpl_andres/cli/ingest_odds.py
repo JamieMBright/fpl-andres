@@ -198,10 +198,11 @@ def _read(batch: OddsBatch) -> tuple[list[dict[str, object]], list[tuple[str, st
 
 def _collect(
     urls: Sequence[tuple[str, bool]], client: httpx.Client, fetched_at: datetime
-) -> tuple[list[dict[str, object]], list[tuple[str, str]], list[dict[str, str]]]:
+) -> tuple[list[dict[str, object]], list[tuple[str, str]], list[dict[str, str]], int]:
     entries: list[dict[str, object]] = []
     refused: list[tuple[str, str]] = []
     provenance: list[dict[str, str]] = []
+    matched = 0
 
     for url, required in urls:
         content = _fetch(url, client, required=required)
@@ -212,11 +213,16 @@ def _collect(
         except OddsContractError as error:
             raise OddsIngestError(str(error)) from error
         read, skipped = _read(batch)
+        matched += batch.matched
+        print(
+            f"{url}: {batch.matched} Premier League rows of divisions "
+            f"{', '.join(batch.divisions) or 'none'}; {len(read)} priced"
+        )
         entries.extend(read)
         refused.extend(skipped)
         provenance.append({"url": url, "contentHash": batch.content_hash})
 
-    return entries, refused, provenance
+    return entries, refused, provenance, matched
 
 
 def _artifact(
@@ -267,26 +273,37 @@ def main(argv: Sequence[str] | None = None) -> int:
         live.append((fixtures_url(), True))
 
     with httpx.Client(follow_redirects=True) as client:
-        entries, refused, provenance = _collect(live, client, fetched_at)
+        entries, refused, provenance, matched = _collect(live, client, fetched_at)
 
-        if not entries:
-            raise OddsIngestError(
-                "no fixture carried both a 1X2 and an over/under market; refusing to "
-                "publish an artifact with nothing in it"
+        if entries:
+            output = Path(args.output)
+            clubs = _write(output, _artifact(args.season, fetched_at, entries, refused, provenance))
+            print(
+                f"wrote {len(entries)} priced fixtures across {clubs} clubs to "
+                f"{output}, refused {len(refused)}"
             )
-
-        output = Path(args.output)
-        clubs = _write(output, _artifact(args.season, fetched_at, entries, refused, provenance))
-        print(
-            f"wrote {len(entries)} priced fixtures across {clubs} clubs to "
-            f"{output}, refused {len(refused)}"
-        )
+        elif matched == 0:
+            # Nothing to price is a legitimate pre-season state: no season file
+            # yet, and the fixture list not out far enough to reach the first
+            # round. Failing here would redden the schedule every day of summer.
+            print(
+                "no Premier League fixture is priced yet; nothing written for "
+                f"{args.season}. This is expected between seasons."
+            )
+        else:
+            for name, why in refused[:10]:
+                print(f"  refused {name}: {why}")
+            raise OddsIngestError(
+                f"{matched} Premier League rows were found and none carried both a "
+                "1X2 and an over/under market. The column names have probably "
+                "changed; the refusals above say which."
+            )
 
         # History lands outside the site bundle. Four seasons is about fifteen
         # hundred fixtures, which belongs in the corpus rather than in every
         # visitor's download.
         for season in args.backfill_seasons:
-            past, past_refused, past_provenance = _collect(
+            past, past_refused, past_provenance, _past_matched = _collect(
                 [(season_url(season), True)], client, fetched_at
             )
             if not past:

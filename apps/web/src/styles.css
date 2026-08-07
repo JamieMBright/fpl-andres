@@ -500,6 +500,19 @@ a:focus-visible {
   outline-offset: 3px;
 }
 
+/* Focus lands on the page heading after a route change so a screen reader
+   announces where it is. That is not a keyboard interaction, so it must not
+   paint a ring -- and on a heading that wraps, the ring follows the line boxes
+   and draws a stepped outline that reads as a rendering fault. */
+h1[tabindex="-1"]:focus {
+  outline: none;
+}
+
+h1[tabindex="-1"]:focus-visible {
+  outline: 3px solid var(--signal-blue);
+  outline-offset: 4px;
+}
+
 .field-hint,
 .field-error {
   margin: 9px 0 0;
@@ -4205,6 +4218,10 @@ a:focus-visible {
   line-height: 1;
 }
 
+.opening-adopt {
+  margin: 14px 0 0;
+}
+
 /* The recommended fifteen as a team sheet, before the table that explains it. */
 .opening-pitch {
   min-height: 0;
@@ -4728,7 +4745,12 @@ a:focus-visible {
 
 .analysis-panels {
   display: grid;
+  /* Without an explicit minmax(0, ...) the implicit track is content-sized, so
+     a wide compare list pushed the whole page wider and squeezed the chart
+     instead of scrolling itself. */
+  grid-template-columns: minmax(0, 1fr);
   gap: 12px;
+  min-width: 0;
 }
 
 .analysis-vintage,
@@ -5327,6 +5349,7 @@ a:focus-visible {
   padding: 14px;
   border: 1px solid var(--rule);
   background: var(--paper);
+  min-width: 0;
 }
 
 .pinned-empty h3,
@@ -5364,6 +5387,8 @@ a:focus-visible {
   margin-top: 10px;
   overflow-x: auto;
   overscroll-behavior-x: contain;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .pinned-scroller:focus-visible {

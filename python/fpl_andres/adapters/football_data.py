@@ -83,6 +83,11 @@ class OddsBatch:
     rows: tuple[FixtureOdds, ...]
     #: Rows the feed carried but this parser would not read, with the reason.
     skipped: tuple[tuple[str, str], ...]
+    #: Every division the file carried, so "no Premier League fixtures yet" can
+    #: be told apart from "the columns changed and everything was refused".
+    divisions: tuple[str, ...]
+    #: Rows matching the requested division, before any were refused.
+    matched: int
     content_hash: str
     upstream_reference: str
     fetched_at: datetime
@@ -154,6 +159,8 @@ def parse_odds_csv(
 
     rows: list[FixtureOdds] = []
     skipped: list[tuple[str, str]] = []
+    divisions: set[str] = set()
+    matched = 0
 
     for row in reader:
         home = (row.get("HomeTeam") or "").strip()
@@ -163,8 +170,10 @@ def parse_odds_csv(
 
         label = f"{home} v {away}"
         found = (row.get("Div") or "").strip()
+        divisions.add(found)
         if division is not None and found != division:
             continue
+        matched += 1
 
         match_odds: tuple[float, float, float] | None = None
         over_under: tuple[float, float] | None = None
@@ -212,6 +221,8 @@ def parse_odds_csv(
     return OddsBatch(
         rows=tuple(rows),
         skipped=tuple(skipped),
+        divisions=tuple(sorted(code for code in divisions if code)),
+        matched=matched,
         content_hash="sha256:" + hashlib.sha256(content.encode("utf-8")).hexdigest(),
         upstream_reference=upstream_reference,
         fetched_at=fetched_at,

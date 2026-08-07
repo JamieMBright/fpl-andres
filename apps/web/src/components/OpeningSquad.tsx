@@ -1,7 +1,11 @@
 import squad from "../data/opening-squad.json";
+import { useState } from "react";
+
 import { CeefaxShirt } from "./CeefaxShirt";
 import { money as sharedMoney } from "../format";
 import { kitForShortName } from "../kit/team-kits";
+import { saveDeclaredSquad } from "../state/declared-squad";
+import { PLAYERS_BY_ELEMENT_ID } from "../state/season-solver";
 import {
   OPENING_SQUAD_SCHEMA_VERSION,
   requireArtifactVersion,
@@ -56,11 +60,34 @@ function money(valueTenths: number): string {
  * has the same thing: a hundred million and no squad. A team ID says who you
  * are, not what you own, until the first deadline passes.
  */
-export function OpeningSquad() {
+export function OpeningSquad({ entryId }: { entryId?: number }) {
   const byPosition = ORDER.map((position) => ({
     position,
     picks: opening.picks.filter((pick) => pick.position === position),
   })).filter((group) => group.picks.length > 0);
+
+  const [taken, setTaken] = useState(false);
+
+  /** Drop the whole recommended fifteen into the builder above. */
+  const adoptAll = () => {
+    if (entryId === undefined) return;
+    // The artifact carries FPL player codes, which are stable across seasons;
+    // the declared squad is keyed by this season's element ids.
+    const idByCode = new Map(
+      [...PLAYERS_BY_ELEMENT_ID.values()].map((player) => [
+        player.code,
+        player.id,
+      ]),
+    );
+    const elementIds = opening.picks
+      .map((pick) => idByCode.get(pick.code))
+      .filter((id): id is number => id !== undefined);
+    if (elementIds.length !== opening.picks.length) return;
+    saveDeclaredSquad(window.localStorage, entryId, 1, elementIds);
+    setTaken(true);
+    // The builder reads storage once, on mount, so it has to be remounted.
+    window.location.reload();
+  };
 
   return (
     <section className="opening-squad" aria-labelledby="opening-title">
@@ -92,6 +119,19 @@ export function OpeningSquad() {
         one is good; for a midfielder or forward it is what they concede, so
         above one is good.
       </p>
+
+      {entryId === undefined ? null : (
+        <p className="opening-adopt">
+          <button
+            className="primary-command"
+            disabled={taken}
+            onClick={adoptAll}
+            type="button"
+          >
+            {taken ? "Copied into your fifteen" : "Use these as my fifteen"}
+          </button>
+        </p>
+      )}
 
       <div className="squad-pitch opening-pitch">
         {byPosition.map((group) => (
