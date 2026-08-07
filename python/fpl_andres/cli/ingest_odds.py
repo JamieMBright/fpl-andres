@@ -41,6 +41,13 @@ from fpl_andres.timeouts import ODDS_FEED
 
 DEFAULT_OUTPUT = Path("apps/web/src/data/fixture-odds.json")
 
+#: Past seasons live in the corpus, not the site bundle.
+DEFAULT_BACKFILL_DIR = Path("data/odds")
+
+#: The seasons the backtest runs on. Odds have to cover the same ground or the
+#: comparison against the history model has nothing to stand on.
+BACKTEST_SEASONS = ("2022-23", "2023-24", "2024-25", "2025-26")
+
 #: Bumped when the published shape changes, so a stale artifact is detectable.
 ODDS_SCHEMA_VERSION = 1
 
@@ -105,10 +112,32 @@ def _parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Read only matches already played. Used when the fixture file is empty out of season.",
     )
+    parser.add_argument(
+        "--backfill-seasons",
+        nargs="*",
+        default=[],
+        metavar="SEASON",
+        help=(
+            "Past seasons to fetch as well, e.g. 2022-23 2023-24. Each is written "
+            "to its own file under --backfill-dir, not into the site bundle."
+        ),
+    )
+    parser.add_argument(
+        "--backfill-dir",
+        default=str(DEFAULT_BACKFILL_DIR),
+        help="Where per-season history lands.",
+    )
     return parser
 
 
-def _fetch(url: str, client: httpx.Client) -> str:
+def _fetch(url: str, client: httpx.Client, *, required: bool = True) -> str | None:
+    """Fetch a feed file. A 404 on an optional file means "not yet", not "broken".
+
+    football-data.co.uk creates a season's played-match file only once matches
+    have been played in it, so between seasons the current season 404s while
+    the fixture list is already priced. Treating that as a failure stopped the
+    job in exactly the weeks a manager is choosing an opening squad.
+    """
     try:
         response = client.get(url, timeout=ODDS_FEED)
     except httpx.HTTPError as error:
@@ -116,6 +145,9 @@ def _fetch(url: str, client: httpx.Client) -> str:
             f"{url} could not be reached: {error}. This CLI cannot run behind a "
             "gambling-category content filter; run it on a GitHub runner."
         ) from error
+    if response.status_code == 404 and not required:
+        print(f"{url} is not published yet; carrying on without it")
+        return None
     if response.status_code != 200:
         raise OddsIngestError(f"{url} answered {response.status_code}, not 200")
     return response.text
@@ -164,40 +196,40 @@ def _read(batch: OddsBatch) -> tuple[list[dict[str, object]], list[tuple[str, st
     return entries, refused
 
 
-def main(argv: Sequence[str] | None = None) -> int:
-    args = _parser().parse_args(argv)
-    fetched_at = datetime.now(UTC)
-
-    sources: list[str] = [season_url(args.season)]
-    if not args.skip_fixtures:
-        sources.append(fixtures_url())
-
+def _collect(
+    urls: Sequence[tuple[str, bool]], client: httpx.Client, fetched_at: datetime
+) -> tuple[list[dict[str, object]], list[tuple[str, str]], list[dict[str, str]]]:
     entries: list[dict[str, object]] = []
     refused: list[tuple[str, str]] = []
     provenance: list[dict[str, str]] = []
 
-    with httpx.Client(follow_redirects=True) as client:
-        for url in sources:
-            content = _fetch(url, client)
-            try:
-                batch = parse_odds_csv(content, upstream_reference=url, fetched_at=fetched_at)
-            except OddsContractError as error:
-                raise OddsIngestError(str(error)) from error
-            read, skipped = _read(batch)
-            entries.extend(read)
-            refused.extend(skipped)
-            provenance.append({"url": url, "contentHash": batch.content_hash})
+    for url, required in urls:
+        content = _fetch(url, client, required=required)
+        if content is None:
+            continue
+        try:
+            batch = parse_odds_csv(content, upstream_reference=url, fetched_at=fetched_at)
+        except OddsContractError as error:
+            raise OddsIngestError(str(error)) from error
+        read, skipped = _read(batch)
+        entries.extend(read)
+        refused.extend(skipped)
+        provenance.append({"url": url, "contentHash": batch.content_hash})
 
-    if not entries:
-        raise OddsIngestError(
-            "no fixture carried both a 1X2 and an over/under market; refusing to "
-            "publish an artifact with nothing in it"
-        )
+    return entries, refused, provenance
 
-    artifact = {
+
+def _artifact(
+    season: str,
+    fetched_at: datetime,
+    entries: list[dict[str, object]],
+    refused: list[tuple[str, str]],
+    provenance: list[dict[str, str]],
+) -> dict[str, object]:
+    return {
         "schemaVersion": ODDS_SCHEMA_VERSION,
         "generatedAt": fetched_at.isoformat(),
-        "season": args.season,
+        "season": season,
         "source": "football-data.co.uk",
         # Early prices, not closing: the FPL deadline falls before kickoff and
         # closing prices carry team news no manager could have acted on.
@@ -208,20 +240,67 @@ def main(argv: Sequence[str] | None = None) -> int:
         "refused": [{"fixture": name, "reason": why} for name, why in refused],
     }
 
-    output = Path(args.output)
-    output.parent.mkdir(parents=True, exist_ok=True)
-    output.write_text(json.dumps(artifact, indent=2) + "\n", encoding="utf-8")
 
-    # Read it straight back through the loader the model uses. A file that
-    # cannot be joined onto clubs is worse than no file: it looks like evidence.
-    views = club_views(load_fixture_odds(output))
+def _write(path: Path, artifact: dict[str, object]) -> int:
+    """Write, then read straight back through the loader the model uses.
+
+    A file that cannot be joined onto clubs is worse than no file: it looks
+    like evidence.
+    """
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(artifact, indent=2) + "\n", encoding="utf-8")
+    views = club_views(load_fixture_odds(path))
     if not views:
-        raise OddsIngestError(f"{output} joined onto no clubs; refusing to call it good")
+        raise OddsIngestError(f"{path} joined onto no clubs; refusing to call it good")
+    return len(views)
 
-    print(
-        f"wrote {len(entries)} priced fixtures across {len(views)} clubs to "
-        f"{output}, refused {len(refused)}"
-    )
+
+def main(argv: Sequence[str] | None = None) -> int:
+    args = _parser().parse_args(argv)
+    fetched_at = datetime.now(UTC)
+
+    # The season-to-date file is optional: football-data creates it only once
+    # matches have been played, so between seasons it 404s while the fixture
+    # list is already priced.
+    live: list[tuple[str, bool]] = [(season_url(args.season), False)]
+    if not args.skip_fixtures:
+        live.append((fixtures_url(), True))
+
+    with httpx.Client(follow_redirects=True) as client:
+        entries, refused, provenance = _collect(live, client, fetched_at)
+
+        if not entries:
+            raise OddsIngestError(
+                "no fixture carried both a 1X2 and an over/under market; refusing to "
+                "publish an artifact with nothing in it"
+            )
+
+        output = Path(args.output)
+        clubs = _write(output, _artifact(args.season, fetched_at, entries, refused, provenance))
+        print(
+            f"wrote {len(entries)} priced fixtures across {clubs} clubs to "
+            f"{output}, refused {len(refused)}"
+        )
+
+        # History lands outside the site bundle. Four seasons is about fifteen
+        # hundred fixtures, which belongs in the corpus rather than in every
+        # visitor's download.
+        for season in args.backfill_seasons:
+            past, past_refused, past_provenance = _collect(
+                [(season_url(season), True)], client, fetched_at
+            )
+            if not past:
+                raise OddsIngestError(f"{season} carried no priced fixture at all")
+            path = Path(args.backfill_dir) / f"{season}.json"
+            count = _write(
+                path,
+                _artifact(season, fetched_at, past, past_refused, past_provenance),
+            )
+            print(
+                f"wrote {len(past)} priced fixtures across {count} clubs to "
+                f"{path}, refused {len(past_refused)}"
+            )
+
     return 0
 
 

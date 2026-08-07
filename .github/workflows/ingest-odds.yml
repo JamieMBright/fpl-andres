@@ -26,6 +26,11 @@ on:
         required: false
         default: ""
         type: string
+      backfill:
+        description: "Also fetch the four backtest seasons (2022-23 to 2025-26) into data/odds. Run this once."
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   contents: read
@@ -67,6 +72,7 @@ jobs:
         env:
           # Passed as env rather than inlined, so no input reaches the shell as code.
           ODDS_SEASON: ${{ inputs.season }}
+          ODDS_BACKFILL: ${{ inputs.backfill }}
         run: |
           season="$ODDS_SEASON"
           if [ -z "$season" ]; then
@@ -80,7 +86,11 @@ jobs:
             season="$year-$(printf '%02d' $(( (year + 1) % 100 )))"
           fi
           echo "season: $season"
-          python -m fpl_andres.cli.ingest_odds --season "$season"
+          extra=()
+          if [ "$ODDS_BACKFILL" = "true" ]; then
+            extra+=(--backfill-seasons 2022-23 2023-24 2024-25 2025-26)
+          fi
+          python -m fpl_andres.cli.ingest_odds --season "$season" "${extra[@]}"
 
       - name: Verify the artifact joins onto FPL clubs
         # A green fetch proves nothing on its own. This reads the artifact back
@@ -107,12 +117,12 @@ jobs:
 
       - name: Commit the refreshed artifact
         run: |
-          if git diff --quiet -- apps/web/src/data/fixture-odds.json; then
+          git add -A apps/web/src/data/fixture-odds.json data/odds
+          if git diff --cached --quiet; then
             echo "prices unchanged since the last run; nothing to commit"
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add apps/web/src/data/fixture-odds.json
           git commit -m "Refresh the bookmaker-implied goals distribution"
           git push
