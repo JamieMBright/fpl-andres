@@ -42,8 +42,18 @@ DEFAULT_OUTPUT = Path("apps/web/src/data/season-inputs.json")
 
 SCHEMA_VERSION = 1
 POSITION_CODES = {position.value: position.code for position in Position}
-# Enough that the solver has real choices, small enough to ship and to search.
-POOL_PER_POSITION = 40
+# Everyone the projector can rate, not a top-forty cut per position.
+#
+# The trim was justified as "small enough to ship". Measured 2026-08-07 that is
+# not true: 144 players gzip to 3.67 kB and all 441 to 5.73 kB, so the whole
+# saving was about two kilobytes. What it cost was the ability to represent a
+# manager's own squad -- a declared fifteen containing anyone outside the cut
+# could not be solved at all, and the plan silently fell back to the generic
+# season. A pool that cannot express the user's team is the wrong pool.
+#
+# Players with no Premier League record still have no row, here or anywhere:
+# that is a limit of the evidence, not of this number.
+POOL_PER_POSITION = 250
 
 
 def build_parser() -> argparse.ArgumentParser:

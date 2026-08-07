@@ -23,11 +23,13 @@ const BUDGETS = [
   { match: /\.css$/, name: "stylesheet", gzipKb: 15 },
   // Measured 128.26 kB. Router, zod, lucide and the shell.
   { match: /^index-.*\.js$/, name: "entry chunk", gzipKb: 150 },
-  // Measured 33.64 kB for squad-projection, raised from 32 kB: every player now
-  // carries his eight route components, his ceiling and the multiple it came
-  // from. That is the artifact the whole plan is argued from, so it is bytes
-  // spent on evidence rather than on decoration.
-  { match: /^(?!index-).*\.js$/, name: "lazy chunk", gzipKb: 36 },
+  // Measured 36.56 kB for the season-solver worker, raised from 36 kB. The
+  // browser pool went from a top-forty-per-position cut to every player the
+  // projector can rate — 144 to 312 — because the cut could not express a
+  // manager's own fifteen, and a squad it could not express was silently
+  // replaced by the generic plan. Measured cost of the whole change is about
+  // two kilobytes of player rows; the rest is the worker's own growth.
+  { match: /^(?!index-).*\.js$/, name: "lazy chunk", gzipKb: 38 },
 ];
 
 const files = readdirSync(DIST);
