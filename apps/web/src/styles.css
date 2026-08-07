@@ -4119,6 +4119,174 @@ a:focus-visible {
   font-weight: 700;
 }
 
+/* The fifteen, laid out the way the official transfer page lays them out:
+   a market on the left, a pitch on the right. Fifteen dropdowns was a form,
+   not a squad, and a squad is what a reader is trying to see. */
+.squad-builder {
+  display: grid;
+  grid-template-columns: minmax(260px, 340px) 1fr;
+  gap: 20px;
+  margin: 20px 0;
+  align-items: start;
+}
+
+@media (width <= 900px) {
+  .squad-builder {
+    grid-template-columns: 1fr;
+  }
+}
+
+.squad-market-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.squad-market-filters select,
+.squad-market-filters input {
+  flex: 1 1 90px;
+  min-width: 0;
+}
+
+.squad-market-count {
+  margin: 0 0 8px;
+  font-size: 0.82rem;
+  opacity: 0.75;
+}
+
+.squad-market-list {
+  max-height: 560px;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  list-style: none;
+  border-top: 1px solid rgb(255 255 255 / 12%);
+}
+
+.squad-market-list li {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  grid-template-areas: "name price add" "club price add";
+  gap: 0 8px;
+  align-items: center;
+  padding: 6px 8px;
+  border-bottom: 1px solid rgb(255 255 255 / 8%);
+}
+
+.squad-market-name {
+  grid-area: name;
+  font-weight: 600;
+}
+
+.squad-market-club {
+  grid-area: club;
+  font-size: 0.74rem;
+  opacity: 0.65;
+}
+
+.squad-market-price {
+  grid-area: price;
+  font-size: 0.85rem;
+}
+
+.squad-market-list button {
+  grid-area: add;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.squad-market-list button:disabled {
+  opacity: 0.3;
+}
+
+.squad-pitch {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 520px;
+  padding: 18px 12px;
+  border-radius: 6px;
+  /* Ceefax green, banded like a mown pitch rather than a photograph. */
+  background: repeating-linear-gradient(
+    to bottom,
+    #067a2e 0,
+    #067a2e 52px,
+    #056927 52px,
+    #056927 104px
+  );
+}
+
+.squad-pitch-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+
+.squad-slot {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  width: 84px;
+  padding: 4px;
+  background: rgb(0 0 0 / 35%);
+  border-radius: 3px;
+  text-align: center;
+}
+
+.squad-slot-empty {
+  justify-content: center;
+  min-height: 74px;
+  background: rgb(0 0 0 / 18%);
+  border: 1px dashed rgb(255 255 255 / 30%);
+}
+
+.squad-slot-position {
+  font-size: 0.72rem;
+  opacity: 0.8;
+}
+
+.squad-slot-price {
+  font-size: 0.72rem;
+}
+
+.squad-slot-name {
+  font-size: 0.78rem;
+  font-weight: 600;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.squad-slot-club {
+  font-size: 0.68rem;
+  opacity: 0.7;
+}
+
+.squad-slot-clear {
+  position: absolute;
+  top: -6px;
+  left: -6px;
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border-radius: 50%;
+  font-size: 0.8rem;
+  line-height: 1;
+}
+
+.squad-slot svg,
+.squad-slot img {
+  width: 38px;
+  height: auto;
+}
+
 /* Bars drawn from the numbers a method step actually uses. */
 .method-chart {
   margin: 0 0 18px;

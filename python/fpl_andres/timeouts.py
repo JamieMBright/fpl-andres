@@ -23,6 +23,7 @@ __all__ = [
     "ARCHIVE_DOWNLOAD",
     "CONNECT",
     "FPL_API",
+    "ODDS_FEED",
     "SUBPROCESS",
     "SUPABASE_REST",
     "client_timeout",
@@ -48,6 +49,12 @@ ARCHIVE_DOWNLOAD = 60.0
 # `git rev-parse`. Not network at all, but the same class of decision: if the
 # local git binary has not answered in ten seconds it is not going to.
 SUBPROCESS = 10.0
+
+# A season of odds is a plain CSV served from a small static host that is slower
+# than a CDN and occasionally slow to first byte. Longer than the FPL API for
+# that reason, and no longer, because a scheduled job that hangs is a job that
+# silently stops refreshing.
+ODDS_FEED = 30.0
 
 
 def client_timeout(total: float) -> httpx.Timeout:

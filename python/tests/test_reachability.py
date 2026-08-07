@@ -85,7 +85,10 @@ KNOWN_ORPHANS = {
     "repeat_rate": "refuses a persistence claim the swept cohort cannot support",
     "devig_proportional": "odds de-vigging; kept as the biased baseline to argue against",
     "devig_power": "odds de-vigging; this network blocks every price source",
-    "devig_shin": "odds de-vigging; this network blocks every price source",
+    "score_probability": (
+        "reconstructs the correct-score market the free feed does not sell; "
+        "published for callers rather than used by the fit itself"
+    ),
 }
 
 KNOWN_ORPHAN_MODULES = {
@@ -205,6 +208,7 @@ def test_no_module_is_imported_only_by_its_own_tests() -> None:
         "compare_validation",
         "crosswalk",
         "ingest_historical",
+        "ingest_odds",
         "ingest_ownership",
         "live_contracts",
         "publish_analysis_seasons",

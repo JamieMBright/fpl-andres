@@ -7,7 +7,10 @@ import {
   type ManagerProfile,
 } from "../state/manager-profile";
 
-type Loaded = { entryId: number; profile: ManagerProfile | null };
+type Loaded = {
+  entryId: number;
+  profile: ManagerProfile | "unreadable" | null;
+};
 
 const ARCHETYPE_LABELS: Record<ManagerProfile["archetype"], string> = {
   newcomer: "Newcomer",
@@ -80,6 +83,18 @@ export function ManagerHistory({ entryId }: { entryId: number }) {
             to exist. */}
         <p className="mono" role="status">
           Reading your history…
+        </p>
+      </section>
+    );
+  }
+
+  if (loaded.profile === "unreadable") {
+    return (
+      <section className="manager-history" aria-labelledby="record-title">
+        <h2 id="record-title">Your record</h2>
+        <p role="status">
+          FPL answered, but not in the shape I expect, so I am showing you
+          nothing rather than guessing at your record. This one is mine to fix.
         </p>
       </section>
     );
@@ -164,11 +179,9 @@ export function ManagerHistory({ entryId }: { entryId: number }) {
       </ol>
 
       <p className="record-caveat">
-        Bars are the share of the field you finished ahead of, so a longer bar
-        is a better season. Raw rank is not comparable across eras — the player
-        base has grown roughly fivefold since 2010, so 100,000th today is a far
-        better performance than 100,000th was then. The percentage is
-        FPL&rsquo;s own.
+        Longer bar, better season. Rank is not comparable across eras — the
+        field has grown roughly fivefold since 2010 — so the share is used
+        instead. It is FPL&rsquo;s own figure.
       </p>
     </section>
   );

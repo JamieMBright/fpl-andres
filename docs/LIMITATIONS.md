@@ -7,25 +7,25 @@ it never licenses a plausible estimate.
 
 What each limit costs you, so a missing feature can be told from a bug.
 
-| Limit                       | What it disables or downgrades                                                                                              |
-| --------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| Public team state           | No live draft. Bank, free transfers and chips are as of the last deadline.                                                  |
-| Matchups                    | Five scoring routes, each bent separately by a fixture. No flank or set-piece splitting — [tested and refused](ROADMAP.md). |
-| Out of position             | No fixed OOP bonus. An attacking defender is flagged, not repriced.                                                         |
-| Defensive contributions     | Nothing before 2025/26: the route did not exist, so the column is absent rather than zero.                                  |
-| Historical data             | Backtests span 2019-20 onward; expected values exist only from 2022-23.                                                     |
-| Historical manager state    | No past bank or chip state, so a replayed season cannot honour real budgets.                                                |
-| Injuries                    | Availability comes from FPL's own flags. No scraped team news.                                                              |
-| Prices                      | No live price-change prediction. Ownership history only from the archive.                                                   |
-| Squad numbers               | FPL publishes the field and leaves it empty for all 567 players, so every shirt is blank.                                   |
-| Season start and cold start | Promoted-club debutants are `unavailable`, not estimated.                                                                   |
-| Rivals and consensus        | Individual rival picks are post-deadline only. Aggregate ownership is legal earlier.                                        |
-| Planning horizon            | Seven gameweeks by default. Longer works but no surface asks for it.                                                        |
-| Team goal projections       | Dixon-Coles, fitted on the completed season. A single home advantage shared by every club.                                  |
-| Execution                   | No automated transfers. Every recommendation is advisory.                                                                   |
-| Suspensions                 | Accumulation bans are priced. A disciplinary hearing at twenty yellows is a judgement, so it is not modelled.               |
-| Bookmaker odds              | De-vigging is built; no price source is reachable from the build network.                                                   |
-| Rate limiting               | The public proxies are unmetered per client.                                                                                |
+| Limit                       | What it disables or downgrades                                                                                                                                                                                                                             |
+| --------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Public team state           | No live draft. Bank, free transfers and chips are as of the last deadline.                                                                                                                                                                                 |
+| Matchups                    | Five scoring routes, each bent separately by a fixture. No flank or set-piece splitting — [tested and refused](ROADMAP.md).                                                                                                                                |
+| Out of position             | No fixed OOP bonus. An attacking defender is flagged, not repriced.                                                                                                                                                                                        |
+| Defensive contributions     | Nothing before 2025/26: the route did not exist, so the column is absent rather than zero.                                                                                                                                                                 |
+| Historical data             | Backtests span 2019-20 onward; expected values exist only from 2022-23.                                                                                                                                                                                    |
+| Historical manager state    | No past bank or chip state, so a replayed season cannot honour real budgets.                                                                                                                                                                               |
+| Injuries                    | Availability comes from FPL's own flags. No scraped team news.                                                                                                                                                                                             |
+| Prices                      | No live price-change prediction. Ownership history only from the archive.                                                                                                                                                                                  |
+| Squad numbers               | FPL publishes the field and leaves it empty for all 567 players, so every shirt is blank.                                                                                                                                                                  |
+| Season start and cold start | Promoted-club debutants are `unavailable`, not estimated.                                                                                                                                                                                                  |
+| Rivals and consensus        | Individual rival picks are post-deadline only. Aggregate ownership is legal earlier.                                                                                                                                                                       |
+| Planning horizon            | Seven gameweeks by default. Longer works but no surface asks for it.                                                                                                                                                                                       |
+| Team goal projections       | Dixon-Coles, fitted on the completed season. A single home advantage shared by every club.                                                                                                                                                                 |
+| Execution                   | No automated transfers. Every recommendation is advisory.                                                                                                                                                                                                  |
+| Suspensions                 | Accumulation bans are priced. A disciplinary hearing at twenty yellows is a judgement, so it is not modelled.                                                                                                                                              |
+| Bookmaker odds              | Ingested on a GitHub runner only; the owner's network blocks every price host. No correct-score market is bought, so scorelines are reconstructed from 1X2 and over/under under independent Poisson, and the draw error is reported rather than corrected. |
+| Rate limiting               | The public proxies are unmetered per client.                                                                                                                                                                                                               |
 
 Each is expanded below.
 

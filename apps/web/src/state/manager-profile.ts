@@ -1,5 +1,12 @@
 import { z } from "zod";
 
+// Measured against entry 212279 on 2026-08-07: FPL sends this as a string
+// ("6"), not a number, so a plain z.number() rejected sixteen real seasons.
+const rankPercentage = z
+  .union([z.number(), z.string()])
+  .transform((value) => (typeof value === "number" ? value : Number(value)))
+  .refine((value) => Number.isFinite(value) && value >= 0 && value <= 100);
+
 /** One completed season on the official record. */
 export const pastSeasonSchema = z
   .object({
@@ -8,7 +15,7 @@ export const pastSeasonSchema = z
     rank: z.int().positive().nullable(),
     // FPL publishes this to one decimal, which is the only figure that
     // compares across a player base that has grown roughly fivefold.
-    rank_percentage: z.number().min(0).max(100).nullable().optional(),
+    rank_percentage: rankPercentage.nullable().optional(),
   })
   .loose();
 
@@ -132,10 +139,16 @@ function classify(
  *
  * Seasons without a rank were never completed, so they are dropped rather than
  * given a placeholder that would drag every summary toward the middle.
+ *
+ * A payload this cannot parse returns `unreadable`, not `null`. Reporting a
+ * schema break as "you have no history" told sixteen-season managers they were
+ * newcomers, which is a lie the reader has no way to catch.
  */
-export function readManagerProfile(payload: unknown): ManagerProfile | null {
+export function readManagerProfile(
+  payload: unknown,
+): ManagerProfile | "unreadable" | null {
   const parsed = entryHistorySchema.safeParse(payload);
-  if (!parsed.success) return null;
+  if (!parsed.success) return "unreadable";
 
   const seasons: PastSeason[] = parsed.data.past
     .filter((entry) => entry.rank !== null && entry.rank > 0)
@@ -201,26 +214,26 @@ export function commentary(profile: ManagerProfile): string {
       : `top ${share(profile.medianPercentile)}`;
   const standout =
     profile.standoutSeasons > 1
-      ? ` You have finished in the top one percent ${profile.standoutSeasons} times, which almost nobody does.`
+      ? ` Top one percent ${profile.standoutSeasons} times.`
       : "";
 
   switch (profile.archetype) {
     case "newcomer":
-      return `${seasons} season${seasons === 1 ? "" : "s"} on record. Not enough to tell me anything about you yet, so I won't pretend otherwise. Your best is ${bestFinish}.`;
+      return `${seasons} season${seasons === 1 ? "" : "s"} on record — not enough to read yet. Best ${bestFinish}.`;
     case "elite":
-      return `${seasons} seasons and a typical finish of ${typical}. That is not variance, that is somebody who knows what they are doing.${standout} Honestly, you may be able to teach me more than I can teach you.`;
+      return `${seasons} seasons, typically ${typical}.${standout} That is not variance. You may be able to teach me more than I can teach you.`;
     case "contender":
-      return `${seasons} seasons, typically ${typical}, best of ${bestFinish}.${standout} Consistently in the upper reaches of a field of millions. You do the work.`;
+      return `${seasons} seasons, typically ${typical}, best ${bestFinish}.${standout} Consistently near the top of a field of millions.`;
     case "spiker":
-      return `${bestFinish} in ${profile.bestSeason}, against a career typically around ${typical}. One outstanding season on its own is mostly variance — the interesting question is whether the process behind it can be repeated.`;
+      return `${bestFinish} in ${profile.bestSeason} against a career around ${typical}. One outstanding season is mostly variance — the question is whether it repeats.`;
     case "climber":
-      return `${seasons} seasons and the graph is pointing the right way. Your later years are comfortably better than your early ones.${standout} Whatever you changed, keep doing it.`;
+      return `${seasons} seasons, and the trend points up: your later years beat your early ones.${standout} Keep doing whatever changed.`;
     case "fader":
-      return `${seasons} seasons, and I have to be honest: your recent finishes are worse than where you started. A best of ${bestFinish} says the ability is there.${standout} Something has drifted since.`;
+      return `${seasons} seasons, and recent finishes trail where you started. A best of ${bestFinish} says the ability is there.${standout}`;
     case "ever-present":
-      return `${seasons} seasons. You have been here longer than most of the players, typically finishing ${typical}, best of ${bestFinish}.${standout} You are the backbone of every mini-league in the country.`;
+      return `${seasons} seasons, typically ${typical}, best ${bestFinish}.${standout} You have been here longer than most of the players.`;
     default:
-      return `${seasons} seasons, best of ${bestFinish}, typically ${typical}.${standout} Comfortably inside the half of the game that takes it seriously.`;
+      return `${seasons} seasons, typically ${typical}, best ${bestFinish}.${standout} Inside the half of the game that takes it seriously.`;
   }
 }
 

@@ -1,7 +1,9 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 
+import { CeefaxShirt } from "./CeefaxShirt";
 import { money } from "../format";
+import { kitForShortName } from "../kit/team-kits";
 import {
   forgetDeclaredSquad,
   readDeclaredSquad,
@@ -33,6 +35,165 @@ const SLOTS = [
 
 function pounds(tenths: number): string {
   return `${money.format(tenths / 10)}m`;
+}
+
+type SquadPlayer = NonNullable<
+  ReturnType<(typeof PLAYERS_BY_ELEMENT_ID)["get"]>
+>;
+
+/** One place on the pitch: a shirt and a price, or an empty outline. */
+function SquadSlot({
+  player,
+  position,
+  onClear,
+}: {
+  player: SquadPlayer | null;
+  position: string;
+  onClear: () => void;
+}) {
+  if (!player) {
+    return (
+      <div className="squad-slot squad-slot-empty">
+        <span className="squad-slot-position mono">{position}</span>
+      </div>
+    );
+  }
+
+  // A club with no kit drawn yet gets the name and the price but no shirt,
+  // rather than another club's colours.
+  const kit = kitForShortName(player.club);
+
+  return (
+    <div className="squad-slot">
+      <button
+        aria-label={`Remove ${player.name}`}
+        className="squad-slot-clear"
+        onClick={onClear}
+        type="button"
+      >
+        ×
+      </button>
+      <span className="squad-slot-price mono">
+        {pounds(player.priceTenths)}
+      </span>
+      {kit ? <CeefaxShirt kit={kit} label={null} /> : null}
+      <span className="squad-slot-name">{player.name}</span>
+      <span className="squad-slot-club mono">{player.club}</span>
+    </div>
+  );
+}
+
+/** The list you pick from, filtered the way the official transfer page filters. */
+function SquadMarket({
+  players,
+  picked,
+  remainingTenths,
+  onAdd,
+}: {
+  players: readonly SquadPlayer[];
+  picked: ReadonlySet<number>;
+  remainingTenths: number;
+  onAdd: (player: SquadPlayer) => void;
+}) {
+  const [position, setPosition] = useState("ALL");
+  const [maxTenths, setMaxTenths] = useState(155);
+  const [search, setSearch] = useState("");
+
+  const shown = useMemo(() => {
+    const needle = search.trim().toLowerCase();
+    return players
+      .filter((player) => position === "ALL" || player.position === position)
+      .filter((player) => player.priceTenths <= maxTenths)
+      .filter(
+        (player) =>
+          !needle ||
+          player.name.toLowerCase().includes(needle) ||
+          player.club.toLowerCase().includes(needle),
+      )
+      .sort((left, right) => right.priceTenths - left.priceTenths);
+  }, [players, position, maxTenths, search]);
+
+  return (
+    <div className="squad-market">
+      <div className="squad-market-filters">
+        <select
+          aria-label="Position"
+          onChange={(changed) => {
+            setPosition(changed.target.value);
+          }}
+          value={position}
+        >
+          <option value="ALL">All players</option>
+          {SLOTS.map((slot) => (
+            <option key={slot.position} value={slot.position}>
+              {slot.label}
+            </option>
+          ))}
+        </select>
+        <select
+          aria-label="Maximum price"
+          onChange={(changed) => {
+            setMaxTenths(Number(changed.target.value));
+          }}
+          value={maxTenths}
+        >
+          {[155, 130, 110, 90, 75, 60, 50, 45].map((tenths) => (
+            <option key={tenths} value={tenths}>
+              {pounds(tenths)}
+            </option>
+          ))}
+        </select>
+        <input
+          aria-label="Search by name or club"
+          onChange={(changed) => {
+            setSearch(changed.target.value);
+          }}
+          placeholder="Search"
+          type="search"
+          value={search}
+        />
+      </div>
+
+      <p className="squad-market-count mono">
+        {shown.length} shown · {pounds(remainingTenths)} left
+      </p>
+
+      <ol className="squad-market-list">
+        {shown.slice(0, 120).map((player) => {
+          const already = picked.has(player.id);
+          const tooDear = player.priceTenths > remainingTenths;
+          return (
+            <li key={player.id}>
+              <span className="squad-market-name">{player.name}</span>
+              <span className="squad-market-club mono">
+                {player.club} {player.position}
+              </span>
+              <span className="squad-market-price mono">
+                {pounds(player.priceTenths)}
+              </span>
+              <button
+                aria-label={`Add ${player.name}`}
+                disabled={already || tooDear}
+                onClick={() => {
+                  onAdd(player);
+                }}
+                title={
+                  already
+                    ? "Already in your fifteen"
+                    : tooDear
+                      ? "More than you have left"
+                      : "Add"
+                }
+                type="button"
+              >
+                +
+              </button>
+            </li>
+          );
+        })}
+      </ol>
+    </div>
+  );
 }
 
 function declaredSquadAnnouncement(
@@ -106,6 +267,18 @@ export function DeclaredSquadBuilder({
     setSaved(true);
   };
 
+  /** Drop a player into the first free slot of his own position. */
+  const addPlayer = (player: SquadPlayer) => {
+    const group = SLOTS.find((slot) => slot.position === player.position);
+    if (!group) return;
+    const free = Array.from(
+      { length: group.count },
+      (_u, o) => group.offset + o,
+    ).find((index) => !picks[index]);
+    if (free === undefined) return;
+    setSlot(free, String(player.id));
+  };
+
   const clear = () => {
     forgetDeclaredSquad(window.localStorage, entryId, event);
     setPicks(Array.from({ length: 15 }, () => ""));
@@ -125,68 +298,55 @@ export function DeclaredSquadBuilder({
       </div>
 
       <p>
-        FPL keeps every squad private until the first deadline passes, so there
-        is nothing public to read for your team yet. Tell me the fifteen you
-        have picked and I will hold it as though it were played in gameweek one,
-        then plan the remaining thirty-seven around it. It stays in this
-        browser.
+        FPL keeps every squad private until the first deadline, so there is
+        nothing public to read yet. Name your fifteen and I will plan the season
+        from it. It stays in this browser.
       </p>
 
-      <form
-        className="declared-squad-form"
-        onSubmit={(submitted) => {
-          submitted.preventDefault();
-          lockIn();
-        }}
-      >
-        {SLOTS.map((group) => (
-          <fieldset key={group.position}>
-            <legend>
-              {group.label} ({group.count})
-            </legend>
-            {Array.from({ length: group.count }, (_unused, offset) => {
-              const index = group.offset + offset;
-              return (
-                <div className="declared-squad-slot" key={index}>
-                  <label htmlFor={`squad-slot-${String(index)}`}>
-                    {group.position} {String(index + 1)}
-                  </label>
-                  <select
-                    id={`squad-slot-${String(index)}`}
-                    onChange={(changed) => {
-                      setSlot(index, changed.target.value);
-                    }}
-                    value={picks[index] ?? ""}
-                  >
-                    <option value="">Pick a player</option>
-                    {players
-                      .filter((player) => player.position === group.position)
-                      .map((player) => (
-                        <option key={player.id} value={player.id}>
-                          {player.name} ({player.club},{" "}
-                          {pounds(player.priceTenths)})
-                        </option>
-                      ))}
-                  </select>
-                </div>
-              );
-            })}
-          </fieldset>
-        ))}
+      <div className="squad-builder">
+        <SquadMarket
+          onAdd={addPlayer}
+          picked={new Set(chosen)}
+          players={players}
+          remainingTenths={SQUAD_BUDGET_TENTHS - spentTenths}
+        />
 
-        <div className="declared-squad-actions">
-          <button
-            className="primary-command"
-            disabled={validation?.valid !== true}
-            type="submit"
-          >
-            Lock this in for gameweek 1
-          </button>
-          <button className="secondary-command" onClick={clear} type="button">
-            Clear
-          </button>
+        <div className="squad-pitch">
+          {SLOTS.map((group) => (
+            <div className="squad-pitch-row" key={group.position}>
+              {Array.from({ length: group.count }, (_unused, offset) => {
+                const index = group.offset + offset;
+                const elementId = Number(picks[index] ?? "");
+                const player = PLAYERS_BY_ELEMENT_ID.get(elementId) ?? null;
+                return (
+                  <SquadSlot
+                    key={index}
+                    onClear={() => {
+                      setSlot(index, "");
+                    }}
+                    player={player}
+                    position={group.position}
+                  />
+                );
+              })}
+            </div>
+          ))}
         </div>
-      </form>
+      </div>
+
+      <div className="declared-squad-actions">
+        <button
+          className="primary-command"
+          disabled={validation?.valid !== true}
+          onClick={lockIn}
+          type="button"
+        >
+          Lock this in for gameweek 1
+        </button>
+        <button className="secondary-command" onClick={clear} type="button">
+          Clear
+        </button>
+      </div>
 
       <p aria-live="polite" className="visually-hidden" role="status">
         {declaredSquadAnnouncement(chosen.length, saved, validation)}

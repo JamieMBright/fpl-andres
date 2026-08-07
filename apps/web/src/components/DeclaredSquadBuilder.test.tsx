@@ -46,12 +46,19 @@ function legalSquad(): SolverPlayer[] {
 
 async function fillSquad(squad: readonly SolverPlayer[]): Promise<void> {
   const user = userEvent.setup();
-  const selects = screen.getAllByRole("combobox");
-  for (const [index, player] of squad.entries()) {
-    const select = selects[index];
-    if (!select) throw new Error("missing squad slot");
-    await user.selectOptions(select, String(player.id));
+  // The market lists by name, so each player is found by his own add button
+  // rather than by a slot index the pitch no longer exposes.
+  const search = screen.getByRole("searchbox", { name: /search/i });
+  for (const player of squad) {
+    // Pasted rather than typed: fifteen names one keystroke at a time takes
+    // longer than the whole suite's per-test budget.
+    await user.clear(search);
+    await user.paste(player.name);
+    await user.click(
+      screen.getByRole("button", { name: `Add ${player.name}` }),
+    );
   }
+  await user.clear(search);
 }
 
 function renderBuilder() {
@@ -67,42 +74,62 @@ describe("DeclaredSquadBuilder", () => {
     window.localStorage.clear();
   });
 
-  it("locks in a legal fifteen and keeps it in this browser", async () => {
-    renderBuilder();
+  // Fifteen real interactions through a six-hundred-player market. The default
+  // five seconds fits when the file runs alone and does not when the suite runs
+  // in parallel, which is a property of the runner rather than of the code.
+  const JOURNEY_TIMEOUT = 30_000;
 
-    await fillSquad(legalSquad());
-    await userEvent.click(
-      screen.getByRole("button", { name: /lock this in/i }),
-    );
+  it(
+    "locks in a legal fifteen and keeps it in this browser",
+    async () => {
+      renderBuilder();
 
-    expect(
-      readDeclaredSquad(window.localStorage, 42, 1)?.elementIds,
-    ).toHaveLength(15);
-    expect(
-      screen.getByText(/now starts from these fifteen/i),
-    ).toBeInTheDocument();
-  });
+      await fillSquad(legalSquad());
+      await userEvent.click(
+        screen.getByRole("button", { name: /lock this in/i }),
+      );
 
-  it("refuses a squad that breaks a published rule and stores nothing", async () => {
-    renderBuilder();
+      expect(
+        readDeclaredSquad(window.localStorage, 42, 1)?.elementIds,
+      ).toHaveLength(15);
+      expect(
+        screen.getByText(/now starts from these fifteen/i),
+      ).toBeInTheDocument();
+    },
+    JOURNEY_TIMEOUT,
+  );
 
-    const squad = legalSquad();
-    const dearest = POOL.filter((player) => player.position === "FWD").sort(
-      (left, right) => right.priceTenths - left.priceTenths,
-    );
-    const replacement = dearest[0];
-    if (!replacement) throw new Error("no forward in the pool");
-    const swapped = squad.map((player, index) =>
-      index === 14 ? replacement : player,
-    );
-    // Same forward twice: a duplicate FPL would never accept.
-    swapped[13] = replacement;
+  it(
+    "refuses a squad that breaks a published rule and stores nothing",
+    async () => {
+      renderBuilder();
 
-    await fillSquad(swapped);
+      // Four from one club. The market cannot prevent this the way it prevents a
+      // duplicate, so it is the rule the validator has to catch.
+      const counts = new Map<string, SolverPlayer[]>();
+      for (const player of POOL) {
+        counts.set(player.club, [...(counts.get(player.club) ?? []), player]);
+      }
+      const crowded = [...counts.values()].find((group) => group.length >= 4);
+      if (!crowded) throw new Error("no club with four players in the pool");
 
-    expect(
-      screen.getByRole("button", { name: /lock this in/i }),
-    ).toBeDisabled();
-    expect(readDeclaredSquad(window.localStorage, 42, 1)).toBeNull();
-  });
+      const squad = legalSquad();
+      const swapped = squad.map((player, index) => {
+        const replacement = crowded.find(
+          (candidate) =>
+            candidate.position === player.position &&
+            !squad.some((held) => held.id === candidate.id),
+        );
+        return index < 4 && replacement ? replacement : player;
+      });
+
+      await fillSquad(swapped);
+
+      expect(
+        screen.getByRole("button", { name: /lock this in/i }),
+      ).toBeDisabled();
+      expect(readDeclaredSquad(window.localStorage, 42, 1)).toBeNull();
+    },
+    JOURNEY_TIMEOUT,
+  );
 });

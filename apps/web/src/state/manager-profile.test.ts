@@ -1,6 +1,19 @@
 import { describe, expect, it } from "vitest";
 
-import { commentary, readManagerProfile } from "./manager-profile";
+import {
+  commentary,
+  readManagerProfile,
+  type ManagerProfile,
+} from "./manager-profile";
+
+/** Narrows to a real profile so a success case reads without null guards. */
+function profileOf(payload: unknown): ManagerProfile {
+  const profile = readManagerProfile(payload);
+  if (profile === null || profile === "unreadable") {
+    throw new Error(`expected a readable profile, got ${String(profile)}`);
+  }
+  return profile;
+}
 
 function history(entries: [string, number, number | null][]) {
   return {
@@ -15,7 +28,7 @@ function history(entries: [string, number, number | null][]) {
 describe("readManagerProfile", () => {
   it("reads a career that transformed rather than a consistent one", () => {
     // Entry 1's real record. Two dreadful seasons, then elite for five.
-    const profile = readManagerProfile({
+    const profile = profileOf({
       past: [
         {
           season_name: "2014/15",
@@ -80,16 +93,16 @@ describe("readManagerProfile", () => {
       ],
     });
 
-    expect(profile?.bestRank).toBe(19);
-    expect(profile?.bestPercentile).toBe(0);
+    expect(profile.bestRank).toBe(19);
+    expect(profile.bestPercentile).toBe(0);
     // Five seasons inside the top one percent is a pattern, never a one-off.
-    expect(profile?.standoutSeasons).toBe(5);
-    expect(profile?.archetype).toBe("elite");
-    expect(commentary(profile!)).toMatch(/top one percent 5 times/);
+    expect(profile.standoutSeasons).toBe(5);
+    expect(profile.archetype).toBe("elite");
+    expect(commentary(profile)).toMatch(/Top one percent 5 times/i);
   });
 
   it("drops seasons that were never completed rather than scoring them", () => {
-    const profile = readManagerProfile(
+    const profile = profileOf(
       history([
         ["2023/24", 2400, 50_000],
         ["2024/25", 0, null],
@@ -97,12 +110,12 @@ describe("readManagerProfile", () => {
       ]),
     );
 
-    expect(profile?.seasonsPlayed).toBe(2);
-    expect(profile?.bestRank).toBe(50_000);
+    expect(profile.seasonsPlayed).toBe(2);
+    expect(profile.bestRank).toBe(50_000);
   });
 
   it("names the season the best finish came in", () => {
-    const profile = readManagerProfile(
+    const profile = profileOf(
       history([
         ["2022/23", 2500, 900_000],
         ["2023/24", 2600, 12_000],
@@ -110,11 +123,11 @@ describe("readManagerProfile", () => {
       ]),
     );
 
-    expect(profile?.bestSeason).toBe("2023/24");
+    expect(profile.bestSeason).toBe("2023/24");
   });
 
   it("calls a consistently elite record a contender", () => {
-    const profile = readManagerProfile(
+    const profile = profileOf(
       history([
         ["2022/23", 2600, 40_000],
         ["2023/24", 2650, 30_000],
@@ -123,11 +136,11 @@ describe("readManagerProfile", () => {
       ]),
     );
 
-    expect(profile?.archetype).toBe("contender");
+    expect(profile.archetype).toBe("contender");
   });
 
   it("calls one great season among ordinary ones a spike", () => {
-    const profile = readManagerProfile(
+    const profile = profileOf(
       history([
         ["2021/22", 2200, 1_400_000],
         ["2022/23", 2700, 8_000],
@@ -136,12 +149,12 @@ describe("readManagerProfile", () => {
       ]),
     );
 
-    expect(profile?.archetype).toBe("spiker");
-    expect(commentary(profile!)).toMatch(/mostly variance/i);
+    expect(profile.archetype).toBe("spiker");
+    expect(commentary(profile)).toMatch(/mostly variance/i);
   });
 
   it("spots an improving career", () => {
-    const profile = readManagerProfile(
+    const profile = profileOf(
       history([
         ["2022/23", 2000, 3_000_000],
         ["2023/24", 2100, 2_500_000],
@@ -150,12 +163,12 @@ describe("readManagerProfile", () => {
       ]),
     );
 
-    expect(profile?.archetype).toBe("climber");
-    expect(profile?.trend).toBeLessThan(0);
+    expect(profile.archetype).toBe("climber");
+    expect(profile.trend).toBeLessThan(0);
   });
 
   it("spots a declining one and says so plainly", () => {
-    const profile = readManagerProfile(
+    const profile = profileOf(
       history([
         ["2022/23", 2500, 200_000],
         ["2023/24", 2450, 400_000],
@@ -164,29 +177,57 @@ describe("readManagerProfile", () => {
       ]),
     );
 
-    expect(profile?.archetype).toBe("fader");
-    expect(commentary(profile!)).toMatch(/worse than where you started/i);
+    expect(profile.archetype).toBe("fader");
+    expect(commentary(profile)).toMatch(/trail where you started/i);
   });
 
   it("does not read a direction into a short career", () => {
-    const profile = readManagerProfile(
+    const profile = profileOf(
       history([
         ["2024/25", 2300, 500_000],
         ["2025/26", 2400, 300_000],
       ]),
     );
 
-    expect(profile?.trend).toBeNull();
-    expect(profile?.archetype).toBe("newcomer");
+    expect(profile.trend).toBeNull();
+    expect(profile.archetype).toBe("newcomer");
   });
 
   it("returns nothing when there is no completed season", () => {
     expect(readManagerProfile(history([["2025/26", 0, null]]))).toBeNull();
     expect(readManagerProfile({ past: [] })).toBeNull();
-    expect(readManagerProfile({ nonsense: true })).toBeNull();
   });
 
-  it("refuses a malformed payload rather than guessing", () => {
-    expect(readManagerProfile({ past: [{ season_name: "nope" }] })).toBeNull();
+  it("refuses a malformed payload rather than calling it an empty record", () => {
+    // Reporting a schema break as "no completed season" told sixteen-season
+    // managers they were newcomers, which the reader cannot catch.
+    expect(readManagerProfile({ past: [{ season_name: "nope" }] })).toBe(
+      "unreadable",
+    );
+    expect(readManagerProfile({ nonsense: true })).toBe("unreadable");
+  });
+
+  it("reads rank_percentage when FPL sends it as a string", () => {
+    // Measured against entry 212279 on 2026-08-07: FPL sends "6", not 6. A
+    // plain number schema rejected the whole array and discarded 16 seasons.
+    const profile = profileOf({
+      past: [
+        {
+          season_name: "2010/11",
+          total_points: 1963,
+          rank: 142800,
+          rank_percentage: "6",
+        },
+        {
+          season_name: "2011/12",
+          total_points: 2103,
+          rank: 39622,
+          rank_percentage: "1",
+        },
+      ],
+    });
+
+    expect(profile.seasons).toHaveLength(2);
+    expect(profile.seasons[0]?.percentile).toBe(6);
   });
 });

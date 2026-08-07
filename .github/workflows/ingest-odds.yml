@@ -1,0 +1,93 @@
+name: Ingest Bookmaker Odds
+
+# Runs here and only here. Every price host fails at the TLS handshake from the
+# owner's network behind a gambling-category content filter, while the same
+# hosts answer normally from a GitHub runner. The blocker is the desk, not the
+# feed, and this is the same pattern `validate` already uses for the corpus.
+#
+# What lands in the repository is not odds. It is the expected goals and the
+# clean-sheet probability each fixture's market implies, which are the
+# quantities the scoring model already speaks. Nothing here emits or implies a
+# betting recommendation, and the site never links to a bookmaker.
+
+on:
+  schedule:
+    # Thursday morning and Friday evening: after midweek prices settle, and
+    # again close enough to a typical Friday deadline to be worth acting on.
+    # Deliberately off the hour.
+    - cron: "23 8 * * 4"
+    - cron: "23 18 * * 5"
+  workflow_dispatch:
+    inputs:
+      season:
+        description: "Season in YYYY-YY form, e.g. 2026-27. Blank derives it from the calendar."
+        required: false
+        default: ""
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ingest-odds
+  cancel-in-progress: false
+
+jobs:
+  ingest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      # Needed to commit the refreshed artifact back to the branch.
+      contents: write
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install engine
+        run: python -m pip install -e .
+
+      - name: Validate dispatch input
+        env:
+          ODDS_SEASON: ${{ inputs.season }}
+        run: |
+          if [ -n "$ODDS_SEASON" ] && ! printf '%s' "$ODDS_SEASON" | grep -qE '^20[0-9]{2}-[0-9]{2}$'; then
+            echo "season must look like 2026-27, got: $ODDS_SEASON" >&2
+            exit 1
+          fi
+
+      - name: Fetch odds and publish the goals distribution
+        env:
+          # Passed as env rather than inlined, so no input reaches the shell as code.
+          ODDS_SEASON: ${{ inputs.season }}
+        run: |
+          season="$ODDS_SEASON"
+          if [ -z "$season" ]; then
+            # A season starts in August, so before August the current season
+            # began in the previous calendar year.
+            year=$(date -u +%Y)
+            month=$(date -u +%m)
+            if [ "$month" -lt 8 ]; then
+              year=$((year - 1))
+            fi
+            season="$year-$(printf '%02d' $(( (year + 1) % 100 )))"
+          fi
+          echo "season: $season"
+          python -m fpl_andres.cli.ingest_odds --season "$season"
+
+      - name: Commit the refreshed artifact
+        run: |
+          if git diff --quiet -- apps/web/src/data/fixture-odds.json; then
+            echo "prices unchanged since the last run; nothing to commit"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add apps/web/src/data/fixture-odds.json
+          git commit -m "Refresh the bookmaker-implied goals distribution"
+          git push
