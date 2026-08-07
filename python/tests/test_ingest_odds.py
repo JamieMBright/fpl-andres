@@ -83,6 +83,13 @@ class TestCrosswalk:
         }
         assert current <= set(TEAM_CODES.values())
 
+    def test_covers_every_club_of_the_backtest_seasons(self) -> None:
+        # 2023-24 published 342 of 380 fixtures because Luton was missing here.
+        # 38 fixtures is exactly one club's season, and it read as a rounding
+        # shortfall rather than a hole.
+        for club in ["Luton", "Sheffield United", "Burnley", "Ipswich", "Leicester"]:
+            assert club in TEAM_CODES, club
+
     def test_an_unmapped_club_refuses_the_fixture(self) -> None:
         # A silently dropped fixture is a fixture priced as if it had no
         # market, which is the one failure mode invisible downstream.

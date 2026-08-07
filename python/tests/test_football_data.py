@@ -132,6 +132,48 @@ class TestParse:
         assert batch.rows == ()
         assert batch.skipped == ()
 
+    def test_reads_a_file_served_with_a_byte_order_mark(self) -> None:
+        # A BOM lands inside the first header name, so `Div` becomes unreadable
+        # and every row is skipped as the wrong division. That silently emptied
+        # whole seasons: 380 rows in, 0 out, and no error.
+        batch = parse_odds_csv(
+            "\ufeff"
+            + csv_of(
+                "E0,15/08/2026,20:00,Arsenal,Bournemouth,0,0,"
+                "1.40,5.00,8.00,1.75,2.10,"
+                "1.42,5.20,8.50,1.78,2.05,"
+                "1.30,5.50,9.00"
+            ),
+            upstream_reference="test",
+            fetched_at=FETCHED,
+        )
+        assert len(batch.rows) == 1
+        assert batch.divisions == ("E0",)
+
+    def test_a_season_file_without_a_division_column_is_still_read(self) -> None:
+        # One division per URL, so the column is redundant there. Requiring it
+        # threw away a season that was otherwise perfectly readable.
+        content = (
+            "Date,Time,HomeTeam,AwayTeam,AvgH,AvgD,AvgA,Avg>2.5,Avg<2.5\n"
+            "15/08/2026,20:00,Arsenal,Bournemouth,1.40,5.00,8.00,1.75,2.10\n"
+        )
+        batch = parse_odds_csv(content, upstream_reference="test", fetched_at=FETCHED)
+        assert len(batch.rows) == 1
+        assert batch.matched == 1
+
+    def test_counts_what_matched_so_a_failure_can_name_its_cause(self) -> None:
+        batch = parse_odds_csv(
+            csv_of(
+                "E0,15/08/2026,20:00,Arsenal,Bournemouth,0,0,1.40,5.00,8.00,,,,,,,,1.30,5.50,9.00"
+            ),
+            upstream_reference="test",
+            fetched_at=FETCHED,
+        )
+        # Rows were found and none priced: a contract problem, not a quiet
+        # pre-season. Nothing matched at all would be the other case.
+        assert batch.matched == 1
+        assert batch.rows == ()
+
     def test_refuses_a_feed_that_changed_shape(self) -> None:
         with pytest.raises(OddsContractError, match="feed shape changed"):
             parse_odds_csv(

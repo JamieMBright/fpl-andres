@@ -3,6 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { PlayerDetail } from "./PlayerDetail";
 import { classifyFetchFailure } from "../state/fetch-failure";
 import { rateFixtureRun, type FixtureRun } from "../state/fixture-run";
+import { fold } from "../state/fold";
 import {
   fetchPlayerPool,
   PlayerPoolError,
@@ -165,14 +166,6 @@ function textValue(player: PoolPlayer, key: SortKey): string {
 }
 
 const TEXT_KEYS = new Set<SortKey>(["name", "position", "club"]);
-
-/** Fold accents so searching "saliba" finds "Salib\u00e1". */
-function fold(value: string): string {
-  return value
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .toLowerCase();
-}
 
 /**
  * Everyone in the 2026/27 game, priced now, measured on last season.

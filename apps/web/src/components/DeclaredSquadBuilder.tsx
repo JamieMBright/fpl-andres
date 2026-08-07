@@ -224,6 +224,17 @@ function SquadMarket({
         {shown.length} shown · {pounds(remainingTenths)} left
       </p>
 
+      <div className="squad-market-headings mono" aria-hidden="true">
+        <span>Player</span>
+        <span>Club</span>
+        <span>Pos</span>
+        <span title="Expected points a match">xPts</span>
+        <span title="Expected points per million">/£m</span>
+        <span title="How often he started">Start</span>
+        <span>Price</span>
+        <span />
+      </div>
+
       <ol className="squad-market-list">
         {shown.slice(0, 200).map((player) => {
           const already = picked.has(player.id);
@@ -235,17 +246,18 @@ function SquadMarket({
           return (
             <li key={player.id}>
               <span className="squad-market-name">{player.name}</span>
-              <span className="squad-market-club mono">
-                {player.club} {player.position}
+              <span className="squad-market-club mono">{player.club}</span>
+              <span className="squad-market-pos mono">{player.position}</span>
+              <span className="squad-market-cell mono">
+                {player.points === undefined ? "—" : player.points.toFixed(2)}
               </span>
-              <span className="squad-market-stats mono">
-                {player.points === undefined
-                  ? "—"
-                  : `${player.points.toFixed(2)} xPts`}
-                {perMillion === null ? "" : ` · ${perMillion}/£m`}
+              <span className="squad-market-cell mono">
+                {perMillion ?? "—"}
+              </span>
+              <span className="squad-market-cell mono">
                 {player.startRate === undefined
-                  ? ""
-                  : ` · ${Math.round(player.startRate * 100)}% start`}
+                  ? "—"
+                  : `${Math.round(player.startRate * 100)}%`}
               </span>
               <span className="squad-market-price mono">
                 {pounds(player.priceTenths)}
@@ -370,6 +382,7 @@ export function DeclaredSquadBuilder({
       : Array.from({ length: 15 }, () => ""),
   );
   const [saved, setSaved] = useState(stored !== null);
+  const [saveError, setSaveError] = useState<string | null>(null);
 
   const chosen = picks
     .map((pick) => Number(pick))
@@ -395,8 +408,19 @@ export function DeclaredSquadBuilder({
 
   const lockIn = () => {
     if (!validation?.valid) return;
-    saveDeclaredSquad(window.localStorage, entryId, event, chosen);
-    setSaved(true);
+    try {
+      saveDeclaredSquad(window.localStorage, entryId, event, chosen, roster);
+      setSaved(true);
+      setSaveError(null);
+    } catch (error) {
+      // Storage can be full or blocked, and a rejected save must say so rather
+      // than leaving a button that looks like it did nothing.
+      setSaveError(
+        error instanceof Error
+          ? error.message
+          : "The squad could not be saved.",
+      );
+    }
   };
 
   /** Drop a player into the first free slot of his own position. */
@@ -479,6 +503,12 @@ export function DeclaredSquadBuilder({
           Clear
         </button>
       </div>
+
+      {saveError === null ? null : (
+        <p className="declared-squad-error" role="alert">
+          {saveError}
+        </p>
+      )}
 
       <p aria-live="polite" className="visually-hidden" role="status">
         {declaredSquadAnnouncement(chosen.length, saved, validation)}

@@ -1,6 +1,7 @@
 import { useId, useMemo, useState } from "react";
 
 import type { AnalysisPlayer } from "../state/analysis-pool";
+import { fold } from "../state/fold";
 
 /**
  * Pick who to highlight, by name or by club, one at a time.
@@ -18,14 +19,6 @@ export interface HighlightPickerProps {
   /** Player codes and club short names, mixed, as chosen so far. */
   highlights: readonly string[];
   onChange: (next: string[]) => void;
-}
-
-/** Fold accents so "saliba" finds "Salibá". */
-function fold(value: string): string {
-  return value
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .toLowerCase();
 }
 
 interface Suggestion {

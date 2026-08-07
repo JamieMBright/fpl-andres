@@ -3,6 +3,7 @@ import { useMemo, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 
 import { CeefaxShirt } from "../components/CeefaxShirt";
+import { DeclaredSquadNote } from "../components/DeclaredSquadNote";
 import { DeclaredTransferForm } from "../components/DeclaredTransferForm";
 import { PlayerDetail } from "../components/PlayerDetail";
 import { RouteHeading } from "../components/RouteHeading";
@@ -568,6 +569,8 @@ export default function SeasonPlanPage() {
       <RouteHeading>Every gameweek to the end.</RouteHeading>
 
       <TeamEntry team={team} params={params} onChange={setParams} />
+
+      {teamId === null ? null : <DeclaredSquadNote entryId={teamId} />}
 
       {team.status === "ready" &&
       team.source === "published" &&

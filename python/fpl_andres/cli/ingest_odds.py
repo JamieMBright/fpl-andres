@@ -48,6 +48,10 @@ DEFAULT_BACKFILL_DIR = Path("data/odds")
 #: comparison against the history model has nothing to stand on.
 BACKTEST_SEASONS = ("2022-23", "2023-24", "2024-25", "2025-26")
 
+#: A completed Premier League season. Fewer means a club fell out of the
+#: crosswalk and took all 38 of its fixtures with it.
+EXPECTED_CLUBS = 20
+
 #: Bumped when the published shape changes, so a stale artifact is detectable.
 ODDS_SCHEMA_VERSION = 1
 
@@ -75,14 +79,18 @@ TEAM_CODES: dict[str, str] = {
     "Leeds": "LEE",
     "Leicester": "LEI",
     "Liverpool": "LIV",
+    "Luton": "LUT",
     "Man City": "MCI",
     "Man United": "MUN",
+    "Middlesbrough": "MID",
     "Newcastle": "NEW",
     "Norwich": "NOR",
     "Nott'm Forest": "NFO",
     "Sheffield United": "SHU",
     "Southampton": "SOU",
+    "Stoke": "STK",
     "Sunderland": "SUN",
+    "Swansea": "SWA",
     "Tottenham": "TOT",
     "Watford": "WAT",
     "West Brom": "WBA",
@@ -307,12 +315,27 @@ def main(argv: Sequence[str] | None = None) -> int:
                 [(season_url(season), True)], client, fetched_at
             )
             if not past:
+                for name, why in past_refused[:10]:
+                    print(f"  refused {name}: {why}")
                 raise OddsIngestError(f"{season} carried no priced fixture at all")
+            if past_refused:
+                # A whole club going missing is 38 fixtures and reads as a small
+                # shortfall, so name the reasons rather than only counting them.
+                for name, why in past_refused[:5]:
+                    print(f"  refused {name}: {why}")
             path = Path(args.backfill_dir) / f"{season}.json"
             count = _write(
                 path,
                 _artifact(season, fetched_at, past, past_refused, past_provenance),
             )
+            # A completed Premier League season is twenty clubs. Nineteen means
+            # a club fell out of the crosswalk and took all 38 of its fixtures
+            # with it, which is a hole a backtest would never announce.
+            if count != EXPECTED_CLUBS:
+                raise OddsIngestError(
+                    f"{season} joined onto {count} clubs, not {EXPECTED_CLUBS}. "
+                    "A club is missing from TEAM_CODES; the refusals above name it."
+                )
             print(
                 f"wrote {len(past)} priced fixtures across {count} clubs to "
                 f"{path}, refused {len(past_refused)}"

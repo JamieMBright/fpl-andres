@@ -225,9 +225,10 @@ export function saveDeclaredSquad(
   entryId: number,
   event: number,
   elementIds: readonly number[],
+  roster: ReadonlyMap<number, RosterPlayer> = PLAYERS_BY_ELEMENT_ID,
   now: () => Date = () => new Date(),
 ): DeclaredSquad {
-  const validation = validateDeclaredSquad(elementIds);
+  const validation = validateDeclaredSquad(elementIds, roster);
   if (!validation.valid) {
     throw new TypeError(validation.problems.join(" "));
   }
@@ -244,7 +245,14 @@ export function saveDeclaredSquad(
   return squad;
 }
 
-/** A stored squad that no longer parses, or no longer obeys the rules, is discarded. */
+/**
+ * A stored squad that no longer parses is discarded.
+ *
+ * Legality is deliberately NOT re-checked here. The squad was checked against
+ * the live FPL list when it was saved, and this reader is often called before
+ * that list has loaded -- re-checking against the smaller planning pool wiped
+ * every squad containing a player the planner holds no record for.
+ */
 export function readDeclaredSquad(
   storage: Storage,
   entryId: number,
@@ -260,7 +268,8 @@ export function readDeclaredSquad(
       !parsed.success ||
       parsed.data.entryId !== entryId ||
       parsed.data.event !== event ||
-      !validateDeclaredSquad(parsed.data.elementIds).valid
+      parsed.data.elementIds.length !== SQUAD_SIZE ||
+      new Set(parsed.data.elementIds).size !== SQUAD_SIZE
     ) {
       storage.removeItem(key);
       return null;

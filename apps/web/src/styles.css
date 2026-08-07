@@ -849,13 +849,41 @@ h1[tabindex="-1"]:focus-visible {
 
 /* Seasons left to right, finishing share up the side: the only axis that
    compares across eras. Points totals move with the season, not the manager. */
+.record-chart {
+  position: relative;
+  margin-top: 8px;
+  padding-right: 52px;
+}
+
+/* Reference lines for the two thresholds anyone actually aims at. */
+.record-goal {
+  position: absolute;
+  right: 0;
+  left: 0;
+  height: 0;
+  border-top: 1px dashed rgb(255 255 255 / 45%);
+  pointer-events: none;
+}
+
+.record-goal-soft {
+  border-top-color: rgb(255 255 255 / 22%);
+}
+
+.record-goal span {
+  position: absolute;
+  right: 0;
+  transform: translateY(-50%);
+  padding-left: 4px;
+  font-size: 10px;
+  color: var(--ink-soft);
+}
+
 .record-seasons {
   display: flex;
   align-items: flex-end;
-  gap: 3px;
+  gap: 2px;
   margin: 0;
   padding: 0;
-  overflow-x: auto;
   list-style: none;
 }
 
@@ -864,16 +892,16 @@ h1[tabindex="-1"]:focus-visible {
   flex: 1 1 0;
   flex-direction: column;
   align-items: center;
-  gap: 3px;
-  min-width: 34px;
-  font-size: 11px;
+  gap: 2px;
+  min-width: 0;
+  font-size: 10px;
 }
 
 .record-column {
   display: flex;
   align-items: flex-end;
   width: 100%;
-  height: 132px;
+  height: 150px;
   background: rgb(255 255 255 / 6%);
 }
 
@@ -883,21 +911,27 @@ h1[tabindex="-1"]:focus-visible {
   background: var(--field-green);
 }
 
+/* A top-one-percent season is the target, so it is the one worth marking. */
+.record-column-fill.is-elite {
+  background: var(--amber);
+}
+
 .record-season-name {
   color: var(--ink-soft);
 }
 
-.record-rank {
-  font-size: 10px;
-  white-space: nowrap;
-}
-
 .record-caveat {
-  margin-top: 18px;
+  margin-top: 14px;
   border-top: 1px solid var(--rule);
   padding-top: 12px;
   color: var(--ink-soft);
   font-size: 13px;
+}
+
+.record-caveat + .record-caveat {
+  margin-top: 8px;
+  border-top: 0;
+  padding-top: 0;
 }
 
 .transfer-plan {
@@ -4134,7 +4168,7 @@ h1[tabindex="-1"]:focus-visible {
    not a squad, and a squad is what a reader is trying to see. */
 .squad-builder {
   display: grid;
-  grid-template-columns: minmax(260px, 340px) 1fr;
+  grid-template-columns: minmax(380px, 1fr) minmax(320px, 1fr);
   gap: 20px;
   margin: 20px 0;
   align-items: start;
@@ -4174,48 +4208,90 @@ h1[tabindex="-1"]:focus-visible {
   border-top: 1px solid rgb(255 255 255 / 12%);
 }
 
+/* One row per player, columns aligned. Stacking name over club over stats made
+   every player three rows tall, so a list of six hundred showed about eight. */
+.squad-market-columns,
+.squad-market-headings,
 .squad-market-list li {
   display: grid;
-  grid-template-columns: 1fr auto auto;
-  grid-template-areas: "name price add" "club price add" "stats price add";
-  gap: 0 8px;
+  grid-template-columns:
+    minmax(0, 1fr) 2.6em 2.2em 2.8em 2.6em 2.6em 3.2em
+    22px;
+  gap: 6px;
   align-items: center;
-  padding: 3px 6px;
+}
+
+.squad-market-headings {
+  padding: 0 6px 3px;
+  border-bottom: 1px solid rgb(255 255 255 / 20%);
+  font-size: 0.6rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  opacity: 0.55;
+}
+
+.squad-market-headings span:not(:first-child) {
+  text-align: right;
+}
+
+.squad-market-list li {
+  padding: 2px 6px;
   border-bottom: 1px solid rgb(255 255 255 / 8%);
-  line-height: 1.25;
+  line-height: 1.3;
 }
 
 .squad-market-name {
-  grid-area: name;
   font-weight: 600;
-  font-size: 0.82rem;
+  font-size: 0.78rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.squad-market-club {
-  grid-area: club;
+.squad-market-club,
+.squad-market-pos {
   font-size: 0.68rem;
-  opacity: 0.6;
+  opacity: 0.65;
+  text-align: right;
 }
 
-.squad-market-stats {
-  grid-area: stats;
-  font-size: 0.68rem;
-  opacity: 0.8;
+.squad-market-cell {
+  font-size: 0.7rem;
+  text-align: right;
 }
 
 .squad-market-price {
-  grid-area: price;
-  font-size: 0.8rem;
+  font-size: 0.72rem;
+  text-align: right;
 }
 
 .squad-market-list button {
-  grid-area: add;
   width: 22px;
   height: 22px;
   padding: 0;
   border-radius: 50%;
   font-size: 0.95rem;
   line-height: 1;
+}
+
+/* A refused save must say so. It used to throw and leave a button that looked
+   like it simply did nothing. */
+.declared-squad-error {
+  margin: 10px 0 0;
+  padding: 10px 14px;
+  border-left: 3px solid var(--danger, #ff5252);
+  background: rgb(255 82 82 / 10%);
+  line-height: 1.5;
+}
+
+/* Says which fifteen the plan started from, with a route back to change it. */
+.declared-note {
+  margin: 12px 0 0;
+  padding: 10px 14px;
+  border-left: 3px solid var(--accent, #00e676);
+  background: rgb(255 255 255 / 4%);
+  font-size: 0.92rem;
+  line-height: 1.5;
 }
 
 .opening-adopt {

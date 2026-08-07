@@ -149,13 +149,21 @@ def parse_odds_csv(
     if fetched_at.tzinfo is None:
         raise OddsContractError("fetched_at must be timezone-aware UTC")
 
-    reader = csv.DictReader(io.StringIO(content))
-    header = reader.fieldnames or []
+    # Some of these files are served with a byte-order mark, which lands inside
+    # the first header name and makes `Div` unreadable. Trailing spaces appear
+    # in others. Both silently emptied whole seasons before this.
+    reader = csv.DictReader(io.StringIO(content.lstrip("\ufeff")))
+    reader.fieldnames = [name.strip().lstrip("\ufeff") for name in reader.fieldnames or []]
+    header = reader.fieldnames
     missing = [column for column in _REQUIRED if column not in header]
     if missing:
         raise OddsContractError(
             f"{upstream_reference} is missing {', '.join(missing)}; the feed shape changed"
         )
+
+    # A per-season file is one division by its URL. Only the combined fixture
+    # list needs the column, so its absence is not a reason to read nothing.
+    has_division_column = "Div" in header
 
     rows: list[FixtureOdds] = []
     skipped: list[tuple[str, str]] = []
@@ -170,8 +178,9 @@ def parse_odds_csv(
 
         label = f"{home} v {away}"
         found = (row.get("Div") or "").strip()
-        divisions.add(found)
-        if division is not None and found != division:
+        if found:
+            divisions.add(found)
+        if division is not None and has_division_column and found and found != division:
             continue
         matched += 1
 
