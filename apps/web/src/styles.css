@@ -4371,6 +4371,14 @@ h1[tabindex="-1"]:focus-visible {
   border: 1px dashed rgb(255 255 255 / 30%);
 }
 
+/* Marks a row whose numbers are a role prior rather than a measurement. */
+.squad-market-prior {
+  margin-left: 3px;
+  color: var(--amber);
+  cursor: help;
+  text-decoration: none;
+}
+
 /* Clubs as kits: a shirt is recognised faster than a three-letter code. */
 .squad-club-strip {
   display: flex;

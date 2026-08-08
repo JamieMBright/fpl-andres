@@ -23,12 +23,13 @@ const BUDGETS = [
   { match: /\.css$/, name: "stylesheet", gzipKb: 15 },
   // Measured 128.26 kB. Router, zod, lucide and the shell.
   { match: /^index-.*\.js$/, name: "entry chunk", gzipKb: 150 },
-  // Measured 50.46 kB. The plan is now the only route a manager needs: the
+  // Measured 54.94 kB. The plan is now the only route a manager needs: the
   // snapshot, the record, the squad builder and the season all arrive here,
-  // replacing a second route that had to be downloaded separately. Budgeted
-  // apart from the other lazy chunks so absorbing a page does not quietly
-  // raise the ceiling for everything else.
-  { match: /^SeasonPlanPage-.*\.js$/, name: "plan chunk", gzipKb: 54 },
+  // replacing a second route that had to be downloaded separately, and the
+  // squad pool carries every player in the game rather than a top-forty cut.
+  // Budgeted apart from the other lazy chunks so absorbing a page does not
+  // quietly raise the ceiling for everything else.
+  { match: /^SeasonPlanPage-.*\.js$/, name: "plan chunk", gzipKb: 58 },
   // Measured 39.94 kB for the shared chunk, raised from 38 kB. Consolidating
   // the team view onto the plan moved several components into shared code
   // rather than a route of their own, and the browser pool grew from a

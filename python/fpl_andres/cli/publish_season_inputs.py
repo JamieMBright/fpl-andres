@@ -22,7 +22,7 @@ import argparse
 import json
 import sys
 import urllib.request
-from collections.abc import Sequence
+from collections.abc import Mapping, Sequence
 from datetime import UTC, datetime
 from pathlib import Path
 
@@ -74,6 +74,43 @@ def _get(url: str) -> object:
 # rated on both halves of it: what this side is likely to score and what it is
 # likely to concede, at the venue it is played. Blanks are None, not three:
 # there is no fixture to be difficult.
+
+
+def _priors_by_depth(
+    elements: Sequence[BootstrapElement],
+    depth: Mapping[int, int],
+    record_by_code: Mapping[int, Mapping[str, object]],
+) -> dict[tuple[int, int], tuple[float, float]]:
+    """What a player of this position and depth rank actually does.
+
+    Measured from the players in this same bootstrap who do have a record, so a
+    debutant is described by his role rather than by a number somebody typed.
+    The median, not the mean: one rank-one keeper who missed the season with an
+    injury should not drag the prior for every other first choice.
+
+    Rank is capped at three by the caller — fourth choice and below all mean
+    the same thing, which is "not expected to play".
+    """
+    grouped: dict[tuple[int, int], list[tuple[float, float]]] = {}
+    for element in elements:
+        record = record_by_code.get(element.code)
+        if record is None:
+            continue
+        key = (element.element_type, min(depth[element.id], 3))
+        grouped.setdefault(key, []).append(
+            (
+                float(str(record["expectedPoints"])),
+                float(str(record["probabilityStart"])),
+            )
+        )
+
+    priors: dict[tuple[int, int], tuple[float, float]] = {}
+    for key, observed in grouped.items():
+        points = sorted(value for value, _ in observed)
+        starts = sorted(value for _, value in observed)
+        middle = len(points) // 2
+        priors[key] = (round(points[middle], 3), round(starts[middle], 3))
+    return priors
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -163,13 +200,41 @@ def main(argv: Sequence[str] | None = None) -> int:
         opponents[str(team["short_name"])] = against
 
     players: list[tuple[int, float, dict[str, object]]] = []
-    for element in parse_elements(bootstrap["elements"], model=BootstrapElement):
-        if element.element_type not in POSITION_CODES or not element.is_available:
-            continue
+    available = [
+        element
+        for element in parse_elements(bootstrap["elements"], model=BootstrapElement)
+        if element.element_type in POSITION_CODES and element.is_available
+    ]
+
+    # Where a player sits in his club's queue for a shirt, read from FPL's own
+    # prices. FPL prices the intended starter above his understudy, and that
+    # ordering is published before a ball is kicked.
+    depth: dict[int, int] = {}
+    by_squad: dict[tuple[int, int], list[BootstrapElement]] = {}
+    for element in available:
+        by_squad.setdefault((element.team, element.element_type), []).append(element)
+    for squad in by_squad.values():
+        for element in squad:
+            depth[element.id] = 1 + sum(1 for other in squad if other.now_cost > element.now_cost)
+
+    priors = _priors_by_depth(available, depth, record_by_code)
+
+    for element in available:
         record = record_by_code.get(element.code)
-        if record is None:
-            continue
-        base_points = round(float(record["expectedPoints"]), 3)
+        rated = record is not None
+        if rated:
+            assert record is not None
+            base_points = round(float(record["expectedPoints"]), 3)
+            start_rate = round(float(record["probabilityStart"]), 3)
+        else:
+            # No Premier League record at all. He is still pickable — somebody
+            # will own him — but every number here is a prior taken from what
+            # players at his depth rank and position actually do, not a
+            # measurement of him.
+            prior = priors.get((element.element_type, min(depth[element.id], 3)))
+            if prior is None:
+                continue
+            base_points, start_rate = prior
         players.append(
             (
                 element.element_type,
@@ -184,8 +249,10 @@ def main(argv: Sequence[str] | None = None) -> int:
                     "teamId": element.team,
                     "priceTenths": element.now_cost,
                     "basePoints": base_points,
-                    "startRate": round(float(record["probabilityStart"]), 3),
+                    "startRate": start_rate,
                     "squadNumber": element.squad_number,
+                    "rated": rated,
+                    "depthRank": depth[element.id],
                 },
             )
         )

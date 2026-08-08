@@ -45,6 +45,8 @@ type SquadPlayer = RosterPlayer & {
   /** Expected points a match, absent where the planner holds no record. */
   points: number | undefined;
   startRate: number | undefined;
+  /** False where those numbers are a prior for his role, not a record of him. */
+  measured: boolean;
 };
 
 /** One place on the pitch: a shirt and a price, or an empty outline. */
@@ -317,7 +319,17 @@ function SquadMarket({
                 : (player.points / (player.priceTenths / 10)).toFixed(2);
             return (
               <li key={player.id}>
-                <span className="squad-market-name">{player.name}</span>
+                <span className="squad-market-name">
+                  {player.name}
+                  {player.measured ? null : (
+                    <abbr
+                      className="squad-market-prior"
+                      title="No Premier League record. These numbers are what players of his position and place in the club's pecking order do, not a measurement of him."
+                    >
+                      ~
+                    </abbr>
+                  )}
+                </span>
                 <span className="squad-market-club mono">{player.club}</span>
                 <span className="squad-market-pos mono">{player.position}</span>
                 <span className="squad-market-cell mono">
@@ -424,6 +436,7 @@ export function DeclaredSquadBuilder({
         priceTenths: player.priceTenths,
         points: player.basePoints,
         startRate: player.startRate,
+        measured: player.rated !== false,
       }));
     }
     return live.map((player) => {
@@ -436,6 +449,9 @@ export function DeclaredSquadBuilder({
         priceTenths: player.priceTenths,
         points: rated?.basePoints,
         startRate: rated?.startRate,
+        // False where the numbers are a prior for his role rather than a
+        // record of him. Shown, because a prior is not a measurement.
+        measured: rated?.rated !== false,
       };
     });
   }, [pool]);

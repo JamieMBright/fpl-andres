@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-07T21:49:24.953554Z",
+  "generatedAt": "2026-08-08T07:33:44.207146Z",
   "recordSeason": "2025-26",
   "events": [
     1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
@@ -1362,7 +1362,9 @@
       "priceTenths": 50,
       "basePoints": 3.34,
       "startRate": 0.88,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 1,
@@ -1375,7 +1377,9 @@
       "priceTenths": 60,
       "basePoints": 3.29,
       "startRate": 0.757,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 226,
@@ -1388,7 +1392,9 @@
       "priceTenths": 55,
       "basePoints": 3.15,
       "startRate": 0.904,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 412,
@@ -1401,7 +1407,9 @@
       "priceTenths": 50,
       "basePoints": 3.05,
       "startRate": 0.902,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 529,
@@ -1414,7 +1422,9 @@
       "priceTenths": 50,
       "basePoints": 3.02,
       "startRate": 0.801,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 109,
@@ -1427,7 +1437,9 @@
       "priceTenths": 45,
       "basePoints": 3.01,
       "startRate": 0.896,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 198,
@@ -1440,7 +1452,9 @@
       "priceTenths": 50,
       "basePoints": 2.99,
       "startRate": 0.863,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 57,
@@ -1453,7 +1467,9 @@
       "priceTenths": 45,
       "basePoints": 2.89,
       "startRate": 0.896,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 250,
@@ -1466,7 +1482,114 @@
       "priceTenths": 45,
       "basePoints": 2.86,
       "startRate": 0.904,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
+    },
+    {
+      "id": 110,
+      "code": 472739,
+      "name": "Rushworth",
+      "position": "GKP",
+      "positionId": 1,
+      "club": "COV",
+      "teamId": 7,
+      "priceTenths": 45,
+      "basePoints": 2.84,
+      "startRate": 0.757,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 1
+    },
+    {
+      "id": 172,
+      "code": 110690,
+      "name": "Wilson",
+      "position": "GKP",
+      "positionId": 1,
+      "club": "COV",
+      "teamId": 7,
+      "priceTenths": 45,
+      "basePoints": 2.84,
+      "startRate": 0.757,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 1
+    },
+    {
+      "id": 274,
+      "code": 105666,
+      "name": "Butland",
+      "position": "GKP",
+      "positionId": 1,
+      "club": "HUL",
+      "teamId": 11,
+      "priceTenths": 45,
+      "basePoints": 2.84,
+      "startRate": 0.757,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 1
+    },
+    {
+      "id": 572,
+      "code": 473284,
+      "name": "Tzolakis",
+      "position": "GKP",
+      "positionId": 1,
+      "club": "HUL",
+      "teamId": 11,
+      "priceTenths": 45,
+      "basePoints": 2.84,
+      "startRate": 0.757,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 1
+    },
+    {
+      "id": 300,
+      "code": 108813,
+      "name": "Walton",
+      "position": "GKP",
+      "positionId": 1,
+      "club": "IPS",
+      "teamId": 12,
+      "priceTenths": 45,
+      "basePoints": 2.84,
+      "startRate": 0.757,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 1
+    },
+    {
+      "id": 554,
+      "code": 546600,
+      "name": "Van Oevelen",
+      "position": "GKP",
+      "positionId": 1,
+      "club": "IPS",
+      "teamId": 12,
+      "priceTenths": 45,
+      "basePoints": 2.84,
+      "startRate": 0.757,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 1
+    },
+    {
+      "id": 564,
+      "code": 240514,
+      "name": "Scherpen",
+      "position": "GKP",
+      "positionId": 1,
+      "club": "IPS",
+      "teamId": 12,
+      "priceTenths": 45,
+      "basePoints": 2.84,
+      "startRate": 0.757,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 1
     },
     {
       "id": 384,
@@ -1479,7 +1602,24 @@
       "priceTenths": 55,
       "basePoints": 2.84,
       "startRate": 0.738,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
+    },
+    {
+      "id": 567,
+      "code": 470551,
+      "name": "Horn\u00ed\u010dek",
+      "position": "GKP",
+      "positionId": 1,
+      "club": "NEW",
+      "teamId": 17,
+      "priceTenths": 50,
+      "basePoints": 2.84,
+      "startRate": 0.757,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 1
     },
     {
       "id": 467,
@@ -1492,7 +1632,9 @@
       "priceTenths": 50,
       "basePoints": 2.78,
       "startRate": 0.818,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 28,
@@ -1505,7 +1647,9 @@
       "priceTenths": 50,
       "basePoints": 2.55,
       "startRate": 0.707,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 140,
@@ -1518,7 +1662,9 @@
       "priceTenths": 50,
       "basePoints": 2.37,
       "startRate": 0.756,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 442,
@@ -1531,7 +1677,9 @@
       "priceTenths": 50,
       "basePoints": 2.31,
       "startRate": 0.679,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 496,
@@ -1544,7 +1692,219 @@
       "priceTenths": 45,
       "basePoints": 1.92,
       "startRate": 0.651,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
+    },
+    {
+      "id": 560,
+      "code": 549939,
+      "name": "Penders",
+      "position": "GKP",
+      "positionId": 1,
+      "club": "CHE",
+      "teamId": 6,
+      "priceTenths": 45,
+      "basePoints": 1.43,
+      "startRate": 0.526,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 3
+    },
+    {
+      "id": 171,
+      "code": 484389,
+      "name": "Dovin",
+      "position": "GKP",
+      "positionId": 1,
+      "club": "COV",
+      "teamId": 7,
+      "priceTenths": 40,
+      "basePoints": 1.43,
+      "startRate": 0.526,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 3
+    },
+    {
+      "id": 555,
+      "code": 169593,
+      "name": "Matthews",
+      "position": "GKP",
+      "positionId": 1,
+      "club": "CRY",
+      "teamId": 8,
+      "priceTenths": 40,
+      "basePoints": 1.43,
+      "startRate": 0.526,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 3
+    },
+    {
+      "id": 228,
+      "code": 138001,
+      "name": "King",
+      "position": "GKP",
+      "positionId": 1,
+      "club": "EVE",
+      "teamId": 9,
+      "priceTenths": 45,
+      "basePoints": 1.43,
+      "startRate": 0.526,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 3
+    },
+    {
+      "id": 273,
+      "code": 167825,
+      "name": "Phillips",
+      "position": "GKP",
+      "positionId": 1,
+      "club": "HUL",
+      "teamId": 11,
+      "priceTenths": 40,
+      "basePoints": 1.43,
+      "startRate": 0.526,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 3
+    },
+    {
+      "id": 276,
+      "code": 444307,
+      "name": "Lo-Tutala",
+      "position": "GKP",
+      "positionId": 1,
+      "club": "HUL",
+      "teamId": 11,
+      "priceTenths": 40,
+      "basePoints": 1.43,
+      "startRate": 0.526,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 3
+    },
+    {
+      "id": 301,
+      "code": 112520,
+      "name": "Palmer",
+      "position": "GKP",
+      "positionId": 1,
+      "club": "IPS",
+      "teamId": 12,
+      "priceTenths": 40,
+      "basePoints": 1.43,
+      "startRate": 0.526,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 4
+    },
+    {
+      "id": 302,
+      "code": 50093,
+      "name": "Button",
+      "position": "GKP",
+      "positionId": 1,
+      "club": "IPS",
+      "teamId": 12,
+      "priceTenths": 40,
+      "basePoints": 1.43,
+      "startRate": 0.526,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 4
+    },
+    {
+      "id": 353,
+      "code": 586268,
+      "name": "Pecsi",
+      "position": "GKP",
+      "positionId": 1,
+      "club": "LIV",
+      "teamId": 14,
+      "priceTenths": 40,
+      "basePoints": 1.43,
+      "startRate": 0.526,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 3
+    },
+    {
+      "id": 355,
+      "code": 464353,
+      "name": "Davies",
+      "position": "GKP",
+      "positionId": 1,
+      "club": "LIV",
+      "teamId": 14,
+      "priceTenths": 40,
+      "basePoints": 1.43,
+      "startRate": 0.526,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 3
+    },
+    {
+      "id": 414,
+      "code": 21205,
+      "name": "Heaton",
+      "position": "GKP",
+      "positionId": 1,
+      "club": "MUN",
+      "teamId": 16,
+      "priceTenths": 40,
+      "basePoints": 1.43,
+      "startRate": 0.526,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 3
+    },
+    {
+      "id": 443,
+      "code": 81441,
+      "name": "Gillespie",
+      "position": "GKP",
+      "positionId": 1,
+      "club": "NEW",
+      "teamId": 17,
+      "priceTenths": 45,
+      "basePoints": 1.43,
+      "startRate": 0.526,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 3
+    },
+    {
+      "id": 444,
+      "code": 554578,
+      "name": "Jaouen",
+      "position": "GKP",
+      "positionId": 1,
+      "club": "NEW",
+      "teamId": 17,
+      "priceTenths": 45,
+      "basePoints": 1.43,
+      "startRate": 0.526,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 3
+    },
+    {
+      "id": 495,
+      "code": 214572,
+      "name": "Austin",
+      "position": "GKP",
+      "positionId": 1,
+      "club": "TOT",
+      "teamId": 19,
+      "priceTenths": 40,
+      "basePoints": 1.43,
+      "startRate": 0.526,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 3
     },
     {
       "id": 497,
@@ -1557,7 +1917,24 @@
       "priceTenths": 40,
       "basePoints": 1.43,
       "startRate": 0.526,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 3
+    },
+    {
+      "id": 530,
+      "code": 232571,
+      "name": "Patterson",
+      "position": "GKP",
+      "positionId": 1,
+      "club": "SUN",
+      "teamId": 20,
+      "priceTenths": 40,
+      "basePoints": 1.43,
+      "startRate": 0.526,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 3
     },
     {
       "id": 350,
@@ -1570,7 +1947,9 @@
       "priceTenths": 55,
       "basePoints": 1.37,
       "startRate": 0.395,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 351,
@@ -1583,7 +1962,9 @@
       "priceTenths": 50,
       "basePoints": 1.24,
       "startRate": 0.347,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 2
     },
     {
       "id": 494,
@@ -1596,7 +1977,9 @@
       "priceTenths": 45,
       "basePoints": 0.89,
       "startRate": 0.304,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 531,
@@ -1609,7 +1992,9 @@
       "priceTenths": 45,
       "basePoints": 0.79,
       "startRate": 0.169,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 2
     },
     {
       "id": 385,
@@ -1622,7 +2007,39 @@
       "priceTenths": 50,
       "basePoints": 0.66,
       "startRate": 0.212,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
+    },
+    {
+      "id": 2,
+      "code": 109745,
+      "name": "Arrizabalaga",
+      "position": "GKP",
+      "positionId": 1,
+      "club": "ARS",
+      "teamId": 1,
+      "priceTenths": 50,
+      "basePoints": 0.6,
+      "startRate": 0.169,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 2
+    },
+    {
+      "id": 3,
+      "code": 437495,
+      "name": "Meslier",
+      "position": "GKP",
+      "positionId": 1,
+      "club": "ARS",
+      "teamId": 1,
+      "priceTenths": 50,
+      "basePoints": 0.6,
+      "startRate": 0.169,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 2
     },
     {
       "id": 29,
@@ -1635,7 +2052,144 @@
       "priceTenths": 45,
       "basePoints": 0.6,
       "startRate": 0.241,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 2
+    },
+    {
+      "id": 58,
+      "code": 40383,
+      "name": "Forster",
+      "position": "GKP",
+      "positionId": 1,
+      "club": "BOU",
+      "teamId": 3,
+      "priceTenths": 40,
+      "basePoints": 0.6,
+      "startRate": 0.169,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 2
+    },
+    {
+      "id": 59,
+      "code": 444172,
+      "name": "Dennis",
+      "position": "GKP",
+      "positionId": 1,
+      "club": "BOU",
+      "teamId": 3,
+      "priceTenths": 40,
+      "basePoints": 0.6,
+      "startRate": 0.169,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 2
+    },
+    {
+      "id": 83,
+      "code": 507433,
+      "name": "Valdimarsson",
+      "position": "GKP",
+      "positionId": 1,
+      "club": "BRE",
+      "teamId": 4,
+      "priceTenths": 45,
+      "basePoints": 0.6,
+      "startRate": 0.169,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 2
+    },
+    {
+      "id": 111,
+      "code": 49262,
+      "name": "Steele",
+      "position": "GKP",
+      "positionId": 1,
+      "club": "BHA",
+      "teamId": 5,
+      "priceTenths": 40,
+      "basePoints": 0.6,
+      "startRate": 0.169,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 2
+    },
+    {
+      "id": 199,
+      "code": 121709,
+      "name": "Benitez",
+      "position": "GKP",
+      "positionId": 1,
+      "club": "CRY",
+      "teamId": 8,
+      "priceTenths": 45,
+      "basePoints": 0.6,
+      "startRate": 0.169,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 2
+    },
+    {
+      "id": 227,
+      "code": 229600,
+      "name": "Travers",
+      "position": "GKP",
+      "positionId": 1,
+      "club": "EVE",
+      "teamId": 9,
+      "priceTenths": 50,
+      "basePoints": 0.6,
+      "startRate": 0.169,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 2
+    },
+    {
+      "id": 251,
+      "code": 86873,
+      "name": "Lecomte",
+      "position": "GKP",
+      "positionId": 1,
+      "club": "FUL",
+      "teamId": 10,
+      "priceTenths": 40,
+      "basePoints": 0.6,
+      "startRate": 0.169,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 2
+    },
+    {
+      "id": 252,
+      "code": 505079,
+      "name": "McNally",
+      "position": "GKP",
+      "positionId": 1,
+      "club": "FUL",
+      "teamId": 10,
+      "priceTenths": 40,
+      "basePoints": 0.6,
+      "startRate": 0.169,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 2
+    },
+    {
+      "id": 386,
+      "code": 122074,
+      "name": "Bettinelli",
+      "position": "GKP",
+      "positionId": 1,
+      "club": "MCI",
+      "teamId": 15,
+      "priceTenths": 45,
+      "basePoints": 0.6,
+      "startRate": 0.169,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 2
     },
     {
       "id": 141,
@@ -1648,7 +2202,9 @@
       "priceTenths": 50,
       "basePoints": 0.5,
       "startRate": 0.196,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 352,
@@ -1661,7 +2217,9 @@
       "priceTenths": 40,
       "basePoints": 0.5,
       "startRate": 0.2,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 3
     },
     {
       "id": 326,
@@ -1674,7 +2232,9 @@
       "priceTenths": 45,
       "basePoints": 0.27,
       "startRate": 0.1,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 2
     },
     {
       "id": 468,
@@ -1687,7 +2247,9 @@
       "priceTenths": 45,
       "basePoints": 0.18,
       "startRate": 0.074,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 2
     },
     {
       "id": 413,
@@ -1700,7 +2262,9 @@
       "priceTenths": 45,
       "basePoints": 0.1,
       "startRate": 0.054,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 2
     },
     {
       "id": 4,
@@ -1713,7 +2277,9 @@
       "priceTenths": 80,
       "basePoints": 4.93,
       "startRate": 0.738,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 498,
@@ -1726,7 +2292,9 @@
       "priceTenths": 60,
       "basePoints": 4.14,
       "startRate": 0.894,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 229,
@@ -1739,7 +2307,9 @@
       "priceTenths": 60,
       "basePoints": 3.79,
       "startRate": 0.87,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 356,
@@ -1752,7 +2322,9 @@
       "priceTenths": 65,
       "basePoints": 3.72,
       "startRate": 0.904,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 61,
@@ -1765,7 +2337,9 @@
       "priceTenths": 55,
       "basePoints": 3.64,
       "startRate": 0.896,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 388,
@@ -1778,7 +2352,9 @@
       "priceTenths": 60,
       "basePoints": 3.59,
       "startRate": 0.727,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 2
     },
     {
       "id": 60,
@@ -1791,7 +2367,9 @@
       "priceTenths": 55,
       "basePoints": 3.5,
       "startRate": 0.87,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 153,
@@ -1804,7 +2382,9 @@
       "priceTenths": 45,
       "basePoints": 3.5,
       "startRate": 0.889,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 7
     },
     {
       "id": 445,
@@ -1817,7 +2397,9 @@
       "priceTenths": 50,
       "basePoints": 3.45,
       "startRate": 0.855,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 112,
@@ -1830,7 +2412,9 @@
       "priceTenths": 50,
       "basePoints": 3.38,
       "startRate": 0.877,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 3
     },
     {
       "id": 387,
@@ -1843,7 +2427,9 @@
       "priceTenths": 65,
       "basePoints": 3.36,
       "startRate": 0.681,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 84,
@@ -1856,7 +2442,9 @@
       "priceTenths": 55,
       "basePoints": 3.2,
       "startRate": 0.814,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 113,
@@ -1869,7 +2457,9 @@
       "priceTenths": 45,
       "basePoints": 3.16,
       "startRate": 0.896,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 5
     },
     {
       "id": 332,
@@ -1882,7 +2472,9 @@
       "priceTenths": 45,
       "basePoints": 3.14,
       "startRate": 0.858,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 3
     },
     {
       "id": 533,
@@ -1895,7 +2487,9 @@
       "priceTenths": 55,
       "basePoints": 3.12,
       "startRate": 0.755,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 200,
@@ -1908,7 +2502,9 @@
       "priceTenths": 60,
       "basePoints": 3.03,
       "startRate": 0.679,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 447,
@@ -1921,7 +2517,9 @@
       "priceTenths": 50,
       "basePoints": 3.02,
       "startRate": 0.738,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 327,
@@ -1934,7 +2532,9 @@
       "priceTenths": 50,
       "basePoints": 3.01,
       "startRate": 0.763,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 203,
@@ -1947,7 +2547,9 @@
       "priceTenths": 50,
       "basePoints": 2.99,
       "startRate": 0.667,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 2
     },
     {
       "id": 469,
@@ -1960,7 +2562,9 @@
       "priceTenths": 50,
       "basePoints": 2.98,
       "startRate": 0.771,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 2
     },
     {
       "id": 418,
@@ -1973,7 +2577,9 @@
       "priceTenths": 50,
       "basePoints": 2.94,
       "startRate": 0.758,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 231,
@@ -1986,7 +2592,9 @@
       "priceTenths": 50,
       "basePoints": 2.93,
       "startRate": 0.704,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 3
     },
     {
       "id": 257,
@@ -1999,7 +2607,9 @@
       "priceTenths": 45,
       "basePoints": 2.93,
       "startRate": 0.832,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 499,
@@ -2012,7 +2622,9 @@
       "priceTenths": 55,
       "basePoints": 2.92,
       "startRate": 0.828,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 2
     },
     {
       "id": 389,
@@ -2025,7 +2637,9 @@
       "priceTenths": 60,
       "basePoints": 2.85,
       "startRate": 0.706,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 2
     },
     {
       "id": 471,
@@ -2038,7 +2652,9 @@
       "priceTenths": 55,
       "basePoints": 2.82,
       "startRate": 0.823,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 85,
@@ -2051,7 +2667,9 @@
       "priceTenths": 50,
       "basePoints": 2.77,
       "startRate": 0.653,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 2
     },
     {
       "id": 201,
@@ -2064,7 +2682,9 @@
       "priceTenths": 55,
       "basePoints": 2.77,
       "startRate": 0.549,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 88,
@@ -2077,7 +2697,9 @@
       "priceTenths": 45,
       "basePoints": 2.75,
       "startRate": 0.884,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 3
     },
     {
       "id": 232,
@@ -2090,7 +2712,9 @@
       "priceTenths": 50,
       "basePoints": 2.7,
       "startRate": 0.883,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 3
     },
     {
       "id": 204,
@@ -2103,7 +2727,9 @@
       "priceTenths": 45,
       "basePoints": 2.64,
       "startRate": 0.596,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 4
     },
     {
       "id": 233,
@@ -2116,7 +2742,9 @@
       "priceTenths": 45,
       "basePoints": 2.63,
       "startRate": 0.871,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 5
     },
     {
       "id": 423,
@@ -2129,7 +2757,9 @@
       "priceTenths": 45,
       "basePoints": 2.62,
       "startRate": 0.879,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 4
     },
     {
       "id": 202,
@@ -2142,7 +2772,9 @@
       "priceTenths": 50,
       "basePoints": 2.58,
       "startRate": 0.531,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 2
     },
     {
       "id": 535,
@@ -2155,7 +2787,9 @@
       "priceTenths": 50,
       "basePoints": 2.57,
       "startRate": 0.641,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 2
     },
     {
       "id": 329,
@@ -2168,7 +2802,24 @@
       "priceTenths": 45,
       "basePoints": 2.52,
       "startRate": 0.767,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 3
+    },
+    {
+      "id": 120,
+      "code": 454490,
+      "name": "Svoboda",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "BHA",
+      "teamId": 5,
+      "priceTenths": 50,
+      "basePoints": 2.5,
+      "startRate": 0.678,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 1
     },
     {
       "id": 328,
@@ -2181,7 +2832,174 @@
       "priceTenths": 50,
       "basePoints": 2.5,
       "startRate": 0.641,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
+    },
+    {
+      "id": 504,
+      "code": 610799,
+      "name": "Vuskovic",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "BHA",
+      "teamId": 5,
+      "priceTenths": 50,
+      "basePoints": 2.5,
+      "startRate": 0.678,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 1
+    },
+    {
+      "id": 173,
+      "code": 461102,
+      "name": "Thomas",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "COV",
+      "teamId": 7,
+      "priceTenths": 40,
+      "basePoints": 2.5,
+      "startRate": 0.678,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 1
+    },
+    {
+      "id": 174,
+      "code": 436761,
+      "name": "Kitching",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "COV",
+      "teamId": 7,
+      "priceTenths": 40,
+      "basePoints": 2.5,
+      "startRate": 0.678,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 1
+    },
+    {
+      "id": 175,
+      "code": 451284,
+      "name": "van Ewijk",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "COV",
+      "teamId": 7,
+      "priceTenths": 40,
+      "basePoints": 2.5,
+      "startRate": 0.678,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 1
+    },
+    {
+      "id": 176,
+      "code": 173878,
+      "name": "Dasilva",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "COV",
+      "teamId": 7,
+      "priceTenths": 40,
+      "basePoints": 2.5,
+      "startRate": 0.678,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 1
+    },
+    {
+      "id": 177,
+      "code": 465390,
+      "name": "Kesler-Hayden",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "COV",
+      "teamId": 7,
+      "priceTenths": 40,
+      "basePoints": 2.5,
+      "startRate": 0.678,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 1
+    },
+    {
+      "id": 178,
+      "code": 80178,
+      "name": "Bidwell",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "COV",
+      "teamId": 7,
+      "priceTenths": 40,
+      "basePoints": 2.5,
+      "startRate": 0.678,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 1
+    },
+    {
+      "id": 179,
+      "code": 204813,
+      "name": "Latibeaudiere",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "COV",
+      "teamId": 7,
+      "priceTenths": 40,
+      "basePoints": 2.5,
+      "startRate": 0.678,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 1
+    },
+    {
+      "id": 180,
+      "code": 220583,
+      "name": "Woolfenden",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "COV",
+      "teamId": 7,
+      "priceTenths": 40,
+      "basePoints": 2.5,
+      "startRate": 0.678,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 1
+    },
+    {
+      "id": 181,
+      "code": 577411,
+      "name": "Brau",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "COV",
+      "teamId": 7,
+      "priceTenths": 40,
+      "basePoints": 2.5,
+      "startRate": 0.678,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 1
+    },
+    {
+      "id": 182,
+      "code": 539142,
+      "name": "Amenda",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "COV",
+      "teamId": 7,
+      "priceTenths": 40,
+      "basePoints": 2.5,
+      "startRate": 0.678,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 1
     },
     {
       "id": 254,
@@ -2194,7 +3012,234 @@
       "priceTenths": 45,
       "basePoints": 2.5,
       "startRate": 0.678,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
+    },
+    {
+      "id": 277,
+      "code": 108416,
+      "name": "Egan",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "HUL",
+      "teamId": 11,
+      "priceTenths": 40,
+      "basePoints": 2.5,
+      "startRate": 0.678,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 1
+    },
+    {
+      "id": 279,
+      "code": 146426,
+      "name": "Ajayi",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "HUL",
+      "teamId": 11,
+      "priceTenths": 40,
+      "basePoints": 2.5,
+      "startRate": 0.678,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 1
+    },
+    {
+      "id": 280,
+      "code": 193278,
+      "name": "Coyle",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "HUL",
+      "teamId": 11,
+      "priceTenths": 40,
+      "basePoints": 2.5,
+      "startRate": 0.678,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 1
+    },
+    {
+      "id": 281,
+      "code": 433590,
+      "name": "Drameh",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "HUL",
+      "teamId": 11,
+      "priceTenths": 40,
+      "basePoints": 2.5,
+      "startRate": 0.678,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 1
+    },
+    {
+      "id": 282,
+      "code": 232351,
+      "name": "Giles",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "HUL",
+      "teamId": 11,
+      "priceTenths": 40,
+      "basePoints": 2.5,
+      "startRate": 0.678,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 1
+    },
+    {
+      "id": 284,
+      "code": 661800,
+      "name": "McCarthy",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "HUL",
+      "teamId": 11,
+      "priceTenths": 40,
+      "basePoints": 2.5,
+      "startRate": 0.678,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 1
+    },
+    {
+      "id": 285,
+      "code": 160817,
+      "name": "McNair",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "HUL",
+      "teamId": 11,
+      "priceTenths": 40,
+      "basePoints": 2.5,
+      "startRate": 0.678,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 1
+    },
+    {
+      "id": 556,
+      "code": 169359,
+      "name": "Targett",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "HUL",
+      "teamId": 11,
+      "priceTenths": 40,
+      "basePoints": 2.5,
+      "startRate": 0.678,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 1
+    },
+    {
+      "id": 303,
+      "code": 183015,
+      "name": "Kipr\u00e9",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "IPS",
+      "teamId": 12,
+      "priceTenths": 40,
+      "basePoints": 2.5,
+      "startRate": 0.678,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 1
+    },
+    {
+      "id": 304,
+      "code": 216616,
+      "name": "O'Shea",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "IPS",
+      "teamId": 12,
+      "priceTenths": 40,
+      "basePoints": 2.5,
+      "startRate": 0.678,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 1
+    },
+    {
+      "id": 305,
+      "code": 455084,
+      "name": "Davis",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "IPS",
+      "teamId": 12,
+      "priceTenths": 40,
+      "basePoints": 2.5,
+      "startRate": 0.678,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 1
+    },
+    {
+      "id": 306,
+      "code": 449429,
+      "name": "Greaves",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "IPS",
+      "teamId": 12,
+      "priceTenths": 40,
+      "basePoints": 2.5,
+      "startRate": 0.678,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 1
+    },
+    {
+      "id": 307,
+      "code": 222018,
+      "name": "Johnson",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "IPS",
+      "teamId": 12,
+      "priceTenths": 40,
+      "basePoints": 2.5,
+      "startRate": 0.678,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 1
+    },
+    {
+      "id": 308,
+      "code": 176420,
+      "name": "Furlong",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "IPS",
+      "teamId": 12,
+      "priceTenths": 40,
+      "basePoints": 2.5,
+      "startRate": 0.678,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 1
+    },
+    {
+      "id": 334,
+      "code": 522047,
+      "name": "Muharemovi\u0107",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "LEE",
+      "teamId": 13,
+      "priceTenths": 50,
+      "basePoints": 2.5,
+      "startRate": 0.678,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 1
     },
     {
       "id": 393,
@@ -2207,7 +3252,9 @@
       "priceTenths": 55,
       "basePoints": 2.48,
       "startRate": 0.598,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 4
     },
     {
       "id": 503,
@@ -2220,7 +3267,9 @@
       "priceTenths": 50,
       "basePoints": 2.46,
       "startRate": 0.783,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 3
     },
     {
       "id": 501,
@@ -2233,7 +3282,9 @@
       "priceTenths": 50,
       "basePoints": 2.42,
       "startRate": 0.726,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 3
     },
     {
       "id": 534,
@@ -2246,7 +3297,9 @@
       "priceTenths": 45,
       "basePoints": 2.4,
       "startRate": 0.661,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 4
     },
     {
       "id": 32,
@@ -2259,7 +3312,9 @@
       "priceTenths": 45,
       "basePoints": 2.28,
       "startRate": 0.681,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 449,
@@ -2272,7 +3327,9 @@
       "priceTenths": 50,
       "basePoints": 2.2,
       "startRate": 0.668,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 116,
@@ -2285,7 +3342,9 @@
       "priceTenths": 45,
       "basePoints": 2.16,
       "startRate": 0.661,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 5
     },
     {
       "id": 258,
@@ -2298,7 +3357,9 @@
       "priceTenths": 45,
       "basePoints": 2.12,
       "startRate": 0.754,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 144,
@@ -2311,7 +3372,9 @@
       "priceTenths": 50,
       "basePoints": 2.1,
       "startRate": 0.627,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 5
     },
     {
       "id": 448,
@@ -2324,7 +3387,9 @@
       "priceTenths": 50,
       "basePoints": 2.07,
       "startRate": 0.587,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 536,
@@ -2337,7 +3402,9 @@
       "priceTenths": 45,
       "basePoints": 2.06,
       "startRate": 0.647,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 4
     },
     {
       "id": 417,
@@ -2350,7 +3417,9 @@
       "priceTenths": 50,
       "basePoints": 2.04,
       "startRate": 0.592,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 31,
@@ -2363,7 +3432,9 @@
       "priceTenths": 45,
       "basePoints": 2.01,
       "startRate": 0.639,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 143,
@@ -2376,7 +3447,9 @@
       "priceTenths": 55,
       "basePoints": 2.01,
       "startRate": 0.43,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 2
     },
     {
       "id": 9,
@@ -2389,7 +3462,24 @@
       "priceTenths": 55,
       "basePoints": 1.92,
       "startRate": 0.46,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 2
+    },
+    {
+      "id": 152,
+      "code": 620109,
+      "name": "Palestra",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "CHE",
+      "teamId": 6,
+      "priceTenths": 55,
+      "basePoints": 1.92,
+      "startRate": 0.46,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 2
     },
     {
       "id": 8,
@@ -2402,7 +3492,9 @@
       "priceTenths": 55,
       "basePoints": 1.88,
       "startRate": 0.298,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 2
     },
     {
       "id": 130,
@@ -2415,7 +3507,9 @@
       "priceTenths": 50,
       "basePoints": 1.87,
       "startRate": 0.479,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 33,
@@ -2428,7 +3522,9 @@
       "priceTenths": 45,
       "basePoints": 1.85,
       "startRate": 0.537,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 330,
@@ -2441,7 +3537,9 @@
       "priceTenths": 45,
       "basePoints": 1.83,
       "startRate": 0.615,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 3
     },
     {
       "id": 392,
@@ -2454,7 +3552,9 @@
       "priceTenths": 55,
       "basePoints": 1.83,
       "startRate": 0.354,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 4
     },
     {
       "id": 470,
@@ -2467,7 +3567,9 @@
       "priceTenths": 50,
       "basePoints": 1.8,
       "startRate": 0.519,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 2
     },
     {
       "id": 36,
@@ -2480,7 +3582,9 @@
       "priceTenths": 45,
       "basePoints": 1.79,
       "startRate": 0.539,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 115,
@@ -2493,7 +3597,9 @@
       "priceTenths": 45,
       "basePoints": 1.75,
       "startRate": 0.308,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 5
     },
     {
       "id": 357,
@@ -2506,7 +3612,9 @@
       "priceTenths": 55,
       "basePoints": 1.68,
       "startRate": 0.403,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 2
     },
     {
       "id": 505,
@@ -2519,7 +3627,9 @@
       "priceTenths": 45,
       "basePoints": 1.65,
       "startRate": 0.369,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 7
     },
     {
       "id": 30,
@@ -2532,7 +3642,9 @@
       "priceTenths": 45,
       "basePoints": 1.62,
       "startRate": 0.414,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 473,
@@ -2545,7 +3657,9 @@
       "priceTenths": 45,
       "basePoints": 1.62,
       "startRate": 0.448,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 4
     },
     {
       "id": 502,
@@ -2558,7 +3672,9 @@
       "priceTenths": 45,
       "basePoints": 1.62,
       "startRate": 0.41,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 7
     },
     {
       "id": 358,
@@ -2571,7 +3687,9 @@
       "priceTenths": 55,
       "basePoints": 1.61,
       "startRate": 0.441,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 2
     },
     {
       "id": 422,
@@ -2584,7 +3702,39 @@
       "priceTenths": 45,
       "basePoints": 1.61,
       "startRate": 0.446,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 4
+    },
+    {
+      "id": 38,
+      "code": 606798,
+      "name": "A.Garc\u00eda",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "AVL",
+      "teamId": 2,
+      "priceTenths": 40,
+      "basePoints": 1.6,
+      "startRate": 0.446,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 8
+    },
+    {
+      "id": 39,
+      "code": 578545,
+      "name": "Nedeljkovic",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "AVL",
+      "teamId": 2,
+      "priceTenths": 40,
+      "basePoints": 1.6,
+      "startRate": 0.446,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 8
     },
     {
       "id": 64,
@@ -2597,7 +3747,534 @@
       "priceTenths": 45,
       "basePoints": 1.6,
       "startRate": 0.494,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 5
+    },
+    {
+      "id": 65,
+      "code": 436893,
+      "name": "J.Araujo",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "BOU",
+      "teamId": 3,
+      "priceTenths": 45,
+      "basePoints": 1.6,
+      "startRate": 0.446,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 5
+    },
+    {
+      "id": 66,
+      "code": 575901,
+      "name": "Soler",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "BOU",
+      "teamId": 3,
+      "priceTenths": 40,
+      "basePoints": 1.6,
+      "startRate": 0.446,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 8
+    },
+    {
+      "id": 566,
+      "code": 483067,
+      "name": "Silva",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "BOU",
+      "teamId": 3,
+      "priceTenths": 50,
+      "basePoints": 1.6,
+      "startRate": 0.446,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 3
+    },
+    {
+      "id": 573,
+      "code": 494928,
+      "name": "Sanchez",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "BOU",
+      "teamId": 3,
+      "priceTenths": 45,
+      "basePoints": 1.6,
+      "startRate": 0.446,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 5
+    },
+    {
+      "id": 92,
+      "code": 570241,
+      "name": "Ji-soo",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "BRE",
+      "teamId": 4,
+      "priceTenths": 45,
+      "basePoints": 1.6,
+      "startRate": 0.446,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 3
+    },
+    {
+      "id": 93,
+      "code": 513086,
+      "name": "Schuster",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "BRE",
+      "teamId": 4,
+      "priceTenths": 45,
+      "basePoints": 1.6,
+      "startRate": 0.446,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 3
+    },
+    {
+      "id": 118,
+      "code": 223434,
+      "name": "Igor",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "BHA",
+      "teamId": 5,
+      "priceTenths": 45,
+      "basePoints": 1.6,
+      "startRate": 0.446,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 5
+    },
+    {
+      "id": 119,
+      "code": 451490,
+      "name": "Costinha",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "BHA",
+      "teamId": 5,
+      "priceTenths": 45,
+      "basePoints": 1.6,
+      "startRate": 0.446,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 5
+    },
+    {
+      "id": 150,
+      "code": 574458,
+      "name": "M.Sarr",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "CHE",
+      "teamId": 6,
+      "priceTenths": 45,
+      "basePoints": 1.6,
+      "startRate": 0.446,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 7
+    },
+    {
+      "id": 561,
+      "code": 622758,
+      "name": "Anselmino",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "CHE",
+      "teamId": 6,
+      "priceTenths": 45,
+      "basePoints": 1.6,
+      "startRate": 0.446,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 7
+    },
+    {
+      "id": 205,
+      "code": 218364,
+      "name": "Sosa",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "CRY",
+      "teamId": 8,
+      "priceTenths": 45,
+      "basePoints": 1.6,
+      "startRate": 0.446,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 4
+    },
+    {
+      "id": 207,
+      "code": 242313,
+      "name": "Mingueza",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "CRY",
+      "teamId": 8,
+      "priceTenths": 45,
+      "basePoints": 1.6,
+      "startRate": 0.446,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 4
+    },
+    {
+      "id": 220,
+      "code": 590014,
+      "name": "Cardines",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "CRY",
+      "teamId": 8,
+      "priceTenths": 45,
+      "basePoints": 1.6,
+      "startRate": 0.446,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 4
+    },
+    {
+      "id": 235,
+      "code": 499300,
+      "name": "Aznou",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "EVE",
+      "teamId": 9,
+      "priceTenths": 40,
+      "basePoints": 1.6,
+      "startRate": 0.446,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 7
+    },
+    {
+      "id": 361,
+      "code": 519440,
+      "name": "Lucky",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "LIV",
+      "teamId": 14,
+      "priceTenths": 40,
+      "basePoints": 1.6,
+      "startRate": 0.446,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 6
+    },
+    {
+      "id": 362,
+      "code": 606702,
+      "name": "Jacquet",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "LIV",
+      "teamId": 14,
+      "priceTenths": 50,
+      "basePoints": 1.6,
+      "startRate": 0.446,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 4
+    },
+    {
+      "id": 364,
+      "code": 214285,
+      "name": "Tsimikas",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "LIV",
+      "teamId": 14,
+      "priceTenths": 50,
+      "basePoints": 1.6,
+      "startRate": 0.446,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 4
+    },
+    {
+      "id": 365,
+      "code": 489580,
+      "name": "Ramsay",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "LIV",
+      "teamId": 14,
+      "priceTenths": 40,
+      "basePoints": 1.6,
+      "startRate": 0.446,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 6
+    },
+    {
+      "id": 394,
+      "code": 494307,
+      "name": "Alleyne",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "MCI",
+      "teamId": 15,
+      "priceTenths": 50,
+      "basePoints": 1.6,
+      "startRate": 0.446,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 8
+    },
+    {
+      "id": 396,
+      "code": 616222,
+      "name": "Vitor Reis",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "MCI",
+      "teamId": 15,
+      "priceTenths": 45,
+      "basePoints": 1.6,
+      "startRate": 0.446,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 9
+    },
+    {
+      "id": 424,
+      "code": 577974,
+      "name": "Amass",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "MUN",
+      "teamId": 16,
+      "priceTenths": 40,
+      "basePoints": 1.6,
+      "startRate": 0.446,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 7
+    },
+    {
+      "id": 425,
+      "code": 547676,
+      "name": "Fredricson",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "MUN",
+      "teamId": 16,
+      "priceTenths": 40,
+      "basePoints": 1.6,
+      "startRate": 0.446,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 7
+    },
+    {
+      "id": 451,
+      "code": 545477,
+      "name": "A.Murphy",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "NEW",
+      "teamId": 17,
+      "priceTenths": 40,
+      "basePoints": 1.6,
+      "startRate": 0.446,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 6
+    },
+    {
+      "id": 476,
+      "code": 204822,
+      "name": "O.Richards",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "NFO",
+      "teamId": 18,
+      "priceTenths": 40,
+      "basePoints": 1.6,
+      "startRate": 0.446,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 7
+    },
+    {
+      "id": 477,
+      "code": 549067,
+      "name": "Abbott",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "NFO",
+      "teamId": 18,
+      "priceTenths": 40,
+      "basePoints": 1.6,
+      "startRate": 0.446,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 7
+    },
+    {
+      "id": 479,
+      "code": 538638,
+      "name": "Bindon",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "NFO",
+      "teamId": 18,
+      "priceTenths": 40,
+      "basePoints": 1.6,
+      "startRate": 0.446,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 7
+    },
+    {
+      "id": 507,
+      "code": 548308,
+      "name": "Phillips",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "TOT",
+      "teamId": 19,
+      "priceTenths": 45,
+      "basePoints": 1.6,
+      "startRate": 0.446,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 7
+    },
+    {
+      "id": 508,
+      "code": 115556,
+      "name": "Davies",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "TOT",
+      "teamId": 19,
+      "priceTenths": 40,
+      "basePoints": 1.6,
+      "startRate": 0.446,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 11
+    },
+    {
+      "id": 509,
+      "code": 640419,
+      "name": "Byfield",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "TOT",
+      "teamId": 19,
+      "priceTenths": 40,
+      "basePoints": 1.6,
+      "startRate": 0.446,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 11
+    },
+    {
+      "id": 510,
+      "code": 499716,
+      "name": "Rowswell",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "TOT",
+      "teamId": 19,
+      "priceTenths": 40,
+      "basePoints": 1.6,
+      "startRate": 0.446,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 11
+    },
+    {
+      "id": 511,
+      "code": 616221,
+      "name": "Souza",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "TOT",
+      "teamId": 19,
+      "priceTenths": 40,
+      "basePoints": 1.6,
+      "startRate": 0.446,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 11
+    },
+    {
+      "id": 537,
+      "code": 519634,
+      "name": "Seelt",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "SUN",
+      "teamId": 20,
+      "priceTenths": 45,
+      "basePoints": 1.6,
+      "startRate": 0.446,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 4
+    },
+    {
+      "id": 538,
+      "code": 477547,
+      "name": "Hjelde",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "SUN",
+      "teamId": 20,
+      "priceTenths": 40,
+      "basePoints": 1.6,
+      "startRate": 0.446,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 8
+    },
+    {
+      "id": 540,
+      "code": 105717,
+      "name": "Masuaku",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "SUN",
+      "teamId": 20,
+      "priceTenths": 40,
+      "basePoints": 1.6,
+      "startRate": 0.446,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 8
+    },
+    {
+      "id": 541,
+      "code": 93605,
+      "name": "Meunier",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "SUN",
+      "teamId": 20,
+      "priceTenths": 45,
+      "basePoints": 1.6,
+      "startRate": 0.446,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 4
     },
     {
       "id": 11,
@@ -2610,7 +4287,9 @@
       "priceTenths": 55,
       "basePoints": 1.54,
       "startRate": 0.423,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 2
     },
     {
       "id": 34,
@@ -2623,7 +4302,9 @@
       "priceTenths": 45,
       "basePoints": 1.47,
       "startRate": 0.39,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 532,
@@ -2636,7 +4317,9 @@
       "priceTenths": 50,
       "basePoints": 1.46,
       "startRate": 0.302,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 2
     },
     {
       "id": 87,
@@ -2649,7 +4332,9 @@
       "priceTenths": 45,
       "basePoints": 1.45,
       "startRate": 0.414,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 3
     },
     {
       "id": 390,
@@ -2662,7 +4347,9 @@
       "priceTenths": 55,
       "basePoints": 1.4,
       "startRate": 0.324,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 4
     },
     {
       "id": 10,
@@ -2675,7 +4362,9 @@
       "priceTenths": 55,
       "basePoints": 1.35,
       "startRate": 0.255,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 2
     },
     {
       "id": 539,
@@ -2688,7 +4377,9 @@
       "priceTenths": 40,
       "basePoints": 1.32,
       "startRate": 0.476,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 8
     },
     {
       "id": 142,
@@ -2701,7 +4392,9 @@
       "priceTenths": 55,
       "basePoints": 1.23,
       "startRate": 0.217,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 2
     },
     {
       "id": 206,
@@ -2714,7 +4407,9 @@
       "priceTenths": 45,
       "basePoints": 1.23,
       "startRate": 0.461,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 4
     },
     {
       "id": 269,
@@ -2727,7 +4422,9 @@
       "priceTenths": 45,
       "basePoints": 1.22,
       "startRate": 0.273,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 478,
@@ -2740,7 +4437,9 @@
       "priceTenths": 45,
       "basePoints": 1.22,
       "startRate": 0.37,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 4
     },
     {
       "id": 506,
@@ -2753,7 +4452,9 @@
       "priceTenths": 45,
       "basePoints": 1.19,
       "startRate": 0.601,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 7
     },
     {
       "id": 259,
@@ -2766,7 +4467,9 @@
       "priceTenths": 40,
       "basePoints": 1.16,
       "startRate": 0.369,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 114,
@@ -2779,7 +4482,9 @@
       "priceTenths": 45,
       "basePoints": 1.15,
       "startRate": 0.315,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 5
     },
     {
       "id": 474,
@@ -2792,7 +4497,9 @@
       "priceTenths": 45,
       "basePoints": 1.1,
       "startRate": 0.294,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 4
     },
     {
       "id": 37,
@@ -2805,7 +4512,9 @@
       "priceTenths": 45,
       "basePoints": 1.07,
       "startRate": 0.43,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 420,
@@ -2818,7 +4527,9 @@
       "priceTenths": 50,
       "basePoints": 1.07,
       "startRate": 0.264,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 148,
@@ -2831,7 +4542,9 @@
       "priceTenths": 45,
       "basePoints": 1.0,
       "startRate": 0.487,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 7
     },
     {
       "id": 333,
@@ -2844,7 +4557,9 @@
       "priceTenths": 45,
       "basePoints": 0.95,
       "startRate": 0.195,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 3
     },
     {
       "id": 421,
@@ -2857,7 +4572,9 @@
       "priceTenths": 45,
       "basePoints": 0.95,
       "startRate": 0.288,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 4
     },
     {
       "id": 151,
@@ -2870,7 +4587,9 @@
       "priceTenths": 45,
       "basePoints": 0.94,
       "startRate": 0.204,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 7
     },
     {
       "id": 149,
@@ -2883,7 +4602,9 @@
       "priceTenths": 50,
       "basePoints": 0.93,
       "startRate": 0.304,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 5
     },
     {
       "id": 331,
@@ -2896,7 +4617,9 @@
       "priceTenths": 45,
       "basePoints": 0.93,
       "startRate": 0.314,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 3
     },
     {
       "id": 230,
@@ -2909,7 +4632,9 @@
       "priceTenths": 55,
       "basePoints": 0.8,
       "startRate": 0.259,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 2
     },
     {
       "id": 90,
@@ -2922,7 +4647,9 @@
       "priceTenths": 45,
       "basePoints": 0.78,
       "startRate": 0.153,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 3
     },
     {
       "id": 256,
@@ -2935,7 +4662,9 @@
       "priceTenths": 45,
       "basePoints": 0.78,
       "startRate": 0.194,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 500,
@@ -2948,7 +4677,9 @@
       "priceTenths": 50,
       "basePoints": 0.65,
       "startRate": 0.186,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 3
     },
     {
       "id": 391,
@@ -2961,7 +4692,9 @@
       "priceTenths": 55,
       "basePoints": 0.64,
       "startRate": 0.038,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 4
     },
     {
       "id": 395,
@@ -2974,7 +4707,9 @@
       "priceTenths": 45,
       "basePoints": 0.62,
       "startRate": 0.221,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 9
     },
     {
       "id": 255,
@@ -2987,7 +4722,9 @@
       "priceTenths": 45,
       "basePoints": 0.55,
       "startRate": 0.111,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 89,
@@ -3000,7 +4737,9 @@
       "priceTenths": 45,
       "basePoints": 0.47,
       "startRate": 0.171,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 3
     },
     {
       "id": 234,
@@ -3013,7 +4752,9 @@
       "priceTenths": 45,
       "basePoints": 0.4,
       "startRate": 0.075,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 5
     },
     {
       "id": 147,
@@ -3026,7 +4767,9 @@
       "priceTenths": 45,
       "basePoints": 0.38,
       "startRate": 0.02,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 7
     },
     {
       "id": 91,
@@ -3039,7 +4782,9 @@
       "priceTenths": 45,
       "basePoints": 0.34,
       "startRate": 0.095,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 3
     },
     {
       "id": 446,
@@ -3052,7 +4797,9 @@
       "priceTenths": 50,
       "basePoints": 0.34,
       "startRate": 0.083,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 62,
@@ -3065,7 +4812,9 @@
       "priceTenths": 50,
       "basePoints": 0.23,
       "startRate": 0.06,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 3
     },
     {
       "id": 117,
@@ -3078,7 +4827,9 @@
       "priceTenths": 45,
       "basePoints": 0.18,
       "startRate": 0.064,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 5
     },
     {
       "id": 146,
@@ -3091,7 +4842,9 @@
       "priceTenths": 45,
       "basePoints": 0.13,
       "startRate": 0.054,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 7
     },
     {
       "id": 426,
@@ -3104,7 +4857,9 @@
       "priceTenths": 120,
       "basePoints": 5.05,
       "startRate": 0.885,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 154,
@@ -3117,7 +4872,9 @@
       "priceTenths": 95,
       "basePoints": 4.09,
       "startRate": 0.866,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 481,
@@ -3130,7 +4887,9 @@
       "priceTenths": 65,
       "basePoints": 3.88,
       "startRate": 0.823,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 5
     },
     {
       "id": 155,
@@ -3143,7 +4902,9 @@
       "priceTenths": 70,
       "basePoints": 3.83,
       "startRate": 0.84,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 3
     },
     {
       "id": 68,
@@ -3156,7 +4917,9 @@
       "priceTenths": 60,
       "basePoints": 3.66,
       "startRate": 0.815,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 2
     },
     {
       "id": 124,
@@ -3169,7 +4932,9 @@
       "priceTenths": 55,
       "basePoints": 3.62,
       "startRate": 0.883,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 3
     },
     {
       "id": 427,
@@ -3182,7 +4947,9 @@
       "priceTenths": 80,
       "basePoints": 3.61,
       "startRate": 0.734,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 2
     },
     {
       "id": 237,
@@ -3195,7 +4962,9 @@
       "priceTenths": 60,
       "basePoints": 3.59,
       "startRate": 0.869,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 2
     },
     {
       "id": 368,
@@ -3208,7 +4977,9 @@
       "priceTenths": 70,
       "basePoints": 3.59,
       "startRate": 0.883,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 2
     },
     {
       "id": 367,
@@ -3221,7 +4992,9 @@
       "priceTenths": 70,
       "basePoints": 3.55,
       "startRate": 0.884,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 2
     },
     {
       "id": 542,
@@ -3234,7 +5007,9 @@
       "priceTenths": 60,
       "basePoints": 3.55,
       "startRate": 0.829,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 13,
@@ -3247,7 +5022,9 @@
       "priceTenths": 75,
       "basePoints": 3.53,
       "startRate": 0.751,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 2
     },
     {
       "id": 236,
@@ -3260,7 +5037,9 @@
       "priceTenths": 65,
       "basePoints": 3.53,
       "startRate": 0.856,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 95,
@@ -3273,7 +5052,9 @@
       "priceTenths": 65,
       "basePoints": 3.5,
       "startRate": 0.708,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 67,
@@ -3286,7 +5067,9 @@
       "priceTenths": 65,
       "basePoints": 3.41,
       "startRate": 0.868,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 480,
@@ -3299,7 +5082,9 @@
       "priceTenths": 80,
       "basePoints": 3.39,
       "startRate": 0.727,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 208,
@@ -3312,7 +5097,9 @@
       "priceTenths": 65,
       "basePoints": 3.33,
       "startRate": 0.508,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 399,
@@ -3325,7 +5112,9 @@
       "priceTenths": 75,
       "basePoints": 3.33,
       "startRate": 0.487,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 2
     },
     {
       "id": 338,
@@ -3338,7 +5127,9 @@
       "priceTenths": 55,
       "basePoints": 3.31,
       "startRate": 0.889,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 4
     },
     {
       "id": 525,
@@ -3351,7 +5142,9 @@
       "priceTenths": 60,
       "basePoints": 3.3,
       "startRate": 0.902,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 2
     },
     {
       "id": 397,
@@ -3364,7 +5157,9 @@
       "priceTenths": 85,
       "basePoints": 3.29,
       "startRate": 0.589,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 97,
@@ -3377,7 +5172,9 @@
       "priceTenths": 55,
       "basePoints": 3.19,
       "startRate": 0.889,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 4
     },
     {
       "id": 123,
@@ -3390,7 +5187,9 @@
       "priceTenths": 60,
       "basePoints": 3.19,
       "startRate": 0.832,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 94,
@@ -3403,7 +5202,9 @@
       "priceTenths": 60,
       "basePoints": 3.18,
       "startRate": 0.72,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 2
     },
     {
       "id": 86,
@@ -3416,7 +5217,9 @@
       "priceTenths": 55,
       "basePoints": 3.06,
       "startRate": 0.78,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 4
     },
     {
       "id": 69,
@@ -3429,7 +5232,9 @@
       "priceTenths": 60,
       "basePoints": 3.04,
       "startRate": 0.743,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 2
     },
     {
       "id": 105,
@@ -3442,7 +5247,9 @@
       "priceTenths": 60,
       "basePoints": 2.96,
       "startRate": 0.868,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 2
     },
     {
       "id": 544,
@@ -3455,7 +5262,9 @@
       "priceTenths": 55,
       "basePoints": 2.87,
       "startRate": 0.802,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 2
     },
     {
       "id": 371,
@@ -3468,7 +5277,9 @@
       "priceTenths": 60,
       "basePoints": 2.86,
       "startRate": 0.756,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 5
     },
     {
       "id": 40,
@@ -3481,7 +5292,9 @@
       "priceTenths": 75,
       "basePoints": 2.84,
       "startRate": 0.768,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 2
     },
     {
       "id": 159,
@@ -3494,7 +5307,9 @@
       "priceTenths": 55,
       "basePoints": 2.8,
       "startRate": 0.877,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 7
     },
     {
       "id": 452,
@@ -3507,7 +5322,9 @@
       "priceTenths": 70,
       "basePoints": 2.79,
       "startRate": 0.627,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 431,
@@ -3520,7 +5337,219 @@
       "priceTenths": 60,
       "basePoints": 2.77,
       "startRate": 0.591,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 5
+    },
+    {
+      "id": 53,
+      "code": 614071,
+      "name": "Manzambi",
+      "position": "MID",
+      "positionId": 3,
+      "club": "AVL",
+      "teamId": 2,
+      "priceTenths": 60,
+      "basePoints": 2.75,
+      "startRate": 0.589,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 1
+    },
+    {
+      "id": 186,
+      "code": 241293,
+      "name": "Mason-Clark",
+      "position": "MID",
+      "positionId": 3,
+      "club": "COV",
+      "teamId": 7,
+      "priceTenths": 55,
+      "basePoints": 2.75,
+      "startRate": 0.589,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 1
+    },
+    {
+      "id": 188,
+      "code": 226965,
+      "name": "Torp",
+      "position": "MID",
+      "positionId": 3,
+      "club": "COV",
+      "teamId": 7,
+      "priceTenths": 55,
+      "basePoints": 2.75,
+      "startRate": 0.589,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 1
+    },
+    {
+      "id": 570,
+      "code": 571779,
+      "name": "Palacios",
+      "position": "MID",
+      "positionId": 3,
+      "club": "FUL",
+      "teamId": 10,
+      "priceTenths": 55,
+      "basePoints": 2.75,
+      "startRate": 0.589,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 1
+    },
+    {
+      "id": 286,
+      "code": 540324,
+      "name": "Belloumi",
+      "position": "MID",
+      "positionId": 3,
+      "club": "HUL",
+      "teamId": 11,
+      "priceTenths": 50,
+      "basePoints": 2.75,
+      "startRate": 0.589,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 1
+    },
+    {
+      "id": 287,
+      "code": 232905,
+      "name": "Millar",
+      "position": "MID",
+      "positionId": 3,
+      "club": "HUL",
+      "teamId": 11,
+      "priceTenths": 50,
+      "basePoints": 2.75,
+      "startRate": 0.589,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 1
+    },
+    {
+      "id": 292,
+      "code": 208481,
+      "name": "\u00d6m\u00fcr",
+      "position": "MID",
+      "positionId": 3,
+      "club": "HUL",
+      "teamId": 11,
+      "priceTenths": 50,
+      "basePoints": 2.75,
+      "startRate": 0.589,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 1
+    },
+    {
+      "id": 293,
+      "code": 490161,
+      "name": "Kamara",
+      "position": "MID",
+      "positionId": 3,
+      "club": "HUL",
+      "teamId": 11,
+      "priceTenths": 50,
+      "basePoints": 2.75,
+      "startRate": 0.589,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 1
+    },
+    {
+      "id": 296,
+      "code": 213292,
+      "name": "Akintola",
+      "position": "MID",
+      "positionId": 3,
+      "club": "HUL",
+      "teamId": 11,
+      "priceTenths": 50,
+      "basePoints": 2.75,
+      "startRate": 0.589,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 1
+    },
+    {
+      "id": 563,
+      "code": 445028,
+      "name": "Morita",
+      "position": "MID",
+      "positionId": 3,
+      "club": "HUL",
+      "teamId": 11,
+      "priceTenths": 50,
+      "basePoints": 2.75,
+      "startRate": 0.589,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 1
+    },
+    {
+      "id": 313,
+      "code": 443261,
+      "name": "Clarke",
+      "position": "MID",
+      "positionId": 3,
+      "club": "IPS",
+      "teamId": 12,
+      "priceTenths": 55,
+      "basePoints": 2.75,
+      "startRate": 0.589,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 1
+    },
+    {
+      "id": 315,
+      "code": 531442,
+      "name": "Fatawu",
+      "position": "MID",
+      "positionId": 3,
+      "club": "IPS",
+      "teamId": 12,
+      "priceTenths": 55,
+      "basePoints": 2.75,
+      "startRate": 0.589,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 1
+    },
+    {
+      "id": 318,
+      "code": 481624,
+      "name": "Philogene",
+      "position": "MID",
+      "positionId": 3,
+      "club": "IPS",
+      "teamId": 12,
+      "priceTenths": 55,
+      "basePoints": 2.75,
+      "startRate": 0.589,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 1
+    },
+    {
+      "id": 562,
+      "code": 442967,
+      "name": "Maeda",
+      "position": "MID",
+      "positionId": 3,
+      "club": "IPS",
+      "teamId": 12,
+      "priceTenths": 55,
+      "basePoints": 2.75,
+      "startRate": 0.589,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 1
     },
     {
       "id": 260,
@@ -3533,7 +5562,9 @@
       "priceTenths": 65,
       "basePoints": 2.75,
       "startRate": 0.622,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 337,
@@ -3546,7 +5577,9 @@
       "priceTenths": 55,
       "basePoints": 2.75,
       "startRate": 0.628,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 4
     },
     {
       "id": 372,
@@ -3559,7 +5592,9 @@
       "priceTenths": 55,
       "basePoints": 2.75,
       "startRate": 0.77,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 7
     },
     {
       "id": 400,
@@ -3572,7 +5607,24 @@
       "priceTenths": 75,
       "basePoints": 2.75,
       "startRate": 0.532,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 2
+    },
+    {
+      "id": 515,
+      "code": 172780,
+      "name": "Maddison",
+      "position": "MID",
+      "positionId": 3,
+      "club": "TOT",
+      "teamId": 19,
+      "priceTenths": 65,
+      "basePoints": 2.75,
+      "startRate": 0.589,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 1
     },
     {
       "id": 96,
@@ -3585,7 +5637,9 @@
       "priceTenths": 55,
       "basePoints": 2.74,
       "startRate": 0.575,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 4
     },
     {
       "id": 122,
@@ -3598,7 +5652,9 @@
       "priceTenths": 60,
       "basePoints": 2.71,
       "startRate": 0.582,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 373,
@@ -3611,7 +5667,9 @@
       "priceTenths": 55,
       "basePoints": 2.69,
       "startRate": 0.696,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 7
     },
     {
       "id": 428,
@@ -3624,7 +5682,24 @@
       "priceTenths": 80,
       "basePoints": 2.69,
       "startRate": 0.677,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 2
+    },
+    {
+      "id": 461,
+      "code": 611665,
+      "name": "Tour\u00e9",
+      "position": "MID",
+      "positionId": 3,
+      "club": "NEW",
+      "teamId": 17,
+      "priceTenths": 60,
+      "basePoints": 2.69,
+      "startRate": 0.59,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 2
     },
     {
       "id": 12,
@@ -3637,7 +5712,9 @@
       "priceTenths": 95,
       "basePoints": 2.68,
       "startRate": 0.438,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 14,
@@ -3650,7 +5727,9 @@
       "priceTenths": 65,
       "basePoints": 2.67,
       "startRate": 0.547,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 3
     },
     {
       "id": 398,
@@ -3663,7 +5742,9 @@
       "priceTenths": 70,
       "basePoints": 2.65,
       "startRate": 0.415,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 4
     },
     {
       "id": 432,
@@ -3676,7 +5757,9 @@
       "priceTenths": 55,
       "basePoints": 2.61,
       "startRate": 0.812,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 7
     },
     {
       "id": 514,
@@ -3689,7 +5772,9 @@
       "priceTenths": 60,
       "basePoints": 2.59,
       "startRate": 0.604,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 2
     },
     {
       "id": 366,
@@ -3702,7 +5787,9 @@
       "priceTenths": 75,
       "basePoints": 2.57,
       "startRate": 0.481,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 19,
@@ -3715,7 +5802,9 @@
       "priceTenths": 55,
       "basePoints": 2.54,
       "startRate": 0.579,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 9
     },
     {
       "id": 519,
@@ -3728,7 +5817,9 @@
       "priceTenths": 55,
       "basePoints": 2.54,
       "startRate": 0.762,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 4
     },
     {
       "id": 453,
@@ -3741,7 +5832,9 @@
       "priceTenths": 60,
       "basePoints": 2.5,
       "startRate": 0.375,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 2
     },
     {
       "id": 262,
@@ -3754,7 +5847,9 @@
       "priceTenths": 55,
       "basePoints": 2.43,
       "startRate": 0.622,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 335,
@@ -3767,7 +5862,9 @@
       "priceTenths": 60,
       "basePoints": 2.4,
       "startRate": 0.59,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 2
     },
     {
       "id": 41,
@@ -3780,7 +5877,9 @@
       "priceTenths": 60,
       "basePoints": 2.37,
       "startRate": 0.531,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 46,
@@ -3793,7 +5892,9 @@
       "priceTenths": 50,
       "basePoints": 2.36,
       "startRate": 0.544,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 8
     },
     {
       "id": 54,
@@ -3806,7 +5907,9 @@
       "priceTenths": 55,
       "basePoints": 2.35,
       "startRate": 0.725,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 4
     },
     {
       "id": 484,
@@ -3819,7 +5922,9 @@
       "priceTenths": 55,
       "basePoints": 2.35,
       "startRate": 0.576,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 2
     },
     {
       "id": 156,
@@ -3832,7 +5937,9 @@
       "priceTenths": 65,
       "basePoints": 2.31,
       "startRate": 0.614,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 4
     },
     {
       "id": 545,
@@ -3845,7 +5952,9 @@
       "priceTenths": 50,
       "basePoints": 2.25,
       "startRate": 0.878,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 5
     },
     {
       "id": 369,
@@ -3858,7 +5967,9 @@
       "priceTenths": 60,
       "basePoints": 2.19,
       "startRate": 0.48,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 5
     },
     {
       "id": 102,
@@ -3871,7 +5982,9 @@
       "priceTenths": 50,
       "basePoints": 2.16,
       "startRate": 0.653,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 8
     },
     {
       "id": 516,
@@ -3884,7 +5997,9 @@
       "priceTenths": 55,
       "basePoints": 2.16,
       "startRate": 0.639,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 4
     },
     {
       "id": 571,
@@ -3897,7 +6012,9 @@
       "priceTenths": 50,
       "basePoints": 2.15,
       "startRate": 0.605,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 5
     },
     {
       "id": 345,
@@ -3910,7 +6027,9 @@
       "priceTenths": 50,
       "basePoints": 2.1,
       "startRate": 0.501,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 6
     },
     {
       "id": 214,
@@ -3923,7 +6042,9 @@
       "priceTenths": 50,
       "basePoints": 2.08,
       "startRate": 0.413,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 5
     },
     {
       "id": 457,
@@ -3936,7 +6057,9 @@
       "priceTenths": 60,
       "basePoints": 2.04,
       "startRate": 0.385,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 2
     },
     {
       "id": 45,
@@ -3949,7 +6072,9 @@
       "priceTenths": 55,
       "basePoints": 1.98,
       "startRate": 0.541,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 4
     },
     {
       "id": 261,
@@ -3962,7 +6087,9 @@
       "priceTenths": 55,
       "basePoints": 1.98,
       "startRate": 0.563,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 456,
@@ -3975,7 +6102,9 @@
       "priceTenths": 50,
       "basePoints": 1.98,
       "startRate": 0.557,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 6
     },
     {
       "id": 211,
@@ -3988,7 +6117,9 @@
       "priceTenths": 55,
       "basePoints": 1.95,
       "startRate": 0.148,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 3
     },
     {
       "id": 213,
@@ -4001,7 +6132,9 @@
       "priceTenths": 50,
       "basePoints": 1.92,
       "startRate": 0.583,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 5
     },
     {
       "id": 488,
@@ -4014,7 +6147,9 @@
       "priceTenths": 50,
       "basePoints": 1.92,
       "startRate": 0.505,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 6
     },
     {
       "id": 210,
@@ -4027,7 +6162,9 @@
       "priceTenths": 55,
       "basePoints": 1.91,
       "startRate": 0.386,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 3
     },
     {
       "id": 240,
@@ -4040,7 +6177,9 @@
       "priceTenths": 50,
       "basePoints": 1.89,
       "startRate": 0.563,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 7
     },
     {
       "id": 264,
@@ -4053,7 +6192,9 @@
       "priceTenths": 55,
       "basePoints": 1.86,
       "startRate": 0.396,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 190,
@@ -4066,7 +6207,9 @@
       "priceTenths": 55,
       "basePoints": 1.85,
       "startRate": 0.586,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 455,
@@ -4079,7 +6222,9 @@
       "priceTenths": 55,
       "basePoints": 1.83,
       "startRate": 0.535,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 4
     },
     {
       "id": 16,
@@ -4092,7 +6237,9 @@
       "priceTenths": 65,
       "basePoints": 1.81,
       "startRate": 0.324,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 3
     },
     {
       "id": 127,
@@ -4105,7 +6252,9 @@
       "priceTenths": 50,
       "basePoints": 1.81,
       "startRate": 0.319,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 6
     },
     {
       "id": 73,
@@ -4118,7 +6267,9 @@
       "priceTenths": 50,
       "basePoints": 1.79,
       "startRate": 0.501,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 5
     },
     {
       "id": 543,
@@ -4131,7 +6282,9 @@
       "priceTenths": 55,
       "basePoints": 1.77,
       "startRate": 0.416,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 2
     },
     {
       "id": 403,
@@ -4144,7 +6297,9 @@
       "priceTenths": 65,
       "basePoints": 1.7,
       "startRate": 0.32,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 5
     },
     {
       "id": 209,
@@ -4157,7 +6312,9 @@
       "priceTenths": 60,
       "basePoints": 1.67,
       "startRate": 0.422,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 2
     },
     {
       "id": 265,
@@ -4170,7 +6327,9 @@
       "priceTenths": 50,
       "basePoints": 1.67,
       "startRate": 0.54,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 7
     },
     {
       "id": 267,
@@ -4183,7 +6342,9 @@
       "priceTenths": 50,
       "basePoints": 1.66,
       "startRate": 0.498,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 7
     },
     {
       "id": 246,
@@ -4196,7 +6357,9 @@
       "priceTenths": 50,
       "basePoints": 1.62,
       "startRate": 0.492,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 7
     },
     {
       "id": 18,
@@ -4209,7 +6372,1014 @@
       "priceTenths": 65,
       "basePoints": 1.59,
       "startRate": 0.203,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 3
+    },
+    {
+      "id": 20,
+      "code": 616077,
+      "name": "Dowman",
+      "position": "MID",
+      "positionId": 3,
+      "club": "ARS",
+      "teamId": 1,
+      "priceTenths": 55,
+      "basePoints": 1.59,
+      "startRate": 0.393,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 9
+    },
+    {
+      "id": 22,
+      "code": 499175,
+      "name": "Nwaneri",
+      "position": "MID",
+      "positionId": 3,
+      "club": "ARS",
+      "teamId": 1,
+      "priceTenths": 55,
+      "basePoints": 1.59,
+      "startRate": 0.393,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 9
+    },
+    {
+      "id": 23,
+      "code": 438098,
+      "name": "F\u00e1bio Vieira",
+      "position": "MID",
+      "positionId": 3,
+      "club": "ARS",
+      "teamId": 1,
+      "priceTenths": 55,
+      "basePoints": 1.59,
+      "startRate": 0.393,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 9
+    },
+    {
+      "id": 24,
+      "code": 200641,
+      "name": "Nelson",
+      "position": "MID",
+      "positionId": 3,
+      "club": "ARS",
+      "teamId": 1,
+      "priceTenths": 55,
+      "basePoints": 1.59,
+      "startRate": 0.393,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 9
+    },
+    {
+      "id": 557,
+      "code": 439509,
+      "name": "Tzolis",
+      "position": "MID",
+      "positionId": 3,
+      "club": "ARS",
+      "teamId": 1,
+      "priceTenths": 65,
+      "basePoints": 1.59,
+      "startRate": 0.393,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 3
+    },
+    {
+      "id": 49,
+      "code": 469247,
+      "name": "Iling Jr",
+      "position": "MID",
+      "positionId": 3,
+      "club": "AVL",
+      "teamId": 2,
+      "priceTenths": 50,
+      "basePoints": 1.59,
+      "startRate": 0.393,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 8
+    },
+    {
+      "id": 50,
+      "code": 645618,
+      "name": "Burrowes",
+      "position": "MID",
+      "positionId": 3,
+      "club": "AVL",
+      "teamId": 2,
+      "priceTenths": 45,
+      "basePoints": 1.59,
+      "startRate": 0.393,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 13
+    },
+    {
+      "id": 51,
+      "code": 577285,
+      "name": "George Hemmings",
+      "position": "MID",
+      "positionId": 3,
+      "club": "AVL",
+      "teamId": 2,
+      "priceTenths": 45,
+      "basePoints": 1.59,
+      "startRate": 0.393,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 13
+    },
+    {
+      "id": 52,
+      "code": 653481,
+      "name": "Alysson",
+      "position": "MID",
+      "positionId": 3,
+      "club": "AVL",
+      "teamId": 2,
+      "priceTenths": 50,
+      "basePoints": 1.59,
+      "startRate": 0.393,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 8
+    },
+    {
+      "id": 72,
+      "code": 496208,
+      "name": "Gannon-Doak",
+      "position": "MID",
+      "positionId": 3,
+      "club": "BOU",
+      "teamId": 3,
+      "priceTenths": 50,
+      "basePoints": 1.59,
+      "startRate": 0.393,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 5
+    },
+    {
+      "id": 76,
+      "code": 614574,
+      "name": "T\u00f3th.A",
+      "position": "MID",
+      "positionId": 3,
+      "club": "BOU",
+      "teamId": 3,
+      "priceTenths": 50,
+      "basePoints": 1.59,
+      "startRate": 0.393,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 5
+    },
+    {
+      "id": 103,
+      "code": 183656,
+      "name": "Dasilva",
+      "position": "MID",
+      "positionId": 3,
+      "club": "BRE",
+      "teamId": 4,
+      "priceTenths": 50,
+      "basePoints": 1.59,
+      "startRate": 0.393,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 8
+    },
+    {
+      "id": 565,
+      "code": 513545,
+      "name": "Sangar\u00e9",
+      "position": "MID",
+      "positionId": 3,
+      "club": "BRE",
+      "teamId": 4,
+      "priceTenths": 55,
+      "basePoints": 1.59,
+      "startRate": 0.393,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 4
+    },
+    {
+      "id": 128,
+      "code": 536916,
+      "name": "Buonanotte",
+      "position": "MID",
+      "positionId": 3,
+      "club": "BHA",
+      "teamId": 5,
+      "priceTenths": 50,
+      "basePoints": 1.59,
+      "startRate": 0.393,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 6
+    },
+    {
+      "id": 132,
+      "code": 597320,
+      "name": "Howell",
+      "position": "MID",
+      "positionId": 3,
+      "club": "BHA",
+      "teamId": 5,
+      "priceTenths": 45,
+      "basePoints": 1.59,
+      "startRate": 0.393,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 9
+    },
+    {
+      "id": 134,
+      "code": 556637,
+      "name": "Oriola",
+      "position": "MID",
+      "positionId": 3,
+      "club": "BHA",
+      "teamId": 5,
+      "priceTenths": 45,
+      "basePoints": 1.59,
+      "startRate": 0.393,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 9
+    },
+    {
+      "id": 135,
+      "code": 700308,
+      "name": "Yohanna",
+      "position": "MID",
+      "positionId": 3,
+      "club": "BHA",
+      "teamId": 5,
+      "priceTenths": 50,
+      "basePoints": 1.59,
+      "startRate": 0.393,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 6
+    },
+    {
+      "id": 163,
+      "code": 491007,
+      "name": "D.Essugo",
+      "position": "MID",
+      "positionId": 3,
+      "club": "CHE",
+      "teamId": 6,
+      "priceTenths": 45,
+      "basePoints": 1.59,
+      "startRate": 0.393,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 11
+    },
+    {
+      "id": 164,
+      "code": 593117,
+      "name": "Quenda",
+      "position": "MID",
+      "positionId": 3,
+      "club": "CHE",
+      "teamId": 6,
+      "priceTenths": 55,
+      "basePoints": 1.59,
+      "startRate": 0.393,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 7
+    },
+    {
+      "id": 568,
+      "code": 543158,
+      "name": "Barco",
+      "position": "MID",
+      "positionId": 3,
+      "club": "CHE",
+      "teamId": 6,
+      "priceTenths": 55,
+      "basePoints": 1.59,
+      "startRate": 0.393,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 7
+    },
+    {
+      "id": 104,
+      "code": 428580,
+      "name": "Onyeka",
+      "position": "MID",
+      "positionId": 3,
+      "club": "COV",
+      "teamId": 7,
+      "priceTenths": 50,
+      "basePoints": 1.59,
+      "startRate": 0.393,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 4
+    },
+    {
+      "id": 184,
+      "code": 168144,
+      "name": "Grimes",
+      "position": "MID",
+      "positionId": 3,
+      "club": "COV",
+      "teamId": 7,
+      "priceTenths": 50,
+      "basePoints": 1.59,
+      "startRate": 0.393,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 4
+    },
+    {
+      "id": 185,
+      "code": 501459,
+      "name": "Sakamoto",
+      "position": "MID",
+      "positionId": 3,
+      "club": "COV",
+      "teamId": 7,
+      "priceTenths": 50,
+      "basePoints": 1.59,
+      "startRate": 0.393,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 4
+    },
+    {
+      "id": 187,
+      "code": 439668,
+      "name": "Eccles",
+      "position": "MID",
+      "positionId": 3,
+      "club": "COV",
+      "teamId": 7,
+      "priceTenths": 50,
+      "basePoints": 1.59,
+      "startRate": 0.393,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 4
+    },
+    {
+      "id": 189,
+      "code": 684268,
+      "name": "Shepherd",
+      "position": "MID",
+      "positionId": 3,
+      "club": "COV",
+      "teamId": 7,
+      "priceTenths": 45,
+      "basePoints": 1.59,
+      "startRate": 0.393,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 8
+    },
+    {
+      "id": 191,
+      "code": 492498,
+      "name": "Borges Rodrigues",
+      "position": "MID",
+      "positionId": 3,
+      "club": "COV",
+      "teamId": 7,
+      "priceTenths": 45,
+      "basePoints": 1.59,
+      "startRate": 0.393,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 8
+    },
+    {
+      "id": 192,
+      "code": 629397,
+      "name": "Andrews",
+      "position": "MID",
+      "positionId": 3,
+      "club": "COV",
+      "teamId": 7,
+      "priceTenths": 45,
+      "basePoints": 1.59,
+      "startRate": 0.393,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 8
+    },
+    {
+      "id": 216,
+      "code": 606921,
+      "name": "Esse",
+      "position": "MID",
+      "positionId": 3,
+      "club": "CRY",
+      "teamId": 8,
+      "priceTenths": 50,
+      "basePoints": 1.59,
+      "startRate": 0.393,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 5
+    },
+    {
+      "id": 217,
+      "code": 536694,
+      "name": "M.Fran\u00e7a",
+      "position": "MID",
+      "positionId": 3,
+      "club": "CRY",
+      "teamId": 8,
+      "priceTenths": 50,
+      "basePoints": 1.59,
+      "startRate": 0.393,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 5
+    },
+    {
+      "id": 218,
+      "code": 438464,
+      "name": "Doucour\u00e9",
+      "position": "MID",
+      "positionId": 3,
+      "club": "CRY",
+      "teamId": 8,
+      "priceTenths": 50,
+      "basePoints": 1.59,
+      "startRate": 0.393,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 5
+    },
+    {
+      "id": 219,
+      "code": 450542,
+      "name": "J.Rak-Sakyi",
+      "position": "MID",
+      "positionId": 3,
+      "club": "CRY",
+      "teamId": 8,
+      "priceTenths": 50,
+      "basePoints": 1.59,
+      "startRate": 0.393,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 5
+    },
+    {
+      "id": 221,
+      "code": 672492,
+      "name": "Drakes-Thomas",
+      "position": "MID",
+      "positionId": 3,
+      "club": "CRY",
+      "teamId": 8,
+      "priceTenths": 45,
+      "basePoints": 1.59,
+      "startRate": 0.393,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 12
+    },
+    {
+      "id": 21,
+      "code": 128295,
+      "name": "N\u00f8rgaard",
+      "position": "MID",
+      "positionId": 3,
+      "club": "EVE",
+      "teamId": 9,
+      "priceTenths": 50,
+      "basePoints": 1.59,
+      "startRate": 0.393,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 7
+    },
+    {
+      "id": 247,
+      "code": 244860,
+      "name": "Hackney",
+      "position": "MID",
+      "positionId": 3,
+      "club": "EVE",
+      "teamId": 9,
+      "priceTenths": 55,
+      "basePoints": 1.59,
+      "startRate": 0.393,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 3
+    },
+    {
+      "id": 270,
+      "code": 153366,
+      "name": "Reed",
+      "position": "MID",
+      "positionId": 3,
+      "club": "FUL",
+      "teamId": 10,
+      "priceTenths": 45,
+      "basePoints": 1.59,
+      "startRate": 0.393,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 10
+    },
+    {
+      "id": 288,
+      "code": 171270,
+      "name": "Dowell",
+      "position": "MID",
+      "positionId": 3,
+      "club": "HUL",
+      "teamId": 11,
+      "priceTenths": 45,
+      "basePoints": 1.59,
+      "startRate": 0.393,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 7
+    },
+    {
+      "id": 289,
+      "code": 101282,
+      "name": "Crooks",
+      "position": "MID",
+      "positionId": 3,
+      "club": "HUL",
+      "teamId": 11,
+      "priceTenths": 45,
+      "basePoints": 1.59,
+      "startRate": 0.393,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 7
+    },
+    {
+      "id": 290,
+      "code": 243413,
+      "name": "Slater",
+      "position": "MID",
+      "positionId": 3,
+      "club": "HUL",
+      "teamId": 11,
+      "priceTenths": 45,
+      "basePoints": 1.59,
+      "startRate": 0.393,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 7
+    },
+    {
+      "id": 309,
+      "code": 501390,
+      "name": "N\u00fa\u00f1ez",
+      "position": "MID",
+      "positionId": 3,
+      "club": "IPS",
+      "teamId": 12,
+      "priceTenths": 50,
+      "basePoints": 1.59,
+      "startRate": 0.393,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 5
+    },
+    {
+      "id": 311,
+      "code": 149929,
+      "name": "Burns",
+      "position": "MID",
+      "positionId": 3,
+      "club": "IPS",
+      "teamId": 12,
+      "priceTenths": 50,
+      "basePoints": 1.59,
+      "startRate": 0.393,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 5
+    },
+    {
+      "id": 314,
+      "code": 229164,
+      "name": "Ogbene",
+      "position": "MID",
+      "positionId": 3,
+      "club": "IPS",
+      "teamId": 12,
+      "priceTenths": 50,
+      "basePoints": 1.59,
+      "startRate": 0.393,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 5
+    },
+    {
+      "id": 319,
+      "code": 172453,
+      "name": "Szmodics",
+      "position": "MID",
+      "positionId": 3,
+      "club": "IPS",
+      "teamId": 12,
+      "priceTenths": 50,
+      "basePoints": 1.59,
+      "startRate": 0.393,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 5
+    },
+    {
+      "id": 323,
+      "code": 461587,
+      "name": "McAteer",
+      "position": "MID",
+      "positionId": 3,
+      "club": "IPS",
+      "teamId": 12,
+      "priceTenths": 45,
+      "basePoints": 1.59,
+      "startRate": 0.393,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 11
+    },
+    {
+      "id": 324,
+      "code": 232457,
+      "name": "Mehmeti",
+      "position": "MID",
+      "positionId": 3,
+      "club": "IPS",
+      "teamId": 12,
+      "priceTenths": 50,
+      "basePoints": 1.59,
+      "startRate": 0.393,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 5
+    },
+    {
+      "id": 340,
+      "code": 462635,
+      "name": "Gelhardt",
+      "position": "MID",
+      "positionId": 3,
+      "club": "LEE",
+      "teamId": 13,
+      "priceTenths": 50,
+      "basePoints": 1.59,
+      "startRate": 0.393,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 6
+    },
+    {
+      "id": 375,
+      "code": 591386,
+      "name": "Nyoni",
+      "position": "MID",
+      "positionId": 3,
+      "club": "LIV",
+      "teamId": 14,
+      "priceTenths": 50,
+      "basePoints": 1.59,
+      "startRate": 0.393,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 11
+    },
+    {
+      "id": 377,
+      "code": 551499,
+      "name": "Munoz",
+      "position": "MID",
+      "positionId": 3,
+      "club": "LIV",
+      "teamId": 14,
+      "priceTenths": 65,
+      "basePoints": 1.59,
+      "startRate": 0.393,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 4
+    },
+    {
+      "id": 378,
+      "code": 491501,
+      "name": "McConnell",
+      "position": "MID",
+      "positionId": 3,
+      "club": "LIV",
+      "teamId": 14,
+      "priceTenths": 45,
+      "basePoints": 1.59,
+      "startRate": 0.393,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 13
+    },
+    {
+      "id": 381,
+      "code": 514514,
+      "name": "Koumas",
+      "position": "MID",
+      "positionId": 3,
+      "club": "LIV",
+      "teamId": 14,
+      "priceTenths": 50,
+      "basePoints": 1.59,
+      "startRate": 0.393,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 11
+    },
+    {
+      "id": 383,
+      "code": 444884,
+      "name": "Elliott",
+      "position": "MID",
+      "positionId": 3,
+      "club": "LIV",
+      "teamId": 14,
+      "priceTenths": 55,
+      "basePoints": 1.59,
+      "startRate": 0.393,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 7
+    },
+    {
+      "id": 406,
+      "code": 91651,
+      "name": "Kova\u010di\u0107",
+      "position": "MID",
+      "positionId": 3,
+      "club": "MCI",
+      "teamId": 15,
+      "priceTenths": 55,
+      "basePoints": 1.59,
+      "startRate": 0.393,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 8
+    },
+    {
+      "id": 407,
+      "code": 575204,
+      "name": "Echeverri",
+      "position": "MID",
+      "positionId": 3,
+      "club": "MCI",
+      "teamId": 15,
+      "priceTenths": 50,
+      "basePoints": 1.59,
+      "startRate": 0.393,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 10
+    },
+    {
+      "id": 408,
+      "code": 155405,
+      "name": "Phillips",
+      "position": "MID",
+      "positionId": 3,
+      "club": "MCI",
+      "teamId": 15,
+      "priceTenths": 50,
+      "basePoints": 1.59,
+      "startRate": 0.393,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 10
+    },
+    {
+      "id": 409,
+      "code": 590039,
+      "name": "Mukasa",
+      "position": "MID",
+      "positionId": 3,
+      "club": "MCI",
+      "teamId": 15,
+      "priceTenths": 45,
+      "basePoints": 1.59,
+      "startRate": 0.393,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 13
+    },
+    {
+      "id": 410,
+      "code": 649208,
+      "name": "Monga",
+      "position": "MID",
+      "positionId": 3,
+      "club": "MCI",
+      "teamId": 15,
+      "priceTenths": 50,
+      "basePoints": 1.59,
+      "startRate": 0.393,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 10
+    },
+    {
+      "id": 429,
+      "code": 176297,
+      "name": "Rashford",
+      "position": "MID",
+      "positionId": 3,
+      "club": "MUN",
+      "teamId": 16,
+      "priceTenths": 70,
+      "basePoints": 1.59,
+      "startRate": 0.393,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 4
+    },
+    {
+      "id": 434,
+      "code": 547037,
+      "name": "J.Fletcher",
+      "position": "MID",
+      "positionId": 3,
+      "club": "MUN",
+      "teamId": 16,
+      "priceTenths": 50,
+      "basePoints": 1.59,
+      "startRate": 0.393,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 9
+    },
+    {
+      "id": 435,
+      "code": 576628,
+      "name": "Lacey",
+      "position": "MID",
+      "positionId": 3,
+      "club": "MUN",
+      "teamId": 16,
+      "priceTenths": 50,
+      "basePoints": 1.59,
+      "startRate": 0.393,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 9
+    },
+    {
+      "id": 436,
+      "code": 490881,
+      "name": "Collyer",
+      "position": "MID",
+      "positionId": 3,
+      "club": "MUN",
+      "teamId": 16,
+      "priceTenths": 50,
+      "basePoints": 1.59,
+      "startRate": 0.393,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 9
+    },
+    {
+      "id": 437,
+      "code": 576620,
+      "name": "Bendito Mantato",
+      "position": "MID",
+      "positionId": 3,
+      "club": "MUN",
+      "teamId": 16,
+      "priceTenths": 45,
+      "basePoints": 1.59,
+      "startRate": 0.393,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 13
+    },
+    {
+      "id": 438,
+      "code": 519913,
+      "name": "Fletcher",
+      "position": "MID",
+      "positionId": 3,
+      "club": "MUN",
+      "teamId": 16,
+      "priceTenths": 45,
+      "basePoints": 1.59,
+      "startRate": 0.393,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 13
+    },
+    {
+      "id": 462,
+      "code": 636852,
+      "name": "Steur",
+      "position": "MID",
+      "positionId": 3,
+      "club": "NEW",
+      "teamId": 17,
+      "priceTenths": 50,
+      "basePoints": 1.59,
+      "startRate": 0.393,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 6
+    },
+    {
+      "id": 559,
+      "code": 632794,
+      "name": "Bamba",
+      "position": "MID",
+      "positionId": 3,
+      "club": "NEW",
+      "teamId": 17,
+      "priceTenths": 50,
+      "basePoints": 1.59,
+      "startRate": 0.393,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 6
+    },
+    {
+      "id": 558,
+      "code": 204561,
+      "name": "Schlager",
+      "position": "MID",
+      "positionId": 3,
+      "club": "NFO",
+      "teamId": 18,
+      "priceTenths": 50,
+      "basePoints": 1.59,
+      "startRate": 0.393,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 6
+    },
+    {
+      "id": 523,
+      "code": 499721,
+      "name": "Moore",
+      "position": "MID",
+      "positionId": 3,
+      "club": "TOT",
+      "teamId": 19,
+      "priceTenths": 50,
+      "basePoints": 1.59,
+      "startRate": 0.393,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 8
+    },
+    {
+      "id": 524,
+      "code": 499726,
+      "name": "Olusesi",
+      "position": "MID",
+      "positionId": 3,
+      "club": "TOT",
+      "teamId": 19,
+      "priceTenths": 45,
+      "basePoints": 1.59,
+      "startRate": 0.393,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 11
+    },
+    {
+      "id": 550,
+      "code": 699989,
+      "name": "Jocelin.T",
+      "position": "MID",
+      "positionId": 3,
+      "club": "SUN",
+      "teamId": 20,
+      "priceTenths": 50,
+      "basePoints": 1.59,
+      "startRate": 0.393,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 5
     },
     {
       "id": 549,
@@ -4222,7 +7392,9 @@
       "priceTenths": 55,
       "basePoints": 1.55,
       "startRate": 0.362,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 2
     },
     {
       "id": 162,
@@ -4235,7 +7407,9 @@
       "priceTenths": 50,
       "basePoints": 1.54,
       "startRate": 0.427,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 9
     },
     {
       "id": 15,
@@ -4248,7 +7422,9 @@
       "priceTenths": 65,
       "basePoints": 1.51,
       "startRate": 0.332,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 3
     },
     {
       "id": 460,
@@ -4261,7 +7437,9 @@
       "priceTenths": 50,
       "basePoints": 1.51,
       "startRate": 0.397,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 6
     },
     {
       "id": 487,
@@ -4274,7 +7452,9 @@
       "priceTenths": 50,
       "basePoints": 1.49,
       "startRate": 0.202,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 6
     },
     {
       "id": 98,
@@ -4287,7 +7467,9 @@
       "priceTenths": 50,
       "basePoints": 1.47,
       "startRate": 0.393,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 8
     },
     {
       "id": 241,
@@ -4300,7 +7482,9 @@
       "priceTenths": 55,
       "basePoints": 1.41,
       "startRate": 0.378,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 3
     },
     {
       "id": 430,
@@ -4313,7 +7497,9 @@
       "priceTenths": 55,
       "basePoints": 1.4,
       "startRate": 0.295,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 7
     },
     {
       "id": 77,
@@ -4326,7 +7512,9 @@
       "priceTenths": 50,
       "basePoints": 1.36,
       "startRate": 0.188,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 5
     },
     {
       "id": 74,
@@ -4339,7 +7527,9 @@
       "priceTenths": 50,
       "basePoints": 1.35,
       "startRate": 0.124,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 5
     },
     {
       "id": 336,
@@ -4352,7 +7542,9 @@
       "priceTenths": 60,
       "basePoints": 1.35,
       "startRate": 0.306,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 2
     },
     {
       "id": 268,
@@ -4365,7 +7557,9 @@
       "priceTenths": 55,
       "basePoints": 1.33,
       "startRate": 0.146,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 404,
@@ -4378,7 +7572,9 @@
       "priceTenths": 60,
       "basePoints": 1.33,
       "startRate": 0.236,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 7
     },
     {
       "id": 551,
@@ -4391,7 +7587,9 @@
       "priceTenths": 50,
       "basePoints": 1.29,
       "startRate": 0.396,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 5
     },
     {
       "id": 129,
@@ -4404,7 +7602,9 @@
       "priceTenths": 55,
       "basePoints": 1.27,
       "startRate": 0.229,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 3
     },
     {
       "id": 454,
@@ -4417,7 +7617,9 @@
       "priceTenths": 60,
       "basePoints": 1.26,
       "startRate": 0.225,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 2
     },
     {
       "id": 160,
@@ -4430,7 +7632,9 @@
       "priceTenths": 60,
       "basePoints": 1.25,
       "startRate": 0.192,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 518,
@@ -4443,7 +7647,9 @@
       "priceTenths": 50,
       "basePoints": 1.25,
       "startRate": 0.212,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 8
     },
     {
       "id": 44,
@@ -4456,7 +7662,9 @@
       "priceTenths": 55,
       "basePoints": 1.24,
       "startRate": 0.236,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 4
     },
     {
       "id": 7,
@@ -4469,7 +7677,9 @@
       "priceTenths": 55,
       "basePoints": 1.23,
       "startRate": 0.434,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 9
     },
     {
       "id": 215,
@@ -4482,7 +7692,9 @@
       "priceTenths": 50,
       "basePoints": 1.19,
       "startRate": 0.306,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 5
     },
     {
       "id": 415,
@@ -4495,7 +7707,9 @@
       "priceTenths": 60,
       "basePoints": 1.18,
       "startRate": 0.235,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 5
     },
     {
       "id": 405,
@@ -4508,7 +7722,9 @@
       "priceTenths": 55,
       "basePoints": 1.17,
       "startRate": 0.334,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 8
     },
     {
       "id": 522,
@@ -4521,7 +7737,9 @@
       "priceTenths": 50,
       "basePoints": 1.17,
       "startRate": 0.309,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 8
     },
     {
       "id": 266,
@@ -4534,7 +7752,9 @@
       "priceTenths": 50,
       "basePoints": 1.14,
       "startRate": 0.248,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 7
     },
     {
       "id": 548,
@@ -4547,7 +7767,9 @@
       "priceTenths": 50,
       "basePoints": 1.13,
       "startRate": 0.225,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 5
     },
     {
       "id": 212,
@@ -4560,7 +7782,9 @@
       "priceTenths": 45,
       "basePoints": 1.12,
       "startRate": 0.275,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 12
     },
     {
       "id": 343,
@@ -4573,7 +7797,9 @@
       "priceTenths": 50,
       "basePoints": 1.12,
       "startRate": 0.129,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 6
     },
     {
       "id": 489,
@@ -4586,7 +7812,9 @@
       "priceTenths": 45,
       "basePoints": 1.05,
       "startRate": 0.134,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 9
     },
     {
       "id": 35,
@@ -4599,7 +7827,9 @@
       "priceTenths": 50,
       "basePoints": 1.01,
       "startRate": 0.4,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 8
     },
     {
       "id": 242,
@@ -4612,7 +7842,9 @@
       "priceTenths": 55,
       "basePoints": 1.01,
       "startRate": 0.069,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 3
     },
     {
       "id": 485,
@@ -4625,7 +7857,9 @@
       "priceTenths": 55,
       "basePoints": 0.99,
       "startRate": 0.223,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 2
     },
     {
       "id": 341,
@@ -4638,7 +7872,9 @@
       "priceTenths": 50,
       "basePoints": 0.95,
       "startRate": 0.011,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 6
     },
     {
       "id": 486,
@@ -4651,7 +7887,9 @@
       "priceTenths": 55,
       "basePoints": 0.9,
       "startRate": 0.132,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 2
     },
     {
       "id": 339,
@@ -4664,7 +7902,9 @@
       "priceTenths": 50,
       "basePoints": 0.87,
       "startRate": 0.055,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 6
     },
     {
       "id": 42,
@@ -4677,7 +7917,9 @@
       "priceTenths": 55,
       "basePoints": 0.86,
       "startRate": 0.122,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 4
     },
     {
       "id": 263,
@@ -4690,7 +7932,9 @@
       "priceTenths": 55,
       "basePoints": 0.82,
       "startRate": 0.021,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 370,
@@ -4703,7 +7947,9 @@
       "priceTenths": 55,
       "basePoints": 0.79,
       "startRate": 0.056,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 7
     },
     {
       "id": 344,
@@ -4716,7 +7962,9 @@
       "priceTenths": 50,
       "basePoints": 0.78,
       "startRate": 0.208,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 6
     },
     {
       "id": 520,
@@ -4729,7 +7977,9 @@
       "priceTenths": 55,
       "basePoints": 0.76,
       "startRate": 0.107,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 4
     },
     {
       "id": 244,
@@ -4742,7 +7992,9 @@
       "priceTenths": 50,
       "basePoints": 0.74,
       "startRate": 0.107,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 7
     },
     {
       "id": 71,
@@ -4755,7 +8007,9 @@
       "priceTenths": 50,
       "basePoints": 0.73,
       "startRate": 0.121,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 5
     },
     {
       "id": 161,
@@ -4768,7 +8022,9 @@
       "priceTenths": 50,
       "basePoints": 0.68,
       "startRate": 0.079,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 10
     },
     {
       "id": 70,
@@ -4781,7 +8037,9 @@
       "priceTenths": 60,
       "basePoints": 0.63,
       "startRate": 0.082,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 2
     },
     {
       "id": 157,
@@ -4794,7 +8052,9 @@
       "priceTenths": 65,
       "basePoints": 0.62,
       "startRate": 0.118,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 4
     },
     {
       "id": 243,
@@ -4807,7 +8067,9 @@
       "priceTenths": 50,
       "basePoints": 0.62,
       "startRate": 0.068,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 7
     },
     {
       "id": 17,
@@ -4820,7 +8082,9 @@
       "priceTenths": 60,
       "basePoints": 0.57,
       "startRate": 0.064,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 8
     },
     {
       "id": 483,
@@ -4833,7 +8097,9 @@
       "priceTenths": 55,
       "basePoints": 0.44,
       "startRate": 0.041,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 2
     },
     {
       "id": 126,
@@ -4846,7 +8112,9 @@
       "priceTenths": 55,
       "basePoints": 0.38,
       "startRate": 0.056,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 3
     },
     {
       "id": 547,
@@ -4859,7 +8127,9 @@
       "priceTenths": 50,
       "basePoints": 0.29,
       "startRate": 0.032,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 5
     },
     {
       "id": 245,
@@ -4872,7 +8142,9 @@
       "priceTenths": 55,
       "basePoints": 0.22,
       "startRate": 0.039,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 3
     },
     {
       "id": 47,
@@ -4885,7 +8157,9 @@
       "priceTenths": 50,
       "basePoints": 0.2,
       "startRate": 0.066,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 8
     },
     {
       "id": 546,
@@ -4898,7 +8172,9 @@
       "priceTenths": 50,
       "basePoints": 0.2,
       "startRate": 0.057,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 5
     },
     {
       "id": 158,
@@ -4911,7 +8187,9 @@
       "priceTenths": 60,
       "basePoints": 0.16,
       "startRate": 0.016,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 6
     },
     {
       "id": 411,
@@ -4924,7 +8202,9 @@
       "priceTenths": 155,
       "basePoints": 4.33,
       "startRate": 0.679,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 106,
@@ -4937,7 +8217,9 @@
       "priceTenths": 80,
       "basePoints": 4.27,
       "startRate": 0.902,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 346,
@@ -4950,7 +8232,9 @@
       "priceTenths": 60,
       "basePoints": 3.84,
       "startRate": 0.867,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 55,
@@ -4963,7 +8247,9 @@
       "priceTenths": 80,
       "basePoints": 3.74,
       "startRate": 0.768,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 165,
@@ -4976,7 +8262,9 @@
       "priceTenths": 75,
       "basePoints": 3.2,
       "startRate": 0.682,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 136,
@@ -4989,7 +8277,9 @@
       "priceTenths": 60,
       "basePoints": 3.12,
       "startRate": 0.665,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 3
     },
     {
       "id": 79,
@@ -5002,7 +8292,9 @@
       "priceTenths": 60,
       "basePoints": 3.0,
       "startRate": 0.731,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 465,
@@ -5015,7 +8307,9 @@
       "priceTenths": 60,
       "basePoints": 2.82,
       "startRate": 0.652,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 491,
@@ -5028,7 +8322,9 @@
       "priceTenths": 60,
       "basePoints": 2.81,
       "startRate": 0.723,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 527,
@@ -5041,7 +8337,9 @@
       "priceTenths": 60,
       "basePoints": 2.72,
       "startRate": 0.626,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 552,
@@ -5054,7 +8352,9 @@
       "priceTenths": 60,
       "basePoints": 2.64,
       "startRate": 0.834,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 248,
@@ -5067,7 +8367,9 @@
       "priceTenths": 55,
       "basePoints": 2.54,
       "startRate": 0.582,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 25,
@@ -5080,7 +8382,84 @@
       "priceTenths": 75,
       "basePoints": 2.52,
       "startRate": 0.393,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
+    },
+    {
+      "id": 81,
+      "code": 561245,
+      "name": "Rodr\u00edguez",
+      "position": "FWD",
+      "positionId": 4,
+      "club": "BOU",
+      "teamId": 3,
+      "priceTenths": 60,
+      "basePoints": 2.52,
+      "startRate": 0.507,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 1
+    },
+    {
+      "id": 193,
+      "code": 176412,
+      "name": "Wright",
+      "position": "FWD",
+      "positionId": 4,
+      "club": "COV",
+      "teamId": 7,
+      "priceTenths": 55,
+      "basePoints": 2.52,
+      "startRate": 0.507,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 1
+    },
+    {
+      "id": 569,
+      "code": 551466,
+      "name": "Garc\u00eda",
+      "position": "FWD",
+      "positionId": 4,
+      "club": "FUL",
+      "teamId": 10,
+      "priceTenths": 60,
+      "basePoints": 2.52,
+      "startRate": 0.507,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 1
+    },
+    {
+      "id": 295,
+      "code": 169432,
+      "name": "McBurnie",
+      "position": "FWD",
+      "positionId": 4,
+      "club": "HUL",
+      "teamId": 11,
+      "priceTenths": 55,
+      "basePoints": 2.52,
+      "startRate": 0.507,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 1
+    },
+    {
+      "id": 316,
+      "code": 543968,
+      "name": "Emersonn",
+      "position": "FWD",
+      "positionId": 4,
+      "club": "IPS",
+      "teamId": 12,
+      "priceTenths": 55,
+      "basePoints": 2.52,
+      "startRate": 0.507,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 1
     },
     {
       "id": 347,
@@ -5093,7 +8472,9 @@
       "priceTenths": 55,
       "basePoints": 2.23,
       "startRate": 0.268,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 2
     },
     {
       "id": 222,
@@ -5106,7 +8487,9 @@
       "priceTenths": 60,
       "basePoints": 2.2,
       "startRate": 0.643,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 2
     },
     {
       "id": 223,
@@ -5119,7 +8502,9 @@
       "priceTenths": 65,
       "basePoints": 2.18,
       "startRate": 0.288,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 463,
@@ -5132,7 +8517,9 @@
       "priceTenths": 60,
       "basePoints": 2.16,
       "startRate": 0.507,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 249,
@@ -5145,7 +8532,9 @@
       "priceTenths": 55,
       "basePoints": 2.12,
       "startRate": 0.371,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 271,
@@ -5158,7 +8547,9 @@
       "priceTenths": 55,
       "basePoints": 2.04,
       "startRate": 0.544,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 2
     },
     {
       "id": 108,
@@ -5171,7 +8562,144 @@
       "priceTenths": 55,
       "basePoints": 1.91,
       "startRate": 0.171,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 2
+    },
+    {
+      "id": 166,
+      "code": 517052,
+      "name": "N.Jackson",
+      "position": "FWD",
+      "positionId": 4,
+      "club": "CHE",
+      "teamId": 6,
+      "priceTenths": 65,
+      "basePoints": 1.91,
+      "startRate": 0.205,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 2
+    },
+    {
+      "id": 194,
+      "code": 230730,
+      "name": "Thomas-Asante",
+      "position": "FWD",
+      "positionId": 4,
+      "club": "COV",
+      "teamId": 7,
+      "priceTenths": 50,
+      "basePoints": 1.91,
+      "startRate": 0.205,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 2
+    },
+    {
+      "id": 195,
+      "code": 218997,
+      "name": "Simms",
+      "position": "FWD",
+      "positionId": 4,
+      "club": "COV",
+      "teamId": 7,
+      "priceTenths": 50,
+      "basePoints": 1.91,
+      "startRate": 0.205,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 2
+    },
+    {
+      "id": 196,
+      "code": 551262,
+      "name": "Markelo",
+      "position": "FWD",
+      "positionId": 4,
+      "club": "COV",
+      "teamId": 7,
+      "priceTenths": 50,
+      "basePoints": 1.91,
+      "startRate": 0.205,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 2
+    },
+    {
+      "id": 298,
+      "code": 500957,
+      "name": "Destan",
+      "position": "FWD",
+      "positionId": 4,
+      "club": "HUL",
+      "teamId": 11,
+      "priceTenths": 45,
+      "basePoints": 1.91,
+      "startRate": 0.205,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 2
+    },
+    {
+      "id": 317,
+      "code": 222625,
+      "name": "Hirst",
+      "position": "FWD",
+      "positionId": 4,
+      "club": "IPS",
+      "teamId": 12,
+      "priceTenths": 50,
+      "basePoints": 1.91,
+      "startRate": 0.205,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 2
+    },
+    {
+      "id": 320,
+      "code": 147675,
+      "name": "Akpom",
+      "position": "FWD",
+      "positionId": 4,
+      "club": "IPS",
+      "teamId": 12,
+      "priceTenths": 50,
+      "basePoints": 1.91,
+      "startRate": 0.205,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 2
+    },
+    {
+      "id": 322,
+      "code": 462387,
+      "name": "Al-Hamadi",
+      "position": "FWD",
+      "positionId": 4,
+      "club": "IPS",
+      "teamId": 12,
+      "priceTenths": 50,
+      "basePoints": 1.91,
+      "startRate": 0.205,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 2
+    },
+    {
+      "id": 441,
+      "code": 596047,
+      "name": "Obi",
+      "position": "FWD",
+      "positionId": 4,
+      "club": "MUN",
+      "teamId": 16,
+      "priceTenths": 45,
+      "basePoints": 1.91,
+      "startRate": 0.205,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 2
     },
     {
       "id": 26,
@@ -5184,7 +8712,9 @@
       "priceTenths": 75,
       "basePoints": 1.89,
       "startRate": 0.277,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 490,
@@ -5197,7 +8727,9 @@
       "priceTenths": 60,
       "basePoints": 1.87,
       "startRate": 0.429,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 492,
@@ -5210,7 +8742,9 @@
       "priceTenths": 55,
       "basePoints": 1.69,
       "startRate": 0.228,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 3
     },
     {
       "id": 167,
@@ -5223,7 +8757,9 @@
       "priceTenths": 55,
       "basePoints": 1.61,
       "startRate": 0.27,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 4
     },
     {
       "id": 125,
@@ -5236,7 +8772,9 @@
       "priceTenths": 55,
       "basePoints": 1.46,
       "startRate": 0.194,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 401,
@@ -5249,7 +8787,9 @@
       "priceTenths": 70,
       "basePoints": 1.32,
       "startRate": 0.205,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 2
     },
     {
       "id": 526,
@@ -5262,7 +8802,9 @@
       "priceTenths": 60,
       "basePoints": 1.26,
       "startRate": 0.327,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 80,
@@ -5275,7 +8817,114 @@
       "priceTenths": 55,
       "basePoints": 1.23,
       "startRate": 0.056,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 3
+    },
+    {
+      "id": 107,
+      "code": 593174,
+      "name": "Furo",
+      "position": "FWD",
+      "positionId": 4,
+      "club": "BRE",
+      "teamId": 4,
+      "priceTenths": 45,
+      "basePoints": 1.23,
+      "startRate": 0.188,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 3
+    },
+    {
+      "id": 169,
+      "code": 567119,
+      "name": "Mheuka",
+      "position": "FWD",
+      "positionId": 4,
+      "club": "CHE",
+      "teamId": 6,
+      "priceTenths": 45,
+      "basePoints": 1.23,
+      "startRate": 0.188,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 6
+    },
+    {
+      "id": 272,
+      "code": 631786,
+      "name": "Kusi-Asare",
+      "position": "FWD",
+      "positionId": 4,
+      "club": "FUL",
+      "teamId": 10,
+      "priceTenths": 45,
+      "basePoints": 1.23,
+      "startRate": 0.188,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 3
+    },
+    {
+      "id": 321,
+      "code": 557012,
+      "name": "Walle Egeli",
+      "position": "FWD",
+      "positionId": 4,
+      "club": "IPS",
+      "teamId": 12,
+      "priceTenths": 45,
+      "basePoints": 1.23,
+      "startRate": 0.188,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 5
+    },
+    {
+      "id": 466,
+      "code": 599303,
+      "name": "Neave",
+      "position": "FWD",
+      "positionId": 4,
+      "club": "NEW",
+      "teamId": 17,
+      "priceTenths": 45,
+      "basePoints": 1.23,
+      "startRate": 0.188,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 4
+    },
+    {
+      "id": 493,
+      "code": 465680,
+      "name": "Kalimuendo",
+      "position": "FWD",
+      "positionId": 4,
+      "club": "NFO",
+      "teamId": 18,
+      "priceTenths": 55,
+      "basePoints": 1.23,
+      "startRate": 0.188,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 3
+    },
+    {
+      "id": 528,
+      "code": 490145,
+      "name": "Scarlett",
+      "position": "FWD",
+      "positionId": 4,
+      "club": "TOT",
+      "teamId": 19,
+      "priceTenths": 45,
+      "basePoints": 1.23,
+      "startRate": 0.188,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 3
     },
     {
       "id": 440,
@@ -5288,7 +8937,9 @@
       "priceTenths": 55,
       "basePoints": 1.2,
       "startRate": 0.151,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 464,
@@ -5301,7 +8952,9 @@
       "priceTenths": 60,
       "basePoints": 1.18,
       "startRate": 0.087,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 553,
@@ -5314,7 +8967,9 @@
       "priceTenths": 55,
       "basePoints": 1.12,
       "startRate": 0.046,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 2
     },
     {
       "id": 138,
@@ -5327,7 +8982,9 @@
       "priceTenths": 55,
       "basePoints": 1.1,
       "startRate": 0.078,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 27,
@@ -5340,7 +8997,9 @@
       "priceTenths": 60,
       "basePoints": 0.98,
       "startRate": 0.188,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 3
     },
     {
       "id": 379,
@@ -5353,7 +9012,9 @@
       "priceTenths": 90,
       "basePoints": 0.85,
       "startRate": 0.184,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1
     },
     {
       "id": 348,
@@ -5366,7 +9027,9 @@
       "priceTenths": 50,
       "basePoints": 0.67,
       "startRate": 0.026,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 3
     },
     {
       "id": 168,
@@ -5379,7 +9042,9 @@
       "priceTenths": 50,
       "basePoints": 0.29,
       "startRate": 0.057,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 5
     },
     {
       "id": 224,
@@ -5392,7 +9057,9 @@
       "priceTenths": 55,
       "basePoints": 0.22,
       "startRate": 0.061,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 3
     },
     {
       "id": 56,
@@ -5405,7 +9072,9 @@
       "priceTenths": 55,
       "basePoints": 0.0,
       "startRate": 0.0,
-      "squadNumber": null
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 2
     }
   ]
 }

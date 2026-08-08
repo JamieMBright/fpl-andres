@@ -165,11 +165,19 @@ def test_a_fixture_with_no_gameweek_is_left_out(tmp_path: Path) -> None:
     assert payload["fixtureLadder"]["ARS"]["attacking"][0] == pytest.approx(1.2)
 
 
-def test_players_without_a_scoring_record_are_dropped(tmp_path: Path) -> None:
+def test_players_without_a_scoring_record_are_kept_on_a_role_prior(
+    tmp_path: Path,
+) -> None:
+    # Somebody will own a promoted-club debutant, so he has to be pickable. The
+    # numbers are what players of his position and depth rank do, and the row
+    # says so rather than passing a prior off as a measurement.
     payload = _run(tmp_path, [_element(), _element(id=12, code=9999)])
 
-    codes = {player["code"] for player in payload["players"]}
-    assert codes == {1001}
+    by_code = {player["code"]: player for player in payload["players"]}
+    assert set(by_code) == {1001, 9999}
+    assert by_code[1001]["rated"] is True
+    assert by_code[9999]["rated"] is False
+    assert by_code[9999]["basePoints"] == by_code[1001]["basePoints"]
 
 
 def test_unavailable_players_are_dropped(tmp_path: Path) -> None:

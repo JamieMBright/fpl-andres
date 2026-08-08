@@ -65,6 +65,10 @@ export interface SolverPlayer {
   priceTenths: number;
   basePoints: number;
   startRate: number;
+  /** False where every number above is a prior for his role, not a measurement. */
+  rated?: boolean;
+  /** 1 is his club's most expensive player in this position. */
+  depthRank?: number;
 }
 
 interface FixtureLadder {
