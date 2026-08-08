@@ -36,6 +36,7 @@ NEUTRAL = RouteAdjustment(
 
 
 class _Minutes:
+    probability_appear = 1.0
     probability_sixty_minutes = 1.0
     expected_minutes = 90.0
 

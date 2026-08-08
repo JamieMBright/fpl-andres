@@ -71,6 +71,7 @@ def _rate_evidence(
         minimum_minutes=minimum_minutes,
         blend_full_weight_minutes=900.0,
         carried_context_weight=1.0,
+        decay_half_life_events=8.0,
         prediction_cutoff=CUTOFF,
         data_available_at=CUTOFF - timedelta(hours=3),
         source_hashes=(HASH,),

@@ -30,7 +30,13 @@ from fpl_andres import timeouts
 from fpl_andres.backtesting.fixtures import TeamStrength, route_adjustment
 from fpl_andres.bootstrap import BootstrapElement, parse_elements
 from fpl_andres.jsonio import parse_json, read_json_file
-from fpl_andres.planning.fixture_routes import fixture_difficulty
+from fpl_andres.planning.fixture_routes import (
+    PROMOTED_STRENGTH,
+    ROUTE_KEYS,
+    fixture_difficulty,
+)
+from fpl_andres.planning.opening import PLAYABLE_START_RATE
+from fpl_andres.planning.transfers import TransferPlanSettings
 from fpl_andres.positions import Position
 
 BOOTSTRAP = "https://fantasy.premierleague.com/api/bootstrap-static/"
@@ -55,12 +61,44 @@ POSITION_CODES = {position.value: position.code for position in Position}
 # that is a limit of the evidence, not of this number.
 POOL_PER_POSITION = 250
 
+#: FPL's own bootstrap does not publish the hit, so it is cited rather than read.
+TRANSFER_COST_POINTS = 4
+
+#: How many of each position may start, from the published rules.
+LINEUP_RANGE = {1: (1, 1), 2: (3, 5), 3: (2, 5), 4: (1, 3)}
+
+#: How many of each position a squad holds.
+SQUAD_SHAPE = {1: 2, 2: 5, 3: 5, 4: 3}
+
+#: FPL awards one a week. The number is in the rules page, not the bootstrap.
+WEEKLY_FREE_TRANSFERS = 1
+
+
+def _setting(bootstrap: Mapping[str, object], key: str) -> int:
+    """One rule from FPL's own settings, or a refusal naming what is missing.
+
+    The browser solver declared these as literals. A rule that cannot be read
+    from its source has to stop the publish, not be typed in from memory.
+    """
+    settings = bootstrap.get("game_settings")
+    if not isinstance(settings, Mapping) or key not in settings:
+        raise ValueError(f"bootstrap game_settings does not publish {key}")
+    value = settings[key]
+    if not isinstance(value, int) or isinstance(value, bool):
+        raise ValueError(f"bootstrap game_settings.{key} is not a whole number")
+    return value
+
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="publish-season-inputs")
     parser.add_argument("--output", default=str(DEFAULT_OUTPUT))
     parser.add_argument("--projections", default=str(PROJECTIONS))
     parser.add_argument("--opening-squad", default=str(OPENING_SQUAD))
+    parser.add_argument(
+        "--rules-reference",
+        default="FPL rules page, Transfers section",
+        help="Where the transfer rules that are not in the bootstrap were read.",
+    )
     return parser
 
 
@@ -166,25 +204,45 @@ def main(argv: Sequence[str] | None = None) -> int:
     for team_id, team in clubs.items():
         defensive: list[float] = []
         attacking: list[float] = []
+        saving: list[float] = []
+        conceding: list[float] = []
+        defcon: list[float] = []
         difficulty: list[float | None] = []
         against: list[list[str]] = []
         for event in ordered:
             games = schedule.get((event, team_id), ())
             back = 0.0
             front = 0.0
+            saves = 0.0
+            leak = 0.0
+            contribution = 0.0
             for opponent, home in games:
-                if opponent not in strength or team_id not in strength:
+                if team_id not in strength:
                     back += 1.0
                     front += 1.0
+                    saves += 1.0
+                    leak += 1.0
+                    contribution += 1.0
                     continue
-                # The backtested per-route multipliers, rather than a hand-rolled
-                # inversion here. `clean_sheet` and `attacking` both account for
-                # this club's own strength as well as the opponent's.
-                adjustment = route_adjustment(strength, team_id, opponent, home=home)
+                # A promoted opponent gets the same soft prior the difficulty
+                # badge already used. Reading a missing club as league-average
+                # here meant the badge beside a fixture said "easy" and the
+                # points beside the badge said "ordinary", for every tie
+                # against a promoted side.
+                rated_strength = (
+                    strength if opponent in strength else {**strength, opponent: PROMOTED_STRENGTH}
+                )
+                adjustment = route_adjustment(rated_strength, team_id, opponent, home=home)
                 back += adjustment.clean_sheet
                 front += adjustment.attacking
-            defensive.append(round(back, 4))
-            attacking.append(round(front, 4))
+                saves += adjustment.saves
+                leak += adjustment.conceding
+                contribution += adjustment.defensive_contribution
+            defensive.append(round(back, 3))
+            attacking.append(round(front, 3))
+            saving.append(round(saves, 3))
+            conceding.append(round(leak, 3))
+            defcon.append(round(contribution, 3))
             difficulty.append(fixture_difficulty(games, team_id, strength))
             against.append(
                 [
@@ -195,6 +253,9 @@ def main(argv: Sequence[str] | None = None) -> int:
         ladder[str(team["short_name"])] = {
             "defensive": defensive,
             "attacking": attacking,
+            "saves": saving,
+            "conceding": conceding,
+            "defensiveContribution": defcon,
         }
         ratings[str(team["short_name"])] = difficulty
         opponents[str(team["short_name"])] = against
@@ -226,6 +287,20 @@ def main(argv: Sequence[str] | None = None) -> int:
             assert record is not None
             base_points = round(float(record["expectedPoints"]), 3)
             start_rate = round(float(record["probabilityStart"]), 3)
+            # The eight routes, so the browser can bend each by its own fixture
+            # multiplier. Applying one multiplier to the whole total priced a
+            # defender's assists by his side's defensive difficulty and a
+            # keeper's saves as if they were clean sheets.
+            #
+            # Zeroes are omitted and three decimals kept: a route worth nothing
+            # needs no key, and the fourth decimal of a projection is well past
+            # anything it can support. Together they hold the browser chunk
+            # inside its budget.
+            routes = {
+                key: value
+                for key in ROUTE_KEYS
+                if (value := round(float(record["routes"][key]), 3))
+            }
         else:
             # No Premier League record at all. He is still pickable — somebody
             # will own him — but every number here is a prior taken from what
@@ -235,6 +310,11 @@ def main(argv: Sequence[str] | None = None) -> int:
             if prior is None:
                 continue
             base_points, start_rate = prior
+            # A role prior has no route split to give, so the whole figure is
+            # carried on the route his position is scored by. Splitting it any
+            # further would be inventing a shape nobody measured.
+            attacking_role = element.element_type in (3, 4)
+            routes = {("attacking" if attacking_role else "cleanSheet"): round(base_points, 3)}
         players.append(
             (
                 element.element_type,
@@ -249,6 +329,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                     "teamId": element.team,
                     "priceTenths": element.now_cost,
                     "basePoints": base_points,
+                    "routes": routes,
                     "startRate": start_rate,
                     "squadNumber": element.squad_number,
                     "rated": rated,
@@ -290,6 +371,33 @@ def main(argv: Sequence[str] | None = None) -> int:
             "multiplier for the gameweek; blanks are zero and doubles are summed"
         ),
         "poolPerPosition": POOL_PER_POSITION,
+        # Read from FPL's own bootstrap, not retyped in TypeScript. The browser
+        # solver declared the squad shape, the weekly award, the cap and the
+        # hit as literals with a prose citation and no timestamp, which is the
+        # one thing this repository says it never does with a controlling rule.
+        "rules": {
+            "weeklyFreeTransfers": WEEKLY_FREE_TRANSFERS,
+            "maximumFreeTransfers": WEEKLY_FREE_TRANSFERS
+            + _setting(bootstrap, "max_extra_free_transfers"),
+            "transferCostPoints": TRANSFER_COST_POINTS,
+            "transferCap": _setting(bootstrap, "transfers_cap"),
+            "squadSize": _setting(bootstrap, "squad_squadsize"),
+            "lineupSize": _setting(bootstrap, "squad_squadplay"),
+            "clubLimit": _setting(bootstrap, "squad_team_limit"),
+            "positions": [
+                {
+                    "positionId": position,
+                    "squadCount": count,
+                    "lineupMinimum": LINEUP_RANGE[position][0],
+                    "lineupMaximum": LINEUP_RANGE[position][1],
+                }
+                for position, count in sorted(SQUAD_SHAPE.items())
+            ],
+            "sourceReference": args.rules_reference,
+            "dataAvailableAt": datetime.now(UTC).isoformat().replace("+00:00", "Z"),
+            "playableStartRate": PLAYABLE_START_RATE,
+            "transferMarginPoints": TransferPlanSettings().margin,
+        },
         "fixtureLadder": ladder,
         "fixtureDifficulty": ratings,
         "opponents": opponents,

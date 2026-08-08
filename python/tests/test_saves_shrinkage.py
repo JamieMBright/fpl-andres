@@ -48,6 +48,7 @@ def _rows(saves: list[int], *, element_id: int = 1) -> list[ElementRow]:
 
 
 class _Minutes:
+    probability_appear = 1.0
     probability_sixty_minutes = 1.0
     expected_minutes = 90.0
 
@@ -69,7 +70,9 @@ def _save_points(own: list[int], league_rows: list[ElementRow]) -> float:
             saves=1.0,
             defensive_contribution=1.0,
         ),
-    ).total
+        # The saves route alone: the total now carries a conceding deduction
+        # derived from the clean-sheet probability, which these rows never set.
+    ).saves
 
 
 class SavesShrinkageTest(unittest.TestCase):

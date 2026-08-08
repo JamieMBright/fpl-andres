@@ -26,6 +26,18 @@ _RETURN_THRESHOLD = 5
 _BLANK_CEILING = 2
 _MINIMUM_APPEARANCES = 4
 
+#: Appearances below which the ninetieth percentile is not one.
+#:
+#: Nearest-rank at 0.9 lands on `round(0.9 * (n - 1))`. At four appearances
+#: that is index 3 of 4 -- the maximum. At five it is index 4 of 5, the maximum
+#: again. So under ten appearances the "ceiling" was the single best afternoon
+#: the player had, and one hat-trick set a ratio that a third of the captain
+#: valuation then rested on.
+#:
+#: Ten is where the index first sits two places below the top, so the estimate
+#: is a percentile rather than an extreme.
+_MINIMUM_CEILING_APPEARANCES = 10
+
 
 @dataclass(frozen=True)
 class PointsShape:
@@ -45,6 +57,11 @@ class PointsShape:
         return self.appearances >= _MINIMUM_APPEARANCES
 
     @property
+    def has_measured_ceiling(self) -> bool:
+        """Whether there are enough appearances for a percentile to be one."""
+        return self.appearances >= _MINIMUM_CEILING_APPEARANCES
+
+    @property
     def ceiling_ratio(self) -> float:
         """How many times his ordinary afternoon his best one is.
 
@@ -54,10 +71,10 @@ class PointsShape:
         will still have a ceiling near twice his mean, and a striker who either
         scores or vanishes will still have one near three times it.
 
-        One when there is nothing to measure, which claims no upside rather
-        than inventing some.
+        One where the sample cannot support a ninetieth percentile, which claims
+        no upside rather than reporting a single afternoon as a distribution.
         """
-        if not self.is_measured or self.mean <= 0:
+        if not self.has_measured_ceiling or self.mean <= 0:
             return 1.0
         return max(1.0, self.ceiling / self.mean)
 

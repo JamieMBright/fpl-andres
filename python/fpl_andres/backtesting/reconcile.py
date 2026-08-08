@@ -35,11 +35,13 @@ from fpl_andres.backtesting.scoring import (
     DEFCON_POINTS,
     DEFCON_THRESHOLD,
     GOAL_POINTS,
+    LONG_PLAY_POINTS,
     OWN_GOAL_POINTS,
     PENALTY_MISS_POINTS,
     PENALTY_SAVE_POINTS,
     RED_CARD_POINTS,
     SAVES_PER_POINT,
+    SHORT_PLAY_POINTS,
     YELLOW_CARD_POINTS,
 )
 from fpl_andres.season_rules import SeasonRules, rules_for
@@ -52,9 +54,11 @@ __all__ = [
     "reconcile_season",
 ]
 
-#: An appearance is one point, and a full hour is two.
-_APPEARANCE_POINTS = 1
-_SIXTY_MINUTE_POINTS = 2
+#: An appearance is one point, and a full hour is two. Imported rather than
+#: retyped: this module exists to check the projection's scoring against FPL's,
+#: and a second copy of the constants would make the check vacuous.
+_APPEARANCE_POINTS = SHORT_PLAY_POINTS
+_SIXTY_MINUTE_POINTS = LONG_PLAY_POINTS
 _SIXTY = 60
 
 #: Every route priced, in the order a reader should read them. Appearance is

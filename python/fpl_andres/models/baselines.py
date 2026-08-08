@@ -5,6 +5,7 @@ from collections.abc import Iterable, Sequence
 from dataclasses import dataclass
 from statistics import fmean
 
+from fpl_andres.events import MAX_EVENT
 from fpl_andres.models.contracts import EvidenceLevel, FixtureResult, TeamGoalPrediction
 
 
@@ -210,8 +211,8 @@ def _prediction(
 def _validate_prediction_ids(home_team_id: int, away_team_id: int, event: int) -> None:
     if home_team_id < 1 or away_team_id < 1 or home_team_id == away_team_id:
         raise ValueError("prediction teams must be distinct positive IDs")
-    if not 1 <= event <= 38:
-        raise ValueError("prediction event must be between 1 and 38")
+    if not 1 <= event <= MAX_EVENT:
+        raise ValueError(f"prediction event must be between 1 and {MAX_EVENT}")
 
 
 def _known_rate(rate: _Rate | None) -> _Rate:

@@ -258,6 +258,17 @@ const quickSolverLimitsSchema = z
     beamWidth: z.int().min(1).max(500),
     candidateLimitPerPosition: z.int().min(1).max(50),
     maxTransfers: z.int().min(0).max(5),
+    /**
+     * What a transfer must clear, per transfer, on top of its cost.
+     *
+     * Without it a free transfer is spent on any gain at all, however small,
+     * because a per-deadline solver sees no value in an unused one. Holding it
+     * is worth something the objective cannot express: next week it can be a
+     * second move, and churn has costs the model cannot see -- price changes,
+     * and being wrong. Same number and same reason as the Python planner's
+     * `TransferPlanSettings.margin`.
+     */
+    transferMarginPoints: z.number().nonnegative().default(0),
   })
   .strict();
 
@@ -394,6 +405,17 @@ export function solveQuickPlan(
     if (frontier.length === 0) break;
     deepestTransferCount = depth;
     if (compareStates(frontier[0]!, best) < 0) best = frontier[0]!;
+  }
+
+  // A move has to be worth making, not merely positive. Applied after the
+  // search rather than inside it so the frontier still explores moves that
+  // only pay off two transfers deep.
+  if (
+    best !== initial &&
+    best.netExpectedPoints - initial.netExpectedPoints <=
+      limits.transferMarginPoints * best.transfersIn.length
+  ) {
+    best = initial;
   }
 
   const sourceHashes = [

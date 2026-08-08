@@ -249,8 +249,12 @@ def test_a_constant_prediction_column_reports_no_rank_correlation() -> None:
 
 
 def test_an_event_outside_the_season_is_rejected() -> None:
+    # 39 is a real event: 2019/20 was suspended and resumed, and ran to 47.
+    # The guard used to stop at 38 and refused a gameweek that was played.
+    EventWindow(season=SEASON, event=39, prediction_cutoff=CUTOFF)
+
     with pytest.raises(ValueError, match="event must be between"):
-        EventWindow(season=SEASON, event=39, prediction_cutoff=CUTOFF)
+        EventWindow(season=SEASON, event=48, prediction_cutoff=CUTOFF)
 
 
 def test_a_naive_cutoff_is_rejected() -> None:

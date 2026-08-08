@@ -11,12 +11,14 @@ reconciles to 34,383 against an actual 34,382, and 27,353 of 27,605 rows in
 
 from __future__ import annotations
 
+import math
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 
 from fpl_andres.backtesting.corpus import ElementRow
 from fpl_andres.backtesting.fixtures import RouteAdjustment
 from fpl_andres.backtesting.rates import LeagueRates, shrunk_rate
+from fpl_andres.models.expected_points import expected_floor_divide
 from fpl_andres.models.minutes import MinutesProjection
 from fpl_andres.models.player_rates import PlayerRateProjection
 
@@ -30,6 +32,11 @@ _ASSIST_PRIOR: Mapping[int, float] = {1: 0.00, 2: 0.06, 3: 0.13, 4: 0.12}
 # team-goal model. Stated here so the number is never mistaken for full xPTS.
 _GOAL_POINTS: Mapping[int, int] = {1: 10, 2: 6, 3: 5, 4: 4}
 _ASSIST_POINTS = 3
+#: A substitute appearance, and a start of an hour or more. Named here with the
+#: rest of the table rather than inline, so `reconcile.py` prices realised
+#: gameweeks from the same two numbers this projects them with.
+_SHORT_PLAY_POINTS = 1
+_LONG_PLAY_POINTS = 2
 _CLEAN_SHEET_POINTS: Mapping[int, int] = {1: 4, 2: 4, 3: 1, 4: 0}
 _SAVES_PER_POINT = 3
 _GOALKEEPER = 1
@@ -39,6 +46,10 @@ _NEUTRAL_ADJUSTMENT = RouteAdjustment(1.0, 1.0, 1.0, 1.0, 1.0)
 # 27,353 of 27,605 rows in 2024-25 match exactly, the remainder being managers.
 _CONCEDED_POINTS: Mapping[int, int] = {1: -1, 2: -1, 3: 0, 4: 0}
 _CONCEDED_PER_POINT = 2
+
+#: A clean sheet is never certain, and log(0) is not a number. At this floor the
+#: implied goals conceded is about 9.2, which is past any real fixture.
+_MINIMUM_CLEAN_SHEET = 1e-4
 _YELLOW_CARD_POINTS = -1
 _RED_CARD_POINTS = -3
 _OWN_GOAL_POINTS = -2
@@ -52,6 +63,8 @@ _DEFCON_THRESHOLD: Mapping[int, int] = {2: 10, 3: 12, 4: 12}
 # gameweeks from it to check this project's scoring against FPL's own, and a
 # second copy of the constants would make that check vacuous.
 GOAL_POINTS = _GOAL_POINTS
+SHORT_PLAY_POINTS = _SHORT_PLAY_POINTS
+LONG_PLAY_POINTS = _LONG_PLAY_POINTS
 ASSIST_POINTS = _ASSIST_POINTS
 CLEAN_SHEET_POINTS = _CLEAN_SHEET_POINTS
 CONCEDED_POINTS = _CONCEDED_POINTS
@@ -124,7 +137,7 @@ def fixture_points_breakdown(
     ninety = minutes.expected_minutes / _MINUTES_PER_90
     appearance = (
         minutes.probability_appear - minutes.probability_sixty_minutes
-    ) + minutes.probability_sixty_minutes * 2
+    ) * _SHORT_PLAY_POINTS + minutes.probability_sixty_minutes * _LONG_PLAY_POINTS
     attacking = (
         ninety
         * (rates.goals_per_90 * _GOAL_POINTS[position] + rates.assists_per_90 * _ASSIST_POINTS)
@@ -192,7 +205,12 @@ def supporting_breakdown(
         * adjusted_clean_sheet
         * _CLEAN_SHEET_POINTS.get(position, 0)
     )
-    bonus = ninety * per_appearance(
+    # Bonus is awarded once per match played, and `per_appearance` already
+    # measures it over matches he played -- whatever minutes those were. Scaling
+    # by expected 90s charged him for his minutes a second time, so a habitual
+    # sixty-minute player was docked a third of his own measured bonus rate.
+    # The probability he appears at all is the right multiplier.
+    bonus = minutes.probability_appear * per_appearance(
         sum(row.bonus for row in appearances),
         league.bonus.get(position, 0.0),
     )
@@ -225,12 +243,20 @@ def supporting_breakdown(
     conceding = 0.0
     conceded_points = _CONCEDED_POINTS.get(position, 0)
     if conceded_points:
-        deductions = sum(row.goals_conceded // _CONCEDED_PER_POINT for row in appearances)
+        # Derived from the clean-sheet probability rather than estimated beside
+        # it. Shrinking the two independently let a defender carry a clean-sheet
+        # rate and a conceded rate that no single scoreline distribution could
+        # produce -- the fixture multipliers are reciprocal, so the total stayed
+        # close, but the two halves described different matches.
+        #
+        # Under Poisson(lambda) conceded, P(clean sheet) = exp(-lambda), so the
+        # adjusted clean-sheet probability names the lambda, and the deduction
+        # is E[floor(X / 2)] for that same lambda.
+        expected_conceded = -math.log(max(adjusted_clean_sheet, _MINIMUM_CLEAN_SHEET))
         conceding = (
-            ninety
-            * rate(deductions, league.conceded_deductions.get(position, 0.0))
+            minutes.probability_sixty_minutes
+            * expected_floor_divide(expected_conceded, _CONCEDED_PER_POINT)
             * conceded_points
-            * adjustment.conceding
         )
 
     routes = (

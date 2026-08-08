@@ -77,15 +77,19 @@ def test_a_candidate_with_no_edge_never_promotes() -> None:
 
 
 def test_replication_suppresses_a_seed_dependent_promotion() -> None:
-    """The bug #30 identified, reproduced and closed.
+    """The bug this identified, reproduced and closed.
 
     Forty rows and a modest edge put the interval bound close enough to zero
     that Monte Carlo error decides the outcome. Under a single seed this sample
     promotes on 7 of 20 seeds. Under eight-way unanimity it promotes on none:
     the disagreement is the finding, and shipping on a 35% coin-flip is what the
     replication exists to stop.
+
+    Re-measured when the gate stopped reading a one-sided decision off a
+    two-sided bound. The old test was twice as strict as it said it was, so the
+    edge that sat on the knife-edge moved with it: 0.5 then, 0.4 now.
     """
-    data = _triplets(40, edge=0.5, noise_seed=1)
+    data = _triplets(40, edge=0.4, noise_seed=1)
 
     single = [_decide(data, seed).promoted for seed in range(20)]  # type: ignore[attr-defined]
     replicated = [_decide(data, seed, replicates=8).promoted for seed in range(20)]  # type: ignore[attr-defined]
@@ -97,7 +101,7 @@ def test_replication_suppresses_a_seed_dependent_promotion() -> None:
 def test_a_split_vote_is_reported_rather_than_resolved_by_majority() -> None:
     """A decision that promotes on its own seed but not on every replicate must
     come back refused, and say why."""
-    data = _triplets(40, edge=0.5, noise_seed=1)
+    data = _triplets(40, edge=0.4, noise_seed=1)
 
     for seed in range(20):
         decision = _decide(data, seed, replicates=8)

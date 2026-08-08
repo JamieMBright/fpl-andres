@@ -52,6 +52,7 @@ def _evidence(
     minimum_minutes: float = 180.0,
     blend_full_weight_minutes: float = 900.0,
     carried_context_weight: float = 1.0,
+    decay_half_life_events: float = 8.0,
 ) -> PlayerRateEvidence:
     return PlayerRateEvidence(
         element_code=118748,
@@ -63,6 +64,7 @@ def _evidence(
         minimum_minutes=minimum_minutes,
         blend_full_weight_minutes=blend_full_weight_minutes,
         carried_context_weight=carried_context_weight,
+        decay_half_life_events=decay_half_life_events,
         prediction_cutoff=CUTOFF,
         data_available_at=CUTOFF - timedelta(hours=3),
         source_hashes=(HASH,),
@@ -234,6 +236,7 @@ def test_evidence_from_after_the_cutoff_is_rejected() -> None:
         minimum_minutes=180.0,
         blend_full_weight_minutes=900.0,
         carried_context_weight=1.0,
+        decay_half_life_events=8.0,
         prediction_cutoff=CUTOFF,
         data_available_at=CUTOFF + timedelta(seconds=1),
         source_hashes=(HASH,),

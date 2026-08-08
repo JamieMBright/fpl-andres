@@ -36,8 +36,38 @@ import inputs from "../data/season-inputs.json";
 const LOOKAHEAD = 5;
 const LOOKAHEAD_DECAY = 0.75;
 
-const WEEKLY_FREE_TRANSFERS = 1;
-const MAX_FREE_TRANSFERS = 5;
+/**
+ * The rules, read rather than retyped.
+ *
+ * They were literals here with a prose citation and no timestamp, which is the
+ * one thing this repository says it never does with a controlling FPL rule.
+ * `publish_season_inputs.py` writes them beside the players, from the same
+ * `RulesSnapshot` the Python solvers take.
+ */
+interface PublishedRules {
+  weeklyFreeTransfers: number;
+  maximumFreeTransfers: number;
+  transferCostPoints: number;
+  transferCap: number;
+  squadSize: number;
+  lineupSize: number;
+  clubLimit: number;
+  positions: {
+    positionId: number;
+    squadCount: number;
+    lineupMinimum: number;
+    lineupMaximum: number;
+  }[];
+  sourceReference: string;
+  dataAvailableAt: string;
+  playableStartRate: number;
+  transferMarginPoints: number;
+}
+
+const RULES = inputs.rules as PublishedRules;
+
+const WEEKLY_FREE_TRANSFERS = RULES.weeklyFreeTransfers;
+const MAX_FREE_TRANSFERS = RULES.maximumFreeTransfers;
 /**
  * The opening gameweek is squad selection, not a transfer window: there is
  * nothing to spend and nothing to roll, and the first award lands for gameweek
@@ -47,12 +77,24 @@ const SEASON_OPENER = 1;
 
 type PositionCode = "GKP" | "DEF" | "MID" | "FWD";
 
-const SQUAD_SHAPE = [
-  { positionId: 1, squadCount: 2, lineupMinimum: 1, lineupMaximum: 1 },
-  { positionId: 2, squadCount: 5, lineupMinimum: 3, lineupMaximum: 5 },
-  { positionId: 3, squadCount: 5, lineupMinimum: 2, lineupMaximum: 5 },
-  { positionId: 4, squadCount: 3, lineupMinimum: 1, lineupMaximum: 3 },
-];
+const SQUAD_SHAPE = RULES.positions;
+
+/**
+ * The eight published routes, and what a fixture does to each.
+ *
+ * Partial: a route worth nothing is omitted from the artifact rather than
+ * written as a zero, which is most of them for most players.
+ */
+export type PlayerRoutes = Partial<{
+  appearance: number;
+  attacking: number;
+  cleanSheet: number;
+  bonus: number;
+  saves: number;
+  conceding: number;
+  discipline: number;
+  defensiveContribution: number;
+}>;
 
 export interface SolverPlayer {
   id: number;
@@ -64,6 +106,7 @@ export interface SolverPlayer {
   teamId: number;
   priceTenths: number;
   basePoints: number;
+  routes: PlayerRoutes;
   startRate: number;
   /** False where every number above is a prior for his role, not a measurement. */
   rated?: boolean;
@@ -74,6 +117,9 @@ export interface SolverPlayer {
 interface FixtureLadder {
   defensive: number[];
   attacking: number[];
+  saves: number[];
+  conceding: number[];
+  defensiveContribution: number[];
 }
 
 const LADDER = inputs.fixtureLadder as Record<string, FixtureLadder>;
@@ -87,17 +133,51 @@ const EVENTS = inputs.events as number[];
 const DEADLINES = inputs.deadlines as string[];
 
 /**
- * A defender's return depends on the opponent's attack, an attacker's on their
- * defence, so the two read different rungs of the same ladder.
+ * Each route bent by what this fixture does to it.
+ *
+ * One multiplier for the whole projection was wrong in both directions: a
+ * defender's assists were priced by his side's defensive difficulty, and a
+ * keeper's saves scaled as if they were clean sheets. Appearance points, bonus
+ * and discipline do not move with the opponent at all.
+ *
+ * A blank gameweek is a zero rung, so every route collapses to nothing except
+ * the ones that do not depend on a fixture -- and those are multiplied by the
+ * fixture count, which is also zero.
  */
 function pointsAt(player: SolverPlayer, eventIndex: number): number {
   const ladder = LADDER[player.club];
   if (!ladder) return 0;
-  const defensive = player.positionId === 1 || player.positionId === 2;
-  const multiplier = defensive
-    ? ladder.defensive[eventIndex]
-    : ladder.attacking[eventIndex];
-  return multiplier === undefined ? 0 : player.basePoints * multiplier;
+  const attacking = ladder.attacking[eventIndex];
+  const cleanSheet = ladder.defensive[eventIndex];
+  const saves = ladder.saves[eventIndex];
+  const conceding = ladder.conceding[eventIndex];
+  const defensiveContribution = ladder.defensiveContribution[eventIndex];
+  if (
+    attacking === undefined ||
+    cleanSheet === undefined ||
+    saves === undefined ||
+    conceding === undefined ||
+    defensiveContribution === undefined
+  ) {
+    return 0;
+  }
+  // A rung is the sum over this gameweek's fixtures, so it doubles for a
+  // double and is zero for a blank. The routes a fixture cannot bend have to
+  // follow the same count, or a blank gameweek would still pay appearance.
+  const fixtures = OPPONENTS[player.club]?.[eventIndex]?.length ?? 0;
+  const { routes } = player;
+  return (
+    ((routes.appearance ?? 0) +
+      (routes.bonus ?? 0) +
+      (routes.discipline ?? 0)) *
+      fixtures +
+    (routes.attacking ?? 0) * attacking +
+    (routes.cleanSheet ?? 0) * cleanSheet +
+    (routes.saves ?? 0) * saves +
+    // Conceding points are negative, so a leakier fixture makes them worse.
+    (routes.conceding ?? 0) * conceding +
+    (routes.defensiveContribution ?? 0) * defensiveContribution
+  );
 }
 
 function lookaheadPoints(player: SolverPlayer, eventIndex: number): number {
@@ -110,6 +190,17 @@ function lookaheadPoints(player: SolverPlayer, eventIndex: number): number {
   return total;
 }
 
+/**
+ * Something the public source cannot say, which this solve assumed anyway.
+ *
+ * FPL publishes a manager's picks and his bank; it does not publish how many
+ * free transfers he is holding, nor what he paid for anyone. Both are private
+ * to the logged-in manager. Refusing to plan without them would make the page
+ * useless for everyone who has not filled the corrections form, so the
+ * assumption is made and named rather than made and hidden.
+ */
+export type SolveAssumption = "free_transfers" | "selling_prices";
+
 export interface SolveStart {
   /** Element ids currently held, and what they would sell for. */
   squad: { elementId: number; sellingPriceTenths: number }[];
@@ -117,6 +208,7 @@ export interface SolveStart {
   availableFreeTransfers: number;
   /** First gameweek to plan. Everything from here to 38 is solved. */
   fromEvent: number;
+  assumed: readonly SolveAssumption[];
 }
 
 export interface SolvedGameweek {
@@ -167,8 +259,22 @@ function confidenceFor(ahead: number): SolvedGameweek["confidence"] {
 
 const HASH = `sha256:${"0".repeat(64)}`;
 
-/** FPL publishes neither the weekly award nor the hit, so both are cited. */
-const RULES_REFERENCE = "FPL rules page, Transfers section, read 2026-08-03";
+/**
+ * Below this the solver will not buy him.
+ *
+ * The same floor `planning/opening.py` applies, published beside the players
+ * rather than retyped here: a man who does not start does not score, however
+ * good his rate looks over the handful of appearances he made.
+ */
+const PLAYABLE_START_RATE = RULES.playableStartRate;
+
+/**
+ * What a transfer must clear before it is worth making. Same number and same
+ * reason as `TransferPlanSettings.margin` on the Python side: a per-deadline
+ * solver sees no value in an unused free transfer, so without this it spends
+ * one on any gain at all and can never bank one for a two-move week.
+ */
+const TRANSFER_MARGIN_POINTS = RULES.transferMarginPoints;
 
 /**
  * Solves gameweek by gameweek, yielding each as it lands.
@@ -196,7 +302,14 @@ export function* solveSeason(
     const deadline = DEADLINES[index];
     if (event === undefined || deadline === undefined) break;
 
-    const players = PLAYERS.map((player) => ({
+    const players = PLAYERS.filter(
+      // Same floor the Python planner applies. Without it a fringe player with
+      // a high per-appearance rate and almost no starts could win a transfer,
+      // and the browser kept exactly the candidates Python drops.
+      (player) =>
+        player.startRate >= PLAYABLE_START_RATE ||
+        squad.some((held) => held.elementId === player.id),
+    ).map((player) => ({
       elementId: player.id,
       teamId: player.teamId,
       positionId: player.positionId,
@@ -226,16 +339,16 @@ export function* solveSeason(
         managerOverridesHash: HASH,
       },
       rules: {
-        squadSize: 15,
-        lineupSize: 11,
-        clubLimit: 3,
-        transferCap: 15,
-        weeklyFreeTransfers: 1,
-        maximumFreeTransfers: 5,
-        transferCostPoints: 4,
-        transferRulesSourceReference: RULES_REFERENCE,
+        squadSize: RULES.squadSize,
+        lineupSize: RULES.lineupSize,
+        clubLimit: RULES.clubLimit,
+        transferCap: RULES.transferCap,
+        weeklyFreeTransfers: RULES.weeklyFreeTransfers,
+        maximumFreeTransfers: RULES.maximumFreeTransfers,
+        transferCostPoints: RULES.transferCostPoints,
+        transferRulesSourceReference: RULES.sourceReference,
         positions: SQUAD_SHAPE,
-        dataAvailableAt: deadline,
+        dataAvailableAt: RULES.dataAvailableAt,
         publishedRulesHash: HASH,
         transferRulesHash: HASH,
       },
@@ -245,6 +358,7 @@ export function* solveSeason(
       beamWidth: 12,
       candidateLimitPerPosition: 8,
       maxTransfers: 2,
+      transferMarginPoints: TRANSFER_MARGIN_POINTS,
     });
 
     const freeBefore = free;
@@ -289,12 +403,20 @@ export function* solveSeason(
       freeTransfersBefore: freeBefore,
     };
 
-    const priceOf = new Map(
+    // A player already held keeps the selling price he came in with; one just
+    // bought sells for what was paid for him this minute. Rebuilding every
+    // price from the list threw away the manager's real purchase prices one
+    // gameweek after they were read.
+    const heldPrice = new Map(
+      squad.map((held) => [held.elementId, held.sellingPriceTenths]),
+    );
+    const listPrice = new Map(
       PLAYERS.map((player) => [player.id, player.priceTenths]),
     );
     squad = solved.squadElementIds.map((elementId) => ({
       elementId,
-      sellingPriceTenths: priceOf.get(elementId) ?? 0,
+      sellingPriceTenths:
+        heldPrice.get(elementId) ?? listPrice.get(elementId) ?? 0,
     }));
     bank = solved.bankAfterTenths;
     // Gameweek 1 is squad selection, not a transfer window: FPL charges nothing
@@ -341,7 +463,10 @@ export function startFromCodes(
       sellingPriceTenths: player.priceTenths,
     }));
 
-  return squad.length === codes.length ? { ...options, squad } : null;
+  // Nobody owns this squad, so nothing was assumed about an owner.
+  return squad.length === codes.length
+    ? { ...options, squad, assumed: [] }
+    : null;
 }
 
 /** Element id to player, for anything that has to name a squad FPL published. */
@@ -356,6 +481,12 @@ const BY_ELEMENT_ID = PLAYERS_BY_ELEMENT_ID;
  * FPL's team endpoint returns element ids, not codes, so this is the door a
  * real manager comes through. A squad the solver does not recognise in full
  * yields null rather than a solve for fourteen players.
+ *
+ * `sellingPrices` is what he actually paid, plus half of any rise, which is
+ * the only number he can really transfer against. Without it the list price is
+ * used and `selling_prices` is named in `assumed`: an appreciated player is
+ * then worth more on paper than he is in the bank, and a plan built on that
+ * can propose a transfer the manager cannot fund.
  */
 export function startFromElementIds(
   elementIds: readonly number[],
@@ -363,15 +494,28 @@ export function startFromElementIds(
     bankTenths: number;
     availableFreeTransfers: number;
     fromEvent: number;
+    sellingPrices?: ReadonlyMap<number, number>;
+    assumed?: readonly SolveAssumption[];
   },
 ): SolveStart | null {
+  const { sellingPrices, assumed = [], ...rest } = options;
   const squad = elementIds
     .map((elementId) => BY_ELEMENT_ID.get(elementId))
     .filter((player): player is SolverPlayer => player !== undefined)
     .map((player) => ({
       elementId: player.id,
-      sellingPriceTenths: player.priceTenths,
+      sellingPriceTenths: sellingPrices?.get(player.id) ?? player.priceTenths,
     }));
 
-  return squad.length === elementIds.length ? { ...options, squad } : null;
+  const missing = elementIds.some(
+    (elementId) => sellingPrices?.get(elementId) === undefined,
+  );
+
+  return squad.length === elementIds.length
+    ? {
+        ...rest,
+        squad,
+        assumed: missing ? [...assumed, "selling_prices"] : assumed,
+      }
+    : null;
 }

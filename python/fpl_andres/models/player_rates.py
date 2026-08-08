@@ -20,17 +20,15 @@ keeps their rates and inherits their new club's context by construction.
 
 from __future__ import annotations
 
+from collections.abc import Sequence
 from datetime import datetime
 from typing import Annotated
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
+from fpl_andres.events import MAX_EVENT
 from fpl_andres.models.contracts import EvidenceLevel
 from fpl_andres.timeguard import require_utc
-
-# A season can exceed 38 events when it is disrupted: 2019/20 was suspended
-# and resumed, running to 47. The history schema already allows this.
-MAX_EVENT = 47
 
 _MINUTES_PER_90 = 90.0
 
@@ -105,6 +103,12 @@ class PlayerRateEvidence(BaseModel):
     # this layer would be indistinguishable from one somebody checked. 1.0
     # keeps the previous behaviour, and says so at the call site.
     carried_context_weight: Annotated[float, Field(ge=0.0, le=1.0)]
+    # Sourced. Gameweeks over which a current-season observation loses half its
+    # weight. Without it a gameweek 1 goal and a gameweek 37 goal counted the
+    # same, while the minutes model beside this one had decayed per event all
+    # along. The carried season is not decayed within itself: it is a whole
+    # season ago and the season blend already prices that.
+    decay_half_life_events: Annotated[float, Field(gt=0.0, le=100.0)]
 
     prediction_cutoff: datetime
     data_available_at: datetime
@@ -233,17 +237,48 @@ def project_player_rates(evidence: PlayerRateEvidence) -> PlayerRateProjection:
 
     current_goals, current_assists = _totals(evidence.current_season_observations, use_expected)
     carried_goals, carried_assists = _totals(evidence.prior_season_observations, use_expected)
+    reasons.append(f"current_returns={current_goals + current_assists:.2f}")
 
-    blended_minutes = current_weight * current_minutes + carried_weight * carried_minutes
-    blended_goals = current_weight * current_goals + carried_weight * carried_goals
-    blended_assists = current_weight * current_assists + carried_weight * carried_assists
+    # One weight per observation: the season share, times recency within the
+    # current season. The rate is a ratio so the weights cancel out of it; they
+    # decide only how much of the player's own evidence survives the shrinkage.
+    current_decay = _decay_weights(
+        evidence.current_season_observations,
+        evidence.prediction_event,
+        evidence.decay_half_life_events,
+    )
+    weights = [current_weight * decay for decay in current_decay] + [
+        carried_weight for _ in evidence.prior_season_observations
+    ]
+    spans = [
+        float(observation.minutes)
+        for observation in (
+            *evidence.current_season_observations,
+            *evidence.prior_season_observations,
+        )
+    ]
+    weighted_minutes = sum(weight * span for weight, span in zip(weights, spans, strict=True))
+    current_goal_credit, current_assist_credit = _weighted_totals(
+        evidence.current_season_observations, use_expected, current_decay
+    )
+    blended_minutes = weighted_minutes
+    blended_goals = current_weight * current_goal_credit + carried_weight * carried_goals
+    blended_assists = current_weight * current_assist_credit + carried_weight * carried_assists
+    effective_minutes = _effective_minutes(weights, spans)
 
     goals_per_90 = _shrink(
-        blended_goals, blended_minutes, evidence.prior.goals_per_90, evidence.prior
+        _per_90(blended_goals, blended_minutes),
+        effective_minutes,
+        evidence.prior.goals_per_90,
+        evidence.prior,
     )
     assists_per_90 = _shrink(
-        blended_assists, blended_minutes, evidence.prior.assists_per_90, evidence.prior
+        _per_90(blended_assists, blended_minutes),
+        effective_minutes,
+        evidence.prior.assists_per_90,
+        evidence.prior,
     )
+    reasons.append(f"effective_minutes={effective_minutes:.0f}")
 
     evidence_level: EvidenceLevel = "observed"
     if carried_weight > 0.0:
@@ -322,6 +357,36 @@ def _total_minutes(observations: tuple[RateObservation, ...]) -> float:
     return float(sum(observation.minutes for observation in observations))
 
 
+def _per_90(credit: float, minutes: float) -> float:
+    """A per-90 rate, or zero where nothing was played."""
+    if minutes <= 0.0 and credit > 0.0:
+        raise ValueError(f"{credit} returns cannot have come from {minutes} minutes")
+    return 0.0 if minutes <= 0.0 else credit * _MINUTES_PER_90 / minutes
+
+
+def _weighted_totals(
+    observations: tuple[RateObservation, ...],
+    use_expected: bool,
+    weights: Sequence[float],
+) -> tuple[float, float]:
+    """Goal and assist credit with each match weighted by its recency."""
+    goals = 0.0
+    assists = 0.0
+    for observation, weight in zip(observations, weights, strict=True):
+        if use_expected:
+            if observation.expected_goals is None or observation.expected_assists is None:
+                raise InconsistentObservationBasis(
+                    f"event {observation.event_id} in {observation.season} has no expected "
+                    "values, but the expected basis was chosen for this set"
+                )
+            goals += weight * observation.expected_goals
+            assists += weight * observation.expected_assists
+        else:
+            goals += weight * observation.goals
+            assists += weight * observation.assists
+    return goals, assists
+
+
 def _carried_context(evidence: PlayerRateEvidence) -> str:
     """Whether the carried season was produced in the same club and role.
 
@@ -357,19 +422,49 @@ def _carried_context(evidence: PlayerRateEvidence) -> str:
     return "same" if all(before == after for before, after in pairs) else "changed"
 
 
-def _shrink(events: float, minutes: float, prior_rate: float, prior: RatePrior) -> float:
-    """Shrink an observed per-90 rate toward the prior, weighted by minutes."""
-    # Returns of 90 per 90 otherwise: with no minutes the denominator collapses
-    # to the prior strength while the numerator keeps the events. Unreachable
-    # through the blend, which derives both from the same observations, but a
-    # silent nonsense answer is not what this package does with impossible input.
-    if minutes <= 0.0 and events > 0.0:
-        raise ValueError(f"{events} returns cannot have come from {minutes} minutes")
-    prior_events = prior_rate * prior.strength_minutes / _MINUTES_PER_90
-    total_minutes = minutes + prior.strength_minutes
+def _decay_weights(
+    observations: tuple[RateObservation, ...],
+    prediction_event: int,
+    half_life: float,
+) -> tuple[float, ...]:
+    """Exponential recency weight per observation, newest weighing one."""
+    return tuple(
+        0.5 ** ((prediction_event - observation.event_id) / half_life)
+        for observation in observations
+    )
+
+
+def _effective_minutes(weights: Sequence[float], minutes: Sequence[float]) -> float:
+    """How many unweighted minutes carry the same precision as this weighted set.
+
+    The rate itself is a ratio, so the weights cancel and any scaling of them
+    gives the same estimate. Its *precision* does not cancel, and shrinkage is
+    entirely a statement about precision.
+
+    For returns g_i ~ Poisson(lambda * m_i) the weighted estimate has variance
+    lambda * sum(w_i^2 * m_i) / sum(w_i * m_i)^2. Setting that equal to
+    lambda / N gives N below. It is the Kish effective sample size written for
+    minutes rather than for counts.
+
+    The previous code used the weighted *mean* of the two seasons' minute
+    totals, which is not a sample size at all: 900 minutes in each of two
+    seasons came out as 900 rather than 1800, so a player with two full seasons
+    of evidence was shrunk toward the position prior as hard as one with a
+    single season.
+    """
+    numerator = sum(weight * span for weight, span in zip(weights, minutes, strict=True))
+    denominator = sum(weight * weight * span for weight, span in zip(weights, minutes, strict=True))
+    if denominator <= 0.0:
+        return 0.0
+    return numerator * numerator / denominator
+
+
+def _shrink(rate: float, effective_minutes: float, prior_rate: float, prior: RatePrior) -> float:
+    """Pull an observed per-90 rate toward the prior, by effective sample size."""
+    total_minutes = effective_minutes + prior.strength_minutes
     if total_minutes <= 0.0:
         return prior_rate
-    return (events + prior_events) * _MINUTES_PER_90 / total_minutes
+    return (rate * effective_minutes + prior_rate * prior.strength_minutes) / total_minutes
 
 
 def _unavailable(

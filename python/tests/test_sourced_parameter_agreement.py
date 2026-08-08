@@ -37,6 +37,7 @@ def _evidence(**overrides: object) -> PlayerRateEvidence:
         "minimum_minutes": 270.0,
         "blend_full_weight_minutes": 900.0,
         "carried_context_weight": 1.0,
+        "decay_half_life_events": 8.0,
         "prediction_cutoff": CUTOFF,
         "data_available_at": CUTOFF - timedelta(hours=1),
         "source_hashes": (HASH,),

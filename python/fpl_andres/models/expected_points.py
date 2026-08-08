@@ -265,7 +265,7 @@ def _poisson_truncation(rate: float) -> int:
     return max(_POISSON_FLOOR, math.ceil(rate + _POISSON_SIGMAS * math.sqrt(rate)))
 
 
-def _expected_floor_divide(rate: float, divisor: int) -> float:
+def expected_floor_divide(rate: float, divisor: int) -> float:
     """E[floor(X / divisor)] for X ~ Poisson(rate)."""
     if rate <= 0.0:
         return 0.0
@@ -275,6 +275,11 @@ def _expected_floor_divide(rate: float, divisor: int) -> float:
             for count in range(_poisson_truncation(rate) + 1)
         )
     )
+
+
+#: Kept for the module's own call sites, which read as arithmetic rather than
+#: as a public helper.
+_expected_floor_divide = expected_floor_divide
 
 
 def _worst(*levels: EvidenceLevel) -> EvidenceLevel:

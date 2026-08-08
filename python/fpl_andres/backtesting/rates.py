@@ -261,6 +261,9 @@ def project_element_rates(
         minimum_minutes=config.minimum_minutes,
         blend_full_weight_minutes=config.blend_full_weight_minutes,
         carried_context_weight=config.carried_context_weight,
+        # The same half-life the minutes model uses. A goal and an appearance
+        # go stale at the same rate because they are the same weekend.
+        decay_half_life_events=config.decay_half_life_events,
         prediction_cutoff=cutoff,
         data_available_at=cutoff,
         source_hashes=(_SOURCE_HASH,),

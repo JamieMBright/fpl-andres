@@ -90,9 +90,9 @@ def plan_chips(
     blanking is worth less than an ordinary week where everybody plays. With no
     floor supplied it falls back to the next largest double, which is a guess.
 
-    Wildcards are placed at random, one per half. Their value is a permanent
-    squad improvement rather than a single fixture, so there is no week on the
-    calendar that obviously deserves them.
+    Wildcards go to the week the squad is worth least, one per half, because
+    that is the week a rebuild buys most. Where no squad value is supplied they
+    fall back to random placement, which is a guess and says so.
     """
     weeks = list(range(from_gameweek, last_event + 1))
     if not weeks:
@@ -126,7 +126,21 @@ def plan_chips(
         [week for week in weeks if week >= _SECOND_HALF_FIRST_EVENT],
     ):
         open_weeks = [week for week in half_weeks if week not in plan]
-        if open_weeks:
-            plan[rng.choice(open_weeks)] = "wildcard"
+        if not open_weeks:
+            continue
+        # The week the squad is worth least is the week a rebuild buys most.
+        # It was `rng.choice` -- a chip placed by a coin toss, which is not a
+        # decision at all and made two runs of the same season disagree about
+        # a quarter of the chip budget. The publisher does a proper
+        # with-minus-without diff; this is the simulator's cheap stand-in, and
+        # it now at least reads the squad.
+        if squad_floor_value:
+            chosen = min(
+                open_weeks,
+                key=lambda week: (squad_floor_value.get(week, 0.0), week),
+            )
+        else:
+            chosen = rng.choice(open_weeks)
+        plan[chosen] = "wildcard"
 
     return plan

@@ -21,7 +21,7 @@ import sys
 import urllib.error
 import urllib.request
 from collections.abc import Sequence
-from datetime import UTC, datetime, timedelta
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import TypedDict, cast, get_args
 
@@ -34,17 +34,12 @@ from fpl_andres.backtesting.corpus import SeasonCorpus, load_season
 from fpl_andres.backtesting.fixtures import (
     Fixture,
     TeamStrength,
-    estimate_strength,
-    strength_from_goal_model,
-    with_venue_tilt,
+    season_strength,
 )
 from fpl_andres.backtesting.projector import MatchProjection, project_next_match
 from fpl_andres.backtesting.scoring import PointsBreakdown
 from fpl_andres.bootstrap import BootstrapElement, parse_elements
 from fpl_andres.jsonio import MalformedJsonError, parse_json
-from fpl_andres.models.baselines import InsufficientHistoryError
-from fpl_andres.models.contracts import FixtureResult
-from fpl_andres.models.dixon_coles import DixonColesModel, ModelFitError
 from fpl_andres.models.minutes import AvailabilityEvidence, AvailabilityStatus
 from fpl_andres.persistence.supabase import SupabaseCredentials, SupabaseRestClient
 from fpl_andres.positions import Position
@@ -179,54 +174,14 @@ def _entry(projection: MatchProjection) -> ProjectionEntry:
 
 
 def _strength(corpus: SeasonCorpus, played: Sequence[Fixture]) -> dict[int, TeamStrength]:
-    """Club strength, from Dixon-Coles where it fits and goal averages where it does not.
-
-    Goal averaging charges a side for the fixtures it happened to draw: a team
-    who played the top four early looks leakier than it is. Dixon-Coles fits
-    attack, defence and home advantage jointly, so the strength is against an
-    average opponent rather than against the ones already faced.
-
-    It is a fit, so it can fail on thin or degenerate data. When it does the
-    averages still work, and a slightly worse strength beats no artifact.
-    """
-    results = [
-        FixtureResult(
-            season=corpus.season,
-            event=fixture.event or 1,
-            home_team_id=fixture.team_h,
-            away_team_id=fixture.team_a,
-            home_goals=fixture.team_h_score,
-            away_goals=fixture.team_a_score,
-            kickoff_time=fixture.kickoff_time,
-            data_available_at=fixture.kickoff_time + timedelta(hours=3),
-            source_hash=f"sha256:{fixture.fixture_id:064x}",
-        )
-        for fixture in played
-        if fixture.team_h_score is not None
-        and fixture.team_a_score is not None
-        and fixture.kickoff_time is not None
-        and fixture.event is not None
-    ]
-
-    if results:
-        try:
-            model = DixonColesModel.fit(
-                results,
-                season=corpus.season,
-                as_of=max(result.data_available_at for result in results),
-                decay_rate=DECAY_RATE_PER_DAY,
-                minimum_matches=MINIMUM_MATCHES,
-                max_iterations=MAX_ITERATIONS,
-            )
-            fitted = strength_from_goal_model(model, sorted(model.teams))
-            if fitted:
-                # Dixon-Coles shares one home advantage across the league. Each
-                # club's own split is measured from its own fixtures instead.
-                return with_venue_tilt(fitted, played)
-        except (ModelFitError, InsufficientHistoryError, ValueError) as error:
-            print(f"Dixon-Coles did not fit, using goal averages: {error}", file=sys.stderr)
-
-    return estimate_strength(played)
+    """Club strength, shared with the backtest so the two cannot diverge."""
+    return season_strength(
+        corpus.season,
+        played,
+        on_fallback=lambda error: print(
+            f"Dixon-Coles did not fit, using goal averages: {error}", file=sys.stderr
+        ),
+    )
 
 
 def _clubs(corpus: SeasonCorpus) -> list[dict[str, object]]:

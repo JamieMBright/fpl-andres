@@ -48,6 +48,7 @@ def _rows(clean_sheets: list[int]) -> list[ElementRow]:
 
 
 class _Minutes:
+    probability_appear = 1.0
     probability_sixty_minutes = 1.0
     expected_minutes = 90.0
 
@@ -55,6 +56,9 @@ class _Minutes:
 def _points(clean_sheets: list[int], multiplier: float) -> float:
     rows = _rows(clean_sheets)
     league = league_rates(rows, {1: DEFENDER})
+    # The clean-sheet route alone. The conceding deduction is now derived from
+    # the same probability, so reading the total would measure both halves of
+    # one number and call it the clean sheet.
     return supporting_breakdown(
         rows,
         DEFENDER,
@@ -62,7 +66,7 @@ def _points(clean_sheets: list[int], multiplier: float) -> float:
         league,
         5.0,
         RouteAdjustment(1.0, multiplier, 1.0, 1.0, 1.0),
-    ).total
+    ).clean_sheet
 
 
 class CleanSheetBoundTest(unittest.TestCase):

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 
-import type { SolveStart } from "./season-solver";
+import type { SolveAssumption, SolveStart } from "./season-solver";
 import { PLAYERS_BY_ELEMENT_ID, startFromElementIds } from "./season-solver";
 import {
   readDeclaredSquad,
@@ -13,6 +13,7 @@ import {
   type DeclaredTransfer,
 } from "./declared-transfers";
 import { refreshTeamAnalysis } from "./team-analysis";
+import { loadTeamStateOverrides } from "./team-state-overrides";
 import {
   initialTeamAnalysisState,
   loadCachedPublicTeamState,
@@ -25,6 +26,12 @@ import {
  * own fifteen, locked in as though it had been played.
  */
 export const PRE_SEASON_EVENT = 1;
+
+/**
+ * Assumed when the manager has not said otherwise. One is the commonest state
+ * and the least dangerous guess: assuming more would plan moves he cannot make.
+ */
+const DEFAULT_FREE_TRANSFERS = 1;
 
 /**
  * A manager's own squad, turned into somewhere for the solver to start.
@@ -151,15 +158,38 @@ export function useTeamPlan(
           entryId,
           fromEvent,
         );
+        // What FPL cannot publish and only the manager knows: how many free
+        // transfers he is holding, what he paid for his squad, and how much is
+        // really in the bank after a move FPL has not processed. The form that
+        // collects these was writing to storage nobody read.
+        const corrections = loadTeamStateOverrides(
+          window.localStorage,
+          entryId,
+          team.stateAsOf,
+        );
+        const sellingPrices = new Map(
+          (corrections?.currentSquad ?? []).map((player) => [
+            player.elementId,
+            player.sellingPriceTenths,
+          ]),
+        );
+        const assumed: SolveAssumption[] =
+          corrections?.availableFreeTransfers === null ||
+          corrections?.availableFreeTransfers === undefined
+            ? ["free_transfers"]
+            : [];
         const start = startFromElementIds(
           squadAfterDeclared(
             team.picks.map((pick) => pick.elementId),
             declared,
           ),
           {
-            bankTenths: team.bankTenths,
-            availableFreeTransfers: 1,
+            bankTenths: corrections?.bankTenths ?? team.bankTenths,
+            availableFreeTransfers:
+              corrections?.availableFreeTransfers ?? DEFAULT_FREE_TRANSFERS,
             fromEvent,
+            sellingPrices,
+            assumed,
           },
         );
         setFetched(
@@ -260,6 +290,15 @@ function startFromDeclaredSquad(entryId: number): TeamStartStatus | null {
     // zeroes the allowance for the opener regardless.
     availableFreeTransfers: 0,
     fromEvent: PRE_SEASON_EVENT,
+    // He is buying at today's price this minute, so the list price IS his
+    // purchase price. Nothing is assumed here, unlike a published squad whose
+    // purchase prices FPL keeps private.
+    sellingPrices: new Map(
+      stored.elementIds.map((elementId) => [
+        elementId,
+        PLAYERS_BY_ELEMENT_ID.get(elementId)?.priceTenths ?? 0,
+      ]),
+    ),
   });
   return start
     ? {

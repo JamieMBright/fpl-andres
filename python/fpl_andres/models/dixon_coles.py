@@ -9,6 +9,7 @@ import numpy as np
 from numpy.typing import NDArray
 from scipy.optimize import minimize
 
+from fpl_andres.events import MAX_EVENT
 from fpl_andres.models.baselines import InsufficientHistoryError
 from fpl_andres.models.contracts import FixtureResult, TeamGoalPrediction
 from fpl_andres.timeguard import is_utc
@@ -85,13 +86,13 @@ class DixonColesModel:
         )
         team_indices = {team_id: index for index, team_id in enumerate(teams)}
         team_count = len(teams)
-        initial = np.zeros(2 * team_count + 1, dtype=np.float64)
+        initial = np.zeros(2 * (team_count - 1) + 2, dtype=np.float64)
         home_mean = sum(fixture.home_goals for fixture in observed) / len(observed)
         away_mean = sum(fixture.away_goals for fixture in observed) / len(observed)
         initial[-2] = math.log((home_mean + 0.1) / (away_mean + 0.1))
         bounds = (
             [(-4.0, 4.0)] * (team_count - 1)
-            + [(-4.0, 4.0)] * team_count
+            + [(-4.0, 4.0)] * (team_count - 1)
             + [(-2.0, 2.0), (-0.2, 0.2)]
         )
 
@@ -254,10 +255,21 @@ def _decode(
     parameters: NDArray[np.float64],
     team_count: int,
 ) -> tuple[tuple[float, ...], tuple[float, ...], float, float]:
+    """Free parameters back into attacks, defences, home advantage and rho.
+
+    Both vectors are pinned, not only the attacks. Rates are
+    `exp(home_advantage + attack_i - defence_j)`, so adding a constant to every
+    defence and the same constant to the home advantage leaves every rate
+    unchanged: with the defences all free the likelihood had a flat ridge and
+    the optimiser settled wherever its path happened to end. Predictions were
+    unaffected -- they only ever depended on differences -- but the reported
+    home advantage and any raw attack or defence was an artefact of the run
+    rather than a measurement.
+    """
     attack_end = team_count - 1
-    defence_end = attack_end + team_count
+    defence_end = attack_end + team_count - 1
     attacks = (*tuple(float(value) for value in parameters[:attack_end]), 0.0)
-    defences = tuple(float(value) for value in parameters[attack_end:defence_end])
+    defences = (*tuple(float(value) for value in parameters[attack_end:defence_end]), 0.0)
     return attacks, defences, float(parameters[-2]), float(parameters[-1])
 
 
@@ -283,8 +295,8 @@ def _low_score_adjustment(
 def _validate_prediction_ids(home_team_id: int, away_team_id: int, event: int) -> None:
     if home_team_id < 1 or away_team_id < 1 or home_team_id == away_team_id:
         raise ValueError("prediction teams must be distinct positive IDs")
-    if not 1 <= event <= 38:
-        raise ValueError("prediction event must be between 1 and 38")
+    if not 1 <= event <= MAX_EVENT:
+        raise ValueError(f"prediction event must be between 1 and {MAX_EVENT}")
 
 
 __all__ = [

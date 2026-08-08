@@ -29,6 +29,57 @@ from __future__ import annotations
 
 __all__ = ["MODEL_VERSION"]
 
+#: 3.0 is the methodology audit, and it is a major because several of these
+#: change what a number means rather than only what it is.
+#:
+#: The backtest and the live publisher no longer describe different models. One
+#: read goal averages and the other Dixon-Coles, so `validation.json` measured
+#: something other than what produced the projections beside it. `fixtures.py`
+#: now owns one strength function and both call it.
+#:
+#: Shrinkage was against a weighted *mean* of two seasons' minute totals, which
+#: is not a sample size: two 900-minute seasons came out as 900, so a player
+#: with two full seasons behind him was pulled toward the position prior as hard
+#: as one with a single season. It is the effective size now,
+#: `(sum w*m)^2 / sum(w^2*m)`, which is the Kish rule written for minutes.
+#:
+#: Rates had no within-season recency at all, while the minutes model beside
+#: them had decayed per event all along: a gameweek 1 goal and a gameweek 37
+#: goal weighed the same. Same half-life for both now, because they are the
+#: same weekend.
+#:
+#: Clean sheets and goals conceded were shrunk independently, so a defender
+#: could carry a pair no scoreline distribution could produce. Conceding is
+#: derived from the clean-sheet probability: `P(CS) = exp(-lambda)` names the
+#: lambda, and the deduction is `E[floor(X/2)]` for that same lambda.
+#:
+#: Bonus was a per-match rate multiplied by expected 90s, charging a player for
+#: his minutes twice. It reads the appearance probability now.
+#:
+#: The horizon solver picked the captain on the mean while the chip planner
+#: scored the armband on a mean/ceiling blend, so in any week the two rules
+#: disagreed the plan captained the man its own rule called second best. Both
+#: use the blend. A transfer hit is charged at full price in a lookahead week
+#: rather than at the week's objective weight, which had made a move in the
+#: back half of a window cost two points instead of four.
+#:
+#: The ninetieth-percentile ceiling was the season maximum below ten
+#: appearances -- nearest-rank lands on the top element at four or five -- so a
+#: single hat-trick set a ratio a third of the captain valuation rested on.
+#:
+#: Dixon-Coles left every defence free while pinning the attacks, so the
+#: likelihood had a flat ridge and the reported home advantage was wherever the
+#: optimiser stopped. Both vectors are pinned.
+#:
+#: The promotion gate read a one-sided decision off a two-sided bound, testing
+#: at half its stated alpha. It computes the one-sided quantile it decides on.
+#:
+#: Recent form averaged per gameweek and was then multiplied by the upcoming
+#: fixture count, doubling a double twice. It is per fixture.
+#:
+#: Three event guards said 38 where the rest of the package said 47, so a 2019/20
+#: gameweek that was actually played raised.
+#:
 #: 2.9 makes a leak guard fire that never could. Both rate models refuse an
 #: observation whose kickoff is after the prediction cutoff -- and the backtest
 #: built every observation with `kickoff_time=min(row.kickoff_time, cutoff)`, so
@@ -101,4 +152,4 @@ __all__ = ["MODEL_VERSION"]
 #: projection and resampled, so a gap that does not clear zero is reported as
 #: not clearing zero. No projection changed; what changed is what may be
 #: claimed from it.
-MODEL_VERSION = "2.9"
+MODEL_VERSION = "3.0"

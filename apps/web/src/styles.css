@@ -4470,6 +4470,18 @@ h1[tabindex="-1"]:focus-visible {
   line-height: 1.6;
 }
 
+/* Named rather than hidden: the plan is built on two numbers FPL keeps
+   private, and a reader has to be able to tell an assumption from a reading. */
+.plan-assumed {
+  max-width: 68ch;
+  margin: 0 0 16px;
+  padding: 12px 14px;
+  border-left: 3px solid var(--signal-blue);
+  background: rgb(46 201 192 / 8%);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
 /* Marks a row whose numbers are a role prior rather than a measurement. */
 .squad-market-prior {
   margin-left: 3px;

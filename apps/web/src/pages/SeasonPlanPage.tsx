@@ -836,6 +836,19 @@ export default function SeasonPlanPage() {
           </p>
         ) : (
           <>
+            {live && live.assumed.length > 0 ? (
+              <p className="plan-assumed" role="status">
+                <strong>Two things FPL will not tell me.</strong>{" "}
+                {live.assumed.includes("free_transfers")
+                  ? "How many free transfers you are holding — I have assumed one. "
+                  : ""}
+                {live.assumed.includes("selling_prices")
+                  ? "What you paid for your squad, so a player who has risen is priced at today's list rather than at buy price plus half the rise. "
+                  : ""}
+                Both are private to your account. Correct them in step one and
+                the whole season is re-solved on the real numbers.
+              </p>
+            ) : null}
             <ReadingKey />
             <ul className="plan-rail">
               {gameweeks.slice(0, shownWeeks).map((week) => (

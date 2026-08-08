@@ -12,7 +12,7 @@ from fpl_andres.optimization.contracts import (
     HorizonOptimizationRequest,
     HorizonOptimizationResult,
 )
-from fpl_andres.optimization.highs import OptimizationError
+from fpl_andres.optimization.highs import CAPTAIN_CEILING_WEIGHT, OptimizationError
 from fpl_andres.optimization.horizon_model import HorizonModel, build_constraints
 
 
@@ -67,15 +67,32 @@ class HighsHorizonOptimizer:
         objective = np.zeros(variable_count, dtype=np.float64)
         for event_index, event in enumerate(events):
             for element_id, index in player_index.items():
-                points = forecasts[(event.event, element_id)].expected_points
+                forecast = forecasts[(event.event, element_id)]
+                points = forecast.expected_points
                 objective[variable(lineup_offset, event_index, index)] = (
                     -event.objective_weight * points
                 )
+                # The same armband valuation the single-event solver uses. On
+                # the mean alone this picked one captain and the chip planner
+                # then scored the armband on a mean/ceiling blend, so in any
+                # week where the two rules disagreed the plan captained the man
+                # its own scoring rule called second best.
+                ceiling = forecast.expected_ceiling
                 objective[variable(captain_offset, event_index, index)] = (
-                    -event.objective_weight * points
+                    -event.objective_weight
+                    * (
+                        points * (1.0 - CAPTAIN_CEILING_WEIGHT)
+                        + (points if ceiling is None else ceiling) * CAPTAIN_CEILING_WEIGHT
+                    )
                 )
             objective[paid_offset + event_index] = (
-                event.objective_weight * request.rules.transfer_rules.transfer_cost_points
+                # Full price, not the event's weight. A lookahead gameweek is
+                # discounted because its points are speculative; the four
+                # points a hit costs are not. Weighting the cost too made a
+                # transfer in the second half of a window cost two points, so
+                # the solver bought there and the next window inherited a squad
+                # it had overpaid for.
+                request.rules.transfer_rules.transfer_cost_points
             )
 
         lower_variable_bounds = np.zeros(variable_count, dtype=np.float64)

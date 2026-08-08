@@ -17,9 +17,11 @@ from __future__ import annotations
 
 from collections.abc import Iterable, Mapping, Sequence
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timedelta
 
-from fpl_andres.models.dixon_coles import DixonColesModel
+from fpl_andres.models.baselines import InsufficientHistoryError
+from fpl_andres.models.contracts import FixtureResult
+from fpl_andres.models.dixon_coles import DixonColesModel, ModelFitError
 
 __all__ = [
     "Fixture",
@@ -27,9 +29,17 @@ __all__ = [
     "TeamStrength",
     "estimate_strength",
     "route_adjustment",
+    "season_strength",
     "venue_tilt",
     "with_venue_tilt",
 ]
+
+#: How fast a result ages out of the goal model.
+DECAY_RATE_PER_DAY = 0.002
+#: Below this the goal model refuses to fit.
+MINIMUM_MATCHES = 5
+#: Optimiser budget for the same fit.
+MAX_ITERATIONS = 200
 
 # Shrinkage target. A side with few matches played is treated as average until
 # the record says otherwise; ten matches is roughly when the split stabilises.
@@ -346,6 +356,66 @@ def strength_from_goal_model(
         )
         for team in known
     }
+
+
+def season_strength(
+    season: str,
+    played: Sequence[Fixture],
+    *,
+    on_fallback: object = None,
+) -> dict[int, TeamStrength]:
+    """Club strength, from Dixon-Coles where it fits and goal averages where not.
+
+    One function, because there used to be two. The backtest read goal averages
+    while the published site read Dixon-Coles, so `validation.json` measured a
+    model materially different from the one producing the projections beside
+    it. Goal averaging charges a side for the fixtures it happened to draw --
+    a team who played the top four early looks leakier than it is -- and that
+    error is largest in the opening ten gameweeks, which the backtest then
+    carried forward more times than any other.
+
+    It is a fit, so it can fail on thin or degenerate data. When it does the
+    averages still work, and a slightly worse strength beats no answer at all.
+    """
+    results = [
+        FixtureResult(
+            season=season,
+            event=fixture.event or 1,
+            home_team_id=fixture.team_h,
+            away_team_id=fixture.team_a,
+            home_goals=fixture.team_h_score,
+            away_goals=fixture.team_a_score,
+            kickoff_time=fixture.kickoff_time,
+            data_available_at=fixture.kickoff_time + timedelta(hours=3),
+            source_hash=f"sha256:{fixture.fixture_id:064x}",
+        )
+        for fixture in played
+        if fixture.team_h_score is not None
+        and fixture.team_a_score is not None
+        and fixture.kickoff_time is not None
+        and fixture.event is not None
+    ]
+
+    if results:
+        try:
+            model = DixonColesModel.fit(
+                results,
+                season=season,
+                as_of=max(result.data_available_at for result in results),
+                decay_rate=DECAY_RATE_PER_DAY,
+                minimum_matches=MINIMUM_MATCHES,
+                max_iterations=MAX_ITERATIONS,
+            )
+            fitted = strength_from_goal_model(model, sorted(model.teams))
+            if fitted:
+                # Dixon-Coles shares one home advantage across the league. Each
+                # club's own split is measured from its own fixtures instead.
+                return with_venue_tilt(fitted, played)
+        except (ModelFitError, InsufficientHistoryError, ValueError) as error:
+            if callable(on_fallback):
+                on_fallback(error)
+
+    return estimate_strength(played)
 
 
 def route_adjustment(

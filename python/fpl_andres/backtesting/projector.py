@@ -19,8 +19,8 @@ from fpl_andres.backtesting.corpus import CorpusLoadError, ElementRow, SeasonCor
 from fpl_andres.backtesting.fixtures import (
     RouteAdjustment,
     TeamStrength,
-    estimate_strength,
     route_adjustment,
+    season_strength,
 )
 from fpl_andres.backtesting.rates import (
     _GOAL_PRIOR,
@@ -168,7 +168,7 @@ def project_horizon(
     cutoff = _cutoff_for(corpus, gameweek, history)
     league = league_rates(history, corpus.position_by_element)
     prior_nineties = config.prior_strength_minutes / _MINUTES_PER_90
-    strength = estimate_strength(corpus.fixtures_before(gameweek))
+    strength = season_strength(corpus.season, corpus.fixtures_before(gameweek))
     form = baseline_recent_mean(corpus, gameweek, window=config.recent_form_window)
     longest = max(horizons)
     projections: list[HorizonProjection] = []
@@ -584,7 +584,7 @@ def _schedule_for(corpus: SeasonCorpus, element_id: int, gameweek: int) -> list[
     """
     strength = corpus.strength_cache.get(gameweek)
     if strength is None:
-        strength = estimate_strength(corpus.fixtures_before(gameweek))
+        strength = season_strength(corpus.season, corpus.fixtures_before(gameweek))
         corpus.strength_cache[gameweek] = strength
     return _adjustments_for(corpus, element_id, gameweek, strength)
 
@@ -642,13 +642,24 @@ def _cutoff_for(
 def baseline_recent_mean(
     corpus: SeasonCorpus, gameweek: int, *, window: int = 5
 ) -> dict[int, float]:
-    """Mean points over the last ``window`` gameweeks. The naive control."""
-    totals: dict[int, list[int]] = {}
+    """Mean points per fixture over the last ``window`` gameweeks.
+
+    Per fixture, not per gameweek. `actual_points` sums a double gameweek's
+    rows into one event total, so averaging events gave a per-gameweek figure
+    that `_blend` then multiplied by the upcoming fixture count -- applying the
+    double twice for anyone whose recent window already contained one.
+    """
+    scored: dict[int, list[int]] = {}
+    fixtures: dict[int, int] = {}
     for event in range(max(1, gameweek - window), gameweek):
         for element_id, points in corpus.actual_points(event).items():
-            totals.setdefault(element_id, []).append(points)
+            scored.setdefault(element_id, []).append(points)
+        for row in corpus.rows_by_gameweek.get(event, ()):
+            fixtures[row.element_id] = fixtures.get(row.element_id, 0) + 1
     return {
-        element_id: sum(points) / len(points) for element_id, points in totals.items() if points
+        element_id: sum(points) / max(1, fixtures.get(element_id, len(points)))
+        for element_id, points in scored.items()
+        if points
     }
 
 

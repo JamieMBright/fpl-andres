@@ -19,6 +19,7 @@ from typing import Annotated
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
+from fpl_andres.events import MAX_EVENT
 from fpl_andres.models.contracts import EvidenceLevel
 from fpl_andres.models.metrics import rank_correlation
 
@@ -40,8 +41,8 @@ class EventWindow:
             0
         ):
             raise ValueError("prediction_cutoff must be an aware UTC timestamp")
-        if not 1 <= self.event <= 38:
-            raise ValueError("event must be between 1 and 38")
+        if not 1 <= self.event <= MAX_EVENT:
+            raise ValueError(f"event must be between 1 and {MAX_EVENT}")
 
 
 class PlayerPrediction(BaseModel):

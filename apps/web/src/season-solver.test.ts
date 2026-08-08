@@ -29,6 +29,7 @@ function openingStart() {
     bankTenths: 0,
     availableFreeTransfers: 1,
     fromEvent: SEASON_EVENTS[0] as number,
+    assumed: [],
   };
 }
 

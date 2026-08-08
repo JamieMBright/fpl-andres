@@ -21,12 +21,32 @@ BOOTSTRAP: dict[str, Any] = {
         {"id": 1, "code": 3, "short_name": "ARS", "name": "Arsenal"},
         {"id": 2, "code": 14, "short_name": "LIV", "name": "Liverpool"},
     ],
+    # The controlling rules the browser solver now reads rather than declares.
+    "game_settings": {
+        "squad_squadsize": 15,
+        "squad_squadplay": 11,
+        "squad_team_limit": 3,
+        "transfers_cap": 20,
+        "max_extra_free_transfers": 4,
+    },
     "events": [
         {"id": 1, "deadline_time": "2026-08-21T17:30:00Z", "finished": False},
         {"id": 2, "deadline_time": "2026-08-28T17:30:00Z", "finished": False},
         {"id": 3, "deadline_time": "2026-09-04T17:30:00Z", "finished": True},
     ],
     "elements": [],
+}
+
+#: A route split that sums to the projection beside it.
+ROUTES: dict[str, float] = {
+    "appearance": 2.0,
+    "attacking": 2.0,
+    "cleanSheet": 0.5,
+    "bonus": 0.2,
+    "saves": 0.0,
+    "conceding": -0.2,
+    "discipline": -0.1,
+    "defensiveContribution": 0.6,
 }
 
 FIXTURES: list[dict[str, Any]] = [
@@ -40,7 +60,7 @@ FIXTURES: list[dict[str, Any]] = [
 PROJECTIONS: dict[str, Any] = {
     "season": "2025-26",
     "players": [
-        {"code": 1001, "expectedPoints": 5.0, "probabilityStart": 0.9},
+        {"code": 1001, "expectedPoints": 5.0, "probabilityStart": 0.9, "routes": ROUTES},
     ],
     "clubs": [
         {
@@ -145,7 +165,11 @@ def test_a_defender_is_rated_inversely_to_the_opponents_attack(tmp_path: Path) -
     # 1 / (1.1 x 0.9). Applied the other way round it said a defender's best
     # fixture was against the league's best attack, and the plan
     # triple-captained Gabriel away at Manchester City for it.
-    assert arsenal["defensive"][0] == pytest.approx(1.0 / (1.1 * 0.9), abs=1e-4)
+    #
+    # Three decimals, which is what the artifact carries: the fourth is well
+    # past what a projection can support and it is paid for in every byte the
+    # browser downloads.
+    assert arsenal["defensive"][0] == pytest.approx(1.0 / (1.1 * 0.9), abs=1e-3)
 
 
 def test_a_double_gameweek_sums_both_fixtures(tmp_path: Path) -> None:
@@ -230,8 +254,18 @@ def test_the_opening_squad_survives_the_trim(tmp_path: Path) -> None:
             {
                 **PROJECTIONS,
                 "players": [
-                    {"code": 1001, "expectedPoints": 5.0, "probabilityStart": 0.9},
-                    {"code": 1002, "expectedPoints": 0.1, "probabilityStart": 0.4},
+                    {
+                        "code": 1001,
+                        "expectedPoints": 5.0,
+                        "probabilityStart": 0.9,
+                        "routes": ROUTES,
+                    },
+                    {
+                        "code": 1002,
+                        "expectedPoints": 0.1,
+                        "probabilityStart": 0.4,
+                        "routes": ROUTES,
+                    },
                 ],
             }
         ),

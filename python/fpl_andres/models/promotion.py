@@ -145,7 +145,12 @@ def evaluate_promotion(
         seed,
         sample_size,
     )
-    promoted = improvement_result.lower > 0
+    # One-sided, and computed as one. The decision only ever reads the lower
+    # bound, so taking it from a two-sided interval at the same nominal
+    # confidence tested at half the stated alpha: `confidence=0.95` promoted at
+    # 2.5%, not 5%. Stricter than advertised is still not what it says, and the
+    # reported interval and the decision boundary have to describe one test.
+    promoted = _quantile(sorted(improvement_samples), 1 - confidence) > 0
     if promoted:
         reasons = ("beat_baseline",)
     elif improvement_point <= 0:
