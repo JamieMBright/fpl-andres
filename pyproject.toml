@@ -28,6 +28,10 @@ dev = [
     "pytest>=8.3,<10",
     "pytest-asyncio>=0.25,<2",
     "pytest-cov>=6,<8",
+    # Splits the suite across cores. The suite is 1,800 tests of pure
+    # computation and ran single-file; this is the difference between a
+    # two-minute gate and a one-minute one.
+    "pytest-xdist>=3.6,<4",
     # test_ci_gates.py parses the workflow files. Declared because it arrives
     # transitively in most local environments and in none of the CI ones.
     "pyyaml>=6,<7",
