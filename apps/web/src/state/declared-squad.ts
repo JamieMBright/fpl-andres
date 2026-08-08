@@ -33,6 +33,19 @@ export function readLastTeam(storage: Storage): number | null {
   if (raw === null || !/^[1-9]\d{0,9}$/.test(raw)) return null;
   return Number(raw);
 }
+
+/**
+ * Remember whose season this is.
+ *
+ * A Team ID is a seven-digit number nobody memorises, and typing it again on
+ * every visit is the first friction a returning reader meets. Kept in this
+ * browser only: it is public, but it is still a statement about who you are and
+ * it has no business on a server.
+ */
+export function rememberTeam(storage: Storage, entryId: number): void {
+  if (!Number.isInteger(entryId) || entryId < 1) return;
+  storage.setItem(LAST_TEAM_KEY, String(entryId));
+}
 export const SQUAD_SIZE = 15;
 export const MAX_PER_CLUB = 3;
 const SHAPE: Record<SolverPlayer["position"], number> = {

@@ -4,11 +4,16 @@ import { Link, useNavigate } from "react-router-dom";
 
 import { RouteHeading } from "../components/RouteHeading";
 import { MAX_PUBLIC_ID } from "../public-ids";
+import { readLastTeam } from "../state/declared-squad";
 import { useDocumentTitle } from "../state/use-document-title";
 
 export default function HomePage() {
   const navigate = useNavigate();
-  const [teamId, setTeamId] = useState("");
+  // Offered back rather than demanded again: a returning reader has already
+  // told us who they are, and the number is a public id kept in this browser.
+  const [teamId, setTeamId] = useState(
+    () => readLastTeam(window.localStorage)?.toString() ?? "",
+  );
   const [error, setError] = useState<string | null>(null);
   useDocumentTitle(
     "FPL Andres",

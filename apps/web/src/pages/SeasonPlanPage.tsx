@@ -1,5 +1,5 @@
 import { ArrowRight } from "lucide-react";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 
 import { CeefaxShirt } from "../components/CeefaxShirt";
@@ -7,7 +7,7 @@ import { PlanStep } from "../components/PlanStep";
 import { DeclaredSquadNote } from "../components/DeclaredSquadNote";
 import { AnalysisResult } from "../components/AnalysisResult";
 import { analysisAnnouncement } from "../state/team-analysis-messages";
-import { readLastTeam } from "../state/declared-squad";
+import { readLastTeam, rememberTeam } from "../state/declared-squad";
 import { DeclaredTransferForm } from "../components/DeclaredTransferForm";
 import { PlayerDetail } from "../components/PlayerDetail";
 import { RouteHeading } from "../components/RouteHeading";
@@ -520,14 +520,23 @@ export default function SeasonPlanPage() {
    * takes over.
    */
   const fromEvent = Number(params.get("from") ?? "");
-  // A squad locked in on the team page should show up here without the id
-  // having to be threaded through every link that reaches this page.
+  // The URL wins, then the browser's memory of the last team. A seven-digit
+  // Team ID is not something anybody memorises, and asking for it again on
+  // every visit is the first friction a returning reader meets.
   const teamParam =
     params.get("team") ?? readLastTeam(window.localStorage)?.toString() ?? null;
   const teamId =
     teamParam !== null && /^\d+$/.test(teamParam) ? Number(teamParam) : null;
   const teamPlan = useTeamPlan(teamParam, declaredAt);
   const team = teamPlan.start;
+
+  // Remembered once FPL has actually answered for it, so a mistyped number
+  // never becomes the id this browser offers next time.
+  useEffect(() => {
+    if (teamId !== null && team.status === "ready") {
+      rememberTeam(window.localStorage, teamId);
+    }
+  }, [teamId, team.status]);
   const live = useMemo(() => {
     // His own fifteen beats a gameweek number, because it is his season either
     // way and only one of the two knows what he owns.
