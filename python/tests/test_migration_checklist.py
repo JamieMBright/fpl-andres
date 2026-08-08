@@ -1,18 +1,11 @@
 """The migration checklist is the production ledger, so it must be complete.
 
-Audit item #192 surfaced this while cataloguing the schema. The repository
-instructions state:
+There is no CLI migration ledger for the hosted project, so an unnamed
+migration is one nobody can tell has been applied. The list lives in the README
+because that is the file an agent reads first.
 
-    The initial production bootstrap is the ordered SQL Editor checklist in
-    `docs/OWNER_SETUP.md`.
-
-That checklist did not exist. `OWNER_SETUP.md` named five migrations in a prose
-bullet and eight were unnamed anywhere, including every one added after the
-history corpus. There is no CLI migration ledger for the hosted project, so an
-unnamed migration is one nobody can tell has been applied.
-
-Also checks `docs/SCHEMA.md`, which is the only readable view of a model defined
-across thirteen files.
+Also checks `docs/SCHEMA.md`, which is the only readable view of a model
+defined across sixteen migrations.
 """
 
 from __future__ import annotations
@@ -24,7 +17,7 @@ import pytest
 
 _ROOT = Path(__file__).resolve().parents[2]
 _MIGRATIONS = _ROOT / "supabase" / "migrations"
-_OWNER_SETUP = _ROOT / "docs" / "OWNER_SETUP.md"
+_LEDGER = _ROOT / "README.md"
 _SCHEMA = _ROOT / "docs" / "SCHEMA.md"
 
 
@@ -42,18 +35,18 @@ def _created_tables() -> set[str]:
 
 def test_the_checklist_names_every_migration() -> None:
     """An unnamed migration is one nobody can tell has been applied."""
-    listed = _OWNER_SETUP.read_text(encoding="utf-8")
+    listed = _LEDGER.read_text(encoding="utf-8")
     missing = [name for name in _migration_names() if name not in listed]
 
     assert missing == [], (
-        "docs/OWNER_SETUP.md does not name these migrations, so their applied "
+        "README.md does not name these migrations, so their applied "
         "state cannot be recorded: " + ", ".join(missing)
     )
 
 
 def test_the_checklist_names_nothing_that_does_not_exist() -> None:
     """A row for a deleted migration would be a line nobody can act on."""
-    listed = re.findall(r"`(\d{14}_\w+\.sql)`", _OWNER_SETUP.read_text(encoding="utf-8"))
+    listed = re.findall(r"`(\d{14}_\w+\.sql)`", _LEDGER.read_text(encoding="utf-8"))
     stale = sorted(set(listed) - set(_migration_names()))
 
     assert stale == [], f"the checklist names migrations that no longer exist: {stale}"
@@ -62,17 +55,17 @@ def test_the_checklist_names_nothing_that_does_not_exist() -> None:
 def test_the_checklist_is_in_filename_order() -> None:
     """The order is the instruction. A list out of order is worse than none,
     because a migration referencing a later table fails on a clean apply."""
-    listed = re.findall(r"`(\d{14}_\w+\.sql)`", _OWNER_SETUP.read_text(encoding="utf-8"))
+    listed = re.findall(r"`(\d{14}_\w+\.sql)`", _LEDGER.read_text(encoding="utf-8"))
 
     assert listed == sorted(listed)
 
 
 def test_the_checklist_says_migrations_are_not_idempotent() -> None:
     """Whoever is pasting needs to know they cannot simply re-run a failed file."""
-    text = _OWNER_SETUP.read_text(encoding="utf-8")
+    text = _LEDGER.read_text(encoding="utf-8")
 
     assert "not idempotent" in text
-    assert "rollback/down.sql" in text or "RUNBOOK" in text
+    assert "rollback/down.sql" in text
 
 
 def test_unconfirmed_rows_are_marked_rather_than_guessed() -> None:
@@ -81,7 +74,7 @@ def test_unconfirmed_rows_are_marked_rather_than_guessed() -> None:
     Marking them for confirmation is the honest answer. Writing "yes" would put a
     guess into the one document that is supposed to be the ledger.
     """
-    text = _OWNER_SETUP.read_text(encoding="utf-8")
+    text = _LEDGER.read_text(encoding="utf-8")
 
     assert "owner to confirm" in text
     assert "marked for confirmation rather than guessed" in text

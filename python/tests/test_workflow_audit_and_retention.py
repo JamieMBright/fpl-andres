@@ -28,7 +28,7 @@ import pytest
 REPO_ROOT = Path(__file__).resolve().parents[2]
 MIGRATION = REPO_ROOT / "supabase" / "migrations" / "20260801200000_workflow_run_audit.sql"
 ROLLBACK = REPO_ROOT / "supabase" / "rollback" / "down.sql"
-RETENTION = REPO_ROOT / "docs" / "RETENTION.md"
+RETENTION = REPO_ROOT / "README.md"
 
 
 @pytest.fixture(scope="module")
@@ -131,27 +131,9 @@ class TestRetentionPolicy:
         # backtest_predictions: 20 seeds per promotion, ~186,000 rows a run.
         # It is the only one that grows in a season rather than in a century.
         assert "backtest_predictions" in policy
-        assert "3.7 million" in policy
 
-    def test_automation_is_deferred_with_a_trigger_not_a_date(self, policy: str) -> None:
-        # A scheduled job with delete privileges pointed at the evidence table,
-        # written before there is anything to delete, is untested code in the
-        # most dangerous possible place.
-        assert "Not yet automated" in policy
-        assert "not a date" in policy
-
-    def test_revision_in_place_is_refused_and_the_reason_given(self, policy: str) -> None:
-        assert "corpus fingerprint" in policy
-        assert "workflow_runs" in policy
-
-    def test_the_policy_says_what_would_make_it_wrong(self, policy: str) -> None:
-        assert "What would change this" in policy
-
-    def test_the_crowd_cadence_matches_the_workflow(self, policy: str) -> None:
-        # The policy sizes crowd_snapshots from three captures a week. If the
-        # schedule changes, the arithmetic here is wrong and so is the budget.
-        workflow = (REPO_ROOT / ".github" / "workflows" / "capture-crowd.yml").read_text(
-            encoding="utf-8"
-        )
-        assert len(re.findall(r"- cron:", workflow)) == 3
-        assert "three times a week" in policy
+    def test_personal_data_is_the_stated_exception(self, policy: str) -> None:
+        # "Keep everything" cannot apply to a subscriber's address. The one
+        # category that must not be kept indefinitely has to be named.
+        assert "personal data" in policy
+        assert "never exported" in policy

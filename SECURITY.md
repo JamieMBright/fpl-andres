@@ -48,8 +48,8 @@ Out of scope:
   Premier League, not here.
 - Denial of service demonstrated by simply sending a lot of traffic. The public
   proxies now carry a per-client and per-instance request budget (audit item
-  72), described in `docs/OPERATIONS.md` along with what it does and does not
-  cover. A report that the per-instance limit can be exceeded across instances
+  72); `api/_lib/rate-limit.ts` states what it does and does not cover. A
+  report that the per-instance limit can be exceeded across instances
   is welcome; a demonstration that hammers the endpoint is not.
 - Findings that require a compromised developer machine or a stolen deployment
   secret to reproduce.
@@ -92,5 +92,56 @@ Stated so a reporter can tell a design decision from an oversight:
 
 ## Secret rotation
 
-See [`docs/RUNBOOK.md`](docs/RUNBOOK.md) for the rotation procedure for
-`SUPABASE_SECRET_KEY`, the Resend API key and workflow tokens.
+Rotate `SUPABASE_SECRET_KEY`, the Resend API key and workflow tokens at the
+provider, then update the GitHub environment and the Vercel project together.
+A key that is live in one and stale in the other fails closed, which is the
+intended direction, but it fails silently on a schedule rather than on a
+deploy — so re-run the canary after any rotation.
+
+## Suppressed advisories
+
+`package.json` carries a `pnpm.auditConfig.ignoreGhsas` list. An entry there
+silences a real finding, and a silence with no reason attached becomes
+permanent by inertia. Every entry must appear below with the date it was
+assessed, a review date, and the specific thing that would make the reason
+false. The last one matters most: a justification that cannot become false is
+not a justification.
+
+`python/tests/test_suppressed_advisories.py` checks that this list and the one
+in `package.json` are the same set, that no review date has passed, and — where
+it can — that the stated reason still holds.
+
+### GHSA-qwww-vcr4-c8h2
+
+|           |                                                                  |
+| --------- | ---------------------------------------------------------------- |
+| Package   | `react-router` (via `react-router-dom` 7.18.2)                   |
+| Title     | RSC Mode CSRF Bypass Allows Action Execution Before 400 Response |
+| Severity  | High, CVSS 7.1                                                   |
+| Affected  | `>= 7.12.0, < 8.3.0`                                             |
+| Patched   | `8.3.0`                                                          |
+| Assessed  | 2026-08-01                                                       |
+| Review by | 2026-11-01                                                       |
+
+The advisory's own text is explicit: "This only affects your application if you
+are using the unstable RSC APIs." This app does not. It is a static
+single-page build served by Vite, routed by `createBrowserRouter` in
+`apps/web/src/main.tsx`, entirely in the browser. There is no React Server
+Components runtime, no server-side router, and no action executing on a server,
+so the code path the advisory describes does not exist in this deployment. The
+serverless functions under `api/` are plain handlers that do not import
+`react-router`.
+
+Upgrading means taking a major version to close a vulnerability in a code path
+this project does not execute. That is scheduled rather than refused: the
+review date is when it is reconsidered.
+
+**What would make this false.** Any one of these, and the suppression must be
+removed and the upgrade taken:
+
+- adopting the RSC APIs, or any `unstable_` router export
+- moving to a framework that runs the router on a server
+- introducing router `action` functions that execute anywhere but the browser
+
+The first and third are checked by the test. The second is a decision nobody
+makes by accident, but the review date is there to catch it if they do.

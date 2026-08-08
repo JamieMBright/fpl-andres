@@ -25,7 +25,7 @@
  * is a real limitation and it is written down rather than papered over. A
  * global limit needs shared state -- Vercel's WAF, or a Redis the owner
  * chooses to run -- and that is an infrastructure decision, not a code one.
- * `docs/OPERATIONS.md` records what this does and does not cover.
+ * The README's operations section records what this does and does not cover.
  *
  * The state is bounded. An unbounded map keyed by client address is itself a
  * denial of service: an attacker sending one request from each of a million

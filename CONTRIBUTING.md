@@ -59,15 +59,15 @@ The same applies to parameters. A half-life or a shrinkage strength is sourced
 and recorded in `docs/MODEL.md`, or it is fitted through the promotion gate in
 `models/promotion.py`. It is never chosen because it looked about right.
 
-See [`docs/LIMITATIONS.md`](docs/LIMITATIONS.md), which is a hard capability
-boundary rather than a wish list.
+See the capability boundaries in [`README.md`](README.md#capability-boundaries),
+which are a hard boundary rather than a wish list.
 
 ## Say what you did not do
 
-A negative result is a result. Understat stage 3 is closed in
-`docs/ROADMAP.md` with the measurements that closed it, so nobody spends the
-effort twice. An audit item that turns out to be already-correct gets recorded
-as such rather than silently skipped.
+A negative result is a result. Record the measurement that closed a line of
+work, in the commit message if nowhere else, so nobody spends the effort twice.
+An audit item that turns out to be already-correct gets recorded as such rather
+than silently skipped.
 
 ## What must not happen
 

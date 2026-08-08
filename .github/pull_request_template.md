@@ -33,7 +33,7 @@ Skip this section if neither applies.
 - [ ] **Round trip still holds.** `python -m pytest python/tests/test_contract_round_trip.py`
 - [ ] **Migration reviewed against `docs/SCHEMA.md`.** New tables appear in the
       ERD and follow the naming conventions; a test enforces both.
-- [ ] **Migration added to the checklist** in `docs/OWNER_SETUP.md`, so its
+- [ ] **Migration added to the checklist** in `README.md`, so its
       applied state can be recorded. Production is bootstrapped by pasting SQL,
       not by `db push`.
 - [ ] **Teardown updated.** `supabase/rollback/down.sql` drops anything the

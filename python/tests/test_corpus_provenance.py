@@ -23,7 +23,6 @@ from fpl_andres.cli.ingest_historical import SUPPORTED_SEASONS
 _ROOT = Path(__file__).resolve().parents[2]
 _CORPUS = _ROOT / "docs" / "CORPUS.md"
 _VALIDATION = _ROOT / "apps" / "web" / "src" / "data" / "validation.json"
-_BUILD_PLAN = _ROOT / "docs" / "BUILD_PLAN.md"
 
 
 def _corpus() -> str:
@@ -108,24 +107,8 @@ def test_the_provenance_says_the_sha_alone_is_not_enough() -> None:
     assert "mutable by design" in text
 
 
-def test_the_build_plan_no_longer_claims_the_ingest_has_not_run() -> None:
-    """It said "shipped, not yet run" and "none of it has seen a real row" for
-    two days after 185,954 rows landed.
-
-    Checks the status table rather than the whole file, because the prose below
-    it quotes the old wording to explain why the file is superseded.
-    """
-    lines = _BUILD_PLAN.read_text(encoding="utf-8").splitlines()
-    table = [line for line in lines if line.startswith("| M")]
-
-    assert table, "the milestone table is gone"
-    assert not any("not yet run" in row or "no corpus yet" in row for row in table)
-    assert any("shipped and run" in row for row in table)
-    assert "185,954" in _BUILD_PLAN.read_text(encoding="utf-8")
-
-
 def test_the_row_total_agrees_between_the_two_documents() -> None:
-    owner = (_ROOT / "docs" / "OWNER_SETUP.md").read_text(encoding="utf-8")
+    readme = (_ROOT / "README.md").read_text(encoding="utf-8")
 
-    assert "185,954" in owner
+    assert "185,954" in readme
     assert "185,954" in _corpus()

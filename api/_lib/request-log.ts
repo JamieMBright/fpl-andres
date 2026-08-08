@@ -79,8 +79,7 @@ export { REQUEST_ID_HEADER };
  * The sink is stdout and stderr. That is not a limitation: Vercel drains both,
  * and every hosted log service ingests newline-delimited JSON. Choosing a
  * vendor is an owner decision; emitting a line an alert can be written against
- * is not, and it is the part that has to exist first. `docs/OPERATIONS.md`
- * records the queries.
+ * is not, and it is the part that has to exist first.
  *
  * Nothing here may carry a payload fragment, an upstream body or a header
  * value. Status codes, durations, counts and fixed strings only -- the same

@@ -132,10 +132,10 @@ def test_the_teardown_lives_outside_the_migrations_directory() -> None:
 
 
 def test_the_migration_set_is_not_idempotent_which_is_why_this_exists() -> None:
-    """Pins the measurement behind the decision, and the numbers the runbook
+    """Pins the measurement behind the decision, and the numbers the README
     quotes.
 
-    The runbook previously claimed migrations were idempotent. They were not,
+    The documentation once claimed migrations were idempotent. They were not,
     and an operator following that claim mid-incident would have re-pasted a
     file and hit `relation already exists` with no stated recovery path.
 
@@ -156,16 +156,16 @@ def test_the_migration_set_is_not_idempotent_which_is_why_this_exists() -> None:
     )
 
     # Collapsed, because prose wraps and a count can land either side of a break.
-    runbook = " ".join((_ROOT / "docs" / "RUNBOOK.md").read_text(encoding="utf-8").split())
+    readme = " ".join((_ROOT / "README.md").read_text(encoding="utf-8").split())
     for label, count in counts.items():
-        assert f"{count} `{label}`" in runbook, (
-            f"the runbook quotes a stale count for {label}; it is now {count}"
+        assert f"{count} `{label}`" in readme, (
+            f"the README quotes a stale count for {label}; it is now {count}"
         )
 
 
-def test_the_runbook_documents_the_recovery_path() -> None:
+def test_the_recovery_path_is_documented() -> None:
     """An escape hatch nobody can find during an incident is not one."""
-    runbook = (_ROOT / "docs" / "RUNBOOK.md").read_text(encoding="utf-8")
-    assert "supabase/rollback/down.sql" in runbook
-    assert "paste failed part-way" in runbook
-    assert "teardown, not a" in runbook, "the destructive scope must be stated"
+    readme = " ".join((_ROOT / "README.md").read_text(encoding="utf-8").split())
+    assert "supabase/rollback/down.sql" in readme
+    assert "paste failed part-way" in readme
+    assert "teardown, not a" in readme, "the destructive scope must be stated"

@@ -22,7 +22,7 @@ import pytest
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 PACKAGE_JSON = REPO_ROOT / "package.json"
-DOCUMENT = REPO_ROOT / "docs" / "SUPPRESSED_ADVISORIES.md"
+DOCUMENT = REPO_ROOT / "SECURITY.md"
 WEB_SOURCE = REPO_ROOT / "apps" / "web" / "src"
 
 
@@ -35,12 +35,12 @@ def suppressed_ghsas() -> list[str]:
 
 def documented_ghsas() -> list[str]:
     text = DOCUMENT.read_text(encoding="utf-8")
-    return re.findall(r"^## (GHSA-[0-9a-z-]+)$", text, flags=re.MULTILINE)
+    return re.findall(r"^### (GHSA-[0-9a-z-]+)$", text, flags=re.MULTILINE)
 
 
 def _section(ghsa: str) -> str:
     text = DOCUMENT.read_text(encoding="utf-8")
-    match = re.search(rf"^## {re.escape(ghsa)}$(.*?)(?=^## |\Z)", text, re.MULTILINE | re.DOTALL)
+    match = re.search(rf"^### {re.escape(ghsa)}$(.*?)(?=^## |\Z)", text, re.MULTILINE | re.DOTALL)
     assert match is not None, f"{ghsa} has no section"
     return match.group(1)
 

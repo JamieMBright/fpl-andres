@@ -240,7 +240,7 @@ Every planned paid feature respects the promotion contract. A paywall never
 surfaces experimental or unpromoted forecasts. The gating shim (auth, entitlement
 check, upgrade prompt) is out of scope for v0.5.x; the paid panels ship as
 `unavailable` placeholders with an evidence chip that explains what is missing.
-See [`docs/PAYWALL.md`](docs/PAYWALL.md) for the tier definitions.
+See the README for what the tiers gate.
 
 ## Interaction
 

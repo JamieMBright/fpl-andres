@@ -5,7 +5,7 @@ name: Production canary
 #
 # This covers the two failures worth waking up for: the site is down, and the
 # FPL contract broke in a way that makes every dossier degrade. It does not
-# cover the rate-based alerts in docs/OPERATIONS.md -- those need log search,
+# cover the rate-based alerts described in the README -- those need log search,
 # which needs a log sink, which is the part that does need an account.
 #
 # The distinction that matters is between FPL being unreachable and FPL having
@@ -115,7 +115,7 @@ jobs:
               "",
               `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
               "",
-              "Triage is in `docs/RUNBOOK.md`.",
+              "A red canary means the deployment, not the model.",
             ].join("\n");
 
             const open = await github.rest.issues.listForRepo({
