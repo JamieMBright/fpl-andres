@@ -1,0 +1,114 @@
+name: Survey Player Markets
+
+# What has player props, and what exactly does it return?
+#
+# football-data.co.uk prices matches. FPL scores players, and most of what it
+# pays for -- a goal, an assist, a save, a card -- is priced somewhere as a
+# player prop. Choosing a source needs the column lists side by side, so this
+# workflow produces them and decides nothing.
+#
+# Runs here and only here. Every price host fails at the TLS handshake from the
+# owner's network behind a gambling-category content filter, while the same
+# hosts answer normally from a GitHub runner.
+#
+# Credentials are optional. A source with no key configured is reported as
+# such; the run still catalogues everything else. Add keys as repository
+# secrets when you want a source probed:
+#
+#   ODDS_API_KEY            https://the-odds-api.com          free, 500/month
+#   API_FOOTBALL_KEY        https://www.api-football.com      free, 100/day
+#   SPORTMONKS_TOKEN        https://www.sportmonks.com        paid for odds
+#   BETFAIR_APP_KEY         https://developer.betfair.com     free delayed key
+#   BETFAIR_SESSION_TOKEN   ditto; expires, so refresh before a run
+#
+# Nothing here emits or implies a betting recommendation. A price is read as a
+# probability and used as evidence about a footballer.
+
+on:
+  workflow_dispatch:
+    inputs:
+      source:
+        description: "One source key to probe, or blank for all of them."
+        required: false
+        default: ""
+        type: choice
+        options:
+          - ""
+          - the-odds-api
+          - api-football
+          - sportmonks
+          - betfair-exchange
+          - football-data
+          - understat
+          - fpl-bootstrap
+      require:
+        description: "Fail the run unless this source answered. Blank requires none."
+        required: false
+        default: ""
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: survey-player-props
+  cancel-in-progress: false
+
+jobs:
+  survey:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install engine
+        run: python -m pip install -e .
+
+      - name: Validate dispatch input
+        env:
+          REQUIRE: ${{ inputs.require }}
+        run: |
+          if [ -n "$REQUIRE" ] && ! printf '%s' "$REQUIRE" | grep -qE '^[a-z0-9-]+$'; then
+            echo "require must be a source key, got: $REQUIRE" >&2
+            exit 1
+          fi
+
+      - name: Catalogue every source
+        env:
+          # Absent secrets arrive as empty strings, which the CLI reports as
+          # "no credential" rather than treating as a failure.
+          ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
+          API_FOOTBALL_KEY: ${{ secrets.API_FOOTBALL_KEY }}
+          SPORTMONKS_TOKEN: ${{ secrets.SPORTMONKS_TOKEN }}
+          BETFAIR_APP_KEY: ${{ secrets.BETFAIR_APP_KEY }}
+          BETFAIR_SESSION_TOKEN: ${{ secrets.BETFAIR_SESSION_TOKEN }}
+          SOURCE: ${{ inputs.source }}
+          REQUIRE: ${{ inputs.require }}
+        run: |
+          extra=()
+          if [ -n "$SOURCE" ]; then
+            extra+=(--source "$SOURCE")
+          fi
+          if [ -n "$REQUIRE" ]; then
+            extra+=(--require "$REQUIRE")
+          fi
+          python -m fpl_andres.cli.survey_player_props \
+            --json player-props-catalogue.json "${extra[@]}"
+
+      - name: Upload the catalogue
+        # Never committed. It is a shopping list, not evidence, and half of it
+        # changes every time a book opens or closes a market.
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: player-props-catalogue
+          path: player-props-catalogue.json
+          if-no-files-found: warn
+          retention-days: 30
