@@ -122,6 +122,22 @@ jobs:
                   )
           PY
 
+      - name: Report every market the feed publishes
+        # Ground truth for what can be modelled. The parser reads two markets;
+        # the file carries many more, and deciding which are worth adding needs
+        # the actual column list rather than a recollection of it.
+        run: |
+          python - <<'PY'
+          import csv, io, urllib.request
+          url = "https://www.football-data.co.uk/mmz4281/2526/E0.csv"
+          with urllib.request.urlopen(url) as handle:
+              text = handle.read().decode("utf-8-sig", errors="replace")
+          header = next(csv.reader(io.StringIO(text)))
+          print(f"{len(header)} columns in {url}")
+          for name in header:
+              print(f"  {name}")
+          PY
+
       - name: Commit the refreshed artifact
         run: |
           # Stage only what this run actually produced. A pathspec matching
