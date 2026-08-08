@@ -185,7 +185,9 @@ describe("FPL proxy transport", () => {
 
     expect(response.status).toBe(502);
     await expect(response.json()).resolves.toEqual({
-      error: "FPL returned an unexpected response format.",
+      // The status and the media type, because "unexpected format" was true of
+      // a refusal, a bot challenge and real maintenance alike.
+      error: "FPL answered 200 with text/html, which is not JSON.",
       reason: "unexpected_format",
     });
   });

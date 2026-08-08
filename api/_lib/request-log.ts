@@ -147,6 +147,38 @@ export function logUpstreamOutcome({
   else console.log(line);
 }
 
+/**
+ * Exactly what FPL said when it declined to speak JSON.
+ *
+ * The one line that tells a bot challenge from real maintenance, and the only
+ * place the upstream body is ever read. Bounded, whitespace-collapsed, and
+ * never returned to a browser: an upstream page is not ours to forward, and it
+ * is the piece an operator has to see to know whether the fix is a user agent,
+ * a region, or waiting.
+ */
+export function logProxyRefusal({
+  upstreamStatus,
+  mediaType,
+  reason,
+  excerpt,
+}: {
+  upstreamStatus: number;
+  mediaType: string;
+  reason: string;
+  excerpt: string;
+}): void {
+  console.warn(
+    JSON.stringify({
+      level: "warn",
+      event: "proxy_refusal",
+      upstreamStatus,
+      mediaType,
+      reason,
+      excerpt,
+    }),
+  );
+}
+
 export type HandlerOutcome = {
   requestId: string;
   route: string;

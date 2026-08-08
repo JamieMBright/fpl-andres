@@ -1,5 +1,6 @@
 import type { FplDocumentStore } from "./fpl-document-store.js";
 import { FplPathError, resolveFplUpstreamUrl } from "./fpl-path.js";
+import { logProxyRefusal } from "./request-log.js";
 import type { SourceCache } from "./source-cache.js";
 
 /**
@@ -99,6 +100,9 @@ export type FplProxyOutcome =
       status: number;
       message: string;
       reason: FplProxyErrorReason;
+      /** What FPL actually answered, where it answered at all. */
+      upstreamStatus?: number;
+      upstreamMediaType?: string;
     };
 
 export interface FplProxyDependencies {
@@ -254,13 +258,7 @@ async function readUpstream(
   }
 
   if (!isJsonMediaType(upstreamResponse.headers.get("Content-Type"))) {
-    await upstreamResponse.body?.cancel();
-    return {
-      kind: "error",
-      status: 502,
-      message: "FPL returned an unexpected response format.",
-      reason: "unexpected_format",
-    };
+    return await refusalOutcome(upstreamResponse);
   }
 
   let body: ArrayBuffer | null;
@@ -274,6 +272,105 @@ async function readUpstream(
   }
 
   return { kind: "ok", status: upstreamResponse.status, body };
+}
+
+/**
+ * What FPL actually said, when what it said was not JSON.
+ *
+ * "Unexpected response format" was true and useless. It threw the body away
+ * unread and never looked at the status, so a 403 refusal, a 503 maintenance
+ * page and a bot challenge all arrived as the same sentence — and the one
+ * thing an operator needs to know, which of those it was, was the one thing
+ * nobody had written down.
+ *
+ * The status and the media type are reported. A short prefix of the body is
+ * read too, because a challenge page and a maintenance page both return HTML
+ * and only the words tell them apart; it is logged and classified server-side
+ * and never returned, since an upstream body is not ours to forward.
+ */
+async function refusalOutcome(
+  upstreamResponse: Response,
+): Promise<FplProxyOutcome> {
+  const mediaType =
+    upstreamResponse.headers.get("Content-Type")?.split(";", 1)[0]?.trim() ??
+    "none";
+  const prefix = await readPrefix(upstreamResponse, _REFUSAL_PREFIX_BYTES);
+  const reason = classifyRefusal(upstreamResponse.status, prefix);
+  logProxyRefusal({
+    upstreamStatus: upstreamResponse.status,
+    mediaType,
+    reason,
+    // Bounded, stripped of anything that could carry a token, and server-only.
+    excerpt: prefix.replace(/\s+/g, " ").slice(0, 200),
+  });
+  return {
+    kind: "error",
+    status: 502,
+    message: refusalMessage(upstreamResponse.status, mediaType, reason),
+    reason,
+    upstreamStatus: upstreamResponse.status,
+    upstreamMediaType: mediaType,
+  };
+}
+
+/** Enough to see a title or a Cloudflare ray, far short of a document. */
+const _REFUSAL_PREFIX_BYTES = 2_048;
+
+async function readPrefix(response: Response, bytes: number): Promise<string> {
+  const reader = response.body?.getReader();
+  if (!reader) return "";
+  try {
+    const { value } = await reader.read();
+    return new TextDecoder().decode(value?.slice(0, bytes));
+  } catch {
+    return "";
+  } finally {
+    await reader.cancel().catch(() => undefined);
+  }
+}
+
+/**
+ * Which refusal this is, from the status and the words in the page.
+ *
+ * Ordered by how specific the evidence is: a status code that only ever means
+ * one thing decides it, and the body is read only where the status is
+ * ambiguous — a bot challenge is commonly served as 200, 403 or 503, so the
+ * page itself is the only thing that separates it from real maintenance.
+ */
+function classifyRefusal(status: number, body: string): FplProxyErrorReason {
+  const text = body.toLowerCase();
+  const challenged =
+    text.includes("cf-browser-verification") ||
+    text.includes("just a moment") ||
+    text.includes("attention required") ||
+    text.includes("cf-chl") ||
+    text.includes("enable javascript and cookies");
+  if (challenged) return "challenged";
+  if (status === 429) return "rate_limited";
+  if (status === 401 || status === 403) return "refused";
+  if (status === 503 || status === 502 || status === 504)
+    return "upstream_down";
+  return "unexpected_format";
+}
+
+function refusalMessage(
+  status: number,
+  mediaType: string,
+  reason: FplProxyErrorReason,
+): string {
+  const said = `FPL answered ${String(status)} with ${mediaType}`;
+  switch (reason) {
+    case "challenged":
+      return `${said}: a bot challenge, so this deployment is being screened rather than served.`;
+    case "rate_limited":
+      return `${said}: this deployment is being rate limited by FPL.`;
+    case "refused":
+      return `${said}: FPL refused the request from this deployment.`;
+    case "upstream_down":
+      return `${said}: FPL is not serving the API right now.`;
+    default:
+      return `${said}, which is not JSON.`;
+  }
 }
 
 function unreachableOutcome(): FplProxyOutcome {
@@ -528,4 +625,14 @@ function jsonError(
 }
 
 export type FplProxyErrorReason =
-  "unreachable" | "unexpected_format" | "oversize";
+  | "unreachable"
+  | "unexpected_format"
+  | "oversize"
+  /** FPL served a bot challenge instead of the API. */
+  | "challenged"
+  /** FPL refused this caller outright: 401 or 403. */
+  | "refused"
+  /** FPL asked this caller to slow down: 429. */
+  | "rate_limited"
+  /** FPL's own API is down: 502, 503 or 504. */
+  | "upstream_down";

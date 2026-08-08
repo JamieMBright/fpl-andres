@@ -49,7 +49,7 @@ describe("upstream content type", () => {
     // The substring check this replaced would have accepted the next two.
     ["JSON named in a parameter", "text/html; charset=application/json"],
     ["JSON as a prefix of another type", "application/jsonp"],
-  ])("refuses %s as an unexpected format", async (_label, contentType) => {
+  ])("refuses %s and names what it was", async (_label, contentType) => {
     const fetchUpstream = upstream(
       "<html>Attention Required</html>",
       contentType,
@@ -61,9 +61,53 @@ describe("upstream content type", () => {
     );
 
     expect(response.status).toBe(502);
+    // "Attention Required" is Cloudflare's, so the body decides this and not
+    // the media type: every one of these is a screening page, and calling it
+    // an unexpected format told an operator nothing they could act on.
     await expect(response.json()).resolves.toMatchObject({
-      reason: "unexpected_format",
+      reason: "challenged",
     });
+  });
+
+  it.each([
+    ["a refusal", 403, "<html>Forbidden</html>", "refused"],
+    ["a rate limit", 429, "<html>Too Many Requests</html>", "rate_limited"],
+    ["FPL's own outage", 503, "<html>We are down</html>", "upstream_down"],
+    ["a bot challenge", 503, "<html>Just a moment...</html>", "challenged"],
+    [
+      "something else entirely",
+      418,
+      "<html>teapot</html>",
+      "unexpected_format",
+    ],
+  ])("reports %s exactly", async (_label, status, body, reason) => {
+    // A fresh Response per call: 5xx is retried, and a body can only be read
+    // once, so a shared instance leaves the retry with nothing to classify.
+    const fetchUpstream = vi.fn<typeof fetch>().mockImplementation(() =>
+      Promise.resolve(
+        new Response(body, {
+          status,
+          headers: { "Content-Type": "text/html" },
+        }),
+      ),
+    );
+
+    const response = await createFplProxyResponse(
+      "/api/fpl/bootstrap-static/",
+      "GET",
+      fetchUpstream,
+      async () => undefined,
+    );
+
+    const payload = (await response.json()) as {
+      reason: string;
+      error: string;
+    };
+    expect(payload.reason).toBe(reason);
+    // The status and the media type are in the sentence, because "unexpected
+    // format" was true of all five and useful for none of them.
+    expect(payload.error).toContain(String(status));
+    expect(payload.error).toContain("text/html");
   });
 
   it("never lets the upstream body reach the caller when the type is wrong", async () => {
