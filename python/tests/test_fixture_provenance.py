@@ -1,6 +1,6 @@
 """Every fixture records where it came from and what it is for.
 
-Audit item #160. A fixture is a claim about what upstream sends. Nothing
+A fixture is a claim about what upstream sends. Nothing
 recorded where these came from, when, or what they are supposed to prove, so a
 fixture that had drifted away from reality looked exactly like one that had
 not -- and a test passing against a stale fixture is worse than no test,

@@ -26,7 +26,7 @@ export function teamStateOverridesStorageKey(
 /**
  * A later write silently discarded an earlier correction.
  *
- * Audit item #66 filed this against a Python module. There is no write path
+ * This filed this against a Python module. There is no write path
  * there -- `team_state.py` only resolves -- but the concern is real and lives
  * here instead: two tabs open on the same manager, both editing. The second
  * `setItem` wins, the first tab still shows what it saved, and nothing tells

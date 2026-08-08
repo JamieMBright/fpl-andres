@@ -1,7 +1,7 @@
 import { defineConfig, devices } from "@playwright/test";
 
 /**
- * Audit item #167. `retries: 2` was already here, which meant a test that
+ * `retries: 2` was already here, which meant a test that
  * failed once and passed on the second attempt was reported as a pass and the
  * flake left no trace. A journey can be flaky for months that way.
  *

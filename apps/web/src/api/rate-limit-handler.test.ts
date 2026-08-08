@@ -4,7 +4,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import fplProxyHandler from "../../../../api/fpl/[...path]";
 
 /**
- * Audit item #72, at the handler rather than the limiter.
+ * The same request budget, at the handler rather than the limiter.
  *
  * The counters live in module scope because they have to outlive an invocation
  * to mean anything, and that is exactly the thing a unit test of the limiter

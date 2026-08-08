@@ -60,7 +60,7 @@ Out of scope:
 **This is a public repository.** Every line of code, every migration and every
 parameter is readable on GitHub, and several decisions rest on that being true.
 
-`/api/health` reports the deployed commit SHA. Audit item #80 asked whether it
+`/api/health` reports the deployed commit SHA. It was asked whether it
 should be gated. It is not, because the SHA names a commit anybody can already
 read, so hiding it conceals nothing and makes it harder to answer "is the
 deploy the thing I think it is" during an incident — which is the question the

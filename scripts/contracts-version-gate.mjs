@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Audit item #142: a schema change must come with a version bump.
+ * A schema change must come with a version bump.
  *
  * `@fpl-andres/contracts` is the shared boundary. The Python models, the web
  * app and the serverless handlers all agree through it, and the generated

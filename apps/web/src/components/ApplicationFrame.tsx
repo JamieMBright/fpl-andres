@@ -9,7 +9,7 @@ import { OfflineBanner } from "./OfflineBanner";
 /**
  * The shell every route renders inside: skip link, header, theme, footer.
  *
- * Audit item #115. Theme state lives here rather than in a context because
+ * Theme state lives here rather than in a context because
  * exactly one control reads it and exactly one element consumes it -- the
  * `data-theme` attribute on the document -- and a context for a single
  * consumer is indirection with no payoff.

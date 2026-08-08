@@ -1,6 +1,6 @@
 """Shared test doubles and builders.
 
-Audit item #156. Measured before building: fifteen helper names are defined in
+Measured before building: fifteen helper names are defined in
 more than one test file, and `FakeClient` in three. Two of those three were the
 same idea with different bodies — one honoured `returning` and gave each row an
 id, the other ignored it — so a persistence test's behaviour depended on which

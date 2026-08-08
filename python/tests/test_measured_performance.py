@@ -1,6 +1,6 @@
 """The published performance numbers must be the measured ones.
 
-Audit item #195. `MODEL_CARDS.md` described the evaluation method and never said
+`MODEL_CARDS.md` described the evaluation method and never said
 what it produced, so a reader had to run the backtest to find out whether the
 model beat anything.
 

@@ -5,7 +5,7 @@
 
 ## Context
 
-Audit item #98 asked for a partitioning or archival strategy for
+It was asked for a partitioning or archival strategy for
 `element_gameweek_stats`, on the grounds that the corpus grows by
 seasons × gameweeks × players indefinitely.
 

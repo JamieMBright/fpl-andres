@@ -79,7 +79,7 @@ select = ["E", "F", "I", "UP", "B", "SIM", "RUF", "W", "C90"]
 # worse, and lowering it is a deliberate refactor rather than a broken build.
 # The two at the ceiling are HighsHorizonOptimizer.solve (21) and
 # HorizonOptimizationRequest.validate_horizon (19), both flagged for extraction
-# as improvement #12.
+# as a tracked improvement.
 max-complexity = 21
 
 [tool.ruff.lint.isort]

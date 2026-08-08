@@ -7,7 +7,7 @@ import {
 } from "../../../../api/_lib/team-public-state-response";
 
 /**
- * Audit item #87, end to end rather than at the cache.
+ * The same caching, end to end rather than at the cache.
  *
  * The saving claimed here is upstream requests avoided, so it is counted
  * directly. The number that matters: two managers looked up in the same minute

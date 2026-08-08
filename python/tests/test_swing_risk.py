@@ -1,6 +1,6 @@
 """The spread of a squad's swing, with correlation in it.
 
-Audit item #28. The module docstring already said that what ownership changes is
+The module docstring already said that what ownership changes is
 the *spread* of outcomes, and then reported only expected values. Swing, cover
 and upside are three views of one player's expectation; there was no variance
 anywhere, so nothing could be said about risk at all.

@@ -1,6 +1,6 @@
 """What this deployment tells the outside world, on purpose.
 
-Audit items #80, #82, #94 and #95. Small surfaces, each of which was either a
+Small surfaces, each of which was either a
 decision nobody had written down or a claim nobody had checked.
 """
 
@@ -23,12 +23,12 @@ def _without_comments(source: str) -> str:
 
 
 class TestHealthEndpoint:
-    """#80: the commit SHA is public because the repository is."""
+    """The commit SHA is public because the repository is."""
 
     def test_the_reasoning_is_written_down_where_the_code_is(self) -> None:
         source = HEALTH.read_text(encoding="utf-8")
-        assert "#80" in source
         assert "public" in source
+        assert "private" in source, "the endpoint must name the premise that would make it wrong"
 
     def test_it_rests_on_the_repository_being_public(self) -> None:
         # The premise, asserted so the decision fails rather than rots if the

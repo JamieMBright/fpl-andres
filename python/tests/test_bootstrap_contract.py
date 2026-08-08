@@ -1,6 +1,6 @@
 """Upstream payload fields must be validated, not cast.
 
-Audit item #139. `int(element["id"])` asserts a type without saying so, and the
+`int(element["id"])` asserts a type without saying so, and the
 message it produces when the assertion breaks names neither the player nor the
 endpoint. These tests pin the replacement and record what the old failures
 actually looked like, so the improvement is a comparison rather than a claim.

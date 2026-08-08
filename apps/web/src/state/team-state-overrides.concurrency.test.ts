@@ -7,11 +7,10 @@ import {
 } from "./team-state-overrides";
 
 /**
- * Audit item #66.
- *
- * The item filed this against a Python module. There is no write path there --
- * `team_state.py` only resolves -- but the concern is real and lives in this
- * file instead: two tabs open on the same manager, both editing corrections.
+ * The concern was originally filed against a Python module. There is no write
+ * path there -- `team_state.py` only resolves -- but it is real and lives in
+ * this file instead: two tabs open on the same manager, both editing
+ * corrections.
  * The second `setItem` wins, the first tab still shows what it saved, and
  * nothing tells anyone the two disagree.
  *

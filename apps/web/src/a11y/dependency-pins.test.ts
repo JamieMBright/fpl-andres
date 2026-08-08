@@ -3,7 +3,7 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
 /**
- * Audit item #184. Every dependency is pinned exactly, which is not the npm
+ * Every dependency is pinned exactly, which is not the npm
  * default and therefore looks like an oversight to anyone who has not read
  * CONTRIBUTING.md. This makes it a rule rather than a habit.
  *

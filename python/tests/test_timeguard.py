@@ -4,9 +4,9 @@ Every leakage guard in this package depends on timestamps being aware and in
 UTC. The check was written out fifteen times. These tests pin the behaviour of
 the one definition that replaced them, at the boundary where it matters.
 
-Also records the outcome of improvement #5, which asked for a None guard before
-the chronology comparison in SourceSnapshot. Pydantic rejects a None on a
-non-optional datetime field before any validator runs, so the TypeError it
+Also records a claim that was made and turned out wrong: that SourceSnapshot
+needed a None guard before the chronology comparison. Pydantic rejects a None
+on a non-optional datetime field before any validator runs, so the TypeError it
 predicted cannot happen. Asserted rather than argued.
 """
 
@@ -74,7 +74,7 @@ class SourceSnapshotTest(unittest.TestCase):
             _snapshot(data_available_at=AWARE + timedelta(seconds=1))
 
     def test_a_none_timestamp_is_a_validation_error_not_a_type_error(self) -> None:
-        """Improvement #5 predicted a TypeError here. Pydantic gets there first."""
+        """A TypeError was predicted here. Pydantic gets there first."""
         with pytest.raises(ValidationError):
             _snapshot(fetched_at=None)
 

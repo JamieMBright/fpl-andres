@@ -6,7 +6,7 @@ import {
 } from "../../../../api/_lib/team-public-state-response";
 
 /**
- * Audit items #85, #88, #92 and #93.
+ * This and #93.
  *
  * A spike in 502s was invisible until someone reported it, a contract failure
  * recorded neither which source failed nor what status it arrived with, there
@@ -228,7 +228,7 @@ describe("handler outcome line", () => {
   });
 
   it("names which upstream stage was slow", async () => {
-    // Audit item #132. The browser makes one request and cannot see the three
+    // The browser makes one request and cannot see the three
     // behind it, so a slow entry fetch and a slow bootstrap fetch look
     // identical from the client. This is where they become distinguishable.
     const log = captured();
@@ -373,7 +373,7 @@ describe("contract failure diagnostics", () => {
 
 describe("picks budget", () => {
   it("gives picks a full budget rather than the remainder of the first two", async () => {
-    // Audit item #88. The opening pair run concurrently, so they cannot starve
+    // The opening pair run concurrently, so they cannot starve
     // each other. Picks is sequential and used to inherit their deadline: a
     // pair that took eight of eight and a half seconds left picks a quarter
     // second, and the request degraded on the one fetch that had done nothing
@@ -409,7 +409,7 @@ describe("picks budget", () => {
   });
 
   it("does not let the two budgets add up past the platform timeout", async () => {
-    // Audit item E5. `vercel.json` gives `api/team/*.ts` a maxDuration of 15 s.
+    // `vercel.json` gives `api/team/*.ts` a maxDuration of 15 s.
     // Handing picks a fresh 12 s after the pair had already spent 12 made the
     // worst case 24 s, so a slow upstream produced a
     // FUNCTION_INVOCATION_TIMEOUT -- a platform error page -- rather than the

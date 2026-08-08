@@ -1,7 +1,7 @@
 /**
  * Schema versions for the published JSON artifacts.
  *
- * Audit item #67. These files are written by the Python publishers and imported
+ * These files are written by the Python publishers and imported
  * here at build time. Nothing recorded which shape they were in, so a change to
  * a writer would have been picked up silently: a field quietly absent,
  * `undefined` where a number was expected, and a page that renders wrongly

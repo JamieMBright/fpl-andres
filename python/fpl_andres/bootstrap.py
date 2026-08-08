@@ -1,6 +1,6 @@
 """Schema-validated access to FPL's `bootstrap-static` elements.
 
-Audit item #139. The publishers read upstream fields with bare casts —
+The publishers read upstream fields with bare casts —
 `int(element["id"])`, `float(element["selected_by_percent"])` — which fail in the
 two worst ways available. A missing key raises `KeyError: 'id'` naming neither
 the player nor the endpoint. A `None` raises `TypeError: int() argument must be

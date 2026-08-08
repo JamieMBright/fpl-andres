@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from "vitest";
 import { SourceCache, sourceTtlMs } from "../../../../api/_lib/source-cache";
 
 /**
- * Audit item #87. Every call to /api/team/:id fetched the 1.3 MB bootstrap
+ * Every call to /api/team/:id fetched the 1.3 MB bootstrap
  * document, identical for every caller and unchanged for minutes. Ten people
  * looking up their teams in the same second pulled it ten times, from the
  * Premier League's servers, under this project's user agent.

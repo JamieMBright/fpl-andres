@@ -1,6 +1,6 @@
 """The horizon constraint matrix is sparse, and the dictionaries are not cached.
 
-Audit items #34 and #35.
+This and #35.
 
 #34 asked for the constraint matrix to be built sparsely, because per-position
 dense construction grows with the whole player pool. Measured before changing

@@ -1,6 +1,6 @@
 """Shared test configuration.
 
-Audit items #161, #162 and #165.
+This and #165.
 
 **#161** Nothing pinned `PYTHONHASHSEED`, so set iteration order varied between
 runs. Most code here sorts before it depends on order, but "most" is the problem:

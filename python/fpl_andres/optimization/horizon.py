@@ -23,7 +23,7 @@ class HighsHorizonOptimizer:
         self._time_limit_seconds = time_limit_seconds
 
     def solve(self, request: HorizonOptimizationRequest) -> HorizonOptimizationResult:
-        # Audit item #12. The layout and every constraint block live in
+        # The layout and every constraint block live in
         # `horizon_model`, one function per rule of the game. What remains here
         # is the three-stage solve, which is the part that is about
         # optimisation rather than about Fantasy Premier League.

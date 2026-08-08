@@ -1,6 +1,6 @@
 """A corrupted club id must not be able to buy a fourth player from one club.
 
-Audit item #7 said an unknown `team_id` "silently escapes the three-per-club
+This said an unknown `team_id` "silently escapes the three-per-club
 constraint". That is not what happens. `HighsOptimizer` groups candidates by
 whatever `team_id` they carry and caps every group at `club_limit`, so an
 unrecognised id is constrained exactly like a recognised one.

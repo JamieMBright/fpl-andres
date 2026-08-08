@@ -3,7 +3,7 @@ import type { TeamAnalysisState } from "./team-analysis";
 /**
  * Every sentence the analysis panel can say, and nothing that renders one.
  *
- * Audit item #115. These were three functions inside a 910-line `App.tsx`,
+ * These were three functions inside a 910-line `App.tsx`,
  * which meant the wording of every refusal was only reachable by rendering the
  * route that produces it. They are the part most worth reading on their own:
  * each one is a promise to a manager about what the site does and does not

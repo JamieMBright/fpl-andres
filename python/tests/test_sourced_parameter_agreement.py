@@ -6,7 +6,7 @@ hit from one that had nothing free to spend, because only the paid count was
 recorded. The budget is now on the result and the arithmetic between them is
 checked.
 
-Also pins improvement #4: two sourced parameters in the rate model must agree
+Also pins the rule that two sourced parameters in the rate model must agree
 with each other, not only be individually in range.
 """
 

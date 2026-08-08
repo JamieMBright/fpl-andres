@@ -1,7 +1,7 @@
 /**
  * Coalescing and short-lived caching for the upstream sources.
  *
- * Audit item #87. Every call to `/api/team/:id` fetched the bootstrap document
+ * Every call to `/api/team/:id` fetched the bootstrap document
  * -- 1.3 MB, identical for every caller, and unchanged for minutes at a time.
  * Ten people looking up their teams in the same second pulled it ten times.
  * The cost lands on FPL, under this project's user agent, which is the same

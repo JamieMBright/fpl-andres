@@ -1,7 +1,7 @@
 /**
  * The bound on every public FPL identifier this app will accept.
  *
- * Audit item #115. Lived in `App.tsx` alongside eleven components, so anything
+ * Lived in `App.tsx` alongside eleven components, so anything
  * else needing it had to import the application root.
  *
  * FPL entry IDs are unsigned 32-bit. Beyond that a value is not a large team,

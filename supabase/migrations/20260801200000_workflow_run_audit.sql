@@ -1,4 +1,4 @@
--- Audit item #105: a history of what a scheduled run did, not just where it ended.
+-- A history of what a scheduled run did, not just where it ended.
 --
 -- `workflow_runs` holds one row per (workflow, idempotency key) and that row is
 -- overwritten as the run proceeds. By the time anyone looks, `status` says

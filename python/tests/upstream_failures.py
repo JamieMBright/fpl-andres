@@ -1,6 +1,6 @@
 """Upstream failures as data, not as one-off mocks.
 
-Audit item #157. Retry and backoff were covered by handlers written inline in
+Retry and backoff were covered by handlers written inline in
 each test, so each one exercised the shape its author thought of. A 429 with a
 `Retry-After`, a 503 with an HTML body, a truncated response and a connection
 reset are all "the upstream failed", and the code paths differ.

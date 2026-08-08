@@ -135,7 +135,7 @@ export function ManagerHistory({ entryId }: { entryId: number }) {
         aria-busy="true"
       >
         <h2 id="record-title">Your record</h2>
-        {/* Audit item #135. Every other loading and empty state on the site is
+        {/* Every other loading and empty state on the site is
             a status region; these two were plain paragraphs, so a screen
             reader was told nothing when the record arrived or turned out not
             to exist. */}

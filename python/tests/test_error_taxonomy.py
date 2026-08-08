@@ -1,6 +1,6 @@
 """`docs/ERRORS.md` must describe every exception the package can raise.
 
-Audit item #8 asked for a public error taxonomy, prompted by
+It was asked for a public error taxonomy, prompted by
 `FutureMinutesEvidenceError` being undocumented. A document alone would rot on
 the first new exception, so this pins it: adding a raisable type without
 classifying it fails the suite.

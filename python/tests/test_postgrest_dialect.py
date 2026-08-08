@@ -1,6 +1,6 @@
 """The requests this client actually puts on the wire.
 
-Audit item #150. The persistence tests asserted that a mocked client was called
+The persistence tests asserted that a mocked client was called
 and what rows it was given. None of them checked the request PostgREST would
 receive — the `Prefer` header, the `on_conflict` parameter, the batching, the
 content type — so a change to any of those would pass every test and fail

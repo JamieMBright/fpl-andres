@@ -1,7 +1,7 @@
 /**
  * A request budget for the two unauthenticated proxies.
  *
- * Audit item #72. `/api/fpl/*` and `/api/team/*` are open proxies onto a third
+ * `/api/fpl/*` and `/api/team/*` are open proxies onto a third
  * party's API. Anyone could point a loop at them, and the cost lands twice:
  * on this deployment's function-seconds, and on the Premier League's servers
  * under this project's user agent. The second is the one that gets a project

@@ -16,7 +16,7 @@ import { TransferPlanPanel } from "./TransferPlanPanel";
 /**
  * The observed squad, its provenance, and the corrections form.
  *
- * Audit item #115. These two lazy imports read the 213 kB projection artifact,
+ * These two lazy imports read the 213 kB projection artifact,
  * so they carry it into whichever chunk they land in. Keeping them beside the
  * only component that renders them is what keeps that chunk off the first
  * paint of every other route.

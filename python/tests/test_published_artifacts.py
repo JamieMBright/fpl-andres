@@ -1,6 +1,6 @@
 """The published artifacts have a shape, and changing it must be deliberate.
 
-Audit item #163. Five JSON files are imported directly by the web app. A
+Five JSON files are imported directly by the web app. A
 publisher that renamed a field or dropped one would break the site at runtime,
 and nothing between the CLI writing the file and the browser reading it would
 have said so.

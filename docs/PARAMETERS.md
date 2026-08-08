@@ -1,6 +1,6 @@
 # Parameter provenance
 
-Audit item #196. The repository has one rule that overrides everything else:
+The repository has one rule that overrides everything else:
 
 > Never default a missing controlling FPL rule; fail its source contract visibly.
 

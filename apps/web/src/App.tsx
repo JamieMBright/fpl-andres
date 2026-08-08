@@ -10,7 +10,7 @@ import { lazyRoute } from "./state/lazy-route";
 /**
  * The route table, and nothing else.
  *
- * Audit item #115. This file was 910 lines holding eleven components, six
+ * This file was 910 lines holding eleven components, six
  * helpers and the route table, so every one of them could only be tested by
  * rendering a router. Each now lives beside the thing it does.
  *

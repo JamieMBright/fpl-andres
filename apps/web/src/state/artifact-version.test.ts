@@ -9,7 +9,7 @@ import {
 } from "./artifact-version";
 
 /**
- * Audit item #67, from the reader's side.
+ * The same version gate, from the reader's side.
  *
  * The check has to refuse rather than degrade. Degrading means rendering a
  * squad from a document whose fields no longer mean what the reader thinks they

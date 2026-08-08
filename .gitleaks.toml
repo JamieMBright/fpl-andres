@@ -1,6 +1,6 @@
 # Secret scanning configuration.
 #
-# Audit item #78. `.env.example` names several live secrets and a real one
+# `.env.example` names several live secrets and a real one
 # committed by accident is not undone by deleting it in a later commit: it is
 # in the history, and on any clone taken in between. The only fix is rotation,
 # so the gate has to catch it before the push lands.

@@ -1,6 +1,6 @@
 """Batching, error codes and configuration for the PostgREST client.
 
-Audit items #63, #64, #65 and #77. Each is a place where the client was correct
+Each is a place where the client was correct
 for the inputs it had been given and wrong for one it had not.
 """
 

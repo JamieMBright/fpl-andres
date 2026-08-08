@@ -1,6 +1,6 @@
 """Boundary behaviour of the ingest and crosswalk, stated as properties.
 
-Audit item #155. Both modules make tolerance judgements — how close two minute
+Both modules make tolerance judgements — how close two minute
 counts have to be, how many name spellings to try — and both were tested with
 worked examples. These state what must hold for every input.
 

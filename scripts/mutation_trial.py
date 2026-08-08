@@ -1,6 +1,6 @@
 """A mutation-testing trial for the rules and scoring modules.
 
-Audit item #166 asked whether the suite actually catches regressions, or merely
+It was asked whether the suite actually catches regressions, or merely
 executes the lines that coverage reports.
 
 Deliberately not `mutmut` or `cosmic-ray`. Both are good tools and both are a

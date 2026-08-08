@@ -1,6 +1,6 @@
 """The half of bootstrap-static that had no contract.
 
-Audit item D2. `validate_published_bootstrap_contract` reads `game_settings`,
+`validate_published_bootstrap_contract` reads `game_settings`,
 `game_config`, `element_types` and `chips` field by field. It never looked at
 `elements`, `teams` or `events` -- the three lists every publisher actually
 indexes into.

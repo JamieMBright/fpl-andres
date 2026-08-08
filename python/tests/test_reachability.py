@@ -128,7 +128,7 @@ def _called_names(paths: list[Path]) -> set[str]:
     and reporting those as orphans would push people to add exemptions for
     code that is very much alive.
 
-    Audit item #12 exposed this: nine constraint builders were reported as
+    This exposed this: nine constraint builders were reported as
     unreachable while being called on every solve. One of the nine escaped by
     coincidence, because `rules.club_limit` happens to be an attribute with the
     same name, which is a fair indication of how loose the previous rule was.
@@ -245,7 +245,7 @@ def test_every_scoring_route_reaches_the_projection() -> None:
     and dropped on the floor for weeks, which cost roughly eight percent of the
     game's points.
     """
-    # Audit item #13 split the projector: pricing lives in `scoring.py`, rate
+    # This split the projector: pricing lives in `scoring.py`, rate
     # estimation in `rates.py`. Both are read, because a route priced in one
     # and estimated in neither is still a route nobody scores.
     priced = "\n".join(

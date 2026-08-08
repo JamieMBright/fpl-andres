@@ -3,7 +3,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { clearInFlight, dedupedFetch } from "./deduped-fetch";
 
 /**
- * Audit item #119. Two components mounting at once, or a StrictMode double
+ * Two components mounting at once, or a StrictMode double
  * render in development, produce two identical requests for the same URL. The
  * second is pure waste, and the proxy behind it has a rate limit.
  */

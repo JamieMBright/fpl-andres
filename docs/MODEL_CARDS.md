@@ -116,7 +116,7 @@ Evaluation pairs baseline and candidate errors on the same holdout observations.
 
 ## Measured performance
 
-Audit item #195. Targets were never written down, so the target is the thesis:
+Targets were never written down, so the target is the thesis:
 beat the baselines a competent human actually uses. Numbers below are from
 `apps/web/src/data/validation.json`, the artifact the calibration page serves.
 
@@ -160,7 +160,7 @@ five of them in a squad, so the weakest part of the model carries the most weigh
 in a selection.
 
 Reproducing these numbers needs the corpus they were measured over, not just the
-code — see `corpusFingerprint` in the artifact and audit item #153.
+code — see `corpusFingerprint` in the artifact.
 
 ### The unblended projection is scored separately
 

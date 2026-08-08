@@ -1,6 +1,6 @@
 """The shapes this repository reads out of the FPL API.
 
-Audit item #140. The client returned ``dict[str, Any]`` for every endpoint,
+The client returned ``dict[str, Any]`` for every endpoint,
 which is honest about the transport and useless as documentation: nothing
 recorded which of the roughly two hundred fields FPL sends are the ones this
 project actually depends on, and a mistyped key type-checked cleanly and failed

@@ -1,6 +1,6 @@
 """Corpus provenance must match what was actually loaded.
 
-Audit item #189. A backtest claim is only reproducible if someone can rebuild the
+A backtest claim is only reproducible if someone can rebuild the
 data it was measured over, and nothing recorded what that data was.
 
 The commit SHA is the part that is genuinely missing: it was a workflow dispatch

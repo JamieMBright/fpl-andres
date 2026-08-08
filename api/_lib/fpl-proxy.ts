@@ -3,7 +3,7 @@ import { FplPathError, resolveFplUpstreamUrl } from "./fpl-path.js";
 import type { SourceCache } from "./source-cache.js";
 
 /**
- * Audit item #82. Name and a contact URL, and a version that does not move on
+ * Name and a contact URL, and a version that does not move on
  * every release.
  *
  * A patch-level version is a fingerprint: it changes with each deploy, so an
@@ -175,7 +175,7 @@ export async function createFplProxyResponse(
       status: outcome.status,
       staleAgeMs: null,
     });
-    // Audit item #94. The body was copied into a fresh ArrayBuffer before being
+    // The body was copied into a fresh ArrayBuffer before being
     // returned. `readBoundedBody` now assembles into one directly, so the copy
     // is gone -- it duplicated up to eight megabytes of bootstrap per request.
     return new Response(outcome.body, {
@@ -437,7 +437,7 @@ async function readBoundedBody(
     reader.releaseLock();
   }
 
-  // Audit item #94. Allocated as an ArrayBuffer rather than as a Uint8Array,
+  // Allocated as an ArrayBuffer rather than as a Uint8Array,
   // so the caller can hand it to `Response` without a second copy.
   //
   // The copy that used to be there was not superstition: `Uint8Array.buffer`
@@ -473,7 +473,7 @@ function parseContentLength(rawValue: string | null): number | null {
 /**
  * Match the media type, not the whole header.
  *
- * Audit item #75 reported this check as missing. It was not: the presence and
+ * This reported this check as missing. It was not: the presence and
  * value were already checked. It was checked with `includes`, though, which
  * accepts `text/html; charset=application/json` -- contrived, but the strict
  * form costs nothing. Only the part before the first `;` is the media type, and
@@ -488,7 +488,7 @@ function isJsonMediaType(rawValue: string | null): boolean {
 /**
  * Only the endpoints whose response is the same for every caller are public.
  *
- * Audit item #76 asked for entry-specific responses to be distinguished from
+ * It was asked for entry-specific responses to be distinguished from
  * public ones. They already were, by construction: this is an allow-list of two
  * shapes and everything else -- every `entry/`, `picks/` and `leagues-classic/`
  * path -- falls through to `private, no-store`. A shared CDN is never offered

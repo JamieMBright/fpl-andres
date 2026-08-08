@@ -375,7 +375,7 @@ def validate_published_bootstrap_contract(bootstrap: Mapping[str, Any]) -> None:
 def validate_published_squad_contract(bootstrap: Mapping[str, Any]) -> None:
     """The clubs, players and gameweeks a live bootstrap must also carry.
 
-    Audit item D2. Kept separate from the rules contract because they answer to
+    Kept separate from the rules contract because they answer to
     different sources. The rules are a snapshot that an archived rules-only
     document legitimately satisfies on its own; the squad is the live roster,
     checked when this package talks to FPL rather than when it reads a stored
@@ -396,7 +396,7 @@ def validate_published_squad_contract(bootstrap: Mapping[str, Any]) -> None:
 def _validate_teams(bootstrap: Mapping[str, Any]) -> frozenset[int]:
     """The twenty clubs, and the short name three publishers key dictionaries by.
 
-    Audit item D2. `publish_season_inputs` builds `ladder[short_name]`,
+    `publish_season_inputs` builds `ladder[short_name]`,
     `ratings[short_name]` and `opponents[short_name]`. Two clubs sharing a short
     name do not raise; the second silently overwrites the first, and a published
     fixture ladder loses a club without saying so. `code` has the same problem
@@ -438,7 +438,7 @@ def _validate_elements(
 ) -> None:
     """Every player points at a club and a position that exist.
 
-    Audit item D2. `bootstrap.py` validates a player's own fields, but a
+    `bootstrap.py` validates a player's own fields, but a
     per-row model cannot see the rest of the payload: it cannot tell that
     `team=21` names no club, or that `element_type=5` is a position this package
     has no scoring rules for. Both resolve later as a `KeyError` inside a
@@ -479,7 +479,7 @@ def _validate_elements(
 def _validate_events(bootstrap: Mapping[str, Any]) -> None:
     """Thirty-eight gameweeks, in order, each with a deadline.
 
-    Audit item D2. `publish_season_inputs` publishes
+    `publish_season_inputs` publishes
     `str(events[event]["deadline_time"]).replace("+00:00", "Z")`. A missing
     deadline publishes the string `None`; an out-of-order one silently reorders
     a season plan. Neither raises anywhere.
@@ -548,7 +548,7 @@ def _required_value(payload: Mapping[str, Any], key: str, parent: str) -> Any:
 
 
 def _rule_path(parent: str, key: str) -> str:
-    """Audit item #18: one spelling of a rule's path.
+    """One spelling of a rule's path.
 
     `_required_value` already handled an empty parent and the type checks below
     did not, so a top-level rule failed with a message beginning in a full stop.
@@ -559,7 +559,7 @@ def _rule_path(parent: str, key: str) -> str:
 def _wrong_type(parent: str, key: str, value: Any, expected: str) -> RulesContractError:
     """One wording for one class of failure.
 
-    Audit item #18. "must be an integer" and "must be numeric" described the
+    "must be an integer" and "must be numeric" described the
     same thing two ways, so a reader could not tell whether they were different
     checks. They are not, and the message now names what arrived as well as what
     was wanted -- an FPL payload that starts sending "15" instead of 15 is a

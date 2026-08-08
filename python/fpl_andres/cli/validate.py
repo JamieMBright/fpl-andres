@@ -50,7 +50,7 @@ LEAGUE = LeagueSettings(
     crowd_share=0.25,
 )
 
-# Audit item #181. Annotated rather than inferred: a bare tuple of strings
+# Annotated rather than inferred: a bare tuple of strings
 # widens to `tuple[str, ...]`, so `league.by_policy(policy)` needed a
 # `# type: ignore[arg-type]` -- which also silenced the check that a policy
 # named here actually exists. Misspell one now and mypy says so.

@@ -2,7 +2,7 @@ import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
 
 /**
- * Audit item #126. `DESIGN.md` claims a contrast standard and nothing enforced
+ * `DESIGN.md` claims a contrast standard and nothing enforced
  * it across the site.
  *
  * What was already there: the home page was scanned in both kits, and three

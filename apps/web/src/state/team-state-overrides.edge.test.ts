@@ -8,7 +8,7 @@ import {
 } from "./team-state-overrides";
 
 /**
- * Audit item #164. The override cache lives in localStorage, which is the least
+ * The override cache lives in localStorage, which is the least
  * reliable store the app touches: it is shared with every other tab, capped at a
  * few megabytes, and can be edited by hand in devtools.
  *

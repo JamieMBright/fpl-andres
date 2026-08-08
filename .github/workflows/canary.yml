@@ -1,6 +1,6 @@
 name: Production canary
 
-# Audit item #85. The alerting layer, using infrastructure this project already
+# The alerting layer, using infrastructure this project already
 # has rather than a service someone has to sign up to and remember to pay for.
 #
 # This covers the two failures worth waking up for: the site is down, and the

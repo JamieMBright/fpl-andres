@@ -9,7 +9,7 @@ import {
  * The proxy is unauthenticated and reachable by anyone. Its only defence is
  * that the URL it fetches is one of a handful it was built to fetch.
  *
- * Audit item #74 asked for the path to be normalised before pattern matching,
+ * It was asked for the path to be normalised before pattern matching,
  * on the grounds that a percent-encoded or dot-segment variant could clear the
  * allow-list in one form and be fetched in another. The variants below were all
  * already refused. What was missing was a guarantee rather than an enumeration,

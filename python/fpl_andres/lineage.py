@@ -1,6 +1,6 @@
 """What produced a decision, recorded alongside it.
 
-Audit item #197. `model_promotion_decisions` recorded the seed, the resample
+`model_promotion_decisions` recorded the seed, the resample
 count and the sample size — enough to re-run the bootstrap, and not enough to
 reproduce the answer. Re-running it needs three more things:
 

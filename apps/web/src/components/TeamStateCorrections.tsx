@@ -479,7 +479,7 @@ export function TeamStateCorrections({ state }: TeamStateCorrectionsProps) {
                 This removes only the local manager record for this team and
                 public deadline. The observed FPL snapshot stays unchanged.
               </p>
-              {/* Audit item #136. The Escape key and the focus trap were
+              {/* The Escape key and the focus trap were
                   exercised only by a Playwright journey, so the behaviour was
                   documented to the test suite and to nobody using the site.
                   Stated here, in the dialog it applies to, and read out by a

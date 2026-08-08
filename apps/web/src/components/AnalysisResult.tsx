@@ -16,7 +16,7 @@ import { TransferPlanPanel } from "./TransferPlanPanel";
 /**
  * One switch over the analysis state, and the panel each case renders.
  *
- * Audit item #115. Every branch here is a decision about what may be shown
+ * Every branch here is a decision about what may be shown
  * when the evidence is incomplete, which is the thing this project is most
  * careful about -- and it was buried two hundred lines into the application
  * root.

@@ -143,7 +143,7 @@ class SeasonCorpus:
     def fingerprint(self) -> str:
         """A content hash of everything a backtest can read from this corpus.
 
-        Audit item #153. A backtest score is only meaningful next to the data
+        A backtest score is only meaningful next to the data
         that produced it, and the corpus is a mutable Supabase table: a
         re-ingest that corrects one fixture changes every metric derived from
         it, with nothing in the artifact to say so. Recording this alongside a

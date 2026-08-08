@@ -52,7 +52,7 @@ class RateObservation(BaseModel):
     expected_goals: Annotated[float, Field(ge=0.0)] | None = None
     expected_assists: Annotated[float, Field(ge=0.0)] | None = None
     kickoff_time: datetime
-    # Audit item #29. The context the return was produced in, so a carried
+    # The context the return was produced in, so a carried
     # season can be discounted when it was produced somewhere else. Optional
     # because not every source records them, and a source that does not is
     # reported as unknown rather than assumed unchanged.
@@ -95,7 +95,7 @@ class PlayerRateEvidence(BaseModel):
     blend_full_weight_minutes: Annotated[float, Field(gt=0.0, le=10_000.0)]
     # Caller. How much of a carried season survives a change of club or role.
     #
-    # Audit item #29. The blend weighted the carried season by minutes alone,
+    # The blend weighted the carried season by minutes alone,
     # so a striker's twenty goals for a relegated side counted exactly as a
     # striker's twenty goals for the same side he still plays for. A move
     # changes the service, the set pieces and the penalty order; a move to a
@@ -213,7 +213,7 @@ def project_player_rates(evidence: PlayerRateEvidence) -> PlayerRateProjection:
         current_weight = 1.0
     carried_weight = 1.0 - current_weight
 
-    # Audit item #29. A carried season produced somewhere else is worth less
+    # A carried season produced somewhere else is worth less
     # than the same minutes produced here. The discount is applied to the
     # carried share rather than to the minutes, so it cannot push the blend
     # below the minutes floor that already decided the projection was possible.
@@ -281,7 +281,7 @@ def _has_complete_expected(observations: tuple[RateObservation, ...]) -> bool:
 class InconsistentObservationBasis(ValueError):
     """Raised when expected values are asked for and one is absent.
 
-    Audit item #32. `_totals` used ``observation.expected_goals or 0.0``, which
+    `_totals` used ``observation.expected_goals or 0.0``, which
     reads as a default for a missing value and is not one: the caller only
     reaches that branch after `_has_complete_expected` has confirmed every
     observation carries both columns.
@@ -325,7 +325,7 @@ def _total_minutes(observations: tuple[RateObservation, ...]) -> float:
 def _carried_context(evidence: PlayerRateEvidence) -> str:
     """Whether the carried season was produced in the same club and role.
 
-    Audit item #29. Three answers, and the third matters as much as the others.
+    Three answers, and the third matters as much as the others.
 
     "same"      the carried season is directly comparable
     "changed"   a different club or a different role, so discount it

@@ -41,7 +41,7 @@ export function readDeclaredTransfers(
   try {
     const parsed = storedSchema.safeParse(JSON.parse(raw));
     if (!parsed.success) {
-      // Audit item E4. Dropped rather than left in place, matching every other
+      // Dropped rather than left in place, matching every other
       // reader in this directory: a value the schema refuses is a value that
       // will be refused on every subsequent read, so keeping it only means
       // paying for the parse forever. It self-heals on the next write, but the

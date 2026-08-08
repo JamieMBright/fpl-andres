@@ -1,6 +1,6 @@
 """A backtest score is only meaningful next to the data that produced it.
 
-Audit item #153. The corpus is a mutable Supabase table. A re-ingest that
+The corpus is a mutable Supabase table. A re-ingest that
 corrects one fixture changes every metric derived from it, and nothing in a
 stored backtest artifact said which corpus state it came from — so a moved
 number was indistinguishable from a moved model.

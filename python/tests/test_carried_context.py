@@ -1,6 +1,6 @@
 """A carried season is discounted when it was produced somewhere else.
 
-Audit item #29. The cross-season blend weighted the carried season by minutes
+The cross-season blend weighted the carried season by minutes
 alone, so a striker's twenty goals for a relegated side counted exactly as
 twenty goals for the side he still plays for. A move changes the service, the
 set pieces and the penalty order; a move to a deeper role changes what the
@@ -258,7 +258,7 @@ class TestDiscount:
 
     def test_the_discount_cannot_produce_a_carried_weight_without_a_season(self) -> None:
         # The projection contract refuses a carried weight with nothing carried,
-        # which is the failure audit item #26 found the other way round.
+        # which is the failure This found the other way round.
         result = project_player_rates(
             evidence(
                 current=season("2026-27", events=4, team_id=2, position_id=4, days_before=20),
@@ -299,7 +299,7 @@ class TestContract:
 
     @pytest.mark.parametrize(("team_id", "position_id"), [(0, 4), (21, 4), (1, 0), (1, 5)])
     def test_an_out_of_range_club_or_role_is_refused(self, team_id: int, position_id: int) -> None:
-        # Twenty clubs, four positions. Audit item #7 is the reason the club
+        # Twenty clubs, four positions. This is the reason the club
         # bound matters: a wrong id splits one club into two groups.
         with pytest.raises(ValueError):
             observation(season="2025-26", event_id=1, team_id=team_id, position_id=position_id)

@@ -1,6 +1,6 @@
 """Every scoring route, priced.
 
-Audit item #13. Split from `projector.py`, which was 882 lines covering rate
+Split from `projector.py`, which was 882 lines covering rate
 estimation, scoring and orchestration together.
 
 The numbers here are the published FPL scoring table, not parameters. They were

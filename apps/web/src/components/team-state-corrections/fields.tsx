@@ -5,7 +5,7 @@ import type { CorrectionError, TransferDraft, TransferField } from "./parse";
 /**
  * The two input primitives of the corrections form.
  *
- * Audit item #114. Both are presentational and stateless: they own no draft and
+ * Both are presentational and stateless: they own no draft and
  * no error, only how a label, an input and its error wiring are put together.
  * Keeping them here means the form component reads as a list of fields rather
  * than as several hundred lines of near-identical markup, and means the

@@ -1,6 +1,6 @@
 """Documented parameter values must equal the ones the code uses.
 
-Audit item #196. The repository rule — never default a controlling FPL rule,
+The repository rule — never default a controlling FPL rule,
 fail its source contract visibly — is only auditable if someone can look a number
 up and find where it came from. `docs/PARAMETERS.md` is that lookup.
 

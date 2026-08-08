@@ -1,6 +1,6 @@
 """How each rival policy spends its transfers.
 
-Split out of `minileague.py` for audit item #40. These are the decisions that
+Split out of `minileague.py` for These are the decisions that
 distinguish an advised manager from a form chaser, and they are the part of the
 simulation most likely to change.
 """

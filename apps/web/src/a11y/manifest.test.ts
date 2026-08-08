@@ -3,7 +3,7 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
 /**
- * Audit item #134. The manifest declared one icon: `favicon.svg`, which is
+ * The manifest declared one icon: `favicon.svg`, which is
  * 260x200. A PWA icon must be square, so every install surface that took it was
  * distorting or letterboxing it, and `sizes: "any"` told nobody.
  *

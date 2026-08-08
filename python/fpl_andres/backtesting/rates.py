@@ -1,6 +1,6 @@
 """League priors, shrinkage, and the per-player rates a projection is built on.
 
-Audit item #13. `projector.py` was 882 lines covering three separate jobs:
+`projector.py` was 882 lines covering three separate jobs:
 working out what a player does per ninety minutes, turning that into points, and
 orchestrating both across a season. This is the first.
 
@@ -275,7 +275,7 @@ def observation(
     team_id: int | None = None,
     position_id: int | None = None,
 ) -> RateObservation:
-    """Audit item #29: club and role travel with the return, when they are known.
+    """Club and role travel with the return, when they are known.
 
     Both default to None rather than to a guess. A carried season whose club is
     unknown is reported as unknown by `project_player_rates`, which is not the

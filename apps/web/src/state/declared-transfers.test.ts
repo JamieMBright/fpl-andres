@@ -77,7 +77,7 @@ describe("declared transfers", () => {
   });
 
   it("clears unparseable storage rather than re-reading it forever", () => {
-    // Audit item E4. Every other reader in this directory removes the key when
+    // Every other reader in this directory removes the key when
     // the schema refuses it. This one returned [] and left the value in place,
     // so the same corrupt string was parsed on every render until the next
     // write happened to overwrite it.

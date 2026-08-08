@@ -394,7 +394,7 @@ weak.
 
 ## 11b. Four things carried beside the projection
 
-Audit item #186. These modules exist, are tested, and were documented nowhere.
+These modules exist, are tested, and were documented nowhere.
 None of them changes the expected-points number. All of them change what a
 sensible person does with it, which is why they are carried alongside rather
 than folded in.

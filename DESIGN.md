@@ -271,7 +271,7 @@ Every remote surface implements idle, loading, ready, stale, degraded and error.
 
 ## Component inventory
 
-Audit item #202. Thirty-five components in `apps/web/src/components`. The column
+Thirty-five components in `apps/web/src/components`. The column
 that matters is the last one: what a browser journey already proves about each,
 so a review knows what it does not have to check by hand.
 

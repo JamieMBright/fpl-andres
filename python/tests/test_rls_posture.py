@@ -1,6 +1,6 @@
 """The deny-all RLS posture is a decision, and must stay one.
 
-Audit item #97. Every table is `enable row level security` plus `force row level
+Every table is `enable row level security` plus `force row level
 security` with no policy attached, which means: no anon or authenticated role can
 read or write anything, and even the table owner is subject to RLS. Only
 `service_role`, which bypasses RLS entirely, reaches the data. That is correct

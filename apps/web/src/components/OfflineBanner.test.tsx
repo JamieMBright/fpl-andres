@@ -4,7 +4,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { OfflineBanner } from "./OfflineBanner";
 
 /**
- * Audit item #120. A dropped connection reached the page as "Fantasy Premier
+ * A dropped connection reached the page as "Fantasy Premier
  * League could not be reached", which is both wrong and unhelpful: FPL is
  * fine, the train went into a tunnel. Telling someone a remote service is down
  * when their own connection is gone sends them to check the wrong thing.

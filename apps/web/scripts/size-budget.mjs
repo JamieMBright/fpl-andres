@@ -3,7 +3,7 @@ import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 
 /**
- * Audit item #122. Nothing stopped the shipped bundle growing.
+ * Nothing stopped the shipped bundle growing.
  *
  * Budgets are on gzipped bytes, because that is what a user waits for. Each is
  * set with roughly 15% headroom over the size measured when this was written,
@@ -64,7 +64,7 @@ console.log("Bundle sizes:");
 console.log(report.sort().join("\n"));
 
 /*
- * Audit item #125: chunk names must stay legible.
+ * Chunk names must stay legible.
  *
  * Vite already names a lazy chunk after the module that produced it, so the
  * report above reads "CalibrationPage-DzpDSLNJ.js" rather than "chunk-4a1f.js".

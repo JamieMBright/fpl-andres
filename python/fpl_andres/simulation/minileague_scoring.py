@@ -1,6 +1,6 @@
 """Turning a squad and a gameweek into points.
 
-Split out of `minileague.py` for audit item #40. Starting eleven, captaincy and
+Split out of `minileague.py` for Starting eleven, captaincy and
 automatic substitutions, none of which depend on how the squad was chosen.
 """
 

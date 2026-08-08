@@ -1,6 +1,6 @@
 """Every model module must be described somewhere a reader would look.
 
-Audit item #186. `models/shot_profile.py`, `models/penalties.py`,
+`models/shot_profile.py`, `models/penalties.py`,
 `models/suspensions.py` and `backtesting/reliability.py` existed, were tested,
 and were documented nowhere — while `MODEL.md` claimed to be the description of
 the model.

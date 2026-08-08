@@ -91,7 +91,7 @@ class RouteEntry(TypedDict):
 class ProjectionEntry(TypedDict):
     """One player's row in `projections.json`.
 
-    Audit items #147 and #181. `_entry` returned `dict[str, object]`, so
+    `_entry` returned `dict[str, object]`, so
     `entry["code"]` was an `object` and sorting by it needed
     `# type: ignore[arg-type,return-value]` -- which also silenced the check
     that would have caught the key being renamed.

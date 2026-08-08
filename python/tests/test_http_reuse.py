@@ -1,6 +1,6 @@
 """Why bootstrap is refetched, and why that is not fixable as proposed.
 
-Audit item #48 asked for conditional-request support (ETag / If-Modified-Since)
+It was asked for conditional-request support (ETag / If-Modified-Since)
 for `bootstrap-static`, on the grounds that it is stable within a gameweek and
 refetched per command. The premise is true. The remedy is not available.
 
@@ -23,7 +23,7 @@ process lifetime for a cache to serve. A cross-process cache would mean writing
 1.3 MB to disk and reasoning about its staleness, to save one request from a
 command that runs on a schedule.
 
-Audit item #49 asked for explicit connection pooling and a single client per CLI
+It was asked for explicit connection pooling and a single client per CLI
 run. Every CLI already opens one `httpx.AsyncClient` in an `async with` for the
 whole run, which is connection pooling: httpx keeps up to 20 keep-alive
 connections per client by default, and this workload talks to one host.

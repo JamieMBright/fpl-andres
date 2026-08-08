@@ -1,6 +1,6 @@
 """The teardown script must stay in step with the migrations.
 
-Audit item #100: CI validated `supabase db reset` but never exercised undoing a
+CI validated `supabase db reset` but never exercised undoing a
 migration, so nothing proved the schema could be torn down and rebuilt.
 
 That gap matters more here than in most projects. The production bootstrap is an

@@ -1,6 +1,6 @@
 """What the adapter does when FPL misbehaves.
 
-Covers improvements #41, #42, #56 and the negative paths of #149. Also records
+Covers the adapter's failure paths and the negative paths of its cache. Also records
 two audit claims that did not survive checking: #45 and #51 asked for guaranteed
 cleanup of the HTTP client, the JSONL sink and the sweep semaphore, and all
 three already use context managers, which release on any exception.

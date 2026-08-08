@@ -8,7 +8,7 @@ import { describe, expect, it } from "vitest";
 import { rateFixtureRun, type FixtureRun } from "../state/fixture-run";
 
 /**
- * Audit items #116 and #118, measured before either is done, and both declined.
+ * This and #118, measured before either is done, and both declined.
  *
  * #116 asks for the player pool table to be virtualised "instead of capping
  * rows at 200". #118 asks for its cells to be memoised. Both read the cap as a

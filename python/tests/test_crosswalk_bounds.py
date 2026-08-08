@@ -1,6 +1,6 @@
 """The crosswalk candidate set is already bounded by squad size.
 
-Audit item #36 said shared surnames make the candidate set "grow quadratically
+This said shared surnames make the candidate set "grow quadratically
 with no bound". The bound exists: candidates are keyed by
 `(season, canonical club, spelling)`, so a name shared across clubs never
 competes and the largest bucket is the number of same-named players registered

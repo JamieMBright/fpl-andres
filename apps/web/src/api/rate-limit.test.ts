@@ -9,7 +9,7 @@ import {
 } from "../../../../api/_lib/rate-limit";
 
 /**
- * Audit item #72. Both proxies were open, unauthenticated and unbudgeted onto a
+ * Both proxies were open, unauthenticated and unbudgeted onto a
  * third party's API.
  *
  * What is asserted here is what the limiter can promise, including where it

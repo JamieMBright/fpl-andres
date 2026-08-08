@@ -1,7 +1,7 @@
 import { expect, test, type Page } from "@playwright/test";
 
 /**
- * Audit item #151. The browser journeys covered the happy paths of two flows
+ * The browser journeys covered the happy paths of two flows
  * plus a handful of failure reasons chosen ad hoc. This walks the whole state
  * space the contract defines, so a reason that stops rendering is a failing
  * test rather than a blank panel nobody notices.

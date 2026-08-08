@@ -1,6 +1,6 @@
 """Published artifacts carry a schema version, and both readers agree on it.
 
-Audit item #67. The artifacts are written by two Python CLIs and imported by the
+The artifacts are written by two Python CLIs and imported by the
 web app at build time. Nothing recorded which shape they were in, so a change to
 a writer would have been picked up silently by the reader: a field quietly
 absent, ``undefined`` where a number was expected, and a page that renders

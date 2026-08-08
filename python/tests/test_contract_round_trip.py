@@ -1,6 +1,6 @@
 """A payload must survive the round trip through Python unchanged.
 
-Audit item #158. `test_contract_parity.py` proves Python accepts what Zod accepts
+`test_contract_parity.py` proves Python accepts what Zod accepts
 and rejects what Zod rejects. It says nothing about what Python emits.
 
 A model that parses `{"entryId": 123}` and serialises to `{"entry_id": 123}`

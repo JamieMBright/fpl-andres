@@ -1,6 +1,6 @@
 """An injected parameter must reach every place that reads it.
 
-Audit item #11 asked for `_BENCH_WEIGHT` and `PLAYABLE_START_RATE` to become
+It was asked for `_BENCH_WEIGHT` and `PLAYABLE_START_RATE` to become
 injectable rather than module constants. Both already were: `OpeningSettings`
 carries `bench_weight` and `playable_start_rate`, defaulting to the constants.
 `simulation/season.py`, which the item named, has no such constant at all.

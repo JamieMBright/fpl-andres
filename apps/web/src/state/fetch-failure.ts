@@ -1,7 +1,7 @@
 /**
  * What can go wrong when the browser asks the proxy for something.
  *
- * Audit item #141. Both callers caught `unknown` and narrowed it by hand, with
+ * Both callers caught `unknown` and narrowed it by hand, with
  * the same `instanceof DOMException && name === "AbortError"` line copied into
  * each. That has two costs. The obvious one is duplication. The one that
  * matters is that `unknown` does not enumerate anything, so neither caller

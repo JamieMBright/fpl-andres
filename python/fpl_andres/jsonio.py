@@ -1,6 +1,6 @@
 """JSON reads that say which file or endpoint was malformed.
 
-Audit item #55. Only `cli/sweep_managers.py` guarded `ValueError` from a JSON
+Only `cli/sweep_managers.py` guarded `ValueError` from a JSON
 parse. Everywhere else a truncated checkpoint or an HTML error page served in
 place of an API response produced a raw `JSONDecodeError` traceback naming a
 character offset — "Expecting value: line 1 column 1 (char 0)" — and nothing

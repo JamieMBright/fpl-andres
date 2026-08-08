@@ -24,7 +24,7 @@ class OptimizationError(RuntimeError):
 # the generated case (0.0, 2.0, 7.0, 1e-07, 0.0, 8.125).
 _MIP_FEASIBILITY_TOLERANCE = 1e-6
 
-# Audit item #15. Lexicographic tie-breaks, expressed as a single objective.
+# Lexicographic tie-breaks, expressed as a single objective.
 #
 # When several squads score identically the solver may return any of them, and
 # "any of them" means a different squad on a different machine or a different
@@ -57,7 +57,7 @@ CAPTAIN_CEILING_WEIGHT = 1.0 / 3.0
 def _optimum_slack(optimum: float) -> float:
     """Slack for re-solving against a proven optimum, scaled to its magnitude.
 
-    Audit item #16. Load-bearing for every optimality proof, and previously
+    Load-bearing for every optimality proof, and previously
     uncommented.
 
     The three-stage solve pins each stage against the previous stage's optimum.
@@ -85,7 +85,7 @@ class HighsOptimizer:
     def solve(self, request: OptimizationRequest) -> OptimizationResult:
         players = tuple(sorted(request.players, key=lambda player: player.element_id))
         player_count = len(players)
-        # Audit item #17. `*_offset` is the first column of a block, and a
+        # `*_offset` is the first column of a block, and a
         # player's column within it is `offset + index`. `paid_transfer_column`
         # is a single column, not the start of a block, and was previously
         # named `paid_transfer_index` -- which read like a player index and sat

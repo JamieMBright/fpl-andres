@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from "vitest";
 import { createFplProxyResponse } from "../../../../api/_lib/fpl-proxy";
 
 /**
- * Audit items #75 and #76, both of which the code already satisfied.
+ * This and #76, both of which the code already satisfied.
  *
  * #75 asked for the upstream `content-type` to be checked before the body is
  * parsed. It was, but with a substring search, so the check now compares the

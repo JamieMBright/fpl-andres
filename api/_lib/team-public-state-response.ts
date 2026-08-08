@@ -18,7 +18,7 @@ const MAX_PUBLIC_ID = 4_294_967_295;
 /**
  * The picks fetch is sequential, not parallel, so it needs its own budget.
  *
- * Audit item #88. The two opening fetches share a deadline correctly -- they run
+ * The two opening fetches share a deadline correctly -- they run
  * concurrently, so neither consumes the other's wall clock. Picks is different:
  * it cannot start until the entry response has named the current event, and it
  * was given whatever remained of the same deadline. A pair that took eight of
@@ -30,7 +30,7 @@ const PICKS_BUDGET_MS = FPL_PROXY_BUDGET_MS;
 /**
  * What the platform will actually wait for, minus room to answer.
  *
- * Audit item E5. Fixing #88 by handing picks a second full budget made the two
+ * Fixing #88 by handing picks a second full budget made the two
  * budgets additive: 12 s of opening fetches plus 12 s of picks is 24 s against
  * a `maxDuration` of 15 on `api/team/*.ts` in `vercel.json`. Vercel kills the
  * invocation first, so the caller gets `FUNCTION_INVOCATION_TIMEOUT` -- a
@@ -149,7 +149,7 @@ interface RequestTrace {
   requestId: string;
   startedAt: number;
   upstreamMs: number;
-  // Audit item #132. The browser makes one request, so it cannot see the three
+  // The browser makes one request, so it cannot see the three
   // upstream calls behind it and a slow entry fetch looks exactly like a slow
   // bootstrap fetch. Recorded per stage so the log can tell them apart after
   // the fact, which is the only place the distinction can be drawn without
@@ -386,7 +386,7 @@ async function buildTeamPublicStateResponse(
 /**
  * Record what upstream said before refusing.
  *
- * Audit item #92. This branch used to swallow the error and answer
+ * This branch used to swallow the error and answer
  * `source_contract_failed`, which says an FPL payload changed shape but not
  * which one, nor what status it arrived with. A 200 that fails the contract is
  * a schema change; a 403 that fails it is a block page that got past the

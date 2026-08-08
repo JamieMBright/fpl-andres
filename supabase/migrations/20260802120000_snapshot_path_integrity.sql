@@ -1,4 +1,4 @@
--- Audit item #106 asked for referential integrity or a reconciliation job for
+-- It was asked for referential integrity or a reconciliation job for
 -- `source_snapshots.storage_path`, so that deleted objects do not leave orphan
 -- rows.
 --

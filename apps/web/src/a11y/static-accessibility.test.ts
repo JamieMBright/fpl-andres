@@ -3,7 +3,7 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
 /**
- * Audit items #128, #129 and #130.
+ * This and #130.
  *
  * #130 asked for every icon to carry an accessible name or `aria-hidden`, and
  * for that to be asserted rather than inspected. The audit of the current tree
@@ -110,7 +110,7 @@ describe("focusable scroll regions", () => {
 });
 
 describe("analysis state announcements", () => {
-  // Audit item #115 split App.tsx apart: the live region lives with the page
+  // This split App.tsx apart: the live region lives with the page
   // that owns the state, and the sentences with the messages module. Reading
   // both keeps this checking the behaviour rather than a file name.
   const page = read(join(SOURCE, "pages", "SeasonPlanPage.tsx"));

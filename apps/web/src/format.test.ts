@@ -5,7 +5,7 @@ import { describe, expect, it } from "vitest";
 import { captureDay, deadline, integer, money, timestamp } from "./format";
 
 /**
- * Audit item #117. Five identical `moneyFormatter` definitions lived in five
+ * Five identical `moneyFormatter` definitions lived in five
  * components. They agreed, which is the point: five copies is five chances for
  * one to gain a decimal place and render a price differently on one page.
  *

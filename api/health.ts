@@ -3,7 +3,7 @@ import type { VercelRequest, VercelResponse } from "@vercel/node";
 /**
  * Liveness, and which build answered.
  *
- * Audit item #80 asked whether the commit SHA and environment should be gated
+ * It was asked whether the commit SHA and environment should be gated
  * behind an authenticated probe. Considered, and kept public, for a reason
  * specific to this project rather than a general one.
  *
@@ -13,7 +13,7 @@ import type { VercelRequest, VercelResponse } from "@vercel/node";
  * think it is" during an incident, which is the question this endpoint exists
  * for.
  *
- * That reasoning stops holding the moment the repository stops being public. A
+ * That reasoning stops holding the moment the repository becomes private. A
  * test asserts the repository is described as public in SECURITY.md, so this
  * decision fails rather than rots if that changes.
  *

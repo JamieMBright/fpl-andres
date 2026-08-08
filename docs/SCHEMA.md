@@ -1,6 +1,6 @@
 # Schema reference
 
-Audit item #192. Sixteen migrations define twenty tables, and reading them in
+Sixteen migrations define twenty tables, and reading them in
 order is the only way to see the model. This is that view.
 
 The organising rule, which is not obvious from any single migration:
@@ -18,7 +18,7 @@ and there are no policies. See `docs/adr/0001-forced-rls-with-no-policies.md`.
 
 ## The shape of it
 
-Audit item #107. The arrows are the foreign keys; everything else is prose
+The arrows are the foreign keys; everything else is prose
 below.
 
 ```mermaid
@@ -64,7 +64,7 @@ from evidence.
 
 ## Naming
 
-Audit item #108. These are descriptive rather than aspirational — every
+These are descriptive rather than aspirational — every
 migration in the tree already follows them, and a test enforces it.
 
 | Object     | Pattern                      | Example                                         |
@@ -173,7 +173,7 @@ Whether a candidate model replaced its baseline, and the evidence.
 - **References**: `workflow_runs`
 - **Notable**: carries `code_revision`, `corpus_fingerprint`,
   `dependency_fingerprint` and `seed_replicates` so the decision is
-  reproducible — see `docs/adr` and audit item #197. A row that promoted on
+  reproducible — see `docs/adr` and A row that promoted on
   fewer seeds than it replicated is refused by check constraint.
 
 ### `optimization_runs`

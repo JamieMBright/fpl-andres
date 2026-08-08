@@ -1,6 +1,6 @@
 """Which season is held out, and the rule for spending it.
 
-Audit item A4. The corpus enforces a cutoff *within* a season, `walk_forward`
+The corpus enforces a cutoff *within* a season, `walk_forward`
 exists as a leak guard, and `test_leakage_guards.py` polices both. All of that
 stops the model seeing the future of a gameweek. None of it stops the modeller
 seeing the future of a season.

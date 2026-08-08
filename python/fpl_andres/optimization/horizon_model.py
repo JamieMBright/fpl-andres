@@ -1,6 +1,6 @@
 """The variable layout and constraint blocks of the horizon MILP.
 
-Audit item #12. `HighsHorizonOptimizer.solve` was around two hundred lines of
+`HighsHorizonOptimizer.solve` was around two hundred lines of
 nested indexing with no names on any of it: a reader had to work out from
 `variable(free_used_offset, event_index, index)` which of eleven rules was being
 written, and there was no way to test one block without solving the whole
@@ -41,7 +41,7 @@ class HorizonModel:
     per-event scalars follow.
 
     Constraints are held as (row, column, value) triples rather than as dense
-    rows. See audit item #34: every constraint names a handful of variables out
+    rows. Every constraint names a handful of variables out
     of thousands, so a dense row is almost entirely zeros and the matrix grew as
     players squared.
     """
@@ -214,8 +214,7 @@ def club_limit(model: HorizonModel, event_index: int) -> None:
     Grouped by the club id in the forecast rather than by a stored squad club,
     because a player who moves mid-season belongs to whoever the forecast says
     -- and a wrong club id here splits one club into two groups and lets six
-    players through as three plus three. Audit item #7.
-    """
+    players through as three plus three."""
     event = model.events[event_index]
     by_club: defaultdict[int, list[int]] = defaultdict(list)
     for element_id, index in model.player_index.items():

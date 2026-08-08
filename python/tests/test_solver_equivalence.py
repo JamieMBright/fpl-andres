@@ -1,6 +1,6 @@
 """The two solvers must obey the same FPL rules.
 
-Audit item #39 asked for the shared constraint-building loops in
+It was asked for the shared constraint-building loops in
 `optimization/highs.py` and `optimization/horizon.py` to be extracted into one
 helper "to keep the two solvers behaviourally identical".
 
@@ -15,7 +15,7 @@ pool and the same rules, both must return a squad obeying every rule that
 applies to one event. Anything else means one of them is wrong, and no amount of
 shared code would have caught it.
 
-Audit item #38 asked to replace the per-player dictionary lookups in
+It was asked to replace the per-player dictionary lookups in
 `highs.py` with a single pre-join. Measured over a 700-player pool: 0.103 ms for
 the lookups against 0.059 ms for the pre-join, a saving of 0.044 ms against a
 HiGHS solve that takes hundreds of milliseconds. Declined, and recorded here so

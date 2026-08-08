@@ -5,8 +5,8 @@ import { PitchView } from "./PitchView";
 import type { PublicTeamPick } from "@fpl-andres/contracts";
 
 /**
- * Audit item #118: "memoise pure leaf components so unrelated parent state
- * changes do not re-render the whole pitch or table". Measured, and declined.
+ * Memoise pure leaf components so unrelated parent state changes do not
+ * re-render the whole pitch or table. Measured, and declined.
  *
  * The re-render is real. The theme toggle lives in the application frame, so
  * flipping it re-renders every route below including all fifteen chips. But

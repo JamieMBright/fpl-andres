@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 /**
- * Audit item #89: "decode each upstream body once and reuse the parsed value".
+ * Decode each upstream body once and reuse the parsed value.
  *
  * Read against the code, the claim is half right. Three bodies arrive; two are
  * decoded exactly once. Only the entry body is decoded twice -- once here

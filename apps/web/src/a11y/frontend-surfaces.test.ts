@@ -5,7 +5,7 @@ import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 
 /**
- * Audit items #123, #124, #125, #135, #136 and #137. Small frontend surfaces,
+ * Small frontend surfaces,
  * each either a duplication, a claim nobody checked, or a behaviour documented
  * only to the test suite.
  */
@@ -20,7 +20,7 @@ const budget = readFileSync(
 
 describe("stripe custom properties", () => {
   it("declares each stripe gradient once", () => {
-    // Audit item #123. Four near-identical declarations differing in exactly
+    // Four near-identical declarations differing in exactly
     // two numbers, so changing the pattern meant changing it four times and
     // getting three of them right. Two remain -- one per surface -- and the
     // light theme now overrides only the mix strengths.
@@ -49,7 +49,7 @@ describe("stripe custom properties", () => {
 
 describe("animation hints", () => {
   it("promotes the one continuously animated element", () => {
-    // Audit item #124.
+    // One declaration per surface, checked here.
     const mark = styles.slice(styles.indexOf(".loading-mark {"));
     expect(mark).toContain("will-change: transform");
     expect(mark).toContain("contain: strict");
@@ -74,7 +74,7 @@ describe("animation hints", () => {
 
 describe("chunk names", () => {
   it("the build refuses chunks named after nothing", () => {
-    // Audit item #125. Vite already names a lazy chunk after its module, so
+    // Vite already names a lazy chunk after its module, so
     // this is true by default -- which is why it is worth guarding. A
     // manualChunks rule returning "vendor" is a one-line change that would
     // make every line of the size report meaningless.

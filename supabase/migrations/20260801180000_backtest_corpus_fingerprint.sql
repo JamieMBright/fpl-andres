@@ -1,4 +1,4 @@
--- Audit item #153: a backtest score is only meaningful next to the data that
+-- A backtest score is only meaningful next to the data that
 -- produced it.
 --
 -- `code_revision` already answered "which code ran". Nothing answered "over

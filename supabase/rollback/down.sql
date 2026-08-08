@@ -1,4 +1,4 @@
--- Forward-repair teardown for the whole schema. Audit item #100.
+-- Forward-repair teardown for the whole schema.
 --
 -- CI validated `supabase db reset` but never exercised undoing anything, so
 -- nothing proved the schema could be torn down and rebuilt. That matters here

@@ -1,6 +1,6 @@
 """Every suppressed advisory has a live, checkable justification.
 
-Audit item #79. ``package.json`` carries ``pnpm.auditConfig.ignoreGhsas``. An
+``package.json`` carries ``pnpm.auditConfig.ignoreGhsas``. An
 entry there silences a real finding, and a silence with no reason attached
 becomes permanent by inertia.
 

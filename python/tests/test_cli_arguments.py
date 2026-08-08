@@ -1,6 +1,6 @@
 """CLI arguments must be refused before the work starts.
 
-Audit item #159. Every numeric argument was `type=int` or `type=float`, so
+Every numeric argument was `type=int` or `type=float`, so
 `--rate 0` reached the throttle and divided by zero, `--concurrency 0` produced a
 semaphore nobody could acquire, and `--gameweek 99` ran a whole ingest before
 failing on a database check constraint.

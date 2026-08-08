@@ -6,7 +6,7 @@ import { TeamStateOverridesConflictError } from "../../state/team-state-override
 /**
  * Parsing and formatting for the manager corrections form.
  *
- * Audit item #114. `TeamStateCorrections.tsx` was 720 lines, of which eight
+ * `TeamStateCorrections.tsx` was 720 lines, of which eight
  * pure functions were reachable only by rendering the component and typing into
  * it. They are the part most worth testing directly: every one of them turns
  * something a person typed into a number the optimiser will trust.

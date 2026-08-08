@@ -1,7 +1,7 @@
 import { expect, test, type Page } from "@playwright/test";
 
 /**
- * Audit item #131 said the layout "relies entirely on fluid clamp() scaling".
+ * This said the layout "relies entirely on fluid clamp() scaling".
  * It does not: `styles.css` carries breakpoints at 480px, 640px and 860px.
  *
  * What was missing is a test that any of it works. These check the three widths

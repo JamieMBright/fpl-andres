@@ -1,6 +1,6 @@
 """A promotion must not depend on which seed was passed in.
 
-Audit item #30. The bootstrap ran once, under one seed. Measured across 40 seeds
+The bootstrap ran once, under one seed. Measured across 40 seeds
 on synthetic data with a small true edge and a 60-row sample, the candidate
 promoted on 3 of them — a 7.5% chance of shipping a model on the strength of a
 random number generator rather than evidence.

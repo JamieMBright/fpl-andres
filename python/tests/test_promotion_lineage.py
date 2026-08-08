@@ -1,6 +1,6 @@
 """A promotion decision must be reproducible, not just recorded.
 
-Audit item #197. `model_promotion_decisions` stored the seed, the resample count
+`model_promotion_decisions` stored the seed, the resample count
 and the sample size — enough to re-run the bootstrap, and not enough to reproduce
 the answer. Three things were missing: which code ran, over which corpus, and
 with which numerical libraries.

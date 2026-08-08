@@ -1,6 +1,6 @@
 """The typed payload shapes describe what this repository actually reads.
 
-Audit item #140. The client returned ``dict[str, Any]`` for every endpoint,
+The client returned ``dict[str, Any]`` for every endpoint,
 which is honest about the transport and useless as documentation: nothing
 recorded which of FPL's roughly two hundred fields this project depends on, and
 a mistyped key type-checked cleanly and failed at runtime.

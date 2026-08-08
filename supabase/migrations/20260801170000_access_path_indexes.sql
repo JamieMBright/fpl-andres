@@ -1,7 +1,7 @@
 -- Indexes and constraints that match how the tables are actually read, and a
 -- trigger message that says which table refused a write.
 --
--- Improvements #99, #101, #102, #103.
+-- Access-path indexes.
 
 -- #99. The corpus is read one of two ways and neither was fully served.
 --

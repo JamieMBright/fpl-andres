@@ -1,6 +1,6 @@
 # Corpus provenance
 
-Audit item #189. A backtest claim is only reproducible if someone can rebuild the
+A backtest claim is only reproducible if someone can rebuild the
 data it was measured over. This records what was loaded, from where, and when.
 
 ## What is loaded
@@ -28,7 +28,7 @@ and usable, but nothing published breaks them out.
 **2022-23 has 37 gameweeks, not 38.** Gameweek 7 was postponed following the
 death of Queen Elizabeth II and never replayed as a numbered round. Every
 2022-23 aggregate is therefore over 37 weeks. `missingGameweeks` in the artifact
-names it; nothing did before audit item #56.
+names it; nothing did before.
 
 ## Where it came from
 
@@ -111,6 +111,6 @@ which corpus _state_ it ran against.
 
 That is `corpus_fingerprint`, a sha256 over the observation rows and fixture
 results, recorded on every `backtest_runs` and `model_promotion_decisions` row.
-See audit items #153 and #197. Two runs with the same code revision and different
+See Two runs with the same code revision and different
 fingerprints were measured over different data, and the difference between their
 metrics says nothing about the model.

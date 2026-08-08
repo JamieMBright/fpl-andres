@@ -3,7 +3,7 @@ import { useSyncExternalStore } from "react";
 /**
  * Whether the browser believes it has a network.
  *
- * Audit item #120. A dropped connection was rendered as a hard error --
+ * A dropped connection was rendered as a hard error --
  * "Fantasy Premier League could not be reached" -- which is both wrong and
  * unhelpful: FPL is fine, the train went into a tunnel. Telling someone a
  * remote service is down when their own connection is gone sends them to check

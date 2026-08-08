@@ -1,6 +1,6 @@
 """A repeated gameweek must not be able to inflate a player's rate.
 
-Audit item #6 said neither `player_rates.py` nor `minutes.py` rejected repeated
+This said neither `player_rates.py` nor `minutes.py` rejected repeated
 or unsorted event ids. Half true. `MinutesEvidence` has rejected repeats since it
 was written ("observations must not repeat an event"). `PlayerRateEvidence` did
 not, and rates are summed over observations, so one duplicated gameweek

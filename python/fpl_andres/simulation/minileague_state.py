@@ -1,6 +1,6 @@
 """Shared state for the mini-league simulation.
 
-Audit item #40 asked for `minileague.py` to be split so the season loop, the
+It was asked for `minileague.py` to be split so the season loop, the
 rival policies and the scoring are independently reviewable. All three need the
 same handful of types, so they live here rather than in any one of them: without
 this module the split would be a three-way import cycle.
@@ -82,7 +82,7 @@ class LeagueSettings:
         ordinary managers the named policies are measured against.
         """
         seats: list[Policy] = []
-        # Audit item #181. Annotated, so the literals are checked against
+        # Annotated, so the literals are checked against
         # `Policy` here rather than silenced at the `extend` below. A share
         # added for a policy that does not exist is now a type error instead of
         # a seat nobody fills.

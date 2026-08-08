@@ -1,6 +1,6 @@
 """Network timeout budgets, in one place.
 
-Audit item #46. Six timeouts were spread across six modules — 20s, 60s, 60s,
+Six timeouts were spread across six modules — 20s, 60s, 60s,
 20s, 10s and 30s — with no way to see them together and no stated reason for
 any of them.
 

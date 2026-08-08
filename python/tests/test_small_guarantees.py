@@ -1,6 +1,6 @@
 """Small guarantees that were true and untested, and one that was not stated.
 
-Audit items #18, #32, #37, #68 and #69. Each is a place where the code was
+Each is a place where the code was
 either already correct in a way nothing recorded, or correct only because of
 something written thirty lines away.
 """

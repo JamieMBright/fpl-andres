@@ -1,6 +1,6 @@
 """Each rule of the game, tested on its own.
 
-Audit item #12. `solve` was around two hundred lines of nested indexing with no
+`solve` was around two hundred lines of nested indexing with no
 names on any of it. A reader had to work out from
 `variable(free_used_offset, event_index, index)` which of eleven rules was being
 written, and there was no way to check one block without solving the whole
@@ -179,7 +179,7 @@ class TestPositionQuotas:
 
 class TestClubLimit:
     def test_players_are_grouped_by_the_club_the_forecast_names(self, model: HorizonModel) -> None:
-        # Audit item #7: a wrong club id splits one club into two groups and
+        # A wrong club id splits one club into two groups and
         # lets six players through as three plus three.
         club_limit(model, 0)
         rows = constraints(model)

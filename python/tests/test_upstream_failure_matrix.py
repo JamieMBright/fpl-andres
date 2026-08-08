@@ -1,6 +1,6 @@
 """Every upstream failure, driven through the real adapter.
 
-Audit item #157. Retry and backoff were covered by handlers written inline in
+Retry and backoff were covered by handlers written inline in
 each test, so each exercised the shape its author thought of. Driving the whole
 catalogue through one code path is what turns "we handle failures" into a list of
 the failures actually handled.

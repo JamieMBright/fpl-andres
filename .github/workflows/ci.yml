@@ -51,12 +51,12 @@ jobs:
       - name: Check formatting
         run: pnpm format:check
 
-  # Audit item #78. `.env.example` names several live secrets, and a real one
+  # `.env.example` names several live secrets, and a real one
   # committed by accident is not undone by deleting it in a later commit -- it
   # is in the history, and on any clone taken in between. The only fix is
   # rotation, so the gate has to catch it before the push lands.
   #
-  # Audit item #143. Schema drift was one step inside `pnpm check`, so a
+  # Schema drift was one step inside `pnpm check`, so a
   # regenerated-but-uncommitted schema was reported as "Lint, types and unit
   # tests failed" and someone read four hundred lines of log to find out which.
   # It runs alone now, and it is the cheapest job in the file.

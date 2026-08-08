@@ -1,6 +1,6 @@
 """The decision not to partition must keep checking itself.
 
-Audit item #98 asked for a partitioning strategy for `element_gameweek_stats`.
+It was asked for a partitioning strategy for `element_gameweek_stats`.
 The growth is real; the rate was never measured. Measured, it is 28,396 rows and
 6.6 MB per season, reaching a million rows in 2061. Partitioning that would be
 premature optimisation with real costs, so ADR 0005 declines and sets thresholds

@@ -1,6 +1,6 @@
 """Persist a promotion decision with everything needed to reproduce it.
 
-Audit item #197. The table has existed since the projection-artifacts migration
+The table has existed since the projection-artifacts migration
 and nothing wrote to it, so every promotion decision so far has lived only in a
 log line.
 

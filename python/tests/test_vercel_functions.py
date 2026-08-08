@@ -2,7 +2,7 @@
 
 Written after a production incident, not before one.
 
-Audit item #86 asked for per-route duration budgets. The implementation replaced
+It was asked for per-route duration budgets. The implementation replaced
 a working `api/**/*.ts` glob with three literal paths:
 
     "api/health.ts"

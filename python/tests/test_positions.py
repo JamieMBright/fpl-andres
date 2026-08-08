@@ -1,10 +1,10 @@
 """The four FPL positions must have exactly one definition.
 
-Audit item #10 said the element-type-to-code mapping was written twice, in
+This said the element-type-to-code mapping was written twice, in
 `backtesting/score.py` and `models/deployment.py`. That was true. This pins the
 merge so a third copy cannot quietly appear.
 
-Audit item #14 asked for the `Literal` position codes in `deployment.py` to
+It was asked for the `Literal` position codes in `deployment.py` to
 become an enum. The `Literal` is deliberately kept: it is a Pydantic field type
 that determines the shape of published JSON, and swapping it for an enum changes
 serialisation for no behavioural gain. The drift risk #14 was actually worried

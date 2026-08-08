@@ -1,6 +1,6 @@
 """Library modules declare `__all__`; CLI entry points do not.
 
-Audit item #146 asked for consistency. Before this, 40 modules declared `__all__`
+It was asked for consistency. Before this, 40 modules declared `__all__`
 and 27 did not, with no rule distinguishing them.
 
 The rule chosen: anything importable as a library must state its surface, because

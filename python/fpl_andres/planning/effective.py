@@ -128,7 +128,7 @@ def effective_points(
 class CovarianceUnavailable(RuntimeError):
     """Raised when the spread of a squad's swing cannot be stated honestly.
 
-    Audit item #28. The module docstring already said that what ownership
+    The module docstring already said that what ownership
     changes is the *spread* of outcomes, and then reported only expected values.
     This is the missing half, and it is only correct with a covariance that
     somebody measured.

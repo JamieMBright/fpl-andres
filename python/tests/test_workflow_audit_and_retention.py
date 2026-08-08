@@ -1,6 +1,6 @@
 """Workflow status changes leave a history, and every growing table has a policy.
 
-Audit items #104 and #105.
+This and #105.
 
 #105: `workflow_runs` holds one row per (workflow, idempotency key) and that row
 is overwritten as the run proceeds. By the time anyone looks it says 'failed'

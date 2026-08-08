@@ -1,7 +1,7 @@
 /**
  * Collapses concurrent identical GETs into one request.
  *
- * Audit item #119. Two components mounting at once, or a StrictMode double
+ * Two components mounting at once, or a StrictMode double
  * render in development, produce two identical requests for the same URL. The
  * second is pure waste: the responses are the same, and the proxy behind them
  * has a rate limit.

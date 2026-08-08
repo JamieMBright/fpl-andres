@@ -81,7 +81,7 @@ than silently skipped.
 
 ## Dependencies are pinned exactly
 
-Audit item #184. Every entry in every `package.json` is an exact version — no
+Every entry in every `package.json` is an exact version — no
 `^`, no `~`. That is deliberate and it is not the npm default, so it will look
 like an oversight to anyone who has not read this.
 

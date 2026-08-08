@@ -1,6 +1,6 @@
 """Schema versions for the published JSON artifacts.
 
-Audit item #67. The artifacts are written by ``cli/publish_projections.py`` and
+The artifacts are written by ``cli/publish_projections.py`` and
 ``cli/publish_opening_squad.py`` and read by the web app, which imports them at
 build time. Nothing recorded which shape they were in, so a change to the
 writer would have been picked up silently by the reader: fields quietly absent,

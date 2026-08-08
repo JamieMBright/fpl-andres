@@ -1,7 +1,7 @@
 /**
  * The captaincy verdict, computed from the artifact rather than typed out.
  *
- * Audit item E2. The Methodology page asserted "measured over 127 paired
+ * The Methodology page asserted "measured over 127 paired
  * gameweeks: none of them", quoted +0.15 with an interval of -0.34 to +0.69,
  * named the two losing rules and their costs, and put the shortlist ceiling at
  * 15.45 against a best thesis of 7.12. Eight numbers and three claims, all

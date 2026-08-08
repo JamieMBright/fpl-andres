@@ -3,7 +3,7 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
 /**
- * Audit item #202. A component inventory is only useful while it is complete.
+ * A component inventory is only useful while it is complete.
  * This is the part that rots first, so it is the part with a test.
  *
  * The accessibility checklist beside it names the test that enforces each rule,

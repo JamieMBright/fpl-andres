@@ -71,7 +71,7 @@ export { REQUEST_ID_HEADER };
 /**
  * Timing and upstream outcomes, so a failure is visible before a user reports it.
  *
- * Audit items #85, #92 and #93. There was no timing instrumentation and a
+ * There was no timing instrumentation and a
  * contract failure was swallowed without recording what upstream had actually
  * said, so a spike in 502s or an FPL schema change was invisible until someone
  * complained, and then not reproducible.

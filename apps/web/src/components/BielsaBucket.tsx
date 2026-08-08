@@ -1,5 +1,5 @@
 /**
- * The mark. Audit item #115: it was 43 lines of path data in the middle of the
+ * The mark. It was 43 lines of path data in the middle of the
  * application root, between the theme reducer and the page frame.
  */
 export function BielsaBucket() {

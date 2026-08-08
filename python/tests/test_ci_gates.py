@@ -1,7 +1,5 @@
 """The named CI gates exist and are wired to the things they claim to check.
 
-Audit items #78, #79, #142, #143 and #144.
-
 A workflow file is configuration, so nothing type-checks it and nothing runs it
 locally. A step deleted in a rebase, a job renamed out of a required-checks
 list, or a script whose name drifted from its `run:` line all fail the same

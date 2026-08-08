@@ -3,7 +3,7 @@ import { WifiOff } from "lucide-react";
 import { useOnlineStatus } from "../state/use-online-status";
 
 /**
- * Audit item #120. A dropped connection reached the page as "Fantasy Premier
+ * A dropped connection reached the page as "Fantasy Premier
  * League could not be reached", which sends someone to check the wrong thing.
  *
  * The banner is a status region rather than an alert: losing a connection is

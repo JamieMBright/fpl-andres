@@ -9,7 +9,7 @@ import {
 } from "./fetch-failure";
 
 /**
- * Audit item #141. Both callers caught `unknown` and narrowed it by hand, with
+ * Both callers caught `unknown` and narrowed it by hand, with
  * the same `instanceof DOMException && name === "AbortError"` line copied into
  * each.
  *

@@ -1,6 +1,6 @@
 """Statistical invariants that must hold for every input, not just the examples.
 
-Audit item #154. The models are tested with worked examples, which prove the
+The models are tested with worked examples, which prove the
 arithmetic on the cases someone thought of. These state the properties that must
 hold everywhere, and let Hypothesis look for the cases nobody thought of.
 

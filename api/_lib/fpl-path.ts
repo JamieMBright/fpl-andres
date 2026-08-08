@@ -59,7 +59,7 @@ export function resolveFplUpstreamUrl(requestUrl: string): URL {
 /**
  * Refuse anything the URL parser did not leave exactly as the allow-list saw it.
  *
- * Audit item #74. The allow-list matches a string; `fetch` sends a resolved URL.
+ * The allow-list matches a string; `fetch` sends a resolved URL.
  * Everywhere those two can differ is a place where a request is approved in one
  * form and issued in another: a dot segment collapsed, a percent-escape
  * decoded, a backslash treated as a separator, a `@` reinterpreted as userinfo

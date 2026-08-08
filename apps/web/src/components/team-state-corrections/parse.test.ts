@@ -14,7 +14,7 @@ import {
 } from "./parse";
 
 /**
- * Audit item #114. These eight functions used to live inside a 720-line
+ * These eight functions used to live inside a 720-line
  * component, so the only way to reach them was to render it and type. That made
  * their boundaries expensive to test and therefore untested.
  *

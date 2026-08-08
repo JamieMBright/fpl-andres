@@ -1,4 +1,4 @@
--- Audit item #197: a promotion decision must be reproducible.
+-- A promotion decision must be reproducible.
 --
 -- The table recorded the seed, the resample count and the sample size, which is
 -- enough to re-run the bootstrap and not enough to reproduce the answer. Three
