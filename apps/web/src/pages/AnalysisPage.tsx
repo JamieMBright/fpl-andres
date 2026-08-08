@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
 import { PinnedPlayers } from "../components/PinnedPlayers";
+import { PlayerDetail } from "../components/PlayerDetail";
 import { PlayerScatter, type OverlayNotes } from "../components/PlayerScatter";
 import { RouteHeading } from "../components/RouteHeading";
 import { ScatterControls } from "../components/ScatterControls";
@@ -18,6 +19,7 @@ import {
   AnalysisPoolError,
   type AnalysisData,
   type AnalysisFailure,
+  type AnalysisPlayer,
 } from "../state/analysis-pool";
 import { describeFreshness } from "../state/freshness";
 import { retryingFetch } from "../state/retrying-fetch";
@@ -270,6 +272,7 @@ function AnalysisBody({
     ring: null,
     frontier: null,
   });
+  const [opened, setOpened] = useState<AnalysisPlayer | null>(null);
 
   if (vintage.state === "unavailable") {
     return (
@@ -337,6 +340,7 @@ function AnalysisBody({
             selection={selection}
             view={view}
             pinned={view.pinned}
+            onOpen={setOpened}
             onTogglePin={onTogglePin}
             onOverlays={setOverlays}
           />
@@ -417,6 +421,7 @@ function AnalysisBody({
             fixtures={data.fixtures}
             onUnpin={onTogglePin}
             onClear={() => onChange({ pinned: [] })}
+            onOpen={setOpened}
             view={view}
           />
         </div>
@@ -429,6 +434,15 @@ function AnalysisBody({
         rankBy={view.tableMetric}
         onRankBy={(tableMetric) => onChange({ tableMetric })}
       />
+
+      {opened ? (
+        <PlayerDetail
+          onClose={() => {
+            setOpened(null);
+          }}
+          player={opened}
+        />
+      ) : null}
     </>
   );
 }

@@ -29,6 +29,7 @@ export interface PinnedPlayersProps {
   fixtures: readonly ScheduledFixture[];
   onUnpin: (code: number) => void;
   onClear: () => void;
+  onOpen: (player: AnalysisPlayer) => void;
   view: ScatterView;
 }
 
@@ -39,6 +40,7 @@ export function PinnedPlayers({
   fixtures,
   onUnpin,
   onClear,
+  onOpen,
   view,
 }: PinnedPlayersProps) {
   const chosen = pinned
@@ -107,6 +109,7 @@ export function PinnedPlayers({
                 clubCodeByTeamId={clubCodeByTeamId}
                 fixtures={fixtures}
                 onFixtures={setBreakdown}
+                onOpen={onOpen}
                 onUnpin={onUnpin}
               />
             ))}
@@ -136,6 +139,7 @@ function PinnedCard({
   clubCodeByTeamId,
   fixtures,
   onFixtures,
+  onOpen,
   onUnpin,
 }: {
   player: AnalysisPlayer;
@@ -145,6 +149,7 @@ function PinnedCard({
   clubCodeByTeamId: ReadonlyMap<number, number>;
   fixtures: readonly ScheduledFixture[];
   onFixtures: (player: AnalysisPlayer) => void;
+  onOpen: (player: AnalysisPlayer) => void;
   onUnpin: (code: number) => void;
 }) {
   const run = rateFixtureRun(
@@ -177,7 +182,16 @@ function PinnedCard({
           club={player.club}
         />
         <div>
-          <strong translate="no">{player.name}</strong>
+          <button
+            className="pinned-open"
+            onClick={() => {
+              onOpen(player);
+            }}
+            translate="no"
+            type="button"
+          >
+            {player.name}
+          </button>
           <span className="pinned-club">
             {/* The club is named right here, so the shirt stays silent. */}
             {kit ? (

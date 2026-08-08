@@ -482,6 +482,60 @@ function ChipStrategy({ chips }: { chips: readonly ChipCall[] }) {
   );
 }
 
+/**
+ * What the columns on a gameweek card mean.
+ *
+ * It sat in the page preamble, two disclosures away from the only thing it
+ * describes, so it was read before there was anything to read it against.
+ */
+function ReadingKey() {
+  return (
+    <dl className="plan-key">
+      <div>
+        <dt>xPts</dt>
+        <dd>
+          Expected FPL points from one match: appearance, goals and assists at
+          his own decayed per-90 rates, plus clean sheets, saves, cards and
+          defensive contribution, scaled by this opponent. A good starter is
+          four to six; anything above seven is a genuinely strong fixture.
+        </dd>
+      </div>
+      <div>
+        <dt>xCeil</dt>
+        <dd>
+          The same match on his best afternoon: xPts multiplied by how far his
+          ninetieth-percentile score sat above his average last season. A
+          centre-half who plays ninety and does nothing lands near twice his
+          xPts; a striker who either scores or vanishes nearer three times it.
+          An armband and a chip are played for this number, not the first one.
+        </dd>
+      </div>
+      <div>
+        <dt>FDR</dt>
+        <dd>
+          One to five, from the measured strength of both sides at the venue the
+          match is played. One is the softest tie, five the hardest, and a dash
+          means a blank or an opponent with no record.
+        </dd>
+      </div>
+      <div>
+        <dt>Opponent</dt>
+        <dd>
+          Capitals are home, lower case away. <span className="mono">HUL</span>{" "}
+          is at home to Hull; <span className="mono">hul</span> is away at Hull.
+        </dd>
+      </div>
+      <div>
+        <dt>Captain</dt>
+        <dd>
+          Shown <strong>doubled</strong>, because that is what he returns. Bench
+          figures are bracketed unless a Bench Boost is paying for them.
+        </dd>
+      </div>
+    </dl>
+  );
+}
+
 export default function SeasonPlanPage() {
   const plan = useMemo(() => readSeasonPlan(), []);
   const [selected, setSelected] = useState<{
@@ -717,54 +771,6 @@ export default function SeasonPlanPage() {
               {plan.poolSize} players — a good plan, not a proof.
             </p>
           )}
-
-          <dl className="plan-key">
-            <div>
-              <dt>xPts</dt>
-              <dd>
-                Expected FPL points from one match: appearance, goals and
-                assists at his own decayed per-90 rates, plus clean sheets,
-                saves, cards and defensive contribution, scaled by this
-                opponent. A good starter is four to six; anything above seven is
-                a genuinely strong fixture.
-              </dd>
-            </div>
-            <div>
-              <dt>xCeil</dt>
-              <dd>
-                The same match on his best afternoon: xPts multiplied by how far
-                his ninetieth-percentile score sat above his average last
-                season. A centre-half who plays ninety and does nothing lands
-                near twice his xPts; a striker who either scores or vanishes
-                nearer three times it. An armband and a chip are played for this
-                number, not the first one.
-              </dd>
-            </div>
-            <div>
-              <dt>FDR</dt>
-              <dd>
-                One to five, from the measured strength of both sides at the
-                venue the match is played. One is the softest tie, five the
-                hardest, and a dash means a blank or an opponent with no record.
-              </dd>
-            </div>
-            <div>
-              <dt>Opponent</dt>
-              <dd>
-                Capitals are home, lower case away.{" "}
-                <span className="mono">HUL</span> is at home to Hull;{" "}
-                <span className="mono">hul</span> is away at Hull.
-              </dd>
-            </div>
-            <div>
-              <dt>Captain</dt>
-              <dd>
-                Shown <strong>doubled</strong>, because that is what he returns.
-                Bench figures are bracketed unless a Bench Boost is paying for
-                them.
-              </dd>
-            </div>
-          </dl>
         </div>
       </details>
 
@@ -830,6 +836,7 @@ export default function SeasonPlanPage() {
           </p>
         ) : (
           <>
+            <ReadingKey />
             <ul className="plan-rail">
               {gameweeks.slice(0, shownWeeks).map((week) => (
                 <GameweekCard

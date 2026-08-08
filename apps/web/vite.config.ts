@@ -67,9 +67,5 @@ export default defineConfig({
     environment: "jsdom",
     include: ["src/**/*.{test,spec}.{ts,tsx}"],
     setupFiles: "./src/test/setup.ts",
-    // Building a fresh jsdom and module registry per file dominated the run.
-    // The suite cleans up after itself rather than relying on isolation, so it
-    // was being paid for and not used.
-    isolate: false,
   },
 });

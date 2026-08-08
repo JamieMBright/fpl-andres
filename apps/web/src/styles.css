@@ -5275,6 +5275,34 @@ h1[tabindex="-1"]:focus-visible {
   cursor: pointer;
 }
 
+/* The name opens the full card. Same reason as the pin: the rest of the
+   tooltip is inert, so this has to claim its own pointer events. */
+.scatter-tooltip-open,
+.pinned-open {
+  display: block;
+  padding: 0;
+  border: 0;
+  border-bottom: 1px dotted currentcolor;
+  color: inherit;
+  background: none;
+  font: inherit;
+  font-weight: 700;
+  text-align: left;
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.scatter-tooltip-open:hover,
+.pinned-open:hover {
+  color: var(--signal-blue);
+}
+
+.scatter-tooltip-open:focus-visible,
+.pinned-open:focus-visible {
+  outline: 3px solid var(--signal-blue);
+  outline-offset: 2px;
+}
+
 .scatter-quadrant-note {
   padding: 8px 12px;
   border-top: 1px solid var(--rule);
@@ -5282,7 +5310,6 @@ h1[tabindex="-1"]:focus-visible {
   color: var(--ink-soft);
   font-size: 12px;
 }
-
 /* What the marks mean. A chart carrying three encodings needs all three said. */
 .scatter-legend {
   display: grid;

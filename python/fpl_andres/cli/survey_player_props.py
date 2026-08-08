@@ -94,6 +94,12 @@ def _report(source: PropSource, result: ProbeResult) -> None:
     print(f"         terms: {source.terms}")
     print(f"         covers: {', '.join(source.covers)}")
     print(f"         {result.note}")
+    if result.status == "no_credential" and source.credential_env:
+        # The whole reason a run reaches one source and not the rest. Naming
+        # the secret here means nobody has to go looking for which it was.
+        print(
+            f"         add repository secrets {', '.join(source.credential_env)} to reach this one"
+        )
     if result.markets:
         print(f"         {len(result.markets)} markets named:")
         for name in result.markets:

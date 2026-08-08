@@ -59,6 +59,8 @@ export interface PlayerScatterProps {
   selection: Selection;
   view: ScatterView;
   pinned: readonly number[];
+  /** Omitted where there is no profile card to open, as on the peer chart. */
+  onOpen?: (player: AnalysisPlayer) => void;
   onTogglePin: (code: number) => void;
   /** Told what the overlays could or could not draw, so the page can say it. */
   onOverlays?: (notes: OverlayNotes) => void;
@@ -166,6 +168,7 @@ export const PlayerScatter = memo(function PlayerScatter({
   selection,
   view,
   pinned,
+  onOpen,
   onTogglePin,
   onOverlays,
 }: PlayerScatterProps) {
@@ -324,7 +327,10 @@ export const PlayerScatter = memo(function PlayerScatter({
       ? `Reference lines at the ${view.centreMode} of each.`
       : "No reference lines: nothing is plotted.");
   return (
-    <div className="scatter-frame">
+    // The leave handler belongs here rather than on the svg: the tooltip is a
+    // sibling of it, so leaving the svg to reach the tooltip closed the very
+    // thing being reached for, and nothing inside it was ever clickable.
+    <div className="scatter-frame" onMouseLeave={() => setHovered(null)}>
       <svg
         ref={svgRef}
         className="scatter-svg"
@@ -332,7 +338,6 @@ export const PlayerScatter = memo(function PlayerScatter({
         role="img"
         aria-label={summary}
         data-testid="player-scatter"
-        onMouseLeave={() => setHovered(null)}
       >
         {shading ? (
           <defs>
@@ -689,6 +694,7 @@ export const PlayerScatter = memo(function PlayerScatter({
           left={MARGIN.left + xScale(hovered.x)}
           top={MARGIN.top + yScale(hovered.y)}
           pinned={pinnedSet.has(hovered.player.code)}
+          onOpen={onOpen}
           onTogglePin={onTogglePin}
         />
       ) : null}
@@ -714,6 +720,7 @@ interface TooltipProps {
   left: number;
   top: number;
   pinned: boolean;
+  onOpen: ((player: AnalysisPlayer) => void) | undefined;
   onTogglePin: (code: number) => void;
 }
 
@@ -728,6 +735,7 @@ function ScatterTooltip({
   left,
   top,
   pinned,
+  onOpen,
   onTogglePin,
 }: TooltipProps) {
   const { player } = point;
@@ -760,7 +768,20 @@ function ScatterTooltip({
           />
         ) : null}
         <span>
-          <strong translate="no">{player.name}</strong>
+          {onOpen === undefined ? (
+            <strong translate="no">{player.name}</strong>
+          ) : (
+            <button
+              className="scatter-tooltip-open"
+              onClick={() => {
+                onOpen(player);
+              }}
+              translate="no"
+              type="button"
+            >
+              {player.name}
+            </button>
+          )}
           <span className="scatter-tooltip-club" translate="no">
             {player.position} · {player.club} · &pound;
             {(player.priceTenths / 10).toFixed(1)}m
