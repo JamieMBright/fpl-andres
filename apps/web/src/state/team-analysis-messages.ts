@@ -21,6 +21,8 @@ export function staleReason(
       "FPL returned a failed source response. The last verified state remains visible.",
     source_contract_failed:
       "FPL source fields changed or disagreed. The last verified state remains visible.",
+    rate_limited:
+      "This site's own call budget was reached. The last verified state remains visible.",
     network_error:
       "The refresh request could not connect. The last verified state remains visible.",
     invalid_response:
@@ -98,6 +100,12 @@ export function terminalStateMessage(
       heading: "FPL Source Data Changed",
       nextStep:
         "Retry later while the source contract is reviewed. No incompatible data was used.",
+    },
+    rate_limited: {
+      heading: "I throttled this, not FPL",
+      nextStep:
+        "This site caps how often it calls FPL, and that cap was reached. " +
+        "Wait a minute and retry; nothing is wrong with your team or with FPL.",
     },
     network_error: {
       heading: "Network Request Failed",

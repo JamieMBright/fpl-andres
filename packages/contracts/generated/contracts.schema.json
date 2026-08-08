@@ -566,7 +566,8 @@
               "enum": [
                 "fpl_unreachable",
                 "fpl_source_failed",
-                "source_contract_failed"
+                "source_contract_failed",
+                "rate_limited"
               ]
             }
           },

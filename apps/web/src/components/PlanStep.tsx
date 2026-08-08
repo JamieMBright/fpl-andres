@@ -27,7 +27,9 @@ export function PlanStep({
   title: string;
 }) {
   return (
-    <details className="plan-step" open={defaultOpen}>
+    // The step number carries the colour: CSS owns the palette so the steps
+    // stay in the kit rather than each caller picking a hue.
+    <details className="plan-step" data-step={step} open={defaultOpen}>
       <summary className="plan-step-summary">
         <span className="plan-step-index mono">{step}</span>
         <span className="plan-step-title">{title}</span>

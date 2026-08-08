@@ -4375,9 +4375,30 @@ h1[tabindex="-1"]:focus-visible {
    record, a fifteen and thirty-eight gameweeks; shown at once it reads as a
    wall and loses the order the steps are meant to be taken in. */
 .plan-step {
+  --step-hue: var(--fa-brand);
+
   margin: 14px 0;
   border: 1px solid var(--rule);
+  border-left: 4px solid var(--step-hue);
   background: var(--paper);
+}
+
+/* Teletext ran its headings in flat primaries, one per section. Four steps,
+   four colours, in the keeper-kit set already reserved for Ceefax surfaces. */
+.plan-step[data-step="01"] {
+  --step-hue: var(--fa-gk-lime);
+}
+
+.plan-step[data-step="02"] {
+  --step-hue: var(--fa-gk-teal);
+}
+
+.plan-step[data-step="03"] {
+  --step-hue: var(--fa-brand);
+}
+
+.plan-step[data-step="04"] {
+  --step-hue: var(--fa-gk-hot);
 }
 
 .plan-step-summary {
@@ -4405,7 +4426,7 @@ h1[tabindex="-1"]:focus-visible {
 }
 
 .plan-step[open] > .plan-step-summary {
-  border-bottom: 1px solid var(--rule);
+  border-bottom: 1px solid var(--step-hue);
 }
 
 .plan-step-summary:focus-visible {
@@ -4414,11 +4435,15 @@ h1[tabindex="-1"]:focus-visible {
 }
 
 .plan-step-index {
-  color: var(--ink-soft);
+  padding: 1px 6px;
+  background: var(--step-hue);
+  color: var(--fa-gk-black);
+  font-weight: 700;
   font-size: 12px;
 }
 
 .plan-step-title {
+  color: var(--step-hue);
   font-family: var(--fa-display);
   font-size: 17px;
 }

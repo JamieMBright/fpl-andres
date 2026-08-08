@@ -255,6 +255,10 @@ export const publicTeamDegradedReasonSchema = z.enum([
   "fpl_unreachable",
   "fpl_source_failed",
   "source_contract_failed",
+  // This project's own proxy budget, not FPL's. It was emitted on a 429 and
+  // was not in this enum, so the browser rejected the envelope and blamed the
+  // source for a limit this repository imposes.
+  "rate_limited",
 ]);
 
 export type PublicTeamDegradedReason = z.infer<

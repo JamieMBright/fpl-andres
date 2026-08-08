@@ -655,19 +655,35 @@ export default function SeasonPlanPage() {
         <summary className="scatter-controls-summary">
           <span>What this is, and how to read it</span>
           <span className="scatter-controls-count mono">
-            GW{gameweeks[0]?.event}–{gameweeks[gameweeks.length - 1]?.event}
-            {solving ? null : ` · ${plan.netExpectedPoints.toFixed(0)} NET`}
+            {awaitingLockIn ? (
+              "no squad yet"
+            ) : (
+              <>
+                GW{gameweeks[0]?.event}–{gameweeks[gameweeks.length - 1]?.event}
+                {solving ? null : ` · ${plan.netExpectedPoints.toFixed(0)} NET`}
+              </>
+            )}
           </span>
         </summary>
         <div className="scatter-controls-body">
           <p className="lede">
-            Gameweek {gameweeks[0]?.event} to{" "}
-            {gameweeks[gameweeks.length - 1]?.event}: the squad, the eleven, the
-            captain and the transfer, for all of it.{" "}
-            {solving ? null : (
+            {awaitingLockIn ? (
               <>
-                <strong>{plan.netExpectedPoints.toFixed(0)}</strong> net points
-                from the opening squad.
+                Gameweek 1 to 38: the squad, the eleven, the captain and the
+                transfer, for all of it — once I know which fifteen it starts
+                from.
+              </>
+            ) : (
+              <>
+                Gameweek {gameweeks[0]?.event} to{" "}
+                {gameweeks[gameweeks.length - 1]?.event}: the squad, the eleven,
+                the captain and the transfer, for all of it.{" "}
+                {solving ? null : (
+                  <>
+                    <strong>{plan.netExpectedPoints.toFixed(0)}</strong> net
+                    points from the opening squad.
+                  </>
+                )}
               </>
             )}
           </p>
@@ -679,6 +695,15 @@ export default function SeasonPlanPage() {
               precomputed, and thirty-eight gameweeks does not fit in a
               fifteen-second function. Nothing about your team is sent anywhere
               to produce it.
+            </p>
+          ) : awaitingLockIn ? (
+            <p className="plan-honesty">
+              A season plan is only worth reading if it starts from what you
+              actually own. Lock a fifteen in at step one — adopt the suggested
+              squad whole if you like it — and the whole season is solved from
+              it on your machine, in {plan.windowsSolved} overlapping windows
+              chained together from a pool of {plan.poolSize} players. Nothing
+              about your team is sent anywhere.
             </p>
           ) : (
             <p className="plan-honesty">
@@ -765,11 +790,25 @@ export default function SeasonPlanPage() {
 
       <PlanStep
         defaultOpen
-        note={`${String(plan.chips.filter((chip) => chip.event !== null).length)} of ${String(plan.chips.length)} placed`}
+        note={
+          awaitingLockIn
+            ? "waiting on your fifteen"
+            : `${String(plan.chips.filter((chip) => chip.event !== null).length)} of ${String(plan.chips.length)} placed`
+        }
         step="02"
         title="When to play the chips"
       >
-        <ChipStrategy chips={plan.chips} />
+        {awaitingLockIn ? (
+          <p className="plan-awaiting">
+            A chip is only worth what your squad makes of it. Bench Boost pays
+            what your bench scores, Triple Captain pays what your captain
+            scores, and until I know which fifteen those are, any week I named
+            here would be a week that suits somebody else&rsquo;s team. Lock a
+            squad in at step one.
+          </p>
+        ) : (
+          <ChipStrategy chips={plan.chips} />
+        )}
       </PlanStep>
 
       <PlanStep
@@ -831,11 +870,6 @@ export default function SeasonPlanPage() {
           difficulty={planDifficulty(selected.week, selected.player)}
         />
       ) : null}
-
-      <p className="plan-basis mono">
-        {plan.basis}. Records from {plan.recordSeason}. Transfer rules:{" "}
-        {plan.rulesReference}.
-      </p>
 
       <PlanStep
         note={`${String(CAVEAT_COUNT)} of them`}
@@ -918,6 +952,10 @@ export default function SeasonPlanPage() {
             </li>
           </ol>
         </section>
+        <p className="plan-basis mono">
+          {plan.basis}. Records from {plan.recordSeason}. Transfer rules:{" "}
+          {plan.rulesReference}.
+        </p>
       </PlanStep>
     </section>
   );
