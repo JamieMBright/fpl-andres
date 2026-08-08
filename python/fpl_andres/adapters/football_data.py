@@ -55,6 +55,46 @@ _OVER_UNDER_COLUMNS = (("Avg>2.5", "Avg<2.5"), ("B365>2.5", "B365<2.5"))
 
 _REQUIRED = ("Date", "HomeTeam", "AwayTeam")
 
+#: Columns that are results or metadata rather than a price. Everything else in
+#: the file is treated as a market and kept, because deciding which markets are
+#: worth modelling needs the data to exist first — and a season's prices, once
+#: gone, cannot be fetched again at the time they were quoted.
+_NOT_A_MARKET = frozenset(
+    {
+        "Div",
+        "Date",
+        "Time",
+        "HomeTeam",
+        "AwayTeam",
+        "FTHG",
+        "FTAG",
+        "FTR",
+        "HTHG",
+        "HTAG",
+        "HTR",
+        "Referee",
+        "HS",
+        "AS",
+        "HST",
+        "AST",
+        "HF",
+        "AF",
+        "HC",
+        "AC",
+        "HY",
+        "AY",
+        "HR",
+        "AR",
+        "Attendance",
+        "HHW",
+        "AHW",
+        "HO",
+        "AO",
+        "HBP",
+        "ABP",
+    }
+)
+
 
 class OddsContractError(ValueError):
     """Raised when the feed is not the shape this parser was written against."""
@@ -76,6 +116,10 @@ class FixtureOdds:
     #: Which column family supplied the prices, so a reader can see whether a
     #: row came from the market average or from a single book.
     price_source: str
+    #: Every other quoted price in the row, by column name. Kept whole because a
+    #: price is only quotable at the time it was quoted: a market this model
+    #: cannot use yet is one it can never go back and collect.
+    markets: dict[str, float]
 
 
 @dataclass(frozen=True)
@@ -224,6 +268,11 @@ def parse_odds_csv(
                 over_odds=over_under[0],
                 under_odds=over_under[1],
                 price_source=source,
+                markets={
+                    column: price
+                    for column in header
+                    if column not in _NOT_A_MARKET and (price := _price(row, column)) is not None
+                },
             )
         )
 

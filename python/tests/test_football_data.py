@@ -174,6 +174,29 @@ class TestParse:
         assert batch.matched == 1
         assert batch.rows == ()
 
+    def test_keeps_every_quoted_price_not_only_the_two_it_reads(self) -> None:
+        # A price is only collectable while it is quoted. Whatever is not kept
+        # today cannot be recovered later, and anything richer than clean
+        # sheets needs a training set that starts accumulating from somewhere.
+        batch = parse_odds_csv(
+            csv_of(
+                "E0,15/08/2026,20:00,Arsenal,Bournemouth,0,0,"
+                "1.40,5.00,8.00,1.75,2.10,"
+                "1.42,5.20,8.50,1.78,2.05,"
+                "1.30,5.50,9.00"
+            ),
+            upstream_reference="test",
+            fetched_at=FETCHED,
+        )
+
+        markets = batch.rows[0].markets
+        # The closing columns are refused for modelling and still recorded.
+        assert markets["AvgCH"] == 1.30
+        assert markets["B365H"] == 1.42
+        # Results and metadata are not prices.
+        assert "FTHG" not in markets
+        assert "HomeTeam" not in markets
+
     def test_refuses_a_feed_that_changed_shape(self) -> None:
         with pytest.raises(OddsContractError, match="feed shape changed"):
             parse_odds_csv(

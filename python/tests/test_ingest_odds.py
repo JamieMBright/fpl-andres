@@ -47,6 +47,7 @@ PRICED = FixtureOdds(
     over_odds=1.75,
     under_odds=2.10,
     price_source="average",
+    markets={"AvgH": 1.40, "AvgD": 5.00, "AvgA": 8.00},
 )
 
 
@@ -95,7 +96,16 @@ class TestCrosswalk:
         # market, which is the one failure mode invisible downstream.
         unknown = FixtureOdds(**{**PRICED.__dict__, "home_team": "Real Madrid"})
         with pytest.raises(UnknownClubError, match="Real Madrid"):
-            _entry(unknown, _priced(unknown))
+            _entry(unknown, _priced(unknown), keep_markets=False)
+
+    def test_history_keeps_every_price_and_the_site_keeps_none(self) -> None:
+        # The corpus needs the raw markets to train on later; the site needs
+        # only the derived numbers, not a hundred prices per fixture.
+        corpus = _entry(PRICED, _priced(PRICED), keep_markets=True)
+        site = _entry(PRICED, _priced(PRICED), keep_markets=False)
+        assert "markets" in corpus
+        assert "markets" not in site
+        assert site["homeCleanSheet"] == corpus["homeCleanSheet"]
 
 
 class TestPreSeason:

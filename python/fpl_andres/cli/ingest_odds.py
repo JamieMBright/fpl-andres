@@ -172,13 +172,13 @@ class UnknownClubError(OddsIngestError):
     """Raised when the feed names a club this crosswalk does not carry."""
 
 
-def _entry(row: FixtureOdds, fit: GoalExpectation) -> dict[str, object]:
+def _entry(row: FixtureOdds, fit: GoalExpectation, *, keep_markets: bool) -> dict[str, object]:
     home = TEAM_CODES.get(row.home_team)
     away = TEAM_CODES.get(row.away_team)
     if home is None or away is None:
         missing = row.home_team if home is None else row.away_team
         raise UnknownClubError(f"no FPL code for {missing!r}; add it to TEAM_CODES")
-    return {
+    entry: dict[str, object] = {
         "kickoff": None if row.kickoff is None else row.kickoff.isoformat(),
         "home": home,
         "away": away,
@@ -191,21 +191,34 @@ def _entry(row: FixtureOdds, fit: GoalExpectation) -> dict[str, object]:
         "drawResidual": round(fit.draw_residual, 4),
         "priceSource": row.price_source,
     }
+    if keep_markets:
+        # Every quoted price in the row, not only the two this model reads. A
+        # price is only collectable while it is quoted, so anything not kept
+        # today cannot be recovered later. Corpus files only: the site needs
+        # the derived numbers, not a hundred prices per fixture.
+        entry["markets"] = {name: round(price, 3) for name, price in sorted(row.markets.items())}
+    return entry
 
 
-def _read(batch: OddsBatch) -> tuple[list[dict[str, object]], list[tuple[str, str]]]:
+def _read(
+    batch: OddsBatch, *, keep_markets: bool
+) -> tuple[list[dict[str, object]], list[tuple[str, str]]]:
     entries: list[dict[str, object]] = []
     refused = list(batch.skipped)
     for row in batch.rows:
         try:
-            entries.append(_entry(row, _priced(row)))
+            entries.append(_entry(row, _priced(row), keep_markets=keep_markets))
         except (OddsUnavailable, UnknownClubError, ValueError) as error:
             refused.append((f"{row.home_team} v {row.away_team}", str(error)))
     return entries, refused
 
 
 def _collect(
-    urls: Sequence[tuple[str, bool]], client: httpx.Client, fetched_at: datetime
+    urls: Sequence[tuple[str, bool]],
+    client: httpx.Client,
+    fetched_at: datetime,
+    *,
+    keep_markets: bool = False,
 ) -> tuple[list[dict[str, object]], list[tuple[str, str]], list[dict[str, str]], int]:
     entries: list[dict[str, object]] = []
     refused: list[tuple[str, str]] = []
@@ -220,7 +233,7 @@ def _collect(
             batch = parse_odds_csv(content, upstream_reference=url, fetched_at=fetched_at)
         except OddsContractError as error:
             raise OddsIngestError(str(error)) from error
-        read, skipped = _read(batch)
+        read, skipped = _read(batch, keep_markets=keep_markets)
         matched += batch.matched
         print(
             f"{url}: {batch.matched} Premier League rows of divisions "
@@ -312,7 +325,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         # visitor's download.
         for season in args.backfill_seasons:
             past, past_refused, past_provenance, _past_matched = _collect(
-                [(season_url(season), True)], client, fetched_at
+                [(season_url(season), True)], client, fetched_at, keep_markets=True
             )
             if not past:
                 for name, why in past_refused[:10]:
