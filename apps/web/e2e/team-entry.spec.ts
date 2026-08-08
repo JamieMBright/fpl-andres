@@ -77,7 +77,10 @@ test("opens a verified public team dossier from the working first screen", async
   await page.getByLabel("Your FPL team ID").fill("123456");
   await page.getByRole("button", { name: "Analyse my squad" }).click();
 
-  await expect(page).toHaveURL(/\/team\/123456$/);
+  // The team view folded into the plan, so a team id is a query on one route
+  // rather than a route of its own. These specs were still asserting the shape
+  // the redirect replaced.
+  await expect(page).toHaveURL(/\/plan\?team=123456$/);
   await expect(
     page.getByRole("heading", { name: "Every gameweek to the end." }),
   ).toBeFocused();

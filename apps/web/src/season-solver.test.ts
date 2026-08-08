@@ -33,8 +33,18 @@ function openingStart() {
   };
 }
 
-/** A full season solve is seconds, not milliseconds, against a 5s default. */
-const SOLVE_TIMEOUT = 40_000;
+/**
+ * A full season solve is tens of seconds under vitest, not milliseconds,
+ * against a 5s default.
+ *
+ * This is deliberately far above any measurement the suite makes. The speed
+ * assertion below is a ratio and is load-independent by construction; the
+ * timeout is wall-clock and is not, so it must never be the thing that decides
+ * the test. Measured here: one 38-gameweek solve takes about 30s under vitest
+ * on a loaded Windows laptop and about 7s on an idle desktop, and the file runs
+ * roughly three solves' worth in total.
+ */
+const SOLVE_TIMEOUT = 120_000;
 
 /** One full season solve, shared. Each is a few seconds; eight is a slow suite. */
 let cached: ReturnType<typeof solveSeason> extends Generator<infer T>

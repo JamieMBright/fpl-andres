@@ -605,12 +605,19 @@ export default function SeasonPlanPage() {
   // plan" when it is nobody's, and removes any reason to declare a squad.
   const awaitingLockIn =
     teamId !== null && !solving && team.status !== "loading";
+  // The published chips were solved for the published opening fifteen. The
+  // browser solver returns gameweeks and no chip plan at all, so the moment a
+  // real squad is being solved these stop describing anything the reader owns.
+  const chipsAreYours = !solving && !awaitingLockIn;
   const gameweeks = solving
     ? solve.gameweeks.map(asPlanGameweek)
     : plan.gameweeks;
 
   useDocumentTitle(
-    "The season plan",
+    // A page about one manager's season says whose. The team view folded into
+    // this route and the title stopped naming the team with it, so a tab, a
+    // bookmark and a shared link all read as the generic plan.
+    teamId === null ? "The season plan" : `Team ${String(teamId)}`,
     "Every gameweek from 1 to 38: squad, eleven, captain and transfer, with " +
       "confidence that falls away the further out it reaches.",
   );
@@ -797,23 +804,27 @@ export default function SeasonPlanPage() {
       <PlanStep
         defaultOpen
         note={
-          awaitingLockIn
-            ? "waiting on your fifteen"
-            : `${String(plan.chips.filter((chip) => chip.event !== null).length)} of ${String(plan.chips.length)} placed`
+          chipsAreYours
+            ? `${String(plan.chips.filter((chip) => chip.event !== null).length)} of ${String(plan.chips.length)} placed`
+            : "not solved for your squad"
         }
         step="02"
         title="When to play the chips"
       >
-        {awaitingLockIn ? (
+        {chipsAreYours ? (
+          <ChipStrategy chips={plan.chips} />
+        ) : (
           <p className="plan-awaiting">
             A chip is only worth what your squad makes of it. Bench Boost pays
             what your bench scores, Triple Captain pays what your captain
-            scores, and until I know which fifteen those are, any week I named
-            here would be a week that suits somebody else&rsquo;s team. Lock a
-            squad in at step one.
+            scores. The weeks below were solved for the published opening
+            fifteen, so naming them here would be naming weeks that suit
+            somebody else&rsquo;s team &mdash; and solving chips for yours is
+            not something the browser does yet.{" "}
+            {awaitingLockIn
+              ? "Lock a squad in at step one and the gameweeks below become yours; the chips will follow."
+              : "The gameweeks below are yours; these would not be."}
           </p>
-        ) : (
-          <ChipStrategy chips={plan.chips} />
         )}
       </PlanStep>
 

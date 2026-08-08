@@ -42,6 +42,7 @@
   --ink-soft: var(--fa-ink-deep);
   --navy: var(--fa-ink);
   --field-green: var(--fa-brand);
+  --accent: var(--fa-brand);
   --signal-blue: var(--fa-focus);
   --amber: var(--fa-amber);
   --danger: var(--fa-red);
@@ -1730,10 +1731,13 @@ h1[tabindex="-1"]:focus-visible {
   background: var(--rule);
 }
 
+/* `--signal-red` was never defined, so this was always the literal `#b00`,
+   which the away kit's near-black paper sits on at 2.3:1. `--danger` is the
+   token that actually flips with the kit. */
 .plan-fdr-4,
 .plan-fdr-5 {
   color: var(--paper);
-  background: var(--signal-red, #b00);
+  background: var(--danger);
 }
 
 .plan-fdr-none {
@@ -2455,9 +2459,12 @@ h1[tabindex="-1"]:focus-visible {
   text-align: left;
 }
 
+/* 22% put the home kit's deep-purple brand behind soft ink at 4.36:1. The
+   3px left edge below is what actually marks the row; the wash only has to
+   be visible, so it is set where the soft ink still clears 4.5:1. */
 .captain-grid-mine th,
 .captain-grid-mine .captain-grid-cell {
-  background: color-mix(in srgb, var(--field-green) 22%, transparent);
+  background: color-mix(in srgb, var(--field-green) 14%, transparent);
 }
 
 /* Colour alone would not survive forced colours or a mono print. */
@@ -2528,7 +2535,7 @@ h1[tabindex="-1"]:focus-visible {
 
 .captain-grid-chosen th,
 .captain-grid-chosen td {
-  background: color-mix(in srgb, var(--field-green) 20%, transparent);
+  background: color-mix(in srgb, var(--field-green) 14%, transparent);
 }
 
 .captain-grid-chosen-mark {
@@ -3729,7 +3736,7 @@ h1[tabindex="-1"]:focus-visible {
 /* Where a figure stands against others in the same position. Amber rather than
    yellow: yellow on this paper is unreadable at this size. */
 .band-poor {
-  color: var(--signal-red, #b00);
+  color: var(--danger);
 }
 
 .band-ordinary {
@@ -4288,7 +4295,7 @@ h1[tabindex="-1"]:focus-visible {
 
 .squad-market-headings button:hover,
 .squad-market-headings button.is-sorted {
-  color: var(--accent, #00e676);
+  color: var(--accent);
 }
 
 .squad-market-list {
@@ -4350,7 +4357,7 @@ h1[tabindex="-1"]:focus-visible {
 .declared-note {
   margin: 12px 0 0;
   padding: 10px 14px;
-  border-left: 3px solid var(--accent, #00e676);
+  border-left: 3px solid var(--accent);
   background: rgb(255 255 255 / 4%);
   font-size: 0.92rem;
   line-height: 1.5;
@@ -4375,7 +4382,8 @@ h1[tabindex="-1"]:focus-visible {
    record, a fifteen and thirty-eight gameweeks; shown at once it reads as a
    wall and loses the order the steps are meant to be taken in. */
 .plan-step {
-  --step-hue: var(--fa-brand);
+  --step-hue: var(--fa-gk-purple);
+  --step-ink: var(--fa-gk-white);
 
   margin: 14px 0;
   border: 1px solid var(--rule);
@@ -4384,21 +4392,29 @@ h1[tabindex="-1"]:focus-visible {
 }
 
 /* Teletext ran its headings in flat primaries, one per section. Four steps,
-   four colours, in the keeper-kit set already reserved for Ceefax surfaces. */
+   four colours, in the keeper-kit set already reserved for Ceefax surfaces.
+   The keeper hues are fixed across all three kits, so each one carries the
+   foreground it is legible against; `--fa-brand` is not usable here because it
+   is a bright green in the away kit and a deep purple in the home one, and no
+   single ink reads on both. */
 .plan-step[data-step="01"] {
   --step-hue: var(--fa-gk-lime);
+  --step-ink: var(--fa-gk-black);
 }
 
 .plan-step[data-step="02"] {
   --step-hue: var(--fa-gk-teal);
+  --step-ink: var(--fa-gk-black);
 }
 
 .plan-step[data-step="03"] {
-  --step-hue: var(--fa-brand);
+  --step-hue: var(--fa-gk-purple);
+  --step-ink: var(--fa-gk-white);
 }
 
 .plan-step[data-step="04"] {
   --step-hue: var(--fa-gk-hot);
+  --step-ink: var(--fa-gk-black);
 }
 
 .plan-step-summary {
@@ -4437,13 +4453,15 @@ h1[tabindex="-1"]:focus-visible {
 .plan-step-index {
   padding: 1px 6px;
   background: var(--step-hue);
-  color: var(--fa-gk-black);
+  color: var(--step-ink);
   font-weight: 700;
   font-size: 12px;
 }
 
 .plan-step-title {
-  color: var(--step-hue);
+  /* The hue lives on the numbered block and the left edge, both of which are
+     large blocks of colour. Tinting 17px type with it failed contrast on the
+     magenta step, and a colour code that cannot be read is not one. */
   font-family: var(--fa-display);
   font-size: 17px;
 }
@@ -4514,8 +4532,8 @@ h1[tabindex="-1"]:focus-visible {
 }
 
 .squad-club-strip button.is-picked {
-  border-color: var(--accent, #00e676);
-  background: rgb(0 230 118 / 12%);
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
 }
 
 .squad-club-strip svg,
@@ -4661,7 +4679,7 @@ h1[tabindex="-1"]:focus-visible {
 .method-bar {
   display: block;
   height: 100%;
-  background: var(--accent, #00e676);
+  background: var(--accent);
   border-radius: 2px;
 }
 
@@ -4788,7 +4806,7 @@ h1[tabindex="-1"]:focus-visible {
 .validation-freshness {
   margin: 0 0 24px;
   padding: 12px 16px;
-  border-left: 3px solid var(--accent, #00e676);
+  border-left: 3px solid var(--accent);
   background: rgb(255 255 255 / 4%);
   font-size: 0.95rem;
   line-height: 1.5;

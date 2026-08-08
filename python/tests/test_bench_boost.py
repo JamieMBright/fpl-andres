@@ -65,12 +65,13 @@ class BenchBoostTest(unittest.TestCase):
         self.assertEqual(_week_of(plan, "bench_boost"), 30)
 
     def test_it_never_lands_on_the_free_hit_week(self) -> None:
-        fixtures = dict(NORMAL)
-        fixtures[20] = 16
         floor = {event: 1.0 for event in range(1, 39)}
-        floor[20] = 99.0
+        # The free hit takes the week this fifteen is worth least. The bench
+        # boost must not then be asked to play a bench that is not there.
+        floor[20] = 0.0
+        floor[24] = 5.0
 
-        plan = _plan(floor, fixtures)
+        plan = _plan(floor)
 
         self.assertEqual(_week_of(plan, "free_hit"), 20)
         self.assertNotEqual(_week_of(plan, "bench_boost"), 20)

@@ -76,23 +76,30 @@ def plan_chips(
 ) -> dict[int, ChipName]:
     """Date every chip once, from the calendar rather than week by week.
 
+    Every placement reads the squad, because a chip is worth what *this*
+    fifteen makes of it. That is not a refinement, it is the difference between
+    a simulation and a coincidence: the free hit used to take the largest
+    double gameweek, which is a property of the fixture list alone, so every
+    manager in a simulated league played it in the same week and the league had
+    no variance in the one dimension it exists to measure.
+
     ``star_fixture_value`` scores each gameweek for the squad's best captaincy
     option: how leaky the opponent is, times how often he plays. The triple
     captain takes the highest.
 
-    The free hit takes the largest double gameweek, because it wants as many
-    players on the pitch as possible for one week only.
+    ``squad_floor_value`` scores each gameweek by the *weakest* of the fifteen.
+    The bench boost takes the highest, because the chip pays all fifteen and is
+    decided by the worst of them: a big double with two players blanking is
+    worth less than an ordinary week where everybody plays.
 
-    The bench boost takes the week where the *weakest* of the fifteen is worth
-    most, supplied as ``squad_floor_value``. The owner's rule, and the right
-    one: the chip pays all fifteen, so it is decided by the worst of them, not
-    by how many fixtures there are. A big double gameweek with two players
-    blanking is worth less than an ordinary week where everybody plays. With no
-    floor supplied it falls back to the next largest double, which is a guess.
+    The free hit takes the lowest, because it replaces the squad for one week
+    and is worth most where the squad is worst — which is what a blank gameweek
+    is. Wildcards take the worst remaining week in each half, a rebuild being
+    permanent where a free hit is not.
 
-    Wildcards go to the week the squad is worth least, one per half, because
-    that is the week a rebuild buys most. Where no squad value is supplied they
-    fall back to random placement, which is a guess and says so.
+    With no squad value supplied every one of these falls back to the fixture
+    calendar, which is a guess and produces exactly the uniformity described
+    above.
     """
     weeks = list(range(from_gameweek, last_event + 1))
     if not weeks:
@@ -103,7 +110,13 @@ def plan_chips(
         (week for week in weeks if fixtures_by_event.get(week, 0) > _NORMAL_FIXTURE_COUNT),
         key=lambda week: (-fixtures_by_event.get(week, 0), week),
     )
-    if doubles:
+
+    if squad_floor_value:
+        # Worst week for this fifteen: a blank, usually. The chip replaces them
+        # for one week, so it is worth most exactly where they are worth least.
+        worst = min(weeks, key=lambda week: (squad_floor_value.get(week, 0.0), week))
+        plan[worst] = "free_hit"
+    elif doubles:
         plan[doubles[0]] = "free_hit"
 
     if squad_floor_value:
@@ -128,12 +141,13 @@ def plan_chips(
         open_weeks = [week for week in half_weeks if week not in plan]
         if not open_weeks:
             continue
-        # The week the squad is worth least is the week a rebuild buys most.
-        # It was `rng.choice` -- a chip placed by a coin toss, which is not a
-        # decision at all and made two runs of the same season disagree about
-        # a quarter of the chip budget. The publisher does a proper
-        # with-minus-without diff; this is the simulator's cheap stand-in, and
-        # it now at least reads the squad.
+        # The worst remaining week in the half. A rebuild is permanent, so it
+        # goes before a bad run rather than on the single worst afternoon --
+        # which the free hit has already taken.
+        #
+        # It was `rng.choice`: a chip placed by a coin toss, which is not a
+        # decision at all and made two runs of the same season disagree about a
+        # quarter of the chip budget.
         if squad_floor_value:
             chosen = min(
                 open_weeks,

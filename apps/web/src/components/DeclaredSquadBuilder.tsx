@@ -287,13 +287,6 @@ function SquadMarket({
             ] as const
           ).map(([key, label, title]) => (
             <button
-              aria-sort={
-                sort === key
-                  ? descending
-                    ? "descending"
-                    : "ascending"
-                  : undefined
-              }
               className={sort === key ? "is-sorted" : undefined}
               key={key}
               onClick={() => {
@@ -304,6 +297,16 @@ function SquadMarket({
             >
               {label}
               {sort === key ? (descending ? " ▾" : " ▴") : ""}
+              {/* `aria-sort` belongs on a `columnheader`, and this market is a
+                  CSS grid of buttons rather than a table, so axe rejected it as
+                  a disallowed attribute. The arrow says which way it is sorted
+                  to anyone who can see it; this says the same thing to anyone
+                  who cannot. */}
+              {sort === key ? (
+                <span className="visually-hidden">
+                  {descending ? ", sorted descending" : ", sorted ascending"}
+                </span>
+              ) : null}
             </button>
           ))}
           <span />

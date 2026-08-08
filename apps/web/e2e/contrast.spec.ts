@@ -33,9 +33,55 @@ const KITS = [
   { name: "home kit", theme: "light", clicks: 2 },
 ] as const;
 
-/** Waits for the lazy route chunk, so axe never scans a Suspense fallback. */
+/** Longest a route is given to stop changing before it is scanned anyway. */
+const SETTLE_CEILING_MS = 8_000;
+
+/** How long the DOM must hold still before the page counts as settled. */
+const SETTLE_QUIET_MS = 500;
+
+/**
+ * Waits for the lazy route chunk and everything it then renders, so axe never
+ * scans a Suspense fallback or a half-filled page.
+ *
+ * Waiting on the heading alone made this suite scan whatever had mounted by
+ * then, which on a loaded machine was less than on an idle one. The captaincy
+ * grid, the plan's numbered steps and its fixture-difficulty chips all carried
+ * real contrast failures that only surfaced in a full parallel run — the check
+ * was passing by arriving early, not by the page being sound.
+ *
+ * `networkidle` was the first attempt and is the wrong instrument: it waits on
+ * requests rather than on rendering, and it has no ceiling of its own. This
+ * waits for the DOM itself to hold still, and gives up at a stated bound rather
+ * than hanging.
+ */
 async function settle(page: Page): Promise<void> {
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+  await page.evaluate(
+    async ([quietMs, ceilingMs]: [number, number]) => {
+      await new Promise<void>((resolve) => {
+        let quiet = window.setTimeout(finish, quietMs);
+        const observer = new MutationObserver(() => {
+          window.clearTimeout(quiet);
+          quiet = window.setTimeout(finish, quietMs);
+        });
+        const ceiling = window.setTimeout(finish, ceilingMs);
+
+        function finish(): void {
+          window.clearTimeout(quiet);
+          window.clearTimeout(ceiling);
+          observer.disconnect();
+          resolve();
+        }
+
+        observer.observe(document.body, {
+          attributes: true,
+          childList: true,
+          subtree: true,
+        });
+      });
+    },
+    [SETTLE_QUIET_MS, SETTLE_CEILING_MS] as [number, number],
+  );
 }
 
 async function applyKit(
