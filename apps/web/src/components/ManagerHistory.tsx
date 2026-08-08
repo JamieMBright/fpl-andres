@@ -6,10 +6,16 @@ import {
   readManagerProfile,
   type ManagerProfile,
 } from "../state/manager-profile";
+import {
+  isProxyRefusal,
+  readProxyRefusal,
+  refusalRecourse,
+  type ProxyRefusal,
+} from "../state/proxy-refusal";
 
 type Loaded = {
   entryId: number;
-  profile: ManagerProfile | "unreadable" | "unreachable" | null;
+  profile: ManagerProfile | "unreadable" | "unreachable" | ProxyRefusal | null;
 };
 
 const ARCHETYPE_LABELS: Record<ManagerProfile["archetype"], string> = {
@@ -103,7 +109,14 @@ export function ManagerHistory({ entryId }: { entryId: number }) {
         // null to the parser made every failed fetch read as "FPL changed
         // shape", which blames the wrong thing and suggests the wrong fix.
         if (!response.ok) {
-          setLoaded({ entryId, profile: "unreachable" });
+          // The proxy has already named the upstream status and classified it.
+          // Repeat that rather than replacing it with a vaguer sentence.
+          setLoaded({
+            entryId,
+            profile:
+              readProxyRefusal(await response.json().catch(() => null)) ??
+              "unreachable",
+          });
           return;
         }
         setLoaded({
@@ -154,6 +167,20 @@ export function ManagerHistory({ entryId }: { entryId: number }) {
           I could not reach FPL for your history just now, so I am showing you
           nothing rather than a guess. Your record is intact; this is a
           connection, not a verdict.
+        </p>
+      </section>
+    );
+  }
+
+  if (isProxyRefusal(loaded.profile)) {
+    const refusal = loaded.profile;
+    return (
+      <section className="manager-history" aria-labelledby="record-title">
+        <h2 id="record-title">Your record</h2>
+        <p role="status">
+          <span className="mono">{refusal.said}</span>{" "}
+          {refusalRecourse(refusal.reason)} Your record is intact; I am showing
+          you nothing rather than a guess.
         </p>
       </section>
     );
