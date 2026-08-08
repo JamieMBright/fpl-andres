@@ -26,7 +26,7 @@ export default function HomePage() {
     }
 
     setError(null);
-    void navigate(`/team/${normalized}`);
+    void navigate(`/plan?team=${normalized}`);
   }
 
   return (

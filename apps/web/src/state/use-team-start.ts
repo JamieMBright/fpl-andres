@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import type { SolveStart } from "./season-solver";
 import { PLAYERS_BY_ELEMENT_ID, startFromElementIds } from "./season-solver";
@@ -13,6 +13,11 @@ import {
   type DeclaredTransfer,
 } from "./declared-transfers";
 import { refreshTeamAnalysis } from "./team-analysis";
+import {
+  initialTeamAnalysisState,
+  loadCachedPublicTeamState,
+  type TeamAnalysisState,
+} from "./team-analysis";
 
 /**
  * The gameweek a pre-season squad is declared for. FPL has processed nothing
@@ -58,11 +63,25 @@ export type TeamStartFailure =
   | "squad_not_projectable"
   | "squad_not_recognised";
 
-export function useTeamStart(
+/**
+ * The squad, and the raw analysis it was derived from.
+ *
+ * Both are wanted on the same page: the start feeds the solver, the analysis
+ * feeds the snapshot the reader looks at. Deriving one and discarding the other
+ * meant the page had to ask FPL twice for the same thing, and that endpoint is
+ * rate limited.
+ */
+export interface TeamPlan {
+  start: TeamStartStatus;
+  analysis: TeamAnalysisState;
+  retry: () => void;
+}
+
+export function useTeamPlan(
   raw: string | null,
   /** Bumped by the caller when a transfer is declared, to read the squad again. */
   declaredAt = 0,
-): TeamStartStatus {
+): TeamPlan {
   // Derived, not stored: a blank box and a nonsense box are both answerable
   // without asking FPL anything, and putting them in state would mean a render
   // pass to say so.
@@ -74,19 +93,33 @@ export function useTeamStart(
     entryId <= 4_294_967_295;
 
   const [fetched, setFetched] = useState<TeamStartStatus | null>(null);
+  const [resolved, setResolved] = useState<TeamAnalysisState | null>(null);
+  const [attempt, setAttempt] = useState(0);
+
+  // Read outside the effect: a cached snapshot is shown while the refresh runs,
+  // and setting that from inside the effect is a cascading render. Keyed on the
+  // team alone — once a refresh lands its result supersedes this.
+  const cached = useMemo(
+    () =>
+      usable && entryId !== null
+        ? loadCachedPublicTeamState(window.localStorage, entryId)
+        : null,
+    [entryId, usable],
+  );
 
   useEffect(() => {
     if (!usable || entryId === null) return;
 
     const controller = new AbortController();
     let settled = false;
-    refreshTeamAnalysis(entryId, null, {
+    refreshTeamAnalysis(entryId, cached, {
       storage: window.localStorage,
       signal: controller.signal,
     })
       .then((result) => {
         if (controller.signal.aborted) return;
         settled = true;
+        setResolved(result);
         if (result.status !== "ready" && result.status !== "stale") {
           const preSeason =
             result.status === "unavailable" &&
@@ -145,19 +178,52 @@ export function useTeamStart(
         if (error instanceof DOMException && error.name === "AbortError")
           return;
         settled = true;
+        // The snapshot has to hear about this too, or the page sits on
+        // "loading" forever while the solver has already given up.
+        setResolved({ status: "error", reason: "network_error" });
         setFetched({ status: "failed", reason: "unreachable" });
       });
 
     return () => {
       controller.abort();
       // A new team id must not show the previous one's answer.
-      if (!settled) setFetched(null);
+      if (!settled) {
+        setFetched(null);
+        setResolved(null);
+      }
     };
-  }, [entryId, usable, declaredAt]);
+  }, [entryId, usable, declaredAt, attempt, cached]);
 
-  if (raw === null) return { status: "idle" };
-  if (!usable) return { status: "failed", reason: "not_a_team_id" };
-  return fetched ?? { status: "loading" };
+  const start: TeamStartStatus =
+    raw === null
+      ? { status: "idle" }
+      : !usable
+        ? { status: "failed", reason: "not_a_team_id" }
+        : (fetched ?? { status: "loading" });
+
+  const analysis: TeamAnalysisState =
+    raw === null || !usable
+      ? initialTeamAnalysisState
+      : (resolved ??
+        (cached
+          ? { status: "refreshing", state: cached }
+          : { status: "loading" }));
+
+  return {
+    start,
+    analysis,
+    retry: () => {
+      setAttempt((previous) => previous + 1);
+    },
+  };
+}
+
+/** The squad alone, for callers with no use for the snapshot behind it. */
+export function useTeamStart(
+  raw: string | null,
+  declaredAt = 0,
+): TeamStartStatus {
+  return useTeamPlan(raw, declaredAt).start;
 }
 
 /**

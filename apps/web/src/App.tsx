@@ -4,7 +4,7 @@ import { ApplicationFrame } from "./components/ApplicationFrame";
 import { LazyRoute } from "./components/LazyRoute";
 import HomePage from "./pages/HomePage";
 import NotFoundPage from "./pages/NotFoundPage";
-import TeamAnalysisRoute from "./pages/TeamAnalysisPage";
+import TeamRedirect from "./pages/TeamRedirect";
 import { lazyRoute } from "./state/lazy-route";
 
 /**
@@ -31,7 +31,7 @@ export const routes: RouteObject[] = [
     element: <ApplicationFrame />,
     children: [
       { index: true, element: <HomePage /> },
-      { path: "team/:teamId", element: <TeamAnalysisRoute /> },
+      { path: "team/:teamId", element: <TeamRedirect /> },
       {
         path: "plan",
         element: (

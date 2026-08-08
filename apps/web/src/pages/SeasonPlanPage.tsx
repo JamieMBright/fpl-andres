@@ -1,9 +1,11 @@
 import { ArrowRight } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 
 import { CeefaxShirt } from "../components/CeefaxShirt";
 import { DeclaredSquadNote } from "../components/DeclaredSquadNote";
+import { AnalysisResult } from "../components/AnalysisResult";
+import { analysisAnnouncement } from "../state/team-analysis-messages";
 import { readLastTeam } from "../state/declared-squad";
 import { DeclaredTransferForm } from "../components/DeclaredTransferForm";
 import { PlayerDetail } from "../components/PlayerDetail";
@@ -17,7 +19,7 @@ import type {
   TeamStartFailure,
   TeamStartStatus,
 } from "../state/use-team-start";
-import { useTeamStart } from "../state/use-team-start";
+import { useTeamPlan } from "../state/use-team-start";
 import type {
   ChipCall,
   Confidence,
@@ -56,6 +58,9 @@ function planDifficulty(
     ? null
     : { rating, opponents: week.opponents[player.club] ?? [] };
 }
+
+/** Roughly the horizon the model has calibrated. The rest is drawn on ask. */
+const INITIAL_WEEKS = 8;
 
 const TEAM_FAILURE: Record<TeamStartFailure, string> = {
   not_a_team_id: "That is not a Team ID. It is the number in your FPL URL.",
@@ -492,6 +497,10 @@ export default function SeasonPlanPage() {
     week: PlanGameweek;
   } | null>(null);
   const [params, setParams] = useSearchParams();
+  // Nobody reads thirty-eight cards at once, and drawing them all on mount is
+  // heavy enough that the page could not share a render with anything else.
+  const [shownWeeks, setShownWeeks] = useState(INITIAL_WEEKS);
+  const resultRef = useRef<HTMLDivElement>(null);
   // Bumped when a transfer is declared, so the squad is read again with it.
   const [declaredAt, setDeclaredAt] = useState(0);
   const chips = useMemo(() => {
@@ -516,7 +525,8 @@ export default function SeasonPlanPage() {
     params.get("team") ?? readLastTeam(window.localStorage)?.toString() ?? null;
   const teamId =
     teamParam !== null && /^\d+$/.test(teamParam) ? Number(teamParam) : null;
-  const team = useTeamStart(teamParam, declaredAt);
+  const teamPlan = useTeamPlan(teamParam, declaredAt);
+  const team = teamPlan.start;
   const live = useMemo(() => {
     // His own fifteen beats a gameweek number, because it is his season either
     // way and only one of the two knows what he owns.
@@ -577,6 +587,38 @@ export default function SeasonPlanPage() {
       <TeamEntry team={team} params={params} onChange={setParams} />
 
       {teamId === null ? null : <DeclaredSquadNote entryId={teamId} />}
+
+      {/* One page, one subject. The snapshot, the record and the fifteen used
+          to be a separate route, which is what made a locked-in squad look
+          ignored by the plan. `useTeamPlan` already asked FPL, so nothing here
+          fetches again — that endpoint is rate limited. */}
+      {teamId === null ? null : (
+        <div
+          aria-label="Analysis result"
+          className="analysis-result"
+          key={teamId}
+          ref={resultRef}
+          role="region"
+          tabIndex={-1}
+        >
+          <AnalysisResult
+            analysis={teamPlan.analysis}
+            entryId={teamId}
+            onRetry={() => {
+              // Focus moves to the region so a screen reader hears the retry's
+              // answer rather than being left on a button that vanished.
+              resultRef.current?.focus();
+              teamPlan.retry();
+            }}
+          />
+        </div>
+      )}
+
+      {/* Announces the transition only. Marking the plan live would re-read
+          every gameweek card each time the squad resolved. */}
+      <p aria-live="polite" className="visually-hidden" role="status">
+        {teamId === null ? "" : analysisAnnouncement(teamPlan.analysis, teamId)}
+      </p>
 
       {team.status === "ready" &&
       team.source === "published" &&
@@ -706,7 +748,7 @@ export default function SeasonPlanPage() {
       <ChipStrategy chips={plan.chips} />
 
       <ul className="plan-rail">
-        {gameweeks.map((week) => (
+        {gameweeks.slice(0, shownWeeks).map((week) => (
           <GameweekCard
             chip={chips.get(week.event) ?? null}
             key={week.event}
@@ -717,6 +759,20 @@ export default function SeasonPlanPage() {
           />
         ))}
       </ul>
+
+      {shownWeeks < gameweeks.length ? (
+        <p className="plan-more">
+          <button
+            className="secondary-command"
+            onClick={() => {
+              setShownWeeks(gameweeks.length);
+            }}
+            type="button"
+          >
+            Show the remaining {String(gameweeks.length - shownWeeks)} gameweeks
+          </button>
+        </p>
+      ) : null}
 
       {selected ? (
         <PlayerDetail

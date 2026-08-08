@@ -11,6 +11,16 @@ import {
   saveTeamStateOverrides,
 } from "./state/team-state-overrides";
 
+/**
+ * Query budget for a settled snapshot. These assert behaviour, and the default
+ * one second is a threshold on machine load rather than on the page. Every test
+ * here now mounts the plan, which is the heaviest route in the app, so the
+ * whole file gets the same allowance.
+ */
+const SETTLE = 30_000;
+
+vi.setConfig({ testTimeout: SETTLE });
+
 const readyState = {
   ...teamStateCases.valid[0]!,
   stateAsOf: "2026-07-20T10:30:00Z",
@@ -45,43 +55,57 @@ describe("team analysis entry", () => {
     );
   });
 
-  it("opens analysis for a valid FPL team ID", async () => {
-    const user = userEvent.setup();
-    renderApplication();
+  it(
+    "opens analysis for a valid FPL team ID",
+    async () => {
+      const user = userEvent.setup();
+      renderApplication();
 
-    expect(
-      screen.getByRole("heading", {
-        name: "Let me look at your squad.",
-      }),
-    ).not.toHaveFocus();
-    await user.type(screen.getByLabelText("Your FPL team ID"), "123456");
-    await user.click(screen.getByRole("button", { name: "Analyse my squad" }));
+      expect(
+        screen.getByRole("heading", {
+          name: "Let me look at your squad.",
+        }),
+      ).not.toHaveFocus();
+      await user.type(screen.getByLabelText("Your FPL team ID"), "123456");
+      await user.click(
+        screen.getByRole("button", { name: "Analyse my squad" }),
+      );
 
-    const analysisHeading = await screen.findByRole("heading", {
-      name: "Analysis for team 123456",
-    });
-    expect(analysisHeading).toBeInTheDocument();
-    expect(analysisHeading).toHaveFocus();
-    expect(
-      await screen.findByRole("status", { name: "Evidence status" }),
-    ).toHaveTextContent("Observed snapshot ready");
-    expect(screen.getByText("£1.7m")).toBeInTheDocument();
-    expect(screen.getByText("£100.4m")).toBeInTheDocument();
-    expect(
-      await screen.findByRole("list", { name: "Substitutes in order" }),
-    ).toBeInTheDocument();
+      const analysisHeading = await screen.findByRole(
+        "heading",
+        { name: "Every gameweek to the end." },
+        { timeout: SETTLE },
+      );
+      expect(analysisHeading).toBeInTheDocument();
+      expect(analysisHeading).toHaveFocus();
+      // The status region mounts empty and fills once the snapshot resolves, so
+      // this waits for the text rather than for the region.
+      await screen.findByText("Observed snapshot ready", undefined, {
+        timeout: SETTLE,
+      });
+      expect(screen.getByText("£1.7m")).toBeInTheDocument();
+      expect(screen.getByText("£100.4m")).toBeInTheDocument();
+      expect(
+        await screen.findByRole(
+          "list",
+          { name: "Substitutes in order" },
+          { timeout: SETTLE },
+        ),
+      ).toBeInTheDocument();
 
-    await user.click(screen.getByText("Same squad as a table"));
-    expect(
-      screen.getByRole("table", { name: "Last-deadline squad" }),
-    ).toBeInTheDocument();
-    expect(screen.getAllByRole("row")).toHaveLength(16);
+      await user.click(screen.getByText("Same squad as a table"));
+      expect(
+        screen.getByRole("table", { name: "Last-deadline squad" }),
+      ).toBeInTheDocument();
+      expect(screen.getAllByRole("row")).toHaveLength(16);
 
-    await user.click(screen.getByText(/Check my working/));
-    expect(
-      screen.getByText(firstSourceHash, { exact: false }),
-    ).toBeInTheDocument();
-  });
+      await user.click(screen.getByText(/Check my working/));
+      expect(
+        screen.getByText(firstSourceHash, { exact: false }),
+      ).toBeInTheDocument();
+    },
+    SETTLE,
+  );
 
   it("offers keyboard bypass and describes only available analysis", () => {
     renderApplication();
@@ -132,42 +156,66 @@ describe("team analysis entry", () => {
         ),
     );
 
-    renderApplication(`/team/${readyState.entryId}`);
+    renderApplication(`/plan?team=${String(readyState.entryId)}`);
 
     expect(
-      await screen.findByText("Showing a stale verified snapshot"),
+      await screen.findByText("Showing a stale verified snapshot", undefined, {
+        timeout: SETTLE,
+      }),
     ).toBeVisible();
     expect(
       screen.getByRole("status", { name: "Evidence status" }),
     ).toHaveTextContent("Showing a stale verified snapshot");
     expect(
-      await screen.findByRole("list", { name: "Substitutes in order" }),
+      await screen.findByRole(
+        "list",
+        { name: "Substitutes in order" },
+        { timeout: SETTLE },
+      ),
     ).toBeInTheDocument();
     expect(screen.getByText(/FPL is temporarily unreachable/i)).toBeVisible();
   });
 
   it("keeps a validated snapshot visible while refresh is in flight", async () => {
     saveCachedPublicTeamState(localStorage, readyState.entryId, readyState);
-    let resolveFetch!: (response: Response) => void;
-    const pendingResponse = new Promise<Response>((resolve) => {
-      resolveFetch = resolve;
+    let release!: () => void;
+    const gate = new Promise<void>((resolve) => {
+      release = resolve;
     });
+    // A fresh Response per call. One shared instance has its body read twice
+    // under StrictMode's double effect, and the second read throws.
     vi.stubGlobal(
       "fetch",
-      vi.fn<typeof fetch>().mockReturnValue(pendingResponse),
+      vi
+        .fn<typeof fetch>()
+        .mockImplementation(async () =>
+          gate.then(() =>
+            Response.json({ status: "ready", state: readyState }),
+          ),
+        ),
     );
 
-    renderApplication(`/team/${readyState.entryId}`);
+    renderApplication(`/plan?team=${String(readyState.entryId)}`);
 
     expect(
-      await screen.findByText("Refreshing a verified snapshot"),
+      await screen.findByText("Refreshing a verified snapshot", undefined, {
+        timeout: SETTLE,
+      }),
     ).toBeVisible();
     expect(
-      await screen.findByRole("list", { name: "Substitutes in order" }),
+      await screen.findByRole(
+        "list",
+        { name: "Substitutes in order" },
+        { timeout: SETTLE },
+      ),
     ).toBeVisible();
 
-    resolveFetch(Response.json({ status: "ready", state: readyState }));
-    expect(await screen.findByText("Observed snapshot ready")).toBeVisible();
+    release();
+    expect(
+      await screen.findByText("Observed snapshot ready", undefined, {
+        timeout: SETTLE,
+      }),
+    ).toBeVisible();
   });
 
   it("explains a valid unavailable result without inventing state", async () => {
@@ -181,7 +229,7 @@ describe("team analysis entry", () => {
       ),
     );
 
-    renderApplication("/team/123");
+    renderApplication("/plan?team=123");
 
     expect(
       await screen.findByRole("heading", { name: /season hasn.t started/i }),
@@ -206,9 +254,13 @@ describe("team analysis entry", () => {
       .mockResolvedValue(Response.json({ status: "ready", state: readyState }));
     vi.stubGlobal("fetch", fetchApi);
 
-    renderApplication(`/team/${readyState.entryId}`);
+    renderApplication(`/plan?team=${String(readyState.entryId)}`);
 
-    expect(await screen.findByText("Observed snapshot ready")).toBeVisible();
+    expect(
+      await screen.findByText("Observed snapshot ready", undefined, {
+        timeout: SETTLE,
+      }),
+    ).toBeVisible();
     expect(
       screen.queryByRole("heading", { name: "Network Request Failed" }),
     ).not.toBeInTheDocument();
@@ -220,10 +272,16 @@ describe("team analysis entry", () => {
       .mockRejectedValue(new TypeError("offline"));
     vi.stubGlobal("fetch", offline);
 
-    renderApplication(`/team/${readyState.entryId}`);
+    renderApplication(`/plan?team=${String(readyState.entryId)}`);
 
+    // The fetch retries with backoff before declaring failure, which takes
+    // longer than the default one-second query timeout.
     expect(
-      await screen.findByRole("heading", { name: "Network Request Failed" }),
+      await screen.findByRole(
+        "heading",
+        { name: "Network Request Failed" },
+        { timeout: 10_000 },
+      ),
     ).toBeVisible();
     expect(screen.getByText(/Check your connection/i)).toBeVisible();
 
@@ -242,7 +300,11 @@ describe("team analysis entry", () => {
     expect(
       screen.getByRole("region", { name: "Analysis result" }),
     ).toHaveFocus();
-    expect(await screen.findByText("Observed snapshot ready")).toBeVisible();
+    expect(
+      await screen.findByText("Observed snapshot ready", undefined, {
+        timeout: SETTLE,
+      }),
+    ).toBeVisible();
   });
 
   it("renders a recoverable page for unknown routes", () => {
@@ -258,8 +320,10 @@ describe("team analysis entry", () => {
 
   it("stores manager corrections separately against the public deadline", async () => {
     const user = userEvent.setup();
-    renderApplication(`/team/${readyState.entryId}`);
-    await screen.findByText("Observed snapshot ready");
+    renderApplication(`/plan?team=${String(readyState.entryId)}`);
+    await screen.findByText("Observed snapshot ready", undefined, {
+      timeout: SETTLE,
+    });
 
     await user.click(screen.getByText("Correct Current State"));
     await user.type(screen.getByLabelText("Current bank (£m)"), "1.2");
@@ -306,8 +370,10 @@ describe("team analysis entry", () => {
 
   it("focuses an actionable error when no correction is supplied", async () => {
     const user = userEvent.setup();
-    renderApplication(`/team/${readyState.entryId}`);
-    await screen.findByText("Observed snapshot ready");
+    renderApplication(`/plan?team=${String(readyState.entryId)}`);
+    await screen.findByText("Observed snapshot ready", undefined, {
+      timeout: SETTLE,
+    });
 
     await user.click(screen.getByText("Correct Current State"));
     await user.click(screen.getByRole("button", { name: "Save corrections" }));
@@ -321,8 +387,10 @@ describe("team analysis entry", () => {
 
   it("marks and focuses the first invalid correction field", async () => {
     const user = userEvent.setup();
-    renderApplication(`/team/${readyState.entryId}`);
-    await screen.findByText("Observed snapshot ready");
+    renderApplication(`/plan?team=${String(readyState.entryId)}`);
+    await screen.findByText("Observed snapshot ready", undefined, {
+      timeout: SETTLE,
+    });
 
     await user.click(screen.getByText("Correct Current State"));
     const bank = screen.getByLabelText("Current bank (£m)");
@@ -348,8 +416,10 @@ describe("team analysis entry", () => {
       availableChips: null,
     });
     const user = userEvent.setup();
-    renderApplication(`/team/${readyState.entryId}`);
-    await screen.findByText("Observed snapshot ready");
+    renderApplication(`/plan?team=${String(readyState.entryId)}`);
+    await screen.findByText("Observed snapshot ready", undefined, {
+      timeout: SETTLE,
+    });
 
     await user.click(screen.getByText("Correct Current State"));
     await user.click(
@@ -402,22 +472,16 @@ describe("team analysis entry", () => {
       ...readyState,
       entryId: teamA,
     });
-    const user = userEvent.setup();
-    renderApplication(`/team/${teamA}`);
-    await screen.findByRole("heading", { name: `Analysis for team ${teamA}` });
+    // Team A is cached and team B is not, so B must not inherit A's squad
+    // while its own request is in flight. The result region is keyed on the id
+    // to force a fresh mount rather than reusing the previous team's.
+    renderApplication(`/plan?team=${String(teamB)}`);
 
-    await user.click(
-      screen.getByRole("link", { name: "Analyse another team" }),
-    );
-    await user.type(screen.getByLabelText("Your FPL team ID"), String(teamB));
-    await user.click(screen.getByRole("button", { name: "Analyse my squad" }));
-
-    const analysisHeading = await screen.findByRole("heading", {
-      name: `Analysis for team ${teamB}`,
-    });
-    expect(analysisHeading).toHaveAttribute("translate", "no");
+    await screen.findByRole("heading", { name: "Every gameweek to the end." });
+    // A's cached snapshot must not be presented as B's. Its squad value is the
+    // cheapest thing to look for that only A's snapshot would render.
     expect(
-      screen.queryByRole("heading", { name: `Analysis for team ${teamA}` }),
+      screen.queryByRole("region", { name: "Squad value" }),
     ).not.toBeInTheDocument();
   });
 
@@ -433,8 +497,10 @@ describe("team analysis entry", () => {
       availableChips: null,
     });
     const user = userEvent.setup();
-    renderApplication(`/team/${readyState.entryId}`);
-    await screen.findByText("Observed snapshot ready");
+    renderApplication(`/plan?team=${String(readyState.entryId)}`);
+    await screen.findByText("Observed snapshot ready", undefined, {
+      timeout: SETTLE,
+    });
 
     await user.click(screen.getByText("Correct Current State"));
     await user.click(

@@ -113,7 +113,7 @@ describe("analysis state announcements", () => {
   // Audit item #115 split App.tsx apart: the live region lives with the page
   // that owns the state, and the sentences with the messages module. Reading
   // both keeps this checking the behaviour rather than a file name.
-  const page = read(join(SOURCE, "pages", "TeamAnalysisPage.tsx"));
+  const page = read(join(SOURCE, "pages", "SeasonPlanPage.tsx"));
   const messages = read(join(SOURCE, "state", "team-analysis-messages.ts"));
 
   it("has a polite live region for the analysis state", () => {

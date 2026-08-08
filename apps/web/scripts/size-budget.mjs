@@ -23,13 +23,21 @@ const BUDGETS = [
   { match: /\.css$/, name: "stylesheet", gzipKb: 15 },
   // Measured 128.26 kB. Router, zod, lucide and the shell.
   { match: /^index-.*\.js$/, name: "entry chunk", gzipKb: 150 },
-  // Measured 36.56 kB for the season-solver worker, raised from 36 kB. The
-  // browser pool went from a top-forty-per-position cut to every player the
-  // projector can rate — 144 to 312 — because the cut could not express a
-  // manager's own fifteen, and a squad it could not express was silently
-  // replaced by the generic plan. Measured cost of the whole change is about
-  // two kilobytes of player rows; the rest is the worker's own growth.
-  { match: /^(?!index-).*\.js$/, name: "lazy chunk", gzipKb: 38 },
+  // Measured 50.46 kB. The plan is now the only route a manager needs: the
+  // snapshot, the record, the squad builder and the season all arrive here,
+  // replacing a second route that had to be downloaded separately. Budgeted
+  // apart from the other lazy chunks so absorbing a page does not quietly
+  // raise the ceiling for everything else.
+  { match: /^SeasonPlanPage-.*\.js$/, name: "plan chunk", gzipKb: 54 },
+  // Measured 39.94 kB for the shared chunk, raised from 38 kB. Consolidating
+  // the team view onto the plan moved several components into shared code
+  // rather than a route of their own, and the browser pool grew from a
+  // top-forty-per-position cut to every player the projector can rate.
+  {
+    match: /^(?!index-|SeasonPlanPage-).*\.js$/,
+    name: "lazy chunk",
+    gzipKb: 42,
+  },
 ];
 
 const files = readdirSync(DIST);
