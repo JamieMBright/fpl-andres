@@ -80,13 +80,35 @@ def test_no_functions_key_uses_a_bracket_parameter_name() -> None:
 
 def test_the_rewrite_does_not_swallow_the_api() -> None:
     """The other way every route could 404 at once."""
-    sources = [rule["source"] for rule in _CONFIG.get("rewrites", [])]
-    assert sources, "expected a SPA rewrite"
-    for source in sources:
-        assert "?!api/" in source, (
-            f"rewrite {source!r} does not exclude /api/, so it would serve "
-            "index.html for every endpoint"
+    rules = _CONFIG.get("rewrites", [])
+    assert rules, "expected a SPA rewrite"
+    spa = [rule for rule in rules if rule["destination"] == "/index.html"]
+    assert spa, "expected a rewrite serving the single-page app"
+    for rule in spa:
+        assert "?!api/" in rule["source"], (
+            f"rewrite {rule['source']!r} does not exclude /api/, so it would "
+            "serve index.html for every endpoint"
         )
+
+
+def test_the_proxy_catch_all_is_routed_explicitly() -> None:
+    """Measured against the deployment, not assumed.
+
+    `api/fpl/[...path].ts` is a catch-all and was reached for one segment only:
+    `/api/fpl/bootstrap-static` ran the function, `/api/fpl/entry/212279`
+    answered `x-vercel-error: NOT_FOUND` from the edge without the function
+    running at all. Every multi-segment endpoint in the allow-list -- which is
+    all of them except the bootstrap -- was therefore unreachable from a
+    browser, and a manager's history is the one the page actually asks for.
+    """
+    rules = _CONFIG.get("rewrites", [])
+    proxy = [rule for rule in rules if rule["source"].startswith("/api/fpl/")]
+    assert proxy, "the FPL proxy catch-all needs an explicit rewrite"
+    assert proxy[0]["destination"] == "/api/fpl/[...path]"
+    # Before the SPA rule, which is a catch-all of its own.
+    assert rules.index(proxy[0]) < next(
+        index for index, rule in enumerate(rules) if rule["destination"] == "/index.html"
+    )
 
 
 def test_the_budgets_reflect_what_each_route_does() -> None:
