@@ -188,11 +188,11 @@ def project_element_minutes(
             event_id=row.gameweek,
             minutes=min(row.minutes, 120),
             started=(row.started or row.minutes >= 60) and row.minutes > 0,
-            kickoff_time=min(row.kickoff_time, cutoff),
+            kickoff_time=row.kickoff_time,
             fixture_id=row.fixture_id,
         )
         for row in sorted(source, key=lambda entry: (entry.gameweek, entry.fixture_id))
-        if row.gameweek < prediction_event
+        if row.gameweek < prediction_event and row.kickoff_time <= cutoff
     )
 
     evidence = MinutesEvidence(
@@ -229,7 +229,7 @@ def project_element_rates(
     observations = tuple(
         observation(row, season, cutoff, team_id=team_id, position_id=position)
         for row in rows
-        if row.gameweek < gameweek
+        if row.gameweek < gameweek and row.kickoff_time <= cutoff
     )
     carried = (
         tuple(
@@ -241,6 +241,7 @@ def project_element_rates(
                 position_id=prior_position,
             )
             for row in prior_rows
+            if row.kickoff_time <= cutoff
         )
         if prior_season and prior_season != season
         else ()
@@ -280,6 +281,11 @@ def observation(
     Both default to None rather than to a guess. A carried season whose club is
     unknown is reported as unknown by `project_player_rates`, which is not the
     same as reported as unchanged -- and the difference is the whole point.
+
+    `cutoff` is not used to clamp the kickoff. It once was, which meant the leak
+    guard in `project_player_rates` compared a value that had already been made
+    to satisfy it. Callers filter on the real kickoff instead, so a match played
+    after the decision moment never reaches this at all.
     """
     return RateObservation(
         season=season,
@@ -289,7 +295,7 @@ def observation(
         assists=row.assists,
         expected_goals=row.expected_goals,
         expected_assists=row.expected_assists,
-        kickoff_time=min(row.kickoff_time, cutoff),
+        kickoff_time=row.kickoff_time,
         team_id=team_id,
         position_id=position_id,
     )

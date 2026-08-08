@@ -29,6 +29,19 @@ from __future__ import annotations
 
 __all__ = ["MODEL_VERSION"]
 
+#: 2.9 makes a leak guard fire that never could. Both rate models refuse an
+#: observation whose kickoff is after the prediction cutoff -- and the backtest
+#: built every observation with `kickoff_time=min(row.kickoff_time, cutoff)`, so
+#: the value handed to the guard had already been made to satisfy it. What
+#: survived was a gameweek-number filter, and a gameweek number is not a date.
+#:
+#: The case it was written for is a postponement. A fixture labelled gameweek 12
+#: and replayed in gameweek 25's week has `gameweek < prediction_event` for
+#: everything from 13 onward, so it was training gameweeks it had not been
+#: played before. Rows are now filtered on the date they were actually played,
+#: and the timestamp reaches the guard unmodified. Expect the metrics to move
+#: wherever the corpus contains a rescheduled match.
+#:
 #: 2.8 closes the rest of the verified input bugs, so every projected point
 #: moves again. Double gameweeks were the worst of them: two fixtures were
 #: merged into one observation, summed, capped at 120 minutes and then spent
@@ -88,4 +101,4 @@ __all__ = ["MODEL_VERSION"]
 #: projection and resampled, so a gap that does not clear zero is reported as
 #: not clearing zero. No projection changed; what changed is what may be
 #: claimed from it.
-MODEL_VERSION = "2.8"
+MODEL_VERSION = "2.9"
