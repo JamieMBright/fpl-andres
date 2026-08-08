@@ -1,6 +1,7 @@
 import { AlertTriangle, CheckCircle2, RefreshCw } from "lucide-react";
 
 import { FIRST_DEADLINE_2026_27 } from "../public-ids";
+import { readDeclaredSquad } from "../state/declared-squad";
 import type { TeamAnalysisState } from "../state/team-analysis";
 import {
   staleReason,
@@ -25,12 +26,17 @@ interface AnalysisResultProps {
   analysis: TeamAnalysisState;
   entryId: number;
   onRetry: () => void;
+  /** Bumped whenever the declared squad changes, so this re-reads it. */
+  declaredAt?: number;
+  onDeclared?: () => void;
 }
 
 export function AnalysisResult({
   analysis,
   entryId,
   onRetry,
+  declaredAt = 0,
+  onDeclared = () => undefined,
 }: AnalysisResultProps) {
   if (analysis.status === "idle" || analysis.status === "loading") {
     return (
@@ -80,6 +86,12 @@ export function AnalysisResult({
   }
 
   const message = terminalStateMessage(analysis);
+  // The season has not started, so there is nothing a retry could reach. A
+  // button that cannot work is worse than no button.
+  const retryable = !(
+    analysis.status === "unavailable" &&
+    analysis.reason === "no_processed_event"
+  );
   return (
     <>
       <div
@@ -99,21 +111,37 @@ export function AnalysisResult({
       >
         <h2 id="terminal-state-title">{message.heading}</h2>
         <p>{message.nextStep}</p>
-        <button className="secondary-command" onClick={onRetry} type="button">
-          <RefreshCw aria-hidden="true" size={17} /> Retry analysis
-        </button>
+        {retryable ? (
+          <button className="secondary-command" onClick={onRetry} type="button">
+            <RefreshCw aria-hidden="true" size={17} /> Retry analysis
+          </button>
+        ) : null}
       </section>
       {analysis.status === "unavailable" &&
       analysis.reason === "no_processed_event" ? (
         <>
           <ManagerHistory entryId={entryId} />
-          <DeclaredSquadBuilder entryId={entryId} />
+          <DeclaredSquadBuilder entryId={entryId} onDeclared={onDeclared} />
           <OpeningSquad entryId={entryId} />
-          <TransferPlanPanel firstDeadline={FIRST_DEADLINE_2026_27} />
+          {/* Only while there is nothing to plan from. Once a fifteen is
+              locked in the season below IS the transfer plan, and a panel
+              saying "not yet" beside it contradicts the page. */}
+          {hasDeclaredSquad(entryId, declaredAt) ? null : (
+            <TransferPlanPanel firstDeadline={FIRST_DEADLINE_2026_27} />
+          )}
         </>
       ) : null}
     </>
   );
+}
+
+/**
+ * `declaredAt` is unused inside, and deliberately so: it is the render key
+ * that makes this storage read happen again after a lock-in.
+ */
+function hasDeclaredSquad(entryId: number, declaredAt: number): boolean {
+  void declaredAt;
+  return readDeclaredSquad(window.localStorage, entryId, 1) !== null;
 }
 
 function EvidenceBanner({

@@ -445,49 +445,40 @@ function ChipStrategy({ chips }: { chips: readonly ChipCall[] }) {
   ] as const;
 
   return (
-    <details className="scatter-controls plan-chips">
-      <summary className="scatter-controls-summary">
-        <span>Eight chips, two of each</span>
-        <span className="scatter-controls-count mono">
-          {chips.filter((chip) => chip.event !== null).length} placed
-        </span>
-      </summary>
-      <div className="scatter-controls-body">
-        <p>
-          Every chip comes twice a season and the first set expires at gameweek
-          nineteen, so an unplayed chip is worth nothing rather than saved. Each
-          is placed where it adds most, and the figure is what playing it adds
-          over not playing it — not what the week scores.
-        </p>
-        {halves.map(([half, label]) => (
-          <div className="plan-chip-half" key={half}>
-            <h3>{label}</h3>
-            <ul>
-              {chips
-                .filter((chip) => chip.half === half)
-                .map((chip) => (
-                  <li key={`${chip.chip}-${half}`}>
-                    <span className="plan-chip-when mono">
-                      {chip.event === null ? "—" : `GW${String(chip.event)}`}
-                    </span>
-                    <span className="plan-chip-name">{chip.chip}</span>
-                    <span
-                      className={
-                        chip.gain >= CHIP_TARGET
-                          ? "plan-chip-gain mono plan-chip-hit"
-                          : "plan-chip-gain mono"
-                      }
-                    >
-                      +{chip.gain.toFixed(1)}
-                    </span>
-                    <span className="plan-chip-note">{chip.note}.</span>
-                  </li>
-                ))}
-            </ul>
-          </div>
-        ))}
-      </div>
-    </details>
+    <div className="plan-chips">
+      {halves.map(([half, label]) => (
+        <div className="plan-chip-half" key={half}>
+          <h3>{label}</h3>
+          <ul>
+            {chips
+              .filter((chip) => chip.half === half)
+              .map((chip) => (
+                <li key={`${chip.chip}-${half}`}>
+                  <span className="plan-chip-when mono">
+                    {chip.event === null ? "—" : `GW${String(chip.event)}`}
+                  </span>
+                  <span className="plan-chip-name">{chip.chip}</span>
+                  <span
+                    className={
+                      chip.gain >= CHIP_TARGET
+                        ? "plan-chip-gain mono plan-chip-hit"
+                        : "plan-chip-gain mono"
+                    }
+                  >
+                    +{chip.gain.toFixed(1)}
+                  </span>
+                  <span className="plan-chip-note">{chip.note}.</span>
+                </li>
+              ))}
+          </ul>
+        </div>
+      ))}
+      <p className="plan-chip-footnote">
+        The figure is what playing the chip that week adds over not playing it,
+        not what the week scores. Anything left unplayed by gameweek nineteen
+        expires rather than carrying over.
+      </p>
+    </div>
   );
 }
 
@@ -555,6 +546,11 @@ export default function SeasonPlanPage() {
 
   const solve = useSeasonSolve(live);
   const solving = live !== null;
+  // Someone who has given a team id is here for their own season. Showing the
+  // published optimum until they lock a fifteen in reads as "here is your
+  // plan" when it is nobody's, and removes any reason to declare a squad.
+  const awaitingLockIn =
+    teamId !== null && !solving && team.status !== "loading";
   const gameweeks = solving
     ? solve.gameweeks.map(asPlanGameweek)
     : plan.gameweeks;
@@ -619,7 +615,11 @@ export default function SeasonPlanPage() {
           >
             <AnalysisResult
               analysis={teamPlan.analysis}
+              declaredAt={declaredAt}
               entryId={teamId}
+              onDeclared={() => {
+                setDeclaredAt(Date.now());
+              }}
               onRetry={() => {
                 // Focus moves to the region so a screen reader hears the
                 // retry's answer rather than being left on a button that
@@ -765,7 +765,7 @@ export default function SeasonPlanPage() {
 
       <PlanStep
         defaultOpen
-        note={`${String(plan.chips.length)} played`}
+        note={`${String(plan.chips.filter((chip) => chip.event !== null).length)} of ${String(plan.chips.length)} placed`}
         step="02"
         title="When to play the chips"
       >
@@ -774,37 +774,52 @@ export default function SeasonPlanPage() {
 
       <PlanStep
         defaultOpen
-        note={`GW${String(gameweeks[0]?.event ?? 1)}–${String(gameweeks[gameweeks.length - 1]?.event ?? 38)}`}
+        note={
+          awaitingLockIn
+            ? "waiting on your fifteen"
+            : `GW${String(gameweeks[0]?.event ?? 1)}–${String(gameweeks[gameweeks.length - 1]?.event ?? 38)}`
+        }
         step="03"
         title="Every gameweek"
       >
-        <ul className="plan-rail">
-          {gameweeks.slice(0, shownWeeks).map((week) => (
-            <GameweekCard
-              chip={chips.get(week.event) ?? null}
-              key={week.event}
-              onOpen={(player) => {
-                setSelected({ player, week });
-              }}
-              week={week}
-            />
-          ))}
-        </ul>
-
-        {shownWeeks < gameweeks.length ? (
-          <p className="plan-more">
-            <button
-              className="secondary-command"
-              onClick={() => {
-                setShownWeeks(gameweeks.length);
-              }}
-              type="button"
-            >
-              Show the remaining {String(gameweeks.length - shownWeeks)}{" "}
-              gameweeks
-            </button>
+        {awaitingLockIn ? (
+          <p className="plan-awaiting">
+            This is your season, so it starts from your fifteen and not from
+            mine. Lock a squad in at step one — take the suggested one whole if
+            you like it — and all thirty-eight weeks are re-solved from it.
+            Until then there is nothing here I could honestly call your plan.
           </p>
-        ) : null}
+        ) : (
+          <>
+            <ul className="plan-rail">
+              {gameweeks.slice(0, shownWeeks).map((week) => (
+                <GameweekCard
+                  chip={chips.get(week.event) ?? null}
+                  key={week.event}
+                  onOpen={(player) => {
+                    setSelected({ player, week });
+                  }}
+                  week={week}
+                />
+              ))}
+            </ul>
+
+            {shownWeeks < gameweeks.length ? (
+              <p className="plan-more">
+                <button
+                  className="secondary-command"
+                  onClick={() => {
+                    setShownWeeks(gameweeks.length);
+                  }}
+                  type="button"
+                >
+                  Show the remaining {String(gameweeks.length - shownWeeks)}{" "}
+                  gameweeks
+                </button>
+              </p>
+            ) : null}
+          </>
+        )}
       </PlanStep>
 
       {selected ? (

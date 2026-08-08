@@ -1755,11 +1755,8 @@ h1[tabindex="-1"]:focus-visible {
 }
 
 .plan-chips p {
-  /* The measure belongs to the paragraph. On the details box it also clamped
-     the collapsed summary bar, which then stopped short of the preamble bar
-     above it and left the row half empty. */
   max-width: 78ch;
-  margin: 0 0 14px;
+  margin: 14px 0 0;
   color: var(--ink-soft);
   font-size: 13px;
   line-height: 1.5;
@@ -4243,8 +4240,11 @@ h1[tabindex="-1"]:focus-visible {
 .squad-market-headings,
 .squad-market-list li {
   display: grid;
+  /* rem, not em. The heading row sets its own font-size to 0.6rem, so `em`
+     columns there measured barely half the width of the same columns on a
+     row, and every label sat left of the numbers it named. */
   grid-template-columns:
-    minmax(0, 1fr) 2.8em 2.4em 3em 2.8em 3em 3.6em
+    minmax(0, 1fr) 2.8rem 2.4rem 3rem 3.4rem 3rem 3.6rem
     24px;
   gap: 8px;
   align-items: center;
@@ -4434,6 +4434,15 @@ h1[tabindex="-1"]:focus-visible {
 
 .plan-more {
   margin: 14px 0 0;
+}
+
+.plan-awaiting {
+  max-width: 68ch;
+  margin: 0;
+  padding: 14px 16px;
+  border-left: 3px solid var(--amber);
+  background: rgb(255 179 0 / 8%);
+  line-height: 1.6;
 }
 
 /* Marks a row whose numbers are a role prior rather than a measurement. */

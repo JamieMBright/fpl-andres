@@ -281,7 +281,7 @@ function SquadMarket({
               ["club", "Club", "Sort by club"],
               ["position", "Pos", "Sort by position"],
               ["points", "xPts", "Sort by expected points a match"],
-              ["perMillion", "/£m", "Sort by expected points per million"],
+              ["perMillion", "Pts/£m", "Sort by expected points per million"],
               ["startRate", "Start", "Sort by how often he started"],
               ["priceTenths", "Price", "Sort by price"],
             ] as const
@@ -391,9 +391,11 @@ function declaredSquadAnnouncement(
 export function DeclaredSquadBuilder({
   entryId,
   event = 1,
+  onDeclared,
 }: {
   entryId: number;
   event?: number;
+  onDeclared?: () => void;
 }) {
   const [pool, setPool] = useState<AnalysisData | null>(null);
 
@@ -504,6 +506,8 @@ export function DeclaredSquadBuilder({
       window.localStorage.setItem(LAST_TEAM_KEY, String(entryId));
       setSaved(true);
       setSaveError(null);
+      // The season below is solved from this fifteen, so it has to be told.
+      onDeclared?.();
     } catch (error) {
       // Storage can be full or blocked, and a rejected save must say so rather
       // than leaving a button that looks like it did nothing.
@@ -531,6 +535,7 @@ export function DeclaredSquadBuilder({
     forgetDeclaredSquad(window.localStorage, entryId, event);
     setPicks(Array.from({ length: 15 }, () => ""));
     setSaved(false);
+    onDeclared?.();
   };
 
   return (

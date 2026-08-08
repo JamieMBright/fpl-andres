@@ -9,7 +9,7 @@ import {
 
 type Loaded = {
   entryId: number;
-  profile: ManagerProfile | "unreadable" | null;
+  profile: ManagerProfile | "unreadable" | "unreachable" | null;
 };
 
 const ARCHETYPE_LABELS: Record<ManagerProfile["archetype"], string> = {
@@ -99,13 +99,22 @@ export function ManagerHistory({ entryId }: { entryId: number }) {
         const response = await fetch(`/api/fpl/entry/${entryId}/history`, {
           signal: controller.signal,
         });
-        const payload = response?.ok ? await response.json() : null;
-        setLoaded({ entryId, profile: readManagerProfile(payload) });
+        // A refused or rate-limited response is not a malformed one. Handing
+        // null to the parser made every failed fetch read as "FPL changed
+        // shape", which blames the wrong thing and suggests the wrong fix.
+        if (!response.ok) {
+          setLoaded({ entryId, profile: "unreachable" });
+          return;
+        }
+        setLoaded({
+          entryId,
+          profile: readManagerProfile(await response.json()),
+        });
       } catch (error) {
         if (classifyFetchFailure(error).kind === "aborted") {
           return;
         }
-        setLoaded({ entryId, profile: null });
+        setLoaded({ entryId, profile: "unreachable" });
       }
     }
 
@@ -132,6 +141,19 @@ export function ManagerHistory({ entryId }: { entryId: number }) {
             to exist. */}
         <p className="mono" role="status">
           Reading your history…
+        </p>
+      </section>
+    );
+  }
+
+  if (loaded.profile === "unreachable") {
+    return (
+      <section className="manager-history" aria-labelledby="record-title">
+        <h2 id="record-title">Your record</h2>
+        <p role="status">
+          I could not reach FPL for your history just now, so I am showing you
+          nothing rather than a guess. Your record is intact; this is a
+          connection, not a verdict.
         </p>
       </section>
     );
