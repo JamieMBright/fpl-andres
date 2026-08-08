@@ -4371,6 +4371,71 @@ h1[tabindex="-1"]:focus-visible {
   border: 1px dashed rgb(255 255 255 / 30%);
 }
 
+/* One step of the plan, folded away until wanted. The page is a snapshot, a
+   record, a fifteen and thirty-eight gameweeks; shown at once it reads as a
+   wall and loses the order the steps are meant to be taken in. */
+.plan-step {
+  margin: 14px 0;
+  border: 1px solid var(--rule);
+  background: var(--paper);
+}
+
+.plan-step-summary {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 12px 14px;
+  cursor: pointer;
+  list-style: none;
+}
+
+.plan-step-summary::-webkit-details-marker {
+  display: none;
+}
+
+.plan-step-summary::after {
+  content: "+";
+  margin-left: auto;
+  font-family: var(--fa-mono);
+  opacity: 0.7;
+}
+
+.plan-step[open] > .plan-step-summary::after {
+  content: "–";
+}
+
+.plan-step[open] > .plan-step-summary {
+  border-bottom: 1px solid var(--rule);
+}
+
+.plan-step-summary:focus-visible {
+  outline: 3px solid var(--signal-blue);
+  outline-offset: -3px;
+}
+
+.plan-step-index {
+  color: var(--ink-soft);
+  font-size: 12px;
+}
+
+.plan-step-title {
+  font-family: var(--fa-display);
+  font-size: 17px;
+}
+
+.plan-step-note {
+  color: var(--ink-soft);
+  font-size: 12px;
+}
+
+.plan-step-body {
+  padding: 14px;
+}
+
+.plan-more {
+  margin: 14px 0 0;
+}
+
 /* Marks a row whose numbers are a role prior rather than a measurement. */
 .squad-market-prior {
   margin-left: 3px;

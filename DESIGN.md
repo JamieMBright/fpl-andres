@@ -292,6 +292,7 @@ so a review knows what it does not have to check by hand.
 | `MethodFlow`           | The pipeline step by step, each step auditable    | unit (static)                           |
 | `MethodChart`          | A method step's own numbers, drawn as bars        | unit (static)                           |
 | `PeerDistribution`     | One figure against players of the same price      | unit (`peer-distribution`)              |
+| `PlanStep`             | One step of the plan, folded away until wanted    | `feature-walk`                          |
 | `PeerChart`            | That peer group plotted, without leaving the card | unit (`peer-distribution`)              |
 | `SeasonFixtures`       | The run to the end of the season, spells marked   | unit (`SeasonFixtures.test.ts`)         |
 | `FixtureBreakdown`     | Every fixture ahead, and last season's totals     | unit (via `PinnedPlayers`)              |

@@ -114,7 +114,7 @@ test.describe("feature walk", () => {
     page,
   }) => {
     await fulfillReady(page);
-    await page.goto("/team/212279");
+    await page.goto("/plan?team=212279");
     await page.getByText("Observed snapshot ready").waitFor();
 
     await page.getByText("Correct Current State").click();
@@ -158,25 +158,18 @@ test.describe("feature walk", () => {
     page,
   }) => {
     await fulfillReady(page);
-    await page.goto("/team/111111");
+    await page.goto("/plan?team=111111");
     await expect(
-      page.getByRole("heading", { name: "Analysis for team 111111" }),
+      page.getByRole("heading", { name: "Every gameweek to the end." }),
     ).toBeVisible();
     await page.getByText("Observed snapshot ready").waitFor();
 
-    await page.getByRole("link", { name: "Analyse another team" }).click();
-    await page.getByLabel("Your FPL team ID").fill("222222");
-    await page.getByRole("button", { name: "Analyse my squad" }).click();
-
+    // Switching team must remount the snapshot, not repaint the previous one.
+    await page.goto("/plan?team=222222");
     await expect(
-      page.getByRole("heading", { name: "Analysis for team 222222" }),
+      page.getByRole("heading", { name: "Every gameweek to the end." }),
     ).toBeVisible();
-    await expect(
-      page.getByRole("heading", { name: "Analysis for team 111111" }),
-    ).toHaveCount(0);
-    await expect(
-      page.getByRole("heading", { name: "Analysis for team 222222" }),
-    ).toHaveAttribute("translate", "no");
+    await expect(page.getByLabel("Your Team ID")).toHaveValue("222222");
   });
 
   test("navigates the methodology and calibration routes and returns focus to headings", async ({
@@ -278,7 +271,7 @@ test.describe("feature walk", () => {
           contentType: "application/json",
         });
       });
-      await page.goto("/team/212279");
+      await page.goto("/plan?team=212279");
       await expect(
         page.getByRole("heading", { name: variant.heading }),
       ).toBeVisible();
@@ -303,7 +296,7 @@ test.describe("feature walk", () => {
       });
     });
 
-    await page.goto("/team/212279");
+    await page.goto("/plan?team=212279");
     await expect(
       page.getByRole("heading", { name: "FPL Source Request Failed" }),
     ).toBeVisible();
@@ -431,7 +424,7 @@ test.describe("feature walk", () => {
         status: 503,
       });
     });
-    await page.goto("/team/212279");
+    await page.goto("/plan?team=212279");
     await page
       .getByRole("heading", { name: "FPL Cannot Be Reached" })
       .waitFor();

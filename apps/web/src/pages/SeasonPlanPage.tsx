@@ -3,6 +3,7 @@ import { useMemo, useRef, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 
 import { CeefaxShirt } from "../components/CeefaxShirt";
+import { PlanStep } from "../components/PlanStep";
 import { DeclaredSquadNote } from "../components/DeclaredSquadNote";
 import { AnalysisResult } from "../components/AnalysisResult";
 import { analysisAnnouncement } from "../state/team-analysis-messages";
@@ -593,25 +594,33 @@ export default function SeasonPlanPage() {
           ignored by the plan. `useTeamPlan` already asked FPL, so nothing here
           fetches again — that endpoint is rate limited. */}
       {teamId === null ? null : (
-        <div
-          aria-label="Analysis result"
-          className="analysis-result"
-          key={teamId}
-          ref={resultRef}
-          role="region"
-          tabIndex={-1}
+        <PlanStep
+          defaultOpen
+          note={teamId.toLocaleString("en-GB")}
+          step="01"
+          title="Your squad and your record"
         >
-          <AnalysisResult
-            analysis={teamPlan.analysis}
-            entryId={teamId}
-            onRetry={() => {
-              // Focus moves to the region so a screen reader hears the retry's
-              // answer rather than being left on a button that vanished.
-              resultRef.current?.focus();
-              teamPlan.retry();
-            }}
-          />
-        </div>
+          <div
+            aria-label="Analysis result"
+            className="analysis-result"
+            key={teamId}
+            ref={resultRef}
+            role="region"
+            tabIndex={-1}
+          >
+            <AnalysisResult
+              analysis={teamPlan.analysis}
+              entryId={teamId}
+              onRetry={() => {
+                // Focus moves to the region so a screen reader hears the
+                // retry's answer rather than being left on a button that
+                // vanished.
+                resultRef.current?.focus();
+                teamPlan.retry();
+              }}
+            />
+          </div>
+        </PlanStep>
       )}
 
       {/* Announces the transition only. Marking the plan live would re-read
@@ -745,34 +754,49 @@ export default function SeasonPlanPage() {
         </p>
       ) : null}
 
-      <ChipStrategy chips={plan.chips} />
+      <PlanStep
+        defaultOpen
+        note={`${String(plan.chips.length)} played`}
+        step="02"
+        title="When to play the chips"
+      >
+        <ChipStrategy chips={plan.chips} />
+      </PlanStep>
 
-      <ul className="plan-rail">
-        {gameweeks.slice(0, shownWeeks).map((week) => (
-          <GameweekCard
-            chip={chips.get(week.event) ?? null}
-            key={week.event}
-            onOpen={(player) => {
-              setSelected({ player, week });
-            }}
-            week={week}
-          />
-        ))}
-      </ul>
+      <PlanStep
+        defaultOpen
+        note={`GW${String(gameweeks[0]?.event ?? 1)}–${String(gameweeks[gameweeks.length - 1]?.event ?? 38)}`}
+        step="03"
+        title="Every gameweek"
+      >
+        <ul className="plan-rail">
+          {gameweeks.slice(0, shownWeeks).map((week) => (
+            <GameweekCard
+              chip={chips.get(week.event) ?? null}
+              key={week.event}
+              onOpen={(player) => {
+                setSelected({ player, week });
+              }}
+              week={week}
+            />
+          ))}
+        </ul>
 
-      {shownWeeks < gameweeks.length ? (
-        <p className="plan-more">
-          <button
-            className="secondary-command"
-            onClick={() => {
-              setShownWeeks(gameweeks.length);
-            }}
-            type="button"
-          >
-            Show the remaining {String(gameweeks.length - shownWeeks)} gameweeks
-          </button>
-        </p>
-      ) : null}
+        {shownWeeks < gameweeks.length ? (
+          <p className="plan-more">
+            <button
+              className="secondary-command"
+              onClick={() => {
+                setShownWeeks(gameweeks.length);
+              }}
+              type="button"
+            >
+              Show the remaining {String(gameweeks.length - shownWeeks)}{" "}
+              gameweeks
+            </button>
+          </p>
+        ) : null}
+      </PlanStep>
 
       {selected ? (
         <PlayerDetail
@@ -789,79 +813,88 @@ export default function SeasonPlanPage() {
         {plan.rulesReference}.
       </p>
 
-      <section className="plan-caveats" aria-label="What this plan cannot know">
-        <h2>{CAVEAT_COUNT} things to hold against it</h2>
-        <ol>
-          <li>
-            <strong>The promoted clubs have no record.</strong> Every projection
-            here comes from {plan.recordSeason}, a season{" "}
-            {plan.dataGaps.clubsWithoutRecord.length > 0 ? (
-              <>
-                {plan.dataGaps.clubsWithoutRecord.join(" and ")} did not play in
-              </>
-            ) : (
-              <>the promoted clubs did not play in</>
-            )}
-            . Their players are missing from the pool entirely, and fixtures
-            against them are rated as exactly average because there is no
-            measured strength to rate them by. {plan.dataGaps.clubsInPool} of{" "}
-            {plan.dataGaps.clubsInLeague} clubs are represented.
-          </li>
-          <li>
-            <strong>It cannot see price changes.</strong> Players rise and fall
-            through the season and this plan holds today&rsquo;s prices for all
-            thirty-eight gameweeks. A transfer eleven weeks out may simply be
-            unaffordable by the time you reach it, and a squad that banks value
-            early can afford things this plan says it cannot.
-          </li>
-          <li>
-            <strong>It does not yet adjust week to week.</strong> A real plan
-            moves with form, minutes, injuries and price changes, and against
-            what your mini-league already owns. None of that is in here: this is
-            last season&rsquo;s scoring record scaled by this season&rsquo;s
-            fixtures, and nothing else.
-          </li>
-          <li>
-            <strong>It will change every gameweek.</strong> That is not a
-            failure of the plan, it is what a plan is for. Read the shape — the
-            weeks worth a chip, the runs worth holding through — and expect the
-            names past the next month or so to be replaced.
-          </li>
-          <li>
-            <strong>
-              {absentPremium
-                ? `No ${absentPremium.name}, and that is the model talking.`
-                : "The expensive names are in on projection, not reputation."}
-            </strong>{" "}
-            {absentPremium ? (
-              <>
-                He is the most expensive player in the game at{" "}
-                {money.format(absentPremium.priceTenths / 10)} and the plan
-                never fields him. The reason is points per pound, not doubt
-                about the player. A squad has £100.0m for fifteen, so every
-                extra million on one name is a million removed from the other
-                fourteen. He has to out-score not the striker who replaces him,
-                but that striker <em>plus</em> the upgrades the saving pays for
-                everywhere else — and on the projection he does not.{" "}
-                <Link to="/calibration#captaincy-title">
-                  The captaincy calibration
-                </Link>{" "}
-                closes the other half of the argument: over four seasons nothing
-                beat captaining the highest projection, so owning him for the
-                armband is not a separate reason to buy him. If you think that
-                understates him, the projection is the number to argue with, not
-                the optimiser.
-              </>
-            ) : (
-              <>
-                Every player above the premium line for his position appears in
-                at least one eleven, so the plan is not quietly avoiding the
-                expensive end of the pool.
-              </>
-            )}
-          </li>
-        </ol>
-      </section>
+      <PlanStep
+        note={`${String(CAVEAT_COUNT)} of them`}
+        step="04"
+        title="What this plan cannot know"
+      >
+        <section
+          className="plan-caveats"
+          aria-label="What this plan cannot know"
+        >
+          <ol>
+            <li>
+              <strong>The promoted clubs have no record.</strong> Every
+              projection here comes from {plan.recordSeason}, a season{" "}
+              {plan.dataGaps.clubsWithoutRecord.length > 0 ? (
+                <>
+                  {plan.dataGaps.clubsWithoutRecord.join(" and ")} did not play
+                  in
+                </>
+              ) : (
+                <>the promoted clubs did not play in</>
+              )}
+              . Their players are missing from the pool entirely, and fixtures
+              against them are rated as exactly average because there is no
+              measured strength to rate them by. {plan.dataGaps.clubsInPool} of{" "}
+              {plan.dataGaps.clubsInLeague} clubs are represented.
+            </li>
+            <li>
+              <strong>It cannot see price changes.</strong> Players rise and
+              fall through the season and this plan holds today&rsquo;s prices
+              for all thirty-eight gameweeks. A transfer eleven weeks out may
+              simply be unaffordable by the time you reach it, and a squad that
+              banks value early can afford things this plan says it cannot.
+            </li>
+            <li>
+              <strong>It does not yet adjust week to week.</strong> A real plan
+              moves with form, minutes, injuries and price changes, and against
+              what your mini-league already owns. None of that is in here: this
+              is last season&rsquo;s scoring record scaled by this
+              season&rsquo;s fixtures, and nothing else.
+            </li>
+            <li>
+              <strong>It will change every gameweek.</strong> That is not a
+              failure of the plan, it is what a plan is for. Read the shape —
+              the weeks worth a chip, the runs worth holding through — and
+              expect the names past the next month or so to be replaced.
+            </li>
+            <li>
+              <strong>
+                {absentPremium
+                  ? `No ${absentPremium.name}, and that is the model talking.`
+                  : "The expensive names are in on projection, not reputation."}
+              </strong>{" "}
+              {absentPremium ? (
+                <>
+                  He is the most expensive player in the game at{" "}
+                  {money.format(absentPremium.priceTenths / 10)} and the plan
+                  never fields him. The reason is points per pound, not doubt
+                  about the player. A squad has £100.0m for fifteen, so every
+                  extra million on one name is a million removed from the other
+                  fourteen. He has to out-score not the striker who replaces
+                  him, but that striker <em>plus</em> the upgrades the saving
+                  pays for everywhere else — and on the projection he does not.{" "}
+                  <Link to="/calibration#captaincy-title">
+                    The captaincy calibration
+                  </Link>{" "}
+                  closes the other half of the argument: over four seasons
+                  nothing beat captaining the highest projection, so owning him
+                  for the armband is not a separate reason to buy him. If you
+                  think that understates him, the projection is the number to
+                  argue with, not the optimiser.
+                </>
+              ) : (
+                <>
+                  Every player above the premium line for his position appears
+                  in at least one eleven, so the plan is not quietly avoiding
+                  the expensive end of the pool.
+                </>
+              )}
+            </li>
+          </ol>
+        </section>
+      </PlanStep>
     </section>
   );
 }

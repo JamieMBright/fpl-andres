@@ -75,7 +75,7 @@ test.describe("both kits meet the contrast standard the design claims", () => {
           contentType: "application/json",
         });
       });
-      await page.goto("/team/212279");
+      await page.goto("/plan?team=212279");
       await settle(page);
       await applyKit(page, kit.clicks, kit.theme);
 

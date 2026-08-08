@@ -85,7 +85,7 @@ test.describe("every unavailable reason explains itself", () => {
           contentType: "application/json",
         });
       });
-      await page.goto("/team/212279");
+      await page.goto("/plan?team=212279");
 
       const main = page.getByRole("main");
       await expect(main).toContainText(/./);
@@ -114,7 +114,7 @@ test.describe("every degraded reason offers a retry and fabricates nothing", () 
           contentType: "application/json",
         });
       });
-      await page.goto("/team/212279");
+      await page.goto("/plan?team=212279");
 
       await expect(
         page.getByRole("button", { name: "Retry analysis" }),
@@ -199,7 +199,7 @@ test.describe("a failed refresh keeps the last verified snapshot and says so", (
         });
       });
 
-      await page.goto("/team/212279");
+      await page.goto("/plan?team=212279");
       await expect(page.getByText("Observed snapshot ready")).toBeVisible();
 
       failing = true;
@@ -257,7 +257,7 @@ test.describe("transport failures never reach the user as a blank page", () => {
     test(failure.name, async ({ page }) => {
       await stubHistory(page);
       await page.route("**/api/team/*", failure.respond);
-      await page.goto("/team/212279");
+      await page.goto("/plan?team=212279");
 
       // Something must be said, a heading must survive, and no squad invented.
       await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
@@ -283,7 +283,7 @@ test("an upstream failure never leaks its internals to the page", async ({
       contentType: "application/json",
     });
   });
-  await page.goto("/team/212279");
+  await page.goto("/plan?team=212279");
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
 
   const body = (await page.textContent("body")) ?? "";

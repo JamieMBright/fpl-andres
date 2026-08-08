@@ -79,7 +79,7 @@ test("opens a verified public team dossier from the working first screen", async
 
   await expect(page).toHaveURL(/\/team\/123456$/);
   await expect(
-    page.getByRole("heading", { name: "Analysis for team 123456" }),
+    page.getByRole("heading", { name: "Every gameweek to the end." }),
   ).toBeFocused();
   await expect(page.getByText("Observed snapshot ready")).toBeVisible();
   await expect(
@@ -93,7 +93,7 @@ test("supports keyboard bypass and disclosure controls", async ({ page }) => {
     status: "ready",
     state: publicTeamState(),
   });
-  await page.goto("/team/212279");
+  await page.goto("/plan?team=212279");
   await page.getByText("Observed snapshot ready").waitFor();
 
   const skipLink = page.getByRole("link", { name: "Skip to content" });
@@ -141,7 +141,7 @@ test("refuses to invent a transfer plan before a ball is kicked", async ({
     status: "ready",
     state: publicTeamState(),
   });
-  await page.goto("/team/212279");
+  await page.goto("/plan?team=212279");
   await page.getByText("Observed snapshot ready").waitFor();
 
   const plan = page.getByRole("region", { name: "Your transfer plan" });
@@ -168,7 +168,7 @@ test("keeps verified cached state visible when refresh is degraded", async ({
     503,
   );
 
-  await page.goto("/team/212279");
+  await page.goto("/plan?team=212279");
 
   await expect(
     page.getByText("Showing a stale verified snapshot"),
@@ -191,7 +191,7 @@ test("renders an honest unavailable state without a squad", async ({
     event: 9,
   });
 
-  await page.goto("/team/212279");
+  await page.goto("/plan?team=212279");
 
   await expect(
     page.getByRole("heading", { name: "Gameweek Picks Not Available" }),
@@ -225,7 +225,7 @@ test("recovers from an invalid response without losing focus", async ({
         : { body: "not-json", contentType: "application/json" },
     );
   });
-  await page.goto("/team/212279");
+  await page.goto("/plan?team=212279");
 
   await expect(
     page.getByRole("heading", {
@@ -284,12 +284,12 @@ test("reflows at a 200 percent desktop zoom equivalent", async ({ page }) => {
     status: "ready",
     state: publicTeamState(4_294_967_295),
   });
-  await page.goto("/team/4294967295");
+  await page.goto("/plan?team=4294967295");
   await page.getByText("Observed snapshot ready").waitFor();
 
   await expectNoPageOverflow(page);
   await expect(
-    page.getByRole("heading", { name: "Analysis for team 4294967295" }),
+    page.getByRole("heading", { name: "Every gameweek to the end." }),
   ).toBeVisible();
   await expect(page.getByText("£100.4m")).toBeVisible();
 });
@@ -309,7 +309,7 @@ test("disables loading and disclosure animation for reduced motion", async ({
       contentType: "application/json",
     });
   });
-  await page.goto("/team/212279");
+  await page.goto("/plan?team=212279");
 
   const loadingMark = page.locator(".loading-mark");
   await expect(loadingMark).toBeVisible();
@@ -329,7 +329,7 @@ test("keeps evidence and focus controls visible in forced colors", async ({
     status: "ready",
     state: publicTeamState(),
   });
-  await page.goto("/team/212279");
+  await page.goto("/plan?team=212279");
   await page.getByText("Observed snapshot ready").waitFor();
 
   await expect(page.locator(".brand-mark")).toBeVisible();

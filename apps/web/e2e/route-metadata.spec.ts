@@ -35,7 +35,7 @@ test.describe("each route says what it is", () => {
         contentType: "application/json",
       });
     });
-    await page.goto("/team/212279");
+    await page.goto("/plan?team=212279");
 
     await expect(page).toHaveTitle(/Team 212279 · FPL Andres/);
   });
