@@ -5,6 +5,7 @@ import {
   createFplProxyResponse,
   type FplProxyOutcome,
   publicTtlMsFor,
+  retentionMsFor,
 } from "../../../../api/_lib/fpl-proxy";
 import { SourceCache } from "../../../../api/_lib/source-cache";
 
@@ -233,5 +234,81 @@ describe("FPL proxy resilience", () => {
     clock = 1_001;
     expect(store.get("key")).toBeNull();
     expect(store.size).toBe(0);
+  });
+});
+
+/**
+ * Measured against production on 2026-08-09: FPL answers 403 with no content
+ * type at all to this deployment, then serves five consecutive requests from
+ * the same region moments later. A 403 here is a door being held shut for a
+ * while, not a door that is locked.
+ */
+describe("FPL turning this deployment away", () => {
+  it("retries a 403 rather than treating one as final", async () => {
+    const upstreamFetch = vi
+      .fn<typeof fetch>()
+      .mockResolvedValueOnce(new Response("", { status: 403 }))
+      .mockResolvedValue(jsonResponse({ total_players: 3 }));
+    const sleep = vi
+      .fn<(milliseconds: number) => Promise<void>>()
+      .mockResolvedValue();
+
+    const response = await createFplProxyResponse(
+      "/api/fpl/bootstrap-static/",
+      "GET",
+      upstreamFetch,
+      sleep,
+      () => 0.5,
+    );
+
+    expect(upstreamFetch).toHaveBeenCalledTimes(2);
+    expect(response.status).toBe(200);
+  });
+
+  it("retains a manager's history, which is settled seasons and cannot go stale wrong", () => {
+    expect(retentionMsFor("/api/entry/1/history/")).toBeGreaterThan(0);
+    expect(retentionMsFor("/api/bootstrap-static/")).toBeGreaterThan(0);
+    // A squad and a live entry both change at the deadline. Serving yesterday's
+    // would be a wrong answer, not an old one.
+    expect(retentionMsFor("/api/entry/1/")).toBe(0);
+    expect(retentionMsFor("/api/entry/1/event/2/picks/")).toBe(0);
+  });
+
+  it("serves a retained history when FPL refuses, labelled and never shared", async () => {
+    const store = new FplDocumentStore();
+    const sleep = vi
+      .fn<(milliseconds: number) => Promise<void>>()
+      .mockResolvedValue();
+    const call = (fetchApi: typeof fetch) =>
+      createFplProxyResponse(
+        "/api/fpl/entry/212279/history/",
+        "GET",
+        fetchApi,
+        sleep,
+        () => 0.5,
+        undefined,
+        undefined,
+        { store },
+      );
+
+    const fresh = await call(
+      vi
+        .fn<typeof fetch>()
+        .mockImplementation(async () => jsonResponse({ past: [{ rank: 19 }] })),
+    );
+    expect(fresh.status).toBe(200);
+    expect(fresh.headers.get("X-FPL-Stale")).toBeNull();
+
+    const stale = await call(
+      vi
+        .fn<typeof fetch>()
+        .mockImplementation(async () => new Response("", { status: 403 })),
+    );
+
+    expect(stale.status).toBe(200);
+    expect(stale.headers.get("X-FPL-Stale")).toBe("1");
+    // One manager's record must never be offered to a shared cache.
+    expect(stale.headers.get("Cache-Control")).toBe("private, no-store");
+    await expect(stale.json()).resolves.toEqual({ past: [{ rank: 19 }] });
   });
 });

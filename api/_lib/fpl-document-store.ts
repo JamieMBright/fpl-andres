@@ -30,7 +30,13 @@
  * an empty store and falls back to the same error as before.
  */
 
-const MAX_ENTRIES = 8;
+/**
+ * Eight held only the handful of public documents. Managers' histories now
+ * land here too, and one of those is a couple of kilobytes against a bootstrap
+ * of well over a megabyte, so the count can rise a long way before the bytes
+ * do. Too small and a run of readers evicts the bootstrap every reader needs.
+ */
+const MAX_ENTRIES = 64;
 const DEFAULT_RETENTION_MS = 6 * 60 * 60 * 1_000;
 
 export interface StoredDocument {

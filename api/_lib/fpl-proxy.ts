@@ -55,7 +55,13 @@ const MIN_ATTEMPT_BUDGET_MS = 250;
 const MIN_RETRY_ATTEMPT_MS = 1_500;
 const MAX_ATTEMPTS = 3;
 const MAX_RETRY_AFTER_MS = 30_000;
-const RETRYABLE_STATUSES = new Set([408, 425, 429, 500, 502, 503, 504]);
+/**
+ * 403 is here on evidence. Measured against production on 2026-08-09, FPL
+ * answered 403 with no content type to this deployment and then served five
+ * consecutive requests from the same region moments later. Treating one as
+ * final spent a whole page load on a refusal that had already lifted.
+ */
+const RETRYABLE_STATUSES = new Set([403, 408, 425, 429, 500, 502, 503, 504]);
 
 /**
  * How long a public document may be reused without asking FPL again.
@@ -77,6 +83,25 @@ export function publicTtlMsFor(pathname: string): number {
     return 300_000;
   }
   return 0;
+}
+
+/**
+ * How long a copy may be held as an answer of last resort when FPL will not
+ * answer at all. Separate from `publicTtlMsFor`, which asks the different
+ * question of whether a document may be reused instead of asking.
+ *
+ * A manager's history is the past seasons, which are settled and never change
+ * again, so an hours-old copy is old rather than wrong. That is not true of
+ * anything else per-manager: the entry and the picks both move at the
+ * deadline, and yesterday's squad is a wrong answer dressed as an old one.
+ * Retention here never makes a document shareable — `cachePolicyFor` still
+ * marks every per-manager path `private, no-store`.
+ */
+export function retentionMsFor(pathname: string): number {
+  if (pathname.endsWith("/history/")) {
+    return 6 * 60 * 60 * 1_000;
+  }
+  return publicTtlMsFor(pathname);
 }
 
 type Sleep = (milliseconds: number) => Promise<void>;
@@ -147,6 +172,7 @@ export async function createFplProxyResponse(
 
   const { cache, store, onOutcome } = dependencies;
   const ttlMs = publicTtlMsFor(upstreamUrl.pathname);
+  const retainMs = retentionMsFor(upstreamUrl.pathname);
   const key = upstreamUrl.href;
   const read = () =>
     readUpstream(upstreamUrl, fetchUpstream, sleep, random, now, deadline);
@@ -170,7 +196,7 @@ export async function createFplProxyResponse(
   }
 
   if (outcome.kind === "ok") {
-    if (store && ttlMs > 0 && outcome.status === 200) {
+    if (store && retainMs > 0 && outcome.status === 200) {
       store.put(key, outcome.body);
     }
     onOutcome?.({
@@ -194,14 +220,16 @@ export async function createFplProxyResponse(
   // FPL did not answer. For a document that is the same for every caller, a
   // copy from a few minutes ago answers the reader's question; a 502 answers
   // nothing. The copy goes out labelled, never disguised as current.
-  const retained = ttlMs > 0 ? (store?.get(key) ?? null) : null;
+  const retained = retainMs > 0 ? (store?.get(key) ?? null) : null;
   if (retained) {
     const staleAgeMs = Math.max(0, now() - retained.capturedAt);
     onOutcome?.({ url: key, tier: "stale", status: 200, staleAgeMs });
     return new Response(retained.body, {
       status: 200,
       headers: {
-        "Cache-Control": "public, s-maxage=30, stale-while-revalidate=600",
+        // A stale per-manager copy is still one manager's, so it follows the
+        // same policy as a fresh one rather than a public shelf life.
+        "Cache-Control": staleCachePolicyFor(upstreamUrl.pathname),
         "Content-Type": "application/json; charset=utf-8",
         "X-FPL-Stale": "1",
         "X-FPL-Stale-Age": String(Math.round(staleAgeMs / 1_000)),
@@ -605,6 +633,14 @@ function cachePolicyFor(pathname: string): string {
     return "public, s-maxage=300, stale-while-revalidate=600";
   }
   return "private, no-store";
+}
+
+/** A shorter shelf life for a copy that is already known to be behind. */
+function staleCachePolicyFor(pathname: string): string {
+  const fresh = cachePolicyFor(pathname);
+  return fresh.startsWith("public")
+    ? "public, s-maxage=30, stale-while-revalidate=600"
+    : fresh;
 }
 
 function jsonError(

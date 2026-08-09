@@ -144,11 +144,14 @@ describe("team analysis entry", () => {
 
   it("keeps a validated snapshot visible when refresh is degraded", async () => {
     saveCachedPublicTeamState(localStorage, readyState.entryId, readyState);
+    // A fresh Response per call: a body can only be read once, and the page
+    // makes two fetches. Sharing one instance made whichever consumer read
+    // first the only one that saw anything.
     vi.stubGlobal(
       "fetch",
       vi
         .fn<typeof fetch>()
-        .mockResolvedValue(
+        .mockImplementation(async () =>
           Response.json(
             { status: "degraded", reason: "fpl_unreachable" },
             { status: 503 },
