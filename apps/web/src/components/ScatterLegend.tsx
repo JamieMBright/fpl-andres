@@ -30,11 +30,14 @@ const SWATCH = 22;
  */
 function Swatch({
   children,
+  dimmed,
   isolated,
   label,
   onToggle,
 }: {
   readonly children: React.ReactNode;
+  /** Its dimension has a selection and this is not in it. */
+  readonly dimmed: boolean;
   readonly isolated: boolean;
   readonly label: string;
   readonly onToggle: () => void;
@@ -42,7 +45,7 @@ function Swatch({
   return (
     <button
       aria-pressed={isolated}
-      className="scatter-legend-key"
+      className={dimmed ? "scatter-legend-key is-dimmed" : "scatter-legend-key"}
       onClick={onToggle}
       type="button"
     >
@@ -93,6 +96,18 @@ export function ScatterLegend({
 }) {
   const byClub = view.colourBy === "club";
   const held = useMemo(() => new Set(view.highlights), [view.highlights]);
+  // Each dimension dims only itself: choosing a club must not grey the shapes.
+  const anyClub = useMemo(
+    () =>
+      view.highlights.some(
+        (key) => !key.startsWith("@") && !key.startsWith("#"),
+      ),
+    [view.highlights],
+  );
+  const anyPosition = useMemo(
+    () => view.highlights.some((key) => key.startsWith("@")),
+    [view.highlights],
+  );
   const shown = useMemo(() => {
     if (!byClub) return [];
     const wanted = new Set(clubsInPlay);
@@ -107,6 +122,7 @@ export function ScatterLegend({
           {POSITIONS.map(({ code, label }) => (
             <li key={code}>
               <Swatch
+                dimmed={anyPosition && !held.has(`@${code}`)}
                 isolated={held.has(`@${code}`)}
                 label={label}
                 onToggle={() => {
@@ -136,6 +152,7 @@ export function ScatterLegend({
             {shown.map((mark) => (
               <li key={mark.shortName}>
                 <Swatch
+                  dimmed={anyClub && !held.has(mark.shortName)}
                   isolated={held.has(mark.shortName)}
                   label={mark.shortName}
                   onToggle={() => {
@@ -171,6 +188,7 @@ export function ScatterLegend({
             {POSITIONS.map(({ code, label }) => (
               <li key={code}>
                 <Swatch
+                  dimmed={anyPosition && !held.has(`@${code}`)}
                   isolated={held.has(`@${code}`)}
                   label={label}
                   onToggle={() => {

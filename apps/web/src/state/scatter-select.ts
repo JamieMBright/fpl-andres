@@ -139,9 +139,19 @@ export function selectPlotted(
         };
 
   const fit = view.trend ? leastSquaresFit(kept) : null;
-  // A club short name matches everyone at that club, `@POS` everyone in that
-  // position, and `#code` matches one man.
-  const highlighted = new Set(view.highlights);
+  // Clubs and positions are two dimensions, each additive within itself and
+  // intersected across: Chelsea then Forward means Chelsea's forwards, not
+  // everyone who is either. A `#code` names one man and shows him as well.
+  const clubs = new Set<string>();
+  const positions = new Set<string>();
+  const named = new Set<string>();
+  for (const key of view.highlights) {
+    if (key.startsWith("@")) positions.add(key.slice(1));
+    else if (key.startsWith("#")) named.add(key);
+    else clubs.add(key);
+  }
+  const grouped = clubs.size > 0 || positions.size > 0;
+  const anySelection = grouped || named.size > 0;
 
   const points = kept.map<PlottedPlayer>((entry) => {
     const quadrant = centres
@@ -158,12 +168,11 @@ export function selectPlotted(
       // "strong and unowned" is the whole chart rather than a subset of it.
       overlooked: inStrongQuadrant(quadrant, x, y),
       matched:
-        highlighted.size === 0 ||
-        highlighted.has(entry.player.club) ||
-        // `@MID` isolates a position. Prefixed so it can never collide with a
-        // club that happens to share the three letters.
-        highlighted.has(`@${entry.player.position}`) ||
-        highlighted.has(`#${String(entry.player.code)}`),
+        !anySelection ||
+        named.has(`#${String(entry.player.code)}`) ||
+        (grouped &&
+          (clubs.size === 0 || clubs.has(entry.player.club)) &&
+          (positions.size === 0 || positions.has(entry.player.position))),
     };
   });
 

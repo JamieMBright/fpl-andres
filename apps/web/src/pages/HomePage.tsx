@@ -37,7 +37,15 @@ export default function HomePage() {
 
   return (
     <section className="index-page" aria-label="Index">
-      <RouteHeading>Where to start.</RouteHeading>
+      <RouteHeading>Welcome to FPL Andres.</RouteHeading>
+      <p className="index-lede">
+        An analytics-first, Fantasy Premier League obsessed stats explorer and
+        team optimiser. Every player in the game priced on fourteen scoring
+        routes, plotted on any two statistics you choose, and solved into a
+        thirty-eight gameweek plan built from your own fifteen. Measured, scored
+        against four seasons of what actually happened, and honest about the
+        weeks it gets wrong.
+      </p>
 
       <ul className="index-grid">
         <li className="index-cell is-plan">

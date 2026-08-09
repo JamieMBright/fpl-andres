@@ -531,14 +531,12 @@ h1[tabindex="-1"]:focus-visible {
 }
 
 .info-marker-bubble {
-  position: absolute;
-  bottom: calc(100% + 6px);
-  left: 50%;
+  position: fixed;
   z-index: 40;
   width: max-content;
   max-width: min(280px, 72vw);
   padding: 10px 12px;
-  transform: translateX(-50%);
+  transform: translate(-50%, -100%);
   border: 1px solid var(--signal-blue);
   background: var(--paper-deep);
   color: var(--ink);
@@ -649,6 +647,14 @@ h1[tabindex="-1"]:focus-visible {
 .index-page h1 {
   max-width: 720px;
   margin-bottom: clamp(28px, 4vw, 44px);
+}
+
+.index-lede {
+  max-width: 66ch;
+  margin: -14px 0 clamp(28px, 4vw, 44px);
+  color: var(--ink-soft);
+  font-size: clamp(15px, 1.4vw, 17px);
+  line-height: 1.6;
 }
 
 .index-grid {
@@ -5390,7 +5396,7 @@ h1[tabindex="-1"]:focus-visible {
      scroll sideways at others. */
   grid-template-columns: minmax(0, 1fr) 360px;
   gap: 24px;
-  align-items: start;
+  align-items: stretch;
   margin-top: 24px;
 }
 
@@ -5399,13 +5405,10 @@ h1[tabindex="-1"]:focus-visible {
   /* Without an explicit minmax(0, ...) the implicit track is content-sized, so
      a wide list pushed the whole page wider and squeezed the chart. */
   grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr);
   gap: 12px;
   min-width: 0;
-  /* Follows the chart down a long page rather than scrolling away from it.
-     No inner scroll: an overflow container clips the info bubbles, which is
-     how the one explanation a reader asked for ended up off screen. */
-  position: sticky;
-  top: 12px;
+  min-height: 0;
 }
 
 .analysis-vintage,
@@ -5539,8 +5542,11 @@ h1[tabindex="-1"]:focus-visible {
   stroke-width: 2;
 }
 
+/* Edge as well as fill. A dimmed point kept its full-strength outline, so an
+   isolated club sat inside a cage of everyone else's borders. */
 .scatter-mark-dimmed {
-  fill-opacity: 0.08;
+  fill-opacity: 0.06;
+  stroke-opacity: 0.12;
 }
 
 /* A heavy green ring. Amber at 2.5 was lost among the club colours, and this
@@ -5779,6 +5785,12 @@ h1[tabindex="-1"]:focus-visible {
   font-weight: 700;
 }
 
+/* Its dimension has a selection and this is not in it, so it reads the way
+   the points it stands for are drawn. */
+.scatter-legend-key.is-dimmed {
+  opacity: 0.35;
+}
+
 .scatter-legend-key:focus-visible {
   outline: 3px solid var(--signal-blue);
   outline-offset: 1px;
@@ -5862,6 +5874,21 @@ h1[tabindex="-1"]:focus-visible {
   font-size: 13px;
 }
 
+/* As tall as the plot it configures, scrolling inside that rather than running
+   past the bottom of it. The bubbles are portalled, so scrolling here no
+   longer hides them. */
+@media (min-width: 1101px) {
+  .analysis-controls {
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    min-height: 0;
+  }
+
+  .analysis-controls[open] > .scatter-controls-body {
+    overflow-y: auto;
+  }
+}
+
 .scatter-controls-summary {
   display: flex;
   align-items: center;
@@ -5929,13 +5956,16 @@ h1[tabindex="-1"]:focus-visible {
 
 .scatter-controls-body {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   padding: 16px;
   gap: 14px;
 }
 
 .scatter-control-row {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 5px;
+  min-width: 0;
 }
 
 .scatter-control-row label,
@@ -5947,8 +5977,15 @@ h1[tabindex="-1"]:focus-visible {
   text-transform: uppercase;
 }
 
+/* `width: 100%` with the border inside it. A select sizes to its longest
+   option by default, which is how the box came to sit wider than the panel
+   holding it. */
 .scatter-controls select,
 .scatter-controls input[type="search"] {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
   min-height: 44px;
   padding: 8px;
   border: 1px solid var(--rule);
@@ -5962,6 +5999,64 @@ h1[tabindex="-1"]:focus-visible {
   min-height: 120px;
 }
 
+/* Same gesture as the legend: press to include, press again to drop. */
+/* The name is the way into the profile, so it looks like one. */
+.readout-name {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.readout-name:hover {
+  color: var(--signal-blue);
+}
+
+.readout-name:focus-visible {
+  outline: 3px solid var(--signal-blue);
+  outline-offset: 2px;
+}
+
+.scatter-toggles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.scatter-toggle {
+  min-height: 26px;
+  padding: 3px 7px;
+  border: 1px solid var(--rule);
+  background: none;
+  color: var(--ink-soft);
+  font-family: var(--fa-body);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+}
+
+.scatter-toggle:hover {
+  border-color: var(--ink-soft);
+}
+
+.scatter-toggle[aria-pressed="true"] {
+  border-color: var(--signal-blue);
+  background: var(--signal-blue);
+  color: var(--paper-deep);
+}
+
+.scatter-toggle:focus-visible {
+  outline: 3px solid var(--signal-blue);
+  outline-offset: 1px;
+}
+
 .scatter-controls input[type="range"] {
   width: 100%;
   min-height: 44px;
@@ -5970,10 +6065,12 @@ h1[tabindex="-1"]:focus-visible {
 
 .scatter-fieldset {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   padding: 10px 12px;
   border: 1px solid var(--rule);
   margin: 0;
   gap: 6px;
+  min-width: 0;
 }
 
 .scatter-radio,
@@ -6270,12 +6367,6 @@ h1[tabindex="-1"]:focus-visible {
 @media (max-width: 1100px) {
   .analysis-layout {
     grid-template-columns: minmax(0, 1fr);
-  }
-
-  /* A sidebar that is now underneath must not also pin itself to the viewport
-     and eat the screen the chart needs. */
-  .analysis-panels {
-    position: static;
   }
 }
 

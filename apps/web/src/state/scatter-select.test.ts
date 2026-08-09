@@ -243,34 +243,61 @@ describe("selectPlotted", () => {
     expect(selection.points.filter((point) => point.matched)).toHaveLength(2);
   });
 
-  // The legend is the control: clicking a shape isolates that position, and
-  // clicking a second one adds to it rather than replacing it.
-  it("highlights a whole position, and adds a second without dropping the first", () => {
+  // The legend is the control, and it has two dimensions. Clubs are additive
+  // among themselves, positions among themselves, and the two intersect:
+  // Chelsea then Forward means Chelsea's forwards, not everyone who is either.
+  describe("legend isolation, step by step", () => {
     const squad = [
-      player({ code: 1, position: "MID" }),
-      player({ code: 2, position: "DEF" }),
-      player({ code: 3, position: "FWD" }),
+      player({ code: 1, club: "CHE", position: "FWD" }),
+      player({ code: 2, club: "CHE", position: "DEF" }),
+      player({ code: 3, club: "MUN", position: "FWD" }),
+      player({ code: 4, club: "MUN", position: "MID" }),
+      player({ code: 5, club: "ARS", position: "FWD" }),
     ];
 
-    const mids = selectPlotted(squad, { ...view, highlights: ["@MID"] })!;
-    expect(mids.points.filter((point) => point.matched)).toHaveLength(1);
+    const lit = (highlights: string[]) =>
+      selectPlotted(squad, { ...view, highlights })!
+        .points.filter((point) => point.matched)
+        .map((point) => point.player.code)
+        .sort((a, b) => a - b);
 
-    const both = selectPlotted(squad, {
-      ...view,
-      highlights: ["@MID", "@FWD"],
-    })!;
-    expect(both.points.filter((point) => point.matched)).toHaveLength(2);
-    // Nothing is removed, only dimmed.
-    expect(both.points).toHaveLength(3);
-  });
+    it("lights everyone by default", () => {
+      expect(lit([])).toEqual([1, 2, 3, 4, 5]);
+    });
 
-  it("keeps a position highlight from colliding with a club of the same name", () => {
-    const selection = selectPlotted(
-      [player({ code: 1, club: "MID", position: "FWD" })],
-      { ...view, highlights: ["@MID"] },
-    )!;
+    it("isolates one club, then adds a second", () => {
+      expect(lit(["CHE"])).toEqual([1, 2]);
+      expect(lit(["CHE", "MUN"])).toEqual([1, 2, 3, 4]);
+    });
 
-    expect(selection.points[0]?.matched).toBe(false);
+    it("intersects a position with the clubs already chosen", () => {
+      expect(lit(["CHE", "MUN", "@FWD"])).toEqual([1, 3]);
+    });
+
+    it("drops one club and keeps the other, position still applied", () => {
+      expect(lit(["MUN", "@FWD"])).toEqual([3]);
+    });
+
+    it("drops the position and restores every position of that club", () => {
+      expect(lit(["MUN"])).toEqual([3, 4]);
+    });
+
+    it("returns to the default view when the last key comes off", () => {
+      expect(lit([])).toEqual([1, 2, 3, 4, 5]);
+    });
+
+    it("never removes a point, only dims it", () => {
+      const selection = selectPlotted(squad, {
+        ...view,
+        highlights: ["CHE", "@FWD"],
+      })!;
+
+      expect(selection.points).toHaveLength(5);
+    });
+
+    it("shows a player named by code whatever the other keys say", () => {
+      expect(lit(["CHE", "#5"])).toEqual([1, 2, 5]);
+    });
   });
 
   it("has no centre and no fit when everything is filtered away", () => {

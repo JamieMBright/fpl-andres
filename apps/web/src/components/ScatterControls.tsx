@@ -276,28 +276,33 @@ export function ScatterControls({
           </p>
         </fieldset>
 
-        <div className="scatter-control-row">
-          <label htmlFor={`${ids}-club`}>Club</label>
-          <select
-            id={`${ids}-club`}
-            multiple
-            size={5}
-            value={view.clubs}
-            onChange={(event) =>
-              onChange({
-                clubs: [...event.target.selectedOptions].map(
-                  (option) => option.value,
-                ),
-              })
-            }
-          >
+        <fieldset className="scatter-fieldset">
+          <legend>Club</legend>
+          {/* Toggles, not a multi-select list: the same gesture as the legend,
+              and a five-row scroller hid fifteen of the twenty clubs. */}
+          <div className="scatter-toggles">
             {pool.clubs.map((club) => (
-              <option key={club} value={club}>
-                {club}
-              </option>
+              <button
+                aria-pressed={view.clubs.includes(club)}
+                className="scatter-toggle"
+                key={club}
+                onClick={() => {
+                  onChange({
+                    clubs: view.clubs.includes(club)
+                      ? view.clubs.filter((held) => held !== club)
+                      : [...view.clubs, club],
+                  });
+                }}
+                type="button"
+              >
+                <span translate="no">{club}</span>
+              </button>
             ))}
-          </select>
-        </div>
+          </div>
+          <p className="scatter-hint">
+            {view.clubs.length === 0 ? "All clubs" : null}
+          </p>
+        </fieldset>
 
         <div className="scatter-control-row">
           <label htmlFor={`${ids}-mins`}>

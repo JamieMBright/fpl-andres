@@ -442,6 +442,7 @@ function AnalysisBody({
         selection={selection}
         pinned={view.pinned}
         onTogglePin={onTogglePin}
+        onOpen={setOpened}
         rankBy={view.tableMetric}
         onRankBy={(tableMetric) => onChange({ tableMetric })}
       />

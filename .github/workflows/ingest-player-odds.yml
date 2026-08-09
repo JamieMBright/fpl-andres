@@ -11,18 +11,25 @@ name: Ingest Player Odds
 #
 #   ODDS_API_KEY   https://the-odds-api.com   free tier, 500 requests a month
 #
+# See docs/PLAYER_MARKETS.md for how to get one and where to put it.
+#
 # Each fixture priced costs one request, so `max-events` is the budget dial.
-# Ten fixtures twice a week is about 80 a month and leaves room for the survey.
+# The schedule below is 30 daily runs plus roughly 9 pre-deadline ones, at ten
+# fixtures each: about 390 requests a month, leaving headroom for manual runs.
 #
 # Nothing here emits or implies a betting recommendation. A price is read as a
 # probability and used as evidence about a footballer.
 
 on:
   schedule:
-    # Friday evening and Monday morning: after most team news, before the
-    # weekend, and again once the round has settled.
-    - cron: "13 19 * * 5"
-    - cron: "13 9 * * 1"
+    # 08:00 UTC is 09:00 British Summer Time, and 08:00 in winter. Cron has no
+    # timezone, and two crons to hold one local hour would cost twice the
+    # requests for an hour nobody is waiting on.
+    - cron: "0 8 * * *"
+    # An hour before the earliest a deadline lands, on the two days it usually
+    # does. Deadlines move; this is the cheap approximation and it is named as
+    # one rather than dressed up as deadline awareness.
+    - cron: "0 9 * * 5,6"
   workflow_dispatch:
     inputs:
       max-events:

@@ -49,6 +49,31 @@ repository secrets to have a source probed.
 | `BETFAIR_APP_KEY`       | Betfair Exchange | Delayed application key is free |
 | `BETFAIR_SESSION_TOKEN` | Betfair Exchange | Expires; refresh before a run   |
 
+### Getting `ODDS_API_KEY`, and where it goes
+
+This is the one the ingest actually needs. Without it **Ingest Player Odds**
+fails on its first step and says so, rather than committing an empty artifact.
+
+1. Go to <https://the-odds-api.com> and click **Get API key**.
+2. Enter an email. The free tier is 500 requests a month and needs no card.
+   The key arrives by email and is shown on the dashboard.
+3. In this repository: **Settings → Secrets and variables → Actions → New
+   repository secret**.
+4. Name it exactly `ODDS_API_KEY`. Paste the key as the value. Save.
+5. **Actions → Ingest Player Odds → Run workflow** to confirm. A good run
+   prints how many fixtures were priced, how many players were quoted and how
+   many joined onto an FPL element, then commits
+   `apps/web/src/data/player-odds.json`.
+
+Never put the key in a file. Nothing here reads it from anywhere but the
+environment, and a key in a commit is a key that has to be rotated.
+
+**The budget.** One request per fixture priced, against 500 a month. The
+schedule is daily at 08:00 UTC and again at 09:00 UTC on Friday and Saturday,
+an hour before the earliest a deadline lands. At ten fixtures a run that is
+about 390 requests a month, leaving room for manual runs. `max-events` on a
+manual run is the dial if you need to spend less.
+
 ## The shortlist, and why each is on it
 
 | Key                | What it is                                                    | Covers                           |

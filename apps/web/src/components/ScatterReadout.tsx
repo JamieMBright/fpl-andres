@@ -20,6 +20,8 @@ export interface ScatterReadoutProps {
   selection: Selection;
   pinned: readonly number[];
   onTogglePin: (code: number) => void;
+  /** Opens the player profile, the same one a point on the chart opens. */
+  onOpen: (player: PlottedPlayer["player"]) => void;
   /** Empty follows the y-axis, so changing the chart moves the table with it. */
   rankBy: string;
   onRankBy: (id: string) => void;
@@ -29,6 +31,7 @@ export function ScatterReadout({
   selection,
   pinned,
   onTogglePin,
+  onOpen,
   rankBy,
   onRankBy,
 }: ScatterReadoutProps) {
@@ -122,6 +125,7 @@ export function ScatterReadout({
                   defconAxis={defconAxis}
                   pinned={pinned.includes(point.player.code)}
                   onTogglePin={onTogglePin}
+                  onOpen={onOpen}
                 />
               ))}
             </tbody>
@@ -138,12 +142,14 @@ function ReadoutRow({
   defconAxis,
   pinned,
   onTogglePin,
+  onOpen,
 }: {
   point: PlottedPlayer;
   selection: Selection;
   defconAxis: boolean;
   pinned: boolean;
   onTogglePin: (code: number) => void;
+  onOpen: (player: PlottedPlayer["player"]) => void;
 }) {
   const { player } = point;
   const threshold = DEFCON_THRESHOLD[player.position];
@@ -151,7 +157,15 @@ function ReadoutRow({
   return (
     <tr className={point.overlooked ? "readout-overlooked" : undefined}>
       <th scope="row">
-        {player.name}
+        <button
+          className="readout-name"
+          onClick={() => {
+            onOpen(player);
+          }}
+          type="button"
+        >
+          {player.name}
+        </button>
         {point.overlooked ? (
           <span className="readout-flag" title="Strong quadrant, barely owned">
             {" "}

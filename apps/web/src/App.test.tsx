@@ -63,7 +63,7 @@ describe("team analysis entry", () => {
 
       expect(
         screen.getByRole("heading", {
-          name: "Where to start.",
+          name: "Welcome to FPL Andres.",
         }),
       ).not.toHaveFocus();
       await user.type(screen.getByLabelText("Your FPL team ID"), "123456");
