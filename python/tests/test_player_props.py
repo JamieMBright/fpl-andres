@@ -267,6 +267,103 @@ class TestProbing:
         assert "quota not reported" in result.note
 
 
+def _api_football(bets: list[dict[str, object]]) -> object:
+    """A handler serving the three calls the api-football probe makes."""
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        if request.url.path.endswith("/odds/bets"):
+            return httpx.Response(
+                200, json={"response": [{"id": 1, "name": "Anytime Goal Scorer"}]}
+            )
+        if request.url.path.endswith("/fixtures"):
+            return httpx.Response(200, json={"response": [{"fixture": {"id": 7001}}]})
+        return httpx.Response(
+            200,
+            json={"response": [{"bookmakers": [{"id": 8, "name": "Bet365", "bets": bets}]}]},
+        )
+
+    return handler
+
+
+class TestWhetherApiFootballPricesFootballers:
+    """A catalogue of bet types is not an offer.
+
+    Knowing this provider has heard of "Anytime Goal Scorer" says nothing about
+    whether a Premier League fixture carries one, and nothing at all about
+    whether its selections name footballers rather than sides. Only the second
+    decides whether the source can be joined onto FPL element ids, and it was
+    the question the survey never asked.
+    """
+
+    def _probe(self, bets: list[dict[str, object]]) -> str:
+        with _client(_api_football(bets)) as client:  # type: ignore[arg-type]
+            return probe_source(
+                source_by_key("api-football"),
+                client,
+                env={"API_FOOTBALL_API_KEY": "k"},
+            ).note
+
+    def test_a_player_bet_is_named_with_a_selection_off_it(self) -> None:
+        note = self._probe(
+            [
+                {
+                    "name": "Anytime Goal Scorer",
+                    "values": [
+                        {"value": "Bukayo Saka", "odd": "2.50"},
+                        {"value": "Kai Havertz", "odd": "3.10"},
+                    ],
+                }
+            ]
+        )
+
+        assert "fixture 7001" in note
+        assert "1 books" in note
+        assert "Anytime Goal Scorer (2 selections, e.g. Bukayo Saka)" in note
+
+    def test_a_fixture_priced_only_on_the_result_says_so(self) -> None:
+        note = self._probe([{"name": "Match Winner", "values": [{"value": "Home", "odd": "1.50"}]}])
+
+        assert "none of them player-level" in note
+
+    def test_an_empty_market_is_not_reported_as_a_player_market(self) -> None:
+        """A bet named but carrying nothing is a shut market, not a source."""
+        note = self._probe([{"name": "Anytime Goal Scorer", "values": []}])
+
+        assert "none of them player-level" in note
+
+    def test_a_fixture_nobody_has_priced_is_told_apart_from_no_fixture(self) -> None:
+        def handler(request: httpx.Request) -> httpx.Response:
+            if request.url.path.endswith("/odds/bets"):
+                return httpx.Response(200, json={"response": [{"id": 1, "name": "Match Winner"}]})
+            if request.url.path.endswith("/fixtures"):
+                return httpx.Response(200, json={"response": [{"fixture": {"id": 7001}}]})
+            return httpx.Response(200, json={"response": []})
+
+        with _client(handler) as client:
+            note = probe_source(
+                source_by_key("api-football"),
+                client,
+                env={"API_FOOTBALL_API_KEY": "k"},
+            ).note
+
+        assert "priced by nobody yet" in note
+
+    def test_no_fixture_at_all_is_its_own_answer(self) -> None:
+        def handler(request: httpx.Request) -> httpx.Response:
+            if request.url.path.endswith("/odds/bets"):
+                return httpx.Response(200, json={"response": [{"id": 1, "name": "Match Winner"}]})
+            return httpx.Response(200, json={"response": []})
+
+        with _client(handler) as client:
+            note = probe_source(
+                source_by_key("api-football"),
+                client,
+                env={"API_FOOTBALL_API_KEY": "k"},
+            ).note
+
+        assert "no Premier League fixture scheduled" in note
+
+
 class TestCli:
     def test_no_selection_probes_everything(self) -> None:
         assert _selected(None) == PROP_SOURCES

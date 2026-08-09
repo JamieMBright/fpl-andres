@@ -323,17 +323,40 @@ def _probe_the_odds_api(
     )
 
 
+#: What a player-level bet is called, in whichever words a provider chose.
+#: Matched case-insensitively against the bet name, because every aggregator
+#: names the same market differently and this file should not pretend to know
+#: which spelling it will meet.
+_PLAYER_BET_WORDS: tuple[str, ...] = (
+    "scorer",
+    "assist",
+    "save",
+    "penalty",
+    "booked",
+    "card",
+    "sent off",
+    "shots",
+    "tackle",
+)
+
+#: The Premier League, and how far ahead to look for a fixture to price.
+_API_FOOTBALL_LEAGUE = "39"
+
+
+def _is_player_bet(name: str) -> bool:
+    lowered = name.lower()
+    return any(word in lowered for word in _PLAYER_BET_WORDS)
+
+
 def _probe_api_football(
     client: httpx.Client,
     env: Mapping[str, str],
 ) -> ProbeResult:
     # The bet list is the catalogue itself: every market this provider knows,
     # by id and name, which is exactly what "what can I get" means here.
-    response = _get(
-        client,
-        "https://v3.football.api-sports.io/odds/bets",
-        headers={"x-apisports-key": env["API_FOOTBALL_API_KEY"]},
-    )
+    key = env["API_FOOTBALL_API_KEY"]
+    headers = {"x-apisports-key": key}
+    response = _get(client, "https://v3.football.api-sports.io/odds/bets", headers=headers)
     result = _from_json(_SOURCE_INDEX["api-football"], response)
     if not result.ok:
         return result
@@ -343,14 +366,85 @@ def _probe_api_football(
         for item in (payload.get("response", []) if isinstance(payload, Mapping) else [])
         if isinstance(item, Mapping) and item.get("name")
     }
+    # A catalogue of bet types is not an offer. Knowing this provider has heard
+    # of "Anytime Goal Scorer" says nothing about whether a Premier League
+    # fixture carries one, or whether its selections name footballers rather
+    # than sides -- and that is the whole question a player-market source has
+    # to answer. Two more requests against a hundred a day settles it.
+    offered = _api_football_fixture_bets(client, headers)
     return ProbeResult(
         key=result.key,
         status=result.status,
-        note=f"{result.note}; {len(named)} bet types listed; {_quota(response)}",
+        note=f"{result.note}; {len(named)} bet types listed; {offered}; {_quota(response)}",
         fields=result.fields,
         markets=tuple(sorted(named)),
         http_status=result.http_status,
     )
+
+
+def _api_football_fixture_bets(client: httpx.Client, headers: Mapping[str, str]) -> str:
+    """What the next Premier League fixture is actually priced for, by whom.
+
+    Reports the player-level bets by name with how many selections each
+    carries and one of them verbatim, because "does the selection name a
+    footballer" cannot be answered from a bet name and is the only thing that
+    decides whether this source can be crosswalked onto FPL element ids.
+    """
+    season = _get(
+        client,
+        "https://v3.football.api-sports.io/fixtures",
+        params={"league": _API_FOOTBALL_LEAGUE, "next": "1"},
+        headers=headers,
+    )
+    if season.status_code >= 400:
+        return f"no fixture to price: HTTP {season.status_code}"
+    listing = season.json()
+    rows = listing.get("response", []) if isinstance(listing, Mapping) else []
+    first = rows[0] if rows and isinstance(rows[0], Mapping) else None
+    fixture = first.get("fixture") if isinstance(first, Mapping) else None
+    fixture_id = fixture.get("id") if isinstance(fixture, Mapping) else None
+    if fixture_id is None:
+        return "no Premier League fixture scheduled"
+    odds = _get(
+        client,
+        "https://v3.football.api-sports.io/odds",
+        params={"fixture": str(fixture_id)},
+        headers=headers,
+    )
+    if odds.status_code >= 400:
+        return f"fixture {fixture_id} priced nowhere: HTTP {odds.status_code}"
+    priced = odds.json()
+    entries = priced.get("response", []) if isinstance(priced, Mapping) else []
+    books: set[str] = set()
+    player_bets: dict[str, tuple[int, str]] = {}
+    total = 0
+    for entry in entries:
+        if not isinstance(entry, Mapping):
+            continue
+        for book in entry.get("bookmakers", []):
+            if not isinstance(book, Mapping):
+                continue
+            if isinstance(book.get("name"), str):
+                books.add(book["name"])
+            for bet in book.get("bets", []):
+                if not isinstance(bet, Mapping) or not isinstance(bet.get("name"), str):
+                    continue
+                total += 1
+                values = [item for item in bet.get("values", []) if isinstance(item, Mapping)]
+                if not _is_player_bet(bet["name"]) or not values:
+                    continue
+                sample = str(values[0].get("value"))
+                player_bets[bet["name"]] = (len(values), sample)
+    if not entries:
+        return f"fixture {fixture_id} is scheduled but priced by nobody yet"
+    detail = f"fixture {fixture_id}: {len(books)} books, {total} bets"
+    if not player_bets:
+        return f"{detail}, none of them player-level"
+    listed = ", ".join(
+        f"{name} ({count} selections, e.g. {sample})"
+        for name, (count, sample) in sorted(player_bets.items())
+    )
+    return f"{detail}, {len(player_bets)} player-level: {listed}"
 
 
 def _probe_betfair(

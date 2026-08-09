@@ -112,6 +112,14 @@ jobs:
         # The Markdown is committed and the JSON is not. One is the answer --
         # which source prices which scoring route -- and the other is a dump of
         # every field name a provider happened to return that minute.
+        #
+        # Skipped only when a run asked about one source, because that
+        # catalogue would report every other source as unprobed and overwrite a
+        # complete answer with a partial one. `inputs` is null on a schedule and
+        # GitHub compares that equal to the empty string, so the weekly run
+        # commits -- which is the run that matters, and the only reason no
+        # catalogue has ever landed is that every run so far was a manual one
+        # naming a source.
         if: ${{ inputs.source == '' }}
         run: |
           npx --yes prettier@3 --write docs/PLAYER_MARKET_CATALOGUE.md
