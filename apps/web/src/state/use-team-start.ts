@@ -4,9 +4,11 @@ import type { SolveAssumption, SolveStart } from "./season-solver";
 import { PLAYERS_BY_ELEMENT_ID, startFromElementIds } from "./season-solver";
 import {
   readDeclaredSquad,
+  saveDeclaredSquad,
   SQUAD_BUDGET_TENTHS,
   validateDeclaredSquad,
 } from "./declared-squad";
+import { decodeSquad } from "./squad-code";
 import {
   readDeclaredTransfers,
   squadAfterDeclared,
@@ -88,6 +90,12 @@ export function useTeamPlan(
   raw: string | null,
   /** Bumped by the caller when a transfer is declared, to read the squad again. */
   declaredAt = 0,
+  /**
+   * A declared fifteen carried in the link, used only when this browser has
+   * none. Read here rather than restored by the page because the squad is read
+   * after FPL answers, and a restore racing that would arrive too late.
+   */
+  squadCode: string | null = null,
 ): TeamPlan {
   // Derived, not stored: a blank box and a nonsense box are both answerable
   // without asking FPL anything, and putting them in state would mean a render
@@ -131,7 +139,7 @@ export function useTeamPlan(
           const preSeason =
             result.status === "unavailable" &&
             result.reason === "no_processed_event"
-              ? startFromDeclaredSquad(entryId)
+              ? startFromDeclaredSquad(entryId, squadCode)
               : null;
           if (preSeason) {
             setFetched(preSeason);
@@ -222,7 +230,7 @@ export function useTeamPlan(
         setResolved(null);
       }
     };
-  }, [entryId, usable, declaredAt, attempt, cached]);
+  }, [entryId, usable, declaredAt, attempt, cached, squadCode]);
 
   const start: TeamStartStatus =
     raw === null
@@ -268,28 +276,32 @@ export function useTeamStart(
  * published rule, and the bank is what the hundred million minus his own
  * prices leaves. Absent or broken, the caller falls back to saying so.
  */
-function startFromDeclaredSquad(entryId: number): TeamStartStatus | null {
+function startFromDeclaredSquad(
+  entryId: number,
+  squadCode: string | null = null,
+): TeamStartStatus | null {
   const stored = readDeclaredSquad(
     window.localStorage,
     entryId,
     PRE_SEASON_EVENT,
   );
-  if (!stored) return null;
+  const elementIds = stored?.elementIds ?? fromLink(entryId, squadCode);
+  if (!elementIds) return null;
 
   // The declaration is made against the whole FPL list; the solver only holds
   // the players it can project. A squad it cannot price must say so rather than
   // fall through to the generic plan, which reads as "your squad was ignored".
-  const unprojectable = stored.elementIds.filter(
+  const unprojectable = elementIds.filter(
     (id) => !PLAYERS_BY_ELEMENT_ID.has(id),
   );
   if (unprojectable.length > 0) {
     return { status: "failed", reason: "squad_not_projectable" };
   }
 
-  const validation = validateDeclaredSquad(stored.elementIds);
+  const validation = validateDeclaredSquad(elementIds);
   if (!validation.valid) return null;
 
-  const start = startFromElementIds(stored.elementIds, {
+  const start = startFromElementIds(elementIds, {
     bankTenths: SQUAD_BUDGET_TENTHS - validation.summary.spentTenths,
     // Gameweek one is squad selection, not a transfer window, and the solver
     // zeroes the allowance for the opener regardless.
@@ -299,7 +311,7 @@ function startFromDeclaredSquad(entryId: number): TeamStartStatus | null {
     // purchase price. Nothing is assumed here, unlike a published squad whose
     // purchase prices FPL keeps private.
     sellingPrices: new Map(
-      stored.elementIds.map((elementId) => [
+      elementIds.map((elementId) => [
         elementId,
         PLAYERS_BY_ELEMENT_ID.get(elementId)?.priceTenths ?? 0,
       ]),
@@ -314,4 +326,28 @@ function startFromDeclaredSquad(entryId: number): TeamStartStatus | null {
         source: "declared",
       }
     : null;
+}
+
+/**
+ * The fifteen a link is carrying, kept in this browser on the way past.
+ *
+ * Used only when nothing is stored, so a link can never overwrite the squad a
+ * manager is looking at. Persisting is best effort: private browsing refuses
+ * the write, and the link should still plan his season.
+ */
+function fromLink(entryId: number, squadCode: string | null): number[] | null {
+  if (squadCode === null) return null;
+  const elementIds = decodeSquad(squadCode);
+  if (!elementIds) return null;
+  try {
+    saveDeclaredSquad(
+      window.localStorage,
+      entryId,
+      PRE_SEASON_EVENT,
+      elementIds,
+    );
+  } catch {
+    // Storage full or blocked. The squad still plans; it just will not persist.
+  }
+  return elementIds;
 }

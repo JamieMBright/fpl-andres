@@ -28,6 +28,17 @@ The project follows Semantic Versioning once milestone tags begin.
 
 ### Added
 
+- The declared fifteen rides in the link as well as in this browser
+  (`state/squad-code.ts`). Mobile Safari clears script-written storage after a
+  week without a first-party visit, so a manager coming back to check his plan
+  found his squad gone. A bookmark is not script-written storage. The fifteen
+  are packed into 44 URL-safe characters with a checksum, so a truncated paste
+  fails rather than restoring a squad he never picked — fifteen plausible names
+  is exactly what a wrong answer looks like. Nothing leaves the browser and no
+  table was added: a Team ID is public and enumerable, so a squad that came
+  back from a server could have been written by anybody who guessed the number,
+  and that is still the reason it does not. A squad already in this browser is
+  never overwritten by a link.
 - The defensive-contribution bar is counted for the position being projected
   (`backtesting/rates.py`, `defensive_actions`). FPL sums clearances, blocks,
   interceptions and tackles for a defender and adds recoveries for everyone

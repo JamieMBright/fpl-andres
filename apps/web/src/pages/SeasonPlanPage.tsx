@@ -8,7 +8,11 @@ import { PlanStep } from "../components/PlanStep";
 import { DeclaredSquadNote } from "../components/DeclaredSquadNote";
 import { AnalysisResult } from "../components/AnalysisResult";
 import { analysisAnnouncement } from "../state/team-analysis-messages";
-import { readLastTeam, rememberTeam } from "../state/declared-squad";
+import {
+  readDeclaredSquad,
+  readLastTeam,
+  rememberTeam,
+} from "../state/declared-squad";
 import { DeclaredTransferForm } from "../components/DeclaredTransferForm";
 import { PlayerDetail } from "../components/PlayerDetail";
 import { RouteHeading } from "../components/RouteHeading";
@@ -16,12 +20,13 @@ import { deadlineDay, money } from "../format";
 import { kitForShortName } from "../kit/team-kits";
 import type { SolvedGameweek } from "../state/season-solver";
 import { PLAYERS_BY_ELEMENT_ID, startFromCodes } from "../state/season-solver";
+import { encodeSquad } from "../state/squad-code";
 import { useSeasonSolve } from "../state/use-season-solve";
 import type {
   TeamStartFailure,
   TeamStartStatus,
 } from "../state/use-team-start";
-import { useTeamPlan } from "../state/use-team-start";
+import { PRE_SEASON_EVENT, useTeamPlan } from "../state/use-team-start";
 import type {
   ChipCall,
   Confidence,
@@ -596,7 +601,49 @@ export default function SeasonPlanPage() {
     params.get("team") ?? readLastTeam(window.localStorage)?.toString() ?? null;
   const teamId =
     teamParam !== null && /^\d+$/.test(teamParam) ? Number(teamParam) : null;
-  const teamPlan = useTeamPlan(teamParam, declaredAt);
+  /*
+   * A declared fifteen carried in the link.
+   *
+   * Mobile Safari clears script-written storage after a week without a visit,
+   * so a manager coming back to check his plan found his squad gone. A
+   * bookmark is not script-written storage. `useTeamPlan` reads it, because the
+   * squad is only read once FPL has answered and a restore here would race
+   * that. It never overwrites a squad this browser already holds.
+   */
+  const squadParam = params.get("squad");
+
+  /**
+   * Keep the address bar carrying whatever fifteen is stored.
+   *
+   * Idempotent and self-terminating: it compares against the code already in
+   * the URL and does nothing when they agree. Replaces rather than pushes —
+   * this is the page you are on, not one you navigated to.
+   */
+  useEffect(() => {
+    if (teamId === null) return;
+    const stored = readDeclaredSquad(
+      window.localStorage,
+      teamId,
+      PRE_SEASON_EVENT,
+    );
+    const code = stored ? encodeSquad(stored.elementIds) : null;
+    if (code === squadParam) return;
+    // Nothing declared in this session yet, so empty storage means the link has
+    // not been read rather than that the squad was cleared. Removing the code
+    // here would throw away the only copy on the way to restoring it.
+    if (code === null && declaredAt === 0) return;
+    setParams(
+      (current) => {
+        const next = new URLSearchParams(current);
+        next.set("team", String(teamId));
+        if (code) next.set("squad", code);
+        else next.delete("squad");
+        return next;
+      },
+      { replace: true },
+    );
+  }, [declaredAt, squadParam, setParams, teamId]);
+  const teamPlan = useTeamPlan(teamParam, declaredAt, squadParam);
   const team = teamPlan.start;
 
   // Remembered once FPL has actually answered for it, so a mistyped number

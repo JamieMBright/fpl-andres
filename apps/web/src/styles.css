@@ -4691,6 +4691,10 @@ h1[tabindex="-1"]:focus-visible {
   line-height: 1.5;
 }
 
+.declared-note-keep {
+  color: var(--ink-soft);
+}
+
 .opening-adopt {
   margin: 14px 0 0;
 }

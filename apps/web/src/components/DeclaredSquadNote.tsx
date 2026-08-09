@@ -34,7 +34,12 @@ export function DeclaredSquadNote({ entryId }: { entryId: number }) {
       {players.length === declared.elementIds.length
         ? ` · ${money.format(spent / 10)}m spent`
         : ` · ${String(players.length)} of ${String(declared.elementIds.length)} rated`}
-      . <Link to={`/team/${String(entryId)}`}>Change these fifteen</Link>.
+      . <Link to={`/team/${String(entryId)}`}>Change these fifteen</Link>.{" "}
+      {/* The address bar is now carrying the squad, and a bookmark is the one
+          copy a phone will not clear after a week without a visit. */}
+      <span className="declared-note-keep">
+        Bookmark this page to keep them.
+      </span>
     </p>
   );
 }
