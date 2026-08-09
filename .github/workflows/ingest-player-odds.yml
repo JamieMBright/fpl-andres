@@ -103,6 +103,11 @@ jobs:
 
       - name: Commit the odds
         run: |
+          # prettier owns the file and Python does not write it that way. An
+          # unformatted bot commit reddens the next human push, not this run.
+          # Formatting before the diff check also stops a rewrite that is only
+          # formatting from reaching `git commit` and failing it empty.
+          npx --yes prettier@3 --write apps/web/src/data/player-odds.json
           if git diff --quiet -- apps/web/src/data/player-odds.json; then
             echo "odds unchanged"
             exit 0

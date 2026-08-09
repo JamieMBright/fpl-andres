@@ -114,6 +114,7 @@ jobs:
         # every field name a provider happened to return that minute.
         if: ${{ inputs.source == '' }}
         run: |
+          npx --yes prettier@3 --write docs/PLAYER_MARKET_CATALOGUE.md
           if git diff --quiet -- docs/PLAYER_MARKET_CATALOGUE.md; then
             echo "catalogue unchanged"
             exit 0

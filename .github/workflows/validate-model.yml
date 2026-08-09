@@ -130,4 +130,5 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add $paths
           git commit -m "chore: refresh the backtest for the model on $GITHUB_SHA"
+          git pull --rebase --autostash
           git push

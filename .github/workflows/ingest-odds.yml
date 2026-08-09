@@ -156,6 +156,9 @@ jobs:
           # legitimately absent.
           for path in apps/web/src/data/fixture-odds.json data/odds; do
             if [ -e "$path" ]; then
+              # Before the staged-diff check, so a rewrite that is only
+              # formatting never reaches `git commit` and fails it empty.
+              npx --yes prettier@3 --write "$path"
               git add -A -- "$path"
             else
               echo "$path not written this run"
@@ -168,4 +171,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git commit -m "Refresh the bookmaker-implied goals distribution"
+          git pull --rebase --autostash
           git push
