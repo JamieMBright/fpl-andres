@@ -582,7 +582,12 @@ export const PlayerScatter = memo(function PlayerScatter({
                 const tipX = px + (flip ? -(r + 6) : r + 6);
                 const tipY = py + (below ? r + 6 : -(r + 6));
                 return (
-                  <g key={point.player.code}>
+                  <g
+                    className={
+                      point.matched ? undefined : "scatter-label-dimmed"
+                    }
+                    key={point.player.code}
+                  >
                     <line
                       className="scatter-label-whisker"
                       x1={px + (flip ? -r : r) * 0.7}

@@ -6,6 +6,26 @@ The project follows Semantic Versioning once milestone tags begin.
 
 ## [Unreleased]
 
+### Changed
+
+- The plot configuration is a sidebar down the left of the chart rather than a
+  panel beside or under it. It sticks as the page scrolls and scrolls inside
+  itself, so the controls stay next to the thing they control however far down
+  the reader has gone. The panel itself is the scroll container: Chromium wraps
+  the content of a `details` in an anonymous box, so a grid row set on the
+  `details` sized that box and never reached the div inside it, which kept
+  spilling past the panel and over the page below.
+- Every mutually-exclusive and multi-choice control in that sidebar is a
+  wrapped box, like the club picker: positions, colour-by, and the whole
+  reference-lines group. The input stays in the document and keeps all of its
+  keyboard and screen-reader behaviour; only its rendering moves to the span
+  beside it, which is why they are not buttons with `aria-pressed`.
+- The club toggles carry the club's kit colours. The picker and the plot are
+  the same legend, and twenty three-letter codes are not something anyone
+  reads as clubs at a glance.
+- A dimmed point's name dims with it. Isolating a club left every other name at
+  full weight, so the chart read as busier than the selection it was showing.
+
 ### Added
 
 - The defensive-contribution bar is counted for the position being projected

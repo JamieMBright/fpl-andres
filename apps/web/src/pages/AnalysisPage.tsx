@@ -336,6 +336,14 @@ function AnalysisBody({
       )}
 
       <div className="analysis-layout">
+        <ScatterControls
+          pool={data.pool}
+          view={view}
+          onChange={onChange}
+          onReset={onReset}
+          plotted={selection.points.length}
+        />
+
         <div className="analysis-chart" ref={chartRef}>
           <PlayerScatter
             selection={selection}
@@ -399,9 +407,7 @@ function AnalysisBody({
               {selection.x.label}.
             </p>
           ) : null}
-        </div>
 
-        <div className="analysis-panels">
           <p className="analysis-reading">
             {reading.corner}
             {(reading.relationship ?? reading.standout ?? reading.size) ? (
@@ -416,14 +422,6 @@ function AnalysisBody({
               </InfoMarker>
             ) : null}
           </p>
-
-          <ScatterControls
-            pool={data.pool}
-            view={view}
-            onChange={onChange}
-            onReset={onReset}
-            plotted={selection.points.length}
-          />
         </div>
       </div>
 

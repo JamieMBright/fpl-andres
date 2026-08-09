@@ -1,5 +1,6 @@
 import { useId, useState } from "react";
 
+import { clubMarker } from "../kit/club-markers";
 import { METRICS, type MetricGroup } from "../state/analysis-metrics";
 import { HighlightPicker } from "./HighlightPicker";
 import { InfoMarker } from "./InfoMarker";
@@ -76,7 +77,7 @@ export function ScatterControls({
   // state, and reopening a panel somebody has just closed because they turned
   // their phone is worse than being a breakpoint behind.
   const [asSidebar] = useState(
-    () => window.matchMedia?.("(min-width: 1101px)").matches ?? false,
+    () => window.matchMedia?.("(min-width: 1000px)").matches ?? false,
   );
   return (
     <details className="scatter-controls analysis-controls" open={asSidebar}>
@@ -163,13 +164,13 @@ export function ScatterControls({
             checked={view.logX}
             onChange={(logX) => onChange({ logX })}
           />
-          <label className="scatter-check">
+          <label className="scatter-box">
             <input
               checked={view.invertX}
               onChange={() => onChange({ invertX: !view.invertX })}
               type="checkbox"
             />
-            Invert
+            <span>Invert</span>
           </label>
         </div>
 
@@ -186,13 +187,13 @@ export function ScatterControls({
             checked={view.logY}
             onChange={(logY) => onChange({ logY })}
           />
-          <label className="scatter-check">
+          <label className="scatter-box">
             <input
               checked={view.invertY}
               onChange={() => onChange({ invertY: !view.invertY })}
               type="checkbox"
             />
-            Invert
+            <span>Invert</span>
           </label>
         </div>
 
@@ -208,21 +209,25 @@ export function ScatterControls({
 
         <fieldset className="scatter-fieldset">
           <legend>Colour by</legend>
-          {(["club", "position", "metric"] as ColourBy[]).map((mode) => (
-            <label key={mode} className="scatter-radio">
-              <input
-                type="radio"
-                name={`${ids}-colour`}
-                checked={view.colourBy === mode}
-                onChange={() => onChange({ colourBy: mode })}
-              />
-              {mode === "position"
-                ? "Position"
-                : mode === "club"
-                  ? "Club"
-                  : "A statistic"}
-            </label>
-          ))}
+          <div className="scatter-boxes">
+            {(["club", "position", "metric"] as ColourBy[]).map((mode) => (
+              <label key={mode} className="scatter-box">
+                <input
+                  type="radio"
+                  name={`${ids}-colour`}
+                  checked={view.colourBy === mode}
+                  onChange={() => onChange({ colourBy: mode })}
+                />
+                <span>
+                  {mode === "position"
+                    ? "Position"
+                    : mode === "club"
+                      ? "Club"
+                      : "A statistic"}
+                </span>
+              </label>
+            ))}
+          </div>
         </fieldset>
 
         {view.colourBy === "metric" ? (
@@ -251,26 +256,28 @@ export function ScatterControls({
 
         <fieldset className="scatter-fieldset">
           <legend>Positions</legend>
-          {pool.positions.map((code) => (
-            <label key={code} className="scatter-check">
-              <input
-                type="checkbox"
-                checked={
-                  view.positions.length === 0 || view.positions.includes(code)
-                }
-                onChange={() =>
-                  onChange({
-                    positions: togglePosition(
-                      view.positions,
-                      code,
-                      pool.positions,
-                    ),
-                  })
-                }
-              />
-              {code}
-            </label>
-          ))}
+          <div className="scatter-boxes">
+            {pool.positions.map((code) => (
+              <label key={code} className="scatter-box">
+                <input
+                  type="checkbox"
+                  checked={
+                    view.positions.length === 0 || view.positions.includes(code)
+                  }
+                  onChange={() =>
+                    onChange({
+                      positions: togglePosition(
+                        view.positions,
+                        code,
+                        pool.positions,
+                      ),
+                    })
+                  }
+                />
+                <span translate="no">{code}</span>
+              </label>
+            ))}
+          </div>
           <p className="scatter-hint">
             {view.positions.length === 0 ? "All positions" : null}
           </p>
@@ -281,23 +288,38 @@ export function ScatterControls({
           {/* Toggles, not a multi-select list: the same gesture as the legend,
               and a five-row scroller hid fifteen of the twenty clubs. */}
           <div className="scatter-toggles">
-            {pool.clubs.map((club) => (
-              <button
-                aria-pressed={view.clubs.includes(club)}
-                className="scatter-toggle"
-                key={club}
-                onClick={() => {
-                  onChange({
-                    clubs: view.clubs.includes(club)
-                      ? view.clubs.filter((held) => held !== club)
-                      : [...view.clubs, club],
-                  });
-                }}
-                type="button"
-              >
-                <span translate="no">{club}</span>
-              </button>
-            ))}
+            {pool.clubs.map((club) => {
+              const mark = clubMarker(club);
+              return (
+                <button
+                  aria-pressed={view.clubs.includes(club)}
+                  className="scatter-toggle"
+                  key={club}
+                  onClick={() => {
+                    onChange({
+                      clubs: view.clubs.includes(club)
+                        ? view.clubs.filter((held) => held !== club)
+                        : [...view.clubs, club],
+                    });
+                  }}
+                  type="button"
+                >
+                  {/* The same fill and outline the chart draws him with, so the
+                      picker and the plot are one legend. */}
+                  {mark ? (
+                    <span
+                      aria-hidden="true"
+                      className="scatter-toggle-kit"
+                      style={{
+                        background: mark.fill,
+                        borderColor: mark.stroke,
+                      }}
+                    />
+                  ) : null}
+                  <span translate="no">{club}</span>
+                </button>
+              );
+            })}
           </div>
           <p className="scatter-hint">
             {view.clubs.length === 0 ? "All clubs" : null}
@@ -335,49 +357,51 @@ export function ScatterControls({
 
         <fieldset className="scatter-fieldset">
           <legend>Reference lines</legend>
-          {(["median", "mean"] as const).map((mode) => (
-            <label key={mode} className="scatter-radio">
+          <div className="scatter-boxes">
+            {(["median", "mean"] as const).map((mode) => (
+              <label key={mode} className="scatter-box">
+                <input
+                  type="radio"
+                  name={`${ids}-centre`}
+                  checked={view.centreMode === mode}
+                  onChange={() => onChange({ centreMode: mode })}
+                />
+                <span>{mode === "median" ? "Median" : "Mean"}</span>
+              </label>
+            ))}
+            <label className="scatter-box">
               <input
-                type="radio"
-                name={`${ids}-centre`}
-                checked={view.centreMode === mode}
-                onChange={() => onChange({ centreMode: mode })}
+                type="checkbox"
+                checked={view.trend}
+                onChange={() => onChange({ trend: !view.trend })}
               />
-              {mode === "median" ? "Median" : "Mean"}
+              <span>Trend line</span>
             </label>
-          ))}
-          <label className="scatter-check">
-            <input
-              type="checkbox"
-              checked={view.trend}
-              onChange={() => onChange({ trend: !view.trend })}
-            />
-            Trend line
-          </label>
-          <label className="scatter-check">
-            <input
-              type="checkbox"
-              checked={view.sweetSpot}
-              onChange={() => onChange({ sweetSpot: !view.sweetSpot })}
-            />
-            Shade the good corner
-          </label>
-          <label className="scatter-check">
-            <input
-              type="checkbox"
-              checked={view.frontier}
-              onChange={() => onChange({ frontier: !view.frontier })}
-            />
-            Two-sigma curve
-          </label>
-          <label className="scatter-check">
-            <input
-              type="checkbox"
-              checked={view.labels}
-              onChange={() => onChange({ labels: !view.labels })}
-            />
-            Name every point
-          </label>
+            <label className="scatter-box">
+              <input
+                type="checkbox"
+                checked={view.sweetSpot}
+                onChange={() => onChange({ sweetSpot: !view.sweetSpot })}
+              />
+              <span>Shade the good corner</span>
+            </label>
+            <label className="scatter-box">
+              <input
+                type="checkbox"
+                checked={view.frontier}
+                onChange={() => onChange({ frontier: !view.frontier })}
+              />
+              <span>Two-sigma curve</span>
+            </label>
+            <label className="scatter-box">
+              <input
+                type="checkbox"
+                checked={view.labels}
+                onChange={() => onChange({ labels: !view.labels })}
+              />
+              <span>Name every point</span>
+            </label>
+          </div>
         </fieldset>
 
         <fieldset className="scatter-fieldset">
@@ -488,14 +512,14 @@ function LogToggle({
   const allowed = METRICS.find((entry) => entry.id === metricId)?.allowLog;
   if (!allowed) return null;
   return (
-    <label className="scatter-check" htmlFor={id}>
+    <label className="scatter-box" htmlFor={id}>
       <input
         id={id}
         type="checkbox"
         checked={checked}
         onChange={(event) => onChange(event.target.checked)}
       />
-      Log scale
+      <span>Log scale</span>
     </label>
   );
 }

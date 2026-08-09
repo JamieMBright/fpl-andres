@@ -5387,28 +5387,28 @@ h1[tabindex="-1"]:focus-visible {
 
 .analysis-layout {
   display: grid;
-  /* The chart and the controls that change it, side by side. One column put
-     the pickers below the fold, so a reader had to scroll away from the thing
-     they were configuring to configure it.
+  /* The controls first, then the chart they change. A sidebar rather than a
+     panel above or below: a reader configuring a plot is looking at the plot,
+     and every layout that stacked them made him scroll away from the thing he
+     was adjusting to adjust it.
 
-     A fixed 360px, not a fraction: the pickers have a natural width and a
+     A fixed 320px, not a fraction: the pickers have a natural width and a
      column that breathes with the viewport made them wrap at some sizes and
      scroll sideways at others. */
-  grid-template-columns: minmax(0, 1fr) 360px;
+  grid-template-columns: 320px minmax(0, 1fr);
   gap: 24px;
-  align-items: stretch;
+  align-items: start;
   margin-top: 24px;
 }
 
-.analysis-panels {
+.analysis-chart {
   display: grid;
-  /* Without an explicit minmax(0, ...) the implicit track is content-sized, so
-     a wide list pushed the whole page wider and squeezed the chart. */
+  /* Same reason as the column: an unconstrained implicit track lets a wide
+     child push the chart past the page. */
   grid-template-columns: minmax(0, 1fr);
-  grid-template-rows: auto minmax(0, 1fr);
   gap: 12px;
+  align-content: start;
   min-width: 0;
-  min-height: 0;
 }
 
 .analysis-vintage,
@@ -5547,6 +5547,13 @@ h1[tabindex="-1"]:focus-visible {
 .scatter-mark-dimmed {
   fill-opacity: 0.06;
   stroke-opacity: 0.12;
+}
+
+/* And its name with it. Isolating a club left every other name at full weight,
+   so the chart read as busier than the selection it was showing. Kept a little
+   heavier than the marks -- text at 6% of a 7px glyph is gone, not faint. */
+.scatter-label-dimmed {
+  opacity: 0.16;
 }
 
 /* A heavy green ring. Amber at 2.5 was lost among the club colours, and this
@@ -5874,18 +5881,26 @@ h1[tabindex="-1"]:focus-visible {
   font-size: 13px;
 }
 
-/* As tall as the plot it configures, scrolling inside that rather than running
-   past the bottom of it. The bubbles are portalled, so scrolling here no
-   longer hides them. */
-@media (min-width: 1101px) {
+/* Stays with the chart as the page scrolls, and scrolls inside itself rather
+   than running past the bottom of the window.
+
+   The panel itself scrolls, not the div inside it: Chromium wraps the content
+   of a `details` in an anonymous box, so a grid row set on the `details` sized
+   that box and never reached the div, which kept spilling out at full height.
+   The bubbles are portalled, so scrolling here does not hide them. */
+@media (min-width: 1000px) {
   .analysis-controls {
-    display: grid;
-    grid-template-rows: auto minmax(0, 1fr);
-    min-height: 0;
+    position: sticky;
+    top: 16px;
+    max-height: calc(100vh - 32px);
+    overflow-y: auto;
   }
 
-  .analysis-controls[open] > .scatter-controls-body {
-    overflow-y: auto;
+  .analysis-controls > .scatter-controls-summary {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background: var(--paper);
   }
 }
 
@@ -6030,6 +6045,9 @@ h1[tabindex="-1"]:focus-visible {
 }
 
 .scatter-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
   min-height: 26px;
   padding: 3px 7px;
   border: 1px solid var(--rule);
@@ -6040,6 +6058,14 @@ h1[tabindex="-1"]:focus-visible {
   font-weight: 700;
   letter-spacing: 0.04em;
   cursor: pointer;
+}
+
+/* Fill and outline set inline from the kit. Square, like the defender mark. */
+.scatter-toggle-kit {
+  width: 9px;
+  height: 9px;
+  border: 2px solid;
+  flex: none;
 }
 
 .scatter-toggle:hover {
@@ -6053,6 +6079,59 @@ h1[tabindex="-1"]:focus-visible {
 }
 
 .scatter-toggle:focus-visible {
+  outline: 3px solid var(--signal-blue);
+  outline-offset: 1px;
+}
+
+/*
+ * A checkbox or radio wearing the same box as the club toggles.
+ *
+ * The input stays in the document and keeps every bit of its keyboard and
+ * screen-reader behaviour; only its rendering is handed to the span beside it.
+ * Buttons with aria-pressed would have looked identical and thrown away the
+ * radio group.
+ */
+.scatter-boxes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.scatter-box {
+  display: inline-flex;
+  cursor: pointer;
+}
+
+.scatter-box input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.scatter-box span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 26px;
+  padding: 3px 7px;
+  border: 1px solid var(--rule);
+  color: var(--ink-soft);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.scatter-box:hover span {
+  border-color: var(--ink-soft);
+}
+
+.scatter-box input:checked + span {
+  border-color: var(--signal-blue);
+  background: var(--signal-blue);
+  color: var(--paper-deep);
+}
+
+.scatter-box input:focus-visible + span {
   outline: 3px solid var(--signal-blue);
   outline-offset: 1px;
 }
@@ -6364,7 +6443,7 @@ h1[tabindex="-1"]:focus-visible {
   color: var(--ink-soft);
 }
 
-@media (max-width: 1100px) {
+@media (max-width: 999px) {
   .analysis-layout {
     grid-template-columns: minmax(0, 1fr);
   }
