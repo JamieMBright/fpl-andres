@@ -30,6 +30,10 @@ from fpl_andres import timeouts
 from fpl_andres.backtesting.fixtures import TeamStrength, route_adjustment
 from fpl_andres.bootstrap import BootstrapElement, parse_elements
 from fpl_andres.jsonio import parse_json, read_json_file
+from fpl_andres.models.market_minutes import (
+    MarketMinutesEvidence,
+    blend_start_rate,
+)
 from fpl_andres.planning.fixture_routes import (
     PROMOTED_STRENGTH,
     ROUTE_KEYS,
@@ -44,6 +48,7 @@ FIXTURES = "https://fantasy.premierleague.com/api/fixtures/"
 USER_AGENT = "fpl-andres/0.5 (+https://github.com/JamieMBright/fpl-andres)"
 PROJECTIONS = Path("apps/web/src/data/projections.json")
 OPENING_SQUAD = Path("apps/web/src/data/opening-squad.json")
+PLAYER_ODDS = Path("apps/web/src/data/player-odds.json")
 DEFAULT_OUTPUT = Path("apps/web/src/data/season-inputs.json")
 
 SCHEMA_VERSION = 1
@@ -99,6 +104,23 @@ def build_parser() -> argparse.ArgumentParser:
         default="FPL rules page, Transfers section",
         help="Where the transfer rules that are not in the bootstrap were read.",
     )
+    parser.add_argument(
+        "--player-odds",
+        default=str(PLAYER_ODDS),
+        help=(
+            "Anytime-scorer prices, written by ingest-player-odds. Absent means "
+            "no market view, and the published start rates are the record's."
+        ),
+    )
+    parser.add_argument(
+        "--market-weight",
+        type=float,
+        default=0.35,
+        help=(
+            "How much of a blended start rate the market owns. Sourced here "
+            "rather than in the model, so it is one number in one place."
+        ),
+    )
     return parser
 
 
@@ -112,6 +134,78 @@ def _get(url: str) -> object:
 # rated on both halves of it: what this side is likely to score and what it is
 # likely to concede, at the venue it is played. Blanks are None, not three:
 # there is no fixture to be difficult.
+
+
+def _market_start_rates(
+    odds_path: Path,
+    elements: Sequence[BootstrapElement],
+    record_by_code: Mapping[int, Mapping[str, object]],
+    weight: float,
+) -> dict[int, float]:
+    """
+    Start rates the market helped write, keyed by element id.
+
+    Returns nothing at all when the odds artifact is absent, which is the state
+    between seasons and any week the ingest has not run. Silence from a
+    bookmaker is not evidence that somebody will not play, so an absent file
+    leaves every published start rate exactly as the record measured it.
+
+    The positional scoring rate is measured from this same bootstrap's own
+    projections rather than assumed: it is the median chance a player of that
+    position is projected to score, which is the denominator the quotient needs.
+    """
+    if not odds_path.exists():
+        return {}
+    artifact = read_json_file(odds_path)
+    quoted: dict[int, float] = {}
+    for row in artifact.get("players", []):
+        element_id = row.get("element_id")
+        anytime = row.get("anytime_goal")
+        if isinstance(element_id, int) and isinstance(anytime, (int, float)):
+            quoted[element_id] = float(anytime)
+    if not quoted:
+        return {}
+
+    # P(scores | starts) per position, taken from the published projections so
+    # the denominator and the numerator describe the same season.
+    scored: dict[int, list[float]] = {}
+    for element in elements:
+        record = record_by_code.get(element.code)
+        if record is None:
+            continue
+        goals = record.get("expectedGoals")
+        if isinstance(goals, (int, float)):
+            scored.setdefault(element.element_type, []).append(float(goals))
+    rates: dict[str, float] = {}
+    for position_id, values in scored.items():
+        ordered = sorted(values)
+        median = ordered[len(ordered) // 2]
+        if median > 0:
+            rates[POSITION_CODES[position_id]] = median
+
+    projections = {}
+    positions = {}
+    for element in elements:
+        record = record_by_code.get(element.code)
+        if record is None or element.id not in quoted:
+            continue
+        projections[element.id] = float(str(record["probabilityStart"]))
+        positions[element.id] = POSITION_CODES[element.element_type]
+
+    blended: dict[int, float] = {}
+    for element_id, recorded in projections.items():
+        rate = rates.get(positions[element_id])
+        if rate is None or recorded <= 0:
+            continue
+        blended[element_id] = blend_start_rate(
+            recorded,
+            MarketMinutesEvidence(
+                anytime_goal=min(1.0, quoted[element_id]),
+                positional_scoring_rate=rate,
+                weight=weight,
+            ),
+        )
+    return blended
 
 
 def _priors_by_depth(
@@ -279,6 +373,12 @@ def main(argv: Sequence[str] | None = None) -> int:
             depth[element.id] = 1 + sum(1 for other in squad if other.now_cost > element.now_cost)
 
     priors = _priors_by_depth(available, depth, record_by_code)
+    market_start = _market_start_rates(
+        Path(args.player_odds),
+        available,
+        record_by_code,
+        args.market_weight,
+    )
 
     for element in available:
         record = record_by_code.get(element.code)
@@ -330,7 +430,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                     "priceTenths": element.now_cost,
                     "basePoints": base_points,
                     "routes": routes,
-                    "startRate": start_rate,
+                    "startRate": round(market_start.get(element.id, start_rate), 3),
                     "squadNumber": element.squad_number,
                     "rated": rated,
                     "depthRank": depth[element.id],
