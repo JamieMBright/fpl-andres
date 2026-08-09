@@ -12,10 +12,16 @@ import {
   refusalRecourse,
   type ProxyRefusal,
 } from "../state/proxy-refusal";
+import {
+  loadManagerHistory,
+  saveManagerHistory,
+} from "../state/manager-history-cache";
 
 type Loaded = {
   entryId: number;
   profile: ManagerProfile | "unreadable" | "unreachable" | ProxyRefusal | null;
+  /** True when this came from the reader's own last visit, not from FPL. */
+  retained: boolean;
 };
 
 const ARCHETYPE_LABELS: Record<ManagerProfile["archetype"], string> = {
@@ -100,6 +106,18 @@ export function ManagerHistory({ entryId }: { entryId: number }) {
     // still costing the proxy an upstream call nobody would read.
     const controller = new AbortController();
 
+    /**
+     * Settled seasons the reader has already been shown beat showing them
+     * nothing. Only when there is no copy does the failure itself go out.
+     */
+    function fallBack(failure: ProxyRefusal | "unreachable"): Loaded {
+      const held = loadManagerHistory(window.localStorage, entryId);
+      const profile = held === null ? null : readManagerProfile(held);
+      return profile !== null && profile !== "unreadable"
+        ? { entryId, profile, retained: true }
+        : { entryId, profile: failure, retained: false };
+    }
+
     async function read() {
       try {
         const response = await fetch(`/api/fpl/entry/${entryId}/history`, {
@@ -111,23 +129,26 @@ export function ManagerHistory({ entryId }: { entryId: number }) {
         if (!response.ok) {
           // The proxy has already named the upstream status and classified it.
           // Repeat that rather than replacing it with a vaguer sentence.
-          setLoaded({
-            entryId,
-            profile:
+          setLoaded(
+            fallBack(
               readProxyRefusal(await response.json().catch(() => null)) ??
-              "unreachable",
-          });
+                "unreachable",
+            ),
+          );
           return;
         }
+        const payload: unknown = await response.json();
+        saveManagerHistory(window.localStorage, entryId, payload);
         setLoaded({
           entryId,
-          profile: readManagerProfile(await response.json()),
+          profile: readManagerProfile(payload),
+          retained: false,
         });
       } catch (error) {
         if (classifyFetchFailure(error).kind === "aborted") {
           return;
         }
-        setLoaded({ entryId, profile: "unreachable" });
+        setLoaded(fallBack("unreachable"));
       }
     }
 
@@ -227,6 +248,14 @@ export function ManagerHistory({ entryId }: { entryId: number }) {
       </div>
 
       <p className="andres-read">{commentary(profile)}</p>
+
+      {loaded.retained ? (
+        <p className="plan-awaiting" role="status">
+          FPL would not answer just now, so this is the record from your last
+          visit. Completed seasons do not change, so it is old rather than
+          wrong.
+        </p>
+      ) : null}
 
       <dl className="record-summary">
         <div>

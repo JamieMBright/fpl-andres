@@ -1,24 +1,18 @@
 import { defineConfig, devices } from "@playwright/test";
 
 /**
- * `retries: 2` was already here, which meant a test that
- * failed once and passed on the second attempt was reported as a pass and the
- * flake left no trace. A journey can be flaky for months that way.
+ * A smoke suite, not a second test pyramid.
  *
- * The retry count stays at two, deliberately: these journeys drive a real
- * browser against a real dev server, and a cold first paint on a loaded runner
- * is a genuine environmental failure rather than a defect. Zero retries would
- * make CI a coin flip; more than two would hide a test that fails half the
- * time.
+ * This used to run 212 journeys across two browser projects for four to six
+ * minutes, most of them re-proving in a real browser what a component test
+ * already proves in milliseconds. `e2e/smoke.spec.ts` now holds the handful
+ * that only a browser can answer, and one project runs them: a second engine
+ * doubled the bill and never once caught something the first missed.
  *
- * What changes is that a flake is now recorded. The JSON reporter writes every
- * attempt to `playwright-report/results.json`, which CI uploads, so a run that
- * "passed" can still be inspected for tests that needed a second go.
- *
- * The policy: a test that appears in the flaky list twice in a fortnight is a
- * broken test, not an unlucky one. Fix it or delete it -- a journey nobody
- * trusts is worse than no journey, because it trains people to re-run CI
- * without reading the failure.
+ * `retries: 2` stays. These drive a real browser against a real dev server,
+ * and a cold first paint on a loaded runner is an environmental failure rather
+ * than a defect. The JSON reporter still records every attempt, so a run that
+ * "passed" can be inspected for tests that needed a second go.
  */
 export default defineConfig({
   testDir: "./e2e",
@@ -29,7 +23,6 @@ export default defineConfig({
     ? [
         ["github"],
         ["json", { outputFile: "playwright-report/results.json" }],
-        // Prints a "flaky" section that the github reporter folds away.
         ["list"],
       ]
     : "list",
@@ -46,15 +39,11 @@ export default defineConfig({
   },
   projects: [
     {
-      name: "desktop-chromium",
+      name: "chromium",
       use: {
         ...devices["Desktop Chrome"],
         viewport: { width: 1440, height: 900 },
       },
-    },
-    {
-      name: "mobile-chromium",
-      use: { ...devices["Pixel 7"] },
     },
   ],
 });

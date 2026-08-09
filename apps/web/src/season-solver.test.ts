@@ -189,25 +189,25 @@ describe("solveSeason", () => {
   });
 
   it(
-    "solves a whole season fast enough to be worth doing on a phone",
+    "solves at a cost that stays roughly linear in the gameweeks asked for",
     () => {
       const eight = performance.now();
       const short = [...solveSeason({ ...openingStart(), fromEvent: 31 })];
       const shortMs = performance.now() - eight;
 
       const started = performance.now();
-      const solved = [...solveSeason(openingStart())];
+      const longer = [...solveSeason({ ...openingStart(), fromEvent: 20 })];
       const elapsed = performance.now() - started;
 
       expect(short).toHaveLength(8);
-      expect(solved).toHaveLength(SEASON_EVENTS.length);
-      // A ratio, not a duration. A desktop solves the full season in about
-      // seven seconds, but the same assertion against the clock fails whenever
-      // the suite's other workers are busy, which measures the machine rather
-      // than the solver. Comparing against eight gameweeks solved in the same
-      // run divides the load out: what matters is that the cost stays roughly
-      // linear in the gameweeks asked for, not what a laptop managed today.
-      expect(elapsed / shortMs).toBeLessThan(12);
+      expect(longer).toHaveLength(19);
+      // A ratio, not a duration. The same assertion against the clock fails
+      // whenever the suite's other workers are busy, which measures the machine
+      // rather than the solver. Nineteen gameweeks against eight is 2.4x the
+      // work, so anything under 6 is comfortably linear-ish; the full
+      // thirty-eight used to be measured here and cost twenty seconds to prove
+      // the same property.
+      expect(elapsed / shortMs).toBeLessThan(6);
     },
     SOLVE_TIMEOUT,
   );

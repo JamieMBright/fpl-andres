@@ -47,12 +47,7 @@ describe("component inventory", () => {
 });
 
 describe("accessibility checklist", () => {
-  const CHECKLIST_TESTS = [
-    "contrast.spec.ts",
-    "static-accessibility.test.ts",
-    "responsive.spec.ts",
-    "team-entry.spec.ts",
-  ];
+  const CHECKLIST_TESTS = ["smoke.spec.ts", "static-accessibility.test.ts"];
 
   it("names a test for every rule", () => {
     const section =

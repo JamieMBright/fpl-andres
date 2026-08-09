@@ -310,6 +310,36 @@ describe("team analysis entry", () => {
     ).toBeVisible();
   });
 
+  /**
+   * The button kept the previous failure on screen for the whole request, so a
+   * retry that failed the same way changed nothing a reader could see. Clicking
+   * has to say "working" before it can say anything else.
+   */
+  it("shows the retry working, even when it fails the same way again", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn<typeof fetch>().mockRejectedValue(new TypeError("offline")),
+    );
+
+    renderApplication(`/plan?team=${String(readyState.entryId)}`);
+
+    expect(
+      await screen.findByRole(
+        "heading",
+        { name: "Network Request Failed" },
+        { timeout: 10_000 },
+      ),
+    ).toBeVisible();
+
+    await userEvent.click(
+      screen.getByRole("button", { name: "Retry analysis" }),
+    );
+
+    expect(
+      screen.getByRole("status", { name: "Evidence status" }),
+    ).toHaveTextContent(/Loading public team state/i);
+  });
+
   it("renders a recoverable page for unknown routes", () => {
     renderApplication("/not-a-real-page");
 

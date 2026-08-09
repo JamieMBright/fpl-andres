@@ -38,6 +38,17 @@ function apiRoutes(): Plugin {
           )) as { createFplProxyResponse: RouteHandler };
           return module.createFplProxyResponse(path, "GET");
         }
+        // Hand-rolled rather than loaded: `api/health.ts` is a Vercel handler
+        // that writes to a response object, not one that returns a `Response`,
+        // and dev had no route for it at all.
+        if (path === "/api/health") {
+          return Promise.resolve(
+            Response.json(
+              { status: "ok", service: "fpl-andres", revision: "local" },
+              { headers: { "Cache-Control": "no-store" } },
+            ),
+          );
+        }
         return null;
       }
 

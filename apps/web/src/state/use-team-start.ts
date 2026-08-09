@@ -243,6 +243,11 @@ export function useTeamPlan(
     start,
     analysis,
     retry: () => {
+      // Clearing first is what makes the click visible. Without it the previous
+      // failure stayed on screen for the whole request, so a retry that failed
+      // the same way changed nothing a reader could see.
+      setResolved(null);
+      setFetched(null);
       setAttempt((previous) => previous + 1);
     },
   };
