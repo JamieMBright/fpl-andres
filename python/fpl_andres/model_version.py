@@ -29,6 +29,15 @@ from __future__ import annotations
 
 __all__ = ["MODEL_VERSION"]
 
+#: 4.0 lets a bookmaker's scoring price move a player's start rate, which is a
+#: major because the published `startRate` no longer means only "how often he
+#: started last season". It now means the record and the market, weighted, and
+#: a projection built on it is answering a different question from one built on
+#: the record alone. The weight is a publisher argument rather than a constant,
+#: and with no odds artifact present every number is the record's exactly as
+#: before -- so a run with no prices is comparable to 3.0 and a run with them
+#: is not.
+#:
 #: 3.0 is the methodology audit, and it is a major because several of these
 #: change what a number means rather than only what it is.
 #:
@@ -152,4 +161,4 @@ __all__ = ["MODEL_VERSION"]
 #: projection and resampled, so a gap that does not clear zero is reported as
 #: not clearing zero. No projection changed; what changed is what may be
 #: claimed from it.
-MODEL_VERSION = "3.0"
+MODEL_VERSION = "4.0"
