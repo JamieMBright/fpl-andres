@@ -19,6 +19,7 @@ import {
   loadManagerHistory,
   saveManagerHistory,
 } from "../state/manager-history-cache";
+import { retryingFetch } from "../state/retrying-fetch";
 
 type Loaded = {
   entryId: number;
@@ -90,7 +91,16 @@ function countsOf(seasons: readonly { percentile: number | null }[]): {
   };
 }
 
-export function ManagerHistory({ entryId }: { entryId: number }) {
+export function ManagerHistory({
+  entryId,
+  // Injected only so a test can skip the backoff. In the app this is the
+  // retrying fetch, which is what stops a transient 502 costing the reader a
+  // hand-refresh.
+  fetchApi,
+}: {
+  readonly entryId: number;
+  readonly fetchApi?: typeof fetch;
+}) {
   const [loaded, setLoaded] = useState<Loaded | null>(null);
 
   useEffect(() => {
@@ -113,9 +123,10 @@ export function ManagerHistory({ entryId }: { entryId: number }) {
 
     async function read() {
       try {
-        const response = await fetch(`/api/fpl/entry/${entryId}/history`, {
-          signal: controller.signal,
-        });
+        const response = await (fetchApi ?? retryingFetch())(
+          `/api/fpl/entry/${entryId}/history`,
+          { signal: controller.signal },
+        );
         // A refused or rate-limited response is not a malformed one. Handing
         // null to the parser made every failed fetch read as "FPL changed
         // shape", which blames the wrong thing and suggests the wrong fix.
@@ -149,7 +160,7 @@ export function ManagerHistory({ entryId }: { entryId: number }) {
     return () => {
       controller.abort();
     };
-  }, [entryId]);
+  }, [entryId, fetchApi]);
 
   // Derived rather than stored, so changing team never shows the old record.
   const ready = loaded !== null && loaded.entryId === entryId;

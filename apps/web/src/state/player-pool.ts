@@ -9,6 +9,7 @@ import {
   type Freshness,
 } from "./freshness";
 import type { ScheduledFixture } from "./fixture-run";
+import { retryingFetch } from "./retrying-fetch";
 import { projectionFor, type PlayerProjection } from "./squad-projection";
 
 /**
@@ -197,7 +198,7 @@ export function forgetLastGoodPool(): void {
 }
 
 export async function fetchPlayerPool(
-  fetchApi: typeof fetch = fetch,
+  fetchApi: typeof fetch = retryingFetch(),
   signal?: AbortSignal,
 ): Promise<PlayerPool> {
   const init = {

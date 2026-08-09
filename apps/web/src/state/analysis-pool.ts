@@ -7,6 +7,7 @@ import {
 import { dedupedFetch } from "./deduped-fetch";
 import type { ScheduledFixture } from "./fixture-run";
 import { freshnessOf, LastGood, leastFresh, type Freshness } from "./freshness";
+import { retryingFetch } from "./retrying-fetch";
 import { readSeasonVintage, type SeasonVintage } from "./season-vintage";
 import understatArtifact from "../data/understat.json";
 
@@ -273,7 +274,7 @@ function fallbackOrFail(message: string, detail: string | null): AnalysisData {
 }
 
 export async function fetchAnalysisPool(
-  fetchApi: typeof fetch = fetch,
+  fetchApi: typeof fetch = retryingFetch(),
   signal?: AbortSignal,
 ): Promise<AnalysisData> {
   const init = {

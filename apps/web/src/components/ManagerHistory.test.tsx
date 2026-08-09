@@ -28,7 +28,7 @@ describe("ManagerHistory", () => {
         .mockResolvedValue(new Response("", { status: 429 })),
     );
 
-    render(<ManagerHistory entryId={212_279} />);
+    render(<ManagerHistory entryId={212_279} fetchApi={globalThis.fetch} />);
 
     expect(await screen.findByText(/would not answer just now/i)).toBeVisible();
     expect(screen.queryByText(/shape I do not recognise/i)).toBeNull();
@@ -42,7 +42,7 @@ describe("ManagerHistory", () => {
         .mockResolvedValue(Response.json({ past: "not a list" })),
     );
 
-    render(<ManagerHistory entryId={212_279} />);
+    render(<ManagerHistory entryId={212_279} fetchApi={globalThis.fetch} />);
 
     expect(await screen.findByText(/shape I do not recognise/i)).toBeVisible();
   });
@@ -67,7 +67,7 @@ describe("ManagerHistory", () => {
       ),
     );
 
-    render(<ManagerHistory entryId={212_279} />);
+    render(<ManagerHistory entryId={212_279} fetchApi={globalThis.fetch} />);
 
     expect(
       await screen.findByText(
@@ -92,7 +92,7 @@ describe("ManagerHistory", () => {
       ),
     );
 
-    render(<ManagerHistory entryId={212_279} />);
+    render(<ManagerHistory entryId={212_279} fetchApi={globalThis.fetch} />);
 
     expect(await screen.findByText(/should clear on its own/i)).toBeVisible();
   });
@@ -105,7 +105,7 @@ describe("ManagerHistory", () => {
         .mockResolvedValue(new Response("", { status: 500 })),
     );
 
-    render(<ManagerHistory entryId={212_279} />);
+    render(<ManagerHistory entryId={212_279} fetchApi={globalThis.fetch} />);
 
     expect(await screen.findByText(/would not answer just now/i)).toBeVisible();
   });
@@ -140,7 +140,7 @@ describe("ManagerHistory", () => {
       ),
     );
 
-    render(<ManagerHistory entryId={212_279} />);
+    render(<ManagerHistory entryId={212_279} fetchApi={globalThis.fetch} />);
 
     expect(
       await screen.findByText(/record from your last visit/i),
@@ -164,7 +164,7 @@ describe("ManagerHistory", () => {
       ),
     );
 
-    render(<ManagerHistory entryId={999_999} />);
+    render(<ManagerHistory entryId={999_999} fetchApi={globalThis.fetch} />);
 
     expect(
       await screen.findByText(/Retrying will not change it/i),
