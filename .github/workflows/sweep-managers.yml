@@ -85,6 +85,10 @@ jobs:
             echo "The sweep moved nothing."
             exit 0
           fi
+          # Formatted before it is committed. Python writes the checkpoint and
+          # prettier owns the file, so an unformatted commit here reddens the
+          # next unrelated push rather than this run.
+          npx --yes prettier@3 --write data/cohort/sweep-checkpoint.json
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add $paths
