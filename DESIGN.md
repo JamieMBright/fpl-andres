@@ -278,7 +278,7 @@ so a review knows what it does not have to check by hand.
 | Component              | Responsibility                                      | Asserted by                          |
 | ---------------------- | --------------------------------------------------- | ------------------------------------ |
 | `ApplicationFrame`     | Shell, skip link, kit toggle, offline banner        | `smoke`                              |
-| `RouteHeading`         | The single `h1`, focused on navigation              | `smoke`                              |
+| `RouteHeading`         | The single `h1`, focused on navigation              | `smoke`, unit                        |
 | `LazyRoute`            | Suspense fallback that still carries an `h1`        | `smoke` (axe `page-has-heading-one`) |
 | `ErrorBoundary`        | Last resort, keeps the shell rendering              | unit                                 |
 | `OfflineBanner`        | Says the connection dropped, not that data broke    | unit                                 |
