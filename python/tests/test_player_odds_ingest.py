@@ -8,7 +8,7 @@ behaviour these pin.
 from __future__ import annotations
 
 from fpl_andres.adapters.player_crosswalk import crosswalk, fold_name
-from fpl_andres.adapters.the_odds_api import read_event
+from fpl_andres.adapters.the_odds_api import describe_event, read_event
 from fpl_andres.models.player_odds import PlayerMatchOdds
 
 
@@ -129,6 +129,66 @@ def test_an_event_with_no_teams_is_refused() -> None:
         assert "named no teams" in str(error)
     else:  # pragma: no cover - the assertion above is the test
         raise AssertionError("an event with no teams must not parse")
+
+
+class TestDescribingWhyNothingWasQuoted:
+    """Ten fixtures priced and nought players quoted has three causes.
+
+    The ingest reported the same line for all three, so a run that had been
+    refused, a run before the markets opened and a run whose market keys were
+    wrong were indistinguishable in the log. Nothing here can be reproduced
+    locally -- the host fails at the TLS handshake -- so the run has to say it.
+    """
+
+    def test_a_fixture_no_book_priced_says_so(self) -> None:
+        assert describe_event(_event()) == "no bookmaker priced it"
+
+    def test_a_book_offering_nothing_is_not_the_same_as_no_book(self) -> None:
+        assert describe_event(_event({"key": "bet365", "markets": []})) == "1 books, no markets"
+
+    def test_the_markets_that_did_arrive_are_named(self) -> None:
+        described = describe_event(
+            _event(
+                _book(
+                    "bet365",
+                    "player_goal_scorer_anytime",
+                    [{"description": "Kai Havertz", "name": "Yes", "price": 2.5}],
+                )
+            )
+        )
+
+        assert "1 books" in described
+        assert "1 outcomes" in described
+        assert "player_goal_scorer_anytime" in described
+
+    def test_the_markets_that_did_not_arrive_are_named_too(self) -> None:
+        """The case that decides whether the keys are wrong or the market is shut."""
+        described = describe_event(
+            _event(
+                _book(
+                    "bet365",
+                    "player_goal_scorer_anytime",
+                    [{"description": "Kai Havertz", "name": "Yes", "price": 2.5}],
+                )
+            )
+        )
+
+        assert "absent" in described
+        assert "player_assists" in described
+
+    def test_a_book_pricing_only_the_result_names_what_it_did_offer(self) -> None:
+        described = describe_event(
+            _event(
+                _book(
+                    "bet365",
+                    "h2h",
+                    [{"name": "Arsenal", "price": 1.5}, {"name": "Bournemouth", "price": 6.0}],
+                )
+            )
+        )
+
+        assert "'h2h'" in described
+        assert "2 outcomes" in described
 
 
 ELEMENTS = [

@@ -27,8 +27,10 @@ from fpl_andres.models.odds import OddsUnavailable, devig_shin
 from fpl_andres.models.player_odds import PlayerMatchOdds
 
 __all__ = [
+    "BASE",
     "MARKET_FIELDS",
     "PLAYER_MARKETS",
+    "describe_event",
     "fetch_event_odds",
     "list_events",
     "read_event",
@@ -123,6 +125,38 @@ def _devigged(prices: Sequence[float]) -> float | None:
             # Neither is worth losing the rest of the fixture over.
             return _two_way(prices[0])
     return _two_way(prices[0])
+
+
+def describe_event(payload: Mapping[str, Any]) -> str:
+    """What the book actually returned for this fixture.
+
+    "0 players quoted" has three completely different causes -- no bookmaker
+    answered, the bookmakers answered with markets nobody asked for, or the
+    markets arrived empty -- and the ingest could not tell them apart. Guessing
+    between them from here is impossible: every price host fails at the TLS
+    handshake on the owner's network, so the only place the question can be
+    answered is the run itself. This puts the answer in the log.
+    """
+    books = [book for book in payload.get("bookmakers", []) if isinstance(book, Mapping)]
+    offered: set[str] = set()
+    outcomes = 0
+    for book in books:
+        for market in book.get("markets", []):
+            if not isinstance(market, Mapping):
+                continue
+            key = market.get("key")
+            if isinstance(key, str):
+                offered.add(key)
+            outcomes += len(
+                [item for item in market.get("outcomes", []) if isinstance(item, Mapping)]
+            )
+    if not books:
+        return "no bookmaker priced it"
+    if not offered:
+        return f"{len(books)} books, no markets"
+    missing = sorted(set(PLAYER_MARKETS) - offered)
+    detail = f"{len(books)} books, {outcomes} outcomes, markets {sorted(offered)}"
+    return detail if not missing else f"{detail}, absent {missing}"
 
 
 def read_event(

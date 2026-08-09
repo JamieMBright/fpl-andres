@@ -27,7 +27,9 @@ import httpx
 
 from fpl_andres.adapters.player_crosswalk import crosswalk
 from fpl_andres.adapters.the_odds_api import (
+    BASE,
     PLAYER_MARKETS,
+    describe_event,
     fetch_event_odds,
     list_events,
     read_event,
@@ -89,17 +91,28 @@ def main(argv: Sequence[str] | None = None) -> int:
         print(f"{len(events)} Premier League fixtures priced")
 
         rows: list[PlayerMatchOdds] = []
+        offered = 0
         for event in events[: args.max_events]:
             event_id = event.get("id")
             if not isinstance(event_id, str):
                 continue
             payload = fetch_event_odds(client, key, event_id)
             read = read_event(payload)
+            if read:
+                offered += 1
             print(
                 f"  {payload.get('home_team')} v {payload.get('away_team')}: "
-                f"{len(read)} players quoted"
+                f"{len(read)} players quoted \u2014 {describe_event(payload)}"
             )
             rows.extend(read)
+
+        # The Odds API charges a credit per market per region, so a run that
+        # spends nothing is a run whose request was refused rather than empty.
+        quota = client.get(f"{BASE}/events", params={"apiKey": key})
+        used = quota.headers.get("x-requests-used")
+        left = quota.headers.get("x-requests-remaining")
+        if used or left:
+            print(f"\nrequests used {used or '?'}, remaining {left or '?'}")
 
         bootstrap = client.get(BOOTSTRAP, headers={"Accept": "application/json"})
         bootstrap.raise_for_status()
@@ -115,15 +128,28 @@ def main(argv: Sequence[str] | None = None) -> int:
     priced = [row for row in matched if row.priced]
     named = [row for row in priced if row.element_id is not None]
     print(
-        f"\n{len(priced)} priced rows, {len(named)} matched to an FPL element, "
-        f"{len(unmatched)} names unmatched"
+        f"\n{offered} fixtures quoted a player market, {len(priced)} priced rows, "
+        f"{len(named)} matched to an FPL element, {len(unmatched)} names unmatched"
     )
     for name in unmatched[:20]:
         print(f"  unmatched: {name}")
 
     if not named and not args.allow_empty:
-        print("\nno player was both priced and matched; refusing to write")
-        return 1
+        if rows:
+            # Quoted but unjoinable: the crosswalk is the fault and it should
+            # be fixed, so this is still a failure.
+            print("\nplayers were quoted but none joined an FPL element; refusing to write")
+            return 1
+        # Nothing quoted at all. Before a season the books price the result and
+        # open player markets only days out, so an empty answer here is the
+        # market's state rather than a fault, and failing red on it would train
+        # the owner to ignore this workflow by the time it matters.
+        print(
+            "\nno player markets are open on these fixtures yet. The books are pricing "
+            "the results; anytime scorer, assists, cards and shots on target usually "
+            "appear closer to kick-off. Nothing written, nothing wrong."
+        )
+        return 0
 
     artifact = {
         "season": args.season,
