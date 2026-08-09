@@ -5383,8 +5383,12 @@ h1[tabindex="-1"]:focus-visible {
   display: grid;
   /* The chart and the controls that change it, side by side. One column put
      the pickers below the fold, so a reader had to scroll away from the thing
-     they were configuring to configure it. */
-  grid-template-columns: minmax(0, 1fr) 320px;
+     they were configuring to configure it.
+
+     A fixed 360px, not a fraction: the pickers have a natural width and a
+     column that breathes with the viewport made them wrap at some sizes and
+     scroll sideways at others. */
+  grid-template-columns: minmax(0, 1fr) 360px;
   gap: 24px;
   align-items: start;
   margin-top: 24px;
@@ -5393,16 +5397,15 @@ h1[tabindex="-1"]:focus-visible {
 .analysis-panels {
   display: grid;
   /* Without an explicit minmax(0, ...) the implicit track is content-sized, so
-     a wide compare list pushed the whole page wider and squeezed the chart
-     instead of scrolling itself. */
+     a wide list pushed the whole page wider and squeezed the chart. */
   grid-template-columns: minmax(0, 1fr);
   gap: 12px;
   min-width: 0;
-  /* Follows the chart down a long page rather than scrolling away from it. */
+  /* Follows the chart down a long page rather than scrolling away from it.
+     No inner scroll: an overflow container clips the info bubbles, which is
+     how the one explanation a reader asked for ended up off screen. */
   position: sticky;
   top: 12px;
-  max-height: calc(100vh - 24px);
-  overflow-y: auto;
 }
 
 .analysis-vintage,
@@ -5749,6 +5752,36 @@ h1[tabindex="-1"]:focus-visible {
   align-items: center;
   gap: 5px;
   font-size: 12px;
+}
+
+/* The key is the control. Pressed means isolated, and isolating dims the rest
+   of the chart rather than removing it. */
+.scatter-legend-key {
+  display: inline-flex;
+  gap: 5px;
+  align-items: center;
+  min-height: 24px;
+  padding: 1px 5px 1px 1px;
+  border: 1px solid transparent;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.scatter-legend-key:hover {
+  border-color: var(--rule);
+}
+
+.scatter-legend-key[aria-pressed="true"] {
+  border-color: var(--signal-blue);
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.scatter-legend-key:focus-visible {
+  outline: 3px solid var(--signal-blue);
+  outline-offset: 1px;
 }
 
 .scatter-legend p {
@@ -6243,8 +6276,6 @@ h1[tabindex="-1"]:focus-visible {
      and eat the screen the chart needs. */
   .analysis-panels {
     position: static;
-    max-height: none;
-    overflow-y: visible;
   }
 }
 

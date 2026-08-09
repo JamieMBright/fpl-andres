@@ -350,6 +350,13 @@ function AnalysisBody({
             bins={colourBins}
             clubsInPlay={clubsInPlay}
             colourMetric={colourMetric}
+            onToggle={(key) => {
+              onChange({
+                highlights: view.highlights.includes(key)
+                  ? view.highlights.filter((held) => held !== key)
+                  : [...view.highlights, key],
+              });
+            }}
             sizeMetric={selection.size}
             sizeRange={sizeRange}
             view={view}
@@ -417,19 +424,19 @@ function AnalysisBody({
             onReset={onReset}
             plotted={selection.points.length}
           />
-
-          <PinnedPlayers
-            players={data.pool.players}
-            pinned={view.pinned}
-            clubCodeByTeamId={data.clubCodeByTeamId}
-            fixtures={data.fixtures}
-            onUnpin={onTogglePin}
-            onClear={() => onChange({ pinned: [] })}
-            onOpen={setOpened}
-            view={view}
-          />
         </div>
       </div>
+
+      <PinnedPlayers
+        players={data.pool.players}
+        pinned={view.pinned}
+        clubCodeByTeamId={data.clubCodeByTeamId}
+        fixtures={data.fixtures}
+        onUnpin={onTogglePin}
+        onClear={() => onChange({ pinned: [] })}
+        onOpen={setOpened}
+        view={view}
+      />
 
       <ScatterReadout
         selection={selection}

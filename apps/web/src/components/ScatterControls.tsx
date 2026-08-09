@@ -2,6 +2,7 @@ import { useId, useState } from "react";
 
 import { METRICS, type MetricGroup } from "../state/analysis-metrics";
 import { HighlightPicker } from "./HighlightPicker";
+import { InfoMarker } from "./InfoMarker";
 import { RangeSlider } from "./RangeSlider";
 import type { AnalysisPool } from "../state/analysis-pool";
 import type { ColourBy, ScatterView } from "../state/scatter-view";
@@ -103,9 +104,25 @@ export function ScatterControls({
           </div>
           {view.season === LIVE_SEASON ? (
             <p className="scatter-hint">
-              {pool.vintage.state === "previous_season"
-                ? `2026/27 has not kicked off, so FPL's season totals are still ${pool.vintage.season ?? "last season"}'s. That is what is plotted. Ownership and price are today's.`
-                : "Live figures from FPL, including ownership and shot quality. A past season is downloaded on request and carries neither."}
+              {pool.vintage.state === "previous_season" ? (
+                <>
+                  Plotting {pool.vintage.season ?? "last season"}. Price and
+                  ownership are today&rsquo;s.
+                  <InfoMarker label="why last season">
+                    2026/27 has not kicked off, so FPL&rsquo;s season totals are
+                    still last season&rsquo;s. A past season downloaded on
+                    request carries no ownership and no shot quality.
+                  </InfoMarker>
+                </>
+              ) : (
+                <>
+                  Live from FPL, ownership and shot quality included.
+                  <InfoMarker label="an archived season">
+                    A past season is downloaded on request and carries neither
+                    ownership nor shot quality.
+                  </InfoMarker>
+                </>
+              )}
             </p>
           ) : (
             <>
@@ -122,10 +139,12 @@ export function ScatterControls({
                 to={view.toEvent}
               />
               <p className="scatter-hint">
-                Points, minutes and price are re-totalled over the window, and
-                the price is what he closed it at. Expected goals and defensive
-                contributions are published as season totals, so those stay
-                whole however narrow the window is.
+                Points, minutes and price re-total over the window.
+                <InfoMarker label="what the window does not change">
+                  Price is what he closed the window at. Expected goals and
+                  defensive contributions are published as season totals, so
+                  those stay whole however narrow the window is.
+                </InfoMarker>
               </p>
             </>
           )}
@@ -359,8 +378,11 @@ export function ScatterControls({
         <fieldset className="scatter-fieldset">
           <legend>Ownership band</legend>
           <p className="scatter-hint">
-            Only players owned inside this range are drawn. Narrow it to hunt a
-            differential; widen it to see the whole market.
+            Draws only players owned inside this range.
+            <InfoMarker label="the ownership band">
+              Narrow it to hunt a differential; widen it to see the whole
+              market.
+            </InfoMarker>
           </p>
           <RangeSlider
             format={(value) => `${value.toFixed(1)}%`}
@@ -379,9 +401,11 @@ export function ScatterControls({
         <fieldset className="scatter-fieldset">
           <legend>Price bracket</legend>
           <p className="scatter-hint">
-            Only players costing inside this range are drawn. A replacement has
-            to be affordable to be a replacement, so narrowing here compares
-            players you could actually swap between.
+            Draws only players costing inside this range.
+            <InfoMarker label="the price band">
+              A replacement has to be affordable to be a replacement, so
+              narrowing here compares players you could actually swap between.
+            </InfoMarker>
           </p>
           <RangeSlider
             format={(value) => `\u00a3${(value / 10).toFixed(1)}m`}

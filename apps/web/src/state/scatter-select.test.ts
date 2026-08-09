@@ -243,6 +243,36 @@ describe("selectPlotted", () => {
     expect(selection.points.filter((point) => point.matched)).toHaveLength(2);
   });
 
+  // The legend is the control: clicking a shape isolates that position, and
+  // clicking a second one adds to it rather than replacing it.
+  it("highlights a whole position, and adds a second without dropping the first", () => {
+    const squad = [
+      player({ code: 1, position: "MID" }),
+      player({ code: 2, position: "DEF" }),
+      player({ code: 3, position: "FWD" }),
+    ];
+
+    const mids = selectPlotted(squad, { ...view, highlights: ["@MID"] })!;
+    expect(mids.points.filter((point) => point.matched)).toHaveLength(1);
+
+    const both = selectPlotted(squad, {
+      ...view,
+      highlights: ["@MID", "@FWD"],
+    })!;
+    expect(both.points.filter((point) => point.matched)).toHaveLength(2);
+    // Nothing is removed, only dimmed.
+    expect(both.points).toHaveLength(3);
+  });
+
+  it("keeps a position highlight from colliding with a club of the same name", () => {
+    const selection = selectPlotted(
+      [player({ code: 1, club: "MID", position: "FWD" })],
+      { ...view, highlights: ["@MID"] },
+    )!;
+
+    expect(selection.points[0]?.matched).toBe(false);
+  });
+
   it("has no centre and no fit when everything is filtered away", () => {
     const selection = selectPlotted([player({ minutes: 10 })], view)!;
 

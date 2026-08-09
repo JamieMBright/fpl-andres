@@ -139,7 +139,8 @@ export function selectPlotted(
         };
 
   const fit = view.trend ? leastSquaresFit(kept) : null;
-  // A club short name matches everyone at that club; `#code` matches one man.
+  // A club short name matches everyone at that club, `@POS` everyone in that
+  // position, and `#code` matches one man.
   const highlighted = new Set(view.highlights);
 
   const points = kept.map<PlottedPlayer>((entry) => {
@@ -159,6 +160,9 @@ export function selectPlotted(
       matched:
         highlighted.size === 0 ||
         highlighted.has(entry.player.club) ||
+        // `@MID` isolates a position. Prefixed so it can never collide with a
+        // club that happens to share the three letters.
+        highlighted.has(`@${entry.player.position}`) ||
         highlighted.has(`#${String(entry.player.code)}`),
     };
   });

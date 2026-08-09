@@ -22,6 +22,43 @@ const POSITIONS = [
 
 const SWATCH = 22;
 
+/**
+ * One key, and the control that isolates it.
+ *
+ * Isolating dims the rest rather than dropping them: the reader asked which of
+ * these is which, and an answer that deletes the comparison is not an answer.
+ */
+function Swatch({
+  children,
+  isolated,
+  label,
+  onToggle,
+}: {
+  readonly children: React.ReactNode;
+  readonly isolated: boolean;
+  readonly label: string;
+  readonly onToggle: () => void;
+}) {
+  return (
+    <button
+      aria-pressed={isolated}
+      className="scatter-legend-key"
+      onClick={onToggle}
+      type="button"
+    >
+      <svg
+        aria-hidden="true"
+        height={SWATCH}
+        viewBox={`0 0 ${SWATCH} ${SWATCH}`}
+        width={SWATCH}
+      >
+        {children}
+      </svg>
+      <span translate="no">{label}</span>
+    </button>
+  );
+}
+
 /** The same geometry the scatter draws, at legend size. */
 function markPath(position: string, r: number): string {
   const c = SWATCH / 2;
@@ -41,6 +78,7 @@ export function ScatterLegend({
   clubsInPlay,
   colourMetric,
   bins,
+  onToggle,
 }: {
   sizeMetric: Metric | null;
   /** Smallest and largest plotted value, so the swatches quote real numbers. */
@@ -50,8 +88,11 @@ export function ScatterLegend({
   /** The statistic the colour bins, when colouring by one. */
   colourMetric: Metric | null;
   bins: readonly Bin[];
+  /** Adds or removes one highlight key. The legend is the control. */
+  onToggle: (key: string) => void;
 }) {
   const byClub = view.colourBy === "club";
+  const held = useMemo(() => new Set(view.highlights), [view.highlights]);
   const shown = useMemo(() => {
     if (!byClub) return [];
     const wanted = new Set(clubsInPlay);
@@ -65,18 +106,18 @@ export function ScatterLegend({
         <ul>
           {POSITIONS.map(({ code, label }) => (
             <li key={code}>
-              <svg
-                aria-hidden="true"
-                height={SWATCH}
-                viewBox={`0 0 ${SWATCH} ${SWATCH}`}
-                width={SWATCH}
+              <Swatch
+                isolated={held.has(`@${code}`)}
+                label={label}
+                onToggle={() => {
+                  onToggle(`@${code}`);
+                }}
               >
                 {/* Grey, like the size key: this row is about shape, and
                     colouring it would claim a second encoding it does not
                     carry. */}
                 <path className="scatter-legend-shape" d={markPath(code, 7)} />
-              </svg>
-              {label}
+              </Swatch>
             </li>
           ))}
         </ul>
@@ -94,11 +135,12 @@ export function ScatterLegend({
           <ul className="scatter-legend-clubs">
             {shown.map((mark) => (
               <li key={mark.shortName}>
-                <svg
-                  aria-hidden="true"
-                  height={SWATCH}
-                  viewBox={`0 0 ${SWATCH} ${SWATCH}`}
-                  width={SWATCH}
+                <Swatch
+                  isolated={held.has(mark.shortName)}
+                  label={mark.shortName}
+                  onToggle={() => {
+                    onToggle(mark.shortName);
+                  }}
                 >
                   <path
                     d={markPath("GKP", 7)}
@@ -107,8 +149,7 @@ export function ScatterLegend({
                     strokeWidth={2.5}
                     {...(mark.dash ? { strokeDasharray: mark.dash } : {})}
                   />
-                </svg>
-                <span translate="no">{mark.shortName}</span>
+                </Swatch>
               </li>
             ))}
           </ul>
@@ -129,18 +170,18 @@ export function ScatterLegend({
           <ul className="scatter-legend-clubs">
             {POSITIONS.map(({ code, label }) => (
               <li key={code}>
-                <svg
-                  aria-hidden="true"
-                  height={SWATCH}
-                  viewBox={`0 0 ${SWATCH} ${SWATCH}`}
-                  width={SWATCH}
+                <Swatch
+                  isolated={held.has(`@${code}`)}
+                  label={label}
+                  onToggle={() => {
+                    onToggle(`@${code}`);
+                  }}
                 >
                   <path
                     className={`scatter-mark scatter-mark-${code.toLowerCase()}`}
                     d={markPath(code, 7)}
                   />
-                </svg>
-                {label}
+                </Swatch>
               </li>
             ))}
           </ul>
