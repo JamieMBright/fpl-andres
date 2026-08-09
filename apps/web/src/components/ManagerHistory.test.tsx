@@ -7,9 +7,8 @@ import { saveManagerHistory } from "../state/manager-history-cache";
 /**
  * A refused request is not a broken contract. The component used to hand null
  * to the parser whenever the response was not ok, so a rate-limited proxy read
- * back as "FPL answered, but not in the shape I expect" -- an accusation
- * against the source for something the source never did, and one that points
- * whoever reads it at the wrong repair.
+ * back as an accusation against the source for something the source never did,
+ * and one that points whoever reads it at the wrong repair.
  */
 
 afterEach(() => {
@@ -31,8 +30,8 @@ describe("ManagerHistory", () => {
 
     render(<ManagerHistory entryId={212_279} />);
 
-    expect(await screen.findByText(/could not reach FPL/i)).toBeVisible();
-    expect(screen.queryByText(/not in the shape I expect/i)).toBeNull();
+    expect(await screen.findByText(/would not answer just now/i)).toBeVisible();
+    expect(screen.queryByText(/shape I do not recognise/i)).toBeNull();
   });
 
   it("blames the payload only when the payload is genuinely unreadable", async () => {
@@ -45,7 +44,7 @@ describe("ManagerHistory", () => {
 
     render(<ManagerHistory entryId={212_279} />);
 
-    expect(await screen.findByText(/not in the shape I expect/i)).toBeVisible();
+    expect(await screen.findByText(/shape I do not recognise/i)).toBeVisible();
   });
 
   /**
@@ -75,7 +74,7 @@ describe("ManagerHistory", () => {
         /FPL answered 403 with none: FPL refused the request from this deployment\./,
       ),
     ).toBeVisible();
-    expect(screen.queryByText(/could not reach FPL/i)).toBeNull();
+    expect(screen.queryByText(/would not answer just now/i)).toBeNull();
   });
 
   it("says a rate limit is worth waiting out and a refusal is not", async () => {
@@ -108,7 +107,7 @@ describe("ManagerHistory", () => {
 
     render(<ManagerHistory entryId={212_279} />);
 
-    expect(await screen.findByText(/could not reach FPL/i)).toBeVisible();
+    expect(await screen.findByText(/would not answer just now/i)).toBeVisible();
   });
 
   /**

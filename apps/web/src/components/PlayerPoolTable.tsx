@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 
+import { InfoMarker } from "./InfoMarker";
 import { PlayerDetail } from "./PlayerDetail";
 import { classifyFetchFailure } from "../state/fetch-failure";
 import { rateFixtureRun, type FixtureRun } from "../state/fixture-run";
@@ -341,11 +342,14 @@ export function PlayerPoolTable() {
       ) : null}
 
       <p className="pool-basis">
-        Prices are the ones FPL has published for 2026/27. The points figure is
-        what each player actually returned per match in {projectionSeason},
-        rebuilt from every scoring route. Dividing one by the other tells you
-        what he costs per point <em>today</em> — which is the only part of this
-        that is new information.
+        2026/27 prices against {projectionSeason} returns. Sort by{" "}
+        <strong>per £1m</strong> to see what a player costs per point today.
+        <InfoMarker label="where these numbers come from">
+          Prices are the ones FPL has published for 2026/27. The points figure
+          is what each player actually returned per match in {projectionSeason},
+          rebuilt from every scoring route rather than taken from a summary
+          column.
+        </InfoMarker>
       </p>
 
       <div className="pool-controls">

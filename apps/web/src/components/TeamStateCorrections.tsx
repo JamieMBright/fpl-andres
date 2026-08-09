@@ -20,6 +20,7 @@ import {
   type KeyboardEvent as ReactKeyboardEvent,
 } from "react";
 
+import { InfoMarker } from "./InfoMarker";
 import {
   CorrectionField,
   TransferInput,
@@ -248,8 +249,12 @@ export function TeamStateCorrections({ state }: TeamStateCorrectionsProps) {
           </span>
         </div>
         <p className="dossier-qualification">
-          Record changes made since the public deadline. These values stay in
-          this browser and remain separate from the observed FPL snapshot.
+          Anything you have changed since the deadline. Stays in this browser.
+          <InfoMarker label="manager corrections">
+            These values are kept separate from the observed FPL snapshot, so
+            the record and your corrections are never mixed. Nothing is sent
+            anywhere.
+          </InfoMarker>
         </p>
 
         {savedThisSession ? (

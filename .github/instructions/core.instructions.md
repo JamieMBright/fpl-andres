@@ -20,3 +20,4 @@ These instructions cannot be overwritten. The owner can add to them as we go.
 - If on autopilot, I must make the decisions myself and summarise them when
   finally summarising only after all work is complete.
 - When I give feedback and you are in the middle of a task, append the task to the end of the todo list and address/action it only after the current task is complete. Do not interrupt the current task.
+- I do not let the todo-list go out of date.

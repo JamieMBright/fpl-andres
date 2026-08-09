@@ -10,6 +10,9 @@ export function BielsaBucket() {
       viewBox="0 0 260 200"
       xmlns="http://www.w3.org/2000/svg"
     >
+      {/* Grass. The bucket needs something to stand on for the mark to read as
+          a badge rather than a cut-out. */}
+      <circle cx="130" cy="104" fill="#00a13e" r="98" />
       <ellipse
         cx="130"
         cy="186"

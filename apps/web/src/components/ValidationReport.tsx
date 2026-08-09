@@ -1,6 +1,7 @@
 import validation from "../data/validation.json";
 import { timestamp } from "../format";
 import { CaptainGrid, type SeasonPicks } from "./CaptainGrid";
+import { InfoMarker } from "./InfoMarker";
 import {
   BarChart,
   IntervalChart,
@@ -286,10 +287,13 @@ export function ValidationReport() {
       <section aria-labelledby="ranking-title">
         <h2 id="ranking-title">Can I rank players?</h2>
         <p>
-          Rank correlation against what actually happened, gameweek by gameweek.
-          Higher is better. One is perfect. This test has no squad, no budget
-          and no transfers &mdash; it ranks every player in the game at once, so
-          nobody could actually play it.
+          Rank correlation against what actually happened, week by week. Higher
+          is better, one is perfect.
+          <InfoMarker label="this ranking test">
+            No squad, no budget and no transfers &mdash; it ranks every player
+            in the game at once, so nobody could actually play it. It is the
+            cleanest measure of ordering, not of a season.
+          </InfoMarker>
         </p>
         <SeasonLines
           title="Rank correlation, season by season"
@@ -313,11 +317,13 @@ export function ValidationReport() {
       <section aria-labelledby="position-title">
         <h2 id="position-title">The same test, one position at a time</h2>
         <p>
-          You never pick from all six hundred players at once. You pick two
-          keepers, five defenders, five midfielders and three forwards. So the
-          honest question is whether I rank better <em>within a position</em>.
-          Here is my correlation minus the baseline&rsquo;s. Positive means I
-          win.
+          My correlation minus the baseline&rsquo;s, within each position.
+          Positive means I win.
+          <InfoMarker label="why position by position">
+            You never pick from all six hundred players at once. You pick two
+            keepers, five defenders, five midfielders and three forwards, so the
+            honest question is whether the ranking holds inside a position.
+          </InfoMarker>
         </p>
         <div
           aria-label="Scrollable per-position comparison table"
@@ -370,12 +376,14 @@ export function ValidationReport() {
         <h2 id="captaincy-title">Who would I have captained?</h2>
         <p>
           The captain doubles, so this one call swings two to three times what a
-          routine transfer does. Every method picks from the same shortlist
-          &mdash; the {CAPTAIN_SHORTLIST} most-owned players going into that
-          gameweek, which is roughly the pool a real squad draws from. Picking
-          from the whole league would be grading hindsight. The ceiling is the
-          best captain <em>in that shortlist</em>, so the regret is a call
-          somebody could have made.
+          routine transfer does.
+          <InfoMarker label="how captaincy is scored">
+            Every method picks from the same shortlist: the {CAPTAIN_SHORTLIST}{" "}
+            most-owned players going into that gameweek, roughly the pool a real
+            squad draws from. Picking from the whole league would be grading
+            hindsight. The ceiling is the best captain in that shortlist, so the
+            regret is a call somebody could have made.
+          </InfoMarker>
         </p>
         {captaincySeasons.length === 0 ? (
           <p className="validation-verdict">
@@ -413,29 +421,25 @@ export function ValidationReport() {
       <section aria-labelledby="picks-title">
         <h2 id="picks-title">Every armband, week by week</h2>
         <p>
-          The charts above settle whether one rule beats another by a tenth of a
-          point. They cannot show what the disagreement was about. Two rules
-          separated by 0.15 still differ on which player, in which week &mdash;
-          and that is the part you can check against a scoresheet.
-        </p>
-        <p>
           Rows are the fourteen methods, columns every scored gameweek. Each
           cell is the shirt, the player, who he faced and what he returned.
-          Opponents carry the venue in their casing:{" "}
-          <span className="mono">ARS</span> at home,{" "}
-          <span className="mono">ars</span> away, both listed in a double. The
-          number under each gameweek is the best return available on that
-          week&rsquo;s shortlist, so a haul can be read against what was on
-          offer. Scroll sideways; the method names stay put.
+          <InfoMarker label="reading the grid">
+            Opponents carry the venue in their casing: ARS at home, ars away,
+            both listed in a double. The number under each gameweek is the best
+            return available on that week&rsquo;s shortlist, so a haul can be
+            read against what was on offer. Scroll sideways; the method names
+            stay put.
+          </InfoMarker>
         </p>
         <p>
-          <strong>Point at any pick to see why it was made.</strong> The panel
-          underneath shows the arithmetic every rule read that week &mdash; the
-          projection, the components under it, recent scoring, the chance he
-          started, ownership, his ceiling and how kind the fixture was &mdash;
-          for the player chosen and for the ones he was chosen over, ranked by
-          projection. Tabbing to a cell does the same thing, so the reasoning is
-          not reserved for people using a mouse.
+          <strong>Point at any pick to see why it was made.</strong>
+          <InfoMarker label="the reasoning panel">
+            The panel underneath shows the arithmetic every rule read that week
+            &mdash; the projection, the components under it, recent scoring, the
+            chance he started, ownership, his ceiling and how kind the fixture
+            was &mdash; for the player chosen and for the ones he was chosen
+            over, ranked by projection. Tabbing to a cell does the same thing.
+          </InfoMarker>
         </p>
         <CaptainGrid
           mine={["model", "expected_points"]}
@@ -449,16 +453,15 @@ export function ValidationReport() {
         <p>
           {report.league.managers} managers per league, each starting from a
           different random squad. {Math.round(report.league.advisedShare * 100)}
-          % follow my projection. The rest play the baselines below. Every
-          policy starts from the same opening squad, so any difference is the
-          policy and not the luck of the draw.
-        </p>
-        <p>
-          Everyone plays by the same rules. The squad carries over week to week,
-          one free transfer arrives each gameweek and banks up to five, and any
-          move beyond the bank costs four points. All four chips are played by
-          every policy. Team value moves with prices, and a risen player sells
-          for only half his profit.
+          % follow my projection. The rest play the baselines below.
+          <InfoMarker label="how the leagues are run">
+            Every policy starts from the same opening squad, so any difference
+            is the policy and not the luck of the draw. The squad carries over
+            week to week, one free transfer arrives each gameweek and banks up
+            to five, and any move beyond the bank costs four points. All four
+            chips are played by every policy. Team value moves with prices, and
+            a risen player sells for only half his profit.
+          </InfoMarker>
         </p>
         <div
           aria-label="Scrollable mini-league table"

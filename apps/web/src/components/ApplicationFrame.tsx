@@ -98,15 +98,18 @@ export function ApplicationFrame() {
             <small>Analysis, not opinion</small>
           </span>
         </Link>
-        <button
-          className="theme-toggle"
-          onClick={() => {
-            setTheme(NEXT_KIT[theme]);
-          }}
-          type="button"
-        >
-          {KIT_LABEL[theme]}
-        </button>
+        <div className="header-controls">
+          <Countdown deadline={FIRST_DEADLINE_2026_27} />
+          <button
+            className="theme-toggle"
+            onClick={() => {
+              setTheme(NEXT_KIT[theme]);
+            }}
+            type="button"
+          >
+            {KIT_LABEL[theme]}
+          </button>
+        </div>
       </header>
       <nav aria-label="Primary navigation" className="teletext-strip">
         <Link to="/plan">Plan</Link>
@@ -114,7 +117,7 @@ export function ApplicationFrame() {
         <Link to="/analysis">Analysis</Link>
         <Link to="/methodology">Method</Link>
         <Link to="/calibration">Calibration</Link>
-        <Countdown deadline={FIRST_DEADLINE_2026_27} />
+        <Link to="/faq">FAQ</Link>
       </nav>
       <main id="main-content" tabIndex={-1}>
         <Outlet />

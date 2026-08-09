@@ -2,6 +2,7 @@ import squad from "../data/opening-squad.json";
 import { useState } from "react";
 
 import { CeefaxShirt } from "./CeefaxShirt";
+import { InfoMarker } from "./InfoMarker";
 import { money as sharedMoney } from "../format";
 import { kitForShortName } from "../kit/team-kits";
 import { saveDeclaredSquad } from "../state/declared-squad";
@@ -112,12 +113,14 @@ export function OpeningSquad({ entryId }: { entryId?: number }) {
         </div>
 
         <p className="opening-basis">
-          Fifteen players inside the real rules — one hundred million, two
-          goalkeepers, five defenders, five midfielders, three forwards, no more
-          than three from a club. Chosen to maximise the{" "}
-          <em>starting eleven</em>, because that is all that scores, with a
-          bench that can actually play so an absence does not cost you a
-          transfer.
+          Fifteen players inside the real rules, chosen to maximise the{" "}
+          <em>starting eleven</em>.
+          <InfoMarker label="how this fifteen was chosen">
+            One hundred million, two goalkeepers, five defenders, five
+            midfielders, three forwards, no more than three from a club. Only
+            the eleven scores, so the bench is picked to be playable rather than
+            cheap — an absence should not cost you a transfer.
+          </InfoMarker>
         </p>
         <p className="opening-basis mono">
           Best eleven: {opening.expectedPoints.toFixed(1)} points a gameweek,
@@ -236,32 +239,30 @@ export function OpeningSquad({ entryId }: { entryId?: number }) {
             <strong>
               Only {opening.consideredPlayers} of the game&rsquo;s players were
               eligible.
-            </strong>{" "}
-            {opening.withoutRecord} have no Premier League record,{" "}
-            {opening.unavailable} are flagged injured or unavailable by FPL, and{" "}
-            {opening.bitPart} have under a{" "}
-            {Math.round(opening.startRateFloor * 100)}% chance of starting,
-            judged on how the season <em>ended</em> rather than what it
-            averaged. Some of those will be excellent this year. This is the
-            best of what is <em>measurable</em>, which is not the same as the
-            best.
+            </strong>
+            <InfoMarker label="who was left out">
+              {opening.withoutRecord} have no Premier League record,{" "}
+              {opening.unavailable} are flagged injured or unavailable by FPL,
+              and {opening.bitPart} have under a{" "}
+              {Math.round(opening.startRateFloor * 100)}% chance of starting,
+              judged on how the season ended rather than what it averaged. Some
+              of those will be excellent this year. This is the best of what is
+              measurable, which is not the same as the best.
+            </InfoMarker>
           </li>
           <li>
-            <strong>It knows a player started, not why.</strong> A stand-in for
-            an injured first choice reads exactly like a man who won his place.
-            That cuts both ways, and nothing here separates them.
+            <strong>It knows a player started, not why.</strong> A stand-in
+            reads exactly like a man who won his place.
           </li>
           <li>
             <strong>
               Last season&rsquo;s minutes are not this season&rsquo;s role.
             </strong>{" "}
-            A summer signing, a new manager or a change of system moves a player
-            off his record entirely, and none of that is modelled here.
+            A signing, a new manager or a new system is not modelled.
           </li>
           <li>
-            <strong>No form, because none exists.</strong> Once gameweeks are
-            played the projection blends the record with recent scoring and this
-            list will change.
+            <strong>No form, because none exists.</strong> This list changes
+            once gameweeks are played.
           </li>
         </ul>
       </section>

@@ -167,7 +167,10 @@ describe("readManagerProfile", () => {
     expect(profile.trend).toBeLessThan(0);
   });
 
-  it("spots a declining one and says so plainly", () => {
+  // The direction still has to be classified; it just stops being said out
+  // loud. The chart above the summary already shows a career sloping the wrong
+  // way, and prose repeating it adds a verdict rather than a fact.
+  it("spots a declining one without narrating it", () => {
     const profile = profileOf(
       history([
         ["2022/23", 2500, 200_000],
@@ -178,7 +181,8 @@ describe("readManagerProfile", () => {
     );
 
     expect(profile.archetype).toBe("fader");
-    expect(commentary(profile)).toMatch(/trail where you started/i);
+    expect(commentary(profile)).toContain("best 200,000 in 2022/23");
+    expect(commentary(profile)).not.toMatch(/trail|drift|declin|worse/i);
   });
 
   it("does not read a direction into a short career", () => {

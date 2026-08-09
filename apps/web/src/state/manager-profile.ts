@@ -198,6 +198,59 @@ export function readManagerProfile(
 }
 
 /**
+ * The gap between the best and worst quarter of rated seasons.
+ *
+ * Quartiles rather than best-to-worst: one freak year should not describe a
+ * career. It answers a different question from the median -- two managers can
+ * share a typical finish while one is reliable and the other alternates.
+ */
+export function spreadOf(
+  seasons: readonly { percentile: number | null }[],
+): number | null {
+  const rated = seasons
+    .map((season) => season.percentile)
+    .filter((value): value is number => value !== null)
+    .sort((left, right) => left - right);
+  if (rated.length < 4) return null;
+  const at = (fraction: number) =>
+    rated[Math.min(rated.length - 1, Math.floor(fraction * rated.length))] ?? 0;
+  return at(0.75) - at(0.25);
+}
+
+/** The same spread in words, so the number and the summary always agree. */
+export function consistencyWord(spread: number | null): string | null {
+  if (spread === null) return null;
+  if (spread < 15) return "steady";
+  if (spread < 30) return "variable";
+  return "swings hard";
+}
+
+/** The last three rated seasons, which is the part of a record still in play. */
+function recentRead(profile: ManagerProfile): string {
+  const rated = profile.seasons.filter(
+    (
+      season,
+    ): season is (typeof profile.seasons)[number] & { percentile: number } =>
+      season.percentile !== null,
+  );
+  if (rated.length < 3) return "";
+
+  const last = rated.slice(-3);
+  const finishes = last.map((season) => `top ${share(season.percentile)}`);
+  const consistency = consistencyWord(spreadOf(profile.seasons));
+  const climbing =
+    profile.archetype !== "climber" && profile.archetype !== "fader";
+  const direction =
+    climbing && profile.trend !== null && profile.trend <= -TREND_THRESHOLD
+      ? " The trend points up."
+      : "";
+
+  return ` Last three: ${finishes.join(", ")}.${
+    consistency === null ? "" : ` Season to season, ${consistency}.`
+  }${direction}`;
+}
+
+/**
  * Andres on the record. Rule-based rather than generated, so the same history
  * always produces the same read and every claim traces to a number above it.
  */
@@ -216,24 +269,25 @@ export function commentary(profile: ManagerProfile): string {
     profile.standoutSeasons > 1
       ? ` Top one percent ${profile.standoutSeasons} times.`
       : "";
+  const recent = recentRead(profile);
 
   switch (profile.archetype) {
     case "newcomer":
       return `${seasons} season${seasons === 1 ? "" : "s"} on record — not enough to read yet. Best ${bestFinish}.`;
     case "elite":
-      return `${seasons} seasons, typically ${typical}.${standout} That is not variance. You may be able to teach me more than I can teach you.`;
+      return `${seasons} seasons, typically ${typical}.${standout}${recent} That is not variance. You may be able to teach me more than I can teach you.`;
     case "contender":
-      return `${seasons} seasons, typically ${typical}, best ${bestFinish}.${standout} Consistently near the top of a field of millions.`;
+      return `${seasons} seasons, typically ${typical}, best ${bestFinish}.${standout}${recent} Consistently near the top of a field of millions.`;
     case "spiker":
-      return `${bestFinish} in ${profile.bestSeason} against a career around ${typical}. One outstanding season is mostly variance — the question is whether it repeats.`;
+      return `${bestFinish} in ${profile.bestSeason} against a career around ${typical}.${recent} One outstanding season is mostly variance — the question is whether it repeats.`;
     case "climber":
-      return `${seasons} seasons, and the trend points up: your later years beat your early ones.${standout} Keep doing whatever changed.`;
+      return `${seasons} seasons, and the trend points up: your later years beat your early ones.${standout}${recent} Keep doing whatever changed.`;
     case "fader":
-      return `${seasons} seasons, and recent finishes trail where you started. A best of ${bestFinish} says the ability is there.${standout}`;
+      return `${seasons} seasons, best ${bestFinish} in ${profile.bestSeason}.${standout}${recent}`;
     case "ever-present":
-      return `${seasons} seasons, typically ${typical}, best ${bestFinish}.${standout} You have been here longer than most of the players.`;
+      return `${seasons} seasons, typically ${typical}, best ${bestFinish}.${standout}${recent} You have been here longer than most of the players.`;
     default:
-      return `${seasons} seasons, typically ${typical}, best ${bestFinish}.${standout} Inside the half of the game that takes it seriously.`;
+      return `${seasons} seasons, typically ${typical}, best ${bestFinish}.${standout}${recent} Inside the half of the game that takes it seriously.`;
   }
 }
 

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
+import { InfoMarker } from "../components/InfoMarker";
 import { PinnedPlayers } from "../components/PinnedPlayers";
 import { PlayerDetail } from "../components/PlayerDetail";
 import { PlayerScatter, type OverlayNotes } from "../components/PlayerScatter";
@@ -176,8 +177,8 @@ export default function AnalysisPage() {
       {failed ? (
         <p className="analysis-failure" role="status">
           {failed === "unreachable"
-            ? "FPL is not answering, and I have no earlier copy of the player list to plot instead."
-            : "FPL sent back a player list I do not recognise, so I am not plotting it."}
+            ? "FPL is not answering, and I have no earlier player list to plot."
+            : "FPL sent a player list I do not recognise, so I am not plotting it."}
           {failureDetail ? (
             <>
               {" "}
@@ -206,8 +207,8 @@ export default function AnalysisPage() {
 
       {archiveFailed ? (
         <p className="analysis-failure" role="status">
-          I could not download the past-season archive, so I have put you back
-          on this season rather than leaving you on an empty chart.{" "}
+          The past-season archive would not download, so you are back on this
+          season.{" "}
           <button
             className="pool-retry"
             onClick={() => setArchiveFailed(false)}
@@ -394,17 +395,20 @@ function AnalysisBody({
         </div>
 
         <div className="analysis-panels">
-          <details className="scatter-controls analysis-reading">
-            <summary className="scatter-controls-summary">
-              <span>How to read this</span>
-            </summary>
-            <div className="scatter-controls-body">
-              <p>{reading.corner}</p>
-              {reading.relationship ? <p>{reading.relationship}</p> : null}
-              {reading.standout ? <p>{reading.standout}</p> : null}
-              {reading.size ? <p>{reading.size}</p> : null}
-            </div>
-          </details>
+          <p className="analysis-reading">
+            {reading.corner}
+            {(reading.relationship ?? reading.standout ?? reading.size) ? (
+              <InfoMarker label="this chart">
+                {[reading.relationship, reading.standout, reading.size]
+                  .filter((line): line is string => Boolean(line))
+                  .map((line) => (
+                    <span className="info-marker-line" key={line}>
+                      {line}
+                    </span>
+                  ))}
+              </InfoMarker>
+            ) : null}
+          </p>
 
           <ScatterControls
             pool={data.pool}

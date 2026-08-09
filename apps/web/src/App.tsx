@@ -21,6 +21,7 @@ import { lazyRoute } from "./state/lazy-route";
 const MethodPage = lazyRoute(() => import("./pages/MethodPage"));
 const PlayerPoolPage = lazyRoute(() => import("./pages/PlayerPoolPage"));
 const CalibrationPage = lazyRoute(() => import("./pages/CalibrationPage"));
+const FaqPage = lazyRoute(() => import("./pages/FaqPage"));
 const SeasonPlanPage = lazyRoute(() => import("./pages/SeasonPlanPage"));
 const KitPreviewPage = lazyRoute(() => import("./pages/KitPreviewPage"));
 const AnalysisPage = lazyRoute(() => import("./pages/AnalysisPage"));
@@ -77,6 +78,14 @@ export const routes: RouteObject[] = [
         element: (
           <LazyRoute>
             <CalibrationPage />
+          </LazyRoute>
+        ),
+      },
+      {
+        path: "faq",
+        element: (
+          <LazyRoute>
+            <FaqPage />
           </LazyRoute>
         ),
       },

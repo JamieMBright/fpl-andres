@@ -59,7 +59,7 @@ describe("moveReason", () => {
   });
 
   it("tells you to roll rather than explaining the accounting", () => {
-    expect(moveReason(week())).toContain("roll the free transfer");
+    expect(moveReason(week())).toContain("Roll the free transfer");
   });
 
   it("names both players, the gain and the fixture", () => {
@@ -75,7 +75,7 @@ describe("moveReason", () => {
     );
 
     expect(reason).toContain("Rice out, Saka in");
-    expect(reason).toContain("3.0 more this week");
+    expect(reason).toContain("+3.0 this week");
     expect(reason).toContain("CHE (H)");
     expect(reason).toContain("£2.5m of the bank");
   });
@@ -86,7 +86,7 @@ describe("moveReason", () => {
       week({ transfersIn: [incoming], transferCostPoints: 4 }),
     );
 
-    expect(reason).toContain("4 in total");
+    expect(reason).toContain("\u22124 for the extra transfers");
   });
 });
 
@@ -103,11 +103,11 @@ describe("moneyLines", () => {
     const parked = player(20, { name: "Palmer", priceTenths: 95 });
     const lines = moneyLines(week({ bench: [parked, ...BENCH.slice(1)] }));
 
-    expect(lines.join(" ")).toContain("Palmer is a £9.5m MID sitting on the");
+    expect(lines.join(" ")).toContain("£9.5m benched: Palmer (MID)");
   });
 
   it("says nothing about a cheap bench", () => {
-    expect(moneyLines(week()).join(" ")).not.toContain("sitting on the bench");
+    expect(moneyLines(week()).join(" ")).not.toContain("benched:");
   });
 });
 
@@ -141,7 +141,7 @@ describe("fixtureReason", () => {
   it("says who blanks", () => {
     const reason = fixtureReason(week({ opponents: { ARS: [] } }));
 
-    expect(reason).toContain("score nothing");
+    expect(reason).toContain("No fixture:");
   });
 
   it("withholds a rating it does not have", () => {
@@ -153,11 +153,11 @@ describe("confidenceReason", () => {
   it("leads with what is specific to the week", () => {
     const reason = confidenceReason(week());
 
-    expect(reason.startsWith("P1 is")).toBe(true);
+    expect(reason.startsWith("P1 (C) is")).toBe(true);
   });
 
   it("argues the armband against the next best", () => {
-    expect(confidenceReason(week())).toContain("He is picked over");
+    expect(confidenceReason(week())).toContain("Picked over");
   });
 
   it("flags a passenger in the eleven", () => {
@@ -165,7 +165,7 @@ describe("confidenceReason", () => {
       week({ expected: { ...week().expected, "3": 1 } }),
     );
 
-    expect(reason).toContain("projected under two points");
+    expect(reason).toContain("Under two points:");
   });
 });
 

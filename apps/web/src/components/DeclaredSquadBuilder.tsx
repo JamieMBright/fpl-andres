@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 
 import { CeefaxShirt } from "./CeefaxShirt";
+import { InfoMarker } from "./InfoMarker";
 import type { AnalysisData } from "../state/analysis-pool";
 import { money } from "../format";
 import { fold } from "../state/fold";
@@ -554,9 +555,13 @@ export function DeclaredSquadBuilder({
       </div>
 
       <p>
-        FPL keeps every squad private until the first deadline, so there is
-        nothing public to read yet. Name your fifteen and I will plan the season
-        from it. It stays in this browser.
+        Name your fifteen and I&rsquo;ll plan the season from it. Stays in this
+        browser.
+        <InfoMarker label="why you have to name it">
+          FPL keeps every squad private until the first deadline, so there is
+          nothing public to read yet. Your picks are checked against the real
+          rules and, once legal, treated as locked in for gameweek one.
+        </InfoMarker>
       </p>
 
       <div className="squad-builder">

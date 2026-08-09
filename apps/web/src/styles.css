@@ -318,10 +318,6 @@ a {
   flex: 0 0 auto;
 }
 
-.brand span {
-  display: grid;
-}
-
 /* Teletext set the page title in a solid coloured cell. One wide block for the
    masthead, then one cell per destination, in the strip palette. */
 .brand strong {
@@ -530,6 +526,83 @@ h1[tabindex="-1"]:focus-visible {
   font-weight: 700;
 }
 
+/* Teletext ran its asides in inverse video, which is what the pip does when
+   it opens: the block fills and the letter drops out of it. */
+.info-marker {
+  position: relative;
+  display: inline-flex;
+  vertical-align: baseline;
+}
+
+.info-marker-pip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--signal-blue);
+  font: inherit;
+  cursor: help;
+}
+
+.info-marker-pip > span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 15px;
+  height: 15px;
+  border: 1px solid currentcolor;
+  font-family: var(--fa-body);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.info-marker-pip:hover > span,
+.info-marker-pip:focus-visible > span {
+  background: var(--signal-blue);
+  color: var(--paper-deep);
+}
+
+.info-marker-pip:focus-visible {
+  outline: 3px solid var(--signal-blue);
+  outline-offset: 1px;
+}
+
+.info-marker-bubble {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  z-index: 40;
+  width: max-content;
+  max-width: min(280px, 72vw);
+  padding: 10px 12px;
+  transform: translateX(-50%);
+  border: 1px solid var(--signal-blue);
+  background: var(--paper-deep);
+  color: var(--ink);
+  font-family: var(--fa-body);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: 0;
+  text-align: left;
+  text-transform: none;
+  white-space: normal;
+  pointer-events: none;
+}
+
+.info-marker-line {
+  display: block;
+}
+
+.info-marker-line + .info-marker-line {
+  margin-top: 7px;
+}
+
 .briefing-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -600,6 +673,77 @@ h1[tabindex="-1"]:focus-visible {
   border-block: 1px solid var(--rule);
   border-left: 4px solid currentColor;
   color: var(--ink-soft);
+}
+
+.faq-answers,
+.faq-glossary {
+  margin: 44px 0 0;
+}
+
+.faq-answers h2,
+.faq-glossary h2 {
+  margin: 0 0 18px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--rule);
+  color: var(--field-green);
+  font-family: var(--fa-body);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.faq-answers dl,
+.faq-glossary dl {
+  display: grid;
+  gap: 1px;
+  max-width: 940px;
+  margin: 0;
+  background: var(--rule);
+}
+
+.faq-answers dl > div,
+.faq-glossary dl > div {
+  display: grid;
+  gap: 4px 18px;
+  padding: 13px 0;
+  background: var(--paper);
+}
+
+.faq-answers dt,
+.faq-glossary dt {
+  color: var(--ink);
+  font-family: var(--fa-body);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.faq-glossary dt {
+  color: var(--signal-blue);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.faq-answers dd,
+.faq-glossary dd {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+@media (min-width: 720px) {
+  .faq-answers dl > div,
+  .faq-glossary dl > div {
+    grid-template-columns: minmax(0, 13rem) minmax(0, 1fr);
+    align-items: baseline;
+  }
+}
+
+.faq-footnote {
+  margin: 44px 0 0;
+  color: var(--ink-soft);
+  font-size: 13px;
 }
 
 .evidence-banner > svg {
@@ -824,28 +968,48 @@ h1[tabindex="-1"]:focus-visible {
   line-height: 1.6;
 }
 
+/* Six figures in a row read as one long number unless each is boxed and the
+   headline is coloured away from the qualifier under it. Teletext did this
+   with a cyan label over a white figure; so does this. */
 .record-summary {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px 28px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(132px, 1fr));
+  gap: 1px;
   margin: 0 0 18px;
+  background: var(--rule);
+  border: 1px solid var(--rule);
+}
+
+.record-summary > div {
+  padding: 11px 13px 12px;
+  background: var(--paper);
 }
 
 .record-summary dt {
-  color: var(--ink-soft);
-  font-size: 12px;
-  letter-spacing: 0.06em;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  color: var(--signal-blue);
+  font-size: 11px;
+  letter-spacing: 0.07em;
   text-transform: uppercase;
 }
 
 .record-summary dd {
-  margin: 2px 0 0;
-  font-size: 18px;
+  display: flex;
+  flex-direction: column;
+  margin: 6px 0 0;
+  color: var(--ink);
+  font-size: 20px;
+  line-height: 1.1;
 }
 
 .record-when {
+  margin-top: 4px;
   color: var(--ink-soft);
-  font-size: 13px;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
 /* Seasons left to right, finishing share up the side: the only axis that
@@ -996,12 +1160,6 @@ h1[tabindex="-1"]:focus-visible {
   padding-top: 12px;
   color: var(--ink-soft);
   font-size: 13px;
-}
-
-.record-caveat + .record-caveat {
-  margin-top: 8px;
-  border-top: 0;
-  padding-top: 0;
 }
 
 .transfer-plan {
@@ -1823,6 +1981,31 @@ h1[tabindex="-1"]:focus-visible {
 
 .plan-preamble {
   margin-top: 22px;
+}
+
+.plan-preamble-line {
+  margin: 0;
+  max-width: 62ch;
+  color: var(--ink);
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+.plan-preamble-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 22px;
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+  color: var(--ink-soft);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.plan-preamble-stats b {
+  color: var(--field-green);
 }
 
 .plan-chip-half h3 {
@@ -3656,7 +3839,35 @@ h1[tabindex="-1"]:focus-visible {
 }
 
 .teletext-countdown {
+  display: inline-flex;
+  gap: 7px;
+  align-items: center;
+  padding: 6px 10px;
+  border: 2px solid currentcolor;
+  font-family: var(--fa-body);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
   font-variant-numeric: tabular-nums;
+}
+
+.countdown-clock {
+  width: 14px;
+  height: 14px;
+  flex: 0 0 auto;
+}
+
+.teletext-countdown.is-calm {
+  color: var(--field-green);
+}
+
+.teletext-countdown.is-near {
+  color: var(--amber);
+}
+
+.teletext-countdown.is-now {
+  color: var(--danger);
 }
 
 .social-links {
@@ -5453,27 +5664,13 @@ h1[tabindex="-1"]:focus-visible {
 /* Stated before the chart, not after it: a reader should not have to work out
    which corner is the good one from the axis titles. */
 .analysis-reading {
+  margin: 0;
   padding: 12px 14px;
   border: 1px solid var(--rule);
   border-bottom: 0;
   background: var(--paper-deep);
-}
-
-.analysis-reading h2 {
-  margin: 0 0 6px;
-  font-size: 11px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.analysis-reading p {
-  margin: 0 0 5px;
   font-size: 13px;
   line-height: 1.5;
-}
-
-.analysis-reading p:last-child {
-  margin-bottom: 0;
 }
 
 .error-detail {

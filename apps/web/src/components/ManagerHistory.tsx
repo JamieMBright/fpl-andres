@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
 
+import { InfoMarker } from "./InfoMarker";
 import { classifyFetchFailure } from "../state/fetch-failure";
 import {
   commentary,
+  consistencyWord,
   readManagerProfile,
+  spreadOf,
   type ManagerProfile,
 } from "../state/manager-profile";
 import {
@@ -66,10 +69,8 @@ function bandOf(percentile: number | null): string {
 /**
  * How often the target was hit, and how far the finishes scatter.
  *
- * Spread is the gap between the best and worst quarter of seasons, not between
- * the single best and worst: one freak year should not describe a career. It
- * answers a different question from the median — two managers can share a
- * typical finish while one is reliable and the other alternates.
+ * The spread itself comes from the profile module, so the number in the table
+ * and the word in the summary can never disagree.
  */
 function countsOf(seasons: readonly { percentile: number | null }[]): {
   rated: number;
@@ -79,21 +80,13 @@ function countsOf(seasons: readonly { percentile: number | null }[]): {
 } {
   const rated = seasons
     .map((season) => season.percentile)
-    .filter((value): value is number => value !== null)
-    .sort((left, right) => left - right);
-
-  if (rated.length === 0) {
-    return { rated: 0, elite: 0, strong: 0, spread: null };
-  }
-
-  const at = (fraction: number) =>
-    rated[Math.min(rated.length - 1, Math.floor(fraction * rated.length))] ?? 0;
+    .filter((value): value is number => value !== null);
 
   return {
     rated: rated.length,
     elite: rated.filter((value) => value <= 1).length,
     strong: rated.filter((value) => value <= 10).length,
-    spread: rated.length < 4 ? null : at(0.75) - at(0.25),
+    spread: spreadOf(seasons),
   };
 }
 
@@ -185,8 +178,7 @@ export function ManagerHistory({ entryId }: { entryId: number }) {
       <section className="manager-history" aria-labelledby="record-title">
         <h2 id="record-title">Your record</h2>
         <p role="status">
-          I could not reach FPL for your history just now, so I am showing you
-          nothing rather than a guess. Your record is intact; this is a
+          FPL would not answer just now. Your record is intact &mdash; this is a
           connection, not a verdict.
         </p>
       </section>
@@ -200,8 +192,7 @@ export function ManagerHistory({ entryId }: { entryId: number }) {
         <h2 id="record-title">Your record</h2>
         <p role="status">
           <span className="mono">{refusal.said}</span>{" "}
-          {refusalRecourse(refusal.reason)} Your record is intact; I am showing
-          you nothing rather than a guess.
+          {refusalRecourse(refusal.reason)} Your record is intact.
         </p>
       </section>
     );
@@ -212,8 +203,8 @@ export function ManagerHistory({ entryId }: { entryId: number }) {
       <section className="manager-history" aria-labelledby="record-title">
         <h2 id="record-title">Your record</h2>
         <p role="status">
-          FPL answered, but not in the shape I expect, so I am showing you
-          nothing rather than guessing at your record. This one is mine to fix.
+          FPL answered in a shape I do not recognise, so I am not guessing at
+          your record. This one is mine to fix.
         </p>
       </section>
     );
@@ -224,9 +215,7 @@ export function ManagerHistory({ entryId }: { entryId: number }) {
       <section className="manager-history" aria-labelledby="record-title">
         <h2 id="record-title">Your record</h2>
         <p role="status">
-          FPL has no completed season on record for this team, so there is
-          nothing for me to read. That is not a judgement — everyone starts
-          somewhere.
+          No completed season on record yet. Everyone starts somewhere.
         </p>
       </section>
     );
@@ -268,7 +257,7 @@ export function ManagerHistory({ entryId }: { entryId: number }) {
             {profile.bestPercentile === null
               ? profile.bestRank.toLocaleString("en-GB")
               : `top ${share(profile.bestPercentile)}`}
-            <span className="record-when"> in {profile.bestSeason}</span>
+            <span className="record-when">in {profile.bestSeason}</span>
           </dd>
         </div>
         <div>
@@ -277,35 +266,38 @@ export function ManagerHistory({ entryId }: { entryId: number }) {
             {profile.medianPercentile === null
               ? profile.medianRank.toLocaleString("en-GB")
               : `top ${share(profile.medianPercentile)}`}
+            <span className="record-when">middle season</span>
           </dd>
         </div>
         <div>
-          <dt>Top 1% seasons</dt>
+          <dt>Top 1% finishes</dt>
           <dd className="mono">
-            {counts.elite}{" "}
-            <span className="record-when">of {counts.rated}</span>
+            {counts.elite}
+            <span className="record-when">of {counts.rated} rated</span>
           </dd>
         </div>
         <div>
-          <dt>Top 10% seasons</dt>
+          <dt>Top 10% finishes</dt>
           <dd className="mono">
-            {counts.strong}{" "}
-            <span className="record-when">of {counts.rated}</span>
+            {counts.strong}
+            <span className="record-when">of {counts.rated} rated</span>
           </dd>
         </div>
         <div>
-          <dt>Spread</dt>
+          <dt>
+            Spread
+            <InfoMarker label="spread">
+              The gap between your best quarter of seasons and your worst,
+              measured in percentage points of the field. Small means you finish
+              in much the same place every year. It answers a different question
+              from Typical: two managers can share a typical finish while one is
+              reliable and the other alternates.
+            </InfoMarker>
+          </dt>
           <dd className="mono">
             {counts.spread === null ? "—" : `${counts.spread.toFixed(0)}pt`}
             <span className="record-when">
-              {" "}
-              {counts.spread === null
-                ? ""
-                : counts.spread < 15
-                  ? "steady"
-                  : counts.spread < 30
-                    ? "variable"
-                    : "swings hard"}
+              {consistencyWord(counts.spread) ?? "needs four seasons"}
             </span>
           </dd>
         </div>
@@ -384,18 +376,15 @@ export function ManagerHistory({ entryId }: { entryId: number }) {
       </ul>
 
       <p className="record-caveat">
-        One bar per season, oldest first. Height is the share of the field you
-        finished ahead of, so taller is better, and the colour is the same
-        threshold the gridlines draw. Hover a bar for the finish, the rank and
-        the points.
-      </p>
-
-      <p className="record-caveat">
-        Total points is deliberately not plotted: it moves with the season, not
-        with you — a year with more goals, more clean sheets or a new scoring
-        route lifts everybody at once. Only the share compares across eras, and
-        the field has grown roughly fivefold since 2010. The percentage is
-        FPL&rsquo;s own.
+        One bar per season, oldest first. Taller is better.
+        <InfoMarker label="how to read the chart">
+          Height is the share of the field you finished ahead of, and the colour
+          matches the gridline thresholds. Hover a bar for the finish, the rank
+          and the points. Total points is deliberately not plotted: it moves
+          with the season rather than with you, and the field has grown roughly
+          fivefold since 2010. Only the share compares across eras, and the
+          percentage is FPL&rsquo;s own.
+        </InfoMarker>
       </p>
     </section>
   );

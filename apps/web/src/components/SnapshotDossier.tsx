@@ -42,8 +42,8 @@ export function SnapshotDossier({ state }: { state: PublicTeamState }) {
           </span>
         </div>
         <p className="dossier-qualification">
-          This is what FPL recorded at the Gameweek {state.event} deadline. It
-          does not reveal transfers, prices or chips changed since then.
+          What FPL recorded at the Gameweek {state.event} deadline. Transfers,
+          prices and chips changed since are not in here.
         </p>
         <dl className="dossier-metrics">
           <div>

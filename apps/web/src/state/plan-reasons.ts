@@ -18,7 +18,7 @@ import { captaincyVerdict } from "./captaincy-verdict";
  * the page has to report whichever way that came out, because the ordering has
  * already inverted once on a single arithmetic fix.
  */
-const CAPTAINCY_VERDICT = (() => {
+export const CAPTAINCY_VERDICT = (() => {
   const verdict = captaincyVerdict(validation.captainSignificance);
   if (verdict.weeks === 0) return "no thesis has been scored against it yet.";
   const beaten = verdict.better.length;
@@ -84,9 +84,7 @@ export function moveReason(week: PlanGameweek): string {
   }
 
   if (week.transfersIn.length === 0) {
-    return week.event === 1
-      ? "Opening squad."
-      : "Nothing gains more than simply holding, so roll the free transfer.";
+    return week.event === 1 ? "Opening squad." : "Roll the free transfer.";
   }
 
   const swaps = week.transfersIn.map((incoming, index) => {
@@ -104,18 +102,18 @@ export function moveReason(week: PlanGameweek): string {
     ];
     parts.push(
       gain >= 0
-        ? `worth ${points(gain)} more this week`
-        : `worth ${points(-gain)} less this week, taken for what follows`,
+        ? `+${points(gain)} this week`
+        : `${points(gain)} now, for later`,
     );
-    if (fixture) parts.push(`he faces ${fixture}`);
-    if (spend > 0) parts.push(`costs ${money(spend)} of the bank`);
+    if (fixture) parts.push(`faces ${fixture}`);
+    if (spend > 0) parts.push(`${money(spend)} of the bank`);
     if (spend < 0) parts.push(`frees ${money(-spend)}`);
     return `${parts.join("; ")}.`;
   });
 
   if (week.transferCostPoints > 0) {
     swaps.push(
-      `Four points a head for going beyond the free transfer, ${week.transferCostPoints} in total, already taken off the expected haul.`,
+      `\u2212${String(week.transferCostPoints)} for the extra transfers, already in the total.`,
     );
   }
   return swaps.join(" ");
@@ -137,7 +135,7 @@ export function moneyLines(week: PlanGameweek): string[] {
   const parked = week.bench.filter(isPremium);
   for (const player of parked) {
     lines.push(
-      `${player.name} is a ${money(player.priceTenths)} ${player.position} sitting on the bench, which is a lot of money to leave out.`,
+      `${money(player.priceTenths)} benched: ${player.name} (${player.position}).`,
     );
   }
   return lines;
@@ -171,7 +169,7 @@ export function fixtureReason(week: PlanGameweek): string | null {
   );
 
   const parts = [
-    `The eleven averages ${mean.toFixed(1)} out of five on fixture difficulty, which is ${DIFFICULTY_WORD[Math.round(mean)] ?? "even"}.`,
+    `Fixtures ${mean.toFixed(1)}/5, ${DIFFICULTY_WORD[Math.round(mean)] ?? "even"}.`,
   ];
 
   if (hardest.length > 0) {
@@ -183,13 +181,11 @@ export function fixtureReason(week: PlanGameweek): string | null {
       )
       .slice(0, 3)
       .join(", ");
-    parts.push(
-      `${named} ${hardest.length === 1 ? "is" : "are"} rated four or worse, and ${hardest.length === 1 ? "is" : "are"} kept because the projection already prices that fixture in rather than despite it.`,
-    );
+    parts.push(`Rated four or worse: ${named}.`);
   }
   if (blanks.length > 0) {
     parts.push(
-      `${blanks.map((player) => player.name).join(", ")} ${blanks.length === 1 ? "has" : "have"} no fixture and ${blanks.length === 1 ? "scores" : "score"} nothing.`,
+      `No fixture: ${blanks.map((player) => player.name).join(", ")}.`,
     );
   }
   return parts.join(" ");
@@ -209,14 +205,14 @@ export function confidenceReason(week: PlanGameweek): string {
       .map((player) => ({ player, score: scoreOf(week, player) }))
       .sort((left, right) => right.score - left.score)[0];
     parts.push(
-      `${week.captain.name} is ${Math.round(share * 100)}% of the expected haul, so the week turns on him more than on anyone else.`,
+      `${week.captain.name} (C) is ${Math.round(share * 100)}% of the haul.`,
     );
     if (runnerUp) {
       // Naming the runner-up is what makes the armband arguable rather than
       // asserted, and it is usually a defender because the 2025/26 defensive
       // contribution route pays them for work that never used to score.
       parts.push(
-        `He is picked over ${runnerUp.player.name} by ${points(captain - runnerUp.score)} a match on the highest expected score, which is the only armband rule that survived testing: ${CAPTAINCY_VERDICT}`,
+        `Picked over ${runnerUp.player.name} by ${points(captain - runnerUp.score)}.`,
       );
     }
   }
@@ -224,7 +220,7 @@ export function confidenceReason(week: PlanGameweek): string {
   const thin = week.starters.filter((player) => scoreOf(week, player) < 2);
   if (thin.length > 0) {
     parts.push(
-      `${thin.map((player) => player.name).join(", ")} ${thin.length === 1 ? "is" : "are"} projected under two points and ${thin.length === 1 ? "is" : "are"} in the eleven only because the alternative is worse.`,
+      `Under two points: ${thin.map((player) => player.name).join(", ")}.`,
     );
   }
 
@@ -236,9 +232,7 @@ export function confidenceReason(week: PlanGameweek): string {
   if (rated.length > 0) {
     const hard = rated.filter((rating) => rating >= 4).length;
     const soft = rated.filter((rating) => rating <= 2).length;
-    parts.push(
-      `${soft} of the eleven have a soft tie and ${hard} a hard one, which is what the projection is already priced against.`,
-    );
+    parts.push(`${String(soft)} soft ties, ${String(hard)} hard.`);
   }
 
   parts.push(CONFIDENCE_NOTE[week.confidence]);
@@ -264,20 +258,20 @@ export function benchedPremiumReasons(week: PlanGameweek): string[] {
       .map((starter) => ({ starter, score: scoreOf(week, starter) }))
       .sort((left, right) => left.score - right.score)[0];
 
-    const opening = `${player.name} costs ${money(player.priceTenths)} and is benched on ${points(benched)} projected`;
+    const opening = `${player.name} benched on ${points(benched)}`;
 
     if (blank) {
-      return `${opening}, because he has no fixture this week and scores nothing whatever he is worth.`;
+      return `${opening}: no fixture.`;
     }
     if (!picked) {
-      return `${opening}; no ${player.position} is started ahead of him, so the bench is a squad-rule consequence rather than a call on him.`;
+      return `${opening}: no ${player.position} started ahead of him, so it is a squad rule and not a call on him.`;
     }
     const gap = picked.score - benched;
     if (gap <= 0) {
       // Started anyway: the eleven is a formation, not a ranking.
-      return `${opening}, which is ${points(-gap)} above ${picked.starter.name} at ${points(picked.score)}. He is out on formation rather than on projection — the shape that fits the rest of the eleven cannot carry both.`;
+      return `${opening}, ${points(-gap)} above ${picked.starter.name}. Out on formation, not projection.`;
     }
-    return `${opening} against ${picked.starter.name} on ${points(picked.score)}, a gap of ${points(gap)}${fixture ? ` with ${player.name} facing ${fixture}` : ""}. Price does not start a player; the projection does, and paying for him is a judgement about the rest of the season rather than this week.`;
+    return `${opening} against ${picked.starter.name} on ${points(picked.score)}, a gap of ${points(gap)}${fixture ? `, facing ${fixture}` : ""}.`;
   });
 }
 

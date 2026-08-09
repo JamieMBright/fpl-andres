@@ -2,6 +2,7 @@ import { ArrowRight, Clock3 } from "lucide-react";
 import { useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
+import { InfoMarker } from "../components/InfoMarker";
 import { RouteHeading } from "../components/RouteHeading";
 import { MAX_PUBLIC_ID } from "../public-ids";
 import { readLastTeam } from "../state/declared-squad";
@@ -50,10 +51,13 @@ export default function HomePage() {
         <div className="entry-copy">
           <RouteHeading>Let me look at your squad.</RouteHeading>
           <p className="lede">
-            Give me your Team ID and I&rsquo;ll pull what FPL last recorded —
-            squad, captain, bank, transfers — and show you exactly where each
-            number came from. Changed something since the deadline? Tell me. I
-            won&rsquo;t guess.
+            Your Team ID is all I need. Squad, captain, bank, transfers &mdash;
+            read from the public record.{" "}
+            <InfoMarker label="where the numbers come from">
+              Every figure carries the FPL endpoint it was read from and the
+              deadline it was recorded at. Changed something since? Tell me at
+              step two. I never guess.
+            </InfoMarker>
           </p>
         </div>
 
@@ -78,8 +82,7 @@ export default function HomePage() {
             </button>
           </div>
           <p className="field-hint" id="team-id-hint">
-            It&rsquo;s in the URL on your FPL points page. No login, no password
-            — I only read what&rsquo;s already public.
+            In the URL of your FPL points page. No login needed.
           </p>
           {error ? (
             <p className="field-error" id="team-id-error" role="alert">
@@ -89,11 +92,14 @@ export default function HomePage() {
         </form>
 
         <p className="entry-aside">
-          Between seasons FPL wipes every squad, so until the first deadline
-          there is nothing of yours to read. What I can price today is the
+          No squad exists until the first deadline. Until then there is the
           market: <Link to="/players">every player in the 2026/27 game</Link>,
-          at this season&rsquo;s money, against what he actually returned last
-          season.
+          priced at this season&rsquo;s money.{" "}
+          <InfoMarker label="the pre-season market">
+            FPL wipes every squad between seasons, so a Team ID can only say who
+            you are. Each player is shown at this season&rsquo;s price against
+            what he actually returned last season.
+          </InfoMarker>
         </p>
       </section>
 

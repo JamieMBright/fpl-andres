@@ -3,6 +3,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 
 import { CeefaxShirt } from "../components/CeefaxShirt";
+import { InfoMarker } from "../components/InfoMarker";
 import { PlanStep } from "../components/PlanStep";
 import { DeclaredSquadNote } from "../components/DeclaredSquadNote";
 import { AnalysisResult } from "../components/AnalysisResult";
@@ -29,6 +30,7 @@ import type {
 } from "../state/season-plan";
 import { readSeasonPlan } from "../state/season-plan";
 import {
+  CAPTAINCY_VERDICT,
   chipReason,
   confidenceReason,
   fixtureReason,
@@ -122,10 +124,10 @@ export function TeamEntry({
           ? "Reading your squad."
           : team.status === "ready"
             ? (team.source === "declared"
-                ? `The fifteen you told me you are starting with, held as played and solved from gameweek ${String(team.event)}.`
+                ? `Your declared fifteen, solved from gameweek ${String(team.event)}.`
                 : `Your fifteen, solved from gameweek ${String(team.event)}.`) +
               (team.declared.length > 0
-                ? ` ${String(team.declared.length)} transfer${team.declared.length === 1 ? "" : "s"} you told me about applied on top.`
+                ? ` Plus ${String(team.declared.length)} transfer${team.declared.length === 1 ? "" : "s"} you told me about.`
                 : "")
             : team.status === "failed"
               ? TEAM_FAILURE[team.reason]
@@ -494,28 +496,37 @@ function ReadingKey() {
       <div>
         <dt>xPts</dt>
         <dd>
-          Expected FPL points from one match: appearance, goals and assists at
-          his own decayed per-90 rates, plus clean sheets, saves, cards and
-          defensive contribution, scaled by this opponent. A good starter is
-          four to six; anything above seven is a genuinely strong fixture.
+          Expected points from one match. Four to six is a good starter, seven
+          and up is a strong fixture.
+          <InfoMarker label="xPts">
+            Appearance, goals and assists at his own decayed per-90 rates, plus
+            clean sheets, saves, cards and defensive contribution, all scaled by
+            this opponent.
+          </InfoMarker>
         </dd>
       </div>
       <div>
         <dt>xCeil</dt>
         <dd>
-          The same match on his best afternoon: xPts multiplied by how far his
-          ninetieth-percentile score sat above his average last season. A
-          centre-half who plays ninety and does nothing lands near twice his
-          xPts; a striker who either scores or vanishes nearer three times it.
-          An armband and a chip are played for this number, not the first one.
+          The same match on his best afternoon. What an armband or a chip is
+          played for.
+          <InfoMarker label="xCeil">
+            xPts multiplied by how far his ninetieth-percentile score sat above
+            his average last season. A centre-half who plays ninety and does
+            nothing lands near twice his xPts; a striker who either scores or
+            vanishes nearer three times it.
+          </InfoMarker>
         </dd>
       </div>
       <div>
         <dt>FDR</dt>
         <dd>
-          One to five, from the measured strength of both sides at the venue the
-          match is played. One is the softest tie, five the hardest, and a dash
-          means a blank or an opponent with no record.
+          One to five. One is softest, five hardest, a dash is a blank.
+          <InfoMarker label="FDR">
+            Taken from the measured strength of both sides at the venue the
+            match is played. A dash also covers an opponent with no Premier
+            League record.
+          </InfoMarker>
         </dd>
       </div>
       <div>
@@ -528,8 +539,24 @@ function ReadingKey() {
       <div>
         <dt>Captain</dt>
         <dd>
-          Shown <strong>doubled</strong>, because that is what he returns. Bench
-          figures are bracketed unless a Bench Boost is paying for them.
+          Shown <strong>doubled</strong>. Bench figures are bracketed unless a
+          Bench Boost is paying for them.
+          <InfoMarker label="the armband rule">
+            The captain is the highest expected score, and {CAPTAINCY_VERDICT}{" "}
+            Every card names the runner-up so the call is arguable rather than
+            asserted.
+          </InfoMarker>
+        </dd>
+      </div>
+      <div>
+        <dt>Hard ties</dt>
+        <dd>
+          Kept, not avoided.
+          <InfoMarker label="why hard fixtures stay">
+            The projection already prices the opponent in, so a four-rated tie
+            is a lower xPts rather than a reason to sell. Selling a good player
+            for one hard week costs more than the week does.
+          </InfoMarker>
         </dd>
       </div>
     </dl>
@@ -712,74 +739,46 @@ export default function SeasonPlanPage() {
         />
       ) : null}
 
-      <details className="scatter-controls plan-preamble">
-        <summary className="scatter-controls-summary">
-          <span>What this is, and how to read it</span>
-          <span className="scatter-controls-count mono">
-            {awaitingLockIn ? (
-              "no squad yet"
-            ) : (
-              <>
-                GW{gameweeks[0]?.event}–{gameweeks[gameweeks.length - 1]?.event}
-                {solving ? null : ` · ${plan.netExpectedPoints.toFixed(0)} NET`}
-              </>
-            )}
-          </span>
-        </summary>
-        <div className="scatter-controls-body">
-          <p className="lede">
-            {awaitingLockIn ? (
-              <>
-                Gameweek 1 to 38: the squad, the eleven, the captain and the
-                transfer, for all of it — once I know which fifteen it starts
-                from.
-              </>
-            ) : (
-              <>
-                Gameweek {gameweeks[0]?.event} to{" "}
-                {gameweeks[gameweeks.length - 1]?.event}: the squad, the eleven,
-                the captain and the transfer, for all of it.{" "}
-                {solving ? null : (
-                  <>
-                    <strong>{plan.netExpectedPoints.toFixed(0)}</strong> net
-                    points from the opening squad.
-                  </>
-                )}
-              </>
-            )}
-          </p>
-
-          {solving ? (
-            <p className="plan-honesty">
-              Solved on your machine, not on a server: the plan depends on your
-              squad, your bank and your free transfers, so it cannot be
-              precomputed, and thirty-eight gameweeks does not fit in a
-              fifteen-second function. Nothing about your team is sent anywhere
-              to produce it.
-            </p>
-          ) : awaitingLockIn ? (
-            <p className="plan-honesty">
-              A season plan is only worth reading if it starts from what you
-              actually own. Lock a fifteen in at step one — adopt the suggested
-              squad whole if you like it — and the whole season is solved from
-              it on your machine, in {plan.windowsSolved} overlapping windows
-              chained together from a pool of {plan.poolSize} players. Nothing
-              about your team is sent anywhere.
-            </p>
-          ) : (
-            <p className="plan-honesty">
-              Between seasons FPL wipes every squad, so this one plan really is
-              everyone&rsquo;s — it is what the opening fifteen does with the
-              whole season. {bands.get("firm") ?? 0} gameweek is firm,{" "}
-              {bands.get("projected") ?? 0} are projected,{" "}
-              {bands.get("provisional") ?? 0} are provisional. A single optimal
-              38-gameweek solve does not return, so this is {plan.windowsSolved}{" "}
-              overlapping windows chained together from a pool of{" "}
-              {plan.poolSize} players — a good plan, not a proof.
-            </p>
+      <div className="plan-preamble">
+        <p className="plan-preamble-line">
+          Squad, eleven, captain and transfer, for every gameweek. Solved in
+          your browser.
+          <InfoMarker label="how this plan is built">
+            {awaitingLockIn
+              ? `A plan is only worth reading if it starts from what you own. Lock a fifteen in at step one and all 38 gameweeks are solved from it here, in ${String(plan.windowsSolved)} overlapping windows from a pool of ${String(plan.poolSize)} players.`
+              : `A single optimal 38-gameweek solve does not return, so this is ${String(plan.windowsSolved)} overlapping windows chained together from a pool of ${String(plan.poolSize)} players. A good plan, not a proof. Your squad, bank and free transfers never leave this browser.`}
+          </InfoMarker>
+        </p>
+        <ul className="plan-preamble-stats mono">
+          <li>
+            <b>
+              {awaitingLockIn
+                ? "GW1–38"
+                : `GW${String(gameweeks[0]?.event)}–${String(gameweeks[gameweeks.length - 1]?.event)}`}
+            </b>{" "}
+            planned
+          </li>
+          {solving || awaitingLockIn ? null : (
+            <li>
+              <b>{plan.netExpectedPoints.toFixed(0)}</b> net points
+            </li>
           )}
-        </div>
-      </details>
+          {solving || awaitingLockIn ? null : (
+            <li>
+              <b>{bands.get("firm") ?? 0}</b> firm ·{" "}
+              <b>{bands.get("projected") ?? 0}</b> projected ·{" "}
+              <b>{bands.get("provisional") ?? 0}</b> provisional
+              <InfoMarker label="firm, projected and provisional">
+                Firm means the gameweek already happened, so every number is
+                observed. Projected sits inside the seven-gameweek horizon the
+                model is calibrated on. Provisional is beyond it — read the
+                shape, not the names.
+              </InfoMarker>
+            </li>
+          )}
+          {awaitingLockIn ? <li>no squad locked in yet</li> : null}
+        </ul>
+      </div>
 
       {solve.status === "solving" ? (
         <p className="plan-progress" role="status">
@@ -815,12 +814,14 @@ export default function SeasonPlanPage() {
           <ChipStrategy chips={plan.chips} />
         ) : (
           <p className="plan-awaiting">
-            A chip is only worth what your squad makes of it. Bench Boost pays
-            what your bench scores, Triple Captain pays what your captain
-            scores. The weeks below were solved for the published opening
-            fifteen, so naming them here would be naming weeks that suit
-            somebody else&rsquo;s team &mdash; and solving chips for yours is
-            not something the browser does yet.{" "}
+            A chip is only worth what your squad makes of it.{" "}
+            <InfoMarker label="why the chip weeks are not yours">
+              Bench Boost pays what your bench scores, Triple Captain pays what
+              your captain scores. The weeks below were solved for the published
+              opening fifteen, so naming them here would name weeks that suit
+              somebody else&rsquo;s team. Solving chips for yours is not
+              something the browser does yet.
+            </InfoMarker>{" "}
             {awaitingLockIn
               ? "Lock a squad in at step one and the gameweeks below become yours; the chips will follow."
               : "The gameweeks below are yours; these would not be."}
@@ -840,10 +841,8 @@ export default function SeasonPlanPage() {
       >
         {awaitingLockIn ? (
           <p className="plan-awaiting">
-            This is your season, so it starts from your fifteen and not from
-            mine. Lock a squad in at step one — take the suggested one whole if
-            you like it — and all thirty-eight weeks are re-solved from it.
-            Until then there is nothing here I could honestly call your plan.
+            Lock a fifteen in at step one and all thirty-eight weeks are
+            re-solved from it. Until then this is not your plan.
           </p>
         ) : (
           <>
@@ -851,13 +850,18 @@ export default function SeasonPlanPage() {
               <p className="plan-assumed" role="status">
                 <strong>Two things FPL will not tell me.</strong>{" "}
                 {live.assumed.includes("free_transfers")
-                  ? "How many free transfers you are holding — I have assumed one. "
+                  ? "Free transfers held \u2014 assumed one. "
                   : ""}
                 {live.assumed.includes("selling_prices")
-                  ? "What you paid for your squad, so a player who has risen is priced at today's list rather than at buy price plus half the rise. "
+                  ? "What you paid, so risers are priced at today's list. "
                   : ""}
-                Both are private to your account. Correct them in step one and
-                the whole season is re-solved on the real numbers.
+                Correct them in step one.
+                <InfoMarker label="the two private numbers">
+                  Both are private to your account, so no public endpoint
+                  carries them. A selling price is buy price plus half the rise,
+                  which changes what a transfer can afford. Correcting either
+                  re-solves the whole season on the real numbers.
+                </InfoMarker>
               </p>
             ) : null}
             <ReadingKey />
@@ -913,40 +917,46 @@ export default function SeasonPlanPage() {
         >
           <ol>
             <li>
-              <strong>The promoted clubs have no record.</strong> Every
-              projection here comes from {plan.recordSeason}, a season{" "}
-              {plan.dataGaps.clubsWithoutRecord.length > 0 ? (
-                <>
-                  {plan.dataGaps.clubsWithoutRecord.join(" and ")} did not play
-                  in
-                </>
-              ) : (
-                <>the promoted clubs did not play in</>
-              )}
-              . Their players are missing from the pool entirely, and fixtures
-              against them are rated as exactly average because there is no
-              measured strength to rate them by. {plan.dataGaps.clubsInPool} of{" "}
-              {plan.dataGaps.clubsInLeague} clubs are represented.
+              <strong>Promoted clubs have no record.</strong>{" "}
+              {plan.dataGaps.clubsInPool} of {plan.dataGaps.clubsInLeague} clubs
+              are in the pool.
+              <InfoMarker label="the missing clubs">
+                Every projection comes from {plan.recordSeason}, a season{" "}
+                {plan.dataGaps.clubsWithoutRecord.length > 0
+                  ? `${plan.dataGaps.clubsWithoutRecord.join(" and ")} did not play in`
+                  : "the promoted clubs did not play in"}
+                . Their players are missing entirely, and fixtures against them
+                are rated exactly average because there is no measured strength
+                to rate them by.
+              </InfoMarker>
             </li>
             <li>
-              <strong>It cannot see price changes.</strong> Players rise and
-              fall through the season and this plan holds today&rsquo;s prices
-              for all thirty-eight gameweeks. A transfer eleven weeks out may
-              simply be unaffordable by the time you reach it, and a squad that
-              banks value early can afford things this plan says it cannot.
+              <strong>Prices are frozen at today&rsquo;s.</strong> A transfer
+              eleven weeks out may be unaffordable by then.
+              <InfoMarker label="price changes">
+                Players rise and fall all season and this plan holds
+                today&rsquo;s prices for all thirty-eight gameweeks. A squad
+                that banks value early can afford things this plan says it
+                cannot.
+              </InfoMarker>
             </li>
             <li>
-              <strong>It does not yet adjust week to week.</strong> A real plan
-              moves with form, minutes, injuries and price changes, and against
-              what your mini-league already owns. None of that is in here: this
-              is last season&rsquo;s scoring record scaled by this
-              season&rsquo;s fixtures, and nothing else.
+              <strong>No form, minutes or injuries yet.</strong> This is last
+              season&rsquo;s record scaled by this season&rsquo;s fixtures.
+              <InfoMarker label="what is not modelled">
+                A real plan moves week to week with form, minutes, injuries and
+                price changes, and against what your mini-league already owns.
+                None of that is in here.
+              </InfoMarker>
             </li>
             <li>
-              <strong>It will change every gameweek.</strong> That is not a
-              failure of the plan, it is what a plan is for. Read the shape —
-              the weeks worth a chip, the runs worth holding through — and
-              expect the names past the next month or so to be replaced.
+              <strong>It will change every gameweek.</strong> Read the shape,
+              not the names past the next month.
+              <InfoMarker label="why the plan moves">
+                That is not a failure of the plan, it is what a plan is for. The
+                weeks worth a chip and the runs worth holding through survive;
+                individual names do not.
+              </InfoMarker>
             </li>
             <li>
               <strong>
@@ -956,28 +966,28 @@ export default function SeasonPlanPage() {
               </strong>{" "}
               {absentPremium ? (
                 <>
-                  He is the most expensive player in the game at{" "}
-                  {money.format(absentPremium.priceTenths / 10)} and the plan
-                  never fields him. The reason is points per pound, not doubt
-                  about the player. A squad has £100.0m for fifteen, so every
-                  extra million on one name is a million removed from the other
-                  fourteen. He has to out-score not the striker who replaces
-                  him, but that striker <em>plus</em> the upgrades the saving
-                  pays for everywhere else — and on the projection he does not.{" "}
+                  Points per pound, not doubt about the player.
+                  <InfoMarker label="the missing premium">
+                    He is the most expensive player in the game at{" "}
+                    {money.format(absentPremium.priceTenths / 10)} and the plan
+                    never fields him. A squad has £100.0m for fifteen, so every
+                    extra million on one name is a million off the other
+                    fourteen. He has to out-score not just the striker who
+                    replaces him, but that striker plus the upgrades the saving
+                    pays for everywhere else.
+                  </InfoMarker>{" "}
+                  Over four seasons nothing beat captaining the highest
+                  projection, so the armband is not a separate reason to own him
+                  &mdash;{" "}
                   <Link to="/calibration#captaincy-title">
-                    The captaincy calibration
+                    the captaincy calibration
                   </Link>{" "}
-                  closes the other half of the argument: over four seasons
-                  nothing beat captaining the highest projection, so owning him
-                  for the armband is not a separate reason to buy him. If you
-                  think that understates him, the projection is the number to
-                  argue with, not the optimiser.
+                  closes that half of it.
                 </>
               ) : (
                 <>
                   Every player above the premium line for his position appears
-                  in at least one eleven, so the plan is not quietly avoiding
-                  the expensive end of the pool.
+                  in at least one eleven.
                 </>
               )}
             </li>
