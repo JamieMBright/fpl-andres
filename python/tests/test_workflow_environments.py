@@ -74,6 +74,33 @@ def test_the_odds_workflows_are_covered_by_that_rule() -> None:
     assert "survey-player-props.yml" in named
 
 
+def test_the_ingest_tells_a_missing_key_apart_from_one_held_as_a_variable() -> None:
+    """`secrets` and `vars` are separate namespaces and the UI puts them a tab
+    apart, so "not set" is the wrong diagnosis half the time. The owner hit
+    exactly that: the key was configured, as an environment variable, and the
+    step told them to add a secret they believed they already had.
+
+    No bash runs locally, so this asserts against the workflow text.
+    """
+    text = (WORKFLOWS / "ingest-player-odds.yml").read_text(encoding="utf-8")
+
+    assert "vars.THE_ODDS_API_KEY" in text, (
+        "the guard cannot tell an unset key from one held in `vars` without reading `vars`"
+    )
+    assert "environment VARIABLE, not a secret" in text
+
+
+def test_no_credential_is_supplied_to_a_step_from_the_variables_namespace() -> None:
+    """A `vars` entry is stored and logged in plain text. `SUPABASE_SECRET_KEY`
+    is the service-role key, so sourcing one from there discloses it."""
+    for path in _workflows():
+        text = path.read_text(encoding="utf-8")
+        for name in sorted(ENVIRONMENT_SECRETS):
+            assert f"{name}: ${{{{ vars.{name} }}}}" not in text, (
+                f"{path.name} takes {name} from `vars`, which is not masked in the log"
+            )
+
+
 def test_no_workflow_still_reads_a_retired_credential_name() -> None:
     """The owner holds `THE_ODDS_API_KEY`; the old names buy nothing but a 401."""
     retired = ("ODDS_API_KEY", "API_FOOTBALL_KEY", "SPORTMONKS_TOKEN")

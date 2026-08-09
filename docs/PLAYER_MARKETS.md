@@ -39,7 +39,9 @@ python -m fpl_andres.cli.survey_player_props --json catalogue.json
 
 Every one is optional. A source with no key configured reports `no key` and
 the run continues; "not signed up yet" is an answer, not a bug. Add these as
-repository secrets to have a source probed.
+secrets to have a source probed. A **variable** of the same name does not
+count: `secrets` and `vars` are separate namespaces, and only a secret is
+masked in the log.
 
 | Secret                  | Source           | Cost                            |
 | ----------------------- | ---------------- | ------------------------------- |
@@ -56,8 +58,12 @@ fails on its first step and says so, rather than committing an empty artifact.
 1. Go to <https://the-odds-api.com> and click **Get API key**.
 2. Enter an email. The free tier is 500 requests a month and needs no card.
    The key arrives by email and is shown on the dashboard.
-3. In this repository: **Settings → Secrets and variables → Actions → New
-   repository secret**.
+3. In this repository: **Settings → Environments → production → Environment
+   secrets → Add environment secret**. A repository secret under **Settings →
+   Secrets and variables → Actions** works as well. What does not work is the
+   **Variables** tab beside it, or the **Environment variables** box below —
+   `${{ secrets.X }}` cannot see either, and the run fails saying the key is
+   not set.
 4. Name it exactly `THE_ODDS_API_KEY`. Paste the key as the value. Save.
 5. **Actions → Ingest Player Odds → Run workflow** to confirm. A good run
    prints how many fixtures were priced, how many players were quoted and how

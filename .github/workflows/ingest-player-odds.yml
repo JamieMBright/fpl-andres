@@ -78,11 +78,23 @@ jobs:
       - name: Fetch player markets
         env:
           THE_ODDS_API_KEY: ${{ secrets.THE_ODDS_API_KEY }}
+          # Read only to tell "nowhere" apart from "the other namespace". A
+          # variable is not a secret: GitHub masks secrets in logs and prints
+          # variables verbatim, so the key is refused here rather than used.
+          THE_ODDS_API_KEY_AS_VARIABLE: ${{ vars.THE_ODDS_API_KEY }}
           MAX_EVENTS: ${{ inputs.max-events }}
         run: |
           if [ -z "$THE_ODDS_API_KEY" ]; then
-            echo "THE_ODDS_API_KEY is not set as a repository secret." >&2
-            echo "Add it at Settings -> Secrets -> Actions, then run again." >&2
+            if [ -n "$THE_ODDS_API_KEY_AS_VARIABLE" ]; then
+              echo "THE_ODDS_API_KEY is an environment VARIABLE, not a secret." >&2
+              echo "Variables are unmasked in logs, so this run will not use it." >&2
+              echo "Move it to Settings -> Environments -> production ->" >&2
+              echo "Environment secrets, and delete the variable." >&2
+            else
+              echo "THE_ODDS_API_KEY is not set as a secret of the 'production'" >&2
+              echo "environment. Add it at Settings -> Environments ->" >&2
+              echo "production -> Environment secrets, then run again." >&2
+            fi
             exit 1
           fi
           python -m fpl_andres.cli.ingest_player_odds \
