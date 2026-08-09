@@ -38,6 +38,7 @@ from fpl_andres.planning.fixture_routes import (
     PROMOTED_STRENGTH,
     ROUTE_KEYS,
     fixture_difficulty,
+    published_strength,
 )
 from fpl_andres.planning.opening import PLAYABLE_START_RATE
 from fpl_andres.planning.transfers import TransferPlanSettings
@@ -268,6 +269,15 @@ def main(argv: Sequence[str] | None = None) -> int:
         for team_id, team in clubs.items()
         if int(team["code"]) in strength_by_code
     }
+    # A club with no Premier League record is rated on FPL's own published
+    # strength, which it sets for all twenty before a ball is kicked. Those
+    # fields were ingested and read by nothing, and a hand-picked constant for
+    # every promoted side is a default standing in for a source that exists.
+    for team_id, team in clubs.items():
+        if team_id in strength:
+            continue
+        published = published_strength(team, list(clubs.values()))
+        strength[team_id] = published if published is not None else PROMOTED_STRENGTH
 
     events = {int(event["id"]): event for event in bootstrap["events"] if not event.get("finished")}
     if not events:
@@ -318,15 +328,9 @@ def main(argv: Sequence[str] | None = None) -> int:
                     leak += 1.0
                     contribution += 1.0
                     continue
-                # A promoted opponent gets the same soft prior the difficulty
-                # badge already used. Reading a missing club as league-average
-                # here meant the badge beside a fixture said "easy" and the
-                # points beside the badge said "ordinary", for every tie
-                # against a promoted side.
-                rated_strength = (
-                    strength if opponent in strength else {**strength, opponent: PROMOTED_STRENGTH}
-                )
-                adjustment = route_adjustment(rated_strength, team_id, opponent, home=home)
+                # Every club is rated now: measured where there is a record,
+                # and on FPL's published strength where there is not.
+                adjustment = route_adjustment(strength, team_id, opponent, home=home)
                 back += adjustment.clean_sheet
                 front += adjustment.attacking
                 saves += adjustment.saves

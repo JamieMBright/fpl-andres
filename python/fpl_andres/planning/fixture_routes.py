@@ -23,14 +23,16 @@ __all__ = [
     "fixture_difficulty",
     "fixture_multiplier",
     "fixture_points_from_routes",
+    "published_strength",
 ]
 
 # A newly promoted side has no Premier League record, so there is nothing to
-# rate it on. Rather than drop the fixture — which reported "no fixture" for a
-# tie that is plainly being played — it is assumed soft until its own results
-# arrive: below-average attack, above-average leakiness. Promoted sides have
-# finished bottom three in most recent seasons, so this is the honest prior
-# rather than a flattering one. `_data_gaps` names every club it applies to.
+# rate it on from results. FPL publishes its own strength for every club,
+# including the promoted ones, and `published_strength` below reads it. This
+# constant is the last resort for a bootstrap that carries no strength at all:
+# assumed soft, because promoted sides have finished bottom three in most
+# recent seasons, so it is the honest prior rather than a flattering one.
+# `_data_gaps` names every club it applies to.
 PROMOTED_ATTACK = 0.80
 PROMOTED_DEFENCE = 1.25
 PROMOTED_STRENGTH = TeamStrength(
@@ -39,6 +41,58 @@ PROMOTED_STRENGTH = TeamStrength(
     defence_home=PROMOTED_DEFENCE,
     defence_away=PROMOTED_DEFENCE,
 )
+
+#: FPL's own strength fields, which it publishes for every club in the game.
+_PUBLISHED_FIELDS = (
+    "strength_attack_home",
+    "strength_attack_away",
+    "strength_defence_home",
+    "strength_defence_away",
+)
+
+
+def published_strength(
+    team: Mapping[str, object],
+    teams: Sequence[Mapping[str, object]],
+) -> TeamStrength | None:
+    """
+    One club rated on FPL's published strength, against the league's own mean.
+
+    A hand-picked constant for every promoted side is a default standing in for
+    a source that exists: FPL rates all twenty clubs before a ball is kicked,
+    promoted ones included, and those numbers are already ingested and were
+    read by nothing.
+
+    Attack is the club over the league mean, so above one is a stronger attack.
+    Defence is inverted -- FPL's higher is better and this module's higher is
+    leakier -- so the league mean over the club. Returns None when the bootstrap
+    carries no strength, which is the one case the constant above is for.
+    """
+    means: dict[str, float] = {}
+    for field_name in _PUBLISHED_FIELDS:
+        values: list[float] = []
+        for other in teams:
+            reading = other.get(field_name)
+            if isinstance(reading, (int, float)) and float(reading) > 0:
+                values.append(float(reading))
+        if not values:
+            return None
+        means[field_name] = sum(values) / len(values)
+
+    read: dict[str, float] = {}
+    for field_name in _PUBLISHED_FIELDS:
+        value = team.get(field_name)
+        if not isinstance(value, (int, float)) or float(value) <= 0:
+            return None
+        read[field_name] = float(value)
+
+    return TeamStrength(
+        attack_home=read["strength_attack_home"] / means["strength_attack_home"],
+        attack_away=read["strength_attack_away"] / means["strength_attack_away"],
+        defence_home=means["strength_defence_home"] / read["strength_defence_home"],
+        defence_away=means["strength_defence_away"] / read["strength_defence_away"],
+    )
+
 
 # Difficulty is a ratio, so it is read on a log scale: twice as easy and half as
 # easy sit the same distance either side of even. The scale is chosen so a tie

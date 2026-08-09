@@ -29,6 +29,13 @@ from __future__ import annotations
 
 __all__ = ["MODEL_VERSION"]
 
+#: 4.1 rates a club with no Premier League record on FPL's own published
+#: strength instead of one hand-picked constant for every promoted side. The
+#: fields were already ingested and read by nothing, and a constant standing in
+#: for a source that exists is the thing this repository says it never does.
+#: Minor: the numbers move for fixtures against promoted clubs and mean the
+#: same thing they did.
+#:
 #: 4.0 lets a bookmaker's scoring price move a player's start rate, which is a
 #: major because the published `startRate` no longer means only "how often he
 #: started last season". It now means the record and the market, weighted, and
@@ -161,4 +168,4 @@ __all__ = ["MODEL_VERSION"]
 #: projection and resampled, so a gap that does not clear zero is reported as
 #: not clearing zero. No projection changed; what changed is what may be
 #: claimed from it.
-MODEL_VERSION = "4.0"
+MODEL_VERSION = "4.1"

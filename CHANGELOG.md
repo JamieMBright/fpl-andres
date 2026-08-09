@@ -8,6 +8,17 @@ The project follows Semantic Versioning once milestone tags begin.
 
 ### Added
 
+- A club with no Premier League record is rated on FPL's own published
+  strength rather than one hand-picked constant (`planning/fixture_routes.py`,
+  `published_strength`). FPL sets `strength_attack_home`, `strength_attack_away`,
+  `strength_defence_home` and `strength_defence_away` for all twenty clubs before
+  a ball is kicked; they were being ingested and read by nothing while every
+  promoted side shared a single 0.80/1.25 pair. Each club is now put against the
+  league's own mean of the four fields, so above one is a stronger attack and,
+  because FPL's defence is higher-is-better and this module's is higher-is-leakier,
+  the defence rating is inverted. The constant survives only for a bootstrap that
+  carries no strength at all, and a zero is read as absent rather than as
+  infinitely weak. Model version 4.1.
 - The captaincy theses are tested rather than ranked
   (`backtesting/captain_significance.py`). Ten policies is ten chances to top a
   table by accident, and the 2.2 ordering inverted on a single arithmetic fix —

@@ -1042,9 +1042,10 @@ export default function SeasonPlanPage() {
                 {plan.dataGaps.clubsWithoutRecord.length > 0
                   ? `${plan.dataGaps.clubsWithoutRecord.join(" and ")} did not play in`
                   : "the promoted clubs did not play in"}
-                . Their players are missing entirely, and fixtures against them
-                are rated exactly average because there is no measured strength
-                to rate them by.
+                . Their players are missing from the pool entirely. Fixtures
+                against them are rated on FPL&rsquo;s own published strength,
+                which it sets for all twenty clubs before a ball is kicked,
+                rather than on a record that does not exist.
               </InfoMarker>
             </li>
             <li>

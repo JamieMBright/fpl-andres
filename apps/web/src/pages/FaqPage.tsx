@@ -35,7 +35,7 @@ const ANSWERS = [
   },
   {
     q: "Why are promoted clubs thin?",
-    a: "They have no Premier League record to measure. Fixtures against them are rated exactly average rather than guessed.",
+    a: "They have no Premier League record to measure, so their players are not in the pool. Fixtures against them are rated on FPL's own published strength.",
   },
   {
     q: "How far ahead is it any good?",
