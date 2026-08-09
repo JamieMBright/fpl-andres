@@ -7,12 +7,11 @@ export function BielsaBucket() {
     <svg
       aria-hidden="true"
       className="brand-mark"
-      viewBox="0 0 260 200"
+      viewBox="-6 -32 272 272"
       xmlns="http://www.w3.org/2000/svg"
     >
-      {/* Grass. The bucket needs something to stand on for the mark to read as
-          a badge rather than a cut-out. */}
-      <circle cx="130" cy="104" fill="#00a13e" r="98" />
+      {/* Grass. Wide enough that the bucket sits inside it rather than on it. */}
+      <circle cx="130" cy="104" fill="#00a13e" r="128" />
       <ellipse
         cx="130"
         cy="186"

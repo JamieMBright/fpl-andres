@@ -63,7 +63,7 @@ describe("team analysis entry", () => {
 
       expect(
         screen.getByRole("heading", {
-          name: "Let me look at your squad.",
+          name: "Six pages. No opinions.",
         }),
       ).not.toHaveFocus();
       await user.type(screen.getByLabelText("Your FPL team ID"), "123456");
@@ -114,11 +114,19 @@ describe("team analysis entry", () => {
       screen.getByRole("link", { name: "Skip to content" }),
     ).toHaveAttribute("href", "#main-content");
     expect(screen.getByRole("main")).toHaveAttribute("id", "main-content");
-    expect(screen.getByRole("link", { name: "Method" })).toBeVisible();
-    expect(screen.getByRole("heading", { name: "Your team ID" })).toBeVisible();
-    expect(screen.getByRole("heading", { name: "I crunch" })).toBeVisible();
-    // Step four has not been earned yet and must say so.
-    expect(screen.getByText(/when the models have earned it/)).toBeVisible();
+    // The home page is the index: every destination reachable without the nav.
+    for (const name of [
+      "Plan",
+      "Players",
+      "Analysis",
+      "Method",
+      "Calibration",
+      "FAQ",
+    ]) {
+      expect(screen.getAllByRole("link", { name }).length).toBeGreaterThan(1);
+    }
+    // Capability is stated, not implied by a page full of promises.
+    expect(screen.getByText(/Reading the public record/)).toBeVisible();
     expect(
       screen.queryByText(/captain and bench calls/i),
     ).not.toBeInTheDocument();

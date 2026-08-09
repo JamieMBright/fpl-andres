@@ -62,7 +62,7 @@ export function Countdown({ deadline }: { deadline: string }) {
           strokeWidth="1.5"
         />
       </svg>
-      <span className="visually-hidden">Next deadline in </span>
+      <span className="countdown-label">Next GW deadline:</span>
       {faceOf(minutes)}
     </span>
   );

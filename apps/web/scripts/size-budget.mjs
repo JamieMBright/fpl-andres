@@ -10,6 +10,10 @@ import { join } from "node:path";
  * so an ordinary change passes and a dependency that doubles the bundle does
  * not. Raising one is a deliberate edit with a number attached, which is the
  * point: the entry chunk was 616 kB before code-splitting and nothing objected.
+ *
+ * The stylesheet went 15 -> 17 when the site gained an info-marker component,
+ * an FAQ page and an index home page. It measured 15.00 against a 15 budget,
+ * which is a guard that fires on the next line of CSS rather than on a problem.
  */
 
 const DIST = join(import.meta.dirname, "..", "dist", "assets");
@@ -20,7 +24,7 @@ const BUDGETS = [
   // card, the squad market and pitch, and the record chart with its key. Dead
   // rules from the squad builder's old dropdown form were removed first, which
   // gained 0.03 kB, so what remains is new UI rather than accumulated slack.
-  { match: /\.css$/, name: "stylesheet", gzipKb: 15 },
+  { match: /\.css$/, name: "stylesheet", gzipKb: 17 },
   // Measured 128.26 kB. Router, zod, lucide and the shell.
   { match: /^index-.*\.js$/, name: "entry chunk", gzipKb: 150 },
   // Measured 54.94 kB. The plan is now the only route a manager needs: the

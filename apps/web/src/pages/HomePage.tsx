@@ -36,108 +36,96 @@ export default function HomePage() {
   }
 
   return (
-    <>
-      <section className="deadline-strip" aria-label="Current capability">
-        <span>
-          <Clock3 aria-hidden="true" size={17} /> Reading the public record
-        </span>
-        <span className="mono">All forecasts are wrong. Some are useful.</span>
-      </section>
+    <section className="index-page" aria-label="Index">
+      <p className="eyebrow">
+        <Clock3 aria-hidden="true" size={14} /> Reading the public record
+      </p>
+      <RouteHeading>Six pages. No opinions.</RouteHeading>
 
-      <section className="analysis-entry">
-        <div className="section-index" aria-hidden="true">
-          01 / TEAM ID
-        </div>
-        <div className="entry-copy">
-          <RouteHeading>Let me look at your squad.</RouteHeading>
-          <p className="lede">
-            Your Team ID is all I need. Squad, captain, bank, transfers &mdash;
-            read from the public record.{" "}
-            <InfoMarker label="where the numbers come from">
-              Every figure carries the FPL endpoint it was read from and the
-              deadline it was recorded at. Changed something since? Tell me at
-              step two. I never guess.
-            </InfoMarker>
-          </p>
-        </div>
+      <ul className="index-grid">
+        <li className="index-cell is-plan">
+          <h2>
+            <span aria-hidden="true">01</span>
+            <Link to="/plan">Plan</Link>
+          </h2>
+          <p>Your fifteen, solved to gameweek 38.</p>
 
-        <form className="team-form" noValidate onSubmit={analyseTeam}>
-          <label htmlFor="team-id">Your FPL team ID</label>
-          <div className="input-command">
-            <input
-              aria-describedby={
-                error ? "team-id-hint team-id-error" : "team-id-hint"
-              }
-              aria-invalid={error !== null}
-              autoComplete="off"
-              id="team-id"
-              inputMode="numeric"
-              maxLength={10}
-              onChange={(event) => setTeamId(event.target.value)}
-              placeholder="e.g. 212279…"
-              value={teamId}
-            />
-            <button type="submit">
-              Analyse my squad <ArrowRight aria-hidden="true" size={19} />
-            </button>
-          </div>
-          <p className="field-hint" id="team-id-hint">
-            In the URL of your FPL points page. No login needed.
-          </p>
-          {error ? (
-            <p className="field-error" id="team-id-error" role="alert">
-              {error}
+          <form className="index-form" noValidate onSubmit={analyseTeam}>
+            <label htmlFor="team-id">Your FPL team ID</label>
+            <div className="input-command">
+              <input
+                aria-describedby={
+                  error ? "team-id-hint team-id-error" : "team-id-hint"
+                }
+                aria-invalid={error !== null}
+                autoComplete="off"
+                id="team-id"
+                inputMode="numeric"
+                maxLength={10}
+                onChange={(event) => setTeamId(event.target.value)}
+                placeholder="e.g. 212279…"
+                value={teamId}
+              />
+              <button type="submit">
+                Analyse my squad <ArrowRight aria-hidden="true" size={19} />
+              </button>
+            </div>
+            <p className="field-hint" id="team-id-hint">
+              In the URL of your FPL points page. No login needed.
+              <InfoMarker label="what I read">
+                Squad, captain, bank and transfers, exactly as FPL last recorded
+                them at a deadline. Nothing about your team is sent anywhere to
+                build the plan.
+              </InfoMarker>
             </p>
-          ) : null}
-        </form>
+            {error ? (
+              <p className="field-error" id="team-id-error" role="alert">
+                {error}
+              </p>
+            ) : null}
+          </form>
+        </li>
 
-        <p className="entry-aside">
-          No squad exists until the first deadline. Until then there is the
-          market: <Link to="/players">every player in the 2026/27 game</Link>,
-          priced at this season&rsquo;s money.{" "}
-          <InfoMarker label="the pre-season market">
-            FPL wipes every squad between seasons, so a Team ID can only say who
-            you are. Each player is shown at this season&rsquo;s price against
-            what he actually returned last season.
-          </InfoMarker>
-        </p>
-      </section>
+        <li className="index-cell is-players">
+          <h2>
+            <span aria-hidden="true">02</span>
+            <Link to="/players">Players</Link>
+          </h2>
+          <p>Every player in the game, and what they cost.</p>
+        </li>
 
-      <section className="method-strip" aria-label="How I work">
-        <h2 className="method-strip-title">How I work</h2>
-        <ol>
-          <li>
-            <span className="method-step" aria-hidden="true">
-              01
-            </span>
-            <h3>Your team ID</h3>
-            <p>I read what FPL made public. Nothing more.</p>
-          </li>
-          <li>
-            <span className="method-step" aria-hidden="true">
-              02
-            </span>
-            <h3>Your changes</h3>
-            <p>
-              Tell me what FPL can&rsquo;t see yet. It stays on your machine.
-            </p>
-          </li>
-          <li>
-            <span className="method-step" aria-hidden="true">
-              03
-            </span>
-            <h3>I crunch</h3>
-            <p>Ten seasons of it. Numbers, not opinions.</p>
-          </li>
-          <li className="method-pending">
-            <span className="method-step" aria-hidden="true">
-              04
-            </span>
-            <h3>The verdict</h3>
-            <p>It arrives when the models have earned it.</p>
-          </li>
-        </ol>
-      </section>
-    </>
+        <li className="index-cell is-analysis">
+          <h2>
+            <span aria-hidden="true">03</span>
+            <Link to="/analysis">Analysis</Link>
+          </h2>
+          <p>Any two stats, plotted. Find who the market missed.</p>
+        </li>
+
+        <li className="index-cell is-method">
+          <h2>
+            <span aria-hidden="true">04</span>
+            <Link to="/methodology">Method</Link>
+          </h2>
+          <p>Fourteen scoring routes, priced. Every step auditable.</p>
+        </li>
+
+        <li className="index-cell is-calibration">
+          <h2>
+            <span aria-hidden="true">05</span>
+            <Link to="/calibration">Calibration</Link>
+          </h2>
+          <p>Where I win, where I lose. Scored four seasons back.</p>
+        </li>
+
+        <li className="index-cell is-faq">
+          <h2>
+            <span aria-hidden="true">06</span>
+            <Link to="/faq">FAQ</Link>
+          </h2>
+          <p>Quick answers and the FPL lingo glossary.</p>
+        </li>
+      </ul>
+    </section>
   );
 }

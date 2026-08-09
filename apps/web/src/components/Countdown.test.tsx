@@ -19,7 +19,7 @@ describe("Countdown", () => {
     cleanup();
     vi.useFakeTimers({ now: NOW });
     render(<Countdown deadline={deadline} />);
-    return screen.getByText(/Next deadline in/).parentElement!;
+    return screen.getByText(/Next GW deadline/).parentElement!;
   }
 
   it("counts down to the minute", () => {
