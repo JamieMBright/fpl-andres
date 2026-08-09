@@ -4750,6 +4750,14 @@ h1[tabindex="-1"]:focus-visible {
   line-height: 1.6;
 }
 
+.plan-chip-scope {
+  max-width: 68ch;
+  margin: 0 0 16px;
+  color: var(--ink-soft);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
 /* Named rather than hidden: the plan is built on two numbers FPL keeps
    private, and a reader has to be able to tell an assumption from a reading. */
 .plan-assumed {

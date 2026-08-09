@@ -29,6 +29,7 @@ import type {
   PlanPlayer,
 } from "../state/season-plan";
 import { readSeasonPlan } from "../state/season-plan";
+import { chipCallsFor } from "../state/season-chips";
 import {
   CAPTAINCY_VERDICT,
   chipReason,
@@ -573,17 +574,10 @@ export default function SeasonPlanPage() {
   // Nobody reads thirty-eight cards at once, and drawing them all on mount is
   // heavy enough that the page could not share a render with anything else.
   const [shownWeeks, setShownWeeks] = useState(INITIAL_WEEKS);
+  const railEnd = useRef<HTMLParagraphElement>(null);
   const resultRef = useRef<HTMLDivElement>(null);
   // Bumped when a transfer is declared, so the squad is read again with it.
   const [declaredAt, setDeclaredAt] = useState(0);
-  const chips = useMemo(() => {
-    const byEvent = new Map<number, ChipCall>();
-    for (const chip of plan.chips) {
-      if (chip.event !== null) byEvent.set(chip.event, chip);
-    }
-    return byEvent;
-  }, [plan.chips]);
-
   /*
    * Nothing to solve until a manager has a squad. Between seasons FPL wipes
    * them all, so the published plan really is everyone's plan — it is what
@@ -627,18 +621,56 @@ export default function SeasonPlanPage() {
 
   const solve = useSeasonSolve(live);
   const solving = live !== null;
+  // Bench Boost and Triple Captain pay what this plan's own bench and captain
+  // score, so they are re-solved from the gameweeks on screen. Wildcard and
+  // Free Hit rebuild the fifteen and are carried through unchanged.
+  const chipCalls = useMemo(
+    () =>
+      solving && solve.status === "done"
+        ? chipCallsFor(solve.gameweeks, plan.chips)
+        : plan.chips,
+    [solving, solve.status, solve.gameweeks, plan.chips],
+  );
   // Someone who has given a team id is here for their own season. Showing the
   // published optimum until they lock a fifteen in reads as "here is your
   // plan" when it is nobody's, and removes any reason to declare a squad.
   const awaitingLockIn =
     teamId !== null && !solving && team.status !== "loading";
-  // The published chips were solved for the published opening fifteen. The
-  // browser solver returns gameweeks and no chip plan at all, so the moment a
-  // real squad is being solved these stop describing anything the reader owns.
-  const chipsAreYours = !solving && !awaitingLockIn;
+  // Wildcard and Free Hit still belong to the published fifteen even once the
+  // other two have been re-solved, and the panel says so rather than implying
+  // all four are his.
+  const chipsAreYours =
+    !awaitingLockIn && (!solving || solve.status === "done");
+  const chips = useMemo(() => {
+    const byEvent = new Map<number, ChipCall>();
+    for (const chip of chipCalls) {
+      if (chip.event !== null) byEvent.set(chip.event, chip);
+    }
+    return byEvent;
+  }, [chipCalls]);
   const gameweeks = solving
     ? solve.gameweeks.map(asPlanGameweek)
     : plan.gameweeks;
+
+  // Reaching the end of the rail asks for more of it. The button below stays,
+  // because scrolling is not a control and a keyboard has nothing to scroll to.
+  useEffect(() => {
+    const node = railEnd.current;
+    if (!node || typeof IntersectionObserver === "undefined") return;
+
+    const watcher = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          setShownWeeks((shown) => shown + INITIAL_WEEKS);
+        }
+      },
+      { rootMargin: "400px" },
+    );
+    watcher.observe(node);
+    return () => {
+      watcher.disconnect();
+    };
+  }, [shownWeeks, gameweeks.length]);
 
   useDocumentTitle(
     // A page about one manager's season says whose. The team view folded into
@@ -804,27 +836,38 @@ export default function SeasonPlanPage() {
         defaultOpen
         note={
           chipsAreYours
-            ? `${String(plan.chips.filter((chip) => chip.event !== null).length)} of ${String(plan.chips.length)} placed`
-            : "not solved for your squad"
+            ? `${String(chipCalls.filter((chip) => chip.event !== null).length)} of ${String(chipCalls.length)} placed`
+            : solving
+              ? "solving"
+              : "waiting on your fifteen"
         }
         step="02"
         title="When to play the chips"
       >
         {chipsAreYours ? (
-          <ChipStrategy chips={plan.chips} />
+          <>
+            {solving ? (
+              <p className="plan-chip-scope">
+                Bench Boost and Triple Captain are solved from{" "}
+                <strong>your</strong> gameweeks. Wildcard and Free Hit are the
+                published fifteen&rsquo;s.
+                <InfoMarker label="why two of four">
+                  Bench Boost pays what your bench scores and Triple Captain
+                  pays what your captain scores, so both fall straight out of
+                  the weeks below. Wildcard and Free Hit rebuild all fifteen,
+                  and the browser solver moves at most five players a week. It
+                  cannot size them, so it does not pretend to.
+                </InfoMarker>
+              </p>
+            ) : null}
+            <ChipStrategy chips={chipCalls} />
+          </>
         ) : (
           <p className="plan-awaiting">
             A chip is only worth what your squad makes of it.{" "}
-            <InfoMarker label="why the chip weeks are not yours">
-              Bench Boost pays what your bench scores, Triple Captain pays what
-              your captain scores. The weeks below were solved for the published
-              opening fifteen, so naming them here would name weeks that suit
-              somebody else&rsquo;s team. Solving chips for yours is not
-              something the browser does yet.
-            </InfoMarker>{" "}
             {awaitingLockIn
-              ? "Lock a squad in at step one and the gameweeks below become yours; the chips will follow."
-              : "The gameweeks below are yours; these would not be."}
+              ? "Lock a squad in at step one and the chip weeks are solved from your bench and your captain."
+              : "Solving yours now."}
           </p>
         )}
       </PlanStep>
@@ -879,7 +922,7 @@ export default function SeasonPlanPage() {
             </ul>
 
             {shownWeeks < gameweeks.length ? (
-              <p className="plan-more">
+              <p className="plan-more" ref={railEnd}>
                 <button
                   className="secondary-command"
                   onClick={() => {
