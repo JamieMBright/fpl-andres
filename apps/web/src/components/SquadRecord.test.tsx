@@ -3,8 +3,11 @@ import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
 import { SquadRecord } from "./SquadRecord";
+import { projectionFor } from "../state/squad-projection";
 
-// Bruno Fernandes, whose record is in the published artifact.
+// Bruno Fernandes, whose record is in the published artifact. What the record
+// says moves every time the artifact is refreshed, so it is read rather than
+// typed: the claim under test is the join, not the number.
 const KNOWN_CODE = 141746;
 
 function pick(squadPosition: number, code: number | null): PublicTeamPick {
@@ -29,12 +32,16 @@ function pick(squadPosition: number, code: number | null): PublicTeamPick {
 
 describe("SquadRecord", () => {
   it("shows the published per-match record for a known player", () => {
+    const published = projectionFor(KNOWN_CODE);
     render(<SquadRecord picks={[pick(1, KNOWN_CODE)]} />);
 
     expect(
       screen.getByRole("table", { name: /last season record/i }),
     ).toBeInTheDocument();
-    expect(screen.getByText("5.05")).toBeInTheDocument();
+    expect(published).not.toBeNull();
+    expect(
+      screen.getByText(published!.expectedPoints.toFixed(2)),
+    ).toBeInTheDocument();
   });
 
   it("names the players it has no record for rather than inventing one", () => {

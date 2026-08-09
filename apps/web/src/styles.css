@@ -314,7 +314,6 @@ a {
 .brand-mark {
   width: 32px;
   height: 32px;
-  color: var(--field-green);
   flex: 0 0 auto;
 }
 
@@ -3950,11 +3949,11 @@ h1[tabindex="-1"]:focus-visible {
   }
 }
 
-/* Bielsa bucket mark. Holds --fa-bucket in both themes. */
+/* Bielsa bucket mark. Every colour is a teletext one, set on the paths
+   themselves, so it does not follow a theme. */
 .brand-mark {
   width: 46px;
   height: auto;
-  color: var(--fa-bucket);
   flex: 0 0 auto;
 }
 

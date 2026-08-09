@@ -1,7 +1,19 @@
 import { useState } from "react";
 
 import { BarChart, type Bar } from "./MethodChart";
-import { projectionSeason } from "../state/squad-projection";
+import { allProjections, projectionSeason } from "../state/squad-projection";
+
+/** The dearest outfielder in the published record, named rather than typed in.
+
+ * The worked example below used to carry his price and projection as prose.
+ * Both moved every time the artifact was refreshed, so the page explaining the
+ * arithmetic was the one place showing numbers that no longer matched it.
+ */
+const DEAREST = allProjections()
+  .filter((player) => player.position !== "GKP" && player.priceTenths !== null)
+  .reduce((dearest, player) =>
+    (player.priceTenths ?? 0) > (dearest.priceTenths ?? 0) ? player : dearest,
+  );
 
 /**
  * The pipeline, end to end, so a reader can check each step rather than the
@@ -176,7 +188,10 @@ const STAGES: Stage[] = [
     title: "5 · Putting it together into a points figure",
     summary: "Rates × minutes × fixture, summed over the routes, then derated.",
     example:
-      "Bruno Fernandes, £12.0m, 5.05 a match. He is the most expensive outfield player here and the arithmetic is the same as everybody else's — no premium adjustment, no manual nudge.",
+      `${DEAREST.name}, £${((DEAREST.priceTenths ?? 0) / 10).toFixed(1)}m, ` +
+      `${DEAREST.expectedPoints.toFixed(2)} a match. He is the most expensive ` +
+      "outfield player here and the arithmetic is the same as everybody else's " +
+      "— no premium adjustment, no manual nudge.",
     arithmetic:
       "For each of the fourteen routes: rate per 90 × (expected minutes ÷ 90) × that route's fixture multiplier. Add the fourteen. Then subtract the suspension derate, which is the chance he is booked into a ban over the next five matches multiplied by what those matches were worth.",
     detail: `The ceiling shown beside the projection is his ninetieth-percentile match in ${projectionSeason} — one afternoon in ten is at least that good. That is the number an armband or a Triple Captain is actually played for, and it is deliberately not the mean, because a chip is a bet on the upper tail.`,

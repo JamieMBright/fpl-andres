@@ -5,8 +5,11 @@ import {
   fetchPlayerPool,
   forgetLastGoodPool,
 } from "./player-pool";
+import { projectionFor } from "./squad-projection";
 
-// Bruno Fernandes, present in the published record.
+// Bruno Fernandes, present in the published record. What that record says
+// moves whenever the artifact is refreshed, so it is read rather than typed:
+// the claim under test is the join, not the number.
 const KNOWN_CODE = 141746;
 
 function bootstrap(
@@ -63,13 +66,15 @@ function bootstrap(
 
 describe("buildPlayerPool", () => {
   it("joins this season's price to last season's record", () => {
+    const published = projectionFor(KNOWN_CODE);
     const pool = buildPlayerPool(bootstrap());
     const bruno = pool.players.find((player) => player.code === KNOWN_CODE);
 
+    expect(published).not.toBeNull();
     expect(bruno?.priceTenths).toBe(100);
-    expect(bruno?.record?.expectedPoints).toBe(5.05);
-    // 5.05 points per match at £10.0m.
-    expect(bruno?.perMillion).toBeCloseTo(0.51, 2);
+    expect(bruno?.record?.expectedPoints).toBe(published!.expectedPoints);
+    // The record, per match, divided by the £10.0m this season charges for him.
+    expect(bruno?.perMillion).toBeCloseTo(published!.expectedPoints / 10, 2);
   });
 
   it("keeps a player with no record rather than dropping him", () => {
