@@ -101,6 +101,21 @@ describe("solveSeason", () => {
     SOLVE_TIMEOUT,
   );
 
+  // Before the first deadline a squad is still being picked. Charging four
+  // points a change made the plan open by advising a hit nobody would pay.
+  it(
+    "never charges for a change made before the first deadline",
+    () => {
+      const opener = season()[0];
+
+      expect(opener?.event).toBe(1);
+      expect(opener?.transferCostPoints).toBe(0);
+      expect(opener?.paidTransfers).toBe(0);
+      expect(opener?.netExpectedPoints).toBe(opener?.projectedPoints);
+    },
+    SOLVE_TIMEOUT,
+  );
+
   it("fields a legal squad in every gameweek", () => {
     for (const week of season()) {
       expect(week.starters).toHaveLength(11);

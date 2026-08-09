@@ -4758,6 +4758,41 @@ h1[tabindex="-1"]:focus-visible {
   line-height: 1.55;
 }
 
+/* Advice, not an instruction: it names what it would do, prices it at nothing
+   and offers the way out in the same block. */
+.plan-opening-advice {
+  max-width: 68ch;
+  margin: 0 0 18px;
+  padding: 14px 16px;
+  border-left: 3px solid var(--field-green);
+  background: rgb(61 220 111 / 8%);
+}
+
+.plan-opening-advice > p {
+  margin: 0;
+  line-height: 1.6;
+}
+
+.plan-opening-list {
+  display: grid;
+  gap: 4px;
+  margin: 10px 0 12px;
+  padding: 0;
+  list-style: none;
+  font-family: var(--fa-body);
+  font-size: 13px;
+}
+
+.plan-opening-list li {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.plan-opening-advice button {
+  margin-top: 4px;
+}
+
 /* Named rather than hidden: the plan is built on two numbers FPL keeps
    private, and a reader has to be able to tell an assumption from a reading. */
 .plan-assumed {

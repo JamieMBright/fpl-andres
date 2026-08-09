@@ -574,6 +574,9 @@ export default function SeasonPlanPage() {
   // Nobody reads thirty-eight cards at once, and drawing them all on mount is
   // heavy enough that the page could not share a render with anything else.
   const [shownWeeks, setShownWeeks] = useState(INITIAL_WEEKS);
+  // Rejecting the free pre-deadline changes holds the declared fifteen through
+  // gameweek one, which is what "no hits" actually means before a season.
+  const [holdOpening, setHoldOpening] = useState(false);
   const railEnd = useRef<HTMLParagraphElement>(null);
   const resultRef = useRef<HTMLDivElement>(null);
   // Bumped when a transfer is declared, so the squad is read again with it.
@@ -606,18 +609,25 @@ export default function SeasonPlanPage() {
   const live = useMemo(() => {
     // His own fifteen beats a gameweek number, because it is his season either
     // way and only one of the two knows what he owns.
-    if (team.status === "ready") return team.start;
-    if (!Number.isInteger(fromEvent) || fromEvent < 1 || fromEvent > 38) {
-      return null;
-    }
-    const opening = plan.gameweeks[0];
-    if (!opening) return null;
-
-    return startFromCodes(
-      [...opening.starters, ...opening.bench].map((player) => player.code),
-      { bankTenths: 0, availableFreeTransfers: 1, fromEvent },
-    );
-  }, [fromEvent, plan.gameweeks, team]);
+    const base =
+      team.status === "ready"
+        ? team.start
+        : Number.isInteger(fromEvent) && fromEvent >= 1 && fromEvent <= 38
+          ? (() => {
+              const opening = plan.gameweeks[0];
+              return opening
+                ? startFromCodes(
+                    [...opening.starters, ...opening.bench].map(
+                      (player) => player.code,
+                    ),
+                    { bankTenths: 0, availableFreeTransfers: 1, fromEvent },
+                  )
+                : null;
+            })()
+          : null;
+    if (!base) return null;
+    return holdOpening ? { ...base, lockOpening: true } : base;
+  }, [fromEvent, holdOpening, plan.gameweeks, team]);
 
   const solve = useSeasonSolve(live);
   const solving = live !== null;
@@ -651,6 +661,17 @@ export default function SeasonPlanPage() {
   const gameweeks = solving
     ? solve.gameweeks.map(asPlanGameweek)
     : plan.gameweeks;
+
+  // Only gameweek one, and only when it is the reader's own squad being
+  // solved: past the first deadline a change is a transfer and costs points.
+  const openingChanges = useMemo(() => {
+    const opener = gameweeks[0];
+    if (!solving || opener?.event !== 1) return [];
+    return opener.transfersIn.map((incoming, index) => ({
+      incoming,
+      outgoing: opener.transfersOut[index],
+    }));
+  }, [gameweeks, solving]);
 
   // Reaching the end of the rail asks for more of it. The button below stays,
   // because scrolling is not a control and a keyboard has nothing to scroll to.
@@ -908,6 +929,59 @@ export default function SeasonPlanPage() {
               </p>
             ) : null}
             <ReadingKey />
+            {openingChanges.length > 0 || holdOpening ? (
+              <div className="plan-opening-advice">
+                <p>
+                  {holdOpening ? (
+                    <>
+                      <strong>Holding your fifteen.</strong> Gameweek 1 is
+                      exactly as you declared it, and the season is solved from
+                      there.
+                    </>
+                  ) : (
+                    <>
+                      <strong>
+                        {openingChanges.length}{" "}
+                        {openingChanges.length === 1 ? "change" : "changes"}{" "}
+                        before the deadline, free.
+                      </strong>{" "}
+                      Nothing is charged for these &mdash; the squad is still
+                      being picked.
+                      <InfoMarker label="free pre-deadline changes">
+                        FPL only starts charging for transfers once the first
+                        deadline has passed. Until then a squad can be edited as
+                        often as you like, so these are advice rather than a
+                        hit.
+                      </InfoMarker>
+                    </>
+                  )}
+                </p>
+                {holdOpening ? null : (
+                  <ul className="plan-opening-list">
+                    {openingChanges.map(({ incoming, outgoing }) => (
+                      <li key={incoming.code}>
+                        <span className="plan-out">
+                          {outgoing?.name ?? "\u2014"}
+                        </span>
+                        <ArrowRight aria-label="replaced by" size={15} />
+                        <span className="plan-in">{incoming.name}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+                <button
+                  className="secondary-command"
+                  onClick={() => {
+                    setHoldOpening(!holdOpening);
+                  }}
+                  type="button"
+                >
+                  {holdOpening
+                    ? "Show me the free changes again"
+                    : "No thanks, keep my fifteen"}
+                </button>
+              </div>
+            ) : null}
             <ul className="plan-rail">
               {gameweeks.slice(0, shownWeeks).map((week) => (
                 <GameweekCard

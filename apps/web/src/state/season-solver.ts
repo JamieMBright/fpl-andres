@@ -208,6 +208,8 @@ export interface SolveStart {
   availableFreeTransfers: number;
   /** First gameweek to plan. Everything from here to 38 is solved. */
   fromEvent: number;
+  /** Set when the reader has rejected the free pre-deadline changes. */
+  lockOpening?: boolean;
   assumed: readonly SolveAssumption[];
 }
 
@@ -294,8 +296,13 @@ export function* solveSeason(
 
   let squad = start.squad.map((held) => ({ ...held }));
   let bank = start.bankTenths;
+  // Nothing is charged before the first deadline: a squad is still being
+  // picked, not transferred. Starting at zero made the solver price a change
+  // it should have taken for nothing, and the plan opened by advising a hit.
   let free =
-    start.fromEvent === SEASON_OPENER ? 0 : start.availableFreeTransfers;
+    start.fromEvent === SEASON_OPENER
+      ? MAX_FREE_TRANSFERS
+      : start.availableFreeTransfers;
 
   for (let index = firstIndex; index < EVENTS.length; index += 1) {
     const event = EVENTS[index];
@@ -357,7 +364,14 @@ export function* solveSeason(
     const solved = solveQuickPlan(input, {
       beamWidth: 12,
       candidateLimitPerPosition: 8,
-      maxTransfers: 2,
+      // Squad selection, not a transfer window: the opening week gets the
+      // solver's full move budget because none of those moves costs anything.
+      maxTransfers:
+        event === SEASON_OPENER
+          ? start.lockOpening
+            ? 0
+            : MAX_FREE_TRANSFERS
+          : 2,
       transferMarginPoints: TRANSFER_MARGIN_POINTS,
     });
 
