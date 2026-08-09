@@ -51,6 +51,35 @@ _GOAL_PRIOR: Mapping[int, float] = {1: 0.00, 2: 0.05, 3: 0.12, 4: 0.28}
 _ASSIST_PRIOR: Mapping[int, float] = {1: 0.00, 2: 0.06, 3: 0.13, 4: 0.12}
 # Defensive contribution, new for 2025/26. Threshold is on the raw action count.
 _DEFCON_THRESHOLD: Mapping[int, int] = {2: 10, 3: 12, 4: 12}
+_DEFENDER = 2
+
+
+def defensive_actions(row: ElementRow, position: int) -> int | None:
+    """The count that faces the bar, counted for the position being projected.
+
+    FPL publishes `defensive_contribution` for the position a player held at the
+    time, and it reclassifies players between seasons and within them. A
+    wing-back moved to midfield carries a clearances-blocks-interceptions-and-
+    tackles record into a bar that also counts recoveries and sits two actions
+    higher: every recovery he has ever made is missing from the count his new
+    threshold is applied to, so he reads as a worse defensive midfielder than
+    the one FPL just decided he is. Re-deriving from the components counts him
+    as a midfielder for as long as he is one.
+
+    Falls back to the published label when a component is absent, which is every
+    season before 2025/26. Returns None for a keeper, who has no bar to clear,
+    and when nothing was published at all.
+    """
+    if position not in _DEFCON_THRESHOLD:
+        return None
+    if row.clearances_blocks_interceptions is None or row.tackles is None:
+        return row.defensive_contribution
+    counted = row.clearances_blocks_interceptions + row.tackles
+    if position == _DEFENDER:
+        return counted
+    if row.recoveries is None:
+        return row.defensive_contribution
+    return counted + row.recoveries
 
 
 @dataclass(frozen=True)
@@ -124,9 +153,10 @@ def league_rates(rows: Sequence[ElementRow], position_by_element: Mapping[int, i
             totals["pen_missed"].get(position, 0.0) + row.penalties_missed
         )
         threshold = _DEFCON_THRESHOLD.get(position)
-        if threshold is not None and row.defensive_contribution is not None:
+        actions = defensive_actions(row, position)
+        if threshold is not None and actions is not None:
             defcon_nineties[position] = defcon_nineties.get(position, 0.0) + played
-            if row.defensive_contribution >= threshold:
+            if actions >= threshold:
                 totals["defcon"][position] = totals["defcon"].get(position, 0.0) + 1
 
     def per_ninety(name: str, denominator: Mapping[int, float]) -> dict[int, float]:

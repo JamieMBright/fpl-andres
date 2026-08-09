@@ -48,6 +48,9 @@ const elementSchema = z
     threat: z.coerce.number().min(0),
     defensive_contribution: z.number().int().min(0),
     defensive_contribution_per_90: z.coerce.number().min(0),
+    clearances_blocks_interceptions: z.number().int().min(0),
+    tackles: z.number().int().min(0),
+    recoveries: z.number().int().min(0),
   })
   .loose();
 
@@ -144,6 +147,18 @@ export interface AnalysisPlayer {
    * season totals cannot tell them apart. `null` for goalkeepers.
    */
   defconBarRatio: number | null;
+  /**
+   * The three counts the defensive contribution is summed from.
+   *
+   * Kept apart from the sum because they are different jobs. A centre-back on
+   * 239 clearances and 38 tackles is defending his own box; a midfielder on 127
+   * clearances and 180 recoveries is winning the ball back up the pitch. Both
+   * clear the same bar and neither reads like the other. Null on an archived
+   * season, where the corpus has no components to give.
+   */
+  clearancesBlocksInterceptions: number | null;
+  tackles: number | null;
+  recoveries: number | null;
   understat: UnderstatRecord | null;
 }
 
@@ -212,6 +227,9 @@ export function buildAnalysisPool(payload: unknown): AnalysisPool {
           threshold === undefined
             ? null
             : element.defensive_contribution_per_90 / threshold,
+        clearancesBlocksInterceptions: element.clearances_blocks_interceptions,
+        tackles: element.tackles,
+        recoveries: element.recoveries,
         understat: understatByCode.get(element.code) ?? null,
       },
     ];

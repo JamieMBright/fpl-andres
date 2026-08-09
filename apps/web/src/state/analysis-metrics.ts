@@ -340,6 +340,58 @@ export const METRICS: Metric[] = [
     higherIsBetter: true,
     allowLog: false,
   },
+  /*
+   * The three counts the bar is summed from. Plotted apart because they are
+   * different jobs and the sum hides which one a player does: a centre-back
+   * clearing his own box and a midfielder recovering the ball in the opposition
+   * half arrive at the same total by opposite routes, and only one of them
+   * keeps doing it when his side goes a goal up.
+   */
+  {
+    id: "cbiPer90",
+    label: "Clearances, blocks, interceptions per 90",
+    group: "Defence",
+    vintage: "record",
+    explains:
+      "Defending his own box. The count that carries a centre-back over the bar.",
+    value: (player) =>
+      player.clearancesBlocksInterceptions === null
+        ? null
+        : per90(player.clearancesBlocksInterceptions, player.ninetiesPlayed),
+    format: two,
+    higherIsBetter: true,
+    allowLog: false,
+  },
+  {
+    id: "tacklesPer90",
+    label: "Tackles per 90",
+    group: "Defence",
+    vintage: "record",
+    explains:
+      "Going to get it. Counts toward the bar in every outfield position.",
+    value: (player) =>
+      player.tackles === null
+        ? null
+        : per90(player.tackles, player.ninetiesPlayed),
+    format: two,
+    higherIsBetter: true,
+    allowLog: false,
+  },
+  {
+    id: "recoveriesPer90",
+    label: "Recoveries per 90",
+    group: "Defence",
+    vintage: "record",
+    explains:
+      "Loose ball won back. Counts toward the bar for midfielders and forwards, and not for defenders.",
+    value: (player) =>
+      player.recoveries === null
+        ? null
+        : per90(player.recoveries, player.ninetiesPlayed),
+    format: two,
+    higherIsBetter: true,
+    allowLog: false,
+  },
 
   {
     id: "price",

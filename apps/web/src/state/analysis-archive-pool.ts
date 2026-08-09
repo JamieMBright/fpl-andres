@@ -25,6 +25,9 @@ export const WHOLE_SEASON_METRICS = [
   "defconTotal",
   "defconPer90",
   "defconBarRatio",
+  "cbiPer90",
+  "tacklesPer90",
+  "recoveriesPer90",
 ];
 
 /**
@@ -77,6 +80,11 @@ export function poolFromArchive(
         ? player.defensiveContributionPer90
         : null,
       defconBarRatio: null,
+      clearancesBlocksInterceptions: measuredDefcon
+        ? (player.clearancesBlocksInterceptions ?? null)
+        : null,
+      tackles: measuredDefcon ? (player.tackles ?? null) : null,
+      recoveries: measuredDefcon ? (player.recoveries ?? null) : null,
       understat: null,
     };
   });

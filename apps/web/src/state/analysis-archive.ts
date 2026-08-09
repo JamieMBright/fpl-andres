@@ -49,6 +49,11 @@ const playerSchema = z
     expectedGoalInvolvements: z.number(),
     defensiveContribution: z.number().int(),
     defensiveContributionPer90: z.number().nullable(),
+    // Optional rather than nullable: an artifact published before the corpus
+    // read the components has no key at all, and it is still a valid archive.
+    clearancesBlocksInterceptions: z.number().int().nullable().optional(),
+    tackles: z.number().int().nullable().optional(),
+    recoveries: z.number().int().nullable().optional(),
     ceiling: z.number().nullable(),
     ceilingRatio: z.number().nullable(),
     priceTenths: z.number().int().nullable(),

@@ -35,6 +35,9 @@ function player(index: number, defcon: number, xgi: number): AnalysisPlayer {
     defensiveContribution: defcon * 30,
     defensiveContributionPer90: defcon,
     defconBarRatio: defcon / 12,
+    clearancesBlocksInterceptions: defcon * 10,
+    tackles: defcon * 8,
+    recoveries: defcon * 12,
     understat: null,
   };
 }

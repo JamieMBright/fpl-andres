@@ -100,6 +100,9 @@ def test_the_fingerprint_does_not_depend_on_row_order() -> None:
         ("penalties_saved", 1),
         ("penalties_missed", 1),
         ("defensive_contribution", 12),
+        ("clearances_blocks_interceptions", 8),
+        ("tackles", 4),
+        ("recoveries", 7),
         ("started", False),
         ("element_code", 999_999),
     ],
@@ -155,7 +158,12 @@ def test_a_golden_corpus_replays_to_a_known_fingerprint() -> None:
     If this value changes, either the corpus construction above changed or the
     fingerprint definition did. Both are things a reviewer should be told about
     explicitly rather than discovering when a backtest metric drifts.
+
+    Moved once, from 97211ac7, when the defensive-contribution components joined
+    the fingerprint. They joined it because the projection started reading them,
+    and a value the projection reads that the fingerprint does not cover is a
+    re-ingest that can move every DefCon number with nothing to say it did.
     """
     assert _corpus().fingerprint == (
-        "sha256:97211ac73f8093e8f8b853cac0ab7f3d7b2ba5be31d7788e0dff88ec763d8f22"
+        "sha256:1af90f94022fda8252b15206c9b6a8becaeb7c4c6928201f110179d018917675"
     )

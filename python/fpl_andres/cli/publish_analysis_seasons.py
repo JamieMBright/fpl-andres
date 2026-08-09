@@ -62,6 +62,13 @@ def _aggregate(rows: Sequence[ElementRow]) -> dict[str, float | int | None]:
     def total(field: str) -> int:
         return sum(int(getattr(row, field) or 0) for row in rows)
 
+    def optional_total(field: str) -> int | None:
+        """Summed only where the archive published it, and None where it did not."""
+        seen = [getattr(row, field) for row in rows]
+        if all(value is None for value in seen):
+            return None
+        return sum(int(value or 0) for value in seen)
+
     expected_goals = sum(row.expected_goals or 0.0 for row in rows)
     expected_assists = sum(row.expected_assists or 0.0 for row in rows)
     defcon = sum(row.defensive_contribution or 0 for row in rows)
@@ -82,6 +89,14 @@ def _aggregate(rows: Sequence[ElementRow]) -> dict[str, float | int | None]:
         "expectedAssists": round(expected_assists, 3),
         "expectedGoalInvolvements": round(expected_goals + expected_assists, 3),
         "defensiveContribution": defcon,
+        # The three counts behind that sum. Published separately because the sum
+        # cannot say whether a player clears the bar by defending his own box or
+        # by winning the ball back in the opposition half. Null before 2025/26,
+        # where the archive has nothing to give and a zero would read as a
+        # defender who made no tackles all year.
+        "clearancesBlocksInterceptions": optional_total("clearances_blocks_interceptions"),
+        "tackles": optional_total("tackles"),
+        "recoveries": optional_total("recoveries"),
         # Withheld rather than zeroed: a rate over no minutes is not zero, it is
         # unmeasured, and a dot on the origin says something false.
         "defensiveContributionPer90": (

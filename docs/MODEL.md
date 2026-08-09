@@ -153,6 +153,18 @@ defenders, 12 for midfielders and forwards, not available to goalkeepers. It is
 new for 2025/26 and was **7.5% of all points** that season. Null before 2025/26
 is absence-of-rule, not missing data.
 
+The count itself differs by position. A defender's is clearances, blocks,
+interceptions and tackles; a midfielder's and a forward's adds recoveries. FPL
+publishes one `defensive_contribution` column holding whichever of the two
+applied to that player at that time, so the projection re-derives the count from
+its three components for the position it is projecting
+(`rates.defensive_actions`). This matters only where FPL has reclassified
+someone: a wing-back moved to midfield would otherwise carry a count missing
+every recovery he had ever made into a bar two actions higher. For everyone
+else the re-derived count equals the published one, which was checked against
+the live bootstrap rather than assumed. Seasons before 2025/26 publish no
+components, and there the published label stands.
+
 ---
 
 ## 5. Fixtures change routes, not totals

@@ -1,5 +1,5 @@
 ﻿import teamStateCases from "../../../packages/contracts/fixtures/public-team-state-cases.json";
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { createMemoryRouter, RouterProvider } from "react-router-dom";
 import { beforeEach, describe, expect, it, vi } from "vitest";
@@ -77,7 +77,12 @@ describe("team analysis entry", () => {
         { timeout: SETTLE },
       );
       expect(analysisHeading).toBeInTheDocument();
-      expect(analysisHeading).toHaveFocus();
+      // The heading is in the document one commit before the effect that focuses
+      // it has run. Asserting in the same tick passes alone and fails under a
+      // loaded suite, which is a statement about the machine and not the page.
+      await waitFor(() => {
+        expect(analysisHeading).toHaveFocus();
+      });
       // The status region mounts empty and fills once the snapshot resolves, so
       // this waits for the text rather than for the region.
       await screen.findByText("Observed snapshot ready", undefined, {

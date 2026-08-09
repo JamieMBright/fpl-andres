@@ -31,6 +31,9 @@ function player(overrides: Partial<AnalysisPlayer> = {}): AnalysisPlayer {
     defensiveContribution: 240,
     defensiveContributionPer90: 12,
     defconBarRatio: 1,
+    clearancesBlocksInterceptions: 80,
+    tackles: 60,
+    recoveries: 100,
     understat: null,
     ...overrides,
   };

@@ -29,6 +29,15 @@ from __future__ import annotations
 
 __all__ = ["MODEL_VERSION"]
 
+#: 4.2 counts the defensive-contribution bar for the position being projected
+#: rather than the one the player held when FPL published the label. FPL sums
+#: clearances, blocks, interceptions and tackles for a defender and adds
+#: recoveries for everyone else, so a wing-back moved to midfield carried a
+#: count that was missing every recovery he had ever made into a bar two actions
+#: higher. Minor: for a player FPL has not reclassified the re-derived count is
+#: identical to the published one, which was checked against the live bootstrap
+#: rather than assumed.
+#:
 #: 4.1 rates a club with no Premier League record on FPL's own published
 #: strength instead of one hand-picked constant for every promoted side. The
 #: fields were already ingested and read by nothing, and a constant standing in
@@ -168,4 +177,4 @@ __all__ = ["MODEL_VERSION"]
 #: projection and resampled, so a gap that does not clear zero is reported as
 #: not clearing zero. No projection changed; what changed is what may be
 #: claimed from it.
-MODEL_VERSION = "4.1"
+MODEL_VERSION = "4.2"

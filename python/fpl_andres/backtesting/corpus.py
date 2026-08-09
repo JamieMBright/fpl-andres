@@ -28,7 +28,8 @@ _STAT_COLUMNS = (
     "season,gameweek,element_id,element_code,fixture_id,minutes,starts,"
     "goals_scored,assists,clean_sheets,goals_conceded,saves,bonus,bps,"
     "expected_goals,expected_assists,expected_goals_conceded,"
-    "defensive_contribution,yellow_cards,red_cards,own_goals,penalties_saved,"
+    "defensive_contribution,clearances_blocks_interceptions,tackles,recoveries,"
+    "yellow_cards,red_cards,own_goals,penalties_saved,"
     "penalties_missed,total_points,value,selected,transfers_in,transfers_out,"
     "was_home,opponent_team,kickoff_time"
 )
@@ -67,6 +68,12 @@ class ElementRow:
     penalties_missed: int = 0
     # Raw CBIT/CBIRT count, not the awarded points; absent before 2025/26.
     defensive_contribution: int | None = None
+    # The components behind that count. Kept apart from it because the label is
+    # counted for the position the player held at the time and FPL reclassifies
+    # players; see `rates.defensive_actions`. Absent before 2025/26.
+    clearances_blocks_interceptions: int | None = None
+    tackles: int | None = None
+    recoveries: int | None = None
     transfers_in: int | None = None
     transfers_out: int | None = None
 
@@ -188,6 +195,9 @@ class SeasonCorpus:
                             row.penalties_saved,
                             row.penalties_missed,
                             row.defensive_contribution,
+                            row.clearances_blocks_interceptions,
+                            row.tackles,
+                            row.recoveries,
                         )
                     ).encode("utf-8")
                 )
@@ -336,6 +346,11 @@ def load_season(client: SupabaseRestClient, season: str) -> SeasonCorpus:
                 penalties_saved=int(row.get("penalties_saved") or 0),
                 penalties_missed=int(row.get("penalties_missed") or 0),
                 defensive_contribution=_optional_int(row.get("defensive_contribution")),
+                clearances_blocks_interceptions=_optional_int(
+                    row.get("clearances_blocks_interceptions")
+                ),
+                tackles=_optional_int(row.get("tackles")),
+                recoveries=_optional_int(row.get("recoveries")),
                 transfers_in=_optional_int(row.get("transfers_in")),
                 transfers_out=_optional_int(row.get("transfers_out")),
             )

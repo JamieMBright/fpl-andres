@@ -17,7 +17,7 @@ from dataclasses import dataclass
 
 from fpl_andres.backtesting.corpus import ElementRow
 from fpl_andres.backtesting.fixtures import RouteAdjustment
-from fpl_andres.backtesting.rates import LeagueRates, shrunk_rate
+from fpl_andres.backtesting.rates import LeagueRates, defensive_actions, shrunk_rate
 from fpl_andres.models.expected_points import expected_floor_divide
 from fpl_andres.models.minutes import MinutesProjection
 from fpl_andres.models.player_rates import PlayerRateProjection
@@ -305,11 +305,17 @@ def defensive_contribution_points(
     threshold = _DEFCON_THRESHOLD.get(position)
     if threshold is None:
         return 0.0
-    observed = [row for row in appearances if row.defensive_contribution is not None]
+    # Counted for the position being projected rather than the one held at the
+    # time, so a reclassified player is not judged on the wrong actions.
+    observed: list[tuple[ElementRow, int]] = []
+    for row in appearances:
+        actions = defensive_actions(row, position)
+        if actions is not None:
+            observed.append((row, actions))
     if not observed:
         return 0.0
-    hits = sum(1 for row in observed if (row.defensive_contribution or 0) >= threshold)
-    seen = sum(row.minutes for row in observed) / _MINUTES_PER_90
+    hits = sum(1 for _, actions in observed if actions >= threshold)
+    seen = sum(row.minutes for row, _ in observed) / _MINUTES_PER_90
     # `seen` is the evidence that exists, and `shrunk_rate` already pulls a thin
     # sample toward the league rate in proportion to how thin it is. A coverage
     # term on top charged the same missing data twice: a defender with five

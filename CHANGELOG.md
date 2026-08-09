@@ -8,6 +8,24 @@ The project follows Semantic Versioning once milestone tags begin.
 
 ### Added
 
+- The defensive-contribution bar is counted for the position being projected
+  (`backtesting/rates.py`, `defensive_actions`). FPL sums clearances, blocks,
+  interceptions and tackles for a defender and adds recoveries for everyone
+  else, publishing whichever applied at the time in one column — and it
+  reclassifies players. A wing-back moved to midfield therefore carried a count
+  missing every recovery he had ever made into a bar two actions higher, and
+  read as a worse defensive midfielder than the one FPL had just decided he was.
+  The three components are now read out of the corpus and summed for the
+  position being projected. The arithmetic was checked against the live
+  bootstrap rather than assumed: Gabriel 239 + 38 = 277, Rice 127 + 69 + 180 =
+  376, both exactly what FPL published. They join the corpus fingerprint too,
+  because a value the projection reads that the fingerprint does not cover is a
+  re-ingest that can move every DefCon number with nothing to say it did. Model
+  version 4.2.
+- Clearances-blocks-interceptions, tackles and recoveries are three separate
+  scatter axes. The sum cannot say whether a player clears the bar by defending
+  his own box or by winning the ball back in the opposition half, and those are
+  not the same player: one of them keeps doing it when his side goes a goal up.
 - A club with no Premier League record is rated on FPL's own published
   strength rather than one hand-picked constant (`planning/fixture_routes.py`,
   `published_strength`). FPL sets `strength_attack_home`, `strength_attack_away`,

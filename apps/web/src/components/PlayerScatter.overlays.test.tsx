@@ -36,6 +36,9 @@ function pool(count: number): AnalysisPlayer[] {
       defensiveContribution: index % 500,
       defensiveContributionPer90: (index % 160) / 10,
       defconBarRatio: position === "GKP" ? null : (index % 160) / 100,
+      clearancesBlocksInterceptions: index % 90,
+      tackles: index % 40,
+      recoveries: index % 120,
       understat: null,
     };
   });
