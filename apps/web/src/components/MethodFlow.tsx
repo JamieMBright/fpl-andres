@@ -298,7 +298,7 @@ const STAGES: Stage[] = [
     detail:
       "Firm means prices, availability and fixtures are all observed and only the points are projected. Projected means it sits inside the horizon this repository has measured and calibrated. Provisional means the fixtures are known and almost nothing else is — read the shape of the plan, not the names in it.",
     caveat:
-      "The plan is solved once, offline, and published. Nothing re-reads the evidence after gameweek one. Early-season minutes are the input every rate scales off, and they are exactly what this cannot yet see, so the further into the season you read, the more the plan describes last season's players rather than this season's.",
+      "The season is re-solved in your browser every visit, from the squad, prices and bank FPL publishes today. What is not re-read is the projection underneath it: each player's rate is built once from the completed season and published. Early-season minutes are the input every rate scales off, and they are exactly what it cannot yet see, so the further into the season you read, the more the plan describes last season's players rather than this season's.",
   },
 ];
 

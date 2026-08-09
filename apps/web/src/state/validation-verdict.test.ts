@@ -2,9 +2,11 @@ import { describe, expect, it } from "vitest";
 
 import validation from "../data/validation.json";
 import {
+  leagueVerdict,
   pooledVerdict,
   positionVerdict,
   separableVerdict,
+  type LeagueSeason,
   type VerdictSeason,
 } from "./validation-verdict";
 
@@ -56,6 +58,45 @@ describe("the shipped artifact", () => {
       expect(verdict.sentence).not.toContain(
         "I rank better than the last-five",
       );
+    }
+  });
+
+  it("is what the mini-league verdict describes", () => {
+    const leagues = seasons as unknown as LeagueSeason[];
+    const beaten = leagues.filter(
+      (season) =>
+        (season.league.policies.advised?.mean ?? 0) >
+        (season.league.policies.form_chaser?.mean ?? 0),
+    ).length;
+
+    const sentence = leagueVerdict(leagues);
+
+    // The sentence that drifted said the form chaser won a season it did not.
+    // Whichever way the artifact falls, the count has to come from the numbers.
+    if (beaten === leagues.length) {
+      expect(sentence).toContain(`all ${String(leagues.length)} seasons`);
+      expect(sentence).not.toContain("beat me in");
+    } else {
+      expect(sentence).toContain(String(beaten));
+    }
+  });
+
+  it("names a baseline that beat the projection, or does not mention one", () => {
+    const leagues = seasons as unknown as LeagueSeason[];
+    const crowdWins = leagues.filter(
+      (season) =>
+        (season.league.policies.crowd?.mean ?? 0) >
+        (season.league.policies.advised?.mean ?? 0),
+    );
+
+    const sentence = leagueVerdict(leagues);
+
+    if (crowdWins.length === 0) {
+      expect(sentence).not.toContain("The crowd beat me");
+    } else {
+      for (const season of crowdWins) {
+        expect(sentence).toContain(season.season);
+      }
     }
   });
 });
@@ -149,7 +190,7 @@ describe("which captaincy theses the bootstrap separated", () => {
       interval("fine", 0.7),
       interval("bad", -0.1),
     ]);
-    expect(sentence).toBe("Only bad lose to it.");
+    expect(sentence).toBe("Only bad loses to it.");
   });
 
   it("names both sides when both exist", () => {
@@ -159,7 +200,7 @@ describe("which captaincy theses the bootstrap separated", () => {
       interval("bad", -0.1),
       interval("worse", -0.4),
     ]);
-    expect(sentence).toBe("Only good beat it, and bad and worse lose to it.");
+    expect(sentence).toBe("Only good beats it, and bad and worse lose to it.");
   });
 
   it("says nothing at all when nothing was measured", () => {

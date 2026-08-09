@@ -156,6 +156,79 @@ export interface SeparableInterval {
   better: boolean;
 }
 
+export interface LeagueSeason {
+  season: string;
+  /** Mean season points per policy, keyed the way the artifact keys them. */
+  league: {
+    policies: Readonly<Record<string, { mean: number } | undefined>>;
+  };
+}
+
+/**
+ * How the advised policy actually did against the baselines that matter.
+ *
+ * The sentence under this table was written by hand and said the form chaser
+ * beat the projection in 2024-25. It had, when it was written. The backtest
+ * reran, the sign flipped, and the page went on saying it — the same drift this
+ * file exists to stop. Nothing here names a season or a winner that was not
+ * read out of the artifact on the way past.
+ *
+ * "Never transfers" is deliberately not counted. Beating a manager who does
+ * nothing proves nothing, and a verdict that included it would read better and
+ * mean less.
+ */
+export function leagueVerdict(seasons: readonly LeagueSeason[]): string {
+  const margins = seasons
+    .map(({ season, league }) => ({
+      season,
+      margin:
+        (league.policies.advised?.mean ?? 0) -
+        (league.policies.form_chaser?.mean ?? 0),
+      crowd:
+        (league.policies.advised?.mean ?? 0) -
+        (league.policies.crowd?.mean ?? 0),
+    }))
+    .filter((row) => Number.isFinite(row.margin));
+  if (margins.length === 0) {
+    return "No season in this artifact ran a league, so there is nothing to report.";
+  }
+
+  const beaten = margins.filter((row) => row.margin > 0);
+  const lost = margins.filter((row) => row.margin <= 0);
+  const total = margins.length;
+
+  const head =
+    lost.length === 0
+      ? `I beat the form chaser in all ${String(total)} seasons, by ${margins
+          .map((row) => String(Math.round(row.margin)))
+          .join(", ")}.`
+      : beaten.length === 0
+        ? `The form chaser beat me in all ${String(total)} seasons.`
+        : `I beat the form chaser in ${String(beaten.length)} of ${String(total)} seasons and lost in ${nameSeasons(lost.map((row) => row.season))}.`;
+
+  // A margin that is shrinking is the thing a reader needs told, and it is the
+  // shape this table has had since the form chaser learned to bank transfers.
+  const first = margins[0]?.margin ?? 0;
+  const last = margins[margins.length - 1]?.margin ?? 0;
+  const trend =
+    total > 1 && last < first
+      ? " The margin is narrowing, which is what the last column is for."
+      : "";
+
+  const crowdLosses = margins.filter((row) => row.crowd < 0);
+  const crowd =
+    crowdLosses.length > 0
+      ? ` The crowd beat me outright in ${nameSeasons(crowdLosses.map((row) => row.season))}.`
+      : "";
+
+  return `${head}${trend}${crowd}`;
+}
+
+function nameSeasons(seasons: readonly string[]): string {
+  if (seasons.length === 1) return seasons[0] ?? "";
+  return `${seasons.slice(0, -1).join(", ")} and ${seasons[seasons.length - 1] ?? ""}`;
+}
+
 /**
  * Which captaincy theses the bootstrap could separate from the projection.
  *
@@ -173,8 +246,16 @@ export function separableVerdict(
     return "Nothing here is separable from the projection.";
   }
   const clauses: string[] = [];
-  if (better.length > 0) clauses.push(`${nameList(better)} beat it`);
-  if (worse.length > 0) clauses.push(`${nameList(worse)} lose to it`);
+  if (better.length > 0) {
+    clauses.push(
+      `${nameList(better)} ${better.length === 1 ? "beats" : "beat"} it`,
+    );
+  }
+  if (worse.length > 0) {
+    clauses.push(
+      `${nameList(worse)} ${worse.length === 1 ? "loses" : "lose"} to it`,
+    );
+  }
   return `Only ${clauses.join(", and ")}.`;
 }
 

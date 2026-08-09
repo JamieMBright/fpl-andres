@@ -10,6 +10,7 @@ import {
   type IntervalDatum,
 } from "./CalibrationCharts";
 import {
+  leagueVerdict,
   pooledVerdict,
   positionVerdict,
   separableVerdict,
@@ -513,8 +514,7 @@ export function ValidationReport() {
         <p className="validation-verdict">
           The honest column is the last one. Beating a manager who never
           transfers proves nothing; beating one who chases form is the real
-          test, and the margin there is small — in 2024-25 the form chaser beat
-          me outright. These totals cover{" "}
+          test. {leagueVerdict(report.seasons)} These totals cover{" "}
           {report.seasons[0]?.gameweeksPlayed ?? 32} gameweeks of 38, so they
           are not season totals and should not be read as any.
         </p>

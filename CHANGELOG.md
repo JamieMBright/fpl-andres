@@ -8,6 +8,18 @@ The project follows Semantic Versioning once milestone tags begin.
 
 ### Changed
 
+- The mini-league verdict is derived from the artifact instead of typed
+  (`state/validation-verdict.ts`, `leagueVerdict`). It said the form chaser beat
+  the projection outright in 2024-25. It had, when it was written; the backtest
+  reran, the sign flipped to +15, and the page went on saying it — the exact
+  drift that file exists to stop. It now reads the margins out on the way past
+  and reports what they are: beaten in all four seasons by 228, 71, 15 and 13,
+  a margin that is narrowing, and the crowd ahead outright in 2025-26. Two
+  tests hold it to the shipped numbers whichever way they fall.
+- Step nine of the method no longer says the plan is solved once and never
+  re-read. The season is re-solved in the browser on every visit from today's
+  squad, prices and bank; what is published once is the projection underneath
+  it, and that is what goes stale as the season runs on.
 - The plot configuration is a sidebar down the left of the chart rather than a
   panel beside or under it. It sticks as the page scrolls and scrolls inside
   itself, so the controls stay next to the thing they control however far down
