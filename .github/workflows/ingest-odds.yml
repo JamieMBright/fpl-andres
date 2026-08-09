@@ -129,9 +129,8 @@ jobs:
         # source it can, names the ones it cannot, and says which secret
         # unlocks each -- in the same run, so the answer is never a guess.
         env:
-          ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
-          API_FOOTBALL_KEY: ${{ secrets.API_FOOTBALL_KEY }}
-          SPORTMONKS_TOKEN: ${{ secrets.SPORTMONKS_TOKEN }}
+          THE_ODDS_API_KEY: ${{ secrets.THE_ODDS_API_KEY }}
+          API_FOOTBALL_API_KEY: ${{ secrets.API_FOOTBALL_API_KEY }}
           BETFAIR_APP_KEY: ${{ secrets.BETFAIR_APP_KEY }}
           BETFAIR_SESSION_TOKEN: ${{ secrets.BETFAIR_SESSION_TOKEN }}
         run: |

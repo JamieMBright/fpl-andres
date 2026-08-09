@@ -15,9 +15,8 @@ name: Survey Player Markets
 # such; the run still catalogues everything else. Add keys as repository
 # secrets when you want a source probed:
 #
-#   ODDS_API_KEY            https://the-odds-api.com          free, 500/month
-#   API_FOOTBALL_KEY        https://www.api-football.com      free, 100/day
-#   SPORTMONKS_TOKEN        https://www.sportmonks.com        paid for odds
+#   THE_ODDS_API_KEY        https://the-odds-api.com          free, 500/month
+#   API_FOOTBALL_API_KEY    https://www.api-football.com      free, 100/day
 #   BETFAIR_APP_KEY         https://developer.betfair.com     free delayed key
 #   BETFAIR_SESSION_TOKEN   ditto; expires, so refresh before a run
 #
@@ -41,7 +40,6 @@ on:
           - ""
           - the-odds-api
           - api-football
-          - sportmonks
           - betfair-exchange
           - football-data
           - understat
@@ -89,9 +87,8 @@ jobs:
         env:
           # Absent secrets arrive as empty strings, which the CLI reports as
           # "no credential" rather than treating as a failure.
-          ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
-          API_FOOTBALL_KEY: ${{ secrets.API_FOOTBALL_KEY }}
-          SPORTMONKS_TOKEN: ${{ secrets.SPORTMONKS_TOKEN }}
+          THE_ODDS_API_KEY: ${{ secrets.THE_ODDS_API_KEY }}
+          API_FOOTBALL_API_KEY: ${{ secrets.API_FOOTBALL_API_KEY }}
           BETFAIR_APP_KEY: ${{ secrets.BETFAIR_APP_KEY }}
           BETFAIR_SESSION_TOKEN: ${{ secrets.BETFAIR_SESSION_TOKEN }}
           SOURCE: ${{ inputs.source }}

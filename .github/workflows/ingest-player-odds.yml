@@ -9,7 +9,7 @@ name: Ingest Player Odds
 #
 # Needs one secret:
 #
-#   ODDS_API_KEY   https://the-odds-api.com   free tier, 500 requests a month
+#   THE_ODDS_API_KEY   https://the-odds-api.com   free tier, 500 requests a month
 #
 # See docs/PLAYER_MARKETS.md for how to get one and where to put it.
 #
@@ -73,11 +73,11 @@ jobs:
 
       - name: Fetch player markets
         env:
-          ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
+          THE_ODDS_API_KEY: ${{ secrets.THE_ODDS_API_KEY }}
           MAX_EVENTS: ${{ inputs.max-events }}
         run: |
-          if [ -z "$ODDS_API_KEY" ]; then
-            echo "ODDS_API_KEY is not set as a repository secret." >&2
+          if [ -z "$THE_ODDS_API_KEY" ]; then
+            echo "THE_ODDS_API_KEY is not set as a repository secret." >&2
             echo "Add it at Settings -> Secrets -> Actions, then run again." >&2
             exit 1
           fi
