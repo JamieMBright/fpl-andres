@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-08-09T14:07:43.667462+00:00",
-  "modelVersion": "4.1",
+  "generatedAt": "2026-08-09T14:29:06.125421+00:00",
+  "modelVersion": "4.2",
   "seasons": [
     {
       "season": "2022-23",
@@ -12,7 +12,7 @@
       "firstScoredGameweek": 7,
       "expectedGoalsCoverage": 1.0,
       "missingGameweeks": [7],
-      "corpusFingerprint": "sha256:e4fc5653db80f9ec8497fd6d40a99c8aeadca2d4e243210fc374765986ce68a4",
+      "corpusFingerprint": "sha256:0d3588f3df0d8fcf245b3f9035b40a7db1fcf6a6ee00c67c88eed13a092c9421",
       "methods": [
         {
           "label": "model",
@@ -1092,7 +1092,7 @@
           },
           {
             "346": [6.23, 5.89, 3.8, 0.893, 28.4, 9.22, 1.145],
-            "357": [5.65, 4.56, 10.0, 0.893, 78.9, 9.11, 0.666],
+            "357": [5.65, 4.56, 10.0, 0.893, 78.9, 9.11, 0.665],
             "210": [5.41, 5.16, 3.2, 0.642, 30.2, 12.96, 1.145],
             "7": [5.38, 4.07, 10.6, 0.858, 22.3, 12.78, 1.042],
             "335": [4.89, 4.57, 6.2, 0.669, 38.7, 13.53, 2.2],
@@ -1709,7 +1709,7 @@
       "firstScoredGameweek": 7,
       "expectedGoalsCoverage": 1.0,
       "missingGameweeks": [],
-      "corpusFingerprint": "sha256:e53777c1b8878bc0d8c42428d4b94a66e7d4c66e0a32fdf3be6e53f4dfb323fa",
+      "corpusFingerprint": "sha256:d18d891e13c9436395a5b0fc271171107d6db585df3743e483bb649aec3181f3",
       "methods": [
         {
           "label": "model",
@@ -3415,7 +3415,7 @@
       "firstScoredGameweek": 7,
       "expectedGoalsCoverage": 1.0,
       "missingGameweeks": [],
-      "corpusFingerprint": "sha256:be92bb6614717a5aecfe8faf6e155447e047ba3d8b0e2b9f027a58fb61852ab5",
+      "corpusFingerprint": "sha256:e339cb09e5556c38a985603f7979928ac8aa340466d2e02b3e9fb44fc4e013ac",
       "methods": [
         {
           "label": "model",
@@ -5114,7 +5114,7 @@
       "firstScoredGameweek": 7,
       "expectedGoalsCoverage": 1.0,
       "missingGameweeks": [],
-      "corpusFingerprint": "sha256:48bfc0222f49159aac4040f7ead028d65a75880c7ceaa14be4cee9980b170cc1",
+      "corpusFingerprint": "sha256:cead194cdd5a6b8d3c26e6514e0017b2185ba750676504b6d27a8d2a872ff063",
       "methods": [
         {
           "label": "model",
