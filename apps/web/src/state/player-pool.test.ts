@@ -73,8 +73,10 @@ describe("buildPlayerPool", () => {
     expect(published).not.toBeNull();
     expect(bruno?.priceTenths).toBe(100);
     expect(bruno?.record?.expectedPoints).toBe(published!.expectedPoints);
-    // The record, per match, divided by the £10.0m this season charges for him.
-    expect(bruno?.perMillion).toBeCloseTo(published!.expectedPoints / 10, 2);
+    // The record, per match, over the £10.0m this season charges for him.
+    expect(bruno?.perMillion).toBe(
+      Math.round((published!.expectedPoints / 10) * 100) / 100,
+    );
   });
 
   it("keeps a player with no record rather than dropping him", () => {
