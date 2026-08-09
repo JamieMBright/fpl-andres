@@ -23,16 +23,19 @@ import json
 import sys
 import urllib.request
 from collections.abc import Mapping, Sequence
-from datetime import UTC, datetime
+from datetime import UTC, date, datetime
 from pathlib import Path
 
 from fpl_andres import timeouts
 from fpl_andres.backtesting.fixtures import TeamStrength, route_adjustment
+from fpl_andres.backtesting.scoring import ASSIST_POINTS, GOAL_POINTS
 from fpl_andres.bootstrap import BootstrapElement, parse_elements
 from fpl_andres.jsonio import parse_json, read_json_file
-from fpl_andres.models.market_minutes import (
-    MarketMinutesEvidence,
-    blend_start_rate,
+from fpl_andres.models.market_routes import (
+    MarketAttack,
+    MarketRoutesError,
+    blend_rate,
+    market_attack,
 )
 from fpl_andres.planning.fixture_routes import (
     PROMOTED_STRENGTH,
@@ -109,8 +112,8 @@ def build_parser() -> argparse.ArgumentParser:
         "--player-odds",
         default=str(PLAYER_ODDS),
         help=(
-            "Anytime-scorer prices, written by ingest-player-odds. Absent means "
-            "no market view, and the published start rates are the record's."
+            "Anytime-scorer and assist prices, written by ingest-player-odds. "
+            "Absent means no market view, and every route stays the record's."
         ),
     )
     parser.add_argument(
@@ -118,8 +121,9 @@ def build_parser() -> argparse.ArgumentParser:
         type=float,
         default=0.35,
         help=(
-            "How much of a blended start rate the market owns. Sourced here "
-            "rather than in the model, so it is one number in one place."
+            "How much of a player's goal and assist expectation the market "
+            "owns. Sourced here rather than in the model, so it is one number "
+            "in one place."
         ),
     )
     return parser
@@ -137,76 +141,133 @@ def _get(url: str) -> object:
 # there is no fixture to be difficult.
 
 
-def _market_start_rates(
-    odds_path: Path,
-    elements: Sequence[BootstrapElement],
-    record_by_code: Mapping[int, Mapping[str, object]],
-    weight: float,
-) -> dict[int, float]:
-    """
-    Start rates the market helped write, keyed by element id.
+def _quoted_attack(odds_path: Path) -> dict[int, tuple[MarketAttack, date]]:
+    """Goals and assists the market expects, by element, with the day quoted.
 
-    Returns nothing at all when the odds artifact is absent, which is the state
-    between seasons and any week the ingest has not run. Silence from a
-    bookmaker is not evidence that somebody will not play, so an absent file
-    leaves every published start rate exactly as the record measured it.
-
-    The positional scoring rate is measured from this same bootstrap's own
-    projections rather than assumed: it is the median chance a player of that
-    position is projected to score, which is the denominator the quotient needs.
+    A price is for one fixture, so the day it was quoted for has to travel with
+    it: the number below is de-fixtured against that gameweek's multiplier
+    before it can be published as a per-average-match route.
     """
     if not odds_path.exists():
         return {}
     artifact = read_json_file(odds_path)
-    quoted: dict[int, float] = {}
+    quoted: dict[int, tuple[MarketAttack, date]] = {}
     for row in artifact.get("players", []):
         element_id = row.get("element_id")
-        anytime = row.get("anytime_goal")
-        if isinstance(element_id, int) and isinstance(anytime, (int, float)):
-            quoted[element_id] = float(anytime)
-    if not quoted:
-        return {}
-
-    # P(scores | starts) per position, taken from the published projections so
-    # the denominator and the numerator describe the same season.
-    scored: dict[int, list[float]] = {}
-    for element in elements:
-        record = record_by_code.get(element.code)
-        if record is None:
+        kickoff = row.get("kickoff")
+        if not isinstance(element_id, int) or not isinstance(kickoff, str):
             continue
-        goals = record.get("expectedGoals")
-        if isinstance(goals, (int, float)):
-            scored.setdefault(element.element_type, []).append(float(goals))
-    rates: dict[str, float] = {}
-    for position_id, values in scored.items():
-        ordered = sorted(values)
-        median = ordered[len(ordered) // 2]
-        if median > 0:
-            rates[POSITION_CODES[position_id]] = median
-
-    projections = {}
-    positions = {}
-    for element in elements:
-        record = record_by_code.get(element.code)
-        if record is None or element.id not in quoted:
+        goal = row.get("anytime_goal")
+        assist = row.get("anytime_assist")
+        try:
+            when = datetime.fromisoformat(kickoff.replace("Z", "+00:00")).astimezone(UTC).date()
+            attack = market_attack(
+                float(goal) if isinstance(goal, (int, float)) else None,
+                float(assist) if isinstance(assist, (int, float)) else None,
+            )
+        except (ValueError, MarketRoutesError):
+            # A malformed kickoff, or a player priced certain to score. Both are
+            # faults in the feed rather than in him; skipping him keeps the rest.
             continue
-        projections[element.id] = float(str(record["probabilityStart"]))
-        positions[element.id] = POSITION_CODES[element.element_type]
+        if attack is not None:
+            quoted[element_id] = (attack, when)
+    return quoted
 
-    blended: dict[int, float] = {}
-    for element_id, recorded in projections.items():
-        rate = rates.get(positions[element_id])
-        if rate is None or recorded <= 0:
-            continue
-        blended[element_id] = blend_start_rate(
-            recorded,
-            MarketMinutesEvidence(
-                anytime_goal=min(1.0, quoted[element_id]),
-                positional_scoring_rate=rate,
-                weight=weight,
-            ),
+
+def _market_attacking(
+    priced: tuple[MarketAttack, date] | None,
+    position: int,
+    record: Mapping[str, object],
+    multipliers: Sequence[float],
+    slots: Mapping[date, int],
+    weight: float,
+) -> float | None:
+    """The attacking route with the market's view of it blended in.
+
+    The market prices a fixture; this artifact publishes a route against an
+    average opponent and lets the browser bend it by a per-gameweek multiplier.
+    Publishing a fixture's number as if it were the average would apply that
+    fixture twice, so the market rate is divided back out by the multiplier of
+    the gameweek it was quoted in. What survives is what the book thinks of the
+    footballer once his opponent is taken off, which is the quantity this file
+    carries.
+
+    Goals and assists are blended separately against the projector's own
+    estimate of each, so a fixture with an anytime-scorer market and no assist
+    market still counts for something and leaves the assists alone.
+
+    Returns None wherever any part of that is unavailable -- no quote, no
+    gameweek on that day, or a multiplier of nothing. Silence from a bookmaker
+    leaves the record's own number standing.
+    """
+    if priced is None:
+        return None
+    attack, when = priced
+    index = slots.get(when)
+    goal_points = GOAL_POINTS.get(position)
+    if index is None or index >= len(multipliers) or goal_points is None:
+        return None
+    multiplier = multipliers[index]
+    if multiplier <= 0.0:
+        return None
+    if "expectedGoals" not in record or "expectedAssists" not in record:
+        # The version of this that shipped before read a projection field the
+        # projector never published, took the absence as "no market view" and
+        # returned nothing for everybody. Refusing is the whole lesson.
+        raise ValueError(
+            "the projections artifact publishes no expectedGoals/expectedAssists, "
+            "so a quoted price has nothing to blend against; regenerate it with "
+            "publish_projections before publishing season inputs"
         )
-    return blended
+    goals = float(str(record["expectedGoals"]))
+    assists = float(str(record["expectedAssists"]))
+    if attack.goals is not None:
+        goals = blend_rate(goals, attack.goals / multiplier, weight)
+    if attack.assists is not None:
+        assists = blend_rate(assists, attack.assists / multiplier, weight)
+    return goals * goal_points + assists * ASSIST_POINTS
+
+
+def _schedule(
+    raw_fixtures: Sequence[Mapping[str, object]],
+    ordered: Sequence[int],
+) -> tuple[dict[tuple[int, int], list[tuple[int, bool]]], dict[int, dict[date, int]]]:
+    """Who each club plays in each gameweek, and which ladder slot a day sits in.
+
+    The second half is what lets a bookmaker's price find its gameweek. A quote
+    carries a kickoff and no gameweek, and the two clocks agree on the date long
+    before they agree on the minute, so the day is the join. A club plays at
+    most once a day, which is what makes that unambiguous.
+    """
+    slot_of = {event: slot for slot, event in enumerate(ordered)}
+    schedule: dict[tuple[int, int], list[tuple[int, bool]]] = {}
+    slots: dict[int, dict[date, int]] = {}
+    for row in raw_fixtures:
+        event = row["event"]
+        if event is None:
+            continue
+        home_id, away_id = int(str(row["team_h"])), int(str(row["team_a"]))
+        schedule.setdefault((int(str(event)), home_id), []).append((away_id, True))
+        schedule.setdefault((int(str(event)), away_id), []).append((home_id, False))
+        slot = slot_of.get(int(str(event)))
+        kickoff = row.get("kickoff_time")
+        if slot is None or not isinstance(kickoff, str):
+            continue
+        try:
+            day = datetime.fromisoformat(kickoff.replace("Z", "+00:00")).astimezone(UTC).date()
+        except ValueError:
+            continue
+        for team_id in (home_id, away_id):
+            slots.setdefault(team_id, {})[day] = slot
+    # A double gameweek's rung is the sum of both fixtures while a book prices
+    # one of them, so there is no multiplier to divide a quote by. Dropping the
+    # day leaves the record standing rather than publishing a halved market view.
+    for team_id, days in slots.items():
+        doubled = {
+            slot for slot in days.values() if len(schedule.get((ordered[slot], team_id), ())) > 1
+        }
+        slots[team_id] = {day: slot for day, slot in days.items() if slot not in doubled}
+    return schedule, slots
 
 
 def _priors_by_depth(
@@ -287,14 +348,7 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     raw_fixtures = _get(FIXTURES)
     assert isinstance(raw_fixtures, list)
-    schedule: dict[tuple[int, int], list[tuple[int, bool]]] = {}
-    for row in raw_fixtures:
-        event = row["event"]
-        if event is None:
-            continue
-        home_id, away_id = int(row["team_h"]), int(row["team_a"])
-        schedule.setdefault((int(event), home_id), []).append((away_id, True))
-        schedule.setdefault((int(event), away_id), []).append((home_id, False))
+    schedule, slots_by_team = _schedule(raw_fixtures, ordered)
 
     # Two multipliers per club per gameweek: one for players who score by
     # keeping goals out, one for players who score by putting them in. A blank
@@ -377,12 +431,8 @@ def main(argv: Sequence[str] | None = None) -> int:
             depth[element.id] = 1 + sum(1 for other in squad if other.now_cost > element.now_cost)
 
     priors = _priors_by_depth(available, depth, record_by_code)
-    market_start = _market_start_rates(
-        Path(args.player_odds),
-        available,
-        record_by_code,
-        args.market_weight,
-    )
+    quoted_attack = _quoted_attack(Path(args.player_odds))
+    priced_attack = 0
 
     for element in available:
         record = record_by_code.get(element.code)
@@ -405,6 +455,22 @@ def main(argv: Sequence[str] | None = None) -> int:
                 for key in ROUTE_KEYS
                 if (value := round(float(record["routes"][key]), 3))
             }
+            # Where a book priced him to score and to assist, its view of those
+            # two replaces part of the record's. Everything else on the row is
+            # left alone: no market here prices a clean sheet for a named
+            # player, a bonus point or a booking, and inventing one would be
+            # worse than the measurement already there.
+            blended_attack = _market_attacking(
+                quoted_attack.get(element.id),
+                element.element_type,
+                record,
+                ladder.get(str(clubs[element.team]["short_name"]), {}).get("attacking", ()),
+                slots_by_team.get(element.team, {}),
+                args.market_weight,
+            )
+            if blended_attack is not None:
+                priced_attack += 1
+                routes["attacking"] = round(blended_attack, 3)
         else:
             # No Premier League record at all. He is still pickable — somebody
             # will own him — but every number here is a prior taken from what
@@ -434,7 +500,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                     "priceTenths": element.now_cost,
                     "basePoints": base_points,
                     "routes": routes,
-                    "startRate": round(market_start.get(element.id, start_rate), 3),
+                    "startRate": round(start_rate, 3),
                     "squadNumber": element.squad_number,
                     "rated": rated,
                     "depthRank": depth[element.id],
@@ -515,6 +581,12 @@ def main(argv: Sequence[str] | None = None) -> int:
     print(
         f"wrote {output} — {len(trimmed)} players, {len(ordered)} gameweeks, "
         f"{len(ladder)} clubs, {size:.1f} kB"
+    )
+    # Said out loud because the last market blend here was a no-op for months:
+    # it looked up a projection field that the projector never published, so it
+    # returned nothing for everyone and nothing said so.
+    print(
+        f"market: {priced_attack} attacking routes blended from {len(quoted_attack)} players quoted"
     )
     return 0
 

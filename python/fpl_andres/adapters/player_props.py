@@ -145,6 +145,31 @@ def _get(
     return client.get(url, params=dict(params or {}), headers=dict(headers or {}))
 
 
+#: What each host calls the counters it returns on every response. Free tiers
+#: are small enough that a survey and an ingest sharing one key can exhaust the
+#: allowance between them, and none of these hosts warns before they do -- the
+#: request that crosses the line simply fails. Reading the counters back is the
+#: only way to know where a run stands, so every probe reports them.
+_QUOTA_HEADERS: Mapping[str, tuple[str, str]] = {
+    # The Odds API bills per market per region, so a request costs far more
+    # than one and `x-requests-last` is the only place the true price appears.
+    "x-requests-remaining": ("x-requests-remaining", "x-requests-last"),
+    # API-Football counts whole requests against a daily allowance.
+    "x-ratelimit-requests-remaining": ("x-ratelimit-requests-remaining", ""),
+}
+
+
+def _quota(response: httpx.Response) -> str:
+    """What this request cost the day's or month's allowance, as the host said."""
+    for remaining_key, (_, cost_key) in _QUOTA_HEADERS.items():
+        remaining = response.headers.get(remaining_key)
+        if remaining is None:
+            continue
+        cost = response.headers.get(cost_key) if cost_key else None
+        return f"cost {cost}, {remaining} left" if cost else f"{remaining} left"
+    return "quota not reported"
+
+
 def _from_json(
     source: PropSource,
     response: httpx.Response,
@@ -225,9 +250,17 @@ def _probe_the_odds_api(
             fields=tuple(sorted(field_paths(listing))),
             http_status=events.status_code,
         )
-    first = listing[0]
-    event_id = first.get("id") if isinstance(first, Mapping) else None
-    if not isinstance(event_id, str):
+    # The soonest fixture, not whichever the host listed first. Books price the
+    # result months out and open player props days out, so probing an arbitrary
+    # fixture answers "are props open in December" and reports an empty
+    # catalogue for a source that has one.
+    soonest = min(
+        (row for row in listing if isinstance(row, Mapping)),
+        key=lambda row: str(row.get("commence_time") or "9999"),
+        default=None,
+    )
+    event_id = soonest.get("id") if soonest is not None else None
+    if soonest is None or not isinstance(event_id, str):
         return ProbeResult(
             key="the-odds-api",
             status="unreadable",
@@ -240,7 +273,12 @@ def _probe_the_odds_api(
         f"https://api.the-odds-api.com/v4/sports/soccer_epl/events/{event_id}/odds",
         params={
             "apiKey": key,
-            "regions": "uk,eu",
+            # One region, not two. The host bills per market per region, so the
+            # eleven markets below cost eleven units in the UK and twenty-two
+            # across the UK and Europe -- against a free tier of five hundred a
+            # month that this survey shares with the weekly ingest. UK books are
+            # the ones that price a Premier League player deepest anyway.
+            "regions": "uk",
             "oddsFormat": "decimal",
             "markets": ",".join(_THE_ODDS_API_MARKETS),
         },
@@ -250,16 +288,35 @@ def _probe_the_odds_api(
         return result
     payload = odds.json()
     named: set[str] = set()
+    houses: set[str] = set()
+    outcomes = 0
     for book in payload.get("bookmakers", []) if isinstance(payload, Mapping) else []:
         if not isinstance(book, Mapping):
             continue
+        if isinstance(book.get("key"), str):
+            houses.add(book["key"])
         for market in book.get("markets", []):
-            if isinstance(market, Mapping) and isinstance(market.get("key"), str):
+            if not isinstance(market, Mapping):
+                continue
+            if isinstance(market.get("key"), str):
                 named.add(market["key"])
+            outcomes += sum(1 for item in market.get("outcomes", []) if isinstance(item, Mapping))
+    # Everything a reader needs to tell a shut market from a wrong request:
+    # which fixture was asked about, who answered, how much they said, what
+    # was asked for that did not come back, and what the question cost.
+    absent = sorted(set(_THE_ODDS_API_MARKETS) - named)
+    note = (
+        f"{soonest.get('home_team')} v {soonest.get('away_team')} on "
+        f"{soonest.get('commence_time')}; {len(houses)} books, {outcomes} outcomes; "
+        f"asked for {len(_THE_ODDS_API_MARKETS)} markets, {len(absent)} absent"
+    )
+    if absent:
+        note += f" ({', '.join(absent)})"
+    note += f"; {_quota(odds)}"
     return ProbeResult(
         key=result.key,
         status=result.status,
-        note=f"{result.note}; asked for {len(_THE_ODDS_API_MARKETS)} markets",
+        note=note,
         fields=result.fields,
         markets=tuple(sorted(named)),
         http_status=result.http_status,
@@ -289,7 +346,7 @@ def _probe_api_football(
     return ProbeResult(
         key=result.key,
         status=result.status,
-        note=f"{result.note}; {len(named)} bet types listed",
+        note=f"{result.note}; {len(named)} bet types listed; {_quota(response)}",
         fields=result.fields,
         markets=tuple(sorted(named)),
         http_status=result.http_status,

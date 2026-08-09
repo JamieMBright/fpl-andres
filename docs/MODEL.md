@@ -234,6 +234,67 @@ than it sounds, because 83% of the top thirty is the same either way.
 
 ---
 
+## 7b. Where a bookmaker gets a say
+
+`models/market_routes.py`, `cli/publish_season_inputs.py`
+
+Everything above reads history. A book reads the team sheet. It knows a striker
+has lost his place, that a summer signing has taken it, and what the manager
+said on Friday — none of which is in last season's numbers. So where a market
+prices a scoring route, its view is blended into that route at a stated weight.
+
+Only goals and assists. Those are the two the books quote per player and the
+two this reads, and the ingest asks for nothing else because the host bills per
+market and an unread price is a paid-for number nobody looks at.
+
+Three things make the reading honest rather than convenient.
+
+**A price is a probability and FPL pays per event.** "Anytime goalscorer" is
+the chance of at least one; two goals pay twice and the price does not say so.
+Goals arrive within a match as a Poisson process, so `P(at least one)` is
+`1 − e^−λ` and the rate behind a price is `λ = −ln(1 − P)`. That inversion is
+an assumption, it is mild — hardly anybody scores twice — and it fails upward
+on the shortest prices, where real scoring is slightly underdispersed against
+Poisson. It is stated rather than corrected, because there is nothing measured
+here to correct it with.
+
+**A price is for one fixture and this artifact publishes an average one.**
+Section 5 sends the browser a per-route base and a per-gameweek multiplier. A
+market rate already carries its opponent, so publishing it as the base would
+apply that fixture twice — once by the book, once by the solver. The rate is
+therefore divided by the multiplier of the gameweek it was quoted in before it
+is published. In a double gameweek the rung is the sum of two fixtures while
+the book priced one of them, so there is no divisor and the record stands.
+
+**Half a view beats none.** Goals and assists are blended separately against
+the projector's own `expectedGoals` and `expectedAssists`, so a fixture with an
+anytime-scorer market and no assist market still counts, and leaves the assists
+where the record put them.
+
+A price is never read twice. An earlier version also read the anytime-scorer
+price as a minutes signal — dividing it by a positional scoring rate to infer a
+start probability — which would have counted the same evidence into goals and
+into every route that scales with minutes. That path is gone. It also never
+worked: it looked up a projection field the projector did not publish, returned
+nothing for everybody and said nothing about it, which is why the publisher now
+prints how many routes the market actually moved.
+
+The blend lives in `publish_season_inputs` rather than in the projector because
+that is where last season's team strength meets this season's clubs and fixture
+list, and the divisor cannot be computed without all three. The consequence is
+that it reaches the browser's own solve and not the pre-solved
+`season-plan.json`, which reads `projections.json` directly. That is deliberate.
+A book prices the next few days; the season plan commits thirty-eight gameweeks
+and is regenerated rarely, so folding one week's quotes into it would move a
+year of chip and transfer structure on evidence that expires by Saturday. The
+plan a manager actually solves for their own squad is the one that reads the
+market.
+
+Nothing here emits or implies a betting recommendation. A price is read as a
+probability and used as evidence about a footballer.
+
+---
+
 ## 8. Between seasons
 
 `projector.project_next_match`
@@ -577,6 +638,16 @@ one season is not many shots per cell.
   rise.
 - **Posterior carry.** Models refit on decayed history each week rather than
   updating a posterior forward.
+- **Every scoring route a bookmaker prices.** §7b reads goals and assists. The
+  card market is quoted per player and is not read, because `routes.discipline`
+  bundles yellows with reds, own goals and missed penalties into one published
+  number that cannot be taken apart; splitting that route is what the card price
+  is waiting on. Nothing quotes a clean sheet, a save, a bonus point or a
+  defensive contribution for a named player, so those stay on the record.
+- **Fixture-level bookmaker odds.** `data/odds/` holds four seasons of implied
+  clean sheets and expected goals per club per match, derived and committed, and
+  read by nothing but the writer's own check. Clean sheets and conceding are a
+  sixth of gross points and the market prices both directly.
 
 ---
 
@@ -599,6 +670,7 @@ one season is not many shots per cell.
 | §3 Attacking rate, §8 between seasons | `models/player_rates.py`     |
 | §4 Scoring routes priced              | `models/expected_points.py`  |
 | §5 Fixtures change routes             | `backtesting/fixtures.py`    |
+| §7b Bookmaker player prices           | `models/market_routes.py`    |
 | §11 Team goals                        | `models/dixon_coles.py`      |
 | §11 Out-of-position deployment        | `models/deployment.py`       |
 | §11b Shot volume and quality          | `models/shot_profile.py`     |

@@ -71,7 +71,7 @@ answer.
 | `OddsIngestError`          | `cli/ingest_odds.py`        | The odds feed could not be reached or carried no market.  |
 | `UnknownClubError`         | `cli/ingest_odds.py`        | The feed named a club with no FPL code in the crosswalk.  |
 | `OddsUnavailable`          | `models/odds.py`            | Quoted prices cannot be read as a market.                 |
-| `MarketMinutesError`       | `models/market_minutes.py`  | A scoring price cannot be read as evidence about minutes. |
+| `MarketRoutesError`        | `models/market_routes.py`   | A price cannot be read as evidence about a scoring route. |
 | `PenaltySplitUnavailable`  | `models/penalties.py`       | The penalty and open-play split cannot be trusted.        |
 | `ShotProfileUnavailable`   | `models/shot_profile.py`    | Too little shooting to read a profile from.               |
 | `SquadSelectionError`      | `simulation/squad.py`       | A legal squad cannot be produced from the supplied pool.  |

@@ -29,6 +29,20 @@ Leave both inputs blank to catalogue every source. The run uploads
 returned, as a build artifact — never committed, because half of it changes
 whenever a book opens or closes a market.
 
+**Reading The Odds API's entry.** It answered far more thinly than the sources
+beside it, and that was the probe's fault rather than the source's. Player props
+open days before kickoff, and the probe asked about whichever fixture the host
+happened to list first — often one in December, which has none. It now asks
+about the soonest fixture, and its note names the tie, how many books answered,
+how many outcomes they carried, which of the asked-for markets did not arrive
+and what the request cost. That is what separates a shut market from a wrong
+request, and neither can be told from an empty `markets` list.
+
+Every probe reports what its host says is left of the day's or month's
+allowance. None of these hosts warns before an allowance runs out — the request
+that crosses the line simply fails, and a failed request looks exactly like a
+market nobody has opened.
+
 Locally, on a network that permits it:
 
 ```bash
@@ -75,30 +89,50 @@ environment, and a key in a commit is a key that has to be rotated.
 
 **The budget.** This repository used to claim one request per fixture. Nobody
 had measured it, and it is very likely wrong: the host charges per market per
-region, and the ingest asks for four markets across two regions. So the dial is
-written in the unit that actually bills. `budget` is how many requests a run may
-spend against the free tier's 500 a month, fixtures are priced soonest first so
-a small budget still buys the ones being played, and the run prints what each
-request cost and what the key has left. Set the default from that log.
+region. So the dial is written in the unit that actually bills. `budget` is how
+many requests a run may spend against the free tier's 500 a month, fixtures are
+priced soonest first so a small budget still buys the ones being played, and the
+run prints what each request cost and what the key has left. Set the default
+from that log.
 
-The schedule is Tuesday, Friday and Saturday at 09:00 UTC — the days a deadline
-can fall behind, an hour before the earliest one lands. Books price the result
-months out and open player props days out, so the daily run this replaced was
-spending the month's allowance on markets that did not exist yet.
+Three things keep the spend inside the tier, and
+`python/tests/test_api_budgets.py` holds all three to the allowance so a raised
+cron has to be argued for rather than merged.
+
+- **Two markets, not four.** Anytime scorer and assists are the two anything
+  here reads. Cards and shots on target were fetched and discarded every run;
+  each one is billed per region whether or not it is read. The card market
+  comes back when there is a card route to spend it on — `routes.discipline`
+  currently bundles yellows with reds, own goals and missed penalties into one
+  published number that cannot be taken apart.
+- **One region.** UK books price a Premier League player deepest, and adding
+  Europe doubles the bill for a slightly steadier median.
+- **Three days a week, not seven.** Tuesday, Friday and Saturday at 09:00 UTC,
+  an hour before the earliest a deadline lands. Books price the result months
+  out and open player props days out, so the daily run this replaced was
+  spending the month's allowance on markets that did not exist yet.
+
+The same key pays for the weekly survey, which is why the guard counts both.
 
 **When nothing is quoted.** Ten fixtures priced and nought players quoted is not
 a failure. Each fixture's line names how many books answered, how many outcomes
-they carried, which market keys arrived and which of the four asked-for keys did
-not, which is what separates "the market is shut" from "the keys are wrong".
-A run that quotes nobody anywhere exits clean and says the markets are not open;
-a run that quotes players but joins none of them to an FPL element fails, because
-that one is the crosswalk's fault and wants fixing.
+they carried, which market keys arrived and which of the asked-for keys did not,
+which is what separates "the market is shut" from "the keys are wrong". A run
+that quotes nobody anywhere exits clean and says the markets are not open; a run
+that quotes players but joins none of them to an FPL element fails, because that
+one is the crosswalk's fault and wants fixing.
+
+**What the numbers then do.** `docs/MODEL.md` §7b. The two prices are inverted
+from "chance of at least one" to a Poisson rate, divided by the fixture
+multiplier they already carry, and blended into the goal and assist halves of
+the attacking route at `--market-weight`. Nothing else in the projection reads
+a player price.
 
 ## The shortlist, and why each is on it
 
 | Key                | What it is                                                    | Covers                           |
 | ------------------ | ------------------------------------------------------------- | -------------------------------- |
-| `the-odds-api`     | Aggregator over UK and EU books, markets named explicitly     | goal, assist, cards              |
+| `the-odds-api`     | Aggregator over UK books, markets named explicitly            | goal, assist, cards              |
 | `api-football`     | Aggregator; its `/odds/bets` endpoint _is_ a market catalogue | goal, assist, cards, clean sheet |
 | `betfair-exchange` | An exchange, not a book: two-sided prices, so the least vig   | goal, assist, clean sheet, cards |
 | `football-data`    | The baseline already ingested. Match level only, no props     | clean sheet, goals conceded      |

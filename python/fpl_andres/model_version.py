@@ -29,6 +29,22 @@ from __future__ import annotations
 
 __all__ = ["MODEL_VERSION"]
 
+#: 5.0 lets a bookmaker's player prices move the attacking route itself, and
+#: stops them moving the start rate. Major on both counts. `routes.attacking`
+#: now means the record and the market weighted together rather than the record
+#: alone, and it is built by inverting "chance of at least one" to a Poisson
+#: rate and dividing out the fixture the quote already carried -- so a projection
+#: with prices present is answering a different question from one without. The
+#: start rate goes the other way and means only what the record measured again:
+#: reading the same anytime-scorer price as goals and as minutes counted one
+#: piece of evidence twice, into the attacking route and into every route that
+#: scales with minutes. That path never ran in any case. It looked up an
+#: `expectedGoals` field the projector did not publish, returned nothing for
+#: everybody and said nothing about it, so 4.0's stated behaviour was never the
+#: behaviour. `expectedGoals` and `expectedAssists` are published now, because
+#: a book quotes the two halves separately and a route that adds them cannot be
+#: taken apart again.
+#:
 #: 4.2 counts the defensive-contribution bar for the position being projected
 #: rather than the one the player held when FPL published the label. FPL sums
 #: clearances, blocks, interceptions and tackles for a defender and adds
@@ -177,4 +193,4 @@ __all__ = ["MODEL_VERSION"]
 #: projection and resampled, so a gap that does not clear zero is reported as
 #: not clearing zero. No projection changed; what changed is what may be
 #: claimed from it.
-MODEL_VERSION = "4.2"
+MODEL_VERSION = "5.0"

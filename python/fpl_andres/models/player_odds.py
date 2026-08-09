@@ -42,10 +42,6 @@ class PlayerMatchOdds:
     anytime_goal: float | None = None
     #: P(assists at least once), where the book prices it.
     anytime_assist: float | None = None
-    #: P(shown a card).
-    card: float | None = None
-    #: P(one or more shots on target), a proxy for being on the pitch.
-    shot_on_target: float | None = None
     #: How many books were averaged into the numbers above.
     books: int = 0
 
@@ -57,8 +53,6 @@ class PlayerMatchOdds:
             for value in (
                 self.anytime_goal,
                 self.anytime_assist,
-                self.card,
-                self.shot_on_target,
             )
         )
 

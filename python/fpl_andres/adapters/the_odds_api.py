@@ -40,21 +40,23 @@ __all__ = [
 
 BASE = "https://api.the-odds-api.com/v4/sports/soccer_epl"
 
-#: Only markets that map onto an FPL scoring event. Asking for more spends the
-#: free tier's request budget on prices nothing here can use.
+#: Only markets that map onto an FPL scoring route something here reads. The
+#: host bills per market per region, so asking for a market nothing consumes is
+#: a direct charge against a free tier of 500 requests a month. Cards and shots
+#: on target were both fetched and both discarded: a card is priced by the book
+#: but `routes.discipline` bundles yellows with reds, own goals and missed
+#: penalties into one published number that cannot be taken apart, so there is
+#: nothing for a card price to replace until that route is split. Add them back
+#: with the reader, not before it.
 PLAYER_MARKETS: tuple[str, ...] = (
     "player_goal_scorer_anytime",
     "player_assists",
-    "player_to_receive_card",
-    "player_shots_on_target",
 )
 
 #: Which field on `PlayerMatchOdds` each market fills.
 MARKET_FIELDS: Mapping[str, str] = {
     "player_goal_scorer_anytime": "anytime_goal",
     "player_assists": "anytime_assist",
-    "player_to_receive_card": "card",
-    "player_shots_on_target": "shot_on_target",
 }
 
 
@@ -115,12 +117,18 @@ def fetch_event_odds(
     event_id: str,
     markets: Sequence[str] = PLAYER_MARKETS,
 ) -> tuple[Mapping[str, Any], Quota]:
-    """One event's player markets, across every book in the UK and EU."""
+    """One event's player markets, across every book in the United Kingdom.
+
+    One region rather than two. The host bills per market per region, so adding
+    Europe doubles the price of a run against a free tier of five hundred a
+    month. What it buys is a slightly steadier median across more books, and
+    the books that price a Premier League player deepest are the UK ones.
+    """
     response = client.get(
         f"{BASE}/events/{event_id}/odds",
         params={
             "apiKey": api_key,
-            "regions": "uk,eu",
+            "regions": "uk",
             "oddsFormat": "decimal",
             "markets": ",".join(markets),
         },
@@ -291,8 +299,6 @@ def read_event(
                 books=len(books[name]),
                 anytime_goal=fields.get("anytime_goal"),
                 anytime_assist=fields.get("anytime_assist"),
-                card=fields.get("card"),
-                shot_on_target=fields.get("shot_on_target"),
             )
         )
     return rows

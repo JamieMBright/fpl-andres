@@ -13,11 +13,12 @@ name: Ingest Player Odds
 #
 # See docs/PLAYER_MARKETS.md for how to get one and where to put it.
 #
-# The free tier is 500 requests a month. What one fixture costs against that is
-# not known: the host charges per market per region and this asks for four
-# markets across two regions, so `budget` is written in requests rather than
-# fixtures and the run prints what it actually spent. Size the number below off
-# that log, not off a guess.
+# The free tier is 500 requests a month and this key also pays for the weekly
+# market survey. What one fixture costs is not known: the host charges per
+# market per region, so `budget` is written in requests rather than fixtures and
+# the run prints what it actually spent. Size the number below off that log, not
+# off a guess -- and python/tests/test_api_budgets.py holds the schedules here
+# and in the survey under the allowance between them.
 #
 # The schedule is the days a deadline can fall behind. Books price the result
 # months out and open player props days out, so a daily run a fortnight before
@@ -38,7 +39,7 @@ on:
       budget:
         description: "How many requests this run may spend, against 500 a month."
         required: false
-        default: "35"
+        default: "30"
         type: string
 
 permissions:
@@ -102,7 +103,7 @@ jobs:
           fi
           python -m fpl_andres.cli.ingest_player_odds \
             --season "$(date -u +%Y)-$(printf '%02d' $((10#$(date -u +%y) + 1)))" \
-            --budget "${BUDGET:-35}"
+            --budget "${BUDGET:-30}"
 
       - name: Commit the odds
         run: |

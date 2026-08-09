@@ -155,6 +155,117 @@ class TestProbing:
         assert result.markets == ("player_assists", "player_goal_scorer_anytime")
         assert "bookmakers[].markets[].key" in result.fields
 
+    def test_the_odds_api_probes_the_soonest_fixture(self) -> None:
+        """Props open days before kickoff, so an arbitrary fixture has none.
+
+        The host does not list fixtures in date order. Probing whichever came
+        first reported an empty catalogue for a source that has one, which is
+        why this reads far thinner than the sources beside it.
+        """
+        asked: list[str] = []
+
+        def handler(request: httpx.Request) -> httpx.Response:
+            if request.url.path.endswith("/events"):
+                return httpx.Response(
+                    200,
+                    json=[
+                        {"id": "december", "commence_time": "2026-12-26T15:00:00Z"},
+                        {"id": "saturday", "commence_time": "2026-08-22T14:00:00Z"},
+                    ],
+                )
+            asked.append(request.url.path)
+            return httpx.Response(200, json={"id": "saturday", "bookmakers": []})
+
+        with _client(handler) as client:
+            probe_source(source_by_key("the-odds-api"), client, env={"THE_ODDS_API_KEY": "k"})
+
+        assert asked == ["/v4/sports/soccer_epl/events/saturday/odds"]
+
+    def test_the_odds_api_reports_its_depth_and_what_it_cost(self) -> None:
+        """A shut market and a wrong request both return nothing.
+
+        Naming the fixture, the books, the outcomes and the markets that did
+        not arrive is what separates them. The quota is here because a free
+        tier shared with the ingest can be spent without any host warning.
+        """
+
+        def handler(request: httpx.Request) -> httpx.Response:
+            if request.url.path.endswith("/events"):
+                return httpx.Response(
+                    200,
+                    json=[
+                        {
+                            "id": "abc",
+                            "home_team": "Arsenal",
+                            "away_team": "Bournemouth",
+                            "commence_time": "2026-08-22T14:00:00Z",
+                        }
+                    ],
+                )
+            return httpx.Response(
+                200,
+                headers={"x-requests-remaining": "412", "x-requests-last": "80"},
+                json={
+                    "id": "abc",
+                    "bookmakers": [
+                        {
+                            "key": "williamhill",
+                            "markets": [
+                                {
+                                    "key": "player_goal_scorer_anytime",
+                                    "outcomes": [{"description": "Saka", "price": 3.0}],
+                                }
+                            ],
+                        },
+                        {"key": "bet365", "markets": []},
+                    ],
+                },
+            )
+
+        with _client(handler) as client:
+            result = probe_source(
+                source_by_key("the-odds-api"),
+                client,
+                env={"THE_ODDS_API_KEY": "k"},
+            )
+
+        assert "Arsenal v Bournemouth" in result.note
+        assert "2 books, 1 outcomes" in result.note
+        assert "player_assists" in result.note
+        assert "cost 80, 412 left" in result.note
+
+    def test_api_football_reports_what_its_daily_allowance_has_left(self) -> None:
+        def handler(request: httpx.Request) -> httpx.Response:
+            return httpx.Response(
+                200,
+                headers={"x-ratelimit-requests-remaining": "63"},
+                json={"response": [{"id": 1, "name": "Anytime Goal Scorer"}]},
+            )
+
+        with _client(handler) as client:
+            result = probe_source(
+                source_by_key("api-football"),
+                client,
+                env={"API_FOOTBALL_API_KEY": "k"},
+            )
+
+        assert "63 left" in result.note
+
+    def test_a_host_that_publishes_no_counter_says_so(self) -> None:
+        """Nought left and no answer must never read the same."""
+
+        def handler(request: httpx.Request) -> httpx.Response:
+            return httpx.Response(200, json={"response": []})
+
+        with _client(handler) as client:
+            result = probe_source(
+                source_by_key("api-football"),
+                client,
+                env={"API_FOOTBALL_API_KEY": "k"},
+            )
+
+        assert "quota not reported" in result.note
+
 
 class TestCli:
     def test_no_selection_probes_everything(self) -> None:

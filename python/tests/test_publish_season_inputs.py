@@ -8,6 +8,7 @@ These run the publisher against fixed payloads and check the arithmetic.
 from __future__ import annotations
 
 import json
+import math
 from pathlib import Path
 from typing import Any
 from unittest.mock import patch
@@ -50,17 +51,25 @@ ROUTES: dict[str, float] = {
 }
 
 FIXTURES: list[dict[str, Any]] = [
-    {"id": 1, "event": 1, "team_h": 1, "team_a": 2},
+    {"id": 1, "event": 1, "team_h": 1, "team_a": 2, "kickoff_time": "2026-08-22T14:00:00Z"},
     # Gameweek 2 is a blank for Arsenal and a single away game for Liverpool.
-    {"id": 2, "event": 2, "team_h": 2, "team_a": 1},
-    {"id": 3, "event": 2, "team_h": 1, "team_a": 2},
-    {"id": 4, "event": None, "team_h": 1, "team_a": 2},
+    {"id": 2, "event": 2, "team_h": 2, "team_a": 1, "kickoff_time": "2026-08-29T14:00:00Z"},
+    {"id": 3, "event": 2, "team_h": 1, "team_a": 2, "kickoff_time": "2026-08-29T16:30:00Z"},
+    {"id": 4, "event": None, "team_h": 1, "team_a": 2, "kickoff_time": None},
 ]
 
 PROJECTIONS: dict[str, Any] = {
     "season": "2025-26",
     "players": [
-        {"code": 1001, "expectedPoints": 5.0, "probabilityStart": 0.9, "routes": ROUTES},
+        {
+            "code": 1001,
+            "expectedPoints": 5.0,
+            "probabilityStart": 0.9,
+            # 0.34 * 5 + 0.1 * 3 = 2.0, the attacking route below.
+            "expectedGoals": 0.34,
+            "expectedAssists": 0.1,
+            "routes": ROUTES,
+        },
     ],
     "clubs": [
         {
@@ -101,13 +110,20 @@ def _element(**overrides: Any) -> dict[str, Any]:
     return base
 
 
-def _run(tmp_path: Path, elements: list[dict[str, Any]]) -> dict[str, Any]:
+def _run(
+    tmp_path: Path,
+    elements: list[dict[str, Any]],
+    odds: dict[str, Any] | None = None,
+) -> dict[str, Any]:
     bootstrap = {**BOOTSTRAP, "elements": elements}
     projections = tmp_path / "projections.json"
     projections.write_text(json.dumps(PROJECTIONS), encoding="utf-8")
     opening = tmp_path / "opening-squad.json"
     opening.write_text(json.dumps({"picks": []}), encoding="utf-8")
     output = tmp_path / "season-inputs.json"
+    player_odds = tmp_path / "player-odds.json"
+    if odds is not None:
+        player_odds.write_text(json.dumps(odds), encoding="utf-8")
 
     def fake_get(url: str) -> Any:
         return bootstrap if "bootstrap" in url else FIXTURES
@@ -121,6 +137,8 @@ def _run(tmp_path: Path, elements: list[dict[str, Any]]) -> dict[str, Any]:
                 str(projections),
                 "--opening-squad",
                 str(opening),
+                "--player-odds",
+                str(player_odds),
             ]
         )
 
@@ -137,6 +155,141 @@ def test_only_unfinished_gameweeks_are_published(tmp_path: Path) -> None:
         "2026-08-21T17:30:00Z",
         "2026-08-28T17:30:00Z",
     ]
+
+
+def _odds(**overrides: Any) -> dict[str, Any]:
+    row = {
+        "element_id": 11,
+        "quoted_name": "Bukayo Saka",
+        "kickoff": "2026-08-22T14:00:00Z",
+        "anytime_goal": 0.5,
+        "anytime_assist": 0.2,
+    }
+    row.update(overrides)
+    return {"season": "2026-27", "players": [row]}
+
+
+def _attacking(payload: dict[str, Any]) -> float:
+    return float(payload["players"][0]["routes"]["attacking"])
+
+
+def payload_multiplier(payload: dict[str, Any]) -> float:
+    """Arsenal's attacking rung in gameweek one, the divisor under test."""
+    return float(payload["fixtureLadder"]["ARS"]["attacking"][0])
+
+
+class TestTheMarketPricingTheAttackingRoute:
+    """A bookmaker's view of a player, folded into the route it speaks to.
+
+    The blend that used to live here read a projection field the projector never
+    published, so it returned nothing for everybody and nothing said so. These
+    exist so that cannot happen quietly again: each one asserts the number moved.
+    """
+
+    def test_a_quoted_player_is_rated_above_his_record(self, tmp_path: Path) -> None:
+        # Evens to score is far above the 0.34 the record projects.
+        recorded = _attacking(_run(tmp_path, [_element()]))
+        blended = _attacking(_run(tmp_path, [_element()], odds=_odds()))
+
+        assert blended > recorded
+
+    def test_a_player_the_book_ignored_keeps_his_record(self, tmp_path: Path) -> None:
+        recorded = _attacking(_run(tmp_path, [_element()]))
+        other = _attacking(_run(tmp_path, [_element()], odds=_odds(element_id=99)))
+
+        assert other == recorded
+
+    def test_a_scorer_price_alone_moves_goals_and_leaves_assists(self, tmp_path: Path) -> None:
+        """Assist markets open on fewer fixtures, and half a view beats none."""
+        recorded = _attacking(_run(tmp_path, [_element()]))
+        both = _attacking(_run(tmp_path, [_element()], odds=_odds()))
+        goals_only = _attacking(_run(tmp_path, [_element()], odds=_odds(anytime_assist=None)))
+
+        assert recorded < goals_only < both
+
+    def test_the_fixture_is_divided_back_out_before_publishing(self, tmp_path: Path) -> None:
+        """The route is per average opponent; the browser applies the fixture.
+
+        Publishing the quote as it stands would apply Arsenal's gameweek one
+        multiplier twice -- once by the book and once by the solver. So the
+        arithmetic is asserted in full rather than by direction: the market's
+        Poisson rate, divided by the rung the solver will multiply it back by.
+        """
+        payload = _run(tmp_path, [_element()], odds=_odds())
+        rung = payload_multiplier(payload)
+        weight = 0.35
+        goals = (1 - weight) * 0.34 + weight * -math.log(0.5) / rung
+        assists = (1 - weight) * 0.1 + weight * -math.log(0.8) / rung
+
+        assert _attacking(payload) == pytest.approx(goals * 5 + assists * 3, abs=0.001)
+
+    def test_a_double_gameweek_is_left_to_the_record(self, tmp_path: Path) -> None:
+        """Its rung sums two fixtures and the book priced one of them.
+
+        Dividing a single fixture's quote by the pair's multiplier would halve
+        the market's view of him, which is worse than not reading it.
+        """
+        recorded = _attacking(_run(tmp_path, [_element()]))
+        doubled = _attacking(
+            _run(tmp_path, [_element()], odds=_odds(kickoff="2026-08-29T16:30:00Z"))
+        )
+
+        assert doubled == recorded
+
+    def test_a_price_for_a_day_nobody_plays_is_ignored(self, tmp_path: Path) -> None:
+        recorded = _attacking(_run(tmp_path, [_element()]))
+        stray = _attacking(_run(tmp_path, [_element()], odds=_odds(kickoff="2026-08-25T14:00:00Z")))
+
+        assert stray == recorded
+
+    def test_a_defender_is_paid_more_for_the_same_quoted_goal(self, tmp_path: Path) -> None:
+        midfielder = _attacking(_run(tmp_path, [_element()], odds=_odds()))
+        defender = _attacking(_run(tmp_path, [_element(element_type=2)], odds=_odds()))
+
+        assert defender > midfielder
+
+    def test_a_projection_with_no_split_to_blend_against_is_refused(self, tmp_path: Path) -> None:
+        """The exact shape the previous blend failed silently in.
+
+        It read a projection field the projector never published and took the
+        absence as "no market view", so it returned nothing for everybody and
+        nothing said so.
+        """
+        stale = {
+            **PROJECTIONS,
+            "players": [
+                {key: value for key, value in row.items() if not key.startswith("expected")}
+                | {"expectedPoints": row["expectedPoints"]}
+                for row in PROJECTIONS["players"]
+            ],
+        }
+        projections = tmp_path / "projections.json"
+        projections.write_text(json.dumps(stale), encoding="utf-8")
+        opening = tmp_path / "opening-squad.json"
+        opening.write_text(json.dumps({"picks": []}), encoding="utf-8")
+        player_odds = tmp_path / "player-odds.json"
+        player_odds.write_text(json.dumps(_odds()), encoding="utf-8")
+        bootstrap = {**BOOTSTRAP, "elements": [_element()]}
+
+        def fake_get(url: str) -> Any:
+            return bootstrap if "bootstrap" in url else FIXTURES
+
+        with (
+            patch.object(publish_season_inputs, "_get", fake_get),
+            pytest.raises(ValueError, match="publishes no expectedGoals"),
+        ):
+            publish_season_inputs.main(
+                [
+                    "--output",
+                    str(tmp_path / "out.json"),
+                    "--projections",
+                    str(projections),
+                    "--opening-squad",
+                    str(opening),
+                    "--player-odds",
+                    str(player_odds),
+                ]
+            )
 
 
 def test_the_ladder_has_one_rung_per_club_per_gameweek(tmp_path: Path) -> None:

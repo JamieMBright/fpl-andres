@@ -50,6 +50,10 @@ DEFAULT_OUTPUT = Path("apps/web/src/data/projections.json")
 POSITION_CODES = {position.value: position.code for position in Position}
 # Below this the shape statistics describe a cameo, not a season.
 MINIMUM_APPEARANCES = 4
+#: The same divisor `scoring.py` turns expected minutes into 90s with, so the
+#: goals and assists published here multiply back to the attacking route it
+#: priced rather than to a number near it.
+MINUTES_PER_90 = 90.0
 # Dixon-Coles fit. Half-weight at roughly a season's distance, so the fit leans
 # on recent form without discarding the rest of the year.
 DECAY_RATE_PER_DAY = 0.002
@@ -105,6 +109,13 @@ class ProjectionEntry(TypedDict):
     expectedCeiling: float
     ceilingRatio: float
     expectedMinutes: float
+    # The two halves of the attacking route, in goals and assists rather than
+    # points. `routes.attacking` prices them together and cannot be taken apart
+    # again, which matters because a bookmaker quotes them separately: an
+    # anytime-scorer price is evidence about one of these and says nothing about
+    # the other. Per match, against an average opponent, like everything else here.
+    expectedGoals: float
+    expectedAssists: float
     probabilityAppear: float
     probabilityStart: float
     appearances: int
@@ -138,6 +149,9 @@ def _routes(breakdown: PointsBreakdown) -> RouteEntry:
 def _entry(projection: MatchProjection) -> ProjectionEntry:
     shape = projection.shape
     enough = shape.appearances >= MINIMUM_APPEARANCES
+    # The same 90s the breakdown scaled the rates by, so the published goals and
+    # assists multiply back to the published attacking route exactly.
+    nineties = projection.expected_minutes / MINUTES_PER_90
     return {
         "code": projection.code,
         "name": projection.web_name,
@@ -149,6 +163,9 @@ def _entry(projection: MatchProjection) -> ProjectionEntry:
         "expectedCeiling": round(projection.expected_ceiling, 2),
         "ceilingRatio": round(shape.ceiling_ratio, 3),
         "expectedMinutes": round(projection.expected_minutes, 1),
+        # Three decimals because a fringe player's rate lives in the third one.
+        "expectedGoals": round(nineties * projection.rates.goals_per_90, 3),
+        "expectedAssists": round(nineties * projection.rates.assists_per_90, 3),
         "probabilityAppear": round(projection.minutes.probability_appear, 3),
         "probabilityStart": round(projection.minutes.probability_sixty_minutes, 3),
         "appearances": shape.appearances,

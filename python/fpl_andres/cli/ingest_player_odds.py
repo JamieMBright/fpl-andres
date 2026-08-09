@@ -39,13 +39,16 @@ from fpl_andres.timeouts import ODDS_FEED
 
 BOOTSTRAP = "https://fantasy.premierleague.com/api/bootstrap-static/"
 
-#: The free tier is 500 requests a month. What one fixture costs against that
-#: is not known here and was never measured -- the host charges per market per
-#: region, and this asks for four markets across two regions -- so the cap is
-#: written in requests rather than fixtures. Whatever a fixture turns out to
-#: cost, a run cannot spend more than this, and the run reports what it did
-#: spend so the number below can be set from evidence instead of hope.
-DEFAULT_BUDGET = 35
+#: The free tier is 500 requests a month, shared with the weekly survey. What
+#: one fixture costs against that is not known here and was never measured --
+#: the host charges per market per region -- so the cap is written in requests
+#: rather than fixtures. Whatever a fixture turns out to cost, a run cannot
+#: spend more than this, and the run reports what it did spend so the number
+#: below can be set from evidence instead of hope.
+#:
+#: Thirteen scheduled runs a month at this budget is 396, and the survey takes
+#: another 48. `tests/test_api_budgets.py` holds that sum under the allowance.
+DEFAULT_BUDGET = 30
 
 
 def _parser() -> argparse.ArgumentParser:
@@ -112,7 +115,10 @@ def main(argv: Sequence[str] | None = None) -> int:
                 print(f"  stopping: this run's budget of {args.budget} requests is spent")
                 break
             payload, closing = fetch_event_odds(client, key, event_id)
-            spent += closing.cost or 0
+            # A host that reports no cost still charged something, so a fixture
+            # counts for one rather than nothing. Otherwise a missing header
+            # turns the budget off and the run prices the whole division.
+            spent += closing.cost or 1
             read = read_event(payload)
             if read:
                 offered += 1
@@ -124,7 +130,12 @@ def main(argv: Sequence[str] | None = None) -> int:
 
         # The documented budget of one request per fixture was never measured.
         # This is the measurement, and the schedule should be sized off it.
-        print(f"\nspent {spent} requests on this run; {closing}")
+        measured = (
+            closing.used - opening.used
+            if closing.used is not None and opening.used is not None
+            else None
+        )
+        print(f"\nspent {measured if measured is not None else spent} requests; {closing}")
 
         bootstrap = client.get(BOOTSTRAP, headers={"Accept": "application/json"})
         bootstrap.raise_for_status()
