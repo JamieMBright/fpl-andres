@@ -78,23 +78,33 @@ jobs:
           fi
           exit "$status"
 
+      # The ranking is derived from the catalogue this run just extended, so
+      # leaving it to a hand-run makes it stale by construction: the sweep
+      # moved every six hours and FPL500 last moved whenever somebody
+      # remembered. Rebuilding here costs seconds and nothing can drift.
+      - name: Rank the catalogue the sweep just extended
+        run: python -m fpl_andres.cli.publish_fpl500 | tee -a "$GITHUB_STEP_SUMMARY"
+
       - name: Commit the position and anything it found
         run: |
-          paths="data/cohort/managers.jsonl data/cohort/sweep-checkpoint.json"
+          paths="data/cohort/managers.jsonl data/cohort/sweep-checkpoint.json data/cohort/fpl500.json apps/web/src/data/fpl500.json"
           if git diff --quiet -- $paths; then
             echo "The sweep moved nothing."
             exit 0
           fi
-          # Formatted before it is committed. Python writes the checkpoint and
-          # prettier owns the file, so an unformatted commit here reddens the
-          # next unrelated push rather than this run.
-          npx --yes prettier@3 --write data/cohort/sweep-checkpoint.json
+          # Formatted before it is committed. Python writes these and prettier
+          # owns the files, so an unformatted commit here reddens the next
+          # unrelated push rather than this run.
+          npx --yes prettier@3 --write \
+            data/cohort/sweep-checkpoint.json \
+            data/cohort/fpl500.json \
+            apps/web/src/data/fpl500.json
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add $paths
           next=$(python -c "import json;print(json.load(open('data/cohort/sweep-checkpoint.json'))['next_id'])")
           git commit -m "chore: sweep the register as far as id ${next}"
           # A scheduled run can start while main has moved on; rebasing is
-          # safe here because this job only ever touches these two files.
+          # safe here because this job only ever touches these files.
           git pull --rebase --autostash
           git push

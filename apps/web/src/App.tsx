@@ -25,6 +25,7 @@ const FaqPage = lazyRoute(() => import("./pages/FaqPage"));
 const SeasonPlanPage = lazyRoute(() => import("./pages/SeasonPlanPage"));
 const KitPreviewPage = lazyRoute(() => import("./pages/KitPreviewPage"));
 const AnalysisPage = lazyRoute(() => import("./pages/AnalysisPage"));
+const Fpl500Page = lazyRoute(() => import("./pages/Fpl500Page"));
 
 export const routes: RouteObject[] = [
   {
@@ -78,6 +79,14 @@ export const routes: RouteObject[] = [
         element: (
           <LazyRoute>
             <CalibrationPage />
+          </LazyRoute>
+        ),
+      },
+      {
+        path: "fpl500",
+        element: (
+          <LazyRoute>
+            <Fpl500Page />
           </LazyRoute>
         ),
       },

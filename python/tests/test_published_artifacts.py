@@ -33,7 +33,7 @@ def _require_keys(payload: dict[str, Any], expected: set[str], label: str) -> No
 
 @pytest.mark.parametrize(
     "name",
-    ["projections", "opening-squad", "validation", "cohort", "projections-meta"],
+    ["projections", "opening-squad", "validation", "cohort", "projections-meta", "fpl500"],
 )
 def test_every_artifact_records_when_it_was_generated(name: str) -> None:
     """Without this the site cannot say how old what it is showing is."""
@@ -41,6 +41,43 @@ def test_every_artifact_records_when_it_was_generated(name: str) -> None:
 
     parsed = datetime.fromisoformat(generated)
     assert parsed.tzinfo is not None, f"{name} generatedAt must carry a timezone"
+
+
+def test_fpl500_shape() -> None:
+    """The ranking the site lists, and the sweep position that produced it.
+
+    `sweptTo` is here because the ranking is only as good as how much of the
+    register has been read, and four fifths of it has not. A page showing the
+    five hundred without saying that is claiming more than it has.
+    """
+    payload = _artifact("fpl500")
+    _require_keys(
+        payload,
+        {
+            "catalogueSize",
+            "generatedAt",
+            "listed",
+            "managers",
+            "minimumCoverage",
+            "portfolioEvents",
+            "scoreAtRank",
+            "seasonsCounted",
+            "settings",
+            "size",
+            "sweptTo",
+        },
+        "fpl500",
+    )
+    assert payload["managers"], "fpl500 must list the head of the ranking"
+    assert len(payload["managers"]) == payload["listed"]
+    _require_keys(
+        payload["managers"][0],
+        {"bestPercentile", "entryId", "latestSeason", "rank", "score", "seasons"},
+        "fpl500 manager",
+    )
+    # The fund is the point of the page, so its absence has to be a published
+    # fact rather than an empty section nobody can explain.
+    assert isinstance(payload["portfolioEvents"], list)
 
 
 def test_projections_shape() -> None:

@@ -3949,6 +3949,22 @@ h1[tabindex="-1"]:focus-visible {
   }
 }
 
+/* The cohort ranking, and the fund it is not yet. Prose is measured because
+   the table beside it is wide, and a paragraph that runs the table's width is
+   unreadable. */
+.fpl500-page p,
+.fpl500-page li {
+  max-width: 68ch;
+}
+
+.fpl500-page section {
+  margin-top: 34px;
+}
+
+.fpl500-page .squad-table-wrap {
+  max-width: 640px;
+}
+
 /* Bielsa bucket mark. Every colour is a teletext one, set on the paths
    themselves, so it does not follow a theme. */
 .brand-mark {

@@ -142,6 +142,9 @@ export function ApplicationFrame() {
               <Link to="/calibration">Calibration</Link>
             </li>
             <li>
+              <Link to="/fpl500">FPL500</Link>
+            </li>
+            <li>
               <Link to="/faq">FAQ</Link>
             </li>
             <li>

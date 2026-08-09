@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 import cohort from "../data/cohort.json";
 import { integer } from "../format";
 
@@ -85,6 +87,13 @@ export function CohortPanel() {
           <p>{data.persistenceNote}</p>
         </div>
       )}
+
+      <p>
+        <Link to="/fpl500">
+          FPL500 — the five hundred of them worth following, how the ranking is
+          built, and the fund they have not yet been turned into.
+        </Link>
+      </p>
     </section>
   );
 }
