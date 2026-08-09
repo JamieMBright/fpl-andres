@@ -1,0 +1,179 @@
+"""Reading a book's player markets, and joining them to FPL.
+
+The fetch cannot run anywhere but a runner, so everything worth asserting is
+in the parser and the crosswalk. Both refuse rather than guess, which is the
+behaviour these pin.
+"""
+
+from __future__ import annotations
+
+from fpl_andres.adapters.player_crosswalk import crosswalk, fold_name
+from fpl_andres.adapters.the_odds_api import read_event
+from fpl_andres.models.player_odds import PlayerMatchOdds
+
+
+def _event(*bookmakers: dict[str, object]) -> dict[str, object]:
+    return {
+        "home_team": "Arsenal",
+        "away_team": "Bournemouth",
+        "commence_time": "2026-08-21T19:00:00Z",
+        "bookmakers": list(bookmakers),
+    }
+
+
+def _book(key: str, market: str, outcomes: list[dict[str, object]]):
+    return {"key": key, "markets": [{"key": market, "outcomes": outcomes}]}
+
+
+def test_a_lone_quote_reads_as_its_implied_probability() -> None:
+    rows = read_event(
+        _event(
+            _book(
+                "bet365",
+                "player_goal_scorer_anytime",
+                [{"description": "Kai Havertz", "name": "Yes", "price": 2.5}],
+            )
+        )
+    )
+
+    assert len(rows) == 1
+    assert rows[0].quoted_name == "Kai Havertz"
+    assert rows[0].anytime_goal == 0.4
+    assert rows[0].books == 1
+    assert rows[0].home_team == "Arsenal"
+    assert rows[0].away_team == "Bournemouth"
+    # The book says nothing about which side he plays for.
+    assert rows[0].club is None
+
+
+def test_a_complete_two_way_book_is_devigged() -> None:
+    rows = read_event(
+        _event(
+            _book(
+                "bet365",
+                "player_goal_scorer_anytime",
+                [
+                    {"description": "Kai Havertz", "name": "Yes", "price": 1.9},
+                    {"description": "Kai Havertz", "name": "No", "price": 1.9},
+                ],
+            )
+        )
+    )
+
+    # Implied is 0.526 either way; the margin comes out and leaves a half.
+    assert rows[0].anytime_goal is not None
+    assert abs(rows[0].anytime_goal - 0.5) < 1e-6
+
+
+def test_a_book_quoting_no_margin_does_not_stop_the_fixture() -> None:
+    rows = read_event(
+        _event(
+            _book(
+                "bet365",
+                "player_goal_scorer_anytime",
+                [
+                    {"description": "Saka", "name": "Yes", "price": 2.0},
+                    {"description": "Saka", "name": "No", "price": 2.0},
+                ],
+            )
+        )
+    )
+
+    assert rows[0].anytime_goal == 0.5
+
+
+def test_books_are_medianed_not_averaged() -> None:
+    rows = read_event(
+        _event(
+            _book(
+                "a",
+                "player_goal_scorer_anytime",
+                [{"description": "Saka", "name": "Yes", "price": 4.0}],
+            ),
+            _book(
+                "b",
+                "player_goal_scorer_anytime",
+                [{"description": "Saka", "name": "Yes", "price": 5.0}],
+            ),
+            _book(
+                "c",
+                "player_goal_scorer_anytime",
+                [{"description": "Saka", "name": "Yes", "price": 100.0}],
+            ),
+        )
+    )
+
+    # A mean would be 0.145; the stale hundred must not drag it.
+    assert rows[0].anytime_goal == 0.2
+    assert rows[0].books == 3
+
+
+def test_a_market_nobody_asked_for_is_ignored() -> None:
+    rows = read_event(
+        _event(
+            _book(
+                "bet365",
+                "h2h",
+                [{"description": "Arsenal", "name": "Arsenal", "price": 1.5}],
+            )
+        )
+    )
+
+    assert rows == []
+
+
+def test_an_event_with_no_teams_is_refused() -> None:
+    try:
+        read_event({"bookmakers": []})
+    except ValueError as error:
+        assert "named no teams" in str(error)
+    else:  # pragma: no cover - the assertion above is the test
+        raise AssertionError("an event with no teams must not parse")
+
+
+ELEMENTS = [
+    {"id": 1, "first_name": "Kai", "second_name": "Havertz", "web_name": "Havertz", "team": 1},
+    {"id": 2, "first_name": "Bukayo", "second_name": "Saka", "web_name": "Saka", "team": 1},
+    # Two Rices: a surname alone must not decide between them.
+    {"id": 3, "first_name": "Declan", "second_name": "Rice", "web_name": "Rice", "team": 1},
+    {"id": 4, "first_name": "Sean", "second_name": "Rice", "web_name": "Rice", "team": 2},
+]
+
+
+def _row(name: str) -> PlayerMatchOdds:
+    return PlayerMatchOdds(
+        element_id=None,
+        quoted_name=name,
+        home_team="Arsenal",
+        away_team="Bournemouth",
+        kickoff=None,
+        anytime_goal=0.3,
+    )
+
+
+def test_an_unambiguous_name_is_matched_and_given_its_club() -> None:
+    matched, unmatched = crosswalk([_row("Kai Havertz")], ELEMENTS, {1: "ARS", 2: "BOU"})
+
+    assert unmatched == ()
+    assert matched[0].element_id == 1
+    assert matched[0].club == "ARS"
+
+
+def test_a_shared_surname_is_reported_rather_than_guessed() -> None:
+    matched, unmatched = crosswalk([_row("Rice")], ELEMENTS, {1: "ARS", 2: "BOU"})
+
+    assert unmatched == ("Rice",)
+    assert matched[0].element_id is None
+    # The row survives, so the gap is visible instead of vanishing.
+    assert matched[0].quoted_name == "Rice"
+
+
+def test_accents_and_case_do_not_stop_a_match() -> None:
+    assert fold_name("Ødegaard") == fold_name("Odegaard")
+    assert fold_name("N'Golo Kanté") == "ngolo kante"
+
+
+def test_a_name_nobody_carries_is_unmatched() -> None:
+    _matched, unmatched = crosswalk([_row("Nobody At All")], ELEMENTS, {})
+
+    assert unmatched == ("Nobody At All",)
