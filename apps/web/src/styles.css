@@ -2811,6 +2811,46 @@ h1[tabindex="-1"]:focus-visible {
   background: var(--paper-deep);
 }
 
+/*
+ * The player pool's first column is the name, not a shirt.
+ *
+ * The shared rule above pins column one at 54px because in a squad table that
+ * column holds a kit. Here it crushed the name to nothing and left the header
+ * reading "PLAYERCLUB" on a phone. The name is the one column worth freezing,
+ * so it keeps a real width and takes the edge shadow, and the second column
+ * goes back to scrolling with the rest.
+ */
+.pool-table-wrap th:first-child,
+.pool-table-wrap td:first-child {
+  width: 8.5rem;
+  min-width: 8.5rem;
+  max-width: 8.5rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  box-shadow: 1px 0 0 var(--rule);
+}
+
+.pool-table-wrap th:nth-child(2) {
+  position: static;
+  box-shadow: none;
+}
+
+@media (max-width: 620px) {
+  /* Tighter gutters so the frozen name keeps its width without eating the
+     scrollable half of the table. */
+  .pool-table-wrap th,
+  .pool-table-wrap td {
+    padding: 10px 10px;
+  }
+
+  .pool-table-wrap th:first-child,
+  .pool-table-wrap td:first-child {
+    width: 7.5rem;
+    min-width: 7.5rem;
+    max-width: 7.5rem;
+  }
+}
+
 /* Captaincy grid: fourteen methods across every scored gameweek. Five hundred
    cells on screen, so each one carries four things and no more. */
 .captain-grid-seasons {

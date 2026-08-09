@@ -8,6 +8,11 @@ The project follows Semantic Versioning once milestone tags begin.
 
 ### Fixed
 
+- The player pool's name column was crushed to nothing on a phone, leaving the
+  header reading "PLAYERCLUB" and every row nameless. The shared table style
+  pins the first column at 54px because in a squad table that column holds a
+  kit; here it holds the name. The pool now keeps a real width for it, freezes
+  it as the rest scrolls, and takes tighter gutters below 620px.
 - The odds workflows never declared `environment: production`, so the API keys
   the owner had configured were invisible to them and every expression expanded
   to an empty string. `Ingest Player Odds` run 1 failed reporting that its key

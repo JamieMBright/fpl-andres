@@ -464,7 +464,7 @@ export function PlayerPoolTable() {
 
       <div
         aria-label="Scrollable player list"
-        className="squad-table-wrap"
+        className="squad-table-wrap pool-table-wrap"
         role="region"
         // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- Keyboard users must be able to scroll this table horizontally.
         tabIndex={0}
