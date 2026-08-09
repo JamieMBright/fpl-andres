@@ -31,6 +31,7 @@ from pathlib import Path
 
 import httpx
 
+from fpl_andres.adapters.player_market_catalogue import render_catalogue
 from fpl_andres.adapters.player_props import (
     PROP_SOURCES,
     ProbeResult,
@@ -62,6 +63,15 @@ def _parser() -> argparse.ArgumentParser:
         default=None,
         metavar="PATH",
         help="Also write the full catalogue here, every field name included.",
+    )
+    parser.add_argument(
+        "--catalogue",
+        default=None,
+        metavar="PATH",
+        help=(
+            "Write the survey as tracked Markdown: which source prices which "
+            "scoring route, and what each one answered."
+        ),
     )
     parser.add_argument(
         "--require",
@@ -159,6 +169,15 @@ def main(argv: Sequence[str] | None = None) -> int:
             encoding="utf-8",
         )
         print(f"Catalogue written to {path}")
+
+    if args.catalogue:
+        page = Path(args.catalogue)
+        page.parent.mkdir(parents=True, exist_ok=True)
+        page.write_text(
+            render_catalogue(sources, results, datetime.now(UTC)),
+            encoding="utf-8",
+        )
+        print(f"Market catalogue written to {page}")
 
     required = set(args.require or ())
     unknown = required - {source.key for source in sources}

@@ -97,6 +97,10 @@ class PropSource:
     probe: Callable[[httpx.Client, Mapping[str, str]], ProbeResult] = field(
         repr=False,
     )
+    #: False for a rate source or the scoring target. Both are useful and
+    #: neither is somebody with money on the outcome, which is the whole reason
+    #: a market is worth having.
+    market: bool = True
 
 
 def field_paths(payload: Any, prefix: str = "") -> set[str]:
@@ -498,6 +502,7 @@ PROP_SOURCES: tuple[PropSource, ...] = (
         covers=("goal", "assist"),
         terms="Free, unofficial. A rate source, not a market.",
         probe=_probe_understat,
+        market=False,
     ),
     PropSource(
         key="fpl-bootstrap",
@@ -507,6 +512,7 @@ PROP_SOURCES: tuple[PropSource, ...] = (
         covers=SCORING_EVENTS,
         terms="Free, official. The scoring authority and the prediction target.",
         probe=_probe_fpl_elements,
+        market=False,
     ),
 )
 

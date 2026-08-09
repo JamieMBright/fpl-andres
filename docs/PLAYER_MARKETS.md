@@ -9,6 +9,14 @@ column lists side by side, and those come from a run, not from memory.
 Nothing here emits or implies a betting recommendation. A price is read as a
 probability and used as evidence about a footballer.
 
+## The answer
+
+`docs/PLAYER_MARKET_CATALOGUE.md` is generated: which source prices which
+scoring route, what each one answered, and whether anything at all can price a
+player's chance to score. It is refreshed every Monday and on any manual run,
+and committed, so a key that expired or a market that opened shows up as a
+diff. Do not edit it by hand.
+
 ## Running the survey
 
 The owner's network fails at the TLS handshake for every price host behind a

@@ -25,6 +25,11 @@ name: Survey Player Markets
 # probability and used as evidence about a footballer.
 
 on:
+  # Weekly, so the answer to "can we price a player's chance to score" is
+  # never older than seven days. A source opening a market, or a key expiring,
+  # both show up as a diff in the committed page.
+  schedule:
+    - cron: "41 6 * * 1"
   workflow_dispatch:
     inputs:
       source:
@@ -48,7 +53,7 @@ on:
         type: string
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: survey-player-props
@@ -100,7 +105,25 @@ jobs:
             extra+=(--require "$REQUIRE")
           fi
           python -m fpl_andres.cli.survey_player_props \
-            --json player-props-catalogue.json "${extra[@]}"
+            --json player-props-catalogue.json \
+            --catalogue docs/PLAYER_MARKET_CATALOGUE.md "${extra[@]}"
+
+      - name: Commit the catalogue
+        # The Markdown is committed and the JSON is not. One is the answer --
+        # which source prices which scoring route -- and the other is a dump of
+        # every field name a provider happened to return that minute.
+        if: ${{ inputs.source == '' }}
+        run: |
+          if git diff --quiet -- docs/PLAYER_MARKET_CATALOGUE.md; then
+            echo "catalogue unchanged"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/PLAYER_MARKET_CATALOGUE.md
+          git commit -m "Refresh the player market catalogue"
+          git pull --rebase --autostash
+          git push
 
       - name: Upload the catalogue
         # Never committed. It is a shopping list, not evidence, and half of it
