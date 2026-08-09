@@ -271,7 +271,7 @@ Every remote surface implements idle, loading, ready, stale, degraded and error.
 
 ## Component inventory
 
-Thirty-five components in `apps/web/src/components`. The column
+Thirty-six components in `apps/web/src/components`. The column
 that matters is the last one: what a browser journey already proves about each,
 so a review knows what it does not have to check by hand.
 
@@ -301,6 +301,7 @@ so a review knows what it does not have to check by hand.
 | `RangeSlider`          | One track, two thumbs, for a band                   | —                                    |
 | `HighlightPicker`      | Typeahead for names and clubs, chosen as chips      | —                                    |
 | `DeclaredTransferForm` | A swap FPL has not published yet, kept locally      | unit (`declared-transfers.test.ts`)  |
+| `Scorecard`            | What was advised against what was actually done     | unit (`scorecard.test.ts`)           |
 | `DeclaredSquadBuilder` | Your pre-season fifteen, rule-checked and locked    | unit (`declared-squad.test.ts`)      |     | `DeclaredSquadNote` | Which fifteen the plan started from, and a way back | unit (`declared-squad.test.ts`) |     | `SquadRecord` | Per-player projection table | unit |
 | `ManagerHistory`       | Past seasons, including the empty case              | unit                                 |
 | `TeamStateCorrections` | Manager overrides, parsing and conflict             | unit (`parse.test.ts`)               |

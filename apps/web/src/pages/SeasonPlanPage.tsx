@@ -16,11 +16,13 @@ import {
 import { DeclaredTransferForm } from "../components/DeclaredTransferForm";
 import { PlayerDetail } from "../components/PlayerDetail";
 import { RouteHeading } from "../components/RouteHeading";
+import { Scorecard } from "../components/Scorecard";
 import { deadlineDay, money } from "../format";
 import { kitForShortName } from "../kit/team-kits";
 import type { SolvedGameweek } from "../state/season-solver";
 import { PLAYERS_BY_ELEMENT_ID, startFromCodes } from "../state/season-solver";
 import { encodeSquad } from "../state/squad-code";
+import { readScorecard, recordCall, settleCall } from "../state/scorecard";
 import { useSeasonSolve } from "../state/use-season-solve";
 import type {
   TeamStartFailure,
@@ -653,6 +655,21 @@ export default function SeasonPlanPage() {
       rememberTeam(window.localStorage, teamId);
     }
   }, [teamId, team.status]);
+
+  /*
+   * Settle the call made for the gameweek FPL has now published.
+   *
+   * The published fifteen is what he actually fielded, so his transfer is the
+   * difference between it and the fifteen the advice was given from. Nothing is
+   * settled twice, so a later visit cannot rewrite a result.
+   */
+  const published =
+    teamPlan.analysis.status === "ready" ||
+    teamPlan.analysis.status === "stale" ||
+    teamPlan.analysis.status === "refreshing"
+      ? teamPlan.analysis.state
+      : null;
+
   const live = useMemo(() => {
     // His own fifteen beats a gameweek number, because it is his season either
     // way and only one of the two knows what he owns.
@@ -678,6 +695,42 @@ export default function SeasonPlanPage() {
 
   const solve = useSeasonSolve(live);
   const solving = live !== null;
+
+  /*
+   * The record of what was advised against what was done.
+   *
+   * Both halves are written here rather than in an effect, so the table below
+   * is never a render behind the week that just settled. Safe to do while
+   * rendering because both writes refuse to overwrite: a call is recorded once
+   * per gameweek and a result is settled once, so running twice under Strict
+   * Mode changes nothing. That is a property of `scorecard.ts`, not a hope —
+   * it is the same property that stops a re-solve rewriting yesterday's advice.
+   */
+  const scorecard = useMemo(() => {
+    if (teamId === null) return [];
+    const captain = published?.picks.find((pick) => pick.isCaptain);
+    if (published && captain) {
+      settleCall(
+        window.localStorage,
+        teamId,
+        published.event,
+        published.picks.map((pick) => pick.elementId),
+        captain.elementId,
+      );
+    }
+    const next = solve.status === "done" ? solve.gameweeks[0] : null;
+    if (next && team.status === "ready" && team.source === "published") {
+      recordCall(window.localStorage, teamId, {
+        event: next.event,
+        squadBefore: team.start.squad.map((held) => held.elementId),
+        elementOut: next.transfersOut[0]?.id ?? null,
+        elementIn: next.transfersIn[0]?.id ?? null,
+        captain: next.captain.id,
+      });
+    }
+    return readScorecard(window.localStorage, teamId);
+  }, [published, solve.gameweeks, solve.status, team, teamId]);
+
   // Bench Boost and Triple Captain pay what this plan's own bench and captain
   // score, so they are re-solved from the gameweeks on screen. Wildcard and
   // Free Hit rebuild the fifteen and are carried through unchanged.
@@ -838,6 +891,8 @@ export default function SeasonPlanPage() {
           }}
         />
       ) : null}
+
+      {teamId === null ? null : <Scorecard calls={scorecard} />}
 
       <div className="plan-preamble">
         <p className="plan-preamble-line">

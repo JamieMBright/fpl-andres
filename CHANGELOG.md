@@ -28,6 +28,17 @@ The project follows Semantic Versioning once milestone tags begin.
 
 ### Added
 
+- A scorecard: what was advised for a gameweek against what the manager
+  actually did (`state/scorecard.ts`, `Scorecard`). The call is recorded before
+  the deadline and never rewritten afterwards — the plan is re-solved on every
+  visit and the numbers move, so taking the last version before the deadline
+  would score whichever answer happened to be on screen when he stopped
+  looking. It settles against the fifteen FPL publishes: his transfer is the
+  difference between that squad and the one the advice was given from, and more
+  than one change is reported as a hit or a chip rather than reduced to a swap
+  somebody picked. Agreement only, not points: scoring one captain against
+  another needs every player's points for the gameweek and no endpoint this
+  site is allowed to call publishes them, so the smaller claim is the one made.
 - The declared fifteen rides in the link as well as in this browser
   (`state/squad-code.ts`). Mobile Safari clears script-written storage after a
   week without a first-party visit, so a manager coming back to check his plan

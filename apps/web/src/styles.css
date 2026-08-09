@@ -4695,6 +4695,49 @@ h1[tabindex="-1"]:focus-visible {
   color: var(--ink-soft);
 }
 
+/* A recommendation nobody checks is an opinion, so this table has to be able
+   to say I was wrong as plainly as it says I was right. */
+.scorecard {
+  margin: 28px 0 0;
+  padding: 16px 18px;
+  border: 2px solid var(--ink);
+  background: var(--paper);
+}
+
+.scorecard-lede {
+  margin: 8px 0 14px;
+  color: var(--ink-soft);
+  font-size: 13px;
+  line-height: 1.55;
+  max-width: 68ch;
+}
+
+.scorecard-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.scorecard-table th,
+.scorecard-table td {
+  padding: 7px 10px;
+  border-bottom: 1px solid var(--rule);
+  text-align: left;
+  vertical-align: top;
+}
+
+.scorecard-table th {
+  color: var(--ink-soft);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.scorecard-agreed {
+  color: var(--field-green);
+}
+
 .opening-adopt {
   margin: 14px 0 0;
 }
