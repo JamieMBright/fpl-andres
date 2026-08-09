@@ -8,7 +8,7 @@ behaviour these pin.
 from __future__ import annotations
 
 from fpl_andres.adapters.player_crosswalk import crosswalk, fold_name
-from fpl_andres.adapters.the_odds_api import describe_event, read_event
+from fpl_andres.adapters.the_odds_api import Quota, by_kickoff, describe_event, read_event
 from fpl_andres.models.player_odds import PlayerMatchOdds
 
 
@@ -189,6 +189,59 @@ class TestDescribingWhyNothingWasQuoted:
 
         assert "'h2h'" in described
         assert "2 outcomes" in described
+
+
+class TestSpendingTheMonthlyBudget:
+    """Where a capped run points itself, and what it knows about the bill.
+
+    The free tier is 500 requests a month and the repository documented one
+    request per fixture without ever measuring it. Neither the cost nor the
+    balance can be checked from here, so both come off the response and into
+    the log; the ordering is what stops a capped run spending them all on
+    fixtures no book has opened a player market on yet.
+    """
+
+    def test_the_soonest_fixture_is_priced_first(self) -> None:
+        ordered = by_kickoff(
+            [
+                {"id": "late", "commence_time": "2026-12-26T15:00:00Z"},
+                {"id": "soon", "commence_time": "2026-08-21T19:00:00Z"},
+                {"id": "middle", "commence_time": "2026-09-13T13:00:00Z"},
+            ]
+        )
+
+        assert [event["id"] for event in ordered] == ["soon", "middle", "late"]
+
+    def test_an_unreadable_kickoff_sorts_last_rather_than_vanishing(self) -> None:
+        """Dropping it would hide a fixture; sorting it last only defers it."""
+        ordered = by_kickoff(
+            [
+                {"id": "undated", "commence_time": "not a date"},
+                {"id": "dated", "commence_time": "2026-12-26T15:00:00Z"},
+            ]
+        )
+
+        assert [event["id"] for event in ordered] == ["dated", "undated"]
+
+    def test_the_counters_are_read_off_the_response(self) -> None:
+        quota = Quota.from_headers(
+            {"x-requests-last": "10", "x-requests-used": "120", "x-requests-remaining": "380"}
+        )
+
+        assert (quota.cost, quota.used, quota.remaining) == (10, 120, 380)
+        assert str(quota) == "cost 10, used 120, 380 left"
+
+    def test_a_host_that_reports_no_counters_says_so_rather_than_reading_zero(self) -> None:
+        """Nought left and no answer must not look alike; one stops the run."""
+        quota = Quota.from_headers({})
+
+        assert quota.remaining is None
+        assert str(quota) == "quota not reported"
+
+    def test_a_counter_that_is_not_a_number_is_not_believed(self) -> None:
+        quota = Quota.from_headers({"x-requests-remaining": "unlimited"})
+
+        assert quota.remaining is None
 
 
 ELEMENTS = [

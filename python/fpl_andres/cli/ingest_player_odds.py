@@ -7,7 +7,7 @@ workflow that calls this holds the key as a repository secret.
 Usage:
 
     python -m fpl_andres.cli.ingest_player_odds --season 2026-27
-    python -m fpl_andres.cli.ingest_player_odds --season 2026-27 --max-events 4
+    python -m fpl_andres.cli.ingest_player_odds --season 2026-27 --budget 20
 
 Nothing here emits or implies a betting recommendation. A price is read as a
 probability and used as evidence about a footballer.
@@ -27,8 +27,8 @@ import httpx
 
 from fpl_andres.adapters.player_crosswalk import crosswalk
 from fpl_andres.adapters.the_odds_api import (
-    BASE,
     PLAYER_MARKETS,
+    by_kickoff,
     describe_event,
     fetch_event_odds,
     list_events,
@@ -39,9 +39,13 @@ from fpl_andres.timeouts import ODDS_FEED
 
 BOOTSTRAP = "https://fantasy.premierleague.com/api/bootstrap-static/"
 
-#: The free tier is 500 requests a month and each event costs one, so a run
-#: that priced every fixture every day would exhaust it in a fortnight.
-DEFAULT_MAX_EVENTS = 10
+#: The free tier is 500 requests a month. What one fixture costs against that
+#: is not known here and was never measured -- the host charges per market per
+#: region, and this asks for four markets across two regions -- so the cap is
+#: written in requests rather than fixtures. Whatever a fixture turns out to
+#: cost, a run cannot spend more than this, and the run reports what it did
+#: spend so the number below can be set from evidence instead of hope.
+DEFAULT_BUDGET = 35
 
 
 def _parser() -> argparse.ArgumentParser:
@@ -53,12 +57,13 @@ def _parser() -> argparse.ArgumentParser:
         help="Where the site bundle reads it from.",
     )
     parser.add_argument(
-        "--max-events",
+        "--budget",
         type=int,
-        default=DEFAULT_MAX_EVENTS,
+        default=DEFAULT_BUDGET,
         help=(
-            "Stop after this many fixtures. Each one costs a request against a "
-            f"free tier of 500 a month. Default {DEFAULT_MAX_EVENTS}."
+            "Stop once this many requests have been spent, against a free tier "
+            "of 500 a month. Fixtures are priced soonest first, so a small "
+            f"budget still buys the ones being played. Default {DEFAULT_BUDGET}."
         ),
     )
     parser.add_argument(
@@ -87,16 +92,27 @@ def main(argv: Sequence[str] | None = None) -> int:
         return 1
 
     with httpx.Client(timeout=ODDS_FEED, follow_redirects=True) as client:
-        events = list_events(client, key)
-        print(f"{len(events)} Premier League fixtures priced")
+        # Listing is free, so this is the cheap read of what the key has left
+        # before a single credit is spent.
+        events, opening = list_events(client, key)
+        print(f"{len(events)} Premier League fixtures priced \u2014 {opening}")
 
         rows: list[PlayerMatchOdds] = []
         offered = 0
-        for event in events[: args.max_events]:
+        spent = 0
+        closing = opening
+        for event in by_kickoff(events):
             event_id = event.get("id")
             if not isinstance(event_id, str):
                 continue
-            payload = fetch_event_odds(client, key, event_id)
+            if closing.remaining is not None and closing.remaining <= 0:
+                print("  stopping: the key has no requests left this month")
+                break
+            if spent >= args.budget:
+                print(f"  stopping: this run's budget of {args.budget} requests is spent")
+                break
+            payload, closing = fetch_event_odds(client, key, event_id)
+            spent += closing.cost or 0
             read = read_event(payload)
             if read:
                 offered += 1
@@ -106,13 +122,9 @@ def main(argv: Sequence[str] | None = None) -> int:
             )
             rows.extend(read)
 
-        # The Odds API charges a credit per market per region, so a run that
-        # spends nothing is a run whose request was refused rather than empty.
-        quota = client.get(f"{BASE}/events", params={"apiKey": key})
-        used = quota.headers.get("x-requests-used")
-        left = quota.headers.get("x-requests-remaining")
-        if used or left:
-            print(f"\nrequests used {used or '?'}, remaining {left or '?'}")
+        # The documented budget of one request per fixture was never measured.
+        # This is the measurement, and the schedule should be sized off it.
+        print(f"\nspent {spent} requests on this run; {closing}")
 
         bootstrap = client.get(BOOTSTRAP, headers={"Accept": "application/json"})
         bootstrap.raise_for_status()

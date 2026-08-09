@@ -73,11 +73,26 @@ fails on its first step and says so, rather than committing an empty artifact.
 Never put the key in a file. Nothing here reads it from anywhere but the
 environment, and a key in a commit is a key that has to be rotated.
 
-**The budget.** One request per fixture priced, against 500 a month. The
-schedule is daily at 08:00 UTC and again at 09:00 UTC on Friday and Saturday,
-an hour before the earliest a deadline lands. At ten fixtures a run that is
-about 390 requests a month, leaving room for manual runs. `max-events` on a
-manual run is the dial if you need to spend less.
+**The budget.** This repository used to claim one request per fixture. Nobody
+had measured it, and it is very likely wrong: the host charges per market per
+region, and the ingest asks for four markets across two regions. So the dial is
+written in the unit that actually bills. `budget` is how many requests a run may
+spend against the free tier's 500 a month, fixtures are priced soonest first so
+a small budget still buys the ones being played, and the run prints what each
+request cost and what the key has left. Set the default from that log.
+
+The schedule is Tuesday, Friday and Saturday at 09:00 UTC — the days a deadline
+can fall behind, an hour before the earliest one lands. Books price the result
+months out and open player props days out, so the daily run this replaced was
+spending the month's allowance on markets that did not exist yet.
+
+**When nothing is quoted.** Ten fixtures priced and nought players quoted is not
+a failure. Each fixture's line names how many books answered, how many outcomes
+they carried, which market keys arrived and which of the four asked-for keys did
+not, which is what separates "the market is shut" from "the keys are wrong".
+A run that quotes nobody anywhere exits clean and says the markets are not open;
+a run that quotes players but joins none of them to an FPL element fails, because
+that one is the crosswalk's fault and wants fixing.
 
 ## The shortlist, and why each is on it
 

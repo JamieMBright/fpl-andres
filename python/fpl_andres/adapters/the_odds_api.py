@@ -18,6 +18,7 @@ from __future__ import annotations
 import statistics
 from collections import defaultdict
 from collections.abc import Iterable, Mapping, Sequence
+from dataclasses import dataclass
 from datetime import UTC, datetime
 from typing import Any
 
@@ -27,9 +28,10 @@ from fpl_andres.models.odds import OddsUnavailable, devig_shin
 from fpl_andres.models.player_odds import PlayerMatchOdds
 
 __all__ = [
-    "BASE",
     "MARKET_FIELDS",
     "PLAYER_MARKETS",
+    "Quota",
+    "by_kickoff",
     "describe_event",
     "fetch_event_odds",
     "list_events",
@@ -56,12 +58,55 @@ MARKET_FIELDS: Mapping[str, str] = {
 }
 
 
-def list_events(client: httpx.Client, api_key: str) -> list[Mapping[str, Any]]:
-    """Every Premier League match the book is currently pricing."""
+@dataclass(frozen=True)
+class Quota:
+    """What the host says a request cost, and what is left.
+
+    The budget written into this repository -- one request per fixture, 500 a
+    month, so about 390 spent on the schedule -- was an assumption nobody could
+    check, because the host cannot be reached from the owner's network at all.
+    It is also the kind of assumption that fails quietly: an exhausted key
+    returns an error, not an empty market, and a run that reads the two apart
+    is a run that can say which happened. Every response carries the counters,
+    so the answer is free to take and there is no reason to keep guessing.
+    """
+
+    cost: int | None
+    used: int | None
+    remaining: int | None
+
+    @classmethod
+    def from_headers(cls, headers: Mapping[str, str]) -> Quota:
+        return cls(
+            cost=_counter(headers.get("x-requests-last")),
+            used=_counter(headers.get("x-requests-used")),
+            remaining=_counter(headers.get("x-requests-remaining")),
+        )
+
+    def __str__(self) -> str:
+        if self.used is None and self.remaining is None:
+            return "quota not reported"
+        return f"cost {self.cost or '?'}, used {self.used or '?'}, {self.remaining or '?'} left"
+
+
+def _counter(value: str | None) -> int | None:
+    try:
+        return int(float(value)) if value is not None else None
+    except ValueError:
+        return None
+
+
+def list_events(client: httpx.Client, api_key: str) -> tuple[list[Mapping[str, Any]], Quota]:
+    """Every Premier League match the book is currently pricing.
+
+    Listing is free, which makes it the cheap way to read the quota counters
+    without spending anything to learn them.
+    """
     response = client.get(f"{BASE}/events", params={"apiKey": api_key})
     response.raise_for_status()
     payload = response.json()
-    return [event for event in payload if isinstance(event, Mapping)]
+    events = [event for event in payload if isinstance(event, Mapping)]
+    return events, Quota.from_headers(response.headers)
 
 
 def fetch_event_odds(
@@ -69,7 +114,7 @@ def fetch_event_odds(
     api_key: str,
     event_id: str,
     markets: Sequence[str] = PLAYER_MARKETS,
-) -> Mapping[str, Any]:
+) -> tuple[Mapping[str, Any], Quota]:
     """One event's player markets, across every book in the UK and EU."""
     response = client.get(
         f"{BASE}/events/{event_id}/odds",
@@ -84,7 +129,7 @@ def fetch_event_odds(
     payload = response.json()
     if not isinstance(payload, Mapping):
         raise ValueError("event odds payload was not an object")
-    return payload
+    return payload, Quota.from_headers(response.headers)
 
 
 def _kickoff(value: object) -> datetime | None:
@@ -125,6 +170,21 @@ def _devigged(prices: Sequence[float]) -> float | None:
             # Neither is worth losing the rest of the fixture over.
             return _two_way(prices[0])
     return _two_way(prices[0])
+
+
+def by_kickoff(events: Iterable[Mapping[str, Any]]) -> list[Mapping[str, Any]]:
+    """Soonest first, so a limited budget is spent where markets are open.
+
+    Books price the result months out and open player props days out, so the
+    order the host happens to list fixtures in decides whether a capped run
+    finds anything at all. Sorting is the difference between spending the
+    month's credits on ten fixtures nobody has quoted yet and spending them on
+    the ones being played this week. Anything without a readable kickoff sorts
+    last rather than being dropped: an unparseable date is a reason to look, not
+    a reason to skip.
+    """
+    far = datetime.max.replace(tzinfo=UTC)
+    return sorted(events, key=lambda event: _kickoff(event.get("commence_time")) or far)
 
 
 def describe_event(payload: Mapping[str, Any]) -> str:
