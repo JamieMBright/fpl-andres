@@ -1,4 +1,4 @@
-import { ArrowRight, Clock3 } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -37,10 +37,7 @@ export default function HomePage() {
 
   return (
     <section className="index-page" aria-label="Index">
-      <p className="eyebrow">
-        <Clock3 aria-hidden="true" size={14} /> Reading the public record
-      </p>
-      <RouteHeading>Five pages. No opinions.</RouteHeading>
+      <RouteHeading>Where to start.</RouteHeading>
 
       <ul className="index-grid">
         <li className="index-cell is-plan">
@@ -53,7 +50,13 @@ export default function HomePage() {
 
         <li className="index-cell is-entry">
           <form className="index-form" noValidate onSubmit={analyseTeam}>
-            <label htmlFor="team-id">Your FPL team ID</label>
+            <div className="index-form-label">
+              <label htmlFor="team-id">Your FPL team ID</label>
+              <InfoMarker label="finding your team ID">
+                Open the Fantasy Premier League site and go to Points. The
+                number in the address bar, after /entry/, is your Team ID.
+              </InfoMarker>
+            </div>
             <div className="input-command">
               <input
                 aria-describedby={
@@ -73,12 +76,7 @@ export default function HomePage() {
               </button>
             </div>
             <p className="field-hint" id="team-id-hint">
-              In the URL of your FPL points page. No login needed.
-              <InfoMarker label="what I read">
-                Squad, captain, bank and transfers, exactly as FPL last recorded
-                them at a deadline. Nothing about your team is sent anywhere to
-                build the plan.
-              </InfoMarker>
+              No login needed.
             </p>
             {error ? (
               <p className="field-error" id="team-id-error" role="alert">

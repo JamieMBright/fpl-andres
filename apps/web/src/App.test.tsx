@@ -63,7 +63,7 @@ describe("team analysis entry", () => {
 
       expect(
         screen.getByRole("heading", {
-          name: "Five pages. No opinions.",
+          name: "Where to start.",
         }),
       ).not.toHaveFocus();
       await user.type(screen.getByLabelText("Your FPL team ID"), "123456");
@@ -129,8 +129,8 @@ describe("team analysis entry", () => {
     for (const name of ["FAQ", "Kits"]) {
       expect(screen.getAllByRole("link", { name }).length).toBeGreaterThan(0);
     }
-    // Capability is stated, not implied by a page full of promises.
-    expect(screen.getByText(/Reading the public record/)).toBeVisible();
+    // Capability is stated by what the page offers, not by a page full of
+    // promises about what it will offer one day.
     expect(
       screen.queryByText(/captain and bench calls/i),
     ).not.toBeInTheDocument();

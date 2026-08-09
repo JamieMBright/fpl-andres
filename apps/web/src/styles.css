@@ -732,12 +732,19 @@ h1[tabindex="-1"]:focus-visible {
   line-height: 1.5;
 }
 
-/* The form is not a destination, so it takes the page's own colour rather
-   than a keeper-kit one and keeps the themed input legible. */
+/* The form is not a destination. It carries a wash of the Plan cell's colour
+   because it belongs to it, and no rule between the two, because a rule there
+   reads as a border between two things rather than one. */
 .is-entry {
   justify-content: center;
   color: var(--ink);
-  background: var(--paper);
+  background: color-mix(in srgb, var(--fa-gk-lime) 12%, var(--paper));
+}
+
+@media (min-width: 1000px) {
+  .is-entry {
+    margin-left: -2px;
+  }
 }
 
 .is-plan {
@@ -776,9 +783,14 @@ h1[tabindex="-1"]:focus-visible {
   max-width: 620px;
 }
 
-.index-form label {
-  display: block;
+.index-form-label {
+  display: flex;
+  gap: 2px;
+  align-items: center;
   margin-bottom: 9px;
+}
+
+.index-form label {
   font-family: var(--fa-body);
   font-size: 13px;
   font-weight: 700;
