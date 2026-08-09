@@ -130,17 +130,15 @@ describe("ManagerHistory", () => {
     saveManagerHistory(window.localStorage, 212_279, history);
     vi.stubGlobal(
       "fetch",
-      vi
-        .fn<typeof fetch>()
-        .mockImplementation(async () =>
-          Response.json(
-            {
-              error: "FPL answered 403 with none: refused.",
-              reason: "refused",
-            },
-            { status: 502 },
-          ),
+      vi.fn<typeof fetch>().mockImplementation(async () =>
+        Response.json(
+          {
+            error: "FPL answered 403 with none: refused.",
+            reason: "refused",
+          },
+          { status: 502 },
         ),
+      ),
     );
 
     render(<ManagerHistory entryId={212_279} />);
@@ -156,17 +154,15 @@ describe("ManagerHistory", () => {
   it("keeps saying nothing when a refusal meets an empty store", async () => {
     vi.stubGlobal(
       "fetch",
-      vi
-        .fn<typeof fetch>()
-        .mockImplementation(async () =>
-          Response.json(
-            {
-              error: "FPL answered 403 with none: refused.",
-              reason: "refused",
-            },
-            { status: 502 },
-          ),
+      vi.fn<typeof fetch>().mockImplementation(async () =>
+        Response.json(
+          {
+            error: "FPL answered 403 with none: refused.",
+            reason: "refused",
+          },
+          { status: 502 },
         ),
+      ),
     );
 
     render(<ManagerHistory entryId={999_999} />);

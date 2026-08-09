@@ -18,7 +18,7 @@
     "dev": "corepack pnpm --filter @fpl-andres/web dev",
     "fast": "corepack pnpm format && corepack pnpm lint && corepack pnpm typecheck && python -m ruff check python && python -m ruff format python && python -m mypy && python -m pytest -q -m \"not slow\" -n auto --no-cov",
     "format": "prettier --cache --write .",
-    "format:check": "prettier --cache --check .",
+    "format:check": "prettier --check .",
     "lint": "eslint --cache --cache-location node_modules/.cache/eslint/lint-cache .",
     "test": "corepack pnpm -r --if-present test",
     "test:e2e": "corepack pnpm --filter @fpl-andres/web test:e2e",
