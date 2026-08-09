@@ -43,7 +43,7 @@ import {
   confidenceReason,
   fixtureReason,
   moneyLines,
-  moveReason,
+  moveLines,
 } from "../state/plan-reasons";
 import { useDocumentTitle } from "../state/use-document-title";
 
@@ -319,32 +319,46 @@ function Why({ week, chip }: { week: PlanGameweek; chip: ChipCall | null }) {
   const fixtures = fixtureReason(week);
 
   return (
-    <dl className="plan-why">
-      <dt data-label="move">Move</dt>
-      <dd>{moveReason(week)}</dd>
+    // Folded by default. Thirty-eight cards of open reasoning is a wall a
+    // reader scrolls past rather than reads, and the squad and the haul are
+    // what the card is for; this is the working behind them.
+    <details className="plan-why-fold">
+      <summary className="plan-why-summary">
+        <span>Why</span>
+      </summary>
+      <dl className="plan-why">
+        <dt data-label="move">Move</dt>
+        <dd>
+          <ul className="plan-money">
+            {moveLines(week).map((line) => (
+              <li key={line}>{line}</li>
+            ))}
+          </ul>
+        </dd>
 
-      <dt data-label="money">Money</dt>
-      <dd>
-        <ul className="plan-money">
-          {moneyLines(week).map((line) => (
-            <li key={line}>{line}</li>
-          ))}
-        </ul>
-      </dd>
+        <dt data-label="money">Money</dt>
+        <dd>
+          <ul className="plan-money">
+            {moneyLines(week).map((line) => (
+              <li key={line}>{line}</li>
+            ))}
+          </ul>
+        </dd>
 
-      {fixtures ? (
-        <>
-          <dt data-label="fixtures">Fixtures</dt>
-          <dd>{fixtures}</dd>
-        </>
-      ) : null}
+        {fixtures ? (
+          <>
+            <dt data-label="fixtures">Fixtures</dt>
+            <dd>{fixtures}</dd>
+          </>
+        ) : null}
 
-      <dt data-label="confidence">Confidence</dt>
-      <dd>{confidenceReason(week)}</dd>
+        <dt data-label="confidence">Confidence</dt>
+        <dd>{confidenceReason(week)}</dd>
 
-      <dt data-label="chip">Chip</dt>
-      <dd>{chipReason(chip)}</dd>
-    </dl>
+        <dt data-label="chip">Chip</dt>
+        <dd>{chipReason(chip, week.chip !== undefined)}</dd>
+      </dl>
+    </details>
   );
 }
 
@@ -389,7 +403,12 @@ function GameweekCard({
       <div className="plan-card-head">
         <span className="plan-gw mono">GW{week.event}</span>
         <span className="plan-date mono">{deadlineDay.format(deadline)}</span>
-        {chip ? <span className="plan-chip mono">{chip.chip}</span> : null}
+        {chip ? (
+          <span className="plan-chip mono">
+            {chip.chip}
+            {week.chip === undefined ? " advised" : ""}
+          </span>
+        ) : null}
       </div>
 
       <Move week={week} />

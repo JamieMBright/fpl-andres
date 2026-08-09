@@ -13,12 +13,19 @@ import {
   type PoolPlayer,
 } from "../state/player-pool";
 import { describeFreshness } from "../state/freshness";
+import {
+  DEFAULT_HORIZON,
+  horizonPointsByCode,
+  horizonsAvailable,
+  type Horizon,
+} from "../state/horizon-points";
 import { retryingFetch } from "../state/retrying-fetch";
 import { projectionSeason } from "../state/squad-projection";
 import { money as sharedMoney } from "../format";
 
 type SortKey =
   | "points"
+  | "horizon"
   | "perMillion"
   | "price"
   | "run"
@@ -62,6 +69,12 @@ const COLUMNS: Column[] = [
     label: "Pts / match",
     explains:
       "Expected FPL points in one match against an average opponent, from last season's per-90 rates and minutes. Four to six is a good starter.",
+  },
+  {
+    key: "horizon",
+    label: "xPts",
+    explains:
+      "Expected points added up over the next few gameweeks, against the real opponents. A double counts twice and a blank counts nothing, which is what a per-match figure cannot say.",
   },
   {
     key: "perMillion",
@@ -143,8 +156,14 @@ function FixtureRunCell({
   );
 }
 
-function sortValue(player: PoolPlayer, key: SortKey, run: FixtureRun): number {
+function sortValue(
+  player: PoolPlayer,
+  key: SortKey,
+  run: FixtureRun,
+  horizon: ReadonlyMap<number, number>,
+): number {
   if (key === "price") return player.priceTenths;
+  if (key === "horizon") return horizon.get(player.code) ?? -Infinity;
   if (key === "perMillion") return player.perMillion ?? -1;
   if (key === "returned") return player.record?.returnRate ?? -1;
   if (key === "ceiling") return player.record?.ceiling ?? -1;
@@ -181,6 +200,7 @@ export function PlayerPoolTable() {
   const [failed, setFailed] = useState<PoolFailure | null>(null);
   const [position, setPosition] = useState("ALL");
   const [sort, setSort] = useState<SortKey>("points");
+  const [horizonWeeks, setHorizonWeeks] = useState<Horizon>(DEFAULT_HORIZON);
   const [descending, setDescending] = useState(true);
   const [maxPrice, setMaxPrice] = useState(0);
   const [search, setSearch] = useState("");
@@ -232,6 +252,12 @@ export function PlayerPoolTable() {
     };
   }, [attempt]);
 
+  const horizon = useMemo(
+    () => horizonPointsByCode(horizonWeeks),
+    [horizonWeeks],
+  );
+  const available = useMemo(() => horizonsAvailable(), []);
+
   const shown = useMemo(() => {
     if (!pool) return [];
     const runs = new Map<number, FixtureRun>();
@@ -273,11 +299,11 @@ export function PlayerPoolTable() {
         }
         return (
           direction *
-          (sortValue(left.player, sort, left.run) -
-            sortValue(right.player, sort, right.run))
+          (sortValue(left.player, sort, left.run, horizon) -
+            sortValue(right.player, sort, right.run, horizon))
         );
       });
-  }, [pool, position, sort, descending, maxPrice, search]);
+  }, [pool, position, sort, descending, maxPrice, search, horizon]);
 
   // The whole remaining season, computed only for the card that is open. Doing
   // it for every row would be thirty-eight fixtures times six hundred players
@@ -390,10 +416,50 @@ export function PlayerPoolTable() {
             ))}
           </select>
         </label>
+        <label>
+          xPts over
+          <select
+            onChange={(event) =>
+              setHorizonWeeks(Number(event.target.value) as Horizon)
+            }
+            value={horizonWeeks}
+          >
+            {available.map((weeks) => (
+              <option key={weeks} value={weeks}>
+                {weeks} GW
+              </option>
+            ))}
+          </select>
+        </label>
       </div>
 
       <p className="pool-count mono">
         {shown.length} shown · {unknown} in the game with no record
+      </p>
+
+      <p className="pool-horizon-note">
+        Sort on <strong>xPts{horizonWeeks}</strong> to find the transfer worth
+        making.
+        <InfoMarker label="what xPts over a horizon is">
+          <span className="info-marker-line">
+            Every gameweek in the horizon added up, against the real opponents:
+            a double counts twice and a blank counts nothing.
+          </span>
+          <span className="info-marker-line">
+            Not discounted. The solver weights later weeks down because it will
+            get another transfer before them; you are asking what the next{" "}
+            {horizonWeeks} gameweeks are worth, which is a different question.
+          </span>
+          <span className="info-marker-line">
+            One gameweek is who to captain. Five and beyond is who to buy: a
+            striker with one soft fixture and then the top three outranks a
+            steadier one on Saturday and is the worse buy by gameweek five.
+          </span>
+          <span className="info-marker-line">
+            It is still last season&rsquo;s rates in this season&rsquo;s
+            fixtures. Nothing here has seen a minute of 2026/27.
+          </span>
+        </InfoMarker>
       </p>
 
       <div
@@ -424,7 +490,9 @@ export function PlayerPoolTable() {
                     title={column.explains}
                     type="button"
                   >
-                    {column.label}
+                    {column.key === "horizon"
+                      ? `${column.label}${String(horizonWeeks)}`
+                      : column.label}
                     <span aria-hidden="true" className="pool-arrow">
                       {sort === column.key
                         ? descending
@@ -464,6 +532,9 @@ export function PlayerPoolTable() {
                   {player.record
                     ? player.record.expectedPoints.toFixed(2)
                     : "—"}
+                </td>
+                <td className="mono">
+                  {horizon.get(player.code)?.toFixed(1) ?? "—"}
                 </td>
                 <td className="mono">{player.perMillion?.toFixed(2) ?? "—"}</td>
                 <td className="mono">

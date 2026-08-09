@@ -15,10 +15,13 @@ from typing import Any
 import pytest
 
 from fpl_andres.cli.publish_season_plan import (
+    MINIMUM_WILDCARD_CHANGES,
     Candidate,
     _ChipRun,
+    _place_wildcards,
     _play_chips,
     _turnover,
+    _wildcard_turnover,
 )
 
 
@@ -168,6 +171,41 @@ def test_the_turnover_captains_the_best_of_the_new_eleven() -> None:
 
     assert week["captain"] == max(starters)
     assert week["viceCaptain"] == sorted(starters)[-2]
+
+
+def _wildcard(event: int | None = 3) -> dict[str, Any]:
+    return {"chip": "Wildcard", "half": "first", "event": event, "gain": 0.0, "note": ""}
+
+
+def test_a_rebuild_that_moves_almost_nobody_is_not_a_wildcard() -> None:
+    """The report that motivated it: a Wildcard offered against one transfer.
+
+    The pool here is the squad the plan already holds, so the best fifteen it
+    can shop for is the fifteen it has. A chip that buys nothing the free
+    transfer could not is a chip thrown away.
+    """
+    weeks = {2: _week(2, HELD), 3: _week(3, HELD)}
+    run = _run(weeks, _points(better=False))
+    chips = [_wildcard(3)]
+
+    assert _wildcard_turnover(3, run) < MINIMUM_WILDCARD_CHANGES
+
+    _place_wildcards(chips, run)
+
+    assert chips[0]["event"] is None
+    assert chips[0]["gain"] == 0.0
+    assert str(MINIMUM_WILDCARD_CHANGES) in chips[0]["note"]
+    assert "chip" not in weeks[3]
+
+
+def test_the_turnover_is_measured_against_the_week_before_the_rebuild() -> None:
+    """Not against the rebuild itself, which would always report zero moves."""
+    weeks = {2: _week(2, HELD), 3: _week(3, HELD)}
+    run = _run(weeks, _points(better=True))
+
+    # The pool is the held fifteen, so a rebuild in gameweek 3 can only reshuffle
+    # what is already there and the turnover against gameweek 2 is nil.
+    assert _wildcard_turnover(3, run) == 0
 
 
 def test_the_turnover_names_the_opponent_and_grades_the_week() -> None:

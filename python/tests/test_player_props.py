@@ -70,7 +70,7 @@ class TestProbing:
             result = probe_source(source, client, env={})
 
         assert result.status == "no_credential"
-        assert "ODDS_API_KEY" in result.note
+        assert "THE_ODDS_API_KEY" in result.note
 
     def test_a_credential_never_reaches_the_report(self) -> None:
         def handler(request: httpx.Request) -> httpx.Response:
@@ -78,7 +78,7 @@ class TestProbing:
 
         source = source_by_key("the-odds-api")
         with _client(handler) as client:
-            result = probe_source(source, client, env={"ODDS_API_KEY": "s3cret"})
+            result = probe_source(source, client, env={"THE_ODDS_API_KEY": "s3cret"})
 
         assert result.status == "refused"
         assert "s3cret" not in result.note
@@ -148,7 +148,7 @@ class TestProbing:
             result = probe_source(
                 source_by_key("the-odds-api"),
                 client,
-                env={"ODDS_API_KEY": "k"},
+                env={"THE_ODDS_API_KEY": "k"},
             )
 
         assert result.status == "ok"

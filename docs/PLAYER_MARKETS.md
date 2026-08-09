@@ -43,13 +43,12 @@ repository secrets to have a source probed.
 
 | Secret                  | Source           | Cost                            |
 | ----------------------- | ---------------- | ------------------------------- |
-| `ODDS_API_KEY`          | The Odds API     | Free tier, 500 requests a month |
-| `API_FOOTBALL_KEY`      | API-Football     | Free tier, 100 requests a day   |
-| `SPORTMONKS_TOKEN`      | Sportmonks       | Odds need a paid plan           |
+| `THE_ODDS_API_KEY`      | The Odds API     | Free tier, 500 requests a month |
+| `API_FOOTBALL_API_KEY`  | API-Football     | Free tier, 100 requests a day   |
 | `BETFAIR_APP_KEY`       | Betfair Exchange | Delayed application key is free |
 | `BETFAIR_SESSION_TOKEN` | Betfair Exchange | Expires; refresh before a run   |
 
-### Getting `ODDS_API_KEY`, and where it goes
+### Getting `THE_ODDS_API_KEY`, and where it goes
 
 This is the one the ingest actually needs. Without it **Ingest Player Odds**
 fails on its first step and says so, rather than committing an empty artifact.
@@ -59,7 +58,7 @@ fails on its first step and says so, rather than committing an empty artifact.
    The key arrives by email and is shown on the dashboard.
 3. In this repository: **Settings → Secrets and variables → Actions → New
    repository secret**.
-4. Name it exactly `ODDS_API_KEY`. Paste the key as the value. Save.
+4. Name it exactly `THE_ODDS_API_KEY`. Paste the key as the value. Save.
 5. **Actions → Ingest Player Odds → Run workflow** to confirm. A good run
    prints how many fixtures were priced, how many players were quoted and how
    many joined onto an FPL element, then commits
@@ -80,7 +79,6 @@ manual run is the dial if you need to spend less.
 | ------------------ | ------------------------------------------------------------- | -------------------------------- |
 | `the-odds-api`     | Aggregator over UK and EU books, markets named explicitly     | goal, assist, cards              |
 | `api-football`     | Aggregator; its `/odds/bets` endpoint _is_ a market catalogue | goal, assist, cards, clean sheet |
-| `sportmonks`       | Licensed feed with a published market taxonomy                | goal, assist, save, cards        |
 | `betfair-exchange` | An exchange, not a book: two-sided prices, so the least vig   | goal, assist, clean sheet, cards |
 | `football-data`    | The baseline already ingested. Match level only, no props     | clean sheet, goals conceded      |
 | `understat`        | Not a market. Shot-level rates, the control on any prop       | goal, assist                     |

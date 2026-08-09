@@ -19,6 +19,17 @@ const HALVES = [
   { half: "second", from: 20, to: 38 },
 ] as const;
 
+/**
+ * How many of the fifteen a wildcard has to move before it is worth playing.
+ *
+ * Anything a free transfer or two could have made is not a wildcard, it is a
+ * transfer you happened to make in the week you burned a chip.
+ */
+const MINIMUM_WILDCARD_CHANGES = 5;
+
+/** The run a kept squad is priced over. A free hit is one afternoon. */
+const WILDCARD_HORIZON = 5;
+
 function pointsOf(week: SolvedGameweek, code: number): number {
   return week.expected[String(code)] ?? 0;
 }
@@ -92,9 +103,9 @@ function budgetAt(week: SolvedGameweek): number {
 /**
  * The two rebuild chips, priced by actually rebuilding.
  *
- * A free hit is one week, so its gain is the one-week uplift of the best
- * fifteen the money buys. A wildcard keeps the squad, so it is priced on the
- * lookahead the rebuild is chosen for -- the run it opens, not the Saturday.
+ * A free hit is one week, so it is priced on that afternoon alone. A wildcard
+ * keeps the squad, so it is priced across the run it opens -- the note used to
+ * claim five gameweeks while the number underneath measured one.
  */
 function rebuildCalls(
   half: string,
@@ -103,20 +114,36 @@ function rebuildCalls(
   const priced = weeks
     .map((week) => ({
       week,
-      ...rebuildUplift(
+      free: rebuildUplift(
         week.event,
         [...week.starters, ...week.bench],
         budgetAt(week),
       ),
+      kept: rebuildUplift(
+        week.event,
+        [...week.starters, ...week.bench],
+        budgetAt(week),
+        WILDCARD_HORIZON,
+      ),
     }))
-    .filter((entry) => entry.rebuilt !== null && entry.gain > 0)
-    .sort((left, right) => right.gain - left.gain);
+    .filter((entry) => entry.free.rebuilt !== null);
 
-  const freeHit = priced[0];
-  // Never the same week twice: one squad cannot be both handed back and kept.
-  const wildcard = priced.find(
-    (entry) => entry.week.event !== freeHit?.week.event,
-  );
+  const freeHit = priced
+    .filter((entry) => entry.free.gain > 0)
+    .sort((left, right) => right.free.gain - left.free.gain)[0];
+
+  // A wildcard that moves one player is a wildcard thrown away, however well
+  // that one swap scores: the chip is the right to rebuild, and a rebuild the
+  // free transfer could have made costs nothing to make with the free transfer.
+  const wildcard = priced
+    .filter(
+      (entry) =>
+        entry.kept.gain > 0 &&
+        entry.kept.changes >= MINIMUM_WILDCARD_CHANGES &&
+        // Never the same week twice: one squad cannot be both handed back and kept.
+        entry.week.event !== freeHit?.week.event,
+    )
+    .sort((left, right) => right.kept.gain - left.kept.gain)[0];
 
   return [
     freeHit
@@ -124,10 +151,11 @@ function rebuildCalls(
           event: freeHit.week.event,
           chip: "Free Hit",
           half,
-          gain: Math.round(freeHit.gain * 100) / 100,
+          gain: Math.round(freeHit.free.gain * 100) / 100,
           note:
-            `the best fifteen this budget buys is worth ${freeHit.gain.toFixed(1)} more ` +
-            `than yours in gameweek ${String(freeHit.week.event)}, and you get yours back after`,
+            `the best fifteen this budget buys is worth ${freeHit.free.gain.toFixed(1)} more ` +
+            `than yours in gameweek ${String(freeHit.week.event)}, on ${String(freeHit.free.changes)} changes, ` +
+            `and you get yours back after`,
         }
       : {
           event: null,
@@ -141,17 +169,17 @@ function rebuildCalls(
           event: wildcard.week.event,
           chip: "Wildcard",
           half,
-          gain: Math.round(wildcard.gain * 100) / 100,
+          gain: Math.round(wildcard.kept.gain * 100) / 100,
           note:
-            `rebuilding in gameweek ${String(wildcard.week.event)} is worth ${wildcard.gain.toFixed(1)} ` +
-            `on the five gameweeks it opens, and the squad stays`,
+            `rebuilding in gameweek ${String(wildcard.week.event)} moves ${String(wildcard.kept.changes)} of your fifteen ` +
+            `and is worth ${wildcard.kept.gain.toFixed(1)} over the ${String(WILDCARD_HORIZON)} gameweeks it opens, and the squad stays`,
         }
       : {
           event: null,
           chip: "Wildcard",
           half,
           gain: 0,
-          note: "no week in this half worth a rebuild",
+          note: `no week in this half where a rebuild moves ${String(MINIMUM_WILDCARD_CHANGES)} or more of your fifteen for a gain`,
         },
   ];
 }

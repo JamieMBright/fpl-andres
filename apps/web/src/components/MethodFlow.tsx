@@ -52,7 +52,7 @@ const STAGES: Stage[] = [
       {
         name: "Odds refresh",
         value: "daily, plus Friday evening",
-        why: "Fixtures now land on every day of the week, so a twice-weekly grab would price a midweek round off a stale scrape. It runs on a hosted runner rather than my machine, because this network blocks every price host at the TLS handshake.",
+        why: "Fixtures now land on every day of the week, so a twice-weekly grab would price a midweek round off a stale scrape. It runs on a hosted runner rather than a development machine, because the network this project is developed on blocks every price host at the TLS handshake.",
       },
       {
         name: "Odds used",
@@ -165,11 +165,11 @@ const STAGES: Stage[] = [
       {
         name: "Draw residual",
         value: "published per fixture",
-        why: "Independent Poisson under-prices draws, which is what Dixon-Coles exists to correct. Rather than apply a correction I have not measured on this corpus, the gap between the market's draw price and the fitted model's is published. A large one is the size of the correction being forgone.",
+        why: "Independent Poisson under-prices draws, which is what Dixon-Coles exists to correct. Rather than apply a correction that has not been measured on this corpus, the gap between the market's draw price and the fitted model's is published. A large one is the size of the correction being forgone.",
       },
     ],
     caveat:
-      "A promoted club has no measured Premier League strength, so the history route rates fixtures against them as average. That is a guess wearing the costume of a measurement, and it is the largest soft spot in the fixture model — three of twenty clubs are promoted every year, so it touches roughly a seventh of all fixtures. The bookmaker route is the intended fix, because a market prices a promoted club on evidence I do not have. It is ingested, joined and published; what it does not yet do is override the history route in the projection, and it should not until it has beaten it on four seasons of backtest.",
+      "A promoted club has no measured Premier League strength. The history route therefore rates fixtures against them on FPL's own published attack and defence strength, which FPL sets for all twenty clubs before a ball is kicked. That is a real source rather than an assumption of average, but it is FPL's judgement rather than a measurement, and it is the largest soft spot in the fixture model: three of twenty clubs are promoted every year, so it touches roughly a seventh of all fixtures. The bookmaker route is the intended replacement, because a market prices a promoted club on evidence no historical record contains. It is ingested, joined and published; what it does not yet do is override the history route in the projection, and it should not until it has beaten it across four seasons of backtest.",
   },
   {
     id: "points",

@@ -6,8 +6,57 @@ The project follows Semantic Versioning once milestone tags begin.
 
 ## [Unreleased]
 
+### Fixed
+
+- The odds workflows never declared `environment: production`, so the API keys
+  the owner had configured were invisible to them and every expression expanded
+  to an empty string. `Ingest Player Odds` run 1 failed reporting that its key
+  was not set while the key existed. All three now name the environment, and
+  `test_workflow_environments.py` fails any workflow that reads one of those
+  secrets without it — there is no error from GitHub when this is wrong, only a
+  step that fails further down for a reason that looks unrelated.
+- A Wildcard is refused unless the rebuild moves at least five of the fifteen,
+  in both the published plan and the browser solve. It was being offered
+  against a single transfer, which is a chip thrown away: the free transfer
+  makes that move and the chip is still in hand. The published plan's two
+  wildcards now move six each.
+- The Wildcard is priced over the run it opens rather than one afternoon. The
+  note claimed five gameweeks while the number underneath measured one, which
+  is also why it kept landing on the second-best week.
+- A chip badge on a solved plan says `advised`. The squad below it has not been
+  rebuilt around the chip, and a badge that did not say so read as a Wildcard
+  being spent on the single transfer printed underneath it.
+
 ### Changed
 
+- The two-sigma curve control is disabled, rather than silently drawing
+  nothing, when the axes have too few players or no spread to measure. The
+  reason is on the control.
+- Expected points can be totalled over the next 1, 3, 5, 7 or 9 gameweeks
+  against the real opponents, on the player pool, the player card and as a
+  scatter axis (`state/horizon-points.ts`). A double counts twice and a blank
+  counts nothing, which is what a per-match figure cannot express. It is a
+  plain sum rather than the solver's decayed lookahead: the solver discounts
+  later weeks because it will get another transfer before them, and a reader
+  comparing two players over nine gameweeks is asking a different question.
+- The plan's per-gameweek reasoning is folded away by default, and the move
+  section gives one line per transfer. Thirty-eight cards of open reasoning is
+  a wall to scroll past, and a double transfer read as one sentence about four
+  players with no way to tell which price belonged to which move.
+- The club shirts on the plan are ten to a row, centred, rather than however
+  many the width allows. Sized against their own column with a container query,
+  so all twenty appear on one line if the column ever gets wide enough.
+- The manager record chart's season labels are angled and smaller. Sixteen
+  seasons in a 500px column put them hard against each other.
+- The FAQ is written out properly: full answers in several paragraphs, a
+  definition of every term that actually defines it, and no first person. It is
+  the one page with no numbers on it, so a clipped answer there is only an
+  answer somebody has to ask again.
+- The method page carries one body size instead of five, and no longer speaks
+  in the first person. It is a description of what a program does.
+- The odds credentials are `THE_ODDS_API_KEY` and `API_FOOTBALL_API_KEY`.
+  SportMonks is removed: its odds need a paid plan and the owner is not
+  signing up.
 - The mini-league verdict is derived from the artifact instead of typed
   (`state/validation-verdict.ts`, `leagueVerdict`). It said the form chaser beat
   the projection outright in 2024-25. It had, when it was written; the backtest

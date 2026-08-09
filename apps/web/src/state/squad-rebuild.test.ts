@@ -80,6 +80,10 @@ describe("rebuildUplift", () => {
   });
 
   it("says nothing for a gameweek that is not in the season", () => {
-    expect(rebuildUplift(99, [], BUDGET)).toEqual({ gain: 0, rebuilt: null });
+    expect(rebuildUplift(99, [], BUDGET)).toEqual({
+      gain: 0,
+      changes: 0,
+      rebuilt: null,
+    });
   });
 });

@@ -146,6 +146,46 @@ describe("chipCallsFor", () => {
     );
   });
 
+  it("refuses a wildcard that would move fewer than five of the fifteen", () => {
+    // The report that motivated it: a Wildcard offered for gameweek 3 against
+    // a single transfer. A chip that buys a move the free transfer could have
+    // made is a chip thrown away, however well that move scores.
+    const calls = chipCallsFor(
+      [
+        week(2, { bench: [1], captain: 7 }),
+        week(3, { bench: [1], captain: 7 }),
+      ],
+      PUBLISHED,
+    );
+    const wildcard = callOf(calls, "Wildcard");
+
+    if (wildcard.event === null) {
+      expect(wildcard.note).toContain("5 or more");
+      return;
+    }
+    const moves = /moves (\d+) of your fifteen/.exec(wildcard.note);
+    expect(moves).not.toBeNull();
+    expect(Number(moves?.[1])).toBeGreaterThanOrEqual(5);
+  });
+
+  it("prices the wildcard over the run it opens, not one afternoon", () => {
+    const calls = chipCallsFor(
+      [
+        week(2, { bench: [1], captain: 7 }),
+        week(3, { bench: [1], captain: 7 }),
+      ],
+      PUBLISHED,
+    );
+    const wildcard = callOf(calls, "Wildcard");
+    const freeHit = callOf(calls, "Free Hit");
+
+    if (wildcard.event === null) return;
+    expect(wildcard.note).toContain("gameweeks it opens");
+    // A kept squad scores over several weeks and a free hit over one, so the
+    // two numbers cannot be the same measure. They used to be.
+    expect(wildcard.gain).toBeGreaterThan(freeHit.gain);
+  });
+
   it("keeps the halves apart", () => {
     const calls = chipCallsFor(
       [

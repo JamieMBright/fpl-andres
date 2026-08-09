@@ -6,7 +6,7 @@ import {
   fixtureReason,
   isPremium,
   moneyLines,
-  moveReason,
+  moveLines,
 } from "./plan-reasons";
 import type { PlanGameweek, PlanPlayer } from "./season-plan";
 
@@ -53,26 +53,26 @@ function week(overrides: Partial<PlanGameweek> = {}): PlanGameweek {
   };
 }
 
-describe("moveReason", () => {
+describe("moveLines", () => {
   it("says nothing more than the obvious in the opening week", () => {
-    expect(moveReason(week({ event: 1 }))).toBe("Opening squad.");
+    expect(moveLines(week({ event: 1 }))).toEqual(["Opening squad."]);
   });
 
   it("tells you to roll rather than explaining the accounting", () => {
-    expect(moveReason(week())).toContain("Roll the free transfer");
+    expect(moveLines(week()).join(" ")).toContain("Roll the free transfer");
   });
 
   it("names both players, the gain and the fixture", () => {
     const incoming = player(30, { name: "Saka", priceTenths: 100 });
     const outgoing = player(2, { name: "Rice", priceTenths: 75 });
-    const reason = moveReason(
+    const reason = moveLines(
       week({
         starters: [incoming, ...ELEVEN.slice(1)],
         transfersIn: [incoming],
         transfersOut: [outgoing],
         expected: { "30": 7, "2": 4 },
       }),
-    );
+    ).join(" ");
 
     expect(reason).toContain("Rice out, Saka in");
     expect(reason).toContain("+3.0 this week");
@@ -80,13 +80,34 @@ describe("moveReason", () => {
     expect(reason).toContain("£2.5m of the bank");
   });
 
+  it("gives one line per transfer rather than a paragraph", () => {
+    // A double transfer read as one sentence about four players, and nothing
+    // said which price and which fixture belonged to which move.
+    const first = player(30, { name: "Saka" });
+    const second = player(31, { name: "Palmer" });
+    const lines = moveLines(
+      week({
+        transfersIn: [first, second],
+        transfersOut: [
+          player(2, { name: "Rice" }),
+          player(3, { name: "Odegaard" }),
+        ],
+      }),
+    );
+
+    expect(lines).toHaveLength(2);
+    expect(lines[0]).toContain("Saka");
+    expect(lines[0]).not.toContain("Palmer");
+    expect(lines[1]).toContain("Palmer");
+  });
+
   it("counts the hit where one is taken", () => {
     const incoming = player(30);
-    const reason = moveReason(
+    const lines = moveLines(
       week({ transfersIn: [incoming], transferCostPoints: 4 }),
     );
 
-    expect(reason).toContain("\u22124 for the extra transfers");
+    expect(lines.at(-1)).toContain("\u22124 for the extra transfers");
   });
 });
 

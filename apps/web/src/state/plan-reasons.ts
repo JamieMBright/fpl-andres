@@ -68,23 +68,24 @@ export function isPremium(player: PlanPlayer): boolean {
 /**
  * Why this transfer, naming both players and what separates them.
  *
- * The old text said "inside the free transfer, so it costs nothing", which
- * explains the accounting and not the decision.
+ * One line per swap. Run together as a paragraph, a double transfer read as a
+ * single sentence about four players and there was no way to tell which price
+ * and which fixture belonged to which move.
  */
-export function moveReason(week: PlanGameweek): string {
+export function moveLines(week: PlanGameweek): string[] {
   if (week.chip) {
     const changes = week.transfersIn.length;
     const revert = week.revertsAfter
       ? " The squad goes back to what it was for the following week."
       : " The squad is kept from here on.";
-    return (
+    return [
       `${week.chip}: ${changes} ${changes === 1 ? "change" : "changes"}, ` +
-      `no transfer charged and no free transfer spent.${revert}`
-    );
+        `no transfer charged and no free transfer spent.${revert}`,
+    ];
   }
 
   if (week.transfersIn.length === 0) {
-    return week.event === 1 ? "Opening squad." : "Roll the free transfer.";
+    return [week.event === 1 ? "Opening squad." : "Roll the free transfer."];
   }
 
   const swaps = week.transfersIn.map((incoming, index) => {
@@ -116,7 +117,7 @@ export function moveReason(week: PlanGameweek): string {
       `\u2212${String(week.transferCostPoints)} for the extra transfers, already in the total.`,
     );
   }
-  return swaps.join(" ");
+  return swaps;
 }
 
 /** The money, one fact per line, because a paragraph of figures reads as none. */
@@ -275,7 +276,18 @@ export function benchedPremiumReasons(week: PlanGameweek): string[] {
   });
 }
 
-/** The chip line, or an honest statement that none is due. */
-export function chipReason(chip: ChipCall | null): string {
-  return chip ? `${chip.chip} — ${chip.note}.` : "None this week.";
+/**
+ * The chip line, or an honest statement that none is due.
+ *
+ * `played` is whether the squad below was solved with the chip in hand. On a
+ * published plan it was; on a manager's own solve the chip is a recommendation
+ * sitting beside an ordinary week, and a badge that did not say so read as a
+ * Wildcard being spent on the single transfer printed under it.
+ */
+export function chipReason(chip: ChipCall | null, played = true): string {
+  if (!chip) return "None this week.";
+  const caveat = played
+    ? ""
+    : " Advice for this week, not something the squad below has been rebuilt around: play it in FPL and the transfers are free.";
+  return `${chip.chip} \u2014 ${chip.note}.${caveat}`;
 }

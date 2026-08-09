@@ -217,23 +217,37 @@ export function rebuildSquad(
 }
 
 /**
- * What the best possible fifteen would score this week, against what is held.
+ * What the best possible fifteen would score, against what is held.
  *
- * The measure both chips are chosen on: a free hit takes it for one week, a
- * wildcard keeps the squad and is priced by solving the rest of the season.
+ * `weeks` is how far the comparison runs. A free hit takes one week and hands
+ * the squad back, so it is worth exactly that afternoon. A wildcard keeps the
+ * squad, so pricing it on one Saturday understates it and makes the note claim
+ * a horizon it never measured — which is what it used to do.
+ *
+ * `changes` is how many of the fifteen the rebuild actually moves. A chip that
+ * replaces one player is a chip thrown away, however well the swap scores.
  */
 export function rebuildUplift(
   event: number,
   held: readonly SolverPlayer[],
   budgetTenths: number,
-): { gain: number; rebuilt: RebuiltSquad | null } {
+  weeks = 1,
+): { gain: number; changes: number; rebuilt: RebuiltSquad | null } {
   const eventIndex = EVENT_INDEX.get(event);
-  if (eventIndex === undefined) return { gain: 0, rebuilt: null };
+  if (eventIndex === undefined) return { gain: 0, changes: 0, rebuilt: null };
 
   const rebuilt = rebuildSquad(eventIndex, budgetTenths);
-  if (!rebuilt) return { gain: 0, rebuilt: null };
+  if (!rebuilt) return { gain: 0, changes: 0, rebuilt: null };
 
-  const mine = bestElevenPoints(rebuilt.squad, eventIndex);
-  const theirs = bestElevenPoints([...held], eventIndex);
-  return { gain: mine - theirs, rebuilt };
+  let gain = 0;
+  for (let ahead = 0; ahead < weeks; ahead += 1) {
+    const index = eventIndex + ahead;
+    gain +=
+      bestElevenPoints(rebuilt.squad, index) -
+      bestElevenPoints([...held], index);
+  }
+
+  const kept = new Set(held.map((player) => player.id));
+  const changes = rebuilt.squad.filter((player) => !kept.has(player.id)).length;
+  return { gain, changes, rebuilt };
 }

@@ -235,6 +235,11 @@ UNLIMITED_CHIP_SEPARATION = 3
 FREE_TRANSFER_CATCHUP = 5
 # How far a wildcard's rebuild is credited forward.
 WILDCARD_HORIZON = 8
+# How many of the fifteen a rebuild has to move before the chip is worth
+# spending. Below this the free transfer makes the same moves over a few weeks
+# and the chip is still in hand; a Wildcard offered against one swap is a chip
+# thrown away, however well that swap scores.
+MINIMUM_WILDCARD_CHANGES = 5
 
 # How many rebuild weeks per half are solved exactly rather than trusted to the
 # cheap screen. The screen already scores every legal week; taking only its
@@ -617,6 +622,25 @@ def _turnover(
     )
 
 
+def _wildcard_turnover(event: int, run: _ChipRun) -> int:
+    """How many of the fifteen a rebuild in this week would actually move.
+
+    Measured against the squad the baseline plan holds going into the week, so
+    it is the turnover a reader would see on the card. A chip that moves one or
+    two players is a chip thrown away: the free transfer could have made those
+    moves, and the wildcard cannot be played twice.
+    """
+    picked = _wildcard_squad(event, run)
+    if picked is None:
+        return 0
+    index = run.ordered_events.index(event)
+    previous = run.ordered_events[index - 1] if index > 0 else None
+    if previous is None or previous not in run.by_event:
+        return len(set(picked[0]) | set(picked[1]))
+    held = set(run.by_event[previous]["squadElementIds"])
+    return len((set(picked[0]) | set(picked[1])) - held)
+
+
 def _wildcard_squad(event: int, run: _ChipRun) -> tuple[list[int], list[int]] | None:
     """The fifteen a Wildcard buys, built for the run it has to last.
 
@@ -771,7 +795,24 @@ def _place_wildcards(chips: list[dict[str, Any]], run: _ChipRun) -> None:
     by_half: list[list[int]] = []
     for chip in proposed:
         alternatives = [int(event) for event in chip.pop("_alternatives", [])]
-        by_half.append([int(chip["event"]), *alternatives])
+        offered = [int(chip["event"]), *alternatives]
+        # Screened before the expensive solve: a week whose rebuild moves fewer
+        # than this is not a wildcard week however well the season scores
+        # around it.
+        by_half.append(
+            [week for week in offered if _wildcard_turnover(week, run) >= MINIMUM_WILDCARD_CHANGES]
+        )
+
+    if not any(by_half):
+        for chip in proposed:
+            chip["event"] = None
+            chip["gain"] = 0.0
+            chip["note"] = (
+                f"No week in this half rebuilds {MINIMUM_WILDCARD_CHANGES} or more of the "
+                "fifteen. A rebuild smaller than that is a transfer, and the free transfer "
+                "makes it without spending the chip."
+            )
+        return
 
     options: list[list[int]] = []
     for weeks_for_half in by_half:

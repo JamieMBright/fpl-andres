@@ -203,7 +203,7 @@ def _probe_the_odds_api(
     client: httpx.Client,
     env: Mapping[str, str],
 ) -> ProbeResult:
-    key = env["ODDS_API_KEY"]
+    key = env["THE_ODDS_API_KEY"]
     events = _get(
         client,
         "https://api.the-odds-api.com/v4/sports/soccer_epl/events",
@@ -275,7 +275,7 @@ def _probe_api_football(
     response = _get(
         client,
         "https://v3.football.api-sports.io/odds/bets",
-        headers={"x-apisports-key": env["API_FOOTBALL_KEY"]},
+        headers={"x-apisports-key": env["API_FOOTBALL_API_KEY"]},
     )
     result = _from_json(_SOURCE_INDEX["api-football"], response)
     if not result.ok:
@@ -290,34 +290,6 @@ def _probe_api_football(
         key=result.key,
         status=result.status,
         note=f"{result.note}; {len(named)} bet types listed",
-        fields=result.fields,
-        markets=tuple(sorted(named)),
-        http_status=result.http_status,
-    )
-
-
-def _probe_sportmonks(
-    client: httpx.Client,
-    env: Mapping[str, str],
-) -> ProbeResult:
-    response = _get(
-        client,
-        "https://api.sportmonks.com/v3/odds/markets",
-        params={"api_token": env["SPORTMONKS_TOKEN"], "per_page": "100"},
-    )
-    result = _from_json(_SOURCE_INDEX["sportmonks"], response)
-    if not result.ok:
-        return result
-    payload = response.json()
-    named = {
-        str(item.get("name"))
-        for item in (payload.get("data", []) if isinstance(payload, Mapping) else [])
-        if isinstance(item, Mapping) and item.get("name")
-    }
-    return ProbeResult(
-        key=result.key,
-        status=result.status,
-        note=f"{result.note}; {len(named)} markets listed",
         fields=result.fields,
         markets=tuple(sorted(named)),
         http_status=result.http_status,
@@ -453,7 +425,7 @@ PROP_SOURCES: tuple[PropSource, ...] = (
         key="the-odds-api",
         name="The Odds API",
         homepage="https://the-odds-api.com",
-        credential_env=("ODDS_API_KEY",),
+        credential_env=("THE_ODDS_API_KEY",),
         covers=("goal", "assist", "yellow_card", "red_card"),
         terms="Free tier, 500 requests a month. Attribution required.",
         probe=_probe_the_odds_api,
@@ -462,19 +434,10 @@ PROP_SOURCES: tuple[PropSource, ...] = (
         key="api-football",
         name="API-Football",
         homepage="https://www.api-football.com",
-        credential_env=("API_FOOTBALL_KEY",),
+        credential_env=("API_FOOTBALL_API_KEY",),
         covers=("goal", "assist", "yellow_card", "red_card", "clean_sheet"),
         terms="Free tier, 100 requests a day.",
         probe=_probe_api_football,
-    ),
-    PropSource(
-        key="sportmonks",
-        name="Sportmonks",
-        homepage="https://www.sportmonks.com",
-        credential_env=("SPORTMONKS_TOKEN",),
-        covers=("goal", "assist", "save", "yellow_card", "red_card"),
-        terms="Free plan covers two lower leagues only; odds need a paid plan.",
-        probe=_probe_sportmonks,
     ),
     PropSource(
         key="betfair-exchange",

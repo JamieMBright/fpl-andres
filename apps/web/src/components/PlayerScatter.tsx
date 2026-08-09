@@ -285,27 +285,33 @@ export const PlayerScatter = memo(function PlayerScatter({
     };
   }, [view.sweetSpot, centres, xScale, yScale, xMetric, yMetric]);
 
+  // Measured whether or not the box is ticked, so the control can be disabled
+  // before it is clicked. Toggling a checkbox and seeing nothing happen is a
+  // worse answer than a control that says it has nothing to draw.
   const edge = useMemo(
     () =>
-      view.frontier
-        ? frontier(
-            points.map((point) => point.player),
-            xMetric,
-            yMetric,
-          )
-        : null,
-    [points, xMetric, yMetric, view.frontier],
+      frontier(
+        points.map((point) => point.player),
+        xMetric,
+        yMetric,
+      ),
+    [points, xMetric, yMetric],
   );
 
   // The page prints whichever overlay could not be drawn and why. Reported
   // rather than returned, because the chart is the thing that knows.
   useEffect(() => {
-    onOverlays?.({ ring: null, frontier: edge?.reason ?? null });
+    onOverlays?.({ ring: null, frontier: edge.reason });
   }, [onOverlays, edge]);
 
   const pioneers = useMemo(
-    () => new Set(edge?.drawn?.pioneers.map((entry) => entry.code) ?? []),
-    [edge],
+    () =>
+      new Set(
+        view.frontier
+          ? (edge.drawn?.pioneers.map((entry) => entry.code) ?? [])
+          : [],
+      ),
+    [edge, view.frontier],
   );
 
   const handleEnter = useCallback((point: PlottedPlayer) => {
@@ -496,7 +502,7 @@ export const PlayerScatter = memo(function PlayerScatter({
             />
           ) : null}
 
-          {edge?.drawn ? (
+          {view.frontier && edge.drawn ? (
             <polyline
               className="scatter-frontier"
               points={edge.drawn.curve

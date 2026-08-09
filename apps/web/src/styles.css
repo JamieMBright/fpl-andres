@@ -876,13 +876,39 @@ h1[tabindex="-1"]:focus-visible {
   margin: 0;
   color: var(--ink-soft);
   font-size: 14px;
+  line-height: 1.6;
+}
+
+/* Answers run to several paragraphs here, which is the point of the page. */
+.faq-answers dd > p {
+  margin: 0 0 10px;
+  max-width: 74ch;
+}
+
+.faq-answers dd > p:last-child {
+  margin-bottom: 0;
+}
+
+.faq-lede {
+  margin: 0 0 8px;
+  color: var(--ink-soft);
+  font-size: 15px;
+  line-height: 1.6;
+  max-width: 74ch;
+}
+
+.faq-intro {
+  margin: -8px 0 16px;
+  color: var(--ink-soft);
+  font-size: 13px;
   line-height: 1.55;
+  max-width: 74ch;
 }
 
 @media (min-width: 720px) {
   .faq-answers dl > div,
   .faq-glossary dl > div {
-    grid-template-columns: minmax(0, 13rem) minmax(0, 1fr);
+    grid-template-columns: minmax(0, 15rem) minmax(0, 1fr);
     align-items: baseline;
   }
 }
@@ -1297,8 +1323,21 @@ h1[tabindex="-1"]:focus-visible {
   background: #d32f2f;
 }
 
+/* Angled, because sixteen seasons in a 500px column puts "24/25" hard against
+   "25/26" and both stop being readable. Rotating about the top-right keeps each
+   label under its own bar. */
 .record-season-name {
   color: var(--ink-soft);
+  font-size: 9px;
+  white-space: nowrap;
+  transform: rotate(-45deg);
+  transform-origin: 100% 0;
+  align-self: center;
+}
+
+/* The rotated label leaves its own box empty, so the row has to make room. */
+.record-seasons li {
+  padding-bottom: 22px;
 }
 
 .record-caveat {
@@ -2294,9 +2333,41 @@ h1[tabindex="-1"]:focus-visible {
   text-transform: uppercase;
 }
 
-.plan-why {
+.plan-why-fold {
   margin: 8px 0 0;
   border-top: 1px solid var(--rule);
+}
+
+.plan-why-summary {
+  padding: 6px 0 0;
+  color: var(--ink-soft);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  list-style: none;
+}
+
+.plan-why-summary::-webkit-details-marker {
+  display: none;
+}
+
+.plan-why-summary::after {
+  content: " \25be";
+}
+
+.plan-why-fold[open] > .plan-why-summary::after {
+  content: " \25b4";
+}
+
+.plan-why-summary:focus-visible {
+  outline: 3px solid var(--signal-blue);
+  outline-offset: 2px;
+}
+
+.plan-why {
+  margin: 8px 0 0;
   padding-top: 8px;
   font-size: 11px;
   line-height: 1.5;
@@ -4738,6 +4809,14 @@ h1[tabindex="-1"]:focus-visible {
   color: var(--field-green);
 }
 
+.pool-horizon-note {
+  margin: 0 0 10px;
+  color: var(--ink-soft);
+  font-size: 13px;
+  line-height: 1.55;
+  max-width: 68ch;
+}
+
 .opening-adopt {
   margin: 14px 0 0;
 }
@@ -4933,14 +5012,36 @@ h1[tabindex="-1"]:focus-visible {
   text-decoration: none;
 }
 
-/* Clubs as kits: a shirt is recognised faster than a three-letter code. */
+/* Clubs as kits: a shirt is recognised faster than a three-letter code.
+   Even rows rather than however many the width happens to allow: twenty shirts
+   reflowing to a ragged last row of three reads as a mistake. Sized against
+   this column rather than the window, because the column is what the shirts
+   have to fit in and it stops growing long before the screen does. */
+.squad-market {
+  container-type: inline-size;
+}
+
 .squad-club-strip {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(5, 34px);
+  justify-content: center;
   gap: 2px;
   margin: 0 0 8px;
   padding: 0;
   list-style: none;
+}
+
+@container (min-width: 372px) {
+  .squad-club-strip {
+    grid-template-columns: repeat(10, 34px);
+  }
+}
+
+/* All twenty on one line, which needs 718px of column. */
+@container (min-width: 728px) {
+  .squad-club-strip {
+    grid-template-columns: repeat(20, 34px);
+  }
 }
 
 .squad-club-strip button {
@@ -5246,7 +5347,7 @@ h1[tabindex="-1"]:focus-visible {
   max-width: 78ch;
   margin: 0 0 22px;
   color: var(--ink-soft);
-  font-size: 14px;
+  font-size: 15px;
   line-height: 1.6;
 }
 
@@ -5276,26 +5377,33 @@ h1[tabindex="-1"]:focus-visible {
   text-transform: uppercase;
 }
 
+/* One body size for the whole card. It carried five -- 15, 14, 13 and two
+   different 12s -- and read as five different kinds of writing rather than one
+   explanation. Only the step label above is smaller, and it is a label. */
+.method-flow-summary,
+.method-flow-example,
+.method-flow-toggle,
+.method-flow-detail p {
+  font-size: 14px;
+  line-height: 1.6;
+}
+
 .method-flow-summary {
-  margin: 0 0 8px;
-  font-size: 15px;
-  line-height: 1.5;
+  margin: 0 0 10px;
 }
 
 .method-flow-example {
-  margin: 0 0 10px;
+  margin: 0 0 12px;
   padding-inline-start: 10px;
   border-inline-start: 2px solid var(--field-green);
   color: var(--ink-soft);
-  font-size: 12px;
-  line-height: 1.5;
 }
 
 .method-flow-toggle {
   padding: 0;
   color: inherit;
-  font: inherit;
-  font-size: 12px;
+  font-family: inherit;
+  font-weight: inherit;
   background: none;
   border: 0;
   cursor: pointer;
@@ -5316,9 +5424,7 @@ h1[tabindex="-1"]:focus-visible {
 }
 
 .method-flow-detail p {
-  margin: 0 0 10px;
-  font-size: 13px;
-  line-height: 1.6;
+  margin: 0 0 12px;
 }
 
 .method-flow-detail p:last-child {
@@ -6181,6 +6287,18 @@ h1[tabindex="-1"]:focus-visible {
 .scatter-box input:focus-visible + span {
   outline: 3px solid var(--signal-blue);
   outline-offset: 1px;
+}
+
+/* A control with nothing to draw says so by looking spent, not by doing
+   nothing when you click it. */
+.scatter-box input:disabled + span {
+  border-style: dashed;
+  color: var(--ink-soft);
+  opacity: 0.45;
+}
+
+.scatter-box:has(input:disabled) {
+  cursor: not-allowed;
 }
 
 .scatter-controls input[type="range"] {

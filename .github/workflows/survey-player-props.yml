@@ -60,6 +60,9 @@ concurrency:
 jobs:
   survey:
     runs-on: ubuntu-latest
+    # The API keys are scoped to this environment; without it every source
+    # reports "no key" and the survey silently measures nothing.
+    environment: production
     timeout-minutes: 15
     steps:
       - name: Check out repository

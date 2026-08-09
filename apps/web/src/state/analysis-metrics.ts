@@ -1,4 +1,5 @@
 import { DEFCON_THRESHOLD, type AnalysisPlayer } from "./analysis-pool";
+import { HORIZONS, horizonPoints } from "./horizon-points";
 import { projectionFor } from "./squad-projection";
 
 /**
@@ -82,6 +83,28 @@ export const METRICS: Metric[] = [
     higherIsBetter: true,
     allowLog: false,
   },
+  /*
+   * The same projection put through the fixtures he actually has. A per-match
+   * figure cannot say that a striker's next three are City, Arsenal and
+   * Liverpool, or that he has a double in gameweek six and a blank in seven.
+   * These can, and they are the axis a transfer is really chosen on.
+   *
+   * Market vintage, not record: the rates behind it are last season's, but the
+   * fixtures are the ones still to be played, so the number describes what is
+   * coming rather than what happened. Plotted against an archived season it is
+   * still this season's run, which is why it is labelled as today's.
+   */
+  ...HORIZONS.map<Metric>((weeks) => ({
+    id: `xPts${String(weeks)}`,
+    label: `xPts over ${String(weeks)} GW`,
+    group: "Points",
+    vintage: "market",
+    explains: `Expected points added up over the next ${String(weeks)} gameweeks against his real opponents. A double counts twice and a blank counts nothing.`,
+    value: (player) => horizonPoints(player.code, weeks),
+    format: one,
+    higherIsBetter: true,
+    allowLog: false,
+  })),
   {
     id: "xCeil",
     label: "xCeil per match",

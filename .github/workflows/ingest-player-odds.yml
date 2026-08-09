@@ -48,6 +48,10 @@ concurrency:
 jobs:
   ingest:
     runs-on: ubuntu-latest
+    # The API keys are scoped to this environment. Without the declaration the
+    # job cannot see them and the fetch step exits on an empty key, which is
+    # exactly how run 1 failed.
+    environment: production
     timeout-minutes: 15
     steps:
       - name: Check out repository

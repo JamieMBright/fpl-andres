@@ -79,9 +79,9 @@ def _serialise(row: PlayerMatchOdds) -> dict[str, object]:
 
 def main(argv: Sequence[str] | None = None) -> int:
     args = _parser().parse_args(argv)
-    key = os.environ.get("ODDS_API_KEY", "").strip()
+    key = os.environ.get("THE_ODDS_API_KEY", "").strip()
     if not key:
-        print("ODDS_API_KEY is not set; nothing to fetch", flush=True)
+        print("THE_ODDS_API_KEY is not set; nothing to fetch", flush=True)
         return 1
 
     with httpx.Client(timeout=ODDS_FEED, follow_redirects=True) as client:

@@ -337,6 +337,7 @@ function AnalysisBody({
 
       <div className="analysis-layout">
         <ScatterControls
+          frontierUnavailable={overlays.frontier}
           pool={data.pool}
           view={view}
           onChange={onChange}

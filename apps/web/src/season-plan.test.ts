@@ -66,6 +66,24 @@ describe("season plan artifact", () => {
     }
   });
 
+  it("never charges more than two hits in a gameweek", () => {
+    // Two is the point at which a week is buying a rebuild one transfer at a
+    // time, which is what the Wildcard is for. Beyond it the plan is spending
+    // a chip's worth of points and keeping the chip.
+    for (const week of weeks) {
+      expect(week.transferCostPoints).toBeLessThanOrEqual(8);
+    }
+  });
+
+  it("never plays a wildcard that moves fewer than five of the fifteen", () => {
+    // A rebuild the free transfer could have made over a few weeks costs
+    // nothing to make over a few weeks, and leaves the chip in hand.
+    for (const week of weeks) {
+      if (week.chip !== "Wildcard") continue;
+      expect(week.transfersIn.length).toBeGreaterThanOrEqual(5);
+    }
+  });
+
   it("names every player it references", () => {
     const known = new Set(Object.keys(plan.players).map(Number));
     for (const week of weeks) {

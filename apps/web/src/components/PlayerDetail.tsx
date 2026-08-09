@@ -4,6 +4,7 @@ import { CeefaxShirt } from "./CeefaxShirt";
 import { PeerDistribution } from "./PeerDistribution";
 import { SeasonFixtures } from "./SeasonFixtures";
 import type { FixtureRun } from "../state/fixture-run";
+import { DEFAULT_HORIZON, horizonPoints } from "../state/horizon-points";
 import { kitForShortName } from "../kit/team-kits";
 import type { PeerMetric } from "../state/peer-distribution";
 import { peerMetric } from "../state/peer-distribution";
@@ -59,6 +60,12 @@ function rowsFor(player: DetailPlayer, record: PlayerProjection | null): Row[] {
       value: record.expectedPoints.toFixed(2),
       explains: `Expected FPL points in one match against an average opponent, rebuilt from his ${projectionSeason} per-90 rates and minutes.`,
       band: band("expectedPoints", record.expectedPoints),
+    },
+    {
+      term: `xPts${String(DEFAULT_HORIZON)}`,
+      value: horizonPoints(player.code, DEFAULT_HORIZON)?.toFixed(1) ?? "—",
+      explains: `Expected points added up over the next ${String(DEFAULT_HORIZON)} gameweeks against his real opponents. A double counts twice and a blank counts nothing, which is what a per-match figure cannot say.`,
+      band: null,
     },
     {
       term: "Per £1m",

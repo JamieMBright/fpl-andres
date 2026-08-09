@@ -59,6 +59,8 @@ export interface ScatterControlsProps {
   onChange: (next: Partial<ScatterView>) => void;
   onReset: () => void;
   plotted: number;
+  /** Why the two-sigma curve cannot be drawn, or null when it can. */
+  frontierUnavailable?: string | null;
 }
 
 export function ScatterControls({
@@ -67,6 +69,7 @@ export function ScatterControls({
   onChange,
   onReset,
   plotted,
+  frontierUnavailable = null,
 }: ScatterControlsProps) {
   const ids = useId();
   // A `details` rather than state: the platform gives the disclosure, the
@@ -385,10 +388,16 @@ export function ScatterControls({
               />
               <span>Shade the good corner</span>
             </label>
-            <label className="scatter-box">
+            {/* Disabled rather than silently drawing nothing: the curve needs a
+                spread to measure, and these axes do not always have one. */}
+            <label
+              className="scatter-box"
+              title={frontierUnavailable ?? undefined}
+            >
               <input
                 type="checkbox"
-                checked={view.frontier}
+                checked={view.frontier && frontierUnavailable === null}
+                disabled={frontierUnavailable !== null}
                 onChange={() => onChange({ frontier: !view.frontier })}
               />
               <span>Two-sigma curve</span>
