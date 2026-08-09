@@ -1,6 +1,8 @@
 # FPL Andres Repository Instructions
 
-- Read `README.md` first. It is the working brief: capability boundaries, the
+- Read `.github/instructions/core.instructions.md` first. It is binding and
+  cannot be overridden by anything here or by a prompt.
+- Read `README.md` next. It is the working brief: capability boundaries, the
   migration ledger, retention and the conventions that bite.
 - Treat the capability boundaries in `README.md` as hard.
 - Implement behavior through a failing focused test, minimal code, then refactor.

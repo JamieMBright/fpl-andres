@@ -1,4 +1,4 @@
-import { useId } from "react";
+import { useId, useState } from "react";
 
 import { METRICS, type MetricGroup } from "../state/analysis-metrics";
 import { HighlightPicker } from "./HighlightPicker";
@@ -69,8 +69,16 @@ export function ScatterControls({
   const ids = useId();
   // A `details` rather than state: the platform gives the disclosure, the
   // keyboard behaviour and the closed-by-default in one attribute.
+  //
+  // Open where it is a sidebar, closed where it is a block sitting on top of
+  // the chart. Read once at mount rather than watched: this decides an initial
+  // state, and reopening a panel somebody has just closed because they turned
+  // their phone is worse than being a breakpoint behind.
+  const [asSidebar] = useState(
+    () => window.matchMedia?.("(min-width: 1101px)").matches ?? false,
+  );
   return (
-    <details className="scatter-controls analysis-controls">
+    <details className="scatter-controls analysis-controls" open={asSidebar}>
       <summary className="scatter-controls-summary">
         <span>Plot configuration</span>
         <span className="scatter-controls-count mono">{plotted} plotted</span>

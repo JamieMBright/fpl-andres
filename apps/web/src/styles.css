@@ -2204,6 +2204,48 @@ h1[tabindex="-1"]:focus-visible {
   justify-content: center;
 }
 
+.opening-squad-fold {
+  margin-top: 26px;
+  border: 1px solid var(--rule);
+  background: var(--paper);
+}
+
+.opening-squad-summary {
+  display: flex;
+  gap: 12px;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 12px 14px;
+  cursor: pointer;
+  list-style: none;
+  font-family: var(--fa-display);
+}
+
+.opening-squad-summary::-webkit-details-marker {
+  display: none;
+}
+
+.opening-squad-summary::after {
+  content: "+";
+  font-family: var(--fa-mono);
+  opacity: 0.7;
+}
+
+.opening-squad-fold[open] > .opening-squad-summary::after {
+  content: "–";
+}
+
+.opening-squad-summary:focus-visible {
+  outline: 3px solid var(--signal-blue);
+  outline-offset: -3px;
+}
+
+.opening-squad-fold > .opening-squad {
+  margin-top: 0;
+  padding: 0 14px 18px;
+  border-top: 1px solid var(--rule);
+}
+
 .opening-squad {
   margin-top: 26px;
   border-top: 1px solid var(--rule);
@@ -4424,6 +4466,13 @@ h1[tabindex="-1"]:focus-visible {
   padding: 12px 14px;
   cursor: pointer;
   list-style: none;
+  /* Stays put while a thirty-eight gameweek step scrolls under it, so the
+     number and title of the step you are reading are always on screen.
+     Opaque, or the rows show through it. */
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: var(--paper);
 }
 
 .plan-step-summary::-webkit-details-marker {
@@ -5009,10 +5058,10 @@ h1[tabindex="-1"]:focus-visible {
 
 .analysis-layout {
   display: grid;
-  /* One column, so the chart and every panel under it are the same width.
-     Pickers beside a chart get read before anyone knows what they change, and
-     three boxes of three widths reads as three unrelated things. */
-  grid-template-columns: minmax(0, 1fr);
+  /* The chart and the controls that change it, side by side. One column put
+     the pickers below the fold, so a reader had to scroll away from the thing
+     they were configuring to configure it. */
+  grid-template-columns: minmax(0, 1fr) 320px;
   gap: 24px;
   align-items: start;
   margin-top: 24px;
@@ -5026,6 +5075,11 @@ h1[tabindex="-1"]:focus-visible {
   grid-template-columns: minmax(0, 1fr);
   gap: 12px;
   min-width: 0;
+  /* Follows the chart down a long page rather than scrolling away from it. */
+  position: sticky;
+  top: 12px;
+  max-height: calc(100vh - 24px);
+  overflow-y: auto;
 }
 
 .analysis-vintage,
@@ -5874,6 +5928,14 @@ h1[tabindex="-1"]:focus-visible {
 @media (max-width: 1100px) {
   .analysis-layout {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* A sidebar that is now underneath must not also pin itself to the viewport
+     and eat the screen the chart needs. */
+  .analysis-panels {
+    position: static;
+    max-height: none;
+    overflow-y: visible;
   }
 }
 

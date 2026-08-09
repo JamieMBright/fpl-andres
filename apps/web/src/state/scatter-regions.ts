@@ -54,10 +54,14 @@ const MINIMUM_PER_BIN = 6;
 const MINIMUM_BINS = 3;
 /** How far above the local mean the bar sits. Two is the conventional outlier. */
 const SIGMA = 2;
-/** Share of the x-range inside one local fit, so the slices join smoothly. */
-const SPAN = 0.55;
+/**
+ * Share of the x-range inside one local fit. At 0.55 the curve chased each
+ * slice and read as noise; a wider window is what makes it a description of
+ * the pool rather than a join-the-dots of ten bins.
+ */
+const SPAN = 0.9;
 /** Sampled positions along the curve. Enough that the polyline reads as smooth. */
-const SAMPLES = 48;
+const SAMPLES = 64;
 
 /** Tricube, the standard LOESS weight: 1 at the centre, 0 at the bandwidth. */
 function tricube(distance: number, bandwidth: number): number {
@@ -188,9 +192,15 @@ export function frontier(
 
   const firstBin = bins[0]!;
   const lastBin = bins.at(-1)!;
-  const bandwidth = (lastBin.x - firstBin.x) * SPAN;
+  // Drawn across every x that has a player on it, not just between the first
+  // and last usable bin centre. Stopping at the centres left the line hanging
+  // in mid-air with dots either side of both ends.
+  const bandwidth = Math.max(
+    (lastBin.x - firstBin.x) * SPAN,
+    (highX - lowX) * SPAN,
+  );
   const curve = Array.from({ length: SAMPLES }, (_, index) => {
-    const at = firstBin.x + ((lastBin.x - firstBin.x) * index) / (SAMPLES - 1);
+    const at = lowX + ((highX - lowX) * index) / (SAMPLES - 1);
     return { x: at, y: localFit(bins, at, bandwidth) };
   });
 

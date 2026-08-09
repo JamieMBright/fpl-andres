@@ -61,11 +61,13 @@ describe("scatter overlays", () => {
   });
 
   it("leaves the chart unshaded when it is not asked to", () => {
-    const selection = selectPlotted(pool(200), DEFAULT_VIEW)!;
+    // Shading is on by default now, so the off state has to be asked for.
+    const view = { ...DEFAULT_VIEW, sweetSpot: false };
+    const selection = selectPlotted(pool(200), view)!;
     const { container } = render(
       <PlayerScatter
         selection={selection}
-        view={DEFAULT_VIEW}
+        view={view}
         pinned={[]}
         onTogglePin={() => {}}
       />,
@@ -95,11 +97,12 @@ describe("scatter overlays", () => {
   });
 
   it("names every point only when asked", () => {
-    const off = selectPlotted(pool(40), DEFAULT_VIEW)!;
+    const hidden = { ...DEFAULT_VIEW, labels: false };
+    const off = selectPlotted(pool(40), hidden)!;
     const plain = render(
       <PlayerScatter
         selection={off}
-        view={DEFAULT_VIEW}
+        view={hidden}
         pinned={[]}
         onTogglePin={() => {}}
       />,

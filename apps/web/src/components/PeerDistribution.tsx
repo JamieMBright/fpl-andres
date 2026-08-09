@@ -58,12 +58,9 @@ export function PeerDistribution({
 
         {spread === null ? (
           <p>
-            Too few {subject.position}s within £0.5m of{" "}
-            {subject.priceTenths === null
-              ? "his price"
-              : money(subject.priceTenths)}{" "}
-            carry this figure, so there is no distribution to show. A percentile
-            over three players is noise wearing a number.
+            Too few {subject.position}s carry this figure at all, so there is no
+            distribution to show. A percentile over three players is noise
+            wearing a number.
           </p>
         ) : (
           <>
@@ -71,9 +68,13 @@ export function PeerDistribution({
               {spread.peers} {subject.position}
               {spread.peers === 1 ? "" : "s"} priced {money(spread.fromTenths)}{" "}
               to {money(spread.toTenths)} at the close of {projectionSeason} —
-              the players you would buy instead of him. The band is last
-              season&rsquo;s price because that is the one every player in the
-              record shares; today&rsquo;s price is on the card above.
+              the players you would buy instead of him.{" "}
+              {spread.widened
+                ? "His own price tier held too few to read, so this is the whole position."
+                : ""}{" "}
+              The band is last season&rsquo;s price because that is the one
+              every player in the record shares; today&rsquo;s price is on the
+              card above.
             </p>
 
             <ol className="peer-spread-bars">

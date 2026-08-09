@@ -120,10 +120,12 @@ export const DEFAULT_VIEW: ScatterView = {
   minMinutes: 1500,
   centreMode: "median",
   trend: false,
-  sweetSpot: false,
-  frontier: false,
-  // Off by default: legible on a filtered chart, illegible on the whole pool.
-  labels: false,
+  // The three overlays that make the chart mean something at a glance: which
+  // corner is good, where the edge of the pool is, and who each dot is. A
+  // reader who has to switch them on has already been shown a cloud of dots.
+  sweetSpot: true,
+  frontier: true,
+  labels: true,
   // A differential is roughly anything under ten per cent owned; the floor
   // drops the hundreds of players nobody has heard of who own nothing.
   ownedFrom: 0.1,
@@ -166,9 +168,9 @@ export function readScatterView(params: URLSearchParams): ScatterView {
     ),
     centreMode: params.get("centre") === "mean" ? "mean" : "median",
     trend: flag(params.get("trend")),
-    sweetSpot: flag(params.get("ring")),
-    frontier: flag(params.get("front")),
-    labels: flag(params.get("names")),
+    sweetSpot: flagOr(params.get("ring"), DEFAULT_VIEW.sweetSpot),
+    frontier: flagOr(params.get("front"), DEFAULT_VIEW.frontier),
+    labels: flagOr(params.get("names"), DEFAULT_VIEW.labels),
     ownedFrom: bounded(
       params.get("from"),
       DEFAULT_VIEW.ownedFrom,
@@ -224,6 +226,14 @@ export function writeScatterView(view: ScatterView): string {
   const put = (key: string, value: string, fallback: string) => {
     if (value !== fallback) params.set(key, value);
   };
+  const putFlag = (
+    target: URLSearchParams,
+    key: string,
+    value: boolean,
+    fallback: boolean,
+  ) => {
+    if (value !== fallback) target.set(key, value ? "1" : "0");
+  };
 
   put("x", view.x, DEFAULT_VIEW.x);
   put("y", view.y, DEFAULT_VIEW.y);
@@ -242,9 +252,9 @@ export function writeScatterView(view: ScatterView): string {
   put("mins", String(view.minMinutes), String(DEFAULT_VIEW.minMinutes));
   put("centre", view.centreMode, DEFAULT_VIEW.centreMode);
   if (view.trend) params.set("trend", "1");
-  if (view.sweetSpot) params.set("ring", "1");
-  if (view.frontier) params.set("front", "1");
-  if (view.labels) params.set("names", "1");
+  putFlag(params, "ring", view.sweetSpot, DEFAULT_VIEW.sweetSpot);
+  putFlag(params, "front", view.frontier, DEFAULT_VIEW.frontier);
+  putFlag(params, "names", view.labels, DEFAULT_VIEW.labels);
   put("from", String(view.ownedFrom), String(DEFAULT_VIEW.ownedFrom));
   put("to", String(view.ownedTo), String(DEFAULT_VIEW.ownedTo));
   put(
@@ -291,6 +301,13 @@ function metricId(raw: string | null, fallback: string): string {
 
 function flag(raw: string | null): boolean {
   return raw === "1";
+}
+
+/** For a flag that is on by default, where absence has to mean on. */
+function flagOr(raw: string | null, fallback: boolean): boolean {
+  if (raw === "1") return true;
+  if (raw === "0") return false;
+  return fallback;
 }
 
 function list(raw: string | null): string[] {

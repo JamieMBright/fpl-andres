@@ -4,9 +4,9 @@ import { METRICS } from "./analysis-metrics";
 import {
   analysisLinkFor,
   AXES_BY_POSITION,
+  bandFor,
   FALLBACK_AXES,
   MINIMUM_PEERS,
-  PEER_BAND_TENTHS,
   PEER_METRICS,
   peerDistribution,
   peerMetric,
@@ -57,17 +57,34 @@ function projection(over: Partial<PlayerProjection>): PlayerProjection {
 const points = peerMetric("Points per match")!;
 
 describe("who counts as a peer", () => {
-  it("keeps the price band symmetric and one step wide", () => {
-    // A transfer chooses between players you can actually afford, so the band
-    // is what defines the comparison rather than the whole position.
-    expect(PEER_BAND_TENTHS).toBe(5);
+  it("bands by the market's own tiers, not a flat step either side", () => {
+    // A premium costs a different number in each position, and ±£0.5m is most
+    // of the market at £4.5m and a sliver of it at £12.5m.
+    expect(bandFor("MID", 125)).toEqual({ fromTenths: 75, toTenths: null });
+    expect(bandFor("MID", 80)).toEqual({ fromTenths: 75, toTenths: null });
+    expect(bandFor("FWD", 65)).toEqual({ fromTenths: 60, toTenths: 69 });
+    expect(bandFor("DEF", 40)).toEqual({ fromTenths: 0, toTenths: 44 });
+    expect(bandFor("GKP", 50)).toEqual({ fromTenths: 50, toTenths: null });
+  });
+
+  it("always puts the player inside his own band", () => {
+    for (const position of ["GKP", "DEF", "MID", "FWD"]) {
+      for (const price of [38, 45, 55, 70, 75, 125]) {
+        const band = bandFor(position, price);
+        expect(price).toBeGreaterThanOrEqual(band.fromTenths);
+        if (band.toTenths !== null) {
+          expect(price).toBeLessThanOrEqual(band.toTenths);
+        }
+      }
+    }
   });
 
   it("finds players of the same position within the band", () => {
+    const band = bandFor("DEF", 60);
     const found = peersOf("DEF", 60, points);
     for (const peer of found) {
       expect(peer.position).toBe("DEF");
-      expect(Math.abs((peer.priceTenths ?? 0) - 60)).toBeLessThanOrEqual(5);
+      expect(peer.priceTenths ?? 0).toBeGreaterThanOrEqual(band.fromTenths);
     }
     expect(found.length).toBeGreaterThan(0);
   });
@@ -80,13 +97,16 @@ describe("who counts as a peer", () => {
 });
 
 describe("the distribution", () => {
-  it("refuses to report a percentile over too few players", () => {
-    // A band with three players in it produces percentiles of 0, 50 and 100,
-    // which look like measurements and are not.
+  it("draws the dearest player rather than refusing him", () => {
+    // The old rule returned null for anyone whose ±£0.5m band was thin, which
+    // showed the reader nothing precisely for the players a transfer is
+    // actually agonising over. The premium tier has no ceiling, so he lands
+    // in it with every other premium in his position.
     expect(MINIMUM_PEERS).toBeGreaterThan(3);
-    expect(
-      peerDistribution(projection({ priceTenths: 139 }), points),
-    ).toBeNull();
+    const spread = peerDistribution(projection({ priceTenths: 139 }), points);
+    expect(spread).not.toBeNull();
+    expect(spread!.fromTenths).toBeLessThanOrEqual(139);
+    expect(spread!.peers).toBeGreaterThanOrEqual(MINIMUM_PEERS);
   });
 
   it("says nothing for a player with no price", () => {

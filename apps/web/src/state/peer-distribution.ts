@@ -6,9 +6,15 @@
  * can afford". Those are different questions and only the second one decides a
  * transfer: nobody chooses between a £4.0m bench filler and a £6.5m starter.
  *
- * So the peer group is the position at roughly the same price. The band is
- * ±£0.5m, which is one FPL price step either side — wide enough to hold a real
- * group and narrow enough that everyone in it is a genuine alternative.
+ * So the peer group is the position at roughly the same price. A flat ±£0.5m
+ * was the wrong shape: it is most of the premium market at £4.5m and a sliver
+ * of it at £12.5m, and it kept putting a £12.5m midfielder in a band that did
+ * not contain the only players anyone would consider instead of him.
+ *
+ * The bands are the market's own tiers instead, per position, because a
+ * "premium" costs a different number in each one. Everyone above the premium
+ * threshold is compared with every other premium in that position, which is
+ * what a manager is actually choosing between.
  *
  * Everything here reads the published projection artifact. No player is
  * imputed: a promoted-club debutant has no record, and a peer group padded with
@@ -19,11 +25,49 @@ import type { PlayerProjection } from "./squad-projection";
 import { allProjections } from "./squad-projection";
 import { OWNERSHIP_CAP } from "./scatter-view";
 
-/** One price step either side, in FPL's tenths. */
+/**
+ * Where one tier ends and the next begins, per position, in FPL's tenths.
+ *
+ * The top figure is the premium threshold: £5.0m for a keeper, £5.5m for a
+ * defender, £7.0m for a forward, £7.5m for a midfielder. Above it there is no
+ * upper edge, so the £12.5m midfielder and the £8.0m one are in one band —
+ * they are competing for the same squad slot and the same money.
+ */
+const TIER_EDGES: Record<string, readonly number[]> = {
+  GKP: [45, 50],
+  DEF: [45, 55],
+  MID: [55, 75],
+  FWD: [60, 70],
+};
+
+/** Used where a position has no declared tiers, so the band is still bounded. */
 export const PEER_BAND_TENTHS = 5;
 
 /** Fewer than this and a percentile is noise dressed as a measurement. */
 export const MINIMUM_PEERS = 4;
+
+export interface PeerBand {
+  fromTenths: number;
+  /** Null above the premium threshold, where the band has no ceiling. */
+  toTenths: number | null;
+}
+
+/** The tier a price falls in. Always contains the price it was asked about. */
+export function bandFor(position: string, priceTenths: number): PeerBand {
+  const edges = TIER_EDGES[position];
+  if (!edges) {
+    return {
+      fromTenths: priceTenths - PEER_BAND_TENTHS,
+      toTenths: priceTenths + PEER_BAND_TENTHS,
+    };
+  }
+  let from = 0;
+  for (const edge of edges) {
+    if (priceTenths < edge) return { fromTenths: from, toTenths: edge - 1 };
+    from = edge;
+  }
+  return { fromTenths: from, toTenths: null };
+}
 
 export interface PeerMetric {
   /** Matches the row term on the card. */
@@ -135,6 +179,8 @@ export interface PeerDistribution {
   position: string;
   fromTenths: number;
   toTenths: number;
+  /** True where the tier was too thin and the whole position was used. */
+  widened: boolean;
   /** Everyone in the band with a value for this metric, the subject included. */
   peers: number;
   subject: number;
@@ -146,18 +192,31 @@ export interface PeerDistribution {
   median: number;
 }
 
-/** Same position, within a price step, and carrying a record for this metric. */
+/** Same position, inside the same market tier, carrying a record. */
 export function peersOf(
   position: string,
   priceTenths: number,
   metric: PeerMetric,
 ): PlayerProjection[] {
+  const band = bandFor(position, priceTenths);
   return allProjections().filter(
     (candidate) =>
       candidate.position === position &&
       candidate.priceTenths !== null &&
-      Math.abs(candidate.priceTenths - priceTenths) <= PEER_BAND_TENTHS &&
+      candidate.priceTenths >= band.fromTenths &&
+      (band.toTenths === null || candidate.priceTenths <= band.toTenths) &&
       metric.value(candidate) !== null,
+  );
+}
+
+/** Everyone in the position with a record, when the tier is too thin to read. */
+function wholePosition(
+  position: string,
+  metric: PeerMetric,
+): PlayerProjection[] {
+  return allProjections().filter(
+    (candidate) =>
+      candidate.position === position && metric.value(candidate) !== null,
   );
 }
 
@@ -170,7 +229,13 @@ export function peerDistribution(
   const own = metric.value(subject);
   if (price === null || own === null) return null;
 
-  const group = peersOf(subject.position, price, metric);
+  const band = bandFor(subject.position, price);
+  const tier = peersOf(subject.position, price, metric);
+  // The subject is never allowed to fall out of his own chart. Where his tier
+  // is too thin to describe, the comparison widens to the whole position
+  // rather than refusing to draw: a wider answer beats no answer.
+  const widened = tier.length < MINIMUM_PEERS;
+  const group = widened ? wholePosition(subject.position, metric) : tier;
   // The subject has to be inside his own population or the percentile divides
   // by the wrong count and can come out above one.
   const population = group.some((peer) => peer.code === subject.code)
@@ -204,10 +269,16 @@ export function peerDistribution(
   const middle = values[Math.floor(values.length / 2)]?.value ?? own;
 
   const ranked = metric.higherIsBetter ? [...values].reverse() : values;
+  const priced = population
+    .map((peer) => peer.priceTenths)
+    .filter((value): value is number => value !== null);
   return {
     position: subject.position,
-    fromTenths: price - PEER_BAND_TENTHS,
-    toTenths: price + PEER_BAND_TENTHS,
+    fromTenths: widened ? Math.min(...priced) : band.fromTenths,
+    toTenths: widened
+      ? Math.max(...priced)
+      : (band.toTenths ?? Math.max(...priced)),
+    widened,
     peers: values.length,
     subject: own,
     bins,
