@@ -189,6 +189,11 @@ async def run(args: argparse.Namespace) -> int:
         f"{rule.rank_ceiling:,} since {rule.since_start_year}"
     )
     started = time.monotonic()
+    # Where this run began, which on a resume is the checkpoint rather than
+    # `--start`. Measuring from `--start` counted 2.5 million ids somebody else
+    # swept as work done in the last minute: a resumed run reported 18,728/s
+    # against a 15/s throttle and "0.3h left" with seventeen million to go.
+    swept_from = progress.next_id
 
     async with httpx.AsyncClient(
         headers={"User-Agent": USER_AGENT},
@@ -247,7 +252,7 @@ async def run(args: argparse.Namespace) -> int:
                 progress.next_id = stop
                 _save_progress(progress)
                 elapsed = time.monotonic() - started
-                done = progress.next_id - args.start
+                done = progress.next_id - swept_from
                 rate = done / elapsed if elapsed else 0.0
                 remaining = (args.until - progress.next_id) / rate if rate else 0.0
                 print(

@@ -1,0 +1,96 @@
+name: Manager sweep
+
+# The register was swept to id 2,500,001 and stopped. FPL is past thirteen
+# million players, so more than four fifths of the ids have never been looked
+# at, and every manager who registered since is invisible to FPL500.
+#
+# It cannot run in one go: eleven and a half million ids at the rate this
+# sweep holds itself to is the better part of a week, and a job here is capped
+# at six hours. So each run takes a bounded bite and writes its position, and
+# the next run picks it up. The checkpoint is the whole design.
+#
+# Egress matters. FPL refuses the Vercel deployment intermittently; it has no
+# quarrel with GitHub's runners, which is where every other ingest already
+# talks to it from.
+on:
+  schedule:
+    # Every six hours, so a five-hour bite never overlaps the next start.
+    - cron: "17 */6 * * *"
+  workflow_dispatch:
+    inputs:
+      rate:
+        description: Requests a second
+        default: "25"
+      max-seconds:
+        description: Stop cleanly after this long
+        default: "16200"
+
+permissions:
+  contents: read
+
+# Two sweeps writing the checkpoint would lose one of their positions, and
+# cancelling one midway throws away the block it was in.
+concurrency:
+  group: manager-sweep
+  cancel-in-progress: false
+
+jobs:
+  sweep:
+    name: Sweep the next block of the register
+    runs-on: ubuntu-latest
+    timeout-minutes: 340
+    permissions:
+      # The results and the checkpoint are pushed back.
+      contents: write
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install engine
+        run: python -m pip install -e ".[dev]"
+
+      - name: Sweep
+        id: sweep
+        timeout-minutes: 330
+        run: |
+          set +e
+          python -m fpl_andres.cli.sweep_managers \
+            --resume \
+            --rate "${{ inputs.rate || '25' }}" \
+            --max-seconds "${{ inputs.max-seconds || '16200' }}" \
+            | tee -a "$GITHUB_STEP_SUMMARY"
+          status=${PIPESTATUS[0]}
+          # 2 is the sweep stopping because FPL told it to often enough to
+          # matter. That is the throttle working, not a broken run: the
+          # checkpoint is written per block, so the next run resumes. Failing
+          # the schedule for it would paint main red every six hours for
+          # something that needs no action.
+          if [ "$status" = "2" ]; then
+            echo "FPL asked us to stop; position kept, resuming next run." \
+              >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          exit "$status"
+
+      - name: Commit the position and anything it found
+        run: |
+          paths="data/cohort/managers.jsonl data/cohort/sweep-checkpoint.json"
+          if git diff --quiet -- $paths; then
+            echo "The sweep moved nothing."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add $paths
+          next=$(python -c "import json;print(json.load(open('data/cohort/sweep-checkpoint.json'))['next_id'])")
+          git commit -m "chore: sweep the register as far as id ${next}"
+          # A scheduled run can start while main has moved on; rebasing is
+          # safe here because this job only ever touches these two files.
+          git pull --rebase --autostash
+          git push
