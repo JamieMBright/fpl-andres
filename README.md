@@ -62,10 +62,16 @@ GitHub Actions -> Python projections + optimizer -> Supabase -> Resend
 corepack pnpm install
 python -m pip install -e ".[dev]"
 corepack pnpm dev          # the web app
-corepack pnpm check        # the full gate; run before committing a milestone
-corepack pnpm fast         # ruff, fast pytest, unit tests only
+corepack pnpm fast         # the iteration loop, ~70s
+corepack pnpm check        # the full gate; run before pushing a milestone
 corepack pnpm test:e2e     # deterministic browser matrix, no live FPL
 ```
+
+`fast` runs the lite unit suite: everything except the three files that solve a
+whole season or drive a fifteen-pick journey through the market. Those three
+cost more than the other seventy-three put together, and none of them is what
+breaks while you are moving markup around. `check` runs them, so does CI, and
+nothing reaches origin without them.
 
 Prerequisites: Node 20.19+, Python 3.12+, Docker Desktop for the local
 database. No global pnpm or Supabase install is needed.

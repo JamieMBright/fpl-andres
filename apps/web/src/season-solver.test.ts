@@ -160,12 +160,15 @@ describe("solveSeason", () => {
   it(
     "starts from a mid-season gameweek when given one",
     () => {
-      const start = { ...openingStart(), fromEvent: 12 };
+      // Late enough that the solve is short. What is under test is that it
+      // begins where the manager arrived and still runs to the end, which does
+      // not need thirty weeks of solving to demonstrate.
+      const start = { ...openingStart(), fromEvent: 33 };
       const solved = [...solveSeason(start)];
 
-      // The whole reason this runs client-side: a manager arriving in gameweek 12
+      // The whole reason this runs client-side: a manager arriving mid-season
       // has a squad nobody could have precomputed a plan for.
-      expect(solved[0]?.event).toBe(12);
+      expect(solved[0]?.event).toBe(33);
       expect(solved.at(-1)?.event).toBe(SEASON_EVENTS.at(-1));
       expect(solved[0]?.confidence).toBe("firm");
     },

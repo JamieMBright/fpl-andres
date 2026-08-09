@@ -15,6 +15,7 @@
     "schema:check": "tsx scripts/export-schema.ts --check",
     "schema:generate": "tsx scripts/export-schema.ts",
     "test": "vitest run",
+    "test:lite": "vitest run",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

@@ -1,4 +1,4 @@
-import teamStateCases from "../../../packages/contracts/fixtures/public-team-state-cases.json";
+﻿import teamStateCases from "../../../packages/contracts/fixtures/public-team-state-cases.json";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { createMemoryRouter, RouterProvider } from "react-router-dom";
@@ -58,7 +58,7 @@ describe("team analysis entry", () => {
   it(
     "opens analysis for a valid FPL team ID",
     async () => {
-      const user = userEvent.setup();
+      const user = userEvent.setup({ delay: null });
       renderApplication();
 
       expect(
@@ -126,7 +126,7 @@ describe("team analysis entry", () => {
   });
 
   it("explains why a malformed team ID cannot be analysed", async () => {
-    const user = userEvent.setup();
+    const user = userEvent.setup({ delay: null });
     const router = renderApplication();
 
     await user.type(screen.getByLabelText("Your FPL team ID"), "abc");
@@ -352,7 +352,7 @@ describe("team analysis entry", () => {
   });
 
   it("stores manager corrections separately against the public deadline", async () => {
-    const user = userEvent.setup();
+    const user = userEvent.setup({ delay: null });
     renderApplication(`/plan?team=${String(readyState.entryId)}`);
     await screen.findByText("Observed snapshot ready", undefined, {
       timeout: SETTLE,
@@ -402,7 +402,7 @@ describe("team analysis entry", () => {
   });
 
   it("focuses an actionable error when no correction is supplied", async () => {
-    const user = userEvent.setup();
+    const user = userEvent.setup({ delay: null });
     renderApplication(`/plan?team=${String(readyState.entryId)}`);
     await screen.findByText("Observed snapshot ready", undefined, {
       timeout: SETTLE,
@@ -419,7 +419,7 @@ describe("team analysis entry", () => {
   });
 
   it("marks and focuses the first invalid correction field", async () => {
-    const user = userEvent.setup();
+    const user = userEvent.setup({ delay: null });
     renderApplication(`/plan?team=${String(readyState.entryId)}`);
     await screen.findByText("Observed snapshot ready", undefined, {
       timeout: SETTLE,
@@ -448,7 +448,7 @@ describe("team analysis entry", () => {
       queuedTransfers: null,
       availableChips: null,
     });
-    const user = userEvent.setup();
+    const user = userEvent.setup({ delay: null });
     renderApplication(`/plan?team=${String(readyState.entryId)}`);
     await screen.findByText("Observed snapshot ready", undefined, {
       timeout: SETTLE,
@@ -529,7 +529,7 @@ describe("team analysis entry", () => {
       queuedTransfers: null,
       availableChips: null,
     });
-    const user = userEvent.setup();
+    const user = userEvent.setup({ delay: null });
     renderApplication(`/plan?team=${String(readyState.entryId)}`);
     await screen.findByText("Observed snapshot ready", undefined, {
       timeout: SETTLE,

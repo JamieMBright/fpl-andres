@@ -45,7 +45,9 @@ function legalSquad(): SolverPlayer[] {
 }
 
 async function fillSquad(squad: readonly SolverPlayer[]): Promise<void> {
-  const user = userEvent.setup();
+  // `delay: null` removes userEvent's inter-event wait. Fifteen picks made it
+  // most of this file's seventeen seconds, and nothing here asserts timing.
+  const user = userEvent.setup({ delay: null });
   // The market lists by name, so each player is found by his own add button
   // rather than by a slot index the pitch no longer exposes.
   const search = screen.getByRole("searchbox", { name: /search/i });

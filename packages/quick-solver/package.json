@@ -9,6 +9,7 @@
   "scripts": {
     "benchmark": "tsx scripts/benchmark.ts",
     "test": "vitest run",
+    "test:lite": "vitest run",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

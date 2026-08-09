@@ -16,11 +16,12 @@
     "contracts:version-gate": "node scripts/contracts-version-gate.mjs",
     "model:version-gate": "node scripts/model-version-gate.mjs",
     "dev": "corepack pnpm --filter @fpl-andres/web dev",
-    "fast": "corepack pnpm format && corepack pnpm lint && corepack pnpm typecheck && python -m ruff check python && python -m ruff format python && python -m mypy && python -m pytest -q -m \"not slow\" -n auto --no-cov",
+    "fast": "corepack pnpm format && corepack pnpm lint && corepack pnpm typecheck && corepack pnpm test:lite && python -m ruff check python && python -m ruff format python && python -m mypy && python -m pytest -q -m \"not slow\" -n auto --no-cov",
     "format": "prettier --cache --write .",
     "format:check": "prettier --check .",
     "lint": "eslint --cache --cache-location node_modules/.cache/eslint/lint-cache .",
     "test": "corepack pnpm -r --if-present test",
+    "test:lite": "corepack pnpm -r --if-present test:lite",
     "test:e2e": "corepack pnpm --filter @fpl-andres/web test:e2e",
     "test:deployed": "corepack pnpm --filter @fpl-andres/web test:deployed",
     "typecheck": "corepack pnpm -r --if-present typecheck && tsc --noEmit -p tsconfig.api.json"
