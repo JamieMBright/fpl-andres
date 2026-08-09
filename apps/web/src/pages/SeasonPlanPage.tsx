@@ -869,15 +869,15 @@ export default function SeasonPlanPage() {
           <>
             {solving ? (
               <p className="plan-chip-scope">
-                Bench Boost and Triple Captain are solved from{" "}
-                <strong>your</strong> gameweeks. Wildcard and Free Hit are the
-                published fifteen&rsquo;s.
-                <InfoMarker label="why two of four">
+                All four solved from <strong>your</strong> squad.
+                <InfoMarker label="how each chip is priced">
                   Bench Boost pays what your bench scores and Triple Captain
-                  pays what your captain scores, so both fall straight out of
-                  the weeks below. Wildcard and Free Hit rebuild all fifteen,
-                  and the browser solver moves at most five players a week. It
-                  cannot size them, so it does not pretend to.
+                  pays what your captain scores, both read off the weeks below.
+                  Wildcard and Free Hit are priced by rebuilding your fifteen
+                  from the whole pool at every week and taking the best: the
+                  Free Hit on one week, the Wildcard on the run it opens. The
+                  rebuild is a bounded search, not a proof, and it values your
+                  squad at list price rather than selling price.
                 </InfoMarker>
               </p>
             ) : null}

@@ -244,6 +244,98 @@ function look(elementId: number): SolverPlayer {
 
 const SHEET_ORDER = ["GKP", "DEF", "MID", "FWD"];
 
+/** Position ids come from the rules artifact; the codes are this app's. */
+const POSITION_BY_ID: Record<number, string> = {
+  1: "GKP",
+  2: "DEF",
+  3: "MID",
+  4: "FWD",
+};
+
+export const EVENT_INDEX = new Map(
+  EVENTS.map((event, index) => [event, index]),
+);
+
+export const SQUAD_SHAPE_BY_CODE: Record<string, number> = Object.fromEntries(
+  SQUAD_SHAPE.map((slot) => [
+    POSITION_BY_ID[slot.positionId] ?? String(slot.positionId),
+    slot.squadCount,
+  ]),
+);
+
+export const LINEUP_SHAPE: Record<string, { min: number; max: number }> =
+  Object.fromEntries(
+    SQUAD_SHAPE.map((slot) => [
+      POSITION_BY_ID[slot.positionId] ?? String(slot.positionId),
+      { min: slot.lineupMinimum, max: slot.lineupMaximum },
+    ]),
+  );
+
+export const LINEUP_SIZE = RULES.lineupSize;
+export { PLAYABLE_START_RATE };
+
+/** One player's expected points for a single gameweek, fixture included. */
+export function pointsAtEvent(
+  player: SolverPlayer,
+  eventIndex: number,
+): number {
+  return pointsAt(player, eventIndex);
+}
+
+/** The same, discounted over the next few gameweeks. */
+export function lookaheadPointsFor(
+  player: SolverPlayer,
+  eventIndex: number,
+): number {
+  return lookaheadPoints(player, eventIndex);
+}
+
+/**
+ * The best legal eleven this fifteen can field, captain doubled.
+ *
+ * Both sides of a chip comparison are scored through here, so the captain
+ * multiplier cancels out of the difference and cannot flatter either.
+ */
+export function bestElevenPoints(
+  squad: readonly SolverPlayer[],
+  eventIndex: number,
+): number {
+  const scored = squad
+    .map((player) => ({ player, points: pointsAt(player, eventIndex) }))
+    .sort((left, right) => right.points - left.points);
+
+  const picked: typeof scored = [];
+  const perPosition = new Map<string, number>();
+
+  // Minimums first, or a keeper-less eleven scores better than a legal one.
+  for (const [code, shape] of Object.entries(LINEUP_SHAPE)) {
+    for (const entry of scored) {
+      if ((perPosition.get(code) ?? 0) >= shape.min) break;
+      if (entry.player.position !== code) continue;
+      if (picked.includes(entry)) continue;
+      picked.push(entry);
+      perPosition.set(code, (perPosition.get(code) ?? 0) + 1);
+    }
+  }
+
+  for (const entry of scored) {
+    if (picked.length >= LINEUP_SIZE) break;
+    if (picked.includes(entry)) continue;
+    const code = entry.player.position;
+    const shape = LINEUP_SHAPE[code];
+    if (shape && (perPosition.get(code) ?? 0) >= shape.max) continue;
+    picked.push(entry);
+    perPosition.set(code, (perPosition.get(code) ?? 0) + 1);
+  }
+
+  const total = picked.reduce((sum, entry) => sum + entry.points, 0);
+  const captain = picked.reduce(
+    (best, entry) => Math.max(best, entry.points),
+    0,
+  );
+  return total + captain;
+}
+
 function inSheetOrder(players: SolverPlayer[]): SolverPlayer[] {
   return [...players].sort(
     (left, right) =>

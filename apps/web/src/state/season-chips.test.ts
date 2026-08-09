@@ -28,7 +28,13 @@ function player(code: number): SolverPlayer {
 
 function week(
   event: number,
-  { bench, captain }: { bench: number[]; captain: number },
+  {
+    bench,
+    captain,
+    // Enough that a rebuild can actually buy a legal fifteen. A squad of two
+    // invented players has no realistic sale value of its own.
+    bankTenths = 880,
+  }: { bench: number[]; captain: number; bankTenths?: number },
 ): SolvedGameweek {
   const expected: Record<string, number> = { [String(captain)]: 6 };
   bench.forEach((points, index) => {
@@ -51,7 +57,7 @@ function week(
     transferCostPoints: 0,
     projectedPoints: 0,
     netExpectedPoints: 0,
-    bankAfterTenths: 0,
+    bankAfterTenths: bankTenths,
     freeTransfersBefore: 1,
   };
 }
@@ -117,14 +123,27 @@ describe("chipCallsFor", () => {
     expect(callOf(calls, "Triple Captain").gain).toBe(6);
   });
 
-  it("leaves the two it cannot size exactly as published", () => {
+  // The rebuild reads the real player artifact, so a fixture squad of two
+  // invented players is beaten by any legal fifteen the budget buys. What is
+  // pinned here is that both chips are now solved rather than carried over.
+  it("solves the two rebuild chips instead of repeating the published week", () => {
     const calls = chipCallsFor(
-      [week(2, { bench: [1], captain: 7 })],
+      [
+        week(2, { bench: [1], captain: 7 }),
+        week(3, { bench: [1], captain: 7 }),
+      ],
       PUBLISHED,
     );
 
-    expect(callOf(calls, "Free Hit")).toEqual(callOf(PUBLISHED, "Free Hit"));
-    expect(callOf(calls, "Wildcard")).toEqual(callOf(PUBLISHED, "Wildcard"));
+    for (const chip of ["Free Hit", "Wildcard"] as const) {
+      const call = callOf(calls, chip);
+      expect(call.note).not.toContain("published");
+      expect(call.event).not.toBe(callOf(PUBLISHED, chip).event);
+    }
+    // One squad cannot be both handed back and kept.
+    expect(callOf(calls, "Free Hit").event).not.toBe(
+      callOf(calls, "Wildcard").event,
+    );
   });
 
   it("keeps the halves apart", () => {

@@ -63,7 +63,7 @@ describe("team analysis entry", () => {
 
       expect(
         screen.getByRole("heading", {
-          name: "Six pages. No opinions.",
+          name: "Five pages. No opinions.",
         }),
       ).not.toHaveFocus();
       await user.type(screen.getByLabelText("Your FPL team ID"), "123456");
@@ -114,16 +114,20 @@ describe("team analysis entry", () => {
       screen.getByRole("link", { name: "Skip to content" }),
     ).toHaveAttribute("href", "#main-content");
     expect(screen.getByRole("main")).toHaveAttribute("id", "main-content");
-    // The home page is the index: every destination reachable without the nav.
+    // Every destination is reachable from the shell, and the five that carry
+    // the work are on the index page as well as in the bar.
     for (const name of [
       "Plan",
       "Players",
       "Analysis",
       "Method",
       "Calibration",
-      "FAQ",
     ]) {
-      expect(screen.getAllByRole("link", { name }).length).toBeGreaterThan(1);
+      expect(screen.getAllByRole("link", { name }).length).toBeGreaterThan(2);
+    }
+    // FAQ and Kits are wayfinding, not the main event: bar and footer only.
+    for (const name of ["FAQ", "Kits"]) {
+      expect(screen.getAllByRole("link", { name }).length).toBeGreaterThan(0);
     }
     // Capability is stated, not implied by a page full of promises.
     expect(screen.getByText(/Reading the public record/)).toBeVisible();

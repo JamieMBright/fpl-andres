@@ -40,7 +40,7 @@ export default function HomePage() {
       <p className="eyebrow">
         <Clock3 aria-hidden="true" size={14} /> Reading the public record
       </p>
-      <RouteHeading>Six pages. No opinions.</RouteHeading>
+      <RouteHeading>Five pages. No opinions.</RouteHeading>
 
       <ul className="index-grid">
         <li className="index-cell is-plan">
@@ -49,7 +49,9 @@ export default function HomePage() {
             <Link to="/plan">Plan</Link>
           </h2>
           <p>Your fifteen, solved to gameweek 38.</p>
+        </li>
 
+        <li className="index-cell is-entry">
           <form className="index-form" noValidate onSubmit={analyseTeam}>
             <label htmlFor="team-id">Your FPL team ID</label>
             <div className="input-command">
@@ -116,14 +118,6 @@ export default function HomePage() {
             <Link to="/calibration">Calibration</Link>
           </h2>
           <p>Where I win, where I lose. Scored four seasons back.</p>
-        </li>
-
-        <li className="index-cell is-faq">
-          <h2>
-            <span aria-hidden="true">06</span>
-            <Link to="/faq">FAQ</Link>
-          </h2>
-          <p>Quick answers and the FPL lingo glossary.</p>
         </li>
       </ul>
     </section>

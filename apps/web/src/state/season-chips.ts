@@ -1,5 +1,6 @@
 import type { ChipCall } from "./season-plan";
 import type { SolvedGameweek } from "./season-solver";
+import { rebuildUplift } from "./squad-rebuild";
 
 /**
  * Which week to play a chip, for the squad actually being solved.
@@ -8,26 +9,15 @@ import type { SolvedGameweek } from "./season-solver";
  * them to a manager who locked in his own squad names weeks that suit somebody
  * else's bench, which is worse than saying nothing.
  *
- * Bench Boost and Triple Captain need no extra solving: they pay what this
- * plan's bench and captain already score, so their week falls straight out of
- * the gameweeks on screen. Wildcard and Free Hit do not, and are not guessed
- * at here -- see `UNSOLVED_CHIPS`.
+ * All four are solved here. Bench Boost and Triple Captain fall out of the
+ * gameweeks on screen; Wildcard and Free Hit are priced by rebuilding the
+ * fifteen from the pool, in `squad-rebuild.ts`.
  */
 
 const HALVES = [
   { half: "first", from: 1, to: 19 },
   { half: "second", from: 20, to: 38 },
 ] as const;
-
-/**
- * The two the browser cannot answer.
- *
- * Both rebuild the fifteen, and `solveQuickPlan` is a beam search capped at
- * five transfers a week. Sizing them needs a fresh fifteen-man selection the
- * browser has no solver for, so their weeks are left to the published plan and
- * the page says which is which.
- */
-export const UNSOLVED_CHIPS = ["Wildcard", "Free Hit"] as const;
 
 function pointsOf(week: SolvedGameweek, code: number): number {
   return week.expected[String(code)] ?? 0;
@@ -85,10 +75,93 @@ function callFor(
 }
 
 /**
- * Chip calls for a solved season, plus whichever published ones still stand.
+ * What a squad entering this gameweek is worth if it were all sold.
  *
- * Published Wildcard and Free Hit calls are carried through unchanged and
- * flagged by `UNSOLVED_CHIPS`, so a half never silently loses two of its four.
+ * Selling price is not list price, but the solved plan does not carry one per
+ * player, so this uses list. It overstates a risen player's value by half his
+ * rise, which is named in the chip note rather than hidden.
+ */
+function budgetAt(week: SolvedGameweek): number {
+  const held = [...week.starters, ...week.bench];
+  return (
+    held.reduce((total, player) => total + player.priceTenths, 0) +
+    week.bankAfterTenths
+  );
+}
+
+/**
+ * The two rebuild chips, priced by actually rebuilding.
+ *
+ * A free hit is one week, so its gain is the one-week uplift of the best
+ * fifteen the money buys. A wildcard keeps the squad, so it is priced on the
+ * lookahead the rebuild is chosen for -- the run it opens, not the Saturday.
+ */
+function rebuildCalls(
+  half: string,
+  weeks: readonly SolvedGameweek[],
+): ChipCall[] {
+  const priced = weeks
+    .map((week) => ({
+      week,
+      ...rebuildUplift(
+        week.event,
+        [...week.starters, ...week.bench],
+        budgetAt(week),
+      ),
+    }))
+    .filter((entry) => entry.rebuilt !== null && entry.gain > 0)
+    .sort((left, right) => right.gain - left.gain);
+
+  const freeHit = priced[0];
+  // Never the same week twice: one squad cannot be both handed back and kept.
+  const wildcard = priced.find(
+    (entry) => entry.week.event !== freeHit?.week.event,
+  );
+
+  return [
+    freeHit
+      ? {
+          event: freeHit.week.event,
+          chip: "Free Hit",
+          half,
+          gain: Math.round(freeHit.gain * 100) / 100,
+          note:
+            `the best fifteen this budget buys is worth ${freeHit.gain.toFixed(1)} more ` +
+            `than yours in gameweek ${String(freeHit.week.event)}, and you get yours back after`,
+        }
+      : {
+          event: null,
+          chip: "Free Hit",
+          half,
+          gain: 0,
+          note: "no week in this half where a rebuilt fifteen beats yours",
+        },
+    wildcard
+      ? {
+          event: wildcard.week.event,
+          chip: "Wildcard",
+          half,
+          gain: Math.round(wildcard.gain * 100) / 100,
+          note:
+            `rebuilding in gameweek ${String(wildcard.week.event)} is worth ${wildcard.gain.toFixed(1)} ` +
+            `on the five gameweeks it opens, and the squad stays`,
+        }
+      : {
+          event: null,
+          chip: "Wildcard",
+          half,
+          gain: 0,
+          note: "no week in this half worth a rebuild",
+        },
+  ];
+}
+
+/**
+ * Chip calls for a solved season, all four of them.
+ *
+ * Bench Boost and Triple Captain read straight off the solved weeks. Wildcard
+ * and Free Hit rebuild the fifteen from the pool, because a beam search capped
+ * at five transfers a week cannot express "throw it away and start again".
  */
 export function chipCallsFor(
   gameweeks: readonly SolvedGameweek[],
@@ -101,17 +174,10 @@ export function chipCallsFor(
     const weeks = gameweeks.filter(
       (week) => week.event >= from && week.event <= to,
     );
-
-    for (const chip of UNSOLVED_CHIPS) {
-      const carried = published.find(
-        (call) => call.chip === chip && call.half === half,
-      );
-      if (carried) calls.push(carried);
-    }
-
     if (weeks.length === 0) continue;
 
     calls.push(
+      ...rebuildCalls(half, weeks),
       callFor(
         "Bench Boost",
         half,

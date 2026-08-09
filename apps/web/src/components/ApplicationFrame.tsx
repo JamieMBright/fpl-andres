@@ -123,24 +123,53 @@ export function ApplicationFrame() {
         <Outlet />
       </main>
       <footer className="site-footer">
-        <p>Independent analysis. Not affiliated with Fantasy Premier League.</p>
-        <ul className="social-links">
-          {SOCIAL_LINKS.map((social) => (
-            <li key={social.name}>
-              <a
-                aria-label={`FPL Andres on ${social.name}`}
-                href={social.href}
-                rel="me noopener noreferrer"
-                target="_blank"
-              >
-                <svg aria-hidden="true" viewBox="0 0 24 24">
-                  <path d={social.path} />
-                </svg>
-              </a>
+        <nav aria-label="Site map" className="site-map">
+          <h2>Site map</h2>
+          <ul>
+            <li>
+              <Link to="/plan">Plan</Link>
             </li>
-          ))}
-        </ul>
-        <p className="mono">I only read what FPL makes public.</p>
+            <li>
+              <Link to="/players">Players</Link>
+            </li>
+            <li>
+              <Link to="/analysis">Analysis</Link>
+            </li>
+            <li>
+              <Link to="/methodology">Method</Link>
+            </li>
+            <li>
+              <Link to="/calibration">Calibration</Link>
+            </li>
+            <li>
+              <Link to="/faq">FAQ</Link>
+            </li>
+            <li>
+              <Link to="/kits">Kits</Link>
+            </li>
+          </ul>
+        </nav>
+        <div className="site-footer-end">
+          <ul className="social-links">
+            {SOCIAL_LINKS.map((social) => (
+              <li key={social.name}>
+                <a
+                  aria-label={`FPL Andres on ${social.name}`}
+                  href={social.href}
+                  rel="me noopener noreferrer"
+                  target="_blank"
+                >
+                  <svg aria-hidden="true" viewBox="0 0 24 24">
+                    <path d={social.path} />
+                  </svg>
+                </a>
+              </li>
+            ))}
+          </ul>
+          <p>
+            Independent analysis. Not affiliated with Fantasy Premier League.
+          </p>
+        </div>
       </footer>
     </div>
   );
