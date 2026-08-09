@@ -4,6 +4,7 @@ import { describe, expect, it } from "vitest";
 
 import { Fpl500Playbook } from "./Fpl500Playbook";
 import artifact from "../data/fpl500.json";
+import { fineShare, integer } from "../format";
 
 /**
  * The page exists to say two things a reader cannot get from the ranking
@@ -25,7 +26,7 @@ describe("Fpl500Playbook", () => {
 
     // Four fifths of the ids have never been looked at. A page listing five
     // hundred managers without that is claiming a completeness it lacks.
-    const swept = new Intl.NumberFormat("en-GB").format(artifact.sweptTo);
+    const swept = integer.format(artifact.sweptTo);
     expect(
       screen.getByText(new RegExp(`Swept to id ${swept}`)),
     ).toBeInTheDocument();
@@ -70,10 +71,8 @@ describe("Fpl500Playbook", () => {
   it("quotes the reconciler's own coverage floor rather than a number typed here", () => {
     draw();
 
-    const floor = new Intl.NumberFormat("en-GB", {
-      style: "percent",
-      maximumFractionDigits: 3,
-    }).format(artifact.minimumCoverage);
-    expect(screen.getByText(new RegExp(floor))).toBeInTheDocument();
+    expect(
+      screen.getByText(new RegExp(fineShare.format(artifact.minimumCoverage))),
+    ).toBeInTheDocument();
   });
 });

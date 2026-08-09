@@ -84,3 +84,16 @@ export const twoDecimals = new Intl.NumberFormat("en-GB", {
   minimumFractionDigits: 2,
   maximumFractionDigits: 2,
 });
+
+/**
+ * A share of a population, to a thousandth.
+ *
+ * Three places because the shares this renders are the tails: a manager who
+ * finished ahead of 99.9687% of the field and one who finished ahead of
+ * 99.9% are two hundred places apart, and rounding to a whole percent makes
+ * every one of them "100%".
+ */
+export const fineShare = new Intl.NumberFormat("en-GB", {
+  style: "percent",
+  maximumFractionDigits: 3,
+});

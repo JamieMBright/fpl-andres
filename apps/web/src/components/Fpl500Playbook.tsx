@@ -1,5 +1,5 @@
 import fpl500 from "../data/fpl500.json";
-import { integer } from "../format";
+import { fineShare, integer } from "../format";
 
 type Fpl500 = {
   generatedAt: string;
@@ -36,14 +36,9 @@ type Fpl500 = {
 const data = fpl500 as Fpl500;
 const number = integer;
 
-const percent = new Intl.NumberFormat("en-GB", {
-  style: "percent",
-  maximumFractionDigits: 3,
-});
-
 /** Top 0.031% reads better than 0.999687, and is the same number. */
 function topShare(percentile: number): string {
-  return percent.format(1 - percentile);
+  return fineShare.format(1 - percentile);
 }
 
 /**
@@ -232,7 +227,7 @@ export function Fpl500Playbook() {
         <ul className="plan-promises">
           <li>
             <strong>
-              Coverage is floored at {percent.format(data.minimumCoverage)}.
+              Coverage is floored at {fineShare.format(data.minimumCoverage)}.
             </strong>{" "}
             Five hundred requests will not all answer. Dividing by however many
             did makes the denominator move every week, and a player looks to be
