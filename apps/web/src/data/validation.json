@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-10T17:02:01.371449+00:00",
+  "generatedAt": "2026-08-10T21:15:10.896883+00:00",
   "modelVersion": "6.5",
   "seasons": [
     {
@@ -1092,7 +1092,7 @@
           },
           {
             "346": [6.23, 5.89, 3.8, 0.893, 28.4, 9.22, 1.145],
-            "357": [5.65, 4.56, 10.0, 0.893, 78.9, 9.11, 0.666],
+            "357": [5.65, 4.56, 10.0, 0.893, 78.9, 9.11, 0.665],
             "210": [5.41, 5.16, 3.2, 0.642, 30.2, 12.96, 1.145],
             "7": [5.38, 4.07, 10.6, 0.858, 22.3, 12.78, 1.042],
             "335": [4.89, 4.57, 6.2, 0.669, 38.7, 13.53, 2.2],
@@ -1470,7 +1470,16 @@
                 "position": "FWD",
                 "priceTenths": 119
               }
-            ]
+            ],
+            "prorated38Gameweeks": 2334,
+            "overallRankBand": {
+              "rankFrom": 1097124,
+              "rankTo": 1287967,
+              "pointsFrom": 2324,
+              "pointsTo": 2344,
+              "sampleSize": 20
+            },
+            "rankReason": null
           },
           "form_chaser": {
             "mean": 1676,
@@ -1573,7 +1582,16 @@
                 "position": "DEF",
                 "priceTenths": 75
               }
-            ]
+            ],
+            "prorated38Gameweeks": 2054,
+            "overallRankBand": {
+              "rankFrom": 2645039,
+              "rankTo": 6147948,
+              "pointsFrom": 1926,
+              "pointsTo": 2204,
+              "sampleSize": 20
+            },
+            "rankReason": null
           },
           "crowd": {
             "mean": 1732,
@@ -1676,7 +1694,16 @@
                 "position": "FWD",
                 "priceTenths": 71
               }
-            ]
+            ],
+            "prorated38Gameweeks": 2123,
+            "overallRankBand": {
+              "rankFrom": 2451179,
+              "rankTo": 4422261,
+              "pointsFrom": 2066,
+              "pointsTo": 2220,
+              "sampleSize": 20
+            },
+            "rankReason": null
           },
           "hold": {
             "mean": 1692,
@@ -1775,7 +1802,16 @@
                 "position": "MID",
                 "priceTenths": 66
               }
-            ]
+            ],
+            "prorated38Gameweeks": 2074,
+            "overallRankBand": {
+              "rankFrom": 2645039,
+              "rankTo": 5668232,
+              "pointsFrom": 1966,
+              "pointsTo": 2204,
+              "sampleSize": 20
+            },
+            "rankReason": null
           }
         },
         "leaguesPlayed": 5
@@ -3256,7 +3292,16 @@
                 "position": "DEF",
                 "priceTenths": 45
               }
-            ]
+            ],
+            "prorated38Gameweeks": 2336,
+            "overallRankBand": {
+              "rankFrom": 697123,
+              "rankTo": 779810,
+              "pointsFrom": 2331,
+              "pointsTo": 2342,
+              "sampleSize": 20
+            },
+            "rankReason": null
           },
           "form_chaser": {
             "mean": 1896,
@@ -3360,7 +3405,16 @@
                 "position": "DEF",
                 "priceTenths": 43
               }
-            ]
+            ],
+            "prorated38Gameweeks": 2252,
+            "overallRankBand": {
+              "rankFrom": 1318777,
+              "rankTo": 1776774,
+              "pointsFrom": 2232,
+              "pointsTo": 2272,
+              "sampleSize": 20
+            },
+            "rankReason": null
           },
           "crowd": {
             "mean": 1709,
@@ -3464,7 +3518,16 @@
                 "position": "MID",
                 "priceTenths": 62
               }
-            ]
+            ],
+            "prorated38Gameweeks": 2029,
+            "overallRankBand": {
+              "rankFrom": 2790171,
+              "rankTo": 5938650,
+              "pointsFrom": 1905,
+              "pointsTo": 2155,
+              "sampleSize": 20
+            },
+            "rankReason": null
           },
           "hold": {
             "mean": 1398,
@@ -3563,7 +3626,16 @@
                 "position": "MID",
                 "priceTenths": 46
               }
-            ]
+            ],
+            "prorated38Gameweeks": 1660,
+            "overallRankBand": {
+              "rankFrom": 3568039,
+              "rankTo": 8933070,
+              "pointsFrom": 1618,
+              "pointsTo": 2097,
+              "sampleSize": 20
+            },
+            "rankReason": null
           }
         },
         "leaguesPlayed": 5
@@ -5027,7 +5099,16 @@
                 "position": "DEF",
                 "priceTenths": 59
               }
-            ]
+            ],
+            "prorated38Gameweeks": 2040,
+            "overallRankBand": {
+              "rankFrom": 2991189,
+              "rankTo": 6431341,
+              "pointsFrom": 1909,
+              "pointsTo": 2190,
+              "sampleSize": 20
+            },
+            "rankReason": null
           },
           "form_chaser": {
             "mean": 1703,
@@ -5131,7 +5212,16 @@
                 "position": "FWD",
                 "priceTenths": 65
               }
-            ]
+            ],
+            "prorated38Gameweeks": 2022,
+            "overallRankBand": {
+              "rankFrom": 2991189,
+              "rankTo": 6431341,
+              "pointsFrom": 1909,
+              "pointsTo": 2190,
+              "sampleSize": 20
+            },
+            "rankReason": null
           },
           "crowd": {
             "mean": 1672,
@@ -5235,7 +5325,16 @@
                 "position": "GKP",
                 "priceTenths": 46
               }
-            ]
+            ],
+            "prorated38Gameweeks": 1986,
+            "overallRankBand": {
+              "rankFrom": 3136214,
+              "rankTo": 7431562,
+              "pointsFrom": 1807,
+              "pointsTo": 2180,
+              "sampleSize": 20
+            },
+            "rankReason": null
           },
           "hold": {
             "mean": 1477,
@@ -5334,7 +5433,16 @@
                 "position": "MID",
                 "priceTenths": 44
               }
-            ]
+            ],
+            "prorated38Gameweeks": 1754,
+            "overallRankBand": {
+              "rankFrom": 3466247,
+              "rankTo": 8646267,
+              "pointsFrom": 1681,
+              "pointsTo": 2158,
+              "sampleSize": 20
+            },
+            "rankReason": null
           }
         },
         "leaguesPlayed": 5
@@ -6832,7 +6940,16 @@
                 "position": "GKP",
                 "priceTenths": 45
               }
-            ]
+            ],
+            "prorated38Gameweeks": 1914,
+            "overallRankBand": {
+              "rankFrom": 3188463,
+              "rankTo": 7808716,
+              "pointsFrom": 1789,
+              "pointsTo": 2047,
+              "sampleSize": 20
+            },
+            "rankReason": null
           },
           "form_chaser": {
             "mean": 1599,
@@ -6936,7 +7053,16 @@
                 "position": "GKP",
                 "priceTenths": 39
               }
-            ]
+            ],
+            "prorated38Gameweeks": 1899,
+            "overallRankBand": {
+              "rankFrom": 3288253,
+              "rankTo": 8186880,
+              "pointsFrom": 1765,
+              "pointsTo": 2041,
+              "sampleSize": 20
+            },
+            "rankReason": null
           },
           "crowd": {
             "mean": 1638,
@@ -7040,7 +7166,16 @@
                 "position": "GKP",
                 "priceTenths": 46
               }
-            ]
+            ],
+            "prorated38Gameweeks": 1945,
+            "overallRankBand": {
+              "rankFrom": 3114544,
+              "rankTo": 6833564,
+              "pointsFrom": 1848,
+              "pointsTo": 2051,
+              "sampleSize": 20
+            },
+            "rankReason": null
           },
           "hold": {
             "mean": 1480,
@@ -7139,7 +7274,16 @@
                 "position": "FWD",
                 "priceTenths": 43
               }
-            ]
+            ],
+            "prorated38Gameweeks": 1758,
+            "overallRankBand": {
+              "rankFrom": 4351674,
+              "rankTo": 11100618,
+              "pointsFrom": 1508,
+              "pointsTo": 1984,
+              "sampleSize": 20
+            },
+            "rankReason": null
           }
         },
         "leaguesPlayed": 5
