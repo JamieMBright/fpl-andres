@@ -773,6 +773,21 @@ def main(argv: Sequence[str] | None = None) -> int:
             "multiplier for the gameweek; blanks are zero and doubles are summed"
         ),
         "poolPerPosition": POOL_PER_POSITION,
+        # How much of the market actually reached this run. Printed to stderr
+        # for months while the page went on describing a bookmaker's
+        # contribution in the present tense -- and the whole path was a no-op,
+        # so every one of these was zero and nothing on the site could tell.
+        # Published so the claim can be derived from the evidence instead of
+        # asserted beside it.
+        "market": {
+            "attackingRoutes": priced_attack,
+            "playersQuoted": len(quoted_attack),
+            "cardRoutes": priced_cards,
+            "playersQuotedForCards": len(quoted_cards),
+            "startRatesCut": benched,
+            "squadsNamed": len(squads.covered),
+            "fixtureRungs": market_rungs,
+        },
         # Read from FPL's own bootstrap, not retyped in TypeScript. The browser
         # solver declared the squad shape, the weekly award, the cap and the
         # hit as literals with a prose citation and no timestamp, which is the

@@ -29,6 +29,22 @@ from __future__ import annotations
 
 __all__ = ["MODEL_VERSION"]
 
+#: 6.5 stops the recency decay running across the summer break. Inside a season
+#: a four-event half-life asks "what is he doing lately", which is the right
+#: question in March. In August it is the wrong one and an actively misleading
+#: one: the last month of a decided season is rotation, rested legs and dead
+#: rubbers, the least representative football anybody plays, and ninety per cent
+#: of the weight was sitting on it. A striker who started thirty-five of
+#: thirty-eight but five of his last seven was published as a sixty-three per
+#: cent starter for a season that had not begun -- a claim about April, not
+#: about him -- and minutes scale every route, so it cost him a third of
+#: everything. Every premium was suppressed the same way. Across the break the
+#: half-life is the whole campaign, because none of it is recent and all of it
+#: is his record. Minor: inside a season nothing moves at all, and a player who
+#: genuinely lost his place is still marked down. This is also the one
+#: configuration the backtest never scores -- it always projects gameweek N from
+#: 1..N-1 within a season -- so it shipped unmeasured until now.
+#:
 #: 6.4 stops last season outvoting this one on defensive contribution. A
 #: defender's action count is mostly a property of the arrangement around him --
 #: how high the line sits, who screens in front, whether the manager changed,
@@ -271,4 +287,4 @@ __all__ = ["MODEL_VERSION"]
 #: projection and resampled, so a gap that does not clear zero is reported as
 #: not clearing zero. No projection changed; what changed is what may be
 #: claimed from it.
-MODEL_VERSION = "6.4"
+MODEL_VERSION = "6.5"

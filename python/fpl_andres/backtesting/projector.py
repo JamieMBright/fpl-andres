@@ -12,7 +12,7 @@ ignored, they are absent.
 from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from datetime import datetime, timedelta
 
 from fpl_andres.backtesting.corpus import CorpusLoadError, ElementRow, SeasonCorpus
@@ -298,6 +298,16 @@ def project_next_match(
     # When the next event runs past the end of a season, the next match a player
     # actually plays is match one of the next one, with a clean card record.
     season_over = corpus.last_event + 1 > SEASON_MATCHES
+    if season_over:
+        # And a flat one. A four-event half-life asks "what is he doing lately",
+        # which is the right question in March and the wrong one in August: the
+        # last month of a decided season is rotation, rested legs and dead
+        # rubbers, and it is the least representative stretch there is. Left
+        # decayed, a striker who started thirty-five of thirty-eight but five of
+        # his last seven is published as a sixty-three per cent starter for a
+        # season that has not begun. Across the break the whole campaign is the
+        # evidence, because none of it is recent and all of it is his record.
+        config = replace(config, decay_half_life_events=SEASON_MATCHES)
     history = corpus.before(corpus.last_event + 1)
     if not history:
         return []

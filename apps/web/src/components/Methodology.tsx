@@ -9,6 +9,7 @@ import {
   type ThesisRow,
 } from "../state/captaincy-verdict";
 import { projectionSeason } from "../state/projection-meta";
+import { marketIsSilent, marketSentence } from "../state/market-reach";
 import { InfoMarker } from "./InfoMarker";
 
 const VERDICT_WORDS: Record<ThesisRow["verdict"], string> = {
@@ -44,6 +45,8 @@ export function Methodology() {
   const which = whichThesisVerdict(verdict);
   const ceiling = ceilingSentence(verdict);
   const table = thesisTable(validation.captainSignificance);
+  const marketSilent = marketIsSilent();
+  const marketLine = marketSentence();
 
   return (
     <div className="method-body">
@@ -159,7 +162,15 @@ export function Methodology() {
       </section>
 
       <section aria-labelledby="method-market">
-        <h2 id="method-market">Where a bookmaker gets a say</h2>
+        <h2 id="method-market">Where a bookmaker gets a say</h2>{" "}
+        <p
+          className={
+            marketSilent ? "method-market-silent" : "method-market-live"
+          }
+        >
+          <strong>{marketSilent ? "Not yet." : "Currently:"}</strong>{" "}
+          {marketLine}
+        </p>{" "}
         <p>
           Everything above reads history. A book reads the team sheet. It knows
           a striker has lost his place, that a summer signing has taken it, and

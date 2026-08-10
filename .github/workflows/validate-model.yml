@@ -88,6 +88,20 @@ jobs:
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
         run: python -m fpl_andres.cli.reconcile
 
+      # The site reads the published projection, not the backtest. Republished
+      # here because this is the only place that can: the owner's network
+      # intercepts TLS to Supabase, so a model change made there lands dormant
+      # until somebody remembers to regenerate by hand -- which is how a scored
+      # improvement can sit unshipped for weeks.
+      - name: Republish the projection the site reads
+        timeout-minutes: 20
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+        run: |
+          python -m fpl_andres.cli.publish_projections
+          python -m fpl_andres.cli.publish_season_inputs
+
       # Python writes the artifact and prettier owns the file. Without this the
       # refresh commit is format-clean nowhere and reddens main on arrival.
       - name: Format what is about to be committed
@@ -96,6 +110,9 @@ jobs:
             apps/web/src/data/validation.json \
             apps/web/src/data/model-history.json \
             apps/web/src/data/reconciliation.json \
+            apps/web/src/data/projections.json \
+            apps/web/src/data/projections-meta.json \
+            apps/web/src/data/season-inputs.json \
             docs/MODEL_CARDS.md
 
       - name: Prove the document agrees with the artifact
@@ -121,7 +138,7 @@ jobs:
 
       - name: Commit the refreshed artifact
         run: |
-          paths="apps/web/src/data/validation.json apps/web/src/data/model-history.json apps/web/src/data/reconciliation.json docs/MODEL_CARDS.md"
+          paths="apps/web/src/data/validation.json apps/web/src/data/model-history.json apps/web/src/data/reconciliation.json apps/web/src/data/projections.json apps/web/src/data/projections-meta.json apps/web/src/data/season-inputs.json docs/MODEL_CARDS.md"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           # Staged before the comparison. `git diff` does not look at untracked
