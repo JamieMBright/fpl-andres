@@ -4218,8 +4218,170 @@ h1[tabindex="-1"]:focus-visible {
   color: var(--ink-soft);
 }
 
-/* The best five-gameweek player in each position. The green panel behind the
-   photograph is the one loud thing; everything under it is ordinary type. */
+/* What a player did, drawn. The marks never carry meaning alone -- each has a
+   title, and the card prints the points beside them. */
+.score-marks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  align-items: center;
+  min-height: 14px;
+}
+
+.score-mark {
+  display: block;
+  width: 14px;
+  height: 14px;
+  shape-rendering: crispEdges;
+}
+
+.score-marks-more {
+  font-family: var(--fa-body);
+  font-size: 11px;
+  color: var(--ink-soft);
+}
+
+/* The fifteen, and what each of them actually did. */
+.live-squad {
+  margin: clamp(24px, 3vw, 36px) 0;
+}
+
+.live-squad > h2 {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  margin: 0 0 4px;
+  font-size: clamp(18px, 1.9vw, 24px);
+}
+
+.live-squad-total {
+  margin: 0 0 12px;
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+
+.live-squad-total b {
+  font-size: 22px;
+  color: var(--ink);
+}
+
+.live-squad-failed {
+  margin: 0 0 12px;
+  border-left: 3px solid var(--danger);
+  padding-left: 12px;
+  color: var(--ink-soft);
+}
+
+.live-eleven,
+.live-bench {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border: 2px solid var(--rule);
+  background: var(--rule);
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+}
+
+.live-bench-label {
+  margin: 14px 0 6px;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.live-card {
+  background: var(--paper-deep);
+}
+
+.live-card button {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: 100%;
+  padding: 9px 10px 10px;
+  border: 0;
+  /* The band is a stripe, not a wash: colour never decides anything on its own
+     and the words beside it say the same thing. */
+  border-left: 4px solid var(--rule);
+  background: none;
+  color: inherit;
+  cursor: pointer;
+  text-align: left;
+}
+
+.live-card.is-under button {
+  border-left-color: var(--fa-signal-red);
+}
+
+.live-card.is-met button {
+  border-left-color: var(--amber);
+}
+
+.live-card.is-over button,
+.live-card.is-haul button {
+  border-left-color: var(--fa-signal-green);
+}
+
+.live-card.is-haul button {
+  background: color-mix(in srgb, var(--fa-signal-green) 10%, transparent);
+}
+
+.live-card.is-unread {
+  padding: 9px 10px 10px;
+  opacity: 0.6;
+}
+
+.live-card-head {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.live-card-shirt {
+  display: block;
+  width: 14px;
+  height: 18px;
+  flex: 0 0 auto;
+  shape-rendering: crispEdges;
+}
+
+.live-card-name {
+  font-family: var(--fa-display);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.live-card-armband {
+  padding: 0 4px;
+  border: 1px solid var(--rule);
+  font-family: var(--fa-body);
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.live-card-score {
+  display: flex;
+  gap: 6px;
+  align-items: baseline;
+}
+
+.live-card-score b {
+  font-family: var(--fa-body);
+  font-size: 24px;
+  line-height: 1;
+}
+
+.live-card-expected,
+.live-card-band,
+.live-card-note {
+  font-family: var(--fa-body);
+  font-size: 11px;
+  color: var(--ink-soft);
+}
+
 .top-picks {
   margin: clamp(28px, 4vw, 44px) 0 0;
 }

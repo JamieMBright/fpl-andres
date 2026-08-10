@@ -206,4 +206,26 @@ describe("chipCallsFor", () => {
     expect(callOf(calls, "Bench Boost").event).toBeNull();
     expect(callOf(calls, "Bench Boost").note).toContain("no week");
   });
+
+  it("does not offer a chip the manager says he has already played", () => {
+    const calls = chipCallsFor([], PUBLISHED, ["Bench Boost", "Wildcard"]);
+
+    expect(calls.map((call) => call.chip)).not.toContain("Bench Boost");
+    expect(calls.map((call) => call.chip)).not.toContain("Wildcard");
+    expect(calls.length).toBeGreaterThan(0);
+  });
+
+  it("still solves the chips he has left", () => {
+    const calls = chipCallsFor(
+      [
+        week(2, { bench: [1, 1, 1, 1], captain: 7 }),
+        week(3, { bench: [4, 3, 2, 5], captain: 7 }),
+      ],
+      PUBLISHED,
+      ["Bench Boost"],
+    );
+
+    expect(calls.map((call) => call.chip)).not.toContain("Bench Boost");
+    expect(callOf(calls, "Triple Captain").event).toBe(2);
+  });
 });

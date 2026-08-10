@@ -14,6 +14,8 @@ import {
   rememberTeam,
 } from "../state/declared-squad";
 import { DeclaredTransferForm } from "../components/DeclaredTransferForm";
+import { DeclaredChipsForm } from "../components/DeclaredChipsForm";
+import { LiveSquad } from "../components/LiveSquad";
 import { PlayerDetail } from "../components/PlayerDetail";
 import { RouteHeading } from "../components/RouteHeading";
 import { Scorecard } from "../components/Scorecard";
@@ -37,6 +39,11 @@ import type {
 } from "../state/season-plan";
 import { readSeasonPlan } from "../state/season-plan";
 import { chipCallsFor } from "../state/season-chips";
+import {
+  CHIP_NAMES,
+  readDeclaredChips,
+  type DeclaredChips,
+} from "../state/declared-chips";
 import {
   CAPTAINCY_VERDICT,
   chipReason,
@@ -607,6 +614,12 @@ export default function SeasonPlanPage() {
   const resultRef = useRef<HTMLDivElement>(null);
   // Bumped when a transfer is declared, so the squad is read again with it.
   const [declaredAt, setDeclaredAt] = useState(0);
+  // Held beside the stored value rather than replacing it, and stamped with the
+  // team it belongs to, so switching id cannot inherit the last one's chips.
+  const [chipEdit, setChipEdit] = useState<{
+    entryId: number;
+    chips: DeclaredChips;
+  } | null>(null);
   /*
    * Nothing to solve until a manager has a squad. Between seasons FPL wipes
    * them all, so the published plan really is everyone's plan — it is what
@@ -752,13 +765,22 @@ export default function SeasonPlanPage() {
 
   // Bench Boost and Triple Captain pay what this plan's own bench and captain
   // score, so they are re-solved from the gameweeks on screen. Wildcard and
-  // Free Hit rebuild the fifteen and are carried through unchanged.
+  // Free Hit rebuild the fifteen and are carried through unchanged. A chip the
+  // manager says he has already played is dropped from both.
+  const spentChips = useMemo(() => {
+    if (teamId === null) return [];
+    const held =
+      chipEdit?.entryId === teamId
+        ? chipEdit.chips
+        : readDeclaredChips(window.localStorage, teamId);
+    return held.spent.map((chip) => CHIP_NAMES[chip]);
+  }, [chipEdit, teamId]);
   const chipCalls = useMemo(
     () =>
       solving && solve.status === "done"
-        ? chipCallsFor(solve.gameweeks, plan.chips)
-        : plan.chips,
-    [solving, solve.status, solve.gameweeks, plan.chips],
+        ? chipCallsFor(solve.gameweeks, plan.chips, spentChips)
+        : plan.chips.filter((call) => !spentChips.includes(call.chip)),
+    [solving, solve.status, solve.gameweeks, plan.chips, spentChips],
   );
   // Someone who has given a team id is here for their own season. Showing the
   // published optimum until they lock a fifteen in reads as "here is your
@@ -911,7 +933,21 @@ export default function SeasonPlanPage() {
         />
       ) : null}
 
+      {teamId === null ? null : (
+        <DeclaredChipsForm
+          entryId={teamId}
+          key={teamId}
+          onDeclared={(chips) => {
+            setChipEdit({ entryId: teamId, chips });
+          }}
+        />
+      )}
+
       {teamId === null ? null : <Scorecard calls={scorecard} />}
+
+      {published === null ? null : (
+        <LiveSquad event={published.event} picks={published.picks} />
+      )}
 
       <div className="plan-preamble">
         <p className="plan-preamble-line">

@@ -190,12 +190,22 @@ function rebuildCalls(
  * Bench Boost and Triple Captain read straight off the solved weeks. Wildcard
  * and Free Hit rebuild the fifteen from the pool, because a beam search capped
  * at five transfers a week cannot express "throw it away and start again".
+ *
+ * A chip already played is dropped rather than re-offered. FPL publishes only
+ * the one used last gameweek, so this depends on the manager saying so, and a
+ * plan that keeps advising a wildcard spent in August is worse than one that
+ * says nothing: every transfer around it is planned against a move he cannot
+ * make.
  */
 export function chipCallsFor(
   gameweeks: readonly SolvedGameweek[],
   published: readonly ChipCall[],
+  spent: readonly string[] = [],
 ): ChipCall[] {
-  if (gameweeks.length === 0) return [...published];
+  const gone = new Set(spent);
+  const keep = (calls: ChipCall[]): ChipCall[] =>
+    calls.filter((call) => !gone.has(call.chip));
+  if (gameweeks.length === 0) return keep([...published]);
 
   const calls: ChipCall[] = [];
   for (const { half, from, to } of HALVES) {
@@ -225,5 +235,5 @@ export function chipCallsFor(
     );
   }
 
-  return calls;
+  return keep(calls);
 }

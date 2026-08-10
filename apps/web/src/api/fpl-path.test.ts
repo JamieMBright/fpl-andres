@@ -25,6 +25,10 @@ describe("FPL proxy path grammar", () => {
       "https://fantasy.premierleague.com/api/entry/123/event/5/picks/",
     ],
     [
+      "/api/fpl/event/5/live/",
+      "https://fantasy.premierleague.com/api/event/5/live/",
+    ],
+    [
       "/api/fpl/leagues-classic/314/standings/?phase=2&page_standings=3",
       "https://fantasy.premierleague.com/api/leagues-classic/314/standings/?page_standings=3&phase=2",
     ],
@@ -57,6 +61,8 @@ describe("FPL proxy path grammar", () => {
     "/api/fpl/entry/abc/",
     "/api/fpl/entry/0/",
     "/api/fpl/entry/1/event/39/picks/",
+    "/api/fpl/event/39/live/",
+    "/api/fpl/event/0/live/",
     "/api/fpl/element-summary/2001/",
     "/api/fpl/fixtures/?event=0",
     "/api/fpl/fixtures/?event=1&host=example.com",

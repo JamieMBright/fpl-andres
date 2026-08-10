@@ -117,6 +117,15 @@ function validateEndpointPath(path: string): EndpointKind {
     requireIntegerInRange(picksMatch[2], "event ID", 1, MAX_EVENT_ID);
     return "none";
   }
+  // What every player actually did in a gameweek. The only public endpoint that
+  // carries realised goals, assists, clean sheets, bonus and defensive
+  // contributions per element, which is what a squad card needs to show a haul
+  // rather than a number. It names no manager and takes no id.
+  const liveMatch = /^event\/([1-9]\d?)\/live\/$/.exec(path);
+  if (liveMatch) {
+    requireIntegerInRange(liveMatch[1], "event ID", 1, MAX_EVENT_ID);
+    return "none";
+  }
   const elementMatch = /^element-summary\/([1-9]\d{0,3})\/$/.exec(path);
   if (elementMatch) {
     requireIntegerInRange(elementMatch[1], "element ID", 1, MAX_ELEMENT_ID);
