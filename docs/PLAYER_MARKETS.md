@@ -101,10 +101,10 @@ cron has to be argued for rather than merged.
 
 - **Two markets, not four.** Anytime scorer and assists are the two anything
   here reads. Cards and shots on target were fetched and discarded every run;
-  each one is billed per region whether or not it is read. The card market
-  comes back when there is a card route to spend it on — `routes.discipline`
-  currently bundles yellows with reds, own goals and missed penalties into one
-  published number that cannot be taken apart.
+  each one is billed per region whether or not it is read. `routes.discipline`
+  is four routes as of model 6.0, so a card price now has somewhere to go; it
+  is the next market to come back, and adding it is a budget decision rather
+  than a modelling one.
 - **One region.** UK books price a Premier League player deepest, and adding
   Europe doubles the bill for a slightly steadier median.
 - **Three days a week, not seven.** Tuesday, Friday and Saturday at 09:00 UTC,

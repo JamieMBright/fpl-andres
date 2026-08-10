@@ -46,7 +46,10 @@ ROUTES: dict[str, float] = {
     "bonus": 0.2,
     "saves": 0.0,
     "conceding": -0.2,
-    "discipline": -0.1,
+    "yellowCards": -0.08,
+    "redCards": -0.01,
+    "ownGoals": 0.0,
+    "penaltiesMissed": -0.01,
     "defensiveContribution": 0.6,
 }
 

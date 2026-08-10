@@ -83,7 +83,10 @@ class RouteEntry(TypedDict):
     bonus: float
     saves: float
     conceding: float
-    discipline: float
+    yellowCards: float
+    redCards: float
+    ownGoals: float
+    penaltiesMissed: float
     defensiveContribution: float
 
 
@@ -134,15 +137,23 @@ class ProjectionEntry(TypedDict):
 
 
 def _routes(breakdown: PointsBreakdown) -> RouteEntry:
+    def priced(value: float) -> float:
+        # `or` rather than a bare round: a route rounding to negative zero is
+        # published as `-0.0`, which is true and reads as a defect.
+        return round(value, 3) or 0.0
+
     return {
-        "appearance": round(breakdown.appearance, 3),
-        "attacking": round(breakdown.attacking, 3),
-        "cleanSheet": round(breakdown.clean_sheet, 3),
-        "bonus": round(breakdown.bonus, 3),
-        "saves": round(breakdown.saves, 3),
-        "conceding": round(breakdown.conceding, 3),
-        "discipline": round(breakdown.discipline, 3),
-        "defensiveContribution": round(breakdown.defensive_contribution, 3),
+        "appearance": priced(breakdown.appearance),
+        "attacking": priced(breakdown.attacking),
+        "cleanSheet": priced(breakdown.clean_sheet),
+        "bonus": priced(breakdown.bonus),
+        "saves": priced(breakdown.saves),
+        "conceding": priced(breakdown.conceding),
+        "yellowCards": priced(breakdown.yellow_cards),
+        "redCards": priced(breakdown.red_cards),
+        "ownGoals": priced(breakdown.own_goals),
+        "penaltiesMissed": priced(breakdown.penalties_missed),
+        "defensiveContribution": priced(breakdown.defensive_contribution),
     }
 
 

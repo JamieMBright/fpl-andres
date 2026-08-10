@@ -660,11 +660,11 @@ one season is not many shots per cell.
   updating a posterior forward.
 - **Every scoring route a bookmaker prices.** §7b reads goals and assists, and
   §5 reads the fixture's clean sheet and goals conceded. The card market is
-  quoted per player and is not read, because `routes.discipline` bundles
-  yellows with reds, own goals and missed penalties into one published number
-  that cannot be taken apart; splitting that route is what the card price is
-  waiting on. Nothing prices a bonus point or a defensive contribution for a
-  named player, so those stay on the record.
+  quoted per player and is not read yet: `routes.discipline` bundled yellows
+  with reds, own goals and missed penalties, and until model 6.0 split it into
+  four there was nothing on the row a card price could replace. There is now.
+  Nothing prices a bonus point or a defensive contribution for a named player,
+  so those stay on the record.
 
 ---
 

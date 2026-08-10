@@ -43,11 +43,11 @@ BASE = "https://api.the-odds-api.com/v4/sports/soccer_epl"
 #: Only markets that map onto an FPL scoring route something here reads. The
 #: host bills per market per region, so asking for a market nothing consumes is
 #: a direct charge against a free tier of 500 requests a month. Cards and shots
-#: on target were both fetched and both discarded: a card is priced by the book
-#: but `routes.discipline` bundles yellows with reds, own goals and missed
-#: penalties into one published number that cannot be taken apart, so there is
-#: nothing for a card price to replace until that route is split. Add them back
-#: with the reader, not before it.
+#: on target were both fetched and both discarded. `routes.discipline` was one
+#: number bundling yellows with reds, own goals and missed penalties, so there
+#: was nothing for a card price to replace; model 6.0 split it into four. The
+#: card market is the next one to come back, and what stops it now is the
+#: budget rather than the model. Add it back with the reader, not before it.
 PLAYER_MARKETS: tuple[str, ...] = (
     "player_goal_scorer_anytime",
     "player_assists",

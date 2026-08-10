@@ -151,7 +151,10 @@ const ROUTE_LABELS: [keyof PlayerProjection["routes"], string][] = [
   ["bonus", "Bonus"],
   ["saves", "Saves"],
   ["conceding", "Goals conceded"],
-  ["discipline", "Cards and misses"],
+  ["yellowCards", "Yellow cards"],
+  ["redCards", "Red cards"],
+  ["ownGoals", "Own goals"],
+  ["penaltiesMissed", "Penalties missed"],
   ["defensiveContribution", "Defensive actions"],
 ];
 

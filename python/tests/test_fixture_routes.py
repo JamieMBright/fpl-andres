@@ -26,7 +26,10 @@ FORWARD = {
     "bonus": 0.4,
     "saves": 0.0,
     "conceding": 0.0,
-    "discipline": -0.1,
+    "yellowCards": -0.08,
+    "redCards": -0.01,
+    "ownGoals": 0.0,
+    "penaltiesMissed": -0.01,
     "defensiveContribution": 0.0,
 }
 # A defender: a clean sheet, a conceding deduction and defensive contributions.
@@ -37,7 +40,10 @@ DEFENDER = {
     "bonus": 0.3,
     "saves": 0.0,
     "conceding": -0.5,
-    "discipline": -0.1,
+    "yellowCards": -0.09,
+    "redCards": -0.01,
+    "ownGoals": 0.0,
+    "penaltiesMissed": 0.0,
     "defensiveContribution": 0.8,
 }
 

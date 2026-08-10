@@ -29,6 +29,16 @@ from __future__ import annotations
 
 __all__ = ["MODEL_VERSION"]
 
+#: 6.0 splits `routes.discipline` into yellow cards, red cards, own goals and
+#: missed penalties. Major because the published shape changes: a reader that
+#: knew eight route names now finds eleven, and the one it knew is gone. The
+#: arithmetic does not move -- each of the four was already computed separately
+#: and summed at the last line -- so no projection changes by a point. What
+#: changes is that a booking has a route of its own. A book prices "to be
+#: carded" directly and prices nothing else in that bundle; while the four were
+#: one number there was nothing for that price to replace, which is why the
+#: card market was fetched, measured and thrown away twice.
+#:
 #: 5.1 lets a bookmaker's match price set the fixture multipliers for the two
 #: routes it prices directly. `ingest-odds` had been deriving implied clean
 #: sheets and expected goals per club per match for four seasons, committing
@@ -206,4 +216,4 @@ __all__ = ["MODEL_VERSION"]
 #: projection and resampled, so a gap that does not clear zero is reported as
 #: not clearing zero. No projection changed; what changed is what may be
 #: claimed from it.
-MODEL_VERSION = "5.1"
+MODEL_VERSION = "6.0"

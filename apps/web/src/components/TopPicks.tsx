@@ -52,7 +52,10 @@ const ROUTE_LABELS: readonly (readonly [keyof EventRoutes, string])[] = [
   ["defensiveContribution", "defensive contribution"],
   ["bonus", "bonus"],
   ["conceding", "goals conceded"],
-  ["discipline", "cards"],
+  ["yellowCards", "yellow cards"],
+  ["redCards", "red cards"],
+  ["ownGoals", "own goals"],
+  ["penaltiesMissed", "penalties missed"],
 ];
 
 /** Below this a route is rounding, and eight rounding routes bury the two that matter. */

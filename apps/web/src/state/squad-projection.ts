@@ -49,7 +49,10 @@ export interface PlayerProjection {
     bonus: number;
     saves: number;
     conceding: number;
-    discipline: number;
+    yellowCards: number;
+    redCards: number;
+    ownGoals: number;
+    penaltiesMissed: number;
     defensiveContribution: number;
   };
   evidence: string;

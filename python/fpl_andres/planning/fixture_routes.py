@@ -151,7 +151,9 @@ def fixture_difficulty(
 
 
 # The published route names, and whether a fixture moves them at all. Appearance
-# points, bonus and discipline do not depend on who the opponent is.
+# points, bonus and the four discipline routes do not depend on who the opponent
+# is -- not because a booking is opponent-blind, but because nothing here
+# measures that yet. A card price will.
 ROUTE_KEYS = (
     "appearance",
     "attacking",
@@ -159,7 +161,10 @@ ROUTE_KEYS = (
     "bonus",
     "saves",
     "conceding",
-    "discipline",
+    "yellowCards",
+    "redCards",
+    "ownGoals",
+    "penaltiesMissed",
     "defensiveContribution",
 )
 
@@ -182,7 +187,10 @@ def fixture_points_from_routes(
         + float(routes["saves"]) * adjustment.saves
         # Conceding points are negative, so a leakier fixture makes them worse.
         + float(routes["conceding"]) * adjustment.conceding
-        + float(routes["discipline"])
+        + float(routes["yellowCards"])
+        + float(routes["redCards"])
+        + float(routes["ownGoals"])
+        + float(routes["penaltiesMissed"])
         + float(routes["defensiveContribution"]) * adjustment.defensive_contribution
     )
 

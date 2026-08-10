@@ -19,8 +19,9 @@ from __future__ import annotations
 
 from typing import Final
 
-#: Player-level projections plus club rows.
-PROJECTIONS_SCHEMA_VERSION: Final = 1
+#: Player-level projections plus club rows. Version 2 replaced `routes.discipline`
+#: with the four events it bundled, so a card price has something to price.
+PROJECTIONS_SCHEMA_VERSION: Final = 2
 
 #: The header of the projections artifact, published separately so a component
 #: needing only the season label does not pull the whole player list.

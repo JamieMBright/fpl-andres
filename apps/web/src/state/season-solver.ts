@@ -85,6 +85,12 @@ const SQUAD_SHAPE = RULES.positions;
  * Partial: a route worth nothing is omitted from the artifact rather than
  * written as a zero, which is most of them for most players.
  */
+/**
+ * The published routes, and what a fixture does to each.
+ *
+ * Partial: a route worth nothing is omitted from the artifact rather than
+ * written as a zero, which is most of them for most players.
+ */
 export type PlayerRoutes = Partial<{
   appearance: number;
   attacking: number;
@@ -92,11 +98,14 @@ export type PlayerRoutes = Partial<{
   bonus: number;
   saves: number;
   conceding: number;
-  discipline: number;
+  yellowCards: number;
+  redCards: number;
+  ownGoals: number;
+  penaltiesMissed: number;
   defensiveContribution: number;
 }>;
 
-/** The same eight, priced for one gameweek. A route worth nothing is a zero. */
+/** The same set, priced for one gameweek. A route worth nothing is a zero. */
 export type EventRoutes = Required<PlayerRoutes>;
 
 const NO_ROUTES: EventRoutes = {
@@ -106,7 +115,10 @@ const NO_ROUTES: EventRoutes = {
   bonus: 0,
   saves: 0,
   conceding: 0,
-  discipline: 0,
+  yellowCards: 0,
+  redCards: 0,
+  ownGoals: 0,
+  penaltiesMissed: 0,
   defensiveContribution: 0,
 };
 
@@ -182,7 +194,10 @@ function splitAt(player: SolverPlayer, eventIndex: number): EventRoutes {
   return {
     appearance: (routes.appearance ?? 0) * fixtures,
     bonus: (routes.bonus ?? 0) * fixtures,
-    discipline: (routes.discipline ?? 0) * fixtures,
+    yellowCards: (routes.yellowCards ?? 0) * fixtures,
+    redCards: (routes.redCards ?? 0) * fixtures,
+    ownGoals: (routes.ownGoals ?? 0) * fixtures,
+    penaltiesMissed: (routes.penaltiesMissed ?? 0) * fixtures,
     attacking: (routes.attacking ?? 0) * attacking,
     cleanSheet: (routes.cleanSheet ?? 0) * cleanSheet,
     saves: (routes.saves ?? 0) * saves,
@@ -198,7 +213,10 @@ function pointsAt(player: SolverPlayer, eventIndex: number): number {
   return (
     split.appearance +
     split.bonus +
-    split.discipline +
+    split.yellowCards +
+    split.redCards +
+    split.ownGoals +
+    split.penaltiesMissed +
     split.attacking +
     split.cleanSheet +
     split.saves +

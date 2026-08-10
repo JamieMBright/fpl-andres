@@ -63,7 +63,7 @@ PLAYER_ODDS = Path("apps/web/src/data/player-odds.json")
 FIXTURE_ODDS = Path("apps/web/src/data/fixture-odds.json")
 DEFAULT_OUTPUT = Path("apps/web/src/data/season-inputs.json")
 
-SCHEMA_VERSION = 1
+SCHEMA_VERSION = 2
 POSITION_CODES = {position.value: position.code for position in Position}
 # Everyone the projector can rate, not a top-forty cut per position.
 #
@@ -515,7 +515,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             assert record is not None
             base_points = round(float(record["expectedPoints"]), 3)
             start_rate = round(float(record["probabilityStart"]), 3)
-            # The eight routes, so the browser can bend each by its own fixture
+            # Every route, so the browser can bend each by its own fixture
             # multiplier. Applying one multiplier to the whole total priced a
             # defender's assists by his side's defensive difficulty and a
             # keeper's saves as if they were clean sheets.

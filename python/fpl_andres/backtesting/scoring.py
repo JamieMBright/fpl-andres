@@ -86,6 +86,10 @@ class PointsBreakdown:
     A single expected-points number cannot be checked and cannot be argued with.
     These are the parts it is made of, and each responds to a fixture
     differently: a hard away tie suppresses clean sheets while raising saves.
+
+    Cards, own goals and missed penalties were one `discipline` number. A book
+    prices a booking directly and prices nothing else in that bundle, so the
+    market had nothing it could replace. They are four routes now.
     """
 
     appearance: float
@@ -94,8 +98,16 @@ class PointsBreakdown:
     bonus: float
     saves: float
     conceding: float
-    discipline: float
+    yellow_cards: float
+    red_cards: float
+    own_goals: float
+    penalties_missed: float
     defensive_contribution: float
+
+    @property
+    def discipline(self) -> float:
+        """The four together, for anything that still wants one number."""
+        return self.yellow_cards + self.red_cards + self.own_goals + self.penalties_missed
 
     @property
     def total(self) -> float:
@@ -151,7 +163,10 @@ def fixture_points_breakdown(
         bonus=supporting.bonus,
         saves=supporting.saves,
         conceding=supporting.conceding,
-        discipline=supporting.discipline,
+        yellow_cards=supporting.yellow_cards,
+        red_cards=supporting.red_cards,
+        own_goals=supporting.own_goals,
+        penalties_missed=supporting.penalties_missed,
         defensive_contribution=supporting.defensive_contribution,
     )
 
@@ -170,7 +185,7 @@ def supporting_breakdown(
     the position. These routes are position-specific, so omitting them shifts
     whole positions against each other rather than simply adding noise.
     """
-    empty = PointsBreakdown(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+    empty = PointsBreakdown(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
     appearances = [row for row in rows if row.minutes > 0]
     if not appearances:
         return empty
@@ -259,20 +274,8 @@ def supporting_breakdown(
             * conceded_points
         )
 
-    routes = (
-        (sum(row.yellow_cards for row in appearances), league.yellow_cards, _YELLOW_CARD_POINTS),
-        (sum(row.red_cards for row in appearances), league.red_cards, _RED_CARD_POINTS),
-        (sum(row.own_goals for row in appearances), league.own_goals, _OWN_GOAL_POINTS),
-        (
-            sum(row.penalties_missed for row in appearances),
-            league.penalties_missed,
-            _PENALTY_MISS_POINTS,
-        ),
-    )
-    discipline = sum(
-        ninety * rate(events, league_rate.get(position, 0.0)) * points
-        for events, league_rate, points in routes
-    )
+    def booked(events: float, league_rate: Mapping[int, float], points: int) -> float:
+        return ninety * rate(events, league_rate.get(position, 0.0)) * points
 
     return PointsBreakdown(
         appearance=0.0,
@@ -281,7 +284,26 @@ def supporting_breakdown(
         bonus=bonus,
         saves=saves,
         conceding=conceding,
-        discipline=discipline,
+        yellow_cards=booked(
+            sum(row.yellow_cards for row in appearances),
+            league.yellow_cards,
+            _YELLOW_CARD_POINTS,
+        ),
+        red_cards=booked(
+            sum(row.red_cards for row in appearances),
+            league.red_cards,
+            _RED_CARD_POINTS,
+        ),
+        own_goals=booked(
+            sum(row.own_goals for row in appearances),
+            league.own_goals,
+            _OWN_GOAL_POINTS,
+        ),
+        penalties_missed=booked(
+            sum(row.penalties_missed for row in appearances),
+            league.penalties_missed,
+            _PENALTY_MISS_POINTS,
+        ),
         defensive_contribution=defensive_contribution_points(
             appearances,
             position,
