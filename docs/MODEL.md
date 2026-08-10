@@ -702,8 +702,14 @@ one season is not many shots per cell.
   updating a posterior forward.
 - **Every scoring route a bookmaker prices.** §7b reads goals, assists and
   bookings, and §5 reads the fixture's clean sheet and goals conceded. Nothing
-  prices a bonus point or a defensive contribution for a named player, so those
-  stay on the record.
+  prices a bonus point for a named player, so that stays on the record.
+  Defensive contribution is the one worth watching: `docs/PLAYER_MARKET_CATALOGUE.md`
+  measured on 2026-08-10 that API-Football lists `Home Player Tackles` and
+  `Away Player Tackles` and no other source lists anything defensive. Tackles
+  are one of the four actions FPL counts for a defender and one of five for
+  everyone else, so that line is partial evidence about the bar rather than a
+  price of it, and reading it would need a model of the other three that
+  nothing here can calibrate yet.
 
 ---
 
