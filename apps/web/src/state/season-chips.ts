@@ -185,6 +185,48 @@ function rebuildCalls(
 }
 
 /**
+ * A chip the reader has already decided on, priced where he says he will play
+ * it rather than where the plan would.
+ *
+ * Arguing with a decision already made is how a plan stops being read. So the
+ * call becomes his week, and the note says what the plan would have chosen and
+ * what the difference is worth. He can then change his mind on the number, or
+ * not, which is the whole point of showing it.
+ */
+function pinned(
+  committed: { chip: string; event: number },
+  solved: ChipCall | undefined,
+  weeks: readonly SolvedGameweek[],
+  half: string,
+): ChipCall {
+  const week = weeks.find((entry) => entry.event === committed.event);
+  const score =
+    committed.chip === "Bench Boost"
+      ? benchPoints
+      : committed.chip === "Triple Captain"
+        ? tripleCaptainPoints
+        : null;
+  // Wildcard and Free Hit are priced by rebuilding, which needs the pool and
+  // is not worth a second pass here. The week is still his; the gain is not
+  // claimed.
+  const gain = week && score ? Math.round(score(week) * 100) / 100 : 0;
+  const better =
+    solved?.event != null && solved.event !== committed.event
+      ? `; the plan would have said gameweek ${String(solved.event)}, worth ${solved.gain.toFixed(1)}`
+      : "";
+  return {
+    event: committed.event,
+    chip: committed.chip,
+    half,
+    gain,
+    note:
+      week && score
+        ? `you have committed to gameweek ${String(committed.event)}, worth ${gain.toFixed(1)}${better}`
+        : `you have committed to gameweek ${String(committed.event)}${better}`,
+  };
+}
+
+/**
  * Chip calls for a solved season, all four of them.
  *
  * Bench Boost and Triple Captain read straight off the solved weeks. Wildcard
@@ -201,11 +243,22 @@ export function chipCallsFor(
   gameweeks: readonly SolvedGameweek[],
   published: readonly ChipCall[],
   spent: readonly string[] = [],
+  committed: { chip: string; event: number } | null = null,
 ): ChipCall[] {
   const gone = new Set(spent);
   const keep = (calls: ChipCall[]): ChipCall[] =>
     calls.filter((call) => !gone.has(call.chip));
-  if (gameweeks.length === 0) return keep([...published]);
+  const claimed = committed && !gone.has(committed.chip) ? committed : null;
+  if (gameweeks.length === 0) {
+    const carried = keep([...published]);
+    if (!claimed) return carried;
+    const half = claimed.event <= 19 ? "first" : "second";
+    return carried.map((call) =>
+      call.chip === claimed.chip && call.half === half
+        ? pinned(claimed, call, [], half)
+        : call,
+    );
+  }
 
   const calls: ChipCall[] = [];
   for (const { half, from, to } of HALVES) {
@@ -214,7 +267,7 @@ export function chipCallsFor(
     );
     if (weeks.length === 0) continue;
 
-    calls.push(
+    const halfCalls = [
       ...rebuildCalls(half, weeks),
       callFor(
         "Bench Boost",
@@ -232,6 +285,16 @@ export function chipCallsFor(
         (gain, week) =>
           `a third copy of ${week.captain.name} is worth ${gain.toFixed(1)} in gameweek ${String(week.event)}`,
       ),
+    ];
+
+    calls.push(
+      ...(claimed && claimed.event >= from && claimed.event <= to
+        ? halfCalls.map((call) =>
+            call.chip === claimed.chip
+              ? pinned(claimed, call, weeks, half)
+              : call,
+          )
+        : halfCalls),
     );
   }
 

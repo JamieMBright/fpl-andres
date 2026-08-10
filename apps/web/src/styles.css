@@ -4440,10 +4440,12 @@ h1[tabindex="-1"]:focus-visible {
 }
 
 /* Fixed rather than themed: the photograph has to sit on the same colour in
-   every kit or the cards stop reading as one set. */
+   every kit or the cards stop reading as one set. Bottom-aligned because the
+   headshot is cut at the chest, so the cut edge and the panel edge have to be
+   the same line or the player appears to float. */
 .top-pick-frame {
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: center;
   width: 104px;
   height: 124px;

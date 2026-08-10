@@ -40,7 +40,10 @@ export function PeerDistribution({
   }, []);
 
   const spread = peerDistribution(subject, metric);
-  const link = useMemo(() => analysisLinkFor(subject), [subject]);
+  const link = useMemo(
+    () => analysisLinkFor(subject, metric),
+    [subject, metric],
+  );
 
   return (
     <dialog

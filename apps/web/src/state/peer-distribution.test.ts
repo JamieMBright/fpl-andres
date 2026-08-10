@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { METRICS } from "./analysis-metrics";
+import { DEFAULT_HORIZON } from "./horizon-points";
 import {
   analysisLinkFor,
   AXES_BY_POSITION,
@@ -156,10 +157,26 @@ describe("the distribution", () => {
 });
 
 describe("the metrics offered", () => {
-  it("leaves out the one the band itself determines", () => {
-    // Within a ±£0.5m band, points per £1m is very nearly points per match
-    // rescaled by a constant, so its spread is an artefact of the band edges.
-    expect(peerMetric("Per £1m")).toBeNull();
+  it("compares the one with price in it across the whole position", () => {
+    // Within a tier, points per £1m is very nearly points per match rescaled by
+    // a constant, so a band comparison would report the band edges. Across the
+    // position it is the question the row is asking.
+    const perMillion = peerMetric("Per £1m");
+    expect(perMillion?.acrossPosition).toBe(true);
+  });
+
+  it("keeps every other metric inside the price tier", () => {
+    for (const metric of PEER_METRICS) {
+      if (metric.term === "Per £1m") continue;
+      expect(metric.acrossPosition).toBeUndefined();
+    }
+  });
+
+  it("opens the two rows that used to be dead ends", () => {
+    // The card builds these terms from `DEFAULT_HORIZON` and its own price
+    // label, so the lookup is asserted against the same source it renders from.
+    expect(peerMetric(`xPts${String(DEFAULT_HORIZON)}`)).not.toBeNull();
+    expect(peerMetric("Per £1m")).not.toBeNull();
   });
 
   it("names only rows the card actually shows", () => {
@@ -185,20 +202,35 @@ describe("the chart it links to", () => {
     expect(axis("GKP")).toBe("minutes");
   });
 
-  it("never divides by a price the chart has already fixed", () => {
-    // The band makes everyone on the chart cost about the same, so a
-    // points-per-million axis would divide by a number they share.
-    for (const position of ["GKP", "DEF", "MID", "FWD"]) {
-      const params = link({ position });
-      expect(params.get("x")).not.toBe("pointsPerMillion");
-      expect(params.get("y")).not.toBe("pointsPerMillion");
-    }
-  });
-
   it("brackets the price a million either side", () => {
     const params = link({ priceTenths: 55 });
     expect(params.get("pricefrom")).toBe("45");
     expect(params.get("priceto")).toBe("65");
+  });
+
+  it("plots the horizon against the per-match figure it came from", () => {
+    const metric = peerMetric("xPts5");
+    expect(metric).not.toBeNull();
+    const params = new URLSearchParams(
+      analysisLinkFor(projection({}), metric!).split("?")[1],
+    );
+
+    expect(params.get("y")).toBe("xPts5");
+    expect(params.get("x")).toBe("xPts");
+  });
+
+  it("plots value against price, and lets the whole position onto it", () => {
+    const metric = peerMetric("Per £1m");
+    expect(metric).not.toBeNull();
+    const params = new URLSearchParams(
+      analysisLinkFor(projection({ priceTenths: 55 }), metric!).split("?")[1],
+    );
+
+    expect(params.get("x")).toBe("price");
+    // The price bracket is the one filter this chart must not carry: it would
+    // remove every player the row exists to compare against.
+    expect(params.get("pricefrom")).toBeNull();
+    expect(params.get("priceto")).toBeNull();
   });
 
   it("does not ask for a negative price", () => {

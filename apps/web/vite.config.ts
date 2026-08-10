@@ -72,11 +72,52 @@ function apiRoutes(): Plugin {
   };
 }
 
+/**
+ * The tests that actually need a browser.
+ *
+ * Everything under `components` renders React. The handful of state tests
+ * listed after it reach for the real `localStorage` rather than passing a fake
+ * one in. Every other test is arithmetic and has no use for a DOM, so building
+ * one for it was the single largest cost in the suite.
+ */
+const DOM_TESTS = [
+  "src/**/*.test.tsx",
+  "src/state/manager-history-cache.test.ts",
+  "src/state/manager-state-wiring.test.ts",
+  "src/state/scorecard.test.ts",
+  "src/state/team-analysis.test.ts",
+  "src/state/team-state-overrides*.test.ts",
+];
+
+const NEVER = ["**/node_modules/**", "**/dist/**", "**/test-results/**"];
+
 export default defineConfig({
   plugins: [react(), apiRoutes()],
   test: {
-    environment: "jsdom",
-    include: ["src/**/*.{test,spec}.{ts,tsx}"],
-    setupFiles: "./src/test/setup.ts",
+    // One fork per core is twenty-two jsdom documents on this machine, which
+    // starves the pool into "failed to start forks worker" long before it runs
+    // out of assertions to make.
+    maxWorkers: 8,
+    projects: [
+      {
+        extends: true,
+        test: {
+          name: "dom",
+          environment: "jsdom",
+          include: DOM_TESTS,
+          exclude: NEVER,
+          setupFiles: "./src/test/setup.ts",
+        },
+      },
+      {
+        extends: true,
+        test: {
+          name: "node",
+          environment: "node",
+          include: ["src/**/*.test.ts"],
+          exclude: [...NEVER, ...DOM_TESTS],
+        },
+      },
+    ],
   },
 });

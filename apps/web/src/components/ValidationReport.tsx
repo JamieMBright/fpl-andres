@@ -44,6 +44,41 @@ type PolicyResult = {
   squad: SquadPlayer[];
 };
 
+/** What the squad the method owned could actually get at. */
+type Reach = {
+  giant: {
+    gameweeks: number;
+    owned: number;
+    started: number;
+    captained: number;
+    ownedShare: number | null;
+    startedShare: number | null;
+    captainedShare: number | null;
+    leaders: { elementId: number; name: string; gameweeks: number }[];
+  };
+  captaincy: {
+    gameweeks: number;
+    meanChosen: number | null;
+    meanOwnedCeiling: number | null;
+    meanGameCeiling: number | null;
+    ownedRegret: number | null;
+    reachGap: number | null;
+  };
+};
+
+/** Opening with the best player in the game, against buying him later. */
+type GiantFirst = {
+  elementId: number;
+  name: string;
+  startGameweek: number;
+  seasons: number;
+  meanWithout: number;
+  meanOpeningWithHim: number;
+  gain: number;
+  meanGameweeksBeforeOwned: number | null;
+  neverOwned: number;
+};
+
 type SeasonReport = {
   season: string;
   rows: number;
@@ -59,6 +94,10 @@ type SeasonReport = {
   captainPolicies?: CaptaincyScore[];
   /** Absent from artifacts generated before the picks were retained. */
   captainPicks?: Omit<SeasonPicks, "season">;
+  /** Absent from artifacts generated before reach was measured. */
+  reach?: Reach;
+  /** Absent from artifacts generated before the opening was compared. */
+  giantFirst?: GiantFirst;
   league: {
     policies: Record<string, PolicyResult>;
     leaguesPlayed: number;
@@ -223,6 +262,13 @@ function show(value: number | null | undefined, digits = 3): string {
   return value === null || value === undefined ? "—" : value.toFixed(digits);
 }
 
+/** A share printed as a percentage, because "84%" is read and "0.844" is parsed. */
+function percent(value: number | null | undefined): string {
+  return value === null || value === undefined
+    ? "—"
+    : `${String(Math.round(value * 100))}%`;
+}
+
 export function ValidationReport() {
   const freshness = freshnessOf(report.generatedAt);
   const totalRows = report.seasons.reduce(
@@ -248,6 +294,16 @@ export function ValidationReport() {
     season.captainPicks === undefined
       ? []
       : [{ season: season.season, ...season.captainPicks }],
+  );
+  const reachSeasons = report.seasons.flatMap((season) =>
+    season.reach === undefined
+      ? []
+      : [{ season: season.season, reach: season.reach }],
+  );
+  const openingSeasons = report.seasons.flatMap((season) =>
+    season.giantFirst === undefined
+      ? []
+      : [{ season: season.season, opening: season.giantFirst }],
   );
 
   return (
@@ -447,6 +503,233 @@ export function ValidationReport() {
           names={METHOD_NAMES}
           seasons={pickSeasons}
         />
+      </section>
+
+      <section aria-labelledby="reach-title">
+        <h2 id="reach-title">Could the squad even reach that?</h2>
+        <p>
+          Every number above is scored against the whole game. Nobody picks from
+          the whole game. These are scored against the fifteen the projection
+          was actually holding at the deadline, which is a harder and less
+          flattering question.
+          <InfoMarker label="where these come from">
+            The simulated leagues, replayed. Each gameweek now keeps the squad
+            it was played with, so &ldquo;was the best player in the game on
+            your field&rdquo; and &ldquo;what could you have captained&rdquo;
+            can be asked of a season that has already happened. No re-projection
+            and no hindsight: the squad is whatever the transfers left.
+          </InfoMarker>
+        </p>
+
+        {reachSeasons.length === 0 ? (
+          <p className="validation-verdict">
+            This artifact predates the reach measurements. They appear the next
+            time <span className="mono">fpl_andres.cli.validate</span> runs.
+          </p>
+        ) : (
+          <>
+            <h3>Was the best player in the game on the field?</h3>
+            <p className="validation-verdict">
+              The single highest projection in the game each week, and whether
+              the advised squad owned him, started him and gave him the armband.
+              Counted over every advised manager and every gameweek they played.
+            </p>
+            <div
+              aria-label="Scrollable reach table"
+              className="squad-table-wrap"
+              role="region"
+              // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- Keyboard users must be able to scroll this table horizontally.
+              tabIndex={0}
+            >
+              <table aria-label="How often the game's best projection was on the field">
+                <thead>
+                  <tr>
+                    <th scope="col">Season</th>
+                    <th scope="col">Manager-gameweeks</th>
+                    <th scope="col">Owned</th>
+                    <th scope="col">Started</th>
+                    <th scope="col">Captained</th>
+                    <th scope="col">Held top spot longest</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {reachSeasons.map(({ season, reach }) => (
+                    <tr key={season}>
+                      <th scope="row">{season}</th>
+                      <td className="mono">{reach.giant.gameweeks}</td>
+                      <td className="mono">
+                        {percent(reach.giant.ownedShare)}
+                      </td>
+                      <td className="mono">
+                        {percent(reach.giant.startedShare)}
+                      </td>
+                      <td className="mono">
+                        {percent(reach.giant.captainedShare)}
+                      </td>
+                      <td translate="no">
+                        {reach.giant.leaders[0]
+                          ? `${reach.giant.leaders[0].name} (${String(
+                              reach.giant.leaders[0].gameweeks,
+                            )} weeks)`
+                          : "\u2014"}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <p className="validation-verdict">
+              The suspicion was that the top projection is almost never
+              reachable, because it is usually the most expensive player in the
+              game and a fifteen cannot hold all of them. Four seasons say the
+              opposite: it is owned in three-quarters to nine-tenths of
+              manager-gameweeks. Owning is not the same as playing, though
+              &mdash; where the two columns differ, he was in the squad and on
+              the bench, which scores nothing. Started and captained never
+              differ, because the ranking that puts him in the eleven is the
+              ranking that hands him the armband.
+            </p>
+            <p className="validation-verdict">
+              The last column is the part that is actually contested. In one
+              season a single player held top spot for twenty-three of the
+              thirty-two scored weeks; in another the longest run was eight. So
+              &ldquo;buy the best player and keep him&rdquo; is a strategy in
+              some seasons and a fiction in others, and which kind of season it
+              is cannot be known in August.
+            </p>
+
+            <h3>What the armband could have returned</h3>
+            <p className="validation-verdict">
+              Per gameweek, the player&rsquo;s own score rather than the doubled
+              one. Best in your eleven is the best captain in the side that was
+              fielded; best in the game is the best in the entire league, which
+              nobody can reach.
+            </p>
+            <div
+              aria-label="Scrollable captaincy reach table"
+              className="squad-table-wrap"
+              role="region"
+              // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- Keyboard users must be able to scroll this table horizontally.
+              tabIndex={0}
+            >
+              <table aria-label="Captaincy scored against the eleven that was fielded">
+                <thead>
+                  <tr>
+                    <th scope="col">Season</th>
+                    <th scope="col">Captained</th>
+                    <th scope="col">Best in your eleven</th>
+                    <th scope="col">Best in the game</th>
+                    <th scope="col">Avoidable</th>
+                    <th scope="col">Out of reach</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {reachSeasons.map(({ season, reach }) => (
+                    <tr key={season}>
+                      <th scope="row">{season}</th>
+                      <td className="mono">
+                        {show(reach.captaincy.meanChosen, 2)}
+                      </td>
+                      <td className="mono">
+                        {show(reach.captaincy.meanOwnedCeiling, 2)}
+                      </td>
+                      <td className="mono">
+                        {show(reach.captaincy.meanGameCeiling, 2)}
+                      </td>
+                      <td className="mono">
+                        {show(reach.captaincy.ownedRegret, 2)}
+                      </td>
+                      <td className="mono">
+                        {show(reach.captaincy.reachGap, 2)}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <p className="validation-verdict">
+              Two different failures, and only one of them is a decision.
+              &ldquo;Avoidable&rdquo; is what better captaincy from the same
+              eleven was worth &mdash; that is skill, and it is on me.
+              &ldquo;Out of reach&rdquo; is the distance from the best captain
+              in your squad to the best captain in the game, which no call on
+              the day could close. The captaincy table further up quietly counts
+              part of the second as if it were the first.
+            </p>
+          </>
+        )}
+
+        {openingSeasons.length === 0 ? null : (
+          <>
+            <h3>Is it easier to start with him than to get him later?</h3>
+            <p className="validation-verdict">
+              The same season played twice from the same seeds. The only
+              difference is whether the highest projection at the opening
+              gameweek was forced into the opening fifteen. Who that is comes
+              from the projection at that deadline, not from how the season
+              turned out.
+            </p>
+            <div
+              aria-label="Scrollable opening comparison table"
+              className="squad-table-wrap"
+              role="region"
+              // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- Keyboard users must be able to scroll this table horizontally.
+              tabIndex={0}
+            >
+              <table aria-label="Opening with the best player against buying him later">
+                <thead>
+                  <tr>
+                    <th scope="col">Season</th>
+                    <th scope="col">Who</th>
+                    <th scope="col">Left to the transfers</th>
+                    <th scope="col">Opened with him</th>
+                    <th scope="col">Difference</th>
+                    <th scope="col">Weeks before he was owned</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {openingSeasons.map(({ season, opening }) => (
+                    <tr key={season}>
+                      <th scope="row">{season}</th>
+                      <td translate="no">{opening.name}</td>
+                      <td className="mono">
+                        {opening.meanWithout.toLocaleString("en-GB")}
+                      </td>
+                      <td className="mono">
+                        {opening.meanOpeningWithHim.toLocaleString("en-GB")}
+                      </td>
+                      <td className="mono">
+                        {opening.gain >= 0 ? "+" : "\u2212"}
+                        {Math.abs(opening.gain).toLocaleString("en-GB")}
+                      </td>
+                      <td className="mono">
+                        {show(opening.meanGameweeksBeforeOwned, 1)}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <p className="validation-verdict">
+              The claim survives in two seasons of four, and neither of the
+              other two contradicts it so much as make it moot. Read the last
+              column first: where the projection&rsquo;s opening pick was a
+              player the transfers were going to buy within a fortnight anyway,
+              forcing him into the fifteen bought a week or two and nothing
+              else. The one negative season is the informative one &mdash; the
+              highest projection at that opening deadline was a goalkeeper, and
+              spending the opening budget on the highest number in the game is a
+              worse rule than it sounds when the highest number belongs to
+              somebody who cannot be captained.
+            </p>
+            <p className="validation-verdict">
+              So: worth doing when the man at the top is a premium attacker,
+              worth nothing when he is not, and worth much more against a
+              manager who would have waited. It is a real effect and it is
+              smaller than it feels.
+            </p>
+          </>
+        )}
       </section>
 
       <section aria-labelledby="league-title">

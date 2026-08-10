@@ -228,4 +228,71 @@ describe("chipCallsFor", () => {
     expect(calls.map((call) => call.chip)).not.toContain("Bench Boost");
     expect(callOf(calls, "Triple Captain").event).toBe(2);
   });
+
+  it("plays a committed chip in the week he named, not the best one", () => {
+    const calls = chipCallsFor(
+      [
+        week(2, { bench: [1, 1, 1, 1], captain: 7 }),
+        week(3, { bench: [4, 3, 2, 5], captain: 7 }),
+      ],
+      PUBLISHED,
+      [],
+      { chip: "Bench Boost", event: 2 },
+    );
+
+    const boost = callOf(calls, "Bench Boost");
+    expect(boost.event).toBe(2);
+    expect(boost.gain).toBe(4);
+  });
+
+  it("says what the week he named costs him against the week it would pick", () => {
+    const calls = chipCallsFor(
+      [
+        week(2, { bench: [1, 1, 1, 1], captain: 7 }),
+        week(3, { bench: [4, 3, 2, 5], captain: 7 }),
+      ],
+      PUBLISHED,
+      [],
+      { chip: "Bench Boost", event: 2 },
+    );
+
+    expect(callOf(calls, "Bench Boost").note).toContain("gameweek 3");
+    expect(callOf(calls, "Bench Boost").note).toContain("14.0");
+  });
+
+  it("leaves the other chips alone when one is committed", () => {
+    const calls = chipCallsFor(
+      [
+        week(2, { bench: [1, 1, 1, 1], captain: 7 }),
+        week(3, { bench: [4, 3, 2, 5], captain: 7 }),
+      ],
+      PUBLISHED,
+      [],
+      { chip: "Bench Boost", event: 2 },
+    );
+
+    expect(callOf(calls, "Triple Captain").event).toBe(2);
+    expect(callOf(calls, "Triple Captain").note).not.toContain("committed");
+  });
+
+  it("ignores a commitment to a chip he also says he has spent", () => {
+    const calls = chipCallsFor(
+      [week(3, { bench: [4, 3, 2, 5], captain: 7 })],
+      PUBLISHED,
+      ["Bench Boost"],
+      { chip: "Bench Boost", event: 2 },
+    );
+
+    expect(calls.map((call) => call.chip)).not.toContain("Bench Boost");
+  });
+
+  it("pins a commitment onto the published calls when nothing is solved", () => {
+    const calls = chipCallsFor([], PUBLISHED, [], {
+      chip: "Wildcard",
+      event: 6,
+    });
+
+    expect(callOf(calls, "Wildcard").event).toBe(6);
+    expect(callOf(calls, "Wildcard").note).toContain("committed");
+  });
 });

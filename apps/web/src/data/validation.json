@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-08-10T09:19:51.149512+00:00",
-  "modelVersion": "6.3",
+  "generatedAt": "2026-08-10T12:41:21.437445+00:00",
+  "modelVersion": "6.4",
   "seasons": [
     {
       "season": "2022-23",
@@ -1092,7 +1092,7 @@
           },
           {
             "346": [6.23, 5.89, 3.8, 0.893, 28.4, 9.22, 1.145],
-            "357": [5.65, 4.56, 10.0, 0.893, 78.9, 9.11, 0.665],
+            "357": [5.65, 4.56, 10.0, 0.893, 78.9, 9.11, 0.666],
             "210": [5.41, 5.16, 3.2, 0.642, 30.2, 12.96, 1.145],
             "7": [5.38, 4.07, 10.6, 0.858, 22.3, 12.78, 1.042],
             "335": [4.89, 4.57, 6.2, 0.669, 38.7, 13.53, 2.2],
@@ -1284,6 +1284,88 @@
             "28": [4.27, 4.64, 2.8, 0.726, 33.2, 8.5, 2.2]
           }
         ]
+      },
+      "reach": {
+        "giant": {
+          "gameweeks": 155,
+          "owned": 145,
+          "started": 145,
+          "captained": 145,
+          "ownedShare": 0.935,
+          "startedShare": 0.935,
+          "captainedShare": 0.935,
+          "leaders": [
+            {
+              "elementId": 357,
+              "name": "Trippier",
+              "gameweeks": 9
+            },
+            {
+              "elementId": 318,
+              "name": "Haaland",
+              "gameweeks": 8
+            },
+            {
+              "elementId": 13,
+              "name": "Saka",
+              "gameweeks": 2
+            },
+            {
+              "elementId": 283,
+              "name": "Salah",
+              "gameweeks": 2
+            },
+            {
+              "elementId": 306,
+              "name": "Cancelo",
+              "gameweeks": 2
+            },
+            {
+              "elementId": 427,
+              "name": "Kane",
+              "gameweeks": 2
+            },
+            {
+              "elementId": 2,
+              "name": "Leno",
+              "gameweeks": 1
+            },
+            {
+              "elementId": 10,
+              "name": "White",
+              "gameweeks": 1
+            },
+            {
+              "elementId": 80,
+              "name": "Toney",
+              "gameweeks": 1
+            },
+            {
+              "elementId": 124,
+              "name": "Mitoma",
+              "gameweeks": 1
+            }
+          ]
+        },
+        "captaincy": {
+          "gameweeks": 155,
+          "meanChosen": 7.226,
+          "meanOwnedCeiling": 13.645,
+          "meanGameCeiling": 17.484,
+          "ownedRegret": 6.419,
+          "reachGap": 3.839
+        }
+      },
+      "giantFirst": {
+        "elementId": 2,
+        "name": "Leno",
+        "startGameweek": 7,
+        "seasons": 5,
+        "meanWithout": 1904,
+        "meanOpeningWithHim": 1898,
+        "gain": -6,
+        "meanGameweeksBeforeOwned": 11.0,
+        "neverOwned": 0
       },
       "league": {
         "policies": {
@@ -2988,6 +3070,88 @@
           }
         ]
       },
+      "reach": {
+        "giant": {
+          "gameweeks": 160,
+          "owned": 145,
+          "started": 130,
+          "captained": 130,
+          "ownedShare": 0.906,
+          "startedShare": 0.812,
+          "captainedShare": 0.812,
+          "leaders": [
+            {
+              "elementId": 308,
+              "name": "Salah",
+              "gameweeks": 8
+            },
+            {
+              "elementId": 355,
+              "name": "Haaland",
+              "gameweeks": 5
+            },
+            {
+              "elementId": 362,
+              "name": "Palmer",
+              "gameweeks": 4
+            },
+            {
+              "elementId": 19,
+              "name": "Saka",
+              "gameweeks": 3
+            },
+            {
+              "elementId": 290,
+              "name": "Alexander-Arnold",
+              "gameweeks": 3
+            },
+            {
+              "elementId": 353,
+              "name": "Foden",
+              "gameweeks": 2
+            },
+            {
+              "elementId": 5,
+              "name": "Gabriel",
+              "gameweeks": 1
+            },
+            {
+              "elementId": 60,
+              "name": "Watkins",
+              "gameweeks": 1
+            },
+            {
+              "elementId": 85,
+              "name": "Solanke",
+              "gameweeks": 1
+            },
+            {
+              "elementId": 303,
+              "name": "Luis D\u00edaz",
+              "gameweeks": 1
+            }
+          ]
+        },
+        "captaincy": {
+          "gameweeks": 160,
+          "meanChosen": 7.5,
+          "meanOwnedCeiling": 14.062,
+          "meanGameCeiling": 18.625,
+          "ownedRegret": 6.562,
+          "reachGap": 4.562
+        }
+      },
+      "giantFirst": {
+        "elementId": 355,
+        "name": "Haaland",
+        "startGameweek": 7,
+        "seasons": 5,
+        "meanWithout": 1967,
+        "meanOpeningWithHim": 1967,
+        "gain": 0,
+        "meanGameweeksBeforeOwned": 0.0,
+        "neverOwned": 0
+      },
       "league": {
         "policies": {
           "advised": {
@@ -4686,6 +4850,78 @@
             "351": [1.94, 2.22, 0.8, 0.5, 35.4, 4.32, 1.151]
           }
         ]
+      },
+      "reach": {
+        "giant": {
+          "gameweeks": 160,
+          "owned": 135,
+          "started": 135,
+          "captained": 135,
+          "ownedShare": 0.844,
+          "startedShare": 0.844,
+          "captainedShare": 0.844,
+          "leaders": [
+            {
+              "elementId": 328,
+              "name": "M.Salah",
+              "gameweeks": 23
+            },
+            {
+              "elementId": 182,
+              "name": "Palmer",
+              "gameweeks": 2
+            },
+            {
+              "elementId": 351,
+              "name": "Haaland",
+              "gameweeks": 2
+            },
+            {
+              "elementId": 58,
+              "name": "Watkins",
+              "gameweeks": 1
+            },
+            {
+              "elementId": 110,
+              "name": "Wissa",
+              "gameweeks": 1
+            },
+            {
+              "elementId": 447,
+              "name": "Wood",
+              "gameweeks": 1
+            },
+            {
+              "elementId": 585,
+              "name": "I.Sarr",
+              "gameweeks": 1
+            },
+            {
+              "elementId": 755,
+              "name": "Marmoush",
+              "gameweeks": 1
+            }
+          ]
+        },
+        "captaincy": {
+          "gameweeks": 160,
+          "meanChosen": 8.562,
+          "meanOwnedCeiling": 13.656,
+          "meanGameCeiling": 18.969,
+          "ownedRegret": 5.094,
+          "reachGap": 5.312
+        }
+      },
+      "giantFirst": {
+        "elementId": 328,
+        "name": "M.Salah",
+        "startGameweek": 7,
+        "seasons": 5,
+        "meanWithout": 1718,
+        "meanOpeningWithHim": 1739,
+        "gain": 21,
+        "meanGameweeksBeforeOwned": 0.4,
+        "neverOwned": 0
       },
       "league": {
         "policies": {
@@ -6409,6 +6645,88 @@
             "249": [2.52, 2.65, 2.0, 0.596, 58.8, 4.87, 0.863]
           }
         ]
+      },
+      "reach": {
+        "giant": {
+          "gameweeks": 160,
+          "owned": 125,
+          "started": 110,
+          "captained": 110,
+          "ownedShare": 0.781,
+          "startedShare": 0.688,
+          "captainedShare": 0.688,
+          "leaders": [
+            {
+              "elementId": 430,
+              "name": "Haaland",
+              "gameweeks": 13
+            },
+            {
+              "elementId": 5,
+              "name": "Gabriel",
+              "gameweeks": 8
+            },
+            {
+              "elementId": 249,
+              "name": "Jo\u00e3o Pedro",
+              "gameweeks": 2
+            },
+            {
+              "elementId": 411,
+              "name": "O'Reilly",
+              "gameweeks": 2
+            },
+            {
+              "elementId": 449,
+              "name": "B.Fernandes",
+              "gameweeks": 2
+            },
+            {
+              "elementId": 8,
+              "name": "J.Timber",
+              "gameweeks": 1
+            },
+            {
+              "elementId": 235,
+              "name": "Palmer",
+              "gameweeks": 1
+            },
+            {
+              "elementId": 237,
+              "name": "Enzo",
+              "gameweeks": 1
+            },
+            {
+              "elementId": 260,
+              "name": "Gu\u00e9hi",
+              "gameweeks": 1
+            },
+            {
+              "elementId": 373,
+              "name": "Virgil",
+              "gameweeks": 1
+            }
+          ]
+        },
+        "captaincy": {
+          "gameweeks": 160,
+          "meanChosen": 4.781,
+          "meanOwnedCeiling": 12.0,
+          "meanGameCeiling": 17.156,
+          "ownedRegret": 7.219,
+          "reachGap": 5.156
+        }
+      },
+      "giantFirst": {
+        "elementId": 430,
+        "name": "Haaland",
+        "startGameweek": 7,
+        "seasons": 5,
+        "meanWithout": 1612,
+        "meanOpeningWithHim": 1641,
+        "gain": 29,
+        "meanGameweeksBeforeOwned": 2.0,
+        "neverOwned": 0
       },
       "league": {
         "policies": {

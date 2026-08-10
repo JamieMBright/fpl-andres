@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { DeclaredSquadBuilder } from "./DeclaredSquadBuilder";
 import { readDeclaredSquad } from "../state/declared-squad";
@@ -72,7 +72,19 @@ function renderBuilder() {
 }
 
 describe("DeclaredSquadBuilder", () => {
+  // The builder asks for the live FPL list and replaces its market with it when
+  // the answer arrives. Left to a real fetch that is a race: alone it fails
+  // fast and the bundled pool stands, under a loaded suite it can land halfway
+  // through the journey and rename every row the test is clicking on.
+  beforeEach(() => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(() => Promise.reject(new Error("offline"))),
+    );
+  });
+
   afterEach(() => {
+    vi.unstubAllGlobals();
     window.localStorage.clear();
   });
 

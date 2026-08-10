@@ -273,6 +273,7 @@ def project_next_match(
     settings: ProjectionSettings | None = None,
     recent_window: int = 6,
     availability: Mapping[int, AvailabilityEvidence] | None = None,
+    previous: SeasonCorpus | None = None,
 ) -> list[MatchProjection]:
     """Project every player's next match from a completed season, fixture-free.
 
@@ -283,6 +284,11 @@ def project_next_match(
     `availability` is FPL's own published status, keyed by element code. Without
     it the projection reads an injured player's history and reports the minutes
     he used to play, which is how a ruled-out player kept a full projection.
+
+    `previous` is read for the defensive-contribution route only, where a
+    season played under a different arrangement is a prior rather than a record.
+    Everything else stays on the season named, which is what "the record" means
+    on the site.
     """
     config = settings or ProjectionSettings()
     # 2019-20 ran to gameweek 47 after the shutdown, so the season after the
@@ -312,6 +318,7 @@ def project_next_match(
     # already split this way.
     league_booking_rate = _booking_rates(history, corpus.position_by_element)
     prior_nineties = config.prior_strength_minutes / _MINUTES_PER_90
+    carried = _carried_history(corpus, previous)
     projections: list[MatchProjection] = []
 
     for element_id, rows in by_element.items():
@@ -362,6 +369,7 @@ def project_next_match(
             league,
             prior_nineties,
             _NEUTRAL_ADJUSTMENT,
+            list(carried.get(element_id, ())),
         )
         shape = describe_shape(rows)
         expected = breakdown.total * ban.multiplier
@@ -468,11 +476,26 @@ def project_gameweek(
 
         # Scoring rates come from whichever season supplied the evidence.
         scoring_rows = rows or list(prior_rows)
+        # Last season is handed over separately only when this season has
+        # something of its own to weigh it against. Where it does not,
+        # `scoring_rows` already is last season and passing it twice would
+        # shrink it toward itself. Only the defensive-contribution route reads
+        # it: a defender's action count is a property of the system around him,
+        # so a completed gameweek of the current arrangement has to outweigh a
+        # campaign played under a different one.
+        carried_defcon = list(prior_rows) if rows else []
         schedule = _schedule_for(corpus, element_id, gameweek)
         total = 0.0
         for adjustment in schedule:
             total += fixture_points(
-                scoring_rows, position, minutes, rates, league, prior_nineties, adjustment
+                scoring_rows,
+                position,
+                minutes,
+                rates,
+                league,
+                prior_nineties,
+                adjustment,
+                carried_defcon,
             )
 
         recent = form.get(element_id)

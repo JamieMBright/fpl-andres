@@ -166,14 +166,14 @@ export function Fpl500Playbook() {
         </li>
       </ul>
 
-      <Fold kind="what" open title="What it is">
+      <Fold kind="what" title="What it is">
         <ul className="plan-promises">
           <li>
             Every FPL entry id is public, so the register is read, not guessed
             at.
           </li>
           <li>
-            A manager is catalogued once he has finished inside the top ten
+            A manager is catalogued once they have finished inside the top ten
             thousand at least twice since 2021.
           </li>
           <li>
@@ -284,9 +284,9 @@ export function Fpl500Playbook() {
           <h3>What none of it can tell you</h3>
           <p>
             Being in the FPL500 does not mean a manager will be good this
-            season. What it means is that he has been consistent enough for long
-            enough to qualify, which is why he is worth learning from rather
-            than worth copying.
+            season. What it means is that they have been consistent enough for
+            long enough to qualify, which is why they are worth learning from
+            rather than worth copying.
           </p>
         </div>
       </Fold>

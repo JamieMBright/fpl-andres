@@ -165,7 +165,10 @@ export function Methodology() {
             <code>&lambda; = &minus;ln(1 &minus; P)</code> — and then divided by
             the multiplier of the gameweek it was quoted in, because the quote
             already carries its opponent and the solver is about to apply that
-            opponent again.
+            opponent again. What survives is what the book thinks of the
+            footballer with his opponent taken off, so a striker quoted against
+            the champions is still the same striker next week against a promoted
+            side, only at a bigger number.
           </li>
           <li>
             <strong>Card prices move the two card routes.</strong> A book prices
@@ -273,6 +276,32 @@ export function Methodology() {
           The ladder beats repeating a one-week view by 0.012, 0.019 and 0.020
           on rank correlation at three, five and seven weeks. The gain is real
           and small: 83% of the top thirty is the same either way.
+        </p>
+      </section>
+
+      <section aria-labelledby="method-wildcard">
+        <h2 id="method-wildcard">What a wildcard does to the horizon</h2>
+        <p>
+          A horizon is a claim about how long you will own somebody. Five
+          gameweeks is the right yardstick for a squad you keep and the wrong
+          one for a squad you have already decided to throw away, so a wildcard
+          you have committed to ends the run every player before it is valued
+          over. Tell the plan you are wildcarding in gameweek 3 and a gameweek 1
+          transfer is priced on gameweeks 1 and 2 alone, however good the
+          fixtures turn in gameweek 6. From the wildcard onwards the squad is
+          new and gets the whole run ahead of it back.
+        </p>
+        <p>
+          Without that, the plan happily pays a hit in August for a player it
+          has been told will be sold in September, which is the specific way an
+          unaware optimiser wastes a chip: it does not misplay the wildcard, it
+          misplays the four weeks in front of it.
+        </p>
+        <p>
+          A Free Hit does none of this. The squad comes straight back, so it
+          changes one afternoon and nothing either side of it, and it is priced
+          on that afternoon alone. A Bench Boost and a Triple Captain change no
+          squad at all; they are read off the weeks already solved.
         </p>
       </section>
 

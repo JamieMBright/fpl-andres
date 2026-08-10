@@ -29,6 +29,20 @@ from __future__ import annotations
 
 __all__ = ["MODEL_VERSION"]
 
+#: 6.4 stops last season outvoting this one on defensive contribution. A
+#: defender's action count is mostly a property of the arrangement around him --
+#: how high the line sits, who screens in front, whether the manager changed,
+#: who was signed in August -- and all of those turn over in a summer. The
+#: projector used whichever season had rows, so last season was the whole answer
+#: until a ball was kicked and then no part of it at all, and one gameweek
+#: against the league prior decided the opening month. Now last season displaces
+#: at most half the prior, in proportion to how much of it there is, and the
+#: shrinkage strength is untouched -- weakening that to make room would have
+#: made a thin record more volatile, not less. A completed gameweek of the
+#: current arrangement therefore outweighs a gameweek of the last, which is the
+#: rule that was asked for. Minor: a player with no previous season, and any
+#: player once a season is a dozen matches old, is unchanged.
+#:
 #: 6.3 pays a defender the league's defensive-contribution rate where nothing is
 #: known about his own. The route arrived in 2025/26, so every earlier season in
 #: the corpus has a null column, and the code returned zero on an empty
@@ -257,4 +271,4 @@ __all__ = ["MODEL_VERSION"]
 #: projection and resampled, so a gap that does not clear zero is reported as
 #: not clearing zero. No projection changed; what changed is what may be
 #: claimed from it.
-MODEL_VERSION = "6.3"
+MODEL_VERSION = "6.4"

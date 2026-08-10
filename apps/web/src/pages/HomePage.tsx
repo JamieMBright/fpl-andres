@@ -58,6 +58,12 @@ export default function HomePage() {
         weeks it gets wrong.
       </p>
 
+      <ErrorBoundary>
+        <Suspense fallback={null}>
+          <TopPicks />
+        </Suspense>
+      </ErrorBoundary>
+
       <ul className="index-grid">
         <li className="index-cell is-plan">
           <h2>
@@ -137,12 +143,6 @@ export default function HomePage() {
           <p>Where I win, where I lose. Scored four seasons back.</p>
         </li>
       </ul>
-
-      <ErrorBoundary>
-        <Suspense fallback={null}>
-          <TopPicks />
-        </Suspense>
-      </ErrorBoundary>
     </section>
   );
 }

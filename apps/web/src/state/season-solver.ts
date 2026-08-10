@@ -225,11 +225,27 @@ function pointsAt(player: SolverPlayer, eventIndex: number): number {
   );
 }
 
-function lookaheadPoints(player: SolverPlayer, eventIndex: number): number {
+/**
+ * What a player is worth from here, over the run the solver can see.
+ *
+ * `rebuildIndex` is a gameweek the squad is thrown away in, because the reader
+ * has committed to a wildcard there. Nothing he holds before it is still his
+ * afterwards, so the sum stops at it. Without this the solver happily pays a
+ * hit in gameweek 1 for a player whose fixtures turn in gameweek 6, having
+ * been told the squad is being rebuilt in gameweek 3.
+ */
+function lookaheadPoints(
+  player: SolverPlayer,
+  eventIndex: number,
+  rebuildIndex = Number.POSITIVE_INFINITY,
+): number {
   let total = 0;
   for (let ahead = 0; ahead < LOOKAHEAD; ahead += 1) {
     const index = eventIndex + ahead;
     if (index >= EVENTS.length) break;
+    // Only binds before the rebuild. From the rebuild onwards the squad is new
+    // and the full run ahead is its own again.
+    if (eventIndex < rebuildIndex && index >= rebuildIndex) break;
     total += pointsAt(player, index) * LOOKAHEAD_DECAY ** ahead;
   }
   return total;
@@ -255,6 +271,15 @@ export interface SolveStart {
   fromEvent: number;
   /** Set when the reader has rejected the free pre-deadline changes. */
   lockOpening?: boolean;
+  /**
+   * A gameweek the reader has committed to wildcarding in.
+   *
+   * A wildcard resets the long-term view: a five-gameweek horizon is the right
+   * yardstick for a squad you keep, and the wrong one for a squad you have
+   * already decided to throw away. Only a wildcard does this. A Free Hit hands
+   * the squad straight back, so it changes one week and nothing either side.
+   */
+  rebuildAtEvent?: number;
   assumed: readonly SolveAssumption[];
 }
 
@@ -358,8 +383,9 @@ export function fixtureAtEvent(
 export function lookaheadPointsFor(
   player: SolverPlayer,
   eventIndex: number,
+  rebuildIndex?: number,
 ): number {
-  return lookaheadPoints(player, eventIndex);
+  return lookaheadPoints(player, eventIndex, rebuildIndex);
 }
 
 /**
@@ -460,6 +486,13 @@ export function* solveSeason(
 
   let squad = start.squad.map((held) => ({ ...held }));
   let bank = start.bankTenths;
+  const rebuildIndex =
+    start.rebuildAtEvent === undefined
+      ? Number.POSITIVE_INFINITY
+      : (() => {
+          const at = EVENTS.indexOf(start.rebuildAtEvent);
+          return at < 0 ? Number.POSITIVE_INFINITY : at;
+        })();
   // Nothing is charged before the first deadline: a squad is still being
   // picked, not transferred. Starting at zero made the solver price a change
   // it should have taken for nothing, and the plan opened by advising a hit.
@@ -485,7 +518,7 @@ export function* solveSeason(
       teamId: player.teamId,
       positionId: player.positionId,
       buyPriceTenths: player.priceTenths,
-      expectedPoints: lookaheadPoints(player, index),
+      expectedPoints: lookaheadPoints(player, index, rebuildIndex),
       evidenceLevel: "inferred" as const,
       dataAvailableAt: deadline,
       sourceHashes: [HASH],

@@ -139,7 +139,7 @@ const FPL_LINGO = [
   ],
   [
     "Differential",
-    "A player owned by very few managers. He gains rank quickly when he returns and costs little when he blanks, because few rivals owned him either way.",
+    "A player owned by very few managers. Owning one gains rank quickly on a return and costs little on a blank, because few rivals owned him either way.",
   ],
   [
     "EO",

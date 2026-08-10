@@ -64,6 +64,10 @@ MAX_ITERATIONS = 200
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="publish-projections")
     parser.add_argument("--season", default="2025-26")
+    # Read for the defensive-contribution route alone, where a season played
+    # under a different arrangement is a prior rather than a record. Empty says
+    # there is no season before this one worth loading.
+    parser.add_argument("--previous-season", default="")
     parser.add_argument("--output", default=str(DEFAULT_OUTPUT))
     return parser
 
@@ -287,9 +291,10 @@ def main(argv: Sequence[str] | None = None) -> int:
     credentials = SupabaseCredentials.from_env(os.environ)
     with SupabaseRestClient(credentials) as client:
         corpus = load_season(client, args.season)
+        previous = load_season(client, args.previous_season) if args.previous_season else None
 
     availability = _published_availability()
-    projections = project_next_match(corpus, availability=availability)
+    projections = project_next_match(corpus, availability=availability, previous=previous)
     if not projections:
         print(f"no projections for {args.season}", file=sys.stderr)
         return 1

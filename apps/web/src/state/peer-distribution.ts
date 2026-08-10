@@ -23,6 +23,7 @@
 
 import type { PlayerProjection } from "./squad-projection";
 import { allProjections } from "./squad-projection";
+import { DEFAULT_HORIZON, horizonPoints } from "./horizon-points";
 import { OWNERSHIP_CAP } from "./scatter-view";
 
 /**
@@ -75,9 +76,21 @@ export interface PeerMetric {
   value: (record: PlayerProjection) => number | null;
   format: (value: number) => string;
   higherIsBetter: boolean;
+  /**
+   * Compare against the whole position rather than the price tier.
+   *
+   * Only for metrics that already have price in them. Value per pound inside a
+   * price band is very nearly a constant, so a tier comparison would report the
+   * band edges rather than a finding; across the position it is the question
+   * being asked.
+   */
+  acrossPosition?: boolean;
+  /** The chart to open for this row, where the position's own pair is wrong. */
+  axes?: { x: string; y: string };
 }
 
 const two = (value: number) => value.toFixed(2);
+const one = (value: number) => value.toFixed(1);
 const whole = (value: number) => String(Math.round(value));
 const rate = (value: number) => `${Math.round(value * 100)}%`;
 
@@ -94,6 +107,26 @@ export const PEER_METRICS: readonly PeerMetric[] = [
     value: (record) => record.expectedPoints,
     format: two,
     higherIsBetter: true,
+  },
+  {
+    term: `xPts${String(DEFAULT_HORIZON)}`,
+    value: (record) => horizonPoints(record.code, DEFAULT_HORIZON),
+    format: one,
+    higherIsBetter: true,
+    // Against the run, not against the price: the whole point of the horizon is
+    // that two players on the same money have different fixtures.
+    axes: { x: "xPts", y: `xPts${String(DEFAULT_HORIZON)}` },
+  },
+  {
+    term: "Per \u00a31m",
+    value: (record) =>
+      record.priceTenths === null || record.priceTenths <= 0
+        ? null
+        : record.expectedPoints / (record.priceTenths / 10),
+    format: two,
+    higherIsBetter: true,
+    acrossPosition: true,
+    axes: { x: "price", y: "xPts" },
   },
   {
     term: "Minutes",
@@ -198,6 +231,7 @@ export function peersOf(
   priceTenths: number,
   metric: PeerMetric,
 ): PlayerProjection[] {
+  if (metric.acrossPosition) return wholePosition(position, metric);
   const band = bandFor(position, priceTenths);
   return allProjections().filter(
     (candidate) =>
@@ -340,8 +374,12 @@ export const LINK_BAND_TENTHS = 10;
  * narrows on price instead, which is the filter that makes the remaining
  * players genuine alternatives.
  */
-export function analysisLinkFor(subject: PlayerProjection): string {
-  const axes = AXES_BY_POSITION[subject.position] ?? FALLBACK_AXES;
+export function analysisLinkFor(
+  subject: PlayerProjection,
+  metric?: PeerMetric,
+): string {
+  const axes =
+    metric?.axes ?? AXES_BY_POSITION[subject.position] ?? FALLBACK_AXES;
   // `#code` is a player; a bare token is read as a club short name.
   const token = `#${String(subject.code)}`;
   const params = new URLSearchParams({
@@ -362,7 +400,9 @@ export function analysisLinkFor(subject: PlayerProjection): string {
     hl: token,
     pin: String(subject.code),
   });
-  if (subject.priceTenths !== null) {
+  // A metric with price already in it is asked across the whole position, so
+  // narrowing to a price band would remove every player it exists to compare.
+  if (subject.priceTenths !== null && !metric?.acrossPosition) {
     params.set(
       "pricefrom",
       String(Math.max(0, subject.priceTenths - LINK_BAND_TENTHS)),

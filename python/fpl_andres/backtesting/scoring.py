@@ -58,6 +58,22 @@ _PENALTY_MISS_POINTS = -2
 # Defensive contribution, new for 2025/26. Threshold is on the raw action count.
 _DEFCON_POINTS: Mapping[int, int] = {1: 0, 2: 2, 3: 2, 4: 2}
 _DEFCON_THRESHOLD: Mapping[int, int] = {2: 10, 3: 12, 4: 12}
+#: How much of the prior last season is allowed to be, at most.
+#:
+#: Half. A defender's action count is largely a property of the system around
+#: him -- how high the line sits, who screens in front, whether the manager has
+#: changed, who was signed in August -- so a campaign played under a different
+#: arrangement gets a say and not the last word. The rest of the prior stays the
+#: league rate for the position, which is the honest stand-in for "the
+#: arrangement is new and nothing is known about it yet".
+#:
+#: The consequence is the one asked for: a completed gameweek of this season
+#: outweighs a gameweek of last. Ten matches in, this season carries twice the
+#: weight of the whole of the one before it.
+_DEFCON_CARRY = 0.5
+#: Nineties of last season needed before it carries its full share. Below this
+#: it is a thin record rather than a system, and counts proportionally.
+_DEFCON_CARRY_NINETIES = 10.0
 
 # Public names for the same table. `backtesting/reconcile.py` prices realised
 # gameweeks from it to check this project's scoring against FPL's own, and a
@@ -131,9 +147,10 @@ def fixture_points(
     league: LeagueRates,
     prior_nineties: float,
     adjustment: RouteAdjustment,
+    last_season: Sequence[ElementRow] = (),
 ) -> float:
     return fixture_points_breakdown(
-        rows, position, minutes, rates, league, prior_nineties, adjustment
+        rows, position, minutes, rates, league, prior_nineties, adjustment, last_season
     ).total
 
 
@@ -145,6 +162,7 @@ def fixture_points_breakdown(
     league: LeagueRates,
     prior_nineties: float,
     adjustment: RouteAdjustment,
+    last_season: Sequence[ElementRow] = (),
 ) -> PointsBreakdown:
     ninety = minutes.expected_minutes / _MINUTES_PER_90
     appearance = (
@@ -155,7 +173,9 @@ def fixture_points_breakdown(
         * (rates.goals_per_90 * _GOAL_POINTS[position] + rates.assists_per_90 * _ASSIST_POINTS)
         * adjustment.attacking
     )
-    supporting = supporting_breakdown(rows, position, minutes, league, prior_nineties, adjustment)
+    supporting = supporting_breakdown(
+        rows, position, minutes, league, prior_nineties, adjustment, last_season
+    )
     return PointsBreakdown(
         appearance=appearance,
         attacking=attacking,
@@ -178,6 +198,7 @@ def supporting_breakdown(
     league: LeagueRates,
     prior_nineties: float,
     adjustment: RouteAdjustment,
+    last_season: Sequence[ElementRow] = (),
 ) -> PointsBreakdown:
     """Every scoring route other than appearance, goals and assists.
 
@@ -311,6 +332,7 @@ def supporting_breakdown(
             league,
             prior_nineties,
             adjustment.defensive_contribution,
+            last_season,
         ),
     )
 
@@ -322,8 +344,20 @@ def defensive_contribution_points(
     league: LeagueRates,
     prior_nineties: float,
     adjustment: float,
+    last_season: Sequence[ElementRow] = (),
 ) -> float:
-    """Zero before 2025/26, where the column is absent because the route did not exist."""
+    """Zero before 2025/26, where the column is absent because the route did not exist.
+
+    Last season is evidence, not a vote. A defender's action count is mostly a
+    property of the system he plays in -- how high the line sits, who screens in
+    front of him, whether the manager has changed -- and every one of those can
+    turn over in an August. So his record from last season displaces part of the
+    league rate as the target this season's matches are shrunk toward, and the
+    shrinkage strength itself is left alone.
+
+    The effect is that before a ball is kicked he is priced on last season, and
+    by the time a month has been played he is priced on this one.
+    """
     threshold = _DEFCON_THRESHOLD.get(position)
     if threshold is None:
         return 0.0
@@ -345,18 +379,57 @@ def defensive_contribution_points(
     # which is what "nothing is known about him yet" means.
     hits = sum(1 for _, actions in observed if actions >= threshold)
     seen = sum(row.minutes for row, _ in observed) / _MINUTES_PER_90
+    target, strength = _defcon_prior(last_season, position, league, prior_nineties)
     # `seen` is the evidence that exists, and `shrunk_rate` already pulls a thin
-    # sample toward the league rate in proportion to how thin it is. A coverage
+    # sample toward the target in proportion to how thin it is. A coverage
     # term on top charged the same missing data twice: a defender with five
     # hundred of his three thousand minutes in 2025/26 was shrunk for having
     # five hundred, then scaled by a sixth for not having the other twenty-five
     # hundred -- hardest against the established defenders whose defcon record
     # is best evidenced.
-    rate = shrunk_rate(hits, seen, league.defcon_hits.get(position, 0.0), prior_nineties)
+    rate = shrunk_rate(hits, seen, target, strength)
     # A hit rate is a share of matches, so the fixture multiplier cannot lift it
     # past one however much pressure the opponent applies.
     adjusted = min(1.0, rate * adjustment)
     return ninety * adjusted * _DEFCON_POINTS[position]
+
+
+def _defcon_prior(
+    last_season: Sequence[ElementRow],
+    position: int,
+    league: LeagueRates,
+    prior_nineties: float,
+) -> tuple[float, float]:
+    """What this season's defensive record is shrunk toward, and how hard.
+
+    The strength is never touched. Shrinkage strength is what stops one good
+    afternoon reading as a transformation, and weakening it to make room for
+    last season would have made a thin record *more* volatile, not less --
+    which is the opposite of what carrying evidence forward is for.
+
+    What last season changes is the target. It displaces the league rate in
+    proportion to how much of it there is, up to `_DEFCON_CARRY`. His own rate
+    from it is itself shrunk toward the league first, so a defender with two
+    matches last season does not arrive carrying a rate of one.
+    """
+    neutral = league.defcon_hits.get(position, 0.0)
+    threshold = _DEFCON_THRESHOLD.get(position)
+    if threshold is None or not last_season:
+        return neutral, prior_nineties
+
+    observed = [
+        (row, actions)
+        for row, actions in ((row, defensive_actions(row, position)) for row in last_season)
+        if actions is not None and row.minutes > 0
+    ]
+    if not observed:
+        return neutral, prior_nineties
+
+    hits = sum(1 for _, actions in observed if actions >= threshold)
+    seen = sum(row.minutes for row, _ in observed) / _MINUTES_PER_90
+    rate = shrunk_rate(hits, seen, neutral, prior_nineties)
+    share = _DEFCON_CARRY * min(1.0, seen / _DEFCON_CARRY_NINETIES)
+    return share * rate + (1.0 - share) * neutral, prior_nineties
 
 
 __all__ = [

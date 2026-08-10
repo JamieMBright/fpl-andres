@@ -41,6 +41,7 @@ import { readSeasonPlan } from "../state/season-plan";
 import { chipCallsFor } from "../state/season-chips";
 import {
   CHIP_NAMES,
+  NO_CHIPS,
   readDeclaredChips,
   type DeclaredChips,
 } from "../state/declared-chips";
@@ -702,6 +703,13 @@ export default function SeasonPlanPage() {
       ? teamPlan.analysis.state
       : null;
 
+  const declaredChips = useMemo(() => {
+    if (teamId === null) return NO_CHIPS;
+    return chipEdit?.entryId === teamId
+      ? chipEdit.chips
+      : readDeclaredChips(window.localStorage, teamId);
+  }, [chipEdit, teamId]);
+
   const live = useMemo(() => {
     // His own fifteen beats a gameweek number, because it is his season either
     // way and only one of the two knows what he owns.
@@ -722,8 +730,15 @@ export default function SeasonPlanPage() {
             })()
           : null;
     if (!base) return null;
-    return holdOpening ? { ...base, lockOpening: true } : base;
-  }, [fromEvent, holdOpening, plan.gameweeks, team]);
+    // A committed wildcard is the one declaration that changes the solve
+    // itself: it ends the run every player before it is being valued over.
+    const committed = declaredChips.committed;
+    const rebuild =
+      committed?.chip === "wildcard" ? { rebuildAtEvent: committed.event } : {};
+    return holdOpening
+      ? { ...base, ...rebuild, lockOpening: true }
+      : { ...base, ...rebuild };
+  }, [declaredChips, fromEvent, holdOpening, plan.gameweeks, team]);
 
   const solve = useSeasonSolve(live);
   const solving = live !== null;
@@ -766,21 +781,35 @@ export default function SeasonPlanPage() {
   // Bench Boost and Triple Captain pay what this plan's own bench and captain
   // score, so they are re-solved from the gameweeks on screen. Wildcard and
   // Free Hit rebuild the fifteen and are carried through unchanged. A chip the
-  // manager says he has already played is dropped from both.
-  const spentChips = useMemo(() => {
-    if (teamId === null) return [];
-    const held =
-      chipEdit?.entryId === teamId
-        ? chipEdit.chips
-        : readDeclaredChips(window.localStorage, teamId);
-    return held.spent.map((chip) => CHIP_NAMES[chip]);
-  }, [chipEdit, teamId]);
+  // manager says he has already played is dropped from both, and one he has
+  // committed to is pinned to the week he named.
+  const spentChips = useMemo(
+    () => declaredChips.spent.map((chip) => CHIP_NAMES[chip]),
+    [declaredChips],
+  );
+  const committedChip = useMemo(
+    () =>
+      declaredChips.committed
+        ? {
+            chip: CHIP_NAMES[declaredChips.committed.chip],
+            event: declaredChips.committed.event,
+          }
+        : null,
+    [declaredChips],
+  );
   const chipCalls = useMemo(
     () =>
       solving && solve.status === "done"
-        ? chipCallsFor(solve.gameweeks, plan.chips, spentChips)
-        : plan.chips.filter((call) => !spentChips.includes(call.chip)),
-    [solving, solve.status, solve.gameweeks, plan.chips, spentChips],
+        ? chipCallsFor(solve.gameweeks, plan.chips, spentChips, committedChip)
+        : chipCallsFor([], plan.chips, spentChips, committedChip),
+    [
+      solving,
+      solve.status,
+      solve.gameweeks,
+      plan.chips,
+      spentChips,
+      committedChip,
+    ],
   );
   // Someone who has given a team id is here for their own season. Showing the
   // published optimum until they lock a fifteen in reads as "here is your

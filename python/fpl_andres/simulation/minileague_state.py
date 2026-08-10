@@ -23,6 +23,7 @@ from fpl_andres.simulation.squad import (
 from fpl_andres.simulation.valuation import Portfolio
 
 __all__ = [
+    "GameweekSquad",
     "LeagueResult",
     "LeagueSettings",
     "ManagerResult",
@@ -62,6 +63,14 @@ class LeagueSettings:
     # risk setting: cover the field when ahead, take differentials when behind.
     risk_weight: float = 0.3
     chips_enabled: bool = True
+    # Element ids the opening squad must contain if it legally can.
+    #
+    # The strategic claim worth testing is that starting with the best player
+    # in the game is easier than getting to him later: a transfer into a
+    # premium is one move that costs most of the bank, and the money has to
+    # come from somewhere. Forcing him into the opening fifteen and playing the
+    # same season twice is how that stops being an opinion.
+    open_with: tuple[int, ...] = ()
     # Floors below which a chip is not worth burning. Expressed in projected
     # points, so they are comparable to everything else the model produces.
     triple_captain_floor: float = 7.0
@@ -104,6 +113,23 @@ class LeagueSettings:
         return seats
 
 
+@dataclass(frozen=True)
+class GameweekSquad:
+    """What a manager actually owned and fielded in one gameweek.
+
+    Kept because the interesting questions are about reach, not totals. "How
+    often was the best player in the game on your field" and "how much of the
+    captaincy ceiling was reachable from the squad you owned" cannot be asked
+    of a season total, and both were previously unanswerable here: the loop
+    scored each week and threw the squad away.
+    """
+
+    event: int
+    squad: tuple[int, ...]
+    starters: tuple[int, ...]
+    captain: int | None
+
+
 @dataclass
 class ManagerResult:
     manager_id: int
@@ -115,6 +141,7 @@ class ManagerResult:
     weekly_points: list[int] = field(default_factory=list)
     chips_played: dict[str, int] = field(default_factory=dict)
     final_team_value_tenths: int = 0
+    gameweek_squads: list[GameweekSquad] = field(default_factory=list)
 
     @property
     def net_points(self) -> int:
@@ -128,6 +155,10 @@ class LeagueResult:
     managers: list[ManagerResult] = field(default_factory=list)
     # One representative finishing squad per policy, for inspection.
     squad_snapshots: list[tuple[str, list[tuple[int, int]]]] = field(default_factory=list)
+    # The single highest projected player in the whole game, per gameweek.
+    # Not a squad and not owned by anybody: the yardstick a squad is measured
+    # against when asking how often the best player was reachable at all.
+    best_projected: dict[int, int] = field(default_factory=dict)
 
     def standings(self) -> list[ManagerResult]:
         return sorted(self.managers, key=lambda manager: -manager.net_points)

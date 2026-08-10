@@ -35,6 +35,7 @@ from fpl_andres.simulation.minileague_state import (
     _DROPPED_THRESHOLD,
     _FORM_WINDOW,
     _PASSIVE,
+    GameweekSquad,
     LeagueResult,
     LeagueSettings,
     ManagerResult,
@@ -51,6 +52,7 @@ from fpl_andres.simulation.squad import (
 from fpl_andres.simulation.valuation import Portfolio
 
 __all__ = [
+    "GameweekSquad",
     "LeagueResult",
     "LeagueSettings",
     "ManagerResult",
@@ -113,6 +115,13 @@ def simulate_league(
             projection.element_id: projection.expected_points
             for projection in project_gameweek(corpus, gameweek, settings=projection_settings)
         }
+        # The one player the model would have taken above everybody else this
+        # week, whether or not anybody owned him. Kept so "how often was the
+        # best player in the game on your field" can be asked afterwards.
+        if projected:
+            outcome.best_projected[gameweek] = max(
+                projected, key=lambda element: (projected[element], -element)
+            )
         form = _recent_form(corpus, gameweek)
         minutes = _recent_minutes(corpus, gameweek)
         outcomes = _outcomes(corpus, gameweek)
@@ -190,9 +199,17 @@ def simulate_league(
                 if chip is not None:
                     manager.chips.record(chip, gameweek)
 
-            points = _play(manager, settings, outcomes, ranking, form, chip, pool)
-            manager.result.weekly_points.append(points)
-            manager.result.total_points += points
+            played = _play(manager, settings, outcomes, ranking, form, chip, pool)
+            manager.result.weekly_points.append(played.points)
+            manager.result.total_points += played.points
+            manager.result.gameweek_squads.append(
+                GameweekSquad(
+                    event=gameweek,
+                    squad=played.squad,
+                    starters=played.starters,
+                    captain=played.captain,
+                )
+            )
             manager.result.final_team_value_tenths = manager.portfolio.team_value(prices)
             if chip is not None:
                 manager.result.chips_played[chip] = gameweek
@@ -331,6 +348,14 @@ def _opening_squad(
     variants.append(_recent_form(corpus, gameweek))
 
     ranking = variants[seed % len(variants)]
+    if settings.open_with:
+        # Above everything else in the ranking, so the greedy pass reaches him
+        # first. He is still subject to the budget floor and the club limit: a
+        # player the squad cannot legally afford is simply not taken, and the
+        # league is then the same as the one it is being compared against,
+        # which is the honest outcome rather than a special case.
+        ceiling = max(ranking.values(), default=0.0) + 1.0
+        ranking = {**ranking, **{element: ceiling for element in settings.open_with}}
     try:
         return build_ranked_squad(pool, settings.squad_rules, ranking)
     except SquadSelectionError:

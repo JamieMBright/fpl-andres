@@ -3,6 +3,8 @@ import { describe, expect, it } from "vitest";
 import openingSquad from "./data/opening-squad.json";
 import inputs from "./data/season-inputs.json";
 import {
+  fixtureAtEvent,
+  lookaheadPointsFor,
   solveSeason,
   SEASON_EVENTS,
   SEASON_PLAYERS,
@@ -229,4 +231,39 @@ describe("solveSeason", () => {
     },
     SOLVE_TIMEOUT,
   );
+});
+
+/**
+ * A wildcard resets the long-term view. Five gameweeks is the right yardstick
+ * for a squad you keep and the wrong one for a squad you have already decided
+ * to throw away, so a player is valued only as far as the rebuild.
+ */
+describe("a committed rebuild", () => {
+  const best = [...SEASON_PLAYERS].sort(
+    (left, right) => right.basePoints - left.basePoints,
+  )[0];
+
+  it("stops paying for gameweeks the squad will not be around for", () => {
+    expect(best).toBeDefined();
+    expect(lookaheadPointsFor(best!, 0, 2)).toBeLessThan(
+      lookaheadPointsFor(best!, 0),
+    );
+  });
+
+  it("pays only the week itself on the last week before it", () => {
+    const alone = fixtureAtEvent(best!, 1)?.points ?? 0;
+
+    expect(lookaheadPointsFor(best!, 1, 2)).toBeCloseTo(alone, 6);
+  });
+
+  it("gives the whole run back from the rebuild onwards", () => {
+    expect(lookaheadPointsFor(best!, 2, 2)).toBe(lookaheadPointsFor(best!, 2));
+    expect(lookaheadPointsFor(best!, 5, 2)).toBe(lookaheadPointsFor(best!, 5));
+  });
+
+  it("leaves the run alone when nothing is committed", () => {
+    expect(lookaheadPointsFor(best!, 0, undefined)).toBe(
+      lookaheadPointsFor(best!, 0),
+    );
+  });
 });

@@ -17,18 +17,21 @@ import os
 import statistics
 import sys
 from collections.abc import Mapping, Sequence
+from dataclasses import replace
 from datetime import UTC, datetime
 from pathlib import Path
 
 from fpl_andres.backtesting.captain_picks import picks_payload
 from fpl_andres.backtesting.captain_significance import compare_policies
 from fpl_andres.backtesting.corpus import SeasonCorpus, load_season
+from fpl_andres.backtesting.projector import project_gameweek
 from fpl_andres.backtesting.score import METHOD_LABELS, score_season
 from fpl_andres.holdout import HOLDOUT_SEASON, SCORED_SEASONS
 from fpl_andres.model_version import MODEL_VERSION
 from fpl_andres.persistence.supabase import SupabaseCredentials, SupabaseRestClient
 from fpl_andres.positions import Position
 from fpl_andres.simulation.minileague import LeagueSettings, Policy, simulate_league
+from fpl_andres.simulation.reach import captaincy_reach, first_acquisition, giant_reach
 from fpl_andres.simulation.season import LineupRules
 from fpl_andres.simulation.squad import SquadRules
 
@@ -98,6 +101,115 @@ def _squad_rows(league: object, policy: str, corpus: object) -> list[dict[str, o
         }
         for element_id, price in holder[1]
     ]
+
+
+def _reach_payload(corpus: SeasonCorpus, league: object) -> dict[str, object]:
+    """What the advised squad could actually get at.
+
+    Two claims the rest of this report cannot make, because everything else is
+    scored against the whole game. A ranking is graded over the pool and a
+    captain is picked from the crowd's twenty-five most owned; neither is a set
+    anybody owns. These are scored against the fifteen the method was holding
+    at the deadline.
+    """
+    from fpl_andres.simulation.minileague import LeagueResult
+
+    if not isinstance(league, LeagueResult):
+        return {}
+    giant = giant_reach(league)
+    armband = captaincy_reach(corpus, league)
+    names = corpus.name_by_element
+    return {
+        "giant": {
+            "gameweeks": giant.gameweeks,
+            "owned": giant.owned,
+            "started": giant.started,
+            "captained": giant.captained,
+            "ownedShare": _round(giant.owned_share),
+            "startedShare": _round(giant.started_share),
+            "captainedShare": _round(giant.captained_share),
+            # Who held top spot, and for how long. The suspicion under test is
+            # that one player holds it for most of the season, which is what
+            # makes "just buy him" a strategy rather than a shrug.
+            "leaders": [
+                {
+                    "elementId": element_id,
+                    "name": names.get(element_id, f"#{element_id}"),
+                    "gameweeks": weeks,
+                }
+                for element_id, weeks in sorted(
+                    giant.weeks_at_the_top.items(),
+                    key=lambda entry: (-entry[1], entry[0]),
+                )[:10]
+            ],
+        },
+        "captaincy": {
+            "gameweeks": armband.gameweeks,
+            "meanChosen": _round(armband.mean_chosen),
+            "meanOwnedCeiling": _round(armband.mean_owned_ceiling),
+            "meanGameCeiling": _round(armband.mean_game_ceiling),
+            "ownedRegret": _round(armband.owned_regret),
+            "reachGap": _round(armband.reach_gap),
+        },
+    }
+
+
+def _giant_first_payload(
+    corpus: SeasonCorpus,
+    seeds: Sequence[int],
+) -> dict[str, object]:
+    """Is starting with the best player in the game worth it?
+
+    The claim is that getting to a premium later is harder than opening with
+    him: the transfer costs most of the bank in one move and the money has to
+    be found by downgrading somewhere else. That is an opinion until the same
+    season is played twice from the same seeds, with the only difference being
+    whether he was in the opening fifteen.
+
+    Who "he" is comes from the projection at the start gameweek, which is
+    public before that deadline. Naming the season's eventual top scorer would
+    be hindsight and would guarantee the answer.
+    """
+    start = LEAGUE.start_gameweek
+    projected = {
+        projection.element_id: projection.expected_points
+        for projection in project_gameweek(corpus, start)
+    }
+    if not projected:
+        return {}
+    giant = max(projected, key=lambda element: (projected[element], -element))
+
+    plain: list[int] = []
+    forced: list[int] = []
+    waits: list[float] = []
+    never = 0
+    for seed in seeds:
+        without = simulate_league(corpus, LEAGUE, seed=seed)
+        with_him = simulate_league(corpus, replace(LEAGUE, open_with=(giant,)), seed=seed)
+        plain.extend(manager.net_points for manager in without.by_policy("advised"))
+        forced.extend(manager.net_points for manager in with_him.by_policy("advised"))
+        got = first_acquisition(without, giant)
+        never += got.never
+        if got.never < got.managers:
+            waits.append(got.mean_wait)
+
+    if not plain or not forced:
+        return {}
+    plain_mean = statistics.mean(plain)
+    forced_mean = statistics.mean(forced)
+    return {
+        "elementId": giant,
+        "name": corpus.name_by_element.get(giant, f"#{giant}"),
+        "startGameweek": start,
+        "seasons": len(seeds),
+        "meanWithout": round(plain_mean),
+        "meanOpeningWithHim": round(forced_mean),
+        "gain": round(forced_mean - plain_mean),
+        # Gameweeks played before he was first owned, for the managers who did
+        # not open with him. The cost of arriving late, in weeks.
+        "meanGameweeksBeforeOwned": _round(statistics.mean(waits) if waits else 0.0),
+        "neverOwned": never,
+    }
 
 
 def _significance_rows(weekly: Mapping[str, Sequence[int]]) -> list[dict[str, object]]:
@@ -242,6 +354,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             value: dict[str, int] = {}
             wins: dict[str, int] = {policy: 0 for policy in POLICIES}
             gameweeks_played = 0
+            reach: dict[str, object] = {}
 
             for seed in seeds:
                 league = simulate_league(corpus, LEAGUE, seed=seed)
@@ -254,6 +367,8 @@ def main(argv: Sequence[str] | None = None) -> int:
                         chips[policy] = dict(first.chips_played)
                         value[policy] = first.final_team_value_tenths
                         squads[policy] = _squad_rows(league, policy, corpus)
+                if seed == seeds[0]:
+                    reach = _reach_payload(corpus, league)
                 winner = league.standings()[0].policy
                 if winner in wins:
                     wins[winner] += 1
@@ -279,6 +394,8 @@ def main(argv: Sequence[str] | None = None) -> int:
                     "captainPolicies": captain_policies,
                     "captainSignificance": captain_significance,
                     "captainPicks": captain_picks,
+                    "reach": reach,
+                    "giantFirst": _giant_first_payload(corpus, seeds),
                     "league": {
                         "policies": {
                             policy: {

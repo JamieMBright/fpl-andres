@@ -7,11 +7,29 @@ automatic substitutions, none of which depend on how the squad was chosen.
 from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
+from dataclasses import dataclass
 
 from fpl_andres.simulation.chips import ChipName
 from fpl_andres.simulation.minileague_state import LeagueSettings, _Manager
 from fpl_andres.simulation.season import LineupRules, SquadGameweek
 from fpl_andres.simulation.squad import Candidate, build_ranked_squad
+
+__all__ = ["Played"]
+
+
+@dataclass(frozen=True)
+class Played:
+    """A scored gameweek, and the eleven that scored it.
+
+    The eleven is returned rather than discarded because the questions worth
+    asking of a season are about what was on the field, and the total alone
+    cannot answer any of them.
+    """
+
+    points: int
+    squad: tuple[int, ...]
+    starters: tuple[int, ...]
+    captain: int | None
 
 
 def _play(
@@ -22,7 +40,7 @@ def _play(
     form: Mapping[int, float],
     chip: ChipName | None = None,
     pool: Sequence[Candidate] = (),
-) -> int:
+) -> Played:
     squad = manager.squad
     if chip == "free_hit" and pool:
         # One week only: the squad played is not the squad kept.
@@ -47,7 +65,12 @@ def _play(
         points += available[captain].points
         if chip == "triple_captain":
             points += available[captain].points
-    return points
+    return Played(
+        points=points,
+        squad=tuple(player.element_id for player in squad),
+        starters=tuple(starters),
+        captain=captain,
+    )
 
 
 def _starting_eleven(
