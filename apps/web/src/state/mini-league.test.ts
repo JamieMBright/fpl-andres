@@ -8,6 +8,7 @@ import {
   overlookedIn,
   readPicks,
   readStandings,
+  standingIn,
   threatsIn,
   type MiniLeague,
   type RivalSquad,
@@ -180,6 +181,31 @@ describe("the two boards", () => {
 
     // 3 is held by nobody, 2 by half of them, 1 by all of them.
     expect(board.map((entry) => entry.elementId)).toEqual([3, 2, 1]);
+  });
+});
+
+describe("where you sit in it", () => {
+  it("places you by points, not by the order they were read", () => {
+    const read = league(
+      [rival(11, [1], null), rival(12, [1], null), rival(13, [1], null)],
+      [],
+    );
+
+    // `rival` gives entry 13 the most points.
+    expect(standingIn(read, 13)?.place).toBe(1);
+    expect(standingIn(read, 11)?.place).toBe(3);
+  });
+
+  it("measures the gap to the leader and to whoever is next", () => {
+    const read = league([rival(11, [1], null), rival(13, [1], null)], []);
+    const held = standingIn(read, 11);
+
+    expect(held?.pointsBehindLeader).toBe(2);
+    expect(held?.pointsAheadOfNext).toBeNull();
+  });
+
+  it("says nothing about somebody the read did not reach", () => {
+    expect(standingIn(league([rival(11, [1], null)], []), 99)).toBeNull();
   });
 });
 

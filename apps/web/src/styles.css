@@ -4473,6 +4473,41 @@ h1[tabindex="-1"]:focus-visible {
   padding-left: 12px;
 }
 
+/* What to do about the league, given where you sit in it. The stripe is the
+   posture; the words beside it say the same thing. */
+.mini-league-posture {
+  margin: 12px 0 16px;
+  border-left: 4px solid var(--rule);
+  padding: 2px 0 2px 14px;
+}
+
+.mini-league-posture.is-cover {
+  border-left-color: var(--fa-signal-green);
+}
+
+.mini-league-posture.is-level {
+  border-left-color: var(--amber);
+}
+
+.mini-league-posture.is-differ {
+  border-left-color: var(--fa-signal-red);
+}
+
+.mini-league-posture > h3 {
+  margin: 0 0 4px;
+  font-size: 16px;
+}
+
+.mini-league-posture > p {
+  margin: 0 0 6px;
+  font-size: 14px;
+  color: var(--ink-soft);
+}
+
+.mini-league-chip {
+  font-size: 13px;
+}
+
 .mini-league-failed {
   margin: 0;
   border-left: 3px solid var(--rule);

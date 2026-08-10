@@ -238,6 +238,36 @@ export function overlookedIn(league: MiniLeague): LeagueExposure[] {
     );
 }
 
+export interface Standing {
+  place: number;
+  size: number;
+  pointsBehindLeader: number;
+  /** Null where nobody is close enough behind to be defending against. */
+  pointsAheadOfNext: number | null;
+}
+
+/** Where the reader sits in the squads that were read. */
+export function standingIn(
+  league: MiniLeague,
+  entryId: number,
+): Standing | null {
+  const ordered = [...league.rivals].sort(
+    (left, right) => right.totalPoints - left.totalPoints,
+  );
+  const index = ordered.findIndex((rival) => rival.entryId === entryId);
+  if (index < 0) return null;
+  const me = ordered[index];
+  const leader = ordered[0];
+  const next = ordered[index + 1];
+  if (!me || !leader) return null;
+  return {
+    place: index + 1,
+    size: ordered.length,
+    pointsBehindLeader: leader.totalPoints - me.totalPoints,
+    pointsAheadOfNext: next ? me.totalPoints - next.totalPoints : null,
+  };
+}
+
 async function readJson(
   path: string,
   fetchApi: typeof fetch,

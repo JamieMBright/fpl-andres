@@ -1003,14 +1003,26 @@ export default function SeasonPlanPage() {
         <LiveSquad event={published.event} picks={published.picks} />
       )}
 
-      {published !== null && chasesLeague(objective) ? (
-        <MiniLeagueThreats
-          event={published.event}
-          leagueId={objective.leagueId}
-          mine={published.picks
-            .filter((pick) => pick.multiplier > 0)
-            .map((pick) => pick.elementId)}
-        />
+      {chasesLeague(objective) ? (
+        published === null ? (
+          <section aria-labelledby="mini-league" className="mini-league">
+            <h2 id="mini-league">Your league</h2>
+            <p className="mini-league-failed" role="status">
+              FPL keeps every squad private until a deadline has passed, so
+              there is nothing in your league to read yet. This fills in after
+              the first gameweek starts.
+            </p>
+          </section>
+        ) : (
+          <MiniLeagueThreats
+            entryId={teamId ?? 0}
+            event={published.event}
+            leagueId={objective.leagueId}
+            mine={published.picks
+              .filter((pick) => pick.multiplier > 0)
+              .map((pick) => pick.elementId)}
+          />
+        )
       ) : null}
 
       <div className="plan-preamble">

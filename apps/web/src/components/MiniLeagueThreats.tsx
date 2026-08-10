@@ -2,9 +2,16 @@ import { useEffect, useState } from "react";
 
 import { kitForShortName } from "../kit/team-kits";
 import {
+  POSTURE_HEADINGS,
+  chipNote,
+  postureFor,
+  postureVerdict,
+} from "../state/league-tactics";
+import {
   MiniLeagueError,
   fetchMiniLeague,
   overlookedIn,
+  standingIn,
   threatsIn,
   RIVAL_LIMIT,
   type LeagueExposure,
@@ -93,10 +100,12 @@ interface Read {
 }
 
 export function MiniLeagueThreats({
+  entryId,
   leagueId,
   event,
   mine,
 }: {
+  entryId: number;
   leagueId: number;
   event: number;
   /** The element ids the reader started this gameweek. */
@@ -190,6 +199,8 @@ export function MiniLeagueThreats({
   const overlooked = overlookedIn(league);
   const template = threats.filter((row) => row.effective >= TEMPLATE_SHARE);
   const worst = threats[0];
+  const standing = standingIn(league, entryId);
+  const posture = postureFor(standing);
 
   return (
     <section aria-labelledby="mini-league" className="mini-league">
@@ -215,6 +226,27 @@ export function MiniLeagueThreats({
           ? `The name that hurts most is ${nameOf(worst.elementId, roll)}, on ${String(Math.round(worst.effective * 100))}%.`
           : "You start everything this league starts."}
       </p>
+
+      <div className={`mini-league-posture is-${posture}`}>
+        <h3>{POSTURE_HEADINGS[posture]}</h3>
+        <p>
+          {postureVerdict(posture, standing)}
+          <InfoMarker label="why position decides this">
+            Buying a player raises your expected points by his whole projection
+            whether or not your rivals own him. What their owning him changes is
+            the spread of where you finish, not the middle of it. So ownership
+            is a risk setting: a leader wants a narrow spread because the middle
+            already wins, and somebody last wants a wide one because the middle
+            loses.
+          </InfoMarker>
+        </p>
+        <p className="mini-league-chip">
+          {chipNote(
+            posture,
+            league.exposure.filter((row) => row.captainedShare > 0),
+          )}
+        </p>
+      </div>
 
       {template.length > 0 ? (
         <p className="mini-league-verdict">
