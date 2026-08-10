@@ -22,12 +22,16 @@ from datetime import datetime, timedelta
 from fpl_andres.models.baselines import InsufficientHistoryError
 from fpl_andres.models.contracts import FixtureResult
 from fpl_andres.models.dixon_coles import DixonColesModel, ModelFitError
+from fpl_andres.models.fixture_odds import ClubMatchOdds
 
 __all__ = [
     "Fixture",
+    "MarketBaseline",
     "RouteAdjustment",
     "TeamStrength",
     "estimate_strength",
+    "market_baseline",
+    "market_route_adjustment",
     "route_adjustment",
     "season_strength",
     "venue_tilt",
@@ -454,4 +458,59 @@ def route_adjustment(
         conceding=conceding,
         saves=saves,
         defensive_contribution=defensive_contribution,
+    )
+
+
+@dataclass(frozen=True)
+class MarketBaseline:
+    """The average priced fixture, which is what a multiplier of one means.
+
+    A market clean sheet is an absolute probability and the routes above take
+    multipliers, so the two cannot be swapped without a denominator. Taking it
+    from the priced fixtures themselves rather than from a constant keeps the
+    two kinds of adjustment measuring the same thing: one is this club against
+    this opponent over the average meeting of two clubs, the other is this
+    fixture over the average fixture the same books priced that week.
+    """
+
+    goals_per_side: float
+    clean_sheet: float
+
+
+def market_baseline(views: Iterable[ClubMatchOdds]) -> MarketBaseline | None:
+    """The mean priced fixture, or None when there is nothing to average."""
+    priced = list(views)
+    if not priced:
+        return None
+    goals = sum(view.expected_goals for view in priced) / len(priced)
+    sheets = sum(view.clean_sheet for view in priced) / len(priced)
+    if goals <= 0 or sheets <= 0:
+        return None
+    return MarketBaseline(goals_per_side=goals, clean_sheet=sheets)
+
+
+def market_route_adjustment(
+    view: ClubMatchOdds,
+    baseline: MarketBaseline,
+) -> RouteAdjustment:
+    """The same five multipliers, priced by a bookmaker rather than fitted.
+
+    `estimate_strength` reads results and shrinks toward average, so it answers
+    "how have these two clubs met over a season". A book answers "how will they
+    meet on Saturday", with the injuries, the suspensions and the rotation
+    already in the number. For the routes a market prices directly -- goals for
+    and goals against -- that is the better estimate of the same quantity, and
+    blending the two would only dilute it.
+
+    Saves and defensive contribution still come off the conceding term rather
+    than from any market, for the reason they always have: nobody prices them
+    per player, and a side under pressure defends more.
+    """
+    conceding = _bounded(view.opponent_expected_goals / baseline.goals_per_side)
+    return RouteAdjustment(
+        attacking=_bounded(view.expected_goals / baseline.goals_per_side),
+        clean_sheet=_bounded(view.clean_sheet / baseline.clean_sheet),
+        conceding=conceding,
+        saves=conceding,
+        defensive_contribution=_bounded(1.0 + (conceding - _NEUTRAL) * 0.5),
     )

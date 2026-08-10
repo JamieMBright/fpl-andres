@@ -114,6 +114,7 @@ def _run(
     tmp_path: Path,
     elements: list[dict[str, Any]],
     odds: dict[str, Any] | None = None,
+    fixture_odds: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     bootstrap = {**BOOTSTRAP, "elements": elements}
     projections = tmp_path / "projections.json"
@@ -124,6 +125,9 @@ def _run(
     player_odds = tmp_path / "player-odds.json"
     if odds is not None:
         player_odds.write_text(json.dumps(odds), encoding="utf-8")
+    match_odds = tmp_path / "fixture-odds.json"
+    if fixture_odds is not None:
+        match_odds.write_text(json.dumps(fixture_odds), encoding="utf-8")
 
     def fake_get(url: str) -> Any:
         return bootstrap if "bootstrap" in url else FIXTURES
@@ -139,6 +143,8 @@ def _run(
                 str(opening),
                 "--player-odds",
                 str(player_odds),
+                "--fixture-odds",
+                str(match_odds),
             ]
         )
 
@@ -247,6 +253,104 @@ class TestTheMarketPricingTheAttackingRoute:
         defender = _attacking(_run(tmp_path, [_element(element_type=2)], odds=_odds()))
 
         assert defender > midfielder
+
+
+def _match_odds(**overrides: Any) -> dict[str, Any]:
+    fixture = {
+        "kickoff": "2026-08-22T14:00:00+00:00",
+        "home": "ARS",
+        "away": "LIV",
+        "homeExpectedGoals": 2.4,
+        "awayExpectedGoals": 0.6,
+        "homeCleanSheet": 0.55,
+        "awayCleanSheet": 0.09,
+        "drawResidual": 0.0,
+        "priceSource": "average",
+    }
+    fixture.update(overrides)
+    return {
+        "schemaVersion": 1,
+        "generatedAt": "2026-08-10T00:00:00+00:00",
+        "season": "2026-27",
+        "source": "football-data.co.uk",
+        "priceTiming": "pre-match",
+        "evidenceLevel": "observed",
+        "fixtures": [fixture],
+    }
+
+
+def _rung(payload: dict[str, Any], club: str, route: str, slot: int) -> float:
+    return float(payload["fixtureLadder"][club][route][slot])
+
+
+class TestTheMarketPricingAFixture:
+    """Clean sheets and goals conceded, taken off the match market.
+
+    Four seasons of this artifact had been ingested, derived and committed
+    while nothing read a single number out of it. Between them the two routes
+    are about a sixth of every point FPL awards, and the fitted strength they
+    were coming from is a shrunk season-long ratio that cannot know who is
+    injured on the day.
+    """
+
+    def test_an_easy_fixture_lifts_the_clean_sheet_above_the_fitted_one(
+        self, tmp_path: Path
+    ) -> None:
+        fitted = _run(tmp_path, [_element()])
+        priced = _run(tmp_path, [_element()], fixture_odds=_match_odds())
+
+        # Arsenal are priced to concede 0.6 against a round averaging 1.5.
+        assert _rung(priced, "ARS", "defensive", 0) > _rung(fitted, "ARS", "defensive", 0)
+        assert _rung(priced, "ARS", "conceding", 0) < _rung(fitted, "ARS", "conceding", 0)
+
+    def test_the_opponent_gets_the_other_side_of_the_same_price(self, tmp_path: Path) -> None:
+        priced = _run(tmp_path, [_element()], fixture_odds=_match_odds())
+
+        assert _rung(priced, "LIV", "defensive", 0) < _rung(priced, "ARS", "defensive", 0)
+        assert _rung(priced, "LIV", "conceding", 0) > _rung(priced, "ARS", "conceding", 0)
+
+    def test_a_side_under_pressure_is_given_more_saves(self, tmp_path: Path) -> None:
+        priced = _run(tmp_path, [_element()], fixture_odds=_match_odds())
+
+        assert _rung(priced, "LIV", "saves", 0) > _rung(priced, "ARS", "saves", 0)
+
+    def test_a_gameweek_the_market_did_not_price_keeps_the_fitted_rung(
+        self, tmp_path: Path
+    ) -> None:
+        fitted = _run(tmp_path, [_element()])
+        priced = _run(tmp_path, [_element()], fixture_odds=_match_odds())
+
+        # Gameweek two is a double for both clubs and is priced by nobody.
+        assert _rung(priced, "ARS", "defensive", 1) == _rung(fitted, "ARS", "defensive", 1)
+
+    def test_an_absent_artifact_changes_nothing(self, tmp_path: Path) -> None:
+        """The state between seasons, and any week the ingest has not run."""
+        fitted = _run(tmp_path, [_element()])
+        absent = _run(tmp_path, [_element()], fixture_odds=None)
+
+        assert absent["fixtureLadder"] == fitted["fixtureLadder"]
+
+    def test_a_double_gameweek_is_left_to_the_fitted_strength(self, tmp_path: Path) -> None:
+        """One price cannot fill a rung that sums two fixtures."""
+        fitted = _run(tmp_path, [_element()])
+        doubled = _run(
+            tmp_path,
+            [_element()],
+            fixture_odds={
+                **_match_odds(),
+                "fixtures": [
+                    {**_match_odds()["fixtures"][0], "kickoff": "2026-08-29T14:00:00+00:00"},
+                    {
+                        **_match_odds()["fixtures"][0],
+                        "kickoff": "2026-08-29T16:30:00+00:00",
+                        "home": "LIV",
+                        "away": "ARS",
+                    },
+                ],
+            },
+        )
+
+        assert _rung(doubled, "ARS", "defensive", 1) == _rung(fitted, "ARS", "defensive", 1)
 
     def test_a_projection_with_no_split_to_blend_against_is_refused(self, tmp_path: Path) -> None:
         """The exact shape the previous blend failed silently in.

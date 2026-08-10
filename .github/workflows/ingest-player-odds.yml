@@ -107,6 +107,14 @@ jobs:
 
       - name: Commit the odds
         run: |
+          # A run before the books open player markets writes nothing and exits
+          # clean, which is the correct answer and not a fault. Without this
+          # guard the next line runs prettier on a path that does not exist and
+          # reddens the schedule for the one outcome it was told to accept.
+          if [ ! -f apps/web/src/data/player-odds.json ]; then
+            echo "no odds artifact this run; nothing to commit"
+            exit 0
+          fi
           # prettier owns the file and Python does not write it that way. An
           # unformatted bot commit reddens the next human push, not this run.
           # Formatting before the diff check also stops a rewrite that is only

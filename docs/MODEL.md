@@ -183,6 +183,26 @@ early-season freak run cannot produce an absurd figure.
 FPL's own 1–5 difficulty rating is deliberately ignored: it is subjective and
 null for older seasons.
 
+**Where a bookmaker has priced the fixture, the market's rung is used instead.**
+`backtesting/fixtures.market_route_adjustment`. A match market prices two of
+these five routes directly — goals for and goals against — and it prices them
+for Saturday, with the injuries, the suspensions and the rotation already in
+the number. The fitted strength above answers a different question: how these
+two clubs have met across a season, shrunk toward average. For the routes both
+describe, the market is the better estimate of the same quantity and blending
+would only dilute it.
+
+The conversion needs a denominator, because a market clean sheet is an absolute
+probability and a route takes a multiplier. It is the mean of the fixtures the
+same books priced that week, so a market rung and a fitted rung mean the same
+shape of thing: this fixture over an average one. Saves and defensive
+contribution still come off the conceding term, because no match market prices
+either.
+
+A double gameweek is left to the fitted strength: the rung is the sum of two
+fixtures and one price cannot fill it. So is any week the ingest has not run,
+and the whole gap between seasons.
+
 ---
 
 ## 6. The blend with recent scoring
@@ -638,16 +658,13 @@ one season is not many shots per cell.
   rise.
 - **Posterior carry.** Models refit on decayed history each week rather than
   updating a posterior forward.
-- **Every scoring route a bookmaker prices.** §7b reads goals and assists. The
-  card market is quoted per player and is not read, because `routes.discipline`
-  bundles yellows with reds, own goals and missed penalties into one published
-  number that cannot be taken apart; splitting that route is what the card price
-  is waiting on. Nothing quotes a clean sheet, a save, a bonus point or a
-  defensive contribution for a named player, so those stay on the record.
-- **Fixture-level bookmaker odds.** `data/odds/` holds four seasons of implied
-  clean sheets and expected goals per club per match, derived and committed, and
-  read by nothing but the writer's own check. Clean sheets and conceding are a
-  sixth of gross points and the market prices both directly.
+- **Every scoring route a bookmaker prices.** §7b reads goals and assists, and
+  §5 reads the fixture's clean sheet and goals conceded. The card market is
+  quoted per player and is not read, because `routes.discipline` bundles
+  yellows with reds, own goals and missed penalties into one published number
+  that cannot be taken apart; splitting that route is what the card price is
+  waiting on. Nothing prices a bonus point or a defensive contribution for a
+  named player, so those stay on the record.
 
 ---
 

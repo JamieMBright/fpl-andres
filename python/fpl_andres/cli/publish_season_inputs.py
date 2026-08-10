@@ -27,10 +27,17 @@ from datetime import UTC, date, datetime
 from pathlib import Path
 
 from fpl_andres import timeouts
-from fpl_andres.backtesting.fixtures import TeamStrength, route_adjustment
+from fpl_andres.backtesting.fixtures import (
+    RouteAdjustment,
+    TeamStrength,
+    market_baseline,
+    market_route_adjustment,
+    route_adjustment,
+)
 from fpl_andres.backtesting.scoring import ASSIST_POINTS, GOAL_POINTS
 from fpl_andres.bootstrap import BootstrapElement, parse_elements
 from fpl_andres.jsonio import parse_json, read_json_file
+from fpl_andres.models.fixture_odds import club_views, load_fixture_odds
 from fpl_andres.models.market_routes import (
     MarketAttack,
     MarketRoutesError,
@@ -53,6 +60,7 @@ USER_AGENT = "fpl-andres/0.5 (+https://github.com/JamieMBright/fpl-andres)"
 PROJECTIONS = Path("apps/web/src/data/projections.json")
 OPENING_SQUAD = Path("apps/web/src/data/opening-squad.json")
 PLAYER_ODDS = Path("apps/web/src/data/player-odds.json")
+FIXTURE_ODDS = Path("apps/web/src/data/fixture-odds.json")
 DEFAULT_OUTPUT = Path("apps/web/src/data/season-inputs.json")
 
 SCHEMA_VERSION = 1
@@ -114,6 +122,14 @@ def build_parser() -> argparse.ArgumentParser:
         help=(
             "Anytime-scorer and assist prices, written by ingest-player-odds. "
             "Absent means no market view, and every route stays the record's."
+        ),
+    )
+    parser.add_argument(
+        "--fixture-odds",
+        default=str(FIXTURE_ODDS),
+        help=(
+            "Match prices, written by ingest-odds. Where a fixture is priced "
+            "its clean sheet and goals conceded replace the fitted strength."
         ),
     )
     parser.add_argument(
@@ -270,6 +286,53 @@ def _schedule(
     return schedule, slots
 
 
+def _market_ladder(
+    odds_path: Path,
+    slots_by_team: Mapping[int, Mapping[date, int]],
+    clubs: Mapping[int, Mapping[str, object]],
+    ordered: Sequence[int],
+) -> dict[tuple[str, int], RouteAdjustment]:
+    """Fixture multipliers a bookmaker wrote, by club short name and gameweek.
+
+    `ingest-odds` has been producing this artifact for four seasons and nothing
+    has ever read it. Clean sheets and goals conceded are about a sixth of every
+    point FPL awards, they are the two routes a match market prices directly,
+    and the fitted strength they were coming from is a shrunk season-long ratio
+    that cannot know who is injured.
+
+    Empty whenever the artifact is absent, which is the state between seasons
+    and any week the ingest has not run. A double gameweek is skipped: the rung
+    is the sum of two fixtures and this keys one price to one rung.
+    """
+    if not odds_path.exists():
+        return {}
+    views = club_views(load_fixture_odds(odds_path))
+    baseline = market_baseline(view for club in views.values() for view in club)
+    if baseline is None:
+        return {}
+    by_short = {str(team["short_name"]): team_id for team_id, team in clubs.items()}
+    rungs: dict[tuple[str, int], RouteAdjustment] = {}
+    seen: set[tuple[str, int]] = set()
+    for short, matches in views.items():
+        team_id = by_short.get(short)
+        slots = slots_by_team.get(team_id) if team_id is not None else None
+        if slots is None:
+            continue
+        for view in matches:
+            if view.kickoff is None:
+                continue
+            slot = slots.get(view.kickoff.astimezone(UTC).date())
+            if slot is None or slot >= len(ordered):
+                continue
+            key = (short, ordered[slot])
+            if key in seen:
+                rungs.pop(key, None)
+                continue
+            seen.add(key)
+            rungs[key] = market_route_adjustment(view, baseline)
+    return rungs
+
+
 def _priors_by_depth(
     elements: Sequence[BootstrapElement],
     depth: Mapping[int, int],
@@ -359,6 +422,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     opponents: dict[str, list[list[str]]] = {}
     # One to five per club per gameweek, to a tenth, the measured difficulty.
     ratings: dict[str, list[float | None]] = {}
+    market = _market_ladder(Path(args.fixture_odds), slots_by_team, clubs, ordered)
+    market_rungs = 0
     for team_id, team in clubs.items():
         defensive: list[float] = []
         attacking: list[float] = []
@@ -375,16 +440,25 @@ def main(argv: Sequence[str] | None = None) -> int:
             leak = 0.0
             contribution = 0.0
             for opponent, home in games:
-                if team_id not in strength:
+                # A book prices Saturday with the injuries and the rotation
+                # already in the number, where the fitted strength prices the
+                # average meeting of two clubs. Where the market has priced
+                # this fixture it is the better estimate of the same thing.
+                priced = market.get((team["short_name"], event))
+                if priced is not None:
+                    adjustment = priced
+                    market_rungs += 1
+                elif team_id not in strength:
                     back += 1.0
                     front += 1.0
                     saves += 1.0
                     leak += 1.0
                     contribution += 1.0
                     continue
-                # Every club is rated now: measured where there is a record,
-                # and on FPL's published strength where there is not.
-                adjustment = route_adjustment(strength, team_id, opponent, home=home)
+                else:
+                    # Every club is rated now: measured where there is a record,
+                    # and on FPL's published strength where there is not.
+                    adjustment = route_adjustment(strength, team_id, opponent, home=home)
                 back += adjustment.clean_sheet
                 front += adjustment.attacking
                 saves += adjustment.saves
@@ -587,6 +661,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     # returned nothing for everyone and nothing said so.
     print(
         f"market: {priced_attack} attacking routes blended from {len(quoted_attack)} players quoted"
+        f"; {market_rungs} fixture rungs priced by a bookmaker"
     )
     return 0
 

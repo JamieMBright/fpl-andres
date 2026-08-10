@@ -39,12 +39,15 @@ from fpl_andres.timeouts import ODDS_FEED
 
 BOOTSTRAP = "https://fantasy.premierleague.com/api/bootstrap-static/"
 
-#: The free tier is 500 requests a month, shared with the weekly survey. What
-#: one fixture costs against that is not known here and was never measured --
-#: the host charges per market per region -- so the cap is written in requests
-#: rather than fixtures. Whatever a fixture turns out to cost, a run cannot
-#: spend more than this, and the run reports what it did spend so the number
-#: below can be set from evidence instead of hope.
+#: The free tier is 500 requests a month, shared with the weekly survey.
+#:
+#: Measured 2026-08-10 rather than assumed: a survey request asking for eleven
+#: markets across one region, of which the book offered four, was billed four.
+#: So the charge is per market actually returned, not per market asked for, and
+#: the ingest's two markets cost two on a fixture where both are open and
+#: nothing on one where neither is. Thirty therefore buys about fifteen priced
+#: fixtures -- a full gameweek -- and costs nothing on the weeks before the
+#: books open player props at all.
 #:
 #: Thirteen scheduled runs a month at this budget is 396, and the survey takes
 #: another 48. `tests/test_api_budgets.py` holds that sum under the allowance.

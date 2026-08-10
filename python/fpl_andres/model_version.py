@@ -29,6 +29,19 @@ from __future__ import annotations
 
 __all__ = ["MODEL_VERSION"]
 
+#: 5.1 lets a bookmaker's match price set the fixture multipliers for the two
+#: routes it prices directly. `ingest-odds` had been deriving implied clean
+#: sheets and expected goals per club per match for four seasons, committing
+#: them, and being read by nothing at all -- while clean sheets and goals
+#: conceded between them are about a sixth of every point FPL awards. Where a
+#: fixture is priced, its rung is now the market's; where it is not, the fitted
+#: Dixon-Coles strength stands exactly as before. Minor: the routes mean what
+#: they meant and the multiplier is still this fixture over an average one, but
+#: the average is now the average fixture the same books priced that week
+#: rather than the average meeting of two clubs over a season. Saves and
+#: defensive contribution still come off the conceding term, because no match
+#: market prices them.
+#:
 #: 5.0 lets a bookmaker's player prices move the attacking route itself, and
 #: stops them moving the start rate. Major on both counts. `routes.attacking`
 #: now means the record and the market weighted together rather than the record
@@ -193,4 +206,4 @@ __all__ = ["MODEL_VERSION"]
 #: projection and resampled, so a gap that does not clear zero is reported as
 #: not clearing zero. No projection changed; what changed is what may be
 #: claimed from it.
-MODEL_VERSION = "5.0"
+MODEL_VERSION = "5.1"
