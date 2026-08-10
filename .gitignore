@@ -46,6 +46,13 @@ data/cohort/*
 !data/cohort/managers.jsonl
 !data/cohort/sweep-checkpoint.json
 !data/cohort/fpl500.json
+!data/cohort/fpl100.json
+!data/cohort/deadlines.json
+# What the cohort held, one file a gameweek. Small, and the only record there
+# will ever be: FPL serves picks for the current season only, so a gameweek
+# missed here cannot be recovered.
+!data/cohort/portfolio/
+!data/cohort/portfolio/*.json
 
 # Ownership and price series recovered from the fplcache archive. Bulk, and
 # theirs to distribute rather than ours; re-fetched on demand.

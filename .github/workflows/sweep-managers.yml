@@ -55,6 +55,16 @@ jobs:
       - name: Install engine
         run: python -m pip install -e ".[dev]"
 
+      # The cheap half of the same question, run first. The Overall league is an
+      # ordinary classic league holding every entry, fifty to a page, so the top
+      # ten thousand of the current season is two hundred requests where the id
+      # sweep below needs thirteen million. What it cannot do is reach
+      # backwards -- the league shows the season it is in and no other -- which
+      # is why both exist and why this one goes first.
+      - name: Harvest this season's elite from the Overall league
+        timeout-minutes: 45
+        run: python -m fpl_andres.cli.harvest_league | tee -a "$GITHUB_STEP_SUMMARY"
+
       - name: Sweep
         id: sweep
         timeout-minutes: 330
@@ -87,7 +97,7 @@ jobs:
 
       - name: Commit the position and anything it found
         run: |
-          paths="data/cohort/managers.jsonl data/cohort/sweep-checkpoint.json data/cohort/fpl500.json apps/web/src/data/fpl500.json"
+          paths="data/cohort/managers.jsonl data/cohort/sweep-checkpoint.json data/cohort/fpl500.json data/cohort/fpl100.json apps/web/src/data/fpl500.json"
           if git diff --quiet -- $paths; then
             echo "The sweep moved nothing."
             exit 0
@@ -98,6 +108,7 @@ jobs:
           npx --yes prettier@3 --write \
             data/cohort/sweep-checkpoint.json \
             data/cohort/fpl500.json \
+            data/cohort/fpl100.json \
             apps/web/src/data/fpl500.json
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"

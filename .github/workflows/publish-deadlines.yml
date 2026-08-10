@@ -1,0 +1,62 @@
+name: Publish FPL deadlines
+
+# One request to the bootstrap, once a day, so nothing else has to.
+#
+# The FPL500 capture runs six times a weekend and almost always has nothing to
+# do. Without this it would fetch a megabyte of bootstrap each time to learn
+# that. With it, the answer is a committed file it reads for free.
+#
+# Deadlines move -- FPL shifts them for televised fixtures and for postponements
+# -- so they are read from the source every day rather than written down once.
+
+on:
+  schedule:
+    # Early, so a deadline moved overnight is known before the day's captures.
+    - cron: "20 4 * * *"
+  workflow_dispatch:
+  # A change to this file is how a run gets asked for without a token.
+  push:
+    paths:
+      - ".github/workflows/publish-deadlines.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: publish-deadlines
+  cancel-in-progress: false
+
+jobs:
+  deadlines:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install engine
+        run: python -m pip install -e .
+
+      - name: Read the deadlines
+        run: python -m fpl_andres.cli.publish_deadlines | tee -a "$GITHUB_STEP_SUMMARY"
+
+      - name: Commit them
+        run: |
+          path="data/cohort/deadlines.json"
+          npx --yes prettier@3 --write "$path"
+          if git diff --quiet -- "$path"; then
+            echo "no deadline moved"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$path"
+          git commit -m "chore: refresh the FPL deadline list"
+          git pull --rebase --autostash
+          git push
