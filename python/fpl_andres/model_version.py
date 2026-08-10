@@ -29,6 +29,20 @@ from __future__ import annotations
 
 __all__ = ["MODEL_VERSION"]
 
+#: 6.1 lets a bookmaker's card price move the yellow and red routes. The book
+#: opens "to be shown a card" without saying which colour and opens a separate
+#: red market on fewer fixtures, so the split is the whole question: FPL pays
+#: -1 and -3, and putting a booking on the wrong route triples or thirds it.
+#: Where both are quoted the split is the market's; where only the card market
+#: is, the player's own recorded ratio of reds to cards apportions it -- the
+#: market says how many, the record says what colour. Minor: the routes mean
+#: what they meant. What it gives up is the fixture. The attacking route is
+#: de-fixtured by the gameweek's own rung before publishing; the card routes
+#: have no rung, so a derby's booking rate is published as if it were an
+#: average fixture's. That flatters a player quoted in a hot tie, is bounded by
+#: the blend weight, and is stated rather than corrected because there is no
+#: measurement here to correct it with.
+#:
 #: 6.0 splits `routes.discipline` into yellow cards, red cards, own goals and
 #: missed penalties. Major because the published shape changes: a reader that
 #: knew eight route names now finds eleven, and the one it knew is gone. The
@@ -216,4 +230,4 @@ __all__ = ["MODEL_VERSION"]
 #: projection and resampled, so a gap that does not clear zero is reported as
 #: not clearing zero. No projection changed; what changed is what may be
 #: claimed from it.
-MODEL_VERSION = "6.0"
+MODEL_VERSION = "6.1"

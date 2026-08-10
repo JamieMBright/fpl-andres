@@ -263,8 +263,8 @@ has lost his place, that a summer signing has taken it, and what the manager
 said on Friday — none of which is in last season's numbers. So where a market
 prices a scoring route, its view is blended into that route at a stated weight.
 
-Only goals and assists. Those are the two the books quote per player and the
-two this reads, and the ingest asks for nothing else because the host bills per
+Goals, assists and bookings. Those are the routes the books quote per player
+and this reads, and the ingest asks for nothing else because the host bills per
 market and an unread price is a paid-for number nobody looks at.
 
 Three things make the reading honest rather than convenient.
@@ -290,6 +290,26 @@ the book priced one of them, so there is no divisor and the record stands.
 the projector's own `expectedGoals` and `expectedAssists`, so a fixture with an
 anytime-scorer market and no assist market still counts, and leaves the assists
 where the record put them.
+
+### Bookings
+
+A book opens "to be shown a card" and does not say which colour, and opens a
+separate red-card market on fewer fixtures. FPL pays −1 for a yellow and −3 for
+a red, so the split decides the points: putting a booking on the wrong route
+triples or thirds the charge. Where both markets are quoted the split is the
+market's own. Where only the card market is, the player's own recorded ratio of
+reds to cards apportions it — the market says how many bookings, the record says
+what colour, and neither source is asked a question it cannot answer. A red
+quote with no card quote is refused outright: reds are around a twentieth of
+bookings and a rate built from them alone would read as if the player were never
+booked otherwise.
+
+What this gives up is the fixture. The attacking route is de-fixtured by its
+gameweek's own rung before publishing; the card routes have no rung, because
+nothing here has measured how a booking rate moves with the opponent. A derby's
+quote is therefore published as if it were an average fixture's, which flatters
+a player priced in a hot tie. It is bounded by the blend weight and named here
+rather than corrected.
 
 A price is never read twice. An earlier version also read the anytime-scorer
 price as a minutes signal — dividing it by a positional scoring rate to infer a
@@ -658,13 +678,10 @@ one season is not many shots per cell.
   rise.
 - **Posterior carry.** Models refit on decayed history each week rather than
   updating a posterior forward.
-- **Every scoring route a bookmaker prices.** §7b reads goals and assists, and
-  §5 reads the fixture's clean sheet and goals conceded. The card market is
-  quoted per player and is not read yet: `routes.discipline` bundled yellows
-  with reds, own goals and missed penalties, and until model 6.0 split it into
-  four there was nothing on the row a card price could replace. There is now.
-  Nothing prices a bonus point or a defensive contribution for a named player,
-  so those stay on the record.
+- **Every scoring route a bookmaker prices.** §7b reads goals, assists and
+  bookings, and §5 reads the fixture's clean sheet and goals conceded. Nothing
+  prices a bonus point or a defensive contribution for a named player, so those
+  stay on the record.
 
 ---
 

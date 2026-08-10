@@ -35,10 +35,12 @@ from dataclasses import dataclass
 
 __all__ = [
     "MarketAttack",
+    "MarketCards",
     "MarketRoutesError",
     "blend_rate",
     "implied_events",
     "market_attack",
+    "market_cards",
 ]
 
 
@@ -92,3 +94,33 @@ def blend_rate(recorded: float, market: float, weight: float) -> float:
     if recorded < 0.0 or market < 0.0:
         raise MarketRoutesError(f"rates cannot be negative, got {recorded} and {market}")
     return (1.0 - weight) * recorded + weight * market
+
+
+@dataclass(frozen=True)
+class MarketCards:
+    """Bookings the market expects of one player in one fixture.
+
+    `cards` is every booking, because that is the market a book opens: "to be
+    shown a card" does not say which colour. `red` is the separate market, open
+    on fewer fixtures. FPL pays -1 and -3, so the split decides the points and
+    the caller has to make it -- from the red market where there is one, and
+    from the player's own recorded ratio where there is not.
+    """
+
+    cards: float
+    red: float | None
+
+
+def market_cards(any_card: float | None, red_card: float | None) -> MarketCards | None:
+    """One fixture's booking expectation, or None where nothing is priced.
+
+    A red-only quote is refused. Reds are a twentieth of bookings, so a rate
+    built from them alone would describe almost none of the points at stake and
+    would read as if the player were never booked otherwise.
+    """
+    if any_card is None:
+        return None
+    return MarketCards(
+        cards=implied_events(any_card),
+        red=None if red_card is None else implied_events(red_card),
+    )

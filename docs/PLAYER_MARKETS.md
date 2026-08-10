@@ -99,12 +99,11 @@ Three things keep the spend inside the tier, and
 `python/tests/test_api_budgets.py` holds all three to the allowance so a raised
 cron has to be argued for rather than merged.
 
-- **Two markets, not four.** Anytime scorer and assists are the two anything
-  here reads. Cards and shots on target were fetched and discarded every run;
-  each one is billed per region whether or not it is read. `routes.discipline`
-  is four routes as of model 6.0, so a card price now has somewhere to go; it
-  is the next market to come back, and adding it is a budget decision rather
-  than a modelling one.
+- **Four markets, not eight.** Anytime scorer, assists, to be shown a card and
+  to be shown a red are the four anything here reads. Shots on target map onto
+  no FPL scoring event and are not asked for. The host bills for a market it
+  actually returns, so a market no book has opened costs nothing — which is why
+  a run eleven days out finds no player props and spends almost nothing.
 - **One region.** UK books price a Premier League player deepest, and adding
   Europe doubles the bill for a slightly steadier median.
 - **Three days a week, not seven.** Tuesday, Friday and Saturday at 09:00 UTC,

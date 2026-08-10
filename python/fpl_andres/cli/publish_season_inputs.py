@@ -34,15 +34,22 @@ from fpl_andres.backtesting.fixtures import (
     market_route_adjustment,
     route_adjustment,
 )
-from fpl_andres.backtesting.scoring import ASSIST_POINTS, GOAL_POINTS
+from fpl_andres.backtesting.scoring import (
+    ASSIST_POINTS,
+    GOAL_POINTS,
+    RED_CARD_POINTS,
+    YELLOW_CARD_POINTS,
+)
 from fpl_andres.bootstrap import BootstrapElement, parse_elements
 from fpl_andres.jsonio import parse_json, read_json_file
 from fpl_andres.models.fixture_odds import club_views, load_fixture_odds
 from fpl_andres.models.market_routes import (
     MarketAttack,
+    MarketCards,
     MarketRoutesError,
     blend_rate,
     market_attack,
+    market_cards,
 )
 from fpl_andres.planning.fixture_routes import (
     PROMOTED_STRENGTH,
@@ -242,6 +249,77 @@ def _market_attacking(
     if attack.assists is not None:
         assists = blend_rate(assists, attack.assists / multiplier, weight)
     return goals * goal_points + assists * ASSIST_POINTS
+
+
+def _quoted_cards(odds_path: Path) -> dict[int, MarketCards]:
+    """Bookings the market expects, by element.
+
+    No kickoff travels with these. The attacking routes are de-fixtured by the
+    gameweek's own multiplier before publishing, because the ladder has one; the
+    card routes have no rung, so there is nothing to divide out and nothing to
+    correct with. What is published is therefore a fixture's booking rate read
+    as if it were an average one, which flatters a player quoted in a derby and
+    is stated here rather than hidden. It is bounded by the blend weight.
+    """
+    if not odds_path.exists():
+        return {}
+    artifact = read_json_file(odds_path)
+    quoted: dict[int, MarketCards] = {}
+    for row in artifact.get("players", []):
+        element_id = row.get("element_id")
+        if not isinstance(element_id, int):
+            continue
+        any_card = row.get("any_card")
+        red = row.get("red_card")
+        try:
+            cards = market_cards(
+                float(any_card) if isinstance(any_card, (int, float)) else None,
+                float(red) if isinstance(red, (int, float)) else None,
+            )
+        except MarketRoutesError:
+            continue
+        if cards is not None:
+            quoted[element_id] = cards
+    return quoted
+
+
+def _market_discipline(
+    priced: MarketCards | None,
+    record: Mapping[str, object],
+    weight: float,
+) -> tuple[float, float] | None:
+    """The yellow and red routes with the market's view of them blended in.
+
+    The book prices "shown a card" without saying which colour, and prices reds
+    separately on fewer fixtures. Where both are quoted the split is the
+    market's own. Where only the card market is, the player's recorded ratio of
+    reds to cards apportions it -- the market says how many, the record says
+    what colour, and neither is asked a question it cannot answer.
+
+    Returns points, not rates, because that is what the artifact publishes.
+    None wherever nothing is quoted, which leaves the record standing.
+    """
+    if priced is None:
+        return None
+    routes = record.get("routes")
+    if not isinstance(routes, Mapping):
+        return None
+    # Published as points; FPL's own table turns them back into rates.
+    recorded_yellow = float(str(routes.get("yellowCards", 0.0))) / YELLOW_CARD_POINTS
+    recorded_red = float(str(routes.get("redCards", 0.0))) / RED_CARD_POINTS
+
+    if priced.red is not None:
+        market_red = priced.red
+        market_yellow = max(0.0, priced.cards - priced.red)
+    else:
+        recorded_total = recorded_yellow + recorded_red
+        red_share = recorded_red / recorded_total if recorded_total > 0.0 else 0.0
+        market_red = priced.cards * red_share
+        market_yellow = priced.cards - market_red
+
+    yellow = blend_rate(max(0.0, recorded_yellow), market_yellow, weight)
+    red = blend_rate(max(0.0, recorded_red), market_red, weight)
+    return yellow * YELLOW_CARD_POINTS, red * RED_CARD_POINTS
 
 
 def _schedule(
@@ -506,7 +584,9 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     priors = _priors_by_depth(available, depth, record_by_code)
     quoted_attack = _quoted_attack(Path(args.player_odds))
+    quoted_cards = _quoted_cards(Path(args.player_odds))
     priced_attack = 0
+    priced_cards = 0
 
     for element in available:
         record = record_by_code.get(element.code)
@@ -529,11 +609,11 @@ def main(argv: Sequence[str] | None = None) -> int:
                 for key in ROUTE_KEYS
                 if (value := round(float(record["routes"][key]), 3))
             }
-            # Where a book priced him to score and to assist, its view of those
-            # two replaces part of the record's. Everything else on the row is
-            # left alone: no market here prices a clean sheet for a named
-            # player, a bonus point or a booking, and inventing one would be
-            # worse than the measurement already there.
+            # Where a book priced him to score, to assist or to be booked, its
+            # view of those replaces part of the record's. Everything else on
+            # the row is left alone: no market here prices a clean sheet for a
+            # named player, a bonus point or a defensive contribution, and
+            # inventing one would be worse than the measurement already there.
             blended_attack = _market_attacking(
                 quoted_attack.get(element.id),
                 element.element_type,
@@ -545,6 +625,14 @@ def main(argv: Sequence[str] | None = None) -> int:
             if blended_attack is not None:
                 priced_attack += 1
                 routes["attacking"] = round(blended_attack, 3)
+            blended_cards = _market_discipline(
+                quoted_cards.get(element.id), record, args.market_weight
+            )
+            if blended_cards is not None:
+                priced_cards += 1
+                yellow, red = blended_cards
+                routes["yellowCards"] = round(yellow, 3)
+                routes["redCards"] = round(red, 3)
         else:
             # No Premier League record at all. He is still pickable — somebody
             # will own him — but every number here is a prior taken from what
@@ -661,6 +749,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     # returned nothing for everyone and nothing said so.
     print(
         f"market: {priced_attack} attacking routes blended from {len(quoted_attack)} players quoted"
+        f"; {priced_cards} card routes from {len(quoted_cards)} quoted"
         f"; {market_rungs} fixture rungs priced by a bookmaker"
     )
     return 0

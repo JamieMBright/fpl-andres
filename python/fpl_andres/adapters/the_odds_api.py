@@ -42,21 +42,25 @@ BASE = "https://api.the-odds-api.com/v4/sports/soccer_epl"
 
 #: Only markets that map onto an FPL scoring route something here reads. The
 #: host bills per market per region, so asking for a market nothing consumes is
-#: a direct charge against a free tier of 500 requests a month. Cards and shots
-#: on target were both fetched and both discarded. `routes.discipline` was one
-#: number bundling yellows with reds, own goals and missed penalties, so there
-#: was nothing for a card price to replace; model 6.0 split it into four. The
-#: card market is the next one to come back, and what stops it now is the
-#: budget rather than the model. Add it back with the reader, not before it.
+#: a direct charge against a free tier of 500 requests a month -- and it bills
+#: for a market it actually returns, so a market no book has opened is free.
+#: Shots on target were fetched and discarded twice; they map onto no FPL
+#: scoring event and are not asked for. Cards were discarded for a different
+#: reason, now gone: `routes.discipline` was one number and had no card route
+#: to spend a price on. Model 6.0 split it into four.
 PLAYER_MARKETS: tuple[str, ...] = (
     "player_goal_scorer_anytime",
     "player_assists",
+    "player_to_receive_card",
+    "player_to_receive_red_card",
 )
 
 #: Which field on `PlayerMatchOdds` each market fills.
 MARKET_FIELDS: Mapping[str, str] = {
     "player_goal_scorer_anytime": "anytime_goal",
     "player_assists": "anytime_assist",
+    "player_to_receive_card": "any_card",
+    "player_to_receive_red_card": "red_card",
 }
 
 
@@ -299,6 +303,8 @@ def read_event(
                 books=len(books[name]),
                 anytime_goal=fields.get("anytime_goal"),
                 anytime_assist=fields.get("anytime_assist"),
+                any_card=fields.get("any_card"),
+                red_card=fields.get("red_card"),
             )
         )
     return rows

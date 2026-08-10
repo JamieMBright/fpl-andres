@@ -128,9 +128,15 @@ def _run(
     player_odds = tmp_path / "player-odds.json"
     if odds is not None:
         player_odds.write_text(json.dumps(odds), encoding="utf-8")
+    else:
+        # A second run in the same directory would otherwise read the first
+        # run's artifact and call it "the record with no market".
+        player_odds.unlink(missing_ok=True)
     match_odds = tmp_path / "fixture-odds.json"
     if fixture_odds is not None:
         match_odds.write_text(json.dumps(fixture_odds), encoding="utf-8")
+    else:
+        match_odds.unlink(missing_ok=True)
 
     def fake_get(url: str) -> Any:
         return bootstrap if "bootstrap" in url else FIXTURES
@@ -256,6 +262,74 @@ class TestTheMarketPricingTheAttackingRoute:
         defender = _attacking(_run(tmp_path, [_element(element_type=2)], odds=_odds()))
 
         assert defender > midfielder
+
+
+def _cards(payload: dict[str, Any]) -> tuple[float, float]:
+    routes = payload["players"][0]["routes"]
+    return float(routes.get("yellowCards", 0.0)), float(routes.get("redCards", 0.0))
+
+
+class TestTheMarketPricingABooking:
+    """A card quote, folded into the two routes it speaks to.
+
+    The card market says "shown a card" without saying which colour, so the
+    split is the thing that has to be got right: FPL pays -1 and -3, and
+    apportioning a booking to the wrong colour triples or thirds the charge.
+    """
+
+    def test_a_player_the_book_thinks_will_be_booked_is_docked_more(self, tmp_path: Path) -> None:
+        recorded, _ = _cards(_run(tmp_path, [_element()]))
+        blended, _ = _cards(_run(tmp_path, [_element()], odds=_odds(any_card=0.45)))
+
+        assert blended < recorded
+
+    def test_a_card_quote_alone_is_split_by_his_own_recorded_colours(self, tmp_path: Path) -> None:
+        """The market says how many; the record says which colour."""
+        payload = _run(tmp_path, [_element()], odds=_odds(any_card=0.45))
+        yellow, red = _cards(payload)
+        weight = 0.35
+        cards = -math.log(0.55)
+        # The record: 0.08 yellow points and 0.01 red points, so rates of 0.08
+        # and 0.01/3 -- the red share of the two.
+        recorded_yellow, recorded_red = 0.08, 0.01 / 3
+        red_share = recorded_red / (recorded_yellow + recorded_red)
+
+        assert red == pytest.approx(
+            ((1 - weight) * recorded_red + weight * cards * red_share) * -3, abs=0.001
+        )
+        assert yellow == pytest.approx(
+            ((1 - weight) * recorded_yellow + weight * cards * (1 - red_share)) * -1,
+            abs=0.001,
+        )
+
+    def test_a_quoted_red_takes_the_split_off_the_record(self, tmp_path: Path) -> None:
+        """Where the book prices both, its own split beats an inferred one."""
+        inferred = _cards(_run(tmp_path, [_element()], odds=_odds(any_card=0.45)))
+        quoted = _cards(_run(tmp_path, [_element()], odds=_odds(any_card=0.45, red_card=0.05)))
+
+        assert quoted[1] < inferred[1]
+
+    def test_a_player_the_book_ignored_keeps_his_record(self, tmp_path: Path) -> None:
+        recorded = _cards(_run(tmp_path, [_element()]))
+        other = _cards(_run(tmp_path, [_element()], odds=_odds(element_id=99, any_card=0.45)))
+
+        assert other == recorded
+
+    def test_a_red_quote_without_a_card_quote_is_refused(self, tmp_path: Path) -> None:
+        """Reds are a twentieth of bookings; alone they describe almost nothing."""
+        recorded = _cards(_run(tmp_path, [_element()]))
+        red_only = _cards(_run(tmp_path, [_element()], odds=_odds(red_card=0.05)))
+
+        assert red_only == recorded
+
+    def test_a_quote_needs_no_gameweek_to_be_read(self, tmp_path: Path) -> None:
+        """Unlike the attacking route, no card rung exists to divide out."""
+        stray = _cards(
+            _run(tmp_path, [_element()], odds=_odds(any_card=0.45, kickoff="2026-08-25T14:00:00Z"))
+        )
+        recorded = _cards(_run(tmp_path, [_element()]))
+
+        assert stray[0] < recorded[0]
 
 
 def _match_odds(**overrides: Any) -> dict[str, Any]:

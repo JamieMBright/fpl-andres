@@ -42,6 +42,10 @@ class PlayerMatchOdds:
     anytime_goal: float | None = None
     #: P(assists at least once), where the book prices it.
     anytime_assist: float | None = None
+    #: P(shown a card of either colour). The market does not say which.
+    any_card: float | None = None
+    #: P(shown a red), open on fewer fixtures than the card market.
+    red_card: float | None = None
     #: How many books were averaged into the numbers above.
     books: int = 0
 
@@ -53,6 +57,8 @@ class PlayerMatchOdds:
             for value in (
                 self.anytime_goal,
                 self.anytime_assist,
+                self.any_card,
+                self.red_card,
             )
         )
 
