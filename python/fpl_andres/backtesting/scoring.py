@@ -334,8 +334,15 @@ def defensive_contribution_points(
         actions = defensive_actions(row, position)
         if actions is not None:
             observed.append((row, actions))
-    if not observed:
-        return 0.0
+    # No early return on an empty list. This used to pay nothing at all, which
+    # is a claim that the player never clears the bar rather than that nothing
+    # is known about whether he does -- and it fell on exactly the players with
+    # no 2025/26 minutes: promoted squads, arrivals from abroad, anyone whose
+    # Premier League record predates the route existing. Defensive contribution
+    # is 7.5% of every point FPL awards, more than assists, so zeroing it
+    # understated a whole population by more than the route it replaced.
+    # `shrunk_rate` with no evidence returns the league rate for the position,
+    # which is what "nothing is known about him yet" means.
     hits = sum(1 for _, actions in observed if actions >= threshold)
     seen = sum(row.minutes for row, _ in observed) / _MINUTES_PER_90
     # `seen` is the evidence that exists, and `shrunk_rate` already pulls a thin

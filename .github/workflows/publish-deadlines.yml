@@ -50,13 +50,15 @@ jobs:
         run: |
           path="data/cohort/deadlines.json"
           npx --yes prettier@3 --write "$path"
-          if git diff --quiet -- "$path"; then
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # Staged before the comparison. `git diff` does not look at untracked
+          # files, so a run that creates the artifact would call it unchanged.
+          git add "$path"
+          if git diff --cached --quiet -- "$path"; then
             echo "no deadline moved"
             exit 0
           fi
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add "$path"
           git commit -m "chore: refresh the FPL deadline list"
           git pull --rebase --autostash
           git push

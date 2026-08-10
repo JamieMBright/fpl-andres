@@ -122,13 +122,15 @@ jobs:
       - name: Commit the refreshed artifact
         run: |
           paths="apps/web/src/data/validation.json apps/web/src/data/model-history.json apps/web/src/data/reconciliation.json docs/MODEL_CARDS.md"
-          if git diff --quiet -- $paths; then
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # Staged before the comparison. `git diff` does not look at untracked
+          # files, so a run that creates one of these would call it unchanged.
+          git add $paths
+          if git diff --cached --quiet -- $paths; then
             echo "Nothing moved."
             exit 0
           fi
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add $paths
           git commit -m "chore: refresh the backtest for the model on $GITHUB_SHA"
           git pull --rebase --autostash
           git push

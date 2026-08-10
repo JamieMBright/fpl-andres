@@ -27,6 +27,9 @@ _PRETTIER_OWNED = re.compile(r"[\w./-]+\.(?:json|md)\b")
 
 _PUSH = re.compile(r"^\s*git push\b", re.MULTILINE)
 _REBASE = re.compile(r"^\s*git pull --rebase --autostash\b", re.MULTILINE)
+#: `git diff` without `--cached` compares the working tree to the index and
+#: ignores untracked files entirely.
+_UNSTAGED_DIFF = re.compile(r"^\s*(?:if\s+)?git diff(?!\s+--cached)\b", re.MULTILINE)
 
 
 def _workflows() -> list[Path]:
@@ -35,6 +38,33 @@ def _workflows() -> list[Path]:
 
 def _pushes(text: str) -> bool:
     return bool(_PUSH.search(text))
+
+
+@pytest.mark.parametrize("path", _workflows(), ids=lambda path: path.name)
+def test_a_workflow_that_commits_asks_the_index_whether_anything_changed(
+    path: Path,
+) -> None:
+    """`git diff` cannot see a file git has never seen.
+
+    Every committing workflow here guards its commit with "has anything
+    changed", and every one of them asked the working tree. A file that does
+    not yet exist in git is untracked, `git diff` ignores untracked files, and
+    the guard therefore reports "unchanged" and exits clean -- so the first run
+    to produce an artifact silently throws it away.
+
+    That is not hypothetical. `Survey Player Markets` passed weekly for months
+    and `docs/PLAYER_MARKET_CATALOGUE.md` never landed once, which is also why
+    nobody could answer which sources price which scoring route.
+    """
+    text = path.read_text(encoding="utf-8")
+    if not _pushes(text):
+        return
+
+    assert not _UNSTAGED_DIFF.search(text), (
+        f"{path.name} decides whether to commit with `git diff`, which ignores "
+        "untracked files, so the run that first creates its artifact will "
+        "report no change and discard it. Stage it, then `git diff --cached`."
+    )
 
 
 @pytest.mark.parametrize("path", _workflows(), ids=lambda path: path.name)

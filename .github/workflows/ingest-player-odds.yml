@@ -125,13 +125,16 @@ jobs:
           # Formatting before the diff check also stops a rewrite that is only
           # formatting from reaching `git commit` and failing it empty.
           npx --yes prettier@3 --write apps/web/src/data/player-odds.json
-          if git diff --quiet -- apps/web/src/data/player-odds.json; then
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # Staged first, then compared against the index. `git diff` does not
+          # look at untracked files, so the first run to produce this artifact
+          # would report "unchanged" and throw it away.
+          git add apps/web/src/data/player-odds.json
+          if git diff --cached --quiet -- apps/web/src/data/player-odds.json; then
             echo "odds unchanged"
             exit 0
           fi
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add apps/web/src/data/player-odds.json
           git commit -m "Refresh player market odds"
           git pull --rebase --autostash
           git push

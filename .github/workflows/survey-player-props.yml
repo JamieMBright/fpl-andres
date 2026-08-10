@@ -121,19 +121,21 @@ jobs:
         # catalogue would report every other source as unprobed and overwrite a
         # complete answer with a partial one. `inputs` is null on a schedule and
         # GitHub compares that equal to the empty string, so the weekly run
-        # commits -- which is the run that matters, and the only reason no
-        # catalogue has ever landed is that every run so far was a manual one
-        # naming a source.
+        # commits.
         if: ${{ inputs.source == '' }}
         run: |
           npx --yes prettier@3 --write docs/PLAYER_MARKET_CATALOGUE.md
-          if git diff --quiet -- docs/PLAYER_MARKET_CATALOGUE.md; then
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # Staged first, then compared against the index. `git diff` does not
+          # look at untracked files, so the first run -- the one that creates
+          # the catalogue -- reported "unchanged" and dropped it. That is why no
+          # catalogue had ever landed despite the step passing every week.
+          git add docs/PLAYER_MARKET_CATALOGUE.md
+          if git diff --cached --quiet -- docs/PLAYER_MARKET_CATALOGUE.md; then
             echo "catalogue unchanged"
             exit 0
           fi
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs/PLAYER_MARKET_CATALOGUE.md
           git commit -m "Refresh the player market catalogue"
           git pull --rebase --autostash
           git push

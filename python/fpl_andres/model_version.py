@@ -29,6 +29,19 @@ from __future__ import annotations
 
 __all__ = ["MODEL_VERSION"]
 
+#: 6.3 pays a defender the league's defensive-contribution rate where nothing is
+#: known about his own. The route arrived in 2025/26, so every earlier season in
+#: the corpus has a null column, and the code returned zero on an empty
+#: observation list -- which is not "nothing is known", it is a claim that he
+#: never clears the bar. It landed on exactly the players it should not have: a
+#: promoted squad, an arrival from abroad, anyone whose Premier League record
+#: predates the route. Defensive contribution is 7.5% of every point FPL awards,
+#: more than assists, so a whole population was understated by more than the
+#: route it replaced. `shrunk_rate` with no evidence already returns the league
+#: rate for the position; the early return was the only thing stopping it.
+#: Minor: a player with defcon minutes is unchanged to the last decimal. A
+#: keeper is still paid nothing, because there is no bar for him to clear.
+#:
 #: 6.2 reads the one part of a player market that is not a price: who is in it.
 #: A book opens a market on players it expects to be available, so a man missing
 #: from a squad it otherwise named in full is the market saying he is not
@@ -244,4 +257,4 @@ __all__ = ["MODEL_VERSION"]
 #: projection and resampled, so a gap that does not clear zero is reported as
 #: not clearing zero. No projection changed; what changed is what may be
 #: claimed from it.
-MODEL_VERSION = "6.2"
+MODEL_VERSION = "6.3"

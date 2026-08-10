@@ -99,14 +99,21 @@ jobs:
         if: steps.due.outputs.event != ''
         run: |
           paths="data/cohort/portfolio"
-          if [ ! -d "$paths" ] || git diff --quiet -- "$paths"; then
+          if [ ! -d "$paths" ]; then
             echo "nothing new captured"
             exit 0
           fi
           npx --yes prettier@3 --write "$paths"/*.json
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # Staged first, then compared against the index. `git diff` does not
+          # look at untracked files, and every capture here writes a new one, so
+          # comparing the working tree would drop every one of them.
           git add "$paths"
+          if git diff --cached --quiet -- "$paths"; then
+            echo "nothing new captured"
+            exit 0
+          fi
           git commit -m "chore: capture the FPL500 for gameweek ${{ steps.due.outputs.event }}"
           git pull --rebase --autostash
           git push
