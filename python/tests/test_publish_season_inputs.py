@@ -264,6 +264,78 @@ class TestTheMarketPricingTheAttackingRoute:
         assert defender > midfielder
 
 
+def _start_rate(payload: dict[str, Any]) -> float:
+    return float(payload["players"][0]["startRate"])
+
+
+def _squad(count: int, **overrides: Any) -> dict[str, Any]:
+    """A book that named `count` Arsenal players, none of them element 11."""
+    rows = [
+        {
+            "element_id": 100 + index,
+            "quoted_name": f"Player {index}",
+            "club": "ARS",
+            "kickoff": "2026-08-22T14:00:00Z",
+            "anytime_goal": 0.2,
+        }
+        for index in range(count)
+    ]
+    artifact: dict[str, Any] = {"season": "2026-27", "unmatched": [], "players": rows}
+    artifact.update(overrides)
+    return artifact
+
+
+class TestTheMarketNamingASquad:
+    """The one part of a player market that is not a price.
+
+    A book opens a market on players it expects to be available. A man missing
+    from an otherwise complete squad is the market saying he is not playing,
+    which last season's appearances cannot know. Read only downward, and only
+    where the book named enough of the squad for silence to mean anything.
+    """
+
+    def test_a_player_the_book_left_out_of_a_full_squad_is_cut(self, tmp_path: Path) -> None:
+        recorded = _start_rate(_run(tmp_path, [_element()]))
+        left_out = _start_rate(_run(tmp_path, [_element()], odds=_squad(14)))
+
+        assert left_out < recorded
+
+    def test_a_partly_quoted_squad_says_nothing(self, tmp_path: Path) -> None:
+        """Books open a scorer market on the strikers first. Ten is not a team."""
+        recorded = _start_rate(_run(tmp_path, [_element()]))
+        thin = _start_rate(_run(tmp_path, [_element()], odds=_squad(10)))
+
+        assert thin == recorded
+
+    def test_a_quoted_player_keeps_his_record(self, tmp_path: Path) -> None:
+        """Being priced proves he is available, which the record already implies."""
+        recorded = _start_rate(_run(tmp_path, [_element()]))
+        named = _start_rate(
+            _run(
+                tmp_path,
+                [_element()],
+                odds=_squad(14, players=[*_squad(14)["players"], _odds()["players"][0]]),
+            )
+        )
+
+        assert named == recorded
+
+    def test_one_unmatched_name_disables_the_whole_signal(self, tmp_path: Path) -> None:
+        """An unmatched name was priced and is missing, so absence lies about him."""
+        recorded = _start_rate(_run(tmp_path, [_element()]))
+        poisoned = _start_rate(
+            _run(tmp_path, [_element()], odds=_squad(14, unmatched=["Some Name"]))
+        )
+
+        assert poisoned == recorded
+
+    def test_another_club_is_left_alone(self, tmp_path: Path) -> None:
+        recorded = _start_rate(_run(tmp_path, [_element()]))
+        liverpool = _start_rate(_run(tmp_path, [_element(team=2)], odds=_squad(14)))
+
+        assert liverpool == recorded
+
+
 def _cards(payload: dict[str, Any]) -> tuple[float, float]:
     routes = payload["players"][0]["routes"]
     return float(routes.get("yellowCards", 0.0)), float(routes.get("redCards", 0.0))

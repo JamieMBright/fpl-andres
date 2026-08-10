@@ -29,6 +29,20 @@ from __future__ import annotations
 
 __all__ = ["MODEL_VERSION"]
 
+#: 6.2 reads the one part of a player market that is not a price: who is in it.
+#: A book opens a market on players it expects to be available, so a man missing
+#: from a squad it otherwise named in full is the market saying he is not
+#: playing -- which last season's appearances cannot know, and which is not the
+#: evidence 5.0 removed. That was the anytime-scorer *price*, divided by a
+#: scoring rate to infer minutes, counted twice into goals and into everything
+#: minutes scale. This is the market's membership, read once, downward only:
+#: being quoted proves availability the record already implies, so it changes
+#: nothing. Minor. Guarded twice, because absence is only evidence when it is
+#: complete: a club counts only where the book priced at least eleven of its
+#: players, and the whole signal is refused for a run where any quoted name
+#: failed the crosswalk -- an unmatched man was priced and is missing from the
+#: matched rows, so absence would read him as dropped.
+#:
 #: 6.1 lets a bookmaker's card price move the yellow and red routes. The book
 #: opens "to be shown a card" without saying which colour and opens a separate
 #: red market on fewer fixtures, so the split is the whole question: FPL pays
@@ -230,4 +244,4 @@ __all__ = ["MODEL_VERSION"]
 #: projection and resampled, so a gap that does not clear zero is reported as
 #: not clearing zero. No projection changed; what changed is what may be
 #: claimed from it.
-MODEL_VERSION = "6.1"
+MODEL_VERSION = "6.2"

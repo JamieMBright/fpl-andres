@@ -311,13 +311,35 @@ quote is therefore published as if it were an average fixture's, which flatters
 a player priced in a hot tie. It is bounded by the blend weight and named here
 rather than corrected.
 
-A price is never read twice. An earlier version also read the anytime-scorer
-price as a minutes signal — dividing it by a positional scoring rate to infer a
-start probability — which would have counted the same evidence into goals and
-into every route that scales with minutes. That path is gone. It also never
-worked: it looked up a projection field the projector did not publish, returned
-nothing for everybody and said nothing about it, which is why the publisher now
-prints how many routes the market actually moved.
+### Who is in the market at all
+
+Everything above reads a price. This reads the list. A book opens a player
+market on men it expects to be available, so a player missing from a squad it
+otherwise named in full is the market saying he is not playing — a dropped
+man, an injury announced on Friday, a rotation nobody has published. Last
+season's appearances cannot know any of it.
+
+Read downward only. Being quoted proves he is in the squad, which the record
+already implies, so a quoted player's start rate is untouched; being missing
+from a complete squad list pulls it toward zero at the same blend weight.
+
+Guarded twice, because absence is only evidence when the list is complete.
+
+- A club counts only where the book priced at least eleven of its players.
+  Books open a scorer market on the forwards first, and reading absence off a
+  partial list would bench a defender because nobody quoted him to score.
+- The whole signal is refused for any run where a quoted name failed the
+  crosswalk. An unmatched man _was_ priced and is missing from the matched
+  rows, so absence would read him as dropped. The one thing worse than not
+  using this is using it on the players it is wrong about.
+
+This is not the path 5.0 removed. That one read the anytime-scorer _price_,
+divided it by a positional scoring rate and called the result minutes, which
+counted one number into goals and into every route that scales with minutes.
+It also never worked: it looked up a projection field the projector did not
+publish, returned nothing for everybody and said nothing about it, which is why
+the publisher now prints what the market actually moved. Membership is a
+different fact, read once, and it appears nowhere else.
 
 The blend lives in `publish_season_inputs` rather than in the projector because
 that is where last season's team strength meets this season's clubs and fixture

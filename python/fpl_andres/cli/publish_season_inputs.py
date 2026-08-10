@@ -22,7 +22,9 @@ import argparse
 import json
 import sys
 import urllib.request
+from collections import Counter
 from collections.abc import Mapping, Sequence
+from dataclasses import dataclass
 from datetime import UTC, date, datetime
 from pathlib import Path
 
@@ -249,6 +251,64 @@ def _market_attacking(
     if attack.assists is not None:
         assists = blend_rate(assists, attack.assists / multiplier, weight)
     return goals * goal_points + assists * ASSIST_POINTS
+
+
+#: How many of a club's players a book must have priced before its silence about
+#: one of them means anything. A book that has opened an anytime-scorer market
+#: prices the whole matchday squad, so anything under a starting eleven is a
+#: partial read rather than a team sheet, and reading absence off it would bench
+#: a defender because the book only quoted the strikers.
+CLUB_QUOTE_FLOOR = 11
+
+
+@dataclass(frozen=True)
+class QuotedSquads:
+    """Which clubs the book named a squad for, and who it named.
+
+    The only part of a player market this reads that is not a price. A book
+    opens a market on players it expects to be available, so a man missing from
+    an otherwise complete squad is the market saying he is not playing -- which
+    is information last season's appearances cannot hold, and which is not the
+    same evidence as the price level that `_market_attacking` already reads.
+    """
+
+    #: FPL element ids the book quoted.
+    quoted: frozenset[int]
+    #: Club short names the book priced a full enough squad for.
+    covered: frozenset[str]
+
+    def absent(self, element_id: int, club: str) -> bool:
+        return club in self.covered and element_id not in self.quoted
+
+
+def _quoted_squads(odds_path: Path) -> QuotedSquads:
+    """Who the book named, by club, when it can be trusted to have named everyone.
+
+    Refused outright when any quoted name failed the crosswalk. An unmatched
+    name is a player who *was* priced and is not in `quoted`, so absence would
+    read him as dropped -- and the one thing worse than not using this signal is
+    using it on the players it is wrong about.
+    """
+    empty = QuotedSquads(quoted=frozenset(), covered=frozenset())
+    if not odds_path.exists():
+        return empty
+    artifact = read_json_file(odds_path)
+    if artifact.get("unmatched"):
+        return empty
+    quoted: set[int] = set()
+    by_club: Counter[str] = Counter()
+    for row in artifact.get("players", []):
+        element_id = row.get("element_id")
+        club = row.get("club")
+        if not isinstance(element_id, int):
+            continue
+        quoted.add(element_id)
+        if isinstance(club, str):
+            by_club[club] += 1
+    return QuotedSquads(
+        quoted=frozenset(quoted),
+        covered=frozenset(club for club, count in by_club.items() if count >= CLUB_QUOTE_FLOOR),
+    )
 
 
 def _quoted_cards(odds_path: Path) -> dict[int, MarketCards]:
@@ -585,8 +645,10 @@ def main(argv: Sequence[str] | None = None) -> int:
     priors = _priors_by_depth(available, depth, record_by_code)
     quoted_attack = _quoted_attack(Path(args.player_odds))
     quoted_cards = _quoted_cards(Path(args.player_odds))
+    squads = _quoted_squads(Path(args.player_odds))
     priced_attack = 0
     priced_cards = 0
+    benched = 0
 
     for element in available:
         record = record_by_code.get(element.code)
@@ -647,6 +709,14 @@ def main(argv: Sequence[str] | None = None) -> int:
             # further would be inventing a shape nobody measured.
             attacking_role = element.element_type in (3, 4)
             routes = {("attacking" if attacking_role else "cleanSheet"): round(base_points, 3)}
+        # Applies to a rated player and to a prior alike: the book's silence is
+        # about the man, not about how much history he has. Only downward --
+        # being quoted proves he is in the squad, which the record already
+        # implies, while being missing from a squad the book otherwise named in
+        # full is the one thing last season cannot know.
+        if squads.absent(element.id, str(clubs[element.team]["short_name"])):
+            benched += 1
+            start_rate = round(blend_rate(start_rate, 0.0, args.market_weight), 3)
         players.append(
             (
                 element.element_type,
@@ -750,6 +820,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     print(
         f"market: {priced_attack} attacking routes blended from {len(quoted_attack)} players quoted"
         f"; {priced_cards} card routes from {len(quoted_cards)} quoted"
+        f"; {benched} start rates cut by a book that named {len(squads.covered)} full squads"
         f"; {market_rungs} fixture rungs priced by a bookmaker"
     )
     return 0
