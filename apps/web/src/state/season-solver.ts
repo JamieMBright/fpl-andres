@@ -96,6 +96,20 @@ export type PlayerRoutes = Partial<{
   defensiveContribution: number;
 }>;
 
+/** The same eight, priced for one gameweek. A route worth nothing is a zero. */
+export type EventRoutes = Required<PlayerRoutes>;
+
+const NO_ROUTES: EventRoutes = {
+  appearance: 0,
+  attacking: 0,
+  cleanSheet: 0,
+  bonus: 0,
+  saves: 0,
+  conceding: 0,
+  discipline: 0,
+  defensiveContribution: 0,
+};
+
 export interface SolverPlayer {
   id: number;
   code: number;
@@ -144,14 +158,13 @@ const DEADLINES = inputs.deadlines as string[];
  * the ones that do not depend on a fixture -- and those are multiplied by the
  * fixture count, which is also zero.
  */
-function pointsAt(player: SolverPlayer, eventIndex: number): number {
+function splitAt(player: SolverPlayer, eventIndex: number): EventRoutes {
   const ladder = LADDER[player.club];
-  if (!ladder) return 0;
-  const attacking = ladder.attacking[eventIndex];
-  const cleanSheet = ladder.defensive[eventIndex];
-  const saves = ladder.saves[eventIndex];
-  const conceding = ladder.conceding[eventIndex];
-  const defensiveContribution = ladder.defensiveContribution[eventIndex];
+  const attacking = ladder?.attacking[eventIndex];
+  const cleanSheet = ladder?.defensive[eventIndex];
+  const saves = ladder?.saves[eventIndex];
+  const conceding = ladder?.conceding[eventIndex];
+  const defensiveContribution = ladder?.defensiveContribution[eventIndex];
   if (
     attacking === undefined ||
     cleanSheet === undefined ||
@@ -159,24 +172,38 @@ function pointsAt(player: SolverPlayer, eventIndex: number): number {
     conceding === undefined ||
     defensiveContribution === undefined
   ) {
-    return 0;
+    return NO_ROUTES;
   }
   // A rung is the sum over this gameweek's fixtures, so it doubles for a
   // double and is zero for a blank. The routes a fixture cannot bend have to
   // follow the same count, or a blank gameweek would still pay appearance.
   const fixtures = OPPONENTS[player.club]?.[eventIndex]?.length ?? 0;
   const { routes } = player;
-  return (
-    ((routes.appearance ?? 0) +
-      (routes.bonus ?? 0) +
-      (routes.discipline ?? 0)) *
-      fixtures +
-    (routes.attacking ?? 0) * attacking +
-    (routes.cleanSheet ?? 0) * cleanSheet +
-    (routes.saves ?? 0) * saves +
+  return {
+    appearance: (routes.appearance ?? 0) * fixtures,
+    bonus: (routes.bonus ?? 0) * fixtures,
+    discipline: (routes.discipline ?? 0) * fixtures,
+    attacking: (routes.attacking ?? 0) * attacking,
+    cleanSheet: (routes.cleanSheet ?? 0) * cleanSheet,
+    saves: (routes.saves ?? 0) * saves,
     // Conceding points are negative, so a leakier fixture makes them worse.
-    (routes.conceding ?? 0) * conceding +
-    (routes.defensiveContribution ?? 0) * defensiveContribution
+    conceding: (routes.conceding ?? 0) * conceding,
+    defensiveContribution:
+      (routes.defensiveContribution ?? 0) * defensiveContribution,
+  };
+}
+
+function pointsAt(player: SolverPlayer, eventIndex: number): number {
+  const split = splitAt(player, eventIndex);
+  return (
+    split.appearance +
+    split.bonus +
+    split.discipline +
+    split.attacking +
+    split.cleanSheet +
+    split.saves +
+    split.conceding +
+    split.defensiveContribution
   );
 }
 
@@ -280,6 +307,33 @@ export function pointsAtEvent(
   eventIndex: number,
 ): number {
   return pointsAt(player, eventIndex);
+}
+
+/** One gameweek, told the way a reader asking "why that number" wants it. */
+export interface EventFixture {
+  event: number;
+  /** As published: "COV (H)". Two entries in a double, none in a blank. */
+  opponents: readonly string[];
+  difficulty: number | null;
+  points: number;
+  routes: EventRoutes;
+}
+
+/** The same gameweek, split back into the routes that paid for it. */
+export function fixtureAtEvent(
+  player: SolverPlayer,
+  eventIndex: number,
+): EventFixture | null {
+  const event = EVENTS[eventIndex];
+  if (event === undefined) return null;
+  const routes = splitAt(player, eventIndex);
+  return {
+    event,
+    opponents: OPPONENTS[player.club]?.[eventIndex] ?? [],
+    difficulty: DIFFICULTY[player.club]?.[eventIndex] ?? null,
+    points: pointsAt(player, eventIndex),
+    routes,
+  };
 }
 
 /** The same, discounted over the next few gameweeks. */

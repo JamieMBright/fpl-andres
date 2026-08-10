@@ -14,17 +14,17 @@ import { join } from "node:path";
  * The stylesheet went 15 -> 17 when the site gained an info-marker component,
  * an FAQ page and an index home page. It measured 15.00 against a 15 budget,
  * which is a guard that fires on the next line of CSS rather than on a problem.
+ * It went 17 -> 19 for the same reason a second time.
  */
 
 const DIST = join(import.meta.dirname, "..", "dist", "assets");
 
 const BUDGETS = [
-  // Measured 14.04 kB, raised from 14 kB. Six new surfaces landed at once: the
-  // season fixture strip, the method-step bar charts, the peer chart in the
-  // card, the squad market and pitch, and the record chart with its key. Dead
-  // rules from the squad builder's old dropdown form were removed first, which
-  // gained 0.03 kB, so what remains is new UI rather than accumulated slack.
-  { match: /\.css$/, name: "stylesheet", gzipKb: 17 },
+  // Measured 17.01 kB, raised from 17 kB. The FPL500 page became folds, a rank
+  // ridge and eight empty analysis frames, and the home and player pages gained
+  // the top-picks cards with their fixture panel. The previous budget had no
+  // headroom left at all: it measured 17.01 against 17 on the next line of CSS.
+  { match: /\.css$/, name: "stylesheet", gzipKb: 19 },
   // Measured 128.26 kB. Router, zod, lucide and the shell.
   { match: /^index-.*\.js$/, name: "entry chunk", gzipKb: 150 },
   // Measured 54.94 kB. The plan is now the only route a manager needs: the

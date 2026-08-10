@@ -1,12 +1,23 @@
 import { ArrowRight } from "lucide-react";
-import { useState, type FormEvent } from "react";
+import { Suspense, useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
+import { ErrorBoundary } from "../components/ErrorBoundary";
 import { InfoMarker } from "../components/InfoMarker";
 import { RouteHeading } from "../components/RouteHeading";
 import { MAX_PUBLIC_ID } from "../public-ids";
 import { readLastTeam } from "../state/declared-squad";
+import { lazyRoute } from "../state/lazy-route";
 import { useDocumentTitle } from "../state/use-document-title";
+
+// The picks need the whole season solver, and the landing page is the one
+// chunk every visitor pays for. It sits below the wayfinding grid, so it can
+// arrive a moment after the page it is on.
+const TopPicks = lazyRoute(() =>
+  import("../components/TopPicks").then((module) => ({
+    default: module.TopPicks,
+  })),
+);
 
 export default function HomePage() {
   const navigate = useNavigate();
@@ -126,6 +137,12 @@ export default function HomePage() {
           <p>Where I win, where I lose. Scored four seasons back.</p>
         </li>
       </ul>
+
+      <ErrorBoundary>
+        <Suspense fallback={null}>
+          <TopPicks />
+        </Suspense>
+      </ErrorBoundary>
     </section>
   );
 }

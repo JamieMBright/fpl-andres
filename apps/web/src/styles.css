@@ -661,9 +661,12 @@ h1[tabindex="-1"]:focus-visible {
   line-height: 1.6;
 }
 
+/* One column, two, or four -- never three. The first row is Plan and the team
+   ID form and nothing else, and the four destinations divide exactly into the
+   rows below it, so no cell is ever left with the grid's own rule on show. */
 .index-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  grid-template-columns: minmax(0, 1fr);
   gap: 2px;
   margin: 0;
   padding: 0;
@@ -672,8 +675,16 @@ h1[tabindex="-1"]:focus-visible {
   background: var(--ink);
 }
 
-/* Four across once there is room: Plan leads the first row and the Team ID
-   form takes the other three, so every destination is the same small box. */
+@media (min-width: 620px) {
+  .index-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .is-entry {
+    margin-left: -2px;
+  }
+}
+
 @media (min-width: 1000px) {
   .index-grid {
     grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -751,12 +762,6 @@ h1[tabindex="-1"]:focus-visible {
   background: color-mix(in srgb, var(--fa-gk-lime) 12%, var(--paper));
 }
 
-@media (min-width: 1000px) {
-  .is-entry {
-    margin-left: -2px;
-  }
-}
-
 .is-plan {
   background: var(--fa-gk-lime);
 }
@@ -777,14 +782,6 @@ h1[tabindex="-1"]:focus-visible {
 .is-calibration {
   color: var(--fa-gk-white);
   background: var(--fa-bucket);
-}
-
-/* Below the five-across breakpoint a row can come up short, so the last cell
-   takes what is left rather than leaving the rule behind it on show. */
-@media (max-width: 999px) {
-  .index-grid > :last-child {
-    grid-column: auto / -1;
-  }
 }
 
 /* On its own ground, so the themed input and button keep their contrast
@@ -4010,6 +4007,14 @@ h1[tabindex="-1"]:focus-visible {
   color: var(--fa-gk-black);
 }
 
+/* The title is a heading so the page keeps an outline; a summary is not one. */
+.fpl500-fold > summary h2 {
+  display: inline;
+  margin: 0;
+  font: inherit;
+  letter-spacing: inherit;
+}
+
 .fpl500-fold > summary:focus-visible {
   outline: 3px solid var(--signal-blue);
   outline-offset: -3px;
@@ -4031,6 +4036,10 @@ h1[tabindex="-1"]:focus-visible {
 .fpl500-fold.is-when > summary {
   color: var(--fa-gk-white);
   background: var(--fa-gk-purple);
+}
+
+.fpl500-fold.is-analysis > summary {
+  background: var(--fa-gk-hot);
 }
 
 .fpl500-fold-body {
@@ -4188,6 +4197,265 @@ h1[tabindex="-1"]:focus-visible {
   margin: 4px 0 0;
   font-size: 11px;
   color: var(--ink-soft);
+}
+
+/* The best five-gameweek player in each position. The green panel behind the
+   photograph is the one loud thing; everything under it is ordinary type. */
+.top-picks {
+  margin: clamp(28px, 4vw, 44px) 0 0;
+}
+
+.top-picks > h2 {
+  margin: 0 0 6px;
+  font-size: clamp(19px, 2vw, 26px);
+}
+
+.top-picks > p {
+  max-width: 66ch;
+  margin: 0 0 16px;
+  font-family: var(--fa-body);
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--ink-soft);
+}
+
+.top-pick-board {
+  position: relative;
+}
+
+/* One, two or four across. Three would leave a card's worth of the grid's own
+   rule on show under the last row, which is the same gap the index grid had. */
+.top-pick-grid {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border: 2px solid var(--rule);
+  background: var(--rule);
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@media (min-width: 560px) {
+  .top-pick-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .top-pick-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.top-pick {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: center;
+  padding: 14px 12px 12px;
+  background: var(--paper-deep);
+  text-align: center;
+}
+
+/* Fixed rather than themed: the photograph has to sit on the same colour in
+   every kit or the cards stop reading as one set. */
+.top-pick-frame {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 104px;
+  height: 124px;
+  background: var(--fa-signal-green);
+}
+
+.top-pick-role {
+  margin: 8px 0 0;
+  font-family: var(--fa-body);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.top-pick-name {
+  margin: 0;
+}
+
+.top-pick-name button {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ink);
+  font-family: var(--fa-display);
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.15;
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-color: var(--rule);
+  text-underline-offset: 4px;
+}
+
+.top-pick-name button:hover {
+  text-decoration-color: currentcolor;
+}
+
+.top-pick-club {
+  display: flex;
+  gap: 8px;
+  margin: 0;
+  font-family: var(--fa-body);
+  font-size: 12px;
+  color: var(--ink-soft);
+}
+
+.top-pick-metric {
+  display: flex;
+  gap: 2px;
+  align-items: center;
+  margin: 6px 0 0;
+}
+
+.top-pick-points {
+  display: flex;
+  gap: 6px;
+  align-items: baseline;
+  padding: 2px 6px;
+  border: 1px solid var(--rule);
+  background: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+.top-pick-points b {
+  font-family: var(--fa-body);
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.top-pick-points span {
+  font-family: var(--fa-body);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--ink-soft);
+}
+
+.top-pick-panel {
+  position: absolute;
+  z-index: 5;
+  top: calc(100% - 2px);
+  right: 0;
+  left: 0;
+  padding: 10px 14px 14px;
+  border: 2px solid var(--ink);
+  background: var(--paper);
+  text-align: left;
+}
+
+.top-pick-panel[hidden] {
+  display: none;
+}
+
+.top-pick-panel-head {
+  margin: 0 0 8px;
+  font-family: var(--fa-body);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.top-pick-panel > ul {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+}
+
+.top-pick-fixture {
+  padding: 8px 10px 10px;
+  background: var(--paper-deep);
+}
+
+.top-pick-fixture-head {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  justify-content: space-between;
+  margin: 0;
+  font-family: var(--fa-body);
+  font-size: 12px;
+}
+
+.top-pick-gw {
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--ink-soft);
+}
+
+.top-pick-fixture-head b {
+  font-family: var(--fa-body);
+  font-size: 16px;
+}
+
+.top-pick-fixture-against {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  margin: 4px 0 0;
+  font-family: var(--fa-body);
+  font-size: 12px;
+}
+
+.top-pick-opponent {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.top-pick-shirt {
+  display: block;
+  width: 15px;
+  height: 19px;
+  shape-rendering: crispEdges;
+}
+
+.top-pick-venue,
+.top-pick-difficulty,
+.top-pick-blank {
+  color: var(--ink-soft);
+}
+
+.top-pick-difficulty {
+  margin: 2px 0 0;
+  font-family: var(--fa-body);
+  font-size: 12px;
+}
+
+.top-pick-routes {
+  margin: 6px 0 0;
+  padding: 6px 0 0;
+  border-top: 1px solid var(--rule);
+  list-style: none;
+  font-family: var(--fa-body);
+  font-size: 11px;
+  color: var(--ink-soft);
+}
+
+.top-pick-routes li {
+  display: flex;
+  gap: 8px;
+  justify-content: space-between;
+}
+
+.top-pick-routes b {
+  color: var(--ink);
 }
 
 /* Bielsa bucket mark. Every colour is a teletext one, set on the paths

@@ -11,12 +11,7 @@ export default function Fpl500Page() {
     <section className="text-page fpl500-page">
       <p className="eyebrow">The cohort</p>
       <RouteHeading>Five hundred managers worth following.</RouteHeading>
-      <p className="faq-lede">
-        Found by reading the public register rather than by asking anyone.
-        Ranked on sustained finishing, in percentile so seasons of very
-        different sizes can be compared. What they collectively own is the
-        interesting part, and that part is not built yet.
-      </p>
+      <p className="faq-lede">Determined statistically, not by perception.</p>
       <Fpl500Playbook />
     </section>
   );

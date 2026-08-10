@@ -44,7 +44,9 @@ function Fold({
 }) {
   return (
     <details className={`fpl500-fold is-${kind}`} open={open}>
-      <summary>{title}</summary>
+      <summary>
+        <h2>{title}</h2>
+      </summary>
       <div className="fpl500-fold-body">{children}</div>
     </details>
   );
@@ -148,7 +150,8 @@ export function Fpl500Playbook() {
           <strong>{number.format(data.size)}</strong> managers
         </li>
         <li>
-          from <strong>{number.format(data.catalogueSize)}</strong> catalogued
+          from <strong>{number.format(data.catalogueSize)}</strong> shortlisted
+          candidates
         </li>
         <li>
           across{" "}
@@ -270,8 +273,7 @@ export function Fpl500Playbook() {
         </ul>
       </Fold>
 
-      <section aria-labelledby="fpl500-analysis">
-        <h2 id="fpl500-analysis">Analysing the FPL500</h2>
+      <Fold kind="analysis" open title="Analysing the FPL500">
         <p>
           {data.portfolioEvents.length === 0
             ? "No deadline has passed, so there is nothing in these yet. The frames and their axes are what will be drawn."
@@ -281,12 +283,13 @@ export function Fpl500Playbook() {
         <div className="cohort-caveat">
           <h3>What none of it can tell you</h3>
           <p>
-            Whether being in FPL500 predicts next season. The catalogue only
-            holds managers who already cleared the bar, so the question cannot
-            be answered from inside it.
+            Being in the FPL500 does not mean a manager will be good this
+            season. What it means is that he has been consistent enough for long
+            enough to qualify, which is why he is worth learning from rather
+            than worth copying.
           </p>
         </div>
-      </section>
+      </Fold>
     </>
   );
 }

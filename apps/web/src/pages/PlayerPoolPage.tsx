@@ -1,5 +1,6 @@
 import { PlayerPoolTable } from "../components/PlayerPoolTable";
 import { RouteHeading } from "../components/RouteHeading";
+import { TopPicks } from "../components/TopPicks";
 import { useDocumentTitle } from "../state/use-document-title";
 
 export default function PlayerPoolPage() {
@@ -11,6 +12,7 @@ export default function PlayerPoolPage() {
     <section className="text-page pool-page">
       <p className="eyebrow">The market</p>
       <RouteHeading>Everyone in the game, and what they cost.</RouteHeading>
+      <TopPicks />
       <PlayerPoolTable />
     </section>
   );
