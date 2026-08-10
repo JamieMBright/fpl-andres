@@ -1667,6 +1667,26 @@ h1[tabindex="-1"]:focus-visible {
   line-height: 1.65;
 }
 
+/* The control the rest of the table is measured against, so it reads as the
+   baseline rather than as another candidate. */
+.method-body tr.is-control th,
+.method-body tr.is-control td {
+  background: var(--paper-deep);
+  font-style: italic;
+}
+
+.thesis-better {
+  color: var(--fa-signal-green);
+}
+
+.thesis-worse {
+  color: var(--fa-signal-red);
+}
+
+.thesis-unproven {
+  color: var(--ink-soft);
+}
+
 /* The one place on the site where order carries meaning: each step consumes
    the one above it, so the numbers are the argument rather than decoration. */
 .method-chain {
@@ -3889,11 +3909,64 @@ h1[tabindex="-1"]:focus-visible {
   line-height: 1.5;
 }
 
+/* Amber is reserved for the one sentence a section concludes with. A caption,
+   a footnote or a "nothing measured yet" notice in the same colour turns the
+   page into an argument with itself. */
 .validation-verdict {
   margin-top: 16px;
   padding: 14px 16px;
   background: color-mix(in srgb, var(--amber) 9%, transparent);
   border-left: 4px solid var(--amber);
+}
+
+.validation-note {
+  margin: 6px 0 10px;
+  font-size: 13px;
+  color: var(--ink-soft);
+  line-height: 1.6;
+}
+
+/* The whole page in five figures, for the reader who will not scroll. */
+.validation-board {
+  margin: 0 0 clamp(24px, 3vw, 36px);
+}
+
+.validation-claims {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border: 2px solid var(--rule);
+  background: var(--rule);
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+}
+
+.validation-claims li {
+  padding: 14px 14px 16px;
+  background: var(--paper-deep);
+}
+
+.validation-claim-figure {
+  margin: 0;
+  font-size: clamp(28px, 3.4vw, 40px);
+  line-height: 1;
+  color: var(--accent);
+}
+
+.validation-claim-heading {
+  margin: 8px 0 0;
+  font-family: var(--fa-display);
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.validation-claim-detail {
+  margin: 6px 0 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--ink-soft);
 }
 
 .validation-positions,
@@ -6633,18 +6706,37 @@ h1[tabindex="-1"]:focus-visible {
   stroke-width: 2;
 }
 
-/* Edge as well as fill. A dimmed point kept its full-strength outline, so an
-   isolated club sat inside a cage of everyone else's borders. */
-.scatter-mark-dimmed {
-  fill-opacity: 0.06;
-  stroke-opacity: 0.12;
+/* Highlighting adds, it does not subtract. Everyone stays legible; the chosen
+   player gets a glow and his name in the glow's own colour, because a chart
+   that answers "where is he" by hiding the pool has stopped being a scatter. */
+.scatter-mark-highlit {
+  stroke: var(--accent);
+  stroke-width: 3;
+  paint-order: stroke;
+  filter: drop-shadow(0 0 5px var(--accent)) drop-shadow(0 0 10px var(--accent));
 }
 
-/* And its name with it. Isolating a club left every other name at full weight,
-   so the chart read as busier than the selection it was showing. Kept a little
-   heavier than the marks -- text at 6% of a 7px glyph is gone, not faint. */
-.scatter-label-dimmed {
-  opacity: 0.16;
+.scatter-mark-receded {
+  fill-opacity: 0.55;
+  stroke-opacity: 0.5;
+}
+
+.scatter-label-receded {
+  opacity: 0.45;
+}
+
+.scatter-label-highlit .scatter-label {
+  font-size: 13px;
+  font-weight: 700;
+  fill: var(--accent);
+  paint-order: stroke;
+  stroke: var(--paper);
+  stroke-width: 3;
+}
+
+.scatter-label-highlit .scatter-label-whisker {
+  stroke: var(--accent);
+  stroke-opacity: 0.9;
 }
 
 /* A heavy green ring. Amber at 2.5 was lost among the club colours, and this

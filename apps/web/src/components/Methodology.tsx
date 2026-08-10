@@ -4,9 +4,27 @@ import validation from "../data/validation.json";
 import {
   captaincyVerdict,
   ceilingSentence,
+  thesisTable,
   whichThesisVerdict,
+  type ThesisRow,
 } from "../state/captaincy-verdict";
 import { projectionSeason } from "../state/projection-meta";
+import { InfoMarker } from "./InfoMarker";
+
+const VERDICT_WORDS: Record<ThesisRow["verdict"], string> = {
+  better: "measurably better",
+  worse: "measurably worse",
+  unproven: "inside the noise",
+};
+
+function signedWhole(value: number): string {
+  const rounded = Math.round(value);
+  return `${rounded < 0 ? "\u2212" : "+"}${String(Math.abs(rounded))}`;
+}
+
+function sentenceCase(text: string): string {
+  return text.charAt(0).toUpperCase() + text.slice(1);
+}
 
 /**
  * How the projection is built, in enough detail to be argued with.
@@ -25,8 +43,7 @@ export function Methodology() {
   );
   const which = whichThesisVerdict(verdict);
   const ceiling = ceilingSentence(verdict);
-  // Every scored thesis, plus the projection they are all measured against.
-  const thesisCount = validation.captainSignificance.length + 1;
+  const table = thesisTable(validation.captainSignificance);
 
   return (
     <div className="method-body">
@@ -326,179 +343,76 @@ export function Methodology() {
       <section aria-labelledby="method-captaincy">
         <h2 id="method-captaincy">On captaincy</h2>
         <p>
-          The captain doubles. One call a week therefore carries two to three
-          times the expected-value swing of a routine transfer, and it is the
-          only decision in the game with a multiplier attached. It is also the
-          one this project made without evidence for longest: take the highest
-          projected scorer, and never check.
-        </p>
-        <p>
-          Every published framework says that is wrong. None of them publishes a
-          measurement, and they contradict each other, so all of them are
-          written down as rules and scored on the same gameweeks, the same
-          shortlist and the same ceiling. {thesisCount} theses, one of which is
-          the owner&rsquo;s own, each against the projection as control.
-        </p>
-
-        <h3>What the sources argue</h3>
-        <p>
-          <strong>
-            Ramezani and Dinh,{" "}
-            <em>
-              A data-driven framework for team selection in Fantasy Premier
-              League
-            </em>{" "}
-            (arXiv:2505.02170)
-          </strong>{" "}
-          make captaincy a decision variable inside the optimiser rather than a
-          heuristic bolted on afterwards: maximise{" "}
-          <code>&Sigma; c&#8321;x&#8321; + &Sigma; c&#8321;y&#8321;</code>{" "}
-          subject to <code>&Sigma;y&#8321; = 1</code> and{" "}
-          <code>y&#8321; &le; x&#8321;</code> &mdash; exactly one captain, and
-          he must be starting. They also report that penalising a score by its
-          own uncertainty trimmed upside without buying protection, and cite
-          Bhatt&rsquo;s finding that crowd captaincy beat expert analysts.
-        </p>
-        <p>
-          <strong>FPL Oracle</strong> works in six steps: shortlist two to four
-          on expected points, compute effective ownership as{" "}
-          <code>own% + own% &times; captain-rate</code>, apply your rank
-          situation, check the fixture on opponent xGA rather than the published
-          difficulty, derate by rotation risk as{" "}
-          <code>xPts &times; P(start)</code>, and set the vice-captain
-          independently at lower ownership. Their one quantitative claim is an
-          indifference band: inside about 1.5 projected points the ownership
-          maths favours the differential; two points clear and you captain the
-          favourite regardless.
-        </p>
-        <p>
-          <strong>FPL360</strong> leads on form with a hard floor at 2.0, argues
-          that form compounds fixture quality rather than trading against it,
-          and frames the whole decision as loss aversion &mdash; the template
-          captain is chosen out of fear of the crowd rather than belief.
+          The captain doubles, so this one call a week swings two to three times
+          what a transfer does. Every published strategy was written down as a
+          rule and scored on the same gameweeks, from the same shortlist, over{" "}
+          {verdict.weeks} paired gameweeks of four seasons. The column that
+          matters is the last one: what a whole season of following each rule
+          would have been worth against simply captaining the highest
+          projection.
+          <InfoMarker label="how each rule was scored">
+            Every rule picks from the same shortlist — the twenty-five
+            most-owned players with a realised score that week — because given
+            the whole pool each would captain the week&rsquo;s cheapest
+            hat-trick and report skill at a decision nobody faced. Each is then
+            paired against the projection week for week and the differences
+            resampled two thousand times. A rule is called better or worse only
+            when its whole 95% interval sits one side of zero; anything else is
+            a number the data cannot separate from luck.
+          </InfoMarker>
         </p>
 
-        <h3>The mathematics, once</h3>
-        <p>
-          Every one of those rules is the same object: an <code>argmax</code>{" "}
-          over a shortlist of some function of five quantities. Expected points{" "}
-          <code>&mu;</code>, the spread <code>&sigma;</code>, the chance he
-          starts <code>p</code>, ownership <code>&omega;</code>, and a rank
-          state. The theses differ only in how they combine them.
-        </p>
-        <ul className="method-losses">
-          <li>
-            <strong>Expected points</strong> &mdash; <code>argmax &mu;</code>.
-            The control, and what this project already did.
-          </li>
-          <li>
-            <strong>Availability adjusted</strong> &mdash;{" "}
-            <code>argmax &mu;p</code>. Seven and a half points behind an 85%
-            chance of starting is worth 6.4; six and a half behind a certainty
-            is worth 6.5.
-          </li>
-          <li>
-            <strong>Upside</strong> &mdash; <code>argmax (&mu; + &sigma;)</code>
-            . Doubling a mean is worth far less than doubling a haul, so the
-            multiplier arguably makes this a right-tail bet rather than a point
-            estimate.
-          </li>
-          <li>
-            <strong>Robust</strong> &mdash;{" "}
-            <code>argmax (&mu; &minus; &sigma;)</code>. The exact opposite, from
-            the paper. Included because a comparison of only the ideas somebody
-            believes in cannot say whether the winner won on merit.
-          </li>
-          <li>
-            <strong>Differential and template</strong> &mdash;{" "}
-            <code>argmax (&mu; &mp; &lambda;&omega;)</code> with{" "}
-            <code>&lambda;</code> = 1.5 points per 100% owned, which is
-            Oracle&rsquo;s own indifference band. Both signs are scored, because
-            the backtest has no rank to condition on and a rule that is right
-            only for managers in one league position must not be reported as
-            right in general.
-          </li>
-          <li>
-            <strong>Form</strong> &mdash; <code>argmax</code> recent scoring,
-            refusing anyone under 2.0.
-          </li>
-          <li>
-            <strong>Crowd</strong> &mdash; <code>argmax &omega;</code>. The
-            template. Not a foil: it is what most managers do and what Bhatt
-            found beat the experts.
-          </li>
-          <li>
-            <strong>Ceiling against fixture</strong> &mdash;{" "}
-            <code>argmax (&mu;&kappa; &times; f)</code>, where{" "}
-            <code>&kappa;</code> is how many times his ordinary afternoon his
-            ninetieth-percentile one is, and <code>f</code> the attacking
-            multiplier for the fixture. This is the owner&rsquo;s own rule and
-            it is a product, not a filter: a big enough ceiling tolerates a
-            harder draw, an ordinary one needs a kind one. No separate home
-            term, because venue is already measured inside <code>f</code> per
-            club and per side, and pricing it twice would outrank the ceiling it
-            is meant to modify.
-          </li>
-        </ul>
+        <div
+          aria-label="Scrollable captaincy strategy table"
+          className="squad-table-wrap"
+          role="region"
+          // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- Keyboard users must be able to scroll this table horizontally.
+          tabIndex={0}
+        >
+          <table aria-label="Every captaincy strategy, and what a season of it is worth">
+            <thead>
+              <tr>
+                <th scope="col">Strategy</th>
+                <th scope="col">What it does</th>
+                <th scope="col">Points a season</th>
+                <th scope="col">Range</th>
+                <th scope="col">Verdict</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr className="is-control">
+                <th scope="row">Highest projection</th>
+                <td>
+                  Captain the highest projected scorer. This is the control.
+                </td>
+                <td className="mono">&mdash;</td>
+                <td className="mono">&mdash;</td>
+                <td>what the plan does</td>
+              </tr>
+              {table.map((row) => (
+                <tr key={row.label}>
+                  <th scope="row">{sentenceCase(row.name)}</th>
+                  <td>{row.rule}</td>
+                  <td className="mono">{signedWhole(row.pointsPerSeason)}</td>
+                  <td className="mono">
+                    {signedWhole(row.lowPerSeason)} to{" "}
+                    {signedWhole(row.highPerSeason)}
+                  </td>
+                  <td className={`thesis-${row.verdict}`}>
+                    {VERDICT_WORDS[row.verdict]}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
 
-        <h3>How the comparison is kept honest</h3>
-        <p>
-          Every thesis picks from the same shortlist: the twenty-five most-owned
-          players who have a realised score that gameweek. Given the whole pool
-          each would captain the week&rsquo;s cheapest hat-trick and report
-          skill at a decision nobody faced. The ceiling is the best captain{" "}
-          <em>in that shortlist</em>, so the regret is a call somebody could
-          have made.
-        </p>
-        <p>
-          {thesisCount} rules is {thesisCount} chances to win by luck, so the
-          record reports the number of seasons a thesis won as well as its mean
-          &mdash; a policy that wins once and loses three times got lucky, and a
-          table sorted on the average alone would crown it. Nothing is tuned:
-          where a coefficient is unavoidable it is the one its source proposed,
-          used once and never swept.
-        </p>
-        <p>
-          A ranked table still produces a winner whether or not one exists, so
-          the ranking is not the verdict. Each thesis is paired against the
-          projection week for week across every scored gameweek of all four
-          seasons and the differences are resampled two thousand times. A thesis
-          is reported as better only when the whole 95% interval sits above
-          zero. Paired rather than pooled because both rules face the same
-          fixtures in the same weeks; a blank gameweek depresses both, and
-          comparing unpaired means would charge that to whichever was measured
-          over more of them.
-        </p>
         <p>
           <strong>So which one should you use?</strong> {which.lead}
           <em>{which.headline}</em>
           {which.detail}
         </p>
-        <p>
-          That is less disappointing than it sounds. {ceiling} Until something
-          closes it, take the highest projected scorer and spend the attention
-          elsewhere.
-        </p>
-        <p>
-          <strong>Then learn the rule instead?</strong> Captaincy yields one
-          graded observation per gameweek &mdash; about {verdict.weeks} across
-          four seasons. Fitting six feature weights to {verdict.weeks} points
-          whose week-to-week spread exceeds the entire range between best and
-          worst thesis will report a lead in sample, and would report one on
-          shuffled labels too. If a learned policy is ever added it enters as
-          one more candidate, fit on seasons it is not scored on, and it has to
-          clear the same interval every rule here has so far failed to clear.
-        </p>
-        <p className="method-proof">
-          <strong>One correction, on the record.</strong> The first run reported
-          the two ownership rules as tested. They were not. The corpus stores
-          ownership as a count of managers, of the order of a million, while
-          both rules price it per percentage point &mdash; so the ownership term
-          swamped every projection and the pair silently collapsed into
-          &ldquo;captain the most owned&rdquo; and &ldquo;captain the least
-          owned&rdquo;. The numbers looked plausible, which is the problem. Two
-          tests now fail if either collapses again.
-        </p>
+        <p>{ceiling}</p>
       </section>
 
       <section aria-labelledby="method-loses">

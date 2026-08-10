@@ -44,6 +44,27 @@ const TIER_EDGES: Record<string, readonly number[]> = {
 /** Used where a position has no declared tiers, so the band is still bounded. */
 export const PEER_BAND_TENTHS = 5;
 
+/**
+ * Half a million, in FPL's tenths.
+ *
+ * A band edge of £6.3m is arithmetic showing through: nobody shops in tenths,
+ * and a comparison that starts three-tenths above a round number silently drops
+ * the players just below it. Edges are widened to the nearest half million so
+ * the set is the one a manager would have drawn by hand.
+ */
+const PRICE_STEP_TENTHS = 5;
+
+function floorToStep(tenths: number): number {
+  return Math.max(
+    0,
+    Math.floor(tenths / PRICE_STEP_TENTHS) * PRICE_STEP_TENTHS,
+  );
+}
+
+function ceilToStep(tenths: number): number {
+  return Math.ceil(tenths / PRICE_STEP_TENTHS) * PRICE_STEP_TENTHS;
+}
+
 /** Fewer than this and a percentile is noise dressed as a measurement. */
 export const MINIMUM_PEERS = 4;
 
@@ -58,8 +79,8 @@ export function bandFor(position: string, priceTenths: number): PeerBand {
   const edges = TIER_EDGES[position];
   if (!edges) {
     return {
-      fromTenths: priceTenths - PEER_BAND_TENTHS,
-      toTenths: priceTenths + PEER_BAND_TENTHS,
+      fromTenths: floorToStep(priceTenths - PEER_BAND_TENTHS),
+      toTenths: ceilToStep(priceTenths + PEER_BAND_TENTHS),
     };
   }
   let from = 0;
@@ -405,9 +426,12 @@ export function analysisLinkFor(
   if (subject.priceTenths !== null && !metric?.acrossPosition) {
     params.set(
       "pricefrom",
-      String(Math.max(0, subject.priceTenths - LINK_BAND_TENTHS)),
+      String(floorToStep(subject.priceTenths - LINK_BAND_TENTHS)),
     );
-    params.set("priceto", String(subject.priceTenths + LINK_BAND_TENTHS));
+    params.set(
+      "priceto",
+      String(ceilToStep(subject.priceTenths + LINK_BAND_TENTHS)),
+    );
   }
   return `/analysis?${params.toString()}`;
 }

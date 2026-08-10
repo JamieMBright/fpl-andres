@@ -44,6 +44,63 @@ function pool(count: number): AnalysisPlayer[] {
   });
 }
 
+describe("highlighting a player", () => {
+  // Index 1, not 0: the default x axis is defensive contribution, which is null
+  // for a keeper, so every fourth player in this pool is never plotted at all.
+  const ONE_DEFENDER = "#900001";
+  const ALL_DEFENDERS = "C1";
+
+  function draw(highlights: string[]) {
+    const view = { ...DEFAULT_VIEW, highlights, labels: false };
+    const selection = selectPlotted(pool(200), view)!;
+    return render(
+      <PlayerScatter
+        selection={selection}
+        view={view}
+        pinned={[]}
+        onTogglePin={() => {}}
+      />,
+    ).container;
+  }
+
+  it("lights the chosen player rather than hiding everybody else", () => {
+    const container = draw([ONE_DEFENDER]);
+
+    expect(container.querySelectorAll(".scatter-mark-highlit")).toHaveLength(1);
+    // The rest are still drawn, still coloured and still hoverable. A chart
+    // that answers "where is he" by deleting the pool is not a scatter.
+    expect(
+      container.querySelectorAll(".scatter-mark-receded").length,
+    ).toBeGreaterThan(100);
+  });
+
+  it("names him even with labels turned off", () => {
+    const container = draw([ONE_DEFENDER]);
+
+    // Somebody who typed a name wants to see whose mark lit up.
+    expect(container.querySelectorAll(".scatter-label-highlit")).toHaveLength(
+      1,
+    );
+    expect(container.querySelectorAll(".scatter-label")).toHaveLength(1);
+  });
+
+  it("lights nobody when nothing is highlighted", () => {
+    const container = draw([]);
+
+    expect(container.querySelectorAll(".scatter-mark-highlit")).toHaveLength(0);
+    expect(container.querySelectorAll(".scatter-mark-receded")).toHaveLength(0);
+  });
+
+  it("lights a whole club when a club is named", () => {
+    const one = draw([ONE_DEFENDER]).querySelectorAll(".scatter-mark-highlit");
+    const club = draw([ALL_DEFENDERS]).querySelectorAll(
+      ".scatter-mark-highlit",
+    );
+
+    expect(club.length).toBeGreaterThan(one.length);
+  });
+});
+
 describe("scatter overlays", () => {
   it("shades the good corner when it is asked to", () => {
     const view = { ...DEFAULT_VIEW, sweetSpot: true };

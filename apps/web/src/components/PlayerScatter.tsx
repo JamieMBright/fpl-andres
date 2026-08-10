@@ -318,6 +318,14 @@ export const PlayerScatter = memo(function PlayerScatter({
     setHovered(point);
   }, []);
 
+  // A highlight is only on when it excludes somebody. With nothing typed every
+  // point matches, and glowing all five hundred would be the same as glowing
+  // none of them.
+  const highlighting = useMemo(
+    () => points.some((point) => !point.matched),
+    [points],
+  );
+
   // Only when a single position is selected: DEF clear ten and everyone else
   // twelve, so a bar drawn across a mixed pool would be the wrong bar for half
   // the marks.
@@ -540,7 +548,8 @@ export const PlayerScatter = memo(function PlayerScatter({
                 "scatter-mark",
                 `scatter-mark-${point.player.position.toLowerCase()}`,
                 mark ? "scatter-mark-club" : "",
-                point.matched ? "" : "scatter-mark-dimmed",
+                highlighting && point.matched ? "scatter-mark-highlit" : "",
+                highlighting && !point.matched ? "scatter-mark-receded" : "",
                 point.overlooked ? "scatter-mark-overlooked" : "",
                 pioneers.has(point.player.code) ? "scatter-mark-pioneer" : "",
                 isPinned ? "scatter-mark-pinned" : "",
@@ -575,9 +584,13 @@ export const PlayerScatter = memo(function PlayerScatter({
             })}
           </g>
 
-          {view.labels ? (
+          {view.labels || highlighting ? (
             <g className="scatter-labels" aria-hidden="true">
               {points.map((point) => {
+                const lit = highlighting && point.matched;
+                // With labels off, a highlight still names who it lit up --
+                // that is the whole reason somebody typed a name in.
+                if (!view.labels && !lit) return null;
                 const px = xScale(point.x);
                 const py = yScale(point.y);
                 const r = radius(point.size);
@@ -590,7 +603,11 @@ export const PlayerScatter = memo(function PlayerScatter({
                 return (
                   <g
                     className={
-                      point.matched ? undefined : "scatter-label-dimmed"
+                      lit
+                        ? "scatter-label-highlit"
+                        : highlighting
+                          ? "scatter-label-receded"
+                          : undefined
                     }
                     key={point.player.code}
                   >

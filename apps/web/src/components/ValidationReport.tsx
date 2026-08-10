@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 import validation from "../data/validation.json";
 import { timestamp } from "../format";
 import { CaptainGrid, type SeasonPicks } from "./CaptainGrid";
@@ -306,6 +308,62 @@ export function ValidationReport() {
       : [{ season: season.season, opening: season.giantFirst }],
   );
 
+  // The whole page in five lines, derived. Anybody who reads nothing else
+  // should still leave knowing what was measured and what it came to.
+  const headlines: { figure: string; heading: string; detail: string }[] = [];
+  const pooled = pooledVerdict(report.seasons as VerdictSeason[]);
+  const positions = positionVerdict(
+    report.seasons as VerdictSeason[],
+    POSITIONS,
+  );
+  headlines.push({
+    figure: `${String(positions.modelWins)}/${String(positions.cells)}`,
+    heading: "season-and-position cells my ranking wins",
+    detail:
+      "Against a last-five-gameweek average, within a position, which is the " +
+      "only comparison a transfer ever faces.",
+  });
+  headlines.push({
+    figure: `${String(pooled.modelWins)}/${String(pooled.seasons)}`,
+    heading: "seasons my ranking wins with every player pooled",
+    detail:
+      "The harder framing, and the one dominated by telling positions apart " +
+      "rather than telling players apart.",
+  });
+  if (leaguesPlayed > 0) {
+    headlines.push({
+      figure: `${String(advisedWins)}/${String(leaguesPlayed)}`,
+      heading: "simulated leagues the advised policy won",
+      detail:
+        "Twenty managers a league, every policy starting from the same squad, " +
+        "so a win is the policy and not the draw.",
+    });
+  }
+  if (verdicts.length > 0) {
+    const separable = verdicts.filter(
+      (entry) => entry.lower > 0 || entry.upper < 0,
+    ).length;
+    headlines.push({
+      figure: `${String(separable)}/${String(verdicts.length)}`,
+      heading: "captaincy rules the data can separate from mine",
+      detail:
+        "Every published strategy, paired against my projection week for week " +
+        "and resampled. Most of the table is inside its own noise.",
+    });
+  }
+  const worstReach = reachSeasons
+    .map(({ reach }) => reach.captaincy.reachGap ?? 0)
+    .sort((left, right) => right - left)[0];
+  if (worstReach !== undefined) {
+    headlines.push({
+      figure: `${show(worstReach, 1)}`,
+      heading: "points a week no captaincy rule can reach",
+      detail:
+        "The distance from the best captain in the squad you own to the best " +
+        "in the game. It dwarfs the argument between the rules.",
+    });
+  }
+
   return (
     <>
       <p className="validation-freshness">
@@ -339,6 +397,22 @@ export function ValidationReport() {
             </dd>
           </div>
         </dl>
+      </section>
+
+      <section aria-labelledby="scoreboard-title" className="validation-board">
+        <h2 id="scoreboard-title">The short version</h2>
+        <ol className="validation-claims">
+          {headlines.map((claim) => (
+            <li key={claim.heading}>
+              <p className="validation-claim-figure mono">{claim.figure}</p>
+              <p className="validation-claim-heading">{claim.heading}</p>
+              <p className="validation-claim-detail">{claim.detail}</p>
+            </li>
+          ))}
+        </ol>
+        <p className="validation-note">
+          Each of those is a section below, with the table it came from.
+        </p>
       </section>
 
       <section aria-labelledby="ranking-title">
@@ -443,7 +517,7 @@ export function ValidationReport() {
           </InfoMarker>
         </p>
         {captaincySeasons.length === 0 ? (
-          <p className="validation-verdict">
+          <p className="validation-note">
             This artifact predates the captaincy score, so there is nothing
             measured to show. It appears the next time{" "}
             <span className="mono">fpl_andres.cli.validate</span> runs.
@@ -468,10 +542,12 @@ export function ValidationReport() {
             />
           </>
         )}
-        <p className="validation-verdict">
+        <p className="validation-note">
           Figures are the player&rsquo;s own score, not the doubled one. The
           doubling is a constant on every row, so it changes no ordering &mdash;
-          but over a season a gap here is worth twice what it reads.
+          but over a season a gap here is worth twice what it reads. The full
+          table of rules, and what a season of each is worth, is on{" "}
+          <Link to="/methodology#method-captaincy">the method page</Link>.
         </p>
       </section>
 
@@ -508,31 +584,30 @@ export function ValidationReport() {
       <section aria-labelledby="reach-title">
         <h2 id="reach-title">Could the squad even reach that?</h2>
         <p>
-          Every number above is scored against the whole game. Nobody picks from
-          the whole game. These are scored against the fifteen the projection
-          was actually holding at the deadline, which is a harder and less
-          flattering question.
+          Everything above is scored against the whole game, and nobody picks
+          from the whole game. These are scored against the fifteen the
+          projection was holding at the deadline.
           <InfoMarker label="where these come from">
-            The simulated leagues, replayed. Each gameweek now keeps the squad
-            it was played with, so &ldquo;was the best player in the game on
-            your field&rdquo; and &ldquo;what could you have captained&rdquo;
-            can be asked of a season that has already happened. No re-projection
-            and no hindsight: the squad is whatever the transfers left.
+            The simulated leagues, replayed. Each gameweek keeps the squad it
+            was played with, so &ldquo;was the best player in the game on your
+            field&rdquo; and &ldquo;what could you have captained&rdquo; can be
+            asked of a season that has already happened. No re-projection and no
+            hindsight: the squad is whatever the transfers left.
           </InfoMarker>
         </p>
 
         {reachSeasons.length === 0 ? (
-          <p className="validation-verdict">
+          <p className="validation-note">
             This artifact predates the reach measurements. They appear the next
             time <span className="mono">fpl_andres.cli.validate</span> runs.
           </p>
         ) : (
           <>
             <h3>Was the best player in the game on the field?</h3>
-            <p className="validation-verdict">
-              The single highest projection in the game each week, and whether
-              the advised squad owned him, started him and gave him the armband.
-              Counted over every advised manager and every gameweek they played.
+            <p className="validation-note">
+              The highest projection in the game each week, and whether the
+              advised squad owned him, started him and captained him. Counted
+              over every advised manager and every gameweek they played.
             </p>
             <div
               aria-label="Scrollable reach table"
@@ -579,27 +654,17 @@ export function ValidationReport() {
               </table>
             </div>
             <p className="validation-verdict">
-              The suspicion was that the top projection is almost never
-              reachable, because it is usually the most expensive player in the
-              game and a fifteen cannot hold all of them. Four seasons say the
-              opposite: it is owned in three-quarters to nine-tenths of
-              manager-gameweeks. Owning is not the same as playing, though
-              &mdash; where the two columns differ, he was in the squad and on
-              the bench, which scores nothing. Started and captained never
-              differ, because the ranking that puts him in the eleven is the
-              ranking that hands him the armband.
-            </p>
-            <p className="validation-verdict">
-              The last column is the part that is actually contested. In one
-              season a single player held top spot for twenty-three of the
-              thirty-two scored weeks; in another the longest run was eight. So
-              &ldquo;buy the best player and keep him&rdquo; is a strategy in
-              some seasons and a fiction in others, and which kind of season it
-              is cannot be known in August.
+              He is owned in three-quarters to nine-tenths of manager-gameweeks,
+              which is the opposite of what I expected. Where owned and started
+              differ he was on the bench, scoring nothing. The last column is
+              the contested part: one season a single player held top spot for
+              23 of 32 weeks, another the longest run was 8. &ldquo;Buy the best
+              player and keep him&rdquo; is a strategy in some seasons and a
+              fiction in others, and August cannot tell you which.
             </p>
 
             <h3>What the armband could have returned</h3>
-            <p className="validation-verdict">
+            <p className="validation-note">
               Per gameweek, the player&rsquo;s own score rather than the doubled
               one. Best in your eleven is the best captain in the side that was
               fielded; best in the game is the best in the entire league, which
@@ -662,7 +727,7 @@ export function ValidationReport() {
         {openingSeasons.length === 0 ? null : (
           <>
             <h3>Is it easier to start with him than to get him later?</h3>
-            <p className="validation-verdict">
+            <p className="validation-note">
               The same season played twice from the same seeds. The only
               difference is whether the highest projection at the opening
               gameweek was forced into the opening fifteen. Who that is comes
@@ -711,22 +776,14 @@ export function ValidationReport() {
               </table>
             </div>
             <p className="validation-verdict">
-              The claim survives in two seasons of four, and neither of the
-              other two contradicts it so much as make it moot. Read the last
-              column first: where the projection&rsquo;s opening pick was a
-              player the transfers were going to buy within a fortnight anyway,
-              forcing him into the fifteen bought a week or two and nothing
-              else. The one negative season is the informative one &mdash; the
-              highest projection at that opening deadline was a goalkeeper, and
-              spending the opening budget on the highest number in the game is a
-              worse rule than it sounds when the highest number belongs to
-              somebody who cannot be captained.
-            </p>
-            <p className="validation-verdict">
-              So: worth doing when the man at the top is a premium attacker,
-              worth nothing when he is not, and worth much more against a
-              manager who would have waited. It is a real effect and it is
-              smaller than it feels.
+              Worth doing when the man at the top is a premium attacker, worth
+              nothing when he is not. The negative season is the informative
+              one: the highest projection at that deadline was a goalkeeper, and
+              spending the opening budget on the biggest number in the game is a
+              worse rule than it sounds when that number belongs to somebody who
+              cannot be captained. Read the last column too &mdash; where the
+              transfers were going to buy him within a fortnight anyway, forcing
+              him in bought a week, not a season.
             </p>
           </>
         )}

@@ -67,12 +67,72 @@ const THESIS_NAMES: Record<string, string> = {
   differential: "captaining away from the crowd",
   form: "chasing form",
   robust: "captaining the safest",
+  set_and_forget: "picking one captain in August and never changing",
   template: "leaning toward the crowd",
   upside: "captaining the biggest upside",
 };
 
 export function thesisName(label: string): string {
   return THESIS_NAMES[label] ?? label;
+}
+
+/** One line each, in the words the rule would use if it could speak. */
+const THESIS_RULES: Record<string, string> = {
+  expected_points: "Captain the highest projected scorer.",
+  availability_adjusted:
+    "The same, after multiplying each projection by his chance of starting.",
+  ceiling_and_fixture:
+    "Captain the biggest best-case afternoon, scaled by how kind the fixture is.",
+  components:
+    "Captain the highest score rebuilt from its parts rather than from the total.",
+  crowd: "Captain whoever the most managers own.",
+  differential: "Captain the best projection nobody else owns.",
+  form: "Captain whoever has scored most lately, ignoring anyone under 2.0.",
+  robust: "Captain the safest: the projection minus its own spread.",
+  set_and_forget:
+    "Pick the most owned player in the first week and never change.",
+  template:
+    "Captain the best projection, nudged toward whoever is widely owned.",
+  upside: "Captain the biggest upside: the projection plus its own spread.",
+};
+
+export interface ThesisRow {
+  label: string;
+  name: string;
+  rule: string;
+  /** What a whole season of this rule is worth against the projection. */
+  pointsPerSeason: number;
+  /** The same, as the interval it was measured on. */
+  lowPerSeason: number;
+  highPerSeason: number;
+  verdict: "better" | "worse" | "unproven";
+}
+
+/** Gameweeks in a season, so a per-week gap can be read as a season's worth. */
+export const SEASON_GAMEWEEKS = 38;
+
+/**
+ * The whole comparison as one table, sorted by what it is worth.
+ *
+ * A gap of a tenth of a point a week is unreadable and a season's worth of it
+ * is not, so the per-week figures are multiplied out. Nothing else changes: the
+ * verdict still comes from the interval, so a rule worth points on average and
+ * unproven on the interval says so in its own row.
+ */
+export function thesisTable(
+  intervals: readonly CaptaincyInterval[],
+): ThesisRow[] {
+  return [...intervals]
+    .sort((left, right) => right.improvement - left.improvement)
+    .map((entry) => ({
+      label: entry.label,
+      name: thesisName(entry.label),
+      rule: THESIS_RULES[entry.label] ?? "",
+      pointsPerSeason: entry.improvement * SEASON_GAMEWEEKS,
+      lowPerSeason: entry.lower * SEASON_GAMEWEEKS,
+      highPerSeason: entry.upper * SEASON_GAMEWEEKS,
+      verdict: entry.better ? "better" : entry.upper < 0 ? "worse" : "unproven",
+    }));
 }
 
 export function captaincyVerdict(

@@ -2,9 +2,11 @@ import { describe, expect, it } from "vitest";
 
 import validation from "../data/validation.json";
 import {
+  SEASON_GAMEWEEKS,
   type CaptaincyInterval,
   captaincyVerdict,
   ceilingSentence,
+  thesisTable,
   whichThesisVerdict,
 } from "./captaincy-verdict";
 
@@ -31,6 +33,54 @@ function interval(
     better: lower > 0,
   };
 }
+
+describe("the table the page reads", () => {
+  const rows = [
+    interval("form", -0.3, -0.5, -0.1),
+    interval("template", 0.15, -0.34, 0.69),
+    interval("crowd", 0.4, 0.1, 0.7),
+  ];
+
+  it("multiplies a per-week gap out to a season, which is the readable unit", () => {
+    const [best] = thesisTable(rows);
+
+    expect(best?.pointsPerSeason).toBeCloseTo(0.4 * SEASON_GAMEWEEKS, 6);
+  });
+
+  it("sorts by what the rule is worth, best first", () => {
+    expect(thesisTable(rows).map((row) => row.label)).toEqual([
+      "crowd",
+      "template",
+      "form",
+    ]);
+  });
+
+  it("takes the verdict from the interval, never from the mean", () => {
+    const table = thesisTable(rows);
+
+    // Template is second on the mean and still unproven, because its interval
+    // straddles zero. A table sorted on the average alone would crown it.
+    expect(table.map((row) => row.verdict)).toEqual([
+      "better",
+      "unproven",
+      "worse",
+    ]);
+  });
+
+  it("gives every scored rule a plain-language description", () => {
+    for (const row of thesisTable(validation.captainSignificance)) {
+      expect(row.rule.length, row.label).toBeGreaterThan(0);
+      expect(row.name, row.label).not.toBe(row.label);
+    }
+  });
+
+  it("carries the interval through in the same unit as the headline", () => {
+    const [best] = thesisTable(rows);
+
+    expect(best?.lowPerSeason).toBeLessThan(best?.pointsPerSeason ?? 0);
+    expect(best?.highPerSeason).toBeGreaterThan(best?.pointsPerSeason ?? 0);
+  });
+});
 
 describe("captaincyVerdict", () => {
   it("takes the week count from the intervals", () => {

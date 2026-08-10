@@ -202,10 +202,18 @@ describe("the chart it links to", () => {
     expect(axis("GKP")).toBe("minutes");
   });
 
-  it("brackets the price a million either side", () => {
+  it("brackets the price a million either side, on half-million steps", () => {
     const params = link({ priceTenths: 55 });
     expect(params.get("pricefrom")).toBe("45");
     expect(params.get("priceto")).toBe("65");
+  });
+
+  it("widens an awkward price out to the steps managers actually shop in", () => {
+    // A defender at 6.3m used to open a band starting at 5.3m, which drops
+    // everybody sitting on the round number just below it.
+    const params = link({ priceTenths: 63 });
+    expect(params.get("pricefrom")).toBe("50");
+    expect(params.get("priceto")).toBe("75");
   });
 
   it("plots the horizon against the per-match figure it came from", () => {
