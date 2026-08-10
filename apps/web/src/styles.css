@@ -4382,6 +4382,178 @@ h1[tabindex="-1"]:focus-visible {
   color: var(--ink-soft);
 }
 
+/* Which race is being run. Asked, never assumed. */
+.rank-objective {
+  margin: clamp(24px, 3vw, 36px) 0;
+  border: 2px solid var(--rule);
+  padding: 14px 16px 16px;
+  background: var(--paper-deep);
+}
+
+.rank-objective > h2 {
+  margin: 0 0 6px;
+  font-size: clamp(18px, 1.9vw, 24px);
+}
+
+.rank-objective > p {
+  margin: 0 0 12px;
+  font-size: 14px;
+  color: var(--ink-soft);
+}
+
+.rank-objective-choice {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+  margin: 0;
+  border: 0;
+  padding: 0;
+}
+
+.rank-objective-choice legend {
+  padding: 0;
+  font-family: var(--fa-body);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.rank-objective-choice label {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  font-family: var(--fa-display);
+  font-size: 15px;
+}
+
+.rank-objective-league {
+  margin: 14px 0 0;
+  max-width: 420px;
+}
+
+.rank-objective-league > label {
+  display: block;
+  margin: 0 0 4px;
+  font-family: var(--fa-body);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+/* The squads you are actually racing. */
+.mini-league {
+  margin: clamp(24px, 3vw, 36px) 0;
+}
+
+.mini-league > h2 {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  margin: 0 0 4px;
+  font-size: clamp(18px, 1.9vw, 24px);
+}
+
+.mini-league > h3,
+.mini-league-board > h3 {
+  margin: 18px 0 6px;
+  font-size: 15px;
+}
+
+.mini-league-lede,
+.mini-league-verdict {
+  margin: 0 0 8px;
+  font-size: 14px;
+  color: var(--ink-soft);
+}
+
+.mini-league-verdict {
+  border-left: 3px solid var(--amber);
+  padding-left: 12px;
+}
+
+.mini-league-failed {
+  margin: 0;
+  border-left: 3px solid var(--rule);
+  padding-left: 12px;
+  color: var(--ink-soft);
+}
+
+.mini-league-names {
+  display: grid;
+  gap: 2px;
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+  border: 2px solid var(--rule);
+  background: var(--rule);
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+}
+
+.mini-league-names li {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding: 6px 8px;
+  background: var(--paper-deep);
+  font-family: var(--fa-display);
+  font-size: 14px;
+}
+
+.mini-league-names li .mono {
+  margin-left: auto;
+  font-size: 11px;
+  color: var(--ink-soft);
+}
+
+.league-shirt {
+  display: block;
+  width: 12px;
+  height: 16px;
+  flex: 0 0 auto;
+  shape-rendering: crispEdges;
+}
+
+.mini-league-roster {
+  margin: 18px 0 0;
+  border: 1px solid var(--rule);
+  padding: 8px 12px;
+}
+
+.mini-league-roster summary {
+  cursor: pointer;
+  font-size: 12px;
+  color: var(--ink-soft);
+}
+
+.league-roster {
+  margin: 10px 0 4px;
+  padding: 0;
+  list-style: none;
+}
+
+.league-roster li {
+  display: grid;
+  gap: 10px;
+  align-items: baseline;
+  padding: 4px 0;
+  border-top: 1px solid var(--rule);
+  grid-template-columns: 32px minmax(0, 1fr) minmax(0, 1fr) auto;
+  font-size: 13px;
+}
+
+.league-roster-rank,
+.league-roster-points {
+  font-size: 11px;
+  color: var(--ink-soft);
+}
+
+.league-roster-captain {
+  font-size: 12px;
+  color: var(--ink-soft);
+}
+
 .top-picks {
   margin: clamp(28px, 4vw, 44px) 0 0;
 }

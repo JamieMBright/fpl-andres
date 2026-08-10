@@ -21,7 +21,10 @@ import {
  */
 const SETTLE = 30_000;
 
-vi.setConfig({ testTimeout: SETTLE });
+// Strictly above the query budget, not equal to it. A `findBy` allowed thirty
+// seconds inside a thirty-second test can never report what it was waiting for:
+// the test times out first and says only that it did.
+vi.setConfig({ testTimeout: SETTLE * 3 });
 
 const readyState = {
   ...teamStateCases.valid[0]!,

@@ -52,9 +52,10 @@ async function fillSquad(squad: readonly SolverPlayer[]): Promise<void> {
   // rather than by a slot index the pitch no longer exposes.
   const search = screen.getByRole("searchbox", { name: /search/i });
   for (const player of squad) {
-    // Pasted rather than typed: fifteen names one keystroke at a time takes
-    // longer than the whole suite's per-test budget.
-    await user.clear(search);
+    // Selected and pasted over rather than cleared and retyped. Clearing sends
+    // the search back to empty, and an empty search renders the two hundred
+    // rows the market caps at -- fifteen times, for nothing.
+    await user.tripleClick(search);
     await user.paste(player.name);
     await user.click(
       screen.getByRole("button", { name: `Add ${player.name}` }),
@@ -91,7 +92,10 @@ describe("DeclaredSquadBuilder", () => {
   // Fifteen real interactions through a six-hundred-player market. The default
   // five seconds fits when the file runs alone and does not when the suite runs
   // in parallel, which is a property of the runner rather than of the code.
-  const JOURNEY_TIMEOUT = 30_000;
+  // Measured at eight seconds alone and forty under a full parallel suite on a
+  // loaded machine, so the number is a safety net rather than a budget: it must
+  // never be the thing that decides whether this journey works.
+  const JOURNEY_TIMEOUT = 120_000;
 
   it(
     "locks in a legal fifteen and keeps it in this browser",

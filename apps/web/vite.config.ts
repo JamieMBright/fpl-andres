@@ -1,4 +1,5 @@
 import react from "@vitejs/plugin-react";
+import { availableParallelism } from "node:os";
 import { defineConfig, type Plugin } from "vitest/config";
 
 type RouteHandler = (path: string, method: string) => Promise<Response>;
@@ -91,13 +92,21 @@ const DOM_TESTS = [
 
 const NEVER = ["**/node_modules/**", "**/dist/**", "**/test-results/**"];
 
+/**
+ * Forks, capped.
+ *
+ * One per core is twenty-two jsdom documents on a development machine, which
+ * starves the pool into "failed to start forks worker" long before it runs out
+ * of assertions to make. A fixed eight is the opposite mistake on a two-core CI
+ * runner, so it is a share of what the machine actually has, floored at two so
+ * a single-core box still runs in parallel at all.
+ */
+const WORKERS = Math.max(2, Math.min(8, availableParallelism() - 1));
+
 export default defineConfig({
   plugins: [react(), apiRoutes()],
   test: {
-    // One fork per core is twenty-two jsdom documents on this machine, which
-    // starves the pool into "failed to start forks worker" long before it runs
-    // out of assertions to make.
-    maxWorkers: 8,
+    maxWorkers: WORKERS,
     projects: [
       {
         extends: true,
@@ -107,6 +116,10 @@ export default defineConfig({
           include: DOM_TESTS,
           exclude: NEVER,
           setupFiles: "./src/test/setup.ts",
+          // A browser journey is not a unit test. None of these assert timing,
+          // and the five-second default measures how busy the runner is rather
+          // than whether the page works.
+          testTimeout: 60_000,
         },
       },
       {

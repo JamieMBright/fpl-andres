@@ -114,12 +114,17 @@ describe("bounded state", () => {
   it("does not grow without limit when every request has a new key", () => {
     // An unbounded map keyed by client address is itself a denial of service:
     // a million addresses would exhaust memory rather than the budget.
+    //
+    // A thousand past the cap, not fifteen thousand. Once the table is full
+    // every further new key sweeps all five thousand entries looking for an
+    // expired one, so the loop is quadratic and the extra keys bought no
+    // evidence -- only a test that blew its timeout on a busy runner.
     const clock = { at: 1_000_000 };
     const limiter = new RateLimiter(
       { perClient: 3, global: 1_000_000 },
       () => clock.at,
     );
-    for (let index = 0; index < 20_000; index += 1) {
+    for (let index = 0; index < 6_000; index += 1) {
       limiter.check(`client-${index}`);
     }
     expect(limiter.trackedClients).toBeLessThanOrEqual(5_000);

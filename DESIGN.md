@@ -271,7 +271,7 @@ Every remote surface implements idle, loading, ready, stale, degraded and error.
 
 ## Component inventory
 
-Forty-three components in `apps/web/src/components`. The column
+Forty-five components in `apps/web/src/components`. The column
 that matters is the last one: what a browser journey already proves about each,
 so a review knows what it does not have to check by hand.
 
@@ -324,6 +324,8 @@ so a review knows what it does not have to check by hand.
 | `LiveSquad`            | The fifteen and what each of them actually did      | unit (`LiveSquad.test.tsx`)          |
 | `ScoreMarks`           | A gameweek drawn as balls, shields, medals, a star  | unit (`ScoreMarks.test.tsx`)         |
 | `DeclaredChipsForm`    | Chips already spent, and one committed ahead        | unit (`declared-chips.test.ts`)      |
+| `RankObjectiveForm`    | Which race is being run, asked before advising      | unit (`rank-objective.test.ts`)      |
+| `MiniLeagueThreats`    | What your league holds that you do not              | unit (`mini-league.test.ts`)         |
 | `Methodology`          | How the projection is built                         | —                                    |
 | `BielsaBucket`         | The mark                                            | —                                    |
 

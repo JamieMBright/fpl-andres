@@ -16,6 +16,8 @@ import {
 import { DeclaredTransferForm } from "../components/DeclaredTransferForm";
 import { DeclaredChipsForm } from "../components/DeclaredChipsForm";
 import { LiveSquad } from "../components/LiveSquad";
+import { MiniLeagueThreats } from "../components/MiniLeagueThreats";
+import { RankObjectiveForm } from "../components/RankObjectiveForm";
 import { PlayerDetail } from "../components/PlayerDetail";
 import { RouteHeading } from "../components/RouteHeading";
 import { Scorecard } from "../components/Scorecard";
@@ -45,6 +47,11 @@ import {
   readDeclaredChips,
   type DeclaredChips,
 } from "../state/declared-chips";
+import {
+  chasesLeague,
+  readRankObjective,
+  type RankObjective,
+} from "../state/rank-objective";
 import {
   CAPTAINCY_VERDICT,
   chipReason,
@@ -615,6 +622,9 @@ export default function SeasonPlanPage() {
   const resultRef = useRef<HTMLDivElement>(null);
   // Bumped when a transfer is declared, so the squad is read again with it.
   const [declaredAt, setDeclaredAt] = useState(0);
+  const [chosenObjective, setChosenObjective] = useState<RankObjective | null>(
+    null,
+  );
   // Held beside the stored value rather than replacing it, and stamped with the
   // team it belongs to, so switching id cannot inherit the last one's chips.
   const [chipEdit, setChipEdit] = useState<{
@@ -709,6 +719,13 @@ export default function SeasonPlanPage() {
       ? chipEdit.chips
       : readDeclaredChips(window.localStorage, teamId);
   }, [chipEdit, teamId]);
+
+  // Held beside the stored answer and stamped with the team it belongs to, so
+  // switching id cannot inherit the last one's league.
+  const objective = useMemo(() => {
+    if (teamId === null) return null;
+    return chosenObjective ?? readRankObjective(window.localStorage, teamId);
+  }, [chosenObjective, teamId]);
 
   const live = useMemo(() => {
     // His own fifteen beats a gameweek number, because it is his season either
@@ -963,6 +980,14 @@ export default function SeasonPlanPage() {
       ) : null}
 
       {teamId === null ? null : (
+        <RankObjectiveForm
+          entryId={teamId}
+          key={teamId}
+          onChosen={setChosenObjective}
+        />
+      )}
+
+      {teamId === null ? null : (
         <DeclaredChipsForm
           entryId={teamId}
           key={teamId}
@@ -977,6 +1002,16 @@ export default function SeasonPlanPage() {
       {published === null ? null : (
         <LiveSquad event={published.event} picks={published.picks} />
       )}
+
+      {published !== null && chasesLeague(objective) ? (
+        <MiniLeagueThreats
+          event={published.event}
+          leagueId={objective.leagueId}
+          mine={published.picks
+            .filter((pick) => pick.multiplier > 0)
+            .map((pick) => pick.elementId)}
+        />
+      ) : null}
 
       <div className="plan-preamble">
         <p className="plan-preamble-line">
