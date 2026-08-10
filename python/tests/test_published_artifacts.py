@@ -44,11 +44,16 @@ def test_every_artifact_records_when_it_was_generated(name: str) -> None:
 
 
 def test_fpl500_shape() -> None:
-    """The ranking the site lists, and the sweep position that produced it.
+    """The ranking the site describes, and the sweep position that produced it.
 
     `sweptTo` is here because the ranking is only as good as how much of the
     register has been read, and four fifths of it has not. A page showing the
     five hundred without saying that is claiming more than it has.
+
+    The published artifact describes the cohort without naming it. Membership
+    is the thing being ranked, and a browser that can list it can be scraped
+    for it, so what ships is the shape of the distribution and nothing that
+    identifies a manager.
     """
     payload = _artifact("fpl500")
     _require_keys(
@@ -56,24 +61,34 @@ def test_fpl500_shape() -> None:
         {
             "catalogueSize",
             "generatedAt",
+            "latestSeasonEntries",
             "listed",
-            "managers",
             "minimumCoverage",
             "portfolioEvents",
+            "rankBins",
+            "rankHistogram",
             "scoreAtRank",
             "seasonsCounted",
             "settings",
             "size",
             "sweptTo",
+            "thisSeason",
         },
         "fpl500",
     )
-    assert payload["managers"], "fpl500 must list the head of the ranking"
-    assert len(payload["managers"]) == payload["listed"]
+    assert payload["listed"] == 0, "the web artifact must name nobody"
+    assert "managers" not in payload
+    assert payload["rankHistogram"], "the distribution is what is published"
+    for season, counts in payload["rankHistogram"].items():
+        assert len(counts) == len(payload["rankBins"]) + 1, (
+            f"{season} histogram must have one bin more than it has edges"
+        )
+    # This season's leaders are public on the FPL site already, so they may be
+    # named. Before the first gameweek is scored there are none.
     _require_keys(
-        payload["managers"][0],
-        {"bestPercentile", "entryId", "latestSeason", "rank", "score", "seasons"},
-        "fpl500 manager",
+        payload["thisSeason"],
+        {"managers", "rankCeiling", "size"},
+        "fpl500 thisSeason",
     )
     # The fund is the point of the page, so its absence has to be a published
     # fact rather than an empty section nobody can explain.

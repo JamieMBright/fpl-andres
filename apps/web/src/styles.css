@@ -31,6 +31,11 @@
   /* Bucket mark holds its own hue in both themes */
   --fa-bucket: #5308dc;
 
+  /* The two signal colours a teletext page reserves for the loud cells. Held
+     back until now so that when they are used they still read as a signal. */
+  --fa-signal-green: #17c964;
+  --fa-signal-red: #d81e2c;
+
   --fa-body: "IBM Plex Mono", ui-monospace, monospace;
   --fa-display: "Space Grotesk", "IBM Plex Sans", sans-serif;
   --fa-stripe-width: 88px;
@@ -3929,18 +3934,26 @@ h1[tabindex="-1"]:focus-visible {
 }
 
 .teletext-strip > :nth-child(4) {
-  color: var(--fa-gk-white);
-  background: var(--fa-gk-purple);
+  color: var(--fa-gk-black);
+  background: var(--fa-signal-green);
 }
 
 .teletext-strip > :nth-child(5) {
   color: var(--fa-gk-white);
-  background: var(--fa-bucket);
+  background: var(--fa-gk-purple);
 }
 
 .teletext-strip > :nth-child(6) {
   color: var(--fa-gk-white);
-  background: var(--fa-gk-black);
+  background: var(--fa-bucket);
+}
+
+/* FAQ is a destination people arrive at, not one they browse to, so it takes
+   half a cell and stays last. */
+.teletext-strip > .teletext-strip-half {
+  flex: 0.5 1 0;
+  color: var(--fa-gk-white);
+  background: var(--fa-signal-red);
 }
 
 @media (width <= 640px) {
@@ -3961,8 +3974,220 @@ h1[tabindex="-1"]:focus-visible {
   margin-top: 34px;
 }
 
-.fpl500-page .squad-table-wrap {
-  max-width: 640px;
+/* The four numbers that place the whole thing, before any prose. */
+.fpl500-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 22px;
+  margin: 18px 0 26px;
+  padding: 0;
+  list-style: none;
+  font-family: var(--fa-body);
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+
+.fpl500-facts strong {
+  font-size: 17px;
+  color: var(--ink);
+}
+
+/* Folds, colour-coded to the strip so a section is found by its cell colour. */
+.fpl500-fold {
+  margin: 0 0 10px;
+  border: 1px solid var(--rule);
+  background: var(--paper-deep);
+}
+
+.fpl500-fold > summary {
+  padding: 9px 14px;
+  font-family: var(--fa-body);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: pointer;
+  color: var(--fa-gk-black);
+}
+
+.fpl500-fold > summary:focus-visible {
+  outline: 3px solid var(--signal-blue);
+  outline-offset: -3px;
+}
+
+.fpl500-fold.is-what > summary {
+  background: var(--fa-gk-lime);
+}
+
+.fpl500-fold.is-how > summary {
+  background: var(--fa-gk-teal);
+}
+
+.fpl500-fold.is-who > summary {
+  color: var(--fa-gk-black);
+  background: var(--fa-signal-green);
+}
+
+.fpl500-fold.is-when > summary {
+  color: var(--fa-gk-white);
+  background: var(--fa-gk-purple);
+}
+
+.fpl500-fold-body {
+  padding: 4px 16px 18px;
+}
+
+.fpl500-note {
+  margin-top: -4px;
+  font-size: 12px;
+  color: var(--ink-soft);
+}
+
+/* This season's standings, bounded and paged rather than a thousand rows. */
+.fpl500-scroll {
+  max-height: 340px;
+  overflow-y: auto;
+  border: 1px solid var(--rule);
+}
+
+.fpl500-pager {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-top: 10px;
+  font-size: 12px;
+}
+
+.fpl500-pager button {
+  padding: 5px 12px;
+  border: 1px solid var(--rule);
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--fa-body);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.fpl500-pager button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Five seasons of the same distribution, laid over one axis. */
+.ridge-chart {
+  margin: 18px 0 8px;
+}
+
+.ridge-chart figcaption {
+  margin-bottom: 6px;
+  font-size: 12px;
+  color: var(--ink-soft);
+}
+
+.ridge-grid {
+  stroke: var(--rule);
+  stroke-width: 1;
+  opacity: 0.35;
+}
+
+.ridge-axis {
+  stroke: var(--rule);
+  stroke-width: 1;
+}
+
+.ridge-area {
+  fill: var(--signal-blue);
+  opacity: 0.28;
+}
+
+.ridge-line {
+  fill: none;
+  stroke: var(--signal-blue);
+  stroke-width: 1.6;
+}
+
+.ridge-row.separate .ridge-area {
+  fill: var(--fa-signal-green);
+}
+
+.ridge-row.separate .ridge-line {
+  stroke: var(--fa-signal-green);
+}
+
+.ridge-label,
+.ridge-tick {
+  fill: var(--ink-soft);
+  font-family: var(--fa-body);
+  font-size: 10px;
+}
+
+.ridge-label {
+  text-anchor: end;
+}
+
+.ridge-tick {
+  text-anchor: middle;
+}
+
+/* What will be here after gameweek one, drawn as the real frame. */
+.planned-grid-wrap {
+  display: grid;
+  gap: 18px;
+  margin: 18px 0 8px;
+  grid-template-columns: repeat(auto-fit, minmax(248px, 1fr));
+}
+
+.planned-chart {
+  margin: 0;
+  padding: 12px 12px 8px;
+  border: 1px solid var(--rule);
+  background: var(--paper-deep);
+}
+
+.planned-chart figcaption {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  font-family: var(--fa-body);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.planned-answers {
+  margin: 4px 0 8px;
+  font-size: 12px;
+  color: var(--ink-soft);
+}
+
+.planned-frame {
+  width: 100%;
+  height: auto;
+}
+
+.planned-axis {
+  stroke: var(--rule);
+  stroke-width: 1.2;
+}
+
+.planned-grid {
+  stroke: var(--rule);
+  stroke-width: 1;
+  opacity: 0.3;
+}
+
+.planned-empty {
+  fill: var(--ink-soft);
+  font-family: var(--fa-body);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-anchor: middle;
+  text-transform: uppercase;
+}
+
+.planned-axes {
+  margin: 4px 0 0;
+  font-size: 11px;
+  color: var(--ink-soft);
 }
 
 /* Bielsa bucket mark. Every colour is a teletext one, set on the paths

@@ -40,15 +40,22 @@ CHECKPOINT = COHORT_DIR / "sweep-checkpoint.json"
 #: Where `capture_cohort_picks` writes a gameweek's squads. Empty until the
 #: season starts: the fund cannot hold anything before anybody has picked.
 PORTFOLIO_DIR = COHORT_DIR / "portfolio"
+#: This season's Overall standings, written by `harvest_league`.
+STANDINGS = COHORT_DIR / "fpl100.json"
 DEFAULT_OUTPUT = COHORT_DIR / "fpl500.json"
 DEFAULT_WEB_OUTPUT = Path("apps/web/src/data/fpl500.json")
 SCHEMA_VERSION = 1
 
-#: How many of the ranking the site lists by name. The whole five hundred is a
-#: hundred kilobytes of entry ids nobody scrolls; what a reader needs is the
-#: shape of the cut and enough of the head to see what clearing it looks like.
-#: The distribution below carries the rest.
-WEB_LISTED = 50
+#: How many of the ranking the site lists by name. None of it. Who clears the
+#: bar is the one thing in this repository somebody could copy outright, and a
+#: page can say everything useful about the cohort as a distribution. The
+#: current season's Overall standings below are a different list and are public
+#: on FPL's own site, so those are named.
+WEB_LISTED = 0
+
+#: How many of this season's standings the page carries. Enough to page
+#: through in a bounded box, not so many that the chunk is mostly entry ids.
+CURRENT_SEASON_LISTED = 100
 
 #: Where the score distribution is sampled, so a reader can see the curve
 #: without shipping five hundred points to draw it with.
@@ -185,6 +192,49 @@ def main(argv: Sequence[str] | None = None) -> int:
     return 0
 
 
+#: Where the rank histogram cuts. Log-spaced because the interesting structure
+#: is all at the top: the gap between 1,000th and 10,000th matters far more
+#: than the gap between a million and two.
+RANK_BINS: tuple[int, ...] = (100, 1_000, 5_000, 10_000, 50_000, 100_000, 500_000)
+
+#: How many seasons of the distribution to draw. Five is a chart that reads.
+DISTRIBUTION_SEASONS = 5
+
+
+def _rank_histogram(
+    ranked: Sequence[EliteScore],
+    managers: Sequence[SweptManager],
+    seasons: int,
+) -> dict[str, list[int]]:
+    """Where the ranked five hundred actually finished, season by season.
+
+    A distribution rather than a list, because who is in FPL500 is the one
+    thing this repository has that somebody could simply copy. Counts per bin
+    say everything a reader needs about how the cohort performs and name
+    nobody.
+    """
+    members = {row.entry_id for row in ranked}
+    finishes: dict[str, list[int]] = {}
+    for manager in managers:
+        if manager.entry_id not in members:
+            continue
+        for season in manager.seasons:
+            finishes.setdefault(season.season, []).append(season.rank)
+
+    recent = sorted(finishes, key=season_start_year)[-seasons:]
+    histogram: dict[str, list[int]] = {}
+    for season_name in recent:
+        counts = [0] * (len(RANK_BINS) + 1)
+        for rank in finishes[season_name]:
+            slot = next(
+                (index for index, edge in enumerate(RANK_BINS) if rank <= edge),
+                len(RANK_BINS),
+            )
+            counts[slot] += 1
+        histogram[season_name] = counts
+    return histogram
+
+
 def _web_payload(
     ranked: Sequence[EliteScore],
     managers: Sequence[SweptManager],
@@ -235,20 +285,33 @@ def _web_payload(
             if depth <= len(ranked)
         },
         "seasonsCounted": _histogram(row.seasons_counted for row in ranked),
-        "managers": [
-            {
-                "rank": position,
-                "entryId": row.entry_id,
-                "score": round(row.score, 6),
-                "seasons": row.seasons_counted,
-                "bestPercentile": round(row.best_percentile, 6),
-                "latestPercentile": (
-                    None if row.latest_percentile is None else round(row.latest_percentile, 6)
-                ),
-                "latestSeason": row.latest_season,
-            }
-            for position, row in enumerate(ranked[:WEB_LISTED], 1)
-        ],
+        "rankBins": list(RANK_BINS),
+        "rankHistogram": _rank_histogram(ranked, managers, DISTRIBUTION_SEASONS),
+        # This season's Overall standings, which are public and are not the
+        # same list. Who is in FPL500 is the one thing here somebody could
+        # simply copy, so it is published as a distribution and never as names.
+        "thisSeason": _this_season(),
+    }
+
+
+def _this_season() -> dict[str, object]:
+    """The current Overall standings, straight off the league.
+
+    Empty before a ball is kicked, which is the honest answer rather than a
+    fault: the Overall league exists all summer and nobody has a rank in it.
+    """
+    if not STANDINGS.exists():
+        return {"size": 0, "managers": []}
+    saved = parse_json(STANDINGS.read_text(encoding="utf-8"), source=str(STANDINGS))
+    assert isinstance(saved, dict)
+    rows = saved.get("managers")
+    if not isinstance(rows, list):
+        return {"size": 0, "managers": []}
+    return {
+        "generatedAt": saved.get("generatedAt"),
+        "rankCeiling": saved.get("rankCeiling"),
+        "size": len(rows),
+        "managers": rows[:CURRENT_SEASON_LISTED],
     }
 
 

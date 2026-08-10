@@ -115,9 +115,12 @@ export function ApplicationFrame() {
         <Link to="/plan">Plan</Link>
         <Link to="/players">Players</Link>
         <Link to="/analysis">Analysis</Link>
+        <Link to="/fpl500">FPL500</Link>
         <Link to="/methodology">Method</Link>
         <Link to="/calibration">Calibration</Link>
-        <Link to="/faq">FAQ</Link>
+        <Link className="teletext-strip-half" to="/faq">
+          FAQ
+        </Link>
       </nav>
       <main id="main-content" tabIndex={-1}>
         <Outlet />

@@ -1,4 +1,5 @@
 import { render, screen, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 import { describe, expect, it } from "vitest";
 
@@ -7,10 +8,14 @@ import artifact from "../data/fpl500.json";
 import { fineShare, integer } from "../format";
 
 /**
- * The page exists to say two things a reader cannot get from the ranking
- * itself: how little of the register has been read, and that the fund does not
- * hold anything yet. Both are easy to lose to a redesign and neither is
- * visible in a screenshot, so both are pinned here.
+ * Two claims here are easy to lose to a redesign and neither is visible in a
+ * screenshot: that the page never names who is in FPL500, and that it says how
+ * little of the register has been read.
+ *
+ * The first is the one that matters commercially. Who clears the bar is the
+ * single thing in this repository somebody could copy outright, so the page
+ * carries a distribution and the artifact behind it carries no entry ids at
+ * all. A well-meaning change that adds "just the top ten" gives it away.
  */
 describe("Fpl500Playbook", () => {
   function draw() {
@@ -21,58 +26,85 @@ describe("Fpl500Playbook", () => {
     );
   }
 
+  it("names nobody in the ranking", () => {
+    draw();
+
+    expect(artifact.listed).toBe(0);
+    expect(JSON.stringify(artifact.rankHistogram)).not.toContain("entryId");
+    // The only entry ids the page may show are this season's public standings.
+    expect(
+      screen.queryByRole("link", { name: /^\d+$/ }),
+    ).not.toBeInTheDocument();
+  });
+
+  it("publishes the distribution instead", () => {
+    draw();
+
+    expect(Object.keys(artifact.rankHistogram).length).toBeGreaterThan(1);
+    for (const counts of Object.values(artifact.rankHistogram)) {
+      expect(counts).toHaveLength(artifact.rankBins.length + 1);
+    }
+    expect(screen.getByText(/Where they finish/)).toBeInTheDocument();
+  });
+
   it("says how far the register has been read", () => {
     draw();
 
-    // Four fifths of the ids have never been looked at. A page listing five
+    // Four fifths of the ids have never been looked at. A page about five
     // hundred managers without that is claiming a completeness it lacks.
-    const swept = integer.format(artifact.sweptTo);
     expect(
-      screen.getByText(new RegExp(`Swept to id ${swept}`)),
+      screen.getByText(integer.format(artifact.sweptTo)),
     ).toBeInTheDocument();
+    expect(screen.getByText(/still unread/)).toBeInTheDocument();
   });
 
-  it("lists exactly the managers the artifact says it lists", () => {
-    draw();
-    const table = screen.getByRole("table");
-
-    expect(within(table).getAllByRole("row")).toHaveLength(artifact.listed + 1);
-  });
-
-  it("links each entry to its own public history", () => {
-    draw();
-    const first = artifact.managers[0]!;
-
-    expect(
-      screen.getByRole("link", { name: String(first.entryId) }),
-    ).toHaveAttribute(
-      "href",
-      `https://fantasy.premierleague.com/entry/${first.entryId}/history`,
-    );
-  });
-
-  it("says the ordering inside the five hundred carries little", () => {
-    // The scores span about 0.017 across all five hundred. Reading rank 12 as
-    // better than rank 300 is the mistake this section exists to prevent.
+  it("segments the page rather than running it together", () => {
     draw();
 
-    expect(
-      screen.getByRole("heading", { name: /order inside the five hundred/i }),
-    ).toBeInTheDocument();
+    for (const title of [
+      "What it is",
+      "How it is decided",
+      "Who is scoring this season",
+      "When it updates",
+    ]) {
+      expect(screen.getByText(title)).toBeInTheDocument();
+    }
   });
 
-  it("says plainly that the fund holds nothing yet", () => {
+  it("says plainly that nothing has been captured yet", () => {
     draw();
 
     expect(artifact.portfolioEvents).toEqual([]);
-    expect(screen.getByText(/Nothing captured yet/)).toBeInTheDocument();
+    expect(screen.getByText(/No deadline has passed/)).toBeInTheDocument();
   });
 
-  it("quotes the reconciler's own coverage floor rather than a number typed here", () => {
+  it("draws the frames the analysis will use, with their axes", () => {
     draw();
 
+    // An empty section says nothing about whether to come back. A frame with
+    // the right axes says exactly what will be in it.
+    expect(screen.getAllByText(/awaiting gameweek 1/).length).toBeGreaterThan(
+      4,
+    );
+    expect(screen.getAllByText(/Gameweek/).length).toBeGreaterThan(3);
+  });
+
+  it("quotes the reconciler's own coverage floor rather than a number typed here", async () => {
+    draw();
+
+    // Inside a closed fold, so it is hidden from the accessibility tree.
+    // jsdom does not open a `details` on a summary click, so it is asked for
+    // directly rather than through an interaction that would not happen.
+    await userEvent.click(
+      screen.getByRole("button", {
+        hidden: true,
+        name: "About the coverage floor",
+      }),
+    );
     expect(
-      screen.getByText(new RegExp(fineShare.format(artifact.minimumCoverage))),
+      within(screen.getByRole("tooltip")).getByText(
+        new RegExp(fineShare.format(artifact.minimumCoverage)),
+      ),
     ).toBeInTheDocument();
   });
 });

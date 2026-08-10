@@ -1,3 +1,9 @@
+import { useState } from "react";
+
+import { InfoMarker } from "./InfoMarker";
+import { BarChart, type Bar } from "./MethodChart";
+import { PlannedAnalysis } from "./PlannedAnalysis";
+import { RankRidge, type Ridge } from "./RankRidge";
 import fpl500 from "../data/fpl500.json";
 import { fineShare, integer } from "../format";
 
@@ -6,279 +12,278 @@ type Fpl500 = {
   catalogueSize: number;
   sweptTo: number | null;
   size: number;
-  listed: number;
-  settings: {
-    decayPerSeason: number;
-    preRulesChangeWeight: number;
-    rulesChangedIn: number;
-    shrinkageWeight: number;
-    priorPercentile: number;
-    minimumSeasons: number;
-  };
+  settings: { rulesChangedIn: number; minimumSeasons: number };
   latestSeason: string | null;
   latestSeasonEntries: number | null;
-  estimatedEntriesBySeason: Record<string, number>;
   minimumCoverage: number;
   portfolioEvents: number[];
-  scoreAtRank: Record<string, number>;
+  rankBins: number[];
+  rankHistogram: Record<string, number[]>;
   seasonsCounted: Record<string, number>;
-  managers: {
-    rank: number;
-    entryId: number;
-    score: number;
-    seasons: number;
-    bestPercentile: number;
-    latestPercentile: number | null;
-    latestSeason: string | null;
-  }[];
+  thisSeason: {
+    size: number;
+    managers: { rank: number; entryId: number; total: number }[];
+  };
 };
 
 const data = fpl500 as Fpl500;
 const number = integer;
+const PAGE = 20;
 
-/** Top 0.031% reads better than 0.999687, and is the same number. */
-function topShare(percentile: number): string {
-  return fineShare.format(1 - percentile);
+/** A fold, colour-coded like the strip above it. */
+function Fold({
+  children,
+  kind,
+  open,
+  title,
+}: {
+  children: React.ReactNode;
+  kind: string;
+  open?: boolean;
+  title: string;
+}) {
+  return (
+    <details className={`fpl500-fold is-${kind}`} open={open}>
+      <summary>{title}</summary>
+      <div className="fpl500-fold-body">{children}</div>
+    </details>
+  );
+}
+
+function CurrentSeason() {
+  const [page, setPage] = useState(0);
+  const rows = data.thisSeason.managers;
+
+  if (rows.length === 0) {
+    return (
+      <p className="mono">
+        The Overall league has no standings until the first gameweek is scored.
+      </p>
+    );
+  }
+
+  const pages = Math.ceil(rows.length / PAGE);
+  const shown = rows.slice(page * PAGE, page * PAGE + PAGE);
+  return (
+    <>
+      <div className="fpl500-scroll">
+        <table className="squad-table">
+          <caption className="visually-hidden">
+            The top {rows.length} of the Overall league this season
+          </caption>
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Entry</th>
+              <th scope="col">Points</th>
+            </tr>
+          </thead>
+          <tbody>
+            {shown.map((row) => (
+              <tr key={row.entryId}>
+                <td className="mono">{row.rank}</td>
+                <td className="mono">
+                  <a
+                    href={`https://fantasy.premierleague.com/entry/${row.entryId}/history`}
+                    rel="noreferrer noopener"
+                    target="_blank"
+                  >
+                    {row.entryId}
+                  </a>
+                </td>
+                <td className="mono">{number.format(row.total)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <div className="fpl500-pager">
+        <button
+          disabled={page === 0}
+          onClick={() => setPage((current) => current - 1)}
+          type="button"
+        >
+          Back
+        </button>
+        <span className="mono">
+          {page * PAGE + 1}–{Math.min(rows.length, page * PAGE + PAGE)} of{" "}
+          {rows.length}
+        </span>
+        <button
+          disabled={page + 1 >= pages}
+          onClick={() => setPage((current) => current + 1)}
+          type="button"
+        >
+          Next
+        </button>
+      </div>
+    </>
+  );
 }
 
 /**
- * The ranking, the thin cut through it, and the fund it has not become.
+ * The cohort: what it is, how it is chosen, who is scoring now, and what will
+ * be read off it once a ball is kicked.
  *
- * The five hundred are real and committed. The fund is not, and the section
- * saying so quotes the reconciler's own rules rather than describing them,
- * because a page that promises a feature is worth less than one that names
- * exactly what is missing before the feature can exist.
+ * The five hundred are not named. Who clears the bar is the one thing here
+ * somebody could copy outright, so the page carries the distribution instead —
+ * which is also the more useful thing to look at.
  */
 export function Fpl500Playbook() {
-  const scores = Object.entries(data.scoreAtRank);
-  const first = scores.at(0);
-  const last = scores.at(-1);
-  const spread = first && last ? Number(first[1]) - Number(last[1]) : null;
-  const held = Object.entries(data.seasonsCounted);
-  const captured = data.portfolioEvents.length;
+  const seasons: Bar[] = Object.entries(data.seasonsCounted).map(
+    ([held, managers]) => ({
+      label: held,
+      value: managers,
+      shown: String(managers),
+    }),
+  );
+  const ridges: Ridge[] = Object.entries(data.rankHistogram).map(
+    ([season, counts]) => ({ label: season, counts }),
+  );
 
   return (
     <>
-      <section aria-labelledby="fpl500-what">
-        <h2 id="fpl500-what">What the five hundred are</h2>
-        <p>
-          Every FPL entry id is public, so the register can be read rather than
-          guessed at. The sweep has walked{" "}
-          {data.sweptTo === null ? "part" : number.format(data.sweptTo)} of them
-          so far and kept {number.format(data.catalogueSize)} managers who have
-          finished inside the top ten thousand at least twice since 2021.{" "}
-          {data.latestSeasonEntries === null ? null : (
-            <>
-              For scale, {data.latestSeason} had about{" "}
-              {number.format(data.latestSeasonEntries)} entries.
-            </>
-          )}{" "}
-          Those {number.format(data.catalogueSize)} are then ranked, and the
-          first {number.format(data.size)} are FPL500.
-        </p>
-        <p className="mono">
-          {`Swept to id ${
-            data.sweptTo === null ? "—" : number.format(data.sweptTo)
-          } · catalogue ${number.format(
-            data.catalogueSize,
-          )} · ranked ${number.format(data.size)}`}
-        </p>
-      </section>
+      <ul className="fpl500-facts">
+        <li>
+          <strong>{number.format(data.size)}</strong> managers
+        </li>
+        <li>
+          from <strong>{number.format(data.catalogueSize)}</strong> catalogued
+        </li>
+        <li>
+          across{" "}
+          <strong>
+            {data.sweptTo === null ? "—" : number.format(data.sweptTo)}
+          </strong>{" "}
+          entry ids read
+        </li>
+        <li>
+          in a field of{" "}
+          <strong>{number.format(data.latestSeasonEntries ?? 0)}</strong>
+        </li>
+      </ul>
 
-      <section aria-labelledby="fpl500-score">
-        <h2 id="fpl500-score">How the ranking is built</h2>
-        <p>
-          Rank cannot be averaged across seasons. The field grew from about{" "}
-          {number.format(data.estimatedEntriesBySeason["2006/07"] ?? 0)} entries
-          to {number.format(data.latestSeasonEntries ?? 0)}, so ten thousandth
-          in 2007 and ten thousandth in 2026 are not the same achievement. Every
-          season is therefore converted to a percentile of its own field first.
-        </p>
+      <Fold kind="what" open title="What it is">
         <ul className="plan-promises">
           <li>
-            <span className="mono">{data.settings.decayPerSeason}</span> — what
-            a season is worth against the one after it. Form decays.
+            Every FPL entry id is public, so the register is read, not guessed
+            at.
           </li>
           <li>
-            <span className="mono">{data.settings.preRulesChangeWeight}</span> —
-            an extra discount on seasons before {data.settings.rulesChangedIn}.
-            Defensive contributions changed what a good squad looks like, so
-            earlier seasons are evidence about a different game.
+            A manager is catalogued once he has finished inside the top ten
+            thousand at least twice since 2021.
           </li>
           <li>
-            <span className="mono">{data.settings.shrinkageWeight}</span> — how
-            hard a thin record is pulled toward the field median of{" "}
-            {data.settings.priorPercentile}. Two brilliant seasons should not
-            outrank twenty good ones.
+            The catalogue is ranked, and the first {number.format(data.size)}{" "}
+            are FPL500.
           </li>
           <li>
-            <span className="mono">{data.settings.minimumSeasons}</span> —
-            seasons required before anyone is ranked at all.
+            Coverage is not complete and is not claimed to be. Four fifths of
+            the register is still unread.
           </li>
         </ul>
-      </section>
+      </Fold>
 
-      <section aria-labelledby="fpl500-thin">
-        <h2 id="fpl500-thin">The order inside the five hundred means little</h2>
-        <p>
-          {first && last && spread !== null ? (
-            <>
-              The score runs from {first[1]} at rank {first[0]} to {last[1]} at
-              rank {last[0]} — a spread of {spread.toFixed(3)} across the whole
-              list. That is what shrinkage does to a population who are all, by
-              construction, very good: it collapses them together. Membership is
-              the signal here. The ordering within it is not, and nothing on
-              this site should be built on the difference between fiftieth and
-              four hundredth.
-            </>
-          ) : null}
-        </p>
-        <ul className="plan-money">
-          {scores.map(([rank, score]) => (
-            <li key={rank}>
-              <span className="mono">#{rank}</span> — {score}
-            </li>
-          ))}
-        </ul>
-        <h3>Seasons held by the ranked five hundred</h3>
-        <ul className="plan-promises">
-          {held.map(([seasons, managers]) => (
-            <li key={seasons}>
-              <span className="mono">{seasons}</span> seasons —{" "}
-              {number.format(managers)} managers
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      <section aria-labelledby="fpl500-head">
-        <h2 id="fpl500-head">The head of the list</h2>
-        <p>
-          The first {data.listed} of {number.format(data.size)}. Entry ids are
-          public; the rest are in{" "}
-          <span className="mono">data/cohort/fpl500.json</span>.
-        </p>
-        <div className="squad-table-wrap">
-          <table className="squad-table">
-            <caption className="visually-hidden">
-              The highest ranked {data.listed} managers in FPL500
-            </caption>
-            <thead>
-              <tr>
-                <th scope="col">#</th>
-                <th scope="col">Entry</th>
-                <th scope="col">Score</th>
-                <th scope="col">Seasons</th>
-                <th scope="col">Best</th>
-                <th scope="col">Latest</th>
-              </tr>
-            </thead>
-            <tbody>
-              {data.managers.map((manager) => (
-                <tr key={manager.entryId}>
-                  <td className="mono">{manager.rank}</td>
-                  <td className="mono">
-                    <a
-                      href={`https://fantasy.premierleague.com/entry/${manager.entryId}/history`}
-                      rel="noreferrer noopener"
-                      target="_blank"
-                    >
-                      {manager.entryId}
-                    </a>
-                  </td>
-                  <td className="mono">{manager.score.toFixed(4)}</td>
-                  <td className="mono">{manager.seasons}</td>
-                  <td className="mono">{topShare(manager.bestPercentile)}</td>
-                  <td className="mono">
-                    {manager.latestPercentile === null
-                      ? "—"
-                      : topShare(manager.latestPercentile)}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        <p className="mono">
-          Best and latest are the share of the field they finished ahead of,
-          shown as how far into the top they came.
-        </p>
-      </section>
-
-      <section aria-labelledby="fpl500-etf">
-        <h2 id="fpl500-etf">The fund</h2>
-        <p>
-          The catalogue knows who is good. It does not know what they own: the
-          sweep stores season ranks, not squads. Reconciling five hundred squads
-          into one holding, once a gameweek, is what turns a list of entry ids
-          into something a manager can actually read — an index of what the
-          people who keep finishing well are collectively exposed to.
-        </p>
-        <p className="mono">
-          {captured === 0
-            ? "Nothing captured yet. No gameweek has been played."
-            : `${captured} gameweeks captured.`}
-        </p>
-        <h3>What is already decided</h3>
-        <p>
-          The reconciler exists and is tested. These are its rules, and each one
-          is there because the obvious alternative is wrong.
-        </p>
+      <Fold kind="how" title="How it is decided">
         <ul className="plan-promises">
           <li>
-            <strong>
-              Coverage is floored at {fineShare.format(data.minimumCoverage)}.
-            </strong>{" "}
-            Five hundred requests will not all answer. Dividing by however many
-            did makes the denominator move every week, and a player looks to be
-            drifting when the sample drifted instead. Below the floor the
-            snapshot is refused rather than published with an asterisk.
+            <strong>Percentile, never rank.</strong> The field has grown from
+            about a million entries to{" "}
+            {number.format(data.latestSeasonEntries ?? 0)}. Ten thousandth in
+            2007 and ten thousandth today are not the same achievement.
+            <InfoMarker label="the rank ladder">
+              Averaging raw ranks across seasons rewards being old rather than
+              being good. Every season is converted to a position relative to
+              its own field first. That field size is estimated from the largest
+              rank the catalogue has observed in the season, which is a lower
+              bound and makes early percentiles slightly flattering.
+            </InfoMarker>
           </li>
           <li>
-            <strong>A Free Hit squad is not a holding.</strong> It is a one-week
-            rental and says nothing about what the manager owns, so it is
-            excluded and counted separately.
+            <strong>Last season counts for most.</strong> Defensive
+            contributions arrived in {data.settings.rulesChangedIn} and the chip
+            rules match this year, so it is the only season played under the
+            game as it is now. Each earlier season is weighted less than the one
+            after it.
           </li>
           <li>
-            <strong>Triple Captain is three, Bench Boost is fifteen.</strong>{" "}
-            Chips change what a squad means, not only what it scores, so
-            "started" cannot be read off the bench position alone.
+            <strong>Longevity is earned, not assumed.</strong> A thin record is
+            pulled toward the middle of the field, so two brilliant seasons do
+            not outrank twenty good ones. At least{" "}
+            {data.settings.minimumSeasons} completed seasons are required before
+            anyone is ranked.
           </li>
           <li>
-            <strong>Captaincy is not ownership.</strong> Sixty percent owned and
-            forty captained is a different exposure from sixty and two.
-            Effective ownership adds the armband on top, which is the number
-            that decides a transfer.
-          </li>
-          <li>
-            <strong>Intent, not outcome.</strong> Picks are read after the
-            deadline and never reconciled against what happened. Auto-subs
-            change what scored; they do not change what the cohort chose.
-          </li>
-          <li>
-            <strong>Every manager counts once.</strong> Weighting by rank would
-            claim this season's table predicts next week, and the section above
-            is exactly why that claim cannot be made.
-          </li>
-          <li>
-            <strong>Every snapshot pins the cohort it was taken over.</strong>{" "}
-            Membership changes whenever the register is re-swept, and a series
-            whose population silently changes is not a series.
+            <strong>The weights themselves are ours.</strong> The shape is
+            above; the numbers are not published.
           </li>
         </ul>
+        <BarChart
+          bars={seasons}
+          caption="Seasons of history held by the ranked five hundred"
+          unit="managers"
+        />
+        <RankRidge
+          caption="Where they finish. Every season, the whole cohort, one shared axis."
+          edges={data.rankBins}
+          ridges={ridges}
+        />
+        <p className="mono fpl500-note">
+          The mass between 1k and 10k is the cohort clearing its own bar. The
+          tail past 100k is the same people having a bad year, which is why more
+          than one season is weighed.
+        </p>
+      </Fold>
+
+      <Fold kind="who" title="Who is scoring this season">
+        <p>
+          A different list, and a public one: the Overall standings as they
+          stand. FPL500 trusts consistent experience; this is raw current form.
+        </p>
+        <CurrentSeason />
+      </Fold>
+
+      <Fold kind="when" title="When it updates">
+        <ul className="plan-promises">
+          <li>
+            <strong>The register, every six hours.</strong> Two hundred requests
+            read this season's top ten thousand off the Overall league. The
+            slower pass over every entry id runs behind it, and picks up
+            managers who have since stopped playing.
+          </li>
+          <li>
+            <strong>The ranking, in the same job.</strong> Rebuilt where the
+            catalogue is extended, so the two cannot describe different sweeps.
+          </li>
+          <li>
+            <strong>The squads, after every deadline.</strong> Picks are private
+            until one passes, and FPL serves them for the current season only,
+            so a gameweek missed is gone for good.
+            <InfoMarker label="the coverage floor">
+              Five hundred requests will not all answer. Dividing by however
+              many did makes the denominator move every week, so a player looks
+              to be drifting when the sample drifted instead. Below{" "}
+              {fineShare.format(data.minimumCoverage)} the snapshot is refused
+              rather than published with an asterisk.
+            </InfoMarker>
+          </li>
+        </ul>
+      </Fold>
+
+      <section aria-labelledby="fpl500-analysis">
+        <h2 id="fpl500-analysis">Analysing the FPL500</h2>
+        <p>
+          {data.portfolioEvents.length === 0
+            ? "No deadline has passed, so there is nothing in these yet. The frames and their axes are what will be drawn."
+            : `${data.portfolioEvents.length} gameweeks captured.`}
+        </p>
+        <PlannedAnalysis />
         <div className="cohort-caveat">
-          <h3>What it still needs</h3>
+          <h3>What none of it can tell you</h3>
           <p>
-            Squads, which do not exist until a deadline has passed, and a
-            scheduled capture to read them at the right moment — after the
-            deadline, before the results settle. Until then this page is the
-            ranking and the rules, and nothing is claimed about what the fund
-            would have returned.
-          </p>
-          <p>
-            One thing it will never tell you is whether being in FPL500 predicts
-            the next season. The catalogue only contains managers who already
-            cleared the bar, so the question cannot be answered from inside it.
+            Whether being in FPL500 predicts next season. The catalogue only
+            holds managers who already cleared the bar, so the question cannot
+            be answered from inside it.
           </p>
         </div>
       </section>
