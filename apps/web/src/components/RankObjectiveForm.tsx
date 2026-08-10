@@ -56,9 +56,10 @@ export function RankObjectiveForm({
         commit({ objective: "league", leagueId: Number(league) || null });
       }}
     >
-      <h2 id="rank-objective">What are you actually trying to win?</h2>
+      <h3 id="rank-objective">Which race matters?</h3>
       <p>
-        These are two different problems and they routinely disagree.
+        Overall rank rewards expected points. A mini-league also cares about
+        what the managers around you own.
         <InfoMarker label="why the answer changes the plan">
           Overall rank is a race against eleven million squads, so nobody
           else&rsquo;s team is readable and the best you can do is take the

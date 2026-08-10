@@ -15,7 +15,11 @@ import {
   leagueVerdict,
   pooledVerdict,
   positionVerdict,
+  rankBandClass,
+  rankBandLabel,
+  rankPerformanceLabel,
   separableVerdict,
+  type RankBandResult,
   type VerdictSeason,
 } from "../state/validation-verdict";
 
@@ -39,6 +43,9 @@ type SquadPlayer = {
 
 type PolicyResult = {
   mean: number;
+  prorated38Gameweeks?: number;
+  overallRankBand?: RankBandResult | null;
+  rankReason?: string | null;
   best: number;
   wins: number;
   chips: Record<string, number>;
@@ -803,6 +810,72 @@ export function ValidationReport() {
             chips are played by every policy. Team value moves with prices, and
             a risen player sells for only half his profit.
           </InfoMarker>
+        </p>
+        <div
+          aria-label="Scrollable Overall Rank comparison table"
+          className="squad-table-wrap policy-rank-wrap"
+          role="region"
+          // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- Keyboard users must be able to scroll this table horizontally.
+          tabIndex={0}
+        >
+          <table aria-label="Overall Rank bands implied by simulated policy points">
+            <thead>
+              <tr>
+                <th scope="col">Season</th>
+                <th scope="col">Policy</th>
+                <th scope="col">Simulated</th>
+                <th scope="col">38-GW pro-rate</th>
+                <th scope="col">Empirical OR</th>
+              </tr>
+            </thead>
+            <tbody>
+              {report.seasons.flatMap((season) =>
+                POLICY_ORDER.map((policy) => {
+                  const result = season.league.policies[policy];
+                  if (!result) return null;
+                  const band = result.overallRankBand;
+                  return (
+                    <tr
+                      className={`${rankBandClass(band)} ${policy === "advised" ? "is-mine" : ""}`}
+                      key={`${season.season}-${policy}`}
+                    >
+                      <th scope="row">{season.season}</th>
+                      <td>{POLICY_NAMES[policy]}</td>
+                      <td className="mono">
+                        {result.mean.toLocaleString("en-GB")} /{" "}
+                        {season.gameweeksPlayed} GW
+                      </td>
+                      <td className="mono">
+                        {result.prorated38Gameweeks?.toLocaleString("en-GB") ??
+                          "awaiting refresh"}
+                      </td>
+                      <td>
+                        <span className="policy-rank-label">
+                          {rankBandLabel(band)}
+                        </span>
+                        <span className="policy-rank-performance mono">
+                          {rankPerformanceLabel(band)}
+                        </span>
+                        {band ? (
+                          <span className="policy-rank-sample mono">
+                            {band.sampleSize} nearby finishes
+                          </span>
+                        ) : null}
+                      </td>
+                    </tr>
+                  );
+                }),
+              )}
+            </tbody>
+          </table>
+        </div>
+        <p className="validation-note">
+          The rank column is an empirical band from the 20 nearest completed
+          finishes in that season&rsquo;s swept catalogue. The simulated totals
+          cover 31 or 32 gameweeks; the 38-GW figure is a straight pro-rate, not
+          a claim that the missing chip-heavy opening weeks would score at the
+          same rate. Top 500k is the minimum acceptable outcome here; anything
+          below it is labelled a total flop.
         </p>
         <div
           aria-label="Scrollable mini-league table"

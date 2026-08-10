@@ -18,6 +18,7 @@ const INLINED = [
   "stroke-opacity",
   "stroke-dasharray",
   "opacity",
+  "paint-order",
   "font-family",
   "font-size",
   "font-weight",
@@ -34,9 +35,21 @@ export class ScatterExportError extends Error {
 
 function inlineStyles(source: Element, clone: Element): void {
   const computed = getComputedStyle(source);
-  const declarations = INLINED.map(
-    (property) => `${property}:${computed.getPropertyValue(property)}`,
-  ).join(";");
+  const raw = source.getAttribute("style") ?? "";
+  const declarations = INLINED.map((property) => {
+    const computedValue = computed.getPropertyValue(property);
+    const explicitValue =
+      source instanceof SVGElement
+        ? source.style.getPropertyValue(property)
+        : "";
+    const rawValue =
+      raw
+        .split(";")
+        .map((entry) => entry.split(":"))
+        .find(([name]) => name?.trim() === property)?.[1]
+        ?.trim() ?? "";
+    return `${property}:${computedValue || explicitValue || rawValue}`;
+  }).join(";");
   clone.setAttribute(
     "style",
     `${declarations};${clone.getAttribute("style") ?? ""}`,
@@ -49,18 +62,24 @@ function inlineStyles(source: Element, clone: Element): void {
   }
 }
 
-export async function scatterToPngBlob(svg: SVGSVGElement): Promise<Blob> {
+/** Test seam: the exact SVG markup handed to the browser rasteriser. */
+export function serialisedScatterSvg(svg: SVGSVGElement): string {
   const clone = svg.cloneNode(true) as SVGSVGElement;
   inlineStyles(svg, clone);
-
   const viewBox = svg.viewBox.baseVal;
   const width = viewBox.width || svg.clientWidth;
   const height = viewBox.height || svg.clientHeight;
   clone.setAttribute("xmlns", "http://www.w3.org/2000/svg");
   clone.setAttribute("width", String(width));
   clone.setAttribute("height", String(height));
+  return new XMLSerializer().serializeToString(clone);
+}
 
-  const markup = new XMLSerializer().serializeToString(clone);
+export async function scatterToPngBlob(svg: SVGSVGElement): Promise<Blob> {
+  const viewBox = svg.viewBox.baseVal;
+  const width = viewBox.width || svg.clientWidth;
+  const height = viewBox.height || svg.clientHeight;
+  const markup = serialisedScatterSvg(svg);
   const source = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(markup)}`;
 
   const image = new Image();

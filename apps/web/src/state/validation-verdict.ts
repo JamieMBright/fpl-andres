@@ -13,6 +13,8 @@
  * two ever disagree.
  */
 
+import { compactInteger } from "../format";
+
 export interface VerdictMethod {
   label: string;
   spearman: number | null;
@@ -162,6 +164,45 @@ export interface LeagueSeason {
   league: {
     policies: Readonly<Record<string, { mean: number } | undefined>>;
   };
+}
+
+export interface RankBandResult {
+  rankFrom: number;
+  rankTo: number;
+  sampleSize: number;
+}
+
+export interface RankedPolicy {
+  mean: number;
+  prorated38Gameweeks?: number;
+  overallRankBand?: RankBandResult | null;
+}
+
+export function rankBandClass(band: RankBandResult | null | undefined): string {
+  if (!band) return "is-unrated";
+  if (band.rankTo <= 100_000) return "is-elite";
+  if (band.rankTo <= 500_000) return "is-strong";
+  return "is-flop";
+}
+
+export function rankPerformanceLabel(
+  band: RankBandResult | null | undefined,
+): string {
+  if (!band) return "unrated";
+  if (band.rankTo <= 1_000) return "top 1k";
+  if (band.rankTo <= 10_000) return "top 10k";
+  if (band.rankTo <= 50_000) return "top 50k";
+  if (band.rankTo <= 100_000) return "top 100k";
+  if (band.rankTo <= 250_000) return "top 250k";
+  if (band.rankTo <= 500_000) return "top 500k";
+  return "total flop";
+}
+
+export function rankBandLabel(band: RankBandResult | null | undefined): string {
+  if (!band) return "sample unavailable";
+  if (band.rankFrom === band.rankTo)
+    return `OR ${compactInteger.format(band.rankFrom)}`;
+  return `OR ${compactInteger.format(band.rankFrom)}–${compactInteger.format(band.rankTo)}`;
 }
 
 /**

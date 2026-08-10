@@ -49,9 +49,9 @@ BOOTSTRAP = "https://fantasy.premierleague.com/api/bootstrap-static/"
 #: fixtures -- a full gameweek -- and costs nothing on the weeks before the
 #: books open player props at all.
 #:
-#: Thirteen scheduled runs a month at this budget is 396, and the survey takes
-#: another 48. `tests/test_api_budgets.py` holds that sum under the allowance.
-DEFAULT_BUDGET = 30
+#: Thirty scheduled runs at this budget cost at most 450, and the weekly survey
+#: takes another 48. `tests/test_api_budgets.py` holds the shared sum under 500.
+DEFAULT_BUDGET = 15
 
 
 def _parser() -> argparse.ArgumentParser:

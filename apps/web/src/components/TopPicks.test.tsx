@@ -27,6 +27,17 @@ function best(position: string): { name: string; points: number } {
   return { name, points };
 }
 
+function topThree(position: string): { name: string; points: number }[] {
+  const totals = horizonPointsByCode(DEFAULT_HORIZON);
+  return SEASON_PLAYERS.filter((player) => player.position === position)
+    .flatMap((player) => {
+      const points = totals.get(player.code);
+      return points === undefined ? [] : [{ name: player.name, points }];
+    })
+    .sort((left, right) => right.points - left.points)
+    .slice(0, 3);
+}
+
 describe("TopPicks", () => {
   // jsdom implements the element but not the method the profile opens with.
   beforeAll(() => {
@@ -38,12 +49,24 @@ describe("TopPicks", () => {
     };
   });
 
-  it("names one player per position and no more", () => {
-    render(<TopPicks />);
+  it("names three players per position in xPts5 order", () => {
+    const { container } = render(<TopPicks />);
 
-    expect(screen.getAllByRole("listitem").slice(0, 4)).toHaveLength(4);
+    expect(container.querySelectorAll(".top-pick-column")).toHaveLength(4);
+    expect(container.querySelectorAll(".top-pick-hero")).toHaveLength(4);
+    expect(container.querySelectorAll(".top-pick-runners > li")).toHaveLength(
+      8,
+    );
     for (const role of ["Goalkeeper", "Defender", "Midfielder", "Forward"]) {
       expect(screen.getByText(role)).toBeInTheDocument();
+    }
+    for (const position of ["GKP", "DEF", "MID", "FWD"]) {
+      for (const { name, points } of topThree(position)) {
+        expect(screen.getByRole("button", { name })).toBeInTheDocument();
+        expect(
+          screen.getAllByText(new RegExp(points.toFixed(1))).length,
+        ).toBeGreaterThan(0);
+      }
     }
   });
 
@@ -111,5 +134,26 @@ describe("TopPicks", () => {
     await userEvent.click(screen.getByRole("button", { name }));
 
     expect(screen.getByRole("dialog")).toBeInTheDocument();
+  });
+
+  it("opens a runner's profile without opening a fixture panel", async () => {
+    const { container } = render(<TopPicks />);
+    const runner = topThree("FWD")[1];
+    expect(runner).toBeDefined();
+
+    await userEvent.click(screen.getByRole("button", { name: runner!.name }));
+
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
+    expect(container.querySelector(".top-pick-panel")).toHaveAttribute(
+      "hidden",
+    );
+  });
+
+  it("gives every rank marker an accessible name", () => {
+    render(<TopPicks />);
+
+    expect(screen.getAllByRole("img", { name: "Rank 1" })).toHaveLength(4);
+    expect(screen.getAllByRole("img", { name: "Rank 2" })).toHaveLength(4);
+    expect(screen.getAllByRole("img", { name: "Rank 3" })).toHaveLength(4);
   });
 });

@@ -149,12 +149,24 @@ jobs:
           if-no-files-found: warn
           retention-days: 30
 
+      - name: Republish the live plan when live fixture odds moved
+        run: |
+          live="apps/web/src/data/fixture-odds.json"
+          if [ ! -f "$live" ] || [ -z "$(git status --porcelain -- "$live")" ]; then
+            echo "live fixture odds did not move; season inputs stay unchanged"
+            exit 0
+          fi
+          python -m fpl_andres.cli.publish_season_inputs
+
       - name: Commit the refreshed artifact
         run: |
           # Stage only what this run actually produced. A pathspec matching
           # nothing is fatal to `git add`, and pre-season the live artifact is
           # legitimately absent.
-          for path in apps/web/src/data/fixture-odds.json data/odds; do
+          for path in \
+            apps/web/src/data/fixture-odds.json \
+            apps/web/src/data/season-inputs.json \
+            data/odds; do
             if [ -e "$path" ]; then
               # Before the staged-diff check, so a rewrite that is only
               # formatting never reaches `git commit` and fails it empty.

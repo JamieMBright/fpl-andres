@@ -47,11 +47,10 @@ export function DeclaredChipsForm({
         event.preventDefault();
       }}
     >
-      <h2 id="declared-chips">Anything you have already decided</h2>
+      <h3 id="declared-chips">Chip decisions FPL cannot see</h3>
       <p>
-        FPL publishes the chip you played last gameweek and nothing else, so the
-        plan cannot see a wildcard you spent in August or a Triple Captain you
-        have committed to. Tell it here and it plans around both.
+        Mark chips already used and one you have committed to. The plan will not
+        recommend a chip twice or schedule around a decision you have made.
       </p>
 
       <fieldset className="declared-chips-spent">

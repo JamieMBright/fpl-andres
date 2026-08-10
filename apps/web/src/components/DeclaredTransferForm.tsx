@@ -72,14 +72,13 @@ export function DeclaredTransferForm({
   return (
     <details className="scatter-controls plan-declared">
       <summary className="scatter-controls-summary">
-        <span>Tell me a transfer you have already made</span>
+        <span>Transfer made since the last deadline</span>
         <span className="scatter-controls-count mono">GW{event}</span>
       </summary>
       <div className="scatter-controls-body">
         <p className="scatter-hint">
-          FPL keeps your picks private until the deadline, so what I can read is
-          the squad you finished the last gameweek with. Anything you have done
-          since is invisible to me until then. It stays in this browser.
+          The public squad is one deadline behind. Add a completed move here so
+          the solve starts from what you own now. It stays in this browser.
         </p>
         <form className="plan-declared-form" onSubmit={submit}>
           <label htmlFor="declared-out">Out</label>

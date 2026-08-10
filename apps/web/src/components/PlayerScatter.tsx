@@ -174,6 +174,7 @@ export const PlayerScatter = memo(function PlayerScatter({
 }: PlayerScatterProps) {
   const svgRef = useRef<SVGSVGElement>(null);
   const gradientId = useId();
+  const plotClipId = `${gradientId}-plot-clip`;
   const [hovered, setHovered] = useState<PlottedPlayer | null>(null);
   const {
     points,
@@ -232,6 +233,7 @@ export const PlayerScatter = memo(function PlayerScatter({
   // Equal-width bins across the observed range, so a step of colour means the
   // same amount everywhere along the ramp.
   const colourMetric = metric(view.colourMetric);
+  const horizonMetric = metric("xPts5");
   const bins = useMemo(
     () =>
       view.colourBy === "metric" && colourMetric
@@ -353,54 +355,71 @@ export const PlayerScatter = memo(function PlayerScatter({
         aria-label={summary}
         data-testid="player-scatter"
       >
-        {shading ? (
-          <defs>
-            <linearGradient id={`${gradientId}-x`} x1="0" x2="1" y1="0" y2="0">
-              <stop
-                offset="0"
-                stopColor={shading.x.from.colour}
-                stopOpacity={shading.x.from.alpha}
-              />
-              <stop
-                offset={shading.x.stop}
-                stopColor={shading.x.from.colour}
-                stopOpacity={0}
-              />
-              <stop
-                offset={shading.x.stop}
-                stopColor={shading.x.to.colour}
-                stopOpacity={0}
-              />
-              <stop
-                offset="1"
-                stopColor={shading.x.to.colour}
-                stopOpacity={shading.x.to.alpha}
-              />
-            </linearGradient>
-            <linearGradient id={`${gradientId}-y`} x1="0" x2="0" y1="0" y2="1">
-              <stop
-                offset="0"
-                stopColor={shading.y.from.colour}
-                stopOpacity={shading.y.from.alpha}
-              />
-              <stop
-                offset={shading.y.stop}
-                stopColor={shading.y.from.colour}
-                stopOpacity={0}
-              />
-              <stop
-                offset={shading.y.stop}
-                stopColor={shading.y.to.colour}
-                stopOpacity={0}
-              />
-              <stop
-                offset="1"
-                stopColor={shading.y.to.colour}
-                stopOpacity={shading.y.to.alpha}
-              />
-            </linearGradient>
-          </defs>
-        ) : null}
+        <defs>
+          <clipPath id={plotClipId}>
+            <rect height={PLOT_HEIGHT} width={PLOT_WIDTH} x="0" y="0" />
+          </clipPath>
+          {shading ? (
+            <>
+              <linearGradient
+                id={`${gradientId}-x`}
+                x1="0"
+                x2="1"
+                y1="0"
+                y2="0"
+              >
+                <stop
+                  offset="0"
+                  stopColor={shading.x.from.colour}
+                  stopOpacity={shading.x.from.alpha}
+                />
+                <stop
+                  offset={shading.x.stop}
+                  stopColor={shading.x.from.colour}
+                  stopOpacity={0}
+                />
+                <stop
+                  offset={shading.x.stop}
+                  stopColor={shading.x.to.colour}
+                  stopOpacity={0}
+                />
+                <stop
+                  offset="1"
+                  stopColor={shading.x.to.colour}
+                  stopOpacity={shading.x.to.alpha}
+                />
+              </linearGradient>
+              <linearGradient
+                id={`${gradientId}-y`}
+                x1="0"
+                x2="0"
+                y1="0"
+                y2="1"
+              >
+                <stop
+                  offset="0"
+                  stopColor={shading.y.from.colour}
+                  stopOpacity={shading.y.from.alpha}
+                />
+                <stop
+                  offset={shading.y.stop}
+                  stopColor={shading.y.from.colour}
+                  stopOpacity={0}
+                />
+                <stop
+                  offset={shading.y.stop}
+                  stopColor={shading.y.to.colour}
+                  stopOpacity={0}
+                />
+                <stop
+                  offset="1"
+                  stopColor={shading.y.to.colour}
+                  stopOpacity={shading.y.to.alpha}
+                />
+              </linearGradient>
+            </>
+          ) : null}
+        </defs>
         <rect
           className="scatter-plot-bg"
           x={MARGIN.left}
@@ -410,251 +429,255 @@ export const PlayerScatter = memo(function PlayerScatter({
         />
 
         <g transform={`translate(${MARGIN.left} ${MARGIN.top})`}>
-          {shading ? (
-            <>
-              <rect
-                className="scatter-shade"
-                x={0}
-                y={0}
-                width={PLOT_WIDTH}
-                height={PLOT_HEIGHT}
-                fill={`url(#${gradientId}-x)`}
-              >
-                <title>
-                  Green is the good end of {xMetric.label.toLowerCase()} and of{" "}
-                  {yMetric.label.toLowerCase()}, fading to nothing at the{" "}
-                  {view.centreMode}. Both shades are on at once, so the corner
-                  that is good on both reads greenest and the mixed corners
-                  cancel out.
-                </title>
-              </rect>
-              <rect
-                className="scatter-shade"
-                x={0}
-                y={0}
-                width={PLOT_WIDTH}
-                height={PLOT_HEIGHT}
-                fill={`url(#${gradientId}-y)`}
-              />
-            </>
-          ) : null}
+          <g clipPath={`url(#${plotClipId})`}>
+            {shading ? (
+              <>
+                <rect
+                  className="scatter-shade"
+                  x={0}
+                  y={0}
+                  width={PLOT_WIDTH}
+                  height={PLOT_HEIGHT}
+                  fill={`url(#${gradientId}-x)`}
+                >
+                  <title>
+                    Green is the good end of {xMetric.label.toLowerCase()} and
+                    of {yMetric.label.toLowerCase()}, fading to nothing at the{" "}
+                    {view.centreMode}. Both shades are on at once, so the corner
+                    that is good on both reads greenest and the mixed corners
+                    cancel out.
+                  </title>
+                </rect>
+                <rect
+                  className="scatter-shade"
+                  x={0}
+                  y={0}
+                  width={PLOT_WIDTH}
+                  height={PLOT_HEIGHT}
+                  fill={`url(#${gradientId}-y)`}
+                />
+              </>
+            ) : null}
 
-          {xScale.ticks.map((tick) => (
-            <line
-              key={`gx-${tick}`}
-              className="scatter-grid"
-              x1={xScale(tick)}
-              y1={0}
-              x2={xScale(tick)}
-              y2={PLOT_HEIGHT}
-            />
-          ))}
-          {yScale.ticks.map((tick) => (
-            <line
-              key={`gy-${tick}`}
-              className="scatter-grid"
-              x1={0}
-              y1={yScale(tick)}
-              x2={PLOT_WIDTH}
-              y2={yScale(tick)}
-            />
-          ))}
-
-          {centres ? (
-            <>
+            {xScale.ticks.map((tick) => (
               <line
-                className="scatter-centre"
-                x1={xScale(centres.x)}
+                key={`gx-${tick}`}
+                className="scatter-grid"
+                x1={xScale(tick)}
                 y1={0}
-                x2={xScale(centres.x)}
+                x2={xScale(tick)}
                 y2={PLOT_HEIGHT}
               />
+            ))}
+            {yScale.ticks.map((tick) => (
               <line
-                className="scatter-centre"
+                key={`gy-${tick}`}
+                className="scatter-grid"
                 x1={0}
-                y1={yScale(centres.y)}
+                y1={yScale(tick)}
                 x2={PLOT_WIDTH}
-                y2={yScale(centres.y)}
+                y2={yScale(tick)}
               />
-            </>
-          ) : null}
+            ))}
 
-          {/* The bar a DefCon axis actually has to clear, when one position is
-              selected and so there is a single threshold to draw. */}
-          {defconLine !== null ? (
-            <line
-              className="scatter-threshold"
-              x1={xScale(defconLine)}
-              y1={0}
-              x2={xScale(defconLine)}
-              y2={PLOT_HEIGHT}
-            />
-          ) : null}
-          {defconLineY !== null ? (
-            <line
-              className="scatter-threshold"
-              x1={0}
-              y1={yScale(defconLineY)}
-              x2={PLOT_WIDTH}
-              y2={yScale(defconLineY)}
-            />
-          ) : null}
-
-          {fit ? (
-            <line
-              className="scatter-trend"
-              x1={xScale(xScale.domain[0])}
-              y1={yScale(fit.slope * xScale.domain[0] + fit.intercept)}
-              x2={xScale(xScale.domain[1])}
-              y2={yScale(fit.slope * xScale.domain[1] + fit.intercept)}
-            />
-          ) : null}
-
-          {view.frontier && edge.drawn ? (
-            <polyline
-              className="scatter-frontier"
-              points={edge.drawn.curve
-                .map(
-                  (point) =>
-                    `${String(xScale(point.x))},${String(yScale(point.y))}`,
-                )
-                .join(" ")}
-            >
-              <title>
-                {edge.drawn.sigma} standard deviations above the average{" "}
-                {yMetric.label.toLowerCase()} of the players around the same{" "}
-                {xMetric.label.toLowerCase()}, measured in{" "}
-                {edge.drawn.bins.length} slices of the x-axis.{" "}
-                {edge.drawn.pioneers.length === 0
-                  ? "Nobody clears it."
-                  : `${String(edge.drawn.pioneers.length)} players clear it.`}
-              </title>
-            </polyline>
-          ) : null}
-
-          <g className="scatter-marks">
-            {points.map((point) => {
-              const isPinned = pinnedSet.has(point.player.code);
-              // Colouring by club or by a binned statistic overrides the
-              // position palette. The shape still carries the position, so
-              // nothing is lost by it.
-              const mark =
-                view.colourBy === "club"
-                  ? clubMarker(point.player.club)
-                  : view.colourBy === "metric"
-                    ? binMarker(point.player)
-                    : null;
-              const classes = [
-                "scatter-mark",
-                `scatter-mark-${point.player.position.toLowerCase()}`,
-                mark ? "scatter-mark-club" : "",
-                highlighting && point.matched ? "scatter-mark-highlit" : "",
-                highlighting && !point.matched ? "scatter-mark-receded" : "",
-                point.overlooked ? "scatter-mark-overlooked" : "",
-                pioneers.has(point.player.code) ? "scatter-mark-pioneer" : "",
-                isPinned ? "scatter-mark-pinned" : "",
-              ]
-                .filter(Boolean)
-                .join(" ");
-              return (
-                <path
-                  key={point.player.code}
-                  className={classes}
-                  d={markPath(
-                    point.player.position,
-                    xScale(point.x),
-                    yScale(point.y),
-                    radius(point.size),
-                  )}
-                  {...(mark
-                    ? {
-                        // Inline style, not a presentation attribute: the
-                        // position palette is a stylesheet rule and would win.
-                        style: {
-                          fill: mark.fill,
-                          stroke: mark.stroke,
-                          ...(mark.dash ? { strokeDasharray: mark.dash } : {}),
-                        },
-                      }
-                    : {})}
-                  onMouseEnter={() => handleEnter(point)}
-                  onClick={() => onTogglePin(point.player.code)}
+            {centres ? (
+              <>
+                <line
+                  className="scatter-centre"
+                  x1={xScale(centres.x)}
+                  y1={0}
+                  x2={xScale(centres.x)}
+                  y2={PLOT_HEIGHT}
                 />
-              );
-            })}
-          </g>
+                <line
+                  className="scatter-centre"
+                  x1={0}
+                  y1={yScale(centres.y)}
+                  x2={PLOT_WIDTH}
+                  y2={yScale(centres.y)}
+                />
+              </>
+            ) : null}
 
-          {view.labels || highlighting ? (
-            <g className="scatter-labels" aria-hidden="true">
+            {/* The bar a DefCon axis actually has to clear, when one position is
+              selected and so there is a single threshold to draw. */}
+            {defconLine !== null ? (
+              <line
+                className="scatter-threshold"
+                x1={xScale(defconLine)}
+                y1={0}
+                x2={xScale(defconLine)}
+                y2={PLOT_HEIGHT}
+              />
+            ) : null}
+            {defconLineY !== null ? (
+              <line
+                className="scatter-threshold"
+                x1={0}
+                y1={yScale(defconLineY)}
+                x2={PLOT_WIDTH}
+                y2={yScale(defconLineY)}
+              />
+            ) : null}
+
+            {fit ? (
+              <line
+                className="scatter-trend"
+                x1={xScale(xScale.domain[0])}
+                y1={yScale(fit.slope * xScale.domain[0] + fit.intercept)}
+                x2={xScale(xScale.domain[1])}
+                y2={yScale(fit.slope * xScale.domain[1] + fit.intercept)}
+              />
+            ) : null}
+
+            {view.frontier && edge.drawn ? (
+              <polyline
+                className="scatter-frontier"
+                points={edge.drawn.curve
+                  .map(
+                    (point) =>
+                      `${String(xScale(point.x))},${String(yScale(point.y))}`,
+                  )
+                  .join(" ")}
+              >
+                <title>
+                  {edge.drawn.sigma} standard deviations above the average{" "}
+                  {yMetric.label.toLowerCase()} of the players around the same{" "}
+                  {xMetric.label.toLowerCase()}, measured in{" "}
+                  {edge.drawn.bins.length} slices of the x-axis.{" "}
+                  {edge.drawn.pioneers.length === 0
+                    ? "Nobody clears it."
+                    : `${String(edge.drawn.pioneers.length)} players clear it.`}
+                </title>
+              </polyline>
+            ) : null}
+
+            <g className="scatter-marks">
               {points.map((point) => {
-                const lit = highlighting && point.matched;
-                // With labels off, a highlight still names who it lit up --
-                // that is the whole reason somebody typed a name in.
-                if (!view.labels && !lit) return null;
-                const px = xScale(point.x);
-                const py = yScale(point.y);
-                const r = radius(point.size);
-                // Leader goes up-left near the right edge and down near the
-                // top, so a name never runs outside the plotting area.
-                const flip = px > PLOT_WIDTH * 0.78;
-                const below = py < 14;
-                const tipX = px + (flip ? -(r + 6) : r + 6);
-                const tipY = py + (below ? r + 6 : -(r + 6));
+                const isPinned = pinnedSet.has(point.player.code);
+                // Colouring by club or by a binned statistic overrides the
+                // position palette. The shape still carries the position, so
+                // nothing is lost by it.
+                const mark =
+                  view.colourBy === "club"
+                    ? clubMarker(point.player.club)
+                    : view.colourBy === "metric"
+                      ? binMarker(point.player)
+                      : null;
+                const classes = [
+                  "scatter-mark",
+                  `scatter-mark-${point.player.position.toLowerCase()}`,
+                  mark ? "scatter-mark-club" : "",
+                  highlighting && point.matched ? "scatter-mark-highlit" : "",
+                  highlighting && !point.matched ? "scatter-mark-receded" : "",
+                  point.overlooked ? "scatter-mark-overlooked" : "",
+                  pioneers.has(point.player.code) ? "scatter-mark-pioneer" : "",
+                  isPinned ? "scatter-mark-pinned" : "",
+                ]
+                  .filter(Boolean)
+                  .join(" ");
                 return (
-                  <g
-                    className={
-                      lit
-                        ? "scatter-label-highlit"
-                        : highlighting
-                          ? "scatter-label-receded"
-                          : undefined
-                    }
+                  <path
                     key={point.player.code}
-                  >
-                    <line
-                      className="scatter-label-whisker"
-                      x1={px + (flip ? -r : r) * 0.7}
-                      x2={tipX}
-                      y1={py + (below ? r : -r) * 0.7}
-                      y2={tipY}
-                    />
-                    <text
-                      className="scatter-label"
-                      textAnchor={flip ? "end" : "start"}
-                      x={tipX + (flip ? -1 : 1)}
-                      y={tipY + (below ? 6 : -1)}
-                    >
-                      {point.player.name}
-                    </text>
-                  </g>
+                    className={classes}
+                    d={markPath(
+                      point.player.position,
+                      xScale(point.x),
+                      yScale(point.y),
+                      radius(point.size),
+                    )}
+                    {...(mark
+                      ? {
+                          // Inline style, not a presentation attribute: the
+                          // position palette is a stylesheet rule and would win.
+                          style: {
+                            fill: mark.fill,
+                            stroke: mark.stroke,
+                            ...(mark.dash
+                              ? { strokeDasharray: mark.dash }
+                              : {}),
+                          },
+                        }
+                      : {})}
+                    onMouseEnter={() => handleEnter(point)}
+                    onClick={() => onTogglePin(point.player.code)}
+                  />
                 );
               })}
             </g>
-          ) : null}
 
-          {/* Said on the axes, because a reader who has just moved a slider is
+            {view.labels || highlighting ? (
+              <g className="scatter-labels" aria-hidden="true">
+                {points.map((point) => {
+                  const lit = highlighting && point.matched;
+                  // With labels off, a highlight still names who it lit up --
+                  // that is the whole reason somebody typed a name in.
+                  if (!view.labels && !lit) return null;
+                  const px = xScale(point.x);
+                  const py = yScale(point.y);
+                  const r = radius(point.size);
+                  // Leader goes up-left near the right edge and down near the
+                  // top, so a name never runs outside the plotting area.
+                  const flip = px > PLOT_WIDTH * 0.78;
+                  const below = py < 14;
+                  const tipX = px + (flip ? -(r + 6) : r + 6);
+                  const tipY = py + (below ? r + 6 : -(r + 6));
+                  return (
+                    <g
+                      className={
+                        lit
+                          ? "scatter-label-highlit"
+                          : highlighting
+                            ? "scatter-label-receded"
+                            : undefined
+                      }
+                      key={point.player.code}
+                    >
+                      <line
+                        className="scatter-label-whisker"
+                        x1={px + (flip ? -r : r) * 0.7}
+                        x2={tipX}
+                        y1={py + (below ? r : -r) * 0.7}
+                        y2={tipY}
+                      />
+                      <text
+                        className="scatter-label"
+                        textAnchor={flip ? "end" : "start"}
+                        x={tipX + (flip ? -1 : 1)}
+                        y={tipY + (below ? 6 : -1)}
+                      >
+                        {point.player.name}
+                      </text>
+                    </g>
+                  );
+                })}
+              </g>
+            ) : null}
+
+            {/* Said on the axes, because a reader who has just moved a slider is
               looking at the chart and not at a table underneath it. */}
-          {points.length === 0 ? (
-            <>
-              <text
-                className="scatter-empty-title"
-                x={PLOT_WIDTH / 2}
-                y={PLOT_HEIGHT / 2 - 8}
-                textAnchor="middle"
-              >
-                Nothing survives these filters
-              </text>
-              <text
-                className="scatter-empty-hint"
-                x={PLOT_WIDTH / 2}
-                y={PLOT_HEIGHT / 2 + 18}
-                textAnchor="middle"
-              >
-                Drop the minutes threshold, widen the ownership band, or put a
-                position back.
-              </text>
-            </>
-          ) : null}
+            {points.length === 0 ? (
+              <>
+                <text
+                  className="scatter-empty-title"
+                  x={PLOT_WIDTH / 2}
+                  y={PLOT_HEIGHT / 2 - 8}
+                  textAnchor="middle"
+                >
+                  Nothing survives these filters
+                </text>
+                <text
+                  className="scatter-empty-hint"
+                  x={PLOT_WIDTH / 2}
+                  y={PLOT_HEIGHT / 2 + 18}
+                  textAnchor="middle"
+                >
+                  Drop the minutes threshold, widen the ownership band, or put a
+                  position back.
+                </text>
+              </>
+            ) : null}
+          </g>
         </g>
 
         <g className="scatter-axis">
@@ -719,6 +742,19 @@ export const PlayerScatter = memo(function PlayerScatter({
               ? sizeMetric.format(hovered.size)
               : null
           }
+          extraMetrics={[
+            ...(view.colourBy === "metric" && colourMetric
+              ? [colourMetric]
+              : []),
+            ...(horizonMetric ? [horizonMetric] : []),
+          ]}
+          activeMetricIds={
+            new Set(
+              [xMetric.id, yMetric.id, sizeMetric?.id].filter(
+                (id): id is string => id !== undefined,
+              ),
+            )
+          }
           left={MARGIN.left + xScale(hovered.x)}
           top={MARGIN.top + yScale(hovered.y)}
           pinned={pinnedSet.has(hovered.player.code)}
@@ -745,6 +781,8 @@ interface TooltipProps {
   yText: string;
   sizeLabel: string | null;
   sizeText: string | null;
+  extraMetrics: readonly NonNullable<ReturnType<typeof metric>>[];
+  activeMetricIds: ReadonlySet<string>;
   left: number;
   top: number;
   pinned: boolean;
@@ -760,6 +798,8 @@ function ScatterTooltip({
   yText,
   sizeLabel,
   sizeText,
+  extraMetrics,
+  activeMetricIds,
   left,
   top,
   pinned,
@@ -832,6 +872,16 @@ function ScatterTooltip({
             <dd>{sizeText}</dd>
           </div>
         ) : null}
+        {extraMetrics.map((extra) => {
+          if (activeMetricIds.has(extra.id)) return null;
+          const value = extra.value(player);
+          return value === null ? null : (
+            <div key={extra.id}>
+              <dt>{extra.label}</dt>
+              <dd>{extra.format(value)}</dd>
+            </div>
+          );
+        })}
         <div>
           <dt>Minutes</dt>
           <dd>{player.minutes.toLocaleString("en-GB")}</dd>

@@ -68,7 +68,7 @@ describe("team analysis entry", () => {
 
       expect(
         screen.getByRole("heading", {
-          name: "Welcome to FPL Andres.",
+          name: "Top players for the next five gameweeks.",
         }),
       ).not.toHaveFocus();
       await user.type(screen.getByLabelText("Your FPL team ID"), "123456");
@@ -116,6 +116,37 @@ describe("team analysis entry", () => {
     },
     SETTLE,
   );
+
+  it("keeps one objective form while its answer changes", async () => {
+    const user = userEvent.setup({ delay: null });
+    renderApplication(`/plan?team=${String(readyState.entryId)}`);
+
+    const objective = await screen.findByRole(
+      "heading",
+      { name: "Which race matters?" },
+      { timeout: SETTLE },
+    );
+    expect(objective.closest(".plan-step")?.getAttribute("data-step")).toBe(
+      "02",
+    );
+
+    for (const name of [
+      "Overall rank",
+      "A mini-league",
+      "Overall rank",
+      "A mini-league",
+    ]) {
+      await user.click(screen.getByRole("radio", { name }));
+      expect(
+        screen.getAllByRole("heading", { name: "Which race matters?" }),
+      ).toHaveLength(1);
+    }
+
+    expect(document.querySelectorAll("form.rank-objective")).toHaveLength(1);
+    expect(
+      screen.getByRole("heading", { name: "Chip decisions FPL cannot see" }),
+    ).toBeInTheDocument();
+  });
 
   it("offers keyboard bypass and describes only available analysis", () => {
     renderApplication();

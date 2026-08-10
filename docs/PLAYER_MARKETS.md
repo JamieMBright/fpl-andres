@@ -106,10 +106,10 @@ cron has to be argued for rather than merged.
   a run eleven days out finds no player props and spends almost nothing.
 - **One region.** UK books price a Premier League player deepest, and adding
   Europe doubles the bill for a slightly steadier median.
-- **Three days a week, not seven.** Tuesday, Friday and Saturday at 09:00 UTC,
-  an hour before the earliest a deadline lands. Books price the result months
-  out and open player props days out, so the daily run this replaced was
-  spending the month's allowance on markets that did not exist yet.
+- **Daily, at a bounded 15 requests.** No provider publishes an exact opening
+  hour, so a daily 09:00 UTC probe is the only way to see the first open market.
+  Thirty runs cost at most 450 requests; the weekly survey takes the remaining
+  48, and `test_api_budgets.py` holds the shared total under 500.
 
 The same key pays for the weekly survey, which is why the guard counts both.
 

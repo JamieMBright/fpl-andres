@@ -604,21 +604,15 @@ h1[tabindex="-1"]:focus-visible {
 .analysis-page,
 .text-page {
   min-height: 68vh;
-  padding: clamp(54px, 9vw, 110px) 0;
+  padding: clamp(28px, 4vw, 56px) 0 clamp(40px, 6vw, 80px);
 }
 
 .analysis-page h1,
-.text-page h1 {
-  max-width: 800px;
-}
-
-/* A chart page is a Teletext page: the title is set in the body mono at a size
-   that leads the content instead of competing with it. The display face is for
-   the landing page, where the headline is the whole screen. */
-.analysis-page h1 {
+.text-page h1,
+.season-plan h1 {
   max-width: 720px;
   font-family: var(--fa-body);
-  font-size: clamp(20px, 2.4vw, 28px);
+  font-size: clamp(24px, 2.8vw, 34px);
   font-weight: 700;
   letter-spacing: 0.01em;
   line-height: 1.2;
@@ -649,16 +643,8 @@ h1[tabindex="-1"]:focus-visible {
 }
 
 .index-page h1 {
-  max-width: 720px;
-  margin-bottom: clamp(28px, 4vw, 44px);
-}
-
-.index-lede {
-  max-width: 66ch;
-  margin: -14px 0 clamp(28px, 4vw, 44px);
-  color: var(--ink-soft);
-  font-size: clamp(15px, 1.4vw, 17px);
-  line-height: 1.6;
+  max-width: 860px;
+  margin-bottom: 12px;
 }
 
 /* One column, two, or four -- never three. The first row is Plan and the team
@@ -701,6 +687,31 @@ h1[tabindex="-1"]:focus-visible {
   gap: 10px;
   padding: 20px 22px 24px;
   color: var(--fa-gk-black);
+}
+
+.about-panel {
+  max-width: 74ch;
+  margin: clamp(28px, 4vw, 44px) 0 0;
+  padding: 20px 24px 22px;
+  border-left: 4px solid var(--fa-gk-lime);
+  background: var(--fa-gk-black);
+  color: var(--fa-gk-white);
+}
+
+.about-panel h2 {
+  margin: 0 0 8px;
+  font-size: 18px;
+}
+
+.about-panel p {
+  max-width: 66ch;
+  margin: 0 0 8px;
+  color: rgb(255 255 255 / 82%);
+  line-height: 1.6;
+}
+
+.about-panel p:last-child {
+  margin-bottom: 0;
 }
 
 .index-cell h2 {
@@ -1877,7 +1888,7 @@ h1[tabindex="-1"]:focus-visible {
 /* ---- Season plan -------------------------------------------------------- */
 
 .season-plan {
-  padding: clamp(34px, 5vw, 62px) 0 clamp(40px, 6vw, 70px);
+  padding: clamp(28px, 4vw, 50px) 0 clamp(36px, 5vw, 64px);
 }
 
 .plan-honesty {
@@ -2924,6 +2935,13 @@ h1[tabindex="-1"]:focus-visible {
 .captain-grid-season[aria-pressed="true"] {
   background: var(--ink);
   color: var(--paper);
+}
+
+.captain-grid-scroller {
+  /* Sticky cells can leak a wide table's visual overflow into the root even
+     when this element scrolls. Contain that canvas without hiding its own
+     horizontal scrollbar. */
+  contain: inline-size paint;
 }
 
 .captain-grid-table {
@@ -3980,6 +3998,63 @@ h1[tabindex="-1"]:focus-visible {
   color: var(--ink-soft);
 }
 
+.policy-rank-wrap tbody tr {
+  border-left: 4px solid transparent;
+}
+
+.policy-rank-wrap tbody tr.is-elite {
+  border-left-color: var(--fa-gk-lime);
+  background: color-mix(in srgb, var(--fa-gk-lime) 8%, transparent);
+}
+
+.policy-rank-wrap tbody tr.is-strong {
+  border-left-color: var(--fa-signal-green);
+  background: color-mix(in srgb, var(--fa-signal-green) 8%, transparent);
+}
+
+.policy-rank-wrap tbody tr.is-flop {
+  border-left-color: var(--fa-signal-red);
+  background: color-mix(in srgb, var(--fa-signal-red) 7%, transparent);
+}
+
+.policy-rank-wrap tbody tr.is-unrated {
+  border-left-color: var(--rule);
+  background: repeating-linear-gradient(
+    135deg,
+    transparent 0 8px,
+    color-mix(in srgb, var(--rule) 45%, transparent) 8px 9px
+  );
+}
+
+.policy-rank-wrap tbody tr.is-mine {
+  outline: 2px solid var(--field-green);
+  outline-offset: -2px;
+}
+
+.policy-rank-label,
+.policy-rank-performance,
+.policy-rank-sample {
+  display: block;
+}
+
+.policy-rank-label {
+  font-weight: 700;
+}
+
+.policy-rank-performance {
+  margin-top: 2px;
+  color: currentcolor;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.policy-rank-sample {
+  margin-top: 2px;
+  color: var(--ink-soft);
+  font-size: 10px;
+}
+
 .validation-positions,
 .validation-generated {
   margin-top: 12px;
@@ -4074,17 +4149,8 @@ h1[tabindex="-1"]:focus-visible {
   margin-top: 34px;
 }
 
-/* The four numbers that place the whole thing, before any prose. */
-.fpl500-facts {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px 22px;
+.fpl500-page .dossier-metrics {
   margin: 18px 0 26px;
-  padding: 0;
-  list-style: none;
-  font-family: var(--fa-body);
-  font-size: 13px;
-  color: var(--ink-soft);
 }
 
 .fpl500-facts strong {
@@ -4468,15 +4534,14 @@ h1[tabindex="-1"]:focus-visible {
 
 /* Which race is being run. Asked, never assumed. */
 .rank-objective {
-  margin: clamp(24px, 3vw, 36px) 0;
-  border: 2px solid var(--rule);
-  padding: 14px 16px 16px;
-  background: var(--paper-deep);
+  margin: 0;
+  border-block: 1px solid var(--rule);
+  padding: 14px 0 16px;
 }
 
-.rank-objective > h2 {
+.rank-objective > h3 {
   margin: 0 0 6px;
-  font-size: clamp(18px, 1.9vw, 24px);
+  font-size: 17px;
 }
 
 .rank-objective > p {
@@ -4708,26 +4773,25 @@ h1[tabindex="-1"]:focus-visible {
   grid-template-columns: minmax(0, 1fr);
 }
 
-@media (min-width: 560px) {
+@media (min-width: 720px) {
   .top-pick-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 1120px) {
   .top-pick-grid {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
 
-.top-pick {
+.top-pick-column {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  align-items: center;
+  gap: 8px;
+  min-width: 0;
   padding: 14px 12px 12px;
   background: var(--paper-deep);
-  text-align: center;
 }
 
 /* Fixed rather than themed: the photograph has to sit on the same colour in
@@ -4738,13 +4802,25 @@ h1[tabindex="-1"]:focus-visible {
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  width: 104px;
-  height: 124px;
+  width: 88px;
+  height: 112px;
   background: var(--fa-signal-green);
 }
 
+.top-pick-hero {
+  display: grid;
+  gap: 12px;
+  align-items: end;
+  grid-template-columns: 88px minmax(0, 1fr);
+}
+
+.top-pick-hero-detail {
+  min-width: 0;
+  padding-bottom: 2px;
+}
+
 .top-pick-role {
-  margin: 8px 0 0;
+  margin: 0;
   font-family: var(--fa-body);
   font-size: 10px;
   font-weight: 700;
@@ -4770,6 +4846,68 @@ h1[tabindex="-1"]:focus-visible {
   text-decoration: underline;
   text-decoration-color: var(--rule);
   text-underline-offset: 4px;
+}
+
+.rank-medal {
+  display: block;
+  width: 18px;
+  height: 20px;
+  flex: 0 0 auto;
+  shape-rendering: crispEdges;
+}
+
+.top-pick-runners {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.top-pick-runners > li {
+  display: grid;
+  gap: 6px;
+  align-items: center;
+  min-width: 0;
+  padding: 7px 0;
+  border-top: 1px solid var(--rule);
+  grid-template-columns: 18px minmax(0, 1fr) auto;
+}
+
+.top-pick-runner-name {
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  background: none;
+  color: var(--ink);
+  font-family: var(--fa-display);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  text-align: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.top-pick-runner-name:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.top-pick-runner-club {
+  grid-column: 2;
+  min-width: 0;
+  overflow: hidden;
+  color: var(--ink-soft);
+  font-size: 11px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.top-pick-runner-points {
+  grid-column: 3;
+  grid-row: 1 / span 2;
+  font-size: 11px;
+  white-space: nowrap;
 }
 
 .top-pick-name button:hover {
@@ -5893,6 +6031,11 @@ h1[tabindex="-1"]:focus-visible {
   --step-ink: var(--fa-gk-black);
 }
 
+.plan-step[data-step="05"] {
+  --step-hue: var(--fa-gk-lime);
+  --step-ink: var(--fa-gk-black);
+}
+
 .plan-step-summary {
   display: flex;
   align-items: baseline;
@@ -5956,6 +6099,23 @@ h1[tabindex="-1"]:focus-visible {
 
 .plan-step-body {
   padding: 14px;
+}
+
+.plan-inputs-intro {
+  max-width: 74ch;
+  margin: 0 0 12px;
+  color: var(--ink-soft);
+  line-height: 1.6;
+}
+
+.plan-step-body > .plan-declared,
+.plan-step-body > .declared-chips {
+  margin-top: 14px;
+}
+
+.declared-chips > h3 {
+  margin: 0 0 6px;
+  font-size: 17px;
 }
 
 .plan-more {
@@ -6574,6 +6734,10 @@ h1[tabindex="-1"]:focus-visible {
   gap: 24px;
   align-items: start;
   margin-top: 24px;
+}
+
+.analysis-pinned {
+  margin-top: 32px;
 }
 
 .analysis-chart {

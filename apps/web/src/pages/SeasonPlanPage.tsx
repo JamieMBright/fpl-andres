@@ -966,35 +966,36 @@ export default function SeasonPlanPage() {
         {teamId === null ? "" : analysisAnnouncement(teamPlan.analysis, teamId)}
       </p>
 
-      {team.status === "ready" &&
-      team.source === "published" &&
-      teamId !== null ? (
-        <DeclaredTransferForm
-          entryId={teamId}
-          event={team.event}
-          season={plan.season}
-          onDeclared={() => {
-            setDeclaredAt(Date.now());
-          }}
-        />
-      ) : null}
-
       {teamId === null ? null : (
-        <RankObjectiveForm
-          entryId={teamId}
-          key={teamId}
-          onChosen={setChosenObjective}
-        />
-      )}
-
-      {teamId === null ? null : (
-        <DeclaredChipsForm
-          entryId={teamId}
-          key={teamId}
-          onDeclared={(chips) => {
-            setChipEdit({ entryId: teamId, chips });
-          }}
-        />
+        <PlanStep
+          defaultOpen
+          note={objective ? "objective set" : "answer before solving"}
+          step="02"
+          title="Before I solve"
+        >
+          <p className="plan-inputs-intro">
+            Tell the plan what the public FPL record cannot: which race matters,
+            anything you have changed since the deadline, and chips already used
+            or committed. Each answer changes the solve below.
+          </p>
+          <RankObjectiveForm entryId={teamId} onChosen={setChosenObjective} />
+          {team.status === "ready" && team.source === "published" ? (
+            <DeclaredTransferForm
+              entryId={teamId}
+              event={team.event}
+              season={plan.season}
+              onDeclared={() => {
+                setDeclaredAt(Date.now());
+              }}
+            />
+          ) : null}
+          <DeclaredChipsForm
+            entryId={teamId}
+            onDeclared={(chips) => {
+              setChipEdit({ entryId: teamId, chips });
+            }}
+          />
+        </PlanStep>
       )}
 
       {teamId === null ? null : <Scorecard calls={scorecard} />}
@@ -1095,7 +1096,7 @@ export default function SeasonPlanPage() {
               ? "solving"
               : "waiting on your fifteen"
         }
-        step="02"
+        step="03"
         title="When to play the chips"
       >
         {chipsAreYours ? (
@@ -1133,7 +1134,7 @@ export default function SeasonPlanPage() {
             ? "waiting on your fifteen"
             : `GW${String(gameweeks[0]?.event ?? 1)}–${String(gameweeks[gameweeks.length - 1]?.event ?? 38)}`
         }
-        step="03"
+        step="04"
         title="Every gameweek"
       >
         {awaitingLockIn ? (
@@ -1258,7 +1259,7 @@ export default function SeasonPlanPage() {
 
       <PlanStep
         note={`${String(CAVEAT_COUNT)} of them`}
-        step="04"
+        step="05"
         title="What this plan cannot know"
       >
         <section

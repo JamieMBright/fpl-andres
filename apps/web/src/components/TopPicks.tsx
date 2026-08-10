@@ -16,6 +16,7 @@ import { CeefaxShirt } from "./CeefaxShirt";
 import { InfoMarker } from "./InfoMarker";
 import { PlayerAvatar } from "./PlayerAvatar";
 import { PlayerDetail, type DetailPlayer } from "./PlayerDetail";
+import { RankMedal } from "./RankMedal";
 
 /**
  * The best five-gameweek player in each position, and why.
@@ -68,6 +69,7 @@ interface Pick {
   player: SolverPlayer;
   points: number;
   fixtures: readonly EventFixture[];
+  rank: 1 | 2 | 3;
 }
 
 /** "COV (H)" as published, which is the only place the venue is recorded. */
@@ -76,29 +78,38 @@ function readOpponent(entry: string): { club: string; home: boolean } {
   return { club, home: venue.startsWith("(H") };
 }
 
-function pickFor(
+function picksFor(
   position: string,
   label: string,
   totals: ReadonlyMap<number, number>,
-): Pick | null {
-  if (START_INDEX === null) return null;
-  let best: SolverPlayer | null = null;
-  let bestPoints = -Infinity;
-  for (const player of SEASON_PLAYERS) {
-    if (player.position !== position) continue;
-    const points = totals.get(player.code);
-    if (points === undefined || points <= bestPoints) continue;
-    best = player;
-    bestPoints = points;
-  }
-  if (!best) return null;
-
-  const fixtures: EventFixture[] = [];
-  for (let ahead = 0; ahead < DEFAULT_HORIZON; ahead += 1) {
-    const fixture = fixtureAtEvent(best, START_INDEX + ahead);
-    if (fixture) fixtures.push(fixture);
-  }
-  return { label, player: best, points: bestPoints, fixtures };
+): Pick[] {
+  if (START_INDEX === null) return [];
+  return SEASON_PLAYERS.filter((player) => player.position === position)
+    .flatMap((player) => {
+      const points = totals.get(player.code);
+      return points === undefined ? [] : [{ player, points }];
+    })
+    .sort(
+      (left, right) =>
+        right.points - left.points || left.player.code - right.player.code,
+    )
+    .slice(0, 3)
+    .map(({ player, points }, index) => {
+      const fixtures: EventFixture[] = [];
+      if (index === 0) {
+        for (let ahead = 0; ahead < DEFAULT_HORIZON; ahead += 1) {
+          const fixture = fixtureAtEvent(player, START_INDEX + ahead);
+          if (fixture) fixtures.push(fixture);
+        }
+      }
+      return {
+        label,
+        player,
+        points,
+        fixtures,
+        rank: (index + 1) as 1 | 2 | 3,
+      };
+    });
 }
 
 function Opponent({ entry }: { entry: string }) {
@@ -153,64 +164,88 @@ function FixtureColumn({ fixture }: { fixture: EventFixture }) {
   );
 }
 
-function TopPickCard({
+function TopPickColumn({
   onOpen,
   onProfile,
-  open,
+  openCode,
   panelId,
-  pick,
+  picks,
 }: {
-  onOpen: (open: boolean) => void;
+  onOpen: (code: number | null) => void;
   onProfile: (player: DetailPlayer) => void;
-  open: boolean;
+  openCode: number | null;
   panelId: string;
-  pick: Pick;
+  picks: readonly Pick[];
 }) {
-  const { player } = pick;
+  const winner = picks[0];
+  if (!winner) return null;
+  const { player } = winner;
+  const open = openCode === player.code;
   return (
-    <li className="top-pick">
-      <span className="top-pick-frame">
-        <PlayerAvatar
-          club={player.club}
-          name={player.name}
-          playerCode={player.code}
-        />
-      </span>
-
-      <p className="top-pick-role">{pick.label}</p>
-      <p className="top-pick-name">
-        <button onClick={() => onProfile(player)} type="button">
-          {player.name}
-        </button>
-      </p>
-      <p className="top-pick-club">
-        <span translate="no">{player.club}</span>
-        <span>{money.format(player.priceTenths / 10)}</span>
-      </p>
-
-      <p className="top-pick-metric">
-        <button
-          aria-controls={panelId}
-          aria-expanded={open}
-          className="top-pick-points"
-          onClick={() => onOpen(true)}
-          onFocus={() => onOpen(true)}
-          onKeyDown={(event) => {
-            if (event.key === "Escape") onOpen(false);
-          }}
-          onMouseEnter={() => onOpen(true)}
-          type="button"
-        >
-          <b>{oneDecimal.format(pick.points)}</b>
-          <span>xPts5</span>
-        </button>
-        <InfoMarker label="xPts5">
-          Expected points over the next five gameweeks, each one priced against
-          the fixture it is actually played in. A double counts twice and a
-          blank counts nothing, which is why this is worth reading beside a
-          per-match figure rather than instead of one.
-        </InfoMarker>
-      </p>
+    <li className="top-pick-column">
+      <p className="top-pick-role">{winner.label}</p>
+      <article className="top-pick-hero">
+        <span className="top-pick-frame">
+          <PlayerAvatar
+            club={player.club}
+            name={player.name}
+            playerCode={player.code}
+          />
+        </span>
+        <div className="top-pick-hero-detail">
+          <RankMedal rank={1} />
+          <p className="top-pick-name">
+            <button onClick={() => onProfile(player)} type="button">
+              {player.name}
+            </button>
+          </p>
+          <p className="top-pick-club">
+            <span translate="no">{player.club}</span>
+            <span>{money.format(player.priceTenths / 10)}</span>
+          </p>
+          <p className="top-pick-metric">
+            <button
+              aria-controls={panelId}
+              aria-expanded={open}
+              className="top-pick-points"
+              onClick={() => onOpen(player.code)}
+              onFocus={() => onOpen(player.code)}
+              onKeyDown={(event) => {
+                if (event.key === "Escape") onOpen(null);
+              }}
+              onMouseEnter={() => onOpen(player.code)}
+              type="button"
+            >
+              <b>{oneDecimal.format(winner.points)}</b>
+              <span>xPts5</span>
+            </button>
+            <InfoMarker label="xPts5">
+              Expected points over the next five gameweeks. A double counts
+              twice and a blank counts nothing.
+            </InfoMarker>
+          </p>
+        </div>
+      </article>
+      <ol className="top-pick-runners">
+        {picks.slice(1).map((pick) => (
+          <li key={pick.player.code}>
+            <RankMedal rank={pick.rank} />
+            <button
+              className="top-pick-runner-name"
+              onClick={() => onProfile(pick.player)}
+              type="button"
+            >
+              {pick.player.name}
+            </button>
+            <span className="top-pick-runner-club" translate="no">
+              {pick.player.club}
+            </span>
+            <span className="top-pick-runner-points mono">
+              {oneDecimal.format(pick.points)} xPts5
+            </span>
+          </li>
+        ))}
+      </ol>
     </li>
   );
 }
@@ -220,18 +255,18 @@ export function TopPicks() {
   const [selected, setSelected] = useState<DetailPlayer | null>(null);
   const [openCode, setOpenCode] = useState<number | null>(null);
   const totals = horizonPointsByCode(DEFAULT_HORIZON);
-  const picks = POSITIONS.map(({ code, label }) =>
-    pickFor(code, label, totals),
-  ).filter((pick): pick is Pick => pick !== null);
+  const columns = POSITIONS.map(({ code, label }) =>
+    picksFor(code, label, totals),
+  ).filter((picks) => picks.length > 0);
+  const picks = columns.flat();
   const shown = picks.find((pick) => pick.player.code === openCode) ?? null;
 
   return (
     <section aria-labelledby="top-picks" className="top-picks">
-      <h2 id="top-picks">FPL Andres&rsquo; top picks</h2>
+      <h2 id="top-picks">Top players for the next five gameweeks</h2>
       <p>
-        The highest five-gameweek projection in each position, out of everyone
-        in the game. Not advice to buy: it says who the fixtures favour, not
-        what the other fourteen slots can afford.
+        The top three in every position by xPts5. The leader gets the full
+        fixture breakdown; every name opens the player profile.
       </p>
       {picks.length === 0 ? (
         <p className="mono">
@@ -248,14 +283,14 @@ export function TopPicks() {
           onMouseLeave={() => setOpenCode(null)}
         >
           <ul className="top-pick-grid">
-            {picks.map((pick) => (
-              <TopPickCard
-                key={pick.player.code}
-                onOpen={(next) => setOpenCode(next ? pick.player.code : null)}
+            {columns.map((column) => (
+              <TopPickColumn
+                key={column[0]?.player.position}
+                onOpen={setOpenCode}
                 onProfile={(player) => setSelected(player)}
-                open={shown?.player.code === pick.player.code}
+                openCode={openCode}
                 panelId={panelId}
-                pick={pick}
+                picks={column}
               />
             ))}
           </ul>

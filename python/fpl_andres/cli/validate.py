@@ -26,7 +26,9 @@ from fpl_andres.backtesting.captain_significance import compare_policies
 from fpl_andres.backtesting.corpus import SeasonCorpus, load_season
 from fpl_andres.backtesting.projector import project_gameweek
 from fpl_andres.backtesting.score import METHOD_LABELS, score_season
+from fpl_andres.cohorts.points_to_rank import rank_band
 from fpl_andres.holdout import HOLDOUT_SEASON, SCORED_SEASONS
+from fpl_andres.jsonio import read_json_lines
 from fpl_andres.model_version import MODEL_VERSION
 from fpl_andres.persistence.supabase import SupabaseCredentials, SupabaseRestClient
 from fpl_andres.positions import Position
@@ -36,6 +38,7 @@ from fpl_andres.simulation.season import LineupRules
 from fpl_andres.simulation.squad import SquadRules
 
 DEFAULT_OUTPUT = Path("apps/web/src/data/validation.json")
+MANAGER_CATALOGUE = Path("data/cohort/managers.jsonl")
 
 LEAGUE = LeagueSettings(
     squad_rules=SquadRules(
@@ -70,6 +73,33 @@ def build_parser() -> argparse.ArgumentParser:
 
 def _round(value: float | None, digits: int = 3) -> float | None:
     return None if value is None else round(value, digits)
+
+
+def _overall_rank_payload(
+    catalogue: Sequence[Mapping[str, object]],
+    *,
+    season: str,
+    mean: int,
+    gameweeks_played: int,
+) -> dict[str, object]:
+    prorated = round(mean * 38 / gameweeks_played) if gameweeks_played else 0
+    label = season.replace("-", "/")
+    band = rank_band(catalogue, season=label, points=prorated)
+    return {
+        "prorated38Gameweeks": prorated,
+        "overallRankBand": (
+            None
+            if band is None
+            else {
+                "rankFrom": band.rank_from,
+                "rankTo": band.rank_to,
+                "pointsFrom": band.lower_points,
+                "pointsTo": band.upper_points,
+                "sampleSize": band.sample_size,
+            }
+        ),
+        "rankReason": None if band is not None else "outside_catalogue_range",
+    }
 
 
 def _squad_rows(league: object, policy: str, corpus: object) -> list[dict[str, object]]:
@@ -252,6 +282,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
     seasons = [part.strip() for part in args.seasons.split(",") if part.strip()]
     seeds = [int(part) for part in args.seeds.split(",") if part.strip()]
+    catalogue = read_json_lines(MANAGER_CATALOGUE)
 
     credentials = SupabaseCredentials.from_env(os.environ)
     report: dict[str, object] = {
@@ -398,16 +429,22 @@ def main(argv: Sequence[str] | None = None) -> int:
                     "giantFirst": _giant_first_payload(corpus, seeds),
                     "league": {
                         "policies": {
-                            policy: {
-                                "mean": round(statistics.mean(totals[policy]))
-                                if totals[policy]
-                                else 0,
-                                "best": max(totals[policy]) if totals[policy] else 0,
-                                "wins": wins[policy],
-                                "chips": chips.get(policy, {}),
-                                "teamValueTenths": value.get(policy, 0),
-                                "squad": squads.get(policy, []),
-                            }
+                            policy: (
+                                lambda mean: {
+                                    "mean": mean,
+                                    "best": max(totals[policy]) if totals[policy] else 0,
+                                    "wins": wins[policy],
+                                    "chips": chips.get(policy, {}),
+                                    "teamValueTenths": value.get(policy, 0),
+                                    "squad": squads.get(policy, []),
+                                    **_overall_rank_payload(
+                                        catalogue,
+                                        season=season,
+                                        mean=mean,
+                                        gameweeks_played=gameweeks_played,
+                                    ),
+                                }
+                            )(round(statistics.mean(totals[policy])) if totals[policy] else 0)
                             for policy in POLICIES
                         },
                         "leaguesPlayed": len(seeds),

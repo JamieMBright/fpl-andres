@@ -145,26 +145,24 @@ export function Fpl500Playbook() {
 
   return (
     <>
-      <ul className="fpl500-facts">
-        <li>
-          <strong>{number.format(data.size)}</strong> managers
-        </li>
-        <li>
-          from <strong>{number.format(data.catalogueSize)}</strong> shortlisted
-          candidates
-        </li>
-        <li>
-          across{" "}
-          <strong>
-            {data.sweptTo === null ? "—" : number.format(data.sweptTo)}
-          </strong>{" "}
-          entry ids read
-        </li>
-        <li>
-          in a field of{" "}
-          <strong>{number.format(data.latestSeasonEntries ?? 0)}</strong>
-        </li>
-      </ul>
+      <dl className="dossier-metrics">
+        <div>
+          <dt>Ranked managers</dt>
+          <dd>{number.format(data.size)}</dd>
+        </div>
+        <div>
+          <dt>Qualified candidates</dt>
+          <dd>{number.format(data.catalogueSize)}</dd>
+        </div>
+        <div>
+          <dt>Entry IDs read</dt>
+          <dd>{data.sweptTo === null ? "—" : number.format(data.sweptTo)}</dd>
+        </div>
+        <div>
+          <dt>Field size</dt>
+          <dd>{number.format(data.latestSeasonEntries ?? 0)}</dd>
+        </div>
+      </dl>
 
       <Fold kind="what" title="What it is">
         <ul className="plan-promises">

@@ -26,6 +26,11 @@ export const money = new Intl.NumberFormat("en-GB", {
 
 export const integer = new Intl.NumberFormat("en-GB");
 
+/** A large count where the order of magnitude matters more than every digit. */
+export const compactInteger = new Intl.NumberFormat("en-GB", {
+  notation: "compact",
+});
+
 /** When something happened in football. */
 export const timestamp = new Intl.DateTimeFormat("en-GB", {
   day: "numeric",

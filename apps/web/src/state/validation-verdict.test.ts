@@ -5,6 +5,8 @@ import {
   leagueVerdict,
   pooledVerdict,
   positionVerdict,
+  rankBandClass,
+  rankPerformanceLabel,
   separableVerdict,
   type LeagueSeason,
   type VerdictSeason,
@@ -167,6 +169,38 @@ describe("verdicts on artifacts that do not exist yet", () => {
     );
     expect(verdict.cells).toBe(3);
     expect(verdict.modelWins).toBe(2);
+  });
+});
+
+describe("Overall Rank performance bands", () => {
+  const band = (rankTo: number) => ({
+    rankFrom: rankTo,
+    rankTo,
+    sampleSize: 20,
+  });
+
+  it.each([
+    [1_000, "top 1k"],
+    [10_000, "top 10k"],
+    [50_000, "top 50k"],
+    [100_000, "top 100k"],
+    [250_000, "top 250k"],
+    [500_000, "top 500k"],
+    [500_001, "total flop"],
+    [3_000_000, "total flop"],
+  ])("labels rank %,i as %s", (rankTo, label) => {
+    expect(rankPerformanceLabel(band(rankTo))).toBe(label);
+  });
+
+  it("uses the conservative edge of a measured range", () => {
+    const range = { rankFrom: 100_000, rankTo: 600_000, sampleSize: 20 };
+    expect(rankPerformanceLabel(range)).toBe("total flop");
+    expect(rankBandClass(range)).toBe("is-flop");
+  });
+
+  it("does not invent a result without a sample", () => {
+    expect(rankPerformanceLabel(null)).toBe("unrated");
+    expect(rankBandClass(undefined)).toBe("is-unrated");
   });
 });
 

@@ -20,20 +20,18 @@ name: Ingest Player Odds
 # off a guess -- and python/tests/test_api_budgets.py holds the schedules here
 # and in the survey under the allowance between them.
 #
-# The schedule is the days a deadline can fall behind. Books price the result
-# months out and open player props days out, so a daily run a fortnight before
-# kickoff spends the month's allowance on markets that do not exist yet.
+# Player props open days rather than months out, but no provider publishes an
+# exact opening hour. Run daily so the first open market is seen; the 15-request
+# cap keeps thirty runs plus the weekly survey inside the shared free tier.
 #
 # Nothing here emits or implies a betting recommendation. A price is read as a
 # probability and used as evidence about a footballer.
 
 on:
   schedule:
-    # An hour before the earliest a deadline lands, on the days it can. Cron has
-    # no timezone, so 09:00 UTC is 10:00 British Summer Time and 09:00 in
-    # winter. Deadlines move; this is the cheap approximation and it is named as
-    # one rather than dressed up as deadline awareness.
-    - cron: "0 9 * * 2,5,6"
+    # An hour before the earliest a deadline lands. Cron has no timezone, so
+    # 09:00 UTC is 10:00 British Summer Time and 09:00 in winter.
+    - cron: "0 9 * * *"
   # A change to this file is how a run gets asked for without a token. It spends
   # the default budget below, which is why the budget has one.
   push:
@@ -44,7 +42,7 @@ on:
       budget:
         description: "How many requests this run may spend, against 500 a month."
         required: false
-        default: "30"
+        default: "15"
         type: string
 
 permissions:
@@ -108,7 +106,7 @@ jobs:
           fi
           python -m fpl_andres.cli.ingest_player_odds \
             --season "$(date -u +%Y)-$(printf '%02d' $((10#$(date -u +%y) + 1)))" \
-            --budget "${BUDGET:-30}"
+            --budget "${BUDGET:-15}"
 
       - name: Commit the odds
         run: |
@@ -120,18 +118,27 @@ jobs:
             echo "no odds artifact this run; nothing to commit"
             exit 0
           fi
+          # `player-odds.json` is an input, not a shipped recommendation. The
+          # plan reads `season-inputs.json`, so commit both or neither.
+          python -m fpl_andres.cli.publish_season_inputs
           # prettier owns the file and Python does not write it that way. An
           # unformatted bot commit reddens the next human push, not this run.
           # Formatting before the diff check also stops a rewrite that is only
           # formatting from reaching `git commit` and failing it empty.
-          npx --yes prettier@3 --write apps/web/src/data/player-odds.json
+          npx --yes prettier@3 --write \
+            apps/web/src/data/player-odds.json \
+            apps/web/src/data/season-inputs.json
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           # Staged first, then compared against the index. `git diff` does not
           # look at untracked files, so the first run to produce this artifact
           # would report "unchanged" and throw it away.
-          git add apps/web/src/data/player-odds.json
-          if git diff --cached --quiet -- apps/web/src/data/player-odds.json; then
+          git add \
+            apps/web/src/data/player-odds.json \
+            apps/web/src/data/season-inputs.json
+          if git diff --cached --quiet -- \
+            apps/web/src/data/player-odds.json \
+            apps/web/src/data/season-inputs.json; then
             echo "odds unchanged"
             exit 0
           fi

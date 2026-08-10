@@ -81,11 +81,8 @@ def test_the_ingest_asks_for_no_market_it_does_not_read() -> None:
     assert set(PLAYER_MARKETS) == set(MARKET_FIELDS)
 
 
-def test_the_odds_ingest_does_not_run_daily() -> None:
-    """Player props open days before kickoff, so a daily run buys nothing.
-
-    It also costs the same as a run that finds something, which is how an
-    allowance disappears into fixtures no book has opened a market on.
-    """
-    for entry in _triggers("ingest-player-odds.yml")["schedule"]:  # type: ignore[index]
-        assert str(entry["cron"]).split()[4] != "*", "a daily cron spends the month on shut markets"
+def test_the_odds_ingest_runs_daily() -> None:
+    """No provider publishes an opening hour, so only a daily probe sees the first one."""
+    schedule = _triggers("ingest-player-odds.yml")["schedule"]  # type: ignore[index]
+    assert len(schedule) == 1
+    assert str(schedule[0]["cron"]).split()[4] == "*"

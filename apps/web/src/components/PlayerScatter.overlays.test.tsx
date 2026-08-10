@@ -1,10 +1,11 @@
-import { render } from "@testing-library/react";
+import { fireEvent, render, within } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
 import { PlayerScatter } from "./PlayerScatter";
 import type { AnalysisPlayer } from "../state/analysis-pool";
 import { selectPlotted } from "../state/scatter-select";
 import { DEFAULT_VIEW } from "../state/scatter-view";
+import { SEASON_PLAYERS } from "../state/season-solver";
 
 function pool(count: number): AnalysisPlayer[] {
   return Array.from({ length: count }, (_, index) => {
@@ -218,5 +219,76 @@ describe("scatter overlays", () => {
       />,
     );
     expect(container.querySelector(".scatter-frontier")).not.toBeNull();
+  });
+
+  it("clips trend, frontier, marks and labels to the plotting rectangle", () => {
+    const view = { ...DEFAULT_VIEW, frontier: true, trend: true, labels: true };
+    const selection = selectPlotted(pool(200), view)!;
+    const { container } = render(
+      <PlayerScatter
+        selection={selection}
+        view={view}
+        pinned={[]}
+        onTogglePin={() => {}}
+      />,
+    );
+    const clip = container.querySelector("clipPath")?.id;
+    expect(clip).toBeTruthy();
+    const clipped = container.querySelector(`g[clip-path="url(#${clip})"]`);
+    expect(clipped?.querySelector(".scatter-trend")).not.toBeNull();
+    expect(clipped?.querySelector(".scatter-frontier")).not.toBeNull();
+    expect(clipped?.querySelector(".scatter-marks")).not.toBeNull();
+    expect(clipped?.querySelector(".scatter-labels")).not.toBeNull();
+  });
+});
+
+describe("scatter tooltip evidence", () => {
+  it("shows every active encoding and the five-gameweek projection", () => {
+    const published = SEASON_PLAYERS.find(
+      (player) => player.position === "DEF",
+    );
+    expect(published).toBeDefined();
+    const [subject] = pool(1);
+    expect(subject).toBeDefined();
+    const player = {
+      ...subject!,
+      code: published!.code,
+      position: "DEF",
+      minutes: 1800,
+      ownership: 4.2,
+      defensiveContributionPer90: 5,
+      defconBarRatio: 0.5,
+      expectedGoalInvolvements: 8,
+      ninetiesPlayed: 20,
+    } satisfies AnalysisPlayer;
+    const view = {
+      ...DEFAULT_VIEW,
+      x: "defconPer90",
+      y: "xGIPer90",
+      size: "ownership",
+      colourBy: "metric" as const,
+      colourMetric: "totalPoints",
+      minMinutes: 0,
+    };
+    const selection = selectPlotted([player], view)!;
+    const { container } = render(
+      <PlayerScatter
+        selection={selection}
+        view={view}
+        pinned={[]}
+        onTogglePin={() => {}}
+      />,
+    );
+
+    fireEvent.mouseEnter(container.querySelector(".scatter-mark")!);
+    const stats = container.querySelector<HTMLElement>(
+      ".scatter-tooltip-stats",
+    )!;
+    expect(within(stats).getByText("DefCon per 90")).toBeInTheDocument();
+    expect(within(stats).getByText("xGI per 90")).toBeInTheDocument();
+    expect(within(stats).getByText("Ownership")).toBeInTheDocument();
+    expect(within(stats).getByText("Total points")).toBeInTheDocument();
+    expect(within(stats).getByText("xPts over 5 GW")).toBeInTheDocument();
+    expect(within(stats).getByText("Minutes")).toBeInTheDocument();
   });
 });

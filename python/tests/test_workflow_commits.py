@@ -111,3 +111,28 @@ def test_the_bot_committing_workflows_are_covered_by_those_rules() -> None:
         "validate-model.yml",
     ):
         assert name in pushing, f"{name} no longer looks like it pushes"
+
+
+@pytest.mark.parametrize(
+    "name,source",
+    (
+        ("ingest-player-odds.yml", "player-odds.json"),
+        ("ingest-odds.yml", "fixture-odds.json"),
+    ),
+)
+def test_live_odds_producers_republish_the_plan_the_browser_reads(name: str, source: str) -> None:
+    text = (WORKFLOWS / name).read_text(encoding="utf-8")
+
+    assert source in text
+    assert "python -m fpl_andres.cli.publish_season_inputs" in text
+    assert "apps/web/src/data/season-inputs.json" in text
+    if name == "ingest-odds.yml":
+        # This workflow iterates the declared paths and formats/stages `$path`.
+        assert 'prettier@3 --write "$path"' in text
+        assert 'git add -A -- "$path"' in text
+    else:
+        # The player workflow names both artifacts explicitly.
+        publish = text.index("python -m fpl_andres.cli.publish_season_inputs")
+        season_inputs = text.index("apps/web/src/data/season-inputs.json", publish)
+        assert text.index("prettier@3 --write", publish) < season_inputs
+        assert text.index("git add", publish) < text.rindex("apps/web/src/data/season-inputs.json")
