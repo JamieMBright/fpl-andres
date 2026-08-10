@@ -21,6 +21,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 
 from fpl_andres import cliargs
+from fpl_andres.cohorts.absence import DEFAULT_TOLERANCE, departed
 from fpl_andres.cohorts.elite import (
     DEFAULT_SETTINGS,
     EliteScore,
@@ -42,6 +43,8 @@ CHECKPOINT = COHORT_DIR / "sweep-checkpoint.json"
 PORTFOLIO_DIR = COHORT_DIR / "portfolio"
 #: This season's Overall standings, written by `harvest_league`.
 STANDINGS = COHORT_DIR / "fpl100.json"
+#: Who has stopped answering, counted by `capture_cohort_picks`.
+ABSENT = COHORT_DIR / "absent.json"
 DEFAULT_OUTPUT = COHORT_DIR / "fpl500.json"
 DEFAULT_WEB_OUTPUT = Path("apps/web/src/data/fpl500.json")
 SCHEMA_VERSION = 1
@@ -81,6 +84,16 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--top", type=cliargs.positive_int, default=500)
     parser.add_argument("--decay", type=cliargs.positive_float, default=None)
     parser.add_argument("--minimum-seasons", type=cliargs.positive_int, default=None)
+    parser.add_argument("--absent", default=str(ABSENT))
+    parser.add_argument(
+        "--absence-tolerance",
+        type=cliargs.positive_int,
+        default=DEFAULT_TOLERANCE,
+        help=(
+            "Consecutive deadlines a manager may miss before the ranking gives "
+            "his place to the next one down."
+        ),
+    )
     return parser
 
 
@@ -107,6 +120,24 @@ def read_catalogue(path: Path) -> list[SweptManager]:
     return managers
 
 
+def _gone(path: Path, tolerance: int) -> frozenset[int]:
+    """Entries the capture job has stopped being able to reach.
+
+    A deleted account answers a request for its picks with a 404 forever and
+    says nothing else, so the only way to know is to have asked several times.
+    Dropped from the catalogue before the ranking is cut rather than blanked
+    afterwards, so the five hundredth place goes to somebody who is still
+    playing instead of being left empty.
+    """
+    if not path.exists():
+        return frozenset()
+    saved = parse_json(path.read_text(encoding="utf-8"), source=str(path))
+    misses = saved.get("consecutiveMisses", {})
+    if not isinstance(misses, dict):
+        return frozenset()
+    return departed({int(entry): int(count) for entry, count in misses.items()}, tolerance)
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
     path = Path(args.managers)
@@ -116,7 +147,9 @@ def main(argv: Sequence[str] | None = None) -> int:
             f"from the catalogue, not discovered independently."
         )
 
-    managers = read_catalogue(path)
+    catalogued = read_catalogue(path)
+    gone = _gone(Path(args.absent), args.absence_tolerance)
+    managers = [row for row in catalogued if row.entry_id not in gone]
     settings = EliteSettings(
         decay_per_season=args.decay or DEFAULT_SETTINGS.decay_per_season,
         minimum_seasons=args.minimum_seasons or DEFAULT_SETTINGS.minimum_seasons,
@@ -175,6 +208,11 @@ def main(argv: Sequence[str] | None = None) -> int:
     )
 
     print(f"wrote {output} — {len(ranked)} of {len(managers)} managers")
+    if gone:
+        print(
+            f"  {len(gone)} dropped for missing {args.absence_tolerance} "
+            "consecutive deadlines; their places went to the next ranked"
+        )
     if ranked:
         print(f"  top score {ranked[0].score:.4f}, cut-off {ranked[-1].score:.4f}")
         print(

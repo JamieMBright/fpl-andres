@@ -48,6 +48,7 @@ data/cohort/*
 !data/cohort/fpl500.json
 !data/cohort/fpl100.json
 !data/cohort/deadlines.json
+!data/cohort/absent.json
 # What the cohort held, one file a gameweek. Small, and the only record there
 # will ever be: FPL serves picks for the current season only, so a gameweek
 # missed here cannot be recovered.

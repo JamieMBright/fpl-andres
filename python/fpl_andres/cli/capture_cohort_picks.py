@@ -29,6 +29,7 @@ import httpx
 
 from fpl_andres import cliargs, timeouts
 from fpl_andres.cli.sweep_managers import Throttle
+from fpl_andres.cohorts.absence import DEFAULT_TOLERANCE, record_attempt
 from fpl_andres.cohorts.portfolio import (
     CoverageTooLow,
     ManagerPicks,
@@ -44,6 +45,7 @@ USER_AGENT = "fpl-andres/0.5 (+https://github.com/JamieMBright/fpl-andres)"
 COHORT_DIR = Path("data/cohort")
 MANAGERS = COHORT_DIR / "managers.jsonl"
 CHECKPOINT = COHORT_DIR / "sweep-checkpoint.json"
+ABSENT = COHORT_DIR / "absent.json"
 DEFAULT_OUTPUT = COHORT_DIR / "portfolio"
 
 
@@ -54,6 +56,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--concurrency", type=cliargs.positive_int, default=8)
     parser.add_argument("--managers", default=str(MANAGERS))
     parser.add_argument("--output-dir", default=str(DEFAULT_OUTPUT))
+    parser.add_argument("--absent", default=str(ABSENT))
     parser.add_argument(
         "--minimum-coverage",
         type=float,
@@ -160,6 +163,34 @@ def _write(portfolio: Portfolio, directory: Path) -> Path:
     return output
 
 
+def _read_absent(path: Path) -> dict[int, int]:
+    if not path.exists():
+        return {}
+    saved = read_json_file(path)
+    misses = saved.get("consecutiveMisses", {})
+    if not isinstance(misses, dict):
+        return {}
+    return {int(entry): int(count) for entry, count in misses.items()}
+
+
+def _write_absent(path: Path, ledger: dict[int, int], event: int) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+        json.dumps(
+            {
+                "schemaVersion": 1,
+                "updatedAt": datetime.now(UTC).isoformat().replace("+00:00", "Z"),
+                "throughEvent": event,
+                # Sorted so a diff shows who changed rather than the whole file.
+                "consecutiveMisses": {str(entry): ledger[entry] for entry in sorted(ledger)},
+            },
+            indent=2,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+
+
 async def run(args: argparse.Namespace) -> int:
     managers = Path(args.managers)
     if not managers.exists():
@@ -188,6 +219,18 @@ async def run(args: argparse.Namespace) -> int:
         results = await asyncio.gather(*(one(entry_id) for entry_id in entry_ids))
 
     captured = [row for row in results if row is not None]
+    # Written before the coverage gate. A run that fails to publish still
+    # learned who answered, and a cohort where too few answer is exactly the
+    # run whose evidence about who is gone is worth keeping.
+    absent = Path(args.absent)
+    ledger = record_attempt(_read_absent(absent), entry_ids, (row.entry_id for row in captured))
+    _write_absent(absent, ledger, args.event)
+    settled = sum(1 for misses in ledger.values() if misses >= DEFAULT_TOLERANCE)
+    print(
+        f"{len(ledger):,} managers are mid-absence; "
+        f"{settled:,} have missed {DEFAULT_TOLERANCE} and lose their place"
+    )
+
     try:
         portfolio = reconcile(
             captured,

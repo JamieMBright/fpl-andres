@@ -98,19 +98,23 @@ jobs:
       - name: Commit the portfolio
         if: steps.due.outputs.event != ''
         run: |
-          paths="data/cohort/portfolio"
-          if [ ! -d "$paths" ]; then
+          # The absence ledger travels with the portfolio. It is what the
+          # ranking reads to give a place to somebody still playing, and a
+          # capture that learned who answered and did not commit it has
+          # learned nothing.
+          paths="data/cohort/portfolio data/cohort/absent.json"
+          if [ ! -d data/cohort/portfolio ]; then
             echo "nothing new captured"
             exit 0
           fi
-          npx --yes prettier@3 --write "$paths"/*.json
+          npx --yes prettier@3 --write data/cohort/portfolio/*.json data/cohort/absent.json
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           # Staged first, then compared against the index. `git diff` does not
           # look at untracked files, and every capture here writes a new one, so
           # comparing the working tree would drop every one of them.
-          git add "$paths"
-          if git diff --cached --quiet -- "$paths"; then
+          git add $paths
+          if git diff --cached --quiet -- $paths; then
             echo "nothing new captured"
             exit 0
           fi
