@@ -34,6 +34,11 @@ on:
     # winter. Deadlines move; this is the cheap approximation and it is named as
     # one rather than dressed up as deadline awareness.
     - cron: "0 9 * * 2,5,6"
+  # A change to this file is how a run gets asked for without a token. It spends
+  # the default budget below, which is why the budget has one.
+  push:
+    paths:
+      - ".github/workflows/ingest-player-odds.yml"
   workflow_dispatch:
     inputs:
       budget:

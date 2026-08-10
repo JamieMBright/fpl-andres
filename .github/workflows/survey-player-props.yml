@@ -29,6 +29,10 @@ on:
   # both show up as a diff in the committed page.
   schedule:
     - cron: "41 6 * * 1"
+  # A change to this file is how a run gets asked for without a token.
+  push:
+    paths:
+      - ".github/workflows/survey-player-props.yml"
   workflow_dispatch:
     inputs:
       source:
