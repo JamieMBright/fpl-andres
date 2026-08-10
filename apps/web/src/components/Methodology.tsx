@@ -59,6 +59,150 @@ export function Methodology() {
         </p>
       </section>
 
+      <section aria-labelledby="method-xpts">
+        <h2 id="method-xpts">How a player gets a number</h2>
+        <p>
+          Every projection on this site is one arithmetic chain. It starts with
+          what a footballer actually did and ends with a number for a named
+          gameweek. Nothing in it is a rating anybody typed.
+        </p>
+        <ol className="method-chain">
+          <li>
+            <strong>Count what he did.</strong> Every appearance he has a record
+            for, from the corpus: minutes, goals, assists, clean sheets, saves,
+            cards, defensive actions. Recency-weighted on a four-gameweek
+            half-life, so last April counts for more than the previous August.
+          </li>
+          <li>
+            <strong>Turn counts into rates.</strong> Each becomes a per-ninety
+            rate and is then pulled toward the league rate for his position, in
+            proportion to how little he has played. Two hundred minutes and two
+            goals does not project as a goal a game.
+          </li>
+          <li>
+            <strong>Model the minutes separately.</strong> The chance he appears
+            and the chance he lasts an hour, from his own start record shrunk
+            the same way. Nothing else is computed until this is, because a
+            player who does not play scores nothing.
+          </li>
+          <li>
+            <strong>Price eleven routes.</strong> Each rate is multiplied by
+            what FPL pays for it — appearance, goals and assists, clean sheet,
+            bonus, saves, goals conceded, yellow cards, red cards, own goals,
+            penalties missed, defensive contribution. That sum, per match
+            against an average opponent, is the base.
+          </li>
+          <li>
+            <strong>Bend each route by the fixture.</strong> Not the total.
+            Every route gets its own multiplier for every one of the 38
+            gameweeks, so a keeper facing the champions loses clean sheets and
+            gains saves. A blank gameweek is a zero and a double counts twice.
+          </li>
+          <li>
+            <strong>Add the gameweeks up.</strong> xPts5 is the next five, each
+            priced against the fixture it is actually played in. No discount,
+            because a reader asking what five gameweeks are worth is not asking
+            the question the solver asks.
+          </li>
+        </ol>
+      </section>
+
+      <section aria-labelledby="method-promoted">
+        <h2 id="method-promoted">Players and clubs with no record at all</h2>
+        <p>
+          Three promoted clubs arrive every August with no Premier League
+          results, and every summer brings arrivals from other leagues. Neither
+          gets a made-up rating, and neither is silently dropped.
+        </p>
+        <p>
+          <strong>A promoted club</strong> is rated on FPL&rsquo;s own published
+          strength, which it publishes for every club including the ones that
+          have never played a top-flight match, normalised against the
+          league&rsquo;s own mean so it sits on the same scale as a measured
+          side. Where even that is missing the fallback is a deliberately soft
+          prior — promoted sides have finished in the bottom three in most
+          recent seasons, so the honest assumption is the unflattering one.
+        </p>
+        <p>
+          <strong>A player with no record</strong> is described by his role
+          rather than by himself. Players in this same squad list who{" "}
+          <em>do</em> have a record are grouped by position and by depth rank —
+          how expensive he is relative to his own club&rsquo;s players in his
+          position — and the median of that group becomes his projection and his
+          start rate. Fourth choice and below all mean the same thing, which is
+          &ldquo;not expected to play&rdquo;. A role prior has no route split to
+          give, so the whole figure sits on the one route his position is scored
+          by rather than being spread into a shape nobody measured.
+        </p>
+        <p>
+          He is marked unrated in the artifact, and the plan can still pick him,
+          because somebody will own him and a plan that pretends he does not
+          exist is not a plan for a real squad.
+        </p>
+      </section>
+
+      <section aria-labelledby="method-market">
+        <h2 id="method-market">Where a bookmaker gets a say</h2>
+        <p>
+          Everything above reads history. A book reads the team sheet. It knows
+          a striker has lost his place, that a summer signing has taken it, and
+          what the manager said on Friday — none of which is in last
+          season&rsquo;s numbers. So where a market prices something this model
+          also prices, the two are blended rather than one replacing the other.
+        </p>
+        <ul className="method-losses">
+          <li>
+            <strong>The match market sets the fixture.</strong> Where a book
+            priced the result, the implied clean sheet and expected goals for
+            each side set that gameweek&rsquo;s rungs directly, against the
+            average fixture the same books priced that week. Where it did not,
+            the fitted team strength stands.
+          </li>
+          <li>
+            <strong>Scorer and assist prices move the attacking route.</strong>{" "}
+            &ldquo;Anytime goalscorer&rdquo; is the chance of at least one and
+            FPL pays per goal, so the price is inverted to a rate — Poisson, so{" "}
+            <code>&lambda; = &minus;ln(1 &minus; P)</code> — and then divided by
+            the multiplier of the gameweek it was quoted in, because the quote
+            already carries its opponent and the solver is about to apply that
+            opponent again.
+          </li>
+          <li>
+            <strong>Card prices move the two card routes.</strong> A book prices
+            &ldquo;to be shown a card&rdquo; without saying which colour, and
+            prices reds separately on fewer fixtures. FPL pays &minus;1 and
+            &minus;3, so the split decides the points: where both are quoted the
+            split is the market&rsquo;s, and where only the card market is, the
+            player&rsquo;s own recorded ratio of reds to cards apportions it.
+          </li>
+          <li>
+            <strong>Who is in the market moves the start rate.</strong> A book
+            opens a player market on men it expects to be available, so somebody
+            missing from a squad it otherwise priced in full is the market
+            saying he is not playing. Read downward only, and only where the
+            book named at least eleven of that club&rsquo;s players — reading
+            absence off a partial list would bench a defender because nobody
+            quoted him to score.
+          </li>
+        </ul>
+        <p>
+          A price is never read twice. An earlier version read the
+          anytime-scorer price as a minutes signal as well as a goals signal,
+          which counted one number into goals and into every route that scales
+          with minutes. That path is gone; market membership is a different
+          fact, and it appears in one place.
+        </p>
+        <p className="method-proof">
+          <strong>What it gives up.</strong> The card routes have no fixture
+          multiplier, because nothing here has measured how a booking rate moves
+          with the opponent — so a derby&rsquo;s quote is read as if it were an
+          average fixture&rsquo;s. And every one of these blends is governed by
+          a single weight that is assumed rather than fitted, because there is
+          no season of kept quotes to fit it against yet. Both are bounded by
+          that weight and neither is hidden.
+        </p>
+      </section>
+
       <section aria-labelledby="method-minutes">
         <h2 id="method-minutes">Minutes first</h2>
         <p>
@@ -357,14 +501,15 @@ export function Methodology() {
       <section aria-labelledby="method-silent">
         <h2 id="method-silent">Where it says nothing</h2>
         <p>
-          A promoted-club debutant or an arrival from another league has no
-          Premier League evidence, so he is left out. A positional average would
-          look like knowledge without being any.
+          A player with no Premier League record carries a role prior rather
+          than a measurement, and the artifact says so on his row. It is not
+          knowledge about him; it is what players at his position and depth rank
+          actually do, and it should be read as the placeholder it is.
         </p>
         <p>
-          Between seasons the same rule applies. Until a gameweek of 2026/27 is
-          played there is no form to read and no fixture to weight, so the only
-          figure published is what each player returned per match last season,
+          Between seasons the same caution applies to everyone. Until a gameweek
+          of {projectionSeason} is played there is no form to read, so every
+          rate on this site is last season&rsquo;s, weighted by recency and
           labelled as exactly that.
         </p>
       </section>

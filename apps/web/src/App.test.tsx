@@ -15,7 +15,9 @@ import {
  * Query budget for a settled snapshot. These assert behaviour, and the default
  * one second is a threshold on machine load rather than on the page. Every test
  * here now mounts the plan, which is the heaviest route in the app, so the
- * whole file gets the same allowance.
+ * whole file gets the same allowance -- including the two error paths, which
+ * were left on ten seconds and failed only inside the full suite, where the
+ * workers contend and the same render takes three times as long.
  */
 const SETTLE = 30_000;
 
@@ -300,7 +302,7 @@ describe("team analysis entry", () => {
       await screen.findByRole(
         "heading",
         { name: "Network Request Failed" },
-        { timeout: 10_000 },
+        { timeout: SETTLE },
       ),
     ).toBeVisible();
     expect(screen.getByText(/Check your connection/i)).toBeVisible();
@@ -344,7 +346,7 @@ describe("team analysis entry", () => {
       await screen.findByRole(
         "heading",
         { name: "Network Request Failed" },
-        { timeout: 10_000 },
+        { timeout: SETTLE },
       ),
     ).toBeVisible();
 

@@ -55,11 +55,11 @@ const STAGES: Stage[] = [
     id: "sources",
     title: "1 · Where the numbers come from",
     summary:
-      "Three sources. FPL for prices, squads and fixtures. Understat for shot quality. Bookmakers for what a match is expected to look like.",
+      "Three sources. FPL for prices, squads and fixtures. Understat for shot quality. Bookmakers for what a match is expected to look like, and for what they expect of a named player in it.",
     example:
       "James Trafford arrives with four Premier League appearances to his name. That is the whole of his record here — not a small sample of a bigger one, the entire thing.",
     detail:
-      "What FPL publishes, plus Understat joined on a crosswalk checked by hand rather than matched on name, plus free multi-bookmaker prices from football-data.co.uk. Prices and availability are today's. The scoring record is last completed season. Nothing is scraped from another FPL site and no projection from another model is used as an input, so an error here is mine and traceable.",
+      "What FPL publishes, plus Understat joined on a crosswalk checked by hand rather than matched on name, plus free multi-bookmaker prices from football-data.co.uk for match results and a paid tier for player markets — anytime scorer, assists and cards. Prices and availability are today's. The scoring record is last completed season. Nothing is scraped from another FPL site and no projection from another model is used as an input, so an error here is mine and traceable.",
     constants: [
       {
         name: "Odds refresh",
@@ -73,7 +73,7 @@ const STAGES: Stage[] = [
       },
     ],
     caveat:
-      "A player with no Premier League record at all — a promoted-club debutant, an arrival from abroad — gets no row. He is left out rather than given a positional average, so the pool this model chooses from is smaller than the game. You will not see him suggested, and that is a limitation rather than a judgement on him.",
+      "A player with no Premier League record at all — a promoted-club debutant, an arrival from abroad — has nothing measured about him, so he carries the median of the players in his position at his depth rank who do have a record. He is pickable and he is marked unrated. That is a placeholder standing in for evidence, not evidence, and it should be read that way.",
   },
   {
     id: "minutes",

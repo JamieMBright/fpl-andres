@@ -1667,6 +1667,25 @@ h1[tabindex="-1"]:focus-visible {
   line-height: 1.65;
 }
 
+/* The one place on the site where order carries meaning: each step consumes
+   the one above it, so the numbers are the argument rather than decoration. */
+.method-chain {
+  margin: 0;
+  padding-left: 22px;
+}
+
+.method-chain li {
+  margin-bottom: 14px;
+  padding-left: 4px;
+  line-height: 1.65;
+}
+
+.method-chain li::marker {
+  color: var(--accent);
+  font-family: var(--fa-body);
+  font-weight: 700;
+}
+
 .method-footnote {
   margin-top: 30px;
   color: var(--ink-soft);
