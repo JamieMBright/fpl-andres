@@ -87,6 +87,10 @@ test("an unreachable source is reported, never invented", async ({ page }) => {
 
   await page.goto(`/plan?team=${TEAM_ID}`);
   await settle(page);
+  await page
+    .locator('[data-step="01"] summary')
+    .getByText("Your squad and your record")
+    .click();
 
   await expect(
     page.getByRole("button", { name: /retry analysis/i }),
