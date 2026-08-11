@@ -32,6 +32,7 @@ const PUBLIC_PATHS = [
   "/analysis",
   "/methodology",
   "/calibration",
+  "/results",
   "/fpl500",
   "/faq",
   "/about",
@@ -97,7 +98,7 @@ describe("sitemap", () => {
 });
 
 describe("non-public routes", () => {
-  it.each(["/team/(.*)", "/kits", "/kits/(.*)"])(
+  it.each(["/team/(.*)", "/kits", "/kits/(.*)", "/thanks", "/thanks/(.*)"])(
     "serves an X-Robots-Tag for %s",
     (source) => {
       const rule = vercel.headers?.find((entry) => entry.source === source);

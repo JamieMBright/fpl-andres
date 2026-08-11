@@ -18,7 +18,11 @@ describe("privacy and data controls", () => {
     );
 
     expect(
-      screen.getByText(/no advertising or visitor analytics/i),
+      screen.getByText(/optional visitor analytics stays off/i),
+    ).toBeVisible();
+    expect(screen.getByText(/only after explicit consent/i)).toBeVisible();
+    expect(
+      screen.getByText(/query strings, Team IDs, contact details/i),
     ).toBeVisible();
     expect(
       screen.getByText(/Team ID, season, gameweek and swap/i),
@@ -56,8 +60,9 @@ describe("privacy and data controls", () => {
 
     expect(localStorage.getItem("fpl-andres:last-team")).toBeNull();
     expect(localStorage.getItem("fpl-andres:theme")).toBe("light");
-    expect(screen.getByRole("status")).toHaveTextContent(
-      "Saved team data cleared",
+    expect(screen.getByText(/Saved team data cleared/)).toHaveAttribute(
+      "role",
+      "status",
     );
   });
 });

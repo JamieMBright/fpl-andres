@@ -1,12 +1,14 @@
 import { useRef, useState, type FormEvent } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { RouteHeading } from "../components/RouteHeading";
 import { useDocumentTitle } from "../state/use-document-title";
 
-type ContactState = "idle" | "sending" | "sent" | "failed";
+type ContactState = "idle" | "sending" | "failed";
 
 export default function AboutPage() {
+  const navigate = useNavigate();
+
   useDocumentTitle(
     "About",
     "What FPL Andres does, why the evidence stays visible, and how to get in touch.",
@@ -51,7 +53,7 @@ export default function AboutPage() {
       });
       if (!response.ok) throw new Error("contact unavailable");
       form.reset();
-      setState("sent");
+      void navigate("/thanks?from=contact");
     } catch {
       setState("failed");
       setError("The message did not send. Keep it here and try again shortly.");
@@ -78,8 +80,9 @@ export default function AboutPage() {
             <p>
               Every recommendation keeps its evidence, timestamp and uncertainty
               attached. Read the <Link to="/methodology">method</Link> or
-              inspect the <Link to="/calibration">scorecard</Link> when the
-              number matters.
+              inspect the <Link to="/results">measured results</Link> when the
+              number matters. The <Link to="/calibration">full scorecard</Link>{" "}
+              keeps every table underneath.
             </p>
           </div>
         </section>
@@ -128,7 +131,7 @@ export default function AboutPage() {
               Send a question, correction or collaboration note. Your reply
               address and message go only to the mail provider and the private
               project inbox; they are not added to a mailing list or stored in
-              the analysis database.
+              the analysis database. I aim to reply within two working days.
             </p>
             <form className="contact-form" noValidate onSubmit={submit}>
               <div className="contact-field">
@@ -173,9 +176,7 @@ export default function AboutPage() {
                 {state === "sending" ? "Sending…" : "Send message"}
               </button>
               <p aria-live="polite" className="contact-status">
-                {state === "sent"
-                  ? "Message sent. I will reply by email."
-                  : error}
+                {error}
               </p>
             </form>
             <p className="contact-privacy">

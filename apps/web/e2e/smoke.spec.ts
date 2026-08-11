@@ -31,6 +31,16 @@ async function settle(page: Page): Promise<void> {
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
 }
 
+async function selectKit(page: Page, theme: "dark" | "light"): Promise<void> {
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    if ((await page.locator("html").getAttribute("data-theme")) === theme) {
+      return;
+    }
+    await page.getByRole("button", { name: /kit$/i }).click();
+  }
+  await expect(page.locator("html")).toHaveAttribute("data-theme", theme);
+}
+
 test("the API is alive and says so in its own contract", async ({
   request,
 }) => {
@@ -148,8 +158,9 @@ test("privacy controls clear team data without clearing the kit", async ({
   ).toBeVisible();
   await page.getByRole("button", { name: "Clear Team Data Now" }).click();
 
-  await expect(page.getByRole("status")).toContainText(
-    "Saved team data cleared",
+  await expect(page.getByText(/Saved team data cleared/)).toHaveAttribute(
+    "role",
+    "status",
   );
   expect(
     await page.evaluate(() => ({
@@ -160,6 +171,40 @@ test("privacy controls clear team data without clearing the kit", async ({
 
   const scan = await new AxeBuilder({ page }).withTags([...WCAG]).analyze();
   expect(scan.violations).toEqual([]);
+});
+
+test("the trust routes pass accessibility in both kits", async ({ page }) => {
+  const scan = async () =>
+    (await new AxeBuilder({ page }).withTags([...WCAG]).analyze()).violations;
+
+  for (const path of ["/results", "/privacy", "/thanks?from=contact"]) {
+    await page.goto(path);
+    await settle(page);
+    await selectKit(page, "dark");
+    expect(await scan(), `${path} in the dark kit`).toEqual([]);
+
+    await selectKit(page, "light");
+    expect(await scan(), `${path} in the light kit`).toEqual([]);
+  }
+});
+
+test("the phone action reaches and focuses the Team ID field", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 360, height: 780 });
+  await page.goto("/results");
+  await settle(page);
+
+  const scan = await new AxeBuilder({ page }).withTags([...WCAG]).analyze();
+  expect(scan.violations).toEqual([]);
+
+  await page.getByRole("link", { name: "Analyse my squad" }).click();
+
+  await expect(page).toHaveURL(/\/#team-id$/);
+  await expect(page.getByLabel("Your FPL team ID")).toBeFocused();
+  await expect(
+    page.getByRole("link", { name: "Analyse my squad" }),
+  ).toHaveCount(0);
 });
 
 test("a phone gets a readable, tappable page that does not spill", async ({

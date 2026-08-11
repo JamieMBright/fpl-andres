@@ -1,6 +1,6 @@
 import { ArrowRight } from "lucide-react";
-import { Suspense, useState, type FormEvent } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Suspense, useEffect, useRef, useState, type FormEvent } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import { ErrorBoundary } from "../components/ErrorBoundary";
 import { InfoMarker } from "../components/InfoMarker";
@@ -21,6 +21,8 @@ const TopPicks = lazyRoute(() =>
 
 export default function HomePage() {
   const navigate = useNavigate();
+  const { hash } = useLocation();
+  const teamIdInput = useRef<HTMLInputElement>(null);
   // Offered back rather than demanded again: a returning reader has already
   // told us who they are, and the number is a public id kept in this browser.
   const [teamId, setTeamId] = useState(
@@ -32,6 +34,14 @@ export default function HomePage() {
     "An evidence-first Fantasy Premier League assistant that shows its working and admits what it cannot know.",
     { canonicalPath: "/" },
   );
+
+  useEffect(() => {
+    if (hash !== "#team-id") return;
+    requestAnimationFrame(() => {
+      teamIdInput.current?.focus();
+      teamIdInput.current?.scrollIntoView({ block: "center" });
+    });
+  }, [hash]);
 
   function analyseTeam(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -50,14 +60,6 @@ export default function HomePage() {
   return (
     <section className="index-page" aria-label="Index">
       <RouteHeading>Top Picks</RouteHeading>
-
-      <div className="index-rankings">
-        <ErrorBoundary>
-          <Suspense fallback={null}>
-            <TopPicks />
-          </Suspense>
-        </ErrorBoundary>
-      </div>
 
       <ul className="index-grid">
         <li className="index-cell is-plan">
@@ -79,6 +81,7 @@ export default function HomePage() {
             </div>
             <div className="input-command">
               <input
+                ref={teamIdInput}
                 aria-describedby={
                   error ? "team-id-hint team-id-error" : "team-id-hint"
                 }
@@ -130,14 +133,22 @@ export default function HomePage() {
           <p>Fourteen scoring routes, priced. Every step auditable.</p>
         </li>
 
-        <li className="index-cell is-calibration">
+        <li className="index-cell is-results">
           <h2>
             <span aria-hidden="true">05</span>
-            <Link to="/calibration">Calibration</Link>
+            <Link to="/results">Results</Link>
           </h2>
-          <p>Where I win, where I lose. Scored four seasons back.</p>
+          <p>Three measured questions, with every source still attached.</p>
         </li>
       </ul>
+
+      <div className="index-rankings">
+        <ErrorBoundary>
+          <Suspense fallback={null}>
+            <TopPicks />
+          </Suspense>
+        </ErrorBoundary>
+      </div>
     </section>
   );
 }

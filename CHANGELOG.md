@@ -103,6 +103,21 @@ The project follows Semantic Versioning once milestone tags begin.
 
 ### Added
 
+- A measured-results route turns the calibration, season simulations and
+  FPL500 catalogue into three concise, source-dated evidence cases. It links to
+  the full tables and never substitutes testimonials or ratings for measured
+  outcomes.
+- A reusable, `noindex` thank-you route now follows accepted contact messages,
+  with neutral direct-visit copy so it can later support paid onboarding
+  without pretending accounts or payments exist today. Contact copy states a
+  two-working-day reply target.
+- Optional Google Analytics is disabled unless a valid GA4 measurement ID is
+  configured and the visitor explicitly opts in on the privacy page. Events
+  contain only sanitised route paths; Team IDs and query strings are removed,
+  advertising signals are disabled, and consent can be revoked.
+- The Team ID form now comes before deferred rankings on Home. Content routes
+  gain a phone-only, safe-area-aware action back to that form; Home, Plan and
+  completion routes suppress the duplicate action.
 - A privacy and data page states what stays in the browser, what reaches the
   server and for how long, with a confirmed one-click reset that preserves the
   selected kit and unrelated origin data. The standard

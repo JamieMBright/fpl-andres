@@ -102,6 +102,28 @@ Values without `VITE_` are server-only. Never put a Supabase secret key, a
 Resend key or a subscriber email into a `VITE_` variable, into browser code, or
 into a log line.
 
+`VITE_GOOGLE_ANALYTICS_ID` is the one optional browser-side provider value. It
+must be a GA4 `G-...` measurement ID. Having an ID does not start analytics:
+the visitor must explicitly opt in on `/privacy`. Page views contain only a
+sanitised route path; query strings, Team IDs, contact details and team state
+are excluded. With no configured ID, no analytics script loads.
+
+## Website surfaces
+
+- `/results` is the case-study surface: values are derived from the shipped
+  calibration and FPL500 artifacts, with their source timestamps and links to
+  the complete evidence. It carries no testimonials or ratings.
+- `/thanks` is the reusable completion route. Contact submissions use it now;
+  future account or paid onboarding may add an allowlisted success context
+  without implying that either capability exists today. It is always
+  `noindex` and absent from the sitemap.
+- Contact replies target two working days. This is an aim, not a guaranteed
+  service level.
+- FPL Andres is an online application with no public premises. Maps,
+  directions, postal-address markup and `LocalBusiness` schema would be false,
+  so they are intentionally absent. The shallow top-level route structure uses
+  persistent navigation and contextual links instead of breadcrumbs.
+
 ## The hosted database
 
 The sole hosted Supabase project is production. There is no CLI migration

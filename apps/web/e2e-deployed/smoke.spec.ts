@@ -138,10 +138,10 @@ test("crawler files publish the canonical routes", async ({ request }) => {
   expect(xml).not.toContain("/kits");
 });
 
-test("private and QA routes are excluded before JavaScript runs", async ({
+test("private, completion and QA routes are excluded before JavaScript runs", async ({
   request,
 }) => {
-  for (const path of ["/team/212279", "/kits", "/kits/"]) {
+  for (const path of ["/team/212279", "/thanks", "/kits", "/kits/"]) {
     const response = await request.get(path);
     expect(response.status()).toBe(200);
     expect(response.headers()["x-robots-tag"]).toBe("noindex, nofollow");
@@ -153,5 +153,19 @@ test("the standard security contact is deployed", async ({ request }) => {
   expect(response.status()).toBe(200);
   expect(await response.text()).toContain(
     "Contact: https://github.com/JamieMBright/fpl-andres/security/advisories/new",
+  );
+});
+
+test("the measured-results route is deployed and canonical", async ({
+  page,
+}) => {
+  await page.goto("/results");
+
+  await expect(
+    page.getByRole("heading", { name: "Measured Results" }),
+  ).toBeVisible();
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+    "href",
+    "https://fpl-andres.vercel.app/results",
   );
 });

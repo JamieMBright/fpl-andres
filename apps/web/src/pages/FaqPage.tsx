@@ -311,8 +311,8 @@ export default function FaqPage() {
       <p className="faq-footnote">
         For the arithmetic behind the projection, see{" "}
         <Link to="/methodology">the method</Link>. For how accurate it has
-        proved, including where it loses, see{" "}
-        <Link to="/calibration">the calibration</Link>.
+        proved, start with <Link to="/results">the measured results</Link> or
+        open <Link to="/calibration">the full calibration</Link>.
       </p>
     </section>
   );

@@ -28,6 +28,8 @@ const SeasonPlanPage = lazyRoute(() => import("./pages/SeasonPlanPage"));
 const KitPreviewPage = lazyRoute(() => import("./pages/KitPreviewPage"));
 const AnalysisPage = lazyRoute(() => import("./pages/AnalysisPage"));
 const Fpl500Page = lazyRoute(() => import("./pages/Fpl500Page"));
+const ResultsPage = lazyRoute(() => import("./pages/ResultsPage"));
+const ThanksPage = lazyRoute(() => import("./pages/ThanksPage"));
 
 export const routes: RouteObject[] = [
   {
@@ -93,6 +95,14 @@ export const routes: RouteObject[] = [
         ),
       },
       {
+        path: "results",
+        element: (
+          <LazyRoute>
+            <ResultsPage />
+          </LazyRoute>
+        ),
+      },
+      {
         path: "fpl500",
         element: (
           <LazyRoute>
@@ -113,6 +123,14 @@ export const routes: RouteObject[] = [
         element: (
           <LazyRoute>
             <PrivacyPage />
+          </LazyRoute>
+        ),
+      },
+      {
+        path: "thanks",
+        element: (
+          <LazyRoute>
+            <ThanksPage />
           </LazyRoute>
         ),
       },

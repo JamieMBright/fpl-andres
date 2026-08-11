@@ -1,14 +1,29 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { MemoryRouter } from "react-router-dom";
+import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import AboutPage from "./AboutPage";
+import ThanksPage from "./ThanksPage";
+
+function LocationProbe() {
+  const location = useLocation();
+  return (
+    <output aria-label="Current location">
+      {location.pathname}
+      {location.search}
+    </output>
+  );
+}
 
 function draw() {
   return render(
     <MemoryRouter initialEntries={["/about"]}>
-      <AboutPage />
+      <Routes>
+        <Route path="/about" element={<AboutPage />} />
+        <Route path="/thanks" element={<ThanksPage />} />
+      </Routes>
+      <LocationProbe />
     </MemoryRouter>,
   );
 }
@@ -57,7 +72,7 @@ describe("About contact form", () => {
     );
   });
 
-  it("clears the form only after the server accepts it", async () => {
+  it("opens the thank-you route only after the server accepts it", async () => {
     const user = userEvent.setup();
     const send = vi
       .fn<typeof fetch>()
@@ -79,7 +94,17 @@ describe("About contact form", () => {
     );
     await user.click(screen.getByRole("button", { name: "Send message" }));
 
-    expect(await screen.findByText(/Message sent/i)).toBeVisible();
+    expect(await screen.findByLabelText("Current location")).toHaveTextContent(
+      "/thanks?from=contact",
+    );
+    expect(
+      await screen.findByRole("heading", { name: "Thank you" }),
+    ).toBeVisible();
+    expect(document.querySelector('link[rel="canonical"]')).toBeNull();
+    expect(document.querySelector('meta[name="robots"]')).toHaveAttribute(
+      "content",
+      "noindex, nofollow",
+    );
     expect(email).toHaveValue("");
     expect(message).toHaveValue("");
     const [, init] = send.mock.calls[0]!;

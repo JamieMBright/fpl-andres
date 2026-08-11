@@ -2,8 +2,10 @@ import { Link, NavLink, Outlet } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 import { FIRST_DEADLINE_2026_27 } from "../public-ids";
+import { AnalyticsRouteTracker } from "./AnalyticsRouteTracker";
 import { BielsaBucket } from "./BielsaBucket";
 import { Countdown } from "./Countdown";
+import { MobilePlanCta } from "./MobilePlanCta";
 import { OfflineBanner } from "./OfflineBanner";
 
 /**
@@ -86,6 +88,9 @@ export function ApplicationFrame() {
 
   return (
     <div className="app-shell">
+      <AnalyticsRouteTracker
+        measurementId={import.meta.env.VITE_GOOGLE_ANALYTICS_ID ?? ""}
+      />
       <a className="skip-link" href="#main-content">
         Skip to content
       </a>
@@ -117,7 +122,7 @@ export function ApplicationFrame() {
         <NavLink to="/analysis">Analysis</NavLink>
         <NavLink to="/fpl500">FPL500</NavLink>
         <NavLink to="/methodology">Method</NavLink>
-        <NavLink to="/calibration">Calibration</NavLink>
+        <NavLink to="/results">Results</NavLink>
         <NavLink className="teletext-strip-half" to="/faq">
           FAQ
         </NavLink>
@@ -149,6 +154,9 @@ export function ApplicationFrame() {
             </li>
             <li>
               <Link to="/calibration">Calibration</Link>
+            </li>
+            <li>
+              <Link to="/results">Results</Link>
             </li>
             <li>
               <Link to="/fpl500">FPL500</Link>
@@ -189,6 +197,7 @@ export function ApplicationFrame() {
           </p>
         </div>
       </footer>
+      <MobilePlanCta />
     </div>
   );
 }

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type KeyboardEvent } from "react";
 
+import { AnalyticsConsentControl } from "../components/AnalyticsConsentControl";
 import { RouteHeading } from "../components/RouteHeading";
 import { clearPrivateBrowserData } from "../state/private-browser-data";
 import { useDocumentTitle } from "../state/use-document-title";
@@ -53,9 +54,10 @@ export default function PrivacyPage() {
       <p className="eyebrow">Privacy and data</p>
       <RouteHeading>Privacy</RouteHeading>
       <p className="lede">
-        There are no accounts, advertising cookies, behavioural profiles or
-        visitor analytics. FPL Andres reads public FPL data and keeps the
-        private corrections needed for a plan under tight limits.
+        There are no accounts, advertising cookies or behavioural profiles.
+        Optional visitor analytics stays off unless you explicitly allow it. FPL
+        Andres reads public FPL data and keeps the private corrections needed
+        for a plan under tight limits.
       </p>
 
       <div className="privacy-sections">
@@ -92,8 +94,10 @@ export default function PrivacyPage() {
           <p>
             Team lookups pass through this site to Fantasy Premier League&apos;s
             public API. Fonts load from Google Fonts, and available player
-            photographs load from the Premier League media host. No advertising
-            or visitor analytics service receives an event from this site.
+            photographs load from the Premier League media host. Google
+            Analytics receives a route-only page view only after explicit
+            consent and only when a property is configured. Query strings, Team
+            IDs, contact details and team state are never included.
           </p>
           <p>
             If you use the About page contact form, your reply address and
@@ -103,6 +107,20 @@ export default function PrivacyPage() {
             closes; Resend retains its processor copy under its own service
             terms unless content storage has been disabled.
           </p>
+        </section>
+
+        <section aria-labelledby="privacy-analytics">
+          <h2 id="privacy-analytics">Optional analytics</h2>
+          <p>
+            This helps count which public pages are useful. It does not use
+            advertising signals or personalised ads. Consent is stored in this
+            browser and can be withdrawn here at any time. When enabled, Google
+            Analytics may set first-party measurement cookies. Turning it off
+            blocks future events and clears those cookies from this site.
+          </p>
+          <AnalyticsConsentControl
+            measurementId={import.meta.env.VITE_GOOGLE_ANALYTICS_ID ?? ""}
+          />
         </section>
 
         <section aria-labelledby="privacy-control">
