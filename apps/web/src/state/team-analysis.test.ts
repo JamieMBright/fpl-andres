@@ -3,6 +3,7 @@ import teamStateCases from "../../../../packages/contracts/fixtures/public-team-
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import {
+  currentTeamCacheContext,
   initialTeamAnalysisState,
   loadCachedPublicTeamState,
   reduceTeamAnalysis,
@@ -46,6 +47,66 @@ describe("team analysis state machine", () => {
       headers: { Accept: "application/json" },
       signal: expect.any(AbortSignal),
     });
+  });
+
+  it("stores a versioned snapshot bound to this season and roster", () => {
+    saveCachedPublicTeamState(localStorage, ENTRY_ID, readyState);
+    const raw = localStorage.getItem(teamPublicStateStorageKey(ENTRY_ID));
+    const saved = JSON.parse(raw ?? "{}") as Record<string, unknown>;
+
+    expect(saved).toMatchObject({
+      schemaVersion: 2,
+      season: currentTeamCacheContext.season,
+      rosterVersion: currentTeamCacheContext.rosterVersion,
+      state: readyState,
+    });
+  });
+
+  it("removes a legacy unscoped snapshot rather than guessing its season", () => {
+    const key = teamPublicStateStorageKey(ENTRY_ID);
+    localStorage.setItem(key, JSON.stringify(readyState));
+
+    expect(loadCachedPublicTeamState(localStorage, ENTRY_ID)).toBeNull();
+    expect(localStorage.getItem(key)).toBeNull();
+  });
+
+  it("refuses a snapshot from another season or roster", () => {
+    saveCachedPublicTeamState(localStorage, ENTRY_ID, readyState);
+    const key = teamPublicStateStorageKey(ENTRY_ID);
+    const saved = JSON.parse(localStorage.getItem(key) ?? "{}") as Record<
+      string,
+      unknown
+    >;
+
+    localStorage.setItem(key, JSON.stringify({ ...saved, season: "2025-26" }));
+    expect(loadCachedPublicTeamState(localStorage, ENTRY_ID)).toBeNull();
+
+    saveCachedPublicTeamState(localStorage, ENTRY_ID, readyState);
+    localStorage.setItem(
+      key,
+      JSON.stringify({ ...saved, rosterVersion: "another-roster" }),
+    );
+    expect(loadCachedPublicTeamState(localStorage, ENTRY_ID)).toBeNull();
+  });
+
+  it("expires a gameweek snapshot at the following deadline", () => {
+    const state = { ...readyState, event: 1 };
+    saveCachedPublicTeamState(localStorage, ENTRY_ID, state);
+
+    expect(
+      loadCachedPublicTeamState(
+        localStorage,
+        ENTRY_ID,
+        new Date("2026-08-28T17:29:59Z"),
+      ),
+    ).toEqual(state);
+    expect(
+      loadCachedPublicTeamState(
+        localStorage,
+        ENTRY_ID,
+        new Date("2026-08-28T17:30:00Z"),
+      ),
+    ).toBeNull();
   });
 
   it("preserves a cached ready snapshot as stale when refresh is degraded", async () => {

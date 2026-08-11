@@ -5,13 +5,53 @@ import {
   type PublicTeamResponse,
   type PublicTeamState,
 } from "@fpl-andres/contracts";
+import { z } from "zod";
 
-const STORAGE_PREFIX = "fpl-andres:public-team-state:v1";
+import inputs from "../data/season-inputs.json";
+import { SEASON_PLAYERS } from "./season-solver";
+
+const STORAGE_PREFIX = "fpl-andres:public-team-state:v2";
 const MAX_PUBLIC_ID = 4_294_967_295;
 // A flaky connection should cost a second, not the whole answer. Bounded so a
 // genuinely dead endpoint still fails fast enough to say so.
 const MAX_ATTEMPTS = 3;
 const RETRY_BASE_MS = 250;
+
+const deadlines = inputs.deadlines as string[];
+const firstDeadline = deadlines[0];
+const startYear = firstDeadline
+  ? new Date(firstDeadline).getUTCFullYear()
+  : Number.NaN;
+
+function rosterVersion(): string {
+  let hash = 2_166_136_261;
+  for (const player of [...SEASON_PLAYERS].sort(
+    (left, right) => left.code - right.code,
+  )) {
+    for (const value of `${player.code}:${player.id}|`) {
+      hash ^= value.charCodeAt(0);
+      hash = Math.imul(hash, 16_777_619);
+    }
+  }
+  return `fnv1a32:${(hash >>> 0).toString(16).padStart(8, "0")}`;
+}
+
+export const currentTeamCacheContext = {
+  season: Number.isFinite(startYear)
+    ? `${startYear}-${String((startYear + 1) % 100).padStart(2, "0")}`
+    : "unavailable",
+  rosterVersion: rosterVersion(),
+} as const;
+
+const cachedTeamStateSchema = z
+  .object({
+    schemaVersion: z.literal(2),
+    season: z.string(),
+    rosterVersion: z.string(),
+    savedAt: z.iso.datetime(),
+    state: publicTeamStateSchema,
+  })
+  .strict();
 
 export type TeamAnalysisState =
   | { status: "idle" }
@@ -69,29 +109,51 @@ export function saveCachedPublicTeamState(
   if (state.entryId !== entryId) {
     throw new TypeError("Cached public state does not match the Team ID");
   }
-  storage.setItem(teamPublicStateStorageKey(entryId), JSON.stringify(state));
+  storage.setItem(
+    teamPublicStateStorageKey(entryId),
+    JSON.stringify({
+      schemaVersion: 2,
+      ...currentTeamCacheContext,
+      savedAt: new Date().toISOString(),
+      state,
+    }),
+  );
   return state;
 }
 
 export function loadCachedPublicTeamState(
   storage: Storage,
   entryId: number,
+  now: Date = new Date(),
 ): PublicTeamState | null {
   const key = teamPublicStateStorageKey(entryId);
   const serialized = storage.getItem(key);
   if (serialized === null) return null;
 
   try {
-    const parsed = publicTeamStateSchema.safeParse(JSON.parse(serialized));
-    if (!parsed.success || parsed.data.entryId !== entryId) {
+    const parsed = cachedTeamStateSchema.safeParse(JSON.parse(serialized));
+    if (
+      !parsed.success ||
+      parsed.data.state.entryId !== entryId ||
+      parsed.data.season !== currentTeamCacheContext.season ||
+      parsed.data.rosterVersion !== currentTeamCacheContext.rosterVersion ||
+      !usableUntilNextDeadline(parsed.data.state.event, now)
+    ) {
       storage.removeItem(key);
       return null;
     }
-    return parsed.data;
+    return parsed.data.state;
   } catch {
     storage.removeItem(key);
     return null;
   }
+}
+
+function usableUntilNextDeadline(event: number, now: Date): boolean {
+  const next = deadlines[event];
+  if (next === undefined) return event === deadlines.length;
+  const boundary = Date.parse(next);
+  return Number.isFinite(boundary) && now.getTime() < boundary;
 }
 
 export async function refreshTeamAnalysis(
@@ -156,10 +218,7 @@ export async function refreshTeamAnalysis(
         : { status: "error", reason: "invalid_response" };
     }
     try {
-      dependencies.storage.setItem(
-        teamPublicStateStorageKey(entryId),
-        JSON.stringify(state),
-      );
+      saveCachedPublicTeamState(dependencies.storage, entryId, state);
     } catch {
       // Storage failure (quota, private mode, disabled) does not invalidate
       // the response. The current session still surfaces the fresh snapshot.
