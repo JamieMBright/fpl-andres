@@ -14,17 +14,18 @@ import { join } from "node:path";
  * The stylesheet went 15 -> 17 when the site gained an info-marker component,
  * an FAQ page and an index home page. It measured 15.00 against a 15 budget,
  * which is a guard that fires on the next line of CSS rather than on a problem.
- * It went 17 -> 19 for the same reason a second time.
+ * It went 17 -> 19 for the same reason a second time, and 19 -> 22 a third.
  */
 
 const DIST = join(import.meta.dirname, "..", "dist", "assets");
 
 const BUDGETS = [
-  // Measured 17.01 kB, raised from 17 kB. The FPL500 page became folds, a rank
-  // ridge and eight empty analysis frames, and the home and player pages gained
-  // the top-picks cards with their fixture panel. The previous budget had no
-  // headroom left at all: it measured 17.01 against 17 on the next line of CSS.
-  { match: /\.css$/, name: "stylesheet", gzipKb: 19 },
+  // Measured 19.29 kB, raised from 19 kB. The top-picks cards gained their
+  // responsive layout and the accessible rules that go with it, and the 19 kB
+  // budget was again a guard with nothing left in it: 19.29 against 19. Set at
+  // 22 so an ordinary rule passes and a stylesheet that grows by a page does
+  // not.
+  { match: /\.css$/, name: "stylesheet", gzipKb: 22 },
   // Measured 128.26 kB. Router, zod, lucide and the shell.
   { match: /^index-.*\.js$/, name: "entry chunk", gzipKb: 150 },
   // Measured 54.94 kB. The plan is now the only route a manager needs: the
