@@ -19,7 +19,7 @@ import argparse
 import json
 import os
 from collections.abc import Sequence
-from dataclasses import asdict
+from dataclasses import asdict, dataclass
 from datetime import UTC, datetime
 from pathlib import Path
 
@@ -34,6 +34,7 @@ from fpl_andres.adapters.the_odds_api import (
     list_events,
     read_event,
 )
+from fpl_andres.jsonio import read_json_file
 from fpl_andres.models.player_odds import PlayerMatchOdds
 from fpl_andres.timeouts import ODDS_FEED
 
@@ -52,6 +53,52 @@ BOOTSTRAP = "https://fantasy.premierleague.com/api/bootstrap-static/"
 #: Thirty scheduled runs at this budget cost at most 450, and the weekly survey
 #: takes another 48. `tests/test_api_budgets.py` holds the shared sum under 500.
 DEFAULT_BUDGET = 15
+DEFAULT_DEADLINES = Path("apps/web/src/data/deadlines.json")
+DEFAULT_WINDOW_DAYS = 7
+
+
+@dataclass(frozen=True)
+class DeadlineProximity:
+    due: bool
+    event: int
+    deadline: datetime
+    days: float
+
+
+def deadline_proximity(
+    path: Path,
+    *,
+    within_days: float,
+    now: datetime | None = None,
+) -> DeadlineProximity:
+    payload = read_json_file(path)
+    if not isinstance(payload, dict) or not isinstance(payload.get("deadlines"), list):
+        raise ValueError(f"{path} published no deadline list")
+    at = now if now is not None else datetime.now(UTC)
+    upcoming: list[tuple[datetime, int]] = []
+    for row in payload["deadlines"]:
+        if not isinstance(row, dict):
+            continue
+        event = row.get("event")
+        raw = row.get("deadline")
+        if not isinstance(event, int) or not isinstance(raw, str):
+            continue
+        try:
+            deadline = datetime.fromisoformat(raw.replace("Z", "+00:00"))
+        except ValueError:
+            continue
+        if deadline >= at:
+            upcoming.append((deadline, event))
+    if not upcoming:
+        raise ValueError(f"{path} has no upcoming deadline")
+    deadline, event = min(upcoming)
+    days = (deadline - at).total_seconds() / 86_400
+    return DeadlineProximity(
+        due=days <= within_days,
+        event=event,
+        deadline=deadline,
+        days=days,
+    )
 
 
 def _parser() -> argparse.ArgumentParser:
@@ -61,6 +108,21 @@ def _parser() -> argparse.ArgumentParser:
         "--output",
         default="apps/web/src/data/player-odds.json",
         help="Where the site bundle reads it from.",
+    )
+    parser.add_argument("--deadlines", default=str(DEFAULT_DEADLINES))
+    parser.add_argument(
+        "--within-days",
+        type=float,
+        default=DEFAULT_WINDOW_DAYS,
+        help=(
+            "Skip before reading the provider key unless the next FPL deadline "
+            f"is this close. Default {DEFAULT_WINDOW_DAYS}."
+        ),
+    )
+    parser.add_argument(
+        "--force",
+        action="store_true",
+        help="Ignore deadline proximity for an explicit manual survey.",
     )
     parser.add_argument(
         "--budget",
@@ -92,6 +154,26 @@ def _serialise(row: PlayerMatchOdds) -> dict[str, object]:
 
 def main(argv: Sequence[str] | None = None) -> int:
     args = _parser().parse_args(argv)
+    if args.within_days <= 0:
+        print("--within-days must be positive", flush=True)
+        return 1
+    if not args.force:
+        try:
+            proximity = deadline_proximity(
+                Path(args.deadlines),
+                within_days=args.within_days,
+            )
+        except ValueError as error:
+            print(str(error), flush=True)
+            return 1
+        if not proximity.due:
+            print(
+                f"GW{proximity.event} is {proximity.days:.1f} days away, outside "
+                f"the {args.within_days:g}-day player-market window. "
+                "No provider request made.",
+                flush=True,
+            )
+            return 0
     key = os.environ.get("THE_ODDS_API_KEY", "").strip()
     if not key:
         print("THE_ODDS_API_KEY is not set; nothing to fetch", flush=True)

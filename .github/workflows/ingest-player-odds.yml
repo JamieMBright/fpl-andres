@@ -21,8 +21,9 @@ name: Ingest Player Odds
 # and in the survey under the allowance between them.
 #
 # Player props open days rather than months out, but no provider publishes an
-# exact opening hour. Run daily so the first open market is seen; the 15-request
-# cap keeps thirty runs plus the weekly survey inside the shared free tier.
+# exact opening hour. Run daily, then stop from the committed FPL deadline list
+# unless the next deadline is within seven days. The provider sees no request
+# outside that window; the 15-request cap bounds runs that pass it.
 #
 # Nothing here emits or implies a betting recommendation. A price is read as a
 # probability and used as evidence about a footballer.
@@ -106,6 +107,7 @@ jobs:
           fi
           python -m fpl_andres.cli.ingest_player_odds \
             --season "$(date -u +%Y)-$(printf '%02d' $((10#$(date -u +%y) + 1)))" \
+            --within-days 7 \
             --budget "${BUDGET:-15}"
 
       - name: Commit the odds

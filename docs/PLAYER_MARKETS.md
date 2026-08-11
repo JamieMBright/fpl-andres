@@ -106,10 +106,12 @@ cron has to be argued for rather than merged.
   a run eleven days out finds no player props and spends almost nothing.
 - **One region.** UK books price a Premier League player deepest, and adding
   Europe doubles the bill for a slightly steadier median.
-- **Daily, at a bounded 15 requests.** No provider publishes an exact opening
-  hour, so a daily 09:00 UTC probe is the only way to see the first open market.
-  Thirty runs cost at most 450 requests; the weekly survey takes the remaining
-  48, and `test_api_budgets.py` holds the shared total under 500.
+- **Daily trigger, seven-day gate, bounded 15-request run.** No provider
+  publishes an exact opening hour, so the workflow wakes at 09:00 UTC every
+  day. It reads the committed FPL calendar first and exits before reading the
+  provider key unless the next deadline is within seven days. A run that passes
+  the gate may spend at most 15 requests; `test_api_budgets.py` keeps the
+  worst-case shared allowance under 500.
 
 The same key pays for the weekly survey, which is why the guard counts both.
 

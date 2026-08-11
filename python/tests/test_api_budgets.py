@@ -86,3 +86,12 @@ def test_the_odds_ingest_runs_daily() -> None:
     schedule = _triggers("ingest-player-odds.yml")["schedule"]  # type: ignore[index]
     assert len(schedule) == 1
     assert str(schedule[0]["cron"]).split()[4] == "*"
+
+
+def test_the_daily_odds_trigger_bails_before_the_provider_outside_deadline_week() -> None:
+    text = (WORKFLOWS / "ingest-player-odds.yml").read_text(encoding="utf-8")
+
+    assert "--within-days 7" in text
+    assert "apps/web/src/data/deadlines.json" in (
+        Path(__file__).resolve().parents[1] / "fpl_andres" / "cli" / "ingest_player_odds.py"
+    ).read_text(encoding="utf-8")
