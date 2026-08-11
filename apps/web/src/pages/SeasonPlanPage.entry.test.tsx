@@ -20,6 +20,18 @@ import { TeamEntry } from "./SeasonPlanPage";
  */
 
 const SOURCE = readFileSync(join(__dirname, "SeasonPlanPage.tsx"), "utf8");
+const STYLES = readFileSync(join(__dirname, "..", "styles.css"), "utf8");
+
+function stepSource(step: string, nextStep?: string): string {
+  const marker = `step="${step}"`;
+  const markerAt = SOURCE.indexOf(marker);
+  const start = SOURCE.lastIndexOf("<PlanStep", markerAt);
+  const end =
+    nextStep === undefined
+      ? SOURCE.indexOf("</PlanStep>", markerAt)
+      : SOURCE.lastIndexOf("<PlanStep", SOURCE.indexOf(`step="${nextStep}"`));
+  return SOURCE.slice(start, end);
+}
 
 function renderEntry(
   team: Parameters<typeof TeamEntry>[0]["team"],
@@ -105,6 +117,44 @@ describe("the caveats", () => {
   it("names whoever the plan actually leaves out", () => {
     expect(list).toContain("absentPremium");
     expect(list).not.toContain("Haaland");
+  });
+
+  it("uses the red signal treatment", () => {
+    const start = STYLES.indexOf('.plan-step[data-step="05"]');
+    const rule = STYLES.slice(start, STYLES.indexOf("}", start));
+    expect(rule).toContain("--fa-signal-red");
+  });
+});
+
+describe("the numbered Plan boxes", () => {
+  it("starts every section collapsed", () => {
+    expect(SOURCE).not.toContain("defaultOpen");
+  });
+
+  it("keeps squad and record content inside step one", () => {
+    const step = stepSource("01", "02");
+    for (const content of [
+      "<TeamEntry",
+      "<DeclaredSquadNote",
+      "<AnalysisResult",
+      "<Scorecard",
+      "<LiveSquad",
+    ]) {
+      expect(step).toContain(content);
+    }
+  });
+
+  it("keeps objective context inside step two", () => {
+    const step = stepSource("02", "03");
+    expect(step).toContain("<RankObjectiveForm");
+    expect(step).toContain("<MiniLeagueThreats");
+  });
+
+  it("keeps solve status and gameweeks inside step four", () => {
+    const step = stepSource("04", "05");
+    expect(step).toContain('className="plan-preamble"');
+    expect(step).toContain('className="plan-progress"');
+    expect(step).toContain('className="plan-rail"');
   });
 });
 

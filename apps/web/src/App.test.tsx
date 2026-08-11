@@ -45,6 +45,13 @@ function renderApplication(initialEntry = "/") {
   return router;
 }
 
+async function openPlanStep(name: string): Promise<void> {
+  const title = await screen.findByText(name, { selector: ".plan-step-title" });
+  const details = title.closest("details");
+  if (details?.open) return;
+  await userEvent.click(title.closest("summary")!);
+}
+
 describe("team analysis entry", () => {
   beforeEach(() => {
     localStorage.clear();
@@ -91,6 +98,7 @@ describe("team analysis entry", () => {
       await waitFor(() => {
         expect(analysisHeading).toHaveFocus();
       });
+      await openPlanStep("Your squad and your record");
       // The status region mounts empty and fills once the snapshot resolves, so
       // this waits for the text rather than for the region.
       await screen.findByText("Observed snapshot ready", undefined, {
@@ -123,6 +131,7 @@ describe("team analysis entry", () => {
   it("keeps one objective form while its answer changes", async () => {
     const user = userEvent.setup({ delay: null });
     renderApplication(`/plan?team=${String(readyState.entryId)}`);
+    await openPlanStep("Before I solve");
 
     const objective = await screen.findByRole(
       "heading",
@@ -263,6 +272,7 @@ describe("team analysis entry", () => {
     );
 
     renderApplication(`/plan?team=${String(readyState.entryId)}`);
+    await openPlanStep("Your squad and your record");
 
     expect(
       await screen.findByText("Showing a stale verified snapshot", undefined, {
@@ -302,6 +312,7 @@ describe("team analysis entry", () => {
     );
 
     renderApplication(`/plan?team=${String(readyState.entryId)}`);
+    await openPlanStep("Your squad and your record");
 
     expect(
       await screen.findByText("Refreshing a verified snapshot", undefined, {
@@ -336,6 +347,7 @@ describe("team analysis entry", () => {
     );
 
     renderApplication("/plan?team=123");
+    await openPlanStep("Your squad and your record");
 
     expect(
       await screen.findByRole("heading", { name: /season hasn.t started/i }),
@@ -361,6 +373,7 @@ describe("team analysis entry", () => {
     vi.stubGlobal("fetch", fetchApi);
 
     renderApplication(`/plan?team=${String(readyState.entryId)}`);
+    await openPlanStep("Your squad and your record");
 
     expect(
       await screen.findByText("Observed snapshot ready", undefined, {
@@ -379,6 +392,7 @@ describe("team analysis entry", () => {
     vi.stubGlobal("fetch", offline);
 
     renderApplication(`/plan?team=${String(readyState.entryId)}`);
+    await openPlanStep("Your squad and your record");
 
     // The fetch retries with backoff before declaring failure, which takes
     // longer than the default one-second query timeout.
@@ -425,6 +439,7 @@ describe("team analysis entry", () => {
     );
 
     renderApplication(`/plan?team=${String(readyState.entryId)}`);
+    await openPlanStep("Your squad and your record");
 
     expect(
       await screen.findByRole(
@@ -461,6 +476,7 @@ describe("team analysis entry", () => {
   it("stores manager corrections separately against the public deadline", async () => {
     const user = userEvent.setup({ delay: null });
     renderApplication(`/plan?team=${String(readyState.entryId)}`);
+    await openPlanStep("Your squad and your record");
     await screen.findByText("Observed snapshot ready", undefined, {
       timeout: SETTLE,
     });
@@ -511,6 +527,7 @@ describe("team analysis entry", () => {
   it("focuses an actionable error when no correction is supplied", async () => {
     const user = userEvent.setup({ delay: null });
     renderApplication(`/plan?team=${String(readyState.entryId)}`);
+    await openPlanStep("Your squad and your record");
     await screen.findByText("Observed snapshot ready", undefined, {
       timeout: SETTLE,
     });
@@ -528,6 +545,7 @@ describe("team analysis entry", () => {
   it("marks and focuses the first invalid correction field", async () => {
     const user = userEvent.setup({ delay: null });
     renderApplication(`/plan?team=${String(readyState.entryId)}`);
+    await openPlanStep("Your squad and your record");
     await screen.findByText("Observed snapshot ready", undefined, {
       timeout: SETTLE,
     });
@@ -557,6 +575,7 @@ describe("team analysis entry", () => {
     });
     const user = userEvent.setup({ delay: null });
     renderApplication(`/plan?team=${String(readyState.entryId)}`);
+    await openPlanStep("Your squad and your record");
     await screen.findByText("Observed snapshot ready", undefined, {
       timeout: SETTLE,
     });
@@ -638,6 +657,7 @@ describe("team analysis entry", () => {
     });
     const user = userEvent.setup({ delay: null });
     renderApplication(`/plan?team=${String(readyState.entryId)}`);
+    await openPlanStep("Your squad and your record");
     await screen.findByText("Observed snapshot ready", undefined, {
       timeout: SETTLE,
     });

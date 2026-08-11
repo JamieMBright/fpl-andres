@@ -6232,8 +6232,8 @@ h1[tabindex="-1"]:focus-visible {
 }
 
 .plan-step[data-step="05"] {
-  --step-hue: var(--fa-gk-lime);
-  --step-ink: var(--fa-gk-black);
+  --step-hue: var(--fa-signal-red);
+  --step-ink: var(--fa-gk-white);
 }
 
 .plan-step-summary {

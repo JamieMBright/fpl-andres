@@ -919,57 +919,62 @@ export default function SeasonPlanPage() {
 
       <RouteHeading>Season Plan</RouteHeading>
 
-      <TeamEntry team={team} params={params} onChange={setParams} />
-
-      {teamId === null ? null : <DeclaredSquadNote entryId={teamId} />}
-
       {/* One page, one subject. The snapshot, the record and the fifteen used
           to be a separate route, which is what made a locked-in squad look
           ignored by the plan. `useTeamPlan` already asked FPL, so nothing here
           fetches again — that endpoint is rate limited. */}
+      <PlanStep
+        note={
+          teamId === null
+            ? "enter your Team ID"
+            : teamId.toLocaleString("en-GB")
+        }
+        step="01"
+        title="Your squad and your record"
+      >
+        <TeamEntry team={team} params={params} onChange={setParams} />
+        {teamId === null ? null : (
+          <>
+            <DeclaredSquadNote entryId={teamId} />
+            <div
+              aria-label="Analysis result"
+              className="analysis-result"
+              key={teamId}
+              ref={resultRef}
+              role="region"
+              tabIndex={-1}
+            >
+              <AnalysisResult
+                analysis={teamPlan.analysis}
+                declaredAt={declaredAt}
+                entryId={teamId}
+                onDeclared={() => {
+                  setDeclaredAt(Date.now());
+                }}
+                onRetry={() => {
+                  // Focus moves to the region so a screen reader hears the
+                  // retry's answer rather than being left on a button that
+                  // vanished.
+                  resultRef.current?.focus();
+                  teamPlan.retry();
+                }}
+              />
+            </div>
+            <Scorecard calls={scorecard} />
+            {published === null ? null : (
+              <LiveSquad event={published.event} picks={published.picks} />
+            )}
+            {/* Announces the transition only. Marking the plan live would
+                re-read every gameweek card each time the squad resolved. */}
+            <p aria-live="polite" className="visually-hidden" role="status">
+              {analysisAnnouncement(teamPlan.analysis, teamId)}
+            </p>
+          </>
+        )}
+      </PlanStep>
+
       {teamId === null ? null : (
         <PlanStep
-          defaultOpen
-          note={teamId.toLocaleString("en-GB")}
-          step="01"
-          title="Your squad and your record"
-        >
-          <div
-            aria-label="Analysis result"
-            className="analysis-result"
-            key={teamId}
-            ref={resultRef}
-            role="region"
-            tabIndex={-1}
-          >
-            <AnalysisResult
-              analysis={teamPlan.analysis}
-              declaredAt={declaredAt}
-              entryId={teamId}
-              onDeclared={() => {
-                setDeclaredAt(Date.now());
-              }}
-              onRetry={() => {
-                // Focus moves to the region so a screen reader hears the
-                // retry's answer rather than being left on a button that
-                // vanished.
-                resultRef.current?.focus();
-                teamPlan.retry();
-              }}
-            />
-          </div>
-        </PlanStep>
-      )}
-
-      {/* Announces the transition only. Marking the plan live would re-read
-          every gameweek card each time the squad resolved. */}
-      <p aria-live="polite" className="visually-hidden" role="status">
-        {teamId === null ? "" : analysisAnnouncement(teamPlan.analysis, teamId)}
-      </p>
-
-      {teamId === null ? null : (
-        <PlanStep
-          defaultOpen
           note={objective ? "objective set" : "answer before solving"}
           step="02"
           title="Before I solve"
@@ -996,100 +1001,31 @@ export default function SeasonPlanPage() {
               setChipEdit({ entryId: teamId, chips });
             }}
           />
+          {chasesLeague(objective) ? (
+            published === null ? (
+              <section aria-labelledby="mini-league" className="mini-league">
+                <h2 id="mini-league">Your league</h2>
+                <p className="mini-league-failed" role="status">
+                  FPL keeps every squad private until a deadline has passed, so
+                  there is nothing in your league to read yet. This fills in
+                  after the first gameweek starts.
+                </p>
+              </section>
+            ) : (
+              <MiniLeagueThreats
+                entryId={teamId}
+                event={published.event}
+                leagueId={objective.leagueId}
+                mine={published.picks
+                  .filter((pick) => pick.multiplier > 0)
+                  .map((pick) => pick.elementId)}
+              />
+            )
+          ) : null}
         </PlanStep>
       )}
 
-      {teamId === null ? null : <Scorecard calls={scorecard} />}
-
-      {published === null ? null : (
-        <LiveSquad event={published.event} picks={published.picks} />
-      )}
-
-      {chasesLeague(objective) ? (
-        published === null ? (
-          <section aria-labelledby="mini-league" className="mini-league">
-            <h2 id="mini-league">Your league</h2>
-            <p className="mini-league-failed" role="status">
-              FPL keeps every squad private until a deadline has passed, so
-              there is nothing in your league to read yet. This fills in after
-              the first gameweek starts.
-            </p>
-          </section>
-        ) : (
-          <MiniLeagueThreats
-            entryId={teamId ?? 0}
-            event={published.event}
-            leagueId={objective.leagueId}
-            mine={published.picks
-              .filter((pick) => pick.multiplier > 0)
-              .map((pick) => pick.elementId)}
-          />
-        )
-      ) : null}
-
-      <div className="plan-preamble">
-        <p className="plan-preamble-line">
-          Squad, eleven, captain and transfer, for every gameweek. Solved in
-          your browser.
-          <InfoMarker label="how this plan is built">
-            {awaitingLockIn
-              ? `A plan is only worth reading if it starts from what you own. Lock a fifteen in at step one and all 38 gameweeks are solved from it here, in ${String(plan.windowsSolved)} overlapping windows from a pool of ${String(plan.poolSize)} players.`
-              : `A single optimal 38-gameweek solve does not return, so this is ${String(plan.windowsSolved)} overlapping windows chained together from a pool of ${String(plan.poolSize)} players. A good plan, not a proof. Your squad, bank and free transfers never leave this browser.`}
-          </InfoMarker>
-        </p>
-        <ul className="plan-preamble-stats mono">
-          <li>
-            <b>
-              {awaitingLockIn
-                ? "GW1–38"
-                : `GW${String(gameweeks[0]?.event)}–${String(gameweeks[gameweeks.length - 1]?.event)}`}
-            </b>{" "}
-            planned
-          </li>
-          {solving || awaitingLockIn ? null : (
-            <li>
-              <b>{plan.netExpectedPoints.toFixed(0)}</b> net points
-            </li>
-          )}
-          {solving || awaitingLockIn ? null : (
-            <li>
-              <b>{bands.get("firm") ?? 0}</b> firm ·{" "}
-              <b>{bands.get("projected") ?? 0}</b> projected ·{" "}
-              <b>{bands.get("provisional") ?? 0}</b> provisional
-              <InfoMarker label="firm, projected and provisional">
-                Firm means the gameweek already happened, so every number is
-                observed. Projected sits inside the seven-gameweek horizon the
-                model is calibrated on. Provisional is beyond it — read the
-                shape, not the names.
-              </InfoMarker>
-            </li>
-          )}
-          {awaitingLockIn ? <li>no squad locked in yet</li> : null}
-        </ul>
-      </div>
-
-      {solve.status === "solving" ? (
-        <p className="plan-progress" role="status">
-          <span
-            aria-hidden="true"
-            className="plan-progress-bar"
-            style={{
-              inlineSize: `${Math.round((solve.progress ?? 0) * 100)}%`,
-            }}
-          />
-          Solved {solve.gameweeks.length} of {38 - fromEvent + 1} gameweeks…
-        </p>
-      ) : null}
-
-      {solve.status === "failed" ? (
-        <p className="plan-progress plan-progress-failed" role="alert">
-          The solver stopped: {solve.reason}. The published opening-squad plan
-          is still below.
-        </p>
-      ) : null}
-
       <PlanStep
-        defaultOpen
         note={
           chipsAreYours
             ? `${String(chipCalls.filter((chip) => chip.event !== null).length)} of ${String(chipCalls.length)} placed`
@@ -1129,7 +1065,6 @@ export default function SeasonPlanPage() {
       </PlanStep>
 
       <PlanStep
-        defaultOpen
         note={
           awaitingLockIn
             ? "waiting on your fifteen"
@@ -1138,6 +1073,67 @@ export default function SeasonPlanPage() {
         step="04"
         title="Every gameweek"
       >
+        <div className="plan-preamble">
+          <p className="plan-preamble-line">
+            Squad, eleven, captain and transfer, for every gameweek. Solved in
+            your browser.
+            <InfoMarker label="how this plan is built">
+              {awaitingLockIn
+                ? `A plan is only worth reading if it starts from what you own. Lock a fifteen in at step one and all 38 gameweeks are solved from it here, in ${String(plan.windowsSolved)} overlapping windows from a pool of ${String(plan.poolSize)} players.`
+                : `A single optimal 38-gameweek solve does not return, so this is ${String(plan.windowsSolved)} overlapping windows chained together from a pool of ${String(plan.poolSize)} players. A good plan, not a proof. Your squad, bank and free transfers never leave this browser.`}
+            </InfoMarker>
+          </p>
+          <ul className="plan-preamble-stats mono">
+            <li>
+              <b>
+                {awaitingLockIn
+                  ? "GW1–38"
+                  : `GW${String(gameweeks[0]?.event)}–${String(gameweeks[gameweeks.length - 1]?.event)}`}
+              </b>{" "}
+              planned
+            </li>
+            {solving || awaitingLockIn ? null : (
+              <li>
+                <b>{plan.netExpectedPoints.toFixed(0)}</b> net points
+              </li>
+            )}
+            {solving || awaitingLockIn ? null : (
+              <li>
+                <b>{bands.get("firm") ?? 0}</b> firm ·{" "}
+                <b>{bands.get("projected") ?? 0}</b> projected ·{" "}
+                <b>{bands.get("provisional") ?? 0}</b> provisional
+                <InfoMarker label="firm, projected and provisional">
+                  Firm means the gameweek already happened, so every number is
+                  observed. Projected sits inside the seven-gameweek horizon the
+                  model is calibrated on. Provisional is beyond it — read the
+                  shape, not the names.
+                </InfoMarker>
+              </li>
+            )}
+            {awaitingLockIn ? <li>no squad locked in yet</li> : null}
+          </ul>
+        </div>
+
+        {solve.status === "solving" ? (
+          <p className="plan-progress" role="status">
+            <span
+              aria-hidden="true"
+              className="plan-progress-bar"
+              style={{
+                inlineSize: `${Math.round((solve.progress ?? 0) * 100)}%`,
+              }}
+            />
+            Solved {solve.gameweeks.length} of {38 - fromEvent + 1} gameweeks…
+          </p>
+        ) : null}
+
+        {solve.status === "failed" ? (
+          <p className="plan-progress plan-progress-failed" role="alert">
+            The solver stopped: {solve.reason}. The published opening-squad plan
+            is still below.
+          </p>
+        ) : null}
+
         {awaitingLockIn ? (
           <p className="plan-awaiting">
             Lock a fifteen in at step one and all thirty-eight weeks are
@@ -1245,19 +1241,19 @@ export default function SeasonPlanPage() {
                 </button>
               </p>
             ) : null}
+
+            {selected ? (
+              <PlayerDetail
+                onClose={() => {
+                  setSelected(null);
+                }}
+                player={selected.player}
+                difficulty={planDifficulty(selected.week, selected.player)}
+              />
+            ) : null}
           </>
         )}
       </PlanStep>
-
-      {selected ? (
-        <PlayerDetail
-          onClose={() => {
-            setSelected(null);
-          }}
-          player={selected.player}
-          difficulty={planDifficulty(selected.week, selected.player)}
-        />
-      ) : null}
 
       <PlanStep
         note={`${String(CAVEAT_COUNT)} of them`}
