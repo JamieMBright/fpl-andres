@@ -20,6 +20,7 @@ import {
   rankPerformanceLabel,
   separableVerdict,
   type RankBandResult,
+  type RankBinResult,
   type VerdictSeason,
 } from "../state/validation-verdict";
 
@@ -45,6 +46,7 @@ type PolicyResult = {
   mean: number;
   prorated38Gameweeks?: number;
   overallRankBand?: RankBandResult | null;
+  overallRankBin?: RankBinResult | null;
   rankReason?: string | null;
   best: number;
   wins: number;
@@ -833,7 +835,7 @@ export function ValidationReport() {
                 POLICY_ORDER.map((policy) => {
                   const result = season.league.policies[policy];
                   if (!result) return null;
-                  const band = result.overallRankBand;
+                  const band = result.overallRankBin ?? result.overallRankBand;
                   return (
                     <tr
                       className={`${rankBandClass(band)} ${policy === "advised" ? "is-mine" : ""}`}
@@ -858,7 +860,7 @@ export function ValidationReport() {
                         </span>
                         {band ? (
                           <span className="policy-rank-sample mono">
-                            {band.sampleSize} nearby finishes
+                            {band.sampleSize ?? "rough"} observed finishes
                           </span>
                         ) : null}
                       </td>
@@ -870,12 +872,13 @@ export function ValidationReport() {
           </table>
         </div>
         <p className="validation-note">
-          The rank column is an empirical band from the 20 nearest completed
-          finishes in that season&rsquo;s swept catalogue. The simulated totals
-          cover 31 or 32 gameweeks; the 38-GW figure is a straight pro-rate, not
-          a claim that the missing chip-heavy opening weeks would score at the
-          same rate. Top 500k is the minimum acceptable outcome here; anything
-          below it is labelled a total flop.
+          The rank column uses the nearest observed finish inside and outside
+          fixed 1k, 10k, 50k, 100k, 250k, 500k, 1m, 2m and 3m cutoffs. Around
+          means the score sits inside that measured point bracket; it is not an
+          interpolated exact rank. The simulated totals cover 31 or 32
+          gameweeks, so the 38-GW figure is a straight pro-rate. Top 500k is the
+          minimum acceptable outcome here; anything below it is labelled a total
+          flop.
         </p>
         <div
           aria-label="Scrollable mini-league table"

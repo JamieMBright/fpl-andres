@@ -104,6 +104,7 @@ def test_the_bot_committing_workflows_are_covered_by_those_rules() -> None:
     pushing = {path.name for path in _workflows() if _pushes(path.read_text(encoding="utf-8"))}
 
     for name in (
+        "calibrate-points-to-rank.yml",
         "ingest-odds.yml",
         "ingest-player-odds.yml",
         "survey-player-props.yml",
@@ -136,3 +137,19 @@ def test_live_odds_producers_republish_the_plan_the_browser_reads(name: str, sou
         season_inputs = text.index("apps/web/src/data/season-inputs.json", publish)
         assert text.index("prettier@3 --write", publish) < season_inputs
         assert text.index("git add", publish) < text.rindex("apps/web/src/data/season-inputs.json")
+
+
+def test_rank_sampler_keeps_raw_progress_out_of_model_validation() -> None:
+    validation = (WORKFLOWS / "validate-model.yml").read_text(encoding="utf-8")
+    calibration = (WORKFLOWS / "calibrate-points-to-rank.yml").read_text(encoding="utf-8")
+
+    assert "data/cohort/points-to-rank.json" in validation
+    assert "points-to-rank-sample.jsonl" not in validation
+    assert "points-to-rank-sample-checkpoint.json" not in validation
+    for path in (
+        "data/cohort/points-to-rank-sample.jsonl",
+        "data/cohort/points-to-rank-sample-checkpoint.json",
+        "data/cohort/points-to-rank.json",
+    ):
+        assert path in calibration
+    assert 'git add -- "$path"' in calibration

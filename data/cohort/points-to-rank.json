@@ -1,0 +1,583 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-08-11T06:26:16.744046+00:00",
+  "evidenceLevel": "observed",
+  "cutoffSemantics": "overallRank <= cutoff",
+  "cutoffs": [
+    1000, 10000, 50000, 100000, 250000, 500000, 1000000, 2000000, 3000000
+  ],
+  "sources": [
+    {
+      "selection": "outcome_filtered_seed",
+      "records": 2392,
+      "fingerprint": "sha256:688e6827213e794f95d5c0c012522b7145f8ebe4b113b6be10516ecd04ce1c80",
+      "timestampReason": "legacy catalogue did not retain fetch timestamps"
+    }
+  ],
+  "seasons": [
+    {
+      "season": "2022-23",
+      "observations": 2345,
+      "boundaries": [
+        {
+          "rankCutoff": 1000,
+          "status": "bracketed",
+          "inside": {
+            "rank": 980,
+            "points": 2660
+          },
+          "outside": {
+            "rank": 1016,
+            "points": 2659
+          },
+          "rankGap": 36,
+          "pointsGap": 1,
+          "sampleSize": 2345
+        },
+        {
+          "rankCutoff": 10000,
+          "status": "tie_at_cutoff",
+          "inside": {
+            "rank": 9989,
+            "points": 2606
+          },
+          "outside": {
+            "rank": 10026,
+            "points": 2606
+          },
+          "rankGap": 37,
+          "pointsGap": 0,
+          "sampleSize": 2345
+        },
+        {
+          "rankCutoff": 50000,
+          "status": "tie_at_cutoff",
+          "inside": {
+            "rank": 49971,
+            "points": 2556
+          },
+          "outside": {
+            "rank": 50024,
+            "points": 2556
+          },
+          "rankGap": 53,
+          "pointsGap": 0,
+          "sampleSize": 2345
+        },
+        {
+          "rankCutoff": 100000,
+          "status": "tie_at_cutoff",
+          "inside": {
+            "rank": 99844,
+            "points": 2528
+          },
+          "outside": {
+            "rank": 100090,
+            "points": 2528
+          },
+          "rankGap": 246,
+          "pointsGap": 0,
+          "sampleSize": 2345
+        },
+        {
+          "rankCutoff": 250000,
+          "status": "tie_at_cutoff",
+          "inside": {
+            "rank": 249844,
+            "points": 2477
+          },
+          "outside": {
+            "rank": 250246,
+            "points": 2477
+          },
+          "rankGap": 402,
+          "pointsGap": 0,
+          "sampleSize": 2345
+        },
+        {
+          "rankCutoff": 500000,
+          "status": "tie_at_cutoff",
+          "inside": {
+            "rank": 499719,
+            "points": 2425
+          },
+          "outside": {
+            "rank": 500294,
+            "points": 2425
+          },
+          "rankGap": 575,
+          "pointsGap": 0,
+          "sampleSize": 2345
+        },
+        {
+          "rankCutoff": 1000000,
+          "status": "bracketed",
+          "inside": {
+            "rank": 985550,
+            "points": 2357
+          },
+          "outside": {
+            "rank": 1000728,
+            "points": 2355
+          },
+          "rankGap": 15178,
+          "pointsGap": 2,
+          "sampleSize": 2345
+        },
+        {
+          "rankCutoff": 2000000,
+          "status": "bracketed",
+          "inside": {
+            "rank": 1972230,
+            "points": 2260
+          },
+          "outside": {
+            "rank": 2062239,
+            "points": 2252
+          },
+          "rankGap": 90009,
+          "pointsGap": 8,
+          "sampleSize": 2345
+        },
+        {
+          "rankCutoff": 3000000,
+          "status": "bracketed",
+          "inside": {
+            "rank": 2656094,
+            "points": 2203
+          },
+          "outside": {
+            "rank": 3011820,
+            "points": 2175
+          },
+          "rankGap": 355726,
+          "pointsGap": 28,
+          "sampleSize": 2345
+        }
+      ]
+    },
+    {
+      "season": "2023-24",
+      "observations": 2379,
+      "boundaries": [
+        {
+          "rankCutoff": 1000,
+          "status": "bracketed",
+          "inside": {
+            "rank": 998,
+            "points": 2629
+          },
+          "outside": {
+            "rank": 1007,
+            "points": 2628
+          },
+          "rankGap": 9,
+          "pointsGap": 1,
+          "sampleSize": 2379
+        },
+        {
+          "rankCutoff": 10000,
+          "status": "tie_at_cutoff",
+          "inside": {
+            "rank": 9984,
+            "points": 2573
+          },
+          "outside": {
+            "rank": 10002,
+            "points": 2573
+          },
+          "rankGap": 18,
+          "pointsGap": 0,
+          "sampleSize": 2379
+        },
+        {
+          "rankCutoff": 50000,
+          "status": "tie_at_cutoff",
+          "inside": {
+            "rank": 49963,
+            "points": 2519
+          },
+          "outside": {
+            "rank": 50071,
+            "points": 2519
+          },
+          "rankGap": 108,
+          "pointsGap": 0,
+          "sampleSize": 2379
+        },
+        {
+          "rankCutoff": 100000,
+          "status": "tie_at_cutoff",
+          "inside": {
+            "rank": 99977,
+            "points": 2486
+          },
+          "outside": {
+            "rank": 100759,
+            "points": 2486
+          },
+          "rankGap": 782,
+          "pointsGap": 0,
+          "sampleSize": 2379
+        },
+        {
+          "rankCutoff": 250000,
+          "status": "bracketed",
+          "inside": {
+            "rank": 249936,
+            "points": 2429
+          },
+          "outside": {
+            "rank": 251135,
+            "points": 2428
+          },
+          "rankGap": 1199,
+          "pointsGap": 1,
+          "sampleSize": 2379
+        },
+        {
+          "rankCutoff": 500000,
+          "status": "bracketed",
+          "inside": {
+            "rank": 495144,
+            "points": 2374
+          },
+          "outside": {
+            "rank": 503851,
+            "points": 2372
+          },
+          "rankGap": 8707,
+          "pointsGap": 2,
+          "sampleSize": 2379
+        },
+        {
+          "rankCutoff": 1000000,
+          "status": "bracketed",
+          "inside": {
+            "rank": 994352,
+            "points": 2305
+          },
+          "outside": {
+            "rank": 1013196,
+            "points": 2303
+          },
+          "rankGap": 18844,
+          "pointsGap": 2,
+          "sampleSize": 2379
+        },
+        {
+          "rankCutoff": 2000000,
+          "status": "bracketed",
+          "inside": {
+            "rank": 1991950,
+            "points": 2215
+          },
+          "outside": {
+            "rank": 2058682,
+            "points": 2210
+          },
+          "rankGap": 66732,
+          "pointsGap": 5,
+          "sampleSize": 2379
+        },
+        {
+          "rankCutoff": 3000000,
+          "status": "bracketed",
+          "inside": {
+            "rank": 2827299,
+            "points": 2152
+          },
+          "outside": {
+            "rank": 3085756,
+            "points": 2133
+          },
+          "rankGap": 258457,
+          "pointsGap": 19,
+          "sampleSize": 2379
+        }
+      ]
+    },
+    {
+      "season": "2024-25",
+      "observations": 2390,
+      "boundaries": [
+        {
+          "rankCutoff": 1000,
+          "status": "tie_at_cutoff",
+          "inside": {
+            "rank": 967,
+            "points": 2658
+          },
+          "outside": {
+            "rank": 1009,
+            "points": 2658
+          },
+          "rankGap": 42,
+          "pointsGap": 0,
+          "sampleSize": 2390
+        },
+        {
+          "rankCutoff": 10000,
+          "status": "tie_at_cutoff",
+          "inside": {
+            "rank": 9986,
+            "points": 2599
+          },
+          "outside": {
+            "rank": 10092,
+            "points": 2599
+          },
+          "rankGap": 106,
+          "pointsGap": 0,
+          "sampleSize": 2390
+        },
+        {
+          "rankCutoff": 50000,
+          "status": "tie_at_cutoff",
+          "inside": {
+            "rank": 49894,
+            "points": 2543
+          },
+          "outside": {
+            "rank": 50073,
+            "points": 2543
+          },
+          "rankGap": 179,
+          "pointsGap": 0,
+          "sampleSize": 2390
+        },
+        {
+          "rankCutoff": 100000,
+          "status": "tie_at_cutoff",
+          "inside": {
+            "rank": 99860,
+            "points": 2512
+          },
+          "outside": {
+            "rank": 100185,
+            "points": 2512
+          },
+          "rankGap": 325,
+          "pointsGap": 0,
+          "sampleSize": 2390
+        },
+        {
+          "rankCutoff": 250000,
+          "status": "bracketed",
+          "inside": {
+            "rank": 249405,
+            "points": 2461
+          },
+          "outside": {
+            "rank": 250820,
+            "points": 2460
+          },
+          "rankGap": 1415,
+          "pointsGap": 1,
+          "sampleSize": 2390
+        },
+        {
+          "rankCutoff": 500000,
+          "status": "tie_at_cutoff",
+          "inside": {
+            "rank": 498458,
+            "points": 2411
+          },
+          "outside": {
+            "rank": 500013,
+            "points": 2411
+          },
+          "rankGap": 1555,
+          "pointsGap": 0,
+          "sampleSize": 2390
+        },
+        {
+          "rankCutoff": 1000000,
+          "status": "bracketed",
+          "inside": {
+            "rank": 991532,
+            "points": 2348
+          },
+          "outside": {
+            "rank": 1003963,
+            "points": 2347
+          },
+          "rankGap": 12431,
+          "pointsGap": 1,
+          "sampleSize": 2390
+        },
+        {
+          "rankCutoff": 2000000,
+          "status": "bracketed",
+          "inside": {
+            "rank": 1947879,
+            "points": 2265
+          },
+          "outside": {
+            "rank": 2008897,
+            "points": 2260
+          },
+          "rankGap": 61018,
+          "pointsGap": 5,
+          "sampleSize": 2390
+        },
+        {
+          "rankCutoff": 3000000,
+          "status": "bracketed",
+          "inside": {
+            "rank": 2991189,
+            "points": 2190
+          },
+          "outside": {
+            "rank": 3105930,
+            "points": 2182
+          },
+          "rankGap": 114741,
+          "pointsGap": 8,
+          "sampleSize": 2390
+        }
+      ]
+    },
+    {
+      "season": "2025-26",
+      "observations": 2385,
+      "boundaries": [
+        {
+          "rankCutoff": 1000,
+          "status": "bracketed",
+          "inside": {
+            "rank": 968,
+            "points": 2448
+          },
+          "outside": {
+            "rank": 1003,
+            "points": 2447
+          },
+          "rankGap": 35,
+          "pointsGap": 1,
+          "sampleSize": 2385
+        },
+        {
+          "rankCutoff": 10000,
+          "status": "tie_at_cutoff",
+          "inside": {
+            "rank": 9970,
+            "points": 2398
+          },
+          "outside": {
+            "rank": 10317,
+            "points": 2398
+          },
+          "rankGap": 347,
+          "pointsGap": 0,
+          "sampleSize": 2385
+        },
+        {
+          "rankCutoff": 50000,
+          "status": "tie_at_cutoff",
+          "inside": {
+            "rank": 49730,
+            "points": 2352
+          },
+          "outside": {
+            "rank": 50020,
+            "points": 2352
+          },
+          "rankGap": 290,
+          "pointsGap": 0,
+          "sampleSize": 2385
+        },
+        {
+          "rankCutoff": 100000,
+          "status": "tie_at_cutoff",
+          "inside": {
+            "rank": 99469,
+            "points": 2327
+          },
+          "outside": {
+            "rank": 100057,
+            "points": 2327
+          },
+          "rankGap": 588,
+          "pointsGap": 0,
+          "sampleSize": 2385
+        },
+        {
+          "rankCutoff": 250000,
+          "status": "tie_at_cutoff",
+          "inside": {
+            "rank": 249859,
+            "points": 2285
+          },
+          "outside": {
+            "rank": 250492,
+            "points": 2285
+          },
+          "rankGap": 633,
+          "pointsGap": 0,
+          "sampleSize": 2385
+        },
+        {
+          "rankCutoff": 500000,
+          "status": "tie_at_cutoff",
+          "inside": {
+            "rank": 498975,
+            "points": 2244
+          },
+          "outside": {
+            "rank": 500124,
+            "points": 2244
+          },
+          "rankGap": 1149,
+          "pointsGap": 0,
+          "sampleSize": 2385
+        },
+        {
+          "rankCutoff": 1000000,
+          "status": "bracketed",
+          "inside": {
+            "rank": 998878,
+            "points": 2191
+          },
+          "outside": {
+            "rank": 1007594,
+            "points": 2190
+          },
+          "rankGap": 8716,
+          "pointsGap": 1,
+          "sampleSize": 2385
+        },
+        {
+          "rankCutoff": 2000000,
+          "status": "bracketed",
+          "inside": {
+            "rank": 1971950,
+            "points": 2119
+          },
+          "outside": {
+            "rank": 2017252,
+            "points": 2116
+          },
+          "rankGap": 45302,
+          "pointsGap": 3,
+          "sampleSize": 2385
+        },
+        {
+          "rankCutoff": 3000000,
+          "status": "bracketed",
+          "inside": {
+            "rank": 2977324,
+            "points": 2059
+          },
+          "outside": {
+            "rank": 3079303,
+            "points": 2053
+          },
+          "rankGap": 101979,
+          "pointsGap": 6,
+          "sampleSize": 2385
+        }
+      ]
+    }
+  ]
+}

@@ -6,6 +6,7 @@ import {
   pooledVerdict,
   positionVerdict,
   rankBandClass,
+  rankBandLabel,
   rankPerformanceLabel,
   separableVerdict,
   type LeagueSeason,
@@ -201,6 +202,53 @@ describe("Overall Rank performance bands", () => {
   it("does not invent a result without a sample", () => {
     expect(rankPerformanceLabel(null)).toBe("unrated");
     expect(rankBandClass(undefined)).toBe("is-unrated");
+  });
+
+  it.each([
+    [1_000_000, "top 1m"],
+    [2_000_000, "top 2m"],
+    [3_000_000, "top 3m"],
+  ])("names the rough tail cutoff %,i", (rankCutoff, label) => {
+    const result = {
+      rankCutoff,
+      status: "inside" as const,
+      inside: { rank: rankCutoff - 10, points: 2200 },
+      outside: { rank: rankCutoff + 10, points: 2199 },
+      rankGap: 20,
+      pointsGap: 1,
+      sampleSize: 2_300,
+    };
+    expect(rankBandLabel(result)).toBe(label);
+    expect(rankPerformanceLabel(result)).toBe("total flop");
+  });
+
+  it("says around when a tied score straddles the cutoff", () => {
+    const result = {
+      rankCutoff: 500_000,
+      status: "around" as const,
+      inside: { rank: 499_900, points: 2244 },
+      outside: { rank: 500_100, points: 2244 },
+      rankGap: 200,
+      pointsGap: 0,
+      sampleSize: 2_300,
+    };
+    expect(rankBandLabel(result)).toBe("around top 500k");
+    expect(rankPerformanceLabel(result)).toBe("top 500k");
+  });
+
+  it("names the open tail and keeps it a flop", () => {
+    const result = {
+      rankCutoff: null,
+      status: "outside" as const,
+      inside: null,
+      outside: null,
+      rankGap: null,
+      pointsGap: null,
+      sampleSize: 2_300,
+    };
+    expect(rankBandLabel(result)).toBe("outside top 3m");
+    expect(rankPerformanceLabel(result)).toBe("total flop");
+    expect(rankBandClass(result)).toBe("is-flop");
   });
 });
 

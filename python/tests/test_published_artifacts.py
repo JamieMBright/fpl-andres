@@ -20,6 +20,7 @@ from typing import Any
 import pytest
 
 _DATA = Path(__file__).resolve().parents[2] / "apps" / "web" / "src" / "data"
+_COHORT = Path(__file__).resolve().parents[2] / "data" / "cohort"
 
 
 def _artifact(name: str) -> Any:
@@ -222,6 +223,39 @@ def test_validation_shape() -> None:
         },
         "validation.seasons[]",
     )
+
+
+def test_points_to_rank_shape() -> None:
+    payload = json.loads((_COHORT / "points-to-rank.json").read_text(encoding="utf-8"))
+    _require_keys(
+        payload,
+        {
+            "schemaVersion",
+            "generatedAt",
+            "evidenceLevel",
+            "cutoffSemantics",
+            "cutoffs",
+            "sources",
+            "seasons",
+        },
+        "points-to-rank",
+    )
+    assert payload["cutoffs"] == [
+        1_000,
+        10_000,
+        50_000,
+        100_000,
+        250_000,
+        500_000,
+        1_000_000,
+        2_000_000,
+        3_000_000,
+    ]
+    assert len(payload["seasons"]) == 4
+    assert all(len(season["boundaries"]) == 9 for season in payload["seasons"])
+    text = json.dumps(payload)
+    assert "entryId" not in text
+    assert '"name"' not in text
 
 
 def test_cohort_shape() -> None:

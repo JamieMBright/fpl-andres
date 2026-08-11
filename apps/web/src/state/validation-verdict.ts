@@ -172,37 +172,64 @@ export interface RankBandResult {
   sampleSize: number;
 }
 
+export interface RankBinResult {
+  rankCutoff: number | null;
+  status: "inside" | "around" | "outside";
+  inside: { rank: number; points: number } | null;
+  outside: { rank: number; points: number } | null;
+  rankGap: number | null;
+  pointsGap: number | null;
+  sampleSize: number | null;
+}
+
+export type RankResult = RankBandResult | RankBinResult;
+
 export interface RankedPolicy {
   mean: number;
   prorated38Gameweeks?: number;
   overallRankBand?: RankBandResult | null;
+  overallRankBin?: RankBinResult | null;
 }
 
-export function rankBandClass(band: RankBandResult | null | undefined): string {
-  if (!band) return "is-unrated";
-  if (band.rankTo <= 100_000) return "is-elite";
-  if (band.rankTo <= 500_000) return "is-strong";
+function conservativeRank(result: RankResult): number | null {
+  return "rankCutoff" in result ? result.rankCutoff : result.rankTo;
+}
+
+export function rankBandClass(result: RankResult | null | undefined): string {
+  if (!result) return "is-unrated";
+  const rank = conservativeRank(result);
+  if (rank !== null && rank <= 100_000) return "is-elite";
+  if (rank !== null && rank <= 500_000) return "is-strong";
   return "is-flop";
 }
 
 export function rankPerformanceLabel(
-  band: RankBandResult | null | undefined,
+  result: RankResult | null | undefined,
 ): string {
-  if (!band) return "unrated";
-  if (band.rankTo <= 1_000) return "top 1k";
-  if (band.rankTo <= 10_000) return "top 10k";
-  if (band.rankTo <= 50_000) return "top 50k";
-  if (band.rankTo <= 100_000) return "top 100k";
-  if (band.rankTo <= 250_000) return "top 250k";
-  if (band.rankTo <= 500_000) return "top 500k";
+  if (!result) return "unrated";
+  const rank = conservativeRank(result);
+  if (rank !== null && rank <= 1_000) return "top 1k";
+  if (rank !== null && rank <= 10_000) return "top 10k";
+  if (rank !== null && rank <= 50_000) return "top 50k";
+  if (rank !== null && rank <= 100_000) return "top 100k";
+  if (rank !== null && rank <= 250_000) return "top 250k";
+  if (rank !== null && rank <= 500_000) return "top 500k";
   return "total flop";
 }
 
-export function rankBandLabel(band: RankBandResult | null | undefined): string {
-  if (!band) return "sample unavailable";
-  if (band.rankFrom === band.rankTo)
-    return `OR ${compactInteger.format(band.rankFrom)}`;
-  return `OR ${compactInteger.format(band.rankFrom)}–${compactInteger.format(band.rankTo)}`;
+export function rankBandLabel(result: RankResult | null | undefined): string {
+  if (!result) return "sample unavailable";
+  if ("rankCutoff" in result) {
+    if (result.status === "outside" || result.rankCutoff === null)
+      return "outside top 3m";
+    const cutoff = compactInteger.format(result.rankCutoff);
+    return result.status === "around"
+      ? `around top ${cutoff}`
+      : `top ${cutoff}`;
+  }
+  if (result.rankFrom === result.rankTo)
+    return `OR ${compactInteger.format(result.rankFrom)}`;
+  return `OR ${compactInteger.format(result.rankFrom)}–${compactInteger.format(result.rankTo)}`;
 }
 
 /**

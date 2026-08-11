@@ -26,9 +26,9 @@ from fpl_andres.backtesting.captain_significance import compare_policies
 from fpl_andres.backtesting.corpus import SeasonCorpus, load_season
 from fpl_andres.backtesting.projector import project_gameweek
 from fpl_andres.backtesting.score import METHOD_LABELS, score_season
-from fpl_andres.cohorts.points_to_rank import rank_band
+from fpl_andres.cohorts.points_to_rank import boundaries_from_artifact, classify_points
 from fpl_andres.holdout import HOLDOUT_SEASON, SCORED_SEASONS
-from fpl_andres.jsonio import read_json_lines
+from fpl_andres.jsonio import read_json_file
 from fpl_andres.model_version import MODEL_VERSION
 from fpl_andres.persistence.supabase import SupabaseCredentials, SupabaseRestClient
 from fpl_andres.positions import Position
@@ -38,7 +38,7 @@ from fpl_andres.simulation.season import LineupRules
 from fpl_andres.simulation.squad import SquadRules
 
 DEFAULT_OUTPUT = Path("apps/web/src/data/validation.json")
-MANAGER_CATALOGUE = Path("data/cohort/managers.jsonl")
+POINTS_TO_RANK = Path("data/cohort/points-to-rank.json")
 
 LEAGUE = LeagueSettings(
     squad_rules=SquadRules(
@@ -76,29 +76,46 @@ def _round(value: float | None, digits: int = 3) -> float | None:
 
 
 def _overall_rank_payload(
-    catalogue: Sequence[Mapping[str, object]],
+    rank_artifact: object,
     *,
     season: str,
     mean: int,
     gameweeks_played: int,
 ) -> dict[str, object]:
     prorated = round(mean * 38 / gameweeks_played) if gameweeks_played else 0
-    label = season.replace("-", "/")
-    band = rank_band(catalogue, season=label, points=prorated)
+    boundaries = boundaries_from_artifact(rank_artifact, season=season)
+    estimate = classify_points(boundaries, points=prorated)
+    boundary = estimate.boundary if estimate is not None else None
     return {
         "prorated38Gameweeks": prorated,
-        "overallRankBand": (
+        "overallRankBin": (
             None
-            if band is None
+            if estimate is None
             else {
-                "rankFrom": band.rank_from,
-                "rankTo": band.rank_to,
-                "pointsFrom": band.lower_points,
-                "pointsTo": band.upper_points,
-                "sampleSize": band.sample_size,
+                "rankCutoff": estimate.rank_cutoff,
+                "status": estimate.status,
+                "inside": (
+                    None
+                    if boundary is None
+                    else {
+                        "rank": boundary.inside.rank,
+                        "points": boundary.inside.points,
+                    }
+                ),
+                "outside": (
+                    None
+                    if boundary is None
+                    else {
+                        "rank": boundary.outside.rank,
+                        "points": boundary.outside.points,
+                    }
+                ),
+                "rankGap": None if boundary is None else boundary.rank_gap,
+                "pointsGap": None if boundary is None else boundary.points_gap,
+                "sampleSize": None if boundary is None else boundary.sample_size,
             }
         ),
-        "rankReason": None if band is not None else "outside_catalogue_range",
+        "rankReason": None if estimate is not None else "boundary_unavailable",
     }
 
 
@@ -282,7 +299,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
     seasons = [part.strip() for part in args.seasons.split(",") if part.strip()]
     seeds = [int(part) for part in args.seeds.split(",") if part.strip()]
-    catalogue = read_json_lines(MANAGER_CATALOGUE)
+    rank_artifact = read_json_file(POINTS_TO_RANK)
 
     credentials = SupabaseCredentials.from_env(os.environ)
     report: dict[str, object] = {
@@ -438,7 +455,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                                     "teamValueTenths": value.get(policy, 0),
                                     "squad": squads.get(policy, []),
                                     **_overall_rank_payload(
-                                        catalogue,
+                                        rank_artifact,
                                         season=season,
                                         mean=mean,
                                         gameweeks_played=gameweeks_played,

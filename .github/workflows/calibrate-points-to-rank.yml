@@ -1,0 +1,108 @@
+name: Calibrate points to rank
+
+# A small unfiltered sample verifies the long-tail rank bins without mixing
+# random managers into FPL500. It is resumable: one bounded weekly slice moves
+# the checkpoint, and a transient FPL refusal leaves the same ordinal for next
+# time rather than turning a network failure into a sampled exclusion.
+on:
+  schedule:
+    - cron: "41 3 * * 1"
+  push:
+    paths:
+      - ".github/workflows/calibrate-points-to-rank.yml"
+      - "python/fpl_andres/cli/sample_points_to_rank.py"
+      - "python/fpl_andres/cli/publish_points_to_rank.py"
+      - "python/fpl_andres/cohorts/points_to_rank.py"
+  workflow_dispatch:
+    inputs:
+      max-seconds:
+        description: Stop cleanly after this long
+        default: "2700"
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: calibrate-points-to-rank
+  cancel-in-progress: false
+
+jobs:
+  sample:
+    name: Sample the public manager register
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    permissions:
+      contents: write
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install engine
+        run: python -m pip install -e ".[dev]"
+
+      - name: Validate time budget
+        env:
+          MAX_SECONDS: ${{ inputs.max-seconds }}
+        run: |
+          if [ -n "$MAX_SECONDS" ] && ! printf '%s' "$MAX_SECONDS" | grep -qE '^[1-9][0-9]{0,4}$'; then
+            echo "max-seconds must be a positive integer" >&2
+            exit 1
+          fi
+
+      - name: Sample a bounded slice
+        id: sample
+        env:
+          MAX_SECONDS: ${{ inputs.max-seconds }}
+        run: |
+          set +e
+          python -m fpl_andres.cli.sample_points_to_rank \
+            --resume \
+            --max-seconds "${MAX_SECONDS:-2700}" \
+            | tee -a "$GITHUB_STEP_SUMMARY"
+          status=${PIPESTATUS[0]}
+          if [ "$status" = "2" ]; then
+            echo "FPL asked us to stop; the ordinal was preserved." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          exit "$status"
+
+      - name: Publish rough boundaries
+        run: |
+          python -m fpl_andres.cli.publish_points_to_rank \
+            | tee -a "$GITHUB_STEP_SUMMARY"
+
+      - name: Check rank contracts
+        run: |
+          python -m pytest \
+            python/tests/test_points_to_rank.py \
+            python/tests/test_points_to_rank_sampling.py \
+            python/tests/test_publish_points_to_rank.py \
+            -q --no-cov
+
+      - name: Commit sample progress and boundaries
+        run: |
+          paths="data/cohort/points-to-rank-sample.jsonl data/cohort/points-to-rank-sample-checkpoint.json data/cohort/points-to-rank.json"
+          npx --yes prettier@3 --write \
+            data/cohort/points-to-rank-sample-checkpoint.json \
+            data/cohort/points-to-rank.json
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          for path in $paths; do
+            if [ -e "$path" ]; then
+              git add -- "$path"
+            fi
+          done
+          if git diff --cached --quiet -- $paths; then
+            echo "No sample progress moved."
+            exit 0
+          fi
+          git commit -m "chore: refine the points-to-rank bins"
+          git pull --rebase --autostash
+          git push

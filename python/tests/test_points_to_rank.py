@@ -1,62 +1,105 @@
 from __future__ import annotations
 
-from fpl_andres.cohorts.points_to_rank import rank_band
+from fpl_andres.cohorts.points_to_rank import (
+    RANK_CUTOFFS,
+    classify_points,
+    rank_boundaries,
+)
 
 
 def catalogue() -> list[dict[str, object]]:
     return [
-        {"seasons": [{"season": "2025/26", "points": 1900, "rank": 5_000_000}]},
-        {"seasons": [{"season": "2025/26", "points": 1950, "rank": 4_000_000}]},
-        {"seasons": [{"season": "2025/26", "points": 1950, "rank": 4_100_000}]},
-        {"seasons": [{"season": "2025/26", "points": 2000, "rank": 3_000_000}]},
-        {"seasons": [{"season": "2024/25", "points": 1950, "rank": 900_000}]},
+        {"seasons": [{"season": "2025/26", "points": 2500, "rank": 900}]},
+        {"seasons": [{"season": "2025/26", "points": 2499, "rank": 1100}]},
+        {"seasons": [{"season": "2025/26", "points": 2400, "rank": 9_900}]},
+        {"seasons": [{"season": "2025/26", "points": 2399, "rank": 10_100}]},
+        {"seasons": [{"season": "2025/26", "points": 2200, "rank": 499_000}]},
+        {"seasons": [{"season": "2025/26", "points": 2200, "rank": 501_000}]},
+        {"seasons": [{"season": "2025/26", "points": 2100, "rank": 990_000}]},
+        {"seasons": [{"season": "2025/26", "points": 2099, "rank": 1_010_000}]},
+        {"seasons": [{"season": "2025/26", "points": 2000, "rank": 1_990_000}]},
+        {"seasons": [{"season": "2025/26", "points": 1999, "rank": 2_010_000}]},
+        {"seasons": [{"season": "2025/26", "points": 1900, "rank": 2_990_000}]},
+        {"seasons": [{"season": "2025/26", "points": 1899, "rank": 3_010_000}]},
+        {"seasons": [{"season": "2024/25", "points": 2500, "rank": 8_000_000}]},
     ]
 
 
-def test_brackets_the_nearest_measured_finishes() -> None:
-    band = rank_band(catalogue(), season="2025/26", points=1975, minimum_sample=3)
-
-    assert band is not None
-    assert (band.lower_points, band.upper_points) == (1950, 2000)
-    assert (band.rank_from, band.rank_to) == (3_000_000, 4_100_000)
-    assert band.sample_size == 3
-
-
-def test_an_exact_score_uses_every_observation_at_that_score() -> None:
-    band = rank_band(catalogue(), season="2025/26", points=1950, minimum_sample=2)
-
-    assert band is not None
-    assert (band.rank_from, band.rank_to) == (4_000_000, 4_100_000)
-    assert band.sample_size == 2
+def test_the_requested_rank_cutoffs_are_fixed() -> None:
+    assert RANK_CUTOFFS == (
+        1_000,
+        10_000,
+        50_000,
+        100_000,
+        250_000,
+        500_000,
+        1_000_000,
+        2_000_000,
+        3_000_000,
+    )
 
 
-def test_better_points_never_produce_a_worse_bracket() -> None:
-    lower = rank_band(catalogue(), season="2025/26", points=1925, minimum_sample=2)
-    higher = rank_band(catalogue(), season="2025/26", points=1975, minimum_sample=2)
+def test_boundaries_use_the_nearest_finish_on_each_side() -> None:
+    boundaries = rank_boundaries(catalogue(), season="2025/26")
+    top_10k = next(boundary for boundary in boundaries if boundary.rank_cutoff == 10_000)
 
-    assert lower is not None and higher is not None
-    assert higher.rank_from < lower.rank_from
-    assert higher.rank_to < lower.rank_to
+    assert top_10k.inside.rank == 9_900
+    assert top_10k.inside.points == 2400
+    assert top_10k.outside.rank == 10_100
+    assert top_10k.outside.points == 2399
+    assert top_10k.rank_gap == 200
+    assert top_10k.status == "bracketed"
 
 
-def test_refuses_to_extrapolate_beyond_the_catalogue() -> None:
-    assert rank_band(catalogue(), season="2025/26", points=1800, minimum_sample=2) is None
-    assert rank_band(catalogue(), season="2025/26", points=2100, minimum_sample=2) is None
+def test_equal_points_on_both_sides_are_a_tie_not_an_exact_threshold() -> None:
+    boundaries = rank_boundaries(catalogue(), season="2025/26")
+    top_500k = next(boundary for boundary in boundaries if boundary.rank_cutoff == 500_000)
+
+    assert top_500k.inside.points == top_500k.outside.points == 2200
+    assert top_500k.status == "tie_at_cutoff"
+    estimate = classify_points(boundaries, points=2200)
+    assert estimate is not None
+    assert estimate.status == "around"
+    assert estimate.rank_cutoff == 500_000
+
+
+def test_score_is_classified_into_the_first_cutoff_it_clearly_beats() -> None:
+    boundaries = rank_boundaries(catalogue(), season="2025/26")
+
+    top_1k = classify_points(boundaries, points=2501)
+    top_10k = classify_points(boundaries, points=2400)
+    top_1m = classify_points(boundaries, points=2100)
+    outside = classify_points(boundaries, points=1800)
+    assert top_1k is not None and top_1k.rank_cutoff == 1_000
+    assert top_10k is not None and top_10k.rank_cutoff == 10_000
+    assert top_1m is not None and top_1m.rank_cutoff == 1_000_000
+    assert outside is not None and outside.status == "outside"
+
+
+def test_a_score_between_observed_point_levels_is_around_the_cutoff() -> None:
+    rows = [
+        {"seasons": [{"season": "2025/26", "points": 2302, "rank": 99_000}]},
+        {"seasons": [{"season": "2025/26", "points": 2298, "rank": 101_000}]},
+    ]
+    estimate = classify_points(
+        rank_boundaries(rows, season="2025/26", cutoffs=(100_000,)),
+        points=2300,
+    )
+
+    assert estimate is not None
+    assert estimate.status == "around"
+    assert estimate.rank_cutoff == 100_000
 
 
 def test_seasons_never_leak_into_each_other() -> None:
-    band = rank_band(catalogue(), season="2025/26", points=1950, minimum_sample=2)
+    boundaries = rank_boundaries(catalogue(), season="2025/26", cutoffs=(1_000,))
 
-    assert band is not None
-    assert band.rank_from != 900_000
-
-
-def test_refuses_a_catalogue_below_the_sample_floor() -> None:
-    assert rank_band(catalogue(), season="2025/26", points=1950) is None
+    assert boundaries[0].inside.rank == 900
+    assert boundaries[0].outside.rank == 1_100
 
 
-def test_refuses_an_invalid_sample_floor() -> None:
-    import pytest
+def test_an_unbracketed_cutoff_is_unavailable() -> None:
+    boundaries = rank_boundaries(catalogue()[:1], season="2025/26", cutoffs=(1_000,))
 
-    with pytest.raises(ValueError, match="at least two"):
-        rank_band(catalogue(), season="2025/26", points=1950, minimum_sample=1)
+    assert boundaries == ()
+    assert classify_points(boundaries, points=2500) is None
