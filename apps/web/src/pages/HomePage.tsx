@@ -11,8 +11,8 @@ import { lazyRoute } from "../state/lazy-route";
 import { useDocumentTitle } from "../state/use-document-title";
 
 // The picks need the whole season solver, and the landing page is the one
-// chunk every visitor pays for. It sits below the wayfinding grid, so it can
-// arrive a moment after the page it is on.
+// chunk every visitor pays for. Its wrapper stays above the wayfinding grid
+// even while the chunk loads, so the main rankings never jump below the menu.
 const TopPicks = lazyRoute(() =>
   import("../components/TopPicks").then((module) => ({
     default: module.TopPicks,
@@ -60,6 +60,14 @@ export default function HomePage() {
   return (
     <section className="index-page" aria-label="Index">
       <RouteHeading>Top Picks</RouteHeading>
+
+      <div className="index-rankings">
+        <ErrorBoundary>
+          <Suspense fallback={null}>
+            <TopPicks />
+          </Suspense>
+        </ErrorBoundary>
+      </div>
 
       <ul className="index-grid">
         <li className="index-cell is-plan">
@@ -141,14 +149,6 @@ export default function HomePage() {
           <p>Three measured questions, with every source still attached.</p>
         </li>
       </ul>
-
-      <div className="index-rankings">
-        <ErrorBoundary>
-          <Suspense fallback={null}>
-            <TopPicks />
-          </Suspense>
-        </ErrorBoundary>
-      </div>
     </section>
   );
 }

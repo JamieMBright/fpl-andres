@@ -189,6 +189,23 @@ describe("team analysis entry", () => {
     ).not.toBeInTheDocument();
   });
 
+  it("puts the top-player rankings before the main route blocks", async () => {
+    renderApplication();
+
+    const rankings = (
+      await screen.findByRole("heading", {
+        name: "Top players for the next five gameweeks",
+      })
+    ).closest(".index-rankings");
+    const menu = document.querySelector(".index-grid");
+
+    expect(rankings).not.toBeNull();
+    expect(menu).not.toBeNull();
+    expect(rankings?.compareDocumentPosition(menu ?? document.body) ?? 0).toBe(
+      Node.DOCUMENT_POSITION_FOLLOWING,
+    );
+  });
+
   it("puts the product story and private contact form on About", async () => {
     renderApplication("/about");
 

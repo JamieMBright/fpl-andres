@@ -751,9 +751,9 @@ h1[tabindex="-1"]:focus-visible {
 }
 
 .index-rankings {
-  margin-top: clamp(38px, 5vw, 64px);
-  padding-top: clamp(28px, 4vw, 44px);
-  border-top: 4px solid var(--ink);
+  margin-bottom: clamp(38px, 5vw, 64px);
+  padding-bottom: clamp(28px, 4vw, 44px);
+  border-bottom: 4px solid var(--ink);
 }
 
 .index-rankings .top-picks > h2 {
