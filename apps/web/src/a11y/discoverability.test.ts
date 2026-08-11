@@ -34,6 +34,7 @@ const PUBLIC_PATHS = [
   "/calibration",
   "/fpl500",
   "/faq",
+  "/about",
   "/privacy",
 ] as const;
 

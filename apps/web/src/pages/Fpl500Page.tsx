@@ -11,7 +11,7 @@ export default function Fpl500Page() {
   return (
     <section className="text-page fpl500-page">
       <p className="eyebrow">The cohort</p>
-      <RouteHeading>Five hundred managers worth following.</RouteHeading>
+      <RouteHeading>FPL500</RouteHeading>
       <p className="faq-lede">Determined statistically, not by perception.</p>
       <Fpl500Playbook />
     </section>

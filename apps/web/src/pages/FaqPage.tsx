@@ -266,7 +266,7 @@ export default function FaqPage() {
   return (
     <section className="text-page faq-page">
       <p className="eyebrow">Questions</p>
-      <RouteHeading>Questions and definitions.</RouteHeading>
+      <RouteHeading>Questions</RouteHeading>
 
       <p className="faq-lede">
         This is the long version. Everywhere else on the site the words are kept

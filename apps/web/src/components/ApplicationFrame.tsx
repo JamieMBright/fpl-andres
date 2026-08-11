@@ -1,4 +1,4 @@
-import { Link, Outlet } from "react-router-dom";
+import { Link, NavLink, Outlet } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 import { FIRST_DEADLINE_2026_27 } from "../public-ids";
@@ -112,15 +112,21 @@ export function ApplicationFrame() {
         </div>
       </header>
       <nav aria-label="Primary navigation" className="teletext-strip">
-        <Link to="/plan">Plan</Link>
-        <Link to="/players">Players</Link>
-        <Link to="/analysis">Analysis</Link>
-        <Link to="/fpl500">FPL500</Link>
-        <Link to="/methodology">Method</Link>
-        <Link to="/calibration">Calibration</Link>
-        <Link className="teletext-strip-half" to="/faq">
+        <NavLink to="/plan">Plan</NavLink>
+        <NavLink to="/players">Players</NavLink>
+        <NavLink to="/analysis">Analysis</NavLink>
+        <NavLink to="/fpl500">FPL500</NavLink>
+        <NavLink to="/methodology">Method</NavLink>
+        <NavLink to="/calibration">Calibration</NavLink>
+        <NavLink className="teletext-strip-half" to="/faq">
           FAQ
-        </Link>
+        </NavLink>
+        <NavLink
+          className="teletext-strip-half teletext-strip-about"
+          to="/about"
+        >
+          About
+        </NavLink>
       </nav>
       <main id="main-content" tabIndex={-1}>
         <Outlet />
@@ -149,6 +155,9 @@ export function ApplicationFrame() {
             </li>
             <li>
               <Link to="/faq">FAQ</Link>
+            </li>
+            <li>
+              <Link to="/about">About</Link>
             </li>
             <li>
               <Link to="/privacy">Privacy</Link>

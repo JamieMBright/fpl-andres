@@ -917,7 +917,7 @@ export default function SeasonPlanPage() {
         02 / THE SEASON
       </div>
 
-      <RouteHeading>Every gameweek to the end.</RouteHeading>
+      <RouteHeading>Season Plan</RouteHeading>
 
       <TeamEntry team={team} params={params} onChange={setParams} />
 

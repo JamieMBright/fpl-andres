@@ -155,11 +155,15 @@ table that can reach the ceiling is `backtest_predictions`, because a sweep
 writes a row per player per gameweek per candidate; prune it by run, oldest
 first, if it ever does.
 
-Analysis requests and declared transfers are personal data and are the
-exception. Request diagnostics are deleted after 30 days. Declared-transfer
-copies are deleted seven days after the relevant deadline and never kept beyond
-30 days. They are never exported or read back into a recommendation. The
-`prune-private-state.yml` workflow enforces those limits and refuses an
+Analysis requests, declared transfers, contact messages and reply addresses are
+personal data and are the exception. Request diagnostics are deleted after 30
+days. Declared-transfer copies are deleted seven days after the relevant
+deadline and never kept beyond 30 days. Contact content is never written to
+Supabase: it passes through Resend to the private project mailbox, whose copy is
+deleted within 30 days after the conversation closes. Resend retains its
+processor copy under its own service terms unless content storage has been
+disabled. Personal data is never exported for analysis or marketing. The
+`prune-private-state.yml` workflow enforces the database limits and refuses an
 unexpectedly large deletion batch; `/privacy` exposes the local-data controls.
 
 ## Operations

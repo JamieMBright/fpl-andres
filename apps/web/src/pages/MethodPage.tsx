@@ -12,7 +12,7 @@ export default function MethodPage() {
   return (
     <section className="text-page method-page">
       <p className="eyebrow">Method</p>
-      <RouteHeading>How the projection is built.</RouteHeading>
+      <RouteHeading>Method</RouteHeading>
       <MethodFlow />
       <Methodology />
     </section>

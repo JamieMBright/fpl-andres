@@ -68,7 +68,7 @@ describe("team analysis entry", () => {
 
       expect(
         screen.getByRole("heading", {
-          name: "Top players for the next five gameweeks.",
+          name: "Top Picks",
         }),
       ).not.toHaveFocus();
       await user.type(screen.getByLabelText("Your FPL team ID"), "123456");
@@ -78,7 +78,7 @@ describe("team analysis entry", () => {
 
       const analysisHeading = await screen.findByRole(
         "heading",
-        { name: "Every gameweek to the end." },
+        { name: "Season Plan" },
         { timeout: SETTLE },
       );
       expect(analysisHeading).toBeInTheDocument();
@@ -179,6 +179,42 @@ describe("team analysis entry", () => {
       screen.queryByText(/captain and bench calls/i),
     ).not.toBeInTheDocument();
     expect(screen.queryByText(/chip roadmap/i)).not.toBeInTheDocument();
+  });
+
+  it("links to About without printing the About page on Home", () => {
+    renderApplication();
+
+    expect(
+      screen.getByRole("navigation", { name: "Primary navigation" }),
+    ).toContainElement(screen.getAllByRole("link", { name: "About" })[0]!);
+    expect(
+      screen.queryByRole("region", { name: "About FPL Andres" }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(/Every recommendation is scored against/i),
+    ).not.toBeInTheDocument();
+  });
+
+  it("puts the product story and private contact form on About", async () => {
+    renderApplication("/about");
+
+    expect(
+      await screen.findByRole("heading", { name: "About FPL Andres" }),
+    ).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "What I do" })).toBeVisible();
+    expect(screen.getByRole("heading", { name: "Why I do it" })).toBeVisible();
+    expect(
+      screen.getByRole("heading", { name: "Where Andres comes from" }),
+    ).toBeVisible();
+    expect(screen.getByLabelText("Your email")).toHaveAttribute(
+      "type",
+      "email",
+    );
+    expect(screen.getByLabelText("Message")).toBeVisible();
+    expect(screen.getByRole("button", { name: "Send message" })).toBeVisible();
+    expect(document.body.textContent).not.toContain(
+      "fpl.andres.socials@gmail.com",
+    );
   });
 
   it("explains why a malformed team ID cannot be analysed", async () => {
@@ -400,7 +436,7 @@ describe("team analysis entry", () => {
     renderApplication("/not-a-real-page");
 
     expect(
-      screen.getByRole("heading", { name: "Nothing here." }),
+      screen.getByRole("heading", { name: "Page Not Found" }),
     ).toBeVisible();
     expect(
       document.querySelector<HTMLMetaElement>('meta[name="robots"]')?.content,
@@ -570,7 +606,7 @@ describe("team analysis entry", () => {
     // to force a fresh mount rather than reusing the previous team's.
     renderApplication(`/plan?team=${String(teamB)}`);
 
-    await screen.findByRole("heading", { name: "Every gameweek to the end." });
+    await screen.findByRole("heading", { name: "Season Plan" });
     // A's cached snapshot must not be presented as B's. Its squad value is the
     // cheapest thing to look for that only A's snapshot would render.
     expect(

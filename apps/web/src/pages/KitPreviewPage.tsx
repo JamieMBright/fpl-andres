@@ -44,7 +44,7 @@ export default function KitPreviewPage() {
         QA / KITS
       </div>
 
-      <RouteHeading>Twenty kits, eight colours.</RouteHeading>
+      <RouteHeading>Kits</RouteHeading>
 
       <p className="lede">
         Teletext had eight colours and no anti-aliasing. Every shirt below is

@@ -1,5 +1,6 @@
 import react from "@vitejs/plugin-react";
 import { availableParallelism } from "node:os";
+import { loadEnv } from "vite";
 import { defineConfig, type Plugin } from "vitest/config";
 
 type RouteHandler = (path: string, method: string) => Promise<Response>;
@@ -13,14 +14,40 @@ type RouteHandler = (path: string, method: string) => Promise<Response>;
  * importing them from the config itself fails, because the config loader
  * cannot resolve the TypeScript workspace packages they depend on.
  */
-function apiRoutes(): Plugin {
+function apiRoutes(contactEnv: Record<string, string>): Plugin {
   return {
     name: "fpl-andres-dev-api",
     configureServer(server) {
       async function handlerFor(
         url: string,
+        method: string,
+        body?: string,
       ): Promise<Promise<Response> | null> {
         const path = new URL(url, "http://localhost").pathname;
+        if (path === "/api/contact") {
+          const module = (await server.ssrLoadModule(
+            "/../../api/_lib/contact-response.ts",
+          )) as {
+            createContactResponse: (
+              request: Request,
+              options: {
+                clientKey: string;
+                env: Record<string, string>;
+              },
+            ) => Promise<Response>;
+          };
+          return module.createContactResponse(
+            new Request(new URL(url, "http://localhost:5173"), {
+              method,
+              headers: {
+                "Content-Type": "application/json",
+                Origin: "http://localhost:5173",
+              },
+              ...(body === undefined ? {} : { body }),
+            }),
+            { clientKey: "local", env: contactEnv },
+          );
+        }
         const team = /^\/api\/team\/(\d+)\/?$/.exec(path);
         if (team) {
           const module = (await server.ssrLoadModule(
@@ -31,13 +58,13 @@ function apiRoutes(): Plugin {
               method: string,
             ) => Promise<Response>;
           };
-          return module.createTeamPublicStateResponse(Number(team[1]), "GET");
+          return module.createTeamPublicStateResponse(Number(team[1]), method);
         }
         if (path.startsWith("/api/fpl/")) {
           const module = (await server.ssrLoadModule(
             "/../../api/_lib/fpl-proxy.ts",
           )) as { createFplProxyResponse: RouteHandler };
-          return module.createFplProxyResponse(path, "GET");
+          return module.createFplProxyResponse(path, method);
         }
         // Hand-rolled rather than loaded: `api/health.ts` is a Vercel handler
         // that writes to a response object, not one that returns a `Response`,
@@ -55,9 +82,24 @@ function apiRoutes(): Plugin {
 
       server.middlewares.use((request, response, next) => {
         const url = request.url ?? "";
-        if (!url.startsWith("/api/") || request.method !== "GET") return next();
+        const method = request.method ?? "GET";
+        if (!url.startsWith("/api/")) return next();
 
-        void handlerFor(url)
+        const readBody = async (): Promise<string | undefined> => {
+          if (method === "GET" || method === "HEAD") return undefined;
+          const chunks: Buffer[] = [];
+          let bytes = 0;
+          for await (const chunk of request) {
+            const buffer = Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk);
+            bytes += buffer.length;
+            if (bytes > 20 * 1024) throw new Error("request body too large");
+            chunks.push(buffer);
+          }
+          return Buffer.concat(chunks).toString("utf8");
+        };
+
+        void readBody()
+          .then((body) => handlerFor(url, method, body))
           .then(async (pending) => {
             if (!pending) return next();
             const result = await pending;
@@ -103,34 +145,42 @@ const NEVER = ["**/node_modules/**", "**/dist/**", "**/test-results/**"];
  */
 const WORKERS = Math.max(2, Math.min(8, availableParallelism() - 1));
 
-export default defineConfig({
-  plugins: [react(), apiRoutes()],
-  test: {
-    maxWorkers: WORKERS,
-    projects: [
-      {
-        extends: true,
-        test: {
-          name: "dom",
-          environment: "jsdom",
-          include: DOM_TESTS,
-          exclude: NEVER,
-          setupFiles: "./src/test/setup.ts",
-          // A browser journey is not a unit test. None of these assert timing,
-          // and the five-second default measures how busy the runner is rather
-          // than whether the page works.
-          testTimeout: 60_000,
+export default defineConfig(({ mode }) => {
+  const loaded = loadEnv(mode, "../..", "");
+  const contactEnv = Object.fromEntries(
+    ["RESEND_API_KEY", "CONTACT_FROM_EMAIL", "CONTACT_TO_EMAIL"].flatMap(
+      (name) => (loaded[name] === undefined ? [] : [[name, loaded[name]]]),
+    ),
+  );
+  return {
+    plugins: [react(), apiRoutes(contactEnv)],
+    test: {
+      maxWorkers: WORKERS,
+      projects: [
+        {
+          extends: true,
+          test: {
+            name: "dom",
+            environment: "jsdom",
+            include: DOM_TESTS,
+            exclude: NEVER,
+            setupFiles: "./src/test/setup.ts",
+            // A browser journey is not a unit test. None of these assert timing,
+            // and the five-second default measures how busy the runner is rather
+            // than whether the page works.
+            testTimeout: 60_000,
+          },
         },
-      },
-      {
-        extends: true,
-        test: {
-          name: "node",
-          environment: "node",
-          include: ["src/**/*.test.ts"],
-          exclude: [...NEVER, ...DOM_TESTS],
+        {
+          extends: true,
+          test: {
+            name: "node",
+            environment: "node",
+            include: ["src/**/*.test.ts"],
+            exclude: [...NEVER, ...DOM_TESTS],
+          },
         },
-      },
-    ],
-  },
+      ],
+    },
+  };
 });

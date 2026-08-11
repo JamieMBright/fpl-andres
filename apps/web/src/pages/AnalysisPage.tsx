@@ -173,7 +173,7 @@ export default function AnalysisPage() {
   return (
     <section className="text-page analysis-page">
       <p className="eyebrow">Football analytics</p>
-      <RouteHeading>Find the best player, statistically speaking.</RouteHeading>
+      <RouteHeading>Analysis</RouteHeading>
 
       {failed ? (
         <p className="analysis-failure" role="status">

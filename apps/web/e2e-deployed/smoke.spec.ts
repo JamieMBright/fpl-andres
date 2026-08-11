@@ -80,6 +80,7 @@ test("every function named in vercel.json is reachable", async ({
     "api/fpl/*.ts": "/api/fpl/bootstrap-static/",
     "api/team/*.ts": "/api/team/1",
     "api/analysis-request.ts": "/api/analysis-request",
+    "api/contact.ts": "/api/contact",
   };
   const declared = Object.keys(config.functions ?? {});
   expect(
@@ -132,6 +133,7 @@ test("crawler files publish the canonical routes", async ({ request }) => {
   const xml = await sitemap.text();
   expect(xml).toContain("http://www.sitemaps.org/schemas/sitemap/0.9");
   expect(xml).toContain("https://fpl-andres.vercel.app/privacy");
+  expect(xml).toContain("https://fpl-andres.vercel.app/about");
   expect(xml).not.toContain("/team/");
   expect(xml).not.toContain("/kits");
 });

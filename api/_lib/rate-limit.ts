@@ -56,6 +56,12 @@ export const TEAM_STATE_POLICY: RateLimitPolicy = {
   global: 200,
 };
 
+/** Contact sends mail, so its abuse budget is deliberately much smaller. */
+export const CONTACT_POLICY: RateLimitPolicy = {
+  perClient: 3,
+  global: 30,
+};
+
 export type RateLimitDecision =
   | { allowed: true; remaining: number }
   | { allowed: true; remaining: number; degraded: "client_table_full" }

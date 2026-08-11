@@ -51,7 +51,7 @@ export default function PrivacyPage() {
   return (
     <section className="text-page privacy-page">
       <p className="eyebrow">Privacy and data</p>
-      <RouteHeading>Your team stays yours.</RouteHeading>
+      <RouteHeading>Privacy</RouteHeading>
       <p className="lede">
         There are no accounts, advertising cookies, behavioural profiles or
         visitor analytics. FPL Andres reads public FPL data and keeps the
@@ -94,6 +94,14 @@ export default function PrivacyPage() {
             public API. Fonts load from Google Fonts, and available player
             photographs load from the Premier League media host. No advertising
             or visitor analytics service receives an event from this site.
+          </p>
+          <p>
+            If you use the About page contact form, your reply address and
+            message pass through Resend and into the private project mailbox.
+            They are not written to Supabase or used for marketing. The project
+            mailbox copy is deleted within 30 days after the conversation
+            closes; Resend retains its processor copy under its own service
+            terms unless content storage has been disabled.
           </p>
         </section>
 

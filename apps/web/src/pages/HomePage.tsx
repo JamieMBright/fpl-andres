@@ -49,13 +49,15 @@ export default function HomePage() {
 
   return (
     <section className="index-page" aria-label="Index">
-      <RouteHeading>Top players for the next five gameweeks.</RouteHeading>
+      <RouteHeading>Top Picks</RouteHeading>
 
-      <ErrorBoundary>
-        <Suspense fallback={null}>
-          <TopPicks />
-        </Suspense>
-      </ErrorBoundary>
+      <div className="index-rankings">
+        <ErrorBoundary>
+          <Suspense fallback={null}>
+            <TopPicks />
+          </Suspense>
+        </ErrorBoundary>
+      </div>
 
       <ul className="index-grid">
         <li className="index-cell is-plan">
@@ -136,20 +138,6 @@ export default function HomePage() {
           <p>Where I win, where I lose. Scored four seasons back.</p>
         </li>
       </ul>
-
-      <section aria-labelledby="about-fpl-andres" className="about-panel">
-        <h2 id="about-fpl-andres">About FPL Andres</h2>
-        <p>
-          An analytics-first Fantasy Premier League stats explorer and team
-          optimiser. Every player is priced across fourteen scoring routes,
-          plotted on any two statistics, and solved into a gameweek 1–38 plan
-          built from your own fifteen.
-        </p>
-        <p>
-          Every recommendation is scored against what happened across four
-          seasons, with the evidence and the misses left visible.
-        </p>
-      </section>
     </section>
   );
 }

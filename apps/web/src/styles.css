@@ -610,12 +610,30 @@ h1[tabindex="-1"]:focus-visible {
 .analysis-page h1,
 .text-page h1,
 .season-plan h1 {
-  max-width: 720px;
+  display: block;
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 0 18px;
+  padding: 4px 10px 5px;
+  overflow: hidden;
+  background: var(--ink);
+  color: var(--paper);
   font-family: var(--fa-body);
-  font-size: clamp(24px, 2.8vw, 34px);
+  font-size: 24px;
   font-weight: 700;
-  letter-spacing: 0.01em;
-  line-height: 1.2;
+  letter-spacing: 0;
+  line-height: 1.1;
+  text-overflow: ellipsis;
+  text-wrap: nowrap;
+  white-space: nowrap;
+}
+
+@media (width <= 640px) {
+  .analysis-page h1,
+  .text-page h1,
+  .season-plan h1 {
+    font-size: 20px;
+  }
 }
 
 .privacy-page > .lede,
@@ -677,8 +695,17 @@ h1[tabindex="-1"]:focus-visible {
 }
 
 .index-page h1 {
-  max-width: 860px;
-  margin-bottom: 12px;
+  display: block;
+  width: fit-content;
+  margin: 0 0 18px;
+  padding: 4px 10px 5px;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--fa-body);
+  font-size: 24px;
+  letter-spacing: 0;
+  line-height: 1.1;
+  text-wrap: nowrap;
 }
 
 /* One column, two, or four -- never three. The first row is Plan and the team
@@ -723,29 +750,21 @@ h1[tabindex="-1"]:focus-visible {
   color: var(--fa-gk-black);
 }
 
-.about-panel {
-  max-width: 74ch;
-  margin: clamp(28px, 4vw, 44px) 0 0;
-  padding: 20px 24px 22px;
-  border-left: 4px solid var(--fa-gk-lime);
-  background: var(--fa-gk-black);
-  color: var(--fa-gk-white);
+.index-rankings {
+  margin-bottom: clamp(38px, 5vw, 64px);
+  padding-bottom: clamp(28px, 4vw, 44px);
+  border-bottom: 4px solid var(--ink);
 }
 
-.about-panel h2 {
-  margin: 0 0 8px;
-  font-size: 18px;
-}
-
-.about-panel p {
-  max-width: 66ch;
-  margin: 0 0 8px;
-  color: rgb(255 255 255 / 82%);
-  line-height: 1.6;
-}
-
-.about-panel p:last-child {
-  margin-bottom: 0;
+.index-rankings .top-picks > h2 {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
 .index-cell h2 {
@@ -4111,6 +4130,7 @@ h1[tabindex="-1"]:focus-visible {
 .teletext-strip span,
 .teletext-strip a {
   flex: 1 1 0;
+  min-width: 0;
   padding: 8px 4px;
   color: var(--fa-gk-black);
   text-align: center;
@@ -4164,10 +4184,134 @@ h1[tabindex="-1"]:focus-visible {
   background: var(--fa-signal-red);
 }
 
+.teletext-strip > .teletext-strip-about {
+  color: var(--fa-gk-white);
+  background: var(--fa-gk-black);
+}
+
 @media (width <= 640px) {
-  .teletext-strip span:nth-child(n + 5) {
+  .teletext-strip > a:nth-child(4),
+  .teletext-strip > a:nth-child(5),
+  .teletext-strip > a:nth-child(6) {
     display: none;
   }
+}
+
+.about-page {
+  max-width: 920px;
+}
+
+.about-ledger {
+  margin-top: 26px;
+  border-top: 3px solid var(--field-green);
+}
+
+.about-ledger > section {
+  display: grid;
+  gap: 18px;
+  padding: 24px 0 28px;
+  border-bottom: 1px solid var(--rule);
+  grid-template-columns: 42px minmax(0, 1fr);
+}
+
+.about-ledger-number {
+  margin: 1px 0 0;
+  color: var(--field-green);
+  font-family: var(--fa-body);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.about-ledger h2 {
+  margin: 0 0 10px;
+  color: var(--field-green);
+  font-family: var(--fa-body);
+  font-size: 16px;
+  letter-spacing: 0;
+}
+
+.about-ledger p {
+  max-width: 68ch;
+  margin: 0 0 12px;
+  line-height: 1.65;
+}
+
+.contact-form {
+  position: relative;
+  display: grid;
+  gap: 14px;
+  max-width: 620px;
+  margin-top: 20px;
+  padding: 18px;
+  border: 2px solid var(--rule);
+  background: var(--paper-deep);
+}
+
+.contact-field {
+  display: grid;
+  gap: 6px;
+}
+
+.contact-field label,
+.contact-field > span {
+  font-family: var(--fa-body);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.contact-field > span {
+  color: var(--ink-soft);
+  font-size: 10px;
+  font-weight: 400;
+}
+
+.contact-form input,
+.contact-form textarea {
+  width: 100%;
+  padding: 10px 11px;
+  border: 2px solid var(--rule);
+  border-radius: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font: inherit;
+}
+
+.contact-form textarea {
+  resize: vertical;
+}
+
+.contact-form input:focus-visible,
+.contact-form textarea:focus-visible {
+  outline: 3px solid var(--signal-blue);
+  outline-offset: 2px;
+}
+
+.contact-form [aria-invalid="true"] {
+  border-color: var(--danger);
+}
+
+.contact-form button {
+  justify-self: start;
+  min-height: 42px;
+}
+
+.contact-honeypot {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+.contact-status {
+  min-height: 1.5em;
+  margin: 0;
+  color: var(--ink-soft);
+}
+
+.contact-privacy {
+  font-size: 12px;
+  color: var(--ink-soft);
 }
 
 /* The cohort ranking, and the fund it is not yet. Prose is measured because

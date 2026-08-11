@@ -39,8 +39,8 @@ will be told rather than left waiting.
 
 In scope:
 
-- The serverless functions under `api/` — `/api/health`, `/api/fpl/*` and
-  `/api/team/:id`. These are unauthenticated proxies to the public FPL API.
+- The serverless functions under `api/` — `/api/health`, `/api/fpl/*`,
+  `/api/team/:id`, `/api/analysis-request` and `/api/contact`.
 - The web application under `apps/web/`.
 - The Python package under `python/fpl_andres/`, including credential handling
   and anything written to Supabase.
@@ -94,6 +94,9 @@ Stated so a reporter can tell a design decision from an oversight:
   refused before any upstream request is made.
 - **Caller-supplied workflow metadata is redacted** by name and by shape before
   it is persisted, so a credential pasted into a parameter is not stored.
+- **Contact delivery is server-only.** The destination and Resend credential
+  never enter browser code or responses. Submitted addresses and messages are
+  not logged or stored in Supabase.
 
 ## Secret rotation
 
