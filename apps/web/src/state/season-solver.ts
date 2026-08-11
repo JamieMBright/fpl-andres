@@ -260,7 +260,7 @@ function lookaheadPoints(
  * useless for everyone who has not filled the corrections form, so the
  * assumption is made and named rather than made and hidden.
  */
-export type SolveAssumption = "free_transfers" | "selling_prices";
+export type SolveAssumption = "bank" | "free_transfers" | "selling_prices";
 
 export interface SolveStart {
   /** Element ids currently held, and what they would sell for. */
@@ -647,6 +647,7 @@ export function* solveSeason(
 
 export const SEASON_EVENTS = EVENTS;
 export const SEASON_PLAYERS = PLAYERS;
+export const SEASON_DEADLINES = DEADLINES;
 
 const BY_CODE = new Map(PLAYERS.map((player) => [player.code, player]));
 

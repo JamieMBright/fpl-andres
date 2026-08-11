@@ -30,17 +30,23 @@ describe("AnalysisResult", () => {
     expect(screen.queryByRole("button", { name: "Retry analysis" })).toBeNull();
   });
 
-  it("still offers a retry when the network is what failed", () => {
+  it("offers retry and a local squad builder when the network failed", () => {
     render(
-      <AnalysisResult
-        analysis={{ status: "error", reason: "network_error" }}
-        entryId={212_279}
-        onRetry={() => undefined}
-      />,
+      <MemoryRouter>
+        <AnalysisResult
+          analysis={{ status: "error", reason: "network_error" }}
+          entryId={212_279}
+          onRetry={() => undefined}
+        />
+      </MemoryRouter>,
     );
 
     expect(
       screen.getByRole("button", { name: "Retry analysis" }),
     ).toBeVisible();
+    expect(
+      screen.getByRole("heading", { name: /build.*fifteen/i }),
+    ).toBeVisible();
+    expect(screen.getByText(/not your team/i)).toBeVisible();
   });
 });

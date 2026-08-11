@@ -80,6 +80,10 @@ export type SquadValidation =
   | { valid: true; summary: DeclaredSquadSummary }
   | { valid: false; problems: string[] };
 
+interface SquadValidationOptions {
+  enforceOpeningBudget?: boolean;
+}
+
 export function declaredSquadStorageKey(
   entryId: number,
   event: number,
@@ -116,6 +120,7 @@ export interface RosterPlayer {
 export function validateDeclaredSquad(
   elementIds: readonly number[],
   roster: ReadonlyMap<number, RosterPlayer> = PLAYERS_BY_ELEMENT_ID,
+  { enforceOpeningBudget = true }: SquadValidationOptions = {},
 ): SquadValidation {
   const problems: string[] = [];
 
@@ -166,7 +171,7 @@ export function validateDeclaredSquad(
     0,
   );
   const bankTenths = SQUAD_BUDGET_TENTHS - spentTenths;
-  if (bankTenths < 0) {
+  if (enforceOpeningBudget && bankTenths < 0) {
     problems.push(
       `Over budget by ${(-bankTenths / 10).toFixed(1)}m of the 100.0m allowed.`,
     );
@@ -250,8 +255,9 @@ export function saveDeclaredSquad(
   elementIds: readonly number[],
   roster: ReadonlyMap<number, RosterPlayer> = PLAYERS_BY_ELEMENT_ID,
   now: () => Date = () => new Date(),
+  options: SquadValidationOptions = {},
 ): DeclaredSquad {
-  const validation = validateDeclaredSquad(elementIds, roster);
+  const validation = validateDeclaredSquad(elementIds, roster, options);
   if (!validation.valid) {
     throw new TypeError(validation.problems.join(" "));
   }

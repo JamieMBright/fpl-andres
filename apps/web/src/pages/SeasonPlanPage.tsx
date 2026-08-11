@@ -1147,7 +1147,8 @@ export default function SeasonPlanPage() {
           <>
             {live && live.assumed.length > 0 ? (
               <p className="plan-assumed" role="status">
-                <strong>Two things FPL will not tell me.</strong>{" "}
+                <strong>Private state FPL will not tell me.</strong>{" "}
+                {live.assumed.includes("bank") ? "Bank — assumed zero. " : ""}
                 {live.assumed.includes("free_transfers")
                   ? "Free transfers held \u2014 assumed one. "
                   : ""}
@@ -1155,11 +1156,11 @@ export default function SeasonPlanPage() {
                   ? "What you paid, so risers are priced at today's list. "
                   : ""}
                 Correct them in step one.
-                <InfoMarker label="the two private numbers">
-                  Both are private to your account, so no public endpoint
+                <InfoMarker label="the private planning numbers">
+                  These are private to your account, so no public endpoint
                   carries them. A selling price is buy price plus half the rise,
-                  which changes what a transfer can afford. Correcting either
-                  re-solves the whole season on the real numbers.
+                  which changes what a transfer can afford. Correcting any of
+                  them re-solves the whole season on the real numbers.
                 </InfoMarker>
               </p>
             ) : null}

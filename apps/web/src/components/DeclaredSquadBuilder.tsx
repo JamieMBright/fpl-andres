@@ -484,7 +484,9 @@ export function DeclaredSquadBuilder({
     .filter((elementId) => Number.isInteger(elementId) && elementId > 0);
   const complete = chosen.length === 15;
   const validation: SquadValidation | null = complete
-    ? validateDeclaredSquad(chosen, roster)
+    ? validateDeclaredSquad(chosen, roster, {
+        enforceOpeningBudget: event === 1,
+      })
     : null;
 
   const spentTenths = chosen.reduce(
@@ -504,7 +506,15 @@ export function DeclaredSquadBuilder({
   const lockIn = () => {
     if (!validation?.valid) return;
     try {
-      saveDeclaredSquad(window.localStorage, entryId, event, chosen, roster);
+      saveDeclaredSquad(
+        window.localStorage,
+        entryId,
+        event,
+        chosen,
+        roster,
+        () => new Date(),
+        { enforceOpeningBudget: event === 1 },
+      );
       // Remembered so the plan page knows whose season to solve without the
       // team id having to be carried in every link.
       window.localStorage.setItem(LAST_TEAM_KEY, String(entryId));
@@ -547,7 +557,7 @@ export function DeclaredSquadBuilder({
       <div className="dossier-heading dossier-heading-compact">
         <div>
           <p className="eyebrow">Your claim, not FPL&rsquo;s record</p>
-          <h2 id="declared-squad-title">Build your gameweek 1 fifteen</h2>
+          <h2 id="declared-squad-title">Build your gameweek {event} fifteen</h2>
         </div>
         <span className="mono">
           {pounds(spentTenths)} of {pounds(SQUAD_BUDGET_TENTHS)}
@@ -555,12 +565,12 @@ export function DeclaredSquadBuilder({
       </div>
 
       <p>
-        Name your fifteen and I&rsquo;ll plan the season from it. Stays in this
+        Name your current fifteen and I&rsquo;ll plan from it. Stays in this
         browser.
         <InfoMarker label="why you have to name it">
-          FPL keeps every squad private until the first deadline, so there is
-          nothing public to read yet. Your picks are checked against the real
-          rules and, once legal, treated as locked in for gameweek one.
+          {event === 1
+            ? "FPL keeps every squad private until the first deadline, so there is nothing public to read yet."
+            : "FPL is not answering, so only you can state what the public endpoint would have returned."}
         </InfoMarker>
       </p>
 

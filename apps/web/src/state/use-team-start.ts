@@ -1,7 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
 
 import type { SolveAssumption, SolveStart } from "./season-solver";
-import { PLAYERS_BY_ELEMENT_ID, startFromElementIds } from "./season-solver";
+import {
+  PLAYERS_BY_ELEMENT_ID,
+  SEASON_DEADLINES,
+  SEASON_EVENTS,
+  startFromElementIds,
+} from "./season-solver";
 import {
   readDeclaredSquad,
   saveDeclaredSquad,
@@ -34,6 +39,13 @@ export const PRE_SEASON_EVENT = 1;
  * and the least dangerous guess: assuming more would plan moves he cannot make.
  */
 const DEFAULT_FREE_TRANSFERS = 1;
+
+export function currentPlanningEvent(now: Date = new Date()): number {
+  const index = SEASON_DEADLINES.findIndex(
+    (deadline) => new Date(deadline).getTime() > now.getTime(),
+  );
+  return SEASON_EVENTS[index < 0 ? SEASON_EVENTS.length - 1 : index] ?? 1;
+}
 
 /**
  * A manager's own squad, turned into somewhere for the solver to start.
@@ -136,13 +148,13 @@ export function useTeamPlan(
         settled = true;
         setResolved(result);
         if (result.status !== "ready" && result.status !== "stale") {
-          const preSeason =
-            result.status === "unavailable" &&
-            result.reason === "no_processed_event"
-              ? startFromDeclaredSquad(entryId, squadCode)
-              : null;
-          if (preSeason) {
-            setFetched(preSeason);
+          const declaredStart = startFromDeclaredSquad(
+            entryId,
+            currentPlanningEvent(),
+            squadCode,
+          );
+          if (declaredStart) {
+            setFetched(declaredStart);
             return;
           }
           setFetched({
@@ -278,14 +290,11 @@ export function useTeamStart(
  */
 function startFromDeclaredSquad(
   entryId: number,
+  event: number = PRE_SEASON_EVENT,
   squadCode: string | null = null,
 ): TeamStartStatus | null {
-  const stored = readDeclaredSquad(
-    window.localStorage,
-    entryId,
-    PRE_SEASON_EVENT,
-  );
-  const elementIds = stored?.elementIds ?? fromLink(entryId, squadCode);
+  const stored = readDeclaredSquad(window.localStorage, entryId, event);
+  const elementIds = stored?.elementIds ?? fromLink(entryId, event, squadCode);
   if (!elementIds) return null;
 
   // The declaration is made against the whole FPL list; the solver only holds
@@ -298,30 +307,39 @@ function startFromDeclaredSquad(
     return { status: "failed", reason: "squad_not_projectable" };
   }
 
-  const validation = validateDeclaredSquad(elementIds);
+  const opening = event === PRE_SEASON_EVENT;
+  const validation = validateDeclaredSquad(elementIds, PLAYERS_BY_ELEMENT_ID, {
+    enforceOpeningBudget: opening,
+  });
   if (!validation.valid) return null;
 
   const start = startFromElementIds(elementIds, {
-    bankTenths: SQUAD_BUDGET_TENTHS - validation.summary.spentTenths,
+    bankTenths: opening
+      ? SQUAD_BUDGET_TENTHS - validation.summary.spentTenths
+      : 0,
     // Gameweek one is squad selection, not a transfer window, and the solver
     // zeroes the allowance for the opener regardless.
-    availableFreeTransfers: 0,
-    fromEvent: PRE_SEASON_EVENT,
+    availableFreeTransfers: opening ? 0 : DEFAULT_FREE_TRANSFERS,
+    fromEvent: event,
     // He is buying at today's price this minute, so the list price IS his
     // purchase price. Nothing is assumed here, unlike a published squad whose
     // purchase prices FPL keeps private.
-    sellingPrices: new Map(
-      elementIds.map((elementId) => [
-        elementId,
-        PLAYERS_BY_ELEMENT_ID.get(elementId)?.priceTenths ?? 0,
-      ]),
-    ),
+    ...(opening
+      ? {
+          sellingPrices: new Map(
+            elementIds.map((elementId) => [
+              elementId,
+              PLAYERS_BY_ELEMENT_ID.get(elementId)?.priceTenths ?? 0,
+            ]),
+          ),
+        }
+      : { assumed: ["bank", "free_transfers"] as SolveAssumption[] }),
   });
   return start
     ? {
         status: "ready",
         start,
-        event: PRE_SEASON_EVENT,
+        event,
         declared: [],
         source: "declared",
       }
@@ -335,7 +353,11 @@ function startFromDeclaredSquad(
  * manager is looking at. Persisting is best effort: private browsing refuses
  * the write, and the link should still plan his season.
  */
-function fromLink(entryId: number, squadCode: string | null): number[] | null {
+function fromLink(
+  entryId: number,
+  event: number,
+  squadCode: string | null,
+): number[] | null {
   if (squadCode === null) return null;
   const elementIds = decodeSquad(squadCode);
   if (!elementIds) return null;
@@ -343,8 +365,11 @@ function fromLink(entryId: number, squadCode: string | null): number[] | null {
     saveDeclaredSquad(
       window.localStorage,
       entryId,
-      PRE_SEASON_EVENT,
+      event,
       elementIds,
+      PLAYERS_BY_ELEMENT_ID,
+      () => new Date(),
+      { enforceOpeningBudget: event === PRE_SEASON_EVENT },
     );
   } catch {
     // Storage full or blocked. The squad still plans; it just will not persist.

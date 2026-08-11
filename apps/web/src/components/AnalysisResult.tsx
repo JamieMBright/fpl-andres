@@ -7,6 +7,7 @@ import {
   staleReason,
   terminalStateMessage,
 } from "../state/team-analysis-messages";
+import { currentPlanningEvent } from "../state/use-team-start";
 import { DeclaredSquadBuilder } from "./DeclaredSquadBuilder";
 import { ManagerHistory } from "./ManagerHistory";
 import { OpeningSquad } from "./OpeningSquad";
@@ -86,6 +87,7 @@ export function AnalysisResult({
   }
 
   const message = terminalStateMessage(analysis);
+  const currentEvent = currentPlanningEvent();
   // The season has not started, so there is nothing a retry could reach. A
   // button that cannot work is worse than no button.
   const retryable = !(
@@ -119,10 +121,26 @@ export function AnalysisResult({
       </section>
       {analysis.status === "unavailable" &&
       analysis.reason === "no_processed_event" ? (
+        <ManagerHistory entryId={entryId} />
+      ) : null}
+      <section className="outage-squad" aria-labelledby="outage-squad-title">
+        <h2 className="visually-hidden" id="outage-squad-title">
+          Continue without FPL
+        </h2>
+        <DeclaredSquadBuilder
+          entryId={entryId}
+          event={currentEvent}
+          onDeclared={onDeclared}
+        />
+        <p className="plan-team-note">
+          <strong>Model opening plan, not your team.</strong> This is a
+          reference while no verified or manager-provided fifteen is available.
+        </p>
+        <OpeningSquad {...(currentEvent === 1 ? { entryId } : {})} />
+      </section>
+      {analysis.status === "unavailable" &&
+      analysis.reason === "no_processed_event" ? (
         <>
-          <ManagerHistory entryId={entryId} />
-          <DeclaredSquadBuilder entryId={entryId} onDeclared={onDeclared} />
-          <OpeningSquad entryId={entryId} />
           {/* Only while there is nothing to plan from. Once a fifteen is
               locked in the season below IS the transfer plan, and a panel
               saying "not yet" beside it contradicts the page. */}
