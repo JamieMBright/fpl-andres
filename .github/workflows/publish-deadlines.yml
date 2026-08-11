@@ -48,7 +48,7 @@ jobs:
 
       - name: Commit them
         run: |
-          path="data/cohort/deadlines.json"
+          path="apps/web/src/data/deadlines.json"
           npx --yes prettier@3 --write "$path"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"

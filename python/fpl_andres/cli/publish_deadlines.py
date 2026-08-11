@@ -25,7 +25,7 @@ from fpl_andres.jsonio import parse_json
 
 BOOTSTRAP = "https://fantasy.premierleague.com/api/bootstrap-static/"
 USER_AGENT = "fpl-andres/0.5 (+https://github.com/JamieMBright/fpl-andres)"
-DEFAULT_OUTPUT = Path("data/cohort/deadlines.json")
+DEFAULT_OUTPUT = Path("apps/web/src/data/deadlines.json")
 SCHEMA_VERSION = 1
 
 

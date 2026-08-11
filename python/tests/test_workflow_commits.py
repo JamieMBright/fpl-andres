@@ -153,3 +153,14 @@ def test_rank_sampler_keeps_raw_progress_out_of_model_validation() -> None:
     ):
         assert path in calibration
     assert 'git add -- "$path"' in calibration
+
+
+def test_deadlines_are_shipped_data_not_cohort_evidence() -> None:
+    publisher = (
+        Path(__file__).resolve().parents[1] / "fpl_andres" / "cli" / "publish_deadlines.py"
+    ).read_text(encoding="utf-8")
+    workflow = (WORKFLOWS / "publish-deadlines.yml").read_text(encoding="utf-8")
+
+    for text in (publisher, workflow):
+        assert "apps/web/src/data/deadlines.json" in text
+        assert "data/cohort/deadlines.json" not in text
