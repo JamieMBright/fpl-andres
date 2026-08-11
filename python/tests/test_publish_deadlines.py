@@ -93,6 +93,47 @@ class TestReadingTheBootstrap:
         with pytest.raises(SystemExit):
             publish_deadlines._events(["events"])
 
+    def test_the_global_fallback_keeps_only_browser_contract_fields(self) -> None:
+        bootstrap = {
+            "elements": [
+                {
+                    **{field: 0 for field in publish_deadlines._BOOTSTRAP_FIELDS["elements"]},
+                    "id": 1,
+                    "code": 2,
+                    "web_name": "Player",
+                    "status": "a",
+                    "squad_number": None,
+                    "extra_private_noise": "drop me",
+                }
+            ],
+            "element_types": [{"id": 1, "singular_name_short": "GKP"}],
+            "teams": [{"id": 1, "code": 3, "short_name": "ARS", "name": "Arsenal"}],
+            "events": [{"id": 1, "finished": False, "deadline_time": "2026-08-21T17:30:00Z"}],
+        }
+
+        artifact = publish_deadlines.global_payload(
+            bootstrap,
+            [{"event": 1, "team_h": 1, "team_a": 2, "kickoff_time": "drop me"}],
+            generated_at="2026-08-11T04:20:00Z",
+        )
+
+        element = artifact["bootstrap"]["elements"][0]  # type: ignore[index]
+        assert "extra_private_noise" not in element
+        assert artifact["fixtures"] == [{"event": 1, "team_h": 1, "team_a": 2}]
+
+    def test_the_global_fallback_refuses_a_partial_player_row(self) -> None:
+        with pytest.raises(ValueError, match="required field"):
+            publish_deadlines.global_payload(
+                {
+                    "elements": [{"id": 1}],
+                    "element_types": [],
+                    "teams": [],
+                    "events": [],
+                },
+                [],
+                generated_at="2026-08-11T04:20:00Z",
+            )
+
 
 class TestAskingTheCommittedFile:
     def _saved(self, tmp_path: Path) -> Path:

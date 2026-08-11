@@ -164,3 +164,4 @@ def test_deadlines_are_shipped_data_not_cohort_evidence() -> None:
     for text in (publisher, workflow):
         assert "apps/web/src/data/deadlines.json" in text
         assert "data/cohort/deadlines.json" not in text
+    assert "apps/web/public/fpl-global.json" in workflow
