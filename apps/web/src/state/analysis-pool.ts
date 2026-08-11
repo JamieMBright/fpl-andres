@@ -7,6 +7,7 @@ import {
 import { dedupedFetch } from "./deduped-fetch";
 import type { ScheduledFixture } from "./fixture-run";
 import { freshnessOf, LastGood, leastFresh, type Freshness } from "./freshness";
+import { fetchGlobalFplFallback } from "./global-fpl-fallback";
 import { retryingFetch } from "./retrying-fetch";
 import { readSeasonVintage, type SeasonVintage } from "./season-vintage";
 import understatArtifact from "../data/understat.json";
@@ -285,10 +286,36 @@ export function forgetLastGoodAnalysis(): void {
   lastGood.forget();
 }
 
-function fallbackOrFail(message: string, detail: string | null): AnalysisData {
+async function fallbackOrFail(
+  message: string,
+  detail: string | null,
+  fetchApi: typeof fetch,
+  signal?: AbortSignal,
+): Promise<AnalysisData> {
   const held = lastGood.recall();
   if (held) return { ...held.value, freshness: held.freshness };
-  throw new AnalysisPoolError("unreachable", message, detail);
+  try {
+    const fallback = await fetchGlobalFplFallback(fetchApi, signal);
+    const payload = fallback.bootstrap as {
+      teams: { id: number; code: number }[];
+    };
+    return {
+      pool: buildAnalysisPool(fallback.bootstrap),
+      fixtures: fallback.fixtures as ScheduledFixture[],
+      clubCodeByTeamId: new Map(
+        payload.teams.map((team) => [team.id, team.code]),
+      ),
+      freshness: fallback.freshness,
+    };
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      throw new AnalysisPoolError(
+        "source_contract_failed",
+        "the shipped player list did not match the expected shape",
+      );
+    }
+    throw new AnalysisPoolError("unreachable", message, detail);
+  }
 }
 
 export async function fetchAnalysisPool(
@@ -310,7 +337,12 @@ export async function fetchAnalysisPool(
   } catch (error) {
     if (error instanceof DOMException && error.name === "AbortError")
       throw error;
-    return fallbackOrFail("the player list could not be requested", null);
+    return fallbackOrFail(
+      "the player list could not be requested",
+      null,
+      fetchApi,
+      signal,
+    );
   }
 
   if (!bootstrap.ok) {
@@ -318,6 +350,8 @@ export async function fetchAnalysisPool(
     return fallbackOrFail(
       `FPL returned ${String(bootstrap.status)}`,
       `HTTP ${String(bootstrap.status)}${requestId ? ` \u00b7 ${requestId}` : ""}`,
+      fetchApi,
+      signal,
     );
   }
 
