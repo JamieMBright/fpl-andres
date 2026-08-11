@@ -183,6 +183,50 @@ describe("fetchPlayerPool", () => {
     expect(fallback.freshness.stale).toBe(true);
   });
 
+  it("uses the shipped global snapshot on a cold browser outage", async () => {
+    const capturedAt = new Date(Date.now() - 3_600_000).toISOString();
+    const fetchApi = vi.fn<typeof fetch>().mockImplementation((input) => {
+      if (String(input) === "/fpl-global.json") {
+        return Promise.resolve(
+          Response.json({
+            schemaVersion: 1,
+            generatedAt: capturedAt,
+            bootstrap: bootstrap(),
+            fixtures: [{ event: 1, team_h: 1, team_a: 2 }],
+          }),
+        );
+      }
+      return Promise.resolve(new Response("", { status: 503 }));
+    });
+
+    const fallback = await fetchPlayerPool(fetchApi);
+
+    expect(fallback.players).toHaveLength(2);
+    expect(fallback.fixtures).toHaveLength(1);
+    expect(fallback.freshness.stale).toBe(true);
+    expect(fallback.freshness.ageSeconds).toBeGreaterThanOrEqual(3_599);
+    expect(fetchApi).toHaveBeenCalledWith(
+      "/fpl-global.json",
+      expect.objectContaining({ headers: { Accept: "application/json" } }),
+    );
+  });
+
+  it("does not trust a malformed shipped fallback", async () => {
+    const fetchApi = vi
+      .fn<typeof fetch>()
+      .mockImplementation((input) =>
+        Promise.resolve(
+          String(input) === "/fpl-global.json"
+            ? Response.json({ schemaVersion: 1, generatedAt: "not-a-date" })
+            : new Response("", { status: 503 }),
+        ),
+      );
+
+    await expect(fetchPlayerPool(fetchApi)).rejects.toMatchObject({
+      reason: "source_contract_failed",
+    });
+  });
+
   it("carries the staleness the proxy declared", async () => {
     const fetchApi = vi.fn<typeof fetch>().mockImplementation((input) =>
       Promise.resolve(

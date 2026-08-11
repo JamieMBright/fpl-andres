@@ -9,6 +9,7 @@ import {
   type Freshness,
 } from "./freshness";
 import type { ScheduledFixture } from "./fixture-run";
+import { fetchGlobalFplFallback } from "./global-fpl-fallback";
 import { retryingFetch } from "./retrying-fetch";
 import { projectionFor, type PlayerProjection } from "./squad-projection";
 
@@ -215,10 +216,18 @@ export async function fetchPlayerPool(
   } catch (error) {
     if (error instanceof DOMException && error.name === "AbortError")
       throw error;
-    return fallbackOrFail("the player list could not be requested");
+    return fallbackOrFail(
+      "the player list could not be requested",
+      fetchApi,
+      signal,
+    );
   }
   if (!bootstrap.ok) {
-    return fallbackOrFail(`FPL returned ${String(bootstrap.status)}`);
+    return fallbackOrFail(
+      `FPL returned ${String(bootstrap.status)}`,
+      fetchApi,
+      signal,
+    );
   }
   try {
     // A missing fixture list costs the run column and nothing else, so it is
@@ -249,10 +258,29 @@ export async function fetchPlayerPool(
  * An older list, labelled, beats an empty page. Nothing at all is still an
  * error -- the reader is told, rather than shown a blank table.
  */
-function fallbackOrFail(message: string): PlayerPool {
+async function fallbackOrFail(
+  message: string,
+  fetchApi: typeof fetch,
+  signal?: AbortSignal,
+): Promise<PlayerPool> {
   const held = lastGood.recall();
   if (held) return { ...held.value, freshness: held.freshness };
-  throw new PlayerPoolError("unreachable", message);
+  try {
+    const fallback = await fetchGlobalFplFallback(fetchApi, signal);
+    return buildPlayerPool(
+      fallback.bootstrap,
+      fallback.fixtures,
+      fallback.freshness,
+    );
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      throw new PlayerPoolError(
+        "source_contract_failed",
+        "the shipped player list did not match the expected shape",
+      );
+    }
+    throw new PlayerPoolError("unreachable", message);
+  }
 }
 
 function round(value: number): number {
