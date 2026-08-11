@@ -1,6 +1,7 @@
 import { Navigate, useParams } from "react-router-dom";
 
 import { parseTeamId } from "../public-ids";
+import { useDocumentTitle } from "../state/use-document-title";
 
 /**
  * `/team/:id` was its own analysis page. Everything it showed now lives on the
@@ -10,6 +11,14 @@ import { parseTeamId } from "../public-ids";
 export default function TeamRedirect() {
   const { teamId } = useParams();
   const entryId = parseTeamId(teamId);
+  useDocumentTitle(
+    "Team link redirect",
+    "This old team link redirects to the current FPL Andres season plan.",
+    {
+      canonicalPath: null,
+      robots: "noindex, nofollow",
+    },
+  );
   return (
     <Navigate
       replace

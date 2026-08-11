@@ -6,6 +6,7 @@ export default function Fpl500Page() {
   useDocumentTitle(
     "FPL500",
     "The five hundred managers worth following, and the fund they have not yet been turned into.",
+    { canonicalPath: "/fpl500" },
   );
   return (
     <section className="text-page fpl500-page">

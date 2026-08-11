@@ -78,7 +78,9 @@ export function DeclaredTransferForm({
       <div className="scatter-controls-body">
         <p className="scatter-hint">
           The public squad is one deadline behind. Add a completed move here so
-          the solve starts from what you own now. It stays in this browser.
+          the solve starts from what you own now. The plan reads the copy in
+          this browser; a write-only server copy is kept for diagnostics and
+          automatically deleted.
         </p>
         <form className="plan-declared-form" onSubmit={submit}>
           <label htmlFor="declared-out">Out</label>

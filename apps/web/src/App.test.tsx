@@ -82,6 +82,9 @@ describe("team analysis entry", () => {
         { timeout: SETTLE },
       );
       expect(analysisHeading).toBeInTheDocument();
+      expect(
+        document.querySelector<HTMLLinkElement>('link[rel="canonical"]')?.href,
+      ).toBe("https://fpl-andres.vercel.app/plan");
       // The heading is in the document one commit before the effect that focuses
       // it has run. Asserting in the same tick passes alone and fails under a
       // loaded suite, which is a statement about the machine and not the page.
@@ -399,6 +402,10 @@ describe("team analysis entry", () => {
     expect(
       screen.getByRole("heading", { name: "Nothing here." }),
     ).toBeVisible();
+    expect(
+      document.querySelector<HTMLMetaElement>('meta[name="robots"]')?.content,
+    ).toBe("noindex, nofollow");
+    expect(document.querySelector('link[rel="canonical"]')).toBeNull();
     expect(
       screen.getByRole("link", { name: "Back to the Team ID" }),
     ).toHaveAttribute("href", "/");

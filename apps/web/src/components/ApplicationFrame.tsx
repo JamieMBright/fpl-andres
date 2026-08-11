@@ -151,6 +151,9 @@ export function ApplicationFrame() {
               <Link to="/faq">FAQ</Link>
             </li>
             <li>
+              <Link to="/privacy">Privacy</Link>
+            </li>
+            <li>
               <Link to="/kits">Kits</Link>
             </li>
           </ul>

@@ -220,6 +220,7 @@ def test_no_module_is_imported_only_by_its_own_tests() -> None:
         "publish_fpl500",
         "publish_projections",
         "publish_understat",
+        "prune_private_state",
         "publish_season_inputs",
         "publish_season_plan",
         "reconcile",

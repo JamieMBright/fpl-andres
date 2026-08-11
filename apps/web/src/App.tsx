@@ -22,6 +22,7 @@ const MethodPage = lazyRoute(() => import("./pages/MethodPage"));
 const PlayerPoolPage = lazyRoute(() => import("./pages/PlayerPoolPage"));
 const CalibrationPage = lazyRoute(() => import("./pages/CalibrationPage"));
 const FaqPage = lazyRoute(() => import("./pages/FaqPage"));
+const PrivacyPage = lazyRoute(() => import("./pages/PrivacyPage"));
 const SeasonPlanPage = lazyRoute(() => import("./pages/SeasonPlanPage"));
 const KitPreviewPage = lazyRoute(() => import("./pages/KitPreviewPage"));
 const AnalysisPage = lazyRoute(() => import("./pages/AnalysisPage"));
@@ -95,6 +96,14 @@ export const routes: RouteObject[] = [
         element: (
           <LazyRoute>
             <FaqPage />
+          </LazyRoute>
+        ),
+      },
+      {
+        path: "privacy",
+        element: (
+          <LazyRoute>
+            <PrivacyPage />
           </LazyRoute>
         ),
       },

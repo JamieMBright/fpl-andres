@@ -301,6 +301,52 @@ class SupabaseRestClient:
                 code=_sqlstate(response),
             )
 
+    def delete(self, table: str, *, filters: Mapping[str, str]) -> None:
+        """Delete only rows selected by explicit PostgREST filters.
+
+        PostgREST accepts an unfiltered DELETE when the caller bypasses RLS.
+        This client holds a service-role key, so requiring a filter here is the
+        last guard against turning a retention job into a table wipe.
+        """
+        if not filters:
+            raise ValueError("delete requires at least one filter")
+        response = self._send(
+            lambda: self._client.delete(
+                f"/{table}",
+                params=dict(filters),
+                headers={"Prefer": "return=minimal"},
+            )
+        )
+        if response.status_code >= 400:
+            raise SupabaseWriteError(
+                f"{table} delete failed with {response.status_code}: "
+                f"{_safe_detail(response, self._credentials.secret_key)}",
+                code=_sqlstate(response),
+            )
+
+    def count(self, table: str, *, filters: Mapping[str, str]) -> int:
+        """Count filtered rows exactly before a destructive operation."""
+        if not filters:
+            raise ValueError("count requires at least one filter")
+        response = self._send(
+            lambda: self._client.head(
+                f"/{table}",
+                params={"select": "id", **dict(filters)},
+                headers={"Prefer": "count=exact"},
+            )
+        )
+        if response.status_code >= 400:
+            raise SupabaseWriteError(
+                f"{table} count failed with {response.status_code}: "
+                f"{_safe_detail(response, self._credentials.secret_key)}",
+                code=_sqlstate(response),
+            )
+        content_range = response.headers.get("content-range", "")
+        total = content_range.rsplit("/", 1)[-1]
+        if not total.isdigit():
+            raise SupabaseWriteError(f"{table} count returned no exact Content-Range")
+        return int(total)
+
     def select(
         self,
         table: str,

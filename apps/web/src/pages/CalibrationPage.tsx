@@ -7,6 +7,7 @@ export default function CalibrationPage() {
   useDocumentTitle(
     "Calibration",
     "Every test run against completed seasons, including the ones the model loses.",
+    { canonicalPath: "/calibration" },
   );
   return (
     <section className="text-page validation-page">

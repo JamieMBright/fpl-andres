@@ -132,6 +132,36 @@ test("the accessibility scan is not vacuous", async ({ page }) => {
   );
 });
 
+test("privacy controls clear team data without clearing the kit", async ({
+  page,
+}) => {
+  await page.goto("/privacy");
+  await settle(page);
+  await page.evaluate(() => {
+    localStorage.setItem("fpl-andres:last-team", "212279");
+    localStorage.setItem("fpl-andres:theme", "light");
+  });
+
+  await page.getByRole("button", { name: "Clear Saved Team Data" }).click();
+  await expect(
+    page.getByRole("alertdialog", { name: "Clear Saved Team Data?" }),
+  ).toBeVisible();
+  await page.getByRole("button", { name: "Clear Team Data Now" }).click();
+
+  await expect(page.getByRole("status")).toContainText(
+    "Saved team data cleared",
+  );
+  expect(
+    await page.evaluate(() => ({
+      team: localStorage.getItem("fpl-andres:last-team"),
+      theme: localStorage.getItem("fpl-andres:theme"),
+    })),
+  ).toEqual({ team: null, theme: "light" });
+
+  const scan = await new AxeBuilder({ page }).withTags([...WCAG]).analyze();
+  expect(scan.violations).toEqual([]);
+});
+
 test("a phone gets a readable, tappable page that does not spill", async ({
   page,
 }) => {

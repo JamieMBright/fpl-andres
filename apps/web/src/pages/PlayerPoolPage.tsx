@@ -7,6 +7,7 @@ export default function PlayerPoolPage() {
   useDocumentTitle(
     "The player pool",
     "Every Fantasy Premier League player priced against their measured record from last season.",
+    { canonicalPath: "/players" },
   );
   return (
     <section className="text-page pool-page">

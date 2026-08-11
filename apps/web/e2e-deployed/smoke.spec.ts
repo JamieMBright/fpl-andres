@@ -119,3 +119,37 @@ test("the season plan renders its first gameweek", async ({ page }) => {
     timeout: 30_000,
   });
 });
+
+test("crawler files publish the canonical routes", async ({ request }) => {
+  const robots = await request.get("/robots.txt");
+  expect(robots.status()).toBe(200);
+  expect(await robots.text()).toContain(
+    "Sitemap: https://fpl-andres.vercel.app/sitemap.xml",
+  );
+
+  const sitemap = await request.get("/sitemap.xml");
+  expect(sitemap.status()).toBe(200);
+  const xml = await sitemap.text();
+  expect(xml).toContain("http://www.sitemaps.org/schemas/sitemap/0.9");
+  expect(xml).toContain("https://fpl-andres.vercel.app/privacy");
+  expect(xml).not.toContain("/team/");
+  expect(xml).not.toContain("/kits");
+});
+
+test("private and QA routes are excluded before JavaScript runs", async ({
+  request,
+}) => {
+  for (const path of ["/team/212279", "/kits", "/kits/"]) {
+    const response = await request.get(path);
+    expect(response.status()).toBe(200);
+    expect(response.headers()["x-robots-tag"]).toBe("noindex, nofollow");
+  }
+});
+
+test("the standard security contact is deployed", async ({ request }) => {
+  const response = await request.get("/.well-known/security.txt");
+  expect(response.status()).toBe(200);
+  expect(await response.text()).toContain(
+    "Contact: https://github.com/JamieMBright/fpl-andres/security/advisories/new",
+  );
+});

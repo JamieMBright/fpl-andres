@@ -8,6 +8,15 @@ The project follows Semantic Versioning once milestone tags begin.
 
 ### Fixed
 
+- Canonical URLs, route metadata, social sharing, sitemap coverage and crawler
+  exclusions now agree. Team-specific URLs canonicalise without the Team ID,
+  missing and QA routes are `noindex`, and a 1200×630 sharing card ships with
+  the page.
+- The analysis-request endpoint now rejects non-JSON, oversized and cross-origin
+  browser requests before rate limiting or database access.
+- Private diagnostic rows no longer outlive their purpose. A daily production
+  job deletes request diagnostics after 30 days and declared-transfer copies
+  seven days after their gameweek deadline, with a 30-day backstop.
 - The player pool's name column was crushed to nothing on a phone, leaving the
   header reading "PLAYERCLUB" and every row nameless. The shared table style
   pins the first column at 54px because in a squad table that column holds a
@@ -94,6 +103,11 @@ The project follows Semantic Versioning once milestone tags begin.
 
 ### Added
 
+- A privacy and data page states what stays in the browser, what reaches the
+  server and for how long, with a confirmed one-click reset that preserves the
+  selected kit and unrelated origin data. The standard
+  `/.well-known/security.txt` route publishes the existing private reporting
+  channel.
 - A scorecard: what was advised for a gameweek against what the manager
   actually did (`state/scorecard.ts`, `Scorecard`). The call is recorded before
   the deadline and never rewritten afterwards — the plan is re-solved on every

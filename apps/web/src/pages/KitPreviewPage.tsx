@@ -27,6 +27,7 @@ export default function KitPreviewPage() {
   useDocumentTitle(
     "Kit preview",
     "Every club shirt as a teletext block graphic, side by side.",
+    { canonicalPath: null, robots: "noindex, nofollow" },
   );
 
   const collisions = new Map<string, string[]>();

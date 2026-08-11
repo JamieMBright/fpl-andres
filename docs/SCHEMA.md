@@ -255,14 +255,14 @@ browser key cannot reach them.
 
 ### `analysis_requests`
 
-One row per plan generated for a manager, so a rate limit and a "you last looked
-at this on ..." line have something to read, and a bug report can be tied to the
-inputs that produced it.
+One short-lived diagnostic row when a manager declares a transfer. No product
+feature reads it back.
 
 - **Grain**: one request
 - **References**: `seasons`, `source_snapshots`
 - The `event` recorded is the gameweek planned **from**, which differs from the
   gameweek the request was made in either side of a deadline.
+- Deleted after 30 days by the private-state retention workflow.
 
 ### `declared_transfers`
 
@@ -276,6 +276,8 @@ recommends a transfer already made. The manager tells us instead.
   fourteen-player squad.
 - `superseded_at` is set once the public API catches up, so the override is not
   applied twice.
+- The server copy is diagnostic only. It is deleted seven days after the
+  relevant deadline and never kept beyond 30 days.
 
 ---
 

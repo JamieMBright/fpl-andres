@@ -20,7 +20,7 @@ import {
 } from "./_lib/supabase-write.js";
 
 /**
- * Record that a plan was generated, and any transfer a manager declares.
+ * Record a transfer declaration for short-lived operational diagnostics.
  *
  * Two things the site cannot learn by reading what FPL publishes. A manager's
  * picks for the coming gameweek are private until the deadline, so between a
@@ -32,7 +32,8 @@ import {
  * That matters because a Team ID is public and enumerable: if a declared
  * transfer fed the solve, anyone could poison anyone's plan by knowing their
  * number. As it stands the worst a forged row can do is make the owner's own
- * analytics wrong.
+ * diagnostics wrong. A scheduled job deletes the row seven days after its
+ * deadline, with a thirty-day absolute backstop.
  */
 
 const requestSchema = z.object({
@@ -53,6 +54,29 @@ const requestSchema = z.object({
 });
 
 const limiter = new RateLimiter(TEAM_STATE_POLICY);
+const MAX_BODY_BYTES = 4 * 1024;
+
+function firstHeader(value: string | string[] | undefined): string | undefined {
+  return Array.isArray(value) ? value[0] : value;
+}
+
+function isJsonMediaType(value: string | undefined): boolean {
+  return value?.split(";", 1)[0]?.trim().toLowerCase() === "application/json";
+}
+
+function hasAllowedOrigin(headers: VercelRequest["headers"]): boolean {
+  const origin = firstHeader(headers.origin);
+  if (origin === undefined) return false;
+
+  const host = firstHeader(headers["x-forwarded-host"]);
+  const protocol = firstHeader(headers["x-forwarded-proto"]);
+  if (!host || !protocol) return false;
+  try {
+    return new URL(origin).origin === `${protocol}://${host}`;
+  } catch {
+    return false;
+  }
+}
 
 export default async function analysisRequestHandler(
   request: VercelRequest,
@@ -64,6 +88,64 @@ export default async function analysisRequestHandler(
   if (request.method !== "POST") {
     response.setHeader("Allow", "POST");
     response.status(405).json({ error: "Use POST.", reason: "method" });
+    return;
+  }
+
+  if (!isJsonMediaType(firstHeader(request.headers["content-type"]))) {
+    response.status(415).json({
+      error: "Send a JSON request.",
+      reason: "unsupported_media_type",
+    });
+    return;
+  }
+
+  const rawLength = firstHeader(request.headers["content-length"]);
+  if (rawLength === undefined) {
+    response.status(411).json({
+      error: "Content-Length is required.",
+      reason: "length_required",
+    });
+    return;
+  }
+  const declaredLength = Number(rawLength);
+  if (!Number.isInteger(declaredLength) || declaredLength < 0) {
+    response.status(400).json({
+      error: "Content-Length is invalid.",
+      reason: "invalid_content_length",
+    });
+    return;
+  }
+  if (declaredLength > MAX_BODY_BYTES) {
+    response.status(413).json({
+      error: "The request is too large.",
+      reason: "payload_too_large",
+    });
+    return;
+  }
+
+  if (!hasAllowedOrigin(request.headers)) {
+    response.status(403).json({
+      error: "That origin is not allowed.",
+      reason: "origin",
+    });
+    return;
+  }
+
+  let measuredLength: number;
+  try {
+    measuredLength = Buffer.byteLength(JSON.stringify(request.body));
+  } catch {
+    response.status(400).json({
+      error: "That request cannot be read.",
+      reason: "invalid_request",
+    });
+    return;
+  }
+  if (measuredLength > MAX_BODY_BYTES) {
+    response.status(413).json({
+      error: "The request is too large.",
+      reason: "payload_too_large",
+    });
     return;
   }
 

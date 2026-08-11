@@ -14,6 +14,7 @@ inspectable.
 from __future__ import annotations
 
 import json
+from collections.abc import Mapping
 from typing import Any
 
 import httpx
@@ -32,14 +33,25 @@ SECRET = "sb_secret_" + "0" * 32
 class Recorder:
     """Captures every request and answers with a canned response."""
 
-    def __init__(self, status: int = 201, body: Any = None) -> None:
+    def __init__(
+        self,
+        status: int = 201,
+        body: Any = None,
+        headers: Mapping[str, str] | None = None,
+    ) -> None:
         self.requests: list[httpx.Request] = []
         self._status = status
         self._body = body if body is not None else []
+        self._headers = headers
 
     def __call__(self, request: httpx.Request) -> httpx.Response:
         self.requests.append(request)
-        return httpx.Response(self._status, json=self._body, request=request)
+        return httpx.Response(
+            self._status,
+            json=self._body,
+            headers=self._headers,
+            request=request,
+        )
 
     @property
     def only(self) -> httpx.Request:
@@ -183,6 +195,41 @@ def test_an_update_filters_rather_than_rewriting_the_table() -> None:
     assert recorder.only.method == "PATCH"
     assert recorder.only.url.params["id"] == "eq.7"
     assert "return=minimal" in recorder.prefer()
+
+
+def test_a_delete_filters_rather_than_clearing_the_table() -> None:
+    recorder = Recorder(status=204)
+
+    _client(recorder).delete(
+        "analysis_requests",
+        filters={"requested_at": "lt.2026-07-01T00:00:00Z"},
+    )
+
+    assert recorder.only.method == "DELETE"
+    assert recorder.only.url.params["requested_at"] == "lt.2026-07-01T00:00:00Z"
+    assert "return=minimal" in recorder.prefer()
+
+
+def test_a_delete_without_a_filter_is_refused_before_the_network() -> None:
+    recorder = Recorder(status=204)
+
+    with pytest.raises(ValueError, match="at least one filter"):
+        _client(recorder).delete("analysis_requests", filters={})
+
+    assert recorder.requests == []
+
+
+def test_an_exact_count_uses_head_and_reads_content_range() -> None:
+    recorder = Recorder(status=200, headers={"Content-Range": "0-24/357"})
+
+    count = _client(recorder).count(
+        "analysis_requests",
+        filters={"requested_at": "lt.2026-07-01T00:00:00Z"},
+    )
+
+    assert recorder.only.method == "HEAD"
+    assert recorder.only.headers["Prefer"] == "count=exact"
+    assert count == 357
 
 
 def test_a_select_sends_its_filters_and_ordering() -> None:

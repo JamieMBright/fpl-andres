@@ -50,6 +50,7 @@ export default function AnalysisPage() {
   useDocumentTitle(
     "Analysis",
     "Every Fantasy Premier League player on two axes you choose, measured on last season.",
+    { canonicalPath: "/analysis" },
   );
 
   const [searchParams, setSearchParams] = useSearchParams();

@@ -618,6 +618,40 @@ h1[tabindex="-1"]:focus-visible {
   line-height: 1.2;
 }
 
+.privacy-page > .lede,
+.privacy-sections {
+  max-width: 74ch;
+}
+
+.privacy-sections {
+  margin-top: 36px;
+  border-top: 3px solid var(--field-green);
+}
+
+.privacy-sections > section {
+  padding: 24px 0 28px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.privacy-sections h2 {
+  margin: 0 0 10px;
+  color: var(--field-green);
+  font-family: var(--fa-body);
+  font-size: 15px;
+  letter-spacing: 0;
+}
+
+.privacy-sections p {
+  margin: 0 0 12px;
+  line-height: 1.65;
+}
+
+.privacy-cleared {
+  margin-top: 16px !important;
+  color: var(--field-green);
+  font-weight: 700;
+}
+
 .evidence-banner {
   display: flex;
   gap: 12px;
@@ -3711,7 +3745,6 @@ h1[tabindex="-1"]:focus-visible {
 @media (prefers-reduced-motion: no-preference) {
   .input-command button,
   .site-header a,
-  .secondary-command,
   .source-trail summary,
   .correction-panel > summary,
   .primary-command,

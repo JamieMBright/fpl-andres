@@ -43,9 +43,11 @@ const ANSWERS: readonly Answer[] = [
   {
     q: "Does my squad get sent anywhere?",
     a: [
-      "No. The 38-gameweek solve runs in the browser, on the machine reading this page. A squad declared by hand, the bank, the free transfers and any corrections entered are held in that browser's own storage and are never uploaded.",
+      "The 38-gameweek solve runs in the browser, on the machine reading this page. A declared squad, bank, free transfers, chip state and corrections are read only from that browser's storage.",
+      "When a transfer is declared, a write-only server copy of the Team ID, season, gameweek and swap is kept for diagnostics. It is never read back into a plan. The copy is deleted seven days after the gameweek deadline and never kept beyond thirty days; request diagnostics are deleted after thirty days.",
       "The site does ask FPL's public API for the squad belonging to a Team ID that is typed in, because that is the only way to know what is in it. That request goes through this site's own server so the browser is not calling FPL directly, and the answer is exactly what FPL already publishes to anybody who asks.",
     ],
+    link: { to: "/privacy", text: "Read the privacy and data controls" },
   },
   {
     q: "Why does the plan change from one week to the next?",
@@ -258,6 +260,7 @@ export default function FaqPage() {
   useDocumentTitle(
     "Questions",
     "What FPL Andres is, what it cannot know, and what every term on the site means.",
+    { canonicalPath: "/faq" },
   );
 
   return (

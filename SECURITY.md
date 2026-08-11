@@ -17,6 +17,11 @@ Include whatever you have: the route or file, the conditions needed to trigger
 it, and what an attacker gets. A proof of concept helps but is not required to
 report.
 
+The same private form may be used for a sensitive data concern that should not
+expose a Team ID or private team state in a public issue. It is not an identity
+verification route: Team IDs are public, so private rows expire automatically
+instead of being manually deleted on the strength of a number anyone can quote.
+
 ## What to expect
 
 | Stage              | Target                                               |

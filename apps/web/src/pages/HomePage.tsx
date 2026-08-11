@@ -30,6 +30,7 @@ export default function HomePage() {
   useDocumentTitle(
     "FPL Andres",
     "An evidence-first Fantasy Premier League assistant that shows its working and admits what it cannot know.",
+    { canonicalPath: "/" },
   );
 
   function analyseTeam(event: FormEvent<HTMLFormElement>) {

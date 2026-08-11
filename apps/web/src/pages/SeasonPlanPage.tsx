@@ -887,6 +887,7 @@ export default function SeasonPlanPage() {
     teamId === null ? "The season plan" : `Team ${String(teamId)}`,
     "Every gameweek from 1 to 38: squad, eleven, captain and transfer, with " +
       "confidence that falls away the further out it reaches.",
+    { canonicalPath: "/plan" },
   );
 
   const bands = useMemo(() => {

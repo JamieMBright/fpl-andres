@@ -7,6 +7,7 @@ export default function MethodPage() {
   useDocumentTitle(
     "Method",
     "Every scoring route, every parameter and every limit behind the FPL Andres projection.",
+    { canonicalPath: "/methodology" },
   );
   return (
     <section className="text-page method-page">
