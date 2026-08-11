@@ -182,7 +182,7 @@ function TopPickColumn({
   const { player } = winner;
   const open = openCode === player.code;
   return (
-    <li className="top-pick-column">
+    <li className="top-pick-column" data-position={player.position}>
       <p className="top-pick-role">{winner.label}</p>
       <article className="top-pick-hero">
         <span className="top-pick-frame">
@@ -241,7 +241,8 @@ function TopPickColumn({
               {pick.player.club}
             </span>
             <span className="top-pick-runner-points mono">
-              {oneDecimal.format(pick.points)} xPts5
+              <b>{oneDecimal.format(pick.points)}</b>
+              <span>xPts5</span>
             </span>
           </li>
         ))}

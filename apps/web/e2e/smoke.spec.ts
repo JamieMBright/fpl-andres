@@ -211,6 +211,91 @@ test("the phone action reaches and focuses the Team ID field", async ({
   ).toHaveCount(0);
 });
 
+test("top picks wrap once without shrinking their players", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await settle(page);
+
+  const measure = async (width: number) => {
+    await page.setViewportSize({ width, height: 900 });
+    return page.locator(".top-pick-grid").evaluate((grid) => {
+      const cards = [...grid.querySelectorAll<HTMLElement>(".top-pick-column")];
+      const firstTop = Math.round(cards[0]?.getBoundingClientRect().top ?? 0);
+      const rows = new Set(
+        cards.map((card) => Math.round(card.getBoundingClientRect().top)),
+      );
+      const frame = cards[0]?.querySelector<HTMLElement>(".top-pick-frame");
+      const image = frame?.querySelector<HTMLElement>("img, svg");
+      const winner = cards[0]?.querySelector<HTMLElement>(
+        ".top-pick-name button",
+      );
+      const names = [
+        ...grid.querySelectorAll<HTMLElement>(
+          ".top-pick-name button, .top-pick-runner-name",
+        ),
+      ];
+      const tokens = [
+        ...grid.querySelectorAll<HTMLElement>(
+          ".top-pick-points b, .top-pick-points span, " +
+            ".top-pick-runner-points b, .top-pick-runner-points span",
+        ),
+      ];
+      const frameBox = frame?.getBoundingClientRect();
+      const imageBox = image?.getBoundingClientRect();
+
+      return {
+        columns: cards.filter(
+          (card) => Math.round(card.getBoundingClientRect().top) === firstTop,
+        ).length,
+        rows: rows.size,
+        avatar: [frameBox?.width ?? 0, frameBox?.height ?? 0],
+        image: [imageBox?.width ?? 0, imageBox?.height ?? 0],
+        winnerFont: winner
+          ? Number.parseFloat(getComputedStyle(winner).fontSize)
+          : 0,
+        wrappedNames: names.filter(
+          (name) => name.scrollHeight > name.clientHeight + 1,
+        ).length,
+        splitTokens: tokens.filter(
+          (token) => getComputedStyle(token).whiteSpace !== "nowrap",
+        ).length,
+        overflow:
+          document.documentElement.scrollWidth -
+          document.documentElement.clientWidth,
+      };
+    });
+  };
+
+  const wide = await measure(1000);
+  expect(wide).toMatchObject({ columns: 4, rows: 1 });
+
+  const wrapped = await measure(999);
+  expect(wrapped).toMatchObject({ columns: 2, rows: 2 });
+
+  const phone = await measure(360);
+  expect(phone).toMatchObject({
+    columns: 2,
+    rows: 2,
+    avatar: [88, 112],
+    image: [88, 112],
+    winnerFont: 18,
+    wrappedNames: 0,
+    splitTokens: 0,
+    overflow: 0,
+  });
+
+  await page.locator(".top-pick-points").first().click();
+  await expect(page.locator(".top-pick-panel")).toBeVisible();
+  expect(
+    await page.evaluate(
+      () =>
+        document.documentElement.scrollWidth -
+        document.documentElement.clientWidth,
+    ),
+  ).toBeLessThanOrEqual(0);
+});
+
 test("a phone gets a readable, tappable page that does not spill", async ({
   page,
 }) => {

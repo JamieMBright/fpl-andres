@@ -54,6 +54,11 @@ describe("TopPicks", () => {
 
     expect(container.querySelectorAll(".top-pick-column")).toHaveLength(4);
     expect(container.querySelectorAll(".top-pick-hero")).toHaveLength(4);
+    for (const position of ["GKP", "DEF", "MID", "FWD"]) {
+      expect(
+        container.querySelectorAll(`[data-position="${position}"]`),
+      ).toHaveLength(1);
+    }
     expect(container.querySelectorAll(".top-pick-runners > li")).toHaveLength(
       8,
     );
