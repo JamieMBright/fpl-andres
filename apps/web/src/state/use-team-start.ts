@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import type { SolveAssumption, SolveStart } from "./season-solver";
 import {
@@ -39,6 +39,7 @@ export const PRE_SEASON_EVENT = 1;
  * and the least dangerous guess: assuming more would plan moves he cannot make.
  */
 const DEFAULT_FREE_TRANSFERS = 1;
+const FOREGROUND_REFRESH_MS = 15 * 60 * 1_000;
 
 export function currentPlanningEvent(now: Date = new Date()): number {
   const index = SEASON_DEADLINES.findIndex(
@@ -122,6 +123,7 @@ export function useTeamPlan(
   const [fetched, setFetched] = useState<TeamStartStatus | null>(null);
   const [resolved, setResolved] = useState<TeamAnalysisState | null>(null);
   const [attempt, setAttempt] = useState(0);
+  const lastRequestedAt = useRef(0);
 
   // Read outside the effect: a cached snapshot is shown while the refresh runs,
   // and setting that from inside the effect is a cascading render. Keyed on the
@@ -138,6 +140,7 @@ export function useTeamPlan(
     if (!usable || entryId === null) return;
 
     const controller = new AbortController();
+    lastRequestedAt.current = Date.now();
     let settled = false;
     refreshTeamAnalysis(entryId, cached, {
       storage: window.localStorage,
@@ -243,6 +246,25 @@ export function useTeamPlan(
       }
     };
   }, [entryId, usable, declaredAt, attempt, cached, squadCode]);
+
+  useEffect(() => {
+    if (!usable) return;
+    const refresh = () => setAttempt((previous) => previous + 1);
+    const onVisible = () => {
+      if (
+        document.visibilityState === "visible" &&
+        Date.now() - lastRequestedAt.current >= FOREGROUND_REFRESH_MS
+      ) {
+        refresh();
+      }
+    };
+    window.addEventListener("online", refresh);
+    document.addEventListener("visibilitychange", onVisible);
+    return () => {
+      window.removeEventListener("online", refresh);
+      document.removeEventListener("visibilitychange", onVisible);
+    };
+  }, [usable]);
 
   const start: TeamStartStatus =
     raw === null

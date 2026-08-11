@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { act, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { saveDeclaredSquad } from "./declared-squad";
@@ -166,5 +166,33 @@ describe("useTeamStart during an FPL outage", () => {
       "free_transfers",
       "selling_prices",
     ]);
+  });
+
+  it("refreshes when connectivity returns", async () => {
+    const fetchApi = preSeasonFetch();
+    vi.stubGlobal("fetch", fetchApi);
+    render(<Probe onStatus={() => undefined} />);
+    await waitFor(() => expect(fetchApi).toHaveBeenCalledTimes(1));
+
+    act(() => window.dispatchEvent(new Event("online")));
+
+    await waitFor(() => expect(fetchApi).toHaveBeenCalledTimes(2));
+  });
+
+  it("refreshes on a visible return after fifteen minutes, not before", async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    vi.setSystemTime(new Date("2026-08-22T12:00:00Z"));
+    const fetchApi = preSeasonFetch();
+    vi.stubGlobal("fetch", fetchApi);
+    render(<Probe onStatus={() => undefined} />);
+    await waitFor(() => expect(fetchApi).toHaveBeenCalledTimes(1));
+
+    vi.setSystemTime(new Date("2026-08-22T12:14:59Z"));
+    act(() => document.dispatchEvent(new Event("visibilitychange")));
+    expect(fetchApi).toHaveBeenCalledTimes(1);
+
+    vi.setSystemTime(new Date("2026-08-22T12:15:01Z"));
+    act(() => document.dispatchEvent(new Event("visibilitychange")));
+    await waitFor(() => expect(fetchApi).toHaveBeenCalledTimes(2));
   });
 });
