@@ -211,6 +211,31 @@ test("the phone action reaches and focuses the Team ID field", async ({
   ).toHaveCount(0);
 });
 
+test("all primary destinations wrap into two rows on a phone", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 360, height: 780 });
+  await page.goto("/");
+  await settle(page);
+
+  const links = page
+    .getByRole("navigation", { name: "Primary navigation" })
+    .getByRole("link");
+  await expect(links).toHaveCount(8);
+
+  const layout = await links.evaluateAll((destinations) => ({
+    visible: destinations.every(
+      (destination) => destination.getClientRects().length > 0,
+    ),
+    rows: new Set(
+      destinations.map((destination) =>
+        Math.round(destination.getBoundingClientRect().top),
+      ),
+    ).size,
+  }));
+  expect(layout).toEqual({ visible: true, rows: 2 });
+});
+
 test("top picks wrap once without shrinking their players", async ({
   page,
 }) => {

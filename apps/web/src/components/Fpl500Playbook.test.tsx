@@ -47,6 +47,22 @@ describe("Fpl500Playbook", () => {
     expect(screen.getByText(/Where they finish/)).toBeInTheDocument();
   });
 
+  it("makes the selected cohort's previous-season record obvious", () => {
+    draw();
+
+    const summary = screen.getByRole("region", {
+      name: "Previous-season record",
+    });
+    expect(within(summary).getByText("Previous-season record")).toBeVisible();
+    expect(within(summary).getByText("Top 1k finishes")).toBeVisible();
+    expect(within(summary).getByText("Top 10k finishes")).toBeVisible();
+    expect(within(summary).getByText("Top 100k finishes")).toBeVisible();
+    expect(within(summary).getByText(/Observed/)).toBeVisible();
+    expect(
+      within(summary).getByText(/FPL histories through/),
+    ).toBeInTheDocument();
+  });
+
   it("says how far the register has been read", () => {
     draw();
 
