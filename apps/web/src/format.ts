@@ -102,3 +102,9 @@ export const fineShare = new Intl.NumberFormat("en-GB", {
   style: "percent",
   maximumFractionDigits: 3,
 });
+
+/** A population share where a tenth of a percentage point is enough. */
+export const share = new Intl.NumberFormat("en-GB", {
+  style: "percent",
+  maximumFractionDigits: 1,
+});

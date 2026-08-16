@@ -5,7 +5,7 @@ import { BarChart, type Bar } from "./MethodChart";
 import { PlannedAnalysis } from "./PlannedAnalysis";
 import { RankRidge, type Ridge } from "./RankRidge";
 import fpl500 from "../data/fpl500.json";
-import { fineShare, integer, timestamp } from "../format";
+import { fineShare, integer, share, timestamp } from "../format";
 
 type Fpl500 = {
   generatedAt: string;
@@ -28,10 +28,6 @@ type Fpl500 = {
 
 const data = fpl500 as Fpl500;
 const number = integer;
-const share = new Intl.NumberFormat("en-GB", {
-  style: "percent",
-  maximumFractionDigits: 1,
-});
 const PAGE = 20;
 
 function finishesAtOrAbove(rank: number): number {
