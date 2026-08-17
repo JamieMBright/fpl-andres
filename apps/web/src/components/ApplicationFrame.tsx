@@ -45,21 +45,21 @@ const SOCIAL_LINKS = [
   },
 ] as const;
 
-/** `dark` is the away kit, green and navy; it is the default. */
-type ThemeName = "light" | "third" | "dark";
+/** `dark` is the green and blue Third Kit; it is the default. */
+type ThemeName = "light" | "away" | "dark";
 
-/** Home, away, third, then round again. */
+/** Home, Away, Third, then round again. */
 const NEXT_KIT: Record<ThemeName, ThemeName> = {
-  light: "dark",
-  dark: "third",
-  third: "light",
+  light: "away",
+  away: "dark",
+  dark: "light",
 };
 
-/** Name the action explicitly so the destination is not mistaken for the active kit. */
+/** The control names the kit currently being worn. */
 const KIT_LABEL: Record<ThemeName, string> = {
-  light: "Switch to away kit",
-  dark: "Switch to third kit",
-  third: "Switch to home kit",
+  light: "Home Kit",
+  away: "Away Kit",
+  dark: "Third Kit",
 };
 
 const THEME_STORAGE_KEY = "fpl-andres:theme";
@@ -67,7 +67,9 @@ const THEME_STORAGE_KEY = "fpl-andres:theme";
 function readStoredTheme(): ThemeName {
   try {
     const stored = window.localStorage.getItem(THEME_STORAGE_KEY);
-    return stored === "light" || stored === "third" ? stored : "dark";
+    if (stored === "light" || stored === "away") return stored;
+    if (stored === "third") return "away";
+    return "dark";
   } catch {
     // A blocked storage partition must not stop the page rendering.
     return "dark";

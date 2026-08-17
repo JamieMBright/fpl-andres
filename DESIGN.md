@@ -127,39 +127,54 @@ one-in-ten rule allows.
 
 Three palettes ship, toggled by user preference and defaulting to dark. They derive
 their values from period Leeds kits held in
-[`docs/design/inspiration/`](docs/design/inspiration/README.md). The green and navy
-shirt in that folder is the **away** kit — the yellow and blue one is the third,
-which the toggle used to have the wrong way round.
+[`docs/design/inspiration/`](docs/design/inspiration/README.md). The control names
+the active palette: Third Kit is green and blue, Home Kit is white and yellow,
+and Away Kit is blue and full yellow.
 
-### Dark (default) — after the 1994 away kit
+### Dark (default) — Third Kit
 
-| Token        | Value     | Use                                    |
-| ------------ | --------- | -------------------------------------- |
-| Surface      | `#16123a` | App frame background                   |
-| Surface deep | `#0d0a26` | Ruled ground behind stripes            |
-| Surface rise | `#221a55` | Elevated surfaces and ruled headers    |
-| Stripe green | `#00a13e` | Away-kit stripe A, brand accent, ready |
-| Stripe navy  | `#2b2065` | Away-kit stripe B, structural rules    |
-| Cream        | `#f6f4ea` | Primary copy                           |
-| Cream deep   | `#d5cfba` | Secondary copy                         |
-| Focus blue   | `#3b357e` | Focus rings, links, mark bucket body   |
-| Amber        | `#e5a02a` | Stale and watch states                 |
-| Red          | `#d64545` | Errors and negative outcomes only      |
+| Token        | Value     | Use                                     |
+| ------------ | --------- | --------------------------------------- |
+| Surface      | `#16123a` | App frame background                    |
+| Surface deep | `#0d0a26` | Ruled ground behind stripes             |
+| Surface rise | `#221a55` | Elevated surfaces and ruled headers     |
+| Stripe green | `#00a13e` | Third-kit stripe A, brand accent, ready |
+| Stripe navy  | `#2b2065` | Third-kit stripe B, structural rules    |
+| Cream        | `#f6f4ea` | Primary copy                            |
+| Cream deep   | `#d5cfba` | Secondary copy                          |
+| Focus blue   | `#3b357e` | Focus rings, links, mark bucket body    |
+| Amber        | `#e5a02a` | Stale and watch states                  |
+| Red          | `#d64545` | Errors and negative outcomes only       |
 
 ### Light (toggle) — after the 1994 home kit
 
-| Token          | Value     | Use                                       |
-| -------------- | --------- | ----------------------------------------- |
-| Paper          | `#f7f5ea` | App frame background (warm off-white)     |
-| Paper deep     | `#ffffff` | Elevated surfaces (tables, panels)        |
-| Paper rise     | `#ffffff` | Elevated surfaces and ruled headers       |
-| Stripe silver  | `#e4e3eb` | Home-kit stripe A (owner-specified white) |
-| Stripe yellow  | `#e5da15` | Home-kit stripe B                         |
-| Home blue      | `#4a008e` | Primary copy, structural rules, buttons   |
-| Home blue rise | `#6a3aa8` | Hover / focus tint on the blue accent     |
-| Slate deep     | `#6a3aa8` | Secondary copy                            |
-| Amber          | `#a6621b` | Stale and watch states                    |
-| Red            | `#a2433b` | Errors and negative outcomes only         |
+| Token          | Value     | Use                                     |
+| -------------- | --------- | --------------------------------------- |
+| Paper          | `#f7f5ea` | App frame background (warm off-white)   |
+| Paper deep     | `#ffffff` | Elevated surfaces (tables, panels)      |
+| Paper rise     | `#ffffff` | Elevated surfaces and ruled headers     |
+| Stripe white   | `#ffffff` | Home-kit stripe A                       |
+| Stripe yellow  | `#e5da15` | Home-kit stripe B                       |
+| Home blue      | `#4a008e` | Primary copy, structural rules, buttons |
+| Home blue rise | `#6a3aa8` | Hover / focus tint on the blue accent   |
+| Slate deep     | `#6a3aa8` | Secondary copy                          |
+| Amber          | `#a6621b` | Stale and watch states                  |
+| Red            | `#a2433b` | Errors and negative outcomes only       |
+
+### Away — Away Kit
+
+| Token         | Value     | Use                                 |
+| ------------- | --------- | ----------------------------------- |
+| Surface       | `#12225c` | App frame background                |
+| Surface deep  | `#0b1740` | Ruled ground behind stripes         |
+| Surface rise  | `#1b3080` | Elevated surfaces and ruled headers |
+| Stripe yellow | `#ffff00` | Away stripe A at 80% mix            |
+| Stripe blue   | `#0000ff` | Away stripe B at 60% mix            |
+| Cream         | `#fdfbe8` | Primary copy                        |
+| Cream deep    | `#efe6a8` | Secondary copy                      |
+| Focus blue    | `#6fd0ff` | Focus rings and links               |
+| Red           | `#ff8b7a` | Errors and negative outcomes only   |
+| Rule blue     | `#2c4699` | Structural rules                    |
 
 ### Brand mark (both modes)
 
@@ -195,10 +210,9 @@ the token itself is changed rather than exemption granted.
 
 ### Stripe motif
 
-Vertical green + navy stripes drawn from the away kit form a background rhythm on
-the hero region only, at 6–10% opacity, and never overlay tabular content. On
-light mode, the stripes swap to yellow + blue but retain the same rhythm and
-opacity ceiling. Stripes are decorative, not structural: they are
+Vertical green + blue stripes draw the Third Kit default. Home swaps them for
+white + yellow; Away uses blue + full yellow, with the yellow mixed at 80% so it
+does not collapse toward gray. Stripes are decorative, not structural: they are
 `aria-hidden` and never encode meaning.
 
 ## Type
