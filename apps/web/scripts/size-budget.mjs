@@ -26,8 +26,11 @@ const BUDGETS = [
   // 22 so an ordinary rule passes and a stylesheet that grows by a page does
   // not.
   { match: /\.css$/, name: "stylesheet", gzipKb: 22 },
-  // Measured 128.26 kB. Router, zod, lucide and the shell.
-  { match: /^index-.*\.js$/, name: "entry chunk", gzipKb: 150 },
+  // Measured 150.66 kB, raised from 150 kB. Publishing the first
+  // bookmaker-implied goals distribution expanded the static season inputs
+  // consumed by the entry chunk; untouched origin/main measured 150.65 kB.
+  // Set at 174 to restore the documented roughly 15% headroom.
+  { match: /^index-.*\.js$/, name: "entry chunk", gzipKb: 174 },
   // Measured 54.94 kB. The plan is now the only route a manager needs: the
   // snapshot, the record, the squad builder and the season all arrive here,
   // replacing a second route that had to be downloaded separately, and the
