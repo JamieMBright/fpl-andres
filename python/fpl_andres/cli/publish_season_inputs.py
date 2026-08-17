@@ -353,12 +353,12 @@ def _market_attacking(
     return blended.points if blended is not None else None
 
 
-#: How many of a club's players a book must have priced before its silence about
-#: one of them means anything. A book that has opened an anytime-scorer market
-#: prices the whole matchday squad, so anything under a starting eleven is a
-#: partial read rather than a team sheet, and reading absence off it would bench
-#: a defender because the book only quoted the strikers.
-CLUB_QUOTE_FLOOR = 11
+#: How many outfield players a book must have priced before silence about one
+#: can mean anything. The live 2026-08-17 scorer market named seventeen Arsenal
+#: players but no goalkeeper, then the old eleven-player floor read Raya as
+#: dropped. A twenty-player matchday squad normally carries two keepers, so
+#: eighteen is the smallest scorer list that can claim complete outfield cover.
+CLUB_QUOTE_FLOOR = 18
 
 
 @dataclass(frozen=True)

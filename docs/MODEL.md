@@ -364,9 +364,10 @@ experimental rate-to-minutes inference above.
 
 Guarded twice, because absence is only evidence when the list is complete.
 
-- A club counts only where the book priced at least eleven of its players.
-  Books open a scorer market on the forwards first, and reading absence off a
-  partial list would bench a defender because nobody quoted him to score.
+- A club counts only where the book priced at least eighteen outfield players.
+  The live Arsenal market named seventeen but no goalkeeper; the old floor of
+  eleven therefore read Raya as dropped. Books open scorer markets unevenly,
+  so anything below a full outfield matchday set is presence evidence only.
 - The whole signal is refused for any run where a quoted name failed the
   crosswalk. An unmatched man _was_ priced and is missing from the matched
   rows, so absence would read him as dropped. The one thing worse than not

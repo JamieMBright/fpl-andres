@@ -1,6 +1,6 @@
 {
   "schemaVersion": 3,
-  "generatedAt": "2026-08-17T22:31:08.556599Z",
+  "generatedAt": "2026-08-17T22:36:17.355966Z",
   "recordSeason": "2025-26",
   "events": [
     1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
@@ -118,8 +118,8 @@
     "playersQuotedForCards": 0,
     "shotRoutes": 0,
     "playersQuotedForShots": 0,
-    "startRatesCut": 9,
-    "squadsNamed": 1,
+    "startRatesCut": 0,
+    "squadsNamed": 0,
     "fixtureRungs": 0,
     "participationInferred": 17,
     "bonusEvents": 0
@@ -159,7 +159,7 @@
       }
     ],
     "sourceReference": "FPL rules page, Transfers section",
-    "dataAvailableAt": "2026-08-17T22:31:08.561516Z",
+    "dataAvailableAt": "2026-08-17T22:36:17.410330Z",
     "playableStartRate": 0.35,
     "transferMarginPoints": 0.5
   },
@@ -1731,11 +1731,10 @@
         "yellowCards": -0.03,
         "ownGoals": -0.001
       },
-      "startRate": 0.606,
+      "startRate": 0.932,
       "squadNumber": null,
       "rated": true,
-      "depthRank": 1,
-      "evidence": { "appearance": "marketAbsence" }
+      "depthRank": 1
     },
     {
       "id": 82,
@@ -2666,11 +2665,11 @@
         "redCards": -0.001,
         "ownGoals": -0.001
       },
-      "startRate": 0.147,
+      "startRate": 0.226,
       "squadNumber": null,
       "rated": false,
       "depthRank": 2,
-      "evidence": { "all": "rolePrior", "appearance": "marketAbsence" }
+      "evidence": { "all": "rolePrior" }
     },
     {
       "id": 3,
@@ -2693,11 +2692,11 @@
         "redCards": -0.001,
         "ownGoals": -0.001
       },
-      "startRate": 0.147,
+      "startRate": 0.226,
       "squadNumber": null,
       "rated": false,
       "depthRank": 2,
-      "evidence": { "all": "rolePrior", "appearance": "marketAbsence" }
+      "evidence": { "all": "rolePrior" }
     },
     {
       "id": 58,
@@ -8205,11 +8204,10 @@
         "redCards": -0.001,
         "defensiveContribution": 0.233
       },
-      "startRate": 0.432,
+      "startRate": 0.665,
       "squadNumber": null,
       "rated": true,
-      "depthRank": 3,
-      "evidence": { "appearance": "marketAbsence" }
+      "depthRank": 3
     },
     {
       "id": 399,
@@ -10045,11 +10043,11 @@
         "redCards": -0.065,
         "defensiveContribution": 0.12
       },
-      "startRate": 0.246,
+      "startRate": 0.379,
       "squadNumber": null,
       "rated": false,
       "depthRank": 10,
-      "evidence": { "all": "rolePrior", "appearance": "marketAbsence" }
+      "evidence": { "all": "rolePrior" }
     },
     {
       "id": 23,
@@ -10070,11 +10068,11 @@
         "redCards": -0.065,
         "defensiveContribution": 0.12
       },
-      "startRate": 0.246,
+      "startRate": 0.379,
       "squadNumber": null,
       "rated": false,
       "depthRank": 10,
-      "evidence": { "all": "rolePrior", "appearance": "marketAbsence" }
+      "evidence": { "all": "rolePrior" }
     },
     {
       "id": 24,
@@ -10095,11 +10093,11 @@
         "redCards": -0.065,
         "defensiveContribution": 0.12
       },
-      "startRate": 0.246,
+      "startRate": 0.379,
       "squadNumber": null,
       "rated": false,
       "depthRank": 10,
-      "evidence": { "all": "rolePrior", "appearance": "marketAbsence" }
+      "evidence": { "all": "rolePrior" }
     },
     {
       "id": 557,
@@ -10120,11 +10118,11 @@
         "redCards": -0.065,
         "defensiveContribution": 0.12
       },
-      "startRate": 0.246,
+      "startRate": 0.379,
       "squadNumber": null,
       "rated": false,
       "depthRank": 4,
-      "evidence": { "all": "rolePrior", "appearance": "marketAbsence" }
+      "evidence": { "all": "rolePrior" }
     },
     {
       "id": 50,
@@ -13803,11 +13801,10 @@
         "penaltiesMissed": -0.001,
         "defensiveContribution": 0.002
       },
-      "startRate": 0.027,
+      "startRate": 0.041,
       "squadNumber": null,
       "rated": true,
-      "depthRank": 3,
-      "evidence": { "appearance": "marketAbsence" }
+      "depthRank": 3
     },
     {
       "id": 107,

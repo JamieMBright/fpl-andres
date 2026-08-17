@@ -306,9 +306,16 @@ class TestTheMarketNamingASquad:
 
     def test_a_player_the_book_left_out_of_a_full_squad_is_cut(self, tmp_path: Path) -> None:
         recorded = _start_rate(_run(tmp_path, [_element()]))
-        left_out = _start_rate(_run(tmp_path, [_element()], odds=_squad(14)))
+        left_out = _start_rate(_run(tmp_path, [_element()], odds=_squad(18)))
 
         assert left_out < recorded
+
+    def test_seventeen_scorer_quotes_are_not_a_complete_team_sheet(self, tmp_path: Path) -> None:
+        """A goalscorer market omits keepers and can omit low-scoring defenders."""
+        recorded = _start_rate(_run(tmp_path, [_element()]))
+        partial = _start_rate(_run(tmp_path, [_element()], odds=_squad(17)))
+
+        assert partial == recorded
 
     def test_a_partly_quoted_squad_says_nothing(self, tmp_path: Path) -> None:
         """Books open a scorer market on the strikers first. Ten is not a team."""
@@ -324,7 +331,7 @@ class TestTheMarketNamingASquad:
             _run(
                 tmp_path,
                 [_element()],
-                odds=_squad(14, players=[*_squad(14)["players"], _odds()["players"][0]]),
+                odds=_squad(18, players=[*_squad(18)["players"], _odds()["players"][0]]),
             )
         )
 
@@ -334,14 +341,14 @@ class TestTheMarketNamingASquad:
         """An unmatched name was priced and is missing, so absence lies about him."""
         recorded = _start_rate(_run(tmp_path, [_element()]))
         poisoned = _start_rate(
-            _run(tmp_path, [_element()], odds=_squad(14, unmatched=["Some Name"]))
+            _run(tmp_path, [_element()], odds=_squad(18, unmatched=["Some Name"]))
         )
 
         assert poisoned == recorded
 
     def test_another_club_is_left_alone(self, tmp_path: Path) -> None:
         recorded = _start_rate(_run(tmp_path, [_element()]))
-        liverpool = _start_rate(_run(tmp_path, [_element(team=2)], odds=_squad(14)))
+        liverpool = _start_rate(_run(tmp_path, [_element(team=2)], odds=_squad(18)))
 
         assert liverpool == recorded
 
