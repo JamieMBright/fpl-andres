@@ -388,7 +388,11 @@ def test_highs_matches_exhaustive_oracle_across_generated_points(
 
     result = HighsOptimizer(time_limit_seconds=5.0).solve(request)
 
-    assert result.net_expected_points == pytest.approx(exhaustive_optimum(request), abs=1e-6)
+    # HiGHS proves integer feasibility to 1e-6, and one player's points can
+    # enter this objective twice through the starting XI and captaincy. A
+    # smaller assertion tolerance asks the oracle to distinguish solutions the
+    # configured solver legally treats as identical.
+    assert result.net_expected_points == pytest.approx(exhaustive_optimum(request), abs=2e-6)
     assert set(result.starter_element_ids) | set(result.bench_element_ids) == set(
         result.squad_element_ids
     )

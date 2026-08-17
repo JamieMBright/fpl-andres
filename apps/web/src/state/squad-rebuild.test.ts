@@ -70,11 +70,19 @@ describe("rebuildUplift", () => {
   });
 
   it("finds a gain against a squad bought on a smaller budget", () => {
-    // Fifteen players at the floor price is 600, so 700 is legal and poor.
-    const poor = rebuildSquad(0, 700)?.squad ?? [];
-    expect(poor).toHaveLength(15);
+    // The universal price floor is £60.0m, but the cheapest legal fifteen also
+    // depends on who clears the current start-rate filter and the club limit.
+    // Find that boundary from the published pool instead of guessing it.
+    let poor: ReturnType<typeof rebuildSquad> = null;
+    for (let budget = 600; budget < BUDGET && poor === null; budget += 10) {
+      poor = rebuildSquad(0, budget);
+    }
 
-    const { gain } = rebuildUplift(SEASON_EVENTS[0] as number, poor, BUDGET);
+    expect(poor).not.toBeNull();
+    const squad = poor?.squad ?? [];
+    expect(squad).toHaveLength(15);
+
+    const { gain } = rebuildUplift(SEASON_EVENTS[0] as number, squad, BUDGET);
 
     expect(gain).toBeGreaterThan(0);
   });
