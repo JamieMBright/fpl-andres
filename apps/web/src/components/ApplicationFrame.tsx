@@ -55,11 +55,11 @@ const NEXT_KIT: Record<ThemeName, ThemeName> = {
   third: "light",
 };
 
-/** The button names the kit it will switch *to*, which is what a kit button does. */
+/** Name the action explicitly so the destination is not mistaken for the active kit. */
 const KIT_LABEL: Record<ThemeName, string> = {
-  light: "Away kit",
-  dark: "Third kit",
-  third: "Home kit",
+  light: "Switch to away kit",
+  dark: "Switch to third kit",
+  third: "Switch to home kit",
 };
 
 const THEME_STORAGE_KEY = "fpl-andres:theme";

@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
 import { afterEach, describe, expect, it, vi } from "vitest";
@@ -94,9 +94,11 @@ describe("About contact form", () => {
     );
     await user.click(screen.getByRole("button", { name: "Send message" }));
 
-    expect(await screen.findByLabelText("Current location")).toHaveTextContent(
-      "/thanks?from=contact",
-    );
+    await waitFor(() => {
+      expect(screen.getByLabelText("Current location")).toHaveTextContent(
+        "/thanks?from=contact",
+      );
+    });
     expect(
       await screen.findByRole("heading", { name: "Thank you" }),
     ).toBeVisible();

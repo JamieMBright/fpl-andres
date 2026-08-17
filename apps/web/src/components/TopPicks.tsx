@@ -19,13 +19,14 @@ import { PlayerDetail, type DetailPlayer } from "./PlayerDetail";
 import { RankMedal } from "./RankMedal";
 
 /**
- * The best five-gameweek player in each position, and why.
+ * The best five-gameweek value in each position, and why.
  *
  * Four cards rather than a table because this is the first thing a reader sees
  * and a table asks him to do the ranking himself. The number under each photo
  * is the only claim being made, so it is the thing that opens: hover or focus
- * it and the five fixtures behind it come apart into opponent, venue,
- * difficulty and the routes that paid.
+ * it, together with the displayed price, exposes the ranking inputs. The five
+ * fixtures behind it come apart into opponent, venue, difficulty and the
+ * routes that paid.
  *
  * One panel at a time, and it spans the whole row rather than the card that
  * opened it. A panel the width of a card cannot hold five fixtures without
@@ -87,11 +88,19 @@ function picksFor(
   return SEASON_PLAYERS.filter((player) => player.position === position)
     .flatMap((player) => {
       const points = totals.get(player.code);
-      return points === undefined ? [] : [{ player, points }];
+      return points === undefined
+        ? []
+        : [
+            {
+              player,
+              points,
+              value: points / (player.priceTenths / 10),
+            },
+          ];
     })
     .sort(
       (left, right) =>
-        right.points - left.points || left.player.code - right.player.code,
+        right.value - left.value || left.player.code - right.player.code,
     )
     .slice(0, 3)
     .map(({ player, points }, index) => {
@@ -266,7 +275,7 @@ export function TopPicks() {
     <section aria-labelledby="top-picks" className="top-picks">
       <h2 id="top-picks">Top players for the next five gameweeks</h2>
       <p>
-        The top three in every position by xPts5. The leader gets the full
+        The top three in every position by xPts5/£m. The leader gets the full
         fixture breakdown; every name opens the player profile.
       </p>
       {picks.length === 0 ? (

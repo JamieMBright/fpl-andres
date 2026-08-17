@@ -89,9 +89,12 @@ describe("team analysis entry", () => {
         { timeout: SETTLE },
       );
       expect(analysisHeading).toBeInTheDocument();
-      expect(
-        document.querySelector<HTMLLinkElement>('link[rel="canonical"]')?.href,
-      ).toBe("https://fpl-andres.vercel.app/plan");
+      await waitFor(() => {
+        expect(
+          document.querySelector<HTMLLinkElement>('link[rel="canonical"]')
+            ?.href,
+        ).toBe("https://fpl-andres.vercel.app/plan");
+      });
       // The heading is in the document one commit before the effect that focuses
       // it has run. Asserting in the same tick passes alone and fails under a
       // loaded suite, which is a statement about the machine and not the page.
