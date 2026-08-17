@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-11T07:32:07.096880+00:00",
+  "generatedAt": "2026-08-17T04:32:42.821639+00:00",
   "evidenceLevel": "observed",
   "cutoffSemantics": "overallRank <= cutoff",
   "cutoffs": [
@@ -9,20 +9,20 @@
   "sources": [
     {
       "selection": "outcome_filtered_seed",
-      "records": 2392,
-      "fingerprint": "sha256:688e6827213e794f95d5c0c012522b7145f8ebe4b113b6be10516ecd04ce1c80",
+      "records": 2526,
+      "fingerprint": "sha256:7ed143a732bf2bca0e83b8e086dd033ac7054df7465a81e63b8bda732f725e52",
       "timestampReason": "legacy catalogue did not retain fetch timestamps"
     },
     {
       "selection": "deterministic_unfiltered_id_sample",
-      "records": 8880,
-      "fingerprint": "sha256:0bbe33ed70ec5ccc99fe0233bf4c0ed2e2493e78b0b0fdfb3cda282337b3a61d"
+      "records": 10284,
+      "fingerprint": "sha256:873e6ff69004843dd666e7218f48065b0aa3607cfd542e6589f8604ce54d3729"
     }
   ],
   "seasons": [
     {
       "season": "2022-23",
-      "observations": 7185,
+      "observations": 8082,
       "boundaries": [
         {
           "rankCutoff": 1000,
@@ -32,12 +32,12 @@
             "points": 2660
           },
           "outside": {
-            "rank": 1016,
+            "rank": 1005,
             "points": 2659
           },
-          "rankGap": 36,
+          "rankGap": 25,
           "pointsGap": 1,
-          "sampleSize": 7185
+          "sampleSize": 8082
         },
         {
           "rankCutoff": 10000,
@@ -52,7 +52,7 @@
           },
           "rankGap": 37,
           "pointsGap": 0,
-          "sampleSize": 7185
+          "sampleSize": 8082
         },
         {
           "rankCutoff": 50000,
@@ -67,7 +67,7 @@
           },
           "rankGap": 53,
           "pointsGap": 0,
-          "sampleSize": 7185
+          "sampleSize": 8082
         },
         {
           "rankCutoff": 100000,
@@ -82,7 +82,7 @@
           },
           "rankGap": 234,
           "pointsGap": 0,
-          "sampleSize": 7185
+          "sampleSize": 8082
         },
         {
           "rankCutoff": 250000,
@@ -97,7 +97,7 @@
           },
           "rankGap": 402,
           "pointsGap": 0,
-          "sampleSize": 7185
+          "sampleSize": 8082
         },
         {
           "rankCutoff": 500000,
@@ -112,7 +112,7 @@
           },
           "rankGap": 300,
           "pointsGap": 0,
-          "sampleSize": 7185
+          "sampleSize": 8082
         },
         {
           "rankCutoff": 1000000,
@@ -127,7 +127,7 @@
           },
           "rankGap": 3352,
           "pointsGap": 0,
-          "sampleSize": 7185
+          "sampleSize": 8082
         },
         {
           "rankCutoff": 2000000,
@@ -142,7 +142,7 @@
           },
           "rankGap": 2955,
           "pointsGap": 1,
-          "sampleSize": 7185
+          "sampleSize": 8082
         },
         {
           "rankCutoff": 3000000,
@@ -157,13 +157,13 @@
           },
           "rankGap": 3390,
           "pointsGap": 1,
-          "sampleSize": 7185
+          "sampleSize": 8082
         }
       ]
     },
     {
       "season": "2023-24",
-      "observations": 8176,
+      "observations": 9224,
       "boundaries": [
         {
           "rankCutoff": 1000,
@@ -178,7 +178,7 @@
           },
           "rankGap": 9,
           "pointsGap": 1,
-          "sampleSize": 8176
+          "sampleSize": 9224
         },
         {
           "rankCutoff": 10000,
@@ -193,7 +193,7 @@
           },
           "rankGap": 18,
           "pointsGap": 0,
-          "sampleSize": 8176
+          "sampleSize": 9224
         },
         {
           "rankCutoff": 50000,
@@ -208,7 +208,7 @@
           },
           "rankGap": 108,
           "pointsGap": 0,
-          "sampleSize": 8176
+          "sampleSize": 9224
         },
         {
           "rankCutoff": 100000,
@@ -218,12 +218,12 @@
             "points": 2486
           },
           "outside": {
-            "rank": 100249,
+            "rank": 100108,
             "points": 2486
           },
-          "rankGap": 272,
+          "rankGap": 131,
           "pointsGap": 0,
-          "sampleSize": 8176
+          "sampleSize": 9224
         },
         {
           "rankCutoff": 250000,
@@ -238,7 +238,7 @@
           },
           "rankGap": 217,
           "pointsGap": 0,
-          "sampleSize": 8176
+          "sampleSize": 9224
         },
         {
           "rankCutoff": 500000,
@@ -253,7 +253,7 @@
           },
           "rankGap": 3146,
           "pointsGap": 1,
-          "sampleSize": 8176
+          "sampleSize": 9224
         },
         {
           "rankCutoff": 1000000,
@@ -268,7 +268,7 @@
           },
           "rankGap": 1654,
           "pointsGap": 0,
-          "sampleSize": 8176
+          "sampleSize": 9224
         },
         {
           "rankCutoff": 2000000,
@@ -283,7 +283,7 @@
           },
           "rankGap": 447,
           "pointsGap": 0,
-          "sampleSize": 8176
+          "sampleSize": 9224
         },
         {
           "rankCutoff": 3000000,
@@ -298,28 +298,28 @@
           },
           "rankGap": 1301,
           "pointsGap": 0,
-          "sampleSize": 8176
+          "sampleSize": 9224
         }
       ]
     },
     {
       "season": "2024-25",
-      "observations": 9224,
+      "observations": 10410,
       "boundaries": [
         {
           "rankCutoff": 1000,
           "status": "tie_at_cutoff",
           "inside": {
-            "rank": 967,
+            "rank": 975,
             "points": 2658
           },
           "outside": {
             "rank": 1009,
             "points": 2658
           },
-          "rankGap": 42,
+          "rankGap": 34,
           "pointsGap": 0,
-          "sampleSize": 9224
+          "sampleSize": 10410
         },
         {
           "rankCutoff": 10000,
@@ -334,7 +334,7 @@
           },
           "rankGap": 106,
           "pointsGap": 0,
-          "sampleSize": 9224
+          "sampleSize": 10410
         },
         {
           "rankCutoff": 50000,
@@ -344,12 +344,12 @@
             "points": 2543
           },
           "outside": {
-            "rank": 50073,
+            "rank": 50003,
             "points": 2543
           },
-          "rankGap": 179,
+          "rankGap": 109,
           "pointsGap": 0,
-          "sampleSize": 9224
+          "sampleSize": 10410
         },
         {
           "rankCutoff": 100000,
@@ -364,7 +364,7 @@
           },
           "rankGap": 325,
           "pointsGap": 0,
-          "sampleSize": 9224
+          "sampleSize": 10410
         },
         {
           "rankCutoff": 250000,
@@ -379,7 +379,7 @@
           },
           "rankGap": 1044,
           "pointsGap": 1,
-          "sampleSize": 9224
+          "sampleSize": 10410
         },
         {
           "rankCutoff": 500000,
@@ -394,7 +394,7 @@
           },
           "rankGap": 491,
           "pointsGap": 0,
-          "sampleSize": 9224
+          "sampleSize": 10410
         },
         {
           "rankCutoff": 1000000,
@@ -409,7 +409,7 @@
           },
           "rankGap": 865,
           "pointsGap": 0,
-          "sampleSize": 9224
+          "sampleSize": 10410
         },
         {
           "rankCutoff": 2000000,
@@ -424,7 +424,7 @@
           },
           "rankGap": 4005,
           "pointsGap": 0,
-          "sampleSize": 9224
+          "sampleSize": 10410
         },
         {
           "rankCutoff": 3000000,
@@ -434,18 +434,18 @@
             "points": 2190
           },
           "outside": {
-            "rank": 3008627,
+            "rank": 3002834,
             "points": 2189
           },
-          "rankGap": 8837,
+          "rankGap": 3044,
           "pointsGap": 1,
-          "sampleSize": 9224
+          "sampleSize": 10410
         }
       ]
     },
     {
       "season": "2025-26",
-      "observations": 10950,
+      "observations": 12400,
       "boundaries": [
         {
           "rankCutoff": 1000,
@@ -460,7 +460,7 @@
           },
           "rankGap": 35,
           "pointsGap": 1,
-          "sampleSize": 10950
+          "sampleSize": 12400
         },
         {
           "rankCutoff": 10000,
@@ -475,7 +475,7 @@
           },
           "rankGap": 347,
           "pointsGap": 0,
-          "sampleSize": 10950
+          "sampleSize": 12400
         },
         {
           "rankCutoff": 50000,
@@ -490,7 +490,7 @@
           },
           "rankGap": 290,
           "pointsGap": 0,
-          "sampleSize": 10950
+          "sampleSize": 12400
         },
         {
           "rankCutoff": 100000,
@@ -505,7 +505,7 @@
           },
           "rankGap": 588,
           "pointsGap": 0,
-          "sampleSize": 10950
+          "sampleSize": 12400
         },
         {
           "rankCutoff": 250000,
@@ -520,7 +520,7 @@
           },
           "rankGap": 340,
           "pointsGap": 0,
-          "sampleSize": 10950
+          "sampleSize": 12400
         },
         {
           "rankCutoff": 500000,
@@ -535,7 +535,7 @@
           },
           "rankGap": 1149,
           "pointsGap": 0,
-          "sampleSize": 10950
+          "sampleSize": 12400
         },
         {
           "rankCutoff": 1000000,
@@ -550,7 +550,7 @@
           },
           "rankGap": 706,
           "pointsGap": 0,
-          "sampleSize": 10950
+          "sampleSize": 12400
         },
         {
           "rankCutoff": 2000000,
@@ -565,7 +565,7 @@
           },
           "rankGap": 711,
           "pointsGap": 0,
-          "sampleSize": 10950
+          "sampleSize": 12400
         },
         {
           "rankCutoff": 3000000,
@@ -580,7 +580,7 @@
           },
           "rankGap": 2056,
           "pointsGap": 0,
-          "sampleSize": 10950
+          "sampleSize": 12400
         }
       ]
     }
