@@ -23,6 +23,7 @@ import yaml
 
 from fpl_andres.adapters.player_props import _THE_ODDS_API_MARKETS
 from fpl_andres.adapters.the_odds_api import PLAYER_MARKETS
+from fpl_andres.cli.ingest_odds import TEAM_FALLBACK_WEEKLY_BUDGET
 from fpl_andres.cli.ingest_player_odds import DEFAULT_BUDGET
 
 WORKFLOWS = Path(__file__).resolve().parents[2] / ".github" / "workflows"
@@ -66,10 +67,12 @@ def test_the_ingest_and_the_survey_fit_inside_one_free_tier() -> None:
     """
     ingest = _weekly_runs("ingest-player-odds.yml") * DEFAULT_BUDGET
     survey = _weekly_runs("survey-player-props.yml") * len(_THE_ODDS_API_MARKETS)
+    team = WEEKS_PER_MONTH * TEAM_FALLBACK_WEEKLY_BUDGET
 
-    assert ingest + survey <= ODDS_API_MONTHLY, (
-        f"the schedules spend {ingest + survey:.0f} of {ODDS_API_MONTHLY} requests a month "
-        f"({ingest:.0f} ingesting, {survey:.0f} surveying). Cut a cron, the budget, "
+    assert ingest + survey + team <= ODDS_API_MONTHLY, (
+        f"the schedules spend {ingest + survey + team:.0f} of "
+        f"{ODDS_API_MONTHLY} requests a month ({ingest:.0f} player, "
+        f"{team:.0f} team, {survey:.0f} surveying). Cut a cron, the budget, "
         "or the market list."
     )
 

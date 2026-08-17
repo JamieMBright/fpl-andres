@@ -116,6 +116,11 @@ cron has to be argued for rather than merged.
   `test_api_budgets.py` keeps the worst-case shared allowance under 500.
 
 The same key pays for the weekly survey, which is why the guard counts both.
+It also pays for the team-market fallback when football-data.co.uk has not
+opened the current round. That fallback asks for `h2h` and `totals` on at most
+ten uncovered fixtures inside the nearest six days: twenty credits once per
+gameweek. Retained fixture rows prevent a daily repeat, and
+`test_api_budgets.py` includes the weekly bound in the shared 500-credit total.
 
 **When nothing is quoted.** Ten fixtures priced and nought players quoted is not
 a failure. Each fixture's line names how many books answered, how many outcomes

@@ -19,10 +19,13 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
-from collections.abc import Sequence
-from datetime import UTC, datetime
+import os
+from collections.abc import Mapping, Sequence
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
+from typing import Any
 
 import httpx
 
@@ -34,6 +37,13 @@ from fpl_andres.adapters.football_data import (
     parse_odds_csv,
     season_url,
 )
+from fpl_andres.adapters.the_odds_api import (
+    by_kickoff,
+    fetch_event_odds,
+    list_events,
+    read_fixture_odds,
+)
+from fpl_andres.jsonio import read_json_file
 from fpl_andres.models.fixture_odds import club_views, load_fixture_odds
 from fpl_andres.models.goal_expectation import GoalExpectation, fit_goal_expectation
 from fpl_andres.models.odds import OddsUnavailable
@@ -47,6 +57,11 @@ DEFAULT_BACKFILL_DIR = Path("data/odds")
 #: The seasons the backtest runs on. Odds have to cover the same ground or the
 #: comparison against the history model has nothing to stand on.
 BACKTEST_SEASONS = ("2022-23", "2023-24", "2024-25", "2025-26")
+
+TEAM_FALLBACK_MARKETS = ("h2h", "totals")
+TEAM_FALLBACK_FIXTURES = 10
+TEAM_FALLBACK_WINDOW_DAYS = 6
+TEAM_FALLBACK_WEEKLY_BUDGET = len(TEAM_FALLBACK_MARKETS) * TEAM_FALLBACK_FIXTURES
 
 #: A completed Premier League season. Fewer means a club fell out of the
 #: crosswalk and took all 38 of its fixtures with it.
@@ -66,6 +81,7 @@ TEAM_CODES: dict[str, str] = {
     "Bournemouth": "BOU",
     "Brentford": "BRE",
     "Brighton": "BHA",
+    "Brighton and Hove Albion": "BHA",
     "Burnley": "BUR",
     "Chelsea": "CHE",
     "Coventry": "COV",
@@ -77,26 +93,96 @@ TEAM_CODES: dict[str, str] = {
     "Hull City": "HUL",
     "Ipswich": "IPS",
     "Leeds": "LEE",
+    "Leeds United": "LEE",
     "Leicester": "LEI",
     "Liverpool": "LIV",
     "Luton": "LUT",
     "Man City": "MCI",
+    "Manchester City": "MCI",
     "Man United": "MUN",
+    "Manchester United": "MUN",
     "Middlesbrough": "MID",
     "Newcastle": "NEW",
+    "Newcastle United": "NEW",
     "Norwich": "NOR",
     "Nott'm Forest": "NFO",
+    "Nottingham Forest": "NFO",
     "Sheffield United": "SHU",
     "Southampton": "SOU",
     "Stoke": "STK",
     "Sunderland": "SUN",
     "Swansea": "SWA",
     "Tottenham": "TOT",
+    "Tottenham Hotspur": "TOT",
     "Watford": "WAT",
     "West Brom": "WBA",
     "West Ham": "WHU",
     "Wolves": "WOL",
+    "Wolverhampton Wanderers": "WOL",
 }
+
+FixtureKey = tuple[str, str, datetime]
+
+
+def _iso_time(value: object) -> datetime | None:
+    if not isinstance(value, str):
+        return None
+    try:
+        return datetime.fromisoformat(value.replace("Z", "+00:00")).astimezone(UTC)
+    except ValueError:
+        return None
+
+
+def _entry_key(row: Mapping[str, object]) -> FixtureKey | None:
+    home = row.get("home")
+    away = row.get("away")
+    kickoff = _iso_time(row.get("kickoff"))
+    if not isinstance(home, str) or not isinstance(away, str) or kickoff is None:
+        return None
+    return home, away, kickoff
+
+
+def _event_key(event: Mapping[str, Any]) -> FixtureKey | None:
+    home = event.get("home_team")
+    away = event.get("away_team")
+    kickoff = _iso_time(event.get("commence_time"))
+    if not isinstance(home, str) or not isinstance(away, str) or kickoff is None:
+        return None
+    home_code = TEAM_CODES.get(home)
+    away_code = TEAM_CODES.get(away)
+    if home_code is None or away_code is None:
+        return None
+    return home_code, away_code, kickoff
+
+
+def _uncovered_team_events(
+    events: Sequence[Mapping[str, Any]],
+    existing: Sequence[Mapping[str, object]],
+) -> list[Mapping[str, Any]]:
+    """Uncovered fixtures in the nearest six-day match window, capped at ten."""
+    ordered = by_kickoff(events)
+    dated = [(event, _event_key(event)) for event in ordered]
+    readable = [(event, key) for event, key in dated if key is not None]
+    if not readable:
+        return []
+    first = readable[0][1]
+    assert first is not None
+    ceiling = first[2] + timedelta(days=TEAM_FALLBACK_WINDOW_DAYS)
+    covered = {key for row in existing if (key := _entry_key(row)) is not None}
+    return [
+        event
+        for event, key in readable
+        if key is not None and key[2] <= ceiling and key not in covered
+    ][:TEAM_FALLBACK_FIXTURES]
+
+
+def _merge_fixture_entries(
+    previous: Sequence[Mapping[str, object]],
+    fresh: Sequence[Mapping[str, object]],
+) -> list[dict[str, object]]:
+    refreshed = {key for row in fresh if (key := _entry_key(row)) is not None}
+    retained = [dict(row) for row in previous if _entry_key(row) not in refreshed]
+    return [*retained, *(dict(row) for row in fresh)]
 
 
 class OddsIngestError(RuntimeError):
@@ -246,18 +332,86 @@ def _collect(
     return entries, refused, provenance, matched
 
 
+def _existing_live(path: Path) -> tuple[list[dict[str, object]], list[dict[str, str]], str]:
+    if not path.exists():
+        return [], [], ""
+    artifact = read_json_file(path)
+    fixtures = artifact.get("fixtures")
+    provenance = artifact.get("provenance")
+    return (
+        [dict(row) for row in fixtures if isinstance(row, Mapping)]
+        if isinstance(fixtures, list)
+        else [],
+        [dict(row) for row in provenance if isinstance(row, Mapping)]
+        if isinstance(provenance, list)
+        else [],
+        str(artifact.get("source") or ""),
+    )
+
+
+def _collect_the_odds_api(
+    client: httpx.Client,
+    api_key: str,
+    existing: Sequence[Mapping[str, object]],
+) -> tuple[list[dict[str, object]], list[tuple[str, str]], list[dict[str, str]]]:
+    events, opening = list_events(client, api_key)
+    selected = _uncovered_team_events(events, existing)
+    print(
+        f"The Odds API: {len(events)} fixtures listed, {len(selected)} "
+        f"uncovered in the current round; {opening}"
+    )
+    entries: list[dict[str, object]] = []
+    refused: list[tuple[str, str]] = []
+    provenance: list[dict[str, str]] = []
+    closing = opening
+    for event in selected:
+        event_id = event.get("id")
+        if not isinstance(event_id, str):
+            continue
+        if closing.remaining is not None and closing.remaining <= 0:
+            refused.append((event_id, "the key has no requests left this month"))
+            break
+        payload, closing = fetch_event_odds(
+            client,
+            api_key,
+            event_id,
+            markets=TEAM_FALLBACK_MARKETS,
+        )
+        row = read_fixture_odds(payload)
+        label = f"{payload.get('home_team')} v {payload.get('away_team')}"
+        if row is None:
+            refused.append((label, "no complete 1X2 and over/under 2.5 markets"))
+            continue
+        try:
+            entries.append(_entry(row, _priced(row), keep_markets=False))
+        except (OddsUnavailable, UnknownClubError, ValueError) as error:
+            refused.append((label, str(error)))
+            continue
+        encoded = json.dumps(payload, sort_keys=True, separators=(",", ":")).encode()
+        provenance.append(
+            {
+                "url": f"https://api.the-odds-api.com/v4/sports/soccer_epl/events/{event_id}/odds",
+                "contentHash": f"sha256:{hashlib.sha256(encoded).hexdigest()}",
+            }
+        )
+        print(f"  {label}: team markets priced; {closing}")
+    return entries, refused, provenance
+
+
 def _artifact(
     season: str,
     fetched_at: datetime,
     entries: list[dict[str, object]],
     refused: list[tuple[str, str]],
     provenance: list[dict[str, str]],
+    *,
+    source: str = "football-data.co.uk",
 ) -> dict[str, object]:
     return {
         "schemaVersion": ODDS_SCHEMA_VERSION,
         "generatedAt": fetched_at.isoformat(),
         "season": season,
-        "source": "football-data.co.uk",
+        "source": source,
         # Early prices, not closing: the FPL deadline falls before kickoff and
         # closing prices carry team news no manager could have acted on.
         "priceTiming": "pre-match",
@@ -282,43 +436,81 @@ def _write(path: Path, artifact: dict[str, object]) -> int:
     return len(views)
 
 
+def _publish_live(
+    args: argparse.Namespace,
+    client: httpx.Client,
+    fetched_at: datetime,
+) -> None:
+    live: list[tuple[str, bool]] = [(season_url(args.season), False)]
+    if not args.skip_fixtures:
+        live.append((fixtures_url(), True))
+    entries, refused, provenance, matched = _collect(live, client, fetched_at)
+    output = Path(args.output)
+    if entries:
+        clubs = _write(
+            output,
+            _artifact(args.season, fetched_at, entries, refused, provenance),
+        )
+        print(
+            f"wrote {len(entries)} priced fixtures across {clubs} clubs to "
+            f"{output}, refused {len(refused)}"
+        )
+        return
+
+    previous, previous_provenance, previous_source = _existing_live(output)
+    api_key = os.environ.get("THE_ODDS_API_KEY", "").strip()
+    fallback: list[dict[str, object]] = []
+    fallback_refused: list[tuple[str, str]] = []
+    fallback_provenance: list[dict[str, str]] = []
+    if api_key:
+        fallback, fallback_refused, fallback_provenance = _collect_the_odds_api(
+            client,
+            api_key,
+            previous,
+        )
+    if fallback:
+        merged = _merge_fixture_entries(previous, fallback)
+        sources = {source for source in previous_source.split(" + ") if source}
+        sources.add("the-odds-api")
+        artifact = _artifact(
+            args.season,
+            fetched_at,
+            merged,
+            [*refused, *fallback_refused],
+            [*previous_provenance, *fallback_provenance],
+            source=" + ".join(sorted(sources)),
+        )
+        clubs = _write(output, artifact)
+        print(
+            f"wrote {len(merged)} retained fixtures across {clubs} clubs to "
+            f"{output}, added {len(fallback)} from The Odds API"
+        )
+        return
+
+    if matched == 0:
+        detail = (
+            f"; retained {len(previous)} existing fixtures"
+            if previous
+            else "; no fallback key or uncovered team market"
+        )
+        print(f"no new Premier League fixture is priced for {args.season}{detail}")
+        return
+
+    for name, why in refused[:10]:
+        print(f"  refused {name}: {why}")
+    raise OddsIngestError(
+        f"{matched} Premier League rows were found and none carried both a "
+        "1X2 and an over/under market. The column names have probably "
+        "changed; the refusals above say which."
+    )
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     args = _parser().parse_args(argv)
     fetched_at = datetime.now(UTC)
 
-    # The season-to-date file is optional: football-data creates it only once
-    # matches have been played, so between seasons it 404s while the fixture
-    # list is already priced.
-    live: list[tuple[str, bool]] = [(season_url(args.season), False)]
-    if not args.skip_fixtures:
-        live.append((fixtures_url(), True))
-
     with httpx.Client(follow_redirects=True) as client:
-        entries, refused, provenance, matched = _collect(live, client, fetched_at)
-
-        if entries:
-            output = Path(args.output)
-            clubs = _write(output, _artifact(args.season, fetched_at, entries, refused, provenance))
-            print(
-                f"wrote {len(entries)} priced fixtures across {clubs} clubs to "
-                f"{output}, refused {len(refused)}"
-            )
-        elif matched == 0:
-            # Nothing to price is a legitimate pre-season state: no season file
-            # yet, and the fixture list not out far enough to reach the first
-            # round. Failing here would redden the schedule every day of summer.
-            print(
-                "no Premier League fixture is priced yet; nothing written for "
-                f"{args.season}. This is expected between seasons."
-            )
-        else:
-            for name, why in refused[:10]:
-                print(f"  refused {name}: {why}")
-            raise OddsIngestError(
-                f"{matched} Premier League rows were found and none carried both a "
-                "1X2 and an over/under market. The column names have probably "
-                "changed; the refusals above say which."
-            )
+        _publish_live(args, client, fetched_at)
 
         # History lands outside the site bundle. Four seasons is about fifteen
         # hundred fixtures, which belongs in the corpus rather than in every

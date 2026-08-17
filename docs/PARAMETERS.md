@@ -178,6 +178,7 @@ so the judgement is visible, in the same terms as the rest of this section.
 | `CLUB_QUOTE_FLOOR`                | 18          | `cli/publish_season_inputs.py`    | Minimum complete outfield matchday set before scorer-market silence counts as absence. Measured guard: 17 Arsenal quotes omitted Raya, so the old floor of 11 falsely cut a starting goalkeeper.      |
 | `_BONUS_CANDIDATE_FLOOR_PER_CLUB` | 11          | `cli/publish_season_inputs.py`    | A fixture needs both expected starting elevens before BPS rank probabilities replace historical bonus. Fewer candidates would award bonus because competitors were missing.                           |
 | `DEFAULT_BUDGET`                  | 8           | `cli/ingest_player_odds.py`       | Per-run Odds API credit threshold. Uncovered fixtures rotate ahead of refreshes, so bounded daily runs cover the gameweek while the shared monthly allowance remains below 500.                       |
+| `TEAM_FALLBACK_WEEKLY_BUDGET`     | 20          | `cli/ingest_odds.py`              | Two team markets across at most ten uncovered fixtures in the nearest six-day round, only when football-data has no live rows. Retained fixtures prevent daily repeat spend.                          |
 
 The chip floors are the ones most worth challenging: four thresholds, three of
 them identical, none of them measured, each deciding when a once-a-season

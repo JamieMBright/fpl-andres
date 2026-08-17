@@ -192,6 +192,14 @@ two clubs have met across a season, shrunk toward average. For the routes both
 describe, the market is the better estimate of the same quantity and blending
 would only dilute it.
 
+football-data.co.uk remains the first source because one CSV prices a whole
+round at no metered cost. If it carries no current Premier League rows, the
+team-odds ingest falls back to The Odds API's `h2h` and `totals` markets. It
+fetches only uncovered fixtures inside the nearest six-day match window and
+retains prior rows, so a round costs at most twenty credits once rather than
+twenty credits every daily run. Both sources enter the same de-vigged
+independent-Poisson fit below.
+
 The conversion needs a denominator, because a market clean sheet is an absolute
 probability and a route takes a multiplier. It is the mean of the fixtures the
 same books priced that week, so a market rung and a fitted rung mean the same

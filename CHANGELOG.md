@@ -26,6 +26,11 @@ The project follows Semantic Versioning once milestone tags begin.
   timestamped current quotes. Previously every daily run started at the same
   earliest fixture and overwrote the artifact, so later weekend fixtures could
   remain permanently unvisited despite a week of green jobs.
+- Team odds now fall back to The Odds API's 1X2 and totals markets when
+  football-data.co.uk publishes no current Premier League rows. The fallback
+  fetches each uncovered fixture in the nearest round once and retains it, so
+  clean sheets, goals conceded, save pressure and DefCon pressure can open
+  before the CSV source does without exhausting the shared allowance.
 
 - Canonical URLs, route metadata, social sharing, sitemap coverage and crawler
   exclusions now agree. Team-specific URLs canonicalise without the Team ID,

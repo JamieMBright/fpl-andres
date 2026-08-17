@@ -8,6 +8,7 @@ from pathlib import Path
 import pytest
 
 from fpl_andres.adapters.football_data import FixtureOdds, fixtures_url, season_url
+from fpl_andres.adapters.the_odds_api import read_fixture_odds
 from fpl_andres.cli.ingest_odds import (
     BACKTEST_SEASONS,
     TEAM_CODES,
@@ -15,8 +16,10 @@ from fpl_andres.cli.ingest_odds import (
     UnknownClubError,
     _entry,
     _fetch,
+    _merge_fixture_entries,
     _parser,
     _priced,
+    _uncovered_team_events,
 )
 
 
@@ -154,3 +157,131 @@ class TestPreSeason:
             ["--season", "2026-27", "--backfill-seasons", "2022-23", "2023-24"]
         )
         assert args.backfill_seasons == ["2022-23", "2023-24"]
+
+
+class TestTheOddsApiFallback:
+    def test_reads_the_median_one_x_two_and_total_markets(self) -> None:
+        row = read_fixture_odds(
+            {
+                "home_team": "Arsenal",
+                "away_team": "Bournemouth",
+                "commence_time": "2026-08-21T19:00:00Z",
+                "bookmakers": [
+                    {
+                        "key": "a",
+                        "markets": [
+                            {
+                                "key": "h2h",
+                                "outcomes": [
+                                    {"name": "Arsenal", "price": 1.4},
+                                    {"name": "Draw", "price": 5.0},
+                                    {"name": "Bournemouth", "price": 8.0},
+                                ],
+                            },
+                            {
+                                "key": "totals",
+                                "outcomes": [
+                                    {"name": "Over", "point": 2.5, "price": 1.75},
+                                    {"name": "Under", "point": 2.5, "price": 2.1},
+                                ],
+                            },
+                        ],
+                    },
+                    {
+                        "key": "b",
+                        "markets": [
+                            {
+                                "key": "h2h",
+                                "outcomes": [
+                                    {"name": "Arsenal", "price": 1.5},
+                                    {"name": "Draw", "price": 4.8},
+                                    {"name": "Bournemouth", "price": 7.5},
+                                ],
+                            },
+                            {
+                                "key": "totals",
+                                "outcomes": [
+                                    {"name": "Over", "point": 2.5, "price": 1.85},
+                                    {"name": "Under", "point": 2.5, "price": 2.0},
+                                ],
+                            },
+                        ],
+                    },
+                ],
+            }
+        )
+
+        assert row is not None
+        assert row.home_team == "Arsenal"
+        assert row.away_team == "Bournemouth"
+        assert row.home_odds == pytest.approx(1.45)
+        assert row.draw_odds == pytest.approx(4.9)
+        assert row.away_odds == pytest.approx(7.75)
+        assert row.over_odds == pytest.approx(1.8)
+        assert row.under_odds == pytest.approx(2.05)
+        assert row.price_source == "the-odds-api-median"
+
+    def test_refuses_a_fixture_without_both_required_markets(self) -> None:
+        assert (
+            read_fixture_odds(
+                {
+                    "home_team": "Arsenal",
+                    "away_team": "Bournemouth",
+                    "bookmakers": [],
+                }
+            )
+            is None
+        )
+
+    def test_only_the_current_rounds_uncovered_fixtures_are_selected(self) -> None:
+        events = [
+            {
+                "id": "covered",
+                "home_team": "Arsenal",
+                "away_team": "Coventry City",
+                "commence_time": "2026-08-21T19:00:00Z",
+            },
+            {
+                "id": "current",
+                "home_team": "Nottingham Forest",
+                "away_team": "Leeds United",
+                "commence_time": "2026-08-22T14:00:00Z",
+            },
+            {
+                "id": "next-week",
+                "home_team": "Arsenal",
+                "away_team": "Everton",
+                "commence_time": "2026-08-28T19:00:00Z",
+            },
+        ]
+        existing = [
+            {
+                "home": "ARS",
+                "away": "COV",
+                "kickoff": "2026-08-21T19:00:00+00:00",
+            }
+        ]
+
+        selected = _uncovered_team_events(events, existing)
+
+        assert [event["id"] for event in selected] == ["current"]
+
+    def test_fresh_rows_replace_the_same_fixture_and_retain_the_rest(self) -> None:
+        previous = [
+            {"home": "ARS", "away": "COV", "kickoff": "2026-08-21T19:00:00+00:00"},
+            {"home": "NFO", "away": "LEE", "kickoff": "2026-08-22T14:00:00+00:00"},
+        ]
+        fresh = [
+            {
+                "home": "ARS",
+                "away": "COV",
+                "kickoff": "2026-08-21T19:00:00+00:00",
+                "homeExpectedGoals": 2.0,
+            }
+        ]
+
+        merged = _merge_fixture_entries(previous, fresh)
+
+        assert len(merged) == 2
+        arsenal = next(row for row in merged if row["home"] == "ARS")
+        assert arsenal["homeExpectedGoals"] == 2.0

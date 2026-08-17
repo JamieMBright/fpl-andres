@@ -7,8 +7,11 @@ name: Ingest Bookmaker Odds
 #
 # What lands in the repository is not odds. It is the expected goals and the
 # clean-sheet probability each fixture's market implies, which are the
-# quantities the scoring model already speaks. Nothing here emits or implies a
-# betting recommendation, and the site never links to a bookmaker.
+# quantities the scoring model already speaks. When the CSV has no current
+# Premier League rows, the job reads h2h and totals for uncovered fixtures from
+# The Odds API, capped to the nearest round and retained between daily runs.
+# Nothing here emits or implies a betting recommendation, and the site never
+# links to a bookmaker.
 
 on:
   schedule:
@@ -31,6 +34,11 @@ on:
         required: false
         default: false
         type: boolean
+  push:
+    paths:
+      - ".github/workflows/ingest-odds.yml"
+      - "python/fpl_andres/cli/ingest_odds.py"
+      - "python/fpl_andres/adapters/the_odds_api.py"
 
 permissions:
   contents: read
@@ -75,6 +83,7 @@ jobs:
           # Passed as env rather than inlined, so no input reaches the shell as code.
           ODDS_SEASON: ${{ inputs.season }}
           ODDS_BACKFILL: ${{ inputs.backfill }}
+          THE_ODDS_API_KEY: ${{ secrets.THE_ODDS_API_KEY }}
         run: |
           season="$ODDS_SEASON"
           if [ -z "$season" ]; then

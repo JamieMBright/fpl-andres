@@ -25,6 +25,7 @@ from typing import Any
 
 import httpx
 
+from fpl_andres.adapters.football_data import FixtureOdds
 from fpl_andres.models.odds import OddsUnavailable, devig_shin
 from fpl_andres.models.player_odds import PlayerMatchOdds
 
@@ -37,6 +38,7 @@ __all__ = [
     "fetch_event_odds",
     "list_events",
     "read_event",
+    "read_fixture_odds",
 ]
 
 BASE = "https://api.the-odds-api.com/v4/sports/soccer_epl"
@@ -269,6 +271,60 @@ def describe_event(payload: Mapping[str, Any]) -> str:
     missing = sorted(set(PLAYER_MARKETS) - offered)
     detail = f"{len(books)} books, {outcomes} outcomes, markets {sorted(offered)}"
     return detail if not missing else f"{detail}, absent {missing}"
+
+
+def read_fixture_odds(payload: Mapping[str, Any]) -> FixtureOdds | None:
+    """A complete median 1X2 and over/under 2.5 book for one fixture."""
+    home = payload.get("home_team")
+    away = payload.get("away_team")
+    if not isinstance(home, str) or not isinstance(away, str):
+        raise ValueError("event payload named no teams")
+
+    prices: dict[str, list[float]] = defaultdict(list)
+    for book in payload.get("bookmakers", []):
+        if not isinstance(book, Mapping):
+            continue
+        for market in book.get("markets", []):
+            if not isinstance(market, Mapping):
+                continue
+            key = market.get("key")
+            if key == "h2h":
+                wanted = {home: "home", "Draw": "draw", away: "away"}
+                for outcome in market.get("outcomes", []):
+                    if not isinstance(outcome, Mapping):
+                        continue
+                    name = outcome.get("name")
+                    price = outcome.get("price")
+                    field = wanted.get(name) if isinstance(name, str) else None
+                    if field and isinstance(price, (int, float)) and price > 1.0:
+                        prices[field].append(float(price))
+            elif key == "totals":
+                for outcome in market.get("outcomes", []):
+                    if not isinstance(outcome, Mapping) or outcome.get("point") != 2.5:
+                        continue
+                    name = outcome.get("name")
+                    price = outcome.get("price")
+                    field = str(name).lower() if name in ("Over", "Under") else None
+                    if field and isinstance(price, (int, float)) and price > 1.0:
+                        prices[field].append(float(price))
+
+    required = ("home", "draw", "away", "over", "under")
+    if any(not prices[field] for field in required):
+        return None
+    medians = {field: statistics.median(prices[field]) for field in required}
+    return FixtureOdds(
+        division="E0",
+        kickoff=_kickoff(payload.get("commence_time")),
+        home_team=home,
+        away_team=away,
+        home_odds=medians["home"],
+        draw_odds=medians["draw"],
+        away_odds=medians["away"],
+        over_odds=medians["over"],
+        under_odds=medians["under"],
+        price_source="the-odds-api-median",
+        markets={f"the-odds-api:{field}": medians[field] for field in required},
+    )
 
 
 def _count_market_values(outcomes: object) -> dict[str, float]:
