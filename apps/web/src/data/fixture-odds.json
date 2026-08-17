@@ -1,0 +1,148 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-08-17T23:15:12.397638+00:00",
+  "season": "2026-27",
+  "source": "the-odds-api",
+  "priceTiming": "pre-match",
+  "evidenceLevel": "observed",
+  "provenance": [
+    {
+      "url": "https://api.the-odds-api.com/v4/sports/soccer_epl/events/eb2553d10d63dc912b99f8fd0d675721/odds",
+      "contentHash": "sha256:dd2e9dbb5936157b228912d2ac222d63a9dc4bcefed7573376837ba605a078d2"
+    },
+    {
+      "url": "https://api.the-odds-api.com/v4/sports/soccer_epl/events/95bb16d19debff3ec39919f361f072a4/odds",
+      "contentHash": "sha256:96fea74a8c48396b65e65c9e40b17a26f1ca29628e301d046394e03a41be31ec"
+    },
+    {
+      "url": "https://api.the-odds-api.com/v4/sports/soccer_epl/events/cd1f0173ec061d9b8a8b22ab8f2f8393/odds",
+      "contentHash": "sha256:e883afaa2c0f48d90d8902580e743e6bbb456a780b8a743cc2db1e63afd55e7f"
+    },
+    {
+      "url": "https://api.the-odds-api.com/v4/sports/soccer_epl/events/ee99154f8db029efcf567c5f7f7a0c0b/odds",
+      "contentHash": "sha256:92ba3b70f9873f865f4c7b14e55212f89b963a3dea939dd496a5d58d7421ee73"
+    },
+    {
+      "url": "https://api.the-odds-api.com/v4/sports/soccer_epl/events/8b4b033209bb204516cbd1f523614f25/odds",
+      "contentHash": "sha256:1ecf1dba33f6f51495dc85137667bf71259019cd082cd18a0dca1e3bfdb2eb86"
+    },
+    {
+      "url": "https://api.the-odds-api.com/v4/sports/soccer_epl/events/f5086c74d4a767e3ad7ea69bd4a66b76/odds",
+      "contentHash": "sha256:69e267107391a5371d5c7b4e8e7503f384a1e63e09749bc7bfa421a078c20a3c"
+    },
+    {
+      "url": "https://api.the-odds-api.com/v4/sports/soccer_epl/events/87c7c9bfd5e3072bded20c702f553c63/odds",
+      "contentHash": "sha256:a9bb20e41d2cde0e3ecdf77f4ac029275921d4f69d174d8afd8cc3937346af6e"
+    },
+    {
+      "url": "https://api.the-odds-api.com/v4/sports/soccer_epl/events/ea0bacc4c23f813c6af97ec9b306a850/odds",
+      "contentHash": "sha256:2a749e754d22ac8016d55001c004f80fdb53836fe6dea9065b79b7f75adcc914"
+    },
+    {
+      "url": "https://api.the-odds-api.com/v4/sports/soccer_epl/events/4e4a813bf4218cc527e6f8ef2351170d/odds",
+      "contentHash": "sha256:ace8178e0185e9ae6fdf31593c98971a7385cdec3dba76009d714eeb1cc58473"
+    }
+  ],
+  "fixtures": [
+    {
+      "kickoff": "2026-08-21T19:00:00+00:00",
+      "home": "ARS",
+      "away": "COV",
+      "homeExpectedGoals": 2.6199,
+      "awayExpectedGoals": 0.5035,
+      "homeCleanSheet": 0.6044,
+      "awayCleanSheet": 0.0728,
+      "drawResidual": -0.0,
+      "priceSource": "the-odds-api-median"
+    },
+    {
+      "kickoff": "2026-08-22T11:30:00+00:00",
+      "home": "HUL",
+      "away": "MUN",
+      "homeExpectedGoals": 0.7146,
+      "awayExpectedGoals": 2.194,
+      "homeCleanSheet": 0.1115,
+      "awayCleanSheet": 0.4894,
+      "drawResidual": 0.0154,
+      "priceSource": "the-odds-api-median"
+    },
+    {
+      "kickoff": "2026-08-22T14:00:00+00:00",
+      "home": "EVE",
+      "away": "CRY",
+      "homeExpectedGoals": 1.5088,
+      "awayExpectedGoals": 1.1538,
+      "homeCleanSheet": 0.3154,
+      "awayCleanSheet": 0.2212,
+      "drawResidual": 0.0188,
+      "priceSource": "the-odds-api-median"
+    },
+    {
+      "kickoff": "2026-08-22T14:00:00+00:00",
+      "home": "NFO",
+      "away": "LEE",
+      "homeExpectedGoals": 1.4582,
+      "awayExpectedGoals": 1.2158,
+      "homeCleanSheet": 0.2965,
+      "awayCleanSheet": 0.2326,
+      "drawResidual": 0.0198,
+      "priceSource": "the-odds-api-median"
+    },
+    {
+      "kickoff": "2026-08-22T16:30:00+00:00",
+      "home": "BRE",
+      "away": "TOT",
+      "homeExpectedGoals": 1.5588,
+      "awayExpectedGoals": 1.4366,
+      "homeCleanSheet": 0.2377,
+      "awayCleanSheet": 0.2104,
+      "drawResidual": 0.0221,
+      "priceSource": "the-odds-api-median"
+    },
+    {
+      "kickoff": "2026-08-23T13:00:00+00:00",
+      "home": "BHA",
+      "away": "AVL",
+      "homeExpectedGoals": 1.6409,
+      "awayExpectedGoals": 1.4023,
+      "homeCleanSheet": 0.246,
+      "awayCleanSheet": 0.1938,
+      "drawResidual": 0.0163,
+      "priceSource": "the-odds-api-median"
+    },
+    {
+      "kickoff": "2026-08-23T13:00:00+00:00",
+      "home": "MCI",
+      "away": "BOU",
+      "homeExpectedGoals": 2.4223,
+      "awayExpectedGoals": 1.0571,
+      "homeCleanSheet": 0.3475,
+      "awayCleanSheet": 0.0887,
+      "drawResidual": 0.0119,
+      "priceSource": "the-odds-api-median"
+    },
+    {
+      "kickoff": "2026-08-23T15:30:00+00:00",
+      "home": "NEW",
+      "away": "LIV",
+      "homeExpectedGoals": 1.346,
+      "awayExpectedGoals": 1.9182,
+      "homeCleanSheet": 0.1469,
+      "awayCleanSheet": 0.2603,
+      "drawResidual": 0.0185,
+      "priceSource": "the-odds-api-median"
+    },
+    {
+      "kickoff": "2026-08-24T19:00:00+00:00",
+      "home": "FUL",
+      "away": "CHE",
+      "homeExpectedGoals": 1.2663,
+      "awayExpectedGoals": 1.7769,
+      "homeCleanSheet": 0.1692,
+      "awayCleanSheet": 0.2819,
+      "drawResidual": 0.0141,
+      "priceSource": "the-odds-api-median"
+    }
+  ],
+  "refused": []
+}
