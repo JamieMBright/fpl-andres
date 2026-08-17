@@ -31,7 +31,10 @@ async function settle(page: Page): Promise<void> {
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
 }
 
-async function selectKit(page: Page, theme: "dark" | "light"): Promise<void> {
+async function selectKit(
+  page: Page,
+  theme: "dark" | "light" | "away",
+): Promise<void> {
   for (let attempt = 0; attempt < 3; attempt += 1) {
     if ((await page.locator("html").getAttribute("data-theme")) === theme) {
       return;
@@ -97,27 +100,22 @@ test("an unreachable source is reported, never invented", async ({ page }) => {
   ).toBeVisible();
 });
 
-test("the busiest page passes an accessibility scan in both kits", async ({
-  page,
-}) => {
-  await page.goto(`/plan?team=${TEAM_ID}`);
-  await settle(page);
-  // The steps and their fixture chips carried real contrast failures that only
-  // appeared once the page had finished rendering.
-  await expect(page.locator('[data-step="04"]')).toBeVisible();
+test.describe.serial("plan palette accessibility", () => {
+  for (const theme of ["dark", "light", "away"] as const) {
+    test(`the busiest page passes an accessibility scan in the ${theme} kit`, async ({
+      page,
+    }) => {
+      await page.goto(`/plan?team=${TEAM_ID}`);
+      await settle(page);
+      // The steps and their fixture chips carried real contrast failures that
+      // only appeared once the page had finished rendering.
+      await expect(page.locator('[data-step="04"]')).toBeVisible();
+      await selectKit(page, theme);
 
-  const scan = async () =>
-    (await new AxeBuilder({ page }).withTags([...WCAG]).analyze()).violations;
-
-  expect(await scan()).toEqual([]);
-
-  // The light kit is a separate palette, not a filter over the dark one, and
-  // three of the four contrast defects found so far were only in one of them.
-  await page.getByRole("button", { name: /kit$/i }).click();
-  await page.getByRole("button", { name: /kit$/i }).click();
-  await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
-
-  expect(await scan()).toEqual([]);
+      const scan = await new AxeBuilder({ page }).withTags([...WCAG]).analyze();
+      expect(scan.violations).toEqual([]);
+    });
+  }
 });
 
 test("the accessibility scan is not vacuous", async ({ page }) => {
@@ -177,18 +175,17 @@ test("privacy controls clear team data without clearing the kit", async ({
   expect(scan.violations).toEqual([]);
 });
 
-test("the trust routes pass accessibility in both kits", async ({ page }) => {
+test("the trust routes pass accessibility in all kits", async ({ page }) => {
   const scan = async () =>
     (await new AxeBuilder({ page }).withTags([...WCAG]).analyze()).violations;
 
   for (const path of ["/results", "/privacy", "/thanks?from=contact"]) {
     await page.goto(path);
     await settle(page);
-    await selectKit(page, "dark");
-    expect(await scan(), `${path} in the dark kit`).toEqual([]);
-
-    await selectKit(page, "light");
-    expect(await scan(), `${path} in the light kit`).toEqual([]);
+    for (const theme of ["dark", "light", "away"] as const) {
+      await selectKit(page, theme);
+      expect(await scan(), `${path} in the ${theme} kit`).toEqual([]);
+    }
   }
 });
 

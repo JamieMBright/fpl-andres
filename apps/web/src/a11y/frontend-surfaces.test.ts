@@ -35,12 +35,36 @@ describe("stripe custom properties", () => {
     expect(stripeGradients).toHaveLength(2);
   });
 
-  it("puts the only difference between the themes in two variables", () => {
+  it("maps each named kit to its requested vertical stripe colours", () => {
+    const third = styles.slice(styles.indexOf(":root {"));
+    const away = styles.slice(styles.indexOf(':root[data-theme="away"] {'));
+    const light = styles.slice(styles.indexOf(':root[data-theme="light"] {'));
+
+    expect(third).toContain("--fa-stripe-a: #00a13e");
+    expect(third).toContain("--fa-stripe-b: #2b2065");
+    expect(away).toContain("--fa-stripe-a: #ffff00");
+    expect(away).toContain("--fa-stripe-b: #0000ff");
+    expect(light).toContain("--fa-stripe-a: #ffffff");
+    expect(light).toContain("--fa-stripe-b: #e5da15");
+  });
+
+  it("gives the Away Kit yellow enough strength to remain yellow", () => {
     expect(styles).toContain("--fa-stripe-a-mix");
     expect(styles).toContain("--fa-stripe-b-mix");
-    const light = styles.slice(styles.indexOf(':root[data-theme="light"] {'));
-    expect(light).toContain("--fa-stripe-a-mix: 45%");
-    expect(light).toContain("--fa-stripe-b-mix: 14%");
+    const away = styles.slice(styles.indexOf(':root[data-theme="away"] {'));
+    expect(away).toContain("--fa-stripe-a-mix: 80%");
+    expect(away).toContain("--fa-stripe-b-mix: 60%");
+  });
+
+  it("grounds exposed Away Kit copy without hiding the verticals", () => {
+    const start = styles.indexOf(':root[data-theme="away"] .site-header');
+    const block = styles.slice(start, styles.indexOf("}", start));
+    expect(start).toBeGreaterThan(-1);
+    expect(block).toContain(':root[data-theme="away"] main');
+    expect(block).toContain(':root[data-theme="away"] .site-footer');
+    expect(block).toContain("background: color-mix(");
+    expect(block).toContain("var(--fa-surface-deep) 52%");
+    expect(block).toContain("transparent");
   });
 
   it("keeps the deep variant, because the two surfaces differ", () => {

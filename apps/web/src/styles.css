@@ -6,7 +6,7 @@
 :root {
   color-scheme: dark;
 
-  /* Dark — 1994 Leeds away kit, green and navy vertical stripes */
+  /* Dark — 1994 Leeds Third Kit, green and blue vertical stripes */
   --fa-surface: #16123a;
   --fa-surface-deep: #0d0a26;
   --fa-surface-rise: #221a55;
@@ -60,20 +60,22 @@
   text-rendering: optimizeLegibility;
 }
 
-/* Third — 1994 Leeds third kit, yellow and blue in vertical bars */
-:root[data-theme="third"] {
+/* Away — blue and full yellow in vertical bars */
+:root[data-theme="away"] {
   color-scheme: dark;
 
   --fa-surface: #12225c;
   --fa-surface-deep: #0b1740;
   --fa-surface-rise: #1b3080;
-  --fa-stripe-a: #f2d51a;
-  --fa-stripe-b: #12225c;
+  --fa-stripe-a: #ffff00;
+  --fa-stripe-b: #0000ff;
+  --fa-stripe-a-mix: 80%;
+  --fa-stripe-b-mix: 60%;
   --fa-ink: #fdfbe8;
   --fa-ink-deep: #efe6a8;
-  --fa-brand: #f2d51a;
+  --fa-brand: #ffff00;
   --fa-focus: #6fd0ff;
-  --fa-amber: #f2d51a;
+  --fa-amber: #ffff00;
   --fa-red: #ff8b7a;
   --fa-rule: #2c4699;
 }
@@ -85,7 +87,7 @@
   --fa-surface: #f7f5ea;
   --fa-surface-deep: #fff;
   --fa-surface-rise: #fff;
-  --fa-stripe-a: #e4e3eb;
+  --fa-stripe-a: #ffffff;
   --fa-stripe-b: #e5da15;
   --fa-ink: #4a008e;
   --fa-ink-deep: #6a3aa8;
@@ -112,8 +114,8 @@ body {
   background: var(--fa-stripes-deep);
 }
 
-/* Alternating kit stripes: away-kit green/navy in dark, home-kit
-   silver/yellow in light.
+/* Alternating kit stripes: Third Kit green/blue in dark, Home Kit
+  white/yellow in light and Away Kit blue/yellow in away.
 
    Audit item #123. This was four near-identical gradient declarations that
    differed in exactly two numbers, so changing the pattern meant changing it
@@ -290,6 +292,15 @@ a {
   padding: 0 clamp(18px, 4vw, 54px);
   background: var(--fa-stripes);
   border-inline: 1px solid var(--rule);
+}
+
+/* Full yellow makes the Away Kit read correctly, but one ink cannot contrast
+   with both yellow and blue. Ground exposed shell copy in deep blue while the
+   verticals remain full-strength in the gutters and faintly visible beneath. */
+:root[data-theme="away"] .site-header,
+:root[data-theme="away"] main,
+:root[data-theme="away"] .site-footer {
+  background: color-mix(in srgb, var(--fa-surface-deep) 52%, transparent);
 }
 
 .site-header {
@@ -2169,7 +2180,7 @@ h1[tabindex="-1"]:focus-visible {
 }
 
 /* `--signal-red` was never defined, so this was always the literal `#b00`,
-   which the away kit's near-black paper sits on at 2.3:1. `--danger` is the
+   which the Third Kit's near-black paper sits on at 2.3:1. `--danger` is the
    token that actually flips with the kit. */
 .plan-fdr-4,
 .plan-fdr-5 {
@@ -6314,9 +6325,9 @@ h1[tabindex="-1"]:focus-visible {
 /* Teletext ran its headings in flat primaries, one per section. Four steps,
    four colours, in the keeper-kit set already reserved for Ceefax surfaces.
    The keeper hues are fixed across all three kits, so each one carries the
-   foreground it is legible against; `--fa-brand` is not usable here because it
-   is a bright green in the away kit and a deep purple in the home one, and no
-   single ink reads on both. */
+  foreground it is legible against; `--fa-brand` is not usable here because it
+  is bright green in the Third Kit, deep purple in Home and full yellow in
+  Away, and no single ink reads on all three. */
 .plan-step[data-step="01"] {
   --step-hue: var(--fa-gk-lime);
   --step-ink: var(--fa-gk-black);

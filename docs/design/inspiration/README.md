@@ -11,9 +11,8 @@ Anything that helps pin down the intended feel. Categories the owner has
 mentioned so far:
 
 - **Kit palettes.** Photographs or scans of the specific kits whose colours
-  anchor the palette. The current brief anchors on the 1994 Leeds United third
-  kit (dark scheme) with a light-mode variant drawn from the yellow/blue home
-  kit of the same era.
+  anchor the palette. The current brief uses green/blue for the Third Kit dark
+  scheme, white/yellow for Home and blue/full yellow for Away.
 - **Subbuteo.** Base rings, painted figure stances, and printed team card
   typography.
 - **Teletext.** Block-cell letterforms, the 40 × 25 character grid, the six
