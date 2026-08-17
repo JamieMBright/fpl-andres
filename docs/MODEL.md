@@ -195,9 +195,11 @@ would only dilute it.
 The conversion needs a denominator, because a market clean sheet is an absolute
 probability and a route takes a multiplier. It is the mean of the fixtures the
 same books priced that week, so a market rung and a fitted rung mean the same
-shape of thing: this fixture over an average one. Saves and defensive
-contribution still come off the conceding term, because no match market prices
-either.
+shape of thing: this fixture over an average one. Saves combine the goalkeeper's
+shrunk historical save-point rate with that opponent pressure. Defensive
+contribution applies the same pressure to the odds of clearing the player's
+full CBIT/CBIRT threshold, so a harder fixture can raise the route without ever
+paying more than its two-point maximum.
 
 A double gameweek is left to the fitted strength: the rung is the sum of two
 fixtures and one price cannot fill it. So is any week the ingest has not run,
@@ -256,16 +258,19 @@ than it sounds, because 83% of the top thirty is the same either way.
 
 ## 7b. Where a bookmaker gets a say
 
-`models/market_routes.py`, `cli/publish_season_inputs.py`
+`models/market_routes.py`, `models/market_evidence.py`,
+`backtesting/bonus.py`, `cli/publish_season_inputs.py`
 
 Everything above reads history. A book reads the team sheet. It knows a striker
 has lost his place, that a summer signing has taken it, and what the manager
 said on Friday — none of which is in last season's numbers. So where a market
 prices a scoring route, its view is blended into that route at a stated weight.
 
-Goals, assists and bookings. Those are the routes the books quote per player
-and this reads, and the ingest asks for nothing else because the host bills per
-market and an unread price is a paid-for number nobody looks at.
+The live ingest reads goals, assists, bookings, reds, shots and shots on target.
+The team market supplies expected goals and clean sheets. The shared artifact
+records the source timestamp and content hash; individual rows carry their own
+observation time because a capped run can retain one fixture while refreshing
+another.
 
 Three things make the reading honest rather than convenient.
 
@@ -290,6 +295,39 @@ the book priced one of them, so there is no divisor and the record stands.
 the projector's own `expectedGoals` and `expectedAssists`, so a fixture with an
 anytime-scorer market and no assist market still counts, and leaves the assists
 where the record put them.
+
+### Shots and participation
+
+Shots and shots on target are over/under lines, not anytime yes/no prices. The
+Over and Under are de-vigged together and the Poisson tail at the quoted line is
+inverted to an expected count. Understat supplies the historical shots-per-90
+baseline. The market count can then imply minutes at that established event
+rate; the estimate is blended and labelled `experimental`, because a changed
+price can also mean changed ability or role.
+
+The same evidence is not spent twice. The goals/assists market writes the
+attacking route directly. Market-inferred participation scales the other
+minutes-dependent routes while attacking is held at its already blended value.
+For a new arrival, the baseline is the complete measured route vector of a
+player at the same position and FPL price-depth rank, not one undifferentiated
+points bucket.
+
+### Bonus and BPS
+
+The history corpus retains observed BPS. For a future match, every component
+available here is reconstructed with the official coefficients: minutes,
+goals, assists, clean sheets, goals conceded, penalty events, cards, own goals,
+shots on target, clearances, blocks, interceptions, tackles and recoveries.
+Pass completion, errors, shot location and the other Opta-only inputs are not
+set to zero. Their difference from reconstructed historical BPS is retained as
+the player's per-appearance residual.
+
+For a market-priced fixture, the expected starting elevens' BPS means and
+historical spreads are compared to estimate first-, second- and third-place
+probabilities. Those probabilities replace the historical bonus route for that
+fixture. The normal approximation does not reproduce integer BPS ties exactly,
+so this route is `experimental`; where either expected XI is incomplete, the
+historical bonus rate remains.
 
 ### Bookings
 
@@ -319,9 +357,10 @@ otherwise named in full is the market saying he is not playing — a dropped
 man, an injury announced on Friday, a rotation nobody has published. Last
 season's appearances cannot know any of it.
 
-Read downward only. Being quoted proves he is in the squad, which the record
-already implies, so a quoted player's start rate is untouched; being missing
-from a complete squad list pulls it toward zero at the same blend weight.
+Absence is read downward: being missing from a complete squad list pulls a
+player toward zero at the stated blend weight. Presence alone does not prove a
+start. A quoted event count can move participation only through the separate,
+experimental rate-to-minutes inference above.
 
 Guarded twice, because absence is only evidence when the list is complete.
 
@@ -333,13 +372,11 @@ Guarded twice, because absence is only evidence when the list is complete.
   rows, so absence would read him as dropped. The one thing worse than not
   using this is using it on the players it is wrong about.
 
-This is not the path 5.0 removed. That one read the anytime-scorer _price_,
-divided it by a positional scoring rate and called the result minutes, which
-counted one number into goals and into every route that scales with minutes.
-It also never worked: it looked up a projection field the projector did not
-publish, returned nothing for everybody and said nothing about it, which is why
-the publisher now prints what the market actually moved. Membership is a
-different fact, read once, and it appears nowhere else.
+This is not the path 5.0 removed. That path divided an anytime price by a
+positional scoring prior and then multiplied the result back into goals and
+every other route. Model 7.0 requires the player's own measured event baseline,
+keeps the market-written attacking route fixed, labels the minutes consequence
+experimental, and publishes counts for every route it actually moved.
 
 The blend lives in `publish_season_inputs` rather than in the projector because
 that is where last season's team strength meets this season's clubs and fixture
@@ -692,7 +729,9 @@ one season is not many shots per cell.
   and no positional matchup.
 - **Non-penalty xG.** FPL's expected goals include penalties, which flatters a
   penalty taker's open-play rate. Understat's `np_xg` is joined and unused.
-- **Shot volume and key passes.** Joined from Understat, unused.
+- **Key passes.** Understat's season endpoint used here does not expose them in
+  the published artifact. Shot volume is now read; key passes remain in the BPS
+  residual.
 - **Why a player is playing.** A stand-in for an injured first choice reads
   exactly like a man who won his place.
 - **Squad restructuring.** Transfers are like-for-like by position.
@@ -700,16 +739,13 @@ one season is not many shots per cell.
   rise.
 - **Posterior carry.** Models refit on decayed history each week rather than
   updating a posterior forward.
-- **Every scoring route a bookmaker prices.** §7b reads goals, assists and
-  bookings, and §5 reads the fixture's clean sheet and goals conceded. Nothing
-  prices a bonus point for a named player, so that stays on the record.
-  Defensive contribution is the one worth watching: `docs/PLAYER_MARKET_CATALOGUE.md`
-  measured on 2026-08-10 that API-Football lists `Home Player Tackles` and
-  `Away Player Tackles` and no other source lists anything defensive. Tackles
-  are one of the four actions FPL counts for a defender and one of five for
-  everyone else, so that line is partial evidence about the bar rather than a
-  price of it, and reading it would need a model of the other three that
-  nothing here can calibrate yet.
+- **Direct markets for every route.** Own goals, penalty misses and penalty
+  saves have no dependable named-player market in the measured catalogue, so
+  they remain shrunk historical rates. API-Football lists player tackles and
+  goalkeeper saves, but its fixture probe has not yet observed a Premier League
+  selection shape that can be crosswalked safely. Tackles alone are never
+  presented as DefCon: the model uses FPL's full clearances, blocks,
+  interceptions, tackles and recoveries history, then team-market pressure.
 
 ---
 
@@ -733,6 +769,8 @@ one season is not many shots per cell.
 | §4 Scoring routes priced              | `models/expected_points.py`  |
 | §5 Fixtures change routes             | `backtesting/fixtures.py`    |
 | §7b Bookmaker player prices           | `models/market_routes.py`    |
+| §7b Evidence and BPS ranking          | `models/market_evidence.py`  |
+| §7b Historical BPS residual           | `backtesting/bonus.py`       |
 | §11 Team goals                        | `models/dixon_coles.py`      |
 | §11 Out-of-position deployment        | `models/deployment.py`       |
 | §11b Shot volume and quality          | `models/shot_profile.py`     |

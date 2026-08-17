@@ -230,6 +230,7 @@ def test_no_module_is_imported_only_by_its_own_tests() -> None:
         "sweep_managers",
         "track_model",
         "validate",
+        "validate_lineup_prior",
         "verify_veterans",
         "regret",
         "rivals",

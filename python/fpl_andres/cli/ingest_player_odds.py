@@ -18,10 +18,11 @@ from __future__ import annotations
 import argparse
 import json
 import os
-from collections.abc import Sequence
-from dataclasses import asdict, dataclass
+from collections.abc import Mapping, Sequence
+from dataclasses import asdict, dataclass, replace
 from datetime import UTC, datetime
 from pathlib import Path
+from typing import Any
 
 import httpx
 
@@ -45,14 +46,15 @@ BOOTSTRAP = "https://fantasy.premierleague.com/api/bootstrap-static/"
 #: Measured 2026-08-10 rather than assumed: a survey request asking for eleven
 #: markets across one region, of which the book offered four, was billed four.
 #: So the charge is per market actually returned, not per market asked for, and
-#: the ingest's two markets cost two on a fixture where both are open and
-#: nothing on one where neither is. Thirty therefore buys about fifteen priced
-#: fixtures -- a full gameweek -- and costs nothing on the weeks before the
-#: books open player props at all.
+#: the ingest asks for six markets and pays only for those returned. A capped
+#: run cannot cover ten fully open fixtures, so it visits uncovered fixtures
+#: before refreshing retained ones. Several daily runs then cover the gameweek
+#: without repeatedly spending the allowance on the same first fixture.
 #:
-#: Thirty scheduled runs at this budget cost at most 450, and the weekly survey
-#: takes another 48. `tests/test_api_budgets.py` holds the shared sum under 500.
-DEFAULT_BUDGET = 15
+#: Thirty scheduled runs at the eight-credit threshold cost 240 before a final
+#: request's bounded overshoot, and the weekly survey takes about 48.
+#: `tests/test_api_budgets.py` holds the declared shared sum under 500.
+DEFAULT_BUDGET = 8
 DEFAULT_DEADLINES = Path("apps/web/src/data/deadlines.json")
 DEFAULT_WINDOW_DAYS = 7
 
@@ -147,9 +149,104 @@ def _parser() -> argparse.ArgumentParser:
 
 def _serialise(row: PlayerMatchOdds) -> dict[str, object]:
     payload = asdict(row)
-    kickoff = payload.pop("kickoff")
-    payload["kickoff"] = kickoff.isoformat() if kickoff is not None else None
+    for key in ("kickoff", "observed_at"):
+        value = payload.pop(key)
+        payload[key] = value.isoformat() if value is not None else None
     return payload
+
+
+FixtureKey = tuple[str, str, datetime]
+
+
+def _timestamp(value: object) -> datetime | None:
+    if not isinstance(value, str):
+        return None
+    try:
+        parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
+    except ValueError:
+        return None
+    return parsed.astimezone(UTC)
+
+
+def _event_key(event: Mapping[str, Any]) -> FixtureKey | None:
+    home = event.get("home_team")
+    away = event.get("away_team")
+    kickoff = _timestamp(event.get("commence_time"))
+    if not isinstance(home, str) or not isinstance(away, str) or kickoff is None:
+        return None
+    return home, away, kickoff
+
+
+def _row_key(row: PlayerMatchOdds) -> FixtureKey | None:
+    if row.kickoff is None:
+        return None
+    return row.home_team, row.away_team, row.kickoff.astimezone(UTC)
+
+
+def prioritise_uncovered_events(
+    events: Sequence[Mapping[str, Any]],
+    previous: Sequence[PlayerMatchOdds],
+) -> list[Mapping[str, Any]]:
+    """Soonest uncovered fixtures first, then refresh the covered fixtures."""
+    covered = {key for row in previous if (key := _row_key(row)) is not None}
+    ordered = by_kickoff(events)
+    return sorted(ordered, key=lambda event: _event_key(event) in covered)
+
+
+def merge_fixture_rows(
+    previous: Sequence[PlayerMatchOdds],
+    fresh: Sequence[PlayerMatchOdds],
+    current_fixtures: set[FixtureKey],
+) -> list[PlayerMatchOdds]:
+    """Replace freshly quoted fixtures and retain still-current older quotes."""
+    refreshed = {key for row in fresh if (key := _row_key(row)) is not None}
+    retained = [
+        row
+        for row in previous
+        if (key := _row_key(row)) in current_fixtures and key not in refreshed
+    ]
+    return [*retained, *fresh]
+
+
+def _read_previous(path: Path) -> list[PlayerMatchOdds]:
+    if not path.exists():
+        return []
+    artifact = read_json_file(path)
+    fallback = _timestamp(artifact.get("fetchedAt"))
+    rows: list[PlayerMatchOdds] = []
+    for raw in artifact.get("players", []):
+        if not isinstance(raw, dict):
+            continue
+        home = raw.get("home_team")
+        away = raw.get("away_team")
+        name = raw.get("quoted_name")
+        if not isinstance(home, str) or not isinstance(away, str) or not isinstance(name, str):
+            continue
+        rows.append(
+            PlayerMatchOdds(
+                element_id=(
+                    raw.get("element_id") if isinstance(raw.get("element_id"), int) else None
+                ),
+                quoted_name=name,
+                home_team=home,
+                away_team=away,
+                kickoff=_timestamp(raw.get("kickoff")),
+                club=raw.get("club") if isinstance(raw.get("club"), str) else None,
+                anytime_goal=_optional_number(raw.get("anytime_goal")),
+                anytime_assist=_optional_number(raw.get("anytime_assist")),
+                any_card=_optional_number(raw.get("any_card")),
+                red_card=_optional_number(raw.get("red_card")),
+                shots=_optional_number(raw.get("shots")),
+                shots_on_target=_optional_number(raw.get("shots_on_target")),
+                observed_at=_timestamp(raw.get("observed_at")) or fallback,
+                books=int(raw.get("books", 0)),
+            )
+        )
+    return rows
+
+
+def _optional_number(value: object) -> float | None:
+    return float(value) if isinstance(value, (int, float)) and not isinstance(value, bool) else None
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -179,6 +276,10 @@ def main(argv: Sequence[str] | None = None) -> int:
         print("THE_ODDS_API_KEY is not set; nothing to fetch", flush=True)
         return 1
 
+    output_path = Path(args.output)
+    previous = _read_previous(output_path)
+    fetched_at = datetime.now(UTC)
+
     with httpx.Client(timeout=ODDS_FEED, follow_redirects=True) as client:
         # Listing is free, so this is the cheap read of what the key has left
         # before a single credit is spent.
@@ -189,7 +290,11 @@ def main(argv: Sequence[str] | None = None) -> int:
         offered = 0
         spent = 0
         closing = opening
-        for event in by_kickoff(events):
+        current_fixtures = {
+            fixture_key for event in events if (fixture_key := _event_key(event)) is not None
+        }
+        visited = 0
+        for event in prioritise_uncovered_events(list(events), previous):
             event_id = event.get("id")
             if not isinstance(event_id, str):
                 continue
@@ -200,6 +305,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                 print(f"  stopping: this run's budget of {args.budget} requests is spent")
                 break
             payload, closing = fetch_event_odds(client, key, event_id)
+            visited += 1
             # A host that reports no cost still charged something, so a fixture
             # counts for one rather than nothing. Otherwise a missing header
             # turns the budget off and the run prices the whole division.
@@ -211,7 +317,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                 f"  {payload.get('home_team')} v {payload.get('away_team')}: "
                 f"{len(read)} players quoted \u2014 {describe_event(payload)}"
             )
-            rows.extend(read)
+            rows.extend(replace(row, observed_at=fetched_at) for row in read)
 
         # The documented budget of one request per fixture was never measured.
         # This is the measurement, and the schedule should be sized off it.
@@ -231,7 +337,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         for team in static.get("teams", [])
         if isinstance(team, dict) and "id" in team and "short_name" in team
     }
-    matched, unmatched = crosswalk(rows, static.get("elements", []), clubs)
+    merged = merge_fixture_rows(previous, rows, current_fixtures)
+    matched, unmatched = crosswalk(merged, static.get("elements", []), clubs)
 
     priced = [row for row in matched if row.priced]
     named = [row for row in priced if row.element_id is not None]
@@ -261,13 +368,20 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     artifact = {
         "season": args.season,
-        "fetchedAt": datetime.now(UTC).isoformat(),
+        "fetchedAt": fetched_at.isoformat(),
         "source": "the-odds-api",
         "markets": list(PLAYER_MARKETS),
+        "coverage": {
+            "fixturesListed": len(current_fixtures),
+            "fixturesVisitedThisRun": visited,
+            "fixturesWithQuotes": len(
+                {fixture_key for row in priced if (fixture_key := _row_key(row)) is not None}
+            ),
+        },
         "unmatched": list(unmatched),
         "players": [_serialise(row) for row in priced],
     }
-    path = Path(args.output)
+    path = output_path
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(artifact, indent=2) + "\n", encoding="utf-8")
     print(f"Written to {path}")

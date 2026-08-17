@@ -17,6 +17,10 @@ from collections.abc import Mapping, Sequence
 from typing import Any
 
 from fpl_andres.backtesting.fixtures import TeamStrength, route_adjustment
+from fpl_andres.models.market_evidence import (
+    pressure_adjusted_defcon,
+    pressure_adjusted_saves,
+)
 
 __all__ = [
     "ROUTE_KEYS",
@@ -184,14 +188,17 @@ def fixture_points_from_routes(
         + float(routes["attacking"]) * adjustment.attacking
         + float(routes["cleanSheet"]) * adjustment.clean_sheet
         + float(routes["bonus"])
-        + float(routes["saves"]) * adjustment.saves
+        + pressure_adjusted_saves(float(routes["saves"]), adjustment.saves)
         # Conceding points are negative, so a leakier fixture makes them worse.
         + float(routes["conceding"]) * adjustment.conceding
         + float(routes["yellowCards"])
         + float(routes["redCards"])
         + float(routes["ownGoals"])
         + float(routes["penaltiesMissed"])
-        + float(routes["defensiveContribution"]) * adjustment.defensive_contribution
+        + pressure_adjusted_defcon(
+            float(routes["defensiveContribution"]),
+            adjustment.defensive_contribution,
+        )
     )
 
 

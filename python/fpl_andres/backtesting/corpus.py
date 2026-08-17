@@ -60,6 +60,7 @@ class ElementRow:
     clean_sheets: int = 0
     saves: int = 0
     bonus: int = 0
+    bps: int = 0
     goals_conceded: int = 0
     yellow_cards: int = 0
     red_cards: int = 0
@@ -188,6 +189,7 @@ class SeasonCorpus:
                             row.clean_sheets,
                             row.saves,
                             row.bonus,
+                            row.bps,
                             row.goals_conceded,
                             row.yellow_cards,
                             row.red_cards,
@@ -339,6 +341,7 @@ def load_season(client: SupabaseRestClient, season: str) -> SeasonCorpus:
                 clean_sheets=int(row.get("clean_sheets") or 0),
                 saves=int(row.get("saves") or 0),
                 bonus=int(row.get("bonus") or 0),
+                bps=int(row.get("bps") or 0),
                 goals_conceded=int(row.get("goals_conceded") or 0),
                 yellow_cards=int(row.get("yellow_cards") or 0),
                 red_cards=int(row.get("red_cards") or 0),

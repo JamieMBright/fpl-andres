@@ -33,6 +33,7 @@ on:
   push:
     paths:
       - ".github/workflows/survey-player-props.yml"
+      - "python/fpl_andres/adapters/player_props.py"
   workflow_dispatch:
     inputs:
       source:

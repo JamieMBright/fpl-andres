@@ -8,6 +8,8 @@ that raised and took the other six down with it.
 
 from __future__ import annotations
 
+from datetime import UTC, datetime
+
 import httpx
 import pytest
 
@@ -15,6 +17,7 @@ from fpl_andres.adapters.player_props import (
     PROP_SOURCES,
     ProbeResult,
     PropSource,
+    _api_football_season,
     field_paths,
     probe_source,
     source_by_key,
@@ -302,6 +305,10 @@ class TestWhetherApiFootballPricesFootballers:
                 client,
                 env={"API_FOOTBALL_API_KEY": "k"},
             ).note
+
+    def test_the_fixture_query_uses_the_campaign_start_year(self) -> None:
+        assert _api_football_season(datetime(2026, 8, 17, tzinfo=UTC)) == "2026"
+        assert _api_football_season(datetime(2027, 1, 17, tzinfo=UTC)) == "2026"
 
     def test_a_player_bet_is_named_with_a_selection_off_it(self) -> None:
         note = self._probe(

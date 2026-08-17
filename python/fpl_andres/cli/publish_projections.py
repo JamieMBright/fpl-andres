@@ -123,6 +123,8 @@ class ProjectionEntry(TypedDict):
     # the other. Per match, against an average opponent, like everything else here.
     expectedGoals: float
     expectedAssists: float
+    expectedBps: float | None
+    bpsDeviation: float | None
     probabilityAppear: float
     probabilityStart: float
     appearances: int
@@ -181,6 +183,12 @@ def _entry(projection: MatchProjection) -> ProjectionEntry:
         # Three decimals because a fringe player's rate lives in the third one.
         "expectedGoals": round(nineties * projection.rates.goals_per_90, 3),
         "expectedAssists": round(nineties * projection.rates.assists_per_90, 3),
+        "expectedBps": (
+            round(projection.expected_bps, 3) if projection.expected_bps is not None else None
+        ),
+        "bpsDeviation": (
+            round(projection.bps_deviation, 3) if projection.bps_deviation is not None else None
+        ),
         "probabilityAppear": round(projection.minutes.probability_appear, 3),
         "probabilityStart": round(projection.minutes.probability_sixty_minutes, 3),
         "appearances": shape.appearances,

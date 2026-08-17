@@ -3,6 +3,8 @@ import { describe, expect, it } from "vitest";
 import openingSquad from "./data/opening-squad.json";
 import inputs from "./data/season-inputs.json";
 import {
+  bonusPointsAtEvent,
+  defconPointsAtEvent,
   fixtureAtEvent,
   lookaheadPointsFor,
   solveSeason,
@@ -59,6 +61,21 @@ function season() {
 }
 
 describe("season inputs artifact", () => {
+  it("uses a fixture BPS override instead of adding it to historical bonus", () => {
+    expect(bonusPointsAtEvent(0.6, 1, 1.4)).toBe(1.4);
+  });
+
+  it("keeps historical bonus when no BPS override was published", () => {
+    expect(bonusPointsAtEvent(0.6, 2, undefined)).toBe(1.2);
+  });
+
+  it("raises DefCon under pressure without exceeding its two-point route", () => {
+    const adjusted = defconPointsAtEvent(0.8, 1.8, 1);
+
+    expect(adjusted).toBeGreaterThan(0.8);
+    expect(adjusted).toBeLessThan(2);
+  });
+
   it("carries a fixture ladder for every club a player belongs to", () => {
     const clubs = new Set(SEASON_PLAYERS.map((player) => player.club));
     for (const club of clubs) {

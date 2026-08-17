@@ -25,6 +25,7 @@ from __future__ import annotations
 import os
 from collections.abc import Callable, Iterable, Mapping, Sequence
 from dataclasses import dataclass, field
+from datetime import UTC, datetime
 from typing import Any
 
 import httpx
@@ -343,6 +344,12 @@ _PLAYER_BET_WORDS: tuple[str, ...] = (
 _API_FOOTBALL_LEAGUE = "39"
 
 
+def _api_football_season(at: datetime | None = None) -> str:
+    """API-Football keys an English campaign by its starting calendar year."""
+    current = at if at is not None else datetime.now(UTC)
+    return str(current.year if current.month >= 7 else current.year - 1)
+
+
 def _is_player_bet(name: str) -> bool:
     lowered = name.lower()
     return any(word in lowered for word in _PLAYER_BET_WORDS)
@@ -393,7 +400,11 @@ def _api_football_fixture_bets(client: httpx.Client, headers: Mapping[str, str])
     season = _get(
         client,
         "https://v3.football.api-sports.io/fixtures",
-        params={"league": _API_FOOTBALL_LEAGUE, "next": "1"},
+        params={
+            "league": _API_FOOTBALL_LEAGUE,
+            "season": _api_football_season(),
+            "next": "1",
+        },
         headers=headers,
     )
     if season.status_code >= 400:

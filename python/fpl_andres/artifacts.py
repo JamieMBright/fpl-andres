@@ -23,6 +23,10 @@ from typing import Final
 #: with the four events it bundled, so a card price has something to price.
 PROJECTIONS_SCHEMA_VERSION: Final = 2
 
+#: Browser season-solver inputs. Version 3 adds route evidence/provenance,
+#: market-informed participation, BPS distributions and per-event bonus overrides.
+SEASON_INPUTS_SCHEMA_VERSION: Final = 3
+
 #: The header of the projections artifact, published separately so a component
 #: needing only the season label does not pull the whole player list.
 PROJECTIONS_META_SCHEMA_VERSION: Final = 1
@@ -41,5 +45,6 @@ __all__ = [
     "OPENING_SQUAD_SCHEMA_VERSION",
     "PROJECTIONS_META_SCHEMA_VERSION",
     "PROJECTIONS_SCHEMA_VERSION",
+    "SEASON_INPUTS_SCHEMA_VERSION",
     "UNDERSTAT_SCHEMA_VERSION",
 ]

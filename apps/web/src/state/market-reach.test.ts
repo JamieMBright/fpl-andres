@@ -20,9 +20,13 @@ function reach(over: Partial<MarketReach> = {}): MarketReach {
     playersQuoted: 0,
     cardRoutes: 0,
     playersQuotedForCards: 0,
+    shotRoutes: 0,
+    playersQuotedForShots: 0,
     startRatesCut: 0,
+    participationInferred: 0,
     squadsNamed: 0,
     fixtureRungs: 0,
+    bonusEvents: 0,
     ...over,
   };
 }
@@ -42,8 +46,11 @@ describe("what the market actually moved", () => {
   it("does not call it silent on a single blended route", () => {
     expect(marketIsSilent(reach({ attackingRoutes: 1 }))).toBe(false);
     expect(marketIsSilent(reach({ cardRoutes: 1 }))).toBe(false);
+    expect(marketIsSilent(reach({ shotRoutes: 1 }))).toBe(false);
     expect(marketIsSilent(reach({ startRatesCut: 1 }))).toBe(false);
+    expect(marketIsSilent(reach({ participationInferred: 1 }))).toBe(false);
     expect(marketIsSilent(reach({ fixtureRungs: 1 }))).toBe(false);
+    expect(marketIsSilent(reach({ bonusEvents: 1 }))).toBe(false);
   });
 
   it("says plainly that nothing is switched on rather than describing the plan", () => {
@@ -59,13 +66,20 @@ describe("what the market actually moved", () => {
         attackingRoutes: 240,
         playersQuoted: 300,
         cardRoutes: 90,
+        shotRoutes: 40,
+        playersQuotedForShots: 55,
+        participationInferred: 12,
         fixtureRungs: 10,
+        bonusEvents: 8,
       }),
     );
 
     expect(said).toContain("240 attacking routes from 300 players quoted");
     expect(said).toContain("90 card routes");
+    expect(said).toContain("40 shot routes from 55 players quoted");
+    expect(said).toContain("12 participation estimates");
     expect(said).toContain("10 fixture rungs");
+    expect(said).toContain("8 BPS-ranked bonus events");
     expect(said).not.toContain("switched on");
   });
 

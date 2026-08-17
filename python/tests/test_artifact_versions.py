@@ -23,6 +23,7 @@ from fpl_andres.artifacts import (
     OPENING_SQUAD_SCHEMA_VERSION,
     PROJECTIONS_META_SCHEMA_VERSION,
     PROJECTIONS_SCHEMA_VERSION,
+    SEASON_INPUTS_SCHEMA_VERSION,
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -31,6 +32,11 @@ TS_VERSIONS = REPO_ROOT / "apps" / "web" / "src" / "state" / "artifact-version.t
 
 ARTIFACTS = (
     ("projections.json", PROJECTIONS_SCHEMA_VERSION, "PROJECTIONS_SCHEMA_VERSION"),
+    (
+        "season-inputs.json",
+        SEASON_INPUTS_SCHEMA_VERSION,
+        "SEASON_INPUTS_SCHEMA_VERSION",
+    ),
     (
         "projections-meta.json",
         PROJECTIONS_META_SCHEMA_VERSION,
@@ -89,7 +95,11 @@ def test_every_publisher_stamps_the_artifact_it_writes() -> None:
     # A publisher that forgot the stamp would write an artifact the reader
     # refuses, which is the right failure but a late one. This catches it
     # without running either CLI.
-    for module in ("publish_projections.py", "publish_opening_squad.py"):
+    for module in (
+        "publish_projections.py",
+        "publish_opening_squad.py",
+        "publish_season_inputs.py",
+    ):
         source = (REPO_ROOT / "python" / "fpl_andres" / "cli" / module).read_text(encoding="utf-8")
         assert "schemaVersion" in source, f"{module} does not stamp its artifact"
         assert "SCHEMA_VERSION" in source, f"{module} hardcodes a version"

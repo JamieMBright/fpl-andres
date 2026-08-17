@@ -46,6 +46,12 @@ class PlayerMatchOdds:
     any_card: float | None = None
     #: P(shown a red), open on fewer fixtures than the card market.
     red_card: float | None = None
+    #: Expected attempts, inferred from an over/under player line.
+    shots: float | None = None
+    #: Expected attempts on target, inferred from an over/under player line.
+    shots_on_target: float | None = None
+    #: When this fixture's prices were observed, so retained rows expose age.
+    observed_at: datetime | None = None
     #: How many books were averaged into the numbers above.
     books: int = 0
 
@@ -59,6 +65,8 @@ class PlayerMatchOdds:
                 self.anytime_assist,
                 self.any_card,
                 self.red_card,
+                self.shots,
+                self.shots_on_target,
             )
         )
 

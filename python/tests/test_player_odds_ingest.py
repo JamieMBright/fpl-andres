@@ -7,6 +7,8 @@ behaviour these pin.
 
 from __future__ import annotations
 
+import pytest
+
 from fpl_andres.adapters.player_crosswalk import crosswalk, fold_name
 from fpl_andres.adapters.the_odds_api import Quota, by_kickoff, describe_event, read_event
 from fpl_andres.models.player_odds import PlayerMatchOdds
@@ -63,6 +65,34 @@ def test_a_complete_two_way_book_is_devigged() -> None:
     # Implied is 0.526 either way; the margin comes out and leaves a half.
     assert rows[0].anytime_goal is not None
     assert abs(rows[0].anytime_goal - 0.5) < 1e-6
+
+
+def test_a_shots_on_target_line_becomes_an_expected_count() -> None:
+    rows = read_event(
+        _event(
+            _book(
+                "bet365",
+                "player_shots_on_target",
+                [
+                    {
+                        "description": "Bukayo Saka",
+                        "name": "Over",
+                        "price": 2.0,
+                        "point": 1.5,
+                    },
+                    {
+                        "description": "Bukayo Saka",
+                        "name": "Under",
+                        "price": 2.0,
+                        "point": 1.5,
+                    },
+                ],
+            )
+        )
+    )
+
+    assert len(rows) == 1
+    assert rows[0].shots_on_target == pytest.approx(1.678, abs=0.001)
 
 
 def test_a_book_quoting_no_margin_does_not_stop_the_fixture() -> None:
@@ -247,6 +277,20 @@ class TestSpendingTheMonthlyBudget:
 ELEMENTS = [
     {"id": 1, "first_name": "Kai", "second_name": "Havertz", "web_name": "Havertz", "team": 1},
     {"id": 2, "first_name": "Bukayo", "second_name": "Saka", "web_name": "Saka", "team": 1},
+    {
+        "id": 5,
+        "first_name": "Benjamin",
+        "second_name": "White",
+        "web_name": "White",
+        "team": 1,
+    },
+    {
+        "id": 6,
+        "first_name": "Gabriel",
+        "second_name": "dos Santos Magalhães",
+        "web_name": "Gabriel",
+        "team": 1,
+    },
     # Two Rices: a surname alone must not decide between them.
     {"id": 3, "first_name": "Declan", "second_name": "Rice", "web_name": "Rice", "team": 1},
     {"id": 4, "first_name": "Sean", "second_name": "Rice", "web_name": "Rice", "team": 2},
@@ -270,6 +314,48 @@ def test_an_unambiguous_name_is_matched_and_given_its_club() -> None:
     assert unmatched == ()
     assert matched[0].element_id == 1
     assert matched[0].club == "ARS"
+
+
+def test_a_matched_row_keeps_every_market_probability() -> None:
+    row = PlayerMatchOdds(
+        element_id=None,
+        quoted_name="Kai Havertz",
+        home_team="Arsenal",
+        away_team="Bournemouth",
+        kickoff=None,
+        anytime_goal=0.3,
+        anytime_assist=0.2,
+        any_card=0.1,
+        red_card=0.01,
+        shots=2.4,
+        shots_on_target=1.2,
+        books=3,
+    )
+
+    matched, unmatched = crosswalk([row], ELEMENTS, {1: "ARS", 2: "BOU"})
+
+    assert unmatched == ()
+    assert matched[0].anytime_goal == 0.3
+    assert matched[0].anytime_assist == 0.2
+    assert matched[0].any_card == 0.1
+    assert matched[0].red_card == 0.01
+    assert matched[0].shots == 2.4
+    assert matched[0].shots_on_target == 1.2
+    assert matched[0].books == 3
+
+
+def test_a_controlled_short_first_name_matches_the_full_fpl_name() -> None:
+    matched, unmatched = crosswalk([_row("Ben White")], ELEMENTS, {1: "ARS"})
+
+    assert unmatched == ()
+    assert matched[0].element_id == 5
+
+
+def test_a_reversed_provider_name_matches_when_the_tokens_are_unique() -> None:
+    matched, unmatched = crosswalk([_row("Magalhaes Gabriel")], ELEMENTS, {1: "ARS"})
+
+    assert unmatched == ()
+    assert matched[0].element_id == 6
 
 
 def test_a_shared_surname_is_reported_rather_than_guessed() -> None:

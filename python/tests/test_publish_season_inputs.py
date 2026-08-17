@@ -71,6 +71,9 @@ PROJECTIONS: dict[str, Any] = {
             # 0.34 * 5 + 0.1 * 3 = 2.0, the attacking route below.
             "expectedGoals": 0.34,
             "expectedAssists": 0.1,
+            "expectedMinutes": 75.0,
+            "expectedBps": 20.0,
+            "bpsDeviation": 5.0,
             "routes": ROUTES,
         },
     ],
@@ -118,6 +121,7 @@ def _run(
     elements: list[dict[str, Any]],
     odds: dict[str, Any] | None = None,
     fixture_odds: dict[str, Any] | None = None,
+    understat: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     bootstrap = {**BOOTSTRAP, "elements": elements}
     projections = tmp_path / "projections.json"
@@ -137,25 +141,31 @@ def _run(
         match_odds.write_text(json.dumps(fixture_odds), encoding="utf-8")
     else:
         match_odds.unlink(missing_ok=True)
+    understat_path = tmp_path / "understat.json"
+    if understat is not None:
+        understat_path.write_text(json.dumps(understat), encoding="utf-8")
+    else:
+        understat_path.unlink(missing_ok=True)
 
     def fake_get(url: str) -> Any:
         return bootstrap if "bootstrap" in url else FIXTURES
 
     with patch.object(publish_season_inputs, "_get", fake_get):
-        code = publish_season_inputs.main(
-            [
-                "--output",
-                str(output),
-                "--projections",
-                str(projections),
-                "--opening-squad",
-                str(opening),
-                "--player-odds",
-                str(player_odds),
-                "--fixture-odds",
-                str(match_odds),
-            ]
-        )
+        arguments = [
+            "--output",
+            str(output),
+            "--projections",
+            str(projections),
+            "--opening-squad",
+            str(opening),
+            "--player-odds",
+            str(player_odds),
+            "--fixture-odds",
+            str(match_odds),
+        ]
+        if understat is not None:
+            arguments.extend(("--understat", str(understat_path)))
+        code = publish_season_inputs.main(arguments)
 
     assert code == 0
     return json.loads(output.read_text(encoding="utf-8"))
@@ -307,8 +317,8 @@ class TestTheMarketNamingASquad:
 
         assert thin == recorded
 
-    def test_a_quoted_player_keeps_his_record(self, tmp_path: Path) -> None:
-        """Being priced proves he is available, which the record already implies."""
+    def test_a_quoted_player_can_raise_market_inferred_participation(self, tmp_path: Path) -> None:
+        """The price supplies an experimental minutes signal as well as membership."""
         recorded = _start_rate(_run(tmp_path, [_element()]))
         named = _start_rate(
             _run(
@@ -318,7 +328,7 @@ class TestTheMarketNamingASquad:
             )
         )
 
-        assert named == recorded
+        assert named > recorded
 
     def test_one_unmatched_name_disables_the_whole_signal(self, tmp_path: Path) -> None:
         """An unmatched name was priced and is missing, so absence lies about him."""
@@ -390,7 +400,17 @@ class TestTheMarketPricingABooking:
     def test_a_red_quote_without_a_card_quote_is_refused(self, tmp_path: Path) -> None:
         """Reds are a twentieth of bookings; alone they describe almost nothing."""
         recorded = _cards(_run(tmp_path, [_element()]))
-        red_only = _cards(_run(tmp_path, [_element()], odds=_odds(red_card=0.05)))
+        red_only = _cards(
+            _run(
+                tmp_path,
+                [_element()],
+                odds=_odds(
+                    red_card=0.05,
+                    anytime_goal=None,
+                    anytime_assist=None,
+                ),
+            )
+        )
 
         assert red_only == recorded
 
@@ -529,7 +549,7 @@ class TestTheMarketPricingAFixture:
 
         with (
             patch.object(publish_season_inputs, "_get", fake_get),
-            pytest.raises(ValueError, match="publishes no expectedGoals"),
+            pytest.raises(ValueError, match=r"publishes no .*expectedGoals"),
         ):
             publish_season_inputs.main(
                 [
@@ -608,6 +628,99 @@ def test_players_without_a_scoring_record_are_kept_on_a_role_prior(
     assert by_code[1001]["rated"] is True
     assert by_code[9999]["rated"] is False
     assert by_code[9999]["basePoints"] == by_code[1001]["basePoints"]
+    assert by_code[9999]["routes"] == by_code[1001]["routes"]
+    assert by_code[9999]["evidence"]["all"] == "rolePrior"
+
+
+def test_a_debutants_market_price_moves_attack_and_participation(tmp_path: Path) -> None:
+    elements = [_element(), _element(id=12, code=9999)]
+    unquoted = _run(tmp_path, elements)
+    quoted = _run(tmp_path, elements, odds=_odds(element_id=12))
+    baseline = next(player for player in unquoted["players"] if player["code"] == 9999)
+    priced = next(player for player in quoted["players"] if player["code"] == 9999)
+
+    assert priced["routes"]["attacking"] > baseline["routes"]["attacking"]
+    assert priced["startRate"] > baseline["startRate"]
+    assert priced["basePoints"] == pytest.approx(sum(priced["routes"].values()), abs=0.001)
+    assert priced["evidence"]["appearance"] == "marketParticipation"
+
+
+def test_shot_markets_blend_understat_history_into_minutes_and_bps(tmp_path: Path) -> None:
+    understat = {
+        "players": [
+            {
+                "code": 1001,
+                "shotsPer90": 2.0,
+            }
+        ]
+    }
+    unquoted = _run(tmp_path, [_element()], understat=understat)
+    quoted = _run(
+        tmp_path,
+        [_element()],
+        odds=_odds(
+            anytime_goal=None,
+            anytime_assist=None,
+            shots=3.0,
+            shots_on_target=1.5,
+        ),
+        understat=understat,
+    )
+    baseline = unquoted["players"][0]
+    priced = quoted["players"][0]
+
+    assert priced["startRate"] > baseline["startRate"]
+    assert priced["evidence"]["bonus"] == "shotBps"
+    assert "expectedBps" not in priced
+
+
+def test_a_market_priced_fixture_converts_bps_rank_into_bonus_xpts() -> None:
+    players = []
+    for index in range(11):
+        players.extend(
+            [
+                {
+                    "id": index + 1,
+                    "teamId": 1,
+                    "club": "ARS",
+                    "positionId": 3,
+                    "startRate": 0.9 - index * 0.02,
+                    "expectedBps": 30.0 - index,
+                    "bpsDeviation": 4.0,
+                    "expectedGoals": 0.5 - index * 0.02,
+                    "expectedAssists": 0.1,
+                    "routes": {"cleanSheet": 0.2},
+                },
+                {
+                    "id": index + 12,
+                    "teamId": 2,
+                    "club": "LIV",
+                    "positionId": 3,
+                    "startRate": 0.9 - index * 0.02,
+                    "expectedBps": 18.0 - index,
+                    "bpsDeviation": 4.0,
+                    "expectedGoals": 0.2 - index * 0.01,
+                    "expectedAssists": 0.1,
+                    "routes": {"cleanSheet": 0.2},
+                },
+            ]
+        )
+    ladder = {
+        "ARS": {"attacking": [1.2], "defensive": [1.1]},
+        "LIV": {"attacking": [0.8], "defensive": [0.9]},
+    }
+
+    overrides = publish_season_inputs._bonus_overrides(
+        players,
+        [1],
+        [FIXTURES[0]],
+        {1},
+        ladder,
+    )
+
+    assert overrides["1"]["1"] > overrides["1"]["2"]
+    assert overrides["1"]["2"] > overrides["1"]["22"]
+    assert all(0.0 <= points <= 3.0 for points in overrides["1"].values())
 
 
 def test_unavailable_players_are_dropped(tmp_path: Path) -> None:
@@ -649,6 +762,30 @@ def test_the_pool_is_trimmed_and_says_so(tmp_path: Path) -> None:
     assert payload["recordSeason"] == "2025-26"
 
 
+def test_every_input_publishes_timestamped_content_provenance(tmp_path: Path) -> None:
+    payload = _run(
+        tmp_path,
+        [_element()],
+        odds={
+            **_odds(),
+            "source": "the-odds-api",
+            "fetchedAt": "2026-08-17T09:50:00+00:00",
+        },
+        fixture_odds=_match_odds(),
+        understat={
+            "source": "understat",
+            "generatedAt": "2026-08-01T12:03:03+00:00",
+            "players": [{"code": 1001, "shotsPer90": 2.0}],
+        },
+    )
+
+    evidence = payload["evidence"]
+    for key in ("historicalProjection", "playerMarkets", "fixtureMarkets", "understat"):
+        assert evidence[key]["contentHash"].startswith("sha256:")
+    assert evidence["playerMarkets"]["updatedAt"] == "2026-08-17T09:50:00+00:00"
+    assert evidence["fixtureMarkets"]["level"] == "observed"
+
+
 def test_the_opening_squad_survives_the_trim(tmp_path: Path) -> None:
     """The browser solve starts from the published squad, so a cheap bench
     enabler who would never make a top-forty-by-points cut still has to be in
@@ -664,12 +801,22 @@ def test_the_opening_squad_survives_the_trim(tmp_path: Path) -> None:
                         "code": 1001,
                         "expectedPoints": 5.0,
                         "probabilityStart": 0.9,
+                        "expectedMinutes": 75.0,
+                        "expectedGoals": 0.34,
+                        "expectedAssists": 0.1,
+                        "expectedBps": 20.0,
+                        "bpsDeviation": 5.0,
                         "routes": ROUTES,
                     },
                     {
                         "code": 1002,
                         "expectedPoints": 0.1,
                         "probabilityStart": 0.4,
+                        "expectedMinutes": 35.0,
+                        "expectedGoals": 0.05,
+                        "expectedAssists": 0.02,
+                        "expectedBps": 8.0,
+                        "bpsDeviation": 3.0,
                         "routes": ROUTES,
                     },
                 ],

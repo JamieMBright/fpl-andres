@@ -6,7 +6,26 @@ The project follows Semantic Versioning once milestone tags begin.
 
 ## [Unreleased]
 
+### Added
+
+- Model 7.0 carries route-level market evidence into goals, assists, cards,
+  shots, participation, save pressure, defensive contribution and bonus. BPS
+  is reconstructed from the official action weights plus each player's
+  historical residual, then ranked within complete expected starting elevens.
+- A dated Leeds GW1 probable-XI validation records the owner's 10-of-11 prior,
+  the model's 10-of-11 overlap and, after the fixture, the actual-XI overlap
+  and Brier score. The prior is validation-only and never changes production
+  start probabilities.
+
 ### Fixed
+
+- Player-market ingestion now preserves card fields, resolves the observed
+  `Ben White` and reversed `Magalhaes Gabriel` provider spellings without fuzzy
+  matching, and reads shots/shot-on-target over-under lines as expected counts.
+- Capped odds runs rotate uncovered fixtures ahead of refreshes and retain
+  timestamped current quotes. Previously every daily run started at the same
+  earliest fixture and overwrote the artifact, so later weekend fixtures could
+  remain permanently unvisited despite a week of green jobs.
 
 - Canonical URLs, route metadata, social sharing, sitemap coverage and crawler
   exclusions now agree. Team-specific URLs canonicalise without the Team ID,

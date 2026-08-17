@@ -33,6 +33,7 @@ def _row(element_id: int, gameweek: int, **overrides: object) -> ElementRow:
         "expected_goals": 0.42,
         "expected_assists": 0.11,
         "total_points": 8,
+        "bps": 27,
         "price_tenths": 75,
         "selected": 1_000_000,
         "kickoff_time": datetime(2025, 8, 16, 14, 0, tzinfo=UTC),
@@ -93,6 +94,7 @@ def test_the_fingerprint_does_not_depend_on_row_order() -> None:
         ("clean_sheets", 1),
         ("saves", 3),
         ("bonus", 2),
+        ("bps", 31),
         ("goals_conceded", 1),
         ("yellow_cards", 1),
         ("red_cards", 1),
@@ -159,11 +161,11 @@ def test_a_golden_corpus_replays_to_a_known_fingerprint() -> None:
     fingerprint definition did. Both are things a reviewer should be told about
     explicitly rather than discovering when a backtest metric drifts.
 
-    Moved once, from 97211ac7, when the defensive-contribution components joined
-    the fingerprint. They joined it because the projection started reading them,
-    and a value the projection reads that the fingerprint does not cover is a
-    re-ingest that can move every DefCon number with nothing to say it did.
+    Moved from 97211ac7 when the defensive-contribution components joined, and
+    from 1af90f94 when BPS became a model input. A value the projection reads
+    that the fingerprint does not cover is a re-ingest that can move the model
+    with nothing to say it did.
     """
     assert _corpus().fingerprint == (
-        "sha256:1af90f94022fda8252b15206c9b6a8becaeb7c4c6928201f110179d018917675"
+        "sha256:4307f7e004e57f751ce6e9b2e54f8009a2c5b43a2453f39f76c0c34f2983cd1d"
     )

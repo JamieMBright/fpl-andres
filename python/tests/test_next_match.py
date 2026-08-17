@@ -13,6 +13,7 @@ from datetime import UTC, datetime, timedelta
 from fpl_andres.backtesting.corpus import ElementRow, SeasonCorpus
 from fpl_andres.backtesting.fixtures import Fixture
 from fpl_andres.backtesting.projector import project_next_match
+from fpl_andres.cli.publish_projections import _entry
 
 KICKOFF = datetime(2025, 8, 16, 14, 0, tzinfo=UTC)
 STEADY = 1
@@ -40,6 +41,7 @@ def _row(gameweek: int, element_id: int, *, minutes: int, points: int) -> Elemen
         clean_sheets=0,
         saves=0,
         bonus=1,
+        bps=18 + (gameweek % 5),
     )
 
 
@@ -105,6 +107,19 @@ class ProjectNextMatchTest(unittest.TestCase):
         self.assertEqual(without.keys(), with_schedule.keys())
         for code, points in without.items():
             self.assertAlmostEqual(points, with_schedule[code], places=6)
+
+    def test_publishes_a_bps_distribution_for_bonus_ranking(self) -> None:
+        [projection] = [
+            entry
+            for entry in project_next_match(_corpus(with_fixtures=False))
+            if entry.element_id == STEADY
+        ]
+
+        self.assertGreater(projection.expected_bps, 0.0)
+        self.assertGreater(projection.bps_deviation, 0.0)
+        artifact = _entry(projection)
+        self.assertEqual(artifact["expectedBps"], round(projection.expected_bps, 3))
+        self.assertEqual(artifact["bpsDeviation"], round(projection.bps_deviation, 3))
 
     def test_keys_on_the_code_that_survives_the_season(self) -> None:
         codes = {entry.code for entry in project_next_match(_corpus(with_fixtures=False))}

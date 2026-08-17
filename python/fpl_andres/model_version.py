@@ -29,6 +29,20 @@ from __future__ import annotations
 
 __all__ = ["MODEL_VERSION"]
 
+#: 7.0 makes market evidence a route-level model rather than two publisher
+#: adjustments. Goals, assists, cards, shots and shots on target retain their
+#: own evidence and can inform participation without being multiplied into the
+#: attacking route twice. Team expected goals continue to price clean sheets
+#: and conceding, now explicitly drive goalkeeper-save pressure, and move the
+#: odds of clearing the full CBIT/CBIRT defensive-contribution threshold rather
+#: than linearly scaling points beyond its cap. Bonus is reconstructed from the
+#: official BPS coefficients plus each player's historical residual for Opta
+#: actions the corpus cannot source, then ranked against the expected starting
+#: elevens for each market-priced fixture. Major: `routes.bonus`, start rates
+#: and the route evidence attached to a projection now answer materially richer
+#: questions, and debutants carry a complete measured role prior rather than
+#: one undifferentiated points bucket.
+#:
 #: 6.5 stops the recency decay running across the summer break. Inside a season
 #: a four-event half-life asks "what is he doing lately", which is the right
 #: question in March. In August it is the wrong one and an actively misleading
@@ -287,4 +301,4 @@ __all__ = ["MODEL_VERSION"]
 #: projection and resampled, so a gap that does not clear zero is reported as
 #: not clearing zero. No projection changed; what changed is what may be
 #: claimed from it.
-MODEL_VERSION = "6.5"
+MODEL_VERSION = "7.0"

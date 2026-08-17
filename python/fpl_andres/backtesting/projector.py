@@ -15,6 +15,7 @@ from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, replace
 from datetime import datetime, timedelta
 
+from fpl_andres.backtesting.bonus import project_player_bps
 from fpl_andres.backtesting.corpus import CorpusLoadError, ElementRow, SeasonCorpus
 from fpl_andres.backtesting.fixtures import (
     RouteAdjustment,
@@ -256,6 +257,10 @@ class MatchProjection:
     # What `expected_points` is made of, before the suspension derate. A scalar
     # cannot be checked; these can, and a fixture moves each of them differently.
     breakdown: PointsBreakdown
+    # Officially reconstructable BPS plus the player's historical residual for
+    # Opta actions the corpus cannot source, with its observed spread.
+    expected_bps: float | None
+    bps_deviation: float | None
     # The closing stretch of the season, which is the best guide to a player's
     # current role. A January signing who started every remaining match reads
     # nothing like a squad player with the same season total.
@@ -381,6 +386,13 @@ def project_next_match(
             _NEUTRAL_ADJUSTMENT,
             list(carried.get(element_id, ())),
         )
+        bps = project_player_bps(
+            rows,
+            position=position,
+            minutes=minutes,
+            rates=rates,
+            breakdown=breakdown,
+        )
         shape = describe_shape(rows)
         expected = breakdown.total * ban.multiplier
         projections.append(
@@ -394,6 +406,8 @@ def project_next_match(
                 expected_points=expected,
                 expected_ceiling=expected * shape.ceiling_ratio,
                 breakdown=breakdown,
+                expected_bps=bps.expected_bps if bps is not None else None,
+                bps_deviation=bps.bps_deviation if bps is not None else None,
                 suspension_multiplier=ban.multiplier,
                 yellow_cards=yellows,
                 shape=shape,

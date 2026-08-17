@@ -4,6 +4,16 @@ import {
 } from "@fpl-andres/quick-solver";
 
 import inputs from "../data/season-inputs.json";
+import {
+  requireArtifactVersion,
+  SEASON_INPUTS_SCHEMA_VERSION,
+} from "./artifact-version";
+
+requireArtifactVersion(
+  "season-inputs.json",
+  inputs,
+  SEASON_INPUTS_SCHEMA_VERSION,
+);
 
 /**
  * Solve a whole season in the browser, one gameweek at a time.
@@ -157,6 +167,38 @@ const DIFFICULTY = inputs.fixtureDifficulty as Record<
 const PLAYERS = inputs.players as SolverPlayer[];
 const EVENTS = inputs.events as number[];
 const DEADLINES = inputs.deadlines as string[];
+const BONUS_OVERRIDES =
+  (
+    inputs as unknown as {
+      bonusOverrides?: Record<string, Record<string, number>>;
+    }
+  ).bonusOverrides ?? {};
+
+/** A fixture BPS ranking replaces the historical bonus rate where available. */
+export function bonusPointsAtEvent(
+  historicalPerFixture: number,
+  fixtures: number,
+  override: number | undefined,
+): number {
+  return override ?? historicalPerFixture * fixtures;
+}
+
+/** Pressure moves the odds of clearing the DefCon bar, never the two-point cap. */
+export function defconPointsAtEvent(
+  historicalPerFixture: number,
+  pressureTotal: number,
+  fixtures: number,
+): number {
+  if (fixtures <= 0) return 0;
+  const probability = Math.min(1, Math.max(0, historicalPerFixture / 2));
+  if (probability === 0 || probability === 1) {
+    return probability * 2 * fixtures;
+  }
+  const pressure = pressureTotal / fixtures;
+  const adjusted =
+    (probability * pressure) / (1 - probability + probability * pressure);
+  return adjusted * 2 * fixtures;
+}
 
 /**
  * Each route bent by what this fixture does to it.
@@ -190,10 +232,15 @@ function splitAt(player: SolverPlayer, eventIndex: number): EventRoutes {
   // double and is zero for a blank. The routes a fixture cannot bend have to
   // follow the same count, or a blank gameweek would still pay appearance.
   const fixtures = OPPONENTS[player.club]?.[eventIndex]?.length ?? 0;
+  const event = EVENTS[eventIndex];
+  const bonusOverride =
+    event === undefined
+      ? undefined
+      : BONUS_OVERRIDES[String(event)]?.[String(player.id)];
   const { routes } = player;
   return {
     appearance: (routes.appearance ?? 0) * fixtures,
-    bonus: (routes.bonus ?? 0) * fixtures,
+    bonus: bonusPointsAtEvent(routes.bonus ?? 0, fixtures, bonusOverride),
     yellowCards: (routes.yellowCards ?? 0) * fixtures,
     redCards: (routes.redCards ?? 0) * fixtures,
     ownGoals: (routes.ownGoals ?? 0) * fixtures,
@@ -203,8 +250,11 @@ function splitAt(player: SolverPlayer, eventIndex: number): EventRoutes {
     saves: (routes.saves ?? 0) * saves,
     // Conceding points are negative, so a leakier fixture makes them worse.
     conceding: (routes.conceding ?? 0) * conceding,
-    defensiveContribution:
-      (routes.defensiveContribution ?? 0) * defensiveContribution,
+    defensiveContribution: defconPointsAtEvent(
+      routes.defensiveContribution ?? 0,
+      defensiveContribution,
+      fixtures,
+    ),
   };
 }
 

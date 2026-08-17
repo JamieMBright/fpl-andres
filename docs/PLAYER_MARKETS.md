@@ -99,19 +99,21 @@ Three things keep the spend inside the tier, and
 `python/tests/test_api_budgets.py` holds all three to the allowance so a raised
 cron has to be argued for rather than merged.
 
-- **Four markets, not eight.** Anytime scorer, assists, to be shown a card and
-  to be shown a red are the four anything here reads. Shots on target map onto
-  no FPL scoring event and are not asked for. The host bills for a market it
-  actually returns, so a market no book has opened costs nothing — which is why
-  a run eleven days out finds no player props and spends almost nothing.
+- **Six markets.** Anytime scorer, assists, to be shown a card, to be shown a
+  red, shots and shots on target all feed a route. Shot counts inform
+  participation and the official BPS shot terms; they are over/under lines and
+  are inverted separately from anytime prices. The host bills only for a
+  market it returns, so a shut market costs nothing.
 - **One region.** UK books price a Premier League player deepest, and adding
   Europe doubles the bill for a slightly steadier median.
-- **Daily trigger, seven-day gate, bounded 15-request run.** No provider
+- **Daily trigger, seven-day gate, bounded eight-credit run.** No provider
   publishes an exact opening hour, so the workflow wakes at 09:00 UTC every
   day. It reads the committed FPL calendar first and exits before reading the
-  provider key unless the next deadline is within seven days. A run that passes
-  the gate may spend at most 15 requests; `test_api_budgets.py` keeps the
-  worst-case shared allowance under 500.
+  provider key unless the next deadline is within seven days. Uncovered
+  fixtures are visited before an existing quote is refreshed, and still-current
+  older rows retain their own observation timestamp. That lets several bounded
+  runs cover a gameweek instead of buying the same first fixtures every day.
+  `test_api_budgets.py` keeps the worst-case shared allowance under 500.
 
 The same key pays for the weekly survey, which is why the guard counts both.
 
@@ -123,17 +125,18 @@ that quotes nobody anywhere exits clean and says the markets are not open; a run
 that quotes players but joins none of them to an FPL element fails, because that
 one is the crosswalk's fault and wants fixing.
 
-**What the numbers then do.** `docs/MODEL.md` §7b. The two prices are inverted
-from "chance of at least one" to a Poisson rate, divided by the fixture
-multiplier they already carry, and blended into the goal and assist halves of
-the attacking route at `--market-weight`. Nothing else in the projection reads
-a player price.
+**What the numbers then do.** `docs/MODEL.md` §7b. Anytime prices become event
+rates; count lines become expected counts. The fixture is divided back out,
+then the matching historical route is blended at `--market-weight`. Goals,
+assists, cards, participation, shots and BPS each consume only the evidence
+that names them. The fixture market separately prices clean sheets, goals
+conceded, save pressure and defensive-action pressure.
 
 ## The shortlist, and why each is on it
 
 | Key                | What it is                                                    | Covers                           |
 | ------------------ | ------------------------------------------------------------- | -------------------------------- |
-| `the-odds-api`     | Aggregator over UK books, markets named explicitly            | goal, assist, cards              |
+| `the-odds-api`     | Aggregator over UK books, markets named explicitly            | goal, assist, cards, shots       |
 | `api-football`     | Aggregator; its `/odds/bets` endpoint _is_ a market catalogue | goal, assist, cards, clean sheet |
 | `betfair-exchange` | An exchange, not a book: two-sided prices, so the least vig   | goal, assist, clean sheet, cards |
 | `football-data`    | The baseline already ingested. Match level only, no props     | clean sheet, goals conceded      |

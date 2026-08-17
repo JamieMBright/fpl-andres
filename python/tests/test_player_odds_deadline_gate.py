@@ -7,7 +7,12 @@ from pathlib import Path
 import pytest
 
 from fpl_andres.cli import ingest_player_odds
-from fpl_andres.cli.ingest_player_odds import deadline_proximity
+from fpl_andres.cli.ingest_player_odds import (
+    deadline_proximity,
+    merge_fixture_rows,
+    prioritise_uncovered_events,
+)
+from fpl_andres.models.player_odds import PlayerMatchOdds
 
 NOW = datetime(2026, 8, 11, 9, 0, tzinfo=UTC)
 
@@ -85,3 +90,93 @@ class _FrozenClock(datetime):
     @classmethod
     def now(cls, tz: object = None) -> datetime:  # type: ignore[override]
         return NOW
+
+
+def _quoted(
+    home: str,
+    away: str,
+    kickoff: datetime,
+    *,
+    probability: float,
+    observed_at: datetime,
+) -> PlayerMatchOdds:
+    return PlayerMatchOdds(
+        element_id=1,
+        quoted_name="Player One",
+        home_team=home,
+        away_team=away,
+        kickoff=kickoff,
+        anytime_goal=probability,
+        observed_at=observed_at,
+    )
+
+
+def test_uncovered_fixtures_are_visited_before_refreshing_an_old_quote() -> None:
+    soon = {
+        "id": "soon",
+        "home_team": "Arsenal",
+        "away_team": "Coventry City",
+        "commence_time": "2026-08-21T19:00:00Z",
+    }
+    later = {
+        "id": "later",
+        "home_team": "Leeds United",
+        "away_team": "Nottingham Forest",
+        "commence_time": "2026-08-22T14:00:00Z",
+    }
+    previous = [
+        _quoted(
+            "Arsenal",
+            "Coventry City",
+            datetime(2026, 8, 21, 19, 0, tzinfo=UTC),
+            probability=0.3,
+            observed_at=NOW,
+        )
+    ]
+
+    ordered = prioritise_uncovered_events([soon, later], previous)
+
+    assert [event["id"] for event in ordered] == ["later", "soon"]
+
+
+def test_a_fresh_fixture_replaces_itself_and_retains_other_current_quotes() -> None:
+    old_time = datetime(2026, 8, 16, 9, 0, tzinfo=UTC)
+    fresh_time = datetime(2026, 8, 17, 9, 0, tzinfo=UTC)
+    arsenal_kickoff = datetime(2026, 8, 21, 19, 0, tzinfo=UTC)
+    leeds_kickoff = datetime(2026, 8, 22, 14, 0, tzinfo=UTC)
+    previous = [
+        _quoted(
+            "Arsenal",
+            "Coventry City",
+            arsenal_kickoff,
+            probability=0.25,
+            observed_at=old_time,
+        ),
+        _quoted(
+            "Leeds United",
+            "Nottingham Forest",
+            leeds_kickoff,
+            probability=0.2,
+            observed_at=old_time,
+        ),
+    ]
+    fresh = [
+        _quoted(
+            "Arsenal",
+            "Coventry City",
+            arsenal_kickoff,
+            probability=0.4,
+            observed_at=fresh_time,
+        )
+    ]
+    current = {
+        ("Arsenal", "Coventry City", arsenal_kickoff),
+        ("Leeds United", "Nottingham Forest", leeds_kickoff),
+    }
+
+    merged = merge_fixture_rows(previous, fresh, current)
+
+    by_fixture = {(row.home_team, row.away_team): row for row in merged}
+    assert by_fixture[("Arsenal", "Coventry City")].anytime_goal == 0.4
+    assert by_fixture[("Arsenal", "Coventry City")].observed_at == fresh_time
+    assert by_fixture[("Leeds United", "Nottingham Forest")].observed_at == old_time

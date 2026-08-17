@@ -19,6 +19,10 @@ from fpl_andres.backtesting.corpus import ElementRow
 from fpl_andres.backtesting.fixtures import RouteAdjustment
 from fpl_andres.backtesting.rates import LeagueRates, defensive_actions, shrunk_rate
 from fpl_andres.models.expected_points import expected_floor_divide
+from fpl_andres.models.market_evidence import (
+    pressure_adjusted_defcon,
+    pressure_adjusted_saves,
+)
 from fpl_andres.models.minutes import MinutesProjection
 from fpl_andres.models.player_rates import PlayerRateProjection
 
@@ -259,14 +263,11 @@ def supporting_breakdown(
         # Shrunk like every other route: a keeper with two appearances was
         # otherwise priced on two appearances, and the thin bucket ranges from
         # zero to 1.50 save points a match against a league rate near 0.65.
-        saves += (
-            ninety
-            * rate(
-                sum(row.saves // _SAVES_PER_POINT for row in appearances),
-                league.save_points.get(position, 0.0),
-            )
-            * adjustment.saves
+        recorded_save_points = ninety * rate(
+            sum(row.saves // _SAVES_PER_POINT for row in appearances),
+            league.save_points.get(position, 0.0),
         )
+        saves += pressure_adjusted_saves(recorded_save_points, adjustment.saves)
         saves += (
             ninety
             * rate(
@@ -388,10 +389,9 @@ def defensive_contribution_points(
     # hundred -- hardest against the established defenders whose defcon record
     # is best evidenced.
     rate = shrunk_rate(hits, seen, target, strength)
-    # A hit rate is a share of matches, so the fixture multiplier cannot lift it
-    # past one however much pressure the opponent applies.
-    adjusted = min(1.0, rate * adjustment)
-    return ninety * adjusted * _DEFCON_POINTS[position]
+    conditional_points = rate * _DEFCON_POINTS[position]
+    adjusted_points = pressure_adjusted_defcon(conditional_points, adjustment)
+    return ninety * adjusted_points
 
 
 def _defcon_prior(

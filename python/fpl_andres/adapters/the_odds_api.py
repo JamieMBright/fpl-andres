@@ -15,6 +15,7 @@ probability and used as evidence about a footballer.
 
 from __future__ import annotations
 
+import math
 import statistics
 from collections import defaultdict
 from collections.abc import Iterable, Mapping, Sequence
@@ -53,6 +54,8 @@ PLAYER_MARKETS: tuple[str, ...] = (
     "player_assists",
     "player_to_receive_card",
     "player_to_receive_red_card",
+    "player_shots",
+    "player_shots_on_target",
 )
 
 #: Which field on `PlayerMatchOdds` each market fills.
@@ -61,7 +64,11 @@ MARKET_FIELDS: Mapping[str, str] = {
     "player_assists": "anytime_assist",
     "player_to_receive_card": "any_card",
     "player_to_receive_red_card": "red_card",
+    "player_shots": "shots",
+    "player_shots_on_target": "shots_on_target",
 }
+
+_COUNT_MARKETS = frozenset(("player_shots", "player_shots_on_target"))
 
 
 @dataclass(frozen=True)
@@ -184,6 +191,39 @@ def _devigged(prices: Sequence[float]) -> float | None:
     return _two_way(prices[0])
 
 
+def _poisson_mean_from_over(point: float, probability: float) -> float:
+    """Expected count whose Poisson tail matches an over-line probability."""
+    if point < 0.0:
+        raise ValueError("count-market point cannot be negative")
+    if not 0.0 <= probability < 1.0:
+        raise ValueError("over probability must be in [0, 1)")
+    if probability == 0.0:
+        return 0.0
+    threshold = math.floor(point) + 1
+
+    def over(mean: float) -> float:
+        term = math.exp(-mean)
+        cumulative = term
+        for count in range(1, threshold):
+            term *= mean / count
+            cumulative += term
+        return 1.0 - cumulative
+
+    low = 0.0
+    high = max(1.0, point + 1.0)
+    while over(high) < probability:
+        high *= 2.0
+        if high > 100.0:
+            raise ValueError("count-market probability implies an implausible mean")
+    for _ in range(80):
+        middle = (low + high) / 2.0
+        if over(middle) < probability:
+            low = middle
+        else:
+            high = middle
+    return (low + high) / 2.0
+
+
 def by_kickoff(events: Iterable[Mapping[str, Any]]) -> list[Mapping[str, Any]]:
     """Soonest first, so a limited budget is spent where markets are open.
 
@@ -231,6 +271,68 @@ def describe_event(payload: Mapping[str, Any]) -> str:
     return detail if not missing else f"{detail}, absent {missing}"
 
 
+def _count_market_values(outcomes: object) -> dict[str, float]:
+    if not isinstance(outcomes, list):
+        return {}
+    by_player_line: dict[str, dict[float, dict[str, float]]] = defaultdict(
+        lambda: defaultdict(dict)
+    )
+    for outcome in outcomes:
+        if not isinstance(outcome, Mapping):
+            continue
+        player = outcome.get("description")
+        side = outcome.get("name")
+        price = outcome.get("price")
+        point = outcome.get("point")
+        if not isinstance(player, str) or not isinstance(side, str):
+            continue
+        if not isinstance(price, (int, float)) or float(price) <= 1.0:
+            continue
+        if not isinstance(point, (int, float)) or side.lower() not in {"over", "under"}:
+            continue
+        by_player_line[player][float(point)][side.lower()] = float(price)
+
+    values: dict[str, float] = {}
+    for player, lines in by_player_line.items():
+        estimates = [
+            _poisson_mean_from_over(point, probability)
+            for point, sides in lines.items()
+            if (probability := _over_probability(sides)) is not None
+        ]
+        if estimates:
+            values[player] = statistics.median(estimates)
+    return values
+
+
+def _over_probability(sides: Mapping[str, float]) -> float | None:
+    over_price = sides.get("over")
+    if over_price is None:
+        return None
+    prices = [over_price]
+    under_price = sides.get("under")
+    if under_price is not None:
+        prices.append(under_price)
+    return _devigged(prices)
+
+
+def _anytime_market_values(outcomes: object) -> dict[str, float]:
+    if not isinstance(outcomes, list):
+        return {}
+    by_player: dict[str, list[float]] = defaultdict(list)
+    for outcome in outcomes:
+        if not isinstance(outcome, Mapping):
+            continue
+        name = outcome.get("description") or outcome.get("name")
+        price = outcome.get("price")
+        if isinstance(name, str) and isinstance(price, (int, float)) and price > 1:
+            by_player[name].append(float(price))
+    return {
+        name: probability
+        for name, prices in by_player.items()
+        if (probability := _devigged(prices)) is not None
+    }
+
+
 def read_event(
     payload: Mapping[str, Any],
     *,
@@ -264,35 +366,24 @@ def read_event(
             key = market.get("key")
             if key not in wanted or not isinstance(key, str):
                 continue
-            # Outcomes for one player arrive as Yes/No pairs where the book
-            # publishes both, and as a lone Yes where it does not.
-            by_player: dict[str, list[float]] = defaultdict(list)
-            for outcome in market.get("outcomes", []):
-                if not isinstance(outcome, Mapping):
-                    continue
-                name = outcome.get("description") or outcome.get("name")
-                price = outcome.get("price")
-                if not isinstance(name, str) or not isinstance(price, (int, float)):
-                    continue
-                if price <= 1:
-                    continue
-                by_player[name].append(float(price))
-            for name, prices in by_player.items():
-                probability = _devigged(prices)
-                if probability is None:
-                    continue
-                quotes[name][key].append(probability)
+            market_values = (
+                _count_market_values(market.get("outcomes"))
+                if key in _COUNT_MARKETS
+                else _anytime_market_values(market.get("outcomes"))
+            )
+            for name, value in market_values.items():
+                quotes[name][key].append(value)
                 if isinstance(book_key, str):
                     books[name].add(book_key)
 
     rows: list[PlayerMatchOdds] = []
     for name, by_market in sorted(quotes.items()):
         fields: dict[str, float] = {}
-        for key, values in by_market.items():
+        for key, quote_values in by_market.items():
             field = MARKET_FIELDS.get(key)
-            if field is None or not values:
+            if field is None or not quote_values:
                 continue
-            fields[field] = round(statistics.median(values), 6)
+            fields[field] = round(statistics.median(quote_values), 6)
         rows.append(
             PlayerMatchOdds(
                 element_id=None,
@@ -305,6 +396,8 @@ def read_event(
                 anytime_assist=fields.get("anytime_assist"),
                 any_card=fields.get("any_card"),
                 red_card=fields.get("red_card"),
+                shots=fields.get("shots"),
+                shots_on_target=fields.get("shots_on_target"),
             )
         )
     return rows
