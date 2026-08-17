@@ -239,8 +239,8 @@ def _fetch(url: str, client: httpx.Client, *, required: bool = True) -> str | No
             f"{url} could not be reached: {error}. This CLI cannot run behind a "
             "gambling-category content filter; run it on a GitHub runner."
         ) from error
-    if response.status_code == 404 and not required:
-        print(f"{url} is not published yet; carrying on without it")
+    if response.status_code in (300, 404) and not required:
+        print(f"{url} is not published yet (HTTP {response.status_code}); carrying on without it")
         return None
     if response.status_code != 200:
         raise OddsIngestError(f"{url} answered {response.status_code}, not 200")

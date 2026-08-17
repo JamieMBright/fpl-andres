@@ -120,6 +120,15 @@ class TestPreSeason:
         client = _StubClient({season_url("2026-27"): 404})
         assert _fetch(season_url("2026-27"), client, required=False) is None
 
+    def test_an_optional_season_file_answering_300_uses_the_fallback(self) -> None:
+        client = _StubClient({season_url("2026-27"): 300})
+        assert _fetch(season_url("2026-27"), client, required=False) is None
+
+    def test_a_required_file_answering_300_still_fails(self) -> None:
+        client = _StubClient({fixtures_url(): 300})
+        with pytest.raises(OddsIngestError, match="300"):
+            _fetch(fixtures_url(), client, required=True)
+
     def test_a_missing_required_file_still_fails(self) -> None:
         client = _StubClient({fixtures_url(): 404})
         with pytest.raises(OddsIngestError, match="404"):
