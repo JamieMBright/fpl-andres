@@ -4980,10 +4980,9 @@ h1[tabindex="-1"]:focus-visible {
 }
 
 .top-pick-column {
-  --top-pick-accent: var(--fa-brand);
-  --top-pick-accent-ink: var(--fa-gk-black);
+  --top-pick-accent: #00ff00;
+  --top-pick-accent-ink: #000000;
   --top-pick-photo: var(--top-pick-accent);
-  --top-pick-score: var(--top-pick-accent);
 
   display: flex;
   flex-direction: column;
@@ -4994,29 +4993,24 @@ h1[tabindex="-1"]:focus-visible {
 }
 
 .top-pick-column[data-position="GKP"] {
-  --top-pick-accent: var(--fa-gk-hot);
-  --top-pick-photo: var(--fa-gk-lime);
-  --top-pick-score: var(--fa-gk-lime);
+  --top-pick-accent: #ff00ff;
+  --top-pick-accent-ink: #000000;
+  --top-pick-photo: #ffff00;
 }
 
 .top-pick-column[data-position="DEF"] {
-  --top-pick-accent: var(--fa-focus);
+  --top-pick-accent: #00ffff;
+  --top-pick-accent-ink: #000000;
 }
 
 .top-pick-column[data-position="MID"] {
-  --top-pick-accent: var(--fa-brand);
+  --top-pick-accent: #00ff00;
+  --top-pick-accent-ink: #000000;
 }
 
 .top-pick-column[data-position="FWD"] {
-  --top-pick-accent: var(--fa-amber);
-}
-
-:root[data-theme="light"] .top-pick-column:not([data-position="GKP"]) {
-  --top-pick-accent-ink: var(--fa-gk-white);
-}
-
-:root[data-theme="light"] .top-pick-column[data-position="GKP"] {
-  --top-pick-score: var(--fa-gk-purple);
+  --top-pick-accent: #ffff00;
+  --top-pick-accent-ink: #000000;
 }
 
 /* The photograph ground follows the card's position colour. Bottom-aligned
@@ -5142,6 +5136,7 @@ h1[tabindex="-1"]:focus-visible {
   grid-column: 3;
   grid-row: 1 / span 2;
   font-size: 11px;
+  text-transform: none;
   white-space: nowrap;
 }
 
@@ -5151,7 +5146,9 @@ h1[tabindex="-1"]:focus-visible {
 }
 
 .top-pick-runner-points b {
-  color: var(--top-pick-score);
+  padding: 1px 3px;
+  color: var(--top-pick-accent-ink);
+  background: var(--top-pick-accent);
 }
 
 @media (width < 480px) {
@@ -5213,8 +5210,8 @@ h1[tabindex="-1"]:focus-visible {
   align-items: baseline;
   padding: 2px 6px;
   border: 1px solid var(--top-pick-accent);
-  background: none;
-  color: inherit;
+  background: var(--top-pick-accent);
+  color: var(--top-pick-accent-ink);
   cursor: pointer;
 }
 
@@ -5222,7 +5219,7 @@ h1[tabindex="-1"]:focus-visible {
   font-family: var(--fa-body);
   font-size: 20px;
   font-weight: 700;
-  color: var(--top-pick-score);
+  color: inherit;
   white-space: nowrap;
 }
 
@@ -5230,7 +5227,7 @@ h1[tabindex="-1"]:focus-visible {
   font-family: var(--fa-body);
   font-size: 11px;
   letter-spacing: 0.08em;
-  color: var(--ink-soft);
+  color: inherit;
   white-space: nowrap;
 }
 

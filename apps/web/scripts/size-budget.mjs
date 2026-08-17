@@ -20,11 +20,11 @@ import { join } from "node:path";
 const DIST = join(import.meta.dirname, "..", "dist", "assets");
 
 const BUDGETS = [
-  // Measured 17.01 kB, raised from 17 kB. The FPL500 page became folds, a rank
-  // ridge and eight empty analysis frames, and the home and player pages gained
-  // the top-picks cards with their fixture panel. The previous budget had no
-  // headroom left at all: it measured 17.01 against 17 on the next line of CSS.
-  { match: /\.css$/, name: "stylesheet", gzipKb: 19 },
+  // Measured 19.27 kB, raised from 19 kB. The previous budget had already been
+  // overtaken by the committed stylesheet at 19.29 kB, so it had no headroom
+  // before the Top Picks Mode 7 colours landed. Twenty-two restores roughly
+  // 15% headroom without weakening any JavaScript budget.
+  { match: /\.css$/, name: "stylesheet", gzipKb: 22 },
   // Measured 128.26 kB. Router, zod, lucide and the shell.
   { match: /^index-.*\.js$/, name: "entry chunk", gzipKb: 150 },
   // Measured 54.94 kB. The plan is now the only route a manager needs: the

@@ -7,34 +7,34 @@ import { DEFAULT_HORIZON, horizonPointsByCode } from "../state/horizon-points";
 import { SEASON_PLAYERS } from "../state/season-solver";
 
 /**
- * The claim on the card is "best in the game at this position over five
- * gameweeks". These check the claim against the same numbers the rest of the
- * site sorts on, because a card that quietly ranked on something else would
- * look exactly like a card that did not.
+ * The claim on the card is "best five-gameweek value at this position". These
+ * check the rendered order against xPts5 per million, because cards that show
+ * raw xPts5 while quietly ranking on it would otherwise still look plausible.
  */
 
 function best(position: string): { name: string; points: number } {
-  const totals = horizonPointsByCode(DEFAULT_HORIZON);
-  let name = "";
-  let points = -Infinity;
-  for (const player of SEASON_PLAYERS) {
-    if (player.position !== position) continue;
-    const total = totals.get(player.code);
-    if (total === undefined || total <= points) continue;
-    name = player.name;
-    points = total;
-  }
-  return { name, points };
+  return topThree(position)[0]!;
 }
 
-function topThree(position: string): { name: string; points: number }[] {
+function topThree(
+  position: string,
+): { code: number; name: string; points: number; value: number }[] {
   const totals = horizonPointsByCode(DEFAULT_HORIZON);
   return SEASON_PLAYERS.filter((player) => player.position === position)
     .flatMap((player) => {
       const points = totals.get(player.code);
-      return points === undefined ? [] : [{ name: player.name, points }];
+      return points === undefined
+        ? []
+        : [
+            {
+              code: player.code,
+              name: player.name,
+              points,
+              value: points / (player.priceTenths / 10),
+            },
+          ];
     })
-    .sort((left, right) => right.points - left.points)
+    .sort((left, right) => right.value - left.value || left.code - right.code)
     .slice(0, 3);
 }
 
@@ -49,7 +49,7 @@ describe("TopPicks", () => {
     };
   });
 
-  it("names three players per position in xPts5 order", () => {
+  it("names three players per position in xPts5 per million order", () => {
     const { container } = render(<TopPicks />);
 
     expect(container.querySelectorAll(".top-pick-column")).toHaveLength(4);
@@ -66,7 +66,17 @@ describe("TopPicks", () => {
       expect(screen.getByText(role)).toBeInTheDocument();
     }
     for (const position of ["GKP", "DEF", "MID", "FWD"]) {
-      for (const { name, points } of topThree(position)) {
+      const expected = topThree(position);
+      const column = container.querySelector(`[data-position="${position}"]`);
+      expect(column).not.toBeNull();
+      expect(
+        [
+          ...column!.querySelectorAll(
+            ".top-pick-name button, .top-pick-runner-name",
+          ),
+        ].map((button) => button.textContent),
+      ).toEqual(expected.map(({ name }) => name));
+      for (const { name, points } of expected) {
         expect(screen.getByRole("button", { name })).toBeInTheDocument();
         expect(
           screen.getAllByText(new RegExp(points.toFixed(1))).length,
@@ -75,7 +85,7 @@ describe("TopPicks", () => {
     }
   });
 
-  it("picks the highest five-gameweek projection, not the highest per match", () => {
+  it("picks the highest five-gameweek value, not the highest raw projection", () => {
     render(<TopPicks />);
 
     for (const position of ["GKP", "DEF", "MID", "FWD"]) {

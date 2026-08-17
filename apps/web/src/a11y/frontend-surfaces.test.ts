@@ -4,6 +4,8 @@ import { fileURLToPath } from "node:url";
 
 import { describe, expect, it } from "vitest";
 
+import { TELETEXT_PALETTE } from "../kit/teletext";
+
 /**
  * Small frontend surfaces,
  * each either a duplication, a claim nobody checked, or a behaviour documented
@@ -44,6 +46,38 @@ describe("stripe custom properties", () => {
   it("keeps the deep variant, because the two surfaces differ", () => {
     expect(styles).toContain("--fa-stripes-deep");
     expect(styles).toContain("--fa-surface-deep");
+  });
+});
+
+describe("Top Picks position colours", () => {
+  it("uses four distinct Mode 7 accents in every kit", () => {
+    const positions = {
+      GKP: "magenta",
+      DEF: "cyan",
+      MID: "green",
+      FWD: "yellow",
+    } as const;
+
+    for (const [position, colour] of Object.entries(positions)) {
+      const selector = `.top-pick-column[data-position="${position}"]`;
+      const start = styles.indexOf(`${selector} {`);
+      const block = styles.slice(start, styles.indexOf("}", start));
+      expect(start).toBeGreaterThan(-1);
+      expect(block).toContain(`--top-pick-accent: ${TELETEXT_PALETTE[colour]}`);
+      expect(block).toContain(
+        `--top-pick-accent-ink: ${TELETEXT_PALETTE.black}`,
+      );
+    }
+
+    expect(styles).not.toMatch(/:root\[data-theme="[^"]+"\] \.top-pick-column/);
+  });
+
+  it("preserves the authored xPts5 capitalization", () => {
+    const selector = ".top-pick-runner-points";
+    const start = styles.indexOf(`${selector} {`);
+    const block = styles.slice(start, styles.indexOf("}", start));
+    expect(start).toBeGreaterThan(-1);
+    expect(block).toContain("text-transform: none");
   });
 });
 

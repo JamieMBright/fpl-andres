@@ -8,12 +8,12 @@ const REPOSITORY_ROOT = resolve(WEB_ROOT, "..", "..");
 const read = (path: string) => readFileSync(resolve(WEB_ROOT, path), "utf8");
 
 describe("website checklist", () => {
-  it("puts the primary action before deferred rankings", () => {
+  it("keeps the rankings above homepage navigation", () => {
     const home = read("src/pages/HomePage.tsx");
     expect(home.indexOf('className="index-grid"')).toBeGreaterThan(-1);
     expect(home.indexOf('className="index-rankings"')).toBeGreaterThan(-1);
-    expect(home.indexOf('className="index-grid"')).toBeLessThan(
-      home.indexOf('className="index-rankings"'),
+    expect(home.indexOf('className="index-rankings"')).toBeLessThan(
+      home.indexOf('className="index-grid"'),
     );
   });
 
