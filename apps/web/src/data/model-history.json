@@ -4298,5 +4298,220 @@
         }
       }
     ]
+  },
+  {
+    "modelVersion": "7.0",
+    "generatedAt": "2026-08-17T22:54:41.528536+00:00",
+    "codeRevision": "c2d947f36a1ea681fdaecabd788129b0a5733637",
+    "seasons": [
+      {
+        "season": "2022-23",
+        "corpusFingerprint": "sha256:e391320d85950de1a65a540a34b5b25e5f7f63877d122adb56353c3870e7af29",
+        "methods": {
+          "model": {
+            "meanAbsoluteError": 1.765,
+            "spearman": 0.497,
+            "topNHitRate": 0.189,
+            "bias": -0.089
+          },
+          "components": {
+            "meanAbsoluteError": 1.763,
+            "spearman": 0.489,
+            "topNHitRate": 0.179,
+            "bias": -0.123
+          },
+          "recent_mean": {
+            "meanAbsoluteError": 1.887,
+            "spearman": 0.446,
+            "topNHitRate": 0.153,
+            "bias": -0.097
+          },
+          "ownership": {
+            "meanAbsoluteError": null,
+            "spearman": 0.258,
+            "topNHitRate": 0.176,
+            "bias": null
+          }
+        },
+        "captaincy": {
+          "model": {
+            "meanPoints": 7.258,
+            "regret": 8.194,
+            "shareOfCeiling": 0.47
+          },
+          "components": {
+            "meanPoints": 7.806,
+            "regret": 7.645,
+            "shareOfCeiling": 0.505
+          },
+          "recent_mean": {
+            "meanPoints": 5.742,
+            "regret": 9.71,
+            "shareOfCeiling": 0.372
+          },
+          "ownership": {
+            "meanPoints": 6.742,
+            "regret": 8.71,
+            "shareOfCeiling": 0.436
+          }
+        }
+      },
+      {
+        "season": "2023-24",
+        "corpusFingerprint": "sha256:2621943c2e6597782ee90ed962055c4d0582e4391e78c198a4f8825aab4e2521",
+        "methods": {
+          "model": {
+            "meanAbsoluteError": 1.715,
+            "spearman": 0.511,
+            "topNHitRate": 0.208,
+            "bias": -0.096
+          },
+          "components": {
+            "meanAbsoluteError": 1.71,
+            "spearman": 0.504,
+            "topNHitRate": 0.205,
+            "bias": -0.132
+          },
+          "recent_mean": {
+            "meanAbsoluteError": 1.851,
+            "spearman": 0.464,
+            "topNHitRate": 0.167,
+            "bias": -0.026
+          },
+          "ownership": {
+            "meanAbsoluteError": null,
+            "spearman": 0.22,
+            "topNHitRate": 0.177,
+            "bias": null
+          }
+        },
+        "captaincy": {
+          "model": {
+            "meanPoints": 5.719,
+            "regret": 9.688,
+            "shareOfCeiling": 0.371
+          },
+          "components": {
+            "meanPoints": 4.969,
+            "regret": 10.438,
+            "shareOfCeiling": 0.323
+          },
+          "recent_mean": {
+            "meanPoints": 4.906,
+            "regret": 10.5,
+            "shareOfCeiling": 0.318
+          },
+          "ownership": {
+            "meanPoints": 5.812,
+            "regret": 9.594,
+            "shareOfCeiling": 0.377
+          }
+        }
+      },
+      {
+        "season": "2024-25",
+        "corpusFingerprint": "sha256:c91af5764ca2781bc823a5f80103c82d2531ae0300ff92487c046b785f77e78d",
+        "methods": {
+          "model": {
+            "meanAbsoluteError": 1.675,
+            "spearman": 0.508,
+            "topNHitRate": 0.192,
+            "bias": -0.108
+          },
+          "components": {
+            "meanAbsoluteError": 1.667,
+            "spearman": 0.502,
+            "topNHitRate": 0.18,
+            "bias": -0.146
+          },
+          "recent_mean": {
+            "meanAbsoluteError": 1.804,
+            "spearman": 0.466,
+            "topNHitRate": 0.148,
+            "bias": 0.006
+          },
+          "ownership": {
+            "meanAbsoluteError": null,
+            "spearman": 0.237,
+            "topNHitRate": 0.166,
+            "bias": null
+          }
+        },
+        "captaincy": {
+          "model": {
+            "meanPoints": 8.219,
+            "regret": 6.312,
+            "shareOfCeiling": 0.566
+          },
+          "components": {
+            "meanPoints": 7.938,
+            "regret": 6.594,
+            "shareOfCeiling": 0.546
+          },
+          "recent_mean": {
+            "meanPoints": 6.688,
+            "regret": 7.844,
+            "shareOfCeiling": 0.46
+          },
+          "ownership": {
+            "meanPoints": 7.781,
+            "regret": 6.75,
+            "shareOfCeiling": 0.535
+          }
+        }
+      },
+      {
+        "season": "2025-26",
+        "corpusFingerprint": "sha256:6aad10d62476fbeb5b7b9f76ea1abba9bb2aad132ab4be368b62964fd57bdb04",
+        "methods": {
+          "model": {
+            "meanAbsoluteError": 1.865,
+            "spearman": 0.467,
+            "topNHitRate": 0.169,
+            "bias": -0.067
+          },
+          "components": {
+            "meanAbsoluteError": 1.859,
+            "spearman": 0.462,
+            "topNHitRate": 0.166,
+            "bias": -0.095
+          },
+          "recent_mean": {
+            "meanAbsoluteError": 1.992,
+            "spearman": 0.423,
+            "topNHitRate": 0.119,
+            "bias": 0.011
+          },
+          "ownership": {
+            "meanAbsoluteError": null,
+            "spearman": 0.237,
+            "topNHitRate": 0.136,
+            "bias": null
+          }
+        },
+        "captaincy": {
+          "model": {
+            "meanPoints": 5.219,
+            "regret": 8.281,
+            "shareOfCeiling": 0.387
+          },
+          "components": {
+            "meanPoints": 5.562,
+            "regret": 7.938,
+            "shareOfCeiling": 0.412
+          },
+          "recent_mean": {
+            "meanPoints": 4.094,
+            "regret": 9.406,
+            "shareOfCeiling": 0.303
+          },
+          "ownership": {
+            "meanPoints": 5.156,
+            "regret": 8.344,
+            "shareOfCeiling": 0.382
+          }
+        }
+      }
+    ]
   }
 ]
