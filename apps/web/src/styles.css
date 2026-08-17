@@ -4194,10 +4194,13 @@ h1[tabindex="-1"]:focus-visible {
 }
 
 @media (width <= 640px) {
-  .teletext-strip > a:nth-child(4),
-  .teletext-strip > a:nth-child(5),
-  .teletext-strip > a:nth-child(6) {
-    display: none;
+  .teletext-strip {
+    flex-wrap: wrap;
+  }
+
+  .teletext-strip > a,
+  .teletext-strip > .teletext-strip-half {
+    flex: 0 0 25%;
   }
 
   .mobile-plan-cta {
@@ -4351,6 +4354,32 @@ h1[tabindex="-1"]:focus-visible {
 
 .fpl500-page .dossier-metrics {
   margin: 18px 0 26px;
+}
+
+.fpl500-history {
+  margin: 0 0 26px;
+  padding: 18px;
+  border: 1px solid var(--rule);
+  background: var(--paper-deep);
+}
+
+.fpl500-history h2 {
+  margin-top: 0;
+}
+
+.fpl500-history .dossier-metrics {
+  margin-bottom: 14px;
+}
+
+.fpl500-history dd small {
+  color: var(--ink-soft);
+  font-size: 12px;
+}
+
+.fpl500-source {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 12px;
 }
 
 .fpl500-facts strong {

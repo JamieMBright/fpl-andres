@@ -5,7 +5,7 @@ import { BarChart, type Bar } from "./MethodChart";
 import { PlannedAnalysis } from "./PlannedAnalysis";
 import { RankRidge, type Ridge } from "./RankRidge";
 import fpl500 from "../data/fpl500.json";
-import { fineShare, integer } from "../format";
+import { fineShare, integer, share, timestamp } from "../format";
 
 type Fpl500 = {
   generatedAt: string;
@@ -29,6 +29,18 @@ type Fpl500 = {
 const data = fpl500 as Fpl500;
 const number = integer;
 const PAGE = 20;
+
+function finishesAtOrAbove(rank: number): number {
+  const bins = data.rankBins.findIndex((edge) => edge === rank);
+  if (bins < 0) {
+    return 0;
+  }
+  return Object.values(data.rankHistogram).reduce(
+    (total, counts) =>
+      total + counts.slice(0, bins + 1).reduce((sum, count) => sum + count, 0),
+    0,
+  );
+}
 
 /** A fold, colour-coded like the strip above it. */
 function Fold({
@@ -142,6 +154,15 @@ export function Fpl500Playbook() {
   const ridges: Ridge[] = Object.entries(data.rankHistogram).map(
     ([season, counts]) => ({ label: season, counts }),
   );
+  const finishes = Object.values(data.rankHistogram).reduce(
+    (total, counts) => total + counts.reduce((sum, count) => sum + count, 0),
+    0,
+  );
+  const historicFinishes = [
+    { label: "Top 1k finishes", count: finishesAtOrAbove(1_000) },
+    { label: "Top 10k finishes", count: finishesAtOrAbove(10_000) },
+    { label: "Top 100k finishes", count: finishesAtOrAbove(100_000) },
+  ];
 
   return (
     <>
@@ -163,6 +184,40 @@ export function Fpl500Playbook() {
           <dd>{number.format(data.latestSeasonEntries ?? 0)}</dd>
         </div>
       </dl>
+
+      <section
+        aria-labelledby="fpl500-previous-season-record"
+        className="fpl500-history"
+      >
+        <h2 id="fpl500-previous-season-record">Previous-season record</h2>
+        <p>
+          How the selected five hundred finished across the five most recent
+          completed seasons.
+        </p>
+        <dl className="dossier-metrics">
+          <div>
+            <dt>Seasons profiled</dt>
+            <dd>{number.format(ridges.length)}</dd>
+          </div>
+          <div>
+            <dt>Finishes observed</dt>
+            <dd>{number.format(finishes)}</dd>
+          </div>
+          {historicFinishes.map((metric) => (
+            <div key={metric.label}>
+              <dt>{metric.label}</dt>
+              <dd>
+                {number.format(metric.count)}{" "}
+                <small>({share.format(metric.count / finishes)})</small>
+              </dd>
+            </div>
+          ))}
+        </dl>
+        <p className="mono fpl500-source">
+          Observed · FPL histories through{" "}
+          {timestamp.format(new Date(data.generatedAt))}
+        </p>
+      </section>
 
       <Fold kind="what" title="What it is">
         <ul className="plan-promises">
