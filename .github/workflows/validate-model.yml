@@ -18,6 +18,7 @@ on:
       - python/fpl_andres/rules.py
       - python/fpl_andres/model_version.py
       - python/fpl_andres/cli/validate.py
+      - python/fpl_andres/cli/publish_season_inputs.py
       - python/fpl_andres/cohorts/points_to_rank.py
       - data/cohort/points-to-rank.json
       - python/fpl_andres/cli/track_model.py

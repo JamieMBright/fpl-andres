@@ -67,6 +67,11 @@ The project follows Semantic Versioning once milestone tags begin.
 
 ### Changed
 
+- Player-market goals, participation and card evidence now persist beyond the
+  quoted fixture with a two-gameweek half-life toward the historical or
+  depth-role baseline. GW1 gets the full signal; by GW9 one-sixteenth remains.
+  Team odds remain fixture-specific and do not leak one opponent into another.
+
 - The two-sigma curve control is disabled, rather than silently drawing
   nothing, when the axes have too few players or no spread to measure. The
   reason is on the control.

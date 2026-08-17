@@ -650,6 +650,27 @@ def test_a_debutants_market_price_moves_attack_and_participation(tmp_path: Path)
     assert priced["startRate"] > baseline["startRate"]
     assert priced["basePoints"] == pytest.approx(sum(priced["routes"].values()), abs=0.001)
     assert priced["evidence"]["appearance"] == "marketParticipation"
+    carry = quoted["marketCarry"]
+    assert carry["halfLifeGameweeks"] == 2
+    assert carry["fields"] == [
+        "anchorIndex",
+        "baselineStartRate",
+        "participationRatio",
+        "baselineAttacking",
+        "baselineYellowCards",
+        "baselineRedCards",
+    ]
+    values = carry["players"]["12"]
+    assert values[0] == 0
+    assert values[1] == baseline["startRate"]
+    assert values[2] > 1.0
+    assert values[3] == baseline["routes"]["attacking"]
+
+
+def test_no_market_publishes_no_player_carry(tmp_path: Path) -> None:
+    payload = _run(tmp_path, [_element()])
+
+    assert payload["marketCarry"]["players"] == {}
 
 
 def test_shot_markets_blend_understat_history_into_minutes_and_bps(tmp_path: Path) -> None:

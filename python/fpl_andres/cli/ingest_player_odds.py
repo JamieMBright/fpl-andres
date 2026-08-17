@@ -51,10 +51,11 @@ BOOTSTRAP = "https://fantasy.premierleague.com/api/bootstrap-static/"
 #: before refreshing retained ones. Several daily runs then cover the gameweek
 #: without repeatedly spending the allowance on the same first fixture.
 #:
-#: Thirty scheduled runs at the eight-credit threshold cost 240 before a final
-#: request's bounded overshoot, and the weekly survey takes about 48.
-#: `tests/test_api_budgets.py` holds the declared shared sum under 500.
-DEFAULT_BUDGET = 8
+#: Thirty scheduled runs at the twelve-credit hard cap cost at most 360, the
+#: weekly team fallback about 88 and the survey about 48. The next fixture is
+#: requested only when all six markets could fit, so the cap cannot overshoot.
+#: `tests/test_api_budgets.py` holds the shared sum under 500.
+DEFAULT_BUDGET = 12
 DEFAULT_DEADLINES = Path("apps/web/src/data/deadlines.json")
 DEFAULT_WINDOW_DAYS = 7
 
@@ -65,6 +66,11 @@ class DeadlineProximity:
     event: int
     deadline: datetime
     days: float
+
+
+def can_request_fixture(*, spent: int, budget: int) -> bool:
+    """Whether another fixture fits even if every requested market is open."""
+    return spent + len(PLAYER_MARKETS) <= budget
 
 
 def deadline_proximity(
@@ -254,6 +260,12 @@ def main(argv: Sequence[str] | None = None) -> int:
     if args.within_days <= 0:
         print("--within-days must be positive", flush=True)
         return 1
+    if args.budget < len(PLAYER_MARKETS):
+        print(
+            f"--budget must reserve at least {len(PLAYER_MARKETS)} credits for one fixture",
+            flush=True,
+        )
+        return 1
     if not args.force:
         try:
             proximity = deadline_proximity(
@@ -301,8 +313,11 @@ def main(argv: Sequence[str] | None = None) -> int:
             if closing.remaining is not None and closing.remaining <= 0:
                 print("  stopping: the key has no requests left this month")
                 break
-            if spent >= args.budget:
-                print(f"  stopping: this run's budget of {args.budget} requests is spent")
+            if not can_request_fixture(spent=spent, budget=args.budget):
+                print(
+                    f"  stopping: another fixture could exceed this run's hard "
+                    f"cap of {args.budget} credits"
+                )
                 break
             payload, closing = fetch_event_odds(client, key, event_id)
             visited += 1

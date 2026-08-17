@@ -24,7 +24,7 @@ import yaml
 from fpl_andres.adapters.player_props import _THE_ODDS_API_MARKETS
 from fpl_andres.adapters.the_odds_api import PLAYER_MARKETS
 from fpl_andres.cli.ingest_odds import TEAM_FALLBACK_WEEKLY_BUDGET
-from fpl_andres.cli.ingest_player_odds import DEFAULT_BUDGET
+from fpl_andres.cli.ingest_player_odds import DEFAULT_BUDGET, can_request_fixture
 
 WORKFLOWS = Path(__file__).resolve().parents[2] / ".github" / "workflows"
 
@@ -82,6 +82,12 @@ def test_the_ingest_asks_for_no_market_it_does_not_read() -> None:
     from fpl_andres.adapters.the_odds_api import MARKET_FIELDS
 
     assert set(PLAYER_MARKETS) == set(MARKET_FIELDS)
+
+
+def test_a_player_run_reserves_the_maximum_cost_before_another_fixture() -> None:
+    assert DEFAULT_BUDGET == 12
+    assert can_request_fixture(spent=6, budget=DEFAULT_BUDGET) is True
+    assert can_request_fixture(spent=7, budget=DEFAULT_BUDGET) is False
 
 
 def test_the_odds_ingest_runs_daily() -> None:

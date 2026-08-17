@@ -29,6 +29,16 @@ from __future__ import annotations
 
 __all__ = ["MODEL_VERSION"]
 
+#: 7.1 keeps one fixture's player market as evidence beyond that fixture
+#: without pretending it is a nine-week forecast. The quote-vs-history
+#: deviation is full in its anchor gameweek and halves every two gameweeks;
+#: before the anchor it carries no weight. Player goals, participation and card
+#: evidence therefore inform future recommendations but yield steadily to the
+#: completed-season record or depth-role prior. Team markets remain
+#: fixture-specific: an unpriced future opponent keeps the season-strength
+#: route ladder until its own 1X2 and totals markets open. Minor: routes and
+#: start rates retain their meanings, but their horizon values now decay.
+#:
 #: 7.0 makes market evidence a route-level model rather than two publisher
 #: adjustments. Goals, assists, cards, shots and shots on target retain their
 #: own evidence and can inform participation without being multiplied into the
@@ -301,4 +311,4 @@ __all__ = ["MODEL_VERSION"]
 #: projection and resampled, so a gap that does not clear zero is reported as
 #: not clearing zero. No projection changed; what changed is what may be
 #: claimed from it.
-MODEL_VERSION = "7.0"
+MODEL_VERSION = "7.1"

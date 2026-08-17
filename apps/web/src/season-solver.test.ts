@@ -7,6 +7,8 @@ import {
   defconPointsAtEvent,
   fixtureAtEvent,
   lookaheadPointsFor,
+  marketCarryWeight,
+  marketValueAtEvent,
   solveSeason,
   SEASON_EVENTS,
   SEASON_PLAYERS,
@@ -61,6 +63,20 @@ function season() {
 }
 
 describe("season inputs artifact", () => {
+  it("decays a quoted market deviation with a two-gameweek half-life", () => {
+    expect(marketCarryWeight(0, 0, 2)).toBe(1);
+    expect(marketCarryWeight(1, 0, 2)).toBeCloseTo(Math.SQRT1_2);
+    expect(marketCarryWeight(2, 0, 2)).toBe(0.5);
+    expect(marketCarryWeight(8, 0, 2)).toBeCloseTo(0.0625);
+    expect(marketCarryWeight(0, 1, 2)).toBe(0);
+  });
+
+  it("carries the quote fully now and fades it toward history later", () => {
+    expect(marketValueAtEvent(10, 4, 0, 0, 2)).toBe(10);
+    expect(marketValueAtEvent(10, 4, 2, 0, 2)).toBe(7);
+    expect(marketValueAtEvent(10, 4, 8, 0, 2)).toBeCloseTo(4.375);
+  });
+
   it("uses a fixture BPS override instead of adding it to historical bonus", () => {
     expect(bonusPointsAtEvent(0.6, 1, 1.4)).toBe(1.4);
   });

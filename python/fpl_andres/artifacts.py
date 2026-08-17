@@ -23,9 +23,9 @@ from typing import Final
 #: with the four events it bundled, so a card price has something to price.
 PROJECTIONS_SCHEMA_VERSION: Final = 2
 
-#: Browser season-solver inputs. Version 3 adds route evidence/provenance,
-#: market-informed participation, BPS distributions and per-event bonus overrides.
-SEASON_INPUTS_SCHEMA_VERSION: Final = 3
+#: Browser season-solver inputs. Version 4 anchors player-market deviations to
+#: their quoted gameweek and decays them toward the historical/role baseline.
+SEASON_INPUTS_SCHEMA_VERSION: Final = 4
 
 #: The header of the projections artifact, published separately so a component
 #: needing only the season label does not pull the whole player list.

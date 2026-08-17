@@ -320,6 +320,15 @@ For a new arrival, the baseline is the complete measured route vector of a
 player at the same position and FPL price-depth rank, not one undifferentiated
 points bucket.
 
+One fixture is not nine forecasts. The player-market deviation from that
+historical or role baseline is carried forward with a two-gameweek half-life:
+full in the quoted gameweek, half two gameweeks later and one-sixteenth by the
+ninth. A quote never leaks backward before its fixture. This lets a market
+reveal a new role or stronger scorer without permanently replacing a season of
+evidence. Team odds are different: they describe one opponent, so only that
+fixture's ladder rung changes. Later FDR remains the season-strength estimate
+until the later fixture gets its own 1X2 and totals markets.
+
 ### Bonus and BPS
 
 The history corpus retains observed BPS. For a future match, every component

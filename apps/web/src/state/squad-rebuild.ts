@@ -5,6 +5,7 @@ import {
   SQUAD_SHAPE_BY_CODE,
   bestElevenPoints,
   lookaheadPointsFor,
+  startRateAtEvent,
   type SolverPlayer,
 } from "./season-solver";
 
@@ -36,7 +37,7 @@ export interface RebuiltSquad {
 function eligible(eventIndex: number): SolverPlayer[] {
   return SEASON_PLAYERS.filter(
     (player) =>
-      player.startRate >= PLAYABLE_START_RATE &&
+      startRateAtEvent(player, eventIndex) >= PLAYABLE_START_RATE &&
       lookaheadPointsFor(player, eventIndex) > 0,
   );
 }

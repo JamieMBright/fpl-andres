@@ -106,14 +106,16 @@ cron has to be argued for rather than merged.
   market it returns, so a shut market costs nothing.
 - **One region.** UK books price a Premier League player deepest, and adding
   Europe doubles the bill for a slightly steadier median.
-- **Daily trigger, seven-day gate, bounded eight-credit run.** No provider
+- **Daily trigger, seven-day gate, twelve-credit hard cap.** No provider
   publishes an exact opening hour, so the workflow wakes at 09:00 UTC every
   day. It reads the committed FPL calendar first and exits before reading the
   provider key unless the next deadline is within seven days. Uncovered
   fixtures are visited before an existing quote is refreshed, and still-current
   older rows retain their own observation timestamp. That lets several bounded
   runs cover a gameweek instead of buying the same first fixtures every day.
-  `test_api_budgets.py` keeps the worst-case shared allowance under 500.
+  Before another fixture is fetched, the run reserves all six possible market
+  credits, so a response cannot overshoot the cap. `test_api_budgets.py` keeps
+  the worst-case shared allowance under 500.
 
 The same key pays for the weekly survey, which is why the guard counts both.
 It also pays for the team-market fallback when football-data.co.uk has not

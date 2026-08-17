@@ -27,6 +27,8 @@ const MODEL_PATHS = [
   "python/fpl_andres/models/",
   "python/fpl_andres/backtesting/",
   "python/fpl_andres/rules.py",
+  "python/fpl_andres/cli/publish_season_inputs.py",
+  "apps/web/src/state/season-solver.ts",
 ];
 
 const VERSION_PATH = "python/fpl_andres/model_version.py";

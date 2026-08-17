@@ -174,6 +174,102 @@ const BONUS_OVERRIDES =
     }
   ).bonusOverrides ?? {};
 
+type MarketCarryValues = readonly [
+  anchorIndex: number,
+  baselineStartRate: number,
+  participationRatio: number,
+  baselineAttacking: number,
+  baselineYellowCards: number,
+  baselineRedCards: number,
+];
+
+const MARKET_CARRY = (
+  inputs as unknown as {
+    marketCarry: {
+      halfLifeGameweeks: number;
+      players: Record<string, MarketCarryValues>;
+    };
+  }
+).marketCarry;
+
+export function marketCarryWeight(
+  eventIndex: number,
+  anchorIndex: number,
+  halfLifeGameweeks: number,
+): number {
+  if (eventIndex < anchorIndex) return 0;
+  if (halfLifeGameweeks <= 0) return eventIndex === anchorIndex ? 1 : 0;
+  return 0.5 ** ((eventIndex - anchorIndex) / halfLifeGameweeks);
+}
+
+export function marketValueAtEvent(
+  quoted: number,
+  baseline: number,
+  eventIndex: number,
+  anchorIndex: number,
+  halfLifeGameweeks: number,
+): number {
+  const weight = marketCarryWeight(eventIndex, anchorIndex, halfLifeGameweeks);
+  return baseline + (quoted - baseline) * weight;
+}
+
+function routesAtEvent(player: SolverPlayer, eventIndex: number): PlayerRoutes {
+  const carry = MARKET_CARRY.players[String(player.id)];
+  if (!carry) return player.routes;
+  const [
+    anchorIndex,
+    _baselineStartRate,
+    participationRatio,
+    baselineAttacking,
+    baselineYellowCards,
+    baselineRedCards,
+  ] = carry;
+  const baselineFor = (route: keyof PlayerRoutes): number => {
+    const current = player.routes[route] ?? 0;
+    if (route === "attacking") return baselineAttacking;
+    if (route === "yellowCards") return baselineYellowCards;
+    if (route === "redCards") return baselineRedCards;
+    return participationRatio > 0 ? current / participationRatio : current;
+  };
+  const carried = (route: keyof PlayerRoutes): number =>
+    marketValueAtEvent(
+      player.routes[route] ?? 0,
+      baselineFor(route),
+      eventIndex,
+      anchorIndex,
+      MARKET_CARRY.halfLifeGameweeks,
+    );
+  return {
+    appearance: carried("appearance"),
+    attacking: carried("attacking"),
+    cleanSheet: carried("cleanSheet"),
+    bonus: carried("bonus"),
+    saves: carried("saves"),
+    conceding: carried("conceding"),
+    yellowCards: carried("yellowCards"),
+    redCards: carried("redCards"),
+    ownGoals: carried("ownGoals"),
+    penaltiesMissed: carried("penaltiesMissed"),
+    defensiveContribution: carried("defensiveContribution"),
+  };
+}
+
+export function startRateAtEvent(
+  player: SolverPlayer,
+  eventIndex: number,
+): number {
+  const carry = MARKET_CARRY.players[String(player.id)];
+  if (!carry) return player.startRate;
+  const [anchorIndex, baselineStartRate] = carry;
+  return marketValueAtEvent(
+    player.startRate,
+    baselineStartRate,
+    eventIndex,
+    anchorIndex,
+    MARKET_CARRY.halfLifeGameweeks,
+  );
+}
+
 /** A fixture BPS ranking replaces the historical bonus rate where available. */
 export function bonusPointsAtEvent(
   historicalPerFixture: number,
@@ -237,7 +333,7 @@ function splitAt(player: SolverPlayer, eventIndex: number): EventRoutes {
     event === undefined
       ? undefined
       : BONUS_OVERRIDES[String(event)]?.[String(player.id)];
-  const { routes } = player;
+  const routes = routesAtEvent(player, eventIndex);
   return {
     appearance: (routes.appearance ?? 0) * fixtures,
     bonus: bonusPointsAtEvent(routes.bonus ?? 0, fixtures, bonusOverride),
@@ -561,7 +657,7 @@ export function* solveSeason(
       // a high per-appearance rate and almost no starts could win a transfer,
       // and the browser kept exactly the candidates Python drops.
       (player) =>
-        player.startRate >= PLAYABLE_START_RATE ||
+        startRateAtEvent(player, index) >= PLAYABLE_START_RATE ||
         squad.some((held) => held.elementId === player.id),
     ).map((player) => ({
       elementId: player.id,

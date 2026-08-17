@@ -98,6 +98,10 @@ POOL_PER_POSITION = 250
 #: FPL's own bootstrap does not publish the hit, so it is cited rather than read.
 TRANSFER_COST_POINTS = 4
 
+#: A single fixture quote is strongest for that fixture and then yields to the
+#: player's measured record. Assumed until retained quotes can fit this decay.
+MARKET_CARRY_HALF_LIFE_GAMEWEEKS = 2.0
+
 #: How many of each position may start, from the published rules.
 LINEUP_RANGE = {1: (1, 1), 2: (3, 5), 3: (2, 5), 4: (1, 3)}
 
@@ -376,6 +380,8 @@ class QuotedSquads:
     quoted: frozenset[int]
     #: Club short names the book priced a full enough squad for.
     covered: frozenset[str]
+    #: Earliest fixture date represented for each club.
+    anchors: Mapping[str, date]
 
     def absent(self, element_id: int, club: str) -> bool:
         return club in self.covered and element_id not in self.quoted
@@ -425,7 +431,7 @@ def _quoted_squads(odds_path: Path) -> QuotedSquads:
     read him as dropped -- and the one thing worse than not using this signal is
     using it on the players it is wrong about.
     """
-    empty = QuotedSquads(quoted=frozenset(), covered=frozenset())
+    empty = QuotedSquads(quoted=frozenset(), covered=frozenset(), anchors={})
     if not odds_path.exists():
         return empty
     artifact = read_json_file(odds_path)
@@ -433,6 +439,7 @@ def _quoted_squads(odds_path: Path) -> QuotedSquads:
         return empty
     quoted: set[int] = set()
     by_club: Counter[str] = Counter()
+    anchors: dict[str, date] = {}
     for row in artifact.get("players", []):
         element_id = row.get("element_id")
         club = row.get("club")
@@ -441,29 +448,38 @@ def _quoted_squads(odds_path: Path) -> QuotedSquads:
         quoted.add(element_id)
         if isinstance(club, str):
             by_club[club] += 1
+            kickoff = row.get("kickoff")
+            if isinstance(kickoff, str):
+                try:
+                    when = (
+                        datetime.fromisoformat(kickoff.replace("Z", "+00:00"))
+                        .astimezone(UTC)
+                        .date()
+                    )
+                except ValueError:
+                    continue
+                anchors[club] = min(when, anchors.get(club, when))
     return QuotedSquads(
         quoted=frozenset(quoted),
         covered=frozenset(club for club, count in by_club.items() if count >= CLUB_QUOTE_FLOOR),
+        anchors=anchors,
     )
 
 
-def _quoted_cards(odds_path: Path) -> dict[int, MarketCards]:
+def _quoted_cards(odds_path: Path) -> dict[int, tuple[MarketCards, date]]:
     """Bookings the market expects, by element.
 
-    No kickoff travels with these. The attacking routes are de-fixtured by the
-    gameweek's own multiplier before publishing, because the ladder has one; the
-    card routes have no rung, so there is nothing to divide out and nothing to
-    correct with. What is published is therefore a fixture's booking rate read
-    as if it were an average one, which flatters a player quoted in a derby and
-    is stated here rather than hidden. It is bounded by the blend weight.
+    Card routes have no fixture rung to divide out, but the kickoff still
+    anchors how their deviation from history decays across future gameweeks.
     """
     if not odds_path.exists():
         return {}
     artifact = read_json_file(odds_path)
-    quoted: dict[int, MarketCards] = {}
+    quoted: dict[int, tuple[MarketCards, date]] = {}
     for row in artifact.get("players", []):
         element_id = row.get("element_id")
-        if not isinstance(element_id, int):
+        kickoff = row.get("kickoff")
+        if not isinstance(element_id, int) or not isinstance(kickoff, str):
             continue
         any_card = row.get("any_card")
         red = row.get("red_card")
@@ -475,7 +491,11 @@ def _quoted_cards(odds_path: Path) -> dict[int, MarketCards]:
         except MarketRoutesError:
             continue
         if cards is not None:
-            quoted[element_id] = cards
+            try:
+                when = datetime.fromisoformat(kickoff.replace("Z", "+00:00")).astimezone(UTC).date()
+            except ValueError:
+                continue
+            quoted[element_id] = (cards, when)
     return quoted
 
 
@@ -1233,34 +1253,45 @@ def _build_player_rows(
     records: Mapping[int, Mapping[str, object]],
     priors: Mapping[tuple[int, int], DepthRolePrior],
     quoted_attack: Mapping[int, tuple[MarketAttack, date]],
-    quoted_cards: Mapping[int, MarketCards],
+    quoted_cards: Mapping[int, tuple[MarketCards, date]],
     quoted_shots: Mapping[int, tuple[MarketShots, date]],
     squads: QuotedSquads,
     ladder: Mapping[str, Mapping[str, Sequence[float]]],
     slots_by_team: Mapping[int, Mapping[date, int]],
     clubs: Mapping[int, Mapping[str, object]],
     weight: float,
-) -> tuple[list[tuple[int, float, dict[str, object]]], PlayerMarketReach]:
+) -> tuple[
+    list[tuple[int, float, dict[str, object]]],
+    PlayerMarketReach,
+    dict[int, list[float]],
+]:
     players: list[tuple[int, float, dict[str, object]]] = []
     reach = PlayerMarketReach()
+    carry: dict[int, list[float]] = {}
     for element in available:
         prior = priors.get((element.element_type, min(depth[element.id], 3)))
         draft = _initial_player_draft(element, records.get(element.code), prior)
         if draft is None:
             continue
+        baseline_start_rate = draft.start_rate
+        baseline_minutes = draft.expected_minutes
+        baseline_routes = dict(draft.routes)
         club = str(clubs[element.team]["short_name"])
         attack_multipliers = ladder.get(club, {}).get("attacking", ())
         slots = slots_by_team.get(element.team, {})
+        attack_quote = quoted_attack.get(element.id)
+        shot_quote = quoted_shots.get(element.id)
+        card_quote = quoted_cards.get(element.id)
         attacked, attack_participation = _apply_attack_market(
             draft,
-            quoted_attack.get(element.id),
+            attack_quote,
             attack_multipliers,
             slots,
             weight,
         )
         shot, shot_participation = _apply_shot_market(
             draft,
-            quoted_shots.get(element.id),
+            shot_quote,
             attack_multipliers,
             slots,
             weight,
@@ -1269,12 +1300,35 @@ def _build_player_rows(
         reach.attacking += int(attacked)
         reach.shots += int(shot)
         reach.participation += int(attack_participation or shot_participation)
-        reach.cards += int(_apply_card_market(draft, quoted_cards.get(element.id), weight))
-        if squads.absent(element.id, club):
+        carded = _apply_card_market(
+            draft,
+            card_quote[0] if card_quote is not None else None,
+            weight,
+        )
+        reach.cards += int(carded)
+        absent = squads.absent(element.id, club)
+        if absent:
             reach.benched += 1
             _omit_from_complete_squad(draft, weight)
+        anchor_dates = [
+            quote[1] for quote in (attack_quote, shot_quote, card_quote) if quote is not None
+        ]
+        squad_anchor = squads.anchors.get(club) if absent else None
+        if squad_anchor is not None:
+            anchor_dates.append(squad_anchor)
+        anchor_indices = [slots[when] for when in anchor_dates if when in slots]
+        touched = attacked or shot or carded or absent
+        if touched and anchor_indices and baseline_minutes > 0.0:
+            carry[element.id] = [
+                float(min(anchor_indices)),
+                round(baseline_start_rate, 3),
+                round(draft.expected_minutes / baseline_minutes, 6),
+                round(baseline_routes.get("attacking", 0.0), 3),
+                round(baseline_routes.get("yellowCards", 0.0), 3),
+                round(baseline_routes.get("redCards", 0.0), 3),
+            ]
         players.append(_final_player_row(draft, clubs, depth))
-    return players, reach
+    return players, reach, carry
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -1350,7 +1404,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     quoted_cards = _quoted_cards(player_odds_path)
     quoted_shots = _quoted_shots(player_odds_path)
     squads = _quoted_squads(player_odds_path)
-    players, player_reach = _build_player_rows(
+    players, player_reach, market_carry = _build_player_rows(
         available,
         depth=depth,
         records=record_by_code,
@@ -1395,6 +1449,12 @@ def main(argv: Sequence[str] | None = None) -> int:
     for player in trimmed:
         for key in [name for name in player if name.startswith("_")]:
             del player[key]
+    trimmed_ids = {int(str(player["id"])) for player in trimmed}
+    market_carry = {
+        element_id: values
+        for element_id, values in market_carry.items()
+        if element_id in trimmed_ids
+    }
 
     payload = {
         "schemaVersion": SCHEMA_VERSION,
@@ -1486,6 +1546,18 @@ def main(argv: Sequence[str] | None = None) -> int:
             "fixtureRungs": market_rungs,
             "participationInferred": player_reach.participation,
             "bonusEvents": len(bonus_overrides),
+        },
+        "marketCarry": {
+            "halfLifeGameweeks": MARKET_CARRY_HALF_LIFE_GAMEWEEKS,
+            "fields": [
+                "anchorIndex",
+                "baselineStartRate",
+                "participationRatio",
+                "baselineAttacking",
+                "baselineYellowCards",
+                "baselineRedCards",
+            ],
+            "players": market_carry,
         },
         # Read from FPL's own bootstrap, not retyped in TypeScript. The browser
         # solver declared the squad shape, the weekly award, the cap and the
