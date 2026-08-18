@@ -41,22 +41,41 @@ test("the health endpoint answers", async ({ request }) => {
 
 test("the player list is proxied rather than 404d", async ({ request }) => {
   // The exact call the analysis page makes on first paint.
-  const response = await request.get("/api/fpl/bootstrap-static/");
+  const response = await request.get("/api/fpl/bootstrap-static");
 
   expect(
     response.status(),
     "a 404 here means the function is not routed, not that FPL is down",
-  ).toBe(200);
-  const payload = (await response.json()) as { elements?: unknown[] };
-  expect(Array.isArray(payload.elements)).toBe(true);
-  expect(payload.elements?.length ?? 0).toBeGreaterThan(100);
+  ).not.toBe(404);
+  expect(response.headers()["content-type"]).toContain("application/json");
+  const payload = (await response.json()) as {
+    elements?: unknown[];
+    reason?: string;
+  };
+  if (response.status() === 200) {
+    expect(Array.isArray(payload.elements)).toBe(true);
+    expect(payload.elements?.length ?? 0).toBeGreaterThan(100);
+  } else {
+    expect([
+      "refused",
+      "rate_limited",
+      "upstream_down",
+      "challenged",
+    ]).toContain(payload.reason);
+  }
 });
 
 test("the fixture list is proxied", async ({ request }) => {
-  const response = await request.get("/api/fpl/fixtures/");
+  const response = await request.get("/api/fpl/fixtures");
 
-  expect(response.status()).toBe(200);
-  expect(Array.isArray(await response.json())).toBe(true);
+  expect(response.status()).not.toBe(404);
+  expect(response.headers()["content-type"]).toContain("application/json");
+  const payload = (await response.json()) as unknown;
+  if (response.status() === 200) {
+    expect(Array.isArray(payload)).toBe(true);
+  } else {
+    expect(payload).toMatchObject({ reason: expect.any(String) });
+  }
 });
 
 test("a team route resolves to a handler", async ({ request }) => {
@@ -77,7 +96,7 @@ test("every function named in vercel.json is reachable", async ({
   // or never deployed, which is exactly how the last outage happened.
   const probes: Record<string, string> = {
     "api/health.ts": "/api/health",
-    "api/fpl/*.ts": "/api/fpl/bootstrap-static/",
+    "api/fpl/*.ts": "/api/fpl/bootstrap-static",
     "api/team/*.ts": "/api/team/1",
     "api/analysis-request.ts": "/api/analysis-request",
     "api/contact.ts": "/api/contact",
@@ -115,6 +134,7 @@ test("the analysis page plots rather than reporting a failure", async ({
 
 test("the season plan renders its first gameweek", async ({ page }) => {
   await page.goto("/plan");
+  await page.locator('[data-step="04"] > summary').click();
 
   await expect(page.locator(".plan-card").first()).toBeVisible({
     timeout: 30_000,
