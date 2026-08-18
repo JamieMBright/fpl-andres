@@ -80,7 +80,9 @@ jobs:
         run: cp apps/web/src/data/validation.json "$RUNNER_TEMP/before.json"
 
       - name: Run the backtest
-        timeout-minutes: 40
+        # Run 41 reached the old 40-minute ceiling on a loaded hosted runner;
+        # comparable successful runs are usually about 20 minutes.
+        timeout-minutes: 60
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}

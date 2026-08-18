@@ -187,6 +187,14 @@ def test_model_validation_republishes_the_complete_planning_chain() -> None:
         assert text.count(path) >= 3, f"{path} must be watched, formatted and committed"
 
 
+def test_model_backtest_allows_the_measured_slow_runner_duration() -> None:
+    text = (WORKFLOWS / "validate-model.yml").read_text(encoding="utf-8")
+    backtest = text.index("- name: Run the backtest")
+    following_step = text.index("- name:", backtest + 1)
+
+    assert "timeout-minutes: 60" in text[backtest:following_step]
+
+
 def test_fpl500_capture_republishes_the_prospective_event_ledger() -> None:
     text = (WORKFLOWS / "capture-fpl500.yml").read_text(encoding="utf-8")
 
