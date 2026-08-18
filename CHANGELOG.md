@@ -30,6 +30,9 @@ The project follows Semantic Versioning once milestone tags begin.
   applied when total shots are absent and no defensible BPS delta exists.
 - First/last-scorer market outcomes such as `No Scorer` are no longer emitted
   as unmatched players or allowed to disable complete-squad inference.
+- Legacy Odds API fixture rows refresh once when the team-market analysis
+  version changes, so newly consumed lay and alternate-total lines reach the
+  current round without turning into repeated daily requests.
 - Player-market ingestion now preserves card fields, resolves the observed
   `Ben White` and reversed `Magalhaes Gabriel` provider spellings without fuzzy
   matching, and reads shots/shot-on-target over-under lines as expected counts.

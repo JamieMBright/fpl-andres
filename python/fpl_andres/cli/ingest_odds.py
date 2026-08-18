@@ -76,6 +76,7 @@ EXPECTED_CLUBS = 20
 
 #: Bumped when the published shape changes, so a stale artifact is detectable.
 ODDS_SCHEMA_VERSION = 1
+TEAM_MARKET_ANALYSIS_VERSION = 1
 
 TEAM_MARKET_USAGE = {
     "alternate_totals": "total-goals-shape",
@@ -183,12 +184,27 @@ def _uncovered_team_events(
     first = readable[0][1]
     assert first is not None
     ceiling = first[2] + timedelta(days=TEAM_FALLBACK_WINDOW_DAYS)
-    covered = {key for row in existing if (key := _entry_key(row)) is not None}
+    covered = {
+        key
+        for row in existing
+        if (key := _entry_key(row)) is not None and _team_analysis_is_current(row)
+    }
     return [
         event
         for event, key in readable
         if key is not None and key[2] <= ceiling and key not in covered
     ][:TEAM_FALLBACK_FIXTURES]
+
+
+def _team_analysis_is_current(row: Mapping[str, object]) -> bool:
+    source = row.get("priceSource")
+    if not isinstance(source, str) or not source.startswith("the-odds-api"):
+        return True
+    evidence = row.get("marketEvidence")
+    return (
+        isinstance(evidence, Mapping)
+        and evidence.get("analysisVersion") == TEAM_MARKET_ANALYSIS_VERSION
+    )
 
 
 def _merge_fixture_entries(
@@ -312,6 +328,7 @@ def _entry(row: FixtureOdds, fit: GoalExpectation, *, keep_markets: bool) -> dic
         entry["markets"] = {name: round(price, 3) for name, price in sorted(row.markets.items())}
     if row.observed_market_keys:
         entry["marketEvidence"] = {
+            "analysisVersion": TEAM_MARKET_ANALYSIS_VERSION,
             "observed": list(row.observed_market_keys),
             "numberMoving": list(row.used_market_keys),
             "usage": {

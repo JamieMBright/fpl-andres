@@ -125,8 +125,10 @@ opened the current round. That fallback asks for `h2h`, `totals` and
 `alternate_totals` on at most ten uncovered fixtures inside the nearest six
 days; the live provider also returns and bills `h2h_lay` beside `h2h`, for a
 forty-credit worst-case round. Retained fixture rows prevent a daily repeat,
-and `test_api_budgets.py` includes the weekly bound in the shared 500-credit
-total.
+and each Odds API row carries the team-analysis version that consumed it. A
+parser/model upgrade refreshes legacy rows once; a market genuinely absent on
+that refresh is then retained as absent rather than bought again every day.
+`test_api_budgets.py` includes the weekly bound in the shared 500-credit total.
 
 **When nothing is quoted.** Ten fixtures priced and nought players quoted is not
 a failure. Each fixture's line names how many books answered, how many outcomes

@@ -12,6 +12,7 @@ from fpl_andres.adapters.the_odds_api import read_fixture_odds
 from fpl_andres.cli.ingest_odds import (
     BACKTEST_SEASONS,
     TEAM_CODES,
+    TEAM_MARKET_ANALYSIS_VERSION,
     OddsIngestError,
     UnknownClubError,
     _entry,
@@ -321,6 +322,7 @@ class TestTheOddsApiFallback:
             baseline_fitted.home / baseline_fitted.total
         )
         assert _entry(row, fitted, keep_markets=False)["marketEvidence"] == {
+            "analysisVersion": TEAM_MARKET_ANALYSIS_VERSION,
             "observed": ["alternate_totals", "h2h", "h2h_lay", "totals"],
             "numberMoving": ["alternate_totals", "h2h", "h2h_lay", "totals"],
             "usage": {
@@ -363,6 +365,36 @@ class TestTheOddsApiFallback:
         selected = _uncovered_team_events(events, existing)
 
         assert [event["id"] for event in selected] == ["current"]
+
+    def test_legacy_odds_api_rows_refresh_once_for_new_market_analysis(self) -> None:
+        events = [
+            {
+                "id": "arsenal-coventry",
+                "home_team": "Arsenal",
+                "away_team": "Coventry City",
+                "commence_time": "2026-08-21T19:00:00Z",
+            }
+        ]
+        legacy = [
+            {
+                "home": "ARS",
+                "away": "COV",
+                "kickoff": "2026-08-21T19:00:00+00:00",
+                "priceSource": "the-odds-api-median",
+            }
+        ]
+
+        assert [event["id"] for event in _uncovered_team_events(events, legacy)] == [
+            "arsenal-coventry"
+        ]
+
+        refreshed = [
+            {
+                **legacy[0],
+                "marketEvidence": {"analysisVersion": TEAM_MARKET_ANALYSIS_VERSION},
+            }
+        ]
+        assert _uncovered_team_events(events, refreshed) == []
 
     def test_fresh_rows_replace_the_same_fixture_and_retain_the_rest(self) -> None:
         previous = [
