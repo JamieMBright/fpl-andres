@@ -1,6 +1,6 @@
 {
   "schemaVersion": 5,
-  "generatedAt": "2026-08-18T16:36:18.114744Z",
+  "generatedAt": "2026-08-18T18:04:50.165596Z",
   "recordSeason": "2025-26",
   "events": [
     1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
@@ -189,7 +189,7 @@
       }
     ],
     "sourceReference": "FPL rules page, Transfers section",
-    "dataAvailableAt": "2026-08-18T16:36:18.123277Z",
+    "dataAvailableAt": "2026-08-18T18:04:50.165596Z",
     "playableStartRate": 0.35,
     "transferMarginPoints": 0.5
   },
@@ -2282,17 +2282,17 @@
       "33": 0.0,
       "47": 0.0,
       "37": 0.0,
-      "481": 0.036,
+      "481": 0.043,
       "384": 0.002,
-      "388": 0.007,
+      "388": 0.008,
       "397": 0.001,
       "386": 0.0,
-      "411": 0.084,
+      "411": 0.093,
       "387": 0.001,
       "390": 0.0,
       "398": 0.001,
-      "400": 0.0,
-      "399": 0.001,
+      "399": 0.002,
+      "393": 0.0,
       "57": 0.0,
       "61": 0.0,
       "69": 0.001,
@@ -8121,7 +8121,7 @@
       "startRate": 0.934,
       "squadNumber": null,
       "rated": true,
-      "depthRank": 5
+      "depthRank": 4
     },
     {
       "id": 12,
@@ -9380,7 +9380,7 @@
       "startRate": 0.529,
       "squadNumber": null,
       "rated": true,
-      "depthRank": 4
+      "depthRank": 3
     },
     {
       "id": 337,
@@ -9802,30 +9802,6 @@
       "squadNumber": null,
       "rated": true,
       "depthRank": 5
-    },
-    {
-      "id": 400,
-      "code": 248875,
-      "name": "Doku",
-      "position": "MID",
-      "positionId": 3,
-      "club": "MCI",
-      "teamId": 15,
-      "priceTenths": 75,
-      "basePoints": 2.45,
-      "routes": {
-        "appearance": 1.227,
-        "attacking": 0.74,
-        "cleanSheet": 0.117,
-        "bonus": 0.352,
-        "yellowCards": -0.019,
-        "redCards": -0.001,
-        "defensiveContribution": 0.034
-      },
-      "startRate": 0.462,
-      "squadNumber": null,
-      "rated": true,
-      "depthRank": 2
     },
     {
       "id": 17,
@@ -10291,7 +10267,7 @@
       "startRate": 0.388,
       "squadNumber": null,
       "rated": true,
-      "depthRank": 8
+      "depthRank": 7
     },
     {
       "id": 214,
@@ -11756,7 +11732,7 @@
       "startRate": 0.294,
       "squadNumber": null,
       "rated": false,
-      "depthRank": 9,
+      "depthRank": 8,
       "evidence": { "all": "rolePrior" }
     },
     {
@@ -11781,7 +11757,7 @@
       "startRate": 0.294,
       "squadNumber": null,
       "rated": false,
-      "depthRank": 11,
+      "depthRank": 10,
       "evidence": { "all": "rolePrior" }
     },
     {
@@ -11806,7 +11782,7 @@
       "startRate": 0.294,
       "squadNumber": null,
       "rated": false,
-      "depthRank": 13,
+      "depthRank": 12,
       "evidence": { "all": "rolePrior" }
     },
     {
@@ -11831,7 +11807,7 @@
       "startRate": 0.294,
       "squadNumber": null,
       "rated": false,
-      "depthRank": 11,
+      "depthRank": 10,
       "evidence": { "all": "rolePrior" }
     },
     {
@@ -12306,7 +12282,7 @@
       "startRate": 0.401,
       "squadNumber": null,
       "rated": true,
-      "depthRank": 5
+      "depthRank": 4
     },
     {
       "id": 522,
@@ -12402,7 +12378,7 @@
       "startRate": 0.401,
       "squadNumber": null,
       "rated": true,
-      "depthRank": 9
+      "depthRank": 8
     },
     {
       "id": 162,
@@ -12620,7 +12596,7 @@
       "startRate": 0.161,
       "squadNumber": null,
       "rated": true,
-      "depthRank": 5
+      "depthRank": 4
     },
     {
       "id": 263,
