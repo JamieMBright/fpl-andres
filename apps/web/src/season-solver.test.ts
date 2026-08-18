@@ -71,15 +71,15 @@ describe("season inputs artifact", () => {
       event: 1,
       opponent: "BOU",
       venue: "H",
-      expectedGoals: 2.4223,
-      opponentExpectedGoals: 1.0571,
-      cleanSheetProbability: 0.3475,
+      expectedGoals: 2.3956,
+      opponentExpectedGoals: 1.054,
+      cleanSheetProbability: 0.3485,
       adjustments: {
-        attacking: 1.625,
-        cleanSheet: 1.372,
+        attacking: 1.593,
+        cleanSheet: 1.385,
       },
       source: "the-odds-api",
-      updatedAt: "2026-08-18T00:04:25.601367+00:00",
+      updatedAt: "2026-08-18T23:20:01.490355+00:00",
     });
   });
 
