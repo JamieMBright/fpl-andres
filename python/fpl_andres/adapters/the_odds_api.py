@@ -73,6 +73,18 @@ MARKET_FIELDS: Mapping[str, str] = {
 }
 
 _COUNT_MARKETS = frozenset(("player_shots", "player_shots_on_target"))
+_NON_PLAYER_OUTCOMES = frozenset(
+    {
+        "no",
+        "no goal scorer",
+        "no goalscorer",
+        "no scorer",
+        "over",
+        "own goal",
+        "under",
+        "yes",
+    }
+)
 
 
 @dataclass(frozen=True)
@@ -539,7 +551,9 @@ def _anytime_market_values(outcomes: object) -> dict[str, float]:
             continue
         name = outcome.get("description") or outcome.get("name")
         price = outcome.get("price")
-        if isinstance(name, str) and isinstance(price, (int, float)) and price > 1:
+        if not isinstance(name, str) or name.strip().casefold() in _NON_PLAYER_OUTCOMES:
+            continue
+        if isinstance(price, (int, float)) and price > 1:
             by_player[name].append(float(price))
     return {
         name: probability

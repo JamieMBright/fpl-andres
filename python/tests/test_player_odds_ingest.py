@@ -117,6 +117,23 @@ def test_first_and_last_scorer_markets_are_retained() -> None:
     assert rows[0].priced
 
 
+def test_no_scorer_is_not_emitted_as_a_player() -> None:
+    rows = read_event(
+        _event(
+            _book(
+                "bet365",
+                "player_first_goal_scorer",
+                [
+                    {"description": "Bukayo Saka", "name": "Yes", "price": 5.0},
+                    {"name": "No Scorer", "price": 12.0},
+                ],
+            )
+        )
+    )
+
+    assert [row.quoted_name for row in rows] == ["Bukayo Saka"]
+
+
 def test_a_book_quoting_no_margin_does_not_stop_the_fixture() -> None:
     rows = read_event(
         _event(

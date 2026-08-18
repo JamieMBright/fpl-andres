@@ -28,6 +28,8 @@ The project follows Semantic Versioning once milestone tags begin.
 - Player and fixture artifacts now expose every observed market with an
   explicit number-moving or corroborative use. Shots on target no longer look
   applied when total shots are absent and no defensible BPS delta exists.
+- First/last-scorer market outcomes such as `No Scorer` are no longer emitted
+  as unmatched players or allowed to disable complete-squad inference.
 - Player-market ingestion now preserves card fields, resolves the observed
   `Ben White` and reversed `Magalhaes Gabriel` provider spellings without fuzzy
   matching, and reads shots/shot-on-target over-under lines as expected counts.
