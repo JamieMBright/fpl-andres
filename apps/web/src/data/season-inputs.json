@@ -1,6 +1,6 @@
 {
   "schemaVersion": 4,
-  "generatedAt": "2026-08-18T00:35:37.811620Z",
+  "generatedAt": "2026-08-18T00:44:01.719960Z",
   "recordSeason": "2025-26",
   "events": [
     1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
@@ -58,8 +58,8 @@
     "playerMarkets": {
       "source": "the-odds-api",
       "level": "observed",
-      "updatedAt": "2026-08-17T23:50:06.749660+00:00",
-      "contentHash": "sha256:10b7fd67a9ddeb769b9750594890b9b23568adeb1d90266e4df6d78e4ab6a5a2"
+      "updatedAt": "2026-08-18T00:43:58.504105+00:00",
+      "contentHash": "sha256:a8063502c8f7c9849d6c6ea533636a0c5d8c1b1bc4f36abcc52bc74646caf9cf"
     },
     "fixtureMarkets": {
       "source": "the-odds-api",
@@ -151,7 +151,7 @@
       "19": [0.0, 0.794, 1.068327, 0.55, -0.105, -0.002],
       "20": [0.0, 0.294, 1.527437, 0.432, -0.019, -0.001],
       "25": [0.0, 0.547, 1.20998, 1.312, -0.118, 0.0],
-      "26": [0.0, 0.161, 2.041477, 0.417, -0.032, 0.0]
+      "26": [0.0, 0.161, 2.134431, 0.417, -0.032, 0.0]
     }
   },
   "rules": {
@@ -189,7 +189,7 @@
       }
     ],
     "sourceReference": "FPL rules page, Transfers section",
-    "dataAvailableAt": "2026-08-18T00:35:37.818117Z",
+    "dataAvailableAt": "2026-08-18T00:44:01.725000Z",
     "playableStartRate": 0.35,
     "transferMarginPoints": 0.5
   },
@@ -1741,12 +1741,12 @@
   },
   "bonusOverrides": {
     "1": {
-      "1": 0.048,
-      "13": 0.062,
+      "1": 0.05,
+      "13": 0.064,
       "19": 0.003,
-      "4": 0.192,
-      "12": 0.017,
-      "25": 0.004,
+      "4": 0.186,
+      "12": 0.013,
+      "25": 0.005,
       "9": 0.0,
       "452": 0.002,
       "14": 0.001,
@@ -3430,10 +3430,10 @@
       "club": "ARS",
       "teamId": 1,
       "priceTenths": 80,
-      "basePoints": 5.166,
+      "basePoints": 5.117,
       "routes": {
         "appearance": 1.714,
-        "attacking": 0.678,
+        "attacking": 0.629,
         "cleanSheet": 1.69,
         "bonus": 0.745,
         "conceding": -0.122,
@@ -4132,36 +4132,6 @@
       "depthRank": 1
     },
     {
-      "id": 9,
-      "code": 448104,
-      "name": "Hincapie",
-      "position": "DEF",
-      "positionId": 2,
-      "club": "ARS",
-      "teamId": 1,
-      "priceTenths": 55,
-      "basePoints": 2.609,
-      "routes": {
-        "appearance": 1.533,
-        "attacking": 0.36,
-        "cleanSheet": 0.514,
-        "bonus": 0.235,
-        "conceding": -0.358,
-        "yellowCards": -0.083,
-        "redCards": -0.004,
-        "ownGoals": -0.059,
-        "defensiveContribution": 0.471
-      },
-      "startRate": 0.686,
-      "squadNumber": null,
-      "rated": true,
-      "depthRank": 2,
-      "evidence": {
-        "appearance": "marketParticipation",
-        "attacking": "marketAttack"
-      }
-    },
-    {
       "id": 534,
       "code": 487676,
       "name": "Hume",
@@ -4186,6 +4156,36 @@
       "squadNumber": null,
       "rated": true,
       "depthRank": 2
+    },
+    {
+      "id": 9,
+      "code": 448104,
+      "name": "Hincapie",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "ARS",
+      "teamId": 1,
+      "priceTenths": 55,
+      "basePoints": 2.598,
+      "routes": {
+        "appearance": 1.533,
+        "attacking": 0.349,
+        "cleanSheet": 0.514,
+        "bonus": 0.235,
+        "conceding": -0.358,
+        "yellowCards": -0.083,
+        "redCards": -0.004,
+        "ownGoals": -0.059,
+        "defensiveContribution": 0.471
+      },
+      "startRate": 0.686,
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 2,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 503,
@@ -4474,6 +4474,36 @@
       "depthRank": 3
     },
     {
+      "id": 10,
+      "code": 198869,
+      "name": "White",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "ARS",
+      "teamId": 1,
+      "priceTenths": 55,
+      "basePoints": 2.202,
+      "routes": {
+        "appearance": 1.188,
+        "attacking": 0.225,
+        "cleanSheet": 0.616,
+        "bonus": 0.172,
+        "conceding": -0.13,
+        "yellowCards": -0.035,
+        "redCards": -0.004,
+        "ownGoals": -0.004,
+        "defensiveContribution": 0.174
+      },
+      "startRate": 0.478,
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 2,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
+    },
+    {
       "id": 203,
       "code": 651426,
       "name": "Canvot",
@@ -4498,36 +4528,6 @@
       "squadNumber": null,
       "rated": true,
       "depthRank": 2
-    },
-    {
-      "id": 10,
-      "code": 198869,
-      "name": "White",
-      "position": "DEF",
-      "positionId": 2,
-      "club": "ARS",
-      "teamId": 1,
-      "priceTenths": 55,
-      "basePoints": 2.195,
-      "routes": {
-        "appearance": 1.188,
-        "attacking": 0.218,
-        "cleanSheet": 0.616,
-        "bonus": 0.172,
-        "conceding": -0.13,
-        "yellowCards": -0.035,
-        "redCards": -0.004,
-        "ownGoals": -0.004,
-        "defensiveContribution": 0.174
-      },
-      "startRate": 0.478,
-      "squadNumber": null,
-      "rated": true,
-      "depthRank": 2,
-      "evidence": {
-        "appearance": "marketParticipation",
-        "attacking": "marketAttack"
-      }
     },
     {
       "id": 120,
@@ -7819,34 +7819,6 @@
       }
     },
     {
-      "id": 12,
-      "code": 223340,
-      "name": "Saka",
-      "position": "MID",
-      "positionId": 3,
-      "club": "ARS",
-      "teamId": 1,
-      "priceTenths": 95,
-      "basePoints": 4.263,
-      "routes": {
-        "appearance": 1.636,
-        "attacking": 1.663,
-        "cleanSheet": 0.247,
-        "bonus": 0.501,
-        "yellowCards": -0.073,
-        "redCards": -0.002,
-        "defensiveContribution": 0.291
-      },
-      "startRate": 0.724,
-      "squadNumber": null,
-      "rated": true,
-      "depthRank": 1,
-      "evidence": {
-        "appearance": "marketParticipation",
-        "attacking": "marketAttack"
-      }
-    },
-    {
       "id": 481,
       "code": 215379,
       "name": "Anderson",
@@ -7869,6 +7841,34 @@
       "squadNumber": null,
       "rated": true,
       "depthRank": 5
+    },
+    {
+      "id": 12,
+      "code": 223340,
+      "name": "Saka",
+      "position": "MID",
+      "positionId": 3,
+      "club": "ARS",
+      "teamId": 1,
+      "priceTenths": 95,
+      "basePoints": 4.156,
+      "routes": {
+        "appearance": 1.636,
+        "attacking": 1.556,
+        "cleanSheet": 0.247,
+        "bonus": 0.501,
+        "yellowCards": -0.073,
+        "redCards": -0.002,
+        "defensiveContribution": 0.291
+      },
+      "startRate": 0.724,
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 480,
@@ -8172,10 +8172,10 @@
       "club": "ARS",
       "teamId": 1,
       "priceTenths": 55,
-      "basePoints": 3.336,
+      "basePoints": 3.325,
       "routes": {
         "appearance": 1.87,
-        "attacking": 0.655,
+        "attacking": 0.644,
         "cleanSheet": 0.326,
         "bonus": 0.243,
         "yellowCards": -0.113,
@@ -8238,34 +8238,6 @@
       "squadNumber": null,
       "rated": true,
       "depthRank": 2
-    },
-    {
-      "id": 14,
-      "code": 232413,
-      "name": "Eze",
-      "position": "MID",
-      "positionId": 3,
-      "club": "ARS",
-      "teamId": 1,
-      "priceTenths": 65,
-      "basePoints": 3.29,
-      "routes": {
-        "appearance": 1.71,
-        "attacking": 1.139,
-        "cleanSheet": 0.185,
-        "bonus": 0.266,
-        "yellowCards": -0.052,
-        "redCards": -0.003,
-        "defensiveContribution": 0.045
-      },
-      "startRate": 0.65,
-      "squadNumber": null,
-      "rated": true,
-      "depthRank": 4,
-      "evidence": {
-        "appearance": "marketParticipation",
-        "attacking": "marketAttack"
-      }
     },
     {
       "id": 67,
@@ -8365,6 +8337,34 @@
       "squadNumber": null,
       "rated": true,
       "depthRank": 2
+    },
+    {
+      "id": 14,
+      "code": 232413,
+      "name": "Eze",
+      "position": "MID",
+      "positionId": 3,
+      "club": "ARS",
+      "teamId": 1,
+      "priceTenths": 65,
+      "basePoints": 3.224,
+      "routes": {
+        "appearance": 1.71,
+        "attacking": 1.073,
+        "cleanSheet": 0.185,
+        "bonus": 0.266,
+        "yellowCards": -0.052,
+        "redCards": -0.003,
+        "defensiveContribution": 0.045
+      },
+      "startRate": 0.65,
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 4,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 95,
@@ -13557,16 +13557,16 @@
       "club": "ARS",
       "teamId": 1,
       "priceTenths": 75,
-      "basePoints": 2.01,
+      "basePoints": 2.099,
       "routes": {
-        "appearance": 1.086,
-        "attacking": 0.779,
-        "bonus": 0.209,
-        "yellowCards": -0.064,
+        "appearance": 1.136,
+        "attacking": 0.811,
+        "bonus": 0.219,
+        "yellowCards": -0.067,
         "penaltiesMissed": -0.004,
         "defensiveContribution": 0.004
       },
-      "startRate": 0.392,
+      "startRate": 0.411,
       "squadNumber": null,
       "rated": true,
       "depthRank": 1,
