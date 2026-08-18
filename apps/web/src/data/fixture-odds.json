@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-17T23:15:12.397638+00:00",
+  "generatedAt": "2026-08-18T00:04:25.601367+00:00",
   "season": "2026-27",
   "source": "the-odds-api",
   "priceTiming": "pre-match",
@@ -41,6 +41,10 @@
     {
       "url": "https://api.the-odds-api.com/v4/sports/soccer_epl/events/4e4a813bf4218cc527e6f8ef2351170d/odds",
       "contentHash": "sha256:ace8178e0185e9ae6fdf31593c98971a7385cdec3dba76009d714eeb1cc58473"
+    },
+    {
+      "url": "https://api.the-odds-api.com/v4/sports/soccer_epl/events/01615d9573ef1e5aa8c09eb32a4a983b/odds",
+      "contentHash": "sha256:8c71770e5ab923a316896fa4640d869ca691e2680d0672bbf72ff15c41fec01b"
     }
   ],
   "fixtures": [
@@ -141,6 +145,17 @@
       "homeCleanSheet": 0.1692,
       "awayCleanSheet": 0.2819,
       "drawResidual": 0.0141,
+      "priceSource": "the-odds-api-median"
+    },
+    {
+      "kickoff": "2026-08-22T14:00:00+00:00",
+      "home": "IPS",
+      "away": "SUN",
+      "homeExpectedGoals": 1.3038,
+      "awayExpectedGoals": 1.3133,
+      "homeCleanSheet": 0.2689,
+      "awayCleanSheet": 0.2715,
+      "drawResidual": 0.0184,
       "priceSource": "the-odds-api-median"
     }
   ],
