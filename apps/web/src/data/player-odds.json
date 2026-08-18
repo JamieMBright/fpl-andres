@@ -1,6 +1,6 @@
 {
   "season": "2026-27",
-  "fetchedAt": "2026-08-18T22:50:45.391866+00:00",
+  "fetchedAt": "2026-08-18T22:59:29.973846+00:00",
   "source": "the-odds-api",
   "markets": [
     "player_goal_scorer_anytime",
@@ -17,7 +17,7 @@
     "fixturesVisitedThisRun": 10,
     "fixturesWithQuotes": 1
   },
-  "unmatched": ["No Scorer"],
+  "unmatched": [],
   "players": [
     {
       "element_id": 10,
@@ -35,7 +35,7 @@
       "shots_on_target": 0.353248,
       "books": 3,
       "kickoff": "2026-08-21T19:00:00+00:00",
-      "observed_at": "2026-08-18T22:50:45.391866+00:00"
+      "observed_at": "2026-08-18T22:59:29.973846+00:00"
     },
     {
       "element_id": 12,
@@ -53,7 +53,7 @@
       "shots_on_target": 1.771594,
       "books": 3,
       "kickoff": "2026-08-21T19:00:00+00:00",
-      "observed_at": "2026-08-18T22:50:45.391866+00:00"
+      "observed_at": "2026-08-18T22:59:29.973846+00:00"
     },
     {
       "element_id": 11,
@@ -71,7 +71,7 @@
       "shots_on_target": 0.353248,
       "books": 3,
       "kickoff": "2026-08-21T19:00:00+00:00",
-      "observed_at": "2026-08-18T22:50:45.391866+00:00"
+      "observed_at": "2026-08-18T22:59:29.973846+00:00"
     },
     {
       "element_id": 13,
@@ -89,7 +89,7 @@
       "shots_on_target": 0.641072,
       "books": 3,
       "kickoff": "2026-08-21T19:00:00+00:00",
-      "observed_at": "2026-08-18T22:50:45.391866+00:00"
+      "observed_at": "2026-08-18T22:59:29.973846+00:00"
     },
     {
       "element_id": 14,
@@ -107,7 +107,7 @@
       "shots_on_target": 1.464443,
       "books": 3,
       "kickoff": "2026-08-21T19:00:00+00:00",
-      "observed_at": "2026-08-18T22:50:45.391866+00:00"
+      "observed_at": "2026-08-18T22:59:29.973846+00:00"
     },
     {
       "element_id": 18,
@@ -125,7 +125,7 @@
       "shots_on_target": 1.521301,
       "books": 3,
       "kickoff": "2026-08-21T19:00:00+00:00",
-      "observed_at": "2026-08-18T22:50:45.391866+00:00"
+      "observed_at": "2026-08-18T22:59:29.973846+00:00"
     },
     {
       "element_id": 26,
@@ -143,7 +143,7 @@
       "shots_on_target": 1.534619,
       "books": 3,
       "kickoff": "2026-08-21T19:00:00+00:00",
-      "observed_at": "2026-08-18T22:50:45.391866+00:00"
+      "observed_at": "2026-08-18T22:59:29.973846+00:00"
     },
     {
       "element_id": 4,
@@ -161,7 +161,7 @@
       "shots_on_target": 0.485696,
       "books": 3,
       "kickoff": "2026-08-21T19:00:00+00:00",
-      "observed_at": "2026-08-18T22:50:45.391866+00:00"
+      "observed_at": "2026-08-18T22:59:29.973846+00:00"
     },
     {
       "element_id": 15,
@@ -179,7 +179,7 @@
       "shots_on_target": 1.076521,
       "books": 3,
       "kickoff": "2026-08-21T19:00:00+00:00",
-      "observed_at": "2026-08-18T22:50:45.391866+00:00"
+      "observed_at": "2026-08-18T22:59:29.973846+00:00"
     },
     {
       "element_id": 19,
@@ -197,7 +197,7 @@
       "shots_on_target": 0.514428,
       "books": 3,
       "kickoff": "2026-08-21T19:00:00+00:00",
-      "observed_at": "2026-08-18T22:50:45.391866+00:00"
+      "observed_at": "2026-08-18T22:59:29.973846+00:00"
     },
     {
       "element_id": 20,
@@ -215,7 +215,7 @@
       "shots_on_target": 1.521301,
       "books": 3,
       "kickoff": "2026-08-21T19:00:00+00:00",
-      "observed_at": "2026-08-18T22:50:45.391866+00:00"
+      "observed_at": "2026-08-18T22:59:29.973846+00:00"
     },
     {
       "element_id": 17,
@@ -233,7 +233,7 @@
       "shots_on_target": 1.376736,
       "books": 3,
       "kickoff": "2026-08-21T19:00:00+00:00",
-      "observed_at": "2026-08-18T22:50:45.391866+00:00"
+      "observed_at": "2026-08-18T22:59:29.973846+00:00"
     },
     {
       "element_id": 7,
@@ -251,25 +251,7 @@
       "shots_on_target": 0.547444,
       "books": 3,
       "kickoff": "2026-08-21T19:00:00+00:00",
-      "observed_at": "2026-08-18T22:50:45.391866+00:00"
-    },
-    {
-      "element_id": null,
-      "quoted_name": "No Scorer",
-      "home_team": "Arsenal",
-      "away_team": "Coventry City",
-      "club": null,
-      "anytime_goal": null,
-      "first_goal": 0.064777,
-      "last_goal": null,
-      "anytime_assist": null,
-      "any_card": null,
-      "red_card": null,
-      "shots": null,
-      "shots_on_target": null,
-      "books": 2,
-      "kickoff": "2026-08-21T19:00:00+00:00",
-      "observed_at": "2026-08-18T22:50:45.391866+00:00"
+      "observed_at": "2026-08-18T22:59:29.973846+00:00"
     },
     {
       "element_id": 16,
@@ -287,7 +269,7 @@
       "shots_on_target": 1.406249,
       "books": 3,
       "kickoff": "2026-08-21T19:00:00+00:00",
-      "observed_at": "2026-08-18T22:50:45.391866+00:00"
+      "observed_at": "2026-08-18T22:59:29.973846+00:00"
     },
     {
       "element_id": 9,
@@ -305,7 +287,7 @@
       "shots_on_target": 0.375711,
       "books": 3,
       "kickoff": "2026-08-21T19:00:00+00:00",
-      "observed_at": "2026-08-18T22:50:45.391866+00:00"
+      "observed_at": "2026-08-18T22:59:29.973846+00:00"
     },
     {
       "element_id": 8,
@@ -323,7 +305,7 @@
       "shots_on_target": 0.864396,
       "books": 3,
       "kickoff": "2026-08-21T19:00:00+00:00",
-      "observed_at": "2026-08-18T22:50:45.391866+00:00"
+      "observed_at": "2026-08-18T22:59:29.973846+00:00"
     },
     {
       "element_id": 25,
@@ -341,7 +323,7 @@
       "shots_on_target": 1.534391,
       "books": 3,
       "kickoff": "2026-08-21T19:00:00+00:00",
-      "observed_at": "2026-08-18T22:50:45.391866+00:00"
+      "observed_at": "2026-08-18T22:59:29.973846+00:00"
     }
   ]
 }
