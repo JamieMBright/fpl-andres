@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import openingSquad from "./data/opening-squad.json";
 import inputs from "./data/season-inputs.json";
+import { fixtureEvidenceAt } from "./state/fixture-evidence";
 import {
   bonusPointsAtEvent,
   defconPointsAtEvent,
@@ -63,6 +64,25 @@ function season() {
 }
 
 describe("season inputs artifact", () => {
+  it("publishes the exact MCI-Bournemouth market evidence used in GW1", () => {
+    const evidence = fixtureEvidenceAt("MCI", 0);
+
+    expect(evidence).toMatchObject({
+      event: 1,
+      opponent: "BOU",
+      venue: "H",
+      expectedGoals: 2.4223,
+      opponentExpectedGoals: 1.0571,
+      cleanSheetProbability: 0.3475,
+      adjustments: {
+        attacking: 1.625,
+        cleanSheet: 1.372,
+      },
+      source: "the-odds-api",
+      updatedAt: "2026-08-18T00:04:25.601367+00:00",
+    });
+  });
+
   it("decays a quoted market deviation with a two-gameweek half-life", () => {
     expect(marketCarryWeight(0, 0, 2)).toBe(1);
     expect(marketCarryWeight(1, 0, 2)).toBeCloseTo(Math.SQRT1_2);
@@ -122,9 +142,69 @@ describe("season inputs artifact", () => {
 
     expect(absent.map((pick) => pick.name)).toEqual([]);
   });
+
+  it("rates the canonical opening squad over the next five gameweeks", () => {
+    const byCode = new Map(
+      SEASON_PLAYERS.map((player) => [player.code, player]),
+    );
+
+    for (const pick of openingSquad.picks) {
+      const player = byCode.get(pick.code);
+      expect(player, pick.name).toBeDefined();
+      const fixtures = Array.from({ length: 5 }, (_, index) =>
+        fixtureAtEvent(player!, index),
+      );
+      const fixtureCount = fixtures.reduce(
+        (total, fixture) => total + (fixture?.opponents.length ?? 0),
+        0,
+      );
+      const points = fixtures.reduce(
+        (total, fixture) => total + (fixture?.points ?? 0),
+        0,
+      );
+      const run =
+        fixtureCount > 0 && player!.basePoints > 0
+          ? Math.round((points / (player!.basePoints * fixtureCount)) * 100) /
+            100
+          : null;
+
+      expect(pick.run, pick.name).toBe(run);
+      expect(pick.ratedFixtures, pick.name).toBe(fixtureCount);
+      expect(pick.fixtures, pick.name).toBe(fixtureCount);
+    }
+  });
 });
 
 describe("solveSeason", () => {
+  it(
+    "treats the published opening squad as a GW1 fixpoint",
+    () => {
+      const opener = solveSeason(openingStart()).next().value;
+
+      expect(opener).toBeDefined();
+      expect(opener?.transfersIn.map((player) => player.code)).toEqual([]);
+      expect(opener?.transfersOut.map((player) => player.code)).toEqual([]);
+    },
+    SOLVE_TIMEOUT,
+  );
+
+  it(
+    "gives the armband to the current-gameweek leaders in the XI",
+    () => {
+      const opener = solveSeason(openingStart()).next().value;
+      expect(opener).toBeDefined();
+      const ranked = [...(opener?.starters ?? [])].sort(
+        (left, right) =>
+          (opener?.expected[String(right.code)] ?? 0) -
+          (opener?.expected[String(left.code)] ?? 0),
+      );
+
+      expect(opener?.captain.id).toBe(ranked[0]?.id);
+      expect(opener?.viceCaptain.id).toBe(ranked[1]?.id);
+    },
+    SOLVE_TIMEOUT,
+  );
+
   it(
     "plans every gameweek from the one it was given",
     () => {

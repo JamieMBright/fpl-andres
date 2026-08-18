@@ -110,6 +110,8 @@ test.describe.serial("plan palette accessibility", () => {
       // The steps and their fixture chips carried real contrast failures that
       // only appeared once the page had finished rendering.
       await expect(page.locator('[data-step="04"]')).toBeVisible();
+      await page.locator('[data-step="01"] > summary').click();
+      await expect(page.locator(".squad-builder .squad-pitch")).toBeVisible();
       await selectKit(page, theme);
 
       const scan = await new AxeBuilder({ page }).withTags([...WCAG]).analyze();
@@ -369,4 +371,61 @@ test("a phone gets a readable, tappable page that does not spill", async ({
     measured.smallestTarget,
     `smallest tap target is ${measured.smallestWhat}`,
   ).toBeGreaterThanOrEqual(24);
+});
+
+test("a mobile gesture over a player row scrolls the plan, not an inner list", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 360, height: 780 });
+  await page.route("**/api/team/*", async (route) => {
+    await route.fulfill({
+      body: JSON.stringify({
+        status: "unavailable",
+        reason: "no_processed_event",
+      }),
+      contentType: "application/json",
+      status: 200,
+    });
+  });
+  await page.goto(`/plan?team=${TEAM_ID}`);
+  await settle(page);
+  await page.locator('[data-step="01"] > summary').click();
+
+  const market = page.getByRole("region", {
+    name: "Scrollable player market",
+  });
+  const row = market.locator(".squad-market-list > li").first();
+  await expect(row).toBeVisible();
+  await row.scrollIntoViewIfNeeded();
+  expect(
+    await market.evaluate((element) => getComputedStyle(element).overflowY),
+  ).toBe("visible");
+
+  const rowBox = await row.boundingBox();
+  if (!rowBox) throw new Error("player row has no box");
+  await page.mouse.move(
+    rowBox.x + rowBox.width / 2,
+    rowBox.y + rowBox.height / 2,
+  );
+  const pageBefore = await page.evaluate(() => window.scrollY);
+  await page.mouse.wheel(0, 600);
+
+  expect(await page.evaluate(() => window.scrollY)).toBeGreaterThan(pageBefore);
+  expect(await market.evaluate((element) => element.scrollTop)).toBe(0);
+
+  const wheelIntoView = async (selector: string) => {
+    const target = page.locator(selector);
+    const top = await target.evaluate(
+      (element) => element.getBoundingClientRect().top,
+    );
+    await page.mouse.wheel(0, Math.max(1, top - 100));
+    await expect(target).toBeInViewport();
+  };
+
+  await wheelIntoView(".squad-builder .squad-pitch");
+  await wheelIntoView(".declared-squad-actions");
+  await expect(
+    page.getByRole("button", { name: "Lock this in for gameweek 1" }),
+  ).toBeInViewport();
+  await wheelIntoView('[data-step="02"]');
 });

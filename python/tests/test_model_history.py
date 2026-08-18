@@ -34,7 +34,7 @@ def _run(version: str, fingerprint: str, spearman: float = 0.5) -> dict[str, Any
                 "season": "2024-25",
                 "corpusFingerprint": fingerprint,
                 "methods": {"model": {"spearman": spearman}},
-                "captaincy": {},
+                "ownedCaptainPolicies": {},
             }
         ],
     }
@@ -207,18 +207,18 @@ class TestCardTables:
     ) -> None:
         assert render_captaincy({"seasons": [{"season": "2024-25"}]}) == "Not yet measured."
 
-    def test_captaincy_rows_name_the_method_and_the_ceiling(self) -> None:
+    def test_captaincy_rows_name_the_reachable_xi_ceiling(self) -> None:
         report = {
             "seasons": [
                 {
                     "season": "2024-25",
-                    "captaincy": [
+                    "ownedCaptainPolicies": [
                         {
-                            "label": "model",
+                            "label": "expected_points",
                             "gameweeks": 32,
-                            "meanPoints": 8.75,
-                            "meanBestPoints": 14.531,
-                            "regret": 5.781,
+                            "meanChosenPoints": 8.75,
+                            "meanReachableCeiling": 14.531,
+                            "ownedSquadRegret": 5.781,
                             "perfectWeeks": 9,
                             "blankRate": 0.281,
                         }
@@ -227,7 +227,8 @@ class TestCardTables:
             ]
         }
         table = render_captaincy(report)
-        assert "`model`" in table
+        assert "Reachable XI" in table
+        assert "Owned regret" in table
         assert "8.75" in table
         assert "14.53" in table
 
@@ -240,8 +241,8 @@ class TestPolicyTable:
             "seasons": [
                 {
                     "season": f"20{20 + index}-{21 + index}",
-                    "captainPolicies": [
-                        {"label": label, "meanPoints": mean} for label, mean in season.items()
+                    "ownedCaptainPolicies": [
+                        {"label": label, "meanChosenPoints": mean} for label, mean in season.items()
                     ],
                 }
                 for index, season in enumerate(seasons)
@@ -325,9 +326,9 @@ class TestPolicyTable:
             "seasons": [
                 {
                     "season": "2024-25",
-                    "captainPolicies": [
-                        {"label": "scored", "meanPoints": 6.0},
-                        {"label": "silent", "meanPoints": None},
+                    "ownedCaptainPolicies": [
+                        {"label": "scored", "meanChosenPoints": 6.0},
+                        {"label": "silent", "meanChosenPoints": None},
                     ],
                 }
             ]

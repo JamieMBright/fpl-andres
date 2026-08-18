@@ -1,6 +1,7 @@
 import type { ChipCall, PlanGameweek, PlanPlayer } from "./season-plan";
 import { CONFIDENCE_NOTE } from "./season-plan";
 import validation from "../data/validation.json";
+import { captainEvidence } from "./captain-evidence";
 import { captaincyVerdict } from "./captaincy-verdict";
 
 /**
@@ -19,12 +20,13 @@ import { captaincyVerdict } from "./captaincy-verdict";
  * already inverted once on a single arithmetic fix.
  */
 export const CAPTAINCY_VERDICT = (() => {
-  const verdict = captaincyVerdict(validation.captainSignificance);
+  const evidence = captainEvidence(validation);
+  const verdict = captaincyVerdict(evidence.significance);
   if (verdict.weeks === 0) return "no thesis has been scored against it yet.";
   const beaten = verdict.better.length;
   return beaten === 0
-    ? `none of ${String(validation.captainSignificance.length)} published theses beat it over ${String(verdict.weeks)} paired gameweeks.`
-    : `${String(beaten)} of ${String(validation.captainSignificance.length)} published theses did beat it over ${String(verdict.weeks)} paired gameweeks, so this rule is now the weaker one.`;
+    ? `none of ${String(evidence.significance.length)} published theses beat it over ${String(verdict.weeks)} paired gameweeks.`
+    : `${String(beaten)} of ${String(evidence.significance.length)} published theses did beat it over ${String(verdict.weeks)} paired gameweeks, so this rule is now the weaker one.`;
 })();
 
 /**

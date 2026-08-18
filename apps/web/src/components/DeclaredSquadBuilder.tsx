@@ -136,6 +136,8 @@ type SortKey =
   | "startRate"
   | "priceTenths";
 
+const MARKET_PAGE = 40;
+
 /** Null where the planner holds no record, so it can be sorted last either way. */
 function sortValue(player: SquadPlayer, key: SortKey): number | null {
   switch (key) {
@@ -170,6 +172,7 @@ function SquadMarket({
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState<SortKey>("points");
   const [descending, setDescending] = useState(true);
+  const [shownCount, setShownCount] = useState(MARKET_PAGE);
 
   const clubs = useMemo(
     () => [...new Set(players.map((player) => player.club))].sort(),
@@ -204,6 +207,7 @@ function SquadMarket({
   }, [players, position, club, maxTenths, search, sort, descending]);
 
   const toggle = (key: SortKey) => {
+    setShownCount(MARKET_PAGE);
     if (key === sort) {
       setDescending(!descending);
       return;
@@ -220,6 +224,7 @@ function SquadMarket({
           aria-label="Position"
           onChange={(changed) => {
             setPosition(changed.target.value);
+            setShownCount(MARKET_PAGE);
           }}
           value={position}
         >
@@ -234,6 +239,7 @@ function SquadMarket({
           aria-label="Club"
           onChange={(changed) => {
             setClub(changed.target.value);
+            setShownCount(MARKET_PAGE);
           }}
           value={club}
         >
@@ -248,6 +254,7 @@ function SquadMarket({
           aria-label="Maximum price"
           onChange={(changed) => {
             setMaxTenths(Number(changed.target.value));
+            setShownCount(MARKET_PAGE);
           }}
           value={maxTenths}
         >
@@ -261,28 +268,41 @@ function SquadMarket({
           aria-label="Search by name or club"
           onChange={(changed) => {
             setSearch(changed.target.value);
+            setShownCount(MARKET_PAGE);
           }}
-          placeholder="Search"
+          autoComplete="off"
+          name="player-search"
+          placeholder="Search…"
           type="search"
           value={search}
         />
       </div>
 
-      <ClubStrip clubs={clubs} onPick={setClub} picked={club} />
+      <ClubStrip
+        clubs={clubs}
+        onPick={(pickedClub) => {
+          setClub(pickedClub);
+          setShownCount(MARKET_PAGE);
+        }}
+        picked={club}
+      />
 
       <p className="squad-market-count mono">
-        {shown.length} shown · {pounds(remainingTenths)} left
+        Showing {Math.min(shownCount, shown.length)} of {shown.length} ·{" "}
+        {pounds(remainingTenths)} left
       </p>
 
-      <div className="squad-market-scroll">
+      <div
+        aria-label="Scrollable player market"
+        className="squad-market-scroll squad-table-wrap"
+        role="region"
+        // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- Desktop users need keyboard access to the bounded market scroll.
+        tabIndex={0}
+      >
         <div className="squad-market-headings mono">
           {(
             [
               ["name", "Player", "Sort by name"],
-              ["club", "Club", "Sort by club"],
-              ["position", "Pos", "Sort by position"],
-              ["points", "xPts", "Sort by expected points a match"],
-              ["perMillion", "Pts/£m", "Sort by expected points per million"],
               ["startRate", "Start", "Sort by how often he started"],
               ["priceTenths", "Price", "Sort by price"],
             ] as const
@@ -314,7 +334,7 @@ function SquadMarket({
         </div>
 
         <ol className="squad-market-list">
-          {shown.slice(0, 200).map((player) => {
+          {shown.slice(0, shownCount).map((player) => {
             const already = picked.has(player.id);
             const tooDear = player.priceTenths > remainingTenths;
             const perMillion =
@@ -372,6 +392,19 @@ function SquadMarket({
           })}
         </ol>
       </div>
+      {shownCount < shown.length ? (
+        <p className="squad-market-more">
+          <button
+            className="secondary-command"
+            onClick={() => {
+              setShownCount((current) => current + MARKET_PAGE);
+            }}
+            type="button"
+          >
+            Show more players
+          </button>
+        </p>
+      ) : null}
     </div>
   );
 }

@@ -1,6 +1,6 @@
 {
-  "schemaVersion": 4,
-  "generatedAt": "2026-08-18T09:40:32.529478Z",
+  "schemaVersion": 5,
+  "generatedAt": "2026-08-18T16:36:18.114744Z",
   "recordSeason": "2025-26",
   "events": [
     1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
@@ -189,7 +189,7 @@
       }
     ],
     "sourceReference": "FPL rules page, Transfers section",
-    "dataAvailableAt": "2026-08-18T09:40:32.536203Z",
+    "dataAvailableAt": "2026-08-18T16:36:18.123277Z",
     "playableStartRate": 0.35,
     "transferMarginPoints": 0.5
   },
@@ -842,27 +842,27 @@
       1.0, 1.0, 2.3, 1.0, 2.0, 1.0, 1.6, 1.0
     ],
     "AVL": [
-      4.0, 3.7, 2.3, 2.1, 2.8, 1.7, 3.6, 3.3, 1.3, 4.5, 1.3, 2.3, 1.8, 1.4, 2.3,
+      3.3, 3.7, 2.3, 2.1, 2.8, 1.7, 3.6, 3.3, 1.3, 4.5, 1.3, 2.3, 1.8, 1.4, 2.3,
       3.5, 1.3, 2.1, 4.1, 3.4, 2.6, 3.8, 1.3, 3.6, 2.0, 3.8, 2.1, 4.3, 1.3, 3.5,
       1.9, 5.0, 1.3, 3.0, 4.1, 1.5, 5.0, 1.7
     ],
     "BOU": [
-      5.0, 1.7, 3.6, 1.6, 2.0, 3.5, 1.2, 4.5, 1.3, 2.3, 2.0, 3.8, 1.9, 1.2, 5.0,
+      4.8, 1.7, 3.6, 1.6, 2.0, 3.5, 1.2, 4.5, 1.3, 2.3, 2.0, 3.8, 1.9, 1.2, 5.0,
       1.2, 2.8, 3.0, 1.9, 4.0, 1.2, 3.4, 1.2, 3.8, 4.0, 1.4, 2.3, 1.6, 1.5, 4.0,
       3.3, 3.3, 3.7, 2.3, 2.5, 3.5, 2.1, 4.3
     ],
     "BRE": [
-      1.7, 4.1, 1.2, 4.4, 2.1, 4.3, 2.0, 2.6, 2.1, 4.3, 1.8, 4.8, 3.7, 3.3, 4.1,
+      2.8, 4.1, 1.2, 4.4, 2.1, 4.3, 2.0, 2.6, 2.1, 4.3, 1.8, 4.8, 3.7, 3.3, 4.1,
       1.5, 2.6, 2.6, 1.4, 5.0, 1.9, 3.6, 2.6, 3.7, 3.3, 1.2, 3.9, 1.2, 3.8, 2.0,
       3.1, 1.3, 1.2, 5.0, 1.9, 4.6, 1.2, 3.8
     ],
     "BHA": [
-      2.0, 3.6, 1.3, 2.4, 3.7, 3.6, 1.4, 4.3, 5.0, 1.7, 2.4, 1.5, 4.1, 3.5, 1.8,
+      2.7, 3.6, 1.3, 2.4, 3.7, 3.6, 1.4, 4.3, 5.0, 1.7, 2.4, 1.5, 4.1, 3.5, 1.8,
       1.2, 3.9, 2.9, 2.6, 2.0, 4.1, 3.3, 3.7, 1.2, 4.5, 1.7, 2.4, 1.2, 3.8, 1.2,
       4.1, 2.1, 3.4, 2.1, 1.3, 3.0, 2.0, 5.0
     ],
     "CHE": [
-      3.7, 2.4, 5.0, 1.8, 3.9, 2.5, 3.2, 2.2, 3.1, 3.4, 1.8, 3.3, 1.9, 2.6, 5.0,
+      2.3, 2.4, 5.0, 1.8, 3.9, 2.5, 3.2, 2.2, 3.1, 3.4, 1.8, 3.3, 1.9, 2.6, 5.0,
       2.5, 2.1, 2.1, 2.1, 2.8, 1.8, 3.6, 2.6, 4.3, 3.5, 1.8, 3.9, 1.8, 4.2, 2.1,
       1.8, 3.9, 3.8, 4.1, 2.7, 2.3, 3.9, 2.2
     ],
@@ -872,22 +872,22 @@
       5.0, 3.0, 4.7, 4.3, 4.4, 3.4, 4.6, 3.8
     ],
     "CRY": [
-      3.9, 4.4, 4.4, 2.3, 4.3, 3.2, 4.6, 2.6, 3.4, 3.1, 2.8, 2.3, 4.1, 4.6, 3.6,
+      3.6, 4.4, 4.4, 2.3, 4.3, 3.2, 4.6, 2.6, 3.4, 3.1, 2.8, 2.3, 4.1, 4.6, 3.6,
       4.1, 4.8, 3.0, 4.6, 3.2, 4.8, 2.7, 2.8, 2.3, 2.7, 4.6, 2.3, 5.0, 2.3, 2.8,
       2.8, 5.0, 5.0, 3.0, 4.0, 3.0, 4.2, 2.4
     ],
     "EVE": [
-      2.1, 4.3, 3.3, 3.0, 1.9, 2.5, 2.8, 5.0, 3.8, 1.9, 4.2, 2.7, 4.2, 1.9, 4.2,
+      2.4, 4.3, 3.3, 3.0, 1.9, 2.5, 2.8, 5.0, 3.8, 1.9, 4.2, 2.7, 4.2, 1.9, 4.2,
       3.6, 1.9, 4.0, 4.0, 2.6, 2.5, 2.4, 4.5, 2.2, 2.0, 3.7, 2.8, 5.0, 4.7, 2.4,
       3.2, 2.7, 2.6, 4.0, 1.9, 3.7, 4.4, 2.5
     ],
     "FUL": [
-      2.3, 4.3, 1.6, 5.0, 2.8, 3.0, 1.4, 3.0, 4.7, 1.7, 5.0, 2.2, 3.6, 4.1, 1.9,
+      3.7, 4.3, 1.6, 5.0, 2.8, 3.0, 1.4, 3.0, 4.7, 1.7, 5.0, 2.2, 3.6, 4.1, 1.9,
       4.5, 2.1, 3.9, 4.2, 1.9, 4.4, 2.2, 4.8, 3.5, 2.3, 5.0, 1.5, 4.8, 3.7, 2.2,
       4.2, 1.5, 4.8, 2.0, 1.4, 3.0, 1.4, 5.0
     ],
     "HUL": [
-      4.3, 3.0, 3.7, 4.2, 4.4, 3.5, 4.6, 3.4, 3.0, 5.0, 3.6, 3.7, 3.8, 4.8, 3.4,
+      5.0, 3.0, 3.7, 4.2, 4.4, 3.5, 4.6, 3.4, 3.0, 5.0, 3.6, 3.7, 3.8, 4.8, 3.4,
       5.0, 3.8, 3.1, 4.3, 4.2, 5.0, 3.0, 3.2, 4.8, 3.0, 5.0, 5.0, 4.5, 4.7, 3.9,
       5.0, 3.0, 3.5, 3.7, 4.1, 3.0, 4.8, 3.3
     ],
@@ -897,37 +897,37 @@
       4.3, 4.3, 4.4, 3.1, 4.6, 5.0, 4.2, 3.5
     ],
     "LEE": [
-      4.1, 1.9, 4.7, 1.8, 1.7, 5.0, 2.8, 4.2, 4.7, 1.9, 4.2, 1.5, 5.0, 1.5, 4.9,
+      3.4, 1.9, 4.7, 1.8, 1.7, 5.0, 2.8, 4.2, 4.7, 1.9, 4.2, 1.5, 5.0, 1.5, 4.9,
       1.5, 4.7, 2.9, 2.0, 3.6, 3.5, 2.4, 2.9, 2.2, 4.0, 2.2, 4.5, 1.5, 2.2, 4.3,
       2.3, 4.7, 2.3, 2.9, 4.0, 5.0, 1.5, 3.6
     ],
     "LIV": [
-      3.6, 1.8, 2.2, 1.0, 4.0, 3.1, 4.0, 1.7, 3.5, 2.9, 2.3, 3.3, 1.0, 3.4, 1.1,
+      2.2, 1.8, 2.2, 1.0, 4.0, 3.1, 4.0, 1.7, 3.5, 2.9, 2.3, 3.3, 1.0, 3.4, 1.1,
       1.4, 2.2, 3.9, 1.0, 3.5, 1.2, 4.4, 1.5, 5.0, 2.2, 1.0, 2.7, 1.7, 1.0, 3.8,
       1.3, 3.4, 3.7, 1.9, 5.0, 1.4, 4.0, 1.7
     ],
     "MCI": [
-      1.0, 1.6, 1.0, 3.1, 1.0, 2.9, 1.0, 2.7, 1.0, 2.1, 1.0, 4.6, 1.0, 2.7, 1.0,
+      1.2, 1.6, 1.0, 3.1, 1.0, 2.9, 1.0, 2.7, 1.0, 2.1, 1.0, 4.6, 1.0, 2.7, 1.0,
       1.0, 2.3, 2.0, 1.0, 2.4, 1.0, 2.7, 2.1, 2.5, 1.5, 1.0, 1.0, 1.0, 1.0, 1.0,
       2.7, 1.0, 2.2, 1.0, 1.0, 1.0, 1.0, 2.2
     ],
     "MUN": [
-      1.7, 1.0, 2.7, 2.9, 3.2, 1.2, 3.2, 1.5, 2.9, 1.5, 3.7, 1.2, 3.0, 1.0, 2.4,
+      1.0, 1.0, 2.7, 2.9, 3.2, 1.2, 3.2, 1.5, 2.9, 1.5, 3.7, 1.2, 3.0, 1.0, 2.4,
       5.0, 1.7, 1.0, 3.4, 1.1, 3.4, 1.6, 3.4, 1.7, 1.5, 2.8, 3.3, 2.9, 1.3, 5.0,
       1.0, 1.7, 1.0, 1.7, 3.5, 1.0, 2.2, 1.0
     ],
     "NEW": [
-      2.4, 3.3, 2.4, 4.2, 1.6, 2.7, 2.4, 3.4, 2.2, 4.3, 4.1, 4.5, 3.0, 1.7, 2.7,
+      3.8, 3.3, 2.4, 4.2, 1.6, 2.7, 2.4, 3.4, 2.2, 4.3, 4.1, 4.5, 3.0, 1.7, 2.7,
       4.5, 3.7, 2.5, 3.9, 4.9, 1.6, 5.0, 2.3, 3.8, 2.5, 5.0, 2.1, 3.9, 4.5, 1.7,
       4.7, 2.1, 1.6, 4.0, 1.6, 4.5, 1.8, 2.7
     ],
     "NFO": [
-      1.9, 4.2, 2.3, 3.9, 1.8, 2.8, 4.3, 2.2, 3.9, 3.9, 4.0, 2.7, 2.2, 2.5, 3.4,
+      2.6, 4.2, 2.3, 3.9, 1.8, 2.8, 4.3, 2.2, 3.9, 3.9, 4.0, 2.7, 2.2, 2.5, 3.4,
       2.4, 4.3, 3.5, 1.8, 1.8, 5.0, 2.6, 3.4, 2.3, 3.7, 3.2, 3.2, 2.1, 2.7, 2.5,
       3.7, 2.6, 1.8, 3.9, 2.0, 5.0, 1.8, 2.2
     ],
     "TOT": [
-      4.3, 2.7, 3.7, 3.0, 3.2, 4.8, 2.5, 3.8, 2.6, 4.1, 2.5, 3.8, 2.4, 4.9, 2.6,
+      3.2, 2.7, 3.7, 3.0, 3.2, 4.8, 2.5, 3.8, 2.6, 4.1, 2.5, 3.8, 2.4, 4.9, 2.6,
       4.6, 3.2, 3.1, 5.0, 4.1, 2.5, 3.3, 2.5, 2.6, 4.5, 4.3, 3.3, 4.4, 3.3, 3.6,
       2.9, 3.9, 2.5, 5.0, 3.3, 2.6, 3.8, 4.3
     ],
@@ -936,6 +936,393 @@
       1.9, 4.1, 5.0, 1.7, 2.5, 4.2, 1.7, 3.5, 2.4, 3.0, 2.3, 3.7, 3.1, 2.2, 5.0,
       1.7, 4.5, 4.2, 2.0, 4.7, 2.5, 4.5, 3.8
     ]
+  },
+  "fixtureEvidence": {
+    "source": "the-odds-api",
+    "updatedAt": "2026-08-18T00:04:25.601367+00:00",
+    "level": "observed",
+    "byClub": {
+      "ARS": [
+        {
+          "event": 1,
+          "opponent": "COV",
+          "venue": "H",
+          "kickoff": "2026-08-21T19:00:00+00:00",
+          "expectedGoals": 2.6199,
+          "opponentExpectedGoals": 0.5035,
+          "cleanSheetProbability": 0.6044,
+          "adjustments": {
+            "attacking": 1.758,
+            "cleanSheet": 2.2,
+            "conceding": 0.4,
+            "saves": 0.4,
+            "defensiveContribution": 0.7
+          },
+          "difficulty": { "raw": -0.2, "summary": 1.0, "clipped": true }
+        }
+      ],
+      "AVL": [
+        {
+          "event": 1,
+          "opponent": "BHA",
+          "venue": "A",
+          "kickoff": "2026-08-23T13:00:00+00:00",
+          "expectedGoals": 1.4023,
+          "opponentExpectedGoals": 1.6409,
+          "cleanSheetProbability": 0.1938,
+          "adjustments": {
+            "attacking": 0.941,
+            "cleanSheet": 0.765,
+            "conceding": 1.101,
+            "saves": 1.101,
+            "defensiveContribution": 1.05
+          },
+          "difficulty": { "raw": 3.3, "summary": 3.3, "clipped": false }
+        }
+      ],
+      "BOU": [
+        {
+          "event": 1,
+          "opponent": "MCI",
+          "venue": "A",
+          "kickoff": "2026-08-23T13:00:00+00:00",
+          "expectedGoals": 1.0571,
+          "opponentExpectedGoals": 2.4223,
+          "cleanSheetProbability": 0.0887,
+          "adjustments": {
+            "attacking": 0.709,
+            "cleanSheet": 0.4,
+            "conceding": 1.625,
+            "saves": 1.625,
+            "defensiveContribution": 1.313
+          },
+          "difficulty": { "raw": 4.8, "summary": 4.8, "clipped": false }
+        }
+      ],
+      "BRE": [
+        {
+          "event": 1,
+          "opponent": "TOT",
+          "venue": "H",
+          "kickoff": "2026-08-22T16:30:00+00:00",
+          "expectedGoals": 1.5588,
+          "opponentExpectedGoals": 1.4366,
+          "cleanSheetProbability": 0.2377,
+          "adjustments": {
+            "attacking": 1.046,
+            "cleanSheet": 0.938,
+            "conceding": 0.964,
+            "saves": 0.964,
+            "defensiveContribution": 0.982
+          },
+          "difficulty": { "raw": 2.8, "summary": 2.8, "clipped": false }
+        }
+      ],
+      "BHA": [
+        {
+          "event": 1,
+          "opponent": "AVL",
+          "venue": "H",
+          "kickoff": "2026-08-23T13:00:00+00:00",
+          "expectedGoals": 1.6409,
+          "opponentExpectedGoals": 1.4023,
+          "cleanSheetProbability": 0.246,
+          "adjustments": {
+            "attacking": 1.101,
+            "cleanSheet": 0.971,
+            "conceding": 0.941,
+            "saves": 0.941,
+            "defensiveContribution": 0.97
+          },
+          "difficulty": { "raw": 2.7, "summary": 2.7, "clipped": false }
+        }
+      ],
+      "CHE": [
+        {
+          "event": 1,
+          "opponent": "FUL",
+          "venue": "A",
+          "kickoff": "2026-08-24T19:00:00+00:00",
+          "expectedGoals": 1.7769,
+          "opponentExpectedGoals": 1.2663,
+          "cleanSheetProbability": 0.2819,
+          "adjustments": {
+            "attacking": 1.192,
+            "cleanSheet": 1.113,
+            "conceding": 0.85,
+            "saves": 0.85,
+            "defensiveContribution": 0.925
+          },
+          "difficulty": { "raw": 2.3, "summary": 2.3, "clipped": false }
+        }
+      ],
+      "COV": [
+        {
+          "event": 1,
+          "opponent": "ARS",
+          "venue": "A",
+          "kickoff": "2026-08-21T19:00:00+00:00",
+          "expectedGoals": 0.5035,
+          "opponentExpectedGoals": 2.6199,
+          "cleanSheetProbability": 0.0728,
+          "adjustments": {
+            "attacking": 0.4,
+            "cleanSheet": 0.4,
+            "conceding": 1.758,
+            "saves": 1.758,
+            "defensiveContribution": 1.379
+          },
+          "difficulty": { "raw": 6.2, "summary": 5.0, "clipped": true }
+        }
+      ],
+      "CRY": [
+        {
+          "event": 1,
+          "opponent": "EVE",
+          "venue": "A",
+          "kickoff": "2026-08-22T14:00:00+00:00",
+          "expectedGoals": 1.1538,
+          "opponentExpectedGoals": 1.5088,
+          "cleanSheetProbability": 0.2212,
+          "adjustments": {
+            "attacking": 0.774,
+            "cleanSheet": 0.873,
+            "conceding": 1.012,
+            "saves": 1.012,
+            "defensiveContribution": 1.006
+          },
+          "difficulty": { "raw": 3.6, "summary": 3.6, "clipped": false }
+        }
+      ],
+      "EVE": [
+        {
+          "event": 1,
+          "opponent": "CRY",
+          "venue": "H",
+          "kickoff": "2026-08-22T14:00:00+00:00",
+          "expectedGoals": 1.5088,
+          "opponentExpectedGoals": 1.1538,
+          "cleanSheetProbability": 0.3154,
+          "adjustments": {
+            "attacking": 1.012,
+            "cleanSheet": 1.245,
+            "conceding": 0.774,
+            "saves": 0.774,
+            "defensiveContribution": 0.887
+          },
+          "difficulty": { "raw": 2.4, "summary": 2.4, "clipped": false }
+        }
+      ],
+      "FUL": [
+        {
+          "event": 1,
+          "opponent": "CHE",
+          "venue": "H",
+          "kickoff": "2026-08-24T19:00:00+00:00",
+          "expectedGoals": 1.2663,
+          "opponentExpectedGoals": 1.7769,
+          "cleanSheetProbability": 0.1692,
+          "adjustments": {
+            "attacking": 0.85,
+            "cleanSheet": 0.668,
+            "conceding": 1.192,
+            "saves": 1.192,
+            "defensiveContribution": 1.096
+          },
+          "difficulty": { "raw": 3.7, "summary": 3.7, "clipped": false }
+        }
+      ],
+      "HUL": [
+        {
+          "event": 1,
+          "opponent": "MUN",
+          "venue": "H",
+          "kickoff": "2026-08-22T11:30:00+00:00",
+          "expectedGoals": 0.7146,
+          "opponentExpectedGoals": 2.194,
+          "cleanSheetProbability": 0.1115,
+          "adjustments": {
+            "attacking": 0.479,
+            "cleanSheet": 0.44,
+            "conceding": 1.472,
+            "saves": 1.472,
+            "defensiveContribution": 1.236
+          },
+          "difficulty": { "raw": 5.4, "summary": 5.0, "clipped": true }
+        }
+      ],
+      "IPS": [
+        {
+          "event": 1,
+          "opponent": "SUN",
+          "venue": "H",
+          "kickoff": "2026-08-22T14:00:00+00:00",
+          "expectedGoals": 1.3038,
+          "opponentExpectedGoals": 1.3133,
+          "cleanSheetProbability": 0.2689,
+          "adjustments": {
+            "attacking": 0.875,
+            "cleanSheet": 1.061,
+            "conceding": 0.881,
+            "saves": 0.881,
+            "defensiveContribution": 0.941
+          },
+          "difficulty": { "raw": 3.0, "summary": 3.0, "clipped": false }
+        }
+      ],
+      "LEE": [
+        {
+          "event": 1,
+          "opponent": "NFO",
+          "venue": "A",
+          "kickoff": "2026-08-22T14:00:00+00:00",
+          "expectedGoals": 1.2158,
+          "opponentExpectedGoals": 1.4582,
+          "cleanSheetProbability": 0.2326,
+          "adjustments": {
+            "attacking": 0.816,
+            "cleanSheet": 0.918,
+            "conceding": 0.978,
+            "saves": 0.978,
+            "defensiveContribution": 0.989
+          },
+          "difficulty": { "raw": 3.4, "summary": 3.4, "clipped": false }
+        }
+      ],
+      "LIV": [
+        {
+          "event": 1,
+          "opponent": "NEW",
+          "venue": "A",
+          "kickoff": "2026-08-23T15:30:00+00:00",
+          "expectedGoals": 1.9182,
+          "opponentExpectedGoals": 1.346,
+          "cleanSheetProbability": 0.2603,
+          "adjustments": {
+            "attacking": 1.287,
+            "cleanSheet": 1.028,
+            "conceding": 0.903,
+            "saves": 0.903,
+            "defensiveContribution": 0.952
+          },
+          "difficulty": { "raw": 2.2, "summary": 2.2, "clipped": false }
+        }
+      ],
+      "MCI": [
+        {
+          "event": 1,
+          "opponent": "BOU",
+          "venue": "H",
+          "kickoff": "2026-08-23T13:00:00+00:00",
+          "expectedGoals": 2.4223,
+          "opponentExpectedGoals": 1.0571,
+          "cleanSheetProbability": 0.3475,
+          "adjustments": {
+            "attacking": 1.625,
+            "cleanSheet": 1.372,
+            "conceding": 0.709,
+            "saves": 0.709,
+            "defensiveContribution": 0.855
+          },
+          "difficulty": { "raw": 1.2, "summary": 1.2, "clipped": false }
+        }
+      ],
+      "MUN": [
+        {
+          "event": 1,
+          "opponent": "HUL",
+          "venue": "A",
+          "kickoff": "2026-08-22T11:30:00+00:00",
+          "expectedGoals": 2.194,
+          "opponentExpectedGoals": 0.7146,
+          "cleanSheetProbability": 0.4894,
+          "adjustments": {
+            "attacking": 1.472,
+            "cleanSheet": 1.932,
+            "conceding": 0.479,
+            "saves": 0.479,
+            "defensiveContribution": 0.74
+          },
+          "difficulty": { "raw": 0.6, "summary": 1.0, "clipped": true }
+        }
+      ],
+      "NEW": [
+        {
+          "event": 1,
+          "opponent": "LIV",
+          "venue": "H",
+          "kickoff": "2026-08-23T15:30:00+00:00",
+          "expectedGoals": 1.346,
+          "opponentExpectedGoals": 1.9182,
+          "cleanSheetProbability": 0.1469,
+          "adjustments": {
+            "attacking": 0.903,
+            "cleanSheet": 0.58,
+            "conceding": 1.287,
+            "saves": 1.287,
+            "defensiveContribution": 1.143
+          },
+          "difficulty": { "raw": 3.8, "summary": 3.8, "clipped": false }
+        }
+      ],
+      "NFO": [
+        {
+          "event": 1,
+          "opponent": "LEE",
+          "venue": "H",
+          "kickoff": "2026-08-22T14:00:00+00:00",
+          "expectedGoals": 1.4582,
+          "opponentExpectedGoals": 1.2158,
+          "cleanSheetProbability": 0.2965,
+          "adjustments": {
+            "attacking": 0.978,
+            "cleanSheet": 1.17,
+            "conceding": 0.816,
+            "saves": 0.816,
+            "defensiveContribution": 0.908
+          },
+          "difficulty": { "raw": 2.6, "summary": 2.6, "clipped": false }
+        }
+      ],
+      "TOT": [
+        {
+          "event": 1,
+          "opponent": "BRE",
+          "venue": "A",
+          "kickoff": "2026-08-22T16:30:00+00:00",
+          "expectedGoals": 1.4366,
+          "opponentExpectedGoals": 1.5588,
+          "cleanSheetProbability": 0.2104,
+          "adjustments": {
+            "attacking": 0.964,
+            "cleanSheet": 0.831,
+            "conceding": 1.046,
+            "saves": 1.046,
+            "defensiveContribution": 1.023
+          },
+          "difficulty": { "raw": 3.2, "summary": 3.2, "clipped": false }
+        }
+      ],
+      "SUN": [
+        {
+          "event": 1,
+          "opponent": "IPS",
+          "venue": "A",
+          "kickoff": "2026-08-22T14:00:00+00:00",
+          "expectedGoals": 1.3133,
+          "opponentExpectedGoals": 1.3038,
+          "cleanSheetProbability": 0.2715,
+          "adjustments": {
+            "attacking": 0.881,
+            "cleanSheet": 1.072,
+            "conceding": 0.875,
+            "saves": 0.875,
+            "defensiveContribution": 0.937
+          },
+          "difficulty": { "raw": 3.0, "summary": 3.0, "clipped": false }
+        }
+      ]
+    }
   },
   "opponents": {
     "ARS": [
@@ -1817,9 +2204,9 @@
       "315": 0.0,
       "318": 0.0,
       "562": 0.0,
-      "303": 0.0,
-      "529": 0.004,
-      "542": 0.009,
+      "591": 0.0,
+      "529": 0.003,
+      "542": 0.008,
       "545": 0.0,
       "544": 0.006,
       "534": 0.0,
@@ -1873,9 +2260,9 @@
       "519": 0.0,
       "455": 0.0,
       "515": 0.0,
-      "109": 0.011,
+      "109": 0.012,
       "113": 0.002,
-      "124": 0.124,
+      "124": 0.134,
       "116": 0.0,
       "120": 0.0,
       "504": 0.0,
@@ -1894,13 +2281,13 @@
       "41": 0.0,
       "33": 0.0,
       "47": 0.0,
-      "38": 0.0,
-      "481": 0.037,
+      "37": 0.0,
+      "481": 0.036,
       "384": 0.002,
       "388": 0.007,
       "397": 0.001,
       "386": 0.0,
-      "411": 0.085,
+      "411": 0.084,
       "387": 0.001,
       "390": 0.0,
       "398": 0.001,
@@ -1913,10 +2300,10 @@
       "68": 0.0,
       "79": 0.0,
       "60": 0.0,
-      "566": 0.0,
-      "573": 0.0,
       "64": 0.0,
       "72": 0.0,
+      "76": 0.0,
+      "566": 0.0,
       "567": 0.0,
       "443": 0.0,
       "444": 0.0,
@@ -1928,17 +2315,17 @@
       "463": 0.0,
       "447": 0.0,
       "453": 0.0,
-      "356": 0.003,
-      "368": 0.062,
-      "353": 0.0,
+      "356": 0.004,
+      "368": 0.071,
       "355": 0.0,
-      "371": 0.005,
+      "371": 0.007,
       "367": 0.001,
       "372": 0.001,
-      "366": 0.003,
+      "366": 0.004,
       "350": 0.0,
       "358": 0.0,
       "579": 0.0,
+      "357": 0.0,
       "250": 0.0,
       "265": 0.0,
       "257": 0.0,
@@ -2591,32 +2978,6 @@
       "squadNumber": null,
       "rated": false,
       "depthRank": 4,
-      "evidence": { "all": "rolePrior" }
-    },
-    {
-      "id": 353,
-      "code": 586268,
-      "name": "Pecsi",
-      "position": "GKP",
-      "positionId": 1,
-      "club": "LIV",
-      "teamId": 14,
-      "priceTenths": 40,
-      "basePoints": 2.389,
-      "routes": {
-        "appearance": 1.716,
-        "attacking": 0.003,
-        "cleanSheet": 0.451,
-        "bonus": 0.173,
-        "saves": 0.736,
-        "conceding": -0.66,
-        "yellowCards": -0.029,
-        "ownGoals": -0.001
-      },
-      "startRate": 0.865,
-      "squadNumber": null,
-      "rated": false,
-      "depthRank": 3,
       "evidence": { "all": "rolePrior" }
     },
     {
@@ -5259,6 +5620,33 @@
       "evidence": { "all": "rolePrior" }
     },
     {
+      "id": 592,
+      "code": 572584,
+      "name": "Ouattara",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "IPS",
+      "teamId": 12,
+      "priceTenths": 40,
+      "basePoints": 2.171,
+      "routes": {
+        "appearance": 1.241,
+        "attacking": 0.214,
+        "cleanSheet": 0.455,
+        "bonus": 0.155,
+        "conceding": -0.316,
+        "yellowCards": -0.106,
+        "redCards": -0.003,
+        "ownGoals": -0.002,
+        "defensiveContribution": 0.533
+      },
+      "startRate": 0.583,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 1,
+      "evidence": { "all": "rolePrior" }
+    },
+    {
       "id": 327,
       "code": 434752,
       "name": "Bijol",
@@ -5463,32 +5851,6 @@
       "squadNumber": null,
       "rated": true,
       "depthRank": 1
-    },
-    {
-      "id": 505,
-      "code": 232859,
-      "name": "Spence",
-      "position": "DEF",
-      "positionId": 2,
-      "club": "TOT",
-      "teamId": 19,
-      "priceTenths": 45,
-      "basePoints": 1.989,
-      "routes": {
-        "appearance": 1.269,
-        "attacking": 0.259,
-        "cleanSheet": 0.593,
-        "bonus": 0.083,
-        "conceding": -0.204,
-        "yellowCards": -0.097,
-        "redCards": -0.002,
-        "ownGoals": -0.002,
-        "defensiveContribution": 0.09
-      },
-      "startRate": 0.532,
-      "squadNumber": null,
-      "rated": true,
-      "depthRank": 6
     },
     {
       "id": 448,
@@ -6047,465 +6409,6 @@
       "depthRank": 1
     },
     {
-      "id": 38,
-      "code": 606798,
-      "name": "A.Garc\u00eda",
-      "position": "DEF",
-      "positionId": 2,
-      "club": "AVL",
-      "teamId": 2,
-      "priceTenths": 40,
-      "basePoints": 1.5,
-      "routes": {
-        "appearance": 0.725,
-        "attacking": 0.315,
-        "cleanSheet": 0.37,
-        "bonus": 0.107,
-        "conceding": -0.11,
-        "yellowCards": -0.049,
-        "redCards": -0.002,
-        "ownGoals": -0.002,
-        "defensiveContribution": 0.146
-      },
-      "startRate": 0.31,
-      "squadNumber": null,
-      "rated": false,
-      "depthRank": 7,
-      "evidence": { "all": "rolePrior" }
-    },
-    {
-      "id": 39,
-      "code": 578545,
-      "name": "Nedeljkovic",
-      "position": "DEF",
-      "positionId": 2,
-      "club": "AVL",
-      "teamId": 2,
-      "priceTenths": 40,
-      "basePoints": 1.5,
-      "routes": {
-        "appearance": 0.725,
-        "attacking": 0.315,
-        "cleanSheet": 0.37,
-        "bonus": 0.107,
-        "conceding": -0.11,
-        "yellowCards": -0.049,
-        "redCards": -0.002,
-        "ownGoals": -0.002,
-        "defensiveContribution": 0.146
-      },
-      "startRate": 0.31,
-      "squadNumber": null,
-      "rated": false,
-      "depthRank": 7,
-      "evidence": { "all": "rolePrior" }
-    },
-    {
-      "id": 566,
-      "code": 483067,
-      "name": "Silva",
-      "position": "DEF",
-      "positionId": 2,
-      "club": "BOU",
-      "teamId": 3,
-      "priceTenths": 50,
-      "basePoints": 1.5,
-      "routes": {
-        "appearance": 0.725,
-        "attacking": 0.315,
-        "cleanSheet": 0.37,
-        "bonus": 0.107,
-        "conceding": -0.11,
-        "yellowCards": -0.049,
-        "redCards": -0.002,
-        "ownGoals": -0.002,
-        "defensiveContribution": 0.146
-      },
-      "startRate": 0.31,
-      "squadNumber": null,
-      "rated": false,
-      "depthRank": 3,
-      "evidence": { "all": "rolePrior" }
-    },
-    {
-      "id": 573,
-      "code": 494928,
-      "name": "Sanchez",
-      "position": "DEF",
-      "positionId": 2,
-      "club": "BOU",
-      "teamId": 3,
-      "priceTenths": 45,
-      "basePoints": 1.5,
-      "routes": {
-        "appearance": 0.725,
-        "attacking": 0.315,
-        "cleanSheet": 0.37,
-        "bonus": 0.107,
-        "conceding": -0.11,
-        "yellowCards": -0.049,
-        "redCards": -0.002,
-        "ownGoals": -0.002,
-        "defensiveContribution": 0.146
-      },
-      "startRate": 0.31,
-      "squadNumber": null,
-      "rated": false,
-      "depthRank": 5,
-      "evidence": { "all": "rolePrior" }
-    },
-    {
-      "id": 118,
-      "code": 223434,
-      "name": "Igor",
-      "position": "DEF",
-      "positionId": 2,
-      "club": "BHA",
-      "teamId": 5,
-      "priceTenths": 45,
-      "basePoints": 1.5,
-      "routes": {
-        "appearance": 0.725,
-        "attacking": 0.315,
-        "cleanSheet": 0.37,
-        "bonus": 0.107,
-        "conceding": -0.11,
-        "yellowCards": -0.049,
-        "redCards": -0.002,
-        "ownGoals": -0.002,
-        "defensiveContribution": 0.146
-      },
-      "startRate": 0.31,
-      "squadNumber": null,
-      "rated": false,
-      "depthRank": 4,
-      "evidence": { "all": "rolePrior" }
-    },
-    {
-      "id": 119,
-      "code": 451490,
-      "name": "Costinha",
-      "position": "DEF",
-      "positionId": 2,
-      "club": "BHA",
-      "teamId": 5,
-      "priceTenths": 45,
-      "basePoints": 1.5,
-      "routes": {
-        "appearance": 0.725,
-        "attacking": 0.315,
-        "cleanSheet": 0.37,
-        "bonus": 0.107,
-        "conceding": -0.11,
-        "yellowCards": -0.049,
-        "redCards": -0.002,
-        "ownGoals": -0.002,
-        "defensiveContribution": 0.146
-      },
-      "startRate": 0.31,
-      "squadNumber": null,
-      "rated": false,
-      "depthRank": 4,
-      "evidence": { "all": "rolePrior" }
-    },
-    {
-      "id": 150,
-      "code": 574458,
-      "name": "M.Sarr",
-      "position": "DEF",
-      "positionId": 2,
-      "club": "CHE",
-      "teamId": 6,
-      "priceTenths": 45,
-      "basePoints": 1.5,
-      "routes": {
-        "appearance": 0.725,
-        "attacking": 0.315,
-        "cleanSheet": 0.37,
-        "bonus": 0.107,
-        "conceding": -0.11,
-        "yellowCards": -0.049,
-        "redCards": -0.002,
-        "ownGoals": -0.002,
-        "defensiveContribution": 0.146
-      },
-      "startRate": 0.31,
-      "squadNumber": null,
-      "rated": false,
-      "depthRank": 7,
-      "evidence": { "all": "rolePrior" }
-    },
-    {
-      "id": 561,
-      "code": 622758,
-      "name": "Anselmino",
-      "position": "DEF",
-      "positionId": 2,
-      "club": "CHE",
-      "teamId": 6,
-      "priceTenths": 45,
-      "basePoints": 1.5,
-      "routes": {
-        "appearance": 0.725,
-        "attacking": 0.315,
-        "cleanSheet": 0.37,
-        "bonus": 0.107,
-        "conceding": -0.11,
-        "yellowCards": -0.049,
-        "redCards": -0.002,
-        "ownGoals": -0.002,
-        "defensiveContribution": 0.146
-      },
-      "startRate": 0.31,
-      "squadNumber": null,
-      "rated": false,
-      "depthRank": 7,
-      "evidence": { "all": "rolePrior" }
-    },
-    {
-      "id": 583,
-      "code": 498444,
-      "name": "Chavarria",
-      "position": "DEF",
-      "positionId": 2,
-      "club": "CHE",
-      "teamId": 6,
-      "priceTenths": 50,
-      "basePoints": 1.5,
-      "routes": {
-        "appearance": 0.725,
-        "attacking": 0.315,
-        "cleanSheet": 0.37,
-        "bonus": 0.107,
-        "conceding": -0.11,
-        "yellowCards": -0.049,
-        "redCards": -0.002,
-        "ownGoals": -0.002,
-        "defensiveContribution": 0.146
-      },
-      "startRate": 0.31,
-      "squadNumber": null,
-      "rated": false,
-      "depthRank": 4,
-      "evidence": { "all": "rolePrior" }
-    },
-    {
-      "id": 205,
-      "code": 218364,
-      "name": "Sosa",
-      "position": "DEF",
-      "positionId": 2,
-      "club": "CRY",
-      "teamId": 8,
-      "priceTenths": 45,
-      "basePoints": 1.5,
-      "routes": {
-        "appearance": 0.725,
-        "attacking": 0.315,
-        "cleanSheet": 0.37,
-        "bonus": 0.107,
-        "conceding": -0.11,
-        "yellowCards": -0.049,
-        "redCards": -0.002,
-        "ownGoals": -0.002,
-        "defensiveContribution": 0.146
-      },
-      "startRate": 0.31,
-      "squadNumber": null,
-      "rated": false,
-      "depthRank": 5,
-      "evidence": { "all": "rolePrior" }
-    },
-    {
-      "id": 207,
-      "code": 242313,
-      "name": "Mingueza",
-      "position": "DEF",
-      "positionId": 2,
-      "club": "CRY",
-      "teamId": 8,
-      "priceTenths": 45,
-      "basePoints": 1.5,
-      "routes": {
-        "appearance": 0.725,
-        "attacking": 0.315,
-        "cleanSheet": 0.37,
-        "bonus": 0.107,
-        "conceding": -0.11,
-        "yellowCards": -0.049,
-        "redCards": -0.002,
-        "ownGoals": -0.002,
-        "defensiveContribution": 0.146
-      },
-      "startRate": 0.31,
-      "squadNumber": null,
-      "rated": false,
-      "depthRank": 5,
-      "evidence": { "all": "rolePrior" }
-    },
-    {
-      "id": 577,
-      "code": 223723,
-      "name": "Tomiyasu",
-      "position": "DEF",
-      "positionId": 2,
-      "club": "CRY",
-      "teamId": 8,
-      "priceTenths": 45,
-      "basePoints": 1.5,
-      "routes": {
-        "appearance": 0.725,
-        "attacking": 0.315,
-        "cleanSheet": 0.37,
-        "bonus": 0.107,
-        "conceding": -0.11,
-        "yellowCards": -0.049,
-        "redCards": -0.002,
-        "ownGoals": -0.002,
-        "defensiveContribution": 0.146
-      },
-      "startRate": 0.31,
-      "squadNumber": null,
-      "rated": false,
-      "depthRank": 5,
-      "evidence": { "all": "rolePrior" }
-    },
-    {
-      "id": 235,
-      "code": 499300,
-      "name": "Aznou",
-      "position": "DEF",
-      "positionId": 2,
-      "club": "EVE",
-      "teamId": 9,
-      "priceTenths": 40,
-      "basePoints": 1.5,
-      "routes": {
-        "appearance": 0.725,
-        "attacking": 0.315,
-        "cleanSheet": 0.37,
-        "bonus": 0.107,
-        "conceding": -0.11,
-        "yellowCards": -0.049,
-        "redCards": -0.002,
-        "ownGoals": -0.002,
-        "defensiveContribution": 0.146
-      },
-      "startRate": 0.31,
-      "squadNumber": null,
-      "rated": false,
-      "depthRank": 7,
-      "evidence": { "all": "rolePrior" }
-    },
-    {
-      "id": 361,
-      "code": 519440,
-      "name": "Lucky",
-      "position": "DEF",
-      "positionId": 2,
-      "club": "LIV",
-      "teamId": 14,
-      "priceTenths": 40,
-      "basePoints": 1.5,
-      "routes": {
-        "appearance": 0.725,
-        "attacking": 0.315,
-        "cleanSheet": 0.37,
-        "bonus": 0.107,
-        "conceding": -0.11,
-        "yellowCards": -0.049,
-        "redCards": -0.002,
-        "ownGoals": -0.002,
-        "defensiveContribution": 0.146
-      },
-      "startRate": 0.31,
-      "squadNumber": null,
-      "rated": false,
-      "depthRank": 7,
-      "evidence": { "all": "rolePrior" }
-    },
-    {
-      "id": 362,
-      "code": 606702,
-      "name": "Jacquet",
-      "position": "DEF",
-      "positionId": 2,
-      "club": "LIV",
-      "teamId": 14,
-      "priceTenths": 50,
-      "basePoints": 1.5,
-      "routes": {
-        "appearance": 0.725,
-        "attacking": 0.315,
-        "cleanSheet": 0.37,
-        "bonus": 0.107,
-        "conceding": -0.11,
-        "yellowCards": -0.049,
-        "redCards": -0.002,
-        "ownGoals": -0.002,
-        "defensiveContribution": 0.146
-      },
-      "startRate": 0.31,
-      "squadNumber": null,
-      "rated": false,
-      "depthRank": 5,
-      "evidence": { "all": "rolePrior" }
-    },
-    {
-      "id": 364,
-      "code": 214285,
-      "name": "Tsimikas",
-      "position": "DEF",
-      "positionId": 2,
-      "club": "LIV",
-      "teamId": 14,
-      "priceTenths": 50,
-      "basePoints": 1.5,
-      "routes": {
-        "appearance": 0.725,
-        "attacking": 0.315,
-        "cleanSheet": 0.37,
-        "bonus": 0.107,
-        "conceding": -0.11,
-        "yellowCards": -0.049,
-        "redCards": -0.002,
-        "ownGoals": -0.002,
-        "defensiveContribution": 0.146
-      },
-      "startRate": 0.31,
-      "squadNumber": null,
-      "rated": false,
-      "depthRank": 5,
-      "evidence": { "all": "rolePrior" }
-    },
-    {
-      "id": 365,
-      "code": 489580,
-      "name": "Ramsay",
-      "position": "DEF",
-      "positionId": 2,
-      "club": "LIV",
-      "teamId": 14,
-      "priceTenths": 40,
-      "basePoints": 1.5,
-      "routes": {
-        "appearance": 0.725,
-        "attacking": 0.315,
-        "cleanSheet": 0.37,
-        "bonus": 0.107,
-        "conceding": -0.11,
-        "yellowCards": -0.049,
-        "redCards": -0.002,
-        "ownGoals": -0.002,
-        "defensiveContribution": 0.146
-      },
-      "startRate": 0.31,
-      "squadNumber": null,
-      "rated": false,
-      "depthRank": 7,
-      "evidence": { "all": "rolePrior" }
-    },
-    {
       "id": 391,
       "code": 477424,
       "name": "Gvardiol",
@@ -6530,330 +6433,6 @@
       "squadNumber": null,
       "rated": true,
       "depthRank": 3
-    },
-    {
-      "id": 394,
-      "code": 494307,
-      "name": "Alleyne",
-      "position": "DEF",
-      "positionId": 2,
-      "club": "MCI",
-      "teamId": 15,
-      "priceTenths": 50,
-      "basePoints": 1.5,
-      "routes": {
-        "appearance": 0.725,
-        "attacking": 0.315,
-        "cleanSheet": 0.37,
-        "bonus": 0.107,
-        "conceding": -0.11,
-        "yellowCards": -0.049,
-        "redCards": -0.002,
-        "ownGoals": -0.002,
-        "defensiveContribution": 0.146
-      },
-      "startRate": 0.31,
-      "squadNumber": null,
-      "rated": false,
-      "depthRank": 7,
-      "evidence": { "all": "rolePrior" }
-    },
-    {
-      "id": 396,
-      "code": 616222,
-      "name": "Vitor Reis",
-      "position": "DEF",
-      "positionId": 2,
-      "club": "MCI",
-      "teamId": 15,
-      "priceTenths": 45,
-      "basePoints": 1.5,
-      "routes": {
-        "appearance": 0.725,
-        "attacking": 0.315,
-        "cleanSheet": 0.37,
-        "bonus": 0.107,
-        "conceding": -0.11,
-        "yellowCards": -0.049,
-        "redCards": -0.002,
-        "ownGoals": -0.002,
-        "defensiveContribution": 0.146
-      },
-      "startRate": 0.31,
-      "squadNumber": null,
-      "rated": false,
-      "depthRank": 8,
-      "evidence": { "all": "rolePrior" }
-    },
-    {
-      "id": 424,
-      "code": 577974,
-      "name": "Amass",
-      "position": "DEF",
-      "positionId": 2,
-      "club": "MUN",
-      "teamId": 16,
-      "priceTenths": 40,
-      "basePoints": 1.5,
-      "routes": {
-        "appearance": 0.725,
-        "attacking": 0.315,
-        "cleanSheet": 0.37,
-        "bonus": 0.107,
-        "conceding": -0.11,
-        "yellowCards": -0.049,
-        "redCards": -0.002,
-        "ownGoals": -0.002,
-        "defensiveContribution": 0.146
-      },
-      "startRate": 0.31,
-      "squadNumber": null,
-      "rated": false,
-      "depthRank": 8,
-      "evidence": { "all": "rolePrior" }
-    },
-    {
-      "id": 425,
-      "code": 547676,
-      "name": "Fredricson",
-      "position": "DEF",
-      "positionId": 2,
-      "club": "MUN",
-      "teamId": 16,
-      "priceTenths": 40,
-      "basePoints": 1.5,
-      "routes": {
-        "appearance": 0.725,
-        "attacking": 0.315,
-        "cleanSheet": 0.37,
-        "bonus": 0.107,
-        "conceding": -0.11,
-        "yellowCards": -0.049,
-        "redCards": -0.002,
-        "ownGoals": -0.002,
-        "defensiveContribution": 0.146
-      },
-      "startRate": 0.31,
-      "squadNumber": null,
-      "rated": false,
-      "depthRank": 8,
-      "evidence": { "all": "rolePrior" }
-    },
-    {
-      "id": 476,
-      "code": 204822,
-      "name": "O.Richards",
-      "position": "DEF",
-      "positionId": 2,
-      "club": "NFO",
-      "teamId": 18,
-      "priceTenths": 40,
-      "basePoints": 1.5,
-      "routes": {
-        "appearance": 0.725,
-        "attacking": 0.315,
-        "cleanSheet": 0.37,
-        "bonus": 0.107,
-        "conceding": -0.11,
-        "yellowCards": -0.049,
-        "redCards": -0.002,
-        "ownGoals": -0.002,
-        "defensiveContribution": 0.146
-      },
-      "startRate": 0.31,
-      "squadNumber": null,
-      "rated": false,
-      "depthRank": 9,
-      "evidence": { "all": "rolePrior" }
-    },
-    {
-      "id": 477,
-      "code": 549067,
-      "name": "Abbott",
-      "position": "DEF",
-      "positionId": 2,
-      "club": "NFO",
-      "teamId": 18,
-      "priceTenths": 40,
-      "basePoints": 1.5,
-      "routes": {
-        "appearance": 0.725,
-        "attacking": 0.315,
-        "cleanSheet": 0.37,
-        "bonus": 0.107,
-        "conceding": -0.11,
-        "yellowCards": -0.049,
-        "redCards": -0.002,
-        "ownGoals": -0.002,
-        "defensiveContribution": 0.146
-      },
-      "startRate": 0.31,
-      "squadNumber": null,
-      "rated": false,
-      "depthRank": 9,
-      "evidence": { "all": "rolePrior" }
-    },
-    {
-      "id": 479,
-      "code": 538638,
-      "name": "Bindon",
-      "position": "DEF",
-      "positionId": 2,
-      "club": "NFO",
-      "teamId": 18,
-      "priceTenths": 40,
-      "basePoints": 1.5,
-      "routes": {
-        "appearance": 0.725,
-        "attacking": 0.315,
-        "cleanSheet": 0.37,
-        "bonus": 0.107,
-        "conceding": -0.11,
-        "yellowCards": -0.049,
-        "redCards": -0.002,
-        "ownGoals": -0.002,
-        "defensiveContribution": 0.146
-      },
-      "startRate": 0.31,
-      "squadNumber": null,
-      "rated": false,
-      "depthRank": 9,
-      "evidence": { "all": "rolePrior" }
-    },
-    {
-      "id": 507,
-      "code": 548308,
-      "name": "Phillips",
-      "position": "DEF",
-      "positionId": 2,
-      "club": "TOT",
-      "teamId": 19,
-      "priceTenths": 45,
-      "basePoints": 1.5,
-      "routes": {
-        "appearance": 0.725,
-        "attacking": 0.315,
-        "cleanSheet": 0.37,
-        "bonus": 0.107,
-        "conceding": -0.11,
-        "yellowCards": -0.049,
-        "redCards": -0.002,
-        "ownGoals": -0.002,
-        "defensiveContribution": 0.146
-      },
-      "startRate": 0.31,
-      "squadNumber": null,
-      "rated": false,
-      "depthRank": 6,
-      "evidence": { "all": "rolePrior" }
-    },
-    {
-      "id": 508,
-      "code": 115556,
-      "name": "Davies",
-      "position": "DEF",
-      "positionId": 2,
-      "club": "TOT",
-      "teamId": 19,
-      "priceTenths": 40,
-      "basePoints": 1.5,
-      "routes": {
-        "appearance": 0.725,
-        "attacking": 0.315,
-        "cleanSheet": 0.37,
-        "bonus": 0.107,
-        "conceding": -0.11,
-        "yellowCards": -0.049,
-        "redCards": -0.002,
-        "ownGoals": -0.002,
-        "defensiveContribution": 0.146
-      },
-      "startRate": 0.31,
-      "squadNumber": null,
-      "rated": false,
-      "depthRank": 10,
-      "evidence": { "all": "rolePrior" }
-    },
-    {
-      "id": 509,
-      "code": 640419,
-      "name": "Byfield",
-      "position": "DEF",
-      "positionId": 2,
-      "club": "TOT",
-      "teamId": 19,
-      "priceTenths": 40,
-      "basePoints": 1.5,
-      "routes": {
-        "appearance": 0.725,
-        "attacking": 0.315,
-        "cleanSheet": 0.37,
-        "bonus": 0.107,
-        "conceding": -0.11,
-        "yellowCards": -0.049,
-        "redCards": -0.002,
-        "ownGoals": -0.002,
-        "defensiveContribution": 0.146
-      },
-      "startRate": 0.31,
-      "squadNumber": null,
-      "rated": false,
-      "depthRank": 10,
-      "evidence": { "all": "rolePrior" }
-    },
-    {
-      "id": 510,
-      "code": 499716,
-      "name": "Rowswell",
-      "position": "DEF",
-      "positionId": 2,
-      "club": "TOT",
-      "teamId": 19,
-      "priceTenths": 40,
-      "basePoints": 1.5,
-      "routes": {
-        "appearance": 0.725,
-        "attacking": 0.315,
-        "cleanSheet": 0.37,
-        "bonus": 0.107,
-        "conceding": -0.11,
-        "yellowCards": -0.049,
-        "redCards": -0.002,
-        "ownGoals": -0.002,
-        "defensiveContribution": 0.146
-      },
-      "startRate": 0.31,
-      "squadNumber": null,
-      "rated": false,
-      "depthRank": 10,
-      "evidence": { "all": "rolePrior" }
-    },
-    {
-      "id": 511,
-      "code": 616221,
-      "name": "Souza",
-      "position": "DEF",
-      "positionId": 2,
-      "club": "TOT",
-      "teamId": 19,
-      "priceTenths": 40,
-      "basePoints": 1.5,
-      "routes": {
-        "appearance": 0.725,
-        "attacking": 0.315,
-        "cleanSheet": 0.37,
-        "bonus": 0.107,
-        "conceding": -0.11,
-        "yellowCards": -0.049,
-        "redCards": -0.002,
-        "ownGoals": -0.002,
-        "defensiveContribution": 0.146
-      },
-      "startRate": 0.31,
-      "squadNumber": null,
-      "rated": false,
-      "depthRank": 10,
-      "evidence": { "all": "rolePrior" }
     },
     {
       "id": 36,
@@ -6882,6 +6461,465 @@
       "depthRank": 1
     },
     {
+      "id": 38,
+      "code": 606798,
+      "name": "A.Garc\u00eda",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "AVL",
+      "teamId": 2,
+      "priceTenths": 40,
+      "basePoints": 1.369,
+      "routes": {
+        "appearance": 0.732,
+        "attacking": 0.218,
+        "cleanSheet": 0.3,
+        "bonus": 0.206,
+        "conceding": -0.114,
+        "yellowCards": -0.054,
+        "redCards": -0.002,
+        "ownGoals": -0.002,
+        "defensiveContribution": 0.085
+      },
+      "startRate": 0.281,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 7,
+      "evidence": { "all": "rolePrior" }
+    },
+    {
+      "id": 39,
+      "code": 578545,
+      "name": "Nedeljkovic",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "AVL",
+      "teamId": 2,
+      "priceTenths": 40,
+      "basePoints": 1.369,
+      "routes": {
+        "appearance": 0.732,
+        "attacking": 0.218,
+        "cleanSheet": 0.3,
+        "bonus": 0.206,
+        "conceding": -0.114,
+        "yellowCards": -0.054,
+        "redCards": -0.002,
+        "ownGoals": -0.002,
+        "defensiveContribution": 0.085
+      },
+      "startRate": 0.281,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 7,
+      "evidence": { "all": "rolePrior" }
+    },
+    {
+      "id": 566,
+      "code": 483067,
+      "name": "Silva",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "BOU",
+      "teamId": 3,
+      "priceTenths": 50,
+      "basePoints": 1.369,
+      "routes": {
+        "appearance": 0.732,
+        "attacking": 0.218,
+        "cleanSheet": 0.3,
+        "bonus": 0.206,
+        "conceding": -0.114,
+        "yellowCards": -0.054,
+        "redCards": -0.002,
+        "ownGoals": -0.002,
+        "defensiveContribution": 0.085
+      },
+      "startRate": 0.281,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 3,
+      "evidence": { "all": "rolePrior" }
+    },
+    {
+      "id": 573,
+      "code": 494928,
+      "name": "Sanchez",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "BOU",
+      "teamId": 3,
+      "priceTenths": 45,
+      "basePoints": 1.369,
+      "routes": {
+        "appearance": 0.732,
+        "attacking": 0.218,
+        "cleanSheet": 0.3,
+        "bonus": 0.206,
+        "conceding": -0.114,
+        "yellowCards": -0.054,
+        "redCards": -0.002,
+        "ownGoals": -0.002,
+        "defensiveContribution": 0.085
+      },
+      "startRate": 0.281,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 5,
+      "evidence": { "all": "rolePrior" }
+    },
+    {
+      "id": 118,
+      "code": 223434,
+      "name": "Igor",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "BHA",
+      "teamId": 5,
+      "priceTenths": 45,
+      "basePoints": 1.369,
+      "routes": {
+        "appearance": 0.732,
+        "attacking": 0.218,
+        "cleanSheet": 0.3,
+        "bonus": 0.206,
+        "conceding": -0.114,
+        "yellowCards": -0.054,
+        "redCards": -0.002,
+        "ownGoals": -0.002,
+        "defensiveContribution": 0.085
+      },
+      "startRate": 0.281,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 4,
+      "evidence": { "all": "rolePrior" }
+    },
+    {
+      "id": 119,
+      "code": 451490,
+      "name": "Costinha",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "BHA",
+      "teamId": 5,
+      "priceTenths": 45,
+      "basePoints": 1.369,
+      "routes": {
+        "appearance": 0.732,
+        "attacking": 0.218,
+        "cleanSheet": 0.3,
+        "bonus": 0.206,
+        "conceding": -0.114,
+        "yellowCards": -0.054,
+        "redCards": -0.002,
+        "ownGoals": -0.002,
+        "defensiveContribution": 0.085
+      },
+      "startRate": 0.281,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 4,
+      "evidence": { "all": "rolePrior" }
+    },
+    {
+      "id": 150,
+      "code": 574458,
+      "name": "M.Sarr",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "CHE",
+      "teamId": 6,
+      "priceTenths": 45,
+      "basePoints": 1.369,
+      "routes": {
+        "appearance": 0.732,
+        "attacking": 0.218,
+        "cleanSheet": 0.3,
+        "bonus": 0.206,
+        "conceding": -0.114,
+        "yellowCards": -0.054,
+        "redCards": -0.002,
+        "ownGoals": -0.002,
+        "defensiveContribution": 0.085
+      },
+      "startRate": 0.281,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 7,
+      "evidence": { "all": "rolePrior" }
+    },
+    {
+      "id": 561,
+      "code": 622758,
+      "name": "Anselmino",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "CHE",
+      "teamId": 6,
+      "priceTenths": 45,
+      "basePoints": 1.369,
+      "routes": {
+        "appearance": 0.732,
+        "attacking": 0.218,
+        "cleanSheet": 0.3,
+        "bonus": 0.206,
+        "conceding": -0.114,
+        "yellowCards": -0.054,
+        "redCards": -0.002,
+        "ownGoals": -0.002,
+        "defensiveContribution": 0.085
+      },
+      "startRate": 0.281,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 7,
+      "evidence": { "all": "rolePrior" }
+    },
+    {
+      "id": 583,
+      "code": 498444,
+      "name": "Chavarria",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "CHE",
+      "teamId": 6,
+      "priceTenths": 50,
+      "basePoints": 1.369,
+      "routes": {
+        "appearance": 0.732,
+        "attacking": 0.218,
+        "cleanSheet": 0.3,
+        "bonus": 0.206,
+        "conceding": -0.114,
+        "yellowCards": -0.054,
+        "redCards": -0.002,
+        "ownGoals": -0.002,
+        "defensiveContribution": 0.085
+      },
+      "startRate": 0.281,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 4,
+      "evidence": { "all": "rolePrior" }
+    },
+    {
+      "id": 205,
+      "code": 218364,
+      "name": "Sosa",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "CRY",
+      "teamId": 8,
+      "priceTenths": 45,
+      "basePoints": 1.369,
+      "routes": {
+        "appearance": 0.732,
+        "attacking": 0.218,
+        "cleanSheet": 0.3,
+        "bonus": 0.206,
+        "conceding": -0.114,
+        "yellowCards": -0.054,
+        "redCards": -0.002,
+        "ownGoals": -0.002,
+        "defensiveContribution": 0.085
+      },
+      "startRate": 0.281,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 5,
+      "evidence": { "all": "rolePrior" }
+    },
+    {
+      "id": 207,
+      "code": 242313,
+      "name": "Mingueza",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "CRY",
+      "teamId": 8,
+      "priceTenths": 45,
+      "basePoints": 1.369,
+      "routes": {
+        "appearance": 0.732,
+        "attacking": 0.218,
+        "cleanSheet": 0.3,
+        "bonus": 0.206,
+        "conceding": -0.114,
+        "yellowCards": -0.054,
+        "redCards": -0.002,
+        "ownGoals": -0.002,
+        "defensiveContribution": 0.085
+      },
+      "startRate": 0.281,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 5,
+      "evidence": { "all": "rolePrior" }
+    },
+    {
+      "id": 577,
+      "code": 223723,
+      "name": "Tomiyasu",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "CRY",
+      "teamId": 8,
+      "priceTenths": 45,
+      "basePoints": 1.369,
+      "routes": {
+        "appearance": 0.732,
+        "attacking": 0.218,
+        "cleanSheet": 0.3,
+        "bonus": 0.206,
+        "conceding": -0.114,
+        "yellowCards": -0.054,
+        "redCards": -0.002,
+        "ownGoals": -0.002,
+        "defensiveContribution": 0.085
+      },
+      "startRate": 0.281,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 5,
+      "evidence": { "all": "rolePrior" }
+    },
+    {
+      "id": 235,
+      "code": 499300,
+      "name": "Aznou",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "EVE",
+      "teamId": 9,
+      "priceTenths": 40,
+      "basePoints": 1.369,
+      "routes": {
+        "appearance": 0.732,
+        "attacking": 0.218,
+        "cleanSheet": 0.3,
+        "bonus": 0.206,
+        "conceding": -0.114,
+        "yellowCards": -0.054,
+        "redCards": -0.002,
+        "ownGoals": -0.002,
+        "defensiveContribution": 0.085
+      },
+      "startRate": 0.281,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 7,
+      "evidence": { "all": "rolePrior" }
+    },
+    {
+      "id": 361,
+      "code": 519440,
+      "name": "Lucky",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "LIV",
+      "teamId": 14,
+      "priceTenths": 40,
+      "basePoints": 1.369,
+      "routes": {
+        "appearance": 0.732,
+        "attacking": 0.218,
+        "cleanSheet": 0.3,
+        "bonus": 0.206,
+        "conceding": -0.114,
+        "yellowCards": -0.054,
+        "redCards": -0.002,
+        "ownGoals": -0.002,
+        "defensiveContribution": 0.085
+      },
+      "startRate": 0.281,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 7,
+      "evidence": { "all": "rolePrior" }
+    },
+    {
+      "id": 362,
+      "code": 606702,
+      "name": "Jacquet",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "LIV",
+      "teamId": 14,
+      "priceTenths": 50,
+      "basePoints": 1.369,
+      "routes": {
+        "appearance": 0.732,
+        "attacking": 0.218,
+        "cleanSheet": 0.3,
+        "bonus": 0.206,
+        "conceding": -0.114,
+        "yellowCards": -0.054,
+        "redCards": -0.002,
+        "ownGoals": -0.002,
+        "defensiveContribution": 0.085
+      },
+      "startRate": 0.281,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 5,
+      "evidence": { "all": "rolePrior" }
+    },
+    {
+      "id": 364,
+      "code": 214285,
+      "name": "Tsimikas",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "LIV",
+      "teamId": 14,
+      "priceTenths": 50,
+      "basePoints": 1.369,
+      "routes": {
+        "appearance": 0.732,
+        "attacking": 0.218,
+        "cleanSheet": 0.3,
+        "bonus": 0.206,
+        "conceding": -0.114,
+        "yellowCards": -0.054,
+        "redCards": -0.002,
+        "ownGoals": -0.002,
+        "defensiveContribution": 0.085
+      },
+      "startRate": 0.281,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 5,
+      "evidence": { "all": "rolePrior" }
+    },
+    {
+      "id": 365,
+      "code": 489580,
+      "name": "Ramsay",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "LIV",
+      "teamId": 14,
+      "priceTenths": 40,
+      "basePoints": 1.369,
+      "routes": {
+        "appearance": 0.732,
+        "attacking": 0.218,
+        "cleanSheet": 0.3,
+        "bonus": 0.206,
+        "conceding": -0.114,
+        "yellowCards": -0.054,
+        "redCards": -0.002,
+        "ownGoals": -0.002,
+        "defensiveContribution": 0.085
+      },
+      "startRate": 0.281,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 7,
+      "evidence": { "all": "rolePrior" }
+    },
+    {
       "id": 392,
       "code": 448514,
       "name": "A\u00eft-Nouri",
@@ -6906,6 +6944,249 @@
       "squadNumber": null,
       "rated": true,
       "depthRank": 3
+    },
+    {
+      "id": 396,
+      "code": 616222,
+      "name": "Vitor Reis",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "MCI",
+      "teamId": 15,
+      "priceTenths": 45,
+      "basePoints": 1.369,
+      "routes": {
+        "appearance": 0.732,
+        "attacking": 0.218,
+        "cleanSheet": 0.3,
+        "bonus": 0.206,
+        "conceding": -0.114,
+        "yellowCards": -0.054,
+        "redCards": -0.002,
+        "ownGoals": -0.002,
+        "defensiveContribution": 0.085
+      },
+      "startRate": 0.281,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 7,
+      "evidence": { "all": "rolePrior" }
+    },
+    {
+      "id": 424,
+      "code": 577974,
+      "name": "Amass",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "MUN",
+      "teamId": 16,
+      "priceTenths": 40,
+      "basePoints": 1.369,
+      "routes": {
+        "appearance": 0.732,
+        "attacking": 0.218,
+        "cleanSheet": 0.3,
+        "bonus": 0.206,
+        "conceding": -0.114,
+        "yellowCards": -0.054,
+        "redCards": -0.002,
+        "ownGoals": -0.002,
+        "defensiveContribution": 0.085
+      },
+      "startRate": 0.281,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 8,
+      "evidence": { "all": "rolePrior" }
+    },
+    {
+      "id": 476,
+      "code": 204822,
+      "name": "O.Richards",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "NFO",
+      "teamId": 18,
+      "priceTenths": 40,
+      "basePoints": 1.369,
+      "routes": {
+        "appearance": 0.732,
+        "attacking": 0.218,
+        "cleanSheet": 0.3,
+        "bonus": 0.206,
+        "conceding": -0.114,
+        "yellowCards": -0.054,
+        "redCards": -0.002,
+        "ownGoals": -0.002,
+        "defensiveContribution": 0.085
+      },
+      "startRate": 0.281,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 9,
+      "evidence": { "all": "rolePrior" }
+    },
+    {
+      "id": 477,
+      "code": 549067,
+      "name": "Abbott",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "NFO",
+      "teamId": 18,
+      "priceTenths": 40,
+      "basePoints": 1.369,
+      "routes": {
+        "appearance": 0.732,
+        "attacking": 0.218,
+        "cleanSheet": 0.3,
+        "bonus": 0.206,
+        "conceding": -0.114,
+        "yellowCards": -0.054,
+        "redCards": -0.002,
+        "ownGoals": -0.002,
+        "defensiveContribution": 0.085
+      },
+      "startRate": 0.281,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 9,
+      "evidence": { "all": "rolePrior" }
+    },
+    {
+      "id": 479,
+      "code": 538638,
+      "name": "Bindon",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "NFO",
+      "teamId": 18,
+      "priceTenths": 40,
+      "basePoints": 1.369,
+      "routes": {
+        "appearance": 0.732,
+        "attacking": 0.218,
+        "cleanSheet": 0.3,
+        "bonus": 0.206,
+        "conceding": -0.114,
+        "yellowCards": -0.054,
+        "redCards": -0.002,
+        "ownGoals": -0.002,
+        "defensiveContribution": 0.085
+      },
+      "startRate": 0.281,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 9,
+      "evidence": { "all": "rolePrior" }
+    },
+    {
+      "id": 508,
+      "code": 115556,
+      "name": "Davies",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "TOT",
+      "teamId": 19,
+      "priceTenths": 40,
+      "basePoints": 1.369,
+      "routes": {
+        "appearance": 0.732,
+        "attacking": 0.218,
+        "cleanSheet": 0.3,
+        "bonus": 0.206,
+        "conceding": -0.114,
+        "yellowCards": -0.054,
+        "redCards": -0.002,
+        "ownGoals": -0.002,
+        "defensiveContribution": 0.085
+      },
+      "startRate": 0.281,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 8,
+      "evidence": { "all": "rolePrior" }
+    },
+    {
+      "id": 509,
+      "code": 640419,
+      "name": "Byfield",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "TOT",
+      "teamId": 19,
+      "priceTenths": 40,
+      "basePoints": 1.369,
+      "routes": {
+        "appearance": 0.732,
+        "attacking": 0.218,
+        "cleanSheet": 0.3,
+        "bonus": 0.206,
+        "conceding": -0.114,
+        "yellowCards": -0.054,
+        "redCards": -0.002,
+        "ownGoals": -0.002,
+        "defensiveContribution": 0.085
+      },
+      "startRate": 0.281,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 8,
+      "evidence": { "all": "rolePrior" }
+    },
+    {
+      "id": 510,
+      "code": 499716,
+      "name": "Rowswell",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "TOT",
+      "teamId": 19,
+      "priceTenths": 40,
+      "basePoints": 1.369,
+      "routes": {
+        "appearance": 0.732,
+        "attacking": 0.218,
+        "cleanSheet": 0.3,
+        "bonus": 0.206,
+        "conceding": -0.114,
+        "yellowCards": -0.054,
+        "redCards": -0.002,
+        "ownGoals": -0.002,
+        "defensiveContribution": 0.085
+      },
+      "startRate": 0.281,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 8,
+      "evidence": { "all": "rolePrior" }
+    },
+    {
+      "id": 511,
+      "code": 616221,
+      "name": "Souza",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "TOT",
+      "teamId": 19,
+      "priceTenths": 40,
+      "basePoints": 1.369,
+      "routes": {
+        "appearance": 0.732,
+        "attacking": 0.218,
+        "cleanSheet": 0.3,
+        "bonus": 0.206,
+        "conceding": -0.114,
+        "yellowCards": -0.054,
+        "redCards": -0.002,
+        "ownGoals": -0.002,
+        "defensiveContribution": 0.085
+      },
+      "startRate": 0.281,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 8,
+      "evidence": { "all": "rolePrior" }
     },
     {
       "id": 33,
@@ -7633,7 +7914,7 @@
       "startRate": 0.113,
       "squadNumber": null,
       "rated": true,
-      "depthRank": 8
+      "depthRank": 7
     },
     {
       "id": 234,
@@ -8924,6 +9205,32 @@
       "evidence": { "all": "rolePrior" }
     },
     {
+      "id": 591,
+      "code": 474120,
+      "name": "Enciso",
+      "position": "MID",
+      "positionId": 3,
+      "club": "IPS",
+      "teamId": 12,
+      "priceTenths": 55,
+      "basePoints": 2.99,
+      "routes": {
+        "appearance": 1.275,
+        "attacking": 1.426,
+        "cleanSheet": 0.074,
+        "bonus": 0.268,
+        "yellowCards": -0.132,
+        "redCards": -0.002,
+        "penaltiesMissed": -0.045,
+        "defensiveContribution": 0.126
+      },
+      "startRate": 0.603,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 1,
+      "evidence": { "all": "rolePrior" }
+    },
+    {
       "id": 461,
       "code": 611665,
       "name": "Tour\u00e9",
@@ -9792,7 +10099,7 @@
       "startRate": 0.614,
       "squadNumber": null,
       "rated": true,
-      "depthRank": 5
+      "depthRank": 6
     },
     {
       "id": 336,
@@ -10503,31 +10810,6 @@
       "evidence": { "all": "rolePrior" }
     },
     {
-      "id": 100,
-      "code": 244858,
-      "name": "Carvalho",
-      "position": "MID",
-      "positionId": 3,
-      "club": "BRE",
-      "teamId": 4,
-      "priceTenths": 50,
-      "basePoints": 1.58,
-      "routes": {
-        "appearance": 0.901,
-        "attacking": 0.432,
-        "cleanSheet": 0.069,
-        "bonus": 0.127,
-        "yellowCards": -0.019,
-        "redCards": -0.001,
-        "defensiveContribution": 0.071
-      },
-      "startRate": 0.294,
-      "squadNumber": null,
-      "rated": false,
-      "depthRank": 8,
-      "evidence": { "all": "rolePrior" }
-    },
-    {
       "id": 103,
       "code": 183656,
       "name": "Dasilva",
@@ -11224,7 +11506,7 @@
       "startRate": 0.294,
       "squadNumber": null,
       "rated": false,
-      "depthRank": 5,
+      "depthRank": 6,
       "evidence": { "all": "rolePrior" }
     },
     {
@@ -11249,7 +11531,7 @@
       "startRate": 0.294,
       "squadNumber": null,
       "rated": false,
-      "depthRank": 5,
+      "depthRank": 6,
       "evidence": { "all": "rolePrior" }
     },
     {
@@ -11274,7 +11556,7 @@
       "startRate": 0.294,
       "squadNumber": null,
       "rated": false,
-      "depthRank": 10,
+      "depthRank": 11,
       "evidence": { "all": "rolePrior" }
     },
     {
@@ -11299,7 +11581,7 @@
       "startRate": 0.294,
       "squadNumber": null,
       "rated": false,
-      "depthRank": 5,
+      "depthRank": 6,
       "evidence": { "all": "rolePrior" }
     },
     {
@@ -11503,31 +11785,6 @@
       "evidence": { "all": "rolePrior" }
     },
     {
-      "id": 408,
-      "code": 155405,
-      "name": "Phillips",
-      "position": "MID",
-      "positionId": 3,
-      "club": "MCI",
-      "teamId": 15,
-      "priceTenths": 50,
-      "basePoints": 1.58,
-      "routes": {
-        "appearance": 0.901,
-        "attacking": 0.432,
-        "cleanSheet": 0.069,
-        "bonus": 0.127,
-        "yellowCards": -0.019,
-        "redCards": -0.001,
-        "defensiveContribution": 0.071
-      },
-      "startRate": 0.294,
-      "squadNumber": null,
-      "rated": false,
-      "depthRank": 11,
-      "evidence": { "all": "rolePrior" }
-    },
-    {
       "id": 409,
       "code": 590039,
       "name": "Mukasa",
@@ -11549,7 +11806,7 @@
       "startRate": 0.294,
       "squadNumber": null,
       "rated": false,
-      "depthRank": 14,
+      "depthRank": 13,
       "evidence": { "all": "rolePrior" }
     },
     {
@@ -11899,7 +12156,7 @@
       "startRate": 0.43,
       "squadNumber": null,
       "rated": true,
-      "depthRank": 5
+      "depthRank": 6
     },
     {
       "id": 268,
@@ -13329,56 +13586,6 @@
       "depthRank": 1
     },
     {
-      "id": 194,
-      "code": 230730,
-      "name": "Thomas-Asante",
-      "position": "FWD",
-      "positionId": 4,
-      "club": "COV",
-      "teamId": 7,
-      "priceTenths": 50,
-      "basePoints": 2.519,
-      "routes": {
-        "appearance": 1.471,
-        "attacking": 0.775,
-        "bonus": 0.332,
-        "yellowCards": -0.016,
-        "ownGoals": -0.043,
-        "penaltiesMissed": -0.002,
-        "defensiveContribution": 0.002
-      },
-      "startRate": 0.551,
-      "squadNumber": null,
-      "rated": false,
-      "depthRank": 1,
-      "evidence": { "all": "rolePrior" }
-    },
-    {
-      "id": 195,
-      "code": 218997,
-      "name": "Simms",
-      "position": "FWD",
-      "positionId": 4,
-      "club": "COV",
-      "teamId": 7,
-      "priceTenths": 50,
-      "basePoints": 2.519,
-      "routes": {
-        "appearance": 1.471,
-        "attacking": 0.775,
-        "bonus": 0.332,
-        "yellowCards": -0.016,
-        "ownGoals": -0.043,
-        "penaltiesMissed": -0.002,
-        "defensiveContribution": 0.002
-      },
-      "startRate": 0.551,
-      "squadNumber": null,
-      "rated": false,
-      "depthRank": 1,
-      "evidence": { "all": "rolePrior" }
-    },
-    {
       "id": 249,
       "code": 586309,
       "name": "Barry",
@@ -13607,6 +13814,54 @@
       "club": "CHE",
       "teamId": 6,
       "priceTenths": 65,
+      "basePoints": 1.96,
+      "routes": {
+        "appearance": 1.043,
+        "attacking": 0.752,
+        "bonus": 0.217,
+        "yellowCards": -0.014,
+        "penaltiesMissed": -0.04,
+        "defensiveContribution": 0.002
+      },
+      "startRate": 0.237,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 2,
+      "evidence": { "all": "rolePrior" }
+    },
+    {
+      "id": 194,
+      "code": 230730,
+      "name": "Thomas-Asante",
+      "position": "FWD",
+      "positionId": 4,
+      "club": "COV",
+      "teamId": 7,
+      "priceTenths": 50,
+      "basePoints": 1.96,
+      "routes": {
+        "appearance": 1.043,
+        "attacking": 0.752,
+        "bonus": 0.217,
+        "yellowCards": -0.014,
+        "penaltiesMissed": -0.04,
+        "defensiveContribution": 0.002
+      },
+      "startRate": 0.237,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 2,
+      "evidence": { "all": "rolePrior" }
+    },
+    {
+      "id": 195,
+      "code": 218997,
+      "name": "Simms",
+      "position": "FWD",
+      "positionId": 4,
+      "club": "COV",
+      "teamId": 7,
+      "priceTenths": 50,
       "basePoints": 1.96,
       "routes": {
         "appearance": 1.043,
@@ -13958,8 +14213,8 @@
       "name": "Awoniyi",
       "position": "FWD",
       "positionId": 4,
-      "club": "NFO",
-      "teamId": 18,
+      "club": "COV",
+      "teamId": 7,
       "priceTenths": 55,
       "basePoints": 1.04,
       "routes": {
@@ -13973,7 +14228,7 @@
       "startRate": 0.079,
       "squadNumber": null,
       "rated": true,
-      "depthRank": 3
+      "depthRank": 1
     },
     {
       "id": 464,

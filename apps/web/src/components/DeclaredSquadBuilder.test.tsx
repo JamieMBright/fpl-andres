@@ -1,3 +1,6 @@
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
+
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
@@ -17,6 +20,7 @@ import {
  */
 
 const POOL = [...PLAYERS_BY_ELEMENT_ID.values()];
+const STYLES = readFileSync(join(__dirname, "..", "styles.css"), "utf8");
 
 function legalSquad(): SolverPlayer[] {
   const picked: SolverPlayer[] = [];
@@ -96,6 +100,40 @@ describe("DeclaredSquadBuilder", () => {
   // loaded machine, so the number is a safety net rather than a budget: it must
   // never be the thing that decides whether this journey works.
   const JOURNEY_TIMEOUT = 120_000;
+
+  it("reveals the filtered player market forty rows at a time", async () => {
+    renderBuilder();
+
+    expect(document.querySelectorAll(".squad-market-list > li")).toHaveLength(
+      40,
+    );
+    const more = screen.getByRole("button", { name: /show more players/i });
+    await userEvent.click(more);
+
+    expect(document.querySelectorAll(".squad-market-list > li")).toHaveLength(
+      80,
+    );
+  });
+
+  it("names the bounded desktop market as a keyboard scroll region", () => {
+    renderBuilder();
+
+    expect(
+      screen.getByRole("region", { name: "Scrollable player market" }),
+    ).toHaveAttribute("tabindex", "0");
+  });
+
+  it("uses opaque theme-invariant ink for every label on the pitch", () => {
+    const start = STYLES.indexOf(".squad-pitch {");
+    const pitchRules = STYLES.slice(
+      start,
+      STYLES.indexOf("/* Bars drawn", start),
+    );
+
+    expect(STYLES).toContain("--pitch-ink: var(--fa-pitch-ink);");
+    expect(pitchRules).toContain("color: var(--pitch-ink);");
+    expect(pitchRules).not.toContain("opacity:");
+  });
 
   it(
     "locks in a legal fifteen and keeps it in this browser",

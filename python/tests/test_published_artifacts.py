@@ -183,6 +183,20 @@ def test_opening_squad_shape() -> None:
     )
 
 
+def test_planning_artifacts_are_published_in_dependency_order() -> None:
+    """The opening solve follows its inputs and the static plan starts from
+    exactly the same canonical fifteen."""
+    season_inputs = datetime.fromisoformat(_artifact("season-inputs")["generatedAt"])
+    opening = _artifact("opening-squad")
+    opening_squad = datetime.fromisoformat(opening["generatedAt"])
+    opener = _artifact("season-plan")["gameweeks"][0]
+
+    assert opening_squad >= season_inputs
+    assert set(opener["starters"] + opener["bench"]) == {pick["code"] for pick in opening["picks"]}
+    assert opener["transfersIn"] == []
+    assert opener["transfersOut"] == []
+
+
 def test_the_published_squad_is_legal() -> None:
     """A shape check that also checks the rules, because an illegal squad is a
     worse failure than a renamed field and costs nothing extra to catch."""

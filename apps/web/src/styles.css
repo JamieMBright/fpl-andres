@@ -27,6 +27,7 @@
   --fa-gk-purple: #5b2ca8;
   --fa-gk-black: #0a0a0a;
   --fa-gk-white: #fff;
+  --fa-pitch-ink: #fff;
 
   /* Bucket mark holds its own hue in both themes */
   --fa-bucket: #5308dc;
@@ -52,6 +53,7 @@
   --amber: var(--fa-amber);
   --danger: var(--fa-red);
   --rule: var(--fa-rule);
+  --pitch-ink: var(--fa-pitch-ink);
 
   color: var(--ink);
   background: var(--paper-deep);
@@ -2202,6 +2204,37 @@ h1[tabindex="-1"]:focus-visible {
   margin-bottom: 2px;
 }
 
+.plan-fixture-evidence ul {
+  display: grid;
+  gap: 10px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.plan-fixture-evidence li {
+  display: grid;
+  gap: 2px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.plan-fixture-evidence li:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.plan-fixture-evidence .mono {
+  font-size: 10px;
+  line-height: 1.45;
+}
+
+.plan-fixture-source,
+.plan-fixture-summary {
+  color: var(--ink-soft);
+  font-size: 10px;
+}
+
 .plan-chips {
   margin: 18px 0 0;
 }
@@ -2975,210 +3008,6 @@ h1[tabindex="-1"]:focus-visible {
     min-width: 7.5rem;
     max-width: 7.5rem;
   }
-}
-
-/* Captaincy grid: fourteen methods across every scored gameweek. Five hundred
-   cells on screen, so each one carries four things and no more. */
-.captain-grid-seasons {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin: 16px 0 10px;
-}
-
-.captain-grid-season {
-  padding: 5px 12px;
-  border: 2px solid var(--ink);
-  background: var(--paper);
-  color: var(--ink);
-  font-family: "IBM Plex Mono", monospace;
-  font-size: 12px;
-  cursor: pointer;
-}
-
-.captain-grid-season[aria-pressed="true"] {
-  background: var(--ink);
-  color: var(--paper);
-}
-
-.captain-grid-scroller {
-  /* Sticky cells can leak a wide table's visual overflow into the root even
-     when this element scrolls. Contain that canvas without hiding its own
-     horizontal scrollbar. */
-  contain: inline-size paint;
-}
-
-.captain-grid-table {
-  min-width: 0;
-  border-collapse: collapse;
-}
-
-.captain-grid-table thead th {
-  padding: 4px 0;
-  min-width: 74px;
-  text-align: center;
-}
-
-.captain-grid-week,
-.captain-grid-ceiling,
-.captain-grid-group,
-.captain-grid-name,
-.captain-grid-against,
-.captain-grid-points {
-  display: block;
-}
-
-.captain-grid-against,
-.captain-grid-points,
-.captain-grid-table tbody th {
-  font-family: "IBM Plex Mono", monospace;
-}
-
-/* The best return available that week. A haul is only readable against it. */
-.captain-grid-ceiling {
-  color: var(--amber);
-  font-size: 10px;
-}
-
-.captain-grid-table tbody th {
-  position: sticky;
-  left: 0;
-  z-index: 2;
-  padding: 0 10px 0 4px;
-  width: auto;
-  min-width: 132px;
-  background: var(--paper);
-  box-shadow: 1px 0 0 var(--rule);
-  font-size: 11px;
-  text-align: left;
-}
-
-/* 22% put the home kit's deep-purple brand behind soft ink at 4.36:1. The
-   3px left edge below is what actually marks the row; the wash only has to
-   be visible, so it is set where the soft ink still clears 4.5:1. */
-.captain-grid-mine th,
-.captain-grid-mine .captain-grid-cell {
-  background: color-mix(in srgb, var(--field-green) 14%, transparent);
-}
-
-/* Colour alone would not survive forced colours or a mono print. */
-.captain-grid-mine th {
-  border-left: 3px solid var(--field-green);
-}
-
-/* `components` names both a ranking method and a thesis. Saying which is which
-   is the difference between two rows and one row rendered twice. */
-.captain-grid-group,
-.captain-grid-against,
-.captain-grid-empty {
-  color: var(--ink-soft);
-}
-
-.captain-grid-group {
-  font-size: 9px;
-  text-transform: uppercase;
-}
-
-.captain-grid-cell {
-  padding: 0;
-  border-left: 1px solid var(--rule);
-  text-align: center;
-  line-height: 1.25;
-}
-
-/* The whole cell is the control, so hover and keyboard focus reach the same
-   target and the readout below says the same thing for both. */
-.captain-grid-pick {
-  display: block;
-  width: 100%;
-  padding: 3px 2px;
-  border: 0;
-  background: none;
-  color: inherit;
-  font: inherit;
-  text-align: center;
-  cursor: pointer;
-}
-
-.captain-grid-pick:hover,
-.captain-grid-pick:focus-visible {
-  background: color-mix(in srgb, var(--amber) 22%, transparent);
-  outline: 2px solid var(--amber);
-  outline-offset: -2px;
-}
-
-.captain-grid-readout {
-  margin-top: 14px;
-  padding: 12px 14px;
-  border: 2px solid var(--ink);
-  background: var(--paper);
-}
-
-.captain-grid-readout-idle {
-  color: var(--ink-soft);
-  font-size: 13px;
-}
-
-.captain-grid-readout-title {
-  margin: 0 0 8px;
-  font-family: "IBM Plex Mono", monospace;
-  font-size: 12px;
-  font-weight: 700;
-  text-transform: uppercase;
-}
-
-.captain-grid-chosen th,
-.captain-grid-chosen td {
-  background: color-mix(in srgb, var(--field-green) 14%, transparent);
-}
-
-.captain-grid-chosen-mark {
-  color: var(--field-green);
-  font-family: "IBM Plex Mono", monospace;
-  font-size: 10px;
-  text-transform: uppercase;
-}
-
-.captain-grid-cell .grid-shirt {
-  display: block;
-  width: 15px;
-  height: 17px;
-  margin: 0 auto 1px;
-}
-
-.captain-grid-name {
-  overflow: hidden;
-  max-width: 72px;
-  margin: 0 auto;
-  font-size: 10px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-/* Cased to carry the venue, so nothing may re-case it. */
-.captain-grid-against {
-  font-size: 10px;
-  text-transform: none;
-}
-
-.captain-grid-points {
-  font-size: 12px;
-  font-weight: 700;
-}
-
-/* Two points is an appearance and nothing else; ten or more is the week the
-   call is remembered for. Both carry a second cue beyond colour. */
-.captain-grid-blank .captain-grid-points {
-  color: var(--ink-soft);
-  text-decoration: line-through;
-}
-
-.captain-grid-haul .captain-grid-points {
-  color: var(--field-green);
-}
-
-.captain-grid-haul .captain-grid-points::after {
-  content: "\2191";
 }
 
 .source-trail {
@@ -6120,6 +5949,18 @@ h1[tabindex="-1"]:focus-visible {
   border-top: 1px solid rgb(255 255 255 / 12%);
 }
 
+.squad-market-more {
+  margin: 10px 0 0;
+  text-align: center;
+}
+
+@media (width <= 900px) {
+  .squad-market-scroll {
+    max-height: none;
+    overflow: visible;
+  }
+}
+
 .squad-market-headings,
 .squad-market-list li {
   display: grid;
@@ -6305,8 +6146,8 @@ h1[tabindex="-1"]:focus-visible {
 }
 
 .squad-slot.is-bench-slot {
-  opacity: 0.62;
-  border: 1px dashed rgb(255 255 255 / 30%);
+  border: 1px dashed var(--pitch-ink);
+  background: rgb(0 0 0 / 58%);
 }
 
 /* One step of the plan, folded away until wanted. The page is a snapshot, a
@@ -6487,7 +6328,16 @@ h1[tabindex="-1"]:focus-visible {
   align-items: center;
 }
 
-.plan-opening-advice button {
+.plan-opening-advice > .plan-opening-source {
+  margin-top: 10px;
+  color: var(--ink-soft);
+  font-size: 12px;
+}
+
+.plan-opening-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
   margin-top: 4px;
 }
 
@@ -6579,6 +6429,7 @@ h1[tabindex="-1"]:focus-visible {
   min-height: 520px;
   padding: 18px 12px;
   border-radius: 6px;
+  color: var(--pitch-ink);
   /* Ceefax green, banded like a mown pitch rather than a photograph. */
   background: repeating-linear-gradient(
     to bottom,
@@ -6618,7 +6469,7 @@ h1[tabindex="-1"]:focus-visible {
 
 .squad-slot-position {
   font-size: 0.72rem;
-  opacity: 0.8;
+  color: var(--pitch-ink);
 }
 
 .squad-slot-price {
@@ -6633,8 +6484,8 @@ h1[tabindex="-1"]:focus-visible {
 }
 
 .squad-slot-club {
+  color: var(--pitch-ink);
   font-size: 0.68rem;
-  opacity: 0.7;
 }
 
 .squad-slot-clear {

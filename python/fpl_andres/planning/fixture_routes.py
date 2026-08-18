@@ -16,7 +16,7 @@ import math
 from collections.abc import Mapping, Sequence
 from typing import Any
 
-from fpl_andres.backtesting.fixtures import TeamStrength, route_adjustment
+from fpl_andres.backtesting.fixtures import RouteAdjustment, TeamStrength, route_adjustment
 from fpl_andres.models.market_evidence import (
     pressure_adjusted_defcon,
     pressure_adjusted_saves,
@@ -24,6 +24,7 @@ from fpl_andres.models.market_evidence import (
 
 __all__ = [
     "ROUTE_KEYS",
+    "adjustment_difficulty",
     "fixture_difficulty",
     "fixture_multiplier",
     "fixture_points_from_routes",
@@ -143,15 +144,34 @@ def fixture_difficulty(
         )
         for opponent, home in games
     ]
-    if not rated:
+    return adjustment_difficulty(rated)
+
+
+def adjustment_difficulty(
+    adjustments: Sequence[RouteAdjustment],
+    *,
+    bounded: bool = True,
+) -> float | None:
+    """Summarise route adjustments without recomputing another fixture view.
+
+    ``bounded=False`` retains where an exceptionally soft or hard fixture sits
+    beyond the familiar one-to-five display. Callers that show the bounded
+    value can therefore disclose that clipping instead of silently turning a
+    raw 0.4 into 1.0.
+    """
+    if not adjustments:
         return None
     # A double gameweek averages its fixtures rather than summing them: two hard
     # games are still hard, not twice as hard.
-    ease = sum(adjustment.attacking / adjustment.conceding for adjustment in rated) / len(rated)
+    ease = sum(adjustment.attacking / adjustment.conceding for adjustment in adjustments) / len(
+        adjustments
+    )
     if ease <= 0:
         return DIFFICULTY_HARDEST
     rating = DIFFICULTY_MIDPOINT - DIFFICULTY_LOG_SCALE * math.log(ease)
-    return round(min(DIFFICULTY_HARDEST, max(DIFFICULTY_EASIEST, rating)), 1)
+    if bounded:
+        rating = min(DIFFICULTY_HARDEST, max(DIFFICULTY_EASIEST, rating))
+    return round(rating, 1)
 
 
 # The published route names, and whether a fixture moves them at all. Appearance

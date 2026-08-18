@@ -10,17 +10,7 @@ from __future__ import annotations
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
 
-from fpl_andres.backtesting.captain_policies import (
-    CaptainCandidate,
-    build_captain_policies,
-    policy_names,
-)
-from fpl_andres.backtesting.captaincy import (
-    CaptaincyScore,
-    captain_shortlist,
-    score_captaincy,
-    score_policies,
-)
+from fpl_andres.backtesting.captain_policies import CaptainCandidate
 from fpl_andres.backtesting.corpus import SeasonCorpus
 from fpl_andres.backtesting.projector import (
     ProjectionSettings,
@@ -120,12 +110,9 @@ class SeasonScore:
     season: str
     first_scored_gameweek: int
     methods: dict[str, MethodScore] = field(default_factory=dict)
-    captaincy: dict[str, CaptaincyScore] = field(default_factory=dict)
-    #: One entry per competing captaincy thesis, keyed by policy name.
-    captain_policies: dict[str, CaptaincyScore] = field(default_factory=dict)
-    #: The pool each gameweek's armband was chosen from, kept so a pick can be
-    #: explained by the numbers that produced it rather than defended in prose.
-    captain_shortlists: dict[int, tuple[CaptainCandidate, ...]] = field(default_factory=dict)
+    #: Full pre-deadline candidates, retained so simulated legal XIs can be
+    #: scored after their season has been played.
+    captain_candidates: dict[int, tuple[CaptainCandidate, ...]] = field(default_factory=dict)
 
 
 def score_season(
@@ -145,12 +132,6 @@ def score_season(
     outcome = SeasonScore(season=corpus.season, first_scored_gameweek=minimum_history + 1)
     for label in METHOD_LABELS:
         outcome.methods[label] = MethodScore(label=label)
-        outcome.captaincy[label] = CaptaincyScore(label=label)
-    for label in policy_names():
-        outcome.captain_policies[label] = CaptaincyScore(label=label)
-    # One set for the whole season: `set_and_forget` holds an anchor, and a
-    # fresh set each gameweek would let it change its mind every week.
-    policies = build_captain_policies()
 
     for gameweek in corpus.gameweeks:
         if gameweek <= minimum_history:
@@ -202,31 +183,10 @@ def score_season(
                 calibrated=calibrated,
             )
 
-        # The one decision that gets multiplied. Scored from the crowd's own
-        # holdings so every method picks from a squad somebody could have had.
-        score_captaincy(
-            {
-                "model": model_ranking,
-                "components": component_ranking,
-                "recent_mean": recent,
-                "ownership": ownership,
-            },
-            ownership,
-            actual,
-            outcome.captaincy,
-            gameweek=gameweek,
-        )
-
-        # The competing theses, on the same weeks and the same shortlist.
+        # Retained until the legal season simulation has named the model-owned
+        # XI. Scoring against any larger set would invent reachable captains.
         candidates = _captain_candidates(projections, recent, deviation, ownership)
-        outcome.captain_shortlists[gameweek] = tuple(captain_shortlist(candidates, actual))
-        score_policies(
-            candidates,
-            actual,
-            outcome.captain_policies,
-            gameweek=gameweek,
-            policies=policies,
-        )
+        outcome.captain_candidates[gameweek] = tuple(candidates)
 
     return outcome
 

@@ -6,6 +6,7 @@
   "scripts": {
     "build": "vite build && node scripts/size-budget.mjs",
     "dev": "vite",
+    "publish:canonical-opening": "corepack pnpm --filter @fpl-andres/quick-solver exec tsx ../../apps/web/scripts/publish-canonical-opening.ts",
     "test": "vitest run",
     "test:lite": "vitest run --exclude '**/node_modules/**' --exclude '**/dist/**' --exclude 'src/season-solver.test.ts' --exclude 'src/App.test.tsx' --exclude 'src/components/DeclaredSquadBuilder.test.tsx'",
     "test:e2e": "playwright test",

@@ -597,19 +597,16 @@ PROP_SOURCES: tuple[PropSource, ...] = (
         name="API-Football",
         homepage="https://www.api-football.com",
         credential_env=("API_FOOTBALL_API_KEY",),
-        # `defensive_contribution` is claimed on the strength of `Home Player
-        # Tackles` / `Away Player Tackles`, which the 2026-08-10 survey found
-        # it lists. It is partial evidence and the only source that offers any:
-        # FPL counts clearances, blocks, interceptions and tackles for a
-        # defender, and adds recoveries for everyone else, so a tackles line
-        # prices one of four or five components rather than the bar itself.
+        # The catalogue also lists player tackles, but that is not direct
+        # DefCon coverage. FPL's threshold includes clearances, blocks and
+        # interceptions for defenders, and recoveries outside defence. A
+        # tackles line is partial experimental evidence until calibrated.
         covers=(
             "goal",
             "assist",
             "yellow_card",
             "red_card",
             "clean_sheet",
-            "defensive_contribution",
         ),
         terms="Free tier, 100 requests a day.",
         probe=_probe_api_football,

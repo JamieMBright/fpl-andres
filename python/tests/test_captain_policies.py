@@ -142,17 +142,16 @@ class TestTheComparisonIsFair:
 
         assert {score.best_points for score in scores.values()} == {17}
 
-    def test_the_shortlist_is_the_crowd_not_the_whole_pool(self) -> None:
-        # Element 99 outscores everybody and nobody owns him. A policy allowed
-        # to reach him would report skill for captaining a player who was never
-        # in anyone's squad.
+    def test_realised_players_outside_the_supplied_xi_are_not_reachable(self) -> None:
+        # Element 99 outscores everybody but is not in the XI supplied by the
+        # season simulation, so no policy may reach him.
         candidates = [
             _candidate(index, expected=5.0, ownership=float(50 - index)) for index in range(1, 4)
-        ] + [_candidate(99, expected=40.0, ownership=0.1)]
+        ]
         actual = {1: 2, 2: 2, 3: 2, 99: 24}
         scores = _scores()
 
-        score_policies(candidates, actual, scores, gameweek=1, shortlist_size=3)
+        score_policies(candidates, actual, scores, gameweek=1)
 
         assert all(score.captain_points == 2 for score in scores.values())
         assert all(score.best_points == 2 for score in scores.values())

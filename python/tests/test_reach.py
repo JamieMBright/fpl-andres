@@ -9,6 +9,7 @@ from __future__ import annotations
 
 from datetime import UTC, datetime, timedelta
 
+from fpl_andres.backtesting.captain_policies import CaptainCandidate, policy_names
 from fpl_andres.backtesting.corpus import ElementRow, SeasonCorpus
 from fpl_andres.simulation.minileague import (
     LeagueSettings,
@@ -21,7 +22,12 @@ from fpl_andres.simulation.minileague_state import (
     LeagueResult,
     ManagerResult,
 )
-from fpl_andres.simulation.reach import captaincy_reach, first_acquisition, giant_reach
+from fpl_andres.simulation.reach import (
+    captaincy_reach,
+    first_acquisition,
+    giant_reach,
+    owned_captain_policy_scores,
+)
 from fpl_andres.simulation.season import LineupRules
 from fpl_andres.simulation.squad import SquadRules, validate_squad
 
@@ -230,6 +236,32 @@ class TestOpeningWithANamedPlayer:
 
 
 class TestWhatCaptaincyCostsFromYourOwnEleven:
+    def test_every_policy_can_choose_only_from_the_model_owned_xi(self) -> None:
+        corpus = synthetic_corpus()
+        actual = corpus.actual_points(7)
+        weeks = [GameweekSquad(event=7, squad=(1, 2, 3), starters=(1, 2), captain=1)]
+        candidates = {
+            7: tuple(
+                CaptainCandidate(
+                    element_id=element,
+                    expected_points={1: 4.0, 2: 8.0, 3: 20.0}[element],
+                    component_points={1: 4.0, 2: 8.0, 3: 20.0}[element],
+                    recent_points=5.0,
+                    recent_deviation=0.0,
+                    probability_start=1.0,
+                    ownership={1: 50.0, 2: 10.0, 3: 100.0}[element],
+                )
+                for element in (1, 2, 3)
+            )
+        }
+
+        scores = owned_captain_policy_scores(corpus, [staged(weeks, {})], candidates)
+
+        assert tuple(scores) == policy_names()
+        assert scores["crowd"].picks[0].element_id == 1
+        assert {pick.element_id for score in scores.values() for pick in score.picks} <= {1, 2}
+        assert {score.best_points for score in scores.values()} == {max(actual[1], actual[2])}
+
     def test_scores_the_armband_that_was_actually_worn(self) -> None:
         corpus = synthetic_corpus()
         actual = corpus.actual_points(7)

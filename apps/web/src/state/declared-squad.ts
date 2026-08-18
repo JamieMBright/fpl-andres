@@ -61,9 +61,11 @@ const declaredSquadSchema = z.object({
   event: z.number().int().min(1).max(47),
   elementIds: z.array(z.number().int().positive()).length(SQUAD_SIZE),
   declaredAt: z.iso.datetime(),
+  openingDecision: z.enum(["accepted", "held"]).optional(),
 });
 
 export type DeclaredSquad = z.infer<typeof declaredSquadSchema>;
+export type OpeningDecision = NonNullable<DeclaredSquad["openingDecision"]>;
 
 export interface DeclaredSquadSummary {
   players: RosterPlayer[];
@@ -82,6 +84,10 @@ export type SquadValidation =
 
 interface SquadValidationOptions {
   enforceOpeningBudget?: boolean;
+}
+
+interface SaveDeclaredSquadOptions extends SquadValidationOptions {
+  openingDecision?: OpeningDecision;
 }
 
 export function declaredSquadStorageKey(
@@ -255,9 +261,14 @@ export function saveDeclaredSquad(
   elementIds: readonly number[],
   roster: ReadonlyMap<number, RosterPlayer> = PLAYERS_BY_ELEMENT_ID,
   now: () => Date = () => new Date(),
-  options: SquadValidationOptions = {},
+  options: SaveDeclaredSquadOptions = {},
 ): DeclaredSquad {
-  const validation = validateDeclaredSquad(elementIds, roster, options);
+  const { openingDecision, ...validationOptions } = options;
+  const validation = validateDeclaredSquad(
+    elementIds,
+    roster,
+    validationOptions,
+  );
   if (!validation.valid) {
     throw new TypeError(validation.problems.join(" "));
   }
@@ -266,6 +277,7 @@ export function saveDeclaredSquad(
     event,
     elementIds: [...elementIds],
     declaredAt: now().toISOString(),
+    ...(openingDecision === undefined ? {} : { openingDecision }),
   });
   storage.setItem(
     declaredSquadStorageKey(entryId, event),

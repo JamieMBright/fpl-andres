@@ -11,6 +11,7 @@ from datetime import UTC, datetime, timedelta
 
 from fpl_andres.backtesting.corpus import ElementRow, SeasonCorpus
 from fpl_andres.backtesting.fixtures import Fixture
+from fpl_andres.backtesting.opening_gameweek import score_opening_gameweek
 from fpl_andres.backtesting.projector import project_gameweek
 
 KICKOFF = datetime(2025, 8, 16, 14, 0, tzinfo=UTC)
@@ -107,3 +108,39 @@ def test_the_carried_season_is_named_on_the_projection() -> None:
 
     assert returning.rates.carried_season == "2025-26"
     assert returning.rates.carried_weight > 0.0
+
+
+def test_opening_score_reveals_new_season_outcomes_after_prediction() -> None:
+    current = new_season()
+    current.rows_by_gameweek[1] = [
+        ElementRow(
+            gameweek=1,
+            element_id=7,
+            element_code=RETURNING,
+            fixture_id=1,
+            minutes=90,
+            started=True,
+            goals=0,
+            assists=0,
+            expected_goals=0.1,
+            expected_assists=0.1,
+            total_points=2,
+            price_tenths=90,
+            selected=500_000,
+            kickoff_time=KICKOFF + timedelta(days=365),
+        )
+    ]
+    low = score_opening_gameweek(last_season(), current)
+    current.rows_by_gameweek[1][0] = ElementRow(
+        **{
+            **current.rows_by_gameweek[1][0].__dict__,
+            "total_points": 20,
+            "goals": 3,
+        }
+    )
+    high = score_opening_gameweek(last_season(), current)
+
+    assert low.predictions == high.predictions
+    assert low.actual_points == {7: 2}
+    assert high.actual_points == {7: 20}
+    assert low.mean_absolute_error != high.mean_absolute_error

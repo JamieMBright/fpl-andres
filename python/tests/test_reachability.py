@@ -207,6 +207,7 @@ def test_no_module_is_imported_only_by_its_own_tests() -> None:
         "cohort_captains",
         "compare_validation",
         "crosswalk",
+        "freeze_prospective",
         "harvest_league",
         "ingest_historical",
         "ingest_odds",

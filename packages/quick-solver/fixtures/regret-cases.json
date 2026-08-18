@@ -15,7 +15,8 @@
             "teamId": 1,
             "positionId": 1,
             "buyPriceTenths": 50,
-            "expectedPoints": 2,
+            "planningPoints": 2,
+            "eventPoints": 2,
             "evidenceLevel": "experimental",
             "dataAvailableAt": "2026-09-12T09:00:00Z",
             "sourceHashes": [
@@ -27,7 +28,8 @@
             "teamId": 2,
             "positionId": 1,
             "buyPriceTenths": 50,
-            "expectedPoints": 1,
+            "planningPoints": 1,
+            "eventPoints": 1,
             "evidenceLevel": "experimental",
             "dataAvailableAt": "2026-09-12T09:00:00Z",
             "sourceHashes": [
@@ -39,7 +41,8 @@
             "teamId": 1,
             "positionId": 2,
             "buyPriceTenths": 50,
-            "expectedPoints": 2,
+            "planningPoints": 2,
+            "eventPoints": 2,
             "evidenceLevel": "experimental",
             "dataAvailableAt": "2026-09-12T09:00:00Z",
             "sourceHashes": [
@@ -51,7 +54,8 @@
             "teamId": 2,
             "positionId": 2,
             "buyPriceTenths": 50,
-            "expectedPoints": 1,
+            "planningPoints": 1,
+            "eventPoints": 1,
             "evidenceLevel": "experimental",
             "dataAvailableAt": "2026-09-12T09:00:00Z",
             "sourceHashes": [
@@ -63,7 +67,8 @@
             "teamId": 3,
             "positionId": 1,
             "buyPriceTenths": 50,
-            "expectedPoints": 5,
+            "planningPoints": 5,
+            "eventPoints": 5,
             "evidenceLevel": "experimental",
             "dataAvailableAt": "2026-09-12T09:00:00Z",
             "sourceHashes": [
@@ -75,7 +80,8 @@
             "teamId": 3,
             "positionId": 2,
             "buyPriceTenths": 50,
-            "expectedPoints": 6,
+            "planningPoints": 6,
+            "eventPoints": 6,
             "evidenceLevel": "experimental",
             "dataAvailableAt": "2026-09-12T09:00:00Z",
             "sourceHashes": [
@@ -146,7 +152,8 @@
             "teamId": 1,
             "positionId": 1,
             "buyPriceTenths": 50,
-            "expectedPoints": 10,
+            "planningPoints": 10,
+            "eventPoints": 10,
             "evidenceLevel": "inferred",
             "dataAvailableAt": "2026-09-12T09:00:00Z",
             "sourceHashes": [
@@ -158,7 +165,8 @@
             "teamId": 2,
             "positionId": 1,
             "buyPriceTenths": 50,
-            "expectedPoints": 1,
+            "planningPoints": 1,
+            "eventPoints": 1,
             "evidenceLevel": "inferred",
             "dataAvailableAt": "2026-09-12T09:00:00Z",
             "sourceHashes": [
@@ -170,7 +178,8 @@
             "teamId": 3,
             "positionId": 1,
             "buyPriceTenths": 50,
-            "expectedPoints": 5.1,
+            "planningPoints": 5.1,
+            "eventPoints": 5.1,
             "evidenceLevel": "inferred",
             "dataAvailableAt": "2026-09-12T09:00:00Z",
             "sourceHashes": [

@@ -125,8 +125,22 @@ def test_live_odds_producers_republish_the_plan_the_browser_reads(name: str, sou
     text = (WORKFLOWS / name).read_text(encoding="utf-8")
 
     assert source in text
-    assert "python -m fpl_andres.cli.publish_season_inputs" in text
-    assert "apps/web/src/data/season-inputs.json" in text
+    season_inputs = text.index("python -m fpl_andres.cli.publish_season_inputs")
+    canonical = text.index(
+        "pnpm --filter @fpl-andres/web publish:canonical-opening",
+        season_inputs,
+    )
+    season_plan = text.index("python -m fpl_andres.cli.publish_season_plan", canonical)
+    assert season_inputs < canonical < season_plan
+    assert "pnpm install --frozen-lockfile" in text
+    assert "opening_before" in text
+    assert "opening_after" in text
+    for path in (
+        "apps/web/src/data/season-inputs.json",
+        "apps/web/src/data/opening-squad.json",
+        "apps/web/src/data/season-plan.json",
+    ):
+        assert path in text
     if name == "ingest-odds.yml":
         # This workflow iterates the declared paths and formats/stages `$path`.
         assert 'prettier@3 --write "$path"' in text
@@ -134,9 +148,10 @@ def test_live_odds_producers_republish_the_plan_the_browser_reads(name: str, sou
     else:
         # The player workflow names both artifacts explicitly.
         publish = text.index("python -m fpl_andres.cli.publish_season_inputs")
-        season_inputs = text.index("apps/web/src/data/season-inputs.json", publish)
-        assert text.index("prettier@3 --write", publish) < season_inputs
-        assert text.index("git add", publish) < text.rindex("apps/web/src/data/season-inputs.json")
+        formatting = text.index("prettier@3 --write", publish)
+        staging = text.index("git add", formatting)
+        assert publish < formatting < staging
+        assert staging < text.rindex("apps/web/src/data/season-inputs.json")
 
 
 def test_rank_sampler_keeps_raw_progress_out_of_model_validation() -> None:
@@ -153,6 +168,33 @@ def test_rank_sampler_keeps_raw_progress_out_of_model_validation() -> None:
     ):
         assert path in calibration
     assert 'git add -- "$path"' in calibration
+
+
+def test_model_validation_republishes_the_complete_planning_chain() -> None:
+    text = (WORKFLOWS / "validate-model.yml").read_text(encoding="utf-8")
+
+    projection = text.index("python -m fpl_andres.cli.publish_projections")
+    opening_seed = text.index("python -m fpl_andres.cli.publish_opening_squad", projection)
+    season_inputs = text.index("python -m fpl_andres.cli.publish_season_inputs", opening_seed)
+    canonical = text.index("pnpm --filter @fpl-andres/web publish:canonical-opening", season_inputs)
+    season_plan = text.index("python -m fpl_andres.cli.publish_season_plan", canonical)
+    assert projection < opening_seed < season_inputs < canonical < season_plan
+
+    for path in (
+        "apps/web/src/data/opening-squad.json",
+        "apps/web/src/data/season-plan.json",
+    ):
+        assert text.count(path) >= 3, f"{path} must be watched, formatted and committed"
+
+
+def test_fpl500_capture_republishes_the_prospective_event_ledger() -> None:
+    text = (WORKFLOWS / "capture-fpl500.yml").read_text(encoding="utf-8")
+
+    capture = text.index("python -m fpl_andres.cli.capture_cohort_picks")
+    publish = text.index("python -m fpl_andres.cli.publish_fpl500", capture)
+    web_artifact = "apps/web/src/data/fpl500.json"
+    assert publish > capture
+    assert text.count(web_artifact) >= 2
 
 
 def test_deadlines_are_shipped_data_not_cohort_evidence() -> None:

@@ -21,19 +21,24 @@ from dataclasses import replace
 from datetime import UTC, datetime
 from pathlib import Path
 
-from fpl_andres.backtesting.captain_picks import picks_payload
 from fpl_andres.backtesting.captain_significance import compare_policies
 from fpl_andres.backtesting.corpus import SeasonCorpus, load_season
+from fpl_andres.backtesting.opening_gameweek import score_opening_gameweek
 from fpl_andres.backtesting.projector import project_gameweek
 from fpl_andres.backtesting.score import METHOD_LABELS, score_season
 from fpl_andres.cohorts.points_to_rank import boundaries_from_artifact, classify_points
-from fpl_andres.holdout import HOLDOUT_SEASON, SCORED_SEASONS
+from fpl_andres.holdout import SCORED_SEASONS
 from fpl_andres.jsonio import read_json_file
 from fpl_andres.model_version import MODEL_VERSION
 from fpl_andres.persistence.supabase import SupabaseCredentials, SupabaseRestClient
 from fpl_andres.positions import Position
-from fpl_andres.simulation.minileague import LeagueSettings, Policy, simulate_league
-from fpl_andres.simulation.reach import captaincy_reach, first_acquisition, giant_reach
+from fpl_andres.simulation.minileague import LeagueResult, LeagueSettings, Policy, simulate_league
+from fpl_andres.simulation.reach import (
+    captaincy_reach,
+    first_acquisition,
+    giant_reach,
+    owned_captain_policy_scores,
+)
 from fpl_andres.simulation.season import LineupRules
 from fpl_andres.simulation.squad import SquadRules
 
@@ -295,6 +300,14 @@ def _expected_goals_coverage(corpus: SeasonCorpus) -> float:
     return round(with_expected / len(rows), 4)
 
 
+def _previous_season(season: str) -> str:
+    start_text, _, end_text = season.partition("-")
+    if len(start_text) != 4 or len(end_text) != 2:
+        raise ValueError(f"invalid season label: {season}")
+    start = int(start_text)
+    return f"{start - 1}-{str(start)[-2:]}"
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
     seasons = [part.strip() for part in args.seasons.split(",") if part.strip()]
@@ -307,6 +320,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         # Two runs are only comparable if something says whether the model
         # between them moved. `scripts/model-version-gate.mjs` keeps it honest.
         "modelVersion": MODEL_VERSION,
+        "captainEvidenceScope": "model_owned_xi",
         "seasons": [],
         "league": {
             "managers": LEAGUE.managers,
@@ -322,8 +336,19 @@ def main(argv: Sequence[str] | None = None) -> int:
     pooled_weekly: dict[str, list[int]] = {}
 
     with SupabaseRestClient(credentials) as client:
+        corpora: dict[str, SeasonCorpus] = {}
+
+        def corpus_for(label: str) -> SeasonCorpus:
+            if label not in corpora:
+                corpora[label] = load_season(client, label)
+            return corpora[label]
+
         for season in seasons:
-            corpus = load_season(client, season)
+            corpus = corpus_for(season)
+            opening = score_opening_gameweek(
+                corpus_for(_previous_season(season)),
+                corpus,
+            )
             scored = score_season(corpus)
 
             methods = []
@@ -345,57 +370,6 @@ def main(argv: Sequence[str] | None = None) -> int:
                     }
                 )
 
-            captaincy = [
-                {
-                    "label": label,
-                    "gameweeks": pick.gameweeks,
-                    "meanPoints": _round(pick.mean_points),
-                    "meanBestPoints": _round(pick.mean_best_points),
-                    "regret": _round(pick.regret),
-                    "shareOfCeiling": _round(pick.share_of_ceiling),
-                    "perfectWeeks": pick.perfect_weeks,
-                    "blankRate": _round(pick.blank_rate),
-                }
-                for label, pick in ((label, scored.captaincy[label]) for label in METHOD_LABELS)
-            ]
-
-            captain_policies = [
-                {
-                    "label": label,
-                    "gameweeks": pick.gameweeks,
-                    "meanPoints": _round(pick.mean_points),
-                    "meanBestPoints": _round(pick.mean_best_points),
-                    "regret": _round(pick.regret),
-                    "shareOfCeiling": _round(pick.share_of_ceiling),
-                    "perfectWeeks": pick.perfect_weeks,
-                    "blankRate": _round(pick.blank_rate),
-                }
-                for label, pick in scored.captain_policies.items()
-            ]
-
-            # A table of ten means is ten chances to top it by accident. The
-            # paired bootstrap says which gaps survive an interval.
-            weekly = {
-                label: pick.weekly for label, pick in scored.captain_policies.items() if pick.weekly
-            }
-            for label, series in weekly.items():
-                pooled_weekly.setdefault(label, []).extend(series)
-            captain_significance = _significance_rows(weekly)
-
-            # Who each method actually captained, week by week. The means above
-            # say two methods differ by a tenth of a point and give a reader no
-            # way to disagree; the picks are what can be argued with.
-            # `components` names both a ranking method and a thesis, so the two
-            # groups stay separate rather than being merged by label.
-            captain_picks = picks_payload(
-                corpus,
-                [
-                    *(("method", label, scored.captaincy[label]) for label in METHOD_LABELS),
-                    *(("thesis", label, score) for label, score in scored.captain_policies.items()),
-                ],
-                scored.captain_shortlists,
-            )
-
             totals: dict[str, list[int]] = {policy: [] for policy in POLICIES}
             chips: dict[str, dict[str, int]] = {}
             squads: dict[str, list[dict[str, object]]] = {}
@@ -403,9 +377,11 @@ def main(argv: Sequence[str] | None = None) -> int:
             wins: dict[str, int] = {policy: 0 for policy in POLICIES}
             gameweeks_played = 0
             reach: dict[str, object] = {}
+            leagues: list[LeagueResult] = []
 
             for seed in seeds:
                 league = simulate_league(corpus, LEAGUE, seed=seed)
+                leagues.append(league)
                 for policy in POLICIES:
                     cohort = league.by_policy(policy)
                     totals[policy].extend(manager.net_points for manager in cohort)
@@ -421,27 +397,54 @@ def main(argv: Sequence[str] | None = None) -> int:
                 if winner in wins:
                     wins[winner] += 1
 
+            owned_scores = owned_captain_policy_scores(
+                corpus,
+                leagues,
+                scored.captain_candidates,
+            )
+            owned_captain_policies = [
+                {
+                    "label": label,
+                    "gameweeks": pick.gameweeks,
+                    "meanChosenPoints": _round(pick.mean_points),
+                    "meanReachableCeiling": _round(pick.mean_best_points),
+                    "ownedSquadRegret": _round(pick.regret),
+                    "shareOfReachableCeiling": _round(pick.share_of_ceiling),
+                    "perfectWeeks": pick.perfect_weeks,
+                    "blankRate": _round(pick.blank_rate),
+                }
+                for label, pick in owned_scores.items()
+            ]
+            weekly = {label: pick.weekly for label, pick in owned_scores.items() if pick.weekly}
+            for label, series in weekly.items():
+                pooled_weekly.setdefault(label, []).extend(series)
+            captain_significance = _significance_rows(weekly)
+
             season_reports.append(
                 {
                     "season": season,
-                    # Tuned against, or kept back. A number from a development
-                    # season is a number the constants were chosen to fit.
-                    "holdout": season == HOLDOUT_SEASON,
                     "rows": corpus.total_rows,
                     "gameweeks": len(corpus.gameweeks),
                     "gameweeksPlayed": gameweeks_played,
                     "elements": len(corpus.position_by_element),
                     "firstScoredGameweek": scored.first_scored_gameweek,
+                    "openingGameweek": {
+                        "previousSeason": opening.previous_season,
+                        "event": 1,
+                        "scored": opening.scored,
+                        "meanAbsoluteError": _round(opening.mean_absolute_error),
+                        "rootMeanSquaredError": _round(opening.root_mean_squared_error),
+                        "bias": _round(opening.bias),
+                        "spearman": _round(opening.spearman),
+                    },
                     "expectedGoalsCoverage": _expected_goals_coverage(corpus),
                     "missingGameweeks": list(corpus.missing_gameweeks),
                     # Names the corpus state every metric below was measured
                     # over, so a moved number can be told from a moved model.
                     "corpusFingerprint": corpus.fingerprint,
                     "methods": methods,
-                    "captaincy": captaincy,
-                    "captainPolicies": captain_policies,
+                    "ownedCaptainPolicies": owned_captain_policies,
                     "captainSignificance": captain_significance,
-                    "captainPicks": captain_picks,
                     "reach": reach,
                     "giantFirst": _giant_first_payload(corpus, seeds),
                     "league": {

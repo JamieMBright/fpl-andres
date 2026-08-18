@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 
 import validation from "../data/validation.json";
+import { captainEvidence } from "../state/captain-evidence";
 import {
   captaincyVerdict,
   ceilingSentence,
@@ -38,13 +39,11 @@ function sentenceCase(text: string): string {
  * claim on this page that a rerun can invert. See `captaincy-verdict.ts`.
  */
 export function Methodology() {
-  const verdict = captaincyVerdict(
-    validation.captainSignificance,
-    validation.seasons,
-  );
+  const evidence = captainEvidence(validation);
+  const verdict = captaincyVerdict(evidence.significance, evidence.seasons);
   const which = whichThesisVerdict(verdict);
   const ceiling = ceilingSentence(verdict);
-  const table = thesisTable(validation.captainSignificance);
+  const table = thesisTable(evidence.significance);
   const marketSilent = marketIsSilent();
   const marketLine = marketSentence();
 
@@ -353,77 +352,90 @@ export function Methodology() {
 
       <section aria-labelledby="method-captaincy">
         <h2 id="method-captaincy">On captaincy</h2>
-        <p>
-          The captain doubles, so this one call a week swings two to three times
-          what a transfer does. Every published strategy was written down as a
-          rule and scored on the same gameweeks, from the same shortlist, over{" "}
-          {verdict.weeks} paired gameweeks of four seasons. The column that
-          matters is the last one: what a whole season of following each rule
-          would have been worth against simply captaining the highest
-          projection.
-          <InfoMarker label="how each rule was scored">
-            Every rule picks from the same shortlist — the twenty-five
-            most-owned players with a realised score that week — because given
-            the whole pool each would captain the week&rsquo;s cheapest
-            hat-trick and report skill at a decision nobody faced. Each is then
-            paired against the projection week for week and the differences
-            resampled two thousand times. A rule is called better or worse only
-            when its whole 95% interval sits one side of zero; anything else is
-            a number the data cannot separate from luck.
-          </InfoMarker>
-        </p>
+        {verdict.weeks === 0 ? (
+          <p className="validation-note">
+            The shipped artifact predates the owned-XI captain test. Its old
+            crowd-shortlist result is withdrawn, not used as a substitute. The
+            model-validation run will fill this section from legal simulated
+            elevens.
+          </p>
+        ) : (
+          <p>
+            The captain doubles, so this one call a week swings two to three
+            times what a transfer does. Every published strategy was written
+            down as a rule and replayed on the same legal, model-owned starting
+            elevens over {verdict.weeks} paired manager-gameweeks. The column
+            that matters is the last one: what a whole season of following each
+            rule would have been worth against simply captaining the highest
+            projection.
+            <InfoMarker label="how each rule was scored">
+              Every rule picks only from the eleven that the simulated model
+              manager actually fielded. The ceiling is the best return inside
+              that same eleven. Each rule is paired against the projection week
+              for week and the differences resampled two thousand times. A rule
+              is called better or worse only when its whole 95% interval sits
+              one side of zero; anything else is a number the data cannot
+              separate from luck. FPL does not retain historical manager squads,
+              so none are reconstructed as fact. From 2026/27 onward, the
+              separately captured FPL500 squads and captains provide prospective
+              evidence after each deadline.
+            </InfoMarker>
+          </p>
+        )}
 
-        <div
-          aria-label="Scrollable captaincy strategy table"
-          className="squad-table-wrap"
-          role="region"
-          // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- Keyboard users must be able to scroll this table horizontally.
-          tabIndex={0}
-        >
-          <table aria-label="Every captaincy strategy, and what a season of it is worth">
-            <thead>
-              <tr>
-                <th scope="col">Strategy</th>
-                <th scope="col">What it does</th>
-                <th scope="col">Points a season</th>
-                <th scope="col">Range</th>
-                <th scope="col">Verdict</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr className="is-control">
-                <th scope="row">Highest projection</th>
-                <td>
-                  Captain the highest projected scorer. This is the control.
-                </td>
-                <td className="mono">&mdash;</td>
-                <td className="mono">&mdash;</td>
-                <td>what the plan does</td>
-              </tr>
-              {table.map((row) => (
-                <tr key={row.label}>
-                  <th scope="row">{sentenceCase(row.name)}</th>
-                  <td>{row.rule}</td>
-                  <td className="mono">{signedWhole(row.pointsPerSeason)}</td>
-                  <td className="mono">
-                    {signedWhole(row.lowPerSeason)} to{" "}
-                    {signedWhole(row.highPerSeason)}
-                  </td>
-                  <td className={`thesis-${row.verdict}`}>
-                    {VERDICT_WORDS[row.verdict]}
-                  </td>
+        {table.length === 0 ? null : (
+          <div
+            aria-label="Scrollable captaincy strategy table"
+            className="squad-table-wrap"
+            role="region"
+            // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- Keyboard users must be able to scroll this table horizontally.
+            tabIndex={0}
+          >
+            <table aria-label="Every captaincy strategy, and what a season of it is worth">
+              <thead>
+                <tr>
+                  <th scope="col">Strategy</th>
+                  <th scope="col">What it does</th>
+                  <th scope="col">Points a season</th>
+                  <th scope="col">Range</th>
+                  <th scope="col">Verdict</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                <tr className="is-control">
+                  <th scope="row">Highest projection</th>
+                  <td>
+                    Captain the highest projected scorer. This is the control.
+                  </td>
+                  <td className="mono">&mdash;</td>
+                  <td className="mono">&mdash;</td>
+                  <td>what the plan does</td>
+                </tr>
+                {table.map((row) => (
+                  <tr key={row.label}>
+                    <th scope="row">{sentenceCase(row.name)}</th>
+                    <td>{row.rule}</td>
+                    <td className="mono">{signedWhole(row.pointsPerSeason)}</td>
+                    <td className="mono">
+                      {signedWhole(row.lowPerSeason)} to{" "}
+                      {signedWhole(row.highPerSeason)}
+                    </td>
+                    <td className={`thesis-${row.verdict}`}>
+                      {VERDICT_WORDS[row.verdict]}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
 
         <p>
           <strong>So which one should you use?</strong> {which.lead}
           <em>{which.headline}</em>
           {which.detail}
         </p>
-        <p>{ceiling}</p>
+        {ceiling ? <p>{ceiling}</p> : null}
       </section>
 
       <section aria-labelledby="method-loses">

@@ -64,6 +64,11 @@ class TestCatalogue:
         with pytest.raises(KeyError, match="the-odds-api"):
             source_by_key("betfair-but-misspelled")
 
+    def test_tackles_alone_are_not_direct_defcon_coverage(self) -> None:
+        api_football = source_by_key("api-football")
+
+        assert "defensive_contribution" not in api_football.covers
+
 
 class TestProbing:
     def test_a_missing_credential_is_reported_not_raised(self) -> None:

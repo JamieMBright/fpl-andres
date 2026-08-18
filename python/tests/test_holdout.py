@@ -1,54 +1,79 @@
-"""The holdout is a promise, and a promise needs something that can break it.
-
-Declaring a held-out season costs nothing if the declaration drifts from what
-the backtest actually scores, or if the holdout quietly becomes a development
-season because somebody widened the default season list.
-"""
+"""Retrospective seasons are named honestly; prospective evidence is frozen."""
 
 from __future__ import annotations
 
-import json
+import hashlib
+import inspect
+import re
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
-from fpl_andres.cli.validate import build_parser
-from fpl_andres.holdout import DEVELOPMENT_SEASONS, HOLDOUT_SEASON, SCORED_SEASONS
+from fpl_andres.cli import validate
+from fpl_andres.holdout import SCORED_SEASONS
+from fpl_andres.jsonio import read_json_file
+from fpl_andres.model_version import MODEL_VERSION
+from fpl_andres.prospective import (
+    FROZEN_PLANNING_ARTIFACTS,
+    PROSPECTIVE_SCHEMA_VERSION,
+    build_prospective_manifest,
+)
 
-ARTIFACT = Path(__file__).resolve().parents[2] / "apps" / "web" / "src" / "data" / "validation.json"
-
-
-class TestTheHoldoutIsCoherent:
-    def test_the_holdout_is_one_of_the_scored_seasons(self) -> None:
-        assert HOLDOUT_SEASON in SCORED_SEASONS
-
-    def test_development_is_everything_else(self) -> None:
-        assert set(DEVELOPMENT_SEASONS) == set(SCORED_SEASONS) - {HOLDOUT_SEASON}
-        assert HOLDOUT_SEASON not in DEVELOPMENT_SEASONS
-
-    def test_something_is_actually_held_back(self) -> None:
-        # A holdout equal to the whole set is not a holdout.
-        assert DEVELOPMENT_SEASONS
-        assert len(DEVELOPMENT_SEASONS) < len(SCORED_SEASONS)
-
-    def test_the_validate_default_scores_every_declared_season(self) -> None:
-        # Scored, not tuned against. The holdout has to be measured or there is
-        # nothing to report at the end.
-        default = build_parser().parse_args([]).seasons
-        assert default.split(",") == list(SCORED_SEASONS)
-
-    def test_the_holdout_is_the_most_recent_season(self) -> None:
-        # A holdout is only worth having if it is the one most like the season
-        # about to be played.
-        assert max(SCORED_SEASONS) == HOLDOUT_SEASON
+ROOT = Path(__file__).resolve().parents[2]
+MANIFEST = ROOT / "data" / "prospective" / "gw1-2026-27.json"
 
 
-class TestTheArtifactAgreesWithTheDeclaration:
-    def test_every_scored_season_is_labelled_once_the_backtest_reruns(self) -> None:
-        report = json.loads(ARTIFACT.read_text(encoding="utf-8"))
-        seasons = report.get("seasons", [])
-        labelled = [entry for entry in seasons if "holdout" in entry]
-        if not labelled:
-            # Artifact predates the declaration; CI fills it on the next run.
-            return
+def _sha256(path: Path) -> str:
+    return f"sha256:{hashlib.sha256(path.read_bytes()).hexdigest()}"
 
-        flagged = [entry["season"] for entry in labelled if entry["holdout"]]
-        assert flagged == [HOLDOUT_SEASON]
+
+def test_every_scored_season_is_retrospective() -> None:
+    assert SCORED_SEASONS == ("2022-23", "2023-24", "2024-25", "2025-26")
+    assert '"holdout"' not in inspect.getsource(validate.main)
+
+
+def test_the_pre_gw1_prospective_manifest_freezes_the_live_model() -> None:
+    payload = read_json_file(MANIFEST)
+
+    assert payload["schemaVersion"] == PROSPECTIVE_SCHEMA_VERSION
+    assert payload["season"] == "2026-27"
+    assert payload["event"] == 1
+    assert payload["modelVersion"] == MODEL_VERSION
+    assert re.fullmatch(r"[0-9a-f]{40}", payload["codeRevision"])
+    assert datetime.fromisoformat(payload["frozenAt"]) < datetime.fromisoformat(payload["deadline"])
+    assert payload["outcomesObserved"] is False
+
+
+def test_the_manifest_hashes_every_input_that_can_move_the_gw1_plan() -> None:
+    payload = read_json_file(MANIFEST)
+
+    assert payload["parameters"]["path"] == "docs/PARAMETERS.md"
+    assert re.fullmatch(r"sha256:[0-9a-f]{64}", payload["parameters"]["sha256"])
+    assert set(payload["artifacts"]) == set(FROZEN_PLANNING_ARTIFACTS)
+    assert all(
+        re.fullmatch(r"sha256:[0-9a-f]{64}", digest) for digest in payload["artifacts"].values()
+    )
+
+
+def test_the_manifest_builder_hashes_the_files_it_was_given(tmp_path: Path) -> None:
+    parameters = tmp_path / "docs" / "PARAMETERS.md"
+    parameters.parent.mkdir(parents=True)
+    parameters.write_text("parameters", encoding="utf-8")
+    for index, relative in enumerate(FROZEN_PLANNING_ARTIFACTS):
+        path = tmp_path / relative
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(f"artifact {index}", encoding="utf-8")
+    frozen_at = datetime(2026, 8, 18, tzinfo=UTC)
+
+    payload = build_prospective_manifest(
+        tmp_path,
+        season="2026-27",
+        event=1,
+        deadline=frozen_at + timedelta(days=3),
+        frozen_at=frozen_at,
+        code_revision="a" * 40,
+    )
+
+    assert payload["parameters"]["sha256"] == _sha256(parameters)
+    assert payload["artifacts"] == {
+        relative: _sha256(tmp_path / relative) for relative in FROZEN_PLANNING_ARTIFACTS
+    }

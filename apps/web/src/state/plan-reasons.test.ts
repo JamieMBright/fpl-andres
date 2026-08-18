@@ -37,6 +37,7 @@ function week(overrides: Partial<PlanGameweek> = {}): PlanGameweek {
     transfersOut: [],
     opponents: { ARS: ["CHE (H)"] },
     difficulty: { ARS: 3 },
+    fixtureEvidence: {},
     expected: Object.fromEntries(
       [...ELEVEN, ...BENCH].map((each) => [String(each.code), 4]),
     ),

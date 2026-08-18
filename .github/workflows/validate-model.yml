@@ -15,10 +15,19 @@ on:
     paths:
       - python/fpl_andres/models/**
       - python/fpl_andres/backtesting/**
+      - python/fpl_andres/simulation/**
+      - python/fpl_andres/holdout.py
       - python/fpl_andres/rules.py
       - python/fpl_andres/model_version.py
       - python/fpl_andres/cli/validate.py
+      - python/fpl_andres/cli/publish_opening_squad.py
       - python/fpl_andres/cli/publish_season_inputs.py
+      - python/fpl_andres/cli/publish_season_plan.py
+      - python/fpl_andres/cli/freeze_prospective.py
+      - python/fpl_andres/prospective.py
+      - packages/quick-solver/src/**
+      - apps/web/scripts/publish-canonical-opening.ts
+      - apps/web/src/state/season-solver.ts
       - python/fpl_andres/cohorts/points_to_rank.py
       - data/cohort/points-to-rank.json
       - python/fpl_andres/cli/track_model.py
@@ -38,7 +47,7 @@ jobs:
   validate:
     name: Backtest the projection
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 90
     environment: production
     permissions:
       # The refreshed artifact and the appended history row are pushed back.
@@ -97,13 +106,22 @@ jobs:
       # until somebody remembers to regenerate by hand -- which is how a scored
       # improvement can sit unshipped for weeks.
       - name: Republish the projection the site reads
-        timeout-minutes: 20
+        timeout-minutes: 40
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
         run: |
           python -m fpl_andres.cli.publish_projections
+          python -m fpl_andres.cli.publish_opening_squad
           python -m fpl_andres.cli.publish_season_inputs
+          pnpm --filter @fpl-andres/web publish:canonical-opening
+          weekly_free_transfers="$(node -e "const p=require('./apps/web/src/data/season-inputs.json'); process.stdout.write(String(p.rules.weeklyFreeTransfers))")"
+          transfer_cost_points="$(node -e "const p=require('./apps/web/src/data/season-inputs.json'); process.stdout.write(String(p.rules.transferCostPoints))")"
+          rules_reference="$(node -e "const p=require('./apps/web/src/data/season-inputs.json'); process.stdout.write(p.rules.sourceReference)")"
+          python -m fpl_andres.cli.publish_season_plan \
+            --weekly-free-transfers "$weekly_free_transfers" \
+            --transfer-cost-points "$transfer_cost_points" \
+            --rules-reference "$rules_reference"
 
       # Python writes the artifact and prettier owns the file. Without this the
       # refresh commit is format-clean nowhere and reddens main on arrival.
@@ -116,7 +134,22 @@ jobs:
             apps/web/src/data/projections.json \
             apps/web/src/data/projections-meta.json \
             apps/web/src/data/season-inputs.json \
+            apps/web/src/data/opening-squad.json \
+            apps/web/src/data/season-plan.json \
             docs/MODEL_CARDS.md
+
+      - name: Freeze the prospective GW1 inputs
+        run: |
+          deadline="$(node -e "const p=require('./apps/web/src/data/season-inputs.json'); process.stdout.write(p.deadlines[0])")"
+          if node -e "process.exit(Date.now() < Date.parse(process.argv[1]) ? 0 : 1)" "$deadline"; then
+            python -m fpl_andres.cli.freeze_prospective \
+              --deadline "$deadline" \
+              --frozen-at "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+              --code-revision "$GITHUB_SHA"
+            pnpm exec prettier --write data/prospective/gw1-2026-27.json
+          else
+            echo "GW1 deadline has passed; prospective manifest remains frozen"
+          fi
 
       - name: Prove the document agrees with the artifact
         run: python -m pytest python/tests/test_measured_performance.py -q
@@ -137,11 +170,17 @@ jobs:
             apps/web/src/data/validation.json
             apps/web/src/data/model-history.json
             apps/web/src/data/reconciliation.json
+            apps/web/src/data/opening-squad.json
+            apps/web/src/data/projections.json
+            apps/web/src/data/projections-meta.json
+            apps/web/src/data/season-inputs.json
+            apps/web/src/data/season-plan.json
+            data/prospective/gw1-2026-27.json
           retention-days: 30
 
       - name: Commit the refreshed artifact
         run: |
-          paths="apps/web/src/data/validation.json apps/web/src/data/model-history.json apps/web/src/data/reconciliation.json apps/web/src/data/projections.json apps/web/src/data/projections-meta.json apps/web/src/data/season-inputs.json docs/MODEL_CARDS.md"
+          paths="apps/web/src/data/validation.json apps/web/src/data/model-history.json apps/web/src/data/reconciliation.json apps/web/src/data/projections.json apps/web/src/data/projections-meta.json apps/web/src/data/season-inputs.json apps/web/src/data/opening-squad.json apps/web/src/data/season-plan.json data/prospective/gw1-2026-27.json docs/MODEL_CARDS.md"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           # Staged before the comparison. `git diff` does not look at untracked

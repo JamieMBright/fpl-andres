@@ -4,9 +4,15 @@ import {
   forgetDeclaredSquad,
   readDeclaredSquad,
   saveDeclaredSquad,
+  SQUAD_BUDGET_TENTHS,
   validateDeclaredSquad,
 } from "./declared-squad";
-import { PLAYERS_BY_ELEMENT_ID, type SolverPlayer } from "./season-solver";
+import {
+  PLAYERS_BY_ELEMENT_ID,
+  solveSeason,
+  startFromElementIds,
+  type SolverPlayer,
+} from "./season-solver";
 
 /**
  * Before the first deadline FPL publishes nothing, so a manager's own claim is
@@ -133,6 +139,94 @@ describe("declared squad", () => {
     expect(readDeclaredSquad(storage, 42, 1)?.elementIds).toEqual(squad);
     expect(readDeclaredSquad(storage, 43, 1)).toBeNull();
     expect(readDeclaredSquad(storage, 42, 2)).toBeNull();
+  });
+
+  it("stores an accepted opening recommendation with the complete fifteen", () => {
+    const squad = legalSquad();
+
+    saveDeclaredSquad(
+      storage,
+      42,
+      1,
+      squad,
+      PLAYERS_BY_ELEMENT_ID,
+      () => new Date("2026-08-18T12:00:00Z"),
+      { openingDecision: "accepted" },
+    );
+
+    expect(readDeclaredSquad(storage, 42, 1)).toMatchObject({
+      elementIds: squad,
+      openingDecision: "accepted",
+    });
+  });
+
+  it("clears an opening lock when the manager later edits the squad", () => {
+    const squad = legalSquad();
+    saveDeclaredSquad(
+      storage,
+      42,
+      1,
+      squad,
+      PLAYERS_BY_ELEMENT_ID,
+      () => new Date("2026-08-18T12:00:00Z"),
+      { openingDecision: "held" },
+    );
+
+    saveDeclaredSquad(storage, 42, 1, squad);
+
+    expect(readDeclaredSquad(storage, 42, 1)?.openingDecision).toBeUndefined();
+  });
+
+  it("reloads an accepted recommendation as a locked GW1 fixpoint", () => {
+    const initialIds = legalSquad();
+    const spent = initialIds.reduce(
+      (total, elementId) =>
+        total + (PLAYERS_BY_ELEMENT_ID.get(elementId)?.priceTenths ?? 0),
+      0,
+    );
+    const initial = startFromElementIds(initialIds, {
+      bankTenths: SQUAD_BUDGET_TENTHS - spent,
+      availableFreeTransfers: 0,
+      fromEvent: 1,
+    });
+    expect(initial).not.toBeNull();
+    const recommended = solveSeason(initial!).next().value;
+    expect(recommended?.transfersIn.length).toBeGreaterThan(0);
+    const acceptedIds = [
+      ...(recommended?.starters ?? []),
+      ...(recommended?.bench ?? []),
+    ].map((player) => player.id);
+    saveDeclaredSquad(
+      storage,
+      42,
+      1,
+      acceptedIds,
+      PLAYERS_BY_ELEMENT_ID,
+      () => new Date("2026-08-18T12:00:00Z"),
+      { openingDecision: "accepted" },
+    );
+
+    const reloaded = readDeclaredSquad(storage, 42, 1);
+    const reloadedSpent = (reloaded?.elementIds ?? []).reduce(
+      (total, elementId) =>
+        total + (PLAYERS_BY_ELEMENT_ID.get(elementId)?.priceTenths ?? 0),
+      0,
+    );
+    const restart = startFromElementIds(reloaded?.elementIds ?? [], {
+      bankTenths: SQUAD_BUDGET_TENTHS - reloadedSpent,
+      availableFreeTransfers: 0,
+      fromEvent: 1,
+    });
+    expect(restart).not.toBeNull();
+    const locked = solveSeason({ ...restart!, lockOpening: true }).next().value;
+
+    expect(locked?.transfersIn).toEqual([]);
+    expect(locked?.transfersOut).toEqual([]);
+    expect(
+      [...(locked?.starters ?? []), ...(locked?.bench ?? [])]
+        .map((player) => player.id)
+        .sort((left, right) => left - right),
+    ).toEqual([...acceptedIds].sort((left, right) => left - right));
   });
 
   it("never stores a squad that breaks a rule", () => {

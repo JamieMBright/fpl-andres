@@ -490,6 +490,32 @@ class TestTheMarketPricingAFixture:
 
         assert _rung(priced, "LIV", "saves", 0) > _rung(priced, "ARS", "saves", 0)
 
+    def test_publishes_the_exact_market_evidence_used_by_the_ladder(self, tmp_path: Path) -> None:
+        priced = _run(tmp_path, [_element()], fixture_odds=_match_odds())
+
+        evidence = priced["fixtureEvidence"]
+        arsenal = evidence["byClub"]["ARS"][0]
+        assert evidence["source"] == "football-data.co.uk"
+        assert evidence["updatedAt"] == "2026-08-10T00:00:00+00:00"
+        assert arsenal["event"] == 1
+        assert arsenal["opponent"] == "LIV"
+        assert arsenal["venue"] == "H"
+        assert arsenal["expectedGoals"] == 2.4
+        assert arsenal["opponentExpectedGoals"] == 0.6
+        assert arsenal["cleanSheetProbability"] == 0.55
+        assert set(arsenal["adjustments"]) == {
+            "attacking",
+            "cleanSheet",
+            "conceding",
+            "saves",
+            "defensiveContribution",
+        }
+        assert arsenal["adjustments"]["attacking"] == _rung(priced, "ARS", "attacking", 0)
+        assert arsenal["adjustments"]["cleanSheet"] == _rung(priced, "ARS", "defensive", 0)
+        assert arsenal["difficulty"]["summary"] == priced["fixtureDifficulty"]["ARS"][0]
+        assert arsenal["difficulty"]["raw"] < arsenal["difficulty"]["summary"]
+        assert arsenal["difficulty"]["clipped"] is True
+
     def test_a_gameweek_the_market_did_not_price_keeps_the_fitted_rung(
         self, tmp_path: Path
     ) -> None:

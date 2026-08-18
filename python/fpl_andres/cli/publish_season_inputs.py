@@ -46,7 +46,7 @@ from fpl_andres.backtesting.scoring import (
 )
 from fpl_andres.bootstrap import BootstrapElement, parse_elements
 from fpl_andres.jsonio import parse_json, read_json_file
-from fpl_andres.models.fixture_odds import club_views, load_fixture_odds
+from fpl_andres.models.fixture_odds import ClubMatchOdds, club_views, load_fixture_odds
 from fpl_andres.models.market_evidence import (
     BonusCandidate,
     bonus_expectations,
@@ -63,7 +63,7 @@ from fpl_andres.models.market_routes import (
 from fpl_andres.planning.fixture_routes import (
     PROMOTED_STRENGTH,
     ROUTE_KEYS,
-    fixture_difficulty,
+    adjustment_difficulty,
     published_strength,
 )
 from fpl_andres.planning.opening import PLAYABLE_START_RATE
@@ -580,12 +580,18 @@ def _schedule(
     return schedule, slots
 
 
+@dataclass(frozen=True)
+class MarketFixtureRung:
+    view: ClubMatchOdds
+    adjustment: RouteAdjustment
+
+
 def _market_ladder(
     odds_path: Path,
     slots_by_team: Mapping[int, Mapping[date, int]],
     clubs: Mapping[int, Mapping[str, object]],
     ordered: Sequence[int],
-) -> dict[tuple[str, int], RouteAdjustment]:
+) -> dict[tuple[str, int], MarketFixtureRung]:
     """Fixture multipliers a bookmaker wrote, by club short name and gameweek.
 
     `ingest-odds` has been producing this artifact for four seasons and nothing
@@ -605,7 +611,7 @@ def _market_ladder(
     if baseline is None:
         return {}
     by_short = {str(team["short_name"]): team_id for team_id, team in clubs.items()}
-    rungs: dict[tuple[str, int], RouteAdjustment] = {}
+    rungs: dict[tuple[str, int], MarketFixtureRung] = {}
     seen: set[tuple[str, int]] = set()
     for short, matches in views.items():
         team_id = by_short.get(short)
@@ -623,7 +629,10 @@ def _market_ladder(
                 rungs.pop(key, None)
                 continue
             seen.add(key)
-            rungs[key] = market_route_adjustment(view, baseline)
+            rungs[key] = MarketFixtureRung(
+                view=view,
+                adjustment=market_route_adjustment(view, baseline),
+            )
     return rungs
 
 
@@ -1165,6 +1174,7 @@ class FixtureLadders:
     ratings: dict[str, list[float | None]]
     opponents: dict[str, list[list[str]]]
     market_rungs: int
+    market_evidence: dict[str, list[dict[str, object]]]
 
 
 def _fixture_adjustment_sum(
@@ -1174,17 +1184,30 @@ def _fixture_adjustment_sum(
     event: int,
     short_name: object,
     strength: Mapping[int, TeamStrength],
-    market: Mapping[tuple[str, int], RouteAdjustment],
-) -> tuple[float, float, float, float, float, int]:
+    market: Mapping[tuple[str, int], MarketFixtureRung],
+) -> tuple[
+    float,
+    float,
+    float,
+    float,
+    float,
+    int,
+    tuple[RouteAdjustment, ...],
+    tuple[MarketFixtureRung, ...],
+]:
     values = [0.0, 0.0, 0.0, 0.0, 0.0]
     priced_count = 0
+    adjustments: list[RouteAdjustment] = []
+    market_matches: list[MarketFixtureRung] = []
     for opponent, home in games:
         priced = market.get((str(short_name), event))
         if priced is not None:
-            adjustment = priced
+            adjustment = priced.adjustment
             priced_count += 1
+            market_matches.append(priced)
         else:
             adjustment = route_adjustment(strength, team_id, opponent, home=home)
+        adjustments.append(adjustment)
         for index, value in enumerate(
             (
                 adjustment.clean_sheet,
@@ -1195,7 +1218,16 @@ def _fixture_adjustment_sum(
             )
         ):
             values[index] += value
-    return values[0], values[1], values[2], values[3], values[4], priced_count
+    return (
+        values[0],
+        values[1],
+        values[2],
+        values[3],
+        values[4],
+        priced_count,
+        tuple(adjustments),
+        tuple(market_matches),
+    )
 
 
 def _fixture_ladders(
@@ -1203,11 +1235,12 @@ def _fixture_ladders(
     ordered: Sequence[int],
     schedule: Mapping[tuple[int, int], Sequence[tuple[int, bool]]],
     strength: Mapping[int, TeamStrength],
-    market: Mapping[tuple[str, int], RouteAdjustment],
+    market: Mapping[tuple[str, int], MarketFixtureRung],
 ) -> FixtureLadders:
     ladders: dict[str, dict[str, list[float]]] = {}
     ratings: dict[str, list[float | None]] = {}
     opponents: dict[str, list[list[str]]] = {}
+    market_evidence: dict[str, list[dict[str, object]]] = {}
     market_rungs = 0
     for team_id, team in clubs.items():
         route_rows: list[list[float]] = [[] for _ in range(5)]
@@ -1215,7 +1248,7 @@ def _fixture_ladders(
         against: list[list[str]] = []
         for event in ordered:
             games = schedule.get((event, team_id), ())
-            *values, priced = _fixture_adjustment_sum(
+            *values, priced, adjustments, market_matches = _fixture_adjustment_sum(
                 games,
                 team_id=team_id,
                 event=event,
@@ -1226,7 +1259,49 @@ def _fixture_ladders(
             market_rungs += priced
             for rows, value in zip(route_rows, values, strict=True):
                 rows.append(round(value, 3))
-            difficulty.append(fixture_difficulty(games, team_id, strength))
+            difficulty.append(adjustment_difficulty(adjustments))
+            for market_match in market_matches:
+                raw_difficulty = adjustment_difficulty(
+                    [market_match.adjustment],
+                    bounded=False,
+                )
+                summary_difficulty = adjustment_difficulty([market_match.adjustment])
+                market_evidence.setdefault(str(team["short_name"]), []).append(
+                    {
+                        "event": event,
+                        "opponent": market_match.view.opponent,
+                        "venue": "H" if market_match.view.home else "A",
+                        "kickoff": (
+                            None
+                            if market_match.view.kickoff is None
+                            else market_match.view.kickoff.isoformat()
+                        ),
+                        "expectedGoals": round(market_match.view.expected_goals, 4),
+                        "opponentExpectedGoals": round(
+                            market_match.view.opponent_expected_goals,
+                            4,
+                        ),
+                        "cleanSheetProbability": round(
+                            market_match.view.clean_sheet,
+                            4,
+                        ),
+                        "adjustments": {
+                            "attacking": round(market_match.adjustment.attacking, 3),
+                            "cleanSheet": round(market_match.adjustment.clean_sheet, 3),
+                            "conceding": round(market_match.adjustment.conceding, 3),
+                            "saves": round(market_match.adjustment.saves, 3),
+                            "defensiveContribution": round(
+                                market_match.adjustment.defensive_contribution,
+                                3,
+                            ),
+                        },
+                        "difficulty": {
+                            "raw": raw_difficulty,
+                            "summary": summary_difficulty,
+                            "clipped": raw_difficulty != summary_difficulty,
+                        },
+                    }
+                )
             against.append(
                 [
                     f"{clubs[opponent]['short_name']} ({'H' if home else 'A'})"
@@ -1243,7 +1318,7 @@ def _fixture_ladders(
         )
         ratings[short] = difficulty
         opponents[short] = against
-    return FixtureLadders(ladders, ratings, opponents, market_rungs)
+    return FixtureLadders(ladders, ratings, opponents, market_rungs, market_evidence)
 
 
 def _build_player_rows(
@@ -1381,6 +1456,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     ratings = fixture_ladders.ratings
     opponents = fixture_ladders.opponents
     market_rungs = fixture_ladders.market_rungs
+    market_evidence = fixture_ladders.market_evidence
 
     available = [
         element
@@ -1455,6 +1531,11 @@ def main(argv: Sequence[str] | None = None) -> int:
         for element_id, values in market_carry.items()
         if element_id in trimmed_ids
     }
+    fixture_provenance = _artifact_provenance(
+        fixture_odds_path,
+        source="football-data.co.uk",
+        default_level="observed",
+    )
 
     payload = {
         "schemaVersion": SCHEMA_VERSION,
@@ -1480,11 +1561,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                 source="the-odds-api",
                 default_level="observed",
             ),
-            "fixtureMarkets": _artifact_provenance(
-                fixture_odds_path,
-                source="football-data.co.uk",
-                default_level="observed",
-            ),
+            "fixtureMarkets": fixture_provenance,
             "understat": _artifact_provenance(
                 understat_path,
                 source="understat",
@@ -1588,6 +1665,12 @@ def main(argv: Sequence[str] | None = None) -> int:
         },
         "fixtureLadder": ladder,
         "fixtureDifficulty": ratings,
+        "fixtureEvidence": {
+            "source": fixture_provenance["source"],
+            "updatedAt": fixture_provenance["updatedAt"],
+            "level": fixture_provenance["level"],
+            "byClub": market_evidence,
+        },
         "opponents": opponents,
         "bonusOverrides": bonus_overrides,
         "players": trimmed,

@@ -30,6 +30,12 @@ from __future__ import annotations
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 
+from fpl_andres.backtesting.captain_policies import (
+    CaptainCandidate,
+    build_captain_policies,
+    policy_names,
+)
+from fpl_andres.backtesting.captaincy import CaptaincyScore, score_policies
 from fpl_andres.backtesting.corpus import SeasonCorpus
 from fpl_andres.simulation.minileague_state import LeagueResult, ManagerResult, Policy
 
@@ -40,6 +46,7 @@ __all__ = [
     "captaincy_reach",
     "first_acquisition",
     "giant_reach",
+    "owned_captain_policy_scores",
 ]
 
 
@@ -254,3 +261,48 @@ def captaincy_reach(
         owned_ceiling_points=owned_ceiling,
         game_ceiling_points=game_ceiling,
     )
+
+
+def owned_captain_policy_scores(
+    corpus: SeasonCorpus,
+    results: Sequence[LeagueResult],
+    candidates_by_event: Mapping[int, Sequence[CaptainCandidate]],
+    policy: Policy = "advised",
+) -> dict[str, CaptaincyScore]:
+    """Replay every captain rule against the eleven the model fielded.
+
+    Each simulated manager gets a fresh policy set because ``set_and_forget``
+    carries its own anchor. Scores aggregate across managers and seeds, but the
+    candidate population never does: one manager-week is one legal XI.
+
+    A missing candidate skips that manager-week. Quietly scoring the remaining
+    ten would turn missing pre-deadline evidence into a different, easier
+    choice set and overstate the rule's reach.
+    """
+    scores = {label: CaptaincyScore(label=label) for label in policy_names()}
+    actual_by_event: dict[int, Mapping[int, int]] = {}
+
+    for result in results:
+        for manager in _cohort(result, policy):
+            active = build_captain_policies()
+            for week in manager.gameweek_squads:
+                actual = actual_by_event.setdefault(
+                    week.event,
+                    corpus.actual_points(week.event),
+                )
+                if not actual:
+                    continue
+                candidates = candidates_by_event.get(week.event, ())
+                by_element = {entry.element_id: entry for entry in candidates}
+                if any(element not in by_element for element in week.starters):
+                    continue
+                eleven = [by_element[element] for element in week.starters]
+                score_policies(
+                    eleven,
+                    actual,
+                    scores,
+                    gameweek=week.event,
+                    policies=active,
+                )
+
+    return scores

@@ -17,7 +17,8 @@ const quickPlayerSchema = z
     teamId: z.int().positive(),
     positionId: z.int().positive(),
     buyPriceTenths: z.int().nonnegative(),
-    expectedPoints: z.number().finite(),
+    planningPoints: z.number().finite(),
+    eventPoints: z.number().finite(),
     evidenceLevel: z.enum(["inferred", "experimental"]),
     dataAvailableAt: z.iso.datetime(),
     sourceHashes: sourceHashesSchema,
@@ -294,6 +295,8 @@ export interface QuickSolverResult {
   transferCostPoints: number;
   projectedPointsBeforeCost: number;
   netExpectedPoints: number;
+  planningPointsBeforeCost: number;
+  netPlanningPoints: number;
   bankAfterTenths: number;
   evidenceLevel: "inferred" | "experimental";
   dataAvailableAt: string;
@@ -323,6 +326,8 @@ interface EvaluatedState {
   transferCostPoints: number;
   projectedPointsBeforeCost: number;
   netExpectedPoints: number;
+  planningPointsBeforeCost: number;
+  netPlanningPoints: number;
   bankAfterTenths: number;
   squadQuality: number;
 }
@@ -412,7 +417,7 @@ export function solveQuickPlan(
   // only pay off two transfers deep.
   if (
     best !== initial &&
-    best.netExpectedPoints - initial.netExpectedPoints <=
+    best.netPlanningPoints - initial.netPlanningPoints <=
       limits.transferMarginPoints * best.transfersIn.length
   ) {
     best = initial;
@@ -453,6 +458,8 @@ export function solveQuickPlan(
     transferCostPoints: best.transferCostPoints,
     projectedPointsBeforeCost: best.projectedPointsBeforeCost,
     netExpectedPoints: best.netExpectedPoints,
+    planningPointsBeforeCost: best.planningPointsBeforeCost,
+    netPlanningPoints: best.netPlanningPoints,
     bankAfterTenths: best.bankAfterTenths,
     evidenceLevel: input.players.some(
       ({ evidenceLevel }) => evidenceLevel === "experimental",
@@ -496,7 +503,7 @@ function boundedCandidates(
         (left, right) =>
           bestOneTransferValue(right, currentIds, input, players, current) -
             bestOneTransferValue(left, currentIds, input, players, current) ||
-          right.expectedPoints - left.expectedPoints ||
+          right.planningPoints - left.planningPoints ||
           left.buyPriceTenths - right.buyPriceTenths ||
           left.elementId - right.elementId,
       );
@@ -530,7 +537,7 @@ function bestOneTransferValue(
     squad.delete(outgoing);
     squad.add(incoming.elementId);
     const evaluated = evaluateSquad(squad, input, players, current);
-    if (evaluated !== null) best = Math.max(best, evaluated.netExpectedPoints);
+    if (evaluated !== null) best = Math.max(best, evaluated.netPlanningPoints);
   }
   return best;
 }
@@ -565,36 +572,54 @@ function evaluateSquad(
   if (bankAfterTenths < 0) return null;
 
   const squadElementIds = [...squad].sort((left, right) => left - right);
-  const lineup = bestLineup(squadElementIds, players, input.rules);
-  if (lineup === null) return null;
+  const eventLineup = bestLineup(
+    squadElementIds,
+    players,
+    input.rules,
+    "eventPoints",
+    true,
+  );
+  const planningLineup = bestLineup(
+    squadElementIds,
+    players,
+    input.rules,
+    "planningPoints",
+    false,
+  );
+  if (eventLineup === null || planningLineup === null) return null;
   const paidTransfers = Math.max(
     0,
     transfersIn.length - input.availableFreeTransfers,
   );
   const transferCostPoints = paidTransfers * input.rules.transferCostPoints;
-  const starterSet = new Set(lineup.elementIds);
+  const starterSet = new Set(eventLineup.elementIds);
+  const planningPointsBeforeCost =
+    planningLineup.projectedPoints +
+    requiredPlayer(players, eventLineup.captainElementId).eventPoints;
   return {
     squadElementIds,
-    starterElementIds: lineup.elementIds,
+    starterElementIds: eventLineup.elementIds,
     benchElementIds: squadElementIds
       .filter((elementId) => !starterSet.has(elementId))
       .sort(
         (left, right) =>
-          requiredPlayer(players, right).expectedPoints -
-            requiredPlayer(players, left).expectedPoints || left - right,
+          requiredPlayer(players, right).eventPoints -
+            requiredPlayer(players, left).eventPoints || left - right,
       ),
-    captainElementId: lineup.captainElementId,
-    viceCaptainElementId: lineup.viceCaptainElementId,
+    captainElementId: eventLineup.captainElementId,
+    viceCaptainElementId: eventLineup.viceCaptainElementId,
     transfersIn,
     transfersOut,
     paidTransfers,
     transferCostPoints,
-    projectedPointsBeforeCost: lineup.projectedPoints,
-    netExpectedPoints: lineup.projectedPoints - transferCostPoints,
+    projectedPointsBeforeCost: eventLineup.projectedPoints,
+    netExpectedPoints: eventLineup.projectedPoints - transferCostPoints,
+    planningPointsBeforeCost,
+    netPlanningPoints: planningPointsBeforeCost - transferCostPoints,
     bankAfterTenths,
     squadQuality: squadElementIds.reduce(
       (total, elementId) =>
-        total + requiredPlayer(players, elementId).expectedPoints,
+        total + requiredPlayer(players, elementId).planningPoints,
       0,
     ),
   };
@@ -628,6 +653,8 @@ function bestLineup(
   squad: number[],
   players: Map<number, QuickPlayer>,
   rules: QuickRules,
+  pointsField: "planningPoints" | "eventPoints",
+  includeCaptain: boolean,
 ): LineupEvaluation | null {
   const positions = [...rules.positions].sort(
     (left, right) => left.positionId - right.positionId,
@@ -643,8 +670,8 @@ function bestLineup(
         )
         .sort(
           (left, right) =>
-            requiredPlayer(players, right).expectedPoints -
-              requiredPlayer(players, left).expectedPoints || left - right,
+            requiredPlayer(players, right)[pointsField] -
+              requiredPlayer(players, left)[pointsField] || left - right,
         ),
     ]),
   );
@@ -654,7 +681,12 @@ function bestLineup(
   const visit = (positionIndex: number, remaining: number): void => {
     if (positionIndex === positions.length) {
       if (remaining !== 0) return;
-      const scored = scoreLineup(selected, players);
+      const scored = scoreLineup(
+        selected,
+        players,
+        pointsField,
+        includeCaptain,
+      );
       if (
         best === null ||
         scored.projectedPoints > best.projectedPoints + 1e-10 ||
@@ -699,11 +731,13 @@ function bestLineup(
 function scoreLineup(
   lineup: number[],
   players: Map<number, QuickPlayer>,
+  pointsField: "planningPoints" | "eventPoints",
+  includeCaptain: boolean,
 ): LineupEvaluation {
   const ranked = [...lineup].sort(
     (left, right) =>
-      requiredPlayer(players, right).expectedPoints -
-        requiredPlayer(players, left).expectedPoints || left - right,
+      requiredPlayer(players, right)[pointsField] -
+        requiredPlayer(players, left)[pointsField] || left - right,
   );
   const captainElementId = ranked[0]!;
   return {
@@ -713,15 +747,18 @@ function scoreLineup(
     projectedPoints:
       lineup.reduce(
         (total, elementId) =>
-          total + requiredPlayer(players, elementId).expectedPoints,
+          total + requiredPlayer(players, elementId)[pointsField],
         0,
-      ) + requiredPlayer(players, captainElementId).expectedPoints,
+      ) +
+      (includeCaptain
+        ? requiredPlayer(players, captainElementId)[pointsField]
+        : 0),
   };
 }
 
 function compareStates(left: EvaluatedState, right: EvaluatedState): number {
   return (
-    right.netExpectedPoints - left.netExpectedPoints ||
+    right.netPlanningPoints - left.netPlanningPoints ||
     left.transfersIn.length - right.transfersIn.length ||
     right.squadQuality - left.squadQuality ||
     compareIds(left.squadElementIds, right.squadElementIds)

@@ -46,7 +46,11 @@ function renderApplication(initialEntry = "/") {
 }
 
 async function openPlanStep(name: string): Promise<void> {
-  const title = await screen.findByText(name, { selector: ".plan-step-title" });
+  const title = await screen.findByText(
+    name,
+    { selector: ".plan-step-title" },
+    { timeout: SETTLE },
+  );
   const details = title.closest("details");
   if (details?.open) return;
   await userEvent.click(title.closest("summary")!);

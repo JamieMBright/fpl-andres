@@ -64,19 +64,60 @@ describe("bounded quick solver", () => {
     expect(result.reasonCodes).toContain("bounded_search_truncated");
   });
 
+  it("uses current-event points for the XI and armband", () => {
+    const base = regretCases[0]!.input;
+    const points = new Map([
+      [1, { planningPoints: 100, eventPoints: 2 }],
+      [2, { planningPoints: 1, eventPoints: 9 }],
+      [3, { planningPoints: 100, eventPoints: 3 }],
+      [4, { planningPoints: 1, eventPoints: 8 }],
+      [5, { planningPoints: 0, eventPoints: 0 }],
+      [6, { planningPoints: 0, eventPoints: 0 }],
+    ]);
+    const input = {
+      ...base,
+      players: base.players.map((player) => {
+        return { ...player, ...points.get(player.elementId)! };
+      }),
+    };
+
+    const result = solveQuickPlan(input, { ...limits, maxTransfers: 0 });
+
+    expect(result.starterElementIds).toEqual([2, 4]);
+    expect(result.captainElementId).toBe(2);
+    expect(result.viceCaptainElementId).toBe(4);
+    expect(result.projectedPointsBeforeCost).toBe(26);
+  });
+
   it("ranks truncated candidates by feasible squad gain under the club cap", () => {
     const base = regretCases[1]!.input;
     const input = {
       ...base,
       players: [
-        { ...base.players[0]!, teamId: 1, expectedPoints: 10 },
-        { ...base.players[1]!, teamId: 2, expectedPoints: 1 },
-        { ...base.players[2]!, teamId: 1, expectedPoints: 9 },
+        {
+          ...base.players[0]!,
+          teamId: 1,
+          planningPoints: 10,
+          eventPoints: 10,
+        },
+        {
+          ...base.players[1]!,
+          teamId: 2,
+          planningPoints: 1,
+          eventPoints: 1,
+        },
+        {
+          ...base.players[2]!,
+          teamId: 1,
+          planningPoints: 9,
+          eventPoints: 9,
+        },
         {
           ...base.players[2]!,
           elementId: 4,
           teamId: 3,
-          expectedPoints: 8,
+          planningPoints: 8,
+          eventPoints: 8,
           sourceHashes: [
             "sha256:4444444444444444444444444444444444444444444444444444444444444444",
           ],

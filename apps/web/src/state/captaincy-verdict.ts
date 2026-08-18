@@ -31,10 +31,12 @@ export interface CaptaincyInterval {
   lower: number;
   upper: number;
   better: boolean;
+  familySize?: number;
 }
 
 export interface CaptaincySeason {
-  captaincy?: { label: string; meanBestPoints: number | null }[] | null;
+  ownedCaptainPolicies?:
+    readonly { label: string; meanReachableCeiling: number | null }[] | null;
 }
 
 export interface CaptaincyVerdict {
@@ -140,8 +142,8 @@ export function captaincyVerdict(
   seasons: readonly CaptaincySeason[] = [],
 ): CaptaincyVerdict {
   const ceilings = seasons
-    .flatMap((season) => season.captaincy ?? [])
-    .map((entry) => entry.meanBestPoints)
+    .flatMap((season) => season.ownedCaptainPolicies ?? [])
+    .map((entry) => entry.meanReachableCeiling)
     .filter((value): value is number => value !== null);
 
   // The artifact ships the table already sorted, but a verdict that depends on
@@ -227,7 +229,7 @@ function worseClause(verdict: CaptaincyVerdict): string {
   return ` ${subject} \u2014 ${costs}, ${interval} entirely below zero.${framing}`;
 }
 
-/** The gap between the best rule and the best pick the shortlist offered. */
+/** The gap between the best rule and the best pick its owned XI offered. */
 export function ceilingSentence(verdict: CaptaincyVerdict): string {
   const { ceilingPoints, bestThesisPoints, leader } = verdict;
   if (ceilingPoints === null || bestThesisPoints === null || leader === null) {
@@ -238,7 +240,7 @@ export function ceilingSentence(verdict: CaptaincyVerdict): string {
   const argument =
     Math.ceil((leader.improvement - worst.improvement) * 10) / 10;
   return (
-    "The best captain available on the shortlist averages " +
+    "The best captain reachable in the fielded eleven averages " +
     `${twoDecimals.format(ceilingPoints)} points and the best thesis takes ` +
     `${twoDecimals.format(bestThesisPoints)}, so the whole argument between them is ` +
     `worth under ${oneDecimal.format(argument)} points a week while more than ` +

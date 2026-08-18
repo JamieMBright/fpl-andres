@@ -29,6 +29,17 @@ from __future__ import annotations
 
 __all__ = ["MODEL_VERSION"]
 
+#: 8.0 replaces the crowd's synthetic top-25 captain shortlist with legal
+#: model-owned elevens replayed from the season simulation. Every captain rule
+#: now publishes chosen points, the ceiling reachable from that same XI and
+#: owned-squad regret; significance is paired over those manager-gameweeks.
+#: The 2022/23 through 2025/26 seasons are labelled retrospective because all
+#: four outcomes were visible during model 7.1 development. Genuine evidence
+#: begins with a pre-GW1 2026/27 manifest that freezes the revision, parameter
+#: ledger and planning artifacts before the deadline. Major: the projection is
+#: unchanged, but the population and meaning of its headline validation metric
+#: are not comparable with 7.x.
+#:
 #: 7.1 keeps one fixture's player market as evidence beyond that fixture
 #: without pretending it is a nine-week forecast. The quote-vs-history
 #: deviation is full in its anchor gameweek and halves every two gameweeks;
@@ -311,4 +322,4 @@ __all__ = ["MODEL_VERSION"]
 #: projection and resampled, so a gap that does not clear zero is reported as
 #: not clearing zero. No projection changed; what changed is what may be
 #: claimed from it.
-MODEL_VERSION = "7.1"
+MODEL_VERSION = "8.0"

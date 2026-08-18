@@ -7,6 +7,7 @@ import { MemoryRouter } from "react-router-dom";
 import { describe, expect, it, vi } from "vitest";
 
 import { TeamEntry } from "./SeasonPlanPage";
+import { FixtureEvidenceList } from "./SeasonPlanPage";
 
 /**
  * The plan page, on the things a reader complained about.
@@ -167,5 +168,104 @@ describe("what a gameweek card counts", () => {
 
   it("does not pass the mean off as a ceiling", () => {
     expect(SOURCE).not.toContain("ceiling: week.expected");
+  });
+});
+
+describe("opening recommendations", () => {
+  const step = stepSource("04", "05");
+
+  it("offers acceptance alongside keeping the declared fifteen", () => {
+    expect(step).toContain("Use these free changes");
+    expect(step).toContain("Keep my fifteen");
+  });
+
+  it("persists the solved fifteen as accepted and refreshes the live plan", () => {
+    expect(step).toContain('decideOpening("accepted")');
+    expect(SOURCE).toContain('decision === "accepted"');
+    expect(SOURCE).toContain("[...opener.starters, ...opener.bench]");
+    expect(SOURCE).toContain("{ openingDecision: decision }");
+    expect(SOURCE).toContain("setDeclaredAt(Date.now())");
+  });
+
+  it("states that FPL cannot reveal pre-deadline squad edits", () => {
+    expect(step).toContain("does not expose pre-deadline squads");
+    expect(step).toContain("cannot be detected automatically");
+  });
+});
+
+describe("fixture evidence", () => {
+  it("shows the exact market values and route adjustments used by the solver", () => {
+    render(
+      <FixtureEvidenceList
+        evidence={{
+          MCI: [
+            {
+              event: 1,
+              opponent: "BOU",
+              venue: "H",
+              kickoff: "2026-08-23T13:00:00+00:00",
+              expectedGoals: 2.4223,
+              opponentExpectedGoals: 1.0571,
+              cleanSheetProbability: 0.3475,
+              adjustments: {
+                attacking: 1.625,
+                cleanSheet: 1.372,
+                conceding: 0.709,
+                saves: 0.709,
+                defensiveContribution: 0.855,
+              },
+              difficulty: { raw: 1.2, summary: 1.2, clipped: false },
+              source: "the-odds-api",
+              updatedAt: "2026-08-18T00:04:25.601367+00:00",
+              level: "observed",
+            },
+          ],
+        }}
+      />,
+    );
+
+    expect(screen.getByText("MCI v BOU (H)")).toBeInTheDocument();
+    expect(
+      screen.getByText(/2\.42 xG · 1\.06 xGA · 34\.8% clean sheet/),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        /Attack 1\.625× · Defence 1\.372× · Conceding 0\.709× · Saves 0\.709× · DefCon 0\.855×/,
+      ),
+    ).toBeInTheDocument();
+    expect(screen.getByText(/the-odds-api/)).toBeInTheDocument();
+  });
+
+  it("names a bounded FDR instead of silently clipping its raw value", () => {
+    render(
+      <FixtureEvidenceList
+        evidence={{
+          ARS: [
+            {
+              event: 1,
+              opponent: "COV",
+              venue: "H",
+              kickoff: null,
+              expectedGoals: 3,
+              opponentExpectedGoals: 0.4,
+              cleanSheetProbability: 0.67,
+              adjustments: {
+                attacking: 2.1,
+                cleanSheet: 2.2,
+                conceding: 0.4,
+                saves: 0.4,
+                defensiveContribution: 0.7,
+              },
+              difficulty: { raw: -0.6, summary: 1, clipped: true },
+              source: "example",
+              updatedAt: null,
+              level: "observed",
+            },
+          ],
+        }}
+      />,
+    );
+
+    expect(screen.getByText(/raw −0\.6, bounded to 1\.0/)).toBeInTheDocument();
   });
 });

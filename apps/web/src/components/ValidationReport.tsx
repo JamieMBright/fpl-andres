@@ -2,7 +2,11 @@ import { Link } from "react-router-dom";
 
 import validation from "../data/validation.json";
 import { timestamp } from "../format";
-import { CaptainGrid, type SeasonPicks } from "./CaptainGrid";
+import {
+  captainEvidence,
+  type OwnedCaptainPolicy,
+  type OwnedCaptainSeason,
+} from "../state/captain-evidence";
 import { InfoMarker } from "./InfoMarker";
 import {
   BarChart,
@@ -99,12 +103,8 @@ type SeasonReport = {
   firstScoredGameweek: number;
   expectedGoalsCoverage: number;
   methods: Method[];
-  /** Absent from artifacts generated before captaincy was scored. */
-  captaincy?: CaptaincyScore[];
-  /** Absent from artifacts generated before the theses were scored. */
-  captainPolicies?: CaptaincyScore[];
-  /** Absent from artifacts generated before the picks were retained. */
-  captainPicks?: Omit<SeasonPicks, "season">;
+  /** Absent until captain rules were replayed on model-owned legal XIs. */
+  ownedCaptainPolicies?: OwnedCaptainPolicy[];
   /** Absent from artifacts generated before reach was measured. */
   reach?: Reach;
   /** Absent from artifacts generated before the opening was compared. */
@@ -113,17 +113,6 @@ type SeasonReport = {
     policies: Record<string, PolicyResult>;
     leaguesPlayed: number;
   };
-};
-
-type CaptaincyScore = {
-  label: string;
-  gameweeks: number;
-  meanPoints: number | null;
-  meanBestPoints: number | null;
-  regret: number | null;
-  shareOfCeiling: number | null;
-  perfectWeeks: number;
-  blankRate: number | null;
 };
 
 /** One thesis measured against the incumbent projection, week for week. */
@@ -145,6 +134,7 @@ type Report = {
   generatedAt: string;
   /** Absent from artifacts published before the model was versioned. */
   modelVersion?: string;
+  captainEvidenceScope?: string;
   seasons: SeasonReport[];
   league: { managers: number; advisedShare: number; seeds: number[] };
   /** Absent from artifacts generated before the theses were tested. */
@@ -192,9 +182,6 @@ const CHIP_NAMES: Record<string, string> = {
 
 const POSITIONS = ["GKP", "DEF", "MID", "FWD"] as const;
 
-/** Matches `SHORTLIST_SIZE` in `backtesting/captaincy.py`. */
-const CAPTAIN_SHORTLIST = 25;
-
 /** My rank correlation minus the naive baseline's, for one position. */
 function positionLead(season: SeasonReport, position: string): number | null {
   const mine = methodOf(season, "model")?.byPosition[position];
@@ -208,25 +195,21 @@ function methodOf(season: SeasonReport, label: string): Method | undefined {
   return season.methods.find((method) => method.label === label);
 }
 
-/** Averaged across seasons, because one season of 32 weeks decides nothing. */
-function averaged(
-  seasons: readonly SeasonReport[],
-  pick: (season: SeasonReport) => readonly CaptaincyScore[] | undefined,
-  names: Record<string, string> = {},
-): BarDatum[] {
+/** Averaged across seasons, because one season of manager-XIs decides nothing. */
+function policyAverages(seasons: readonly OwnedCaptainSeason[]): BarDatum[] {
   const totals = new Map<string, number[]>();
   const ceilings = new Map<string, number[]>();
   for (const season of seasons) {
-    for (const entry of pick(season) ?? []) {
-      if (entry.meanPoints === null) continue;
+    for (const entry of season.ownedCaptainPolicies ?? []) {
+      if (entry.meanChosenPoints === null) continue;
       totals.set(entry.label, [
         ...(totals.get(entry.label) ?? []),
-        entry.meanPoints,
+        entry.meanChosenPoints,
       ]);
-      if (entry.meanBestPoints !== null) {
+      if (entry.meanReachableCeiling !== null) {
         ceilings.set(entry.label, [
           ...(ceilings.get(entry.label) ?? []),
-          entry.meanBestPoints,
+          entry.meanReachableCeiling,
         ]);
       }
     }
@@ -236,37 +219,33 @@ function averaged(
   return [...totals].map(([label, values]) => {
     const ceiling = ceilings.get(label);
     return {
-      label: names[label] ?? label,
+      label,
       value: mean(values),
-      mine: label === "model" || label === "expected_points",
+      mine: label === "expected_points",
       ...(ceiling && ceiling.length > 0 ? { reference: mean(ceiling) } : {}),
     };
   });
 }
 
-function captaincyAverages(seasons: readonly SeasonReport[]): BarDatum[] {
-  return averaged(seasons, (season) => season.captaincy, METHOD_NAMES);
-}
-
-function policyAverages(seasons: readonly SeasonReport[]): BarDatum[] {
-  return averaged(seasons, (season) => season.captainPolicies);
-}
-
 /** Drops any verdict the bootstrap could not resolve into a real interval. */
-function intervals(entries: readonly Significance[]): IntervalDatum[] {
-  return entries.flatMap((entry) =>
-    entry.improvement === null || entry.lower === null || entry.upper === null
-      ? []
-      : [
-          {
-            label: entry.label,
-            improvement: entry.improvement,
-            lower: entry.lower,
-            upper: entry.upper,
-            better: entry.better,
-          },
-        ],
-  );
+function intervals(
+  entries: readonly {
+    label: string;
+    improvement: number;
+    lower: number;
+    upper: number;
+    better: boolean;
+  }[],
+): IntervalDatum[] {
+  return entries.flatMap((entry) => [
+    {
+      label: entry.label,
+      improvement: entry.improvement,
+      lower: entry.lower,
+      upper: entry.upper,
+      better: entry.better,
+    },
+  ]);
 }
 
 function show(value: number | null | undefined, digits = 3): string {
@@ -282,6 +261,7 @@ function percent(value: number | null | undefined): string {
 
 export function ValidationReport() {
   const freshness = freshnessOf(report.generatedAt);
+  const captain = captainEvidence(report);
   const totalRows = report.seasons.reduce(
     (sum, season) => sum + season.rows,
     0,
@@ -294,18 +274,11 @@ export function ValidationReport() {
     (sum, season) => sum + (season.league.policies.advised?.wins ?? 0),
     0,
   );
-  const captaincySeasons = report.seasons.filter(
-    (season) => (season.captaincy ?? []).length > 0,
-  );
-  const significance = report.captainSignificance ?? [];
+  const captaincySeasons = captain.seasons;
+  const significance = captain.significance;
   const verdicts = intervals(significance);
   const pooledWeeks = significance[0]?.weeks ?? 0;
   const family = significance[0]?.familySize ?? significance.length;
-  const pickSeasons = report.seasons.flatMap((season) =>
-    season.captainPicks === undefined
-      ? []
-      : [{ season: season.season, ...season.captainPicks }],
-  );
   const reachSeasons = report.seasons.flatMap((season) =>
     season.reach === undefined
       ? []
@@ -518,31 +491,27 @@ export function ValidationReport() {
           The captain doubles, so this one call swings two to three times what a
           routine transfer does.
           <InfoMarker label="how captaincy is scored">
-            Every method picks from the same shortlist: the {CAPTAIN_SHORTLIST}{" "}
-            most-owned players going into that gameweek, roughly the pool a real
-            squad draws from. Picking from the whole league would be grading
-            hindsight. The ceiling is the best captain in that shortlist, so the
-            regret is a call somebody could have made.
+            Every rule picks only from the eleven fielded by a legal simulated
+            squad following the model. The ceiling is the best return inside
+            that same eleven, so the regret is a call that manager could really
+            have made. Historical real-manager squads are not recoverable from
+            FPL and are not approximated here as fact.
           </InfoMarker>
         </p>
         {captaincySeasons.length === 0 ? (
           <p className="validation-note">
-            This artifact predates the captaincy score, so there is nothing
-            measured to show. It appears the next time{" "}
+            This artifact predates the owned-squad captain score. The old
+            crowd-shortlist result is deliberately not shown as a substitute.
+            This appears the next time{" "}
             <span className="mono">fpl_andres.cli.validate</span> runs.
           </p>
         ) : (
           <>
             <BarChart
-              title="Captain points per gameweek, averaged across every season"
-              caption="Bars are the captain's own score, not the doubled one. The tick is the best captain available on the same shortlist — the gap to it is what every method leaves behind."
-              referenceLabel="Nobody gets close to it."
-              data={captaincyAverages(captaincySeasons)}
-            />
-            <BarChart
-              title="Competing captaincy theses"
-              caption="Nine rules from the practitioner literature, each maximising something different, all picking from the same shortlist in the same weeks."
-              data={policyAverages(report.seasons)}
+              title="Captain rules on model-owned elevens"
+              caption="Bars are each chosen captain's own score. The tick is the best return reachable inside the same fielded eleven; the gap is owned-squad regret."
+              referenceLabel="Reachable XI ceiling"
+              data={policyAverages(captaincySeasons)}
             />
             <IntervalChart
               title="Which of those leads are real?"
@@ -560,42 +529,12 @@ export function ValidationReport() {
         </p>
       </section>
 
-      <section aria-labelledby="picks-title">
-        <h2 id="picks-title">Every armband, week by week</h2>
-        <p>
-          Rows are the fourteen methods, columns every scored gameweek. Each
-          cell is the shirt, the player, who he faced and what he returned.
-          <InfoMarker label="reading the grid">
-            Opponents carry the venue in their casing: ARS at home, ars away,
-            both listed in a double. The number under each gameweek is the best
-            return available on that week&rsquo;s shortlist, so a haul can be
-            read against what was on offer. Scroll sideways; the method names
-            stay put.
-          </InfoMarker>
-        </p>
-        <p>
-          <strong>Point at any pick to see why it was made.</strong>
-          <InfoMarker label="the reasoning panel">
-            The panel underneath shows the arithmetic every rule read that week
-            &mdash; the projection, the components under it, recent scoring, the
-            chance he started, ownership, his ceiling and how kind the fixture
-            was &mdash; for the player chosen and for the ones he was chosen
-            over, ranked by projection. Tabbing to a cell does the same thing.
-          </InfoMarker>
-        </p>
-        <CaptainGrid
-          mine={["model", "expected_points"]}
-          names={METHOD_NAMES}
-          seasons={pickSeasons}
-        />
-      </section>
-
       <section aria-labelledby="reach-title">
         <h2 id="reach-title">Could the squad even reach that?</h2>
         <p>
-          Everything above is scored against the whole game, and nobody picks
-          from the whole game. These are scored against the fifteen the
-          projection was holding at the deadline.
+          The captain rules above already use the fielded eleven. This section
+          separates that decision from the squad-building gap: whether the best
+          projection in the whole game was owned or fielded at all.
           <InfoMarker label="where these come from">
             The simulated leagues, replayed. Each gameweek keeps the squad it
             was played with, so &ldquo;was the best player in the game on your
@@ -727,8 +666,8 @@ export function ValidationReport() {
               eleven was worth &mdash; that is skill, and it is on me.
               &ldquo;Out of reach&rdquo; is the distance from the best captain
               in your squad to the best captain in the game, which no call on
-              the day could close. The captaincy table further up quietly counts
-              part of the second as if it were the first.
+              the day could close. The owned-XI comparison above keeps that gap
+              separate from the captain rule.
             </p>
           </>
         )}

@@ -82,20 +82,21 @@ def _row(report: dict[str, Any], code_revision: str) -> dict[str, Any]:
             method["label"]: {key: method.get(key) for key in CARRIED_METRICS}
             for method in season.get("methods", [])
         }
-        captaincy = {
+        owned_captain_policies = {
             entry["label"]: {
-                "meanPoints": entry.get("meanPoints"),
-                "regret": entry.get("regret"),
-                "shareOfCeiling": entry.get("shareOfCeiling"),
+                "meanChosenPoints": entry.get("meanChosenPoints"),
+                "meanReachableCeiling": entry.get("meanReachableCeiling"),
+                "ownedSquadRegret": entry.get("ownedSquadRegret"),
+                "shareOfReachableCeiling": entry.get("shareOfReachableCeiling"),
             }
-            for entry in season.get("captaincy", [])
+            for entry in season.get("ownedCaptainPolicies", [])
         }
         seasons.append(
             {
                 "season": season.get("season"),
                 "corpusFingerprint": season.get("corpusFingerprint"),
                 "methods": methods,
-                "captaincy": captaincy,
+                "ownedCaptainPolicies": owned_captain_policies,
             }
         )
     return {
@@ -178,21 +179,22 @@ def render_performance(report: dict[str, Any]) -> str:
 
 
 def render_captaincy(report: dict[str, Any]) -> str:
-    """Captain returns per season and method, or a line saying it was not scored."""
+    """Incumbent captain returns from legal model-owned XIs."""
     rows = [
-        "| Season | Method | Weeks | Captain | Best available | Left behind | Nailed it |"
-        " Blanked |",
-        "| ------ | ------ | ----- | ------- | -------------- | ----------- | --------- |"
-        " ------- |",
+        "| Season | Weeks | Chosen | Reachable XI | Owned regret | Nailed it | Blanked |",
+        "| ------ | ----- | ------ | ------------ | ------------ | --------- | ------- |",
     ]
     scored = False
     for season in report.get("seasons", []):
-        for entry in season.get("captaincy", []):
+        for entry in season.get("ownedCaptainPolicies", []):
+            if entry.get("label") != "expected_points":
+                continue
             scored = True
             rows.append(
-                f"| {season.get('season')} | `{entry.get('label')}` | "
-                f"{entry.get('gameweeks')} | {_cell(entry.get('meanPoints'), 2)} | "
-                f"{_cell(entry.get('meanBestPoints'), 2)} | {_cell(entry.get('regret'), 2)} | "
+                f"| {season.get('season')} | {entry.get('gameweeks')} | "
+                f"{_cell(entry.get('meanChosenPoints'), 2)} | "
+                f"{_cell(entry.get('meanReachableCeiling'), 2)} | "
+                f"{_cell(entry.get('ownedSquadRegret'), 2)} | "
                 f"{entry.get('perfectWeeks')} | {_cell(entry.get('blankRate'), 2)} |"
             )
     if not scored:
@@ -211,16 +213,18 @@ def render_policies(report: dict[str, Any]) -> str:
     totals: dict[str, list[float]] = {}
     wins: dict[str, int] = {}
     for season in report.get("seasons", []):
-        entries = season.get("captainPolicies", [])
-        scored = [entry for entry in entries if isinstance(entry.get("meanPoints"), (int, float))]
+        entries = season.get("ownedCaptainPolicies", [])
+        scored = [
+            entry for entry in entries if isinstance(entry.get("meanChosenPoints"), (int, float))
+        ]
         if not scored:
             continue
-        best = max(float(entry["meanPoints"]) for entry in scored)
+        best = max(float(entry["meanChosenPoints"]) for entry in scored)
         for entry in scored:
             label = str(entry.get("label"))
-            totals.setdefault(label, []).append(float(entry["meanPoints"]))
+            totals.setdefault(label, []).append(float(entry["meanChosenPoints"]))
             wins.setdefault(label, 0)
-            if float(entry["meanPoints"]) == best:
+            if float(entry["meanChosenPoints"]) == best:
                 wins[label] += 1
     if not totals:
         return "Not yet measured."

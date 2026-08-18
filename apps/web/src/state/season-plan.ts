@@ -1,4 +1,8 @@
 import plan from "../data/season-plan.json";
+import {
+  fixtureEvidenceForClubs,
+  type FixtureEvidence,
+} from "./fixture-evidence";
 
 /**
  * The published season plan.
@@ -31,6 +35,7 @@ export interface PlanGameweek {
   opponents: Readonly<Record<string, readonly string[]>>;
   /** Club short name to how hard the week is, one to five. Null on a blank. */
   difficulty: Readonly<Record<string, number | null>>;
+  fixtureEvidence: Readonly<Record<string, readonly FixtureEvidence[]>>;
   /** Player code to what he is worth this gameweek. */
   expected: Readonly<Record<string, number>>;
   /** The same week on his best afternoon. */
@@ -147,6 +152,10 @@ export function readSeasonPlan(): SeasonPlan {
       transfersOut: resolveAll(week.transfersOut),
       opponents: week.opponents,
       difficulty: week.difficulty,
+      fixtureEvidence: fixtureEvidenceForClubs(
+        Object.keys(week.opponents),
+        week.event,
+      ),
       expected: week.expected,
       ceiling: week.ceiling,
       freeTransfersBefore: week.freeTransfersBefore,

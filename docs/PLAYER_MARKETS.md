@@ -141,14 +141,14 @@ conceded, save pressure and defensive-action pressure.
 
 ## The shortlist, and why each is on it
 
-| Key                | What it is                                                    | Covers                           |
-| ------------------ | ------------------------------------------------------------- | -------------------------------- |
-| `the-odds-api`     | Aggregator over UK books, markets named explicitly            | goal, assist, cards, shots       |
-| `api-football`     | Aggregator; its `/odds/bets` endpoint _is_ a market catalogue | goal, assist, cards, clean sheet |
-| `betfair-exchange` | An exchange, not a book: two-sided prices, so the least vig   | goal, assist, clean sheet, cards |
-| `football-data`    | The baseline already ingested. Match level only, no props     | clean sheet, goals conceded      |
-| `understat`        | Not a market. Shot-level rates, the control on any prop       | goal, assist                     |
-| `fpl-bootstrap`    | The scoring authority, and therefore the prediction target    | every scoring event              |
+| Key                | What it is                                                     | Covers                           |
+| ------------------ | -------------------------------------------------------------- | -------------------------------- |
+| `the-odds-api`     | Aggregator over UK books, markets named explicitly             | goal, assist, cards, shots       |
+| `api-football`     | Aggregator; `/odds/bets` is a catalogue, not proof of an offer | goal, assist, cards, clean sheet |
+| `betfair-exchange` | An exchange, not a book: two-sided prices, so the least vig    | goal, assist, clean sheet, cards |
+| `football-data`    | The baseline already ingested. Match level only, no props      | clean sheet, goals conceded      |
+| `understat`        | Not a market. Shot-level rates, the control on any prop        | goal, assist                     |
+| `fpl-bootstrap`    | The scoring authority, and therefore the prediction target     | every scoring event              |
 
 The exchange is listed last among the price sources but is first on merit:
 its implied probabilities need no de-vigging assumption, because the price is
@@ -169,6 +169,33 @@ what someone actually laid rather than what a book offered.
   first choice here has no useful record, and the market is the only source
   that has already priced the change. Coverage there has to be checked club by
   club, not assumed from a headline market count.
+
+## Field availability audit, 18 August 2026
+
+Three evidence levels must not be collapsed into one:
+
+| Provider            | Documented or catalogued                                                                                                                                                                                                                                          | Observed on a live 2026/27 fixture                                                                                                                                         | Safe model use now                                                                                                                                                              |
+| ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| The Odds API        | Event odds accept explicit player keys for anytime goal, assists, cards, red cards, shots and shots on target. Responses carry bookmaker, market key, player description, price and count-line point.                                                             | Arsenal–Coventry returned three books and 17 matched players for `player_goal_scorer_anytime`. The other five requested player keys were absent three days before kickoff. | Goals now. Assists, cards and shots only when the retained fixture row actually contains them; absence is not zero.                                                             |
+| API-Football        | `/odds/bets` listed 332 bet types, including anytime scorer, player assists, cards, shots, shots on target, tackles, goalkeeper saves, own goal and penalty miss. `/fixtures` and `/odds?fixture=` must still prove an actual offer with player-named selections. | The catalogue answered with 97 daily requests left, but no 2026/27 Premier League fixture was available to probe. No player selection payload has been observed.           | None yet. Catalogue names are capability hints, not evidence. A tackles line is not direct DefCon: it omits clearances, blocks, interceptions and, outside defence, recoveries. |
+| football-data.co.uk | Season CSVs publish match-level result, 1X2, totals and Asian-handicap columns from multiple books.                                                                                                                                                               | Four completed seasons are ingested. The current-season file is unavailable before matches are played, so The Odds API supplies the team-market fallback.                  | Team xG, clean-sheet and conceding routes only. It has no player props or lineups.                                                                                              |
+
+The provider pages cannot be opened from the owner's network: The Odds API is
+reset by the gambling-category filter and API-Football returns a Cloudflare 403.
+The tracked catalogue therefore comes from the documented endpoints on a GitHub
+runner and records actual market names and response fields rather than relying
+on website copy.
+
+### What still needs one capture
+
+No credential should be pasted into chat or committed. The existing
+`API_FOOTBALL_API_KEY` is enough. Once API-Football lists a 2026/27 Premier
+League fixture, run **Survey Player Markets** once while props are open. The
+probe already records the fixture id, bookmaker count, each player-level bet,
+selection count and one verbatim selection. That one runner result decides
+whether its catalogue is crosswalkable evidence or only a taxonomy. If it
+still says `no Premier League fixture scheduled`, the provider cannot help this
+GW1 and nothing should be inferred from its 332-name catalogue.
 
 ## Reading a catalogue
 

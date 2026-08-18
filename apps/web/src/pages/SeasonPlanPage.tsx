@@ -12,6 +12,8 @@ import {
   readDeclaredSquad,
   readLastTeam,
   rememberTeam,
+  saveDeclaredSquad,
+  type OpeningDecision,
 } from "../state/declared-squad";
 import { DeclaredTransferForm } from "../components/DeclaredTransferForm";
 import { DeclaredChipsForm } from "../components/DeclaredChipsForm";
@@ -21,7 +23,7 @@ import { RankObjectiveForm } from "../components/RankObjectiveForm";
 import { PlayerDetail } from "../components/PlayerDetail";
 import { RouteHeading } from "../components/RouteHeading";
 import { Scorecard } from "../components/Scorecard";
-import { deadlineDay, money } from "../format";
+import { deadlineDay, money, timestamp } from "../format";
 import { kitForShortName } from "../kit/team-kits";
 import type { SolvedGameweek } from "../state/season-solver";
 import { PLAYERS_BY_ELEMENT_ID, startFromCodes } from "../state/season-solver";
@@ -61,6 +63,10 @@ import {
   moveLines,
 } from "../state/plan-reasons";
 import { useDocumentTitle } from "../state/use-document-title";
+import {
+  fixtureEvidenceForClubs,
+  type FixtureEvidence,
+} from "../state/fixture-evidence";
 
 /** What a chip should return before it is worth planning a season around. */
 const CHIP_TARGET = 20;
@@ -222,6 +228,7 @@ function TeamSheet({
     const best = captain ? peak * 2 : peak;
     const scores = !benched || benchCounts;
     const rating = week.difficulty[player.club] ?? null;
+    const fixtureEvidence = week.fixtureEvidence[player.club]?.[0];
 
     return (
       <li key={player.code}>
@@ -249,7 +256,9 @@ function TeamSheet({
           title={
             rating === null
               ? "No fixture, or no measured record for this club"
-              : `Fixture difficulty ${rating.toFixed(1)} of 5`
+              : fixtureEvidence
+                ? `Market-aligned fixture summary ${rating.toFixed(1)} of 5${fixtureEvidence.difficulty.clipped ? `; raw ${fixtureEvidence.difficulty.raw?.toFixed(1) ?? "unknown"} was bounded` : ""}`
+                : `Historical fixture summary ${rating.toFixed(1)} of 5`
           }
         >
           {rating === null ? "\u2014" : rating.toFixed(1)}
@@ -290,6 +299,58 @@ function TeamSheet({
       <ol className="plan-bench" aria-label="Bench in order">
         {week.bench.map((player) => line(player, true))}
       </ol>
+    </div>
+  );
+}
+
+function oneDecimal(value: number): string {
+  return `${value < 0 ? "−" : ""}${Math.abs(value).toFixed(1)}`;
+}
+
+export function FixtureEvidenceList({
+  evidence,
+}: {
+  evidence: Readonly<Record<string, readonly FixtureEvidence[]>>;
+}) {
+  const rows = Object.entries(evidence).flatMap(([club, fixtures]) =>
+    fixtures.map((fixture) => ({ club, fixture })),
+  );
+  if (rows.length === 0) return null;
+
+  return (
+    <div className="plan-fixture-evidence">
+      <ul>
+        {rows.map(({ club, fixture }) => (
+          <li key={`${club}-${String(fixture.event)}-${fixture.opponent}`}>
+            <strong>
+              {club} v {fixture.opponent} ({fixture.venue})
+            </strong>
+            <span className="mono">
+              {fixture.expectedGoals.toFixed(2)} xG ·{" "}
+              {fixture.opponentExpectedGoals.toFixed(2)} xGA ·{" "}
+              {(fixture.cleanSheetProbability * 100).toFixed(1)}% clean sheet
+            </span>
+            <span className="mono">
+              Attack {fixture.adjustments.attacking.toFixed(3)}× · Defence{" "}
+              {fixture.adjustments.cleanSheet.toFixed(3)}× · Conceding{" "}
+              {fixture.adjustments.conceding.toFixed(3)}× · Saves{" "}
+              {fixture.adjustments.saves.toFixed(3)}× · DefCon{" "}
+              {fixture.adjustments.defensiveContribution.toFixed(3)}×
+            </span>
+            <span className="plan-fixture-summary mono">
+              {fixture.difficulty.clipped
+                ? `FDR raw ${fixture.difficulty.raw === null ? "unknown" : oneDecimal(fixture.difficulty.raw)}, bounded to ${fixture.difficulty.summary?.toFixed(1) ?? "unknown"}.`
+                : `FDR ${fixture.difficulty.summary?.toFixed(1) ?? "unavailable"}/5 from the same route adjustments.`}
+            </span>
+            <span className="plan-fixture-source">
+              {fixture.level} · {fixture.source} ·{" "}
+              {fixture.updatedAt === null
+                ? "timestamp unavailable"
+                : timestamp.format(new Date(fixture.updatedAt))}
+            </span>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
@@ -364,6 +425,15 @@ function Why({ week, chip }: { week: PlanGameweek; chip: ChipCall | null }) {
           <>
             <dt data-label="fixtures">Fixtures</dt>
             <dd>{fixtures}</dd>
+          </>
+        ) : null}
+
+        {Object.keys(week.fixtureEvidence).length > 0 ? (
+          <>
+            <dt data-label="market">Market evidence</dt>
+            <dd>
+              <FixtureEvidenceList evidence={week.fixtureEvidence} />
+            </dd>
           </>
         ) : null}
 
@@ -461,6 +531,10 @@ function asPlanGameweek(week: SolvedGameweek): PlanGameweek {
     transfersOut: week.transfersOut,
     opponents: week.opponents,
     difficulty: week.difficulty,
+    fixtureEvidence: fixtureEvidenceForClubs(
+      [...week.starters, ...week.bench].map((player) => player.club),
+      week.event,
+    ),
     expected: week.expected,
     // The solver returns a mean and no spread. Copying the mean in here was a
     // ceiling that always equalled the expectation, which reads as a measured
@@ -563,11 +637,13 @@ function ReadingKey() {
       <div>
         <dt>FDR</dt>
         <dd>
-          One to five. One is softest, five hardest, a dash is a blank.
+          A secondary one-to-five summary. One is softest, five hardest, a dash
+          is a blank.
           <InfoMarker label="FDR">
-            Taken from the measured strength of both sides at the venue the
-            match is played. A dash also covers an opponent with no Premier
-            League record.
+            Where match odds exist, this is derived from the same route
+            adjustments as xPts. Otherwise it uses the measured strength of both
+            sides at the venue. The Why panel shows the raw value whenever the
+            familiar one-to-five scale bounded it.
           </InfoMarker>
         </dd>
       </div>
@@ -615,9 +691,10 @@ export default function SeasonPlanPage() {
   // Nobody reads thirty-eight cards at once, and drawing them all on mount is
   // heavy enough that the page could not share a render with anything else.
   const [shownWeeks, setShownWeeks] = useState(INITIAL_WEEKS);
-  // Rejecting the free pre-deadline changes holds the declared fifteen through
-  // gameweek one, which is what "no hits" actually means before a season.
-  const [holdOpening, setHoldOpening] = useState(false);
+  const [openingEdit, setOpeningEdit] = useState<{
+    entryId: number;
+    decision: OpeningDecision;
+  } | null>(null);
   const railEnd = useRef<HTMLParagraphElement>(null);
   const resultRef = useRef<HTMLDivElement>(null);
   // Bumped when a transfer is declared, so the squad is read again with it.
@@ -646,6 +723,13 @@ export default function SeasonPlanPage() {
     params.get("team") ?? readLastTeam(window.localStorage)?.toString() ?? null;
   const teamId =
     teamParam !== null && /^\d+$/.test(teamParam) ? Number(teamParam) : null;
+  const openingDecision =
+    teamId === null
+      ? null
+      : openingEdit?.entryId === teamId
+        ? openingEdit.decision
+        : (readDeclaredSquad(window.localStorage, teamId, PRE_SEASON_EVENT)
+            ?.openingDecision ?? null);
   /*
    * A declared fifteen carried in the link.
    *
@@ -752,10 +836,10 @@ export default function SeasonPlanPage() {
     const committed = declaredChips.committed;
     const rebuild =
       committed?.chip === "wildcard" ? { rebuildAtEvent: committed.event } : {};
-    return holdOpening
+    return openingDecision
       ? { ...base, ...rebuild, lockOpening: true }
       : { ...base, ...rebuild };
-  }, [declaredChips, fromEvent, holdOpening, plan.gameweeks, team]);
+  }, [declaredChips, fromEvent, openingDecision, plan.gameweeks, team]);
 
   const solve = useSeasonSolve(live);
   const solving = live !== null;
@@ -860,6 +944,27 @@ export default function SeasonPlanPage() {
     }));
   }, [gameweeks, solving]);
 
+  const decideOpening = (decision: OpeningDecision) => {
+    if (teamId === null || live === null) return;
+    const opener = solve.gameweeks[0];
+    if (opener?.event !== PRE_SEASON_EVENT) return;
+    const elementIds =
+      decision === "accepted"
+        ? [...opener.starters, ...opener.bench].map((player) => player.id)
+        : live.squad.map((player) => player.elementId);
+    saveDeclaredSquad(
+      window.localStorage,
+      teamId,
+      PRE_SEASON_EVENT,
+      elementIds,
+      PLAYERS_BY_ELEMENT_ID,
+      () => new Date(),
+      { openingDecision: decision },
+    );
+    setOpeningEdit({ entryId: teamId, decision });
+    setDeclaredAt(Date.now());
+  };
+
   // Reaching the end of the rail asks for more of it. The button below stays,
   // because scrolling is not a control and a keyboard has nothing to scroll to.
   useEffect(() => {
@@ -949,6 +1054,7 @@ export default function SeasonPlanPage() {
                 declaredAt={declaredAt}
                 entryId={teamId}
                 onDeclared={() => {
+                  setOpeningEdit(null);
                   setDeclaredAt(Date.now());
                 }}
                 onRetry={() => {
@@ -1161,14 +1267,18 @@ export default function SeasonPlanPage() {
               </p>
             ) : null}
             <ReadingKey />
-            {openingChanges.length > 0 || holdOpening ? (
+            {openingChanges.length > 0 || openingDecision ? (
               <div className="plan-opening-advice">
                 <p>
-                  {holdOpening ? (
+                  {openingDecision ? (
                     <>
-                      <strong>Holding your fifteen.</strong> Gameweek 1 is
-                      exactly as you declared it, and the season is solved from
-                      there.
+                      <strong>
+                        {openingDecision === "accepted"
+                          ? "Using the recommended fifteen."
+                          : "Keeping your fifteen."}
+                      </strong>{" "}
+                      Gameweek 1 is locked, saved in this browser, and the
+                      season is solved from there.
                     </>
                   ) : (
                     <>
@@ -1188,7 +1298,7 @@ export default function SeasonPlanPage() {
                     </>
                   )}
                 </p>
-                {holdOpening ? null : (
+                {openingDecision ? null : (
                   <ul className="plan-opening-list">
                     {openingChanges.map(({ incoming, outgoing }) => (
                       <li key={incoming.code}>
@@ -1201,17 +1311,33 @@ export default function SeasonPlanPage() {
                     ))}
                   </ul>
                 )}
-                <button
-                  className="secondary-command"
-                  onClick={() => {
-                    setHoldOpening(!holdOpening);
-                  }}
-                  type="button"
-                >
-                  {holdOpening
-                    ? "Show me the free changes again"
-                    : "No thanks, keep my fifteen"}
-                </button>
+                <p className="plan-opening-source">
+                  FPL does not expose pre-deadline squads. Changes made only on
+                  the FPL site cannot be detected automatically, so keep the
+                  fifteen saved here in step one up to date.
+                </p>
+                {openingDecision ? null : (
+                  <div className="plan-opening-actions">
+                    <button
+                      className="primary-command"
+                      onClick={() => {
+                        decideOpening("accepted");
+                      }}
+                      type="button"
+                    >
+                      Use these free changes
+                    </button>
+                    <button
+                      className="secondary-command"
+                      onClick={() => {
+                        decideOpening("held");
+                      }}
+                      type="button"
+                    >
+                      Keep my fifteen
+                    </button>
+                  </div>
+                )}
               </div>
             ) : null}
             <ul className="plan-rail">

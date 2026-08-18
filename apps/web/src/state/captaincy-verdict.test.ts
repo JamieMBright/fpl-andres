@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import validation from "../data/validation.json";
+import { captainEvidence } from "./captain-evidence";
 import {
   SEASON_GAMEWEEKS,
   type CaptaincyInterval,
@@ -110,12 +111,20 @@ describe("captaincyVerdict", () => {
     ]);
   });
 
-  it("averages the shortlist ceiling across seasons", () => {
+  it("averages the reachable XI ceiling across seasons", () => {
     const verdict = captaincyVerdict(
       [interval("template", 0.15, -0.34, 0.69)],
       [
-        { captaincy: [{ label: "model", meanBestPoints: 14 }] },
-        { captaincy: [{ label: "model", meanBestPoints: 16 }] },
+        {
+          ownedCaptainPolicies: [
+            { label: "expected_points", meanReachableCeiling: 14 },
+          ],
+        },
+        {
+          ownedCaptainPolicies: [
+            { label: "expected_points", meanReachableCeiling: 16 },
+          ],
+        },
       ],
     );
     expect(verdict.ceilingPoints).toBe(15);
@@ -125,8 +134,12 @@ describe("captaincyVerdict", () => {
     const verdict = captaincyVerdict(
       [interval("template", 0.15, -0.34, 0.69)],
       [
-        { captaincy: null },
-        { captaincy: [{ label: "model", meanBestPoints: 12 }] },
+        { ownedCaptainPolicies: null },
+        {
+          ownedCaptainPolicies: [
+            { label: "expected_points", meanReachableCeiling: 12 },
+          ],
+        },
       ],
     );
     expect(verdict.ceilingPoints).toBe(12);
@@ -202,7 +215,16 @@ describe("ceilingSentence", () => {
           interval("template", 0.15, -0.34, 0.69),
           interval("form", -1.57, -2.55, -0.68),
         ],
-        [{ captaincy: [{ label: "model", meanBestPoints: 15.45 }] }],
+        [
+          {
+            ownedCaptainPolicies: [
+              {
+                label: "expected_points",
+                meanReachableCeiling: 15.45,
+              },
+            ],
+          },
+        ],
       ),
     );
     expect(sentence).toContain("15.45 points");
@@ -221,24 +243,26 @@ describe("ceilingSentence", () => {
 });
 
 describe("the shipped artifact", () => {
-  it("produces a verdict the page can render", () => {
-    const verdict = captaincyVerdict(
-      validation.captainSignificance,
-      validation.seasons,
-    );
+  it("renders only evidence explicitly scoped to model-owned XIs", () => {
+    const evidence = captainEvidence(validation);
+    const verdict = captaincyVerdict(evidence.significance, evidence.seasons);
     const which = whichThesisVerdict(verdict);
 
-    expect(verdict.weeks).toBeGreaterThan(0);
-    expect(which.headline).not.toBe("nothing to answer with");
-    expect(ceilingSentence(verdict)).not.toBe("");
+    if (evidence.seasons.length === 0) {
+      expect(verdict.weeks).toBe(0);
+      expect(which.headline).toBe("nothing to answer with");
+      expect(ceilingSentence(verdict)).toBe("");
+    } else {
+      expect(verdict.weeks).toBeGreaterThan(0);
+      expect(which.headline).not.toBe("nothing to answer with");
+      expect(ceilingSentence(verdict)).not.toBe("");
+    }
   });
 
   it("agrees with its own interval bounds", () => {
     // A rule reported as better must actually have a lower bound above zero.
-    const verdict = captaincyVerdict(
-      validation.captainSignificance,
-      validation.seasons,
-    );
+    const evidence = captainEvidence(validation);
+    const verdict = captaincyVerdict(evidence.significance, evidence.seasons);
     for (const entry of verdict.better) {
       expect(entry.lower).toBeGreaterThan(0);
     }

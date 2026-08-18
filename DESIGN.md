@@ -285,7 +285,7 @@ Every remote surface implements idle, loading, ready, stale, degraded and error.
 
 ## Component inventory
 
-Forty-nine components in `apps/web/src/components`. The column
+Forty-eight components in `apps/web/src/components`. The column
 that matters is the last one: what a browser journey already proves about each,
 so a review knows what it does not have to check by hand.
 
@@ -332,7 +332,6 @@ so a review knows what it does not have to check by hand.
 | `PinnedPlayers`           | Up to four players compared side by side               | unit                                 |
 | `ValidationReport`        | Backtest metrics against baselines                     | —                                    |
 | `CalibrationCharts`       | Ranked bars and season lines, drawn by hand            | unit                                 |
-| `CaptainGrid`             | Every armband, method by gameweek, side-scrolled       | unit                                 |
 | `CohortPanel`             | The swept cohort and its coverage                      | —                                    |
 | `Fpl500Playbook`          | The ranked five hundred, and the fund they are not     | unit (`Fpl500Playbook.test.tsx`)     |
 | `RankRidge`               | Five seasons of finishes over one shared axis          | unit (via `Fpl500Playbook`)          |

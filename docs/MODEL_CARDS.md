@@ -182,18 +182,20 @@ two to three times the expected-value impact of a routine transfer — the
 reasoning is standard across the practitioner literature and is why it is scored
 on its own rather than folded into the pooled rank correlation.
 
-Every method captains from the same shortlist: the 25 most-owned players going
-into that gameweek, from ownership at the previous gameweek. Captaining from the
-whole pool would grade a decision nobody faces. The ceiling is the best captain
-_inside that shortlist_, so the reported regret is a call a manager could have
-made.
+Every rule captains from a legal eleven fielded by the simulated advised policy.
+Captaining from the whole pool, or from a synthetic list no manager owns, grades
+a decision nobody faces. The ceiling is the best captain inside that same
+eleven, so `ownedSquadRegret` is a call the manager could have made.
 
-Reported per season and per method: gameweeks scored, mean realised points of the
-captain, mean points of the best available, regret per gameweek, share of the
-ceiling, weeks the pick was the best available, and blank rate (two points or
-fewer). Figures are the player's own score, not the doubled one — doubling is a
-constant on every method and on the ceiling, so it changes no ordering, and a gap
-is worth twice what it reads over a season.
+Reported per season and per rule: manager-gameweeks scored, mean realised points
+of the chosen captain, mean reachable XI ceiling, owned-squad regret, share of
+that ceiling, weeks the pick reached it, and blank rate (two points or fewer).
+Figures are the player's own score, not the doubled one — doubling is a constant
+on every rule and on the ceiling, so it changes no ordering, and a gap is worth
+twice what it reads over a season.
+
+The table inside the generated markers predates model 8.0 until model validation
+runs. Its old top-25 population is withdrawn and is not rendered by the site.
 
 <!-- captaincy:start -->
 
@@ -224,8 +226,7 @@ is worth twice what it reads over a season.
 the highest projected scorer is not how the decision is made, and agree on
 almost nothing else: one says take the form, one the crowd's pick, one the
 differential, one shrinks a score by its own uncertainty. Each is stated without
-a measurement, so all of them are scored on the same weeks and the same
-shortlist.
+a measurement, so all of them are scored on the same legal fielded elevens.
 
 Nine policies, each a different family rather than a variant. Tuning a
 coefficient inside one and calling the result a new thesis would be fitting four
@@ -253,8 +254,8 @@ multiplier and adding it twice would outrank the ceiling it is meant to modify.
 Ownership reaches a policy rescaled to 0–100 against the most-owned player of
 that gameweek. Model 2.1 handed it the raw `selected` count — of the order of a
 million — so the ownership term swamped every projection and `template` reduced
-to `crowd` while `differential` reduced to "captain the least owned of the
-twenty-five". Both scored, both were reported, and neither was the thesis it
+to `crowd` while `differential` reduced to "captain the least owned". Both
+scored, both were reported, and neither was the thesis it
 claimed to be. `test_the_rank_policies_have_not_collapsed_into_the_crowd` now
 fails if either does it again.
 
@@ -262,10 +263,10 @@ Both halves of the rank rule are scored because the backtest has no rank to
 condition on. A policy that is right only for managers in one league position
 must not be reported as right in general.
 
-Nothing here excludes a premium the whole field owns. Seven of the nine take the
-best player on the shortlist when he is also the most owned, and only
-`differential` declines — a framework that could never captain Haaland would be
-answering a different question.
+Nothing here excludes a premium the whole field owns when the model-owned XI
+contains him. A framework that could never captain the most-owned premium would
+be answering a different question; a framework that assumes he was owned would
+be answering no real manager's question at all.
 
 #### Why the table below has an interval column
 
@@ -288,13 +289,18 @@ The bootstrap refuses fewer than 32 paired weeks rather than returning a narrow
 interval from a short series, and it refuses two series of different lengths
 rather than truncating one to fit.
 
-**The measured result, over 127 paired gameweeks: nothing beats the
-projection.** Not one interval clears zero. `template` tops the table by 0.15
-points a week on an interval of −0.34 to +0.69, so the ordering is inside its
-own noise and the two seasons it won are two coin flips. The only findings that
-survive are negative: `upside` costs 1.20 a week and `form` 1.57, both with
-intervals entirely below zero. Maximising the ceiling and chasing form are
-measurably worse than taking the highest projected scorer.
+The old result over 127 crowd-shortlist gameweeks is withdrawn. Model 8.0 pools
+paired manager-gameweeks from legal advised-policy elevens and publishes the
+result only after the refreshed bootstrap has run. Until then no captain rule
+is claimed to beat or lose to the projection.
+
+The 2022/23 through 2025/26 seasons are retrospective: every outcome was visible
+while model 7.1 was developed, so none is labelled a holdout. The first genuine
+prospective record is `data/prospective/gw1-2026-27.json`, frozen before the GW1
+deadline with the code revision, model version, `docs/PARAMETERS.md` hash and
+hashes of every planning artifact. FPL500 squads and captains are then captured
+after each 2026/27 deadline as a separate forward-only evidence stream; FPL does
+not expose historical manager squads for backfill.
 
 A captain's return can be negative — a red card is −3, an own goal −2 — and
 `TripletPrediction` refuses a negative row because the metrics it was built for
@@ -345,15 +351,15 @@ This is not a permanent refusal. The conditions under which it changes are
 written down so the decision can be revisited rather than re-argued:
 
 - a learned policy enters as one more candidate in `CAPTAIN_POLICIES`, scored on
-  the same shortlist, in the same weeks, by the same paired bootstrap;
+  the same model-owned elevens, in the same manager-gameweeks, by the same paired
+  bootstrap;
 - it is fit on seasons it is not scored on, walk-forward, never on all four;
 - it is only adopted if its interval clears zero against `expected_points` —
   the same bar all ten hand-written theses have now failed to clear.
 
-Until then the honest position is that the ceiling is the thing worth chasing,
-not the ranking. The best captain available on the shortlist averages 15.45; the
-best thesis takes 7.12. Nobody is leaving less than half of it on the table, and
-no reweighting of these features closes a gap that size.
+Until then the honest comparison is against the reachable XI ceiling, not the
+best player in the game. The generated model 8.0 table reports that gap after
+the owned-XI validation run; this prose does not copy its numbers.
 
 ### Studying the elite cohort's armband
 
@@ -409,10 +415,9 @@ The evaluation design draws on published work rather than being invented here.
   ARIMA are the baselines worth beating, that a hybrid weighted toward the model
   beats one weighted toward realised points, and that captaincy is normally
   handled outside the optimiser and should not be.
-- FPL Oracle, _FPL Captaincy Logic_. Source of the shortlist framing: build two
-  to four candidates on expected points first, then separate them on effective
-  ownership and rank situation. Our shortlist is the crowd's holdings for the
-  same reason — it is the pool the decision is actually made from.
+- FPL Oracle, _FPL Captaincy Logic_. Source of the candidate framing: separate
+  options on expected points, effective ownership and rank situation. Those
+  rules are evaluated only among the legal eleven the model actually fielded.
 - FPL360, _FPL Captaincy Strategy_. Source of the blank-rate column: the cost of
   a captaincy call is felt on the weeks it returns nothing, which a mean hides.
 

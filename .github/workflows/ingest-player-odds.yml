@@ -64,10 +64,21 @@ jobs:
     # job cannot see them and the fetch step exits on an empty key, which is
     # exactly how run 1 failed.
     environment: production
-    timeout-minutes: 15
+    timeout-minutes: 45
     steps:
       - name: Check out repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+
+      - name: Set up Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: 20.20.2
+
+      - name: Install JavaScript dependencies
+        run: |
+          corepack enable
+          corepack prepare pnpm@9.15.9 --activate
+          pnpm install --frozen-lockfile
 
       - name: Set up Python
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
@@ -125,15 +136,39 @@ jobs:
             exit 0
           fi
           # `player-odds.json` is an input, not a shipped recommendation. The
-          # plan reads `season-inputs.json`, so commit both or neither.
+          # plan reads the complete chain, so commit all of it or none of it.
+          opening_before="$(node -e "const p=require('./apps/web/src/data/opening-squad.json'); process.stdout.write(p.picks.map(x=>x.code).sort((a,b)=>a-b).join(','))")"
           python -m fpl_andres.cli.publish_season_inputs
+          pnpm --filter @fpl-andres/web publish:canonical-opening
+          opening_after="$(node -e "const p=require('./apps/web/src/data/opening-squad.json'); process.stdout.write(p.picks.map(x=>x.code).sort((a,b)=>a-b).join(','))")"
+          if [ "$opening_before" != "$opening_after" ]; then
+            weekly_free_transfers="$(node -e "const p=require('./apps/web/src/data/season-inputs.json'); process.stdout.write(String(p.rules.weeklyFreeTransfers))")"
+            transfer_cost_points="$(node -e "const p=require('./apps/web/src/data/season-inputs.json'); process.stdout.write(String(p.rules.transferCostPoints))")"
+            rules_reference="$(node -e "const p=require('./apps/web/src/data/season-inputs.json'); process.stdout.write(p.rules.sourceReference)")"
+            python -m fpl_andres.cli.publish_season_plan \
+              --weekly-free-transfers "$weekly_free_transfers" \
+              --transfer-cost-points "$transfer_cost_points" \
+              --rules-reference "$rules_reference"
+          else
+            echo "canonical fifteen unchanged; static plan remains valid"
+          fi
           # prettier owns the file and Python does not write it that way. An
           # unformatted bot commit reddens the next human push, not this run.
           # Formatting before the diff check also stops a rewrite that is only
           # formatting from reaching `git commit` and failing it empty.
           npx --yes prettier@3 --write \
             apps/web/src/data/player-odds.json \
-            apps/web/src/data/season-inputs.json
+            apps/web/src/data/season-inputs.json \
+            apps/web/src/data/opening-squad.json \
+            apps/web/src/data/season-plan.json
+          deadline="$(node -e "const p=require('./apps/web/src/data/season-inputs.json'); process.stdout.write(p.deadlines[0])")"
+          if node -e "process.exit(Date.now() < Date.parse(process.argv[1]) ? 0 : 1)" "$deadline"; then
+            python -m fpl_andres.cli.freeze_prospective \
+              --deadline "$deadline" \
+              --frozen-at "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+              --code-revision "$GITHUB_SHA"
+            npx --yes prettier@3 --write data/prospective/gw1-2026-27.json
+          fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           # Staged first, then compared against the index. `git diff` does not
@@ -141,10 +176,16 @@ jobs:
           # would report "unchanged" and throw it away.
           git add \
             apps/web/src/data/player-odds.json \
-            apps/web/src/data/season-inputs.json
+            apps/web/src/data/season-inputs.json \
+            apps/web/src/data/opening-squad.json \
+            apps/web/src/data/season-plan.json \
+            data/prospective/gw1-2026-27.json
           if git diff --cached --quiet -- \
             apps/web/src/data/player-odds.json \
-            apps/web/src/data/season-inputs.json; then
+            apps/web/src/data/season-inputs.json \
+            apps/web/src/data/opening-squad.json \
+            apps/web/src/data/season-plan.json \
+            data/prospective/gw1-2026-27.json; then
             echo "odds unchanged"
             exit 0
           fi
