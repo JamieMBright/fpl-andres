@@ -1,6 +1,6 @@
 {
   "schemaVersion": 4,
-  "generatedAt": "2026-08-18T00:44:01.719960Z",
+  "generatedAt": "2026-08-18T09:40:32.529478Z",
   "recordSeason": "2025-26",
   "events": [
     1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
@@ -58,8 +58,8 @@
     "playerMarkets": {
       "source": "the-odds-api",
       "level": "observed",
-      "updatedAt": "2026-08-18T00:43:58.504105+00:00",
-      "contentHash": "sha256:a8063502c8f7c9849d6c6ea533636a0c5d8c1b1bc4f36abcc52bc74646caf9cf"
+      "updatedAt": "2026-08-18T09:40:28.690037+00:00",
+      "contentHash": "sha256:23ca6cdb807b71250bebaf713718e2e83e8bf9ab3ace726a15f68559f0ee631b"
     },
     "fixtureMarkets": {
       "source": "the-odds-api",
@@ -189,7 +189,7 @@
       }
     ],
     "sourceReference": "FPL rules page, Transfers section",
-    "dataAvailableAt": "2026-08-18T00:44:01.725000Z",
+    "dataAvailableAt": "2026-08-18T09:40:32.536203Z",
     "playableStartRate": 0.35,
     "transferMarginPoints": 0.5
   },
@@ -1741,11 +1741,11 @@
   },
   "bonusOverrides": {
     "1": {
-      "1": 0.05,
-      "13": 0.064,
+      "1": 0.051,
+      "13": 0.065,
       "19": 0.003,
-      "4": 0.186,
-      "12": 0.013,
+      "4": 0.182,
+      "12": 0.012,
       "25": 0.005,
       "9": 0.0,
       "452": 0.002,
@@ -3430,10 +3430,10 @@
       "club": "ARS",
       "teamId": 1,
       "priceTenths": 80,
-      "basePoints": 5.117,
+      "basePoints": 5.099,
       "routes": {
         "appearance": 1.714,
-        "attacking": 0.629,
+        "attacking": 0.611,
         "cleanSheet": 1.69,
         "bonus": 0.745,
         "conceding": -0.122,
@@ -7851,10 +7851,10 @@
       "club": "ARS",
       "teamId": 1,
       "priceTenths": 95,
-      "basePoints": 4.156,
+      "basePoints": 4.128,
       "routes": {
         "appearance": 1.636,
-        "attacking": 1.556,
+        "attacking": 1.528,
         "cleanSheet": 0.247,
         "bonus": 0.501,
         "yellowCards": -0.073,
@@ -8172,10 +8172,10 @@
       "club": "ARS",
       "teamId": 1,
       "priceTenths": 55,
-      "basePoints": 3.325,
+      "basePoints": 3.336,
       "routes": {
         "appearance": 1.87,
-        "attacking": 0.644,
+        "attacking": 0.655,
         "cleanSheet": 0.326,
         "bonus": 0.243,
         "yellowCards": -0.113,
@@ -9521,6 +9521,34 @@
       "depthRank": 2
     },
     {
+      "id": 17,
+      "code": 195384,
+      "name": "Merino",
+      "position": "MID",
+      "positionId": 3,
+      "club": "ARS",
+      "teamId": 1,
+      "priceTenths": 60,
+      "basePoints": 2.436,
+      "routes": {
+        "appearance": 1.354,
+        "attacking": 0.806,
+        "cleanSheet": 0.065,
+        "bonus": 0.223,
+        "yellowCards": -0.062,
+        "redCards": -0.002,
+        "defensiveContribution": 0.052
+      },
+      "startRate": 0.471,
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 9,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
+    },
+    {
       "id": 15,
       "code": 184029,
       "name": "\u00d8degaard",
@@ -9543,34 +9571,6 @@
       "squadNumber": null,
       "rated": true,
       "depthRank": 4,
-      "evidence": {
-        "appearance": "marketParticipation",
-        "attacking": "marketAttack"
-      }
-    },
-    {
-      "id": 17,
-      "code": 195384,
-      "name": "Merino",
-      "position": "MID",
-      "positionId": 3,
-      "club": "ARS",
-      "teamId": 1,
-      "priceTenths": 60,
-      "basePoints": 2.418,
-      "routes": {
-        "appearance": 1.354,
-        "attacking": 0.788,
-        "cleanSheet": 0.065,
-        "bonus": 0.223,
-        "yellowCards": -0.062,
-        "redCards": -0.002,
-        "defensiveContribution": 0.052
-      },
-      "startRate": 0.471,
-      "squadNumber": null,
-      "rated": true,
-      "depthRank": 9,
       "evidence": {
         "appearance": "marketParticipation",
         "attacking": "marketAttack"
