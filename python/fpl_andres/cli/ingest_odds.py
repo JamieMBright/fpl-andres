@@ -45,8 +45,13 @@ from fpl_andres.adapters.the_odds_api import (
 )
 from fpl_andres.jsonio import read_json_file
 from fpl_andres.models.fixture_odds import club_views, load_fixture_odds
-from fpl_andres.models.goal_expectation import GoalExpectation, fit_goal_expectation
-from fpl_andres.models.odds import OddsUnavailable
+from fpl_andres.models.goal_expectation import (
+    GoalExpectation,
+    fit_goal_expectation,
+    fit_goal_expectation_from_probabilities,
+    total_goals_mean,
+)
+from fpl_andres.models.odds import OddsUnavailable, devig_shin
 from fpl_andres.timeouts import ODDS_FEED
 
 DEFAULT_OUTPUT = Path("apps/web/src/data/fixture-odds.json")
@@ -58,10 +63,12 @@ DEFAULT_BACKFILL_DIR = Path("data/odds")
 #: comparison against the history model has nothing to stand on.
 BACKTEST_SEASONS = ("2022-23", "2023-24", "2024-25", "2025-26")
 
-TEAM_FALLBACK_MARKETS = ("h2h", "totals")
+TEAM_FALLBACK_MARKETS = ("h2h", "totals", "alternate_totals")
+# The live survey returned and billed `h2h_lay` alongside a requested `h2h`.
+TEAM_FALLBACK_BILLED_MARKETS = len(TEAM_FALLBACK_MARKETS) + 1
 TEAM_FALLBACK_FIXTURES = 10
 TEAM_FALLBACK_WINDOW_DAYS = 6
-TEAM_FALLBACK_WEEKLY_BUDGET = len(TEAM_FALLBACK_MARKETS) * TEAM_FALLBACK_FIXTURES
+TEAM_FALLBACK_WEEKLY_BUDGET = TEAM_FALLBACK_BILLED_MARKETS * TEAM_FALLBACK_FIXTURES
 
 #: A completed Premier League season. Fewer means a club fell out of the
 #: crosswalk and took all 38 of its fixtures with it.
@@ -69,6 +76,13 @@ EXPECTED_CLUBS = 20
 
 #: Bumped when the published shape changes, so a stale artifact is detectable.
 ODDS_SCHEMA_VERSION = 1
+
+TEAM_MARKET_USAGE = {
+    "alternate_totals": "total-goals-shape",
+    "h2h": "goal-split",
+    "h2h_lay": "paired-back-lay-goal-split",
+    "totals": "total-goals",
+}
 
 #: football-data.co.uk club names against FPL short codes, which is the key
 #: every other artifact in this repository joins on. A name that is not here is
@@ -249,6 +263,18 @@ def _fetch(url: str, client: httpx.Client, *, required: bool = True) -> str | No
 
 
 def _priced(row: FixtureOdds) -> GoalExpectation:
+    if row.match_probabilities is not None or row.total_goals_mean is not None:
+        match_probabilities = row.match_probabilities
+        if match_probabilities is None:
+            home_probability, draw_probability, away_probability = devig_shin(
+                (row.home_odds, row.draw_odds, row.away_odds)
+            )
+            match_probabilities = home_probability, draw_probability, away_probability
+        total = row.total_goals_mean
+        if total is None:
+            over_probability, _ = devig_shin((row.over_odds, row.under_odds))
+            total = total_goals_mean(over_probability)
+        return fit_goal_expectation_from_probabilities(match_probabilities, total)
     return fit_goal_expectation(
         (row.home_odds, row.draw_odds, row.away_odds),
         (row.over_odds, row.under_odds),
@@ -284,6 +310,16 @@ def _entry(row: FixtureOdds, fit: GoalExpectation, *, keep_markets: bool) -> dic
         # today cannot be recovered later. Corpus files only: the site needs
         # the derived numbers, not a hundred prices per fixture.
         entry["markets"] = {name: round(price, 3) for name, price in sorted(row.markets.items())}
+    if row.observed_market_keys:
+        entry["marketEvidence"] = {
+            "observed": list(row.observed_market_keys),
+            "numberMoving": list(row.used_market_keys),
+            "usage": {
+                key: TEAM_MARKET_USAGE[key]
+                for key in row.observed_market_keys
+                if key in TEAM_MARKET_USAGE
+            },
+        }
     return entry
 
 

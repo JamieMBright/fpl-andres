@@ -95,6 +95,28 @@ def test_a_shots_on_target_line_becomes_an_expected_count() -> None:
     assert rows[0].shots_on_target == pytest.approx(1.678, abs=0.001)
 
 
+def test_first_and_last_scorer_markets_are_retained() -> None:
+    rows = read_event(
+        _event(
+            _book(
+                "bet365",
+                "player_first_goal_scorer",
+                [{"description": "Bukayo Saka", "name": "Yes", "price": 5.0}],
+            ),
+            _book(
+                "bet365",
+                "player_last_goal_scorer",
+                [{"description": "Bukayo Saka", "name": "Yes", "price": 4.0}],
+            ),
+        )
+    )
+
+    assert len(rows) == 1
+    assert rows[0].first_goal == 0.2
+    assert rows[0].last_goal == 0.25
+    assert rows[0].priced
+
+
 def test_a_book_quoting_no_margin_does_not_stop_the_fixture() -> None:
     rows = read_event(
         _event(
@@ -331,6 +353,8 @@ def test_a_matched_row_keeps_every_market_probability() -> None:
         away_team="Bournemouth",
         kickoff=None,
         anytime_goal=0.3,
+        first_goal=0.12,
+        last_goal=0.11,
         anytime_assist=0.2,
         any_card=0.1,
         red_card=0.01,
@@ -343,6 +367,8 @@ def test_a_matched_row_keeps_every_market_probability() -> None:
 
     assert unmatched == ()
     assert matched[0].anytime_goal == 0.3
+    assert matched[0].first_goal == 0.12
+    assert matched[0].last_goal == 0.11
     assert matched[0].anytime_assist == 0.2
     assert matched[0].any_card == 0.1
     assert matched[0].red_card == 0.01

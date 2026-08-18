@@ -243,6 +243,94 @@ class TestTheOddsApiFallback:
             is None
         )
 
+    def test_every_live_team_market_reaches_the_goal_analysis(self) -> None:
+        payload = {
+            "home_team": "Arsenal",
+            "away_team": "Bournemouth",
+            "commence_time": "2026-08-21T19:00:00Z",
+            "bookmakers": [
+                {
+                    "key": "exchange",
+                    "markets": [
+                        {
+                            "key": "h2h",
+                            "outcomes": [
+                                {"name": "Arsenal", "price": 1.5},
+                                {"name": "Draw", "price": 4.5},
+                                {"name": "Bournemouth", "price": 7.0},
+                            ],
+                        },
+                        {
+                            "key": "h2h_lay",
+                            "outcomes": [
+                                {"name": "Arsenal", "price": 1.55},
+                                {"name": "Draw", "price": 4.7},
+                                {"name": "Bournemouth", "price": 7.4},
+                            ],
+                        },
+                        {
+                            "key": "totals",
+                            "outcomes": [
+                                {"name": "Over", "point": 2.5, "price": 1.9},
+                                {"name": "Under", "point": 2.5, "price": 2.0},
+                            ],
+                        },
+                        {
+                            "key": "alternate_totals",
+                            "outcomes": [
+                                {"name": "Over", "point": 1.5, "price": 1.3},
+                                {"name": "Under", "point": 1.5, "price": 4.2},
+                                {"name": "Over", "point": 3.5, "price": 2.4},
+                                {"name": "Under", "point": 3.5, "price": 1.6},
+                            ],
+                        },
+                    ],
+                }
+            ],
+        }
+        baseline_payload = {
+            **payload,
+            "bookmakers": [
+                {
+                    **payload["bookmakers"][0],
+                    "markets": [
+                        market
+                        for market in payload["bookmakers"][0]["markets"]
+                        if market["key"] in {"h2h", "totals"}
+                    ],
+                }
+            ],
+        }
+
+        row = read_fixture_odds(payload)
+        baseline = read_fixture_odds(baseline_payload)
+
+        assert row is not None
+        assert baseline is not None
+        assert row.observed_market_keys == (
+            "alternate_totals",
+            "h2h",
+            "h2h_lay",
+            "totals",
+        )
+        assert row.used_market_keys == row.observed_market_keys
+        fitted = _priced(row)
+        baseline_fitted = _priced(baseline)
+        assert fitted.total != pytest.approx(baseline_fitted.total)
+        assert fitted.home / fitted.total != pytest.approx(
+            baseline_fitted.home / baseline_fitted.total
+        )
+        assert _entry(row, fitted, keep_markets=False)["marketEvidence"] == {
+            "observed": ["alternate_totals", "h2h", "h2h_lay", "totals"],
+            "numberMoving": ["alternate_totals", "h2h", "h2h_lay", "totals"],
+            "usage": {
+                "alternate_totals": "total-goals-shape",
+                "h2h": "goal-split",
+                "h2h_lay": "paired-back-lay-goal-split",
+                "totals": "total-goals",
+            },
+        }
+
     def test_only_the_current_rounds_uncovered_fixtures_are_selected(self) -> None:
         events = [
             {

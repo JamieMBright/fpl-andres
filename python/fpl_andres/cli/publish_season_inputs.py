@@ -393,6 +393,52 @@ class MarketShots:
     shots_on_target: float | None
 
 
+PLAYER_MARKET_EVIDENCE_FIELDS = (
+    ("anytime_goal", "anytimeGoal", "attacking-participation-bps"),
+    ("first_goal", "firstGoal", "corroborating-overlap-not-added"),
+    ("last_goal", "lastGoal", "corroborating-overlap-not-added"),
+    ("anytime_assist", "anytimeAssist", "attacking-participation-bps"),
+    ("any_card", "anyCard", "discipline-bps"),
+    ("red_card", "redCard", "discipline-bps"),
+    ("shots", "shots", "participation; bps-when-paired"),
+    ("shots_on_target", "shotsOnTarget", "availability; bps-when-paired"),
+)
+PLAYER_MARKET_USAGE = {output: usage for _source, output, usage in PLAYER_MARKET_EVIDENCE_FIELDS}
+
+
+def _quoted_market_evidence(odds_path: Path) -> dict[int, dict[str, object]]:
+    """Retain every observed quote and state how analysis treats it."""
+    if not odds_path.exists():
+        return {}
+    artifact = read_json_file(odds_path)
+    fetched_at = artifact.get("fetchedAt")
+    quoted: dict[int, dict[str, object]] = {}
+    for row in artifact.get("players", []):
+        element_id = row.get("element_id")
+        if not isinstance(element_id, int):
+            continue
+        values = {
+            output: value
+            for source, output, _usage in PLAYER_MARKET_EVIDENCE_FIELDS
+            if (value := _optional_float(row.get(source))) is not None
+        }
+        if not values:
+            continue
+        observed_at = row.get("observed_at")
+        quoted[element_id] = {
+            "observedAt": (
+                observed_at
+                if isinstance(observed_at, str)
+                else fetched_at
+                if isinstance(fetched_at, str)
+                else None
+            ),
+            "books": row.get("books") if isinstance(row.get("books"), int) else 0,
+            **values,
+        }
+    return quoted
+
+
 def _quoted_shots(odds_path: Path) -> dict[int, tuple[MarketShots, date]]:
     if not odds_path.exists():
         return {}
@@ -1037,17 +1083,17 @@ def _apply_shot_market(
             if draft.expected_bps is not None:
                 draft.expected_bps *= ratio
             draft.evidence["appearance"] = "shotParticipation"
-    _apply_shot_bps(draft, market, weight)
+    bps_applied = _apply_shot_bps(draft, market, weight)
     if market.shots is not None:
         draft.expected_shots = (
             blend_rate(draft.expected_shots, market.shots, weight)
             if draft.expected_shots is not None
             else market.shots
         )
-    return True, inferred
+    return inferred or bps_applied, inferred
 
 
-def _apply_shot_bps(draft: PlayerDraft, market: MarketShots, weight: float) -> None:
+def _apply_shot_bps(draft: PlayerDraft, market: MarketShots, weight: float) -> bool:
     if (
         draft.expected_bps is None
         or draft.expected_shots is None
@@ -1056,13 +1102,14 @@ def _apply_shot_bps(draft: PlayerDraft, market: MarketShots, weight: float) -> N
         or market.shots <= 0.0
         or market.shots_on_target is None
     ):
-        return
+        return False
     on_target_share = min(1.0, market.shots_on_target / market.shots)
     baseline_on_target = draft.expected_shots * on_target_share
     baseline_shot_bps = 3.0 * baseline_on_target - draft.expected_shots
     market_shot_bps = 3.0 * market.shots_on_target - market.shots
     draft.expected_bps += weight * (market_shot_bps - baseline_shot_bps)
     draft.evidence["bonus"] = "shotBps"
+    return True
 
 
 def _apply_card_market(draft: PlayerDraft, priced: MarketCards | None, weight: float) -> bool:
@@ -1479,6 +1526,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     quoted_attack = _quoted_attack(player_odds_path)
     quoted_cards = _quoted_cards(player_odds_path)
     quoted_shots = _quoted_shots(player_odds_path)
+    quoted_evidence = _quoted_market_evidence(player_odds_path)
     squads = _quoted_squads(player_odds_path)
     players, player_reach, market_carry = _build_player_rows(
         available,
@@ -1623,6 +1671,12 @@ def main(argv: Sequence[str] | None = None) -> int:
             "fixtureRungs": market_rungs,
             "participationInferred": player_reach.participation,
             "bonusEvents": len(bonus_overrides),
+            "playerMarketUsage": PLAYER_MARKET_USAGE,
+            "playerEvidence": {
+                str(element_id): evidence
+                for element_id, evidence in quoted_evidence.items()
+                if element_id in trimmed_ids
+            },
         },
         "marketCarry": {
             "halfLifeGameweeks": MARKET_CARRY_HALF_LIFE_GAMEWEEKS,

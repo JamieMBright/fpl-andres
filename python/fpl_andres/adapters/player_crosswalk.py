@@ -134,6 +134,8 @@ def crosswalk(
                 kickoff=row.kickoff,
                 club=club_of.get(element_id),
                 anytime_goal=row.anytime_goal,
+                first_goal=row.first_goal,
+                last_goal=row.last_goal,
                 anytime_assist=row.anytime_assist,
                 any_card=row.any_card,
                 red_card=row.red_card,

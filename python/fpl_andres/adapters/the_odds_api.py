@@ -26,6 +26,7 @@ from typing import Any
 import httpx
 
 from fpl_andres.adapters.football_data import FixtureOdds
+from fpl_andres.models.goal_expectation import total_goals_mean
 from fpl_andres.models.odds import OddsUnavailable, devig_shin
 from fpl_andres.models.player_odds import PlayerMatchOdds
 
@@ -43,16 +44,15 @@ __all__ = [
 
 BASE = "https://api.the-odds-api.com/v4/sports/soccer_epl"
 
-#: Only markets that map onto an FPL scoring route something here reads. The
-#: host bills per market per region, so asking for a market nothing consumes is
-#: a direct charge against a free tier of 500 requests a month -- and it bills
-#: for a market it actually returns, so a market no book has opened is free.
-#: Shots on target were fetched and discarded twice; they map onto no FPL
-#: scoring event and are not asked for. Cards were discarded for a different
-#: reason, now gone: `routes.discipline` was one number and had no card route
-#: to spend a price on. Model 6.0 split it into four.
+#: Every live player market that constrains a scoring route or availability.
+#: First/last scorer overlap anytime scorer and are retained as corroboration,
+#: not added as extra goals. An unpaired SOT line is likewise retained without
+#: inventing a historical BPS baseline. The host bills per returned market per
+#: region, so a market no book has opened is free.
 PLAYER_MARKETS: tuple[str, ...] = (
     "player_goal_scorer_anytime",
+    "player_first_goal_scorer",
+    "player_last_goal_scorer",
     "player_assists",
     "player_to_receive_card",
     "player_to_receive_red_card",
@@ -63,6 +63,8 @@ PLAYER_MARKETS: tuple[str, ...] = (
 #: Which field on `PlayerMatchOdds` each market fills.
 MARKET_FIELDS: Mapping[str, str] = {
     "player_goal_scorer_anytime": "anytime_goal",
+    "player_first_goal_scorer": "first_goal",
+    "player_last_goal_scorer": "last_goal",
     "player_assists": "anytime_assist",
     "player_to_receive_card": "any_card",
     "player_to_receive_red_card": "red_card",
@@ -276,45 +278,193 @@ def describe_event(payload: Mapping[str, Any]) -> str:
     return detail if not missing else f"{detail}, absent {missing}"
 
 
+def _match_prices(outcomes: object, home: str, away: str) -> dict[str, float]:
+    if not isinstance(outcomes, list):
+        return {}
+    wanted = {home: "home", "Draw": "draw", away: "away"}
+    values: dict[str, float] = {}
+    for outcome in outcomes:
+        if not isinstance(outcome, Mapping):
+            continue
+        name = outcome.get("name")
+        price = outcome.get("price")
+        field = wanted.get(name) if isinstance(name, str) else None
+        if field and isinstance(price, (int, float)) and price > 1.0:
+            values[field] = float(price)
+    return values
+
+
+def _total_prices(outcomes: object) -> dict[float, dict[str, float]]:
+    if not isinstance(outcomes, list):
+        return {}
+    values: dict[float, dict[str, float]] = defaultdict(dict)
+    for outcome in outcomes:
+        if not isinstance(outcome, Mapping):
+            continue
+        name = outcome.get("name")
+        point = outcome.get("point")
+        price = outcome.get("price")
+        side = str(name).lower() if name in ("Over", "Under") else None
+        if (
+            side
+            and isinstance(point, (int, float))
+            and isinstance(price, (int, float))
+            and price > 1.0
+        ):
+            values[float(point)][side] = float(price)
+    return dict(values)
+
+
+def _normalise_three(
+    values: tuple[float, float, float],
+) -> tuple[float, float, float]:
+    total = sum(values)
+    return values[0] / total, values[1] / total, values[2] / total
+
+
+def _book_team_markets(
+    book: Mapping[str, Any], home: str, away: str
+) -> tuple[
+    dict[str, float],
+    dict[str, float],
+    dict[str, dict[float, dict[str, float]]],
+    set[str],
+]:
+    back: dict[str, float] = {}
+    lay: dict[str, float] = {}
+    totals: dict[str, dict[float, dict[str, float]]] = {}
+    observed: set[str] = set()
+    for market in book.get("markets", []):
+        if not isinstance(market, Mapping):
+            continue
+        key = market.get("key")
+        if key not in {"h2h", "h2h_lay", "totals", "alternate_totals"}:
+            continue
+        assert isinstance(key, str)
+        observed.add(key)
+        if key == "h2h":
+            back.update(_match_prices(market.get("outcomes"), home, away))
+        elif key == "h2h_lay":
+            lay.update(_match_prices(market.get("outcomes"), home, away))
+        else:
+            totals[key] = _total_prices(market.get("outcomes"))
+    return back, lay, totals, observed
+
+
+def _paired_lay_view(
+    back: Mapping[str, float], lay: Mapping[str, float]
+) -> tuple[float, float, float] | None:
+    fields = ("home", "draw", "away")
+    if not all(field in back and field in lay for field in fields):
+        return None
+    if any(back[field] > lay[field] for field in fields):
+        return None
+    return _normalise_three(
+        (
+            (1.0 / back["home"] + 1.0 / lay["home"]) / 2.0,
+            (1.0 / back["draw"] + 1.0 / lay["draw"]) / 2.0,
+            (1.0 / back["away"] + 1.0 / lay["away"]) / 2.0,
+        )
+    )
+
+
+def _collect_total_means(
+    totals: Mapping[str, Mapping[float, Mapping[str, float]]],
+    prices: dict[str, list[float]],
+    total_means_by_line: dict[float, list[float]],
+) -> set[str]:
+    valid_keys: set[str] = set()
+    for market_key, lines in totals.items():
+        for line, sides in lines.items():
+            if line == 2.5 and market_key == "totals":
+                for side in ("over", "under"):
+                    if side in sides:
+                        prices[side].append(sides[side])
+            if line <= 0.0 or line != int(line) + 0.5:
+                continue
+            over = sides.get("over")
+            under = sides.get("under")
+            if over is None or under is None:
+                continue
+            try:
+                over_probability, _ = devig_shin((over, under))
+                total_means_by_line[line].append(total_goals_mean(over_probability, line))
+            except OddsUnavailable:
+                continue
+            valid_keys.add(market_key)
+    return valid_keys
+
+
+def _match_probability_consensus(
+    medians: Mapping[str, float],
+    paired_lay_views: Sequence[tuple[float, float, float]],
+) -> tuple[float, float, float] | None:
+    if not paired_lay_views:
+        return None
+    try:
+        back_probabilities = devig_shin((medians["home"], medians["draw"], medians["away"]))
+    except OddsUnavailable:
+        return None
+    lay_consensus = _normalise_three(
+        (
+            statistics.median(view[0] for view in paired_lay_views),
+            statistics.median(view[1] for view in paired_lay_views),
+            statistics.median(view[2] for view in paired_lay_views),
+        )
+    )
+    return _normalise_three(
+        (
+            (back_probabilities[0] + lay_consensus[0]) / 2.0,
+            (back_probabilities[1] + lay_consensus[1]) / 2.0,
+            (back_probabilities[2] + lay_consensus[2]) / 2.0,
+        )
+    )
+
+
+def _alternate_total_consensus(
+    valid_total_keys: set[str], total_means_by_line: Mapping[float, Sequence[float]]
+) -> float | None:
+    if "alternate_totals" not in valid_total_keys:
+        return None
+    line_consensus = [statistics.median(means) for means in total_means_by_line.values() if means]
+    return statistics.median(line_consensus) if line_consensus else None
+
+
 def read_fixture_odds(payload: Mapping[str, Any]) -> FixtureOdds | None:
-    """A complete median 1X2 and over/under 2.5 book for one fixture."""
+    """A complete team-market consensus for one fixture."""
     home = payload.get("home_team")
     away = payload.get("away_team")
     if not isinstance(home, str) or not isinstance(away, str):
         raise ValueError("event payload named no teams")
 
     prices: dict[str, list[float]] = defaultdict(list)
+    observed: set[str] = set()
+    paired_lay_views: list[tuple[float, float, float]] = []
+    total_means_by_line: dict[float, list[float]] = defaultdict(list)
+    valid_total_keys: set[str] = set()
     for book in payload.get("bookmakers", []):
         if not isinstance(book, Mapping):
             continue
-        for market in book.get("markets", []):
-            if not isinstance(market, Mapping):
-                continue
-            key = market.get("key")
-            if key == "h2h":
-                wanted = {home: "home", "Draw": "draw", away: "away"}
-                for outcome in market.get("outcomes", []):
-                    if not isinstance(outcome, Mapping):
-                        continue
-                    name = outcome.get("name")
-                    price = outcome.get("price")
-                    field = wanted.get(name) if isinstance(name, str) else None
-                    if field and isinstance(price, (int, float)) and price > 1.0:
-                        prices[field].append(float(price))
-            elif key == "totals":
-                for outcome in market.get("outcomes", []):
-                    if not isinstance(outcome, Mapping) or outcome.get("point") != 2.5:
-                        continue
-                    name = outcome.get("name")
-                    price = outcome.get("price")
-                    field = str(name).lower() if name in ("Over", "Under") else None
-                    if field and isinstance(price, (int, float)) and price > 1.0:
-                        prices[field].append(float(price))
+        back, lay, totals, book_observed = _book_team_markets(book, home, away)
+        observed.update(book_observed)
+        for field, price in back.items():
+            prices[field].append(price)
+        lay_view = _paired_lay_view(back, lay)
+        if lay_view is not None:
+            paired_lay_views.append(lay_view)
+        valid_total_keys.update(_collect_total_means(totals, prices, total_means_by_line))
 
     required = ("home", "draw", "away", "over", "under")
     if any(not prices[field] for field in required):
         return None
     medians = {field: statistics.median(prices[field]) for field in required}
+    match_probabilities = _match_probability_consensus(medians, paired_lay_views)
+    used = {"h2h", "totals"}
+    if match_probabilities is not None:
+        used.add("h2h_lay")
+    alternate_total_mean = _alternate_total_consensus(valid_total_keys, total_means_by_line)
+    if alternate_total_mean is not None:
+        used.add("alternate_totals")
     return FixtureOdds(
         division="E0",
         kickoff=_kickoff(payload.get("commence_time")),
@@ -325,8 +475,14 @@ def read_fixture_odds(payload: Mapping[str, Any]) -> FixtureOdds | None:
         away_odds=medians["away"],
         over_odds=medians["over"],
         under_odds=medians["under"],
-        price_source="the-odds-api-median",
+        price_source=(
+            "the-odds-api-market-consensus" if used - {"h2h", "totals"} else "the-odds-api-median"
+        ),
         markets={f"the-odds-api:{field}": medians[field] for field in required},
+        match_probabilities=match_probabilities,
+        total_goals_mean=alternate_total_mean,
+        observed_market_keys=tuple(sorted(observed)),
+        used_market_keys=tuple(sorted(used)),
     )
 
 
@@ -452,6 +608,8 @@ def read_event(
                 kickoff=kickoff,
                 books=len(books[name]),
                 anytime_goal=fields.get("anytime_goal"),
+                first_goal=fields.get("first_goal"),
+                last_goal=fields.get("last_goal"),
                 anytime_assist=fields.get("anytime_assist"),
                 any_card=fields.get("any_card"),
                 red_card=fields.get("red_card"),

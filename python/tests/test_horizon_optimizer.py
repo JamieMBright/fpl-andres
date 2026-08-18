@@ -8,6 +8,7 @@ from hypothesis import strategies as st
 from pydantic import ValidationError
 from test_highs_optimizer import CUTOFF, rules, state_evidence
 
+from fpl_andres.optimization import horizon as horizon_module
 from fpl_andres.optimization.contracts import (
     CurrentSquadPlayer,
     HorizonEvent,
@@ -197,6 +198,46 @@ def test_horizon_matches_dynamic_programming_oracle_across_generated_points(
         exhaustive_horizon(generated),
         abs=1e-6,
     )
+
+
+def test_horizon_stages_accept_the_previous_optimum_at_solver_tolerance() -> None:
+    request = horizon_request()
+    points = {
+        6: (1e-6, 10.0, 9.5, 1.0, 0.0),
+        7: (0.0, 0.0, 0.0, 10.0, 10.0),
+    }
+    generated = HorizonOptimizationRequest.model_validate(
+        {
+            **request.model_dump(),
+            "forecasts": tuple(
+                row.model_copy(update={"expected_points": points[row.event][row.element_id - 1]})
+                for row in request.forecasts
+            ),
+        }
+    )
+
+    result = HighsHorizonOptimizer(time_limit_seconds=5.0).solve(generated)
+
+    assert result.weighted_net_expected_points == pytest.approx(
+        exhaustive_horizon(generated),
+        abs=2e-6,
+    )
+
+
+def test_horizon_reuses_the_shared_optimum_handoff_slack(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    calls: list[float] = []
+
+    def record(optimum: float) -> float:
+        calls.append(optimum)
+        return 2e-6
+
+    monkeypatch.setattr(horizon_module, "optimum_handoff_slack", record)
+
+    HighsHorizonOptimizer(time_limit_seconds=5.0).solve(horizon_request())
+
+    assert len(calls) == 1
 
 
 def exhaustive_horizon(request: HorizonOptimizationRequest) -> float:

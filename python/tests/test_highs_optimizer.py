@@ -343,25 +343,10 @@ def test_result_contract_rejects_invalid_lineup_partition() -> None:
         OptimizationResult.model_validate(invalid)
 
 
-@settings(max_examples=20, deadline=None)
-@given(
-    points=st.tuples(
-        *(
-            st.floats(
-                min_value=0,
-                max_value=12,
-                allow_nan=False,
-                allow_infinity=False,
-                width=32,
-            )
-            for _ in range(6)
-        )
-    )
-)
-def test_highs_matches_exhaustive_oracle_across_generated_points(
+def generated_request(
     points: tuple[float, float, float, float, float, float],
-) -> None:
-    request = OptimizationRequest(
+) -> OptimizationRequest:
+    return OptimizationRequest(
         event=6,
         prediction_cutoff=CUTOFF,
         objective="expected_value",
@@ -385,6 +370,35 @@ def test_highs_matches_exhaustive_oracle_across_generated_points(
         state_evidence=state_evidence(),
         rules=rules(),
     )
+
+
+def test_lexicographic_stages_accept_the_previous_optimum_at_the_solver_tolerance() -> None:
+    request = generated_request((1e-6, 10.0, 9.5, 1.0, 0.0, 10.0))
+
+    result = HighsOptimizer(time_limit_seconds=5.0).solve(request)
+
+    assert result.net_expected_points == pytest.approx(exhaustive_optimum(request), abs=2e-6)
+
+
+@settings(max_examples=20, deadline=None)
+@given(
+    points=st.tuples(
+        *(
+            st.floats(
+                min_value=0,
+                max_value=12,
+                allow_nan=False,
+                allow_infinity=False,
+                width=32,
+            )
+            for _ in range(6)
+        )
+    )
+)
+def test_highs_matches_exhaustive_oracle_across_generated_points(
+    points: tuple[float, float, float, float, float, float],
+) -> None:
+    request = generated_request(points)
 
     result = HighsOptimizer(time_limit_seconds=5.0).solve(request)
 

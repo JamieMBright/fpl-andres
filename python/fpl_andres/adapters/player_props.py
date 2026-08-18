@@ -224,6 +224,9 @@ _THE_ODDS_API_MARKETS = (
     "h2h",
 )
 
+#: The live provider returns and bills this beside a requested `h2h` market.
+_THE_ODDS_API_IMPLICIT_MARKETS = ("h2h_lay",)
+
 
 def _probe_the_odds_api(
     client: httpx.Client,

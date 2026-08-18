@@ -21,9 +21,16 @@ from pathlib import Path
 
 import yaml
 
-from fpl_andres.adapters.player_props import _THE_ODDS_API_MARKETS
+from fpl_andres.adapters.player_props import (
+    _THE_ODDS_API_IMPLICIT_MARKETS,
+    _THE_ODDS_API_MARKETS,
+)
 from fpl_andres.adapters.the_odds_api import PLAYER_MARKETS
-from fpl_andres.cli.ingest_odds import TEAM_FALLBACK_WEEKLY_BUDGET
+from fpl_andres.cli.ingest_odds import (
+    TEAM_FALLBACK_BILLED_MARKETS,
+    TEAM_FALLBACK_MARKETS,
+    TEAM_FALLBACK_WEEKLY_BUDGET,
+)
 from fpl_andres.cli.ingest_player_odds import (
     DEFAULT_BUDGET,
     billed_request_cost,
@@ -70,7 +77,9 @@ def test_the_ingest_and_the_survey_fit_inside_one_free_tier() -> None:
     silently, in the week before a deadline.
     """
     ingest = _weekly_runs("ingest-player-odds.yml") * DEFAULT_BUDGET
-    survey = _weekly_runs("survey-player-props.yml") * len(_THE_ODDS_API_MARKETS)
+    survey = _weekly_runs("survey-player-props.yml") * (
+        len(_THE_ODDS_API_MARKETS) + len(_THE_ODDS_API_IMPLICIT_MARKETS)
+    )
     team = WEEKS_PER_MONTH * TEAM_FALLBACK_WEEKLY_BUDGET
 
     assert ingest + survey + team <= ODDS_API_MONTHLY, (
@@ -88,10 +97,17 @@ def test_the_ingest_asks_for_no_market_it_does_not_read() -> None:
     assert set(PLAYER_MARKETS) == set(MARKET_FIELDS)
 
 
+def test_team_fallback_requests_every_live_number_moving_market() -> None:
+    assert TEAM_FALLBACK_MARKETS == ("h2h", "totals", "alternate_totals")
+    assert _THE_ODDS_API_IMPLICIT_MARKETS == ("h2h_lay",)
+    assert len(TEAM_FALLBACK_MARKETS) + 1 == TEAM_FALLBACK_BILLED_MARKETS
+
+
 def test_a_player_run_reserves_the_maximum_cost_before_another_fixture() -> None:
-    assert DEFAULT_BUDGET == 12
-    assert can_request_fixture(spent=6, budget=DEFAULT_BUDGET) is True
-    assert can_request_fixture(spent=7, budget=DEFAULT_BUDGET) is False
+    assert DEFAULT_BUDGET == len(PLAYER_MARKETS)
+    last_safe = DEFAULT_BUDGET - len(PLAYER_MARKETS)
+    assert can_request_fixture(spent=last_safe, budget=DEFAULT_BUDGET) is True
+    assert can_request_fixture(spent=last_safe + 1, budget=DEFAULT_BUDGET) is False
 
 
 def test_an_explicitly_free_response_does_not_consume_the_run_cap() -> None:

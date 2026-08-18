@@ -1,6 +1,6 @@
 {
   "schemaVersion": 5,
-  "generatedAt": "2026-08-18T18:10:17.391374Z",
+  "generatedAt": "2026-08-18T22:35:31.353395Z",
   "recordSeason": "2025-26",
   "events": [
     1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
@@ -116,13 +116,144 @@
     "playersQuoted": 17,
     "cardRoutes": 0,
     "playersQuotedForCards": 0,
-    "shotRoutes": 17,
+    "shotRoutes": 0,
     "playersQuotedForShots": 17,
     "startRatesCut": 0,
     "squadsNamed": 0,
     "fixtureRungs": 20,
     "participationInferred": 17,
-    "bonusEvents": 1
+    "bonusEvents": 1,
+    "playerMarketUsage": {
+      "anytimeGoal": "attacking-participation-bps",
+      "firstGoal": "corroborating-overlap-not-added",
+      "lastGoal": "corroborating-overlap-not-added",
+      "anytimeAssist": "attacking-participation-bps",
+      "anyCard": "discipline-bps",
+      "redCard": "discipline-bps",
+      "shots": "participation; bps-when-paired",
+      "shotsOnTarget": "availability; bps-when-paired"
+    },
+    "playerEvidence": {
+      "10": {
+        "observedAt": "2026-08-18T18:10:14.415625+00:00",
+        "books": 3,
+        "anytimeGoal": 0.1,
+        "anytimeAssist": 0.217391,
+        "shotsOnTarget": 0.353248
+      },
+      "12": {
+        "observedAt": "2026-08-18T18:10:14.415625+00:00",
+        "books": 3,
+        "anytimeGoal": 0.4,
+        "anytimeAssist": 0.4,
+        "shotsOnTarget": 1.771594
+      },
+      "11": {
+        "observedAt": "2026-08-18T18:10:14.415625+00:00",
+        "books": 3,
+        "anytimeGoal": 0.083333,
+        "anytimeAssist": 0.090909,
+        "shotsOnTarget": 0.353248
+      },
+      "13": {
+        "observedAt": "2026-08-18T18:10:14.415625+00:00",
+        "books": 3,
+        "anytimeGoal": 0.25,
+        "anytimeAssist": 0.294118,
+        "shotsOnTarget": 0.641072
+      },
+      "14": {
+        "observedAt": "2026-08-18T18:10:14.415625+00:00",
+        "books": 3,
+        "anytimeGoal": 0.381679,
+        "anytimeAssist": 0.307692,
+        "shotsOnTarget": 1.464443
+      },
+      "18": {
+        "observedAt": "2026-08-18T18:10:14.415625+00:00",
+        "books": 3,
+        "anytimeGoal": 0.380228,
+        "anytimeAssist": 0.266667,
+        "shotsOnTarget": 1.521301
+      },
+      "26": {
+        "observedAt": "2026-08-18T18:10:14.415625+00:00",
+        "books": 3,
+        "anytimeGoal": 0.47619,
+        "anytimeAssist": 0.285714,
+        "shotsOnTarget": 1.534619
+      },
+      "4": {
+        "observedAt": "2026-08-18T18:10:14.415625+00:00",
+        "books": 3,
+        "anytimeGoal": 0.153846,
+        "anytimeAssist": 0.1,
+        "shotsOnTarget": 0.485696
+      },
+      "15": {
+        "observedAt": "2026-08-18T18:10:14.415625+00:00",
+        "books": 3,
+        "anytimeGoal": 0.266667,
+        "anytimeAssist": 0.384615,
+        "shotsOnTarget": 1.076521
+      },
+      "19": {
+        "observedAt": "2026-08-18T18:10:14.415625+00:00",
+        "books": 3,
+        "anytimeGoal": 0.2,
+        "anytimeAssist": 0.125,
+        "shotsOnTarget": 0.514428
+      },
+      "20": {
+        "observedAt": "2026-08-18T18:10:14.415625+00:00",
+        "books": 3,
+        "anytimeGoal": 0.363636,
+        "anytimeAssist": 0.307692,
+        "shotsOnTarget": 1.521301
+      },
+      "17": {
+        "observedAt": "2026-08-18T18:10:14.415625+00:00",
+        "books": 3,
+        "anytimeGoal": 0.37037,
+        "anytimeAssist": 0.285714,
+        "shotsOnTarget": 1.376736
+      },
+      "7": {
+        "observedAt": "2026-08-18T18:10:14.415625+00:00",
+        "books": 3,
+        "anytimeGoal": 0.153846,
+        "anytimeAssist": 0.153846,
+        "shotsOnTarget": 0.547444
+      },
+      "16": {
+        "observedAt": "2026-08-18T18:10:14.415625+00:00",
+        "books": 3,
+        "anytimeGoal": 0.380228,
+        "anytimeAssist": 0.333333,
+        "shotsOnTarget": 1.406249
+      },
+      "9": {
+        "observedAt": "2026-08-18T18:10:14.415625+00:00",
+        "books": 3,
+        "anytimeGoal": 0.125,
+        "anytimeAssist": 0.153846,
+        "shotsOnTarget": 0.375711
+      },
+      "8": {
+        "observedAt": "2026-08-18T18:10:14.415625+00:00",
+        "books": 3,
+        "anytimeGoal": 0.142857,
+        "anytimeAssist": 0.153846,
+        "shotsOnTarget": 0.864396
+      },
+      "25": {
+        "observedAt": "2026-08-18T18:10:14.415625+00:00",
+        "books": 3,
+        "anytimeGoal": 0.555556,
+        "anytimeAssist": 0.208333,
+        "shotsOnTarget": 1.534391
+      }
+    }
   },
   "marketCarry": {
     "halfLifeGameweeks": 2.0,
@@ -189,7 +320,7 @@
       }
     ],
     "sourceReference": "FPL rules page, Transfers section",
-    "dataAvailableAt": "2026-08-18T18:10:17.395897Z",
+    "dataAvailableAt": "2026-08-18T22:35:31.362829Z",
     "playableStartRate": 0.35,
     "transferMarginPoints": 0.5
   },

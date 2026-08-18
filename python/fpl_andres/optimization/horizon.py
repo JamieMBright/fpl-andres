@@ -12,7 +12,11 @@ from fpl_andres.optimization.contracts import (
     HorizonOptimizationRequest,
     HorizonOptimizationResult,
 )
-from fpl_andres.optimization.highs import CAPTAIN_CEILING_WEIGHT, OptimizationError
+from fpl_andres.optimization.highs import (
+    CAPTAIN_CEILING_WEIGHT,
+    OptimizationError,
+    optimum_handoff_slack,
+)
 from fpl_andres.optimization.horizon_model import HorizonModel, build_constraints
 
 
@@ -151,7 +155,7 @@ class HighsHorizonOptimizer:
                 for index, coefficient in enumerate(objective)
                 if coefficient != 0
             },
-            upper=primary_optimum + 1e-8,
+            upper=primary_optimum + optimum_handoff_slack(primary_optimum),
         )
         transfer_objective = np.zeros(variable_count, dtype=np.float64)
         for event_index in range(event_count):

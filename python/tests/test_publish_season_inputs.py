@@ -273,6 +273,49 @@ class TestTheMarketPricingTheAttackingRoute:
 
         assert defender > midfielder
 
+    def test_every_available_player_market_is_published_with_its_usage(
+        self, tmp_path: Path
+    ) -> None:
+        payload = _run(
+            tmp_path,
+            [_element()],
+            odds=_odds(
+                first_goal=0.12,
+                last_goal=0.11,
+                any_card=0.18,
+                red_card=0.02,
+                shots=None,
+                shots_on_target=1.5,
+                books=3,
+                observed_at="2026-08-18T18:10:14Z",
+            ),
+        )
+
+        market = payload["market"]
+        assert market["playerEvidence"]["11"] == {
+            "observedAt": "2026-08-18T18:10:14Z",
+            "books": 3,
+            "anytimeGoal": 0.5,
+            "firstGoal": 0.12,
+            "lastGoal": 0.11,
+            "anytimeAssist": 0.2,
+            "anyCard": 0.18,
+            "redCard": 0.02,
+            "shotsOnTarget": 1.5,
+        }
+        assert market["playerMarketUsage"] == {
+            "anytimeGoal": "attacking-participation-bps",
+            "firstGoal": "corroborating-overlap-not-added",
+            "lastGoal": "corroborating-overlap-not-added",
+            "anytimeAssist": "attacking-participation-bps",
+            "anyCard": "discipline-bps",
+            "redCard": "discipline-bps",
+            "shots": "participation; bps-when-paired",
+            "shotsOnTarget": "availability; bps-when-paired",
+        }
+        assert market["playersQuotedForShots"] == 1
+        assert market["shotRoutes"] == 0
+
 
 def _start_rate(payload: dict[str, Any]) -> float:
     return float(payload["players"][0]["startRate"])

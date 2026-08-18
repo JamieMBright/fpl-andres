@@ -73,6 +73,7 @@ Values with the measurement recorded next to them in the code.
 | `_MINUTES_TOLERANCE`         | 0.10  | `crosswalk/resolve.py`      | Worst honest Understat 2025-26 disagreement was ~5%. 10% leaves headroom.              |
 | `_CONTRADICTION_TOLERANCE`   | 1e-6  | `models/penalties.py`       | Understat publishes xG at full float precision; this allows float noise only.          |
 | `_MIP_FEASIBILITY_TOLERANCE` | 1e-6  | `optimization/highs.py`     | HiGHS' own documented default.                                                         |
+| lexicographic handoff slack  | 2e-6  | `optimization/highs.py`     | One feasibility tolerance for the proven optimum and one for the follow-up solve.      |
 | Scoring routes               | —     | `backtesting/projector.py`  | 2025-26 reconciles to 34,383 against an actual 34,382; 27,353/27,605 exact in 2024-25. |
 
 ---
@@ -176,8 +177,8 @@ so the judgement is visible, in the same terms as the rest of this section.
 | `--market-weight`                  | 0.35        | `cli/publish_season_inputs.py`    | How much of a player's goals, assists, bookings, shot volume and market-implied participation a bookmaker owns. Assumed, not measured: retained player-prop history is not yet long enough to fit it. |
 | `CLUB_QUOTE_FLOOR`                 | 18          | `cli/publish_season_inputs.py`    | Minimum complete outfield matchday set before scorer-market silence counts as absence. Measured guard: 17 Arsenal quotes omitted Raya, so the old floor of 11 falsely cut a starting goalkeeper.      |
 | `_BONUS_CANDIDATE_FLOOR_PER_CLUB`  | 11          | `cli/publish_season_inputs.py`    | A fixture needs both expected starting elevens before BPS rank probabilities replace historical bonus. Fewer candidates would award bonus because competitors were missing.                           |
-| `DEFAULT_BUDGET`                   | 12          | `cli/ingest_player_odds.py`       | Hard per-run player-market cap. Another fixture is fetched only if all six requested markets could fit, so no response can overshoot it; the shared monthly worst case remains below 500.             |
-| `TEAM_FALLBACK_WEEKLY_BUDGET`      | 20          | `cli/ingest_odds.py`              | Two team markets across at most ten uncovered fixtures in the nearest six-day round, only when football-data has no live rows. Retained fixtures prevent daily repeat spend.                          |
+| `DEFAULT_BUDGET`                   | 8           | `cli/ingest_player_odds.py`       | Hard per-run player-market cap. Another fixture is fetched only if all eight requested markets could fit, so no response can overshoot it; the shared monthly worst case remains below 500.           |
+| `TEAM_FALLBACK_WEEKLY_BUDGET`      | 40          | `cli/ingest_odds.py`              | Three requested team markets plus the implicitly billed lay view across at most ten uncovered fixtures in the nearest six-day round. Retained fixtures prevent daily repeat spend.                    |
 | `MARKET_CARRY_HALF_LIFE_GAMEWEEKS` | 2           | `cli/publish_season_inputs.py`    | How quickly one fixture's player-market deviation yields to the historical or role baseline. Assumed pending enough retained quotes to fit it; full at the anchor, half two gameweeks later.          |
 
 The chip floors are the ones most worth challenging: four thresholds, three of

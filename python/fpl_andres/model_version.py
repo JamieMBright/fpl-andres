@@ -29,6 +29,15 @@ from __future__ import annotations
 
 __all__ = ["MODEL_VERSION"]
 
+#: 8.1 consumes every market observed on the live Arsenal-Coventry survey.
+#: First- and last-scorer prices are retained as overlapping corroboration of
+#: anytime scorer rather than added as extra goals. Shots on target remain
+#: observed when total shots are shut and become number-moving only when the
+#: paired lines identify the BPS delta. At team level, paired h2h lay prices
+#: tighten the 1X2 split and every complete alternate half-goal line contributes
+#: to one total-goals consensus. Minor: routes keep their meaning, but live lay
+#: and alternate-total evidence can move fixture multipliers.
+#:
 #: 8.0 replaces the crowd's synthetic top-25 captain shortlist with legal
 #: model-owned elevens replayed from the season simulation. Every captain rule
 #: now publishes chosen points, the ceiling reachable from that same XI and
@@ -322,4 +331,4 @@ __all__ = ["MODEL_VERSION"]
 #: projection and resampled, so a gap that does not clear zero is reported as
 #: not clearing zero. No projection changed; what changed is what may be
 #: claimed from it.
-MODEL_VERSION = "8.0"
+MODEL_VERSION = "8.1"

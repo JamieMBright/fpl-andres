@@ -99,30 +99,34 @@ Three things keep the spend inside the tier, and
 `python/tests/test_api_budgets.py` holds all three to the allowance so a raised
 cron has to be argued for rather than merged.
 
-- **Six markets.** Anytime scorer, assists, to be shown a card, to be shown a
-  red, shots and shots on target all feed a route. Shot counts inform
-  participation and the official BPS shot terms; they are over/under lines and
-  are inverted separately from anytime prices. The host bills only for a
-  market it returns, so a shut market costs nothing.
+- **Eight markets.** Anytime, first and last scorer, assists, to be shown a
+  card, to be shown a red, shots and shots on target are all retained. First
+  and last scorer overlap anytime scorer, so they corroborate availability but
+  are not added as extra goals. Shot counts inform participation and the
+  official BPS shot terms when total shots and SOT are paired; an unpaired SOT
+  line remains visible but cannot supply a defensible historical BPS delta.
+  The host bills only for a market it returns, so a shut market costs nothing.
 - **One region.** UK books price a Premier League player deepest, and adding
   Europe doubles the bill for a slightly steadier median.
-- **Daily trigger, seven-day gate, twelve-credit hard cap.** No provider
+- **Daily trigger, seven-day gate, eight-credit hard cap.** No provider
   publishes an exact opening hour, so the workflow wakes at 09:00 UTC every
   day. It reads the committed FPL calendar first and exits before reading the
   provider key unless the next deadline is within seven days. Uncovered
   fixtures are visited before an existing quote is refreshed, and still-current
   older rows retain their own observation timestamp. That lets several bounded
   runs cover a gameweek instead of buying the same first fixtures every day.
-  Before another fixture is fetched, the run reserves all six possible market
+  Before another fixture is fetched, the run reserves all eight possible market
   credits, so a response cannot overshoot the cap. `test_api_budgets.py` keeps
   the worst-case shared allowance under 500.
 
 The same key pays for the weekly survey, which is why the guard counts both.
 It also pays for the team-market fallback when football-data.co.uk has not
-opened the current round. That fallback asks for `h2h` and `totals` on at most
-ten uncovered fixtures inside the nearest six days: twenty credits once per
-gameweek. Retained fixture rows prevent a daily repeat, and
-`test_api_budgets.py` includes the weekly bound in the shared 500-credit total.
+opened the current round. That fallback asks for `h2h`, `totals` and
+`alternate_totals` on at most ten uncovered fixtures inside the nearest six
+days; the live provider also returns and bills `h2h_lay` beside `h2h`, for a
+forty-credit worst-case round. Retained fixture rows prevent a daily repeat,
+and `test_api_budgets.py` includes the weekly bound in the shared 500-credit
+total.
 
 **When nothing is quoted.** Ten fixtures priced and nought players quoted is not
 a failure. Each fixture's line names how many books answered, how many outcomes
@@ -136,7 +140,8 @@ one is the crosswalk's fault and wants fixing.
 rates; count lines become expected counts. The fixture is divided back out,
 then the matching historical route is blended at `--market-weight`. Goals,
 assists, cards, participation, shots and BPS each consume only the evidence
-that names them. The fixture market separately prices clean sheets, goals
+that names them. First/last scorer are overlapping corroboration, not extra
+goals. The team markets jointly price one distribution for clean sheets, goals
 conceded, save pressure and defensive-action pressure.
 
 ## The shortlist, and why each is on it
@@ -174,11 +179,11 @@ what someone actually laid rather than what a book offered.
 
 Three evidence levels must not be collapsed into one:
 
-| Provider            | Documented or catalogued                                                                                                                                                                                                                                          | Observed on a live 2026/27 fixture                                                                                                                                         | Safe model use now                                                                                                                                                              |
-| ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| The Odds API        | Event odds accept explicit player keys for anytime goal, assists, cards, red cards, shots and shots on target. Responses carry bookmaker, market key, player description, price and count-line point.                                                             | Arsenal–Coventry returned three books and 17 matched players for `player_goal_scorer_anytime`. The other five requested player keys were absent three days before kickoff. | Goals now. Assists, cards and shots only when the retained fixture row actually contains them; absence is not zero.                                                             |
-| API-Football        | `/odds/bets` listed 332 bet types, including anytime scorer, player assists, cards, shots, shots on target, tackles, goalkeeper saves, own goal and penalty miss. `/fixtures` and `/odds?fixture=` must still prove an actual offer with player-named selections. | The catalogue answered with 97 daily requests left, but no 2026/27 Premier League fixture was available to probe. No player selection payload has been observed.           | None yet. Catalogue names are capability hints, not evidence. A tackles line is not direct DefCon: it omits clearances, blocks, interceptions and, outside defence, recoveries. |
-| football-data.co.uk | Season CSVs publish match-level result, 1X2, totals and Asian-handicap columns from multiple books.                                                                                                                                                               | Four completed seasons are ingested. The current-season file is unavailable before matches are played, so The Odds API supplies the team-market fallback.                  | Team xG, clean-sheet and conceding routes only. It has no player props or lineups.                                                                                              |
+| Provider            | Documented or catalogued                                                                                                                                                                                                                                                       | Observed on a live 2026/27 fixture                                                                                                                               | Safe model use now                                                                                                                                                                                    |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| The Odds API        | Event odds accept explicit player keys for anytime, first and last goal, assists, cards, red cards, shots and shots on target. Responses carry bookmaker, market key, player description, price and count-line point. Team keys include 1X2, lay, totals and alternate totals. | Arsenal–Coventry named all five open player markets and all four team markets. Player shots, cards and red cards remained absent three days before kickoff.      | Anytime goals and assists move routes. First/last scorer corroborate the overlapping goal event. Unpaired SOT stays observed until total shots opens. All four team views feed one goal distribution. |
+| API-Football        | `/odds/bets` listed 332 bet types, including anytime scorer, player assists, cards, shots, shots on target, tackles, goalkeeper saves, own goal and penalty miss. `/fixtures` and `/odds?fixture=` must still prove an actual offer with player-named selections.              | The catalogue answered with 96 daily requests left, but no 2026/27 Premier League fixture was available to probe. No player selection payload has been observed. | None yet. Catalogue names are capability hints, not evidence. A tackles line is not direct DefCon: it omits clearances, blocks, interceptions and, outside defence, recoveries.                       |
+| football-data.co.uk | Season CSVs publish match-level result, 1X2, totals and Asian-handicap columns from multiple books.                                                                                                                                                                            | Four completed seasons are ingested. The current-season file is unavailable before matches are played, so The Odds API supplies the team-market fallback.        | Team xG, clean-sheet and conceding routes only. It has no player props or lineups.                                                                                                                    |
 
 The provider pages cannot be opened from the owner's network: The Odds API is
 reset by the gambling-category filter and API-Football returns a Cloudflare 403.

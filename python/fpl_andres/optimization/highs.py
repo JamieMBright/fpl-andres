@@ -54,7 +54,7 @@ _CAPTAIN_TIE_BREAK = 1e-13
 CAPTAIN_CEILING_WEIGHT = 1.0 / 3.0
 
 
-def _optimum_slack(optimum: float) -> float:
+def optimum_handoff_slack(optimum: float) -> float:
     """Slack for re-solving against a proven optimum, scaled to its magnitude.
 
     Load-bearing for every optimality proof, and previously
@@ -71,9 +71,11 @@ def _optimum_slack(optimum: float) -> float:
     bench-boost margin of 0.4 points would be swamped -- and far too tight for
     one in the hundreds, where 1e-6 is below the float spacing of the number
     itself. The max of the two tracks the magnitude and never drops below what
-    the solver guarantees.
+    the solver guarantees. The handoff needs two tolerances: the first optimum
+    may already sit one tolerance from the mathematical bound, and the next
+    solve applies its own feasibility tolerance when reading that bound.
     """
-    return max(_MIP_FEASIBILITY_TOLERANCE, abs(optimum) * _SQUAD_TIE_BREAK)
+    return max(2.0 * _MIP_FEASIBILITY_TOLERANCE, abs(optimum) * _SQUAD_TIE_BREAK)
 
 
 class HighsOptimizer:
@@ -243,7 +245,7 @@ class HighsOptimizer:
                 for index, coefficient in enumerate(objective)
                 if coefficient != 0
             },
-            upper=primary_optimum + _optimum_slack(primary_optimum),
+            upper=primary_optimum + optimum_handoff_slack(primary_optimum),
         )
 
         transfer_objective = np.zeros(variable_count, dtype=np.float64)
@@ -369,4 +371,5 @@ def _selected(
 __all__ = [
     "HighsOptimizer",
     "OptimizationError",
+    "optimum_handoff_slack",
 ]

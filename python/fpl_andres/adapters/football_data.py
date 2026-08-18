@@ -120,6 +120,12 @@ class FixtureOdds:
     #: price is only quotable at the time it was quoted: a market this model
     #: cannot use yet is one it can never go back and collect.
     markets: dict[str, float]
+    #: Fair 1X2 consensus when a paired exchange lay market sharpens the backs.
+    match_probabilities: tuple[float, float, float] | None = None
+    #: Total-goals consensus when alternate half-goal lines are available.
+    total_goals_mean: float | None = None
+    observed_market_keys: tuple[str, ...] = ()
+    used_market_keys: tuple[str, ...] = ()
 
 
 @dataclass(frozen=True)

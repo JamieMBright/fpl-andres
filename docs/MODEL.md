@@ -274,11 +274,13 @@ has lost his place, that a summer signing has taken it, and what the manager
 said on Friday — none of which is in last season's numbers. So where a market
 prices a scoring route, its view is blended into that route at a stated weight.
 
-The live ingest reads goals, assists, bookings, reds, shots and shots on target.
-The team market supplies expected goals and clean sheets. The shared artifact
-records the source timestamp and content hash; individual rows carry their own
-observation time because a capped run can retain one fixture while refreshing
-another.
+The live ingest reads anytime, first and last goalscorer, assists, bookings,
+reds, shots and shots on target. First/last scorer overlap anytime scorer, so
+they are retained as corroboration and never added as independent goals. The
+team market supplies 1X2, its paired lay view, totals and alternate totals. The
+shared artifact records the source timestamp and content hash; individual rows
+carry their own observation time because a capped run can retain one fixture
+while refreshing another.
 
 Three things make the reading honest rather than convenient.
 
@@ -313,6 +315,13 @@ baseline. The market count can then imply minutes at that established event
 rate; the estimate is blended and labelled `experimental`, because a changed
 price can also mean changed ability or role.
 
+A shots-on-target line without total shots is still published as observed
+evidence, but it does not move BPS. Historical BPS already includes the
+player's normal shot outcomes, and no retained source supplies a historical
+on-target baseline to subtract. Adding the raw future SOT award would therefore
+double-count it. Once both shot lines are open, their ratio supplies that
+baseline consistently and the paired BPS delta becomes number-moving.
+
 The same evidence is not spent twice. The goals/assists market writes the
 attacking route directly. Market-inferred participation scales the other
 minutes-dependent routes while attacking is held at its already blended value.
@@ -326,8 +335,11 @@ full in the quoted gameweek, half two gameweeks later and one-sixteenth by the
 ninth. A quote never leaks backward before its fixture. This lets a market
 reveal a new role or stronger scorer without permanently replacing a season of
 evidence. Team odds are different: they describe one opponent, so only that
-fixture's ladder rung changes. Later FDR remains the season-strength estimate
-until the later fixture gets its own 1X2 and totals markets.
+fixture's ladder rung changes. A paired back/lay spread sharpens the same 1X2
+goal split; it is not a second match. Complete alternate half-goal lines are
+each inverted to a total-goals mean, consolidated by line, then combined with
+2.5 into one consensus. Later FDR remains the season-strength estimate until
+the later fixture gets its own team markets.
 
 ### Bonus and BPS
 

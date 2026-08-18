@@ -1,7 +1,7 @@
 name: Ingest Player Odds
 
-# Anytime-scorer, assist, card and shots-on-target prices, per player, per
-# fixture, de-vigged and joined onto FPL element ids.
+# Anytime-, first- and last-scorer, assist, card, shots and shots-on-target
+# prices, per player, per fixture, de-vigged and joined onto FPL element ids.
 #
 # Runs here and only here. Every price host fails at the TLS handshake from the
 # owner's network behind a gambling-category content filter, while the same
@@ -23,7 +23,7 @@ name: Ingest Player Odds
 # Player props open days rather than months out, but no provider publishes an
 # exact opening hour. Run daily, then stop from the committed FPL deadline list
 # unless the next deadline is within seven days. The provider sees no request
-# outside that window; the twelve-credit hard cap bounds runs that pass it.
+# outside that window; the eight-credit hard cap bounds runs that pass it.
 #
 # A capped run visits fixtures absent from the retained artifact first, then
 # refreshes existing quotes. Each row carries its own observation time, so
@@ -47,7 +47,7 @@ on:
       budget:
         description: "How many requests this run may spend, against 500 a month."
         required: false
-        default: "12"
+        default: "8"
         type: string
 
 permissions:
@@ -123,7 +123,7 @@ jobs:
           python -m fpl_andres.cli.ingest_player_odds \
             --season "$(date -u +%Y)-$(printf '%02d' $((10#$(date -u +%y) + 1)))" \
             --within-days 7 \
-            --budget "${BUDGET:-12}"
+            --budget "${BUDGET:-8}"
 
       - name: Commit the odds
         run: |

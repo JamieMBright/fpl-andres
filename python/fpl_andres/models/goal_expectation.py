@@ -34,6 +34,7 @@ from fpl_andres.models.odds import OddsUnavailable, devig_shin
 __all__ = [
     "GoalExpectation",
     "fit_goal_expectation",
+    "fit_goal_expectation_from_probabilities",
     "score_probability",
     "total_goals_mean",
 ]
@@ -133,24 +134,24 @@ def _outcome_probabilities(home: float, away: float) -> tuple[float, float, floa
     return home_win, draw, away_win
 
 
-def fit_goal_expectation(
-    match_odds: tuple[float, float, float],
-    over_under: tuple[float, float],
-    line: float = 2.5,
+def fit_goal_expectation_from_probabilities(
+    match_probabilities: tuple[float, float, float],
+    total: float,
 ) -> GoalExpectation:
-    """Fit both expected-goal means from a 1X2 book and an over/under book.
+    """Fit goal means from an already de-vigged 1X2 view and goal total."""
+    if not all(
+        math.isfinite(probability) and probability > 0.0 for probability in match_probabilities
+    ):
+        raise OddsUnavailable("match probabilities must be finite and positive")
+    probability_sum = sum(match_probabilities)
+    if not math.isclose(probability_sum, 1.0, abs_tol=1e-6):
+        raise OddsUnavailable(f"match probabilities sum to {probability_sum:.4f}, not one")
+    if not math.isfinite(total) or not _MIN_TOTAL <= total <= _MAX_TOTAL:
+        raise OddsUnavailable(f"a total of {total} sits outside anything a football match produces")
 
-    `match_odds` is decimal home, draw, away. `over_under` is decimal over then
-    under. Both are de-vigged with Shin's method before anything is fitted,
-    because a quoted price is not a probability and the margin is not spread
-    evenly across the outcomes.
-    """
-    home_p, _draw_p, away_p = devig_shin(match_odds)
-    over_p, _under_p = devig_shin(over_under)
-    market_draw = devig_shin(match_odds)[1]
-
-    total = total_goals_mean(over_p, line)
-
+    home_p, market_draw, away_p = (
+        probability / probability_sum for probability in match_probabilities
+    )
     decisive = home_p + away_p
     if decisive <= 0.0:
         raise OddsUnavailable("a market with no decisive outcome cannot set a supremacy")
@@ -164,7 +165,6 @@ def fit_goal_expectation(
             return -target
         return home_win / (home_win + away_win) - target
 
-    # Supremacy cannot exceed the total, or one side has a negative mean.
     bound = min(_MAX_SUPREMACY, total - 1e-9)
     if excess(-bound) > 0 or excess(bound) < 0:
         raise OddsUnavailable(
@@ -175,5 +175,23 @@ def fit_goal_expectation(
     home = (total + supremacy) / 2.0
     away = (total - supremacy) / 2.0
     _, model_draw, _ = _outcome_probabilities(home, away)
-
     return GoalExpectation(home=home, away=away, draw_residual=market_draw - model_draw)
+
+
+def fit_goal_expectation(
+    match_odds: tuple[float, float, float],
+    over_under: tuple[float, float],
+    line: float = 2.5,
+) -> GoalExpectation:
+    """Fit both expected-goal means from a 1X2 book and an over/under book.
+
+    `match_odds` is decimal home, draw, away. `over_under` is decimal over then
+    under. Both are de-vigged with Shin's method before anything is fitted,
+    because a quoted price is not a probability and the margin is not spread
+    evenly across the outcomes.
+    """
+    home_probability, draw_probability, away_probability = devig_shin(match_odds)
+    match_probabilities = home_probability, draw_probability, away_probability
+    over_p, _under_p = devig_shin(over_under)
+    total = total_goals_mean(over_p, line)
+    return fit_goal_expectation_from_probabilities(match_probabilities, total)

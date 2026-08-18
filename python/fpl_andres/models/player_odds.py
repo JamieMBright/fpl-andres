@@ -40,6 +40,10 @@ class PlayerMatchOdds:
     club: str | None = None
     #: P(scores at least once), de-vigged.
     anytime_goal: float | None = None
+    #: P(scores the fixture's first goal). Overlaps with anytime scorer.
+    first_goal: float | None = None
+    #: P(scores the fixture's last goal). Overlaps with anytime scorer.
+    last_goal: float | None = None
     #: P(assists at least once), where the book prices it.
     anytime_assist: float | None = None
     #: P(shown a card of either colour). The market does not say which.
@@ -62,6 +66,8 @@ class PlayerMatchOdds:
             value is not None
             for value in (
                 self.anytime_goal,
+                self.first_goal,
+                self.last_goal,
                 self.anytime_assist,
                 self.any_card,
                 self.red_card,

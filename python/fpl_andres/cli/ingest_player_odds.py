@@ -47,16 +47,16 @@ BOOTSTRAP = "https://fantasy.premierleague.com/api/bootstrap-static/"
 #: Measured 2026-08-10 rather than assumed: a survey request asking for eleven
 #: markets across one region, of which the book offered four, was billed four.
 #: So the charge is per market actually returned, not per market asked for, and
-#: the ingest asks for six markets and pays only for those returned. A capped
+#: the ingest asks for eight markets and pays only for those returned. A capped
 #: run cannot cover ten fully open fixtures, so it visits uncovered fixtures
 #: before refreshing retained ones. Several daily runs then cover the gameweek
 #: without repeatedly spending the allowance on the same first fixture.
 #:
-#: Thirty scheduled runs at the twelve-credit hard cap cost at most 360, the
-#: weekly team fallback about 88 and the survey about 48. The next fixture is
-#: requested only when all six markets could fit, so the cap cannot overshoot.
+#: Thirty scheduled runs at the eight-credit hard cap cost at most 240, the
+#: weekly team fallback about 176 and the survey about 53. The next fixture is
+#: requested only when all eight markets could fit, so the cap cannot overshoot.
 #: `tests/test_api_budgets.py` holds the shared sum under 500.
-DEFAULT_BUDGET = 12
+DEFAULT_BUDGET = len(PLAYER_MARKETS)
 DEFAULT_DEADLINES = Path("apps/web/src/data/deadlines.json")
 DEFAULT_WINDOW_DAYS = 7
 
@@ -245,6 +245,8 @@ def _read_previous(path: Path) -> list[PlayerMatchOdds]:
                 kickoff=_timestamp(raw.get("kickoff")),
                 club=raw.get("club") if isinstance(raw.get("club"), str) else None,
                 anytime_goal=_optional_number(raw.get("anytime_goal")),
+                first_goal=_optional_number(raw.get("first_goal")),
+                last_goal=_optional_number(raw.get("last_goal")),
                 anytime_assist=_optional_number(raw.get("anytime_assist")),
                 any_card=_optional_number(raw.get("any_card")),
                 red_card=_optional_number(raw.get("red_card")),

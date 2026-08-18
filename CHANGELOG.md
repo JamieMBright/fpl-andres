@@ -8,6 +8,9 @@ The project follows Semantic Versioning once milestone tags begin.
 
 ### Added
 
+- Model 8.1 retains all nine live Arsenal-Coventry markets in the analysis.
+  First/last scorer are explicit overlapping evidence, paired lay prices refine
+  1X2, and complete alternate totals refine one total-goals consensus.
 - Model 7.0 carries route-level market evidence into goals, assists, cards,
   shots, participation, save pressure, defensive contribution and bonus. BPS
   is reconstructed from the official action weights plus each player's
@@ -19,6 +22,12 @@ The project follows Semantic Versioning once milestone tags begin.
 
 ### Fixed
 
+- HiGHS lexicographic follow-up solves now allow one feasibility tolerance on
+  each side of the stage handoff, preventing a proven primary optimum from
+  becoming infeasible during deterministic squad tie-breaking.
+- Player and fixture artifacts now expose every observed market with an
+  explicit number-moving or corroborative use. Shots on target no longer look
+  applied when total shots are absent and no defensible BPS delta exists.
 - Player-market ingestion now preserves card fields, resolves the observed
   `Ben White` and reversed `Magalhaes Gabriel` provider spellings without fuzzy
   matching, and reads shots/shot-on-target over-under lines as expected counts.
