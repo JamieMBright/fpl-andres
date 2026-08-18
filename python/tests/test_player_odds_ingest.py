@@ -261,6 +261,13 @@ class TestSpendingTheMonthlyBudget:
         assert (quota.cost, quota.used, quota.remaining) == (10, 120, 380)
         assert str(quota) == "cost 10, used 120, 380 left"
 
+    def test_zero_counters_are_reported_as_zero(self) -> None:
+        quota = Quota.from_headers(
+            {"x-requests-last": "0", "x-requests-used": "123", "x-requests-remaining": "377"}
+        )
+
+        assert str(quota) == "cost 0, used 123, 377 left"
+
     def test_a_host_that_reports_no_counters_says_so_rather_than_reading_zero(self) -> None:
         """Nought left and no answer must not look alike; one stops the run."""
         quota = Quota.from_headers({})

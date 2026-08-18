@@ -92,6 +92,7 @@ TEAM_CODES: dict[str, str] = {
     "Hull": "HUL",
     "Hull City": "HUL",
     "Ipswich": "IPS",
+    "Ipswich Town": "IPS",
     "Leeds": "LEE",
     "Leeds United": "LEE",
     "Leicester": "LEI",

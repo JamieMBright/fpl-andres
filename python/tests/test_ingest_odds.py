@@ -61,6 +61,7 @@ class TestCrosswalk:
         assert TEAM_CODES["Man United"] == "MUN"
         assert TEAM_CODES["Tottenham"] == "TOT"
         assert TEAM_CODES["Nott'm Forest"] == "NFO"
+        assert TEAM_CODES["Ipswich Town"] == "IPS"
 
     def test_covers_the_whole_of_the_current_division(self) -> None:
         current = {

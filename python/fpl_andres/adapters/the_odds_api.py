@@ -101,7 +101,10 @@ class Quota:
     def __str__(self) -> str:
         if self.used is None and self.remaining is None:
             return "quota not reported"
-        return f"cost {self.cost or '?'}, used {self.used or '?'}, {self.remaining or '?'} left"
+        cost = "?" if self.cost is None else str(self.cost)
+        used = "?" if self.used is None else str(self.used)
+        remaining = "?" if self.remaining is None else str(self.remaining)
+        return f"cost {cost}, used {used}, {remaining} left"
 
 
 def _counter(value: str | None) -> int | None:

@@ -24,7 +24,11 @@ import yaml
 from fpl_andres.adapters.player_props import _THE_ODDS_API_MARKETS
 from fpl_andres.adapters.the_odds_api import PLAYER_MARKETS
 from fpl_andres.cli.ingest_odds import TEAM_FALLBACK_WEEKLY_BUDGET
-from fpl_andres.cli.ingest_player_odds import DEFAULT_BUDGET, can_request_fixture
+from fpl_andres.cli.ingest_player_odds import (
+    DEFAULT_BUDGET,
+    billed_request_cost,
+    can_request_fixture,
+)
 
 WORKFLOWS = Path(__file__).resolve().parents[2] / ".github" / "workflows"
 
@@ -88,6 +92,13 @@ def test_a_player_run_reserves_the_maximum_cost_before_another_fixture() -> None
     assert DEFAULT_BUDGET == 12
     assert can_request_fixture(spent=6, budget=DEFAULT_BUDGET) is True
     assert can_request_fixture(spent=7, budget=DEFAULT_BUDGET) is False
+
+
+def test_an_explicitly_free_response_does_not_consume_the_run_cap() -> None:
+    from fpl_andres.adapters.the_odds_api import Quota
+
+    assert billed_request_cost(Quota(cost=0, used=123, remaining=377)) == 0
+    assert billed_request_cost(Quota(cost=None, used=None, remaining=None)) == 1
 
 
 def test_the_odds_ingest_runs_daily() -> None:

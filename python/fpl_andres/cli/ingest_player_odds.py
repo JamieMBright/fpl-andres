@@ -29,6 +29,7 @@ import httpx
 from fpl_andres.adapters.player_crosswalk import crosswalk
 from fpl_andres.adapters.the_odds_api import (
     PLAYER_MARKETS,
+    Quota,
     by_kickoff,
     describe_event,
     fetch_event_odds,
@@ -71,6 +72,11 @@ class DeadlineProximity:
 def can_request_fixture(*, spent: int, budget: int) -> bool:
     """Whether another fixture fits even if every requested market is open."""
     return spent + len(PLAYER_MARKETS) <= budget
+
+
+def billed_request_cost(quota: Quota) -> int:
+    """Keep an explicit free response free; only a missing header is one."""
+    return quota.cost if quota.cost is not None else 1
 
 
 def deadline_proximity(
@@ -324,7 +330,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             # A host that reports no cost still charged something, so a fixture
             # counts for one rather than nothing. Otherwise a missing header
             # turns the budget off and the run prices the whole division.
-            spent += closing.cost or 1
+            spent += billed_request_cost(closing)
             read = read_event(payload)
             if read:
                 offered += 1
