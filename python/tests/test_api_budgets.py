@@ -104,7 +104,7 @@ def test_team_fallback_requests_every_live_number_moving_market() -> None:
 
 
 def test_a_player_run_reserves_the_maximum_cost_before_another_fixture() -> None:
-    assert DEFAULT_BUDGET == len(PLAYER_MARKETS)
+    assert len(PLAYER_MARKETS) == DEFAULT_BUDGET
     last_safe = DEFAULT_BUDGET - len(PLAYER_MARKETS)
     assert can_request_fixture(spent=last_safe, budget=DEFAULT_BUDGET) is True
     assert can_request_fixture(spent=last_safe + 1, budget=DEFAULT_BUDGET) is False
