@@ -76,6 +76,25 @@ def test_the_complete_measured_block_is_generated_from_the_artifact() -> None:
     assert normalize(documented) == normalize(render_performance(report))
 
 
+def test_the_model_still_beats_the_form_chaser_everywhere() -> None:
+    for season in _seasons():
+        methods = _methods(season)
+        model, form = methods["model"], methods["recent_mean"]
+
+        assert model["meanAbsoluteError"] < form["meanAbsoluteError"], season["season"]
+        assert model["spearman"] > form["spearman"], season["season"]
+        assert model["topNHitRate"] > form["topNHitRate"], season["season"]
+
+
+def test_the_model_still_beats_the_crowd_on_hit_rate() -> None:
+    for season in _seasons():
+        methods = _methods(season)
+
+        assert methods["model"]["topNHitRate"] > methods["ownership"]["topNHitRate"], season[
+            "season"
+        ]
+
+
 def test_the_card_points_at_the_corpus_the_numbers_came_from() -> None:
     """Reproducing them needs the data, not just the code."""
     assert "corpusFingerprint" in _CARDS.read_text(encoding="utf-8")
