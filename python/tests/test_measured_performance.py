@@ -34,10 +34,13 @@ def _methods(season: dict[str, object]) -> dict[str, dict[str, float]]:
 
 def _documented_rows() -> dict[str, tuple[float, float, float]]:
     """Season -> (MAE, spearman, top-N hit rate) as published in the card."""
+    text = _CARDS.read_text(encoding="utf-8")
+    start, end = PERFORMANCE_MARKERS
+    measured = text.partition(start)[2].partition(end)[0]
     rows: dict[str, tuple[float, float, float]] = {}
     for match in re.finditer(
         r"^\|\s*(20\d\d-\d\d)\s*\|\s*([\d.]+)\s*\|[^|]*\|\s*([\d.]+)\s*\|[^|]*\|\s*([\d.]+)\s*\|",
-        _CARDS.read_text(encoding="utf-8"),
+        measured,
         re.MULTILINE,
     ):
         rows[match.group(1)] = (
@@ -46,6 +49,29 @@ def _documented_rows() -> dict[str, tuple[float, float, float]]:
             float(match.group(4)),
         )
     return rows
+
+
+def test_captaincy_rows_cannot_overwrite_the_performance_rows(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    card = tmp_path / "MODEL_CARDS.md"
+    card.write_text(
+        "\n".join(
+            (
+                PERFORMANCE_MARKERS[0],
+                "| 2025-26 | 1.865 | -6.4% | 0.467 | +0.044 | 0.169 | 0.119 | 0.136 | -0.067 |",
+                PERFORMANCE_MARKERS[1],
+                "<!-- measured-captaincy:start -->",
+                "| 2025-26 | 540 | 6.73 | 12.18 | 5.45 | 80 | 0.28 |",
+                "<!-- measured-captaincy:end -->",
+            )
+        ),
+        encoding="utf-8",
+    )
+    monkeypatch.setattr("test_measured_performance._CARDS", card)
+
+    assert _documented_rows()["2025-26"] == (1.865, 0.467, 0.169)
 
 
 def test_the_card_publishes_a_row_for_every_scored_season() -> None:

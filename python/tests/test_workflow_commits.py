@@ -187,6 +187,12 @@ def test_model_validation_republishes_the_complete_planning_chain() -> None:
         assert text.count(path) >= 3, f"{path} must be watched, formatted and committed"
 
 
+def test_model_artifact_proof_changes_trigger_hosted_validation() -> None:
+    text = (WORKFLOWS / "validate-model.yml").read_text(encoding="utf-8")
+
+    assert "python/tests/test_measured_performance.py" in text.split("workflow_dispatch:", 1)[0]
+
+
 def test_model_backtest_allows_the_measured_slow_runner_duration() -> None:
     text = (WORKFLOWS / "validate-model.yml").read_text(encoding="utf-8")
     backtest = text.index("- name: Run the backtest")

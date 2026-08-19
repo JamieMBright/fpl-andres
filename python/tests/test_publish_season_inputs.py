@@ -273,7 +273,7 @@ class TestTheMarketPricingTheAttackingRoute:
 
         assert defender > midfielder
 
-    def test_every_available_player_market_is_published_with_its_usage(
+    def test_market_usage_is_published_without_copying_quotes_into_solver_inputs(
         self, tmp_path: Path
     ) -> None:
         payload = _run(
@@ -292,17 +292,7 @@ class TestTheMarketPricingTheAttackingRoute:
         )
 
         market = payload["market"]
-        assert market["playerEvidence"]["11"] == {
-            "observedAt": "2026-08-18T18:10:14Z",
-            "books": 3,
-            "anytimeGoal": 0.5,
-            "firstGoal": 0.12,
-            "lastGoal": 0.11,
-            "anytimeAssist": 0.2,
-            "anyCard": 0.18,
-            "redCard": 0.02,
-            "shotsOnTarget": 1.5,
-        }
+        assert "playerEvidence" not in market
         assert market["playerMarketUsage"] == {
             "anytimeGoal": "attacking-participation-bps",
             "firstGoal": "corroborating-overlap-not-added",

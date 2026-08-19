@@ -31,6 +31,7 @@ on:
       - python/fpl_andres/cohorts/points_to_rank.py
       - data/cohort/points-to-rank.json
       - python/fpl_andres/cli/track_model.py
+      - python/tests/test_measured_performance.py
       - .github/workflows/validate-model.yml
   workflow_dispatch:
 

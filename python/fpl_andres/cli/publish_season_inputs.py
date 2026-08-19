@@ -406,39 +406,6 @@ PLAYER_MARKET_EVIDENCE_FIELDS = (
 PLAYER_MARKET_USAGE = {output: usage for _source, output, usage in PLAYER_MARKET_EVIDENCE_FIELDS}
 
 
-def _quoted_market_evidence(odds_path: Path) -> dict[int, dict[str, object]]:
-    """Retain every observed quote and state how analysis treats it."""
-    if not odds_path.exists():
-        return {}
-    artifact = read_json_file(odds_path)
-    fetched_at = artifact.get("fetchedAt")
-    quoted: dict[int, dict[str, object]] = {}
-    for row in artifact.get("players", []):
-        element_id = row.get("element_id")
-        if not isinstance(element_id, int):
-            continue
-        values = {
-            output: value
-            for source, output, _usage in PLAYER_MARKET_EVIDENCE_FIELDS
-            if (value := _optional_float(row.get(source))) is not None
-        }
-        if not values:
-            continue
-        observed_at = row.get("observed_at")
-        quoted[element_id] = {
-            "observedAt": (
-                observed_at
-                if isinstance(observed_at, str)
-                else fetched_at
-                if isinstance(fetched_at, str)
-                else None
-            ),
-            "books": row.get("books") if isinstance(row.get("books"), int) else 0,
-            **values,
-        }
-    return quoted
-
-
 def _quoted_shots(odds_path: Path) -> dict[int, tuple[MarketShots, date]]:
     if not odds_path.exists():
         return {}
@@ -1526,7 +1493,6 @@ def main(argv: Sequence[str] | None = None) -> int:
     quoted_attack = _quoted_attack(player_odds_path)
     quoted_cards = _quoted_cards(player_odds_path)
     quoted_shots = _quoted_shots(player_odds_path)
-    quoted_evidence = _quoted_market_evidence(player_odds_path)
     squads = _quoted_squads(player_odds_path)
     players, player_reach, market_carry = _build_player_rows(
         available,
@@ -1672,11 +1638,6 @@ def main(argv: Sequence[str] | None = None) -> int:
             "participationInferred": player_reach.participation,
             "bonusEvents": len(bonus_overrides),
             "playerMarketUsage": PLAYER_MARKET_USAGE,
-            "playerEvidence": {
-                str(element_id): evidence
-                for element_id, evidence in quoted_evidence.items()
-                if element_id in trimmed_ids
-            },
         },
         "marketCarry": {
             "halfLifeGameweeks": MARKET_CARRY_HALF_LIFE_GAMEWEEKS,
