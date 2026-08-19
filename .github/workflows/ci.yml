@@ -197,7 +197,11 @@ jobs:
   browser:
     name: Browser journeys
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    # A cold runner can spend more than ten minutes in the Playwright browser
+    # cache/install path before the first test starts. Keep the journey timeout
+    # below the rest of CI, but high enough that setup does not cancel a green
+    # test suite before it runs.
+    timeout-minutes: 25
     steps:
       - name: Check out repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
