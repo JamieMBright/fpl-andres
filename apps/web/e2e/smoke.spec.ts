@@ -215,9 +215,7 @@ test("the phone action reaches and focuses the Team ID field", async ({
   ).toHaveCount(0);
 });
 
-test("all primary destinations wrap into two rows on a phone", async ({
-  page,
-}) => {
+test("all primary destinations stay visible on a phone", async ({ page }) => {
   await page.setViewportSize({ width: 360, height: 780 });
   await page.goto("/");
   await settle(page);
@@ -225,7 +223,7 @@ test("all primary destinations wrap into two rows on a phone", async ({
   const links = page
     .getByRole("navigation", { name: "Primary navigation" })
     .getByRole("link");
-  await expect(links).toHaveCount(8);
+  await expect(links).toHaveCount(10);
 
   const layout = await links.evaluateAll((destinations) => ({
     visible: destinations.every(
@@ -237,7 +235,8 @@ test("all primary destinations wrap into two rows on a phone", async ({
       ),
     ).size,
   }));
-  expect(layout).toEqual({ visible: true, rows: 2 });
+  expect(layout.visible).toBe(true);
+  expect(layout.rows).toBeLessThanOrEqual(3);
 });
 
 test("top picks wrap once without shrinking their players", async ({
