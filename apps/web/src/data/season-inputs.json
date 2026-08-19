@@ -1,6 +1,6 @@
 {
   "schemaVersion": 6,
-  "generatedAt": "2026-08-19T20:54:01.323406Z",
+  "generatedAt": "2026-08-19T22:23:07.151742Z",
   "recordSeason": "2025-26",
   "events": [
     1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
@@ -52,14 +52,14 @@
     "historicalProjection": {
       "source": "fpl-history-corpus",
       "level": "inferred",
-      "updatedAt": "2026-08-18T00:35:36.407175+00:00",
-      "contentHash": "sha256:789d603f26552820000e2cf95949001d671732d67711880577bc775f7731c4dd"
+      "updatedAt": "2026-08-19T22:22:40.385643+00:00",
+      "contentHash": "sha256:0a5b143bf68842f96bdc3af1a43482a5f97304ba4b60a060e34d3913999e2032"
     },
     "playerMarkets": {
       "source": "the-odds-api",
       "level": "observed",
       "updatedAt": "2026-08-19T20:53:59.778619+00:00",
-      "contentHash": "sha256:1a83d5e2affc461e13a74642fb8c41867af7f09292dffe7f5b3f75964e599a5c"
+      "contentHash": "sha256:aae39ac6426fe1e4b286f8c41694d8bbabc138bf28740e8516db4ec403b00a61"
     },
     "fixtureMarkets": {
       "source": "the-odds-api",
@@ -541,7 +541,7 @@
       }
     ],
     "sourceReference": "FPL rules page, Transfers section",
-    "dataAvailableAt": "2026-08-19T20:54:01.328822Z",
+    "dataAvailableAt": "2026-08-19T22:23:07.159883Z",
     "playableStartRate": 0.35,
     "transferMarginPoints": 0.5
   },
@@ -2725,8 +2725,10 @@
         "redCards": -0.016
       },
       "startRate": 0.932,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": { "yellowCards": "marketCards", "redCards": "marketCards" }
     },
     {
       "id": 82,
@@ -2749,6 +2751,7 @@
         "ownGoals": -0.001
       },
       "startRate": 0.938,
+      "squadNumber": null,
       "rated": true,
       "depthRank": 1
     },
@@ -2773,6 +2776,7 @@
         "ownGoals": -0.001
       },
       "startRate": 0.928,
+      "squadNumber": null,
       "rated": true,
       "depthRank": 1
     },
@@ -2798,8 +2802,10 @@
         "redCards": -0.021
       },
       "startRate": 0.966,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": { "yellowCards": "marketCards", "redCards": "marketCards" }
     },
     {
       "id": 529,
@@ -2822,6 +2828,7 @@
         "ownGoals": -0.001
       },
       "startRate": 0.877,
+      "squadNumber": null,
       "rated": true,
       "depthRank": 1
     },
@@ -2847,8 +2854,10 @@
         "redCards": -0.021
       },
       "startRate": 0.937,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": { "yellowCards": "marketCards", "redCards": "marketCards" }
     },
     {
       "id": 57,
@@ -2870,6 +2879,7 @@
         "ownGoals": -0.045
       },
       "startRate": 0.966,
+      "squadNumber": null,
       "rated": true,
       "depthRank": 1
     },
@@ -2895,8 +2905,10 @@
         "redCards": -0.026
       },
       "startRate": 0.966,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": { "yellowCards": "marketCards", "redCards": "marketCards" }
     },
     {
       "id": 572,
@@ -2918,8 +2930,10 @@
         "ownGoals": -0.001
       },
       "startRate": 0.904,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": { "all": "rolePrior" }
     },
     {
       "id": 300,
@@ -2941,8 +2955,10 @@
         "ownGoals": -0.001
       },
       "startRate": 0.904,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": { "all": "rolePrior" }
     },
     {
       "id": 554,
@@ -2964,8 +2980,10 @@
         "ownGoals": -0.001
       },
       "startRate": 0.904,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": { "all": "rolePrior" }
     },
     {
       "id": 564,
@@ -2987,8 +3005,10 @@
         "ownGoals": -0.001
       },
       "startRate": 0.904,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": { "all": "rolePrior" }
     },
     {
       "id": 250,
@@ -3011,6 +3031,7 @@
         "ownGoals": -0.045
       },
       "startRate": 0.966,
+      "squadNumber": null,
       "rated": true,
       "depthRank": 1
     },
@@ -3035,8 +3056,10 @@
         "redCards": -0.021
       },
       "startRate": 0.904,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": { "yellowCards": "marketCards", "redCards": "marketCards" }
     },
     {
       "id": 110,
@@ -3059,8 +3082,14 @@
         "redCards": -0.026
       },
       "startRate": 0.904,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "all": "rolePrior",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 172,
@@ -3083,8 +3112,14 @@
         "redCards": -0.026
       },
       "startRate": 0.904,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "all": "rolePrior",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 567,
@@ -3107,8 +3142,14 @@
         "redCards": -0.026
       },
       "startRate": 0.904,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "all": "rolePrior",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 140,
@@ -3132,6 +3173,7 @@
         "ownGoals": -0.001
       },
       "startRate": 0.86,
+      "squadNumber": null,
       "rated": true,
       "depthRank": 1
     },
@@ -3157,8 +3199,10 @@
         "redCards": -0.026
       },
       "startRate": 0.795,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": { "yellowCards": "marketCards", "redCards": "marketCards" }
     },
     {
       "id": 467,
@@ -3181,6 +3225,7 @@
         "ownGoals": -0.001
       },
       "startRate": 0.737,
+      "squadNumber": null,
       "rated": true,
       "depthRank": 1
     },
@@ -3205,6 +3250,7 @@
         "ownGoals": -0.001
       },
       "startRate": 0.865,
+      "squadNumber": null,
       "rated": true,
       "depthRank": 2
     },
@@ -3230,8 +3276,10 @@
         "redCards": -0.026
       },
       "startRate": 0.679,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": { "yellowCards": "marketCards", "redCards": "marketCards" }
     },
     {
       "id": 350,
@@ -3254,6 +3302,7 @@
         "ownGoals": -0.001
       },
       "startRate": 0.642,
+      "squadNumber": null,
       "rated": true,
       "depthRank": 1
     },
@@ -3277,6 +3326,7 @@
         "ownGoals": -0.001
       },
       "startRate": 0.365,
+      "squadNumber": null,
       "rated": true,
       "depthRank": 2
     },
@@ -3300,8 +3350,10 @@
         "ownGoals": -0.001
       },
       "startRate": 0.245,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 2
+      "depthRank": 2,
+      "evidence": { "all": "rolePrior" }
     },
     {
       "id": 58,
@@ -3323,8 +3375,10 @@
         "ownGoals": -0.001
       },
       "startRate": 0.245,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 2
+      "depthRank": 2,
+      "evidence": { "all": "rolePrior" }
     },
     {
       "id": 59,
@@ -3346,8 +3400,10 @@
         "ownGoals": -0.001
       },
       "startRate": 0.245,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 2
+      "depthRank": 2,
+      "evidence": { "all": "rolePrior" }
     },
     {
       "id": 83,
@@ -3369,8 +3425,10 @@
         "ownGoals": -0.001
       },
       "startRate": 0.245,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 2
+      "depthRank": 2,
+      "evidence": { "all": "rolePrior" }
     },
     {
       "id": 560,
@@ -3392,8 +3450,10 @@
         "ownGoals": -0.001
       },
       "startRate": 0.245,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 2
+      "depthRank": 2,
+      "evidence": { "all": "rolePrior" }
     },
     {
       "id": 251,
@@ -3415,8 +3475,10 @@
         "ownGoals": -0.001
       },
       "startRate": 0.245,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 2
+      "depthRank": 2,
+      "evidence": { "all": "rolePrior" }
     },
     {
       "id": 252,
@@ -3438,8 +3500,10 @@
         "ownGoals": -0.001
       },
       "startRate": 0.245,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 2
+      "depthRank": 2,
+      "evidence": { "all": "rolePrior" }
     },
     {
       "id": 587,
@@ -3461,8 +3525,10 @@
         "ownGoals": -0.001
       },
       "startRate": 0.245,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 2
+      "depthRank": 2,
+      "evidence": { "all": "rolePrior" }
     },
     {
       "id": 590,
@@ -3484,8 +3550,10 @@
         "ownGoals": -0.001
       },
       "startRate": 0.245,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 2
+      "depthRank": 2,
+      "evidence": { "all": "rolePrior" }
     },
     {
       "id": 495,
@@ -3507,8 +3575,10 @@
         "ownGoals": -0.001
       },
       "startRate": 0.245,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 2
+      "depthRank": 2,
+      "evidence": { "all": "rolePrior" }
     },
     {
       "id": 531,
@@ -3532,6 +3602,7 @@
         "ownGoals": -0.001
       },
       "startRate": 0.226,
+      "squadNumber": null,
       "rated": true,
       "depthRank": 2
     },
@@ -3556,8 +3627,14 @@
         "redCards": -0.016
       },
       "startRate": 0.245,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 2
+      "depthRank": 2,
+      "evidence": {
+        "all": "rolePrior",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 199,
@@ -3580,8 +3657,14 @@
         "redCards": -0.021
       },
       "startRate": 0.245,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 2
+      "depthRank": 2,
+      "evidence": {
+        "all": "rolePrior",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 227,
@@ -3604,8 +3687,14 @@
         "redCards": -0.021
       },
       "startRate": 0.245,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 2
+      "depthRank": 2,
+      "evidence": {
+        "all": "rolePrior",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 351,
@@ -3628,8 +3717,10 @@
         "redCards": -0.026
       },
       "startRate": 0.245,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 2
+      "depthRank": 2,
+      "evidence": { "yellowCards": "marketCards", "redCards": "marketCards" }
     },
     {
       "id": 111,
@@ -3652,8 +3743,14 @@
         "redCards": -0.026
       },
       "startRate": 0.245,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 2
+      "depthRank": 2,
+      "evidence": {
+        "all": "rolePrior",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 273,
@@ -3676,8 +3773,14 @@
         "redCards": -0.026
       },
       "startRate": 0.245,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 2
+      "depthRank": 2,
+      "evidence": {
+        "all": "rolePrior",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 496,
@@ -3699,6 +3802,7 @@
         "ownGoals": -0.001
       },
       "startRate": 0.245,
+      "squadNumber": null,
       "rated": true,
       "depthRank": 1
     },
@@ -3722,6 +3826,7 @@
         "ownGoals": -0.001
       },
       "startRate": 0.145,
+      "squadNumber": null,
       "rated": true,
       "depthRank": 2
     },
@@ -3746,8 +3851,10 @@
         "redCards": -0.026
       },
       "startRate": 0.164,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 2
+      "depthRank": 2,
+      "evidence": { "yellowCards": "marketCards", "redCards": "marketCards" }
     },
     {
       "id": 385,
@@ -3769,6 +3876,7 @@
         "ownGoals": -0.001
       },
       "startRate": 0.106,
+      "squadNumber": null,
       "rated": true,
       "depthRank": 1
     },
@@ -3792,8 +3900,10 @@
         "ownGoals": -0.001
       },
       "startRate": 0.082,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 4
+      "depthRank": 4,
+      "evidence": { "all": "rolePrior" }
     },
     {
       "id": 302,
@@ -3815,8 +3925,10 @@
         "ownGoals": -0.001
       },
       "startRate": 0.082,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 4
+      "depthRank": 4,
+      "evidence": { "all": "rolePrior" }
     },
     {
       "id": 355,
@@ -3838,8 +3950,10 @@
         "ownGoals": -0.001
       },
       "startRate": 0.082,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 3
+      "depthRank": 3,
+      "evidence": { "all": "rolePrior" }
     },
     {
       "id": 386,
@@ -3861,8 +3975,10 @@
         "ownGoals": -0.001
       },
       "startRate": 0.082,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 3
+      "depthRank": 3,
+      "evidence": { "all": "rolePrior" }
     },
     {
       "id": 443,
@@ -3884,8 +4000,10 @@
         "ownGoals": -0.001
       },
       "startRate": 0.082,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 3
+      "depthRank": 3,
+      "evidence": { "all": "rolePrior" }
     },
     {
       "id": 444,
@@ -3907,8 +4025,10 @@
         "ownGoals": -0.001
       },
       "startRate": 0.082,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 3
+      "depthRank": 3,
+      "evidence": { "all": "rolePrior" }
     },
     {
       "id": 555,
@@ -3931,8 +4051,14 @@
         "redCards": -0.021
       },
       "startRate": 0.082,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 3
+      "depthRank": 3,
+      "evidence": {
+        "all": "rolePrior",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 228,
@@ -3955,8 +4081,14 @@
         "redCards": -0.021
       },
       "startRate": 0.082,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 3
+      "depthRank": 3,
+      "evidence": {
+        "all": "rolePrior",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 352,
@@ -3979,8 +4111,10 @@
         "redCards": -0.026
       },
       "startRate": 0.082,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 3
+      "depthRank": 3,
+      "evidence": { "yellowCards": "marketCards", "redCards": "marketCards" }
     },
     {
       "id": 171,
@@ -4003,8 +4137,14 @@
         "redCards": -0.026
       },
       "startRate": 0.082,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 3
+      "depthRank": 3,
+      "evidence": {
+        "all": "rolePrior",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 4,
@@ -4028,8 +4168,15 @@
         "defensiveContribution": 0.583
       },
       "startRate": 0.853,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 388,
@@ -4053,8 +4200,13 @@
         "defensiveContribution": 0.549
       },
       "startRate": 0.926,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 2
+      "depthRank": 2,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 498,
@@ -4078,6 +4230,7 @@
         "defensiveContribution": 1.178
       },
       "startRate": 0.944,
+      "squadNumber": null,
       "rated": true,
       "depthRank": 1
     },
@@ -4103,8 +4256,15 @@
         "defensiveContribution": 1.024
       },
       "startRate": 0.959,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 200,
@@ -4128,8 +4288,13 @@
         "defensiveContribution": 0.955
       },
       "startRate": 0.9,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 356,
@@ -4153,8 +4318,15 @@
         "defensiveContribution": 0.767
       },
       "startRate": 0.978,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 61,
@@ -4178,8 +4350,13 @@
         "defensiveContribution": 0.59
       },
       "startRate": 0.978,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 387,
@@ -4203,8 +4380,13 @@
         "defensiveContribution": 0.1
       },
       "startRate": 0.75,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 202,
@@ -4228,8 +4410,15 @@
         "defensiveContribution": 0.658
       },
       "startRate": 0.85,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 2
+      "depthRank": 2,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 231,
@@ -4253,8 +4442,15 @@
         "defensiveContribution": 0.776
       },
       "startRate": 0.819,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 3
+      "depthRank": 3,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 84,
@@ -4278,8 +4474,13 @@
         "defensiveContribution": 0.784
       },
       "startRate": 0.874,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 153,
@@ -4303,6 +4504,7 @@
         "defensiveContribution": 0.311
       },
       "startRate": 0.918,
+      "squadNumber": null,
       "rated": true,
       "depthRank": 7
     },
@@ -4328,8 +4530,15 @@
         "defensiveContribution": 0.327
       },
       "startRate": 0.914,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 5
+      "depthRank": 5,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 112,
@@ -4353,6 +4562,7 @@
         "defensiveContribution": 0.609
       },
       "startRate": 0.916,
+      "squadNumber": null,
       "rated": true,
       "depthRank": 3
     },
@@ -4378,8 +4588,13 @@
         "defensiveContribution": 0.238
       },
       "startRate": 0.903,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 4
+      "depthRank": 4,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 499,
@@ -4403,8 +4618,13 @@
         "defensiveContribution": 0.425
       },
       "startRate": 0.864,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 2
+      "depthRank": 2,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 113,
@@ -4428,8 +4648,15 @@
         "defensiveContribution": 0.151
       },
       "startRate": 0.943,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 4
+      "depthRank": 4,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 532,
@@ -4453,8 +4680,13 @@
         "defensiveContribution": 0.813
       },
       "startRate": 0.711,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 232,
@@ -4478,8 +4710,15 @@
         "defensiveContribution": 0.329
       },
       "startRate": 0.946,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 3
+      "depthRank": 3,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 8,
@@ -4503,8 +4742,15 @@
         "defensiveContribution": 0.068
       },
       "startRate": 0.635,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 2
+      "depthRank": 2,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 88,
@@ -4528,8 +4774,13 @@
         "defensiveContribution": 0.19
       },
       "startRate": 0.96,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 2
+      "depthRank": 2,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 60,
@@ -4553,8 +4804,13 @@
         "defensiveContribution": 0.816
       },
       "startRate": 0.775,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 471,
@@ -4578,8 +4834,13 @@
         "defensiveContribution": 0.639
       },
       "startRate": 0.957,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 178,
@@ -4603,8 +4864,16 @@
         "defensiveContribution": 0.667
       },
       "startRate": 0.729,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 534,
@@ -4628,8 +4897,13 @@
         "defensiveContribution": 0.148
       },
       "startRate": 0.869,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 2
+      "depthRank": 2,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 269,
@@ -4651,8 +4925,13 @@
         "defensiveContribution": 0.306
       },
       "startRate": 0.659,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 332,
@@ -4676,8 +4955,13 @@
         "defensiveContribution": 0.303
       },
       "startRate": 0.748,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 3
+      "depthRank": 3,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 175,
@@ -4701,8 +4985,16 @@
         "defensiveContribution": 0.667
       },
       "startRate": 0.729,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 390,
@@ -4726,8 +5018,13 @@
         "defensiveContribution": 0.304
       },
       "startRate": 0.698,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 3
+      "depthRank": 3,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 180,
@@ -4751,8 +5048,16 @@
         "defensiveContribution": 0.667
       },
       "startRate": 0.729,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 173,
@@ -4776,8 +5081,16 @@
         "defensiveContribution": 0.667
       },
       "startRate": 0.729,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 503,
@@ -4801,8 +5114,13 @@
         "defensiveContribution": 0.192
       },
       "startRate": 0.888,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 3
+      "depthRank": 3,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 176,
@@ -4826,8 +5144,16 @@
         "defensiveContribution": 0.667
       },
       "startRate": 0.729,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 233,
@@ -4851,8 +5177,15 @@
         "defensiveContribution": 0.383
       },
       "startRate": 0.908,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 5
+      "depthRank": 5,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 179,
@@ -4876,8 +5209,16 @@
         "defensiveContribution": 0.667
       },
       "startRate": 0.729,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 592,
@@ -4901,8 +5242,14 @@
         "defensiveContribution": 0.667
       },
       "startRate": 0.729,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 257,
@@ -4926,8 +5273,13 @@
         "defensiveContribution": 0.446
       },
       "startRate": 0.818,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 203,
@@ -4951,8 +5303,15 @@
         "defensiveContribution": 0.698
       },
       "startRate": 0.615,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 2
+      "depthRank": 2,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 174,
@@ -4976,8 +5335,16 @@
         "defensiveContribution": 0.667
       },
       "startRate": 0.729,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 327,
@@ -5001,8 +5368,13 @@
         "defensiveContribution": 0.667
       },
       "startRate": 0.729,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 303,
@@ -5026,8 +5398,14 @@
         "defensiveContribution": 0.667
       },
       "startRate": 0.729,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 306,
@@ -5051,8 +5429,14 @@
         "defensiveContribution": 0.667
       },
       "startRate": 0.729,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 334,
@@ -5076,8 +5460,14 @@
         "defensiveContribution": 0.667
       },
       "startRate": 0.729,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 445,
@@ -5101,8 +5491,15 @@
         "defensiveContribution": 0.542
       },
       "startRate": 0.775,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 329,
@@ -5126,8 +5523,13 @@
         "defensiveContribution": 0.518
       },
       "startRate": 0.87,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 3
+      "depthRank": 3,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 31,
@@ -5151,8 +5553,15 @@
         "defensiveContribution": 0.198
       },
       "startRate": 0.903,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 304,
@@ -5176,8 +5585,14 @@
         "defensiveContribution": 0.667
       },
       "startRate": 0.729,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 307,
@@ -5201,8 +5616,14 @@
         "defensiveContribution": 0.667
       },
       "startRate": 0.729,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 308,
@@ -5226,8 +5647,14 @@
         "defensiveContribution": 0.667
       },
       "startRate": 0.729,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 447,
@@ -5251,8 +5678,15 @@
         "defensiveContribution": 0.674
       },
       "startRate": 0.699,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 581,
@@ -5276,8 +5710,14 @@
         "defensiveContribution": 0.667
       },
       "startRate": 0.729,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 182,
@@ -5301,8 +5741,16 @@
         "defensiveContribution": 0.667
       },
       "startRate": 0.729,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 201,
@@ -5326,8 +5774,10 @@
         "defensiveContribution": 0.337
       },
       "startRate": 0.647,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": { "yellowCards": "marketCards", "redCards": "marketCards" }
     },
     {
       "id": 305,
@@ -5351,8 +5801,14 @@
         "defensiveContribution": 0.667
       },
       "startRate": 0.729,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 115,
@@ -5376,8 +5832,15 @@
         "defensiveContribution": 0.076
       },
       "startRate": 0.546,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 4
+      "depthRank": 4,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 120,
@@ -5401,8 +5864,16 @@
         "defensiveContribution": 0.667
       },
       "startRate": 0.729,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 130,
@@ -5424,8 +5895,15 @@
         "defensiveContribution": 0.602
       },
       "startRate": 0.678,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 573,
@@ -5449,8 +5927,14 @@
         "defensiveContribution": 0.24
       },
       "startRate": 0.551,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 5
+      "depthRank": 5,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 142,
@@ -5474,8 +5958,13 @@
         "defensiveContribution": 0.166
       },
       "startRate": 0.648,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 2
+      "depthRank": 2,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 423,
@@ -5499,8 +5988,15 @@
         "defensiveContribution": 0.278
       },
       "startRate": 0.959,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 5
+      "depthRank": 5,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 32,
@@ -5524,8 +6020,15 @@
         "defensiveContribution": 0.103
       },
       "startRate": 0.884,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 152,
@@ -5549,8 +6052,14 @@
         "defensiveContribution": 0.112
       },
       "startRate": 0.725,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 2
+      "depthRank": 2,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 418,
@@ -5574,8 +6083,15 @@
         "defensiveContribution": 0.534
       },
       "startRate": 0.701,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 282,
@@ -5599,8 +6115,16 @@
         "defensiveContribution": 0.667
       },
       "startRate": 0.729,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 116,
@@ -5624,8 +6148,15 @@
         "defensiveContribution": 0.414
       },
       "startRate": 0.849,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 4
+      "depthRank": 4,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 9,
@@ -5649,8 +6180,15 @@
         "defensiveContribution": 0.471
       },
       "startRate": 0.686,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 2
+      "depthRank": 2,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 279,
@@ -5674,8 +6212,16 @@
         "defensiveContribution": 0.667
       },
       "startRate": 0.729,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 585,
@@ -5699,8 +6245,16 @@
         "defensiveContribution": 0.667
       },
       "startRate": 0.729,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 277,
@@ -5724,8 +6278,16 @@
         "defensiveContribution": 0.667
       },
       "startRate": 0.729,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 280,
@@ -5749,8 +6311,16 @@
         "defensiveContribution": 0.667
       },
       "startRate": 0.729,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 392,
@@ -5774,8 +6344,13 @@
         "defensiveContribution": 0.154
       },
       "startRate": 0.533,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 3
+      "depthRank": 3,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 586,
@@ -5799,8 +6374,16 @@
         "defensiveContribution": 0.667
       },
       "startRate": 0.729,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 144,
@@ -5824,8 +6407,13 @@
         "defensiveContribution": 0.066
       },
       "startRate": 0.744,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 4
+      "depthRank": 4,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 256,
@@ -5849,8 +6437,13 @@
         "defensiveContribution": 0.425
       },
       "startRate": 0.641,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 448,
@@ -5874,8 +6467,15 @@
         "defensiveContribution": 0.547
       },
       "startRate": 0.737,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 417,
@@ -5899,8 +6499,15 @@
         "defensiveContribution": 0.206
       },
       "startRate": 0.821,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 330,
@@ -5924,8 +6531,13 @@
         "defensiveContribution": 0.15
       },
       "startRate": 0.847,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 3
+      "depthRank": 3,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 393,
@@ -5949,8 +6561,13 @@
         "defensiveContribution": 0.379
       },
       "startRate": 0.613,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 3
+      "depthRank": 3,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 472,
@@ -5974,8 +6591,13 @@
         "defensiveContribution": 0.558
       },
       "startRate": 0.721,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 87,
@@ -5999,8 +6621,13 @@
         "defensiveContribution": 0.55
       },
       "startRate": 0.673,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 2
+      "depthRank": 2,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 501,
@@ -6024,8 +6651,13 @@
         "defensiveContribution": 0.767
       },
       "startRate": 0.633,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 3
+      "depthRank": 3,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 93,
@@ -6049,8 +6681,14 @@
         "defensiveContribution": 0.112
       },
       "startRate": 0.725,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 2
+      "depthRank": 2,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 473,
@@ -6074,8 +6712,13 @@
         "defensiveContribution": 0.188
       },
       "startRate": 0.67,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 6
+      "depthRank": 6,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 254,
@@ -6099,8 +6742,13 @@
         "defensiveContribution": 0.311
       },
       "startRate": 0.654,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 449,
@@ -6124,8 +6772,15 @@
         "defensiveContribution": 0.326
       },
       "startRate": 0.758,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 502,
@@ -6149,8 +6804,13 @@
         "defensiveContribution": 0.083
       },
       "startRate": 0.524,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 6
+      "depthRank": 6,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 537,
@@ -6174,8 +6834,14 @@
         "defensiveContribution": 0.112
       },
       "startRate": 0.725,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 2
+      "depthRank": 2,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 10,
@@ -6199,8 +6865,15 @@
         "defensiveContribution": 0.174
       },
       "startRate": 0.478,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 2
+      "depthRank": 2,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 234,
@@ -6224,8 +6897,15 @@
         "defensiveContribution": 0.345
       },
       "startRate": 0.411,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 5
+      "depthRank": 5,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 358,
@@ -6249,8 +6929,15 @@
         "defensiveContribution": 0.112
       },
       "startRate": 0.725,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 2
+      "depthRank": 2,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 504,
@@ -6274,8 +6961,10 @@
         "defensiveContribution": 0.533
       },
       "startRate": 0.583,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": { "all": "rolePrior" }
     },
     {
       "id": 177,
@@ -6299,8 +6988,10 @@
         "defensiveContribution": 0.533
       },
       "startRate": 0.583,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": { "all": "rolePrior" }
     },
     {
       "id": 181,
@@ -6324,8 +7015,10 @@
         "defensiveContribution": 0.533
       },
       "startRate": 0.583,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": { "all": "rolePrior" }
     },
     {
       "id": 284,
@@ -6349,8 +7042,10 @@
         "defensiveContribution": 0.533
       },
       "startRate": 0.583,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": { "all": "rolePrior" }
     },
     {
       "id": 285,
@@ -6374,8 +7069,10 @@
         "defensiveContribution": 0.533
       },
       "startRate": 0.583,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": { "all": "rolePrior" }
     },
     {
       "id": 556,
@@ -6399,8 +7096,10 @@
         "defensiveContribution": 0.533
       },
       "startRate": 0.583,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": { "all": "rolePrior" }
     },
     {
       "id": 579,
@@ -6424,8 +7123,16 @@
         "defensiveContribution": 0.112
       },
       "startRate": 0.725,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 2
+      "depthRank": 2,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 536,
@@ -6449,8 +7156,13 @@
         "defensiveContribution": 0.27
       },
       "startRate": 0.701,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 2
+      "depthRank": 2,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 64,
@@ -6474,8 +7186,13 @@
         "defensiveContribution": 0.083
       },
       "startRate": 0.546,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 5
+      "depthRank": 5,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 357,
@@ -6499,8 +7216,15 @@
         "defensiveContribution": 0.087
       },
       "startRate": 0.545,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 2
+      "depthRank": 2,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 391,
@@ -6524,8 +7248,13 @@
         "defensiveContribution": 0.207
       },
       "startRate": 0.471,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 3
+      "depthRank": 3,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 151,
@@ -6549,8 +7278,13 @@
         "defensiveContribution": 0.097
       },
       "startRate": 0.466,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 7
+      "depthRank": 7,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 90,
@@ -6574,8 +7308,13 @@
         "defensiveContribution": 0.171
       },
       "startRate": 0.465,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 2
+      "depthRank": 2,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 34,
@@ -6599,8 +7338,15 @@
         "defensiveContribution": 0.18
       },
       "startRate": 0.648,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 446,
@@ -6624,8 +7370,15 @@
         "defensiveContribution": 0.442
       },
       "startRate": 0.516,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 33,
@@ -6649,8 +7402,15 @@
         "defensiveContribution": 0.321
       },
       "startRate": 0.597,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 364,
@@ -6674,8 +7434,16 @@
         "defensiveContribution": 0.204
       },
       "startRate": 0.464,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 5
+      "depthRank": 5,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 258,
@@ -6699,8 +7467,13 @@
         "defensiveContribution": 0.18
       },
       "startRate": 0.694,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 508,
@@ -6724,8 +7497,14 @@
         "defensiveContribution": 0.191
       },
       "startRate": 0.434,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 8
+      "depthRank": 8,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 36,
@@ -6749,8 +7528,15 @@
         "defensiveContribution": 0.19
       },
       "startRate": 0.655,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 205,
@@ -6774,8 +7560,16 @@
         "defensiveContribution": 0.198
       },
       "startRate": 0.451,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 5
+      "depthRank": 5,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 422,
@@ -6799,8 +7593,15 @@
         "defensiveContribution": 0.153
       },
       "startRate": 0.535,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 5
+      "depthRank": 5,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 62,
@@ -6824,8 +7625,13 @@
         "defensiveContribution": 0.297
       },
       "startRate": 0.531,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 3
+      "depthRank": 3,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 583,
@@ -6849,8 +7655,14 @@
         "defensiveContribution": 0.186
       },
       "startRate": 0.42,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 4
+      "depthRank": 4,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 114,
@@ -6874,8 +7686,15 @@
         "defensiveContribution": 0.241
       },
       "startRate": 0.511,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 4
+      "depthRank": 4,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 92,
@@ -6899,8 +7718,10 @@
         "defensiveContribution": 0.093
       },
       "startRate": 0.577,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 2
+      "depthRank": 2,
+      "evidence": { "all": "rolePrior" }
     },
     {
       "id": 588,
@@ -6924,8 +7745,10 @@
         "defensiveContribution": 0.093
       },
       "startRate": 0.577,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 2
+      "depthRank": 2,
+      "evidence": { "all": "rolePrior" }
     },
     {
       "id": 419,
@@ -6949,8 +7772,15 @@
         "defensiveContribution": 0.339
       },
       "startRate": 0.576,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 89,
@@ -6974,8 +7804,13 @@
         "defensiveContribution": 0.077
       },
       "startRate": 0.572,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 2
+      "depthRank": 2,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 147,
@@ -6999,8 +7834,13 @@
         "defensiveContribution": 0.366
       },
       "startRate": 0.451,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 7
+      "depthRank": 7,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 255,
@@ -7024,8 +7864,13 @@
         "defensiveContribution": 0.536
       },
       "startRate": 0.516,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 362,
@@ -7049,8 +7894,16 @@
         "defensiveContribution": 0.187
       },
       "startRate": 0.423,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 5
+      "depthRank": 5,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 235,
@@ -7074,8 +7927,16 @@
         "defensiveContribution": 0.186
       },
       "startRate": 0.422,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 7
+      "depthRank": 7,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 566,
@@ -7099,8 +7960,14 @@
         "defensiveContribution": 0.175
       },
       "startRate": 0.395,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 3
+      "depthRank": 3,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 365,
@@ -7124,8 +7991,16 @@
         "defensiveContribution": 0.178
       },
       "startRate": 0.402,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 7
+      "depthRank": 7,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 477,
@@ -7149,8 +8024,14 @@
         "defensiveContribution": 0.168
       },
       "startRate": 0.377,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 9
+      "depthRank": 9,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 11,
@@ -7174,8 +8055,15 @@
         "defensiveContribution": 0.219
       },
       "startRate": 0.499,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 2
+      "depthRank": 2,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 396,
@@ -7199,8 +8087,14 @@
         "defensiveContribution": 0.164
       },
       "startRate": 0.368,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 7
+      "depthRank": 7,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 119,
@@ -7224,8 +8118,16 @@
         "defensiveContribution": 0.167
       },
       "startRate": 0.376,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 4
+      "depthRank": 4,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 539,
@@ -7249,8 +8151,13 @@
         "defensiveContribution": 0.195
       },
       "startRate": 0.485,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 5
+      "depthRank": 5,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 470,
@@ -7274,8 +8181,13 @@
         "defensiveContribution": 0.416
       },
       "startRate": 0.498,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 4
+      "depthRank": 4,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 91,
@@ -7299,8 +8211,13 @@
         "defensiveContribution": 0.307
       },
       "startRate": 0.42,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 2
+      "depthRank": 2,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 421,
@@ -7324,8 +8241,15 @@
         "defensiveContribution": 0.43
       },
       "startRate": 0.531,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 5
+      "depthRank": 5,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 420,
@@ -7349,8 +8273,15 @@
         "defensiveContribution": 0.23
       },
       "startRate": 0.619,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 395,
@@ -7374,8 +8305,13 @@
         "defensiveContribution": 0.113
       },
       "startRate": 0.423,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 7
+      "depthRank": 7,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 476,
@@ -7399,8 +8335,14 @@
         "defensiveContribution": 0.148
       },
       "startRate": 0.33,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 9
+      "depthRank": 9,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 38,
@@ -7424,8 +8366,10 @@
         "defensiveContribution": 0.146
       },
       "startRate": 0.31,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 7
+      "depthRank": 7,
+      "evidence": { "all": "rolePrior" }
     },
     {
       "id": 118,
@@ -7449,8 +8393,10 @@
         "defensiveContribution": 0.146
       },
       "startRate": 0.31,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 4
+      "depthRank": 4,
+      "evidence": { "all": "rolePrior" }
     },
     {
       "id": 150,
@@ -7474,8 +8420,10 @@
         "defensiveContribution": 0.146
       },
       "startRate": 0.31,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 7
+      "depthRank": 7,
+      "evidence": { "all": "rolePrior" }
     },
     {
       "id": 561,
@@ -7499,8 +8447,10 @@
         "defensiveContribution": 0.146
       },
       "startRate": 0.31,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 7
+      "depthRank": 7,
+      "evidence": { "all": "rolePrior" }
     },
     {
       "id": 207,
@@ -7524,8 +8474,10 @@
         "defensiveContribution": 0.146
       },
       "startRate": 0.31,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 5
+      "depthRank": 5,
+      "evidence": { "all": "rolePrior" }
     },
     {
       "id": 577,
@@ -7549,8 +8501,10 @@
         "defensiveContribution": 0.146
       },
       "startRate": 0.31,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 5
+      "depthRank": 5,
+      "evidence": { "all": "rolePrior" }
     },
     {
       "id": 361,
@@ -7574,8 +8528,10 @@
         "defensiveContribution": 0.146
       },
       "startRate": 0.31,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 7
+      "depthRank": 7,
+      "evidence": { "all": "rolePrior" }
     },
     {
       "id": 424,
@@ -7599,8 +8555,10 @@
         "defensiveContribution": 0.146
       },
       "startRate": 0.31,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 8
+      "depthRank": 8,
+      "evidence": { "all": "rolePrior" }
     },
     {
       "id": 593,
@@ -7624,8 +8582,10 @@
         "defensiveContribution": 0.146
       },
       "startRate": 0.31,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 6
+      "depthRank": 6,
+      "evidence": { "all": "rolePrior" }
     },
     {
       "id": 479,
@@ -7649,8 +8609,10 @@
         "defensiveContribution": 0.146
       },
       "startRate": 0.31,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 9
+      "depthRank": 9,
+      "evidence": { "all": "rolePrior" }
     },
     {
       "id": 509,
@@ -7674,8 +8636,10 @@
         "defensiveContribution": 0.146
       },
       "startRate": 0.31,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 8
+      "depthRank": 8,
+      "evidence": { "all": "rolePrior" }
     },
     {
       "id": 510,
@@ -7699,8 +8663,10 @@
         "defensiveContribution": 0.146
       },
       "startRate": 0.31,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 8
+      "depthRank": 8,
+      "evidence": { "all": "rolePrior" }
     },
     {
       "id": 511,
@@ -7724,8 +8690,10 @@
         "defensiveContribution": 0.146
       },
       "startRate": 0.31,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 8
+      "depthRank": 8,
+      "evidence": { "all": "rolePrior" }
     },
     {
       "id": 230,
@@ -7749,8 +8717,15 @@
         "defensiveContribution": 0.335
       },
       "startRate": 0.493,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 2
+      "depthRank": 2,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 37,
@@ -7774,8 +8749,15 @@
         "defensiveContribution": 0.093
       },
       "startRate": 0.55,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 506,
@@ -7799,8 +8781,13 @@
         "defensiveContribution": 0.077
       },
       "startRate": 0.585,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 6
+      "depthRank": 6,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 474,
@@ -7824,8 +8811,13 @@
         "defensiveContribution": 0.198
       },
       "startRate": 0.433,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 6
+      "depthRank": 6,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 149,
@@ -7849,8 +8841,13 @@
         "defensiveContribution": 0.356
       },
       "startRate": 0.406,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 4
+      "depthRank": 4,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 148,
@@ -7874,8 +8871,13 @@
         "defensiveContribution": 0.147
       },
       "startRate": 0.55,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 7
+      "depthRank": 7,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 478,
@@ -7899,6 +8901,7 @@
         "defensiveContribution": 0.156
       },
       "startRate": 0.247,
+      "squadNumber": null,
       "rated": true,
       "depthRank": 6
     },
@@ -7924,6 +8927,7 @@
         "defensiveContribution": 0.082
       },
       "startRate": 0.233,
+      "squadNumber": null,
       "rated": true,
       "depthRank": 1
     },
@@ -7949,6 +8953,7 @@
         "defensiveContribution": 0.08
       },
       "startRate": 0.202,
+      "squadNumber": null,
       "rated": true,
       "depthRank": 5
     },
@@ -7974,6 +8979,7 @@
         "defensiveContribution": 0.061
       },
       "startRate": 0.084,
+      "squadNumber": null,
       "rated": true,
       "depthRank": 7
     },
@@ -7999,6 +9005,7 @@
         "defensiveContribution": 0.04
       },
       "startRate": 0.065,
+      "squadNumber": null,
       "rated": true,
       "depthRank": 4
     },
@@ -8023,8 +9030,15 @@
         "defensiveContribution": 0.259
       },
       "startRate": 0.891,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 13,
@@ -8046,8 +9060,15 @@
         "defensiveContribution": 0.676
       },
       "startRate": 0.928,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 2
+      "depthRank": 2,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 480,
@@ -8069,8 +9090,13 @@
         "defensiveContribution": 0.084
       },
       "startRate": 0.923,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 12,
@@ -8092,8 +9118,15 @@
         "defensiveContribution": 0.291
       },
       "startRate": 0.724,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 481,
@@ -8115,6 +9148,7 @@
         "defensiveContribution": 1.172
       },
       "startRate": 0.934,
+      "squadNumber": null,
       "rated": true,
       "depthRank": 4
     },
@@ -8139,8 +9173,13 @@
         "defensiveContribution": 0.17
       },
       "startRate": 0.919,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 542,
@@ -8163,8 +9202,13 @@
         "defensiveContribution": 0.411
       },
       "startRate": 0.904,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 368,
@@ -8187,8 +9231,15 @@
         "defensiveContribution": 0.481
       },
       "startRate": 0.945,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 2
+      "depthRank": 2,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 68,
@@ -8210,8 +9261,13 @@
         "defensiveContribution": 0.179
       },
       "startRate": 0.864,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 2
+      "depthRank": 2,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 95,
@@ -8233,8 +9289,13 @@
         "defensiveContribution": 0.143
       },
       "startRate": 0.759,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 399,
@@ -8256,8 +9317,13 @@
         "defensiveContribution": 0.159
       },
       "startRate": 0.632,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 2
+      "depthRank": 2,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 69,
@@ -8279,8 +9345,13 @@
         "defensiveContribution": 0.742
       },
       "startRate": 0.899,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 2
+      "depthRank": 2,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 155,
@@ -8302,8 +9373,13 @@
         "defensiveContribution": 0.115
       },
       "startRate": 0.853,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 3
+      "depthRank": 3,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 237,
@@ -8325,8 +9401,15 @@
         "defensiveContribution": 0.324
       },
       "startRate": 0.882,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 2
+      "depthRank": 2,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 427,
@@ -8348,8 +9431,15 @@
         "defensiveContribution": 0.036
       },
       "startRate": 0.797,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 2
+      "depthRank": 2,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 94,
@@ -8372,8 +9462,13 @@
         "defensiveContribution": 0.038
       },
       "startRate": 0.844,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 2
+      "depthRank": 2,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 367,
@@ -8395,8 +9490,15 @@
         "defensiveContribution": 0.088
       },
       "startRate": 0.876,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 2
+      "depthRank": 2,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 515,
@@ -8419,8 +9521,14 @@
         "defensiveContribution": 0.154
       },
       "startRate": 0.742,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 366,
@@ -8442,8 +9550,15 @@
         "defensiveContribution": 0.09
       },
       "startRate": 0.786,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 124,
@@ -8467,8 +9582,15 @@
         "defensiveContribution": 0.225
       },
       "startRate": 0.933,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 2
+      "depthRank": 2,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 370,
@@ -8490,8 +9612,15 @@
         "defensiveContribution": 0.078
       },
       "startRate": 0.377,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 7
+      "depthRank": 7,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 398,
@@ -8513,8 +9642,13 @@
         "defensiveContribution": 0.191
       },
       "startRate": 0.694,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 3
+      "depthRank": 3,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 236,
@@ -8536,8 +9670,15 @@
         "defensiveContribution": 0.278
       },
       "startRate": 0.838,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 96,
@@ -8559,8 +9700,13 @@
         "defensiveContribution": 0.356
       },
       "startRate": 0.712,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 4
+      "depthRank": 4,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 313,
@@ -8583,8 +9729,14 @@
         "defensiveContribution": 0.154
       },
       "startRate": 0.742,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 154,
@@ -8607,8 +9759,13 @@
         "defensiveContribution": 0.154
       },
       "startRate": 0.742,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 335,
@@ -8630,8 +9787,13 @@
         "defensiveContribution": 0.523
       },
       "startRate": 0.788,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 2
+      "depthRank": 2,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 208,
@@ -8653,8 +9815,15 @@
         "defensiveContribution": 0.043
       },
       "startRate": 0.71,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 188,
@@ -8677,8 +9846,16 @@
         "defensiveContribution": 0.154
       },
       "startRate": 0.742,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 584,
@@ -8701,8 +9878,16 @@
         "defensiveContribution": 0.154
       },
       "startRate": 0.742,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 337,
@@ -8724,8 +9909,13 @@
         "defensiveContribution": 0.189
       },
       "startRate": 0.822,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 4
+      "depthRank": 4,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 453,
@@ -8747,8 +9937,15 @@
         "defensiveContribution": 0.044
       },
       "startRate": 0.652,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 40,
@@ -8770,6 +9967,7 @@
         "defensiveContribution": 0.078
       },
       "startRate": 0.932,
+      "squadNumber": null,
       "rated": true,
       "depthRank": 2
     },
@@ -8794,8 +9992,14 @@
         "defensiveContribution": 0.147
       },
       "startRate": 0.707,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 574,
@@ -8818,8 +10022,16 @@
         "defensiveContribution": 0.146
       },
       "startRate": 0.703,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 525,
@@ -8841,6 +10053,7 @@
         "defensiveContribution": 0.731
       },
       "startRate": 0.923,
+      "squadNumber": null,
       "rated": true,
       "depthRank": 2
     },
@@ -8865,8 +10078,14 @@
         "defensiveContribution": 0.142
       },
       "startRate": 0.685,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 318,
@@ -8889,8 +10108,14 @@
         "defensiveContribution": 0.142
       },
       "startRate": 0.685,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 156,
@@ -8912,8 +10137,13 @@
         "defensiveContribution": 0.039
       },
       "startRate": 0.837,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 4
+      "depthRank": 4,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 14,
@@ -8935,8 +10165,15 @@
         "defensiveContribution": 0.045
       },
       "startRate": 0.65,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 4
+      "depthRank": 4,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 19,
@@ -8958,8 +10195,15 @@
         "defensiveContribution": 0.357
       },
       "startRate": 0.866,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 10
+      "depthRank": 10,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 338,
@@ -8981,8 +10225,13 @@
         "defensiveContribution": 0.86
       },
       "startRate": 0.907,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 4
+      "depthRank": 4,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 97,
@@ -9004,8 +10253,13 @@
         "defensiveContribution": 0.253
       },
       "startRate": 0.82,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 4
+      "depthRank": 4,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 544,
@@ -9027,8 +10281,13 @@
         "defensiveContribution": 0.627
       },
       "startRate": 0.871,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 2
+      "depthRank": 2,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 428,
@@ -9050,8 +10309,15 @@
         "defensiveContribution": 0.089
       },
       "startRate": 0.825,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 2
+      "depthRank": 2,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 210,
@@ -9073,8 +10339,15 @@
         "defensiveContribution": 0.469
       },
       "startRate": 0.8,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 2
+      "depthRank": 2,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 67,
@@ -9098,6 +10371,7 @@
         "defensiveContribution": 0.073
       },
       "startRate": 0.811,
+      "squadNumber": null,
       "rated": true,
       "depthRank": 1
     },
@@ -9121,6 +10395,7 @@
         "defensiveContribution": 0.077
       },
       "startRate": 0.773,
+      "squadNumber": null,
       "rated": true,
       "depthRank": 1
     },
@@ -9144,8 +10419,13 @@
         "defensiveContribution": 0.052
       },
       "startRate": 0.579,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 2
+      "depthRank": 2,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 371,
@@ -9167,8 +10447,15 @@
         "defensiveContribution": 0.36
       },
       "startRate": 0.893,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 5
+      "depthRank": 5,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 336,
@@ -9190,8 +10477,13 @@
         "defensiveContribution": 0.047
       },
       "startRate": 0.649,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 2
+      "depthRank": 2,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 86,
@@ -9215,8 +10507,13 @@
         "defensiveContribution": 0.071
       },
       "startRate": 0.72,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 4
+      "depthRank": 4,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 41,
@@ -9238,8 +10535,15 @@
         "defensiveContribution": 0.263
       },
       "startRate": 0.624,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 519,
@@ -9263,8 +10567,13 @@
         "defensiveContribution": 0.253
       },
       "startRate": 0.819,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 4
+      "depthRank": 4,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 576,
@@ -9287,8 +10596,16 @@
         "defensiveContribution": 0.141
       },
       "startRate": 0.679,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 127,
@@ -9310,8 +10627,15 @@
         "defensiveContribution": 0.19
       },
       "startRate": 0.726,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 5
+      "depthRank": 5,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 452,
@@ -9333,6 +10657,7 @@
         "defensiveContribution": 0.233
       },
       "startRate": 0.665,
+      "squadNumber": null,
       "rated": true,
       "depthRank": 3
     },
@@ -9356,8 +10681,13 @@
         "defensiveContribution": 0.046
       },
       "startRate": 0.695,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 16,
@@ -9379,8 +10709,15 @@
         "defensiveContribution": 0.051
       },
       "startRate": 0.54,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 4
+      "depthRank": 4,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 292,
@@ -9403,8 +10740,10 @@
         "defensiveContribution": 0.126
       },
       "startRate": 0.603,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": { "all": "rolePrior" }
     },
     {
       "id": 296,
@@ -9427,8 +10766,10 @@
         "defensiveContribution": 0.126
       },
       "startRate": 0.603,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": { "all": "rolePrior" }
     },
     {
       "id": 589,
@@ -9451,8 +10792,10 @@
         "defensiveContribution": 0.126
       },
       "startRate": 0.603,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": { "all": "rolePrior" }
     },
     {
       "id": 591,
@@ -9475,8 +10818,10 @@
         "defensiveContribution": 0.126
       },
       "startRate": 0.603,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": { "all": "rolePrior" }
     },
     {
       "id": 211,
@@ -9498,8 +10843,15 @@
         "defensiveContribution": 0.095
       },
       "startRate": 0.654,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 2
+      "depthRank": 2,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 457,
@@ -9521,8 +10873,15 @@
         "defensiveContribution": 0.046
       },
       "startRate": 0.626,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 461,
@@ -9545,8 +10904,16 @@
         "defensiveContribution": 0.126
       },
       "startRate": 0.608,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 261,
@@ -9568,8 +10935,13 @@
         "defensiveContribution": 0.088
       },
       "startRate": 0.798,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 372,
@@ -9591,8 +10963,15 @@
         "defensiveContribution": 0.231
       },
       "startRate": 0.836,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 7
+      "depthRank": 7,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 123,
@@ -9615,8 +10994,15 @@
         "defensiveContribution": 0.104
       },
       "startRate": 0.721,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 159,
@@ -9638,8 +11024,13 @@
         "defensiveContribution": 0.636
       },
       "startRate": 0.877,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 7
+      "depthRank": 7,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 557,
@@ -9661,8 +11052,16 @@
         "defensiveContribution": 0.109
       },
       "startRate": 0.541,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 4
+      "depthRank": 4,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 570,
@@ -9685,8 +11084,14 @@
         "defensiveContribution": 0.122
       },
       "startRate": 0.588,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 102,
@@ -9708,8 +11113,13 @@
         "defensiveContribution": 0.556
       },
       "startRate": 0.822,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 8
+      "depthRank": 8,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 484,
@@ -9731,8 +11141,13 @@
         "defensiveContribution": 0.105
       },
       "startRate": 0.633,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 3
+      "depthRank": 3,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 286,
@@ -9755,8 +11170,16 @@
         "defensiveContribution": 0.133
       },
       "startRate": 0.64,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 45,
@@ -9778,8 +11201,15 @@
         "defensiveContribution": 0.09
       },
       "startRate": 0.747,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 3
+      "depthRank": 3,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 482,
@@ -9801,8 +11231,13 @@
         "defensiveContribution": 0.044
       },
       "startRate": 0.631,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 2
+      "depthRank": 2,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 431,
@@ -9824,8 +11259,15 @@
         "defensiveContribution": 0.042
       },
       "startRate": 0.732,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 5
+      "depthRank": 5,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 516,
@@ -9847,8 +11289,13 @@
         "defensiveContribution": 0.705
       },
       "startRate": 0.697,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 4
+      "depthRank": 4,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 523,
@@ -9870,8 +11317,14 @@
         "defensiveContribution": 0.109
       },
       "startRate": 0.541,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 8
+      "depthRank": 8,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 105,
@@ -9893,6 +11346,7 @@
         "defensiveContribution": 0.08
       },
       "startRate": 0.783,
+      "squadNumber": null,
       "rated": true,
       "depthRank": 2
     },
@@ -9916,8 +11370,15 @@
         "defensiveContribution": 0.295
       },
       "startRate": 0.655,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 2
+      "depthRank": 2,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 185,
@@ -9939,8 +11400,16 @@
         "defensiveContribution": 0.109
       },
       "startRate": 0.541,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 4
+      "depthRank": 4,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 287,
@@ -9963,8 +11432,16 @@
         "defensiveContribution": 0.127
       },
       "startRate": 0.611,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 324,
@@ -9986,8 +11463,14 @@
         "defensiveContribution": 0.109
       },
       "startRate": 0.541,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 6
+      "depthRank": 6,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 549,
@@ -10009,8 +11492,13 @@
         "defensiveContribution": 0.047
       },
       "startRate": 0.611,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 2
+      "depthRank": 2,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 369,
@@ -10032,8 +11520,15 @@
         "defensiveContribution": 0.07
       },
       "startRate": 0.466,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 5
+      "depthRank": 5,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 268,
@@ -10055,8 +11550,13 @@
         "defensiveContribution": 0.048
       },
       "startRate": 0.544,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 488,
@@ -10078,8 +11578,13 @@
         "defensiveContribution": 0.503
       },
       "startRate": 0.72,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 7
+      "depthRank": 7,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 18,
@@ -10101,8 +11606,15 @@
         "defensiveContribution": 0.054
       },
       "startRate": 0.438,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 4
+      "depthRank": 4,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 214,
@@ -10124,8 +11636,15 @@
         "defensiveContribution": 0.303
       },
       "startRate": 0.665,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 6
+      "depthRank": 6,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 345,
@@ -10147,8 +11666,13 @@
         "defensiveContribution": 0.296
       },
       "startRate": 0.567,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 6
+      "depthRank": 6,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 50,
@@ -10170,8 +11694,16 @@
         "defensiveContribution": 0.109
       },
       "startRate": 0.541,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 9
+      "depthRank": 9,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 98,
@@ -10193,8 +11725,13 @@
         "defensiveContribution": 0.448
       },
       "startRate": 0.613,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 8
+      "depthRank": 8,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 20,
@@ -10216,8 +11753,16 @@
         "defensiveContribution": 0.109
       },
       "startRate": 0.541,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 10
+      "depthRank": 10,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 265,
@@ -10240,8 +11785,13 @@
         "defensiveContribution": 0.264
       },
       "startRate": 0.877,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 7
+      "depthRank": 7,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 454,
@@ -10263,8 +11813,15 @@
         "defensiveContribution": 0.049
       },
       "startRate": 0.536,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 15,
@@ -10286,8 +11843,15 @@
         "defensiveContribution": 0.109
       },
       "startRate": 0.541,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 4
+      "depthRank": 4,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 164,
@@ -10309,8 +11873,14 @@
         "defensiveContribution": 0.109
       },
       "startRate": 0.541,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 7
+      "depthRank": 7,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 518,
@@ -10332,8 +11902,13 @@
         "defensiveContribution": 0.279
       },
       "startRate": 0.561,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 8
+      "depthRank": 8,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 377,
@@ -10355,8 +11930,16 @@
         "defensiveContribution": 0.109
       },
       "startRate": 0.541,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 4
+      "depthRank": 4,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 17,
@@ -10378,8 +11961,15 @@
         "defensiveContribution": 0.052
       },
       "startRate": 0.471,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 9
+      "depthRank": 9,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 314,
@@ -10401,8 +11991,14 @@
         "defensiveContribution": 0.109
       },
       "startRate": 0.541,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 6
+      "depthRank": 6,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 157,
@@ -10424,8 +12020,13 @@
         "defensiveContribution": 0.055
       },
       "startRate": 0.463,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 4
+      "depthRank": 4,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 550,
@@ -10447,8 +12048,14 @@
         "defensiveContribution": 0.109
       },
       "startRate": 0.541,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 5
+      "depthRank": 5,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 241,
@@ -10470,8 +12077,15 @@
         "defensiveContribution": 0.182
       },
       "startRate": 0.577,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 2
+      "depthRank": 2,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 343,
@@ -10493,8 +12107,13 @@
         "defensiveContribution": 0.068
       },
       "startRate": 0.4,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 6
+      "depthRank": 6,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 46,
@@ -10516,8 +12135,15 @@
         "defensiveContribution": 0.136
       },
       "startRate": 0.506,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 5
+      "depthRank": 5,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 383,
@@ -10539,8 +12165,16 @@
         "defensiveContribution": 0.109
       },
       "startRate": 0.541,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 7
+      "depthRank": 7,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 217,
@@ -10562,8 +12196,16 @@
         "defensiveContribution": 0.109
       },
       "startRate": 0.541,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 6
+      "depthRank": 6,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 565,
@@ -10585,8 +12227,14 @@
         "defensiveContribution": 0.109
       },
       "startRate": 0.541,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 4
+      "depthRank": 4,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 76,
@@ -10608,8 +12256,14 @@
         "defensiveContribution": 0.109
       },
       "startRate": 0.541,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 5
+      "depthRank": 5,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 381,
@@ -10631,8 +12285,16 @@
         "defensiveContribution": 0.109
       },
       "startRate": 0.541,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 10
+      "depthRank": 10,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 184,
@@ -10654,8 +12316,16 @@
         "defensiveContribution": 0.109
       },
       "startRate": 0.541,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 4
+      "depthRank": 4,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 52,
@@ -10677,8 +12347,16 @@
         "defensiveContribution": 0.109
       },
       "startRate": 0.541,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 5
+      "depthRank": 5,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 323,
@@ -10700,8 +12378,14 @@
         "defensiveContribution": 0.109
       },
       "startRate": 0.541,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 11
+      "depthRank": 11,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 339,
@@ -10723,8 +12407,13 @@
         "defensiveContribution": 0.176
       },
       "startRate": 0.475,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 6
+      "depthRank": 6,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 545,
@@ -10746,8 +12435,13 @@
         "defensiveContribution": 0.219
       },
       "startRate": 0.899,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 5
+      "depthRank": 5,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 309,
@@ -10769,8 +12463,14 @@
         "defensiveContribution": 0.109
       },
       "startRate": 0.541,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 6
+      "depthRank": 6,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 486,
@@ -10792,8 +12492,13 @@
         "defensiveContribution": 0.083
       },
       "startRate": 0.379,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 3
+      "depthRank": 3,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 551,
@@ -10817,8 +12522,13 @@
         "defensiveContribution": 0.095
       },
       "startRate": 0.581,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 5
+      "depthRank": 5,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 187,
@@ -10840,8 +12550,16 @@
         "defensiveContribution": 0.109
       },
       "startRate": 0.541,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 4
+      "depthRank": 4,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 459,
@@ -10863,8 +12581,15 @@
         "defensiveContribution": 0.336
       },
       "startRate": 0.609,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 5
+      "depthRank": 5,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 238,
@@ -10886,8 +12611,13 @@
         "defensiveContribution": 0.043
       },
       "startRate": 0.611,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 4
+      "depthRank": 4,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 575,
@@ -10909,8 +12639,16 @@
         "defensiveContribution": 0.109
       },
       "startRate": 0.541,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 4
+      "depthRank": 4,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 483,
@@ -10932,8 +12670,13 @@
         "defensiveContribution": 0.049
       },
       "startRate": 0.486,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 3
+      "depthRank": 3,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 103,
@@ -10955,8 +12698,14 @@
         "defensiveContribution": 0.109
       },
       "startRate": 0.541,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 8
+      "depthRank": 8,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 191,
@@ -10978,8 +12727,16 @@
         "defensiveContribution": 0.109
       },
       "startRate": 0.541,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 9
+      "depthRank": 9,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 580,
@@ -11001,8 +12758,14 @@
         "defensiveContribution": 0.109
       },
       "startRate": 0.541,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 7
+      "depthRank": 7,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 406,
@@ -11024,8 +12787,14 @@
         "defensiveContribution": 0.109
       },
       "startRate": 0.541,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 8
+      "depthRank": 8,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 558,
@@ -11047,8 +12816,14 @@
         "defensiveContribution": 0.109
       },
       "startRate": 0.541,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 7
+      "depthRank": 7,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 568,
@@ -11070,8 +12845,14 @@
         "defensiveContribution": 0.109
       },
       "startRate": 0.541,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 7
+      "depthRank": 7,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 520,
@@ -11093,8 +12874,13 @@
         "defensiveContribution": 0.119
       },
       "startRate": 0.486,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 4
+      "depthRank": 4,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 429,
@@ -11116,8 +12902,16 @@
         "defensiveContribution": 0.109
       },
       "startRate": 0.541,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 4
+      "depthRank": 4,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 104,
@@ -11139,8 +12933,16 @@
         "defensiveContribution": 0.109
       },
       "startRate": 0.541,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 4
+      "depthRank": 4,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 163,
@@ -11162,8 +12964,14 @@
         "defensiveContribution": 0.109
       },
       "startRate": 0.541,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 12
+      "depthRank": 12,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 375,
@@ -11185,8 +12993,16 @@
         "defensiveContribution": 0.109
       },
       "startRate": 0.541,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 10
+      "depthRank": 10,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 270,
@@ -11208,8 +13024,14 @@
         "defensiveContribution": 0.109
       },
       "startRate": 0.541,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 9
+      "depthRank": 9,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 456,
@@ -11231,8 +13053,15 @@
         "defensiveContribution": 0.17
       },
       "startRate": 0.596,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 6
+      "depthRank": 6,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 462,
@@ -11254,8 +13083,16 @@
         "defensiveContribution": 0.109
       },
       "startRate": 0.541,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 6
+      "depthRank": 6,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 455,
@@ -11277,6 +13114,7 @@
         "defensiveContribution": 0.202
       },
       "startRate": 0.674,
+      "squadNumber": null,
       "rated": true,
       "depthRank": 4
     },
@@ -11300,8 +13138,13 @@
         "defensiveContribution": 0.056
       },
       "startRate": 0.432,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 4
+      "depthRank": 4,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 243,
@@ -11323,8 +13166,15 @@
         "defensiveContribution": 0.06
       },
       "startRate": 0.461,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 7
+      "depthRank": 7,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 245,
@@ -11346,8 +13196,15 @@
         "defensiveContribution": 0.168
       },
       "startRate": 0.389,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 4
+      "depthRank": 4,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 192,
@@ -11369,8 +13226,16 @@
         "defensiveContribution": 0.109
       },
       "startRate": 0.541,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 9
+      "depthRank": 9,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 70,
@@ -11392,8 +13257,13 @@
         "defensiveContribution": 0.053
       },
       "startRate": 0.492,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 2
+      "depthRank": 2,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 543,
@@ -11415,8 +13285,13 @@
         "defensiveContribution": 0.049
       },
       "startRate": 0.617,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 2
+      "depthRank": 2,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 432,
@@ -11438,8 +13313,15 @@
         "defensiveContribution": 0.404
       },
       "startRate": 0.67,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 8
+      "depthRank": 8,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 263,
@@ -11461,8 +13343,13 @@
         "defensiveContribution": 0.055
       },
       "startRate": 0.449,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 215,
@@ -11484,8 +13371,15 @@
         "defensiveContribution": 0.133
       },
       "startRate": 0.481,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 6
+      "depthRank": 6,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 288,
@@ -11507,8 +13401,16 @@
         "defensiveContribution": 0.109
       },
       "startRate": 0.541,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 8
+      "depthRank": 8,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 487,
@@ -11530,8 +13432,13 @@
         "defensiveContribution": 0.115
       },
       "startRate": 0.492,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 7
+      "depthRank": 7,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 374,
@@ -11553,8 +13460,16 @@
         "defensiveContribution": 0.109
       },
       "startRate": 0.541,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 10
+      "depthRank": 10,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 415,
@@ -11578,8 +13493,15 @@
         "defensiveContribution": 0.127
       },
       "startRate": 0.569,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 5
+      "depthRank": 5,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 51,
@@ -11601,8 +13523,16 @@
         "defensiveContribution": 0.109
       },
       "startRate": 0.541,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 9
+      "depthRank": 9,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 213,
@@ -11625,8 +13555,15 @@
         "defensiveContribution": 0.264
       },
       "startRate": 0.637,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 6
+      "depthRank": 6,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 548,
@@ -11648,8 +13585,13 @@
         "defensiveContribution": 0.061
       },
       "startRate": 0.481,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 5
+      "depthRank": 5,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 571,
@@ -11671,6 +13613,7 @@
         "defensiveContribution": 0.638
       },
       "startRate": 0.614,
+      "squadNumber": null,
       "rated": true,
       "depthRank": 6
     },
@@ -11694,8 +13637,16 @@
         "defensiveContribution": 0.109
       },
       "startRate": 0.541,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 9
+      "depthRank": 9,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 522,
@@ -11717,8 +13668,13 @@
         "defensiveContribution": 0.047
       },
       "startRate": 0.616,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 8
+      "depthRank": 8,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 559,
@@ -11740,8 +13696,16 @@
         "defensiveContribution": 0.109
       },
       "startRate": 0.541,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 6
+      "depthRank": 6,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 546,
@@ -11763,8 +13727,13 @@
         "defensiveContribution": 0.061
       },
       "startRate": 0.457,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 5
+      "depthRank": 5,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 378,
@@ -11786,8 +13755,16 @@
         "defensiveContribution": 0.109
       },
       "startRate": 0.541,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 13
+      "depthRank": 13,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 246,
@@ -11809,8 +13786,15 @@
         "defensiveContribution": 0.147
       },
       "startRate": 0.488,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 7
+      "depthRank": 7,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 289,
@@ -11832,8 +13816,16 @@
         "defensiveContribution": 0.109
       },
       "startRate": 0.541,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 8
+      "depthRank": 8,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 460,
@@ -11855,8 +13847,15 @@
         "defensiveContribution": 0.056
       },
       "startRate": 0.505,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 6
+      "depthRank": 6,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 71,
@@ -11878,8 +13877,13 @@
         "defensiveContribution": 0.54
       },
       "startRate": 0.491,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 5
+      "depthRank": 5,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 158,
@@ -11901,8 +13905,13 @@
         "defensiveContribution": 0.067
       },
       "startRate": 0.383,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 6
+      "depthRank": 6,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 434,
@@ -11924,8 +13933,16 @@
         "defensiveContribution": 0.109
       },
       "startRate": 0.541,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 9
+      "depthRank": 9,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 290,
@@ -11947,8 +13964,16 @@
         "defensiveContribution": 0.109
       },
       "startRate": 0.541,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 8
+      "depthRank": 8,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 485,
@@ -11970,8 +13995,13 @@
         "defensiveContribution": 0.067
       },
       "startRate": 0.434,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 3
+      "depthRank": 3,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 244,
@@ -11993,8 +14023,15 @@
         "defensiveContribution": 0.154
       },
       "startRate": 0.446,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 7
+      "depthRank": 7,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 547,
@@ -12016,8 +14053,13 @@
         "defensiveContribution": 0.076
       },
       "startRate": 0.373,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 5
+      "depthRank": 5,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 162,
@@ -12039,8 +14081,15 @@
         "defensiveContribution": 0.173
       },
       "startRate": 0.553,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 9
+      "depthRank": 9,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 404,
@@ -12062,6 +14111,7 @@
         "defensiveContribution": 0.066
       },
       "startRate": 0.388,
+      "squadNumber": null,
       "rated": true,
       "depthRank": 7
     },
@@ -12085,8 +14135,15 @@
         "defensiveContribution": 0.045
       },
       "startRate": 0.557,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 14
+      "depthRank": 14,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 43,
@@ -12108,6 +14165,7 @@
         "defensiveContribution": 0.117
       },
       "startRate": 0.525,
+      "squadNumber": null,
       "rated": true,
       "depthRank": 5
     },
@@ -12131,8 +14189,15 @@
         "defensiveContribution": 0.206
       },
       "startRate": 0.585,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 5
+      "depthRank": 5,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 35,
@@ -12156,8 +14221,15 @@
         "defensiveContribution": 0.085
       },
       "startRate": 0.531,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 5
+      "depthRank": 5,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 209,
@@ -12179,6 +14251,7 @@
         "defensiveContribution": 0.034
       },
       "startRate": 0.431,
+      "squadNumber": null,
       "rated": true,
       "depthRank": 2
     },
@@ -12202,8 +14275,13 @@
         "defensiveContribution": 0.076
       },
       "startRate": 0.373,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 11
+      "depthRank": 11,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 7,
@@ -12227,8 +14305,15 @@
         "defensiveContribution": 0.1
       },
       "startRate": 0.462,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 10
+      "depthRank": 10,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 160,
@@ -12250,6 +14335,7 @@
         "defensiveContribution": 0.031
       },
       "startRate": 0.256,
+      "squadNumber": null,
       "rated": true,
       "depthRank": 1
     },
@@ -12273,8 +14359,10 @@
         "defensiveContribution": 0.071
       },
       "startRate": 0.294,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 10
+      "depthRank": 10,
+      "evidence": { "all": "rolePrior" }
     },
     {
       "id": 23,
@@ -12296,8 +14384,10 @@
         "defensiveContribution": 0.071
       },
       "startRate": 0.294,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 10
+      "depthRank": 10,
+      "evidence": { "all": "rolePrior" }
     },
     {
       "id": 24,
@@ -12319,8 +14409,10 @@
         "defensiveContribution": 0.071
       },
       "startRate": 0.294,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 10
+      "depthRank": 10,
+      "evidence": { "all": "rolePrior" }
     },
     {
       "id": 72,
@@ -12342,8 +14434,10 @@
         "defensiveContribution": 0.071
       },
       "startRate": 0.294,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 5
+      "depthRank": 5,
+      "evidence": { "all": "rolePrior" }
     },
     {
       "id": 134,
@@ -12365,8 +14459,10 @@
         "defensiveContribution": 0.071
       },
       "startRate": 0.294,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 7
+      "depthRank": 7,
+      "evidence": { "all": "rolePrior" }
     },
     {
       "id": 135,
@@ -12388,8 +14484,10 @@
         "defensiveContribution": 0.071
       },
       "startRate": 0.294,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 5
+      "depthRank": 5,
+      "evidence": { "all": "rolePrior" }
     },
     {
       "id": 578,
@@ -12411,8 +14509,10 @@
         "defensiveContribution": 0.071
       },
       "startRate": 0.294,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 7
+      "depthRank": 7,
+      "evidence": { "all": "rolePrior" }
     },
     {
       "id": 189,
@@ -12434,8 +14534,10 @@
         "defensiveContribution": 0.071
       },
       "startRate": 0.294,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 9
+      "depthRank": 9,
+      "evidence": { "all": "rolePrior" }
     },
     {
       "id": 216,
@@ -12457,8 +14559,10 @@
         "defensiveContribution": 0.071
       },
       "startRate": 0.294,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 6
+      "depthRank": 6,
+      "evidence": { "all": "rolePrior" }
     },
     {
       "id": 218,
@@ -12480,8 +14584,10 @@
         "defensiveContribution": 0.071
       },
       "startRate": 0.294,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 6
+      "depthRank": 6,
+      "evidence": { "all": "rolePrior" }
     },
     {
       "id": 219,
@@ -12503,8 +14609,10 @@
         "defensiveContribution": 0.071
       },
       "startRate": 0.294,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 6
+      "depthRank": 6,
+      "evidence": { "all": "rolePrior" }
     },
     {
       "id": 221,
@@ -12526,8 +14634,10 @@
         "defensiveContribution": 0.071
       },
       "startRate": 0.294,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 14
+      "depthRank": 14,
+      "evidence": { "all": "rolePrior" }
     },
     {
       "id": 595,
@@ -12549,8 +14659,10 @@
         "defensiveContribution": 0.071
       },
       "startRate": 0.294,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 6
+      "depthRank": 6,
+      "evidence": { "all": "rolePrior" }
     },
     {
       "id": 247,
@@ -12572,8 +14684,10 @@
         "defensiveContribution": 0.071
       },
       "startRate": 0.294,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 4
+      "depthRank": 4,
+      "evidence": { "all": "rolePrior" }
     },
     {
       "id": 407,
@@ -12595,8 +14709,10 @@
         "defensiveContribution": 0.071
       },
       "startRate": 0.294,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 10
+      "depthRank": 10,
+      "evidence": { "all": "rolePrior" }
     },
     {
       "id": 409,
@@ -12618,8 +14734,10 @@
         "defensiveContribution": 0.071
       },
       "startRate": 0.294,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 12
+      "depthRank": 12,
+      "evidence": { "all": "rolePrior" }
     },
     {
       "id": 410,
@@ -12641,8 +14759,10 @@
         "defensiveContribution": 0.071
       },
       "startRate": 0.294,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 10
+      "depthRank": 10,
+      "evidence": { "all": "rolePrior" }
     },
     {
       "id": 436,
@@ -12664,8 +14784,10 @@
         "defensiveContribution": 0.071
       },
       "startRate": 0.294,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 9
+      "depthRank": 9,
+      "evidence": { "all": "rolePrior" }
     },
     {
       "id": 437,
@@ -12687,8 +14809,10 @@
         "defensiveContribution": 0.071
       },
       "startRate": 0.294,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 13
+      "depthRank": 13,
+      "evidence": { "all": "rolePrior" }
     },
     {
       "id": 438,
@@ -12710,8 +14834,10 @@
         "defensiveContribution": 0.071
       },
       "startRate": 0.294,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 13
+      "depthRank": 13,
+      "evidence": { "all": "rolePrior" }
     },
     {
       "id": 524,
@@ -12733,8 +14859,10 @@
         "defensiveContribution": 0.071
       },
       "startRate": 0.294,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 11
+      "depthRank": 11,
+      "evidence": { "all": "rolePrior" }
     },
     {
       "id": 267,
@@ -12756,6 +14884,7 @@
         "defensiveContribution": 0.146
       },
       "startRate": 0.43,
+      "squadNumber": null,
       "rated": true,
       "depthRank": 6
     },
@@ -12779,6 +14908,7 @@
         "defensiveContribution": 0.278
       },
       "startRate": 0.401,
+      "squadNumber": null,
       "rated": true,
       "depthRank": 8
     },
@@ -12802,6 +14932,7 @@
         "defensiveContribution": 0.071
       },
       "startRate": 0.325,
+      "squadNumber": null,
       "rated": true,
       "depthRank": 1
     },
@@ -12825,6 +14956,7 @@
         "defensiveContribution": 0.031
       },
       "startRate": 0.265,
+      "squadNumber": null,
       "rated": true,
       "depthRank": 1
     },
@@ -12848,6 +14980,7 @@
         "defensiveContribution": 0.028
       },
       "startRate": 0.177,
+      "squadNumber": null,
       "rated": true,
       "depthRank": 2
     },
@@ -12871,6 +15004,7 @@
         "defensiveContribution": 0.027
       },
       "startRate": 0.11,
+      "squadNumber": null,
       "rated": true,
       "depthRank": 3
     },
@@ -12894,6 +15028,7 @@
         "defensiveContribution": 0.021
       },
       "startRate": 0.064,
+      "squadNumber": null,
       "rated": true,
       "depthRank": 4
     },
@@ -12917,6 +15052,7 @@
         "defensiveContribution": 0.014
       },
       "startRate": 0.053,
+      "squadNumber": null,
       "rated": true,
       "depthRank": 2
     },
@@ -12940,8 +15076,13 @@
         "defensiveContribution": 0.002
       },
       "startRate": 0.881,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 106,
@@ -12963,8 +15104,13 @@
         "defensiveContribution": 0.047
       },
       "startRate": 0.964,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 165,
@@ -12986,8 +15132,13 @@
         "defensiveContribution": 0.002
       },
       "startRate": 0.83,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 55,
@@ -13010,8 +15161,15 @@
         "redCards": -0.016
       },
       "startRate": 0.869,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 346,
@@ -13033,8 +15191,13 @@
         "defensiveContribution": 0.002
       },
       "startRate": 0.877,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 25,
@@ -13057,8 +15220,15 @@
         "redCards": -0.01
       },
       "startRate": 0.706,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 223,
@@ -13080,8 +15250,15 @@
         "redCards": -0.016
       },
       "startRate": 0.688,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 569,
@@ -13102,8 +15279,14 @@
         "defensiveContribution": 0.003
       },
       "startRate": 0.629,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 248,
@@ -13125,8 +15308,15 @@
         "redCards": -0.026
       },
       "startRate": 0.631,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 527,
@@ -13147,8 +15337,13 @@
         "defensiveContribution": 0.002
       },
       "startRate": 0.67,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 79,
@@ -13170,8 +15365,13 @@
         "defensiveContribution": 0.002
       },
       "startRate": 0.85,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 491,
@@ -13193,8 +15393,13 @@
         "defensiveContribution": 0.002
       },
       "startRate": 0.776,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 347,
@@ -13215,8 +15420,13 @@
         "defensiveContribution": 0.003
       },
       "startRate": 0.504,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 2
+      "depthRank": 2,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 295,
@@ -13238,8 +15448,16 @@
         "redCards": -0.026
       },
       "startRate": 0.631,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 316,
@@ -13260,8 +15478,14 @@
         "defensiveContribution": 0.003
       },
       "startRate": 0.572,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 463,
@@ -13284,8 +15508,15 @@
         "redCards": -0.016
       },
       "startRate": 0.708,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 249,
@@ -13307,8 +15538,15 @@
         "redCards": -0.026
       },
       "startRate": 0.669,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 465,
@@ -13330,8 +15568,15 @@
         "redCards": -0.026
       },
       "startRate": 0.522,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 138,
@@ -13353,8 +15598,15 @@
         "redCards": -0.031
       },
       "startRate": 0.395,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 2
+      "depthRank": 2,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 552,
@@ -13376,8 +15628,13 @@
         "defensiveContribution": 0.003
       },
       "startRate": 0.767,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 553,
@@ -13398,8 +15655,13 @@
         "defensiveContribution": 0.004
       },
       "startRate": 0.477,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 2
+      "depthRank": 2,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 136,
@@ -13421,6 +15683,7 @@
         "defensiveContribution": 0.002
       },
       "startRate": 0.646,
+      "squadNumber": null,
       "rated": true,
       "depthRank": 3
     },
@@ -13445,8 +15708,16 @@
         "defensiveContribution": 0.096
       },
       "startRate": 0.625,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 2
+      "depthRank": 2,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 194,
@@ -13469,8 +15740,16 @@
         "defensiveContribution": 0.096
       },
       "startRate": 0.625,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 2
+      "depthRank": 2,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 317,
@@ -13493,8 +15772,14 @@
         "defensiveContribution": 0.096
       },
       "startRate": 0.625,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 2
+      "depthRank": 2,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 320,
@@ -13517,8 +15802,14 @@
         "defensiveContribution": 0.096
       },
       "startRate": 0.625,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 2
+      "depthRank": 2,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 464,
@@ -13540,8 +15831,15 @@
         "redCards": -0.031
       },
       "startRate": 0.428,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 125,
@@ -13564,8 +15862,15 @@
         "defensiveContribution": 0.096
       },
       "startRate": 0.625,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 2
+      "depthRank": 2,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 401,
@@ -13587,8 +15892,13 @@
         "defensiveContribution": 0.062
       },
       "startRate": 0.444,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 2
+      "depthRank": 2,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 594,
@@ -13609,8 +15919,10 @@
         "defensiveContribution": 0.002
       },
       "startRate": 0.433,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": { "all": "rolePrior" }
     },
     {
       "id": 440,
@@ -13632,8 +15944,15 @@
         "redCards": -0.021
       },
       "startRate": 0.395,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 490,
@@ -13654,8 +15973,13 @@
         "defensiveContribution": 0.004
       },
       "startRate": 0.518,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 271,
@@ -13677,8 +16001,13 @@
         "defensiveContribution": 0.003
       },
       "startRate": 0.522,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 2
+      "depthRank": 2,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 379,
@@ -13700,8 +16029,15 @@
         "redCards": -0.021
       },
       "startRate": 0.483,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 526,
@@ -13722,8 +16058,13 @@
         "defensiveContribution": 0.003
       },
       "startRate": 0.547,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 26,
@@ -13745,8 +16086,15 @@
         "redCards": -0.016
       },
       "startRate": 0.455,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 27,
@@ -13768,8 +16116,15 @@
         "redCards": -0.021
       },
       "startRate": 0.377,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 3
+      "depthRank": 3,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 222,
@@ -13791,6 +16146,7 @@
         "defensiveContribution": 0.002
       },
       "startRate": 0.579,
+      "squadNumber": null,
       "rated": true,
       "depthRank": 2
     },
@@ -13813,8 +16169,14 @@
         "defensiveContribution": 0.006
       },
       "startRate": 0.377,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 3
+      "depthRank": 3,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 493,
@@ -13835,8 +16197,14 @@
         "defensiveContribution": 0.006
       },
       "startRate": 0.377,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 3
+      "depthRank": 3,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 224,
@@ -13858,8 +16226,15 @@
         "redCards": -0.021
       },
       "startRate": 0.392,
+      "squadNumber": null,
       "rated": true,
-      "depthRank": 3
+      "depthRank": 3,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 108,
@@ -13880,6 +16255,7 @@
         "defensiveContribution": 0.002
       },
       "startRate": 0.2,
+      "squadNumber": null,
       "rated": true,
       "depthRank": 2
     },
@@ -13904,8 +16280,10 @@
         "defensiveContribution": 0.07
       },
       "startRate": 0.423,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 2
+      "depthRank": 2,
+      "evidence": { "all": "rolePrior" }
     },
     {
       "id": 322,
@@ -13928,8 +16306,10 @@
         "defensiveContribution": 0.07
       },
       "startRate": 0.423,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 2
+      "depthRank": 2,
+      "evidence": { "all": "rolePrior" }
     },
     {
       "id": 441,
@@ -13952,8 +16332,10 @@
         "defensiveContribution": 0.07
       },
       "startRate": 0.423,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 2
+      "depthRank": 2,
+      "evidence": { "all": "rolePrior" }
     },
     {
       "id": 272,
@@ -13974,8 +16356,14 @@
         "defensiveContribution": 0.005
       },
       "startRate": 0.313,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 3
+      "depthRank": 3,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 466,
@@ -13997,8 +16385,16 @@
         "redCards": -0.031
       },
       "startRate": 0.305,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 4
+      "depthRank": 4,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
     },
     {
       "id": 167,
@@ -14019,6 +16415,7 @@
         "defensiveContribution": 0.002
       },
       "startRate": 0.27,
+      "squadNumber": null,
       "rated": true,
       "depthRank": 4
     },
@@ -14041,8 +16438,14 @@
         "defensiveContribution": 0.003
       },
       "startRate": 0.172,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 5
+      "depthRank": 5,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 492,
@@ -14063,6 +16466,7 @@
         "defensiveContribution": 0.002
       },
       "startRate": 0.079,
+      "squadNumber": null,
       "rated": true,
       "depthRank": 1
     },
@@ -14085,8 +16489,10 @@
         "defensiveContribution": 0.002
       },
       "startRate": 0.041,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 3
+      "depthRank": 3,
+      "evidence": { "all": "rolePrior" }
     },
     {
       "id": 169,
@@ -14107,8 +16513,10 @@
         "defensiveContribution": 0.002
       },
       "startRate": 0.041,
+      "squadNumber": null,
       "rated": false,
-      "depthRank": 6
+      "depthRank": 6,
+      "evidence": { "all": "rolePrior" }
     },
     {
       "id": 168,
@@ -14129,6 +16537,7 @@
         "defensiveContribution": 0.001
       },
       "startRate": 0.038,
+      "squadNumber": null,
       "rated": true,
       "depthRank": 5
     }
