@@ -6,6 +6,7 @@ import { TEAM_KITS } from "../kit/team-kits";
 import {
   marketHealth,
   type MarketHealth,
+  type PlayerMarketHealth,
   type TeamMarketHealth,
 } from "../state/market-health";
 import { useDocumentTitle } from "../state/use-document-title";
@@ -62,47 +63,136 @@ function providerLabel(status: string): string {
   return labels[status] ?? status;
 }
 
+function marketNumber(value: number | null, kind: "count" | "probability") {
+  if (value === null) return "—";
+  return kind === "probability"
+    ? percent.format(value)
+    : twoDecimal.format(value);
+}
+
+function PlayerMarketRow({ player }: { player: PlayerMarketHealth }) {
+  return (
+    <tr>
+      <th scope="row">
+        <strong>{player.name}</strong>
+        <span>{player.quotedName}</span>
+      </th>
+      <td className="mono">{player.position ?? "—"}</td>
+      <td className="mono">
+        {player.startRate === null ? "—" : percent.format(player.startRate)}
+      </td>
+      <td className="mono">{player.books ?? "—"}</td>
+      <td className="mono">
+        {marketNumber(player.markets["Anytime scorer"] ?? null, "probability")}
+      </td>
+      <td className="mono">
+        {marketNumber(player.markets["Anytime assist"] ?? null, "probability")}
+      </td>
+      <td className="mono">
+        {marketNumber(player.markets["Any card"] ?? null, "probability")}
+      </td>
+      <td className="mono">
+        {marketNumber(player.markets["Total shots"] ?? null, "count")}
+      </td>
+      <td className="mono">
+        {marketNumber(player.markets["Shots on target"] ?? null, "count")}
+      </td>
+    </tr>
+  );
+}
+
 function TeamRow({ team }: { team: TeamMarketHealth }) {
   const complete =
     team.teamMarketsCovered === team.teamMarketsExpected &&
     team.playerMarketsCovered === team.playerMarketsExpected &&
     team.playersQuoted >= team.quoteFloor;
   return (
-    <tr className={complete ? "is-complete" : "is-gap"}>
-      <th scope="row" translate="no">
-        <strong>{team.club}</strong>
-        <span>{clubNames.get(team.club) ?? team.club}</span>
-      </th>
-      <td className="mono" translate="no">
-        {team.opponent} ({team.venue})
-      </td>
-      <td className="mono">{twoDecimal.format(team.expectedGoals)}</td>
-      <td className="mono">{percent.format(team.cleanSheetProbability)}</td>
-      <td className="mono">
-        {team.teamMarketsCovered}/{team.teamMarketsExpected}
-      </td>
-      <td className="mono">
-        {team.playerMarketsCovered}/{team.playerMarketsExpected}
-      </td>
-      <td className="mono">
-        {team.playersQuoted}/{team.quoteFloor}
-      </td>
-      <td>
-        <span
-          className={`market-provider market-provider-${team.providerStatus}`}
-        >
-          {providerLabel(team.providerStatus)}
-        </span>
-        {team.unmatchedNames.length > 0 ? (
-          <small>{team.unmatchedNames.join(", ")} did not match FPL</small>
-        ) : null}
-      </td>
-      <td className="mono">
-        {team.visitedAt
-          ? dateTimeShort.format(new Date(team.visitedAt))
-          : "Not checked"}
-      </td>
-    </tr>
+    <>
+      <tr className={complete ? "is-complete" : "is-gap"}>
+        <th scope="row" translate="no">
+          <strong>{team.club}</strong>
+          <span>{clubNames.get(team.club) ?? team.club}</span>
+        </th>
+        <td className="mono" translate="no">
+          {team.opponent} ({team.venue})
+        </td>
+        <td className="mono">{twoDecimal.format(team.expectedGoals)}</td>
+        <td className="mono">{percent.format(team.cleanSheetProbability)}</td>
+        <td className="mono">
+          {team.teamMarketsCovered}/{team.teamMarketsExpected}
+        </td>
+        <td className="mono">
+          {team.playerMarketsCovered}/{team.playerMarketsExpected}
+        </td>
+        <td className="mono">
+          {team.playersQuoted}/{team.quoteFloor}
+        </td>
+        <td>
+          <span
+            className={`market-provider market-provider-${team.providerStatus}`}
+          >
+            {providerLabel(team.providerStatus)}
+          </span>
+          {team.unmatchedNames.length > 0 ? (
+            <small>{team.unmatchedNames.join(", ")} did not match FPL</small>
+          ) : null}
+        </td>
+        <td className="mono">
+          {team.visitedAt
+            ? dateTimeShort.format(new Date(team.visitedAt))
+            : "Not checked"}
+        </td>
+      </tr>
+      <tr className="market-player-detail-row">
+        <td colSpan={9}>
+          <details>
+            <summary>
+              {team.players.length} matched player quote
+              {team.players.length === 1 ? "" : "s"}
+            </summary>
+            <div
+              aria-label="Scrollable player markets"
+              className="squad-table-wrap market-player-table"
+              role="region"
+              // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- Keyboard users must be able to scroll wide evidence tables.
+              tabIndex={0}
+            >
+              <table>
+                <thead>
+                  <tr>
+                    <th scope="col">Player</th>
+                    <th scope="col">Pos</th>
+                    <th scope="col">xStart</th>
+                    <th scope="col">Books</th>
+                    <th scope="col">Goal</th>
+                    <th scope="col">Assist</th>
+                    <th scope="col">Card</th>
+                    <th scope="col">Shots</th>
+                    <th scope="col">SoT</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {team.players.length > 0 ? (
+                    team.players.map((player) => (
+                      <PlayerMarketRow
+                        key={`${team.kickoff}-${team.club}-${player.elementId ?? player.quotedName}`}
+                        player={player}
+                      />
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={9}>
+                        No matched player prices for this team.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </details>
+        </td>
+      </tr>
+    </>
   );
 }
 

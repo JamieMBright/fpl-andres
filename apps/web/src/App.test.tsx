@@ -176,11 +176,11 @@ describe("team analysis entry", () => {
     expect(screen.getByRole("main")).toHaveAttribute("id", "main-content");
     // Every destination is reachable from the shell, and the five that carry
     // the work are on the index page as well as in the bar.
-    for (const name of ["Plan", "Players", "Analysis", "Method", "Results"]) {
+    for (const name of ["Plan", "Players", "Analysis"]) {
       expect(screen.getAllByRole("link", { name }).length).toBeGreaterThan(2);
     }
-    // FAQ, Expected XI, Markets and Kits are wayfinding, not the main event: bar and footer only.
-    for (const name of ["FAQ", "Expected XI", "Markets", "Kits"]) {
+    // FAQ, xStart, Markets, Proof, API and Kits are wayfinding, not the main event: bar and footer only.
+    for (const name of ["FAQ", "xStart", "Markets", "Proof", "API", "Kits"]) {
       expect(screen.getAllByRole("link", { name }).length).toBeGreaterThan(0);
     }
     // Capability is stated by what the page offers, not by a page full of

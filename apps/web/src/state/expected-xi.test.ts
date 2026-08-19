@@ -71,6 +71,24 @@ const seasonInputs = {
       teamId: 2,
       startRate: 0.9,
     },
+    {
+      id: 326,
+      code: 201595,
+      name: "Perri",
+      position: "GKP",
+      club: "LEE",
+      teamId: 13,
+      startRate: 0.365,
+    },
+    {
+      id: 385,
+      code: 432720,
+      name: "Trafford",
+      position: "GKP",
+      club: "LEE",
+      teamId: 13,
+      startRate: 0.106,
+    },
   ],
 } as const;
 
@@ -87,6 +105,22 @@ const playerOdds = {
     },
   ],
   players: [{ element_id: 3, club: "ARS", kickoff: "2026-08-21T19:00:00Z" }],
+} as const;
+
+const manualPriors = {
+  generatedAt: "2026-08-19T21:45:00Z",
+  source: "manual-team-news",
+  players: [
+    {
+      elementId: 385,
+      code: 432720,
+      club: "LEE",
+      name: "Trafford",
+      startProbability: 1,
+      confidence: "high",
+      reason: "Known starting goalkeeper for GW1",
+    },
+  ],
 } as const;
 
 describe("expected XI reader", () => {
@@ -137,5 +171,28 @@ describe("expected XI reader", () => {
       updatedAt: "2026-08-19T21:10:00Z",
     });
     expect(arsenal?.averageStartProbability).toBeGreaterThan(0.6);
+  });
+
+  it("lets a manual xStart prior correct a known starting goalkeeper", () => {
+    const leeds = buildExpectedXi({
+      seasonInputs,
+      playerOdds,
+      manualPriors,
+    }).teams.find((team) => team.club === "LEE");
+
+    expect(leeds?.starters[0]).toMatchObject({
+      name: "Trafford",
+      startProbability: 1,
+      evidence: "manual",
+    });
+    expect(
+      leeds?.reserves.find((player) => player.name === "Perri"),
+    ).toMatchObject({
+      startProbability: 0.01,
+    });
+    expect(leeds?.starters[0]?.explanation.factors.at(-1)).toMatchObject({
+      label: "Manual",
+      detail: "Known starting goalkeeper for GW1",
+    });
   });
 });

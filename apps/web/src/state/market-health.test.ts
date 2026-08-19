@@ -94,12 +94,28 @@ const playerOdds = {
   players: [
     {
       element_id: 10,
+      quoted_name: "Bukayo Saka",
       home_team: "Arsenal",
       away_team: "Coventry City",
       club: "ARS",
       kickoff: "2026-08-21T19:00:00Z",
       anytime_goal: 0.25,
       anytime_assist: 0.2,
+      books: 3,
+      observed_at: "2026-08-19T09:00:00Z",
+    },
+  ],
+};
+
+const seasonInputs = {
+  players: [
+    {
+      id: 10,
+      name: "Saka",
+      position: "MID",
+      priceTenths: 100,
+      startRate: 0.91,
+      depthRank: 1,
     },
   ],
 };
@@ -111,7 +127,7 @@ const deadlines = {
 describe("market health", () => {
   it("flags incomplete player coverage inside 72 hours", () => {
     const health = buildMarketHealth(
-      { fixtureOdds, playerOdds, deadlines },
+      { fixtureOdds, playerOdds, deadlines, seasonInputs },
       new Date("2026-08-19T06:30:00Z"),
     );
 
@@ -130,6 +146,20 @@ describe("market health", () => {
       quoteFloor: 18,
       providerStatus: "returned",
     });
+    expect(arsenal?.players[0]).toMatchObject({
+      elementId: 10,
+      quotedName: "Bukayo Saka",
+      name: "Saka",
+      position: "MID",
+      startRate: 0.91,
+      books: 3,
+      observedAt: "2026-08-19T09:00:00Z",
+      markets: {
+        "Anytime scorer": 0.25,
+        "Anytime assist": 0.2,
+        "Red card": null,
+      },
+    });
     expect(coventry).toMatchObject({
       teamMarketsCovered: 4,
       playerMarketsCovered: 0,
@@ -140,7 +170,7 @@ describe("market health", () => {
 
   it("lists every team and player market separately", () => {
     const health = buildMarketHealth(
-      { fixtureOdds, playerOdds, deadlines },
+      { fixtureOdds, playerOdds, deadlines, seasonInputs },
       new Date("2026-08-18T06:30:00Z"),
     );
 

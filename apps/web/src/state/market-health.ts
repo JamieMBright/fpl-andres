@@ -1,6 +1,7 @@
 import deadlinesData from "../data/deadlines.json";
 import fixtureOddsData from "../data/fixture-odds.json";
 import playerOddsData from "../data/player-odds.json";
+import seasonInputsData from "../data/season-inputs.json";
 
 export const MARKET_EXPECTATION_HOURS = 72;
 
@@ -43,9 +44,25 @@ interface FixtureOddsArtifact {
 
 interface PlayerOddsRow {
   element_id: number | null;
+  quoted_name?: string;
   club: string | null;
   kickoff: string | null;
+  books?: number;
+  observed_at?: string;
   [key: string]: unknown;
+}
+
+interface SeasonInputPlayer {
+  id: number;
+  name: string;
+  position: string;
+  priceTenths: number;
+  startRate: number;
+  depthRank?: number;
+}
+
+interface SeasonInputsArtifact {
+  players: readonly SeasonInputPlayer[];
 }
 
 interface FixtureDiagnostic {
@@ -94,6 +111,20 @@ export interface TeamMarketHealth {
   providerStatus: string;
   visitedAt: string | null;
   unmatchedNames: readonly string[];
+  players: readonly PlayerMarketHealth[];
+}
+
+export interface PlayerMarketHealth {
+  elementId: number | null;
+  quotedName: string;
+  name: string;
+  position: string | null;
+  priceTenths: number | null;
+  startRate: number | null;
+  depthRank: number | null;
+  books: number | null;
+  observedAt: string | null;
+  markets: Record<string, number | null>;
 }
 
 export interface MarketHealth {
@@ -114,6 +145,7 @@ interface MarketHealthInputs {
   fixtureOdds: FixtureOddsArtifact;
   playerOdds: PlayerOddsArtifact;
   deadlines: DeadlineArtifact;
+  seasonInputs?: SeasonInputsArtifact;
 }
 
 function hoursBetween(later: Date, earlier: Date): number | null {
@@ -153,14 +185,49 @@ function fixtureRows(
   );
 }
 
+function nullableNumber(value: unknown): number | null {
+  return typeof value === "number" && Number.isFinite(value) ? value : null;
+}
+
+function playerMarketHealth(
+  row: PlayerOddsRow,
+  playerById: ReadonlyMap<number, SeasonInputPlayer>,
+): PlayerMarketHealth {
+  const player =
+    typeof row.element_id === "number"
+      ? playerById.get(row.element_id)
+      : undefined;
+  return {
+    elementId: row.element_id,
+    quotedName: row.quoted_name ?? player?.name ?? "Unmatched player",
+    name: player?.name ?? row.quoted_name ?? "Unmatched player",
+    position: player?.position ?? null,
+    priceTenths: player?.priceTenths ?? null,
+    startRate: player?.startRate ?? null,
+    depthRank: player?.depthRank ?? null,
+    books: nullableNumber(row.books),
+    observedAt: typeof row.observed_at === "string" ? row.observed_at : null,
+    markets: Object.fromEntries(
+      PLAYER_MARKETS.map(([, label, field]) => [
+        label,
+        nullableNumber(row[field]),
+      ]),
+    ),
+  };
+}
+
 function teamHealth(
   fixture: FixtureOddsRow,
   club: string,
   venue: "H" | "A",
   artifact: PlayerOddsArtifact,
+  seasonInputs: SeasonInputsArtifact,
 ): TeamMarketHealth {
   const rows = fixtureRows(artifact, fixture).filter(
     (row) => row.club === club,
+  );
+  const playerById = new Map(
+    seasonInputs.players.map((player) => [player.id, player]),
   );
   const diagnostic = fixtureDiagnostic(artifact, fixture);
   const observed = new Set(fixture.marketEvidence.observed);
@@ -195,6 +262,13 @@ function teamHealth(
       diagnostic?.visited_at ??
       (fixtureRows(artifact, fixture).length > 0 ? artifact.fetchedAt : null),
     unmatchedNames: diagnostic?.unmatched_names ?? [],
+    players: rows
+      .map((row) => playerMarketHealth(row, playerById))
+      .sort(
+        (left, right) =>
+          (right.startRate ?? -1) - (left.startRate ?? -1) ||
+          left.name.localeCompare(right.name),
+      ),
   };
 }
 
@@ -203,6 +277,8 @@ export function buildMarketHealth(
   now: Date = new Date(),
 ): MarketHealth {
   const { fixtureOdds, playerOdds, deadlines } = inputs;
+  const seasonInputs =
+    inputs.seasonInputs ?? (seasonInputsData as SeasonInputsArtifact);
   const next = [...deadlines.deadlines]
     .filter((row) => !row.finished)
     .sort(
@@ -288,8 +364,8 @@ export function buildMarketHealth(
     playerFixturesCovered,
     markets,
     teams: fixtureOdds.fixtures.flatMap((fixture) => [
-      teamHealth(fixture, fixture.home, "H", playerOdds),
-      teamHealth(fixture, fixture.away, "A", playerOdds),
+      teamHealth(fixture, fixture.home, "H", playerOdds, seasonInputs),
+      teamHealth(fixture, fixture.away, "A", playerOdds, seasonInputs),
     ]),
   };
 }
@@ -300,6 +376,7 @@ export function marketHealth(now: Date = new Date()): MarketHealth {
       fixtureOdds: fixtureOddsData as FixtureOddsArtifact,
       playerOdds: playerOddsData as PlayerOddsArtifact,
       deadlines: deadlinesData as DeadlineArtifact,
+      seasonInputs: seasonInputsData as SeasonInputsArtifact,
     },
     now,
   );

@@ -853,6 +853,119 @@ h1[tabindex="-1"]:focus-visible {
   line-height: 1.6;
 }
 
+.api-page,
+.proof-page {
+  padding-block: clamp(38px, 6vw, 72px) clamp(52px, 8vw, 96px);
+}
+
+.api-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 28px;
+  margin-top: 34px;
+}
+
+.api-grid h2,
+.api-example h2,
+.proof-results h2,
+.proof-method h2 {
+  margin: 0 0 12px;
+  color: var(--ink);
+  font-family: var(--fa-display);
+  font-size: 24px;
+  letter-spacing: 0;
+}
+
+.api-endpoints {
+  display: grid;
+  gap: 12px;
+}
+
+.api-endpoints div {
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.api-endpoints dt {
+  color: var(--field-green);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.api-endpoints dd {
+  margin: 4px 0 0;
+}
+
+.api-example,
+.proof-results,
+.proof-method {
+  margin-top: 42px;
+}
+
+.api-example pre {
+  max-width: 100%;
+  overflow-x: auto;
+  padding: 16px;
+  background: var(--ink);
+  color: var(--paper);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.proof-results > .mono {
+  margin-top: 14px;
+}
+
+.market-player-detail-row > td {
+  padding: 0 12px 14px;
+  background: color-mix(in srgb, var(--paper-strong) 80%, transparent);
+}
+
+.market-player-detail-row details {
+  max-height: 420px;
+  overflow-y: auto;
+}
+
+.market-player-detail-row summary {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  padding: 10px 0;
+  background: var(--paper-strong);
+  color: var(--ink);
+  cursor: pointer;
+  font-family: var(--fa-mono);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.market-player-table {
+  max-width: 100%;
+  overflow-x: auto;
+  border-block: 1px solid var(--rule);
+}
+
+.market-player-table:focus-visible {
+  outline: 3px solid var(--signal-blue);
+  outline-offset: 3px;
+}
+
+.market-player-table table {
+  min-width: 840px;
+  font-size: 12px;
+}
+
+.market-player-table tbody th strong,
+.market-player-table tbody th span {
+  display: block;
+}
+
+.market-player-table tbody th span {
+  margin-top: 2px;
+  color: var(--ink-soft);
+  font-size: 10px;
+}
+
 .expected-xi-page {
   padding-block: clamp(38px, 6vw, 72px) clamp(52px, 8vw, 96px);
 }
@@ -866,10 +979,10 @@ h1[tabindex="-1"]:focus-visible {
   top: 0;
   z-index: 4;
   display: grid;
-  grid-template-columns: repeat(10, minmax(72px, 1fr));
+  grid-template-columns: repeat(10, minmax(48px, 1fr));
   gap: 2px;
   margin-top: 28px;
-  padding: 8px;
+  padding: 5px;
   overflow-x: auto;
   background: var(--paper);
   border-block: 3px solid var(--ink);
@@ -878,10 +991,10 @@ h1[tabindex="-1"]:focus-visible {
 
 .expected-xi-clubs a {
   display: grid;
-  min-width: 72px;
-  min-height: 74px;
+  min-width: 48px;
+  min-height: 48px;
   place-items: center;
-  padding: 6px 4px;
+  padding: 4px 3px;
   color: var(--ink);
   font-family: var(--fa-mono);
   font-size: 12px;
@@ -895,8 +1008,8 @@ h1[tabindex="-1"]:focus-visible {
 }
 
 .expected-xi-club-shirt {
-  width: 34px;
-  height: 34px;
+  width: 22px;
+  height: 22px;
 }
 
 .expected-xi-scoreboard {
@@ -974,7 +1087,10 @@ h1[tabindex="-1"]:focus-visible {
 
 .expected-xi-list li {
   display: grid;
-  grid-template-columns: 42px minmax(120px, 1fr) 56px minmax(92px, auto);
+  grid-template-columns: 42px minmax(120px, 1fr) minmax(96px, auto) minmax(
+      92px,
+      auto
+    );
   gap: 10px;
   align-items: center;
   min-height: 38px;
@@ -984,9 +1100,75 @@ h1[tabindex="-1"]:focus-visible {
 }
 
 .expected-xi-position,
-.expected-xi-probability {
+.expected-xi-position,
+.expected-xi-probability summary {
   color: var(--ink);
   font-size: 12px;
+}
+
+.expected-xi-probability {
+  position: relative;
+}
+
+.expected-xi-probability summary {
+  cursor: pointer;
+  list-style: none;
+}
+
+.expected-xi-probability summary::-webkit-details-marker {
+  display: none;
+}
+
+.expected-xi-probability summary span {
+  color: var(--ink-soft);
+}
+
+.expected-xi-explain {
+  position: absolute;
+  right: 0;
+  z-index: 5;
+  width: min(300px, 80vw);
+  margin-top: 8px;
+  padding: 12px;
+  background: var(--paper-strong);
+  border: 2px solid var(--ink);
+  box-shadow: 6px 6px 0 rgb(0 0 0 / 22%);
+}
+
+.expected-xi-explain strong,
+.expected-xi-explain small {
+  display: block;
+}
+
+.expected-xi-explain dl {
+  display: grid;
+  gap: 8px;
+  margin: 10px 0;
+}
+
+.expected-xi-explain div {
+  display: grid;
+  gap: 2px;
+}
+
+.expected-xi-explain dt {
+  color: var(--ink-soft);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.expected-xi-explain dd {
+  display: grid;
+  gap: 3px;
+  margin: 0;
+  color: var(--ink);
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.expected-xi-explain small {
+  color: var(--ink-soft);
+  font-size: 11px;
 }
 
 .expected-xi-name {
@@ -1008,6 +1190,10 @@ h1[tabindex="-1"]:focus-visible {
 
 .expected-xi-evidence-market {
   color: var(--field-green);
+}
+
+.expected-xi-evidence-manual {
+  color: var(--danger);
 }
 
 .expected-xi-evidence-model {
@@ -1041,8 +1227,12 @@ h1[tabindex="-1"]:focus-visible {
     z-index: 1;
   }
 
+  .api-grid {
+    grid-template-columns: 1fr;
+  }
+
   .expected-xi-clubs {
-    grid-template-columns: repeat(20, 72px);
+    grid-template-columns: repeat(20, 48px);
   }
 
   .expected-xi-team > header,
@@ -1052,6 +1242,15 @@ h1[tabindex="-1"]:focus-visible {
 
   .expected-xi-list li {
     grid-template-columns: 38px minmax(0, 1fr) 52px;
+  }
+
+  .expected-xi-probability {
+    grid-column: 2 / -1;
+  }
+
+  .expected-xi-explain {
+    position: static;
+    width: auto;
   }
 
   .expected-xi-evidence {
@@ -6375,6 +6574,10 @@ h1[tabindex="-1"]:focus-visible {
   text-align: right;
 }
 
+.squad-market-headings > span:last-child {
+  text-align: center;
+}
+
 .squad-market-headings button {
   padding: 0;
   border: 0;
@@ -6817,10 +7020,23 @@ h1[tabindex="-1"]:focus-visible {
 }
 
 .squad-pitch-row {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(var(--squad-row-count), 84px);
   justify-content: center;
   gap: 8px;
+}
+
+.squad-pitch-row:nth-child(1) {
+  --squad-row-count: 2;
+}
+
+.squad-pitch-row:nth-child(2),
+.squad-pitch-row:nth-child(3) {
+  --squad-row-count: 5;
+}
+
+.squad-pitch-row:nth-child(4) {
+  --squad-row-count: 3;
 }
 
 .squad-slot {

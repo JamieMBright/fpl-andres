@@ -123,6 +123,35 @@ describe("DeclaredSquadBuilder", () => {
     ).toHaveAttribute("tabindex", "0");
   });
 
+  it("shows every player-list column header", () => {
+    renderBuilder();
+
+    for (const label of [
+      "Player",
+      "Club",
+      "Pos",
+      "Pts",
+      "£/pt",
+      "Start",
+      "Price",
+    ]) {
+      expect(
+        screen.getByRole("button", { name: new RegExp(label) }),
+      ).toBeVisible();
+    }
+    expect(screen.getByText("Add")).toBeVisible();
+  });
+
+  it("fixes the pitch rows to two, five, five and three", () => {
+    expect(STYLES).toContain("--squad-row-count: 2;");
+    expect(STYLES).toContain("--squad-row-count: 5;");
+    expect(STYLES).toContain("--squad-row-count: 3;");
+    expect(STYLES).toContain(
+      "grid-template-columns: repeat(var(--squad-row-count), 84px);",
+    );
+    expect(STYLES).not.toContain(".squad-pitch-row {\n  display: flex;");
+  });
+
   it("uses opaque theme-invariant ink for every label on the pitch", () => {
     const start = STYLES.indexOf(".squad-pitch {");
     const pitchRules = STYLES.slice(

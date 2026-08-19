@@ -303,6 +303,10 @@ function SquadMarket({
           {(
             [
               ["name", "Player", "Sort by name"],
+              ["club", "Club", "Sort by club"],
+              ["position", "Pos", "Sort by position"],
+              ["points", "Pts", "Sort by expected points"],
+              ["perMillion", "£/pt", "Sort by points per million"],
               ["startRate", "Start", "Sort by how often he started"],
               ["priceTenths", "Price", "Sort by price"],
             ] as const
@@ -330,7 +334,7 @@ function SquadMarket({
               ) : null}
             </button>
           ))}
-          <span />
+          <span>Add</span>
         </div>
 
         <ol className="squad-market-list">

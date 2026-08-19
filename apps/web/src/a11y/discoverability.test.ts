@@ -30,6 +30,8 @@ const PUBLIC_PATHS = [
   "/plan",
   "/players",
   "/analysis",
+  "/api-docs",
+  "/proof",
   "/methodology",
   "/calibration",
   "/results",

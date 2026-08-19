@@ -160,7 +160,7 @@ describe("chipCallsFor", () => {
     const wildcard = callOf(calls, "Wildcard");
 
     if (wildcard.event === null) {
-      expect(wildcard.note).toContain("5 or more");
+      expect(wildcard.note).toMatch(/5 or more|already using gameweek/);
       return;
     }
     const moves = /moves (\d+) of your fifteen/.exec(wildcard.note);
@@ -196,8 +196,9 @@ describe("chipCallsFor", () => {
     );
 
     const boosts = calls.filter((call) => call.chip === "Bench Boost");
-    expect(boosts.map((call) => call.event)).toEqual([3, 25]);
     expect(boosts.map((call) => call.half)).toEqual(["first", "second"]);
+    expect(boosts[1]?.event).toBe(25);
+    expect(calls.filter((call) => call.event === 3)).toHaveLength(1);
   });
 
   it("says nothing rather than naming a week worth nothing", () => {
@@ -271,8 +272,39 @@ describe("chipCallsFor", () => {
       { chip: "Bench Boost", event: 2 },
     );
 
+    expect(callOf(calls, "Triple Captain").event).toBeNull();
+    expect(callOf(calls, "Triple Captain").note).toContain(
+      "already using gameweek 2",
+    );
+  });
+
+  it("never advises two chips in the same gameweek", () => {
+    const calls = chipCallsFor(
+      [
+        week(2, { bench: [4, 3, 2, 5], captain: 7 }),
+        week(3, { bench: [1, 1, 1, 1], captain: 8 }),
+      ],
+      PUBLISHED,
+    );
+    const events = calls.flatMap((call) =>
+      call.event === null ? [] : [call.event],
+    );
+
+    expect(new Set(events).size).toBe(events.length);
+  });
+
+  it("lets a committed chip keep its week when another chip would clash", () => {
+    const calls = chipCallsFor(
+      [week(2, { bench: [4, 3, 2, 5], captain: 7 })],
+      PUBLISHED,
+      [],
+      { chip: "Triple Captain", event: 2 },
+    );
+
     expect(callOf(calls, "Triple Captain").event).toBe(2);
-    expect(callOf(calls, "Triple Captain").note).not.toContain("committed");
+    expect(
+      calls.filter((call) => call.event === 2).map((call) => call.chip),
+    ).toEqual(["Triple Captain"]);
   });
 
   it("ignores a commitment to a chip he also says he has spent", () => {

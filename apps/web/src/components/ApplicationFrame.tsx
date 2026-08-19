@@ -120,11 +120,13 @@ export function ApplicationFrame() {
       </header>
       <nav aria-label="Primary navigation" className="teletext-strip">
         <NavLink to="/plan">Plan</NavLink>
+        <NavLink to="/expected-xi">xStart</NavLink>
         <NavLink to="/players">Players</NavLink>
+        <NavLink to="/markets">Markets</NavLink>
         <NavLink to="/analysis">Analysis</NavLink>
         <NavLink to="/fpl500">FPL500</NavLink>
-        <NavLink to="/methodology">Method</NavLink>
-        <NavLink to="/results">Results</NavLink>
+        <NavLink to="/proof">Proof</NavLink>
+        <NavLink to="/api-docs">API</NavLink>
         <NavLink className="teletext-strip-half" to="/faq">
           FAQ
         </NavLink>

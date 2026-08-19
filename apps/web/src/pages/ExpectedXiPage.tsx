@@ -20,12 +20,15 @@ function anchorFor(club: string): string {
 }
 
 function evidenceLabel(player: ExpectedXiPlayer): string {
+  if (player.evidence === "manual") return "Manual";
   if (player.evidence === "market") return "Market";
   if (player.evidence === "prior") return "Prior";
   return "Model";
 }
 
 function evidenceIcon(player: ExpectedXiPlayer) {
+  if (player.evidence === "manual")
+    return <CircleHelp aria-hidden="true" size={14} />;
   if (player.evidence === "market")
     return <LineChart aria-hidden="true" size={14} />;
   if (player.evidence === "prior")
@@ -38,9 +41,30 @@ function PlayerRow({ player }: { player: ExpectedXiPlayer }) {
     <li>
       <span className="expected-xi-position mono">{player.position}</span>
       <span className="expected-xi-name">{player.name}</span>
-      <span className="expected-xi-probability mono">
-        {percent.format(player.startProbability)}
-      </span>
+      <details className="expected-xi-probability">
+        <summary className="mono">
+          <span>xStart</span> {percent.format(player.startProbability)}
+        </summary>
+        <div className="expected-xi-explain">
+          <strong>{player.explanation.title}</strong>
+          <dl>
+            {player.explanation.factors.map((factor) => (
+              <div key={`${player.id}-${factor.label}-${factor.value}`}>
+                <dt>{factor.label}</dt>
+                <dd>
+                  <span className="mono">{factor.value}</span>
+                  {factor.detail}
+                </dd>
+              </div>
+            ))}
+          </dl>
+          <small>
+            {player.explanation.updatedAt
+              ? `Updated ${dateTimeShort.format(new Date(player.explanation.updatedAt))}`
+              : "No source timestamp"}
+          </small>
+        </div>
+      </details>
       <span
         className={`expected-xi-evidence expected-xi-evidence-${player.evidence}`}
       >
@@ -68,7 +92,7 @@ function TeamSection({ team }: { team: ExpectedXiTeam }) {
             <span translate="no">{team.club}</span> {team.name}
           </h2>
           <p>
-            {percent.format(team.averageStartProbability)} average start read.{" "}
+            {percent.format(team.averageStartProbability)} average xStart.{" "}
             {team.playersQuoted}/{team.quoteFloor} player quotes.
           </p>
         </div>
@@ -122,8 +146,8 @@ export default function ExpectedXiPage() {
       <p className="eyebrow">Team sheets</p>
       <RouteHeading>Expected XI</RouteHeading>
       <p className="lede">
-        My current read on who starts, split by market signal, model record and
-        role prior.
+        My current xStart read, split by market signal, model record, manual
+        team news and role prior.
       </p>
 
       <nav aria-label="Expected XI clubs" className="expected-xi-clubs">

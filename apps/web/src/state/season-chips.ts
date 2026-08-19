@@ -226,6 +226,52 @@ function pinned(
   };
 }
 
+function singleChipPerGameweek(
+  calls: readonly ChipCall[],
+  committed: { chip: string; event: number } | null,
+): ChipCall[] {
+  const priority = (call: ChipCall): number =>
+    call.chip === "Bench Boost" || call.chip === "Triple Captain" ? 2 : 1;
+  const byEvent = new Map<number, ChipCall[]>();
+  for (const call of calls) {
+    if (call.event === null) continue;
+    byEvent.set(call.event, [...(byEvent.get(call.event) ?? []), call]);
+  }
+
+  const blocked = new Map<string, string>();
+  for (const [event, clashes] of byEvent) {
+    if (clashes.length < 2) continue;
+    const kept =
+      clashes.find(
+        (call) => committed?.event === event && committed.chip === call.chip,
+      ) ??
+      [...clashes].sort(
+        (left, right) =>
+          priority(right) - priority(left) || right.gain - left.gain,
+      )[0];
+    if (!kept) continue;
+    for (const call of clashes) {
+      if (call === kept) continue;
+      blocked.set(
+        `${call.chip}:${call.half}`,
+        `${kept.chip} is already using gameweek ${String(event)}`,
+      );
+    }
+  }
+
+  return calls.map((call) => {
+    const reason = blocked.get(`${call.chip}:${call.half}`);
+    return reason
+      ? {
+          ...call,
+          event: null,
+          gain: 0,
+          note: `${reason}, so this chip is left unplayed`,
+        }
+      : call;
+  });
+}
+
 /**
  * Chip calls for a solved season, all four of them.
  *
@@ -251,12 +297,15 @@ export function chipCallsFor(
   const claimed = committed && !gone.has(committed.chip) ? committed : null;
   if (gameweeks.length === 0) {
     const carried = keep([...published]);
-    if (!claimed) return carried;
+    if (!claimed) return singleChipPerGameweek(carried, null);
     const half = claimed.event <= 19 ? "first" : "second";
-    return carried.map((call) =>
-      call.chip === claimed.chip && call.half === half
-        ? pinned(claimed, call, [], half)
-        : call,
+    return singleChipPerGameweek(
+      carried.map((call) =>
+        call.chip === claimed.chip && call.half === half
+          ? pinned(claimed, call, [], half)
+          : call,
+      ),
+      claimed,
     );
   }
 
@@ -298,5 +347,5 @@ export function chipCallsFor(
     );
   }
 
-  return keep(calls);
+  return singleChipPerGameweek(keep(calls), claimed);
 }

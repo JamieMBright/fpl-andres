@@ -27,9 +27,11 @@ const PrivacyPage = lazyRoute(() => import("./pages/PrivacyPage"));
 const SeasonPlanPage = lazyRoute(() => import("./pages/SeasonPlanPage"));
 const MarketsPage = lazyRoute(() => import("./pages/MarketsPage"));
 const ExpectedXiPage = lazyRoute(() => import("./pages/ExpectedXiPage"));
+const ApiPage = lazyRoute(() => import("./pages/ApiPage"));
 const KitPreviewPage = lazyRoute(() => import("./pages/KitPreviewPage"));
 const AnalysisPage = lazyRoute(() => import("./pages/AnalysisPage"));
 const Fpl500Page = lazyRoute(() => import("./pages/Fpl500Page"));
+const ProofPage = lazyRoute(() => import("./pages/ProofPage"));
 const ResultsPage = lazyRoute(() => import("./pages/ResultsPage"));
 const ThanksPage = lazyRoute(() => import("./pages/ThanksPage"));
 
@@ -77,6 +79,22 @@ export const routes: RouteObject[] = [
         element: (
           <LazyRoute>
             <MethodPage />
+          </LazyRoute>
+        ),
+      },
+      {
+        path: "proof",
+        element: (
+          <LazyRoute>
+            <ProofPage />
+          </LazyRoute>
+        ),
+      },
+      {
+        path: "api-docs",
+        element: (
+          <LazyRoute>
+            <ApiPage />
           </LazyRoute>
         ),
       },
