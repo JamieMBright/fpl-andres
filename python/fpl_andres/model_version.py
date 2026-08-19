@@ -29,6 +29,12 @@ from __future__ import annotations
 
 __all__ = ["MODEL_VERSION"]
 
+#: 8.3 restores row-level season-input provenance beside each player after the
+#: player-market diagnostic route started reading the slimmer artifact surface.
+#: Minor: route values keep their meaning, but the published season-input row
+#: again names whether a player is carried by role prior, market participation,
+#: attack, shots/BPS or cards.
+#:
 #: 8.2 removes copied per-player quote disclosure from the browser solver
 #: artifact. The authoritative player-odds artifact still retains every quote,
 #: and season inputs retain aggregate reach plus every number-moving blend.
@@ -337,4 +343,4 @@ __all__ = ["MODEL_VERSION"]
 #: projection and resampled, so a gap that does not clear zero is reported as
 #: not clearing zero. No projection changed; what changed is what may be
 #: claimed from it.
-MODEL_VERSION = "8.2"
+MODEL_VERSION = "8.3"
