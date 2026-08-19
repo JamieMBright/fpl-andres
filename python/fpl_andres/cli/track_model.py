@@ -145,7 +145,7 @@ def _cell(value: Any, digits: int = 3) -> str:
 
 
 def render_performance(report: dict[str, Any]) -> str:
-    """The measured-performance table, in the column order the guard parses."""
+    """The measured table and findings, all derived from the same artifact."""
     rows = [
         "| Season  | MAE   | vs form | Spearman | vs form | Top-20 hit | form  | crowd | Bias   |",
         "| ------- | ----- | ------- | -------- | ------- | ---------- | ----- | ----- | ------ |",
@@ -175,7 +175,121 @@ def render_performance(report: dict[str, Any]) -> str:
             f"{rho_gap} | {_cell(model.get('topNHitRate'))} | {_cell(form.get('topNHitRate'))} | "
             f"{_cell(crowd.get('topNHitRate'))} | {_cell(model.get('bias'))} |"
         )
-    return "\n".join(rows)
+    findings = _performance_findings(report)
+    return "\n".join(rows) if not findings else f"{'\n'.join(rows)}\n\n{findings}"
+
+
+def _performance_findings(report: dict[str, Any]) -> str:
+    """Results prose that cannot drift away from the generated table."""
+    seasons = [season for season in report.get("seasons", []) if isinstance(season, dict)]
+    comparable: list[tuple[dict[str, Any], dict[str, Any], dict[str, Any], str]] = []
+    for season in seasons:
+        methods = {
+            str(entry.get("label")): entry
+            for entry in season.get("methods", [])
+            if isinstance(entry, dict)
+        }
+        model = methods.get("model", {})
+        form = methods.get("recent_mean", {})
+        crowd = methods.get("ownership", {})
+        if model and form:
+            comparable.append((model, form, crowd, str(season.get("season", "unknown"))))
+
+    paragraphs: list[str] = []
+    if comparable:
+        total = len(comparable)
+        mae_wins = sum(
+            1
+            for model, form, _, _ in comparable
+            if _less(model.get("meanAbsoluteError"), form.get("meanAbsoluteError"))
+        )
+        spearman_wins = sum(
+            1
+            for model, form, _, _ in comparable
+            if _greater(model.get("spearman"), form.get("spearman"))
+        )
+        hit_wins = sum(
+            1
+            for model, form, _, _ in comparable
+            if _greater(model.get("topNHitRate"), form.get("topNHitRate"))
+        )
+        crowd_wins = sum(
+            1
+            for model, _, crowd, _ in comparable
+            if _greater(model.get("topNHitRate"), crowd.get("topNHitRate"))
+        )
+        paragraphs.append(
+            f"Against recent form, the model wins MAE in {mae_wins}/{total} seasons, "
+            f"Spearman in {spearman_wins}/{total}, and top-20 hit rate in "
+            f"{hit_wins}/{total}; it beats ownership hit rate in {crowd_wins}/{total}."
+        )
+
+        biases = [
+            float(model["bias"]) for model, _, _, _ in comparable if _is_number(model.get("bias"))
+        ]
+        if biases:
+            negative = sum(value < 0 for value in biases)
+            positive = sum(value > 0 for value in biases)
+            paragraphs.append(
+                f"Bias: {negative}/{len(biases)} negative, {positive}/{len(biases)} positive; "
+                f"range {_signed(min(biases))} to {_signed(max(biases))}."
+            )
+
+        mae_rows = [
+            (float(model["meanAbsoluteError"]), season)
+            for model, _, _, season in comparable
+            if _is_number(model.get("meanAbsoluteError"))
+        ]
+        spearman_rows = [
+            (float(model["spearman"]), season)
+            for model, _, _, season in comparable
+            if _is_number(model.get("spearman"))
+        ]
+        if mae_rows and spearman_rows:
+            highest_mae, highest_mae_season = max(mae_rows)
+            lowest_spearman, lowest_spearman_season = min(spearman_rows)
+            paragraphs.append(
+                f"Highest MAE: {highest_mae_season} at {highest_mae:.3f}. "
+                f"Lowest Spearman: {lowest_spearman_season} at {lowest_spearman:.3f}."
+            )
+
+    if seasons:
+        latest = seasons[-1]
+        methods = {
+            str(entry.get("label")): entry
+            for entry in latest.get("methods", [])
+            if isinstance(entry, dict)
+        }
+        positions = methods.get("model", {}).get("byPosition", {})
+        rated = (
+            [
+                (float(value), str(position))
+                for position, value in positions.items()
+                if _is_number(value)
+            ]
+            if isinstance(positions, dict)
+            else []
+        )
+        if rated:
+            value, position = min(rated)
+            paragraphs.append(
+                f"In {latest.get('season')}, the weakest position is {position} at "
+                f"{value:.3f} Spearman."
+            )
+
+    return "\n\n".join(paragraphs)
+
+
+def _is_number(value: Any) -> bool:
+    return isinstance(value, int | float) and not isinstance(value, bool)
+
+
+def _less(left: Any, right: Any) -> bool:
+    return _is_number(left) and _is_number(right) and float(left) < float(right)
+
+
+def _greater(left: Any, right: Any) -> bool:
+    return _is_number(left) and _is_number(right) and float(left) > float(right)
 
 
 def render_captaincy(report: dict[str, Any]) -> str:

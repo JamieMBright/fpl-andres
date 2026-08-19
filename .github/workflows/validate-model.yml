@@ -47,7 +47,7 @@ jobs:
   validate:
     name: Backtest the projection
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    timeout-minutes: 150
     environment: production
     permissions:
       # The refreshed artifact and the appended history row are pushed back.
@@ -80,8 +80,8 @@ jobs:
         run: cp apps/web/src/data/validation.json "$RUNNER_TEMP/before.json"
 
       - name: Run the backtest
-        # Run 41 reached the old 40-minute ceiling on a loaded hosted runner;
-        # comparable successful runs are usually about 20 minutes.
+        # Runs 41 and 42 completed in 15.47 and 19.55 minutes. Sixty minutes is
+        # bounded headroom for a loaded hosted runner, not a changed criterion.
         timeout-minutes: 60
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
@@ -108,7 +108,9 @@ jobs:
       # until somebody remembers to regenerate by hand -- which is how a scored
       # improvement can sit unshipped for weeks.
       - name: Republish the projection the site reads
-        timeout-minutes: 40
+        # Run 41 needed 38.6 minutes and run 42 hit the old 40-minute ceiling.
+        # This chain includes the bounded 38-week static-plan solve.
+        timeout-minutes: 60
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}

@@ -135,29 +135,15 @@ backtest run. Editing them by hand is how the last set went stale.
 | 2024-25 | 1.675 | −7.2%   | 0.508    | +0.042  | 0.192      | 0.148 | 0.166 | −0.108 |
 | 2025-26 | 1.865 | −6.4%   | 0.467    | +0.044  | 0.169      | 0.119 | 0.136 | −0.067 |
 
+Against recent form, the model wins MAE in 4/4 seasons, Spearman in 4/4, and top-20 hit rate in 4/4; it beats ownership hit rate in 4/4.
+
+Bias: 4/4 negative, 0/4 positive; range −0.108 to −0.067.
+
+Highest MAE: 2025-26 at 1.865. Lowest Spearman: 2025-26 at 0.467.
+
+In 2025-26, the weakest position is DEF at 0.425 Spearman.
+
 <!-- measured-performance:end -->
-
-**The model beats the form chaser on all three metrics in all four seasons, and
-beats the crowd's top-20 hit rate in all four.** The margin is stable rather than
-large: 7–10% on error, about 0.04 on rank correlation.
-
-Three things this does not say.
-
-**Bias is negative in every season.** The model under-predicts by 0.11 to 0.20
-points per player per gameweek, consistently. That is a systematic error, not
-noise, and it is the clearest open lead in the calibration: something in the
-scoring composition is not being credited. The form chaser's bias is near zero
-because a mean of recent scores cannot be biased against itself.
-
-**2025-26 is the worst season on every metric.** MAE is 0.19 higher than 2024-25
-and rank correlation 0.04 lower. Defensive contribution points arrived that
-season and the model had no history to fit them against, which is the obvious
-explanation and not a verified one.
-
-**Rank correlation is worst where the squad is largest.** In 2025-26: GKP 0.589,
-FWD 0.553, MID 0.481, DEF 0.425. Defenders are the hardest to rank and there are
-five of them in a squad, so the weakest part of the model carries the most weight
-in a selection.
 
 Reproducing these numbers needs the corpus they were measured over, not just the
 code — see `corpusFingerprint` in the artifact.

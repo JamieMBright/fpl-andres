@@ -195,6 +195,17 @@ def test_model_backtest_allows_the_measured_slow_runner_duration() -> None:
     assert "timeout-minutes: 60" in text[backtest:following_step]
 
 
+def test_model_republication_allows_the_measured_slow_runner_duration() -> None:
+    text = (WORKFLOWS / "validate-model.yml").read_text(encoding="utf-8")
+    republish = text.index("- name: Republish the projection the site reads")
+    following_step = text.index("- name:", republish + 1)
+    job = text.index("jobs:")
+    first_step = text.index("steps:", job)
+
+    assert "timeout-minutes: 60" in text[republish:following_step]
+    assert "timeout-minutes: 150" in text[job:first_step]
+
+
 def test_fpl500_capture_republishes_the_prospective_event_ledger() -> None:
     text = (WORKFLOWS / "capture-fpl500.yml").read_text(encoding="utf-8")
 

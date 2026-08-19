@@ -180,7 +180,9 @@ class TestCardTables:
                 }
             ]
         }
-        row = render_performance(report).splitlines()[-1]
+        row = next(
+            line for line in render_performance(report).splitlines() if line.startswith("| 2024-25")
+        )
         match = re.match(
             r"^\|\s*(20\d\d-\d\d)\s*\|\s*([\d.]+)\s*\|[^|]*\|\s*([\d.]+)\s*\|[^|]*\|\s*([\d.]+)\s*\|",
             row,
@@ -201,6 +203,43 @@ class TestCardTables:
             ]
         }
         assert "\u22120.127" in render_performance(report)
+
+    def test_performance_findings_follow_the_artifact_instead_of_assuming_wins(
+        self,
+    ) -> None:
+        report = {
+            "seasons": [
+                {
+                    "season": "2024-25",
+                    "methods": [
+                        {
+                            "label": "model",
+                            "meanAbsoluteError": 1.9,
+                            "spearman": 0.4,
+                            "topNHitRate": 0.12,
+                            "bias": 0.05,
+                            "byPosition": {"GKP": 0.5, "DEF": 0.3},
+                        },
+                        {
+                            "label": "recent_mean",
+                            "meanAbsoluteError": 1.8,
+                            "spearman": 0.45,
+                            "topNHitRate": 0.14,
+                        },
+                        {"label": "ownership", "topNHitRate": 0.13},
+                    ],
+                }
+            ]
+        }
+
+        rendered = render_performance(report)
+
+        assert "MAE in 0/1 seasons" in rendered
+        assert "Spearman in 0/1" in rendered
+        assert "top-20 hit rate in 0/1" in rendered
+        assert "Bias is negative in every season" not in rendered
+        assert "1/1 positive" in rendered
+        assert "weakest position is DEF" in rendered
 
     def test_an_unscored_captaincy_says_so_rather_than_drawing_an_empty_table(
         self,
