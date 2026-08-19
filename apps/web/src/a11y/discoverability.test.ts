@@ -100,6 +100,8 @@ describe("sitemap", () => {
 describe("non-public routes", () => {
   it.each([
     "/team/(.*)",
+    "/expected-xi",
+    "/expected-xi/(.*)",
     "/markets",
     "/markets/(.*)",
     "/kits",

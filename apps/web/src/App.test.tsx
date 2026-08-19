@@ -179,8 +179,8 @@ describe("team analysis entry", () => {
     for (const name of ["Plan", "Players", "Analysis", "Method", "Results"]) {
       expect(screen.getAllByRole("link", { name }).length).toBeGreaterThan(2);
     }
-    // FAQ, Markets and Kits are wayfinding, not the main event: bar and footer only.
-    for (const name of ["FAQ", "Markets", "Kits"]) {
+    // FAQ, Expected XI, Markets and Kits are wayfinding, not the main event: bar and footer only.
+    for (const name of ["FAQ", "Expected XI", "Markets", "Kits"]) {
       expect(screen.getAllByRole("link", { name }).length).toBeGreaterThan(0);
     }
     // Capability is stated by what the page offers, not by a page full of

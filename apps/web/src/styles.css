@@ -853,6 +853,175 @@ h1[tabindex="-1"]:focus-visible {
   line-height: 1.6;
 }
 
+.expected-xi-page {
+  padding-block: clamp(38px, 6vw, 72px) clamp(52px, 8vw, 96px);
+}
+
+.expected-xi-page > .lede {
+  max-width: 70ch;
+}
+
+.expected-xi-clubs {
+  position: sticky;
+  top: 0;
+  z-index: 4;
+  display: grid;
+  grid-template-columns: repeat(10, minmax(72px, 1fr));
+  gap: 2px;
+  margin-top: 28px;
+  padding: 8px;
+  overflow-x: auto;
+  background: var(--paper);
+  border-block: 3px solid var(--ink);
+  box-shadow: 0 8px 0 rgb(0 0 0 / 12%);
+}
+
+.expected-xi-clubs a {
+  display: grid;
+  min-width: 72px;
+  min-height: 74px;
+  place-items: center;
+  padding: 6px 4px;
+  color: var(--ink);
+  font-family: var(--fa-mono);
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.expected-xi-clubs a:focus-visible {
+  outline: 3px solid var(--signal-blue);
+  outline-offset: -3px;
+}
+
+.expected-xi-club-shirt {
+  width: 34px;
+  height: 34px;
+}
+
+.expected-xi-scoreboard {
+  margin-top: 28px;
+}
+
+.expected-xi-teams {
+  display: grid;
+  gap: 28px;
+  margin-top: 42px;
+}
+
+.expected-xi-team {
+  padding-block: 22px 26px;
+  border-block: 2px solid var(--ink);
+}
+
+.expected-xi-team > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: center;
+}
+
+.expected-xi-shirt {
+  width: 44px;
+  height: 44px;
+}
+
+.expected-xi-team h2,
+.expected-xi-team h3 {
+  margin: 0;
+  letter-spacing: 0;
+}
+
+.expected-xi-team h2 {
+  color: var(--ink);
+  font-family: var(--fa-display);
+  font-size: 24px;
+}
+
+.expected-xi-team h2 span {
+  font-family: var(--fa-mono);
+  font-size: 0.7em;
+}
+
+.expected-xi-team header p,
+.expected-xi-source {
+  margin: 5px 0 0;
+  color: var(--ink-soft);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.expected-xi-columns {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(260px, 0.8fr);
+  gap: 20px;
+  margin-top: 18px;
+}
+
+.expected-xi-team h3 {
+  color: var(--field-green);
+  font-family: var(--fa-body);
+  font-size: 13px;
+}
+
+.expected-xi-list {
+  display: grid;
+  gap: 1px;
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.expected-xi-list li {
+  display: grid;
+  grid-template-columns: 42px minmax(120px, 1fr) 56px minmax(92px, auto);
+  gap: 10px;
+  align-items: center;
+  min-height: 38px;
+  padding: 8px 10px;
+  background: color-mix(in srgb, var(--paper-strong) 82%, transparent);
+  border-bottom: 1px solid var(--rule);
+}
+
+.expected-xi-position,
+.expected-xi-probability {
+  color: var(--ink);
+  font-size: 12px;
+}
+
+.expected-xi-name {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.expected-xi-evidence {
+  display: inline-flex;
+  gap: 5px;
+  align-items: center;
+  width: fit-content;
+  font-family: var(--fa-mono);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.expected-xi-evidence-market {
+  color: var(--field-green);
+}
+
+.expected-xi-evidence-model {
+  color: var(--signal-blue);
+}
+
+.expected-xi-evidence-prior {
+  color: var(--amber);
+}
+
+.expected-xi-source {
+  margin-top: 12px;
+}
+
 @media (max-width: 760px) {
   .market-scoreboard {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -870,6 +1039,23 @@ h1[tabindex="-1"]:focus-visible {
     position: sticky;
     left: 0;
     z-index: 1;
+  }
+
+  .expected-xi-clubs {
+    grid-template-columns: repeat(20, 72px);
+  }
+
+  .expected-xi-team > header,
+  .expected-xi-columns {
+    grid-template-columns: 1fr;
+  }
+
+  .expected-xi-list li {
+    grid-template-columns: 38px minmax(0, 1fr) 52px;
+  }
+
+  .expected-xi-evidence {
+    grid-column: 2 / -1;
   }
 }
 

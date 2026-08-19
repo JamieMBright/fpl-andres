@@ -173,6 +173,9 @@ export function ApplicationFrame() {
               <Link to="/privacy">Privacy</Link>
             </li>
             <li>
+              <Link to="/expected-xi">Expected XI</Link>
+            </li>
+            <li>
               <Link to="/markets">Markets</Link>
             </li>
             <li>
