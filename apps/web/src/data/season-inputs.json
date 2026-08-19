@@ -1,6 +1,6 @@
 {
   "schemaVersion": 5,
-  "generatedAt": "2026-08-18T23:20:10.135479Z",
+  "generatedAt": "2026-08-19T09:40:39.142691Z",
   "recordSeason": "2025-26",
   "events": [
     1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
@@ -58,14 +58,14 @@
     "playerMarkets": {
       "source": "the-odds-api",
       "level": "observed",
-      "updatedAt": "2026-08-18T22:59:29.973846+00:00",
-      "contentHash": "sha256:695e679d310b7ac5c3b6afa6bba796310ae3f9011e18ca5f372ba97199d9a50b"
+      "updatedAt": "2026-08-19T09:40:37.379932+00:00",
+      "contentHash": "sha256:20ffc5b793f871237d740de1b3c4023f2dba9dc35e678a20377ef40d2a2bbd76"
     },
     "fixtureMarkets": {
       "source": "the-odds-api",
       "level": "observed",
       "updatedAt": "2026-08-18T23:20:01.490355+00:00",
-      "contentHash": "sha256:f3a17b248bd80fc4b03ebafdd762aab2f584865290f38c95777e4646d71ef437"
+      "contentHash": "sha256:46619cde049a0ca7fc13b6db05a91a43a0368ecc6df71b53a1b26047d1d59d60"
     },
     "understat": {
       "source": "understat",
@@ -112,8 +112,8 @@
     }
   },
   "market": {
-    "attackingRoutes": 17,
-    "playersQuoted": 17,
+    "attackingRoutes": 47,
+    "playersQuoted": 51,
     "cardRoutes": 0,
     "playersQuotedForCards": 0,
     "shotRoutes": 0,
@@ -121,7 +121,7 @@
     "startRatesCut": 0,
     "squadsNamed": 0,
     "fixtureRungs": 20,
-    "participationInferred": 17,
+    "participationInferred": 47,
     "bonusEvents": 1,
     "playerMarketUsage": {
       "anytimeGoal": "attacking-participation-bps",
@@ -286,6 +286,216 @@
         "lastGoal": 0.25641,
         "anytimeAssist": 0.208333,
         "shotsOnTarget": 1.534391
+      },
+      "431": {
+        "observedAt": "2026-08-19T09:40:37.379932+00:00",
+        "books": 3,
+        "anytimeGoal": 0.30303,
+        "firstGoal": 0.133929,
+        "lastGoal": 0.142857
+      },
+      "162": {
+        "observedAt": "2026-08-19T09:40:37.379932+00:00",
+        "books": 3,
+        "anytimeGoal": 0.230947,
+        "firstGoal": 0.091667,
+        "lastGoal": 0.083333
+      },
+      "421": {
+        "observedAt": "2026-08-19T09:40:37.379932+00:00",
+        "books": 3,
+        "anytimeGoal": 0.105263,
+        "firstGoal": 0.04097,
+        "lastGoal": 0.038462
+      },
+      "426": {
+        "observedAt": "2026-08-19T09:40:37.379932+00:00",
+        "books": 3,
+        "anytimeGoal": 0.322581,
+        "firstGoal": 0.15,
+        "lastGoal": 0.166667
+      },
+      "427": {
+        "observedAt": "2026-08-19T09:40:37.379932+00:00",
+        "books": 3,
+        "anytimeGoal": 0.4,
+        "firstGoal": 0.1875,
+        "lastGoal": 0.208333
+      },
+      "417": {
+        "observedAt": "2026-08-19T09:40:37.379932+00:00",
+        "books": 3,
+        "anytimeGoal": 0.111111,
+        "firstGoal": 0.045549,
+        "lastGoal": 0.047619
+      },
+      "576": {
+        "observedAt": "2026-08-19T09:40:37.379932+00:00",
+        "books": 3,
+        "anytimeGoal": 0.153846,
+        "firstGoal": 0.067982,
+        "lastGoal": 0.083333
+      },
+      "418": {
+        "observedAt": "2026-08-19T09:40:37.379932+00:00",
+        "books": 3,
+        "anytimeGoal": 0.111111,
+        "firstGoal": 0.063406,
+        "lastGoal": 0.083333
+      },
+      "434": {
+        "observedAt": "2026-08-19T09:40:37.379932+00:00",
+        "books": 3,
+        "anytimeGoal": 0.210526,
+        "firstGoal": 0.094298,
+        "lastGoal": 0.105263
+      },
+      "277": {
+        "observedAt": "2026-08-19T09:40:37.379932+00:00",
+        "books": 3,
+        "anytimeGoal": 0.047619,
+        "firstGoal": 0.027045,
+        "lastGoal": 0.034483
+      },
+      "440": {
+        "observedAt": "2026-08-19T09:40:37.379932+00:00",
+        "books": 3,
+        "anytimeGoal": 0.380228,
+        "firstGoal": 0.16954,
+        "lastGoal": 0.172414
+      },
+      "288": {
+        "observedAt": "2026-08-19T09:40:37.379932+00:00",
+        "books": 3,
+        "anytimeGoal": 0.125,
+        "firstGoal": 0.053221,
+        "lastGoal": 0.058824
+      },
+      "432": {
+        "observedAt": "2026-08-19T09:40:37.379932+00:00",
+        "books": 3,
+        "anytimeGoal": 0.133333,
+        "firstGoal": 0.067982,
+        "lastGoal": 0.083333
+      },
+      "420": {
+        "observedAt": "2026-08-19T09:40:37.379932+00:00",
+        "books": 3,
+        "anytimeGoal": 0.1,
+        "firstGoal": 0.04097,
+        "lastGoal": 0.043478
+      },
+      "280": {
+        "observedAt": "2026-08-19T09:40:37.379932+00:00",
+        "books": 3,
+        "anytimeGoal": 0.034483,
+        "firstGoal": 0.015038,
+        "lastGoal": 0.015152
+      },
+      "287": {
+        "observedAt": "2026-08-19T09:40:37.379932+00:00",
+        "books": 3,
+        "anytimeGoal": 0.111111,
+        "firstGoal": 0.051151,
+        "lastGoal": 0.058824
+      },
+      "419": {
+        "observedAt": "2026-08-19T09:40:37.379932+00:00",
+        "books": 3,
+        "anytimeGoal": 0.1,
+        "firstGoal": 0.043478,
+        "lastGoal": 0.043478
+      },
+      "585": {
+        "observedAt": "2026-08-19T09:40:37.379932+00:00",
+        "books": 3,
+        "anytimeGoal": 0.052632,
+        "firstGoal": 0.027045,
+        "lastGoal": 0.034483
+      },
+      "423": {
+        "observedAt": "2026-08-19T09:40:37.379932+00:00",
+        "books": 3,
+        "anytimeGoal": 0.111111,
+        "firstGoal": 0.04304,
+        "lastGoal": 0.038462
+      },
+      "429": {
+        "observedAt": "2026-08-19T09:40:37.379932+00:00",
+        "books": 3,
+        "anytimeGoal": 0.363636,
+        "firstGoal": 0.160256,
+        "lastGoal": 0.166667
+      },
+      "428": {
+        "observedAt": "2026-08-19T09:40:37.379932+00:00",
+        "books": 3,
+        "anytimeGoal": 0.4,
+        "firstGoal": 0.183333,
+        "lastGoal": 0.2
+      },
+      "289": {
+        "observedAt": "2026-08-19T09:40:37.379932+00:00",
+        "books": 3,
+        "anytimeGoal": 0.125,
+        "firstGoal": 0.057143,
+        "lastGoal": 0.066667
+      },
+      "286": {
+        "observedAt": "2026-08-19T09:40:37.379932+00:00",
+        "books": 3,
+        "anytimeGoal": 0.1,
+        "firstGoal": 0.043557,
+        "lastGoal": 0.052632
+      },
+      "586": {
+        "observedAt": "2026-08-19T09:40:37.379932+00:00",
+        "books": 3,
+        "anytimeGoal": 0.076923,
+        "firstGoal": 0.025575,
+        "lastGoal": 0.021739
+      },
+      "422": {
+        "observedAt": "2026-08-19T09:40:37.379932+00:00",
+        "books": 3,
+        "anytimeGoal": 0.083333,
+        "firstGoal": 0.036472,
+        "lastGoal": 0.038462
+      },
+      "415": {
+        "observedAt": "2026-08-19T09:40:37.379932+00:00",
+        "books": 3,
+        "anytimeGoal": 0.294118,
+        "firstGoal": 0.133929,
+        "lastGoal": 0.142857
+      },
+      "290": {
+        "observedAt": "2026-08-19T09:40:37.379932+00:00",
+        "books": 3,
+        "anytimeGoal": 0.047619,
+        "firstGoal": 0.023693,
+        "lastGoal": 0.027778
+      },
+      "282": {
+        "observedAt": "2026-08-19T09:40:37.379932+00:00",
+        "books": 3,
+        "anytimeGoal": 0.043478,
+        "firstGoal": 0.023693,
+        "lastGoal": 0.027778
+      },
+      "279": {
+        "observedAt": "2026-08-19T09:40:37.379932+00:00",
+        "books": 3,
+        "anytimeGoal": 0.055556,
+        "firstGoal": 0.029437,
+        "lastGoal": 0.034483
+      },
+      "435": {
+        "observedAt": "2026-08-19T09:40:37.379932+00:00",
+        "books": 3,
+        "anytimeGoal": 0.30303,
+        "firstGoal": 0.133929,
+        "lastGoal": 0.142857
       }
     }
   },
@@ -316,7 +526,37 @@
       "19": [0.0, 0.794, 1.068327, 0.55, -0.105, -0.002],
       "20": [0.0, 0.294, 1.527437, 0.432, -0.019, -0.001],
       "25": [0.0, 0.547, 1.211497, 1.312, -0.118, 0.0],
-      "26": [0.0, 0.161, 2.343548, 0.417, -0.032, 0.0]
+      "26": [0.0, 0.161, 2.343548, 0.417, -0.032, 0.0],
+      "277": [0.0, 0.583, 1.251145, 0.214, -0.106, -0.003],
+      "279": [0.0, 0.583, 1.251145, 0.214, -0.106, -0.003],
+      "280": [0.0, 0.583, 1.251145, 0.214, -0.106, -0.003],
+      "282": [0.0, 0.583, 1.251145, 0.214, -0.106, -0.003],
+      "286": [0.0, 0.603, 0.969473, 1.426, -0.132, -0.002],
+      "287": [0.0, 0.603, 1.00714, 1.426, -0.132, -0.002],
+      "288": [0.0, 0.294, 1.527437, 0.432, -0.019, -0.001],
+      "289": [0.0, 0.294, 1.527437, 0.432, -0.019, -0.001],
+      "290": [0.0, 0.294, 1.527437, 0.432, -0.019, -0.001],
+      "576": [0.0, 0.603, 1.156539, 1.426, -0.132, -0.002],
+      "585": [0.0, 0.583, 1.251145, 0.214, -0.106, -0.003],
+      "586": [0.0, 0.583, 1.251145, 0.214, -0.106, -0.003],
+      "162": [0.0, 0.312, 1.579204, 0.326, -0.096, -0.001],
+      "415": [0.0, 0.337, 1.565698, 0.428, -0.104, -0.002],
+      "417": [0.0, 0.724, 1.116667, 0.463, -0.126, -0.003],
+      "418": [0.0, 0.54, 1.320213, 0.228, -0.085, -0.068],
+      "419": [0.0, 0.348, 1.539831, 0.107, -0.019, -0.065],
+      "420": [0.0, 0.418, 1.377688, 0.256, -0.038, -0.002],
+      "421": [0.0, 0.279, 1.885294, 0.088, -0.053, -0.002],
+      "422": [0.0, 0.285, 1.799635, 0.085, -0.073, -0.002],
+      "423": [0.0, 0.937, 1.035557, 0.286, -0.211, -0.003],
+      "426": [0.0, 0.87, 1.045653, 2.031, -0.128, -0.002],
+      "427": [0.0, 0.781, 1.074053, 1.732, -0.103, -0.002],
+      "428": [0.0, 0.73, 1.137616, 1.032, -0.105, -0.002],
+      "429": [0.0, 0.294, 1.527437, 0.432, -0.019, -0.001],
+      "431": [0.0, 0.587, 1.175876, 0.959, -0.062, -0.002],
+      "432": [0.0, 0.493, 1.294172, 0.256, -0.067, -0.002],
+      "434": [0.0, 0.294, 1.527437, 0.432, -0.019, -0.001],
+      "435": [0.0, 0.294, 1.527437, 0.432, -0.019, -0.001],
+      "440": [0.0, 0.113, 2.445891, 0.291, -0.056, 0.0]
     }
   },
   "rules": {
@@ -354,7 +594,7 @@
       }
     ],
     "sourceReference": "FPL rules page, Transfers section",
-    "dataAvailableAt": "2026-08-18T23:20:10.141961Z",
+    "dataAvailableAt": "2026-08-19T09:40:39.149434Z",
     "playableStartRate": 0.35,
     "transferMarginPoints": 0.5
   },
@@ -2316,27 +2556,27 @@
       "177": 0.0,
       "178": 0.0,
       "572": 0.0,
-      "286": 0.0,
+      "586": 0.0,
+      "279": 0.0,
+      "585": 0.0,
+      "277": 0.0,
+      "282": 0.0,
+      "280": 0.0,
+      "576": 0.0,
       "287": 0.0,
       "292": 0.0,
       "296": 0.0,
-      "574": 0.0,
-      "576": 0.0,
-      "589": 0.0,
-      "277": 0.0,
-      "279": 0.0,
-      "280": 0.0,
       "423": 0.001,
+      "426": 0.303,
       "412": 0.001,
-      "426": 0.289,
-      "427": 0.007,
-      "428": 0.003,
+      "428": 0.011,
       "417": 0.0,
-      "431": 0.003,
+      "427": 0.008,
+      "431": 0.011,
       "418": 0.0,
-      "43": 0.0,
       "432": 0.0,
       "420": 0.0,
+      "419": 0.0,
       "226": 0.003,
       "229": 0.006,
       "232": 0.0,
@@ -4398,6 +4638,36 @@
       "depthRank": 4
     },
     {
+      "id": 423,
+      "code": 106760,
+      "name": "Shaw",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "MUN",
+      "teamId": 16,
+      "priceTenths": 45,
+      "basePoints": 2.976,
+      "routes": {
+        "appearance": 1.891,
+        "attacking": 0.404,
+        "cleanSheet": 0.956,
+        "bonus": 0.086,
+        "conceding": -0.415,
+        "yellowCards": -0.219,
+        "redCards": -0.003,
+        "ownGoals": -0.002,
+        "defensiveContribution": 0.278
+      },
+      "startRate": 0.959,
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 5,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
+    },
+    {
       "id": 471,
       "code": 227444,
       "name": "Milenkovi\u0107",
@@ -4422,6 +4692,37 @@
       "squadNumber": null,
       "rated": true,
       "depthRank": 1
+    },
+    {
+      "id": 586,
+      "code": 606930,
+      "name": "Mendy",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "HUL",
+      "teamId": 11,
+      "priceTenths": 40,
+      "basePoints": 2.961,
+      "routes": {
+        "appearance": 1.553,
+        "attacking": 0.513,
+        "cleanSheet": 0.569,
+        "bonus": 0.194,
+        "conceding": -0.396,
+        "yellowCards": -0.133,
+        "redCards": -0.004,
+        "ownGoals": -0.002,
+        "defensiveContribution": 0.667
+      },
+      "startRate": 0.729,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 1,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 88,
@@ -4528,6 +4829,98 @@
       "depthRank": 1
     },
     {
+      "id": 279,
+      "code": 146426,
+      "name": "Ajayi",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "HUL",
+      "teamId": 11,
+      "priceTenths": 40,
+      "basePoints": 2.861,
+      "routes": {
+        "appearance": 1.553,
+        "attacking": 0.413,
+        "cleanSheet": 0.569,
+        "bonus": 0.194,
+        "conceding": -0.396,
+        "yellowCards": -0.133,
+        "redCards": -0.004,
+        "ownGoals": -0.002,
+        "defensiveContribution": 0.667
+      },
+      "startRate": 0.729,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 1,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
+    },
+    {
+      "id": 585,
+      "code": 597462,
+      "name": "Herrington",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "HUL",
+      "teamId": 11,
+      "priceTenths": 40,
+      "basePoints": 2.847,
+      "routes": {
+        "appearance": 1.553,
+        "attacking": 0.399,
+        "cleanSheet": 0.569,
+        "bonus": 0.194,
+        "conceding": -0.396,
+        "yellowCards": -0.133,
+        "redCards": -0.004,
+        "ownGoals": -0.002,
+        "defensiveContribution": 0.667
+      },
+      "startRate": 0.729,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 1,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
+    },
+    {
+      "id": 418,
+      "code": 95658,
+      "name": "Maguire",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "MUN",
+      "teamId": 16,
+      "priceTenths": 50,
+      "basePoints": 2.84,
+      "routes": {
+        "appearance": 1.49,
+        "attacking": 0.33,
+        "cleanSheet": 0.798,
+        "bonus": 0.167,
+        "conceding": -0.274,
+        "yellowCards": -0.112,
+        "redCards": -0.09,
+        "ownGoals": -0.003,
+        "defensiveContribution": 0.534
+      },
+      "startRate": 0.701,
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
+    },
+    {
       "id": 499,
       "code": 441164,
       "name": "Pedro Porro",
@@ -4554,30 +4947,127 @@
       "depthRank": 2
     },
     {
-      "id": 423,
-      "code": 106760,
-      "name": "Shaw",
+      "id": 277,
+      "code": 108416,
+      "name": "Egan",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "HUL",
+      "teamId": 11,
+      "priceTenths": 40,
+      "basePoints": 2.824,
+      "routes": {
+        "appearance": 1.553,
+        "attacking": 0.376,
+        "cleanSheet": 0.569,
+        "bonus": 0.194,
+        "conceding": -0.396,
+        "yellowCards": -0.133,
+        "redCards": -0.004,
+        "ownGoals": -0.002,
+        "defensiveContribution": 0.667
+      },
+      "startRate": 0.729,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 1,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
+    },
+    {
+      "id": 282,
+      "code": 232351,
+      "name": "Giles",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "HUL",
+      "teamId": 11,
+      "priceTenths": 40,
+      "basePoints": 2.805,
+      "routes": {
+        "appearance": 1.553,
+        "attacking": 0.357,
+        "cleanSheet": 0.569,
+        "bonus": 0.194,
+        "conceding": -0.396,
+        "yellowCards": -0.133,
+        "redCards": -0.004,
+        "ownGoals": -0.002,
+        "defensiveContribution": 0.667
+      },
+      "startRate": 0.729,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 1,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
+    },
+    {
+      "id": 417,
+      "code": 216051,
+      "name": "Dalot",
       "position": "DEF",
       "positionId": 2,
       "club": "MUN",
       "teamId": 16,
-      "priceTenths": 45,
-      "basePoints": 2.77,
+      "priceTenths": 50,
+      "basePoints": 2.779,
       "routes": {
-        "appearance": 1.826,
-        "attacking": 0.286,
-        "cleanSheet": 0.923,
-        "bonus": 0.083,
-        "conceding": -0.401,
-        "yellowCards": -0.211,
+        "appearance": 1.737,
+        "attacking": 0.527,
+        "cleanSheet": 0.646,
+        "bonus": 0.24,
+        "conceding": -0.431,
+        "yellowCards": -0.141,
         "redCards": -0.003,
         "ownGoals": -0.002,
-        "defensiveContribution": 0.269
+        "defensiveContribution": 0.206
       },
-      "startRate": 0.937,
+      "startRate": 0.821,
       "squadNumber": null,
       "rated": true,
-      "depthRank": 5
+      "depthRank": 1,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
+    },
+    {
+      "id": 280,
+      "code": 193278,
+      "name": "Coyle",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "HUL",
+      "teamId": 11,
+      "priceTenths": 40,
+      "basePoints": 2.764,
+      "routes": {
+        "appearance": 1.553,
+        "attacking": 0.316,
+        "cleanSheet": 0.569,
+        "bonus": 0.194,
+        "conceding": -0.396,
+        "yellowCards": -0.133,
+        "redCards": -0.004,
+        "ownGoals": -0.002,
+        "defensiveContribution": 0.667
+      },
+      "startRate": 0.729,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 1,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 9,
@@ -4787,32 +5277,6 @@
         "defensiveContribution": 0.394
       },
       "startRate": 0.72,
-      "squadNumber": null,
-      "rated": true,
-      "depthRank": 1
-    },
-    {
-      "id": 417,
-      "code": 216051,
-      "name": "Dalot",
-      "position": "DEF",
-      "positionId": 2,
-      "club": "MUN",
-      "teamId": 16,
-      "priceTenths": 50,
-      "basePoints": 2.479,
-      "routes": {
-        "appearance": 1.555,
-        "attacking": 0.463,
-        "cleanSheet": 0.579,
-        "bonus": 0.215,
-        "conceding": -0.386,
-        "yellowCards": -0.126,
-        "redCards": -0.003,
-        "ownGoals": -0.002,
-        "defensiveContribution": 0.184
-      },
-      "startRate": 0.724,
       "squadNumber": null,
       "rated": true,
       "depthRank": 1
@@ -5380,114 +5844,6 @@
       "evidence": { "all": "rolePrior" }
     },
     {
-      "id": 277,
-      "code": 108416,
-      "name": "Egan",
-      "position": "DEF",
-      "positionId": 2,
-      "club": "HUL",
-      "teamId": 11,
-      "priceTenths": 40,
-      "basePoints": 2.171,
-      "routes": {
-        "appearance": 1.241,
-        "attacking": 0.214,
-        "cleanSheet": 0.455,
-        "bonus": 0.155,
-        "conceding": -0.316,
-        "yellowCards": -0.106,
-        "redCards": -0.003,
-        "ownGoals": -0.002,
-        "defensiveContribution": 0.533
-      },
-      "startRate": 0.583,
-      "squadNumber": null,
-      "rated": false,
-      "depthRank": 1,
-      "evidence": { "all": "rolePrior" }
-    },
-    {
-      "id": 279,
-      "code": 146426,
-      "name": "Ajayi",
-      "position": "DEF",
-      "positionId": 2,
-      "club": "HUL",
-      "teamId": 11,
-      "priceTenths": 40,
-      "basePoints": 2.171,
-      "routes": {
-        "appearance": 1.241,
-        "attacking": 0.214,
-        "cleanSheet": 0.455,
-        "bonus": 0.155,
-        "conceding": -0.316,
-        "yellowCards": -0.106,
-        "redCards": -0.003,
-        "ownGoals": -0.002,
-        "defensiveContribution": 0.533
-      },
-      "startRate": 0.583,
-      "squadNumber": null,
-      "rated": false,
-      "depthRank": 1,
-      "evidence": { "all": "rolePrior" }
-    },
-    {
-      "id": 280,
-      "code": 193278,
-      "name": "Coyle",
-      "position": "DEF",
-      "positionId": 2,
-      "club": "HUL",
-      "teamId": 11,
-      "priceTenths": 40,
-      "basePoints": 2.171,
-      "routes": {
-        "appearance": 1.241,
-        "attacking": 0.214,
-        "cleanSheet": 0.455,
-        "bonus": 0.155,
-        "conceding": -0.316,
-        "yellowCards": -0.106,
-        "redCards": -0.003,
-        "ownGoals": -0.002,
-        "defensiveContribution": 0.533
-      },
-      "startRate": 0.583,
-      "squadNumber": null,
-      "rated": false,
-      "depthRank": 1,
-      "evidence": { "all": "rolePrior" }
-    },
-    {
-      "id": 282,
-      "code": 232351,
-      "name": "Giles",
-      "position": "DEF",
-      "positionId": 2,
-      "club": "HUL",
-      "teamId": 11,
-      "priceTenths": 40,
-      "basePoints": 2.171,
-      "routes": {
-        "appearance": 1.241,
-        "attacking": 0.214,
-        "cleanSheet": 0.455,
-        "bonus": 0.155,
-        "conceding": -0.316,
-        "yellowCards": -0.106,
-        "redCards": -0.003,
-        "ownGoals": -0.002,
-        "defensiveContribution": 0.533
-      },
-      "startRate": 0.583,
-      "squadNumber": null,
-      "rated": false,
-      "depthRank": 1,
-      "evidence": { "all": "rolePrior" }
-    },
-    {
       "id": 284,
       "code": 661800,
       "name": "McCarthy",
@@ -5545,60 +5901,6 @@
       "id": 556,
       "code": 169359,
       "name": "Targett",
-      "position": "DEF",
-      "positionId": 2,
-      "club": "HUL",
-      "teamId": 11,
-      "priceTenths": 40,
-      "basePoints": 2.171,
-      "routes": {
-        "appearance": 1.241,
-        "attacking": 0.214,
-        "cleanSheet": 0.455,
-        "bonus": 0.155,
-        "conceding": -0.316,
-        "yellowCards": -0.106,
-        "redCards": -0.003,
-        "ownGoals": -0.002,
-        "defensiveContribution": 0.533
-      },
-      "startRate": 0.583,
-      "squadNumber": null,
-      "rated": false,
-      "depthRank": 1,
-      "evidence": { "all": "rolePrior" }
-    },
-    {
-      "id": 585,
-      "code": 597462,
-      "name": "Herrington",
-      "position": "DEF",
-      "positionId": 2,
-      "club": "HUL",
-      "teamId": 11,
-      "priceTenths": 40,
-      "basePoints": 2.171,
-      "routes": {
-        "appearance": 1.241,
-        "attacking": 0.214,
-        "cleanSheet": 0.455,
-        "bonus": 0.155,
-        "conceding": -0.316,
-        "yellowCards": -0.106,
-        "redCards": -0.003,
-        "ownGoals": -0.002,
-        "defensiveContribution": 0.533
-      },
-      "startRate": 0.583,
-      "squadNumber": null,
-      "rated": false,
-      "depthRank": 1,
-      "evidence": { "all": "rolePrior" }
-    },
-    {
-      "id": 586,
-      "code": 606930,
-      "name": "Mendy",
       "position": "DEF",
       "positionId": 2,
       "club": "HUL",
@@ -5892,30 +6194,64 @@
       "evidence": { "all": "rolePrior" }
     },
     {
-      "id": 418,
-      "code": 95658,
-      "name": "Maguire",
+      "id": 422,
+      "code": 230001,
+      "name": "Mazraoui",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "MUN",
+      "teamId": 16,
+      "priceTenths": 45,
+      "basePoints": 2.143,
+      "routes": {
+        "appearance": 1.435,
+        "attacking": 0.19,
+        "cleanSheet": 0.479,
+        "bonus": 0.258,
+        "conceding": -0.235,
+        "yellowCards": -0.131,
+        "redCards": -0.003,
+        "ownGoals": -0.003,
+        "defensiveContribution": 0.153
+      },
+      "startRate": 0.535,
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 5,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
+    },
+    {
+      "id": 419,
+      "code": 221820,
+      "name": "Martinez",
       "position": "DEF",
       "positionId": 2,
       "club": "MUN",
       "teamId": 16,
       "priceTenths": 50,
-      "basePoints": 2.13,
+      "basePoints": 2.121,
       "routes": {
-        "appearance": 1.129,
-        "attacking": 0.228,
-        "cleanSheet": 0.604,
-        "bonus": 0.126,
-        "conceding": -0.207,
-        "yellowCards": -0.085,
-        "redCards": -0.068,
-        "ownGoals": -0.002,
-        "defensiveContribution": 0.405
+        "appearance": 1.287,
+        "attacking": 0.238,
+        "cleanSheet": 0.556,
+        "bonus": 0.128,
+        "conceding": -0.231,
+        "yellowCards": -0.029,
+        "redCards": -0.1,
+        "ownGoals": -0.067,
+        "defensiveContribution": 0.339
       },
-      "startRate": 0.54,
+      "startRate": 0.576,
       "squadNumber": null,
       "rated": true,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 144,
@@ -6094,6 +6430,66 @@
       "squadNumber": null,
       "rated": true,
       "depthRank": 1
+    },
+    {
+      "id": 421,
+      "code": 606745,
+      "name": "Heaven",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "MUN",
+      "teamId": 16,
+      "priceTenths": 45,
+      "basePoints": 1.887,
+      "routes": {
+        "appearance": 1.359,
+        "attacking": 0.223,
+        "cleanSheet": 0.283,
+        "bonus": 0.149,
+        "conceding": -0.382,
+        "yellowCards": -0.099,
+        "redCards": -0.004,
+        "ownGoals": -0.072,
+        "defensiveContribution": 0.43
+      },
+      "startRate": 0.531,
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 5,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
+    },
+    {
+      "id": 420,
+      "code": 550864,
+      "name": "Yoro",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "MUN",
+      "teamId": 16,
+      "priceTenths": 50,
+      "basePoints": 1.855,
+      "routes": {
+        "appearance": 1.675,
+        "attacking": 0.334,
+        "cleanSheet": 0.187,
+        "bonus": 0.056,
+        "conceding": -0.569,
+        "yellowCards": -0.052,
+        "redCards": -0.003,
+        "ownGoals": -0.003,
+        "defensiveContribution": 0.23
+      },
+      "startRate": 0.619,
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 92,
@@ -7380,58 +7776,6 @@
       "depthRank": 1
     },
     {
-      "id": 420,
-      "code": 550864,
-      "name": "Yoro",
-      "position": "DEF",
-      "positionId": 2,
-      "club": "MUN",
-      "teamId": 16,
-      "priceTenths": 50,
-      "basePoints": 1.36,
-      "routes": {
-        "appearance": 1.216,
-        "attacking": 0.256,
-        "cleanSheet": 0.135,
-        "bonus": 0.041,
-        "conceding": -0.413,
-        "yellowCards": -0.038,
-        "redCards": -0.002,
-        "ownGoals": -0.002,
-        "defensiveContribution": 0.167
-      },
-      "startRate": 0.418,
-      "squadNumber": null,
-      "rated": true,
-      "depthRank": 1
-    },
-    {
-      "id": 419,
-      "code": 221820,
-      "name": "Martinez",
-      "position": "DEF",
-      "positionId": 2,
-      "club": "MUN",
-      "teamId": 16,
-      "priceTenths": 50,
-      "basePoints": 1.33,
-      "routes": {
-        "appearance": 0.836,
-        "attacking": 0.107,
-        "cleanSheet": 0.361,
-        "bonus": 0.083,
-        "conceding": -0.15,
-        "yellowCards": -0.019,
-        "redCards": -0.065,
-        "ownGoals": -0.043,
-        "defensiveContribution": 0.22
-      },
-      "startRate": 0.348,
-      "squadNumber": null,
-      "rated": true,
-      "depthRank": 1
-    },
-    {
       "id": 502,
       "code": 122798,
       "name": "Robertson",
@@ -7536,32 +7880,6 @@
       "depthRank": 5
     },
     {
-      "id": 422,
-      "code": 230001,
-      "name": "Mazraoui",
-      "position": "DEF",
-      "positionId": 2,
-      "club": "MUN",
-      "teamId": 16,
-      "priceTenths": 45,
-      "basePoints": 1.168,
-      "routes": {
-        "appearance": 0.797,
-        "attacking": 0.085,
-        "cleanSheet": 0.266,
-        "bonus": 0.143,
-        "conceding": -0.131,
-        "yellowCards": -0.073,
-        "redCards": -0.002,
-        "ownGoals": -0.002,
-        "defensiveContribution": 0.085
-      },
-      "startRate": 0.285,
-      "squadNumber": null,
-      "rated": true,
-      "depthRank": 5
-    },
-    {
       "id": 446,
       "code": 119471,
       "name": "Sch\u00e4r",
@@ -7638,32 +7956,6 @@
       "squadNumber": null,
       "rated": true,
       "depthRank": 3
-    },
-    {
-      "id": 421,
-      "code": 606745,
-      "name": "Heaven",
-      "position": "DEF",
-      "positionId": 2,
-      "club": "MUN",
-      "teamId": 16,
-      "priceTenths": 45,
-      "basePoints": 0.97,
-      "routes": {
-        "appearance": 0.721,
-        "attacking": 0.088,
-        "cleanSheet": 0.15,
-        "bonus": 0.079,
-        "conceding": -0.203,
-        "yellowCards": -0.053,
-        "redCards": -0.002,
-        "ownGoals": -0.038,
-        "defensiveContribution": 0.228
-      },
-      "startRate": 0.279,
-      "squadNumber": null,
-      "rated": true,
-      "depthRank": 5
     },
     {
       "id": 114,
@@ -8220,21 +8512,25 @@
       "club": "MUN",
       "teamId": 16,
       "priceTenths": 120,
-      "basePoints": 4.861,
+      "basePoints": 5.04,
       "routes": {
-        "appearance": 1.714,
-        "attacking": 2.031,
-        "cleanSheet": 0.167,
-        "bonus": 0.913,
-        "yellowCards": -0.128,
+        "appearance": 1.792,
+        "attacking": 2.081,
+        "cleanSheet": 0.175,
+        "bonus": 0.955,
+        "yellowCards": -0.134,
         "redCards": -0.002,
-        "penaltiesMissed": -0.087,
-        "defensiveContribution": 0.253
+        "penaltiesMissed": -0.091,
+        "defensiveContribution": 0.264
       },
-      "startRate": 0.87,
+      "startRate": 0.91,
       "squadNumber": null,
       "rated": true,
-      "depthRank": 1
+      "depthRank": 1,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 13,
@@ -8317,6 +8613,34 @@
       "depthRank": 4
     },
     {
+      "id": 427,
+      "code": 446008,
+      "name": "Mbeumo",
+      "position": "MID",
+      "positionId": 3,
+      "club": "MUN",
+      "teamId": 16,
+      "priceTenths": 80,
+      "basePoints": 4.068,
+      "routes": {
+        "appearance": 1.714,
+        "attacking": 1.835,
+        "cleanSheet": 0.193,
+        "bonus": 0.402,
+        "yellowCards": -0.111,
+        "redCards": -0.002,
+        "defensiveContribution": 0.037
+      },
+      "startRate": 0.816,
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 2,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
+    },
+    {
       "id": 480,
       "code": 222531,
       "name": "Gibbs-White",
@@ -8390,30 +8714,6 @@
       "depthRank": 1
     },
     {
-      "id": 427,
-      "code": 446008,
-      "name": "Mbeumo",
-      "position": "MID",
-      "positionId": 3,
-      "club": "MUN",
-      "teamId": 16,
-      "priceTenths": 80,
-      "basePoints": 3.81,
-      "routes": {
-        "appearance": 1.596,
-        "attacking": 1.732,
-        "cleanSheet": 0.179,
-        "bonus": 0.374,
-        "yellowCards": -0.103,
-        "redCards": -0.002,
-        "defensiveContribution": 0.034
-      },
-      "startRate": 0.781,
-      "squadNumber": null,
-      "rated": true,
-      "depthRank": 2
-    },
-    {
       "id": 368,
       "code": 424876,
       "name": "Szoboszlai",
@@ -8462,6 +8762,34 @@
       "squadNumber": null,
       "rated": true,
       "depthRank": 1
+    },
+    {
+      "id": 428,
+      "code": 430871,
+      "name": "Cunha",
+      "position": "MID",
+      "positionId": 3,
+      "club": "MUN",
+      "teamId": 16,
+      "priceTenths": 80,
+      "basePoints": 3.638,
+      "routes": {
+        "appearance": 1.754,
+        "attacking": 1.353,
+        "cleanSheet": 0.191,
+        "bonus": 0.373,
+        "yellowCards": -0.12,
+        "redCards": -0.002,
+        "defensiveContribution": 0.089
+      },
+      "startRate": 0.825,
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 2,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 68,
@@ -8560,6 +8888,36 @@
       "squadNumber": null,
       "rated": true,
       "depthRank": 2
+    },
+    {
+      "id": 576,
+      "code": 608227,
+      "name": "Stroud",
+      "position": "MID",
+      "positionId": 3,
+      "club": "HUL",
+      "teamId": 11,
+      "priceTenths": 50,
+      "basePoints": 3.424,
+      "routes": {
+        "appearance": 1.474,
+        "attacking": 1.614,
+        "cleanSheet": 0.085,
+        "bonus": 0.31,
+        "yellowCards": -0.152,
+        "redCards": -0.002,
+        "penaltiesMissed": -0.051,
+        "defensiveContribution": 0.146
+      },
+      "startRate": 0.703,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 1,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 14,
@@ -8861,6 +9219,34 @@
       "depthRank": 1
     },
     {
+      "id": 431,
+      "code": 493250,
+      "name": "Amad",
+      "position": "MID",
+      "positionId": 3,
+      "club": "MUN",
+      "teamId": 16,
+      "priceTenths": 60,
+      "basePoints": 3.115,
+      "routes": {
+        "appearance": 1.649,
+        "attacking": 1.161,
+        "cleanSheet": 0.127,
+        "bonus": 0.211,
+        "yellowCards": -0.073,
+        "redCards": -0.002,
+        "defensiveContribution": 0.042
+      },
+      "startRate": 0.732,
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 5,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
+    },
+    {
       "id": 16,
       "code": 248857,
       "name": "Madueke",
@@ -8887,30 +9273,6 @@
         "appearance": "marketParticipation",
         "attacking": "marketAttack"
       }
-    },
-    {
-      "id": 428,
-      "code": 430871,
-      "name": "Cunha",
-      "position": "MID",
-      "positionId": 3,
-      "club": "MUN",
-      "teamId": 16,
-      "priceTenths": 80,
-      "basePoints": 3.039,
-      "routes": {
-        "appearance": 1.541,
-        "attacking": 1.032,
-        "cleanSheet": 0.167,
-        "bonus": 0.328,
-        "yellowCards": -0.105,
-        "redCards": -0.002,
-        "defensiveContribution": 0.078
-      },
-      "startRate": 0.73,
-      "squadNumber": null,
-      "rated": true,
-      "depthRank": 2
     },
     {
       "id": 452,
@@ -8983,6 +9345,36 @@
       "squadNumber": null,
       "rated": true,
       "depthRank": 5
+    },
+    {
+      "id": 287,
+      "code": 232905,
+      "name": "Millar",
+      "position": "MID",
+      "positionId": 3,
+      "club": "HUL",
+      "teamId": 11,
+      "priceTenths": 50,
+      "basePoints": 3.008,
+      "routes": {
+        "appearance": 1.284,
+        "attacking": 1.433,
+        "cleanSheet": 0.074,
+        "bonus": 0.27,
+        "yellowCards": -0.133,
+        "redCards": -0.002,
+        "penaltiesMissed": -0.045,
+        "defensiveContribution": 0.127
+      },
+      "startRate": 0.611,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 1,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 208,
@@ -9112,58 +9504,6 @@
       "evidence": { "all": "rolePrior" }
     },
     {
-      "id": 286,
-      "code": 540324,
-      "name": "Belloumi",
-      "position": "MID",
-      "positionId": 3,
-      "club": "HUL",
-      "teamId": 11,
-      "priceTenths": 50,
-      "basePoints": 2.99,
-      "routes": {
-        "appearance": 1.275,
-        "attacking": 1.426,
-        "cleanSheet": 0.074,
-        "bonus": 0.268,
-        "yellowCards": -0.132,
-        "redCards": -0.002,
-        "penaltiesMissed": -0.045,
-        "defensiveContribution": 0.126
-      },
-      "startRate": 0.603,
-      "squadNumber": null,
-      "rated": false,
-      "depthRank": 1,
-      "evidence": { "all": "rolePrior" }
-    },
-    {
-      "id": 287,
-      "code": 232905,
-      "name": "Millar",
-      "position": "MID",
-      "positionId": 3,
-      "club": "HUL",
-      "teamId": 11,
-      "priceTenths": 50,
-      "basePoints": 2.99,
-      "routes": {
-        "appearance": 1.275,
-        "attacking": 1.426,
-        "cleanSheet": 0.074,
-        "bonus": 0.268,
-        "yellowCards": -0.132,
-        "redCards": -0.002,
-        "penaltiesMissed": -0.045,
-        "defensiveContribution": 0.126
-      },
-      "startRate": 0.603,
-      "squadNumber": null,
-      "rated": false,
-      "depthRank": 1,
-      "evidence": { "all": "rolePrior" }
-    },
-    {
       "id": 292,
       "code": 208481,
       "name": "\u00d6m\u00fcr",
@@ -9219,32 +9559,6 @@
       "id": 574,
       "code": 552946,
       "name": "Hjert\u00f8-Dahl",
-      "position": "MID",
-      "positionId": 3,
-      "club": "HUL",
-      "teamId": 11,
-      "priceTenths": 50,
-      "basePoints": 2.99,
-      "routes": {
-        "appearance": 1.275,
-        "attacking": 1.426,
-        "cleanSheet": 0.074,
-        "bonus": 0.268,
-        "yellowCards": -0.132,
-        "redCards": -0.002,
-        "penaltiesMissed": -0.045,
-        "defensiveContribution": 0.126
-      },
-      "startRate": 0.603,
-      "squadNumber": null,
-      "rated": false,
-      "depthRank": 1,
-      "evidence": { "all": "rolePrior" }
-    },
-    {
-      "id": 576,
-      "code": 608227,
-      "name": "Stroud",
       "position": "MID",
       "positionId": 3,
       "club": "HUL",
@@ -9498,6 +9812,36 @@
       "squadNumber": null,
       "rated": true,
       "depthRank": 4
+    },
+    {
+      "id": 286,
+      "code": 540324,
+      "name": "Belloumi",
+      "position": "MID",
+      "positionId": 3,
+      "club": "HUL",
+      "teamId": 11,
+      "priceTenths": 50,
+      "basePoints": 2.904,
+      "routes": {
+        "appearance": 1.236,
+        "attacking": 1.388,
+        "cleanSheet": 0.071,
+        "bonus": 0.26,
+        "yellowCards": -0.128,
+        "redCards": -0.002,
+        "penaltiesMissed": -0.043,
+        "defensiveContribution": 0.122
+      },
+      "startRate": 0.588,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 1,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 210,
@@ -9797,6 +10141,35 @@
       "depthRank": 1
     },
     {
+      "id": 429,
+      "code": 176297,
+      "name": "Rashford",
+      "position": "MID",
+      "positionId": 3,
+      "club": "MUN",
+      "teamId": 16,
+      "priceTenths": 70,
+      "basePoints": 2.647,
+      "routes": {
+        "appearance": 1.376,
+        "attacking": 0.893,
+        "cleanSheet": 0.106,
+        "bonus": 0.194,
+        "yellowCards": -0.029,
+        "redCards": -0.002,
+        "defensiveContribution": 0.109
+      },
+      "startRate": 0.541,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 4,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
+    },
+    {
       "id": 15,
       "code": 184029,
       "name": "\u00d8degaard",
@@ -9849,28 +10222,62 @@
       "depthRank": 7
     },
     {
-      "id": 431,
-      "code": 493250,
-      "name": "Amad",
+      "id": 288,
+      "code": 171270,
+      "name": "Dowell",
       "position": "MID",
       "positionId": 3,
-      "club": "MUN",
-      "teamId": 16,
-      "priceTenths": 60,
-      "basePoints": 2.619,
+      "club": "HUL",
+      "teamId": 11,
+      "priceTenths": 45,
+      "basePoints": 2.612,
       "routes": {
-        "appearance": 1.402,
-        "attacking": 0.959,
-        "cleanSheet": 0.108,
-        "bonus": 0.179,
-        "yellowCards": -0.062,
+        "appearance": 1.376,
+        "attacking": 0.858,
+        "cleanSheet": 0.106,
+        "bonus": 0.194,
+        "yellowCards": -0.029,
         "redCards": -0.002,
-        "defensiveContribution": 0.035
+        "defensiveContribution": 0.109
       },
-      "startRate": 0.587,
+      "startRate": 0.541,
       "squadNumber": null,
-      "rated": true,
-      "depthRank": 5
+      "rated": false,
+      "depthRank": 8,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
+    },
+    {
+      "id": 289,
+      "code": 101282,
+      "name": "Crooks",
+      "position": "MID",
+      "positionId": 3,
+      "club": "HUL",
+      "teamId": 11,
+      "priceTenths": 45,
+      "basePoints": 2.612,
+      "routes": {
+        "appearance": 1.376,
+        "attacking": 0.858,
+        "cleanSheet": 0.106,
+        "bonus": 0.194,
+        "yellowCards": -0.029,
+        "redCards": -0.002,
+        "defensiveContribution": 0.109
+      },
+      "startRate": 0.541,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 8,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 17,
@@ -9927,6 +10334,63 @@
       "depthRank": 4
     },
     {
+      "id": 435,
+      "code": 576628,
+      "name": "Lacey",
+      "position": "MID",
+      "positionId": 3,
+      "club": "MUN",
+      "teamId": 16,
+      "priceTenths": 50,
+      "basePoints": 2.541,
+      "routes": {
+        "appearance": 1.376,
+        "attacking": 0.787,
+        "cleanSheet": 0.106,
+        "bonus": 0.194,
+        "yellowCards": -0.029,
+        "redCards": -0.002,
+        "defensiveContribution": 0.109
+      },
+      "startRate": 0.541,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 9,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
+    },
+    {
+      "id": 432,
+      "code": 516895,
+      "name": "Mainoo",
+      "position": "MID",
+      "positionId": 3,
+      "club": "MUN",
+      "teamId": 16,
+      "priceTenths": 55,
+      "basePoints": 2.506,
+      "routes": {
+        "appearance": 1.593,
+        "attacking": 0.379,
+        "cleanSheet": 0.131,
+        "bonus": 0.089,
+        "yellowCards": -0.087,
+        "redCards": -0.003,
+        "defensiveContribution": 0.404
+      },
+      "startRate": 0.67,
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 8,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
+    },
+    {
       "id": 519,
       "code": 232787,
       "name": "Gallagher",
@@ -9951,6 +10415,36 @@
       "squadNumber": null,
       "rated": true,
       "depthRank": 4
+    },
+    {
+      "id": 415,
+      "code": 596777,
+      "name": "Dorgu",
+      "position": "MID",
+      "positionId": 3,
+      "club": "MUN",
+      "teamId": 16,
+      "priceTenths": 60,
+      "basePoints": 2.493,
+      "routes": {
+        "appearance": 1.481,
+        "attacking": 0.69,
+        "cleanSheet": 0.331,
+        "bonus": 0.372,
+        "conceding": -0.339,
+        "yellowCards": -0.163,
+        "redCards": -0.003,
+        "ownGoals": -0.003,
+        "defensiveContribution": 0.127
+      },
+      "startRate": 0.569,
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 5,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 211,
@@ -10050,6 +10544,35 @@
       "depthRank": 1
     },
     {
+      "id": 434,
+      "code": 547037,
+      "name": "J.Fletcher",
+      "position": "MID",
+      "positionId": 3,
+      "club": "MUN",
+      "teamId": 16,
+      "priceTenths": 50,
+      "basePoints": 2.397,
+      "routes": {
+        "appearance": 1.376,
+        "attacking": 0.643,
+        "cleanSheet": 0.106,
+        "bonus": 0.194,
+        "yellowCards": -0.029,
+        "redCards": -0.002,
+        "defensiveContribution": 0.109
+      },
+      "startRate": 0.541,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 9,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
+    },
+    {
       "id": 261,
       "code": 153133,
       "name": "Iwobi",
@@ -10097,6 +10620,63 @@
       "squadNumber": null,
       "rated": true,
       "depthRank": 7
+    },
+    {
+      "id": 290,
+      "code": 243413,
+      "name": "Slater",
+      "position": "MID",
+      "positionId": 3,
+      "club": "HUL",
+      "teamId": 11,
+      "priceTenths": 45,
+      "basePoints": 2.302,
+      "routes": {
+        "appearance": 1.376,
+        "attacking": 0.548,
+        "cleanSheet": 0.106,
+        "bonus": 0.194,
+        "yellowCards": -0.029,
+        "redCards": -0.002,
+        "defensiveContribution": 0.109
+      },
+      "startRate": 0.541,
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 8,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
+    },
+    {
+      "id": 162,
+      "code": 532605,
+      "name": "Andrey Santos",
+      "position": "MID",
+      "positionId": 3,
+      "club": "MUN",
+      "teamId": 16,
+      "priceTenths": 50,
+      "basePoints": 2.292,
+      "routes": {
+        "appearance": 1.558,
+        "attacking": 0.55,
+        "cleanSheet": 0.029,
+        "bonus": 0.136,
+        "yellowCards": -0.152,
+        "redCards": -0.002,
+        "defensiveContribution": 0.173
+      },
+      "startRate": 0.553,
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 9,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 455,
@@ -10483,30 +11063,6 @@
       "depthRank": 2
     },
     {
-      "id": 432,
-      "code": 516895,
-      "name": "Mainoo",
-      "position": "MID",
-      "positionId": 3,
-      "club": "MUN",
-      "teamId": 16,
-      "priceTenths": 55,
-      "basePoints": 1.9,
-      "routes": {
-        "appearance": 1.231,
-        "attacking": 0.256,
-        "cleanSheet": 0.101,
-        "bonus": 0.069,
-        "yellowCards": -0.067,
-        "redCards": -0.002,
-        "defensiveContribution": 0.312
-      },
-      "startRate": 0.493,
-      "squadNumber": null,
-      "rated": true,
-      "depthRank": 8
-    },
-    {
       "id": 43,
       "code": 166989,
       "name": "Tielemans",
@@ -10728,32 +11284,6 @@
       "squadNumber": null,
       "rated": true,
       "depthRank": 1
-    },
-    {
-      "id": 415,
-      "code": 596777,
-      "name": "Dorgu",
-      "position": "MID",
-      "positionId": 3,
-      "club": "MUN",
-      "teamId": 16,
-      "priceTenths": 60,
-      "basePoints": 1.581,
-      "routes": {
-        "appearance": 0.946,
-        "attacking": 0.428,
-        "cleanSheet": 0.212,
-        "bonus": 0.238,
-        "conceding": -0.216,
-        "yellowCards": -0.104,
-        "redCards": -0.002,
-        "ownGoals": -0.002,
-        "defensiveContribution": 0.081
-      },
-      "startRate": 0.337,
-      "squadNumber": null,
-      "rated": true,
-      "depthRank": 5
     },
     {
       "id": 22,
@@ -11581,81 +12111,6 @@
       "evidence": { "all": "rolePrior" }
     },
     {
-      "id": 288,
-      "code": 171270,
-      "name": "Dowell",
-      "position": "MID",
-      "positionId": 3,
-      "club": "HUL",
-      "teamId": 11,
-      "priceTenths": 45,
-      "basePoints": 1.58,
-      "routes": {
-        "appearance": 0.901,
-        "attacking": 0.432,
-        "cleanSheet": 0.069,
-        "bonus": 0.127,
-        "yellowCards": -0.019,
-        "redCards": -0.001,
-        "defensiveContribution": 0.071
-      },
-      "startRate": 0.294,
-      "squadNumber": null,
-      "rated": false,
-      "depthRank": 8,
-      "evidence": { "all": "rolePrior" }
-    },
-    {
-      "id": 289,
-      "code": 101282,
-      "name": "Crooks",
-      "position": "MID",
-      "positionId": 3,
-      "club": "HUL",
-      "teamId": 11,
-      "priceTenths": 45,
-      "basePoints": 1.58,
-      "routes": {
-        "appearance": 0.901,
-        "attacking": 0.432,
-        "cleanSheet": 0.069,
-        "bonus": 0.127,
-        "yellowCards": -0.019,
-        "redCards": -0.001,
-        "defensiveContribution": 0.071
-      },
-      "startRate": 0.294,
-      "squadNumber": null,
-      "rated": false,
-      "depthRank": 8,
-      "evidence": { "all": "rolePrior" }
-    },
-    {
-      "id": 290,
-      "code": 243413,
-      "name": "Slater",
-      "position": "MID",
-      "positionId": 3,
-      "club": "HUL",
-      "teamId": 11,
-      "priceTenths": 45,
-      "basePoints": 1.58,
-      "routes": {
-        "appearance": 0.901,
-        "attacking": 0.432,
-        "cleanSheet": 0.069,
-        "bonus": 0.127,
-        "yellowCards": -0.019,
-        "redCards": -0.001,
-        "defensiveContribution": 0.071
-      },
-      "startRate": 0.294,
-      "squadNumber": null,
-      "rated": false,
-      "depthRank": 8,
-      "evidence": { "all": "rolePrior" }
-    },
-    {
       "id": 309,
       "code": 501390,
       "name": "N\u00fa\u00f1ez",
@@ -12003,81 +12458,6 @@
       "squadNumber": null,
       "rated": false,
       "depthRank": 10,
-      "evidence": { "all": "rolePrior" }
-    },
-    {
-      "id": 429,
-      "code": 176297,
-      "name": "Rashford",
-      "position": "MID",
-      "positionId": 3,
-      "club": "MUN",
-      "teamId": 16,
-      "priceTenths": 70,
-      "basePoints": 1.58,
-      "routes": {
-        "appearance": 0.901,
-        "attacking": 0.432,
-        "cleanSheet": 0.069,
-        "bonus": 0.127,
-        "yellowCards": -0.019,
-        "redCards": -0.001,
-        "defensiveContribution": 0.071
-      },
-      "startRate": 0.294,
-      "squadNumber": null,
-      "rated": false,
-      "depthRank": 4,
-      "evidence": { "all": "rolePrior" }
-    },
-    {
-      "id": 434,
-      "code": 547037,
-      "name": "J.Fletcher",
-      "position": "MID",
-      "positionId": 3,
-      "club": "MUN",
-      "teamId": 16,
-      "priceTenths": 50,
-      "basePoints": 1.58,
-      "routes": {
-        "appearance": 0.901,
-        "attacking": 0.432,
-        "cleanSheet": 0.069,
-        "bonus": 0.127,
-        "yellowCards": -0.019,
-        "redCards": -0.001,
-        "defensiveContribution": 0.071
-      },
-      "startRate": 0.294,
-      "squadNumber": null,
-      "rated": false,
-      "depthRank": 9,
-      "evidence": { "all": "rolePrior" }
-    },
-    {
-      "id": 435,
-      "code": 576628,
-      "name": "Lacey",
-      "position": "MID",
-      "positionId": 3,
-      "club": "MUN",
-      "teamId": 16,
-      "priceTenths": 50,
-      "basePoints": 1.58,
-      "routes": {
-        "appearance": 0.901,
-        "attacking": 0.432,
-        "cleanSheet": 0.069,
-        "bonus": 0.127,
-        "yellowCards": -0.019,
-        "redCards": -0.001,
-        "defensiveContribution": 0.071
-      },
-      "startRate": 0.294,
-      "squadNumber": null,
-      "rated": false,
-      "depthRank": 9,
       "evidence": { "all": "rolePrior" }
     },
     {
@@ -12544,30 +12924,6 @@
       "squadNumber": null,
       "rated": true,
       "depthRank": 8
-    },
-    {
-      "id": 162,
-      "code": 532605,
-      "name": "Andrey Santos",
-      "position": "MID",
-      "positionId": 3,
-      "club": "MUN",
-      "teamId": 16,
-      "priceTenths": 50,
-      "basePoints": 1.429,
-      "routes": {
-        "appearance": 0.986,
-        "attacking": 0.326,
-        "cleanSheet": 0.018,
-        "bonus": 0.086,
-        "yellowCards": -0.096,
-        "redCards": -0.001,
-        "defensiveContribution": 0.11
-      },
-      "startRate": 0.312,
-      "squadNumber": null,
-      "rated": true,
-      "depthRank": 9
     },
     {
       "id": 190,
@@ -13657,6 +14013,33 @@
       "depthRank": 1
     },
     {
+      "id": 440,
+      "code": 458249,
+      "name": "Zirkzee",
+      "position": "FWD",
+      "positionId": 4,
+      "club": "MUN",
+      "teamId": 16,
+      "priceTenths": 55,
+      "basePoints": 2.77,
+      "routes": {
+        "appearance": 1.843,
+        "attacking": 0.646,
+        "bonus": 0.415,
+        "yellowCards": -0.137,
+        "penaltiesMissed": -0.002,
+        "defensiveContribution": 0.005
+      },
+      "startRate": 0.395,
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
+    },
+    {
       "id": 491,
       "code": 482973,
       "name": "Igor Jesus",
@@ -14297,29 +14680,6 @@
         "defensiveContribution": 0.002
       },
       "startRate": 0.259,
-      "squadNumber": null,
-      "rated": true,
-      "depthRank": 1
-    },
-    {
-      "id": 440,
-      "code": 458249,
-      "name": "Zirkzee",
-      "position": "FWD",
-      "positionId": 4,
-      "club": "MUN",
-      "teamId": 16,
-      "priceTenths": 55,
-      "basePoints": 1.16,
-      "routes": {
-        "appearance": 0.754,
-        "attacking": 0.291,
-        "bonus": 0.17,
-        "yellowCards": -0.056,
-        "penaltiesMissed": -0.001,
-        "defensiveContribution": 0.002
-      },
-      "startRate": 0.113,
       "squadNumber": null,
       "rated": true,
       "depthRank": 1
