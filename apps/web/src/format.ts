@@ -79,6 +79,25 @@ export const oneDecimal = new Intl.NumberFormat("en-GB", {
   maximumFractionDigits: 1,
 });
 
+/** A date and time in London timezone, medium style. Used for market checks. */
+export const dateTimeShort = new Intl.DateTimeFormat("en-GB", {
+  dateStyle: "medium",
+  timeStyle: "short",
+  timeZone: "Europe/London",
+});
+
+/** Two decimal places for xG and probabilities in market audit. */
+export const twoDecimal = new Intl.NumberFormat("en-GB", {
+  maximumFractionDigits: 2,
+  minimumFractionDigits: 2,
+});
+
+/** Percentage for clean sheet probability display. */
+export const percent = new Intl.NumberFormat("en-GB", {
+  maximumFractionDigits: 0,
+  style: "percent",
+});
+
 /**
  * A point total to a hundredth, for a difference small enough to need it.
  *

@@ -8,7 +8,9 @@ import pytest
 
 from fpl_andres.cli import ingest_player_odds
 from fpl_andres.cli.ingest_player_odds import (
+    FixtureDiagnostic,
     deadline_proximity,
+    merge_fixture_diagnostics,
     merge_fixture_rows,
     prioritise_uncovered_events,
 )
@@ -180,3 +182,306 @@ def test_a_fresh_fixture_replaces_itself_and_retains_other_current_quotes() -> N
     assert by_fixture[("Arsenal", "Coventry City")].anytime_goal == 0.4
     assert by_fixture[("Arsenal", "Coventry City")].observed_at == fresh_time
     assert by_fixture[("Leeds United", "Nottingham Forest")].observed_at == old_time
+
+
+def _diagnostic(
+    event_id: str,
+    home: str,
+    away: str,
+    kickoff: datetime,
+    *,
+    status: str = "returned",
+    visited_at: datetime | None = NOW,
+) -> FixtureDiagnostic:
+    return FixtureDiagnostic(
+        event_id=event_id,
+        home_team=home,
+        away_team=away,
+        home_short=None,
+        away_short=None,
+        kickoff=kickoff,
+        status=status,
+        visited_at=visited_at,
+        books=1 if visited_at else 0,
+        outcomes=1 if visited_at else 0,
+        offered_markets=("player_goal_scorer_anytime",) if visited_at else (),
+        missing_markets=(),
+        player_rows_parsed=1 if visited_at else 0,
+        player_rows_matched=1 if visited_at else 0,
+        unmatched_names=(),
+        error=None,
+    )
+
+
+def test_fixture_diagnostics_replace_fresh_retain_old_and_name_unvisited() -> None:
+    first = datetime(2026, 8, 21, 19, 0, tzinfo=UTC)
+    second = datetime(2026, 8, 22, 14, 0, tzinfo=UTC)
+    third = datetime(2026, 8, 23, 13, 0, tzinfo=UTC)
+    events = [
+        {
+            "id": "first",
+            "home_team": "Arsenal",
+            "away_team": "Coventry City",
+            "commence_time": first.isoformat(),
+        },
+        {
+            "id": "second",
+            "home_team": "Leeds United",
+            "away_team": "Nottingham Forest",
+            "commence_time": second.isoformat(),
+        },
+        {
+            "id": "third",
+            "home_team": "Brentford",
+            "away_team": "Tottenham Hotspur",
+            "commence_time": third.isoformat(),
+        },
+    ]
+    previous = [
+        _diagnostic("first", "Arsenal", "Coventry City", first),
+        _diagnostic("second", "Leeds United", "Nottingham Forest", second),
+    ]
+    fresh = [
+        _diagnostic(
+            "first",
+            "Arsenal",
+            "Coventry City",
+            first,
+            status="requested-markets-empty",
+            visited_at=datetime(2026, 8, 19, 9, 0, tzinfo=UTC),
+        )
+    ]
+
+    merged = merge_fixture_diagnostics(previous, fresh, events)
+
+    assert [row.event_id for row in merged] == ["first", "second", "third"]
+    assert merged[0].status == "requested-markets-empty"
+    assert merged[1] == previous[1]
+    assert merged[2].status == "unvisited"
+    assert merged[2].visited_at is None
+
+
+class _Response:
+    def raise_for_status(self) -> None:
+        return None
+
+    def json(self) -> dict[str, object]:
+        return {
+            "teams": [
+                {"id": 1, "name": "Arsenal", "short_name": "ARS"},
+                {"id": 2, "name": "Coventry", "short_name": "COV"},
+                {"id": 3, "name": "Leeds", "short_name": "LEE"},
+                {"id": 4, "name": "Nott'm Forest", "short_name": "NFO"},
+            ],
+            "elements": [
+                {
+                    "id": 10,
+                    "first_name": "Kai",
+                    "second_name": "Havertz",
+                    "web_name": "Havertz",
+                    "team": 1,
+                }
+            ],
+        }
+
+
+class _Client:
+    def __enter__(self) -> _Client:
+        return self
+
+    def __exit__(self, *_args: object) -> None:
+        return None
+
+    def get(self, _url: str, **_kwargs: object) -> _Response:
+        return _Response()
+
+
+def test_an_empty_in_window_run_still_publishes_fixture_diagnostics(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    events = [
+        {
+            "id": "ars-cov",
+            "home_team": "Arsenal",
+            "away_team": "Coventry City",
+            "commence_time": "2026-08-18T19:00:00Z",
+        },
+        {
+            "id": "nfo-lee",
+            "home_team": "Nottingham Forest",
+            "away_team": "Leeds United",
+            "commence_time": "2026-08-19T14:00:00Z",
+        },
+    ]
+    monkeypatch.setenv("THE_ODDS_API_KEY", "test-key")
+    monkeypatch.setattr(ingest_player_odds, "datetime", _FrozenClock)
+    monkeypatch.setattr(ingest_player_odds.httpx, "Client", lambda **_kwargs: _Client())
+    monkeypatch.setattr(
+        ingest_player_odds,
+        "list_events",
+        lambda _client, _key: (events, ingest_player_odds.Quota(0, 100, 400)),
+    )
+    monkeypatch.setattr(
+        ingest_player_odds,
+        "fetch_event_odds",
+        lambda _client, _key, event_id: (
+            {
+                **next(event for event in events if event["id"] == event_id),
+                "bookmakers": [],
+            },
+            ingest_player_odds.Quota(0, 100, 400),
+        ),
+    )
+    output = tmp_path / "player-odds.json"
+
+    result = ingest_player_odds.main(
+        [
+            "--season",
+            "2026-27",
+            "--output",
+            str(output),
+            "--deadlines",
+            str(artifact(tmp_path, "2026-08-18T09:00:00Z")),
+        ]
+    )
+
+    assert result == 0
+    payload = json.loads(output.read_text(encoding="utf-8"))
+    assert payload["schemaVersion"] == 1
+    assert payload["clubQuoteFloor"] == 18
+    assert payload["quota"] == {
+        "opening": {"cost": 0, "used": 100, "remaining": 400},
+        "closing": {"cost": 0, "used": 100, "remaining": 400},
+        "spentThisRun": 0,
+    }
+    assert payload["nameMappingGaps"] == []
+    assert payload["players"] == []
+    assert payload["coverage"] == {
+        "fixturesListed": 2,
+        "fixturesVisitedThisRun": 2,
+        "fixturesWithQuotes": 0,
+    }
+    assert [fixture["status"] for fixture in payload["fixtures"]] == [
+        "no-bookmaker",
+        "no-bookmaker",
+    ]
+    assert [(row["home_short"], row["away_short"]) for row in payload["fixtures"]] == [
+        ("ARS", "COV"),
+        ("NFO", "LEE"),
+    ]
+
+
+def test_returned_rows_and_unmatched_names_are_attributed_to_the_fixture(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    event = {
+        "id": "ars-cov",
+        "home_team": "Arsenal",
+        "away_team": "Coventry City",
+        "commence_time": "2026-08-18T19:00:00Z",
+    }
+    monkeypatch.setenv("THE_ODDS_API_KEY", "test-key")
+    monkeypatch.setattr(ingest_player_odds, "datetime", _FrozenClock)
+    monkeypatch.setattr(ingest_player_odds.httpx, "Client", lambda **_kwargs: _Client())
+    monkeypatch.setattr(
+        ingest_player_odds,
+        "list_events",
+        lambda _client, _key: ([event], ingest_player_odds.Quota(0, 100, 400)),
+    )
+    monkeypatch.setattr(
+        ingest_player_odds,
+        "fetch_event_odds",
+        lambda _client, _key, _event_id: (
+            {
+                **event,
+                "bookmakers": [
+                    {
+                        "key": "bet365",
+                        "markets": [
+                            {
+                                "key": "player_goal_scorer_anytime",
+                                "outcomes": [
+                                    {"description": "Kai Havertz", "name": "Yes", "price": 2.5},
+                                    {"description": "Mystery Player", "name": "Yes", "price": 4.0},
+                                ],
+                            }
+                        ],
+                    }
+                ],
+            },
+            ingest_player_odds.Quota(2, 102, 398),
+        ),
+    )
+    output = tmp_path / "player-odds.json"
+
+    result = ingest_player_odds.main(
+        [
+            "--season",
+            "2026-27",
+            "--output",
+            str(output),
+            "--deadlines",
+            str(artifact(tmp_path, "2026-08-18T09:00:00Z")),
+        ]
+    )
+
+    assert result == 0
+    payload = json.loads(output.read_text(encoding="utf-8"))
+    diagnostic = payload["fixtures"][0]
+    assert diagnostic["status"] == "returned"
+    assert diagnostic["player_rows_parsed"] == 2
+    assert diagnostic["player_rows_matched"] == 1
+    assert diagnostic["unmatched_names"] == ["Mystery Player"]
+    assert diagnostic["offered_markets"] == ["player_goal_scorer_anytime"]
+    assert "player_assists" in diagnostic["missing_markets"]
+    assert payload["unmatched"] == ["Mystery Player"]
+    assert payload["coverage"]["fixturesWithQuotes"] == 1
+
+
+def test_a_malformed_event_persists_only_a_safe_error_class(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    event = {
+        "id": "ars-cov",
+        "home_team": "Arsenal",
+        "away_team": "Coventry City",
+        "commence_time": "2026-08-18T19:00:00Z",
+    }
+    monkeypatch.setenv("THE_ODDS_API_KEY", "secret-that-must-not-be-written")
+    monkeypatch.setattr(ingest_player_odds, "datetime", _FrozenClock)
+    monkeypatch.setattr(ingest_player_odds.httpx, "Client", lambda **_kwargs: _Client())
+    monkeypatch.setattr(
+        ingest_player_odds,
+        "list_events",
+        lambda _client, _key: ([event], ingest_player_odds.Quota(0, 100, 400)),
+    )
+    monkeypatch.setattr(
+        ingest_player_odds,
+        "fetch_event_odds",
+        lambda _client, _key, _event_id: (
+            {"bookmakers": []},
+            ingest_player_odds.Quota(0, 100, 400),
+        ),
+    )
+    output = tmp_path / "player-odds.json"
+
+    result = ingest_player_odds.main(
+        [
+            "--season",
+            "2026-27",
+            "--output",
+            str(output),
+            "--deadlines",
+            str(artifact(tmp_path, "2026-08-18T09:00:00Z")),
+        ]
+    )
+
+    assert result == 0
+    text = output.read_text(encoding="utf-8")
+    assert "secret-that-must-not-be-written" not in text
+    diagnostic = json.loads(text)["fixtures"][0]
+    assert diagnostic["status"] == "parse-error"
+    assert diagnostic["error"] == "ValueError"

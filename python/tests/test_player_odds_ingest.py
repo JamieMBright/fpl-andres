@@ -10,7 +10,13 @@ from __future__ import annotations
 import pytest
 
 from fpl_andres.adapters.player_crosswalk import crosswalk, fold_name
-from fpl_andres.adapters.the_odds_api import Quota, by_kickoff, describe_event, read_event
+from fpl_andres.adapters.the_odds_api import (
+    Quota,
+    by_kickoff,
+    classify_event,
+    describe_event,
+    read_event,
+)
 from fpl_andres.models.player_odds import PlayerMatchOdds
 
 
@@ -258,6 +264,51 @@ class TestDescribingWhyNothingWasQuoted:
 
         assert "'h2h'" in described
         assert "2 outcomes" in described
+
+
+class TestClassifyingWhyNothingWasQuoted:
+    def test_no_bookmaker_is_distinct_from_no_markets(self) -> None:
+        assert classify_event(_event()).status == "no-bookmaker"
+        assert classify_event(_event({"key": "bet365", "markets": []})).status == "no-markets"
+
+    def test_unrequested_markets_are_not_reported_as_player_markets(self) -> None:
+        summary = classify_event(
+            _event(
+                _book(
+                    "bet365",
+                    "h2h",
+                    [{"name": "Arsenal", "price": 1.5}],
+                )
+            )
+        )
+
+        assert summary.status == "requested-markets-absent"
+        assert summary.offered_markets == ("h2h",)
+        assert set(summary.missing_markets) == set(summary.requested_markets)
+
+    def test_an_open_requested_market_with_no_rows_is_empty(self) -> None:
+        summary = classify_event(_event(_book("bet365", "player_goal_scorer_anytime", [])))
+
+        assert summary.status == "requested-markets-empty"
+        assert summary.outcomes == 0
+
+    def test_a_returned_player_market_names_coverage_and_gaps(self) -> None:
+        summary = classify_event(
+            _event(
+                _book(
+                    "bet365",
+                    "player_goal_scorer_anytime",
+                    [{"description": "Kai Havertz", "name": "Yes", "price": 2.5}],
+                )
+            )
+        )
+
+        assert summary.status == "returned"
+        assert summary.books == 1
+        assert summary.outcomes == 1
+        assert summary.offered_markets == ("player_goal_scorer_anytime",)
+        assert "player_assists" in summary.missing_markets
+        assert set(summary.offered_markets).isdisjoint(summary.missing_markets)
 
 
 class TestSpendingTheMonthlyBudget:

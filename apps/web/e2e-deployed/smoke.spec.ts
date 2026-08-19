@@ -155,13 +155,21 @@ test("crawler files publish the canonical routes", async ({ request }) => {
   expect(xml).toContain("https://fpl-andres.vercel.app/privacy");
   expect(xml).toContain("https://fpl-andres.vercel.app/about");
   expect(xml).not.toContain("/team/");
+  expect(xml).not.toContain("/markets");
   expect(xml).not.toContain("/kits");
 });
 
 test("private, completion and QA routes are excluded before JavaScript runs", async ({
   request,
 }) => {
-  for (const path of ["/team/212279", "/thanks", "/kits", "/kits/"]) {
+  for (const path of [
+    "/team/212279",
+    "/thanks",
+    "/markets",
+    "/markets/",
+    "/kits",
+    "/kits/",
+  ]) {
     const response = await request.get(path);
     expect(response.status()).toBe(200);
     expect(response.headers()["x-robots-tag"]).toBe("noindex, nofollow");

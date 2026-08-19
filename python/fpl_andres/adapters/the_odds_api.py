@@ -21,7 +21,7 @@ from collections import defaultdict
 from collections.abc import Iterable, Mapping, Sequence
 from dataclasses import dataclass
 from datetime import UTC, datetime
-from typing import Any
+from typing import Any, Literal
 
 import httpx
 
@@ -35,6 +35,7 @@ __all__ = [
     "PLAYER_MARKETS",
     "Quota",
     "by_kickoff",
+    "classify_event",
     "describe_event",
     "fetch_event_odds",
     "list_events",
@@ -119,6 +120,25 @@ class Quota:
         used = "?" if self.used is None else str(self.used)
         remaining = "?" if self.remaining is None else str(self.remaining)
         return f"cost {cost}, used {used}, {remaining} left"
+
+
+EventMarketStatus = Literal[
+    "no-bookmaker",
+    "no-markets",
+    "requested-markets-absent",
+    "requested-markets-empty",
+    "returned",
+]
+
+
+@dataclass(frozen=True)
+class EventMarketSummary:
+    status: EventMarketStatus
+    books: int
+    outcomes: int
+    requested_markets: tuple[str, ...]
+    offered_markets: tuple[str, ...]
+    missing_markets: tuple[str, ...]
 
 
 def _counter(value: str | None) -> int | None:
@@ -258,6 +278,45 @@ def by_kickoff(events: Iterable[Mapping[str, Any]]) -> list[Mapping[str, Any]]:
     return sorted(events, key=lambda event: _kickoff(event.get("commence_time")) or far)
 
 
+def classify_event(payload: Mapping[str, Any]) -> EventMarketSummary:
+    """Structured account of what a provider returned for one fixture."""
+    books = [book for book in payload.get("bookmakers", []) if isinstance(book, Mapping)]
+    offered: set[str] = set()
+    outcomes = 0
+    requested_outcomes = 0
+    requested = frozenset(PLAYER_MARKETS)
+    for book in books:
+        for market in book.get("markets", []):
+            if not isinstance(market, Mapping):
+                continue
+            key = market.get("key")
+            rows = [item for item in market.get("outcomes", []) if isinstance(item, Mapping)]
+            if isinstance(key, str):
+                offered.add(key)
+                if key in requested:
+                    requested_outcomes += len(rows)
+            outcomes += len(rows)
+    requested_offered = offered & requested
+    if not books:
+        status: EventMarketStatus = "no-bookmaker"
+    elif not offered:
+        status = "no-markets"
+    elif not requested_offered:
+        status = "requested-markets-absent"
+    elif requested_outcomes == 0:
+        status = "requested-markets-empty"
+    else:
+        status = "returned"
+    return EventMarketSummary(
+        status=status,
+        books=len(books),
+        outcomes=outcomes,
+        requested_markets=tuple(PLAYER_MARKETS),
+        offered_markets=tuple(sorted(offered)),
+        missing_markets=tuple(sorted(requested - offered)),
+    )
+
+
 def describe_event(payload: Mapping[str, Any]) -> str:
     """What the book actually returned for this fixture.
 
@@ -268,26 +327,20 @@ def describe_event(payload: Mapping[str, Any]) -> str:
     handshake on the owner's network, so the only place the question can be
     answered is the run itself. This puts the answer in the log.
     """
-    books = [book for book in payload.get("bookmakers", []) if isinstance(book, Mapping)]
-    offered: set[str] = set()
-    outcomes = 0
-    for book in books:
-        for market in book.get("markets", []):
-            if not isinstance(market, Mapping):
-                continue
-            key = market.get("key")
-            if isinstance(key, str):
-                offered.add(key)
-            outcomes += len(
-                [item for item in market.get("outcomes", []) if isinstance(item, Mapping)]
-            )
-    if not books:
+    summary = classify_event(payload)
+    if summary.status == "no-bookmaker":
         return "no bookmaker priced it"
-    if not offered:
-        return f"{len(books)} books, no markets"
-    missing = sorted(set(PLAYER_MARKETS) - offered)
-    detail = f"{len(books)} books, {outcomes} outcomes, markets {sorted(offered)}"
-    return detail if not missing else f"{detail}, absent {missing}"
+    if summary.status == "no-markets":
+        return f"{summary.books} books, no markets"
+    detail = (
+        f"{summary.books} books, {summary.outcomes} outcomes, "
+        f"markets {list(summary.offered_markets)}"
+    )
+    return (
+        detail
+        if not summary.missing_markets
+        else f"{detail}, absent {list(summary.missing_markets)}"
+    )
 
 
 def _match_prices(outcomes: object, home: str, away: str) -> dict[str, float]:

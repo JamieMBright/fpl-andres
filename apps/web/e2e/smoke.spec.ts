@@ -181,7 +181,12 @@ test("the trust routes pass accessibility in all kits", async ({ page }) => {
   const scan = async () =>
     (await new AxeBuilder({ page }).withTags([...WCAG]).analyze()).violations;
 
-  for (const path of ["/results", "/privacy", "/thanks?from=contact"]) {
+  for (const path of [
+    "/results",
+    "/markets",
+    "/privacy",
+    "/thanks?from=contact",
+  ]) {
     await page.goto(path);
     await settle(page);
     for (const theme of ["dark", "light", "away"] as const) {

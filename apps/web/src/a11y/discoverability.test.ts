@@ -98,16 +98,21 @@ describe("sitemap", () => {
 });
 
 describe("non-public routes", () => {
-  it.each(["/team/(.*)", "/kits", "/kits/(.*)", "/thanks", "/thanks/(.*)"])(
-    "serves an X-Robots-Tag for %s",
-    (source) => {
-      const rule = vercel.headers?.find((entry) => entry.source === source);
-      const robots = rule?.headers.find(
-        (header) => header.key.toLowerCase() === "x-robots-tag",
-      );
-      expect(robots?.value).toBe("noindex, nofollow");
-    },
-  );
+  it.each([
+    "/team/(.*)",
+    "/markets",
+    "/markets/(.*)",
+    "/kits",
+    "/kits/(.*)",
+    "/thanks",
+    "/thanks/(.*)",
+  ])("serves an X-Robots-Tag for %s", (source) => {
+    const rule = vercel.headers?.find((entry) => entry.source === source);
+    const robots = rule?.headers.find(
+      (header) => header.key.toLowerCase() === "x-robots-tag",
+    );
+    expect(robots?.value).toBe("noindex, nofollow");
+  });
 });
 
 describe("security contact", () => {

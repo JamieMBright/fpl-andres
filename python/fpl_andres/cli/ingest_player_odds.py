@@ -28,14 +28,18 @@ import httpx
 
 from fpl_andres.adapters.player_crosswalk import crosswalk
 from fpl_andres.adapters.the_odds_api import (
+    MARKET_FIELDS,
     PLAYER_MARKETS,
     Quota,
     by_kickoff,
+    classify_event,
     describe_event,
     fetch_event_odds,
     list_events,
     read_event,
 )
+from fpl_andres.cli.ingest_odds import TEAM_CODES
+from fpl_andres.cli.publish_season_inputs import CLUB_QUOTE_FLOOR
 from fpl_andres.jsonio import read_json_file
 from fpl_andres.models.player_odds import PlayerMatchOdds
 from fpl_andres.timeouts import ODDS_FEED
@@ -59,6 +63,7 @@ BOOTSTRAP = "https://fantasy.premierleague.com/api/bootstrap-static/"
 DEFAULT_BUDGET = len(PLAYER_MARKETS)
 DEFAULT_DEADLINES = Path("apps/web/src/data/deadlines.json")
 DEFAULT_WINDOW_DAYS = 7
+PLAYER_ODDS_SCHEMA_VERSION = 1
 
 
 @dataclass(frozen=True)
@@ -67,6 +72,26 @@ class DeadlineProximity:
     event: int
     deadline: datetime
     days: float
+
+
+@dataclass(frozen=True)
+class FixtureDiagnostic:
+    event_id: str
+    home_team: str
+    away_team: str
+    home_short: str | None
+    away_short: str | None
+    kickoff: datetime | None
+    status: str
+    visited_at: datetime | None
+    books: int
+    outcomes: int | None
+    offered_markets: tuple[str, ...]
+    missing_markets: tuple[str, ...]
+    player_rows_parsed: int
+    player_rows_matched: int
+    unmatched_names: tuple[str, ...]
+    error: str | None
 
 
 def can_request_fixture(*, spent: int, budget: int) -> bool:
@@ -167,6 +192,18 @@ def _serialise(row: PlayerMatchOdds) -> dict[str, object]:
     return payload
 
 
+def _serialise_diagnostic(row: FixtureDiagnostic) -> dict[str, object]:
+    payload = asdict(row)
+    for key in ("kickoff", "visited_at"):
+        value = payload.pop(key)
+        payload[key] = value.isoformat() if isinstance(value, datetime) else None
+    return payload
+
+
+def _serialise_quota(quota: Quota) -> dict[str, int | None]:
+    return {"cost": quota.cost, "used": quota.used, "remaining": quota.remaining}
+
+
 FixtureKey = tuple[str, str, datetime]
 
 
@@ -220,9 +257,103 @@ def merge_fixture_rows(
     return [*retained, *fresh]
 
 
-def _read_previous(path: Path) -> list[PlayerMatchOdds]:
+def _diagnostic_key(row: FixtureDiagnostic) -> FixtureKey | None:
+    if row.kickoff is None:
+        return None
+    return row.home_team, row.away_team, row.kickoff.astimezone(UTC)
+
+
+def merge_fixture_diagnostics(
+    previous: Sequence[FixtureDiagnostic],
+    fresh: Sequence[FixtureDiagnostic],
+    events: Sequence[Mapping[str, Any]],
+) -> list[FixtureDiagnostic]:
+    """Fresh visit, retained measurement, or an explicit unvisited row."""
+    previous_by_key = {key: row for row in previous if (key := _diagnostic_key(row)) is not None}
+    fresh_by_key = {key: row for row in fresh if (key := _diagnostic_key(row)) is not None}
+    merged: list[FixtureDiagnostic] = []
+    for event in by_kickoff(events):
+        key = _event_key(event)
+        if key is None:
+            continue
+        measured = fresh_by_key.get(key) or previous_by_key.get(key)
+        if measured is not None:
+            event_id = event.get("id")
+            merged.append(
+                replace(
+                    measured,
+                    event_id=event_id if isinstance(event_id, str) else measured.event_id,
+                )
+            )
+            continue
+        event_id = event.get("id")
+        merged.append(
+            FixtureDiagnostic(
+                event_id=event_id if isinstance(event_id, str) else "",
+                home_team=key[0],
+                away_team=key[1],
+                home_short=None,
+                away_short=None,
+                kickoff=key[2],
+                status="unvisited",
+                visited_at=None,
+                books=0,
+                outcomes=0,
+                offered_markets=(),
+                missing_markets=tuple(PLAYER_MARKETS),
+                player_rows_parsed=0,
+                player_rows_matched=0,
+                unmatched_names=(),
+                error=None,
+            )
+        )
+    return merged
+
+
+def _legacy_diagnostics(rows: Sequence[PlayerMatchOdds]) -> list[FixtureDiagnostic]:
+    grouped: dict[FixtureKey, list[PlayerMatchOdds]] = {}
+    for row in rows:
+        key = _row_key(row)
+        if key is not None:
+            grouped.setdefault(key, []).append(row)
+    diagnostics: list[FixtureDiagnostic] = []
+    for key, fixture_rows in grouped.items():
+        offered = tuple(
+            market
+            for market, field in MARKET_FIELDS.items()
+            if any(getattr(row, field) is not None for row in fixture_rows)
+        )
+        diagnostics.append(
+            FixtureDiagnostic(
+                event_id="",
+                home_team=key[0],
+                away_team=key[1],
+                home_short=None,
+                away_short=None,
+                kickoff=key[2],
+                status="returned",
+                visited_at=max(
+                    (row.observed_at for row in fixture_rows if row.observed_at is not None),
+                    default=None,
+                ),
+                books=max((row.books for row in fixture_rows), default=0),
+                outcomes=None,
+                offered_markets=offered,
+                missing_markets=tuple(sorted(set(PLAYER_MARKETS) - set(offered))),
+                player_rows_parsed=len(fixture_rows),
+                player_rows_matched=sum(row.element_id is not None for row in fixture_rows),
+                unmatched_names=tuple(
+                    sorted({row.quoted_name for row in fixture_rows if row.element_id is None})
+                ),
+                error=None,
+            )
+        )
+    return diagnostics
+
+
+def _read_previous(path: Path) -> tuple[list[PlayerMatchOdds], list[FixtureDiagnostic]]:
     if not path.exists():
-        return []
+        return [], []
     artifact = read_json_file(path)
     fallback = _timestamp(artifact.get("fetchedAt"))
     rows: list[PlayerMatchOdds] = []
@@ -256,11 +387,122 @@ def _read_previous(path: Path) -> list[PlayerMatchOdds]:
                 books=int(raw.get("books", 0)),
             )
         )
-    return rows
+    diagnostics: list[FixtureDiagnostic] = []
+    for raw in artifact.get("fixtures", []):
+        if not isinstance(raw, Mapping):
+            continue
+        home = raw.get("home_team")
+        away = raw.get("away_team")
+        status = raw.get("status")
+        if not isinstance(home, str) or not isinstance(away, str) or not isinstance(status, str):
+            continue
+        diagnostics.append(
+            FixtureDiagnostic(
+                event_id=str(raw.get("event_id", "")),
+                home_team=home,
+                away_team=away,
+                home_short=(
+                    raw.get("home_short") if isinstance(raw.get("home_short"), str) else None
+                ),
+                away_short=(
+                    raw.get("away_short") if isinstance(raw.get("away_short"), str) else None
+                ),
+                kickoff=_timestamp(raw.get("kickoff")),
+                status=status,
+                visited_at=_timestamp(raw.get("visited_at")),
+                books=int(raw.get("books", 0)),
+                outcomes=(int(raw["outcomes"]) if isinstance(raw.get("outcomes"), int) else None),
+                offered_markets=tuple(
+                    str(value) for value in raw.get("offered_markets", []) if isinstance(value, str)
+                ),
+                missing_markets=tuple(
+                    str(value) for value in raw.get("missing_markets", []) if isinstance(value, str)
+                ),
+                player_rows_parsed=int(raw.get("player_rows_parsed", 0)),
+                player_rows_matched=int(raw.get("player_rows_matched", 0)),
+                unmatched_names=tuple(
+                    str(value) for value in raw.get("unmatched_names", []) if isinstance(value, str)
+                ),
+                error=raw.get("error") if isinstance(raw.get("error"), str) else None,
+            )
+        )
+    return rows, diagnostics or _legacy_diagnostics(rows)
 
 
 def _optional_number(value: object) -> float | None:
     return float(value) if isinstance(value, (int, float)) and not isinstance(value, bool) else None
+
+
+def _event_diagnostic(
+    event: Mapping[str, Any],
+    payload: Mapping[str, Any],
+    rows: Sequence[PlayerMatchOdds],
+    visited_at: datetime,
+) -> FixtureDiagnostic | None:
+    key = _event_key(event)
+    if key is None:
+        return None
+    event_id = event.get("id")
+    summary = classify_event(payload)
+    status = (
+        "requested-markets-empty" if summary.status == "returned" and not rows else summary.status
+    )
+    return FixtureDiagnostic(
+        event_id=event_id if isinstance(event_id, str) else "",
+        home_team=key[0],
+        away_team=key[1],
+        home_short=None,
+        away_short=None,
+        kickoff=key[2],
+        status=status,
+        visited_at=visited_at,
+        books=summary.books,
+        outcomes=summary.outcomes,
+        offered_markets=summary.offered_markets,
+        missing_markets=summary.missing_markets,
+        player_rows_parsed=len(rows),
+        player_rows_matched=0,
+        unmatched_names=(),
+        error=None,
+    )
+
+
+def _error_diagnostic(
+    event: Mapping[str, Any], error: Exception, visited_at: datetime
+) -> FixtureDiagnostic | None:
+    key = _event_key(event)
+    if key is None:
+        return None
+    event_id = event.get("id")
+    return FixtureDiagnostic(
+        event_id=event_id if isinstance(event_id, str) else "",
+        home_team=key[0],
+        away_team=key[1],
+        home_short=None,
+        away_short=None,
+        kickoff=key[2],
+        status="parse-error",
+        visited_at=visited_at,
+        books=0,
+        outcomes=None,
+        offered_markets=(),
+        missing_markets=tuple(PLAYER_MARKETS),
+        player_rows_parsed=0,
+        player_rows_matched=0,
+        unmatched_names=(),
+        error=type(error).__name__,
+    )
+
+
+def _short_codes(static: Mapping[str, Any]) -> dict[str, str]:
+    exact = {
+        str(team["name"]): str(team["short_name"])
+        for team in static.get("teams", [])
+        if isinstance(team, Mapping)
+        and isinstance(team.get("name"), str)
+        and isinstance(team.get("short_name"), str)
+    }
+    return {**exact, **TEAM_CODES}
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -297,7 +539,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         return 1
 
     output_path = Path(args.output)
-    previous = _read_previous(output_path)
+    previous, previous_diagnostics = _read_previous(output_path)
     fetched_at = datetime.now(UTC)
 
     with httpx.Client(timeout=ODDS_FEED, follow_redirects=True) as client:
@@ -307,6 +549,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         print(f"{len(events)} Premier League fixtures priced \u2014 {opening}")
 
         rows: list[PlayerMatchOdds] = []
+        fresh_diagnostics: list[FixtureDiagnostic] = []
         offered = 0
         spent = 0
         closing = opening
@@ -327,15 +570,31 @@ def main(argv: Sequence[str] | None = None) -> int:
                     f"cap of {args.budget} credits"
                 )
                 break
-            payload, closing = fetch_event_odds(client, key, event_id)
             visited += 1
+            try:
+                payload, closing = fetch_event_odds(client, key, event_id)
+                read = read_event(payload)
+            except (httpx.HTTPError, ValueError) as error:
+                diagnostic = _error_diagnostic(event, error, fetched_at)
+                if diagnostic is not None:
+                    fresh_diagnostics.append(diagnostic)
+                # The request was attempted but its billed cost is unknown.
+                # Refuse another fixture rather than risk overspending the cap.
+                spent = args.budget
+                print(
+                    f"  {event.get('home_team')} v {event.get('away_team')}: "
+                    f"provider response failed ({type(error).__name__})"
+                )
+                continue
             # A host that reports no cost still charged something, so a fixture
             # counts for one rather than nothing. Otherwise a missing header
             # turns the budget off and the run prices the whole division.
             spent += billed_request_cost(closing)
-            read = read_event(payload)
             if read:
                 offered += 1
+            diagnostic = _event_diagnostic(event, payload, read, fetched_at)
+            if diagnostic is not None:
+                fresh_diagnostics.append(diagnostic)
             print(
                 f"  {payload.get('home_team')} v {payload.get('away_team')}: "
                 f"{len(read)} players quoted \u2014 {describe_event(payload)}"
@@ -363,6 +622,39 @@ def main(argv: Sequence[str] | None = None) -> int:
     merged = merge_fixture_rows(previous, rows, current_fixtures)
     matched, unmatched = crosswalk(merged, static.get("elements", []), clubs)
 
+    mapped = _short_codes(static)
+    completed_diagnostics: list[FixtureDiagnostic] = []
+    for diagnostic in fresh_diagnostics:
+        diagnostic_key = _diagnostic_key(diagnostic)
+        fresh_rows = [
+            row
+            for row in matched
+            if _row_key(row) == diagnostic_key and row.observed_at == fetched_at
+        ]
+        completed_diagnostics.append(
+            replace(
+                diagnostic,
+                home_short=mapped.get(diagnostic.home_team),
+                away_short=mapped.get(diagnostic.away_team),
+                player_rows_matched=sum(row.element_id is not None for row in fresh_rows),
+                unmatched_names=tuple(
+                    sorted({row.quoted_name for row in fresh_rows if row.element_id is None})
+                ),
+            )
+        )
+    diagnostics = [
+        replace(
+            diagnostic,
+            home_short=mapped.get(diagnostic.home_team),
+            away_short=mapped.get(diagnostic.away_team),
+        )
+        for diagnostic in merge_fixture_diagnostics(
+            previous_diagnostics,
+            completed_diagnostics,
+            events,
+        )
+    ]
+
     priced = [row for row in matched if row.priced]
     named = [row for row in priced if row.element_id is not None]
     print(
@@ -372,35 +664,47 @@ def main(argv: Sequence[str] | None = None) -> int:
     for name in unmatched[:20]:
         print(f"  unmatched: {name}")
 
-    if not named and not args.allow_empty:
-        if rows:
-            # Quoted but unjoinable: the crosswalk is the fault and it should
-            # be fixed, so this is still a failure.
-            print("\nplayers were quoted but none joined an FPL element; refusing to write")
-            return 1
-        # Nothing quoted at all. Before a season the books price the result and
-        # open player markets only days out, so an empty answer here is the
-        # market's state rather than a fault, and failing red on it would train
-        # the owner to ignore this workflow by the time it matters.
+    if rows and not named and not args.allow_empty:
+        # Quoted but unjoinable: the crosswalk is the fault and it should be
+        # fixed, so this is still a failure.
+        print("\nplayers were quoted but none joined an FPL element; refusing to write")
+        return 1
+    if not rows:
         print(
             "\nno player markets are open on these fixtures yet. The books are pricing "
             "the results; anytime scorer, assists, cards and shots on target usually "
-            "appear closer to kick-off. Nothing written, nothing wrong."
+            "appear closer to kick-off. Fixture diagnostics will still be written."
         )
-        return 0
 
     artifact = {
+        "schemaVersion": PLAYER_ODDS_SCHEMA_VERSION,
         "season": args.season,
         "fetchedAt": fetched_at.isoformat(),
         "source": "the-odds-api",
         "markets": list(PLAYER_MARKETS),
+        "clubQuoteFloor": CLUB_QUOTE_FLOOR,
+        "quota": {
+            "opening": _serialise_quota(opening),
+            "closing": _serialise_quota(closing),
+            "spentThisRun": measured,
+        },
         "coverage": {
             "fixturesListed": len(current_fixtures),
             "fixturesVisitedThisRun": visited,
-            "fixturesWithQuotes": len(
-                {fixture_key for row in priced if (fixture_key := _row_key(row)) is not None}
-            ),
+            "fixturesWithQuotes": sum(row.status == "returned" for row in diagnostics),
         },
+        "nameMappingGaps": sorted(
+            {
+                team
+                for row in diagnostics
+                for team, short in (
+                    (row.home_team, row.home_short),
+                    (row.away_team, row.away_short),
+                )
+                if short is None
+            }
+        ),
+        "fixtures": [_serialise_diagnostic(row) for row in diagnostics],
         "unmatched": list(unmatched),
         "players": [_serialise(row) for row in priced],
     }
