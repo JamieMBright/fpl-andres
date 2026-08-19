@@ -1129,12 +1129,9 @@ def _final_player_row(
         "_bpsDeviation": (
             round(draft.bps_deviation, 3) if draft.bps_deviation is not None else None
         ),
-        "squadNumber": element.squad_number,
         "rated": draft.rated,
         "depthRank": depth[element.id],
     }
-    if draft.evidence:
-        payload["evidence"] = draft.evidence
     return element.element_type, base_points, payload
 
 

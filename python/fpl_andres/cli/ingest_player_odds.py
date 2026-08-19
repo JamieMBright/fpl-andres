@@ -104,6 +104,13 @@ def billed_request_cost(quota: Quota) -> int:
     return quota.cost if quota.cost is not None else 1
 
 
+def spent_after_response(*, opening: Quota, closing: Quota, local_spent: int) -> int:
+    """Prefer the provider's measured monthly delta once it is available."""
+    if opening.used is not None and closing.used is not None:
+        return max(local_spent, closing.used - opening.used)
+    return local_spent + billed_request_cost(closing)
+
+
 def deadline_proximity(
     path: Path,
     *,
@@ -589,7 +596,11 @@ def main(argv: Sequence[str] | None = None) -> int:
             # A host that reports no cost still charged something, so a fixture
             # counts for one rather than nothing. Otherwise a missing header
             # turns the budget off and the run prices the whole division.
-            spent += billed_request_cost(closing)
+            spent = spent_after_response(
+                opening=opening,
+                closing=closing,
+                local_spent=spent,
+            )
             if read:
                 offered += 1
             diagnostic = _event_diagnostic(event, payload, read, fetched_at)

@@ -695,7 +695,8 @@ def test_players_without_a_scoring_record_are_kept_on_a_role_prior(
     assert by_code[9999]["rated"] is False
     assert by_code[9999]["basePoints"] == by_code[1001]["basePoints"]
     assert by_code[9999]["routes"] == by_code[1001]["routes"]
-    assert by_code[9999]["evidence"]["all"] == "rolePrior"
+    assert "evidence" not in by_code[9999]
+    assert payload["evidenceDefinitions"]["rolePrior"]["level"] == "experimental"
 
 
 def test_a_debutants_market_price_moves_attack_and_participation(tmp_path: Path) -> None:
@@ -708,7 +709,7 @@ def test_a_debutants_market_price_moves_attack_and_participation(tmp_path: Path)
     assert priced["routes"]["attacking"] > baseline["routes"]["attacking"]
     assert priced["startRate"] > baseline["startRate"]
     assert priced["basePoints"] == pytest.approx(sum(priced["routes"].values()), abs=0.001)
-    assert priced["evidence"]["appearance"] == "marketParticipation"
+    assert "evidence" not in priced
     carry = quoted["marketCarry"]
     assert carry["halfLifeGameweeks"] == 2
     assert carry["fields"] == [
@@ -757,7 +758,7 @@ def test_shot_markets_blend_understat_history_into_minutes_and_bps(tmp_path: Pat
     priced = quoted["players"][0]
 
     assert priced["startRate"] > baseline["startRate"]
-    assert priced["evidence"]["bonus"] == "shotBps"
+    assert quoted["market"]["playersQuotedForShots"] == 1
     assert "expectedBps" not in priced
 
 

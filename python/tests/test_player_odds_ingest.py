@@ -17,6 +17,7 @@ from fpl_andres.adapters.the_odds_api import (
     describe_event,
     read_event,
 )
+from fpl_andres.cli.ingest_player_odds import can_request_fixture, spent_after_response
 from fpl_andres.models.player_odds import PlayerMatchOdds
 
 
@@ -370,6 +371,22 @@ class TestSpendingTheMonthlyBudget:
 
         assert quota.remaining is None
 
+    def test_the_run_cap_uses_the_provider_measured_delta(self) -> None:
+        opening = Quota(cost=0, used=100, remaining=400)
+        closing = Quota(cost=None, used=127, remaining=373)
+
+        spent = spent_after_response(opening=opening, closing=closing, local_spent=0)
+
+        assert spent == 27
+        assert can_request_fixture(spent=spent, budget=50)
+        assert not can_request_fixture(spent=54, budget=50)
+
+    def test_missing_provider_counters_fall_back_to_response_cost(self) -> None:
+        opening = Quota(cost=None, used=None, remaining=None)
+        closing = Quota(cost=8, used=None, remaining=None)
+
+        assert spent_after_response(opening=opening, closing=closing, local_spent=16) == 24
+
 
 ELEMENTS = [
     {"id": 1, "first_name": "Kai", "second_name": "Havertz", "web_name": "Havertz", "team": 1},
@@ -387,6 +404,41 @@ ELEMENTS = [
         "second_name": "dos Santos Magalhães",
         "web_name": "Gabriel",
         "team": 1,
+    },
+    {
+        "id": 224,
+        "first_name": "Eddie",
+        "second_name": "Nketiah",
+        "web_name": "Nketiah",
+        "team": 2,
+    },
+    {
+        "id": 262,
+        "first_name": "Emile",
+        "second_name": "Smith Rowe",
+        "web_name": "Smith Rowe",
+        "team": 2,
+    },
+    {
+        "id": 337,
+        "first_name": "Brenden",
+        "second_name": "Aaronson",
+        "web_name": "Aaronson",
+        "team": 2,
+    },
+    {
+        "id": 364,
+        "first_name": "Kostas",
+        "second_name": "Tsimikas",
+        "web_name": "Tsimikas",
+        "team": 2,
+    },
+    {
+        "id": 377,
+        "first_name": "Daniel",
+        "second_name": "Muñoz Mejía",
+        "web_name": "Muñoz",
+        "team": 2,
     },
     # Two Rices: a surname alone must not decide between them.
     {"id": 3, "first_name": "Declan", "second_name": "Rice", "web_name": "Rice", "team": 1},
@@ -450,6 +502,86 @@ def test_a_controlled_short_first_name_matches_the_full_fpl_name() -> None:
 
     assert unmatched == ()
     assert matched[0].element_id == 5
+
+
+@pytest.mark.parametrize(
+    ("quoted", "element_id"),
+    [
+        ("Brendan Aaronson", 337),
+        ("Edward Nketiah", 224),
+        ("Emile Smith-Rowe", 262),
+        ("Konstantinos Tsimikas", 364),
+        ("Alvaro Daniel Rodriguez Munoz", 201),
+    ],
+)
+def test_live_provider_name_overrides_match_explicit_fpl_players(
+    quoted: str,
+    element_id: int,
+) -> None:
+    elements = [
+        *ELEMENTS,
+        {
+            "id": element_id,
+            "first_name": "",
+            "second_name": "",
+            "web_name": "",
+            "team": 2,
+        },
+    ]
+    matched, unmatched = crosswalk([_row(quoted)], elements, {1: "ARS", 2: "BOU"})
+
+    assert unmatched == ()
+    assert matched[0].element_id == element_id
+
+
+@pytest.mark.parametrize(
+    ("quoted", "element_id"),
+    [
+        ("Abdul Fatawu Issahaku", 315),
+        ("Alvaro Daniel Rodriguez Munoz", 201),
+        ("Alysson Edward", 52),
+        ("Chiedoze Ogbene", 314),
+        ("Christopher Rigg", 548),
+        ("Damian Emiliano Martinez", 28),
+        ("Degnand Wilfried Gnonto", 341),
+        ("Iliman-Cheikh Ndiaye", 237),
+        ("Iliya Gruev", 344),
+        ("Iyenoma Destiny Udogie", 506),
+        ("Jaden Philogene-Bidace", 318),
+        ("Jens Hjerto Dahl", 574),
+        ("Jocelin Ta Bi", 550),
+        ("Joseph Willock", 460),
+        ("Joshua Kofi Acheampong", 151),
+        ("Kai Andrews", 192),
+        ("Marcelino Ignacio Nunez Espinoza", 309),
+        ("Mickey van de Ven", 503),
+        ("Niko O'Reilly", 387),
+        ("Nilson David Angulo Ramirez", 551),
+        ("Ogochukwu Onyeka Frank", 104),
+        ("Oliver McBurnie", 295),
+        ("Omari Giraud-Hutchinson", 484),
+        ("Rayan Ait Nouri", 392),
+        ("Valentino Livramento", 450),
+        ("Vitaliy Mykolenko", 233),
+        ("Yeremi Pino", 211),
+    ],
+)
+def test_live_provider_name_overrides_cover_current_bootstrap_aliases(
+    quoted: str,
+    element_id: int,
+) -> None:
+    elements = [{"id": element_id, "first_name": "", "second_name": "", "web_name": "", "team": 2}]
+    matched, unmatched = crosswalk([_row(quoted)], elements, {2: "BOU"})
+
+    assert unmatched == ()
+    assert matched[0].element_id == element_id
+
+
+def test_a_stale_provider_name_override_is_not_used_without_that_fpl_player() -> None:
+    matched, unmatched = crosswalk([_row("Yeremi Pino")], ELEMENTS, {1: "ARS", 2: "BOU"})
+
+    assert unmatched == ("Yeremi Pino",)
+    assert matched[0].element_id is None
 
 
 def test_a_reversed_provider_name_matches_when_the_tokens_are_unique() -> None:

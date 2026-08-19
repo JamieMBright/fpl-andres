@@ -38,17 +38,15 @@ const BUDGETS = [
   // Budgeted apart from the other lazy chunks so absorbing a page does not
   // quietly raise the ceiling for everything else.
   { match: /^SeasonPlanPage-.*\.js$/, name: "plan chunk", gzipKb: 58 },
-  // Measured 50.29 kB, raised from 42 kB. The worker carries the whole solver
-  // input: 515 players and, since the methodology audit, each player's eight
-  // scoring routes rather than one blended figure. That split is the fix for
-  // pricing a defender's assists by his side's defensive difficulty, and it
-  // costs about 10 kB gzipped. Trimmed as far as it goes first -- three
-  // decimals rather than four, and a route worth nothing omitted entirely --
-  // which recovered 3 kB of the 13.
+  // Measured 58.93 kB, raised from 54 kB. The worker carries the solver-used
+  // market-carry table so a player's quoted fixture view fades back toward
+  // history instead of staying fixed all season. Unused row-level provenance
+  // and squad numbers were trimmed first; compacting the remaining carry rows
+  // recovered only 0.45 kB because every retained row moves a solver route.
   {
     match: /^season-solver\.worker-.*\.js$/,
     name: "solver worker",
-    gzipKb: 54,
+    gzipKb: 68,
   },
   // Measured 39.94 kB for the shared chunk, raised from 38 kB. Consolidating
   // the team view onto the plan moved several components into shared code

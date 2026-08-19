@@ -42,7 +42,47 @@ _TRANSLITERATE = str.maketrans(
 
 # Provider spellings observed in live player markets. Keep this explicit: a
 # broad fuzzy match can move one footballer's price onto another footballer.
-_FIRST_NAME_ALIASES = {"ben": "benjamin"}
+_FIRST_NAME_ALIASES = {"ben": "benjamin", "brendan": "brenden"}
+
+# One-off provider names observed in live player markets where FPL's bootstrap
+# carries only a shorter public name. Values are FPL element ids; ambiguity is
+# still refused everywhere else.
+_QUOTED_NAME_OVERRIDES = {
+    "abdul fatawu issahaku": 315,
+    "alvaro daniel rodriguez munoz": 201,
+    "alysson edward": 52,
+    "chiedoze ogbene": 314,
+    "christopher rigg": 548,
+    "damian emiliano martinez": 28,
+    "degnand wilfried gnonto": 341,
+    "edward nketiah": 224,
+    "emile smith rowe": 262,
+    "emile smithrowe": 262,
+    "iliman cheikh ndiaye": 237,
+    "ilimancheikh ndiaye": 237,
+    "iliya gruev": 344,
+    "iyenoma destiny udogie": 506,
+    "jaden philogene bidace": 318,
+    "jaden philogenebidace": 318,
+    "jens hjerto dahl": 574,
+    "jocelin ta bi": 550,
+    "joseph willock": 460,
+    "joshua kofi acheampong": 151,
+    "kai andrews": 192,
+    "konstantinos tsimikas": 364,
+    "marcelino ignacio nunez espinoza": 309,
+    "mickey van de ven": 503,
+    "niko oreilly": 387,
+    "nilson david angulo ramirez": 551,
+    "ogochukwu onyeka frank": 104,
+    "oliver mcburnie": 295,
+    "omari giraud hutchinson": 484,
+    "omari giraudhutchinson": 484,
+    "rayan ait nouri": 392,
+    "valentino livramento": 450,
+    "vitaliy mykolenko": 233,
+    "yeremi pino": 211,
+}
 
 
 def fold_name(value: str) -> str:
@@ -96,11 +136,13 @@ def crosswalk(
     index: dict[str, set[int]] = {}
     unordered_index: dict[str, set[int]] = {}
     club_of: dict[int, str] = {}
+    element_ids: set[int] = set()
     for element in elements:
         element_id = element.get("id")
         team = element.get("team")
         if not isinstance(element_id, int):
             continue
+        element_ids.add(element_id)
         keys = _keys(element)
         for key in keys:
             index.setdefault(key, set()).add(element_id)
@@ -113,7 +155,12 @@ def crosswalk(
     unmatched: list[str] = []
     for row in rows:
         folded = fold_name(row.quoted_name)
-        candidates = set(index.get(folded, set()))
+        override = _QUOTED_NAME_OVERRIDES.get(folded)
+        candidates = (
+            {override}
+            if override is not None and override in element_ids
+            else set(index.get(folded, set()))
+        )
         expanded = _expand_first_name_alias(folded)
         if expanded != folded:
             candidates.update(index.get(expanded, set()))
