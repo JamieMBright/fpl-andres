@@ -29,6 +29,12 @@ from __future__ import annotations
 
 __all__ = ["MODEL_VERSION"]
 
+#: 8.2 removes copied per-player quote disclosure from the browser solver
+#: artifact. The authoritative player-odds artifact still retains every quote,
+#: and season inputs retain aggregate reach plus every number-moving blend.
+#: Minor: projected points are unchanged; the shipped solver payload is smaller
+#: and its schema now refuses the duplicated field.
+#:
 #: 8.1 consumes every market observed on the live Arsenal-Coventry survey.
 #: First- and last-scorer prices are retained as overlapping corroboration of
 #: anytime scorer rather than added as extra goals. Shots on target remain
@@ -331,4 +337,4 @@ __all__ = ["MODEL_VERSION"]
 #: projection and resampled, so a gap that does not clear zero is reported as
 #: not clearing zero. No projection changed; what changed is what may be
 #: claimed from it.
-MODEL_VERSION = "8.1"
+MODEL_VERSION = "8.2"
