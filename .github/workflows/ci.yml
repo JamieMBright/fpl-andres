@@ -51,6 +51,15 @@ jobs:
       - name: Check formatting
         run: pnpm format:check
 
+      # The odds jobs rebuild their derived artifacts from a shell script, and a
+      # syntax error in it is only discovered when a scheduled run fails hours
+      # later with a round of quotes already paid for. Windows desks have no
+      # bash to check it with, so the check runs where bash lives.
+      - name: Check shell scripts
+        run: |
+          shellcheck --version
+          shellcheck scripts/*.sh
+
   # `.env.example` names several live secrets, and a real one
   # committed by accident is not undone by deleting it in a later commit -- it
   # is in the history, and on any clone taken in between. The only fix is

@@ -196,5 +196,40 @@ jobs:
             exit 0
           fi
           git commit -m "chore: refresh the backtest for the model on $GITHUB_SHA"
-          git pull --rebase --autostash
-          git push
+          for attempt in 1 2 3 4 5; do
+            # A plain rebase first: when nothing else moved this is a no-op and
+            # the push lands. This solve takes the better part of an hour, so
+            # an odds job landing underneath it is the normal case rather than
+            # the unlucky one, and every artifact below conflicts when it does.
+            git pull --rebase --autostash || git rebase --abort || true
+            if git push; then
+              exit 0
+            fi
+            echo "push rejected on attempt $attempt; rebuilding on the base that arrived"
+            rm -rf "$RUNNER_TEMP/backtest"
+            for path in $paths; do
+              if [ -e "$path" ]; then
+                mkdir -p "$RUNNER_TEMP/backtest/$(dirname "$path")"
+                cp "$path" "$RUNNER_TEMP/backtest/$path"
+              fi
+            done
+            git fetch origin "$GITHUB_REF_NAME"
+            git reset --hard "origin/$GITHUB_REF_NAME"
+            for path in $paths; do
+              if [ -e "$RUNNER_TEMP/backtest/$path" ]; then
+                cp "$RUNNER_TEMP/backtest/$path" "$path"
+              fi
+            done
+            # The backtest itself is kept: nothing else produces it, and it is
+            # hours of work. The planning chain is rebuilt instead, because the
+            # base that arrived may carry odds this solve never saw.
+            bash scripts/republish-plan.sh
+            git add $paths
+            if git diff --cached --quiet -- $paths; then
+              echo "the base that arrived already carries this backtest"
+              exit 0
+            fi
+            git commit -m "chore: refresh the backtest for the model on $GITHUB_SHA"
+          done
+          echo "could not push the refreshed backtest after five attempts" >&2
+          exit 1

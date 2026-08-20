@@ -140,70 +140,59 @@ jobs:
           fi
           # `player-odds.json` is an input, not a shipped recommendation. The
           # plan reads the complete chain, so commit all of it or none of it.
-          opening_before="$(node -e "const p=require('./apps/web/src/data/opening-squad.json'); process.stdout.write(p.picks.map(x=>x.code).sort((a,b)=>a-b).join(','))")"
-          python -m fpl_andres.cli.publish_season_inputs
-          pnpm --filter @fpl-andres/web publish:canonical-opening
-          opening_after="$(node -e "const p=require('./apps/web/src/data/opening-squad.json'); process.stdout.write(p.picks.map(x=>x.code).sort((a,b)=>a-b).join(','))")"
-          if [ "$opening_before" != "$opening_after" ]; then
-            weekly_free_transfers="$(node -e "const p=require('./apps/web/src/data/season-inputs.json'); process.stdout.write(String(p.rules.weeklyFreeTransfers))")"
-            transfer_cost_points="$(node -e "const p=require('./apps/web/src/data/season-inputs.json'); process.stdout.write(String(p.rules.transferCostPoints))")"
-            rules_reference="$(node -e "const p=require('./apps/web/src/data/season-inputs.json'); process.stdout.write(p.rules.sourceReference)")"
-            python -m fpl_andres.cli.publish_season_plan \
-              --weekly-free-transfers "$weekly_free_transfers" \
-              --transfer-cost-points "$transfer_cost_points" \
-              --rules-reference "$rules_reference"
-          else
-            echo "canonical fifteen unchanged; static plan remains valid"
-          fi
-          # prettier owns the file and Python does not write it that way. An
-          # unformatted bot commit reddens the next human push, not this run.
-          # Formatting before the diff check also stops a rewrite that is only
-          # formatting from reaching `git commit` and failing it empty.
-          npx --yes prettier@3 --write \
-            apps/web/src/data/player-odds.json \
+          # The chain itself lives in a script because it has to run a second
+          # time when the push is rejected -- see that script for why a rebase
+          # cannot settle two independently regenerated artifacts.
+          TRACKED="apps/web/src/data/player-odds.json \
             apps/web/src/data/season-inputs.json \
             apps/web/src/data/opening-squad.json \
-            apps/web/src/data/season-plan.json
-          deadline="$(node -e "const p=require('./apps/web/src/data/season-inputs.json'); process.stdout.write(p.deadlines[0])")"
-          if node -e "process.exit(Date.now() < Date.parse(process.argv[1]) ? 0 : 1)" "$deadline"; then
-            python -m fpl_andres.cli.freeze_prospective \
-              --deadline "$deadline" \
-              --frozen-at "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
-              --code-revision "$GITHUB_SHA"
-            npx --yes prettier@3 --write data/prospective/gw1-2026-27.json
-          fi
+            apps/web/src/data/season-plan.json \
+            data/prospective/gw1-2026-27.json"
+          stage() {
+            npx --yes prettier@3 --write apps/web/src/data/player-odds.json
+            # Staged first, then compared against the index. `git diff` does not
+            # look at untracked files, so the first run to produce this artifact
+            # would report "unchanged" and throw it away.
+            git add apps/web/src/data/player-odds.json
+            # Regenerating the chain against unchanged quotes would still
+            # rewrite `generatedAt` and commit noise on every scheduled run.
+            if git diff --cached --quiet -- apps/web/src/data/player-odds.json; then
+              echo "quotes did not move; season inputs stay unchanged"
+              return 0
+            fi
+            bash scripts/republish-plan.sh
+            # shellcheck disable=SC2086
+            git add $TRACKED
+          }
+
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          # Staged first, then compared against the index. `git diff` does not
-          # look at untracked files, so the first run to produce this artifact
-          # would report "unchanged" and throw it away.
-          git add \
-            apps/web/src/data/player-odds.json \
-            apps/web/src/data/season-inputs.json \
-            apps/web/src/data/opening-squad.json \
-            apps/web/src/data/season-plan.json \
-            data/prospective/gw1-2026-27.json
-          if git diff --cached --quiet -- \
-            apps/web/src/data/player-odds.json \
-            apps/web/src/data/season-inputs.json \
-            apps/web/src/data/opening-squad.json \
-            apps/web/src/data/season-plan.json \
-            data/prospective/gw1-2026-27.json; then
+          stage
+          # shellcheck disable=SC2086
+          if git diff --cached --quiet -- $TRACKED; then
             echo "odds unchanged"
             exit 0
           fi
           git commit -m "Refresh player market odds"
-          # The bookmaker-odds job commits the same artifacts and both are
-          # triggered by the same push, so the two race. A single pull-then-push
-          # loses that race whenever the other job lands in between, and the
-          # quotes this run spent budget on are thrown away. Retry instead.
           for attempt in 1 2 3 4 5; do
-            git pull --rebase --autostash
+            # A plain rebase first: when nothing else moved this is a no-op and
+            # the push lands. When it does conflict, abort and rebuild instead.
+            git pull --rebase --autostash || git rebase --abort || true
             if git push; then
               exit 0
             fi
-            echo "push rejected on attempt $attempt; the branch moved underneath"
-            sleep $((attempt * 5))
+            echo "push rejected on attempt $attempt; rebuilding on the base that arrived"
+            cp apps/web/src/data/player-odds.json "$RUNNER_TEMP/player-odds.json"
+            git fetch origin "$GITHUB_REF_NAME"
+            git reset --hard "origin/$GITHUB_REF_NAME"
+            cp "$RUNNER_TEMP/player-odds.json" apps/web/src/data/player-odds.json
+            stage
+            # shellcheck disable=SC2086
+            if git diff --cached --quiet -- $TRACKED; then
+              echo "the base that arrived already carries these quotes"
+              exit 0
+            fi
+            git commit -m "Refresh player market odds"
           done
           echo "could not push the refreshed player odds after five attempts" >&2
           exit 1

@@ -170,80 +170,80 @@ jobs:
           if-no-files-found: warn
           retention-days: 30
 
-      - name: Republish the live plan when live fixture odds moved
-        run: |
-          live="apps/web/src/data/fixture-odds.json"
-          if [ ! -f "$live" ] || [ -z "$(git status --porcelain -- "$live")" ]; then
-            echo "live fixture odds did not move; season inputs stay unchanged"
-            exit 0
-          fi
-          opening_before="$(node -e "const p=require('./apps/web/src/data/opening-squad.json'); process.stdout.write(p.picks.map(x=>x.code).sort((a,b)=>a-b).join(','))")"
-          python -m fpl_andres.cli.publish_season_inputs
-          pnpm --filter @fpl-andres/web publish:canonical-opening
-          opening_after="$(node -e "const p=require('./apps/web/src/data/opening-squad.json'); process.stdout.write(p.picks.map(x=>x.code).sort((a,b)=>a-b).join(','))")"
-          if [ "$opening_before" != "$opening_after" ]; then
-            weekly_free_transfers="$(node -e "const p=require('./apps/web/src/data/season-inputs.json'); process.stdout.write(String(p.rules.weeklyFreeTransfers))")"
-            transfer_cost_points="$(node -e "const p=require('./apps/web/src/data/season-inputs.json'); process.stdout.write(String(p.rules.transferCostPoints))")"
-            rules_reference="$(node -e "const p=require('./apps/web/src/data/season-inputs.json'); process.stdout.write(p.rules.sourceReference)")"
-            python -m fpl_andres.cli.publish_season_plan \
-              --weekly-free-transfers "$weekly_free_transfers" \
-              --transfer-cost-points "$transfer_cost_points" \
-              --rules-reference "$rules_reference"
-          else
-            echo "canonical fifteen unchanged; static plan remains valid"
-          fi
-          npx --yes prettier@3 --write \
-            apps/web/src/data/season-inputs.json \
-            apps/web/src/data/opening-squad.json \
-            apps/web/src/data/season-plan.json
-          deadline="$(node -e "const p=require('./apps/web/src/data/season-inputs.json'); process.stdout.write(p.deadlines[0])")"
-          if node -e "process.exit(Date.now() < Date.parse(process.argv[1]) ? 0 : 1)" "$deadline"; then
-            python -m fpl_andres.cli.freeze_prospective \
-              --deadline "$deadline" \
-              --frozen-at "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
-              --code-revision "$GITHUB_SHA"
-            npx --yes prettier@3 --write data/prospective/gw1-2026-27.json
-          fi
-
       - name: Commit the refreshed artifact
         run: |
           # Stage only what this run actually produced. A pathspec matching
           # nothing is fatal to `git add`, and pre-season the live artifact is
           # legitimately absent.
-          for path in \
-            apps/web/src/data/fixture-odds.json \
-            apps/web/src/data/season-inputs.json \
+          SOURCES="apps/web/src/data/fixture-odds.json data/odds"
+          DERIVED="apps/web/src/data/season-inputs.json \
             apps/web/src/data/opening-squad.json \
             apps/web/src/data/season-plan.json \
-            data/prospective/gw1-2026-27.json \
-            data/odds; do
-            if [ -e "$path" ]; then
-              # Before the staged-diff check, so a rewrite that is only
-              # formatting never reaches `git commit` and fails it empty.
-              npx --yes prettier@3 --write "$path"
-              git add -A -- "$path"
+            data/prospective/gw1-2026-27.json"
+          stage() {
+            for path in $SOURCES; do
+              if [ -e "$path" ]; then
+                # Before the staged-diff check, so a rewrite that is only
+                # formatting never reaches `git commit` and fails it empty.
+                npx --yes prettier@3 --write "$path"
+                git add -A -- "$path"
+              else
+                echo "$path not written this run"
+              fi
+            done
+            # The derived chain only means anything once the live artifact
+            # exists, and regenerating it against an unchanged book would still
+            # rewrite `generatedAt` and commit noise every day.
+            if [ -e apps/web/src/data/fixture-odds.json ] &&
+              ! git diff --cached --quiet -- apps/web/src/data/fixture-odds.json; then
+              bash scripts/republish-plan.sh
+              # shellcheck disable=SC2086
+              git add $DERIVED
             else
-              echo "$path not written this run"
+              echo "live fixture odds did not move; season inputs stay unchanged"
             fi
-          done
+          }
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          stage
           if git diff --cached --quiet; then
             echo "prices unchanged since the last run; nothing to commit"
             exit 0
           fi
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git commit -m "Refresh the bookmaker-implied goals distribution"
-          # The player-odds job commits the same artifacts and both are triggered
-          # by the same push, so the two race. A single pull-then-push loses
-          # that race whenever the other job lands in between, and the round
-          # this run paid the provider for is thrown away. Retry instead.
           for attempt in 1 2 3 4 5; do
-            git pull --rebase --autostash
+            # A plain rebase first: when nothing else moved this is a no-op and
+            # the push lands. When it does conflict, abort and rebuild instead —
+            # see scripts/republish-plan.sh for why a rebase cannot settle it.
+            git pull --rebase --autostash || git rebase --abort || true
             if git push; then
               exit 0
             fi
-            echo "push rejected on attempt $attempt; the branch moved underneath"
-            sleep $((attempt * 5))
+            echo "push rejected on attempt $attempt; rebuilding on the base that arrived"
+            # Keep what the provider was paid for, take the base that arrived,
+            # put the fetched prices back and rebuild the derived chain on top.
+            rm -rf "$RUNNER_TEMP/keep"
+            mkdir -p "$RUNNER_TEMP/keep/odds"
+            if [ -e apps/web/src/data/fixture-odds.json ]; then
+              cp apps/web/src/data/fixture-odds.json "$RUNNER_TEMP/keep/fixture-odds.json"
+            fi
+            if [ -d data/odds ]; then
+              cp -r data/odds/. "$RUNNER_TEMP/keep/odds/"
+            fi
+            git fetch origin "$GITHUB_REF_NAME"
+            git reset --hard "origin/$GITHUB_REF_NAME"
+            if [ -e "$RUNNER_TEMP/keep/fixture-odds.json" ]; then
+              cp "$RUNNER_TEMP/keep/fixture-odds.json" apps/web/src/data/fixture-odds.json
+            fi
+            mkdir -p data/odds
+            cp -r "$RUNNER_TEMP/keep/odds/." data/odds/
+            stage
+            if git diff --cached --quiet; then
+              echo "the base that arrived already carries these prices"
+              exit 0
+            fi
+            git commit -m "Refresh the bookmaker-implied goals distribution"
           done
           echo "could not push the refreshed odds after five attempts" >&2
           exit 1

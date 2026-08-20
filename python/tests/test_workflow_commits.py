@@ -20,6 +20,7 @@ from pathlib import Path
 import pytest
 
 WORKFLOWS = Path(__file__).resolve().parents[2] / ".github" / "workflows"
+REPO = Path(__file__).resolve().parents[2]
 
 #: Extensions prettier owns in this repository. A bot that commits one of
 #: these without formatting it hands the failure to the next push.
@@ -31,6 +32,11 @@ _PRETTIER_OWNED = re.compile(r"[\w./-]+\.(?:json|md)\b")
 #: `[^#\n]*` keeps a mention inside a comment from counting.
 _PUSH = re.compile(r"^[^#\n]*\bgit push\b", re.MULTILINE)
 _REBASE = re.compile(r"^\s*git pull --rebase --autostash\b", re.MULTILINE)
+#: Rebasing is not enough on its own for the two odds jobs. Both regenerate the
+#: same derived artifacts, so every one of them conflicts and `--autostash` only
+#: relocates the conflict. Rebuilding on the base that arrived is the recovery
+#: that actually works, and it counts.
+_REBUILD = re.compile(r"^\s*git reset --hard \"origin/\$GITHUB_REF_NAME\"", re.MULTILINE)
 #: `git diff` without `--cached` compares the working tree to the index and
 #: ignores untracked files entirely.
 _UNSTAGED_DIFF = re.compile(r"^\s*(?:if\s+)?git diff(?!\s+--cached)\b", re.MULTILINE)
@@ -77,9 +83,10 @@ def test_a_workflow_that_pushes_rebases_onto_whatever_arrived_first(path: Path) 
     if not _pushes(text):
         return
 
-    assert _REBASE.search(text), (
-        f"{path.name} pushes without `git pull --rebase --autostash`, so a run "
-        "whose base moved while it worked is rejected and its output is lost"
+    assert _REBASE.search(text) or _REBUILD.search(text), (
+        f"{path.name} pushes without `git pull --rebase --autostash` or a "
+        "rebuild onto the fetched base, so a run whose base moved while it "
+        "worked is rejected and its output is lost"
     )
 
 
@@ -129,33 +136,42 @@ def test_live_odds_producers_republish_the_plan_the_browser_reads(name: str, sou
     text = (WORKFLOWS / name).read_text(encoding="utf-8")
 
     assert source in text
-    season_inputs = text.index("python -m fpl_andres.cli.publish_season_inputs")
-    canonical = text.index(
+    # The chain is one script both odds jobs call, because each has to be able
+    # to run it a second time when its push is rejected and it rebuilds on the
+    # base that arrived. The ordering guarantee therefore lives with the script.
+    assert "scripts/republish-plan.sh" in text
+    assert "pnpm install --frozen-lockfile" in text
+
+    chain = (REPO / "scripts" / "republish-plan.sh").read_text(encoding="utf-8")
+    season_inputs = chain.index("python -m fpl_andres.cli.publish_season_inputs")
+    canonical = chain.index(
         "pnpm --filter @fpl-andres/web publish:canonical-opening",
         season_inputs,
     )
-    season_plan = text.index("python -m fpl_andres.cli.publish_season_plan", canonical)
+    season_plan = chain.index("python -m fpl_andres.cli.publish_season_plan", canonical)
     assert season_inputs < canonical < season_plan
-    assert "pnpm install --frozen-lockfile" in text
-    assert "opening_before" in text
-    assert "opening_after" in text
+    # The 38-week solve only reruns when the fifteen it starts from moved.
+    assert "$before" in chain
+    assert "$after" in chain
     for path in (
         "apps/web/src/data/season-inputs.json",
         "apps/web/src/data/opening-squad.json",
         "apps/web/src/data/season-plan.json",
     ):
+        assert path in chain
         assert path in text
+
+    # Whatever else changed, the artifact this job fetched is formatted and
+    # staged, and the derived chain is republished before anything is staged.
     if name == "ingest-odds.yml":
         # This workflow iterates the declared paths and formats/stages `$path`.
         assert 'prettier@3 --write "$path"' in text
         assert 'git add -A -- "$path"' in text
     else:
-        # The player workflow names both artifacts explicitly.
-        publish = text.index("python -m fpl_andres.cli.publish_season_inputs")
-        formatting = text.index("prettier@3 --write", publish)
-        staging = text.index("git add", formatting)
-        assert publish < formatting < staging
-        assert staging < text.rindex("apps/web/src/data/season-inputs.json")
+        # The player workflow names its own artifact explicitly.
+        formatting = text.index("prettier@3 --write apps/web/src/data/player-odds.json")
+        staging = text.index("git add apps/web/src/data/player-odds.json", formatting)
+        assert formatting < staging
 
 
 def test_rank_sampler_keeps_raw_progress_out_of_model_validation() -> None:
