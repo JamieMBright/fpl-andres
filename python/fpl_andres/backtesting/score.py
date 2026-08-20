@@ -19,6 +19,7 @@ from fpl_andres.backtesting.projector import (
     baseline_recent_mean,
     project_gameweek,
 )
+from fpl_andres.models.backtest import CALIBRATION_BAND_EDGES, CalibrationBand
 from fpl_andres.models.metrics import rank_correlation
 from fpl_andres.positions import PositionUnknown, position_code
 
@@ -71,6 +72,10 @@ class MethodScore:
     signed_error: float = 0.0
     gameweeks: list[GameweekScore] = field(default_factory=list)
     by_position: dict[str, list[tuple[float, float]]] = field(default_factory=dict)
+    #: Band index -> [rows, summed projection, summed outcome]. Kept as running
+    #: totals rather than retained rows because a season is ~11k predictions and
+    #: nothing needs them individually.
+    band_totals: dict[int, list[float]] = field(default_factory=dict)
 
     @property
     def mean_absolute_error(self) -> float | None:
@@ -103,6 +108,26 @@ class MethodScore:
                 [predicted for predicted, _ in pairs], [actual for _, actual in pairs]
             )
         return out
+
+    def calibration(self) -> tuple[CalibrationBand, ...]:
+        """Mean projection against mean outcome, banded by what was projected."""
+        bands: list[CalibrationBand] = []
+        for index, (low, high) in enumerate(_band_bounds()):
+            totals = self.band_totals.get(index)
+            if not totals or totals[0] == 0:
+                continue
+            rows = int(totals[0])
+            bands.append(
+                CalibrationBand(
+                    label=f"{low:g}+" if high is None else f"{low:g}-{high:g}",
+                    lower=low,
+                    upper=high,
+                    count=rows,
+                    mean_predicted=totals[1] / rows,
+                    mean_actual=totals[2] / rows,
+                )
+            )
+        return tuple(bands)
 
 
 @dataclass
@@ -258,6 +283,10 @@ def _score(
             method.absolute_error += abs(error)
             method.squared_error += error * error
             method.signed_error += error
+            totals = method.band_totals.setdefault(_band_index(value), [0.0, 0.0, 0.0])
+            totals[0] += 1.0
+            totals[1] += value
+            totals[2] += truth
 
     for element, value, truth in zip(shared, predicted, realised, strict=True):
         position = positions.get(element)
@@ -277,6 +306,24 @@ def _score(
             top_n=top_n,
         )
     )
+
+
+def _band_bounds() -> list[tuple[float, float | None]]:
+    bounds: list[tuple[float, float | None]] = []
+    lower = 0.0
+    for edge in CALIBRATION_BAND_EDGES:
+        bounds.append((lower, edge))
+        lower = edge
+    bounds.append((lower, None))
+    return bounds
+
+
+def _band_index(value: float) -> int:
+    """Which band a projection falls in. Anything below zero joins the first."""
+    for index, edge in enumerate(CALIBRATION_BAND_EDGES):
+        if value < edge:
+            return index
+    return len(CALIBRATION_BAND_EDGES)
 
 
 def _spearman(predicted: Sequence[float], actual: Sequence[float]) -> float | None:

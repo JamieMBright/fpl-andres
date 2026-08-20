@@ -367,6 +367,20 @@ def main(argv: Sequence[str] | None = None) -> int:
                             position: _round(value)
                             for position, value in method.position_spearman().items()
                         },
+                        # What players projected into each band actually scored.
+                        # The pooled error is dominated by players projected near
+                        # zero; a captain pick lives in the top band alone.
+                        "calibration": [
+                            {
+                                "label": band.label,
+                                "lower": band.lower,
+                                "upper": band.upper,
+                                "count": band.count,
+                                "meanPredicted": _round(band.mean_predicted),
+                                "meanActual": _round(band.mean_actual),
+                            }
+                            for band in method.calibration()
+                        ],
                     }
                 )
 

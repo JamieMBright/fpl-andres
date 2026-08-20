@@ -71,3 +71,52 @@ describe("the opening gameweek is reported on its own", () => {
     expect(screen.getByText(/least tested number I publish/i)).toBeVisible();
   });
 });
+
+describe("calibration is reported by projected band", () => {
+  // The bands land with the next `validate` run, which reads the corpus out of
+  // Supabase and cannot be run here. Until that artifact arrives the field is
+  // absent from the JSON and therefore from its inferred type, so the shape is
+  // named rather than inferred.
+  type BandRow = { label: string; count: number };
+  const banded = (
+    validation.seasons as unknown as {
+      methods: { label: string; calibration?: BandRow[] }[];
+    }[]
+  ).flatMap(
+    (season) =>
+      season.methods.find((method) => method.label === "model")?.calibration ??
+      [],
+  );
+
+  it("renders a band table when the artifact carries one, and claims nothing when it does not", () => {
+    renderReport();
+
+    const heading = screen.queryByRole("heading", {
+      name: "When I say six, what comes back?",
+    });
+    // The measurement lands with the next validate run. Until then the section
+    // must be absent rather than rendered empty or filled with zeroes.
+    expect(heading === null).toBe(banded.length === 0);
+  });
+
+  it("pools every band across seasons so the top band has rows", () => {
+    if (banded.length === 0) {
+      return;
+    }
+    renderReport();
+
+    const table = screen.getByRole("table", {
+      name: /Mean projected points against mean actual points/i,
+    });
+    const labels = new Set(banded.map((band) => band.label));
+    for (const label of labels) {
+      const total = banded
+        .filter((band) => band.label === label)
+        .reduce((sum, band) => sum + band.count, 0);
+      const row = within(table).getByRole("row", {
+        name: new RegExp(`^${label.replace("+", "\\+")}\\b`),
+      });
+      expect(row).toHaveTextContent(total.toLocaleString("en-GB"));
+    }
+  });
+});

@@ -104,6 +104,33 @@ class BacktestMetrics(BaseModel):
     top_n_events_skipped: int = 0
 
 
+class CalibrationBand(BaseModel):
+    """What players projected into one band actually went on to score.
+
+    Error summaries pool the whole population, and the population is mostly
+    players projected near zero. That hides the only question a captain pick
+    asks: when this model says eight, what comes back? A band compares the mean
+    projection against the mean outcome for the same rows, so an over- or
+    under-projection that only appears at the top of the range is visible
+    instead of averaged into the bench.
+    """
+
+    model_config = ConfigDict(extra="forbid", frozen=True, strict=True)
+
+    label: str
+    lower: float
+    #: Open-ended at the top, because the highest band has no ceiling.
+    upper: float | None
+    count: int
+    mean_predicted: float
+    mean_actual: float
+
+    @property
+    def bias(self) -> float:
+        """Positive when the model promised more than the players returned."""
+        return self.mean_predicted - self.mean_actual
+
+
 class BacktestReport(BaseModel):
     """Full backtest outcome."""
 
@@ -112,6 +139,7 @@ class BacktestReport(BaseModel):
     overall: BacktestMetrics
     by_position: tuple[BacktestMetrics, ...]
     by_evidence_level: tuple[BacktestMetrics, ...]
+    calibration: tuple[CalibrationBand, ...]
     events_evaluated: int
     predictions_scored: int
     predictions_skipped_unavailable: int
@@ -185,10 +213,50 @@ def run_backtest(
             )
             for level in levels
         ),
+        calibration=_calibration(scored),
         events_evaluated=len(windows),
         predictions_scored=len(scored),
         predictions_skipped_unavailable=skipped,
     )
+
+
+#: Upper edges of the projected-points bands, in FPL points for one gameweek.
+#: Chosen so the top band is the captaincy range rather than a tail of one.
+CALIBRATION_BAND_EDGES: tuple[float, ...] = (2.0, 4.0, 6.0, 8.0)
+
+
+def _calibration(outcomes: Sequence[PredictionOutcome]) -> tuple[CalibrationBand, ...]:
+    """Mean projection against mean outcome, banded by what was projected."""
+    bounds: list[tuple[float, float | None]] = []
+    lower = 0.0
+    for edge in CALIBRATION_BAND_EDGES:
+        bounds.append((lower, edge))
+        lower = edge
+    bounds.append((lower, None))
+
+    bands: list[CalibrationBand] = []
+    for low, high in bounds:
+        rows = [
+            outcome
+            for outcome in outcomes
+            if outcome.predicted_points >= low and (high is None or outcome.predicted_points < high)
+        ]
+        if not rows:
+            # An empty band is dropped rather than published as zeroes, which
+            # would read as "the model was perfect here".
+            continue
+        count = len(rows)
+        bands.append(
+            CalibrationBand(
+                label=f"{low:g}+" if high is None else f"{low:g}-{high:g}",
+                lower=low,
+                upper=high,
+                count=count,
+                mean_predicted=sum(row.predicted_points for row in rows) / count,
+                mean_actual=sum(row.actual_points for row in rows) / count,
+            )
+        )
+    return tuple(bands)
 
 
 def _metrics(label: str, outcomes: Sequence[PredictionOutcome], top_n: int) -> BacktestMetrics:
@@ -275,9 +343,11 @@ def _top_n_hit_rate(
 
 
 __all__ = [
+    "CALIBRATION_BAND_EDGES",
     "BacktestLeakError",
     "BacktestMetrics",
     "BacktestReport",
+    "CalibrationBand",
     "EventWindow",
     "PlayerPrediction",
     "PredictionOutcome",

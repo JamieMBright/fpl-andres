@@ -28,6 +28,15 @@ import {
   type VerdictSeason,
 } from "../state/validation-verdict";
 
+type CalibrationBand = {
+  label: string;
+  lower: number;
+  upper: number | null;
+  count: number;
+  meanPredicted: number;
+  meanActual: number;
+};
+
 type Method = {
   label: string;
   scored: number;
@@ -37,6 +46,8 @@ type Method = {
   spearman: number | null;
   topNHitRate: number | null;
   byPosition: Record<string, number | null>;
+  /** Absent from artifacts generated before calibration was banded. */
+  calibration?: CalibrationBand[];
 };
 
 type SquadPlayer = {
@@ -350,6 +361,96 @@ function OpeningGameweekAccuracy({
   );
 }
 
+/**
+ * Calibration, banded by what was projected.
+ *
+ * A pooled mean error is mostly a statement about players projected near zero,
+ * because that is nearly everyone. The number that decides a captain is the top
+ * band on its own: when this says nine, what comes back? Bands are pooled
+ * across seasons so the top one has enough rows to mean anything.
+ */
+function CalibrationByBand({ seasons }: { seasons: readonly SeasonReport[] }) {
+  const pooled = new Map<
+    string,
+    {
+      label: string;
+      lower: number;
+      count: number;
+      predicted: number;
+      actual: number;
+    }
+  >();
+  for (const season of seasons) {
+    for (const band of methodOf(season, "model")?.calibration ?? []) {
+      const running = pooled.get(band.label) ?? {
+        label: band.label,
+        lower: band.lower,
+        count: 0,
+        predicted: 0,
+        actual: 0,
+      };
+      running.count += band.count;
+      running.predicted += band.meanPredicted * band.count;
+      running.actual += band.meanActual * band.count;
+      pooled.set(band.label, running);
+    }
+  }
+  if (pooled.size === 0) {
+    // Artifact predates the measurement. Claim nothing rather than imply it.
+    return null;
+  }
+  const bands = [...pooled.values()].sort(
+    (left, right) => left.lower - right.lower,
+  );
+  return (
+    <div className="validation-opening">
+      <h3>When I say six, what comes back?</h3>
+      <p>
+        Every error figure above is pooled over all players, and most players
+        are projected near zero &mdash; so the pooled number says little about
+        the rows a captain is chosen from. Here the same predictions are grouped
+        by what was projected, and each group is compared against what those
+        exact players went on to score.
+      </p>
+      <table>
+        <caption className="visually-hidden">
+          Mean projected points against mean actual points, by projected band
+        </caption>
+        <thead>
+          <tr>
+            <th scope="col">Projected</th>
+            <th scope="col">Predictions</th>
+            <th scope="col">Mean projected</th>
+            <th scope="col">Mean actual</th>
+            <th scope="col">Miss</th>
+          </tr>
+        </thead>
+        <tbody>
+          {bands.map((band) => {
+            const predicted = band.predicted / band.count;
+            const actual = band.actual / band.count;
+            return (
+              <tr key={band.label}>
+                <td>{band.label}</td>
+                <td className="mono">{band.count.toLocaleString("en-GB")}</td>
+                <td className="mono">{predicted.toFixed(2)}</td>
+                <td className="mono">{actual.toFixed(2)}</td>
+                <td className="mono">
+                  {predicted - actual >= 0 ? "+" : "\u2212"}
+                  {Math.abs(predicted - actual).toFixed(2)}
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+      <p className="validation-note">
+        A positive miss means I promised more than the players returned.
+      </p>
+    </div>
+  );
+}
+
 export function ValidationReport() {
   const freshness = freshnessOf(report.generatedAt);
   const captain = captainEvidence(report);
@@ -517,6 +618,7 @@ export function ValidationReport() {
           {pooledVerdict(report.seasons as VerdictSeason[]).sentence}
         </p>
         <OpeningGameweekAccuracy seasons={report.seasons} />
+        <CalibrationByBand seasons={report.seasons} />
       </section>
 
       <section aria-labelledby="position-title">
