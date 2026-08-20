@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "season": "2026-27",
-  "fetchedAt": "2026-08-20T09:42:26.543678+00:00",
+  "fetchedAt": "2026-08-20T20:24:32.610843+00:00",
   "source": "the-odds-api",
   "markets": [
     "player_goal_scorer_anytime",
@@ -17,13 +17,13 @@
   "quota": {
     "opening": {
       "cost": 0,
-      "used": 361,
-      "remaining": 139
+      "used": 418,
+      "remaining": 82
     },
     "closing": {
       "cost": 7,
-      "used": 368,
-      "remaining": 132
+      "used": 425,
+      "remaining": 75
     },
     "spentThisRun": 7
   },
@@ -58,7 +58,7 @@
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-08-21T19:00:00+00:00",
-      "visited_at": "2026-08-20T09:42:26.543678+00:00"
+      "visited_at": "2026-08-20T20:24:32.610843+00:00"
     },
     {
       "event_id": "95bb16d19debff3ec39919f361f072a4",
@@ -6966,17 +6966,17 @@
       "home_team": "Arsenal",
       "away_team": "Coventry City",
       "club": "COV",
-      "anytime_goal": 0.026901,
+      "anytime_goal": 0.029412,
       "first_goal": 0.011667,
       "last_goal": 0.010989,
       "anytime_assist": 0.038462,
-      "any_card": 0.661716,
+      "any_card": 0.309524,
       "red_card": 0.029412,
       "shots": null,
       "shots_on_target": 0.244565,
       "books": 4,
       "kickoff": "2026-08-21T19:00:00+00:00",
-      "observed_at": "2026-08-20T09:42:26.543678+00:00"
+      "observed_at": "2026-08-20T20:24:32.610843+00:00"
     },
     {
       "element_id": 10,
@@ -6985,16 +6985,16 @@
       "away_team": "Coventry City",
       "club": "ARS",
       "anytime_goal": 0.105263,
-      "first_goal": 0.048055,
+      "first_goal": 0.043478,
       "last_goal": 0.052632,
       "anytime_assist": 0.166667,
-      "any_card": 0.578383,
+      "any_card": 0.166667,
       "red_card": 0.014925,
       "shots": null,
       "shots_on_target": 0.485696,
       "books": 4,
       "kickoff": "2026-08-21T19:00:00+00:00",
-      "observed_at": "2026-08-20T09:42:26.543678+00:00"
+      "observed_at": "2026-08-20T20:24:32.610843+00:00"
     },
     {
       "element_id": 172,
@@ -7012,7 +7012,7 @@
       "shots_on_target": null,
       "books": 1,
       "kickoff": "2026-08-21T19:00:00+00:00",
-      "observed_at": "2026-08-20T09:42:26.543678+00:00"
+      "observed_at": "2026-08-20T20:24:32.610843+00:00"
     },
     {
       "element_id": 173,
@@ -7020,17 +7020,17 @@
       "home_team": "Arsenal",
       "away_team": "Coventry City",
       "club": "COV",
-      "anytime_goal": 0.046653,
+      "anytime_goal": 0.048643,
       "first_goal": 0.021999,
       "last_goal": 0.02439,
       "anytime_assist": 0.052632,
-      "any_card": 0.6513,
+      "any_card": 0.3125,
       "red_card": 0.029412,
       "shots": null,
       "shots_on_target": 0.26459,
       "books": 4,
       "kickoff": "2026-08-21T19:00:00+00:00",
-      "observed_at": "2026-08-20T09:42:26.543678+00:00"
+      "observed_at": "2026-08-20T20:24:32.610843+00:00"
     },
     {
       "element_id": 194,
@@ -7038,17 +7038,17 @@
       "home_team": "Arsenal",
       "away_team": "Coventry City",
       "club": "COV",
-      "anytime_goal": 0.114719,
-      "first_goal": 0.54505,
+      "anytime_goal": 0.169034,
+      "first_goal": 0.075,
       "last_goal": 0.1,
       "anytime_assist": 0.105263,
-      "any_card": 0.614097,
+      "any_card": 0.230159,
       "red_card": 0.019608,
       "shots": null,
       "shots_on_target": 0.603725,
       "books": 2,
       "kickoff": "2026-08-21T19:00:00+00:00",
-      "observed_at": "2026-08-20T09:42:26.543678+00:00"
+      "observed_at": "2026-08-20T20:24:32.610843+00:00"
     },
     {
       "element_id": 12,
@@ -7057,16 +7057,16 @@
       "away_team": "Coventry City",
       "club": "ARS",
       "anytime_goal": 0.384615,
-      "first_goal": 0.181818,
+      "first_goal": 0.166667,
       "last_goal": 0.181818,
       "anytime_assist": 0.4,
-      "any_card": 0.578383,
+      "any_card": 0.161458,
       "red_card": 0.012346,
       "shots": null,
       "shots_on_target": 1.615488,
       "books": 4,
       "kickoff": "2026-08-21T19:00:00+00:00",
-      "observed_at": "2026-08-20T09:42:26.543678+00:00"
+      "observed_at": "2026-08-20T20:24:32.610843+00:00"
     },
     {
       "element_id": 575,
@@ -7074,17 +7074,17 @@
       "home_team": "Arsenal",
       "away_team": "Coventry City",
       "club": "COV",
-      "anytime_goal": 0.059649,
-      "first_goal": 0.028595,
+      "anytime_goal": 0.064777,
+      "first_goal": 0.030835,
       "last_goal": 0.021739,
       "anytime_assist": 0.076923,
-      "any_card": 0.648896,
+      "any_card": 0.315136,
       "red_card": 0.029412,
       "shots": null,
       "shots_on_target": 0.248026,
       "books": 4,
       "kickoff": "2026-08-21T19:00:00+00:00",
-      "observed_at": "2026-08-20T09:42:26.543678+00:00"
+      "observed_at": "2026-08-20T20:24:32.610843+00:00"
     },
     {
       "element_id": 110,
@@ -7102,7 +7102,7 @@
       "shots_on_target": null,
       "books": 1,
       "kickoff": "2026-08-21T19:00:00+00:00",
-      "observed_at": "2026-08-20T09:42:26.543678+00:00"
+      "observed_at": "2026-08-20T20:24:32.610843+00:00"
     },
     {
       "element_id": 557,
@@ -7111,16 +7111,16 @@
       "away_team": "Coventry City",
       "club": "ARS",
       "anytime_goal": 0.444444,
-      "first_goal": 0.204167,
+      "first_goal": 0.190909,
       "last_goal": 0.208333,
       "anytime_assist": 0.444444,
-      "any_card": 0.599216,
+      "any_card": 0.182292,
       "red_card": 0.014925,
       "shots": null,
       "shots_on_target": 1.326722,
       "books": 4,
       "kickoff": "2026-08-21T19:00:00+00:00",
-      "observed_at": "2026-08-20T09:42:26.543678+00:00"
+      "observed_at": "2026-08-20T20:24:32.610843+00:00"
     },
     {
       "element_id": 11,
@@ -7132,13 +7132,13 @@
       "first_goal": 0.036472,
       "last_goal": 0.034483,
       "anytime_assist": 0.090909,
-      "any_card": 0.561716,
+      "any_card": 0.15,
       "red_card": 0.009901,
       "shots": null,
       "shots_on_target": 0.425314,
       "books": 4,
       "kickoff": "2026-08-21T19:00:00+00:00",
-      "observed_at": "2026-08-20T09:42:26.543678+00:00"
+      "observed_at": "2026-08-20T20:24:32.610843+00:00"
     },
     {
       "element_id": 1,
@@ -7156,7 +7156,7 @@
       "shots_on_target": null,
       "books": 1,
       "kickoff": "2026-08-21T19:00:00+00:00",
-      "observed_at": "2026-08-20T09:42:26.543678+00:00"
+      "observed_at": "2026-08-20T20:24:32.610843+00:00"
     },
     {
       "element_id": 13,
@@ -7164,17 +7164,17 @@
       "home_team": "Arsenal",
       "away_team": "Coventry City",
       "club": "ARS",
-      "anytime_goal": 0.25,
-      "first_goal": 0.1,
+      "anytime_goal": 0.2,
+      "first_goal": 0.090909,
       "last_goal": 0.090909,
       "anytime_assist": 0.294118,
-      "any_card": 0.578383,
+      "any_card": 0.166667,
       "red_card": 0.014925,
       "shots": null,
       "shots_on_target": 0.954774,
       "books": 4,
       "kickoff": "2026-08-21T19:00:00+00:00",
-      "observed_at": "2026-08-20T09:42:26.543678+00:00"
+      "observed_at": "2026-08-20T20:24:32.610843+00:00"
     },
     {
       "element_id": 14,
@@ -7182,8 +7182,8 @@
       "home_team": "Arsenal",
       "away_team": "Coventry City",
       "club": "ARS",
-      "anytime_goal": 0.411606,
-      "first_goal": 0.585959,
+      "anytime_goal": 0.384615,
+      "first_goal": 0.169034,
       "last_goal": 0.181818,
       "anytime_assist": 0.307692,
       "any_card": 0.553873,
@@ -7192,7 +7192,7 @@
       "shots_on_target": 1.676958,
       "books": 2,
       "kickoff": "2026-08-21T19:00:00+00:00",
-      "observed_at": "2026-08-20T09:42:26.543678+00:00"
+      "observed_at": "2026-08-20T20:24:32.610843+00:00"
     },
     {
       "element_id": 195,
@@ -7200,17 +7200,17 @@
       "home_team": "Arsenal",
       "away_team": "Coventry City",
       "club": "COV",
-      "anytime_goal": 0.153846,
-      "first_goal": 0.078788,
+      "anytime_goal": 0.166667,
+      "first_goal": 0.071795,
       "last_goal": 0.090909,
       "anytime_assist": 0.083333,
-      "any_card": 0.578383,
+      "any_card": 0.154762,
       "red_card": 0.012346,
       "shots": null,
       "shots_on_target": 0.954774,
       "books": 4,
       "kickoff": "2026-08-21T19:00:00+00:00",
-      "observed_at": "2026-08-20T09:42:26.543678+00:00"
+      "observed_at": "2026-08-20T20:24:32.610843+00:00"
     },
     {
       "element_id": 186,
@@ -7218,17 +7218,17 @@
       "home_team": "Arsenal",
       "away_team": "Coventry City",
       "club": "COV",
-      "anytime_goal": 0.071862,
-      "first_goal": 0.521365,
+      "anytime_goal": 0.111111,
+      "first_goal": 0.048055,
       "last_goal": 0.052632,
       "anytime_assist": 0.105263,
-      "any_card": 0.581256,
+      "any_card": 0.186207,
       "red_card": 0.014925,
       "shots": null,
       "shots_on_target": 0.496685,
       "books": 2,
       "kickoff": "2026-08-21T19:00:00+00:00",
-      "observed_at": "2026-08-20T09:42:26.543678+00:00"
+      "observed_at": "2026-08-20T20:24:32.610843+00:00"
     },
     {
       "element_id": 27,
@@ -7236,8 +7236,8 @@
       "home_team": "Arsenal",
       "away_team": "Coventry City",
       "club": "ARS",
-      "anytime_goal": 0.578947,
-      "first_goal": 0.603745,
+      "anytime_goal": 0.507732,
+      "first_goal": 0.210736,
       "last_goal": 0.217391,
       "anytime_assist": 0.217391,
       "any_card": 0.614097,
@@ -7246,7 +7246,7 @@
       "shots_on_target": 1.87017,
       "books": 2,
       "kickoff": "2026-08-21T19:00:00+00:00",
-      "observed_at": "2026-08-20T09:42:26.543678+00:00"
+      "observed_at": "2026-08-20T20:24:32.610843+00:00"
     },
     {
       "element_id": 18,
@@ -7254,8 +7254,8 @@
       "home_team": "Arsenal",
       "away_team": "Coventry City",
       "club": "ARS",
-      "anytime_goal": 0.401116,
-      "first_goal": 0.585959,
+      "anytime_goal": 0.3643,
+      "first_goal": 0.162338,
       "last_goal": 0.181818,
       "anytime_assist": 0.266667,
       "any_card": 0.581256,
@@ -7264,7 +7264,7 @@
       "shots_on_target": 1.521301,
       "books": 2,
       "kickoff": "2026-08-21T19:00:00+00:00",
-      "observed_at": "2026-08-20T09:42:26.543678+00:00"
+      "observed_at": "2026-08-20T20:24:32.610843+00:00"
     },
     {
       "element_id": 584,
@@ -7272,17 +7272,17 @@
       "home_team": "Arsenal",
       "away_team": "Coventry City",
       "club": "COV",
-      "anytime_goal": 0.090909,
-      "first_goal": 0.516789,
+      "anytime_goal": 0.095455,
+      "first_goal": 0.045549,
       "last_goal": 0.043478,
       "anytime_assist": 0.133333,
-      "any_card": 0.667463,
+      "any_card": 0.357599,
       "red_card": 0.034483,
       "shots": null,
       "shots_on_target": 0.460638,
       "books": 2,
       "kickoff": "2026-08-21T19:00:00+00:00",
-      "observed_at": "2026-08-20T09:42:26.543678+00:00"
+      "observed_at": "2026-08-20T20:24:32.610843+00:00"
     },
     {
       "element_id": 193,
@@ -7290,8 +7290,8 @@
       "home_team": "Arsenal",
       "away_team": "Coventry City",
       "club": "COV",
-      "anytime_goal": 0.11954,
-      "first_goal": 0.540504,
+      "anytime_goal": 0.172414,
+      "first_goal": 0.081169,
       "last_goal": 0.090909,
       "anytime_assist": 0.090909,
       "any_card": 0.581256,
@@ -7300,7 +7300,7 @@
       "shots_on_target": 0.668593,
       "books": 2,
       "kickoff": "2026-08-21T19:00:00+00:00",
-      "observed_at": "2026-08-20T09:42:26.543678+00:00"
+      "observed_at": "2026-08-20T20:24:32.610843+00:00"
     },
     {
       "element_id": 183,
@@ -7318,7 +7318,7 @@
       "shots_on_target": 0.496685,
       "books": 2,
       "kickoff": "2026-08-21T19:00:00+00:00",
-      "observed_at": "2026-08-20T09:42:26.543678+00:00"
+      "observed_at": "2026-08-20T20:24:32.610843+00:00"
     },
     {
       "element_id": 178,
@@ -7336,7 +7336,7 @@
       "shots_on_target": 0.209396,
       "books": 2,
       "kickoff": "2026-08-21T19:00:00+00:00",
-      "observed_at": "2026-08-20T09:42:26.543678+00:00"
+      "observed_at": "2026-08-20T20:24:32.610843+00:00"
     },
     {
       "element_id": 176,
@@ -7348,13 +7348,13 @@
       "first_goal": 0.010445,
       "last_goal": 0.010989,
       "anytime_assist": 0.076923,
-      "any_card": 0.581256,
+      "any_card": 0.266989,
       "red_card": 0.014925,
       "shots": null,
       "shots_on_target": 0.199803,
       "books": 4,
       "kickoff": "2026-08-21T19:00:00+00:00",
-      "observed_at": "2026-08-20T09:42:26.543678+00:00"
+      "observed_at": "2026-08-20T20:24:32.610843+00:00"
     },
     {
       "element_id": 179,
@@ -7366,13 +7366,13 @@
       "first_goal": 0.502092,
       "last_goal": 0.014085,
       "anytime_assist": 0.047619,
-      "any_card": 0.648896,
+      "any_card": 0.305361,
       "red_card": 0.029412,
       "shots": null,
       "shots_on_target": 0.179047,
       "books": 2,
       "kickoff": "2026-08-21T19:00:00+00:00",
-      "observed_at": "2026-08-20T09:42:26.543678+00:00"
+      "observed_at": "2026-08-20T20:24:32.610843+00:00"
     },
     {
       "element_id": 187,
@@ -7384,13 +7384,13 @@
       "first_goal": 0.51428,
       "last_goal": 0.038462,
       "anytime_assist": 0.076923,
-      "any_card": 0.668661,
+      "any_card": 0.329861,
       "red_card": 0.034483,
       "shots": null,
       "shots_on_target": 0.408702,
       "books": 2,
       "kickoff": "2026-08-21T19:00:00+00:00",
-      "observed_at": "2026-08-20T09:42:26.543678+00:00"
+      "observed_at": "2026-08-20T20:24:32.610843+00:00"
     },
     {
       "element_id": 192,
@@ -7408,7 +7408,7 @@
       "shots_on_target": null,
       "books": 2,
       "kickoff": "2026-08-21T19:00:00+00:00",
-      "observed_at": "2026-08-20T09:42:26.543678+00:00"
+      "observed_at": "2026-08-20T20:24:32.610843+00:00"
     },
     {
       "element_id": 26,
@@ -7417,16 +7417,16 @@
       "away_team": "Coventry City",
       "club": "ARS",
       "anytime_goal": 0.47619,
-      "first_goal": 0.219807,
+      "first_goal": 0.215079,
       "last_goal": 0.217391,
       "anytime_assist": 0.285714,
-      "any_card": 0.590288,
+      "any_card": 0.186147,
       "red_card": 0.014925,
       "shots": null,
       "shots_on_target": 1.464443,
       "books": 4,
       "kickoff": "2026-08-21T19:00:00+00:00",
-      "observed_at": "2026-08-20T09:42:26.543678+00:00"
+      "observed_at": "2026-08-20T20:24:32.610843+00:00"
     },
     {
       "element_id": 177,
@@ -7438,13 +7438,13 @@
       "first_goal": 0.516789,
       "last_goal": 0.043478,
       "anytime_assist": 0.1,
-      "any_card": 0.614097,
+      "any_card": 0.270563,
       "red_card": 0.019608,
       "shots": null,
       "shots_on_target": 0.284431,
       "books": 2,
       "kickoff": "2026-08-21T19:00:00+00:00",
-      "observed_at": "2026-08-20T09:42:26.543678+00:00"
+      "observed_at": "2026-08-20T20:24:32.610843+00:00"
     },
     {
       "element_id": 2,
@@ -7462,7 +7462,7 @@
       "shots_on_target": null,
       "books": 1,
       "kickoff": "2026-08-21T19:00:00+00:00",
-      "observed_at": "2026-08-20T09:42:26.543678+00:00"
+      "observed_at": "2026-08-20T20:24:32.610843+00:00"
     },
     {
       "element_id": 174,
@@ -7474,13 +7474,13 @@
       "first_goal": 0.502625,
       "last_goal": 0.015152,
       "anytime_assist": 0.043478,
-      "any_card": 0.667463,
+      "any_card": 0.33908,
       "red_card": 0.034483,
       "shots": null,
       "shots_on_target": 0.227933,
       "books": 2,
       "kickoff": "2026-08-21T19:00:00+00:00",
-      "observed_at": "2026-08-20T09:42:26.543678+00:00"
+      "observed_at": "2026-08-20T20:24:32.610843+00:00"
     },
     {
       "element_id": 180,
@@ -7498,7 +7498,7 @@
       "shots_on_target": 0.179047,
       "books": 2,
       "kickoff": "2026-08-21T19:00:00+00:00",
-      "observed_at": "2026-08-20T09:42:26.543678+00:00"
+      "observed_at": "2026-08-20T20:24:32.610843+00:00"
     },
     {
       "element_id": 4,
@@ -7506,17 +7506,17 @@
       "home_team": "Arsenal",
       "away_team": "Coventry City",
       "club": "ARS",
-      "anytime_goal": 0.172414,
-      "first_goal": 0.075,
+      "anytime_goal": 0.153846,
+      "first_goal": 0.066667,
       "last_goal": 0.083333,
       "anytime_assist": 0.1,
-      "any_card": 0.59505,
+      "any_card": 0.183333,
       "red_card": 0.019608,
       "shots": null,
       "shots_on_target": 0.877624,
       "books": 4,
       "kickoff": "2026-08-21T19:00:00+00:00",
-      "observed_at": "2026-08-20T09:42:26.543678+00:00"
+      "observed_at": "2026-08-20T20:24:32.610843+00:00"
     },
     {
       "element_id": 15,
@@ -7524,17 +7524,17 @@
       "home_team": "Arsenal",
       "away_team": "Coventry City",
       "club": "ARS",
-      "anytime_goal": 0.266667,
-      "first_goal": 0.111455,
+      "anytime_goal": 0.25641,
+      "first_goal": 0.102632,
       "last_goal": 0.117647,
       "anytime_assist": 0.344828,
-      "any_card": 0.561716,
+      "any_card": 0.129167,
       "red_card": 0.009901,
       "shots": null,
       "shots_on_target": 1.076521,
       "books": 4,
       "kickoff": "2026-08-21T19:00:00+00:00",
-      "observed_at": "2026-08-20T09:42:26.543678+00:00"
+      "observed_at": "2026-08-20T20:24:32.610843+00:00"
     },
     {
       "element_id": 19,
@@ -7542,17 +7542,17 @@
       "home_team": "Arsenal",
       "away_team": "Coventry City",
       "club": "ARS",
-      "anytime_goal": 0.208696,
-      "first_goal": 0.550605,
+      "anytime_goal": 0.194903,
+      "first_goal": 0.088889,
       "last_goal": 0.111111,
       "anytime_assist": 0.2,
-      "any_card": 0.628383,
+      "any_card": 0.233333,
       "red_card": 0.02439,
       "shots": null,
       "shots_on_target": 0.519504,
       "books": 2,
       "kickoff": "2026-08-21T19:00:00+00:00",
-      "observed_at": "2026-08-20T09:42:26.543678+00:00"
+      "observed_at": "2026-08-20T20:24:32.610843+00:00"
     },
     {
       "element_id": 184,
@@ -7560,17 +7560,17 @@
       "home_team": "Arsenal",
       "away_team": "Coventry City",
       "club": "COV",
-      "anytime_goal": 0.055728,
+      "anytime_goal": 0.058824,
       "first_goal": 0.02439,
       "last_goal": 0.02439,
       "anytime_assist": 0.1,
-      "any_card": 0.610523,
+      "any_card": 0.240473,
       "red_card": 0.019608,
       "shots": null,
       "shots_on_target": 0.244565,
       "books": 4,
       "kickoff": "2026-08-21T19:00:00+00:00",
-      "observed_at": "2026-08-20T09:42:26.543678+00:00"
+      "observed_at": "2026-08-20T20:24:32.610843+00:00"
     },
     {
       "element_id": 20,
@@ -7578,8 +7578,8 @@
       "home_team": "Arsenal",
       "away_team": "Coventry City",
       "club": "ARS",
-      "anytime_goal": 0.383431,
-      "first_goal": 0.585959,
+      "anytime_goal": 0.36039,
+      "first_goal": 0.162338,
       "last_goal": 0.181818,
       "anytime_assist": 0.307692,
       "any_card": 0.614097,
@@ -7588,7 +7588,7 @@
       "shots_on_target": 1.521301,
       "books": 2,
       "kickoff": "2026-08-21T19:00:00+00:00",
-      "observed_at": "2026-08-20T09:42:26.543678+00:00"
+      "observed_at": "2026-08-20T20:24:32.610843+00:00"
     },
     {
       "element_id": 17,
@@ -7596,17 +7596,17 @@
       "home_team": "Arsenal",
       "away_team": "Coventry City",
       "club": "ARS",
-      "anytime_goal": 0.382653,
-      "first_goal": 0.59505,
+      "anytime_goal": 0.389267,
+      "first_goal": 0.171429,
       "last_goal": 0.2,
       "anytime_assist": 0.285714,
-      "any_card": 0.628383,
+      "any_card": 0.233333,
       "red_card": 0.02439,
       "shots": null,
       "shots_on_target": 1.376736,
       "books": 2,
       "kickoff": "2026-08-21T19:00:00+00:00",
-      "observed_at": "2026-08-20T09:42:26.543678+00:00"
+      "observed_at": "2026-08-20T20:24:32.610843+00:00"
     },
     {
       "element_id": 175,
@@ -7618,13 +7618,13 @@
       "first_goal": 0.011667,
       "last_goal": 0.010989,
       "anytime_assist": 0.083333,
-      "any_card": 0.59505,
+      "any_card": 0.211111,
       "red_card": 0.014925,
       "shots": null,
       "shots_on_target": 0.186258,
       "books": 4,
       "kickoff": "2026-08-21T19:00:00+00:00",
-      "observed_at": "2026-08-20T09:42:26.543678+00:00"
+      "observed_at": "2026-08-20T20:24:32.610843+00:00"
     },
     {
       "element_id": 7,
@@ -7633,16 +7633,16 @@
       "away_team": "Coventry City",
       "club": "ARS",
       "anytime_goal": 0.153846,
-      "first_goal": 0.078788,
+      "first_goal": 0.062745,
       "last_goal": 0.090909,
       "anytime_assist": 0.172414,
-      "any_card": 0.614097,
+      "any_card": 0.219048,
       "red_card": 0.02439,
       "shots": null,
       "shots_on_target": 0.514428,
       "books": 4,
       "kickoff": "2026-08-21T19:00:00+00:00",
-      "observed_at": "2026-08-20T09:42:26.543678+00:00"
+      "observed_at": "2026-08-20T20:24:32.610843+00:00"
     },
     {
       "element_id": 16,
@@ -7650,8 +7650,8 @@
       "home_team": "Arsenal",
       "away_team": "Coventry City",
       "club": "ARS",
-      "anytime_goal": 0.380228,
-      "first_goal": 0.160256,
+      "anytime_goal": 0.322581,
+      "first_goal": 0.153846,
       "last_goal": 0.166667,
       "anytime_assist": 0.333333,
       "any_card": 0.553873,
@@ -7660,7 +7660,7 @@
       "shots_on_target": 1.326722,
       "books": 4,
       "kickoff": "2026-08-21T19:00:00+00:00",
-      "observed_at": "2026-08-20T09:42:26.543678+00:00"
+      "observed_at": "2026-08-20T20:24:32.610843+00:00"
     },
     {
       "element_id": 104,
@@ -7672,13 +7672,13 @@
       "first_goal": 0.027045,
       "last_goal": 0.034483,
       "anytime_assist": 0.090909,
-      "any_card": 0.687357,
+      "any_card": 0.377493,
       "red_card": 0.034483,
       "shots": null,
       "shots_on_target": 0.313067,
       "books": 4,
       "kickoff": "2026-08-21T19:00:00+00:00",
-      "observed_at": "2026-08-20T09:42:26.543678+00:00"
+      "observed_at": "2026-08-20T20:24:32.610843+00:00"
     },
     {
       "element_id": 171,
@@ -7696,7 +7696,7 @@
       "shots_on_target": null,
       "books": 1,
       "kickoff": "2026-08-21T19:00:00+00:00",
-      "observed_at": "2026-08-20T09:42:26.543678+00:00"
+      "observed_at": "2026-08-20T20:24:32.610843+00:00"
     },
     {
       "element_id": 9,
@@ -7704,17 +7704,17 @@
       "home_team": "Arsenal",
       "away_team": "Coventry City",
       "club": "ARS",
-      "anytime_goal": 0.131579,
-      "first_goal": 0.055728,
+      "anytime_goal": 0.111111,
+      "first_goal": 0.047619,
       "last_goal": 0.047619,
       "anytime_assist": 0.153846,
-      "any_card": 0.610523,
+      "any_card": 0.215473,
       "red_card": 0.02439,
       "shots": null,
       "shots_on_target": 0.496685,
       "books": 4,
       "kickoff": "2026-08-21T19:00:00+00:00",
-      "observed_at": "2026-08-20T09:42:26.543678+00:00"
+      "observed_at": "2026-08-20T20:24:32.610843+00:00"
     },
     {
       "element_id": 191,
@@ -7732,7 +7732,7 @@
       "shots_on_target": null,
       "books": 2,
       "kickoff": "2026-08-21T19:00:00+00:00",
-      "observed_at": "2026-08-20T09:42:26.543678+00:00"
+      "observed_at": "2026-08-20T20:24:32.610843+00:00"
     },
     {
       "element_id": 8,
@@ -7741,16 +7741,16 @@
       "away_team": "Coventry City",
       "club": "ARS",
       "anytime_goal": 0.153846,
-      "first_goal": 0.075,
+      "first_goal": 0.066667,
       "last_goal": 0.083333,
       "anytime_assist": 0.172414,
-      "any_card": 0.633938,
+      "any_card": 0.25,
       "red_card": 0.029412,
       "shots": null,
       "shots_on_target": 0.864396,
       "books": 4,
       "kickoff": "2026-08-21T19:00:00+00:00",
-      "observed_at": "2026-08-20T09:42:26.543678+00:00"
+      "observed_at": "2026-08-20T20:24:32.610843+00:00"
     },
     {
       "element_id": 185,
@@ -7758,17 +7758,17 @@
       "home_team": "Arsenal",
       "away_team": "Coventry City",
       "club": "COV",
-      "anytime_goal": 0.102632,
-      "first_goal": 0.048055,
+      "anytime_goal": 0.105263,
+      "first_goal": 0.045549,
       "last_goal": 0.052632,
       "anytime_assist": 0.1,
-      "any_card": 0.571973,
+      "any_card": 0.167832,
       "red_card": 0.012346,
       "shots": null,
       "shots_on_target": 0.446412,
       "books": 4,
       "kickoff": "2026-08-21T19:00:00+00:00",
-      "observed_at": "2026-08-20T09:42:26.543678+00:00"
+      "observed_at": "2026-08-20T20:24:32.610843+00:00"
     },
     {
       "element_id": 188,
@@ -7776,17 +7776,17 @@
       "home_team": "Arsenal",
       "away_team": "Coventry City",
       "club": "COV",
-      "anytime_goal": 0.090909,
-      "first_goal": 0.060201,
+      "anytime_goal": 0.111111,
+      "first_goal": 0.047619,
       "last_goal": 0.076923,
       "anytime_assist": 0.117647,
-      "any_card": 0.603745,
+      "any_card": 0.233696,
       "red_card": 0.019608,
       "shots": null,
       "shots_on_target": 0.494854,
       "books": 4,
       "kickoff": "2026-08-21T19:00:00+00:00",
-      "observed_at": "2026-08-20T09:42:26.543678+00:00"
+      "observed_at": "2026-08-20T20:24:32.610843+00:00"
     },
     {
       "element_id": 25,
@@ -7794,17 +7794,17 @@
       "home_team": "Arsenal",
       "away_team": "Coventry City",
       "club": "ARS",
-      "anytime_goal": 0.571429,
-      "first_goal": 0.261538,
+      "anytime_goal": 0.555556,
+      "first_goal": 0.253205,
       "last_goal": 0.25641,
       "anytime_assist": 0.208333,
-      "any_card": 0.566478,
+      "any_card": 0.142857,
       "red_card": 0.009901,
       "shots": null,
       "shots_on_target": 1.480779,
       "books": 4,
       "kickoff": "2026-08-21T19:00:00+00:00",
-      "observed_at": "2026-08-20T09:42:26.543678+00:00"
+      "observed_at": "2026-08-20T20:24:32.610843+00:00"
     }
   ]
 }
