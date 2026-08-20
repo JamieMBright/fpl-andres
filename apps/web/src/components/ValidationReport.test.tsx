@@ -113,8 +113,12 @@ describe("calibration is reported by projected band", () => {
       const total = banded
         .filter((band) => band.label === label)
         .reduce((sum, band) => sum + band.count, 0);
+      // Escaped and anchored on whitespace rather than `\b`: the top band is
+      // "8+", and there is no word boundary between a plus and the space that
+      // follows it.
+      const escaped = label.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
       const row = within(table).getByRole("row", {
-        name: new RegExp(`^${label.replace("+", "\\+")}\\b`),
+        name: new RegExp(`^${escaped}(\\s|$)`),
       });
       expect(row).toHaveTextContent(total.toLocaleString("en-GB"));
     }
