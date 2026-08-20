@@ -29,6 +29,12 @@ from __future__ import annotations
 
 __all__ = ["MODEL_VERSION"]
 
+#: 8.6 groups scored predictions by what was projected and reports each band's
+#: mean projection against its mean outcome. No projected point moves: this is
+#: the grading harness, which this file's own rule places in scope because
+#: `validation.json` is keyed on the version and now carries a field it did not
+#: before. Minor, and the numerical projection is byte-identical to 8.5.
+#:
 #: 8.5 reconciles the player scoring market against the team scoring market and
 #: stops reading two separate selections in one book as a complementary pair.
 #: Summing the per-player anytime-scorer prices across a club implied 2.48x the
@@ -361,4 +367,4 @@ __all__ = ["MODEL_VERSION"]
 #: projection and resampled, so a gap that does not clear zero is reported as
 #: not clearing zero. No projection changed; what changed is what may be
 #: claimed from it.
-MODEL_VERSION = "8.5"
+MODEL_VERSION = "8.6"

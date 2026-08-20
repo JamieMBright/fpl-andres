@@ -233,5 +233,17 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git commit -m "Refresh the bookmaker-implied goals distribution"
-          git pull --rebase --autostash
-          git push
+          # The player-odds job commits the same artifacts and both are triggered
+          # by the same push, so the two race. A single pull-then-push loses
+          # that race whenever the other job lands in between, and the round
+          # this run paid the provider for is thrown away. Retry instead.
+          for attempt in 1 2 3 4 5; do
+            git pull --rebase --autostash
+            if git push; then
+              exit 0
+            fi
+            echo "push rejected on attempt $attempt; the branch moved underneath"
+            sleep $((attempt * 5))
+          done
+          echo "could not push the refreshed odds after five attempts" >&2
+          exit 1

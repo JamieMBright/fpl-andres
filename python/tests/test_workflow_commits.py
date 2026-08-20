@@ -25,7 +25,11 @@ WORKFLOWS = Path(__file__).resolve().parents[2] / ".github" / "workflows"
 #: these without formatting it hands the failure to the next push.
 _PRETTIER_OWNED = re.compile(r"[\w./-]+\.(?:json|md)\b")
 
-_PUSH = re.compile(r"^\s*git push\b", re.MULTILINE)
+#: A push is a push wherever it sits on the line. The odds jobs retry inside
+#: `if git push; then`, and an anchored pattern silently stopped seeing them —
+#: which is the coverage loss the guard below exists to catch. The leading
+#: `[^#\n]*` keeps a mention inside a comment from counting.
+_PUSH = re.compile(r"^[^#\n]*\bgit push\b", re.MULTILINE)
 _REBASE = re.compile(r"^\s*git pull --rebase --autostash\b", re.MULTILINE)
 #: `git diff` without `--cached` compares the working tree to the index and
 #: ignores untracked files entirely.

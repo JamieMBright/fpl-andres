@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import openingSquad from "./data/opening-squad.json";
+import fixtureOdds from "./data/fixture-odds.json";
 import inputs from "./data/season-inputs.json";
 import { fixtureEvidenceAt } from "./state/fixture-evidence";
 import {
@@ -67,20 +68,29 @@ describe("season inputs artifact", () => {
   it("publishes the exact MCI-Bournemouth market evidence used in GW1", () => {
     const evidence = fixtureEvidenceAt("MCI", 0);
 
+    // Checked against the odds artifact it was derived from rather than against
+    // frozen literals. The bookmaker job re-prices the round in the last day
+    // before a deadline, so literals here would redden CI on every refresh and
+    // teach the next reader to update them without looking. What has to hold is
+    // that the number shown to a manager is the number the book actually quoted.
+    const quoted = fixtureOdds.fixtures.find(
+      (fixture) => fixture.home === "MCI" && fixture.away === "BOU",
+    );
+    expect(quoted).toBeDefined();
+
     expect(evidence).toMatchObject({
       event: 1,
       opponent: "BOU",
       venue: "H",
-      expectedGoals: 2.3956,
-      opponentExpectedGoals: 1.054,
-      cleanSheetProbability: 0.3485,
-      adjustments: {
-        attacking: 1.593,
-        cleanSheet: 1.385,
-      },
+      expectedGoals: quoted?.homeExpectedGoals,
+      opponentExpectedGoals: quoted?.awayExpectedGoals,
+      cleanSheetProbability: quoted?.homeCleanSheet,
       source: "the-odds-api",
-      updatedAt: "2026-08-18T23:20:01.490355+00:00",
+      updatedAt: fixtureOdds.generatedAt,
     });
+    // A rung with a missing half would satisfy the match above by absence.
+    expect(evidence?.adjustments.attacking).toBeGreaterThan(0);
+    expect(evidence?.adjustments.cleanSheet).toBeGreaterThan(0);
   });
 
   it("decays a quoted market deviation with a two-gameweek half-life", () => {

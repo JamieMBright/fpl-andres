@@ -193,5 +193,17 @@ jobs:
             exit 0
           fi
           git commit -m "Refresh player market odds"
-          git pull --rebase --autostash
-          git push
+          # The bookmaker-odds job commits the same artifacts and both are
+          # triggered by the same push, so the two race. A single pull-then-push
+          # loses that race whenever the other job lands in between, and the
+          # quotes this run spent budget on are thrown away. Retry instead.
+          for attempt in 1 2 3 4 5; do
+            git pull --rebase --autostash
+            if git push; then
+              exit 0
+            fi
+            echo "push rejected on attempt $attempt; the branch moved underneath"
+            sleep $((attempt * 5))
+          done
+          echo "could not push the refreshed player odds after five attempts" >&2
+          exit 1
