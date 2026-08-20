@@ -12,17 +12,39 @@ import {
 import { useDocumentTitle } from "../state/use-document-title";
 const clubNames = new Map(TEAM_KITS.map((team) => [team.shortName, team.name]));
 
-function statusCopy(health: MarketHealth) {
+function playerMarketCoverage(health: MarketHealth) {
+  const playerMarkets = health.markets.filter(
+    (market) => market.kind === "player",
+  );
+  const complete = playerMarkets.filter(
+    (market) => market.status === "complete",
+  );
+  const incomplete = playerMarkets.filter(
+    (market) => market.status !== "complete",
+  );
+  return { playerMarkets, complete, incomplete };
+}
+
+export function statusCopy(health: MarketHealth) {
   const hours =
     health.hoursUntilDeadline === null
       ? "an unreadable deadline"
       : `${Math.max(0, Math.round(health.hoursUntilDeadline))} hours to deadline`;
+  const playerCoverage = playerMarketCoverage(health);
+  const incompleteMarkets = playerCoverage.incomplete
+    .map((market) => market.label)
+    .join(", ");
+  const playerClassCoverage = `${playerCoverage.complete.length}/${playerCoverage.playerMarkets.length}`;
   if (health.verdict === "deadline-anomaly") {
+    const detail =
+      health.playerFixturesCovered < health.fixturesExpected
+        ? `${health.playerFixturesCovered}/${health.fixturesExpected} fixtures have usable player prices with ${hours}. I expected the round by now.`
+        : `${health.playerFixturesCovered}/${health.fixturesExpected} fixtures have player prices, but only ${playerClassCoverage} player markets are complete with ${hours}${incompleteMarkets ? `: ${incompleteMarkets}` : ""}.`;
     return {
       className: "error",
       icon: <AlertTriangle aria-hidden="true" size={20} />,
       title: "Player markets are late",
-      detail: `${health.playerFixturesCovered}/${health.fixturesExpected} fixtures have usable player prices with ${hours}. I expected the round by now.`,
+      detail,
     };
   }
   if (health.verdict === "ready") {
@@ -46,7 +68,11 @@ function statusCopy(health: MarketHealth) {
     className: "stale",
     icon: <CircleHelp aria-hidden="true" size={20} />,
     title: "Player markets are still opening",
-    detail: `${health.playerFixturesCovered}/${health.fixturesExpected} fixtures have usable player prices with ${hours}.`,
+    detail:
+      health.playerFixturesCovered === health.fixturesExpected &&
+      playerCoverage.incomplete.length > 0
+        ? `${health.playerFixturesCovered}/${health.fixturesExpected} fixtures have player prices; ${playerClassCoverage} player markets are complete.`
+        : `${health.playerFixturesCovered}/${health.fixturesExpected} fixtures have usable player prices with ${hours}.`,
   };
 }
 

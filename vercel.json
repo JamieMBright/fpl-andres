@@ -19,6 +19,9 @@
     },
     "api/contact.ts": {
       "maxDuration": 10
+    },
+    "api/recommendations/*.ts": {
+      "maxDuration": 5
     }
   },
   "rewrites": [

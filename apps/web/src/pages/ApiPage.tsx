@@ -46,7 +46,7 @@ export default function ApiPage() {
           </p>
         </section>
         <section aria-labelledby="api-endpoints">
-          <h2 id="api-endpoints">Endpoints planned</h2>
+          <h2 id="api-endpoints">Endpoints</h2>
           <dl className="api-endpoints">
             {ENDPOINTS.map(([path, description]) => (
               <div key={path}>
@@ -59,23 +59,34 @@ export default function ApiPage() {
       </div>
 
       <section className="api-example" aria-labelledby="api-example">
-        <h2 id="api-example">Response shape</h2>
+        <h2 id="api-example">Python example</h2>
         <pre aria-label="API response example">
-          {`{
-  "schemaVersion": 1,
-  "generatedAt": "2026-08-19T21:00:00Z",
-  "modelVersion": "8.3",
-  "deadline": "2026-08-21T17:30:00Z",
-  "recommendations": {
-    "captain": {
-      "name": "Player",
-      "expectedPoints": 6.4,
-      "evidence": "inferred",
-      "sources": ["season-inputs", "fixture-odds", "player-odds"]
-    }
-  }
-}`}
+          {`import requests
+
+BASE = "https://fpl-andres.vercel.app"
+
+response = requests.get(
+    f"{BASE}/api/recommendations/xstart",
+    timeout=10,
+)
+response.raise_for_status()
+
+payload = response.json()
+for team in payload["teams"]:
+    if team["club"] == "LEE":
+        for player in team["players"][:5]:
+            print(
+                player["name"],
+                player["startProbability"],
+                player["evidence"],
+            )`}
         </pre>
+        <p>
+          The endpoints are public, read-only and rate-limited. Check
+          <code>RateLimit-Remaining</code> before polling again; a limit
+          response is HTTP <code>429</code> and includes
+          <code>Retry-After</code>.
+        </p>
       </section>
     </section>
   );

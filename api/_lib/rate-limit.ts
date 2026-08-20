@@ -56,6 +56,12 @@ export const TEAM_STATE_POLICY: RateLimitPolicy = {
   global: 200,
 };
 
+/** Public artifact reads are cheap, but still bounded against scraping loops. */
+export const RECOMMENDATIONS_POLICY: RateLimitPolicy = {
+  perClient: 120,
+  global: 1_200,
+};
+
 /** Contact sends mail, so its abuse budget is deliberately much smaller. */
 export const CONTACT_POLICY: RateLimitPolicy = {
   perClient: 3,
