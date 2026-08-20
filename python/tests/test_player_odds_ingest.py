@@ -611,3 +611,132 @@ def test_a_name_nobody_carries_is_unmatched() -> None:
     _matched, unmatched = crosswalk([_row("Nobody At All")], ELEMENTS, {})
 
     assert unmatched == ("Nobody At All",)
+
+
+def test_a_first_scorer_price_above_the_anytime_price_is_refused() -> None:
+    """Scoring first requires scoring, so the bound needs no model behind it.
+
+    Eleven players carried a first-scorer probability near 0.5 on 2026-08-20
+    from books that priced them anytime between 0.04 and 0.20. Whatever the
+    provider meant by it, it is not a first-scorer probability.
+    """
+    rows = read_event(
+        _event(
+            _book(
+                "bet365",
+                "player_goal_scorer_anytime",
+                [{"description": "Jake Bidwell", "name": "Yes", "price": 21.0}],
+            ),
+            {
+                "key": "unibet",
+                "markets": [
+                    {
+                        "key": "player_first_goal_scorer",
+                        "outcomes": [
+                            {
+                                "description": "Jake Bidwell",
+                                "name": "Yes",
+                                "price": 1.99,
+                            }
+                        ],
+                    }
+                ],
+            },
+        )
+    )
+
+    (row,) = rows
+    # The impossible reading goes; the sound one beside it stays, because it is
+    # the one that prices a scoring route.
+    assert row.first_goal is None
+    assert row.anytime_goal is not None
+    assert row.anytime_goal == pytest.approx(1 / 21.0, rel=1e-6)
+
+
+def test_a_last_scorer_price_above_the_anytime_price_is_refused() -> None:
+    rows = read_event(
+        _event(
+            _book(
+                "bet365",
+                "player_goal_scorer_anytime",
+                [{"description": "Jake Bidwell", "name": "Yes", "price": 21.0}],
+            ),
+            {
+                "key": "unibet",
+                "markets": [
+                    {
+                        "key": "player_last_goal_scorer",
+                        "outcomes": [
+                            {
+                                "description": "Jake Bidwell",
+                                "name": "Yes",
+                                "price": 1.99,
+                            }
+                        ],
+                    }
+                ],
+            },
+        )
+    )
+
+    (row,) = rows
+    assert row.last_goal is None
+    assert row.anytime_goal is not None
+
+
+def test_a_first_scorer_price_below_the_anytime_price_is_kept() -> None:
+    rows = read_event(
+        _event(
+            _book(
+                "bet365",
+                "player_goal_scorer_anytime",
+                [{"description": "Kai Havertz", "name": "Yes", "price": 2.5}],
+            ),
+            {
+                "key": "unibet",
+                "markets": [
+                    {
+                        "key": "player_first_goal_scorer",
+                        "outcomes": [
+                            {
+                                "description": "Kai Havertz",
+                                "name": "Yes",
+                                "price": 9.0,
+                            }
+                        ],
+                    }
+                ],
+            },
+        )
+    )
+
+    (row,) = rows
+    assert row.anytime_goal == pytest.approx(0.4)
+    assert row.first_goal == pytest.approx(1 / 9.0, rel=1e-6)
+
+
+def test_a_first_scorer_price_with_no_anytime_beside_it_is_left_alone() -> None:
+    """Nothing to compare against is not evidence that the quote is wrong."""
+    rows = read_event(
+        _event(
+            {
+                "key": "unibet",
+                "markets": [
+                    {
+                        "key": "player_first_goal_scorer",
+                        "outcomes": [
+                            {
+                                "description": "Kai Havertz",
+                                "name": "Yes",
+                                "price": 9.0,
+                            }
+                        ],
+                    }
+                ],
+            }
+        )
+    )
+
+    (row,) = rows
+    assert row.anytime_goal is None
+    assert row.first_goal == pytest.approx(1 / 9.0, rel=1e-6)

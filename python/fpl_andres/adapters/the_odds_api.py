@@ -643,6 +643,30 @@ def _is_complementary(sides: Sequence[str]) -> bool:
     return {sides[0], sides[1]} in ({"yes", "no"}, {"over", "under"})
 
 
+def _refuse_impossible_orderings(fields: dict[str, float], name: str) -> None:
+    """Drop a scorer field that outranks the market it is a subset of.
+
+    Scoring first, and scoring last, both require scoring. `P(first)` and
+    `P(last)` are therefore bounded above by `P(anytime)` for the same player in
+    the same match, with no modelling assumption whatever behind it. A quote
+    that breaks the bound has been misread somewhere upstream, and the reading
+    is what is refused -- not the whole player. The anytime price beside it is
+    usually sound, and it is the one that prices a scoring route; discarding it
+    too was throwing away twenty-six good quotes to punish eleven bad ones.
+
+    Seen on 2026-08-20: eleven players carried a first-scorer probability near
+    0.5 from books that priced them anytime at 0.04-0.20, every one of them
+    from a fixture only two books had opened.
+    """
+    anytime = fields.get("anytime_goal")
+    if anytime is None:
+        return
+    for field in ("first_goal", "last_goal"):
+        value = fields.get(field)
+        if value is not None and value > anytime:
+            del fields[field]
+
+
 def read_event(
     payload: Mapping[str, Any],
     *,
@@ -694,6 +718,7 @@ def read_event(
             if field is None or not quote_values:
                 continue
             fields[field] = round(statistics.median(quote_values), 6)
+        _refuse_impossible_orderings(fields, name)
         rows.append(
             PlayerMatchOdds(
                 element_id=None,
