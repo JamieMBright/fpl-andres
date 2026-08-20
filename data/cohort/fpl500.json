@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-20T17:41:38.942038Z",
-  "catalogueSize": 2686,
-  "sweptTo": 7022001,
+  "generatedAt": "2026-08-20T23:29:51.888808Z",
+  "catalogueSize": 2721,
+  "sweptTo": 7426001,
   "size": 500,
   "settings": {
     "decayPerSeason": 0.78,
@@ -477,12 +477,30 @@
       "latestSeason": "2025/26"
     },
     {
+      "entryId": 7098478,
+      "score": 0.79844,
+      "seasons": 19,
+      "weight": 3.103,
+      "bestPercentile": 0.999424,
+      "latestPercentile": 0.999424,
+      "latestSeason": "2025/26"
+    },
+    {
       "entryId": 105958,
       "score": 0.798387,
       "seasons": 17,
       "weight": 3.0849,
       "bestPercentile": 0.999978,
       "latestPercentile": 0.999848,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 7289903,
+      "score": 0.798375,
+      "seasons": 15,
+      "weight": 3.0616,
+      "bestPercentile": 0.999224,
+      "latestPercentile": 0.993957,
       "latestSeason": "2025/26"
     },
     {
@@ -1149,6 +1167,15 @@
       "weight": 3.0616,
       "bestPercentile": 0.999777,
       "latestPercentile": 0.999549,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 7349315,
+      "score": 0.795797,
+      "seasons": 13,
+      "weight": 3.0194,
+      "bestPercentile": 0.99999,
+      "latestPercentile": 0.987876,
       "latestSeason": "2025/26"
     },
     {
@@ -4506,33 +4533,6 @@
       "weight": 3.0431,
       "bestPercentile": 0.999938,
       "latestPercentile": 0.999897,
-      "latestSeason": "2025/26"
-    },
-    {
-      "entryId": 15963,
-      "score": 0.786841,
-      "seasons": 13,
-      "weight": 3.0194,
-      "bestPercentile": 0.999877,
-      "latestPercentile": 0.977099,
-      "latestSeason": "2025/26"
-    },
-    {
-      "entryId": 6609,
-      "score": 0.786803,
-      "seasons": 14,
-      "weight": 3.0431,
-      "bestPercentile": 0.999669,
-      "latestPercentile": 0.970018,
-      "latestSeason": "2025/26"
-    },
-    {
-      "entryId": 17463,
-      "score": 0.786795,
-      "seasons": 8,
-      "weight": 2.7536,
-      "bestPercentile": 0.999897,
-      "latestPercentile": 0.997462,
       "latestSeason": "2025/26"
     }
   ]
