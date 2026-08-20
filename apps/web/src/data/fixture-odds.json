@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-18T23:20:01.490355+00:00",
+  "generatedAt": "2026-08-20T19:00:44.324948+00:00",
   "season": "2026-27",
   "source": "the-odds-api",
   "priceTiming": "pre-match",
@@ -85,31 +85,13 @@
     {
       "url": "https://api.the-odds-api.com/v4/sports/soccer_epl/events/4e4a813bf4218cc527e6f8ef2351170d/odds",
       "contentHash": "sha256:560354624efb1257377a75e4f0651a246d6f435e303d9cef2c237d66946b5112"
+    },
+    {
+      "url": "https://api.the-odds-api.com/v4/sports/soccer_epl/events/eb2553d10d63dc912b99f8fd0d675721/odds",
+      "contentHash": "sha256:3b12c82b3f84df51086b29c13ba80d6845daeb18f72afb12f772fcd53987e5dd"
     }
   ],
   "fixtures": [
-    {
-      "kickoff": "2026-08-21T19:00:00+00:00",
-      "home": "ARS",
-      "away": "COV",
-      "homeExpectedGoals": 2.6536,
-      "awayExpectedGoals": 0.494,
-      "homeCleanSheet": 0.6102,
-      "awayCleanSheet": 0.0704,
-      "drawResidual": 0.0039,
-      "priceSource": "the-odds-api-market-consensus",
-      "marketEvidence": {
-        "analysisVersion": 1,
-        "observed": ["alternate_totals", "h2h", "h2h_lay", "totals"],
-        "numberMoving": ["alternate_totals", "h2h", "h2h_lay", "totals"],
-        "usage": {
-          "alternate_totals": "total-goals-shape",
-          "h2h": "goal-split",
-          "h2h_lay": "paired-back-lay-goal-split",
-          "totals": "total-goals"
-        }
-      }
-    },
     {
       "kickoff": "2026-08-22T11:30:00+00:00",
       "home": "HUL",
@@ -295,6 +277,28 @@
       "homeCleanSheet": 0.1611,
       "awayCleanSheet": 0.2891,
       "drawResidual": 0.0211,
+      "priceSource": "the-odds-api-market-consensus",
+      "marketEvidence": {
+        "analysisVersion": 1,
+        "observed": ["alternate_totals", "h2h", "h2h_lay", "totals"],
+        "numberMoving": ["alternate_totals", "h2h", "h2h_lay", "totals"],
+        "usage": {
+          "alternate_totals": "total-goals-shape",
+          "h2h": "goal-split",
+          "h2h_lay": "paired-back-lay-goal-split",
+          "totals": "total-goals"
+        }
+      }
+    },
+    {
+      "kickoff": "2026-08-21T19:00:00+00:00",
+      "home": "ARS",
+      "away": "COV",
+      "homeExpectedGoals": 2.6484,
+      "awayExpectedGoals": 0.4959,
+      "homeCleanSheet": 0.609,
+      "awayCleanSheet": 0.0708,
+      "drawResidual": 0.0026,
       "priceSource": "the-odds-api-market-consensus",
       "marketEvidence": {
         "analysisVersion": 1,
