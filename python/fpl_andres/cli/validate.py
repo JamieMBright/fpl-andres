@@ -39,6 +39,11 @@ from fpl_andres.simulation.reach import (
     giant_reach,
     owned_captain_policy_scores,
 )
+from fpl_andres.simulation.replay import (
+    benchmark_against,
+    cohort_totals,
+    replay_season,
+)
 from fpl_andres.simulation.season import LineupRules
 from fpl_andres.simulation.squad import SquadRules
 
@@ -66,6 +71,78 @@ LEAGUE = LeagueSettings(
 # `# type: ignore[arg-type]` -- which also silenced the check that a policy
 # named here actually exists. Misspell one now and mypy says so.
 POLICIES: tuple[Policy, ...] = ("advised", "form_chaser", "crowd", "hold")
+
+# One manager, opening in August and playing to the end. The mini-league above
+# starts at gameweek seven because before that there is not enough of the season
+# to project from; that is right for comparing policies and wrong for comparing
+# a total against somebody who played all thirty-eight, so the replay projects
+# the opening weeks off last season instead.
+REPLAY = replace(
+    LEAGUE,
+    managers=1,
+    advised_share=1.0,
+    hold_share=0.0,
+    form_chaser_share=0.0,
+    crowd_share=0.0,
+    start_gameweek=1,
+)
+
+
+def _replay_payload(
+    corpus: SeasonCorpus,
+    previous: SeasonCorpus,
+    names: Mapping[int, str],
+) -> dict[str, object]:
+    """One season replayed week by week, and where the total would have placed."""
+    replay = replay_season(corpus, previous=previous, settings=REPLAY)
+    benchmark = benchmark_against(corpus.season, replay.net_points, cohort_totals(corpus.season))
+    return {
+        "season": replay.season,
+        "startGameweek": replay.start_gameweek,
+        "totalPoints": replay.total_points,
+        "hitPoints": replay.hit_points,
+        "netPoints": replay.net_points,
+        "transfers": replay.transfers,
+        "chips": replay.chips,
+        "finalTeamValueTenths": replay.final_team_value_tenths,
+        "benchmark": (
+            None
+            if benchmark is None
+            else {
+                "managers": benchmark.managers,
+                "beaten": benchmark.beaten,
+                "percentile": benchmark.percentile,
+                "best": benchmark.best,
+                "medianPoints": benchmark.median_points,
+            }
+        ),
+        "weeks": [
+            {
+                "event": week.event,
+                "points": week.points,
+                "runningTotal": week.running_total,
+                "chip": week.chip,
+                "captain": week.captain,
+                "captainName": names.get(week.captain or 0),
+                "captainPoints": week.captain_points,
+                "benchPoints": week.bench_points,
+                "hitPoints": week.hit_points,
+                "transfers": [
+                    {
+                        "out": out,
+                        "outName": names.get(out),
+                        "in": incoming,
+                        "inName": names.get(incoming),
+                    }
+                    for out, incoming in week.transfers
+                ],
+                "teamValueTenths": week.team_value_tenths,
+                "bankTenths": week.bank_tenths,
+                "starters": list(week.starters),
+            }
+            for week in replay.weeks
+        ],
+    }
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -345,8 +422,9 @@ def main(argv: Sequence[str] | None = None) -> int:
 
         for season in seasons:
             corpus = corpus_for(season)
+            previous_corpus = corpus_for(_previous_season(season))
             opening = score_opening_gameweek(
-                corpus_for(_previous_season(season)),
+                previous_corpus,
                 corpus,
             )
             scored = score_season(corpus)
@@ -385,7 +463,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                 )
 
             totals: dict[str, list[int]] = {policy: [] for policy in POLICIES}
-            chips: dict[str, dict[str, int]] = {}
+            chips: dict[str, dict[str, list[int]]] = {}
             squads: dict[str, list[dict[str, object]]] = {}
             value: dict[str, int] = {}
             wins: dict[str, int] = {policy: 0 for policy in POLICIES}
@@ -402,7 +480,9 @@ def main(argv: Sequence[str] | None = None) -> int:
                     if cohort and seed == seeds[0]:
                         first = cohort[0]
                         gameweeks_played = len(first.weekly_points)
-                        chips[policy] = dict(first.chips_played)
+                        chips[policy] = {
+                            name: sorted(events) for name, events in first.chips_played.items()
+                        }
                         value[policy] = first.final_team_value_tenths
                         squads[policy] = _squad_rows(league, policy, corpus)
                 if seed == seeds[0]:
@@ -453,6 +533,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                     },
                     "expectedGoalsCoverage": _expected_goals_coverage(corpus),
                     "missingGameweeks": list(corpus.missing_gameweeks),
+                    "replay": _replay_payload(corpus, previous_corpus, corpus.name_by_element),
                     # Names the corpus state every metric below was measured
                     # over, so a moved number can be told from a moved model.
                     "corpusFingerprint": corpus.fingerprint,

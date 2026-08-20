@@ -36,6 +36,7 @@ is that the failure stays visible.
 | `InconsistentObservationBasis` | `models/player_rates.py`   | Expected values were chosen as the basis and one is absent.      |
 | `MalformedJsonError`           | `jsonio.py`                | JSON cannot be parsed, naming the source that produced it.       |
 | `MissingCredentialsError`      | `persistence/supabase.py`  | Service-role credentials are absent or malformed.                |
+| `ChipRulesUnavailable`         | `simulation/chips.py`      | A season's chip allowance has not been recorded.                 |
 | `ModelFitError`                | `models/dixon_coles.py`    | Numerical optimization cannot produce a valid model.             |
 | `OptimizationError`            | `optimization/highs.py`    | The optimizer cannot prove an optimal valid squad.               |
 | `OutOfWindowObservationError`  | `models/minutes.py`        | Recency decay has driven an observation's weight to zero.        |

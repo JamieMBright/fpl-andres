@@ -23,6 +23,7 @@ from fpl_andres.simulation.squad import (
 from fpl_andres.simulation.valuation import Portfolio
 
 __all__ = [
+    "GameweekLedger",
     "GameweekSquad",
     "LeagueResult",
     "LeagueSettings",
@@ -130,6 +131,35 @@ class GameweekSquad:
     captain: int | None
 
 
+@dataclass(frozen=True)
+class GameweekLedger:
+    """One week of a replayed season, in the terms a manager would recognise.
+
+    A season total says nothing about how it was reached, and "trust the
+    total" is the one thing a backtest cannot ask for. This records the week as
+    it was actually played -- what came in, what went out, what it cost, who
+    took the armband and what the bench was left holding -- so the season can
+    be stepped through and argued with rather than believed.
+    """
+
+    event: int
+    points: int
+    #: Net of hits taken this week, which is the number that reaches a league
+    #: table. `points` is the raw score, as the FPL site shows it.
+    running_total: int
+    chip: str | None
+    captain: int | None
+    captain_points: int
+    bench_points: int
+    hit_points: int
+    #: `(out, in)` element ids, in the order the swaps were settled.
+    transfers: tuple[tuple[int, int], ...]
+    squad: tuple[int, ...]
+    starters: tuple[int, ...]
+    team_value_tenths: int
+    bank_tenths: int
+
+
 @dataclass
 class ManagerResult:
     manager_id: int
@@ -139,9 +169,13 @@ class ManagerResult:
     transfers_made: int = 0
     hit_points: int = 0
     weekly_points: list[int] = field(default_factory=list)
-    chips_played: dict[str, int] = field(default_factory=dict)
+    #: Chip name -> the gameweeks it was played in. A list because from 2025-26
+    #: a season grants two of each, and a single slot silently kept the later
+    #: one and lost the half that mattered most.
+    chips_played: dict[str, list[int]] = field(default_factory=dict)
     final_team_value_tenths: int = 0
     gameweek_squads: list[GameweekSquad] = field(default_factory=list)
+    ledger: list[GameweekLedger] = field(default_factory=list)
 
     @property
     def net_points(self) -> int:
@@ -179,3 +213,7 @@ class _Manager:
     portfolio: Portfolio
     chips: ChipState = field(default_factory=ChipState)
     chip_plan: dict[int, ChipName] = field(default_factory=dict)
+    #: Swaps settled since the ledger was last written. Every transfer goes
+    #: through one function, so recording it there is the only way the log
+    #: cannot drift from what the portfolio actually did.
+    pending_transfers: list[tuple[int, int]] = field(default_factory=list)

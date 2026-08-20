@@ -26,7 +26,7 @@ from fpl_andres.backtesting.corpus import SeasonCorpus
 from fpl_andres.backtesting.fixtures import estimate_strength
 from fpl_andres.backtesting.projector import ProjectionSettings, project_gameweek
 from fpl_andres.simulation.baselines import crowd_ranking
-from fpl_andres.simulation.chips import ChipName, plan_chips
+from fpl_andres.simulation.chips import ChipName, ChipState, chip_rules_for, plan_chips
 from fpl_andres.simulation.minileague_policies import (
     _take_transfers,
 )
@@ -35,6 +35,7 @@ from fpl_andres.simulation.minileague_state import (
     _DROPPED_THRESHOLD,
     _FORM_WINDOW,
     _PASSIVE,
+    GameweekLedger,
     GameweekSquad,
     LeagueResult,
     LeagueSettings,
@@ -67,8 +68,16 @@ def simulate_league(
     *,
     projection_settings: ProjectionSettings | None = None,
     seed: int = 0,
+    previous: SeasonCorpus | None = None,
 ) -> LeagueResult:
-    """Play a whole league through the season."""
+    """Play a whole league through the season.
+
+    ``previous`` supplies last season's record. Without it the season cannot be
+    opened before there is enough of itself to project from, which is why the
+    default start is a seventh of the way in; with it the opening weeks are
+    projected the way the live planner projects an August gameweek, and the
+    total becomes comparable to a real manager's.
+    """
     pool = _candidate_pool(corpus, settings.start_gameweek)
     if not pool:
         raise ValueError(f"{corpus.season} has no priced pool at GW{settings.start_gameweek}")
@@ -76,8 +85,11 @@ def simulate_league(
     outcome = LeagueResult(season=corpus.season, settings=settings)
     managers: list[_Manager] = []
     roster = settings.policy_roster()
-    opening = _opening_squad(corpus, pool, settings, seed)
+    opening = _opening_squad(corpus, pool, settings, seed, previous=previous)
     last_event = max(corpus.gameweeks, default=settings.start_gameweek)
+    # What this particular season allowed. From 2025-26 that is a full set of
+    # four chips in each half rather than one set for the year.
+    chip_rules = chip_rules_for(corpus.season)
 
     for index in range(settings.managers):
         policy = roster[index]
@@ -99,6 +111,7 @@ def simulate_league(
                     settings.squad_rules.budget_tenths,
                 ),
                 chip_plan=_chip_plan(corpus, squad, settings, manager_seed, last_event),
+                chips=ChipState(rules=chip_rules),
             )
         )
 
@@ -113,7 +126,9 @@ def simulate_league(
 
         projected = {
             projection.element_id: projection.expected_points
-            for projection in project_gameweek(corpus, gameweek, settings=projection_settings)
+            for projection in project_gameweek(
+                corpus, gameweek, settings=projection_settings, previous=previous
+            )
         }
         # The one player the model would have taken above everybody else this
         # week, whether or not anybody owned him. Kept so "how often was the
@@ -141,6 +156,8 @@ def simulate_league(
         ownership = _league_ownership(managers)
         for manager in managers:
             policy = manager.result.policy
+            manager.pending_transfers.clear()
+            hits_before = manager.result.hit_points
             ranking = rankings.get(policy, projected)
             if policy == "rank_aware":
                 ranking = _tilted_ranking(manager, managers, projected, ownership, settings)
@@ -212,7 +229,25 @@ def simulate_league(
             )
             manager.result.final_team_value_tenths = manager.portfolio.team_value(prices)
             if chip is not None:
-                manager.result.chips_played[chip] = gameweek
+                manager.result.chips_played.setdefault(chip, []).append(gameweek)
+            week_hits = manager.result.hit_points - hits_before
+            manager.result.ledger.append(
+                GameweekLedger(
+                    event=gameweek,
+                    points=played.points,
+                    running_total=manager.result.total_points - manager.result.hit_points,
+                    chip=chip,
+                    captain=played.captain,
+                    captain_points=played.captain_points,
+                    bench_points=played.bench_points,
+                    hit_points=week_hits,
+                    transfers=tuple(manager.pending_transfers),
+                    squad=played.squad,
+                    starters=played.starters,
+                    team_value_tenths=manager.result.final_team_value_tenths,
+                    bank_tenths=manager.portfolio.bank_tenths,
+                )
+            )
 
     seen: set[str] = set()
     for manager in managers:
@@ -292,6 +327,7 @@ def _chip_plan(
         last_event=last_event,
         rng=random.Random(seed),
         squad_floor_value=floor_value,
+        rules=chip_rules_for(corpus.season),
     )
 
 
@@ -318,6 +354,8 @@ def _opening_squad(
     pool: Sequence[Candidate],
     settings: LeagueSettings,
     seed: int,
+    *,
+    previous: SeasonCorpus | None = None,
 ) -> tuple[Candidate, ...]:
     """The team every policy starts from.
 
@@ -334,6 +372,20 @@ def _opening_squad(
         if row.selected is not None
     }
     if not owned:
+        if previous is not None:
+            # Opening week: there is no season yet to read ownership from, so
+            # the fifteen is built the way the live planner builds it in August
+            # -- off last season and the opening projection. The random legal
+            # squad below would measure recovery from a bad team instead.
+            ranking = {
+                projection.element_id: projection.expected_points
+                for projection in project_gameweek(corpus, gameweek, previous=previous)
+            }
+            if ranking:
+                try:
+                    return build_ranked_squad(pool, settings.squad_rules, ranking)
+                except SquadSelectionError:
+                    pass
         return build_squad(pool, settings.squad_rules, rng=random.Random(seed))
 
     variants = [owned]

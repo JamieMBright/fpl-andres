@@ -30,6 +30,12 @@ class Played:
     squad: tuple[int, ...]
     starters: tuple[int, ...]
     captain: int | None
+    #: The captain's own score before his multiplier, so a ledger can show what
+    #: the armband was worth rather than only what the week totalled.
+    captain_points: int = 0
+    #: What the unused substitutes scored. Zero under a bench boost, where they
+    #: were not substitutes.
+    bench_points: int = 0
 
 
 def _play(
@@ -65,11 +71,16 @@ def _play(
         points += available[captain].points
         if chip == "triple_captain":
             points += available[captain].points
+    fielded = set(starters)
     return Played(
         points=points,
         squad=tuple(player.element_id for player in squad),
         starters=tuple(starters),
         captain=captain,
+        captain_points=available[captain].points if captain is not None else 0,
+        bench_points=sum(
+            outcome.points for element, outcome in available.items() if element not in fielded
+        ),
     )
 
 

@@ -330,7 +330,8 @@ so a review knows what it does not have to check by hand.
 | `ScatterLegend`           | What shape, colour and disc size each mean             | —                                    |
 | `ScatterReadout`          | The scatter as a ranked, pinnable table                | unit                                 |
 | `PinnedPlayers`           | Up to four players compared side by side               | unit                                 |
-| `ValidationReport`        | Backtest metrics against baselines                     | —                                    |
+| `ValidationReport`        | Backtest metrics against baselines                     | unit (`ValidationReport.test.tsx`)   |
+| `SeasonReplay`            | A completed season stepped through week by week        | unit (`SeasonReplay.test.tsx`)       |
 | `CalibrationCharts`       | Ranked bars and season lines, drawn by hand            | unit                                 |
 | `CohortPanel`             | The swept cohort and its coverage                      | —                                    |
 | `Fpl500Playbook`          | The ranked five hundred, and the fund they are not     | unit (`Fpl500Playbook.test.tsx`)     |

@@ -91,6 +91,7 @@ def _settle(
     manager.portfolio.transfer(outgoing.element_id, incoming.element_id, prices)
     manager.squad[manager.squad.index(outgoing)] = incoming
     manager.result.transfers_made += 1
+    manager.pending_transfers.append((outgoing.element_id, incoming.element_id))
 
 
 def _zombie_transfer(

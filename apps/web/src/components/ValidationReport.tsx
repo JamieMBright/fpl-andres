@@ -8,6 +8,7 @@ import {
   type OwnedCaptainSeason,
 } from "../state/captain-evidence";
 import { InfoMarker } from "./InfoMarker";
+import { SeasonReplay } from "./SeasonReplay";
 import {
   BarChart,
   IntervalChart,
@@ -65,7 +66,11 @@ type PolicyResult = {
   rankReason?: string | null;
   best: number;
   wins: number;
-  chips: Record<string, number>;
+  /**
+   * Chip name to the gameweek(s) it was played in. A bare number in artifacts
+   * published before 2025-26 granted a second set of every chip.
+   */
+  chips: Record<string, number | number[]>;
   teamValueTenths: number;
   squad: SquadPlayer[];
 };
@@ -1069,6 +1074,8 @@ export function ValidationReport() {
         </p>
       </section>
 
+      <SeasonReplay />
+
       <section aria-labelledby="squads-title">
         <h2 id="squads-title">The teams they finished with</h2>
         <p>
@@ -1098,9 +1105,14 @@ export function ValidationReport() {
                       {Object.entries(entry.chips).length === 0
                         ? "No chips played"
                         : Object.entries(entry.chips)
-                            .sort((a, b) => a[1] - b[1])
+                            .flatMap(([chip, weeks]) =>
+                              (Array.isArray(weeks) ? weeks : [weeks]).map(
+                                (week) => ({ chip, week }),
+                              ),
+                            )
+                            .sort((a, b) => a.week - b.week)
                             .map(
-                              ([chip, week]) =>
+                              ({ chip, week }) =>
                                 `${CHIP_NAMES[chip] ?? chip} GW${week}`,
                             )
                             .join(", ")}
