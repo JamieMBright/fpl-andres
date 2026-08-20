@@ -7,6 +7,8 @@ behaviour these pin.
 
 from __future__ import annotations
 
+import json
+
 import pytest
 
 from fpl_andres.adapters.player_crosswalk import crosswalk, fold_name
@@ -17,7 +19,11 @@ from fpl_andres.adapters.the_odds_api import (
     describe_event,
     read_event,
 )
-from fpl_andres.cli.ingest_player_odds import can_request_fixture, spent_after_response
+from fpl_andres.cli.ingest_player_odds import (
+    _read_previous,
+    can_request_fixture,
+    spent_after_response,
+)
 from fpl_andres.models.player_odds import PlayerMatchOdds
 
 
@@ -611,6 +617,76 @@ def test_a_name_nobody_carries_is_unmatched() -> None:
     _matched, unmatched = crosswalk([_row("Nobody At All")], ELEMENTS, {})
 
     assert unmatched == ("Nobody At All",)
+
+
+def test_a_retained_quote_is_held_to_the_same_ordering_bound(tmp_path) -> None:
+    """A fixture this run cannot afford to revisit is carried forward verbatim.
+
+    Applying the bound only where the artifact is written leaves a bad reading
+    in place for every run whose budget cannot reach that fixture again, which
+    is exactly the case it was found in.
+    """
+    artifact = tmp_path / "player-odds.json"
+    artifact.write_text(
+        json.dumps(
+            {
+                "fetchedAt": "2026-08-20T09:00:00+00:00",
+                "players": [
+                    {
+                        "quoted_name": "Jake Bidwell",
+                        "home_team": "Arsenal",
+                        "away_team": "Coventry City",
+                        "kickoff": "2026-08-21T19:00:00+00:00",
+                        "anytime_goal": 0.048,
+                        "first_goal": 0.503,
+                        "last_goal": 0.502,
+                        "books": 2,
+                    }
+                ],
+                "fixtures": [],
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    rows, _diagnostics = _read_previous(artifact)
+
+    (row,) = rows
+    assert row.first_goal is None
+    assert row.last_goal is None
+    # The quote that prices a scoring route is kept.
+    assert row.anytime_goal == pytest.approx(0.048)
+
+
+def test_a_sound_retained_quote_is_carried_forward_untouched(tmp_path) -> None:
+    artifact = tmp_path / "player-odds.json"
+    artifact.write_text(
+        json.dumps(
+            {
+                "fetchedAt": "2026-08-20T09:00:00+00:00",
+                "players": [
+                    {
+                        "quoted_name": "Kai Havertz",
+                        "home_team": "Arsenal",
+                        "away_team": "Coventry City",
+                        "kickoff": "2026-08-21T19:00:00+00:00",
+                        "anytime_goal": 0.4,
+                        "first_goal": 0.11,
+                        "last_goal": 0.12,
+                        "books": 4,
+                    }
+                ],
+                "fixtures": [],
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    rows, _diagnostics = _read_previous(artifact)
+
+    (row,) = rows
+    assert row.first_goal == pytest.approx(0.11)
+    assert row.last_goal == pytest.approx(0.12)
 
 
 def test_a_first_scorer_price_above_the_anytime_price_is_refused() -> None:

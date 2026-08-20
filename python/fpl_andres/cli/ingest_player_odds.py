@@ -37,6 +37,7 @@ from fpl_andres.adapters.the_odds_api import (
     fetch_event_odds,
     list_events,
     read_event,
+    refuse_impossible_orderings,
 )
 from fpl_andres.cli.ingest_odds import TEAM_CODES
 from fpl_andres.cli.publish_season_inputs import CLUB_QUOTE_FLOOR
@@ -372,6 +373,15 @@ def _read_previous(path: Path) -> tuple[list[PlayerMatchOdds], list[FixtureDiagn
         name = raw.get("quoted_name")
         if not isinstance(home, str) or not isinstance(away, str) or not isinstance(name, str):
             continue
+        anytime_goal = _optional_number(raw.get("anytime_goal"))
+        # A retained quote never passes back through the parser, so a reading
+        # refused there would survive here for as long as the budget cannot
+        # afford to revisit its fixture.
+        first_goal, last_goal = refuse_impossible_orderings(
+            anytime_goal=anytime_goal,
+            first_goal=_optional_number(raw.get("first_goal")),
+            last_goal=_optional_number(raw.get("last_goal")),
+        )
         rows.append(
             PlayerMatchOdds(
                 element_id=(
@@ -382,9 +392,9 @@ def _read_previous(path: Path) -> tuple[list[PlayerMatchOdds], list[FixtureDiagn
                 away_team=away,
                 kickoff=_timestamp(raw.get("kickoff")),
                 club=raw.get("club") if isinstance(raw.get("club"), str) else None,
-                anytime_goal=_optional_number(raw.get("anytime_goal")),
-                first_goal=_optional_number(raw.get("first_goal")),
-                last_goal=_optional_number(raw.get("last_goal")),
+                anytime_goal=anytime_goal,
+                first_goal=first_goal,
+                last_goal=last_goal,
                 anytime_assist=_optional_number(raw.get("anytime_assist")),
                 any_card=_optional_number(raw.get("any_card")),
                 red_card=_optional_number(raw.get("red_card")),

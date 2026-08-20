@@ -41,6 +41,7 @@ __all__ = [
     "list_events",
     "read_event",
     "read_fixture_odds",
+    "refuse_impossible_orderings",
 ]
 
 BASE = "https://api.the-odds-api.com/v4/sports/soccer_epl"
@@ -643,8 +644,13 @@ def _is_complementary(sides: Sequence[str]) -> bool:
     return {sides[0], sides[1]} in ({"yes", "no"}, {"over", "under"})
 
 
-def _refuse_impossible_orderings(fields: dict[str, float], name: str) -> None:
-    """Drop a scorer field that outranks the market it is a subset of.
+def refuse_impossible_orderings(
+    *,
+    anytime_goal: float | None,
+    first_goal: float | None,
+    last_goal: float | None,
+) -> tuple[float | None, float | None]:
+    """Return `(first, last)` with any value that outranks anytime removed.
 
     Scoring first, and scoring last, both require scoring. `P(first)` and
     `P(last)` are therefore bounded above by `P(anytime)` for the same player in
@@ -657,14 +663,32 @@ def _refuse_impossible_orderings(fields: dict[str, float], name: str) -> None:
     Seen on 2026-08-20: eleven players carried a first-scorer probability near
     0.5 from books that priced them anytime at 0.04-0.20, every one of them
     from a fixture only two books had opened.
+
+    Public because a retained quote never passes back through the parser. A
+    fixture this run had no budget to revisit is carried forward verbatim, so
+    the bound has to be applied where the artifact is read as well as where it
+    is written, or a bad reading survives every run that cannot afford to look
+    at it again.
     """
-    anytime = fields.get("anytime_goal")
-    if anytime is None:
-        return
-    for field in ("first_goal", "last_goal"):
-        value = fields.get(field)
-        if value is not None and value > anytime:
-            del fields[field]
+    if anytime_goal is None:
+        # Nothing to compare against is not evidence that the quote is wrong.
+        return first_goal, last_goal
+    return (
+        None if first_goal is not None and first_goal > anytime_goal else first_goal,
+        None if last_goal is not None and last_goal > anytime_goal else last_goal,
+    )
+
+
+def _refuse_impossible_orderings(fields: dict[str, float], name: str) -> None:
+    """Apply the scorer-ordering bound to one player's parsed markets."""
+    first, last = refuse_impossible_orderings(
+        anytime_goal=fields.get("anytime_goal"),
+        first_goal=fields.get("first_goal"),
+        last_goal=fields.get("last_goal"),
+    )
+    for field, value in (("first_goal", first), ("last_goal", last)):
+        if value is None:
+            fields.pop(field, None)
 
 
 def read_event(
