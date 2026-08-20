@@ -3,9 +3,9 @@
   "season": "2026-27",
   "event": 1,
   "deadline": "2026-08-21T17:30:00+00:00",
-  "frozenAt": "2026-08-20T21:22:12+00:00",
+  "frozenAt": "2026-08-20T22:47:52+00:00",
   "modelVersion": "8.6",
-  "codeRevision": "9f754312ab39948af1c9e79af428f169f5cf8d50",
+  "codeRevision": "cea729bec24894fcce31bd872f274729a427e702",
   "outcomesObserved": false,
   "evidenceLevel": "observed",
   "parameters": {
@@ -13,10 +13,10 @@
     "sha256": "sha256:1e8cc6f04643c84e10b951d80cdd9e1de9ea311aab8e9176fe81c03b4b03d143"
   },
   "artifacts": {
-    "apps/web/src/data/projections.json": "sha256:9475d12735204a49de15473760f93409ee3b9a0f19b2e9dbd66be20173386d62",
-    "apps/web/src/data/projections-meta.json": "sha256:a05b04bfcbf6df3d40b0dd983a9b90a48d6ff1f506ba500c3f729ad4a37f4d77",
-    "apps/web/src/data/season-inputs.json": "sha256:155c52fca76bd9fba67509aacf786d4f67b571f988b4b7e83a4e1420f9a414aa",
-    "apps/web/src/data/opening-squad.json": "sha256:0527954b24b83d9696fb2e31f171d8152128e3a32c9d4e89c8109ce3743efba0",
-    "apps/web/src/data/season-plan.json": "sha256:aca290887d40a38479b04994734a6efa74cf16c23e6723aac9eb7253ea21bc33"
+    "apps/web/src/data/projections.json": "sha256:7fb8254394a6ba2f0cd0ec1afb63dc9b7c3fddd0eb360b765207419615bbe695",
+    "apps/web/src/data/projections-meta.json": "sha256:249c1cac220baa355b20be15af2591655a40853c610c7a33486372a82013b82f",
+    "apps/web/src/data/season-inputs.json": "sha256:3ffc7c28e825488e225cd0d1d676749fc41835eb5325c928c96d528b111d14f1",
+    "apps/web/src/data/opening-squad.json": "sha256:c9e09e5a4d53988dd37c27ae953534115d291cfdba773a1a40b18dc8c5b2fa4b",
+    "apps/web/src/data/season-plan.json": "sha256:d06e32554bfec01ab560f4672987d531d5e2f25bde2ccececd9624af35968811"
   }
 }
