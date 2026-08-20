@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-08-20T08:15:55.491072+00:00",
-  "modelVersion": "8.4",
+  "generatedAt": "2026-08-20T20:24:29.807668+00:00",
+  "modelVersion": "8.6",
   "captainEvidenceScope": "model_owned_xi",
   "seasons": [
     {
@@ -36,7 +36,49 @@
             "FWD": 0.525,
             "GKP": 0.556,
             "MID": 0.551
-          }
+          },
+          "calibration": [
+            {
+              "label": "0-2",
+              "lower": 0.0,
+              "upper": 2.0,
+              "count": 6120,
+              "meanPredicted": 1.103,
+              "meanActual": 1.243
+            },
+            {
+              "label": "2-4",
+              "lower": 2.0,
+              "upper": 4.0,
+              "count": 4007,
+              "meanPredicted": 2.759,
+              "meanActual": 2.942
+            },
+            {
+              "label": "4-6",
+              "lower": 4.0,
+              "upper": 6.0,
+              "count": 726,
+              "meanPredicted": 4.736,
+              "meanActual": 4.138
+            },
+            {
+              "label": "6-8",
+              "lower": 6.0,
+              "upper": 8.0,
+              "count": 157,
+              "meanPredicted": 6.777,
+              "meanActual": 6.064
+            },
+            {
+              "label": "8+",
+              "lower": 8.0,
+              "upper": null,
+              "count": 71,
+              "meanPredicted": 9.464,
+              "meanActual": 8.577
+            }
+          ]
         },
         {
           "label": "components",
@@ -51,7 +93,49 @@
             "FWD": 0.516,
             "GKP": 0.561,
             "MID": 0.543
-          }
+          },
+          "calibration": [
+            {
+              "label": "0-2",
+              "lower": 0.0,
+              "upper": 2.0,
+              "count": 6352,
+              "meanPredicted": 1.149,
+              "meanActual": 1.297
+            },
+            {
+              "label": "2-4",
+              "lower": 2.0,
+              "upper": 4.0,
+              "count": 3830,
+              "meanPredicted": 2.708,
+              "meanActual": 2.993
+            },
+            {
+              "label": "4-6",
+              "lower": 4.0,
+              "upper": 6.0,
+              "count": 677,
+              "meanPredicted": 4.77,
+              "meanActual": 4.142
+            },
+            {
+              "label": "6-8",
+              "lower": 6.0,
+              "upper": 8.0,
+              "count": 148,
+              "meanPredicted": 6.757,
+              "meanActual": 5.466
+            },
+            {
+              "label": "8+",
+              "lower": 8.0,
+              "upper": null,
+              "count": 74,
+              "meanPredicted": 9.495,
+              "meanActual": 8.797
+            }
+          ]
         },
         {
           "label": "recent_mean",
@@ -66,7 +150,49 @@
             "FWD": 0.468,
             "GKP": 0.484,
             "MID": 0.508
-          }
+          },
+          "calibration": [
+            {
+              "label": "0-2",
+              "lower": 0.0,
+              "upper": 2.0,
+              "count": 5911,
+              "meanPredicted": 0.788,
+              "meanActual": 1.345
+            },
+            {
+              "label": "2-4",
+              "lower": 2.0,
+              "upper": 4.0,
+              "count": 3529,
+              "meanPredicted": 2.755,
+              "meanActual": 2.77
+            },
+            {
+              "label": "4-6",
+              "lower": 4.0,
+              "upper": 6.0,
+              "count": 1292,
+              "meanPredicted": 4.672,
+              "meanActual": 3.595
+            },
+            {
+              "label": "6-8",
+              "lower": 6.0,
+              "upper": 8.0,
+              "count": 289,
+              "meanPredicted": 6.656,
+              "meanActual": 4.349
+            },
+            {
+              "label": "8+",
+              "lower": 8.0,
+              "upper": null,
+              "count": 60,
+              "meanPredicted": 9.171,
+              "meanActual": 5.617
+            }
+          ]
         },
         {
           "label": "ownership",
@@ -81,7 +207,8 @@
             "FWD": 0.332,
             "GKP": 0.315,
             "MID": 0.312
-          }
+          },
+          "calibration": []
         }
       ],
       "ownedCaptainPolicies": [
@@ -925,7 +1052,49 @@
             "FWD": 0.522,
             "GKP": 0.533,
             "MID": 0.561
-          }
+          },
+          "calibration": [
+            {
+              "label": "0-2",
+              "lower": 0.0,
+              "upper": 2.0,
+              "count": 6859,
+              "meanPredicted": 1.035,
+              "meanActual": 1.164
+            },
+            {
+              "label": "2-4",
+              "lower": 2.0,
+              "upper": 4.0,
+              "count": 4047,
+              "meanPredicted": 2.77,
+              "meanActual": 2.877
+            },
+            {
+              "label": "4-6",
+              "lower": 4.0,
+              "upper": 6.0,
+              "count": 677,
+              "meanPredicted": 4.719,
+              "meanActual": 4.514
+            },
+            {
+              "label": "6-8",
+              "lower": 6.0,
+              "upper": 8.0,
+              "count": 105,
+              "meanPredicted": 6.652,
+              "meanActual": 6.238
+            },
+            {
+              "label": "8+",
+              "lower": 8.0,
+              "upper": null,
+              "count": 41,
+              "meanPredicted": 9.484,
+              "meanActual": 9.22
+            }
+          ]
         },
         {
           "label": "components",
@@ -940,7 +1109,49 @@
             "FWD": 0.514,
             "GKP": 0.528,
             "MID": 0.553
-          }
+          },
+          "calibration": [
+            {
+              "label": "0-2",
+              "lower": 0.0,
+              "upper": 2.0,
+              "count": 7082,
+              "meanPredicted": 1.079,
+              "meanActual": 1.199
+            },
+            {
+              "label": "2-4",
+              "lower": 2.0,
+              "upper": 4.0,
+              "count": 3902,
+              "meanPredicted": 2.736,
+              "meanActual": 2.942
+            },
+            {
+              "label": "4-6",
+              "lower": 4.0,
+              "upper": 6.0,
+              "count": 620,
+              "meanPredicted": 4.726,
+              "meanActual": 4.671
+            },
+            {
+              "label": "6-8",
+              "lower": 6.0,
+              "upper": 8.0,
+              "count": 99,
+              "meanPredicted": 6.727,
+              "meanActual": 6.101
+            },
+            {
+              "label": "8+",
+              "lower": 8.0,
+              "upper": null,
+              "count": 26,
+              "meanPredicted": 9.771,
+              "meanActual": 9.577
+            }
+          ]
         },
         {
           "label": "recent_mean",
@@ -955,7 +1166,49 @@
             "FWD": 0.477,
             "GKP": 0.488,
             "MID": 0.516
-          }
+          },
+          "calibration": [
+            {
+              "label": "0-2",
+              "lower": 0.0,
+              "upper": 2.0,
+              "count": 6593,
+              "meanPredicted": 0.747,
+              "meanActual": 1.223
+            },
+            {
+              "label": "2-4",
+              "lower": 2.0,
+              "upper": 4.0,
+              "count": 3426,
+              "meanPredicted": 2.768,
+              "meanActual": 2.745
+            },
+            {
+              "label": "4-6",
+              "lower": 4.0,
+              "upper": 6.0,
+              "count": 1326,
+              "meanPredicted": 4.688,
+              "meanActual": 3.381
+            },
+            {
+              "label": "6-8",
+              "lower": 6.0,
+              "upper": 8.0,
+              "count": 299,
+              "meanPredicted": 6.697,
+              "meanActual": 4.284
+            },
+            {
+              "label": "8+",
+              "lower": 8.0,
+              "upper": null,
+              "count": 85,
+              "meanPredicted": 9.322,
+              "meanActual": 5.718
+            }
+          ]
         },
         {
           "label": "ownership",
@@ -970,7 +1223,8 @@
             "FWD": 0.342,
             "GKP": 0.221,
             "MID": 0.284
-          }
+          },
+          "calibration": []
         }
       ],
       "ownedCaptainPolicies": [
@@ -1817,7 +2071,49 @@
             "FWD": 0.507,
             "GKP": 0.62,
             "MID": 0.514
-          }
+          },
+          "calibration": [
+            {
+              "label": "0-2",
+              "lower": 0.0,
+              "upper": 2.0,
+              "count": 7024,
+              "meanPredicted": 1.052,
+              "meanActual": 1.203
+            },
+            {
+              "label": "2-4",
+              "lower": 2.0,
+              "upper": 4.0,
+              "count": 4157,
+              "meanPredicted": 2.788,
+              "meanActual": 2.924
+            },
+            {
+              "label": "4-6",
+              "lower": 4.0,
+              "upper": 6.0,
+              "count": 682,
+              "meanPredicted": 4.634,
+              "meanActual": 4.161
+            },
+            {
+              "label": "6-8",
+              "lower": 6.0,
+              "upper": 8.0,
+              "count": 82,
+              "meanPredicted": 6.806,
+              "meanActual": 7.195
+            },
+            {
+              "label": "8+",
+              "lower": 8.0,
+              "upper": null,
+              "count": 29,
+              "meanPredicted": 9.776,
+              "meanActual": 8.276
+            }
+          ]
         },
         {
           "label": "components",
@@ -1832,7 +2128,49 @@
             "FWD": 0.502,
             "GKP": 0.61,
             "MID": 0.511
-          }
+          },
+          "calibration": [
+            {
+              "label": "0-2",
+              "lower": 0.0,
+              "upper": 2.0,
+              "count": 7211,
+              "meanPredicted": 1.086,
+              "meanActual": 1.227
+            },
+            {
+              "label": "2-4",
+              "lower": 2.0,
+              "upper": 4.0,
+              "count": 4088,
+              "meanPredicted": 2.758,
+              "meanActual": 3.026
+            },
+            {
+              "label": "4-6",
+              "lower": 4.0,
+              "upper": 6.0,
+              "count": 571,
+              "meanPredicted": 4.626,
+              "meanActual": 4.035
+            },
+            {
+              "label": "6-8",
+              "lower": 6.0,
+              "upper": 8.0,
+              "count": 76,
+              "meanPredicted": 6.71,
+              "meanActual": 6.75
+            },
+            {
+              "label": "8+",
+              "lower": 8.0,
+              "upper": null,
+              "count": 28,
+              "meanPredicted": 9.793,
+              "meanActual": 8.571
+            }
+          ]
         },
         {
           "label": "recent_mean",
@@ -1847,7 +2185,49 @@
             "FWD": 0.467,
             "GKP": 0.596,
             "MID": 0.469
-          }
+          },
+          "calibration": [
+            {
+              "label": "0-2",
+              "lower": 0.0,
+              "upper": 2.0,
+              "count": 6525,
+              "meanPredicted": 0.772,
+              "meanActual": 1.262
+            },
+            {
+              "label": "2-4",
+              "lower": 2.0,
+              "upper": 4.0,
+              "count": 3756,
+              "meanPredicted": 2.752,
+              "meanActual": 2.622
+            },
+            {
+              "label": "4-6",
+              "lower": 4.0,
+              "upper": 6.0,
+              "count": 1285,
+              "meanPredicted": 4.695,
+              "meanActual": 3.397
+            },
+            {
+              "label": "6-8",
+              "lower": 6.0,
+              "upper": 8.0,
+              "count": 325,
+              "meanPredicted": 6.649,
+              "meanActual": 4.083
+            },
+            {
+              "label": "8+",
+              "lower": 8.0,
+              "upper": null,
+              "count": 83,
+              "meanPredicted": 9.34,
+              "meanActual": 5.964
+            }
+          ]
         },
         {
           "label": "ownership",
@@ -1862,7 +2242,8 @@
             "FWD": 0.372,
             "GKP": 0.479,
             "MID": 0.273
-          }
+          },
+          "calibration": []
         }
       ],
       "ownedCaptainPolicies": [
@@ -2699,7 +3080,49 @@
             "FWD": 0.551,
             "GKP": 0.595,
             "MID": 0.48
-          }
+          },
+          "calibration": [
+            {
+              "label": "0-2",
+              "lower": 0.0,
+              "upper": 2.0,
+              "count": 5885,
+              "meanPredicted": 1.122,
+              "meanActual": 1.295
+            },
+            {
+              "label": "2-4",
+              "lower": 2.0,
+              "upper": 4.0,
+              "count": 5007,
+              "meanPredicted": 2.846,
+              "meanActual": 2.964
+            },
+            {
+              "label": "4-6",
+              "lower": 4.0,
+              "upper": 6.0,
+              "count": 944,
+              "meanPredicted": 4.678,
+              "meanActual": 3.976
+            },
+            {
+              "label": "6-8",
+              "lower": 6.0,
+              "upper": 8.0,
+              "count": 89,
+              "meanPredicted": 6.762,
+              "meanActual": 5.663
+            },
+            {
+              "label": "8+",
+              "lower": 8.0,
+              "upper": null,
+              "count": 28,
+              "meanPredicted": 9.645,
+              "meanActual": 7.821
+            }
+          ]
         },
         {
           "label": "components",
@@ -2714,7 +3137,49 @@
             "FWD": 0.54,
             "GKP": 0.586,
             "MID": 0.477
-          }
+          },
+          "calibration": [
+            {
+              "label": "0-2",
+              "lower": 0.0,
+              "upper": 2.0,
+              "count": 6065,
+              "meanPredicted": 1.175,
+              "meanActual": 1.315
+            },
+            {
+              "label": "2-4",
+              "lower": 2.0,
+              "upper": 4.0,
+              "count": 4939,
+              "meanPredicted": 2.811,
+              "meanActual": 3.012
+            },
+            {
+              "label": "4-6",
+              "lower": 4.0,
+              "upper": 6.0,
+              "count": 826,
+              "meanPredicted": 4.701,
+              "meanActual": 4.04
+            },
+            {
+              "label": "6-8",
+              "lower": 6.0,
+              "upper": 8.0,
+              "count": 95,
+              "meanPredicted": 6.622,
+              "meanActual": 5.695
+            },
+            {
+              "label": "8+",
+              "lower": 8.0,
+              "upper": null,
+              "count": 28,
+              "meanPredicted": 9.628,
+              "meanActual": 7.5
+            }
+          ]
         },
         {
           "label": "recent_mean",
@@ -2729,7 +3194,49 @@
             "FWD": 0.515,
             "GKP": 0.565,
             "MID": 0.437
-          }
+          },
+          "calibration": [
+            {
+              "label": "0-2",
+              "lower": 0.0,
+              "upper": 2.0,
+              "count": 5750,
+              "meanPredicted": 0.788,
+              "meanActual": 1.397
+            },
+            {
+              "label": "2-4",
+              "lower": 2.0,
+              "upper": 4.0,
+              "count": 4048,
+              "meanPredicted": 2.827,
+              "meanActual": 2.772
+            },
+            {
+              "label": "4-6",
+              "lower": 4.0,
+              "upper": 6.0,
+              "count": 1730,
+              "meanPredicted": 4.7,
+              "meanActual": 3.464
+            },
+            {
+              "label": "6-8",
+              "lower": 6.0,
+              "upper": 8.0,
+              "count": 361,
+              "meanPredicted": 6.602,
+              "meanActual": 3.95
+            },
+            {
+              "label": "8+",
+              "lower": 8.0,
+              "upper": null,
+              "count": 64,
+              "meanPredicted": 8.948,
+              "meanActual": 4.125
+            }
+          ]
         },
         {
           "label": "ownership",
@@ -2744,7 +3251,8 @@
             "FWD": 0.233,
             "GKP": 0.482,
             "MID": 0.241
-          }
+          },
+          "calibration": []
         }
       ],
       "ownedCaptainPolicies": [
