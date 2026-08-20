@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-20T20:57:05.343Z",
+  "generatedAt": "2026-08-20T21:12:59.231Z",
   "basis": "2025-26",
   "budgetTenths": 1000,
   "spentTenths": 1000,
-  "expectedPoints": 43.21,
+  "expectedPoints": 43.19,
   "consideredPlayers": 181,
   "withoutRecord": 200,
   "unavailable": 114,
@@ -124,20 +124,6 @@
       "fixtures": 5
     },
     {
-      "code": 446008,
-      "name": "Mbeumo",
-      "position": "MID",
-      "club": "MUN",
-      "priceTenths": 80,
-      "record": 2.98,
-      "adjusted": 3.57,
-      "startRate": 0.65,
-      "starter": true,
-      "run": 1.27,
-      "ratedFixtures": 5,
-      "fixtures": 5
-    },
-    {
       "code": 204480,
       "name": "Rice",
       "position": "MID",
@@ -148,6 +134,20 @@
       "startRate": 0.69,
       "starter": true,
       "run": 1.23,
+      "ratedFixtures": 5,
+      "fixtures": 5
+    },
+    {
+      "code": 446008,
+      "name": "Mbeumo",
+      "position": "MID",
+      "club": "MUN",
+      "priceTenths": 80,
+      "record": 2.96,
+      "adjusted": 3.55,
+      "startRate": 0.64,
+      "starter": true,
+      "run": 1.28,
       "ratedFixtures": 5,
       "fixtures": 5
     },

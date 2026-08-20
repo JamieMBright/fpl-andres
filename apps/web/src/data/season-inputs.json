@@ -1,6 +1,6 @@
 {
   "schemaVersion": 6,
-  "generatedAt": "2026-08-20T20:57:02.755006Z",
+  "generatedAt": "2026-08-20T21:12:56.814918Z",
   "recordSeason": "2025-26",
   "events": [
     1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
@@ -58,8 +58,8 @@
     "playerMarkets": {
       "source": "the-odds-api",
       "level": "observed",
-      "updatedAt": "2026-08-20T20:56:58.895161+00:00",
-      "contentHash": "sha256:22a05683b1a039f69a1c54cba32a5db473b6b87d38b37cc649c8e7725571ad14"
+      "updatedAt": "2026-08-20T21:12:53.273110+00:00",
+      "contentHash": "sha256:686a454c54fa6362eb1a1873b997f8bbff620187a379ca5b73435889c8c1c836"
     },
     "fixtureMarkets": {
       "source": "the-odds-api",
@@ -112,8 +112,8 @@
     }
   },
   "market": {
-    "attackingRoutes": 343,
-    "playersQuoted": 368,
+    "attackingRoutes": 344,
+    "playersQuoted": 370,
     "cardRoutes": 192,
     "playersQuotedForCards": 205,
     "shotRoutes": 0,
@@ -121,7 +121,7 @@
     "startRatesCut": 0,
     "squadsNamed": 0,
     "fixtureRungs": 20,
-    "participationInferred": 343,
+    "participationInferred": 344,
     "bonusEvents": 1,
     "playerMarketUsage": {
       "anytimeGoal": "attacking-participation-bps",
@@ -244,10 +244,10 @@
         },
         {
           "club": "MUN",
-          "playerEvents": 5.3055,
+          "playerEvents": 5.627,
           "teamEvents": 2.2674,
-          "exponent": 1.6177,
-          "quotedPlayers": 19
+          "exponent": 1.6506,
+          "quotedPlayers": 21
         },
         {
           "club": "NEW",
@@ -560,25 +560,25 @@
       "403": [0.0, 0.161, 1.108956, 0.389, -0.05, -0.001],
       "406": [0.0, 0.379, 0.9965, 0.322, -0.084, -0.065],
       "411": [0.0, 0.817, 0.949239, 2.406, -0.058, 0.0],
-      "162": [0.0, 0.312, 1.038124, 0.326, -0.096, -0.001],
+      "162": [0.0, 0.312, 1.017572, 0.326, -0.096, -0.001],
       "412": [0.0, 0.904, 1.0, 0.0, -0.009, 0.0],
-      "415": [0.0, 0.337, 1.290381, 0.428, -0.104, -0.002],
-      "417": [0.0, 0.724, 0.769265, 0.463, -0.126, -0.003],
-      "418": [0.0, 0.54, 0.888641, 0.228, -0.085, -0.068],
-      "419": [0.0, 0.348, 1.196329, 0.107, -0.019, -0.065],
-      "420": [0.0, 0.418, 0.818601, 0.256, -0.038, -0.002],
-      "421": [0.0, 0.279, 1.178878, 0.088, -0.053, -0.002],
-      "422": [0.0, 0.285, 1.13284, 0.085, -0.073, -0.002],
-      "423": [0.0, 0.937, 0.860519, 0.286, -0.211, -0.003],
-      "426": [0.0, 0.87, 0.813392, 2.031, -0.128, -0.002],
-      "427": [0.0, 0.781, 0.84488, 1.732, -0.103, -0.002],
-      "428": [0.0, 0.73, 1.001923, 1.032, -0.105, -0.002],
+      "415": [0.0, 0.337, 1.262671, 0.428, -0.104, -0.002],
+      "417": [0.0, 0.724, 0.760458, 0.463, -0.126, -0.003],
+      "418": [0.0, 0.54, 0.871759, 0.228, -0.085, -0.068],
+      "419": [0.0, 0.348, 1.154451, 0.107, -0.019, -0.065],
+      "420": [0.0, 0.418, 0.806151, 0.256, -0.038, -0.002],
+      "421": [0.0, 0.279, 1.139823, 0.088, -0.053, -0.002],
+      "422": [0.0, 0.285, 1.094589, 0.085, -0.073, -0.002],
+      "423": [0.0, 0.937, 0.844382, 0.286, -0.211, -0.003],
+      "426": [0.0, 0.87, 0.806667, 2.031, -0.128, -0.002],
+      "427": [0.0, 0.781, 0.838025, 1.732, -0.103, -0.002],
+      "428": [0.0, 0.73, 0.989544, 1.032, -0.105, -0.002],
       "429": [0.0, 0.379, 1.416423, 0.322, -0.084, -0.065],
-      "431": [0.0, 0.587, 0.917596, 0.959, -0.062, -0.002],
-      "432": [0.0, 0.493, 1.1002, 0.256, -0.067, -0.002],
-      "434": [0.0, 0.379, 1.0, 0.322, -0.084, -0.065],
+      "431": [0.0, 0.587, 0.906016, 0.959, -0.062, -0.002],
+      "432": [0.0, 0.493, 1.072654, 0.256, -0.067, -0.002],
+      "434": [0.0, 0.379, 1.085384, 0.322, -0.084, -0.065],
       "435": [0.0, 0.379, 1.416423, 0.322, -0.084, -0.065],
-      "440": [0.0, 0.113, 1.531261, 0.291, -0.056, 0.0],
+      "440": [0.0, 0.113, 1.500262, 0.291, -0.056, 0.0],
       "442": [0.0, 0.679, 1.0, 0.038, -0.049, 0.0],
       "445": [0.0, 0.839, 0.701102, 0.779, -0.109, -0.003],
       "446": [0.0, 0.255, 1.231887, 0.169, -0.03, -0.002],
@@ -693,7 +693,7 @@
       }
     ],
     "sourceReference": "FPL rules page, Transfers section",
-    "dataAvailableAt": "2026-08-20T20:57:02.762105Z",
+    "dataAvailableAt": "2026-08-20T21:12:56.821667Z",
     "playableStartRate": 0.35,
     "transferMarginPoints": 0.5
   },
@@ -2667,14 +2667,14 @@
       "279": 0.0,
       "412": 0.002,
       "423": 0.0,
-      "428": 0.003,
-      "426": 0.076,
-      "427": 0.002,
+      "428": 0.002,
+      "426": 0.074,
+      "427": 0.001,
       "429": 0.0,
       "435": 0.0,
-      "432": 0.0,
       "417": 0.0,
       "431": 0.001,
+      "432": 0.0,
       "43": 0.001,
       "226": 0.005,
       "232": 0.0,
@@ -6846,48 +6846,6 @@
       }
     },
     {
-      "id": 423,
-      "code": 106760,
-      "name": "Shaw",
-      "position": "DEF",
-      "positionId": 2,
-      "club": "MUN",
-      "teamId": 16,
-      "priceTenths": 45,
-      "basePoints": 2.064,
-      "routes": {
-        "appearance": 1.571,
-        "attacking": 0.269,
-        "cleanSheet": 0.794,
-        "bonus": 0.072,
-        "conceding": -0.345,
-        "yellowCards": -0.493,
-        "redCards": -0.033,
-        "ownGoals": -0.002,
-        "defensiveContribution": 0.231
-      },
-      "startRate": 0.8,
-      "startEvidence": {
-        "sourceStartRate": 0.937,
-        "finalStartRate": 0.8,
-        "observedAppearances": 38,
-        "recentStarts": 6,
-        "recentMatches": 6,
-        "recentMinutes": 513,
-        "appearanceSource": "marketParticipation",
-        "marketAdjustment": -0.137
-      },
-      "squadNumber": null,
-      "rated": true,
-      "depthRank": 5,
-      "evidence": {
-        "appearance": "marketParticipation",
-        "attacking": "marketAttack",
-        "yellowCards": "marketCards",
-        "redCards": "marketCards"
-      }
-    },
-    {
       "id": 328,
       "code": 222694,
       "name": "Struijk",
@@ -7007,6 +6965,48 @@
       "evidence": {
         "appearance": "marketParticipation",
         "attacking": "marketAttack"
+      }
+    },
+    {
+      "id": 423,
+      "code": 106760,
+      "name": "Shaw",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "MUN",
+      "teamId": 16,
+      "priceTenths": 45,
+      "basePoints": 2.017,
+      "routes": {
+        "appearance": 1.542,
+        "attacking": 0.266,
+        "cleanSheet": 0.779,
+        "bonus": 0.07,
+        "conceding": -0.339,
+        "yellowCards": -0.493,
+        "redCards": -0.033,
+        "ownGoals": -0.002,
+        "defensiveContribution": 0.227
+      },
+      "startRate": 0.786,
+      "startEvidence": {
+        "sourceStartRate": 0.937,
+        "finalStartRate": 0.786,
+        "observedAppearances": 38,
+        "recentStarts": 6,
+        "recentMatches": 6,
+        "recentMinutes": 513,
+        "appearanceSource": "marketParticipation",
+        "marketAdjustment": -0.151
+      },
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 5,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
       }
     },
     {
@@ -8833,48 +8833,6 @@
       }
     },
     {
-      "id": 417,
-      "code": 216051,
-      "name": "Dalot",
-      "position": "DEF",
-      "positionId": 2,
-      "club": "MUN",
-      "teamId": 16,
-      "priceTenths": 50,
-      "basePoints": 1.634,
-      "routes": {
-        "appearance": 1.196,
-        "attacking": 0.397,
-        "cleanSheet": 0.445,
-        "bonus": 0.166,
-        "conceding": -0.297,
-        "yellowCards": -0.391,
-        "redCards": -0.023,
-        "ownGoals": -0.001,
-        "defensiveContribution": 0.142
-      },
-      "startRate": 0.56,
-      "startEvidence": {
-        "sourceStartRate": 0.724,
-        "finalStartRate": 0.56,
-        "observedAppearances": 34,
-        "recentStarts": 4,
-        "recentMatches": 6,
-        "recentMinutes": 360,
-        "appearanceSource": "marketParticipation",
-        "marketAdjustment": -0.164
-      },
-      "squadNumber": null,
-      "rated": true,
-      "depthRank": 1,
-      "evidence": {
-        "appearance": "marketParticipation",
-        "attacking": "marketAttack",
-        "yellowCards": "marketCards",
-        "redCards": "marketCards"
-      }
-    },
-    {
       "id": 581,
       "code": 568420,
       "name": "Diomande",
@@ -8986,6 +8944,48 @@
         "recentMinutes": 384,
         "appearanceSource": "marketParticipation",
         "marketAdjustment": -0.078
+      },
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
+    },
+    {
+      "id": 417,
+      "code": 216051,
+      "name": "Dalot",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "MUN",
+      "teamId": 16,
+      "priceTenths": 50,
+      "basePoints": 1.613,
+      "routes": {
+        "appearance": 1.183,
+        "attacking": 0.394,
+        "cleanSheet": 0.44,
+        "bonus": 0.164,
+        "conceding": -0.293,
+        "yellowCards": -0.391,
+        "redCards": -0.023,
+        "ownGoals": -0.001,
+        "defensiveContribution": 0.14
+      },
+      "startRate": 0.553,
+      "startEvidence": {
+        "sourceStartRate": 0.724,
+        "finalStartRate": 0.553,
+        "observedAppearances": 34,
+        "recentStarts": 4,
+        "recentMatches": 6,
+        "recentMinutes": 360,
+        "appearanceSource": "marketParticipation",
+        "marketAdjustment": -0.171
       },
       "squadNumber": null,
       "rated": true,
@@ -9563,48 +9563,6 @@
       }
     },
     {
-      "id": 418,
-      "code": 95658,
-      "name": "Maguire",
-      "position": "DEF",
-      "positionId": 2,
-      "club": "MUN",
-      "teamId": 16,
-      "priceTenths": 50,
-      "basePoints": 1.582,
-      "routes": {
-        "appearance": 1.003,
-        "attacking": 0.206,
-        "cleanSheet": 0.537,
-        "bonus": 0.112,
-        "conceding": -0.184,
-        "yellowCards": -0.38,
-        "redCards": -0.07,
-        "ownGoals": -0.002,
-        "defensiveContribution": 0.36
-      },
-      "startRate": 0.476,
-      "startEvidence": {
-        "sourceStartRate": 0.54,
-        "finalStartRate": 0.476,
-        "observedAppearances": 23,
-        "recentStarts": 5,
-        "recentMatches": 6,
-        "recentMinutes": 450,
-        "appearanceSource": "marketParticipation",
-        "marketAdjustment": -0.064
-      },
-      "squadNumber": null,
-      "rated": true,
-      "depthRank": 1,
-      "evidence": {
-        "appearance": "marketParticipation",
-        "attacking": "marketAttack",
-        "yellowCards": "marketCards",
-        "redCards": "marketCards"
-      }
-    },
-    {
       "id": 364,
       "code": 214285,
       "name": "Tsimikas",
@@ -9807,6 +9765,48 @@
       "squadNumber": null,
       "rated": true,
       "depthRank": 2,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
+    },
+    {
+      "id": 418,
+      "code": 95658,
+      "name": "Maguire",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "MUN",
+      "teamId": 16,
+      "priceTenths": 50,
+      "basePoints": 1.544,
+      "routes": {
+        "appearance": 0.984,
+        "attacking": 0.203,
+        "cleanSheet": 0.527,
+        "bonus": 0.11,
+        "conceding": -0.181,
+        "yellowCards": -0.38,
+        "redCards": -0.07,
+        "ownGoals": -0.002,
+        "defensiveContribution": 0.353
+      },
+      "startRate": 0.467,
+      "startEvidence": {
+        "sourceStartRate": 0.54,
+        "finalStartRate": 0.467,
+        "observedAppearances": 23,
+        "recentStarts": 5,
+        "recentMatches": 6,
+        "recentMinutes": 450,
+        "appearanceSource": "marketParticipation",
+        "marketAdjustment": -0.073
+      },
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1,
       "evidence": {
         "appearance": "marketParticipation",
         "attacking": "marketAttack",
@@ -10524,28 +10524,28 @@
       "club": "MUN",
       "teamId": 16,
       "priceTenths": 50,
-      "basePoints": 1.286,
+      "basePoints": 1.23,
       "routes": {
-        "appearance": 1.0,
-        "attacking": 0.12,
-        "cleanSheet": 0.432,
-        "bonus": 0.099,
-        "conceding": -0.179,
+        "appearance": 0.965,
+        "attacking": 0.118,
+        "cleanSheet": 0.417,
+        "bonus": 0.096,
+        "conceding": -0.173,
         "yellowCards": -0.334,
         "redCards": -0.063,
-        "ownGoals": -0.052,
-        "defensiveContribution": 0.263
+        "ownGoals": -0.05,
+        "defensiveContribution": 0.254
       },
-      "startRate": 0.441,
+      "startRate": 0.425,
       "startEvidence": {
         "sourceStartRate": 0.348,
-        "finalStartRate": 0.441,
+        "finalStartRate": 0.425,
         "observedAppearances": 18,
         "recentStarts": 3,
         "recentMatches": 6,
         "recentMinutes": 270,
         "appearanceSource": "marketParticipation",
-        "marketAdjustment": 0.093
+        "marketAdjustment": 0.077
       },
       "squadNumber": null,
       "rated": true,
@@ -10853,28 +10853,28 @@
       "club": "MUN",
       "teamId": 16,
       "priceTenths": 45,
-      "basePoints": 1.044,
+      "basePoints": 0.999,
       "routes": {
-        "appearance": 0.903,
-        "attacking": 0.094,
-        "cleanSheet": 0.301,
-        "bonus": 0.162,
-        "conceding": -0.148,
+        "appearance": 0.873,
+        "attacking": 0.092,
+        "cleanSheet": 0.291,
+        "bonus": 0.157,
+        "conceding": -0.143,
         "yellowCards": -0.348,
         "redCards": -0.014,
         "ownGoals": -0.002,
-        "defensiveContribution": 0.096
+        "defensiveContribution": 0.093
       },
-      "startRate": 0.332,
+      "startRate": 0.321,
       "startEvidence": {
         "sourceStartRate": 0.285,
-        "finalStartRate": 0.332,
+        "finalStartRate": 0.321,
         "observedAppearances": 20,
         "recentStarts": 3,
         "recentMatches": 6,
         "recentMinutes": 298,
         "appearanceSource": "marketParticipation",
-        "marketAdjustment": 0.047
+        "marketAdjustment": 0.036
       },
       "squadNumber": null,
       "rated": true,
@@ -11127,90 +11127,6 @@
       }
     },
     {
-      "id": 421,
-      "code": 606745,
-      "name": "Heaven",
-      "position": "DEF",
-      "positionId": 2,
-      "club": "MUN",
-      "teamId": 16,
-      "priceTenths": 45,
-      "basePoints": 0.803,
-      "routes": {
-        "appearance": 0.85,
-        "attacking": 0.102,
-        "cleanSheet": 0.177,
-        "bonus": 0.093,
-        "conceding": -0.239,
-        "yellowCards": -0.377,
-        "redCards": -0.027,
-        "ownGoals": -0.045,
-        "defensiveContribution": 0.269
-      },
-      "startRate": 0.331,
-      "startEvidence": {
-        "sourceStartRate": 0.279,
-        "finalStartRate": 0.331,
-        "observedAppearances": 17,
-        "recentStarts": 3,
-        "recentMatches": 6,
-        "recentMinutes": 270,
-        "appearanceSource": "marketParticipation",
-        "marketAdjustment": 0.052
-      },
-      "squadNumber": null,
-      "rated": true,
-      "depthRank": 5,
-      "evidence": {
-        "appearance": "marketParticipation",
-        "attacking": "marketAttack",
-        "yellowCards": "marketCards",
-        "redCards": "marketCards"
-      }
-    },
-    {
-      "id": 420,
-      "code": 550864,
-      "name": "Yoro",
-      "position": "DEF",
-      "positionId": 2,
-      "club": "MUN",
-      "teamId": 16,
-      "priceTenths": 50,
-      "basePoints": 0.8,
-      "routes": {
-        "appearance": 0.995,
-        "attacking": 0.221,
-        "cleanSheet": 0.111,
-        "bonus": 0.033,
-        "conceding": -0.338,
-        "yellowCards": -0.34,
-        "redCards": -0.017,
-        "ownGoals": -0.002,
-        "defensiveContribution": 0.137
-      },
-      "startRate": 0.352,
-      "startEvidence": {
-        "sourceStartRate": 0.418,
-        "finalStartRate": 0.352,
-        "observedAppearances": 32,
-        "recentStarts": 0,
-        "recentMatches": 6,
-        "recentMinutes": 34,
-        "appearanceSource": "marketParticipation",
-        "marketAdjustment": -0.066
-      },
-      "squadNumber": null,
-      "rated": true,
-      "depthRank": 1,
-      "evidence": {
-        "appearance": "marketParticipation",
-        "attacking": "marketAttack",
-        "yellowCards": "marketCards",
-        "redCards": "marketCards"
-      }
-    },
-    {
       "id": 148,
       "code": 551210,
       "name": "Hato",
@@ -11248,6 +11164,90 @@
       "evidence": {
         "appearance": "marketParticipation",
         "attacking": "marketAttack"
+      }
+    },
+    {
+      "id": 420,
+      "code": 550864,
+      "name": "Yoro",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "MUN",
+      "teamId": 16,
+      "priceTenths": 50,
+      "basePoints": 0.784,
+      "routes": {
+        "appearance": 0.98,
+        "attacking": 0.219,
+        "cleanSheet": 0.109,
+        "bonus": 0.033,
+        "conceding": -0.333,
+        "yellowCards": -0.34,
+        "redCards": -0.017,
+        "ownGoals": -0.002,
+        "defensiveContribution": 0.135
+      },
+      "startRate": 0.346,
+      "startEvidence": {
+        "sourceStartRate": 0.418,
+        "finalStartRate": 0.346,
+        "observedAppearances": 32,
+        "recentStarts": 0,
+        "recentMatches": 6,
+        "recentMinutes": 34,
+        "appearanceSource": "marketParticipation",
+        "marketAdjustment": -0.072
+      },
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
+    },
+    {
+      "id": 421,
+      "code": 606745,
+      "name": "Heaven",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "MUN",
+      "teamId": 16,
+      "priceTenths": 45,
+      "basePoints": 0.764,
+      "routes": {
+        "appearance": 0.821,
+        "attacking": 0.1,
+        "cleanSheet": 0.171,
+        "bonus": 0.09,
+        "conceding": -0.231,
+        "yellowCards": -0.377,
+        "redCards": -0.027,
+        "ownGoals": -0.043,
+        "defensiveContribution": 0.26
+      },
+      "startRate": 0.32,
+      "startEvidence": {
+        "sourceStartRate": 0.279,
+        "finalStartRate": 0.32,
+        "observedAppearances": 17,
+        "recentStarts": 3,
+        "recentMatches": 6,
+        "recentMinutes": 270,
+        "appearanceSource": "marketParticipation",
+        "marketAdjustment": 0.041
+      },
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 5,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
       }
     },
     {
@@ -11599,27 +11599,27 @@
       "club": "MUN",
       "teamId": 16,
       "priceTenths": 120,
-      "basePoints": 3.789,
+      "basePoints": 3.76,
       "routes": {
-        "appearance": 1.394,
-        "attacking": 1.816,
-        "cleanSheet": 0.136,
-        "bonus": 0.743,
+        "appearance": 1.383,
+        "attacking": 1.808,
+        "cleanSheet": 0.135,
+        "bonus": 0.736,
         "yellowCards": -0.408,
         "redCards": -0.027,
         "penaltiesMissed": -0.071,
-        "defensiveContribution": 0.206
+        "defensiveContribution": 0.204
       },
-      "startRate": 0.708,
+      "startRate": 0.702,
       "startEvidence": {
         "sourceStartRate": 0.87,
-        "finalStartRate": 0.708,
+        "finalStartRate": 0.702,
         "observedAppearances": 35,
         "recentStarts": 6,
         "recentMatches": 6,
         "recentMinutes": 540,
         "appearanceSource": "marketParticipation",
-        "marketAdjustment": -0.162
+        "marketAdjustment": -0.168
       },
       "squadNumber": null,
       "rated": true,
@@ -12586,26 +12586,26 @@
       "club": "MUN",
       "teamId": 16,
       "priceTenths": 80,
-      "basePoints": 2.984,
+      "basePoints": 2.96,
       "routes": {
-        "appearance": 1.348,
-        "attacking": 1.514,
-        "cleanSheet": 0.151,
-        "bonus": 0.316,
+        "appearance": 1.337,
+        "attacking": 1.505,
+        "cleanSheet": 0.15,
+        "bonus": 0.313,
         "yellowCards": -0.36,
         "redCards": -0.014,
         "defensiveContribution": 0.029
       },
-      "startRate": 0.649,
+      "startRate": 0.644,
       "startEvidence": {
         "sourceStartRate": 0.781,
-        "finalStartRate": 0.649,
+        "finalStartRate": 0.644,
         "observedAppearances": 33,
         "recentStarts": 5,
         "recentMatches": 6,
         "recentMinutes": 400,
         "appearanceSource": "marketParticipation",
-        "marketAdjustment": -0.132
+        "marketAdjustment": -0.137
       },
       "squadNumber": null,
       "rated": true,
@@ -13045,46 +13045,6 @@
       }
     },
     {
-      "id": 428,
-      "code": 430871,
-      "name": "Cunha",
-      "position": "MID",
-      "positionId": 3,
-      "club": "MUN",
-      "teamId": 16,
-      "priceTenths": 80,
-      "basePoints": 2.732,
-      "routes": {
-        "appearance": 1.544,
-        "attacking": 1.033,
-        "cleanSheet": 0.168,
-        "bonus": 0.329,
-        "yellowCards": -0.393,
-        "redCards": -0.027,
-        "defensiveContribution": 0.078
-      },
-      "startRate": 0.727,
-      "startEvidence": {
-        "sourceStartRate": 0.73,
-        "finalStartRate": 0.727,
-        "observedAppearances": 33,
-        "recentStarts": 4,
-        "recentMatches": 6,
-        "recentMinutes": 335,
-        "appearanceSource": "marketParticipation",
-        "marketAdjustment": -0.003
-      },
-      "squadNumber": null,
-      "rated": true,
-      "depthRank": 2,
-      "evidence": {
-        "appearance": "marketParticipation",
-        "attacking": "marketAttack",
-        "yellowCards": "marketCards",
-        "redCards": "marketCards"
-      }
-    },
-    {
       "id": 366,
       "code": 494595,
       "name": "Wirtz",
@@ -13117,6 +13077,46 @@
       "squadNumber": null,
       "rated": true,
       "depthRank": 1,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
+    },
+    {
+      "id": 428,
+      "code": 430871,
+      "name": "Cunha",
+      "position": "MID",
+      "positionId": 3,
+      "club": "MUN",
+      "teamId": 16,
+      "priceTenths": 80,
+      "basePoints": 2.696,
+      "routes": {
+        "appearance": 1.525,
+        "attacking": 1.023,
+        "cleanSheet": 0.166,
+        "bonus": 0.325,
+        "yellowCards": -0.393,
+        "redCards": -0.027,
+        "defensiveContribution": 0.077
+      },
+      "startRate": 0.718,
+      "startEvidence": {
+        "sourceStartRate": 0.73,
+        "finalStartRate": 0.718,
+        "observedAppearances": 33,
+        "recentStarts": 4,
+        "recentMatches": 6,
+        "recentMinutes": 335,
+        "appearanceSource": "marketParticipation",
+        "marketAdjustment": -0.012
+      },
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 2,
       "evidence": {
         "appearance": "marketParticipation",
         "attacking": "marketAttack",
@@ -15227,46 +15227,6 @@
       }
     },
     {
-      "id": 431,
-      "code": 493250,
-      "name": "Amad",
-      "position": "MID",
-      "positionId": 3,
-      "club": "MUN",
-      "teamId": 16,
-      "priceTenths": 60,
-      "basePoints": 2.138,
-      "routes": {
-        "appearance": 1.287,
-        "attacking": 0.907,
-        "cleanSheet": 0.099,
-        "bonus": 0.165,
-        "yellowCards": -0.338,
-        "redCards": -0.014,
-        "defensiveContribution": 0.032
-      },
-      "startRate": 0.56,
-      "startEvidence": {
-        "sourceStartRate": 0.587,
-        "finalStartRate": 0.56,
-        "observedAppearances": 32,
-        "recentStarts": 3,
-        "recentMatches": 6,
-        "recentMinutes": 354,
-        "appearanceSource": "marketParticipation",
-        "marketAdjustment": -0.027
-      },
-      "squadNumber": null,
-      "rated": true,
-      "depthRank": 5,
-      "evidence": {
-        "appearance": "marketParticipation",
-        "attacking": "marketAttack",
-        "yellowCards": "marketCards",
-        "redCards": "marketCards"
-      }
-    },
-    {
       "id": 14,
       "code": 232413,
       "name": "Eze",
@@ -15342,6 +15302,46 @@
       "evidence": {
         "appearance": "marketParticipation",
         "attacking": "marketAttack"
+      }
+    },
+    {
+      "id": 431,
+      "code": 493250,
+      "name": "Amad",
+      "position": "MID",
+      "positionId": 3,
+      "club": "MUN",
+      "teamId": 16,
+      "priceTenths": 60,
+      "basePoints": 2.11,
+      "routes": {
+        "appearance": 1.27,
+        "attacking": 0.899,
+        "cleanSheet": 0.098,
+        "bonus": 0.163,
+        "yellowCards": -0.338,
+        "redCards": -0.014,
+        "defensiveContribution": 0.032
+      },
+      "startRate": 0.552,
+      "startEvidence": {
+        "sourceStartRate": 0.587,
+        "finalStartRate": 0.552,
+        "observedAppearances": 32,
+        "recentStarts": 3,
+        "recentMatches": 6,
+        "recentMinutes": 354,
+        "appearanceSource": "marketParticipation",
+        "marketAdjustment": -0.035
+      },
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 5,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
       }
     },
     {
@@ -15662,10 +15662,10 @@
       "club": "MUN",
       "teamId": 16,
       "priceTenths": 70,
-      "basePoints": 2.035,
+      "basePoints": 2.026,
       "routes": {
         "appearance": 1.605,
-        "attacking": 0.51,
+        "attacking": 0.501,
         "cleanSheet": 0.03,
         "bonus": 0.131,
         "yellowCards": -0.355,
@@ -16056,10 +16056,10 @@
       "club": "MUN",
       "teamId": 16,
       "priceTenths": 50,
-      "basePoints": 1.928,
+      "basePoints": 1.92,
       "routes": {
         "appearance": 1.605,
-        "attacking": 0.423,
+        "attacking": 0.415,
         "cleanSheet": 0.03,
         "bonus": 0.131,
         "yellowCards": -0.368,
@@ -16438,46 +16438,6 @@
       }
     },
     {
-      "id": 432,
-      "code": 516895,
-      "name": "Mainoo",
-      "position": "MID",
-      "positionId": 3,
-      "club": "MUN",
-      "teamId": 16,
-      "priceTenths": 55,
-      "basePoints": 1.801,
-      "routes": {
-        "appearance": 1.354,
-        "attacking": 0.271,
-        "cleanSheet": 0.112,
-        "bonus": 0.076,
-        "yellowCards": -0.341,
-        "redCards": -0.014,
-        "defensiveContribution": 0.343
-      },
-      "startRate": 0.565,
-      "startEvidence": {
-        "sourceStartRate": 0.493,
-        "finalStartRate": 0.565,
-        "observedAppearances": 28,
-        "recentStarts": 6,
-        "recentMatches": 6,
-        "recentMinutes": 540,
-        "appearanceSource": "marketParticipation",
-        "marketAdjustment": 0.072
-      },
-      "squadNumber": null,
-      "rated": true,
-      "depthRank": 8,
-      "evidence": {
-        "appearance": "marketParticipation",
-        "attacking": "marketAttack",
-        "yellowCards": "marketCards",
-        "redCards": "marketCards"
-      }
-    },
-    {
       "id": 246,
       "code": 513466,
       "name": "R\u00f6hl",
@@ -16672,6 +16632,46 @@
       "evidence": {
         "appearance": "marketParticipation",
         "attacking": "marketAttack"
+      }
+    },
+    {
+      "id": 432,
+      "code": 516895,
+      "name": "Mainoo",
+      "position": "MID",
+      "positionId": 3,
+      "club": "MUN",
+      "teamId": 16,
+      "priceTenths": 55,
+      "basePoints": 1.75,
+      "routes": {
+        "appearance": 1.32,
+        "attacking": 0.267,
+        "cleanSheet": 0.109,
+        "bonus": 0.074,
+        "yellowCards": -0.341,
+        "redCards": -0.014,
+        "defensiveContribution": 0.335
+      },
+      "startRate": 0.55,
+      "startEvidence": {
+        "sourceStartRate": 0.493,
+        "finalStartRate": 0.55,
+        "observedAppearances": 28,
+        "recentStarts": 6,
+        "recentMatches": 6,
+        "recentMinutes": 540,
+        "appearanceSource": "marketParticipation",
+        "marketAdjustment": 0.057
+      },
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 8,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
       }
     },
     {
@@ -16983,48 +16983,6 @@
       }
     },
     {
-      "id": 415,
-      "code": 596777,
-      "name": "Dorgu",
-      "position": "MID",
-      "positionId": 3,
-      "club": "MUN",
-      "teamId": 16,
-      "priceTenths": 60,
-      "basePoints": 1.64,
-      "routes": {
-        "appearance": 1.221,
-        "attacking": 0.449,
-        "cleanSheet": 0.273,
-        "bonus": 0.307,
-        "conceding": -0.279,
-        "yellowCards": -0.407,
-        "redCards": -0.027,
-        "ownGoals": -0.002,
-        "defensiveContribution": 0.105
-      },
-      "startRate": 0.464,
-      "startEvidence": {
-        "sourceStartRate": 0.337,
-        "finalStartRate": 0.464,
-        "observedAppearances": 26,
-        "recentStarts": 1,
-        "recentMatches": 6,
-        "recentMinutes": 111,
-        "appearanceSource": "marketParticipation",
-        "marketAdjustment": 0.127
-      },
-      "squadNumber": null,
-      "rated": true,
-      "depthRank": 5,
-      "evidence": {
-        "appearance": "marketParticipation",
-        "attacking": "marketAttack",
-        "yellowCards": "marketCards",
-        "redCards": "marketCards"
-      }
-    },
-    {
       "id": 35,
       "code": 515597,
       "name": "Bogarde",
@@ -17179,6 +17137,48 @@
       "squadNumber": null,
       "rated": true,
       "depthRank": 3,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
+    },
+    {
+      "id": 415,
+      "code": 596777,
+      "name": "Dorgu",
+      "position": "MID",
+      "positionId": 3,
+      "club": "MUN",
+      "teamId": 16,
+      "priceTenths": 60,
+      "basePoints": 1.597,
+      "routes": {
+        "appearance": 1.195,
+        "attacking": 0.442,
+        "cleanSheet": 0.267,
+        "bonus": 0.3,
+        "conceding": -0.273,
+        "yellowCards": -0.407,
+        "redCards": -0.027,
+        "ownGoals": -0.002,
+        "defensiveContribution": 0.102
+      },
+      "startRate": 0.453,
+      "startEvidence": {
+        "sourceStartRate": 0.337,
+        "finalStartRate": 0.453,
+        "observedAppearances": 26,
+        "recentStarts": 1,
+        "recentMatches": 6,
+        "recentMinutes": 111,
+        "appearanceSource": "marketParticipation",
+        "marketAdjustment": 0.116
+      },
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 5,
       "evidence": {
         "appearance": "marketParticipation",
         "attacking": "marketAttack",
@@ -18775,6 +18775,47 @@
       }
     },
     {
+      "id": 434,
+      "code": 547037,
+      "name": "J.Fletcher",
+      "position": "MID",
+      "positionId": 3,
+      "club": "MUN",
+      "teamId": 16,
+      "priceTenths": 50,
+      "basePoints": 1.369,
+      "routes": {
+        "appearance": 1.23,
+        "attacking": 0.341,
+        "cleanSheet": 0.023,
+        "bonus": 0.101,
+        "yellowCards": -0.388,
+        "redCards": -0.068,
+        "defensiveContribution": 0.13
+      },
+      "startRate": 0.445,
+      "startEvidence": {
+        "sourceStartRate": 0.379,
+        "finalStartRate": 0.445,
+        "observedAppearances": null,
+        "recentStarts": null,
+        "recentMatches": null,
+        "recentMinutes": null,
+        "appearanceSource": "marketParticipation",
+        "marketAdjustment": 0.066
+      },
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 9,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
+    },
+    {
       "id": 487,
       "code": 250199,
       "name": "Dominguez",
@@ -19285,45 +19326,6 @@
       }
     },
     {
-      "id": 434,
-      "code": 547037,
-      "name": "J.Fletcher",
-      "position": "MID",
-      "positionId": 3,
-      "club": "MUN",
-      "teamId": 16,
-      "priceTenths": 50,
-      "basePoints": 1.233,
-      "routes": {
-        "appearance": 1.133,
-        "attacking": 0.322,
-        "cleanSheet": 0.021,
-        "bonus": 0.093,
-        "yellowCards": -0.388,
-        "redCards": -0.068,
-        "defensiveContribution": 0.12
-      },
-      "startRate": 0.379,
-      "startEvidence": {
-        "sourceStartRate": 0.379,
-        "finalStartRate": 0.379,
-        "observedAppearances": null,
-        "recentStarts": null,
-        "recentMatches": null,
-        "recentMinutes": null,
-        "appearanceSource": "historicalProjection",
-        "marketAdjustment": 0.0
-      },
-      "squadNumber": null,
-      "rated": false,
-      "depthRank": 9,
-      "evidence": {
-        "all": "rolePrior",
-        "yellowCards": "marketCards",
-        "redCards": "marketCards"
-      }
-    },
-    {
       "id": 547,
       "code": 461199,
       "name": "Mundle",
@@ -19451,26 +19453,26 @@
       "club": "MUN",
       "teamId": 16,
       "priceTenths": 50,
-      "basePoints": 1.136,
+      "basePoints": 1.107,
       "routes": {
-        "appearance": 1.024,
-        "attacking": 0.337,
+        "appearance": 1.004,
+        "attacking": 0.332,
         "cleanSheet": 0.019,
-        "bonus": 0.09,
+        "bonus": 0.088,
         "yellowCards": -0.416,
         "redCards": -0.032,
-        "defensiveContribution": 0.114
+        "defensiveContribution": 0.112
       },
-      "startRate": 0.349,
+      "startRate": 0.341,
       "startEvidence": {
         "sourceStartRate": 0.312,
-        "finalStartRate": 0.349,
+        "finalStartRate": 0.341,
         "observedAppearances": 27,
         "recentStarts": 2,
         "recentMatches": 6,
         "recentMinutes": 184,
         "appearanceSource": "marketParticipation",
-        "marketAdjustment": 0.037
+        "marketAdjustment": 0.029
       },
       "squadNumber": null,
       "rated": true,
@@ -21237,26 +21239,26 @@
       "club": "MUN",
       "teamId": 16,
       "priceTenths": 55,
-      "basePoints": 1.464,
+      "basePoints": 1.429,
       "routes": {
-        "appearance": 1.154,
-        "attacking": 0.42,
-        "bonus": 0.26,
+        "appearance": 1.131,
+        "attacking": 0.412,
+        "bonus": 0.255,
         "yellowCards": -0.35,
-        "penaltiesMissed": -0.002,
+        "penaltiesMissed": -0.001,
         "defensiveContribution": 0.003,
         "redCards": -0.021
       },
-      "startRate": 0.231,
+      "startRate": 0.226,
       "startEvidence": {
         "sourceStartRate": 0.113,
-        "finalStartRate": 0.231,
+        "finalStartRate": 0.226,
         "observedAppearances": 24,
         "recentStarts": 1,
         "recentMatches": 6,
         "recentMinutes": 98,
         "appearanceSource": "marketParticipation",
-        "marketAdjustment": 0.118
+        "marketAdjustment": 0.113
       },
       "squadNumber": null,
       "rated": true,
