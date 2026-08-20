@@ -426,6 +426,8 @@ export interface SolveStart {
    * the squad straight back, so it changes one week and nothing either side.
    */
   rebuildAtEvent?: number;
+  /** A one-week temporary squad that is restored after this event. */
+  freeHitAtEvent?: number;
   assumed: readonly SolveAssumption[];
 }
 
@@ -448,6 +450,9 @@ export interface SolvedGameweek {
   netExpectedPoints: number;
   bankAfterTenths: number;
   freeTransfersBefore: number;
+  chip?: "Free Hit";
+  revertsAfter?: boolean;
+  revertsTo?: SolverPlayer[];
 }
 
 const BY_ID = new Map(PLAYERS.map((player) => [player.id, player]));
@@ -646,6 +651,10 @@ export function* solveSeason(
     start.fromEvent === SEASON_OPENER
       ? MAX_FREE_TRANSFERS
       : start.availableFreeTransfers;
+  const freeHitIndex =
+    start.freeHitAtEvent === undefined
+      ? -1
+      : EVENTS.indexOf(start.freeHitAtEvent);
 
   for (let index = firstIndex; index < EVENTS.length; index += 1) {
     const event = EVENTS[index];
@@ -671,12 +680,16 @@ export function* solveSeason(
       sourceHashes: [HASH],
     }));
 
+    const isFreeHit = index === freeHitIndex;
+    const preChipSquad = squad.map((held) => ({ ...held }));
+    const preChipBank = bank;
+    const preChipFree = free;
     const input: QuickSolverInput = {
       season: "2026-27",
       event,
       objective: "expected_value",
       priceScenario: "current_prices",
-      chipScenario: "none",
+      chipScenario: isFreeHit ? "free_hit" : "none",
       predictionCutoff: deadline,
       players,
       currentSquad: squad,
@@ -705,19 +718,40 @@ export function* solveSeason(
       },
     };
 
-    const solved = solveQuickPlan(input, {
+    let solved = solveQuickPlan(input, {
       beamWidth: 12,
       candidateLimitPerPosition: 8,
       // Squad selection, not a transfer window: the opening week gets the
       // solver's full move budget because none of those moves costs anything.
-      maxTransfers:
-        event === SEASON_OPENER
+      maxTransfers: isFreeHit
+        ? 15
+        : event === SEASON_OPENER
           ? start.lockOpening
             ? 0
             : MAX_FREE_TRANSFERS
           : 2,
       transferMarginPoints: TRANSFER_MARGIN_POINTS,
     });
+
+    // A Free Hit is only a chip when it materially rebuilds the fifteen. If
+    // the best temporary squad moves fewer than five players, keep the normal
+    // transfer solve and leave the chip available.
+    if (isFreeHit && solved.transfersIn.length < 5) {
+      solved = solveQuickPlan(
+        { ...input, chipScenario: "none" },
+        {
+          beamWidth: 12,
+          candidateLimitPerPosition: 8,
+          maxTransfers:
+            event === SEASON_OPENER
+              ? start.lockOpening
+                ? 0
+                : MAX_FREE_TRANSFERS
+              : 2,
+          transferMarginPoints: TRANSFER_MARGIN_POINTS,
+        },
+      );
+    }
 
     const freeBefore = free;
     // The published points are the lookahead sum, which is not what this
@@ -759,7 +793,21 @@ export function* solveSeason(
         Math.round((gameweekPoints - solved.transferCostPoints) * 100) / 100,
       bankAfterTenths: solved.bankAfterTenths,
       freeTransfersBefore: freeBefore,
+      ...(isFreeHit && solved.transfersIn.length >= 5
+        ? {
+            chip: "Free Hit" as const,
+            revertsAfter: true,
+            revertsTo: preChipSquad.map((held) => look(held.elementId)),
+          }
+        : {}),
     };
+
+    if (isFreeHit && solved.transfersIn.length >= 5) {
+      squad = preChipSquad;
+      bank = preChipBank;
+      free = Math.min(MAX_FREE_TRANSFERS, preChipFree + WEEKLY_FREE_TRANSFERS);
+      continue;
+    }
 
     // A player already held keeps the selling price he came in with; one just
     // bought sells for what was paid for him this minute. Rebuilding every

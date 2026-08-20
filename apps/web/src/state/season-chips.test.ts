@@ -168,6 +168,25 @@ describe("chipCallsFor", () => {
     expect(Number(moves?.[1])).toBeGreaterThanOrEqual(5);
   });
 
+  it("refuses a free hit that would move fewer than five of the fifteen", () => {
+    const calls = chipCallsFor(
+      [
+        week(2, { bench: [1], captain: 7 }),
+        week(3, { bench: [1], captain: 7 }),
+      ],
+      PUBLISHED,
+    );
+    const freeHit = callOf(calls, "Free Hit");
+
+    if (freeHit.event === null) {
+      expect(freeHit.note).toMatch(/5 or more|no week/);
+      return;
+    }
+    const moves = /on (\d+) changes/.exec(freeHit.note);
+    expect(moves).not.toBeNull();
+    expect(Number(moves?.[1])).toBeGreaterThanOrEqual(5);
+  });
+
   it("prices the wildcard over the run it opens, not one afternoon", () => {
     const calls = chipCallsFor(
       [

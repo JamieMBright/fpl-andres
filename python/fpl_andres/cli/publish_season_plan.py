@@ -240,6 +240,7 @@ WILDCARD_HORIZON = 8
 # and the chip is still in hand; a Wildcard offered against one swap is a chip
 # thrown away, however well that swap scores.
 MINIMUM_WILDCARD_CHANGES = 5
+MINIMUM_FREE_HIT_CHANGES = 5
 
 # How many rebuild weeks per half are solved exactly rather than trusted to the
 # cheap screen. The screen already scores every legal week; taking only its
@@ -893,6 +894,16 @@ def _play_free_hit(chip: dict[str, Any], run: _ChipRun) -> None:
     week = run.by_event.get(event)
     picked = run.free_squads.get(event)
     if week is None or picked is None:
+        return
+
+    changes = len(set(picked[0] + picked[1]) - set(week["squadElementIds"]))
+    if changes < MINIMUM_FREE_HIT_CHANGES:
+        chip["event"] = None
+        chip["gain"] = 0.0
+        chip["note"] = (
+            f"The best temporary squad moves only {changes} of the fifteen; "
+            f"a Free Hit needs {MINIMUM_FREE_HIT_CHANGES} or more changes."
+        )
         return
 
     before = float(week["netExpectedPoints"])

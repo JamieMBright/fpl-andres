@@ -52,6 +52,29 @@ function renderEntry(
 }
 
 describe("the team ID form", () => {
+  it("offers previously declared team IDs from this browser", () => {
+    window.localStorage.clear();
+    window.localStorage.setItem("fpl-andres:last-team", "212279");
+    window.localStorage.setItem("fpl-andres:declared-squad:v1:7654321:1", "{}");
+
+    renderEntry({ status: "idle" });
+
+    expect(screen.getByRole("combobox")).toHaveAttribute(
+      "list",
+      "plan-team-id-history",
+    );
+    const options = [
+      ...document.querySelectorAll<HTMLOptionElement>(
+        "#plan-team-id-history option",
+      ),
+    ];
+    expect(options.map((option) => option.value)).toEqual([
+      "212279",
+      "7654321",
+    ]);
+    window.localStorage.clear();
+  });
+
   it("submits on Enter without reaching for the button", async () => {
     // Asked directly and worth pinning: implicit submission is a platform
     // behaviour that a stray preventDefault or a type="button" would remove,
@@ -174,6 +197,14 @@ describe("what a gameweek card counts", () => {
 describe("opening recommendations", () => {
   const step = stepSource("04", "05");
 
+  it("keeps the expanded opening title compact and accessible", () => {
+    const start = STYLES.indexOf(
+      ".opening-squad-fold .dossier-heading-compact h2",
+    );
+    const rule = STYLES.slice(start, STYLES.indexOf("}", start));
+    expect(rule).toContain("font-size: 19px");
+  });
+
   it("offers acceptance alongside keeping the declared fifteen", () => {
     expect(step).toContain("Use these free changes");
     expect(step).toContain("Keep my fifteen");
@@ -190,6 +221,21 @@ describe("opening recommendations", () => {
   it("states that FPL cannot reveal pre-deadline squad edits", () => {
     expect(step).toContain("does not expose pre-deadline squads");
     expect(step).toContain("cannot be detected automatically");
+  });
+});
+
+describe("fixture difficulty display", () => {
+  it("keeps the easy and very-easy buckets visually distinct", () => {
+    const first = STYLES.indexOf(".plan-fdr-1 {");
+    const second = STYLES.indexOf(".plan-fdr-2 {");
+    expect(first).toBeGreaterThan(-1);
+    expect(second).toBeGreaterThan(-1);
+    expect(STYLES.slice(first, STYLES.indexOf("}", first))).toContain(
+      "background: var(--field-green)",
+    );
+    expect(STYLES.slice(second, STYLES.indexOf("}", second))).toContain(
+      "color-mix",
+    );
   });
 });
 

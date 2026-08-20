@@ -43,6 +43,7 @@
 
   /* Semantic layer consumed by the rest of the sheet */
   --paper: var(--fa-surface);
+  --paper-strong: var(--fa-surface-rise);
   --paper-deep: var(--fa-surface-deep);
   --ink: var(--fa-ink);
   --ink-soft: var(--fa-ink-deep);
@@ -2745,10 +2746,14 @@ h1[tabindex="-1"]:focus-visible {
   text-align: center;
   border-radius: 2px;
 }
-.plan-fdr-1,
-.plan-fdr-2 {
+.plan-fdr-1 {
   color: var(--paper);
   background: var(--field-green);
+}
+
+.plan-fdr-2 {
+  color: var(--ink);
+  background: color-mix(in srgb, var(--field-green) 58%, var(--paper));
 }
 
 .plan-fdr-3 {
@@ -3150,6 +3155,12 @@ h1[tabindex="-1"]:focus-visible {
   font-weight: 700;
 }
 
+.plan-captain-note {
+  margin: 8px 0 0;
+  color: var(--signal-blue);
+  font-size: 10px;
+}
+
 .plan-points-captain {
   font-weight: 700;
   color: var(--ink);
@@ -3357,6 +3368,18 @@ h1[tabindex="-1"]:focus-visible {
   margin-top: 0;
   padding: 0 14px 18px;
   border-top: 1px solid var(--rule);
+}
+
+.opening-squad-fold .dossier-heading-compact {
+  margin-bottom: 12px;
+}
+
+.opening-squad-fold .dossier-heading-compact h2 {
+  font-size: 19px;
+}
+
+.opening-squad-fold .dossier-heading-compact .eyebrow {
+  display: none;
 }
 
 .opening-squad {
@@ -4589,6 +4612,16 @@ h1[tabindex="-1"]:focus-visible {
 .teletext-strip > :nth-child(6) {
   color: var(--fa-gk-white);
   background: var(--fa-bucket);
+}
+
+.teletext-strip > :nth-child(7) {
+  color: var(--fa-gk-black);
+  background: var(--fa-gk-lime);
+}
+
+.teletext-strip > :nth-child(8) {
+  color: var(--fa-gk-black);
+  background: var(--fa-gk-teal);
 }
 
 /* FAQ is a destination people arrive at, not one they browse to, so it takes

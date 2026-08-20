@@ -899,6 +899,7 @@ class PlayerDraft:
     bps_deviation: float | None
     routes: dict[str, float]
     evidence: dict[str, str]
+    source_start_rate: float
 
 
 def _optional_float(value: object) -> float | None:
@@ -949,6 +950,7 @@ def _initial_player_draft(
             if (value := float(str(model_routes.get(key, 0.0)))) != 0.0
         },
         evidence=evidence,
+        source_start_rate=float(str(model_record["probabilityStart"])),
     )
 
 
@@ -1123,6 +1125,16 @@ def _final_player_row(
         "basePoints": base_points,
         "routes": published_routes,
         "startRate": round(draft.start_rate, 3),
+        "startEvidence": {
+            "sourceStartRate": round(draft.source_start_rate, 3),
+            "finalStartRate": round(draft.start_rate, 3),
+            "observedAppearances": draft.model_record.get("appearances"),
+            "recentStarts": draft.model_record.get("recentStarts"),
+            "recentMatches": draft.model_record.get("recentMatches"),
+            "recentMinutes": draft.model_record.get("recentMinutes"),
+            "appearanceSource": draft.evidence.get("appearance", "historicalProjection"),
+            "marketAdjustment": round(draft.start_rate - draft.source_start_rate, 3),
+        },
         "_expectedGoals": round(draft.expected_goals, 3),
         "_expectedAssists": round(draft.expected_assists, 3),
         "_expectedBps": (round(draft.expected_bps, 3) if draft.expected_bps is not None else None),

@@ -46,6 +46,20 @@ export function rememberTeam(storage: Storage, entryId: number): void {
   if (!Number.isInteger(entryId) || entryId < 1) return;
   storage.setItem(LAST_TEAM_KEY, String(entryId));
 }
+
+/** Team IDs already represented by declared squads in this browser. */
+export function readTeamIdHistory(storage: Storage): number[] {
+  const ids = new Set<number>();
+  const lastTeam = readLastTeam(storage);
+  if (lastTeam !== null) ids.add(lastTeam);
+  const keyPattern = /^fpl-andres:declared-squad:v1:([1-9]\d{0,9}):\d+$/;
+  for (let index = 0; index < storage.length; index += 1) {
+    const key = storage.key(index);
+    const match = key?.match(keyPattern);
+    if (match?.[1] !== undefined) ids.add(Number(match[1]));
+  }
+  return [...ids];
+}
 export const SQUAD_SIZE = 15;
 export const MAX_PER_CLUB = 3;
 const SHAPE: Record<SolverPlayer["position"], number> = {

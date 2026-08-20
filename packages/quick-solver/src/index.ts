@@ -142,7 +142,7 @@ export const quickSolverInputSchema = z
     event: z.int().min(1).max(38),
     objective: z.literal("expected_value"),
     priceScenario: z.literal("current_prices"),
-    chipScenario: z.literal("none"),
+    chipScenario: z.enum(["none", "free_hit"]),
     predictionCutoff: z.iso.datetime(),
     players: z.array(quickPlayerSchema).min(1),
     currentSquad: z.array(currentPlayerSchema).min(1),
@@ -258,7 +258,7 @@ const quickSolverLimitsSchema = z
   .object({
     beamWidth: z.int().min(1).max(500),
     candidateLimitPerPosition: z.int().min(1).max(50),
-    maxTransfers: z.int().min(0).max(5),
+    maxTransfers: z.int().min(0).max(15),
     /**
      * What a transfer must clear, per transfer, on top of its cost.
      *
@@ -283,7 +283,7 @@ export interface QuickSolverResult {
   solverStatus: "bounded";
   objective: "expected_value";
   priceScenario: "current_prices";
-  chipScenario: "none";
+  chipScenario: "none" | "free_hit";
   squadElementIds: number[];
   starterElementIds: number[];
   benchElementIds: number[];
@@ -587,10 +587,10 @@ function evaluateSquad(
     false,
   );
   if (eventLineup === null || planningLineup === null) return null;
-  const paidTransfers = Math.max(
-    0,
-    transfersIn.length - input.availableFreeTransfers,
-  );
+  const paidTransfers =
+    input.chipScenario === "free_hit"
+      ? 0
+      : Math.max(0, transfersIn.length - input.availableFreeTransfers);
   const transferCostPoints = paidTransfers * input.rules.transferCostPoints;
   const starterSet = new Set(eventLineup.elementIds);
   const planningPointsBeforeCost =

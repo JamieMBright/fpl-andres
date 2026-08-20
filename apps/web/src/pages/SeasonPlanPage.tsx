@@ -11,6 +11,7 @@ import { analysisAnnouncement } from "../state/team-analysis-messages";
 import {
   readDeclaredSquad,
   readLastTeam,
+  readTeamIdHistory,
   rememberTeam,
   saveDeclaredSquad,
   type OpeningDecision,
@@ -123,6 +124,10 @@ export function TeamEntry({
   onChange: (next: URLSearchParams, options?: { replace: boolean }) => void;
 }) {
   const [entered, setEntered] = useState(params.get("team") ?? "");
+  const teamIdHistory = useMemo(
+    () => readTeamIdHistory(window.localStorage),
+    [],
+  );
 
   const submit = (event: React.FormEvent) => {
     event.preventDefault();
@@ -143,10 +148,16 @@ export function TeamEntry({
         inputMode="numeric"
         pattern="[0-9]*"
         autoComplete="off"
+        list="plan-team-id-history"
         placeholder="1234567"
         value={entered}
         onChange={(event) => setEntered(event.target.value)}
       />
+      <datalist id="plan-team-id-history">
+        {teamIdHistory.map((entryId) => (
+          <option key={entryId} value={entryId} />
+        ))}
+      </datalist>
       <button type="submit">Plan my season</button>
       <p className="plan-team-note" role="status">
         {team.status === "loading"
@@ -479,6 +490,9 @@ function GameweekCard({
     (boosted ? sum(week.bench, from) : 0);
 
   const haul = total(week.expected);
+  const captainExpected = week.expected[String(week.captain.code)] ?? 0;
+  const viceExpected = week.expected[String(week.viceCaptain.code)] ?? 0;
+  const captainGap = captainExpected - viceExpected;
   // Empty where the run that produced this week could not measure a spread.
   const ceiling =
     Object.keys(week.ceiling).length > 0 ? total(week.ceiling) : null;
@@ -512,6 +526,12 @@ function GameweekCard({
         )}
       </p>
 
+      <p className="plan-captain-note mono">
+        CAPTAIN {week.captain.name} {captainExpected.toFixed(1)} · VICE{" "}
+        {week.viceCaptain.name} {viceExpected.toFixed(1)} · GAP{" "}
+        {captainGap.toFixed(1)}
+      </p>
+
       <Why chip={chip} week={week} />
     </li>
   );
@@ -541,6 +561,9 @@ function asPlanGameweek(week: SolvedGameweek): PlanGameweek {
     // claim that the week has no upside. Empty means unmeasured, and the card
     // prints nothing rather than a number that is really the mean again.
     ceiling: {},
+    chip: week.chip,
+    revertsAfter: week.revertsAfter,
+    revertsTo: week.revertsTo,
     freeTransfersBefore: week.freeTransfersBefore,
     paidTransfers: week.paidTransfers,
     transferCostPoints: week.transferCostPoints,
@@ -836,9 +859,11 @@ export default function SeasonPlanPage() {
     const committed = declaredChips.committed;
     const rebuild =
       committed?.chip === "wildcard" ? { rebuildAtEvent: committed.event } : {};
+    const freeHit =
+      committed?.chip === "freehit" ? { freeHitAtEvent: committed.event } : {};
     return openingDecision
-      ? { ...base, ...rebuild, lockOpening: true }
-      : { ...base, ...rebuild };
+      ? { ...base, ...rebuild, ...freeHit, lockOpening: true }
+      : { ...base, ...rebuild, ...freeHit };
   }, [declaredChips, fromEvent, openingDecision, plan.gameweeks, team]);
 
   const solve = useSeasonSolve(live);

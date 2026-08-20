@@ -73,6 +73,13 @@ describe("stripe custom properties", () => {
   });
 });
 
+describe("semantic surface tokens", () => {
+  it("declares every surface token used by the evidence overlays", () => {
+    expect(styles).toContain("--paper-strong: var(--fa-surface-rise)");
+    expect(styles).toContain("background: var(--paper-strong)");
+  });
+});
+
 describe("Top Picks position colours", () => {
   it("uses four distinct Mode 7 accents in every kit", () => {
     const positions = {

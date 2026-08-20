@@ -696,6 +696,7 @@ def test_players_without_a_scoring_record_are_kept_on_a_role_prior(
     assert by_code[9999]["basePoints"] == by_code[1001]["basePoints"]
     assert by_code[9999]["routes"] == by_code[1001]["routes"]
     assert by_code[9999]["evidence"]["all"] == "rolePrior"
+    assert by_code[9999]["startEvidence"]["appearanceSource"] == "historicalProjection"
 
 
 def test_a_debutants_market_price_moves_attack_and_participation(tmp_path: Path) -> None:
@@ -707,6 +708,8 @@ def test_a_debutants_market_price_moves_attack_and_participation(tmp_path: Path)
 
     assert priced["routes"]["attacking"] > baseline["routes"]["attacking"]
     assert priced["startRate"] > baseline["startRate"]
+    assert priced["startEvidence"]["appearanceSource"] == "marketParticipation"
+    assert priced["startEvidence"]["marketAdjustment"] > 0
     assert priced["basePoints"] == pytest.approx(sum(priced["routes"].values()), abs=0.001)
     assert priced["evidence"]["appearance"] == "marketParticipation"
     carry = quoted["marketCarry"]

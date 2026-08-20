@@ -284,6 +284,8 @@ describe("solveSeason", () => {
     for (const week of season()) {
       expect(week.transfersIn).toHaveLength(week.transfersOut.length);
       expect(week.bankAfterTenths).toBeGreaterThanOrEqual(0);
+      expect(week.freeTransfersBefore).toBeGreaterThanOrEqual(1);
+      expect(week.freeTransfersBefore).toBeLessThanOrEqual(5);
     }
   });
 

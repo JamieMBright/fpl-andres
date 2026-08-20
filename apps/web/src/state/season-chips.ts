@@ -26,6 +26,7 @@ const HALVES = [
  * transfer you happened to make in the week you burned a chip.
  */
 const MINIMUM_WILDCARD_CHANGES = 5;
+const MINIMUM_FREE_HIT_CHANGES = 5;
 
 /** The run a kept squad is priced over. A free hit is one afternoon. */
 const WILDCARD_HORIZON = 5;
@@ -129,7 +130,10 @@ function rebuildCalls(
     .filter((entry) => entry.free.rebuilt !== null);
 
   const freeHit = priced
-    .filter((entry) => entry.free.gain > 0)
+    .filter(
+      (entry) =>
+        entry.free.gain > 0 && entry.free.changes >= MINIMUM_FREE_HIT_CHANGES,
+    )
     .sort((left, right) => right.free.gain - left.free.gain)[0];
 
   // A wildcard that moves one player is a wildcard thrown away, however well

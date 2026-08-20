@@ -16,6 +16,16 @@ interface SeasonInputPlayer {
   teamId: number;
   startRate: number;
   rated?: boolean;
+  startEvidence?: {
+    sourceStartRate?: number;
+    finalStartRate?: number;
+    observedAppearances?: number | null;
+    recentStarts?: number | null;
+    recentMatches?: number | null;
+    recentMinutes?: number | null;
+    appearanceSource?: string;
+    marketAdjustment?: number;
+  };
 }
 
 interface SeasonInputsArtifact {
@@ -153,6 +163,35 @@ function toPlayer(
           : "Season-input start rate.",
     },
   ];
+  const startEvidence = player.startEvidence;
+  if (startEvidence) {
+    const observed =
+      typeof startEvidence.observedAppearances === "number"
+        ? `${startEvidence.observedAppearances} recorded appearances`
+        : "recorded appearances unavailable";
+    const recent =
+      typeof startEvidence.recentStarts === "number" &&
+      typeof startEvidence.recentMatches === "number"
+        ? `${startEvidence.recentStarts}/${startEvidence.recentMatches} recent starts`
+        : "recent starts unavailable";
+    factors[0] = {
+      label: "Math",
+      value: `${Math.round(startProbability * 100)}%`,
+      detail: `${observed}; ${recent}. The published start rate is the model output after its role prior and availability evidence.`,
+    };
+    if (typeof startEvidence.marketAdjustment === "number") {
+      factors.push({
+        label: "Market effect",
+        value: `${startEvidence.marketAdjustment >= 0 ? "+" : ""}${Math.round(startEvidence.marketAdjustment * 100)}pp`,
+        detail:
+          startEvidence.appearanceSource === "marketParticipation"
+            ? "Bookmaker player participation changed the model input by this amount."
+            : startEvidence.appearanceSource === "marketAbsence"
+              ? "Absence from a complete player market pulled the model input by this amount."
+              : "No bookmaker participation adjustment was applied.",
+      });
+    }
+  }
   if (quoted || carried) {
     factors.push({
       label: "Market",

@@ -89,6 +89,18 @@ describe("bounded quick solver", () => {
     expect(result.projectedPointsBeforeCost).toBe(26);
   });
 
+  it("does not charge transfer costs in a Free Hit scenario", () => {
+    const input = {
+      ...regretCases[0]!.input,
+      chipScenario: "free_hit" as const,
+    };
+    const result = solveQuickPlan(input, { ...limits, maxTransfers: 15 });
+
+    expect(result.chipScenario).toBe("free_hit");
+    expect(result.paidTransfers).toBe(0);
+    expect(result.transferCostPoints).toBe(0);
+  });
+
   it("ranks truncated candidates by feasible squad gain under the club cap", () => {
     const base = regretCases[1]!.input;
     const input = {
