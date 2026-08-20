@@ -33,6 +33,7 @@ from fpl_andres.simulation.minileague_state import GameweekLedger, LeagueSetting
 
 __all__ = [
     "COHORT_MANAGERS",
+    "SEASON_GAMEWEEKS",
     "ManagerBenchmark",
     "SeasonReplay",
     "benchmark_against",
@@ -41,6 +42,9 @@ __all__ = [
 ]
 
 COHORT_MANAGERS = Path("data/cohort/managers.jsonl")
+
+#: A full Premier League season, which is what a real manager's total covers.
+SEASON_GAMEWEEKS = 38
 
 
 @dataclass(frozen=True)
@@ -82,6 +86,20 @@ class SeasonReplay:
     @property
     def net_points(self) -> int:
         return self.total_points - self.hit_points
+
+    @property
+    def prorated_points(self) -> int:
+        """The season this pace implies, for comparison with a full one.
+
+        An estimate and not a result: it assumes the unplayed weeks would have
+        gone like the played ones, which nothing here has shown. It exists
+        because the alternative is comparing 32 weeks against somebody's 38 and
+        calling that a verdict.
+        """
+        played = len(self.weeks)
+        if played == 0:
+            return 0
+        return round(self.net_points * SEASON_GAMEWEEKS / played)
 
 
 def replay_season(

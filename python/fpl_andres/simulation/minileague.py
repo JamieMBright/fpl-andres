@@ -110,7 +110,9 @@ def simulate_league(
                     {player.element_id: player.price_tenths for player in pool},
                     settings.squad_rules.budget_tenths,
                 ),
-                chip_plan=_chip_plan(corpus, squad, settings, manager_seed, last_event),
+                chip_plan=_chip_plan(
+                    corpus, squad, settings, manager_seed, last_event, previous=previous
+                ),
                 chips=ChipState(rules=chip_rules),
             )
         )
@@ -270,6 +272,8 @@ def _chip_plan(
     settings: LeagueSettings,
     seed: int,
     last_event: int,
+    *,
+    previous: SeasonCorpus | None = None,
 ) -> dict[int, ChipName]:
     """Date the season's chips from the fixture list.
 
@@ -286,6 +290,12 @@ def _chip_plan(
         event: len(fixtures) for event, fixtures in corpus.fixtures_by_event.items()
     }
     strength = estimate_strength(corpus.fixtures_before(start))
+    if not strength and previous is not None:
+        # Opening the season there are no results yet to estimate strength
+        # from, and every week scores identically -- which dated the free hit in
+        # gameweek one and rebuilt the squad in gameweek two. Last season's
+        # table is what a manager actually has in August.
+        strength = estimate_strength(previous.fixtures_before(previous.last_event + 1))
     star = max(squad, key=lambda player: player.price_tenths, default=None)
 
     star_value: dict[int, float] = {}

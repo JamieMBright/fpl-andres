@@ -238,6 +238,9 @@ def plan_chips(
         )
 
     # The wildcard is one per half under every allowance the game has used.
+    informative = squad_floor_value is not None and any(
+        value > 0.0 for value in squad_floor_value.values()
+    )
     for half_weeks in halves:
         open_weeks = [week for week in half_weeks if week not in plan]
         if not open_weeks:
@@ -249,11 +252,16 @@ def plan_chips(
         # It was `rng.choice`: a chip placed by a coin toss, which is not a
         # decision at all and made two runs of the same season disagree about a
         # quarter of the chip budget.
-        if squad_floor_value:
+        if informative and squad_floor_value:
             chosen = min(
                 open_weeks,
                 key=lambda week: (squad_floor_value.get(week, 0.0), week),
             )
+        elif squad_floor_value:
+            # No strength estimate yet, so every week scores the same and the
+            # "worst" one is just the earliest. A permanent rebuild taken on no
+            # information is worse than not taking it.
+            continue
         else:
             chosen = rng.choice(open_weeks)
         plan[chosen] = "wildcard"
@@ -278,8 +286,18 @@ def _date_set(
         (week for week in weeks if fixtures_by_event.get(week, 0) > _NORMAL_FIXTURE_COUNT),
         key=lambda week: (-fixtures_by_event.get(week, 0), week),
     )
+    # A squad value of zero everywhere is not a flat season, it is no
+    # information: team strength is estimated from results, and before any have
+    # been played there are none. Dating a chip off it picks whichever week
+    # sorts first, which is how a free hit landed in gameweek one and a
+    # wildcard rebuilt the squad in gameweek two off a projection that could
+    # not yet see anything. An undated chip is not played, which is the right
+    # answer when nothing is known.
+    informative = squad_floor_value is not None and any(
+        value > 0.0 for value in squad_floor_value.values()
+    )
 
-    if squad_floor_value:
+    if informative and squad_floor_value:
         # Worst week for this fifteen: a blank, usually. The chip replaces them
         # for one week, so it is worth most exactly where they are worth least.
         worst = min(weeks, key=lambda week: (squad_floor_value.get(week, 0.0), week))
@@ -287,7 +305,7 @@ def _date_set(
     elif doubles:
         plan[doubles[0]] = "free_hit"
 
-    if squad_floor_value:
+    if informative and squad_floor_value:
         boostable = [week for week in weeks if week not in plan]
         if boostable:
             best_floor = max(boostable, key=lambda week: (squad_floor_value.get(week, 0.0), -week))

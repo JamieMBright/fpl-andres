@@ -17,7 +17,10 @@ type ReplayWeek = {
 type Replay = {
   season: string;
   startGameweek: number;
+  gameweeksPlayed: number;
+  seasonGameweeks: number;
   netPoints: number;
+  proratedPoints: number;
   weeks: ReplayWeek[];
   benchmark: { managers: number; beaten: number } | null;
 };
@@ -27,7 +30,13 @@ type Replay = {
 // before the artifact carries it and exact afterwards.
 const replays = (validation.seasons as unknown as { replay?: Replay }[])
   .map((season) => season.replay)
-  .filter((replay): replay is Replay => Boolean(replay?.weeks?.length));
+  .filter(
+    (replay): replay is Replay =>
+      Boolean(replay?.weeks?.length) &&
+      // An earlier artifact replayed from gameweek one, which the projector
+      // cannot support. The component refuses that shape, and so does this.
+      typeof replay?.gameweeksPlayed === "number",
+  );
 
 function renderReplay() {
   return render(
@@ -52,10 +61,35 @@ describe("the replayed season", () => {
     expect(screen.getByRole("slider", { name: "Gameweek" })).toBeVisible();
   });
 
-  it("opens in gameweek one, so the total covers a whole season", () => {
+  it("says how much of the season it covers rather than implying all of it", () => {
     for (const replay of replays) {
-      expect(replay.startGameweek).toBe(1);
-      expect(replay.weeks[0]?.event).toBe(1);
+      expect(replay.weeks[0]?.event).toBe(replay.startGameweek);
+      expect(replay.gameweeksPlayed).toBe(replay.weeks.length);
+      expect(replay.gameweeksPlayed).toBeLessThanOrEqual(
+        replay.seasonGameweeks,
+      );
+    }
+    if (replays.length === 0) return;
+    renderReplay();
+    // The shortfall is the reason the comparison needs pro-rating, so the page
+    // has to name it rather than let a part-season read as a whole one.
+    expect(screen.getByText(/gameweeks two to six/i)).toBeVisible();
+  });
+
+  it("compares a pro-rated pace and says that is what it is", () => {
+    if (replays.length === 0) return;
+    renderReplay();
+
+    const replay = replays[0]!;
+    expect(replay.proratedPoints).toBe(
+      Math.round(
+        (replay.netPoints * replay.seasonGameweeks) / replay.gameweeksPlayed,
+      ),
+    );
+    if (replay.benchmark) {
+      expect(
+        screen.getByText(/pro-rated pace rather than a season/i),
+      ).toBeVisible();
     }
   });
 
@@ -103,7 +137,7 @@ describe("the replayed season", () => {
       expect(screen.getByText(/real\s+managers/i)).toBeVisible();
       // The cohort is skewed toward good managers and the page has to say so.
       expect(
-        screen.getByText(/ranked cohort rather than the whole game/i),
+        screen.getByText(/ranked one rather than the whole game/i),
       ).toBeVisible();
     } else {
       expect(screen.getByText(/nothing honest to compare/i)).toBeVisible();

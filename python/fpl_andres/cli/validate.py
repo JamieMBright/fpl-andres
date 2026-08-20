@@ -40,6 +40,7 @@ from fpl_andres.simulation.reach import (
     owned_captain_policy_scores,
 )
 from fpl_andres.simulation.replay import (
+    SEASON_GAMEWEEKS,
     benchmark_against,
     cohort_totals,
     replay_season,
@@ -72,11 +73,15 @@ LEAGUE = LeagueSettings(
 # named here actually exists. Misspell one now and mypy says so.
 POLICIES: tuple[Policy, ...] = ("advised", "form_chaser", "crowd", "hold")
 
-# One manager, opening in August and playing to the end. The mini-league above
-# starts at gameweek seven because before that there is not enough of the season
-# to project from; that is right for comparing policies and wrong for comparing
-# a total against somebody who played all thirty-eight, so the replay projects
-# the opening weeks off last season instead.
+# One manager, playing the season as a ledger rather than as a league table.
+#
+# It starts at gameweek seven, not one. The projector returns nothing for
+# gameweeks two to six: with a single week of this season on the books, last
+# season's rows fall outside the recency window and there is no evidence left to
+# project from. Opening in August therefore fields an arbitrary eleven for a
+# sixth of the season and rebuilds on a wildcard it cannot rank, which scores
+# about a third of what the model manages once it can see. Until that gap is
+# closed the honest replay is the part the model can actually play.
 REPLAY = replace(
     LEAGUE,
     managers=1,
@@ -84,7 +89,6 @@ REPLAY = replace(
     hold_share=0.0,
     form_chaser_share=0.0,
     crowd_share=0.0,
-    start_gameweek=1,
 )
 
 
@@ -95,13 +99,21 @@ def _replay_payload(
 ) -> dict[str, object]:
     """One season replayed week by week, and where the total would have placed."""
     replay = replay_season(corpus, previous=previous, settings=REPLAY)
-    benchmark = benchmark_against(corpus.season, replay.net_points, cohort_totals(corpus.season))
+    # Pro-rated, because the replay covers the weeks the model can project and
+    # a real manager played all thirty-eight. Named as an estimate everywhere it
+    # is shown rather than passed off as a season total.
+    benchmark = benchmark_against(
+        corpus.season, replay.prorated_points, cohort_totals(corpus.season)
+    )
     return {
         "season": replay.season,
         "startGameweek": replay.start_gameweek,
+        "gameweeksPlayed": len(replay.weeks),
+        "seasonGameweeks": SEASON_GAMEWEEKS,
         "totalPoints": replay.total_points,
         "hitPoints": replay.hit_points,
         "netPoints": replay.net_points,
+        "proratedPoints": replay.prorated_points,
         "transfers": replay.transfers,
         "chips": replay.chips,
         "finalTeamValueTenths": replay.final_team_value_tenths,

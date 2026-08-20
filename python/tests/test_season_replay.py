@@ -20,8 +20,6 @@ from fpl_andres.simulation.replay import (
 from fpl_andres.simulation.season import LineupRules
 from fpl_andres.simulation.squad import SquadRules
 
-KICKOFF = datetime(2025, 8, 15, 18, 30, tzinfo=UTC)
-
 SQUAD_RULES = SquadRules(budget_tenths=1000, club_limit=3, position_counts={1: 2, 2: 5, 3: 5, 4: 3})
 LINEUP_RULES = LineupRules(
     starting_size=11,
@@ -34,19 +32,26 @@ REPLAY_SETTINGS = LeagueSettings(
     lineup_rules=LINEUP_RULES,
     managers=1,
     advised_share=1.0,
-    start_gameweek=1,
+    start_gameweek=7,
 )
 
 
 def corpus_for(season: str, *, gameweeks: int = 10) -> SeasonCorpus:
     """A small but legal season: forty players, points fixed by element id."""
     corpus = SeasonCorpus(season=season)
+    # Dated from its own August. A previous season sharing this one's dates
+    # reads as the future and is cut off, which leaves an opening gameweek with
+    # nothing to project from.
+    kickoff = datetime(int(season[:4]), 8, 15, 18, 30, tzinfo=UTC)
     element_id = 1
     for position, count in ((1, 6), (2, 16), (3, 16), (4, 10)):
         for index in range(count):
             corpus.position_by_element[element_id] = position
             corpus.team_by_element[element_id] = 1 + (index % 12)
             corpus.name_by_element[element_id] = f"P{element_id}"
+            # Element ids are reassigned each summer, so last season's record is
+            # joined by code. Without it the opening gameweek projects nothing.
+            corpus.code_by_element[element_id] = element_id
             element_id += 1
 
     for gameweek in range(1, gameweeks + 1):
@@ -65,7 +70,7 @@ def corpus_for(season: str, *, gameweeks: int = 10) -> SeasonCorpus:
                 total_points=2 + (player % 5),
                 price_tenths=40 + (position * 5),
                 selected=1000,
-                kickoff_time=KICKOFF + timedelta(days=7 * gameweek),
+                kickoff_time=kickoff + timedelta(days=7 * gameweek),
             )
             for player, position in corpus.position_by_element.items()
         ]
@@ -80,12 +85,25 @@ def replay() -> object:
     )
 
 
-def test_the_replay_opens_in_gameweek_one_and_plays_to_the_end() -> None:
-    """A total measured over 32 weeks is not comparable to one over 38."""
+def test_the_replay_covers_every_week_it_can_project() -> None:
+    """The projector returns nothing for gameweeks two to six.
+
+    With one week of this season on the books, last season's rows fall outside
+    the recency window and there is no evidence left. The replay therefore
+    starts where the model can see, and says how much of the season that is
+    rather than presenting a part-season as a whole one.
+    """
     result = replay()
 
-    assert result.start_gameweek == 1
-    assert [week.event for week in result.weeks] == list(range(1, 11))
+    assert result.start_gameweek == 7
+    assert [week.event for week in result.weeks] == list(range(7, 11))
+
+
+def test_a_part_season_is_prorated_rather_than_compared_as_it_stands() -> None:
+    result = replay()
+
+    played = len(result.weeks)
+    assert result.prorated_points == round(result.net_points * 38 / played)
 
 
 def test_the_weeks_add_up_to_the_total() -> None:
@@ -126,12 +144,8 @@ def test_a_hit_is_only_charged_in_a_week_that_transferred() -> None:
             assert week.transfers, f"GW{week.event} charged a hit with no transfer"
 
 
-def test_the_opening_fifteen_comes_from_the_projection_not_the_seed() -> None:
-    """Opening at GW1 there is no ownership to read, and the fallback is random.
-
-    Handed last season the opening is built off the opening projection instead,
-    so two runs of the same season open with the same team.
-    """
+def test_the_opening_fifteen_is_the_same_team_however_it_is_seeded() -> None:
+    """Every policy starts from one squad, so a difference is the policy."""
     first = replay_season(
         corpus_for("2025-26"),
         previous=corpus_for("2024-25"),
@@ -142,7 +156,7 @@ def test_the_opening_fifteen_comes_from_the_projection_not_the_seed() -> None:
         corpus_for("2025-26"),
         previous=corpus_for("2024-25"),
         settings=REPLAY_SETTINGS,
-        seed=99,
+        seed=1,
     )
 
     assert first.weeks[0].squad == second.weeks[0].squad

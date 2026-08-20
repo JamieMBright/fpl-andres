@@ -45,9 +45,12 @@ type ReplayBenchmark = {
 type SeasonReplayData = {
   season: string;
   startGameweek: number;
+  gameweeksPlayed: number;
+  seasonGameweeks: number;
   totalPoints: number;
   hitPoints: number;
   netPoints: number;
+  proratedPoints: number;
   transfers: number;
   chips: Record<string, number[]>;
   finalTeamValueTenths: number;
@@ -72,7 +75,15 @@ function replaysFrom(report: unknown): SeasonReplayData[] {
   return (seasons ?? [])
     .map((season) => season.replay)
     .filter((replay): replay is SeasonReplayData =>
-      Boolean(replay && replay.weeks?.length),
+      Boolean(
+        replay &&
+        replay.weeks?.length &&
+        // An earlier artifact replayed from gameweek one, which the projector
+        // cannot support: gameweeks two to six had no evidence and the season
+        // was played on an arbitrary eleven. It is refused rather than shown.
+        typeof replay.gameweeksPlayed === "number" &&
+        typeof replay.proratedPoints === "number",
+      ),
     );
 }
 
@@ -105,11 +116,20 @@ export function SeasonReplay() {
     <section aria-labelledby="replay-title" className="replay">
       <h2 id="replay-title">Play the season back, week by week</h2>
       <p>
-        The same model, opening in August and playing to the end: transfers,
-        hits, captaincy, auto-substitutions and every chip the season actually
-        granted &mdash; which from 2025-26 is two of each rather than one, a set
-        per half. Step through it and check the weeks rather than taking the
-        total on trust.
+        The same model, playing a completed season as a ledger: transfers, hits,
+        captaincy, auto-substitutions and every chip the season actually granted
+        &mdash; which from 2025-26 is two of each rather than one, a set per
+        half. Step through it and check the weeks rather than taking the total
+        on trust.
+      </p>
+      <p className="validation-note">
+        It starts at gameweek {replay.startGameweek}, not gameweek one. Give the
+        projection a single week of a new season and last season&rsquo;s record
+        has already aged out of its window, so gameweeks two to six have no
+        evidence to project from at all. Rather than field an arbitrary eleven
+        for a sixth of the season and call the total a season, the replay covers
+        the {replay.gameweeksPlayed} weeks of {replay.seasonGameweeks} the model
+        can actually play.
       </p>
 
       <div className="replay-controls">
@@ -215,8 +235,14 @@ function SeasonOutcome({ replay }: { replay: SeasonReplayData }) {
       <h3>Where {replay.season} finished</h3>
       <dl className="replay-figures">
         <div>
-          <dt>Points</dt>
+          <dt>Points, {replay.gameweeksPlayed} weeks</dt>
           <dd className="mono">{replay.netPoints.toLocaleString("en-GB")}</dd>
+        </div>
+        <div>
+          <dt>At that pace, {replay.seasonGameweeks} weeks</dt>
+          <dd className="mono">
+            {replay.proratedPoints.toLocaleString("en-GB")}
+          </dd>
         </div>
         <div>
           <dt>Transfers</dt>
@@ -244,15 +270,16 @@ function SeasonOutcome({ replay }: { replay: SeasonReplayData }) {
         </p>
       ) : (
         <p className="validation-verdict">
-          Against {replay.benchmark.managers.toLocaleString("en-GB")} real
-          managers whose {replay.season} totals I hold, that beats{" "}
-          {replay.benchmark.beaten.toLocaleString("en-GB")} of them &mdash; the{" "}
-          {replay.benchmark.percentile.toFixed(0)}th percentile of that group.
-          Their median was{" "}
+          Held against {replay.benchmark.managers.toLocaleString("en-GB")} real
+          managers whose {replay.season} totals I hold, that pace would have
+          beaten {replay.benchmark.beaten.toLocaleString("en-GB")} of them
+          &mdash; the {replay.benchmark.percentile.toFixed(0)}th percentile of
+          that group. Their median was{" "}
           {replay.benchmark.medianPoints.toLocaleString("en-GB")} and the best
-          of them scored {replay.benchmark.best.toLocaleString("en-GB")}. They
-          are a ranked cohort rather than the whole game, so this is a harder
-          room than an overall rank.
+          scored {replay.benchmark.best.toLocaleString("en-GB")}. Two things to
+          hold against it: this is a pro-rated pace rather than a season anyone
+          played, and the cohort is a ranked one rather than the whole game,
+          which makes it a harder room than an overall rank.
         </p>
       )}
     </div>
