@@ -29,6 +29,13 @@ from __future__ import annotations
 
 __all__ = ["MODEL_VERSION"]
 
+#: 8.4 adds explainable xStart evidence fields and changes planner chip
+#: semantics: Free Hit is a temporary five-to-fifteen-player rebuild with no
+#: transfer cost, and its squad/bank/free-transfer state is restored afterward.
+#: Projected player rates and route weights are unchanged. Minor: the
+#: recommendation contract and evidence surface changed while the numerical
+#: projection retains its meaning.
+#:
 #: 8.3 restores row-level season-input provenance beside each player after the
 #: player-market diagnostic route started reading the slimmer artifact surface.
 #: Minor: route values keep their meaning, but the published season-input row
@@ -343,4 +350,4 @@ __all__ = ["MODEL_VERSION"]
 #: projection and resampled, so a gap that does not clear zero is reported as
 #: not clearing zero. No projection changed; what changed is what may be
 #: claimed from it.
-MODEL_VERSION = "8.3"
+MODEL_VERSION = "8.4"
