@@ -1209,6 +1209,10 @@ h1[tabindex="-1"]:focus-visible {
   margin-top: 12px;
 }
 
+.expected-xi-source-warning {
+  color: var(--amber);
+}
+
 @media (max-width: 760px) {
   .market-scoreboard {
     grid-template-columns: repeat(2, minmax(0, 1fr));

@@ -62,6 +62,15 @@ function scoreOf(week: PlanGameweek, player: PlanPlayer): number {
   return week.expected[String(player.code)] ?? 0;
 }
 
+export function captainLine(week: PlanGameweek): string {
+  const captainScore = scoreOf(week, week.captain);
+  const viceScore = scoreOf(week, week.viceCaptain);
+  const gap = captainScore - viceScore;
+  const fixture = (week.opponents[week.captain.club] ?? []).join(", ");
+  const contest = Math.abs(gap) < 1 ? " This is a contested call." : "";
+  return `${week.captain.name} leads ${week.viceCaptain.name} ${points(Math.abs(gap))} points on expected score${fixture ? `, with ${fixture}` : ""}.${contest}`;
+}
+
 export function isPremium(player: PlanPlayer): boolean {
   const line = PREMIUM_TENTHS[player.position];
   return line !== undefined && player.priceTenths > line;

@@ -111,6 +111,7 @@ export interface ExpectedXiTeam {
   playersQuoted: number;
   quoteFloor: number;
   unmatchedNames: readonly string[];
+  teamSheetEvidence: "dated" | "unavailable";
   updatedAt: string | null;
 }
 
@@ -165,6 +166,14 @@ function toPlayer(
   ];
   const startEvidence = player.startEvidence;
   if (startEvidence) {
+    const sourceRate =
+      typeof startEvidence.sourceStartRate === "number"
+        ? `${Math.round(startEvidence.sourceStartRate * 100)}%`
+        : "unpublished";
+    const finalRate =
+      typeof startEvidence.finalStartRate === "number"
+        ? `${Math.round(startEvidence.finalStartRate * 100)}%`
+        : `${Math.round(startProbability * 100)}%`;
     const observed =
       typeof startEvidence.observedAppearances === "number"
         ? `${startEvidence.observedAppearances} recorded appearances`
@@ -176,8 +185,8 @@ function toPlayer(
         : "recent starts unavailable";
     factors[0] = {
       label: "Math",
-      value: `${Math.round(startProbability * 100)}%`,
-      detail: `${observed}; ${recent}. The published start rate is the model output after its role prior and availability evidence.`,
+      value: finalRate,
+      detail: `${sourceRate} source rate -> ${finalRate} published rate; ${observed}; ${recent}. The artifact does not publish the prior strength or effective sample size yet.`,
     };
     if (typeof startEvidence.marketAdjustment === "number") {
       factors.push({
@@ -333,10 +342,20 @@ function buildTeam(
     playersQuoted: quotedIds.size,
     quoteFloor: inputs.playerOdds.clubQuoteFloor ?? 18,
     unmatchedNames: diagnostic?.unmatched_names ?? [],
+    teamSheetEvidence: manualPriorsForClub(inputs.manualPriors, club)
+      ? "dated"
+      : "unavailable",
     updatedAt:
       diagnostic?.visited_at ??
       (quotedIds.size > 0 ? inputs.playerOdds.fetchedAt : null),
   };
+}
+
+function manualPriorsForClub(
+  artifact: ManualPriorArtifact | undefined,
+  club: string,
+): ManualPriorRow | undefined {
+  return artifact?.players.find((prior) => prior.club === club);
 }
 
 export function buildExpectedXi(inputs: ExpectedXiInputs): ExpectedXi {

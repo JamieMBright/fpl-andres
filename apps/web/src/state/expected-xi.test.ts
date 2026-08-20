@@ -15,6 +15,15 @@ const seasonInputs = {
       club: "ARS",
       teamId: 1,
       startRate: 0.7,
+      startEvidence: {
+        sourceStartRate: 0.8,
+        finalStartRate: 0.9,
+        observedAppearances: 32,
+        recentStarts: 5,
+        recentMatches: 6,
+        appearanceSource: "marketParticipation",
+        marketAdjustment: 0.1,
+      },
     },
     {
       id: 2,
@@ -156,6 +165,30 @@ describe("expected XI reader", () => {
     expect(
       arsenal?.starters.find((player) => player.name === "Keeper")?.evidence,
     ).toBe("model");
+  });
+
+  it("explains the published source-to-final start-rate trail", () => {
+    const arsenal = buildExpectedXi({ seasonInputs, playerOdds }).teams.find(
+      (team) => team.club === "ARS",
+    );
+    const keeper = arsenal?.starters.find((player) => player.name === "Keeper");
+    expect(keeper?.explanation.factors[0]).toMatchObject({
+      label: "Math",
+      value: "90%",
+    });
+    expect(keeper?.explanation.factors[0]?.detail).toContain(
+      "80% source rate -> 90% published rate",
+    );
+    expect(keeper?.explanation.factors[0]?.detail).toContain(
+      "32 recorded appearances",
+    );
+    expect(
+      keeper?.explanation.factors.find(
+        (factor) => factor.label === "Market effect",
+      ),
+    ).toMatchObject({
+      value: "+10pp",
+    });
   });
 
   it("attaches team market health to the squad", () => {

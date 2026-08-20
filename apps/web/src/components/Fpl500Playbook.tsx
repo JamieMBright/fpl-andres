@@ -329,7 +329,7 @@ export function Fpl500Playbook() {
       <Fold kind="analysis" open title="Analysing the FPL500">
         <p>
           {data.portfolioEvents.length === 0
-            ? "No deadline has passed, so there is nothing in these yet. The frames and their axes are what will be drawn."
+            ? "No deadline has passed, so there are no FPL500 gameweek picks or captain choices to compare yet. The frames and their axes are what will be drawn."
             : `${data.portfolioEvents.length} gameweeks captured.`}
         </p>
         <PlannedAnalysis />

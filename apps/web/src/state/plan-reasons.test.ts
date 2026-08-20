@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   chipReason,
+  captainLine,
   confidenceReason,
   fixtureReason,
   isPremium,
@@ -109,6 +110,16 @@ describe("moveLines", () => {
     );
 
     expect(lines.at(-1)).toContain("\u22124 for the extra transfers");
+  });
+});
+
+describe("captainLine", () => {
+  it("explains a close captain call as contested", () => {
+    const line = captainLine(week({ expected: { "1": 4.8, "2": 4.1 } }));
+
+    expect(line).toContain("P1 leads P2 0.7 points");
+    expect(line).toContain("CHE (H)");
+    expect(line).toContain("contested");
   });
 });
 

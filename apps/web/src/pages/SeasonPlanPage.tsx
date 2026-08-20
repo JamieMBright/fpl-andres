@@ -57,6 +57,7 @@ import {
 } from "../state/rank-objective";
 import {
   CAPTAINCY_VERDICT,
+  captainLine,
   chipReason,
   confidenceReason,
   fixtureReason,
@@ -438,6 +439,9 @@ function Why({ week, chip }: { week: PlanGameweek; chip: ChipCall | null }) {
             <dd>{fixtures}</dd>
           </>
         ) : null}
+
+        <dt data-label="captain">Captain</dt>
+        <dd>{captainLine(week)}</dd>
 
         {Object.keys(week.fixtureEvidence).length > 0 ? (
           <>

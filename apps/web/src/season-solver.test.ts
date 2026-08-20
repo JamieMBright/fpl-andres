@@ -382,3 +382,22 @@ describe("a committed rebuild", () => {
     );
   });
 });
+
+describe("a committed Free Hit", () => {
+  it(
+    "does not mark a week when the solve cannot move five players",
+    () => {
+      const solved = [
+        ...solveSeason({
+          ...openingStart(),
+          fromEvent: 6,
+          freeHitAtEvent: 6,
+        }),
+      ];
+      const hitIndex = solved.findIndex((week) => week.chip === "Free Hit");
+      expect(hitIndex).toBe(-1);
+      expect(solved.every((week) => week.chip !== "Free Hit")).toBe(true);
+    },
+    SOLVE_TIMEOUT,
+  );
+});

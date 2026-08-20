@@ -128,6 +128,12 @@ function TeamSection({ team }: { team: ExpectedXiTeam }) {
           ? ` · ${team.unmatchedNames.length} unmatched`
           : " · matched"}
       </p>
+      {team.teamSheetEvidence === "unavailable" ? (
+        <p className="expected-xi-source expected-xi-source-warning">
+          No dated team-sheet source is attached. Bookmaker coverage is market
+          evidence, not confirmation that this XI starts.
+        </p>
+      ) : null}
     </section>
   );
 }

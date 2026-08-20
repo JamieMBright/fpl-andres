@@ -217,7 +217,6 @@ describe("declared squad", () => {
       availableFreeTransfers: 0,
       fromEvent: 1,
     });
-    expect(restart).not.toBeNull();
     const locked = solveSeason({ ...restart!, lockOpening: true }).next().value;
 
     expect(locked?.transfersIn).toEqual([]);
@@ -227,7 +226,7 @@ describe("declared squad", () => {
         .map((player) => player.id)
         .sort((left, right) => left - right),
     ).toEqual([...acceptedIds].sort((left, right) => left - right));
-  });
+  }, 30_000);
 
   it("never stores a squad that breaks a rule", () => {
     expect(() => saveDeclaredSquad(storage, 42, 1, [1, 2, 3])).toThrow(

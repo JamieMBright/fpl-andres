@@ -91,7 +91,9 @@ describe("Fpl500Playbook", () => {
     draw();
 
     expect(artifact.portfolioEvents).toEqual([]);
-    expect(screen.getByText(/No deadline has passed/)).toBeInTheDocument();
+    expect(
+      screen.getByText(/no FPL500 gameweek picks or captain choices/i),
+    ).toBeInTheDocument();
   });
 
   it("draws the frames the analysis will use, with their axes", () => {
