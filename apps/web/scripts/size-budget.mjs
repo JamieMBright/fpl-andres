@@ -43,10 +43,16 @@ const BUDGETS = [
   // history instead of staying fixed all season. Unused row-level provenance
   // and squad numbers were trimmed first; compacting the remaining carry rows
   // recovered only 0.45 kB because every retained row moves a solver route.
+  //
+  // Measured 68.55 kB, raised from 68 kB at model 8.5. No code entered the
+  // worker: anchoring each club's attacking routes to its team goal total
+  // replaced a column of repeated de-vigged prices with fitted values that
+  // share fewer digits, and the artifact gzips 1.33 kB worse for it. The
+  // uncompressed bundle got smaller.
   {
     match: /^season-solver\.worker-.*\.js$/,
     name: "solver worker",
-    gzipKb: 68,
+    gzipKb: 70,
   },
   // Measured 39.94 kB for the shared chunk, raised from 38 kB. Consolidating
   // the team view onto the plan moved several components into shared code

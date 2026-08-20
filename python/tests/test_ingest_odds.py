@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 import pytest
@@ -395,6 +396,107 @@ class TestTheOddsApiFallback:
             }
         ]
         assert _uncovered_team_events(events, refreshed) == []
+
+    def test_a_covered_round_is_repriced_in_the_last_day_before_kickoff(self) -> None:
+        """The deadline price carries the team news a manager locks against.
+
+        Leaving the round covered froze the whole gameweek on whatever the book
+        said when it was first seen, so the run closest to the deadline spent
+        nothing and changed nothing.
+        """
+        events = [
+            {
+                "id": "imminent",
+                "home_team": "Arsenal",
+                "away_team": "Coventry City",
+                "commence_time": "2026-08-21T19:00:00Z",
+            },
+            {
+                "id": "later-in-the-round",
+                "home_team": "Nottingham Forest",
+                "away_team": "Leeds United",
+                "commence_time": "2026-08-26T14:00:00Z",
+            },
+        ]
+        covered = [
+            {
+                "home": "ARS",
+                "away": "COV",
+                "kickoff": "2026-08-21T19:00:00+00:00",
+                "marketEvidence": {"analysisVersion": TEAM_MARKET_ANALYSIS_VERSION},
+            },
+            {
+                "home": "NFO",
+                "away": "LEE",
+                "kickoff": "2026-08-26T14:00:00+00:00",
+                "marketEvidence": {"analysisVersion": TEAM_MARKET_ANALYSIS_VERSION},
+            },
+        ]
+        now = datetime(2026, 8, 20, 18, 0, tzinfo=UTC)
+        priced_at = datetime(2026, 8, 18, 23, 20, tzinfo=UTC)
+
+        selected = _uncovered_team_events(events, covered, priced_at=priced_at, now=now)
+
+        # Only the fixture inside the deadline window is worth re-billing.
+        assert [event["id"] for event in selected] == ["imminent"]
+
+    def test_a_quote_taken_moments_ago_is_not_billed_again(self) -> None:
+        events = [
+            {
+                "id": "imminent",
+                "home_team": "Arsenal",
+                "away_team": "Coventry City",
+                "commence_time": "2026-08-21T19:00:00Z",
+            }
+        ]
+        covered = [
+            {
+                "home": "ARS",
+                "away": "COV",
+                "kickoff": "2026-08-21T19:00:00+00:00",
+                "marketEvidence": {"analysisVersion": TEAM_MARKET_ANALYSIS_VERSION},
+            }
+        ]
+        now = datetime(2026, 8, 20, 18, 0, tzinfo=UTC)
+
+        assert (
+            _uncovered_team_events(
+                events,
+                covered,
+                priced_at=now - timedelta(hours=1),
+                now=now,
+            )
+            == []
+        )
+
+    def test_a_kicked_off_fixture_is_never_repriced(self) -> None:
+        events = [
+            {
+                "id": "started",
+                "home_team": "Arsenal",
+                "away_team": "Coventry City",
+                "commence_time": "2026-08-21T19:00:00Z",
+            }
+        ]
+        covered = [
+            {
+                "home": "ARS",
+                "away": "COV",
+                "kickoff": "2026-08-21T19:00:00+00:00",
+                "marketEvidence": {"analysisVersion": TEAM_MARKET_ANALYSIS_VERSION},
+            }
+        ]
+        now = datetime(2026, 8, 21, 20, 0, tzinfo=UTC)
+
+        assert (
+            _uncovered_team_events(
+                events,
+                covered,
+                priced_at=datetime(2026, 8, 18, 23, 20, tzinfo=UTC),
+                now=now,
+            )
+            == []
+        )
 
     def test_fresh_rows_replace_the_same_fixture_and_retain_the_rest(self) -> None:
         previous = [

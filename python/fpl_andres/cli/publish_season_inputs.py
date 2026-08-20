@@ -23,7 +23,7 @@ import hashlib
 import json
 import sys
 import urllib.request
-from collections import Counter
+from collections import Counter, defaultdict
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from datetime import UTC, date, datetime
@@ -46,7 +46,12 @@ from fpl_andres.backtesting.scoring import (
 )
 from fpl_andres.bootstrap import BootstrapElement, parse_elements
 from fpl_andres.jsonio import parse_json, read_json_file
-from fpl_andres.models.fixture_odds import ClubMatchOdds, club_views, load_fixture_odds
+from fpl_andres.models.fixture_odds import (
+    ClubMatchOdds,
+    OddsArtifactError,
+    club_views,
+    load_fixture_odds,
+)
 from fpl_andres.models.market_evidence import (
     BonusCandidate,
     bonus_expectations,
@@ -56,9 +61,12 @@ from fpl_andres.models.market_routes import (
     MarketAttack,
     MarketCards,
     MarketRoutesError,
+    TeamTotalMismatch,
     blend_rate,
+    implied_events,
     market_attack,
     market_cards,
+    reconcile_to_team_total,
 )
 from fpl_andres.planning.fixture_routes import (
     PROMOTED_STRENGTH,
@@ -232,17 +240,62 @@ def _artifact_provenance(
 # there is no fixture to be difficult.
 
 
-def _quoted_attack(odds_path: Path) -> dict[int, tuple[MarketAttack, date]]:
+def _contradicts_itself(row: Mapping[str, object]) -> bool:
+    """Whether one player's prices disagree with each other.
+
+    Scoring first is a way of scoring, so its probability cannot exceed the
+    anytime price. A row that says otherwise has been misread rather than
+    mispriced, and every number on it is suspect -- including the anytime price
+    the attacking route would otherwise believe.
+    """
+    anytime = row.get("anytime_goal")
+    first = row.get("first_goal")
+    if not isinstance(anytime, (int, float)) or not isinstance(first, (int, float)):
+        return False
+    return bool(first > anytime)
+
+
+def _team_expected_goals(odds_path: Path) -> dict[tuple[str, date], float]:
+    """What each club's own team book expects it to score, by matchday.
+
+    Keyed the way the player rows are, so a club playing twice in a week
+    anchors each fixture against its own price rather than a week's average.
+    """
+    if not odds_path.exists():
+        return {}
+    try:
+        views = club_views(load_fixture_odds(odds_path))
+    except OddsArtifactError:
+        return {}
+    anchored: dict[tuple[str, date], float] = {}
+    for club, matches in views.items():
+        for match in matches:
+            if match.kickoff is None:
+                continue
+            anchored[(club, match.kickoff.astimezone(UTC).date())] = match.expected_goals
+    return anchored
+
+
+def _quoted_attack(
+    odds_path: Path,
+    team_expected_goals: Mapping[tuple[str, date], float] | None = None,
+) -> tuple[dict[int, tuple[MarketAttack, date]], list[TeamTotalMismatch]]:
     """Goals and assists the market expects, by element, with the day quoted.
 
     A price is for one fixture, so the day it was quoted for has to travel with
     it: the number below is de-fixtured against that gameweek's multiplier
     before it can be published as a per-average-match route.
+
+    Player rates are reconciled club by club onto the goals that club's own team
+    book implies, because a one-sided player market cannot be de-vigged and a
+    complete team book can. `team_expected_goals` absent leaves every rate as it
+    was quoted, which is what the older artifacts carry.
     """
     if not odds_path.exists():
-        return {}
+        return {}, []
     artifact = read_json_file(odds_path)
     quoted: dict[int, tuple[MarketAttack, date]] = {}
+    raw: dict[int, tuple[float | None, float | None, str | None]] = {}
     for row in artifact.get("players", []):
         element_id = row.get("element_id")
         kickoff = row.get("kickoff")
@@ -250,6 +303,8 @@ def _quoted_attack(odds_path: Path) -> dict[int, tuple[MarketAttack, date]]:
             continue
         goal = row.get("anytime_goal")
         assist = row.get("anytime_assist")
+        if _contradicts_itself(row):
+            continue
         try:
             when = datetime.fromisoformat(kickoff.replace("Z", "+00:00")).astimezone(UTC).date()
             attack = market_attack(
@@ -262,7 +317,55 @@ def _quoted_attack(odds_path: Path) -> dict[int, tuple[MarketAttack, date]]:
             continue
         if attack is not None:
             quoted[element_id] = (attack, when)
-    return quoted
+            club = row.get("club")
+            raw[element_id] = (
+                float(goal) if isinstance(goal, (int, float)) else None,
+                float(assist) if isinstance(assist, (int, float)) else None,
+                club if isinstance(club, str) else None,
+            )
+    if not team_expected_goals:
+        return quoted, []
+    return _reconcile_quoted_attack(quoted, raw, team_expected_goals)
+
+
+def _reconcile_quoted_attack(
+    quoted: Mapping[int, tuple[MarketAttack, date]],
+    raw: Mapping[int, tuple[float | None, float | None, str | None]],
+    team_expected_goals: Mapping[tuple[str, date], float],
+) -> tuple[dict[int, tuple[MarketAttack, date]], list[TeamTotalMismatch]]:
+    """One exponent per club per matchday, applied to both halves of the attack."""
+    grouped: dict[tuple[str, date], dict[int, float]] = defaultdict(dict)
+    for element_id, (_attack, when) in quoted.items():
+        goal, _assist, club = raw[element_id]
+        if club is None or goal is None:
+            continue
+        grouped[(club, when)][element_id] = goal
+
+    exponents: dict[tuple[str, date], float] = {}
+    mismatches: list[TeamTotalMismatch] = []
+    for key, probabilities in grouped.items():
+        team = team_expected_goals.get(key)
+        if team is None:
+            continue
+        _, mismatch = reconcile_to_team_total(probabilities, team, club=key[0])
+        exponents[key] = mismatch.exponent
+        mismatches.append(mismatch)
+
+    reconciled: dict[int, tuple[MarketAttack, date]] = {}
+    for element_id, (attack, when) in quoted.items():
+        goal, assist, club = raw[element_id]
+        exponent = exponents.get((club, when)) if club is not None else None
+        if exponent is None or exponent == 1.0:
+            reconciled[element_id] = (attack, when)
+            continue
+        reconciled[element_id] = (
+            MarketAttack(
+                goals=None if goal is None else implied_events(goal**exponent),
+                assists=None if assist is None else implied_events(assist**exponent),
+            ),
+            when,
+        )
+    return reconciled, sorted(mismatches, key=lambda row: (row.club, row.exponent))
 
 
 @dataclass(frozen=True)
@@ -1502,7 +1605,9 @@ def main(argv: Sequence[str] | None = None) -> int:
             depth[element.id] = 1 + sum(1 for other in squad if other.now_cost > element.now_cost)
 
     priors = _priors_by_depth(available, depth, record_by_code)
-    quoted_attack = _quoted_attack(player_odds_path)
+    quoted_attack, attack_mismatches = _quoted_attack(
+        player_odds_path, _team_expected_goals(fixture_odds_path)
+    )
     quoted_cards = _quoted_cards(player_odds_path)
     quoted_shots = _quoted_shots(player_odds_path)
     squads = _quoted_squads(player_odds_path)
@@ -1650,6 +1755,32 @@ def main(argv: Sequence[str] | None = None) -> int:
             "participationInferred": player_reach.participation,
             "bonusEvents": len(bonus_overrides),
             "playerMarketUsage": PLAYER_MARKET_USAGE,
+            # A one-sided player market carries its margin; a complete team book
+            # does not. Published per club so the size of that gap is arguable
+            # rather than absorbed silently into every attacking route.
+            "teamTotalReconciliation": {
+                "clubsAnchored": len(attack_mismatches),
+                "medianExponent": (
+                    round(
+                        sorted(row.exponent for row in attack_mismatches)[
+                            len(attack_mismatches) // 2
+                        ],
+                        4,
+                    )
+                    if attack_mismatches
+                    else None
+                ),
+                "clubs": [
+                    {
+                        "club": row.club,
+                        "playerEvents": round(row.player_events, 4),
+                        "teamEvents": round(row.team_events, 4),
+                        "exponent": round(row.exponent, 4),
+                        "quotedPlayers": row.quoted_players,
+                    }
+                    for row in attack_mismatches
+                ],
+            },
         },
         "marketCarry": {
             "halfLifeGameweeks": MARKET_CARRY_HALF_LIFE_GAMEWEEKS,

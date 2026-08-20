@@ -103,6 +103,19 @@ type SeasonReport = {
   firstScoredGameweek: number;
   expectedGoalsCoverage: number;
   methods: Method[];
+  /**
+   * The opening gameweek scored on its own, off the previous season only.
+   * Absent from artifacts generated before the opening was measured.
+   */
+  openingGameweek?: {
+    previousSeason: string;
+    event: number;
+    scored: number;
+    meanAbsoluteError: number;
+    rootMeanSquaredError: number;
+    bias: number;
+    spearman: number | null;
+  };
   /** Absent until captain rules were replayed on model-owned legal XIs. */
   ownedCaptainPolicies?: OwnedCaptainPolicy[];
   /** Absent from artifacts generated before reach was measured. */
@@ -257,6 +270,84 @@ function percent(value: number | null | undefined): string {
   return value === null || value === undefined
     ? "—"
     : `${String(Math.round(value * 100))}%`;
+}
+
+/**
+ * The opening gameweek, scored on its own.
+ *
+ * Every other number on this page pools the whole season, by which point the
+ * model has watched players in the current campaign. GW1 has none of that: it
+ * runs off last season and the summer market alone. Someone locking a squad
+ * before a ball is kicked is buying the worse of the two numbers, so it is
+ * printed rather than averaged away.
+ */
+function OpeningGameweekAccuracy({
+  seasons,
+}: {
+  seasons: readonly SeasonReport[];
+}) {
+  const rows = seasons
+    .map((season) => ({
+      season: season.season,
+      opening: season.openingGameweek,
+      inSeason: methodOf(season, "model")?.spearman ?? null,
+    }))
+    .filter(
+      (
+        row,
+      ): row is {
+        season: string;
+        opening: NonNullable<SeasonReport["openingGameweek"]>;
+        inSeason: number | null;
+      } => row.opening !== undefined,
+    );
+  if (rows.length === 0) {
+    // Older artifact: say nothing rather than imply the opening was tested.
+    return null;
+  }
+  return (
+    <div className="validation-opening">
+      <h3>How much of that survives gameweek one?</h3>
+      <p>
+        Less of it, most years. Replaying each season&rsquo;s opening gameweek
+        with nothing but the previous season and the summer market, ranking came
+        out worse in three of the four seasons I have &mdash; there is no
+        current-season form to lean on yet. {rows[0]?.season} is the exception,
+        and with four seasons that is far too few to call the size of the gap.
+      </p>
+      <table>
+        <caption className="visually-hidden">
+          Opening-gameweek rank correlation against the same season pooled
+        </caption>
+        <thead>
+          <tr>
+            <th scope="col">Season</th>
+            <th scope="col">Priced off</th>
+            <th scope="col">Players scored</th>
+            <th scope="col">GW1 rank correlation</th>
+            <th scope="col">Whole season</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((row) => (
+            <tr key={row.season}>
+              <td>{row.season}</td>
+              <td>{row.opening.previousSeason}</td>
+              <td className="mono">{row.opening.scored}</td>
+              <td className="mono">{show(row.opening.spearman)}</td>
+              <td className="mono">{show(row.inSeason)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <p className="validation-verdict">
+        Treat an opening-gameweek ranking as the least tested number I publish.
+        It is scored on about half the player list, on one week per season, so
+        it is thinner evidence than everything above it. That is why an opening
+        squad comes with the evidence behind each pick rather than only a total.
+      </p>
+    </div>
+  );
 }
 
 export function ValidationReport() {
@@ -425,6 +516,7 @@ export function ValidationReport() {
         <p className="validation-verdict">
           {pooledVerdict(report.seasons as VerdictSeason[]).sentence}
         </p>
+        <OpeningGameweekAccuracy seasons={report.seasons} />
       </section>
 
       <section aria-labelledby="position-title">

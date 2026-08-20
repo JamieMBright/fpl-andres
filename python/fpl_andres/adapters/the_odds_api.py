@@ -596,9 +596,20 @@ def _over_probability(sides: Mapping[str, float]) -> float | None:
 
 
 def _anytime_market_values(outcomes: object) -> dict[str, float]:
+    """One probability per player from one book's market.
+
+    A book keys these markets by `description` (the footballer) and puts the
+    side in `name`. Two rows sharing a description are only a complete book when
+    those sides are a yes and a no; two rows for the same man priced as separate
+    selections are two quotes for the same thing. Handing the second case to a
+    two-way de-vig reads one selection as the complement of the other and
+    inflates both. Measured on the 2026-08-20 artifact that put twenty-one
+    players above their own anytime price on first-scorer, and carried a median
+    first-scorer probability of 0.503 where three or more books read 0.065.
+    """
     if not isinstance(outcomes, list):
         return {}
-    by_player: dict[str, list[float]] = defaultdict(list)
+    by_player: dict[str, list[tuple[str, float]]] = defaultdict(list)
     for outcome in outcomes:
         if not isinstance(outcome, Mapping):
             continue
@@ -607,12 +618,29 @@ def _anytime_market_values(outcomes: object) -> dict[str, float]:
         if not isinstance(name, str) or name.strip().casefold() in _NON_PLAYER_OUTCOMES:
             continue
         if isinstance(price, (int, float)) and price > 1:
-            by_player[name].append(float(price))
-    return {
-        name: probability
-        for name, prices in by_player.items()
-        if (probability := _devigged(prices)) is not None
-    }
+            side = outcome.get("name")
+            by_player[name].append(
+                (side.strip().casefold() if isinstance(side, str) else "", price)
+            )
+
+    values: dict[str, float] = {}
+    for name, quotes in by_player.items():
+        sides = [side for side, _ in quotes]
+        prices = [price for _, price in quotes]
+        if len(prices) == 2 and _is_complementary(sides):
+            probability = _devigged(prices)
+        else:
+            # Separate selections for the same man: no complement to de-vig
+            # against, so the shortest honest read is the median implied.
+            probability = _two_way(statistics.median(prices))
+        if probability is not None:
+            values[name] = probability
+    return values
+
+
+def _is_complementary(sides: Sequence[str]) -> bool:
+    """Whether two outcome labels are the two halves of one two-way book."""
+    return {sides[0], sides[1]} in ({"yes", "no"}, {"over", "under"})
 
 
 def read_event(

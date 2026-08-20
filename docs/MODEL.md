@@ -306,6 +306,48 @@ the projector's own `expectedGoals` and `expectedAssists`, so a fixture with an
 anytime-scorer market and no assist market still counts, and leaves the assists
 where the record put them.
 
+**Every player price in a club is anchored to that club's team price.** The
+same bookmaker sells two views of one quantity. Summing `λ = −ln(1 − P)` across
+a club's anytime-scorer prices says how many goals its players will score;
+de-vigging the 1X2 and totals book says how many goals the club will score.
+Nothing forced them to agree, and they did not: measured across the twenty
+clubs priced for the 2026-27 opening, the player view implied a median **2.48×**
+the team view, ranging 1.73× to 3.44×. Both cannot be right, and the team book
+is the one with the deeper liquidity and the tighter margin.
+
+The gap is bookmaker margin, and margin is not spread evenly. It concentrates
+in longshots — the favourite-longshot bias — so dividing every rate by 2.48
+would be proportional de-vig, the method this codebase already refuses
+elsewhere for exactly that reason. Doing it that way put four goalkeepers into
+the top twenty projected scorers and cut Haaland to 20% of City's goals.
+
+So the correction is a power, not a scale. Each club's prices are raised to a
+common exponent `k`, chosen by bisection so that
+
+$$\sum_i -\ln\!\left(1 - p_i^{\,k}\right) = \lambda_{\text{team}}$$
+
+A power leaves the ordering untouched and takes proportionally more from the
+long prices than the short ones, which is where the margin sits. Fitted on the
+opening round the exponents ran 1.13–1.77 with a median of 1.53, and Haaland
+came out at 31% of City's priced goals — where a first-choice striker belongs.
+The exponent, both totals and the quoted-player count are published per club
+under `market.teamTotalReconciliation`, so the size of the correction is
+inspectable rather than implied.
+
+A club with no team price is left alone rather than guessed at, and a target
+outside the reachable range of the fit is refused with the exponent recorded
+as 1.0.
+
+**Two identities are checked before any of this.** First-scorer is a subset of
+anytime-scorer, so `P(first) ≤ P(anytime)` for every player and
+`Σ P(first) ≤ 1` across a club. Rows failing the first test are dropped. They
+existed: 21 of 388 in the opening round, every one of them from a fixture with
+two or fewer books, and Arsenal's first-scorer probabilities summed to 5.115.
+The cause was a parser that treated two separate selections for one player
+inside one book as a complementary yes/no pair and de-vigged them against each
+other, inflating both. A pair is now de-vigged only when the two labels
+actually are complementary.
+
 ### Shots and participation
 
 Shots and shots on target are over/under lines, not anytime yes/no prices. The

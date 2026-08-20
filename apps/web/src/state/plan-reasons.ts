@@ -1,6 +1,7 @@
 import type { ChipCall, PlanGameweek, PlanPlayer } from "./season-plan";
 import { CONFIDENCE_NOTE } from "./season-plan";
 import validation from "../data/validation.json";
+import seasonInputs from "../data/season-inputs.json";
 import { captainEvidence } from "./captain-evidence";
 import { captaincyVerdict } from "./captaincy-verdict";
 
@@ -62,13 +63,40 @@ function scoreOf(week: PlanGameweek, player: PlanPlayer): number {
   return week.expected[String(player.code)] ?? 0;
 }
 
+function captainRoutes(player: PlanPlayer): string {
+  const row = seasonInputs.players.find(
+    (candidate) => candidate.code === player.code,
+  ) as { routes?: Record<string, number> } | undefined;
+  if (!row?.routes) return "route breakdown unavailable";
+  const labels: Record<string, string> = {
+    appearance: "appearance",
+    attacking: "attacking",
+    cleanSheet: "clean sheet",
+    bonus: "bonus",
+    defensiveContribution: "DefCon",
+  };
+  const routes = Object.entries(row.routes)
+    .filter(
+      ([key, value]) => labels[key] !== undefined && Math.abs(value) >= 0.05,
+    )
+    .sort((left, right) => Math.abs(right[1]) - Math.abs(left[1]))
+    .slice(0, 3)
+    .map(
+      ([key, value]) =>
+        `${labels[key]} ${value >= 0 ? "+" : ""}${value.toFixed(1)}`,
+    );
+  return routes.length > 0
+    ? routes.join(", ")
+    : "no published route contribution";
+}
+
 export function captainLine(week: PlanGameweek): string {
   const captainScore = scoreOf(week, week.captain);
   const viceScore = scoreOf(week, week.viceCaptain);
   const gap = captainScore - viceScore;
   const fixture = (week.opponents[week.captain.club] ?? []).join(", ");
   const contest = Math.abs(gap) < 1 ? " This is a contested call." : "";
-  return `${week.captain.name} leads ${week.viceCaptain.name} ${points(Math.abs(gap))} points on expected score${fixture ? `, with ${fixture}` : ""}.${contest}`;
+  return `${week.captain.name} leads ${week.viceCaptain.name} ${points(Math.abs(gap))} points on expected score${fixture ? `, with ${fixture}` : ""}. Main routes: ${captainRoutes(week.captain)}.${contest}`;
 }
 
 export function isPremium(player: PlanPlayer): boolean {

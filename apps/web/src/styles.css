@@ -4449,6 +4449,37 @@ h1[tabindex="-1"]:focus-visible {
   line-height: 1.6;
 }
 
+/* The opening gameweek is the weakest number on the page and it is the one a
+   manager acts on first. Setting it off in its own rule keeps it from reading
+   as a footnote to the season-long result it undercuts. */
+.validation-opening {
+  margin-top: clamp(20px, 2.5vw, 28px);
+  padding-top: clamp(16px, 2vw, 22px);
+  border-top: 1px solid var(--rule);
+}
+
+.validation-opening h3 {
+  margin: 0 0 8px;
+}
+
+.validation-opening table {
+  width: 100%;
+  margin-top: 12px;
+  border-collapse: collapse;
+}
+
+.validation-opening th,
+.validation-opening td {
+  padding: 8px 10px;
+  text-align: left;
+  border-bottom: 1px solid var(--rule);
+}
+
+.validation-opening td.mono,
+.validation-opening th:nth-child(n + 3) {
+  text-align: right;
+}
+
 /* The whole page in five figures, for the reader who will not scroll. */
 .validation-board {
   margin: 0 0 clamp(24px, 3vw, 36px);

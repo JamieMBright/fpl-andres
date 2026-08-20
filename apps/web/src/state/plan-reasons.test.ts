@@ -119,6 +119,7 @@ describe("captainLine", () => {
 
     expect(line).toContain("P1 leads P2 0.7 points");
     expect(line).toContain("CHE (H)");
+    expect(line).toContain("route breakdown unavailable");
     expect(line).toContain("contested");
   });
 });

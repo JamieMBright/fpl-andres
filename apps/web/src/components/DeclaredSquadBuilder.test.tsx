@@ -22,6 +22,24 @@ import {
 const POOL = [...PLAYERS_BY_ELEMENT_ID.values()];
 const STYLES = readFileSync(join(__dirname, "..", "styles.css"), "utf8");
 
+/**
+ * Display names repeat in FPL: two Davies, two Palmers, two Johnsons. This
+ * file drives the builder through its search box, so a squad containing a
+ * shared name has no single "Add X" button to click. That is a limitation of
+ * the test's own lookup, not of the builder, so the squad is drawn from the
+ * unambiguous names rather than teaching every click to disambiguate.
+ */
+const UNIQUELY_NAMED = new Set(
+  [
+    ...POOL.reduce((counts, player) => {
+      counts.set(player.name, (counts.get(player.name) ?? 0) + 1);
+      return counts;
+    }, new Map<string, number>()),
+  ]
+    .filter(([, count]) => count === 1)
+    .map(([name]) => name),
+);
+
 function legalSquad(): SolverPlayer[] {
   const picked: SolverPlayer[] = [];
   const clubs = new Map<string, number>();
@@ -33,7 +51,8 @@ function legalSquad(): SolverPlayer[] {
   ];
   for (const [position, required] of shape) {
     const candidates = POOL.filter(
-      (player) => player.position === position,
+      (player) =>
+        player.position === position && UNIQUELY_NAMED.has(player.name),
     ).sort((left, right) => left.priceTenths - right.priceTenths);
     let taken = 0;
     for (const candidate of candidates) {

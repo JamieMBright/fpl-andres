@@ -70,6 +70,16 @@ TEAM_FALLBACK_FIXTURES = 10
 TEAM_FALLBACK_WINDOW_DAYS = 6
 TEAM_FALLBACK_WEEKLY_BUDGET = TEAM_FALLBACK_BILLED_MARKETS * TEAM_FALLBACK_FIXTURES
 
+#: A fixture already priced is normally left alone, because re-pricing it spends
+#: budget for a number that barely moved. That is wrong in the last day before
+#: kickoff: the deadline price is the one carrying the team news, and a manager
+#: locks a squad against it. Inside this window a covered fixture becomes
+#: eligible again, so the Friday-evening run has something to do.
+TEAM_FALLBACK_DEADLINE_HOURS = 30
+#: ...but only if the quote on file has actually aged. Two runs an hour apart
+#: would otherwise both re-price and bill twice for the same prices.
+TEAM_FALLBACK_RESTALE_HOURS = 8
+
 #: A completed Premier League season. Fewer means a club fell out of the
 #: crosswalk and took all 38 of its fixtures with it.
 EXPECTED_CLUBS = 20
@@ -174,8 +184,17 @@ def _event_key(event: Mapping[str, Any]) -> FixtureKey | None:
 def _uncovered_team_events(
     events: Sequence[Mapping[str, Any]],
     existing: Sequence[Mapping[str, object]],
+    *,
+    priced_at: datetime | None = None,
+    now: datetime | None = None,
 ) -> list[Mapping[str, Any]]:
-    """Uncovered fixtures in the nearest six-day match window, capped at ten."""
+    """Fixtures to price in the nearest six-day window, capped at ten.
+
+    Uncovered fixtures always qualify. A covered fixture qualifies again only
+    when its kickoff is inside the deadline window and the quote on file has
+    aged past the restale threshold, so the run before a deadline re-prices the
+    round rather than finding everything covered and spending nothing.
+    """
     ordered = by_kickoff(events)
     dated = [(event, _event_key(event)) for event in ordered]
     readable = [(event, key) for event, key in dated if key is not None]
@@ -189,10 +208,24 @@ def _uncovered_team_events(
         for row in existing
         if (key := _entry_key(row)) is not None and _team_analysis_is_current(row)
     }
+    stale = (
+        priced_at is not None
+        and now is not None
+        and now - priced_at >= timedelta(hours=TEAM_FALLBACK_RESTALE_HOURS)
+    )
+    deadline_ceiling = (
+        now + timedelta(hours=TEAM_FALLBACK_DEADLINE_HOURS) if stale and now is not None else None
+    )
+
+    def wanted(key: FixtureKey) -> bool:
+        if key not in covered:
+            return True
+        if deadline_ceiling is None or now is None:
+            return False
+        return now <= key[2] <= deadline_ceiling
+
     return [
-        event
-        for event, key in readable
-        if key is not None and key[2] <= ceiling and key not in covered
+        event for event, key in readable if key is not None and key[2] <= ceiling and wanted(key)
     ][:TEAM_FALLBACK_FIXTURES]
 
 
@@ -386,9 +419,11 @@ def _collect(
     return entries, refused, provenance, matched
 
 
-def _existing_live(path: Path) -> tuple[list[dict[str, object]], list[dict[str, str]], str]:
+def _existing_live(
+    path: Path,
+) -> tuple[list[dict[str, object]], list[dict[str, str]], str, datetime | None]:
     if not path.exists():
-        return [], [], ""
+        return [], [], "", None
     artifact = read_json_file(path)
     fixtures = artifact.get("fixtures")
     provenance = artifact.get("provenance")
@@ -400,6 +435,7 @@ def _existing_live(path: Path) -> tuple[list[dict[str, object]], list[dict[str, 
         if isinstance(provenance, list)
         else [],
         str(artifact.get("source") or ""),
+        _iso_time(artifact.get("generatedAt")),
     )
 
 
@@ -407,12 +443,15 @@ def _collect_the_odds_api(
     client: httpx.Client,
     api_key: str,
     existing: Sequence[Mapping[str, object]],
+    *,
+    priced_at: datetime | None = None,
+    now: datetime | None = None,
 ) -> tuple[list[dict[str, object]], list[tuple[str, str]], list[dict[str, str]]]:
     events, opening = list_events(client, api_key)
-    selected = _uncovered_team_events(events, existing)
+    selected = _uncovered_team_events(events, existing, priced_at=priced_at, now=now)
     print(
         f"The Odds API: {len(events)} fixtures listed, {len(selected)} "
-        f"uncovered in the current round; {opening}"
+        f"to price in the current round; {opening}"
     )
     entries: list[dict[str, object]] = []
     refused: list[tuple[str, str]] = []
@@ -511,7 +550,7 @@ def _publish_live(
         )
         return
 
-    previous, previous_provenance, previous_source = _existing_live(output)
+    previous, previous_provenance, previous_source, previous_at = _existing_live(output)
     api_key = os.environ.get("THE_ODDS_API_KEY", "").strip()
     fallback: list[dict[str, object]] = []
     fallback_refused: list[tuple[str, str]] = []
@@ -521,6 +560,8 @@ def _publish_live(
             client,
             api_key,
             previous,
+            priced_at=previous_at,
+            now=fetched_at,
         )
     if fallback:
         merged = _merge_fixture_entries(previous, fallback)

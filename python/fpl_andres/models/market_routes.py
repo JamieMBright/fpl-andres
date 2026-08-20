@@ -31,21 +31,31 @@ probability and used as evidence about a footballer.
 from __future__ import annotations
 
 import math
+from collections.abc import Mapping
 from dataclasses import dataclass
 
 __all__ = [
     "MarketAttack",
     "MarketCards",
     "MarketRoutesError",
+    "TeamTotalMismatch",
     "blend_rate",
     "implied_events",
     "market_attack",
     "market_cards",
+    "reconcile_to_team_total",
 ]
 
 
 class MarketRoutesError(ValueError):
     """Raised when a price cannot be read as evidence about a scoring route."""
+
+
+#: How far the fitted exponent may travel before the fit is abandoned. A book
+#: quoting a squad three times over lands near two; the low end leaves room for
+#: a player market implying fewer goals than the team price, which happens when
+#: only a handful of a squad is quoted.
+_EXPONENT_BOUNDS = (0.05, 20.0)
 
 
 def implied_events(probability: float) -> float:
@@ -94,6 +104,110 @@ def blend_rate(recorded: float, market: float, weight: float) -> float:
     if recorded < 0.0 or market < 0.0:
         raise MarketRoutesError(f"rates cannot be negative, got {recorded} and {market}")
     return (1.0 - weight) * recorded + weight * market
+
+
+@dataclass(frozen=True)
+class TeamTotalMismatch:
+    """How far one club's player prices sat from its own team price.
+
+    `exponent` is the power every player probability was raised to. Above one
+    means the player market implied more goals than the team market did, and
+    the longshots gave up most of the difference.
+    """
+
+    club: str
+    player_events: float
+    team_events: float
+    exponent: float
+    quoted_players: int
+
+
+def reconcile_to_team_total(
+    probabilities: Mapping[int, float],
+    team_events: float,
+    *,
+    club: str,
+) -> tuple[dict[int, float], TeamTotalMismatch]:
+    """Fit one club's player prices onto the goals its own team book implies.
+
+    Two prices in the same feed answer the same question. A club's expected
+    goals is the sum of what each of its players is expected to score, so
+    ``sum(lambda_player)`` and the team's expected goals are the same quantity
+    read two ways. Measured on the 2026-08-20 artifact they disagreed by a
+    median factor of 2.45, every club in the same direction.
+
+    The team book is the one to trust. Home, draw, away and over/under are all
+    quoted, so Shin's method has a complete book to take the margin out of. An
+    anytime-scorer market publishes only the yes, so there is no complement to
+    de-vig against and the margin stays in every price.
+
+    The margin is not spread evenly. A book earns most of it on the longshots,
+    which is why a flat rescale -- proportional de-vigging by another name --
+    is the wrong correction: it takes the same fraction off the striker as off
+    the third-choice full-back and leaves the favourite far too cheap. Measured
+    on Manchester City against Bournemouth, a flat scale left Haaland with 0.48
+    goals against a team total of 2.40, a fifth of his side's scoring, while the
+    power fit gave him 0.75.
+
+    So the exponent is fitted instead: every probability is raised to the same
+    power `k` and `k` is chosen to make the goals add up. Raising to a power
+    above one shrinks a long price far harder than a short one, which is the
+    shape a bookmaker's margin actually has.
+
+    What survives is the market's ordering. What is surrendered is its level.
+    Assists are raised to the same power, because the margin being removed
+    belongs to how a one-sided player market has to be read rather than to the
+    particular market, and no team-level assist price exists to fit them
+    against on their own.
+    """
+    if team_events < 0.0:
+        raise MarketRoutesError(f"team events cannot be negative, got {team_events}")
+    for value in probabilities.values():
+        if not 0.0 <= value < 1.0:
+            raise MarketRoutesError(f"a chance of at least one must be in [0, 1), got {value}")
+
+    def total(exponent: float) -> float:
+        return sum(implied_events(value**exponent) for value in probabilities.values())
+
+    raw = total(1.0)
+    unchanged = {element: implied_events(value) for element, value in probabilities.items()}
+    if not probabilities or raw <= 0.0 or team_events <= 0.0:
+        return unchanged, TeamTotalMismatch(
+            club=club,
+            player_events=raw,
+            team_events=team_events,
+            exponent=1.0,
+            quoted_players=len(probabilities),
+        )
+
+    # Monotone decreasing in the exponent, so a plain bisection finds it. The
+    # bracket is wide enough for a book quoting a squad three times over and for
+    # one quoting fewer goals than the team price.
+    low, high = _EXPONENT_BOUNDS
+    if not total(high) <= team_events <= total(low):
+        return unchanged, TeamTotalMismatch(
+            club=club,
+            player_events=raw,
+            team_events=team_events,
+            exponent=1.0,
+            quoted_players=len(probabilities),
+        )
+    for _ in range(200):
+        middle = (low + high) / 2.0
+        if total(middle) > team_events:
+            low = middle
+        else:
+            high = middle
+    exponent = (low + high) / 2.0
+    return {
+        element: implied_events(value**exponent) for element, value in probabilities.items()
+    }, TeamTotalMismatch(
+        club=club,
+        player_events=raw,
+        team_events=team_events,
+        exponent=exponent,
+        quoted_players=len(probabilities),
+    )
 
 
 @dataclass(frozen=True)

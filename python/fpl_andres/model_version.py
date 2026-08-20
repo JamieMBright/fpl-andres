@@ -29,6 +29,17 @@ from __future__ import annotations
 
 __all__ = ["MODEL_VERSION"]
 
+#: 8.5 reconciles the player scoring market against the team scoring market and
+#: stops reading two separate selections in one book as a complementary pair.
+#: Summing the per-player anytime-scorer prices across a club implied 2.48x the
+#: goals the same bookmaker's 1X2 and totals book implied for that club, and 21
+#: rows quoted a first-scorer probability above the player's own anytime price,
+#: which cannot happen. Attacking routes are now raised to a per-club exponent
+#: fitted so the club's routes sum to its priced goals, which takes the margin
+#: out of the longshots where it sits rather than spreading it evenly. Minor:
+#: attacking numbers move a long way, but the target and the population are
+#: unchanged.
+#:
 #: 8.4 adds explainable xStart evidence fields and changes planner chip
 #: semantics: Free Hit is a temporary five-to-fifteen-player rebuild with no
 #: transfer cost, and its squad/bank/free-transfer state is restored afterward.
@@ -350,4 +361,4 @@ __all__ = ["MODEL_VERSION"]
 #: projection and resampled, so a gap that does not clear zero is reported as
 #: not clearing zero. No projection changed; what changed is what may be
 #: claimed from it.
-MODEL_VERSION = "8.4"
+MODEL_VERSION = "8.5"
