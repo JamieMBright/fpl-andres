@@ -42,6 +42,15 @@ type ReplayBenchmark = {
   medianPoints: number;
 };
 
+type TransferReturn = {
+  horizon: number;
+  freeMoves: number;
+  freeGain: number;
+  hitMoves: number;
+  hitGain: number;
+  hitNetGain: number;
+};
+
 type SeasonReplayData = {
   season: string;
   startGameweek: number;
@@ -55,6 +64,7 @@ type SeasonReplayData = {
   chips: Record<string, number[]>;
   finalTeamValueTenths: number;
   benchmark: ReplayBenchmark | null;
+  transferReturn?: TransferReturn | null;
   weeks: ReplayWeek[];
 };
 
@@ -226,6 +236,44 @@ export function SeasonReplay() {
   );
 }
 
+/**
+ * Did the transfers pay?
+ *
+ * Checkable after the fact rather than projected: the player sold keeps
+ * scoring whether or not he was owned, so his points over the same weeks are
+ * what doing nothing would have returned.
+ */
+function TransferVerdict({
+  transfers,
+}: {
+  transfers: TransferReturn | null | undefined;
+}) {
+  if (!transfers) return null;
+  const paid = transfers.hitNetGain >= 0;
+  return (
+    <p className="validation-note">
+      Measured over the {transfers.horizon} gameweeks after each move, against
+      what the player sold went on to score: the {transfers.freeMoves} free
+      transfers returned{" "}
+      <span className="mono">
+        {transfers.freeGain >= 0 ? "+" : "\u2212"}
+        {Math.abs(transfers.freeGain).toFixed(0)}
+      </span>{" "}
+      points, and the {transfers.hitMoves} taken as hits returned{" "}
+      <span className="mono">
+        {transfers.hitGain >= 0 ? "+" : "\u2212"}
+        {Math.abs(transfers.hitGain).toFixed(0)}
+      </span>{" "}
+      before their cost and{" "}
+      <span className="mono">
+        {paid ? "+" : "\u2212"}
+        {Math.abs(transfers.hitNetGain).toFixed(0)}
+      </span>{" "}
+      after it. {paid ? "The hits paid for themselves." : "The hits did not."}
+    </p>
+  );
+}
+
 function SeasonOutcome({ replay }: { replay: SeasonReplayData }) {
   const chips = Object.entries(replay.chips)
     .flatMap(([chip, weeks]) => weeks.map((week) => ({ chip, week })))
@@ -262,7 +310,8 @@ function SeasonOutcome({ replay }: { replay: SeasonReplayData }) {
           : chips
               .map(({ chip, week }) => `${chipLabel(chip)} GW${week}`)
               .join(" · ")}
-      </p>
+      </p>{" "}
+      <TransferVerdict transfers={replay.transferReturn} />{" "}
       {replay.benchmark === null ? (
         <p className="validation-note">
           No harvested manager totals for this season, so there is nothing

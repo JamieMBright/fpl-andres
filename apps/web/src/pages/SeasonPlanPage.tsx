@@ -42,7 +42,7 @@ import type {
   PlanGameweek,
   PlanPlayer,
 } from "../state/season-plan";
-import { readSeasonPlan } from "../state/season-plan";
+import { pairTransfers, readSeasonPlan } from "../state/season-plan";
 import { chipCallsFor } from "../state/season-chips";
 import {
   CHIP_NAMES,
@@ -386,18 +386,15 @@ function Move({ week }: { week: PlanGameweek }) {
         </p>
       ) : null}
       <ul className="plan-move">
-        {week.transfersIn.map((incoming, index) => {
-          const outgoing = week.transfersOut[index];
-          return (
-            <li key={incoming.code}>
-              {outgoing ? <Shirt club={outgoing.club} /> : null}
-              <span className="plan-out">{outgoing?.name ?? "\u2014"}</span>
-              <ArrowRight aria-label="replaced by" size={15} />
-              <Shirt club={incoming.club} />
-              <span className="plan-in">{incoming.name}</span>
-            </li>
-          );
-        })}
+        {pairTransfers(week.transfersOut, week.transfersIn).map((swap) => (
+          <li key={swap.in.code}>
+            <Shirt club={swap.out.club} />
+            <span className="plan-out">{swap.out.name}</span>
+            <ArrowRight aria-label="replaced by" size={15} />
+            <Shirt club={swap.in.club} />
+            <span className="plan-in">{swap.in.name}</span>
+          </li>
+        ))}
       </ul>
     </>
   );

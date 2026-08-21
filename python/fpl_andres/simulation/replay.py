@@ -23,21 +23,28 @@ from the mini-league the validation page reports:
 from __future__ import annotations
 
 import json
+from collections.abc import Sequence
 from dataclasses import dataclass
 from pathlib import Path
 from statistics import median
 
 from fpl_andres.backtesting.corpus import SeasonCorpus
 from fpl_andres.simulation.minileague import simulate_league
-from fpl_andres.simulation.minileague_state import GameweekLedger, LeagueSettings
+from fpl_andres.simulation.minileague_state import (
+    _TRANSFER_HIT_POINTS,
+    GameweekLedger,
+    LeagueSettings,
+)
 
 __all__ = [
     "COHORT_MANAGERS",
     "SEASON_GAMEWEEKS",
     "ManagerBenchmark",
     "SeasonReplay",
+    "TransferReturn",
     "benchmark_against",
     "cohort_totals",
+    "measure_transfers",
     "replay_season",
 ]
 
@@ -82,6 +89,7 @@ class SeasonReplay:
     chips: dict[str, list[int]]
     final_team_value_tenths: int
     benchmark: ManagerBenchmark | None
+    transfer_return: TransferReturn | None = None
 
     @property
     def net_points(self) -> int:
@@ -100,6 +108,73 @@ class SeasonReplay:
         if played == 0:
             return 0
         return round(self.net_points * SEASON_GAMEWEEKS / played)
+
+
+@dataclass(frozen=True)
+class TransferReturn:
+    """Whether the transfers actually paid for themselves.
+
+    A transfer is a bet that the man coming in outscores the man going out by
+    more than the move cost. That is checkable after the fact: hold both, and
+    count what each went on to score over the weeks the new man was owned.
+
+    The player sold keeps scoring in the corpus whether or not he was owned, so
+    his points over the same window are the counterfactual -- what the squad
+    would have had by doing nothing. Nothing here is a projection.
+    """
+
+    #: Gameweeks after the move counted on both sides.
+    horizon: int
+    free_moves: int
+    free_gain: float
+    hit_moves: int
+    #: Gain before the four points, so the cost is visible rather than netted.
+    hit_gain: float
+
+    @property
+    def hit_net_gain(self) -> float:
+        """What the hits returned after paying for themselves."""
+        return self.hit_gain - _TRANSFER_HIT_POINTS * self.hit_moves
+
+
+def measure_transfers(
+    corpus: SeasonCorpus,
+    weeks: Sequence[GameweekLedger],
+    *,
+    horizon: int = 6,
+) -> TransferReturn:
+    """Score every swap in the ledger against what both men went on to do."""
+    actuals = {event: corpus.actual_points(event) for event in corpus.gameweeks}
+
+    def scored(element: int, first: int) -> int:
+        return sum(
+            actuals.get(event, {}).get(element, 0) for event in range(first, first + horizon)
+        )
+
+    free_moves = hit_moves = 0
+    free_gain = hit_gain = 0.0
+    for week in weeks:
+        if not week.transfers:
+            continue
+        # Hits are charged per move beyond the free ones, so the paid moves are
+        # the last ones settled in the week.
+        paid = week.hit_points // _TRANSFER_HIT_POINTS
+        free_here = len(week.transfers) - paid
+        for index, (out, incoming) in enumerate(week.transfers):
+            gain = scored(incoming, week.event) - scored(out, week.event)
+            if index < free_here:
+                free_moves += 1
+                free_gain += gain
+            else:
+                hit_moves += 1
+                hit_gain += gain
+    return TransferReturn(
+        horizon=horizon,
+        free_moves=free_moves,
+        free_gain=free_gain,
+        hit_moves=hit_moves,
+        hit_gain=hit_gain,
+    )
 
 
 def replay_season(
@@ -121,16 +196,18 @@ def replay_season(
     if not advised:
         raise ValueError("the replay settings produced no advised manager")
     manager = advised[0]
+    ledger = tuple(manager.ledger)
     return SeasonReplay(
         season=corpus.season,
         start_gameweek=settings.start_gameweek,
-        weeks=tuple(manager.ledger),
+        weeks=ledger,
         total_points=manager.total_points,
         hit_points=manager.hit_points,
         transfers=manager.transfers_made,
         chips={name: sorted(events) for name, events in manager.chips_played.items()},
         final_team_value_tenths=manager.final_team_value_tenths,
         benchmark=None,
+        transfer_return=measure_transfers(corpus, ledger),
     )
 
 

@@ -10,11 +10,14 @@ from __future__ import annotations
 
 from datetime import UTC, datetime, timedelta
 
+import pytest
+
 from fpl_andres.backtesting.corpus import ElementRow, SeasonCorpus
-from fpl_andres.simulation.minileague_state import LeagueSettings
+from fpl_andres.simulation.minileague_state import GameweekLedger, LeagueSettings
 from fpl_andres.simulation.replay import (
     benchmark_against,
     cohort_totals,
+    measure_transfers,
     replay_season,
 )
 from fpl_andres.simulation.season import LineupRules
@@ -168,6 +171,90 @@ def test_the_bench_is_reported_separately_from_the_score() -> None:
     for week in result.weeks:
         assert week.bench_points >= 0
         assert len(week.starters) <= len(week.squad)
+
+
+def test_a_transfer_is_scored_against_what_both_men_went_on_to_do() -> None:
+    """The man sold keeps scoring, so his points are the do-nothing case."""
+    corpus = corpus_for("2025-26")
+    ledger = [
+        GameweekLedger(
+            event=7,
+            points=50,
+            running_total=50,
+            chip=None,
+            captain=None,
+            captain_points=0,
+            bench_points=0,
+            hit_points=0,
+            # Element 7 scores 2 + 7 % 5 = 4; element 1 scores 2 + 1 % 5 = 3.
+            transfers=((1, 7),),
+            squad=(),
+            starters=(),
+            team_value_tenths=1000,
+            bank_tenths=0,
+        )
+    ]
+
+    measured = measure_transfers(corpus, ledger, horizon=2)
+
+    assert measured.free_moves == 1
+    assert measured.hit_moves == 0
+    # Two weeks of a four-point player against a three-point one.
+    assert measured.free_gain == pytest.approx(2.0)
+
+
+def test_a_paid_move_is_charged_the_four_points_it_cost() -> None:
+    corpus = corpus_for("2025-26")
+    ledger = [
+        GameweekLedger(
+            event=7,
+            points=50,
+            running_total=46,
+            chip=None,
+            captain=None,
+            captain_points=0,
+            bench_points=0,
+            hit_points=4,
+            transfers=((1, 7),),
+            squad=(),
+            starters=(),
+            team_value_tenths=1000,
+            bank_tenths=0,
+        )
+    ]
+
+    measured = measure_transfers(corpus, ledger, horizon=2)
+
+    assert measured.hit_moves == 1
+    assert measured.hit_gain == pytest.approx(2.0)
+    # Gained two, paid four: the move lost money and the ledger says so.
+    assert measured.hit_net_gain == pytest.approx(-2.0)
+
+
+def test_the_free_moves_of_a_week_are_counted_before_the_paid_ones() -> None:
+    corpus = corpus_for("2025-26")
+    ledger = [
+        GameweekLedger(
+            event=7,
+            points=50,
+            running_total=46,
+            chip=None,
+            captain=None,
+            captain_points=0,
+            bench_points=0,
+            hit_points=4,
+            transfers=((1, 7), (2, 7)),
+            squad=(),
+            starters=(),
+            team_value_tenths=1000,
+            bank_tenths=0,
+        )
+    ]
+
+    measured = measure_transfers(corpus, ledger, horizon=1)
+
+    assert measured.free_moves == 1
+    assert measured.hit_moves == 1
 
 
 def test_a_benchmark_needs_real_totals_to_compare_against() -> None:

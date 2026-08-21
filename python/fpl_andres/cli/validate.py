@@ -117,6 +117,18 @@ def _replay_payload(
         "transfers": replay.transfers,
         "chips": replay.chips,
         "finalTeamValueTenths": replay.final_team_value_tenths,
+        "transferReturn": (
+            None
+            if replay.transfer_return is None
+            else {
+                "horizon": replay.transfer_return.horizon,
+                "freeMoves": replay.transfer_return.free_moves,
+                "freeGain": _round(replay.transfer_return.free_gain, 1),
+                "hitMoves": replay.transfer_return.hit_moves,
+                "hitGain": _round(replay.transfer_return.hit_gain, 1),
+                "hitNetGain": _round(replay.transfer_return.hit_net_gain, 1),
+            }
+        ),
         "benchmark": (
             None
             if benchmark is None

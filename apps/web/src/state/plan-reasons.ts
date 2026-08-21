@@ -1,5 +1,5 @@
 import type { ChipCall, PlanGameweek, PlanPlayer } from "./season-plan";
-import { CONFIDENCE_NOTE } from "./season-plan";
+import { CONFIDENCE_NOTE, pairTransfers } from "./season-plan";
 import validation from "../data/validation.json";
 import seasonInputs from "../data/season-inputs.json";
 import { captainEvidence } from "./captain-evidence";
@@ -127,29 +127,24 @@ export function moveLines(week: PlanGameweek): string[] {
     return [week.event === 1 ? "Opening squad." : "Roll the free transfer."];
   }
 
-  const swaps = week.transfersIn.map((incoming, index) => {
-    const outgoing = week.transfersOut[index];
-    const gain = outgoing
-      ? scoreOf(week, incoming) - scoreOf(week, outgoing)
-      : scoreOf(week, incoming);
-    const spend = outgoing ? incoming.priceTenths - outgoing.priceTenths : 0;
-    const fixture = (week.opponents[incoming.club] ?? []).join(", ");
+  const swaps = pairTransfers(week.transfersOut, week.transfersIn).map(
+    ({ out: outgoing, in: incoming }) => {
+      const gain = scoreOf(week, incoming) - scoreOf(week, outgoing);
+      const spend = incoming.priceTenths - outgoing.priceTenths;
+      const fixture = (week.opponents[incoming.club] ?? []).join(", ");
 
-    const parts = [
-      outgoing
-        ? `${outgoing.name} out, ${incoming.name} in`
-        : `${incoming.name} in`,
-    ];
-    parts.push(
-      gain >= 0
-        ? `+${points(gain)} this week`
-        : `${points(gain)} now, for later`,
-    );
-    if (fixture) parts.push(`faces ${fixture}`);
-    if (spend > 0) parts.push(`${money(spend)} of the bank`);
-    if (spend < 0) parts.push(`frees ${money(-spend)}`);
-    return `${parts.join("; ")}.`;
-  });
+      const parts = [`${outgoing.name} out, ${incoming.name} in`];
+      parts.push(
+        gain >= 0
+          ? `+${points(gain)} this week`
+          : `${points(gain)} now, for later`,
+      );
+      if (fixture) parts.push(`faces ${fixture}`);
+      if (spend > 0) parts.push(`${money(spend)} of the bank`);
+      if (spend < 0) parts.push(`frees ${money(-spend)}`);
+      return `${parts.join("; ")}.`;
+    },
+  );
 
   if (week.transferCostPoints > 0) {
     swaps.push(

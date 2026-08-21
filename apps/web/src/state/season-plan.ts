@@ -124,6 +124,46 @@ function inSheetOrder(players: PlanPlayer[]): PlanPlayer[] {
   );
 }
 
+export interface PlanSwap {
+  out: PlanPlayer;
+  in: PlanPlayer;
+}
+
+/**
+ * Pair the week's outgoing and incoming players by position.
+ *
+ * FPL records a week's moves as two independent lists, and pairing them by
+ * index reads a goalkeeper out against a defender in whenever the solver
+ * happens to order them differently. A legal squad keeps its position counts,
+ * so the two lists always match as a multiset and every move can be shown as
+ * the like-for-like swap it actually was.
+ */
+export function pairTransfers(
+  outgoing: readonly PlanPlayer[],
+  incoming: readonly PlanPlayer[],
+): PlanSwap[] {
+  const available = [...incoming];
+  const swaps: PlanSwap[] = [];
+  const unmatched: PlanPlayer[] = [];
+  for (const out of outgoing) {
+    const index = available.findIndex(
+      (candidate) => candidate.position === out.position,
+    );
+    if (index === -1) {
+      unmatched.push(out);
+      continue;
+    }
+    swaps.push({ out, in: available.splice(index, 1)[0]! });
+  }
+  // Only reachable if the plan ever broke its own squad shape. Pair what is
+  // left in order rather than dropping a move off the page.
+  for (const out of unmatched) {
+    const next = available.shift();
+    if (next) swaps.push({ out, in: next });
+  }
+  return swaps;
+}
+
 export function readSeasonPlan(): SeasonPlan {
   return {
     season: plan.season,
