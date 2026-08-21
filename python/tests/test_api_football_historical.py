@@ -16,6 +16,8 @@ def _client(handler: object) -> httpx.Client:
 def test_probe_reports_an_accessible_historical_fixture_without_exposing_payload() -> None:
     def handler(request: httpx.Request) -> httpx.Response:
         if request.url.path.endswith("/fixtures"):
+            assert request.url.params["date"] == "2022-08-05"
+            assert "last" not in request.url.params
             return httpx.Response(
                 200,
                 headers={"x-ratelimit-requests-remaining": "97"},

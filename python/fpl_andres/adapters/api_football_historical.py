@@ -17,6 +17,11 @@ from fpl_andres.timeguard import require_utc
 
 BASE_URL = "https://v3.football.api-sports.io"
 LEAGUE = "39"
+HISTORICAL_PROBE_DATES = {
+    2022: "2022-08-05",
+    2023: "2023-08-11",
+    2024: "2024-08-16",
+}
 PLAYER_MARKET_WORDS = (
     "scorer",
     "assist",
@@ -134,9 +139,26 @@ def probe_historical_seasons(
     headers = {"x-apisports-key": api_key}
     results: list[HistoricalProbe] = []
     for season in seasons:
+        probe_date = HISTORICAL_PROBE_DATES.get(season)
+        if probe_date is None:
+            results.append(
+                HistoricalProbe(
+                    season,
+                    "unsupported-season",
+                    None,
+                    0,
+                    0,
+                    0,
+                    0,
+                    fetched_at,
+                    None,
+                    "no known historical fixture date",
+                )
+            )
+            continue
         fixtures = client.get(
             f"{BASE_URL}/fixtures",
-            params={"league": LEAGUE, "season": str(season), "last": "1"},
+            params={"league": LEAGUE, "season": str(season), "date": probe_date},
             headers=headers,
         )
         refusal = _error(fixtures)
