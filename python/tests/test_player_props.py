@@ -375,6 +375,93 @@ class TestWhetherApiFootballPricesFootballers:
 
         assert "no Premier League fixture scheduled" in note
 
+    def test_a_refusal_dressed_as_success_is_not_read_as_an_empty_league(self) -> None:
+        """This host answers 200 and puts the refusal in `errors`.
+
+        A plan that does not carry the odds endpoint, an exhausted allowance
+        and a rejected key all arrive this way. Reading only `response` turns
+        every one of them into "no Premier League fixture scheduled", which is
+        a sentence about football rather than about the subscription, and it
+        is why this source sat unwired while looking merely out of season.
+        """
+
+        def handler(request: httpx.Request) -> httpx.Response:
+            if request.url.path.endswith("/odds/bets"):
+                return httpx.Response(200, json={"response": [{"id": 1, "name": "Match Winner"}]})
+            return httpx.Response(
+                200,
+                json={"errors": {"plan": "Free plans do not have access to this endpoint."}},
+            )
+
+        with _client(handler) as client:
+            note = probe_source(
+                source_by_key("api-football"),
+                client,
+                env={"API_FOOTBALL_API_KEY": "k"},
+            ).note
+
+        assert "no Premier League fixture scheduled" not in note
+        assert "Free plans do not have access" in note
+
+    def test_the_catalogue_call_reports_its_own_refusal(self) -> None:
+        def handler(request: httpx.Request) -> httpx.Response:
+            return httpx.Response(200, json={"errors": {"token": "Invalid API key."}})
+
+        with _client(handler) as client:
+            result = probe_source(
+                source_by_key("api-football"),
+                client,
+                env={"API_FOOTBALL_API_KEY": "k"},
+            )
+
+        assert result.status == "refused"
+        assert "Invalid API key." in result.note
+
+    def test_an_empty_errors_list_is_the_hosts_way_of_saying_all_well(self) -> None:
+        # The same field is `[]` on success and an object on failure.
+        def handler(request: httpx.Request) -> httpx.Response:
+            if request.url.path.endswith("/odds/bets"):
+                return httpx.Response(
+                    200,
+                    json={"errors": [], "response": [{"id": 1, "name": "Anytime Goal Scorer"}]},
+                )
+            if request.url.path.endswith("/fixtures"):
+                return httpx.Response(
+                    200, json={"errors": [], "response": [{"fixture": {"id": 7001}}]}
+                )
+            return httpx.Response(
+                200,
+                json={
+                    "errors": [],
+                    "response": [
+                        {
+                            "bookmakers": [
+                                {
+                                    "id": 8,
+                                    "name": "Bet365",
+                                    "bets": [
+                                        {
+                                            "name": "Anytime Goal Scorer",
+                                            "values": [{"value": "Saka", "odd": "2.5"}],
+                                        }
+                                    ],
+                                }
+                            ]
+                        }
+                    ],
+                },
+            )
+
+        with _client(handler) as client:
+            result = probe_source(
+                source_by_key("api-football"),
+                client,
+                env={"API_FOOTBALL_API_KEY": "k"},
+            )
+
+        assert result.status == "ok"
+        assert "Anytime Goal Scorer (1 selections, e.g. Saka)" in result.note
+
 
 class TestCli:
     def test_no_selection_probes_everything(self) -> None:

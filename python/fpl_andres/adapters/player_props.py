@@ -358,6 +358,26 @@ def _is_player_bet(name: str) -> bool:
     return any(word in lowered for word in _PLAYER_BET_WORDS)
 
 
+def _api_football_refusal(response: httpx.Response) -> str | None:
+    """What this host refused, when it refused with a 200.
+
+    An unsubscribed endpoint, a spent daily allowance and a rejected key all
+    come back as success with the reason in `errors`. Read only `response` and
+    every one of them reads as a league with no fixtures on.
+    """
+    try:
+        payload = response.json()
+    except ValueError:
+        return None
+    if not isinstance(payload, Mapping):
+        return None
+    errors = payload.get("errors")
+    # The field is `[]` on success and an object keyed by cause on failure.
+    if not isinstance(errors, Mapping) or not errors:
+        return None
+    return "; ".join(f"{key}: {value}" for key, value in sorted(errors.items()))
+
+
 def _probe_api_football(
     client: httpx.Client,
     env: Mapping[str, str],
@@ -370,6 +390,14 @@ def _probe_api_football(
     result = _from_json(_SOURCE_INDEX["api-football"], response)
     if not result.ok:
         return result
+    refused = _api_football_refusal(response)
+    if refused is not None:
+        return ProbeResult(
+            key=result.key,
+            status="refused",
+            note=refused,
+            http_status=response.status_code,
+        )
     payload = response.json()
     named = {
         str(item.get("name"))
@@ -412,6 +440,9 @@ def _api_football_fixture_bets(client: httpx.Client, headers: Mapping[str, str])
     )
     if season.status_code >= 400:
         return f"no fixture to price: HTTP {season.status_code}"
+    refused = _api_football_refusal(season)
+    if refused is not None:
+        return f"fixtures refused: {refused}"
     listing = season.json()
     rows = listing.get("response", []) if isinstance(listing, Mapping) else []
     first = rows[0] if rows and isinstance(rows[0], Mapping) else None
@@ -427,6 +458,9 @@ def _api_football_fixture_bets(client: httpx.Client, headers: Mapping[str, str])
     )
     if odds.status_code >= 400:
         return f"fixture {fixture_id} priced nowhere: HTTP {odds.status_code}"
+    refused = _api_football_refusal(odds)
+    if refused is not None:
+        return f"fixture {fixture_id} odds refused: {refused}"
     priced = odds.json()
     entries = priced.get("response", []) if isinstance(priced, Mapping) else []
     books: set[str] = set()
