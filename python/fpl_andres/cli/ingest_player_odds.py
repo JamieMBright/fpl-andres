@@ -26,7 +26,7 @@ from typing import Any
 
 import httpx
 
-from fpl_andres.adapters.odds_archive import flatten_event, write_archive
+from fpl_andres.adapters.odds_archive import ARCHIVE_ROOT, flatten_event, write_archive
 from fpl_andres.adapters.player_crosswalk import crosswalk
 from fpl_andres.adapters.the_odds_api import (
     MARKET_FIELDS,
@@ -180,6 +180,15 @@ def _parser() -> argparse.ArgumentParser:
             "Stop once this many requests have been spent, against a free tier "
             "of 500 a month. Fixtures are priced soonest first, so a small "
             f"budget still buys the ones being played. Default {DEFAULT_BUDGET}."
+        ),
+    )
+    parser.add_argument(
+        "--archive-root",
+        default=str(ARCHIVE_ROOT),
+        help=(
+            "Where to keep every book's price, one file per fetch. Named "
+            "rather than assumed so a run from anywhere writes where it was "
+            "told to."
         ),
     )
     parser.add_argument(
@@ -636,7 +645,12 @@ def main(argv: Sequence[str] | None = None) -> int:
         )
         print(f"\nspent {measured if measured is not None else spent} requests; {closing}")
 
-        archive = write_archive(archived, season=args.season, fetched_at=fetched_at)
+        archive = write_archive(
+            archived,
+            season=args.season,
+            fetched_at=fetched_at,
+            root=Path(args.archive_root),
+        )
         if archive is not None:
             print(f"archived {len(archived):,} book-level quotes to {archive}")
         else:

@@ -126,6 +126,7 @@ jobs:
           python -m fpl_andres.cli.ingest_player_odds \
             --season "$(date -u +%Y)-$(printf '%02d' $((10#$(date -u +%y) + 1)))" \
             --within-days 7 \
+            --archive-root data/odds/player-raw \
             --budget "${BUDGET:-8}"
 
       - name: Commit the odds

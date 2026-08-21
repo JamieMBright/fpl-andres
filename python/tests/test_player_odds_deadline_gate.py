@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import gzip
 import json
 from datetime import UTC, datetime
 from pathlib import Path
@@ -415,6 +416,7 @@ def test_returned_rows_and_unmatched_names_are_attributed_to_the_fixture(
         ),
     )
     output = tmp_path / "player-odds.json"
+    archive_root = tmp_path / "player-raw"
 
     result = ingest_player_odds.main(
         [
@@ -422,12 +424,23 @@ def test_returned_rows_and_unmatched_names_are_attributed_to_the_fixture(
             "2026-27",
             "--output",
             str(output),
+            "--archive-root",
+            str(archive_root),
             "--deadlines",
             str(artifact(tmp_path, "2026-08-18T09:00:00Z")),
         ]
     )
 
     assert result == 0
+    # Every book's price is kept beside the medians the artifact publishes.
+    archived = sorted(archive_root.rglob("*.jsonl.gz"))
+    assert len(archived) == 1
+    with gzip.open(archived[0], "rt", encoding="utf-8") as handle:
+        rows = [json.loads(line) for line in handle if line.strip()]
+    # Both quoted men, including the one the crosswalk could not place: the
+    # archive is the record of what was offered, not of what was matched.
+    assert {row["player"] for row in rows} == {"Kai Havertz", "Mystery Player"}
+
     payload = json.loads(output.read_text(encoding="utf-8"))
     diagnostic = payload["fixtures"][0]
     assert diagnostic["status"] == "returned"
