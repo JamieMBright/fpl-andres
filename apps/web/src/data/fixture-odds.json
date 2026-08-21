@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-20T19:00:44.324948+00:00",
+  "generatedAt": "2026-08-21T09:01:04.307253+00:00",
   "season": "2026-27",
   "source": "the-odds-api",
   "priceTiming": "pre-match",
@@ -89,6 +89,10 @@
     {
       "url": "https://api.the-odds-api.com/v4/sports/soccer_epl/events/eb2553d10d63dc912b99f8fd0d675721/odds",
       "contentHash": "sha256:3b12c82b3f84df51086b29c13ba80d6845daeb18f72afb12f772fcd53987e5dd"
+    },
+    {
+      "url": "https://api.the-odds-api.com/v4/sports/soccer_epl/events/eb2553d10d63dc912b99f8fd0d675721/odds",
+      "contentHash": "sha256:6182c1a074f37504f21986c3fd54e288bcba7f48e85f33dc6bd91ffbfa252c48"
     }
   ],
   "fixtures": [
@@ -294,11 +298,11 @@
       "kickoff": "2026-08-21T19:00:00+00:00",
       "home": "ARS",
       "away": "COV",
-      "homeExpectedGoals": 2.6484,
-      "awayExpectedGoals": 0.4959,
-      "homeCleanSheet": 0.609,
-      "awayCleanSheet": 0.0708,
-      "drawResidual": 0.0026,
+      "homeExpectedGoals": 2.6251,
+      "awayExpectedGoals": 0.5233,
+      "homeCleanSheet": 0.5926,
+      "awayCleanSheet": 0.0724,
+      "drawResidual": 0.0013,
       "priceSource": "the-odds-api-market-consensus",
       "marketEvidence": {
         "analysisVersion": 1,
@@ -313,5 +317,10 @@
       }
     }
   ],
-  "refused": []
+  "refused": [
+    {
+      "fixture": "95bb16d19debff3ec39919f361f072a4",
+      "reason": "the key has no requests left this month"
+    }
+  ]
 }
