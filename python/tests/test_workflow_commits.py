@@ -118,6 +118,7 @@ def test_the_bot_committing_workflows_are_covered_by_those_rules() -> None:
         "calibrate-points-to-rank.yml",
         "ingest-odds.yml",
         "ingest-player-odds.yml",
+        "probe-api-football-historical.yml",
         "survey-player-props.yml",
         "sweep-managers.yml",
         "validate-model.yml",

@@ -213,6 +213,7 @@ def test_no_module_is_imported_only_by_its_own_tests() -> None:
         "ingest_odds",
         "ingest_ownership",
         "ingest_player_odds",
+        "probe_api_football_historical",
         "live_contracts",
         "publish_analysis_seasons",
         "publish_opening_squad",

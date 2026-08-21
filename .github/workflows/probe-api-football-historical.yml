@@ -1,0 +1,90 @@
+name: Probe API-Football Historical Odds
+
+# This is a capability probe, not an odds ingest. It records whether the
+# production plan can reach historical fixture odds and whether the response
+# contains player-named selections. It never stores prices or enters training.
+
+on:
+  workflow_dispatch:
+    inputs:
+      seasons:
+        description: "Comma-separated season start years, for example 2022,2023,2024"
+        required: false
+        default: "2022,2023,2024"
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: probe-api-football-historical
+  cancel-in-progress: false
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    environment: production
+    timeout-minutes: 15
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Set up Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: "22.14.0"
+          cache: pnpm
+
+      - name: Install engine
+        run: python -m pip install -e .
+
+      - name: Validate seasons
+        env:
+          SEASONS: ${{ inputs.seasons }}
+        run: |
+          if ! printf '%s' "$SEASONS" | grep -qE '^[0-9]{4}(,[0-9]{4})*$'; then
+            echo "seasons must be comma-separated four-digit years" >&2
+            exit 1
+          fi
+
+      - name: Probe historical access
+        env:
+          API_FOOTBALL_API_KEY: ${{ secrets.API_FOOTBALL_API_KEY }}
+          SEASONS: ${{ inputs.seasons }}
+        run: |
+          if [ -z "$API_FOOTBALL_API_KEY" ]; then
+            echo "API_FOOTBALL_API_KEY is not set as a production secret" >&2
+            exit 1
+          fi
+          args=()
+          IFS=',' read -ra requested <<< "$SEASONS"
+          for season in "${requested[@]}"; do
+            args+=(--season "$season")
+          done
+          python -m fpl_andres.cli.probe_api_football_historical "${args[@]}"
+
+      - name: Format capability report
+        run: |
+          corepack enable
+          corepack prepare pnpm@9.15.9 --activate
+          pnpm install --frozen-lockfile
+          pnpm exec prettier --write data/odds/api-football-historical-capability.json
+
+      - name: Commit capability report
+        run: |
+          git pull --rebase --autostash
+          git add data/odds/api-football-historical-capability.json
+          if git diff --cached --quiet; then
+            echo "capability report did not change"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Probe API-Football historical odds access"
+          git push
