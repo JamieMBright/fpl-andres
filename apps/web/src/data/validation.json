@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-20T23:04:47.788064+00:00",
+  "generatedAt": "2026-08-21T05:34:51.632906+00:00",
   "modelVersion": "8.6",
   "captainEvidenceScope": "model_owned_xi",
   "seasons": [
@@ -37,12 +37,20 @@
           "triple_captain": [34]
         },
         "finalTeamValueTenths": 1018,
+        "transferReturn": {
+          "horizon": 6,
+          "freeMoves": 29,
+          "freeGain": 111.0,
+          "hitMoves": 25,
+          "hitGain": 160.0,
+          "hitNetGain": 60.0
+        },
         "benchmark": {
-          "managers": 2634,
-          "beaten": 78,
+          "managers": 2675,
+          "beaten": 79,
           "percentile": 3.0,
           "best": 2776,
-          "medianPoints": 2566
+          "medianPoints": 2567
         },
         "weeks": [
           {
@@ -1901,12 +1909,20 @@
           "bench_boost": [37]
         },
         "finalTeamValueTenths": 1021,
+        "transferReturn": {
+          "horizon": 6,
+          "freeMoves": 30,
+          "freeGain": 266.0,
+          "hitMoves": 7,
+          "hitGain": 16.0,
+          "hitNetGain": -12.0
+        },
         "benchmark": {
-          "managers": 2670,
-          "beaten": 216,
-          "percentile": 8.1,
+          "managers": 2712,
+          "beaten": 223,
+          "percentile": 8.2,
           "best": 2738,
-          "medianPoints": 2571
+          "medianPoints": 2570
         },
         "weeks": [
           {
@@ -3682,12 +3698,20 @@
           "triple_captain": [18]
         },
         "finalTeamValueTenths": 1001,
+        "transferReturn": {
+          "horizon": 6,
+          "freeMoves": 30,
+          "freeGain": 218.0,
+          "hitMoves": 14,
+          "hitGain": 86.0,
+          "hitNetGain": 30.0
+        },
         "benchmark": {
-          "managers": 2682,
-          "beaten": 9,
-          "percentile": 0.3,
+          "managers": 2723,
+          "beaten": 10,
+          "percentile": 0.4,
           "best": 2756,
-          "medianPoints": 2547
+          "medianPoints": 2548
         },
         "weeks": [
           {
@@ -5495,12 +5519,20 @@
           "wildcard": [14, 34]
         },
         "finalTeamValueTenths": 988,
+        "transferReturn": {
+          "horizon": 6,
+          "freeMoves": 30,
+          "freeGain": 100.0,
+          "hitMoves": 12,
+          "hitGain": -12.0,
+          "hitNetGain": -60.0
+        },
         "benchmark": {
-          "managers": 2677,
-          "beaten": 26,
+          "managers": 2718,
+          "beaten": 27,
           "percentile": 1.0,
           "best": 2521,
-          "medianPoints": 2327
+          "medianPoints": 2326
         },
         "weeks": [
           {
