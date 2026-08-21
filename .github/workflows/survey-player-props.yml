@@ -29,13 +29,8 @@ on:
   # both show up as a diff in the committed page.
   schedule:
     - cron: "41 6 * * 1"
-  # A change to this file is how a run gets asked for without a token. The
-  # adapter is not listed: it shares one 500-a-month key with the ingest, and
-  # a push-per-edit spends that allowance outside the sum in
-  # `tests/test_api_budgets.py`. Ask for a survey by dispatching it.
-  push:
-    paths:
-      - ".github/workflows/survey-player-props.yml"
+  # Editing this workflow does not spend the shared free-tier key. Ask for a
+  # survey with workflow_dispatch; source changes are deliberately not triggers.
   workflow_dispatch:
     inputs:
       source:

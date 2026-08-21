@@ -37,15 +37,8 @@ on:
     # An hour before the earliest a deadline lands. Cron has no timezone, so
     # 09:00 UTC is 10:00 British Summer Time and 09:00 in winter.
     - cron: "0 9 * * *"
-  # A change to this file is how a run gets asked for without a token. It spends
-  # the default budget below, which is why the budget has one. The adapter and
-  # CLI are deliberately NOT listed: a day's work on them is several pushes,
-  # each costing a full budget outside the monthly sum in
-  # `tests/test_api_budgets.py`, which is how a season's allowance goes in a
-  # week. Editing them and wanting prices is a dispatch, not a side effect.
-  push:
-    paths:
-      - ".github/workflows/ingest-player-odds.yml"
+  # Editing this workflow does not spend the shared free-tier key. Ask for a
+  # run with workflow_dispatch; source changes are deliberately not triggers.
   workflow_dispatch:
     inputs:
       budget:

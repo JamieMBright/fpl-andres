@@ -139,10 +139,9 @@ def test_a_paid_workflow_does_not_spend_the_allowance_on_every_push() -> None:
     for name in ("ingest-player-odds.yml", "survey-player-props.yml", "ingest-odds.yml"):
         triggers = _triggers(name)
         assert "workflow_dispatch" in triggers, f"{name} must stay manually runnable"
-        paths = (triggers.get("push") or {}).get("paths", [])  # type: ignore[union-attr]
-        assert all(str(path).startswith(".github/workflows/") for path in paths), (
-            f"{name} re-runs on a push to {paths}, spending its whole budget "
-            "again outside the monthly sum above. Trigger it by hand instead."
+        assert "push" not in triggers, (
+            f"{name} spends its whole budget on every push outside the monthly "
+            "sum above. Trigger it by schedule or workflow_dispatch instead."
         )
 
 
