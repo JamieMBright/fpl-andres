@@ -1,6 +1,6 @@
 {
   "schemaVersion": 6,
-  "generatedAt": "2026-08-21T06:23:29.372660Z",
+  "generatedAt": "2026-08-21T08:08:22.342484Z",
   "recordSeason": "2025-26",
   "events": [
     1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
@@ -58,8 +58,8 @@
     "playerMarkets": {
       "source": "the-odds-api",
       "level": "observed",
-      "updatedAt": "2026-08-21T06:17:00.319130+00:00",
-      "contentHash": "sha256:0ac804fdb361f027396f4797849227726fedb5e766e409604e3e32d43fc83e6c"
+      "updatedAt": "2026-08-21T08:08:18.690984+00:00",
+      "contentHash": "sha256:a5ae2a303d5495b97d1ba5f1db0725334a19379054dad16965fd9422be46fca6"
     },
     "fixtureMarkets": {
       "source": "the-odds-api",
@@ -139,9 +139,9 @@
       "clubs": [
         {
           "club": "ARS",
-          "playerEvents": 6.9868,
+          "playerEvents": 6.8379,
           "teamEvents": 2.6484,
-          "exponent": 1.8337,
+          "exponent": 1.802,
           "quotedPlayers": 19
         },
         {
@@ -181,9 +181,9 @@
         },
         {
           "club": "COV",
-          "playerEvents": 3.532,
+          "playerEvents": 3.5516,
           "teamEvents": 0.4959,
-          "exponent": 2.0836,
+          "exponent": 2.0865,
           "quotedPlayers": 23
         },
         {
@@ -293,24 +293,24 @@
     "players": {
       "1": [0.0, 0.932, 1.0, 0.004, -0.03, 0.0],
       "2": [0.0, 0.245, 1.0, 0.0, -0.007, 0.0],
-      "4": [0.0, 0.774, 0.731671, 0.562, -0.107, -0.003],
-      "7": [0.0, 0.173, 1.531232, 0.066, -0.071, -0.002],
-      "8": [0.0, 0.439, 0.815471, 0.438, -0.108, -0.002],
-      "9": [0.0, 0.517, 0.821852, 0.219, -0.066, -0.003],
-      "10": [0.0, 0.197, 1.041543, 0.115, -0.016, -0.002],
-      "11": [0.0, 0.23, 0.845781, 0.092, -0.091, -0.002],
-      "12": [0.0, 0.576, 0.891502, 1.309, -0.06, -0.002],
-      "13": [0.0, 0.889, 0.783471, 0.89, -0.085, -0.002],
-      "14": [0.0, 0.461, 0.977576, 0.808, -0.041, -0.002],
-      "15": [0.0, 0.294, 1.046504, 0.432, -0.019, -0.001],
-      "16": [0.0, 0.292, 1.169504, 0.379, -0.018, -0.001],
-      "17": [0.0, 0.186, 1.220996, 0.447, -0.031, -0.001],
-      "18": [0.0, 0.135, 1.068961, 0.547, -0.073, -0.001],
-      "19": [0.0, 0.794, 0.802157, 0.55, -0.105, -0.002],
-      "20": [0.0, 0.379, 1.342728, 0.322, -0.084, -0.065],
-      "25": [0.0, 0.547, 0.92525, 1.312, -0.118, 0.0],
-      "26": [0.0, 0.161, 1.348095, 0.417, -0.032, 0.0],
-      "27": [0.0, 0.041, 1.705943, 0.283, -0.055, 0.0],
+      "4": [0.0, 0.774, 0.737113, 0.562, -0.107, -0.003],
+      "7": [0.0, 0.173, 1.584313, 0.066, -0.071, -0.002],
+      "8": [0.0, 0.439, 0.825581, 0.438, -0.108, -0.002],
+      "9": [0.0, 0.517, 0.833197, 0.219, -0.066, -0.003],
+      "10": [0.0, 0.197, 1.066666, 0.115, -0.016, -0.002],
+      "11": [0.0, 0.23, 0.861622, 0.092, -0.091, -0.002],
+      "12": [0.0, 0.576, 0.899572, 1.309, -0.06, -0.002],
+      "13": [0.0, 0.889, 0.78959, 0.89, -0.085, -0.002],
+      "14": [0.0, 0.461, 0.946588, 0.808, -0.041, -0.002],
+      "15": [0.0, 0.294, 1.070042, 0.432, -0.019, -0.001],
+      "16": [0.0, 0.292, 1.189836, 0.379, -0.018, -0.001],
+      "17": [0.0, 0.186, 1.17944, 0.447, -0.031, -0.001],
+      "18": [0.0, 0.135, 1.061794, 0.547, -0.073, -0.001],
+      "19": [0.0, 0.794, 0.80456, 0.55, -0.105, -0.002],
+      "20": [0.0, 0.379, 1.368991, 0.322, -0.084, -0.065],
+      "25": [0.0, 0.547, 0.932688, 1.312, -0.118, 0.0],
+      "26": [0.0, 0.161, 1.370735, 0.417, -0.032, 0.0],
+      "27": [0.0, 0.041, 1.732822, 0.283, -0.055, 0.0],
       "557": [0.0, 0.379, 1.416423, 0.322, -0.084, -0.065],
       "28": [0.0, 0.795, 1.0, 0.005, -0.051, 0.0],
       "29": [0.0, 0.164, 1.0, 0.0, -0.035, 0.0],
@@ -395,31 +395,31 @@
       "200": [0.0, 0.846, 0.822729, 0.428, -0.104, -0.066],
       "568": [0.0, 0.379, 1.098102, 0.322, -0.084, -0.065],
       "583": [0.0, 0.436, 1.027849, 0.156, -0.185, -0.003],
-      "104": [0.0, 0.379, 0.793065, 0.322, -0.084, -0.065],
+      "104": [0.0, 0.379, 0.79209, 0.322, -0.084, -0.065],
       "110": [0.0, 0.904, 1.0, 0.0, -0.009, 0.0],
       "171": [0.0, 0.164, 1.0, 0.0, -0.035, 0.0],
       "172": [0.0, 0.904, 1.0, 0.0, -0.009, 0.0],
-      "173": [0.0, 0.537, 0.710834, 0.343, -0.063, -0.003],
-      "174": [0.0, 0.537, 1.066337, 0.343, -0.063, -0.003],
-      "175": [0.0, 0.537, 0.734197, 0.343, -0.063, -0.003],
-      "176": [0.0, 0.537, 0.717395, 0.343, -0.063, -0.003],
-      "177": [0.0, 0.537, 1.276324, 0.343, -0.063, -0.003],
-      "178": [0.0, 0.537, 1.143667, 0.343, -0.063, -0.003],
-      "179": [0.0, 0.537, 1.061002, 0.343, -0.063, -0.003],
-      "180": [0.0, 0.537, 1.066337, 0.343, -0.063, -0.003],
-      "182": [0.0, 0.537, 0.671985, 0.343, -0.063, -0.003],
-      "183": [0.0, 0.379, 0.822499, 0.322, -0.084, -0.065],
-      "184": [0.0, 0.379, 0.766133, 0.322, -0.084, -0.065],
-      "185": [0.0, 0.379, 0.834518, 0.322, -0.084, -0.065],
-      "186": [0.0, 0.603, 0.799948, 1.426, -0.132, -0.002],
-      "187": [0.0, 0.379, 1.109573, 0.322, -0.084, -0.065],
-      "188": [0.0, 0.603, 0.711289, 1.426, -0.132, -0.002],
+      "173": [0.0, 0.537, 0.720399, 0.343, -0.063, -0.003],
+      "174": [0.0, 0.537, 1.064275, 0.343, -0.063, -0.003],
+      "175": [0.0, 0.537, 0.733573, 0.343, -0.063, -0.003],
+      "176": [0.0, 0.537, 0.716883, 0.343, -0.063, -0.003],
+      "177": [0.0, 0.537, 1.273334, 0.343, -0.063, -0.003],
+      "178": [0.0, 0.537, 1.141153, 0.343, -0.063, -0.003],
+      "179": [0.0, 0.537, 1.058945, 0.343, -0.063, -0.003],
+      "180": [0.0, 0.537, 1.064275, 0.343, -0.063, -0.003],
+      "182": [0.0, 0.537, 0.671776, 0.343, -0.063, -0.003],
+      "183": [0.0, 0.379, 0.838, 0.322, -0.084, -0.065],
+      "184": [0.0, 0.379, 0.76533, 0.322, -0.084, -0.065],
+      "185": [0.0, 0.379, 0.833324, 0.322, -0.084, -0.065],
+      "186": [0.0, 0.603, 0.799242, 1.426, -0.132, -0.002],
+      "187": [0.0, 0.379, 1.107352, 0.322, -0.084, -0.065],
+      "188": [0.0, 0.603, 0.710911, 1.426, -0.132, -0.002],
       "191": [0.0, 0.379, 1.416423, 0.322, -0.084, -0.065],
       "192": [0.0, 0.379, 1.416423, 0.322, -0.084, -0.065],
-      "194": [0.0, 0.423, 0.881184, 0.564, -0.056, -0.001],
-      "195": [0.0, 0.423, 0.836216, 0.564, -0.056, -0.001],
-      "575": [0.0, 0.379, 0.750909, 0.322, -0.084, -0.065],
-      "584": [0.0, 0.603, 0.715336, 1.426, -0.132, -0.002],
+      "194": [0.0, 0.423, 0.879955, 0.564, -0.056, -0.001],
+      "195": [0.0, 0.423, 0.835192, 0.564, -0.056, -0.001],
+      "575": [0.0, 0.379, 0.750175, 0.322, -0.084, -0.065],
+      "584": [0.0, 0.603, 0.714942, 1.426, -0.132, -0.002],
       "199": [0.0, 0.904, 1.0, 0.0, -0.009, 0.0],
       "201": [0.0, 0.647, 1.0, 0.561, -0.161, -0.003],
       "202": [0.0, 0.769, 0.841407, 0.495, -0.103, -0.003],
@@ -693,7 +693,7 @@
       }
     ],
     "sourceReference": "FPL rules page, Transfers section",
-    "dataAvailableAt": "2026-08-21T06:23:29.380412Z",
+    "dataAvailableAt": "2026-08-21T08:08:22.350222Z",
     "playableStartRate": 0.35,
     "transferMarginPoints": 0.5
   },
@@ -2632,17 +2632,17 @@
   },
   "bonusOverrides": {
     "1": {
-      "1": 0.178,
+      "1": 0.172,
       "13": 0.009,
       "19": 0.001,
       "557": 0.001,
-      "4": 0.012,
       "20": 0.0,
+      "4": 0.013,
       "25": 0.002,
       "12": 0.002,
       "14": 0.0,
       "9": 0.0,
-      "22": 0.0,
+      "16": 0.0,
       "110": 0.0,
       "172": 0.0,
       "177": 0.0,
@@ -5003,28 +5003,28 @@
       "club": "ARS",
       "teamId": 1,
       "priceTenths": 80,
-      "basePoints": 3.349,
+      "basePoints": 3.376,
       "routes": {
-        "appearance": 1.151,
-        "attacking": 0.412,
-        "cleanSheet": 1.134,
-        "bonus": 0.5,
+        "appearance": 1.159,
+        "attacking": 0.415,
+        "cleanSheet": 1.143,
+        "bonus": 0.504,
         "conceding": -0.082,
         "yellowCards": -0.134,
         "redCards": -0.023,
         "ownGoals": -0.001,
-        "defensiveContribution": 0.392
+        "defensiveContribution": 0.395
       },
-      "startRate": 0.568,
+      "startRate": 0.572,
       "startEvidence": {
         "sourceStartRate": 0.774,
-        "finalStartRate": 0.568,
+        "finalStartRate": 0.572,
         "observedAppearances": 32,
         "recentStarts": 5,
         "recentMatches": 6,
         "recentMinutes": 495,
         "appearanceSource": "marketParticipation",
-        "marketAdjustment": -0.206
+        "marketAdjustment": -0.202
       },
       "squadNumber": null,
       "rated": true,
@@ -5571,49 +5571,6 @@
       }
     },
     {
-      "id": 177,
-      "code": 465390,
-      "name": "Kesler-Hayden",
-      "position": "DEF",
-      "positionId": 2,
-      "club": "COV",
-      "teamId": 7,
-      "priceTenths": 40,
-      "basePoints": 2.78,
-      "routes": {
-        "appearance": 1.51,
-        "attacking": 0.467,
-        "cleanSheet": 0.541,
-        "bonus": 0.191,
-        "conceding": -0.377,
-        "yellowCards": -0.144,
-        "redCards": -0.023,
-        "ownGoals": -0.057,
-        "defensiveContribution": 0.672
-      },
-      "startRate": 0.697,
-      "startEvidence": {
-        "sourceStartRate": 0.537,
-        "finalStartRate": 0.697,
-        "observedAppearances": null,
-        "recentStarts": null,
-        "recentMatches": null,
-        "recentMinutes": null,
-        "appearanceSource": "marketParticipation",
-        "marketAdjustment": 0.16
-      },
-      "squadNumber": null,
-      "rated": false,
-      "depthRank": 1,
-      "evidence": {
-        "all": "rolePrior",
-        "appearance": "marketParticipation",
-        "attacking": "marketAttack",
-        "yellowCards": "marketCards",
-        "redCards": "marketCards"
-      }
-    },
-    {
       "id": 202,
       "code": 427623,
       "name": "Richards",
@@ -5649,6 +5606,49 @@
       "rated": true,
       "depthRank": 2,
       "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
+    },
+    {
+      "id": 177,
+      "code": 465390,
+      "name": "Kesler-Hayden",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "COV",
+      "teamId": 7,
+      "priceTenths": 40,
+      "basePoints": 2.773,
+      "routes": {
+        "appearance": 1.506,
+        "attacking": 0.466,
+        "cleanSheet": 0.54,
+        "bonus": 0.191,
+        "conceding": -0.377,
+        "yellowCards": -0.144,
+        "redCards": -0.023,
+        "ownGoals": -0.057,
+        "defensiveContribution": 0.671
+      },
+      "startRate": 0.695,
+      "startEvidence": {
+        "sourceStartRate": 0.537,
+        "finalStartRate": 0.695,
+        "observedAppearances": null,
+        "recentStarts": null,
+        "recentMatches": null,
+        "recentMinutes": null,
+        "appearanceSource": "marketParticipation",
+        "marketAdjustment": 0.158
+      },
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 1,
+      "evidence": {
+        "all": "rolePrior",
         "appearance": "marketParticipation",
         "attacking": "marketAttack",
         "yellowCards": "marketCards",
@@ -6259,49 +6259,6 @@
       }
     },
     {
-      "id": 179,
-      "code": 204813,
-      "name": "Latibeaudiere",
-      "position": "DEF",
-      "positionId": 2,
-      "club": "COV",
-      "teamId": 7,
-      "priceTenths": 40,
-      "basePoints": 2.263,
-      "routes": {
-        "appearance": 1.255,
-        "attacking": 0.393,
-        "cleanSheet": 0.45,
-        "bonus": 0.159,
-        "conceding": -0.314,
-        "yellowCards": -0.158,
-        "redCards": -0.033,
-        "ownGoals": -0.048,
-        "defensiveContribution": 0.559
-      },
-      "startRate": 0.577,
-      "startEvidence": {
-        "sourceStartRate": 0.537,
-        "finalStartRate": 0.577,
-        "observedAppearances": null,
-        "recentStarts": null,
-        "recentMatches": null,
-        "recentMinutes": null,
-        "appearanceSource": "marketParticipation",
-        "marketAdjustment": 0.04
-      },
-      "squadNumber": null,
-      "rated": false,
-      "depthRank": 1,
-      "evidence": {
-        "all": "rolePrior",
-        "appearance": "marketParticipation",
-        "attacking": "marketAttack",
-        "yellowCards": "marketCards",
-        "redCards": "marketCards"
-      }
-    },
-    {
       "id": 31,
       "code": 199798,
       "name": "Konsa",
@@ -6344,36 +6301,36 @@
       }
     },
     {
-      "id": 174,
-      "code": 436761,
-      "name": "Kitching",
+      "id": 179,
+      "code": 204813,
+      "name": "Latibeaudiere",
       "position": "DEF",
       "positionId": 2,
       "club": "COV",
       "teamId": 7,
       "priceTenths": 40,
-      "basePoints": 2.256,
+      "basePoints": 2.259,
       "routes": {
-        "appearance": 1.261,
-        "attacking": 0.396,
-        "cleanSheet": 0.452,
-        "bonus": 0.16,
-        "conceding": -0.315,
-        "yellowCards": -0.173,
-        "redCards": -0.039,
+        "appearance": 1.253,
+        "attacking": 0.392,
+        "cleanSheet": 0.449,
+        "bonus": 0.159,
+        "conceding": -0.313,
+        "yellowCards": -0.158,
+        "redCards": -0.033,
         "ownGoals": -0.048,
-        "defensiveContribution": 0.562
+        "defensiveContribution": 0.558
       },
-      "startRate": 0.58,
+      "startRate": 0.576,
       "startEvidence": {
         "sourceStartRate": 0.537,
-        "finalStartRate": 0.58,
+        "finalStartRate": 0.576,
         "observedAppearances": null,
         "recentStarts": null,
         "recentMatches": null,
         "recentMinutes": null,
         "appearanceSource": "marketParticipation",
-        "marketAdjustment": 0.043
+        "marketAdjustment": 0.039
       },
       "squadNumber": null,
       "rated": false,
@@ -6427,6 +6384,49 @@
       }
     },
     {
+      "id": 174,
+      "code": 436761,
+      "name": "Kitching",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "COV",
+      "teamId": 7,
+      "priceTenths": 40,
+      "basePoints": 2.25,
+      "routes": {
+        "appearance": 1.259,
+        "attacking": 0.395,
+        "cleanSheet": 0.451,
+        "bonus": 0.159,
+        "conceding": -0.315,
+        "yellowCards": -0.173,
+        "redCards": -0.039,
+        "ownGoals": -0.048,
+        "defensiveContribution": 0.561
+      },
+      "startRate": 0.579,
+      "startEvidence": {
+        "sourceStartRate": 0.537,
+        "finalStartRate": 0.579,
+        "observedAppearances": null,
+        "recentStarts": null,
+        "recentMatches": null,
+        "recentMinutes": null,
+        "appearanceSource": "marketParticipation",
+        "marketAdjustment": 0.042
+      },
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 1,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
+    },
+    {
       "id": 178,
       "code": 80178,
       "name": "Bidwell",
@@ -6435,28 +6435,28 @@
       "club": "COV",
       "teamId": 7,
       "priceTenths": 40,
-      "basePoints": 2.246,
+      "basePoints": 2.242,
       "routes": {
-        "appearance": 1.353,
+        "appearance": 1.35,
         "attacking": 0.414,
-        "cleanSheet": 0.485,
+        "cleanSheet": 0.484,
         "bonus": 0.171,
-        "conceding": -0.338,
+        "conceding": -0.337,
         "yellowCards": -0.367,
         "redCards": -0.023,
-        "ownGoals": -0.052,
-        "defensiveContribution": 0.603
+        "ownGoals": -0.051,
+        "defensiveContribution": 0.601
       },
-      "startRate": 0.623,
+      "startRate": 0.622,
       "startEvidence": {
         "sourceStartRate": 0.537,
-        "finalStartRate": 0.623,
+        "finalStartRate": 0.622,
         "observedAppearances": null,
         "recentStarts": null,
         "recentMatches": null,
         "recentMinutes": null,
         "appearanceSource": "marketParticipation",
-        "marketAdjustment": 0.086
+        "marketAdjustment": 0.085
       },
       "squadNumber": null,
       "rated": false,
@@ -7025,28 +7025,28 @@
       "club": "COV",
       "teamId": 7,
       "priceTenths": 40,
-      "basePoints": 2.078,
+      "basePoints": 2.072,
       "routes": {
-        "appearance": 1.261,
-        "attacking": 0.396,
-        "cleanSheet": 0.452,
-        "bonus": 0.16,
+        "appearance": 1.259,
+        "attacking": 0.395,
+        "cleanSheet": 0.451,
+        "bonus": 0.159,
         "conceding": -0.315,
         "yellowCards": -0.367,
         "redCards": -0.023,
         "ownGoals": -0.048,
-        "defensiveContribution": 0.562
+        "defensiveContribution": 0.561
       },
-      "startRate": 0.58,
+      "startRate": 0.579,
       "startEvidence": {
         "sourceStartRate": 0.537,
-        "finalStartRate": 0.58,
+        "finalStartRate": 0.579,
         "observedAppearances": null,
         "recentStarts": null,
         "recentMatches": null,
         "recentMinutes": null,
         "appearanceSource": "marketParticipation",
-        "marketAdjustment": 0.043
+        "marketAdjustment": 0.042
       },
       "squadNumber": null,
       "rated": false,
@@ -8170,6 +8170,48 @@
       }
     },
     {
+      "id": 8,
+      "code": 466075,
+      "name": "Calafiori",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "ARS",
+      "teamId": 1,
+      "priceTenths": 55,
+      "basePoints": 1.738,
+      "routes": {
+        "appearance": 0.87,
+        "attacking": 0.345,
+        "cleanSheet": 0.634,
+        "bonus": 0.115,
+        "conceding": -0.069,
+        "yellowCards": -0.161,
+        "redCards": -0.033,
+        "ownGoals": -0.002,
+        "defensiveContribution": 0.039
+      },
+      "startRate": 0.365,
+      "startEvidence": {
+        "sourceStartRate": 0.439,
+        "finalStartRate": 0.365,
+        "observedAppearances": 26,
+        "recentStarts": 2,
+        "recentMatches": 6,
+        "recentMinutes": 251,
+        "appearanceSource": "marketParticipation",
+        "marketAdjustment": -0.074
+      },
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 2,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
+    },
+    {
       "id": 304,
       "code": 216616,
       "name": "O'Shea",
@@ -8416,48 +8458,6 @@
       "evidence": {
         "appearance": "marketParticipation",
         "attacking": "marketAttack"
-      }
-    },
-    {
-      "id": 8,
-      "code": 466075,
-      "name": "Calafiori",
-      "position": "DEF",
-      "positionId": 2,
-      "club": "ARS",
-      "teamId": 1,
-      "priceTenths": 55,
-      "basePoints": 1.714,
-      "routes": {
-        "appearance": 0.859,
-        "attacking": 0.341,
-        "cleanSheet": 0.627,
-        "bonus": 0.113,
-        "conceding": -0.069,
-        "yellowCards": -0.161,
-        "redCards": -0.033,
-        "ownGoals": -0.002,
-        "defensiveContribution": 0.039
-      },
-      "startRate": 0.36,
-      "startEvidence": {
-        "sourceStartRate": 0.439,
-        "finalStartRate": 0.36,
-        "observedAppearances": 26,
-        "recentStarts": 2,
-        "recentMatches": 6,
-        "recentMinutes": 251,
-        "appearanceSource": "marketParticipation",
-        "marketAdjustment": -0.079
-      },
-      "squadNumber": null,
-      "rated": true,
-      "depthRank": 2,
-      "evidence": {
-        "appearance": "marketParticipation",
-        "attacking": "marketAttack",
-        "yellowCards": "marketCards",
-        "redCards": "marketCards"
       }
     },
     {
@@ -9477,6 +9477,48 @@
       }
     },
     {
+      "id": 9,
+      "code": 448104,
+      "name": "Hincapie",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "ARS",
+      "teamId": 1,
+      "priceTenths": 55,
+      "basePoints": 1.582,
+      "routes": {
+        "appearance": 1.012,
+        "attacking": 0.187,
+        "cleanSheet": 0.339,
+        "bonus": 0.155,
+        "conceding": -0.236,
+        "yellowCards": -0.119,
+        "redCards": -0.028,
+        "ownGoals": -0.039,
+        "defensiveContribution": 0.311
+      },
+      "startRate": 0.441,
+      "startEvidence": {
+        "sourceStartRate": 0.517,
+        "finalStartRate": 0.441,
+        "observedAppearances": 25,
+        "recentStarts": 3,
+        "recentMatches": 6,
+        "recentMinutes": 288,
+        "appearanceSource": "marketParticipation",
+        "marketAdjustment": -0.076
+      },
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 2,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
+    },
+    {
       "id": 364,
       "code": 214285,
       "name": "Tsimikas",
@@ -9602,48 +9644,6 @@
       }
     },
     {
-      "id": 9,
-      "code": 448104,
-      "name": "Hincapie",
-      "position": "DEF",
-      "positionId": 2,
-      "club": "ARS",
-      "teamId": 1,
-      "priceTenths": 55,
-      "basePoints": 1.557,
-      "routes": {
-        "appearance": 0.998,
-        "attacking": 0.184,
-        "cleanSheet": 0.335,
-        "bonus": 0.153,
-        "conceding": -0.233,
-        "yellowCards": -0.119,
-        "redCards": -0.028,
-        "ownGoals": -0.039,
-        "defensiveContribution": 0.306
-      },
-      "startRate": 0.434,
-      "startEvidence": {
-        "sourceStartRate": 0.517,
-        "finalStartRate": 0.434,
-        "observedAppearances": 25,
-        "recentStarts": 3,
-        "recentMatches": 6,
-        "recentMinutes": 288,
-        "appearanceSource": "marketParticipation",
-        "marketAdjustment": -0.083
-      },
-      "squadNumber": null,
-      "rated": true,
-      "depthRank": 2,
-      "evidence": {
-        "appearance": "marketParticipation",
-        "attacking": "marketAttack",
-        "yellowCards": "marketCards",
-        "redCards": "marketCards"
-      }
-    },
-    {
       "id": 418,
       "code": 95658,
       "name": "Maguire",
@@ -9694,9 +9694,9 @@
       "club": "COV",
       "teamId": 7,
       "priceTenths": 40,
-      "basePoints": 1.535,
+      "basePoints": 1.533,
       "routes": {
-        "appearance": 0.869,
+        "appearance": 0.868,
         "attacking": 0.244,
         "cleanSheet": 0.311,
         "bonus": 0.11,
@@ -9704,18 +9704,18 @@
         "yellowCards": -0.118,
         "redCards": -0.018,
         "ownGoals": -0.033,
-        "defensiveContribution": 0.387
+        "defensiveContribution": 0.386
       },
-      "startRate": 0.396,
+      "startRate": 0.395,
       "startEvidence": {
         "sourceStartRate": 0.537,
-        "finalStartRate": 0.396,
+        "finalStartRate": 0.395,
         "observedAppearances": null,
         "recentStarts": null,
         "recentMatches": null,
         "recentMinutes": null,
         "appearanceSource": "marketParticipation",
-        "marketAdjustment": -0.141
+        "marketAdjustment": -0.142
       },
       "squadNumber": null,
       "rated": false,
@@ -9900,9 +9900,9 @@
       "club": "COV",
       "teamId": 7,
       "priceTenths": 40,
-      "basePoints": 1.471,
+      "basePoints": 1.47,
       "routes": {
-        "appearance": 0.849,
+        "appearance": 0.848,
         "attacking": 0.239,
         "cleanSheet": 0.304,
         "bonus": 0.107,
@@ -10015,6 +10015,49 @@
       }
     },
     {
+      "id": 173,
+      "code": 461102,
+      "name": "Thomas",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "COV",
+      "teamId": 7,
+      "priceTenths": 40,
+      "basePoints": 1.454,
+      "routes": {
+        "appearance": 0.852,
+        "attacking": 0.248,
+        "cleanSheet": 0.305,
+        "bonus": 0.108,
+        "conceding": -0.213,
+        "yellowCards": -0.161,
+        "redCards": -0.033,
+        "ownGoals": -0.032,
+        "defensiveContribution": 0.38
+      },
+      "startRate": 0.388,
+      "startEvidence": {
+        "sourceStartRate": 0.537,
+        "finalStartRate": 0.388,
+        "observedAppearances": null,
+        "recentStarts": null,
+        "recentMatches": null,
+        "recentMinutes": null,
+        "appearanceSource": "marketParticipation",
+        "marketAdjustment": -0.149
+      },
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 1,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
+    },
+    {
       "id": 393,
       "code": 578153,
       "name": "Khusanov",
@@ -10052,49 +10095,6 @@
       "evidence": {
         "appearance": "marketParticipation",
         "attacking": "marketAttack"
-      }
-    },
-    {
-      "id": 173,
-      "code": 461102,
-      "name": "Thomas",
-      "position": "DEF",
-      "positionId": 2,
-      "club": "COV",
-      "teamId": 7,
-      "priceTenths": 40,
-      "basePoints": 1.43,
-      "routes": {
-        "appearance": 0.841,
-        "attacking": 0.243,
-        "cleanSheet": 0.301,
-        "bonus": 0.107,
-        "conceding": -0.21,
-        "yellowCards": -0.161,
-        "redCards": -0.033,
-        "ownGoals": -0.032,
-        "defensiveContribution": 0.374
-      },
-      "startRate": 0.383,
-      "startEvidence": {
-        "sourceStartRate": 0.537,
-        "finalStartRate": 0.383,
-        "observedAppearances": null,
-        "recentStarts": null,
-        "recentMatches": null,
-        "recentMinutes": null,
-        "appearanceSource": "marketParticipation",
-        "marketAdjustment": -0.154
-      },
-      "squadNumber": null,
-      "rated": false,
-      "depthRank": 1,
-      "evidence": {
-        "all": "rolePrior",
-        "appearance": "marketParticipation",
-        "attacking": "marketAttack",
-        "yellowCards": "marketCards",
-        "redCards": "marketCards"
       }
     },
     {
@@ -10895,28 +10895,28 @@
       "club": "ARS",
       "teamId": 1,
       "priceTenths": 55,
-      "basePoints": 0.97,
+      "basePoints": 0.996,
       "routes": {
-        "appearance": 0.554,
-        "attacking": 0.117,
-        "cleanSheet": 0.287,
-        "bonus": 0.08,
-        "conceding": -0.061,
+        "appearance": 0.567,
+        "attacking": 0.12,
+        "cleanSheet": 0.294,
+        "bonus": 0.082,
+        "conceding": -0.062,
         "yellowCards": -0.069,
         "redCards": -0.017,
         "ownGoals": -0.002,
-        "defensiveContribution": 0.081
+        "defensiveContribution": 0.083
       },
-      "startRate": 0.215,
+      "startRate": 0.22,
       "startEvidence": {
         "sourceStartRate": 0.197,
-        "finalStartRate": 0.215,
+        "finalStartRate": 0.22,
         "observedAppearances": 12,
         "recentStarts": 2,
         "recentMatches": 6,
         "recentMinutes": 215,
         "appearanceSource": "marketParticipation",
-        "marketAdjustment": 0.018
+        "marketAdjustment": 0.023
       },
       "squadNumber": null,
       "rated": true,
@@ -11295,28 +11295,28 @@
       "club": "ARS",
       "teamId": 1,
       "priceTenths": 55,
-      "basePoints": 0.716,
+      "basePoints": 0.73,
       "routes": {
-        "appearance": 0.632,
-        "attacking": 0.079,
-        "cleanSheet": 0.122,
+        "appearance": 0.643,
+        "attacking": 0.08,
+        "cleanSheet": 0.125,
         "bonus": 0.033,
-        "conceding": -0.126,
+        "conceding": -0.129,
         "yellowCards": -0.113,
         "redCards": -0.012,
         "ownGoals": -0.002,
-        "defensiveContribution": 0.103
+        "defensiveContribution": 0.105
       },
-      "startRate": 0.209,
+      "startRate": 0.214,
       "startEvidence": {
         "sourceStartRate": 0.23,
-        "finalStartRate": 0.209,
+        "finalStartRate": 0.214,
         "observedAppearances": 20,
         "recentStarts": 3,
         "recentMatches": 6,
         "recentMinutes": 305,
         "appearanceSource": "marketParticipation",
-        "marketAdjustment": -0.021
+        "marketAdjustment": -0.016
       },
       "squadNumber": null,
       "rated": true,
@@ -12171,26 +12171,26 @@
       "club": "ARS",
       "teamId": 1,
       "priceTenths": 75,
-      "basePoints": 3.183,
+      "basePoints": 3.21,
       "routes": {
-        "appearance": 1.384,
-        "attacking": 0.7,
-        "cleanSheet": 0.314,
-        "bonus": 0.412,
+        "appearance": 1.395,
+        "attacking": 0.706,
+        "cleanSheet": 0.317,
+        "bonus": 0.415,
         "yellowCards": -0.114,
         "redCards": -0.017,
-        "defensiveContribution": 0.504
+        "defensiveContribution": 0.508
       },
-      "startRate": 0.694,
+      "startRate": 0.7,
       "startEvidence": {
         "sourceStartRate": 0.889,
-        "finalStartRate": 0.694,
+        "finalStartRate": 0.7,
         "observedAppearances": 36,
         "recentStarts": 5,
         "recentMatches": 6,
         "recentMinutes": 423,
         "appearanceSource": "marketParticipation",
-        "marketAdjustment": -0.195
+        "marketAdjustment": -0.189
       },
       "squadNumber": null,
       "rated": true,
@@ -12326,26 +12326,26 @@
       "club": "ARS",
       "teamId": 1,
       "priceTenths": 95,
-      "basePoints": 3.015,
+      "basePoints": 3.044,
       "routes": {
-        "appearance": 1.201,
-        "attacking": 1.161,
-        "cleanSheet": 0.181,
-        "bonus": 0.368,
+        "appearance": 1.212,
+        "attacking": 1.172,
+        "cleanSheet": 0.183,
+        "bonus": 0.371,
         "yellowCards": -0.096,
         "redCards": -0.014,
-        "defensiveContribution": 0.214
+        "defensiveContribution": 0.216
       },
-      "startRate": 0.524,
+      "startRate": 0.529,
       "startEvidence": {
         "sourceStartRate": 0.576,
-        "finalStartRate": 0.524,
+        "finalStartRate": 0.529,
         "observedAppearances": 31,
         "recentStarts": 2,
         "recentMatches": 6,
         "recentMinutes": 223,
         "appearanceSource": "marketParticipation",
-        "marketAdjustment": -0.052
+        "marketAdjustment": -0.047
       },
       "squadNumber": null,
       "rated": true,
@@ -13953,6 +13953,47 @@
       }
     },
     {
+      "id": 557,
+      "code": 439509,
+      "name": "Tzolis",
+      "position": "MID",
+      "positionId": 3,
+      "club": "ARS",
+      "teamId": 1,
+      "priceTenths": 65,
+      "basePoints": 2.389,
+      "routes": {
+        "appearance": 1.605,
+        "attacking": 0.631,
+        "cleanSheet": 0.03,
+        "bonus": 0.131,
+        "yellowCards": -0.12,
+        "redCards": -0.058,
+        "defensiveContribution": 0.17
+      },
+      "startRate": 0.596,
+      "startEvidence": {
+        "sourceStartRate": 0.379,
+        "finalStartRate": 0.596,
+        "observedAppearances": null,
+        "recentStarts": null,
+        "recentMatches": null,
+        "recentMinutes": null,
+        "appearanceSource": "marketParticipation",
+        "marketAdjustment": 0.217
+      },
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 3,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
+    },
+    {
       "id": 370,
       "code": 223541,
       "name": "Chiesa",
@@ -13986,47 +14027,6 @@
       "rated": true,
       "depthRank": 7,
       "evidence": {
-        "appearance": "marketParticipation",
-        "attacking": "marketAttack",
-        "yellowCards": "marketCards",
-        "redCards": "marketCards"
-      }
-    },
-    {
-      "id": 557,
-      "code": 439509,
-      "name": "Tzolis",
-      "position": "MID",
-      "positionId": 3,
-      "club": "ARS",
-      "teamId": 1,
-      "priceTenths": 65,
-      "basePoints": 2.377,
-      "routes": {
-        "appearance": 1.605,
-        "attacking": 0.619,
-        "cleanSheet": 0.03,
-        "bonus": 0.131,
-        "yellowCards": -0.12,
-        "redCards": -0.058,
-        "defensiveContribution": 0.17
-      },
-      "startRate": 0.596,
-      "startEvidence": {
-        "sourceStartRate": 0.379,
-        "finalStartRate": 0.596,
-        "observedAppearances": null,
-        "recentStarts": null,
-        "recentMatches": null,
-        "recentMinutes": null,
-        "appearanceSource": "marketParticipation",
-        "marketAdjustment": 0.217
-      },
-      "squadNumber": null,
-      "rated": false,
-      "depthRank": 3,
-      "evidence": {
-        "all": "rolePrior",
         "appearance": "marketParticipation",
         "attacking": "marketAttack",
         "yellowCards": "marketCards",
@@ -14160,26 +14160,26 @@
       "club": "ARS",
       "teamId": 1,
       "priceTenths": 55,
-      "basePoints": 2.358,
+      "basePoints": 2.364,
       "routes": {
-        "appearance": 1.404,
+        "appearance": 1.408,
         "attacking": 0.439,
-        "cleanSheet": 0.245,
-        "bonus": 0.182,
+        "cleanSheet": 0.246,
+        "bonus": 0.183,
         "yellowCards": -0.153,
         "redCards": -0.027,
         "defensiveContribution": 0.268
       },
-      "startRate": 0.643,
+      "startRate": 0.645,
       "startEvidence": {
         "sourceStartRate": 0.794,
-        "finalStartRate": 0.643,
+        "finalStartRate": 0.645,
         "observedAppearances": 38,
         "recentStarts": 3,
         "recentMatches": 6,
         "recentMinutes": 319,
         "appearanceSource": "marketParticipation",
-        "marketAdjustment": -0.151
+        "marketAdjustment": -0.149
       },
       "squadNumber": null,
       "rated": true,
@@ -14241,10 +14241,10 @@
       "club": "COV",
       "teamId": 7,
       "priceTenths": 55,
-      "basePoints": 2.334,
+      "basePoints": 2.332,
       "routes": {
-        "appearance": 1.02,
-        "attacking": 1.145,
+        "appearance": 1.019,
+        "attacking": 1.144,
         "cleanSheet": 0.059,
         "bonus": 0.214,
         "yellowCards": -0.152,
@@ -14252,16 +14252,16 @@
         "penaltiesMissed": -0.036,
         "defensiveContribution": 0.101
       },
-      "startRate": 0.484,
+      "startRate": 0.483,
       "startEvidence": {
         "sourceStartRate": 0.603,
-        "finalStartRate": 0.484,
+        "finalStartRate": 0.483,
         "observedAppearances": null,
         "recentStarts": null,
         "recentMatches": null,
         "recentMinutes": null,
         "appearanceSource": "marketParticipation",
-        "marketAdjustment": -0.119
+        "marketAdjustment": -0.12
       },
       "squadNumber": null,
       "rated": false,
@@ -15143,46 +15143,6 @@
       }
     },
     {
-      "id": 14,
-      "code": 232413,
-      "name": "Eze",
-      "position": "MID",
-      "positionId": 3,
-      "club": "ARS",
-      "teamId": 1,
-      "priceTenths": 65,
-      "basePoints": 2.138,
-      "routes": {
-        "appearance": 1.292,
-        "attacking": 0.787,
-        "cleanSheet": 0.14,
-        "bonus": 0.201,
-        "yellowCards": -0.306,
-        "redCards": -0.01,
-        "defensiveContribution": 0.034
-      },
-      "startRate": 0.478,
-      "startEvidence": {
-        "sourceStartRate": 0.461,
-        "finalStartRate": 0.478,
-        "observedAppearances": 33,
-        "recentStarts": 4,
-        "recentMatches": 6,
-        "recentMinutes": 355,
-        "appearanceSource": "marketParticipation",
-        "marketAdjustment": 0.017
-      },
-      "squadNumber": null,
-      "rated": true,
-      "depthRank": 3,
-      "evidence": {
-        "appearance": "marketParticipation",
-        "attacking": "marketAttack",
-        "yellowCards": "marketCards",
-        "redCards": "marketCards"
-      }
-    },
-    {
       "id": 343,
       "code": 200617,
       "name": "James",
@@ -15454,6 +15414,46 @@
       }
     },
     {
+      "id": 14,
+      "code": 232413,
+      "name": "Eze",
+      "position": "MID",
+      "positionId": 3,
+      "club": "ARS",
+      "teamId": 1,
+      "priceTenths": 65,
+      "basePoints": 2.055,
+      "routes": {
+        "appearance": 1.251,
+        "attacking": 0.756,
+        "cleanSheet": 0.136,
+        "bonus": 0.195,
+        "yellowCards": -0.306,
+        "redCards": -0.01,
+        "defensiveContribution": 0.033
+      },
+      "startRate": 0.461,
+      "startEvidence": {
+        "sourceStartRate": 0.461,
+        "finalStartRate": 0.461,
+        "observedAppearances": 33,
+        "recentStarts": 4,
+        "recentMatches": 6,
+        "recentMinutes": 355,
+        "appearanceSource": "marketParticipation",
+        "marketAdjustment": -0.0
+      },
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 3,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
+    },
+    {
       "id": 483,
       "code": 456512,
       "name": "Ndoye",
@@ -15659,27 +15659,27 @@
       "club": "COV",
       "teamId": 7,
       "priceTenths": 55,
-      "basePoints": 2.016,
+      "basePoints": 2.013,
       "routes": {
-        "appearance": 0.907,
-        "attacking": 1.002,
+        "appearance": 0.906,
+        "attacking": 1.001,
         "cleanSheet": 0.052,
         "bonus": 0.191,
         "yellowCards": -0.172,
         "redCards": -0.022,
         "penaltiesMissed": -0.032,
-        "defensiveContribution": 0.09
+        "defensiveContribution": 0.089
       },
-      "startRate": 0.43,
+      "startRate": 0.429,
       "startEvidence": {
         "sourceStartRate": 0.603,
-        "finalStartRate": 0.43,
+        "finalStartRate": 0.429,
         "observedAppearances": null,
         "recentStarts": null,
         "recentMatches": null,
         "recentMinutes": null,
         "appearanceSource": "marketParticipation",
-        "marketAdjustment": -0.173
+        "marketAdjustment": -0.174
       },
       "squadNumber": null,
       "rated": false,
@@ -15896,9 +15896,9 @@
       "club": "COV",
       "teamId": 7,
       "priceTenths": 55,
-      "basePoints": 1.951,
+      "basePoints": 1.95,
       "routes": {
-        "appearance": 0.912,
+        "appearance": 0.911,
         "attacking": 1.002,
         "cleanSheet": 0.053,
         "bonus": 0.192,
@@ -16015,10 +16015,10 @@
       "club": "COV",
       "teamId": 7,
       "priceTenths": 45,
-      "basePoints": 1.94,
+      "basePoints": 1.939,
       "routes": {
         "appearance": 1.605,
-        "attacking": 0.443,
+        "attacking": 0.442,
         "cleanSheet": 0.03,
         "bonus": 0.131,
         "yellowCards": -0.376,
@@ -16247,6 +16247,47 @@
       }
     },
     {
+      "id": 20,
+      "code": 616077,
+      "name": "Dowman",
+      "position": "MID",
+      "positionId": 3,
+      "club": "ARS",
+      "teamId": 1,
+      "priceTenths": 55,
+      "basePoints": 1.883,
+      "routes": {
+        "appearance": 1.551,
+        "attacking": 0.459,
+        "cleanSheet": 0.029,
+        "bonus": 0.127,
+        "yellowCards": -0.379,
+        "redCards": -0.068,
+        "defensiveContribution": 0.164
+      },
+      "startRate": 0.575,
+      "startEvidence": {
+        "sourceStartRate": 0.379,
+        "finalStartRate": 0.575,
+        "observedAppearances": null,
+        "recentStarts": null,
+        "recentMatches": null,
+        "recentMinutes": null,
+        "appearanceSource": "marketParticipation",
+        "marketAdjustment": 0.196
+      },
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 9,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
+    },
+    {
       "id": 43,
       "code": 166989,
       "name": "Tielemans",
@@ -16313,47 +16354,6 @@
       "squadNumber": null,
       "rated": false,
       "depthRank": 8,
-      "evidence": {
-        "all": "rolePrior",
-        "appearance": "marketParticipation",
-        "attacking": "marketAttack",
-        "yellowCards": "marketCards",
-        "redCards": "marketCards"
-      }
-    },
-    {
-      "id": 20,
-      "code": 616077,
-      "name": "Dowman",
-      "position": "MID",
-      "positionId": 3,
-      "club": "ARS",
-      "teamId": 1,
-      "priceTenths": 55,
-      "basePoints": 1.839,
-      "routes": {
-        "appearance": 1.521,
-        "attacking": 0.45,
-        "cleanSheet": 0.029,
-        "bonus": 0.125,
-        "yellowCards": -0.379,
-        "redCards": -0.068,
-        "defensiveContribution": 0.161
-      },
-      "startRate": 0.563,
-      "startEvidence": {
-        "sourceStartRate": 0.379,
-        "finalStartRate": 0.563,
-        "observedAppearances": null,
-        "recentStarts": null,
-        "recentMatches": null,
-        "recentMinutes": null,
-        "appearanceSource": "marketParticipation",
-        "marketAdjustment": 0.184
-      },
-      "squadNumber": null,
-      "rated": false,
-      "depthRank": 9,
       "evidence": {
         "all": "rolePrior",
         "appearance": "marketParticipation",
@@ -16754,6 +16754,46 @@
       }
     },
     {
+      "id": 16,
+      "code": 248857,
+      "name": "Madueke",
+      "position": "MID",
+      "positionId": 3,
+      "club": "ARS",
+      "teamId": 1,
+      "priceTenths": 65,
+      "basePoints": 1.736,
+      "routes": {
+        "appearance": 1.167,
+        "attacking": 0.466,
+        "cleanSheet": 0.099,
+        "bonus": 0.266,
+        "yellowCards": -0.292,
+        "redCards": -0.008,
+        "defensiveContribution": 0.038
+      },
+      "startRate": 0.384,
+      "startEvidence": {
+        "sourceStartRate": 0.292,
+        "finalStartRate": 0.384,
+        "observedAppearances": 26,
+        "recentStarts": 2,
+        "recentMatches": 6,
+        "recentMinutes": 263,
+        "appearanceSource": "marketParticipation",
+        "marketAdjustment": 0.092
+      },
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 3,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
+    },
+    {
       "id": 209,
       "code": 242898,
       "name": "Johnson",
@@ -16786,46 +16826,6 @@
       "squadNumber": null,
       "rated": true,
       "depthRank": 2
-    },
-    {
-      "id": 16,
-      "code": 248857,
-      "name": "Madueke",
-      "position": "MID",
-      "positionId": 3,
-      "club": "ARS",
-      "teamId": 1,
-      "priceTenths": 65,
-      "basePoints": 1.701,
-      "routes": {
-        "appearance": 1.147,
-        "attacking": 0.458,
-        "cleanSheet": 0.097,
-        "bonus": 0.262,
-        "yellowCards": -0.292,
-        "redCards": -0.008,
-        "defensiveContribution": 0.037
-      },
-      "startRate": 0.377,
-      "startEvidence": {
-        "sourceStartRate": 0.292,
-        "finalStartRate": 0.377,
-        "observedAppearances": 26,
-        "recentStarts": 2,
-        "recentMatches": 6,
-        "recentMinutes": 263,
-        "appearanceSource": "marketParticipation",
-        "marketAdjustment": 0.085
-      },
-      "squadNumber": null,
-      "rated": true,
-      "depthRank": 3,
-      "evidence": {
-        "appearance": "marketParticipation",
-        "attacking": "marketAttack",
-        "yellowCards": "marketCards",
-        "redCards": "marketCards"
-      }
     },
     {
       "id": 375,
@@ -17024,6 +17024,46 @@
       }
     },
     {
+      "id": 15,
+      "code": 184029,
+      "name": "\u00d8degaard",
+      "position": "MID",
+      "positionId": 3,
+      "club": "ARS",
+      "teamId": 1,
+      "priceTenths": 65,
+      "basePoints": 1.652,
+      "routes": {
+        "appearance": 0.964,
+        "attacking": 0.47,
+        "cleanSheet": 0.074,
+        "bonus": 0.136,
+        "yellowCards": -0.057,
+        "redCards": -0.011,
+        "defensiveContribution": 0.076
+      },
+      "startRate": 0.359,
+      "startEvidence": {
+        "sourceStartRate": 0.294,
+        "finalStartRate": 0.359,
+        "observedAppearances": 24,
+        "recentStarts": 3,
+        "recentMatches": 6,
+        "recentMinutes": 293,
+        "appearanceSource": "marketParticipation",
+        "marketAdjustment": 0.065
+      },
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 3,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
+    },
+    {
       "id": 187,
       "code": 439668,
       "name": "Eccles",
@@ -17032,26 +17072,26 @@
       "club": "COV",
       "teamId": 7,
       "priceTenths": 50,
-      "basePoints": 1.65,
+      "basePoints": 1.646,
       "routes": {
-        "appearance": 1.257,
-        "attacking": 0.394,
+        "appearance": 1.254,
+        "attacking": 0.393,
         "cleanSheet": 0.024,
         "bonus": 0.103,
         "yellowCards": -0.182,
         "redCards": -0.079,
         "defensiveContribution": 0.133
       },
-      "startRate": 0.456,
+      "startRate": 0.455,
       "startEvidence": {
         "sourceStartRate": 0.379,
-        "finalStartRate": 0.456,
+        "finalStartRate": 0.455,
         "observedAppearances": null,
         "recentStarts": null,
         "recentMatches": null,
         "recentMinutes": null,
         "appearanceSource": "marketParticipation",
-        "marketAdjustment": 0.077
+        "marketAdjustment": 0.076
       },
       "squadNumber": null,
       "rated": false,
@@ -17099,46 +17139,6 @@
       "squadNumber": null,
       "rated": true,
       "depthRank": 5,
-      "evidence": {
-        "appearance": "marketParticipation",
-        "attacking": "marketAttack",
-        "yellowCards": "marketCards",
-        "redCards": "marketCards"
-      }
-    },
-    {
-      "id": 15,
-      "code": 184029,
-      "name": "\u00d8degaard",
-      "position": "MID",
-      "positionId": 3,
-      "club": "ARS",
-      "teamId": 1,
-      "priceTenths": 65,
-      "basePoints": 1.614,
-      "routes": {
-        "appearance": 0.943,
-        "attacking": 0.458,
-        "cleanSheet": 0.073,
-        "bonus": 0.133,
-        "yellowCards": -0.057,
-        "redCards": -0.011,
-        "defensiveContribution": 0.075
-      },
-      "startRate": 0.349,
-      "startEvidence": {
-        "sourceStartRate": 0.294,
-        "finalStartRate": 0.349,
-        "observedAppearances": 24,
-        "recentStarts": 3,
-        "recentMatches": 6,
-        "recentMinutes": 293,
-        "appearanceSource": "marketParticipation",
-        "marketAdjustment": 0.055
-      },
-      "squadNumber": null,
-      "rated": true,
-      "depthRank": 3,
       "evidence": {
         "appearance": "marketParticipation",
         "attacking": "marketAttack",
@@ -18419,46 +18419,6 @@
       "depthRank": 7
     },
     {
-      "id": 17,
-      "code": 195384,
-      "name": "Merino",
-      "position": "MID",
-      "positionId": 3,
-      "club": "ARS",
-      "teamId": 1,
-      "priceTenths": 60,
-      "basePoints": 1.469,
-      "routes": {
-        "appearance": 0.845,
-        "attacking": 0.544,
-        "cleanSheet": 0.041,
-        "bonus": 0.139,
-        "yellowCards": -0.105,
-        "redCards": -0.027,
-        "defensiveContribution": 0.032
-      },
-      "startRate": 0.274,
-      "startEvidence": {
-        "sourceStartRate": 0.186,
-        "finalStartRate": 0.274,
-        "observedAppearances": 22,
-        "recentStarts": 0,
-        "recentMatches": 6,
-        "recentMinutes": 28,
-        "appearanceSource": "marketParticipation",
-        "marketAdjustment": 0.088
-      },
-      "squadNumber": null,
-      "rated": true,
-      "depthRank": 8,
-      "evidence": {
-        "appearance": "marketParticipation",
-        "attacking": "marketAttack",
-        "yellowCards": "marketCards",
-        "redCards": "marketCards"
-      }
-    },
-    {
       "id": 270,
       "code": 153366,
       "name": "Reed",
@@ -18532,6 +18492,46 @@
       "depthRank": 6,
       "evidence": {
         "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
+    },
+    {
+      "id": 17,
+      "code": 195384,
+      "name": "Merino",
+      "position": "MID",
+      "positionId": 3,
+      "club": "ARS",
+      "teamId": 1,
+      "priceTenths": 60,
+      "basePoints": 1.41,
+      "routes": {
+        "appearance": 0.816,
+        "attacking": 0.521,
+        "cleanSheet": 0.039,
+        "bonus": 0.135,
+        "yellowCards": -0.105,
+        "redCards": -0.027,
+        "defensiveContribution": 0.031
+      },
+      "startRate": 0.263,
+      "startEvidence": {
+        "sourceStartRate": 0.186,
+        "finalStartRate": 0.263,
+        "observedAppearances": 22,
+        "recentStarts": 0,
+        "recentMatches": 6,
+        "recentMinutes": 28,
+        "appearanceSource": "marketParticipation",
+        "marketAdjustment": 0.077
+      },
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 8,
+      "evidence": {
         "appearance": "marketParticipation",
         "attacking": "marketAttack",
         "yellowCards": "marketCards",
@@ -18814,26 +18814,26 @@
       "club": "ARS",
       "teamId": 1,
       "priceTenths": 65,
-      "basePoints": 1.327,
+      "basePoints": 1.314,
       "routes": {
-        "appearance": 0.969,
-        "attacking": 0.581,
+        "appearance": 0.963,
+        "attacking": 0.575,
         "cleanSheet": 0.011,
-        "bonus": 0.095,
+        "bonus": 0.094,
         "yellowCards": -0.348,
         "redCards": -0.014,
         "defensiveContribution": 0.033
       },
-      "startRate": 0.223,
+      "startRate": 0.22,
       "startEvidence": {
         "sourceStartRate": 0.135,
-        "finalStartRate": 0.223,
+        "finalStartRate": 0.22,
         "observedAppearances": 30,
         "recentStarts": 1,
         "recentMatches": 6,
         "recentMinutes": 173,
         "appearanceSource": "marketParticipation",
-        "marketAdjustment": 0.088
+        "marketAdjustment": 0.085
       },
       "squadNumber": null,
       "rated": true,
@@ -19170,9 +19170,9 @@
       "club": "COV",
       "teamId": 7,
       "priceTenths": 50,
-      "basePoints": 1.242,
+      "basePoints": 1.241,
       "routes": {
-        "appearance": 0.945,
+        "appearance": 0.944,
         "attacking": 0.273,
         "cleanSheet": 0.018,
         "bonus": 0.077,
@@ -19180,16 +19180,16 @@
         "redCards": -0.056,
         "defensiveContribution": 0.1
       },
-      "startRate": 0.331,
+      "startRate": 0.33,
       "startEvidence": {
         "sourceStartRate": 0.379,
-        "finalStartRate": 0.331,
+        "finalStartRate": 0.33,
         "observedAppearances": null,
         "recentStarts": null,
         "recentMatches": null,
         "recentMinutes": null,
         "appearanceSource": "marketParticipation",
-        "marketAdjustment": -0.048
+        "marketAdjustment": -0.049
       },
       "squadNumber": null,
       "rated": false,
@@ -19329,9 +19329,9 @@
       "club": "COV",
       "teamId": 7,
       "priceTenths": 50,
-      "basePoints": 1.085,
+      "basePoints": 1.084,
       "routes": {
-        "appearance": 0.868,
+        "appearance": 0.867,
         "attacking": 0.245,
         "cleanSheet": 0.016,
         "bonus": 0.071,
@@ -19370,32 +19370,74 @@
       "club": "COV",
       "teamId": 7,
       "priceTenths": 50,
-      "basePoints": 1.056,
+      "basePoints": 1.054,
       "routes": {
-        "appearance": 0.898,
+        "appearance": 0.897,
         "attacking": 0.259,
         "cleanSheet": 0.017,
-        "bonus": 0.074,
+        "bonus": 0.073,
         "yellowCards": -0.208,
         "redCards": -0.079,
         "defensiveContribution": 0.095
       },
-      "startRate": 0.312,
+      "startRate": 0.311,
       "startEvidence": {
         "sourceStartRate": 0.379,
-        "finalStartRate": 0.312,
+        "finalStartRate": 0.311,
         "observedAppearances": null,
         "recentStarts": null,
         "recentMatches": null,
         "recentMinutes": null,
         "appearanceSource": "marketParticipation",
-        "marketAdjustment": -0.067
+        "marketAdjustment": -0.068
       },
       "squadNumber": null,
       "rated": false,
       "depthRank": 5,
       "evidence": {
         "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
+    },
+    {
+      "id": 7,
+      "code": 499169,
+      "name": "Lewis-Skelly",
+      "position": "MID",
+      "positionId": 3,
+      "club": "ARS",
+      "teamId": 1,
+      "priceTenths": 55,
+      "basePoints": 1.039,
+      "routes": {
+        "appearance": 1.076,
+        "attacking": 0.101,
+        "cleanSheet": 0.13,
+        "bonus": 0.028,
+        "conceding": -0.216,
+        "yellowCards": -0.124,
+        "redCards": -0.027,
+        "ownGoals": -0.003,
+        "defensiveContribution": 0.074
+      },
+      "startRate": 0.334,
+      "startEvidence": {
+        "sourceStartRate": 0.173,
+        "finalStartRate": 0.334,
+        "observedAppearances": 20,
+        "recentStarts": 3,
+        "recentMatches": 6,
+        "recentMinutes": 296,
+        "appearanceSource": "marketParticipation",
+        "marketAdjustment": 0.161
+      },
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 9,
+      "evidence": {
         "appearance": "marketParticipation",
         "attacking": "marketAttack",
         "yellowCards": "marketCards",
@@ -19411,9 +19453,9 @@
       "club": "COV",
       "teamId": 7,
       "priceTenths": 50,
-      "basePoints": 1.021,
+      "basePoints": 1.02,
       "routes": {
-        "appearance": 0.851,
+        "appearance": 0.85,
         "attacking": 0.245,
         "cleanSheet": 0.016,
         "bonus": 0.07,
@@ -19478,48 +19520,6 @@
       "depthRank": 2
     },
     {
-      "id": 7,
-      "code": 499169,
-      "name": "Lewis-Skelly",
-      "position": "MID",
-      "positionId": 3,
-      "club": "ARS",
-      "teamId": 1,
-      "priceTenths": 55,
-      "basePoints": 0.999,
-      "routes": {
-        "appearance": 1.04,
-        "attacking": 0.098,
-        "cleanSheet": 0.125,
-        "bonus": 0.027,
-        "conceding": -0.209,
-        "yellowCards": -0.124,
-        "redCards": -0.027,
-        "ownGoals": -0.003,
-        "defensiveContribution": 0.072
-      },
-      "startRate": 0.321,
-      "startEvidence": {
-        "sourceStartRate": 0.173,
-        "finalStartRate": 0.321,
-        "observedAppearances": 20,
-        "recentStarts": 3,
-        "recentMatches": 6,
-        "recentMinutes": 296,
-        "appearanceSource": "marketParticipation",
-        "marketAdjustment": 0.148
-      },
-      "squadNumber": null,
-      "rated": true,
-      "depthRank": 9,
-      "evidence": {
-        "appearance": "marketParticipation",
-        "attacking": "marketAttack",
-        "yellowCards": "marketCards",
-        "redCards": "marketCards"
-      }
-    },
-    {
       "id": 183,
       "code": 480457,
       "name": "Rudoni",
@@ -19528,26 +19528,26 @@
       "club": "COV",
       "teamId": 7,
       "priceTenths": 50,
-      "basePoints": 0.949,
+      "basePoints": 0.976,
       "routes": {
-        "appearance": 0.932,
-        "attacking": 0.265,
+        "appearance": 0.949,
+        "attacking": 0.271,
         "cleanSheet": 0.018,
-        "bonus": 0.076,
+        "bonus": 0.078,
         "yellowCards": -0.378,
         "redCards": -0.063,
-        "defensiveContribution": 0.099
+        "defensiveContribution": 0.101
       },
-      "startRate": 0.325,
+      "startRate": 0.332,
       "startEvidence": {
         "sourceStartRate": 0.379,
-        "finalStartRate": 0.325,
+        "finalStartRate": 0.332,
         "observedAppearances": null,
         "recentStarts": null,
         "recentMatches": null,
         "recentMinutes": null,
         "appearanceSource": "marketParticipation",
-        "marketAdjustment": -0.054
+        "marketAdjustment": -0.047
       },
       "squadNumber": null,
       "rated": false,
@@ -19980,27 +19980,27 @@
       "club": "ARS",
       "teamId": 1,
       "priceTenths": 75,
-      "basePoints": 2.81,
+      "basePoints": 2.833,
       "routes": {
-        "appearance": 1.356,
-        "attacking": 1.22,
-        "bonus": 0.372,
+        "appearance": 1.367,
+        "attacking": 1.229,
+        "bonus": 0.375,
         "yellowCards": -0.127,
         "ownGoals": -0.001,
         "penaltiesMissed": -0.002,
         "defensiveContribution": 0.002,
         "redCards": -0.01
       },
-      "startRate": 0.527,
+      "startRate": 0.532,
       "startEvidence": {
         "sourceStartRate": 0.547,
-        "finalStartRate": 0.527,
+        "finalStartRate": 0.532,
         "observedAppearances": 36,
         "recentStarts": 2,
         "recentMatches": 6,
         "recentMinutes": 239,
         "appearanceSource": "marketParticipation",
-        "marketAdjustment": -0.02
+        "marketAdjustment": -0.015
       },
       "squadNumber": null,
       "rated": true,
@@ -21122,9 +21122,9 @@
       "club": "COV",
       "teamId": 7,
       "priceTenths": 50,
-      "basePoints": 1.553,
+      "basePoints": 1.551,
       "routes": {
-        "appearance": 1.089,
+        "appearance": 1.087,
         "attacking": 0.441,
         "cleanSheet": 0.079,
         "bonus": 0.059,
@@ -21133,16 +21133,16 @@
         "ownGoals": -0.034,
         "defensiveContribution": 0.061
       },
-      "startRate": 0.386,
+      "startRate": 0.385,
       "startEvidence": {
         "sourceStartRate": 0.423,
-        "finalStartRate": 0.386,
+        "finalStartRate": 0.385,
         "observedAppearances": null,
         "recentStarts": null,
         "recentMatches": null,
         "recentMinutes": null,
         "appearanceSource": "marketParticipation",
-        "marketAdjustment": -0.037
+        "marketAdjustment": -0.038
       },
       "squadNumber": null,
       "rated": false,
@@ -21164,9 +21164,9 @@
       "club": "COV",
       "teamId": 7,
       "priceTenths": 50,
-      "basePoints": 1.504,
+      "basePoints": 1.503,
       "routes": {
-        "appearance": 1.033,
+        "appearance": 1.032,
         "attacking": 0.419,
         "cleanSheet": 0.075,
         "bonus": 0.056,
@@ -21311,6 +21311,46 @@
       }
     },
     {
+      "id": 26,
+      "code": 219847,
+      "name": "Havertz",
+      "position": "FWD",
+      "positionId": 4,
+      "club": "ARS",
+      "teamId": 1,
+      "priceTenths": 75,
+      "basePoints": 1.334,
+      "routes": {
+        "appearance": 0.729,
+        "attacking": 0.568,
+        "bonus": 0.14,
+        "yellowCards": -0.087,
+        "penaltiesMissed": -0.003,
+        "defensiveContribution": 0.003,
+        "redCards": -0.016
+      },
+      "startRate": 0.254,
+      "startEvidence": {
+        "sourceStartRate": 0.161,
+        "finalStartRate": 0.254,
+        "observedAppearances": 12,
+        "recentStarts": 2,
+        "recentMatches": 6,
+        "recentMinutes": 263,
+        "appearanceSource": "marketParticipation",
+        "marketAdjustment": 0.093
+      },
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
+    },
+    {
       "id": 528,
       "code": 490145,
       "name": "Scarlett",
@@ -21346,46 +21386,6 @@
         "all": "rolePrior",
         "appearance": "marketParticipation",
         "attacking": "marketAttack"
-      }
-    },
-    {
-      "id": 26,
-      "code": 219847,
-      "name": "Havertz",
-      "position": "FWD",
-      "positionId": 4,
-      "club": "ARS",
-      "teamId": 1,
-      "priceTenths": 75,
-      "basePoints": 1.311,
-      "routes": {
-        "appearance": 0.717,
-        "attacking": 0.559,
-        "bonus": 0.138,
-        "yellowCards": -0.087,
-        "penaltiesMissed": -0.003,
-        "defensiveContribution": 0.003,
-        "redCards": -0.016
-      },
-      "startRate": 0.249,
-      "startEvidence": {
-        "sourceStartRate": 0.161,
-        "finalStartRate": 0.249,
-        "observedAppearances": 12,
-        "recentStarts": 2,
-        "recentMatches": 6,
-        "recentMinutes": 263,
-        "appearanceSource": "marketParticipation",
-        "marketAdjustment": 0.088
-      },
-      "squadNumber": null,
-      "rated": true,
-      "depthRank": 1,
-      "evidence": {
-        "appearance": "marketParticipation",
-        "attacking": "marketAttack",
-        "yellowCards": "marketCards",
-        "redCards": "marketCards"
       }
     },
     {
@@ -21506,26 +21506,26 @@
       "club": "ARS",
       "teamId": 1,
       "priceTenths": 60,
-      "basePoints": 0.907,
+      "basePoints": 0.927,
       "routes": {
-        "appearance": 0.743,
-        "attacking": 0.486,
-        "bonus": 0.06,
+        "appearance": 0.755,
+        "attacking": 0.493,
+        "bonus": 0.061,
         "yellowCards": -0.362,
         "penaltiesMissed": -0.002,
         "defensiveContribution": 0.003,
         "redCards": -0.021
       },
-      "startRate": 0.179,
+      "startRate": 0.183,
       "startEvidence": {
         "sourceStartRate": 0.041,
-        "finalStartRate": 0.179,
+        "finalStartRate": 0.183,
         "observedAppearances": 14,
         "recentStarts": 1,
         "recentMatches": 6,
         "recentMinutes": 100,
         "appearanceSource": "marketParticipation",
-        "marketAdjustment": 0.138
+        "marketAdjustment": 0.142
       },
       "squadNumber": null,
       "rated": true,
