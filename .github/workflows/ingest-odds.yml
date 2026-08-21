@@ -38,8 +38,9 @@ on:
   push:
     paths:
       - ".github/workflows/ingest-odds.yml"
-      - "python/fpl_andres/cli/ingest_odds.py"
-      - "python/fpl_andres/adapters/the_odds_api.py"
+      # The CLI and adapter are not listed. They share one 500-a-month key
+      # with the player ingest and the survey, and a run per push spends it
+      # outside the monthly sum in `tests/test_api_budgets.py`.
 
 permissions:
   contents: read

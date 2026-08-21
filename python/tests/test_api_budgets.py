@@ -124,6 +124,28 @@ def test_the_odds_ingest_runs_daily() -> None:
     assert str(schedule[0]["cron"]).split()[4] == "*"
 
 
+def test_a_paid_workflow_does_not_spend_the_allowance_on_every_push() -> None:
+    """A `push` trigger on a source path is an unbounded, uncounted spender.
+
+    The monthly sum above counts crons. A workflow that also fires on pushes
+    to the modules it runs costs its full budget again for each one, and a day
+    of ordinary work on those modules is several pushes. That is not a
+    rounding error against a 500-request tier: it is how an allowance sized for
+    a season is gone in a week, and the failure arrives as a market that looks
+    shut rather than as an error.
+
+    Free-tier workflows are therefore asked for by hand.
+    """
+    for name in ("ingest-player-odds.yml", "survey-player-props.yml", "ingest-odds.yml"):
+        triggers = _triggers(name)
+        assert "workflow_dispatch" in triggers, f"{name} must stay manually runnable"
+        paths = (triggers.get("push") or {}).get("paths", [])  # type: ignore[union-attr]
+        assert all(str(path).startswith(".github/workflows/") for path in paths), (
+            f"{name} re-runs on a push to {paths}, spending its whole budget "
+            "again outside the monthly sum above. Trigger it by hand instead."
+        )
+
+
 def test_the_daily_odds_trigger_bails_before_the_provider_outside_deadline_week() -> None:
     text = (WORKFLOWS / "ingest-player-odds.yml").read_text(encoding="utf-8")
 

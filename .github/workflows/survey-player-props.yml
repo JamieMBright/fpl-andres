@@ -29,11 +29,13 @@ on:
   # both show up as a diff in the committed page.
   schedule:
     - cron: "41 6 * * 1"
-  # A change to this file is how a run gets asked for without a token.
+  # A change to this file is how a run gets asked for without a token. The
+  # adapter is not listed: it shares one 500-a-month key with the ingest, and
+  # a push-per-edit spends that allowance outside the sum in
+  # `tests/test_api_budgets.py`. Ask for a survey by dispatching it.
   push:
     paths:
       - ".github/workflows/survey-player-props.yml"
-      - "python/fpl_andres/adapters/player_props.py"
   workflow_dispatch:
     inputs:
       source:
