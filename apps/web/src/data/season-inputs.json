@@ -1,6 +1,6 @@
 {
   "schemaVersion": 6,
-  "generatedAt": "2026-08-21T09:01:14.313705Z",
+  "generatedAt": "2026-08-21T09:44:22.835770Z",
   "recordSeason": "2025-26",
   "events": [
     1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
@@ -58,8 +58,8 @@
     "playerMarkets": {
       "source": "the-odds-api",
       "level": "observed",
-      "updatedAt": "2026-08-21T08:08:18.690984+00:00",
-      "contentHash": "sha256:a5ae2a303d5495b97d1ba5f1db0725334a19379054dad16965fd9422be46fca6"
+      "updatedAt": "2026-08-21T09:44:19.191365+00:00",
+      "contentHash": "sha256:07439e8c57ddad41400ae5b5b1ded4fabdb43645d8b066a352544f3b2ca3ab79"
     },
     "fixtureMarkets": {
       "source": "the-odds-api",
@@ -693,7 +693,7 @@
       }
     ],
     "sourceReference": "FPL rules page, Transfers section",
-    "dataAvailableAt": "2026-08-21T09:01:14.319629Z",
+    "dataAvailableAt": "2026-08-21T09:44:22.843616Z",
     "playableStartRate": 0.35,
     "transferMarginPoints": 0.5
   },

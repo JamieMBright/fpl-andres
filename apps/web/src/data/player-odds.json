@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "season": "2026-27",
-  "fetchedAt": "2026-08-21T08:08:18.690984+00:00",
+  "fetchedAt": "2026-08-21T09:44:19.191365+00:00",
   "source": "the-odds-api",
   "markets": [
     "player_goal_scorer_anytime",
@@ -17,19 +17,19 @@
   "quota": {
     "opening": {
       "cost": 0,
-      "used": 479,
-      "remaining": 21
+      "used": 500,
+      "remaining": 0
     },
     "closing": {
-      "cost": 7,
-      "used": 486,
-      "remaining": 14
+      "cost": 0,
+      "used": 500,
+      "remaining": 0
     },
-    "spentThisRun": 7
+    "spentThisRun": 0
   },
   "coverage": {
     "fixturesListed": 10,
-    "fixturesVisitedThisRun": 1,
+    "fixturesVisitedThisRun": 0,
     "fixturesWithQuotes": 10
   },
   "nameMappingGaps": [],
