@@ -604,9 +604,15 @@ PROP_SOURCES: tuple[PropSource, ...] = (
         # DefCon coverage. FPL's threshold includes clearances, blocks and
         # interceptions for defenders, and recoveries outside defence. A
         # tackles line is partial experimental evidence until calibrated.
+        #
+        # Saves are different and were missing: the taxonomy names
+        # `Goalkeeper Saves`, `Saves Total` and a home/away over-under, and FPL
+        # pays a goalkeeper a point per three of them. No other source here
+        # prices that route at all.
         covers=(
             "goal",
             "assist",
+            "save",
             "yellow_card",
             "red_card",
             "clean_sheet",

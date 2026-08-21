@@ -148,12 +148,19 @@ jobs:
             apps/web/src/data/opening-squad.json \
             apps/web/src/data/season-plan.json \
             data/prospective/gw1-2026-27.json"
+          # Every book's price, kept for training. Committed even when the
+          # published medians did not move: that a price held steady between
+          # Tuesday and the deadline is itself the measurement.
+          ARCHIVE="data/odds/player-raw"
           stage() {
             npx --yes prettier@3 --write apps/web/src/data/player-odds.json
             # Staged first, then compared against the index. `git diff` does not
             # look at untracked files, so the first run to produce this artifact
             # would report "unchanged" and throw it away.
             git add apps/web/src/data/player-odds.json
+            if [ -d "$ARCHIVE" ]; then
+              git add -A -- "$ARCHIVE"
+            fi
             # Regenerating the chain against unchanged quotes would still
             # rewrite `generatedAt` and commit noise on every scheduled run.
             if git diff --cached --quiet -- apps/web/src/data/player-odds.json; then
@@ -169,7 +176,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           stage
           # shellcheck disable=SC2086
-          if git diff --cached --quiet -- $TRACKED; then
+          if git diff --cached --quiet -- $TRACKED "$ARCHIVE"; then
             echo "odds unchanged"
             exit 0
           fi
@@ -182,13 +189,22 @@ jobs:
               exit 0
             fi
             echo "push rejected on attempt $attempt; rebuilding on the base that arrived"
-            cp apps/web/src/data/player-odds.json "$RUNNER_TEMP/player-odds.json"
+            rm -rf "$RUNNER_TEMP/keep"
+            mkdir -p "$RUNNER_TEMP/keep"
+            cp apps/web/src/data/player-odds.json "$RUNNER_TEMP/keep/player-odds.json"
+            if [ -d "$ARCHIVE" ]; then
+              cp -r "$ARCHIVE" "$RUNNER_TEMP/keep/archive"
+            fi
             git fetch origin "$GITHUB_REF_NAME"
             git reset --hard "origin/$GITHUB_REF_NAME"
-            cp "$RUNNER_TEMP/player-odds.json" apps/web/src/data/player-odds.json
+            cp "$RUNNER_TEMP/keep/player-odds.json" apps/web/src/data/player-odds.json
+            if [ -d "$RUNNER_TEMP/keep/archive" ]; then
+              mkdir -p "$ARCHIVE"
+              cp -r "$RUNNER_TEMP/keep/archive/." "$ARCHIVE/"
+            fi
             stage
             # shellcheck disable=SC2086
-            if git diff --cached --quiet -- $TRACKED; then
+            if git diff --cached --quiet -- $TRACKED "$ARCHIVE"; then
               echo "the base that arrived already carries these quotes"
               exit 0
             fi
