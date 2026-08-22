@@ -6,6 +6,9 @@ import { PlannedAnalysis } from "./PlannedAnalysis";
 import { RankRidge, type Ridge } from "./RankRidge";
 import fpl500 from "../data/fpl500.json";
 import { fineShare, integer, share, timestamp } from "../format";
+import { PLAYERS_BY_ELEMENT_ID } from "../state/season-solver";
+
+type CaptainEntry = { elementId: number; share: number };
 
 type Fpl500 = {
   generatedAt: string;
@@ -17,6 +20,7 @@ type Fpl500 = {
   latestSeasonEntries: number | null;
   minimumCoverage: number;
   portfolioEvents: number[];
+  portfolioCaptains: Record<string, CaptainEntry[]>;
   rankBins: number[];
   rankHistogram: Record<string, number[]>;
   seasonsCounted: Record<string, number>;
@@ -61,6 +65,76 @@ function Fold({
       </summary>
       <div className="fpl500-fold-body">{children}</div>
     </details>
+  );
+}
+
+/**
+ * Armband distribution for a set of captured gameweeks.
+ *
+ * Shows who the cohort captained and by how much. When the cohort is nearly
+ * unanimous the week says nothing interesting about strategy — and this
+ * component says so. When the week is split, the bar chart makes the
+ * disagreement visible.
+ */
+function CaptainDistribution() {
+  const captains = data.portfolioCaptains;
+  const events = Object.keys(captains).sort((a, b) => Number(a) - Number(b));
+  if (events.length === 0) return null;
+
+  return (
+    <section aria-labelledby="cohort-armband-title" className="cohort-armband">
+      <h3 id="cohort-armband-title">
+        The armband, week by week
+        <InfoMarker label="armband distribution">
+          Who the cohort captained and the share who chose each player. A week
+          where over half the cohort picks the same player is effectively
+          unanimous — every sensible thesis lands on the same name — so only
+          the contested weeks tell you anything new. The share here is of
+          managers whose picks were reconciled, not of all five hundred.
+        </InfoMarker>
+      </h3>
+      <div className="cohort-armband-weeks">
+        {events.map((eventKey) => {
+          const top = captains[eventKey] ?? [];
+          const best = top[0];
+          const isUnanimous = best !== undefined && best.share > 0.5;
+          const bestName =
+            best !== undefined
+              ? (PLAYERS_BY_ELEMENT_ID.get(best.elementId)?.name ??
+                `element ${best.elementId}`)
+              : "—";
+          return (
+            <div className="cohort-armband-week" key={eventKey}>
+              <p className="cohort-armband-gw mono">GW{Number(eventKey)}</p>
+              <ul className="cohort-armband-bars">
+                {top.map(({ elementId, share: s }) => {
+                  const name =
+                    PLAYERS_BY_ELEMENT_ID.get(elementId)?.name ??
+                    `element ${elementId}`;
+                  return (
+                    <li key={elementId} className="cohort-armband-bar">
+                      <span
+                        className="cohort-armband-fill"
+                        style={{ width: `${Math.round(s * 100)}%` }}
+                        aria-hidden="true"
+                      />
+                      <span className="cohort-armband-label">
+                        {name} {fineShare.format(s)}
+                      </span>
+                    </li>
+                  );
+                })}
+              </ul>
+              {isUnanimous && (
+                <p className="cohort-armband-verdict mono">
+                  Near-unanimous on {bestName} — no thesis separates here.
+                </p>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </section>
   );
 }
 
@@ -332,6 +406,7 @@ export function Fpl500Playbook() {
             ? "No deadline has passed, so there are no FPL500 gameweek picks or captain choices to compare yet. The frames and their axes are what will be drawn."
             : `${data.portfolioEvents.length} gameweeks captured.`}
         </p>
+        <CaptainDistribution />
         <PlannedAnalysis />
         <div className="cohort-caveat">
           <h3>What none of it can tell you</h3>

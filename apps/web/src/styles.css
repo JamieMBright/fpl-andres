@@ -5017,6 +5017,67 @@ h1[tabindex="-1"]:focus-visible {
   color: var(--ink-soft);
 }
 
+/* Armband distribution — who the cohort captained, per captured gameweek. */
+.cohort-armband {
+  margin: 16px 0;
+}
+
+.cohort-armband-weeks {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.cohort-armband-week {
+  border-left: 3px solid var(--accent);
+  padding-left: 12px;
+}
+
+.cohort-armband-gw {
+  font-size: 11px;
+  color: var(--ink-soft);
+  margin-bottom: 4px;
+}
+
+.cohort-armband-bars {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cohort-armband-bar {
+  position: relative;
+  height: 24px;
+  background: var(--surface-raised);
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+.cohort-armband-fill {
+  position: absolute;
+  inset: 0;
+  background: var(--accent);
+  opacity: 0.18;
+  max-width: 100%;
+}
+
+.cohort-armband-label {
+  position: relative;
+  font-size: 12px;
+  padding: 0 8px;
+  white-space: nowrap;
+}
+
+.cohort-armband-verdict {
+  font-size: 11px;
+  color: var(--ink-soft);
+  margin-top: 4px;
+}
+
 /* This season's standings, bounded and paged rather than a thousand rows. */
 .fpl500-scroll {
   max-height: 340px;

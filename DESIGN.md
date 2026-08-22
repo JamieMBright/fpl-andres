@@ -337,6 +337,7 @@ so a review knows what it does not have to check by hand.
 | `Fpl500Playbook`          | The ranked five hundred, and the fund they are not     | unit (`Fpl500Playbook.test.tsx`)     |
 | `RankRidge`               | Five seasons of finishes over one shared axis          | unit (via `Fpl500Playbook`)          |
 | `PlannedAnalysis`         | The frames a gameweek will fill, drawn empty           | unit (via `Fpl500Playbook`)          |
+| `CaptainDistribution`     | Armband shares per captured gameweek, in-page bars     | unit (via `Fpl500Playbook`)          |
 | `TopPicks`                | The best five-gameweek player in each position         | unit (`TopPicks.test.tsx`)           |
 | `RankMedal`               | Gold, silver and bronze rank marks                     | unit (`TopPicks.test.tsx`)           |
 | `LiveSquad`               | The fifteen and what each of them actually did         | unit (`LiveSquad.test.tsx`)          |
