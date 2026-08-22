@@ -3,6 +3,7 @@ import { fileURLToPath } from "node:url";
 
 import {
   fixtureAtEvent,
+  SEASON_DEADLINES,
   SEASON_EVENTS,
   SEASON_PLAYERS,
   solveSeason,
@@ -64,6 +65,17 @@ if (event !== 1) {
   throw new Error(
     `expected the published season to begin at GW1, got ${event}`,
   );
+}
+
+// GW1 picks are fixed once the deadline passes. Re-solving after the deadline
+// would fail: publish_season_inputs sets rules.dataAvailableAt to now(), which
+// the solver rejects when it is later than the (now-past) predictionCutoff.
+const firstDeadline = (SEASON_DEADLINES as string[])[0];
+if (firstDeadline && Date.now() > Date.parse(firstDeadline)) {
+  console.log(
+    `${OUTPUT} — GW1 deadline passed; canonical squad stands as committed`,
+  );
+  process.exit(0);
 }
 
 let codes = opening.picks.map((pick) => pick.code);

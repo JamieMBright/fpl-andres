@@ -116,7 +116,7 @@ jobs:
         run: |
           python - <<'PY'
           from pathlib import Path
-          from fpl_andres.models.fixture_odds import club_views, load_fixture_odds
+          from fpl_andres.models.fixture_odds import OddsArtifactError, club_views, load_fixture_odds
 
           for path in sorted(Path("data/odds").glob("*.json")) + [
               Path("apps/web/src/data/fixture-odds.json")
@@ -125,7 +125,13 @@ jobs:
                   # Nothing priced yet is a legitimate pre-season state.
                   print(f"{path} not written this run")
                   continue
-              fixtures = load_fixture_odds(path)
+              try:
+                  fixtures = load_fixture_odds(path)
+              except OddsArtifactError as exc:
+                  # Probe and capability files (e.g. api-football-historical-capability.json)
+                  # live alongside the odds artifacts and are not odds artifacts themselves.
+                  print(f"{path} skipped (not an odds artifact): {exc}")
+                  continue
               views = club_views(fixtures)
               if not views:
                   raise SystemExit(f"{path} joined onto no clubs")

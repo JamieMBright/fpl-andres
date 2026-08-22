@@ -24,7 +24,12 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
-from fpl_andres.cohorts.captain_agreement import SPLIT_THRESHOLD, CohortWeek
+from fpl_andres.cohorts.captain_agreement import (
+    SPLIT_THRESHOLD,
+    CohortWeek,
+    score_agreement,
+    weight_agreement_signal,
+)
 from fpl_andres.cli.cohort_captains import load_weeks
 from fpl_andres.jsonio import read_json_file
 
@@ -61,6 +66,16 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="publish-cohort-agreement")
     parser.add_argument("--portfolio-dir", type=Path, default=DEFAULT_PORTFOLIO_DIR)
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
+    parser.add_argument(
+        "--picks",
+        type=Path,
+        default=None,
+        help=(
+            "JSON mapping a policy label to {gameweek: elementId}. "
+            "When provided, scored and weighted policy agreement signals are "
+            "included in the output under 'signals'."
+        ),
+    )
     return parser
 
 
@@ -74,6 +89,16 @@ def main(argv: Sequence[str] | None = None) -> int:
         )
         return 0
 
+    picks: dict[str, dict[int, int]] = {}
+    if args.picks is not None:
+        raw_picks: dict[str, dict[str, int]] = read_json_file(args.picks)
+        picks = {
+            label: {int(event): int(element) for event, element in by_event.items()}
+            for label, by_event in raw_picks.items()
+        }
+
+    signals = weight_agreement_signal(score_agreement(picks, weeks))
+
     contested = [week for week in weeks if week.is_split]
     payload = {
         "schemaVersion": SCHEMA_VERSION,
@@ -82,6 +107,17 @@ def main(argv: Sequence[str] | None = None) -> int:
         "capturedWeeks": len(weeks),
         "contestedWeeks": len(contested),
         "weeks": [_week_payload(week) for week in weeks],
+        "signals": [
+            {
+                "label": s.label,
+                "splitWeeks": s.split_weeks,
+                "weight": round(s.weight, 5),
+                "splitModalRate": round(s.split_modal_rate, 5) if s.split_modal_rate is not None else None,
+                "meanShare": round(s.mean_share, 5),
+                "weightedRate": round(s.weighted_rate, 5) if s.weighted_rate is not None else None,
+            }
+            for s in signals
+        ],
     }
 
     output = args.output
