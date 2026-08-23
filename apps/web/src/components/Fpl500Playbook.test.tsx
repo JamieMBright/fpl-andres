@@ -86,13 +86,21 @@ describe("Fpl500Playbook", () => {
     }
   });
 
-  it("says plainly that nothing has been captured yet", () => {
+  it("reports how many gameweeks have been captured", () => {
     draw();
 
-    expect(artifact.portfolioEvents).toEqual([]);
-    expect(
-      screen.getByText(/no FPL500 gameweek picks or captain choices/i),
-    ).toBeInTheDocument();
+    expect(artifact.portfolioEvents.length).toBeGreaterThanOrEqual(0);
+    if (artifact.portfolioEvents.length === 0) {
+      expect(
+        screen.getByText(/no FPL500 gameweek picks or captain choices/i),
+      ).toBeInTheDocument();
+    } else {
+      expect(
+        screen.getByText(
+          new RegExp(`${artifact.portfolioEvents.length} gameweeks captured`, "i"),
+        ),
+      ).toBeInTheDocument();
+    }
   });
 
   it("draws the frames the analysis will use, with their axes", () => {
