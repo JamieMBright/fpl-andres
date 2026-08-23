@@ -31,10 +31,9 @@ describe("Fpl500Playbook", () => {
 
     expect(artifact.listed).toBe(0);
     expect(JSON.stringify(artifact.rankHistogram)).not.toContain("entryId");
-    // The only entry ids the page may show are this season's public standings.
-    expect(
-      screen.queryByRole("link", { name: /^\d+$/ }),
-    ).not.toBeInTheDocument();
+    // The page may show this season's public Overall standings (entry ids are
+    // public). It must not expose membership of the FPL500 cohort itself.
+    expect(JSON.stringify(artifact.portfolioCaptains)).not.toContain("entryId");
   });
 
   it("publishes the distribution instead", () => {
