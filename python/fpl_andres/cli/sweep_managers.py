@@ -27,7 +27,7 @@ import httpx
 
 from fpl_andres import cliargs, timeouts
 from fpl_andres.cohorts.sweep import CohortRule, parse_history, qualifies
-from fpl_andres.jsonio import read_json_file
+from fpl_andres.jsonio import parse_json, read_json_file
 from fpl_andres.timeouts import client_timeout
 
 HISTORY_URL = "https://fantasy.premierleague.com/api/entry/{entry_id}/history/"
@@ -171,6 +171,26 @@ async def _fetch(
         return entry_id, None, "error"
 
 
+def _already_catalogued() -> set[int]:
+    """Entry ids the catalogue already holds.
+
+    The sink is opened in append mode and the checkpoint advances one block at
+    a time, so a run killed between writing a block and saving its position
+    re-sweeps that block on resume and appends the same managers again. The
+    shipped catalogue carries 467 such repeats. Reading the ids back before the
+    sweep starts costs one pass over a 1.8 MB file and stops it growing.
+    """
+    if not RESULTS.exists():
+        return set()
+    seen: set[int] = set()
+    for number, line in enumerate(RESULTS.read_text(encoding="utf-8").splitlines(), 1):
+        if not line.strip():
+            continue
+        row = parse_json(line, source=f"{RESULTS}:{number}")
+        seen.add(int(row["entryId"]))
+    return seen
+
+
 async def run(args: argparse.Namespace) -> int:
     rule = CohortRule(
         since_start_year=args.since_start_year,
@@ -179,6 +199,7 @@ async def run(args: argparse.Namespace) -> int:
     )
     progress = _load_progress(args.start, args.resume)
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+    catalogued = _already_catalogued()
     throttle = Throttle(args.rate)
     semaphore = asyncio.Semaphore(args.concurrency)
     refusals: list[int] = []
@@ -230,6 +251,9 @@ async def run(args: argparse.Namespace) -> int:
                     if not qualifies(record, rule):
                         continue
                     progress.qualifying += 1
+                    if record.entry_id in catalogued:
+                        continue
+                    catalogued.add(record.entry_id)
                     sink.write(
                         json.dumps(
                             {

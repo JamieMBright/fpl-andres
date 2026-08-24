@@ -103,14 +103,28 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def read_catalogue(path: Path) -> list[SweptManager]:
+    """Every manager in the catalogue, once.
+
+    The sweep appends and checkpoints a block at a time, so a run killed
+    between the two re-sweeps that block on resume and writes its managers
+    again. A repeated row would otherwise be ranked twice and take two of the
+    five hundred places, leaving a cohort that reports 500 and holds fewer.
+    The first copy wins: the rows are identical, and sweep order is what the
+    ranking's tie-breaks already see.
+    """
     managers: list[SweptManager] = []
+    seen: set[int] = set()
     for number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
         if not line.strip():
             continue
         row = parse_json(line, source=f"{path}:{number}")
+        entry_id = int(row["entryId"])
+        if entry_id in seen:
+            continue
+        seen.add(entry_id)
         managers.append(
             SweptManager(
-                entry_id=int(row["entryId"]),
+                entry_id=entry_id,
                 seasons=tuple(
                     ManagerSeason(
                         season=str(season["season"]),
