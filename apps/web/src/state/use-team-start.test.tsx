@@ -84,7 +84,8 @@ describe("useTeamStart before the first deadline", () => {
 
   it("plans from the fifteen the manager declared, as if played in gameweek 1", async () => {
     vi.stubGlobal("fetch", preSeasonFetch());
-    saveDeclaredSquad(window.localStorage, 42, 1, legalSquad());
+    const event = currentPlanningEvent();
+    saveDeclaredSquad(window.localStorage, 42, event, legalSquad());
     const seen: { latest: TeamStartStatus } = {
       latest: { status: "idle" },
     };
@@ -103,7 +104,7 @@ describe("useTeamStart before the first deadline", () => {
     const latest = seen.latest;
     if (latest.status !== "ready") return;
     expect(latest.source).toBe("declared");
-    expect(latest.event).toBe(1);
+    expect(latest.event).toBe(event);
     expect(latest.start.squad).toHaveLength(15);
     expect(latest.start.bankTenths).toBeGreaterThanOrEqual(0);
   });
