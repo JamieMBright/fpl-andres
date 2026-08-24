@@ -97,7 +97,10 @@ describe("Fpl500Playbook", () => {
     } else {
       expect(
         screen.getByText(
-          new RegExp(`${artifact.portfolioEvents.length} gameweeks captured`, "i"),
+          new RegExp(
+            `${artifact.portfolioEvents.length} gameweeks captured`,
+            "i",
+          ),
         ),
       ).toBeInTheDocument();
     }

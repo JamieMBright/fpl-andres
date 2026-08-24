@@ -31,17 +31,17 @@
     "zod": "4.4.3"
   },
   "devDependencies": {
-    "@eslint/js": "9.39.5",
+    "@eslint/js": "10.0.1",
     "@types/node": "20.19.43",
-    "@vercel/node": "5.9.3",
-    "eslint": "9.39.5",
+    "@vercel/node": "5.10.2",
+    "eslint": "10.8.1",
     "eslint-plugin-jsx-a11y": "6.10.2",
     "eslint-plugin-react-hooks": "7.1.1",
-    "globals": "17.8.0",
+    "globals": "17.11.0",
     "prettier": "3.9.6",
-    "supabase": "2.111.0",
+    "supabase": "2.115.0",
     "typescript": "6.0.3",
-    "typescript-eslint": "8.65.0"
+    "typescript-eslint": "8.67.0"
   },
   "pnpm": {
     "auditConfig": {
