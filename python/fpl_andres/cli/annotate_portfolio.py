@@ -102,7 +102,9 @@ def annotate(event: int, portfolio_dir: Path) -> dict[int, int] | None:
 
     # Restrict to elements the cohort held, so the sidecar is bounded in size
     # and tightly coupled to the portfolio it describes.
-    held_points = {element_id: points[element_id] for element_id in element_ids if element_id in points}
+    held_points = {
+        element_id: points[element_id] for element_id in element_ids if element_id in points
+    }
 
     output_path = _output_path(portfolio_dir, event)
     output_path.write_text(
@@ -134,8 +136,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             )
             return 1
         print(
-            f"FPL has not published scores for gameweek {args.event} yet; "
-            "nothing written.",
+            f"FPL has not published scores for gameweek {args.event} yet; nothing written.",
             file=sys.stderr,
         )
         return 1

@@ -50,9 +50,7 @@ class TestPublishCohortAgreement:
         _capture(portfolio, 1, {11: 0.91, 22: 0.09})
         _capture(portfolio, 2, {11: 0.40, 22: 0.35, 33: 0.25})
         output = tmp_path / "agreement.json"
-        code = main(
-            ["--portfolio-dir", str(portfolio), "--output", str(output)]
-        )
+        code = main(["--portfolio-dir", str(portfolio), "--output", str(output)])
         assert code == 0
         data = json.loads(output.read_text(encoding="utf-8"))
         assert data["capturedWeeks"] == 2

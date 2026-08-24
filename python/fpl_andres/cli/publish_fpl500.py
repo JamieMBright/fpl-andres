@@ -361,7 +361,7 @@ def _this_season() -> dict[str, object]:
     }
 
 
-def _portfolio_captains() -> dict[str, list[dict[str, object]]]:
+def _portfolio_captains() -> dict[str, list[dict[str, float]]]:
     """Top captains per captured gameweek, for the armband chart.
 
     Read directly from the portfolio files so the site can render real data as
@@ -370,7 +370,7 @@ def _portfolio_captains() -> dict[str, list[dict[str, object]]]:
 
     Keyed by event number as a string so JSON serialises it naturally.
     """
-    result: dict[str, list[dict[str, object]]] = {}
+    result: dict[str, list[dict[str, float]]] = {}
     for path in sorted(PORTFOLIO_DIR.glob("gw*.json")):
         stem = path.stem.removeprefix("gw")
         if not stem.isdigit():
@@ -387,8 +387,7 @@ def _portfolio_captains() -> dict[str, list[dict[str, object]]]:
         captains = [
             {"elementId": int(h["elementId"]), "share": round(float(h["captainedShare"]), 5)}
             for h in holdings
-            if isinstance(h, dict)
-            and float(h.get("captainedShare", 0)) >= WEB_CAPTAIN_MIN_SHARE
+            if isinstance(h, dict) and float(h.get("captainedShare", 0)) >= WEB_CAPTAIN_MIN_SHARE
         ]
         captains.sort(key=lambda row: -row["share"])
         result[stem] = captains[:WEB_TOP_CAPTAINS]

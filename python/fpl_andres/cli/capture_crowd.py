@@ -211,7 +211,7 @@ def _seed_live_season(
     """
     client.insert_ignoring_duplicates("seasons", [{"season": season}], on_conflict="season")
 
-    raw_teams = bootstrap.get("teams") or []  # type: ignore[attr-defined]
+    raw_teams = bootstrap.get("teams") or []
     teams = [
         {
             "season": season,
@@ -268,7 +268,7 @@ def _seed_live_season(
     )
 
 
-
+def _record_snapshot(client: SupabaseRestClient, snapshot: Any) -> str:
     written = client.insert(
         "source_snapshots",
         [

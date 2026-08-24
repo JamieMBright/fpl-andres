@@ -24,13 +24,13 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
+from fpl_andres.cli.cohort_captains import load_weeks
 from fpl_andres.cohorts.captain_agreement import (
     SPLIT_THRESHOLD,
     CohortWeek,
     score_agreement,
     weight_agreement_signal,
 )
-from fpl_andres.cli.cohort_captains import load_weeks
 from fpl_andres.jsonio import read_json_file
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
@@ -112,9 +112,13 @@ def main(argv: Sequence[str] | None = None) -> int:
                 "label": s.label,
                 "splitWeeks": s.split_weeks,
                 "weight": round(s.weight, 5),
-                "splitModalRate": round(s.split_modal_rate, 5) if s.split_modal_rate is not None else None,
+                "splitModalRate": (
+                    round(s.split_modal_rate, 5) if s.split_modal_rate is not None else None
+                ),
                 "meanShare": round(s.mean_share, 5),
-                "weightedRate": round(s.weighted_rate, 5) if s.weighted_rate is not None else None,
+                "weightedRate": (
+                    round(s.weighted_rate, 5) if s.weighted_rate is not None else None
+                ),
             }
             for s in signals
         ],

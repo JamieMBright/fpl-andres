@@ -14,7 +14,6 @@ import pytest
 from fpl_andres.cohorts.captain_agreement import (
     MINIMUM_CONTESTED_WEEKS,
     SPLIT_THRESHOLD,
-    CohortAgreementSignal,
     CohortWeek,
     PolicyAgreement,
     score_agreement,

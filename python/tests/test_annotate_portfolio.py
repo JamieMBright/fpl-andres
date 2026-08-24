@@ -9,15 +9,11 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Any
 from unittest.mock import patch
-
-import pytest
 
 from fpl_andres.cli.annotate_portfolio import (
     SCHEMA_VERSION,
     _output_path,
-    _portfolio_path,
     annotate,
     main,
 )
@@ -49,16 +45,9 @@ def _write_portfolio(directory: Path, event: int, element_ids: list[int]) -> Non
     )
 
 
-def _live_payload(points_by_element: dict[int, int]) -> Any:
-    return {
-        "elements": [
-            {
-                "id": element_id,
-                "stats": {"total_points": pts, "starts": 1},
-            }
-            for element_id, pts in points_by_element.items()
-        ]
-    }
+def _live_payload(points_by_element: dict[int, int]) -> dict[int, int]:
+    """What `_fetch_live` returns: element id to realised points, already parsed."""
+    return dict(points_by_element)
 
 
 class TestAnnotate:
@@ -66,9 +55,7 @@ class TestAnnotate:
         _write_portfolio(tmp_path, 1, [11, 22, 33])
         live = _live_payload({11: 8, 22: 3, 33: 0, 99: 12})
 
-        with patch(
-            "fpl_andres.cli.annotate_portfolio._fetch_live", return_value={11: 8, 22: 3, 33: 0, 99: 12}
-        ):
+        with patch("fpl_andres.cli.annotate_portfolio._fetch_live", return_value=live):
             result = annotate(1, tmp_path)
 
         assert result == {11: 8, 22: 3, 33: 0}
@@ -80,9 +67,7 @@ class TestAnnotate:
     def test_elements_not_in_live_data_are_silently_omitted(self, tmp_path: Path) -> None:
         _write_portfolio(tmp_path, 1, [11, 22, 44])
 
-        with patch(
-            "fpl_andres.cli.annotate_portfolio._fetch_live", return_value={11: 8, 22: 3}
-        ):
+        with patch("fpl_andres.cli.annotate_portfolio._fetch_live", return_value={11: 8, 22: 3}):
             result = annotate(1, tmp_path)
 
         assert result is not None
@@ -122,9 +107,7 @@ class TestAnnotate:
 class TestMain:
     def test_exits_zero_on_success(self, tmp_path: Path) -> None:
         _write_portfolio(tmp_path, 1, [11, 22])
-        with patch(
-            "fpl_andres.cli.annotate_portfolio._fetch_live", return_value={11: 8, 22: 3}
-        ):
+        with patch("fpl_andres.cli.annotate_portfolio._fetch_live", return_value={11: 8, 22: 3}):
             code = main(["--event", "1", "--portfolio-dir", str(tmp_path)])
         assert code == 0
 
