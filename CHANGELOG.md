@@ -21,6 +21,12 @@ The project follows Semantic Versioning once milestone tags begin.
 - A portfolio can be annotated with the points each held player actually
   scored. The sidecar is a fact of record, written per captured gameweek, and
   its absence is tolerated: scores may not be published when a capture runs.
+  The annotation runs daily on its own schedule and sweeps every captured week
+  that still lacks a sidecar, so a round the capture missed is picked up
+  whenever it finishes.
+- The armband chart reports what each captain pick returned, for weeks FPL has
+  finished scoring. A week still being played carries no points figure at all
+  rather than a zero, which would read as a blank.
 - Model 8.1 retains all nine live Arsenal-Coventry markets in the analysis.
   First/last scorer are explicit overlapping evidence, paired lay prices refine
   1X2, and complete alternate totals refine one total-goals consensus.
@@ -35,6 +41,16 @@ The project follows Semantic Versioning once milestone tags begin.
 
 ### Fixed
 
+- The portfolio annotation no longer records a scoreline that is still moving.
+  It ran inside the FPL500 capture, within six hours of the deadline and so
+  roughly four hours after the first kickoff, and the live endpoint answers at
+  that point with points that have not settled. It now requires every fixture
+  in the round to carry a confirmed score — `finished`, not merely
+  `finished_provisional`, since bonus is worth up to three points a player —
+  and writes nothing until they do.
+- The points sidecar is no longer read as a gameweek of its own. The cohort
+  captain loader globbed every `gw*.json` in the portfolio directory, so
+  `gw01-points.json` came back as a second, captainless gameweek 1.
 - The crowd capture no longer refuses the current season. It found the season
   absent from the corpus — the historical ingest covers completed seasons only
   — and exited rather than seeding it, so ownership was never recorded while a

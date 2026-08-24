@@ -98,16 +98,6 @@ jobs:
           python -m fpl_andres.cli.publish_fpl500 \
             | tee -a "$GITHUB_STEP_SUMMARY"
 
-      - name: Annotate with realised points
-        if: steps.due.outputs.event != ''
-        run: |
-          # Scores may not be published yet (DGW or early capture). A non-zero
-          # exit is a soft failure: the portfolio is still valid without it.
-          python -m fpl_andres.cli.annotate_portfolio \
-            --event "${{ steps.due.outputs.event }}" \
-            | tee -a "$GITHUB_STEP_SUMMARY" || \
-            echo "FPL scores not yet available; sidecar skipped"
-
       - name: Commit the portfolio
         if: steps.due.outputs.event != ''
         run: |

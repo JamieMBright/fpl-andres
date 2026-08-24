@@ -106,6 +106,37 @@ describe("Fpl500Playbook", () => {
     }
   });
 
+  it("shows what the armband returned once a week is fully scored", () => {
+    draw();
+
+    // The sidecar behind this is written only when every fixture in the round
+    // has a confirmed score, so an unscored week must show no points at all
+    // rather than a zero that reads as a blank.
+    for (const [eventKey, entries] of Object.entries(
+      artifact.portfolioCaptains as Record<
+        string,
+        { elementId: number; share: number; points?: number }[]
+      >,
+    )) {
+      for (const entry of entries) {
+        if (entry.points === undefined) continue;
+        expect(
+          screen.getAllByText(new RegExp(`${integer.format(entry.points)} pts`))
+            .length,
+          `GW${eventKey} element ${entry.elementId}`,
+        ).toBeGreaterThan(0);
+      }
+    }
+    const scored = Object.values(
+      artifact.portfolioCaptains as Record<string, { points?: number }[]>,
+    )
+      .flat()
+      .filter((entry) => entry.points !== undefined);
+    if (scored.length === 0) {
+      expect(screen.queryByText(/ pts/)).toBeNull();
+    }
+  });
+
   it("draws the frames the analysis will use, with their axes", () => {
     draw();
 

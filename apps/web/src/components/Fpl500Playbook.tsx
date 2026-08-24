@@ -8,7 +8,10 @@ import fpl500 from "../data/fpl500.json";
 import { fineShare, integer, share, timestamp } from "../format";
 import { PLAYERS_BY_ELEMENT_ID } from "../state/season-solver";
 
-type CaptainEntry = { elementId: number; share: number };
+// `points` arrives only once every fixture in the round has a confirmed score.
+// It is absent, never zero, while a week is still being played — a captain who
+// blanked and a captain who has not kicked off are different facts.
+type CaptainEntry = { elementId: number; share: number; points?: number };
 
 type Fpl500 = {
   generatedAt: string;
@@ -90,7 +93,9 @@ function CaptainDistribution() {
           where over half the cohort picks the same player is effectively
           unanimous — every sensible thesis lands on the same name — so only the
           contested weeks tell you anything new. The share here is of managers
-          whose picks were reconciled, not of all five hundred.
+          whose picks were reconciled, not of all five hundred. A points figure
+          appears once every fixture in that week has a confirmed score,
+          including bonus; a week still being played shows none.
         </InfoMarker>
       </h3>
       <div className="cohort-armband-weeks">
@@ -107,7 +112,7 @@ function CaptainDistribution() {
             <div className="cohort-armband-week" key={eventKey}>
               <p className="cohort-armband-gw mono">GW{Number(eventKey)}</p>
               <ul className="cohort-armband-bars">
-                {top.map(({ elementId, share: s }) => {
+                {top.map(({ elementId, share: s, points }) => {
                   const name =
                     PLAYERS_BY_ELEMENT_ID.get(elementId)?.name ??
                     `element ${elementId}`;
@@ -120,6 +125,9 @@ function CaptainDistribution() {
                       />
                       <span className="cohort-armband-label">
                         {name} {fineShare.format(s)}
+                        {points === undefined
+                          ? ""
+                          : ` · ${integer.format(points)} pts`}
                       </span>
                     </li>
                   );

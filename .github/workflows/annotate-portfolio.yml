@@ -1,0 +1,116 @@
+name: Annotate the cohort portfolio
+
+# What the cohort's holdings actually scored, once the round is over.
+#
+# This ran inside `capture-fpl500` and was wrong there. The capture fires
+# within six hours of the deadline, which is roughly four hours after the first
+# kickoff, and the live endpoint answers happily at that point with a scoreline
+# that is still moving. The sidecar it wrote was mostly zeroes and was committed
+# as a fact of record.
+#
+# So it runs here instead, daily and on its own. The command asks FPL whether
+# every fixture in the round carries a confirmed score before it fetches
+# anything, writes nothing until they do, and sweeps every captured week that
+# is still missing a sidecar rather than only the newest. A round that ends on
+# a Monday night is annotated on Tuesday morning; a round the capture missed
+# entirely is picked up whenever it finishes.
+#
+# Separate from the capture so the two fail independently, for the same reason
+# `score-cohort-agreement` is separate: an annotation that crashes must not
+# take the portfolio commit with it.
+
+on:
+  # Bonus is confirmed within a couple of hours of the last match, and the
+  # latest a Premier League round finishes is a Monday 20:00 kickoff. 06:00 UTC
+  # is after that on every day of the week.
+  schedule:
+    - cron: "0 6 * * *"
+  workflow_dispatch:
+    inputs:
+      event:
+        description: "Annotate this gameweek and report a refusal as an error."
+        required: false
+        default: ""
+        type: string
+  # A change to this file is how a run gets asked for without a token.
+  push:
+    paths:
+      - ".github/workflows/annotate-portfolio.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: annotate-portfolio
+  cancel-in-progress: false
+
+jobs:
+  annotate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install engine
+        run: python -m pip install -e .
+
+      - name: Validate dispatch input
+        env:
+          EVENT: ${{ inputs.event }}
+        run: |
+          if [ -n "$EVENT" ] && ! printf '%s' "$EVENT" | grep -qE '^[0-9]{1,2}$'; then
+            echo "event must be a gameweek number, got: $EVENT" >&2
+            exit 1
+          fi
+
+      - name: Annotate with realised points
+        env:
+          EVENT: ${{ inputs.event }}
+        run: |
+          set -o pipefail
+          if [ -n "$EVENT" ]; then
+            python -m fpl_andres.cli.annotate_portfolio --event "$EVENT" \
+              | tee -a "$GITHUB_STEP_SUMMARY"
+          else
+            python -m fpl_andres.cli.annotate_portfolio \
+              | tee -a "$GITHUB_STEP_SUMMARY"
+          fi
+
+      # The site reads the captains out of the FPL500 artifact, and a sidecar
+      # nothing republishes against is a file the page never sees.
+      - name: Republish the FPL500 artifact
+        run: |
+          set -o pipefail
+          python -m fpl_andres.cli.publish_fpl500 \
+            | tee -a "$GITHUB_STEP_SUMMARY"
+
+      - name: Commit the sidecars
+        run: |
+          paths="data/cohort/portfolio data/cohort/fpl500.json apps/web/src/data/fpl500.json"
+          if [ ! -d data/cohort/portfolio ]; then
+            echo "nothing captured yet"
+            exit 0
+          fi
+          npx --yes prettier@3 --write \
+            data/cohort/portfolio/*.json \
+            data/cohort/fpl500.json \
+            apps/web/src/data/fpl500.json
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # Staged first, then compared against the index. `git diff` does not
+          # look at untracked files, and a new sidecar is exactly that.
+          git add $paths
+          if git diff --cached --quiet -- $paths; then
+            echo "no round finished since the last run"
+            exit 0
+          fi
+          git commit -m "chore: annotate the cohort portfolio with realised points"
+          git pull --rebase --autostash
+          git push
