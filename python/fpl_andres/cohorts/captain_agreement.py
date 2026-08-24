@@ -44,10 +44,13 @@ from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 
 __all__ = [
+    "MINIMUM_CONTESTED_WEEKS",
     "SPLIT_THRESHOLD",
+    "CohortAgreementSignal",
     "CohortWeek",
     "PolicyAgreement",
     "score_agreement",
+    "weight_agreement_signal",
 ]
 
 # Above this share the cohort is effectively unanimous and the week separates
@@ -161,4 +164,90 @@ def score_agreement(
             -entry.modal_rate,
             entry.label,
         ),
+    )
+
+
+# ---------------------------------------------------------------------------
+# Agreement signal — a secondary input to thesis selection, not a score
+# ---------------------------------------------------------------------------
+
+#: How many contested weeks are needed before the signal carries enough evidence
+#: to influence thesis tiebreaking. Below this the signal weight is fractional.
+MINIMUM_CONTESTED_WEEKS = 10
+
+
+@dataclass(frozen=True)
+class CohortAgreementSignal:
+    """One thesis's cohort agreement, weighted by how much evidence exists.
+
+    The weight is proportional to the number of contested weeks observed,
+    capped at 1.0 once `MINIMUM_CONTESTED_WEEKS` is reached. A fresh season
+    with two contested weeks carries 0.2 of full weight: the signal is present
+    but modest, and it grows as the series does.
+
+    This is a secondary signal. It belongs alongside the backtest result, never
+    in place of it. A thesis that agrees with the cohort on split weeks is
+    describing a habit that has no demonstrated scoring value; the backtest
+    result is the thing that has demonstrated value, and it takes precedence.
+    """
+
+    label: str
+    split_weeks: int
+    """Number of contested weeks the signal is based on."""
+    weight: float
+    """Confidence in the signal: `split_weeks / MINIMUM_CONTESTED_WEEKS`, capped at 1.0."""
+    split_modal_rate: float | None
+    """How often this thesis named the cohort's plurality captain on contested weeks."""
+    mean_share: float
+    """Mean share of the cohort that captained this thesis's pick."""
+
+    @property
+    def is_mature(self) -> bool:
+        """True once the series has enough contested weeks to be informative."""
+        return self.split_weeks >= MINIMUM_CONTESTED_WEEKS
+
+    @property
+    def weighted_rate(self) -> float | None:
+        """The signal value: `split_modal_rate * weight`, or None when unavailable."""
+        if self.split_modal_rate is None:
+            return None
+        return self.split_modal_rate * self.weight
+
+
+def weight_agreement_signal(
+    agreements: Sequence[PolicyAgreement],
+) -> tuple[CohortAgreementSignal, ...]:
+    """Convert scored policy agreements into weighted signals.
+
+    The signal is ordered by weighted_rate, descending. A thesis with no split
+    weeks at all is included with `split_modal_rate=None` and `weighted_rate=None`
+    so it is visible in a report but sorts last.
+
+    The weight grows with `split_weeks` up to `MINIMUM_CONTESTED_WEEKS`, then
+    stays at 1.0. Weeks beyond the minimum do not shrink the weight back down:
+    once a signal is mature it remains mature.
+    """
+
+    def _weight(split_weeks: int) -> float:
+        return min(1.0, split_weeks / MINIMUM_CONTESTED_WEEKS)
+
+    signals = tuple(
+        CohortAgreementSignal(
+            label=entry.label,
+            split_weeks=entry.split_weeks,
+            weight=_weight(entry.split_weeks),
+            split_modal_rate=entry.split_modal_rate,
+            mean_share=entry.mean_share,
+        )
+        for entry in agreements
+    )
+
+    return tuple(
+        sorted(
+            signals,
+            key=lambda s: (
+                -(s.weighted_rate if s.weighted_rate is not None else -1.0),
+                s.label,
+            ),
+        )
     )

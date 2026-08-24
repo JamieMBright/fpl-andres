@@ -68,6 +68,11 @@ WEB_QUANTILES = (1, 10, 25, 50, 100, 200, 300, 400, 500)
 #: sweep's own estimate of the largest rank in the season just finished.
 LATEST_SEASON_KEY = "latestSeasonEntries"
 
+#: Top captains to include per gameweek in the web artifact. Keeps the file
+#: small: the long tail below a percent is noise, not a strategy.
+WEB_TOP_CAPTAINS = 5
+WEB_CAPTAIN_MIN_SHARE = 0.01
+
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="publish-fpl500")
@@ -315,6 +320,9 @@ def _web_payload(
             for path in sorted(PORTFOLIO_DIR.glob("gw*.json"))
             if path.stem.removeprefix("gw").isdigit()
         ),
+        # Top captains per gameweek, so the armband chart has data as soon as
+        # the first deadline passes. Keyed by event number (string).
+        "portfolioCaptains": _portfolio_captains(),
         # The score at fixed depths, so the shape of the cut is visible without
         # shipping five hundred points to draw it from.
         "scoreAtRank": {
@@ -351,6 +359,40 @@ def _this_season() -> dict[str, object]:
         "size": len(rows),
         "managers": rows[:CURRENT_SEASON_LISTED],
     }
+
+
+def _portfolio_captains() -> dict[str, list[dict[str, object]]]:
+    """Top captains per captured gameweek, for the armband chart.
+
+    Read directly from the portfolio files so the site can render real data as
+    soon as a deadline has passed, without a separate fetch. Only captains above
+    `WEB_CAPTAIN_MIN_SHARE` are included; the rest are noise.
+
+    Keyed by event number as a string so JSON serialises it naturally.
+    """
+    result: dict[str, list[dict[str, object]]] = {}
+    for path in sorted(PORTFOLIO_DIR.glob("gw*.json")):
+        stem = path.stem.removeprefix("gw")
+        if not stem.isdigit():
+            continue
+        try:
+            raw = parse_json(path.read_text(encoding="utf-8"), source=str(path))
+        except Exception:
+            continue
+        if not isinstance(raw, dict):
+            continue
+        holdings = raw.get("holdings", [])
+        if not isinstance(holdings, list):
+            continue
+        captains = [
+            {"elementId": int(h["elementId"]), "share": round(float(h["captainedShare"]), 5)}
+            for h in holdings
+            if isinstance(h, dict)
+            and float(h.get("captainedShare", 0)) >= WEB_CAPTAIN_MIN_SHARE
+        ]
+        captains.sort(key=lambda row: -row["share"])
+        result[stem] = captains[:WEB_TOP_CAPTAINS]
+    return result
 
 
 def _histogram(values: Iterable[int]) -> dict[str, int]:

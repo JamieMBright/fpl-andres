@@ -234,6 +234,8 @@ def test_no_module_is_imported_only_by_its_own_tests() -> None:
         "validate",
         "validate_lineup_prior",
         "verify_veterans",
+        "annotate_portfolio",
+        "publish_cohort_agreement",
         "regret",
         "rivals",
         "backtest",

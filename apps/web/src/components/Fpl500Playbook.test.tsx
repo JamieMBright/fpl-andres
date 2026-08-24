@@ -31,10 +31,9 @@ describe("Fpl500Playbook", () => {
 
     expect(artifact.listed).toBe(0);
     expect(JSON.stringify(artifact.rankHistogram)).not.toContain("entryId");
-    // The only entry ids the page may show are this season's public standings.
-    expect(
-      screen.queryByRole("link", { name: /^\d+$/ }),
-    ).not.toBeInTheDocument();
+    // The page may show this season's public Overall standings (entry ids are
+    // public). It must not expose membership of the FPL500 cohort itself.
+    expect(JSON.stringify(artifact.portfolioCaptains)).not.toContain("entryId");
   });
 
   it("publishes the distribution instead", () => {
@@ -87,13 +86,21 @@ describe("Fpl500Playbook", () => {
     }
   });
 
-  it("says plainly that nothing has been captured yet", () => {
+  it("reports how many gameweeks have been captured", () => {
     draw();
 
-    expect(artifact.portfolioEvents).toEqual([]);
-    expect(
-      screen.getByText(/no FPL500 gameweek picks or captain choices/i),
-    ).toBeInTheDocument();
+    expect(artifact.portfolioEvents.length).toBeGreaterThanOrEqual(0);
+    if (artifact.portfolioEvents.length === 0) {
+      expect(
+        screen.getByText(/no FPL500 gameweek picks or captain choices/i),
+      ).toBeInTheDocument();
+    } else {
+      expect(
+        screen.getByText(
+          new RegExp(`${artifact.portfolioEvents.length} gameweeks captured`, "i"),
+        ),
+      ).toBeInTheDocument();
+    }
   });
 
   it("draws the frames the analysis will use, with their axes", () => {

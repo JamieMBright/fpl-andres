@@ -12,9 +12,13 @@ from __future__ import annotations
 import pytest
 
 from fpl_andres.cohorts.captain_agreement import (
+    MINIMUM_CONTESTED_WEEKS,
     SPLIT_THRESHOLD,
+    CohortAgreementSignal,
     CohortWeek,
+    PolicyAgreement,
     score_agreement,
+    weight_agreement_signal,
 )
 
 
@@ -127,3 +131,69 @@ class TestScoreAgreement:
 
     def test_a_cohort_with_no_captured_weeks_scores_nothing(self) -> None:
         assert score_agreement({"any": {1: 11}}, []) == []
+
+
+class TestWeightAgreementSignal:
+    def _agreements(self) -> list[PolicyAgreement]:
+        return [
+            PolicyAgreement(
+                label="mature",
+                weeks=15,
+                modal_hits=12,
+                modal_rate=0.8,
+                mean_share=0.6,
+                split_weeks=10,
+                split_modal_rate=0.7,
+            ),
+            PolicyAgreement(
+                label="immature",
+                weeks=5,
+                modal_hits=3,
+                modal_rate=0.6,
+                mean_share=0.4,
+                split_weeks=4,
+                split_modal_rate=0.5,
+            ),
+            PolicyAgreement(
+                label="no_split",
+                weeks=8,
+                modal_hits=6,
+                modal_rate=0.75,
+                mean_share=0.5,
+                split_weeks=0,
+                split_modal_rate=None,
+            ),
+        ]
+
+    def test_weight_is_capped_at_one_when_split_weeks_meets_minimum(self) -> None:
+        signals = weight_agreement_signal(self._agreements())
+        mature = next(s for s in signals if s.label == "mature")
+        assert mature.weight == pytest.approx(1.0)
+        assert mature.is_mature
+
+    def test_weight_is_fractional_below_minimum(self) -> None:
+        signals = weight_agreement_signal(self._agreements())
+        immature = next(s for s in signals if s.label == "immature")
+        assert immature.weight == pytest.approx(4 / MINIMUM_CONTESTED_WEEKS)
+        assert not immature.is_mature
+
+    def test_a_thesis_with_no_split_weeks_has_none_weighted_rate(self) -> None:
+        signals = weight_agreement_signal(self._agreements())
+        no_split = next(s for s in signals if s.label == "no_split")
+        assert no_split.weighted_rate is None
+
+    def test_weighted_rate_is_the_product_of_rate_and_weight(self) -> None:
+        signals = weight_agreement_signal(self._agreements())
+        immature = next(s for s in signals if s.label == "immature")
+        expected = 0.5 * (4 / MINIMUM_CONTESTED_WEEKS)
+        assert immature.weighted_rate == pytest.approx(expected)
+
+    def test_sorted_by_weighted_rate_descending_none_last(self) -> None:
+        signals = weight_agreement_signal(self._agreements())
+        rates = [s.weighted_rate for s in signals]
+        non_none = [r for r in rates if r is not None]
+        assert non_none == sorted(non_none, reverse=True)
+        assert rates[-1] is None
+
+    def test_empty_input_returns_empty_tuple(self) -> None:
+        assert weight_agreement_signal([]) == ()
