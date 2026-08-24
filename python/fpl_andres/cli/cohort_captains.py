@@ -65,6 +65,12 @@ def load_weeks(directory: Path) -> list[CohortWeek]:
         return []
     weeks: list[CohortWeek] = []
     for path in sorted(directory.glob("gw*.json")):
+        # `annotate_portfolio` writes `gwNN-points.json` in the same directory.
+        # It repeats the event number and carries no holdings, so reading it as
+        # a capture files a second, empty week against a gameweek that was
+        # captured properly and doubles the series.
+        if not path.stem.removeprefix("gw").isdigit():
+            continue
         payload: dict[str, Any] = read_json_file(path)
         shares = {
             int(holding["elementId"]): float(holding["captainedShare"])
