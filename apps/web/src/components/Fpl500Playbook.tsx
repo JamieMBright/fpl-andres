@@ -88,9 +88,9 @@ function CaptainDistribution() {
         <InfoMarker label="armband distribution">
           Who the cohort captained and the share who chose each player. A week
           where over half the cohort picks the same player is effectively
-          unanimous — every sensible thesis lands on the same name — so only
-          the contested weeks tell you anything new. The share here is of
-          managers whose picks were reconciled, not of all five hundred.
+          unanimous — every sensible thesis lands on the same name — so only the
+          contested weeks tell you anything new. The share here is of managers
+          whose picks were reconciled, not of all five hundred.
         </InfoMarker>
       </h3>
       <div className="cohort-armband-weeks">
