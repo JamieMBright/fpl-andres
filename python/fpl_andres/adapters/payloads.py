@@ -74,6 +74,7 @@ class BootstrapPayload(TypedDict, total=False):
     events: list[BootstrapEvent]
     elements: list[dict[str, Any]]
     element_types: list[BootstrapElementType]
+    teams: list[dict[str, Any]]
     chips: list[BootstrapChip]
     game_settings: dict[str, Any]
     game_config: dict[str, Any]

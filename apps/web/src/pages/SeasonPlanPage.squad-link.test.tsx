@@ -8,6 +8,7 @@ import {
   PLAYERS_BY_ELEMENT_ID,
   type SolverPlayer,
 } from "../state/season-solver";
+import { currentPlanningEvent } from "../state/use-team-start";
 import { encodeSquad } from "../state/squad-code";
 
 /**
@@ -72,13 +73,14 @@ describe("the declared squad in a link", () => {
     const squad = legalSquad();
     const code = encodeSquad(squad);
     expect(code).not.toBeNull();
+    const event = currentPlanningEvent();
 
     renderPlan(`/plan?team=${String(ENTRY_ID)}&squad=${code!}`);
 
     await waitFor(
       () => {
         expect(
-          readDeclaredSquad(localStorage, ENTRY_ID, 1)?.elementIds,
+          readDeclaredSquad(localStorage, ENTRY_ID, event)?.elementIds,
         ).toEqual(squad);
       },
       { timeout: SETTLE },

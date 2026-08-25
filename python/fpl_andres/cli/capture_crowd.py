@@ -140,9 +140,17 @@ async def _capture(args: argparse.Namespace) -> int:
     with SupabaseRestClient(credentials) as supabase:
         missing = _unseeded(supabase, season)
         if missing is not None:
-            print(missing, file=sys.stderr)
-            return 1
-        snapshot_id = _record_snapshot(supabase, bootstrap.snapshot)
+            # The season is not in the corpus yet. Seed it from the bootstrap
+            # data that was already fetched, then proceed with the capture.
+            snapshot_id = _record_snapshot(supabase, bootstrap.snapshot)
+            _seed_live_season(
+                supabase,
+                bootstrap.payload,
+                season=season,
+                snapshot_id=snapshot_id,
+            )
+        else:
+            snapshot_id = _record_snapshot(supabase, bootstrap.snapshot)
         rows = _rows(
             bootstrap.payload,
             season=season,
@@ -183,6 +191,80 @@ def _unseeded(client: SupabaseRestClient, season: str) -> str | None:
         f"reference: crowd_snapshots.season is a foreign key into seasons, and "
         f"(season, element_id) is one into elements. Ingest the season first. "
         f"Refusing rather than writing a snapshot row that nothing can point at."
+    )
+
+
+def _seed_live_season(
+    client: SupabaseRestClient,
+    bootstrap: BootstrapPayload,
+    *,
+    season: str,
+    snapshot_id: str,
+) -> None:
+    """Seed seasons/teams/elements for a live season from the FPL bootstrap.
+
+    The historical ingest fills these tables from the vaastav archive, which
+    only covers completed seasons. The crowd capture needs them for the current
+    season too, so the first run that finds them absent seeds them from the
+    same bootstrap payload it already fetched. This is idempotent: upserts
+    replace nothing and the snapshot_id records what data was used.
+    """
+    client.insert_ignoring_duplicates("seasons", [{"season": season}], on_conflict="season")
+
+    raw_teams = bootstrap.get("teams") or []
+    teams = [
+        {
+            "season": season,
+            "team_id": int(team["id"]),
+            "code": int(team["code"]),
+            "name": str(team.get("name") or ""),
+            "short_name": str(team.get("short_name") or ""),
+            "strength": team.get("strength"),
+            "strength_overall_home": team.get("strength_overall_home"),
+            "strength_overall_away": team.get("strength_overall_away"),
+            "strength_attack_home": team.get("strength_attack_home"),
+            "strength_attack_away": team.get("strength_attack_away"),
+            "strength_defence_home": team.get("strength_defence_home"),
+            "strength_defence_away": team.get("strength_defence_away"),
+            "source_snapshot_id": snapshot_id,
+        }
+        for team in raw_teams
+        if team.get("id") and team.get("code")
+    ]
+    if teams:
+        client.upsert("teams", teams, on_conflict="season,team_id")
+
+    raw_elements = bootstrap.get("elements") or []
+    elements = []
+    for raw in raw_elements:
+        element_id = raw.get("id")
+        code = raw.get("code")
+        team_id = raw.get("team")
+        if not (element_id and code and team_id):
+            continue
+        first_name = str(raw.get("first_name") or "")
+        second_name = str(raw.get("second_name") or "")
+        web_name = str(raw.get("web_name") or "") or second_name or first_name
+        elements.append(
+            {
+                "season": season,
+                "element_id": int(element_id),
+                "code": int(code),
+                "first_name": first_name,
+                "second_name": second_name,
+                "web_name": web_name,
+                "element_type": int(raw.get("element_type", 0)),
+                "team_id": int(team_id),
+                "start_cost": raw.get("now_cost"),
+                "source_snapshot_id": snapshot_id,
+            }
+        )
+    if elements:
+        client.upsert("elements", elements, on_conflict="season,element_id")
+
+    print(
+        f"seeded {season} live corpus: {len(teams)} teams, {len(elements)} elements",
+        file=sys.stderr,
     )
 
 

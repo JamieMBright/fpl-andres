@@ -68,6 +68,11 @@ WEB_QUANTILES = (1, 10, 25, 50, 100, 200, 300, 400, 500)
 #: sweep's own estimate of the largest rank in the season just finished.
 LATEST_SEASON_KEY = "latestSeasonEntries"
 
+#: Top captains to include per gameweek in the web artifact. Keeps the file
+#: small: the long tail below a percent is noise, not a strategy.
+WEB_TOP_CAPTAINS = 5
+WEB_CAPTAIN_MIN_SHARE = 0.01
+
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="publish-fpl500")
@@ -98,14 +103,28 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def read_catalogue(path: Path) -> list[SweptManager]:
+    """Every manager in the catalogue, once.
+
+    The sweep appends and checkpoints a block at a time, so a run killed
+    between the two re-sweeps that block on resume and writes its managers
+    again. A repeated row would otherwise be ranked twice and take two of the
+    five hundred places, leaving a cohort that reports 500 and holds fewer.
+    The first copy wins: the rows are identical, and sweep order is what the
+    ranking's tie-breaks already see.
+    """
     managers: list[SweptManager] = []
+    seen: set[int] = set()
     for number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
         if not line.strip():
             continue
         row = parse_json(line, source=f"{path}:{number}")
+        entry_id = int(row["entryId"])
+        if entry_id in seen:
+            continue
+        seen.add(entry_id)
         managers.append(
             SweptManager(
-                entry_id=int(row["entryId"]),
+                entry_id=entry_id,
                 seasons=tuple(
                     ManagerSeason(
                         season=str(season["season"]),
@@ -315,6 +334,9 @@ def _web_payload(
             for path in sorted(PORTFOLIO_DIR.glob("gw*.json"))
             if path.stem.removeprefix("gw").isdigit()
         ),
+        # Top captains per gameweek, so the armband chart has data as soon as
+        # the first deadline passes. Keyed by event number (string).
+        "portfolioCaptains": _portfolio_captains(),
         # The score at fixed depths, so the shape of the cut is visible without
         # shipping five hundred points to draw it from.
         "scoreAtRank": {
@@ -351,6 +373,78 @@ def _this_season() -> dict[str, object]:
         "size": len(rows),
         "managers": rows[:CURRENT_SEASON_LISTED],
     }
+
+
+def _realised_points(directory: Path, stem: str) -> dict[int, int]:
+    """What each element scored in a finished round, or nothing.
+
+    `annotate_portfolio` writes this sidecar only once every fixture in the
+    round carries a confirmed score, so its presence is what distinguishes a
+    round that is over from one still being played. Absent is the normal state
+    for the current gameweek and is not an error.
+    """
+    path = directory / f"gw{stem}-points.json"
+    if not path.exists():
+        return {}
+    try:
+        raw = parse_json(path.read_text(encoding="utf-8"), source=str(path))
+    except Exception:
+        return {}
+    if not isinstance(raw, dict):
+        return {}
+    points = raw.get("elementPoints")
+    if not isinstance(points, dict):
+        return {}
+    return {int(element): int(score) for element, score in points.items()}
+
+
+def _portfolio_captains(directory: Path | None = None) -> dict[str, list[dict[str, float]]]:
+    """Top captains per captured gameweek, and what each pick returned.
+
+    Read directly from the portfolio files so the site can render real data as
+    soon as a deadline has passed, without a separate fetch. Only captains above
+    `WEB_CAPTAIN_MIN_SHARE` are included; the rest are noise.
+
+    `points` is present only for a round FPL has finished scoring. It is left
+    off entirely rather than set to zero, because a captain who blanked and a
+    captain whose match has not kicked off are different facts and a zero would
+    say the first about both.
+
+    Keyed by event number as a string so JSON serialises it naturally.
+    """
+    portfolio_dir = PORTFOLIO_DIR if directory is None else directory
+    result: dict[str, list[dict[str, float]]] = {}
+    for path in sorted(portfolio_dir.glob("gw*.json")):
+        stem = path.stem.removeprefix("gw")
+        if not stem.isdigit():
+            continue
+        try:
+            raw = parse_json(path.read_text(encoding="utf-8"), source=str(path))
+        except Exception:
+            continue
+        if not isinstance(raw, dict):
+            continue
+        holdings = raw.get("holdings", [])
+        if not isinstance(holdings, list):
+            continue
+        scored = _realised_points(portfolio_dir, stem)
+        captains: list[dict[str, float]] = []
+        for holding in holdings:
+            if not isinstance(holding, dict):
+                continue
+            if float(holding.get("captainedShare", 0)) < WEB_CAPTAIN_MIN_SHARE:
+                continue
+            element_id = int(holding["elementId"])
+            entry: dict[str, float] = {
+                "elementId": element_id,
+                "share": round(float(holding["captainedShare"]), 5),
+            }
+            if element_id in scored:
+                entry["points"] = scored[element_id]
+            captains.append(entry)
+        captains.sort(key=lambda row: -row["share"])
+        result[stem] = captains[:WEB_TOP_CAPTAINS]
+    return result
 
 
 def _histogram(values: Iterable[int]) -> dict[str, int]:

@@ -31,10 +31,9 @@ describe("Fpl500Playbook", () => {
 
     expect(artifact.listed).toBe(0);
     expect(JSON.stringify(artifact.rankHistogram)).not.toContain("entryId");
-    // The only entry ids the page may show are this season's public standings.
-    expect(
-      screen.queryByRole("link", { name: /^\d+$/ }),
-    ).not.toBeInTheDocument();
+    // The page may show this season's public Overall standings (entry ids are
+    // public). It must not expose membership of the FPL500 cohort itself.
+    expect(JSON.stringify(artifact.portfolioCaptains)).not.toContain("entryId");
   });
 
   it("publishes the distribution instead", () => {
@@ -87,13 +86,55 @@ describe("Fpl500Playbook", () => {
     }
   });
 
-  it("says plainly that nothing has been captured yet", () => {
+  it("reports how many gameweeks have been captured", () => {
     draw();
 
-    expect(artifact.portfolioEvents).toEqual([]);
-    expect(
-      screen.getByText(/no FPL500 gameweek picks or captain choices/i),
-    ).toBeInTheDocument();
+    expect(artifact.portfolioEvents.length).toBeGreaterThanOrEqual(0);
+    if (artifact.portfolioEvents.length === 0) {
+      expect(
+        screen.getByText(/no FPL500 gameweek picks or captain choices/i),
+      ).toBeInTheDocument();
+    } else {
+      expect(
+        screen.getByText(
+          new RegExp(
+            `${artifact.portfolioEvents.length} gameweeks captured`,
+            "i",
+          ),
+        ),
+      ).toBeInTheDocument();
+    }
+  });
+
+  it("shows what the armband returned once a week is fully scored", () => {
+    draw();
+
+    // The sidecar behind this is written only when every fixture in the round
+    // has a confirmed score, so an unscored week must show no points at all
+    // rather than a zero that reads as a blank.
+    for (const [eventKey, entries] of Object.entries(
+      artifact.portfolioCaptains as Record<
+        string,
+        { elementId: number; share: number; points?: number }[]
+      >,
+    )) {
+      for (const entry of entries) {
+        if (entry.points === undefined) continue;
+        expect(
+          screen.getAllByText(new RegExp(`${integer.format(entry.points)} pts`))
+            .length,
+          `GW${eventKey} element ${entry.elementId}`,
+        ).toBeGreaterThan(0);
+      }
+    }
+    const scored = Object.values(
+      artifact.portfolioCaptains as Record<string, { points?: number }[]>,
+    )
+      .flat()
+      .filter((entry) => entry.points !== undefined);
+    if (scored.length === 0) {
+      expect(screen.queryByText(/ pts/)).toBeNull();
+    }
   });
 
   it("draws the frames the analysis will use, with their axes", () => {

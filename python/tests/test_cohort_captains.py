@@ -57,6 +57,20 @@ class TestLoadWeeks:
         assert [week.event for week in weeks] == [9]
         assert weeks[0].modal_captain is None
 
+    def test_the_points_sidecar_is_not_a_second_gameweek(self, tmp_path: Path) -> None:
+        # `annotate_portfolio` writes `gwNN-points.json` beside the capture. It
+        # carries the same `event` and no holdings, so a glob that accepts it
+        # doubles the series and files an uncontested empty week against a
+        # gameweek that was captured properly.
+        _capture(tmp_path, 1, {11: 0.62, 22: 0.38})
+        (tmp_path / "gw01-points.json").write_text(
+            json.dumps({"schemaVersion": 1, "event": 1, "elementPoints": {"11": 13}}),
+            encoding="utf-8",
+        )
+        weeks = load_weeks(tmp_path)
+        assert [week.event for week in weeks] == [1]
+        assert weeks[0].modal_captain == 11
+
 
 class TestCommand:
     def test_no_captures_says_so_and_does_not_fail_the_run(self, tmp_path: Path) -> None:

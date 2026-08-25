@@ -111,7 +111,13 @@ test.describe.serial("plan palette accessibility", () => {
       // only appeared once the page had finished rendering.
       await expect(page.locator('[data-step="04"]')).toBeVisible();
       await page.locator('[data-step="01"] > summary').click();
-      await expect(page.locator(".squad-builder .squad-pitch")).toBeVisible();
+      // Wait for step 01 content to render. Pre-season: squad builder is shown.
+      // In-season: the snapshot dossier is shown instead. Either satisfies.
+      await expect(
+        page.locator(
+          '[data-step="01"] .squad-builder, [data-step="01"] .dossier',
+        ),
+      ).toBeVisible();
       await selectKit(page, theme);
 
       const scan = await new AxeBuilder({ page }).withTags([...WCAG]).analyze();

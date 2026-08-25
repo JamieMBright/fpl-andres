@@ -3,6 +3,7 @@ name: Validate Lineup Prior
 # A probable XI is validation evidence, never a production input. After the
 # Saturday fixtures FPL's live endpoint publishes `starts`; this compares the
 # dated prior and the model with that actual XI, then commits the report once.
+# Triggered manually on 2026-08-22 to complete GW1 validation against actuals.
 
 on:
   schedule:
