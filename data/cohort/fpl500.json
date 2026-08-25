@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-25T07:29:59.219414Z",
-  "catalogueSize": 21570,
-  "sweptTo": 9590001,
+  "generatedAt": "2026-08-25T13:46:13.695104Z",
+  "catalogueSize": 22568,
+  "sweptTo": 9628001,
   "size": 500,
   "settings": {
     "decayPerSeason": 0.78,
@@ -510,6 +510,15 @@
       "weight": 3.0194,
       "bestPercentile": 0.999935,
       "latestPercentile": 0.998633,
+      "latestSeason": "2025/26"
+    },
+    {
+      "entryId": 125522,
+      "score": 0.798676,
+      "seasons": 20,
+      "weight": 3.1083,
+      "bestPercentile": 0.999817,
+      "latestPercentile": 0.993823,
       "latestSeason": "2025/26"
     },
     {
@@ -4524,15 +4533,6 @@
       "weight": 3.1083,
       "bestPercentile": 0.999949,
       "latestPercentile": 0.969906,
-      "latestSeason": "2025/26"
-    },
-    {
-      "entryId": 1574290,
-      "score": 0.789269,
-      "seasons": 16,
-      "weight": 3.0761,
-      "bestPercentile": 0.999719,
-      "latestPercentile": 0.996315,
       "latestSeason": "2025/26"
     }
   ]
