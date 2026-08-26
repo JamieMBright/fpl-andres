@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-26T20:07:21.207489Z",
-  "modelVersion": "8.8",
-  "codeRevision": "ef86fca9724072bb0d7d7a47df4706fa6ab926da",
+  "generatedAt": "2026-08-26T21:19:48.556521Z",
+  "modelVersion": "8.9",
+  "codeRevision": "4dacafa8d463e13a12bcc51e4a7731a40c93ad76",
   "trainSeasons": ["2022-23", "2023-24"],
   "holdoutSeasons": ["2024-25", "2025-26"],
   "grid": [
@@ -270,7 +270,7 @@
   },
   "comparison": {
     "shippedReference": "reconstructed historical-only P(60+) reference",
-    "baseline": "historical-only true P(start) under production defaults",
+    "baseline": "historical-only true P(start) under model 8.8 defaults",
     "candidate": "true P(start) with current-plus-carried minutes evidence",
     "bootstrapUnit": "stable player code averaged across holdout seasons"
   },
