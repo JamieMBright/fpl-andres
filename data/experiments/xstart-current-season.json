@@ -1,0 +1,321 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-08-26T20:07:21.207489Z",
+  "modelVersion": "8.8",
+  "codeRevision": "ef86fca9724072bb0d7d7a47df4706fa6ab926da",
+  "trainSeasons": ["2022-23", "2023-24"],
+  "holdoutSeasons": ["2024-25", "2025-26"],
+  "grid": [
+    {
+      "halfLifeEvents": 2.0,
+      "priorStrengthEvents": 1.0,
+      "sampleSize": 703,
+      "uniquePlayers": 485,
+      "shippedP60Brier": 0.2577952135436957,
+      "baselineBrier": 0.2561135699983846,
+      "candidateBrier": 0.22750279819681385,
+      "seasons": [
+        {
+          "season": "2022-23",
+          "sampleSize": 354,
+          "shippedP60Brier": 0.30967924452607515,
+          "baselineBrier": 0.30967924452607515,
+          "candidateBrier": 0.3058510303368387
+        },
+        {
+          "season": "2023-24",
+          "sampleSize": 349,
+          "shippedP60Brier": 0.20516785833520773,
+          "baselineBrier": 0.2017804789301827,
+          "candidateBrier": 0.14803209854761956
+        }
+      ],
+      "selectionBrier": 0.1480460903320776
+    },
+    {
+      "halfLifeEvents": 2.0,
+      "priorStrengthEvents": 2.0,
+      "sampleSize": 703,
+      "uniquePlayers": 485,
+      "shippedP60Brier": 0.2577952135436957,
+      "baselineBrier": 0.2561135699983846,
+      "candidateBrier": 0.2131365326858133,
+      "seasons": [
+        {
+          "season": "2022-23",
+          "sampleSize": 354,
+          "shippedP60Brier": 0.30967924452607515,
+          "baselineBrier": 0.30967924452607515,
+          "candidateBrier": 0.2738049418704714
+        },
+        {
+          "season": "2023-24",
+          "sampleSize": 349,
+          "shippedP60Brier": 0.20516785833520773,
+          "baselineBrier": 0.2017804789301827,
+          "candidateBrier": 0.1515989485844696
+        }
+      ],
+      "selectionBrier": 0.13822788052417478
+    },
+    {
+      "halfLifeEvents": 2.0,
+      "priorStrengthEvents": 4.0,
+      "sampleSize": 703,
+      "uniquePlayers": 485,
+      "shippedP60Brier": 0.2577952135436957,
+      "baselineBrier": 0.2561135699983846,
+      "candidateBrier": 0.19758030066132848,
+      "seasons": [
+        {
+          "season": "2022-23",
+          "sampleSize": 354,
+          "shippedP60Brier": 0.30967924452607515,
+          "baselineBrier": 0.30967924452607515,
+          "candidateBrier": 0.23283328598662376
+        },
+        {
+          "season": "2023-24",
+          "sampleSize": 349,
+          "shippedP60Brier": 0.20516785833520773,
+          "baselineBrier": 0.2017804789301827,
+          "candidateBrier": 0.1618222582396823
+        }
+      ],
+      "selectionBrier": 0.12836750693608814
+    },
+    {
+      "halfLifeEvents": 4.0,
+      "priorStrengthEvents": 1.0,
+      "sampleSize": 703,
+      "uniquePlayers": 485,
+      "shippedP60Brier": 0.2577952135436957,
+      "baselineBrier": 0.2561135699983846,
+      "candidateBrier": 0.24004560094444105,
+      "seasons": [
+        {
+          "season": "2022-23",
+          "sampleSize": 354,
+          "shippedP60Brier": 0.30967924452607515,
+          "baselineBrier": 0.30967924452607515,
+          "candidateBrier": 0.31612655655526956
+        },
+        {
+          "season": "2023-24",
+          "sampleSize": 349,
+          "shippedP60Brier": 0.20516785833520773,
+          "baselineBrier": 0.2017804789301827,
+          "candidateBrier": 0.16287466029620817
+        }
+      ],
+      "selectionBrier": 0.15889685801282522
+    },
+    {
+      "halfLifeEvents": 4.0,
+      "priorStrengthEvents": 2.0,
+      "sampleSize": 703,
+      "uniquePlayers": 485,
+      "shippedP60Brier": 0.2577952135436957,
+      "baselineBrier": 0.2561135699983846,
+      "candidateBrier": 0.23012297539590132,
+      "seasons": [
+        {
+          "season": "2022-23",
+          "sampleSize": 354,
+          "shippedP60Brier": 0.30967924452607515,
+          "baselineBrier": 0.30967924452607515,
+          "candidateBrier": 0.29603689925470056
+        },
+        {
+          "season": "2023-24",
+          "sampleSize": 349,
+          "shippedP60Brier": 0.20516785833520773,
+          "baselineBrier": 0.2017804789301827,
+          "candidateBrier": 0.1632647259803858
+        }
+      ],
+      "selectionBrier": 0.15188365537486578
+    },
+    {
+      "halfLifeEvents": 4.0,
+      "priorStrengthEvents": 4.0,
+      "sampleSize": 703,
+      "uniquePlayers": 485,
+      "shippedP60Brier": 0.2577952135436957,
+      "baselineBrier": 0.2561135699983846,
+      "candidateBrier": 0.21609585425759795,
+      "seasons": [
+        {
+          "season": "2022-23",
+          "sampleSize": 354,
+          "shippedP60Brier": 0.30967924452607515,
+          "baselineBrier": 0.30967924452607515,
+          "candidateBrier": 0.26532118745148026
+        },
+        {
+          "season": "2023-24",
+          "sampleSize": 349,
+          "shippedP60Brier": 0.20516785833520773,
+          "baselineBrier": 0.2017804789301827,
+          "candidateBrier": 0.1661652870638033
+        }
+      ],
+      "selectionBrier": 0.14225685350309514
+    },
+    {
+      "halfLifeEvents": 8.0,
+      "priorStrengthEvents": 1.0,
+      "sampleSize": 703,
+      "uniquePlayers": 485,
+      "shippedP60Brier": 0.2577952135436957,
+      "baselineBrier": 0.2561135699983846,
+      "candidateBrier": 0.24581510566876055,
+      "seasons": [
+        {
+          "season": "2022-23",
+          "sampleSize": 354,
+          "shippedP60Brier": 0.30967924452607515,
+          "baselineBrier": 0.30967924452607515,
+          "candidateBrier": 0.31667840137738795
+        },
+        {
+          "season": "2023-24",
+          "sampleSize": 349,
+          "shippedP60Brier": 0.20516785833520773,
+          "baselineBrier": 0.2017804789301827,
+          "candidateBrier": 0.17393657649725885
+        }
+      ],
+      "selectionBrier": 0.16623084068216645
+    },
+    {
+      "halfLifeEvents": 8.0,
+      "priorStrengthEvents": 2.0,
+      "sampleSize": 703,
+      "uniquePlayers": 485,
+      "shippedP60Brier": 0.2577952135436957,
+      "baselineBrier": 0.2561135699983846,
+      "candidateBrier": 0.23953287290918873,
+      "seasons": [
+        {
+          "season": "2022-23",
+          "sampleSize": 354,
+          "shippedP60Brier": 0.30967924452607515,
+          "baselineBrier": 0.30967924452607515,
+          "candidateBrier": 0.30450153324206597
+        },
+        {
+          "season": "2023-24",
+          "sampleSize": 349,
+          "shippedP60Brier": 0.20516785833520773,
+          "baselineBrier": 0.2017804789301827,
+          "candidateBrier": 0.17363342947698662
+        }
+      ],
+      "selectionBrier": 0.1616606067396559
+    },
+    {
+      "halfLifeEvents": 8.0,
+      "priorStrengthEvents": 4.0,
+      "sampleSize": 703,
+      "uniquePlayers": 485,
+      "shippedP60Brier": 0.2577952135436957,
+      "baselineBrier": 0.2561135699983846,
+      "candidateBrier": 0.22931890838865762,
+      "seasons": [
+        {
+          "season": "2022-23",
+          "sampleSize": 354,
+          "shippedP60Brier": 0.30967924452607515,
+          "baselineBrier": 0.30967924452607515,
+          "candidateBrier": 0.28385513860379935
+        },
+        {
+          "season": "2023-24",
+          "sampleSize": 349,
+          "shippedP60Brier": 0.20516785833520773,
+          "baselineBrier": 0.2017804789301827,
+          "candidateBrier": 0.17400135682372878
+        }
+      ],
+      "selectionBrier": 0.1543289668181132
+    }
+  ],
+  "selected": {
+    "halfLifeEvents": 2.0,
+    "priorStrengthEvents": 4.0
+  },
+  "holdout": {
+    "sampleSize": 701,
+    "uniquePlayers": 444,
+    "shippedP60Brier": 0.1981703178646918,
+    "baselineBrier": 0.19696030615471433,
+    "candidateBrier": 0.15962055290787783,
+    "seasons": [
+      {
+        "season": "2024-25",
+        "sampleSize": 363,
+        "shippedP60Brier": 0.18646290677590918,
+        "baselineBrier": 0.1847526034161842,
+        "candidateBrier": 0.15367686789204896
+      },
+      {
+        "season": "2025-26",
+        "sampleSize": 338,
+        "shippedP60Brier": 0.21074366172631342,
+        "baselineBrier": 0.21007094548633093,
+        "candidateBrier": 0.16600385959647507
+      }
+    ]
+  },
+  "comparison": {
+    "shippedReference": "reconstructed historical-only P(60+) reference",
+    "baseline": "historical-only true P(start) under production defaults",
+    "candidate": "true P(start) with current-plus-carried minutes evidence",
+    "bootstrapUnit": "stable player code averaged across holdout seasons"
+  },
+  "promotion": {
+    "baseline": {
+      "metric_name": "brier",
+      "point_estimate": 0.13977523620686358,
+      "lower": 0.12381755869856916,
+      "upper": 0.15637679850428765,
+      "confidence": 0.95,
+      "resamples": 2000,
+      "seed": 17,
+      "sample_size": 444
+    },
+    "candidate": {
+      "metric_name": "brier",
+      "point_estimate": 0.11534010085475324,
+      "lower": 0.10369635541421147,
+      "upper": 0.1275027413040555,
+      "confidence": 0.95,
+      "resamples": 2000,
+      "seed": 17,
+      "sample_size": 444
+    },
+    "paired_improvement": {
+      "metric_name": "paired_brier_improvement",
+      "point_estimate": 0.024435135352110338,
+      "lower": 0.011744282173264033,
+      "upper": 0.03685942352068786,
+      "confidence": 0.95,
+      "resamples": 2000,
+      "seed": 17,
+      "sample_size": 444
+    },
+    "minimum_sample_size": 200,
+    "promoted": true,
+    "reason_codes": ["beat_baseline"],
+    "seed_replicates": 3,
+    "seeds_promoting": 3
+  },
+  "corpusFingerprints": {
+    "2021-22": "sha256:7ef040372f6567e8adb622a927cc75143d3d6bd0913bf8409c4ebf2e9e6abaeb",
+    "2022-23": "sha256:e391320d85950de1a65a540a34b5b25e5f7f63877d122adb56353c3870e7af29",
+    "2023-24": "sha256:2621943c2e6597782ee90ed962055c4d0582e4391e78c198a4f8825aab4e2521",
+    "2024-25": "sha256:c91af5764ca2781bc823a5f80103c82d2531ae0300ff92487c046b785f77e78d",
+    "2025-26": "sha256:6aad10d62476fbeb5b7b9f76ea1abba9bb2aad132ab4be368b62964fd57bdb04"
+  }
+}
