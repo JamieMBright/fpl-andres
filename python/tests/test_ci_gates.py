@@ -45,6 +45,16 @@ def _triggers(workflow: dict[str, object]) -> object:
     return workflow.get("on", workflow.get(True))  # type: ignore[call-overload]
 
 
+class TestHistoricalArtifactGate:
+    def test_validation_checkout_preserves_recorded_revisions(
+        self, workflow: dict[str, object]
+    ) -> None:
+        checkout = next(
+            step for step in _steps(workflow, "checks") if "checkout" in str(step.get("uses", ""))
+        )
+        assert checkout.get("with", {}).get("fetch-depth") == 0  # type: ignore[union-attr]
+
+
 class TestSecretScanning:
     """#78: a real secret committed by accident is only undone by rotation."""
 
