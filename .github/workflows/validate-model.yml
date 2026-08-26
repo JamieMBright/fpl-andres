@@ -22,6 +22,7 @@ on:
       - python/fpl_andres/cli/validate.py
       - python/fpl_andres/cli/publish_projections.py
       - python/fpl_andres/cli/experiment_xstart.py
+      - python/fpl_andres/cli/experiment_recent_form_weight.py
       - python/fpl_andres/experiments/**
       - python/fpl_andres/cli/publish_opening_squad.py
       - python/fpl_andres/cli/publish_season_inputs.py
@@ -102,6 +103,14 @@ jobs:
           rm -f data/experiments/xstart-current-season.json
           python -m fpl_andres.cli.experiment_xstart --code-revision "$GITHUB_SHA"
 
+      - name: Tune and hold out the recent-form blend
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+        run: |
+          rm -f data/experiments/recent-form-weight.json
+          python -m fpl_andres.cli.experiment_recent_form_weight --code-revision "$GITHUB_SHA"
+
       - name: Append the run to the model history
         run: |
           python -m fpl_andres.cli.track_model --code-revision "$GITHUB_SHA"
@@ -155,6 +164,7 @@ jobs:
             apps/web/src/data/opening-squad.json \
             apps/web/src/data/season-plan.json \
             data/experiments/xstart-current-season.json \
+            data/experiments/recent-form-weight.json \
             docs/MODEL_CARDS.md
 
       - name: Freeze the prospective event inputs
@@ -189,12 +199,13 @@ jobs:
             apps/web/src/data/season-inputs.json
             apps/web/src/data/season-plan.json
             data/experiments/xstart-current-season.json
+            data/experiments/recent-form-weight.json
             data/prospective/*.json
           retention-days: 30
 
       - name: Commit the refreshed artifact
         run: |
-          paths="apps/web/src/data/validation.json apps/web/src/data/model-history.json apps/web/src/data/reconciliation.json apps/web/src/data/projections.json apps/web/src/data/projections-meta.json apps/web/src/data/season-inputs.json apps/web/src/data/opening-squad.json apps/web/src/data/season-plan.json data/experiments/xstart-current-season.json data/prospective/*.json docs/MODEL_CARDS.md"
+          paths="apps/web/src/data/validation.json apps/web/src/data/model-history.json apps/web/src/data/reconciliation.json apps/web/src/data/projections.json apps/web/src/data/projections-meta.json apps/web/src/data/season-inputs.json apps/web/src/data/opening-squad.json apps/web/src/data/season-plan.json data/experiments/xstart-current-season.json data/experiments/recent-form-weight.json data/prospective/*.json docs/MODEL_CARDS.md"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           # Staged before the comparison. `git diff` does not look at untracked

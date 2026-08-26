@@ -229,6 +229,16 @@ def test_model_validation_publishes_the_held_out_xstart_experiment() -> None:
     assert text.count(artifact) >= 3
 
 
+def test_model_validation_publishes_the_held_out_recent_form_experiment() -> None:
+    text = (WORKFLOWS / "validate-model.yml").read_text(encoding="utf-8")
+    experiment = "python -m fpl_andres.cli.experiment_recent_form_weight"
+    artifact = "data/experiments/recent-form-weight.json"
+
+    assert experiment in text
+    assert '--code-revision "$GITHUB_SHA"' in text
+    assert text.count(artifact) >= 4
+
+
 def test_model_artifact_proof_changes_trigger_hosted_validation() -> None:
     text = (WORKFLOWS / "validate-model.yml").read_text(encoding="utf-8")
 
