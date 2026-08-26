@@ -41,7 +41,7 @@ const FULL_SEASON_MINIMUM_MINUTES = 450;
 // record to show yet.
 const WIPED_POOL_MINUTES = 450;
 
-const MINUTES_PER_MATCH = 90;
+export const MINUTES_PER_MATCH = 90;
 
 /**
  * @param events `bootstrap-static` events, in any order.
@@ -90,12 +90,9 @@ function label(startYear: number): string {
   return `${startYear}-${String((startYear + 1) % 100).padStart(2, "0")}`;
 }
 
-/** Half the minutes a player could have played, capped at the season figure. */
+/** Eighty minutes per completed gameweek. */
 function scaledMinimum(completedGameweeks: number): number {
-  return Math.min(
-    FULL_SEASON_MINIMUM_MINUTES,
-    Math.round((completedGameweeks * MINUTES_PER_MATCH) / 2),
-  );
+  return completedGameweeks * 80;
 }
 
 function unavailable(completedGameweeks: number): SeasonVintage {

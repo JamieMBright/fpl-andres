@@ -2,6 +2,7 @@ import { useId, useState } from "react";
 
 import { clubMarker } from "../kit/club-markers";
 import { METRICS, type MetricGroup } from "../state/analysis-metrics";
+import { MINUTES_PER_MATCH } from "../state/season-vintage";
 import { HighlightPicker } from "./HighlightPicker";
 import { InfoMarker } from "./InfoMarker";
 import { RangeSlider } from "./RangeSlider";
@@ -34,6 +35,8 @@ const GROUP_ORDER: MetricGroup[] = [
   "Defence",
   "Market",
 ];
+const LIVE_MINUTES_STEP = 10;
+const FULL_SEASON_MINUTES_SLIDER_MAX = 3000;
 
 /**
  * What the live option is actually showing.
@@ -72,6 +75,13 @@ export function ScatterControls({
   frontierUnavailable = null,
 }: ScatterControlsProps) {
   const ids = useId();
+  const liveMinutesCap =
+    view.season === LIVE_SEASON && pool.vintage.state === "live_season"
+      ? pool.vintage.completedGameweeks * MINUTES_PER_MATCH
+      : null;
+  const minutesMax = liveMinutesCap ?? FULL_SEASON_MINUTES_SLIDER_MAX;
+  const minutesStep =
+    liveMinutesCap === null ? MINUTES_PER_MATCH : LIVE_MINUTES_STEP;
   // A `details` rather than state: the platform gives the disclosure, the
   // keyboard behaviour and the closed-by-default in one attribute.
   //
@@ -338,8 +348,8 @@ export function ScatterControls({
             id={`${ids}-mins`}
             type="range"
             min={0}
-            max={3000}
-            step={90}
+            max={minutesMax}
+            step={minutesStep}
             value={view.minMinutes}
             onChange={(event) =>
               onChange({ minMinutes: Number(event.target.value) })

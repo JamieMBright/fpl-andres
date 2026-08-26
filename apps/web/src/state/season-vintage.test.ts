@@ -63,12 +63,11 @@ describe("minimum minutes default", () => {
   });
 
   /*
-   * Half the minutes available so far, so the threshold means the same thing in
-   * September as in May: a player who has been involved in about half his
-   * side's football. A fixed 450 would empty the chart until November.
+   * One full match minus stoppage each gameweek: this keeps the floor near
+   * regular starters early on, while still staying below the hard maximum.
    */
   it("scales the threshold down early in a live season", () => {
-    expect(readSeasonVintage(events(2), 180).defaultMinimumMinutes).toBe(90);
-    expect(readSeasonVintage(events(10), 900).defaultMinimumMinutes).toBe(450);
+    expect(readSeasonVintage(events(2), 180).defaultMinimumMinutes).toBe(160);
+    expect(readSeasonVintage(events(10), 900).defaultMinimumMinutes).toBe(800);
   });
 });
