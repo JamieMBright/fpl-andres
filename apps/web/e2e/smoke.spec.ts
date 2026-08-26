@@ -245,6 +245,7 @@ test("the trust routes pass accessibility in all kits", async ({ page }) => {
   for (const path of [
     "/results",
     "/markets",
+    "/fpl500",
     "/privacy",
     "/thanks?from=contact",
   ]) {

@@ -19,6 +19,11 @@ The project follows Semantic Versioning once milestone tags begin.
   chronological distances let GW1 update the prior campaign without replacing
   it or inventing cross-season gameweek ids. Model 8.8 remains unchanged until
   a stable-player paired Brier bootstrap promotes the candidate.
+- GW1 now carries two cohort reads without conflating them: the original 2,786-
+  manager catalogue-at-deadline aggregate and an exact 500-manager aggregate
+  pinned to the ranking produced 734 seconds after the deadline at `7ee37f9`.
+  The immutable membership, complete picks capture and realised-points sidecar
+  publish separately; captain agreement now reads only the exact ranked 500.
 - The manager plan now reviews GW1 on a club-kit pitch against the exact model
   8.6 xPts frozen before the deadline. Raw player points determine each grade;
   the observed Raya captain multiplier appears only in the 56-point team total.
@@ -32,9 +37,10 @@ The project follows Semantic Versioning once milestone tags begin.
   cohort is effectively unanimous separate no two theses and are excluded from
   the contested rate; the signal's weight grows with the contested weeks
   observed and reaches full strength at ten.
-- The FPL500 surface shows the armband week by week once a deadline has passed,
-  drawn from the captured portfolios rather than a separate fetch. A week where
-  one player takes over half the cohort is labelled as deciding nothing.
+- The FPL500 surface shows the armband week by week once a deadline has passed.
+  Catalogue and exact-ranked samples retain their real counts, capture times and
+  membership basis instead of sharing an FPL500 label. A week where one player
+  takes over half a sample is labelled as deciding nothing.
 - A portfolio can be annotated with the points each held player actually
   scored. The sidecar is a fact of record, written per captured gameweek, and
   its absence is tolerated: scores may not be published when a capture runs.

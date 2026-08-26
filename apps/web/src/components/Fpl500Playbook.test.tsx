@@ -33,7 +33,12 @@ describe("Fpl500Playbook", () => {
     expect(JSON.stringify(artifact.rankHistogram)).not.toContain("entryId");
     // The page may show this season's public Overall standings (entry ids are
     // public). It must not expose membership of the FPL500 cohort itself.
-    expect(JSON.stringify(artifact.portfolioCaptains)).not.toContain("entryId");
+    expect(JSON.stringify(artifact.cataloguePortfolio)).not.toContain(
+      "entryId",
+    );
+    expect(JSON.stringify(artifact.exactFpl500Portfolio)).not.toContain(
+      "entryId",
+    );
   });
 
   it("publishes the distribution instead", () => {
@@ -89,21 +94,17 @@ describe("Fpl500Playbook", () => {
   it("reports how many gameweeks have been captured", () => {
     draw();
 
-    expect(artifact.portfolioEvents.length).toBeGreaterThanOrEqual(0);
-    if (artifact.portfolioEvents.length === 0) {
-      expect(
-        screen.getByText(/no FPL500 gameweek picks or captain choices/i),
-      ).toBeInTheDocument();
-    } else {
-      expect(
-        screen.getByText(
-          new RegExp(
-            `${artifact.portfolioEvents.length} gameweeks captured`,
-            "i",
-          ),
-        ),
-      ).toBeInTheDocument();
-    }
+    expect(artifact.cataloguePortfolio.events.length).toBeGreaterThanOrEqual(0);
+    expect(artifact.exactFpl500Portfolio.events.length).toBeGreaterThanOrEqual(
+      0,
+    );
+    expect(screen.getByText("Catalogue at deadline")).toBeInTheDocument();
+    expect(screen.getByText("Exact FPL500")).toBeInTheDocument();
+    expect(screen.getByText(/2,786 managers/)).toBeInTheDocument();
+    expect(
+      screen.getByText(/post-deadline capture-era FPL500 membership/),
+    ).toBeInTheDocument();
+    expect(screen.getAllByText(/picks read/)).toHaveLength(2);
   });
 
   it("shows what the armband returned once a week is fully scored", () => {
@@ -112,24 +113,41 @@ describe("Fpl500Playbook", () => {
     // The sidecar behind this is written only when every fixture in the round
     // has a confirmed score, so an unscored week must show no points at all
     // rather than a zero that reads as a blank.
-    for (const [eventKey, entries] of Object.entries(
-      artifact.portfolioCaptains as Record<
-        string,
-        { elementId: number; share: number; points?: number }[]
-      >,
-    )) {
-      for (const entry of entries) {
-        if (entry.points === undefined) continue;
-        expect(
-          screen.getAllByText(new RegExp(`${integer.format(entry.points)} pts`))
-            .length,
-          `GW${eventKey} element ${entry.elementId}`,
-        ).toBeGreaterThan(0);
+    for (const series of [
+      artifact.cataloguePortfolio,
+      artifact.exactFpl500Portfolio,
+    ]) {
+      for (const [eventKey, entries] of Object.entries(
+        series.captains as Record<
+          string,
+          { elementId: number; share: number; points?: number }[]
+        >,
+      )) {
+        for (const entry of entries) {
+          if (entry.points === undefined) continue;
+          expect(
+            screen.getAllByText(
+              new RegExp(`${integer.format(entry.points)} pts`),
+            ).length,
+            `GW${eventKey} element ${entry.elementId}`,
+          ).toBeGreaterThan(0);
+        }
       }
     }
-    const scored = Object.values(
-      artifact.portfolioCaptains as Record<string, { points?: number }[]>,
-    )
+    const scored = [
+      ...Object.values(
+        artifact.cataloguePortfolio.captains as Record<
+          string,
+          { points?: number }[]
+        >,
+      ),
+      ...Object.values(
+        artifact.exactFpl500Portfolio.captains as Record<
+          string,
+          { points?: number }[]
+        >,
+      ),
+    ]
       .flat()
       .filter((entry) => entry.points !== undefined);
     if (scored.length === 0) {

@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-08-26T20:08:13.701767Z",
+  "portfolioBasis": "ranked-500",
+  "splitThreshold": 0.5,
+  "capturedWeeks": 1,
+  "contestedWeeks": 0,
+  "weeks": [
+    {
+      "event": 1,
+      "counted": 500,
+      "modalCaptain": 426,
+      "unanimity": 0.646,
+      "isSplit": false,
+      "topCaptains": [
+        {
+          "elementId": 426,
+          "share": 0.646
+        },
+        {
+          "elementId": 411,
+          "share": 0.344
+        }
+      ]
+    }
+  ],
+  "signals": []
+}

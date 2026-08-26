@@ -13,6 +13,9 @@ first deadline of the season.
 
 Usage:
     python -m fpl_andres.cli.capture_cohort_picks --event 1
+    python -m fpl_andres.cli.capture_cohort_picks --event 1 \
+        --membership data/cohort/fpl500-membership/gw01.json \
+        --output-dir data/cohort/portfolio/fpl500
 """
 
 from __future__ import annotations
@@ -22,6 +25,7 @@ import asyncio
 import json
 import sys
 from collections.abc import Sequence
+from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
 
@@ -30,11 +34,13 @@ import httpx
 from fpl_andres import cliargs, timeouts
 from fpl_andres.cli.sweep_managers import Throttle
 from fpl_andres.cohorts.absence import DEFAULT_TOLERANCE, record_attempt
+from fpl_andres.cohorts.fpl500_membership import Fpl500Membership, read_membership
 from fpl_andres.cohorts.portfolio import (
     CoverageTooLow,
     ManagerPicks,
     Pick,
     Portfolio,
+    PortfolioBasis,
     reconcile,
 )
 from fpl_andres.jsonio import parse_json, read_json_file
@@ -49,12 +55,29 @@ ABSENT = COHORT_DIR / "absent.json"
 DEFAULT_OUTPUT = COHORT_DIR / "portfolio"
 
 
+@dataclass(frozen=True)
+class CaptureSource:
+    entry_ids: tuple[int, ...]
+    revision: str
+    basis: PortfolioBasis
+    membership: Fpl500Membership | None = None
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="capture-cohort-picks")
     parser.add_argument("--event", type=cliargs.positive_int, required=True)
     parser.add_argument("--rate", type=cliargs.positive_float, default=25.0)
     parser.add_argument("--concurrency", type=cliargs.positive_int, default=8)
     parser.add_argument("--managers", default=str(MANAGERS))
+    parser.add_argument(
+        "--membership",
+        type=Path,
+        default=None,
+        help=(
+            "Immutable event-specific FPL500 membership. When set, capture its "
+            "500 entries separately and do not update the catalogue absence ledger."
+        ),
+    )
     parser.add_argument("--output-dir", default=str(DEFAULT_OUTPUT))
     parser.add_argument("--absent", default=str(ABSENT))
     parser.add_argument(
@@ -126,15 +149,61 @@ def _cohort_revision() -> str:
     return f"swept-to-{saved.get('next_id', 'unknown')}"
 
 
-def _write(portfolio: Portfolio, directory: Path) -> Path:
+def _capture_source(args: argparse.Namespace) -> CaptureSource:
+    if args.membership is not None:
+        membership = read_membership(args.membership)
+        if membership.event != args.event:
+            raise ValueError(
+                f"membership belongs to gameweek {membership.event}, not gameweek {args.event}"
+            )
+        return CaptureSource(
+            entry_ids=membership.entry_ids,
+            revision=membership.membership_hash,
+            basis="ranked-500",
+            membership=membership,
+        )
+    managers = Path(args.managers)
+    if not managers.exists():
+        raise FileNotFoundError(managers)
+    return CaptureSource(
+        entry_ids=tuple(_entry_ids(managers)),
+        revision=_cohort_revision(),
+        basis="catalogue-at-deadline",
+    )
+
+
+def _write(
+    portfolio: Portfolio,
+    directory: Path,
+    *,
+    membership: Fpl500Membership | None = None,
+) -> Path:
     directory.mkdir(parents=True, exist_ok=True)
     output = directory / f"gw{portfolio.event:02d}.json"
+    if output.exists():
+        raise FileExistsError(f"refusing to overwrite immutable portfolio {output}")
+    membership_payload: dict[str, object] | None = None
+    if membership is not None:
+        membership_payload = {
+            "event": membership.event,
+            "label": membership.label,
+            "sourceTiming": membership.source_timing,
+            "sourceGeneratedAt": membership.source_generated_at.isoformat().replace("+00:00", "Z"),
+            "secondsFromDeadline": membership.seconds_from_deadline,
+            "sourceCommit": membership.source_commit,
+            "sourceCatalogueSize": membership.source_catalogue_size,
+            "pinnedAt": membership.pinned_at.isoformat().replace("+00:00", "Z"),
+            "size": membership.size,
+            "membershipHash": membership.membership_hash,
+        }
     output.write_text(
         json.dumps(
             {
                 "event": portfolio.event,
                 "capturedAt": datetime.now(UTC).isoformat().replace("+00:00", "Z"),
+                "basis": portfolio.basis,
                 "cohortRevision": portfolio.cohort_revision,
+                "membership": membership_payload,
                 "attempted": portfolio.attempted,
                 "responded": portfolio.responded,
                 "counted": portfolio.counted,
@@ -192,16 +261,17 @@ def _write_absent(path: Path, ledger: dict[int, int], event: int) -> None:
 
 
 async def run(args: argparse.Namespace) -> int:
-    managers = Path(args.managers)
-    if not managers.exists():
+    try:
+        source = _capture_source(args)
+    except FileNotFoundError as error:
         print(
-            f"{managers} does not exist. Run sweep_managers first; the cohort is "
+            f"{error.filename or error} does not exist. Run sweep_managers first; the cohort is "
             f"the input to this job, not something it can infer.",
             file=sys.stderr,
         )
         return 1
 
-    entry_ids = _entry_ids(managers)
+    entry_ids = source.entry_ids
     throttle = Throttle(args.rate)
     semaphore = asyncio.Semaphore(args.concurrency)
     print(f"reading gameweek {args.event} picks for {len(entry_ids):,} managers")
@@ -222,28 +292,30 @@ async def run(args: argparse.Namespace) -> int:
     # Written before the coverage gate. A run that fails to publish still
     # learned who answered, and a cohort where too few answer is exactly the
     # run whose evidence about who is gone is worth keeping.
-    absent = Path(args.absent)
-    ledger = record_attempt(_read_absent(absent), entry_ids, (row.entry_id for row in captured))
-    _write_absent(absent, ledger, args.event)
-    settled = sum(1 for misses in ledger.values() if misses >= DEFAULT_TOLERANCE)
-    print(
-        f"{len(ledger):,} managers are mid-absence; "
-        f"{settled:,} have missed {DEFAULT_TOLERANCE} and lose their place"
-    )
+    if source.membership is None:
+        absent = Path(args.absent)
+        ledger = record_attempt(_read_absent(absent), entry_ids, (row.entry_id for row in captured))
+        _write_absent(absent, ledger, args.event)
+        settled = sum(1 for misses in ledger.values() if misses >= DEFAULT_TOLERANCE)
+        print(
+            f"{len(ledger):,} managers are mid-absence; "
+            f"{settled:,} have missed {DEFAULT_TOLERANCE} and lose their place"
+        )
 
     try:
         portfolio = reconcile(
             captured,
             event=args.event,
             attempted=len(entry_ids),
-            cohort_revision=_cohort_revision(),
+            cohort_revision=source.revision,
             minimum_coverage=args.minimum_coverage,
+            basis=source.basis,
         )
     except CoverageTooLow as error:
         print(f"\n{error}", file=sys.stderr)
         return 2
 
-    output = _write(portfolio, Path(args.output_dir))
+    output = _write(portfolio, Path(args.output_dir), membership=source.membership)
     top = portfolio.holdings[:5]
     print(
         f"wrote {output} — {portfolio.counted:,} squads counted, "

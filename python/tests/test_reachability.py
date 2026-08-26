@@ -225,6 +225,7 @@ def test_no_module_is_imported_only_by_its_own_tests() -> None:
         "publish_cohort",
         "publish_deadlines",
         "publish_fpl500",
+        "pin_fpl500_membership",
         "publish_projections",
         "publish_understat",
         "prune_private_state",

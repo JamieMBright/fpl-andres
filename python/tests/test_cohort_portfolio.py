@@ -132,6 +132,20 @@ def test_the_cohort_revision_travels_with_the_snapshot() -> None:
     assert portfolio.event == 4
 
 
+def test_ranked_500_basis_travels_with_its_separate_snapshot() -> None:
+    captured = [squad(i, [1, 2], captain=1, vice=2) for i in range(10)]
+
+    portfolio = reconcile(
+        captured,
+        event=1,
+        attempted=10,
+        cohort_revision="sha256:pinned",
+        basis="ranked-500",
+    )
+
+    assert portfolio.basis == "ranked-500"
+
+
 def test_picks_from_the_wrong_gameweek_are_named_not_folded_in() -> None:
     captured = [squad(i, [1, 2], captain=1, vice=2) for i in range(9)]
     captured.append(squad(99, [1, 2], captain=1, vice=2, event=2))

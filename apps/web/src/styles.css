@@ -5028,6 +5028,39 @@ h1[tabindex="-1"]:focus-visible {
   margin: 16px 0;
 }
 
+.cohort-armband-series-list {
+  margin-top: 18px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.cohort-armband-series {
+  padding: 14px 0 18px;
+  border-top: 1px solid var(--rule);
+}
+
+.cohort-armband-series h4 {
+  margin: 0 0 10px;
+  font-family: var(--fa-body);
+  font-size: 14px;
+}
+
+.cohort-armband-empty,
+.cohort-armband-sample,
+.cohort-armband-provenance {
+  color: var(--ink-soft);
+  font-size: 11px;
+}
+
+.cohort-armband-empty,
+.cohort-armband-sample {
+  margin: 0 0 6px;
+}
+
+.cohort-armband-provenance {
+  margin: 0 0 10px;
+  overflow-wrap: anywhere;
+}
+
 .cohort-armband-weeks {
   display: flex;
   flex-direction: column;

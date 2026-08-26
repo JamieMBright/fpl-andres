@@ -71,6 +71,7 @@ jobs:
           fi
 
       - name: Annotate with realised points
+        id: annotate
         env:
           EVENT: ${{ inputs.event }}
         run: |
@@ -78,39 +79,68 @@ jobs:
           if [ -n "$EVENT" ]; then
             python -m fpl_andres.cli.annotate_portfolio --event "$EVENT" \
               | tee -a "$GITHUB_STEP_SUMMARY"
+            python -m fpl_andres.cli.annotate_portfolio --event "$EVENT" \
+              --portfolio-dir data/cohort/portfolio/fpl500 \
+              | tee -a "$GITHUB_STEP_SUMMARY"
           else
             python -m fpl_andres.cli.annotate_portfolio \
               | tee -a "$GITHUB_STEP_SUMMARY"
+            python -m fpl_andres.cli.annotate_portfolio \
+              --portfolio-dir data/cohort/portfolio/fpl500 \
+              | tee -a "$GITHUB_STEP_SUMMARY"
+          fi
+          if [ -n "$(git status --porcelain --untracked-files=all -- data/cohort/portfolio)" ]; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=false" >> "$GITHUB_OUTPUT"
           fi
 
       # The site reads the captains out of the FPL500 artifact, and a sidecar
       # nothing republishes against is a file the page never sees.
       - name: Republish the FPL500 artifact
-        run: |
-          set -o pipefail
-          python -m fpl_andres.cli.publish_fpl500 \
-            | tee -a "$GITHUB_STEP_SUMMARY"
+        if: steps.annotate.outputs.changed == 'true'
+        run: bash scripts/republish-fpl500.sh | tee -a "$GITHUB_STEP_SUMMARY"
 
       - name: Commit the sidecars
+        if: steps.annotate.outputs.changed == 'true'
         run: |
           paths="data/cohort/portfolio data/cohort/fpl500.json apps/web/src/data/fpl500.json"
           if [ ! -d data/cohort/portfolio ]; then
             echo "nothing captured yet"
             exit 0
           fi
-          npx --yes prettier@3 --write \
-            data/cohort/portfolio/*.json \
-            data/cohort/fpl500.json \
-            apps/web/src/data/fpl500.json
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          # Staged first, then compared against the index. `git diff` does not
-          # look at untracked files, and a new sidecar is exactly that.
-          git add $paths
+          stage() {
+            # The shared chain runs prettier over every JSON it publishes.
+            bash scripts/republish-fpl500.sh
+            git add $paths
+          }
+          stage
           if git diff --cached --quiet -- $paths; then
             echo "no round finished since the last run"
             exit 0
           fi
           git commit -m "chore: annotate the cohort portfolio with realised points"
-          git pull --rebase --autostash
-          git push
+          for attempt in 1 2 3 4 5; do
+            git pull --rebase --autostash || git rebase --abort || true
+            if git push; then
+              exit 0
+            fi
+            echo "push rejected on attempt $attempt; rebuilding on the base that arrived"
+            rm -rf "$RUNNER_TEMP/keep"
+            mkdir -p "$RUNNER_TEMP/keep/portfolio"
+            cp -r data/cohort/portfolio/. "$RUNNER_TEMP/keep/portfolio/"
+            git fetch origin "$GITHUB_REF_NAME"
+            git reset --hard "origin/$GITHUB_REF_NAME"
+            mkdir -p data/cohort/portfolio
+            cp -r "$RUNNER_TEMP/keep/portfolio/." data/cohort/portfolio/
+            stage
+            if git diff --cached --quiet -- $paths; then
+              echo "the base that arrived already carries these sidecars"
+              exit 0
+            fi
+            git commit -m "chore: annotate the cohort portfolio with realised points"
+          done
+          echo "could not push portfolio points after five attempts" >&2
+          exit 1

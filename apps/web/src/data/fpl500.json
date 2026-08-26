@@ -1,6 +1,6 @@
 {
-  "schemaVersion": 1,
-  "generatedAt": "2026-08-26T13:37:10.778595Z",
+  "schemaVersion": 2,
+  "generatedAt": "2026-08-26T20:08:14.683547Z",
   "catalogueSize": 23548,
   "sweptTo": 9730001,
   "size": 500,
@@ -38,20 +38,67 @@
     "2025/26": 12991347
   },
   "minimumCoverage": 0.9,
-  "portfolioEvents": [1],
-  "portfolioCaptains": {
-    "01": [
-      {
-        "elementId": 426,
-        "share": 0.57071,
-        "points": 2
-      },
-      {
-        "elementId": 411,
-        "share": 0.40955,
-        "points": 2
+  "cataloguePortfolio": {
+    "basis": "catalogue-at-deadline",
+    "label": "Catalogue at deadline",
+    "events": [1],
+    "samples": {
+      "01": {
+        "capturedAt": "2026-08-21T19:13:44.152497Z",
+        "attempted": 2786,
+        "responded": 2786,
+        "counted": 2786,
+        "coverage": 1.0
       }
-    ]
+    },
+    "captains": {
+      "01": [
+        {
+          "elementId": 426,
+          "share": 0.57071,
+          "points": 2
+        },
+        {
+          "elementId": 411,
+          "share": 0.40955,
+          "points": 2
+        }
+      ]
+    }
+  },
+  "exactFpl500Portfolio": {
+    "basis": "ranked-500",
+    "label": "Exact FPL500",
+    "events": [1],
+    "samples": {
+      "01": {
+        "capturedAt": "2026-08-26T20:02:29.293562Z",
+        "attempted": 500,
+        "responded": 500,
+        "counted": 500,
+        "coverage": 1.0,
+        "membershipLabel": "post-deadline capture-era FPL500 membership",
+        "membershipSourceTiming": "post-deadline",
+        "membershipSourceGeneratedAt": "2026-08-21T17:42:14.337262Z",
+        "membershipSecondsFromDeadline": 734,
+        "membershipSourceCommit": "7ee37f9ef2eb40502b94cba4e2bd0a10cd84b1ad",
+        "membershipSize": 500
+      }
+    },
+    "captains": {
+      "01": [
+        {
+          "elementId": 426,
+          "share": 0.646,
+          "points": 2
+        },
+        {
+          "elementId": 411,
+          "share": 0.344,
+          "points": 2
+        }
+      ]
+    }
   },
   "scoreAtRank": {
     "1": 0.802503,

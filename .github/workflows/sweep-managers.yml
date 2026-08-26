@@ -93,31 +93,50 @@ jobs:
       # moved every six hours and FPL500 last moved whenever somebody
       # remembered. Rebuilding here costs seconds and nothing can drift.
       - name: Rank the catalogue the sweep just extended
-        run: python -m fpl_andres.cli.publish_fpl500 | tee -a "$GITHUB_STEP_SUMMARY"
+        run: bash scripts/republish-fpl500.sh | tee -a "$GITHUB_STEP_SUMMARY"
 
       - name: Commit the position and anything it found
         run: |
           paths="data/cohort/managers.jsonl data/cohort/sweep-checkpoint.json data/cohort/fpl500.json data/cohort/fpl100.json apps/web/src/data/fpl500.json"
-          # Formatted before it is committed. Python writes these and prettier
-          # owns the files, so an unformatted commit here reddens the next
-          # unrelated push rather than this run.
-          npx --yes prettier@3 --write \
-            data/cohort/sweep-checkpoint.json \
-            data/cohort/fpl500.json \
-            data/cohort/fpl100.json \
-            apps/web/src/data/fpl500.json
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          # Staged before the comparison. `git diff` does not look at untracked
-          # files, so a run that creates one of these would call it unchanged.
-          git add $paths
+          stage() {
+            bash scripts/republish-fpl500.sh
+            npx --yes prettier@3 --write \
+              data/cohort/sweep-checkpoint.json \
+              data/cohort/fpl100.json
+            git add $paths
+          }
+          stage
           if git diff --cached --quiet -- $paths; then
             echo "The sweep moved nothing."
             exit 0
           fi
           next=$(python -c "import json;print(json.load(open('data/cohort/sweep-checkpoint.json'))['next_id'])")
           git commit -m "chore: sweep the register as far as id ${next}"
-          # A scheduled run can start while main has moved on; rebasing is
-          # safe here because this job only ever touches these files.
-          git pull --rebase --autostash
-          git push
+          for attempt in 1 2 3 4 5; do
+            git pull --rebase --autostash || git rebase --abort || true
+            if git push; then
+              exit 0
+            fi
+            echo "push rejected on attempt $attempt; rebuilding on the base that arrived"
+            rm -rf "$RUNNER_TEMP/keep"
+            mkdir -p "$RUNNER_TEMP/keep"
+            cp data/cohort/managers.jsonl "$RUNNER_TEMP/keep/managers.jsonl"
+            cp data/cohort/sweep-checkpoint.json "$RUNNER_TEMP/keep/sweep-checkpoint.json"
+            cp data/cohort/fpl100.json "$RUNNER_TEMP/keep/fpl100.json"
+            git fetch origin "$GITHUB_REF_NAME"
+            git reset --hard "origin/$GITHUB_REF_NAME"
+            cp "$RUNNER_TEMP/keep/managers.jsonl" data/cohort/managers.jsonl
+            cp "$RUNNER_TEMP/keep/sweep-checkpoint.json" data/cohort/sweep-checkpoint.json
+            cp "$RUNNER_TEMP/keep/fpl100.json" data/cohort/fpl100.json
+            stage
+            if git diff --cached --quiet -- $paths; then
+              echo "the base that arrived already carries this sweep"
+              exit 0
+            fi
+            next=$(python -c "import json;print(json.load(open('data/cohort/sweep-checkpoint.json'))['next_id'])")
+            git commit -m "chore: sweep the register as far as id ${next}"
+          done
+          echo "could not push the manager sweep after five attempts" >&2
+          exit 1

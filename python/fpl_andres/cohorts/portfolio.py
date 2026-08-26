@@ -29,7 +29,8 @@ and what it chose is the signal.
 
 **Cohort drift.** Membership changes whenever the catalogue is re-swept. A
 series whose population silently changes is not a series, so every snapshot pins
-the cohort revision it was taken over.
+the cohort revision it was taken over. Exact ranked-500 captures carry a hashed,
+event-specific membership and publish separately from the full catalogue.
 
 **Equal weight.** Each manager counts once. Weighting by rank would encode a
 claim that this season's league table predicts next week, which is exactly the
@@ -41,6 +42,7 @@ from __future__ import annotations
 
 from collections.abc import Sequence
 from dataclasses import dataclass
+from typing import Literal
 
 __all__ = [
     "MINIMUM_COVERAGE",
@@ -49,6 +51,7 @@ __all__ = [
     "ManagerPicks",
     "Pick",
     "Portfolio",
+    "PortfolioBasis",
     "reconcile",
 ]
 
@@ -60,6 +63,7 @@ MINIMUM_COVERAGE = 0.9
 FREE_HIT = "freehit"
 TRIPLE_CAPTAIN = "3xc"
 BENCH_BOOST = "bboost"
+PortfolioBasis = Literal["catalogue-at-deadline", "ranked-500"]
 
 
 class CoverageTooLow(RuntimeError):
@@ -128,6 +132,7 @@ class Portfolio:
     """Responded minus the Free Hit squads, which are excluded from holdings."""
     free_hit: int
     holdings: tuple[Holding, ...]
+    basis: PortfolioBasis = "catalogue-at-deadline"
 
     @property
     def coverage(self) -> float:
@@ -141,6 +146,7 @@ def reconcile(
     attempted: int,
     cohort_revision: str,
     minimum_coverage: float = MINIMUM_COVERAGE,
+    basis: PortfolioBasis = "catalogue-at-deadline",
 ) -> Portfolio:
     """Fold a gameweek of captured picks into one portfolio.
 
@@ -150,6 +156,8 @@ def reconcile(
     """
     if attempted <= 0:
         raise ValueError("a portfolio needs a cohort to be taken over")
+    if basis not in ("catalogue-at-deadline", "ranked-500"):
+        raise ValueError(f"unsupported portfolio basis: {basis}")
 
     wrong_event = [row.entry_id for row in captured if row.event != event]
     if wrong_event:
@@ -228,4 +236,5 @@ def reconcile(
         counted=total,
         free_hit=free_hit,
         holdings=holdings,
+        basis=basis,
     )

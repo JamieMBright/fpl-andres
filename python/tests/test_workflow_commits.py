@@ -257,11 +257,40 @@ def test_model_republication_allows_the_measured_slow_runner_duration() -> None:
 def test_fpl500_capture_republishes_the_prospective_event_ledger() -> None:
     text = (WORKFLOWS / "capture-fpl500.yml").read_text(encoding="utf-8")
 
-    capture = text.index("python -m fpl_andres.cli.capture_cohort_picks")
-    publish = text.index("python -m fpl_andres.cli.publish_fpl500", capture)
+    pin = text.index("python -m fpl_andres.cli.pin_fpl500_membership")
+    catalogue_capture = text.index("python -m fpl_andres.cli.capture_cohort_picks", pin)
+    exact_capture = text.index(
+        "python -m fpl_andres.cli.capture_cohort_picks", catalogue_capture + 1
+    )
+    publish = text.index("scripts/republish-fpl500.sh", exact_capture)
     web_artifact = "apps/web/src/data/fpl500.json"
-    assert publish > capture
-    assert text.count(web_artifact) >= 2
+    assert pin < catalogue_capture < exact_capture < publish
+    assert "--membership" in text[catalogue_capture:publish]
+    assert "data/cohort/portfolio/fpl500" in text
+    assert web_artifact in text
+    chain = (REPO / "scripts" / "republish-fpl500.sh").read_text(encoding="utf-8")
+    assert web_artifact in chain
+
+
+@pytest.mark.parametrize(
+    "name",
+    ("capture-fpl500.yml", "sweep-managers.yml", "annotate-portfolio.yml"),
+)
+def test_fpl500_artifact_producers_rebuild_on_the_base_that_arrived(name: str) -> None:
+    text = (WORKFLOWS / name).read_text(encoding="utf-8")
+
+    assert "scripts/republish-fpl500.sh" in text
+    assert _REBUILD.search(text), (
+        f"{name} regenerates the shared FPL500 artifacts, so rebasing two "
+        "independent JSON generations cannot recover a rejected push"
+    )
+
+
+def test_portfolio_annotation_sweeps_catalogue_and_exact_fpl500() -> None:
+    text = (WORKFLOWS / "annotate-portfolio.yml").read_text(encoding="utf-8")
+
+    assert text.count("python -m fpl_andres.cli.annotate_portfolio") >= 2
+    assert "--portfolio-dir data/cohort/portfolio/fpl500" in text
 
 
 def test_live_capture_builds_the_review_after_the_settled_snapshot() -> None:

@@ -76,7 +76,8 @@ def test_fpl500_shape() -> None:
             "latestSeasonEntries",
             "listed",
             "minimumCoverage",
-            "portfolioEvents",
+            "cataloguePortfolio",
+            "exactFpl500Portfolio",
             "rankBins",
             "rankHistogram",
             "scoreAtRank",
@@ -104,7 +105,15 @@ def test_fpl500_shape() -> None:
     )
     # The fund is the point of the page, so its absence has to be a published
     # fact rather than an empty section nobody can explain.
-    assert isinstance(payload["portfolioEvents"], list)
+    for key, basis in (
+        ("cataloguePortfolio", "catalogue-at-deadline"),
+        ("exactFpl500Portfolio", "ranked-500"),
+    ):
+        series = payload[key]
+        _require_keys(series, {"basis", "captains", "events", "label", "samples"}, key)
+        assert series["basis"] == basis
+        assert isinstance(series["events"], list)
+        assert "entryId" not in json.dumps(series)
 
 
 def test_projections_shape() -> None:

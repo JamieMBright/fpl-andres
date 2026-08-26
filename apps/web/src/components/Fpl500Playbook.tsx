@@ -12,6 +12,23 @@ import { PLAYERS_BY_ELEMENT_ID } from "../state/season-solver";
 // It is absent, never zero, while a week is still being played — a captain who
 // blanked and a captain who has not kicked off are different facts.
 type CaptainEntry = { elementId: number; share: number; points?: number };
+type PortfolioSample = {
+  capturedAt: string;
+  attempted: number;
+  responded: number;
+  counted: number;
+  coverage: number;
+  membershipLabel?: string;
+  membershipSourceGeneratedAt?: string;
+  membershipSecondsFromDeadline?: number;
+};
+type PortfolioSeries = {
+  basis: "catalogue-at-deadline" | "ranked-500";
+  label: string;
+  events: number[];
+  samples: Record<string, PortfolioSample>;
+  captains: Record<string, CaptainEntry[]>;
+};
 
 type Fpl500 = {
   generatedAt: string;
@@ -22,8 +39,8 @@ type Fpl500 = {
   latestSeason: string | null;
   latestSeasonEntries: number | null;
   minimumCoverage: number;
-  portfolioEvents: number[];
-  portfolioCaptains: Record<string, CaptainEntry[]>;
+  cataloguePortfolio: PortfolioSeries;
+  exactFpl500Portfolio: PortfolioSeries;
   rankBins: number[];
   rankHistogram: Record<string, number[]>;
   seasonsCounted: Record<string, number>;
@@ -79,28 +96,34 @@ function Fold({
  * component says so. When the week is split, the bar chart makes the
  * disagreement visible.
  */
-function CaptainDistribution() {
-  const captains = data.portfolioCaptains;
+function CaptainSeries({
+  id,
+  series,
+}: {
+  id: string;
+  series: PortfolioSeries;
+}) {
+  const captains = series.captains;
   const events = Object.keys(captains).sort((a, b) => Number(a) - Number(b));
-  if (events.length === 0) return null;
+  if (events.length === 0) {
+    return (
+      <section
+        className="cohort-armband-series"
+        aria-labelledby={`${id}-title`}
+      >
+        <h4 id={`${id}-title`}>{series.label}</h4>
+        <p className="mono cohort-armband-empty">No captured gameweeks.</p>
+      </section>
+    );
+  }
 
   return (
-    <section aria-labelledby="cohort-armband-title" className="cohort-armband">
-      <h3 id="cohort-armband-title">
-        The armband, week by week
-        <InfoMarker label="armband distribution">
-          Who the cohort captained and the share who chose each player. A week
-          where over half the cohort picks the same player is effectively
-          unanimous — every sensible thesis lands on the same name — so only the
-          contested weeks tell you anything new. The share here is of managers
-          whose picks were reconciled, not of all five hundred. A points figure
-          appears once every fixture in that week has a confirmed score,
-          including bonus; a week still being played shows none.
-        </InfoMarker>
-      </h3>
+    <section className="cohort-armband-series" aria-labelledby={`${id}-title`}>
+      <h4 id={`${id}-title`}>{series.label}</h4>
       <div className="cohort-armband-weeks">
         {events.map((eventKey) => {
           const top = captains[eventKey] ?? [];
+          const sample = series.samples[eventKey];
           const best = top[0];
           const isUnanimous = best !== undefined && best.share > 0.5;
           const bestName =
@@ -111,6 +134,24 @@ function CaptainDistribution() {
           return (
             <div className="cohort-armband-week" key={eventKey}>
               <p className="cohort-armband-gw mono">GW{Number(eventKey)}</p>
+              {sample !== undefined && (
+                <p className="cohort-armband-sample mono">
+                  {number.format(sample.responded)} of{" "}
+                  {number.format(sample.attempted)} managers ·{" "}
+                  {fineShare.format(sample.coverage)} coverage · picks read{" "}
+                  {timestamp.format(new Date(sample.capturedAt))}
+                </p>
+              )}
+              {sample?.membershipLabel !== undefined && (
+                <p className="cohort-armband-provenance">
+                  {sample.membershipLabel}
+                  {sample.membershipSecondsFromDeadline === undefined
+                    ? ""
+                    : ` · ranked ${number.format(
+                        Math.round(sample.membershipSecondsFromDeadline / 60),
+                      )} minutes after the deadline`}
+                </p>
+              )}
               <ul className="cohort-armband-bars">
                 {top.map(({ elementId, share: s, points }) => {
                   const name =
@@ -141,6 +182,36 @@ function CaptainDistribution() {
             </div>
           );
         })}
+      </div>
+    </section>
+  );
+}
+
+function CaptainDistribution() {
+  return (
+    <section aria-labelledby="cohort-armband-title" className="cohort-armband">
+      <h3 id="cohort-armband-title">
+        The armband, week by week
+        <InfoMarker label="armband samples">
+          Two populations, kept separate. The catalogue shows every manager
+          captured around the deadline. Exact FPL500 uses the five hundred
+          ranked at the stated source time. A points figure appears only after
+          every fixture has a confirmed score, including bonus.
+        </InfoMarker>
+      </h3>
+      <p>
+        The first capture covered the whole catalogue. It was not the FPL500. I
+        have kept that evidence and added the exact five hundred beside it.
+      </p>
+      <div className="cohort-armband-series-list">
+        <CaptainSeries
+          id="catalogue-armband"
+          series={data.cataloguePortfolio}
+        />
+        <CaptainSeries
+          id="exact-fpl500-armband"
+          series={data.exactFpl500Portfolio}
+        />
       </div>
     </section>
   );
@@ -398,9 +469,9 @@ export function Fpl500Playbook() {
             until one passes, and FPL serves them for the current season only,
             so a gameweek missed is gone for good.
             <InfoMarker label="the coverage floor">
-              Five hundred requests will not all answer. Dividing by however
-              many did makes the denominator move every week, so a player looks
-              to be drifting when the sample drifted instead. Below{" "}
+              Every request will not answer. Dividing by however many did makes
+              the denominator move every week, so a player looks to be drifting
+              when the sample drifted instead. Below{" "}
               {fineShare.format(data.minimumCoverage)} the snapshot is refused
               rather than published with an asterisk.
             </InfoMarker>
@@ -410,9 +481,9 @@ export function Fpl500Playbook() {
 
       <Fold kind="analysis" open title="Analysing the FPL500">
         <p>
-          {data.portfolioEvents.length === 0
-            ? "No deadline has passed, so there are no FPL500 gameweek picks or captain choices to compare yet. The frames and their axes are what will be drawn."
-            : `${data.portfolioEvents.length} gameweeks captured.`}
+          {data.exactFpl500Portfolio.events.length === 0
+            ? "No exact FPL500 gameweek has been captured yet."
+            : `${data.exactFpl500Portfolio.events.length} exact FPL500 gameweek captured.`}
         </p>
         <CaptainDistribution />
         <PlannedAnalysis />

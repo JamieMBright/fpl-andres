@@ -58,10 +58,15 @@ const BUDGETS = [
   // the team view onto the plan moved several components into shared code
   // rather than a route of their own, and the browser pool grew from a
   // top-forty-per-position cut to every player the projector can rate.
+  //
+  // Measured 44.27 kB after projection publication added explicit true
+  // P(start) and P(60+) beside the legacy field for every player. The repeated
+  // rows are shipped model semantics rather than application code; 51 kB
+  // restores roughly 15% headroom over the measured bridge payload.
   {
     match: /^(?!index-|SeasonPlanPage-|season-solver\.worker-).*\.js$/,
     name: "lazy chunk",
-    gzipKb: 42,
+    gzipKb: 51,
   },
 ];
 

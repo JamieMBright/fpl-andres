@@ -12,16 +12,39 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from fpl_andres.cli.publish_fpl500 import _portfolio_captains
+from fpl_andres.cli.publish_fpl500 import _portfolio_captains, _portfolio_series
 
 
-def _capture(directory: Path, event: int, shares: dict[int, float]) -> None:
+def _capture(
+    directory: Path,
+    event: int,
+    shares: dict[int, float],
+    *,
+    basis: str = "catalogue-at-deadline",
+) -> None:
     directory.mkdir(parents=True, exist_ok=True)
     (directory / f"gw{event:02d}.json").write_text(
         json.dumps(
             {
                 "event": event,
+                "capturedAt": "2026-08-21T19:13:44Z",
+                "basis": basis,
+                "attempted": 500 if basis == "ranked-500" else 2_786,
+                "responded": 500 if basis == "ranked-500" else 2_786,
                 "counted": 500,
+                "coverage": 1.0,
+                "membership": (
+                    {
+                        "label": "post-deadline capture-era FPL500 membership",
+                        "sourceTiming": "post-deadline",
+                        "sourceGeneratedAt": "2026-08-21T17:42:14Z",
+                        "secondsFromDeadline": 734,
+                        "sourceCommit": "7ee37f9ef2eb40502b94cba4e2bd0a10cd84b1ad",
+                        "size": 500,
+                    }
+                    if basis == "ranked-500"
+                    else None
+                ),
                 "holdings": [
                     {"elementId": element, "captainedShare": share}
                     for element, share in shares.items()
@@ -81,3 +104,29 @@ class TestPortfolioCaptains:
         _sidecar(tmp_path, 1, {11: 13})
 
         assert list(_portfolio_captains(tmp_path)) == ["01"]
+
+    def test_catalogue_and_exact_500_are_published_as_separate_series(self, tmp_path: Path) -> None:
+        catalogue = tmp_path / "portfolio"
+        exact = catalogue / "fpl500"
+        _capture(catalogue, 1, {11: 0.62})
+        _capture(exact, 1, {22: 0.54}, basis="ranked-500")
+
+        catalogue_series = _portfolio_series(
+            catalogue,
+            basis="catalogue-at-deadline",
+            label="Catalogue at deadline",
+        )
+        exact_series = _portfolio_series(
+            exact,
+            basis="ranked-500",
+            label="Exact FPL500",
+        )
+
+        assert catalogue_series["captains"]["01"][0]["elementId"] == 11
+        assert catalogue_series["samples"]["01"]["attempted"] == 2_786
+        assert exact_series["captains"]["01"][0]["elementId"] == 22
+        assert exact_series["samples"]["01"]["attempted"] == 500
+        assert (
+            exact_series["samples"]["01"]["membershipLabel"]
+            == "post-deadline capture-era FPL500 membership"
+        )

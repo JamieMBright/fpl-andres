@@ -41,13 +41,14 @@ CHECKPOINT = COHORT_DIR / "sweep-checkpoint.json"
 #: Where `capture_cohort_picks` writes a gameweek's squads. Empty until the
 #: season starts: the fund cannot hold anything before anybody has picked.
 PORTFOLIO_DIR = COHORT_DIR / "portfolio"
+FPL500_PORTFOLIO_DIR = PORTFOLIO_DIR / "fpl500"
 #: This season's Overall standings, written by `harvest_league`.
 STANDINGS = COHORT_DIR / "fpl100.json"
 #: Who has stopped answering, counted by `capture_cohort_picks`.
 ABSENT = COHORT_DIR / "absent.json"
 DEFAULT_OUTPUT = COHORT_DIR / "fpl500.json"
 DEFAULT_WEB_OUTPUT = Path("apps/web/src/data/fpl500.json")
-SCHEMA_VERSION = 1
+SCHEMA_VERSION = 2
 
 #: How many of the ranking the site lists by name. None of it. Who clears the
 #: bar is the one thing in this repository somebody could copy outright, and a
@@ -329,14 +330,18 @@ def _web_payload(
         # The reconciler's own floor, so the page describing the fund quotes
         # the number that will refuse a snapshot rather than one typed beside it.
         "minimumCoverage": MINIMUM_COVERAGE,
-        "portfolioEvents": sorted(
-            int(path.stem.removeprefix("gw"))
-            for path in sorted(PORTFOLIO_DIR.glob("gw*.json"))
-            if path.stem.removeprefix("gw").isdigit()
+        # Distinct series. The original capture asked the whole 2,786-manager
+        # catalogue; it must never be relabelled as the ranked five hundred.
+        "cataloguePortfolio": _portfolio_series(
+            PORTFOLIO_DIR,
+            basis="catalogue-at-deadline",
+            label="Catalogue at deadline",
         ),
-        # Top captains per gameweek, so the armband chart has data as soon as
-        # the first deadline passes. Keyed by event number (string).
-        "portfolioCaptains": _portfolio_captains(),
+        "exactFpl500Portfolio": _portfolio_series(
+            FPL500_PORTFOLIO_DIR,
+            basis="ranked-500",
+            label="Exact FPL500",
+        ),
         # The score at fixed depths, so the shape of the cut is visible without
         # shipping five hundred points to draw it from.
         "scoreAtRank": {
@@ -445,6 +450,58 @@ def _portfolio_captains(directory: Path | None = None) -> dict[str, list[dict[st
         captains.sort(key=lambda row: -row["share"])
         result[stem] = captains[:WEB_TOP_CAPTAINS]
     return result
+
+
+def _portfolio_series(
+    directory: Path,
+    *,
+    basis: str,
+    label: str,
+) -> dict[str, object]:
+    """One explicitly based portfolio series, never merged with another."""
+    events: list[int] = []
+    samples: dict[str, dict[str, object]] = {}
+    for path in sorted(directory.glob("gw*.json")):
+        stem = path.stem.removeprefix("gw")
+        if not stem.isdigit():
+            continue
+        raw = parse_json(path.read_text(encoding="utf-8"), source=str(path))
+        if not isinstance(raw, dict):
+            raise ValueError(f"portfolio capture must be an object: {path}")
+        saved_basis = raw.get("basis", "catalogue-at-deadline")
+        if saved_basis != basis:
+            raise ValueError(f"portfolio basis {saved_basis!r} in {path}; expected {basis!r}")
+        event = int(stem)
+        events.append(event)
+        sample: dict[str, object] = {
+            "capturedAt": raw.get("capturedAt"),
+            "attempted": int(raw.get("attempted", 0)),
+            "responded": int(raw.get("responded", 0)),
+            "counted": int(raw.get("counted", 0)),
+            "coverage": float(raw.get("coverage", 0.0)),
+        }
+        membership = raw.get("membership")
+        if basis == "ranked-500":
+            if not isinstance(membership, dict):
+                raise ValueError(f"ranked-500 portfolio lacks membership provenance: {path}")
+            sample.update(
+                {
+                    "membershipLabel": membership.get("label"),
+                    "membershipSourceTiming": membership.get("sourceTiming"),
+                    "membershipSourceGeneratedAt": membership.get("sourceGeneratedAt"),
+                    "membershipSecondsFromDeadline": membership.get("secondsFromDeadline"),
+                    "membershipSourceCommit": membership.get("sourceCommit"),
+                    "membershipSize": membership.get("size"),
+                }
+            )
+        samples[stem] = sample
+    return {
+        "basis": basis,
+        "label": label,
+        "events": sorted(events),
+        "samples": samples,
+        "captains": _portfolio_captains(directory),
+    }
 
 
 def _histogram(values: Iterable[int]) -> dict[str, int]:

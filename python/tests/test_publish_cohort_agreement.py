@@ -11,7 +11,7 @@ from pathlib import Path
 
 import pytest
 
-from fpl_andres.cli.publish_cohort_agreement import main
+from fpl_andres.cli.publish_cohort_agreement import DEFAULT_PORTFOLIO_DIR, main
 
 
 def _capture(directory: Path, event: int, shares: dict[int, float], counted: int = 500) -> None:
@@ -32,6 +32,9 @@ def _capture(directory: Path, event: int, shares: dict[int, float], counted: int
 
 
 class TestPublishCohortAgreement:
+    def test_default_source_is_the_exact_ranked_500_series(self) -> None:
+        assert DEFAULT_PORTFOLIO_DIR.as_posix().endswith("data/cohort/portfolio/fpl500")
+
     def test_exits_zero_when_no_captures_exist(self, tmp_path: Path) -> None:
         output = tmp_path / "agreement.json"
         code = main(
@@ -94,3 +97,4 @@ class TestPublishCohortAgreement:
         data = json.loads(output.read_text(encoding="utf-8"))
         assert "schemaVersion" in data
         assert "generatedAt" in data
+        assert data["portfolioBasis"] == "ranked-500"

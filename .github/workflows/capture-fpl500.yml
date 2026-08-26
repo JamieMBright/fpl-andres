@@ -88,15 +88,37 @@ jobs:
             echo "No deadline has passed recently. Nothing to capture."
           fi
 
-      - name: Capture the cohort's picks
+      - name: Pin and capture both cohort populations
         if: steps.due.outputs.event != ''
         run: |
           set -o pipefail
-          python -m fpl_andres.cli.capture_cohort_picks \
-            --event "${{ steps.due.outputs.event }}" \
-            | tee -a "$GITHUB_STEP_SUMMARY"
-          python -m fpl_andres.cli.publish_fpl500 \
-            | tee -a "$GITHUB_STEP_SUMMARY"
+          event="${{ steps.due.outputs.event }}"
+          membership="data/cohort/fpl500-membership/gw$(printf '%02d' "$event").json"
+          catalogue="data/cohort/portfolio/gw$(printf '%02d' "$event").json"
+          exact="data/cohort/portfolio/fpl500/gw$(printf '%02d' "$event").json"
+          if [ ! -f "$membership" ]; then
+            python -m fpl_andres.cli.pin_fpl500_membership \
+              --event "$event" \
+              --source-commit "$GITHUB_SHA" \
+              | tee -a "$GITHUB_STEP_SUMMARY"
+          fi
+          if [ ! -f "$catalogue" ]; then
+            python -m fpl_andres.cli.capture_cohort_picks \
+              --event "$event" \
+              | tee -a "$GITHUB_STEP_SUMMARY"
+          else
+            echo "$catalogue already exists; immutable capture retained"
+          fi
+          if [ ! -f "$exact" ]; then
+            python -m fpl_andres.cli.capture_cohort_picks \
+              --event "$event" \
+              --membership "$membership" \
+              --output-dir data/cohort/portfolio/fpl500 \
+              | tee -a "$GITHUB_STEP_SUMMARY"
+          else
+            echo "$exact already exists; immutable capture retained"
+          fi
+          bash scripts/republish-fpl500.sh
 
       - name: Commit the portfolio
         if: steps.due.outputs.event != ''
@@ -105,25 +127,47 @@ jobs:
           # ranking reads to give a place to somebody still playing, and a
           # capture that learned who answered and did not commit it has
           # learned nothing.
-          paths="data/cohort/portfolio data/cohort/absent.json apps/web/src/data/fpl500.json"
+          paths="data/cohort/portfolio data/cohort/fpl500-membership data/cohort/absent.json data/cohort/fpl500.json apps/web/src/data/fpl500.json"
           if [ ! -d data/cohort/portfolio ]; then
             echo "nothing new captured"
             exit 0
           fi
-          npx --yes prettier@3 --write \
-            data/cohort/portfolio/*.json \
-            data/cohort/absent.json \
-            apps/web/src/data/fpl500.json
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          # Staged first, then compared against the index. `git diff` does not
-          # look at untracked files, and every capture here writes a new one, so
-          # comparing the working tree would drop every one of them.
-          git add $paths
+          stage() {
+            # The shared chain runs prettier over every JSON it publishes.
+            bash scripts/republish-fpl500.sh
+            git add $paths
+          }
+          stage
           if git diff --cached --quiet -- $paths; then
             echo "nothing new captured"
             exit 0
           fi
           git commit -m "chore: capture the FPL500 for gameweek ${{ steps.due.outputs.event }}"
-          git pull --rebase --autostash
-          git push
+          for attempt in 1 2 3 4 5; do
+            git pull --rebase --autostash || git rebase --abort || true
+            if git push; then
+              exit 0
+            fi
+            echo "push rejected on attempt $attempt; rebuilding on the base that arrived"
+            rm -rf "$RUNNER_TEMP/keep"
+            mkdir -p "$RUNNER_TEMP/keep"
+            cp -r data/cohort/portfolio "$RUNNER_TEMP/keep/portfolio"
+            cp -r data/cohort/fpl500-membership "$RUNNER_TEMP/keep/fpl500-membership"
+            cp data/cohort/absent.json "$RUNNER_TEMP/keep/absent.json"
+            git fetch origin "$GITHUB_REF_NAME"
+            git reset --hard "origin/$GITHUB_REF_NAME"
+            mkdir -p data/cohort/portfolio data/cohort/fpl500-membership
+            cp -r "$RUNNER_TEMP/keep/portfolio/." data/cohort/portfolio/
+            cp -r "$RUNNER_TEMP/keep/fpl500-membership/." data/cohort/fpl500-membership/
+            cp "$RUNNER_TEMP/keep/absent.json" data/cohort/absent.json
+            stage
+            if git diff --cached --quiet -- $paths; then
+              echo "the base that arrived already carries this capture"
+              exit 0
+            fi
+            git commit -m "chore: capture the FPL500 for gameweek ${{ steps.due.outputs.event }}"
+          done
+          echo "could not push the captured portfolios after five attempts" >&2
+          exit 1

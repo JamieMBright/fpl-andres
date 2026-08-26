@@ -34,7 +34,7 @@ from fpl_andres.cohorts.captain_agreement import (
 from fpl_andres.jsonio import read_json_file
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
-DEFAULT_PORTFOLIO_DIR = REPO_ROOT / "data" / "cohort" / "portfolio"
+DEFAULT_PORTFOLIO_DIR = REPO_ROOT / "data" / "cohort" / "portfolio" / "fpl500"
 DEFAULT_OUTPUT = REPO_ROOT / "data" / "cohort" / "agreement.json"
 
 SCHEMA_VERSION = 1
@@ -103,6 +103,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     payload = {
         "schemaVersion": SCHEMA_VERSION,
         "generatedAt": datetime.now(UTC).isoformat().replace("+00:00", "Z"),
+        "portfolioBasis": "ranked-500",
         "splitThreshold": SPLIT_THRESHOLD,
         "capturedWeeks": len(weeks),
         "contestedWeeks": len(contested),
