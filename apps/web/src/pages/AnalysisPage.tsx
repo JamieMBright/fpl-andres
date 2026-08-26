@@ -34,6 +34,7 @@ import {
   LIVE_SEASON,
   type ScatterView,
 } from "../state/scatter-view";
+import { MINUTES_PER_MATCH } from "../state/season-vintage";
 import { useDocumentTitle } from "../state/use-document-title";
 
 const MAX_PINNED = 4;
@@ -74,6 +75,7 @@ export default function AnalysisPage() {
   const chartRef = useRef<HTMLDivElement>(null);
 
   const view = useMemo(() => readScatterView(searchParams), [searchParams]);
+  const hasMinutesParam = searchParams.has("mins");
 
   const update = useCallback(
     (next: Partial<ScatterView>) => {
@@ -129,6 +131,26 @@ export default function AnalysisPage() {
       update({ season: LIVE_SEASON });
     }
   }, [archiveFailed, view.season, update]);
+
+  useEffect(() => {
+    if (!data || view.season !== LIVE_SEASON) return;
+    if (data.pool.vintage.state !== "live_season") return;
+    const minutesCap = data.pool.vintage.completedGameweeks * MINUTES_PER_MATCH;
+    if (minutesCap <= 0) return;
+    if (hasMinutesParam) {
+      if (view.minMinutes > minutesCap) {
+        update({ minMinutes: minutesCap });
+      }
+      return;
+    }
+    const liveDefault = Math.min(
+      data.pool.vintage.defaultMinimumMinutes,
+      minutesCap,
+    );
+    if (view.minMinutes !== liveDefault) {
+      update({ minMinutes: liveDefault });
+    }
+  }, [data, hasMinutesParam, update, view.minMinutes, view.season]);
 
   const shown = useMemo(() => {
     if (!data) return null;
