@@ -4776,6 +4776,11 @@ h1[tabindex="-1"]:focus-visible {
     flex: 0 0 25%;
   }
 
+  .teletext-strip > .teletext-strip-about {
+    flex-basis: 64px;
+    max-width: 64px;
+  }
+
   .mobile-plan-cta {
     display: block;
     min-height: calc(62px + env(safe-area-inset-bottom, 0px));

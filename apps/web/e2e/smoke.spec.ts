@@ -299,6 +299,11 @@ test("all primary destinations stay visible on a phone", async ({ page }) => {
   }));
   expect(layout.visible).toBe(true);
   expect(layout.rows).toBeLessThanOrEqual(3);
+  await expect(
+    page
+      .getByRole("navigation", { name: "Primary navigation" })
+      .getByRole("link", { name: "About" }),
+  ).toHaveCSS("max-width", "64px");
 });
 
 test("top picks wrap once without shrinking their players", async ({
