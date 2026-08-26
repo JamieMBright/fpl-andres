@@ -72,6 +72,13 @@ jobs:
               --season 2026-27 | tee -a "$GITHUB_STEP_SUMMARY"
           fi
 
+      - name: Build immutable xStart scoring
+        run: |
+          set -o pipefail
+          if [ -f data/live/2026-27/gw01.json ]; then
+            python -m fpl_andres.cli.build_xstart_validation | tee -a "$GITHUB_STEP_SUMMARY"
+          fi
+
       - name: Build the immutable GW1 review
         run: |
           set -o pipefail
@@ -81,11 +88,12 @@ jobs:
 
       - name: Commit new immutable evidence
         run: |
-          paths="data/live data/prospective/gw1-2026-27-corrected.json apps/web/src/data/gw1-review.json"
+          paths="data/live data/prospective/gw1-2026-27-corrected.json apps/web/src/data/gw1-review.json apps/web/src/data/xstart-validation.json"
           npx --yes prettier@3 --write \
             "data/live/**/*.json" \
             data/prospective/gw1-2026-27-corrected.json \
-            apps/web/src/data/gw1-review.json
+            apps/web/src/data/gw1-review.json \
+            apps/web/src/data/xstart-validation.json
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           # A new event is untracked. Stage first or `git diff` cannot see it.

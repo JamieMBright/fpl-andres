@@ -126,7 +126,10 @@ class ProjectionEntry(TypedDict):
     expectedBps: float | None
     bpsDeviation: float | None
     probabilityAppear: float
+    #: Compatibility alias for P(60+) until schema 3 moves readers atomically.
     probabilityStart: float
+    probabilityStartModel: float
+    probabilitySixtyMinutes: float
     appearances: int
     recentMinutes: int
     recentStarts: int
@@ -190,7 +193,14 @@ def _entry(projection: MatchProjection) -> ProjectionEntry:
             round(projection.bps_deviation, 3) if projection.bps_deviation is not None else None
         ),
         "probabilityAppear": round(projection.minutes.probability_appear, 3),
+        # Additive bridge: existing readers still consume `probabilityStart`
+        # as P(60+) until the generated artifact carries both explicit fields.
         "probabilityStart": round(projection.minutes.probability_sixty_minutes, 3),
+        "probabilityStartModel": round(projection.minutes.probability_start, 3),
+        "probabilitySixtyMinutes": round(
+            projection.minutes.probability_sixty_minutes,
+            3,
+        ),
         "appearances": shape.appearances,
         # The closing stretch, which says what a player's role became rather
         # than what it averaged. A January arrival reads correctly here.

@@ -95,6 +95,13 @@ function TeamSection({ team }: { team: ExpectedXiTeam }) {
             {percent.format(team.averageStartProbability)} average xStart.{" "}
             {team.playersQuoted}/{team.quoteFloor} player quotes.
           </p>
+          {team.validation ? (
+            <p className="expected-xi-validation mono">
+              GW1 check · {team.validation.topElevenHits}/
+              {team.validation.actualStarters} starters · Brier{" "}
+              {team.validation.brier.toFixed(3)}
+            </p>
+          ) : null}
         </div>
         <span
           className={`market-provider market-provider-${team.marketStatus}`}
@@ -155,6 +162,50 @@ export default function ExpectedXiPage() {
         My current xStart read, split by market signal, model record, manual
         team news and role prior.
       </p>
+
+      {xi.validation ? (
+        <section
+          aria-labelledby="xstart-score-title"
+          className="expected-xi-validation-summary"
+        >
+          <div>
+            <p className="eyebrow">
+              GW1 score · model {xi.validation.modelVersion}
+            </p>
+            <h2 id="xstart-score-title">The shipped P(60+) field, graded</h2>
+            <p>
+              It was labelled xStart. It was actually P(60+), so I am scoring
+              that field under its real name before replacing it.
+            </p>
+          </div>
+          <dl>
+            <div>
+              <dt>Brier</dt>
+              <dd className="mono">
+                {xi.validation.population.brier.toFixed(3)}
+              </dd>
+            </div>
+            <div>
+              <dt>Players</dt>
+              <dd className="mono">{xi.validation.population.count}</dd>
+            </div>
+            <div>
+              <dt>Top-11 hits</dt>
+              <dd className="mono">
+                {xi.validation.topEleven.hits}/
+                {xi.validation.topEleven.actualStarters}
+              </dd>
+            </div>
+            <div>
+              <dt>Forecast / actual</dt>
+              <dd className="mono">
+                {percent.format(xi.validation.population.meanForecast)} /{" "}
+                {percent.format(xi.validation.population.actualStartRate)}
+              </dd>
+            </div>
+          </dl>
+        </section>
+      ) : null}
 
       <nav aria-label="Expected XI clubs" className="expected-xi-clubs">
         {xi.teams.map((team) => {

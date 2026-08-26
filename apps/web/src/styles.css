@@ -5672,6 +5672,161 @@ h1[tabindex="-1"]:focus-visible {
   overflow-wrap: anywhere;
 }
 
+.expected-xi-validation-summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 0.8fr);
+  gap: 22px;
+  margin: 20px 0 24px;
+  border-block: 1px solid var(--rule);
+  padding: 16px 0;
+}
+
+.expected-xi-validation-summary h2 {
+  margin: 2px 0 6px;
+  font-size: 20px;
+}
+
+.expected-xi-validation-summary p:last-child {
+  max-width: 62ch;
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.expected-xi-validation-summary dl {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  margin: 0;
+  background: var(--rule);
+}
+
+.expected-xi-validation-summary dl > div {
+  background: var(--paper-deep);
+  padding: 10px 12px;
+}
+
+.expected-xi-validation-summary dt {
+  color: var(--ink-soft);
+  font-size: 10px;
+  text-transform: uppercase;
+}
+
+.expected-xi-validation-summary dd {
+  margin: 3px 0 0;
+  font-size: 17px;
+  font-variant-numeric: tabular-nums;
+}
+
+.expected-xi-validation {
+  margin: 4px 0 0;
+  color: var(--ink-soft);
+  font-size: 10px;
+}
+
+.xstart-calibration {
+  margin: clamp(30px, 4vw, 48px) 0;
+  border-block: 1px solid var(--rule);
+  padding: 20px 0 24px;
+}
+
+.xstart-calibration > h2 {
+  margin: 2px 0 8px;
+  font-size: 22px;
+}
+
+.xstart-calibration > p:not(.eyebrow, .xstart-reliability-key) {
+  max-width: 70ch;
+  color: var(--ink-soft);
+  line-height: 1.55;
+}
+
+.xstart-reliability {
+  display: grid;
+  gap: 1px;
+  margin: 18px 0 8px;
+  background: var(--rule);
+}
+
+.xstart-reliability-row {
+  display: grid;
+  grid-template-columns: 64px minmax(120px, 1fr) 96px 50px;
+  align-items: center;
+  gap: 10px;
+  background: var(--paper-deep);
+  padding: 8px 10px;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+
+.xstart-reliability-track {
+  position: relative;
+  display: block;
+  height: 12px;
+  background: color-mix(in srgb, var(--rule) 70%, transparent);
+}
+
+.xstart-reliability-track > span {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  height: 5px;
+}
+
+.xstart-reliability-track .is-forecast {
+  background: var(--fa-gk-teal);
+}
+
+.xstart-reliability-track .is-actual {
+  inset-block-start: 7px;
+  background: var(--fa-gk-hot);
+}
+
+.xstart-reliability-key {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 16px;
+  color: var(--ink-soft);
+  font-size: 11px;
+}
+
+.xstart-reliability-key span {
+  display: inline-block;
+  width: 18px;
+  height: 5px;
+  margin-inline-start: 8px;
+}
+
+.xstart-reliability-key .is-forecast {
+  background: var(--fa-gk-teal);
+}
+
+.xstart-reliability-key .is-actual {
+  background: var(--fa-gk-hot);
+}
+
+.xstart-calibration .squad-table-wrap {
+  margin-top: 12px;
+}
+
+@media (max-width: 620px) {
+  .xstart-reliability-row {
+    grid-template-columns: 58px minmax(90px, 1fr) 84px;
+  }
+
+  .xstart-reliability-row > :last-child {
+    display: none;
+  }
+}
+
+@media (max-width: 680px) {
+  .expected-xi-validation-summary {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (max-width: 560px) {
   .gw1-review-heading {
     align-items: start;

@@ -2,6 +2,11 @@ import playerOddsData from "../data/player-odds.json";
 import seasonInputsData from "../data/season-inputs.json";
 import manualPriorsData from "../data/xstart-manual-priors.json";
 import { TEAM_KITS } from "../kit/team-kits";
+import {
+  XSTART_VALIDATION,
+  type XStartClubValidation,
+  type XStartValidation,
+} from "./xstart-validation";
 
 type PositionCode = "GKP" | "DEF" | "MID" | "FWD";
 
@@ -113,12 +118,14 @@ export interface ExpectedXiTeam {
   unmatchedNames: readonly string[];
   teamSheetEvidence: "dated" | "unavailable";
   updatedAt: string | null;
+  validation?: XStartClubValidation;
 }
 
 export interface ExpectedXi {
   generatedAt: string;
   marketUpdatedAt: string | null;
   teams: ExpectedXiTeam[];
+  validation?: XStartValidation;
 }
 
 interface ExpectedXiInputs {
@@ -381,9 +388,20 @@ export function buildExpectedXi(inputs: ExpectedXiInputs): ExpectedXi {
 }
 
 export function expectedXi(): ExpectedXi {
-  return buildExpectedXi({
+  const built = buildExpectedXi({
     seasonInputs: seasonInputsData as SeasonInputsArtifact,
     playerOdds: playerOddsData as PlayerOddsArtifact,
     manualPriors: manualPriorsData as ManualPriorArtifact,
   });
+  const validationByClub = new Map(
+    XSTART_VALIDATION.clubs.map((club) => [club.club, club]),
+  );
+  return {
+    ...built,
+    validation: XSTART_VALIDATION,
+    teams: built.teams.map((team) => {
+      const validation = validationByClub.get(team.club);
+      return validation ? { ...team, validation } : team;
+    }),
+  };
 }

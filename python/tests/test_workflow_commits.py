@@ -258,13 +258,17 @@ def test_live_capture_builds_the_review_after_the_settled_snapshot() -> None:
     text = (WORKFLOWS / "capture-live-gameweek.yml").read_text(encoding="utf-8")
 
     capture = text.index("python -m fpl_andres.cli.capture_live_gameweek")
-    review = text.index("python -m fpl_andres.cli.build_gw1_review", capture)
+    xstart = text.index("python -m fpl_andres.cli.build_xstart_validation", capture)
+    review = text.index("python -m fpl_andres.cli.build_gw1_review", xstart)
+    xstart_step = text.rindex("- name:", 0, xstart)
     review_step = text.rindex("- name:", 0, review)
     staging = text.index("git add $paths", review)
     comparison = text.index("git diff --cached --quiet", staging)
-    assert capture < review < staging < comparison
+    assert capture < xstart < review < staging < comparison
+    assert "set -o pipefail" in text[xstart_step:xstart]
     assert "set -o pipefail" in text[review_step:review]
     assert "fetch-depth: 0" in text
+    assert text.count("apps/web/src/data/xstart-validation.json") >= 2
 
 
 def test_deadlines_are_shipped_data_not_cohort_evidence() -> None:

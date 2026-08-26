@@ -24,6 +24,7 @@ describe("recommendation API deployment", () => {
       "player-odds.json",
       "fixture-odds.json",
       "xstart-manual-priors.json",
+      "xstart-validation.json",
     ]) {
       expect(SOURCE, artifact).toMatch(
         new RegExp(`import [^;]+${artifact.replace(".", "\\.")}`),
@@ -93,5 +94,33 @@ describe("recommendation API deployment", () => {
       captain: { position: expect.stringMatching(/^(MID|FWD)$/) },
       viceCaptain: { position: expect.stringMatching(/^(MID|FWD)$/) },
     });
+
+    let xstartBody: unknown;
+    xstartHandler(
+      {
+        method: "GET",
+        headers: { "x-real-ip": "198.51.100.2" },
+      } as unknown as VercelRequest,
+      {
+        setHeader() {
+          return this;
+        },
+        status() {
+          return this;
+        },
+        json(value: unknown) {
+          xstartBody = value;
+          return this;
+        },
+      } as unknown as VercelResponse,
+    );
+    expect(xstartBody).toMatchObject({
+      shippedFieldValidation: {
+        event: 1,
+        field: "probabilitySixtyMinutesAsShipped",
+        population: { count: 486, brier: 0.230679 },
+      },
+    });
+    expect(SOURCE).toContain("XSTART_VALIDATION_SCHEMA_VERSION");
   });
 });

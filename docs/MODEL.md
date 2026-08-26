@@ -58,7 +58,15 @@ week. There is no minutes cutoff anywhere: see §9 for why.
 starter badly once decay is applied.
 
 **Calibration.** Measured across the corpus, predicted `P(appear)` sits within
-**0.07** of the observed rate and `P(60)` is close to exact.
+**0.07** of the observed rate and `P(60)` is close to exact. The 2026/27 GW1
+artifact exposed a publication defect rather than a model identity: the field
+labelled `probabilityStart` was P(60+), while the model's distinct P(start) was
+not published. That exact shipped field is retained and scored before migration:
+486 players, Brier 0.230679, clipped log loss 0.658683, mean forecast 0.496267
+against a 0.448560 start rate, and 128 hits among 218 observable club starters.
+The transition first publishes additive `probabilityStartModel` and
+`probabilitySixtyMinutes`; readers change meaning only after those generated
+artifacts exist.
 
 ---
 

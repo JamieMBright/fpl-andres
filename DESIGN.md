@@ -285,7 +285,7 @@ Every remote surface implements idle, loading, ready, stale, degraded and error.
 
 ## Component inventory
 
-Forty-eight components in `apps/web/src/components`. The column
+Forty-nine components in `apps/web/src/components`. The column
 that matters is the last one: what a browser journey already proves about each,
 so a review knows what it does not have to check by hand.
 
@@ -332,6 +332,7 @@ so a review knows what it does not have to check by hand.
 | `ScatterReadout`          | The scatter as a ranked, pinnable table                  | unit                                 |
 | `PinnedPlayers`           | Up to four players compared side by side                 | unit                                 |
 | `ValidationReport`        | Backtest metrics against baselines                       | unit (`ValidationReport.test.tsx`)   |
+| `XStartCalibration`       | GW1 reliability and per-club xStart scoring              | unit (`XStartCalibration.test.tsx`)  |
 | `SeasonReplay`            | A completed season stepped through week by week          | unit (`SeasonReplay.test.tsx`)       |
 | `CalibrationCharts`       | Ranked bars and season lines, drawn by hand              | unit                                 |
 | `CohortPanel`             | The swept cohort and its coverage                        | —                                    |

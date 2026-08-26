@@ -1,0 +1,351 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-08-26T16:26:47.030564Z",
+  "season": "2026-27",
+  "event": 1,
+  "modelVersion": "8.6",
+  "evidence": {
+    "frozenRevision": "20d43acd502730f7281d196f0584bb8c610965a7",
+    "frozenAt": "2026-08-21T09:44:27+00:00",
+    "liveSourceHash": "sha256:0974be7e805ad6b65b3345bee327fee541c4e445837b2871473ed9ba1d794d87",
+    "liveCapturedAt": "2026-08-26T16:26:47.030564Z",
+    "level": "observed"
+  },
+  "field": "probabilitySixtyMinutesAsShipped",
+  "population": {
+    "count": 486,
+    "brier": 0.230679,
+    "logLoss": 0.658683,
+    "meanForecast": 0.496267,
+    "actualStartRate": 0.44856
+  },
+  "topEleven": {
+    "hits": 128,
+    "actualStarters": 218,
+    "recall": 0.587156
+  },
+  "reliability": [
+    {
+      "label": "0.0-0.1",
+      "lower": 0.0,
+      "upper": 0.1,
+      "count": 11,
+      "brier": 0.083102,
+      "logLoss": 0.305438,
+      "meanForecast": 0.059545,
+      "actualStartRate": 0.090909
+    },
+    {
+      "label": "0.1-0.2",
+      "lower": 0.1,
+      "upper": 0.2,
+      "count": 19,
+      "brier": 0.207751,
+      "logLoss": 0.626593,
+      "meanForecast": 0.157737,
+      "actualStartRate": 0.263158
+    },
+    {
+      "label": "0.2-0.3",
+      "lower": 0.2,
+      "upper": 0.3,
+      "count": 49,
+      "brier": 0.211771,
+      "logLoss": 0.61482,
+      "meanForecast": 0.247878,
+      "actualStartRate": 0.306122
+    },
+    {
+      "label": "0.3-0.4",
+      "lower": 0.3,
+      "upper": 0.4,
+      "count": 81,
+      "brier": 0.234846,
+      "logLoss": 0.663307,
+      "meanForecast": 0.362728,
+      "actualStartRate": 0.358025
+    },
+    {
+      "label": "0.4-0.5",
+      "lower": 0.4,
+      "upper": 0.5,
+      "count": 96,
+      "brier": 0.235772,
+      "logLoss": 0.664527,
+      "meanForecast": 0.445,
+      "actualStartRate": 0.354167
+    },
+    {
+      "label": "0.5-0.6",
+      "lower": 0.5,
+      "upper": 0.6,
+      "count": 104,
+      "brier": 0.261068,
+      "logLoss": 0.715595,
+      "meanForecast": 0.55375,
+      "actualStartRate": 0.471154
+    },
+    {
+      "label": "0.6-0.7",
+      "lower": 0.6,
+      "upper": 0.7,
+      "count": 48,
+      "brier": 0.232061,
+      "logLoss": 0.655885,
+      "meanForecast": 0.649354,
+      "actualStartRate": 0.604167
+    },
+    {
+      "label": "0.7-0.8",
+      "lower": 0.7,
+      "upper": 0.8,
+      "count": 34,
+      "brier": 0.221707,
+      "logLoss": 0.636909,
+      "meanForecast": 0.741912,
+      "actualStartRate": 0.676471
+    },
+    {
+      "label": "0.8-0.9",
+      "lower": 0.8,
+      "upper": 0.9,
+      "count": 16,
+      "brier": 0.110565,
+      "logLoss": 0.381062,
+      "meanForecast": 0.841437,
+      "actualStartRate": 0.875
+    },
+    {
+      "label": "0.9-1.0",
+      "lower": 0.9,
+      "upper": 1.0,
+      "count": 28,
+      "brier": 0.272079,
+      "logLoss": 0.841062,
+      "meanForecast": 0.922857,
+      "actualStartRate": 0.678571
+    }
+  ],
+  "clubs": [
+    {
+      "club": "ARS",
+      "count": 25,
+      "brier": 0.239791,
+      "logLoss": 0.671623,
+      "meanForecast": 0.41592,
+      "actualStartRate": 0.44,
+      "topElevenHits": 5,
+      "actualStarters": 11,
+      "topElevenRecall": 0.454545
+    },
+    {
+      "club": "AVL",
+      "count": 22,
+      "brier": 0.31613,
+      "logLoss": 0.859286,
+      "meanForecast": 0.534091,
+      "actualStartRate": 0.454545,
+      "topElevenHits": 4,
+      "actualStarters": 10,
+      "topElevenRecall": 0.4
+    },
+    {
+      "club": "BHA",
+      "count": 23,
+      "brier": 0.187036,
+      "logLoss": 0.581854,
+      "meanForecast": 0.525304,
+      "actualStartRate": 0.478261,
+      "topElevenHits": 9,
+      "actualStarters": 11,
+      "topElevenRecall": 0.818182
+    },
+    {
+      "club": "BOU",
+      "count": 17,
+      "brier": 0.152478,
+      "logLoss": 0.466197,
+      "meanForecast": 0.610647,
+      "actualStartRate": 0.647059,
+      "topElevenHits": 9,
+      "actualStarters": 11,
+      "topElevenRecall": 0.818182
+    },
+    {
+      "club": "BRE",
+      "count": 23,
+      "brier": 0.189961,
+      "logLoss": 0.553186,
+      "meanForecast": 0.580739,
+      "actualStartRate": 0.478261,
+      "topElevenHits": 8,
+      "actualStarters": 11,
+      "topElevenRecall": 0.727273
+    },
+    {
+      "club": "CHE",
+      "count": 33,
+      "brier": 0.243466,
+      "logLoss": 0.689196,
+      "meanForecast": 0.456758,
+      "actualStartRate": 0.333333,
+      "topElevenHits": 5,
+      "actualStarters": 11,
+      "topElevenRecall": 0.454545
+    },
+    {
+      "club": "COV",
+      "count": 30,
+      "brier": 0.312234,
+      "logLoss": 0.830201,
+      "meanForecast": 0.457767,
+      "actualStartRate": 0.366667,
+      "topElevenHits": 1,
+      "actualStarters": 11,
+      "topElevenRecall": 0.090909
+    },
+    {
+      "club": "CRY",
+      "count": 29,
+      "brier": 0.232105,
+      "logLoss": 0.675232,
+      "meanForecast": 0.477276,
+      "actualStartRate": 0.344828,
+      "topElevenHits": 7,
+      "actualStarters": 10,
+      "topElevenRecall": 0.7
+    },
+    {
+      "club": "EVE",
+      "count": 21,
+      "brier": 0.263479,
+      "logLoss": 0.771801,
+      "meanForecast": 0.518333,
+      "actualStartRate": 0.52381,
+      "topElevenHits": 7,
+      "actualStarters": 11,
+      "topElevenRecall": 0.636364
+    },
+    {
+      "club": "FUL",
+      "count": 21,
+      "brier": 0.21508,
+      "logLoss": 0.610482,
+      "meanForecast": 0.479762,
+      "actualStartRate": 0.52381,
+      "topElevenHits": 7,
+      "actualStarters": 11,
+      "topElevenRecall": 0.636364
+    },
+    {
+      "club": "HUL",
+      "count": 22,
+      "brier": 0.248968,
+      "logLoss": 0.685132,
+      "meanForecast": 0.548591,
+      "actualStartRate": 0.5,
+      "topElevenHits": 5,
+      "actualStarters": 11,
+      "topElevenRecall": 0.454545
+    },
+    {
+      "club": "IPS",
+      "count": 29,
+      "brier": 0.291497,
+      "logLoss": 0.802405,
+      "meanForecast": 0.489207,
+      "actualStartRate": 0.37931,
+      "topElevenHits": 3,
+      "actualStarters": 11,
+      "topElevenRecall": 0.272727
+    },
+    {
+      "club": "LEE",
+      "count": 18,
+      "brier": 0.174089,
+      "logLoss": 0.556488,
+      "meanForecast": 0.510667,
+      "actualStartRate": 0.611111,
+      "topElevenHits": 10,
+      "actualStarters": 11,
+      "topElevenRecall": 0.909091
+    },
+    {
+      "club": "LIV",
+      "count": 26,
+      "brier": 0.201752,
+      "logLoss": 0.581727,
+      "meanForecast": 0.480077,
+      "actualStartRate": 0.423077,
+      "topElevenHits": 6,
+      "actualStarters": 11,
+      "topElevenRecall": 0.545455
+    },
+    {
+      "club": "MCI",
+      "count": 24,
+      "brier": 0.183715,
+      "logLoss": 0.548455,
+      "meanForecast": 0.462375,
+      "actualStartRate": 0.458333,
+      "topElevenHits": 8,
+      "actualStarters": 11,
+      "topElevenRecall": 0.727273
+    },
+    {
+      "club": "MUN",
+      "count": 25,
+      "brier": 0.219582,
+      "logLoss": 0.624416,
+      "meanForecast": 0.49864,
+      "actualStartRate": 0.44,
+      "topElevenHits": 6,
+      "actualStarters": 11,
+      "topElevenRecall": 0.545455
+    },
+    {
+      "club": "NEW",
+      "count": 23,
+      "brier": 0.234158,
+      "logLoss": 0.649369,
+      "meanForecast": 0.437348,
+      "actualStartRate": 0.478261,
+      "topElevenHits": 5,
+      "actualStarters": 11,
+      "topElevenRecall": 0.454545
+    },
+    {
+      "club": "NFO",
+      "count": 26,
+      "brier": 0.168988,
+      "logLoss": 0.521116,
+      "meanForecast": 0.441808,
+      "actualStartRate": 0.423077,
+      "topElevenHits": 9,
+      "actualStarters": 11,
+      "topElevenRecall": 0.818182
+    },
+    {
+      "club": "SUN",
+      "count": 21,
+      "brier": 0.190975,
+      "logLoss": 0.559549,
+      "meanForecast": 0.555667,
+      "actualStartRate": 0.52381,
+      "topElevenHits": 8,
+      "actualStarters": 11,
+      "topElevenRecall": 0.727273
+    },
+    {
+      "club": "TOT",
+      "count": 28,
+      "brier": 0.275605,
+      "logLoss": 0.772919,
+      "meanForecast": 0.53225,
+      "actualStartRate": 0.392857,
+      "topElevenHits": 6,
+      "actualStarters": 11,
+      "topElevenRecall": 0.545455
+    }
+  ]
+}

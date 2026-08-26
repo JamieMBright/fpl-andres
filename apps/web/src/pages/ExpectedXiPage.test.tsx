@@ -18,7 +18,15 @@ describe("Expected XI page", () => {
       screen.getByRole("navigation", { name: "Expected XI clubs" }),
     ).toBeVisible();
     expect(screen.getAllByRole("link")).toHaveLength(20);
-    expect(screen.getAllByRole("heading", { level: 2 })).toHaveLength(20);
+    expect(screen.getAllByRole("heading", { level: 2 })).toHaveLength(21);
+    expect(
+      screen.getByRole("heading", { name: "The shipped P(60+) field, graded" }),
+    ).toBeVisible();
+    expect(document.body).toHaveTextContent("0.231");
+    expect(document.body).toHaveTextContent("128/218");
+    expect(document.body).toHaveTextContent(
+      "GW1 check · 10/11 starters · Brier 0.174",
+    );
     const players = expectedXi().teams.flatMap((team) => [
       ...team.starters,
       ...team.reserves,

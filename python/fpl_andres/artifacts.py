@@ -42,6 +42,9 @@ SEASON_PLAN_SCHEMA_VERSION: Final = 2
 #: Immutable event-1 scorecard against the pre-deadline projection.
 GW1_REVIEW_SCHEMA_VERSION: Final = 1
 
+#: Population, reliability and club xStart scoring for one settled event.
+XSTART_VALIDATION_SCHEMA_VERSION: Final = 1
+
 #: Understat shot quality and penalty exposure, keyed by FPL code.
 UNDERSTAT_SCHEMA_VERSION: Final = 1
 
@@ -57,4 +60,5 @@ __all__ = [
     "SEASON_INPUTS_SCHEMA_VERSION",
     "SEASON_PLAN_SCHEMA_VERSION",
     "UNDERSTAT_SCHEMA_VERSION",
+    "XSTART_VALIDATION_SCHEMA_VERSION",
 ]

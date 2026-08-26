@@ -81,9 +81,20 @@ function rowsFor(player: DetailPlayer, record: PlayerProjection | null): Row[] {
     },
     {
       term: "Starts",
-      value: percent(record.probabilityStart),
-      explains: "How often he was in the starting eleven when available.",
-      band: band("probabilityStart", record.probabilityStart),
+      value: percent(record.probabilityStartModel),
+      explains:
+        "Probability of being named in the starting eleven. Blank until the additive migration artifact is published.",
+      band:
+        record.probabilityStartModel === undefined
+          ? null
+          : band("probabilityStart", record.probabilityStartModel),
+    },
+    {
+      term: "Reaches 60",
+      value: percent(record.probabilitySixtyMinutes ?? record.probabilityStart),
+      explains:
+        "Probability of reaching the 60-minute scoring threshold. This is the field the old artifact labelled Starts.",
+      band: null,
     },
     {
       term: "Appears",

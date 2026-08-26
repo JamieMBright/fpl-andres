@@ -5,9 +5,11 @@ import playerOddsData from "../../apps/web/src/data/player-odds.json" with { typ
 import seasonInputsData from "../../apps/web/src/data/season-inputs.json" with { type: "json" };
 import seasonPlanData from "../../apps/web/src/data/season-plan.json" with { type: "json" };
 import manualPriorsData from "../../apps/web/src/data/xstart-manual-priors.json" with { type: "json" };
+import xstartValidationData from "../../apps/web/src/data/xstart-validation.json" with { type: "json" };
 import {
   requireArtifactVersion,
   SEASON_PLAN_SCHEMA_VERSION,
+  XSTART_VALIDATION_SCHEMA_VERSION,
 } from "../../apps/web/src/state/artifact-version.js";
 
 import {
@@ -100,14 +102,44 @@ interface FixtureOddsArtifact {
   fixtures: unknown[];
 }
 
+interface XStartValidationArtifact {
+  schemaVersion: number;
+  event: number;
+  modelVersion: string;
+  field: string;
+  population: {
+    count: number;
+    brier: number;
+    logLoss: number;
+    meanForecast: number;
+    actualStartRate: number;
+  };
+  topEleven: { hits: number; actualStarters: number; recall: number | null };
+  clubs: unknown[];
+}
+
 const limiter = new RateLimiter(RECOMMENDATIONS_POLICY);
 const PLAN = seasonPlanData as unknown as PlanArtifact;
 const INPUTS = seasonInputsData as unknown as SeasonInputsArtifact;
 const PLAYER_ODDS = playerOddsData as unknown as PlayerOddsArtifact;
 const FIXTURE_ODDS = fixtureOddsData as unknown as FixtureOddsArtifact;
 const MANUAL_PRIORS = manualPriorsData as unknown as ManualPriorsArtifact;
+const XSTART_VALIDATION =
+  xstartValidationData as unknown as XStartValidationArtifact;
 
 requireArtifactVersion("season-plan", PLAN, SEASON_PLAN_SCHEMA_VERSION);
+requireArtifactVersion(
+  "xstart-validation",
+  XSTART_VALIDATION,
+  XSTART_VALIDATION_SCHEMA_VERSION,
+);
+if (
+  XSTART_VALIDATION.field !== "probabilitySixtyMinutesAsShipped" ||
+  !Array.isArray(XSTART_VALIDATION.clubs) ||
+  XSTART_VALIDATION.clubs.length !== 20
+) {
+  throw new Error("xstart-validation is missing its shipped field and clubs");
+}
 
 function planPlayer(plan: PlanArtifact, code: number): PlanPlayer {
   const found = plan.players[String(code)];
@@ -197,6 +229,7 @@ function xstart() {
       INPUTS.evidence?.playerMarkets?.updatedAt ?? PLAYER_ODDS.fetchedAt,
     manualUpdatedAt: MANUAL_PRIORS.generatedAt,
     modelVersion: PLAN.modelVersion,
+    shippedFieldValidation: XSTART_VALIDATION,
     teams: [...byClub].sort().map(([club, players]) => {
       const manualKeeper = MANUAL_PRIORS.players.find(
         (row) => row.club === club && row.startProbability >= 0.99,

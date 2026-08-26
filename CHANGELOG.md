@@ -8,6 +8,12 @@ The project follows Semantic Versioning once milestone tags begin.
 
 ### Added
 
+- xStart now has an immutable GW1 score over 486 players, with Brier, clipped
+  log loss, reliability bands and all 20 club top-11 results on Expected XI,
+  Calibration and the recommendation API. The score labels the shipped field
+  honestly as P(60+): its Brier was 0.231 and it forecast 49.6% against a 44.9%
+  actual start rate. Projection publication now carries additive true-P(start)
+  and P(60+) bridge fields before readers migrate atomically.
 - The manager plan now reviews GW1 on a club-kit pitch against the exact model
   8.6 xPts frozen before the deadline. Raw player points determine each grade;
   the observed Raya captain multiplier appears only in the 56-point team total.

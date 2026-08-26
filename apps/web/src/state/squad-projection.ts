@@ -30,7 +30,12 @@ export interface PlayerProjection {
   ceilingRatio: number;
   expectedMinutes: number;
   probabilityAppear: number;
+  /** Legacy alias for P(60+) until projections schema 3. */
   probabilityStart: number;
+  /** Additive migration field: the minutes model's true P(start). */
+  probabilityStartModel?: number;
+  /** Additive migration field: reaches the 60-minute scoring threshold. */
+  probabilitySixtyMinutes?: number;
   appearances: number;
   floor: number | null;
   median: number | null;

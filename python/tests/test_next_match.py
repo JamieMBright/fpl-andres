@@ -8,6 +8,7 @@ follows a player between seasons, and stay silent about anyone without evidence.
 from __future__ import annotations
 
 import unittest
+from dataclasses import replace
 from datetime import UTC, datetime, timedelta
 
 from fpl_andres.backtesting.corpus import ElementRow, SeasonCorpus
@@ -120,6 +121,33 @@ class ProjectNextMatchTest(unittest.TestCase):
         artifact = _entry(projection)
         self.assertEqual(artifact["expectedBps"], round(projection.expected_bps, 3))
         self.assertEqual(artifact["bpsDeviation"], round(projection.bps_deviation, 3))
+
+    def test_publishes_start_and_sixty_minute_probabilities_separately(self) -> None:
+        corpus = _corpus(with_fixtures=False)
+        corpus.rows_by_gameweek[20][0] = replace(
+            corpus.rows_by_gameweek[20][0],
+            minutes=45,
+            started=True,
+        )
+        [projection] = [entry for entry in project_next_match(corpus) if entry.element_id == STEADY]
+        artifact = _entry(projection)
+
+        self.assertNotEqual(
+            projection.minutes.probability_start,
+            projection.minutes.probability_sixty_minutes,
+        )
+        self.assertEqual(
+            artifact["probabilityStartModel"],
+            round(projection.minutes.probability_start, 3),
+        )
+        self.assertEqual(
+            artifact["probabilitySixtyMinutes"],
+            round(projection.minutes.probability_sixty_minutes, 3),
+        )
+        self.assertEqual(
+            artifact["probabilityStart"],
+            artifact["probabilitySixtyMinutes"],
+        )
 
     def test_keys_on_the_code_that_survives_the_season(self) -> None:
         codes = {entry.code for entry in project_next_match(_corpus(with_fixtures=False))}

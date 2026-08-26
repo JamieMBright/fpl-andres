@@ -22,6 +22,7 @@ export const PROJECTIONS_META_SCHEMA_VERSION = 1;
 export const OPENING_SQUAD_SCHEMA_VERSION = 1;
 export const SEASON_PLAN_SCHEMA_VERSION = 2;
 export const GW1_REVIEW_SCHEMA_VERSION = 1;
+export const XSTART_VALIDATION_SCHEMA_VERSION = 1;
 export const UNDERSTAT_SCHEMA_VERSION = 1;
 
 export class ArtifactVersionError extends Error {

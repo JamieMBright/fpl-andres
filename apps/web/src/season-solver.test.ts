@@ -162,13 +162,18 @@ describe("season inputs artifact", () => {
 
 describe("solveSeason", () => {
   it(
-    "treats the published opening squad as a GW1 fixpoint",
+    "starts the first remaining gameweek from the archived opening squad",
     () => {
       const opener = solveSeason(openingStart()).next().value;
 
       expect(opener).toBeDefined();
-      expect(opener?.transfersIn.map((player) => player.code)).toEqual([]);
-      expect(opener?.transfersOut.map((player) => player.code)).toEqual([]);
+      expect(opener?.event).toBe(SEASON_EVENTS[0]);
+      expect(opener?.transfersIn).toHaveLength(1);
+      expect(opener?.transfersOut).toHaveLength(1);
+      expect(opener?.transfersIn[0]?.position).toBe(
+        opener?.transfersOut[0]?.position,
+      );
+      expect(opener?.transferCostPoints).toBe(0);
     },
     SOLVE_TIMEOUT,
   );

@@ -1,6 +1,7 @@
 import { CohortPanel } from "../components/CohortPanel";
 import { RouteHeading } from "../components/RouteHeading";
 import { ValidationReport } from "../components/ValidationReport";
+import { XStartCalibration } from "../components/XStartCalibration";
 import { useDocumentTitle } from "../state/use-document-title";
 
 export default function CalibrationPage() {
@@ -18,6 +19,7 @@ export default function CalibrationPage() {
         against completed seasons, including the ones I lose.
       </p>
       <ValidationReport />
+      <XStartCalibration />
       <CohortPanel />
     </section>
   );

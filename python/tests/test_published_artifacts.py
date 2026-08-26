@@ -44,6 +44,7 @@ def _require_keys(payload: dict[str, Any], expected: set[str], label: str) -> No
         "projections-meta",
         "fpl500",
         "gw1-review",
+        "xstart-validation",
     ],
 )
 def test_every_artifact_records_when_it_was_generated(name: str) -> None:
@@ -261,6 +262,31 @@ def test_gw1_review_shape() -> None:
         "below",
         "haul",
     }
+
+
+def test_xstart_validation_shape() -> None:
+    payload = _artifact("xstart-validation")
+    _require_keys(
+        payload,
+        {
+            "clubs",
+            "event",
+            "evidence",
+            "field",
+            "generatedAt",
+            "modelVersion",
+            "population",
+            "reliability",
+            "schemaVersion",
+            "season",
+            "topEleven",
+        },
+        "xstart-validation",
+    )
+    assert payload["field"] == "probabilitySixtyMinutesAsShipped"
+    assert payload["population"]["count"] == 486
+    assert len(payload["clubs"]) == 20
+    assert payload["evidence"]["level"] == "observed"
 
 
 def test_the_published_squad_is_legal() -> None:
