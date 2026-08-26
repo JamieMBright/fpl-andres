@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-21T05:34:51.632906+00:00",
+  "generatedAt": "2026-08-26T06:05:38.995445+00:00",
   "modelVersion": "8.6",
   "captainEvidenceScope": "model_owned_xi",
   "seasons": [
@@ -46,11 +46,11 @@
           "hitNetGain": 60.0
         },
         "benchmark": {
-          "managers": 2675,
-          "beaten": 79,
-          "percentile": 3.0,
+          "managers": 15796,
+          "beaten": 7698,
+          "percentile": 48.7,
           "best": 2776,
-          "medianPoints": 2567
+          "medianPoints": 2331
         },
         "weeks": [
           {
@@ -1501,16 +1501,16 @@
               "rankCutoff": 2000000,
               "status": "inside",
               "inside": {
-                "rank": 1997316,
+                "rank": 1998836,
                 "points": 2258
               },
               "outside": {
                 "rank": 2000271,
                 "points": 2257
               },
-              "rankGap": 2955,
+              "rankGap": 1435,
               "pointsGap": 1,
-              "sampleSize": 8082
+              "sampleSize": 15513
             },
             "rankReason": null
           },
@@ -1621,16 +1621,16 @@
               "rankCutoff": null,
               "status": "outside",
               "inside": {
-                "rank": 2997777,
-                "points": 2177
+                "rank": 2999637,
+                "points": 2176
               },
               "outside": {
                 "rank": 3001167,
                 "points": 2176
               },
-              "rankGap": 3390,
-              "pointsGap": 1,
-              "sampleSize": 8082
+              "rankGap": 1530,
+              "pointsGap": 0,
+              "sampleSize": 15513
             },
             "rankReason": null
           },
@@ -1741,16 +1741,16 @@
               "rankCutoff": null,
               "status": "outside",
               "inside": {
-                "rank": 2997777,
-                "points": 2177
+                "rank": 2999637,
+                "points": 2176
               },
               "outside": {
                 "rank": 3001167,
                 "points": 2176
               },
-              "rankGap": 3390,
-              "pointsGap": 1,
-              "sampleSize": 8082
+              "rankGap": 1530,
+              "pointsGap": 0,
+              "sampleSize": 15513
             },
             "rankReason": null
           },
@@ -1857,16 +1857,16 @@
               "rankCutoff": null,
               "status": "outside",
               "inside": {
-                "rank": 2997777,
-                "points": 2177
+                "rank": 2999637,
+                "points": 2176
               },
               "outside": {
                 "rank": 3001167,
                 "points": 2176
               },
-              "rankGap": 3390,
-              "pointsGap": 1,
-              "sampleSize": 8082
+              "rankGap": 1530,
+              "pointsGap": 0,
+              "sampleSize": 15513
             },
             "rankReason": null
           }
@@ -1918,11 +1918,11 @@
           "hitNetGain": -12.0
         },
         "benchmark": {
-          "managers": 2712,
-          "beaten": 223,
-          "percentile": 8.2,
+          "managers": 17616,
+          "beaten": 11784,
+          "percentile": 66.9,
           "best": 2738,
-          "medianPoints": 2570
+          "medianPoints": 2266
         },
         "weeks": [
           {
@@ -3288,16 +3288,16 @@
               "rankCutoff": 1000000,
               "status": "inside",
               "inside": {
-                "rank": 998831,
+                "rank": 999206,
                 "points": 2304
               },
               "outside": {
-                "rank": 1000485,
+                "rank": 1000072,
                 "points": 2304
               },
-              "rankGap": 1654,
+              "rankGap": 866,
               "pointsGap": 0,
-              "sampleSize": 9224
+              "sampleSize": 17679
             },
             "rankReason": null
           },
@@ -3418,7 +3418,7 @@
               },
               "rankGap": 447,
               "pointsGap": 0,
-              "sampleSize": 9224
+              "sampleSize": 17679
             },
             "rankReason": null
           },
@@ -3534,12 +3534,12 @@
                 "points": 2140
               },
               "outside": {
-                "rank": 3000476,
+                "rank": 3000154,
                 "points": 2140
               },
-              "rankGap": 1301,
+              "rankGap": 979,
               "pointsGap": 0,
-              "sampleSize": 9224
+              "sampleSize": 17679
             },
             "rankReason": null
           },
@@ -3650,12 +3650,12 @@
                 "points": 2140
               },
               "outside": {
-                "rank": 3000476,
+                "rank": 3000154,
                 "points": 2140
               },
-              "rankGap": 1301,
+              "rankGap": 979,
               "pointsGap": 0,
-              "sampleSize": 9224
+              "sampleSize": 17679
             },
             "rankReason": null
           }
@@ -3707,11 +3707,11 @@
           "hitNetGain": 30.0
         },
         "benchmark": {
-          "managers": 2723,
-          "beaten": 10,
-          "percentile": 0.4,
+          "managers": 19780,
+          "beaten": 3628,
+          "percentile": 18.3,
           "best": 2756,
-          "medianPoints": 2548
+          "medianPoints": 2292
         },
         "weeks": [
           {
@@ -5109,16 +5109,16 @@
               "rankCutoff": null,
               "status": "outside",
               "inside": {
-                "rank": 2999790,
+                "rank": 2999974,
                 "points": 2190
               },
               "outside": {
-                "rank": 3002834,
-                "points": 2189
+                "rank": 3000150,
+                "points": 2190
               },
-              "rankGap": 3044,
-              "pointsGap": 1,
-              "sampleSize": 10410
+              "rankGap": 176,
+              "pointsGap": 0,
+              "sampleSize": 20076
             },
             "rankReason": null
           },
@@ -5230,16 +5230,16 @@
               "rankCutoff": null,
               "status": "outside",
               "inside": {
-                "rank": 2999790,
+                "rank": 2999974,
                 "points": 2190
               },
               "outside": {
-                "rank": 3002834,
-                "points": 2189
+                "rank": 3000150,
+                "points": 2190
               },
-              "rankGap": 3044,
-              "pointsGap": 1,
-              "sampleSize": 10410
+              "rankGap": 176,
+              "pointsGap": 0,
+              "sampleSize": 20076
             },
             "rankReason": null
           },
@@ -5351,16 +5351,16 @@
               "rankCutoff": null,
               "status": "outside",
               "inside": {
-                "rank": 2999790,
+                "rank": 2999974,
                 "points": 2190
               },
               "outside": {
-                "rank": 3002834,
-                "points": 2189
+                "rank": 3000150,
+                "points": 2190
               },
-              "rankGap": 3044,
-              "pointsGap": 1,
-              "sampleSize": 10410
+              "rankGap": 176,
+              "pointsGap": 0,
+              "sampleSize": 20076
             },
             "rankReason": null
           },
@@ -5467,16 +5467,16 @@
               "rankCutoff": null,
               "status": "outside",
               "inside": {
-                "rank": 2999790,
+                "rank": 2999974,
                 "points": 2190
               },
               "outside": {
-                "rank": 3002834,
-                "points": 2189
+                "rank": 3000150,
+                "points": 2190
               },
-              "rankGap": 3044,
-              "pointsGap": 1,
-              "sampleSize": 10410
+              "rankGap": 176,
+              "pointsGap": 0,
+              "sampleSize": 20076
             },
             "rankReason": null
           }
@@ -5528,11 +5528,11 @@
           "hitNetGain": -60.0
         },
         "benchmark": {
-          "managers": 2718,
-          "beaten": 27,
-          "percentile": 1.0,
+          "managers": 23096,
+          "beaten": 5969,
+          "percentile": 25.8,
           "best": 2521,
-          "medianPoints": 2326
+          "medianPoints": 2128
         },
         "weeks": [
           {
@@ -6940,7 +6940,7 @@
               },
               "rankGap": 2056,
               "pointsGap": 0,
-              "sampleSize": 12400
+              "sampleSize": 23905
             },
             "rankReason": null
           },
@@ -7061,7 +7061,7 @@
               },
               "rankGap": 2056,
               "pointsGap": 0,
-              "sampleSize": 12400
+              "sampleSize": 23905
             },
             "rankReason": null
           },
@@ -7182,7 +7182,7 @@
               },
               "rankGap": 2056,
               "pointsGap": 0,
-              "sampleSize": 12400
+              "sampleSize": 23905
             },
             "rankReason": null
           },
@@ -7298,7 +7298,7 @@
               },
               "rankGap": 2056,
               "pointsGap": 0,
-              "sampleSize": 12400
+              "sampleSize": 23905
             },
             "rankReason": null
           }
