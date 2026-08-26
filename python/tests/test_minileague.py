@@ -12,8 +12,10 @@ from datetime import UTC, datetime, timedelta
 import pytest
 
 from fpl_andres.backtesting.corpus import ElementRow, SeasonCorpus
+from fpl_andres.backtesting.fixtures import Fixture, TeamStrength
 from fpl_andres.simulation.minileague import (
     LeagueSettings,
+    _chip_plan,
     _Manager,
     _take_transfers,
     simulate_league,
@@ -213,6 +215,51 @@ def test_the_squad_persists_and_only_changes_by_transfer() -> None:
         paid_moves = manager.hit_points // 4
         assert manager.transfers_made <= free_moves + paid_moves
         assert manager.net_points == manager.total_points - manager.hit_points
+
+
+def test_triple_captain_timing_uses_an_eligible_star(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    corpus = SeasonCorpus(season="2024-25")
+    corpus.fixtures_by_event[7] = [
+        Fixture(
+            fixture_id=7,
+            event=7,
+            team_h=2,
+            team_a=1,
+            kickoff_time=KICKOFF,
+        )
+    ]
+    squad = [
+        candidate(1, 1, 1, price=200),
+        candidate(2, 3, 2, price=100),
+    ]
+    strength = TeamStrength(1.0, 1.0, 1.0, 2.0)
+    captured: dict[str, object] = {}
+    monkeypatch.setattr(
+        "fpl_andres.simulation.minileague.estimate_strength",
+        lambda _fixtures: {1: strength, 2: strength},
+    )
+
+    def capture_plan(**kwargs: object) -> dict[int, object]:
+        captured.update(kwargs)
+        return {}
+
+    monkeypatch.setattr("fpl_andres.simulation.minileague.plan_chips", capture_plan)
+
+    _chip_plan(
+        corpus,
+        squad,
+        LeagueSettings(
+            squad_rules=SQUAD_RULES,
+            lineup_rules=LINEUP_RULES,
+            start_gameweek=7,
+        ),
+        seed=0,
+        last_event=7,
+    )
+
+    assert captured["star_fixture_value"] == {7: 2.0}
 
 
 @pytest.mark.parametrize("policy", ["advised", "zombie"])

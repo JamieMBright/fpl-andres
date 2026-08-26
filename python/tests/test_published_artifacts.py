@@ -19,6 +19,8 @@ from typing import Any
 
 import pytest
 
+from fpl_andres.model_version import MODEL_VERSION
+
 _DATA = Path(__file__).resolve().parents[2] / "apps" / "web" / "src" / "data"
 _COHORT = Path(__file__).resolve().parents[2] / "data" / "cohort"
 
@@ -198,6 +200,24 @@ def test_planning_artifacts_are_published_in_dependency_order() -> None:
     assert planned_at >= season_inputs
     assert season_plan["firstEvent"] == _artifact("season-inputs")["events"][0]
     assert set(opener["starters"] + opener["bench"]) == expected
+
+
+def test_the_published_plan_keeps_both_armbands_on_midfielders_or_forwards() -> None:
+    plan = _artifact("season-plan")
+
+    for week in plan["gameweeks"]:
+        captain_position = plan["players"][str(week["captain"])]["position"]
+        vice_position = plan["players"][str(week["viceCaptain"])]["position"]
+        assert captain_position in {"MID", "FWD"}, (
+            f"gameweek {week['event']} captain is {captain_position}"
+        )
+        assert vice_position in {"MID", "FWD"}, (
+            f"gameweek {week['event']} vice-captain is {vice_position}"
+        )
+
+
+def test_the_published_plan_names_the_model_that_generated_it() -> None:
+    assert _artifact("season-plan")["modelVersion"] == MODEL_VERSION
 
 
 def test_the_published_squad_is_legal() -> None:

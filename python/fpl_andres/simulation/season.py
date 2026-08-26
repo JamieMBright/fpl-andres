@@ -14,6 +14,7 @@ from __future__ import annotations
 from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass, field
 
+from fpl_andres.positions import is_captain_eligible
 from fpl_andres.simulation.squad import Candidate
 
 __all__ = [
@@ -95,9 +96,10 @@ def highest_scorer_so_far(
         _outcomes: Mapping[int, SquadGameweek],
         _event: int,
     ) -> int | None:
-        if not squad:
+        eligible = [player for player in squad if is_captain_eligible(player.position)]
+        if not eligible:
             return None
-        return max(squad, key=lambda player: history.get(player.element_id, 0)).element_id
+        return max(eligible, key=lambda player: history.get(player.element_id, 0)).element_id
 
     return policy
 
@@ -116,9 +118,12 @@ def simulate_season(
 
     ``lineup_rank`` scores a player for selection using pre-gameweek information
     only. It defaults to price, a crude but honest proxy; a promoted projection
-    replaces it once one exists.
+    replaces it once one exists. ``captain_policy`` receives only the eligible
+    midfielders and forwards in that gameweek's starting XI. An invalid policy
+    result falls back to the highest pre-gameweek lineup rank in that pool.
     """
     positions = {player.element_id: player.position for player in squad}
+    by_element = {player.element_id: player for player in squad}
     running_points: dict[int, int] = {player.element_id: 0 for player in squad}
     outcome = SeasonResult(season=season, label=label)
     policy = captain_policy or highest_scorer_so_far(running_points)
@@ -135,12 +140,16 @@ def simulate_season(
 
         starters = _pick_starters(squad, rank, lineup_rules)
         starters, autosubs = _apply_autosubs(squad, starters, available, positions, lineup_rules)
+        eligible_starters = [
+            element_id for element_id in starters if is_captain_eligible(positions[element_id])
+        ]
+        if len(eligible_starters) < 2:
+            raise ValueError("lineup has fewer than two captain-eligible starters")
 
-        captain_id = policy(squad, available, event)
-        if captain_id is not None and captain_id not in starters:
-            # A benched captain forfeits the armband; FPL passes it to the vice,
-            # so the highest-scoring starter is the closest honest stand-in.
-            captain_id = max(starters, key=lambda pid: available[pid].points, default=None)
+        captain_pool = [by_element[element_id] for element_id in eligible_starters]
+        captain_id = policy(captain_pool, available, event)
+        if captain_id not in eligible_starters:
+            captain_id = max(eligible_starters, key=lambda pid: rank(by_element[pid]))
 
         points = sum(available[pid].points for pid in starters)
         captain_points = available[captain_id].points if captain_id else 0

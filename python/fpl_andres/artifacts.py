@@ -1,8 +1,8 @@
 """Schema versions for the published JSON artifacts.
 
-The artifacts are written by ``cli/publish_projections.py`` and
-``cli/publish_opening_squad.py`` and read by the web app, which imports them at
-build time. Nothing recorded which shape they were in, so a change to the
+The artifacts are written by the publication CLIs and read by the web app or
+API, which imports them at build time. Nothing recorded which shape they were
+in, so a change to the
 writer would have been picked up silently by the reader: fields quietly absent,
 `undefined` where a number was expected, and a page that renders wrongly rather
 than refusing.
@@ -35,6 +35,10 @@ PROJECTIONS_META_SCHEMA_VERSION: Final = 1
 #: The opening-squad plan.
 OPENING_SQUAD_SCHEMA_VERSION: Final = 1
 
+#: Full-season recommendation plan. Version 2 adds the model version that
+#: generated every captain, transfer and chip call.
+SEASON_PLAN_SCHEMA_VERSION: Final = 2
+
 #: Understat shot quality and penalty exposure, keyed by FPL code.
 UNDERSTAT_SCHEMA_VERSION: Final = 1
 
@@ -47,5 +51,6 @@ __all__ = [
     "PROJECTIONS_META_SCHEMA_VERSION",
     "PROJECTIONS_SCHEMA_VERSION",
     "SEASON_INPUTS_SCHEMA_VERSION",
+    "SEASON_PLAN_SCHEMA_VERSION",
     "UNDERSTAT_SCHEMA_VERSION",
 ]

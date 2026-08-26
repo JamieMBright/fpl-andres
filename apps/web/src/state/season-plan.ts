@@ -1,8 +1,14 @@
 import plan from "../data/season-plan.json";
 import {
+  requireArtifactVersion,
+  SEASON_PLAN_SCHEMA_VERSION,
+} from "./artifact-version";
+import {
   fixtureEvidenceForClubs,
   type FixtureEvidence,
 } from "./fixture-evidence";
+
+requireArtifactVersion("season-plan.json", plan, SEASON_PLAN_SCHEMA_VERSION);
 
 /**
  * The published season plan.
@@ -72,6 +78,7 @@ export interface DataGaps {
 }
 
 export interface SeasonPlan {
+  modelVersion: string;
   season: string;
   recordSeason: string;
   generatedAt: string;
@@ -166,6 +173,7 @@ export function pairTransfers(
 
 export function readSeasonPlan(): SeasonPlan {
   return {
+    modelVersion: (plan as unknown as { modelVersion: string }).modelVersion,
     season: plan.season,
     recordSeason: plan.recordSeason,
     generatedAt: plan.generatedAt,

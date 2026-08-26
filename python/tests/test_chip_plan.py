@@ -13,17 +13,29 @@ what the plan actually fields -- Free Hit for one week, Wildcard for the run.
 
 from __future__ import annotations
 
-from typing import Any
+from types import SimpleNamespace
+from typing import Any, cast
 
-from fpl_andres.cli.publish_season_plan import Candidate, _chip_plan, _data_gaps
+import pytest
+
+from fpl_andres.cli.publish_season_plan import (
+    Candidate,
+    _chip_plan,
+    _ChipRun,
+    _data_gaps,
+    _lineup_points_with_captain,
+    _place_wildcards,
+    _validate_published_armbands,
+    _wildcard_turnover,
+)
 
 
-def _candidate(code: int, name: str, club: str = "ARS") -> Candidate:
+def _candidate(code: int, name: str, club: str = "ARS", position: int = 3) -> Candidate:
     return Candidate(
         element_id=code,
         code=code,
         name=name,
-        position=3,
+        position=position,
         team_id=1,
         club=club,
         price_tenths=100,
@@ -39,10 +51,15 @@ def _week(
     expected: dict[str, float],
     bench: list[int],
     projected: float = 50.0,
+    captain: int | None = None,
 ) -> dict[str, Any]:
+    starters = sorted(int(code) for code in expected if int(code) not in bench)
+    published_captain = captain or max(starters, key=lambda code: expected[str(code)])
     return {
         "event": event,
         "expected": expected,
+        "starters": starters,
+        "captain": published_captain,
         "bench": bench,
         "squadElementIds": sorted(int(code) for code in expected),
         "benchElementIds": list(bench),
@@ -85,6 +102,54 @@ def test_triple_captain_lands_on_the_best_single_player_week() -> None:
 
     assert chips["Triple Captain:first"]["event"] == 2
     assert "Salah" in str(chips["Triple Captain:first"]["note"])
+
+
+def test_triple_captain_ignores_a_higher_scoring_goalkeeper() -> None:
+    named = {
+        1: _candidate(1, "Goalkeeper", position=1),
+        2: _candidate(2, "Midfielder", position=3),
+    }
+    weeks = [_week(1, expected={"1": 20.0, "2": 8.0}, bench=[], captain=2)]
+    chips = {chip["chip"]: chip for chip in _chip_plan(weeks, named, {}, _peak(weeks), CODES)}
+
+    assert "Midfielder" in str(chips["Triple Captain"]["note"])
+
+
+def test_triple_captain_ignores_a_higher_scoring_bench_midfielder() -> None:
+    weeks = [_week(1, expected={"1": 20.0, "2": 8.0}, bench=[1])]
+    chips = _plan(weeks)
+
+    assert "Haaland" in str(chips["Triple Captain:first"]["note"])
+
+
+def test_triple_captain_follows_the_published_captain() -> None:
+    weeks = [_week(1, expected={"1": 6.0, "2": 9.0}, bench=[], captain=1)]
+    chips = _plan(weeks)
+
+    assert "Salah" in str(chips["Triple Captain:first"]["note"])
+
+
+def test_publisher_refuses_an_ineligible_armband() -> None:
+    named = {
+        1: _candidate(1, "Goalkeeper", position=1),
+        2: _candidate(2, "Midfielder", position=3),
+        3: _candidate(3, "Forward", position=4),
+    }
+
+    with pytest.raises(ValueError, match="ineligible captain"):
+        _validate_published_armbands([{"event": 2, "captain": 1, "viceCaptain": 2}], named)
+
+    _validate_published_armbands([{"event": 2, "captain": 2, "viceCaptain": 3}], named)
+
+
+def test_chip_ceiling_doubles_the_best_eligible_starter() -> None:
+    named = {
+        1: _candidate(1, "Goalkeeper", position=1),
+        2: _candidate(2, "Midfielder", position=3),
+        3: _candidate(3, "Forward", position=4),
+    }
+
+    assert _lineup_points_with_captain([1, 2, 3], {1: 20.0, 2: 8.0, 3: 7.0}, named) == 43.0
 
 
 def test_the_triple_captain_is_judged_on_the_ceiling_not_the_average() -> None:
@@ -165,6 +230,113 @@ def test_wildcard_takes_the_run_where_the_squad_is_furthest_behind() -> None:
         ceiling[index] = 45.0
 
     assert _plan(weeks, ceiling)["Wildcard:first"]["event"] == 6
+
+
+@pytest.mark.parametrize(
+    ("ordered_events", "by_event", "expected_replacing"),
+    [
+        (
+            [5, 6],
+            {
+                5: {"event": 5, "squadElementIds": [1, 2, 3], "netExpectedPoints": 10.0},
+                6: {"event": 6, "squadElementIds": [4, 5, 6], "netExpectedPoints": 10.0},
+            },
+            {1, 2, 3},
+        ),
+        (
+            [6],
+            {6: {"event": 6, "squadElementIds": [4, 5, 6], "netExpectedPoints": 10.0}},
+            {1, 2, 3},
+        ),
+    ],
+)
+def test_wildcard_publishes_the_exact_segment_squad(
+    monkeypatch: pytest.MonkeyPatch,
+    ordered_events: list[int],
+    by_event: dict[int, dict[str, Any]],
+    expected_replacing: set[int],
+) -> None:
+    solved_week = {
+        "event": 6,
+        "starters": [101, 102],
+        "bench": [103],
+        "squadElementIds": [11, 12, 13],
+        "netExpectedPoints": 11.0,
+    }
+    run = cast(
+        _ChipRun,
+        SimpleNamespace(
+            ordered_events=ordered_events,
+            by_event=by_event,
+            opening_squad=[1, 2, 3],
+            detail={
+                11: _candidate(101, "Solved one"),
+                12: _candidate(102, "Solved two"),
+                13: _candidate(103, "Solved three"),
+            },
+        ),
+    )
+    captured: dict[str, object] = {}
+
+    monkeypatch.setattr(
+        "fpl_andres.cli.publish_season_plan._wildcard_turnover",
+        lambda _event, _run: 5,
+    )
+    monkeypatch.setattr(
+        "fpl_andres.cli.publish_season_plan._season_with_wildcards",
+        lambda _events, _run: (
+            {
+                event: solved_week if event == 6 else run.by_event[event]
+                for event in run.ordered_events
+            },
+            21.0,
+        ),
+    )
+    monkeypatch.setattr(
+        "fpl_andres.cli.publish_season_plan._wildcard_squad",
+        lambda _event, _run: ([21, 22], [23]),
+    )
+
+    def capture_turnover(
+        _week: dict[str, Any],
+        starters: list[int],
+        bench: list[int],
+        _run: _ChipRun,
+        replacing: set[int] | None = None,
+    ) -> None:
+        captured.update(starters=starters, bench=bench, replacing=replacing)
+
+    monkeypatch.setattr("fpl_andres.cli.publish_season_plan._turnover", capture_turnover)
+
+    _place_wildcards(
+        [{"chip": "Wildcard", "event": 6, "_alternatives": []}],
+        run,
+    )
+
+    assert captured == {
+        "starters": [11, 12],
+        "bench": [13],
+        "replacing": expected_replacing,
+    }
+
+
+def test_first_remaining_wildcard_screen_compares_with_the_held_squad(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    run = cast(
+        _ChipRun,
+        SimpleNamespace(
+            ordered_events=[6],
+            by_event={6: {"squadElementIds": [1, 2, 4]}},
+            opening_squad=[1, 2, 3],
+        ),
+    )
+    monkeypatch.setattr(
+        "fpl_andres.cli.publish_season_plan._wildcard_squad",
+        lambda _event, _run: ([1, 2], [4]),
+    )
+
+    assert _wildcard_turnover(6, run) == 1
 
 
 def test_a_wildcard_is_never_played_before_the_squad_can_have_drifted() -> None:

@@ -4,6 +4,7 @@ import openingSquad from "./data/opening-squad.json";
 import inputs from "./data/season-inputs.json";
 import { fixtureEvidenceAt } from "./state/fixture-evidence";
 import {
+  bestElevenPoints,
   bonusPointsAtEvent,
   defconPointsAtEvent,
   fixtureAtEvent,
@@ -13,6 +14,7 @@ import {
   solveSeason,
   SEASON_EVENTS,
   SEASON_PLAYERS,
+  type SolverPlayer,
 } from "./state/season-solver";
 
 /**
@@ -176,11 +178,15 @@ describe("solveSeason", () => {
     () => {
       const opener = solveSeason(openingStart()).next().value;
       expect(opener).toBeDefined();
-      const ranked = [...(opener?.starters ?? [])].sort(
-        (left, right) =>
-          (opener?.expected[String(right.code)] ?? 0) -
-          (opener?.expected[String(left.code)] ?? 0),
-      );
+      const ranked = [...(opener?.starters ?? [])]
+        .filter(
+          (player) => player.position === "MID" || player.position === "FWD",
+        )
+        .sort(
+          (left, right) =>
+            (opener?.expected[String(right.code)] ?? 0) -
+            (opener?.expected[String(left.code)] ?? 0),
+        );
 
       expect(opener?.captain.id).toBe(ranked[0]?.id);
       expect(opener?.viceCaptain.id).toBe(ranked[1]?.id);
@@ -218,6 +224,8 @@ describe("solveSeason", () => {
       ).toBe(15);
       expect(week.starters.map((p) => p.id)).toContain(week.captain.id);
       expect(week.captain.id).not.toBe(week.viceCaptain.id);
+      expect(["MID", "FWD"]).toContain(week.captain.position);
+      expect(["MID", "FWD"]).toContain(week.viceCaptain.position);
       expect(week.starters.filter((p) => p.position === "GKP")).toHaveLength(1);
     }
   });
@@ -324,6 +332,44 @@ describe("solveSeason", () => {
     },
     SOLVE_TIMEOUT,
   );
+});
+
+describe("chip squad valuation", () => {
+  it("doubles the best midfielder or forward, not the highest-scoring defender", () => {
+    const rows: [SolverPlayer["position"], number][] = [
+      ["GKP", 20],
+      ["GKP", 0],
+      ["DEF", 19],
+      ["DEF", 0],
+      ["DEF", 0],
+      ["DEF", 0],
+      ["DEF", 0],
+      ["MID", 8],
+      ["MID", 7],
+      ["MID", 0],
+      ["MID", 0],
+      ["MID", 0],
+      ["FWD", 6],
+      ["FWD", 0],
+      ["FWD", 0],
+    ];
+    const positionId = { GKP: 1, DEF: 2, MID: 3, FWD: 4 } as const;
+    const squad = rows.map(([position, points], index): SolverPlayer => ({
+      id: 10_001 + index,
+      code: 20_001 + index,
+      name: `Player ${String(index + 1)}`,
+      position,
+      positionId: positionId[position],
+      club: "ARS",
+      teamId: 1,
+      priceTenths: 50,
+      basePoints: points,
+      routes: { appearance: points },
+      startRate: 1,
+    }));
+
+    expect(bestElevenPoints(squad, 0)).toBe(68);
+  });
 });
 
 /**

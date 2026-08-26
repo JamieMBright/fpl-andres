@@ -168,10 +168,12 @@ two to three times the expected-value impact of a routine transfer — the
 reasoning is standard across the practitioner literature and is why it is scored
 on its own rather than folded into the pooled rank correlation.
 
-Every rule captains from a legal eleven fielded by the simulated advised policy.
-Captaining from the whole pool, or from a synthetic list no manager owns, grades
-a decision nobody faces. The ceiling is the best captain inside that same
-eleven, so `ownedSquadRegret` is a call the manager could have made.
+Every rule captains a midfielder or forward from a legal eleven fielded by the
+simulated advised policy; the vice-captain follows the same eligibility rule.
+Observed manager and cohort armbands remain unfiltered facts. Captaining from
+the whole pool, or from a synthetic list no manager owns, grades a decision
+nobody faces. The ceiling is the best eligible captain inside that same eleven,
+so `ownedSquadRegret` is a call the manager could have made.
 
 Reported per season and per rule: manager-gameweeks scored, mean realised points
 of the chosen captain, mean reachable XI ceiling, owned-squad regret, share of

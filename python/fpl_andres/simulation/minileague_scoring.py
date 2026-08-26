@@ -9,6 +9,7 @@ from __future__ import annotations
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 
+from fpl_andres.positions import is_captain_eligible
 from fpl_andres.simulation.chips import ChipName
 from fpl_andres.simulation.minileague_state import LeagueSettings, _Manager
 from fpl_andres.simulation.season import LineupRules, SquadGameweek
@@ -64,7 +65,13 @@ def _play(
         # Every one of the fifteen scores, so there is nothing to substitute.
         starters = [player.element_id for player in squad]
 
-    captain = max(starters, key=lambda pid: ranking.get(pid, 0.0), default=None)
+    positions = {player.element_id: player.position for player in squad}
+    captain_eligible = [
+        element_id for element_id in starters if is_captain_eligible(positions[element_id])
+    ]
+    if len(captain_eligible) < 2:
+        raise ValueError("lineup has fewer than two captain-eligible starters")
+    captain = max(captain_eligible, key=lambda pid: ranking.get(pid, 0.0))
     points = sum(available[pid].points for pid in starters)
     if captain is not None:
         # Captain doubles; the triple captain chip adds a further multiple.

@@ -29,6 +29,11 @@ from __future__ import annotations
 
 __all__ = ["MODEL_VERSION"]
 
+#: 8.8 restricts every advisory captain and vice-captain to midfielders or
+#: forwards. Observed manager, rival and cohort armbands remain unchanged.
+#: Minor: recommendations and chip valuations move, while each player's xPts
+#: and every published projection field keep the same meaning as 8.7.
+#:
 #: 8.7 keeps every rostered player in the browser planning population even
 #: when FPL marks him doubtful, injured or suspended. Availability still
 #: scales or zeros his projection and low-start players remain ineligible as
@@ -374,4 +379,4 @@ __all__ = ["MODEL_VERSION"]
 #: projection and resampled, so a gap that does not clear zero is reported as
 #: not clearing zero. No projection changed; what changed is what may be
 #: claimed from it.
-MODEL_VERSION = "8.7"
+MODEL_VERSION = "8.8"

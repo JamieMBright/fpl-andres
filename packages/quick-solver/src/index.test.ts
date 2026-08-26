@@ -1,7 +1,11 @@
 import { describe, expect, it } from "vitest";
 
 import { regretCases } from "../fixtures/load";
-import { quickSolverInputSchema, solveQuickPlan } from "./index";
+import {
+  isCaptainEligiblePositionId,
+  quickSolverInputSchema,
+  solveQuickPlan,
+} from "./index";
 
 const limits = {
   beamWidth: 16,
@@ -10,6 +14,12 @@ const limits = {
 } as const;
 
 describe("bounded quick solver", () => {
+  it("refuses an unknown position rather than guessing captain eligibility", () => {
+    expect(() => isCaptainEligiblePositionId(5)).toThrow(
+      "not an FPL player position",
+    );
+  });
+
   it("stays within declared regret on HiGHS-verified fixtures", () => {
     for (const fixture of regretCases) {
       const result = solveQuickPlan(fixture.input, limits);
@@ -87,6 +97,37 @@ describe("bounded quick solver", () => {
     expect(result.captainElementId).toBe(2);
     expect(result.viceCaptainElementId).toBe(4);
     expect(result.projectedPointsBeforeCost).toBe(26);
+  });
+
+  it("keeps both armbands on midfielders or forwards", () => {
+    const base = regretCases.at(-1)!.input;
+    const points = new Map([
+      [1, 20],
+      [3, 19],
+      [4, 18],
+      [5, 17],
+      [8, 8],
+      [9, 7],
+      [10, 6],
+      [11, 5],
+      [12, 4],
+      [13, 3],
+      [14, 2],
+      [15, 1],
+    ]);
+    const input = {
+      ...base,
+      players: base.players.map((player) => ({
+        ...player,
+        planningPoints: points.get(player.elementId) ?? 0,
+        eventPoints: points.get(player.elementId) ?? 0,
+      })),
+    };
+
+    const result = solveQuickPlan(input, { ...limits, maxTransfers: 0 });
+
+    expect(result.captainElementId).toBe(8);
+    expect(result.viceCaptainElementId).toBe(9);
   });
 
   it("does not charge transfer costs in a Free Hit scenario", () => {

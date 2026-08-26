@@ -589,7 +589,9 @@ xPts(player, fixture):
 
 Gameweek xPts is the sum over that player's fixtures in the week: **zero for a
 blank, twice for a double**. Squad xPts is the sum over the best legal eleven,
-plus the captain again.
+plus the best eligible midfielder or forward captain again. The same position
+rule applies to the vice-captain; observed manager and cohort armbands are kept
+as FPL published them.
 
 ### ExPts — effective points, which is not the same objective
 

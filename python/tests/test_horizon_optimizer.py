@@ -18,16 +18,23 @@ from fpl_andres.optimization.contracts import (
 )
 from fpl_andres.optimization.highs import HighsOptimizer
 from fpl_andres.optimization.horizon import HighsHorizonOptimizer
+from fpl_andres.positions import is_captain_eligible
 
 
-def forecast(element_id: int, event: int, points: float) -> HorizonPlayerForecast:
+def forecast(
+    element_id: int,
+    event: int,
+    points: float,
+    *,
+    position_id: int = 3,
+) -> HorizonPlayerForecast:
     cutoff = CUTOFF + timedelta(days=7 * (event - 6))
     return HorizonPlayerForecast(
         season="2026-27",
         event=event,
         element_id=element_id,
         team_id=element_id,
-        position_id=1,
+        position_id=position_id,
         buy_price_tenths=50,
         sell_price_tenths=50,
         expected_points=points,
@@ -73,7 +80,7 @@ def horizon_request() -> HorizonOptimizationRequest:
             lineup_size=2,
             positions=(
                 PositionConstraint(
-                    position_id=1,
+                    position_id=3,
                     squad_count=2,
                     lineup_minimum=2,
                     lineup_maximum=2,
@@ -102,6 +109,54 @@ def test_horizon_banks_transfer_when_it_beats_greedy_first_event() -> None:
     assert result.price_scenario == "provided_event_prices"
     assert result.chip_scenario == "none"
     assert result.evidence_level == "experimental"
+
+
+def test_horizon_captain_and_vice_are_midfielders_or_forwards() -> None:
+    positions = tuple(
+        PositionConstraint(
+            position_id=position_id,
+            squad_count=1,
+            lineup_minimum=1,
+            lineup_maximum=1,
+        )
+        for position_id in range(1, 5)
+    )
+    request = HorizonOptimizationRequest(
+        events=(
+            HorizonEvent(event=6, prediction_cutoff=CUTOFF, objective_weight=1.0),
+            HorizonEvent(
+                event=7,
+                prediction_cutoff=CUTOFF + timedelta(days=7),
+                objective_weight=1.0,
+            ),
+        ),
+        forecasts=tuple(
+            forecast(element_id, event, points, position_id=position_id)
+            for event in (6, 7)
+            for element_id, position_id, points in (
+                (1, 1, 12.0),
+                (2, 2, 11.0),
+                (3, 3, 6.0),
+                (4, 4, 5.0),
+            )
+        ),
+        current_squad=tuple(
+            CurrentSquadPlayer(element_id=element_id, selling_price_tenths=50)
+            for element_id in range(1, 5)
+        ),
+        bank_tenths=0,
+        available_free_transfers=0,
+        state_evidence=state_evidence(),
+        price_scenario="provided_event_prices",
+        objective="expected_value",
+        chip_scenario="none",
+        rules=rules(squad_size=4, lineup_size=4, positions=positions),
+    )
+
+    result = HighsHorizonOptimizer(time_limit_seconds=5.0).solve(request)
+
+    assert result.events[0].captain_element_id == 3
+    assert result.events[0].vice_captain_element_id == 4
 
 
 def test_horizon_free_transfers_never_exceed_sourced_cap() -> None:
@@ -285,7 +340,11 @@ def exhaustive_horizon(request: HorizonOptimizationRequest) -> float:
                     unused + request.rules.transfer_rules.weekly_free_transfers,
                 )
                 points = sum(candidates[element_id].expected_points for element_id in squad_ids)
-                points += max(candidates[element_id].expected_points for element_id in squad_ids)
+                points += max(
+                    candidates[element_id].expected_points
+                    for element_id in squad_ids
+                    if is_captain_eligible(candidates[element_id].position_id)
+                )
                 net = event.objective_weight * (
                     points - paid * request.rules.transfer_rules.transfer_cost_points
                 )

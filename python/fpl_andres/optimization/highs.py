@@ -13,6 +13,7 @@ from fpl_andres.optimization.contracts import (
     OptimizationRequest,
     OptimizationResult,
 )
+from fpl_andres.positions import is_captain_eligible
 
 FloatArray = NDArray[np.float64]
 
@@ -150,6 +151,13 @@ class HighsOptimizer:
             lower=1.0,
             upper=1.0,
         )
+        captain_eligible_indices = [
+            index for index, player in enumerate(players) if is_captain_eligible(player.position_id)
+        ]
+        add_constraint(
+            {lineup_offset + index: 1.0 for index in captain_eligible_indices},
+            lower=2.0,
+        )
         for index in range(player_count):
             add_constraint(
                 {lineup_offset + index: 1.0, squad_offset + index: -1.0},
@@ -217,6 +225,9 @@ class HighsOptimizer:
         lower_variable_bounds = np.zeros(variable_count, dtype=np.float64)
         upper_variable_bounds = np.ones(variable_count, dtype=np.float64)
         upper_variable_bounds[paid_transfer_column] = request.rules.transfer_cap
+        for index, player in enumerate(players):
+            if not is_captain_eligible(player.position_id):
+                upper_variable_bounds[captain_offset + index] = 0.0
 
         def optimize(stage_objective: FloatArray, stage: str) -> FloatArray:
             result = milp(
@@ -280,10 +291,19 @@ class HighsOptimizer:
         if len(captains) != 1:
             raise OptimizationError("HiGHS returned an invalid captain selection")
         captain = captains[0]
+        if not is_captain_eligible(captain.position_id):
+            raise OptimizationError("HiGHS returned an ineligible captain")
         vice = max(
-            (player for player in starters if player.element_id != captain.element_id),
+            (
+                player
+                for player in starters
+                if player.element_id != captain.element_id
+                and is_captain_eligible(player.position_id)
+            ),
             key=lambda player: (player.expected_points, -player.element_id),
         )
+        if not is_captain_eligible(vice.position_id):
+            raise OptimizationError("HiGHS returned an ineligible vice-captain")
         bench = tuple(
             sorted(
                 (player for player in selected if player not in starters),

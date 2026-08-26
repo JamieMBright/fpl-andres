@@ -1,0 +1,97 @@
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
+
+import type { VercelRequest, VercelResponse } from "@vercel/node";
+import { describe, expect, it } from "vitest";
+
+import latestHandler from "../../../../api/recommendations/latest";
+import marketsHandler from "../../../../api/recommendations/markets";
+import metaHandler from "../../../../api/recommendations/meta";
+import xstartHandler from "../../../../api/recommendations/xstart";
+
+const SOURCE = readFileSync(
+  resolve(__dirname, "../../../../api/_lib/recommendations.ts"),
+  "utf8",
+);
+
+describe("recommendation API deployment", () => {
+  it("statically imports every artifact the serverless function serves", () => {
+    expect(SOURCE).not.toContain("readFileSync");
+    expect(SOURCE).not.toContain("process.cwd()");
+    for (const artifact of [
+      "season-plan.json",
+      "season-inputs.json",
+      "player-odds.json",
+      "fixture-odds.json",
+      "xstart-manual-priors.json",
+    ]) {
+      expect(SOURCE, artifact).toMatch(
+        new RegExp(`import [^;]+${artifact.replace(".", "\\.")}`),
+      );
+    }
+  });
+
+  it("serves every endpoint from one traced model artifact", () => {
+    const handlers = [
+      latestHandler,
+      marketsHandler,
+      metaHandler,
+      xstartHandler,
+    ];
+    const versions = handlers.map((handler, index) => {
+      let status = 0;
+      let body: unknown;
+      const response = {
+        setHeader() {
+          return this;
+        },
+        status(value: number) {
+          status = value;
+          return this;
+        },
+        json(value: unknown) {
+          body = value;
+          return this;
+        },
+      } as unknown as VercelResponse;
+      handler(
+        {
+          method: "GET",
+          headers: { "x-real-ip": `192.0.2.${String(index + 1)}` },
+        } as unknown as VercelRequest,
+        response,
+      );
+
+      expect(status).toBe(200);
+      expect(body).toMatchObject({ schemaVersion: 1 });
+      return (body as { modelVersion?: unknown }).modelVersion;
+    });
+
+    expect(versions[0]).toEqual(expect.any(String));
+    expect(new Set(versions).size).toBe(1);
+
+    let latestBody: unknown;
+    latestHandler(
+      {
+        method: "GET",
+        headers: { "x-real-ip": "198.51.100.1" },
+      } as unknown as VercelRequest,
+      {
+        setHeader() {
+          return this;
+        },
+        status() {
+          return this;
+        },
+        json(value: unknown) {
+          latestBody = value;
+          return this;
+        },
+      } as unknown as VercelResponse,
+    );
+    expect(latestBody).toMatchObject({
+      captain: { position: expect.stringMatching(/^(MID|FWD)$/) },
+      viceCaptain: { position: expect.stringMatching(/^(MID|FWD)$/) },
+    });
+  });
+});

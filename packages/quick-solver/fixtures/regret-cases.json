@@ -13,7 +13,7 @@
           {
             "elementId": 1,
             "teamId": 1,
-            "positionId": 1,
+            "positionId": 3,
             "buyPriceTenths": 50,
             "planningPoints": 2,
             "eventPoints": 2,
@@ -26,7 +26,7 @@
           {
             "elementId": 2,
             "teamId": 2,
-            "positionId": 1,
+            "positionId": 3,
             "buyPriceTenths": 50,
             "planningPoints": 1,
             "eventPoints": 1,
@@ -39,7 +39,7 @@
           {
             "elementId": 3,
             "teamId": 1,
-            "positionId": 2,
+            "positionId": 4,
             "buyPriceTenths": 50,
             "planningPoints": 2,
             "eventPoints": 2,
@@ -52,7 +52,7 @@
           {
             "elementId": 4,
             "teamId": 2,
-            "positionId": 2,
+            "positionId": 4,
             "buyPriceTenths": 50,
             "planningPoints": 1,
             "eventPoints": 1,
@@ -65,7 +65,7 @@
           {
             "elementId": 5,
             "teamId": 3,
-            "positionId": 1,
+            "positionId": 3,
             "buyPriceTenths": 50,
             "planningPoints": 5,
             "eventPoints": 5,
@@ -78,7 +78,7 @@
           {
             "elementId": 6,
             "teamId": 3,
-            "positionId": 2,
+            "positionId": 4,
             "buyPriceTenths": 50,
             "planningPoints": 6,
             "eventPoints": 6,
@@ -117,13 +117,13 @@
           "transferRulesSourceReference": "https://fantasy.premierleague.com/help/rules",
           "positions": [
             {
-              "positionId": 1,
+              "positionId": 3,
               "squadCount": 2,
               "lineupMinimum": 1,
               "lineupMaximum": 1
             },
             {
-              "positionId": 2,
+              "positionId": 4,
               "squadCount": 2,
               "lineupMinimum": 1,
               "lineupMaximum": 1
@@ -150,7 +150,7 @@
           {
             "elementId": 1,
             "teamId": 1,
-            "positionId": 1,
+            "positionId": 3,
             "buyPriceTenths": 50,
             "planningPoints": 10,
             "eventPoints": 10,
@@ -163,7 +163,7 @@
           {
             "elementId": 2,
             "teamId": 2,
-            "positionId": 1,
+            "positionId": 3,
             "buyPriceTenths": 50,
             "planningPoints": 1,
             "eventPoints": 1,
@@ -176,7 +176,7 @@
           {
             "elementId": 3,
             "teamId": 3,
-            "positionId": 1,
+            "positionId": 3,
             "buyPriceTenths": 50,
             "planningPoints": 5.1,
             "eventPoints": 5.1,
@@ -213,7 +213,7 @@
           "transferRulesSourceReference": "https://fantasy.premierleague.com/help/rules",
           "positions": [
             {
-              "positionId": 1,
+              "positionId": 3,
               "squadCount": 2,
               "lineupMinimum": 2,
               "lineupMaximum": 2

@@ -41,6 +41,17 @@ The project follows Semantic Versioning once milestone tags begin.
 
 ### Fixed
 
+- Advisory captain and vice-captain choices are now restricted to midfielders
+  and forwards across the offline optimizer, browser solver, chip valuation,
+  season simulations and captaincy backtests. Observed FPL, rival and FPL500
+  armbands remain an unfiltered record of what managers actually selected.
+- Recommendation API artifacts are now statically bundled into their Vercel
+  functions instead of read from untraced runtime paths. All four endpoints
+  report the model version carried by the current season plan, rather than the
+  version in a historical GW1 freeze.
+- Wildcard cards now publish the exact squad chosen by the winning segmented
+  season replan. Following gameweeks no longer inherit a different fifteen
+  from the one shown in the wildcard week's transfer ledger.
 - Processed squads no longer become unsolvable when FPL marks an owned player
   doubtful, injured or suspended. The planning artifact retains every roster
   identity with its availability-adjusted projection, while the solver still

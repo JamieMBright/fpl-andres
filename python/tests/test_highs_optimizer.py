@@ -21,6 +21,7 @@ from fpl_andres.optimization.contracts import (
     optimization_rules_from_snapshot,
 )
 from fpl_andres.optimization.highs import HighsOptimizer
+from fpl_andres.positions import is_captain_eligible
 from fpl_andres.rules import RulesSnapshot
 
 CUTOFF = datetime(2026, 9, 12, 9, tzinfo=UTC)
@@ -52,8 +53,8 @@ def rules(
     positions: tuple[PositionConstraint, ...] | None = None,
 ) -> OptimizationRules:
     constraints = positions or (
-        PositionConstraint(position_id=1, squad_count=2, lineup_minimum=1, lineup_maximum=1),
-        PositionConstraint(position_id=2, squad_count=2, lineup_minimum=1, lineup_maximum=1),
+        PositionConstraint(position_id=3, squad_count=2, lineup_minimum=1, lineup_maximum=1),
+        PositionConstraint(position_id=4, squad_count=2, lineup_minimum=1, lineup_maximum=1),
     )
     return OptimizationRules(
         season="2026-27",
@@ -113,12 +114,12 @@ def test_highs_matches_independent_exhaustive_oracle() -> None:
         price_scenario="current_prices",
         chip_scenario="none",
         players=(
-            player(1, team_id=1, position_id=1, points=2.0),
-            player(2, team_id=2, position_id=1, points=1.0),
-            player(3, team_id=1, position_id=2, points=2.0),
-            player(4, team_id=2, position_id=2, points=1.0),
-            player(5, team_id=3, position_id=1, points=5.0),
-            player(6, team_id=3, position_id=2, points=6.0),
+            player(1, team_id=1, position_id=3, points=2.0),
+            player(2, team_id=2, position_id=3, points=1.0),
+            player(3, team_id=1, position_id=4, points=2.0),
+            player(4, team_id=2, position_id=4, points=1.0),
+            player(5, team_id=3, position_id=3, points=5.0),
+            player(6, team_id=3, position_id=4, points=6.0),
         ),
         current_squad=tuple(
             CurrentSquadPlayer(element_id=element_id, selling_price_tenths=50)
@@ -159,10 +160,10 @@ def test_captain_and_lineup_are_deterministic_when_points_tie() -> None:
         price_scenario="current_prices",
         chip_scenario="none",
         players=(
-            player(11, team_id=1, position_id=1, points=8.0),
-            player(12, team_id=2, position_id=1, points=8.0),
-            player(13, team_id=1, position_id=2, points=8.0),
-            player(14, team_id=2, position_id=2, points=8.0),
+            player(11, team_id=1, position_id=3, points=8.0),
+            player(12, team_id=2, position_id=3, points=8.0),
+            player(13, team_id=1, position_id=4, points=8.0),
+            player(14, team_id=2, position_id=4, points=8.0),
         ),
         current_squad=tuple(
             CurrentSquadPlayer(element_id=element_id, selling_price_tenths=50)
@@ -184,6 +185,44 @@ def test_captain_and_lineup_are_deterministic_when_points_tie() -> None:
     assert first.captain_element_id == min(first.starter_element_ids)
 
 
+def test_captain_and_vice_are_midfielders_or_forwards() -> None:
+    positions = tuple(
+        PositionConstraint(
+            position_id=position_id,
+            squad_count=1,
+            lineup_minimum=1,
+            lineup_maximum=1,
+        )
+        for position_id in range(1, 5)
+    )
+    request = OptimizationRequest(
+        event=6,
+        prediction_cutoff=CUTOFF,
+        objective="expected_value",
+        price_scenario="current_prices",
+        chip_scenario="none",
+        players=(
+            player(1, team_id=1, position_id=1, points=12.0),
+            player(2, team_id=2, position_id=2, points=11.0),
+            player(3, team_id=3, position_id=3, points=6.0),
+            player(4, team_id=4, position_id=4, points=5.0),
+        ),
+        current_squad=tuple(
+            CurrentSquadPlayer(element_id=element_id, selling_price_tenths=50)
+            for element_id in range(1, 5)
+        ),
+        bank_tenths=0,
+        available_free_transfers=0,
+        state_evidence=state_evidence(),
+        rules=rules(squad_size=4, lineup_size=4, positions=positions),
+    )
+
+    result = HighsOptimizer(time_limit_seconds=5.0).solve(request)
+
+    assert result.captain_element_id == 3
+    assert result.vice_captain_element_id == 4
+
+
 @pytest.mark.parametrize(
     ("candidate_points", "expected_transfer"),
     ((4.9, ()), (5.1, (3,))),
@@ -197,7 +236,7 @@ def test_paid_transfer_requires_gain_above_explicit_hit_cost(
         lineup_size=2,
         positions=(
             PositionConstraint(
-                position_id=1,
+                position_id=3,
                 squad_count=2,
                 lineup_minimum=2,
                 lineup_maximum=2,
@@ -211,9 +250,9 @@ def test_paid_transfer_requires_gain_above_explicit_hit_cost(
         price_scenario="current_prices",
         chip_scenario="none",
         players=(
-            player(1, team_id=1, position_id=1, points=10.0),
-            player(2, team_id=2, position_id=1, points=1.0),
-            player(3, team_id=3, position_id=1, points=candidate_points),
+            player(1, team_id=1, position_id=3, points=10.0),
+            player(2, team_id=2, position_id=3, points=1.0),
+            player(3, team_id=3, position_id=3, points=candidate_points),
         ),
         current_squad=(
             CurrentSquadPlayer(element_id=1, selling_price_tenths=50),
@@ -356,7 +395,7 @@ def generated_request(
             player(
                 element_id,
                 team_id=(1, 2, 1, 2, 3, 3)[element_id - 1],
-                position_id=1 if element_id in (1, 2, 5) else 2,
+                position_id=3 if element_id in (1, 2, 5) else 4,
                 points=points[element_id - 1],
             )
             for element_id in range(1, 7)
@@ -423,9 +462,9 @@ def compact_request(points: tuple[float, float, float]) -> OptimizationRequest:
         price_scenario="current_prices",
         chip_scenario="none",
         players=(
-            player(1, team_id=1, position_id=1, points=points[0]),
-            player(2, team_id=2, position_id=1, points=points[1]),
-            player(3, team_id=3, position_id=1, points=points[2]),
+            player(1, team_id=1, position_id=3, points=points[0]),
+            player(2, team_id=2, position_id=3, points=points[1]),
+            player(3, team_id=3, position_id=3, points=points[2]),
         ),
         current_squad=(
             CurrentSquadPlayer(element_id=1, selling_price_tenths=50),
@@ -439,7 +478,7 @@ def compact_request(points: tuple[float, float, float]) -> OptimizationRequest:
             lineup_size=2,
             positions=(
                 PositionConstraint(
-                    position_id=1,
+                    position_id=3,
                     squad_count=2,
                     lineup_minimum=2,
                     lineup_maximum=2,
@@ -487,5 +526,7 @@ def exhaustive_optimum(request: OptimizationRequest) -> float:
                 continue
             starter_points = sum(player.expected_points for player in starters)
             for captain in starters:
+                if not is_captain_eligible(captain.position_id):
+                    continue
                 best = max(best, starter_points + captain.expected_points - hit_cost)
     return best

@@ -24,6 +24,8 @@ from typing import TYPE_CHECKING
 
 import numpy as np
 
+from fpl_andres.positions import is_captain_eligible
+
 if TYPE_CHECKING:
     from fpl_andres.optimization.contracts import (
         HorizonEvent,
@@ -159,6 +161,23 @@ def selection_hierarchy(model: HorizonModel, event_index: int) -> None:
             },
             upper=0.0,
         )
+
+
+def captaincy_eligibility(model: HorizonModel, event_index: int) -> None:
+    """Only midfielders and forwards may take either advisory armband."""
+    event = model.events[event_index]
+    eligible_starters: dict[int, float] = {}
+    for element_id, index in model.player_index.items():
+        forecast = model.forecast(event, element_id)
+        if is_captain_eligible(forecast.position_id):
+            eligible_starters[model.variable(model.lineup_offset, event_index, index)] = 1.0
+            continue
+        model.add(
+            {model.variable(model.captain_offset, event_index, index): 1.0},
+            lower=0.0,
+            upper=0.0,
+        )
+    model.add(eligible_starters, lower=2.0)
 
 
 def squad_continuity(model: HorizonModel, event_index: int) -> None:
@@ -362,6 +381,7 @@ def opening_position(model: HorizonModel) -> None:
 PER_EVENT_BLOCKS = (
     squad_composition,
     selection_hierarchy,
+    captaincy_eligibility,
     squad_continuity,
     position_quotas,
     club_limit,
@@ -388,6 +408,7 @@ __all__ = [
     "HorizonModel",
     "bank_flow",
     "build_constraints",
+    "captaincy_eligibility",
     "club_limit",
     "free_transfer_ledger",
     "negated",

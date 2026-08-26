@@ -278,6 +278,14 @@ export type QuickSolverLimits = z.infer<typeof quickSolverLimitsSchema>;
 type QuickPlayer = QuickSolverInput["players"][number];
 type QuickRules = QuickSolverInput["rules"];
 
+export function isCaptainEligiblePositionId(positionId: number): boolean {
+  if (positionId === 1 || positionId === 2) return false;
+  if (positionId === 3 || positionId === 4) return true;
+  throw new Error(
+    `position ID ${String(positionId)} is not an FPL player position`,
+  );
+}
+
 export interface QuickSolverResult {
   solver: "quick-beam";
   solverStatus: "bounded";
@@ -687,6 +695,7 @@ function bestLineup(
         pointsField,
         includeCaptain,
       );
+      if (scored === null) return;
       if (
         best === null ||
         scored.projectedPoints > best.projectedPoints + 1e-10 ||
@@ -733,12 +742,19 @@ function scoreLineup(
   players: Map<number, QuickPlayer>,
   pointsField: "planningPoints" | "eventPoints",
   includeCaptain: boolean,
-): LineupEvaluation {
-  const ranked = [...lineup].sort(
-    (left, right) =>
-      requiredPlayer(players, right)[pointsField] -
-        requiredPlayer(players, left)[pointsField] || left - right,
-  );
+): LineupEvaluation | null {
+  const ranked = lineup
+    .filter((elementId) =>
+      isCaptainEligiblePositionId(
+        requiredPlayer(players, elementId).positionId,
+      ),
+    )
+    .sort(
+      (left, right) =>
+        requiredPlayer(players, right)[pointsField] -
+          requiredPlayer(players, left)[pointsField] || left - right,
+    );
+  if (ranked.length < 2) return null;
   const captainElementId = ranked[0]!;
   return {
     elementIds: [...lineup].sort((left, right) => left - right),

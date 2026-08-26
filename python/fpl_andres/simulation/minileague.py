@@ -25,6 +25,7 @@ from dataclasses import replace
 from fpl_andres.backtesting.corpus import SeasonCorpus
 from fpl_andres.backtesting.fixtures import estimate_strength
 from fpl_andres.backtesting.projector import ProjectionSettings, project_gameweek
+from fpl_andres.positions import is_captain_eligible
 from fpl_andres.simulation.baselines import crowd_ranking
 from fpl_andres.simulation.chips import ChipName, ChipState, chip_rules_for, plan_chips
 from fpl_andres.simulation.minileague_policies import (
@@ -277,8 +278,8 @@ def _chip_plan(
 ) -> dict[int, ChipName]:
     """Date the season's chips from the fixture list.
 
-    The triple captain follows the squad's most expensive player, on the
-    reasoning that price tracks expected returns closely enough to pick a
+    The triple captain follows the squad's most expensive eligible player, on
+    the reasoning that price tracks expected returns closely enough to pick a
     captain by. It wants him at home against a leaky defence, which is a fixture
     rather than a hunch.
     """
@@ -296,7 +297,11 @@ def _chip_plan(
         # gameweek one and rebuilt the squad in gameweek two. Last season's
         # table is what a manager actually has in August.
         strength = estimate_strength(previous.fixtures_before(previous.last_event + 1))
-    star = max(squad, key=lambda player: player.price_tenths, default=None)
+    star = max(
+        (player for player in squad if is_captain_eligible(player.position)),
+        key=lambda player: player.price_tenths,
+        default=None,
+    )
 
     star_value: dict[int, float] = {}
     if star is not None:

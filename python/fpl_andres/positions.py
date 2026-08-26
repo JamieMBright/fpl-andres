@@ -14,7 +14,7 @@ from __future__ import annotations
 
 from enum import IntEnum
 
-__all__ = ["Position", "PositionUnknown", "position_code"]
+__all__ = ["Position", "PositionUnknown", "is_captain_eligible", "position_code"]
 
 
 class PositionUnknown(ValueError):
@@ -41,6 +41,17 @@ _CODES: dict[Position, str] = {
     Position.FORWARD: "FWD",
 }
 
+_CAPTAIN_ELIGIBLE = frozenset({Position.MIDFIELDER, Position.FORWARD})
+
+
+def _position(element_type: int) -> Position:
+    try:
+        return Position(element_type)
+    except ValueError as error:
+        raise PositionUnknown(
+            f"element_type {element_type} is not one of the four FPL positions"
+        ) from error
+
 
 def position_code(element_type: int) -> str:
     """FPL's three-letter code for an element type.
@@ -49,9 +60,9 @@ def position_code(element_type: int) -> str:
     this package does not know about is a rule change, and a silent 'UNK' would
     let it reach a projection.
     """
-    try:
-        return _CODES[Position(element_type)]
-    except ValueError as error:
-        raise PositionUnknown(
-            f"element_type {element_type} is not one of the four FPL positions"
-        ) from error
+    return _CODES[_position(element_type)]
+
+
+def is_captain_eligible(element_type: int) -> bool:
+    """Whether an advisory captain or vice-captain may use this position."""
+    return _position(element_type) in _CAPTAIN_ELIGIBLE

@@ -37,6 +37,7 @@ from fpl_andres.backtesting.captain_policies import (
 )
 from fpl_andres.backtesting.captaincy import CaptaincyScore, score_policies
 from fpl_andres.backtesting.corpus import SeasonCorpus
+from fpl_andres.positions import PositionUnknown, is_captain_eligible
 from fpl_andres.simulation.minileague_state import LeagueResult, ManagerResult, Policy
 
 __all__ = [
@@ -184,9 +185,10 @@ class CaptaincyReach:
 
     `chosen` is what the armband actually returned. `owned_ceiling` is the best
     it could have returned from the same eleven -- a decision the manager could
-    have made. `game_ceiling` is the best in the entire game, which nobody can
-    reach and which is only here to size the gap the published table quietly
-    counts as reachable.
+    have made. Both ceilings consider only midfielders and forwards, matching
+    the advisory rule. `game_ceiling` is the best legal captain in the entire
+    game, which nobody can reach and which is only here to size the gap the
+    published table quietly counts as reachable.
 
     Points are the player's own realised score, not the doubled figure, for the
     same reason the captaincy table does it: doubling is a constant on every
@@ -220,12 +222,20 @@ class CaptaincyReach:
     def reach_gap(self) -> float:
         """What owning a different squad was worth, per gameweek.
 
-        The distance between the best captain in the game and the best captain
-        available from the eleven that was fielded. It is not a decision anybody
-        could have taken on the day, which is exactly the point: a captaincy
-        table scored against the whole game is quoting this as if it were.
+        The distance between the best eligible captain in the game and the best
+        eligible captain available from the eleven that was fielded. It is not
+        a decision anybody could have taken on the day, which is exactly the
+        point: a captaincy table scored against the whole game is quoting this
+        as if it were.
         """
         return self.mean_game_ceiling - self.mean_owned_ceiling
+
+
+def _historical_captain_eligible(position: int) -> bool:
+    try:
+        return is_captain_eligible(position)
+    except PositionUnknown:
+        return False
 
 
 def captaincy_reach(
@@ -249,10 +259,21 @@ def captaincy_reach(
                 continue
             gameweeks += 1
             chosen += float(actual.get(week.captain, 0)) if week.captain is not None else 0.0
-            owned_ceiling += float(
-                max((actual.get(element, 0) for element in week.starters), default=0)
+            eligible_starters = [
+                element
+                for element in week.starters
+                if is_captain_eligible(corpus.position_by_element[element])
+            ]
+            if len(eligible_starters) < 2:
+                raise ValueError("simulated lineup has fewer than two captain-eligible starters")
+            owned_ceiling += float(max(actual.get(element, 0) for element in eligible_starters))
+            game_ceiling += float(
+                max(
+                    points
+                    for element, points in actual.items()
+                    if _historical_captain_eligible(corpus.position_by_element[element])
+                )
             )
-            game_ceiling += float(max(actual.values(), default=0))
 
     return CaptaincyReach(
         policy=policy,
@@ -294,9 +315,18 @@ def owned_captain_policy_scores(
                     continue
                 candidates = candidates_by_event.get(week.event, ())
                 by_element = {entry.element_id: entry for entry in candidates}
-                if any(element not in by_element for element in week.starters):
+                eligible_starters = [
+                    element
+                    for element in week.starters
+                    if is_captain_eligible(corpus.position_by_element[element])
+                ]
+                if len(eligible_starters) < 2:
+                    raise ValueError(
+                        "simulated lineup has fewer than two captain-eligible starters"
+                    )
+                if any(element not in by_element for element in eligible_starters):
                     continue
-                eleven = [by_element[element] for element in week.starters]
+                eleven = [by_element[element] for element in eligible_starters]
                 score_policies(
                     eleven,
                     actual,

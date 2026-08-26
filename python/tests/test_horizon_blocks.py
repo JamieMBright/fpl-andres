@@ -27,6 +27,7 @@ from fpl_andres.optimization.horizon_model import (
     HorizonModel,
     bank_flow,
     build_constraints,
+    captaincy_eligibility,
     club_limit,
     free_transfer_ledger,
     negated,
@@ -125,6 +126,25 @@ class TestSelectionHierarchy:
             assert sorted(coefficients.values()) == [-1.0, 1.0]
             assert upper == 0.0
             assert lower == -np.inf
+
+
+class TestCaptaincyEligibility:
+    def test_it_pins_ineligible_captains_and_requires_two_eligible_starters(
+        self, model: HorizonModel
+    ) -> None:
+        event = model.events[0]
+        element_id = next(iter(model.player_index))
+        key = (event.event, element_id)
+        model.forecasts[key] = model.forecasts[key].model_copy(update={"position_id": 1})
+
+        captaincy_eligibility(model, 0)
+
+        pinned, eligible = constraints(model)
+        assert pinned[1] == pinned[2] == 0.0
+        assert list(pinned[0].values()) == [1.0]
+        assert eligible[1] == 2.0
+        assert eligible[2] == np.inf
+        assert len(eligible[0]) == model.player_count - 1
 
 
 class TestSquadContinuity:

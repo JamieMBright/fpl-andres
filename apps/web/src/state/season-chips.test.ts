@@ -221,7 +221,10 @@ describe("chipCallsFor", () => {
   });
 
   it("says nothing rather than naming a week worth nothing", () => {
-    const calls = chipCallsFor([week(3, { bench: [], captain: 7 })], PUBLISHED);
+    const calls = chipCallsFor(
+      [week(3, { bench: [0, 0, 0, 0], captain: 7 })],
+      PUBLISHED,
+    );
 
     expect(callOf(calls, "Bench Boost").event).toBeNull();
     expect(callOf(calls, "Bench Boost").note).toContain("no week");

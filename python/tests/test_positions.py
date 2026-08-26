@@ -23,7 +23,12 @@ import pytest
 
 from fpl_andres.backtesting.score import _position_label
 from fpl_andres.models.deployment import ListedPosition
-from fpl_andres.positions import Position, PositionUnknown, position_code
+from fpl_andres.positions import (
+    Position,
+    PositionUnknown,
+    is_captain_eligible,
+    position_code,
+)
 
 _PACKAGE = Path(__file__).resolve().parents[1] / "fpl_andres"
 
@@ -50,6 +55,26 @@ def test_refuses_an_unknown_element_type_rather_than_guessing() -> None:
 def test_the_enum_value_is_fpls_own_element_type() -> None:
     assert [position.value for position in Position] == [1, 2, 3, 4]
     assert Position.MIDFIELDER.code == "MID"
+
+
+@pytest.mark.parametrize(
+    ("position", "eligible"),
+    [
+        (Position.GOALKEEPER, False),
+        (Position.DEFENDER, False),
+        (Position.MIDFIELDER, True),
+        (Position.FORWARD, True),
+    ],
+)
+def test_only_midfielders_and_forwards_are_captain_eligible(
+    position: Position, eligible: bool
+) -> None:
+    assert is_captain_eligible(position) is eligible
+
+
+def test_captain_eligibility_refuses_an_unknown_position() -> None:
+    with pytest.raises(PositionUnknown, match="not one of the four"):
+        is_captain_eligible(5)
 
 
 def test_listed_position_matches_the_enum() -> None:

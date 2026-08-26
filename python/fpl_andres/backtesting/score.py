@@ -21,7 +21,7 @@ from fpl_andres.backtesting.projector import (
 )
 from fpl_andres.models.backtest import CALIBRATION_BAND_EDGES, CalibrationBand
 from fpl_andres.models.metrics import rank_correlation
-from fpl_andres.positions import PositionUnknown, position_code
+from fpl_andres.positions import PositionUnknown, is_captain_eligible, position_code
 
 __all__ = [
     "METHOD_LABELS",
@@ -227,17 +227,29 @@ def _captain_candidates(
     Built here rather than inside the policies so no policy can reach past this
     boundary into the corpus and see the gameweek it is deciding.
 
-    Ownership is rescaled to 0-100 against the most-owned player of the week.
-    The corpus stores `selected` as a count of managers, which is of the order
-    of a million, and the two rank policies price ownership in points per
-    percentage point. Handed the raw count they were arithmetic rather than
+    Ownership is rescaled to 0-100 against the most-owned eligible player of
+    the week. The corpus stores `selected` as a count of managers, which is of
+    the order of a million, and the two rank policies price ownership in points
+    per percentage point. Handed the raw count they were arithmetic rather than
     theses: the template term swamped every projection and reduced to "captain
     the most owned", and the differential term to "captain the least owned",
     which is how a policy that nobody proposed scored 3.3 points a week.
     """
-    most_owned = max(ownership.values(), default=0.0)
+    eligible = [
+        projection
+        for projection in projections
+        if is_captain_eligible(projection.position)  # type: ignore[attr-defined]
+    ]
+    most_owned = max(
+        (
+            ownership[projection.element_id]  # type: ignore[attr-defined]
+            for projection in eligible
+            if projection.element_id in ownership  # type: ignore[attr-defined]
+        ),
+        default=0.0,
+    )
     candidates: list[CaptainCandidate] = []
-    for projection in projections:
+    for projection in eligible:
         element = projection.element_id  # type: ignore[attr-defined]
         if element not in ownership:
             continue

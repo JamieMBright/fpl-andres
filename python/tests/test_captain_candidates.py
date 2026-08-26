@@ -21,6 +21,7 @@ class _Minutes:
 @dataclass(frozen=True)
 class _Projection:
     element_id: int
+    position: int
     expected_points: float
     component_points: float
     minutes: _Minutes
@@ -32,11 +33,13 @@ def _projection(
     element_id: int,
     expected: float = 6.0,
     *,
+    position: int = 3,
     ceiling_ratio: float = 2.0,
     attacking_multiplier: float = 1.0,
 ) -> _Projection:
     return _Projection(
         element_id=element_id,
+        position=position,
         expected_points=expected,
         component_points=expected - 0.5,
         minutes=_Minutes(probability_start=0.9),
@@ -61,6 +64,23 @@ def test_ownership_reaches_the_policy_on_a_nought_to_a_hundred_scale() -> None:
     assert owned[1] == 100.0
     assert owned[2] == 25.0
     assert owned[3] == 5.0
+
+
+def test_goalkeepers_and_defenders_never_reach_captain_policies() -> None:
+    candidates = _captain_candidates(
+        [
+            _projection(1, position=1),
+            _projection(2, position=2),
+            _projection(3, position=3),
+            _projection(4, position=4),
+        ],
+        {},
+        {},
+        {1: 100.0, 2: 90.0, 3: 80.0, 4: 70.0},
+    )
+
+    assert [candidate.element_id for candidate in candidates] == [3, 4]
+    assert candidates[0].ownership == 100.0
 
 
 def test_a_week_nobody_owns_anybody_does_not_divide_by_zero() -> None:

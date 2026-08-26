@@ -10,6 +10,7 @@ import { readSeasonPlan } from "./state/season-plan";
  */
 
 const weeks = plan.gameweeks;
+const players = plan.players as Record<string, { position: string }>;
 
 describe("season plan artifact", () => {
   it("covers a contiguous run of gameweeks", () => {
@@ -30,6 +31,12 @@ describe("season plan artifact", () => {
       expect(week.starters).toContain(week.captain);
       expect(week.starters).toContain(week.viceCaptain);
       expect(week.captain).not.toBe(week.viceCaptain);
+      expect(["MID", "FWD"], `GW${String(week.event)} captain`).toContain(
+        players[String(week.captain)]?.position,
+      );
+      expect(["MID", "FWD"], `GW${String(week.event)} vice-captain`).toContain(
+        players[String(week.viceCaptain)]?.position,
+      );
     }
   });
 

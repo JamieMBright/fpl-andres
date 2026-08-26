@@ -45,11 +45,11 @@ from fpl_andres.optimization.horizon import HighsHorizonOptimizer
 HASH = HASH_A
 EVENT = 6
 
-# Two goalkeepers, two defenders, one midfielder: enough shape to exercise the
-# position quotas and the club limit without a fifteen-player pool.
+# Two synthetic position buckets: enough shape to exercise the position quotas
+# and club limit without a fifteen-player pool. MID/FWD keep both armbands legal.
 POSITIONS = (
-    PositionConstraint(position_id=1, squad_count=1, lineup_minimum=1, lineup_maximum=1),
-    PositionConstraint(position_id=2, squad_count=2, lineup_minimum=1, lineup_maximum=2),
+    PositionConstraint(position_id=3, squad_count=1, lineup_minimum=1, lineup_maximum=1),
+    PositionConstraint(position_id=4, squad_count=2, lineup_minimum=1, lineup_maximum=2),
 )
 SQUAD_SIZE = 3
 LINEUP_SIZE = 2
@@ -57,13 +57,13 @@ CLUB_LIMIT = 2
 
 # element_id: (position_id, team_id, price, points)
 POOL = {
-    1: (1, 1, 45, 3.0),
-    2: (1, 2, 45, 2.0),
-    3: (2, 1, 50, 6.0),
-    4: (2, 1, 50, 5.5),
-    5: (2, 1, 50, 5.0),
-    6: (2, 3, 50, 4.0),
-    7: (2, 4, 50, 1.0),
+    1: (3, 1, 45, 3.0),
+    2: (3, 2, 45, 2.0),
+    3: (4, 1, 50, 6.0),
+    4: (4, 1, 50, 5.5),
+    5: (4, 1, 50, 5.0),
+    6: (4, 3, 50, 4.0),
+    7: (4, 4, 50, 1.0),
 }
 
 
@@ -230,7 +230,7 @@ def test_the_chosen_squad_is_the_one_the_rules_allow(
 ) -> None:
     """Pins the answer, so a constraint quietly weakening shows as a diff.
 
-    Only one goalkeeper and one defender start, so the third squad place is a
+    Only one midfielder and one forward start, so the third squad place is a
     bench seat that scores nothing. Keeping incumbent 7 there and keeping 3
     scores the same 9.0 as buying 6 would, and costs no transfer -- so the
     solver keeps it. The club limit still binds: 1 and 3 are both club 1, which

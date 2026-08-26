@@ -7,6 +7,7 @@ population a manager ever chooses from.
 
 from __future__ import annotations
 
+from dataclasses import replace
 from datetime import UTC, datetime, timedelta
 
 from fpl_andres.backtesting.captain_policies import CaptainCandidate, policy_names
@@ -111,10 +112,12 @@ class TestTheSeasonKeepsItsSquads:
 
     def test_the_captain_is_one_of_the_eleven(self) -> None:
         result = played_season()
+        positions = synthetic_corpus().position_by_element
 
         for manager in result.managers:
             for week in manager.gameweek_squads:
                 assert week.captain in week.starters
+                assert positions[week.captain] in (3, 4)
 
     def test_the_best_projection_is_named_for_every_scored_gameweek(self) -> None:
         result = played_season()
@@ -239,54 +242,95 @@ class TestWhatCaptaincyCostsFromYourOwnEleven:
     def test_every_policy_can_choose_only_from_the_model_owned_xi(self) -> None:
         corpus = synthetic_corpus()
         actual = corpus.actual_points(7)
-        weeks = [GameweekSquad(event=7, squad=(1, 2, 3), starters=(1, 2), captain=1)]
+        weeks = [
+            GameweekSquad(
+                event=7,
+                squad=(1, 7, 23, 24, 25),
+                starters=(1, 7, 23, 24),
+                captain=23,
+            )
+        ]
         candidates = {
             7: tuple(
                 CaptainCandidate(
                     element_id=element,
-                    expected_points={1: 4.0, 2: 8.0, 3: 20.0}[element],
-                    component_points={1: 4.0, 2: 8.0, 3: 20.0}[element],
+                    expected_points={23: 4.0, 24: 8.0, 25: 20.0}[element],
+                    component_points={23: 4.0, 24: 8.0, 25: 20.0}[element],
                     recent_points=5.0,
                     recent_deviation=0.0,
                     probability_start=1.0,
-                    ownership={1: 50.0, 2: 10.0, 3: 100.0}[element],
+                    ownership={23: 50.0, 24: 10.0, 25: 100.0}[element],
                 )
-                for element in (1, 2, 3)
+                for element in (23, 24, 25)
             )
         }
 
         scores = owned_captain_policy_scores(corpus, [staged(weeks, {})], candidates)
 
         assert tuple(scores) == policy_names()
-        assert scores["crowd"].picks[0].element_id == 1
-        assert {pick.element_id for score in scores.values() for pick in score.picks} <= {1, 2}
-        assert {score.best_points for score in scores.values()} == {max(actual[1], actual[2])}
+        assert scores["crowd"].picks[0].element_id == 23
+        assert {pick.element_id for score in scores.values() for pick in score.picks} <= {23, 24}
+        assert {score.best_points for score in scores.values()} == {max(actual[23], actual[24])}
 
     def test_scores_the_armband_that_was_actually_worn(self) -> None:
         corpus = synthetic_corpus()
         actual = corpus.actual_points(7)
-        weeks = [GameweekSquad(event=7, squad=(1, 2, 3), starters=(1, 2), captain=1)]
+        weeks = [GameweekSquad(event=7, squad=(23, 24, 25), starters=(23, 24), captain=23)]
 
         reach = captaincy_reach(corpus, staged(weeks, {}))
 
         assert reach.gameweeks == 1
-        assert reach.chosen_points == float(actual[1])
+        assert reach.chosen_points == float(actual[23])
 
-    def test_the_owned_ceiling_is_the_best_of_the_eleven_not_the_game(self) -> None:
+    def test_the_owned_ceiling_is_the_best_eligible_starter_not_the_game(self) -> None:
         corpus = synthetic_corpus()
         actual = corpus.actual_points(7)
-        weeks = [GameweekSquad(event=7, squad=(1, 2, 3), starters=(1, 2), captain=1)]
+        weeks = [
+            GameweekSquad(
+                event=7,
+                squad=(1, 7, 23, 24),
+                starters=(1, 7, 23, 24),
+                captain=23,
+            )
+        ]
 
         reach = captaincy_reach(corpus, staged(weeks, {}))
 
-        assert reach.owned_ceiling_points == float(max(actual[1], actual[2]))
+        assert reach.owned_ceiling_points == float(max(actual[23], actual[24]))
         assert reach.game_ceiling_points == float(max(actual.values()))
+
+    def test_the_game_ceiling_ignores_a_higher_scoring_goalkeeper(self) -> None:
+        corpus = synthetic_corpus()
+        assistant = replace(
+            corpus.rows_by_gameweek[7][0],
+            element_id=99,
+            element_code=99,
+            total_points=30,
+        )
+        corpus.position_by_element[99] = 5
+        corpus.rows_by_gameweek[7] = [
+            replace(row, total_points=20) if row.element_id == 1 else row
+            for row in corpus.rows_by_gameweek[7]
+        ] + [assistant]
+        actual = corpus.actual_points(7)
+        weeks = [GameweekSquad(event=7, squad=(23, 24), starters=(23, 24), captain=23)]
+
+        reach = captaincy_reach(corpus, staged(weeks, {}))
+
+        eligible = [
+            points
+            for element, points in actual.items()
+            if corpus.position_by_element[element] in (3, 4)
+        ]
+        assert actual[99] > actual[1]
+        assert actual[1] > max(eligible)
+        assert reach.game_ceiling_points == float(max(eligible))
 
     def test_names_the_regret_a_manager_could_have_avoided(self) -> None:
         corpus = synthetic_corpus()
         actual = corpus.actual_points(7)
-        worse = min((1, 2, 3, 4, 5), key=lambda element: actual[element])
-        better = max((1, 2, 3, 4, 5), key=lambda element: actual[element])
+        worse = min((23, 24, 25, 26, 27), key=lambda element: actual[element])
+        better = max((23, 24, 25, 26, 27), key=lambda element: actual[element])
         weeks = [
             GameweekSquad(event=7, squad=(1, 2, 3, 4, 5), starters=(worse, better), captain=worse)
         ]
@@ -298,13 +342,14 @@ class TestWhatCaptaincyCostsFromYourOwnEleven:
     def test_separates_a_bad_call_from_a_squad_that_could_not_reach(self) -> None:
         corpus = synthetic_corpus()
         actual = corpus.actual_points(7)
-        weeks = [GameweekSquad(event=7, squad=(1,), starters=(1,), captain=1)]
+        captain = max((23, 24), key=lambda element: actual[element])
+        weeks = [GameweekSquad(event=7, squad=(23, 24), starters=(23, 24), captain=captain)]
 
         reach = captaincy_reach(corpus, staged(weeks, {}))
 
-        # Perfect captaincy from a one-man eleven, and still short of the game.
+        # Perfect captaincy from the only two legal choices, and still short of the game.
         assert reach.owned_regret == 0.0
-        assert reach.reach_gap == float(max(actual.values()) - actual[1])
+        assert reach.reach_gap == float(max(actual.values()) - actual[captain])
 
     def test_a_played_season_reaches_less_than_the_whole_game(self) -> None:
         corpus = synthetic_corpus()

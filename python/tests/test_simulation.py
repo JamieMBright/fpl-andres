@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import random
+from collections.abc import Mapping, Sequence
 
 import pytest
 
@@ -141,6 +142,50 @@ def test_a_season_totals_the_starting_eleven_plus_the_captain() -> None:
     assert len(result.gameweeks) == 1
 
 
+def test_an_ineligible_policy_choice_falls_through_to_an_eligible_starter() -> None:
+    outcomes = _all_played({player.element_id: 2 for player in FIFTEEN})
+    outcomes[1] = SquadGameweek(1, 90, 20)
+    outcomes[8] = SquadGameweek(8, 90, 8)
+    outcomes[9] = SquadGameweek(9, 90, 7)
+
+    result = simulate_season(
+        season="2024-25",
+        label="control",
+        squad=FIFTEEN,
+        results_by_event={1: outcomes},
+        lineup_rules=LINEUP,
+        captain_policy=lambda _squad, _outcomes, _event: 1,
+    )
+
+    assert result.gameweeks[0].captain_id == 8
+
+
+def test_captain_policy_sees_only_eligible_starters() -> None:
+    outcomes = _all_played({player.element_id: 2 for player in FIFTEEN})
+    seen: list[int] = []
+
+    def policy(
+        squad: Sequence[Candidate],
+        _outcomes: Mapping[int, SquadGameweek],
+        _event: int,
+    ) -> int | None:
+        seen.extend(player.element_id for player in squad)
+        return squad[0].element_id
+
+    result = simulate_season(
+        season="2024-25",
+        label="control",
+        squad=FIFTEEN,
+        results_by_event={1: outcomes},
+        lineup_rules=LINEUP,
+        captain_policy=policy,
+    )
+
+    assert result.gameweeks[0].captain_id in seen
+    assert all(FIFTEEN[element_id - 1].position in (3, 4) for element_id in seen)
+    assert len(seen) < len(FIFTEEN)
+
+
 def test_bench_points_are_reported_but_not_scored() -> None:
     outcomes = _all_played({player.element_id: 3 for player in FIFTEEN})
 
@@ -216,9 +261,9 @@ def test_a_goalkeeper_is_only_replaced_by_a_goalkeeper() -> None:
 
 def test_the_captain_is_chosen_only_from_prior_gameweeks() -> None:
     flat = _all_played({player.element_id: 1 for player in FIFTEEN})
-    # Player 8 explodes in gameweek 1, so may only be captained from gameweek 2.
+    # Player 9 explodes in gameweek 1, so may only be captained from gameweek 2.
     gw1 = dict(flat)
-    gw1[8] = SquadGameweek(8, 90, 20)
+    gw1[9] = SquadGameweek(9, 90, 20)
 
     result = simulate_season(
         season="2024-25",
@@ -228,8 +273,8 @@ def test_the_captain_is_chosen_only_from_prior_gameweeks() -> None:
         lineup_rules=LINEUP,
     )
 
-    assert result.gameweeks[0].captain_id != 8
-    assert result.gameweeks[1].captain_id == 8
+    assert result.gameweeks[0].captain_id != 9
+    assert result.gameweeks[1].captain_id == 9
 
 
 def test_every_supplied_gameweek_is_played() -> None:

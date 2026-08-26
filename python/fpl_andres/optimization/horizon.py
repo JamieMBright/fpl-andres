@@ -19,6 +19,7 @@ from fpl_andres.optimization.highs import (
     optimum_handoff_slack,
 )
 from fpl_andres.optimization.horizon_model import HorizonModel, build_constraints
+from fpl_andres.positions import is_captain_eligible
 
 FloatArray = NDArray[np.float64]
 
@@ -210,13 +211,22 @@ class HighsHorizonOptimizer:
                 event_index,
                 player_count,
             )[0]
+            if not is_captain_eligible(event_forecasts[captain].position_id):
+                raise OptimizationError("HiGHS returned an ineligible horizon captain")
             vice = max(
-                (element_id for element_id in starters if element_id != captain),
+                (
+                    element_id
+                    for element_id in starters
+                    if element_id != captain
+                    and is_captain_eligible(event_forecasts[element_id].position_id)
+                ),
                 key=lambda element_id: (
                     event_forecasts[element_id].expected_points,
                     -element_id,
                 ),
             )
+            if not is_captain_eligible(event_forecasts[vice].position_id):
+                raise OptimizationError("HiGHS returned an ineligible horizon vice-captain")
             incoming = _selected(
                 player_ids,
                 solution,

@@ -24,6 +24,7 @@ from fpl_andres.artifacts import (
     PROJECTIONS_META_SCHEMA_VERSION,
     PROJECTIONS_SCHEMA_VERSION,
     SEASON_INPUTS_SCHEMA_VERSION,
+    SEASON_PLAN_SCHEMA_VERSION,
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -43,6 +44,7 @@ ARTIFACTS = (
         "PROJECTIONS_META_SCHEMA_VERSION",
     ),
     ("opening-squad.json", OPENING_SQUAD_SCHEMA_VERSION, "OPENING_SQUAD_SCHEMA_VERSION"),
+    ("season-plan.json", SEASON_PLAN_SCHEMA_VERSION, "SEASON_PLAN_SCHEMA_VERSION"),
 )
 
 

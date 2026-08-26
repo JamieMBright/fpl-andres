@@ -1,4 +1,5 @@
 import {
+  isCaptainEligiblePositionId,
   solveQuickPlan,
   type QuickSolverInput,
 } from "@fpl-andres/quick-solver";
@@ -578,7 +579,13 @@ export function bestElevenPoints(
   }
 
   const total = picked.reduce((sum, entry) => sum + entry.points, 0);
-  const captain = picked.reduce(
+  const eligible = picked.filter((entry) =>
+    isCaptainEligiblePositionId(entry.player.positionId),
+  );
+  if (eligible.length < 2) {
+    throw new Error("best eleven cannot provide two captain-eligible starters");
+  }
+  const captain = eligible.reduce(
     (best, entry) => Math.max(best, entry.points),
     0,
   );

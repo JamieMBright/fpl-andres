@@ -29,9 +29,11 @@ from pathlib import Path
 from typing import Any
 
 from fpl_andres import timeouts
+from fpl_andres.artifacts import SEASON_PLAN_SCHEMA_VERSION
 from fpl_andres.backtesting.fixtures import TeamStrength
 from fpl_andres.bootstrap import BootstrapElement, parse_elements
 from fpl_andres.jsonio import parse_json, read_json_file
+from fpl_andres.model_version import MODEL_VERSION
 from fpl_andres.optimization.contracts import (
     CurrentSquadPlayer,
     HorizonPlayerForecast,
@@ -52,7 +54,7 @@ from fpl_andres.planning.season_plan import (
     confidence_for,
     plan_season,
 )
-from fpl_andres.positions import Position
+from fpl_andres.positions import Position, is_captain_eligible
 from fpl_andres.rules import RulesSnapshot
 from fpl_andres.simulation.squad import Candidate as SquadCandidate
 from fpl_andres.simulation.squad import SquadRules
@@ -66,7 +68,6 @@ PROJECTIONS = Path("apps/web/src/data/projections.json")
 OPENING_SQUAD = Path("apps/web/src/data/opening-squad.json")
 DEFAULT_OUTPUT = Path("apps/web/src/data/season-plan.json")
 
-SCHEMA_VERSION = 1
 POSITION_CODES = {position.value: position.code for position in Position}
 SQUAD_SHAPE = {1: 2, 2: 5, 3: 5, 4: 3}
 LINEUP_RANGE = {1: (1, 1), 2: (3, 5), 3: (2, 5), 4: (1, 3)}
@@ -154,6 +155,29 @@ def _armband_value(mean: float, ceiling: float) -> float:
     return mean * (1.0 - CAPTAIN_CEILING_WEIGHT) + ceiling * CAPTAIN_CEILING_WEIGHT
 
 
+def _captain_eligible_elements(
+    element_ids: Sequence[int], candidates: Mapping[int, Candidate]
+) -> list[int]:
+    return [
+        element_id
+        for element_id in element_ids
+        if element_id in candidates and is_captain_eligible(candidates[element_id].position)
+    ]
+
+
+def _lineup_points_with_captain(
+    starters: Sequence[int],
+    points: Mapping[int, float],
+    candidates: Mapping[int, Candidate],
+) -> float:
+    eligible = _captain_eligible_elements(starters, candidates)
+    if len(eligible) < 2:
+        raise ValueError("lineup has fewer than two captain-eligible starters")
+    return sum(points[element_id] for element_id in starters) + max(
+        points[element_id] for element_id in eligible
+    )
+
+
 def _opponent_multiplier(
     *,
     candidate: Candidate,
@@ -204,6 +228,19 @@ def _data_gaps(
         "clubsInPool": len(represented),
         "clubsInLeague": len(clubs),
     }
+
+
+def _validate_published_armbands(
+    gameweeks: Sequence[Mapping[str, Any]], named: Mapping[int, Candidate]
+) -> None:
+    for week in gameweeks:
+        for armband in ("captain", "viceCaptain"):
+            code = int(week[armband])
+            candidate = named.get(code)
+            if candidate is None or not is_captain_eligible(candidate.position):
+                raise ValueError(
+                    f"gameweek {week['event']} publishes an ineligible {armband}: {code}"
+                )
 
 
 # Every chip is available twice: once in the first half of the season, once in
@@ -297,6 +334,7 @@ def _chip_plan(
 
     peak_by = peak or {}
     code_for = code_of or {}
+    element_for_code = {code: element_id for element_id, code in code_for.items()}
     chips: list[dict[str, object]] = []
     taken: set[int] = set()
 
@@ -341,30 +379,24 @@ def _chip_plan(
         return float(mean), float(best)
 
     def treble(week: dict[str, Any]) -> tuple[float, float, int]:
-        """The armband to treble, and what a third copy of him is worth.
+        """What a third copy of the week's published captain is worth.
 
-        Ranked on the same blend the optimizer already uses for the ordinary
-        armband, not on the ceiling alone. A Triple Captain adds exactly one
-        more copy of whatever the player scores, so on expected points the right
-        pick is the highest mean; the ceiling only earns a say because chasing a
-        haul is the declared strategy. Ranking on ceiling alone handed the chip
-        to whoever was most volatile, which is a different claim entirely.
+        Triple Captain changes the multiplier, not who wears the armband. An
+        independent selector here could describe trebling one starter while the
+        gameweek card captained another, which is not a playable plan.
         """
-        candidates = [
-            (
-                _armband_value(
-                    week["expected"].get(str(code_for.get(element, 0)), 0.0),
-                    peak_of(week["event"], element),
-                ),
-                peak_of(week["event"], element),
-                week["expected"].get(str(code_for.get(element, 0)), 0.0),
-                element,
-            )
-            for element in week["squadElementIds"]
-        ]
-        if not candidates:
-            return 0.0, 0.0, 0
-        _, best, mean, element = max(candidates, key=lambda entry: entry[0])
+        code = int(week["captain"])
+        candidate = named.get(code)
+        element = element_for_code.get(code)
+        if (
+            candidate is None
+            or element is None
+            or not is_captain_eligible(candidate.position)
+            or code not in week["starters"]
+        ):
+            raise ValueError(f"gameweek {week['event']} cannot treble captain {code}")
+        mean = week["expected"].get(str(code), 0.0)
+        best = peak_of(week["event"], element)
         return float(mean), float(best), element
 
     def spike(week: dict[str, Any]) -> float:
@@ -562,9 +594,12 @@ def _turnover(
     points = run.event_points[event]
     held = set(week["squadElementIds"]) if replacing is None else replacing
     fresh = set(starters) | set(bench)
-    captain = max(starters, key=lambda element_id: points[element_id])
+    eligible = _captain_eligible_elements(starters, run.detail)
+    if len(eligible) < 2:
+        raise ValueError("chip squad has fewer than two captain-eligible starters")
+    captain = max(eligible, key=lambda element_id: points[element_id])
     vice = max(
-        (element_id for element_id in starters if element_id != captain),
+        (element_id for element_id in eligible if element_id != captain),
         key=lambda element_id: points[element_id],
     )
 
@@ -637,8 +672,9 @@ def _wildcard_turnover(event: int, run: _ChipRun) -> int:
     index = run.ordered_events.index(event)
     previous = run.ordered_events[index - 1] if index > 0 else None
     if previous is None or previous not in run.by_event:
-        return len(set(picked[0]) | set(picked[1]))
-    held = set(run.by_event[previous]["squadElementIds"])
+        held = set(run.opening_squad)
+    else:
+        held = set(run.by_event[previous]["squadElementIds"])
     return len((set(picked[0]) | set(picked[1])) - held)
 
 
@@ -848,6 +884,7 @@ def _place_wildcards(chips: list[dict[str, Any]], run: _ChipRun) -> None:
     run.by_event.update(weeks)
     # The winning week may be one the screen ranked below the chip's proposal,
     # so each half takes back whichever of its own candidates was kept.
+    element_by_code = {candidate.code: element_id for element_id, candidate in run.detail.items()}
     for chip, offered in zip(proposed, by_half, strict=True):
         won = [week for week in kept if week in offered]
         if not won:
@@ -860,18 +897,21 @@ def _place_wildcards(chips: list[dict[str, Any]], run: _ChipRun) -> None:
             continue
         event = won[0]
         chip["event"] = event
-        picked = _wildcard_squad(event, run)
-        if picked is not None:
-            # Against the week before, because this week already holds the
-            # rebuild and would otherwise report a chip that moved nobody.
-            index = run.ordered_events.index(event)
-            previous = run.ordered_events[index - 1] if index > 0 else None
-            replaced = (
-                set(run.by_event[previous]["squadElementIds"])
-                if previous is not None and previous in run.by_event
-                else None
-            )
-            _turnover(run.by_event[event], picked[0], picked[1], run, replaced)
+        week = run.by_event[event]
+        starters = [element_by_code[int(code)] for code in week["starters"]]
+        bench = [element_by_code[int(code)] for code in week["bench"]]
+        # Against the week before, because the segmented solve has already
+        # installed its exact rebuild here. Replacing it with the screening
+        # squad would leave the following week's transfer ledger on a
+        # different starting fifteen.
+        index = run.ordered_events.index(event)
+        previous = run.ordered_events[index - 1] if index > 0 else None
+        replaced = (
+            set(run.by_event[previous]["squadElementIds"])
+            if previous is not None and previous in run.by_event
+            else set(run.opening_squad)
+        )
+        _turnover(week, starters, bench, run, replaced)
         run.by_event[event]["chip"] = "Wildcard"
         chip["gain"] = round(total - baseline, 2)
         gained = total - baseline
@@ -1093,7 +1133,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                     expected_ceiling=round(max(expected, peak), 3),
                     evidence_level="inferred",
                     model_name="season-plan",
-                    model_version=str(SCHEMA_VERSION),
+                    model_version=MODEL_VERSION,
                     data_available_at=cutoffs[event],
                     source_hashes=(f"sha256:{candidate.code:064x}",),
                 )
@@ -1279,8 +1319,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         # Comparing an eleven against an eleven-plus-captain made the ceiling
         # look lower than the plan every week, so the shortfall was always zero
         # and the Free Hit and Wildcard were never played.
-        starting = [points[player.element_id] for player in free_squad.starters]
-        ceiling[event] = sum(starting) + max(starting, default=0.0)
+        starting = [player.element_id for player in free_squad.starters]
+        ceiling[event] = _lineup_points_with_captain(starting, points, detail)
         free_squads[event] = (
             [player.element_id for player in free_squad.starters],
             [player.element_id for player in free_squad.bench],
@@ -1331,7 +1371,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     gameweeks = [by_event[candidate] for candidate in ordered_events]
 
     payload = {
-        "schemaVersion": SCHEMA_VERSION,
+        "schemaVersion": SEASON_PLAN_SCHEMA_VERSION,
+        "modelVersion": MODEL_VERSION,
         "generatedAt": now.isoformat().replace("+00:00", "Z"),
         "season": season,
         "recordSeason": str(artifact["season"]),
@@ -1367,6 +1408,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         },
         "gameweeks": gameweeks,
     }
+
+    _validate_published_armbands(gameweeks, named)
 
     output = Path(args.output)
     output.parent.mkdir(parents=True, exist_ok=True)

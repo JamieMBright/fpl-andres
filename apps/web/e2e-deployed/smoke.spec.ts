@@ -89,6 +89,20 @@ test("a team route resolves to a handler", async ({ request }) => {
   expect(response.headers()["content-type"]).toContain("application/json");
 });
 
+test("latest recommendations carry current legal armbands", async ({
+  request,
+}) => {
+  const response = await request.get("/api/recommendations/latest");
+
+  expect(response.status()).toBe(200);
+  expect(await response.json()).toMatchObject({
+    status: "ready",
+    modelVersion: expect.any(String),
+    captain: { position: expect.stringMatching(/^(MID|FWD)$/) },
+    viceCaptain: { position: expect.stringMatching(/^(MID|FWD)$/) },
+  });
+});
+
 test("every function named in vercel.json is reachable", async ({
   request,
 }) => {
@@ -100,6 +114,7 @@ test("every function named in vercel.json is reachable", async ({
     "api/team/*.ts": "/api/team/1",
     "api/analysis-request.ts": "/api/analysis-request",
     "api/contact.ts": "/api/contact",
+    "api/recommendations/*.ts": "/api/recommendations/latest",
   };
   const declared = Object.keys(config.functions ?? {});
   expect(

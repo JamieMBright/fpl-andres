@@ -1,7 +1,14 @@
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
-
 import type { VercelRequest, VercelResponse } from "@vercel/node";
+
+import fixtureOddsData from "../../apps/web/src/data/fixture-odds.json" with { type: "json" };
+import playerOddsData from "../../apps/web/src/data/player-odds.json" with { type: "json" };
+import seasonInputsData from "../../apps/web/src/data/season-inputs.json" with { type: "json" };
+import seasonPlanData from "../../apps/web/src/data/season-plan.json" with { type: "json" };
+import manualPriorsData from "../../apps/web/src/data/xstart-manual-priors.json" with { type: "json" };
+import {
+  requireArtifactVersion,
+  SEASON_PLAN_SCHEMA_VERSION,
+} from "../../apps/web/src/state/artifact-version.js";
 
 import {
   clientAddress,
@@ -22,6 +29,7 @@ interface PlanPlayer {
 
 interface PlanArtifact {
   schemaVersion: number;
+  modelVersion: string;
   generatedAt: string;
   season: string;
   recordSeason: string;
@@ -92,16 +100,14 @@ interface FixtureOddsArtifact {
   fixtures: unknown[];
 }
 
-interface ManifestArtifact {
-  modelVersion?: string;
-}
-
-const ROOT = process.cwd();
 const limiter = new RateLimiter(RECOMMENDATIONS_POLICY);
+const PLAN = seasonPlanData as unknown as PlanArtifact;
+const INPUTS = seasonInputsData as unknown as SeasonInputsArtifact;
+const PLAYER_ODDS = playerOddsData as unknown as PlayerOddsArtifact;
+const FIXTURE_ODDS = fixtureOddsData as unknown as FixtureOddsArtifact;
+const MANUAL_PRIORS = manualPriorsData as unknown as ManualPriorsArtifact;
 
-function jsonFile<T>(path: string): T {
-  return JSON.parse(readFileSync(join(ROOT, path), "utf8")) as T;
-}
+requireArtifactVersion("season-plan", PLAN, SEASON_PLAN_SCHEMA_VERSION);
 
 function planPlayer(plan: PlanArtifact, code: number): PlanPlayer {
   const found = plan.players[String(code)];
@@ -116,75 +122,53 @@ function planPlayer(plan: PlanArtifact, code: number): PlanPlayer {
   return { code, ...found };
 }
 
-function modelVersion(): string | null {
-  try {
-    return (
-      jsonFile<ManifestArtifact>("data/prospective/gw1-2026-27.json")
-        .modelVersion ?? null
-    );
-  } catch {
-    return null;
-  }
-}
-
 function meta() {
-  const plan = jsonFile<PlanArtifact>("apps/web/src/data/season-plan.json");
-  const inputs = jsonFile<SeasonInputsArtifact>(
-    "apps/web/src/data/season-inputs.json",
-  );
-  const playerOdds = jsonFile<PlayerOddsArtifact>(
-    "apps/web/src/data/player-odds.json",
-  );
-  const fixtureOdds = jsonFile<FixtureOddsArtifact>(
-    "apps/web/src/data/fixture-odds.json",
-  );
   return {
     schemaVersion: 1,
     generatedAt: new Date().toISOString(),
-    modelVersion: modelVersion(),
+    modelVersion: PLAN.modelVersion,
     artifacts: {
       seasonPlan: {
-        schemaVersion: plan.schemaVersion,
-        generatedAt: plan.generatedAt,
+        schemaVersion: PLAN.schemaVersion,
+        generatedAt: PLAN.generatedAt,
       },
       seasonInputs: {
-        schemaVersion: inputs.schemaVersion,
-        generatedAt: inputs.generatedAt,
+        schemaVersion: INPUTS.schemaVersion,
+        generatedAt: INPUTS.generatedAt,
       },
       playerOdds: {
-        schemaVersion: playerOdds.schemaVersion,
-        fetchedAt: playerOdds.fetchedAt,
+        schemaVersion: PLAYER_ODDS.schemaVersion,
+        fetchedAt: PLAYER_ODDS.fetchedAt,
       },
       fixtureOdds: {
-        schemaVersion: fixtureOdds.schemaVersion,
-        generatedAt: fixtureOdds.generatedAt,
+        schemaVersion: FIXTURE_ODDS.schemaVersion,
+        generatedAt: FIXTURE_ODDS.generatedAt,
       },
     },
   };
 }
 
 function latest() {
-  const plan = jsonFile<PlanArtifact>("apps/web/src/data/season-plan.json");
-  const week = plan.gameweeks[0];
+  const week = PLAN.gameweeks[0];
   if (!week)
     return { schemaVersion: 1, status: "unavailable", reason: "no_gameweeks" };
   return {
     schemaVersion: 1,
     status: "ready",
-    generatedAt: plan.generatedAt,
-    season: plan.season,
-    recordSeason: plan.recordSeason,
-    modelVersion: modelVersion(),
+    generatedAt: PLAN.generatedAt,
+    season: PLAN.season,
+    recordSeason: PLAN.recordSeason,
+    modelVersion: PLAN.modelVersion,
     deadline: week.deadline,
     event: week.event,
     confidence: week.confidence,
-    captain: planPlayer(plan, week.captain),
-    viceCaptain: planPlayer(plan, week.viceCaptain),
-    transfersIn: week.transfersIn.map((code) => planPlayer(plan, code)),
-    transfersOut: week.transfersOut.map((code) => planPlayer(plan, code)),
-    bench: week.bench.map((code) => planPlayer(plan, code)),
+    captain: planPlayer(PLAN, week.captain),
+    viceCaptain: planPlayer(PLAN, week.viceCaptain),
+    transfersIn: week.transfersIn.map((code) => planPlayer(PLAN, code)),
+    transfersOut: week.transfersOut.map((code) => planPlayer(PLAN, code)),
+    bench: week.bench.map((code) => planPlayer(PLAN, code)),
     netExpectedPoints: week.netExpectedPoints,
-    chips: plan.chips,
+    chips: PLAN.chips,
     evidence: {
       level: week.confidence,
       sources: ["season-plan", "season-inputs", "fixture-odds", "player-odds"],
@@ -193,35 +177,28 @@ function latest() {
 }
 
 function xstart() {
-  const inputs = jsonFile<SeasonInputsArtifact>(
-    "apps/web/src/data/season-inputs.json",
-  );
-  const playerOdds = jsonFile<PlayerOddsArtifact>(
-    "apps/web/src/data/player-odds.json",
-  );
-  const manual = jsonFile<ManualPriorsArtifact>(
-    "apps/web/src/data/xstart-manual-priors.json",
-  );
   const quoted = new Set(
-    playerOdds.players.flatMap((row) =>
+    PLAYER_ODDS.players.flatMap((row) =>
       typeof row.element_id === "number" ? [row.element_id] : [],
     ),
   );
-  const carried = new Set(Object.keys(inputs.marketCarry?.players ?? {}));
-  const manualById = new Map(manual.players.map((row) => [row.elementId, row]));
-  const byClub = new Map<string, typeof inputs.players>();
-  for (const player of inputs.players) {
+  const carried = new Set(Object.keys(INPUTS.marketCarry?.players ?? {}));
+  const manualById = new Map(
+    MANUAL_PRIORS.players.map((row) => [row.elementId, row]),
+  );
+  const byClub = new Map<string, typeof INPUTS.players>();
+  for (const player of INPUTS.players) {
     byClub.set(player.club, [...(byClub.get(player.club) ?? []), player]);
   }
   return {
     schemaVersion: 1,
-    generatedAt: inputs.generatedAt,
+    generatedAt: INPUTS.generatedAt,
     marketUpdatedAt:
-      inputs.evidence?.playerMarkets?.updatedAt ?? playerOdds.fetchedAt,
-    manualUpdatedAt: manual.generatedAt,
-    modelVersion: modelVersion(),
+      INPUTS.evidence?.playerMarkets?.updatedAt ?? PLAYER_ODDS.fetchedAt,
+    manualUpdatedAt: MANUAL_PRIORS.generatedAt,
+    modelVersion: PLAN.modelVersion,
     teams: [...byClub].sort().map(([club, players]) => {
-      const manualKeeper = manual.players.find(
+      const manualKeeper = MANUAL_PRIORS.players.find(
         (row) => row.club === club && row.startProbability >= 0.99,
       );
       const ranked = [...players].sort((left, right) => {
@@ -277,30 +254,24 @@ function xstart() {
 }
 
 function markets() {
-  const playerOdds = jsonFile<PlayerOddsArtifact>(
-    "apps/web/src/data/player-odds.json",
-  );
-  const fixtureOdds = jsonFile<FixtureOddsArtifact>(
-    "apps/web/src/data/fixture-odds.json",
-  );
   return {
     schemaVersion: 1,
     generatedAt: new Date().toISOString(),
-    modelVersion: modelVersion(),
+    modelVersion: PLAN.modelVersion,
     fixtureOdds: {
-      generatedAt: fixtureOdds.generatedAt,
-      season: fixtureOdds.season,
-      source: fixtureOdds.source,
-      fixtures: fixtureOdds.fixtures,
+      generatedAt: FIXTURE_ODDS.generatedAt,
+      season: FIXTURE_ODDS.season,
+      source: FIXTURE_ODDS.source,
+      fixtures: FIXTURE_ODDS.fixtures,
     },
     playerOdds: {
-      fetchedAt: playerOdds.fetchedAt,
-      season: playerOdds.season,
-      markets: playerOdds.markets,
-      quota: playerOdds.quota,
-      coverage: playerOdds.coverage,
-      fixtures: playerOdds.fixtures,
-      players: playerOdds.players,
+      fetchedAt: PLAYER_ODDS.fetchedAt,
+      season: PLAYER_ODDS.season,
+      markets: PLAYER_ODDS.markets,
+      quota: PLAYER_ODDS.quota,
+      coverage: PLAYER_ODDS.coverage,
+      fixtures: PLAYER_ODDS.fixtures,
+      players: PLAYER_ODDS.players,
     },
   };
 }
