@@ -169,7 +169,9 @@ describe("the numbered Plan boxes", () => {
   it("keeps the last gameweek inside step two", () => {
     const step = stepSource("02", "03");
     expect(step).toContain("<Scorecard");
+    expect(step).toContain("<Gw1ReviewPitch");
     expect(step).toContain("<LiveSquad");
+    expect(step).toContain("teamId === GW1_REVIEW_ENTRY_ID");
   });
 
   it("keeps objective context inside step three", () => {

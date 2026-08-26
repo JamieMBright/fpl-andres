@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "season": "2026-27",
+  "event": 1,
+  "supersedes": "data/prospective/gw1-2026-27.json",
+  "correctionReason": "The original path was later rewritten with a post-deadline freeze and the gameweek 2 deadline. This companion preserves the original pre-deadline record.",
+  "canonicalManifestRevision": "916de48afecfa174c58d759c3de4a5262dad140c",
+  "canonicalArtifactRevision": "916de48afecfa174c58d759c3de4a5262dad140c",
+  "recordedCodeRevision": "20d43acd502730f7281d196f0584bb8c610965a7",
+  "canonicalModelVersion": "8.6",
+  "canonicalDeadline": "2026-08-21T17:30:00+00:00",
+  "canonicalFrozenAt": "2026-08-21T09:44:27+00:00",
+  "outcomesObserved": false,
+  "evidenceLevel": "observed",
+  "parameters": {
+    "path": "docs/PARAMETERS.md",
+    "sha256": "sha256:1e8cc6f04643c84e10b951d80cdd9e1de9ea311aab8e9176fe81c03b4b03d143"
+  },
+  "artifacts": {
+    "apps/web/src/data/projections.json": "sha256:bcffba5c5257a10dd1f6e4baa8e2d94be699d1d21ab5e06ebc491275a409e4af",
+    "apps/web/src/data/projections-meta.json": "sha256:c520d9f4183f59d33da58b91bc5d8216aec2b0317e1c3ba7e90520f506e9fe9a",
+    "apps/web/src/data/season-inputs.json": "sha256:c9ac65a33a8e94ddb82998db040604413e8f0aa6abd961c16bcc71f41ccb89e4",
+    "apps/web/src/data/opening-squad.json": "sha256:a5ab5efb08065fd6a85f71fa9d2085ca8f3490a2e7b3a629ab2e9388a4344b79",
+    "apps/web/src/data/season-plan.json": "sha256:3a0b2f23fdc4d41e7c2617351f42945228b936601ccf1f3429d59ff5426d6f50"
+  }
+}

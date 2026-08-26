@@ -828,6 +828,11 @@ one season is not many shots per cell.
 - Rate basis and weights are in `reason_codes` on every `PlayerRateProjection`.
 - Every published figure lives in a committed artifact, so a number on the site
   traces to the commit that produced it.
+- Prospective inputs and settled outcomes stay separate. A pre-deadline manifest
+  hashes the planning artifacts; `data/live/{season}/gwNN.json` captures FPL's
+  final public rows once the whole round is finished. The GW1 review recomputes
+  event-specific xPts from the frozen model 8.6 inputs and grades raw player
+  points. Captain multipliers change the team total, not a player's grade.
 - `python/tests/test_reachability.py` fails the build if any function stops being
   called, so this document cannot quietly describe dead code.
 - `python/tests/test_model_document.py` fails if a model module stops being named

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import inspect
+import json
 import re
 import subprocess
 from datetime import UTC, datetime, timedelta
@@ -15,13 +16,18 @@ from fpl_andres.cli import freeze_prospective, validate
 from fpl_andres.holdout import SCORED_SEASONS
 from fpl_andres.jsonio import read_json_file
 from fpl_andres.prospective import (
+    CORRECTION_SCHEMA_VERSION,
     FROZEN_PLANNING_ARTIFACTS,
     PROSPECTIVE_SCHEMA_VERSION,
+    build_correction_manifest,
     build_prospective_manifest,
 )
 
 ROOT = Path(__file__).resolve().parents[2]
 MANIFEST = ROOT / "data" / "prospective" / "gw1-2026-27.json"
+CORRECTION = ROOT / "data" / "prospective" / "gw1-2026-27-corrected.json"
+CANONICAL_MANIFEST_REVISION = "916de48afecfa174c58d759c3de4a5262dad140c"
+CANONICAL_ARTIFACT_REVISION = "20d43acd502730f7281d196f0584bb8c610965a7"
 
 
 def _sha256(path: Path) -> str:
@@ -121,6 +127,45 @@ def test_the_manifest_hashes_every_input_that_can_move_the_gw1_plan() -> None:
     assert all(
         re.fullmatch(r"sha256:[0-9a-f]{64}", digest) for digest in payload["artifacts"].values()
     )
+
+
+def test_the_gw1_correction_points_at_the_original_pre_deadline_tree() -> None:
+    source = subprocess.run(
+        [
+            "git",
+            "show",
+            f"{CANONICAL_MANIFEST_REVISION}:data/prospective/gw1-2026-27.json",
+        ],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    ).stdout
+    canonical = json.loads(source)
+
+    correction = build_correction_manifest(
+        canonical,
+        manifest_revision=CANONICAL_MANIFEST_REVISION,
+    )
+
+    assert correction["schemaVersion"] == CORRECTION_SCHEMA_VERSION
+    assert correction["supersedes"] == "data/prospective/gw1-2026-27.json"
+    assert correction["canonicalManifestRevision"] == CANONICAL_MANIFEST_REVISION
+    assert correction["canonicalArtifactRevision"] == CANONICAL_MANIFEST_REVISION
+    assert correction["recordedCodeRevision"] == CANONICAL_ARTIFACT_REVISION
+    assert correction["canonicalModelVersion"] == "8.6"
+    assert correction["canonicalDeadline"] == "2026-08-21T17:30:00+00:00"
+    assert correction["canonicalFrozenAt"] == "2026-08-21T09:44:27+00:00"
+    for path, expected in correction["artifacts"].items():
+        artifact = subprocess.run(
+            ["git", "show", f"{CANONICAL_MANIFEST_REVISION}:{path}"],
+            cwd=ROOT,
+            check=True,
+            capture_output=True,
+        ).stdout
+        assert f"sha256:{hashlib.sha256(artifact).hexdigest()}" == expected
+
+    assert read_json_file(CORRECTION) == correction
 
 
 def test_the_manifest_builder_hashes_the_files_it_was_given(tmp_path: Path) -> None:

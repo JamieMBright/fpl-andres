@@ -285,7 +285,7 @@ Every remote surface implements idle, loading, ready, stale, degraded and error.
 
 ## Component inventory
 
-Forty-seven components in `apps/web/src/components`. The column
+Forty-eight components in `apps/web/src/components`. The column
 that matters is the last one: what a browser journey already proves about each,
 so a review knows what it does not have to check by hand.
 
@@ -341,6 +341,7 @@ so a review knows what it does not have to check by hand.
 | `TopPicks`                | The best five-gameweek player in each position           | unit (`TopPicks.test.tsx`)           |
 | `RankMedal`               | Gold, silver and bronze rank marks                       | unit (`TopPicks.test.tsx`)           |
 | `LiveSquad`               | The fifteen and what each of them actually did           | unit (`LiveSquad.test.tsx`)          |
+| `Gw1ReviewPitch`          | Frozen xPts against the settled opening gameweek         | unit (`Gw1ReviewPitch.test.tsx`)     |
 | `ScoreMarks`              | A gameweek drawn as balls, shields, medals, a star       | unit (`ScoreMarks.test.tsx`)         |
 | `DeclaredChipsForm`       | Chips already spent, and one committed ahead             | unit (`declared-chips.test.ts`)      |
 | `RankObjectiveForm`       | Which race is being run, asked before advising           | unit (`rank-objective.test.ts`)      |

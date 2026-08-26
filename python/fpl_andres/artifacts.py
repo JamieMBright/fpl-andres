@@ -39,6 +39,9 @@ OPENING_SQUAD_SCHEMA_VERSION: Final = 1
 #: generated every captain, transfer and chip call.
 SEASON_PLAN_SCHEMA_VERSION: Final = 2
 
+#: Immutable event-1 scorecard against the pre-deadline projection.
+GW1_REVIEW_SCHEMA_VERSION: Final = 1
+
 #: Understat shot quality and penalty exposure, keyed by FPL code.
 UNDERSTAT_SCHEMA_VERSION: Final = 1
 
@@ -47,6 +50,7 @@ ANALYSIS_SEASONS_SCHEMA_VERSION: Final = 1
 
 __all__ = [
     "ANALYSIS_SEASONS_SCHEMA_VERSION",
+    "GW1_REVIEW_SCHEMA_VERSION",
     "OPENING_SQUAD_SCHEMA_VERSION",
     "PROJECTIONS_META_SCHEMA_VERSION",
     "PROJECTIONS_SCHEMA_VERSION",

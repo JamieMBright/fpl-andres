@@ -116,6 +116,7 @@ def test_the_bot_committing_workflows_are_covered_by_those_rules() -> None:
 
     for name in (
         "calibrate-points-to-rank.yml",
+        "capture-live-gameweek.yml",
         "ingest-odds.yml",
         "ingest-player-odds.yml",
         "probe-api-football-historical.yml",
@@ -251,6 +252,19 @@ def test_fpl500_capture_republishes_the_prospective_event_ledger() -> None:
     web_artifact = "apps/web/src/data/fpl500.json"
     assert publish > capture
     assert text.count(web_artifact) >= 2
+
+
+def test_live_capture_builds_the_review_after_the_settled_snapshot() -> None:
+    text = (WORKFLOWS / "capture-live-gameweek.yml").read_text(encoding="utf-8")
+
+    capture = text.index("python -m fpl_andres.cli.capture_live_gameweek")
+    review = text.index("python -m fpl_andres.cli.build_gw1_review", capture)
+    review_step = text.rindex("- name:", 0, review)
+    staging = text.index("git add $paths", review)
+    comparison = text.index("git diff --cached --quiet", staging)
+    assert capture < review < staging < comparison
+    assert "set -o pipefail" in text[review_step:review]
+    assert "fetch-depth: 0" in text
 
 
 def test_deadlines_are_shipped_data_not_cohort_evidence() -> None:

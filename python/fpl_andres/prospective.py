@@ -4,17 +4,22 @@ from __future__ import annotations
 
 import hashlib
 import re
+from collections.abc import Mapping
 from datetime import datetime
 from pathlib import Path
+from typing import Any
 
 from fpl_andres.model_version import MODEL_VERSION
 
 __all__ = [
+    "CORRECTION_SCHEMA_VERSION",
     "FROZEN_PLANNING_ARTIFACTS",
     "PROSPECTIVE_SCHEMA_VERSION",
+    "build_correction_manifest",
     "build_prospective_manifest",
 ]
 
+CORRECTION_SCHEMA_VERSION = 1
 PROSPECTIVE_SCHEMA_VERSION = 1
 FROZEN_PLANNING_ARTIFACTS = (
     "apps/web/src/data/projections.json",
@@ -24,6 +29,54 @@ FROZEN_PLANNING_ARTIFACTS = (
     "apps/web/src/data/season-plan.json",
 )
 PARAMETERS_PATH = "docs/PARAMETERS.md"
+
+
+def build_correction_manifest(
+    canonical: Mapping[str, Any],
+    *,
+    manifest_revision: str,
+) -> dict[str, object]:
+    """Point at the original pre-deadline manifest without rewriting history."""
+    if not re.fullmatch(r"[0-9a-f]{40}", manifest_revision):
+        raise ValueError("manifest revision must be a forty-character lowercase Git SHA")
+    artifact_revision = canonical.get("codeRevision")
+    if not isinstance(artifact_revision, str) or not re.fullmatch(
+        r"[0-9a-f]{40}", artifact_revision
+    ):
+        raise ValueError("canonical manifest must name a forty-character artifact revision")
+    if canonical.get("season") != "2026-27" or canonical.get("event") != 1:
+        raise ValueError("the correction source must describe 2026-27 gameweek 1")
+    if canonical.get("outcomesObserved") is not False:
+        raise ValueError("the correction source must be prospective evidence")
+    artifacts = canonical.get("artifacts")
+    if not isinstance(artifacts, Mapping) or set(artifacts) != set(FROZEN_PLANNING_ARTIFACTS):
+        raise ValueError("canonical manifest must hash every frozen planning artifact")
+    if not all(
+        isinstance(digest, str) and re.fullmatch(r"sha256:[0-9a-f]{64}", digest)
+        for digest in artifacts.values()
+    ):
+        raise ValueError("canonical artifact hashes must be SHA-256 digests")
+
+    return {
+        "schemaVersion": CORRECTION_SCHEMA_VERSION,
+        "season": "2026-27",
+        "event": 1,
+        "supersedes": "data/prospective/gw1-2026-27.json",
+        "correctionReason": (
+            "The original path was later rewritten with a post-deadline freeze and the "
+            "gameweek 2 deadline. This companion preserves the original pre-deadline record."
+        ),
+        "canonicalManifestRevision": manifest_revision,
+        "canonicalArtifactRevision": manifest_revision,
+        "recordedCodeRevision": artifact_revision,
+        "canonicalModelVersion": canonical.get("modelVersion"),
+        "canonicalDeadline": canonical.get("deadline"),
+        "canonicalFrozenAt": canonical.get("frozenAt"),
+        "outcomesObserved": False,
+        "evidenceLevel": canonical.get("evidenceLevel"),
+        "parameters": canonical.get("parameters"),
+        "artifacts": dict(artifacts),
+    }
 
 
 def build_prospective_manifest(

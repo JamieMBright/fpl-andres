@@ -272,11 +272,15 @@ is claimed to beat or lose to the projection.
 
 The 2022/23 through 2025/26 seasons are retrospective: every outcome was visible
 while model 7.1 was developed, so none is labelled a holdout. The first genuine
-prospective record is `data/prospective/gw1-2026-27.json`, frozen before the GW1
-deadline with the code revision, model version, `docs/PARAMETERS.md` hash and
-hashes of every planning artifact. FPL500 squads and captains are then captured
-after each 2026/27 deadline as a separate forward-only evidence stream; FPL does
-not expose historical manager squads for backfill.
+prospective record is preserved by
+`data/prospective/gw1-2026-27-corrected.json`. It points to the original
+pre-deadline manifest and the exact model 8.6 planning-artifact hashes without
+rewriting the path that was later mutated. Settled public scoring rows are
+captured separately under `data/live/2026-27/`; the GW1 scorecard compares raw
+player points with the frozen event-specific xPts, while the observed captain
+multiplier changes only the team total. FPL500 squads and captains are then
+captured after each 2026/27 deadline as a separate forward-only evidence stream;
+FPL does not expose historical manager squads for backfill.
 
 A captain's return can be negative — a red card is −3, an own goal −2 — and
 `TripletPrediction` refuses a negative row because the metrics it was built for

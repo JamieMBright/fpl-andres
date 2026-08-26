@@ -1,0 +1,99 @@
+name: Capture settled gameweeks
+
+# One immutable public snapshot per completed round. It is shared evidence for
+# the manager review and xStart scoring, so it waits for FPL's final `finished`
+# flag and never overwrites a file that already exists.
+on:
+  schedule:
+    - cron: "30 6 * * *"
+  workflow_dispatch:
+    inputs:
+      event:
+        description: "Capture this gameweek only. Empty sweeps every finished round."
+        required: false
+        default: ""
+        type: string
+  # A normal push can requeue this job when Actions dispatch is unavailable.
+  push:
+    paths:
+      - ".github/workflows/capture-live-gameweek.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: capture-live-gameweek
+  cancel-in-progress: false
+
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          # The GW1 review reads its frozen input tree with `git show`.
+          fetch-depth: 0
+
+      - name: Set up Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: 20.20.2
+
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install engine
+        run: python -m pip install -e .
+
+      - name: Validate dispatch input
+        env:
+          EVENT: ${{ inputs.event }}
+        run: |
+          if [ -n "$EVENT" ] && ! printf '%s' "$EVENT" | grep -qE '^([1-9]|[12][0-9]|3[0-8])$'; then
+            echo "event must be a gameweek from 1 to 38, got: $EVENT" >&2
+            exit 1
+          fi
+
+      - name: Capture settled public rows
+        env:
+          EVENT: ${{ inputs.event }}
+        run: |
+          set -o pipefail
+          if [ -n "$EVENT" ]; then
+            python -m fpl_andres.cli.capture_live_gameweek \
+              --season 2026-27 --event "$EVENT" | tee -a "$GITHUB_STEP_SUMMARY"
+          else
+            python -m fpl_andres.cli.capture_live_gameweek \
+              --season 2026-27 | tee -a "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Build the immutable GW1 review
+        run: |
+          set -o pipefail
+          if [ -f data/live/2026-27/gw01.json ]; then
+            python -m fpl_andres.cli.build_gw1_review | tee -a "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Commit new immutable evidence
+        run: |
+          paths="data/live data/prospective/gw1-2026-27-corrected.json apps/web/src/data/gw1-review.json"
+          npx --yes prettier@3 --write \
+            "data/live/**/*.json" \
+            data/prospective/gw1-2026-27-corrected.json \
+            apps/web/src/data/gw1-review.json
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # A new event is untracked. Stage first or `git diff` cannot see it.
+          git add $paths
+          if git diff --cached --quiet -- $paths; then
+            echo "no newly settled gameweek"
+            exit 0
+          fi
+          git commit -m "chore: capture settled FPL gameweek evidence"
+          git pull --rebase --autostash
+          git push

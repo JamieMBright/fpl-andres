@@ -61,6 +61,13 @@ function lineFor(live: LivePlayer, position: string, band: Band): ScoreLine {
     assists: live.assists,
     cleanSheets: live.minutes >= 60 ? live.cleanSheets : 0,
     defensiveContribution: bar !== undefined && live.defensiveActions >= bar,
+    goalsConceded: 0,
+    ownGoals: 0,
+    penaltiesMissed: 0,
+    penaltiesSaved: 0,
+    redCards: live.redCards,
+    saves: 0,
+    yellowCards: live.yellowCards,
     bonus: live.bonus,
     haul: band === "haul",
   };

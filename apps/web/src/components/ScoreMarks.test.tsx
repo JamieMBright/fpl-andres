@@ -9,6 +9,13 @@ function line(over: Partial<ScoreLine> = {}): ScoreLine {
     assists: 0,
     cleanSheets: 0,
     defensiveContribution: false,
+    goalsConceded: 0,
+    ownGoals: 0,
+    penaltiesMissed: 0,
+    penaltiesSaved: 0,
+    redCards: 0,
+    saves: 0,
+    yellowCards: 0,
     bonus: 0,
     haul: false,
     ...over,
@@ -79,5 +86,37 @@ describe("ScoreMarks", () => {
     expect(
       screen.queryByRole("img", { name: "Defensive contribution" }),
     ).not.toBeInTheDocument();
+  });
+
+  it("names every detailed scoring mark", () => {
+    render(
+      <ScoreMarks
+        line={line({
+          goalsConceded: 2,
+          ownGoals: 1,
+          penaltiesMissed: 1,
+          penaltiesSaved: 1,
+          redCards: 1,
+          saves: 4,
+          yellowCards: 1,
+        })}
+      />,
+    );
+
+    expect(screen.getByRole("img", { name: "4 saves" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("img", { name: "2 goals conceded" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("img", { name: "Yellow card" }),
+    ).toBeInTheDocument();
+    expect(screen.getByRole("img", { name: "Red card" })).toBeInTheDocument();
+    expect(screen.getByRole("img", { name: "Own goal" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("img", { name: "Penalty saved" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("img", { name: "Penalty missed" }),
+    ).toBeInTheDocument();
   });
 });

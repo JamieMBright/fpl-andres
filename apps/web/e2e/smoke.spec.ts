@@ -1,6 +1,8 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
 
+import gw1Review from "../src/data/gw1-review.json" with { type: "json" };
+
 /**
  * The whole browser suite, deliberately.
  *
@@ -78,6 +80,58 @@ test("the plan answers with gameweeks rather than an empty page", async ({
   // page that renders its heading and nothing else is the failure that matters.
   await expect(page.locator(".plan-step").first()).toBeVisible();
   await expect(page.locator('[data-step="04"]')).toBeVisible();
+});
+
+test("the observed GW1 team opens its immutable review", async ({ page }) => {
+  await page.route("**/api/team/2822737", async (route) => {
+    await route.fulfill({
+      contentType: "application/json",
+      status: 200,
+      body: JSON.stringify({
+        status: "ready",
+        state: {
+          entryId: 2_822_737,
+          event: 1,
+          bankTenths: 0,
+          squadValueTenths: 1_000,
+          eventTransfers: 0,
+          eventTransferCostPoints: 0,
+          totalTransfers: 0,
+          activeChip: null,
+          picks: gw1Review.picks.map((pick) => ({
+            elementId: pick.elementId,
+            squadPosition: pick.squadPosition,
+            multiplier: pick.multiplier,
+            isCaptain: pick.isCaptain,
+            isViceCaptain: pick.isViceCaptain,
+            identity: {
+              webName: pick.identity.name,
+              positionCode: pick.identity.position,
+              teamShortName: pick.identity.club,
+              priceTenths: pick.identity.priceTenths,
+              code: pick.identity.code,
+            },
+          })),
+          stateAsOf: "2026-08-21T17:30:00Z",
+          dataAvailableAt: "2026-08-26T12:00:00Z",
+          evidenceLevel: "observed",
+          sourceHashes: [`sha256:${"a".repeat(64)}`],
+        },
+      }),
+    });
+  });
+
+  await page.goto("/plan?team=2822737");
+  await settle(page);
+  await page.locator('[data-step="02"] > summary').click();
+
+  await expect(
+    page.getByRole("heading", { name: "Gameweek 1, reviewed" }),
+  ).toBeVisible();
+  await expect(page.locator(".gw1-review-card")).toHaveCount(15);
+  await expect(
+    page.getByRole("button", { name: /Raya, captain, 6 actual points/i }),
+  ).toBeVisible();
 });
 
 test("an unreachable source is reported, never invented", async ({ page }) => {

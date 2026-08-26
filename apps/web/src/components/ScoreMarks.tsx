@@ -17,6 +17,8 @@ const SHIELD = "#2ec9c0";
 const ARM = "#e7f24a";
 const STAR = "#e5a02a";
 const LETTER = "#e6338c";
+const WARNING = "#e5da15";
+const DANGER = "#d64545";
 const MEDAL: Record<number, string> = {
   3: "#e5a02a",
   2: "#c9c9c9",
@@ -124,11 +126,87 @@ export function HaulMark() {
   );
 }
 
+export function SaveMark({ saves }: { readonly saves: number }) {
+  return (
+    <Mark title={`${String(saves)} ${saves === 1 ? "save" : "saves"}`}>
+      <rect fill={ARM} height={7} width={2} x={2} y={3} />
+      <rect fill={ARM} height={9} width={2} x={5} y={1} />
+      <rect fill={ARM} height={6} width={2} x={8} y={4} />
+      <rect fill={ARM} height={2} width={6} x={3} y={9} />
+    </Mark>
+  );
+}
+
+export function GoalsConcededMark({ goals }: { readonly goals: number }) {
+  return (
+    <Mark title={`${String(goals)} ${goals === 1 ? "goal" : "goals"} conceded`}>
+      <rect fill={DANGER} height={8} width={1} x={2} y={2} />
+      <rect fill={DANGER} height={1} width={8} x={2} y={2} />
+      <rect fill={DANGER} height={1} width={8} x={2} y={9} />
+      <rect fill={DANGER} height={8} width={1} x={9} y={2} />
+      <rect fill={BALL} height={2} width={2} x={5} y={5} />
+    </Mark>
+  );
+}
+
+export function CardMark({ colour }: { readonly colour: "yellow" | "red" }) {
+  return (
+    <Mark title={colour === "yellow" ? "Yellow card" : "Red card"}>
+      <rect
+        fill={colour === "yellow" ? WARNING : DANGER}
+        height={10}
+        width={7}
+        x={3}
+        y={1}
+      />
+    </Mark>
+  );
+}
+
+export function OwnGoalMark() {
+  return (
+    <Mark title="Own goal">
+      <rect fill={DANGER} height={2} width={10} x={1} y={5} />
+      <rect fill={BALL} height={6} width={2} x={5} y={3} />
+    </Mark>
+  );
+}
+
+export function PenaltyMark({
+  outcome,
+}: {
+  readonly outcome: "saved" | "missed";
+}) {
+  return (
+    <Mark title={outcome === "saved" ? "Penalty saved" : "Penalty missed"}>
+      <rect fill={BALL} height={6} width={6} x={3} y={3} />
+      {outcome === "saved" ? (
+        <>
+          <rect fill={SHIELD} height={2} width={10} x={1} y={5} />
+          <rect fill={SHIELD} height={8} width={2} x={5} y={2} />
+        </>
+      ) : (
+        <>
+          <rect fill={DANGER} height={2} width={10} x={1} y={5} />
+          <rect fill={DANGER} height={10} width={2} x={5} y={1} />
+        </>
+      )}
+    </Mark>
+  );
+}
+
 export interface ScoreLine {
   goals: number;
   assists: number;
   cleanSheets: number;
   defensiveContribution: boolean;
+  goalsConceded: number;
+  ownGoals: number;
+  penaltiesMissed: number;
+  penaltiesSaved: number;
+  redCards: number;
+  saves: number;
+  yellowCards: number;
   bonus: number;
   /** Set where the score beat what was projected by enough to be a haul. */
   haul: boolean;
@@ -161,6 +239,15 @@ export function ScoreMarks({ line }: { readonly line: ScoreLine }) {
       ) : null}
       {line.cleanSheets > 0 ? <CleanSheetMark /> : null}
       {line.defensiveContribution ? <DefensiveMark /> : null}
+      {line.saves > 0 ? <SaveMark saves={line.saves} /> : null}
+      {line.goalsConceded > 0 ? (
+        <GoalsConcededMark goals={line.goalsConceded} />
+      ) : null}
+      {line.yellowCards > 0 ? <CardMark colour="yellow" /> : null}
+      {line.redCards > 0 ? <CardMark colour="red" /> : null}
+      {line.ownGoals > 0 ? <OwnGoalMark /> : null}
+      {line.penaltiesSaved > 0 ? <PenaltyMark outcome="saved" /> : null}
+      {line.penaltiesMissed > 0 ? <PenaltyMark outcome="missed" /> : null}
       {line.bonus > 0 ? <BonusMark bonus={line.bonus} /> : null}
     </span>
   );

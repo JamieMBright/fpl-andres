@@ -8,6 +8,12 @@ The project follows Semantic Versioning once milestone tags begin.
 
 ### Added
 
+- The manager plan now reviews GW1 on a club-kit pitch against the exact model
+  8.6 xPts frozen before the deadline. Raw player points determine each grade;
+  the observed Raya captain multiplier appears only in the 56-point team total.
+  Full settled FPL rows are captured once for every finished gameweek, with a
+  source timestamp and SHA-256, and an additive correction record preserves the
+  original GW1 evidence without rewriting the later-mutated manifest.
 - Cohort captain agreement measures which captaincy thesis best describes what
   the top-500 cohort actually did, and reports it beside the backtest rather
   than inside it. The cohort is selected on final rank, so agreement says a

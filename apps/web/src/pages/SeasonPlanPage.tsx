@@ -1,5 +1,5 @@
 import { ArrowRight } from "lucide-react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 
 import { CeefaxShirt } from "../components/CeefaxShirt";
@@ -68,6 +68,14 @@ import {
   moneyLines,
   moveLines,
 } from "../state/plan-reasons";
+
+const Gw1ReviewPitch = lazy(() =>
+  import("../components/Gw1ReviewPitch").then((module) => ({
+    default: module.Gw1ReviewPitch,
+  })),
+);
+const GW1_REVIEW_EVENT = 1;
+const GW1_REVIEW_ENTRY_ID = 2_822_737;
 import { useDocumentTitle } from "../state/use-document-title";
 import {
   fixtureEvidenceForClubs,
@@ -1116,7 +1124,18 @@ export default function SeasonPlanPage() {
         >
           <Scorecard calls={scorecard} />
           {published === null ? null : (
-            <LiveSquad event={published.event} picks={published.picks} />
+            <>
+              {published.event === GW1_REVIEW_EVENT &&
+              teamId === GW1_REVIEW_ENTRY_ID ? (
+                <Suspense
+                  fallback={<p className="mono">Loading frozen review…</p>}
+                >
+                  <Gw1ReviewPitch />
+                </Suspense>
+              ) : (
+                <LiveSquad event={published.event} picks={published.picks} />
+              )}
+            </>
           )}
         </PlanStep>
       )}

@@ -36,7 +36,15 @@ def _require_keys(payload: dict[str, Any], expected: set[str], label: str) -> No
 
 @pytest.mark.parametrize(
     "name",
-    ["projections", "opening-squad", "validation", "cohort", "projections-meta", "fpl500"],
+    [
+        "projections",
+        "opening-squad",
+        "validation",
+        "cohort",
+        "projections-meta",
+        "fpl500",
+        "gw1-review",
+    ],
 )
 def test_every_artifact_records_when_it_was_generated(name: str) -> None:
     """Without this the site cannot say how old what it is showing is."""
@@ -218,6 +226,41 @@ def test_the_published_plan_keeps_both_armbands_on_midfielders_or_forwards() -> 
 
 def test_the_published_plan_names_the_model_that_generated_it() -> None:
     assert _artifact("season-plan")["modelVersion"] == MODEL_VERSION
+
+
+def test_gw1_review_shape() -> None:
+    payload = _artifact("gw1-review")
+    _require_keys(
+        payload,
+        {
+            "canonicalDeadline",
+            "canonicalFrozenAt",
+            "canonicalManifestRevision",
+            "canonicalModelVersion",
+            "event",
+            "evidence",
+            "generatedAt",
+            "picks",
+            "recordedCodeRevision",
+            "schemaVersion",
+            "season",
+            "team",
+        },
+        "gw1-review",
+    )
+    assert len(payload["picks"]) == 15
+    assert payload["team"]["points"] == 56
+    assert payload["team"]["benchPoints"] == 13
+    assert [row["identity"]["name"] for row in payload["picks"] if row["isCaptain"]] == ["Raya"]
+    assert [row["identity"]["name"] for row in payload["picks"] if row["isViceCaptain"]] == [
+        "Gabriel"
+    ]
+    assert {row["band"] for row in payload["picks"]} == {
+        "above",
+        "as_projected",
+        "below",
+        "haul",
+    }
 
 
 def test_the_published_squad_is_legal() -> None:

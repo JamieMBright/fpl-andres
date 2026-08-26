@@ -5395,6 +5395,310 @@ h1[tabindex="-1"]:focus-visible {
   color: var(--ink-soft);
 }
 
+/* The opening whistle against the frozen sheet. Real club shirts carry the
+   football identity; the flat side rule and printed grade carry the verdict. */
+.gw1-review {
+  margin: clamp(24px, 3vw, 36px) 0;
+  border-block: 1px solid var(--rule);
+  background: var(--paper);
+  padding: clamp(16px, 2.5vw, 28px) clamp(12px, 2vw, 22px);
+}
+
+.gw1-review-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.gw1-review-heading h2 {
+  margin: 2px 0 0;
+  font-size: clamp(20px, 2.2vw, 28px);
+  text-wrap: balance;
+}
+
+.gw1-review-total {
+  display: grid;
+  justify-items: end;
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+
+.gw1-review-total b {
+  color: var(--ink);
+  font-size: 36px;
+  line-height: 1;
+}
+
+.gw1-review-lede {
+  max-width: 68ch;
+  margin: 10px 0 18px;
+  color: var(--ink-soft);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.gw1-review-pitch {
+  display: grid;
+  gap: 14px;
+  background: repeating-linear-gradient(
+    to bottom,
+    var(--paper-deep) 0 2px,
+    transparent 2px 46px
+  );
+  padding: 14px 0;
+}
+
+.gw1-review-row,
+.gw1-review-bench ul {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.gw1-review-row > li,
+.gw1-review-bench li {
+  position: relative;
+  flex: 0 1 112px;
+  min-width: 0;
+}
+
+.gw1-review-card {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  width: 100%;
+  min-height: 150px;
+  padding: 8px 6px 9px;
+  border: 1px solid var(--rule);
+  border-bottom: 4px solid var(--rule);
+  border-radius: 0;
+  background: color-mix(in srgb, var(--paper-deep) 94%, transparent);
+  color: var(--ink);
+  cursor: pointer;
+  text-align: center;
+}
+
+.gw1-review-card:hover {
+  background: var(--paper-deep);
+  border-color: var(--ink-soft);
+}
+
+.gw1-review-card:focus-visible {
+  outline: 3px solid var(--signal-blue);
+  outline-offset: 2px;
+}
+
+.gw1-review-card[data-band="below"] {
+  border-bottom-color: var(--fa-signal-red);
+}
+
+.gw1-review-card[data-band="as_projected"] {
+  border-bottom-color: var(--amber);
+}
+
+.gw1-review-card[data-band="above"],
+.gw1-review-card[data-band="haul"] {
+  border-bottom-color: var(--fa-signal-green);
+}
+
+.gw1-review-card[data-band="haul"] {
+  background: color-mix(in srgb, var(--fa-signal-green) 9%, var(--paper-deep));
+}
+
+.gw1-review-shirt-wrap {
+  position: relative;
+  display: block;
+  line-height: 0;
+}
+
+.gw1-review-shirt {
+  display: block;
+  width: 38px;
+  height: 34px;
+  shape-rendering: crispEdges;
+}
+
+.gw1-review-armband {
+  position: absolute;
+  inset-block-start: -3px;
+  inset-inline-end: -8px;
+  min-width: 18px;
+  padding: 1px 4px;
+  border: 1px solid var(--paper-deep);
+  background: var(--ink);
+  color: var(--paper-deep);
+  font-family: var(--fa-body);
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.gw1-review-name {
+  max-width: 100%;
+  overflow: hidden;
+  font-family: var(--fa-display);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.gw1-review-score {
+  display: grid;
+  justify-items: center;
+  color: var(--ink-soft);
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+}
+
+.gw1-review-score b {
+  color: var(--ink);
+  font-size: 26px;
+  line-height: 1;
+}
+
+.gw1-review-band {
+  color: var(--ink-soft);
+  font-size: 10px;
+  text-transform: uppercase;
+}
+
+.gw1-review-bench {
+  margin-top: 16px;
+  border-top: 1px solid var(--rule);
+  padding-top: 12px;
+}
+
+.gw1-review-bench ul {
+  justify-content: flex-start;
+  margin-top: 8px;
+}
+
+.gw1-review-bench-order {
+  position: absolute;
+  inset-block-start: 5px;
+  inset-inline-start: 6px;
+  z-index: 1;
+  color: var(--ink-soft);
+  font-size: 10px;
+}
+
+.gw1-review-detail-wrap {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 14px;
+  margin-top: 16px;
+  border-left: 4px solid var(--fa-gk-teal);
+  background: var(--paper-deep);
+  padding: 14px;
+}
+
+.gw1-review-detail h3 {
+  margin: 2px 0 10px;
+  font-size: 18px;
+}
+
+.gw1-review-detail dl {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(94px, 1fr));
+  gap: 8px 14px;
+  margin: 0;
+}
+
+.gw1-review-detail dl > div {
+  min-width: 0;
+}
+
+.gw1-review-detail dt {
+  color: var(--ink-soft);
+  font-size: 10px;
+  text-transform: uppercase;
+}
+
+.gw1-review-detail dd {
+  margin: 2px 0 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.gw1-review-detail p:last-child {
+  margin: 12px 0 0;
+  color: var(--ink-soft);
+  font-size: 12px;
+}
+
+.gw1-review-detail-wrap > button {
+  flex: 0 0 auto;
+}
+
+.gw1-review-table,
+.gw1-review-source {
+  margin-top: 16px;
+}
+
+.gw1-review-table > summary,
+.gw1-review-source > summary {
+  min-height: 44px;
+  cursor: pointer;
+  padding: 12px 0;
+  color: var(--ink-soft);
+  font-size: 13px;
+}
+
+.gw1-review-table > summary:focus-visible,
+.gw1-review-source > summary:focus-visible {
+  outline: 3px solid var(--signal-blue);
+  outline-offset: 2px;
+}
+
+.gw1-review-table .squad-table-wrap {
+  margin-top: 6px;
+}
+
+.gw1-review-source p {
+  max-width: 72ch;
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 12px;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 560px) {
+  .gw1-review-heading {
+    align-items: start;
+  }
+
+  .gw1-review-total {
+    max-width: 120px;
+  }
+
+  .gw1-review-row > li,
+  .gw1-review-bench li {
+    flex-basis: 92px;
+  }
+
+  .gw1-review-card {
+    min-height: 146px;
+  }
+
+  .gw1-review-detail-wrap {
+    display: block;
+  }
+
+  .gw1-review-detail-wrap > button {
+    margin-top: 12px;
+  }
+}
+
 /* Which race is being run. Asked, never assumed. */
 .rank-objective {
   margin: 0;
