@@ -1,7 +1,7 @@
 import { AlertTriangle, CheckCircle2, RefreshCw } from "lucide-react";
 
-import { FIRST_DEADLINE_2026_27 } from "../public-ids";
 import { readDeclaredSquad } from "../state/declared-squad";
+import { nextDeadlineAt } from "../state/season-deadlines";
 import type { TeamAnalysisState } from "../state/team-analysis";
 import {
   staleReason,
@@ -88,12 +88,12 @@ export function AnalysisResult({
 
   const message = terminalStateMessage(analysis);
   const currentEvent = currentPlanningEvent();
+  const canDeclare =
+    analysis.status === "unavailable" &&
+    analysis.reason === "no_processed_event";
   // The season has not started, so there is nothing a retry could reach. A
   // button that cannot work is worse than no button.
-  const retryable = !(
-    analysis.status === "unavailable" &&
-    analysis.reason === "no_processed_event"
-  );
+  const retryable = !canDeclare;
   return (
     <>
       <div
@@ -119,33 +119,35 @@ export function AnalysisResult({
           </button>
         ) : null}
       </section>
-      {analysis.status === "unavailable" &&
-      analysis.reason === "no_processed_event" ? (
-        <ManagerHistory entryId={entryId} />
-      ) : null}
-      <section className="outage-squad" aria-labelledby="outage-squad-title">
-        <h2 className="visually-hidden" id="outage-squad-title">
-          Continue without FPL
-        </h2>
-        <DeclaredSquadBuilder
-          entryId={entryId}
-          event={currentEvent}
-          onDeclared={onDeclared}
-        />
-        <p className="plan-team-note">
-          <strong>Model opening plan, not your team.</strong> This is a
-          reference while no verified or manager-provided fifteen is available.
-        </p>
-        <OpeningSquad {...(currentEvent === 1 ? { entryId } : {})} />
-      </section>
-      {analysis.status === "unavailable" &&
-      analysis.reason === "no_processed_event" ? (
+      {canDeclare ? <ManagerHistory entryId={entryId} /> : null}
+      {canDeclare ? (
         <>
+          <section
+            className="outage-squad"
+            aria-labelledby="outage-squad-title"
+          >
+            <h2 className="visually-hidden" id="outage-squad-title">
+              Continue without FPL
+            </h2>
+            <DeclaredSquadBuilder
+              entryId={entryId}
+              event={currentEvent}
+              onDeclared={onDeclared}
+            />
+            <p className="plan-team-note">
+              <strong>Model opening plan, not your team.</strong> This is a
+              reference while no verified or manager-provided fifteen is
+              available.
+            </p>
+            <OpeningSquad {...(currentEvent === 1 ? { entryId } : {})} />
+          </section>
           {/* Only while there is nothing to plan from. Once a fifteen is
               locked in the season below IS the transfer plan, and a panel
               saying "not yet" beside it contradicts the page. */}
-          {hasDeclaredSquad(entryId, declaredAt) ? null : (
-            <TransferPlanPanel firstDeadline={FIRST_DEADLINE_2026_27} />
+          {hasDeclaredSquad(entryId, currentEvent, declaredAt) ? null : (
+            <TransferPlanPanel
+              firstDeadline={nextDeadlineAt()?.deadline ?? null}
+            />
           )}
         </>
       ) : null}
@@ -157,9 +159,13 @@ export function AnalysisResult({
  * `declaredAt` is unused inside, and deliberately so: it is the render key
  * that makes this storage read happen again after a lock-in.
  */
-function hasDeclaredSquad(entryId: number, declaredAt: number): boolean {
+function hasDeclaredSquad(
+  entryId: number,
+  event: number,
+  declaredAt: number,
+): boolean {
   void declaredAt;
-  return readDeclaredSquad(window.localStorage, entryId, 1) !== null;
+  return readDeclaredSquad(window.localStorage, entryId, event) !== null;
 }
 
 function EvidenceBanner({

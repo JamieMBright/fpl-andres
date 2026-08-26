@@ -7,7 +7,7 @@ import {
 } from "@fpl-andres/contracts";
 import { z } from "zod";
 
-import inputs from "../data/season-inputs.json";
+import { deadlineAfterEvent, FULL_SEASON_DEADLINES } from "./season-deadlines";
 import { SEASON_PLAYERS } from "./season-solver";
 
 const STORAGE_PREFIX = "fpl-andres:public-team-state:v2";
@@ -17,8 +17,7 @@ const MAX_PUBLIC_ID = 4_294_967_295;
 const MAX_ATTEMPTS = 3;
 const RETRY_BASE_MS = 250;
 
-const deadlines = inputs.deadlines as string[];
-const firstDeadline = deadlines[0];
+const firstDeadline = FULL_SEASON_DEADLINES[0]?.deadline;
 const startYear = firstDeadline
   ? new Date(firstDeadline).getUTCFullYear()
   : Number.NaN;
@@ -150,9 +149,11 @@ export function loadCachedPublicTeamState(
 }
 
 function usableUntilNextDeadline(event: number, now: Date): boolean {
-  const next = deadlines[event];
-  if (next === undefined) return event === deadlines.length;
-  const boundary = Date.parse(next);
+  const next = deadlineAfterEvent(event);
+  if (next === null) {
+    return event === FULL_SEASON_DEADLINES.at(-1)?.event;
+  }
+  const boundary = Date.parse(next.deadline);
   return Number.isFinite(boundary) && now.getTime() < boundary;
 }
 

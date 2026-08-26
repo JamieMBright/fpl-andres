@@ -142,7 +142,7 @@ jobs:
             apps/web/src/data/season-inputs.json \
             apps/web/src/data/opening-squad.json \
             apps/web/src/data/season-plan.json \
-            data/prospective/gw1-2026-27.json"
+            data/prospective/*.json"
           # Every book's price, kept for training. Committed even when the
           # published medians did not move: that a price held steady between
           # Tuesday and the deadline is itself the measurement.

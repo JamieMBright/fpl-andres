@@ -9,9 +9,6 @@
  */
 export const MAX_PUBLIC_ID = 4_294_967_295;
 
-/** Published by FPL for the 2026/27 opening gameweek. */
-export const FIRST_DEADLINE_2026_27 = "2026-08-21T17:30:00Z";
-
 export function parseTeamId(value: string | undefined): number | null {
   if (!value || !/^[1-9]\d{0,9}$/.test(value)) return null;
   const parsed = Number(value);

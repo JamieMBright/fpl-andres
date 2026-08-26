@@ -184,17 +184,20 @@ def test_opening_squad_shape() -> None:
 
 
 def test_planning_artifacts_are_published_in_dependency_order() -> None:
-    """The opening solve follows its inputs and the static plan starts from
-    exactly the same canonical fifteen."""
+    """The live plan follows its inputs and reconciles from the archived fifteen."""
     season_inputs = datetime.fromisoformat(_artifact("season-inputs")["generatedAt"])
     opening = _artifact("opening-squad")
-    opening_squad = datetime.fromisoformat(opening["generatedAt"])
-    opener = _artifact("season-plan")["gameweeks"][0]
+    season_plan = _artifact("season-plan")
+    planned_at = datetime.fromisoformat(season_plan["generatedAt"])
+    opener = season_plan["gameweeks"][0]
 
-    assert opening_squad >= season_inputs
-    assert set(opener["starters"] + opener["bench"]) == {pick["code"] for pick in opening["picks"]}
-    assert opener["transfersIn"] == []
-    assert opener["transfersOut"] == []
+    expected = {pick["code"] for pick in opening["picks"]}
+    expected.difference_update(opener["transfersOut"])
+    expected.update(opener["transfersIn"])
+
+    assert planned_at >= season_inputs
+    assert season_plan["firstEvent"] == _artifact("season-inputs")["events"][0]
+    assert set(opener["starters"] + opener["bench"]) == expected
 
 
 def test_the_published_squad_is_legal() -> None:

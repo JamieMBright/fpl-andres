@@ -90,7 +90,7 @@ async function fillSquad(squad: readonly SolverPlayer[]): Promise<void> {
 function renderBuilder() {
   render(
     <MemoryRouter>
-      <DeclaredSquadBuilder entryId={42} />
+      <DeclaredSquadBuilder entryId={42} event={1} />
     </MemoryRouter>,
   );
 }

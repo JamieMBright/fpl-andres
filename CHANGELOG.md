@@ -41,6 +41,22 @@ The project follows Semantic Versioning once milestone tags begin.
 
 ### Fixed
 
+- Processed squads no longer become unsolvable when FPL marks an owned player
+  doubtful, injured or suspended. The planning artifact retains every roster
+  identity with its availability-adjusted projection, while the solver still
+  excludes low-start players from transfer targets unless they are already
+  owned.
+- The Team ID journey now advances after GW1: the masthead and cache use the
+  complete deadline ledger, verified squads never ask for a vanished lock-in,
+  and the plan is ordered as manager and season, last gameweek, settings, then
+  the GW2-38 plan. Duplicate squad and projection surfaces have been removed.
+- Prospective manifests now select the actual first unfinished event from the
+  full deadline ledger and write an event-specific file. A post-GW1 refresh can
+  no longer pair GW2's deadline with event 1 and overwrite its historical
+  evidence.
+- Odds refreshes now rebuild the complete static season plan even when the
+  canonical opening fifteen is unchanged. Fixture prices can move transfers,
+  captains and chip timing without changing that initial squad.
 - The portfolio annotation no longer records a scoreline that is still moving.
   It ran inside the FPL500 capture, within six hours of the deadline and so
   roughly four hours after the first kickoff, and the live endpoint answers at

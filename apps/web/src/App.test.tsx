@@ -59,6 +59,15 @@ async function openPlanStep(name: string): Promise<void> {
 describe("team analysis entry", () => {
   beforeEach(() => {
     localStorage.clear();
+    class TestWorker {
+      onerror: ((event: ErrorEvent) => void) | null = null;
+      onmessage: ((event: MessageEvent<unknown>) => void) | null = null;
+
+      postMessage() {}
+
+      terminate() {}
+    }
+    vi.stubGlobal("Worker", TestWorker);
     vi.stubGlobal(
       "fetch",
       vi.fn<typeof fetch>().mockImplementation(async (input) => {
@@ -105,7 +114,7 @@ describe("team analysis entry", () => {
       await waitFor(() => {
         expect(analysisHeading).toHaveFocus();
       });
-      await openPlanStep("Your squad and your record");
+      await openPlanStep("Your manager and season");
       // The status region mounts empty and fills once the snapshot resolves, so
       // this waits for the text rather than for the region.
       await screen.findByText("Observed snapshot ready", undefined, {
@@ -113,19 +122,7 @@ describe("team analysis entry", () => {
       });
       expect(screen.getByText("£1.7m")).toBeInTheDocument();
       expect(screen.getByText("£100.4m")).toBeInTheDocument();
-      expect(
-        await screen.findByRole(
-          "list",
-          { name: "Substitutes in order" },
-          { timeout: SETTLE },
-        ),
-      ).toBeInTheDocument();
-
-      await user.click(screen.getByText("Same squad as a table"));
-      expect(
-        screen.getByRole("table", { name: "Last-deadline squad" }),
-      ).toBeInTheDocument();
-      expect(screen.getAllByRole("row")).toHaveLength(16);
+      expect(screen.queryByText("Same squad as a table")).toBeNull();
 
       await user.click(screen.getByText(/Check my working/));
       expect(
@@ -138,7 +135,7 @@ describe("team analysis entry", () => {
   it("keeps one objective form while its answer changes", async () => {
     const user = userEvent.setup({ delay: null });
     renderApplication(`/plan?team=${String(readyState.entryId)}`);
-    await openPlanStep("Before I solve");
+    await openPlanStep("Set your plan");
 
     const objective = await screen.findByRole(
       "heading",
@@ -146,7 +143,7 @@ describe("team analysis entry", () => {
       { timeout: SETTLE },
     );
     expect(objective.closest(".plan-step")?.getAttribute("data-step")).toBe(
-      "02",
+      "03",
     );
 
     for (const name of [
@@ -279,7 +276,7 @@ describe("team analysis entry", () => {
     );
 
     renderApplication(`/plan?team=${String(readyState.entryId)}`);
-    await openPlanStep("Your squad and your record");
+    await openPlanStep("Your manager and season");
 
     expect(
       await screen.findByText("Showing a stale verified snapshot", undefined, {
@@ -289,13 +286,6 @@ describe("team analysis entry", () => {
     expect(
       screen.getByRole("status", { name: "Evidence status" }),
     ).toHaveTextContent("Showing a stale verified snapshot");
-    expect(
-      await screen.findByRole(
-        "list",
-        { name: "Substitutes in order" },
-        { timeout: SETTLE },
-      ),
-    ).toBeInTheDocument();
     expect(screen.getByText(/FPL is temporarily unreachable/i)).toBeVisible();
   });
 
@@ -319,21 +309,13 @@ describe("team analysis entry", () => {
     );
 
     renderApplication(`/plan?team=${String(readyState.entryId)}`);
-    await openPlanStep("Your squad and your record");
+    await openPlanStep("Your manager and season");
 
     expect(
       await screen.findByText("Refreshing a verified snapshot", undefined, {
         timeout: SETTLE,
       }),
     ).toBeVisible();
-    expect(
-      await screen.findByRole(
-        "list",
-        { name: "Substitutes in order" },
-        { timeout: SETTLE },
-      ),
-    ).toBeVisible();
-
     release();
     expect(
       await screen.findByText("Observed snapshot ready", undefined, {
@@ -354,7 +336,7 @@ describe("team analysis entry", () => {
     );
 
     renderApplication("/plan?team=123");
-    await openPlanStep("Your squad and your record");
+    await openPlanStep("Your manager and season");
 
     expect(
       await screen.findByRole("heading", { name: /season hasn.t started/i }),
@@ -380,7 +362,7 @@ describe("team analysis entry", () => {
     vi.stubGlobal("fetch", fetchApi);
 
     renderApplication(`/plan?team=${String(readyState.entryId)}`);
-    await openPlanStep("Your squad and your record");
+    await openPlanStep("Your manager and season");
 
     expect(
       await screen.findByText("Observed snapshot ready", undefined, {
@@ -399,7 +381,7 @@ describe("team analysis entry", () => {
     vi.stubGlobal("fetch", offline);
 
     renderApplication(`/plan?team=${String(readyState.entryId)}`);
-    await openPlanStep("Your squad and your record");
+    await openPlanStep("Your manager and season");
 
     // The fetch retries with backoff before declaring failure, which takes
     // longer than the default one-second query timeout.
@@ -446,7 +428,7 @@ describe("team analysis entry", () => {
     );
 
     renderApplication(`/plan?team=${String(readyState.entryId)}`);
-    await openPlanStep("Your squad and your record");
+    await openPlanStep("Your manager and season");
 
     expect(
       await screen.findByRole(
@@ -483,7 +465,7 @@ describe("team analysis entry", () => {
   it("stores manager corrections separately against the public deadline", async () => {
     const user = userEvent.setup({ delay: null });
     renderApplication(`/plan?team=${String(readyState.entryId)}`);
-    await openPlanStep("Your squad and your record");
+    await openPlanStep("Your manager and season");
     await screen.findByText("Observed snapshot ready", undefined, {
       timeout: SETTLE,
     });
@@ -534,7 +516,7 @@ describe("team analysis entry", () => {
   it("focuses an actionable error when no correction is supplied", async () => {
     const user = userEvent.setup({ delay: null });
     renderApplication(`/plan?team=${String(readyState.entryId)}`);
-    await openPlanStep("Your squad and your record");
+    await openPlanStep("Your manager and season");
     await screen.findByText("Observed snapshot ready", undefined, {
       timeout: SETTLE,
     });
@@ -552,7 +534,7 @@ describe("team analysis entry", () => {
   it("marks and focuses the first invalid correction field", async () => {
     const user = userEvent.setup({ delay: null });
     renderApplication(`/plan?team=${String(readyState.entryId)}`);
-    await openPlanStep("Your squad and your record");
+    await openPlanStep("Your manager and season");
     await screen.findByText("Observed snapshot ready", undefined, {
       timeout: SETTLE,
     });
@@ -582,7 +564,7 @@ describe("team analysis entry", () => {
     });
     const user = userEvent.setup({ delay: null });
     renderApplication(`/plan?team=${String(readyState.entryId)}`);
-    await openPlanStep("Your squad and your record");
+    await openPlanStep("Your manager and season");
     await screen.findByText("Observed snapshot ready", undefined, {
       timeout: SETTLE,
     });
@@ -664,7 +646,7 @@ describe("team analysis entry", () => {
     });
     const user = userEvent.setup({ delay: null });
     renderApplication(`/plan?team=${String(readyState.entryId)}`);
-    await openPlanStep("Your squad and your record");
+    await openPlanStep("Your manager and season");
     await screen.findByText("Observed snapshot ready", undefined, {
       timeout: SETTLE,
     });

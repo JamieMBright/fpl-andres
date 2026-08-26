@@ -9,6 +9,7 @@ import {
 } from "./declared-squad";
 import {
   PLAYERS_BY_ELEMENT_ID,
+  SEASON_EVENTS,
   solveSeason,
   startFromElementIds,
   type SolverPlayer,
@@ -177,7 +178,9 @@ describe("declared squad", () => {
     expect(readDeclaredSquad(storage, 42, 1)?.openingDecision).toBeUndefined();
   });
 
-  it("reloads an accepted recommendation as a locked GW1 fixpoint", () => {
+  it("reloads a current-event declaration as a solver start", () => {
+    const event = SEASON_EVENTS[0];
+    expect(event).toBeDefined();
     const initialIds = legalSquad();
     const spent = initialIds.reduce(
       (total, elementId) =>
@@ -187,26 +190,19 @@ describe("declared squad", () => {
     const initial = startFromElementIds(initialIds, {
       bankTenths: SQUAD_BUDGET_TENTHS - spent,
       availableFreeTransfers: 0,
-      fromEvent: 1,
+      fromEvent: event!,
     });
     expect(initial).not.toBeNull();
-    const recommended = solveSeason(initial!).next().value;
-    expect(recommended?.transfersIn.length).toBeGreaterThan(0);
-    const acceptedIds = [
-      ...(recommended?.starters ?? []),
-      ...(recommended?.bench ?? []),
-    ].map((player) => player.id);
     saveDeclaredSquad(
       storage,
       42,
-      1,
-      acceptedIds,
+      event!,
+      initialIds,
       PLAYERS_BY_ELEMENT_ID,
       () => new Date("2026-08-18T12:00:00Z"),
-      { openingDecision: "accepted" },
     );
 
-    const reloaded = readDeclaredSquad(storage, 42, 1);
+    const reloaded = readDeclaredSquad(storage, 42, event!);
     const reloadedSpent = (reloaded?.elementIds ?? []).reduce(
       (total, elementId) =>
         total + (PLAYERS_BY_ELEMENT_ID.get(elementId)?.priceTenths ?? 0),
@@ -215,17 +211,11 @@ describe("declared squad", () => {
     const restart = startFromElementIds(reloaded?.elementIds ?? [], {
       bankTenths: SQUAD_BUDGET_TENTHS - reloadedSpent,
       availableFreeTransfers: 0,
-      fromEvent: 1,
+      fromEvent: event!,
     });
-    const locked = solveSeason({ ...restart!, lockOpening: true }).next().value;
 
-    expect(locked?.transfersIn).toEqual([]);
-    expect(locked?.transfersOut).toEqual([]);
-    expect(
-      [...(locked?.starters ?? []), ...(locked?.bench ?? [])]
-        .map((player) => player.id)
-        .sort((left, right) => left - right),
-    ).toEqual([...acceptedIds].sort((left, right) => left - right));
+    expect(restart?.fromEvent).toBe(event);
+    expect(solveSeason(restart!).next().value?.event).toBe(event);
   }, 30_000);
 
   it("never stores a squad that breaks a rule", () => {

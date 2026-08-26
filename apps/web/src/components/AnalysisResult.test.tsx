@@ -1,3 +1,5 @@
+import { publicTeamStateSchema } from "@fpl-andres/contracts";
+import teamStateCases from "../../../../packages/contracts/fixtures/public-team-state-cases.json";
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { afterEach, describe, expect, it, vi } from "vitest";
@@ -16,7 +18,7 @@ afterEach(() => {
 });
 
 describe("AnalysisResult", () => {
-  it("offers no retry when the season has not started", () => {
+  it("offers a local squad builder without retry before any event is processed", () => {
     render(
       <MemoryRouter>
         <AnalysisResult
@@ -28,9 +30,12 @@ describe("AnalysisResult", () => {
     );
 
     expect(screen.queryByRole("button", { name: "Retry analysis" })).toBeNull();
+    expect(
+      screen.getByRole("heading", { name: /build.*fifteen/i }),
+    ).toBeVisible();
   });
 
-  it("offers retry and a local squad builder when the network failed", () => {
+  it("offers retry without a local squad builder when the network failed", () => {
     render(
       <MemoryRouter>
         <AnalysisResult
@@ -45,8 +50,26 @@ describe("AnalysisResult", () => {
       screen.getByRole("button", { name: "Retry analysis" }),
     ).toBeVisible();
     expect(
-      screen.getByRole("heading", { name: /build.*fifteen/i }),
-    ).toBeVisible();
-    expect(screen.getByText(/not your team/i)).toBeVisible();
+      screen.queryByRole("heading", { name: /build.*fifteen/i }),
+    ).toBeNull();
+  });
+
+  it("does not show the preseason transfer panel beside a ready snapshot", () => {
+    render(
+      <MemoryRouter>
+        <AnalysisResult
+          analysis={{
+            status: "ready",
+            state: publicTeamStateSchema.parse(teamStateCases.valid[0]),
+          }}
+          entryId={123}
+          onRetry={() => undefined}
+        />
+      </MemoryRouter>,
+    );
+
+    expect(
+      screen.queryByText(/No gameweek of the 2026\/27 season has been played/i),
+    ).toBeNull();
   });
 });

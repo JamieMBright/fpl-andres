@@ -1003,6 +1003,7 @@ class PlayerDraft:
     routes: dict[str, float]
     evidence: dict[str, str]
     source_start_rate: float
+    availability_adjustment: float = 0.0
 
 
 def _optional_float(value: object) -> float | None:
@@ -1206,6 +1207,27 @@ def _omit_from_complete_squad(draft: PlayerDraft, weight: float) -> None:
     draft.evidence["appearance"] = "marketAbsence"
 
 
+def _apply_fpl_availability(draft: PlayerDraft) -> bool:
+    element = draft.element
+    ruled_out = element.status in {"i", "s", "u", "n"} or (
+        element.status == "d" and element.chance_of_playing_next_round == 0
+    )
+    if not ruled_out:
+        return False
+
+    before = draft.start_rate
+    draft.start_rate = 0.0
+    draft.expected_minutes = 0.0
+    draft.expected_goals = 0.0
+    draft.expected_assists = 0.0
+    draft.expected_shots = 0.0 if draft.expected_shots is not None else None
+    draft.expected_bps = 0.0 if draft.expected_bps is not None else None
+    draft.routes.clear()
+    draft.evidence["appearance"] = "fplAvailability"
+    draft.availability_adjustment = -before
+    return True
+
+
 def _final_player_row(
     draft: PlayerDraft,
     clubs: Mapping[int, Mapping[str, object]],
@@ -1225,6 +1247,8 @@ def _final_player_row(
         "club": str(clubs[element.team]["short_name"]),
         "teamId": element.team,
         "priceTenths": element.now_cost,
+        "availabilityStatus": element.status,
+        "chanceOfPlaying": element.chance_of_playing_next_round,
         "basePoints": base_points,
         "routes": published_routes,
         "startRate": round(draft.start_rate, 3),
@@ -1236,7 +1260,11 @@ def _final_player_row(
             "recentMatches": draft.model_record.get("recentMatches"),
             "recentMinutes": draft.model_record.get("recentMinutes"),
             "appearanceSource": draft.evidence.get("appearance", "historicalProjection"),
-            "marketAdjustment": round(draft.start_rate - draft.source_start_rate, 3),
+            "marketAdjustment": round(
+                draft.start_rate - draft.source_start_rate - draft.availability_adjustment,
+                3,
+            ),
+            "availabilityAdjustment": round(draft.availability_adjustment, 3),
         },
         "_expectedGoals": round(draft.expected_goals, 3),
         "_expectedAssists": round(draft.expected_assists, 3),
@@ -1514,6 +1542,7 @@ def _build_player_rows(
         if absent:
             reach.benched += 1
             _omit_from_complete_squad(draft, weight)
+        ruled_out = _apply_fpl_availability(draft)
         anchor_dates = [
             quote[1] for quote in (attack_quote, shot_quote, card_quote) if quote is not None
         ]
@@ -1521,7 +1550,7 @@ def _build_player_rows(
         if squad_anchor is not None:
             anchor_dates.append(squad_anchor)
         anchor_indices = [slots[when] for when in anchor_dates if when in slots]
-        touched = attacked or shot or carded or absent
+        touched = not ruled_out and (attacked or shot or carded or absent)
         if touched and anchor_indices and baseline_minutes > 0.0:
             carry[element.id] = [
                 float(min(anchor_indices)),
@@ -1587,18 +1616,19 @@ def main(argv: Sequence[str] | None = None) -> int:
     market_rungs = fixture_ladders.market_rungs
     market_evidence = fixture_ladders.market_evidence
 
-    available = [
+    elements = [
         element
         for element in parse_elements(bootstrap["elements"], model=BootstrapElement)
-        if element.element_type in POSITION_CODES and element.is_available
+        if element.element_type in POSITION_CODES
     ]
+    available = [element for element in elements if element.is_available]
 
     # Where a player sits in his club's queue for a shirt, read from FPL's own
     # prices. FPL prices the intended starter above his understudy, and that
     # ordering is published before a ball is kicked.
     depth: dict[int, int] = {}
     by_squad: dict[tuple[int, int], list[BootstrapElement]] = {}
-    for element in available:
+    for element in elements:
         by_squad.setdefault((element.team, element.element_type), []).append(element)
     for squad in by_squad.values():
         for element in squad:
@@ -1612,7 +1642,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     quoted_shots = _quoted_shots(player_odds_path)
     squads = _quoted_squads(player_odds_path)
     players, player_reach, market_carry = _build_player_rows(
-        available,
+        elements,
         depth=depth,
         records=record_by_code,
         priors=priors,

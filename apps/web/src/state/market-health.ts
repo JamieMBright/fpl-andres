@@ -34,12 +34,16 @@ interface FixtureOddsRow {
   awayExpectedGoals: number;
   homeCleanSheet: number;
   awayCleanSheet: number;
-  marketEvidence: { observed: string[] };
+  marketEvidence?: { observed: string[] };
 }
 
 interface FixtureOddsArtifact {
   generatedAt: string;
   fixtures: FixtureOddsRow[];
+}
+
+function observedTeamMarkets(fixture: FixtureOddsRow): ReadonlySet<string> {
+  return new Set(fixture.marketEvidence?.observed ?? []);
 }
 
 interface PlayerOddsRow {
@@ -230,7 +234,7 @@ function teamHealth(
     seasonInputs.players.map((player) => [player.id, player]),
   );
   const diagnostic = fixtureDiagnostic(artifact, fixture);
-  const observed = new Set(fixture.marketEvidence.observed);
+  const observed = observedTeamMarkets(fixture);
   const playerMarketsCovered = PLAYER_MARKETS.filter(([, , field]) =>
     rows.some((row) => typeof row[field] === "number"),
   ).length;
@@ -294,9 +298,7 @@ export function buildMarketHealth(
   );
   const fixturesExpected = fixtureOdds.fixtures.length;
   const teamFixturesCovered = fixtureOdds.fixtures.filter((fixture) =>
-    TEAM_MARKETS.every(([key]) =>
-      fixture.marketEvidence.observed.includes(key),
-    ),
+    TEAM_MARKETS.every(([key]) => observedTeamMarkets(fixture).has(key)),
   ).length;
   const playerFixturesCovered = fixtureOdds.fixtures.filter(
     (fixture) => fixtureRows(playerOdds, fixture).length > 0,
@@ -305,7 +307,7 @@ export function buildMarketHealth(
   const markets: MarketClassHealth[] = [
     ...TEAM_MARKETS.map(([key, label]) => {
       const fixturesCovered = fixtureOdds.fixtures.filter((fixture) =>
-        fixture.marketEvidence.observed.includes(key),
+        observedTeamMarkets(fixture).has(key),
       ).length;
       return {
         key,

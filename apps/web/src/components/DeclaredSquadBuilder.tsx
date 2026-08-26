@@ -417,13 +417,14 @@ function declaredSquadAnnouncement(
   chosenCount: number,
   saved: boolean,
   validation: SquadValidation | null,
+  event: number,
 ): string {
   if (validation === null) {
     return `${String(chosenCount)} of 15 picked.`;
   }
   if (validation.valid) {
     return saved
-      ? "Squad locked in for gameweek 1."
+      ? `Squad locked in for gameweek ${String(event)}.`
       : "Squad is legal and ready to lock in.";
   }
   return `Squad has ${String(validation.problems.length)} problem${validation.problems.length === 1 ? "" : "s"}.`;
@@ -431,11 +432,11 @@ function declaredSquadAnnouncement(
 
 export function DeclaredSquadBuilder({
   entryId,
-  event = 1,
+  event,
   onDeclared,
 }: {
   entryId: number;
-  event?: number;
+  event: number;
   onDeclared?: () => void;
 }) {
   const [pool, setPool] = useState<AnalysisData | null>(null);
@@ -649,7 +650,7 @@ export function DeclaredSquadBuilder({
           onClick={lockIn}
           type="button"
         >
-          Lock this in for gameweek 1
+          Lock this in for gameweek {event}
         </button>
         <button className="secondary-command" onClick={clear} type="button">
           Clear
@@ -663,7 +664,7 @@ export function DeclaredSquadBuilder({
       )}
 
       <p aria-live="polite" className="visually-hidden" role="status">
-        {declaredSquadAnnouncement(chosen.length, saved, validation)}
+        {declaredSquadAnnouncement(chosen.length, saved, validation, event)}
       </p>
       <div className="declared-squad-report">
         {validation === null ? (
@@ -706,7 +707,7 @@ export function DeclaredSquadBuilder({
                 <>
                   Locked in. Your{" "}
                   <Link to={`/plan?team=${String(entryId)}`}>
-                    gameweek 1 to 38 plan
+                    gameweek {event} to 38 plan
                   </Link>{" "}
                   now starts from these fifteen.
                 </>

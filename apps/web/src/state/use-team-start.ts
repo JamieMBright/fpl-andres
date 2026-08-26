@@ -1,12 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import type { SolveAssumption, SolveStart } from "./season-solver";
-import {
-  PLAYERS_BY_ELEMENT_ID,
-  SEASON_DEADLINES,
-  SEASON_EVENTS,
-  startFromElementIds,
-} from "./season-solver";
+import { PLAYERS_BY_ELEMENT_ID, startFromElementIds } from "./season-solver";
+import { planningEventAt } from "./season-deadlines";
 import {
   readDeclaredSquad,
   saveDeclaredSquad,
@@ -42,10 +38,7 @@ const DEFAULT_FREE_TRANSFERS = 1;
 const FOREGROUND_REFRESH_MS = 15 * 60 * 1_000;
 
 export function currentPlanningEvent(now: Date = new Date()): number {
-  const index = SEASON_DEADLINES.findIndex(
-    (deadline) => new Date(deadline).getTime() > now.getTime(),
-  );
-  return SEASON_EVENTS[index < 0 ? SEASON_EVENTS.length - 1 : index] ?? 1;
+  return planningEventAt(now);
 }
 
 /**

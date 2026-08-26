@@ -179,7 +179,7 @@ jobs:
           DERIVED="apps/web/src/data/season-inputs.json \
             apps/web/src/data/opening-squad.json \
             apps/web/src/data/season-plan.json \
-            data/prospective/gw1-2026-27.json"
+            data/prospective/*.json"
           stage() {
             for path in $SOURCES; do
               if [ -e "$path" ]; then

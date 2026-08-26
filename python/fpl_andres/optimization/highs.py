@@ -5,6 +5,7 @@ from collections import defaultdict
 from typing import Literal
 
 import numpy as np
+from numpy.typing import NDArray
 from scipy.optimize import Bounds, LinearConstraint, milp
 
 from fpl_andres.optimization.contracts import (
@@ -12,6 +13,8 @@ from fpl_andres.optimization.contracts import (
     OptimizationRequest,
     OptimizationResult,
 )
+
+FloatArray = NDArray[np.float64]
 
 
 class OptimizationError(RuntimeError):
@@ -115,7 +118,7 @@ class HighsOptimizer:
             )
         objective[paid_transfer_column] = request.rules.transfer_rules.transfer_cost_points
 
-        rows: list[np.ndarray] = []
+        rows: list[FloatArray] = []
         lower_bounds: list[float] = []
         upper_bounds: list[float] = []
 
@@ -215,7 +218,7 @@ class HighsOptimizer:
         upper_variable_bounds = np.ones(variable_count, dtype=np.float64)
         upper_variable_bounds[paid_transfer_column] = request.rules.transfer_cap
 
-        def optimize(stage_objective: np.ndarray, stage: str) -> np.ndarray:
+        def optimize(stage_objective: FloatArray, stage: str) -> FloatArray:
             result = milp(
                 stage_objective,
                 integrality=np.ones(variable_count, dtype=np.int32),
@@ -362,7 +365,7 @@ class HighsOptimizer:
 
 def _selected(
     players: tuple[OptimizationPlayer, ...],
-    solution: np.ndarray,
+    solution: FloatArray,
     offset: int,
 ) -> tuple[OptimizationPlayer, ...]:
     return tuple(player for index, player in enumerate(players) if solution[offset + index] > 0.5)

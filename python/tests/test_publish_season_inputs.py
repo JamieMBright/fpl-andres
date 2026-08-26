@@ -813,10 +813,28 @@ def test_a_market_priced_fixture_converts_bps_rank_into_bonus_xpts() -> None:
     assert all(0.0 <= points <= 3.0 for points in overrides["1"].values())
 
 
-def test_unavailable_players_are_dropped(tmp_path: Path) -> None:
+def test_doubtful_players_remain_available_to_an_owned_squad(tmp_path: Path) -> None:
+    payload = _run(
+        tmp_path,
+        [_element(status="d", chance_of_playing_next_round=50)],
+    )
+
+    player = payload["players"][0]
+    assert player["availabilityStatus"] == "d"
+    assert player["chanceOfPlaying"] == 50
+    assert player["startRate"] == 0.9
+
+
+def test_ruled_out_players_remain_sellable_with_zero_projection(tmp_path: Path) -> None:
     payload = _run(tmp_path, [_element(status="i")])
 
-    assert payload["players"] == []
+    player = payload["players"][0]
+    assert player["availabilityStatus"] == "i"
+    assert player["chanceOfPlaying"] is None
+    assert player["startRate"] == 0.0
+    assert player["basePoints"] == 0.0
+    assert player["routes"] == {}
+    assert player["startEvidence"]["appearanceSource"] == "fplAvailability"
 
 
 def test_a_season_with_nothing_left_to_play_refuses(tmp_path: Path) -> None:

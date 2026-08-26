@@ -5,13 +5,15 @@ from __future__ import annotations
 import hashlib
 import inspect
 import re
+import subprocess
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
-from fpl_andres.cli import validate
+import pytest
+
+from fpl_andres.cli import freeze_prospective, validate
 from fpl_andres.holdout import SCORED_SEASONS
 from fpl_andres.jsonio import read_json_file
-from fpl_andres.model_version import MODEL_VERSION
 from fpl_andres.prospective import (
     FROZEN_PLANNING_ARTIFACTS,
     PROSPECTIVE_SCHEMA_VERSION,
@@ -31,16 +33,83 @@ def test_every_scored_season_is_retrospective() -> None:
     assert '"holdout"' not in inspect.getsource(validate.main)
 
 
-def test_the_pre_gw1_prospective_manifest_freezes_the_live_model() -> None:
+def test_the_pre_gw1_prospective_manifest_keeps_its_recorded_model() -> None:
     payload = read_json_file(MANIFEST)
 
     assert payload["schemaVersion"] == PROSPECTIVE_SCHEMA_VERSION
     assert payload["season"] == "2026-27"
     assert payload["event"] == 1
-    assert payload["modelVersion"] == MODEL_VERSION
     assert re.fullmatch(r"[0-9a-f]{40}", payload["codeRevision"])
+    source = subprocess.run(
+        [
+            "git",
+            "show",
+            f"{payload['codeRevision']}:python/fpl_andres/model_version.py",
+        ],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    ).stdout
+    recorded = re.search(r'^MODEL_VERSION\s*=\s*"([^"]+)"', source, re.MULTILINE)
+    assert recorded is not None
+    assert payload["modelVersion"] == recorded.group(1)
     assert datetime.fromisoformat(payload["frozenAt"]) < datetime.fromisoformat(payload["deadline"])
     assert payload["outcomesObserved"] is False
+
+
+def test_automatic_freeze_selects_the_first_unfinished_event(tmp_path: Path) -> None:
+    deadlines = tmp_path / "deadlines.json"
+    deadlines.write_text(
+        '{"deadlines":['
+        '{"event":1,"deadline":"2026-08-21T17:30:00Z","finished":true},'
+        '{"event":2,"deadline":"2026-08-28T17:30:00Z","finished":false}'
+        "]}",
+        encoding="utf-8",
+    )
+
+    event, deadline = freeze_prospective._event_and_deadline(deadlines, None, None)
+
+    assert event == 2
+    assert deadline == datetime(2026, 8, 28, 17, 30, tzinfo=UTC)
+
+
+def test_explicit_freeze_refuses_a_finished_event(tmp_path: Path) -> None:
+    deadlines = tmp_path / "deadlines.json"
+    deadlines.write_text(
+        '{"deadlines":[{"event":1,"deadline":"2026-08-21T17:30:00Z","finished":true}]}',
+        encoding="utf-8",
+    )
+
+    with pytest.raises(ValueError, match="already finished"):
+        freeze_prospective._event_and_deadline(deadlines, 1, None)
+
+
+def test_an_existing_prospective_manifest_is_never_rewritten(tmp_path: Path) -> None:
+    deadlines = tmp_path / "deadlines.json"
+    deadlines.write_text(
+        '{"deadlines":[{"event":2,"deadline":"2026-08-28T17:30:00Z","finished":false}]}',
+        encoding="utf-8",
+    )
+    output = tmp_path / "gw2-2026-27.json"
+    output.write_text("frozen bytes", encoding="utf-8")
+
+    assert (
+        freeze_prospective.main(
+            [
+                "--deadlines",
+                str(deadlines),
+                "--frozen-at",
+                "2026-08-26T12:00:00Z",
+                "--code-revision",
+                "a" * 40,
+                "--output",
+                str(output),
+            ]
+        )
+        == 0
+    )
+    assert output.read_text(encoding="utf-8") == "frozen bytes"
 
 
 def test_the_manifest_hashes_every_input_that_can_move_the_gw1_plan() -> None:

@@ -29,6 +29,13 @@ from __future__ import annotations
 
 __all__ = ["MODEL_VERSION"]
 
+#: 8.7 keeps every rostered player in the browser planning population even
+#: when FPL marks him doubtful, injured or suspended. Availability still
+#: scales or zeros his projection and low-start players remain ineligible as
+#: transfer targets unless already owned. Minor: xPts keeps the same meaning,
+#: while valid manager squads no longer become unsolvable when one player is
+#: temporarily unavailable.
+#:
 #: 8.6 groups scored predictions by what was projected and reports each band's
 #: mean projection against its mean outcome. No projected point moves: this is
 #: the grading harness, which this file's own rule places in scope because
@@ -367,4 +374,4 @@ __all__ = ["MODEL_VERSION"]
 #: projection and resampled, so a gap that does not clear zero is reported as
 #: not clearing zero. No projection changed; what changed is what may be
 #: claimed from it.
-MODEL_VERSION = "8.6"
+MODEL_VERSION = "8.7"

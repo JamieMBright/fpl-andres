@@ -2976,6 +2976,12 @@ h1[tabindex="-1"]:focus-visible {
   padding-top: 18px;
 }
 
+.plan-caveats-disclosure {
+  margin-top: 24px;
+  border-left: 3px solid var(--fa-signal-red);
+  padding-left: 14px;
+}
+
 .plan-caveats h2 {
   margin: 0 0 10px;
   font-size: 18px;
@@ -6979,11 +6985,6 @@ h1[tabindex="-1"]:focus-visible {
 .plan-step[data-step="04"] {
   --step-hue: var(--fa-gk-hot);
   --step-ink: var(--fa-gk-black);
-}
-
-.plan-step[data-step="05"] {
-  --step-hue: var(--fa-signal-red);
-  --step-ink: var(--fa-gk-white);
 }
 
 .plan-step-summary {

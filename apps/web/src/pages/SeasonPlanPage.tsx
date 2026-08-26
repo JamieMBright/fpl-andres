@@ -35,7 +35,11 @@ import type {
   TeamStartFailure,
   TeamStartStatus,
 } from "../state/use-team-start";
-import { PRE_SEASON_EVENT, useTeamPlan } from "../state/use-team-start";
+import {
+  currentPlanningEvent,
+  PRE_SEASON_EVENT,
+  useTeamPlan,
+} from "../state/use-team-start";
 import type {
   ChipCall,
   Confidence,
@@ -747,8 +751,9 @@ export default function SeasonPlanPage() {
     params.get("team") ?? readLastTeam(window.localStorage)?.toString() ?? null;
   const teamId =
     teamParam !== null && /^\d+$/.test(teamParam) ? Number(teamParam) : null;
+  const planningEvent = currentPlanningEvent();
   const openingDecision =
-    teamId === null
+    teamId === null || planningEvent !== PRE_SEASON_EVENT
       ? null
       : openingEdit?.entryId === teamId
         ? openingEdit.decision
@@ -777,7 +782,7 @@ export default function SeasonPlanPage() {
     const stored = readDeclaredSquad(
       window.localStorage,
       teamId,
-      PRE_SEASON_EVENT,
+      planningEvent,
     );
     const code = stored ? encodeSquad(stored.elementIds) : null;
     if (code === squadParam) return;
@@ -795,7 +800,7 @@ export default function SeasonPlanPage() {
       },
       { replace: true },
     );
-  }, [declaredAt, squadParam, setParams, teamId]);
+  }, [declaredAt, planningEvent, squadParam, setParams, teamId]);
   const teamPlan = useTeamPlan(teamParam, declaredAt, squadParam);
   const team = teamPlan.start;
 
@@ -942,7 +947,9 @@ export default function SeasonPlanPage() {
   // published optimum until they lock a fifteen in reads as "here is your
   // plan" when it is nobody's, and removes any reason to declare a squad.
   const awaitingLockIn =
-    teamId !== null && !solving && team.status !== "loading";
+    teamId !== null &&
+    team.status === "failed" &&
+    team.reason === "no_processed_event";
   // Wildcard and Free Hit still belong to the published fifteen even once the
   // other two have been re-solved, and the panel says so rather than implying
   // all four are his.
@@ -1061,7 +1068,7 @@ export default function SeasonPlanPage() {
             : teamId.toLocaleString("en-GB")
         }
         step="01"
-        title="Your squad and your record"
+        title="Your manager and season"
       >
         <TeamEntry team={team} params={params} onChange={setParams} />
         {teamId === null ? null : (
@@ -1092,10 +1099,6 @@ export default function SeasonPlanPage() {
                 }}
               />
             </div>
-            <Scorecard calls={scorecard} />
-            {published === null ? null : (
-              <LiveSquad event={published.event} picks={published.picks} />
-            )}
             {/* Announces the transition only. Marking the plan live would
                 re-read every gameweek card each time the squad resolved. */}
             <p aria-live="polite" className="visually-hidden" role="status">
@@ -1107,9 +1110,22 @@ export default function SeasonPlanPage() {
 
       {teamId === null ? null : (
         <PlanStep
-          note={objective ? "objective set" : "answer before solving"}
+          note={published ? `GW${String(published.event)}` : "awaiting scores"}
           step="02"
-          title="Before I solve"
+          title="Last gameweek"
+        >
+          <Scorecard calls={scorecard} />
+          {published === null ? null : (
+            <LiveSquad event={published.event} picks={published.picks} />
+          )}
+        </PlanStep>
+      )}
+
+      {teamId === null ? null : (
+        <PlanStep
+          note={objective ? "objective set" : "answer before solving"}
+          step="03"
+          title="Set your plan"
         >
           <p className="plan-inputs-intro">
             Tell the plan what the public FPL record cannot: which race matters,
@@ -1159,346 +1175,340 @@ export default function SeasonPlanPage() {
 
       <PlanStep
         note={
-          chipsAreYours
-            ? `${String(chipCalls.filter((chip) => chip.event !== null).length)} of ${String(chipCalls.length)} placed`
-            : solving
-              ? "solving"
-              : "waiting on your fifteen"
-        }
-        step="03"
-        title="When to play the chips"
-      >
-        {chipsAreYours ? (
-          <>
-            {solving ? (
-              <p className="plan-chip-scope">
-                All four solved from <strong>your</strong> squad.
-                <InfoMarker label="how each chip is priced">
-                  Bench Boost pays what your bench scores and Triple Captain
-                  pays what your captain scores, both read off the weeks below.
-                  Wildcard and Free Hit are priced by rebuilding your fifteen
-                  from the whole pool at every week and taking the best: the
-                  Free Hit on one week, the Wildcard on the run it opens. The
-                  rebuild is a bounded search, not a proof, and it values your
-                  squad at list price rather than selling price.
-                </InfoMarker>
-              </p>
-            ) : null}
-            <ChipStrategy chips={chipCalls} />
-          </>
-        ) : (
-          <p className="plan-awaiting">
-            A chip is only worth what your squad makes of it.{" "}
-            {awaitingLockIn
-              ? "Lock a squad in at step one and the chip weeks are solved from your bench and your captain."
-              : "Solving yours now."}
-          </p>
-        )}
-      </PlanStep>
-
-      <PlanStep
-        note={
           awaitingLockIn
             ? "waiting on your fifteen"
             : `GW${String(gameweeks[0]?.event ?? 1)}–${String(gameweeks[gameweeks.length - 1]?.event ?? 38)}`
         }
         step="04"
-        title="Every gameweek"
+        title="Your plan"
       >
-        <div className="plan-preamble">
-          <p className="plan-preamble-line">
-            Squad, eleven, captain and transfer, for every gameweek. Solved in
-            your browser.
-            <InfoMarker label="how this plan is built">
+        <section aria-labelledby="chip-plan-title" className="plan-subsection">
+          <h2 id="chip-plan-title">Chip strategy</h2>
+          {chipsAreYours ? (
+            <>
+              {solving ? (
+                <p className="plan-chip-scope">
+                  All four solved from <strong>your</strong> squad.
+                  <InfoMarker label="how each chip is priced">
+                    Bench Boost pays what your bench scores and Triple Captain
+                    pays what your captain scores, both read off the weeks
+                    below. Wildcard and Free Hit are priced by rebuilding your
+                    fifteen from the whole pool at every week and taking the
+                    best.
+                  </InfoMarker>
+                </p>
+              ) : null}
+              <ChipStrategy chips={chipCalls} />
+            </>
+          ) : (
+            <p className="plan-awaiting">
+              A chip is only worth what your squad makes of it.{" "}
               {awaitingLockIn
-                ? `A plan is only worth reading if it starts from what you own. Lock a fifteen in at step one and all 38 gameweeks are solved from it here, in ${String(plan.windowsSolved)} overlapping windows from a pool of ${String(plan.poolSize)} players.`
-                : `A single optimal 38-gameweek solve does not return, so this is ${String(plan.windowsSolved)} overlapping windows chained together from a pool of ${String(plan.poolSize)} players. A good plan, not a proof. Your squad, bank and free transfers never leave this browser.`}
-            </InfoMarker>
-          </p>
-          <ul className="plan-preamble-stats mono">
-            <li>
-              <b>
-                {awaitingLockIn
-                  ? "GW1–38"
-                  : `GW${String(gameweeks[0]?.event)}–${String(gameweeks[gameweeks.length - 1]?.event)}`}
-              </b>{" "}
-              planned
-            </li>
-            {solving || awaitingLockIn ? null : (
-              <li>
-                <b>{plan.netExpectedPoints.toFixed(0)}</b> net points
-              </li>
-            )}
-            {solving || awaitingLockIn ? null : (
-              <li>
-                <b>{bands.get("firm") ?? 0}</b> firm ·{" "}
-                <b>{bands.get("projected") ?? 0}</b> projected ·{" "}
-                <b>{bands.get("provisional") ?? 0}</b> provisional
-                <InfoMarker label="firm, projected and provisional">
-                  Firm means the gameweek already happened, so every number is
-                  observed. Projected sits inside the seven-gameweek horizon the
-                  model is calibrated on. Provisional is beyond it — read the
-                  shape, not the names.
-                </InfoMarker>
-              </li>
-            )}
-            {awaitingLockIn ? <li>no squad locked in yet</li> : null}
-          </ul>
-        </div>
-
-        {solve.status === "solving" ? (
-          <p className="plan-progress" role="status">
-            <span
-              aria-hidden="true"
-              className="plan-progress-bar"
-              style={{
-                inlineSize: `${Math.round((solve.progress ?? 0) * 100)}%`,
-              }}
-            />
-            Solved {solve.gameweeks.length} of {38 - fromEvent + 1} gameweeks…
-          </p>
-        ) : null}
-
-        {solve.status === "failed" ? (
-          <p className="plan-progress plan-progress-failed" role="alert">
-            The solver stopped: {solve.reason}. The published opening-squad plan
-            is still below.
-          </p>
-        ) : null}
-
-        {awaitingLockIn ? (
-          <p className="plan-awaiting">
-            Lock a fifteen in at step one and all thirty-eight weeks are
-            re-solved from it. Until then this is not your plan.
-          </p>
-        ) : (
-          <>
-            {live && live.assumed.length > 0 ? (
-              <p className="plan-assumed" role="status">
-                <strong>Private state FPL will not tell me.</strong>{" "}
-                {live.assumed.includes("bank") ? "Bank — assumed zero. " : ""}
-                {live.assumed.includes("free_transfers")
-                  ? "Free transfers held \u2014 assumed one. "
-                  : ""}
-                {live.assumed.includes("selling_prices")
-                  ? "What you paid, so risers are priced at today's list. "
-                  : ""}
-                Correct them in step one.
-                <InfoMarker label="the private planning numbers">
-                  These are private to your account, so no public endpoint
-                  carries them. A selling price is buy price plus half the rise,
-                  which changes what a transfer can afford. Correcting any of
-                  them re-solves the whole season on the real numbers.
-                </InfoMarker>
-              </p>
-            ) : null}
-            <ReadingKey />
-            {openingChanges.length > 0 || openingDecision ? (
-              <div className="plan-opening-advice">
-                <p>
-                  {openingDecision ? (
-                    <>
-                      <strong>
-                        {openingDecision === "accepted"
-                          ? "Using the recommended fifteen."
-                          : "Keeping your fifteen."}
-                      </strong>{" "}
-                      Gameweek 1 is locked, saved in this browser, and the
-                      season is solved from there.
-                    </>
-                  ) : (
-                    <>
-                      <strong>
-                        {openingChanges.length}{" "}
-                        {openingChanges.length === 1 ? "change" : "changes"}{" "}
-                        before the deadline, free.
-                      </strong>{" "}
-                      Nothing is charged for these &mdash; the squad is still
-                      being picked.
-                      <InfoMarker label="free pre-deadline changes">
-                        FPL only starts charging for transfers once the first
-                        deadline has passed. Until then a squad can be edited as
-                        often as you like, so these are advice rather than a
-                        hit.
-                      </InfoMarker>
-                    </>
-                  )}
-                </p>
-                {openingDecision ? null : (
-                  <ul className="plan-opening-list">
-                    {openingChanges.map(({ incoming, outgoing }) => (
-                      <li key={incoming.code}>
-                        <span className="plan-out">
-                          {outgoing?.name ?? "\u2014"}
-                        </span>
-                        <ArrowRight aria-label="replaced by" size={15} />
-                        <span className="plan-in">{incoming.name}</span>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-                <p className="plan-opening-source">
-                  FPL does not expose pre-deadline squads. Changes made only on
-                  the FPL site cannot be detected automatically, so keep the
-                  fifteen saved here in step one up to date.
-                </p>
-                {openingDecision ? null : (
-                  <div className="plan-opening-actions">
-                    <button
-                      className="primary-command"
-                      onClick={() => {
-                        decideOpening("accepted");
-                      }}
-                      type="button"
-                    >
-                      Use these free changes
-                    </button>
-                    <button
-                      className="secondary-command"
-                      onClick={() => {
-                        decideOpening("held");
-                      }}
-                      type="button"
-                    >
-                      Keep my fifteen
-                    </button>
-                  </div>
-                )}
-              </div>
-            ) : null}
-            <ul className="plan-rail">
-              {gameweeks.slice(0, shownWeeks).map((week) => (
-                <GameweekCard
-                  chip={chips.get(week.event) ?? null}
-                  key={week.event}
-                  onOpen={(player) => {
-                    setSelected({ player, week });
-                  }}
-                  week={week}
-                />
-              ))}
-            </ul>
-
-            {shownWeeks < gameweeks.length ? (
-              <p className="plan-more" ref={railEnd}>
-                <button
-                  className="secondary-command"
-                  onClick={() => {
-                    setShownWeeks(gameweeks.length);
-                  }}
-                  type="button"
-                >
-                  Show the remaining {String(gameweeks.length - shownWeeks)}{" "}
-                  gameweeks
-                </button>
-              </p>
-            ) : null}
-
-            {selected ? (
-              <PlayerDetail
-                onClose={() => {
-                  setSelected(null);
-                }}
-                player={selected.player}
-                difficulty={planDifficulty(selected.week, selected.player)}
-              />
-            ) : null}
-          </>
-        )}
-      </PlanStep>
-
-      <PlanStep
-        note={`${String(CAVEAT_COUNT)} of them`}
-        step="05"
-        title="What this plan cannot know"
-      >
-        <section
-          className="plan-caveats"
-          aria-label="What this plan cannot know"
-        >
-          <ol>
-            <li>
-              <strong>Promoted clubs have no record.</strong>{" "}
-              {plan.dataGaps.clubsInPool} of {plan.dataGaps.clubsInLeague} clubs
-              are in the pool.
-              <InfoMarker label="the missing clubs">
-                Every projection comes from {plan.recordSeason}, a season{" "}
-                {plan.dataGaps.clubsWithoutRecord.length > 0
-                  ? `${plan.dataGaps.clubsWithoutRecord.join(" and ")} did not play in`
-                  : "the promoted clubs did not play in"}
-                . Their players are missing from the pool entirely. Fixtures
-                against them are rated on FPL&rsquo;s own published strength,
-                which it sets for all twenty clubs before a ball is kicked,
-                rather than on a record that does not exist.
-              </InfoMarker>
-            </li>
-            <li>
-              <strong>Prices are frozen at today&rsquo;s.</strong> A transfer
-              eleven weeks out may be unaffordable by then.
-              <InfoMarker label="price changes">
-                Players rise and fall all season and this plan holds
-                today&rsquo;s prices for all thirty-eight gameweeks. A squad
-                that banks value early can afford things this plan says it
-                cannot.
-              </InfoMarker>
-            </li>
-            <li>
-              <strong>No form, minutes or injuries yet.</strong> This is last
-              season&rsquo;s record scaled by this season&rsquo;s fixtures.
-              <InfoMarker label="what is not modelled">
-                A real plan moves week to week with form, minutes, injuries and
-                price changes, and against what your mini-league already owns.
-                None of that is in here.
-              </InfoMarker>
-            </li>
-            <li>
-              <strong>It will change every gameweek.</strong> Read the shape,
-              not the names past the next month.
-              <InfoMarker label="why the plan moves">
-                That is not a failure of the plan, it is what a plan is for. The
-                weeks worth a chip and the runs worth holding through survive;
-                individual names do not.
-              </InfoMarker>
-            </li>
-            <li>
-              <strong>
-                {absentPremium
-                  ? `No ${absentPremium.name}, and that is the model talking.`
-                  : "The expensive names are in on projection, not reputation."}
-              </strong>{" "}
-              {absentPremium ? (
-                <>
-                  Points per pound, not doubt about the player.
-                  <InfoMarker label="the missing premium">
-                    He is the most expensive player in the game at{" "}
-                    {money.format(absentPremium.priceTenths / 10)} and the plan
-                    never fields him. A squad has £100.0m for fifteen, so every
-                    extra million on one name is a million off the other
-                    fourteen. He has to out-score not just the striker who
-                    replaces him, but that striker plus the upgrades the saving
-                    pays for everywhere else.
-                  </InfoMarker>{" "}
-                  Over four seasons nothing beat captaining the highest
-                  projection, so the armband is not a separate reason to own him
-                  &mdash;{" "}
-                  <Link to="/calibration#captaincy-title">
-                    the captaincy calibration
-                  </Link>{" "}
-                  closes that half of it.
-                </>
-              ) : (
-                <>
-                  Every player above the premium line for his position appears
-                  in at least one eleven.
-                </>
-              )}
-            </li>
-          </ol>
+                ? "State your squad above and the chip weeks are solved from your bench and captain."
+                : "Solving yours now."}
+            </p>
+          )}
         </section>
-        <p className="plan-basis mono">
-          {plan.basis}. Records from {plan.recordSeason}. Transfer rules:{" "}
-          {plan.rulesReference}.
-        </p>
+
+        <section
+          aria-labelledby="gameweek-plan-title"
+          className="plan-subsection"
+        >
+          <h2 id="gameweek-plan-title">Every gameweek</h2>
+          <div className="plan-preamble">
+            <p className="plan-preamble-line">
+              Squad, eleven, captain and transfer, for every gameweek. Solved in
+              your browser.
+              <InfoMarker label="how this plan is built">
+                {awaitingLockIn
+                  ? `A plan is only worth reading if it starts from what you own. Lock a fifteen in at step one and all 38 gameweeks are solved from it here, in ${String(plan.windowsSolved)} overlapping windows from a pool of ${String(plan.poolSize)} players.`
+                  : `A single optimal 38-gameweek solve does not return, so this is ${String(plan.windowsSolved)} overlapping windows chained together from a pool of ${String(plan.poolSize)} players. A good plan, not a proof. Your squad, bank and free transfers never leave this browser.`}
+              </InfoMarker>
+            </p>
+            <ul className="plan-preamble-stats mono">
+              <li>
+                <b>
+                  {awaitingLockIn
+                    ? `GW${String(planningEvent)}–38`
+                    : `GW${String(gameweeks[0]?.event)}–${String(gameweeks[gameweeks.length - 1]?.event)}`}
+                </b>{" "}
+                planned
+              </li>
+              {solving || awaitingLockIn ? null : (
+                <li>
+                  <b>{plan.netExpectedPoints.toFixed(0)}</b> net points
+                </li>
+              )}
+              {solving || awaitingLockIn ? null : (
+                <li>
+                  <b>{bands.get("firm") ?? 0}</b> firm ·{" "}
+                  <b>{bands.get("projected") ?? 0}</b> projected ·{" "}
+                  <b>{bands.get("provisional") ?? 0}</b> provisional
+                  <InfoMarker label="firm, projected and provisional">
+                    Firm means the gameweek already happened, so every number is
+                    observed. Projected sits inside the seven-gameweek horizon
+                    the model is calibrated on. Provisional is beyond it — read
+                    the shape, not the names.
+                  </InfoMarker>
+                </li>
+              )}
+              {awaitingLockIn ? <li>no squad locked in yet</li> : null}
+            </ul>
+          </div>
+
+          {solve.status === "solving" ? (
+            <p className="plan-progress" role="status">
+              <span
+                aria-hidden="true"
+                className="plan-progress-bar"
+                style={{
+                  inlineSize: `${Math.round((solve.progress ?? 0) * 100)}%`,
+                }}
+              />
+              Solved {solve.gameweeks.length} of {38 - fromEvent + 1} gameweeks…
+            </p>
+          ) : null}
+
+          {solve.status === "failed" ? (
+            <p className="plan-progress plan-progress-failed" role="alert">
+              The solver stopped: {solve.reason}. The published opening-squad
+              plan is still below.
+            </p>
+          ) : null}
+
+          {awaitingLockIn ? (
+            <p className="plan-awaiting">
+              Lock a fifteen in at step one and all thirty-eight weeks are
+              re-solved from it. Until then this is not your plan.
+            </p>
+          ) : (
+            <>
+              {live && live.assumed.length > 0 ? (
+                <p className="plan-assumed" role="status">
+                  <strong>Private state FPL will not tell me.</strong>{" "}
+                  {live.assumed.includes("bank") ? "Bank — assumed zero. " : ""}
+                  {live.assumed.includes("free_transfers")
+                    ? "Free transfers held \u2014 assumed one. "
+                    : ""}
+                  {live.assumed.includes("selling_prices")
+                    ? "What you paid, so risers are priced at today's list. "
+                    : ""}
+                  Correct them in step one.
+                  <InfoMarker label="the private planning numbers">
+                    These are private to your account, so no public endpoint
+                    carries them. A selling price is buy price plus half the
+                    rise, which changes what a transfer can afford. Correcting
+                    any of them re-solves the whole season on the real numbers.
+                  </InfoMarker>
+                </p>
+              ) : null}
+              <ReadingKey />
+              {openingChanges.length > 0 || openingDecision ? (
+                <div className="plan-opening-advice">
+                  <p>
+                    {openingDecision ? (
+                      <>
+                        <strong>
+                          {openingDecision === "accepted"
+                            ? "Using the recommended fifteen."
+                            : "Keeping your fifteen."}
+                        </strong>{" "}
+                        Gameweek 1 is locked, saved in this browser, and the
+                        season is solved from there.
+                      </>
+                    ) : (
+                      <>
+                        <strong>
+                          {openingChanges.length}{" "}
+                          {openingChanges.length === 1 ? "change" : "changes"}{" "}
+                          before the deadline, free.
+                        </strong>{" "}
+                        Nothing is charged for these &mdash; the squad is still
+                        being picked.
+                        <InfoMarker label="free pre-deadline changes">
+                          FPL only starts charging for transfers once the first
+                          deadline has passed. Until then a squad can be edited
+                          as often as you like, so these are advice rather than
+                          a hit.
+                        </InfoMarker>
+                      </>
+                    )}
+                  </p>
+                  {openingDecision ? null : (
+                    <ul className="plan-opening-list">
+                      {openingChanges.map(({ incoming, outgoing }) => (
+                        <li key={incoming.code}>
+                          <span className="plan-out">
+                            {outgoing?.name ?? "\u2014"}
+                          </span>
+                          <ArrowRight aria-label="replaced by" size={15} />
+                          <span className="plan-in">{incoming.name}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                  <p className="plan-opening-source">
+                    FPL does not expose pre-deadline squads. Changes made only
+                    on the FPL site cannot be detected automatically, so keep
+                    the fifteen saved here in step one up to date.
+                  </p>
+                  {openingDecision ? null : (
+                    <div className="plan-opening-actions">
+                      <button
+                        className="primary-command"
+                        onClick={() => {
+                          decideOpening("accepted");
+                        }}
+                        type="button"
+                      >
+                        Use these free changes
+                      </button>
+                      <button
+                        className="secondary-command"
+                        onClick={() => {
+                          decideOpening("held");
+                        }}
+                        type="button"
+                      >
+                        Keep my fifteen
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ) : null}
+              <ul className="plan-rail">
+                {gameweeks.slice(0, shownWeeks).map((week) => (
+                  <GameweekCard
+                    chip={chips.get(week.event) ?? null}
+                    key={week.event}
+                    onOpen={(player) => {
+                      setSelected({ player, week });
+                    }}
+                    week={week}
+                  />
+                ))}
+              </ul>
+
+              {shownWeeks < gameweeks.length ? (
+                <p className="plan-more" ref={railEnd}>
+                  <button
+                    className="secondary-command"
+                    onClick={() => {
+                      setShownWeeks(gameweeks.length);
+                    }}
+                    type="button"
+                  >
+                    Show the remaining {String(gameweeks.length - shownWeeks)}{" "}
+                    gameweeks
+                  </button>
+                </p>
+              ) : null}
+
+              {selected ? (
+                <PlayerDetail
+                  onClose={() => {
+                    setSelected(null);
+                  }}
+                  player={selected.player}
+                  difficulty={planDifficulty(selected.week, selected.player)}
+                />
+              ) : null}
+            </>
+          )}
+        </section>
+
+        <details className="plan-caveats-disclosure">
+          <summary>
+            What this plan cannot know · {String(CAVEAT_COUNT)} limits
+          </summary>
+          <section
+            className="plan-caveats"
+            aria-label="What this plan cannot know"
+          >
+            <ol>
+              <li>
+                <strong>Promoted clubs have no record.</strong>{" "}
+                {plan.dataGaps.clubsInPool} of {plan.dataGaps.clubsInLeague}{" "}
+                clubs are in the pool.
+                <InfoMarker label="the missing clubs">
+                  Every projection comes from {plan.recordSeason}, a season{" "}
+                  {plan.dataGaps.clubsWithoutRecord.length > 0
+                    ? `${plan.dataGaps.clubsWithoutRecord.join(" and ")} did not play in`
+                    : "the promoted clubs did not play in"}
+                  . Their players are missing from the pool entirely. Fixtures
+                  against them are rated on FPL&rsquo;s own published strength,
+                  which it sets for all twenty clubs before a ball is kicked,
+                  rather than on a record that does not exist.
+                </InfoMarker>
+              </li>
+              <li>
+                <strong>Prices are frozen at today&rsquo;s.</strong> A transfer
+                eleven weeks out may be unaffordable by then.
+                <InfoMarker label="price changes">
+                  Players rise and fall all season and this plan holds
+                  today&rsquo;s prices for all thirty-eight gameweeks. A squad
+                  that banks value early can afford things this plan says it
+                  cannot.
+                </InfoMarker>
+              </li>
+              <li>
+                <strong>No form, minutes or injuries yet.</strong> This is last
+                season&rsquo;s record scaled by this season&rsquo;s fixtures.
+                <InfoMarker label="what is not modelled">
+                  A real plan moves week to week with form, minutes, injuries
+                  and price changes, and against what your mini-league already
+                  owns. None of that is in here.
+                </InfoMarker>
+              </li>
+              <li>
+                <strong>It will change every gameweek.</strong> Read the shape,
+                not the names past the next month.
+                <InfoMarker label="why the plan moves">
+                  That is not a failure of the plan, it is what a plan is for.
+                  The weeks worth a chip and the runs worth holding through
+                  survive; individual names do not.
+                </InfoMarker>
+              </li>
+              <li>
+                <strong>
+                  {absentPremium
+                    ? `No ${absentPremium.name}, and that is the model talking.`
+                    : "The expensive names are in on projection, not reputation."}
+                </strong>{" "}
+                {absentPremium ? (
+                  <>
+                    Points per pound, not doubt about the player.
+                    <InfoMarker label="the missing premium">
+                      He is the most expensive player in the game at{" "}
+                      {money.format(absentPremium.priceTenths / 10)} and the
+                      plan never fields him. A squad has £100.0m for fifteen, so
+                      every extra million on one name is a million off the other
+                      fourteen. He has to out-score not just the striker who
+                      replaces him, but that striker plus the upgrades the
+                      saving pays for everywhere else.
+                    </InfoMarker>{" "}
+                    Over four seasons nothing beat captaining the highest
+                    projection, so the armband is not a separate reason to own
+                    him &mdash;{" "}
+                    <Link to="/calibration#captaincy-title">
+                      the captaincy calibration
+                    </Link>{" "}
+                    closes that half of it.
+                  </>
+                ) : (
+                  <>
+                    Every player above the premium line for his position appears
+                    in at least one eleven.
+                  </>
+                )}
+              </li>
+            </ol>
+          </section>
+          <p className="plan-basis mono">
+            {plan.basis}. Records from {plan.recordSeason}. Transfer rules:{" "}
+            {plan.rulesReference}.
+          </p>
+        </details>
       </PlanStep>
     </section>
   );

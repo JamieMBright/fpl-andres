@@ -143,18 +143,12 @@ jobs:
             apps/web/src/data/season-plan.json \
             docs/MODEL_CARDS.md
 
-      - name: Freeze the prospective GW1 inputs
+      - name: Freeze the prospective event inputs
         run: |
-          deadline="$(node -e "const p=require('./apps/web/src/data/season-inputs.json'); process.stdout.write(p.deadlines[0])")"
-          if node -e "process.exit(Date.now() < Date.parse(process.argv[1]) ? 0 : 1)" "$deadline"; then
-            python -m fpl_andres.cli.freeze_prospective \
-              --deadline "$deadline" \
-              --frozen-at "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
-              --code-revision "$GITHUB_SHA"
-            pnpm exec prettier --write data/prospective/gw1-2026-27.json
-          else
-            echo "GW1 deadline has passed; prospective manifest remains frozen"
-          fi
+          python -m fpl_andres.cli.freeze_prospective \
+            --frozen-at "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+            --code-revision "$GITHUB_SHA"
+          pnpm exec prettier --write data/prospective/*.json
 
       - name: Prove the document agrees with the artifact
         run: python -m pytest python/tests/test_measured_performance.py -q
@@ -180,12 +174,12 @@ jobs:
             apps/web/src/data/projections-meta.json
             apps/web/src/data/season-inputs.json
             apps/web/src/data/season-plan.json
-            data/prospective/gw1-2026-27.json
+            data/prospective/*.json
           retention-days: 30
 
       - name: Commit the refreshed artifact
         run: |
-          paths="apps/web/src/data/validation.json apps/web/src/data/model-history.json apps/web/src/data/reconciliation.json apps/web/src/data/projections.json apps/web/src/data/projections-meta.json apps/web/src/data/season-inputs.json apps/web/src/data/opening-squad.json apps/web/src/data/season-plan.json data/prospective/gw1-2026-27.json docs/MODEL_CARDS.md"
+          paths="apps/web/src/data/validation.json apps/web/src/data/model-history.json apps/web/src/data/reconciliation.json apps/web/src/data/projections.json apps/web/src/data/projections-meta.json apps/web/src/data/season-inputs.json apps/web/src/data/opening-squad.json apps/web/src/data/season-plan.json data/prospective/*.json docs/MODEL_CARDS.md"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           # Staged before the comparison. `git diff` does not look at untracked

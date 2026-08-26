@@ -280,123 +280,124 @@ export function ManagerHistory({
             <span className="record-when">middle season</span>
           </dd>
         </div>
-        <div>
-          <dt>Top 1% finishes</dt>
-          <dd className="mono">
-            {counts.elite}
-            <span className="record-when">of {counts.rated} rated</span>
-          </dd>
-        </div>
-        <div>
-          <dt>Top 10% finishes</dt>
-          <dd className="mono">
-            {counts.strong}
-            <span className="record-when">of {counts.rated} rated</span>
-          </dd>
-        </div>
-        <div>
-          <dt>
-            Spread
-            <InfoMarker label="spread">
-              The gap between your best quarter of seasons and your worst,
-              measured in percentage points of the field. Small means you finish
-              in much the same place every year. It answers a different question
-              from Typical: two managers can share a typical finish while one is
-              reliable and the other alternates.
-            </InfoMarker>
-          </dt>
-          <dd className="mono">
-            {counts.spread === null ? "—" : `${counts.spread.toFixed(0)}pt`}
-            <span className="record-when">
-              {consistencyWord(counts.spread) ?? "needs four seasons"}
-            </span>
-          </dd>
-        </div>
       </dl>
 
-      <div className="record-chart">
-        {/* The stated target, drawn rather than described: everything above the
+      <details className="manager-history-detail">
+        <summary>Season-by-season record</summary>
+        <dl className="record-summary">
+          <div>
+            <dt>Top 1% finishes</dt>
+            <dd className="mono">
+              {counts.elite}
+              <span className="record-when">of {counts.rated} rated</span>
+            </dd>
+          </div>
+          <div>
+            <dt>Top 10% finishes</dt>
+            <dd className="mono">
+              {counts.strong}
+              <span className="record-when">of {counts.rated} rated</span>
+            </dd>
+          </div>
+          <div>
+            <dt>
+              Spread
+              <InfoMarker label="spread">
+                The gap between your best quarter of seasons and your worst,
+                measured in percentage points of the field. Small means you
+                finish in much the same place every year.
+              </InfoMarker>
+            </dt>
+            <dd className="mono">
+              {counts.spread === null ? "—" : `${counts.spread.toFixed(0)}pt`}
+              <span className="record-when">
+                {consistencyWord(counts.spread) ?? "needs four seasons"}
+              </span>
+            </dd>
+          </div>
+        </dl>
+
+        <div className="record-chart">
+          {/* The stated target, drawn rather than described: everything above the
             line is a top-one-percent season. */}
-        <span
-          aria-hidden="true"
-          className="record-goal"
-          style={{ bottom: "99%" }}
-        >
-          <span className="mono">top 1%</span>
-        </span>
-        <span
-          aria-hidden="true"
-          className="record-goal record-goal-soft"
-          style={{ bottom: "90%" }}
-        >
-          <span className="mono">top 10%</span>
-        </span>
+          <span
+            aria-hidden="true"
+            className="record-goal"
+            style={{ bottom: "99%" }}
+          >
+            <span className="mono">top 1%</span>
+          </span>
+          <span
+            aria-hidden="true"
+            className="record-goal record-goal-soft"
+            style={{ bottom: "90%" }}
+          >
+            <span className="mono">top 10%</span>
+          </span>
 
-        <ol className="record-seasons" aria-label="Season by season finishes">
-          {profile.seasons.map((season) => {
-            const finish =
-              season.percentile === null
-                ? rankBar(season.rank, profile.worstRank) * 100
-                : 100 - season.percentile;
-            const label =
-              season.percentile === null
-                ? `rank ${season.rank.toLocaleString("en-GB")}`
-                : `top ${share(season.percentile)}`;
-            const detail = [
-              season.season,
-              label,
-              `rank ${season.rank.toLocaleString("en-GB")}`,
-              `${String(season.points)} points`,
-            ].join(" · ");
-            return (
-              <li key={season.season} title={detail}>
-                <span className="record-column">
-                  <span
-                    aria-hidden="true"
-                    className={`record-column-fill ${bandOf(season.percentile)}`}
-                    style={{ height: `${Math.max(2, finish).toFixed(1)}%` }}
-                  />
-                </span>
-                <span className="mono record-season-name">
-                  {season.season.slice(2)}
-                </span>
-                <span className="visually-hidden">{detail}</span>
-              </li>
-            );
-          })}
-        </ol>
-      </div>
+          <ol className="record-seasons" aria-label="Season by season finishes">
+            {profile.seasons.map((season) => {
+              const finish =
+                season.percentile === null
+                  ? rankBar(season.rank, profile.worstRank) * 100
+                  : 100 - season.percentile;
+              const label =
+                season.percentile === null
+                  ? `rank ${season.rank.toLocaleString("en-GB")}`
+                  : `top ${share(season.percentile)}`;
+              const detail = [
+                season.season,
+                label,
+                `rank ${season.rank.toLocaleString("en-GB")}`,
+                `${String(season.points)} points`,
+              ].join(" · ");
+              return (
+                <li key={season.season} title={detail}>
+                  <span className="record-column">
+                    <span
+                      aria-hidden="true"
+                      className={`record-column-fill ${bandOf(season.percentile)}`}
+                      style={{ height: `${Math.max(2, finish).toFixed(1)}%` }}
+                    />
+                  </span>
+                  <span className="mono record-season-name">
+                    {season.season.slice(2)}
+                  </span>
+                  <span className="visually-hidden">{detail}</span>
+                </li>
+              );
+            })}
+          </ol>
+        </div>
 
-      <ul className="record-key mono" aria-label="What the colours mean">
-        <li>
-          <span className="record-swatch is-elite" aria-hidden="true" />
-          top 1%
-        </li>
-        <li>
-          <span className="record-swatch is-strong" aria-hidden="true" />
-          top 10%
-        </li>
-        <li>
-          <span className="record-swatch is-fair" aria-hidden="true" />
-          top 25%
-        </li>
-        <li>
-          <span className="record-swatch is-weak" aria-hidden="true" />
-          below
-        </li>
-      </ul>
+        <ul className="record-key mono" aria-label="What the colours mean">
+          <li>
+            <span className="record-swatch is-elite" aria-hidden="true" />
+            top 1%
+          </li>
+          <li>
+            <span className="record-swatch is-strong" aria-hidden="true" />
+            top 10%
+          </li>
+          <li>
+            <span className="record-swatch is-fair" aria-hidden="true" />
+            top 25%
+          </li>
+          <li>
+            <span className="record-swatch is-weak" aria-hidden="true" />
+            below
+          </li>
+        </ul>
 
-      <p className="record-caveat">
-        One bar per season, oldest first. Taller is better.
-        <InfoMarker label="how to read the chart">
-          Height is the share of the field you finished ahead of, and the colour
-          matches the gridline thresholds. Hover a bar for the finish, the rank
-          and the points. Total points is deliberately not plotted: it moves
-          with the season rather than with you, and the field has grown roughly
-          fivefold since 2010. Only the share compares across eras, and the
-          percentage is FPL&rsquo;s own.
-        </InfoMarker>
-      </p>
+        <p className="record-caveat">
+          One bar per season, oldest first. Taller is better.
+          <InfoMarker label="how to read the chart">
+            Height is the share of the field you finished ahead of, and the
+            colour matches the gridline thresholds. Hover a bar for the finish,
+            rank and points.
+          </InfoMarker>
+        </p>
+      </details>
     </section>
   );
 }

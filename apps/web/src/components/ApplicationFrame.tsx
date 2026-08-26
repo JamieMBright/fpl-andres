@@ -1,7 +1,7 @@
 import { Link, NavLink, Outlet } from "react-router-dom";
 import { useEffect, useState } from "react";
 
-import { FIRST_DEADLINE_2026_27 } from "../public-ids";
+import { nextDeadlineAt } from "../state/season-deadlines";
 import { AnalyticsRouteTracker } from "./AnalyticsRouteTracker";
 import { BielsaBucket } from "./BielsaBucket";
 import { Countdown } from "./Countdown";
@@ -78,6 +78,7 @@ function readStoredTheme(): ThemeName {
 
 export function ApplicationFrame() {
   const [theme, setTheme] = useState<ThemeName>(readStoredTheme);
+  const nextDeadline = nextDeadlineAt();
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
@@ -106,7 +107,7 @@ export function ApplicationFrame() {
           </span>
         </Link>
         <div className="header-controls">
-          <Countdown deadline={FIRST_DEADLINE_2026_27} />
+          {nextDeadline ? <Countdown deadline={nextDeadline.deadline} /> : null}
           <button
             className="theme-toggle"
             onClick={() => {

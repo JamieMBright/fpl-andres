@@ -144,7 +144,7 @@ describe("the caveats", () => {
   });
 
   it("uses the red signal treatment", () => {
-    const start = STYLES.indexOf('.plan-step[data-step="05"]');
+    const start = STYLES.indexOf(".plan-caveats-disclosure {");
     const rule = STYLES.slice(start, STYLES.indexOf("}", start));
     expect(rule).toContain("--fa-signal-red");
   });
@@ -155,30 +155,36 @@ describe("the numbered Plan boxes", () => {
     expect(SOURCE).not.toContain("defaultOpen");
   });
 
-  it("keeps squad and record content inside step one", () => {
+  it("keeps manager and season content inside step one", () => {
     const step = stepSource("01", "02");
     for (const content of [
       "<TeamEntry",
       "<DeclaredSquadNote",
       "<AnalysisResult",
-      "<Scorecard",
-      "<LiveSquad",
     ]) {
       expect(step).toContain(content);
     }
   });
 
-  it("keeps objective context inside step two", () => {
+  it("keeps the last gameweek inside step two", () => {
     const step = stepSource("02", "03");
+    expect(step).toContain("<Scorecard");
+    expect(step).toContain("<LiveSquad");
+  });
+
+  it("keeps objective context inside step three", () => {
+    const step = stepSource("03", "04");
     expect(step).toContain("<RankObjectiveForm");
     expect(step).toContain("<MiniLeagueThreats");
   });
 
   it("keeps solve status and gameweeks inside step four", () => {
-    const step = stepSource("04", "05");
+    const step = stepSource("04");
+    expect(step).toContain("<ChipStrategy");
     expect(step).toContain('className="plan-preamble"');
     expect(step).toContain('className="plan-progress"');
     expect(step).toContain('className="plan-rail"');
+    expect(step).toContain('className="plan-caveats-disclosure"');
   });
 });
 
@@ -195,7 +201,7 @@ describe("what a gameweek card counts", () => {
 });
 
 describe("opening recommendations", () => {
-  const step = stepSource("04", "05");
+  const step = stepSource("04");
 
   it("keeps the expanded opening title compact and accessible", () => {
     const start = STYLES.indexOf(

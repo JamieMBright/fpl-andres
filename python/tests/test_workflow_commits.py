@@ -151,9 +151,9 @@ def test_live_odds_producers_republish_the_plan_the_browser_reads(name: str, sou
     )
     season_plan = chain.index("python -m fpl_andres.cli.publish_season_plan", canonical)
     assert season_inputs < canonical < season_plan
-    # The 38-week solve only reruns when the fifteen it starts from moved.
-    assert "$before" in chain
-    assert "$after" in chain
+    # Fixture and player odds move the whole season plan even when the opening
+    # fifteen happens to stay unchanged.
+    assert "canonical fifteen unchanged" not in chain
     for path in (
         "apps/web/src/data/season-inputs.json",
         "apps/web/src/data/opening-squad.json",
@@ -173,6 +173,16 @@ def test_live_odds_producers_republish_the_plan_the_browser_reads(name: str, sou
         formatting = text.index("prettier@3 --write apps/web/src/data/player-odds.json")
         staging = text.index("git add apps/web/src/data/player-odds.json", formatting)
         assert formatting < staging
+
+
+def test_prospective_freeze_uses_the_event_deadline_ledger() -> None:
+    chain = (REPO / "scripts" / "republish-plan.sh").read_text(encoding="utf-8")
+    validation = (WORKFLOWS / "validate-model.yml").read_text(encoding="utf-8")
+
+    for text in (chain, validation):
+        assert "season-inputs.json'); process.stdout.write(p.deadlines[0])" not in text
+        assert "python -m fpl_andres.cli.freeze_prospective" in text
+        assert "data/prospective/*.json" in text
 
 
 def test_rank_sampler_keeps_raw_progress_out_of_model_validation() -> None:

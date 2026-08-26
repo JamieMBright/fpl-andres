@@ -12,26 +12,19 @@
 # either of them can only run once.
 set -euo pipefail
 
-before="$(node -e "const p=require('./apps/web/src/data/opening-squad.json'); process.stdout.write(p.picks.map(x=>x.code).sort((a,b)=>a-b).join(','))")"
-
 python -m fpl_andres.cli.publish_season_inputs
 pnpm --filter @fpl-andres/web publish:canonical-opening
 
-after="$(node -e "const p=require('./apps/web/src/data/opening-squad.json'); process.stdout.write(p.picks.map(x=>x.code).sort((a,b)=>a-b).join(','))")"
-
-# The static plan is a bounded 38-week solve. It only has to run again when the
-# fifteen it starts from actually moved.
-if [ "$before" != "$after" ]; then
-  weekly_free_transfers="$(node -e "const p=require('./apps/web/src/data/season-inputs.json'); process.stdout.write(String(p.rules.weeklyFreeTransfers))")"
-  transfer_cost_points="$(node -e "const p=require('./apps/web/src/data/season-inputs.json'); process.stdout.write(String(p.rules.transferCostPoints))")"
-  rules_reference="$(node -e "const p=require('./apps/web/src/data/season-inputs.json'); process.stdout.write(p.rules.sourceReference)")"
-  python -m fpl_andres.cli.publish_season_plan \
-    --weekly-free-transfers "$weekly_free_transfers" \
-    --transfer-cost-points "$transfer_cost_points" \
-    --rules-reference "$rules_reference"
-else
-  echo "canonical fifteen unchanged; static plan remains valid"
-fi
+# Fixture and player prices can change every transfer, captain and chip without
+# changing the canonical fifteen. The static plan therefore belongs to the
+# complete derived chain, not only to opening-squad changes.
+weekly_free_transfers="$(node -e "const p=require('./apps/web/src/data/season-inputs.json'); process.stdout.write(String(p.rules.weeklyFreeTransfers))")"
+transfer_cost_points="$(node -e "const p=require('./apps/web/src/data/season-inputs.json'); process.stdout.write(String(p.rules.transferCostPoints))")"
+rules_reference="$(node -e "const p=require('./apps/web/src/data/season-inputs.json'); process.stdout.write(p.rules.sourceReference)")"
+python -m fpl_andres.cli.publish_season_plan \
+  --weekly-free-transfers "$weekly_free_transfers" \
+  --transfer-cost-points "$transfer_cost_points" \
+  --rules-reference "$rules_reference"
 
 # prettier owns these and Python does not write them that way. Formatting before
 # the caller's staged-diff check also stops a rewrite that is only formatting
@@ -41,15 +34,10 @@ npx --yes prettier@3 --write \
   apps/web/src/data/opening-squad.json \
   apps/web/src/data/season-plan.json
 
-# Evidence frozen before the outcome is known is the only evidence worth
-# freezing, so this stops the moment the deadline passes.
-deadline="$(node -e "const p=require('./apps/web/src/data/season-inputs.json'); process.stdout.write(p.deadlines[0])")"
-if node -e "process.exit(Date.now() < Date.parse(process.argv[1]) ? 0 : 1)" "$deadline"; then
-  python -m fpl_andres.cli.freeze_prospective \
-    --deadline "$deadline" \
-    --frozen-at "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
-    --code-revision "${GITHUB_SHA:-$(git rev-parse HEAD)}"
-  npx --yes prettier@3 --write data/prospective/gw1-2026-27.json
-else
-  echo "deadline passed; the pre-deadline freeze stands as it was"
-fi
+# The CLI selects the first unfinished event from the full deadline ledger.
+# Using `season-inputs.deadlines[0]` after GW1 paired GW2's deadline with the
+# default event 1 and rewrote a supposedly frozen historical manifest.
+python -m fpl_andres.cli.freeze_prospective \
+  --frozen-at "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+  --code-revision "${GITHUB_SHA:-$(git rev-parse HEAD)}"
+npx --yes prettier@3 --write data/prospective/*.json

@@ -4,6 +4,7 @@ import math
 from typing import Literal
 
 import numpy as np
+from numpy.typing import NDArray
 from scipy.optimize import Bounds, LinearConstraint, milp
 from scipy.sparse import coo_array
 
@@ -18,6 +19,8 @@ from fpl_andres.optimization.highs import (
     optimum_handoff_slack,
 )
 from fpl_andres.optimization.horizon_model import HorizonModel, build_constraints
+
+FloatArray = NDArray[np.float64]
 
 
 class HighsHorizonOptimizer:
@@ -111,7 +114,7 @@ class HighsHorizonOptimizer:
         )
         upper_variable_bounds[free_compare_offset:bank_offset] = 1.0
 
-        def optimize(stage_objective: np.ndarray, stage: str) -> np.ndarray:
+        def optimize(stage_objective: FloatArray, stage: str) -> FloatArray:
             # Rebuilt per stage rather than hoisted: later stages append
             # constraints, and a matrix built once would silently solve the
             # earlier problem. Assembling from triples is cheap; getting this
@@ -315,7 +318,7 @@ class HighsHorizonOptimizer:
 
 def _selected(
     player_ids: tuple[int, ...],
-    solution: np.ndarray,
+    solution: FloatArray,
     offset: int,
     event_index: int,
     player_count: int,

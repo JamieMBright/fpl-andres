@@ -190,4 +190,25 @@ describe("market health", () => {
       ),
     ).toMatchObject({ kind: "player", fixturesCovered: 0 });
   });
+
+  it("treats missing team-market diagnostics as no observed coverage", () => {
+    const withoutEvidence = {
+      ...fixtureOdds,
+      fixtures: fixtureOdds.fixtures.map(
+        ({ marketEvidence: _marketEvidence, ...fixture }) => fixture,
+      ),
+    };
+
+    const health = buildMarketHealth(
+      { fixtureOdds: withoutEvidence, playerOdds, deadlines, seasonInputs },
+      new Date("2026-08-18T06:30:00Z"),
+    );
+
+    expect(health.teamFixturesCovered).toBe(0);
+    expect(
+      health.markets
+        .filter((market) => market.kind === "team")
+        .map((market) => market.fixturesCovered),
+    ).toEqual([0, 0, 0, 0]);
+  });
 });

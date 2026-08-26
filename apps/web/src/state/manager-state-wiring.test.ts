@@ -22,6 +22,24 @@ beforeEach(() => {
 const held = SEASON_PLAYERS.slice(0, 15);
 
 describe("startFromElementIds", () => {
+  it("keeps every player in a processed squad when FPL marks two doubtful", () => {
+    const elementIds = [
+      1, 82, 4, 388, 387, 498, 61, 346, 465, 426, 68, 481, 368, 124, 106,
+    ];
+
+    const published = new Set(SEASON_PLAYERS.map((player) => player.id));
+    expect(elementIds.filter((elementId) => !published.has(elementId))).toEqual(
+      [],
+    );
+    expect(
+      startFromElementIds(elementIds, {
+        bankTenths: 0,
+        availableFreeTransfers: 1,
+        fromEvent: 2,
+      }),
+    ).not.toBeNull();
+  });
+
   it("uses the manager's own selling prices when he has given them", () => {
     const first = held[0];
     if (!first) throw new Error("no players published");

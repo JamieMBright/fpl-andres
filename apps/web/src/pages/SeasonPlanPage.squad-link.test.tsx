@@ -90,11 +90,12 @@ describe("the declared squad in a link", () => {
   it("leaves a squad already in this browser alone", async () => {
     const held = legalSquad();
     const other = [...held.slice(1), held[0]!].reverse();
+    const event = currentPlanningEvent();
     localStorage.setItem(
-      `fpl-andres:declared-squad:v1:${String(ENTRY_ID)}:1`,
+      `fpl-andres:declared-squad:v1:${String(ENTRY_ID)}:${String(event)}`,
       JSON.stringify({
         entryId: ENTRY_ID,
-        event: 1,
+        event,
         elementIds: held,
         declaredAt: "2026-08-01T00:00:00.000Z",
       }),
@@ -103,18 +104,19 @@ describe("the declared squad in a link", () => {
     renderPlan(`/plan?team=${String(ENTRY_ID)}&squad=${encodeSquad(other)!}`);
 
     await screen.findByRole("heading", { level: 1 }, { timeout: SETTLE });
-    expect(readDeclaredSquad(localStorage, ENTRY_ID, 1)?.elementIds).toEqual(
-      held,
-    );
+    expect(
+      readDeclaredSquad(localStorage, ENTRY_ID, event)?.elementIds,
+    ).toEqual(held);
   });
 
   it("writes the squad it is planning from into the address bar", async () => {
     const squad = legalSquad();
+    const event = currentPlanningEvent();
     localStorage.setItem(
-      `fpl-andres:declared-squad:v1:${String(ENTRY_ID)}:1`,
+      `fpl-andres:declared-squad:v1:${String(ENTRY_ID)}:${String(event)}`,
       JSON.stringify({
         entryId: ENTRY_ID,
-        event: 1,
+        event,
         elementIds: squad,
         declaredAt: "2026-08-01T00:00:00.000Z",
       }),
@@ -133,10 +135,11 @@ describe("the declared squad in a link", () => {
 
   it("ignores a corrupted link rather than planning from half a squad", async () => {
     const code = encodeSquad(legalSquad())!;
+    const event = currentPlanningEvent();
 
     renderPlan(`/plan?team=${String(ENTRY_ID)}&squad=${code.slice(0, -6)}`);
 
     await screen.findByRole("heading", { level: 1 }, { timeout: SETTLE });
-    expect(readDeclaredSquad(localStorage, ENTRY_ID, 1)).toBeNull();
+    expect(readDeclaredSquad(localStorage, ENTRY_ID, event)).toBeNull();
   });
 });

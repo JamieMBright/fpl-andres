@@ -65,6 +65,7 @@ test("a manager can enter a Team ID and reach their plan", async ({ page }) => {
 
   await expect(page).toHaveURL(new RegExp(`/plan\\?team=${TEAM_ID}$`));
   await expect(page).toHaveTitle(new RegExp(`Team ${TEAM_ID}`));
+  await expect(page.getByText(/lock a fifteen in at step one/i)).toHaveCount(0);
 });
 
 test("the plan answers with gameweeks rather than an empty page", async ({
@@ -92,7 +93,7 @@ test("an unreachable source is reported, never invented", async ({ page }) => {
   await settle(page);
   await page
     .locator('[data-step="01"] summary')
-    .getByText("Your squad and your record")
+    .getByText("Your manager and season")
     .click();
 
   await expect(
@@ -435,7 +436,7 @@ test("a mobile gesture over a player row scrolls the plan, not an inner list", a
   await wheelIntoView(".squad-builder .squad-pitch");
   await wheelIntoView(".declared-squad-actions");
   await expect(
-    page.getByRole("button", { name: "Lock this in for gameweek 1" }),
+    page.getByRole("button", { name: /Lock this in for gameweek \d+/ }),
   ).toBeInViewport();
   await wheelIntoView('[data-step="02"]');
 });
