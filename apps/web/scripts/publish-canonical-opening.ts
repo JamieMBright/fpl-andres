@@ -62,9 +62,12 @@ function signature(players: readonly SolverPlayer[]): string {
 const opening = JSON.parse(await readFile(OUTPUT, "utf8")) as OpeningArtifact;
 const event = SEASON_EVENTS[0];
 if (event !== 1) {
-  throw new Error(
-    `expected the published season to begin at GW1, got ${event}`,
+  // season-inputs has advanced past GW1 — the canonical opening squad is fixed
+  // for the season and cannot be re-solved once GW1 is no longer in the window.
+  console.log(
+    `${OUTPUT} — season has advanced past GW1 (first event is now GW${event}); canonical squad stands as committed`,
   );
+  process.exit(0);
 }
 
 // GW1 picks are fixed once the deadline passes. Re-solving after the deadline
