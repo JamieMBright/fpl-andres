@@ -75,7 +75,7 @@ def test_the_two_documents_agree_with_each_other() -> None:
 @pytest.mark.parametrize(
     ("value", "label"),
     [
-        (ProjectionSettings().decay_half_life_events, "4.0"),
+        (ProjectionSettings().decay_half_life_events, "2.0"),
         (ProjectionSettings().prior_strength_minutes, "450"),
         (ProjectionSettings().blend_full_weight_minutes, "900"),
         (ProjectionSettings().minimum_minutes, "180"),
@@ -92,7 +92,7 @@ def test_model_md_quotes_the_projector_defaults_correctly(value: float, label: s
 @pytest.mark.parametrize(
     ("name", "value"),
     [
-        ("prior_strength_events", 2.0),
+        ("prior_strength_events", 4.0),
         ("prior_start_rate", 0.35),
         ("recent_form_window", 5),
         ("recent_form_weight", 0.2),

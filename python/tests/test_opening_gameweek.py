@@ -7,6 +7,7 @@ manager most wants advice.
 
 from __future__ import annotations
 
+from dataclasses import replace
 from datetime import UTC, datetime, timedelta
 
 from fpl_andres.backtesting.corpus import ElementRow, SeasonCorpus
@@ -108,6 +109,43 @@ def test_the_carried_season_is_named_on_the_projection() -> None:
 
     assert returning.rates.carried_season == "2025-26"
     assert returning.rates.carried_weight > 0.0
+
+
+def test_one_current_start_updates_without_replacing_the_carried_record() -> None:
+    previous = last_season()
+    for gameweek, rows in previous.rows_by_gameweek.items():
+        previous.rows_by_gameweek[gameweek] = [
+            replace(row, minutes=20, started=False, total_points=1) for row in rows
+        ]
+    current = new_season()
+    current.rows_by_gameweek[1] = [
+        ElementRow(
+            gameweek=1,
+            element_id=7,
+            element_code=RETURNING,
+            fixture_id=1,
+            minutes=90,
+            started=True,
+            goals=0,
+            assists=0,
+            expected_goals=0.1,
+            expected_assists=0.1,
+            total_points=2,
+            price_tenths=90,
+            selected=500_000,
+            kickoff_time=KICKOFF + timedelta(days=365),
+        )
+    ]
+
+    opening = next(
+        row for row in project_gameweek(current, 1, previous=previous) if row.element_id == 7
+    )
+    after_gw1 = next(
+        row for row in project_gameweek(current, 2, previous=previous) if row.element_id == 7
+    )
+
+    assert opening.minutes.probability_start < after_gw1.minutes.probability_start < 0.8
+    assert "current_plus_carried_start" in after_gw1.minutes.reason_codes
 
 
 def test_opening_score_reveals_new_season_outcomes_after_prediction() -> None:

@@ -23,6 +23,9 @@ from fpl_andres.model_version import MODEL_VERSION
 
 _DATA = Path(__file__).resolve().parents[2] / "apps" / "web" / "src" / "data"
 _COHORT = Path(__file__).resolve().parents[2] / "data" / "cohort"
+_EXPERIMENT = (
+    Path(__file__).resolve().parents[2] / "data" / "experiments" / "xstart-current-season.json"
+)
 
 
 def _artifact(name: str) -> Any:
@@ -235,7 +238,19 @@ def test_the_published_plan_keeps_both_armbands_on_midfielders_or_forwards() -> 
 
 
 def test_the_published_plan_names_the_model_that_generated_it() -> None:
-    assert _artifact("season-plan")["modelVersion"] == MODEL_VERSION
+    published = str(_artifact("season-plan")["modelVersion"])
+    if published == MODEL_VERSION:
+        return
+
+    experiment = json.loads(_EXPERIMENT.read_text(encoding="utf-8"))
+    assert experiment["promotion"]["promoted"] is True
+    assert experiment["modelVersion"] == published
+    published_major, published_minor = map(int, published.split("."))
+    current_major, current_minor = map(int, MODEL_VERSION.split("."))
+    assert (current_major, current_minor) == (published_major, published_minor + 1), (
+        "only the proven model immediately awaiting hosted publication may "
+        "temporarily be newer than the committed plan"
+    )
 
 
 def test_gw1_review_shape() -> None:

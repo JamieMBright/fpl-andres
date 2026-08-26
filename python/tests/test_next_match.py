@@ -86,10 +86,11 @@ class ProjectNextMatchTest(unittest.TestCase):
             if entry.element_id == STEADY
         ]
 
-        # An ever-present is projected near, but below, a full match: the
-        # minutes model shrinks toward a prior rather than promising ninety.
-        self.assertGreater(projection.expected_minutes, 75.0)
-        self.assertLess(projection.expected_minutes, 90.0)
+        # Even an ever-present is pulled away from certainty: model 8.9's
+        # two-event memory and four-event prior were selected on held-out
+        # xStart rather than tuned to make a full campaign read as ninety.
+        self.assertGreater(projection.expected_minutes, 60.0)
+        self.assertLess(projection.expected_minutes, 80.0)
         # One match of a player scoring six a week, not twenty.
         self.assertGreater(projection.expected_points, 2.0)
         self.assertLess(projection.expected_points, 12.0)
@@ -148,6 +149,31 @@ class ProjectNextMatchTest(unittest.TestCase):
             artifact["probabilityStart"],
             artifact["probabilitySixtyMinutes"],
         )
+
+    def test_current_start_updates_the_carried_xstart_record(self) -> None:
+        previous = _corpus(with_fixtures=False)
+        for gameweek, rows in previous.rows_by_gameweek.items():
+            previous.rows_by_gameweek[gameweek] = [
+                replace(row, minutes=20, started=False, total_points=1) for row in rows
+            ]
+        current = SeasonCorpus(season="2026-27")
+        current.position_by_element[7] = 4
+        current.team_by_element[7] = TEAM
+        current.name_by_element[7] = "Returning"
+        current.code_by_element[7] = STEADY * 1000
+        current.rows_by_gameweek[1] = [
+            replace(
+                _row(1, 7, minutes=90, points=2),
+                element_code=STEADY * 1000,
+                kickoff_time=KICKOFF + timedelta(days=365),
+            )
+        ]
+
+        [projection] = project_next_match(current, previous=previous)
+
+        self.assertIn("current_plus_carried_start", projection.minutes.reason_codes)
+        self.assertGreater(projection.minutes.probability_start, 0.1)
+        self.assertLess(projection.minutes.probability_start, 0.8)
 
     def test_keys_on_the_code_that_survives_the_season(self) -> None:
         codes = {entry.code for entry in project_next_match(_corpus(with_fixtures=False))}

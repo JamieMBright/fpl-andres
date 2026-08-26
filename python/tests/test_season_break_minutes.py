@@ -104,13 +104,13 @@ class AcrossTheBreakTheWholeSeasonCounts(unittest.TestCase):
     def test_when_the_misses_fell_no_longer_changes_the_answer(self) -> None:
         # The same record either way. A half-life of a whole season still leaves
         # the oldest observation at half the weight of the newest, so the two
-        # are close rather than identical: measured at 0.874 against 0.905,
-        # where the four-event decay had the late-rested reading at 0.63.
+        # are close rather than identical: measured at 0.848 against 0.878,
+        # where an unflattened short decay would overread the late rests.
         late = start_rate(RESTED_FINISH, through=FULL_SEASON)
         early = start_rate(RESTED_START, through=FULL_SEASON)
 
         assert abs(late - early) < 0.05
-        assert late > 0.85
+        assert late > 0.84
 
     def test_a_player_who_lost_his_place_is_still_marked_down(self) -> None:
         # Flattening the decay must not turn into ignoring the record. Somebody

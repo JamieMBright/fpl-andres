@@ -65,7 +65,7 @@ class IntegerPayoutTest(unittest.TestCase):
         """A point, scaled by expected minutes, which sit below a full ninety."""
         gain = self._points([3] * 20) - self._points([0] * 20)
 
-        self.assertGreater(gain, 0.85)
+        self.assertGreater(gain, 0.7)
         self.assertLessEqual(gain, 1.0)
 
     def test_the_same_mean_is_not_the_same_points(self) -> None:
@@ -75,7 +75,7 @@ class IntegerPayoutTest(unittest.TestCase):
 
         self.assertLess(lumpy, steady)
         # Averaging first and dividing after would have made these equal.
-        self.assertGreater(steady - lumpy, 0.4)
+        self.assertGreater(steady - lumpy, 0.3)
 
 
 if __name__ == "__main__":

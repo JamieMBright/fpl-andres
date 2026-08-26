@@ -12,6 +12,7 @@ projection, which is the intended failure mode.
 
 from __future__ import annotations
 
+import math
 from collections.abc import Callable
 from datetime import datetime
 from typing import Annotated, Literal
@@ -56,12 +57,19 @@ class AppearanceObservation(BaseModel):
     #: is what makes two fixtures in one event distinguishable when the source
     #: published no kickoff and the corpus had to synthesise one per gameweek.
     fixture_id: int | None = None
+    source_season: Annotated[str, Field(pattern=r"^20[0-9]{2}-[0-9]{2}$")] | None = None
+    events_before_prediction: Annotated[int, Field(ge=1, le=76)] | None = None
+    start_probability_only: bool = False
 
     @model_validator(mode="after")
     def validate_observation(self) -> AppearanceObservation:
         _require_utc(self.kickoff_time, "kickoff_time")
         if self.started and self.minutes == 0:
             raise ValueError("a recorded start cannot have zero minutes")
+        if (self.source_season is None) != (self.events_before_prediction is None):
+            raise ValueError("source_season and events_before_prediction must be supplied together")
+        if self.start_probability_only and self.events_before_prediction is None:
+            raise ValueError("start_probability_only evidence requires events_before_prediction")
         return self
 
 
@@ -117,6 +125,7 @@ class MinutesEvidence(BaseModel):
         # is per gameweek and would make a double look like a repeat.
         matches = [
             (
+                observation.source_season or self.season,
                 observation.event_id,
                 observation.fixture_id
                 if observation.fixture_id is not None
@@ -126,6 +135,15 @@ class MinutesEvidence(BaseModel):
         ]
         if len(set(matches)) != len(matches):
             raise ValueError("observations must not repeat a match")
+        for observation in self.observations:
+            if observation.source_season == self.season:
+                expected_distance = self.prediction_event - observation.event_id
+                if observation.events_before_prediction != expected_distance:
+                    raise ValueError(
+                        "current-season events_before_prediction must match the event ledger"
+                    )
+            if observation.start_probability_only and observation.source_season == self.season:
+                raise ValueError("current-season observations cannot be start_probability_only")
         return self
 
 
@@ -166,6 +184,8 @@ def project_minutes(evidence: MinutesEvidence) -> MinutesProjection:
         f"half_life={evidence.decay_half_life_events}",
         f"observations={len(evidence.observations)}",
     ]
+    if any(observation.start_probability_only for observation in evidence.observations):
+        reasons.append("current_plus_carried_start")
 
     ruled_out = evidence.availability is not None and evidence.availability.status in _RULED_OUT
     if ruled_out:
@@ -186,19 +206,36 @@ def project_minutes(evidence: MinutesEvidence) -> MinutesProjection:
         reasons.append(f"below_sample_floor={evidence.minimum_observations}")
         return _unavailable(evidence, reasons)
 
-    weights = {
-        observation.event_id: 0.5
-        ** ((evidence.prediction_event - observation.event_id) / evidence.decay_half_life_events)
+    weighted = [
+        (
+            observation,
+            math.pow(
+                0.5,
+                (
+                    observation.events_before_prediction
+                    if observation.events_before_prediction is not None
+                    else evidence.prediction_event - observation.event_id
+                )
+                / evidence.decay_half_life_events,
+            ),
+        )
         for observation in evidence.observations
-    }
+    ]
     # A weight that underflows to zero is an observation the model is pretending
     # to use. It does not move the estimate, but it does count towards the
     # sample floor, so the caller believes the projection rests on more evidence
     # than it does. Named rather than dropped quietly.
-    vanished = sorted(event for event, weight in weights.items() if weight <= 0.0)
+    vanished = sorted(
+        (
+            observation.source_season or evidence.season,
+            observation.event_id,
+        )
+        for observation, weight in weighted
+        if weight <= 0.0
+    )
     if vanished:
         raise OutOfWindowObservationError(
-            f"observations from event(s) {vanished} are too far from "
+            f"observations from season/event(s) {vanished} are too far from "
             f"event {evidence.prediction_event} to carry any weight at a "
             f"{evidence.decay_half_life_events}-event half-life; "
             "drop them rather than counting them towards the sample floor"
@@ -209,9 +246,6 @@ def project_minutes(evidence: MinutesEvidence) -> MinutesProjection:
     # happened and each has to count. Summing the event map put a double into
     # the denominator once and into the numerator twice, which let a player who
     # started both halves of one carry a start rate above 1.
-    weighted = [
-        (observation, weights[observation.event_id]) for observation in evidence.observations
-    ]
     total_weight = sum(weight for _, weight in weighted)
     if total_weight <= 0.0:
         reasons.append("recency_weights_vanished")
@@ -238,8 +272,15 @@ def project_minutes(evidence: MinutesEvidence) -> MinutesProjection:
     # most of the posterior, and without this the projection cannot say so.
     reasons.append(f"prior_share={prior_strength / (effective_sample + prior_strength):.3f}")
 
-    starts = [observation for observation in evidence.observations if observation.started]
-    benched = [observation for observation in evidence.observations if not observation.started]
+    conditional = [
+        (observation, weight)
+        for observation, weight in weighted
+        if not observation.start_probability_only
+    ]
+    starts = [(observation, weight) for observation, weight in conditional if observation.started]
+    benched = [
+        (observation, weight) for observation, weight in conditional if not observation.started
+    ]
 
     # Both conditionals fall back to a certainty when there is nothing to read:
     # a player with no observed start is assumed to complete the hour, and one
@@ -256,16 +297,16 @@ def project_minutes(evidence: MinutesEvidence) -> MinutesProjection:
         reasons.append(f"assumed_conditional={'+'.join(assumed)}")
 
     probability_sixty_given_start = _weighted_share(
-        starts, weights, lambda o: o.minutes >= _APPEARANCE_POINT_THRESHOLD, default=1.0
+        starts, lambda o: o.minutes >= _APPEARANCE_POINT_THRESHOLD, default=1.0
     )
     mean_minutes_given_start = _weighted_mean(
-        starts, weights, lambda o: float(o.minutes), default=float(_FULL_MATCH_MINUTES)
+        starts, lambda o: float(o.minutes), default=float(_FULL_MATCH_MINUTES)
     )
-    probability_cameo_given_benched = _weighted_share(
-        benched, weights, lambda o: o.minutes > 0, default=0.0
-    )
+    probability_cameo_given_benched = _weighted_share(benched, lambda o: o.minutes > 0, default=0.0)
     mean_minutes_given_cameo = _weighted_mean(
-        [o for o in benched if o.minutes > 0], weights, lambda o: float(o.minutes), default=0.0
+        [(o, weight) for o, weight in benched if o.minutes > 0],
+        lambda o: float(o.minutes),
+        default=0.0,
     )
 
     probability_appear = (
@@ -305,30 +346,28 @@ def project_minutes(evidence: MinutesEvidence) -> MinutesProjection:
 
 
 def _weighted_share(
-    observations: list[AppearanceObservation],
-    weights: dict[int, float],
+    observations: list[tuple[AppearanceObservation, float]],
     predicate: Callable[[AppearanceObservation], bool],
     *,
     default: float,
 ) -> float:
-    total = sum(weights[o.event_id] for o in observations)
+    total = sum(weight for _, weight in observations)
     if total <= 0.0:
         return default
-    hit = sum(weights[o.event_id] for o in observations if predicate(o))
+    hit = sum(weight for observation, weight in observations if predicate(observation))
     return hit / total
 
 
 def _weighted_mean(
-    observations: list[AppearanceObservation],
-    weights: dict[int, float],
+    observations: list[tuple[AppearanceObservation, float]],
     value: Callable[[AppearanceObservation], float],
     *,
     default: float,
 ) -> float:
-    total = sum(weights[o.event_id] for o in observations)
+    total = sum(weight for _, weight in observations)
     if total <= 0.0:
         return default
-    return sum(weights[o.event_id] * value(o) for o in observations) / total
+    return sum(weight * value(observation) for observation, weight in observations) / total
 
 
 def _projection(
@@ -375,7 +414,10 @@ def _reject_future_evidence(evidence: MinutesEvidence) -> None:
             "minutes evidence became available after the prediction cutoff"
         )
     for observation in evidence.observations:
-        if observation.event_id >= evidence.prediction_event:
+        if (
+            observation.events_before_prediction is None
+            and observation.event_id >= evidence.prediction_event
+        ):
             raise FutureMinutesEvidenceError("observations must precede the event being predicted")
         if observation.kickoff_time > evidence.prediction_cutoff:
             raise FutureMinutesEvidenceError(

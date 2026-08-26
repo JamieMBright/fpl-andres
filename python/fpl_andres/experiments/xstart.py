@@ -149,7 +149,13 @@ def score_gw2_xstart(
             f"GW2 xStart comparison requires one fixture per player; repeated {repeated}"
         )
 
-    baseline_projections = project_next_match(previous, settings=ProjectionSettings())
+    baseline_projections = project_next_match(
+        previous,
+        settings=ProjectionSettings(
+            decay_half_life_events=4.0,
+            prior_strength_events=2.0,
+        ),
+    )
     baseline_by_code = {
         projection.code: projection.minutes.probability_start for projection in baseline_projections
     }

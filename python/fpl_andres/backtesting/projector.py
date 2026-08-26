@@ -67,10 +67,10 @@ _BOOKING_PRIOR_MATCHES = 19.0
 class ProjectionSettings:
     """Sourced parameters. None are inferred from the data being scored."""
 
-    decay_half_life_events: float = 4.0
+    decay_half_life_events: float = 2.0
     minimum_observations: int = 3
     minimum_minutes: float = 180.0
-    prior_strength_events: float = 2.0
+    prior_strength_events: float = 4.0
     prior_strength_minutes: float = 450.0
     blend_full_weight_minutes: float = 900.0
     prior_start_rate: float = 0.35
@@ -341,6 +341,8 @@ def project_next_match(
         code = corpus.code_by_element.get(element_id)
         if position is None or position not in _GOAL_PRIOR or code is None:
             continue
+        prior_rows = carried.get(element_id, ())
+        prior_team, prior_position = _prior_context(previous, prior_rows)
 
         minutes = project_element_minutes(
             element_id,
@@ -349,12 +351,25 @@ def project_next_match(
             rows,
             cutoff,
             config,
+            prior_rows,
             availability=(availability or {}).get(code),
+            prior_season=previous.season if previous else None,
         )
         if minutes.evidence_level == "unavailable":
             continue
         rates = project_element_rates(
-            element_id, corpus.season, gameweek, rows, cutoff, config, position
+            element_id,
+            corpus.season,
+            gameweek,
+            rows,
+            cutoff,
+            config,
+            position,
+            prior_rows,
+            previous.season if previous else None,
+            team_id=corpus.team_by_element.get(element_id),
+            prior_team_id=prior_team,
+            prior_position=prior_position,
         )
         if rates.evidence_level == "unavailable":
             continue
@@ -476,7 +491,14 @@ def project_gameweek(
         prior_team, prior_position = _prior_context(previous, prior_rows)
 
         minutes = project_element_minutes(
-            element_id, corpus.season, gameweek, rows, cutoff, config, prior_rows
+            element_id,
+            corpus.season,
+            gameweek,
+            rows,
+            cutoff,
+            config,
+            prior_rows,
+            prior_season=previous.season if previous else None,
         )
         if minutes.evidence_level == "unavailable":
             continue

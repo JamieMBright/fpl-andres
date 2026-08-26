@@ -29,6 +29,13 @@ from __future__ import annotations
 
 __all__ = ["MODEL_VERSION"]
 
+#: 8.9 promotes current-plus-carried xStart evidence after a held-out GW2
+#: comparison over 444 stable players. The selected two-event half-life and
+#: four-event prior lowered paired Brier by 0.0244, with a 95% lower bound of
+#: 0.0117 and all three bootstrap seeds promoting. Minor: true P(start) keeps
+#: the same target, while settled current-season starts now update rather than
+#: replace the carried record.
+#:
 #: 8.8 restricts every advisory captain and vice-captain to midfielders or
 #: forwards. Observed manager, rival and cohort armbands remain unchanged.
 #: Minor: recommendations and chip valuations move, while each player's xPts
@@ -379,4 +386,4 @@ __all__ = ["MODEL_VERSION"]
 #: projection and resampled, so a gap that does not clear zero is reported as
 #: not clearing zero. No projection changed; what changed is what may be
 #: claimed from it.
-MODEL_VERSION = "8.8"
+MODEL_VERSION = "8.9"

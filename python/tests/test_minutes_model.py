@@ -279,6 +279,48 @@ def test_a_repeated_event_is_rejected() -> None:
         _evidence(duplicated, minimum_observations=1)
 
 
+def test_the_same_event_and_fixture_are_distinct_across_seasons() -> None:
+    previous = AppearanceObservation(
+        event_id=1,
+        minutes=90,
+        started=True,
+        kickoff_time=datetime(2023, 8, 1, tzinfo=UTC),
+        fixture_id=101,
+        source_season="2023-24",
+        events_before_prediction=39,
+        start_probability_only=True,
+    )
+    current = AppearanceObservation(
+        event_id=1,
+        minutes=20,
+        started=False,
+        kickoff_time=datetime(2024, 8, 1, tzinfo=UTC),
+        fixture_id=101,
+        source_season=SEASON,
+        events_before_prediction=1,
+    )
+
+    projection = project_minutes(
+        _evidence((previous, current), prediction_event=2, minimum_observations=1)
+    )
+
+    assert projection.evidence_level == "observed"
+    assert projection.probability_start < 0.5
+
+
+def test_carried_start_evidence_requires_its_chronological_distance() -> None:
+    with pytest.raises(ValidationError, match="events_before_prediction"):
+        AppearanceObservation(
+            event_id=38,
+            minutes=90,
+            started=True,
+            kickoff_time=datetime(2024, 5, 19, tzinfo=UTC),
+            fixture_id=3801,
+            source_season="2023-24",
+            start_probability_only=True,
+        )
+
+
 def test_a_start_recorded_with_zero_minutes_is_rejected() -> None:
     with pytest.raises(ValidationError):
         AppearanceObservation(

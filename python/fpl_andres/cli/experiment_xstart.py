@@ -177,7 +177,7 @@ def main(argv: list[str] | None = None) -> int:
         "holdout": _summarise(holdout_scores),
         "comparison": {
             "shippedReference": "reconstructed historical-only P(60+) reference",
-            "baseline": "historical-only true P(start) under production defaults",
+            "baseline": "historical-only true P(start) under model 8.8 defaults",
             "candidate": "true P(start) with current-plus-carried minutes evidence",
             "bootstrapUnit": "stable player code averaged across holdout seasons",
         },

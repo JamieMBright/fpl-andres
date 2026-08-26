@@ -14,10 +14,10 @@ the numerator iterated observations and counted it twice. A player who started
 both halves of a double carried a weighted start rate above one. Nothing had
 ever hit it because nothing had ever produced two observations in one event.
 
-Measured, not guessed. Six single weeks of ninety minutes projects 74.45 with a
-start probability of 0.827; five singles plus a double of two ninety-minute
-matches projects 76.12 at 0.846, on an effective sample that rises from 5.53 to
-6.43 because there really is one more match of evidence.
+Measured under model 8.9. Six single weeks of ninety minutes projects 62.58 with
+a start probability of 0.695; five singles plus a double of two ninety-minute
+matches projects 64.99 at 0.722, on an effective sample that rises from 4.53 to
+5.36 because there really is one more match of evidence.
 """
 
 from __future__ import annotations
@@ -90,8 +90,8 @@ class TestADoubleGameweekIsTwoMatches:
             ]
         )
 
-        assert _reason(plain, "effective_sample=") == "effective_sample=5.53"
-        assert _reason(doubled, "effective_sample=") == "effective_sample=6.43"
+        assert _reason(plain, "effective_sample=") == "effective_sample=4.53"
+        assert _reason(doubled, "effective_sample=") == "effective_sample=5.36"
 
     def test_starting_both_halves_cannot_push_the_rate_above_one(self) -> None:
         # The bug this replaces: denominator counted the event once, numerator
@@ -105,7 +105,7 @@ class TestADoubleGameweekIsTwoMatches:
             ]
         )
 
-        assert doubled.probability_start == pytest.approx(0.846, abs=0.005)
+        assert doubled.probability_start == pytest.approx(0.722, abs=0.005)
         assert doubled.probability_start < 1.0
 
     def test_a_double_no_longer_inflates_the_per_match_minutes(self) -> None:
@@ -121,8 +121,8 @@ class TestADoubleGameweekIsTwoMatches:
             ]
         )
 
-        assert plain.expected_minutes == pytest.approx(74.45, abs=0.05)
-        assert doubled.expected_minutes == pytest.approx(76.12, abs=0.05)
+        assert plain.expected_minutes == pytest.approx(62.58, abs=0.05)
+        assert doubled.expected_minutes == pytest.approx(64.99, abs=0.05)
 
     def test_a_cameo_in_a_double_drags_the_mean_down(self) -> None:
         # The honest read of ninety minutes then ten is two matches, one of them
@@ -135,8 +135,8 @@ class TestADoubleGameweekIsTwoMatches:
             ]
         )
 
-        assert cameo.expected_minutes == pytest.approx(65.61, abs=0.05)
-        assert cameo.probability_start == pytest.approx(0.695, abs=0.005)
+        assert cameo.expected_minutes == pytest.approx(56.28, abs=0.05)
+        assert cameo.probability_start == pytest.approx(0.579, abs=0.005)
 
     def test_a_synthesised_kickoff_does_not_make_a_double_look_like_a_repeat(
         self,

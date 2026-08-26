@@ -49,24 +49,27 @@ Appearance points fall out of the first two directly:
 appearance_points = (P(appear) - P(60)) * 1 + P(60) * 2
 ```
 
-**Recency.** Observations are exponentially decayed with a **four-gameweek
-half-life** (`decay_half_life_events = 4.0`), so a month ago counts half of last
-week. There is no minutes cutoff anywhere: see §9 for why.
+**Recency.** Start observations are exponentially decayed with a **two-event
+half-life** (`decay_half_life_events = 2.0`). There is no minutes cutoff
+anywhere: see §9 for why.
 
 **Effective sample size.** Shrinkage weights use the Kish effective sample size
 `(Σw)² / Σw²`, not the raw weight sum. Using the raw sum understates a nailed
 starter badly once decay is applied.
 
-**Current-season experiment.** A production-disabled harness compares completed
-current-season starts with the carried season. Every
+**Current-season evidence.** Model 8.9 combines completed current-season starts
+with the carried season. Every
 appearance retains its source season and an explicit chronological event
 distance; current and carried rows can therefore share gameweek numbers without
-colliding or inventing synthetic ids. The candidate tunes half-lives 2/4/8 and
+colliding or inventing synthetic ids. The experiment tuned half-lives 2/4/8 and
 prior strengths 1/2/4 on 2022/23–2023/24, then compares against a fixed
 historical-only true-P(start) baseline on 2024/25–2025/26. The paired Brier
-bootstrap runs over stable player codes averaged across holdout seasons. The
-production model remains 8.8 unless that held-out lower bound clears zero under
-3 seeds.
+bootstrap ran over stable player codes averaged across holdout seasons. The
+selected 2.0 half-life and 4.0 prior lowered holdout Brier from 0.139775 to
+0.115340 over 444 players; paired improvement was 0.024435 with a 95% lower
+bound of 0.011744, and all 3 seeds promoted. Carried rows update P(start) only
+once current rows exist; P(60+) and cameo conditionals retain current-season
+evidence rather than claiming the xStart experiment measured them.
 
 **Calibration.** Measured across the corpus, predicted `P(appear)` sits within
 **0.07** of the observed rate and `P(60)` is close to exact. The 2026/27 GW1

@@ -14,11 +14,12 @@ The project follows Semantic Versioning once milestone tags begin.
   honestly as P(60+): its Brier was 0.231 and it forecast 49.6% against a 44.9%
   actual start rate. Projection publication now carries additive true-P(start)
   and P(60+) bridge fields before readers migrate atomically.
-- A production-disabled experiment now measures current-plus-carried minutes
-  evidence in hosted train/holdout runs. Source-season identities and explicit
+- Model 8.9 promotes current-plus-carried xStart evidence after hosted
+  train/holdout measurement. Source-season identities and explicit
   chronological distances let GW1 update the prior campaign without replacing
-  it or inventing cross-season gameweek ids. Model 8.8 remains unchanged until
-  a stable-player paired Brier bootstrap promotes the candidate.
+  it or inventing cross-season gameweek ids. The selected 2.0 half-life and 4.0
+  prior lowered paired holdout Brier by 0.0244 over 444 players; the 95% lower
+  bound was 0.0117 and all three bootstrap seeds promoted.
 - GW1 now carries two cohort reads without conflating them: the original 2,786-
   manager catalogue-at-deadline aggregate and an exact 500-manager aggregate
   pinned to the ranking produced 734 seconds after the deadline at `7ee37f9`.

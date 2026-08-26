@@ -196,9 +196,8 @@ def project_element_minutes(
     config: ProjectionSettings,
     prior_rows: Sequence[ElementRow] = (),
     availability: AvailabilityEvidence | None = None,
+    prior_season: str | None = None,
 ) -> MinutesProjection:
-    # One appearance per gameweek: a double gameweek's fixtures are combined,
-    # because the models reason about events, not matches.
     source = rows
     prediction_event = gameweek
     if not rows and prior_rows:
@@ -213,17 +212,53 @@ def project_element_minutes(
     # observation clipped at 120, and `fixture_points` then spent that figure
     # once per fixture. A player whose history contained doubles was trained
     # somewhere between 90 and 120 and priced per match on it.
-    observations = tuple(
-        AppearanceObservation(
+    if rows and prior_rows and prior_season is None:
+        raise ValueError("current-plus-carried minutes evidence requires prior_season")
+    prior_last_event = max((row.gameweek for row in prior_rows), default=0)
+
+    def minutes_observation(
+        row: ElementRow,
+        *,
+        source_season: str | None = None,
+        events_before_prediction: int | None = None,
+        start_probability_only: bool = False,
+    ) -> AppearanceObservation:
+        return AppearanceObservation(
             event_id=row.gameweek,
             minutes=min(row.minutes, 120),
             started=(row.started or row.minutes >= 60) and row.minutes > 0,
             kickoff_time=row.kickoff_time,
             fixture_id=row.fixture_id,
+            source_season=source_season,
+            events_before_prediction=events_before_prediction,
+            start_probability_only=start_probability_only,
         )
-        for row in sorted(source, key=lambda entry: (entry.gameweek, entry.fixture_id))
-        if row.gameweek < prediction_event and row.kickoff_time <= cutoff
-    )
+
+    if rows and prior_rows:
+        observations = tuple(
+            minutes_observation(
+                row,
+                source_season=season,
+                events_before_prediction=gameweek - row.gameweek,
+            )
+            for row in sorted(rows, key=lambda entry: (entry.gameweek, entry.fixture_id))
+            if row.gameweek < gameweek and row.kickoff_time <= cutoff
+        ) + tuple(
+            minutes_observation(
+                row,
+                source_season=prior_season,
+                events_before_prediction=prior_last_event - row.gameweek + gameweek,
+                start_probability_only=True,
+            )
+            for row in sorted(prior_rows, key=lambda entry: (entry.gameweek, entry.fixture_id))
+            if row.kickoff_time <= cutoff
+        )
+    else:
+        observations = tuple(
+            minutes_observation(row)
+            for row in sorted(source, key=lambda entry: (entry.gameweek, entry.fixture_id))
+            if row.gameweek < prediction_event and row.kickoff_time <= cutoff
+        )
 
     evidence = MinutesEvidence(
         element_code=element_id,

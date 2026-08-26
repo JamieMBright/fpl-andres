@@ -115,17 +115,16 @@ class TestDecayWeights:
 
     def test_the_weights_are_computed_once_and_reused(self) -> None:
         # The item asked for the decay-weight computation to be hoisted out of
-        # a per-observation loop. There is no such loop: the weights are a
-        # single dict comprehension, and every later use is a lookup keyed by
-        # event id. There is nothing to hoist.
+        # a per-observation loop. There is one list comprehension that computes
+        # one weight per match, and every downstream conditional reuses it.
         source = inspect.getsource(minutes_module.project_minutes)
-        assert source.count("0.5\n        **") + source.count("0.5 **") == 1
-        assert "weights[o.event_id]" in inspect.getsource(minutes_module)
+        assert source.count("math.pow(") == 1
+        assert "for observation, weight in weighted" in source
 
     def test_each_weight_depends_only_on_its_own_event(self) -> None:
         # Which is why it cannot be hoisted even in principle.
         source = inspect.getsource(minutes_module.project_minutes)
-        assert "prediction_event - observation.event_id" in source
+        assert "observation.events_before_prediction" in source
 
 
 class TestClientClose:

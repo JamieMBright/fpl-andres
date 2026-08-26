@@ -7,6 +7,7 @@ import pytest
 
 from fpl_andres.backtesting.corpus import ElementRow, SeasonCorpus
 from fpl_andres.backtesting.fixtures import Fixture
+from fpl_andres.backtesting.projector import ProjectionSettings, project_gameweek
 from fpl_andres.cli.experiment_xstart import _aggregate_by_code
 from fpl_andres.experiments.xstart import ChronologicalAppearance, score_gw2_xstart
 
@@ -118,6 +119,31 @@ def test_candidate_parameters_never_move_the_fixed_baseline() -> None:
 
     assert weak.triplets[0].baseline == strong.triplets[0].baseline
     assert weak.triplets[0].candidate != strong.triplets[0].candidate
+
+
+def test_promoted_production_posterior_matches_the_held_out_candidate() -> None:
+    previous = _previous()
+    current = _current()
+    experiment = score_gw2_xstart(
+        previous,
+        current,
+        half_life_events=2.0,
+        prior_strength_events=4.0,
+    )
+    production = project_gameweek(
+        current,
+        2,
+        previous=previous,
+        settings=ProjectionSettings(
+            decay_half_life_events=2.0,
+            prior_strength_events=4.0,
+        ),
+    )
+
+    assert len(production) == 1
+    assert production[0].minutes.probability_start == pytest.approx(
+        experiment.triplets[0].candidate
+    )
 
 
 def test_candidate_distinguishes_the_same_event_and_fixture_across_seasons() -> None:
