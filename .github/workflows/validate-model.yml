@@ -21,6 +21,8 @@ on:
       - python/fpl_andres/model_version.py
       - python/fpl_andres/cli/validate.py
       - python/fpl_andres/cli/publish_projections.py
+      - python/fpl_andres/cli/experiment_xstart.py
+      - python/fpl_andres/experiments/**
       - python/fpl_andres/cli/publish_opening_squad.py
       - python/fpl_andres/cli/publish_season_inputs.py
       - python/fpl_andres/cli/publish_season_plan.py
@@ -92,6 +94,14 @@ jobs:
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
         run: python -m fpl_andres.cli.validate
 
+      - name: Tune and hold out current-season xStart evidence
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+        run: |
+          rm -f data/experiments/xstart-current-season.json
+          python -m fpl_andres.cli.experiment_xstart --code-revision "$GITHUB_SHA"
+
       - name: Append the run to the model history
         run: |
           python -m fpl_andres.cli.track_model --code-revision "$GITHUB_SHA"
@@ -144,6 +154,7 @@ jobs:
             apps/web/src/data/season-inputs.json \
             apps/web/src/data/opening-squad.json \
             apps/web/src/data/season-plan.json \
+            data/experiments/xstart-current-season.json \
             docs/MODEL_CARDS.md
 
       - name: Freeze the prospective event inputs
@@ -177,12 +188,13 @@ jobs:
             apps/web/src/data/projections-meta.json
             apps/web/src/data/season-inputs.json
             apps/web/src/data/season-plan.json
+            data/experiments/xstart-current-season.json
             data/prospective/*.json
           retention-days: 30
 
       - name: Commit the refreshed artifact
         run: |
-          paths="apps/web/src/data/validation.json apps/web/src/data/model-history.json apps/web/src/data/reconciliation.json apps/web/src/data/projections.json apps/web/src/data/projections-meta.json apps/web/src/data/season-inputs.json apps/web/src/data/opening-squad.json apps/web/src/data/season-plan.json data/prospective/*.json docs/MODEL_CARDS.md"
+          paths="apps/web/src/data/validation.json apps/web/src/data/model-history.json apps/web/src/data/reconciliation.json apps/web/src/data/projections.json apps/web/src/data/projections-meta.json apps/web/src/data/season-inputs.json apps/web/src/data/opening-squad.json apps/web/src/data/season-plan.json data/experiments/xstart-current-season.json data/prospective/*.json docs/MODEL_CARDS.md"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           # Staged before the comparison. `git diff` does not look at untracked
@@ -214,6 +226,7 @@ jobs:
             git reset --hard "origin/$GITHUB_REF_NAME"
             for path in $paths; do
               if [ -e "$RUNNER_TEMP/backtest/$path" ]; then
+                mkdir -p "$(dirname "$path")"
                 cp "$RUNNER_TEMP/backtest/$path" "$path"
               fi
             done

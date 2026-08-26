@@ -210,6 +210,7 @@ def test_no_module_is_imported_only_by_its_own_tests() -> None:
         "crosswalk",
         "build_gw1_review",
         "build_xstart_validation",
+        "experiment_xstart",
         "freeze_prospective",
         "harvest_league",
         "ingest_historical",

@@ -219,6 +219,16 @@ def test_model_validation_republishes_the_complete_planning_chain() -> None:
         assert text.count(path) >= 3, f"{path} must be watched, formatted and committed"
 
 
+def test_model_validation_publishes_the_held_out_xstart_experiment() -> None:
+    text = (WORKFLOWS / "validate-model.yml").read_text(encoding="utf-8")
+    experiment = "python -m fpl_andres.cli.experiment_xstart"
+    artifact = "data/experiments/xstart-current-season.json"
+
+    assert experiment in text
+    assert '--code-revision "$GITHUB_SHA"' in text
+    assert text.count(artifact) >= 3
+
+
 def test_model_artifact_proof_changes_trigger_hosted_validation() -> None:
     text = (WORKFLOWS / "validate-model.yml").read_text(encoding="utf-8")
 

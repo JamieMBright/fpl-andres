@@ -57,6 +57,17 @@ week. There is no minutes cutoff anywhere: see §9 for why.
 `(Σw)² / Σw²`, not the raw weight sum. Using the raw sum understates a nailed
 starter badly once decay is applied.
 
+**Current-season experiment.** A production-disabled harness compares completed
+current-season starts with the carried season. Every
+appearance retains its source season and an explicit chronological event
+distance; current and carried rows can therefore share gameweek numbers without
+colliding or inventing synthetic ids. The candidate tunes half-lives 2/4/8 and
+prior strengths 1/2/4 on 2022/23–2023/24, then compares against a fixed
+historical-only true-P(start) baseline on 2024/25–2025/26. The paired Brier
+bootstrap runs over stable player codes averaged across holdout seasons. The
+production model remains 8.8 unless that held-out lower bound clears zero under
+3 seeds.
+
 **Calibration.** Measured across the corpus, predicted `P(appear)` sits within
 **0.07** of the observed rate and `P(60)` is close to exact. The 2026/27 GW1
 artifact exposed a publication defect rather than a model identity: the field
