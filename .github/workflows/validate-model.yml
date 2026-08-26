@@ -32,6 +32,8 @@ on:
       - data/cohort/points-to-rank.json
       - python/fpl_andres/cli/track_model.py
       - python/tests/test_measured_performance.py
+      # Keep the workflow in its own filter: touching this recovery note gives
+      # an Actions outage a normal push path without needing dispatch scope.
       - .github/workflows/validate-model.yml
   workflow_dispatch:
 
