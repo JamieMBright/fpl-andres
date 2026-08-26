@@ -6324,5 +6324,404 @@
         }
       }
     ]
+  },
+  {
+    "modelVersion": "8.8",
+    "generatedAt": "2026-08-26T16:18:15.449324+00:00",
+    "codeRevision": "483ef176267f930fa5014335c9779188fd289d96",
+    "seasons": [
+      {
+        "season": "2022-23",
+        "corpusFingerprint": "sha256:e391320d85950de1a65a540a34b5b25e5f7f63877d122adb56353c3870e7af29",
+        "methods": {
+          "model": {
+            "meanAbsoluteError": 1.765,
+            "spearman": 0.497,
+            "topNHitRate": 0.189,
+            "bias": -0.089
+          },
+          "components": {
+            "meanAbsoluteError": 1.763,
+            "spearman": 0.489,
+            "topNHitRate": 0.179,
+            "bias": -0.123
+          },
+          "recent_mean": {
+            "meanAbsoluteError": 1.887,
+            "spearman": 0.446,
+            "topNHitRate": 0.153,
+            "bias": -0.097
+          },
+          "ownership": {
+            "meanAbsoluteError": null,
+            "spearman": 0.258,
+            "topNHitRate": 0.176,
+            "bias": null
+          }
+        },
+        "ownedCaptainPolicies": {
+          "expected_points": {
+            "meanChosenPoints": 7.269,
+            "meanReachableCeiling": 11.808,
+            "ownedSquadRegret": 4.538,
+            "shareOfReachableCeiling": 0.616
+          },
+          "components": {
+            "meanChosenPoints": 6.808,
+            "meanReachableCeiling": 11.808,
+            "ownedSquadRegret": 5.0,
+            "shareOfReachableCeiling": 0.577
+          },
+          "availability_adjusted": {
+            "meanChosenPoints": 7.346,
+            "meanReachableCeiling": 11.808,
+            "ownedSquadRegret": 4.462,
+            "shareOfReachableCeiling": 0.622
+          },
+          "upside": {
+            "meanChosenPoints": 7.231,
+            "meanReachableCeiling": 11.808,
+            "ownedSquadRegret": 4.577,
+            "shareOfReachableCeiling": 0.612
+          },
+          "robust": {
+            "meanChosenPoints": 6.208,
+            "meanReachableCeiling": 11.808,
+            "ownedSquadRegret": 5.6,
+            "shareOfReachableCeiling": 0.526
+          },
+          "form": {
+            "meanChosenPoints": 6.385,
+            "meanReachableCeiling": 11.808,
+            "ownedSquadRegret": 5.423,
+            "shareOfReachableCeiling": 0.541
+          },
+          "crowd": {
+            "meanChosenPoints": 6.246,
+            "meanReachableCeiling": 11.808,
+            "ownedSquadRegret": 5.562,
+            "shareOfReachableCeiling": 0.529
+          },
+          "differential": {
+            "meanChosenPoints": 6.692,
+            "meanReachableCeiling": 11.808,
+            "ownedSquadRegret": 5.115,
+            "shareOfReachableCeiling": 0.567
+          },
+          "template": {
+            "meanChosenPoints": 7.538,
+            "meanReachableCeiling": 11.808,
+            "ownedSquadRegret": 4.269,
+            "shareOfReachableCeiling": 0.638
+          },
+          "ceiling_and_fixture": {
+            "meanChosenPoints": 6.0,
+            "meanReachableCeiling": 11.808,
+            "ownedSquadRegret": 5.808,
+            "shareOfReachableCeiling": 0.508
+          },
+          "set_and_forget": {
+            "meanChosenPoints": 6.246,
+            "meanReachableCeiling": 11.808,
+            "ownedSquadRegret": 5.562,
+            "shareOfReachableCeiling": 0.529
+          }
+        }
+      },
+      {
+        "season": "2023-24",
+        "corpusFingerprint": "sha256:2621943c2e6597782ee90ed962055c4d0582e4391e78c198a4f8825aab4e2521",
+        "methods": {
+          "model": {
+            "meanAbsoluteError": 1.715,
+            "spearman": 0.511,
+            "topNHitRate": 0.208,
+            "bias": -0.096
+          },
+          "components": {
+            "meanAbsoluteError": 1.71,
+            "spearman": 0.504,
+            "topNHitRate": 0.205,
+            "bias": -0.132
+          },
+          "recent_mean": {
+            "meanAbsoluteError": 1.851,
+            "spearman": 0.464,
+            "topNHitRate": 0.167,
+            "bias": -0.026
+          },
+          "ownership": {
+            "meanAbsoluteError": null,
+            "spearman": 0.22,
+            "topNHitRate": 0.177,
+            "bias": null
+          }
+        },
+        "ownedCaptainPolicies": {
+          "expected_points": {
+            "meanChosenPoints": 8.482,
+            "meanReachableCeiling": 13.453,
+            "ownedSquadRegret": 4.971,
+            "shareOfReachableCeiling": 0.63
+          },
+          "components": {
+            "meanChosenPoints": 7.446,
+            "meanReachableCeiling": 13.453,
+            "ownedSquadRegret": 6.007,
+            "shareOfReachableCeiling": 0.553
+          },
+          "availability_adjusted": {
+            "meanChosenPoints": 8.237,
+            "meanReachableCeiling": 13.453,
+            "ownedSquadRegret": 5.216,
+            "shareOfReachableCeiling": 0.612
+          },
+          "upside": {
+            "meanChosenPoints": 7.856,
+            "meanReachableCeiling": 13.453,
+            "ownedSquadRegret": 5.597,
+            "shareOfReachableCeiling": 0.584
+          },
+          "robust": {
+            "meanChosenPoints": 6.403,
+            "meanReachableCeiling": 13.453,
+            "ownedSquadRegret": 7.05,
+            "shareOfReachableCeiling": 0.476
+          },
+          "form": {
+            "meanChosenPoints": 5.561,
+            "meanReachableCeiling": 13.453,
+            "ownedSquadRegret": 7.892,
+            "shareOfReachableCeiling": 0.413
+          },
+          "crowd": {
+            "meanChosenPoints": 8.489,
+            "meanReachableCeiling": 13.453,
+            "ownedSquadRegret": 4.964,
+            "shareOfReachableCeiling": 0.631
+          },
+          "differential": {
+            "meanChosenPoints": 8.187,
+            "meanReachableCeiling": 13.453,
+            "ownedSquadRegret": 5.266,
+            "shareOfReachableCeiling": 0.609
+          },
+          "template": {
+            "meanChosenPoints": 8.252,
+            "meanReachableCeiling": 13.453,
+            "ownedSquadRegret": 5.201,
+            "shareOfReachableCeiling": 0.613
+          },
+          "ceiling_and_fixture": {
+            "meanChosenPoints": 6.511,
+            "meanReachableCeiling": 13.453,
+            "ownedSquadRegret": 6.942,
+            "shareOfReachableCeiling": 0.484
+          },
+          "set_and_forget": {
+            "meanChosenPoints": 8.489,
+            "meanReachableCeiling": 13.453,
+            "ownedSquadRegret": 4.964,
+            "shareOfReachableCeiling": 0.631
+          }
+        }
+      },
+      {
+        "season": "2024-25",
+        "corpusFingerprint": "sha256:c91af5764ca2781bc823a5f80103c82d2531ae0300ff92487c046b785f77e78d",
+        "methods": {
+          "model": {
+            "meanAbsoluteError": 1.675,
+            "spearman": 0.508,
+            "topNHitRate": 0.192,
+            "bias": -0.108
+          },
+          "components": {
+            "meanAbsoluteError": 1.667,
+            "spearman": 0.502,
+            "topNHitRate": 0.18,
+            "bias": -0.146
+          },
+          "recent_mean": {
+            "meanAbsoluteError": 1.804,
+            "spearman": 0.466,
+            "topNHitRate": 0.148,
+            "bias": 0.006
+          },
+          "ownership": {
+            "meanAbsoluteError": null,
+            "spearman": 0.237,
+            "topNHitRate": 0.166,
+            "bias": null
+          }
+        },
+        "ownedCaptainPolicies": {
+          "expected_points": {
+            "meanChosenPoints": 8.685,
+            "meanReachableCeiling": 13.532,
+            "ownedSquadRegret": 4.847,
+            "shareOfReachableCeiling": 0.642
+          },
+          "components": {
+            "meanChosenPoints": 8.427,
+            "meanReachableCeiling": 13.532,
+            "ownedSquadRegret": 5.105,
+            "shareOfReachableCeiling": 0.623
+          },
+          "availability_adjusted": {
+            "meanChosenPoints": 8.702,
+            "meanReachableCeiling": 13.532,
+            "ownedSquadRegret": 4.831,
+            "shareOfReachableCeiling": 0.643
+          },
+          "upside": {
+            "meanChosenPoints": 7.968,
+            "meanReachableCeiling": 13.532,
+            "ownedSquadRegret": 5.565,
+            "shareOfReachableCeiling": 0.589
+          },
+          "robust": {
+            "meanChosenPoints": 9.048,
+            "meanReachableCeiling": 13.532,
+            "ownedSquadRegret": 4.484,
+            "shareOfReachableCeiling": 0.669
+          },
+          "form": {
+            "meanChosenPoints": 6.573,
+            "meanReachableCeiling": 13.532,
+            "ownedSquadRegret": 6.96,
+            "shareOfReachableCeiling": 0.486
+          },
+          "crowd": {
+            "meanChosenPoints": 9.242,
+            "meanReachableCeiling": 13.532,
+            "ownedSquadRegret": 4.29,
+            "shareOfReachableCeiling": 0.683
+          },
+          "differential": {
+            "meanChosenPoints": 8.887,
+            "meanReachableCeiling": 13.532,
+            "ownedSquadRegret": 4.645,
+            "shareOfReachableCeiling": 0.657
+          },
+          "template": {
+            "meanChosenPoints": 9.202,
+            "meanReachableCeiling": 13.532,
+            "ownedSquadRegret": 4.331,
+            "shareOfReachableCeiling": 0.68
+          },
+          "ceiling_and_fixture": {
+            "meanChosenPoints": 7.258,
+            "meanReachableCeiling": 13.532,
+            "ownedSquadRegret": 6.274,
+            "shareOfReachableCeiling": 0.536
+          },
+          "set_and_forget": {
+            "meanChosenPoints": 9.323,
+            "meanReachableCeiling": 13.532,
+            "ownedSquadRegret": 4.21,
+            "shareOfReachableCeiling": 0.689
+          }
+        }
+      },
+      {
+        "season": "2025-26",
+        "corpusFingerprint": "sha256:6aad10d62476fbeb5b7b9f76ea1abba9bb2aad132ab4be368b62964fd57bdb04",
+        "methods": {
+          "model": {
+            "meanAbsoluteError": 1.865,
+            "spearman": 0.467,
+            "topNHitRate": 0.169,
+            "bias": -0.067
+          },
+          "components": {
+            "meanAbsoluteError": 1.859,
+            "spearman": 0.462,
+            "topNHitRate": 0.166,
+            "bias": -0.095
+          },
+          "recent_mean": {
+            "meanAbsoluteError": 1.992,
+            "spearman": 0.423,
+            "topNHitRate": 0.119,
+            "bias": 0.011
+          },
+          "ownership": {
+            "meanAbsoluteError": null,
+            "spearman": 0.237,
+            "topNHitRate": 0.136,
+            "bias": null
+          }
+        },
+        "ownedCaptainPolicies": {
+          "expected_points": {
+            "meanChosenPoints": 5.092,
+            "meanReachableCeiling": 9.725,
+            "ownedSquadRegret": 4.634,
+            "shareOfReachableCeiling": 0.524
+          },
+          "components": {
+            "meanChosenPoints": 5.229,
+            "meanReachableCeiling": 9.725,
+            "ownedSquadRegret": 4.497,
+            "shareOfReachableCeiling": 0.538
+          },
+          "availability_adjusted": {
+            "meanChosenPoints": 4.902,
+            "meanReachableCeiling": 9.725,
+            "ownedSquadRegret": 4.824,
+            "shareOfReachableCeiling": 0.504
+          },
+          "upside": {
+            "meanChosenPoints": 4.405,
+            "meanReachableCeiling": 9.725,
+            "ownedSquadRegret": 5.32,
+            "shareOfReachableCeiling": 0.453
+          },
+          "robust": {
+            "meanChosenPoints": 5.699,
+            "meanReachableCeiling": 9.725,
+            "ownedSquadRegret": 4.026,
+            "shareOfReachableCeiling": 0.586
+          },
+          "form": {
+            "meanChosenPoints": 4.386,
+            "meanReachableCeiling": 9.725,
+            "ownedSquadRegret": 5.34,
+            "shareOfReachableCeiling": 0.451
+          },
+          "crowd": {
+            "meanChosenPoints": 4.699,
+            "meanReachableCeiling": 9.725,
+            "ownedSquadRegret": 5.026,
+            "shareOfReachableCeiling": 0.483
+          },
+          "differential": {
+            "meanChosenPoints": 5.235,
+            "meanReachableCeiling": 9.725,
+            "ownedSquadRegret": 4.49,
+            "shareOfReachableCeiling": 0.538
+          },
+          "template": {
+            "meanChosenPoints": 5.366,
+            "meanReachableCeiling": 9.725,
+            "ownedSquadRegret": 4.359,
+            "shareOfReachableCeiling": 0.552
+          },
+          "ceiling_and_fixture": {
+            "meanChosenPoints": 4.301,
+            "meanReachableCeiling": 9.725,
+            "ownedSquadRegret": 5.425,
+            "shareOfReachableCeiling": 0.442
+          },
+          "set_and_forget": {
+            "meanChosenPoints": 4.386,
+            "meanReachableCeiling": 9.725,
+            "ownedSquadRegret": 5.34,
+            "shareOfReachableCeiling": 0.451
+          }
+        }
+      }
+    ]
   }
 ]
