@@ -1,326 +1,131 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-21T09:01:04.307253+00:00",
+  "generatedAt": "2026-08-26T09:05:53.216619+00:00",
   "season": "2026-27",
-  "source": "the-odds-api",
+  "source": "football-data.co.uk",
   "priceTiming": "pre-match",
   "evidenceLevel": "observed",
   "provenance": [
     {
-      "url": "https://api.the-odds-api.com/v4/sports/soccer_epl/events/eb2553d10d63dc912b99f8fd0d675721/odds",
-      "contentHash": "sha256:dd2e9dbb5936157b228912d2ac222d63a9dc4bcefed7573376837ba605a078d2"
+      "url": "https://www.football-data.co.uk/mmz4281/2627/E0.csv",
+      "contentHash": "sha256:26e404d6184b16b84fc7dff45e9db4a7dae70bdefb05abd4cc92bd2fef211812"
     },
     {
-      "url": "https://api.the-odds-api.com/v4/sports/soccer_epl/events/95bb16d19debff3ec39919f361f072a4/odds",
-      "contentHash": "sha256:96fea74a8c48396b65e65c9e40b17a26f1ca29628e301d046394e03a41be31ec"
-    },
-    {
-      "url": "https://api.the-odds-api.com/v4/sports/soccer_epl/events/cd1f0173ec061d9b8a8b22ab8f2f8393/odds",
-      "contentHash": "sha256:e883afaa2c0f48d90d8902580e743e6bbb456a780b8a743cc2db1e63afd55e7f"
-    },
-    {
-      "url": "https://api.the-odds-api.com/v4/sports/soccer_epl/events/ee99154f8db029efcf567c5f7f7a0c0b/odds",
-      "contentHash": "sha256:92ba3b70f9873f865f4c7b14e55212f89b963a3dea939dd496a5d58d7421ee73"
-    },
-    {
-      "url": "https://api.the-odds-api.com/v4/sports/soccer_epl/events/8b4b033209bb204516cbd1f523614f25/odds",
-      "contentHash": "sha256:1ecf1dba33f6f51495dc85137667bf71259019cd082cd18a0dca1e3bfdb2eb86"
-    },
-    {
-      "url": "https://api.the-odds-api.com/v4/sports/soccer_epl/events/f5086c74d4a767e3ad7ea69bd4a66b76/odds",
-      "contentHash": "sha256:69e267107391a5371d5c7b4e8e7503f384a1e63e09749bc7bfa421a078c20a3c"
-    },
-    {
-      "url": "https://api.the-odds-api.com/v4/sports/soccer_epl/events/87c7c9bfd5e3072bded20c702f553c63/odds",
-      "contentHash": "sha256:a9bb20e41d2cde0e3ecdf77f4ac029275921d4f69d174d8afd8cc3937346af6e"
-    },
-    {
-      "url": "https://api.the-odds-api.com/v4/sports/soccer_epl/events/ea0bacc4c23f813c6af97ec9b306a850/odds",
-      "contentHash": "sha256:2a749e754d22ac8016d55001c004f80fdb53836fe6dea9065b79b7f75adcc914"
-    },
-    {
-      "url": "https://api.the-odds-api.com/v4/sports/soccer_epl/events/4e4a813bf4218cc527e6f8ef2351170d/odds",
-      "contentHash": "sha256:ace8178e0185e9ae6fdf31593c98971a7385cdec3dba76009d714eeb1cc58473"
-    },
-    {
-      "url": "https://api.the-odds-api.com/v4/sports/soccer_epl/events/01615d9573ef1e5aa8c09eb32a4a983b/odds",
-      "contentHash": "sha256:8c71770e5ab923a316896fa4640d869ca691e2680d0672bbf72ff15c41fec01b"
-    },
-    {
-      "url": "https://api.the-odds-api.com/v4/sports/soccer_epl/events/eb2553d10d63dc912b99f8fd0d675721/odds",
-      "contentHash": "sha256:c2f79404f9bc20f58a1f7e22e1fc7a2b6dfd16662069d10384641169b6d3e632"
-    },
-    {
-      "url": "https://api.the-odds-api.com/v4/sports/soccer_epl/events/95bb16d19debff3ec39919f361f072a4/odds",
-      "contentHash": "sha256:7e6f574624bd3ce762638cac86cf724b16750c85f7dad5b26a23fdccebfac9fc"
-    },
-    {
-      "url": "https://api.the-odds-api.com/v4/sports/soccer_epl/events/cd1f0173ec061d9b8a8b22ab8f2f8393/odds",
-      "contentHash": "sha256:3457d9e2d148d9d891d09df3335d43dcac8cc33dda7fb417d0804a5da15df8cc"
-    },
-    {
-      "url": "https://api.the-odds-api.com/v4/sports/soccer_epl/events/01615d9573ef1e5aa8c09eb32a4a983b/odds",
-      "contentHash": "sha256:6b98220c7b75e079b2d56e03fb479aff2a79d62c3f0f41f8169cd5a327d4ece9"
-    },
-    {
-      "url": "https://api.the-odds-api.com/v4/sports/soccer_epl/events/ee99154f8db029efcf567c5f7f7a0c0b/odds",
-      "contentHash": "sha256:d6df591a39807231567527ea19af2f6770c73e49bab5947212f85a44645c2f59"
-    },
-    {
-      "url": "https://api.the-odds-api.com/v4/sports/soccer_epl/events/8b4b033209bb204516cbd1f523614f25/odds",
-      "contentHash": "sha256:ee9021e80ae34c56d4e7e9cd229a898c0e8e6d7ffdd81ea251e0b8239a48a5cb"
-    },
-    {
-      "url": "https://api.the-odds-api.com/v4/sports/soccer_epl/events/f5086c74d4a767e3ad7ea69bd4a66b76/odds",
-      "contentHash": "sha256:567c579146e4f1e3f56c2ca12eb37ae4b47fc9c79b89afdc5bbd40506eca329d"
-    },
-    {
-      "url": "https://api.the-odds-api.com/v4/sports/soccer_epl/events/87c7c9bfd5e3072bded20c702f553c63/odds",
-      "contentHash": "sha256:152c95463b6522e997e99501ccaf0496ddce04b518a921c18a71a622acbf2e53"
-    },
-    {
-      "url": "https://api.the-odds-api.com/v4/sports/soccer_epl/events/ea0bacc4c23f813c6af97ec9b306a850/odds",
-      "contentHash": "sha256:69c9ea590f11054e6e7b93afaf33183ca7fdc336f35afefeac9c603184776ac5"
-    },
-    {
-      "url": "https://api.the-odds-api.com/v4/sports/soccer_epl/events/4e4a813bf4218cc527e6f8ef2351170d/odds",
-      "contentHash": "sha256:560354624efb1257377a75e4f0651a246d6f435e303d9cef2c237d66946b5112"
-    },
-    {
-      "url": "https://api.the-odds-api.com/v4/sports/soccer_epl/events/eb2553d10d63dc912b99f8fd0d675721/odds",
-      "contentHash": "sha256:3b12c82b3f84df51086b29c13ba80d6845daeb18f72afb12f772fcd53987e5dd"
-    },
-    {
-      "url": "https://api.the-odds-api.com/v4/sports/soccer_epl/events/eb2553d10d63dc912b99f8fd0d675721/odds",
-      "contentHash": "sha256:6182c1a074f37504f21986c3fd54e288bcba7f48e85f33dc6bd91ffbfa252c48"
+      "url": "https://www.football-data.co.uk/fixtures.csv",
+      "contentHash": "sha256:b9fcf016065ccd433b1c7ec70d6ca054b1ab3d43598249b0cb36224252be4952"
     }
   ],
   "fixtures": [
     {
-      "kickoff": "2026-08-22T11:30:00+00:00",
-      "home": "HUL",
-      "away": "MUN",
-      "homeExpectedGoals": 0.7179,
-      "awayExpectedGoals": 2.2674,
-      "homeCleanSheet": 0.1036,
-      "awayCleanSheet": 0.4878,
-      "drawResidual": 0.0176,
-      "priceSource": "the-odds-api-market-consensus",
-      "marketEvidence": {
-        "analysisVersion": 1,
-        "observed": ["alternate_totals", "h2h", "h2h_lay", "totals"],
-        "numberMoving": ["alternate_totals", "h2h", "h2h_lay", "totals"],
-        "usage": {
-          "alternate_totals": "total-goals-shape",
-          "h2h": "goal-split",
-          "h2h_lay": "paired-back-lay-goal-split",
-          "totals": "total-goals"
-        }
-      }
-    },
-    {
-      "kickoff": "2026-08-22T14:00:00+00:00",
-      "home": "EVE",
-      "away": "CRY",
-      "homeExpectedGoals": 1.5193,
-      "awayExpectedGoals": 1.1591,
-      "homeCleanSheet": 0.3138,
-      "awayCleanSheet": 0.2189,
-      "drawResidual": 0.0255,
-      "priceSource": "the-odds-api-market-consensus",
-      "marketEvidence": {
-        "analysisVersion": 1,
-        "observed": ["alternate_totals", "h2h", "h2h_lay", "totals"],
-        "numberMoving": ["alternate_totals", "h2h", "h2h_lay", "totals"],
-        "usage": {
-          "alternate_totals": "total-goals-shape",
-          "h2h": "goal-split",
-          "h2h_lay": "paired-back-lay-goal-split",
-          "totals": "total-goals"
-        }
-      }
-    },
-    {
-      "kickoff": "2026-08-22T14:00:00+00:00",
-      "home": "IPS",
-      "away": "SUN",
-      "homeExpectedGoals": 1.3104,
-      "awayExpectedGoals": 1.3464,
-      "homeCleanSheet": 0.2602,
-      "awayCleanSheet": 0.2697,
-      "drawResidual": 0.0261,
-      "priceSource": "the-odds-api-market-consensus",
-      "marketEvidence": {
-        "analysisVersion": 1,
-        "observed": ["alternate_totals", "h2h", "h2h_lay", "totals"],
-        "numberMoving": ["alternate_totals", "h2h", "h2h_lay", "totals"],
-        "usage": {
-          "alternate_totals": "total-goals-shape",
-          "h2h": "goal-split",
-          "h2h_lay": "paired-back-lay-goal-split",
-          "totals": "total-goals"
-        }
-      }
-    },
-    {
-      "kickoff": "2026-08-22T14:00:00+00:00",
-      "home": "NFO",
-      "away": "LEE",
-      "homeExpectedGoals": 1.4478,
-      "awayExpectedGoals": 1.2054,
-      "homeCleanSheet": 0.2996,
-      "awayCleanSheet": 0.2351,
-      "drawResidual": 0.0199,
-      "priceSource": "the-odds-api-market-consensus",
-      "marketEvidence": {
-        "analysisVersion": 1,
-        "observed": ["alternate_totals", "h2h", "h2h_lay", "totals"],
-        "numberMoving": ["alternate_totals", "h2h", "h2h_lay", "totals"],
-        "usage": {
-          "alternate_totals": "total-goals-shape",
-          "h2h": "goal-split",
-          "h2h_lay": "paired-back-lay-goal-split",
-          "totals": "total-goals"
-        }
-      }
-    },
-    {
-      "kickoff": "2026-08-22T16:30:00+00:00",
-      "home": "BRE",
-      "away": "TOT",
-      "homeExpectedGoals": 1.5679,
-      "awayExpectedGoals": 1.4445,
-      "homeCleanSheet": 0.2359,
-      "awayCleanSheet": 0.2085,
-      "drawResidual": 0.0218,
-      "priceSource": "the-odds-api-market-consensus",
-      "marketEvidence": {
-        "analysisVersion": 1,
-        "observed": ["alternate_totals", "h2h", "h2h_lay", "totals"],
-        "numberMoving": ["alternate_totals", "h2h", "h2h_lay", "totals"],
-        "usage": {
-          "alternate_totals": "total-goals-shape",
-          "h2h": "goal-split",
-          "h2h_lay": "paired-back-lay-goal-split",
-          "totals": "total-goals"
-        }
-      }
-    },
-    {
-      "kickoff": "2026-08-23T13:00:00+00:00",
-      "home": "BHA",
-      "away": "AVL",
-      "homeExpectedGoals": 1.6605,
-      "awayExpectedGoals": 1.3894,
-      "homeCleanSheet": 0.2492,
-      "awayCleanSheet": 0.19,
-      "drawResidual": 0.0194,
-      "priceSource": "the-odds-api-market-consensus",
-      "marketEvidence": {
-        "analysisVersion": 1,
-        "observed": ["alternate_totals", "h2h", "h2h_lay", "totals"],
-        "numberMoving": ["alternate_totals", "h2h", "h2h_lay", "totals"],
-        "usage": {
-          "alternate_totals": "total-goals-shape",
-          "h2h": "goal-split",
-          "h2h_lay": "paired-back-lay-goal-split",
-          "totals": "total-goals"
-        }
-      }
-    },
-    {
-      "kickoff": "2026-08-23T13:00:00+00:00",
-      "home": "MCI",
-      "away": "BOU",
-      "homeExpectedGoals": 2.3956,
-      "awayExpectedGoals": 1.054,
-      "homeCleanSheet": 0.3485,
-      "awayCleanSheet": 0.0911,
-      "drawResidual": 0.0137,
-      "priceSource": "the-odds-api-market-consensus",
-      "marketEvidence": {
-        "analysisVersion": 1,
-        "observed": ["alternate_totals", "h2h", "h2h_lay", "totals"],
-        "numberMoving": ["alternate_totals", "h2h", "h2h_lay", "totals"],
-        "usage": {
-          "alternate_totals": "total-goals-shape",
-          "h2h": "goal-split",
-          "h2h_lay": "paired-back-lay-goal-split",
-          "totals": "total-goals"
-        }
-      }
-    },
-    {
-      "kickoff": "2026-08-23T15:30:00+00:00",
-      "home": "NEW",
-      "away": "LIV",
-      "homeExpectedGoals": 1.3761,
-      "awayExpectedGoals": 1.9947,
-      "homeCleanSheet": 0.1361,
-      "awayCleanSheet": 0.2526,
-      "drawResidual": 0.027,
-      "priceSource": "the-odds-api-market-consensus",
-      "marketEvidence": {
-        "analysisVersion": 1,
-        "observed": ["alternate_totals", "h2h", "h2h_lay", "totals"],
-        "numberMoving": ["alternate_totals", "h2h", "h2h_lay", "totals"],
-        "usage": {
-          "alternate_totals": "total-goals-shape",
-          "h2h": "goal-split",
-          "h2h_lay": "paired-back-lay-goal-split",
-          "totals": "total-goals"
-        }
-      }
-    },
-    {
-      "kickoff": "2026-08-24T19:00:00+00:00",
-      "home": "FUL",
-      "away": "CHE",
-      "homeExpectedGoals": 1.2409,
-      "awayExpectedGoals": 1.8259,
-      "homeCleanSheet": 0.1611,
-      "awayCleanSheet": 0.2891,
-      "drawResidual": 0.0211,
-      "priceSource": "the-odds-api-market-consensus",
-      "marketEvidence": {
-        "analysisVersion": 1,
-        "observed": ["alternate_totals", "h2h", "h2h_lay", "totals"],
-        "numberMoving": ["alternate_totals", "h2h", "h2h_lay", "totals"],
-        "usage": {
-          "alternate_totals": "total-goals-shape",
-          "h2h": "goal-split",
-          "h2h_lay": "paired-back-lay-goal-split",
-          "totals": "total-goals"
-        }
-      }
-    },
-    {
-      "kickoff": "2026-08-21T19:00:00+00:00",
+      "kickoff": "2026-08-21T20:00:00+00:00",
       "home": "ARS",
       "away": "COV",
-      "homeExpectedGoals": 2.6251,
-      "awayExpectedGoals": 0.5233,
-      "homeCleanSheet": 0.5926,
-      "awayCleanSheet": 0.0724,
-      "drawResidual": 0.0013,
-      "priceSource": "the-odds-api-market-consensus",
-      "marketEvidence": {
-        "analysisVersion": 1,
-        "observed": ["alternate_totals", "h2h", "h2h_lay", "totals"],
-        "numberMoving": ["alternate_totals", "h2h", "h2h_lay", "totals"],
-        "usage": {
-          "alternate_totals": "total-goals-shape",
-          "h2h": "goal-split",
-          "h2h_lay": "paired-back-lay-goal-split",
-          "totals": "total-goals"
-        }
-      }
+      "homeExpectedGoals": 2.6188,
+      "awayExpectedGoals": 0.545,
+      "homeCleanSheet": 0.5798,
+      "awayCleanSheet": 0.0729,
+      "drawResidual": 0.0029,
+      "priceSource": "average"
+    },
+    {
+      "kickoff": "2026-08-22T12:30:00+00:00",
+      "home": "HUL",
+      "away": "MUN",
+      "homeExpectedGoals": 0.7355,
+      "awayExpectedGoals": 2.2681,
+      "homeCleanSheet": 0.1035,
+      "awayCleanSheet": 0.4793,
+      "drawResidual": 0.0116,
+      "priceSource": "average"
+    },
+    {
+      "kickoff": "2026-08-22T15:00:00+00:00",
+      "home": "EVE",
+      "away": "CRY",
+      "homeExpectedGoals": 1.4606,
+      "awayExpectedGoals": 1.1564,
+      "homeCleanSheet": 0.3146,
+      "awayCleanSheet": 0.2321,
+      "drawResidual": 0.0184,
+      "priceSource": "average"
+    },
+    {
+      "kickoff": "2026-08-22T15:00:00+00:00",
+      "home": "IPS",
+      "away": "SUN",
+      "homeExpectedGoals": 1.2886,
+      "awayExpectedGoals": 1.3164,
+      "homeCleanSheet": 0.2681,
+      "awayCleanSheet": 0.2757,
+      "drawResidual": 0.021,
+      "priceSource": "average"
+    },
+    {
+      "kickoff": "2026-08-22T15:00:00+00:00",
+      "home": "NFO",
+      "away": "LEE",
+      "homeExpectedGoals": 1.4422,
+      "awayExpectedGoals": 1.1858,
+      "homeCleanSheet": 0.3055,
+      "awayCleanSheet": 0.2364,
+      "drawResidual": 0.0191,
+      "priceSource": "average"
+    },
+    {
+      "kickoff": "2026-08-22T17:30:00+00:00",
+      "home": "BRE",
+      "away": "TOT",
+      "homeExpectedGoals": 1.5035,
+      "awayExpectedGoals": 1.432,
+      "homeCleanSheet": 0.2388,
+      "awayCleanSheet": 0.2223,
+      "drawResidual": 0.0163,
+      "priceSource": "average"
+    },
+    {
+      "kickoff": "2026-08-23T14:00:00+00:00",
+      "home": "BHA",
+      "away": "AVL",
+      "homeExpectedGoals": 1.6334,
+      "awayExpectedGoals": 1.3303,
+      "homeCleanSheet": 0.2644,
+      "awayCleanSheet": 0.1953,
+      "drawResidual": 0.0207,
+      "priceSource": "average"
+    },
+    {
+      "kickoff": "2026-08-23T14:00:00+00:00",
+      "home": "MCI",
+      "away": "BOU",
+      "homeExpectedGoals": 2.4113,
+      "awayExpectedGoals": 1.065,
+      "homeCleanSheet": 0.3447,
+      "awayCleanSheet": 0.0897,
+      "drawResidual": 0.0124,
+      "priceSource": "average"
+    },
+    {
+      "kickoff": "2026-08-23T16:30:00+00:00",
+      "home": "NEW",
+      "away": "LIV",
+      "homeExpectedGoals": 1.3418,
+      "awayExpectedGoals": 1.9232,
+      "homeCleanSheet": 0.1461,
+      "awayCleanSheet": 0.2614,
+      "drawResidual": 0.0191,
+      "priceSource": "average"
+    },
+    {
+      "kickoff": "2026-08-24T20:00:00+00:00",
+      "home": "FUL",
+      "away": "CHE",
+      "homeExpectedGoals": 1.2218,
+      "awayExpectedGoals": 1.8165,
+      "homeCleanSheet": 0.1626,
+      "awayCleanSheet": 0.2947,
+      "drawResidual": 0.0147,
+      "priceSource": "average"
     }
   ],
-  "refused": [
-    {
-      "fixture": "95bb16d19debff3ec39919f361f072a4",
-      "reason": "the key has no requests left this month"
-    }
-  ]
+  "refused": []
 }
