@@ -69,7 +69,7 @@ describe("AnalysisResult", () => {
     );
 
     expect(
-      screen.queryByText(/No gameweek of the 2026\/27 season has been played/i),
+      screen.queryByText(/FPL has not processed a gameweek for this entry/i),
     ).toBeNull();
   });
 });

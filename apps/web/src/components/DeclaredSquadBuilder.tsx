@@ -608,7 +608,7 @@ export function DeclaredSquadBuilder({
         <InfoMarker label="why you have to name it">
           {event === 1
             ? "FPL keeps every squad private until the first deadline, so there is nothing public to read yet."
-            : "FPL is not answering, so only you can state what the public endpoint would have returned."}
+            : "FPL has not processed picks for this entry, so only you can state the current fifteen."}
         </InfoMarker>
       </p>
 

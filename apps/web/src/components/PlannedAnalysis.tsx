@@ -99,7 +99,7 @@ const PLANNED: Planned[] = [
   },
 ];
 
-function Frame({ plan }: { plan: Planned }) {
+function Frame({ event, plan }: { event: number; plan: Planned }) {
   return (
     <figure className="planned-chart">
       <figcaption>
@@ -125,7 +125,7 @@ function Frame({ plan }: { plan: Planned }) {
           />
         ))}
         <text className="planned-empty" x="131" y="44">
-          awaiting gameweek 1
+          awaiting gameweek {event}
         </text>
       </svg>
       <p className="planned-axes">
@@ -136,11 +136,11 @@ function Frame({ plan }: { plan: Planned }) {
   );
 }
 
-export function PlannedAnalysis() {
+export function PlannedAnalysis({ event }: { event: number }) {
   return (
     <div className="planned-grid-wrap">
       {PLANNED.map((plan) => (
-        <Frame key={plan.title} plan={plan} />
+        <Frame event={event} key={plan.title} plan={plan} />
       ))}
     </div>
   );

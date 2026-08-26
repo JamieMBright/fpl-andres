@@ -125,6 +125,34 @@ const deadlines = {
 };
 
 describe("market health", () => {
+  it("refuses a settled round when the next deadline belongs to a later event", () => {
+    const health = buildMarketHealth(
+      {
+        fixtureOdds,
+        playerOdds,
+        deadlines: {
+          deadlines: [
+            { event: 1, deadline: DEADLINE, finished: true },
+            {
+              event: 2,
+              deadline: "2026-08-28T17:30:00Z",
+              finished: false,
+            },
+          ],
+        },
+        seasonInputs,
+      },
+      new Date("2026-08-26T12:00:00Z"),
+    );
+
+    expect(health.event).toBe(2);
+    expect(health.verdict).toBe("unavailable");
+    expect(health.fixturesExpected).toBe(0);
+    expect(health.teamFixturesCovered).toBe(0);
+    expect(health.playerFixturesCovered).toBe(0);
+    expect(health.teams).toEqual([]);
+  });
+
   it("flags incomplete player coverage inside 72 hours", () => {
     const health = buildMarketHealth(
       { fixtureOdds, playerOdds, deadlines, seasonInputs },

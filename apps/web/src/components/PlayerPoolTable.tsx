@@ -456,8 +456,9 @@ export function PlayerPoolTable() {
             steadier one on Saturday and is the worse buy by gameweek five.
           </span>
           <span className="info-marker-line">
-            It is still last season&rsquo;s rates in this season&rsquo;s
-            fixtures. Nothing here has seen a minute of 2026/27.
+            The per-match rates are based on {projectionSeason}. The horizon
+            applies them to the current season&rsquo;s real fixtures; live
+            minutes change the xStart read separately.
           </span>
         </InfoMarker>
       </p>

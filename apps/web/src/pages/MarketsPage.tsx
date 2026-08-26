@@ -59,9 +59,14 @@ export function statusCopy(health: MarketHealth) {
     return {
       className: "unavailable",
       icon: <CircleHelp aria-hidden="true" size={20} />,
-      title: "No round to audit",
+      title:
+        health.event === null
+          ? "No round to audit"
+          : `GW${health.event} prices unavailable`,
       detail:
-        "The deadline or fixture list is unavailable, so I cannot grade market coverage.",
+        health.event === null
+          ? "The deadline or fixture list is unavailable, so I cannot grade market coverage."
+          : `The shipped fixture book belongs to an earlier round. I will not call settled prices GW${health.event} evidence.`,
     };
   }
   return {
@@ -237,8 +242,8 @@ export default function MarketsPage() {
       <p className="eyebrow">Source health</p>
       <RouteHeading>Markets</RouteHeading>
       <p className="lede">
-        What the next-gameweek projection can see from bookmakers, and where it
-        is still leaning on the football record alone.
+        What the GW{health.event ?? "—"} projection can see from bookmakers, and
+        where it is still leaning on the football record alone.
       </p>
 
       <div
@@ -323,7 +328,7 @@ export default function MarketsPage() {
       </section>
 
       <section className="market-section" aria-labelledby="team-coverage">
-        <h2 id="team-coverage">Next gameweek by team</h2>
+        <h2 id="team-coverage">GW{health.event ?? "—"} by team</h2>
         <div
           aria-label="Scrollable team market coverage"
           className="squad-table-wrap market-table-wrap market-team-table"

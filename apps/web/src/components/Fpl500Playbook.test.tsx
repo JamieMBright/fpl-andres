@@ -160,7 +160,7 @@ describe("Fpl500Playbook", () => {
 
     // An empty section says nothing about whether to come back. A frame with
     // the right axes says exactly what will be in it.
-    expect(screen.getAllByText(/awaiting gameweek 1/).length).toBeGreaterThan(
+    expect(screen.getAllByText(/awaiting gameweek 2/).length).toBeGreaterThan(
       4,
     );
     expect(screen.getAllByText(/Gameweek/).length).toBeGreaterThan(3);

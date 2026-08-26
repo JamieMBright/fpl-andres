@@ -15,12 +15,39 @@ const SOURCE = readFileSync(
 );
 
 describe("recommendation API deployment", () => {
+  function responseBody(handler: typeof marketsHandler, address: string) {
+    let status = 0;
+    let body: unknown;
+    handler(
+      {
+        method: "GET",
+        headers: { "x-real-ip": address },
+      } as unknown as VercelRequest,
+      {
+        setHeader() {
+          return this;
+        },
+        status(value: number) {
+          status = value;
+          return this;
+        },
+        json(value: unknown) {
+          body = value;
+          return this;
+        },
+      } as unknown as VercelResponse,
+    );
+    expect(status).toBe(200);
+    return body;
+  }
+
   it("statically imports every artifact the serverless function serves", () => {
     expect(SOURCE).not.toContain("readFileSync");
     expect(SOURCE).not.toContain("process.cwd()");
     for (const artifact of [
       "season-plan.json",
       "season-inputs.json",
+      "deadlines.json",
       "player-odds.json",
       "fixture-odds.json",
       "xstart-manual-priors.json",
@@ -122,5 +149,32 @@ describe("recommendation API deployment", () => {
       },
     });
     expect(SOURCE).toContain("XSTART_VALIDATION_SCHEMA_VERSION");
+  });
+
+  it("does not serve settled GW1 prices as GW2 market evidence", () => {
+    const markets = responseBody(marketsHandler, "203.0.113.41") as {
+      status: string;
+      reason: string;
+      event: number;
+      fixtureOdds: { fixtures: unknown[] };
+      playerOdds: { fixtures: unknown[]; players: unknown[] };
+    };
+    expect(markets).toMatchObject({
+      status: "stale",
+      reason: "post-fixture",
+      event: 2,
+    });
+    expect(markets.fixtureOdds.fixtures).toEqual([]);
+    expect(markets.playerOdds.fixtures.length).toBeGreaterThan(0);
+    expect(markets.playerOdds.players).toEqual([]);
+
+    const xstart = responseBody(xstartHandler, "203.0.113.42") as {
+      teams: { players: { evidence: string }[] }[];
+    };
+    expect(
+      xstart.teams
+        .flatMap((team) => team.players)
+        .some((player) => player.evidence === "market"),
+    ).toBe(false);
   });
 });

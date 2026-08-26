@@ -27,9 +27,9 @@ export function TransferPlanPanel({
       </div>
 
       <p>
-        I will not show you a transfer plan built on nothing. No gameweek of the
-        2026/27 season has been played, so every player&rsquo;s form is unknown
-        and any ranking I produced today would be invented.
+        I will not show you a transfer plan built on nothing. FPL has not
+        processed a gameweek for this entry, so I cannot verify its current
+        squad or transfer state.
       </p>
       <p>
         What I can do without your squad is plan the season from the opening one
@@ -38,7 +38,7 @@ export function TransferPlanPanel({
         further out it reaches.
       </p>
       {formatted ? (
-        <p className="mono plan-deadline">First deadline: {formatted} UTC</p>
+        <p className="mono plan-deadline">Next deadline: {formatted} UTC</p>
       ) : null}
 
       <h3>What it will show, once there is evidence</h3>

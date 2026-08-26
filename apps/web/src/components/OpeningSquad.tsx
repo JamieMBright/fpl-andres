@@ -104,7 +104,7 @@ export function OpeningSquad({ entryId }: { entryId?: number }) {
       <section className="opening-squad" aria-labelledby="opening-title">
         <div className="dossier-heading dossier-heading-compact">
           <div>
-            <p className="eyebrow">Gameweek 1 · the evidence</p>
+            <p className="eyebrow">Opening squad · the evidence</p>
             <h2 id="opening-title">What I would buy today</h2>
           </div>
           <span className="mono">

@@ -5,6 +5,7 @@ import { statusCopy } from "./MarketsPage";
 
 const baseHealth: MarketHealth = {
   verdict: "deadline-anomaly",
+  event: 1,
   deadline: "2026-08-21T17:30:00Z",
   hoursUntilDeadline: 36,
   fixtureMarketsAsOf: "2026-08-19T08:00:00Z",
@@ -57,5 +58,20 @@ describe("MarketsPage status copy", () => {
 
     expect(status.detail).toContain("8/10 fixtures have usable player prices");
     expect(status.detail).toContain("I expected the round by now");
+  });
+
+  it("names a later round whose fixture book has not opened", () => {
+    const status = statusCopy({
+      ...baseHealth,
+      event: 2,
+      verdict: "unavailable",
+      fixturesExpected: 0,
+      teamFixturesCovered: 0,
+      playerFixturesCovered: 0,
+    });
+
+    expect(status.title).toBe("GW2 prices unavailable");
+    expect(status.detail).toContain("settled prices");
+    expect(status.detail).toContain("GW2 evidence");
   });
 });

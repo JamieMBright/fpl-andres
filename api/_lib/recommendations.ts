@@ -1,6 +1,7 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 
 import fixtureOddsData from "../../apps/web/src/data/fixture-odds.json" with { type: "json" };
+import deadlinesData from "../../apps/web/src/data/deadlines.json" with { type: "json" };
 import playerOddsData from "../../apps/web/src/data/player-odds.json" with { type: "json" };
 import seasonInputsData from "../../apps/web/src/data/season-inputs.json" with { type: "json" };
 import seasonPlanData from "../../apps/web/src/data/season-plan.json" with { type: "json" };
@@ -78,8 +79,12 @@ interface PlayerOddsArtifact {
   markets: string[];
   quota?: unknown;
   coverage?: unknown;
-  fixtures?: unknown[];
-  players: { element_id: number | null; club: string | null }[];
+  fixtures?: { kickoff?: string | null }[];
+  players: {
+    element_id: number | null;
+    club: string | null;
+    kickoff?: string | null;
+  }[];
 }
 
 interface ManualPriorsArtifact {
@@ -99,7 +104,11 @@ interface FixtureOddsArtifact {
   generatedAt: string;
   season: string;
   source: string;
-  fixtures: unknown[];
+  fixtures: { kickoff?: string | null }[];
+}
+
+interface DeadlineArtifact {
+  deadlines: { event: number; deadline: string; finished: boolean }[];
 }
 
 interface XStartValidationArtifact {
@@ -123,6 +132,7 @@ const PLAN = seasonPlanData as unknown as PlanArtifact;
 const INPUTS = seasonInputsData as unknown as SeasonInputsArtifact;
 const PLAYER_ODDS = playerOddsData as unknown as PlayerOddsArtifact;
 const FIXTURE_ODDS = fixtureOddsData as unknown as FixtureOddsArtifact;
+const DEADLINES = deadlinesData as unknown as DeadlineArtifact;
 const MANUAL_PRIORS = manualPriorsData as unknown as ManualPriorsArtifact;
 const XSTART_VALIDATION =
   xstartValidationData as unknown as XStartValidationArtifact;
@@ -208,10 +218,34 @@ function latest() {
   };
 }
 
+function currentMarketWindow() {
+  const upcoming = [...DEADLINES.deadlines]
+    .filter((row) => !row.finished)
+    .sort(
+      (left, right) => Date.parse(left.deadline) - Date.parse(right.deadline),
+    );
+  const current = upcoming[0];
+  const following = upcoming.find(
+    (row) => current !== undefined && row.event > current.event,
+  );
+  const includes = (kickoff: string | null | undefined) => {
+    if (current === undefined || typeof kickoff !== "string") return false;
+    const instant = Date.parse(kickoff);
+    return (
+      instant > Date.parse(current.deadline) &&
+      (following === undefined || instant < Date.parse(following.deadline))
+    );
+  };
+  return { current, includes };
+}
+
 function xstart() {
+  const marketWindow = currentMarketWindow();
   const quoted = new Set(
     PLAYER_ODDS.players.flatMap((row) =>
-      typeof row.element_id === "number" ? [row.element_id] : [],
+      typeof row.element_id === "number" && marketWindow.includes(row.kickoff)
+        ? [row.element_id]
+        : [],
     ),
   );
   const carried = new Set(Object.keys(INPUTS.marketCarry?.players ?? {}));
@@ -287,15 +321,28 @@ function xstart() {
 }
 
 function markets() {
+  const marketWindow = currentMarketWindow();
+  const fixtures = FIXTURE_ODDS.fixtures.filter((fixture) =>
+    marketWindow.includes(fixture.kickoff),
+  );
+  const playerFixtures = (PLAYER_ODDS.fixtures ?? []).filter((fixture) =>
+    marketWindow.includes(fixture.kickoff),
+  );
+  const players = PLAYER_ODDS.players.filter((player) =>
+    marketWindow.includes(player.kickoff),
+  );
   return {
     schemaVersion: 1,
+    status: fixtures.length > 0 ? "ready" : "stale",
+    reason: fixtures.length > 0 ? null : "post-fixture",
+    event: marketWindow.current?.event ?? null,
     generatedAt: new Date().toISOString(),
     modelVersion: PLAN.modelVersion,
     fixtureOdds: {
       generatedAt: FIXTURE_ODDS.generatedAt,
       season: FIXTURE_ODDS.season,
       source: FIXTURE_ODDS.source,
-      fixtures: FIXTURE_ODDS.fixtures,
+      fixtures,
     },
     playerOdds: {
       fetchedAt: PLAYER_ODDS.fetchedAt,
@@ -303,8 +350,8 @@ function markets() {
       markets: PLAYER_ODDS.markets,
       quota: PLAYER_ODDS.quota,
       coverage: PLAYER_ODDS.coverage,
-      fixtures: PLAYER_ODDS.fixtures,
-      players: PLAYER_ODDS.players,
+      fixtures: playerFixtures,
+      players,
     },
   };
 }

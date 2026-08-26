@@ -133,6 +133,7 @@ export interface PlayerMarketHealth {
 
 export interface MarketHealth {
   verdict: MarketVerdict;
+  event: number | null;
   deadline: string | null;
   hoursUntilDeadline: number | null;
   fixtureMarketsAsOf: string;
@@ -288,7 +289,25 @@ export function buildMarketHealth(
     .sort(
       (left, right) => Date.parse(left.deadline) - Date.parse(right.deadline),
     )[0];
+  const following = [...deadlines.deadlines]
+    .filter(
+      (row) =>
+        next !== undefined &&
+        row.event > next.event &&
+        Date.parse(row.deadline) > Date.parse(next.deadline),
+    )
+    .sort(
+      (left, right) => Date.parse(left.deadline) - Date.parse(right.deadline),
+    )[0];
   const deadline = next?.deadline ?? null;
+  const fixtures = fixtureOdds.fixtures.filter((fixture) => {
+    if (deadline === null) return false;
+    const kickoff = Date.parse(fixture.kickoff);
+    return (
+      kickoff > Date.parse(deadline) &&
+      (following === undefined || kickoff < Date.parse(following.deadline))
+    );
+  });
   const hoursUntilDeadline = deadline
     ? hoursBetween(new Date(deadline), now)
     : null;
@@ -296,17 +315,17 @@ export function buildMarketHealth(
     now,
     new Date(playerOdds.fetchedAt),
   );
-  const fixturesExpected = fixtureOdds.fixtures.length;
-  const teamFixturesCovered = fixtureOdds.fixtures.filter((fixture) =>
+  const fixturesExpected = fixtures.length;
+  const teamFixturesCovered = fixtures.filter((fixture) =>
     TEAM_MARKETS.every(([key]) => observedTeamMarkets(fixture).has(key)),
   ).length;
-  const playerFixturesCovered = fixtureOdds.fixtures.filter(
+  const playerFixturesCovered = fixtures.filter(
     (fixture) => fixtureRows(playerOdds, fixture).length > 0,
   ).length;
 
   const markets: MarketClassHealth[] = [
     ...TEAM_MARKETS.map(([key, label]) => {
-      const fixturesCovered = fixtureOdds.fixtures.filter((fixture) =>
+      const fixturesCovered = fixtures.filter((fixture) =>
         observedTeamMarkets(fixture).has(key),
       ).length;
       return {
@@ -319,7 +338,7 @@ export function buildMarketHealth(
       };
     }),
     ...PLAYER_MARKETS.map(([key, label, field]) => {
-      const fixturesCovered = fixtureOdds.fixtures.filter((fixture) =>
+      const fixturesCovered = fixtures.filter((fixture) =>
         fixtureRows(playerOdds, fixture).some(
           (row) => typeof row[field] === "number",
         ),
@@ -356,6 +375,7 @@ export function buildMarketHealth(
 
   return {
     verdict,
+    event: next?.event ?? null,
     deadline,
     hoursUntilDeadline,
     fixtureMarketsAsOf: fixtureOdds.generatedAt,
@@ -365,7 +385,7 @@ export function buildMarketHealth(
     teamFixturesCovered,
     playerFixturesCovered,
     markets,
-    teams: fixtureOdds.fixtures.flatMap((fixture) => [
+    teams: fixtures.flatMap((fixture) => [
       teamHealth(fixture, fixture.home, "H", playerOdds, seasonInputs),
       teamHealth(fixture, fixture.away, "A", playerOdds, seasonInputs),
     ]),

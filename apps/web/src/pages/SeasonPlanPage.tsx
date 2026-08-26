@@ -1175,7 +1175,7 @@ export default function SeasonPlanPage() {
                 <p className="mini-league-failed" role="status">
                   FPL keeps every squad private until a deadline has passed, so
                   there is nothing in your league to read yet. This fills in
-                  after the first gameweek starts.
+                  after this entry has a processed deadline.
                 </p>
               </section>
             ) : (

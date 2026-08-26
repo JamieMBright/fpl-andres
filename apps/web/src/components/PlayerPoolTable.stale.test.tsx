@@ -38,7 +38,7 @@ function respond(input: RequestInfo | URL, init?: ResponseInit): Response {
     : Response.json(BOOTSTRAP, init);
 }
 
-describe("the player list when FPL is not answering", () => {
+describe("the player list when FPL is unavailable", () => {
   beforeEach(() => {
     forgetLastGoodPool();
   });

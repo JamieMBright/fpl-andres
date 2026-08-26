@@ -486,7 +486,9 @@ export function Fpl500Playbook() {
             : `${data.exactFpl500Portfolio.events.length} exact FPL500 gameweek captured.`}
         </p>
         <CaptainDistribution />
-        <PlannedAnalysis />
+        <PlannedAnalysis
+          event={Math.max(0, ...data.exactFpl500Portfolio.events) + 1}
+        />
         <div className="cohort-caveat">
           <h3>What none of it can tell you</h3>
           <p>
