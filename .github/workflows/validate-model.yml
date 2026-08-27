@@ -48,7 +48,9 @@ permissions:
 # an older backtest; repository writes happen only in the final atomic commit,
 # so cancelling before that cannot leave a half-written artifact on main.
 concurrency:
-  group: validate-model
+  # v2 drains the legacy non-cancelling group without making future runs
+  # concurrent with one another.
+  group: validate-model-v2
   cancel-in-progress: true
 
 jobs:
