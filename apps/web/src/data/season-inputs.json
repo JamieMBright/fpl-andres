@@ -1,6 +1,6 @@
 {
   "schemaVersion": 6,
-  "generatedAt": "2026-08-27T15:33:30.881179Z",
+  "generatedAt": "2026-08-27T19:07:49.753987Z",
   "recordSeason": "2025-26",
   "events": [
     2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22,
@@ -63,8 +63,8 @@
     "fixtureMarkets": {
       "source": "football-data.co.uk",
       "level": "observed",
-      "updatedAt": "2026-08-26T09:05:53.216619+00:00",
-      "contentHash": "sha256:f9caa42df3d51a1b46be5c0ad0cd95d52f48ecf52350c732bf07b506872c171e"
+      "updatedAt": "2026-08-27T19:07:37.746914+00:00",
+      "contentHash": "sha256:3cb074d84cb1f4466e312f1d391759c727cdc4a57d22609d5125285ac017dde2"
     },
     "understat": {
       "source": "understat",
@@ -185,7 +185,7 @@
       }
     ],
     "sourceReference": "FPL rules page, Transfers section",
-    "dataAvailableAt": "2026-08-27T15:33:30.887873Z",
+    "dataAvailableAt": "2026-08-27T19:07:49.760635Z",
     "playableStartRate": 0.35,
     "transferMarginPoints": 0.5
   },
@@ -935,7 +935,7 @@
   },
   "fixtureEvidence": {
     "source": "football-data.co.uk",
-    "updatedAt": "2026-08-26T09:05:53.216619+00:00",
+    "updatedAt": "2026-08-27T19:07:37.746914+00:00",
     "level": "observed",
     "byClub": {}
   },
@@ -6915,8 +6915,8 @@
       "club": "BHA",
       "teamId": 5,
       "priceTenths": 45,
-      "availabilityStatus": "d",
-      "chanceOfPlaying": 75,
+      "availabilityStatus": "a",
+      "chanceOfPlaying": 100,
       "basePoints": 2.259,
       "routes": {
         "appearance": 1.338,
@@ -8368,8 +8368,8 @@
       "club": "CHE",
       "teamId": 6,
       "priceTenths": 45,
-      "availabilityStatus": "d",
-      "chanceOfPlaying": 25,
+      "availabilityStatus": "a",
+      "chanceOfPlaying": 100,
       "basePoints": 1.579,
       "routes": {
         "appearance": 1.121,
@@ -9565,7 +9565,7 @@
       "teamId": 15,
       "priceTenths": 60,
       "availabilityStatus": "d",
-      "chanceOfPlaying": 50,
+      "chanceOfPlaying": 75,
       "basePoints": 1.489,
       "routes": {
         "appearance": 0.779,
@@ -23251,41 +23251,6 @@
       "depthRank": 5
     },
     {
-      "id": 465,
-      "code": 538207,
-      "name": "Osula",
-      "position": "FWD",
-      "positionId": 4,
-      "club": "NEW",
-      "teamId": 17,
-      "priceTenths": 60,
-      "availabilityStatus": "d",
-      "chanceOfPlaying": 25,
-      "basePoints": 0.439,
-      "routes": {
-        "appearance": 0.227,
-        "attacking": 0.134,
-        "bonus": 0.081,
-        "yellowCards": -0.004,
-        "defensiveContribution": 0.001
-      },
-      "startRate": 0.067,
-      "startEvidence": {
-        "sourceStartRate": 0.067,
-        "finalStartRate": 0.067,
-        "observedAppearances": 24,
-        "recentStarts": 6,
-        "recentMatches": 6,
-        "recentMinutes": 441,
-        "appearanceSource": "historicalProjection",
-        "marketAdjustment": 0.0,
-        "availabilityAdjustment": 0.0
-      },
-      "squadNumber": null,
-      "rated": true,
-      "depthRank": 1
-    },
-    {
       "id": 582,
       "code": 690838,
       "name": "Madjo",
@@ -23764,6 +23729,36 @@
       "rated": false,
       "depthRank": 3,
       "evidence": { "all": "rolePrior", "appearance": "fplAvailability" }
+    },
+    {
+      "id": 465,
+      "code": 538207,
+      "name": "Osula",
+      "position": "FWD",
+      "positionId": 4,
+      "club": "NEW",
+      "teamId": 17,
+      "priceTenths": 60,
+      "availabilityStatus": "i",
+      "chanceOfPlaying": 0,
+      "basePoints": 0,
+      "routes": {},
+      "startRate": 0.0,
+      "startEvidence": {
+        "sourceStartRate": 0.067,
+        "finalStartRate": 0.0,
+        "observedAppearances": 24,
+        "recentStarts": 6,
+        "recentMatches": 6,
+        "recentMinutes": 441,
+        "appearanceSource": "fplAvailability",
+        "marketAdjustment": 0.0,
+        "availabilityAdjustment": -0.067
+      },
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1,
+      "evidence": { "appearance": "fplAvailability" }
     }
   ]
 }
