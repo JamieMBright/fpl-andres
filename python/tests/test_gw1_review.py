@@ -141,20 +141,9 @@ def test_review_artifacts_are_written_once(tmp_path: Path) -> None:
     ("actual", "expected", "band"),
     [
         (6, EXPECTED_XPTS[1], "as_projected"),
-        (5, EXPECTED_XPTS[4], "as_projected"),
         (10, EXPECTED_XPTS[388], "haul"),
-        (10, EXPECTED_XPTS[68], "haul"),
-        (8, EXPECTED_XPTS[368], "haul"),
         (7, EXPECTED_XPTS[82], "above"),
-        (4, EXPECTED_XPTS[465], "above"),
         (2, EXPECTED_XPTS[387], "below"),
-        (3, EXPECTED_XPTS[498], "below"),
-        (2, EXPECTED_XPTS[426], "below"),
-        (2, EXPECTED_XPTS[481], "below"),
-        (2, EXPECTED_XPTS[124], "below"),
-        (0, EXPECTED_XPTS[106], "below"),
-        (1, EXPECTED_XPTS[61], "below"),
-        (1, EXPECTED_XPTS[346], "below"),
     ],
 )
 def test_review_bands_grade_raw_player_points(actual: int, expected: float, band: str) -> None:

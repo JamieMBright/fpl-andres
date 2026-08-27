@@ -8,6 +8,12 @@ The project follows Semantic Versioning once milestone tags begin.
 
 ### Added
 
+- Model 8.11 feeds immutable settled GW1 starts and minutes into GW2 xStart,
+  with current FPL availability applied last. Exact Wildcard solves are also
+  rechecked after re-planning, so a four-transfer week cannot spend the chip.
+- Expected XI now opens as xStart GW2 and can switch back to the immutable GW1
+  score. Club hit counts name the frozen non-starter and omitted actual starter
+  on focus or hover, and explain Brier in plain language.
 - FPL500 now publishes every selected player by position with ownership, EO,
   raw GW returns, cumulative returns and one most-owned player photograph per
   position. An immutable aggregate-only GW1 recapture adds chip usage, mean

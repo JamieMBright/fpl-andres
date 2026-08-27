@@ -110,6 +110,7 @@ def evaluate_xstart(
         selected = sorted(club_rows, key=lambda row: (-row[2], row[0]))[:11]
         actual_starters = sum(row[3] for row in club_rows)
         hits = sum(row[3] for row in selected)
+        selected_ids = {row[0] for row in selected}
         total_hits += hits
         total_actual += actual_starters
         clubs.append(
@@ -119,6 +120,19 @@ def evaluate_xstart(
                 "topElevenHits": hits,
                 "actualStarters": actual_starters,
                 "topElevenRecall": _round(hits / actual_starters) if actual_starters else None,
+                "selected": [
+                    {
+                        "elementId": element_id,
+                        "probability": _round(probability),
+                        "started": bool(started),
+                    }
+                    for element_id, _club, probability, started in selected
+                ],
+                "missedStarters": [
+                    {"elementId": element_id, "probability": _round(probability)}
+                    for element_id, _club, probability, started in club_rows
+                    if started and element_id not in selected_ids
+                ],
             }
         )
 

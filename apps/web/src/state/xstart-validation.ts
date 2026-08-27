@@ -17,6 +17,12 @@ export interface XStartClubValidation extends XStartMetrics {
   topElevenHits: number;
   actualStarters: number;
   topElevenRecall: number | null;
+  selected: readonly {
+    elementId: number;
+    probability: number;
+    started: boolean;
+  }[];
+  missedStarters: readonly { elementId: number; probability: number }[];
 }
 
 export interface XStartValidation {

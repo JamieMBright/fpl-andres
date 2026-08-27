@@ -1,7 +1,10 @@
 import { Activity, CircleHelp, LineChart } from "lucide-react";
+import { useState } from "react";
 
 import { CeefaxShirt } from "../components/CeefaxShirt";
+import { InfoMarker } from "../components/InfoMarker";
 import { RouteHeading } from "../components/RouteHeading";
+import { XStartCalibration } from "../components/XStartCalibration";
 import { dateTimeShort, percent } from "../format";
 import { TEAM_KITS } from "../kit/team-kits";
 import {
@@ -10,6 +13,7 @@ import {
   type ExpectedXiTeam,
 } from "../state/expected-xi";
 import { useDocumentTitle } from "../state/use-document-title";
+import { PLAYERS_BY_ELEMENT_ID } from "../state/season-solver";
 
 const kitsByShortName = new Map(
   TEAM_KITS.map((team) => [team.shortName, team]),
@@ -36,11 +40,32 @@ function evidenceIcon(player: ExpectedXiPlayer) {
   return <Activity aria-hidden="true" size={14} />;
 }
 
+function availabilityLabel(player: ExpectedXiPlayer): string {
+  const labels: Record<string, string> = {
+    d: "Doubtful",
+    i: "Injured",
+    s: "Suspended",
+    u: "Unavailable",
+    n: "Not in squad",
+  };
+  const status = labels[player.availabilityStatus ?? ""] ?? "Flagged";
+  return player.chanceOfPlaying === null
+    ? status
+    : `${status} · ${player.chanceOfPlaying}% play`;
+}
+
 function PlayerRow({ player }: { player: ExpectedXiPlayer }) {
   return (
     <li>
       <span className="expected-xi-position mono">{player.position}</span>
-      <span className="expected-xi-name">{player.name}</span>
+      <span className="expected-xi-name">
+        {player.name}
+        {player.availabilityStatus && player.availabilityStatus !== "a" ? (
+          <small className="expected-xi-availability mono">
+            {availabilityLabel(player)}
+          </small>
+        ) : null}
+      </span>
       <details className="expected-xi-probability">
         <summary className="mono">
           <span>xStart</span> {percent.format(player.startProbability)}
@@ -98,8 +123,27 @@ function TeamSection({ team }: { team: ExpectedXiTeam }) {
           {team.validation ? (
             <p className="expected-xi-validation mono">
               GW1 check · {team.validation.topElevenHits}/
-              {team.validation.actualStarters} starters · Brier{" "}
-              {team.validation.brier.toFixed(3)}
+              {team.validation.actualStarters} starters
+              <InfoMarker label={`${team.club} GW1 xStart check`}>
+                Frozen XI misses:{" "}
+                {team.validation.selected
+                  .filter((row) => !row.started)
+                  .map(
+                    (row) =>
+                      `${PLAYERS_BY_ELEMENT_ID.get(row.elementId)?.name ?? row.elementId} (${percent.format(row.probability)})`,
+                  )
+                  .join(", ") || "none"}
+                . Actual starters left out:{" "}
+                {team.validation.missedStarters
+                  .map(
+                    (row) =>
+                      `${PLAYERS_BY_ELEMENT_ID.get(row.elementId)?.name ?? row.elementId} (${percent.format(row.probability)})`,
+                  )
+                  .join(", ") || "none"}
+                . Brier {team.validation.brier.toFixed(3)} is the mean squared
+                probability error across all {team.validation.count} club
+                candidates. Lower is better.
+              </InfoMarker>
             </p>
           ) : null}
         </div>
@@ -127,6 +171,21 @@ function TeamSection({ team }: { team: ExpectedXiTeam }) {
           </ol>
         </div>
       </div>
+      {team.availabilityFlags.length > 0 ? (
+        <div className="expected-xi-flags">
+          <strong>FPL flags</strong>
+          <ul>
+            {team.availabilityFlags.map((player) => (
+              <li key={player.id}>
+                <span>{player.name}</span>
+                <span className="expected-xi-availability mono">
+                  {availabilityLabel(player)}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
       <p className="expected-xi-source mono">
         {team.updatedAt
           ? dateTimeShort.format(new Date(team.updatedAt))
@@ -147,6 +206,7 @@ function TeamSection({ team }: { team: ExpectedXiTeam }) {
 
 export default function ExpectedXiPage() {
   const xi = expectedXi();
+  const [view, setView] = useState<"current" | "history">("current");
 
   useDocumentTitle(
     "Expected XI",
@@ -157,110 +217,97 @@ export default function ExpectedXiPage() {
   return (
     <section className="text-page expected-xi-page" aria-label="Expected XI">
       <p className="eyebrow">Team sheets</p>
-      <RouteHeading>Expected XI</RouteHeading>
+      <RouteHeading>xStart GW{xi.event}</RouteHeading>
       <p className="lede">
         My current xStart read, split by market signal, model record, manual
         team news and role prior.
       </p>
 
-      {xi.validation ? (
-        <section
-          aria-labelledby="xstart-score-title"
-          className="expected-xi-validation-summary"
-        >
-          <div>
-            <p className="eyebrow">
-              GW1 score · model {xi.validation.modelVersion}
-            </p>
-            <h2 id="xstart-score-title">The shipped P(60+) field, graded</h2>
-            <p>
-              It was labelled xStart. It was actually P(60+), so I am scoring
-              that field under its real name before replacing it.
-            </p>
-          </div>
-          <dl>
+      <fieldset className="xstart-event-choice">
+        <legend>Gameweek view</legend>
+        <label>
+          <input
+            checked={view === "current"}
+            name="xstart-event"
+            onChange={() => setView("current")}
+            type="radio"
+          />
+          <span>GW{xi.event} forecast</span>
+        </label>
+        <label>
+          <input
+            checked={view === "history"}
+            name="xstart-event"
+            onChange={() => setView("history")}
+            type="radio"
+          />
+          <span>GW1 score</span>
+        </label>
+      </fieldset>
+
+      {view === "history" ? (
+        <XStartCalibration />
+      ) : (
+        <>
+          <nav aria-label="Expected XI clubs" className="expected-xi-clubs">
+            {xi.teams.map((team) => {
+              const kit = kitsByShortName.get(team.club);
+              return (
+                <a
+                  key={team.club}
+                  href={`#${anchorFor(team.club)}`}
+                  title={team.name}
+                >
+                  {kit ? (
+                    <CeefaxShirt
+                      className="expected-xi-club-shirt"
+                      kit={kit}
+                      label={team.name}
+                    />
+                  ) : null}
+                  <span translate="no">{team.club}</span>
+                </a>
+              );
+            })}
+          </nav>
+
+          <dl className="market-scoreboard expected-xi-scoreboard">
             <div>
-              <dt>Brier</dt>
+              <dt>Teams</dt>
+              <dd className="mono">{xi.teams.length}</dd>
+            </div>
+            <div>
+              <dt>Starters</dt>
               <dd className="mono">
-                {xi.validation.population.brier.toFixed(3)}
+                {xi.teams.reduce(
+                  (total, team) => total + team.starters.length,
+                  0,
+                )}
               </dd>
             </div>
             <div>
-              <dt>Players</dt>
-              <dd className="mono">{xi.validation.population.count}</dd>
-            </div>
-            <div>
-              <dt>Top-11 hits</dt>
+              <dt>Market check</dt>
               <dd className="mono">
-                {xi.validation.topEleven.hits}/
-                {xi.validation.topEleven.actualStarters}
+                {xi.marketUpdatedAt
+                  ? dateTimeShort.format(new Date(xi.marketUpdatedAt))
+                  : "Unavailable"}
               </dd>
             </div>
             <div>
-              <dt>Forecast / actual</dt>
+              <dt>Model build</dt>
               <dd className="mono">
-                {percent.format(xi.validation.population.meanForecast)} /{" "}
-                {percent.format(xi.validation.population.actualStartRate)}
+                {dateTimeShort.format(new Date(xi.generatedAt))}
               </dd>
             </div>
           </dl>
-        </section>
-      ) : null}
 
-      <nav aria-label="Expected XI clubs" className="expected-xi-clubs">
-        {xi.teams.map((team) => {
-          const kit = kitsByShortName.get(team.club);
-          return (
-            <a
-              key={team.club}
-              href={`#${anchorFor(team.club)}`}
-              title={team.name}
-            >
-              {kit ? (
-                <CeefaxShirt
-                  className="expected-xi-club-shirt"
-                  kit={kit}
-                  label={team.name}
-                />
-              ) : null}
-              <span translate="no">{team.club}</span>
-            </a>
-          );
-        })}
-      </nav>
-
-      <dl className="market-scoreboard expected-xi-scoreboard">
-        <div>
-          <dt>Teams</dt>
-          <dd className="mono">{xi.teams.length}</dd>
-        </div>
-        <div>
-          <dt>Starters</dt>
-          <dd className="mono">
-            {xi.teams.reduce((total, team) => total + team.starters.length, 0)}
-          </dd>
-        </div>
-        <div>
-          <dt>Market check</dt>
-          <dd className="mono">
-            {xi.marketUpdatedAt
-              ? dateTimeShort.format(new Date(xi.marketUpdatedAt))
-              : "Unavailable"}
-          </dd>
-        </div>
-        <div>
-          <dt>Model build</dt>
-          <dd className="mono">
-            {dateTimeShort.format(new Date(xi.generatedAt))}
-          </dd>
-        </div>
-      </dl>
-
-      <div className="expected-xi-teams">
-        {xi.teams.map((team) => (
-          <TeamSection key={team.club} team={team} />
-        ))}
-      </div>
+          <div className="expected-xi-teams">
+            {xi.teams.map((team) => (
+              <TeamSection key={team.club} team={team} />
+            ))}
+          </div>
+        </>
+      )}
     </section>
   );
 }

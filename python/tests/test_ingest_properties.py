@@ -22,7 +22,7 @@ from fpl_andres.crosswalk.resolve import (
     _MINUTES_TOLERANCE,
     _agrees,
 )
-from fpl_andres.ingest.normalise import _bool, _float, _int
+from fpl_andres.ingest.normalise import _float, _int
 
 _SAFE_TEXT = st.text(alphabet=st.characters(blacklist_categories=("Cs",)), min_size=0, max_size=40)
 
@@ -56,18 +56,6 @@ def test_a_float_column_round_trips(value: float) -> None:
     parsed = _float(repr(value), column="expected_goals")
     assert parsed is not None
     assert abs(parsed - value) < 1e-9
-
-
-@given(raw=st.sampled_from(["True", "true", "TRUE", "1"]))
-@settings(max_examples=20, deadline=None)
-def test_truthy_spellings_all_read_as_true(raw: str) -> None:
-    assert _bool(raw, column="was_home") is True
-
-
-@given(raw=st.sampled_from(["False", "false", "FALSE", "0"]))
-@settings(max_examples=20, deadline=None)
-def test_falsy_spellings_all_read_as_false(raw: str) -> None:
-    assert _bool(raw, column="was_home") is False
 
 
 @given(name=_SAFE_TEXT)

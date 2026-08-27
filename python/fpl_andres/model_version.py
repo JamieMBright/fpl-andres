@@ -29,6 +29,11 @@ from __future__ import annotations
 
 __all__ = ["MODEL_VERSION"]
 
+#: 8.11 publishes settled GW1 starts/minutes into the GW2 xStart posterior and
+#: rejects an exact Wildcard solve if earlier re-planning shrinks its final
+#: turnover below five players. Minor: xStart and affected plans move, while
+#: their targets and field meanings stay unchanged.
+#:
 #: 8.10 reduces the recent-points blend from 0.20 to 0.10 after a predeclared
 #: five-weight experiment. Across 64 held-out gameweeks, paired weekly MAE
 #: improved by 0.0110 with a family-corrected 98.75% lower bound of 0.00838;
@@ -391,4 +396,4 @@ __all__ = ["MODEL_VERSION"]
 #: projection and resampled, so a gap that does not clear zero is reported as
 #: not clearing zero. No projection changed; what changed is what may be
 #: claimed from it.
-MODEL_VERSION = "8.10"
+MODEL_VERSION = "8.11"

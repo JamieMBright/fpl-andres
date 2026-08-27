@@ -89,8 +89,8 @@ const ANSWERS: readonly Answer[] = [
   {
     q: "Why does it not know about an injury I have just read about?",
     a: [
-      "The per-player projection is built offline from a completed season and published as a file. It carries no news feed and no injury list, so a player ruled out this morning still appears with last season's rates.",
-      "FPL's own availability flag is read for the squad shown on the plan page, so a flagged player is marked as such. But no projection is withdrawn on the basis of news, because nothing here has measured what news is worth.",
+      "The projection reads FPL's own availability flag when it is published. Ruled-out players go to zero; a published chance scales a doubtful player's minutes.",
+      "FPL can lag club news. Until its flag moves, I keep the football evidence and say the external report is not yet in the model rather than inventing a percentage.",
     ],
   },
   {

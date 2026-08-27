@@ -78,12 +78,12 @@ def test_a_non_numeric_optional_column_names_itself_too() -> None:
         )
 
 
-@pytest.mark.parametrize("value", ["true", "TRUE", "1", "t", "yes"])
+@pytest.mark.parametrize("value", ["True", "true", "TRUE", "1", "t", "yes"])
 def test_every_truthy_form_the_archive_uses_is_accepted(value: str) -> None:
     assert _normalise(_ROW.replace(",True", f",{value}"))[0]["was_home"] is True
 
 
-@pytest.mark.parametrize("value", ["false", "FALSE", "0", "f", "no"])
+@pytest.mark.parametrize("value", ["False", "false", "FALSE", "0", "f", "no"])
 def test_every_falsy_form_the_archive_uses_is_accepted(value: str) -> None:
     assert _normalise(_ROW.replace(",True", f",{value}"))[0]["was_home"] is False
 

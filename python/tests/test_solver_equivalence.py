@@ -26,7 +26,6 @@ from __future__ import annotations
 
 from datetime import timedelta
 
-import pytest
 from test_highs_optimizer import CUTOFF, HASH_A, state_evidence, transfer_rules
 
 from fpl_andres.optimization.contracts import (
@@ -166,30 +165,21 @@ def _horizon_request() -> HorizonOptimizationRequest:
     )
 
 
-@pytest.fixture(scope="module")
-def single_event_squad() -> tuple[int, ...]:
+def _single_event_squad() -> tuple[int, ...]:
     result = HighsOptimizer(time_limit_seconds=20.0).solve(_single_event_request())
     return tuple(sorted(result.squad_element_ids))
 
 
-@pytest.fixture(scope="module")
-def horizon_squad() -> tuple[int, ...]:
+def _horizon_squad() -> tuple[int, ...]:
     result = HighsHorizonOptimizer(time_limit_seconds=20.0).solve(_horizon_request())
     return tuple(sorted(result.events[0].squad_element_ids))
 
 
-@pytest.mark.slow
-def test_both_solvers_pick_a_squad_of_the_required_size(
-    single_event_squad: tuple[int, ...], horizon_squad: tuple[int, ...]
-) -> None:
-    assert len(single_event_squad) == SQUAD_SIZE
-    assert len(horizon_squad) == SQUAD_SIZE
+def test_both_solvers_obey_the_same_single_event_rules() -> None:
+    single_event_squad = _single_event_squad()
+    horizon_squad = _horizon_squad()
 
-
-@pytest.mark.slow
-def test_both_solvers_honour_the_position_quotas(
-    single_event_squad: tuple[int, ...], horizon_squad: tuple[int, ...]
-) -> None:
+    assert len(single_event_squad) == len(horizon_squad) == SQUAD_SIZE
     expected = {position.position_id: position.squad_count for position in POSITIONS}
     for squad in (single_event_squad, horizon_squad):
         counts: dict[int, int] = {}
@@ -198,13 +188,6 @@ def test_both_solvers_honour_the_position_quotas(
             counts[position] = counts.get(position, 0) + 1
         assert counts == expected
 
-
-@pytest.mark.slow
-def test_both_solvers_honour_the_club_limit(
-    single_event_squad: tuple[int, ...], horizon_squad: tuple[int, ...]
-) -> None:
-    """The pool holds four players from club 1 and a limit of two, so a solver
-    that skipped this constraint would take the three best and be caught."""
     for squad in (single_event_squad, horizon_squad):
         counts: dict[int, int] = {}
         for element_id in squad:
@@ -212,40 +195,9 @@ def test_both_solvers_honour_the_club_limit(
             counts[team] = counts.get(team, 0) + 1
         assert max(counts.values()) <= CLUB_LIMIT
 
-
-@pytest.mark.slow
-def test_both_solvers_reach_the_same_squad_on_the_same_evidence(
-    single_event_squad: tuple[int, ...], horizon_squad: tuple[int, ...]
-) -> None:
-    """A one-event horizon is the single-event problem. If these disagree, one
-    of the two is enforcing a rule the other is not, and the plan a manager sees
-    depends on which code path produced it.
-    """
     assert single_event_squad == horizon_squad
-
-
-@pytest.mark.slow
-def test_the_chosen_squad_is_the_one_the_rules_allow(
-    single_event_squad: tuple[int, ...],
-) -> None:
-    """Pins the answer, so a constraint quietly weakening shows as a diff.
-
-    Only one midfielder and one forward start, so the third squad place is a
-    bench seat that scores nothing. Keeping incumbent 7 there and keeping 3
-    scores the same 9.0 as buying 6 would, and costs no transfer -- so the
-    solver keeps it. The club limit still binds: 1 and 3 are both club 1, which
-    is the maximum, so a third club-1 player could not join them.
-    """
     assert single_event_squad == (1, 3, 7)
 
     clubs = [POOL[element_id][1] for element_id in single_event_squad]
     assert clubs.count(1) == CLUB_LIMIT
-
-
-@pytest.mark.slow
-def test_a_transfer_that_gains_nothing_is_not_made(
-    single_event_squad: tuple[int, ...],
-) -> None:
-    """The incumbent bench player is kept. A solver ignoring transfer cost
-    would churn the squad for an identical score."""
     assert 7 in single_event_squad

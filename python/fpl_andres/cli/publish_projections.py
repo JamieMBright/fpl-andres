@@ -20,7 +20,7 @@ import os
 import sys
 import urllib.error
 import urllib.request
-from collections.abc import Sequence
+from collections.abc import Mapping, Sequence
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import TypedDict, cast, get_args
@@ -30,7 +30,7 @@ from fpl_andres.artifacts import (
     PROJECTIONS_META_SCHEMA_VERSION,
     PROJECTIONS_SCHEMA_VERSION,
 )
-from fpl_andres.backtesting.corpus import SeasonCorpus, load_season
+from fpl_andres.backtesting.corpus import ElementRow, SeasonCorpus, load_season
 from fpl_andres.backtesting.fixtures import (
     Fixture,
     TeamStrength,
@@ -39,12 +39,13 @@ from fpl_andres.backtesting.fixtures import (
 from fpl_andres.backtesting.projector import MatchProjection, project_next_match
 from fpl_andres.backtesting.scoring import PointsBreakdown
 from fpl_andres.bootstrap import BootstrapElement, parse_elements
-from fpl_andres.jsonio import MalformedJsonError, parse_json
+from fpl_andres.jsonio import MalformedJsonError, parse_json, read_json_file
 from fpl_andres.models.minutes import AvailabilityEvidence, AvailabilityStatus
 from fpl_andres.persistence.supabase import SupabaseCredentials, SupabaseRestClient
 from fpl_andres.positions import Position
 
 BOOTSTRAP = "https://fantasy.premierleague.com/api/bootstrap-static/"
+FIXTURES = "https://fantasy.premierleague.com/api/fixtures/"
 USER_AGENT = "fpl-andres/0.5 (+https://github.com/JamieMBright/fpl-andres)"
 DEFAULT_OUTPUT = Path("apps/web/src/data/projections.json")
 POSITION_CODES = {position.value: position.code for position in Position}
@@ -68,6 +69,12 @@ def build_parser() -> argparse.ArgumentParser:
     # under a different arrangement is a prior rather than a record. Empty says
     # there is no season before this one worth loading.
     parser.add_argument("--previous-season", default="")
+    parser.add_argument(
+        "--live",
+        type=Path,
+        default=None,
+        help="Immutable settled current-season snapshot, or directory of gw*.json snapshots.",
+    )
     parser.add_argument("--output", default=str(DEFAULT_OUTPUT))
     return parser
 
@@ -265,7 +272,32 @@ def _clubs(corpus: SeasonCorpus) -> list[dict[str, object]]:
     return clubs
 
 
-def _published_availability() -> dict[int, AvailabilityEvidence]:
+def _published_bootstrap() -> Mapping[str, object] | None:
+    request = urllib.request.Request(BOOTSTRAP, headers={"User-Agent": USER_AGENT})
+    try:
+        with urllib.request.urlopen(request, timeout=timeouts.FPL_API) as response:
+            payload = parse_json(response.read().decode("utf-8"), source=BOOTSTRAP)
+    except (urllib.error.URLError, TimeoutError, MalformedJsonError) as error:
+        print(f"bootstrap unavailable: {error}", file=sys.stderr)
+        return None
+    return payload if isinstance(payload, Mapping) else None
+
+
+def _published_fixtures() -> list[Mapping[str, object]]:
+    request = urllib.request.Request(FIXTURES, headers={"User-Agent": USER_AGENT})
+    try:
+        with urllib.request.urlopen(request, timeout=timeouts.FPL_API) as response:
+            payload = parse_json(response.read().decode("utf-8"), source=FIXTURES)
+    except (urllib.error.URLError, TimeoutError, MalformedJsonError) as error:
+        raise ValueError(f"live fixture evidence unavailable: {error}") from error
+    if not isinstance(payload, list) or not all(isinstance(row, Mapping) for row in payload):
+        raise ValueError("FPL fixtures payload must be a list of objects")
+    return payload
+
+
+def _published_availability(
+    payload: Mapping[str, object] | None,
+) -> dict[int, AvailabilityEvidence]:
     """FPL's own status per player code, for the upcoming event.
 
     Without this the projection reads an injured player's history and reports
@@ -277,15 +309,9 @@ def _published_availability() -> dict[int, AvailabilityEvidence]:
     defining it, and refusing to publish at all because a second endpoint was
     briefly unreachable would be the worse trade.
     """
-    request = urllib.request.Request(BOOTSTRAP, headers={"User-Agent": USER_AGENT})
-    try:
-        with urllib.request.urlopen(request, timeout=timeouts.FPL_API) as response:
-            payload = parse_json(response.read().decode("utf-8"), source=BOOTSTRAP)
-    except (urllib.error.URLError, TimeoutError, MalformedJsonError) as error:
-        print(f"availability unavailable, projecting without it: {error}", file=sys.stderr)
+    if payload is None:
+        print("availability unavailable, projecting without it", file=sys.stderr)
         return {}
-
-    assert isinstance(payload, dict)
     published: dict[int, AvailabilityEvidence] = {}
     for element in parse_elements(payload["elements"], model=BootstrapElement):
         status = element.status
@@ -303,15 +329,179 @@ def _published_availability() -> dict[int, AvailabilityEvidence]:
     return published
 
 
+def corpus_from_live_snapshot(
+    snapshot: Mapping[str, object],
+    bootstrap: Mapping[str, object],
+    fixtures: Sequence[Mapping[str, object]],
+) -> SeasonCorpus:
+    """Build current-season rows from one immutable settled live event."""
+    season = snapshot.get("season")
+    event = snapshot.get("event")
+    captured_at = snapshot.get("capturedAt")
+    live_rows = snapshot.get("elements")
+    if (
+        not isinstance(season, str)
+        or not isinstance(event, int)
+        or not isinstance(captured_at, str)
+        or snapshot.get("roundComplete") is not True
+        or not isinstance(live_rows, list)
+    ):
+        raise ValueError("live projection snapshot is incomplete")
+    elements = parse_elements(bootstrap.get("elements"), model=BootstrapElement)
+    teams = bootstrap.get("teams")
+    if not isinstance(teams, list):
+        raise ValueError("bootstrap teams must be a list")
+    corpus = SeasonCorpus(season=season)
+    for team in teams:
+        if not isinstance(team, Mapping):
+            continue
+        team_id = int(team["id"])
+        corpus.code_by_team[team_id] = int(team["code"])
+        corpus.short_name_by_team[team_id] = str(team["short_name"])
+        corpus.name_by_team[team_id] = str(team["name"])
+    metadata = {element.id: element for element in elements}
+    fixtures_by_id: dict[int, tuple[datetime, frozenset[int]]] = {}
+    fixtures_by_team: dict[int, list[int]] = {}
+    for fixture in fixtures:
+        fixture_id = fixture.get("id")
+        home_team = fixture.get("team_h")
+        away_team = fixture.get("team_a")
+        if (
+            fixture.get("event") != event
+            or not isinstance(fixture.get("kickoff_time"), str)
+            or not isinstance(fixture_id, int)
+            or not isinstance(home_team, int)
+            or not isinstance(away_team, int)
+        ):
+            continue
+        kickoff = datetime.fromisoformat(str(fixture["kickoff_time"]).replace("Z", "+00:00"))
+        teams = frozenset((home_team, away_team))
+        fixtures_by_id[fixture_id] = (kickoff, teams)
+        for team_id in teams:
+            fixtures_by_team.setdefault(team_id, []).append(fixture_id)
+    rows: list[ElementRow] = []
+    for raw in live_rows:
+        if not isinstance(raw, Mapping) or not isinstance(raw.get("stats"), Mapping):
+            continue
+        element_id = raw.get("id")
+        element = metadata.get(element_id) if isinstance(element_id, int) else None
+        if element is None:
+            continue
+        try:
+            position = element.position.value
+        except ValueError:
+            continue
+        corpus.position_by_element[element.id] = position
+        corpus.team_by_element[element.id] = element.team
+        corpus.name_by_element[element.id] = element.web_name
+        corpus.code_by_element[element.id] = element.code
+        corpus.price_by_element[element.id] = element.now_cost
+        stats = raw["stats"]
+        assert isinstance(stats, Mapping)
+        explanations = raw.get("explain")
+        first = explanations[0] if isinstance(explanations, list) and explanations else {}
+        explained_fixture = first.get("fixture") if isinstance(first, Mapping) else None
+        team_fixtures = fixtures_by_team.get(element.team, [])
+        fixture_id = (
+            int(explained_fixture)
+            if isinstance(explained_fixture, int)
+            else team_fixtures[0]
+            if len(team_fixtures) == 1
+            else 0
+        )
+        fixture_evidence = fixtures_by_id.get(fixture_id)
+        if fixture_evidence is None:
+            raise ValueError(f"fixture {fixture_id or explained_fixture} kickoff is unavailable")
+        kickoff = fixture_evidence[0]
+        rows.append(
+            ElementRow(
+                gameweek=event,
+                element_id=element.id,
+                element_code=element.code,
+                fixture_id=fixture_id,
+                minutes=int(stats.get("minutes", 0)),
+                started=int(stats.get("starts", 0)) > 0,
+                goals=int(stats.get("goals_scored", 0)),
+                assists=int(stats.get("assists", 0)),
+                expected_goals=float(stats.get("expected_goals", 0.0)),
+                expected_assists=float(stats.get("expected_assists", 0.0)),
+                total_points=int(stats.get("total_points", 0)),
+                price_tenths=element.now_cost,
+                selected=None,
+                kickoff_time=kickoff,
+                clean_sheets=int(stats.get("clean_sheets", 0)),
+                saves=int(stats.get("saves", 0)),
+                bonus=int(stats.get("bonus", 0)),
+                bps=int(stats.get("bps", 0)),
+                goals_conceded=int(stats.get("goals_conceded", 0)),
+                yellow_cards=int(stats.get("yellow_cards", 0)),
+                red_cards=int(stats.get("red_cards", 0)),
+                own_goals=int(stats.get("own_goals", 0)),
+                penalties_saved=int(stats.get("penalties_saved", 0)),
+                penalties_missed=int(stats.get("penalties_missed", 0)),
+                defensive_contribution=int(stats.get("defensive_contribution", 0)),
+                clearances_blocks_interceptions=int(
+                    stats.get("clearances_blocks_interceptions", 0)
+                ),
+                tackles=int(stats.get("tackles", 0)),
+                recoveries=int(stats.get("recoveries", 0)),
+            )
+        )
+    corpus.rows_by_gameweek[event] = rows
+    return corpus
+
+
+def corpus_from_live_snapshots(
+    snapshots: Sequence[Mapping[str, object]],
+    bootstrap: Mapping[str, object],
+    fixtures: Sequence[Mapping[str, object]],
+) -> SeasonCorpus:
+    """Combine immutable settled events into one current-season corpus."""
+    if not snapshots:
+        raise ValueError("live projection requires at least one settled snapshot")
+    combined: SeasonCorpus | None = None
+    for snapshot in snapshots:
+        event_corpus = corpus_from_live_snapshot(snapshot, bootstrap, fixtures)
+        if combined is None:
+            combined = event_corpus
+            continue
+        if event_corpus.season != combined.season:
+            raise ValueError("live projection snapshots must name one season")
+        repeated = set(combined.rows_by_gameweek) & set(event_corpus.rows_by_gameweek)
+        if repeated:
+            raise ValueError(f"live projection snapshots repeat event(s) {sorted(repeated)}")
+        combined.rows_by_gameweek.update(event_corpus.rows_by_gameweek)
+    assert combined is not None
+    return combined
+
+
+def _live_snapshots(path: Path) -> list[Mapping[str, object]]:
+    paths = sorted(path.glob("gw*.json")) if path.is_dir() else [path]
+    snapshots = [read_json_file(candidate) for candidate in paths if candidate.is_file()]
+    if not snapshots:
+        raise ValueError(f"no live snapshots found at {path}")
+    return snapshots
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
 
     credentials = SupabaseCredentials.from_env(os.environ)
+    bootstrap = _published_bootstrap()
     with SupabaseRestClient(credentials) as client:
-        corpus = load_season(client, args.season)
         previous = load_season(client, args.previous_season) if args.previous_season else None
+        if args.live is not None:
+            if previous is None or bootstrap is None:
+                raise ValueError("live projection requires previous-season history and bootstrap")
+            corpus = corpus_from_live_snapshots(
+                _live_snapshots(args.live),
+                bootstrap,
+                _published_fixtures(),
+            )
+        else:
+            corpus = load_season(client, args.season)
 
-    availability = _published_availability()
+    availability = _published_availability(bootstrap)
     projections = project_next_match(corpus, availability=availability, previous=previous)
     if not projections:
         print(f"no projections for {args.season}", file=sys.stderr)

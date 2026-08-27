@@ -28,7 +28,7 @@ def _frozen_inputs() -> dict[str, object]:
     return json.loads(source)
 
 
-def test_frozen_shipped_xstart_is_scored_honestly() -> None:
+def test_frozen_shipped_xstart_matches_the_scoring_reference() -> None:
     result = evaluate_xstart(
         _frozen_inputs(),
         read_json_file(ROOT / "data" / "live" / "2026-27" / "gw01.json"),
@@ -42,18 +42,16 @@ def test_frozen_shipped_xstart_is_scored_honestly() -> None:
     assert result["population"]["actualStartRate"] == pytest.approx(0.448560, abs=0.000001)
     assert result["topEleven"]["hits"] == 128
     assert result["topEleven"]["actualStarters"] == 218
-
-
-def test_frozen_xstart_reports_reliability_and_every_club() -> None:
-    result = evaluate_xstart(
-        _frozen_inputs(),
-        read_json_file(ROOT / "data" / "live" / "2026-27" / "gw01.json"),
-    )
-
     assert len(result["clubs"]) == 20
     leeds = next(club for club in result["clubs"] if club["club"] == "LEE")
     assert leeds["topElevenHits"] == 10
     assert leeds["brier"] == pytest.approx(0.174089, abs=0.000001)
+    assert next(row for row in leeds["selected"] if row["elementId"] == 336) == {
+        "elementId": 336,
+        "probability": 0.463,
+        "started": False,
+    }
+    assert leeds["missedStarters"] == [{"elementId": 385, "probability": 0.106}]
     highest = next(band for band in result["reliability"] if band["label"] == "0.9-1.0")
     assert highest["meanForecast"] == pytest.approx(0.922857, abs=0.000001)
     assert highest["actualStartRate"] == pytest.approx(0.678571, abs=0.000001)

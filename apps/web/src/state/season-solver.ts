@@ -145,6 +145,8 @@ export interface SolverPlayer {
   basePoints: number;
   routes: PlayerRoutes;
   startRate: number;
+  availabilityStatus?: string;
+  chanceOfPlaying?: number | null;
   /** False where every number above is a prior for his role, not a measurement. */
   rated?: boolean;
   /** 1 is his club's most expensive player in this position. */

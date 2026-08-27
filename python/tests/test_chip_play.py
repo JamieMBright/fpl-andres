@@ -20,9 +20,19 @@ from fpl_andres.cli.publish_season_plan import (
     _ChipRun,
     _place_wildcards,
     _play_chips,
+    _solved_wildcard_turnover,
     _turnover,
     _wildcard_turnover,
 )
+
+
+def test_final_wildcard_turnover_reads_the_replanned_predecessor() -> None:
+    weeks = {
+        4: {"squadElementIds": list(range(1, 16))},
+        5: {"squadElementIds": [*range(1, 12), 20, 21, 22, 23]},
+    }
+
+    assert _solved_wildcard_turnover(5, weeks, [4, 5], list(range(1, 16))) == 4
 
 
 def _candidate(element_id: int, club: str, price: int = 50) -> Candidate:

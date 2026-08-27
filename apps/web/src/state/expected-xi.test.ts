@@ -9,6 +9,8 @@ const seasonInputs = {
   players: [
     {
       id: 1,
+      availabilityStatus: "d",
+      chanceOfPlaying: 25,
       code: 101,
       name: "Keeper",
       position: "GKP",
@@ -62,7 +64,7 @@ const seasonInputs = {
       startRate: 0.6,
       rated: false,
     },
-    ...Array.from({ length: 9 }, (_, index) => ({
+    ...Array.from({ length: 13 }, (_, index) => ({
       id: 10 + index,
       code: 110 + index,
       name: `Outfield ${index}`,
@@ -71,6 +73,17 @@ const seasonInputs = {
       teamId: 1,
       startRate: 0.59 - index * 0.01,
     })),
+    {
+      id: 29,
+      availabilityStatus: "i",
+      chanceOfPlaying: 0,
+      code: 129,
+      name: "Hidden injury",
+      position: "FWD",
+      club: "ARS",
+      teamId: 1,
+      startRate: 0,
+    },
     {
       id: 30,
       code: 130,
@@ -133,6 +146,40 @@ const manualPriors = {
 } as const;
 
 describe("expected XI reader", () => {
+  it("carries official availability into the player explanation", () => {
+    const arsenal = buildExpectedXi({ seasonInputs, playerOdds }).teams.find(
+      (team) => team.club === "ARS",
+    );
+    const keeper = [
+      ...(arsenal?.starters ?? []),
+      ...(arsenal?.reserves ?? []),
+    ].find((player) => player.id === 1);
+
+    expect(keeper).toMatchObject({
+      availabilityStatus: "d",
+      chanceOfPlaying: 25,
+    });
+    expect(keeper?.explanation.factors).toContainEqual({
+      label: "FPL availability",
+      value: "Doubtful",
+      detail: "FPL publishes a 25% chance of playing.",
+    });
+  });
+
+  it("keeps flags visible below the seven reserves", () => {
+    const arsenal = buildExpectedXi({ seasonInputs, playerOdds }).teams.find(
+      (team) => team.club === "ARS",
+    );
+
+    expect(arsenal?.availabilityFlags).toEqual([
+      expect.objectContaining({
+        name: "Hidden injury",
+        availabilityStatus: "i",
+        chanceOfPlaying: 0,
+      }),
+    ]);
+  });
+
   it("selects one keeper and the ten likeliest outfield starters", () => {
     const arsenal = buildExpectedXi({ seasonInputs, playerOdds }).teams.find(
       (team) => team.club === "ARS",

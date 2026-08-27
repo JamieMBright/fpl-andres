@@ -14,7 +14,11 @@ from datetime import UTC, datetime, timedelta
 from fpl_andres.backtesting.corpus import ElementRow, SeasonCorpus
 from fpl_andres.backtesting.fixtures import Fixture
 from fpl_andres.backtesting.projector import project_next_match
-from fpl_andres.cli.publish_projections import _entry
+from fpl_andres.cli.publish_projections import (
+    _entry,
+    corpus_from_live_snapshot,
+    corpus_from_live_snapshots,
+)
 
 KICKOFF = datetime(2025, 8, 16, 14, 0, tzinfo=UTC)
 STEADY = 1
@@ -79,6 +83,151 @@ def _corpus(*, with_fixtures: bool) -> SeasonCorpus:
 
 
 class ProjectNextMatchTest(unittest.TestCase):
+    def test_live_snapshot_builds_current_start_evidence(self) -> None:
+        kickoff = datetime(2026, 8, 21, 19, 0, tzinfo=UTC)
+        corpus = corpus_from_live_snapshot(
+            {
+                "season": "2026-27",
+                "event": 1,
+                "capturedAt": "2026-08-26T16:26:47Z",
+                "roundComplete": True,
+                "elements": [
+                    {
+                        "id": 7,
+                        "stats": {
+                            "minutes": 62,
+                            "starts": 1,
+                            "goals_scored": 0,
+                            "assists": 0,
+                            "expected_goals": "0.10",
+                            "expected_assists": "0.20",
+                            "total_points": 2,
+                        },
+                        "explain": [{"fixture": 101}],
+                    }
+                ],
+            },
+            {
+                "elements": [
+                    {
+                        "id": 7,
+                        "code": 7000,
+                        "web_name": "Current",
+                        "element_type": 3,
+                        "team": 1,
+                        "now_cost": 75,
+                        "selected_by_percent": "10.0",
+                        "transfers_in_event": 0,
+                        "transfers_out_event": 0,
+                        "status": "a",
+                    }
+                ],
+                "teams": [{"id": 1, "code": 3, "short_name": "ARS", "name": "Arsenal"}],
+            },
+            [
+                {
+                    "id": 101,
+                    "event": 1,
+                    "team_h": 1,
+                    "team_a": 2,
+                    "kickoff_time": kickoff.isoformat(),
+                }
+            ],
+        )
+
+        [row] = corpus.rows_by_gameweek[1]
+        self.assertEqual(corpus.season, "2026-27")
+        self.assertEqual(row.minutes, 62)
+        self.assertTrue(row.started)
+        self.assertEqual(row.fixture_id, 101)
+        self.assertEqual(row.kickoff_time, kickoff)
+
+    def test_live_snapshot_refuses_an_unsourced_fixture_time(self) -> None:
+        with self.assertRaisesRegex(ValueError, "fixture 101 kickoff"):
+            corpus_from_live_snapshot(
+                {
+                    "season": "2026-27",
+                    "event": 1,
+                    "capturedAt": "2026-08-26T16:26:47Z",
+                    "roundComplete": True,
+                    "elements": [
+                        {
+                            "id": 7,
+                            "stats": {"minutes": 62, "starts": 1},
+                            "explain": [{"fixture": 101}],
+                        }
+                    ],
+                },
+                {
+                    "elements": [
+                        {
+                            "id": 7,
+                            "code": 7000,
+                            "web_name": "Current",
+                            "element_type": 3,
+                            "team": 1,
+                            "now_cost": 75,
+                            "selected_by_percent": "10.0",
+                            "transfers_in_event": 0,
+                            "transfers_out_event": 0,
+                            "status": "a",
+                        }
+                    ],
+                    "teams": [{"id": 1, "code": 3, "short_name": "ARS", "name": "Arsenal"}],
+                },
+                [],
+            )
+
+    def test_live_snapshots_keep_every_settled_event(self) -> None:
+        bootstrap = {
+            "elements": [
+                {
+                    "id": 7,
+                    "code": 7000,
+                    "web_name": "Current",
+                    "element_type": 3,
+                    "team": 1,
+                    "now_cost": 75,
+                    "selected_by_percent": "10.0",
+                    "transfers_in_event": 0,
+                    "transfers_out_event": 0,
+                    "status": "a",
+                }
+            ],
+            "teams": [{"id": 1, "code": 3, "short_name": "ARS", "name": "Arsenal"}],
+        }
+        snapshots = [
+            {
+                "season": "2026-27",
+                "event": event,
+                "capturedAt": f"2026-08-{20 + event:02d}T20:00:00Z",
+                "roundComplete": True,
+                "elements": [
+                    {
+                        "id": 7,
+                        "stats": {"minutes": 90, "starts": 1},
+                        "explain": [{"fixture": 100 + event}],
+                    }
+                ],
+            }
+            for event in (1, 2)
+        ]
+        fixtures = [
+            {
+                "id": 100 + event,
+                "event": event,
+                "team_h": 1,
+                "team_a": 2,
+                "kickoff_time": f"2026-08-{20 + event:02d}T19:00:00Z",
+            }
+            for event in (1, 2)
+        ]
+
+        corpus = corpus_from_live_snapshots(snapshots, bootstrap, fixtures)
+
+        self.assertEqual(sorted(corpus.rows_by_gameweek), [1, 2])
+        self.assertEqual(corpus.last_event, 2)
+
     def test_projects_a_single_match_not_a_season(self) -> None:
         [projection] = [
             entry

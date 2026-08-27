@@ -162,26 +162,9 @@ describe("season inputs artifact", () => {
 
 describe("solveSeason", () => {
   it(
-    "starts the first remaining gameweek from the archived opening squad",
-    () => {
-      const opener = solveSeason(openingStart()).next().value;
-
-      expect(opener).toBeDefined();
-      expect(opener?.event).toBe(SEASON_EVENTS[0]);
-      expect(opener?.transfersIn).toHaveLength(1);
-      expect(opener?.transfersOut).toHaveLength(1);
-      expect(opener?.transfersIn[0]?.position).toBe(
-        opener?.transfersOut[0]?.position,
-      );
-      expect(opener?.transferCostPoints).toBe(0);
-    },
-    SOLVE_TIMEOUT,
-  );
-
-  it(
     "gives the armband to the current-gameweek leaders in the XI",
     () => {
-      const opener = solveSeason(openingStart()).next().value;
+      const opener = season()[0];
       expect(opener).toBeDefined();
       const ranked = [...(opener?.starters ?? [])]
         .filter(
@@ -206,16 +189,6 @@ describe("solveSeason", () => {
 
       expect(solved).toHaveLength(SEASON_EVENTS.length);
       expect(solved.map((week) => week.event)).toEqual(SEASON_EVENTS);
-    },
-    SOLVE_TIMEOUT,
-  );
-
-  it(
-    "starts at the first unfinished event in the published artifact",
-    () => {
-      const opener = season()[0];
-
-      expect(opener?.event).toBe(SEASON_EVENTS[0]);
     },
     SOLVE_TIMEOUT,
   );

@@ -1086,6 +1086,51 @@ h1[tabindex="-1"]:focus-visible {
   list-style: none;
 }
 
+.xstart-event-choice {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 18px 0;
+  padding: 0;
+  border: 0;
+}
+
+.xstart-event-choice legend {
+  width: 100%;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.xstart-event-choice label {
+  position: relative;
+  cursor: pointer;
+}
+
+.xstart-event-choice input {
+  position: absolute;
+  opacity: 0;
+}
+
+.xstart-event-choice span {
+  display: flex;
+  min-height: 44px;
+  align-items: center;
+  padding: 0 12px;
+  border: 1px solid var(--rule);
+  background: var(--paper);
+}
+
+.xstart-event-choice input:checked + span {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 16%, var(--paper));
+  font-weight: 700;
+}
+
+.xstart-event-choice input:focus-visible + span {
+  outline: 3px solid var(--signal-blue);
+  outline-offset: 2px;
+}
+
 .expected-xi-list li {
   display: grid;
   grid-template-columns: 42px minmax(120px, 1fr) minmax(96px, auto) minmax(
@@ -1105,6 +1150,41 @@ h1[tabindex="-1"]:focus-visible {
 .expected-xi-probability summary {
   color: var(--ink);
   font-size: 12px;
+}
+
+.expected-xi-availability {
+  display: block;
+  color: var(--signal-red);
+  font-size: 10px;
+}
+
+.expected-xi-flags {
+  display: flex;
+  gap: 12px;
+  align-items: baseline;
+  margin-top: 14px;
+  padding-top: 10px;
+  border-top: 1px solid var(--rule);
+  font-size: 12px;
+}
+
+.expected-xi-flags ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.expected-xi-flags li {
+  display: flex;
+  gap: 6px;
+  align-items: baseline;
+}
+
+.expected-xi-flags .expected-xi-availability {
+  display: inline;
 }
 
 .expected-xi-probability {

@@ -20,6 +20,8 @@ interface SeasonInputPlayer {
   club: string;
   teamId: number;
   startRate: number;
+  availabilityStatus?: string;
+  chanceOfPlaying?: number | null;
   rated?: boolean;
   startEvidence?: {
     sourceStartRate?: number;
@@ -35,6 +37,7 @@ interface SeasonInputPlayer {
 
 interface SeasonInputsArtifact {
   generatedAt: string;
+  events?: readonly number[];
   players: readonly SeasonInputPlayer[];
   marketCarry?: { players?: Record<string, readonly unknown[]> };
   evidence?: {
@@ -103,6 +106,8 @@ export interface ExpectedXiPlayer {
   startProbability: number;
   evidence: ExpectedXiEvidence;
   quoted: boolean;
+  availabilityStatus: string | null;
+  chanceOfPlaying: number | null;
   explanation: ExpectedXiExplanation;
 }
 
@@ -111,6 +116,7 @@ export interface ExpectedXiTeam {
   name: string;
   starters: ExpectedXiPlayer[];
   reserves: ExpectedXiPlayer[];
+  availabilityFlags: ExpectedXiPlayer[];
   averageStartProbability: number;
   marketStatus: string;
   playersQuoted: number;
@@ -122,6 +128,7 @@ export interface ExpectedXiTeam {
 }
 
 export interface ExpectedXi {
+  event: number;
   generatedAt: string;
   marketUpdatedAt: string | null;
   teams: ExpectedXiTeam[];
@@ -230,6 +237,23 @@ function toPlayer(
       detail: `${blocker.name} is set as the high-confidence starting goalkeeper.`,
     });
   }
+  if (player.availabilityStatus && player.availabilityStatus !== "a") {
+    const names: Record<string, string> = {
+      d: "Doubtful",
+      i: "Injured",
+      s: "Suspended",
+      u: "Unavailable",
+      n: "Not in squad",
+    };
+    factors.push({
+      label: "FPL availability",
+      value: names[player.availabilityStatus] ?? player.availabilityStatus,
+      detail:
+        player.chanceOfPlaying === null || player.chanceOfPlaying === undefined
+          ? "FPL has flagged him without publishing a percentage."
+          : `FPL publishes a ${player.chanceOfPlaying}% chance of playing.`,
+    });
+  }
   return {
     id: player.id,
     code: player.code,
@@ -239,6 +263,8 @@ function toPlayer(
     startProbability,
     evidence,
     quoted,
+    availabilityStatus: player.availabilityStatus ?? null,
+    chanceOfPlaying: player.chanceOfPlaying ?? null,
     explanation: {
       title: `${player.name} xStart ${Math.round(startProbability * 100)}%`,
       factors,
@@ -332,6 +358,18 @@ function buildTeam(
     .slice(0, 7)
     .map(convert);
   const starters = starterRows.map(convert);
+  const displayedIds = new Set(
+    [...starters, ...reserves].map((player) => player.id),
+  );
+  const availabilityFlags = players
+    .filter(
+      (player) =>
+        player.availabilityStatus &&
+        player.availabilityStatus !== "a" &&
+        !displayedIds.has(player.id),
+    )
+    .sort(adjustedSort)
+    .map(convert);
   const diagnostic = diagnosticFor(inputs.playerOdds, club);
   const averageStartProbability =
     starters.length === 0
@@ -343,6 +381,7 @@ function buildTeam(
     name: clubNames.get(club) ?? club,
     starters,
     reserves,
+    availabilityFlags,
     averageStartProbability,
     marketStatus:
       diagnostic?.status ?? (quotedIds.size > 0 ? "returned" : "unvisited"),
@@ -379,6 +418,7 @@ export function buildExpectedXi(inputs: ExpectedXiInputs): ExpectedXi {
         left.club.localeCompare(right.club),
     );
   return {
+    event: inputs.seasonInputs.events?.[0] ?? 2,
     generatedAt: inputs.seasonInputs.generatedAt,
     marketUpdatedAt:
       inputs.seasonInputs.evidence?.playerMarkets?.updatedAt ??

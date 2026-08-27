@@ -138,7 +138,10 @@ jobs:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
         run: |
-          python -m fpl_andres.cli.publish_projections
+          python -m fpl_andres.cli.publish_projections \
+            --season 2026-27 \
+            --previous-season 2025-26 \
+            --live data/live/2026-27
           python -m fpl_andres.cli.publish_opening_squad
           python -m fpl_andres.cli.publish_season_inputs
           pnpm --filter @fpl-andres/web publish:canonical-opening

@@ -16,6 +16,7 @@ interface Row {
   expectedMinutes: number;
   probabilityAppear: number;
   probabilityStart: number;
+  probabilityStartModel: number;
   appearances: number;
   floor: number | null;
   median: number | null;

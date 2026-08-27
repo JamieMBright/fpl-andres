@@ -23,6 +23,8 @@ export interface DetailPlayer {
   priceTenths: number;
   /** FPL's availability flag. Undefined where the caller does not read it. */
   available?: boolean;
+  availabilityStatus?: string;
+  chanceOfPlaying?: number | null;
   squadNumber?: number | null;
 }
 
@@ -87,7 +89,7 @@ function rowsFor(player: DetailPlayer, record: PlayerProjection | null): Row[] {
       band:
         record.probabilityStartModel === undefined
           ? null
-          : band("probabilityStart", record.probabilityStartModel),
+          : band("probabilityStartModel", record.probabilityStartModel),
     },
     {
       term: "Reaches 60",
@@ -261,7 +263,11 @@ export function PlayerDetail({
             <p className="mono">
               {player.position} · <span translate="no">{player.club}</span> ·{" "}
               {money(player.priceTenths)}
-              {player.available === false ? " · flagged by FPL" : null}
+              {player.availabilityStatus && player.availabilityStatus !== "a"
+                ? ` · ${player.availabilityStatus === "d" ? "doubtful" : "flagged"} by FPL${player.chanceOfPlaying === null || player.chanceOfPlaying === undefined ? "" : ` · ${player.chanceOfPlaying}% chance`}`
+                : player.available === false
+                  ? " · flagged by FPL"
+                  : null}
             </p>
           </div>
         </header>

@@ -283,6 +283,10 @@ def test_wildcard_publishes_the_exact_segment_squad(
         lambda _event, _run: 5,
     )
     monkeypatch.setattr(
+        "fpl_andres.cli.publish_season_plan._solved_wildcard_turnover",
+        lambda _event, _weeks, _ordered_events, _opening_squad: 5,
+    )
+    monkeypatch.setattr(
         "fpl_andres.cli.publish_season_plan._season_with_wildcards",
         lambda _events, _run: (
             {

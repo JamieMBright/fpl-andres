@@ -9,7 +9,11 @@ import { readSeasonPlan } from "./state/season-plan";
  * and that the view layer cannot quietly invent a player.
  */
 
-const weeks = plan.gameweeks;
+type GeneratedWeek = (typeof plan.gameweeks)[number];
+const weeks = plan.gameweeks as readonly (GeneratedWeek & {
+  revertsAfter?: boolean;
+  revertsTo?: number[];
+})[];
 const players = plan.players as Record<string, { position: string }>;
 
 describe("season plan artifact", () => {

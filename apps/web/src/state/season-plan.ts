@@ -104,6 +104,11 @@ const PLAYERS = plan.players as Record<
     squadNumber: number | null;
   }
 >;
+type GeneratedWeek = (typeof plan.gameweeks)[number];
+const GENERATED_WEEKS = plan.gameweeks as readonly (GeneratedWeek & {
+  revertsAfter?: boolean;
+  revertsTo?: number[];
+})[];
 
 function resolve(code: number): PlanPlayer {
   const found = PLAYERS[String(code)];
@@ -186,7 +191,7 @@ export function readSeasonPlan(): SeasonPlan {
     netExpectedPoints: plan.netExpectedPoints,
     chips: plan.chips,
     dataGaps: plan.dataGaps,
-    gameweeks: plan.gameweeks.map((week) => ({
+    gameweeks: GENERATED_WEEKS.map((week) => ({
       event: week.event,
       deadline: week.deadline,
       confidence: week.confidence as Confidence,

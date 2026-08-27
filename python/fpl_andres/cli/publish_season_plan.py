@@ -678,6 +678,23 @@ def _wildcard_turnover(event: int, run: _ChipRun) -> int:
     return len((set(picked[0]) | set(picked[1])) - held)
 
 
+def _solved_wildcard_turnover(
+    event: int,
+    weeks: Mapping[int, Mapping[str, Any]],
+    ordered_events: Sequence[int],
+    opening_squad: Sequence[int],
+) -> int:
+    """Turnover in the exact solved season, after earlier chips changed it."""
+    index = ordered_events.index(event)
+    previous = ordered_events[index - 1] if index > 0 else None
+    held = (
+        set(weeks[previous]["squadElementIds"])
+        if previous is not None and previous in weeks
+        else set(opening_squad)
+    )
+    return len(set(weeks[event]["squadElementIds"]) - held)
+
+
 def _wildcard_squad(event: int, run: _ChipRun) -> tuple[list[int], list[int]] | None:
     """The fifteen a Wildcard buys, built for the run it has to last.
 
@@ -865,6 +882,17 @@ def _place_wildcards(chips: list[dict[str, Any]], run: _ChipRun) -> None:
         if outcome is None:
             continue
         weeks, total = outcome
+        if any(
+            _solved_wildcard_turnover(
+                event,
+                weeks,
+                run.ordered_events,
+                run.opening_squad,
+            )
+            < MINIMUM_WILDCARD_CHANGES
+            for event in option
+        ):
+            continue
         if total > baseline and (best is None or total > best[2]):
             best = (option, weeks, total)
 
