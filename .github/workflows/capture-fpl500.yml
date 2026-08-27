@@ -78,6 +78,13 @@ jobs:
             echo "event=$EVENT" >> "$GITHUB_OUTPUT"
             exit 0
           fi
+          # The path-scoped push trigger exists to run a newly added capture
+          # against GW1 while FPL still serves it. Artifact commits do not touch
+          # this workflow, so this cannot trigger itself again.
+          if [ "$GITHUB_EVENT_NAME" = "push" ]; then
+            echo "event=1" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
           # Six hours behind the deadline: long enough that every manager has
           # been read even when FPL is slow, short enough that two scheduled
           # runs do not both claim the same gameweek.
