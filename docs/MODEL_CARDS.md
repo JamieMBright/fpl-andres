@@ -130,18 +130,18 @@ backtest run. Editing them by hand is how the last set went stale.
 
 | Season  | MAE   | vs form | Spearman | vs form | Top-20 hit | form  | crowd | Bias   |
 | ------- | ----- | ------- | -------- | ------- | ---------- | ----- | ----- | ------ |
-| 2022-23 | 1.723 | −8.7%   | 0.512    | +0.066  | 0.185      | 0.153 | 0.176 | −0.211 |
-| 2023-24 | 1.666 | −10.0%  | 0.531    | +0.067  | 0.200      | 0.167 | 0.177 | −0.238 |
-| 2024-25 | 1.628 | −9.8%   | 0.522    | +0.056  | 0.195      | 0.148 | 0.166 | −0.249 |
-| 2025-26 | 1.808 | −9.2%   | 0.487    | +0.064  | 0.155      | 0.119 | 0.136 | −0.226 |
+| 2022-23 | 1.715 | −9.1%   | 0.513    | +0.067  | 0.179      | 0.153 | 0.176 | −0.243 |
+| 2023-24 | 1.656 | −10.5%  | 0.535    | +0.071  | 0.197      | 0.167 | 0.177 | −0.274 |
+| 2024-25 | 1.618 | −10.3%  | 0.524    | +0.058  | 0.192      | 0.148 | 0.166 | −0.286 |
+| 2025-26 | 1.797 | −9.8%   | 0.492    | +0.069  | 0.161      | 0.119 | 0.136 | −0.260 |
 
 Against recent form, the model wins MAE in 4/4 seasons, Spearman in 4/4, and top-20 hit rate in 4/4; it beats ownership hit rate in 4/4.
 
-Bias: 4/4 negative, 0/4 positive; range −0.249 to −0.211.
+Bias: 4/4 negative, 0/4 positive; range −0.286 to −0.243.
 
-Highest MAE: 2025-26 at 1.808. Lowest Spearman: 2025-26 at 0.487.
+Highest MAE: 2025-26 at 1.797. Lowest Spearman: 2025-26 at 0.492.
 
-In 2025-26, the weakest position is DEF at 0.442 Spearman.
+In 2025-26, the weakest position is DEF at 0.446 Spearman.
 
 <!-- measured-performance:end -->
 
@@ -189,10 +189,10 @@ runs. Its old top-25 population is withdrawn and is not rendered by the site.
 
 | Season  | Weeks | Chosen | Reachable XI | Owned regret | Nailed it | Blanked |
 | ------- | ----- | ------ | ------------ | ------------ | --------- | ------- |
-| 2022-23 | 650   | 7.35   | 11.77        | 4.42         | 200       | 0.27    |
-| 2023-24 | 710   | 7.13   | 13.51        | 6.37         | 150       | 0.17    |
-| 2024-25 | 715   | 8.94   | 13.01        | 4.07         | 295       | 0.23    |
-| 2025-26 | 730   | 4.66   | 10.20        | 5.54         | 160       | 0.40    |
+| 2022-23 | 700   | 8.07   | 12.32        | 4.25         | 300       | 0.25    |
+| 2023-24 | 705   | 6.53   | 12.39        | 5.86         | 170       | 0.26    |
+| 2024-25 | 575   | 8.10   | 12.75        | 4.64         | 265       | 0.32    |
+| 2025-26 | 715   | 5.06   | 10.80        | 5.73         | 140       | 0.45    |
 
 <!-- captaincy:end -->
 
@@ -299,17 +299,17 @@ means move, by exactly the offset, and they are moved back.
 
 | Thesis                  | Mean captain points | Seasons won (of 4) | vs projection (95% CI)       |
 | ----------------------- | ------------------- | ------------------ | ---------------------------- |
-| `template`              | 7.29                | 2                  | +0.28 [+0.13, +0.44] **yes** |
-| `upside`                | 7.16                | 1                  | +0.13 [-0.13, +0.39]         |
-| `expected_points`       | 7.02                | 0                  | baseline                     |
-| `availability_adjusted` | 7.00                | 0                  | -0.02 [-0.10, +0.05]         |
-| `components`            | 6.95                | 0                  | -0.07 [-0.25, +0.15]         |
-| `crowd`                 | 6.77                | 1                  | -0.21 [-0.53, +0.08]         |
-| `differential`          | 6.62                | 0                  | -0.39 [-0.58, -0.20]         |
-| `set_and_forget`        | 6.59                | 1                  | -0.40 [-0.72, -0.09]         |
-| `robust`                | 6.55                | 0                  | -0.47 [-0.75, -0.19]         |
-| `ceiling_and_fixture`   | 5.77                | 0                  | -1.24 [-1.54, -0.96]         |
-| `form`                  | 5.75                | 0                  | -1.25 [-1.57, -0.94]         |
+| `template`              | 7.40                | 2                  | +0.42 [+0.26, +0.57] **yes** |
+| `availability_adjusted` | 7.01                | 0                  | +0.05 [-0.03, +0.13]         |
+| `expected_points`       | 6.94                | 0                  | baseline                     |
+| `crowd`                 | 6.83                | 1                  | -0.07 [-0.44, +0.29]         |
+| `set_and_forget`        | 6.82                | 1                  | -0.08 [-0.45, +0.33]         |
+| `upside`                | 6.76                | 0                  | -0.12 [-0.40, +0.19]         |
+| `components`            | 6.75                | 0                  | -0.20 [-0.30, -0.09]         |
+| `differential`          | 6.20                | 1                  | -0.70 [-0.91, -0.48]         |
+| `robust`                | 5.91                | 0                  | -1.01 [-1.29, -0.77]         |
+| `form`                  | 5.73                | 0                  | -1.10 [-1.47, -0.78]         |
+| `ceiling_and_fixture`   | 5.54                | 0                  | -1.32 [-1.56, -1.06]         |
 
 <!-- captain-policies:end -->
 
