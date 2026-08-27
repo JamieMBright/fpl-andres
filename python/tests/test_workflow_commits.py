@@ -272,9 +272,10 @@ def test_fpl500_capture_republishes_the_prospective_event_ledger() -> None:
     exact_capture = text.index(
         "python -m fpl_andres.cli.capture_cohort_picks", catalogue_capture + 1
     )
-    publish = text.index("scripts/republish-fpl500.sh", exact_capture)
+    aggregate = text.index("python -m fpl_andres.cli.capture_cohort_aggregate", exact_capture)
+    publish = text.index("scripts/republish-fpl500.sh", aggregate)
     web_artifact = "apps/web/src/data/fpl500.json"
-    assert pin < catalogue_capture < exact_capture < publish
+    assert pin < catalogue_capture < exact_capture < aggregate < publish
     assert "--membership" in text[catalogue_capture:publish]
     assert "data/cohort/portfolio/fpl500" in text
     assert web_artifact in text

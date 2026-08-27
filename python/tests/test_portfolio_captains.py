@@ -130,3 +130,30 @@ class TestPortfolioCaptains:
             exact_series["samples"]["01"]["membershipLabel"]
             == "post-deadline capture-era FPL500 membership"
         )
+
+    def test_exact_series_publishes_all_holdings_and_accumulates_raw_returns(
+        self, tmp_path: Path
+    ) -> None:
+        _capture(tmp_path, 1, {11: 0.62, 22: 0.38}, basis="ranked-500")
+        _sidecar(tmp_path, 1, {11: 8, 22: 3})
+        _capture(tmp_path, 2, {11: 0.50, 33: 0.50}, basis="ranked-500")
+        _sidecar(tmp_path, 2, {11: 2, 33: 10})
+
+        series = _portfolio_series(tmp_path, basis="ranked-500", label="Exact FPL500")
+
+        first = series["holdings"]["01"]
+        second = series["holdings"]["02"]
+        expected = {
+            "elementId": 11,
+            "ownedShare": 0.0,
+            "startedShare": 0.0,
+            "captainedShare": 0.62,
+            "effectiveOwnership": 0.0,
+            "lastWeekPoints": 8,
+            "pointsSinceFirstCapture": 8,
+            "weightedContribution": 0.0,
+        }
+        assert {key: first[0][key] for key in expected} == expected
+        assert (
+            next(row for row in second if row["elementId"] == 11)["pointsSinceFirstCapture"] == 10
+        )

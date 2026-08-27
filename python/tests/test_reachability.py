@@ -203,6 +203,7 @@ def test_no_module_is_imported_only_by_its_own_tests() -> None:
         "__init__",
         "backtest_ceiling",
         "capture_cohort_picks",
+        "capture_cohort_aggregate",
         "capture_live_gameweek",
         "capture_crowd",
         "cohort_captains",

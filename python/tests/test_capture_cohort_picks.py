@@ -6,7 +6,12 @@ from pathlib import Path
 
 import pytest
 
-from fpl_andres.cli.capture_cohort_picks import _capture_source, _write, build_parser
+from fpl_andres.cli.capture_cohort_picks import (
+    _capture_source,
+    _parse_picks,
+    _write,
+    build_parser,
+)
 from fpl_andres.cohorts.fpl500_membership import build_membership, write_membership
 from fpl_andres.cohorts.portfolio import Portfolio
 
@@ -81,3 +86,39 @@ def test_exact_portfolio_carries_membership_provenance_and_is_immutable(
     assert saved["membership"]["size"] == 500
     with pytest.raises(FileExistsError, match="refusing to overwrite"):
         _write(portfolio, tmp_path / "portfolio", membership=source.membership)
+
+
+def test_pick_payload_retains_only_the_history_needed_for_aggregate_evidence() -> None:
+    row = _parse_picks(
+        17,
+        1,
+        {
+            "active_chip": "bboost",
+            "picks": [
+                {
+                    "element": 11,
+                    "position": 1,
+                    "multiplier": 1,
+                    "is_captain": False,
+                    "is_vice_captain": False,
+                }
+            ],
+            "entry_history": {
+                "event": 1,
+                "points": 72,
+                "points_on_bench": 14,
+                "value": 1003,
+                "bank": 7,
+                "event_transfers": 0,
+                "event_transfers_cost": 0,
+                "overall_rank": 123,
+            },
+        },
+    )
+
+    assert row.active_chip == "bboost"
+    assert row.history is not None
+    assert row.history.points == 72
+    assert row.history.points_on_bench == 14
+    assert row.history.value_tenths == 1003
+    assert row.history.bank_tenths == 7

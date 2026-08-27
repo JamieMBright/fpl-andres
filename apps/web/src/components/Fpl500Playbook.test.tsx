@@ -158,12 +158,20 @@ describe("Fpl500Playbook", () => {
   it("draws the frames the analysis will use, with their axes", () => {
     draw();
 
-    // An empty section says nothing about whether to come back. A frame with
-    // the right axes says exactly what will be in it.
-    expect(screen.getAllByText(/awaiting gameweek 2/).length).toBeGreaterThan(
-      4,
-    );
-    expect(screen.getAllByText(/Gameweek/).length).toBeGreaterThan(3);
+    expect(screen.getAllByText(/awaiting gameweek 2/)).toHaveLength(2);
+    expect(screen.getByText("In and out")).toBeInTheDocument();
+    expect(screen.getByText("Hits taken")).toBeInTheDocument();
+    expect(screen.getByText("GW1, across 500 squads")).toBeInTheDocument();
+    expect(screen.getByText("Mean score")).toBeInTheDocument();
+    expect(screen.getByText("Mean bench")).toBeInTheDocument();
+    for (const position of [
+      "Goalkeepers",
+      "Defenders",
+      "Midfielders",
+      "Forwards",
+    ]) {
+      expect(screen.getByText(position)).toBeInTheDocument();
+    }
   });
 
   it("quotes the reconciler's own coverage floor rather than a number typed here", async () => {

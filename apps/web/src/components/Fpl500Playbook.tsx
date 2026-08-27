@@ -1,12 +1,17 @@
 import { useState } from "react";
 
 import { InfoMarker } from "./InfoMarker";
+import { Fpl500Holdings, type Fpl500Holding } from "./Fpl500Holdings";
 import { BarChart, type Bar } from "./MethodChart";
 import { PlannedAnalysis } from "./PlannedAnalysis";
 import { RankRidge, type Ridge } from "./RankRidge";
 import fpl500 from "../data/fpl500.json";
-import { fineShare, integer, share, timestamp } from "../format";
+import { fineShare, integer, oneDecimal, share, timestamp } from "../format";
 import { PLAYERS_BY_ELEMENT_ID } from "../state/season-solver";
+import {
+  FPL500_SCHEMA_VERSION,
+  requireArtifactVersion,
+} from "../state/artifact-version";
 
 // `points` arrives only once every fixture in the round has a confirmed score.
 // It is absent, never zero, while a week is still being played — a captain who
@@ -21,6 +26,22 @@ type PortfolioSample = {
   membershipLabel?: string;
   membershipSourceGeneratedAt?: string;
   membershipSecondsFromDeadline?: number;
+  aggregate?: {
+    chips: Record<string, number>;
+    totalPoints: DistributionSummary;
+    benchPoints: DistributionSummary;
+    squadValueTenths: DistributionSummary;
+    bankTenths: DistributionSummary;
+    transfersAvailable: boolean;
+  };
+};
+type DistributionSummary = {
+  mean: number;
+  median: number;
+  p10: number;
+  p90: number;
+  minimum: number;
+  maximum: number;
 };
 type PortfolioSeries = {
   basis: "catalogue-at-deadline" | "ranked-500";
@@ -28,6 +49,7 @@ type PortfolioSeries = {
   events: number[];
   samples: Record<string, PortfolioSample>;
   captains: Record<string, CaptainEntry[]>;
+  holdings?: Record<string, Fpl500Holding[]>;
 };
 
 type Fpl500 = {
@@ -50,6 +72,7 @@ type Fpl500 = {
   };
 };
 
+requireArtifactVersion("fpl500", fpl500, FPL500_SCHEMA_VERSION);
 const data = fpl500 as Fpl500;
 const number = integer;
 const PAGE = 20;
@@ -213,6 +236,64 @@ function CaptainDistribution() {
           series={data.exactFpl500Portfolio}
         />
       </div>
+    </section>
+  );
+}
+
+function Gw1CohortSummary() {
+  const sample = data.exactFpl500Portfolio.samples["01"];
+  const aggregate = sample?.aggregate;
+  if (!aggregate) return null;
+  const chipBars: Bar[] = Object.entries(aggregate.chips).map(
+    ([chip, count]) => ({
+      label:
+        chip === "none"
+          ? "No chip"
+          : chip === "bboost"
+            ? "Bench Boost"
+            : chip === "3xc"
+              ? "Triple Captain"
+              : chip,
+      value: count,
+      shown: number.format(count),
+    }),
+  );
+  return (
+    <section
+      className="fpl500-gw-summary"
+      aria-labelledby="fpl500-gw-summary-title"
+    >
+      <h3 id="fpl500-gw-summary-title">GW1, across 500 squads</h3>
+      <dl className="dossier-metrics">
+        <div>
+          <dt>Mean score</dt>
+          <dd>{oneDecimal.format(aggregate.totalPoints.mean)}</dd>
+        </div>
+        <div>
+          <dt>Median score</dt>
+          <dd>{oneDecimal.format(aggregate.totalPoints.median)}</dd>
+        </div>
+        <div>
+          <dt>Mean bench</dt>
+          <dd>{oneDecimal.format(aggregate.benchPoints.mean)}</dd>
+        </div>
+        <div>
+          <dt>Bench range</dt>
+          <dd>
+            {aggregate.benchPoints.minimum}–{aggregate.benchPoints.maximum}
+          </dd>
+        </div>
+      </dl>
+      <BarChart
+        bars={chipBars}
+        caption="Which chips they spent in GW1"
+        unit="managers"
+      />
+      <p className="mono fpl500-note">
+        {number.format(sample.responded)} of {number.format(sample.attempted)}{" "}
+        histories · {fineShare.format(sample.coverage)} coverage. Transfers
+        start at GW2.
+      </p>
     </section>
   );
 }
@@ -486,8 +567,14 @@ export function Fpl500Playbook() {
             : `${data.exactFpl500Portfolio.events.length} exact FPL500 gameweek captured.`}
         </p>
         <CaptainDistribution />
+        <Fpl500Holdings
+          event={1}
+          holdings={data.exactFpl500Portfolio.holdings?.["01"] ?? []}
+        />
+        <Gw1CohortSummary />
         <PlannedAnalysis
           event={Math.max(0, ...data.exactFpl500Portfolio.events) + 1}
+          only={["In and out", "Hits taken"]}
         />
         <div className="cohort-caveat">
           <h3>What none of it can tell you</h3>

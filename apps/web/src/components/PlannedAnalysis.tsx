@@ -136,10 +136,19 @@ function Frame({ event, plan }: { event: number; plan: Planned }) {
   );
 }
 
-export function PlannedAnalysis({ event }: { event: number }) {
+export function PlannedAnalysis({
+  event,
+  only,
+}: {
+  event: number;
+  only?: readonly string[];
+}) {
+  const plans = only
+    ? PLANNED.filter((plan) => only.includes(plan.title))
+    : PLANNED;
   return (
     <div className="planned-grid-wrap">
-      {PLANNED.map((plan) => (
+      {plans.map((plan) => (
         <Frame event={event} key={plan.title} plan={plan} />
       ))}
     </div>

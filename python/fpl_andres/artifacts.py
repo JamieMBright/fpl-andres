@@ -45,6 +45,10 @@ GW1_REVIEW_SCHEMA_VERSION: Final = 1
 #: Population, reliability and club xStart scoring for one settled event.
 XSTART_VALIDATION_SCHEMA_VERSION: Final = 1
 
+#: FPL500 web artifact. Version 3 adds exact holdings joined to settled returns
+#: and aggregate-only manager evidence; no manager identity enters the browser.
+FPL500_SCHEMA_VERSION: Final = 3
+
 #: Understat shot quality and penalty exposure, keyed by FPL code.
 UNDERSTAT_SCHEMA_VERSION: Final = 1
 
@@ -53,6 +57,7 @@ ANALYSIS_SEASONS_SCHEMA_VERSION: Final = 1
 
 __all__ = [
     "ANALYSIS_SEASONS_SCHEMA_VERSION",
+    "FPL500_SCHEMA_VERSION",
     "GW1_REVIEW_SCHEMA_VERSION",
     "OPENING_SQUAD_SCHEMA_VERSION",
     "PROJECTIONS_META_SCHEMA_VERSION",

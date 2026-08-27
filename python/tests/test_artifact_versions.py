@@ -20,6 +20,7 @@ from pathlib import Path
 import pytest
 
 from fpl_andres.artifacts import (
+    FPL500_SCHEMA_VERSION,
     GW1_REVIEW_SCHEMA_VERSION,
     OPENING_SQUAD_SCHEMA_VERSION,
     PROJECTIONS_META_SCHEMA_VERSION,
@@ -48,6 +49,7 @@ ARTIFACTS = (
     ("opening-squad.json", OPENING_SQUAD_SCHEMA_VERSION, "OPENING_SQUAD_SCHEMA_VERSION"),
     ("season-plan.json", SEASON_PLAN_SCHEMA_VERSION, "SEASON_PLAN_SCHEMA_VERSION"),
     ("gw1-review.json", GW1_REVIEW_SCHEMA_VERSION, "GW1_REVIEW_SCHEMA_VERSION"),
+    ("fpl500.json", FPL500_SCHEMA_VERSION, "FPL500_SCHEMA_VERSION"),
     (
         "xstart-validation.json",
         XSTART_VALIDATION_SCHEMA_VERSION,

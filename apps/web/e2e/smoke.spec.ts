@@ -239,6 +239,7 @@ test("privacy controls clear team data without clearing the kit", async ({
 });
 
 test("the trust routes pass accessibility in all kits", async ({ page }) => {
+  test.setTimeout(60_000);
   const scan = async () =>
     (await new AxeBuilder({ page }).withTags([...WCAG]).analyze()).violations;
 

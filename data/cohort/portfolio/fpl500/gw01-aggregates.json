@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "event": 1,
+  "capturedAt": "2026-08-27T15:09:44.186174Z",
+  "basis": "ranked-500",
+  "cohortRevision": "sha256:5cdb277562d29b211f50ca279e595e5eeac97e98791a77b8c81975bb83d6f9a0",
+  "attempted": 500,
+  "responded": 500,
+  "coverage": 1.0,
+  "chips": {
+    "bboost": 336,
+    "none": 164
+  },
+  "totalPoints": {
+    "mean": 64.534,
+    "median": 66.0,
+    "p10": 48.0,
+    "p90": 78.0,
+    "minimum": 31,
+    "maximum": 90
+  },
+  "benchPoints": {
+    "mean": 3.606,
+    "median": 0.0,
+    "p10": 0.0,
+    "p90": 12.0,
+    "minimum": 0,
+    "maximum": 30
+  },
+  "squadValueTenths": {
+    "mean": 1000.0,
+    "median": 1000.0,
+    "p10": 1000.0,
+    "p90": 1000.0,
+    "minimum": 1000,
+    "maximum": 1000
+  },
+  "bankTenths": {
+    "mean": 0.55,
+    "median": 0.0,
+    "p10": 0.0,
+    "p90": 0.0,
+    "minimum": 0,
+    "maximum": 15
+  },
+  "eventTransfers": {
+    "mean": 0.0,
+    "median": 0.0,
+    "p10": 0.0,
+    "p90": 0.0,
+    "minimum": 0,
+    "maximum": 0
+  },
+  "transferCost": {
+    "mean": 0.0,
+    "median": 0.0,
+    "p10": 0.0,
+    "p90": 0.0,
+    "minimum": 0,
+    "maximum": 0
+  },
+  "transfersAvailable": false
+}

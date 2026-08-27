@@ -37,6 +37,7 @@ from fpl_andres.cohorts.absence import DEFAULT_TOLERANCE, record_attempt
 from fpl_andres.cohorts.fpl500_membership import Fpl500Membership, read_membership
 from fpl_andres.cohorts.portfolio import (
     CoverageTooLow,
+    EntryHistory,
     ManagerPicks,
     Pick,
     Portfolio,
@@ -105,11 +106,23 @@ def _parse_picks(entry_id: int, event: int, payload: dict[str, object]) -> Manag
         for row in raw
     )
     chip = payload.get("active_chip")
+    raw_history = payload.get("entry_history")
+    history = None
+    if isinstance(raw_history, dict):
+        history = EntryHistory(
+            points=int(raw_history["points"]),
+            points_on_bench=int(raw_history["points_on_bench"]),
+            value_tenths=int(raw_history["value"]),
+            bank_tenths=int(raw_history["bank"]),
+            event_transfers=int(raw_history["event_transfers"]),
+            event_transfers_cost=int(raw_history["event_transfers_cost"]),
+        )
     return ManagerPicks(
         entry_id=entry_id,
         event=event,
         picks=picks,
         active_chip=None if chip is None else str(chip),
+        history=history,
     )
 
 

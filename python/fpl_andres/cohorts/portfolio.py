@@ -42,16 +42,21 @@ from __future__ import annotations
 
 from collections.abc import Sequence
 from dataclasses import dataclass
+from statistics import median
 from typing import Literal
 
 __all__ = [
     "MINIMUM_COVERAGE",
     "CoverageTooLow",
+    "DistributionSummary",
+    "EntryHistory",
     "Holding",
     "ManagerPicks",
     "Pick",
     "Portfolio",
+    "PortfolioAggregate",
     "PortfolioBasis",
+    "aggregate_manager_history",
     "reconcile",
 ]
 
@@ -92,6 +97,7 @@ class ManagerPicks:
     event: int
     picks: tuple[Pick, ...]
     active_chip: str | None = None
+    history: EntryHistory | None = None
 
     @property
     def captain(self) -> int | None:
@@ -120,6 +126,46 @@ class Holding:
     captained_share: float
     effective_ownership: float
     """Started share plus the armband on top, counting a triple captain twice."""
+
+
+@dataclass(frozen=True)
+class EntryHistory:
+    points: int
+    points_on_bench: int
+    value_tenths: int
+    bank_tenths: int
+    event_transfers: int
+    event_transfers_cost: int
+
+
+@dataclass(frozen=True)
+class DistributionSummary:
+    mean: float
+    median: float
+    p10: float
+    p90: float
+    minimum: int
+    maximum: int
+
+
+@dataclass(frozen=True)
+class PortfolioAggregate:
+    event: int
+    cohort_revision: str
+    attempted: int
+    responded: int
+    chips: dict[str, int]
+    total_points: DistributionSummary
+    bench_points: DistributionSummary
+    squad_value_tenths: DistributionSummary
+    bank_tenths: DistributionSummary
+    event_transfers: DistributionSummary
+    transfer_cost: DistributionSummary
+    transfers_available: bool
+
+    @property
+    def coverage(self) -> float:
+        return self.responded / self.attempted if self.attempted else 0.0
 
 
 @dataclass(frozen=True)
@@ -237,4 +283,74 @@ def reconcile(
         free_hit=free_hit,
         holdings=holdings,
         basis=basis,
+    )
+
+
+def _percentile(values: Sequence[int], share: float) -> float:
+    ordered = sorted(values)
+    if not ordered:
+        raise ValueError("a distribution requires observations")
+    position = (len(ordered) - 1) * share
+    lower = int(position)
+    upper = min(lower + 1, len(ordered) - 1)
+    fraction = position - lower
+    return ordered[lower] * (1 - fraction) + ordered[upper] * fraction
+
+
+def _summary(values: Sequence[int]) -> DistributionSummary:
+    if not values:
+        raise ValueError("a distribution requires observations")
+    return DistributionSummary(
+        mean=sum(values) / len(values),
+        median=float(median(values)),
+        p10=_percentile(values, 0.1),
+        p90=_percentile(values, 0.9),
+        minimum=min(values),
+        maximum=max(values),
+    )
+
+
+def aggregate_manager_history(
+    captured: Sequence[ManagerPicks],
+    *,
+    event: int,
+    attempted: int,
+    cohort_revision: str,
+    minimum_coverage: float = MINIMUM_COVERAGE,
+) -> PortfolioAggregate:
+    """Aggregate entry history without retaining any manager identity."""
+    if attempted <= 0:
+        raise ValueError("a portfolio aggregate needs a cohort")
+    rows = [row for row in captured if row.history is not None]
+    wrong_event = [row.entry_id for row in rows if row.event != event]
+    if wrong_event:
+        raise ValueError(f"history from another gameweek for entries {wrong_event}")
+    if len({row.entry_id for row in rows}) != len(rows):
+        raise ValueError("aggregate history contains duplicate managers")
+    if len(rows) > attempted:
+        raise ValueError("more manager histories answered than were asked")
+    coverage = len(rows) / attempted
+    if coverage < minimum_coverage:
+        raise CoverageTooLow(
+            f"only {len(rows)} of {attempted} manager histories answered "
+            f"({coverage:.1%}); below the {minimum_coverage:.0%} floor"
+        )
+    histories = [row.history for row in rows if row.history is not None]
+    chips: dict[str, int] = {}
+    for row in rows:
+        key = row.active_chip or "none"
+        chips[key] = chips.get(key, 0) + 1
+    return PortfolioAggregate(
+        event=event,
+        cohort_revision=cohort_revision,
+        attempted=attempted,
+        responded=len(histories),
+        chips={key: chips[key] for key in sorted(chips)},
+        total_points=_summary([row.points for row in histories]),
+        bench_points=_summary([row.points_on_bench for row in histories]),
+        squad_value_tenths=_summary([row.value_tenths for row in histories]),
+        bank_tenths=_summary([row.bank_tenths for row in histories]),
+        event_transfers=_summary([row.event_transfers for row in histories]),
+        transfer_cost=_summary([row.event_transfers_cost for row in histories]),
+        transfers_available=event > 1,
     )

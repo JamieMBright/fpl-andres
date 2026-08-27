@@ -21,6 +21,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 
 from fpl_andres import cliargs
+from fpl_andres.artifacts import FPL500_SCHEMA_VERSION
 from fpl_andres.cohorts.absence import DEFAULT_TOLERANCE, departed
 from fpl_andres.cohorts.elite import (
     DEFAULT_SETTINGS,
@@ -34,6 +35,7 @@ from fpl_andres.cohorts.elite import (
 )
 from fpl_andres.cohorts.portfolio import MINIMUM_COVERAGE
 from fpl_andres.jsonio import parse_json
+from fpl_andres.positions import Position
 
 COHORT_DIR = Path("data/cohort")
 MANAGERS = COHORT_DIR / "managers.jsonl"
@@ -48,7 +50,8 @@ STANDINGS = COHORT_DIR / "fpl100.json"
 ABSENT = COHORT_DIR / "absent.json"
 DEFAULT_OUTPUT = COHORT_DIR / "fpl500.json"
 DEFAULT_WEB_OUTPUT = Path("apps/web/src/data/fpl500.json")
-SCHEMA_VERSION = 2
+FPL_GLOBAL = Path("apps/web/public/fpl-global.json")
+SCHEMA_VERSION = FPL500_SCHEMA_VERSION
 
 #: How many of the ranking the site lists by name. None of it. Who clears the
 #: bar is the one thing in this repository somebody could copy outright, and a
@@ -461,6 +464,9 @@ def _portfolio_series(
     """One explicitly based portfolio series, never merged with another."""
     events: list[int] = []
     samples: dict[str, dict[str, object]] = {}
+    holdings_by_event: dict[str, list[dict[str, object]]] = {}
+    cumulative_points: dict[int, int] = {}
+    player_metadata = _player_metadata()
     for path in sorted(directory.glob("gw*.json")):
         stem = path.stem.removeprefix("gw")
         if not stem.isdigit():
@@ -494,13 +500,88 @@ def _portfolio_series(
                     "membershipSize": membership.get("size"),
                 }
             )
+            aggregate_path = directory / f"gw{stem}-aggregates.json"
+            if aggregate_path.exists():
+                aggregate = parse_json(
+                    aggregate_path.read_text(encoding="utf-8"),
+                    source=str(aggregate_path),
+                )
+                if not isinstance(aggregate, dict):
+                    raise ValueError(f"portfolio aggregate must be an object: {aggregate_path}")
+                if aggregate.get("cohortRevision") != raw.get("cohortRevision"):
+                    raise ValueError(f"portfolio aggregate revision mismatch: {aggregate_path}")
+                sample["aggregate"] = aggregate
+            points = _realised_points(directory, stem)
+            event_holdings: list[dict[str, object]] = []
+            raw_holdings = raw.get("holdings", [])
+            if not isinstance(raw_holdings, list):
+                raise ValueError(f"portfolio holdings must be a list: {path}")
+            for holding in raw_holdings:
+                if not isinstance(holding, dict):
+                    continue
+                element_id = int(holding["elementId"])
+                latest = points.get(element_id)
+                if latest is not None:
+                    cumulative_points[element_id] = cumulative_points.get(element_id, 0) + latest
+                owned_share = float(holding.get("ownedShare", 0.0))
+                entry: dict[str, object] = {
+                    "elementId": element_id,
+                    "ownedShare": owned_share,
+                    "startedShare": float(holding.get("startedShare", 0.0)),
+                    "captainedShare": float(holding.get("captainedShare", 0.0)),
+                    "effectiveOwnership": float(holding.get("effectiveOwnership", 0.0)),
+                }
+                entry.update(player_metadata.get(element_id, {}))
+                if latest is not None:
+                    entry.update(
+                        {
+                            "lastWeekPoints": latest,
+                            "pointsSinceFirstCapture": cumulative_points[element_id],
+                            "weightedContribution": round(latest * owned_share, 5),
+                        }
+                    )
+                event_holdings.append(entry)
+            holdings_by_event[stem] = event_holdings
         samples[stem] = sample
-    return {
+    result: dict[str, object] = {
         "basis": basis,
         "label": label,
         "events": sorted(events),
         "samples": samples,
         "captains": _portfolio_captains(directory),
+    }
+    if basis == "ranked-500":
+        result["holdings"] = holdings_by_event
+    return result
+
+
+def _player_metadata() -> dict[int, dict[str, int | str]]:
+    """Current official identity for every FPL element, rated or not."""
+    if not FPL_GLOBAL.exists():
+        return {}
+    raw = parse_json(FPL_GLOBAL.read_text(encoding="utf-8"), source=str(FPL_GLOBAL))
+    if not isinstance(raw, dict) or not isinstance(raw.get("bootstrap"), dict):
+        return {}
+    bootstrap = raw["bootstrap"]
+    elements = bootstrap.get("elements")
+    teams = bootstrap.get("teams")
+    if not isinstance(elements, list) or not isinstance(teams, list):
+        return {}
+    club_by_id = {
+        int(team["id"]): str(team["short_name"])
+        for team in teams
+        if isinstance(team, dict) and "id" in team and "short_name" in team
+    }
+    position_ids = {position.value for position in Position}
+    return {
+        int(element["id"]): {
+            "code": int(element["code"]),
+            "name": str(element["web_name"]),
+            "position": Position(int(element["element_type"])).code,
+            "club": club_by_id.get(int(element["team"]), "UNK"),
+        }
+        for element in elements
+        if isinstance(element, dict) and int(element.get("element_type", 0)) in position_ids
     }
 
 

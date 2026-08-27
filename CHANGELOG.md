@@ -8,6 +8,11 @@ The project follows Semantic Versioning once milestone tags begin.
 
 ### Added
 
+- FPL500 now publishes every selected player by position with ownership, EO,
+  raw GW returns, cumulative returns and one most-owned player photograph per
+  position. An immutable aggregate-only GW1 recapture adds chip usage, mean
+  score and bench strength without publishing manager identities; only
+  transfer-dependent panels wait for GW2.
 - Model 8.10 reduces the recent-points blend from 0.20 to 0.10. The selected
   weight improved paired weekly MAE by 0.0110 across 64 held-out gameweeks; the
   family-corrected lower bound was 0.00838 and both seasons improved Spearman.
