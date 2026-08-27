@@ -40,7 +40,7 @@ past success.
 
 from __future__ import annotations
 
-from collections.abc import Sequence
+from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from statistics import median
 from typing import Literal
@@ -51,13 +51,16 @@ __all__ = [
     "DistributionSummary",
     "EntryHistory",
     "Holding",
+    "KeeperPairing",
     "ManagerPicks",
     "Pick",
     "Portfolio",
     "PortfolioAggregate",
     "PortfolioBasis",
+    "PortfolioStructure",
     "aggregate_manager_history",
     "reconcile",
+    "summarize_structure",
 ]
 
 # Below this share of the cohort the snapshot is refused. Set where a missing
@@ -185,6 +188,30 @@ class Portfolio:
         return self.responded / self.attempted if self.attempted else 0.0
 
 
+@dataclass(frozen=True)
+class KeeperPairing:
+    starter_element_id: int
+    bench_element_id: int
+    count: int
+    share: float
+
+
+@dataclass(frozen=True)
+class PortfolioStructure:
+    event: int
+    cohort_revision: str
+    attempted: int
+    responded: int
+    keeper_pairings: tuple[KeeperPairing, ...]
+    common_starting_xi: tuple[int, ...]
+    formation: tuple[int, int, int]
+    positional_spend: dict[int, DistributionSummary]
+
+    @property
+    def coverage(self) -> float:
+        return self.responded / self.attempted if self.attempted else 0.0
+
+
 def reconcile(
     captured: Sequence[ManagerPicks],
     *,
@@ -283,6 +310,99 @@ def reconcile(
         free_hit=free_hit,
         holdings=holdings,
         basis=basis,
+    )
+
+
+def summarize_structure(
+    captured: Sequence[ManagerPicks],
+    *,
+    event: int,
+    attempted: int,
+    cohort_revision: str,
+    element_types: Mapping[int, int],
+    prices: Mapping[int, int],
+    minimum_coverage: float = MINIMUM_COVERAGE,
+) -> PortfolioStructure:
+    """Publish joint squad choices without retaining manager identity."""
+    if attempted <= 0:
+        raise ValueError("a portfolio structure needs a cohort")
+    rows = [row for row in captured if row.active_chip != FREE_HIT]
+    if any(row.event != event for row in rows):
+        raise ValueError("portfolio structure contains another gameweek")
+    if len({row.entry_id for row in rows}) != len(rows):
+        raise ValueError("portfolio structure contains duplicate managers")
+    if len(captured) / attempted < minimum_coverage:
+        raise CoverageTooLow(
+            f"only {len(captured)} of {attempted} structures answered; "
+            f"below the {minimum_coverage:.0%} floor"
+        )
+    if not rows:
+        raise CoverageTooLow("every captured squad was a Free Hit; no structure remains")
+
+    pair_counts: dict[tuple[int, int], int] = {}
+    formation_counts: dict[tuple[int, int, int], int] = {}
+    started_counts: dict[int, int] = {}
+    spend: dict[int, list[int]] = {position: [] for position in range(1, 5)}
+    for row in rows:
+        keepers = [pick for pick in row.picks if element_types.get(pick.element_id) == 1]
+        starters = [pick for pick in row.picks if pick.started]
+        starting_keeper = next((pick for pick in keepers if pick.started), None)
+        bench_keeper = next((pick for pick in keepers if not pick.started), None)
+        if starting_keeper is not None and bench_keeper is not None:
+            pair = (starting_keeper.element_id, bench_keeper.element_id)
+            pair_counts[pair] = pair_counts.get(pair, 0) + 1
+        formation = (
+            sum(1 for pick in starters if element_types.get(pick.element_id) == 2),
+            sum(1 for pick in starters if element_types.get(pick.element_id) == 3),
+            sum(1 for pick in starters if element_types.get(pick.element_id) == 4),
+        )
+        if len(starters) == 11 and sum(formation) == 10:
+            formation_counts[formation] = formation_counts.get(formation, 0) + 1
+        for pick in starters:
+            started_counts[pick.element_id] = started_counts.get(pick.element_id, 0) + 1
+        for position in range(1, 5):
+            position_spend = sum(
+                prices[pick.element_id]
+                for pick in row.picks
+                if element_types.get(pick.element_id) == position and pick.element_id in prices
+            )
+            spend[position].append(position_spend)
+
+    formation = max(formation_counts, key=lambda value: (formation_counts[value], value))
+    required = {1: 1, 2: formation[0], 3: formation[1], 4: formation[2]}
+    common: list[int] = []
+    for position in range(1, 5):
+        candidates = sorted(
+            (
+                (count, element_id)
+                for element_id, count in started_counts.items()
+                if element_types.get(element_id) == position
+            ),
+            key=lambda row: (-row[0], row[1]),
+        )
+        common.extend(element_id for _, element_id in candidates[: required[position]])
+
+    total = len(rows)
+    pairings = tuple(
+        KeeperPairing(
+            starter_element_id=starter,
+            bench_element_id=bench,
+            count=count,
+            share=count / total,
+        )
+        for (starter, bench), count in sorted(
+            pair_counts.items(), key=lambda row: (-row[1], row[0])
+        )
+    )
+    return PortfolioStructure(
+        event=event,
+        cohort_revision=cohort_revision,
+        attempted=attempted,
+        responded=len(captured),
+        keeper_pairings=pairings,
+        common_starting_xi=tuple(common),
+        formation=formation,
+        positional_spend={position: _summary(values) for position, values in spend.items()},
     )
 
 

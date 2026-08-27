@@ -146,6 +146,7 @@ export const quickSolverInputSchema = z
     predictionCutoff: z.iso.datetime(),
     players: z.array(quickPlayerSchema).min(1),
     currentSquad: z.array(currentPlayerSchema).min(1),
+    priorityTransferOutElementIds: z.array(z.int().positive()).default([]),
     bankTenths: z.int().nonnegative(),
     availableFreeTransfers: z.int().nonnegative(),
     stateEvidence: stateEvidenceSchema,
@@ -217,6 +218,19 @@ export const quickSolverInputSchema = z
       context.addIssue({
         code: "custom",
         message: "current squad must contain unique elements",
+      });
+    }
+    if (
+      new Set(input.priorityTransferOutElementIds).size !==
+        input.priorityTransferOutElementIds.length ||
+      input.priorityTransferOutElementIds.some(
+        (elementId) => !currentIds.includes(elementId),
+      )
+    ) {
+      context.addIssue({
+        code: "custom",
+        message: "priority transfer-outs must be unique current-squad elements",
+        path: ["priorityTransferOutElementIds"],
       });
     }
     if (currentIds.some((elementId) => !playerIds.includes(elementId))) {
@@ -372,6 +386,12 @@ export function solveQuickPlan(
     limits.maxTransfers,
     input.rules.transferCap,
   );
+  const priorityIds = new Set(input.priorityTransferOutElementIds);
+  const requiredPriorityTransfers = Math.min(
+    priorityIds.size,
+    input.availableFreeTransfers,
+    maximumTransfers,
+  );
   let truncated =
     omittedCandidates || maximumTransfers < input.rules.transferCap;
   let statesEvaluated = 0;
@@ -384,6 +404,7 @@ export function solveQuickPlan(
   }
   statesEvaluated += 1;
   let best = initial;
+  let priorityBest: EvaluatedState | null = null;
   let frontier = [initial];
 
   for (let depth = 1; depth <= maximumTransfers; depth += 1) {
@@ -407,6 +428,18 @@ export function solveQuickPlan(
           statesEvaluated += 1;
           if (evaluated !== null && evaluated.transfersIn.length === depth) {
             expanded.set(key, evaluated);
+            const priorityTransfers = evaluated.transfersOut.filter(
+              (elementId) => priorityIds.has(elementId),
+            ).length;
+            if (
+              evaluated.paidTransfers === 0 &&
+              priorityTransfers >= requiredPriorityTransfers &&
+              requiredPriorityTransfers > 0 &&
+              (priorityBest === null ||
+                compareStates(evaluated, priorityBest) < 0)
+            ) {
+              priorityBest = evaluated;
+            }
           }
         }
       }
@@ -423,7 +456,10 @@ export function solveQuickPlan(
   // A move has to be worth making, not merely positive. Applied after the
   // search rather than inside it so the frontier still explores moves that
   // only pay off two transfers deep.
-  if (
+  const usedPriority = priorityBest !== null;
+  if (priorityBest !== null) {
+    best = priorityBest;
+  } else if (
     best !== initial &&
     best.netPlanningPoints - initial.netPlanningPoints <=
       limits.transferMarginPoints * best.transfersIn.length
@@ -448,6 +484,7 @@ export function solveQuickPlan(
     .at(-1)!;
   const reasonCodes = ["quick_beam_plan"];
   if (truncated) reasonCodes.push("bounded_search_truncated");
+  if (usedPriority) reasonCodes.push("ruled_out_replacement");
 
   return {
     solver: "quick-beam",

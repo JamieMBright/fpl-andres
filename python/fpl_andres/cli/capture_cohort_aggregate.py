@@ -19,13 +19,17 @@ from fpl_andres.cohorts.portfolio import (
     DistributionSummary,
     ManagerPicks,
     PortfolioAggregate,
+    PortfolioStructure,
     aggregate_manager_history,
+    summarize_structure,
 )
 from fpl_andres.jsonio import read_json_file
+from fpl_andres.positions import Position
 from fpl_andres.timeouts import client_timeout
 
 DEFAULT_MEMBERSHIP_DIR = Path("data/cohort/fpl500-membership")
 DEFAULT_PORTFOLIO_DIR = Path("data/cohort/portfolio/fpl500")
+DEFAULT_PLAYERS = Path("apps/web/public/fpl-global.json")
 SCHEMA_VERSION = 1
 
 
@@ -35,6 +39,8 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--membership", type=Path, default=None)
     parser.add_argument("--portfolio-dir", type=Path, default=DEFAULT_PORTFOLIO_DIR)
     parser.add_argument("--output", type=Path, default=None)
+    parser.add_argument("--structure-output", type=Path, default=None)
+    parser.add_argument("--players", type=Path, default=DEFAULT_PLAYERS)
     parser.add_argument("--rate", type=cliargs.positive_float, default=25.0)
     parser.add_argument("--concurrency", type=cliargs.positive_int, default=8)
     parser.add_argument("--minimum-coverage", type=float, default=0.9)
@@ -89,6 +95,66 @@ def write_aggregate(
     )
 
 
+def write_structure(
+    structure: PortfolioStructure,
+    output: Path,
+    *,
+    captured_at: datetime | None = None,
+) -> None:
+    if output.exists():
+        raise FileExistsError(f"refusing to overwrite immutable structure {output}")
+    timestamp = captured_at or datetime.now(UTC)
+    position_codes = {position.value: position.code for position in Position}
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text(
+        json.dumps(
+            {
+                "schemaVersion": SCHEMA_VERSION,
+                "event": structure.event,
+                "capturedAt": timestamp.isoformat().replace("+00:00", "Z"),
+                "basis": "ranked-500",
+                "cohortRevision": structure.cohort_revision,
+                "attempted": structure.attempted,
+                "responded": structure.responded,
+                "coverage": round(structure.coverage, 4),
+                "keeperPairings": [
+                    {
+                        "starterElementId": row.starter_element_id,
+                        "benchElementId": row.bench_element_id,
+                        "count": row.count,
+                        "share": round(row.share, 5),
+                    }
+                    for row in structure.keeper_pairings
+                ],
+                "commonStartingXi": {
+                    "method": "modal-formation-most-started",
+                    "formation": list(structure.formation),
+                    "elementIds": list(structure.common_starting_xi),
+                },
+                "positionalSpend": {
+                    position_codes[position]: _summary_payload(summary)
+                    for position, summary in structure.positional_spend.items()
+                },
+            },
+            indent=2,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+
+
+def _player_metadata(path: Path) -> tuple[dict[int, int], dict[int, int]]:
+    raw = read_json_file(path)
+    bootstrap = raw.get("bootstrap")
+    if not isinstance(bootstrap, dict) or not isinstance(bootstrap.get("elements"), list):
+        raise ValueError(f"player source has no bootstrap elements: {path}")
+    elements = [row for row in bootstrap["elements"] if isinstance(row, dict)]
+    return (
+        {int(row["id"]): int(row["element_type"]) for row in elements},
+        {int(row["id"]): int(row["now_cost"]) for row in elements},
+    )
+
+
 async def run(args: argparse.Namespace) -> int:
     event = int(args.event)
     membership_path = args.membership or DEFAULT_MEMBERSHIP_DIR / f"gw{event:02d}.json"
@@ -122,11 +188,33 @@ async def run(args: argparse.Namespace) -> int:
         minimum_coverage=args.minimum_coverage,
     )
     output = args.output or args.portfolio_dir / f"gw{event:02d}-aggregates.json"
-    write_aggregate(aggregate, output)
-    print(
-        f"wrote {output} — {aggregate.responded} of {aggregate.attempted} histories, "
-        f"{aggregate.coverage:.1%} coverage"
+    structure_output = args.structure_output or args.portfolio_dir / f"gw{event:02d}-structure.json"
+    element_types, prices = _player_metadata(args.players)
+    structure = summarize_structure(
+        captured,
+        event=event,
+        attempted=membership.size,
+        cohort_revision=membership.membership_hash,
+        element_types=element_types,
+        prices=prices,
+        minimum_coverage=args.minimum_coverage,
     )
+    if output.exists():
+        print(f"{output} already exists; immutable aggregate retained")
+    else:
+        write_aggregate(aggregate, output)
+        print(
+            f"wrote {output} — {aggregate.responded} of {aggregate.attempted} histories, "
+            f"{aggregate.coverage:.1%} coverage"
+        )
+    if structure_output.exists():
+        print(f"{structure_output} already exists; immutable structure retained")
+    else:
+        write_structure(structure, structure_output)
+        print(
+            f"wrote {structure_output} — {len(structure.keeper_pairings)} keeper pairs, "
+            f"{structure.coverage:.1%} coverage"
+        )
     return 0
 
 

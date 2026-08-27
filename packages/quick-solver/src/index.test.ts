@@ -190,6 +190,37 @@ describe("bounded quick solver", () => {
     expect(result.transfersOut).toEqual([2]);
   });
 
+  it("uses a free transfer on a declared ruled-out incumbent", () => {
+    const base = regretCases[0]!.input;
+    const result = solveQuickPlan(
+      {
+        ...base,
+        priorityTransferOutElementIds: [2],
+      },
+      { ...limits, maxTransfers: 1, transferMarginPoints: 100 },
+    );
+
+    expect(result.transfersOut).toEqual([2]);
+    expect(result.transfersIn).toEqual([5]);
+    expect(result.paidTransfers).toBe(0);
+    expect(result.reasonCodes).toContain("ruled_out_replacement");
+  });
+
+  it("does not force a ruled-out replacement that costs a hit", () => {
+    const base = regretCases[0]!.input;
+    const result = solveQuickPlan(
+      {
+        ...base,
+        availableFreeTransfers: 0,
+        priorityTransferOutElementIds: [2],
+      },
+      { ...limits, maxTransfers: 1, transferMarginPoints: 100 },
+    );
+
+    expect(result.transfersOut).toEqual([]);
+    expect(result.reasonCodes).not.toContain("ruled_out_replacement");
+  });
+
   it("rejects late evidence and missing controlling transfer cost", () => {
     const input = regretCases[0]!.input;
     expect(() =>

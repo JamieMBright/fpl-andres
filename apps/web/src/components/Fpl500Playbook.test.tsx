@@ -1,7 +1,7 @@
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import { Fpl500Playbook } from "./Fpl500Playbook";
 import artifact from "../data/fpl500.json";
@@ -172,6 +172,47 @@ describe("Fpl500Playbook", () => {
     ]) {
       expect(screen.getByText(position)).toBeInTheDocument();
     }
+  });
+
+  it("puts the cohort headlines before the player catalogue", () => {
+    draw();
+
+    const mean = screen.getByText("Mean score");
+    const holdings = screen.getByText("Who they own, by position");
+    expect(
+      mean.compareDocumentPosition(holdings) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+  });
+
+  it("keeps sub-one-percent players behind a disclosure", () => {
+    draw();
+
+    expect(screen.getAllByText(/below 1% ownership/i).length).toBeGreaterThan(
+      0,
+    );
+  });
+
+  it("opens the existing player profile from a holding", async () => {
+    if (!HTMLDialogElement.prototype.showModal) {
+      HTMLDialogElement.prototype.showModal = vi.fn(function showModal(
+        this: HTMLDialogElement,
+      ) {
+        this.setAttribute("open", "");
+      });
+    }
+    const user = userEvent.setup();
+    draw();
+    const first = artifact.exactFpl500Portfolio.holdings["01"].find(
+      (holding) => holding.ownedShare >= 0.01,
+    );
+    expect(first).toBeDefined();
+
+    const name = first?.name ?? `Element ${String(first?.elementId)}`;
+    const button = screen.getAllByRole("button", { name })[0];
+    expect(button).toBeDefined();
+    await user.click(button!);
+
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
   });
 
   it("quotes the reconciler's own coverage floor rather than a number typed here", async () => {

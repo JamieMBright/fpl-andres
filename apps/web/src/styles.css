@@ -859,6 +859,40 @@ h1[tabindex="-1"]:focus-visible {
   padding-block: clamp(38px, 6vw, 72px) clamp(52px, 8vw, 96px);
 }
 
+.proof-run {
+  color: var(--ink-soft);
+  font-size: 12px;
+}
+
+.proof-claims {
+  margin-top: 24px;
+}
+
+.proof-claims dt {
+  font-family: var(--fa-mono);
+  font-size: 28px;
+  font-weight: 800;
+}
+
+.proof-claims dd {
+  margin: 5px 0 0;
+  color: var(--ink-soft);
+}
+
+.proof-weakness {
+  margin-top: 36px;
+  padding-top: 20px;
+  border-top: 2px solid var(--ink);
+}
+
+.proof-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 18px;
+  margin-top: 24px;
+  font-family: var(--fa-mono);
+}
+
 .api-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1438,6 +1472,62 @@ h1[tabindex="-1"]:focus-visible {
   overflow: hidden;
   clip-path: inset(50%);
   white-space: nowrap;
+}
+
+.fpl500-teaser {
+  display: grid;
+  grid-template-columns: minmax(130px, 1.4fr) repeat(3, minmax(86px, 1fr));
+  margin-top: 16px;
+  border-block: 2px solid var(--ink);
+  background: var(--paper-strong);
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.fpl500-teaser > strong,
+.fpl500-teaser > span {
+  display: grid;
+  min-height: 66px;
+  align-content: center;
+  padding: 9px 12px;
+  border-inline-end: 1px solid var(--rule);
+}
+
+.fpl500-teaser > strong {
+  background: var(--field-green);
+  color: var(--paper);
+  font-family: var(--fa-mono);
+}
+
+.fpl500-teaser > span:last-child {
+  border-inline-end: 0;
+}
+
+.fpl500-teaser small {
+  color: var(--ink-soft);
+  font-size: 10px;
+  text-transform: uppercase;
+}
+
+.fpl500-teaser b {
+  font-family: var(--fa-mono);
+  font-size: 18px;
+}
+
+.fpl500-teaser:focus-visible {
+  outline: 3px solid var(--signal-blue);
+  outline-offset: 3px;
+}
+
+@media (width <= 620px) {
+  .fpl500-teaser {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .fpl500-teaser > strong {
+    grid-column: 1 / -1;
+    min-height: 44px;
+  }
 }
 
 .index-cell h2 {
@@ -5335,14 +5425,180 @@ h1[tabindex="-1"]:focus-visible {
   position: absolute;
   inset: 0;
   max-width: 100%;
-  background: var(--accent);
+  background: var(--signal-red);
   opacity: 0.14;
+}
+
+.fpl500-holding-bars .is-ownership-medium .fpl500-holding-fill {
+  background: var(--amber);
+  opacity: 0.2;
+}
+
+.fpl500-holding-bars .is-ownership-high .fpl500-holding-fill {
+  background: var(--field-green);
+  opacity: 0.22;
 }
 
 .fpl500-holding-name,
 .fpl500-holding-bars strong,
 .fpl500-holding-bars small {
   position: relative;
+}
+
+button.fpl500-holding-name {
+  width: fit-content;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, currentColor 35%, transparent);
+  cursor: pointer;
+}
+
+.fpl500-position-fringe {
+  margin: -8px 0 18px;
+  border-top: 1px dashed var(--rule);
+}
+
+.fpl500-position-fringe > summary {
+  min-height: 44px;
+  padding-top: 8px;
+  color: var(--ink-soft);
+  cursor: pointer;
+}
+
+.fpl500-position-fringe .fpl500-holding-bars {
+  margin-bottom: 0;
+}
+
+.fpl500-bench-use {
+  margin-top: 28px;
+}
+
+.fpl500-structure {
+  margin-top: 32px;
+}
+
+.fpl500-common-pitch {
+  display: grid;
+  gap: 18px;
+  min-height: 430px;
+  align-content: space-around;
+  margin-top: 14px;
+  padding: 24px 14px;
+  border-block: 2px solid var(--paper);
+  background:
+    linear-gradient(
+      90deg,
+      transparent 49.7%,
+      rgb(255 255 255 / 35%) 50%,
+      transparent 50.3%
+    ),
+    repeating-linear-gradient(0deg, #08783e 0 54px, #0a8848 54px 108px);
+}
+
+.fpl500-common-pitch > div {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  gap: 8px;
+}
+
+.fpl500-common-pitch span {
+  max-width: 116px;
+  padding: 6px 8px;
+  background: var(--paper-strong);
+  color: var(--ink);
+  font-family: var(--fa-mono);
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.fpl500-structure-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+  margin-top: 22px;
+}
+
+.fpl500-pairs,
+.fpl500-spend {
+  display: grid;
+  gap: 2px;
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.fpl500-pairs li,
+.fpl500-spend li {
+  position: relative;
+  display: flex;
+  min-height: 42px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 7px 9px;
+  overflow: hidden;
+  background: var(--surface-raised);
+}
+
+.fpl500-spend-fill {
+  position: absolute;
+  inset: 0;
+  max-width: 100%;
+  background: var(--signal-blue);
+  opacity: 0.18;
+}
+
+.fpl500-spend-fill.is-def {
+  background: var(--field-green);
+}
+
+.fpl500-spend-fill.is-mid {
+  background: var(--amber);
+}
+
+.fpl500-spend-fill.is-fwd {
+  background: var(--signal-red);
+}
+
+.fpl500-spend li > :not(.fpl500-spend-fill) {
+  position: relative;
+}
+
+@media (width <= 700px) {
+  .fpl500-structure-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.fpl500-bench-use ul {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  padding: 0;
+  list-style: none;
+}
+
+.fpl500-bench-use li {
+  display: flex;
+  min-height: 40px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 10px;
+  background: var(--surface-raised);
+}
+
+@media (width <= 560px) {
+  .fpl500-bench-use ul {
+    grid-template-columns: 1fr;
+  }
 }
 
 .fpl500-holding-bars small {

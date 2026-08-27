@@ -2,6 +2,7 @@ import { useState } from "react";
 
 import { InfoMarker } from "./InfoMarker";
 import { Fpl500Holdings, type Fpl500Holding } from "./Fpl500Holdings";
+import { Fpl500Structure, type PortfolioStructure } from "./Fpl500Structure";
 import { BarChart, type Bar } from "./MethodChart";
 import { PlannedAnalysis } from "./PlannedAnalysis";
 import { RankRidge, type Ridge } from "./RankRidge";
@@ -34,6 +35,7 @@ type PortfolioSample = {
     bankTenths: DistributionSummary;
     transfersAvailable: boolean;
   };
+  structure?: PortfolioStructure;
 };
 type DistributionSummary = {
   mean: number;
@@ -258,6 +260,10 @@ function Gw1CohortSummary() {
       shown: number.format(count),
     }),
   );
+  const topCaptain = data.exactFpl500Portfolio.captains["01"]?.[0];
+  const topCaptainName = topCaptain
+    ? (PLAYERS_BY_ELEMENT_ID.get(topCaptain.elementId)?.name ?? "Unknown")
+    : "—";
   return (
     <section
       className="fpl500-gw-summary"
@@ -278,10 +284,18 @@ function Gw1CohortSummary() {
           <dd>{oneDecimal.format(aggregate.benchPoints.mean)}</dd>
         </div>
         <div>
-          <dt>Bench range</dt>
+          <dt>Score range</dt>
           <dd>
-            {aggregate.benchPoints.minimum}–{aggregate.benchPoints.maximum}
+            {aggregate.totalPoints.minimum}–{aggregate.totalPoints.maximum}
           </dd>
+        </div>
+        <div>
+          <dt>Top captain</dt>
+          <dd>{topCaptainName}</dd>
+        </div>
+        <div>
+          <dt>Captain share</dt>
+          <dd>{topCaptain ? fineShare.format(topCaptain.share) : "—"}</dd>
         </div>
       </dl>
       <BarChart
@@ -294,6 +308,41 @@ function Gw1CohortSummary() {
         histories · {fineShare.format(sample.coverage)} coverage. Transfers
         start at GW2.
       </p>
+    </section>
+  );
+}
+
+function BenchUse({ holdings }: { holdings: readonly Fpl500Holding[] }) {
+  const benched = [...holdings]
+    .map((holding) => ({
+      ...holding,
+      benchedShare: Math.max(0, holding.ownedShare - holding.startedShare),
+      player: PLAYERS_BY_ELEMENT_ID.get(holding.elementId),
+    }))
+    .filter((holding) => holding.benchedShare >= 0.01)
+    .sort((left, right) => right.benchedShare - left.benchedShare)
+    .slice(0, 6);
+  if (benched.length === 0) return null;
+  return (
+    <section
+      className="fpl500-bench-use"
+      aria-labelledby="fpl500-bench-use-title"
+    >
+      <h3 id="fpl500-bench-use-title">Who they left on the bench</h3>
+      <ul>
+        {benched.map((holding) => (
+          <li key={holding.elementId}>
+            <span>
+              {holding.name ??
+                holding.player?.name ??
+                `Element ${holding.elementId}`}
+            </span>
+            <strong className="mono">
+              {fineShare.format(holding.benchedShare)}
+            </strong>
+          </li>
+        ))}
+      </ul>
     </section>
   );
 }
@@ -566,12 +615,19 @@ export function Fpl500Playbook() {
             ? "No exact FPL500 gameweek has been captured yet."
             : `${data.exactFpl500Portfolio.events.length} exact FPL500 gameweek captured.`}
         </p>
+        <Gw1CohortSummary />
         <CaptainDistribution />
         <Fpl500Holdings
           event={1}
           holdings={data.exactFpl500Portfolio.holdings?.["01"] ?? []}
         />
-        <Gw1CohortSummary />
+        {data.exactFpl500Portfolio.samples["01"]?.structure ? (
+          <Fpl500Structure
+            holdings={data.exactFpl500Portfolio.holdings?.["01"] ?? []}
+            structure={data.exactFpl500Portfolio.samples["01"].structure}
+          />
+        ) : null}
+        <BenchUse holdings={data.exactFpl500Portfolio.holdings?.["01"] ?? []} />
         <PlannedAnalysis
           event={Math.max(0, ...data.exactFpl500Portfolio.events) + 1}
           only={["In and out", "Hits taken"]}

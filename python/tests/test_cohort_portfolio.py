@@ -13,6 +13,7 @@ from fpl_andres.cohorts.portfolio import (
     ManagerPicks,
     Pick,
     reconcile,
+    summarize_structure,
 )
 
 
@@ -188,3 +189,42 @@ def test_vice_captains_are_recorded_because_the_armband_can_move() -> None:
     two = next(h for h in portfolio.holdings if h.element_id == 2)
 
     assert two.vice_captained == 10
+
+
+def test_structure_keeps_keeper_pairs_common_xi_and_position_spend() -> None:
+    element_types = {
+        **{element_id: 1 for element_id in (1, 2)},
+        **{element_id: 2 for element_id in range(3, 8)},
+        **{element_id: 3 for element_id in range(8, 13)},
+        **{element_id: 4 for element_id in range(13, 16)},
+    }
+    prices = {element_id: 40 + element_id for element_id in element_types}
+    picks = tuple(
+        Pick(
+            element_id=element_id,
+            position=element_id,
+            multiplier=0 if element_id in (2, 12, 14, 15) else 1,
+            is_captain=element_id == 8,
+            is_vice_captain=element_id == 9,
+        )
+        for element_id in range(1, 16)
+    )
+    captured = [ManagerPicks(entry_id=entry_id, event=1, picks=picks) for entry_id in range(10)]
+
+    structure = summarize_structure(
+        captured,
+        event=1,
+        attempted=10,
+        cohort_revision="sha256:pinned",
+        element_types=element_types,
+        prices=prices,
+        minimum_coverage=0.9,
+    )
+
+    assert structure.keeper_pairings[0].starter_element_id == 1
+    assert structure.keeper_pairings[0].bench_element_id == 2
+    assert structure.keeper_pairings[0].share == pytest.approx(1.0)
+    assert structure.common_starting_xi == (1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13)
+    assert structure.formation == (5, 4, 1)
+    assert structure.positional_spend[1].mean == sum(prices[index] for index in (1, 2))
+    assert not hasattr(structure, "entry_id")

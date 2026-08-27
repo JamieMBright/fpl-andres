@@ -290,7 +290,7 @@ describe("fixture evidence", () => {
     expect(screen.getByText(/the-odds-api/)).toBeInTheDocument();
   });
 
-  it("names a bounded FDR instead of silently clipping its raw value", () => {
+  it("names a bounded matchup instead of silently clipping its raw value", () => {
     render(
       <FixtureEvidenceList
         evidence={{

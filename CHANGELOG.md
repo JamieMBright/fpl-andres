@@ -8,6 +8,18 @@ The project follows Semantic Versioning once milestone tags begin.
 
 ### Added
 
+- FPL500 now leads with exact cohort headlines, hides sub-1% holdings behind
+  position disclosures, opens player profiles from ownership rows, and shows
+  bench use with green/amber/red ownership bands. A privacy-safe structure
+  capture adds goalkeeper pairings, a common XI and positional spend without
+  storing manager identities; the homepage carries a measured GW1 teaser.
+- The live plan prioritises a free transfer away from an officially ruled-out
+  incumbent, while never forcing a hit. Fixture difficulty is labelled as a
+  team-relative matchup rather than generic FDR, and Triple Captain notes show
+  the single, doubled and tripled totals.
+- Proof is now a concise artifact-derived trust case: 16/16 position-season
+  ranking wins, the separable captain edge, league wins, transfer gain and the
+  weaker four-season GW1 table replace duplicated methodology prose.
 - Model 8.11 feeds immutable settled GW1 starts and minutes into GW2 xStart,
   with current FPL availability applied last. Exact Wildcard solves are also
   rechecked after re-planning, so a four-transfer week cannot spend the chip.

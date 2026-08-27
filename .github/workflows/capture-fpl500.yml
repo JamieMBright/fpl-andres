@@ -97,6 +97,7 @@ jobs:
           catalogue="data/cohort/portfolio/gw$(printf '%02d' "$event").json"
           exact="data/cohort/portfolio/fpl500/gw$(printf '%02d' "$event").json"
           aggregate="data/cohort/portfolio/fpl500/gw$(printf '%02d' "$event")-aggregates.json"
+          structure="data/cohort/portfolio/fpl500/gw$(printf '%02d' "$event")-structure.json"
           if [ ! -f "$membership" ]; then
             python -m fpl_andres.cli.pin_fpl500_membership \
               --event "$event" \
@@ -119,7 +120,7 @@ jobs:
           else
             echo "$exact already exists; immutable capture retained"
           fi
-          if [ ! -f "$aggregate" ]; then
+          if [ ! -f "$aggregate" ] || [ ! -f "$structure" ]; then
             python -m fpl_andres.cli.capture_cohort_aggregate \
               --event "$event" \
               --membership "$membership" \

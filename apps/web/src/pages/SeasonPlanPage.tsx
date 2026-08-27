@@ -281,8 +281,8 @@ function TeamSheet({
             rating === null
               ? "No fixture, or no measured record for this club"
               : fixtureEvidence
-                ? `Market-aligned fixture summary ${rating.toFixed(1)} of 5${fixtureEvidence.difficulty.clipped ? `; raw ${fixtureEvidence.difficulty.raw?.toFixed(1) ?? "unknown"} was bounded` : ""}`
-                : `Historical fixture summary ${rating.toFixed(1)} of 5`
+                ? `Team-relative matchup ${rating.toFixed(1)} of 5${fixtureEvidence.difficulty.clipped ? `; raw ${fixtureEvidence.difficulty.raw?.toFixed(1) ?? "unknown"} was bounded` : ""}`
+                : `Team-relative matchup ${rating.toFixed(1)} of 5`
           }
         >
           {rating === null ? "\u2014" : rating.toFixed(1)}
@@ -313,7 +313,7 @@ function TeamSheet({
         <span>Player</span>
         <span>£</span>
         <span>Opp</span>
-        <span>FDR</span>
+        <span>Match</span>
         <span>xPts</span>
         <span>xCeil</span>
       </p>
@@ -363,8 +363,8 @@ export function FixtureEvidenceList({
             </span>
             <span className="plan-fixture-summary mono">
               {fixture.difficulty.clipped
-                ? `FDR raw ${fixture.difficulty.raw === null ? "unknown" : oneDecimal(fixture.difficulty.raw)}, bounded to ${fixture.difficulty.summary?.toFixed(1) ?? "unknown"}.`
-                : `FDR ${fixture.difficulty.summary?.toFixed(1) ?? "unavailable"}/5 from the same route adjustments.`}
+                ? `Matchup raw ${fixture.difficulty.raw === null ? "unknown" : oneDecimal(fixture.difficulty.raw)}, bounded to ${fixture.difficulty.summary?.toFixed(1) ?? "unknown"}.`
+                : `Matchup ${fixture.difficulty.summary?.toFixed(1) ?? "unavailable"}/5 from attack divided by expected conceding.`}
             </span>
             <span className="plan-fixture-source">
               {fixture.level} · {fixture.source} ·{" "}
@@ -671,15 +671,16 @@ function ReadingKey() {
         </dd>
       </div>
       <div>
-        <dt>FDR</dt>
+        <dt>Match</dt>
         <dd>
-          A secondary one-to-five summary. One is softest, five hardest, a dash
+          Team-relative matchup difficulty. One is softest, five hardest, a dash
           is a blank.
-          <InfoMarker label="FDR">
-            Where match odds exist, this is derived from the same route
-            adjustments as xPts. Otherwise it uses the measured strength of both
-            sides at the venue. The Why panel shows the raw value whenever the
-            familiar one-to-five scale bounded it.
+          <InfoMarker label="matchup difficulty">
+            This is not a generic rating of the opponent. It divides this
+            team&rsquo;s attacking multiplier by its expected-conceding
+            multiplier at the venue, then maps that ratio to one-to-five. That
+            is why Leeds away can be hard for Brentford even if Leeds are not a
+            strong side overall. The Why panel shows both route inputs.
           </InfoMarker>
         </dd>
       </div>

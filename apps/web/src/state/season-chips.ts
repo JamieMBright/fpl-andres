@@ -336,7 +336,11 @@ export function chipCallsFor(
         weeks,
         tripleCaptainPoints,
         (gain, week) =>
-          `a third copy of ${week.captain.name} is worth ${gain.toFixed(1)} in gameweek ${String(week.event)}`,
+          `${week.captain.name} projects ${gain.toFixed(1)}: ${(
+            gain * 2
+          ).toFixed(1)} as captain, ${(gain * 3).toFixed(
+            1,
+          )} with Triple Captain. The chip adds ${gain.toFixed(1)} in gameweek ${String(week.event)}`,
       ),
     ];
 

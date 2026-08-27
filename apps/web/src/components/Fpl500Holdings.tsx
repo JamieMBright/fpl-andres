@@ -4,6 +4,7 @@ import { fineShare, integer, oneDecimal } from "../format";
 import { PLAYERS_BY_ELEMENT_ID } from "../state/season-solver";
 import { InfoMarker } from "./InfoMarker";
 import { PlayerAvatar } from "./PlayerAvatar";
+import { PlayerDetail, type DetailPlayer } from "./PlayerDetail";
 
 export type Fpl500Holding = {
   elementId: number;
@@ -47,7 +48,14 @@ function holdingPlayer(holding: Fpl500Holding) {
     name: holding.name ?? known?.name ?? `Element ${holding.elementId}`,
     position: holding.position ?? known?.position,
     club: holding.club ?? known?.club,
+    priceTenths: known?.priceTenths,
   };
+}
+
+function ownershipBand(share: number): "high" | "medium" | "low" {
+  if (share >= 0.25) return "high";
+  if (share >= 0.1) return "medium";
+  return "low";
 }
 
 export function Fpl500Holdings({
@@ -58,6 +66,61 @@ export function Fpl500Holdings({
   holdings: readonly Fpl500Holding[];
 }) {
   const [metric, setMetric] = useState<HoldingMetric>("ownership");
+  const [selected, setSelected] = useState<DetailPlayer | null>(null);
+
+  function holdingRows(rows: readonly Fpl500Holding[], maximum: number) {
+    return (
+      <ol className="fpl500-holding-bars">
+        {rows.map((holding) => {
+          const player = holdingPlayer(holding);
+          const value = metricValue(holding, metric);
+          const canOpen =
+            player.code !== undefined &&
+            player.position !== undefined &&
+            player.club !== undefined &&
+            player.priceTenths !== undefined;
+          return (
+            <li
+              className={`is-ownership-${ownershipBand(holding.ownedShare)}`}
+              key={holding.elementId}
+            >
+              <span
+                aria-hidden="true"
+                className="fpl500-holding-fill"
+                style={{ width: `${String((value / maximum) * 100)}%` }}
+              />
+              {canOpen ? (
+                <button
+                  className="fpl500-holding-name"
+                  onClick={() =>
+                    setSelected({
+                      code: player.code!,
+                      name: player.name,
+                      position: player.position!,
+                      club: player.club!,
+                      priceTenths: player.priceTenths!,
+                    })
+                  }
+                  type="button"
+                >
+                  {player.name}
+                </button>
+              ) : (
+                <span className="fpl500-holding-name">{player.name}</span>
+              )}
+              <strong className="mono">{shownValue(holding, metric)}</strong>
+              <small className="mono">
+                EO {fineShare.format(holding.effectiveOwnership)}
+                {holding.weightedContribution === undefined
+                  ? ""
+                  : ` · weighted ${oneDecimal.format(holding.weightedContribution)} pts`}
+              </small>
+            </li>
+          );
+        })}
+      </ol>
+    );
+  }
 
   return (
     <section
@@ -118,6 +181,8 @@ export function Fpl500Holdings({
             1,
             ...rows.map((holding) => metricValue(holding, metric)),
           );
+          const visible = rows.filter((holding) => holding.ownedShare >= 0.01);
+          const fringe = rows.filter((holding) => holding.ownedShare < 0.01);
           return (
             <details
               className="fpl500-position"
@@ -146,35 +211,22 @@ export function Fpl500Holdings({
                   </p>
                 </div>
               ) : null}
-              <ol className="fpl500-holding-bars">
-                {rows.map((holding) => {
-                  const player = holdingPlayer(holding);
-                  const value = metricValue(holding, metric);
-                  return (
-                    <li key={holding.elementId}>
-                      <span
-                        aria-hidden="true"
-                        className="fpl500-holding-fill"
-                        style={{ width: `${String((value / maximum) * 100)}%` }}
-                      />
-                      <span className="fpl500-holding-name">{player.name}</span>
-                      <strong className="mono">
-                        {shownValue(holding, metric)}
-                      </strong>
-                      <small className="mono">
-                        EO {fineShare.format(holding.effectiveOwnership)}
-                        {holding.weightedContribution === undefined
-                          ? ""
-                          : ` · weighted ${oneDecimal.format(holding.weightedContribution)} pts`}
-                      </small>
-                    </li>
-                  );
-                })}
-              </ol>
+              {holdingRows(visible, maximum)}
+              {fringe.length > 0 ? (
+                <details className="fpl500-position-fringe">
+                  <summary className="mono">
+                    {fringe.length} below 1% ownership
+                  </summary>
+                  {holdingRows(fringe, maximum)}
+                </details>
+              ) : null}
             </details>
           );
         })}
       </div>
+      {selected ? (
+        <PlayerDetail onClose={() => setSelected(null)} player={selected} />
+      ) : null}
     </section>
   );
 }

@@ -162,6 +162,33 @@ describe("season inputs artifact", () => {
 
 describe("solveSeason", () => {
   it(
+    "uses the free transfer on a ruled-out incumbent",
+    () => {
+      const start = openingStart();
+      const osula = SEASON_PLAYERS.find((player) => player.name === "Osula");
+      const forwardIndex = start.squad.findIndex(
+        ({ elementId }) =>
+          SEASON_PLAYERS.find((player) => player.id === elementId)?.position ===
+          "FWD",
+      );
+      expect(osula).toBeDefined();
+      expect(forwardIndex).toBeGreaterThanOrEqual(0);
+      start.squad[forwardIndex] = {
+        elementId: osula!.id,
+        sellingPriceTenths: osula!.priceTenths,
+      };
+      const opener = solveSeason(start).next().value;
+
+      expect(opener).toBeDefined();
+      expect(opener?.transfersOut).toContainEqual(
+        expect.objectContaining({ availabilityStatus: "i" }),
+      );
+      expect(opener?.paidTransfers).toBe(0);
+    },
+    SOLVE_TIMEOUT,
+  );
+
+  it(
     "gives the armband to the current-gameweek leaders in the XI",
     () => {
       const opener = season()[0];

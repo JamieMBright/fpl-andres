@@ -285,7 +285,7 @@ Every remote surface implements idle, loading, ready, stale, degraded and error.
 
 ## Component inventory
 
-Fifty components in `apps/web/src/components`. The column
+Components in `apps/web/src/components`. The column
 that matters is the last one: what a browser journey already proves about each,
 so a review knows what it does not have to check by hand.
 
@@ -338,6 +338,8 @@ so a review knows what it does not have to check by hand.
 | `CohortPanel`             | The swept cohort and its coverage                        | —                                    |
 | `Fpl500Playbook`          | The ranked five hundred, and the fund they are not       | unit (`Fpl500Playbook.test.tsx`)     |
 | `Fpl500Holdings`          | Exact player ownership and returns, grouped by position  | unit (via `Fpl500Playbook`)          |
+| `Fpl500Teaser`            | Homepage summary of the latest exact cohort              | unit (`Fpl500Teaser.test.tsx`)       |
+| `Fpl500Structure`         | Common XI, keeper pairs and positional spend             | unit (`Fpl500Structure.test.tsx`)    |
 | `RankRidge`               | Five seasons of finishes over one shared axis            | unit (via `Fpl500Playbook`)          |
 | `PlannedAnalysis`         | The frames a gameweek will fill, drawn empty             | unit (via `Fpl500Playbook`)          |
 | `TopPicks`                | The best five-gameweek player in each position           | unit (`TopPicks.test.tsx`)           |

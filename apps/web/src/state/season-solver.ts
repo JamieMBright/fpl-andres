@@ -702,6 +702,13 @@ export function* solveSeason(
       predictionCutoff: deadline,
       players,
       currentSquad: squad,
+      priorityTransferOutElementIds: squad.flatMap(({ elementId }) => {
+        const player = look(elementId);
+        const ruledOut =
+          ["i", "s", "u", "n"].includes(player.availabilityStatus ?? "") ||
+          (player.availabilityStatus === "d" && player.chanceOfPlaying === 0);
+        return ruledOut ? [elementId] : [];
+      }),
       bankTenths: bank,
       availableFreeTransfers: free,
       stateEvidence: {

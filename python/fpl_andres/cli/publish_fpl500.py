@@ -511,6 +511,17 @@ def _portfolio_series(
                 if aggregate.get("cohortRevision") != raw.get("cohortRevision"):
                     raise ValueError(f"portfolio aggregate revision mismatch: {aggregate_path}")
                 sample["aggregate"] = aggregate
+            structure_path = directory / f"gw{stem}-structure.json"
+            if structure_path.exists():
+                structure = parse_json(
+                    structure_path.read_text(encoding="utf-8"),
+                    source=str(structure_path),
+                )
+                if not isinstance(structure, dict):
+                    raise ValueError(f"portfolio structure must be an object: {structure_path}")
+                if structure.get("cohortRevision") != raw.get("cohortRevision"):
+                    raise ValueError(f"portfolio structure revision mismatch: {structure_path}")
+                sample["structure"] = structure
             points = _realised_points(directory, stem)
             event_holdings: list[dict[str, object]] = []
             raw_holdings = raw.get("holdings", [])

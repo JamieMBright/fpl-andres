@@ -18,6 +18,11 @@ const TopPicks = lazyRoute(() =>
     default: module.TopPicks,
   })),
 );
+const Fpl500Teaser = lazyRoute(() =>
+  import("../components/Fpl500Teaser").then((module) => ({
+    default: module.Fpl500Teaser,
+  })),
+);
 
 export default function HomePage() {
   const navigate = useNavigate();
@@ -68,6 +73,12 @@ export default function HomePage() {
           </Suspense>
         </ErrorBoundary>
       </div>
+
+      <ErrorBoundary>
+        <Suspense fallback={null}>
+          <Fpl500Teaser />
+        </Suspense>
+      </ErrorBoundary>
 
       <ul className="index-grid">
         <li className="index-cell is-plan">
