@@ -64,20 +64,20 @@ than a zero, so a partial projection is visibly partial.
 
 Values with the measurement recorded next to them in the code.
 
-| Parameter                    | Value | Where                       | Measurement                                                                            |
-| ---------------------------- | ----- | --------------------------- | -------------------------------------------------------------------------------------- |
-| `_QUALITY_PRIOR_SHOTS`       | 10.0  | `models/shot_profile.py`    | Fitted on 553 season pairs. MAE 0.05608 at k=0, 0.05435 at 10, 0.05821 at 100.         |
-| `_VOLUME_REGRESSION`         | 0.1   | `models/shot_profile.py`    | MAE 0.05435 to 0.05417.                                                                |
-| `recent_form_weight`         | 0.2   | `backtesting/projector.py`  | Correlation measured at 0.7–0.8 in all seven corpus seasons independently.             |
-| `_POISSON_SIGMAS`            | 12.0  | `models/expected_points.py` | Keeps residual mass below 1e-12 at every rate; 10 measured short at 1.6e-12.           |
-| `_MINUTES_TOLERANCE`         | 0.10  | `crosswalk/resolve.py`      | Worst honest Understat 2025-26 disagreement was ~5%. 10% leaves headroom.              |
-| `_CONTRADICTION_TOLERANCE`   | 1e-6  | `models/penalties.py`       | Understat publishes xG at full float precision; this allows float noise only.          |
-| `_MIP_FEASIBILITY_TOLERANCE` | 1e-6  | `optimization/highs.py`     | HiGHS' own documented default.                                                         |
-| lexicographic handoff slack  | 2e-6  | `optimization/highs.py`     | One feasibility tolerance for the proven optimum and one for the follow-up solve.      |
-| Scoring routes               | —     | `backtesting/projector.py`  | 2025-26 reconciles to 34,383 against an actual 34,382; 27,353/27,605 exact in 2024-25. |
-| `decay_half_life_events`     | 2.0   | `backtesting/projector.py`  | Selected on 2022/23–2023/24; held-out paired Brier promoted on 2024/25–2025/26.        |
-| `prior_strength_events`      | 4.0   | `backtesting/projector.py`  | Selected in the same 3×3 xStart grid; all 3 held-out bootstrap seeds promoted.         |
-| current-plus-carried xStart  | on    | `models/minutes.py`         | Holdout Brier 0.139775 → 0.115340 over 444 stable players; lower bound 0.011744.       |
+| Parameter                    | Value | Where                       | Measurement                                                                                                                                                            |
+| ---------------------------- | ----- | --------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `_QUALITY_PRIOR_SHOTS`       | 10.0  | `models/shot_profile.py`    | Fitted on 553 season pairs. MAE 0.05608 at k=0, 0.05435 at 10, 0.05821 at 100.                                                                                         |
+| `_VOLUME_REGRESSION`         | 0.1   | `models/shot_profile.py`    | MAE 0.05435 to 0.05417.                                                                                                                                                |
+| `recent_form_weight`         | 0.1   | `backtesting/projector.py`  | Selected on 2022/23–2023/24; held-out paired weekly MAE improved by 0.0110 with a family-corrected lower bound of 0.00838, and both holdout seasons improved Spearman. |
+| `_POISSON_SIGMAS`            | 12.0  | `models/expected_points.py` | Keeps residual mass below 1e-12 at every rate; 10 measured short at 1.6e-12.                                                                                           |
+| `_MINUTES_TOLERANCE`         | 0.10  | `crosswalk/resolve.py`      | Worst honest Understat 2025-26 disagreement was ~5%. 10% leaves headroom.                                                                                              |
+| `_CONTRADICTION_TOLERANCE`   | 1e-6  | `models/penalties.py`       | Understat publishes xG at full float precision; this allows float noise only.                                                                                          |
+| `_MIP_FEASIBILITY_TOLERANCE` | 1e-6  | `optimization/highs.py`     | HiGHS' own documented default.                                                                                                                                         |
+| lexicographic handoff slack  | 2e-6  | `optimization/highs.py`     | One feasibility tolerance for the proven optimum and one for the follow-up solve.                                                                                      |
+| Scoring routes               | —     | `backtesting/projector.py`  | 2025-26 reconciles to 34,383 against an actual 34,382; 27,353/27,605 exact in 2024-25.                                                                                 |
+| `decay_half_life_events`     | 2.0   | `backtesting/projector.py`  | Selected on 2022/23–2023/24; held-out paired Brier promoted on 2024/25–2025/26.                                                                                        |
+| `prior_strength_events`      | 4.0   | `backtesting/projector.py`  | Selected in the same 3×3 xStart grid; all 3 held-out bootstrap seeds promoted.                                                                                         |
+| current-plus-carried xStart  | on    | `models/minutes.py`         | Holdout Brier 0.139775 → 0.115340 over 444 stable players; lower bound 0.011744.                                                                                       |
 
 ---
 

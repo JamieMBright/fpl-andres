@@ -8,6 +8,10 @@ The project follows Semantic Versioning once milestone tags begin.
 
 ### Added
 
+- Model 8.10 reduces the recent-points blend from 0.20 to 0.10. The selected
+  weight improved paired weekly MAE by 0.0110 across 64 held-out gameweeks; the
+  family-corrected lower bound was 0.00838 and both seasons improved Spearman.
+
 - xStart now has an immutable GW1 score over 486 players, with Brier, clipped
   log loss, reliability bands and all 20 club top-11 results on Expected XI,
   Calibration and the recommendation API. The score labels the shipped field

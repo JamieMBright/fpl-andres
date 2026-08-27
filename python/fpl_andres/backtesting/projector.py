@@ -78,9 +78,10 @@ class ProjectionSettings:
     # reconstruction. Realised points are a direct, unbiased reading of the
     # target; the component model is indirect and accumulates error across
     # fourteen routes. Blending beats either alone. Measured at 0.7-0.8 in all
-    # seven seasons of the corpus independently, so 0.2 is not fitted to the
-    # seasons it is reported against.
-    recent_form_weight: float = 0.2
+    # selected 0.10. On 64 held-out gameweeks it lowered paired weekly MAE by
+    # 0.0110, with a family-corrected lower bound of 0.00838; neither holdout
+    # season regressed on Spearman.
+    recent_form_weight: float = 0.1
     recent_form_window: int = 5
     # How much of a carried season survives a change of club or role.
     #

@@ -95,7 +95,7 @@ def test_model_md_quotes_the_projector_defaults_correctly(value: float, label: s
         ("prior_strength_events", 4.0),
         ("prior_start_rate", 0.35),
         ("recent_form_window", 5),
-        ("recent_form_weight", 0.2),
+        ("recent_form_weight", 0.1),
     ],
 )
 def test_parameters_md_records_the_projector_defaults_it_lists(name: str, value: float) -> None:

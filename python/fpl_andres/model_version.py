@@ -29,6 +29,11 @@ from __future__ import annotations
 
 __all__ = ["MODEL_VERSION"]
 
+#: 8.10 reduces the recent-points blend from 0.20 to 0.10 after a predeclared
+#: five-weight experiment. Across 64 held-out gameweeks, paired weekly MAE
+#: improved by 0.0110 with a family-corrected 98.75% lower bound of 0.00838;
+#: both holdout seasons improved Spearman. Minor: xPts keeps the same target.
+#:
 #: 8.9 promotes current-plus-carried xStart evidence after a held-out GW2
 #: comparison over 444 stable players. The selected two-event half-life and
 #: four-event prior lowered paired Brier by 0.0244, with a 95% lower bound of
@@ -386,4 +391,4 @@ __all__ = ["MODEL_VERSION"]
 #: projection and resampled, so a gap that does not clear zero is reported as
 #: not clearing zero. No projection changed; what changed is what may be
 #: claimed from it.
-MODEL_VERSION = "8.9"
+MODEL_VERSION = "8.10"

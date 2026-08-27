@@ -246,12 +246,14 @@ routes. A player's recent realised points are direct but noisy. Neither is best
 alone:
 
 ```
-projection = 0.8 * components + 0.2 * recent_mean(last 5)
+projection = 0.9 * components + 0.1 * recent_mean(last 5)
 ```
 
-`recent_form_weight = 0.2`. Measured independently in **each of seven seasons**
-and landing between 0.7 and 0.8 every time, including the three seasons held back
-from the original fit. It is not tuned to the seasons it is reported against.
+`recent_form_weight = 0.1`. Selected from 0.10/0.15/0.20/0.25/0.30 on
+2022/23-2023/24, then tested once on 2024/25-2025/26. Across 64 held-out
+gameweeks it lowered paired weekly MAE from 1.72704 to 1.71603. The
+family-corrected 98.75% improvement interval was 0.00838-0.01359, and both
+holdout seasons improved rather than regressed on Spearman.
 
 The weight sits on the model's side of the split, which is the direction
 Ramezani and Dinh report for FPL specifically: a hybrid at two-thirds model to
@@ -260,12 +262,12 @@ method's curve", while a 2:1 hybrid favouring realised points "often
 underperforms the base method, suggesting that overweighting raw historical
 points re-introduces the very noise the predictive model is designed to filter
 out" (_A data-driven framework for team selection in Fantasy Premier League_,
-[arXiv:2505.02170](https://arxiv.org/abs/2505.02170), §8). Our 0.8/0.2 is further
+[arXiv:2505.02170](https://arxiv.org/abs/2505.02170), §8). Our 0.9/0.1 is further
 toward the model than their best 0.67/0.33, and was arrived at by measurement
 rather than by copying theirs.
 
 **The blend makes the headline comparison a superset.** `recent_mean` is the
-naive baseline _and_ 20% of the projection, so "model beats recent_mean" cannot
+naive baseline _and_ 10% of the projection, so "model beats recent_mean" cannot
 fully fail. The backtest therefore scores a fourth method, `components`, which is
 the same projection with the blend removed. That is the number that says whether
 the route pricing carries itself. Both are published; see `docs/MODEL_CARDS.md`.
