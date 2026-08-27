@@ -78,9 +78,10 @@ def _candidate_probability_start(
     prior_season: str,
     half_life_events: float,
     prior_strength_events: float,
+    current_season_weight: float,
     prior_start_rate: float,
 ) -> float:
-    if half_life_events <= 0 or prior_strength_events < 0:
+    if half_life_events <= 0 or prior_strength_events < 0 or current_season_weight <= 0:
         raise ValueError("candidate half-life must be positive and prior strength non-negative")
     if not 0 <= prior_start_rate <= 1:
         raise ValueError("candidate prior start rate must be a probability")
@@ -120,9 +121,15 @@ def _candidate_probability_start(
         / total_weight
     )
     effective_sample = total_weight * total_weight / squared_weight
-    return (weighted_start_rate * effective_sample + prior_start_rate * prior_strength_events) / (
-        effective_sample + prior_strength_events
+    posterior_successes = (
+        weighted_start_rate * effective_sample + prior_start_rate * prior_strength_events
     )
+    posterior_events = effective_sample + prior_strength_events
+    extra_weight = current_season_weight - 1.0
+    current = [row for row in observations if row.source_season == current_season]
+    posterior_successes += extra_weight * sum(1 for row in current if row.started)
+    posterior_events += extra_weight * len(current)
+    return posterior_successes / posterior_events
 
 
 def score_gw2_xstart(
@@ -131,6 +138,7 @@ def score_gw2_xstart(
     *,
     half_life_events: float,
     prior_strength_events: float,
+    current_season_weight: float = 1.0,
     prior_start_rate: float = 0.35,
 ) -> Gw2XStartScore:
     if _next_season(previous.season) != current.season:
@@ -192,6 +200,7 @@ def score_gw2_xstart(
             prior_season=previous.season,
             half_life_events=half_life_events,
             prior_strength_events=prior_strength_events,
+            current_season_weight=current_season_weight,
             prior_start_rate=prior_start_rate,
         )
         rows.append(

@@ -21,6 +21,7 @@ TRAIN_SEASONS = ("2022-23", "2023-24")
 HOLDOUT_SEASONS = ("2024-25", "2025-26")
 HALF_LIVES = (2.0, 4.0, 8.0)
 PRIOR_STRENGTHS = (1.0, 2.0, 4.0)
+CURRENT_SEASON_WEIGHTS = (1.0, 2.0, 4.0, 8.0)
 DEFAULT_OUTPUT = Path("data/experiments/xstart-current-season.json")
 
 
@@ -113,32 +114,36 @@ def main(argv: list[str] | None = None) -> int:
     grid: list[dict[str, Any]] = []
     for half_life in HALF_LIVES:
         for prior_strength in PRIOR_STRENGTHS:
-            scores = [
-                score_gw2_xstart(
-                    corpora[_previous_season(season)],
-                    corpora[season],
-                    half_life_events=half_life,
-                    prior_strength_events=prior_strength,
+            for current_weight in CURRENT_SEASON_WEIGHTS:
+                scores = [
+                    score_gw2_xstart(
+                        corpora[_previous_season(season)],
+                        corpora[season],
+                        half_life_events=half_life,
+                        prior_strength_events=prior_strength,
+                        current_season_weight=current_weight,
+                    )
+                    for season in TRAIN_SEASONS
+                ]
+                grid.append(
+                    {
+                        "halfLifeEvents": half_life,
+                        "priorStrengthEvents": prior_strength,
+                        "currentSeasonWeight": current_weight,
+                        **_summarise(scores),
+                        "selectionBrier": _brier(
+                            tuple(row.candidate for row in _aggregate_by_code(scores)),
+                            tuple(row.observed for row in _aggregate_by_code(scores)),
+                        ),
+                    }
                 )
-                for season in TRAIN_SEASONS
-            ]
-            grid.append(
-                {
-                    "halfLifeEvents": half_life,
-                    "priorStrengthEvents": prior_strength,
-                    **_summarise(scores),
-                    "selectionBrier": _brier(
-                        tuple(row.candidate for row in _aggregate_by_code(scores)),
-                        tuple(row.observed for row in _aggregate_by_code(scores)),
-                    ),
-                }
-            )
     selected = min(
         grid,
         key=lambda row: (
             float(row["selectionBrier"]),
             float(row["halfLifeEvents"]),
             float(row["priorStrengthEvents"]),
+            float(row["currentSeasonWeight"]),
         ),
     )
     holdout_scores = [
@@ -147,6 +152,7 @@ def main(argv: list[str] | None = None) -> int:
             corpora[season],
             half_life_events=float(selected["halfLifeEvents"]),
             prior_strength_events=float(selected["priorStrengthEvents"]),
+            current_season_weight=float(selected["currentSeasonWeight"]),
         )
         for season in HOLDOUT_SEASONS
     ]
@@ -173,6 +179,7 @@ def main(argv: list[str] | None = None) -> int:
         "selected": {
             "halfLifeEvents": selected["halfLifeEvents"],
             "priorStrengthEvents": selected["priorStrengthEvents"],
+            "currentSeasonWeight": selected["currentSeasonWeight"],
         },
         "holdout": _summarise(holdout_scores),
         "comparison": {
@@ -190,7 +197,8 @@ def main(argv: list[str] | None = None) -> int:
     args.output.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
     print(
         f"wrote {args.output} — selected half-life {selected['halfLifeEvents']}, "
-        f"prior {selected['priorStrengthEvents']}; promoted={decision.promoted}"
+        f"prior {selected['priorStrengthEvents']}, current weight "
+        f"{selected['currentSeasonWeight']}; promoted={decision.promoted}"
     )
     return 0
 

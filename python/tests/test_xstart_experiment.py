@@ -121,6 +121,49 @@ def test_candidate_parameters_never_move_the_fixed_baseline() -> None:
     assert weak.triplets[0].candidate != strong.triplets[0].candidate
 
 
+def test_more_current_lineup_weight_moves_a_gw1_starter_up() -> None:
+    ordinary = score_gw2_xstart(
+        _previous(),
+        _current(),
+        half_life_events=2.0,
+        prior_strength_events=4.0,
+        current_season_weight=1.0,
+    )
+    stronger = score_gw2_xstart(
+        _previous(),
+        _current(),
+        half_life_events=2.0,
+        prior_strength_events=4.0,
+        current_season_weight=4.0,
+    )
+
+    assert stronger.triplets[0].baseline == ordinary.triplets[0].baseline
+    assert stronger.triplets[0].candidate > ordinary.triplets[0].candidate
+
+
+def test_more_current_lineup_weight_moves_a_gw1_benching_down() -> None:
+    current = _current()
+    current.rows_by_gameweek[1][0] = replace(
+        current.rows_by_gameweek[1][0], minutes=20, started=False
+    )
+    ordinary = score_gw2_xstart(
+        _previous(),
+        current,
+        half_life_events=2.0,
+        prior_strength_events=4.0,
+        current_season_weight=1.0,
+    )
+    stronger = score_gw2_xstart(
+        _previous(),
+        current,
+        half_life_events=2.0,
+        prior_strength_events=4.0,
+        current_season_weight=4.0,
+    )
+
+    assert stronger.triplets[0].candidate < ordinary.triplets[0].candidate
+
+
 def test_promoted_production_posterior_matches_the_held_out_candidate() -> None:
     previous = _previous()
     current = _current()
