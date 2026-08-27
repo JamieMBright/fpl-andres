@@ -1,6 +1,6 @@
 {
   "schemaVersion": 3,
-  "generatedAt": "2026-08-27T23:05:55.685811Z",
+  "generatedAt": "2026-08-27T23:47:10.998618Z",
   "catalogueSize": 23882,
   "sweptTo": 9842001,
   "size": 500,
@@ -147,9 +147,9 @@
           "transfersAvailable": false
         },
         "structure": {
-          "schemaVersion": 1,
+          "schemaVersion": 2,
           "event": 1,
-          "capturedAt": "2026-08-27T23:05:48.517773Z",
+          "capturedAt": "2026-08-27T23:47:00.789820Z",
           "basis": "ranked-500",
           "cohortRevision": "sha256:5cdb277562d29b211f50ca279e595e5eeac97e98791a77b8c81975bb83d6f9a0",
           "attempted": 500,
@@ -159,8 +159,20 @@
             {
               "starterElementId": 109,
               "benchElementId": 496,
-              "count": 28,
-              "share": 0.056
+              "count": 179,
+              "share": 0.358
+            },
+            {
+              "starterElementId": 496,
+              "benchElementId": 109,
+              "count": 60,
+              "share": 0.12
+            },
+            {
+              "starterElementId": 529,
+              "benchElementId": 109,
+              "count": 32,
+              "share": 0.064
             },
             {
               "starterElementId": 496,
@@ -169,6 +181,24 @@
               "share": 0.052
             },
             {
+              "starterElementId": 412,
+              "benchElementId": 109,
+              "count": 23,
+              "share": 0.046
+            },
+            {
+              "starterElementId": 1,
+              "benchElementId": 109,
+              "count": 22,
+              "share": 0.044
+            },
+            {
+              "starterElementId": 1,
+              "benchElementId": 564,
+              "count": 20,
+              "share": 0.04
+            },
+            {
               "starterElementId": 1,
               "benchElementId": 110,
               "count": 14,
@@ -181,14 +211,26 @@
               "share": 0.028
             },
             {
-              "starterElementId": 412,
-              "benchElementId": 496,
-              "count": 9,
-              "share": 0.018
-            },
-            {
               "starterElementId": 1,
               "benchElementId": 496,
+              "count": 12,
+              "share": 0.024
+            },
+            {
+              "starterElementId": 412,
+              "benchElementId": 496,
+              "count": 11,
+              "share": 0.022
+            },
+            {
+              "starterElementId": 109,
+              "benchElementId": 111,
+              "count": 4,
+              "share": 0.008
+            },
+            {
+              "starterElementId": 109,
+              "benchElementId": 529,
               "count": 4,
               "share": 0.008
             },
@@ -205,8 +247,8 @@
               "share": 0.008
             },
             {
-              "starterElementId": 496,
-              "benchElementId": 109,
+              "starterElementId": 529,
+              "benchElementId": 564,
               "count": 4,
               "share": 0.008
             },
@@ -229,20 +271,14 @@
               "share": 0.006
             },
             {
-              "starterElementId": 109,
-              "benchElementId": 111,
-              "count": 3,
-              "share": 0.006
-            },
-            {
-              "starterElementId": 412,
-              "benchElementId": 109,
-              "count": 3,
-              "share": 0.006
-            },
-            {
               "starterElementId": 412,
               "benchElementId": 110,
+              "count": 3,
+              "share": 0.006
+            },
+            {
+              "starterElementId": 412,
+              "benchElementId": 564,
               "count": 3,
               "share": 0.006
             },
@@ -278,13 +314,31 @@
             },
             {
               "starterElementId": 1,
-              "benchElementId": 109,
+              "benchElementId": 412,
               "count": 2,
               "share": 0.004
             },
             {
               "starterElementId": 1,
               "benchElementId": 497,
+              "count": 2,
+              "share": 0.004
+            },
+            {
+              "starterElementId": 1,
+              "benchElementId": 529,
+              "count": 2,
+              "share": 0.004
+            },
+            {
+              "starterElementId": 109,
+              "benchElementId": 110,
+              "count": 2,
+              "share": 0.004
+            },
+            {
+              "starterElementId": 109,
+              "benchElementId": 412,
               "count": 2,
               "share": 0.004
             },
@@ -297,6 +351,12 @@
             {
               "starterElementId": 412,
               "benchElementId": 57,
+              "count": 2,
+              "share": 0.004
+            },
+            {
+              "starterElementId": 467,
+              "benchElementId": 529,
               "count": 2,
               "share": 0.004
             },
@@ -338,12 +398,6 @@
             },
             {
               "starterElementId": 109,
-              "benchElementId": 110,
-              "count": 1,
-              "share": 0.002
-            },
-            {
-              "starterElementId": 109,
               "benchElementId": 252,
               "count": 1,
               "share": 0.002
@@ -351,6 +405,18 @@
             {
               "starterElementId": 109,
               "benchElementId": 301,
+              "count": 1,
+              "share": 0.002
+            },
+            {
+              "starterElementId": 140,
+              "benchElementId": 496,
+              "count": 1,
+              "share": 0.002
+            },
+            {
+              "starterElementId": 140,
+              "benchElementId": 529,
               "count": 1,
               "share": 0.002
             },
@@ -363,6 +429,24 @@
             {
               "starterElementId": 350,
               "benchElementId": 111,
+              "count": 1,
+              "share": 0.002
+            },
+            {
+              "starterElementId": 384,
+              "benchElementId": 1,
+              "count": 1,
+              "share": 0.002
+            },
+            {
+              "starterElementId": 412,
+              "benchElementId": 140,
+              "count": 1,
+              "share": 0.002
+            },
+            {
+              "starterElementId": 412,
+              "benchElementId": 529,
               "count": 1,
               "share": 0.002
             },
@@ -389,12 +473,18 @@
               "benchElementId": 496,
               "count": 1,
               "share": 0.002
+            },
+            {
+              "starterElementId": 564,
+              "benchElementId": 496,
+              "count": 1,
+              "share": 0.002
             }
           ],
           "commonStartingXi": {
             "method": "modal-formation-most-started",
             "formation": [3, 4, 3],
-            "elementIds": [109, 8, 418, 10, 426, 427, 368, 557, 165, 346, 411]
+            "elementIds": [109, 8, 418, 10, 426, 427, 368, 557, 165, 411, 346]
           },
           "positionalSpend": {
             "GKP": {
@@ -429,7 +519,9 @@
               "minimum": 181,
               "maximum": 321
             }
-          }
+          },
+          "supersedes": "gw01-structure.json",
+          "correctionReason": "bench-boost-lineups-use-team-sheet-slots"
         }
       }
     },
