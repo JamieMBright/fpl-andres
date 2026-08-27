@@ -1,6 +1,6 @@
 {
   "schemaVersion": 3,
-  "generatedAt": "2026-08-27T22:56:00.781819Z",
+  "generatedAt": "2026-08-27T23:05:55.685811Z",
   "catalogueSize": 23882,
   "sweptTo": 9842001,
   "size": 500,
@@ -145,6 +145,291 @@
             "maximum": 0
           },
           "transfersAvailable": false
+        },
+        "structure": {
+          "schemaVersion": 1,
+          "event": 1,
+          "capturedAt": "2026-08-27T23:05:48.517773Z",
+          "basis": "ranked-500",
+          "cohortRevision": "sha256:5cdb277562d29b211f50ca279e595e5eeac97e98791a77b8c81975bb83d6f9a0",
+          "attempted": 500,
+          "responded": 500,
+          "coverage": 1.0,
+          "keeperPairings": [
+            {
+              "starterElementId": 109,
+              "benchElementId": 496,
+              "count": 28,
+              "share": 0.056
+            },
+            {
+              "starterElementId": 496,
+              "benchElementId": 497,
+              "count": 26,
+              "share": 0.052
+            },
+            {
+              "starterElementId": 1,
+              "benchElementId": 110,
+              "count": 14,
+              "share": 0.028
+            },
+            {
+              "starterElementId": 496,
+              "benchElementId": 110,
+              "count": 14,
+              "share": 0.028
+            },
+            {
+              "starterElementId": 412,
+              "benchElementId": 496,
+              "count": 9,
+              "share": 0.018
+            },
+            {
+              "starterElementId": 1,
+              "benchElementId": 496,
+              "count": 4,
+              "share": 0.008
+            },
+            {
+              "starterElementId": 140,
+              "benchElementId": 110,
+              "count": 4,
+              "share": 0.008
+            },
+            {
+              "starterElementId": 412,
+              "benchElementId": 497,
+              "count": 4,
+              "share": 0.008
+            },
+            {
+              "starterElementId": 496,
+              "benchElementId": 109,
+              "count": 4,
+              "share": 0.008
+            },
+            {
+              "starterElementId": 1,
+              "benchElementId": 57,
+              "count": 3,
+              "share": 0.006
+            },
+            {
+              "starterElementId": 1,
+              "benchElementId": 111,
+              "count": 3,
+              "share": 0.006
+            },
+            {
+              "starterElementId": 1,
+              "benchElementId": 301,
+              "count": 3,
+              "share": 0.006
+            },
+            {
+              "starterElementId": 109,
+              "benchElementId": 111,
+              "count": 3,
+              "share": 0.006
+            },
+            {
+              "starterElementId": 412,
+              "benchElementId": 109,
+              "count": 3,
+              "share": 0.006
+            },
+            {
+              "starterElementId": 412,
+              "benchElementId": 110,
+              "count": 3,
+              "share": 0.006
+            },
+            {
+              "starterElementId": 496,
+              "benchElementId": 57,
+              "count": 3,
+              "share": 0.006
+            },
+            {
+              "starterElementId": 496,
+              "benchElementId": 250,
+              "count": 3,
+              "share": 0.006
+            },
+            {
+              "starterElementId": 496,
+              "benchElementId": 301,
+              "count": 3,
+              "share": 0.006
+            },
+            {
+              "starterElementId": 529,
+              "benchElementId": 110,
+              "count": 3,
+              "share": 0.006
+            },
+            {
+              "starterElementId": 1,
+              "benchElementId": 59,
+              "count": 2,
+              "share": 0.004
+            },
+            {
+              "starterElementId": 1,
+              "benchElementId": 109,
+              "count": 2,
+              "share": 0.004
+            },
+            {
+              "starterElementId": 1,
+              "benchElementId": 497,
+              "count": 2,
+              "share": 0.004
+            },
+            {
+              "starterElementId": 109,
+              "benchElementId": 497,
+              "count": 2,
+              "share": 0.004
+            },
+            {
+              "starterElementId": 412,
+              "benchElementId": 57,
+              "count": 2,
+              "share": 0.004
+            },
+            {
+              "starterElementId": 496,
+              "benchElementId": 59,
+              "count": 2,
+              "share": 0.004
+            },
+            {
+              "starterElementId": 496,
+              "benchElementId": 302,
+              "count": 2,
+              "share": 0.004
+            },
+            {
+              "starterElementId": 1,
+              "benchElementId": 171,
+              "count": 1,
+              "share": 0.002
+            },
+            {
+              "starterElementId": 1,
+              "benchElementId": 251,
+              "count": 1,
+              "share": 0.002
+            },
+            {
+              "starterElementId": 82,
+              "benchElementId": 496,
+              "count": 1,
+              "share": 0.002
+            },
+            {
+              "starterElementId": 109,
+              "benchElementId": 83,
+              "count": 1,
+              "share": 0.002
+            },
+            {
+              "starterElementId": 109,
+              "benchElementId": 110,
+              "count": 1,
+              "share": 0.002
+            },
+            {
+              "starterElementId": 109,
+              "benchElementId": 252,
+              "count": 1,
+              "share": 0.002
+            },
+            {
+              "starterElementId": 109,
+              "benchElementId": 301,
+              "count": 1,
+              "share": 0.002
+            },
+            {
+              "starterElementId": 250,
+              "benchElementId": 275,
+              "count": 1,
+              "share": 0.002
+            },
+            {
+              "starterElementId": 350,
+              "benchElementId": 111,
+              "count": 1,
+              "share": 0.002
+            },
+            {
+              "starterElementId": 496,
+              "benchElementId": 58,
+              "count": 1,
+              "share": 0.002
+            },
+            {
+              "starterElementId": 496,
+              "benchElementId": 171,
+              "count": 1,
+              "share": 0.002
+            },
+            {
+              "starterElementId": 496,
+              "benchElementId": 495,
+              "count": 1,
+              "share": 0.002
+            },
+            {
+              "starterElementId": 529,
+              "benchElementId": 496,
+              "count": 1,
+              "share": 0.002
+            }
+          ],
+          "commonStartingXi": {
+            "method": "modal-formation-most-started",
+            "formation": [3, 4, 3],
+            "elementIds": [109, 8, 418, 10, 426, 427, 368, 557, 165, 346, 411]
+          },
+          "positionalSpend": {
+            "GKP": {
+              "mean": 93.18,
+              "median": 90.0,
+              "p10": 90.0,
+              "p90": 105.0,
+              "minimum": 85,
+              "maximum": 115
+            },
+            "DEF": {
+              "mean": 255.28,
+              "median": 251.0,
+              "p10": 236.0,
+              "p90": 286.0,
+              "minimum": 225,
+              "maximum": 301
+            },
+            "MID": {
+              "mean": 391.41,
+              "median": 385.0,
+              "p10": 370.0,
+              "p90": 420.0,
+              "minimum": 316,
+              "maximum": 455
+            },
+            "FWD": {
+              "mean": 261.498,
+              "median": 291.0,
+              "p10": 216.0,
+              "p90": 291.0,
+              "minimum": 181,
+              "maximum": 321
+            }
+          }
         }
       }
     },
