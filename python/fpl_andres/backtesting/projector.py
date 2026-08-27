@@ -74,10 +74,10 @@ class ProjectionSettings:
     prior_strength_minutes: float = 450.0
     blend_full_weight_minutes: float = 900.0
     prior_start_rate: float = 0.35
-    # Weight on each settled current-season starting-lineup observation. One
-    # is the promoted model 8.11 incumbent; stronger candidates are held out
-    # before this value moves.
-    current_season_weight: float = 1.0
+    # One settled current-season lineup counts as four carried appearances.
+    # Selected on 2022-24 and held out on 2024-26: paired Brier improved by
+    # 0.0497, with a 95% lower bound of 0.0348 and 3/3 seeds promoting.
+    current_season_weight: float = 4.0
     # Weight on the player's own recent points, against the component
     # reconstruction. Realised points are a direct, unbiased reading of the
     # target; the component model is indirect and accumulates error across

@@ -511,7 +511,12 @@ def _portfolio_series(
                 if aggregate.get("cohortRevision") != raw.get("cohortRevision"):
                     raise ValueError(f"portfolio aggregate revision mismatch: {aggregate_path}")
                 sample["aggregate"] = aggregate
-            structure_path = directory / f"gw{stem}-structure.json"
+            corrected_structure_path = directory / f"gw{stem}-structure-v2.json"
+            structure_path = (
+                corrected_structure_path
+                if corrected_structure_path.exists()
+                else directory / f"gw{stem}-structure.json"
+            )
             if structure_path.exists():
                 structure = parse_json(
                     structure_path.read_text(encoding="utf-8"),

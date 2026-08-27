@@ -24,7 +24,8 @@ const seasonInputs = {
         recentStarts: 5,
         recentMatches: 6,
         appearanceSource: "marketParticipation",
-        marketAdjustment: 0.1,
+        lineupAdjustment: 0.1,
+        marketAdjustment: 0,
       },
     },
     {
@@ -231,7 +232,7 @@ describe("expected XI reader", () => {
     );
     expect(
       keeper?.explanation.factors.find(
-        (factor) => factor.label === "Market effect",
+        (factor) => factor.label === "Last lineups",
       ),
     ).toMatchObject({
       value: "+10pp",

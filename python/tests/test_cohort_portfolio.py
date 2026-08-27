@@ -199,10 +199,12 @@ def test_structure_keeps_keeper_pairs_common_xi_and_position_spend() -> None:
         **{element_id: 4 for element_id in range(13, 16)},
     }
     prices = {element_id: 40 + element_id for element_id in element_types}
+    sheet = (1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 2, 12, 14, 15)
+    slot = {element_id: index + 1 for index, element_id in enumerate(sheet)}
     picks = tuple(
         Pick(
             element_id=element_id,
-            position=element_id,
+            position=slot[element_id],
             multiplier=0 if element_id in (2, 12, 14, 15) else 1,
             is_captain=element_id == 8,
             is_vice_captain=element_id == 9,
@@ -228,3 +230,37 @@ def test_structure_keeps_keeper_pairs_common_xi_and_position_spend() -> None:
     assert structure.formation == (5, 4, 1)
     assert structure.positional_spend[1].mean == sum(prices[index] for index in (1, 2))
     assert not hasattr(structure, "entry_id")
+
+
+def test_structure_reads_team_sheet_slots_during_a_bench_boost() -> None:
+    element_types = {
+        **{element_id: 1 for element_id in (1, 2)},
+        **{element_id: 2 for element_id in range(3, 8)},
+        **{element_id: 3 for element_id in range(8, 13)},
+        **{element_id: 4 for element_id in range(13, 16)},
+    }
+    sheet = (1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 2, 12, 14, 15)
+    slot = {element_id: index + 1 for index, element_id in enumerate(sheet)}
+    picks = tuple(
+        Pick(
+            element_id=element_id,
+            position=slot[element_id],
+            multiplier=1,
+            is_captain=element_id == 8,
+            is_vice_captain=element_id == 9,
+        )
+        for element_id in range(1, 16)
+    )
+    structure = summarize_structure(
+        [ManagerPicks(entry_id=1, event=1, picks=picks, active_chip="bboost")],
+        event=1,
+        attempted=1,
+        cohort_revision="sha256:pinned",
+        element_types=element_types,
+        prices={element_id: 50 for element_id in element_types},
+        minimum_coverage=1.0,
+    )
+
+    assert structure.keeper_pairings[0].starter_element_id == 1
+    assert structure.keeper_pairings[0].bench_element_id == 2
+    assert len(structure.common_starting_xi) == 11

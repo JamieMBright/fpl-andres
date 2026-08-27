@@ -8,6 +8,11 @@ The project follows Semantic Versioning once milestone tags begin.
 
 ### Added
 
+- Model 8.12 weights each settled current-season starting lineup as four
+  carried appearances. On the held-out 2024/25 and 2025/26 GW2 samples it
+  improved paired Brier by 0.0497, with a 95% lower bound of 0.0348 and all
+  three bootstrap seeds promoting. Cold-start role priors now update before
+  bookmaker participation and FPL availability.
 - FPL500 now leads with exact cohort headlines, hides sub-1% holdings behind
   position disclosures, opens player profiles from ownership rows, and shows
   bench use with green/amber/red ownership bands. A privacy-safe structure

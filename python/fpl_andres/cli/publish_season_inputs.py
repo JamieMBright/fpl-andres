@@ -192,8 +192,8 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--current-lineup-weight",
         type=float,
-        default=0.0,
-        help="Held-out current-season lineup weight; 0.0 disables an unpromoted candidate.",
+        default=4.0,
+        help="Held-out weight for settled current-season lineups.",
     )
     return parser
 

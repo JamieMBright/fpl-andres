@@ -152,6 +152,8 @@ def _run(
         understat_path.write_text(json.dumps(understat), encoding="utf-8")
     else:
         understat_path.unlink(missing_ok=True)
+    live_path = tmp_path / "live"
+    live_path.mkdir(exist_ok=True)
 
     def fake_get(url: str) -> Any:
         return bootstrap if "bootstrap" in url else FIXTURES
@@ -168,6 +170,8 @@ def _run(
             str(player_odds),
             "--fixture-odds",
             str(match_odds),
+            "--live",
+            str(live_path),
         ]
         if understat is not None:
             arguments.extend(("--understat", str(understat_path)))

@@ -29,6 +29,12 @@ from __future__ import annotations
 
 __all__ = ["MODEL_VERSION"]
 
+#: 8.12 gives each settled current-season lineup four times the weight of a
+#: carried appearance. Selected on 2022-24 and held out on 2024-26, it lowered
+#: paired Brier by 0.0497 with a 95% lower bound of 0.0348 and all three seeds
+#: promoting. Cold-start role priors receive the same update before bookmaker
+#: participation and FPL availability. Minor: true P(start) keeps its target.
+#:
 #: 8.11 publishes settled GW1 starts/minutes into the GW2 xStart posterior and
 #: rejects an exact Wildcard solve if earlier re-planning shrinks its final
 #: turnover below five players. Minor: xStart and affected plans move, while
@@ -396,4 +402,4 @@ __all__ = ["MODEL_VERSION"]
 #: projection and resampled, so a gap that does not clear zero is reported as
 #: not clearing zero. No projection changed; what changed is what may be
 #: claimed from it.
-MODEL_VERSION = "8.11"
+MODEL_VERSION = "8.12"

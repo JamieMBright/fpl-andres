@@ -345,9 +345,9 @@ def summarize_structure(
     spend: dict[int, list[int]] = {position: [] for position in range(1, 5)}
     for row in rows:
         keepers = [pick for pick in row.picks if element_types.get(pick.element_id) == 1]
-        starters = [pick for pick in row.picks if pick.started]
-        starting_keeper = next((pick for pick in keepers if pick.started), None)
-        bench_keeper = next((pick for pick in keepers if not pick.started), None)
+        starters = [pick for pick in row.picks if pick.position <= 11]
+        starting_keeper = next((pick for pick in keepers if pick.position <= 11), None)
+        bench_keeper = next((pick for pick in keepers if pick.position > 11), None)
         if starting_keeper is not None and bench_keeper is not None:
             pair = (starting_keeper.element_id, bench_keeper.element_id)
             pair_counts[pair] = pair_counts.get(pair, 0) + 1

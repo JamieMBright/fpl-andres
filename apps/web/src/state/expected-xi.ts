@@ -31,6 +31,7 @@ interface SeasonInputPlayer {
     recentMatches?: number | null;
     recentMinutes?: number | null;
     appearanceSource?: string;
+    lineupAdjustment?: number;
     marketAdjustment?: number;
   };
 }
@@ -203,6 +204,17 @@ function toPlayer(
       detail: `${sourceRate} source rate -> ${finalRate} published rate; ${observed}; ${recent}. The artifact does not publish the prior strength or effective sample size yet.`,
     };
     if (typeof startEvidence.marketAdjustment === "number") {
+      if (
+        typeof startEvidence.lineupAdjustment === "number" &&
+        startEvidence.lineupAdjustment !== 0
+      ) {
+        factors.push({
+          label: "Last lineups",
+          value: `${startEvidence.lineupAdjustment >= 0 ? "+" : ""}${Math.round(startEvidence.lineupAdjustment * 100)}pp`,
+          detail:
+            "Settled current-season team sheets moved the role prior by this amount.",
+        });
+      }
       factors.push({
         label: "Market effect",
         value: `${startEvidence.marketAdjustment >= 0 ? "+" : ""}${Math.round(startEvidence.marketAdjustment * 100)}pp`,
