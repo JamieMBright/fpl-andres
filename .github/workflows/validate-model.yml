@@ -44,11 +44,12 @@ on:
 permissions:
   contents: read
 
-# Never two runs writing the artifact at once, and never cancel one midway: a
-# half-written history file is worse than a late one.
+# Never two runs writing the artifact at once. A newer source commit supersedes
+# an older backtest; repository writes happen only in the final atomic commit,
+# so cancelling before that cannot leave a half-written artifact on main.
 concurrency:
   group: validate-model
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   validate:
