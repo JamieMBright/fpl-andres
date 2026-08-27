@@ -1,0 +1,206 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-08-26T22:36:22.576435Z",
+  "modelVersion": "8.9",
+  "codeRevision": "5eb08ffed28f438376671f0e96d748d914d45795",
+  "incumbentWeight": 0.2,
+  "candidateWeights": [0.1, 0.15, 0.2, 0.25, 0.3],
+  "trainSeasons": ["2022-23", "2023-24"],
+  "holdoutSeasons": ["2024-25", "2025-26"],
+  "trainingGrid": [
+    {
+      "weight": 0.1,
+      "weeks": 63,
+      "meanWeeklyMae": 1.6985299894658483,
+      "seasons": [
+        {
+          "season": "2022-23",
+          "weeks": 31,
+          "meanWeeklyMae": 1.737761676003856,
+          "meanSpearman": 0.5130420288623497
+        },
+        {
+          "season": "2023-24",
+          "weeks": 32,
+          "meanWeeklyMae": 1.6605242931321536,
+          "meanSpearman": 0.5345511051157136
+        }
+      ]
+    },
+    {
+      "weight": 0.15,
+      "weeks": 63,
+      "meanWeeklyMae": 1.7026631246137112,
+      "seasons": [
+        {
+          "season": "2022-23",
+          "weeks": 31,
+          "meanWeeklyMae": 1.7413014758791052,
+          "meanSpearman": 0.5133957072091153
+        },
+        {
+          "season": "2023-24",
+          "weeks": 32,
+          "meanWeeklyMae": 1.6652322218253608,
+          "meanSpearman": 0.5331676272801579
+        }
+      ]
+    },
+    {
+      "weight": 0.2,
+      "weeks": 63,
+      "meanWeeklyMae": 1.7079094941025144,
+      "seasons": [
+        {
+          "season": "2022-23",
+          "weeks": 31,
+          "meanWeeklyMae": 1.746053973675099,
+          "meanSpearman": 0.5124856345329142
+        },
+        {
+          "season": "2023-24",
+          "weeks": 32,
+          "meanWeeklyMae": 1.670957029516573,
+          "meanSpearman": 0.5311935290116941
+        }
+      ]
+    },
+    {
+      "weight": 0.25,
+      "weeks": 63,
+      "meanWeeklyMae": 1.7141655769480677,
+      "seasons": [
+        {
+          "season": "2022-23",
+          "weeks": 31,
+          "meanWeeklyMae": 1.7517599922788227,
+          "meanSpearman": 0.5108016591582003
+        },
+        {
+          "season": "2023-24",
+          "weeks": 32,
+          "meanWeeklyMae": 1.6777459870963987,
+          "meanSpearman": 0.5285586567468472
+        }
+      ]
+    },
+    {
+      "weight": 0.3,
+      "weeks": 63,
+      "meanWeeklyMae": 1.721281734829854,
+      "seasons": [
+        {
+          "season": "2022-23",
+          "weeks": 31,
+          "meanWeeklyMae": 1.758280075067875,
+          "meanSpearman": 0.5083407877351153
+        },
+        {
+          "season": "2023-24",
+          "weeks": 32,
+          "meanWeeklyMae": 1.6854395927242705,
+          "meanSpearman": 0.5256578390654248
+        }
+      ]
+    }
+  ],
+  "selectedWeight": 0.1,
+  "holdout": {
+    "incumbent": {
+      "weight": 0.2,
+      "weeks": 64,
+      "meanWeeklyMae": 1.7270356748747873,
+      "seasons": [
+        {
+          "season": "2024-25",
+          "weeks": 32,
+          "meanWeeklyMae": 1.6389799943407506,
+          "meanSpearman": 0.521523258762545
+        },
+        {
+          "season": "2025-26",
+          "weeks": 32,
+          "meanWeeklyMae": 1.8150913554088237,
+          "meanSpearman": 0.4870403495769595
+        }
+      ]
+    },
+    "candidate": {
+      "weight": 0.1,
+      "weeks": 64,
+      "meanWeeklyMae": 1.7160304061660812,
+      "seasons": [
+        {
+          "season": "2024-25",
+          "weeks": 32,
+          "meanWeeklyMae": 1.628537525311281,
+          "meanSpearman": 0.5237306929334675
+        },
+        {
+          "season": "2025-26",
+          "weeks": 32,
+          "meanWeeklyMae": 1.8035232870208813,
+          "meanSpearman": 0.49168735810336417
+        }
+      ]
+    }
+  },
+  "promotion": {
+    "baseline": {
+      "metric_name": "weekly_mae",
+      "point_estimate": 1.7270356748747873,
+      "lower": 1.6682691570472559,
+      "upper": 1.7832700353525022,
+      "confidence": 0.9875,
+      "resamples": 2000,
+      "seed": 17,
+      "sample_size": 64
+    },
+    "candidate": {
+      "metric_name": "weekly_mae",
+      "point_estimate": 1.7160304061660812,
+      "lower": 1.6573208299762836,
+      "upper": 1.771363659748117,
+      "confidence": 0.9875,
+      "resamples": 2000,
+      "seed": 17,
+      "sample_size": 64
+    },
+    "paired_improvement": {
+      "metric_name": "paired_weekly_mae_improvement",
+      "point_estimate": 0.011005268708706106,
+      "lower": 0.008376915028911606,
+      "upper": 0.013591580227504552,
+      "confidence": 0.9875,
+      "resamples": 2000,
+      "seed": 17,
+      "sample_size": 64
+    },
+    "minimum_sample_size": 32,
+    "promoted": true,
+    "reason_codes": ["beat_baseline"],
+    "seed_replicates": 3,
+    "seeds_promoting": 3,
+    "familySize": 4,
+    "familyCorrectedConfidence": 0.9875,
+    "spearmanRegressionLimit": 0.005,
+    "spearmanRegressions": {
+      "2024-25": -0.0022074341709225065,
+      "2025-26": -0.00464700852640465
+    },
+    "promotedAfterGuardrail": true,
+    "finalReasonCodes": ["beat_baseline"]
+  },
+  "comparison": {
+    "primaryMetric": "paired mean weekly MAE",
+    "bootstrapUnit": "scored gameweek on one shared player population",
+    "familyCorrection": "Bonferroni across four challengers",
+    "guardrail": "no holdout-season mean Spearman regression greater than 0.005"
+  },
+  "corpusFingerprints": {
+    "2022-23": "sha256:e391320d85950de1a65a540a34b5b25e5f7f63877d122adb56353c3870e7af29",
+    "2023-24": "sha256:2621943c2e6597782ee90ed962055c4d0582e4391e78c198a4f8825aab4e2521",
+    "2024-25": "sha256:c91af5764ca2781bc823a5f80103c82d2531ae0300ff92487c046b785f77e78d",
+    "2025-26": "sha256:6aad10d62476fbeb5b7b9f76ea1abba9bb2aad132ab4be368b62964fd57bdb04"
+  }
+}
