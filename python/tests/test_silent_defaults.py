@@ -35,6 +35,7 @@ def _evidence(
         minimum_observations=3,
         prior_start_rate=0.35,
         prior_strength_events=2.0,
+        current_season_weight=1.0,
         prediction_cutoff=CUTOFF,
         data_available_at=CUTOFF,
         source_hashes=("hash",),

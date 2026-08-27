@@ -6,6 +6,30 @@ import { clubStrength, rateFixtureRun } from "./fixture-run";
 const ARSENAL = 3;
 const WOLVES = 39;
 const PROMOTED = 999_999;
+const strengths = new Map([
+  [
+    ARSENAL,
+    {
+      code: ARSENAL,
+      shortName: "ARS",
+      attackHome: 1.4,
+      attackAway: 1.2,
+      defenceHome: 0.7,
+      defenceAway: 0.8,
+    },
+  ],
+  [
+    WOLVES,
+    {
+      code: WOLVES,
+      shortName: "WOL",
+      attackHome: 0.8,
+      attackAway: 0.7,
+      defenceHome: 1.3,
+      defenceAway: 1.4,
+    },
+  ],
+]);
 
 // This season's ids, which have nothing to do with last season's.
 const codeByTeamId = new Map([
@@ -19,12 +43,12 @@ const ourCodes = new Map([...codeByTeamId, [OURS, 14]]);
 
 describe("clubStrength", () => {
   it("finds a club by the code that survives a season change", () => {
-    expect(clubStrength(ARSENAL)?.shortName).toBe("ARS");
+    expect(clubStrength(ARSENAL, strengths)?.shortName).toBe("ARS");
   });
 
   it("returns nothing for a club it never measured", () => {
-    expect(clubStrength(PROMOTED)).toBeNull();
-    expect(clubStrength(undefined)).toBeNull();
+    expect(clubStrength(PROMOTED, strengths)).toBeNull();
+    expect(clubStrength(undefined, strengths)).toBeNull();
   });
 });
 
@@ -36,9 +60,9 @@ describe("rateFixtureRun", () => {
   ];
 
   it("rates a defender on what the opponents score", () => {
-    const run = rateFixtureRun(ourCodes, fixtures, OURS, "DEF", 2);
-    const arsenal = clubStrength(ARSENAL);
-    const wolves = clubStrength(WOLVES);
+    const run = rateFixtureRun(ourCodes, fixtures, OURS, "DEF", 2, strengths);
+    const arsenal = clubStrength(ARSENAL, strengths);
+    const wolves = clubStrength(WOLVES, strengths);
 
     expect(run.opponents).toEqual(["ARS", "WOL"]);
     expect(run.rating).toBeCloseTo(
@@ -48,9 +72,9 @@ describe("rateFixtureRun", () => {
   });
 
   it("rates a forward on what the opponents concede", () => {
-    const run = rateFixtureRun(ourCodes, fixtures, OURS, "FWD", 2);
-    const arsenal = clubStrength(ARSENAL);
-    const wolves = clubStrength(WOLVES);
+    const run = rateFixtureRun(ourCodes, fixtures, OURS, "FWD", 2, strengths);
+    const arsenal = clubStrength(ARSENAL, strengths);
+    const wolves = clubStrength(WOLVES, strengths);
 
     expect(run.rating).toBeCloseTo(
       ((arsenal?.defenceAway ?? 0) + (wolves?.defenceHome ?? 0)) / 2,
@@ -59,7 +83,7 @@ describe("rateFixtureRun", () => {
   });
 
   it("leaves a promoted club unrated rather than calling it average", () => {
-    const run = rateFixtureRun(ourCodes, fixtures, OURS, "FWD", 3);
+    const run = rateFixtureRun(ourCodes, fixtures, OURS, "FWD", 3, strengths);
 
     expect(run.fixtures).toBe(3);
     expect(run.rated).toBe(2);
@@ -73,6 +97,7 @@ describe("rateFixtureRun", () => {
       OURS,
       "MID",
       1,
+      strengths,
     );
 
     expect(run.rating).toBeNull();
@@ -89,6 +114,7 @@ describe("rateFixtureRun", () => {
       OURS,
       "DEF",
       1,
+      strengths,
     );
 
     expect(run.fixtures).toBe(2);
@@ -105,6 +131,7 @@ describe("rateFixtureRun", () => {
       OURS,
       "DEF",
       2,
+      strengths,
     );
 
     expect(run.fixtures).toBe(1);

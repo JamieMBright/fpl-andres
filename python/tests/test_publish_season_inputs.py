@@ -16,6 +16,12 @@ from unittest.mock import patch
 import pytest
 
 from fpl_andres.cli import publish_season_inputs
+from fpl_andres.cli.publish_season_inputs import (
+    CurrentLineupObservation,
+    DepthRolePrior,
+    _apply_current_lineup,
+    _initial_player_draft,
+)
 
 BOOTSTRAP: dict[str, Any] = {
     "teams": [
@@ -272,6 +278,41 @@ class TestTheMarketPricingTheAttackingRoute:
         defender = _attacking(_run(tmp_path, [_element(element_type=2)], odds=_odds()))
 
         assert defender > midfielder
+
+
+def test_current_lineup_updates_a_cold_start_role_prior_separately() -> None:
+    prior = DepthRolePrior(
+        base_points=1.5,
+        start_rate=0.3,
+        expected_minutes=30.0,
+        expected_goals=0.1,
+        expected_assists=0.1,
+        expected_shots=None,
+        expected_bps=None,
+        bps_deviation=None,
+        routes={"appearance": 1.0},
+    )
+    starter = _initial_player_draft(_element(), None, prior)
+    benched = _initial_player_draft(_element(), None, prior)
+    assert starter is not None and benched is not None
+
+    assert _apply_current_lineup(
+        starter,
+        [CurrentLineupObservation(started=True, minutes=90)],
+        weight=4.0,
+        prior_strength=4.0,
+    )
+    assert _apply_current_lineup(
+        benched,
+        [CurrentLineupObservation(started=False, minutes=0)],
+        weight=4.0,
+        prior_strength=4.0,
+    )
+
+    assert starter.start_rate > prior.start_rate
+    assert benched.start_rate < prior.start_rate
+    assert starter.lineup_adjustment == pytest.approx(starter.start_rate - prior.start_rate)
+    assert starter.evidence["appearance"] == "currentSeasonLineup"
 
     def test_market_usage_is_published_without_copying_quotes_into_solver_inputs(
         self, tmp_path: Path

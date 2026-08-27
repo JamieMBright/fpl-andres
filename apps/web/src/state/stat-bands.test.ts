@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { bandFor } from "./stat-bands";
+import { bandFor, bandFromCuts } from "./stat-bands";
 
 /**
  * The bands come from the published pool's own quartiles per position, so these
@@ -22,8 +22,8 @@ describe("bandFor", () => {
 
   it("turns the scale around where a bigger number is worse", () => {
     // Blanking often is bad, so a high blank rate must not read as strong.
-    expect(bandFor("MID", "blankRate", 1)).toBe("poor");
-    expect(bandFor("MID", "blankRate", 0)).toBe("strong");
+    expect(bandFromCuts("blankRate", 1, [0.2, 0.4, 0.6])).toBe("poor");
+    expect(bandFromCuts("blankRate", 0, [0.2, 0.4, 0.6])).toBe("strong");
   });
 
   it("judges a figure against its own position, not the whole game", () => {

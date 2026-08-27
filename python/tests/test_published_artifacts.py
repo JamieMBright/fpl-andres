@@ -151,11 +151,14 @@ def test_projections_shape() -> None:
         },
         "projections.players[]",
     )
-    _require_keys(
-        payload["clubs"][0],
-        {"attackAway", "attackHome", "code", "defenceAway", "defenceHome", "shortName"},
-        "projections.clubs[]",
-    )
+    for club in payload["clubs"]:
+        _require_keys(
+            club,
+            {"attackAway", "attackHome", "code", "defenceAway", "defenceHome", "shortName"},
+            "projections.clubs[]",
+        )
+    if payload["throughGameweek"] >= 5:
+        assert payload["clubs"], "a mature projection must publish fitted club strengths"
 
 
 def test_every_projection_carries_an_evidence_level() -> None:

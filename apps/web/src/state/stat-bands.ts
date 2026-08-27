@@ -77,8 +77,21 @@ export function bandFor(
   const [low, middle, high] = cutsFor(position, field);
   if (low === middle && middle === high) return null;
 
+  return bandFromCuts(field, value, [low, middle, high]);
+}
+
+export function bandFromCuts(
+  field: keyof Row,
+  value: number,
+  cuts: readonly [number, number, number],
+): Band {
+  const [low, middle, high] = cuts;
+
   const rank =
     value >= high ? 3 : value >= middle ? 2 : value >= low ? 1 : (0 as const);
   const inverted = LOWER_IS_BETTER.has(field) ? 3 - rank : rank;
-  return (["poor", "ordinary", "useful", "strong"] as const)[inverted] ?? null;
+  const result = (["poor", "ordinary", "useful", "strong"] as const)[inverted];
+  if (result === undefined)
+    throw new Error(`invalid stat-band rank ${inverted}`);
+  return result;
 }

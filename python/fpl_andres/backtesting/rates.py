@@ -270,6 +270,7 @@ def project_element_minutes(
         minimum_observations=config.minimum_observations,
         prior_start_rate=config.prior_start_rate,
         prior_strength_events=config.prior_strength_events,
+        current_season_weight=config.current_season_weight,
         prediction_cutoff=cutoff,
         data_available_at=cutoff,
         source_hashes=(_SOURCE_HASH,),

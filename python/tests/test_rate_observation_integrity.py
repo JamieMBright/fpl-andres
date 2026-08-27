@@ -155,6 +155,7 @@ def test_minutes_evidence_also_rejects_a_repeated_match() -> None:
             minimum_observations=3,
             prior_start_rate=0.5,
             prior_strength_events=4.0,
+            current_season_weight=1.0,
             prediction_cutoff=CUTOFF,
             data_available_at=CUTOFF - timedelta(hours=3),
             source_hashes=(HASH,),

@@ -179,7 +179,7 @@ describe("chipCallsFor", () => {
     const freeHit = callOf(calls, "Free Hit");
 
     if (freeHit.event === null) {
-      expect(freeHit.note).toMatch(/5 or more|no week/);
+      expect(freeHit.note).toMatch(/5 or more|no week|already using gameweek/);
       return;
     }
     const moves = /on (\d+) changes/.exec(freeHit.note);

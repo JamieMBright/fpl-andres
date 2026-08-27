@@ -86,6 +86,7 @@ OPENING_SQUAD = Path("apps/web/src/data/opening-squad.json")
 PLAYER_ODDS = Path("apps/web/src/data/player-odds.json")
 FIXTURE_ODDS = Path("apps/web/src/data/fixture-odds.json")
 UNDERSTAT = Path("apps/web/src/data/understat.json")
+LIVE = Path("data/live/2026-27")
 DEFAULT_OUTPUT = Path("apps/web/src/data/season-inputs.json")
 
 SCHEMA_VERSION = SEASON_INPUTS_SCHEMA_VERSION
@@ -182,6 +183,18 @@ def build_parser() -> argparse.ArgumentParser:
             "in one place."
         ),
     )
+    parser.add_argument(
+        "--live",
+        type=Path,
+        default=LIVE,
+        help="Directory of immutable settled current-season gw*.json snapshots.",
+    )
+    parser.add_argument(
+        "--current-lineup-weight",
+        type=float,
+        default=0.0,
+        help="Held-out current-season lineup weight; 0.0 disables an unpromoted candidate.",
+    )
     return parser
 
 
@@ -207,6 +220,32 @@ def _understat_shots(path: Path) -> dict[int, float]:
         if isinstance(code, int) and isinstance(rate, (int, float)) and float(rate) >= 0.0:
             shots[code] = float(rate)
     return shots
+
+
+def _current_lineups(path: Path) -> dict[int, list[CurrentLineupObservation]]:
+    observations: dict[int, list[CurrentLineupObservation]] = {}
+    paths = sorted(path.glob("gw*.json")) if path.is_dir() else [path]
+    for snapshot_path in paths:
+        snapshot = read_json_file(snapshot_path)
+        if snapshot.get("roundComplete") is not True:
+            continue
+        rows = snapshot.get("elements")
+        if not isinstance(rows, list):
+            raise ValueError(f"live snapshot publishes no elements: {snapshot_path}")
+        for row in rows:
+            if not isinstance(row, Mapping) or not isinstance(row.get("id"), int):
+                continue
+            stats = row.get("stats")
+            if not isinstance(stats, Mapping):
+                continue
+            minutes = stats.get("minutes", 0)
+            starts = stats.get("starts", 0)
+            if not isinstance(minutes, int) or not isinstance(starts, int):
+                raise ValueError(f"live lineup stats are not integers: {snapshot_path}")
+            observations.setdefault(int(row["id"]), []).append(
+                CurrentLineupObservation(started=starts > 0, minutes=minutes)
+            )
+    return observations
 
 
 def _artifact_provenance(
@@ -1003,7 +1042,44 @@ class PlayerDraft:
     routes: dict[str, float]
     evidence: dict[str, str]
     source_start_rate: float
+    lineup_adjustment: float = 0.0
     availability_adjustment: float = 0.0
+
+
+@dataclass(frozen=True)
+class CurrentLineupObservation:
+    started: bool
+    minutes: int
+
+
+def _apply_current_lineup(
+    draft: PlayerDraft,
+    observations: Sequence[CurrentLineupObservation],
+    *,
+    weight: float,
+    prior_strength: float,
+) -> bool:
+    """Update a cold-start role prior with settled current-season lineups."""
+    if draft.rated or not observations or weight == 0:
+        return False
+    if weight < 0 or prior_strength < 0:
+        raise ValueError("current-lineup weight and prior strength must be non-negative")
+    before = draft.start_rate
+    starts = sum(1 for observation in observations if observation.started)
+    denominator = prior_strength + weight * len(observations)
+    if denominator <= 0:
+        raise ValueError("current-lineup posterior has no evidence")
+    draft.start_rate = (before * prior_strength + weight * starts) / denominator
+    draft.lineup_adjustment = draft.start_rate - before
+    draft.model_record = {
+        **draft.model_record,
+        "appearances": len(observations),
+        "recentStarts": starts,
+        "recentMatches": len(observations),
+        "recentMinutes": sum(observation.minutes for observation in observations),
+    }
+    draft.evidence["appearance"] = "currentSeasonLineup"
+    return True
 
 
 def _optional_float(value: object) -> float | None:
@@ -1260,8 +1336,12 @@ def _final_player_row(
             "recentMatches": draft.model_record.get("recentMatches"),
             "recentMinutes": draft.model_record.get("recentMinutes"),
             "appearanceSource": draft.evidence.get("appearance", "historicalProjection"),
+            "lineupAdjustment": round(draft.lineup_adjustment, 3),
             "marketAdjustment": round(
-                draft.start_rate - draft.source_start_rate - draft.availability_adjustment,
+                draft.start_rate
+                - draft.source_start_rate
+                - draft.lineup_adjustment
+                - draft.availability_adjustment,
                 3,
             ),
             "availabilityAdjustment": round(draft.availability_adjustment, 3),
@@ -1492,6 +1572,8 @@ def _build_player_rows(
     slots_by_team: Mapping[int, Mapping[date, int]],
     clubs: Mapping[int, Mapping[str, object]],
     weight: float,
+    current_lineups: Mapping[int, Sequence[CurrentLineupObservation]],
+    current_lineup_weight: float,
 ) -> tuple[
     list[tuple[int, float, dict[str, object]]],
     PlayerMarketReach,
@@ -1505,6 +1587,12 @@ def _build_player_rows(
         draft = _initial_player_draft(element, records.get(element.code), prior)
         if draft is None:
             continue
+        _apply_current_lineup(
+            draft,
+            current_lineups.get(element.id, ()),
+            weight=current_lineup_weight,
+            prior_strength=4.0,
+        )
         baseline_start_rate = draft.start_rate
         baseline_minutes = draft.expected_minutes
         baseline_routes = dict(draft.routes)
@@ -1641,6 +1729,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     quoted_cards = _quoted_cards(player_odds_path)
     quoted_shots = _quoted_shots(player_odds_path)
     squads = _quoted_squads(player_odds_path)
+    current_lineups = _current_lineups(args.live)
     players, player_reach, market_carry = _build_player_rows(
         elements,
         depth=depth,
@@ -1654,6 +1743,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         slots_by_team=slots_by_team,
         clubs=clubs,
         weight=args.market_weight,
+        current_lineups=current_lineups,
+        current_lineup_weight=args.current_lineup_weight,
     )
 
     # The browser solve starts from the published opening squad, so every one of
@@ -1764,6 +1855,11 @@ def main(argv: Sequence[str] | None = None) -> int:
                 "level": "inferred",
                 "sources": ["historical-projection", "the-odds-api"],
                 "reasons": ["absent-from-complete-quoted-squad"],
+            },
+            "currentSeasonLineup": {
+                "level": "observed",
+                "sources": ["immutable-live-gameweek"],
+                "reasons": ["settled-starting-lineup"],
             },
         },
         # How much of the market actually reached this run. Printed to stderr

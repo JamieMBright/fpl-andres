@@ -172,6 +172,7 @@ def test_promoted_production_posterior_matches_the_held_out_candidate() -> None:
         current,
         half_life_events=2.0,
         prior_strength_events=4.0,
+        current_season_weight=4.0,
     )
     production = project_gameweek(
         current,
@@ -180,6 +181,7 @@ def test_promoted_production_posterior_matches_the_held_out_candidate() -> None:
         settings=ProjectionSettings(
             decay_half_life_events=2.0,
             prior_strength_events=4.0,
+            current_season_weight=4.0,
         ),
     )
 

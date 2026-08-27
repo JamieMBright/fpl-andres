@@ -107,6 +107,7 @@ class MinutesEvidence(BaseModel):
     minimum_observations: Annotated[int, Field(ge=1, le=38)]
     prior_start_rate: Annotated[float, Field(ge=0.0, le=1.0)]
     prior_strength_events: Annotated[float, Field(ge=0.0, le=38.0)]
+    current_season_weight: Annotated[float, Field(ge=1.0, le=20.0)]
 
     prediction_cutoff: datetime
     data_available_at: datetime
@@ -264,9 +265,20 @@ def project_minutes(evidence: MinutesEvidence) -> MinutesProjection:
     # Beta-Binomial shrinkage toward the sourced prior keeps a three-appearance
     # sample from reading as a certainty.
     prior_strength = evidence.prior_strength_events
-    probability_start = (
+    posterior_successes = (
         weighted_start_rate * effective_sample + evidence.prior_start_rate * prior_strength
-    ) / (effective_sample + prior_strength)
+    )
+    posterior_events = effective_sample + prior_strength
+    extra_weight = evidence.current_season_weight - 1.0
+    current = [
+        observation
+        for observation in evidence.observations
+        if observation.source_season == evidence.season
+    ]
+    posterior_successes += extra_weight * sum(1 for observation in current if observation.started)
+    posterior_events += extra_weight * len(current)
+    probability_start = posterior_successes / posterior_events
+    reasons.append(f"current_season_weight={evidence.current_season_weight}")
     # How much of the answer is the prior rather than the player. Bounding
     # prior_strength was never the difficulty: a legal value can still supply
     # most of the posterior, and without this the projection cannot say so.

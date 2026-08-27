@@ -81,6 +81,7 @@ export function rateFixtureRun(
   teamId: number,
   position: string,
   window: number,
+  strengths: ReadonlyMap<number, ClubStrength> = clubs,
 ): FixtureRun {
   const defensive = position === "GKP" || position === "DEF";
   const events = [
@@ -109,7 +110,7 @@ export function rateFixtureRun(
     const home = fixture.team_h === teamId;
     const opponentId = home ? fixture.team_a : fixture.team_h;
     const code = clubCodeByTeamId.get(opponentId);
-    const opponent = code === undefined ? undefined : clubs.get(code);
+    const opponent = code === undefined ? undefined : strengths.get(code);
     opponents.push(opponent?.shortName ?? "");
     if (!opponent) {
       matches.push({
@@ -153,8 +154,11 @@ export function rateFixtureRun(
   };
 }
 
-export function clubStrength(code: number | undefined): ClubStrength | null {
-  return code === undefined ? null : (clubs.get(code) ?? null);
+export function clubStrength(
+  code: number | undefined,
+  strengths: ReadonlyMap<number, ClubStrength> = clubs,
+): ClubStrength | null {
+  return code === undefined ? null : (strengths.get(code) ?? null);
 }
 
 function round(value: number): number {

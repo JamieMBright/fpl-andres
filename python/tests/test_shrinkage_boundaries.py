@@ -149,6 +149,7 @@ def _minutes_evidence(count: int, prior_strength: float) -> MinutesEvidence:
         minimum_observations=1,
         prior_start_rate=0.2,
         prior_strength_events=prior_strength,
+        current_season_weight=1.0,
         prediction_cutoff=CUTOFF,
         data_available_at=CUTOFF - timedelta(hours=3),
         source_hashes=(HASH,),

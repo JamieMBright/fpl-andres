@@ -37,6 +37,7 @@ def _evidence(
     minimum_observations: int = 3,
     prior_start_rate: float = 0.5,
     prior_strength_events: float = 2.0,
+    current_season_weight: float = 1.0,
 ) -> MinutesEvidence:
     return MinutesEvidence(
         element_code=118748,
@@ -48,6 +49,7 @@ def _evidence(
         minimum_observations=minimum_observations,
         prior_start_rate=prior_start_rate,
         prior_strength_events=prior_strength_events,
+        current_season_weight=current_season_weight,
         prediction_cutoff=CUTOFF,
         data_available_at=CUTOFF - timedelta(hours=2),
         source_hashes=(HASH,),
@@ -202,6 +204,52 @@ def test_a_stronger_prior_pulls_a_small_sample_further_toward_it() -> None:
     assert strong.probability_start < weak.probability_start
 
 
+def test_current_season_weight_moves_recent_lineups_in_the_observed_direction() -> None:
+    current_start = AppearanceObservation(
+        event_id=1,
+        minutes=90,
+        started=True,
+        kickoff_time=datetime(2024, 8, 8, tzinfo=UTC),
+        fixture_id=1,
+        source_season=SEASON,
+        events_before_prediction=2,
+    )
+    current_bench = current_start.model_copy(update={"minutes": 0, "started": False})
+    prior = tuple(
+        AppearanceObservation(
+            event_id=event,
+            minutes=0,
+            started=False,
+            kickoff_time=datetime(2023, 8, 1, tzinfo=UTC) + timedelta(days=7 * event),
+            fixture_id=100 + event,
+            source_season="2023-24",
+            events_before_prediction=40 - event,
+            start_probability_only=True,
+        )
+        for event in range(1, 39)
+    )
+
+    ordinary_start = project_minutes(_evidence((current_start, *prior), prediction_event=3))
+    weighted_start = project_minutes(
+        _evidence(
+            (current_start, *prior),
+            prediction_event=3,
+            current_season_weight=4.0,
+        )
+    )
+    ordinary_bench = project_minutes(_evidence((current_bench, *prior), prediction_event=3))
+    weighted_bench = project_minutes(
+        _evidence(
+            (current_bench, *prior),
+            prediction_event=3,
+            current_season_weight=4.0,
+        )
+    )
+
+    assert weighted_start.probability_start > ordinary_start.probability_start
+    assert weighted_bench.probability_start < ordinary_bench.probability_start
+
+
 def test_evidence_from_after_the_cutoff_is_rejected() -> None:
     evidence = MinutesEvidence(
         element_code=1,
@@ -212,6 +260,7 @@ def test_evidence_from_after_the_cutoff_is_rejected() -> None:
         minimum_observations=3,
         prior_start_rate=0.5,
         prior_strength_events=2.0,
+        current_season_weight=1.0,
         prediction_cutoff=CUTOFF,
         data_available_at=CUTOFF + timedelta(seconds=1),
         source_hashes=(HASH,),
