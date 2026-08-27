@@ -106,6 +106,7 @@ const PLAYERS = plan.players as Record<
 >;
 type GeneratedWeek = (typeof plan.gameweeks)[number];
 const GENERATED_WEEKS = plan.gameweeks as readonly (GeneratedWeek & {
+  chip?: string;
   revertsAfter?: boolean;
   revertsTo?: number[];
 })[];

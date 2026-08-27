@@ -11,6 +11,7 @@ import { readSeasonPlan } from "./state/season-plan";
 
 type GeneratedWeek = (typeof plan.gameweeks)[number];
 const weeks = plan.gameweeks as readonly (GeneratedWeek & {
+  chip?: string;
   revertsAfter?: boolean;
   revertsTo?: number[];
 })[];
