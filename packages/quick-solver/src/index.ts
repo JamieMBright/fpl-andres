@@ -147,6 +147,7 @@ export const quickSolverInputSchema = z
     players: z.array(quickPlayerSchema).min(1),
     currentSquad: z.array(currentPlayerSchema).min(1),
     priorityTransferOutElementIds: z.array(z.int().positive()).default([]),
+    targetSquadElementIds: z.array(z.int().positive()).optional(),
     bankTenths: z.int().nonnegative(),
     availableFreeTransfers: z.int().nonnegative(),
     stateEvidence: stateEvidenceSchema,
@@ -219,6 +220,30 @@ export const quickSolverInputSchema = z
         code: "custom",
         message: "current squad must contain unique elements",
       });
+    }
+    if (input.targetSquadElementIds !== undefined) {
+      if (input.chipScenario !== "free_hit") {
+        context.addIssue({
+          code: "custom",
+          message:
+            "a target squad is only valid for an unlimited-transfer chip",
+          path: ["targetSquadElementIds"],
+        });
+      }
+      if (
+        input.targetSquadElementIds.length !== input.rules.squadSize ||
+        new Set(input.targetSquadElementIds).size !==
+          input.targetSquadElementIds.length ||
+        input.targetSquadElementIds.some(
+          (elementId) => !playerIds.includes(elementId),
+        )
+      ) {
+        context.addIssue({
+          code: "custom",
+          message: "target squad must contain unique candidate elements",
+          path: ["targetSquadElementIds"],
+        });
+      }
     }
     if (
       new Set(input.priorityTransferOutElementIds).size !==
@@ -405,9 +430,25 @@ export function solveQuickPlan(
     throw new Error("current squad cannot produce a valid lineup");
   }
   statesEvaluated += 1;
-  let best = initial;
+  const planned = input.targetSquadElementIds
+    ? evaluateSquad(
+        new Set(input.targetSquadElementIds),
+        input,
+        players,
+        current,
+      )
+    : null;
+  if (
+    input.targetSquadElementIds &&
+    (planned === null || planned.transfersIn.length > maximumTransfers)
+  ) {
+    throw new Error("planned chip squad violates optimizer rules or budget");
+  }
+  if (planned) statesEvaluated += 1;
+  let best = planned ?? initial;
   let priorityBest: EvaluatedState | null = null;
-  let frontier = [initial];
+  let frontier = planned ? [] : [initial];
+  if (planned) deepestTransferCount = planned.transfersIn.length;
 
   for (let depth = 1; depth <= maximumTransfers; depth += 1) {
     const expanded = new Map<string, EvaluatedState>();
@@ -486,6 +527,7 @@ export function solveQuickPlan(
     .sort((left, right) => Date.parse(left) - Date.parse(right))
     .at(-1)!;
   const reasonCodes = ["quick_beam_plan"];
+  if (planned) reasonCodes.push("planned_chip_squad");
   if (truncated) reasonCodes.push("bounded_search_truncated");
   if (usedPriority) reasonCodes.push("ruled_out_replacement");
 

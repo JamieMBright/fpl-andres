@@ -29,6 +29,14 @@ from __future__ import annotations
 
 __all__ = ["MODEL_VERSION"]
 
+#: 8.14 makes the displayed one-to-five fixture rating opponent-only at the
+#: opponent's venue, while route-specific xPts still uses both teams. The
+#: browser now applies each advised Free Hit/Wildcard squad in a second full-
+#: season solve, so temporary changes revert, permanent changes persist and
+#: every following gameweek is planned from the state the chip actually leaves.
+#: Minor: fixture summaries and manager-specific plans move without changing
+#: the route projections they summarize.
+#:
 #: 8.13 carries the previous season's fitted club strengths by permanent club
 #: code until each returning club has five current-season matches. It also
 #: makes Free Hit a true one-week xPts1 rental: ten-plus temporary changes,
@@ -410,4 +418,4 @@ __all__ = ["MODEL_VERSION"]
 #: projection and resampled, so a gap that does not clear zero is reported as
 #: not clearing zero. No projection changed; what changed is what may be
 #: claimed from it.
-MODEL_VERSION = "8.13"
+MODEL_VERSION = "8.14"

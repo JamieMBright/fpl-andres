@@ -47,7 +47,12 @@ import type {
   PlanPlayer,
 } from "../state/season-plan";
 import { pairTransfers, readSeasonPlan } from "../state/season-plan";
-import { chipCallsByEvent, chipCallsFor } from "../state/season-chips";
+import {
+  chipCallsByEvent,
+  chipCallsFor,
+  plannedRebuilds,
+  resolveChipClashes,
+} from "../state/season-chips";
 import {
   CHIP_NAMES,
   NO_CHIPS,
@@ -691,11 +696,11 @@ function ReadingKey() {
           Team-relative matchup difficulty. One is softest, five hardest, a dash
           is a blank.
           <InfoMarker label="matchup difficulty">
-            This is not a generic rating of the opponent. It divides this
-            team&rsquo;s attacking multiplier by its expected-conceding
-            multiplier at the venue, then maps that ratio to one-to-five. That
-            is why Leeds away can be hard for Brentford even if Leeds are not a
-            strong side overall. The Why panel shows both route inputs.
+            This is the opponent&rsquo;s attacking strength over its defensive
+            tightness at the venue, mapped to one-to-five. The same opponent at
+            the same venue therefore keeps the same rating whoever faces it.
+            Route-specific xPts still uses both teams, because Arsenal and
+            Brentford should not project the same score against Chelsea.
           </InfoMarker>
         </dd>
       </div>
@@ -896,7 +901,63 @@ export default function SeasonPlanPage() {
       : { ...base, ...rebuild, ...freeHit };
   }, [declaredChips, fromEvent, openingDecision, plan.gameweeks, team]);
 
-  const solve = useSeasonSolve(live);
+  const spentChips = useMemo(
+    () =>
+      declaredChips.spent.map(
+        ({ chip, half }) => `${CHIP_NAMES[chip]}:${half}`,
+      ),
+    [declaredChips],
+  );
+  const committedChip = useMemo(
+    () =>
+      declaredChips.committed
+        ? {
+            chip: CHIP_NAMES[declaredChips.committed.chip],
+            event: declaredChips.committed.event,
+          }
+        : null,
+    [declaredChips],
+  );
+  const baselineSolve = useSeasonSolve(live);
+  const baselineChipCalls = useMemo(
+    () =>
+      live !== null && baselineSolve.status === "done"
+        ? chipCallsFor(
+            baselineSolve.gameweeks,
+            plan.chips,
+            spentChips,
+            committedChip,
+          )
+        : chipCallsFor([], plan.chips, spentChips, committedChip),
+    [
+      live,
+      baselineSolve.status,
+      baselineSolve.gameweeks,
+      plan.chips,
+      spentChips,
+      committedChip,
+    ],
+  );
+  const rebuilds = useMemo(
+    () => plannedRebuilds(baselineChipCalls),
+    [baselineChipCalls],
+  );
+  const plannedLive = useMemo(() => {
+    if (live === null || baselineSolve.status !== "done") return null;
+    if (
+      rebuilds.freeHitPlans.length === 0 &&
+      rebuilds.wildcardPlans.length === 0
+    ) {
+      return null;
+    }
+    return {
+      ...live,
+      freeHitPlans: rebuilds.freeHitPlans,
+      wildcardPlans: rebuilds.wildcardPlans,
+    };
+  }, [baselineSolve.status, live, rebuilds]);
+  const plannedSolve = useSeasonSolve(plannedLive);
+  const solve = plannedLive === null ? baselineSolve : plannedSolve;
   const solving = live !== null;
 
   /*
@@ -922,7 +983,12 @@ export default function SeasonPlanPage() {
       );
     }
     const next = solve.status === "done" ? solve.gameweeks[0] : null;
-    if (next && team.status === "ready" && team.source === "published") {
+    if (
+      next &&
+      next.chip === undefined &&
+      team.status === "ready" &&
+      team.source === "published"
+    ) {
       recordCall(window.localStorage, teamId, {
         event: next.event,
         squadBefore: team.start.squad.map((held) => held.elementId),
@@ -934,33 +1000,13 @@ export default function SeasonPlanPage() {
     return readScorecard(window.localStorage, teamId);
   }, [published, solve.gameweeks, solve.status, team, teamId]);
 
-  // Bench Boost and Triple Captain pay what this plan's own bench and captain
-  // score, so they are re-solved from the gameweeks on screen. Wildcard and
-  // Free Hit rebuild the fifteen and are carried through unchanged. A chip the
-  // manager says he has already played is dropped from both, and one he has
-  // committed to is pinned to the week he named.
-  const spentChips = useMemo(
-    () =>
-      declaredChips.spent.map(
-        ({ chip, half }) => `${CHIP_NAMES[chip]}:${half}`,
-      ),
-    [declaredChips],
-  );
-  const committedChip = useMemo(
-    () =>
-      declaredChips.committed
-        ? {
-            chip: CHIP_NAMES[declaredChips.committed.chip],
-            event: declaredChips.committed.event,
-          }
-        : null,
-    [declaredChips],
-  );
-  const chipCalls = useMemo(
+  // Rebuild chips stay on the baseline that selected their exact legal squad.
+  // Bench Boost and Triple Captain are then repriced from the chip-aware plan.
+  const postChipCalls = useMemo(
     () =>
       solving && solve.status === "done"
         ? chipCallsFor(solve.gameweeks, plan.chips, spentChips, committedChip)
-        : chipCallsFor([], plan.chips, spentChips, committedChip),
+        : baselineChipCalls,
     [
       solving,
       solve.status,
@@ -968,8 +1014,31 @@ export default function SeasonPlanPage() {
       plan.chips,
       spentChips,
       committedChip,
+      baselineChipCalls,
     ],
   );
+  const chipCalls = useMemo(() => {
+    if (plannedLive === null || solve.status !== "done") {
+      return baselineChipCalls;
+    }
+    const postByChip = new Map(
+      postChipCalls.map((call) => [`${call.chip}:${call.half}`, call]),
+    );
+    return resolveChipClashes(
+      baselineChipCalls.map((call) =>
+        call.chip === "Free Hit" || call.chip === "Wildcard"
+          ? call
+          : (postByChip.get(`${call.chip}:${call.half}`) ?? call),
+      ),
+      committedChip,
+    );
+  }, [
+    baselineChipCalls,
+    committedChip,
+    plannedLive,
+    postChipCalls,
+    solve.status,
+  ]);
   // Someone who has given a team id is here for their own season. Showing the
   // published optimum until they lock a fifteen in reads as "here is your
   // plan" when it is nobody's, and removes any reason to declare a squad.
@@ -1225,9 +1294,11 @@ export default function SeasonPlanPage() {
                   <InfoMarker label="how each chip is priced">
                     Bench Boost pays what your bench scores and Triple Captain
                     pays what your captain scores, both read off the weeks
-                    below. Wildcard and Free Hit are priced by rebuilding your
-                    fifteen from the whole pool at every week and taking the
-                    best.
+                    below. Wildcard and Free Hit are first priced by rebuilding
+                    your fifteen from the whole pool at every week. Their exact
+                    legal squads are then applied in a second full-season solve,
+                    so the gameweeks below include the chip and everything that
+                    follows it.
                   </InfoMarker>
                 </p>
               ) : null}

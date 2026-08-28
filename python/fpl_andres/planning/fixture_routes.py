@@ -16,7 +16,7 @@ import math
 from collections.abc import Mapping, Sequence
 from typing import Any
 
-from fpl_andres.backtesting.fixtures import RouteAdjustment, TeamStrength, route_adjustment
+from fpl_andres.backtesting.fixtures import TeamStrength, route_adjustment
 from fpl_andres.models.market_evidence import (
     pressure_adjusted_defcon,
     pressure_adjusted_saves,
@@ -24,7 +24,6 @@ from fpl_andres.models.market_evidence import (
 
 __all__ = [
     "ROUTE_KEYS",
-    "adjustment_difficulty",
     "fixture_difficulty",
     "fixture_multiplier",
     "fixture_points_from_routes",
@@ -113,13 +112,16 @@ def fixture_difficulty(
     games: Sequence[tuple[int, bool]],
     team_id: int,
     strength: Mapping[int, TeamStrength],
+    *,
+    bounded: bool = True,
 ) -> float | None:
     """Where this tie sits between one and five, to a tenth.
 
-    Rated on both halves of the fixture, at the venue it is played: what this
-    side is likely to score against that opponent, over what it is likely to
-    concede. A blank is None rather than three, because there is no fixture to
-    be difficult.
+    Rated on the opponent at the venue it plays: its attacking strength over
+    its defensive tightness. The team facing it must not change the label --
+    Chelsea away is the same fixture difficulty for every home side, even
+    though each side's route-specific expected points remain different. A
+    blank is None rather than three, because there is no fixture to be hard.
 
     Continuous rather than banded. Five buckets threw away most of what the
     route model had measured and made a run of fixtures look flat when it was
@@ -128,47 +130,19 @@ def fixture_difficulty(
     """
     if team_id not in strength:
         return None
-    rated = [
-        route_adjustment(
-            strength,
-            team_id,
-            opponent,
-            home=home,
-        )
-        if opponent in strength
-        else route_adjustment(
-            {**strength, opponent: PROMOTED_STRENGTH},
-            team_id,
-            opponent,
-            home=home,
-        )
-        for opponent, home in games
-    ]
-    return adjustment_difficulty(rated)
-
-
-def adjustment_difficulty(
-    adjustments: Sequence[RouteAdjustment],
-    *,
-    bounded: bool = True,
-) -> float | None:
-    """Summarise route adjustments without recomputing another fixture view.
-
-    ``bounded=False`` retains where an exceptionally soft or hard fixture sits
-    beyond the familiar one-to-five display. Callers that show the bounded
-    value can therefore disclose that clipping instead of silently turning a
-    raw 0.4 into 1.0.
-    """
-    if not adjustments:
+    ease: list[float] = []
+    for opponent, home in games:
+        theirs = strength.get(opponent, PROMOTED_STRENGTH)
+        opponent_home = not home
+        attack = theirs.attack(home=opponent_home)
+        defence = theirs.defence(home=opponent_home)
+        if attack <= 0:
+            ease.append(DIFFICULTY_HARDEST)
+            continue
+        ease.append(defence / attack)
+    if not ease:
         return None
-    # A double gameweek averages its fixtures rather than summing them: two hard
-    # games are still hard, not twice as hard.
-    ease = sum(adjustment.attacking / adjustment.conceding for adjustment in adjustments) / len(
-        adjustments
-    )
-    if ease <= 0:
-        return DIFFICULTY_HARDEST
-    rating = DIFFICULTY_MIDPOINT - DIFFICULTY_LOG_SCALE * math.log(ease)
+    rating = DIFFICULTY_MIDPOINT - DIFFICULTY_LOG_SCALE * math.log(sum(ease) / len(ease))
     if bounded:
         rating = min(DIFFICULTY_HARDEST, max(DIFFICULTY_EASIEST, rating))
     return round(rating, 1)

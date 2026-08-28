@@ -205,6 +205,12 @@ early-season freak run cannot produce an absurd figure.
 FPL's own 1–5 difficulty rating is deliberately ignored: it is subjective and
 null for older seasons.
 
+The plan still needs a compact fixture label for scanning. Its one-to-five
+summary uses only the opponent's attacking strength over its defensive
+tightness at the venue. The same opponent and venue therefore keep the same
+label whoever faces them. This label does not feed projected points; the route
+multipliers above continue to use both teams.
+
 **Where a bookmaker has priced the fixture, the market's rung is used instead.**
 `backtesting/fixtures.market_route_adjustment`. A match market prices two of
 these five routes directly — goals for and goals against — and it prices them

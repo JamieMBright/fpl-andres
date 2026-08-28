@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import openingSquad from "./data/opening-squad.json";
 import inputs from "./data/season-inputs.json";
 import { fixtureEvidenceAt } from "./state/fixture-evidence";
+import { rebuildSquad } from "./state/squad-rebuild";
 import {
   bestElevenPoints,
   bonusPointsAtEvent,
@@ -442,6 +443,47 @@ describe("a committed rebuild", () => {
 });
 
 describe("a committed Free Hit", () => {
+  it(
+    "applies the broad legal rental selected by chip planning and then restores",
+    () => {
+      const start = { ...openingStart(), fromEvent: 2 };
+      const target = rebuildSquad(1, 1000, 1);
+      expect(target).not.toBeNull();
+      const targetIds = target?.squad.map((player) => player.id) ?? [];
+      const solved = [
+        ...solveSeason({
+          ...start,
+          freeHitPlans: [{ event: 2, squadElementIds: targetIds }],
+        }),
+      ];
+      const hit = solved.find((week) => week.event === 2);
+      const following = solved.find((week) => week.event === 3);
+      const startingIds = new Set(
+        start.squad.map((player) => player.elementId),
+      );
+      const expectedChanges = targetIds.filter(
+        (elementId) => !startingIds.has(elementId),
+      ).length;
+
+      expect(hit?.chip).toBe("Free Hit");
+      expect(
+        [...(hit?.starters ?? []), ...(hit?.bench ?? [])]
+          .map((player) => player.id)
+          .sort(),
+      ).toEqual([...targetIds].sort());
+      expect(hit?.transfersIn).toHaveLength(expectedChanges);
+      expect(expectedChanges).toBeGreaterThan(1);
+      expect(hit?.paidTransfers).toBe(0);
+      expect(hit?.transferCostPoints).toBe(0);
+      expect(hit?.revertsAfter).toBe(true);
+      expect(hit?.revertsTo?.map((player) => player.id).sort()).toEqual(
+        start.squad.map((player) => player.elementId).sort(),
+      );
+      expect(following?.freeTransfersBefore).toBe(1);
+    },
+    SOLVE_TIMEOUT,
+  );
+
   it(
     "models the chip even when the best rental overlaps the held squad",
     () => {

@@ -10,6 +10,8 @@ import {
   chipCallsByEvent,
   chipCallsFor,
   freeHitSegmentGain,
+  plannedRebuilds,
+  resolveChipClashes,
   wildcardRunGain,
 } from "./season-chips";
 import { rebuildSquad } from "./squad-rebuild";
@@ -75,6 +77,7 @@ function week(
     projectedPoints: 0,
     netExpectedPoints: 0,
     bankAfterTenths: bankTenths,
+    budgetBeforeTenths: bankTenths + (bench.length + 1) * 60,
     freeTransfersBefore: 1,
   };
 }
@@ -317,6 +320,7 @@ describe("chipCallsFor", () => {
     expect(freeHit.changes).toBeGreaterThanOrEqual(10);
     expect(freeHit.incoming).toHaveLength(freeHit.changes ?? 0);
     expect(freeHit.outgoing?.length).toBeGreaterThan(0);
+    expect(freeHit.squadElementIds).toHaveLength(15);
   });
 
   it("measures Free Hit turnover before the ordinary transfer it replaces", () => {
@@ -402,9 +406,57 @@ describe("chipCallsFor", () => {
 
     expect(wildcard.event).not.toBeNull();
     expect(wildcard.note).toContain("gameweeks it opens");
+    expect(wildcard.squadElementIds).toHaveLength(15);
     // A kept squad scores over several weeks and a free hit over one, so the
     // two numbers cannot be the same measure. They used to be.
     expect(wildcard.gain).toBeGreaterThan(freeHit.gain);
+  });
+
+  it("hands only complete advised rebuilds to the second solve", () => {
+    const squadElementIds = Array.from({ length: 15 }, (_, index) => index + 1);
+    const plans = plannedRebuilds([
+      {
+        event: 2,
+        chip: "Free Hit",
+        half: "first",
+        gain: 5,
+        note: "rental",
+        squadElementIds,
+      },
+      {
+        event: null,
+        chip: "Wildcard",
+        half: "first",
+        gain: 0,
+        note: "blocked",
+        squadElementIds,
+      },
+    ]);
+
+    expect(plans.freeHitPlans).toEqual([{ event: 2, squadElementIds }]);
+    expect(plans.wildcardPlans).toEqual([]);
+  });
+
+  it("resolves clashes introduced by repricing chips after the second solve", () => {
+    const resolved = resolveChipClashes([
+      {
+        event: 2,
+        chip: "Free Hit",
+        half: "first",
+        gain: 5.7,
+        note: "rental",
+      },
+      {
+        event: 2,
+        chip: "Triple Captain",
+        half: "first",
+        gain: 5.5,
+        note: "armband",
+      },
+    ]);
+
+    expect(callOf(resolved, "Free Hit").event).toBe(2);
+    expect(callOf(resolved, "Triple Captain").event).toBeNull();
   });
 
   it("keeps the halves apart", () => {

@@ -72,6 +72,8 @@ export interface ChipCall {
   changes?: number;
   incoming?: readonly string[];
   outgoing?: readonly string[];
+  /** Exact legal squad selected for a Free Hit or Wildcard re-solve. */
+  squadElementIds?: readonly number[];
 }
 
 export interface DataGaps {

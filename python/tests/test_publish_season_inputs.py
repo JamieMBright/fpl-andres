@@ -591,8 +591,8 @@ class TestTheMarketPricingAFixture:
         assert arsenal["adjustments"]["attacking"] == _rung(priced, "ARS", "attacking", 0)
         assert arsenal["adjustments"]["cleanSheet"] == _rung(priced, "ARS", "defensive", 0)
         assert arsenal["difficulty"]["summary"] == priced["fixtureDifficulty"]["ARS"][0]
-        assert arsenal["difficulty"]["raw"] < arsenal["difficulty"]["summary"]
-        assert arsenal["difficulty"]["clipped"] is True
+        assert arsenal["difficulty"]["raw"] == arsenal["difficulty"]["summary"]
+        assert arsenal["difficulty"]["clipped"] is False
 
     def test_a_gameweek_the_market_did_not_price_keeps_the_fitted_rung(
         self, tmp_path: Path

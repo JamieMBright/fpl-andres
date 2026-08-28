@@ -142,6 +142,26 @@ describe("bounded quick solver", () => {
     expect(result.transferCostPoints).toBe(0);
   });
 
+  it("scores the exact legal squad selected by chip planning", () => {
+    const base = regretCases[0]!.input;
+    const target = solveQuickPlan(
+      { ...base, chipScenario: "free_hit" as const },
+      { beamWidth: 50, candidateLimitPerPosition: 50, maxTransfers: 15 },
+    ).squadElementIds;
+    const input = {
+      ...base,
+      chipScenario: "free_hit" as const,
+      targetSquadElementIds: target,
+    };
+
+    const result = solveQuickPlan(input, { ...limits, maxTransfers: 15 });
+
+    expect(result.squadElementIds).toEqual(target);
+    expect(result.paidTransfers).toBe(0);
+    expect(result.transferCostPoints).toBe(0);
+    expect(result.reasonCodes).toContain("planned_chip_squad");
+  });
+
   it("moves equal-value money off a Free Hit bench", () => {
     const base = regretCases[0]!.input;
     const current = new Set(

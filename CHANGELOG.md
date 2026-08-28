@@ -18,10 +18,12 @@ The project follows Semantic Versioning once milestone tags begin.
   bench use with green/amber/red ownership bands. A privacy-safe structure
   capture adds goalkeeper pairings, a common XI and positional spend without
   storing manager identities; the homepage carries a measured GW1 teaser.
-- The live plan prioritises a free transfer away from an officially ruled-out
-  incumbent, while never forcing a hit. Fixture difficulty is labelled as a
-  team-relative matchup rather than generic FDR, and Triple Captain notes show
-  the single, doubled and tripled totals.
+- Model 8.14 applies advised Free Hit and Wildcard squads in a second full-
+  season solve, so the displayed transfers, restoration and every following
+  gameweek use the chip state. Fixture difficulty now rates the opponent at its
+  venue rather than changing with the team facing it; route-specific xPts still
+  uses both teams. Triple Captain notes show the single, doubled and tripled
+  totals.
 - Proof is now a concise artifact-derived trust case: 16/16 position-season
   ranking wins, the separable captain edge, league wins, transfer gain and the
   weaker four-season GW1 table replace duplicated methodology prose.

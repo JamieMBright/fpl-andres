@@ -415,6 +415,11 @@ function lookaheadPoints(
  */
 export type SolveAssumption = "bank" | "free_transfers" | "selling_prices";
 
+export interface PlannedChipSquad {
+  event: number;
+  squadElementIds: readonly number[];
+}
+
 export interface SolveStart {
   /** Element ids currently held, and what they would sell for. */
   squad: { elementId: number; sellingPriceTenths: number }[];
@@ -435,6 +440,10 @@ export interface SolveStart {
   rebuildAtEvent?: number;
   /** A one-week temporary squad that is restored after this event. */
   freeHitAtEvent?: number;
+  /** Wildcard squads selected by the chip-planning pass. */
+  wildcardPlans?: readonly PlannedChipSquad[];
+  /** Free Hit squads selected by the chip-planning pass. */
+  freeHitPlans?: readonly PlannedChipSquad[];
   assumed: readonly SolveAssumption[];
 }
 
@@ -456,6 +465,8 @@ export interface SolvedGameweek {
   projectedPoints: number;
   netExpectedPoints: number;
   bankAfterTenths: number;
+  /** Sellable squad value plus bank before this gameweek's moves. */
+  budgetBeforeTenths: number;
   freeTransfersBefore: number;
   chip?: "Free Hit" | "Wildcard";
   revertsAfter?: boolean;
@@ -642,11 +653,31 @@ const TRANSFER_MARGIN_POINTS = RULES.transferMarginPoints;
 export function* solveSeason(
   start: SolveStart,
 ): Generator<SolvedGameweek, void, undefined> {
+  const wildcardPlans = new Map(
+    (start.wildcardPlans ?? []).map((plan) => [
+      plan.event,
+      plan.squadElementIds,
+    ]),
+  );
+  const freeHitPlans = new Map(
+    (start.freeHitPlans ?? []).map((plan) => [
+      plan.event,
+      plan.squadElementIds,
+    ]),
+  );
+  if (
+    start.rebuildAtEvent !== undefined &&
+    !wildcardPlans.has(start.rebuildAtEvent)
+  ) {
+    wildcardPlans.set(start.rebuildAtEvent, []);
+  }
   if (
     start.freeHitAtEvent !== undefined &&
-    start.rebuildAtEvent !== undefined &&
-    start.freeHitAtEvent === start.rebuildAtEvent
+    !freeHitPlans.has(start.freeHitAtEvent)
   ) {
+    freeHitPlans.set(start.freeHitAtEvent, []);
+  }
+  if ([...freeHitPlans.keys()].some((event) => wildcardPlans.has(event))) {
     throw new Error(
       "Free Hit and Wildcard cannot be played in the same gameweek",
     );
@@ -660,13 +691,10 @@ export function* solveSeason(
 
   let squad = start.squad.map((held) => ({ ...held }));
   let bank = start.bankTenths;
-  const rebuildIndex =
-    start.rebuildAtEvent === undefined
-      ? Number.POSITIVE_INFINITY
-      : (() => {
-          const at = EVENTS.indexOf(start.rebuildAtEvent);
-          return at < 0 ? Number.POSITIVE_INFINITY : at;
-        })();
+  const rebuildIndexes = [...wildcardPlans.keys()]
+    .map((event) => EVENTS.indexOf(event))
+    .filter((index) => index >= 0)
+    .sort((left, right) => left - right);
   // Nothing is charged before the first deadline: a squad is still being
   // picked, not transferred. Starting at zero made the solver price a change
   // it should have taken for nothing, and the plan opened by advising a hit.
@@ -674,17 +702,17 @@ export function* solveSeason(
     start.fromEvent === SEASON_OPENER
       ? MAX_FREE_TRANSFERS
       : start.availableFreeTransfers;
-  const freeHitIndex =
-    start.freeHitAtEvent === undefined
-      ? -1
-      : EVENTS.indexOf(start.freeHitAtEvent);
-
   for (let index = firstIndex; index < EVENTS.length; index += 1) {
     const event = EVENTS[index];
     const deadline = DEADLINES[index];
     if (event === undefined || deadline === undefined) break;
-    const isFreeHit = index === freeHitIndex;
-    const isWildcard = index === rebuildIndex;
+    const freeHitTarget = freeHitPlans.get(event);
+    const wildcardTarget = wildcardPlans.get(event);
+    const isFreeHit = freeHitPlans.has(event);
+    const isWildcard = wildcardPlans.has(event);
+    const rebuildIndex =
+      rebuildIndexes.find((candidate) => candidate >= index) ??
+      Number.POSITIVE_INFINITY;
 
     const players = PLAYERS.filter(
       // Same floor the Python planner applies. Without it a fringe player with
@@ -723,6 +751,12 @@ export function* solveSeason(
       predictionCutoff: deadline,
       players,
       currentSquad: squad,
+      targetSquadElementIds:
+        freeHitTarget && freeHitTarget.length > 0
+          ? [...freeHitTarget]
+          : wildcardTarget && wildcardTarget.length > 0
+            ? [...wildcardTarget]
+            : undefined,
       priorityTransferOutElementIds: squad.flatMap(({ elementId }) => {
         const player = look(elementId);
         const ruledOut =
@@ -810,6 +844,12 @@ export function* solveSeason(
       netExpectedPoints:
         Math.round((gameweekPoints - solved.transferCostPoints) * 100) / 100,
       bankAfterTenths: solved.bankAfterTenths,
+      budgetBeforeTenths:
+        bank +
+        input.currentSquad.reduce(
+          (total, player) => total + player.sellingPriceTenths,
+          0,
+        ),
       freeTransfersBefore: freeBefore,
       ...(isFreeHit
         ? {

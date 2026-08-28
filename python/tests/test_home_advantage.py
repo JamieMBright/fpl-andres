@@ -130,6 +130,19 @@ def test_the_same_tie_is_harder_away_than_at_home() -> None:
     assert away > at_home
 
 
+def test_difficulty_describes_the_opponent_not_the_team_facing_them() -> None:
+    strength = {
+        1: TeamStrength(attack_home=1.6, attack_away=1.4, defence_home=0.5, defence_away=0.6),
+        2: TeamStrength(attack_home=0.8, attack_away=0.7, defence_home=1.3, defence_away=1.4),
+        3: TeamStrength(attack_home=1.0, attack_away=1.0, defence_home=1.0, defence_away=1.0),
+    }
+
+    strong_team_rating = fixture_difficulty([(3, True)], 1, strength)
+    weak_team_rating = fixture_difficulty([(3, True)], 2, strength)
+
+    assert strong_team_rating == weak_team_rating == 3.0
+
+
 def test_difficulty_stays_inside_the_published_scale() -> None:
     lopsided = [
         *[_fixture(index, 1, other, 9, 0) for index, other in enumerate((2, 3, 4))],

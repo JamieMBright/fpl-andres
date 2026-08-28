@@ -71,7 +71,7 @@ from fpl_andres.models.market_routes import (
 from fpl_andres.planning.fixture_routes import (
     PROMOTED_STRENGTH,
     ROUTE_KEYS,
-    adjustment_difficulty,
+    fixture_difficulty,
     published_strength,
 )
 from fpl_andres.planning.opening import PLAYABLE_START_RATE
@@ -1485,7 +1485,7 @@ def _fixture_ladders(
         against: list[list[str]] = []
         for event in ordered:
             games = schedule.get((event, team_id), ())
-            *values, priced, adjustments, market_matches = _fixture_adjustment_sum(
+            *values, priced, _adjustments, market_matches = _fixture_adjustment_sum(
                 games,
                 team_id=team_id,
                 event=event,
@@ -1496,13 +1496,10 @@ def _fixture_ladders(
             market_rungs += priced
             for rows, value in zip(route_rows, values, strict=True):
                 rows.append(round(value, 3))
-            difficulty.append(adjustment_difficulty(adjustments))
+            difficulty.append(fixture_difficulty(games, team_id, strength))
             for market_match in market_matches:
-                raw_difficulty = adjustment_difficulty(
-                    [market_match.adjustment],
-                    bounded=False,
-                )
-                summary_difficulty = adjustment_difficulty([market_match.adjustment])
+                raw_difficulty = fixture_difficulty(games, team_id, strength, bounded=False)
+                summary_difficulty = fixture_difficulty(games, team_id, strength)
                 market_evidence.setdefault(str(team["short_name"]), []).append(
                     {
                         "event": event,

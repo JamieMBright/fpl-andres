@@ -9,6 +9,7 @@ import {
   EVENT_INDEX,
   SEASON_TRANSFER_RULES,
   bestElevenPoints,
+  type PlannedChipSquad,
   type SolvedGameweek,
   type SolverPlayer,
 } from "./season-solver";
@@ -122,6 +123,7 @@ function callFor(
  * rise, which is named in the chip note rather than hidden.
  */
 function budgetAt(week: SolvedGameweek): number {
+  if (week.budgetBeforeTenths > 0) return week.budgetBeforeTenths;
   const held = [...week.starters, ...week.bench];
   return (
     held.reduce((total, player) => total + player.priceTenths, 0) +
@@ -355,6 +357,9 @@ function rebuildCalls(
           changes: freeHit.free.changes,
           incoming: freeHitPlayers!.incoming,
           outgoing: freeHitPlayers!.outgoing,
+          squadElementIds: freeHit.free.rebuilt!.squad.map(
+            (player) => player.id,
+          ),
           note:
             `a ${String(freeHit.free.changes)}-change xPts1 rental in gameweek ${String(freeHit.week.event)} is worth ` +
             `${freeHit.free.gain.toFixed(1)} over the ${String(freeHit.freeHitHorizon)}-gameweek restored-squad replay after resetting to one free transfer; ` +
@@ -376,6 +381,9 @@ function rebuildCalls(
           changes: wildcard.kept.changes,
           incoming: wildcardPlayers!.incoming,
           outgoing: wildcardPlayers!.outgoing,
+          squadElementIds: wildcard.kept.rebuilt!.squad.map(
+            (player) => player.id,
+          ),
           note:
             `rebuilding in gameweek ${String(wildcard.week.event)} moves ${String(wildcard.kept.changes)} of your fifteen ` +
             `and is worth ${wildcard.kept.gain.toFixed(1)} over the ${String(wildcard.wildcardHorizon)} gameweeks it opens; ` +
@@ -468,6 +476,7 @@ function singleChipPerGameweek(
       changes: _changes,
       incoming: _incoming,
       outgoing: _outgoing,
+      squadElementIds: _squadElementIds,
       ...rest
     } = call;
     return {
@@ -477,6 +486,31 @@ function singleChipPerGameweek(
       note: `${reason}, so this chip is left unplayed`,
     };
   });
+}
+
+export function resolveChipClashes(
+  calls: readonly ChipCall[],
+  committed: { chip: string; event: number } | null = null,
+): ChipCall[] {
+  return singleChipPerGameweek(calls, committed);
+}
+
+export function plannedRebuilds(calls: readonly ChipCall[]): {
+  freeHitPlans: PlannedChipSquad[];
+  wildcardPlans: PlannedChipSquad[];
+} {
+  const freeHitPlans: PlannedChipSquad[] = [];
+  const wildcardPlans: PlannedChipSquad[] = [];
+  for (const call of calls) {
+    if (call.event === null || call.squadElementIds?.length !== 15) continue;
+    const plan = {
+      event: call.event,
+      squadElementIds: [...call.squadElementIds],
+    };
+    if (call.chip === "Free Hit") freeHitPlans.push(plan);
+    if (call.chip === "Wildcard") wildcardPlans.push(plan);
+  }
+  return { freeHitPlans, wildcardPlans };
 }
 
 /**
