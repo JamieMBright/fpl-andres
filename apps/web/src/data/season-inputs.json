@@ -1,6 +1,6 @@
 {
   "schemaVersion": 6,
-  "generatedAt": "2026-08-28T15:06:35.201060Z",
+  "generatedAt": "2026-08-28T16:47:10.078466Z",
   "recordSeason": "2026-27",
   "events": [
     2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22,
@@ -51,8 +51,8 @@
     "historicalProjection": {
       "source": "fpl-history-corpus",
       "level": "inferred",
-      "updatedAt": "2026-08-28T14:02:46.503178+00:00",
-      "contentHash": "sha256:16b0c455c956c7b88849c55ae7e4ddfddd80fddad264c51664ce24434421beff"
+      "updatedAt": "2026-08-28T16:46:48.333541+00:00",
+      "contentHash": "sha256:0c131ebf6632beed7a4dc0875f9f38a406f8b9aa9a46038b734ecf9133258c34"
     },
     "playerMarkets": {
       "source": "the-odds-api",
@@ -190,7 +190,7 @@
       }
     ],
     "sourceReference": "FPL rules page, Transfers section",
-    "dataAvailableAt": "2026-08-28T15:06:35.207205Z",
+    "dataAvailableAt": "2026-08-28T16:47:10.083824Z",
     "playableStartRate": 0.35,
     "transferMarginPoints": 0.5
   },
@@ -22659,36 +22659,6 @@
       "depthRank": 2
     },
     {
-      "id": 56,
-      "code": 173879,
-      "name": "Abraham",
-      "position": "FWD",
-      "positionId": 4,
-      "club": "AVL",
-      "teamId": 2,
-      "priceTenths": 55,
-      "availabilityStatus": "d",
-      "chanceOfPlaying": 75,
-      "basePoints": 0.43,
-      "routes": { "appearance": 0.212, "attacking": 0.218 },
-      "startRate": 0.108,
-      "startEvidence": {
-        "sourceStartRate": 0.108,
-        "finalStartRate": 0.108,
-        "observedAppearances": 0,
-        "recentStarts": 0,
-        "recentMatches": 1,
-        "recentMinutes": 0,
-        "appearanceSource": "historicalProjection",
-        "lineupAdjustment": 0.0,
-        "marketAdjustment": 0.0,
-        "availabilityAdjustment": 0.0
-      },
-      "squadNumber": null,
-      "rated": true,
-      "depthRank": 2
-    },
-    {
       "id": 168,
       "code": 499309,
       "name": "Marc Guiu",
@@ -22717,6 +22687,36 @@
       "squadNumber": null,
       "rated": true,
       "depthRank": 4
+    },
+    {
+      "id": 56,
+      "code": 173879,
+      "name": "Abraham",
+      "position": "FWD",
+      "positionId": 4,
+      "club": "AVL",
+      "teamId": 2,
+      "priceTenths": 55,
+      "availabilityStatus": "d",
+      "chanceOfPlaying": 50,
+      "basePoints": 0.29,
+      "routes": { "appearance": 0.143, "attacking": 0.147 },
+      "startRate": 0.072,
+      "startEvidence": {
+        "sourceStartRate": 0.072,
+        "finalStartRate": 0.072,
+        "observedAppearances": 0,
+        "recentStarts": 0,
+        "recentMatches": 1,
+        "recentMinutes": 0,
+        "appearanceSource": "historicalProjection",
+        "lineupAdjustment": 0.0,
+        "marketAdjustment": 0.0,
+        "availabilityAdjustment": 0.0
+      },
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 2
     },
     {
       "id": 582,
