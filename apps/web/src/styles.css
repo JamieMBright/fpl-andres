@@ -5571,6 +5571,16 @@ button.fpl500-holding-name {
   position: relative;
 }
 
+.fpl500-spend-values {
+  display: grid;
+  justify-items: end;
+}
+
+.fpl500-spend-values small {
+  color: var(--ink-soft);
+  font-size: 9px;
+}
+
 @media (width <= 700px) {
   .fpl500-structure-grid {
     grid-template-columns: 1fr;

@@ -91,5 +91,6 @@ describe("Fpl500Structure", () => {
     expect(screen.getByText("Starter keeper + Bench keeper")).toBeVisible();
     expect(screen.getByText("48%")).toBeVisible();
     expect(screen.getByText("£40.0m")).toBeVisible();
+    expect(screen.getByText("£38.0–£42.0m")).toBeVisible();
   });
 });

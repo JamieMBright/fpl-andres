@@ -97,7 +97,8 @@ export function Fpl500Structure({
           <h4 id="fpl500-spend-title">Average squad spend</h4>
           <ul className="fpl500-spend">
             {positions.map((position) => {
-              const mean = structure.positionalSpend[position].mean;
+              const spend = structure.positionalSpend[position];
+              const mean = spend.mean;
               return (
                 <li key={position}>
                   <span
@@ -106,7 +107,13 @@ export function Fpl500Structure({
                     style={{ width: `${String((mean / maximumSpend) * 100)}%` }}
                   />
                   <span>{position}</span>
-                  <strong>{money.format(mean / 10)}m</strong>
+                  <span className="fpl500-spend-values">
+                    <strong>{money.format(mean / 10)}m</strong>
+                    <small className="mono">
+                      {money.format(spend.p10 / 10)}–
+                      {money.format(spend.p90 / 10)}m
+                    </small>
+                  </span>
                 </li>
               );
             })}
