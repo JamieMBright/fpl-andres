@@ -635,10 +635,8 @@ export function Fpl500Playbook() {
         <div className="cohort-caveat">
           <h3>What none of it can tell you</h3>
           <p>
-            Being in the FPL500 does not mean a manager will be good this
-            season. What it means is that they have been consistent enough for
-            long enough to qualify, which is why they are worth learning from
-            rather than worth copying.
+            FPL500 measures past consistency, not next season&rsquo;s returns.
+            Learn from the cohort; do not copy it.
           </p>
         </div>
       </Fold>

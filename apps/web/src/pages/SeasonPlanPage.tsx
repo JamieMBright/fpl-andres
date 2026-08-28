@@ -1148,9 +1148,8 @@ export default function SeasonPlanPage() {
           title="Set your plan"
         >
           <p className="plan-inputs-intro">
-            Tell the plan what the public FPL record cannot: which race matters,
-            anything you have changed since the deadline, and chips already used
-            or committed. Each answer changes the solve below.
+            Set your race, any post-deadline transfers and chip state. Each
+            answer re-solves the plan.
           </p>
           <RankObjectiveForm entryId={teamId} onChosen={setChosenObjective} />
           {team.status === "ready" && team.source === "published" ? (

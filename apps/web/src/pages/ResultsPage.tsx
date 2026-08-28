@@ -28,11 +28,10 @@ export default function ResultsPage() {
 
   return (
     <section className="text-page results-page">
-      <p className="eyebrow">Evidence, not endorsements</p>
+      <p className="eyebrow">Results</p>
       <RouteHeading>Measured Results</RouteHeading>
       <p className="faq-lede">
         Three questions, tested against completed seasons and public records.
-        Open the source view whenever the short answer matters.
       </p>
 
       <div className="about-ledger">

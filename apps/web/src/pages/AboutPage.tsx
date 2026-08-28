@@ -78,11 +78,10 @@ export default function AboutPage() {
               fifteen.
             </p>
             <p>
-              Every recommendation keeps its evidence, timestamp and uncertainty
-              attached. Read the <Link to="/methodology">method</Link> or
-              inspect the <Link to="/results">measured results</Link> when the
-              number matters. The <Link to="/calibration">full scorecard</Link>{" "}
-              keeps every table underneath.
+              Every call carries its source, timestamp and confidence. See the{" "}
+              <Link to="/methodology">method</Link>,{" "}
+              <Link to="/results">results</Link> or{" "}
+              <Link to="/calibration">full calibration</Link>.
             </p>
           </div>
         </section>
@@ -94,11 +93,9 @@ export default function AboutPage() {
           <div>
             <h2 id="about-why">Why I do it</h2>
             <p>
-              Deadline decisions get noisy. I want the useful number first, the
-              working directly underneath it, and a visible refusal when the
-              source cannot support an answer.
+              Because deadline calls get noisy, and I would rather refuse than
+              guess.
             </p>
-            <p>All forecasts are wrong. Some are useful.</p>
           </div>
         </section>
 
@@ -109,14 +106,8 @@ export default function AboutPage() {
           <div>
             <h2 id="about-origin">Where Andres comes from</h2>
             <p>
-              Andres is the fictional analyst behind the dossier: pulled into a
-              Bielsa-era spotlight because he spoke Spanish, aware that luck
-              opened the door, and determined to repay it with work good enough
-              to survive scrutiny.
-            </p>
-            <p>
-              That is the voice of the product, not a biography or a claim of
-              club affiliation.
+              Andres is a fictional analyst: a voice, not a biography or a claim
+              of club affiliation.
             </p>
           </div>
         </section>

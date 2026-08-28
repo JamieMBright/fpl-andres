@@ -30,7 +30,6 @@ const ANSWERS: readonly Answer[] = [
     a: [
       "Two things. First, a projection of how many FPL points each Premier League player is expected to score, rebuilt from what he did last season: minutes, goals, assists, clean sheets, saves, defensive contributions and cards, each converted to a per-90 rate and then priced with the published FPL scoring table.",
       "Second, a plan. Those per-player projections are put through the real 2026/27 fixture list, and a solver picks a squad, a starting eleven, a captain and a transfer for all 38 gameweeks inside the actual rules: £100.0m, fifteen players, no more than three from one club, one free transfer a week, four points for any transfer beyond it.",
-      "No part of it is an opinion about a footballer. Every number traces back to a measurement or to a published rule.",
     ],
   },
   {
@@ -269,9 +268,7 @@ export default function FaqPage() {
       <RouteHeading>Questions</RouteHeading>
 
       <p className="faq-lede">
-        This is the long version. Everywhere else on the site the words are kept
-        short because the numbers are next to them. Here there are no numbers,
-        so nothing is abbreviated.
+        Every term used elsewhere on the site, defined in full.
       </p>
 
       <section aria-labelledby="faq-answers-title" className="faq-answers">
