@@ -104,7 +104,8 @@ jobs:
           catalogue="data/cohort/portfolio/gw$(printf '%02d' "$event").json"
           exact="data/cohort/portfolio/fpl500/gw$(printf '%02d' "$event").json"
           aggregate="data/cohort/portfolio/fpl500/gw$(printf '%02d' "$event")-aggregates.json"
-          structure="data/cohort/portfolio/fpl500/gw$(printf '%02d' "$event")-structure-v2.json"
+          structure="data/cohort/portfolio/fpl500/gw$(printf '%02d' "$event")-structure-v3.json"
+          legacy_structure="data/cohort/portfolio/fpl500/gw$(printf '%02d' "$event")-structure-v2.json"
           if [ ! -f "$membership" ]; then
             python -m fpl_andres.cli.pin_fpl500_membership \
               --event "$event" \
@@ -128,12 +129,18 @@ jobs:
             echo "$exact already exists; immutable capture retained"
           fi
           if [ ! -f "$aggregate" ] || [ ! -f "$structure" ]; then
+            structure_args=()
+            if [ -f "$legacy_structure" ]; then
+              structure_args+=(
+                --structure-supersedes "$(basename "$legacy_structure")"
+                --structure-correction-reason "adds-legal-popularity-squad"
+              )
+            fi
             python -m fpl_andres.cli.capture_cohort_aggregate \
               --event "$event" \
               --membership "$membership" \
               --structure-output "$structure" \
-              --structure-supersedes "gw$(printf '%02d' "$event")-structure.json" \
-              --structure-correction-reason "bench-boost-lineups-use-team-sheet-slots" \
+              "${structure_args[@]}" \
               | tee -a "$GITHUB_STEP_SUMMARY"
           else
             echo "$aggregate already exists; immutable aggregate retained"

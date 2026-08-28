@@ -61,7 +61,7 @@ describe("rebuildSquad", () => {
 
 describe("rebuildUplift", () => {
   it("reports nothing to gain against a squad that is already the best", () => {
-    const squad = rebuildSquad(0, BUDGET)?.squad ?? [];
+    const squad = rebuildSquad(0, BUDGET, 1)?.squad ?? [];
     const { gain } = rebuildUplift(SEASON_EVENTS[0] as number, squad, BUDGET);
 
     // The rebuild is deterministic, so rebuilding the same squad on the same
@@ -75,7 +75,7 @@ describe("rebuildUplift", () => {
     // Find that boundary from the published pool instead of guessing it.
     let poor: ReturnType<typeof rebuildSquad> = null;
     for (let budget = 600; budget < BUDGET && poor === null; budget += 10) {
-      poor = rebuildSquad(0, budget);
+      poor = rebuildSquad(0, budget, 1);
     }
 
     expect(poor).not.toBeNull();

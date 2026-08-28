@@ -45,6 +45,9 @@ from dataclasses import dataclass
 from statistics import median
 from typing import Literal
 
+from fpl_andres.planning.opening import OpeningSettings, SquadPlan, choose_opening_squad
+from fpl_andres.simulation.squad import Candidate, SquadRules
+
 __all__ = [
     "MINIMUM_COVERAGE",
     "CoverageTooLow",
@@ -54,6 +57,7 @@ __all__ = [
     "KeeperPairing",
     "ManagerPicks",
     "Pick",
+    "PopularitySquad",
     "Portfolio",
     "PortfolioAggregate",
     "PortfolioBasis",
@@ -197,6 +201,18 @@ class KeeperPairing:
 
 
 @dataclass(frozen=True)
+class PopularitySquad:
+    squad: tuple[int, ...]
+    starters: tuple[int, ...]
+    bench: tuple[int, ...]
+    formation: tuple[int, int, int]
+    spent_tenths: int
+    xi_spent_tenths: int
+    mean_ownership: float
+    mean_started_share: float
+
+
+@dataclass(frozen=True)
 class PortfolioStructure:
     event: int
     cohort_revision: str
@@ -206,6 +222,7 @@ class PortfolioStructure:
     common_starting_xi: tuple[int, ...]
     formation: tuple[int, int, int]
     positional_spend: dict[int, DistributionSummary]
+    popularity_squad: PopularitySquad | None = None
 
     @property
     def coverage(self) -> float:
@@ -320,6 +337,7 @@ def summarize_structure(
     attempted: int,
     cohort_revision: str,
     element_types: Mapping[int, int],
+    team_ids: Mapping[int, int],
     prices: Mapping[int, int],
     minimum_coverage: float = MINIMUM_COVERAGE,
 ) -> PortfolioStructure:
@@ -341,9 +359,12 @@ def summarize_structure(
 
     pair_counts: dict[tuple[int, int], int] = {}
     formation_counts: dict[tuple[int, int, int], int] = {}
+    owned_counts: dict[int, int] = {}
     started_counts: dict[int, int] = {}
     spend: dict[int, list[int]] = {position: [] for position in range(1, 5)}
     for row in rows:
+        for element_id in {pick.element_id for pick in row.picks}:
+            owned_counts[element_id] = owned_counts.get(element_id, 0) + 1
         keepers = [pick for pick in row.picks if element_types.get(pick.element_id) == 1]
         starters = [pick for pick in row.picks if pick.position <= 11]
         starting_keeper = next((pick for pick in keepers if pick.position <= 11), None)
@@ -394,6 +415,15 @@ def summarize_structure(
             pair_counts.items(), key=lambda row: (-row[1], row[0])
         )
     )
+    popularity = _popularity_squad(
+        pairings,
+        owned_counts,
+        started_counts,
+        element_types,
+        team_ids,
+        prices,
+        total,
+    )
     return PortfolioStructure(
         event=event,
         cohort_revision=cohort_revision,
@@ -403,6 +433,82 @@ def summarize_structure(
         common_starting_xi=tuple(common),
         formation=formation,
         positional_spend={position: _summary(values) for position, values in spend.items()},
+        popularity_squad=popularity,
+    )
+
+
+def _popularity_squad(
+    pairings: Sequence[KeeperPairing],
+    owned_counts: Mapping[int, int],
+    started_counts: Mapping[int, int],
+    element_types: Mapping[int, int],
+    team_ids: Mapping[int, int],
+    prices: Mapping[int, int],
+    total: int,
+) -> PopularitySquad | None:
+    candidates = tuple(
+        Candidate(
+            element_id=element_id,
+            element_code=element_id,
+            position=element_types[element_id],
+            team_id=team_ids[element_id],
+            price_tenths=prices[element_id],
+        )
+        for element_id in sorted(owned_counts)
+        if element_id in element_types and element_id in team_ids and element_id in prices
+    )
+    rules = SquadRules(
+        budget_tenths=1000,
+        club_limit=3,
+        position_counts={1: 2, 2: 5, 3: 5, 4: 3},
+    )
+    settings = OpeningSettings(rules=rules, playable_start_rate=0.0)
+    owned_share = {element_id: count / total for element_id, count in owned_counts.items()}
+    started_share = {
+        element_id: started_counts.get(element_id, 0) / total for element_id in owned_counts
+    }
+    plans: list[SquadPlan] = []
+    keeper_pairs = [{pair.starter_element_id, pair.bench_element_id} for pair in pairings] or [
+        set()
+    ]
+    for keeper_pair in keeper_pairs:
+        pool = [
+            player
+            for player in candidates
+            if player.position != 1 or not keeper_pair or player.element_id in keeper_pair
+        ]
+        try:
+            plans.append(
+                choose_opening_squad(
+                    pool,
+                    started_share,
+                    owned_share,
+                    settings,
+                    appear=started_share,
+                )
+            )
+            break
+        except ValueError:
+            continue
+    if not plans:
+        return None
+    plan = plans[0]
+    assert plan is not None
+    starters = tuple(player.element_id for player in plan.starters)
+    squad = tuple(player.element_id for player in plan.squad)
+    formation = tuple(
+        sum(1 for player in plan.starters if player.position == position) for position in (2, 3, 4)
+    )
+    return PopularitySquad(
+        squad=squad,
+        starters=starters,
+        bench=tuple(player.element_id for player in plan.bench),
+        formation=(formation[0], formation[1], formation[2]),
+        spent_tenths=plan.spent_tenths,
+        xi_spent_tenths=sum(player.price_tenths for player in plan.starters),
+        mean_ownership=sum(owned_share[element_id] for element_id in squad) / len(squad),
+        mean_started_share=sum(started_share[element_id] for element_id in starters)
+        / len(starters),
     )
 
 

@@ -225,19 +225,13 @@ function CaptainDistribution() {
         </InfoMarker>
       </h3>
       <p>
-        The first capture covered the whole catalogue. It was not the FPL500. I
-        have kept that evidence and added the exact five hundred beside it.
+        Captain choices from the five hundred managers ranked at the captured
+        source time.
       </p>
-      <div className="cohort-armband-series-list">
-        <CaptainSeries
-          id="catalogue-armband"
-          series={data.cataloguePortfolio}
-        />
-        <CaptainSeries
-          id="exact-fpl500-armband"
-          series={data.exactFpl500Portfolio}
-        />
-      </div>
+      <CaptainSeries
+        id="exact-fpl500-armband"
+        series={data.exactFpl500Portfolio}
+      />
     </section>
   );
 }
@@ -260,10 +254,6 @@ function Gw1CohortSummary() {
       shown: number.format(count),
     }),
   );
-  const topCaptain = data.exactFpl500Portfolio.captains["01"]?.[0];
-  const topCaptainName = topCaptain
-    ? (PLAYERS_BY_ELEMENT_ID.get(topCaptain.elementId)?.name ?? "Unknown")
-    : "—";
   return (
     <section
       className="fpl500-gw-summary"
@@ -288,14 +278,6 @@ function Gw1CohortSummary() {
           <dd>
             {aggregate.totalPoints.minimum}–{aggregate.totalPoints.maximum}
           </dd>
-        </div>
-        <div>
-          <dt>Top captain</dt>
-          <dd>{topCaptainName}</dd>
-        </div>
-        <div>
-          <dt>Captain share</dt>
-          <dd>{topCaptain ? fineShare.format(topCaptain.share) : "—"}</dd>
         </div>
       </dl>
       <BarChart
@@ -620,6 +602,9 @@ export function Fpl500Playbook() {
         <Fpl500Holdings
           event={1}
           holdings={data.exactFpl500Portfolio.holdings?.["01"] ?? []}
+          keeperPairings={
+            data.exactFpl500Portfolio.samples["01"]?.structure?.keeperPairings
+          }
         />
         {data.exactFpl500Portfolio.samples["01"]?.structure ? (
           <Fpl500Structure

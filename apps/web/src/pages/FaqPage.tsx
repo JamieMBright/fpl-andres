@@ -156,15 +156,15 @@ const FPL_LINGO = [
   ],
   [
     "Free Hit",
-    "A chip that fields a completely different squad for one gameweek at no cost. At the final whistle the original squad returns exactly as it was.",
+    "A chip that fields a completely different squad for one gameweek at no cost. At the final whistle the original squad and bank return exactly as they were, and the next gameweek starts with one free transfer. Two copies are issued, one per half.",
   ],
   [
     "Bench Boost",
-    "A chip that scores all fifteen players for one gameweek instead of the usual eleven.",
+    "A chip that scores all fifteen players for one gameweek instead of the usual eleven. Two copies are issued, one per half.",
   ],
   [
     "Triple Captain",
-    "A chip that triples the captain's score for one gameweek instead of doubling it.",
+    "A chip that triples the captain's score for one gameweek instead of doubling it. Two copies are issued, one per half.",
   ],
   [
     "FDR",

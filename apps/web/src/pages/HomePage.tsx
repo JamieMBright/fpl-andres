@@ -66,6 +66,16 @@ export default function HomePage() {
     <section className="index-page" aria-label="Index">
       <RouteHeading>Top Picks</RouteHeading>
 
+      <ErrorBoundary>
+        <Suspense
+          fallback={
+            <div aria-hidden="true" className="fpl500-teaser-placeholder" />
+          }
+        >
+          <Fpl500Teaser />
+        </Suspense>
+      </ErrorBoundary>
+
       <div className="index-rankings">
         <ErrorBoundary>
           <Suspense fallback={null}>
@@ -73,12 +83,6 @@ export default function HomePage() {
           </Suspense>
         </ErrorBoundary>
       </div>
-
-      <ErrorBoundary>
-        <Suspense fallback={null}>
-          <Fpl500Teaser />
-        </Suspense>
-      </ErrorBoundary>
 
       <ul className="index-grid">
         <li className="index-cell is-plan">

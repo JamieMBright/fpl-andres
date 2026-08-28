@@ -31,7 +31,7 @@ DEFAULT_MEMBERSHIP_DIR = Path("data/cohort/fpl500-membership")
 DEFAULT_PORTFOLIO_DIR = Path("data/cohort/portfolio/fpl500")
 DEFAULT_PLAYERS = Path("apps/web/public/fpl-global.json")
 SCHEMA_VERSION = 1
-STRUCTURE_SCHEMA_VERSION = 2
+STRUCTURE_SCHEMA_VERSION = 3
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -141,6 +141,20 @@ def write_structure(
             for position, summary in structure.positional_spend.items()
         },
     }
+    if structure.popularity_squad is not None:
+        popularity = structure.popularity_squad
+        payload["popularitySquad"] = {
+            "method": "legal-aggregate-popularity",
+            "squad": list(popularity.squad),
+            "starters": list(popularity.starters),
+            "bench": list(popularity.bench),
+            "formation": list(popularity.formation),
+            "spentTenths": popularity.spent_tenths,
+            "xiSpentTenths": popularity.xi_spent_tenths,
+            "bankTenths": 1000 - popularity.spent_tenths,
+            "meanOwnership": round(popularity.mean_ownership, 5),
+            "meanStartedShare": round(popularity.mean_started_share, 5),
+        }
     if supersedes is not None and correction_reason is not None:
         payload.update(
             {
@@ -158,7 +172,9 @@ def write_structure(
     )
 
 
-def _player_metadata(path: Path) -> tuple[dict[int, int], dict[int, int]]:
+def _player_metadata(
+    path: Path,
+) -> tuple[dict[int, int], dict[int, int], dict[int, int]]:
     raw = read_json_file(path)
     bootstrap = raw.get("bootstrap")
     if not isinstance(bootstrap, dict) or not isinstance(bootstrap.get("elements"), list):
@@ -167,6 +183,7 @@ def _player_metadata(path: Path) -> tuple[dict[int, int], dict[int, int]]:
     return (
         {int(row["id"]): int(row["element_type"]) for row in elements},
         {int(row["id"]): int(row["now_cost"]) for row in elements},
+        {int(row["id"]): int(row["team"]) for row in elements},
     )
 
 
@@ -194,7 +211,8 @@ async def run(args: argparse.Namespace) -> int:
                 return await _fetch(client, throttle, entry_id, event)
 
         results = await asyncio.gather(*(one(entry_id) for entry_id in membership.entry_ids))
-    captured = [row for row in results if row is not None and row.history is not None]
+    structures = [row for row in results if row is not None]
+    captured = [row for row in structures if row.history is not None]
     aggregate = aggregate_manager_history(
         captured,
         event=event,
@@ -204,13 +222,14 @@ async def run(args: argparse.Namespace) -> int:
     )
     output = args.output or args.portfolio_dir / f"gw{event:02d}-aggregates.json"
     structure_output = args.structure_output or args.portfolio_dir / f"gw{event:02d}-structure.json"
-    element_types, prices = _player_metadata(args.players)
+    element_types, prices, team_ids = _player_metadata(args.players)
     structure = summarize_structure(
-        captured,
+        structures,
         event=event,
         attempted=membership.size,
         cohort_revision=membership.membership_hash,
         element_types=element_types,
+        team_ids=team_ids,
         prices=prices,
         minimum_coverage=args.minimum_coverage,
     )

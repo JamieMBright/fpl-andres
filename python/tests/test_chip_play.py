@@ -10,20 +10,25 @@ from __future__ import annotations
 
 from dataclasses import replace
 from datetime import UTC, datetime
+from types import SimpleNamespace
 from typing import Any
 
 import pytest
 
 from fpl_andres.cli.publish_season_plan import (
+    MINIMUM_FREE_HIT_CHANGES,
     MINIMUM_WILDCARD_CHANGES,
     Candidate,
     _ChipRun,
+    _free_hit_squad,
     _place_wildcards,
     _play_chips,
+    _play_free_hit,
     _solved_wildcard_turnover,
     _turnover,
     _wildcard_turnover,
 )
+from fpl_andres.simulation.squad import Candidate as SquadCandidate
 
 
 def test_final_wildcard_turnover_reads_the_replanned_predecessor() -> None:
@@ -94,7 +99,7 @@ def _run(weeks: dict[int, dict[str, Any]], points: dict[int, float]) -> _ChipRun
         detail=DETAIL,
         cutoffs={event: datetime(2026, 8, 1, tzinfo=UTC) for event in weeks},
         forecasts=(),
-        rules=None,  # type: ignore[arg-type]
+        rules=SimpleNamespace(transfer_rules=SimpleNamespace(weekly_free_transfers=1)),  # type: ignore[arg-type]
         now=datetime(2026, 8, 1, tzinfo=UTC),
         time_limit=1.0,
         schedule={},
@@ -127,6 +132,49 @@ def test_a_free_hit_fields_a_completely_different_fifteen() -> None:
     assert len(week["transfersOut"]) == 15
 
 
+def test_a_free_hit_preserves_the_best_xi_and_cheapens_the_bench(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    positions = [1, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 1, 2, 3, 2]
+    expensive = [
+        SquadCandidate(
+            element_id=index,
+            element_code=index,
+            position=position,
+            team_id=index,
+            price_tenths=50,
+        )
+        for index, position in enumerate(positions, start=1)
+    ]
+    cheap = [
+        SquadCandidate(
+            element_id=16 + index,
+            element_code=16 + index,
+            position=position,
+            team_id=16 + index,
+            price_tenths=40 if position != 3 else 45,
+        )
+        for index, position in enumerate((1, 2, 3, 2))
+    ]
+    starters = tuple(expensive[:11])
+    bench = tuple(expensive[11:])
+    monkeypatch.setattr(
+        "fpl_andres.cli.publish_season_plan.choose_opening_squad",
+        lambda *_args, **_kwargs: SimpleNamespace(
+            squad=tuple(expensive),
+            starters=starters,
+            bench=bench,
+        ),
+    )
+    points = {candidate.element_id: 10.0 for candidate in starters}
+    points.update({candidate.element_id: 0.0 for candidate in [*bench, *cheap]})
+
+    selected_starters, selected_bench = _free_hit_squad([*expensive, *cheap], points)
+
+    assert set(selected_starters) == {candidate.element_id for candidate in starters}
+    assert set(selected_bench) == {candidate.element_id for candidate in cheap}
+
+
 def test_a_free_hit_charges_nothing_and_spends_no_free_transfer() -> None:
     weeks = {2: _week(2, HELD)}
 
@@ -144,6 +192,80 @@ def test_a_free_hit_publishes_the_fifteen_the_plan_resumes_from() -> None:
 
     assert weeks[2]["revertsAfter"] is True
     assert sorted(weeks[2]["revertsTo"]) == HELD
+
+
+def test_a_free_hit_restores_the_previous_squad_and_resets_to_one_transfer(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    ordinary_transfer = [*HELD[:-1], 16]
+    weeks = {1: _week(1, HELD), 2: _week(2, ordinary_transfer), 3: _week(3, ordinary_transfer)}
+    run = _run(weeks, _points(better=True))
+    resumed = _week(3, HELD)
+    captured: dict[str, object] = {}
+
+    def solve_after(
+        events: list[int],
+        squad: list[int],
+        bank_tenths: int,
+        free_transfers: int,
+        _run: _ChipRun,
+    ) -> dict[int, dict[str, Any]]:
+        captured.update(
+            events=events,
+            squad=squad,
+            bank_tenths=bank_tenths,
+            free_transfers=free_transfers,
+        )
+        return {3: resumed}
+
+    monkeypatch.setattr("fpl_andres.cli.publish_season_plan._solve_segment", solve_after)
+
+    _play_chips([_free_hit()], run)
+
+    assert len(weeks[2]["transfersIn"]) >= MINIMUM_FREE_HIT_CHANGES
+    assert weeks[2]["revertsTo"] == HELD
+    assert captured == {
+        "events": [3],
+        "squad": HELD,
+        "bank_tenths": 0,
+        "free_transfers": 1,
+    }
+    assert weeks[3]["squadElementIds"] == HELD
+    assert 16 not in weeks[3]["squadElementIds"]
+
+
+def test_a_wildcard_after_a_free_hit_rebuilds_from_the_restored_squad(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    ordinary_transfer = [*HELD[:-1], 16]
+    rebuilt = [*HELD[:10], *FRESH[:5]]
+    weeks = {
+        1: _week(1, HELD),
+        2: _week(2, ordinary_transfer),
+        3: {**_week(3, rebuilt), "chip": "Wildcard"},
+    }
+    run = _run(weeks, _points(better=True))
+    captured: list[set[int] | None] = []
+
+    def capture_turnover(
+        week: dict[str, Any],
+        starters: list[int],
+        bench: list[int],
+        _run: _ChipRun,
+        replacing: set[int] | None = None,
+    ) -> None:
+        captured.append(replacing)
+        week["squadElementIds"] = sorted(set(starters) | set(bench))
+        week["netExpectedPoints"] = 72.0
+
+    monkeypatch.setattr(
+        "fpl_andres.cli.publish_season_plan._turnover",
+        capture_turnover,
+    )
+
+    _play_free_hit(_free_hit(), run)
+
+    assert captured == [set(HELD), set(HELD)]
 
 
 def test_a_free_hit_that_buys_nothing_better_is_not_played() -> None:
@@ -170,6 +292,28 @@ def test_a_chip_reports_the_gain_it_actually_measured() -> None:
     # Eleven starters at six plus the captain again, against the 36 it replaced.
     assert weeks[2]["netExpectedPoints"] == pytest.approx(72.0)
     assert chips[0]["gain"] == pytest.approx(36.0)
+
+
+def test_a_free_hit_is_refused_when_the_transfer_reset_loses_more_later(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    weeks = {2: _week(2, HELD), 3: _week(3, HELD)}
+    weeks[3]["netExpectedPoints"] = 100.0
+    resumed = _week(3, HELD)
+    resumed["netExpectedPoints"] = 20.0
+    run = _run(weeks, _points(better=True))
+    chip = _free_hit()
+    monkeypatch.setattr(
+        "fpl_andres.cli.publish_season_plan._solve_segment",
+        lambda *_args, **_kwargs: {3: resumed},
+    )
+
+    _play_chips([chip], run)
+
+    assert chip["event"] is None
+    assert chip["gain"] == 0.0
+    assert "resetting to one free transfer" in chip["note"]
+    assert weeks[3]["netExpectedPoints"] == 100.0
 
 
 def test_the_turnover_captains_the_best_of_the_new_eleven() -> None:
@@ -206,6 +350,38 @@ def test_a_rebuild_that_moves_almost_nobody_is_not_a_wildcard() -> None:
     assert chips[0]["gain"] == 0.0
     assert str(MINIMUM_WILDCARD_CHANGES) in chips[0]["note"]
     assert "chip" not in weeks[3]
+
+
+def test_a_played_wildcard_is_a_permanent_meaningful_rebuild(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    rebuilt = [*HELD[:10], *FRESH[:5]]
+    weeks = {2: _week(2, HELD), 3: _week(3, HELD), 4: _week(4, rebuilt)}
+    run = _run(weeks, _points(better=True))
+    solved = {2: weeks[2], 3: _week(3, rebuilt), 4: _week(4, rebuilt)}
+
+    monkeypatch.setattr(
+        "fpl_andres.cli.publish_season_plan._wildcard_turnover",
+        lambda _event, _run: MINIMUM_WILDCARD_CHANGES,
+    )
+    monkeypatch.setattr(
+        "fpl_andres.cli.publish_season_plan._solved_wildcard_turnover",
+        lambda _event, _weeks, _ordered, _opening: MINIMUM_WILDCARD_CHANGES,
+    )
+    monkeypatch.setattr(
+        "fpl_andres.cli.publish_season_plan._season_with_wildcards",
+        lambda _events, _run: (solved, 120.0),
+    )
+    monkeypatch.setattr(
+        "fpl_andres.cli.publish_season_plan._wildcard_horizon_cliff",
+        lambda _event, _run: (5, (5, 7)),
+    )
+
+    _place_wildcards([_wildcard(3)], run)
+
+    assert weeks[3]["chip"] == "Wildcard"
+    assert len(weeks[3]["transfersIn"]) >= MINIMUM_WILDCARD_CHANGES
+    assert weeks[4]["squadElementIds"] == rebuilt
 
 
 def test_the_turnover_is_measured_against_the_week_before_the_rebuild() -> None:

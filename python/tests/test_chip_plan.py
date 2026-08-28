@@ -26,6 +26,7 @@ from fpl_andres.cli.publish_season_plan import (
     _lineup_points_with_captain,
     _place_wildcards,
     _validate_published_armbands,
+    _wildcard_horizon_cliff,
     _wildcard_turnover,
 )
 
@@ -236,16 +237,20 @@ def test_wildcard_takes_the_run_where_the_squad_is_furthest_behind() -> None:
     ("ordered_events", "by_event", "expected_replacing"),
     [
         (
-            [5, 6],
+            [5, 6, 7],
             {
                 5: {"event": 5, "squadElementIds": [1, 2, 3], "netExpectedPoints": 10.0},
                 6: {"event": 6, "squadElementIds": [4, 5, 6], "netExpectedPoints": 10.0},
+                7: {"event": 7, "squadElementIds": [11, 12, 13], "netExpectedPoints": 10.0},
             },
             {1, 2, 3},
         ),
         (
-            [6],
-            {6: {"event": 6, "squadElementIds": [4, 5, 6], "netExpectedPoints": 10.0}},
+            [6, 7],
+            {
+                6: {"event": 6, "squadElementIds": [4, 5, 6], "netExpectedPoints": 10.0},
+                7: {"event": 7, "squadElementIds": [11, 12, 13], "netExpectedPoints": 10.0},
+            },
             {1, 2, 3},
         ),
     ],
@@ -293,12 +298,16 @@ def test_wildcard_publishes_the_exact_segment_squad(
                 event: solved_week if event == 6 else run.by_event[event]
                 for event in run.ordered_events
             },
-            21.0,
+            31.0,
         ),
     )
     monkeypatch.setattr(
         "fpl_andres.cli.publish_season_plan._wildcard_squad",
         lambda _event, _run: ([21, 22], [23]),
+    )
+    monkeypatch.setattr(
+        "fpl_andres.cli.publish_season_plan._wildcard_horizon_cliff",
+        lambda _event, _run: (4, (5, 7)),
     )
 
     def capture_turnover(
@@ -322,6 +331,23 @@ def test_wildcard_publishes_the_exact_segment_squad(
         "bench": [13],
         "replacing": expected_replacing,
     }
+
+
+def test_wildcard_horizon_cliff_compares_3_5_7_and_9(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    squads = {
+        3: ([1, 2, 3], []),
+        5: ([1, 2, 4], []),
+        7: ([5, 6, 7], []),
+        9: ([5, 6, 8], []),
+    }
+    monkeypatch.setattr(
+        "fpl_andres.cli.publish_season_plan._wildcard_squad_for_horizon",
+        lambda _event, horizon, _run: squads[horizon],
+    )
+
+    assert _wildcard_horizon_cliff(6, cast(_ChipRun, object())) == (3, (5, 7))
 
 
 def test_first_remaining_wildcard_screen_compares_with_the_held_squad(
@@ -362,9 +388,7 @@ def test_a_free_hit_is_never_played_in_the_opening_week() -> None:
     assert _plan(weeks, ceiling)["Free Hit:first"]["event"] != 1
 
 
-def test_the_two_unlimited_transfer_chips_are_kept_apart() -> None:
-    """A free hit next door to a wildcard hands back the squad the wildcard just
-    built, which spends two chips to do the work of one."""
+def test_the_two_unlimited_transfer_chips_do_not_share_a_gameweek() -> None:
     weeks = [_week(index, expected={"1": 1.0}, bench=[], projected=10.0) for index in range(1, 20)]
     ceiling = {index: 90.0 for index in range(1, 20)}
 
@@ -374,7 +398,7 @@ def test_the_two_unlimited_transfer_chips_are_kept_apart() -> None:
 
     assert isinstance(wildcard, int)
     assert isinstance(free_hit, int)
-    assert abs(wildcard - free_hit) >= 3
+    assert wildcard != free_hit
 
 
 def test_a_flat_shortfall_is_not_a_free_hit_problem() -> None:

@@ -9,13 +9,13 @@ import {
   requireArtifactVersion,
   SEASON_INPUTS_SCHEMA_VERSION,
 } from "./artifact-version";
+import { WILDCARD_REBUILD_HORIZON } from "./chip-rules";
 
 requireArtifactVersion(
   "season-inputs.json",
   inputs,
   SEASON_INPUTS_SCHEMA_VERSION,
 );
-
 /**
  * Solve a whole season in the browser, one gameweek at a time.
  *
@@ -23,10 +23,8 @@ requireArtifactVersion(
  *
  * The plan is unique to the manager: their squad, their bank, their free
  * transfers, their remaining chips. It cannot be precomputed. It also cannot be
- * computed on request — twelve chained MILP windows take about a minute against
  * a fifteen-second function budget, and the exact 38-event solve does not
  * return at all.
- *
  * A browser has no timeout and no per-request cost, and the private half of the
  * state — free transfers and chips, which FPL does not publish — is already
  * only in localStorage. Solving here means it never has to leave.
@@ -79,6 +77,11 @@ const RULES = inputs.rules as PublishedRules;
 
 const WEEKLY_FREE_TRANSFERS = RULES.weeklyFreeTransfers;
 const MAX_FREE_TRANSFERS = RULES.maximumFreeTransfers;
+export const SEASON_TRANSFER_RULES = {
+  weeklyFreeTransfers: WEEKLY_FREE_TRANSFERS,
+  maximumFreeTransfers: MAX_FREE_TRANSFERS,
+  transferCostPoints: RULES.transferCostPoints,
+} as const;
 /**
  * The opening gameweek is squad selection, not a transfer window: there is
  * nothing to spend and nothing to roll, and the first award lands for gameweek
@@ -387,9 +390,10 @@ function lookaheadPoints(
   player: SolverPlayer,
   eventIndex: number,
   rebuildIndex = Number.POSITIVE_INFINITY,
+  horizon = LOOKAHEAD,
 ): number {
   let total = 0;
-  for (let ahead = 0; ahead < LOOKAHEAD; ahead += 1) {
+  for (let ahead = 0; ahead < horizon; ahead += 1) {
     const index = eventIndex + ahead;
     if (index >= EVENTS.length) break;
     // Only binds before the rebuild. From the rebuild onwards the squad is new
@@ -453,7 +457,7 @@ export interface SolvedGameweek {
   netExpectedPoints: number;
   bankAfterTenths: number;
   freeTransfersBefore: number;
-  chip?: "Free Hit";
+  chip?: "Free Hit" | "Wildcard";
   revertsAfter?: boolean;
   revertsTo?: SolverPlayer[];
 }
@@ -538,8 +542,9 @@ export function lookaheadPointsFor(
   player: SolverPlayer,
   eventIndex: number,
   rebuildIndex?: number,
+  horizon?: number,
 ): number {
-  return lookaheadPoints(player, eventIndex, rebuildIndex);
+  return lookaheadPoints(player, eventIndex, rebuildIndex, horizon);
 }
 
 /**
@@ -637,6 +642,15 @@ const TRANSFER_MARGIN_POINTS = RULES.transferMarginPoints;
 export function* solveSeason(
   start: SolveStart,
 ): Generator<SolvedGameweek, void, undefined> {
+  if (
+    start.freeHitAtEvent !== undefined &&
+    start.rebuildAtEvent !== undefined &&
+    start.freeHitAtEvent === start.rebuildAtEvent
+  ) {
+    throw new Error(
+      "Free Hit and Wildcard cannot be played in the same gameweek",
+    );
+  }
   const firstIndex = EVENTS.indexOf(start.fromEvent);
   if (firstIndex < 0) {
     throw new Error(
@@ -669,6 +683,8 @@ export function* solveSeason(
     const event = EVENTS[index];
     const deadline = DEADLINES[index];
     if (event === undefined || deadline === undefined) break;
+    const isFreeHit = index === freeHitIndex;
+    const isWildcard = index === rebuildIndex;
 
     const players = PLAYERS.filter(
       // Same floor the Python planner applies. Without it a fringe player with
@@ -682,23 +698,28 @@ export function* solveSeason(
       teamId: player.teamId,
       positionId: player.positionId,
       buyPriceTenths: player.priceTenths,
-      planningPoints: lookaheadPoints(player, index, rebuildIndex),
+      planningPoints: isFreeHit
+        ? pointsAt(player, index)
+        : lookaheadPoints(
+            player,
+            index,
+            rebuildIndex,
+            isWildcard ? WILDCARD_REBUILD_HORIZON : LOOKAHEAD,
+          ),
       eventPoints: pointsAt(player, index),
       evidenceLevel: "inferred" as const,
       dataAvailableAt: deadline,
       sourceHashes: [HASH],
     }));
 
-    const isFreeHit = index === freeHitIndex;
     const preChipSquad = squad.map((held) => ({ ...held }));
     const preChipBank = bank;
-    const preChipFree = free;
     const input: QuickSolverInput = {
       season: "2026-27",
       event,
       objective: "expected_value",
       priceScenario: "current_prices",
-      chipScenario: isFreeHit ? "free_hit" : "none",
+      chipScenario: isFreeHit || isWildcard ? "free_hit" : "none",
       predictionCutoff: deadline,
       players,
       currentSquad: squad,
@@ -734,40 +755,21 @@ export function* solveSeason(
       },
     };
 
-    let solved = solveQuickPlan(input, {
+    const solved = solveQuickPlan(input, {
       beamWidth: 12,
       candidateLimitPerPosition: 8,
       // Squad selection, not a transfer window: the opening week gets the
       // solver's full move budget because none of those moves costs anything.
-      maxTransfers: isFreeHit
-        ? 15
-        : event === SEASON_OPENER
-          ? start.lockOpening
-            ? 0
-            : MAX_FREE_TRANSFERS
-          : 2,
+      maxTransfers:
+        isFreeHit || isWildcard
+          ? 15
+          : event === SEASON_OPENER
+            ? start.lockOpening
+              ? 0
+              : MAX_FREE_TRANSFERS
+            : 2,
       transferMarginPoints: TRANSFER_MARGIN_POINTS,
     });
-
-    // A Free Hit is only a chip when it materially rebuilds the fifteen. If
-    // the best temporary squad moves fewer than five players, keep the normal
-    // transfer solve and leave the chip available.
-    if (isFreeHit && solved.transfersIn.length < 5) {
-      solved = solveQuickPlan(
-        { ...input, chipScenario: "none" },
-        {
-          beamWidth: 12,
-          candidateLimitPerPosition: 8,
-          maxTransfers:
-            event === SEASON_OPENER
-              ? start.lockOpening
-                ? 0
-                : MAX_FREE_TRANSFERS
-              : 2,
-          transferMarginPoints: TRANSFER_MARGIN_POINTS,
-        },
-      );
-    }
 
     const freeBefore = free;
     // The published points are the lookahead sum, which is not what this
@@ -809,19 +811,20 @@ export function* solveSeason(
         Math.round((gameweekPoints - solved.transferCostPoints) * 100) / 100,
       bankAfterTenths: solved.bankAfterTenths,
       freeTransfersBefore: freeBefore,
-      ...(isFreeHit && solved.transfersIn.length >= 5
+      ...(isFreeHit
         ? {
             chip: "Free Hit" as const,
             revertsAfter: true,
             revertsTo: preChipSquad.map((held) => look(held.elementId)),
           }
         : {}),
+      ...(isWildcard ? { chip: "Wildcard" as const } : {}),
     };
 
-    if (isFreeHit && solved.transfersIn.length >= 5) {
+    if (isFreeHit) {
       squad = preChipSquad;
       bank = preChipBank;
-      free = Math.min(MAX_FREE_TRANSFERS, preChipFree + WEEKLY_FREE_TRANSFERS);
+      free = WEEKLY_FREE_TRANSFERS;
       continue;
     }
 

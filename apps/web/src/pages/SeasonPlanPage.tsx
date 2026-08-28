@@ -47,7 +47,7 @@ import type {
   PlanPlayer,
 } from "../state/season-plan";
 import { pairTransfers, readSeasonPlan } from "../state/season-plan";
-import { chipCallsFor } from "../state/season-chips";
+import { chipCallsByEvent, chipCallsFor } from "../state/season-chips";
 import {
   CHIP_NAMES,
   NO_CHIPS,
@@ -394,7 +394,12 @@ function Move({ week }: { week: PlanGameweek }) {
     <>
       {week.chip ? (
         <p className="plan-move-chip mono">
-          {week.chip} · {week.transfersIn.length} free
+          {week.chip} · {week.transfersIn.length}{" "}
+          {week.chip === "Free Hit"
+            ? "temporary changes"
+            : week.chip === "Wildcard"
+              ? "permanent changes"
+              : "changes"}
         </p>
       ) : null}
       <ul className="plan-move">
@@ -622,6 +627,16 @@ function ChipStrategy({ chips }: { chips: readonly ChipCall[] }) {
                     +{chip.gain.toFixed(1)}
                   </span>
                   <span className="plan-chip-note">{chip.note}.</span>
+                  {chip.incoming && chip.incoming.length > 0 ? (
+                    <span className="plan-chip-rebuild mono">
+                      <span>
+                        <strong>In</strong> {chip.incoming.join(", ")}
+                      </span>
+                      <span>
+                        <strong>Out</strong> {chip.outgoing?.join(", ") ?? "—"}
+                      </span>
+                    </span>
+                  ) : null}
                 </li>
               ))}
           </ul>
@@ -925,7 +940,10 @@ export default function SeasonPlanPage() {
   // manager says he has already played is dropped from both, and one he has
   // committed to is pinned to the week he named.
   const spentChips = useMemo(
-    () => declaredChips.spent.map((chip) => CHIP_NAMES[chip]),
+    () =>
+      declaredChips.spent.map(
+        ({ chip, half }) => `${CHIP_NAMES[chip]}:${half}`,
+      ),
     [declaredChips],
   );
   const committedChip = useMemo(
@@ -961,19 +979,15 @@ export default function SeasonPlanPage() {
     team.reason === "no_processed_event";
   // Wildcard and Free Hit still belong to the published fifteen even once the
   // other two have been re-solved, and the panel says so rather than implying
-  // all four are his.
+  // all eight half-season copies are his.
   const chipsAreYours =
     !awaitingLockIn && (!solving || solve.status === "done");
-  const chips = useMemo(() => {
-    const byEvent = new Map<number, ChipCall>();
-    for (const chip of chipCalls) {
-      if (chip.event !== null) byEvent.set(chip.event, chip);
-    }
-    return byEvent;
-  }, [chipCalls]);
   const gameweeks = solving
     ? solve.gameweeks.map(asPlanGameweek)
     : plan.gameweeks;
+  const chips = useMemo(() => {
+    return chipCallsByEvent(chipCalls, gameweeks, committedChip);
+  }, [chipCalls, gameweeks, committedChip]);
 
   // Only gameweek one, and only when it is the reader's own squad being
   // solved: past the first deadline a change is a transfer and costs points.
@@ -1207,7 +1221,7 @@ export default function SeasonPlanPage() {
             <>
               {solving ? (
                 <p className="plan-chip-scope">
-                  All four solved from <strong>your</strong> squad.
+                  All eight chip copies solved from <strong>your</strong> squad.
                   <InfoMarker label="how each chip is priced">
                     Bench Boost pays what your bench scores and Triple Captain
                     pays what your captain scores, both read off the weeks
@@ -1455,9 +1469,9 @@ export default function SeasonPlanPage() {
                     ? `${plan.dataGaps.clubsWithoutRecord.join(" and ")} did not play in`
                     : "the promoted clubs did not play in"}
                   . Their players are missing from the pool entirely. Fixtures
-                  against them are rated on FPL&rsquo;s own published strength,
-                  which it sets for all twenty clubs before a ball is kicked,
-                  rather than on a record that does not exist.
+                  against them use the named promoted-club prior because the
+                  current FPL feed carries no usable club-strength fields and a
+                  Premier League record does not exist yet.
                 </InfoMarker>
               </li>
               <li>

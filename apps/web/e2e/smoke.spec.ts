@@ -307,6 +307,57 @@ test("all primary destinations stay visible on a phone", async ({ page }) => {
   ).toHaveCSS("max-width", "64px");
 });
 
+test("FPL500 headlines and the legal popularity squad fit a phone", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/");
+  await settle(page);
+
+  const teaser = page.locator(".fpl500-teaser");
+  await expect(teaser).toContainText("Exact sample");
+  await expect(teaser).toContainText("Used a chip");
+  await expect(teaser).toContainText("Top owned");
+  await expect(teaser).toContainText("Top captain");
+  expect(
+    await teaser.evaluate(
+      (element, rankings) =>
+        Boolean(
+          element.compareDocumentPosition(document.querySelector(rankings)) &
+          Node.DOCUMENT_POSITION_FOLLOWING,
+        ),
+      ".index-rankings",
+    ),
+  ).toBe(true);
+
+  await page.goto("/fpl500");
+  await settle(page);
+  await expect(
+    page.getByRole("heading", { name: "The FPL500 popularity squad" }),
+  ).toBeVisible();
+  await expect(page.locator(".fpl500-structure .ceefax-shirt")).toHaveCount(15);
+  await expect(page.locator(".fpl500-player-tile")).toHaveCount(11);
+  await expect(page.locator(".fpl500-popularity-bench button")).toHaveCount(4);
+  await expect(page.getByText("59 raw")).toBeVisible();
+  await page.getByRole("tab", { name: "Pairings" }).click();
+  await expect(
+    page
+      .getByRole("tabpanel", { name: "Pairings" })
+      .getByRole("listitem")
+      .first(),
+  ).toContainText("squads");
+  await page.getByRole("tab", { name: "Pairings" }).press("Home");
+  await expect(page.getByRole("tab", { name: "Players" })).toBeFocused();
+  await expect(page.getByText("Catalogue at deadline")).toHaveCount(0);
+  expect(
+    await page.evaluate(
+      () =>
+        document.documentElement.scrollWidth ===
+        document.documentElement.clientWidth,
+    ),
+  ).toBe(true);
+});
+
 test("top picks wrap once without shrinking their players", async ({
   page,
 }) => {

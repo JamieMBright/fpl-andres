@@ -211,6 +211,7 @@ def test_model_validation_republishes_the_complete_planning_chain() -> None:
     canonical = text.index("pnpm --filter @fpl-andres/web publish:canonical-opening", season_inputs)
     season_plan = text.index("python -m fpl_andres.cli.publish_season_plan", canonical)
     assert projection < opening_seed < season_inputs < canonical < season_plan
+    assert "--time-limit 120" in text[season_plan : season_plan + 400]
 
     for path in (
         "apps/web/src/data/opening-squad.json",

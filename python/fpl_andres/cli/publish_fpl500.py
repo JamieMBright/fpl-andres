@@ -511,12 +511,16 @@ def _portfolio_series(
                 if aggregate.get("cohortRevision") != raw.get("cohortRevision"):
                     raise ValueError(f"portfolio aggregate revision mismatch: {aggregate_path}")
                 sample["aggregate"] = aggregate
-            corrected_structure_path = directory / f"gw{stem}-structure-v2.json"
-            structure_path = (
-                corrected_structure_path
-                if corrected_structure_path.exists()
-                else directory / f"gw{stem}-structure.json"
+            structure_candidates = (
+                directory / f"gw{stem}-structure-v3.json",
+                directory / f"gw{stem}-structure-v2.json",
+                directory / f"gw{stem}-structure.json",
             )
+            structure_path = next(
+                (candidate for candidate in structure_candidates if candidate.exists()),
+                structure_candidates[-1],
+            )
+            points = _realised_points(directory, stem)
             if structure_path.exists():
                 structure = parse_json(
                     structure_path.read_text(encoding="utf-8"),
@@ -526,8 +530,18 @@ def _portfolio_series(
                     raise ValueError(f"portfolio structure must be an object: {structure_path}")
                 if structure.get("cohortRevision") != raw.get("cohortRevision"):
                     raise ValueError(f"portfolio structure revision mismatch: {structure_path}")
+                popularity = structure.get("popularitySquad")
+                if (
+                    points
+                    and isinstance(popularity, dict)
+                    and isinstance(popularity.get("starters"), list)
+                ):
+                    popularity["rawGameweekPoints"] = sum(
+                        points.get(int(element_id), 0)
+                        for element_id in popularity["starters"]
+                        if isinstance(element_id, int)
+                    )
                 sample["structure"] = structure
-            points = _realised_points(directory, stem)
             event_holdings: list[dict[str, object]] = []
             raw_holdings = raw.get("holdings", [])
             if not isinstance(raw_holdings, list):
@@ -595,6 +609,8 @@ def _player_metadata() -> dict[int, dict[str, int | str]]:
             "name": str(element["web_name"]),
             "position": Position(int(element["element_type"])).code,
             "club": club_by_id.get(int(element["team"]), "UNK"),
+            "teamId": int(element["team"]),
+            "priceTenths": int(element["now_cost"]),
         }
         for element in elements
         if isinstance(element, dict) and int(element.get("element_type", 0)) in position_ids

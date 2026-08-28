@@ -29,6 +29,14 @@ from __future__ import annotations
 
 __all__ = ["MODEL_VERSION"]
 
+#: 8.13 carries the previous season's fitted club strengths by permanent club
+#: code until each returning club has five current-season matches. It also
+#: makes Free Hit a true one-week xPts1 rental: ten-plus temporary changes,
+#: cheapest legal bench, restored squad/bank and one FT next week. Wildcards
+#: compare legal xPts3/5/7/9 squads, require five permanent changes and retain
+#: only exact whole-season gains. Minor: fixture multipliers, xPts, transfers
+#: and chip plans move while their targets stay unchanged.
+#:
 #: 8.12 gives each settled current-season lineup four times the weight of a
 #: carried appearance. Selected on 2022-24 and held out on 2024-26, it lowered
 #: paired Brier by 0.0497 with a 95% lower bound of 0.0348 and all three seeds
@@ -402,4 +410,4 @@ __all__ = ["MODEL_VERSION"]
 #: projection and resampled, so a gap that does not clear zero is reported as
 #: not clearing zero. No projection changed; what changed is what may be
 #: claimed from it.
-MODEL_VERSION = "8.12"
+MODEL_VERSION = "8.13"

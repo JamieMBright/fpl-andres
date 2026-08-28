@@ -410,11 +410,40 @@ describe("a committed rebuild", () => {
       lookaheadPointsFor(best!, 0),
     );
   });
+
+  it(
+    "makes unlimited zero-cost changes and keeps the Wildcard squad",
+    () => {
+      const solved = [
+        ...solveSeason({
+          ...openingStart(),
+          fromEvent: 6,
+          rebuildAtEvent: 6,
+        }),
+      ];
+      const wildcard = solved.find((week) => week.event === 6);
+      const following = solved.find((week) => week.event === 7);
+
+      expect(wildcard?.chip).toBe("Wildcard");
+      expect(wildcard?.paidTransfers).toBe(0);
+      expect(wildcard?.transferCostPoints).toBe(0);
+      expect(wildcard?.transfersIn.length).toBeGreaterThanOrEqual(5);
+      const wildcardSquad = new Set(
+        [...(wildcard?.starters ?? []), ...(wildcard?.bench ?? [])].map(
+          (player) => player.id,
+        ),
+      );
+      for (const player of following?.transfersOut ?? []) {
+        expect(wildcardSquad).toContain(player.id);
+      }
+    },
+    SOLVE_TIMEOUT,
+  );
 });
 
 describe("a committed Free Hit", () => {
   it(
-    "does not mark a week when the solve cannot move five players",
+    "models the chip even when the best rental overlaps the held squad",
     () => {
       const solved = [
         ...solveSeason({
@@ -424,9 +453,51 @@ describe("a committed Free Hit", () => {
         }),
       ];
       const hitIndex = solved.findIndex((week) => week.chip === "Free Hit");
-      expect(hitIndex).toBe(-1);
-      expect(solved.every((week) => week.chip !== "Free Hit")).toBe(true);
+      expect(hitIndex).toBeGreaterThanOrEqual(0);
+      expect(solved[hitIndex]?.revertsAfter).toBe(true);
     },
     SOLVE_TIMEOUT,
   );
+
+  it(
+    "restores the squad and resets the following week to one free transfer",
+    () => {
+      const start = openingStart();
+      const solved = [
+        ...solveSeason({
+          ...start,
+          fromEvent: 2,
+          availableFreeTransfers: 5,
+          freeHitAtEvent: 2,
+        }),
+      ];
+      const hit = solved.find((week) => week.chip === "Free Hit");
+      expect(hit).toBeDefined();
+      const following = solved.find((week) => week.event === 3);
+
+      expect(hit?.revertsTo?.map((player) => player.code).sort()).toEqual(
+        start.squad
+          .map(
+            (player) =>
+              SEASON_PLAYERS.find((known) => known.id === player.elementId)
+                ?.code,
+          )
+          .filter((code): code is number => code !== undefined)
+          .sort(),
+      );
+      expect(following?.freeTransfersBefore).toBe(1);
+    },
+    SOLVE_TIMEOUT,
+  );
+
+  it("refuses two unlimited-transfer chips in one gameweek", () => {
+    expect(() => [
+      ...solveSeason({
+        ...openingStart(),
+        fromEvent: 6,
+        freeHitAtEvent: 6,
+        rebuildAtEvent: 6,
+      }),
+    ]).toThrow("cannot be played in the same gameweek");
+  });
 });

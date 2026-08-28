@@ -154,7 +154,8 @@ jobs:
           python -m fpl_andres.cli.publish_season_plan \
             --weekly-free-transfers "$weekly_free_transfers" \
             --transfer-cost-points "$transfer_cost_points" \
-            --rules-reference "$rules_reference"
+            --rules-reference "$rules_reference" \
+            --time-limit 120
 
       # Python writes the artifact and prettier owns the file. Without this the
       # refresh commit is format-clean nowhere and reddens main on arrival.

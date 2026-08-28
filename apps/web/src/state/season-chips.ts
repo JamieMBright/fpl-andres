@@ -1,5 +1,17 @@
 import type { ChipCall } from "./season-plan";
-import type { SolvedGameweek } from "./season-solver";
+import {
+  MINIMUM_FREE_HIT_CHANGES,
+  MINIMUM_WILDCARD_CHANGES,
+  WILDCARD_HORIZONS,
+  WILDCARD_REBUILD_HORIZON,
+} from "./chip-rules";
+import {
+  EVENT_INDEX,
+  SEASON_TRANSFER_RULES,
+  bestElevenPoints,
+  type SolvedGameweek,
+  type SolverPlayer,
+} from "./season-solver";
 import { rebuildUplift } from "./squad-rebuild";
 
 /**
@@ -9,7 +21,7 @@ import { rebuildUplift } from "./squad-rebuild";
  * them to a manager who locked in his own squad names weeks that suit somebody
  * else's bench, which is worse than saying nothing.
  *
- * All four are solved here. Bench Boost and Triple Captain fall out of the
+ * All eight half-season copies are solved here. Bench Boost and Triple Captain fall out of the
  * gameweeks on screen; Wildcard and Free Hit are priced by rebuilding the
  * fifteen from the pool, in `squad-rebuild.ts`.
  */
@@ -25,11 +37,27 @@ const HALVES = [
  * Anything a free transfer or two could have made is not a wildcard, it is a
  * transfer you happened to make in the week you burned a chip.
  */
-const MINIMUM_WILDCARD_CHANGES = 5;
-const MINIMUM_FREE_HIT_CHANGES = 5;
 
-/** The run a kept squad is priced over. A free hit is one afternoon. */
-const WILDCARD_HORIZON = 5;
+export function chipCallsByEvent(
+  calls: readonly ChipCall[],
+  weeks: readonly { event: number; chip?: string | undefined }[],
+  committed: { chip: string; event: number } | null = null,
+): Map<number, ChipCall> {
+  const solvedByEvent = new Map(weeks.map((week) => [week.event, week]));
+  const byEvent = new Map<number, ChipCall>();
+  for (const call of calls) {
+    if (call.event === null) continue;
+    if (
+      (call.chip === "Free Hit" || call.chip === "Wildcard") &&
+      solvedByEvent.get(call.event)?.chip !== call.chip &&
+      (committed?.event !== call.event || committed.chip !== call.chip)
+    ) {
+      continue;
+    }
+    byEvent.set(call.event, call);
+  }
+  return byEvent;
+}
 
 function pointsOf(week: SolvedGameweek, code: number): number {
   return week.expected[String(code)] ?? 0;
@@ -101,6 +129,69 @@ function budgetAt(week: SolvedGameweek): number {
   );
 }
 
+export function freeHitSegmentGain(
+  weekIndex: number,
+  allWeeks: readonly SolvedGameweek[],
+  entering: readonly SolverPlayer[],
+  oneWeekGain: number,
+): number {
+  let gain = oneWeekGain;
+  let restored = [...entering];
+  let freeTransfers = SEASON_TRANSFER_RULES.weeklyFreeTransfers;
+  for (let ahead = 1; ahead < WILDCARD_REBUILD_HORIZON; ahead += 1) {
+    const planned = allWeeks[weekIndex + ahead];
+    if (!planned) break;
+    const held = new Map(restored.map((player) => [player.id, player]));
+    let changes = 0;
+    for (let index = 0; index < planned.transfersIn.length; index += 1) {
+      const outgoing = planned.transfersOut[index];
+      const incoming = planned.transfersIn[index];
+      if (
+        !outgoing ||
+        !incoming ||
+        !held.has(outgoing.id) ||
+        held.has(incoming.id)
+      ) {
+        continue;
+      }
+      held.delete(outgoing.id);
+      held.set(incoming.id, incoming);
+      changes += 1;
+    }
+    restored = [...held.values()];
+    const eventIndex = EVENT_INDEX.get(planned.event);
+    if (eventIndex === undefined || restored.length !== 15) continue;
+    const paidTransfers = Math.max(0, changes - freeTransfers);
+    const restoredPoints =
+      bestElevenPoints(restored, eventIndex) -
+      paidTransfers * SEASON_TRANSFER_RULES.transferCostPoints;
+    gain += restoredPoints - planned.netExpectedPoints;
+    freeTransfers = Math.min(
+      SEASON_TRANSFER_RULES.maximumFreeTransfers,
+      Math.max(0, freeTransfers - changes) +
+        SEASON_TRANSFER_RULES.weeklyFreeTransfers,
+    );
+  }
+  return gain;
+}
+
+export function wildcardRunGain(
+  rebuilt: readonly SolverPlayer[],
+  weekIndex: number,
+  allWeeks: readonly SolvedGameweek[],
+  horizon: number,
+): number {
+  let gain = 0;
+  for (let ahead = 0; ahead < horizon; ahead += 1) {
+    const planned = allWeeks[weekIndex + ahead];
+    if (!planned) break;
+    const eventIndex = EVENT_INDEX.get(planned.event);
+    if (eventIndex === undefined) continue;
+    gain += bestElevenPoints(rebuilt, eventIndex) - planned.netExpectedPoints;
+  }
+  return gain;
+}
+
 /**
  * The two rebuild chips, priced by actually rebuilding.
  *
@@ -110,23 +201,105 @@ function budgetAt(week: SolvedGameweek): number {
  */
 function rebuildCalls(
   half: string,
-  weeks: readonly SolvedGameweek[],
+  candidateWeeks: readonly SolvedGameweek[],
+  allWeeks: readonly SolvedGameweek[],
 ): ChipCall[] {
-  const priced = weeks
-    .map((week) => ({
-      week,
-      free: rebuildUplift(
-        week.event,
-        [...week.starters, ...week.bench],
-        budgetAt(week),
-      ),
-      kept: rebuildUplift(
-        week.event,
-        [...week.starters, ...week.bench],
-        budgetAt(week),
-        WILDCARD_HORIZON,
-      ),
-    }))
+  const allWeekIndex = new Map(
+    allWeeks.map((week, index) => [week.event, index]),
+  );
+  const priced = candidateWeeks
+    .map((week) => {
+      const weekIndex = allWeekIndex.get(week.event);
+      if (weekIndex === undefined) return null;
+      const held = [...week.starters, ...week.bench];
+      const transferredIn = new Set(
+        week.transfersIn.map((player) => player.id),
+      );
+      const entering = [
+        ...held.filter((player) => !transferredIn.has(player.id)),
+        ...week.transfersOut,
+      ];
+      const enteringIds = new Set(entering.map((player) => player.id));
+      const budget = budgetAt(week);
+      const remaining = allWeeks.length - weekIndex;
+      const availableHorizons = WILDCARD_HORIZONS.filter(
+        (horizon) => horizon <= remaining,
+      );
+      const wildcard = availableHorizons.map((horizon) => ({
+        horizon,
+        result: (() => {
+          const raw = rebuildUplift(week.event, held, budget, horizon);
+          if (!raw.rebuilt) return raw;
+          return {
+            ...raw,
+            gain: wildcardRunGain(
+              raw.rebuilt.squad,
+              weekIndex,
+              allWeeks,
+              horizon,
+            ),
+            changes: raw.rebuilt.squad.filter(
+              (player) => !enteringIds.has(player.id),
+            ).length,
+          };
+        })(),
+      }));
+      const cliffs = wildcard.slice(1).map((later, index) => {
+        const earlier = wildcard[index];
+        if (!earlier?.result.rebuilt || !later.result.rebuilt) {
+          return {
+            changes: 0,
+            from: earlier?.horizon ?? 3,
+            to: later.horizon,
+            measured: false,
+          };
+        }
+        const earlierIds = new Set(
+          earlier.result.rebuilt.squad.map((player) => player.id),
+        );
+        return {
+          changes: later.result.rebuilt.squad.filter(
+            (player) => !earlierIds.has(player.id),
+          ).length,
+          from: earlier.horizon,
+          to: later.horizon,
+          measured: true,
+        };
+      });
+      const cliff = cliffs.sort(
+        (left, right) => right.changes - left.changes,
+      )[0] ?? { changes: 0, from: 3, to: 5, measured: false };
+      const free = rebuildUplift(week.event, held, budget, 1);
+      const freeHitHorizon = Math.min(
+        WILDCARD_REBUILD_HORIZON,
+        allWeeks.length - weekIndex,
+      );
+      const freeGain = free.rebuilt
+        ? freeHitSegmentGain(weekIndex, allWeeks, entering, free.gain)
+        : 0;
+      return {
+        week,
+        entering,
+        free: free.rebuilt
+          ? {
+              ...free,
+              gain: freeGain,
+              changes: free.rebuilt.squad.filter(
+                (player) => !enteringIds.has(player.id),
+              ).length,
+            }
+          : free,
+        freeHitHorizon,
+        kept: wildcard.at(-1)?.result ?? {
+          gain: 0,
+          changes: 0,
+          rebuilt: null,
+        },
+        wildcardHorizon: availableHorizons.at(-1) ?? 0,
+        cliff,
+      };
+    })
+    .filter((entry) => entry !== null)
     .filter((entry) => entry.free.rebuilt !== null);
 
   const freeHit = priced
@@ -144,10 +317,33 @@ function rebuildCalls(
       (entry) =>
         entry.kept.gain > 0 &&
         entry.kept.changes >= MINIMUM_WILDCARD_CHANGES &&
+        entry.cliff.measured &&
         // Never the same week twice: one squad cannot be both handed back and kept.
         entry.week.event !== freeHit?.week.event,
     )
     .sort((left, right) => right.kept.gain - left.kept.gain)[0];
+
+  const changedPlayers = (
+    held: readonly SolverPlayer[],
+    rebuilt: NonNullable<(typeof priced)[number]["free"]["rebuilt"]>,
+  ) => {
+    const heldIds = new Set(held.map((player) => player.id));
+    const rebuiltIds = new Set(rebuilt.squad.map((player) => player.id));
+    return {
+      incoming: rebuilt.squad
+        .filter((player) => !heldIds.has(player.id))
+        .map((player) => player.name),
+      outgoing: held
+        .filter((player) => !rebuiltIds.has(player.id))
+        .map((player) => player.name),
+    };
+  };
+  const freeHitPlayers = freeHit
+    ? changedPlayers(freeHit.entering, freeHit.free.rebuilt!)
+    : null;
+  const wildcardPlayers = wildcard
+    ? changedPlayers(wildcard.entering, wildcard.kept.rebuilt!)
+    : null;
 
   return [
     freeHit
@@ -156,10 +352,13 @@ function rebuildCalls(
           chip: "Free Hit",
           half,
           gain: Math.round(freeHit.free.gain * 100) / 100,
+          changes: freeHit.free.changes,
+          incoming: freeHitPlayers!.incoming,
+          outgoing: freeHitPlayers!.outgoing,
           note:
-            `the best fifteen this budget buys is worth ${freeHit.free.gain.toFixed(1)} more ` +
-            `than yours in gameweek ${String(freeHit.week.event)}, on ${String(freeHit.free.changes)} changes, ` +
-            `and you get yours back after`,
+            `a ${String(freeHit.free.changes)}-change xPts1 rental in gameweek ${String(freeHit.week.event)} is worth ` +
+            `${freeHit.free.gain.toFixed(1)} over the ${String(freeHit.freeHitHorizon)}-gameweek restored-squad replay after resetting to one free transfer; ` +
+            `current list prices set the budget, so correct selling prices in step one before committing`,
         }
       : {
           event: null,
@@ -174,9 +373,14 @@ function rebuildCalls(
           chip: "Wildcard",
           half,
           gain: Math.round(wildcard.kept.gain * 100) / 100,
+          changes: wildcard.kept.changes,
+          incoming: wildcardPlayers!.incoming,
+          outgoing: wildcardPlayers!.outgoing,
           note:
             `rebuilding in gameweek ${String(wildcard.week.event)} moves ${String(wildcard.kept.changes)} of your fifteen ` +
-            `and is worth ${wildcard.kept.gain.toFixed(1)} over the ${String(WILDCARD_HORIZON)} gameweeks it opens, and the squad stays`,
+            `and is worth ${wildcard.kept.gain.toFixed(1)} over the ${String(wildcard.wildcardHorizon)} gameweeks it opens; ` +
+            `the legal squad changes ${String(wildcard.cliff.changes)} ${wildcard.cliff.changes === 1 ? "player" : "players"} between xPts${String(wildcard.cliff.from)} and xPts${String(wildcard.cliff.to)}, and the squad stays; ` +
+            `current list prices set the budget, so correct selling prices in step one before committing`,
         }
       : {
           event: null,
@@ -234,8 +438,6 @@ function singleChipPerGameweek(
   calls: readonly ChipCall[],
   committed: { chip: string; event: number } | null,
 ): ChipCall[] {
-  const priority = (call: ChipCall): number =>
-    call.chip === "Bench Boost" || call.chip === "Triple Captain" ? 2 : 1;
   const byEvent = new Map<number, ChipCall[]>();
   for (const call of calls) {
     if (call.event === null) continue;
@@ -248,11 +450,7 @@ function singleChipPerGameweek(
     const kept =
       clashes.find(
         (call) => committed?.event === event && committed.chip === call.chip,
-      ) ??
-      [...clashes].sort(
-        (left, right) =>
-          priority(right) - priority(left) || right.gain - left.gain,
-      )[0];
+      ) ?? [...clashes].sort((left, right) => right.gain - left.gain)[0];
     if (!kept) continue;
     for (const call of clashes) {
       if (call === kept) continue;
@@ -265,29 +463,28 @@ function singleChipPerGameweek(
 
   return calls.map((call) => {
     const reason = blocked.get(`${call.chip}:${call.half}`);
-    return reason
-      ? {
-          ...call,
-          event: null,
-          gain: 0,
-          note: `${reason}, so this chip is left unplayed`,
-        }
-      : call;
+    if (!reason) return call;
+    const {
+      changes: _changes,
+      incoming: _incoming,
+      outgoing: _outgoing,
+      ...rest
+    } = call;
+    return {
+      ...rest,
+      event: null,
+      gain: 0,
+      note: `${reason}, so this chip is left unplayed`,
+    };
   });
 }
 
 /**
- * Chip calls for a solved season, all four of them.
+ * Chip calls for a solved season, all eight half-season copies.
  *
  * Bench Boost and Triple Captain read straight off the solved weeks. Wildcard
- * and Free Hit rebuild the fifteen from the pool, because a beam search capped
- * at five transfers a week cannot express "throw it away and start again".
- *
- * A chip already played is dropped rather than re-offered. FPL publishes only
- * the one used last gameweek, so this depends on the manager saying so, and a
- * plan that keeps advising a wildcard spent in August is worse than one that
- * says nothing: every transfer around it is planned against a move he cannot
- * make.
+ * and Free Hit rebuild the fifteen from the pool. Spent identifiers include
+ * the half, so using a chip before gameweek 20 does not remove its second copy.
  */
 export function chipCallsFor(
   gameweeks: readonly SolvedGameweek[],
@@ -297,8 +494,13 @@ export function chipCallsFor(
 ): ChipCall[] {
   const gone = new Set(spent);
   const keep = (calls: ChipCall[]): ChipCall[] =>
-    calls.filter((call) => !gone.has(call.chip));
-  const claimed = committed && !gone.has(committed.chip) ? committed : null;
+    calls.filter((call) => !gone.has(`${call.chip}:${call.half}`));
+  const claimed =
+    committed &&
+    !gone.has(`${committed.chip}:${committed.event <= 19 ? "first" : "second"}`)
+      ? committed
+      : null;
+
   if (gameweeks.length === 0) {
     const carried = keep([...published]);
     if (!claimed) return singleChipPerGameweek(carried, null);
@@ -321,7 +523,7 @@ export function chipCallsFor(
     if (weeks.length === 0) continue;
 
     const halfCalls = [
-      ...rebuildCalls(half, weeks),
+      ...rebuildCalls(half, weeks, gameweeks),
       callFor(
         "Bench Boost",
         half,
@@ -336,11 +538,7 @@ export function chipCallsFor(
         weeks,
         tripleCaptainPoints,
         (gain, week) =>
-          `${week.captain.name} projects ${gain.toFixed(1)}: ${(
-            gain * 2
-          ).toFixed(1)} as captain, ${(gain * 3).toFixed(
-            1,
-          )} with Triple Captain. The chip adds ${gain.toFixed(1)} in gameweek ${String(week.event)}`,
+          `${week.captain.name} projects ${gain.toFixed(1)}: ${(gain * 2).toFixed(1)} as captain, ${(gain * 3).toFixed(1)} with Triple Captain. The chip adds ${gain.toFixed(1)} in gameweek ${String(week.event)}`,
       ),
     ];
 

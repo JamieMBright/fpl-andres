@@ -25,6 +25,7 @@ from collections.abc import Callable, Mapping, Sequence
 from copy import deepcopy
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
+from itertools import pairwise
 from pathlib import Path
 from typing import Any
 
@@ -47,6 +48,7 @@ from fpl_andres.planning.fixture_routes import fixture_difficulty, fixture_multi
 from fpl_andres.planning.opening import (
     PLAYABLE_START_RATE,
     OpeningSettings,
+    best_eleven,
     choose_opening_squad,
 )
 from fpl_andres.planning.season_plan import (
@@ -57,7 +59,7 @@ from fpl_andres.planning.season_plan import (
 from fpl_andres.positions import Position, is_captain_eligible
 from fpl_andres.rules import RulesSnapshot
 from fpl_andres.simulation.squad import Candidate as SquadCandidate
-from fpl_andres.simulation.squad import SquadRules
+from fpl_andres.simulation.squad import SquadRules, validate_squad
 
 SQUAD_RULES = SquadRules(budget_tenths=1000, club_limit=3, position_counts={1: 2, 2: 5, 3: 5, 4: 3})
 
@@ -178,6 +180,67 @@ def _lineup_points_with_captain(
     )
 
 
+def _free_hit_squad(
+    pool: Sequence[SquadCandidate],
+    points: Mapping[int, float],
+) -> tuple[list[int], list[int]]:
+    """Maximize one-week XI points, then minimize spend on the four reserves."""
+    settings = OpeningSettings(rules=SQUAD_RULES, bench_weight=0.0)
+    built = choose_opening_squad(
+        pool,
+        points,
+        {candidate.element_id: 1.0 for candidate in pool},
+        settings,
+    )
+    squad = list(built.squad)
+    changed = True
+    while changed:
+        changed = False
+        starters, score = best_eleven(squad, points, settings)
+        starting = {candidate.element_id for candidate in starters}
+        held = {candidate.element_id for candidate in squad}
+        for index, outgoing in sorted(
+            enumerate(squad),
+            key=lambda row: row[1].price_tenths,
+            reverse=True,
+        ):
+            if outgoing.element_id in starting:
+                continue
+            replacements = sorted(
+                (
+                    candidate
+                    for candidate in pool
+                    if candidate.position == outgoing.position
+                    and candidate.element_id not in held
+                    and candidate.price_tenths < outgoing.price_tenths
+                ),
+                key=lambda candidate: (candidate.price_tenths, candidate.element_id),
+            )
+            for incoming in replacements:
+                candidate_squad = list(squad)
+                candidate_squad[index] = incoming
+                try:
+                    validate_squad(candidate_squad, SQUAD_RULES)
+                except ValueError:
+                    continue
+                _, candidate_score = best_eleven(candidate_squad, points, settings)
+                if candidate_score + 1e-9 < score:
+                    continue
+                squad = candidate_squad
+                changed = True
+                break
+            if changed:
+                break
+
+    starters, _ = best_eleven(squad, points, settings)
+    starting = {candidate.element_id for candidate in starters}
+    bench = [candidate for candidate in squad if candidate.element_id not in starting]
+    return (
+        [candidate.element_id for candidate in starters],
+        [candidate.element_id for candidate in bench],
+    )
+
+
 def _opponent_multiplier(
     *,
     candidate: Candidate,
@@ -262,29 +325,27 @@ WILDCARD_EARLIEST_EVENT = 4
 # there is no squad to escape: the eleven on the pitch is the eleven that was
 # picked for it.
 FREE_HIT_EARLIEST_EVENT = 2
-# The two unlimited-transfer chips must not sit on top of each other. A free hit
-# reverts to the squad a wildcard would just have built, so playing one straight
-# after the other spends two chips to do the work of one.
-UNLIMITED_CHIP_SEPARATION = 3
 # How long one free transfer a week takes to close a gap a wildcard closes at
 # once. A squad is usually three to five moves from optimal, so beyond this the
 # wildcard has bought nothing that patience would not.
 FREE_TRANSFER_CATCHUP = 5
-# How far a wildcard's rebuild is credited forward.
-WILDCARD_HORIZON = 8
+# A Wildcard is a horizon pivot, not a fixed five-week rebuild. The legal squad
+# is rebuilt at each of these horizons and the change between adjacent squads
+# names the cliff; the longest squad is what persists after the chip.
+WILDCARD_HORIZONS = (3, 5, 7, 9)
 # How many of the fifteen a rebuild has to move before the chip is worth
 # spending. Below this the free transfer makes the same moves over a few weeks
 # and the chip is still in hand; a Wildcard offered against one swap is a chip
 # thrown away, however well that swap scores.
 MINIMUM_WILDCARD_CHANGES = 5
-MINIMUM_FREE_HIT_CHANGES = 5
+MINIMUM_FREE_HIT_CHANGES = 10
 
 # How many rebuild weeks per half are solved exactly rather than trusted to the
 # cheap screen. The screen already scores every legal week; taking only its
 # best meant a week it ranked second was never verified and could never win.
 # Each candidate is a whole season re-plan, so this is the number that decides
 # how long a publish takes.
-WILDCARD_CANDIDATES = 3
+WILDCARD_CANDIDATES = 2
 # The window a free hit's week is judged against. A gap that persists is a
 # wildcard's job; a free hit is for the week that collapses on its own.
 FREE_HIT_CONTEXT = 4
@@ -322,12 +383,13 @@ def _chip_plan(
 
     That reading also rules some weeks out entirely. A wildcard in gameweek one
     rebuilds a squad that was chosen freely days earlier; a free hit in gameweek
-    one escapes an eleven picked for that very week. And a free hit next door to
-    a wildcard reverts to the squad the wildcard just built, so the two are kept
-    apart.
+    one escapes an eleven picked for that very week. Adjacent Free Hit and
+    Wildcard weeks remain legal: the rental may cover a lull immediately before
+    a meaningful permanent pivot.
 
-    Chip *interaction* beyond that separation is not solved: playing one changes
-    what the others are worth, and these are eight independent answers.
+    Wildcards are solved first as permanent season pivots. A Free Hit then
+    re-solves from the restored squad until the next Wildcard, so its one-week
+    gain includes the lost transfer bank without erasing the permanent rebuild.
     """
     if not gameweeks:
         return []
@@ -427,7 +489,7 @@ def _chip_plan(
         """
         start = index_of[week["event"]]
         total = 0.0
-        for offset, each in enumerate(gameweeks[start : start + WILDCARD_HORIZON]):
+        for offset, each in enumerate(gameweeks[start : start + max(WILDCARD_HORIZONS)]):
             earned = max(0.0, 1.0 - offset / FREE_TRANSFER_CATCHUP)
             total += shortfall[each["event"]] * earned
         return total
@@ -491,13 +553,11 @@ def _chip_plan(
         # The free hit picks first. It is the sharper instrument -- it only ever
         # scores a week that collapses on its own -- so letting the wildcard go
         # first would let a rebuild swallow the one week a rebuild cannot fix.
-        free_hit_event: int | None = None
         candidates = free(weeks, FREE_HIT_EARLIEST_EVENT)
         if candidates:
             chosen = max(candidates, key=spike)
             gain = spike(chosen)
             taken.add(chosen["event"])
-            free_hit_event = int(chosen["event"])
             chips.append(
                 {
                     "event": chosen["event"],
@@ -513,12 +573,7 @@ def _chip_plan(
                 }
             )
 
-        candidates = [
-            week
-            for week in free(weeks, WILDCARD_EARLIEST_EVENT)
-            if free_hit_event is None
-            or abs(int(week["event"]) - free_hit_event) >= UNLIMITED_CHIP_SEPARATION
-        ]
+        candidates = free(weeks, WILDCARD_EARLIEST_EVENT)
         if candidates:
             ranked = sorted(candidates, key=persisting, reverse=True)
             chosen = ranked[0]
@@ -540,7 +595,7 @@ def _chip_plan(
                     "_alternatives": [int(week["event"]) for week in ranked[1:WILDCARD_CANDIDATES]],
                     "note": (
                         f"rebuilding here is worth {gain:.1f} over the next "
-                        f"{WILDCARD_HORIZON} gameweeks once the points one free transfer a "
+                        f"{max(WILDCARD_HORIZONS)} gameweeks once the points one free transfer a "
                         f"week would have recovered anyway are taken off, which {verdict(gain)}"
                     ),
                 }
@@ -574,6 +629,9 @@ class _ChipRun:
     opening_free_transfers: int
     week_dict: Callable[[PlannedEvent], dict[str, Any]]
     ref: Callable[[int], int]
+    wildcard_squads: dict[tuple[int, int], tuple[list[int], list[int]]] = field(
+        default_factory=dict
+    )
 
 
 def _turnover(
@@ -695,16 +753,21 @@ def _solved_wildcard_turnover(
     return len(set(weeks[event]["squadElementIds"]) - held)
 
 
-def _wildcard_squad(event: int, run: _ChipRun) -> tuple[list[int], list[int]] | None:
-    """The fifteen a Wildcard buys, built for the run it has to last.
+def _wildcard_squad_for_horizon(
+    event: int,
+    horizon_length: int,
+    run: _ChipRun,
+) -> tuple[list[int], list[int]] | None:
+    """The legal fifteen a Wildcard buys over one measured horizon.
 
     Shopped from the planning pool rather than the whole game, because the
     segment solved from it has forecasts for no one else.
     """
+    cached = run.wildcard_squads.get((event, horizon_length))
+    if cached is not None:
+        return cached
     horizon = [
-        candidate
-        for candidate in run.ordered_events
-        if event <= candidate < event + WILDCARD_HORIZON
+        candidate for candidate in run.ordered_events if event <= candidate < event + horizon_length
     ]
     over_horizon = {
         candidate.element_id: sum(
@@ -722,19 +785,48 @@ def _wildcard_squad(event: int, run: _ChipRun) -> tuple[list[int], list[int]] | 
     if len(shoppable) < sum(SQUAD_RULES.position_counts.values()):
         return None
     try:
+        rules = SquadRules(
+            budget_tenths=run.budget_tenths,
+            club_limit=SQUAD_RULES.club_limit,
+            position_counts=SQUAD_RULES.position_counts,
+        )
         built = choose_opening_squad(
             shoppable,
             over_horizon,
             {candidate.element_id: 1.0 for candidate in run.pool},
-            OpeningSettings(rules=SQUAD_RULES, bench_weight=0.0),
+            OpeningSettings(rules=rules, bench_weight=0.0),
             weekly=[run.event_points[week] for week in horizon if week in run.event_points],
         )
     except ValueError:
         return None
-    return (
+    selected = (
         [player.element_id for player in built.starters],
         [player.element_id for player in built.bench],
     )
+    run.wildcard_squads[(event, horizon_length)] = selected
+    return selected
+
+
+def _wildcard_squad(event: int, run: _ChipRun) -> tuple[list[int], list[int]] | None:
+    """The longest-horizon legal squad, which persists after the Wildcard."""
+    return _wildcard_squad_for_horizon(event, max(WILDCARD_HORIZONS), run)
+
+
+def _wildcard_horizon_cliff(event: int, run: _ChipRun) -> tuple[int, tuple[int, int] | None]:
+    """Largest squad change between adjacent 3/5/7/9-gameweek optima."""
+    built = [
+        (horizon, _wildcard_squad_for_horizon(event, horizon, run)) for horizon in WILDCARD_HORIZONS
+    ]
+    changes: list[tuple[int, tuple[int, int]]] = []
+    for (short, short_squad), (long, long_squad) in pairwise(built):
+        if short_squad is None or long_squad is None:
+            continue
+        short_ids = set(short_squad[0]) | set(short_squad[1])
+        long_ids = set(long_squad[0]) | set(long_squad[1])
+        changes.append((len(long_ids - short_ids), (short, long)))
+    if not changes:
+        return 0, None
+    return max(changes, key=lambda row: (row[0], row[1]))
 
 
 def _solve_segment(
@@ -753,7 +845,7 @@ def _solve_segment(
     up. Solving the whole season long-termist and then swapping in a rebuild
     pays the cost of the chip and collects none of the licence it buys.
     """
-    if len(events) < 2:
+    if not events:
         return {}
     solved = plan_season(
         events=events,
@@ -847,15 +939,29 @@ def _place_wildcards(chips: list[dict[str, Any]], run: _ChipRun) -> None:
     # best one. A week the screen ranked second can still win the exact solve,
     # and until now it was never given the chance.
     by_half: list[list[int]] = []
+    cliff_by_event: dict[int, tuple[int, tuple[int, int] | None]] = {}
     for chip in proposed:
         alternatives = [int(event) for event in chip.pop("_alternatives", [])]
         offered = [int(chip["event"]), *alternatives]
         # Screened before the expensive solve: a week whose rebuild moves fewer
         # than this is not a wildcard week however well the season scores
         # around it.
-        by_half.append(
-            [week for week in offered if _wildcard_turnover(week, run) >= MINIMUM_WILDCARD_CHANGES]
+        viable = [
+            week
+            for week in offered
+            if week < run.ordered_events[-1]
+            and _wildcard_turnover(week, run) >= MINIMUM_WILDCARD_CHANGES
+        ]
+        for week in viable:
+            cliff_by_event[week] = _wildcard_horizon_cliff(week, run)
+        viable.sort(
+            key=lambda week: (
+                cliff_by_event[week][0],
+                -offered.index(week),
+            ),
+            reverse=True,
         )
+        by_half.append(viable[:WILDCARD_CANDIDATES])
 
     if not any(by_half):
         for chip in proposed:
@@ -914,7 +1020,7 @@ def _place_wildcards(chips: list[dict[str, Any]], run: _ChipRun) -> None:
     # so each half takes back whichever of its own candidates was kept.
     element_by_code = {candidate.code: element_id for element_id, candidate in run.detail.items()}
     for chip, offered in zip(proposed, by_half, strict=True):
-        won = [week for week in kept if week in offered]
+        won = [candidate_event for candidate_event in kept if candidate_event in offered]
         if not won:
             chip["event"] = None
             chip["gain"] = 0.0
@@ -925,9 +1031,9 @@ def _place_wildcards(chips: list[dict[str, Any]], run: _ChipRun) -> None:
             continue
         event = won[0]
         chip["event"] = event
-        week = run.by_event[event]
-        starters = [element_by_code[int(code)] for code in week["starters"]]
-        bench = [element_by_code[int(code)] for code in week["bench"]]
+        week_data = run.by_event[event]
+        starters = [element_by_code[int(code)] for code in week_data["starters"]]
+        bench = [element_by_code[int(code)] for code in week_data["bench"]]
         # Against the week before, because the segmented solve has already
         # installed its exact rebuild here. Replacing it with the screening
         # squad would leave the following week's transfer ledger on a
@@ -939,14 +1045,21 @@ def _place_wildcards(chips: list[dict[str, Any]], run: _ChipRun) -> None:
             if previous is not None and previous in run.by_event
             else set(run.opening_squad)
         )
-        _turnover(week, starters, bench, run, replaced)
+        _turnover(week_data, starters, bench, run, replaced)
         run.by_event[event]["chip"] = "Wildcard"
         chip["gain"] = round(total - baseline, 2)
         gained = total - baseline
+        cliff, horizon_pair = cliff_by_event.get(event, (0, None))
+        horizon_note = (
+            f"the legal fifteen changes {cliff} players between xPts{horizon_pair[0]} "
+            f"and xPts{horizon_pair[1]}"
+            if horizon_pair is not None
+            else "the xPts3/5/7/9 legal squads do not expose a sharper pivot"
+        )
         chip["note"] = (
             f"Rebuilding in gameweek {event} is worth {gained:.1f} over the season, because "
             "the weeks before it no longer have to leave a squad that still works "
-            "afterwards, which "
+            f"afterwards; {horizon_note}, which "
             + (
                 f"clears the {CHIP_TARGET_POINTS:.0f} points a chip wants to return"
                 if gained >= CHIP_TARGET_POINTS
@@ -964,7 +1077,16 @@ def _play_free_hit(chip: dict[str, Any], run: _ChipRun) -> None:
     if week is None or picked is None:
         return
 
-    changes = len(set(picked[0] + picked[1]) - set(week["squadElementIds"]))
+    index = run.ordered_events.index(event)
+    previous = run.ordered_events[index - 1] if index > 0 else None
+    if previous is None or previous not in run.by_event:
+        held = list(run.opening_squad)
+        held_bank = run.opening_bank_tenths
+    else:
+        held = list(run.by_event[previous]["squadElementIds"])
+        held_bank = int(run.by_event[previous]["bankAfterTenths"])
+
+    changes = len(set(picked[0] + picked[1]) - set(held))
     if changes < MINIMUM_FREE_HIT_CHANGES:
         chip["event"] = None
         chip["gain"] = 0.0
@@ -975,11 +1097,10 @@ def _play_free_hit(chip: dict[str, Any], run: _ChipRun) -> None:
         return
 
     before = float(week["netExpectedPoints"])
-    held_week = deepcopy(week)
-    _turnover(week, picked[0], picked[1], run)
-    after = float(week["netExpectedPoints"])
+    rental = deepcopy(week)
+    _turnover(rental, picked[0], picked[1], run, replacing=set(held))
+    after = float(rental["netExpectedPoints"])
     if after <= before:
-        run.by_event[event] = held_week
         chip["event"] = None
         chip["gain"] = 0.0
         chip["note"] = (
@@ -988,12 +1109,79 @@ def _play_free_hit(chip: dict[str, Any], run: _ChipRun) -> None:
         )
         return
 
-    chip["gain"] = round(after - before, 2)
-    week["chip"] = "Free Hit"
+    future_wildcards = [
+        candidate
+        for candidate in run.ordered_events[index + 1 :]
+        if run.by_event.get(candidate, {}).get("chip") == "Wildcard"
+    ]
+    next_wildcard = future_wildcards[0] if future_wildcards else None
+    resume_events = [
+        candidate
+        for candidate in run.ordered_events[index + 1 :]
+        if next_wildcard is None or candidate < next_wildcard
+    ]
+    baseline_total = sum(
+        float(run.by_event[candidate]["netExpectedPoints"]) for candidate in [event, *resume_events]
+    )
+    resumed = _solve_segment(
+        resume_events,
+        held,
+        held_bank,
+        run.rules.transfer_rules.weekly_free_transfers,
+        run,
+    )
+    if any(candidate not in resumed for candidate in resume_events):
+        chip["event"] = None
+        chip["gain"] = 0.0
+        chip["note"] = (
+            f"The temporary squad for gameweek {event} could not restore and re-plan "
+            "every later week, so the Free Hit is left unplayed."
+        )
+        return
+
+    resumed_total = after + sum(
+        float(resumed[candidate]["netExpectedPoints"]) for candidate in resume_events
+    )
+    if resumed_total <= baseline_total:
+        chip["event"] = None
+        chip["gain"] = 0.0
+        chip["note"] = (
+            f"The gameweek {event} rental gains {after - before:.1f}, but restoring the "
+            "old squad and resetting to one free transfer leaves the affected run worth "
+            f"{baseline_total - resumed_total:.1f} less overall, so the Free Hit is unplayed."
+        )
+        return
+
+    opening = run.ordered_events[0]
+    for candidate, resumed_week in resumed.items():
+        resumed_week["confidence"] = confidence_for(candidate, opening)
+        run.by_event[candidate] = resumed_week
+
+    if next_wildcard is not None:
+        wildcard_week = run.by_event[next_wildcard]
+        wildcard_squad = set(wildcard_week["squadElementIds"])
+        wildcard_bench = list(wildcard_week["benchElementIds"])
+        wildcard_starters = sorted(wildcard_squad - set(wildcard_bench))
+        predecessor = run.ordered_events[run.ordered_events.index(next_wildcard) - 1]
+        replacing = (
+            set(held) if predecessor == event else set(run.by_event[predecessor]["squadElementIds"])
+        )
+        _turnover(
+            wildcard_week,
+            wildcard_starters,
+            wildcard_bench,
+            run,
+            replacing=replacing,
+        )
+        wildcard_week["chip"] = "Wildcard"
+
+    chip["gain"] = round(resumed_total - baseline_total, 2)
+    rental["chip"] = "Free Hit"
     # The squad reverts on the whistle. The plan underneath is untouched, so the
     # fifteen it resumes from is published rather than inferred.
-    week["revertsAfter"] = True
-    week["revertsTo"] = sorted(run.ref(element_id) for element_id in held_week["squadElementIds"])
+    rental["revertsAfter"] = True
+    rental["revertsTo"] = sorted(run.ref(element_id) for element_id in held)
+    run.by_event[event] = rental
 
 
 def _play_chips(chips: list[dict[str, Any]], run: _ChipRun) -> None:
@@ -1335,11 +1523,9 @@ def main(argv: Sequence[str] | None = None) -> int:
             for candidate in candidates
         }
         try:
-            free_squad = choose_opening_squad(
+            free_starters, free_bench = _free_hit_squad(
                 list(candidate_for.values()),
                 points,
-                {element_id: 1.0 for element_id in candidate_for},
-                OpeningSettings(rules=SQUAD_RULES, bench_weight=0.0),
             )
         except ValueError:
             continue
@@ -1347,12 +1533,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         # Comparing an eleven against an eleven-plus-captain made the ceiling
         # look lower than the plan every week, so the shortfall was always zero
         # and the Free Hit and Wildcard were never played.
-        starting = [player.element_id for player in free_squad.starters]
-        ceiling[event] = _lineup_points_with_captain(starting, points, detail)
-        free_squads[event] = (
-            [player.element_id for player in free_squad.starters],
-            [player.element_id for player in free_squad.bench],
-        )
+        ceiling[event] = _lineup_points_with_captain(free_starters, points, detail)
+        free_squads[event] = (free_starters, free_bench)
         event_points[event] = points
 
     chips = _chip_plan(

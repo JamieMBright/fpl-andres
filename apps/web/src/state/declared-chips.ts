@@ -21,6 +21,11 @@ const STORAGE_PREFIX = "fpl-andres:chips";
 export const CHIPS = ["wildcard", "freehit", "bboost", "3xc"] as const;
 
 export type Chip = (typeof CHIPS)[number];
+export type ChipHalf = "first" | "second";
+export interface SpentChip {
+  chip: Chip;
+  half: ChipHalf;
+}
 
 export const CHIP_NAMES: Record<Chip, string> = {
   wildcard: "Wildcard",
@@ -30,10 +35,19 @@ export const CHIP_NAMES: Record<Chip, string> = {
 };
 
 const chipSchema = z.enum(CHIPS);
+const chipHalfSchema = z.enum(["first", "second"]);
+const spentChipSchema = z.object({ chip: chipSchema, half: chipHalfSchema });
 
 const declaredChipsSchema = z.object({
   /** Chips already played, so the plan must not offer them again. */
-  spent: z.array(chipSchema).max(CHIPS.length),
+  spent: z
+    .array(z.union([chipSchema, spentChipSchema]))
+    .max(CHIPS.length * 2)
+    .transform((spent) =>
+      spent.map((entry): SpentChip =>
+        typeof entry === "string" ? { chip: entry, half: "first" } : entry,
+      ),
+    ),
   /** One he has committed to, and the gameweek he will play it in. */
   committed: z
     .object({ chip: chipSchema, event: z.number().int().min(1).max(47) })
@@ -44,6 +58,10 @@ const declaredChipsSchema = z.object({
 export type DeclaredChips = z.infer<typeof declaredChipsSchema>;
 
 export const NO_CHIPS: DeclaredChips = { spent: [], committed: null };
+
+export function halfForEvent(event: number): ChipHalf {
+  return event <= 19 ? "first" : "second";
+}
 
 function key(entryId: number): string {
   return `${STORAGE_PREFIX}:${entryId}`;
@@ -75,19 +93,34 @@ export function saveDeclaredChips(
 ): DeclaredChips {
   // A chip cannot be both spent and committed: spending it is what ends the
   // commitment, and holding both would let the plan schedule one he has used.
-  const spent = [...new Set(chips.spent)].filter((chip) =>
-    CHIPS.includes(chip),
-  );
+  const spent = [
+    ...new Map(
+      chips.spent.map((entry) => [`${entry.chip}:${entry.half}`, entry]),
+    ).values(),
+  ];
   const committed =
-    chips.committed && !spent.includes(chips.committed.chip)
+    chips.committed &&
+    !spent.some(
+      (entry) =>
+        entry.chip === chips.committed?.chip &&
+        entry.half === halfForEvent(chips.committed.event),
+    )
       ? chips.committed
       : null;
-  const next: DeclaredChips = { spent: spent.sort(), committed };
+  const next: DeclaredChips = {
+    spent: spent.sort((left, right) =>
+      `${left.half}:${left.chip}`.localeCompare(`${right.half}:${right.chip}`),
+    ),
+    committed,
+  };
   storage.setItem(key(entryId), JSON.stringify(next));
   return next;
 }
 
 /** Which chips the plan may still schedule. */
-export function chipsRemaining(chips: DeclaredChips): Chip[] {
-  return CHIPS.filter((chip) => !chips.spent.includes(chip));
+export function chipsRemaining(chips: DeclaredChips, half: ChipHalf): Chip[] {
+  return CHIPS.filter(
+    (chip) =>
+      !chips.spent.some((entry) => entry.chip === chip && entry.half === half),
+  );
 }

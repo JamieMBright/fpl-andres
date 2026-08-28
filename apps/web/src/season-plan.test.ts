@@ -96,6 +96,20 @@ describe("season plan artifact", () => {
     }
   });
 
+  it("plays a Free Hit only as a broad one-week rental", () => {
+    for (const [index, week] of weeks.entries()) {
+      if (week.chip !== "Free Hit") continue;
+      expect(week.transfersIn.length).toBeGreaterThanOrEqual(10);
+      expect(week.transfersOut.length).toBe(week.transfersIn.length);
+      expect(week.paidTransfers).toBe(0);
+      expect(week.transferCostPoints).toBe(0);
+      expect(week.revertsAfter).toBe(true);
+      expect(week.revertsTo).toHaveLength(15);
+      const following = weeks[index + 1];
+      if (following) expect(following.freeTransfersBefore).toBe(1);
+    }
+  });
+
   it("names every player it references", () => {
     const known = new Set(Object.keys(plan.players).map(Number));
     for (const week of weeks) {

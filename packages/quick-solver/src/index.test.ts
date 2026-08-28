@@ -142,6 +142,61 @@ describe("bounded quick solver", () => {
     expect(result.transferCostPoints).toBe(0);
   });
 
+  it("moves equal-value money off a Free Hit bench", () => {
+    const base = regretCases[0]!.input;
+    const current = new Set(
+      base.currentSquad.map((player) => player.elementId),
+    );
+    const held = solveQuickPlan(
+      { ...base, chipScenario: "free_hit" as const },
+      { ...limits, maxTransfers: 0 },
+    );
+    const outgoingId = held.benchElementIds[0]!;
+    const outgoing = base.players.find(
+      (player) => player.elementId === outgoingId,
+    )!;
+    const incoming = base.players
+      .filter(
+        (player) =>
+          !current.has(player.elementId) &&
+          player.positionId === outgoing.positionId,
+      )
+      .sort((left, right) => left.buyPriceTenths - right.buyPriceTenths)[0]!;
+    const outgoingSale = base.currentSquad.find(
+      (player) => player.elementId === outgoingId,
+    )!.sellingPriceTenths;
+    const cheaperPrice = Math.max(1, outgoingSale - 10);
+    const input = {
+      ...base,
+      chipScenario: "free_hit" as const,
+      players: base.players.map((player) =>
+        player.elementId === incoming.elementId
+          ? {
+              ...player,
+              teamId: outgoing.teamId,
+              buyPriceTenths: cheaperPrice,
+              planningPoints: outgoing.planningPoints,
+              eventPoints: outgoing.eventPoints,
+            }
+          : !current.has(player.elementId)
+            ? { ...player, planningPoints: 0, eventPoints: 0 }
+            : player,
+      ),
+    };
+
+    const result = solveQuickPlan(input, {
+      beamWidth: 50,
+      candidateLimitPerPosition: 50,
+      maxTransfers: 1,
+    });
+
+    expect(result.transfersOut).toHaveLength(1);
+    expect(result.transfersIn).toHaveLength(1);
+    expect(held.benchElementIds).toContain(result.transfersOut[0]);
+    expect(result.netExpectedPoints).toBeCloseTo(held.netExpectedPoints, 6);
+    expect(result.bankAfterTenths).toBeGreaterThan(held.bankAfterTenths);
+  });
+
   it("ranks truncated candidates by feasible squad gain under the club cap", () => {
     const base = regretCases[1]!.input;
     const input = {

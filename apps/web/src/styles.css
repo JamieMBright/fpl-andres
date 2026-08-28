@@ -1476,12 +1476,18 @@ h1[tabindex="-1"]:focus-visible {
 
 .fpl500-teaser {
   display: grid;
-  grid-template-columns: minmax(130px, 1.4fr) repeat(3, minmax(86px, 1fr));
-  margin-top: 16px;
+  grid-template-columns: minmax(130px, 1.25fr) repeat(6, minmax(82px, 1fr));
+  min-height: 70px;
+  margin: 16px 0 28px;
   border-block: 2px solid var(--ink);
   background: var(--paper-strong);
   color: var(--ink);
   text-decoration: none;
+}
+
+.fpl500-teaser-placeholder {
+  min-height: 70px;
+  margin: 16px 0 28px;
 }
 
 .fpl500-teaser > strong,
@@ -1510,8 +1516,16 @@ h1[tabindex="-1"]:focus-visible {
 }
 
 .fpl500-teaser b {
+  overflow: hidden;
   font-family: var(--fa-mono);
   font-size: 18px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fpl500-teaser em {
+  color: var(--ink-soft);
+  font: normal 10px/1.2 var(--fa-mono);
 }
 
 .fpl500-teaser:focus-visible {
@@ -1521,12 +1535,16 @@ h1[tabindex="-1"]:focus-visible {
 
 @media (width <= 620px) {
   .fpl500-teaser {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .fpl500-teaser > strong {
     grid-column: 1 / -1;
     min-height: 44px;
+  }
+
+  .fpl500-teaser > span {
+    min-height: 58px;
   }
 }
 
@@ -3129,6 +3147,22 @@ h1[tabindex="-1"]:focus-visible {
   line-height: 1.45;
 }
 
+.plan-chip-rebuild {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px 16px;
+  padding: 8px 10px;
+  background: var(--surface-raised);
+  color: var(--ink-soft);
+  font-size: 10px;
+  line-height: 1.4;
+}
+
+.plan-chip-rebuild strong {
+  color: var(--ink);
+}
+
 @media (width <= 640px) {
   .plan-chip-half li {
     grid-template-columns: 46px 1fr 46px;
@@ -3136,6 +3170,10 @@ h1[tabindex="-1"]:focus-visible {
 
   .plan-chip-note {
     grid-column: 1 / -1;
+  }
+
+  .plan-chip-rebuild {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -5474,6 +5512,36 @@ button.fpl500-holding-name {
   margin-bottom: 0;
 }
 
+.fpl500-keeper-tabs {
+  display: inline-grid;
+  grid-template-columns: repeat(2, minmax(88px, 1fr));
+  gap: 2px;
+  margin: 12px 0;
+  padding: 2px;
+  background: var(--rule);
+}
+
+.fpl500-keeper-tabs button {
+  min-height: 40px;
+  border: 0;
+  background: var(--surface-raised);
+  color: var(--ink);
+  font: 700 11px/1 var(--fa-mono);
+  cursor: pointer;
+}
+
+.fpl500-keeper-tabs button[aria-selected="true"] {
+  background: var(--signal-blue);
+  color: var(--paper);
+}
+
+.fpl500-keeper-tabs button:hover,
+.fpl500-keeper-tabs button:focus-visible {
+  color: var(--ink);
+  outline: 3px solid var(--signal-blue);
+  outline-offset: -3px;
+}
+
 .fpl500-bench-use {
   margin-top: 28px;
 }
@@ -5482,14 +5550,42 @@ button.fpl500-holding-name {
   margin-top: 32px;
 }
 
+.fpl500-team-ledger {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 1px;
+  margin: 16px 0 0;
+  background: var(--rule);
+}
+
+.fpl500-team-ledger div {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+  padding: 10px;
+  background: var(--surface-raised);
+}
+
+.fpl500-team-ledger dt {
+  color: var(--ink);
+  font: 700 9px/1.25 var(--fa-mono);
+  text-transform: uppercase;
+}
+
+.fpl500-team-ledger dd {
+  margin: 0;
+  font: 700 16px/1 var(--fa-mono);
+}
+
 .fpl500-common-pitch {
   display: grid;
-  gap: 18px;
-  min-height: 430px;
+  gap: 14px;
+  min-height: 520px;
   align-content: space-around;
   margin-top: 14px;
-  padding: 24px 14px;
+  padding: 28px 10px;
   border-block: 2px solid var(--paper);
+  box-shadow: inset 0 0 0 2px rgb(255 255 255 / 42%);
   background:
     linear-gradient(
       90deg,
@@ -5501,21 +5597,126 @@ button.fpl500-holding-name {
 }
 
 .fpl500-common-pitch > div {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(72px, 112px);
   justify-content: space-evenly;
-  gap: 8px;
+  gap: 6px;
 }
 
-.fpl500-common-pitch span {
-  max-width: 116px;
-  padding: 6px 8px;
-  background: var(--paper-strong);
-  color: var(--ink);
-  font-family: var(--fa-mono);
+.fpl500-player-tile {
+  display: grid;
+  min-width: 0;
+  min-height: 110px;
+  justify-items: center;
+  align-content: start;
+  gap: 3px;
+  padding: 6px 4px;
+  border: 1px solid rgb(255 255 255 / 50%);
+  background: rgb(0 29 19 / 78%);
+  color: #fff;
+  cursor: pointer;
+}
+
+.fpl500-player-tile:disabled {
+  cursor: default;
+}
+
+.fpl500-player-tile:hover,
+.fpl500-player-tile:focus-visible {
+  border-color: #fff;
+  outline: 3px solid var(--signal-blue);
+  outline-offset: 2px;
+}
+
+.fpl500-player-tile .ceefax-shirt {
+  width: 36px;
+  height: 32px;
+}
+
+.fpl500-player-tile strong {
+  max-width: 100%;
+  overflow: hidden;
   font-size: 11px;
-  font-weight: 700;
+  line-height: 1.2;
   text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fpl500-player-tile span {
+  max-width: 100%;
+  overflow: hidden;
+  color: rgb(255 255 255 / 82%);
+  font-family: var(--fa-mono);
+  font-size: 8px;
+  line-height: 1.3;
+  text-align: center;
+  white-space: normal;
+}
+
+.fpl500-popularity-bench {
+  margin-top: 1px;
+  padding: 12px;
+  background: var(--surface-raised);
+}
+
+.fpl500-popularity-bench h4 {
+  margin: 0 0 8px;
+}
+
+.fpl500-popularity-bench > div {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1px;
+  background: var(--rule);
+}
+
+.fpl500-popularity-bench > div > button {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  align-items: center;
+  gap: 2px 8px;
+  min-width: 0;
+  padding: 8px;
+  overflow: hidden;
+  border: 0;
+  background: var(--paper);
+  color: var(--ink);
+  text-align: start;
+  cursor: pointer;
+}
+
+.fpl500-popularity-bench > div > button:disabled {
+  cursor: default;
+}
+
+.fpl500-popularity-bench > div > button:hover,
+.fpl500-popularity-bench > div > button:focus-visible {
+  background: var(--paper-strong);
+  outline: 3px solid var(--signal-blue);
+  outline-offset: -3px;
+}
+
+.fpl500-popularity-bench .ceefax-shirt {
+  grid-row: 1 / 3;
+  width: 30px;
+}
+
+.fpl500-popularity-bench strong,
+.fpl500-popularity-bench small {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.fpl500-popularity-bench strong {
+  white-space: nowrap;
+}
+
+.fpl500-popularity-bench small {
+  line-height: 1.3;
+  white-space: normal;
 }
 
 .fpl500-structure-grid {
@@ -5584,6 +5785,39 @@ button.fpl500-holding-name {
 @media (width <= 700px) {
   .fpl500-structure-grid {
     grid-template-columns: 1fr;
+  }
+
+  .fpl500-team-ledger {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .fpl500-common-pitch {
+    min-height: 470px;
+    padding-inline: 4px;
+  }
+
+  .fpl500-common-pitch > div {
+    grid-auto-columns: minmax(0, 82px);
+    gap: 3px;
+  }
+
+  .fpl500-player-tile {
+    min-height: 104px;
+    padding-inline: 2px;
+  }
+
+  .fpl500-player-tile .ceefax-shirt {
+    width: 31px;
+  }
+
+  .fpl500-popularity-bench > div {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (width <= 480px) {
+  .fpl500-team-ledger {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
@@ -8070,6 +8304,58 @@ button.fpl500-holding-name {
 .declared-chips > h3 {
   margin: 0 0 6px;
   font-size: 17px;
+}
+
+.declared-chips-spent {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin: 14px 0;
+  padding: 0;
+  border: 0;
+}
+
+.declared-chips-spent > legend {
+  margin-bottom: 8px;
+  font-weight: 700;
+}
+
+.declared-chips-spent > div {
+  display: grid;
+  gap: 1px;
+  min-width: 0;
+  background: var(--rule);
+}
+
+.declared-chips-spent strong {
+  padding: 8px 10px;
+  background: var(--surface-raised);
+  font-family: var(--fa-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+}
+
+.declared-chips-spent label {
+  display: flex;
+  min-height: 40px;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 10px;
+  background: var(--paper-strong);
+  cursor: pointer;
+}
+
+.declared-chips-commit {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+@media (width <= 540px) {
+  .declared-chips-spent {
+    grid-template-columns: 1fr;
+  }
 }
 
 .plan-more {

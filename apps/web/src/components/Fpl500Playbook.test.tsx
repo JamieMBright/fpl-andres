@@ -98,13 +98,12 @@ describe("Fpl500Playbook", () => {
     expect(artifact.exactFpl500Portfolio.events.length).toBeGreaterThanOrEqual(
       0,
     );
-    expect(screen.getByText("Catalogue at deadline")).toBeInTheDocument();
+    expect(screen.queryByText("Catalogue at deadline")).not.toBeInTheDocument();
     expect(screen.getByText("Exact FPL500")).toBeInTheDocument();
-    expect(screen.getByText(/2,786 managers/)).toBeInTheDocument();
     expect(
       screen.getByText(/post-deadline capture-era FPL500 membership/),
     ).toBeInTheDocument();
-    expect(screen.getAllByText(/picks read/)).toHaveLength(2);
+    expect(screen.getAllByText(/picks read/)).toHaveLength(1);
   });
 
   it("shows what the armband returned once a week is fully scored", () => {

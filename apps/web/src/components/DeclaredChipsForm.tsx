@@ -3,6 +3,8 @@ import { useState } from "react";
 import {
   CHIPS,
   CHIP_NAMES,
+  chipsRemaining,
+  halfForEvent,
   readDeclaredChips,
   saveDeclaredChips,
   type Chip,
@@ -12,9 +14,9 @@ import {
 /**
  * What the manager has already decided, which FPL does not publish.
  *
- * The plan schedules four chips across a season and has no way of knowing that
- * two of them are gone. It will keep offering a wildcard played in August for
- * the rest of the year, which is not a small error: the wildcard is the single
+ * The plan schedules two half-season copies of each chip and has no way of
+ * knowing which are gone. It will keep offering a wildcard played in August
+ * for the first half, which is not a small error: the wildcard is the single
  * biggest move in the game and every transfer around it is planned against it.
  *
  * A committed chip is the other half. A manager who has decided on a Triple
@@ -55,22 +57,35 @@ export function DeclaredChipsForm({
 
       <fieldset className="declared-chips-spent">
         <legend>Chips already played</legend>
-        {CHIPS.map((chip) => (
-          <label key={chip}>
-            <input
-              checked={chips.spent.includes(chip)}
-              onChange={(event) => {
-                commit({
-                  ...chips,
-                  spent: event.target.checked
-                    ? [...chips.spent, chip]
-                    : chips.spent.filter((held) => held !== chip),
-                });
-              }}
-              type="checkbox"
-            />
-            {CHIP_NAMES[chip]}
-          </label>
+        {(["first", "second"] as const).map((half) => (
+          <div key={half}>
+            <strong>{half === "first" ? "First half" : "Second half"}</strong>
+            {CHIPS.map((chip) => {
+              const checked = chips.spent.some(
+                (entry) => entry.chip === chip && entry.half === half,
+              );
+              return (
+                <label key={`${half}-${chip}`}>
+                  <input
+                    checked={checked}
+                    onChange={(event) => {
+                      commit({
+                        ...chips,
+                        spent: event.target.checked
+                          ? [...chips.spent, { chip, half }]
+                          : chips.spent.filter(
+                              (entry) =>
+                                entry.chip !== chip || entry.half !== half,
+                            ),
+                      });
+                    }}
+                    type="checkbox"
+                  />
+                  {CHIP_NAMES[chip]}
+                </label>
+              );
+            })}
+          </div>
         ))}
       </fieldset>
 
@@ -80,18 +95,26 @@ export function DeclaredChipsForm({
           id="chip-committed"
           onChange={(event) => {
             const chip = event.target.value as Chip | "";
+            const defaultEvent =
+              chip !== "" && chipsRemaining(chips, "first").includes(chip)
+                ? 1
+                : 20;
             commit({
               ...chips,
               committed:
                 chip === ""
                   ? null
-                  : { chip, event: chips.committed?.event ?? 1 },
+                  : { chip, event: chips.committed?.event ?? defaultEvent },
             });
           }}
           value={chips.committed?.chip ?? ""}
         >
           <option value="">nothing yet</option>
-          {CHIPS.filter((chip) => !chips.spent.includes(chip)).map((chip) => (
+          {CHIPS.filter(
+            (chip) =>
+              chipsRemaining(chips, "first").includes(chip) ||
+              chipsRemaining(chips, "second").includes(chip),
+          ).map((chip) => (
             <option key={chip} value={chip}>
               {CHIP_NAMES[chip]}
             </option>
@@ -109,7 +132,13 @@ export function DeclaredChipsForm({
             if (week < 1 || week > 38) return;
             commit({
               ...chips,
-              committed: { ...chips.committed, event: week },
+              committed: chips.spent.some(
+                (entry) =>
+                  entry.chip === chips.committed?.chip &&
+                  entry.half === halfForEvent(week),
+              )
+                ? null
+                : { ...chips.committed, event: week },
             });
           }}
           type="number"

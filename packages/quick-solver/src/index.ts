@@ -291,6 +291,7 @@ export type QuickSolverInput = z.infer<typeof quickSolverInputSchema>;
 export type QuickSolverLimits = z.infer<typeof quickSolverLimitsSchema>;
 type QuickPlayer = QuickSolverInput["players"][number];
 type QuickRules = QuickSolverInput["rules"];
+const FREE_HIT_ENABLERS_PER_POSITION = 4;
 
 export function isCaptainEligiblePositionId(positionId: number): boolean {
   if (positionId === 1 || positionId === 2) return false;
@@ -352,6 +353,7 @@ interface EvaluatedState {
   netPlanningPoints: number;
   bankAfterTenths: number;
   squadQuality: number;
+  chipScenario: "none" | "free_hit";
 }
 
 interface LineupEvaluation {
@@ -460,6 +462,7 @@ export function solveQuickPlan(
   if (priorityBest !== null) {
     best = priorityBest;
   } else if (
+    input.chipScenario !== "free_hit" &&
     best !== initial &&
     best.netPlanningPoints - initial.netPlanningPoints <=
       limits.transferMarginPoints * best.transfersIn.length
@@ -554,10 +557,20 @@ function boundedCandidates(
       );
     if (candidates.length > limits.candidateLimitPerPosition)
       omittedCandidates = true;
-    for (const player of candidates.slice(
-      0,
-      limits.candidateLimitPerPosition,
-    )) {
+    const shortlisted = candidates.slice(0, limits.candidateLimitPerPosition);
+    if (input.chipScenario === "free_hit") {
+      shortlisted.push(
+        ...[...candidates]
+          .sort(
+            (left, right) =>
+              left.buyPriceTenths - right.buyPriceTenths ||
+              right.planningPoints - left.planningPoints ||
+              left.elementId - right.elementId,
+          )
+          .slice(0, FREE_HIT_ENABLERS_PER_POSITION),
+      );
+    }
+    for (const player of shortlisted) {
       selected.add(player.elementId);
     }
   }
@@ -667,6 +680,7 @@ function evaluateSquad(
         total + requiredPlayer(players, elementId).planningPoints,
       0,
     ),
+    chipScenario: input.chipScenario,
   };
 }
 
@@ -810,6 +824,13 @@ function scoreLineup(
 }
 
 function compareStates(left: EvaluatedState, right: EvaluatedState): number {
+  if (left.chipScenario === "free_hit" && right.chipScenario === "free_hit") {
+    return (
+      right.netPlanningPoints - left.netPlanningPoints ||
+      right.bankAfterTenths - left.bankAfterTenths ||
+      compareIds(left.squadElementIds, right.squadElementIds)
+    );
+  }
   return (
     right.netPlanningPoints - left.netPlanningPoints ||
     left.transfersIn.length - right.transfersIn.length ||

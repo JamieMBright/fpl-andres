@@ -157,3 +157,20 @@ class TestPortfolioCaptains:
         assert (
             next(row for row in second if row["elementId"] == 11)["pointsSinceFirstCapture"] == 10
         )
+
+    def test_an_unfinished_round_omits_popularity_squad_points(self, tmp_path: Path) -> None:
+        _capture(tmp_path, 1, {11: 0.62}, basis="ranked-500")
+        (tmp_path / "gw01-structure-v3.json").write_text(
+            json.dumps(
+                {
+                    "cohortRevision": None,
+                    "popularitySquad": {"starters": [11]},
+                }
+            ),
+            encoding="utf-8",
+        )
+
+        series = _portfolio_series(tmp_path, basis="ranked-500", label="Exact FPL500")
+        popularity = series["samples"]["01"]["structure"]["popularitySquad"]
+
+        assert "rawGameweekPoints" not in popularity

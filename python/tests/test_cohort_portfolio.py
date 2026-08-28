@@ -6,6 +6,8 @@ the only failure mode that matters for a signal nobody can eyeball.
 
 from __future__ import annotations
 
+from collections import Counter
+
 import pytest
 
 from fpl_andres.cohorts.portfolio import (
@@ -199,6 +201,7 @@ def test_structure_keeps_keeper_pairs_common_xi_and_position_spend() -> None:
         **{element_id: 4 for element_id in range(13, 16)},
     }
     prices = {element_id: 40 + element_id for element_id in element_types}
+    team_ids = {element_id: ((element_id - 1) % 8) + 1 for element_id in element_types}
     sheet = (1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 2, 12, 14, 15)
     slot = {element_id: index + 1 for index, element_id in enumerate(sheet)}
     picks = tuple(
@@ -219,6 +222,7 @@ def test_structure_keeps_keeper_pairs_common_xi_and_position_spend() -> None:
         attempted=10,
         cohort_revision="sha256:pinned",
         element_types=element_types,
+        team_ids=team_ids,
         prices=prices,
         minimum_coverage=0.9,
     )
@@ -229,6 +233,21 @@ def test_structure_keeps_keeper_pairs_common_xi_and_position_spend() -> None:
     assert structure.common_starting_xi == (1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13)
     assert structure.formation == (5, 4, 1)
     assert structure.positional_spend[1].mean == sum(prices[index] for index in (1, 2))
+    popularity = structure.popularity_squad
+    assert popularity is not None
+    assert len(popularity.squad) == 15
+    assert len(set(popularity.squad)) == 15
+    assert len(popularity.starters) == 11
+    assert len(popularity.bench) == 4
+    assert set(popularity.squad[:2]) == {1, 2}
+    assert sum(prices[element_id] for element_id in popularity.squad) <= 1000
+    assert Counter(element_types[element_id] for element_id in popularity.squad) == {
+        1: 2,
+        2: 5,
+        3: 5,
+        4: 3,
+    }
+    assert max(Counter(team_ids[element_id] for element_id in popularity.squad).values()) <= 3
     assert not hasattr(structure, "entry_id")
 
 
@@ -257,6 +276,7 @@ def test_structure_reads_team_sheet_slots_during_a_bench_boost() -> None:
         attempted=1,
         cohort_revision="sha256:pinned",
         element_types=element_types,
+        team_ids={element_id: ((element_id - 1) % 8) + 1 for element_id in element_types},
         prices={element_id: 50 for element_id in element_types},
         minimum_coverage=1.0,
     )

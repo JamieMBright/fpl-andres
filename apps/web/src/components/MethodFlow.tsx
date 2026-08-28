@@ -181,7 +181,7 @@ const STAGES: Stage[] = [
       },
     ],
     caveat:
-      "A promoted club has no measured Premier League strength. The history route therefore rates fixtures against them on FPL's own published attack and defence strength, which FPL sets for all twenty clubs before a ball is kicked. That is a real source rather than an assumption of average, but it is FPL's judgement rather than a measurement, and it is the largest soft spot in the fixture model: three of twenty clubs are promoted every year, so it touches roughly a seventh of all fixtures. The bookmaker route is the intended replacement, because a market prices a promoted club on evidence no historical record contains. It is ingested, joined and published; what it does not yet do is override the history route in the projection, and it should not until it has beaten it across four seasons of backtest.",
+      "A promoted club has no measured Premier League strength, and the current FPL feed carries no usable club-strength fields. The history route therefore uses the named promoted-club prior: deliberately softer than average, but still an assumption rather than a measurement. It is the largest soft spot in the fixture model: three of twenty clubs are promoted every year, so it touches roughly a seventh of all fixtures. The bookmaker route is the intended replacement, because a market prices a promoted club on evidence no historical record contains. It is ingested, joined and published; what it does not yet do is override the history route in the projection, and it should not until it has beaten it across four seasons of backtest.",
   },
   {
     id: "points",
@@ -285,23 +285,23 @@ const STAGES: Stage[] = [
     example:
       "Szoboszlai, £7.0m, 3.96 a match, is the kind of player who decides a Bench Boost: the chip pays what the four benched players score, so a strong fourth-choice midfielder is worth more to it than a strong captain is.",
     arithmetic:
-      "The cheap screen scores a chip in the week it would be played, without re-planning anything around it. Bench Boost scores the four bench players' expected points in that gameweek. Triple Captain scores one extra copy of the best captain's ceiling. Free Hit scores the best legal eleven for that week alone, minus the eleven already planned. Wildcard scores the best rebuilt squad over the following 8 gameweeks, minus the planned squad over the same 8. That is all a screen is: a cheap number used only to decide what to examine properly.",
+      "Bench Boost scores the four bench players in that gameweek. Triple Captain scores one extra copy of the published captain. Free Hit builds an xPts1 squad with a cheap legal bench, restores the prior squad and bank, resets the following week to one free transfer, then compares the affected run with the no-chip plan. Wildcard builds legal xPts3, xPts5, xPts7 and xPts9 squads; the change between adjacent horizons exposes a pivot worth examining.",
     detail:
-      "Every gameweek in a half is screened — no week is ruled out in advance. The best 3 per half are then re-planned exactly, meaning the whole rest of the season is re-solved around each rebuild rather than assumed unchanged, plus every legal pairing of one chip in each half. Whichever week wins the exact re-plan is the one published, even where the screen had ranked it second or third. The screen chooses what to look at; it never chooses what to play.",
+      "Every gameweek in a half is screened. The best 2 Wildcard pivots per half are then re-planned exactly, meaning the whole rest of the season is solved around each permanent rebuild. A Free Hit is retained only when its rental and restored future beat the no-chip segment after the transfer reset. The screen chooses what to examine; the exact comparison decides what to play.",
     constants: [
       {
         name: "Weeks examined exactly",
-        value: "3 per half",
+        value: "2 per half",
         why: "A time budget. Each exact re-plan is a full season re-solve, and the publish already takes ten minutes.",
       },
       {
         name: "Wildcard horizon",
-        value: "8 gameweeks",
-        why: "How far a rebuild is credited. Beyond that the squad would have drifted for other reasons anyway, so crediting the chip for it would overstate the chip.",
+        value: "xPts3 / 5 / 7 / 9",
+        why: "Adjacent legal squads reveal where short-term aggression gives way to the longer-term team a Wildcard can keep.",
       },
     ],
     caveat:
-      "Three weeks per half is a budget, not a proof that the fourth-ranked week could not have won. And a Wildcard exists to repair drift — injuries, price changes, a player losing his place — which a projection built once and never updated barely has. On this evidence a Wildcard is worth about a tenth of a point, which almost certainly understates what it is worth in a real season.",
+      "Two exact weeks per half is a compute budget, not proof that the third-ranked pivot could not have won. A Wildcard also repairs injuries, price changes and lost roles that a static projection cannot foresee, so the FPL500 remains useful human evidence beside this optimizer rather than something the model pretends to replace.",
   },
   {
     id: "published",

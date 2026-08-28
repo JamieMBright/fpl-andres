@@ -37,18 +37,21 @@ describe("declared chips", () => {
     const storage = store();
     saveDeclaredChips(storage, 1, {
       committed: { chip: "3xc", event: 12 },
-      spent: ["wildcard"],
+      spent: [{ chip: "wildcard", half: "first" }],
     });
 
     expect(readDeclaredChips(storage, 1)).toEqual({
       committed: { chip: "3xc", event: 12 },
-      spent: ["wildcard"],
+      spent: [{ chip: "wildcard", half: "first" }],
     });
   });
 
   it("keeps one team's chips out of another's", () => {
     const storage = store();
-    saveDeclaredChips(storage, 1, { committed: null, spent: ["bboost"] });
+    saveDeclaredChips(storage, 1, {
+      committed: null,
+      spent: [{ chip: "bboost", half: "first" }],
+    });
 
     expect(readDeclaredChips(storage, 2)).toEqual(NO_CHIPS);
   });
@@ -57,7 +60,7 @@ describe("declared chips", () => {
     const storage = store();
     const saved = saveDeclaredChips(storage, 1, {
       committed: { chip: "wildcard", event: 9 },
-      spent: ["wildcard"],
+      spent: [{ chip: "wildcard", half: "first" }],
     });
 
     expect(saved.committed).toBeNull();
@@ -68,10 +71,13 @@ describe("declared chips", () => {
     const storage = store();
     const saved = saveDeclaredChips(storage, 1, {
       committed: null,
-      spent: ["freehit", "freehit"],
+      spent: [
+        { chip: "freehit", half: "first" },
+        { chip: "freehit", half: "first" },
+      ],
     });
 
-    expect(saved.spent).toEqual(["freehit"]);
+    expect(saved.spent).toEqual([{ chip: "freehit", half: "first" }]);
   });
 
   it("discards a stored value it cannot trust", () => {
@@ -91,9 +97,48 @@ describe("declared chips", () => {
   });
 
   it("offers the plan only the chips that are left", () => {
-    expect(chipsRemaining(NO_CHIPS)).toEqual([...CHIPS]);
+    expect(chipsRemaining(NO_CHIPS, "first")).toEqual([...CHIPS]);
     expect(
-      chipsRemaining({ committed: null, spent: ["wildcard", "bboost"] }),
+      chipsRemaining(
+        {
+          committed: null,
+          spent: [
+            { chip: "wildcard", half: "first" },
+            { chip: "bboost", half: "first" },
+          ],
+        },
+        "first",
+      ),
     ).toEqual(["freehit", "3xc"]);
+    expect(
+      chipsRemaining(
+        {
+          committed: null,
+          spent: [{ chip: "wildcard", half: "first" }],
+        },
+        "second",
+      ),
+    ).toEqual([...CHIPS]);
+  });
+
+  it("migrates legacy spent chips to the first half", () => {
+    const storage = store();
+    storage.setItem(
+      "fpl-andres:chips:1",
+      '{"spent":["wildcard"],"committed":null}',
+    );
+
+    expect(readDeclaredChips(storage, 1).spent).toEqual([
+      { chip: "wildcard", half: "first" },
+    ]);
+  });
+
+  it("allows committing the second copy after the first was spent", () => {
+    const saved = saveDeclaredChips(store(), 1, {
+      spent: [{ chip: "wildcard", half: "first" }],
+      committed: { chip: "wildcard", event: 20 },
+    });
+
+    expect(saved.committed).toEqual({ chip: "wildcard", event: 20 });
   });
 });

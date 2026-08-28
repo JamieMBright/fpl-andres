@@ -13,6 +13,7 @@ A renamed key, a changed type or a missing field fails here instead.
 from __future__ import annotations
 
 import json
+from collections import Counter
 from datetime import datetime
 from pathlib import Path
 from typing import Any
@@ -118,6 +119,29 @@ def test_fpl500_shape() -> None:
         assert isinstance(series["events"], list)
         assert "entryId" not in json.dumps(series)
 
+    exact = payload["exactFpl500Portfolio"]
+    sample = exact["samples"].get("01", {})
+    structure = sample.get("structure", {})
+    popularity = structure.get("popularitySquad")
+    if popularity is not None:
+        squad = popularity["squad"]
+        starters = popularity["starters"]
+        bench = popularity["bench"]
+        holdings = {holding["elementId"]: holding for holding in exact["holdings"]["01"]}
+        assert len(squad) == len(set(squad)) == 15
+        assert len(starters) == 11
+        assert len(bench) == 4
+        assert set(starters) | set(bench) == set(squad)
+        assert popularity["spentTenths"] <= 1000
+        assert popularity["bankTenths"] == 1000 - popularity["spentTenths"]
+        assert Counter(holdings[element_id]["position"] for element_id in squad) == {
+            "GKP": 2,
+            "DEF": 5,
+            "MID": 5,
+            "FWD": 3,
+        }
+        assert max(Counter(holdings[element_id]["teamId"] for element_id in squad).values()) <= 3
+
 
 def test_projections_shape() -> None:
     payload = _artifact("projections")
@@ -154,9 +178,29 @@ def test_projections_shape() -> None:
     for club in payload["clubs"]:
         _require_keys(
             club,
-            {"attackAway", "attackHome", "code", "defenceAway", "defenceHome", "shortName"},
+            {
+                "attackAway",
+                "attackHome",
+                "code",
+                "defenceAway",
+                "defenceHome",
+                "shortName",
+                "sourceSeason",
+                "strengthBasis",
+            },
             "projections.clubs[]",
         )
+    if payload["throughGameweek"] >= 1 and payload["clubs"]:
+        strengths = {
+            (
+                club["attackHome"],
+                club["attackAway"],
+                club["defenceHome"],
+                club["defenceAway"],
+            )
+            for club in payload["clubs"]
+        }
+        assert len(strengths) > 1, "early-season returning clubs must not collapse to average"
     if payload["throughGameweek"] >= 5:
         assert payload["clubs"], "a mature projection must publish fitted club strengths"
 

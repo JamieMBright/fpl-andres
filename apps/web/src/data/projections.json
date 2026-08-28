@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-08-28T00:26:04.319880+00:00",
+  "generatedAt": "2026-08-28T08:28:58.171403+00:00",
   "season": "2026-27",
   "throughGameweek": 1,
   "basis": "next match against an average opponent, no fixture applied; availability read for 616 players",
@@ -14841,5 +14841,176 @@
       "evidence": "observed"
     }
   ],
-  "clubs": []
+  "clubs": [
+    {
+      "code": 3,
+      "shortName": "ARS",
+      "attackHome": 1.517,
+      "attackAway": 1.162,
+      "defenceHome": 0.437,
+      "defenceAway": 0.588,
+      "strengthBasis": "carried fitted",
+      "sourceSeason": "2025-26"
+    },
+    {
+      "code": 7,
+      "shortName": "AVL",
+      "attackHome": 1.216,
+      "attackAway": 0.943,
+      "defenceHome": 0.859,
+      "defenceAway": 1.063,
+      "strengthBasis": "carried fitted",
+      "sourceSeason": "2025-26"
+    },
+    {
+      "code": 91,
+      "shortName": "BOU",
+      "attackHome": 1.19,
+      "attackAway": 1.066,
+      "defenceHome": 0.817,
+      "defenceAway": 1.186,
+      "strengthBasis": "carried fitted",
+      "sourceSeason": "2025-26"
+    },
+    {
+      "code": 94,
+      "shortName": "BRE",
+      "attackHome": 1.219,
+      "attackAway": 0.892,
+      "defenceHome": 0.841,
+      "defenceAway": 1.141,
+      "strengthBasis": "carried fitted",
+      "sourceSeason": "2025-26"
+    },
+    {
+      "code": 36,
+      "shortName": "BHA",
+      "attackHome": 1.094,
+      "attackAway": 0.839,
+      "defenceHome": 0.765,
+      "defenceAway": 0.974,
+      "strengthBasis": "carried fitted",
+      "sourceSeason": "2025-26"
+    },
+    {
+      "code": 8,
+      "shortName": "CHE",
+      "attackHome": 1.067,
+      "attackAway": 1.06,
+      "defenceHome": 0.955,
+      "defenceAway": 1.108,
+      "strengthBasis": "carried fitted",
+      "sourceSeason": "2025-26"
+    },
+    {
+      "code": 31,
+      "shortName": "CRY",
+      "attackHome": 0.804,
+      "attackAway": 0.775,
+      "defenceHome": 0.915,
+      "defenceAway": 1.128,
+      "strengthBasis": "carried fitted",
+      "sourceSeason": "2025-26"
+    },
+    {
+      "code": 11,
+      "shortName": "EVE",
+      "attackHome": 1.002,
+      "attackAway": 0.807,
+      "defenceHome": 0.955,
+      "defenceAway": 0.984,
+      "strengthBasis": "carried fitted",
+      "sourceSeason": "2025-26"
+    },
+    {
+      "code": 54,
+      "shortName": "FUL",
+      "attackHome": 1.032,
+      "attackAway": 0.698,
+      "defenceHome": 0.788,
+      "defenceAway": 1.094,
+      "strengthBasis": "carried fitted",
+      "sourceSeason": "2025-26"
+    },
+    {
+      "code": 2,
+      "shortName": "LEE",
+      "attackHome": 1.084,
+      "attackAway": 0.807,
+      "defenceHome": 0.854,
+      "defenceAway": 1.229,
+      "strengthBasis": "carried fitted",
+      "sourceSeason": "2025-26"
+    },
+    {
+      "code": 14,
+      "shortName": "LIV",
+      "attackHome": 1.325,
+      "attackAway": 1.096,
+      "defenceHome": 0.829,
+      "defenceAway": 1.188,
+      "strengthBasis": "carried fitted",
+      "sourceSeason": "2025-26"
+    },
+    {
+      "code": 43,
+      "shortName": "MCI",
+      "attackHome": 1.662,
+      "attackAway": 1.256,
+      "defenceHome": 0.558,
+      "defenceAway": 0.763,
+      "strengthBasis": "carried fitted",
+      "sourceSeason": "2025-26"
+    },
+    {
+      "code": 1,
+      "shortName": "MUN",
+      "attackHome": 1.485,
+      "attackAway": 1.166,
+      "defenceHome": 0.849,
+      "defenceAway": 0.987,
+      "strengthBasis": "carried fitted",
+      "sourceSeason": "2025-26"
+    },
+    {
+      "code": 4,
+      "shortName": "NEW",
+      "attackHome": 1.268,
+      "attackAway": 0.786,
+      "defenceHome": 1.061,
+      "defenceAway": 1.082,
+      "strengthBasis": "carried fitted",
+      "sourceSeason": "2025-26"
+    },
+    {
+      "code": 17,
+      "shortName": "NFO",
+      "attackHome": 0.934,
+      "attackAway": 0.988,
+      "defenceHome": 0.852,
+      "defenceAway": 1.049,
+      "strengthBasis": "carried fitted",
+      "sourceSeason": "2025-26"
+    },
+    {
+      "code": 6,
+      "shortName": "TOT",
+      "attackHome": 0.892,
+      "attackAway": 0.868,
+      "defenceHome": 1.086,
+      "defenceAway": 1.111,
+      "strengthBasis": "carried fitted",
+      "sourceSeason": "2025-26"
+    },
+    {
+      "code": 56,
+      "shortName": "SUN",
+      "attackHome": 0.932,
+      "attackAway": 0.688,
+      "defenceHome": 0.809,
+      "defenceAway": 1.069,
+      "strengthBasis": "carried fitted",
+      "sourceSeason": "2025-26"
+    }
+  ]
 }

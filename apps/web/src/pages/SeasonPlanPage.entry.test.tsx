@@ -200,6 +200,17 @@ describe("what a gameweek card counts", () => {
   it("does not pass the mean off as a ceiling", () => {
     expect(SOURCE).not.toContain("ceiling: week.expected");
   });
+
+  it("only badges rebuild chips after that gameweek was re-solved", () => {
+    expect(SOURCE).toContain(
+      "chipCallsByEvent(chipCalls, gameweeks, committedChip)",
+    );
+    expect(SOURCE).toContain('week.chip === "Free Hit"');
+    expect(SOURCE).toContain('"temporary changes"');
+    expect(SOURCE).toContain('week.chip === "Wildcard"');
+    expect(SOURCE).toContain('"permanent changes"');
+    expect(SOURCE).not.toContain("{week.transfersIn.length} free");
+  });
 });
 
 describe("opening recommendations", () => {

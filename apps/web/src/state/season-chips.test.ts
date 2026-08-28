@@ -1,8 +1,25 @@
 import { describe, expect, it } from "vitest";
 
 import type { ChipCall } from "./season-plan";
-import { chipCallsFor } from "./season-chips";
-import type { SolvedGameweek, SolverPlayer } from "./season-solver";
+import {
+  MINIMUM_FREE_HIT_CHANGES,
+  MINIMUM_WILDCARD_CHANGES,
+  WILDCARD_HORIZONS,
+} from "./chip-rules";
+import {
+  chipCallsByEvent,
+  chipCallsFor,
+  freeHitSegmentGain,
+  wildcardRunGain,
+} from "./season-chips";
+import { rebuildSquad } from "./squad-rebuild";
+import {
+  SEASON_EVENTS,
+  SEASON_PLAYERS,
+  bestElevenPoints,
+  type SolvedGameweek,
+  type SolverPlayer,
+} from "./season-solver";
 
 /**
  * The published chip calls belong to the published fifteen. These assert that
@@ -88,6 +105,115 @@ function callOf(calls: readonly ChipCall[], chip: string): ChipCall {
 }
 
 describe("chipCallsFor", () => {
+  it("pins broad rental and permanent rebuild thresholds", () => {
+    expect(MINIMUM_FREE_HIT_CHANGES).toBe(10);
+    expect(MINIMUM_WILDCARD_CHANGES).toBe(5);
+    expect(WILDCARD_HORIZONS).toEqual([3, 5, 7, 9]);
+  });
+
+  it("allows adjacent unlimited chips from different halves", () => {
+    const calls: ChipCall[] = [
+      { event: 19, chip: "Free Hit", half: "first", gain: 8, note: "rental" },
+      {
+        event: 20,
+        chip: "Wildcard",
+        half: "second",
+        gain: 10,
+        note: "rebuild",
+      },
+    ];
+
+    const scheduled = chipCallsFor([], calls);
+
+    expect(callOf(scheduled, "Free Hit").event).toBe(19);
+    expect(callOf(scheduled, "Wildcard").event).toBe(20);
+  });
+
+  it("charges a Free Hit for the restored run after the FT reset", () => {
+    const squad = rebuildSquad(0, 1000, 1)?.squad ?? [];
+    expect(squad).toHaveLength(15);
+    const heldIds = new Set(squad.map((player) => player.id));
+    const used = new Set<number>();
+    const replacements = squad.slice(0, 2).map((outgoing) => {
+      const replacement = SEASON_PLAYERS.find(
+        (candidate) =>
+          !heldIds.has(candidate.id) &&
+          !used.has(candidate.id) &&
+          candidate.position === outgoing.position,
+      );
+      if (replacement) used.add(replacement.id);
+      return replacement;
+    });
+    expect(replacements.every(Boolean)).toBe(true);
+    const incoming = replacements.filter(
+      (player): player is SolverPlayer => player !== undefined,
+    );
+    const changed = [
+      ...squad.filter(
+        (player) =>
+          !squad.slice(0, 2).some((outgoing) => outgoing.id === player.id),
+      ),
+      ...incoming,
+    ];
+    const first = {
+      ...week(SEASON_EVENTS[0] as number, { bench: [1], captain: 7 }),
+      starters: squad.slice(0, 11),
+      bench: squad.slice(11),
+    };
+    const second = {
+      ...week(SEASON_EVENTS[1] as number, { bench: [1], captain: 7 }),
+      starters: changed.slice(0, 11),
+      bench: changed.slice(11),
+      transfersOut: squad.slice(0, 2),
+      transfersIn: incoming,
+      netExpectedPoints: bestElevenPoints(changed, 1),
+    };
+
+    expect(freeHitSegmentGain(0, [first, second], squad, 0)).toBeCloseTo(-4, 6);
+  });
+
+  it("prices a late-first-half Wildcard through gameweek 25", () => {
+    const squad = rebuildSquad(0, 1000, 9)?.squad ?? [];
+    expect(squad).toHaveLength(15);
+    const start = SEASON_EVENTS.findIndex((event) => event === 17);
+    const weeks = SEASON_EVENTS.slice(0, start + 9).map((event, index) => ({
+      ...week(event, { bench: [1], captain: 7 }),
+      starters: squad.slice(0, 11),
+      bench: squad.slice(11),
+      netExpectedPoints: bestElevenPoints(squad, index) - 1,
+    }));
+
+    expect(wildcardRunGain(squad, start, weeks, 9)).toBeCloseTo(9, 6);
+  });
+
+  it("does not call one remaining gameweek an xPts9 Wildcard horizon", () => {
+    const calls = chipCallsFor(
+      [week(38, { bench: [1, 1, 1, 1], captain: 7 })],
+      PUBLISHED,
+    );
+
+    const wildcard = callOf(calls, "Wildcard");
+    expect(wildcard.event).toBeNull();
+    expect(wildcard.note).not.toContain("9 gameweeks");
+  });
+
+  it("reports the remaining Free Hit replay length near season end", () => {
+    const calls = chipCallsFor(
+      SEASON_EVENTS.slice(-4).map((event) =>
+        week(event, { bench: [1, 1, 1, 1], captain: 7 }),
+      ),
+      PUBLISHED,
+    );
+    const freeHit = callOf(calls, "Free Hit");
+
+    if (freeHit.event !== null) {
+      expect(freeHit.note).toMatch(
+        /over the [1-4]-gameweek restored-squad replay/,
+      );
+      expect(freeHit.note).not.toContain("nine-week");
+    }
+  });
+
   it("hands back the published calls when nothing has been solved", () => {
     expect(chipCallsFor([], PUBLISHED)).toEqual(PUBLISHED);
   });
@@ -100,6 +226,7 @@ describe("chipCallsFor", () => {
         week(4, { bench: [2, 2, 2, 2], captain: 7 }),
       ],
       PUBLISHED,
+      ["Free Hit:first", "Wildcard:first", "Triple Captain:first"],
     );
 
     const boost = callOf(calls, "Bench Boost");
@@ -166,9 +293,10 @@ describe("chipCallsFor", () => {
     const moves = /moves (\d+) of your fifteen/.exec(wildcard.note);
     expect(moves).not.toBeNull();
     expect(Number(moves?.[1])).toBeGreaterThanOrEqual(5);
+    expect(wildcard.note).toMatch(/xPts(3|5|7)/);
   });
 
-  it("refuses a free hit that would move fewer than five of the fifteen", () => {
+  it("refuses a free hit that would move fewer than ten of the fifteen", () => {
     const calls = chipCallsFor(
       [
         week(2, { bench: [1], captain: 7 }),
@@ -179,12 +307,86 @@ describe("chipCallsFor", () => {
     const freeHit = callOf(calls, "Free Hit");
 
     if (freeHit.event === null) {
-      expect(freeHit.note).toMatch(/5 or more|no week|already using gameweek/);
+      expect(freeHit.note).toMatch(/10 or more|no week|already using gameweek/);
       return;
     }
-    const moves = /on (\d+) changes/.exec(freeHit.note);
+    const moves = /a (\d+)-change xPts1 rental/.exec(freeHit.note);
     expect(moves).not.toBeNull();
-    expect(Number(moves?.[1])).toBeGreaterThanOrEqual(5);
+    expect(Number(moves?.[1])).toBeGreaterThanOrEqual(10);
+    expect(freeHit.changes).toBeGreaterThanOrEqual(10);
+    expect(freeHit.incoming).toHaveLength(freeHit.changes ?? 0);
+    expect(freeHit.outgoing?.length).toBeGreaterThan(0);
+  });
+
+  it("measures Free Hit turnover before the ordinary transfer it replaces", () => {
+    const planned = week(2, { bench: [1], captain: 7 });
+    planned.transfersIn = [player(7)];
+    planned.transfersOut = [player(999)];
+
+    const freeHit = callOf(chipCallsFor([planned], PUBLISHED), "Free Hit");
+
+    if (freeHit.event === null) return;
+    expect(freeHit.changes).toBeGreaterThanOrEqual(10);
+    expect(freeHit.outgoing).toContain("P999");
+  });
+
+  it("does not badge an ordinary week with an advisory rebuild chip", () => {
+    const calls = [
+      { event: 4, chip: "Free Hit", half: "first", gain: 8, note: "advice" },
+      { event: 6, chip: "Wildcard", half: "first", gain: 9, note: "advice" },
+      {
+        event: 8,
+        chip: "Triple Captain",
+        half: "first",
+        gain: 6,
+        note: "advice",
+      },
+    ];
+
+    const displayed = chipCallsByEvent(calls, [
+      { event: 4 },
+      { event: 6 },
+      { event: 8 },
+    ]);
+
+    expect(displayed.has(4)).toBe(false);
+    expect(displayed.has(6)).toBe(false);
+    expect(displayed.get(8)?.chip).toBe("Triple Captain");
+  });
+
+  it("badges a Free Hit only after that gameweek is re-solved", () => {
+    const call = {
+      event: 4,
+      chip: "Free Hit",
+      half: "first",
+      gain: 8,
+      note: "advice",
+    };
+
+    const displayed = chipCallsByEvent(
+      [call],
+      [{ event: 4, chip: "Free Hit" }],
+    );
+
+    expect(displayed.get(4)).toEqual(call);
+  });
+
+  it("badges a committed Wildcard without exposing an advisory Wildcard", () => {
+    const call = {
+      event: 6,
+      chip: "Wildcard",
+      half: "first",
+      gain: 8,
+      note: "advice",
+    };
+
+    expect(chipCallsByEvent([call], [{ event: 6 }]).has(6)).toBe(false);
+    expect(
+      chipCallsByEvent([call], [{ event: 6 }], {
+        chip: "Wildcard",
+        event: 6,
+      }).get(6),
+    ).toEqual(call);
   });
 
   it("prices the wildcard over the run it opens, not one afternoon", () => {
@@ -212,6 +414,14 @@ describe("chipCallsFor", () => {
         week(25, { bench: [9, 9, 9, 9], captain: 7 }),
       ],
       PUBLISHED,
+      [
+        "Free Hit:first",
+        "Wildcard:first",
+        "Triple Captain:first",
+        "Free Hit:second",
+        "Wildcard:second",
+        "Triple Captain:second",
+      ],
     );
 
     const boosts = calls.filter((call) => call.chip === "Bench Boost");
@@ -231,7 +441,10 @@ describe("chipCallsFor", () => {
   });
 
   it("does not offer a chip the manager says he has already played", () => {
-    const calls = chipCallsFor([], PUBLISHED, ["Bench Boost", "Wildcard"]);
+    const calls = chipCallsFor([], PUBLISHED, [
+      "Bench Boost:first",
+      "Wildcard:first",
+    ]);
 
     expect(calls.map((call) => call.chip)).not.toContain("Bench Boost");
     expect(calls.map((call) => call.chip)).not.toContain("Wildcard");
@@ -245,7 +458,7 @@ describe("chipCallsFor", () => {
         week(3, { bench: [4, 3, 2, 5], captain: 7 }),
       ],
       PUBLISHED,
-      ["Bench Boost"],
+      ["Bench Boost:first"],
     );
 
     expect(calls.map((call) => call.chip)).not.toContain("Bench Boost");
@@ -315,6 +528,37 @@ describe("chipCallsFor", () => {
     expect(new Set(events).size).toBe(events.length);
   });
 
+  it("keeps the higher-gain chip and drops stale rebuild details on a clash", () => {
+    const calls = [
+      {
+        event: 6,
+        chip: "Free Hit",
+        half: "first",
+        gain: 12,
+        note: "rental",
+        changes: 10,
+        incoming: ["In"],
+        outgoing: ["Out"],
+      },
+      {
+        event: 6,
+        chip: "Triple Captain",
+        half: "first",
+        gain: 5,
+        note: "armband",
+      },
+    ];
+
+    const scheduled = chipCallsFor([], calls);
+    const freeHit = callOf(scheduled, "Free Hit");
+    const triple = callOf(scheduled, "Triple Captain");
+
+    expect(freeHit.event).toBe(6);
+    expect(triple.event).toBeNull();
+    expect(triple.incoming).toBeUndefined();
+    expect(triple.outgoing).toBeUndefined();
+  });
+
   it("lets a committed chip keep its week when another chip would clash", () => {
     const calls = chipCallsFor(
       [week(2, { bench: [4, 3, 2, 5], captain: 7 })],
@@ -333,11 +577,32 @@ describe("chipCallsFor", () => {
     const calls = chipCallsFor(
       [week(3, { bench: [4, 3, 2, 5], captain: 7 })],
       PUBLISHED,
-      ["Bench Boost"],
+      ["Bench Boost:first"],
       { chip: "Bench Boost", event: 2 },
     );
 
     expect(calls.map((call) => call.chip)).not.toContain("Bench Boost");
+  });
+
+  it("spending a first-half chip leaves its second-half copy", () => {
+    const calls = chipCallsFor(
+      [week(20, { bench: [1, 1, 1, 1], captain: 7 })],
+      [
+        ...PUBLISHED,
+        {
+          event: 25,
+          chip: "Wildcard",
+          half: "second",
+          gain: 8,
+          note: "second copy",
+        },
+      ],
+      ["Wildcard:first"],
+    );
+
+    expect(
+      calls.find((call) => call.chip === "Wildcard" && call.half === "second"),
+    ).toBeDefined();
   });
 
   it("pins a commitment onto the published calls when nothing is solved", () => {

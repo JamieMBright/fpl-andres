@@ -1,5 +1,6 @@
 import {
   EVENT_INDEX,
+  LINEUP_SHAPE,
   PLAYABLE_START_RATE,
   SEASON_PLAYERS,
   SQUAD_SHAPE_BY_CODE,
@@ -25,7 +26,7 @@ import {
  * reports is the gain it actually found.
  */
 
-const IMPROVEMENT_PASSES = 6;
+const IMPROVEMENT_PASSES = 15;
 const CLUB_LIMIT = 3;
 
 export interface RebuiltSquad {
@@ -34,12 +35,69 @@ export interface RebuiltSquad {
   bankTenths: number;
 }
 
-function eligible(eventIndex: number): SolverPlayer[] {
+function horizonPoints(
+  player: SolverPlayer,
+  eventIndex: number,
+  weeks: number,
+): number {
+  return lookaheadPointsFor(player, eventIndex, undefined, weeks);
+}
+
+function eligible(eventIndex: number, weeks: number): SolverPlayer[] {
   return SEASON_PLAYERS.filter(
     (player) =>
       startRateAtEvent(player, eventIndex) >= PLAYABLE_START_RATE &&
-      lookaheadPointsFor(player, eventIndex) > 0,
+      horizonPoints(player, eventIndex, weeks) > 0,
   );
+}
+
+function bestLineup(
+  squad: readonly SolverPlayer[],
+  scoreOf: (player: SolverPlayer) => number,
+): SolverPlayer[] {
+  const byPosition = new Map<string, SolverPlayer[]>();
+  for (const player of squad) {
+    byPosition.set(player.position, [
+      ...(byPosition.get(player.position) ?? []),
+      player,
+    ]);
+  }
+  for (const players of byPosition.values()) {
+    players.sort((left, right) => scoreOf(right) - scoreOf(left));
+  }
+
+  const selected: SolverPlayer[] = [];
+  const taken = new Map<string, number>();
+  for (const [position, shape] of Object.entries(LINEUP_SHAPE)) {
+    const minimum = (byPosition.get(position) ?? []).slice(0, shape.min);
+    selected.push(...minimum);
+    taken.set(position, minimum.length);
+  }
+  const selectedIds = new Set(selected.map((player) => player.id));
+  const remaining = squad
+    .filter((player) => !selectedIds.has(player.id))
+    .sort((left, right) => scoreOf(right) - scoreOf(left));
+  for (const player of remaining) {
+    if (selected.length === 11) break;
+    const maximum = LINEUP_SHAPE[player.position]?.max ?? 0;
+    if ((taken.get(player.position) ?? 0) >= maximum) continue;
+    selected.push(player);
+    taken.set(player.position, (taken.get(player.position) ?? 0) + 1);
+  }
+  return selected;
+}
+
+function lineupValue(
+  squad: readonly SolverPlayer[],
+  scoreOf: (player: SolverPlayer) => number,
+): number {
+  const lineup = bestLineup(squad, scoreOf);
+  if (lineup.length !== 11) return Number.NEGATIVE_INFINITY;
+  const captains = lineup.filter(
+    (player) => player.position === "MID" || player.position === "FWD",
+  );
+  const captain = Math.max(0, ...captains.map(scoreOf));
+  return lineup.reduce((total, player) => total + scoreOf(player), captain);
 }
 
 /** Squad rules, checked as the fifteen is filled rather than after. */
@@ -154,13 +212,14 @@ function reserveFor(frame: SquadFrame, table: Map<string, number[]>): number {
 export function rebuildSquad(
   eventIndex: number,
   budgetTenths: number,
+  weeks = 5,
 ): RebuiltSquad | null {
-  const pool = eligible(eventIndex);
+  const pool = eligible(eventIndex, weeks);
   if (pool.length === 0) return null;
 
   const value = new Map<number, number>();
   for (const player of pool) {
-    value.set(player.id, lookaheadPointsFor(player, eventIndex));
+    value.set(player.id, horizonPoints(player, eventIndex, weeks));
   }
   const scoreOf = (player: SolverPlayer) => value.get(player.id) ?? 0;
 
@@ -186,26 +245,36 @@ export function rebuildSquad(
 
   for (let pass = 0; pass < IMPROVEMENT_PASSES; pass += 1) {
     let improved = false;
+    const currentValue = lineupValue(frame.players, scoreOf);
     for (const held of frame.players) {
       const spare = budgetTenths - frame.spent + held.priceTenths;
       let best: SolverPlayer | null = null;
-      let bestGain = 0;
+      let bestValue = currentValue;
       for (const candidate of pool) {
         if (candidate.position !== held.position) continue;
         if (candidate.priceTenths > spare) continue;
-        const gain = scoreOf(candidate) - scoreOf(held);
-        if (gain <= bestGain) continue;
         frame.remove(held);
         const fits = frame.fits(candidate);
+        if (fits) {
+          frame.add(candidate);
+          const candidateValue = lineupValue(frame.players, scoreOf);
+          frame.remove(candidate);
+          if (
+            candidateValue > bestValue + 1e-9 ||
+            (Math.abs(candidateValue - bestValue) <= 1e-9 &&
+              candidate.priceTenths < (best?.priceTenths ?? held.priceTenths))
+          ) {
+            best = candidate;
+            bestValue = candidateValue;
+          }
+        }
         frame.add(held);
-        if (!fits) continue;
-        best = candidate;
-        bestGain = gain;
       }
       if (best) {
         frame.remove(held);
         frame.add(best);
         improved = true;
+        break;
       }
     }
     if (!improved) break;
@@ -237,7 +306,7 @@ export function rebuildUplift(
   const eventIndex = EVENT_INDEX.get(event);
   if (eventIndex === undefined) return { gain: 0, changes: 0, rebuilt: null };
 
-  const rebuilt = rebuildSquad(eventIndex, budgetTenths);
+  const rebuilt = rebuildSquad(eventIndex, budgetTenths, weeks);
   if (!rebuilt) return { gain: 0, changes: 0, rebuilt: null };
 
   let gain = 0;

@@ -69,6 +69,9 @@ export interface ChipCall {
   /** Expected points playing it adds, over not playing it. */
   gain: number;
   note: string;
+  changes?: number;
+  incoming?: readonly string[];
+  outgoing?: readonly string[];
 }
 
 export interface DataGaps {

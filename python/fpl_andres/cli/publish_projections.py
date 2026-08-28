@@ -241,7 +241,10 @@ def _strength(corpus: SeasonCorpus, played: Sequence[Fixture]) -> dict[int, Team
     )
 
 
-def _clubs(corpus: SeasonCorpus) -> list[dict[str, object]]:
+def _clubs(
+    corpus: SeasonCorpus,
+    previous: SeasonCorpus | None = None,
+) -> list[dict[str, object]]:
     """Attack and defence multipliers per club, keyed by the permanent code.
 
     Club ids are reassigned every season exactly as player ids are, so the code
@@ -254,11 +257,37 @@ def _clubs(corpus: SeasonCorpus) -> list[dict[str, object]]:
         for fixture in corpus.fixtures_by_event[event]
     ]
     strength = _strength(corpus, played)
-    clubs: list[dict[str, object]] = []
-    for team_id, measured in sorted(strength.items()):
-        code = corpus.code_by_team.get(team_id)
-        if code is None:
+    previous_strength = (
+        _strength(
+            previous,
+            [
+                fixture
+                for event in sorted(previous.fixtures_by_event)
+                for fixture in previous.fixtures_by_event[event]
+            ],
+        )
+        if previous is not None
+        else {}
+    )
+    previous_by_code = {
+        code: previous_strength[team_id]
+        for team_id, code in (previous.code_by_team.items() if previous is not None else ())
+        if team_id in previous_strength
+    }
+    carried_source_season = previous.season if previous is not None else corpus.season
+    played_by_team: dict[int, int] = {}
+    for fixture in played:
+        if not fixture.finished:
             continue
+        played_by_team[fixture.team_h] = played_by_team.get(fixture.team_h, 0) + 1
+        played_by_team[fixture.team_a] = played_by_team.get(fixture.team_a, 0) + 1
+    clubs: list[dict[str, object]] = []
+    for team_id, code in sorted(corpus.code_by_team.items()):
+        current_ready = played_by_team.get(team_id, 0) >= MINIMUM_MATCHES
+        measured = strength.get(team_id) if current_ready else previous_by_code.get(code)
+        if measured is None:
+            continue
+        current_basis = current_ready and team_id in strength
         clubs.append(
             {
                 "code": code,
@@ -267,6 +296,8 @@ def _clubs(corpus: SeasonCorpus) -> list[dict[str, object]]:
                 "attackAway": round(measured.attack_away, 3),
                 "defenceHome": round(measured.defence_home, 3),
                 "defenceAway": round(measured.defence_away, 3),
+                "strengthBasis": ("current-season fitted" if current_basis else "carried fitted"),
+                "sourceSeason": corpus.season if current_basis else carried_source_season,
             }
         )
     return clubs
@@ -375,10 +406,24 @@ def corpus_from_live_snapshot(
         ):
             continue
         kickoff = datetime.fromisoformat(str(fixture["kickoff_time"]).replace("Z", "+00:00"))
+        home_score = fixture.get("team_h_score")
+        away_score = fixture.get("team_a_score")
         teams = frozenset((home_team, away_team))
         fixtures_by_id[fixture_id] = (kickoff, teams)
         for team_id in teams:
             fixtures_by_team.setdefault(team_id, []).append(fixture_id)
+        corpus.fixtures_by_event.setdefault(event, []).append(
+            Fixture(
+                fixture_id=fixture_id,
+                event=event,
+                team_h=home_team,
+                team_a=away_team,
+                kickoff_time=kickoff,
+                team_h_score=home_score if isinstance(home_score, int) else None,
+                team_a_score=away_score if isinstance(away_score, int) else None,
+                finished=fixture.get("finished") is True,
+            )
+        )
     rows: list[ElementRow] = []
     for raw in live_rows:
         if not isinstance(raw, Mapping) or not isinstance(raw.get("stats"), Mapping):
@@ -471,6 +516,7 @@ def corpus_from_live_snapshots(
         if repeated:
             raise ValueError(f"live projection snapshots repeat event(s) {sorted(repeated)}")
         combined.rows_by_gameweek.update(event_corpus.rows_by_gameweek)
+        combined.fixtures_by_event.update(event_corpus.fixtures_by_event)
     assert combined is not None
     return combined
 
@@ -511,7 +557,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         (_entry(projection) for projection in projections),
         key=lambda entry: entry["code"],
     )
-    clubs = _clubs(corpus)
+    clubs = _clubs(corpus, previous)
     artifact = {
         "schemaVersion": PROJECTIONS_SCHEMA_VERSION,
         "generatedAt": datetime.now(UTC).isoformat(),

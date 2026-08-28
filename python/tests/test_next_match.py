@@ -10,11 +10,13 @@ from __future__ import annotations
 import unittest
 from dataclasses import replace
 from datetime import UTC, datetime, timedelta
+from unittest.mock import patch
 
 from fpl_andres.backtesting.corpus import ElementRow, SeasonCorpus
-from fpl_andres.backtesting.fixtures import Fixture
+from fpl_andres.backtesting.fixtures import Fixture, TeamStrength
 from fpl_andres.backtesting.projector import project_next_match
 from fpl_andres.cli.publish_projections import (
+    _clubs,
     _entry,
     corpus_from_live_snapshot,
     corpus_from_live_snapshots,
@@ -218,6 +220,9 @@ class ProjectNextMatchTest(unittest.TestCase):
                 "event": event,
                 "team_h": 1,
                 "team_a": 2,
+                "team_h_score": 2,
+                "team_a_score": 0,
+                "finished": True,
                 "kickoff_time": f"2026-08-{20 + event:02d}T19:00:00Z",
             }
             for event in (1, 2)
@@ -226,7 +231,52 @@ class ProjectNextMatchTest(unittest.TestCase):
         corpus = corpus_from_live_snapshots(snapshots, bootstrap, fixtures)
 
         self.assertEqual(sorted(corpus.rows_by_gameweek), [1, 2])
+        self.assertEqual(sorted(corpus.fixtures_by_event), [1, 2])
+        self.assertEqual(corpus.fixtures_by_event[1][0].team_h_score, 2)
         self.assertEqual(corpus.last_event, 2)
+
+    def test_club_strength_carries_by_code_until_current_sample_is_ready(self) -> None:
+        previous = SeasonCorpus(season="2025-26")
+        previous.code_by_team = {11: 3, 12: 7}
+        current = SeasonCorpus(season="2026-27")
+        current.code_by_team = {1: 3, 2: 7, 3: 91}
+        current.short_name_by_team = {1: "ARS", 2: "AVL", 3: "LEE"}
+        current.fixtures_by_event = {
+            event: [
+                Fixture(
+                    fixture_id=event,
+                    event=event,
+                    team_h=1,
+                    team_a=2 if event == 1 else 3,
+                    kickoff_time=KICKOFF + timedelta(days=7 * event),
+                    team_h_score=2,
+                    team_a_score=0,
+                    finished=True,
+                )
+            ]
+            for event in range(1, 6)
+        }
+        carried_arsenal = TeamStrength(1.1, 1.05, 0.8, 0.85)
+        carried_villa = TeamStrength(0.9, 0.85, 1.2, 1.15)
+        current_arsenal = TeamStrength(1.4, 1.3, 0.6, 0.7)
+        premature_villa = TeamStrength(1.3, 1.2, 0.7, 0.8)
+
+        with patch(
+            "fpl_andres.cli.publish_projections._strength",
+            side_effect=[
+                {1: current_arsenal, 2: premature_villa},
+                {11: carried_arsenal, 12: carried_villa},
+            ],
+        ):
+            clubs = _clubs(current, previous)
+
+        by_code = {club["code"]: club for club in clubs}
+        self.assertEqual(by_code[3]["attackHome"], 1.4)
+        self.assertEqual(by_code[3]["strengthBasis"], "current-season fitted")
+        self.assertEqual(by_code[7]["attackHome"], 0.9)
+        self.assertEqual(by_code[7]["strengthBasis"], "carried fitted")
+        self.assertEqual(by_code[7]["sourceSeason"], "2025-26")
+        self.assertNotIn(91, by_code)
 
     def test_projects_a_single_match_not_a_season(self) -> None:
         [projection] = [
