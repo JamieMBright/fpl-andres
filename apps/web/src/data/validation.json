@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-08-27T22:50:52.863319+00:00",
-  "modelVersion": "8.11",
+  "generatedAt": "2026-08-27T23:54:00.014196+00:00",
+  "modelVersion": "8.12",
   "captainEvidenceScope": "model_owned_xi",
   "seasons": [
     {
@@ -26,79 +26,79 @@
         "startGameweek": 7,
         "gameweeksPlayed": 31,
         "seasonGameweeks": 38,
-        "totalPoints": 1965,
-        "hitPoints": 76,
-        "netPoints": 1889,
-        "proratedPoints": 2316,
-        "transfers": 48,
+        "totalPoints": 2052,
+        "hitPoints": 92,
+        "netPoints": 1960,
+        "proratedPoints": 2403,
+        "transfers": 52,
         "chips": {
           "wildcard": [8, 25],
           "bench_boost": [15],
           "triple_captain": [34]
         },
-        "finalTeamValueTenths": 1011,
+        "finalTeamValueTenths": 1023,
         "transferReturn": {
           "horizon": 6,
           "freeMoves": 29,
-          "freeGain": 204.0,
-          "hitMoves": 19,
-          "hitGain": 114.0,
-          "hitNetGain": 38.0
+          "freeGain": 138.0,
+          "hitMoves": 23,
+          "hitGain": 93.0,
+          "hitNetGain": 1.0
         },
         "benchmark": {
-          "managers": 16147,
-          "beaten": 7734,
-          "percentile": 47.9,
+          "managers": 16148,
+          "beaten": 9920,
+          "percentile": 61.4,
           "best": 2776,
           "medianPoints": 2329
         },
         "weeks": [
           {
             "event": 8,
-            "points": 78,
-            "runningTotal": 78,
+            "points": 74,
+            "runningTotal": 74,
             "chip": "wildcard",
             "captain": 428,
             "captainName": "Son",
             "captainPoints": 19,
-            "benchPoints": 3,
+            "benchPoints": 10,
             "hitPoints": 0,
             "transfers": [],
             "teamValueTenths": 1000,
-            "bankTenths": 0,
-            "starters": [376, 357, 366, 516, 428, 446, 427, 80, 301, 311, 89]
+            "bankTenths": 2,
+            "starters": [376, 357, 366, 516, 428, 446, 427, 80, 301, 89, 95]
           },
           {
             "event": 9,
             "points": 41,
-            "runningTotal": 119,
+            "runningTotal": 115,
             "chip": null,
             "captain": 301,
             "captainName": "De Bruyne",
             "captainPoints": 8,
-            "benchPoints": 2,
+            "benchPoints": 4,
             "hitPoints": 0,
             "transfers": [
               {
-                "out": 357,
-                "outName": "Trippier",
+                "out": 366,
+                "outName": "Sch\u00e4r",
                 "in": 26,
                 "inName": "Saliba"
               }
             ],
-            "teamValueTenths": 1000,
-            "bankTenths": 4,
-            "starters": [478, 26, 477, 366, 301, 311, 80, 428, 427, 446, 89]
+            "teamValueTenths": 1001,
+            "bankTenths": 1,
+            "starters": [478, 26, 477, 89, 301, 428, 80, 427, 194, 357, 95]
           },
           {
             "event": 10,
-            "points": 56,
+            "points": 60,
             "runningTotal": 175,
             "chip": null,
-            "captain": 314,
-            "captainName": "Foden",
-            "captainPoints": 11,
-            "benchPoints": 3,
+            "captain": 301,
+            "captainName": "De Bruyne",
+            "captainPoints": 6,
+            "benchPoints": 4,
             "hitPoints": 0,
             "transfers": [
               {
@@ -109,119 +109,119 @@
               }
             ],
             "teamValueTenths": 1001,
-            "bankTenths": 5,
-            "starters": [376, 366, 26, 477, 314, 301, 427, 311, 428, 80, 89]
+            "bankTenths": 2,
+            "starters": [376, 357, 26, 194, 301, 314, 427, 428, 80, 346, 95]
           },
           {
             "event": 11,
-            "points": 67,
-            "runningTotal": 242,
+            "points": 68,
+            "runningTotal": 243,
             "chip": null,
             "captain": 428,
             "captainName": "Son",
             "captainPoints": 3,
-            "benchPoints": 9,
+            "benchPoints": 11,
             "hitPoints": 0,
             "transfers": [
               {
-                "out": 253,
-                "outName": "Vestergaard",
-                "in": 538,
-                "inName": "Young"
+                "out": 194,
+                "outName": "Mykolenko",
+                "in": 39,
+                "inName": "Mings"
               }
             ],
-            "teamValueTenths": 1003,
-            "bankTenths": 0,
-            "starters": [478, 538, 477, 26, 428, 314, 427, 301, 80, 311, 366]
+            "teamValueTenths": 1004,
+            "bankTenths": 4,
+            "starters": [478, 477, 357, 26, 428, 314, 427, 301, 346, 80, 39]
           },
           {
             "event": 12,
-            "points": 42,
-            "runningTotal": 272,
+            "points": 39,
+            "runningTotal": 274,
             "chip": null,
-            "captain": 80,
-            "captainName": "Toney",
-            "captainPoints": 2,
-            "benchPoints": 2,
-            "hitPoints": 12,
+            "captain": 283,
+            "captainName": "Salah",
+            "captainPoints": 3,
+            "benchPoints": -1,
+            "hitPoints": 8,
             "transfers": [
               {
                 "out": 301,
                 "outName": "De Bruyne",
-                "in": 261,
-                "inName": "Maddison"
+                "in": 283,
+                "inName": "Salah"
               },
               {
                 "out": 26,
                 "outName": "Saliba",
-                "in": 357,
-                "inName": "Trippier"
+                "in": 366,
+                "inName": "Sch\u00e4r"
               },
               {
                 "out": 314,
                 "outName": "Foden",
-                "in": 142,
-                "inName": "Mount"
-              },
-              {
-                "out": 311,
-                "outName": "Bernardo",
-                "in": 264,
-                "inName": "Barnes"
+                "in": 293,
+                "inName": "Luis D\u00edaz"
               }
             ],
-            "teamValueTenths": 1004,
-            "bankTenths": 39,
-            "starters": [376, 357, 366, 538, 516, 142, 80, 264, 428, 427, 89]
+            "teamValueTenths": 1005,
+            "bankTenths": 2,
+            "starters": [376, 357, 366, 516, 283, 95, 80, 427, 346, 428, 89]
           },
           {
             "event": 13,
-            "points": 42,
-            "runningTotal": 314,
+            "points": 31,
+            "runningTotal": 301,
             "chip": null,
             "captain": 314,
             "captainName": "Foden",
             "captainPoints": 1,
-            "benchPoints": 3,
-            "hitPoints": 0,
+            "benchPoints": 14,
+            "hitPoints": 4,
             "transfers": [
               {
-                "out": 89,
-                "outName": "Wissa",
+                "out": 428,
+                "outName": "Son",
                 "in": 314,
                 "inName": "Foden"
-              }
-            ],
-            "teamValueTenths": 1003,
-            "bankTenths": 11,
-            "starters": [478, 357, 538, 366, 314, 142, 427, 428, 264, 80, 261]
-          },
-          {
-            "event": 14,
-            "points": 41,
-            "runningTotal": 355,
-            "chip": null,
-            "captain": 314,
-            "captainName": "Foden",
-            "captainPoints": 1,
-            "benchPoints": 2,
-            "hitPoints": 0,
-            "transfers": [
+              },
               {
                 "out": 516,
                 "outName": "Collins",
+                "in": 306,
+                "inName": "Cancelo"
+              }
+            ],
+            "teamValueTenths": 1005,
+            "bankTenths": 9,
+            "starters": [478, 306, 357, 366, 314, 283, 427, 80, 89, 477, 346]
+          },
+          {
+            "event": 14,
+            "points": 51,
+            "runningTotal": 352,
+            "chip": null,
+            "captain": 80,
+            "captainName": "Toney",
+            "captainPoints": 1,
+            "benchPoints": 6,
+            "hitPoints": 0,
+            "transfers": [
+              {
+                "out": 477,
+                "outName": "Jonny",
                 "in": 10,
                 "inName": "White"
               }
             ],
             "teamValueTenths": 1005,
-            "bankTenths": 11,
-            "starters": [376, 357, 10, 366, 314, 264, 80, 427, 142, 261, 428]
+            "bankTenths": 8,
+            "starters": [376, 357, 10, 366, 346, 314, 80, 283, 427, 306, 89]
           },
           {
             "event": 15,
-            "points": 69,
-            "runningTotal": 424,
+            "points": 70,
+            "runningTotal": 422,
             "chip": "bench_boost",
             "captain": 301,
             "captainName": "De Bruyne",
@@ -230,94 +230,94 @@
             "hitPoints": 0,
             "transfers": [
               {
-                "out": 428,
-                "outName": "Son",
+                "out": 283,
+                "outName": "Salah",
                 "in": 301,
                 "inName": "De Bruyne"
               }
             ],
-            "teamValueTenths": 1007,
-            "bankTenths": 4,
+            "teamValueTenths": 1006,
+            "bankTenths": 11,
             "starters": [
-              301, 427, 80, 142, 357, 376, 261, 264, 314, 366, 478, 10, 477,
-              538, 54
+              314, 427, 80, 357, 293, 376, 301, 366, 478, 89, 306, 95, 10, 346,
+              39
             ]
           },
           {
             "event": 16,
-            "points": 68,
-            "runningTotal": 492,
+            "points": 72,
+            "runningTotal": 494,
             "chip": null,
             "captain": 301,
             "captainName": "De Bruyne",
             "captainPoints": 2,
-            "benchPoints": 15,
+            "benchPoints": 3,
             "hitPoints": 0,
             "transfers": [
               {
-                "out": 477,
-                "outName": "Jonny",
-                "in": 106,
-                "inName": "Dunk"
+                "out": 39,
+                "outName": "Mings",
+                "in": 16,
+                "inName": "Gabriel"
               }
             ],
-            "teamValueTenths": 1007,
-            "bankTenths": 1,
-            "starters": [376, 357, 10, 366, 301, 314, 427, 106, 264, 261, 142]
+            "teamValueTenths": 1006,
+            "bankTenths": 3,
+            "starters": [376, 357, 16, 10, 301, 346, 427, 306, 366, 314, 80]
           },
           {
             "event": 17,
-            "points": 75,
-            "runningTotal": 567,
+            "points": 66,
+            "runningTotal": 560,
             "chip": null,
             "captain": 7,
             "captainName": "\u00d8degaard",
             "captainPoints": 11,
-            "benchPoints": 6,
+            "benchPoints": 8,
             "hitPoints": 0,
             "transfers": [
               {
-                "out": 261,
-                "outName": "Maddison",
+                "out": 293,
+                "outName": "Luis D\u00edaz",
                 "in": 7,
                 "inName": "\u00d8degaard"
               }
             ],
-            "teamValueTenths": 1005,
-            "bankTenths": 19,
-            "starters": [376, 10, 357, 366, 7, 301, 427, 80, 264, 142, 314]
+            "teamValueTenths": 1006,
+            "bankTenths": 17,
+            "starters": [376, 16, 10, 357, 7, 301, 80, 427, 366, 95, 314]
           },
           {
             "event": 18,
-            "points": 44,
-            "runningTotal": 611,
+            "points": 57,
+            "runningTotal": 617,
             "chip": null,
             "captain": 427,
             "captainName": "Kane",
             "captainPoints": 2,
-            "benchPoints": 19,
+            "benchPoints": 5,
             "hitPoints": 0,
             "transfers": [
               {
-                "out": 538,
-                "outName": "Young",
-                "in": 432,
-                "inName": "Davies"
+                "out": 89,
+                "outName": "Wissa",
+                "in": 440,
+                "inName": "Bentancur"
               }
             ],
             "teamValueTenths": 1006,
-            "bankTenths": 14,
-            "starters": [376, 357, 366, 432, 301, 7, 427, 314, 10, 142, 264]
+            "bankTenths": 16,
+            "starters": [376, 357, 366, 314, 80, 301, 427, 7, 16, 346, 10]
           },
           {
             "event": 19,
-            "points": 76,
-            "runningTotal": 687,
+            "points": 77,
+            "runningTotal": 694,
             "chip": null,
-            "captain": 335,
-            "captainName": "Rashford",
-            "captainPoints": 8,
-            "benchPoints": 3,
+            "captain": 346,
+            "captainName": "Andreas",
+            "captainPoints": 5,
+            "benchPoints": 14,
             "hitPoints": 0,
             "transfers": [
               {
@@ -328,29 +328,23 @@
               }
             ],
             "teamValueTenths": 1007,
-            "bankTenths": 28,
-            "starters": [376, 357, 366, 10, 335, 142, 106, 7, 427, 264, 301]
+            "bankTenths": 30,
+            "starters": [376, 357, 16, 366, 346, 335, 306, 7, 427, 301, 10]
           },
           {
             "event": 20,
             "points": 94,
-            "runningTotal": 773,
+            "runningTotal": 780,
             "chip": null,
             "captain": 427,
             "captainName": "Kane",
             "captainPoints": 7,
-            "benchPoints": 15,
+            "benchPoints": 20,
             "hitPoints": 8,
             "transfers": [
               {
-                "out": 106,
-                "outName": "Dunk",
-                "in": 332,
-                "inName": "Shaw"
-              },
-              {
-                "out": 142,
-                "outName": "Mount",
+                "out": 346,
+                "outName": "Andreas",
                 "in": 303,
                 "inName": "Mahrez"
               },
@@ -359,38 +353,44 @@
                 "outName": "S\u00e1",
                 "in": 327,
                 "inName": "De Gea"
+              },
+              {
+                "out": 306,
+                "outName": "Cancelo",
+                "in": 332,
+                "inName": "Shaw"
               }
             ],
             "teamValueTenths": 1007,
-            "bankTenths": 27,
-            "starters": [327, 332, 357, 366, 335, 303, 427, 301, 80, 7, 432]
+            "bankTenths": 25,
+            "starters": [327, 332, 357, 366, 335, 303, 427, 301, 80, 440, 7]
           },
           {
             "event": 21,
-            "points": 58,
-            "runningTotal": 831,
+            "points": 52,
+            "runningTotal": 832,
             "chip": null,
-            "captain": 303,
-            "captainName": "Mahrez",
-            "captainPoints": 6,
-            "benchPoints": 8,
+            "captain": 7,
+            "captainName": "\u00d8degaard",
+            "captainPoints": 5,
+            "benchPoints": 10,
             "hitPoints": 0,
             "transfers": [
               {
-                "out": 432,
-                "outName": "Davies",
-                "in": 16,
-                "inName": "Gabriel"
+                "out": 440,
+                "outName": "Bentancur",
+                "in": 107,
+                "inName": "March"
               }
             ],
-            "teamValueTenths": 1008,
-            "bankTenths": 23,
-            "starters": [376, 357, 366, 16, 303, 7, 427, 10, 80, 335, 301]
+            "teamValueTenths": 1010,
+            "bankTenths": 29,
+            "starters": [376, 357, 16, 366, 7, 107, 427, 303, 10, 80, 301]
           },
           {
             "event": 22,
-            "points": 70,
-            "runningTotal": 901,
+            "points": 81,
+            "runningTotal": 913,
             "chip": null,
             "captain": 335,
             "captainName": "Rashford",
@@ -399,171 +399,177 @@
             "hitPoints": 0,
             "transfers": [
               {
-                "out": 264,
-                "outName": "Barnes",
-                "in": 107,
-                "inName": "March"
+                "out": 301,
+                "outName": "De Bruyne",
+                "in": 225,
+                "inName": "Rodrigo"
               }
             ],
-            "teamValueTenths": 1011,
-            "bankTenths": 39,
-            "starters": [327, 332, 357, 366, 335, 107, 427, 7, 303, 16, 80]
+            "teamValueTenths": 1013,
+            "bankTenths": 89,
+            "starters": [327, 332, 357, 366, 335, 107, 427, 7, 16, 80, 95]
           },
           {
             "event": 23,
-            "points": 78,
-            "runningTotal": 979,
+            "points": 65,
+            "runningTotal": 974,
             "chip": null,
             "captain": 7,
             "captainName": "\u00d8degaard",
             "captainPoints": 4,
-            "benchPoints": 31,
-            "hitPoints": 0,
+            "benchPoints": 17,
+            "hitPoints": 4,
             "transfers": [
               {
-                "out": 427,
-                "outName": "Kane",
+                "out": 80,
+                "outName": "Toney",
                 "in": 318,
                 "inName": "Haaland"
+              },
+              {
+                "out": 327,
+                "outName": "De Gea",
+                "in": 307,
+                "inName": "Ederson"
               }
             ],
-            "teamValueTenths": 1014,
-            "bankTenths": 32,
-            "starters": [376, 16, 10, 357, 7, 303, 318, 301, 335, 366, 107]
+            "teamValueTenths": 1018,
+            "bankTenths": 36,
+            "starters": [307, 16, 10, 357, 7, 303, 318, 427, 335, 366, 107]
           },
           {
             "event": 24,
-            "points": 52,
-            "runningTotal": 1031,
+            "points": 68,
+            "runningTotal": 1042,
             "chip": null,
             "captain": 335,
             "captainName": "Rashford",
             "captainPoints": 15,
-            "benchPoints": 8,
+            "benchPoints": 5,
             "hitPoints": 0,
             "transfers": [
               {
-                "out": 10,
-                "outName": "White",
-                "in": 526,
-                "inName": "Mee"
+                "out": 225,
+                "outName": "Rodrigo",
+                "in": 333,
+                "inName": "Fernandes"
               }
             ],
-            "teamValueTenths": 1014,
-            "bankTenths": 29,
-            "starters": [376, 357, 332, 526, 335, 107, 318, 366, 7, 301, 80]
+            "teamValueTenths": 1020,
+            "bankTenths": 1,
+            "starters": [376, 357, 366, 332, 335, 107, 427, 333, 95, 7, 16]
           },
           {
             "event": 25,
-            "points": 114,
-            "runningTotal": 1145,
+            "points": 118,
+            "runningTotal": 1160,
             "chip": "wildcard",
             "captain": 13,
             "captainName": "Saka",
             "captainPoints": 15,
-            "benchPoints": 18,
+            "benchPoints": 17,
             "hitPoints": 0,
             "transfers": [],
-            "teamValueTenths": 1016,
-            "bankTenths": 11,
-            "starters": [281, 313, 285, 178, 13, 7, 318, 283, 199, 186, 480]
+            "teamValueTenths": 1020,
+            "bankTenths": 26,
+            "starters": [281, 285, 199, 178, 13, 7, 427, 283, 19, 186, 484]
           },
           {
             "event": 26,
-            "points": 54,
-            "runningTotal": 1199,
+            "points": 50,
+            "runningTotal": 1210,
             "chip": null,
-            "captain": 13,
-            "captainName": "Saka",
+            "captain": 19,
+            "captainName": "Martinelli",
             "captainPoints": 2,
-            "benchPoints": 14,
+            "benchPoints": 20,
             "hitPoints": 0,
             "transfers": [
               {
                 "out": 186,
                 "outName": "Iwobi",
-                "in": 107,
-                "inName": "March"
-              }
-            ],
-            "teamValueTenths": 1016,
-            "bankTenths": 14,
-            "starters": [281, 313, 285, 432, 13, 7, 40, 283, 318, 107, 262]
-          },
-          {
-            "event": 27,
-            "points": 72,
-            "runningTotal": 1259,
-            "chip": null,
-            "captain": 124,
-            "captainName": "Mitoma",
-            "captainPoints": 12,
-            "benchPoints": 15,
-            "hitPoints": 12,
-            "transfers": [
-              {
-                "out": 199,
-                "outName": "Tarkowski",
-                "in": 109,
-                "inName": "Veltman"
-              },
-              {
-                "out": 480,
-                "outName": "Neves",
-                "in": 124,
-                "inName": "Mitoma"
-              },
-              {
-                "out": 178,
-                "outName": "Coleman",
-                "in": 92,
-                "inName": "Pinnock"
-              },
-              {
-                "out": 7,
-                "outName": "\u00d8degaard",
                 "in": 335,
                 "inName": "Rashford"
               }
             ],
-            "teamValueTenths": 1017,
-            "bankTenths": 8,
-            "starters": [281, 109, 92, 432, 124, 335, 318, 107, 283, 13, 313]
+            "teamValueTenths": 1020,
+            "bankTenths": 7,
+            "starters": [281, 285, 432, 199, 19, 13, 427, 7, 335, 283, 40]
           },
           {
-            "event": 28,
-            "points": 58,
-            "runningTotal": 1297,
+            "event": 27,
+            "points": 92,
+            "runningTotal": 1282,
             "chip": null,
-            "captain": 19,
-            "captainName": "Martinelli",
-            "captainPoints": 7,
-            "benchPoints": 1,
+            "captain": 116,
+            "captainName": "Mac Allister",
+            "captainPoints": 10,
+            "benchPoints": 11,
             "hitPoints": 20,
             "transfers": [
               {
-                "out": 335,
-                "outName": "Rashford",
-                "in": 19,
-                "inName": "Martinelli"
+                "out": 484,
+                "outName": "Kilman",
+                "in": 109,
+                "inName": "Veltman"
               },
               {
-                "out": 318,
-                "outName": "Haaland",
+                "out": 478,
+                "outName": "S\u00e1",
+                "in": 81,
+                "inName": "Raya"
+              },
+              {
+                "out": 178,
+                "outName": "Coleman",
+                "in": 106,
+                "inName": "Dunk"
+              },
+              {
+                "out": 7,
+                "outName": "\u00d8degaard",
+                "in": 116,
+                "inName": "Mac Allister"
+              },
+              {
+                "out": 40,
+                "outName": "Watkins",
                 "in": 80,
                 "inName": "Toney"
               },
               {
+                "out": 199,
+                "outName": "Tarkowski",
+                "in": 526,
+                "inName": "Mee"
+              }
+            ],
+            "teamValueTenths": 1020,
+            "bankTenths": 8,
+            "starters": [81, 109, 106, 526, 116, 335, 80, 283, 427, 19, 432]
+          },
+          {
+            "event": 28,
+            "points": 55,
+            "runningTotal": 1325,
+            "chip": null,
+            "captain": 19,
+            "captainName": "Martinelli",
+            "captainPoints": 7,
+            "benchPoints": 2,
+            "hitPoints": 12,
+            "transfers": [
+              {
                 "out": 285,
                 "outName": "Alexander-Arnold",
-                "in": 357,
-                "inName": "Trippier"
+                "in": 16,
+                "inName": "Gabriel"
               },
               {
-                "out": 281,
-                "outName": "Alisson",
-                "in": 133,
-                "inName": "Arrizabalaga"
+                "out": 106,
+                "outName": "Dunk",
+                "in": 357,
+                "inName": "Trippier"
               },
               {
                 "out": 109,
@@ -572,20 +578,20 @@
                 "inName": "Burn"
               },
               {
-                "out": 283,
-                "outName": "Salah",
-                "in": 88,
-                "inName": "Jensen"
+                "out": 281,
+                "outName": "Alisson",
+                "in": 376,
+                "inName": "Pope"
               }
             ],
-            "teamValueTenths": 1018,
-            "bankTenths": 160,
-            "starters": [133, 313, 357, 358, 19, 13, 80, 40, 88, 92, 432]
+            "teamValueTenths": 1021,
+            "bankTenths": 17,
+            "starters": [376, 16, 357, 358, 19, 13, 80, 427, 526, 432, 619]
           },
           {
             "event": 29,
-            "points": 103,
-            "runningTotal": 1400,
+            "points": 85,
+            "runningTotal": 1410,
             "chip": null,
             "captain": 13,
             "captainName": "Saka",
@@ -596,131 +602,119 @@
               {
                 "out": 432,
                 "outName": "Davies",
-                "in": 377,
-                "inName": "Botman"
-              }
-            ],
-            "teamValueTenths": 1018,
-            "bankTenths": 163,
-            "starters": [133, 357, 358, 377, 13, 124, 40, 107, 19, 88, 80]
-          },
-          {
-            "event": 30,
-            "points": 53,
-            "runningTotal": 1453,
-            "chip": null,
-            "captain": 40,
-            "captainName": "Watkins",
-            "captainPoints": 7,
-            "benchPoints": 15,
-            "hitPoints": 0,
-            "transfers": [
-              {
-                "out": 262,
-                "outName": "Iheanacho",
-                "in": 427,
-                "inName": "Kane"
+                "in": 109,
+                "inName": "Veltman"
               }
             ],
             "teamValueTenths": 1021,
-            "bankTenths": 106,
-            "starters": [133, 357, 92, 358, 19, 13, 40, 427, 124, 88, 80]
+            "bankTenths": 19,
+            "starters": [376, 357, 358, 109, 13, 116, 80, 335, 283, 19, 16]
           },
           {
-            "event": 31,
-            "points": 49,
-            "runningTotal": 1502,
+            "event": 30,
+            "points": 57,
+            "runningTotal": 1467,
             "chip": null,
-            "captain": 305,
-            "captainName": "Grealish",
-            "captainPoints": 7,
-            "benchPoints": 10,
+            "captain": 427,
+            "captainName": "Kane",
+            "captainPoints": 9,
+            "benchPoints": 13,
             "hitPoints": 0,
             "transfers": [
               {
-                "out": 107,
-                "outName": "March",
+                "out": 80,
+                "outName": "Toney",
+                "in": 40,
+                "inName": "Watkins"
+              }
+            ],
+            "teamValueTenths": 1023,
+            "bankTenths": 22,
+            "starters": [81, 357, 16, 358, 335, 283, 427, 40, 13, 19, 116]
+          },
+          {
+            "event": 31,
+            "points": 52,
+            "runningTotal": 1519,
+            "chip": null,
+            "captain": 427,
+            "captainName": "Kane",
+            "captainPoints": 2,
+            "benchPoints": 6,
+            "hitPoints": 0,
+            "transfers": [
+              {
+                "out": 116,
+                "outName": "Mac Allister",
                 "in": 305,
                 "inName": "Grealish"
               }
             ],
-            "teamValueTenths": 1020,
-            "bankTenths": 88,
-            "starters": [133, 357, 88, 377, 305, 19, 427, 13, 80, 40, 358]
+            "teamValueTenths": 1022,
+            "bankTenths": 7,
+            "starters": [376, 357, 16, 358, 305, 19, 427, 283, 13, 526, 40]
           },
           {
             "event": 32,
-            "points": 58,
-            "runningTotal": 1552,
+            "points": 55,
+            "runningTotal": 1570,
             "chip": null,
             "captain": 283,
             "captainName": "Salah",
             "captainPoints": 7,
-            "benchPoints": 11,
-            "hitPoints": 8,
+            "benchPoints": 5,
+            "hitPoints": 4,
             "transfers": [
               {
                 "out": 305,
                 "outName": "Grealish",
-                "in": 283,
-                "inName": "Salah"
-              },
-              {
-                "out": 124,
-                "outName": "Mitoma",
                 "in": 169,
                 "inName": "Eze"
               },
               {
-                "out": 133,
-                "outName": "Arrizabalaga",
-                "in": 281,
-                "inName": "Alisson"
+                "out": 109,
+                "outName": "Veltman",
+                "in": 280,
+                "inName": "Van Dijk"
               }
             ],
             "teamValueTenths": 1023,
-            "bankTenths": 24,
-            "starters": [281, 357, 377, 358, 283, 19, 40, 13, 169, 80, 313]
+            "bankTenths": 4,
+            "starters": [376, 357, 16, 358, 283, 19, 40, 13, 169, 280, 427]
           },
           {
             "event": 33,
-            "points": 35,
-            "runningTotal": 1587,
+            "points": 44,
+            "runningTotal": 1614,
             "chip": null,
-            "captain": 305,
-            "captainName": "Grealish",
-            "captainPoints": 1,
-            "benchPoints": 10,
+            "captain": 427,
+            "captainName": "Kane",
+            "captainPoints": 11,
+            "benchPoints": 11,
             "hitPoints": 0,
             "transfers": [
               {
-                "out": 88,
-                "outName": "Jensen",
+                "out": 335,
+                "outName": "Rashford",
                 "in": 305,
                 "inName": "Grealish"
               }
             ],
-            "teamValueTenths": 1023,
-            "bankTenths": 0,
-            "starters": [478, 357, 358, 377, 305, 283, 40, 427, 19, 13, 169]
+            "teamValueTenths": 1024,
+            "bankTenths": 4,
+            "starters": [376, 357, 358, 526, 305, 283, 427, 40, 19, 13, 169]
           },
           {
             "event": 34,
-            "points": 105,
-            "runningTotal": 1684,
+            "points": 122,
+            "runningTotal": 1712,
             "chip": "triple_captain",
             "captain": 283,
             "captainName": "Salah",
             "captainPoints": 18,
-            "benchPoints": 5,
-            "hitPoints": 8,
+            "benchPoints": 16,
+            "hitPoints": 24,
             "transfers": [
-              {
-                "out": 427,
-                "outName": "Kane",
-                "in": 288,
-                "inName": "Diogo Jota"
-              },
               {
                 "out": 169,
                 "outName": "Eze",
@@ -728,20 +722,50 @@
                 "inName": "March"
               },
               {
-                "out": 313,
-                "outName": "Zinchenko",
-                "in": 302,
-                "inName": "Stones"
+                "out": 619,
+                "outName": "Gnonto",
+                "in": 125,
+                "inName": "Enciso"
+              },
+              {
+                "out": 427,
+                "outName": "Kane",
+                "in": 318,
+                "inName": "Haaland"
+              },
+              {
+                "out": 526,
+                "outName": "Mee",
+                "in": 106,
+                "inName": "Dunk"
+              },
+              {
+                "out": 81,
+                "outName": "Raya",
+                "in": 327,
+                "inName": "De Gea"
+              },
+              {
+                "out": 13,
+                "outName": "Saka",
+                "in": 335,
+                "inName": "Rashford"
+              },
+              {
+                "out": 40,
+                "outName": "Watkins",
+                "in": 288,
+                "inName": "Diogo Jota"
               }
             ],
-            "teamValueTenths": 1022,
-            "bankTenths": 26,
-            "starters": [281, 302, 357, 377, 283, 305, 288, 107, 19, 13, 80]
+            "teamValueTenths": 1024,
+            "bankTenths": 2,
+            "starters": [327, 106, 357, 280, 283, 107, 318, 335, 305, 288, 19]
           },
           {
             "event": 35,
-            "points": 40,
-            "runningTotal": 1724,
+            "points": 47,
+            "runningTotal": 1759,
             "chip": null,
             "captain": 283,
             "captainName": "Salah",
@@ -750,25 +774,25 @@
             "hitPoints": 0,
             "transfers": [
               {
-                "out": 92,
-                "outName": "Pinnock",
-                "in": 586,
-                "inName": "Estupi\u00f1\u00e1n"
+                "out": 107,
+                "outName": "March",
+                "in": 104,
+                "inName": "Gro\u00df"
               }
             ],
-            "teamValueTenths": 1019,
-            "bankTenths": 22,
-            "starters": [281, 586, 13, 377, 283, 358, 288, 357, 107, 40, 19]
+            "teamValueTenths": 1023,
+            "bankTenths": 0,
+            "starters": [376, 106, 357, 358, 283, 104, 318, 19, 288, 335, 280]
           },
           {
             "event": 36,
-            "points": 73,
-            "runningTotal": 1797,
+            "points": 74,
+            "runningTotal": 1833,
             "chip": null,
             "captain": 7,
             "captainName": "\u00d8degaard",
             "captainPoints": 2,
-            "benchPoints": 0,
+            "benchPoints": 13,
             "hitPoints": 0,
             "transfers": [
               {
@@ -778,48 +802,48 @@
                 "inName": "\u00d8degaard"
               }
             ],
-            "teamValueTenths": 1015,
-            "bankTenths": 28,
-            "starters": [281, 377, 357, 358, 7, 283, 40, 19, 586, 288, 13]
+            "teamValueTenths": 1022,
+            "bankTenths": 6,
+            "starters": [376, 357, 358, 106, 7, 104, 318, 19, 283, 125, 16]
           },
           {
             "event": 37,
-            "points": 54,
-            "runningTotal": 1843,
+            "points": 83,
+            "runningTotal": 1908,
             "chip": null,
             "captain": 300,
             "captainName": "G\u00fcndogan",
             "captainPoints": 2,
-            "benchPoints": 2,
+            "benchPoints": 11,
             "hitPoints": 8,
             "transfers": [
               {
-                "out": 19,
-                "outName": "Martinelli",
+                "out": 335,
+                "outName": "Rashford",
                 "in": 300,
                 "inName": "G\u00fcndogan"
               },
               {
-                "out": 13,
-                "outName": "Saka",
-                "in": 303,
-                "inName": "Mahrez"
+                "out": 288,
+                "outName": "Diogo Jota",
+                "in": 319,
+                "inName": "\u00c1lvarez"
               },
               {
-                "out": 478,
-                "outName": "S\u00e1",
-                "in": 102,
-                "inName": "Steele"
+                "out": 19,
+                "outName": "Martinelli",
+                "in": 333,
+                "inName": "Fernandes"
               }
             ],
-            "teamValueTenths": 1011,
-            "bankTenths": 38,
-            "starters": [102, 586, 357, 358, 300, 303, 288, 283, 302, 7, 377]
+            "teamValueTenths": 1022,
+            "bankTenths": 4,
+            "starters": [327, 106, 357, 358, 300, 104, 318, 333, 283, 319, 125]
           },
           {
             "event": 38,
-            "points": 46,
-            "runningTotal": 1889,
+            "points": 52,
+            "runningTotal": 1960,
             "chip": null,
             "captain": 283,
             "captainName": "Salah",
@@ -828,15 +852,15 @@
             "hitPoints": 0,
             "transfers": [
               {
-                "out": 107,
-                "outName": "March",
-                "in": 169,
-                "inName": "Eze"
+                "out": 106,
+                "outName": "Dunk",
+                "in": 10,
+                "inName": "White"
               }
             ],
-            "teamValueTenths": 1011,
-            "bankTenths": 34,
-            "starters": [102, 357, 358, 377, 283, 169, 40, 7, 303, 288, 586]
+            "teamValueTenths": 1023,
+            "bankTenths": 2,
+            "starters": [327, 357, 10, 16, 283, 7, 319, 333, 358, 104, 125]
           }
         ]
       },
@@ -1861,43 +1885,43 @@
         "startGameweek": 7,
         "gameweeksPlayed": 32,
         "seasonGameweeks": 38,
-        "totalPoints": 1866,
-        "hitPoints": 16,
-        "netPoints": 1850,
-        "proratedPoints": 2197,
-        "transfers": 34,
+        "totalPoints": 1906,
+        "hitPoints": 12,
+        "netPoints": 1894,
+        "proratedPoints": 2249,
+        "transfers": 33,
         "chips": {
           "wildcard": [8, 26],
           "free_hit": [18],
           "triple_captain": [25],
           "bench_boost": [37]
         },
-        "finalTeamValueTenths": 1010,
+        "finalTeamValueTenths": 1020,
         "transferReturn": {
           "horizon": 6,
           "freeMoves": 30,
-          "freeGain": 195.0,
-          "hitMoves": 4,
-          "hitGain": 39.0,
-          "hitNetGain": 23.0
+          "freeGain": 191.0,
+          "hitMoves": 3,
+          "hitGain": 14.0,
+          "hitNetGain": 2.0
         },
         "benchmark": {
-          "managers": 18000,
-          "beaten": 7082,
-          "percentile": 39.3,
+          "managers": 18001,
+          "beaten": 8526,
+          "percentile": 47.4,
           "best": 2738,
           "medianPoints": 2265
         },
         "weeks": [
           {
             "event": 7,
-            "points": 52,
-            "runningTotal": 52,
+            "points": 56,
+            "runningTotal": 56,
             "chip": null,
             "captain": 355,
             "captainName": "Haaland",
             "captainPoints": 2,
-            "benchPoints": 8,
+            "benchPoints": 4,
             "hitPoints": 0,
             "transfers": [
               {
@@ -1909,27 +1933,27 @@
             ],
             "teamValueTenths": 994,
             "bankTenths": 1,
-            "starters": [597, 430, 369, 504, 143, 19, 355, 343, 108, 415, 20]
+            "starters": [524, 430, 369, 504, 143, 19, 355, 343, 108, 20, 415]
           },
           {
             "event": 8,
-            "points": 76,
-            "runningTotal": 128,
+            "points": 69,
+            "runningTotal": 125,
             "chip": "wildcard",
             "captain": 308,
             "captainName": "Salah",
             "captainPoints": 15,
-            "benchPoints": 8,
+            "benchPoints": 15,
             "hitPoints": 0,
             "transfers": [],
             "teamValueTenths": 1000,
             "bankTenths": 1,
-            "starters": [230, 506, 220, 430, 308, 516, 60, 355, 504, 197, 217]
+            "starters": [145, 220, 506, 430, 308, 516, 355, 504, 60, 197, 217]
           },
           {
             "event": 9,
             "points": 99,
-            "runningTotal": 227,
+            "runningTotal": 224,
             "chip": null,
             "captain": 308,
             "captainName": "Salah",
@@ -1950,13 +1974,13 @@
           },
           {
             "event": 10,
-            "points": 58,
-            "runningTotal": 285,
+            "points": 59,
+            "runningTotal": 283,
             "chip": null,
             "captain": 308,
             "captainName": "Salah",
             "captainPoints": 8,
-            "benchPoints": 5,
+            "benchPoints": 4,
             "hitPoints": 0,
             "transfers": [
               {
@@ -1968,12 +1992,12 @@
             ],
             "teamValueTenths": 1006,
             "bankTenths": 15,
-            "starters": [230, 430, 506, 427, 308, 143, 60, 355, 516, 197, 220]
+            "starters": [145, 430, 427, 506, 308, 143, 60, 355, 516, 197, 220]
           },
           {
             "event": 11,
             "points": 44,
-            "runningTotal": 329,
+            "runningTotal": 327,
             "chip": null,
             "captain": 355,
             "captainName": "Haaland",
@@ -1990,56 +2014,56 @@
             ],
             "teamValueTenths": 1007,
             "bankTenths": 7,
-            "starters": [230, 430, 369, 506, 308, 516, 355, 60, 220, 143, 427]
+            "starters": [230, 430, 369, 220, 308, 516, 355, 60, 506, 427, 143]
           },
           {
             "event": 12,
-            "points": 66,
-            "runningTotal": 395,
+            "points": 63,
+            "runningTotal": 390,
             "chip": null,
             "captain": 308,
             "captainName": "Salah",
             "captainPoints": 16,
-            "benchPoints": 7,
+            "benchPoints": 4,
             "hitPoints": 0,
             "transfers": [
               {
-                "out": 145,
-                "outName": "Sanchez",
-                "in": 113,
-                "inName": "Raya"
+                "out": 506,
+                "outName": "Pedro Porro",
+                "in": 29,
+                "inName": "White"
               }
             ],
             "teamValueTenths": 1009,
-            "bankTenths": 5,
-            "starters": [230, 430, 427, 220, 308, 143, 60, 516, 355, 506, 369]
+            "bankTenths": 1,
+            "starters": [230, 430, 33, 427, 308, 516, 60, 220, 355, 143, 369]
           },
           {
             "event": 13,
-            "points": 40,
-            "runningTotal": 435,
+            "points": 36,
+            "runningTotal": 426,
             "chip": null,
             "captain": 355,
             "captainName": "Haaland",
             "captainPoints": 7,
-            "benchPoints": 0,
+            "benchPoints": 2,
             "hitPoints": 0,
             "transfers": [
               {
-                "out": 403,
-                "outName": "Anderson",
-                "in": 513,
-                "inName": "Sarr"
+                "out": 143,
+                "outName": "Mitoma",
+                "in": 664,
+                "inName": "Ward-Prowse"
               }
             ],
             "teamValueTenths": 1009,
-            "bankTenths": 2,
-            "starters": [230, 430, 427, 220, 308, 516, 355, 60, 506, 369, 33]
+            "bankTenths": 5,
+            "starters": [230, 430, 427, 220, 308, 516, 355, 60, 664, 29, 369]
           },
           {
             "event": 14,
-            "points": 69,
-            "runningTotal": 504,
+            "points": 64,
+            "runningTotal": 490,
             "chip": null,
             "captain": 355,
             "captainName": "Haaland",
@@ -2048,201 +2072,251 @@
             "hitPoints": 0,
             "transfers": [
               {
-                "out": 506,
-                "outName": "Pedro Porro",
-                "in": 31,
-                "inName": "Zinchenko"
+                "out": 220,
+                "outName": "Andersen",
+                "in": 20,
+                "inName": "Saliba"
               }
             ],
             "teamValueTenths": 1011,
-            "bankTenths": 3,
-            "starters": [113, 430, 31, 427, 308, 516, 355, 60, 369, 33, 220]
+            "bankTenths": 0,
+            "starters": [230, 20, 430, 427, 308, 664, 355, 60, 29, 369, 516]
           },
           {
             "event": 15,
-            "points": 22,
-            "runningTotal": 526,
+            "points": 28,
+            "runningTotal": 518,
             "chip": null,
             "captain": 308,
             "captainName": "Salah",
             "captainPoints": 3,
-            "benchPoints": 4,
+            "benchPoints": 13,
             "hitPoints": 0,
             "transfers": [
               {
                 "out": 369,
                 "outName": "Walker",
-                "in": 20,
-                "inName": "Saliba"
+                "in": 31,
+                "inName": "Zinchenko"
               }
             ],
             "teamValueTenths": 1012,
-            "bankTenths": 1,
-            "starters": [230, 430, 31, 20, 308, 516, 355, 60, 427, 220, 143]
+            "bankTenths": 2,
+            "starters": [230, 430, 20, 427, 308, 516, 355, 60, 31, 29, 664]
           },
           {
             "event": 16,
-            "points": 52,
-            "runningTotal": 578,
+            "points": 55,
+            "runningTotal": 573,
             "chip": null,
-            "captain": 134,
-            "captainName": "Gross",
-            "captainPoints": 7,
-            "benchPoints": 6,
+            "captain": 308,
+            "captainName": "Salah",
+            "captainPoints": 13,
+            "benchPoints": 3,
             "hitPoints": 0,
             "transfers": [
               {
-                "out": 143,
-                "outName": "Mitoma",
-                "in": 134,
-                "inName": "Gross"
+                "out": 29,
+                "outName": "White",
+                "in": 377,
+                "inName": "Dalot"
               }
             ],
             "teamValueTenths": 1012,
-            "bankTenths": 3,
-            "starters": [230, 430, 31, 427, 134, 308, 220, 60, 516, 20, 33]
+            "bankTenths": 9,
+            "starters": [145, 430, 377, 427, 308, 516, 33, 60, 664, 20, 31]
           },
           {
             "event": 17,
-            "points": 48,
-            "runningTotal": 626,
+            "points": 42,
+            "runningTotal": 615,
             "chip": null,
             "captain": 308,
             "captainName": "Salah",
             "captainPoints": 3,
-            "benchPoints": 2,
+            "benchPoints": 0,
             "hitPoints": 0,
             "transfers": [
               {
                 "out": 52,
                 "outName": "Nakamba",
-                "in": 635,
-                "inName": "Miley"
+                "in": 199,
+                "inName": "Enzo"
               }
             ],
             "teamValueTenths": 1012,
-            "bankTenths": 2,
-            "starters": [113, 220, 20, 31, 308, 516, 513, 427, 134, 60, 635]
+            "bankTenths": 5,
+            "starters": [145, 377, 20, 427, 308, 516, 33, 199, 31, 60, 664]
           },
           {
             "event": 18,
-            "points": 35,
-            "runningTotal": 661,
+            "points": 41,
+            "runningTotal": 656,
             "chip": "free_hit",
             "captain": 60,
             "captainName": "Watkins",
             "captainPoints": 2,
-            "benchPoints": 19,
+            "benchPoints": 21,
             "hitPoints": 0,
             "transfers": [
               {
                 "out": 355,
                 "outName": "Haaland",
-                "in": 558,
-                "inName": "Ra\u00fal"
+                "in": 85,
+                "inName": "Solanke"
               }
             ],
             "teamValueTenths": 1011,
-            "bankTenths": 89,
-            "starters": [275, 290, 501, 506, 256, 516, 60, 308, 402, 48, 313]
+            "bankTenths": 80,
+            "starters": [275, 290, 48, 506, 516, 308, 60, 501, 43, 313, 412]
           },
           {
             "event": 19,
-            "points": 34,
-            "runningTotal": 695,
+            "points": 29,
+            "runningTotal": 685,
             "chip": null,
             "captain": 308,
             "captainName": "Salah",
-            "captainPoints": 3,
-            "benchPoints": 7,
-            "hitPoints": 0,
-            "transfers": [
-              {
-                "out": 220,
-                "outName": "Andersen",
-                "in": 290,
-                "inName": "Alexander-Arnold"
-              }
-            ],
-            "teamValueTenths": 1013,
-            "bankTenths": 55,
-            "starters": [113, 290, 31, 430, 308, 134, 60, 20, 516, 427, 635]
-          },
-          {
-            "event": 20,
-            "points": 58,
-            "runningTotal": 753,
-            "chip": null,
-            "captain": 343,
-            "captainName": "J.Alvarez",
-            "captainPoints": 7,
-            "benchPoints": 0,
-            "hitPoints": 0,
-            "transfers": [
-              {
-                "out": 558,
-                "outName": "Ra\u00fal",
-                "in": 343,
-                "inName": "J.Alvarez"
-              }
-            ],
-            "teamValueTenths": 1013,
-            "bankTenths": 39,
-            "starters": [113, 290, 427, 20, 516, 308, 343, 60, 134, 33, 513]
-          },
-          {
-            "event": 21,
-            "points": 34,
-            "runningTotal": 787,
-            "chip": null,
-            "captain": 134,
-            "captainName": "Gross",
             "captainPoints": 3,
             "benchPoints": 6,
             "hitPoints": 0,
             "transfers": [
               {
-                "out": 230,
-                "outName": "Johnstone",
+                "out": 403,
+                "outName": "Anderson",
+                "in": 412,
+                "inName": "Gordon"
+              }
+            ],
+            "teamValueTenths": 1014,
+            "bankTenths": 60,
+            "starters": [145, 430, 20, 31, 308, 412, 85, 516, 427, 60, 664]
+          },
+          {
+            "event": 20,
+            "points": 57,
+            "runningTotal": 738,
+            "chip": null,
+            "captain": 343,
+            "captainName": "J.Alvarez",
+            "captainPoints": 7,
+            "benchPoints": 1,
+            "hitPoints": 4,
+            "transfers": [
+              {
+                "out": 427,
+                "outName": "Sch\u00e4r",
+                "in": 290,
+                "inName": "Alexander-Arnold"
+              },
+              {
+                "out": 33,
+                "outName": "Archer",
+                "in": 343,
+                "inName": "J.Alvarez"
+              }
+            ],
+            "teamValueTenths": 1015,
+            "bankTenths": 6,
+            "starters": [230, 290, 20, 412, 308, 516, 343, 60, 85, 664, 377]
+          },
+          {
+            "event": 21,
+            "points": 44,
+            "runningTotal": 782,
+            "chip": null,
+            "captain": 343,
+            "captainName": "J.Alvarez",
+            "captainPoints": 2,
+            "benchPoints": 0,
+            "hitPoints": 0,
+            "transfers": [
+              {
+                "out": 377,
+                "outName": "Dalot",
+                "in": 29,
+                "inName": "White"
+              }
+            ],
+            "teamValueTenths": 1015,
+            "bankTenths": 0,
+            "starters": [145, 430, 20, 29, 412, 199, 343, 85, 60, 31, 664]
+          },
+          {
+            "event": 22,
+            "points": 65,
+            "runningTotal": 847,
+            "chip": null,
+            "captain": 343,
+            "captainName": "J.Alvarez",
+            "captainPoints": 13,
+            "benchPoints": 0,
+            "hitPoints": 0,
+            "transfers": [
+              {
+                "out": 430,
+                "outName": "Trippier",
+                "in": 369,
+                "inName": "Walker"
+              }
+            ],
+            "teamValueTenths": 1017,
+            "bankTenths": 13,
+            "starters": [230, 290, 31, 20, 412, 199, 343, 60, 664, 85, 29]
+          },
+          {
+            "event": 23,
+            "points": 35,
+            "runningTotal": 882,
+            "chip": null,
+            "captain": 343,
+            "captainName": "J.Alvarez",
+            "captainPoints": 2,
+            "benchPoints": 2,
+            "hitPoints": 0,
+            "transfers": [
+              {
+                "out": 31,
+                "outName": "Zinchenko",
+                "in": 427,
+                "inName": "Sch\u00e4r"
+              }
+            ],
+            "teamValueTenths": 1015,
+            "bankTenths": 12,
+            "starters": [145, 427, 20, 290, 29, 412, 343, 85, 60, 664, 369]
+          },
+          {
+            "event": 24,
+            "points": 49,
+            "runningTotal": 931,
+            "chip": null,
+            "captain": 343,
+            "captainName": "J.Alvarez",
+            "captainPoints": 2,
+            "benchPoints": 10,
+            "hitPoints": 0,
+            "transfers": [
+              {
+                "out": 145,
+                "outName": "Sanchez",
                 "in": 291,
                 "inName": "A.Becker"
               }
             ],
             "teamValueTenths": 1013,
-            "bankTenths": 28,
-            "starters": [113, 430, 20, 31, 427, 134, 343, 516, 60, 33, 635]
+            "bankTenths": 0,
+            "starters": [291, 369, 290, 20, 29, 516, 343, 60, 664, 427, 85]
           },
           {
-            "event": 22,
-            "points": 79,
-            "runningTotal": 866,
-            "chip": null,
-            "captain": 343,
-            "captainName": "J.Alvarez",
-            "captainPoints": 13,
+            "event": 25,
+            "points": 108,
+            "runningTotal": 1039,
+            "chip": "triple_captain",
+            "captain": 308,
+            "captainName": "Salah",
+            "captainPoints": 11,
             "benchPoints": 4,
-            "hitPoints": 0,
-            "transfers": [
-              {
-                "out": 513,
-                "outName": "Sarr",
-                "in": 509,
-                "inName": "Richarlison"
-              }
-            ],
-            "teamValueTenths": 1014,
-            "bankTenths": 4,
-            "starters": [291, 290, 20, 31, 430, 509, 343, 60, 134, 427, 33]
-          },
-          {
-            "event": 23,
-            "points": 82,
-            "runningTotal": 948,
-            "chip": null,
-            "captain": 343,
-            "captainName": "J.Alvarez",
-            "captainPoints": 2,
-            "benchPoints": 8,
             "hitPoints": 0,
             "transfers": [
               {
@@ -2252,102 +2326,64 @@
                 "inName": "Foden"
               }
             ],
-            "teamValueTenths": 1012,
-            "bankTenths": 18,
-            "starters": [113, 427, 430, 20, 353, 134, 343, 60, 509, 31, 290]
-          },
-          {
-            "event": 24,
-            "points": 60,
-            "runningTotal": 1008,
-            "chip": null,
-            "captain": 353,
-            "captainName": "Foden",
-            "captainPoints": 3,
-            "benchPoints": 2,
-            "hitPoints": 0,
-            "transfers": [
-              {
-                "out": 33,
-                "outName": "Archer",
-                "in": 314,
-                "inName": "Adebayo"
-              }
-            ],
-            "teamValueTenths": 1009,
-            "bankTenths": 13,
-            "starters": [113, 290, 20, 427, 353, 509, 343, 314, 60, 430, 134]
-          },
-          {
-            "event": 25,
-            "points": 85,
-            "runningTotal": 1093,
-            "chip": "triple_captain",
-            "captain": 353,
-            "captainName": "Foden",
-            "captainPoints": 5,
-            "benchPoints": 0,
-            "hitPoints": 0,
-            "transfers": [
-              {
-                "out": 635,
-                "outName": "Miley",
-                "in": 365,
-                "inName": "Rodrigo"
-              }
-            ],
-            "teamValueTenths": 1010,
-            "bankTenths": 2,
-            "starters": [113, 430, 20, 427, 353, 365, 343, 60, 308, 134, 509]
+            "teamValueTenths": 1011,
+            "bankTenths": 14,
+            "starters": [230, 369, 85, 20, 308, 353, 343, 427, 29, 60, 412]
           },
           {
             "event": 26,
-            "points": 64,
-            "runningTotal": 1157,
+            "points": 85,
+            "runningTotal": 1124,
             "chip": "wildcard",
             "captain": 19,
             "captainName": "Saka",
             "captainPoints": 10,
-            "benchPoints": 3,
+            "benchPoints": 11,
             "hitPoints": 0,
             "transfers": [],
-            "teamValueTenths": 1011,
-            "bankTenths": 0,
-            "starters": [49, 5, 32, 563, 19, 134, 60, 14, 353, 355, 382]
+            "teamValueTenths": 1010,
+            "bankTenths": 5,
+            "starters": [49, 5, 563, 551, 19, 134, 60, 14, 355, 353, 43]
           },
           {
             "event": 27,
-            "points": 72,
-            "runningTotal": 1229,
+            "points": 71,
+            "runningTotal": 1195,
             "chip": null,
             "captain": 19,
             "captainName": "Saka",
             "captainPoints": 7,
-            "benchPoints": 5,
+            "benchPoints": 7,
             "hitPoints": 0,
             "transfers": [
               {
-                "out": 617,
-                "outName": "H\u00f8jlund",
-                "in": 85,
-                "inName": "Solanke"
+                "out": 572,
+                "outName": "N.Semedo",
+                "in": 265,
+                "inName": "Tarkowski"
               }
             ],
-            "teamValueTenths": 1011,
-            "bankTenths": 1,
-            "starters": [597, 5, 369, 32, 19, 353, 60, 14, 134, 355, 85]
+            "teamValueTenths": 1010,
+            "bankTenths": 4,
+            "starters": [263, 5, 265, 377, 19, 353, 60, 14, 355, 134, 43]
           },
           {
             "event": 28,
             "points": 47,
-            "runningTotal": 1276,
+            "runningTotal": 1238,
             "chip": null,
             "captain": 85,
             "captainName": "Solanke",
             "captainPoints": 8,
-            "benchPoints": 22,
-            "hitPoints": 0,
+            "benchPoints": 6,
+            "hitPoints": 4,
             "transfers": [
+              {
+                "out": 355,
+                "outName": "Haaland",
+                "in": 85,
+                "inName": "Solanke"
+              },
               {
                 "out": 49,
                 "outName": "Martinez",
@@ -2355,14 +2391,14 @@
                 "inName": "Neto"
               }
             ],
-            "teamValueTenths": 1015,
-            "bankTenths": 7,
-            "starters": [77, 5, 563, 150, 19, 14, 85, 60, 134, 353, 355]
+            "teamValueTenths": 1013,
+            "bankTenths": 83,
+            "starters": [77, 5, 377, 563, 19, 14, 85, 60, 134, 353, 43]
           },
           {
             "event": 29,
-            "points": 8,
-            "runningTotal": 1284,
+            "points": 7,
+            "runningTotal": 1245,
             "chip": null,
             "captain": 60,
             "captainName": "Watkins",
@@ -2371,152 +2407,152 @@
             "hitPoints": 0,
             "transfers": [
               {
-                "out": 355,
-                "outName": "Haaland",
-                "in": 326,
-                "inName": "Morris"
+                "out": 19,
+                "outName": "Saka",
+                "in": 516,
+                "inName": "Son"
               }
             ],
-            "teamValueTenths": 1016,
-            "bankTenths": 99,
-            "starters": [77, 32, 5, 563, 19, 134, 60, 326, 14, 353, 85]
+            "teamValueTenths": 1014,
+            "bankTenths": 76,
+            "starters": [77, 5, 563, 551, 516, 43, 60, 134, 14, 85, 353]
           },
           {
             "event": 30,
-            "points": 38,
-            "runningTotal": 1322,
+            "points": 47,
+            "runningTotal": 1292,
             "chip": null,
-            "captain": 353,
-            "captainName": "Foden",
-            "captainPoints": 3,
+            "captain": 516,
+            "captainName": "Son",
+            "captainPoints": 10,
             "benchPoints": 4,
             "hitPoints": 0,
             "transfers": [
               {
-                "out": 150,
-                "outName": "Van Hecke",
+                "out": 551,
+                "outName": "Dawson",
                 "in": 313,
                 "inName": "Virgil"
               }
             ],
-            "teamValueTenths": 1016,
-            "bankTenths": 75,
-            "starters": [77, 313, 5, 32, 353, 19, 60, 14, 85, 134, 326]
+            "teamValueTenths": 1015,
+            "bankTenths": 57,
+            "starters": [77, 313, 5, 265, 516, 353, 60, 85, 14, 43, 134]
           },
           {
             "event": 31,
-            "points": 68,
-            "runningTotal": 1390,
+            "points": 82,
+            "runningTotal": 1374,
             "chip": null,
-            "captain": 303,
-            "captainName": "Luis D\u00edaz",
-            "captainPoints": 6,
-            "benchPoints": 2,
+            "captain": 353,
+            "captainName": "Foden",
+            "captainPoints": 20,
+            "benchPoints": 8,
             "hitPoints": 0,
             "transfers": [
               {
-                "out": 382,
-                "outName": "Garnacho",
-                "in": 303,
-                "inName": "Luis D\u00edaz"
-              }
-            ],
-            "teamValueTenths": 1012,
-            "bankTenths": 49,
-            "starters": [77, 5, 313, 563, 303, 353, 85, 32, 14, 134, 326]
-          },
-          {
-            "event": 32,
-            "points": 57,
-            "runningTotal": 1447,
-            "chip": null,
-            "captain": 362,
-            "captainName": "Palmer",
-            "captainPoints": 5,
-            "benchPoints": 3,
-            "hitPoints": 0,
-            "transfers": [
-              {
-                "out": 19,
-                "outName": "Saka",
-                "in": 362,
-                "inName": "Palmer"
-              }
-            ],
-            "teamValueTenths": 1012,
-            "bankTenths": 80,
-            "starters": [77, 5, 313, 32, 362, 60, 85, 303, 14, 326, 134]
-          },
-          {
-            "event": 33,
-            "points": 59,
-            "runningTotal": 1506,
-            "chip": null,
-            "captain": 303,
-            "captainName": "Luis D\u00edaz",
-            "captainPoints": 2,
-            "benchPoints": 4,
-            "hitPoints": 0,
-            "transfers": [
-              {
-                "out": 369,
-                "outName": "Walker",
+                "out": 265,
+                "outName": "Tarkowski",
                 "in": 29,
                 "inName": "White"
               }
             ],
-            "teamValueTenths": 1010,
-            "bankTenths": 74,
-            "starters": [77, 5, 29, 313, 303, 362, 85, 60, 14, 134, 326]
+            "teamValueTenths": 1013,
+            "bankTenths": 46,
+            "starters": [77, 29, 5, 313, 353, 14, 85, 516, 134, 343, 43]
           },
           {
-            "event": 34,
-            "points": 108,
-            "runningTotal": 1614,
-            "chip": null,
-            "captain": 14,
-            "captainName": "\u00d8degaard",
-            "captainPoints": 20,
-            "benchPoints": 3,
-            "hitPoints": 0,
-            "transfers": [
-              {
-                "out": 353,
-                "outName": "Foden",
-                "in": 308,
-                "inName": "Salah"
-              }
-            ],
-            "teamValueTenths": 1012,
-            "bankTenths": 20,
-            "starters": [77, 29, 5, 313, 14, 303, 85, 308, 134, 60, 326]
-          },
-          {
-            "event": 35,
-            "points": 38,
-            "runningTotal": 1652,
+            "event": 32,
+            "points": 56,
+            "runningTotal": 1430,
             "chip": null,
             "captain": 362,
             "captainName": "Palmer",
-            "captainPoints": 8,
-            "benchPoints": 9,
+            "captainPoints": 5,
+            "benchPoints": 6,
             "hitPoints": 0,
             "transfers": [
               {
                 "out": 134,
                 "outName": "Gross",
+                "in": 362,
+                "inName": "Palmer"
+              }
+            ],
+            "teamValueTenths": 1013,
+            "bankTenths": 51,
+            "starters": [263, 29, 5, 313, 362, 43, 60, 516, 14, 343, 85]
+          },
+          {
+            "event": 33,
+            "points": 60,
+            "runningTotal": 1490,
+            "chip": null,
+            "captain": 303,
+            "captainName": "Luis D\u00edaz",
+            "captainPoints": 2,
+            "benchPoints": 2,
+            "hitPoints": 0,
+            "transfers": [
+              {
+                "out": 43,
+                "outName": "Douglas Luiz",
+                "in": 303,
+                "inName": "Luis D\u00edaz"
+              }
+            ],
+            "teamValueTenths": 1014,
+            "bankTenths": 30,
+            "starters": [263, 5, 29, 313, 60, 303, 343, 362, 14, 516, 85]
+          },
+          {
+            "event": 34,
+            "points": 143,
+            "runningTotal": 1633,
+            "chip": null,
+            "captain": 14,
+            "captainName": "\u00d8degaard",
+            "captainPoints": 20,
+            "benchPoints": 4,
+            "hitPoints": 0,
+            "transfers": [
+              {
+                "out": 516,
+                "outName": "Son",
+                "in": 304,
+                "inName": "Mac Allister"
+              }
+            ],
+            "teamValueTenths": 1016,
+            "bankTenths": 70,
+            "starters": [263, 29, 5, 313, 14, 303, 85, 304, 60, 343, 353]
+          },
+          {
+            "event": 35,
+            "points": 46,
+            "runningTotal": 1679,
+            "chip": null,
+            "captain": 362,
+            "captainName": "Palmer",
+            "captainPoints": 8,
+            "benchPoints": 3,
+            "hitPoints": 0,
+            "transfers": [
+              {
+                "out": 304,
+                "outName": "Mac Allister",
                 "in": 450,
                 "inName": "Johnson"
               }
             ],
-            "teamValueTenths": 1012,
-            "bankTenths": 24,
-            "starters": [597, 29, 5, 313, 362, 450, 60, 14, 303, 308, 85]
+            "teamValueTenths": 1018,
+            "bankTenths": 71,
+            "starters": [263, 29, 5, 377, 362, 450, 60, 14, 303, 343, 85]
           },
           {
             "event": 36,
-            "points": 56,
-            "runningTotal": 1708,
+            "points": 52,
+            "runningTotal": 1731,
             "chip": null,
             "captain": 362,
             "captainName": "Palmer",
@@ -2525,26 +2561,26 @@
             "hitPoints": 0,
             "transfers": [
               {
-                "out": 32,
-                "outName": "Alex Moreno",
+                "out": 563,
+                "outName": "Kilman",
                 "in": 341,
                 "inName": "Akanji"
               }
             ],
-            "teamValueTenths": 1010,
-            "bankTenths": 23,
-            "starters": [597, 29, 5, 341, 362, 14, 326, 303, 308, 60, 313]
+            "teamValueTenths": 1019,
+            "bankTenths": 66,
+            "starters": [263, 29, 5, 341, 362, 14, 343, 353, 303, 60, 313]
           },
           {
             "event": 37,
-            "points": 107,
-            "runningTotal": 1799,
+            "points": 96,
+            "runningTotal": 1823,
             "chip": "bench_boost",
             "captain": 415,
             "captainName": "Isak",
             "captainPoints": 4,
             "benchPoints": 0,
-            "hitPoints": 16,
+            "hitPoints": 4,
             "transfers": [
               {
                 "out": 85,
@@ -2553,58 +2589,40 @@
                 "inName": "Isak"
               },
               {
-                "out": 563,
-                "outName": "Kilman",
-                "in": 616,
-                "inName": "Gvardiol"
-              },
-              {
-                "out": 60,
-                "outName": "Watkins",
-                "in": 211,
-                "inName": "N.Jackson"
-              },
-              {
-                "out": 77,
-                "outName": "Neto",
-                "in": 687,
-                "inName": "Petrovi\u0107"
-              },
-              {
                 "out": 303,
                 "outName": "Luis D\u00edaz",
-                "in": 516,
-                "inName": "Son"
+                "in": 373,
+                "inName": "B.Fernandes"
               }
             ],
-            "teamValueTenths": 1011,
-            "bankTenths": 2,
+            "teamValueTenths": 1019,
+            "bankTenths": 45,
             "starters": [
-              362, 211, 450, 14, 5, 308, 326, 415, 516, 687, 341, 597, 616, 29,
-              313
+              450, 60, 362, 14, 5, 415, 353, 373, 343, 77, 341, 263, 313, 377,
+              29
             ]
           },
           {
             "event": 38,
-            "points": 51,
-            "runningTotal": 1850,
+            "points": 71,
+            "runningTotal": 1894,
             "chip": null,
             "captain": 362,
             "captainName": "Palmer",
             "captainPoints": 6,
-            "benchPoints": 28,
+            "benchPoints": 8,
             "hitPoints": 0,
             "transfers": [
               {
-                "out": 597,
-                "outName": "Onana",
-                "in": 263,
-                "inName": "Pickford"
+                "out": 377,
+                "outName": "Dalot",
+                "in": 290,
+                "inName": "Alexander-Arnold"
               }
             ],
-            "teamValueTenths": 1010,
-            "bankTenths": 3,
-            "starters": [263, 616, 29, 341, 362, 516, 211, 5, 14, 450, 308]
+            "teamValueTenths": 1020,
+            "bankTenths": 12,
+            "starters": [263, 29, 5, 341, 362, 14, 60, 353, 450, 415, 313]
           }
         ]
       },
@@ -3632,30 +3650,30 @@
         "startGameweek": 7,
         "gameweeksPlayed": 32,
         "seasonGameweeks": 38,
-        "totalPoints": 1637,
-        "hitPoints": 16,
-        "netPoints": 1621,
-        "proratedPoints": 1925,
-        "transfers": 34,
+        "totalPoints": 1486,
+        "hitPoints": 52,
+        "netPoints": 1434,
+        "proratedPoints": 1703,
+        "transfers": 43,
         "chips": {
           "bench_boost": [7],
           "wildcard": [8, 29],
           "free_hit": [15],
           "triple_captain": [18]
         },
-        "finalTeamValueTenths": 993,
+        "finalTeamValueTenths": 982,
         "transferReturn": {
           "horizon": 6,
           "freeMoves": 30,
-          "freeGain": 235.0,
-          "hitMoves": 4,
-          "hitGain": 34.0,
-          "hitNetGain": 18.0
+          "freeGain": 112.0,
+          "hitMoves": 13,
+          "hitGain": 83.0,
+          "hitNetGain": 31.0
         },
         "benchmark": {
-          "managers": 20217,
-          "beaten": 2942,
-          "percentile": 14.6,
+          "managers": 20218,
+          "beaten": 1428,
+          "percentile": 7.1,
           "best": 2756,
           "medianPoints": 2291
         },
@@ -3687,8 +3705,8 @@
           },
           {
             "event": 8,
-            "points": 38,
-            "runningTotal": 77,
+            "points": 28,
+            "runningTotal": 67,
             "chip": "wildcard",
             "captain": 351,
             "captainName": "Haaland",
@@ -3698,18 +3716,18 @@
             "transfers": [],
             "teamValueTenths": 1000,
             "bankTenths": 0,
-            "starters": [443, 3, 311, 301, 328, 263, 351, 491, 4, 291, 111]
+            "starters": [521, 3, 311, 339, 328, 263, 351, 4, 239, 301, 111]
           },
           {
             "event": 9,
-            "points": 56,
-            "runningTotal": 129,
+            "points": 60,
+            "runningTotal": 119,
             "chip": null,
             "captain": 351,
             "captainName": "Haaland",
             "captainPoints": 6,
             "benchPoints": 3,
-            "hitPoints": 4,
+            "hitPoints": 8,
             "transfers": [
               {
                 "out": 17,
@@ -3722,65 +3740,99 @@
                 "outName": "Fraser",
                 "in": 148,
                 "inName": "Welbeck"
+              },
+              {
+                "out": 536,
+                "outName": "Bentley",
+                "in": 383,
+                "inName": "Onana"
               }
             ],
             "teamValueTenths": 999,
-            "bankTenths": 13,
-            "starters": [443, 311, 3, 301, 99, 328, 351, 491, 148, 4, 291]
+            "bankTenths": 3,
+            "starters": [383, 311, 339, 3, 99, 328, 351, 148, 239, 4, 301]
           },
           {
             "event": 10,
-            "points": 51,
-            "runningTotal": 180,
+            "points": 45,
+            "runningTotal": 164,
             "chip": null,
             "captain": 328,
             "captainName": "M.Salah",
             "captainPoints": 9,
-            "benchPoints": 5,
+            "benchPoints": 3,
             "hitPoints": 0,
             "transfers": [
               {
-                "out": 137,
-                "outName": "Moder",
-                "in": 19,
-                "inName": "Smith Rowe"
+                "out": 263,
+                "outName": "Burgess",
+                "in": 228,
+                "inName": "Keane"
               }
             ],
-            "teamValueTenths": 1000,
+            "teamValueTenths": 999,
             "bankTenths": 0,
-            "starters": [443, 311, 3, 291, 328, 99, 351, 491, 19, 4, 148]
+            "starters": [383, 311, 339, 3, 328, 99, 351, 239, 4, 148, 228]
           },
           {
             "event": 11,
-            "points": 64,
-            "runningTotal": 244,
+            "points": 53,
+            "runningTotal": 213,
             "chip": null,
             "captain": 328,
             "captainName": "M.Salah",
             "captainPoints": 14,
-            "benchPoints": 12,
-            "hitPoints": 0,
+            "benchPoints": 9,
+            "hitPoints": 4,
             "transfers": [
               {
                 "out": 3,
                 "outName": "Gabriel",
-                "in": 339,
-                "inName": "Virgil"
+                "in": 422,
+                "inName": "Aina"
+              },
+              {
+                "out": 521,
+                "outName": "Fabianski",
+                "in": 443,
+                "inName": "Sels"
               }
             ],
             "teamValueTenths": 1000,
-            "bankTenths": 0,
-            "starters": [443, 311, 339, 291, 328, 491, 351, 99, 148, 4, 19]
+            "bankTenths": 10,
+            "starters": [443, 311, 339, 422, 328, 99, 351, 148, 4, 239, 111]
           },
           {
             "event": 12,
-            "points": 56,
-            "runningTotal": 300,
+            "points": 40,
+            "runningTotal": 253,
             "chip": null,
             "captain": 328,
             "captainName": "M.Salah",
             "captainPoints": 13,
-            "benchPoints": 9,
+            "benchPoints": 2,
+            "hitPoints": 0,
+            "transfers": [
+              {
+                "out": 442,
+                "outName": "Sangar\u00e9",
+                "in": 240,
+                "inName": "Andreas"
+              }
+            ],
+            "teamValueTenths": 999,
+            "bankTenths": 2,
+            "starters": [383, 339, 301, 422, 328, 99, 351, 148, 240, 239, 111]
+          },
+          {
+            "event": 13,
+            "points": 67,
+            "runningTotal": 320,
+            "chip": null,
+            "captain": 328,
+            "captainName": "M.Salah",
+            "captainPoints": 13,
+            "benchPoints": 6,
             "hitPoints": 0,
             "transfers": [
               {
@@ -3790,36 +3842,14 @@
                 "inName": "N.Jackson"
               }
             ],
-            "teamValueTenths": 1000,
-            "bankTenths": 1,
-            "starters": [443, 339, 301, 291, 328, 19, 351, 180, 99, 491, 148]
-          },
-          {
-            "event": 13,
-            "points": 76,
-            "runningTotal": 376,
-            "chip": null,
-            "captain": 328,
-            "captainName": "M.Salah",
-            "captainPoints": 13,
-            "benchPoints": 2,
-            "hitPoints": 0,
-            "transfers": [
-              {
-                "out": 351,
-                "outName": "Haaland",
-                "in": 110,
-                "inName": "Wissa"
-              }
-            ],
-            "teamValueTenths": 1000,
-            "bankTenths": 92,
-            "starters": [443, 339, 311, 291, 328, 491, 110, 180, 148, 99, 19]
+            "teamValueTenths": 999,
+            "bankTenths": 3,
+            "starters": [383, 339, 422, 311, 328, 99, 148, 180, 351, 301, 111]
           },
           {
             "event": 14,
-            "points": 61,
-            "runningTotal": 437,
+            "points": 59,
+            "runningTotal": 379,
             "chip": null,
             "captain": 328,
             "captainName": "M.Salah",
@@ -3828,135 +3858,191 @@
             "hitPoints": 0,
             "transfers": [
               {
-                "out": 111,
-                "outName": "Yarmoliuk",
-                "in": 182,
-                "inName": "Palmer"
+                "out": 228,
+                "outName": "Keane",
+                "in": 162,
+                "inName": "Colwill"
               }
             ],
-            "teamValueTenths": 1001,
-            "bankTenths": 27,
-            "starters": [443, 339, 311, 291, 328, 182, 19, 491, 110, 148, 99]
+            "teamValueTenths": 999,
+            "bankTenths": 0,
+            "starters": [383, 339, 311, 111, 328, 99, 240, 351, 148, 422, 239]
           },
           {
             "event": 15,
-            "points": 47,
-            "runningTotal": 484,
+            "points": 55,
+            "runningTotal": 426,
             "chip": "free_hit",
             "captain": 58,
             "captainName": "Watkins",
             "captainPoints": 1,
-            "benchPoints": 6,
-            "hitPoints": 0,
+            "benchPoints": 7,
+            "hitPoints": 8,
             "transfers": [
               {
                 "out": 328,
                 "outName": "M.Salah",
-                "in": 17,
-                "inName": "Saka"
+                "in": 182,
+                "inName": "Palmer"
+              },
+              {
+                "out": 311,
+                "outName": "Alexander-Arnold",
+                "in": 18,
+                "inName": "Saliba"
+              },
+              {
+                "out": 339,
+                "outName": "Virgil",
+                "in": 369,
+                "inName": "Dalot"
               }
             ],
-            "teamValueTenths": 1001,
-            "bankTenths": 52,
-            "starters": [383, 18, 369, 422, 182, 17, 58, 71, 617, 110, 136]
+            "teamValueTenths": 997,
+            "bankTenths": 38,
+            "starters": [383, 18, 338, 630, 182, 17, 58, 514, 71, 177, 351]
           },
           {
             "event": 16,
-            "points": 40,
-            "runningTotal": 524,
+            "points": 42,
+            "runningTotal": 468,
             "chip": null,
             "captain": 182,
             "captainName": "Palmer",
             "captainPoints": 3,
-            "benchPoints": 6,
+            "benchPoints": 10,
             "hitPoints": 0,
             "transfers": [
               {
                 "out": 301,
                 "outName": "Okoli",
-                "in": 18,
-                "inName": "Saliba"
+                "in": 339,
+                "inName": "Virgil"
               }
             ],
-            "teamValueTenths": 1000,
-            "bankTenths": 31,
-            "starters": [443, 18, 339, 311, 182, 17, 180, 491, 110, 99, 19]
+            "teamValueTenths": 996,
+            "bankTenths": 14,
+            "starters": [443, 18, 339, 422, 182, 99, 351, 180, 239, 162, 369]
           },
           {
             "event": 17,
-            "points": 31,
-            "runningTotal": 555,
+            "points": 41,
+            "runningTotal": 509,
             "chip": null,
             "captain": 182,
             "captainName": "Palmer",
             "captainPoints": 3,
-            "benchPoints": 4,
+            "benchPoints": 8,
             "hitPoints": 0,
             "transfers": [
               {
-                "out": 263,
-                "outName": "Burgess",
-                "in": 6,
-                "inName": "J.Timber"
+                "out": 111,
+                "outName": "Yarmoliuk",
+                "in": 247,
+                "inName": "Iwobi"
               }
             ],
-            "teamValueTenths": 1001,
-            "bankTenths": 13,
-            "starters": [443, 18, 6, 339, 182, 17, 180, 99, 110, 491, 311]
+            "teamValueTenths": 994,
+            "bankTenths": 1,
+            "starters": [383, 18, 339, 369, 182, 99, 180, 247, 351, 422, 162]
           },
           {
             "event": 18,
-            "points": 47,
-            "runningTotal": 602,
+            "points": 33,
+            "runningTotal": 542,
             "chip": "triple_captain",
             "captain": 336,
             "captainName": "Szoboszlai",
             "captainPoints": 0,
-            "benchPoints": 2,
+            "benchPoints": 14,
             "hitPoints": 0,
             "transfers": [
               {
-                "out": 19,
-                "outName": "Smith Rowe",
+                "out": 99,
+                "outName": "Mbeumo",
                 "in": 336,
                 "inName": "Szoboszlai"
               }
             ],
-            "teamValueTenths": 1002,
-            "bankTenths": 5,
-            "starters": [443, 18, 311, 339, 336, 182, 180, 491, 6, 99, 110]
+            "teamValueTenths": 994,
+            "bankTenths": 13,
+            "starters": [383, 18, 339, 369, 336, 182, 351, 180, 422, 247, 239]
           },
           {
             "event": 19,
-            "points": 55,
-            "runningTotal": 657,
+            "points": 43,
+            "runningTotal": 585,
             "chip": null,
             "captain": 182,
             "captainName": "Palmer",
             "captainPoints": 2,
-            "benchPoints": 0,
+            "benchPoints": 1,
             "hitPoints": 0,
             "transfers": [
               {
-                "out": 291,
-                "outName": "Faes",
-                "in": 650,
-                "inName": "Lacroix"
+                "out": 369,
+                "outName": "Dalot",
+                "in": 436,
+                "inName": "Murillo"
               }
             ],
-            "teamValueTenths": 1001,
-            "bankTenths": 0,
-            "starters": [443, 311, 18, 650, 182, 110, 180, 491, 99, 6, 339]
+            "teamValueTenths": 992,
+            "bankTenths": 18,
+            "starters": [443, 422, 239, 18, 182, 240, 351, 180, 339, 162, 247]
           },
           {
             "event": 20,
-            "points": 81,
-            "runningTotal": 738,
+            "points": 65,
+            "runningTotal": 650,
             "chip": null,
             "captain": 182,
             "captainName": "Palmer",
             "captainPoints": 10,
-            "benchPoints": 0,
+            "benchPoints": 2,
+            "hitPoints": 0,
+            "transfers": [
+              {
+                "out": 239,
+                "outName": "Adama",
+                "in": 54,
+                "inName": "Rogers"
+              }
+            ],
+            "teamValueTenths": 994,
+            "bankTenths": 10,
+            "starters": [443, 422, 339, 436, 182, 240, 351, 18, 162, 180, 247]
+          },
+          {
+            "event": 21,
+            "points": 57,
+            "runningTotal": 707,
+            "chip": null,
+            "captain": 351,
+            "captainName": "Haaland",
+            "captainPoints": 2,
+            "benchPoints": 8,
+            "hitPoints": 0,
+            "transfers": [
+              {
+                "out": 162,
+                "outName": "Colwill",
+                "in": 399,
+                "inName": "Hall"
+              }
+            ],
+            "teamValueTenths": 993,
+            "bankTenths": 7,
+            "starters": [383, 399, 422, 339, 182, 247, 351, 18, 180, 436, 54]
+          },
+          {
+            "event": 22,
+            "points": 33,
+            "runningTotal": 740,
+            "chip": null,
+            "captain": 182,
+            "captainName": "Palmer",
+            "captainPoints": 2,
+            "benchPoints": 2,
             "hitPoints": 0,
             "transfers": [
               {
@@ -3966,190 +4052,146 @@
                 "inName": "Ra\u00fal"
               }
             ],
-            "teamValueTenths": 999,
-            "bankTenths": 1,
-            "starters": [443, 311, 339, 18, 182, 99, 252, 180, 110, 491, 650]
+            "teamValueTenths": 993,
+            "bankTenths": 5,
+            "starters": [443, 422, 436, 336, 182, 247, 351, 180, 252, 399, 339]
           },
           {
-            "event": 21,
-            "points": 44,
-            "runningTotal": 782,
-            "chip": null,
-            "captain": 99,
-            "captainName": "Mbeumo",
-            "captainPoints": 2,
-            "benchPoints": 13,
-            "hitPoints": 0,
-            "transfers": [
-              {
-                "out": 17,
-                "outName": "Saka",
-                "in": 398,
-                "inName": "Gordon"
-              }
-            ],
-            "teamValueTenths": 1000,
-            "bankTenths": 30,
-            "starters": [443, 311, 18, 339, 99, 398, 252, 182, 110, 180, 491]
-          },
-          {
-            "event": 22,
-            "points": 40,
-            "runningTotal": 822,
+            "event": 23,
+            "points": 41,
+            "runningTotal": 781,
             "chip": null,
             "captain": 182,
             "captainName": "Palmer",
             "captainPoints": 2,
-            "benchPoints": 4,
+            "benchPoints": 22,
             "hitPoints": 0,
             "transfers": [
               {
-                "out": 521,
-                "outName": "Fabianski",
-                "in": 396,
-                "inName": "D\u00fabravka"
+                "out": 240,
+                "outName": "Andreas",
+                "in": 364,
+                "inName": "Amad"
               }
             ],
-            "teamValueTenths": 1001,
-            "bankTenths": 28,
-            "starters": [443, 650, 311, 6, 182, 398, 252, 110, 180, 99, 339]
-          },
-          {
-            "event": 23,
-            "points": 45,
-            "runningTotal": 867,
-            "chip": null,
-            "captain": 398,
-            "captainName": "Gordon",
-            "captainPoints": 5,
-            "benchPoints": 23,
-            "hitPoints": 0,
-            "transfers": [
-              {
-                "out": 650,
-                "outName": "Lacroix",
-                "in": 399,
-                "inName": "Hall"
-              }
-            ],
-            "teamValueTenths": 1000,
-            "bankTenths": 23,
-            "starters": [396, 311, 399, 339, 398, 182, 110, 99, 252, 180, 6]
+            "teamValueTenths": 994,
+            "bankTenths": 0,
+            "starters": [443, 339, 399, 422, 182, 364, 351, 18, 180, 436, 252]
           },
           {
             "event": 24,
-            "points": 54,
-            "runningTotal": 921,
+            "points": 55,
+            "runningTotal": 836,
             "chip": null,
             "captain": 336,
             "captainName": "Szoboszlai",
             "captainPoints": 5,
-            "benchPoints": 4,
+            "benchPoints": 19,
             "hitPoints": 0,
             "transfers": [
               {
-                "out": 443,
-                "outName": "Sels",
+                "out": 383,
+                "outName": "Onana",
                 "in": 235,
                 "inName": "Pickford"
               }
             ],
-            "teamValueTenths": 999,
-            "bankTenths": 20,
-            "starters": [235, 311, 339, 399, 336, 99, 110, 182, 180, 398, 252]
+            "teamValueTenths": 993,
+            "bankTenths": 0,
+            "starters": [235, 339, 422, 399, 336, 182, 180, 351, 436, 18, 364]
           },
           {
             "event": 25,
-            "points": 51,
-            "runningTotal": 972,
+            "points": 39,
+            "runningTotal": 875,
             "chip": null,
             "captain": 336,
             "captainName": "Szoboszlai",
             "captainPoints": 4,
-            "benchPoints": 7,
-            "hitPoints": 0,
-            "transfers": [
-              {
-                "out": 491,
-                "outName": "Johnson",
-                "in": 71,
-                "inName": "Kluivert"
-              }
-            ],
-            "teamValueTenths": 997,
-            "bankTenths": 24,
-            "starters": [235, 311, 339, 18, 336, 71, 110, 99, 182, 398, 252]
-          },
-          {
-            "event": 26,
-            "points": 62,
-            "runningTotal": 1034,
-            "chip": null,
-            "captain": 447,
-            "captainName": "Wood",
-            "captainPoints": 5,
-            "benchPoints": 17,
+            "benchPoints": 3,
             "hitPoints": 0,
             "transfers": [
               {
                 "out": 180,
                 "outName": "N.Jackson",
-                "in": 447,
-                "inName": "Wood"
+                "in": 321,
+                "inName": "Gakpo"
               }
             ],
-            "teamValueTenths": 996,
-            "bankTenths": 31,
-            "starters": [235, 18, 311, 6, 71, 99, 447, 110, 182, 336, 252]
+            "teamValueTenths": 990,
+            "bankTenths": 2,
+            "starters": [235, 339, 18, 422, 336, 182, 247, 54, 351, 436, 252]
           },
           {
-            "event": 27,
-            "points": 68,
-            "runningTotal": 1102,
+            "event": 26,
+            "points": 47,
+            "runningTotal": 922,
             "chip": null,
-            "captain": 447,
-            "captainName": "Wood",
-            "captainPoints": 2,
-            "benchPoints": 8,
+            "captain": 207,
+            "captainName": "Mateta",
+            "captainPoints": 5,
+            "benchPoints": 2,
             "hitPoints": 0,
             "transfers": [
               {
-                "out": 398,
-                "outName": "Gordon",
+                "out": 321,
+                "outName": "Gakpo",
+                "in": 207,
+                "inName": "Mateta"
+              }
+            ],
+            "teamValueTenths": 990,
+            "bankTenths": 5,
+            "starters": [235, 18, 422, 339, 182, 336, 207, 436, 252, 247, 399]
+          },
+          {
+            "event": 27,
+            "points": 65,
+            "runningTotal": 987,
+            "chip": null,
+            "captain": 182,
+            "captainName": "Palmer",
+            "captainPoints": 3,
+            "benchPoints": 16,
+            "hitPoints": 0,
+            "transfers": [
+              {
+                "out": 364,
+                "outName": "Amad",
                 "in": 168,
                 "inName": "Enzo"
               }
             ],
-            "teamValueTenths": 996,
-            "bankTenths": 58,
-            "starters": [235, 311, 339, 18, 182, 99, 447, 168, 336, 110, 71]
+            "teamValueTenths": 990,
+            "bankTenths": 13,
+            "starters": [443, 339, 18, 422, 182, 168, 351, 207, 336, 252, 247]
           },
           {
             "event": 28,
-            "points": 29,
-            "runningTotal": 1131,
+            "points": 36,
+            "runningTotal": 1023,
             "chip": null,
             "captain": 182,
             "captainName": "Palmer",
             "captainPoints": 1,
-            "benchPoints": 15,
+            "benchPoints": 13,
             "hitPoints": 0,
             "transfers": [
               {
-                "out": 396,
-                "outName": "D\u00fabravka",
-                "in": 15,
-                "inName": "Raya"
+                "out": 252,
+                "outName": "Ra\u00fal",
+                "in": 110,
+                "inName": "Wissa"
               }
             ],
-            "teamValueTenths": 996,
-            "bankTenths": 45,
-            "starters": [15, 311, 339, 18, 182, 336, 110, 447, 99, 168, 6]
+            "teamValueTenths": 989,
+            "bankTenths": 5,
+            "starters": [235, 339, 18, 422, 182, 336, 110, 54, 168, 351, 436]
           },
           {
             "event": 29,
-            "points": 47,
-            "runningTotal": 1178,
+            "points": 37,
+            "runningTotal": 1060,
             "chip": "wildcard",
             "captain": 447,
             "captainName": "Wood",
@@ -4157,225 +4199,255 @@
             "benchPoints": 3,
             "hitPoints": 0,
             "transfers": [],
-            "teamValueTenths": 997,
+            "teamValueTenths": 987,
             "bankTenths": 0,
-            "starters": [443, 573, 270, 68, 503, 23, 447, 129, 351, 366, 71]
+            "starters": [443, 422, 236, 567, 263, 503, 447, 351, 541, 366, 226]
           },
           {
             "event": 30,
-            "points": 30,
-            "runningTotal": 1204,
+            "points": 35,
+            "runningTotal": 1095,
             "chip": null,
-            "captain": 585,
-            "captainName": "I.Sarr",
-            "captainPoints": 2,
-            "benchPoints": 3,
-            "hitPoints": 4,
-            "transfers": [
-              {
-                "out": 503,
-                "outName": "Son",
-                "in": 585,
-                "inName": "I.Sarr"
-              },
-              {
-                "out": 558,
-                "outName": "Mosquera",
-                "in": 311,
-                "inName": "Alexander-Arnold"
-              }
-            ],
-            "teamValueTenths": 997,
-            "bankTenths": 5,
-            "starters": [443, 311, 573, 517, 585, 366, 351, 129, 447, 23, 182]
-          },
-          {
-            "event": 31,
-            "points": 29,
-            "runningTotal": 1233,
-            "chip": null,
-            "captain": 585,
-            "captainName": "I.Sarr",
-            "captainPoints": 2,
+            "captain": 182,
+            "captainName": "Palmer",
+            "captainPoints": 6,
             "benchPoints": 3,
             "hitPoints": 0,
             "transfers": [
               {
-                "out": 270,
-                "outName": "Greaves",
+                "out": 236,
+                "outName": "Tarkowski",
+                "in": 210,
+                "inName": "Mitchell"
+              }
+            ],
+            "teamValueTenths": 986,
+            "bankTenths": 1,
+            "starters": [443, 210, 422, 567, 182, 366, 263, 447, 503, 541, 226]
+          },
+          {
+            "event": 31,
+            "points": 20,
+            "runningTotal": 1115,
+            "chip": null,
+            "captain": 182,
+            "captainName": "Palmer",
+            "captainPoints": 1,
+            "benchPoints": 3,
+            "hitPoints": 0,
+            "transfers": [
+              {
+                "out": 567,
+                "outName": "Toti",
                 "in": 395,
                 "inName": "Burn"
               }
             ],
-            "teamValueTenths": 996,
+            "teamValueTenths": 985,
             "bankTenths": 0,
-            "starters": [443, 395, 573, 68, 585, 366, 129, 182, 351, 71, 23]
+            "starters": [443, 395, 263, 210, 182, 503, 351, 366, 447, 541, 226]
           },
           {
             "event": 32,
-            "points": 88,
-            "runningTotal": 1317,
+            "points": 77,
+            "runningTotal": 1180,
             "chip": null,
             "captain": 402,
             "captainName": "J.Murphy",
             "captainPoints": 19,
             "benchPoints": 9,
-            "hitPoints": 4,
+            "hitPoints": 12,
             "transfers": [
               {
-                "out": 71,
-                "outName": "Kluivert",
+                "out": 503,
+                "outName": "Son",
                 "in": 402,
                 "inName": "J.Murphy"
               },
               {
-                "out": 517,
-                "outName": "Cresswell",
+                "out": 558,
+                "outName": "Mosquera",
                 "in": 409,
                 "inName": "Livramento"
+              },
+              {
+                "out": 263,
+                "outName": "Burgess",
+                "in": 211,
+                "inName": "Mu\u00f1oz"
+              },
+              {
+                "out": 226,
+                "outName": "Iroegbunam",
+                "in": 585,
+                "inName": "I.Sarr"
               }
             ],
-            "teamValueTenths": 994,
-            "bankTenths": 4,
-            "starters": [443, 409, 395, 573, 402, 585, 129, 182, 366, 23, 447]
+            "teamValueTenths": 982,
+            "bankTenths": 11,
+            "starters": [443, 395, 409, 211, 402, 585, 447, 182, 210, 541, 366]
           },
           {
             "event": 33,
-            "points": 76,
-            "runningTotal": 1389,
+            "points": 49,
+            "runningTotal": 1225,
             "chip": null,
-            "captain": 23,
-            "captainName": "Trossard",
-            "captainPoints": 24,
-            "benchPoints": -1,
+            "captain": 585,
+            "captainName": "I.Sarr",
+            "captainPoints": 3,
+            "benchPoints": 2,
             "hitPoints": 4,
             "transfers": [
               {
-                "out": 311,
-                "outName": "Alexander-Arnold",
-                "in": 18,
-                "inName": "Saliba"
-              },
-              {
-                "out": 573,
-                "outName": "Milenkovi\u0107",
+                "out": 422,
+                "outName": "Aina",
                 "in": 6,
                 "inName": "J.Timber"
+              },
+              {
+                "out": 235,
+                "outName": "Pickford",
+                "in": 15,
+                "inName": "Raya"
               }
             ],
-            "teamValueTenths": 991,
-            "bankTenths": 4,
-            "starters": [443, 18, 6, 409, 23, 585, 129, 402, 447, 366, 182]
+            "teamValueTenths": 980,
+            "bankTenths": 3,
+            "starters": [15, 6, 211, 210, 585, 182, 395, 402, 366, 447, 541]
           },
           {
             "event": 34,
-            "points": 43,
-            "runningTotal": 1432,
+            "points": 71,
+            "runningTotal": 1280,
             "chip": null,
             "captain": 402,
             "captainName": "J.Murphy",
             "captainPoints": 6,
             "benchPoints": 4,
-            "hitPoints": 0,
+            "hitPoints": 16,
             "transfers": [
               {
-                "out": 18,
-                "outName": "Saliba",
+                "out": 585,
+                "outName": "I.Sarr",
+                "in": 247,
+                "inName": "Iwobi"
+              },
+              {
+                "out": 6,
+                "outName": "J.Timber",
+                "in": 533,
+                "inName": "A\u00eft-Nouri"
+              },
+              {
+                "out": 210,
+                "outName": "Mitchell",
+                "in": 436,
+                "inName": "Murillo"
+              },
+              {
+                "out": 351,
+                "outName": "Haaland",
+                "in": 129,
+                "inName": "Jo\u00e3o Pedro"
+              },
+              {
+                "out": 211,
+                "outName": "Mu\u00f1oz",
                 "in": 339,
                 "inName": "Virgil"
               }
             ],
-            "teamValueTenths": 989,
-            "bankTenths": 3,
-            "starters": [443, 339, 409, 395, 402, 182, 129, 366, 447, 68, 6]
+            "teamValueTenths": 978,
+            "bankTenths": 90,
+            "starters": [443, 339, 533, 436, 402, 247, 447, 395, 182, 409, 541]
           },
           {
             "event": 35,
-            "points": 38,
-            "runningTotal": 1470,
+            "points": 42,
+            "runningTotal": 1322,
             "chip": null,
-            "captain": 23,
-            "captainName": "Trossard",
+            "captain": 328,
+            "captainName": "M.Salah",
             "captainPoints": 2,
             "benchPoints": 1,
             "hitPoints": 0,
             "transfers": [
               {
-                "out": 351,
-                "outName": "Haaland",
-                "in": 110,
-                "inName": "Wissa"
+                "out": 247,
+                "outName": "Iwobi",
+                "in": 328,
+                "inName": "M.Salah"
               }
             ],
-            "teamValueTenths": 991,
-            "bankTenths": 84,
-            "starters": [235, 339, 395, 409, 23, 402, 110, 366, 182, 585, 447]
+            "teamValueTenths": 982,
+            "bankTenths": 7,
+            "starters": [443, 339, 436, 395, 328, 402, 447, 541, 533, 182, 409]
           },
           {
             "event": 36,
-            "points": 57,
-            "runningTotal": 1527,
+            "points": 43,
+            "runningTotal": 1365,
             "chip": null,
             "captain": 110,
             "captainName": "Wissa",
             "captainPoints": 1,
-            "benchPoints": 5,
+            "benchPoints": 2,
             "hitPoints": 0,
             "transfers": [
               {
-                "out": 68,
-                "outName": "Hill",
-                "in": 350,
-                "inName": "Gvardiol"
+                "out": 541,
+                "outName": "Cunha",
+                "in": 110,
+                "inName": "Wissa"
               }
             ],
-            "teamValueTenths": 990,
-            "bankTenths": 60,
-            "starters": [443, 350, 339, 409, 182, 23, 110, 585, 447, 402, 395]
+            "teamValueTenths": 980,
+            "bankTenths": 11,
+            "starters": [443, 409, 339, 395, 328, 182, 110, 447, 366, 533, 402]
           },
           {
             "event": 37,
-            "points": 39,
-            "runningTotal": 1566,
+            "points": 28,
+            "runningTotal": 1393,
             "chip": null,
             "captain": 328,
             "captainName": "M.Salah",
             "captainPoints": 2,
-            "benchPoints": 3,
+            "benchPoints": 7,
             "hitPoints": 0,
             "transfers": [
               {
                 "out": 366,
                 "outName": "B.Fernandes",
-                "in": 328,
-                "inName": "M.Salah"
+                "in": 327,
+                "inName": "Luis D\u00edaz"
               }
             ],
-            "teamValueTenths": 994,
-            "bankTenths": 7,
-            "starters": [235, 395, 350, 409, 328, 182, 110, 23, 447, 585, 402]
+            "teamValueTenths": 983,
+            "bankTenths": 20,
+            "starters": [443, 409, 436, 533, 328, 327, 110, 182, 447, 395, 402]
           },
           {
             "event": 38,
-            "points": 55,
-            "runningTotal": 1621,
+            "points": 41,
+            "runningTotal": 1434,
             "chip": null,
             "captain": 328,
             "captainName": "M.Salah",
             "captainPoints": 10,
-            "benchPoints": 12,
+            "benchPoints": 4,
             "hitPoints": 0,
             "transfers": [
               {
-                "out": 129,
-                "outName": "Jo\u00e3o Pedro",
-                "in": 148,
-                "inName": "Welbeck"
+                "out": 402,
+                "outName": "J.Murphy",
+                "in": 23,
+                "inName": "Trossard"
               }
             ],
-            "teamValueTenths": 993,
-            "bankTenths": 7,
-            "starters": [443, 395, 409, 350, 328, 23, 110, 402, 182, 447, 585]
+            "teamValueTenths": 982,
+            "bankTenths": 3,
+            "starters": [15, 395, 339, 409, 328, 327, 110, 23, 447, 182, 436]
           }
         ]
       },
@@ -5393,30 +5465,30 @@
         "startGameweek": 7,
         "gameweeksPlayed": 32,
         "seasonGameweeks": 38,
-        "totalPoints": 1780,
-        "hitPoints": 12,
-        "netPoints": 1768,
-        "proratedPoints": 2100,
-        "transfers": 33,
+        "totalPoints": 1793,
+        "hitPoints": 24,
+        "netPoints": 1769,
+        "proratedPoints": 2101,
+        "transfers": 36,
         "chips": {
           "bench_boost": [7, 33],
           "triple_captain": [8, 22],
           "free_hit": [12, 31],
           "wildcard": [14, 34]
         },
-        "finalTeamValueTenths": 990,
+        "finalTeamValueTenths": 994,
         "transferReturn": {
           "horizon": 6,
           "freeMoves": 30,
-          "freeGain": 144.0,
-          "hitMoves": 3,
-          "hitGain": -5.0,
-          "hitNetGain": -17.0
+          "freeGain": 116.0,
+          "hitMoves": 6,
+          "hitGain": -13.0,
+          "hitNetGain": -37.0
         },
         "benchmark": {
-          "managers": 23623,
-          "beaten": 10715,
-          "percentile": 45.4,
+          "managers": 23624,
+          "beaten": 10749,
+          "percentile": 45.5,
           "best": 2521,
           "medianPoints": 2127
         },
@@ -5448,35 +5520,35 @@
           },
           {
             "event": 8,
-            "points": 32,
-            "runningTotal": 107,
+            "points": 34,
+            "runningTotal": 109,
             "chip": "triple_captain",
             "captain": 381,
             "captainName": "M.Salah",
             "captainPoints": 2,
-            "benchPoints": 9,
+            "benchPoints": 13,
             "hitPoints": 0,
             "transfers": [
               {
-                "out": 470,
-                "outName": "D\u00fabravka",
-                "in": 670,
-                "inName": "Roefs"
+                "out": 419,
+                "outName": "Grealish",
+                "in": 387,
+                "inName": "Szoboszlai"
               }
             ],
             "teamValueTenths": 1000,
-            "bankTenths": 10,
-            "starters": [670, 260, 568, 575, 381, 82, 249, 373, 72, 582, 427]
+            "bankTenths": 20,
+            "starters": [1, 260, 575, 568, 381, 82, 249, 387, 373, 72, 582]
           },
           {
             "event": 9,
-            "points": 80,
-            "runningTotal": 187,
+            "points": 88,
+            "runningTotal": 197,
             "chip": null,
             "captain": 381,
             "captainName": "M.Salah",
             "captainPoints": 6,
-            "benchPoints": 8,
+            "benchPoints": 7,
             "hitPoints": 0,
             "transfers": [
               {
@@ -5487,35 +5559,35 @@
               }
             ],
             "teamValueTenths": 1000,
-            "bankTenths": 8,
-            "starters": [1, 5, 72, 260, 381, 82, 666, 568, 575, 249, 582]
+            "bankTenths": 18,
+            "starters": [1, 5, 72, 260, 381, 82, 249, 387, 568, 575, 582]
           },
           {
             "event": 10,
-            "points": 63,
-            "runningTotal": 250,
+            "points": 68,
+            "runningTotal": 265,
             "chip": null,
             "captain": 283,
             "captainName": "Mateta",
             "captainPoints": 9,
-            "benchPoints": 15,
+            "benchPoints": 12,
             "hitPoints": 0,
             "transfers": [
               {
-                "out": 249,
-                "outName": "Jo\u00e3o Pedro",
+                "out": 666,
+                "outName": "Gy\u00f6keres",
                 "in": 283,
                 "inName": "Mateta"
               }
             ],
             "teamValueTenths": 996,
-            "bankTenths": 7,
-            "starters": [670, 5, 260, 575, 82, 381, 283, 568, 582, 72, 427]
+            "bankTenths": 32,
+            "starters": [1, 5, 260, 575, 82, 381, 283, 568, 387, 582, 72]
           },
           {
             "event": 11,
-            "points": 29,
-            "runningTotal": 279,
+            "points": 39,
+            "runningTotal": 304,
             "chip": null,
             "captain": 249,
             "captainName": "Jo\u00e3o Pedro",
@@ -5524,101 +5596,101 @@
             "hitPoints": 0,
             "transfers": [
               {
-                "out": 666,
-                "outName": "Gy\u00f6keres",
-                "in": 249,
-                "inName": "Jo\u00e3o Pedro"
+                "out": 252,
+                "outName": "Marc Guiu",
+                "in": 136,
+                "inName": "Thiago"
               }
             ],
-            "teamValueTenths": 996,
-            "bankTenths": 23,
-            "starters": [1, 5, 419, 575, 82, 381, 249, 283, 568, 72, 252]
+            "teamValueTenths": 995,
+            "bankTenths": 12,
+            "starters": [1, 5, 387, 575, 82, 381, 249, 283, 568, 136, 72]
           },
           {
             "event": 12,
-            "points": 43,
-            "runningTotal": 322,
+            "points": 48,
+            "runningTotal": 352,
             "chip": "free_hit",
-            "captain": 384,
-            "captainName": "Gakpo",
+            "captain": 381,
+            "captainName": "M.Salah",
             "captainPoints": 2,
-            "benchPoints": 9,
+            "benchPoints": 7,
             "hitPoints": 0,
             "transfers": [
               {
                 "out": 427,
                 "outName": "Reijnders",
-                "in": 384,
-                "inName": "Gakpo"
+                "in": 84,
+                "inName": "Tavernier"
               }
             ],
             "teamValueTenths": 995,
-            "bankTenths": 2,
-            "starters": [253, 100, 8, 7, 384, 381, 430, 411, 257, 84, 119]
+            "bankTenths": 12,
+            "starters": [253, 100, 7, 8, 381, 384, 430, 257, 261, 119, 84]
           },
           {
             "event": 13,
-            "points": 61,
-            "runningTotal": 383,
+            "points": 43,
+            "runningTotal": 395,
             "chip": null,
             "captain": 136,
             "captainName": "Thiago",
             "captainPoints": 13,
-            "benchPoints": 3,
+            "benchPoints": 9,
             "hitPoints": 0,
             "transfers": [
               {
-                "out": 249,
-                "outName": "Jo\u00e3o Pedro",
-                "in": 136,
-                "inName": "Thiago"
+                "out": 72,
+                "outName": "Senesi",
+                "in": 256,
+                "inName": "Mu\u00f1oz"
               }
             ],
-            "teamValueTenths": 992,
-            "bankTenths": 12,
-            "starters": [670, 260, 575, 582, 419, 384, 136, 283, 568, 82, 72]
+            "teamValueTenths": 996,
+            "bankTenths": 3,
+            "starters": [1, 256, 260, 249, 82, 84, 136, 575, 283, 568, 387]
           },
           {
             "event": 14,
-            "points": 47,
-            "runningTotal": 430,
+            "points": 60,
+            "runningTotal": 455,
             "chip": "wildcard",
             "captain": 16,
             "captainName": "Saka",
             "captainPoints": 6,
-            "benchPoints": 12,
+            "benchPoints": 3,
             "hitPoints": 0,
             "transfers": [],
-            "teamValueTenths": 990,
-            "bankTenths": 18,
-            "starters": [220, 8, 257, 224, 16, 266, 249, 449, 256, 119, 84]
+            "teamValueTenths": 994,
+            "bankTenths": 7,
+            "starters": [220, 8, 84, 257, 16, 449, 249, 256, 119, 261, 236]
           },
           {
             "event": 15,
-            "points": 80,
-            "runningTotal": 510,
+            "points": 73,
+            "runningTotal": 528,
             "chip": null,
-            "captain": 414,
-            "captainName": "Foden",
-            "captainPoints": 12,
-            "benchPoints": 11,
+            "captain": 449,
+            "captainName": "B.Fernandes",
+            "captainPoints": 18,
+            "benchPoints": 5,
             "hitPoints": 0,
             "transfers": [
               {
-                "out": 266,
-                "outName": "Eze",
-                "in": 414,
-                "inName": "Foden"
+                "out": 220,
+                "outName": "S\u00e1nchez",
+                "in": 287,
+                "inName": "Pickford"
               }
             ],
-            "teamValueTenths": 989,
-            "bankTenths": 14,
-            "starters": [32, 84, 257, 261, 414, 449, 178, 8, 16, 224, 119]
+            "teamValueTenths": 992,
+            "bankTenths": 0,
+            "starters": [287, 84, 257, 261, 449, 236, 136, 249, 8, 119, 16]
           },
           {
             "event": 16,
-            "points": 80,
-            "runningTotal": 590,
+            "points": 71,
+            "runningTotal": 599,
             "chip": null,
             "captain": 449,
             "captainName": "B.Fernandes",
@@ -5627,289 +5699,201 @@
             "hitPoints": 0,
             "transfers": [
               {
-                "out": 178,
-                "outName": "Welbeck",
-                "in": 136,
-                "inName": "Thiago"
+                "out": 287,
+                "outName": "Pickford",
+                "in": 220,
+                "inName": "S\u00e1nchez"
               }
             ],
-            "teamValueTenths": 990,
-            "bankTenths": 12,
-            "starters": [220, 8, 224, 257, 449, 16, 136, 119, 414, 261, 84]
+            "teamValueTenths": 993,
+            "bankTenths": 7,
+            "starters": [220, 8, 257, 84, 449, 16, 136, 119, 249, 261, 236]
           },
           {
             "event": 17,
-            "points": 34,
-            "runningTotal": 624,
+            "points": 35,
+            "runningTotal": 634,
             "chip": null,
             "captain": 414,
             "captainName": "Foden",
             "captainPoints": 3,
-            "benchPoints": 10,
-            "hitPoints": 0,
-            "transfers": [
-              {
-                "out": 256,
-                "outName": "Mu\u00f1oz",
-                "in": 411,
-                "inName": "O'Reilly"
-              }
-            ],
-            "teamValueTenths": 991,
-            "bankTenths": 19,
-            "starters": [220, 411, 8, 257, 414, 84, 136, 449, 16, 261, 224]
-          },
-          {
-            "event": 18,
-            "points": 34,
-            "runningTotal": 658,
-            "chip": null,
-            "captain": 414,
-            "captainName": "Foden",
-            "captainPoints": 2,
-            "benchPoints": 3,
-            "hitPoints": 0,
-            "transfers": [
-              {
-                "out": 32,
-                "outName": "Martinez",
-                "in": 1,
-                "inName": "Raya"
-              }
-            ],
-            "teamValueTenths": 994,
-            "bankTenths": 9,
-            "starters": [1, 249, 411, 224, 414, 16, 136, 100, 261, 257, 84]
-          },
-          {
-            "event": 19,
-            "points": 32,
-            "runningTotal": 690,
-            "chip": null,
-            "captain": 249,
-            "captainName": "Jo\u00e3o Pedro",
-            "captainPoints": 1,
-            "benchPoints": 2,
-            "hitPoints": 0,
-            "transfers": [
-              {
-                "out": 261,
-                "outName": "Richards",
-                "in": 440,
-                "inName": "Dalot"
-              }
-            ],
-            "teamValueTenths": 991,
-            "bankTenths": 11,
-            "starters": [1, 440, 84, 257, 16, 449, 249, 414, 8, 411, 136]
-          },
-          {
-            "event": 20,
-            "points": 41,
-            "runningTotal": 731,
-            "chip": null,
-            "captain": 414,
-            "captainName": "Foden",
-            "captainPoints": 2,
-            "benchPoints": 5,
-            "hitPoints": 0,
-            "transfers": [
-              {
-                "out": 224,
-                "outName": "Cucurella",
-                "in": 403,
-                "inName": "Gvardiol"
-              }
-            ],
-            "teamValueTenths": 990,
-            "bankTenths": 12,
-            "starters": [1, 403, 8, 411, 414, 16, 249, 257, 84, 440, 136]
-          },
-          {
-            "event": 21,
-            "points": 65,
-            "runningTotal": 796,
-            "chip": null,
-            "captain": 16,
-            "captainName": "Saka",
-            "captainPoints": 3,
-            "benchPoints": 10,
+            "benchPoints": 13,
             "hitPoints": 0,
             "transfers": [
               {
                 "out": 119,
                 "outName": "Mbeumo",
-                "in": 488,
-                "inName": "Bruno G."
+                "in": 414,
+                "inName": "Foden"
               }
             ],
-            "teamValueTenths": 989,
-            "bankTenths": 23,
-            "starters": [1, 8, 449, 411, 16, 414, 136, 488, 84, 257, 249]
+            "teamValueTenths": 992,
+            "bankTenths": 3,
+            "starters": [220, 257, 261, 8, 414, 84, 97, 449, 236, 249, 16]
           },
           {
-            "event": 22,
-            "points": 56,
-            "runningTotal": 852,
-            "chip": "triple_captain",
-            "captain": 488,
-            "captainName": "Bruno G.",
+            "event": 18,
+            "points": 37,
+            "runningTotal": 671,
+            "chip": null,
+            "captain": 414,
+            "captainName": "Foden",
+            "captainPoints": 2,
+            "benchPoints": 1,
+            "hitPoints": 0,
+            "transfers": [
+              {
+                "out": 256,
+                "outName": "Mu\u00f1oz",
+                "in": 373,
+                "inName": "Virgil"
+              }
+            ],
+            "teamValueTenths": 996,
+            "bankTenths": 3,
+            "starters": [220, 84, 373, 249, 97, 414, 136, 16, 257, 5, 236]
+          },
+          {
+            "event": 19,
+            "points": 50,
+            "runningTotal": 721,
+            "chip": null,
+            "captain": 249,
+            "captainName": "Jo\u00e3o Pedro",
+            "captainPoints": 1,
+            "benchPoints": 3,
+            "hitPoints": 0,
+            "transfers": [
+              {
+                "out": 97,
+                "outName": "Evanilson",
+                "in": 691,
+                "inName": "Calvert-Lewin"
+              }
+            ],
+            "teamValueTenths": 994,
+            "bankTenths": 15,
+            "starters": [220, 8, 257, 373, 5, 16, 249, 236, 84, 414, 691]
+          },
+          {
+            "event": 20,
+            "points": 39,
+            "runningTotal": 760,
+            "chip": null,
+            "captain": 414,
+            "captainName": "Foden",
+            "captainPoints": 2,
+            "benchPoints": 19,
+            "hitPoints": 0,
+            "transfers": [
+              {
+                "out": 261,
+                "outName": "Richards",
+                "in": 291,
+                "inName": "Tarkowski"
+              }
+            ],
+            "teamValueTenths": 993,
+            "bankTenths": 5,
+            "starters": [139, 291, 8, 5, 414, 16, 691, 236, 257, 373, 249]
+          },
+          {
+            "event": 21,
+            "points": 63,
+            "runningTotal": 823,
+            "chip": null,
+            "captain": 16,
+            "captainName": "Saka",
             "captainPoints": 3,
             "benchPoints": 12,
             "hitPoints": 0,
             "transfers": [
               {
-                "out": 449,
-                "outName": "B.Fernandes",
-                "in": 382,
-                "inName": "Wirtz"
+                "out": 373,
+                "outName": "Virgil",
+                "in": 408,
+                "inName": "R\u00faben"
               }
             ],
-            "teamValueTenths": 987,
-            "bankTenths": 31,
-            "starters": [1, 8, 257, 440, 488, 382, 136, 16, 414, 249, 84]
+            "teamValueTenths": 992,
+            "bankTenths": 7,
+            "starters": [220, 291, 236, 8, 16, 414, 136, 5, 257, 84, 449]
           },
           {
-            "event": 23,
-            "points": 35,
-            "runningTotal": 887,
-            "chip": null,
-            "captain": 136,
-            "captainName": "Thiago",
-            "captainPoints": 2,
-            "benchPoints": 3,
-            "hitPoints": 0,
-            "transfers": [
-              {
-                "out": 440,
-                "outName": "Dalot",
-                "in": 291,
-                "inName": "Tarkowski"
-              }
-            ],
-            "teamValueTenths": 986,
-            "bankTenths": 18,
-            "starters": [1, 8, 291, 257, 411, 16, 136, 100, 382, 414, 249]
-          },
-          {
-            "event": 24,
-            "points": 57,
-            "runningTotal": 944,
-            "chip": null,
-            "captain": 249,
-            "captainName": "Jo\u00e3o Pedro",
-            "captainPoints": 10,
-            "benchPoints": 6,
-            "hitPoints": 0,
-            "transfers": [
-              {
-                "out": 403,
-                "outName": "Gvardiol",
-                "in": 226,
-                "inName": "Chalobah"
-              }
-            ],
-            "teamValueTenths": 985,
-            "bankTenths": 22,
-            "starters": [220, 226, 291, 8, 382, 414, 249, 136, 257, 411, 100]
-          },
-          {
-            "event": 25,
-            "points": 59,
-            "runningTotal": 1003,
-            "chip": null,
-            "captain": 249,
-            "captainName": "Jo\u00e3o Pedro",
-            "captainPoints": 8,
+            "event": 22,
+            "points": 56,
+            "runningTotal": 879,
+            "chip": "triple_captain",
+            "captain": 488,
+            "captainName": "Bruno G.",
+            "captainPoints": 3,
             "benchPoints": 13,
             "hitPoints": 0,
             "transfers": [
               {
-                "out": 84,
-                "outName": "Tavernier",
-                "in": 90,
-                "inName": "Scott"
+                "out": 449,
+                "outName": "B.Fernandes",
+                "in": 488,
+                "inName": "Bruno G."
               }
             ],
-            "teamValueTenths": 983,
+            "teamValueTenths": 992,
             "bankTenths": 26,
-            "starters": [1, 8, 226, 291, 382, 90, 249, 136, 257, 411, 100]
+            "starters": [220, 5, 8, 257, 488, 16, 691, 136, 291, 414, 249]
           },
           {
-            "event": 26,
-            "points": 73,
-            "runningTotal": 1076,
+            "event": 23,
+            "points": 33,
+            "runningTotal": 912,
             "chip": null,
-            "captain": 21,
-            "captainName": "Rice",
-            "captainPoints": 14,
-            "benchPoints": 10,
-            "hitPoints": 0,
-            "transfers": [
-              {
-                "out": 16,
-                "outName": "Saka",
-                "in": 21,
-                "inName": "Rice"
-              }
-            ],
-            "teamValueTenths": 982,
-            "bankTenths": 50,
-            "starters": [1, 8, 257, 226, 21, 90, 249, 291, 411, 136, 382]
-          },
-          {
-            "event": 27,
-            "points": 56,
-            "runningTotal": 1132,
-            "chip": null,
-            "captain": 249,
-            "captainName": "Jo\u00e3o Pedro",
-            "captainPoints": 7,
-            "benchPoints": 4,
-            "hitPoints": 0,
-            "transfers": [
-              {
-                "out": 488,
-                "outName": "Bruno G.",
-                "in": 82,
-                "inName": "Semenyo"
-              }
-            ],
-            "teamValueTenths": 982,
-            "bankTenths": 41,
-            "starters": [1, 411, 414, 226, 82, 90, 249, 136, 8, 21, 291]
-          },
-          {
-            "event": 28,
-            "points": 57,
-            "runningTotal": 1189,
-            "chip": null,
-            "captain": 21,
-            "captainName": "Rice",
-            "captainPoints": 5,
-            "benchPoints": 4,
-            "hitPoints": 0,
-            "transfers": [
-              {
-                "out": 257,
-                "outName": "Lacroix",
-                "in": 373,
-                "inName": "Virgil"
-              }
-            ],
-            "teamValueTenths": 984,
-            "bankTenths": 32,
-            "starters": [1, 373, 411, 8, 21, 82, 249, 136, 90, 226, 291]
-          },
-          {
-            "event": 29,
-            "points": 87,
-            "runningTotal": 1276,
-            "chip": null,
-            "captain": 82,
-            "captainName": "Semenyo",
-            "captainPoints": 7,
+            "captain": 136,
+            "captainName": "Thiago",
+            "captainPoints": 2,
             "benchPoints": 1,
+            "hitPoints": 0,
+            "transfers": [
+              {
+                "out": 236,
+                "outName": "Neto",
+                "in": 120,
+                "inName": "Schade"
+              }
+            ],
+            "teamValueTenths": 992,
+            "bankTenths": 26,
+            "starters": [220, 5, 8, 291, 120, 414, 136, 249, 16, 691, 257]
+          },
+          {
+            "event": 24,
+            "points": 50,
+            "runningTotal": 962,
+            "chip": null,
+            "captain": 237,
+            "captainName": "Enzo",
+            "captainPoints": 8,
+            "benchPoints": 3,
+            "hitPoints": 0,
+            "transfers": [
+              {
+                "out": 120,
+                "outName": "Schade",
+                "in": 237,
+                "inName": "Enzo"
+              }
+            ],
+            "teamValueTenths": 993,
+            "bankTenths": 31,
+            "starters": [220, 5, 291, 257, 237, 414, 249, 8, 136, 691, 488]
+          },
+          {
+            "event": 25,
+            "points": 66,
+            "runningTotal": 1028,
+            "chip": null,
+            "captain": 237,
+            "captainName": "Enzo",
+            "captainPoints": 2,
+            "benchPoints": 10,
             "hitPoints": 0,
             "transfers": [
               {
@@ -5919,186 +5903,293 @@
                 "inName": "B.Fernandes"
               }
             ],
-            "teamValueTenths": 985,
-            "bankTenths": 14,
-            "starters": [1, 226, 373, 291, 82, 449, 249, 90, 136, 21, 8]
+            "teamValueTenths": 990,
+            "bankTenths": 20,
+            "starters": [220, 5, 8, 291, 237, 449, 249, 488, 136, 408, 257]
+          },
+          {
+            "event": 26,
+            "points": 66,
+            "runningTotal": 1094,
+            "chip": null,
+            "captain": 21,
+            "captainName": "Rice",
+            "captainPoints": 14,
+            "benchPoints": 4,
+            "hitPoints": 0,
+            "transfers": [
+              {
+                "out": 16,
+                "outName": "Saka",
+                "in": 21,
+                "inName": "Rice"
+              }
+            ],
+            "teamValueTenths": 991,
+            "bankTenths": 44,
+            "starters": [220, 5, 8, 257, 21, 237, 249, 449, 291, 408, 488]
+          },
+          {
+            "event": 27,
+            "points": 31,
+            "runningTotal": 1125,
+            "chip": null,
+            "captain": 237,
+            "captainName": "Enzo",
+            "captainPoints": 2,
+            "benchPoints": 10,
+            "hitPoints": 0,
+            "transfers": [
+              {
+                "out": 488,
+                "outName": "Bruno G.",
+                "in": 82,
+                "inName": "Semenyo"
+              }
+            ],
+            "teamValueTenths": 989,
+            "bankTenths": 35,
+            "starters": [220, 449, 5, 408, 237, 82, 249, 136, 291, 8, 21]
+          },
+          {
+            "event": 28,
+            "points": 72,
+            "runningTotal": 1197,
+            "chip": null,
+            "captain": 21,
+            "captainName": "Rice",
+            "captainPoints": 5,
+            "benchPoints": 12,
+            "hitPoints": 0,
+            "transfers": [
+              {
+                "out": 408,
+                "outName": "R\u00faben",
+                "in": 373,
+                "inName": "Virgil"
+              }
+            ],
+            "teamValueTenths": 990,
+            "bankTenths": 31,
+            "starters": [139, 373, 5, 291, 21, 82, 136, 449, 249, 8, 257]
+          },
+          {
+            "event": 29,
+            "points": 92,
+            "runningTotal": 1289,
+            "chip": null,
+            "captain": 82,
+            "captainName": "Semenyo",
+            "captainPoints": 7,
+            "benchPoints": 4,
+            "hitPoints": 0,
+            "transfers": [
+              {
+                "out": 257,
+                "outName": "Lacroix",
+                "in": 411,
+                "inName": "O'Reilly"
+              }
+            ],
+            "teamValueTenths": 992,
+            "bankTenths": 31,
+            "starters": [139, 237, 373, 5, 82, 449, 249, 291, 21, 136, 8]
           },
           {
             "event": 30,
-            "points": 46,
-            "runningTotal": 1322,
+            "points": 44,
+            "runningTotal": 1333,
             "chip": null,
             "captain": 249,
             "captainName": "Jo\u00e3o Pedro",
             "captainPoints": 2,
-            "benchPoints": 7,
+            "benchPoints": 3,
             "hitPoints": 0,
             "transfers": [
               {
-                "out": 382,
-                "outName": "Wirtz",
-                "in": 421,
-                "inName": "Rodrigo"
+                "out": 139,
+                "outName": "Verbruggen",
+                "in": 253,
+                "inName": "Henderson"
               }
             ],
-            "teamValueTenths": 986,
-            "bankTenths": 33,
-            "starters": [1, 8, 373, 411, 449, 82, 249, 136, 21, 90, 421]
+            "teamValueTenths": 991,
+            "bankTenths": 25,
+            "starters": [220, 5, 373, 8, 449, 82, 249, 21, 411, 136, 237]
           },
           {
             "event": 31,
-            "points": 44,
-            "runningTotal": 1362,
+            "points": 54,
+            "runningTotal": 1375,
             "chip": "free_hit",
             "captain": 249,
             "captainName": "Jo\u00e3o Pedro",
             "captainPoints": 2,
-            "benchPoints": 9,
-            "hitPoints": 4,
+            "benchPoints": 14,
+            "hitPoints": 12,
             "transfers": [
               {
                 "out": 8,
                 "outName": "J.Timber",
-                "in": 684,
-                "inName": "Thiaw"
+                "in": 72,
+                "inName": "Senesi"
               },
               {
                 "out": 21,
                 "outName": "Rice",
-                "in": 485,
-                "inName": "Gordon"
+                "in": 517,
+                "inName": "Anderson"
+              },
+              {
+                "out": 82,
+                "outName": "Semenyo",
+                "in": 329,
+                "inName": "Wilson"
+              },
+              {
+                "out": 5,
+                "outName": "Gabriel",
+                "in": 684,
+                "inName": "Thiaw"
               }
             ],
-            "teamValueTenths": 988,
-            "bankTenths": 48,
-            "starters": [32, 684, 72, 77, 449, 485, 249, 136, 90, 373, 235]
+            "teamValueTenths": 994,
+            "bankTenths": 96,
+            "starters": [287, 72, 373, 291, 449, 517, 249, 136, 329, 684, 90]
           },
           {
             "event": 32,
-            "points": 61,
-            "runningTotal": 1423,
+            "points": 65,
+            "runningTotal": 1440,
             "chip": null,
             "captain": 449,
             "captainName": "B.Fernandes",
             "captainPoints": 4,
-            "benchPoints": 23,
+            "benchPoints": 6,
             "hitPoints": 0,
             "transfers": [
               {
-                "out": 226,
-                "outName": "Chalobah",
+                "out": 684,
+                "outName": "Thiaw",
                 "in": 5,
                 "inName": "Gabriel"
               }
             ],
-            "teamValueTenths": 988,
-            "bankTenths": 31,
-            "starters": [1, 5, 373, 411, 449, 421, 249, 136, 82, 485, 684]
+            "teamValueTenths": 995,
+            "bankTenths": 74,
+            "starters": [253, 5, 373, 291, 449, 517, 249, 136, 411, 72, 329]
           },
           {
             "event": 33,
-            "points": 56,
-            "runningTotal": 1479,
+            "points": 78,
+            "runningTotal": 1510,
             "chip": "bench_boost",
             "captain": 249,
             "captainName": "Jo\u00e3o Pedro",
             "captainPoints": 0,
             "benchPoints": 0,
-            "hitPoints": 0,
+            "hitPoints": 8,
             "transfers": [
               {
                 "out": 373,
                 "outName": "Virgil",
-                "in": 72,
-                "inName": "Senesi"
+                "in": 260,
+                "inName": "Gu\u00e9hi"
+              },
+              {
+                "out": 329,
+                "outName": "Wilson",
+                "in": 90,
+                "inName": "Scott"
+              },
+              {
+                "out": 517,
+                "outName": "Anderson",
+                "in": 82,
+                "inName": "Semenyo"
               }
             ],
-            "teamValueTenths": 988,
-            "bankTenths": 41,
+            "teamValueTenths": 995,
+            "bankTenths": 67,
             "starters": [
-              684, 485, 449, 72, 5, 421, 411, 82, 90, 291, 220, 249, 1, 136, 100
+              72, 5, 82, 411, 90, 260, 449, 291, 237, 84, 220, 249, 253, 136,
+              691
             ]
           },
           {
             "event": 34,
-            "points": 77,
-            "runningTotal": 1556,
+            "points": 58,
+            "runningTotal": 1568,
             "chip": "wildcard",
             "captain": 449,
             "captainName": "B.Fernandes",
             "captainPoints": 5,
-            "benchPoints": 12,
+            "benchPoints": 22,
             "hitPoints": 0,
             "transfers": [],
-            "teamValueTenths": 988,
-            "bankTenths": 42,
-            "starters": [1, 5, 6, 373, 449, 515, 136, 606, 683, 457, 242]
+            "teamValueTenths": 995,
+            "bankTenths": 4,
+            "starters": [1, 5, 373, 291, 449, 21, 136, 457, 374, 303, 387]
           },
           {
             "event": 35,
-            "points": 51,
-            "runningTotal": 1607,
+            "points": 46,
+            "runningTotal": 1614,
             "chip": null,
             "captain": 449,
             "captainName": "B.Fernandes",
             "captainPoints": 5,
-            "benchPoints": 14,
+            "benchPoints": 24,
             "hitPoints": 0,
             "transfers": [
               {
-                "out": 311,
-                "outName": "Beto",
-                "in": 691,
-                "inName": "Calvert-Lewin"
-              }
-            ],
-            "teamValueTenths": 987,
-            "bankTenths": 36,
-            "starters": [1, 5, 6, 606, 449, 515, 691, 136, 457, 624, 242]
-          },
-          {
-            "event": 36,
-            "points": 74,
-            "runningTotal": 1673,
-            "chip": null,
-            "captain": 417,
-            "captainName": "Cherki",
-            "captainPoints": 5,
-            "benchPoints": 4,
-            "hitPoints": 8,
-            "transfers": [
-              {
-                "out": 683,
-                "outName": "Alderete",
-                "in": 411,
-                "inName": "O'Reilly"
-              },
-              {
-                "out": 450,
-                "outName": "Cunha",
-                "in": 417,
-                "inName": "Cherki"
-              },
-              {
-                "out": 606,
-                "outName": "Mavropanos",
+                "out": 374,
+                "outName": "Konat\u00e9",
                 "in": 260,
                 "inName": "Gu\u00e9hi"
               }
             ],
-            "teamValueTenths": 989,
-            "bankTenths": 33,
-            "starters": [1, 411, 260, 5, 417, 242, 136, 6, 449, 373, 691]
+            "teamValueTenths": 994,
+            "bankTenths": 8,
+            "starters": [1, 5, 260, 257, 449, 21, 136, 457, 624, 291, 373]
+          },
+          {
+            "event": 36,
+            "points": 66,
+            "runningTotal": 1676,
+            "chip": null,
+            "captain": 417,
+            "captainName": "Cherki",
+            "captainPoints": 5,
+            "benchPoints": 5,
+            "hitPoints": 4,
+            "transfers": [
+              {
+                "out": 291,
+                "outName": "Tarkowski",
+                "in": 411,
+                "inName": "O'Reilly"
+              },
+              {
+                "out": 303,
+                "outName": "Garner",
+                "in": 417,
+                "inName": "Cherki"
+              }
+            ],
+            "teamValueTenths": 995,
+            "bankTenths": 1,
+            "starters": [1, 411, 260, 257, 417, 449, 624, 5, 373, 387, 21]
           },
           {
             "event": 37,
-            "points": 50,
-            "runningTotal": 1723,
+            "points": 52,
+            "runningTotal": 1728,
             "chip": null,
-            "captain": 136,
-            "captainName": "Thiago",
-            "captainPoints": 2,
-            "benchPoints": 15,
+            "captain": 21,
+            "captainName": "Rice",
+            "captainPoints": 5,
+            "benchPoints": 4,
             "hitPoints": 0,
             "transfers": [
               {
@@ -6108,31 +6199,31 @@
                 "inName": "Tarkowski"
               }
             ],
-            "teamValueTenths": 988,
-            "bankTenths": 37,
-            "starters": [1, 5, 6, 291, 449, 242, 136, 260, 691, 417, 624]
+            "teamValueTenths": 992,
+            "bankTenths": 5,
+            "starters": [1, 5, 291, 260, 21, 449, 136, 457, 624, 411, 387]
           },
           {
             "event": 38,
-            "points": 45,
-            "runningTotal": 1768,
+            "points": 41,
+            "runningTotal": 1769,
             "chip": null,
-            "captain": 517,
-            "captainName": "Anderson",
+            "captain": 387,
+            "captainName": "Szoboszlai",
             "captainPoints": 2,
-            "benchPoints": 12,
+            "benchPoints": 0,
             "hitPoints": 0,
             "transfers": [
               {
-                "out": 457,
-                "outName": "Casemiro",
-                "in": 517,
-                "inName": "Anderson"
+                "out": 681,
+                "outName": "\u0160e\u0161ko",
+                "in": 691,
+                "inName": "Calvert-Lewin"
               }
             ],
-            "teamValueTenths": 990,
-            "bankTenths": 39,
-            "starters": [679, 5, 136, 242, 517, 417, 691, 6, 515, 449, 291]
+            "teamValueTenths": 994,
+            "bankTenths": 20,
+            "starters": [287, 5, 136, 691, 387, 21, 624, 291, 449, 257, 417]
           }
         ]
       },
