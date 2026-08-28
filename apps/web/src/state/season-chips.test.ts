@@ -277,26 +277,30 @@ describe("chipCallsFor", () => {
     // The report that motivated it: a Wildcard offered for gameweek 3 against
     // a single transfer. A chip that buys a move the free transfer could have
     // made is a chip thrown away, however well that move scores.
-    const calls = chipCallsFor(
-      [
-        week(2, { bench: [1], captain: 7 }),
-        week(3, { bench: [1], captain: 7 }),
-      ],
-      PUBLISHED,
-    );
+    const weeks = SEASON_EVENTS.slice(0, 9).map((event, index) => {
+      const remaining = 9 - index;
+      const horizon = [...WILDCARD_HORIZONS]
+        .reverse()
+        .find((candidate) => candidate <= remaining);
+      const rebuilt = rebuildSquad(index, 1000, horizon ?? 1);
+      expect(rebuilt).not.toBeNull();
+      const squad = rebuilt?.squad ?? [];
+      return {
+        ...week(event, { bench: [1], captain: 7 }),
+        starters: squad.slice(0, 11),
+        bench: squad.slice(11),
+        bankAfterTenths: rebuilt?.bankTenths ?? 0,
+        netExpectedPoints: bestElevenPoints(squad, index) - 1,
+      };
+    });
+    const calls = chipCallsFor(weeks, PUBLISHED);
     const wildcard = callOf(calls, "Wildcard");
 
-    if (wildcard.event === null) {
-      expect(wildcard.note).toMatch(/5 or more|already using gameweek/);
-      return;
-    }
-    const moves = /moves (\d+) of your fifteen/.exec(wildcard.note);
-    expect(moves).not.toBeNull();
-    expect(Number(moves?.[1])).toBeGreaterThanOrEqual(5);
-    expect(wildcard.note).toMatch(/xPts(3|5|7)/);
+    expect(wildcard.event).toBeNull();
+    expect(wildcard.note).toContain("5 or more");
   });
 
-  it("refuses a free hit that would move fewer than ten of the fifteen", () => {
+  it("never advises a free hit below ten changes", () => {
     const calls = chipCallsFor(
       [
         week(2, { bench: [1], captain: 7 }),
@@ -306,10 +310,7 @@ describe("chipCallsFor", () => {
     );
     const freeHit = callOf(calls, "Free Hit");
 
-    if (freeHit.event === null) {
-      expect(freeHit.note).toMatch(/10 or more|no week|already using gameweek/);
-      return;
-    }
+    expect(freeHit.event).not.toBeNull();
     const moves = /a (\d+)-change xPts1 rental/.exec(freeHit.note);
     expect(moves).not.toBeNull();
     expect(Number(moves?.[1])).toBeGreaterThanOrEqual(10);
@@ -325,7 +326,7 @@ describe("chipCallsFor", () => {
 
     const freeHit = callOf(chipCallsFor([planned], PUBLISHED), "Free Hit");
 
-    if (freeHit.event === null) return;
+    expect(freeHit.event).not.toBeNull();
     expect(freeHit.changes).toBeGreaterThanOrEqual(10);
     expect(freeHit.outgoing).toContain("P999");
   });
@@ -391,16 +392,15 @@ describe("chipCallsFor", () => {
 
   it("prices the wildcard over the run it opens, not one afternoon", () => {
     const calls = chipCallsFor(
-      [
-        week(2, { bench: [1], captain: 7 }),
-        week(3, { bench: [1], captain: 7 }),
-      ],
+      SEASON_EVENTS.slice(0, 9).map((event) =>
+        week(event, { bench: [1], captain: 7 }),
+      ),
       PUBLISHED,
     );
     const wildcard = callOf(calls, "Wildcard");
     const freeHit = callOf(calls, "Free Hit");
 
-    if (wildcard.event === null) return;
+    expect(wildcard.event).not.toBeNull();
     expect(wildcard.note).toContain("gameweeks it opens");
     // A kept squad scores over several weeks and a free hit over one, so the
     // two numbers cannot be the same measure. They used to be.
