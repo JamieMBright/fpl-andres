@@ -28,7 +28,7 @@ const ANSWERS: readonly Answer[] = [
   {
     q: "What is this site?",
     a: [
-      "Two things. First, a projection of how many FPL points each Premier League player is expected to score, rebuilt from what he did last season: minutes, goals, assists, clean sheets, saves, defensive contributions and cards, each converted to a per-90 rate and then priced with the published FPL scoring table.",
+      "Two things. First, a projection of how many FPL points each Premier League player is expected to score, rebuilt from completed matches: minutes, starts, goals, assists, clean sheets, saves, defensive contributions and cards. Last season supplies the opening prior; settled matches this season update it.",
       "Second, a plan. Those per-player projections are put through the real 2026/27 fixture list, and a solver picks a squad, a starting eleven, a captain and a transfer for all 38 gameweeks inside the actual rules: £100.0m, fifteen players, no more than three from one club, one free transfer a week, four points for any transfer beyond it.",
     ],
   },
