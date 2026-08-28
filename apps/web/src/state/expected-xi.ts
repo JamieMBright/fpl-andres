@@ -191,7 +191,7 @@ function toPlayer(
         : `${Math.round(startProbability * 100)}%`;
     const observed =
       typeof startEvidence.observedAppearances === "number"
-        ? `${startEvidence.observedAppearances} recorded appearances`
+        ? `${startEvidence.observedAppearances} recorded ${startEvidence.observedAppearances === 1 ? "appearance" : "appearances"}`
         : "recorded appearances unavailable";
     const recent =
       typeof startEvidence.recentStarts === "number" &&

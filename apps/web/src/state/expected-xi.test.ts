@@ -239,6 +239,35 @@ describe("expected XI reader", () => {
     });
   });
 
+  it("uses singular wording for one recorded appearance", () => {
+    const withOneAppearance = {
+      ...seasonInputs,
+      players: seasonInputs.players.map((player) =>
+        player.id === 1
+          ? {
+              ...player,
+              startEvidence: {
+                ...("startEvidence" in player ? player.startEvidence : {}),
+                observedAppearances: 1,
+              },
+            }
+          : player,
+      ),
+    };
+    const arsenal = buildExpectedXi({
+      seasonInputs: withOneAppearance,
+      playerOdds,
+    }).teams.find((team) => team.club === "ARS");
+    const keeper = arsenal?.starters.find((player) => player.name === "Keeper");
+
+    expect(keeper?.explanation.factors[0]?.detail).toContain(
+      "1 recorded appearance",
+    );
+    expect(keeper?.explanation.factors[0]?.detail).not.toContain(
+      "1 recorded appearances",
+    );
+  });
+
   it("attaches team market health to the squad", () => {
     const arsenal = buildExpectedXi({ seasonInputs, playerOdds }).teams.find(
       (team) => team.club === "ARS",
