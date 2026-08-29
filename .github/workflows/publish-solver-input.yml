@@ -7,7 +7,7 @@ name: Publish solver input
 on:
   # Auto-trigger when market data or live data updates
   workflow_run:
-    workflows: 
+    workflows:
       - "Ingest Bookmaker Odds"
       - "Ingest Player Odds"
       - "Capture settled gameweeks"
