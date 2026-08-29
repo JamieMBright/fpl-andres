@@ -227,11 +227,10 @@ def _current_lineups(path: Path) -> dict[int, list[CurrentLineupObservation]]:
     paths = sorted(path.glob("gw*.json")) if path.is_dir() else [path]
     for snapshot_path in paths:
         snapshot = read_json_file(snapshot_path)
-        if snapshot.get("roundComplete") is not True:
-            continue
         rows = snapshot.get("elements")
         if not isinstance(rows, list):
             raise ValueError(f"live snapshot publishes no elements: {snapshot_path}")
+        has_data = False
         for row in rows:
             if not isinstance(row, Mapping) or not isinstance(row.get("id"), int):
                 continue
@@ -242,9 +241,13 @@ def _current_lineups(path: Path) -> dict[int, list[CurrentLineupObservation]]:
             starts = stats.get("starts", 0)
             if not isinstance(minutes, int) or not isinstance(starts, int):
                 raise ValueError(f"live lineup stats are not integers: {snapshot_path}")
+            if minutes > 0 or starts > 0:
+                has_data = True
             observations.setdefault(int(row["id"]), []).append(
                 CurrentLineupObservation(started=starts > 0, minutes=minutes)
             )
+        if not has_data and not snapshot.get("roundComplete", False):
+            observations.clear()
     return observations
 
 
@@ -1059,8 +1062,13 @@ def _apply_current_lineup(
     weight: float,
     prior_strength: float,
 ) -> bool:
-    """Update a cold-start role prior with settled current-season lineups."""
-    if draft.rated or not observations or weight == 0:
+    """Blend current-season lineups with the prior start rate.
+    
+    Even for players with a measured record (draft.rated), actual current-season
+    game appearances should influence the start rate, especially early in the
+    season where fixtures are few and last-year patterns may not hold.
+    """
+    if not observations or weight == 0:
         return False
     if weight < 0 or prior_strength < 0:
         raise ValueError("current-lineup weight and prior strength must be non-negative")
@@ -1588,7 +1596,7 @@ def _build_player_rows(
             draft,
             current_lineups.get(element.id, ()),
             weight=current_lineup_weight,
-            prior_strength=4.0,
+            prior_strength=1.0,
         )
         baseline_start_rate = draft.start_rate
         baseline_minutes = draft.expected_minutes
