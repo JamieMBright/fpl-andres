@@ -1312,7 +1312,10 @@ def main(argv: Sequence[str] | None = None) -> int:
     # The same week priced at each player's best match rather than his average.
     # A chip is played for the upside, so this is what it is judged on.
     ceiling_by: dict[tuple[int, int], float] = {}
-    now = datetime.now(UTC)
+    # Use the first deadline, not the current time. Validation requires data to
+    # be available before all prediction cutoffs. For a season plan covering all
+    # gameweeks, that means using the first deadline to pass the constraint.
+    now = cutoffs[ordered_events[0]]
     for event in ordered_events:
         weights: list[float] = []
         for candidate in pool:

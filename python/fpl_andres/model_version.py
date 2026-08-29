@@ -29,6 +29,23 @@ from __future__ import annotations
 
 __all__ = ["MODEL_VERSION"]
 
+#: 8.15 lets an in-progress gameweek reach the xStart posterior and stops a
+#: carried record from outvoting it. A live snapshot now counts once any player
+#: in it has minutes or starts, rather than only once `roundComplete` is set, so
+#: the week being played informs the plan for it instead of arriving a week late.
+#: The prior is also no longer skipped for players with a measured record, and
+#: its strength drops from four carried appearances to one. The held-out
+#: quantity 8.12 fitted -- a settled current-season lineup is worth four carried
+#: appearances -- is unchanged, because `--current-lineup-weight` still defaults
+#: to 4.0; what moves is how much total mass the carried estimate starts with.
+#: That mass was never separately fitted, and it is not fitted here either: the
+#: choice is that after two current-season matches the posterior should follow
+#: this season rather than last, which one carried appearance gives (8/9 recent)
+#: and four did not (1/2 recent). It gives up prior stability for players whose
+#: early sample is unrepresentative -- an injury return or a rotated cup week
+#: now moves the number further than it did. Minor: P(start) keeps its target
+#: and its meaning; the estimate and the plans built on it move.
+#:
 #: 8.14 makes the displayed one-to-five fixture rating opponent-only at the
 #: opponent's venue, while route-specific xPts still uses both teams. The
 #: browser now applies each advised Free Hit/Wildcard squad in a second full-
@@ -418,4 +435,4 @@ __all__ = ["MODEL_VERSION"]
 #: projection and resampled, so a gap that does not clear zero is reported as
 #: not clearing zero. No projection changed; what changed is what may be
 #: claimed from it.
-MODEL_VERSION = "8.14"
+MODEL_VERSION = "8.15"
