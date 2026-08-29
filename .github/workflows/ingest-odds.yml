@@ -35,6 +35,11 @@ on:
         required: false
         default: false
         type: boolean
+  # Trigger via push to this file when manual dispatch is needed
+  push:
+    paths:
+      - ".github/workflows/ingest-odds.yml"
+
 permissions:
   contents: read
 
