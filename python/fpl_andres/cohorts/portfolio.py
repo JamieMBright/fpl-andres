@@ -370,7 +370,8 @@ def summarize_structure(
         starting_keeper = next((pick for pick in keepers if pick.position <= 11), None)
         bench_keeper = next((pick for pick in keepers if pick.position > 11), None)
         if starting_keeper is not None and bench_keeper is not None:
-            pair = (starting_keeper.element_id, bench_keeper.element_id)
+            starter, bench = sorted((starting_keeper.element_id, bench_keeper.element_id))
+            pair = (starter, bench)
             pair_counts[pair] = pair_counts.get(pair, 0) + 1
         formation = (
             sum(1 for pick in starters if element_types.get(pick.element_id) == 2),

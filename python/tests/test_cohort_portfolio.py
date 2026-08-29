@@ -284,3 +284,35 @@ def test_structure_reads_team_sheet_slots_during_a_bench_boost() -> None:
     assert structure.keeper_pairings[0].starter_element_id == 1
     assert structure.keeper_pairings[0].bench_element_id == 2
     assert len(structure.common_starting_xi) == 11
+
+
+def test_structure_treats_goalkeeper_pairs_as_reversible() -> None:
+    element_types = {
+        **{element_id: 1 for element_id in (1, 2)},
+        **{element_id: 2 for element_id in range(3, 8)},
+        **{element_id: 3 for element_id in range(8, 13)},
+        **{element_id: 4 for element_id in range(13, 16)},
+    }
+    first_sheet = (1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 2, 12, 14, 15)
+    second_sheet = (2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 1, 12, 14, 15)
+    captured = [
+        squad(1, list(first_sheet), captain=8, vice=9),
+        squad(2, list(second_sheet), captain=8, vice=9),
+    ]
+
+    structure = summarize_structure(
+        captured,
+        event=1,
+        attempted=2,
+        cohort_revision="sha256:pinned",
+        element_types=element_types,
+        team_ids={element_id: ((element_id - 1) % 8) + 1 for element_id in element_types},
+        prices={element_id: 50 for element_id in element_types},
+        minimum_coverage=1.0,
+    )
+
+    assert len(structure.keeper_pairings) == 1
+    assert structure.keeper_pairings[0].starter_element_id == 1
+    assert structure.keeper_pairings[0].bench_element_id == 2
+    assert structure.keeper_pairings[0].count == 2
+    assert structure.keeper_pairings[0].share == pytest.approx(1.0)
