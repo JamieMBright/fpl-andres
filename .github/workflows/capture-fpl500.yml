@@ -32,6 +32,7 @@ on:
         default: ""
         type: string
   # A change to this file is how a run gets asked for without a token.
+  # Triggered to re-capture with GW2 live data and updated GK pairing logic
   push:
     paths:
       - ".github/workflows/capture-fpl500.yml"
