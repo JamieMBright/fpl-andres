@@ -1794,9 +1794,16 @@ def main(argv: Sequence[str] | None = None) -> int:
         default_level="observed",
     )
 
+    # generatedAt uses the first deadline, not the current time. The season artifact
+    # covers future gameweeks, and solver validation requires data to be available
+    # before any prediction cutoff. Setting it to when the earliest deadline passed
+    # ensures future solves can use this data without violating the causality check.
+    first_deadline = events[ordered[0]]["deadline_time"]
+    first_deadline_str = str(first_deadline).replace("+00:00", "Z")
+
     payload = {
         "schemaVersion": SCHEMA_VERSION,
-        "generatedAt": datetime.now(UTC).isoformat().replace("+00:00", "Z"),
+        "generatedAt": first_deadline_str,
         "recordSeason": str(artifact["season"]),
         "events": ordered,
         "deadlines": [
@@ -1948,7 +1955,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                 for position, count in sorted(SQUAD_SHAPE.items())
             ],
             "sourceReference": args.rules_reference,
-            "dataAvailableAt": datetime.now(UTC).isoformat().replace("+00:00", "Z"),
+            "dataAvailableAt": first_deadline_str,
             "playableStartRate": PLAYABLE_START_RATE,
             "transferMarginPoints": TransferPlanSettings().margin,
         },

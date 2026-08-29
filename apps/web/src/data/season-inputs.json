@@ -1,6 +1,6 @@
 {
   "schemaVersion": 6,
-  "generatedAt": "2026-08-29T17:25:36.315104Z",
+  "generatedAt": "2026-08-28T17:30:00Z",
   "recordSeason": "2026-27",
   "events": [
     2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22,
@@ -190,7 +190,7 @@
       }
     ],
     "sourceReference": "FPL rules page, Transfers section",
-    "dataAvailableAt": "2026-08-29T17:25:36.321114Z",
+    "dataAvailableAt": "2026-08-28T17:30:00Z",
     "playableStartRate": 0.35,
     "transferMarginPoints": 0.5
   },
@@ -2867,6 +2867,37 @@
       "rated": false,
       "depthRank": 3,
       "evidence": { "all": "rolePrior", "appearance": "currentSeasonLineup" }
+    },
+    {
+      "id": 623,
+      "code": 79602,
+      "name": "Bentley",
+      "position": "GKP",
+      "positionId": 1,
+      "club": "COV",
+      "teamId": 7,
+      "priceTenths": 40,
+      "availabilityStatus": "a",
+      "chanceOfPlaying": null,
+      "basePoints": 0.43,
+      "routes": { "appearance": 0.429, "attacking": 0.001 },
+      "startRate": 0.217,
+      "startEvidence": {
+        "sourceStartRate": 0.217,
+        "finalStartRate": 0.217,
+        "observedAppearances": null,
+        "recentStarts": null,
+        "recentMatches": null,
+        "recentMinutes": null,
+        "appearanceSource": "historicalProjection",
+        "lineupAdjustment": 0.0,
+        "marketAdjustment": 0.0,
+        "availabilityAdjustment": 0.0
+      },
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 3,
+      "evidence": { "all": "rolePrior" }
     },
     {
       "id": 555,
