@@ -1063,7 +1063,7 @@ def _apply_current_lineup(
     prior_strength: float,
 ) -> bool:
     """Blend current-season lineups with the prior start rate.
-    
+
     Even for players with a measured record (draft.rated), actual current-season
     game appearances should influence the start rate, especially early in the
     season where fixtures are few and last-year patterns may not hold.
