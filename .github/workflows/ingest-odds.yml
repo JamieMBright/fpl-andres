@@ -15,8 +15,12 @@ name: Ingest Bookmaker Odds
 # links to a bookmaker.
 
 on:
+  # Auto-trigger when live gameweek data is captured
+  workflow_run:
+    workflows: ["Capture settled gameweeks", "Capture live current gameweek"]
+    types: [completed]
   schedule:
-    # Daily. Fixtures land on every day of the week now, so a twice-weekly grab
+    # Fallback: daily. Fixtures land on every day of the week now, so a twice-weekly grab
     # would leave a midweek round priced off a stale scrape. Free on a public
     # repository, and the job commits only when the prices actually moved, so a
     # quiet day costs one CSV fetch and nothing else.
@@ -35,10 +39,6 @@ on:
         required: false
         default: false
         type: boolean
-  # Trigger via push to this file when manual dispatch is needed
-  push:
-    paths:
-      - ".github/workflows/ingest-odds.yml"
 
 permissions:
   contents: read

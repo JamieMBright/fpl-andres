@@ -1,0 +1,67 @@
+name: Publish solver input
+
+# Regenerate season-inputs.json whenever market data updates.
+# Triggered by completed odds ingestions to ensure solver input is fresh
+# with latest fixture odds and player props.
+
+on:
+  # Auto-trigger when market data or live data updates
+  workflow_run:
+    workflows: 
+      - "Ingest Bookmaker Odds"
+      - "Ingest Player Odds"
+      - "Capture settled gameweeks"
+      - "Capture live current gameweek"
+    types: [completed]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: publish-solver-input
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+
+      - name: Set up Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: 20.20.2
+
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install engine
+        run: python -m pip install -e .
+
+      - name: Regenerate season inputs with fresh market data
+        run: |
+          set -o pipefail
+          python -m fpl_andres.cli.publish_season_inputs | tee -a publish.log
+
+      - name: Format generated files
+        run: |
+          npx --yes prettier@3 --write apps/web/src/data/season-inputs.json
+
+      - name: Commit updated solver input
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add apps/web/src/data/season-inputs.json
+          if ! git diff --cached --quiet; then
+            git commit -m "chore: regenerate solver input with fresh market data"
+            git pull --rebase --autostash
+            git push
+          else
+            echo "No changes to solver input"
+          fi

@@ -33,6 +33,10 @@ name: Ingest Player Odds
 # probability and used as evidence about a footballer.
 
 on:
+  # Auto-trigger when fixture odds are ingested
+  workflow_run:
+    workflows: ["Ingest Bookmaker Odds"]
+    types: [completed]
   schedule:
     # An hour before the earliest a deadline lands. Cron has no timezone, so
     # 09:00 UTC is 10:00 British Summer Time and 09:00 in winter.

@@ -85,35 +85,22 @@ jobs:
               --season 2026-27 2>&1 | tee -a capture.log
           fi
 
-      - name: Set up Node
-        if: steps.check.outputs.active == 'true'
-        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
-        with:
-          node-version: 20.20.2
-
-      - name: Publish fresh season inputs
+      - name: Format captured files
         if: steps.check.outputs.active == 'true'
         run: |
-          set -o pipefail
-          python -m fpl_andres.cli.publish_season_inputs | tee -a capture.log
+          npx --yes prettier@3 --write data/live/**/*.json
 
-      - name: Format generated files
-        if: steps.check.outputs.active == 'true'
-        run: |
-          npx --yes prettier@3 --write \
-            data/live/**/*.json \
-            apps/web/src/data/season-inputs.json
-
-      - name: Commit live updates
+      - name: Commit live lineup updates
         if: steps.check.outputs.active == 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/live apps/web/src/data/season-inputs.json
+          git add data/live
           if ! git diff --cached --quiet; then
-            git commit -m "chore: update live gameweek stats and solver input"
+            git commit -m "chore: update live gameweek lineup snapshots"
             git pull --rebase --autostash
             git push
           else
-            echo "No changes to commit"
+            echo "No lineup changes"
           fi
+
