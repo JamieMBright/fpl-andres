@@ -7,9 +7,12 @@ follows a player between seasons, and stay silent about anyone without evidence.
 
 from __future__ import annotations
 
+import json
+import tempfile
 import unittest
 from dataclasses import replace
 from datetime import UTC, datetime, timedelta
+from pathlib import Path
 from unittest.mock import patch
 
 from fpl_andres.backtesting.corpus import ElementRow, SeasonCorpus
@@ -18,6 +21,7 @@ from fpl_andres.backtesting.projector import project_next_match
 from fpl_andres.cli.publish_projections import (
     _clubs,
     _entry,
+    _live_snapshots,
     corpus_from_live_snapshot,
     corpus_from_live_snapshots,
 )
@@ -234,6 +238,74 @@ class ProjectNextMatchTest(unittest.TestCase):
         self.assertEqual(sorted(corpus.fixtures_by_event), [1, 2])
         self.assertEqual(corpus.fixtures_by_event[1][0].team_h_score, 2)
         self.assertEqual(corpus.last_event, 2)
+
+    def test_live_directory_skips_the_week_still_being_played(self) -> None:
+        """The corpus is realised points, so a live round is not one of them.
+
+        The same directory now also carries the week in progress, captured for
+        the xStart posterior. Scoring it here would grade half-played matches as
+        final, so the directory selects the settled events and leaves the rest.
+        """
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            for event, complete in ((1, True), (2, False)):
+                (root / f"gw{event:02d}.json").write_text(
+                    json.dumps(
+                        {
+                            "season": "2026-27",
+                            "event": event,
+                            "capturedAt": f"2026-08-{20 + event:02d}T20:00:00Z",
+                            "roundComplete": complete,
+                            "elements": [],
+                        }
+                    ),
+                    encoding="utf-8",
+                )
+
+            snapshots = _live_snapshots(root)
+
+        self.assertEqual([snapshot["event"] for snapshot in snapshots], [1])
+
+    def test_live_directory_without_a_settled_event_is_an_error(self) -> None:
+        """Silence here would publish a projection with no current season in it."""
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "gw01.json").write_text(
+                json.dumps(
+                    {
+                        "season": "2026-27",
+                        "event": 1,
+                        "capturedAt": "2026-08-21T20:00:00Z",
+                        "roundComplete": False,
+                        "elements": [],
+                    }
+                ),
+                encoding="utf-8",
+            )
+
+            with self.assertRaises(ValueError):
+                _live_snapshots(root)
+
+    def test_a_named_live_file_still_has_to_be_settled(self) -> None:
+        """Asking for one event by name is a claim that it is finished."""
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "gw02.json"
+            path.write_text(
+                json.dumps(
+                    {
+                        "season": "2026-27",
+                        "event": 2,
+                        "capturedAt": "2026-08-22T20:00:00Z",
+                        "roundComplete": False,
+                        "elements": [],
+                    }
+                ),
+                encoding="utf-8",
+            )
+
+            snapshots = _live_snapshots(path)
+
+        self.assertEqual([snapshot["event"] for snapshot in snapshots], [2])
 
     def test_club_strength_carries_by_code_until_current_sample_is_ready(self) -> None:
         previous = SeasonCorpus(season="2025-26")

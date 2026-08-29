@@ -522,11 +522,30 @@ def corpus_from_live_snapshots(
 
 
 def _live_snapshots(path: Path) -> list[Mapping[str, object]]:
-    paths = sorted(path.glob("gw*.json")) if path.is_dir() else [path]
-    snapshots = [read_json_file(candidate) for candidate in paths if candidate.is_file()]
-    if not snapshots:
-        raise ValueError(f"no live snapshots found at {path}")
-    return snapshots
+    if not path.is_dir():
+        # Naming one file is a claim about that file, so it is passed through
+        # and `corpus_from_live_snapshot` holds it to the settled contract.
+        snapshots = [read_json_file(path)] if path.is_file() else []
+        if not snapshots:
+            raise ValueError(f"no live snapshots found at {path}")
+        return snapshots
+    # The directory is no longer settled events alone: it also carries the week
+    # currently being played, captured every couple of hours so the xStart
+    # posterior in `publish_season_inputs` sees this week's lineups rather than
+    # last week's. This corpus is realised points, and a round in progress has
+    # none yet -- including it would score half-played matches as final. So the
+    # directory selects, and the per-file contract still refuses an unsettled
+    # event that somebody names outright.
+    settled = [
+        snapshot
+        for candidate in sorted(path.glob("gw*.json"))
+        if candidate.is_file()
+        for snapshot in [read_json_file(candidate)]
+        if snapshot.get("roundComplete") is True
+    ]
+    if not settled:
+        raise ValueError(f"no settled live snapshots found at {path}")
+    return settled
 
 
 def main(argv: Sequence[str] | None = None) -> int:
