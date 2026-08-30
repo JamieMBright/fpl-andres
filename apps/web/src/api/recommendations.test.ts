@@ -189,9 +189,21 @@ describe("recommendation API deployment", () => {
         (following === undefined || instant < Date.parse(following.deadline))
       );
     };
-    expect(markets.fixtureOdds.fixtures.every((fixture) => inCurrentWindow(fixture.kickoff))).toBe(true);
-    expect(markets.playerOdds.fixtures.every((fixture) => inCurrentWindow(fixture.kickoff))).toBe(true);
-    expect(markets.playerOdds.players.every((player) => inCurrentWindow(player.kickoff))).toBe(true);
+    expect(
+      markets.fixtureOdds.fixtures.every((fixture) =>
+        inCurrentWindow(fixture.kickoff),
+      ),
+    ).toBe(true);
+    expect(
+      markets.playerOdds.fixtures.every((fixture) =>
+        inCurrentWindow(fixture.kickoff),
+      ),
+    ).toBe(true);
+    expect(
+      markets.playerOdds.players.every((player) =>
+        inCurrentWindow(player.kickoff),
+      ),
+    ).toBe(true);
 
     const xstart = responseBody(xstartHandler, "203.0.113.42") as {
       teams: { players: { evidence: string }[] }[];
