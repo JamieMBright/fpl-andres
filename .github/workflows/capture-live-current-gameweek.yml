@@ -53,9 +53,9 @@ jobs:
             echo "Dispatch requested gameweek $DISPATCH_EVENT"
           else
             set +e
-            current_event=$(python -c "import json,urllib.request; bootstrap=json.loads(urllib.request.urlopen('https://fantasy.premierleague.com/api/bootstrap-static/').read()); print(bootstrap.get('current_event',''))")
+            current_event=$(python -c "import json,urllib.request; response=urllib.request.urlopen('https://fantasy.premierleague.com/api/bootstrap-static/', timeout=10); bootstrap=json.loads(response.read().decode()); print(bootstrap.get('current_event') or '')")
             set -e
-            if [ -n "$current_event" ] && [ "$current_event" != "None" ]; then
+            if [ -n "$current_event" ]; then
               echo "active=true" >> $GITHUB_OUTPUT
               echo "EVENT=$current_event" >> $GITHUB_ENV
               echo "Current gameweek is $current_event"
