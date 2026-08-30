@@ -4,12 +4,13 @@ name: Capture live current gameweek
 # This keeps season-inputs.json (browser solver input) fresh with current
 # start rates while games are in progress.
 #
-# Runs frequently during typical match times, does nothing if no gameweek is
-# active (bootstrap.current_event is null).
+# Runs every 2 hours. Skips only when both current_event AND next_event are
+# null (no season yet). Falls back to next_event in the pre-kickoff window
+# (post-deadline, before first match) so lineups are always captured.
 
 on:
   schedule:
-    # Every 2 hours, every day. Bootstrap will skip if no active gameweek.
+    # Every 2 hours, every day.
     - cron: "17 */2 * * *"
   workflow_dispatch:
     inputs:
@@ -52,9 +53,29 @@ jobs:
             echo "active=true" >> $GITHUB_OUTPUT
             echo "Dispatch requested gameweek $DISPATCH_EVENT"
           else
-            set +e
-            current_event=$(python -c "import json,urllib.request; response=urllib.request.urlopen('https://fantasy.premierleague.com/api/bootstrap-static/', timeout=10); bootstrap=json.loads(response.read().decode()); print(bootstrap.get('current_event') or '')")
-            set -e
+            # Fetch bootstrap. Fail loudly on network/parse errors so they
+            # are not silently treated as "no active gameweek".
+            current_event=$(python -c "
+import json, sys, urllib.request
+try:
+    req = urllib.request.Request(
+        'https://fantasy.premierleague.com/api/bootstrap-static/',
+        headers={'User-Agent': 'fpl-andres/ci'},
+    )
+    with urllib.request.urlopen(req, timeout=15) as resp:
+        bootstrap = json.loads(resp.read().decode())
+except Exception as exc:
+    print(f'bootstrap fetch failed: {exc}', file=sys.stderr)
+    sys.exit(1)
+
+# current_event is the GW whose matches are in progress or just finished.
+gw = bootstrap.get('current_event')
+if gw is None:
+    # Pre-kickoff window: deadline passed but first match not yet started.
+    # next_event identifies that GW; use it so we can still capture lineups.
+    gw = bootstrap.get('next_event')
+print(gw or '')
+")
             if [ -n "$current_event" ]; then
               echo "active=true" >> $GITHUB_OUTPUT
               echo "EVENT=$current_event" >> $GITHUB_ENV
