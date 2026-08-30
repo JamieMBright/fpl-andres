@@ -155,10 +155,13 @@ describe("recommendation API deployment", () => {
   it("does not serve settled GW1 prices as GW2 market evidence", () => {
     const markets = responseBody(marketsHandler, "203.0.113.41") as {
       status: string;
-      reason: string;
+      reason: string | null;
       event: number;
-      fixtureOdds: { fixtures: unknown[] };
-      playerOdds: { fixtures: unknown[]; players: unknown[] };
+      fixtureOdds: { fixtures: { kickoff: unknown }[] };
+      playerOdds: {
+        fixtures: { kickoff: unknown }[];
+        players: { kickoff: unknown }[];
+      };
     };
     const upcoming = [...deadlinesData.deadlines]
       .filter((row) => !row.finished)
