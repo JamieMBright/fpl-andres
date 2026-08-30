@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-28T16:45:44.490317Z",
-  "modelVersion": "8.14",
-  "codeRevision": "358e370f5dc6489efa3ba0b4562b51f874512c39",
+  "generatedAt": "2026-08-30T00:01:19.579909Z",
+  "modelVersion": "8.15",
+  "codeRevision": "08cd2614e176f0d53f1dbc1e935632b387cc0962",
   "incumbentWeight": 0.2,
   "candidateWeights": [0.1, 0.15, 0.2, 0.25, 0.3],
   "trainSeasons": ["2022-23", "2023-24"],
@@ -11,18 +11,18 @@
     {
       "weight": 0.1,
       "weeks": 63,
-      "meanWeeklyMae": 1.6985299894658483,
+      "meanWeeklyMae": 1.6985299842716708,
       "seasons": [
         {
           "season": "2022-23",
           "weeks": 31,
-          "meanWeeklyMae": 1.737761676003856,
-          "meanSpearman": 0.5130420288623497
+          "meanWeeklyMae": 1.7377616434172352,
+          "meanSpearman": 0.5130436604559412
         },
         {
           "season": "2023-24",
           "weeks": 32,
-          "meanWeeklyMae": 1.6605242931321536,
+          "meanWeeklyMae": 1.660524314474405,
           "meanSpearman": 0.5345511051157136
         }
       ]
@@ -30,18 +30,18 @@
     {
       "weight": 0.15,
       "weeks": 63,
-      "meanWeeklyMae": 1.7026631246137112,
+      "meanWeeklyMae": 1.7026631204029903,
       "seasons": [
         {
           "season": "2022-23",
           "weeks": 31,
-          "meanWeeklyMae": 1.7413014758791052,
-          "meanSpearman": 0.5133957072091153
+          "meanWeeklyMae": 1.7413014477635895,
+          "meanSpearman": 0.5133970544595162
         },
         {
           "season": "2023-24",
           "weeks": 32,
-          "meanWeeklyMae": 1.6652322218253608,
+          "meanWeeklyMae": 1.6652322407724096,
           "meanSpearman": 0.5331676272801579
         }
       ]
@@ -49,18 +49,18 @@
     {
       "weight": 0.2,
       "weeks": 63,
-      "meanWeeklyMae": 1.7079094941025144,
+      "meanWeeklyMae": 1.707909491059502,
       "seasons": [
         {
           "season": "2022-23",
           "weeks": 31,
-          "meanWeeklyMae": 1.746053973675099,
+          "meanWeeklyMae": 1.7460539484302446,
           "meanSpearman": 0.5124856345329142
         },
         {
           "season": "2023-24",
           "weeks": 32,
-          "meanWeeklyMae": 1.670957029516573,
+          "meanWeeklyMae": 1.6709570479815952,
           "meanSpearman": 0.5311935290116941
         }
       ]
@@ -68,18 +68,18 @@
     {
       "weight": 0.25,
       "weeks": 63,
-      "meanWeeklyMae": 1.7141655769480677,
+      "meanWeeklyMae": 1.7141655734027477,
       "seasons": [
         {
           "season": "2022-23",
           "weeks": 31,
-          "meanWeeklyMae": 1.7517599922788227,
+          "meanWeeklyMae": 1.7517599673610709,
           "meanSpearman": 0.5108016591582003
         },
         {
           "season": "2023-24",
           "weeks": 32,
-          "meanWeeklyMae": 1.6777459870963987,
+          "meanWeeklyMae": 1.677746004255622,
           "meanSpearman": 0.5285586567468472
         }
       ]
@@ -87,18 +87,18 @@
     {
       "weight": 0.3,
       "weeks": 63,
-      "meanWeeklyMae": 1.721281734829854,
+      "meanWeeklyMae": 1.7212817316025246,
       "seasons": [
         {
           "season": "2022-23",
           "weeks": 31,
-          "meanWeeklyMae": 1.758280075067875,
+          "meanWeeklyMae": 1.7582800516203738,
           "meanSpearman": 0.5083407877351153
         },
         {
           "season": "2023-24",
           "weeks": 32,
-          "meanWeeklyMae": 1.6854395927242705,
+          "meanWeeklyMae": 1.685439609085233,
           "meanSpearman": 0.5256578390654248
         }
       ]
@@ -109,18 +109,18 @@
     "incumbent": {
       "weight": 0.2,
       "weeks": 64,
-      "meanWeeklyMae": 1.7270356748747873,
+      "meanWeeklyMae": 1.7270356563734872,
       "seasons": [
         {
           "season": "2024-25",
           "weeks": 32,
-          "meanWeeklyMae": 1.6389799943407506,
+          "meanWeeklyMae": 1.638979970658262,
           "meanSpearman": 0.521523258762545
         },
         {
           "season": "2025-26",
           "weeks": 32,
-          "meanWeeklyMae": 1.8150913554088237,
+          "meanWeeklyMae": 1.8150913420887123,
           "meanSpearman": 0.4870403495769595
         }
       ]
@@ -128,18 +128,18 @@
     "candidate": {
       "weight": 0.1,
       "weeks": 64,
-      "meanWeeklyMae": 1.7160304061660812,
+      "meanWeeklyMae": 1.7160303865919502,
       "seasons": [
         {
           "season": "2024-25",
           "weeks": 32,
-          "meanWeeklyMae": 1.628537525311281,
+          "meanWeeklyMae": 1.6285375004179097,
           "meanSpearman": 0.5237306929334675
         },
         {
           "season": "2025-26",
           "weeks": 32,
-          "meanWeeklyMae": 1.8035232870208813,
+          "meanWeeklyMae": 1.8035232727659907,
           "meanSpearman": 0.49168735810336417
         }
       ]
@@ -148,9 +148,9 @@
   "promotion": {
     "baseline": {
       "metric_name": "weekly_mae",
-      "point_estimate": 1.7270356748747873,
-      "lower": 1.6682691570472559,
-      "upper": 1.7832700353525022,
+      "point_estimate": 1.7270356563734872,
+      "lower": 1.6682691416316286,
+      "upper": 1.7832700195950266,
       "confidence": 0.9875,
       "resamples": 2000,
       "seed": 17,
@@ -158,9 +158,9 @@
     },
     "candidate": {
       "metric_name": "weekly_mae",
-      "point_estimate": 1.7160304061660812,
-      "lower": 1.6573208299762836,
-      "upper": 1.771363659748117,
+      "point_estimate": 1.7160303865919502,
+      "lower": 1.6573208184920056,
+      "upper": 1.7713636435134335,
       "confidence": 0.9875,
       "resamples": 2000,
       "seed": 17,
@@ -168,9 +168,9 @@
     },
     "paired_improvement": {
       "metric_name": "paired_weekly_mae_improvement",
-      "point_estimate": 0.011005268708706106,
-      "lower": 0.008376915028911606,
-      "upper": 0.013591580227504552,
+      "point_estimate": 0.011005269781537041,
+      "lower": 0.008376915300094486,
+      "upper": 0.013591581855502202,
       "confidence": 0.9875,
       "resamples": 2000,
       "seed": 17,
