@@ -246,6 +246,7 @@ describe("chipCallsFor", () => {
         week(3, { bench: [1, 1, 1, 1], captain: 8 }),
       ],
       PUBLISHED,
+      ["Bench Boost:first", "Free Hit:first", "Wildcard:first"],
     );
 
     // Both weeks score the captain at 6; the first solved week wins the tie.
@@ -510,7 +511,7 @@ describe("chipCallsFor", () => {
         week(3, { bench: [4, 3, 2, 5], captain: 7 }),
       ],
       PUBLISHED,
-      ["Bench Boost:first"],
+      ["Bench Boost:first", "Free Hit:first", "Wildcard:first"],
     );
 
     expect(calls.map((call) => call.chip)).not.toContain("Bench Boost");

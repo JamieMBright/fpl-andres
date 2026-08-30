@@ -8,6 +8,7 @@ import latestHandler from "../../../../api/recommendations/latest";
 import marketsHandler from "../../../../api/recommendations/markets";
 import metaHandler from "../../../../api/recommendations/meta";
 import xstartHandler from "../../../../api/recommendations/xstart";
+import deadlinesData from "../data/deadlines.json";
 
 const SOURCE = readFileSync(
   resolve(__dirname, "../../../../api/_lib/recommendations.ts"),
@@ -154,27 +155,68 @@ describe("recommendation API deployment", () => {
   it("does not serve settled GW1 prices as GW2 market evidence", () => {
     const markets = responseBody(marketsHandler, "203.0.113.41") as {
       status: string;
-      reason: string;
+      reason: string | null;
       event: number;
-      fixtureOdds: { fixtures: unknown[] };
-      playerOdds: { fixtures: unknown[]; players: unknown[] };
+      fixtureOdds: { fixtures: { kickoff: unknown }[] };
+      playerOdds: {
+        fixtures: { kickoff: unknown }[];
+        players: { kickoff: unknown }[];
+      };
     };
-    expect(markets).toMatchObject({
-      status: "stale",
-      reason: "post-fixture",
-      event: 2,
-    });
-    expect(markets.fixtureOdds.fixtures).toEqual([]);
-    expect(markets.playerOdds.fixtures.length).toBeGreaterThan(0);
-    expect(markets.playerOdds.players).toEqual([]);
+    const upcoming = [...deadlinesData.deadlines]
+      .filter((row) => !row.finished)
+      .sort(
+        (left, right) => Date.parse(left.deadline) - Date.parse(right.deadline),
+      );
+    const current = upcoming[0];
+    const following = upcoming.find(
+      (row) => current !== undefined && row.event > current.event,
+    );
+    expect(markets.event).toBe(current?.event ?? null);
+    if (markets.status === "ready") {
+      expect(markets.reason).toBeNull();
+      expect(markets.fixtureOdds.fixtures.length).toBeGreaterThan(0);
+    } else {
+      expect(markets).toMatchObject({
+        status: "stale",
+        reason: "post-fixture",
+      });
+      expect(markets.fixtureOdds.fixtures).toEqual([]);
+    }
+
+    const inCurrentWindow = (kickoff: unknown) => {
+      if (typeof kickoff !== "string" || current === undefined) return false;
+      const instant = Date.parse(kickoff);
+      return (
+        instant > Date.parse(current.deadline) &&
+        (following === undefined || instant < Date.parse(following.deadline))
+      );
+    };
+    expect(
+      markets.fixtureOdds.fixtures.every((fixture) =>
+        inCurrentWindow(fixture.kickoff),
+      ),
+    ).toBe(true);
+    expect(
+      markets.playerOdds.fixtures.every((fixture) =>
+        inCurrentWindow(fixture.kickoff),
+      ),
+    ).toBe(true);
+    expect(
+      markets.playerOdds.players.every((player) =>
+        inCurrentWindow(player.kickoff),
+      ),
+    ).toBe(true);
 
     const xstart = responseBody(xstartHandler, "203.0.113.42") as {
       teams: { players: { evidence: string }[] }[];
     };
-    expect(
-      xstart.teams
-        .flatMap((team) => team.players)
-        .some((player) => player.evidence === "market"),
-    ).toBe(false);
+    if (markets.playerOdds.players.length === 0) {
+      expect(
+        xstart.teams
+          .flatMap((team) => team.players)
+          .some((player) => player.evidence === "market"),
+      ).toBe(false);
+    }
   });
 });
