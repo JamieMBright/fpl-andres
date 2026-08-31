@@ -58,8 +58,15 @@ from fpl_andres.planning.season_plan import (
 )
 from fpl_andres.positions import Position, is_captain_eligible
 from fpl_andres.rules import RulesSnapshot
+from fpl_andres.season_position import plannable_events
 from fpl_andres.simulation.squad import Candidate as SquadCandidate
 from fpl_andres.simulation.squad import SquadRules, validate_squad
+
+
+def _now() -> datetime:
+    """Read as one call so a test can pin the season's position."""
+    return datetime.now(UTC)
+
 
 SQUAD_RULES = SquadRules(budget_tenths=1000, club_limit=3, position_counts={1: 2, 2: 5, 3: 5, 4: 3})
 
@@ -1218,9 +1225,9 @@ def main(argv: Sequence[str] | None = None) -> int:
         if int(team["code"]) in strength_by_code
     }
 
-    events = {int(event["id"]): event for event in bootstrap["events"] if not event.get("finished")}
+    events = plannable_events(bootstrap["events"], _now())
     if not events:
-        print("every gameweek is finished; nothing to plan", file=sys.stderr)
+        print("every gameweek deadline has passed; nothing to plan", file=sys.stderr)
         return 1
 
     raw_fixtures = _get(FIXTURES)
@@ -1312,10 +1319,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     # The same week priced at each player's best match rather than his average.
     # A chip is played for the upside, so this is what it is judged on.
     ceiling_by: dict[tuple[int, int], float] = {}
-    # Use the first deadline, not the current time. Validation requires data to
-    # be available before all prediction cutoffs. For a season plan covering all
-    # gameweeks, that means using the first deadline to pass the constraint.
-    now = cutoffs[ordered_events[0]]
+    # Every event planned here still has its deadline ahead, so publishing time
+    # is genuinely before every cutoff the validation compares it against.
+    now = _now()
     for event in ordered_events:
         weights: list[float] = []
         for candidate in pool:

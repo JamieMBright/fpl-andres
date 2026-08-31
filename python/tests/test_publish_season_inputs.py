@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import json
 import math
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 from unittest.mock import patch
@@ -39,7 +40,6 @@ BOOTSTRAP: dict[str, Any] = {
     "events": [
         {"id": 1, "deadline_time": "2026-08-21T17:30:00Z", "finished": False},
         {"id": 2, "deadline_time": "2026-08-28T17:30:00Z", "finished": False},
-        {"id": 3, "deadline_time": "2026-09-04T17:30:00Z", "finished": True},
     ],
     "elements": [],
 }
@@ -66,6 +66,12 @@ FIXTURES: list[dict[str, Any]] = [
     {"id": 3, "event": 2, "team_h": 1, "team_a": 2, "kickoff_time": "2026-08-29T16:30:00Z"},
     {"id": 4, "event": None, "team_h": 1, "team_a": 2, "kickoff_time": None},
 ]
+
+# Before the first deadline above, so both gameweeks are still plannable. Pinned
+# rather than read from the clock: the publisher now selects gameweeks by
+# deadline, and a fixture dated in the past would empty the horizon the day
+# these dates went by.
+PINNED_NOW = datetime(2026, 8, 20, 12, 0, tzinfo=UTC)
 
 PROJECTIONS: dict[str, Any] = {
     "season": "2025-26",
@@ -128,8 +134,12 @@ def _run(
     odds: dict[str, Any] | None = None,
     fixture_odds: dict[str, Any] | None = None,
     understat: dict[str, Any] | None = None,
+    events: list[dict[str, Any]] | None = None,
+    now: datetime = PINNED_NOW,
 ) -> dict[str, Any]:
     bootstrap = {**BOOTSTRAP, "elements": elements}
+    if events is not None:
+        bootstrap["events"] = events
     projections = tmp_path / "projections.json"
     projections.write_text(json.dumps(PROJECTIONS), encoding="utf-8")
     opening = tmp_path / "opening-squad.json"
@@ -158,7 +168,10 @@ def _run(
     def fake_get(url: str) -> Any:
         return bootstrap if "bootstrap" in url else FIXTURES
 
-    with patch.object(publish_season_inputs, "_get", fake_get):
+    with (
+        patch.object(publish_season_inputs, "_get", fake_get),
+        patch.object(publish_season_inputs, "_now", lambda: now),
+    ):
         arguments = [
             "--output",
             str(output),
@@ -181,15 +194,40 @@ def _run(
     return json.loads(output.read_text(encoding="utf-8"))
 
 
-def test_only_unfinished_gameweeks_are_published(tmp_path: Path) -> None:
+def test_only_gameweeks_still_open_are_published(tmp_path: Path) -> None:
     payload = _run(tmp_path, [_element()])
 
-    # Gameweek 3 is finished; there is nothing left to plan for it.
     assert payload["events"] == [1, 2]
     assert payload["deadlines"] == [
         "2026-08-21T17:30:00Z",
         "2026-08-28T17:30:00Z",
     ]
+
+
+def test_a_gameweek_whose_deadline_has_passed_is_not_published(tmp_path: Path) -> None:
+    """The horizon starts at the next gameweek a manager can act on.
+
+    FPL only sets `finished` once the bonus for every match is confirmed, hours
+    after the last whistle and days after the deadline. Selecting on that flag
+    had the site planning transfers into a gameweek that had already been
+    played, because the flag was still false.
+    """
+    events = [
+        # Played out, and still not flagged finished.
+        {"id": 1, "deadline_time": "2026-08-21T17:30:00Z", "finished": False},
+        {"id": 2, "deadline_time": "2026-08-28T17:30:00Z", "finished": False},
+        {"id": 3, "deadline_time": "2026-09-04T17:30:00Z", "finished": False},
+    ]
+
+    payload = _run(
+        tmp_path,
+        [_element()],
+        events=events,
+        now=datetime(2026, 8, 31, 21, 0, tzinfo=UTC),
+    )
+
+    assert payload["events"] == [3]
+    assert payload["deadlines"] == ["2026-09-04T17:30:00Z"]
 
 
 def _odds(**overrides: Any) -> dict[str, Any]:
@@ -660,6 +698,7 @@ class TestTheMarketPricingAFixture:
 
         with (
             patch.object(publish_season_inputs, "_get", fake_get),
+            patch.object(publish_season_inputs, "_now", lambda: PINNED_NOW),
             pytest.raises(ValueError, match=r"publishes no .*expectedGoals"),
         ):
             publish_season_inputs.main(
@@ -894,7 +933,10 @@ def test_a_season_with_nothing_left_to_play_refuses(tmp_path: Path) -> None:
     def fake_get(url: str) -> Any:
         return finished if "bootstrap" in url else FIXTURES
 
-    with patch.object(publish_season_inputs, "_get", fake_get):
+    with (
+        patch.object(publish_season_inputs, "_get", fake_get),
+        patch.object(publish_season_inputs, "_now", lambda: datetime(2026, 8, 22, tzinfo=UTC)),
+    ):
         code = publish_season_inputs.main(
             [
                 "--output",
@@ -986,6 +1028,7 @@ def test_the_opening_squad_survives_the_trim(tmp_path: Path) -> None:
 
     with (
         patch.object(publish_season_inputs, "_get", fake_get),
+        patch.object(publish_season_inputs, "_now", lambda: PINNED_NOW),
         patch.object(publish_season_inputs, "POOL_PER_POSITION", 1),
     ):
         assert (
@@ -1018,6 +1061,7 @@ def test_an_opening_squad_player_the_game_no_longer_lists_is_refused(tmp_path: P
 
     with (
         patch.object(publish_season_inputs, "_get", fake_get),
+        patch.object(publish_season_inputs, "_now", lambda: PINNED_NOW),
         pytest.raises(ValueError, match="missing from the solver pool"),
     ):
         publish_season_inputs.main(

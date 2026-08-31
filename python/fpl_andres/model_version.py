@@ -29,6 +29,22 @@ from __future__ import annotations
 
 __all__ = ["MODEL_VERSION"]
 
+#: 8.16 plans from the deadline instead of from FPL's `finished` flag. That
+#: flag is set only once the bonus for every match in a round is confirmed,
+#: hours after the last whistle and days after the deadline that locked the
+#: squad, so the publishers kept solving for a gameweek nobody could act on any
+#: more: on 31 August the site was still planning gameweek 2, played out over
+#: the previous four days, while gameweek 3 was the one taking transfers. The
+#: projected horizon now starts at the first gameweek whose deadline is still
+#: ahead. `finished` keeps its own job, which is deciding what the corpus may
+#: learn from, and a settled round still waits for confirmed bonus.
+#:
+#: Because every projected event is now genuinely in the future, `generatedAt`
+#: and `dataAvailableAt` go back to the real publishing instant rather than
+#: being dated forward to the first deadline to satisfy the causality check.
+#: Minor: the horizon shifts by a gameweek and every number on it moves with
+#: it, while nothing changes about what a projected point means.
+#:
 #: 8.15 lets an in-progress gameweek reach the xStart posterior and stops a
 #: carried record from outvoting it. A live snapshot now counts once any player
 #: in it has minutes or starts, rather than only once `roundComplete` is set, so
@@ -435,4 +451,4 @@ __all__ = ["MODEL_VERSION"]
 #: projection and resampled, so a gap that does not clear zero is reported as
 #: not clearing zero. No projection changed; what changed is what may be
 #: claimed from it.
-MODEL_VERSION = "8.15"
+MODEL_VERSION = "8.16"

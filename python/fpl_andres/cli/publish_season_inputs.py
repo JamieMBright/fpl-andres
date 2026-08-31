@@ -77,10 +77,18 @@ from fpl_andres.planning.fixture_routes import (
 from fpl_andres.planning.opening import PLAYABLE_START_RATE
 from fpl_andres.planning.transfers import TransferPlanSettings
 from fpl_andres.positions import Position
+from fpl_andres.season_position import plannable_events
 
 BOOTSTRAP = "https://fantasy.premierleague.com/api/bootstrap-static/"
 FIXTURES = "https://fantasy.premierleague.com/api/fixtures/"
 USER_AGENT = "fpl-andres/0.5 (+https://github.com/JamieMBright/fpl-andres)"
+
+
+def _now() -> datetime:
+    """Read as one call so a test can pin the season's position."""
+    return datetime.now(UTC)
+
+
 PROJECTIONS = Path("apps/web/src/data/projections.json")
 OPENING_SQUAD = Path("apps/web/src/data/opening-squad.json")
 PLAYER_ODDS = Path("apps/web/src/data/player-odds.json")
@@ -1691,9 +1699,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     # every promoted side is a default standing in for a source that exists.
     strength = _complete_strength(clubs, measured_strength)
 
-    events = {int(event["id"]): event for event in bootstrap["events"] if not event.get("finished")}
+    events = plannable_events(bootstrap["events"], _now())
     if not events:
-        print("every gameweek is finished; nothing to solve", file=sys.stderr)
+        print("every gameweek deadline has passed; nothing to solve", file=sys.stderr)
         return 1
     ordered = sorted(events)
 
@@ -1794,16 +1802,14 @@ def main(argv: Sequence[str] | None = None) -> int:
         default_level="observed",
     )
 
-    # generatedAt uses the first deadline, not the current time. The season artifact
-    # covers future gameweeks, and solver validation requires data to be available
-    # before any prediction cutoff. Setting it to when the earliest deadline passed
-    # ensures future solves can use this data without violating the causality check.
-    first_deadline = events[ordered[0]]["deadline_time"]
-    first_deadline_str = str(first_deadline).replace("+00:00", "Z")
+    # Every event here still has its deadline ahead, so the moment of publishing
+    # is genuinely before every prediction cutoff and the causality check holds
+    # without dating the artifact forward.
+    generated_at = _now().isoformat().replace("+00:00", "Z")
 
     payload = {
         "schemaVersion": SCHEMA_VERSION,
-        "generatedAt": first_deadline_str,
+        "generatedAt": generated_at,
         "recordSeason": str(artifact["season"]),
         "events": ordered,
         "deadlines": [
@@ -1955,7 +1961,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                 for position, count in sorted(SQUAD_SHAPE.items())
             ],
             "sourceReference": args.rules_reference,
-            "dataAvailableAt": first_deadline_str,
+            "dataAvailableAt": generated_at,
             "playableStartRate": PLAYABLE_START_RATE,
             "transferMarginPoints": TransferPlanSettings().margin,
         },
