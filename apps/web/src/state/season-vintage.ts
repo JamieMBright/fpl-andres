@@ -16,6 +16,7 @@ export interface VintageEvent {
   id: number;
   finished?: boolean | undefined;
   deadline_time?: string | undefined;
+  average_entry_score?: number | null | undefined;
 }
 
 export type VintageState = "previous_season" | "live_season" | "unavailable";
@@ -62,7 +63,14 @@ export function readSeasonVintage(
     return unavailable(0);
   }
 
-  const completedGameweeks = ordered.filter((event) => event.finished).length;
+  // FPL publishes the average score of a gameweek as soon as it is played, and
+  // leaves `finished` false for hours afterwards while it confirms bonus. The
+  // page counted the flag, so a gameweek that had finished on the pitch still
+  // read as one fewer until the bonus landed. The average is nought before a
+  // ball is kicked, which also keeps the wiped-column window out of the count.
+  const completedGameweeks = ordered.filter(
+    (event) => (event.average_entry_score ?? 0) > 0,
+  ).length;
 
   if (completedGameweeks > 0) {
     return {

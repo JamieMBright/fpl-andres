@@ -81,6 +81,7 @@ const analysisBootstrapSchema = z.object({
         id: z.number().int().min(1).max(38),
         finished: z.boolean().optional(),
         deadline_time: z.string().optional(),
+        average_entry_score: z.number().nullable().optional(),
       })
       .loose(),
   ),

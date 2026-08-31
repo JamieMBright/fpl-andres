@@ -2,15 +2,27 @@ import { describe, expect, it } from "vitest";
 
 import { readSeasonVintage } from "./season-vintage";
 
-function events(finished: number, total = 38) {
+function events(played: number, total = 38) {
   return Array.from({ length: total }, (_, index) => ({
     id: index + 1,
-    finished: index < finished,
+    // Deliberately behind `played`: FPL confirms bonus hours after the last
+    // whistle, so a played gameweek is routinely not yet flagged finished.
+    finished: index < played - 1,
     deadline_time: `2026-08-${String(21 + index).padStart(2, "0")}T17:30:00Z`,
+    average_entry_score: index < played ? 55 : 0,
   }));
 }
 
 describe("readSeasonVintage", () => {
+  it("counts a gameweek that has been played but not yet settled", () => {
+    // The case the page got wrong: every gameweek-2 match finished, FPL still
+    // confirming bonus, and the analysis tab reading "1 gameweeks in".
+    const vintage = readSeasonVintage(events(2), 900);
+
+    expect(vintage.state).toBe("live_season");
+    expect(vintage.completedGameweeks).toBe(2);
+  });
+
   it("reads a full pre-season pool as last season's record", () => {
     const vintage = readSeasonVintage(events(0), 3420);
 
@@ -19,7 +31,7 @@ describe("readSeasonVintage", () => {
     expect(vintage.completedGameweeks).toBe(0);
   });
 
-  it("switches to the live season once a gameweek has finished", () => {
+  it("switches to the live season once a gameweek has been played", () => {
     const vintage = readSeasonVintage(events(1), 90);
 
     expect(vintage.state).toBe("live_season");
