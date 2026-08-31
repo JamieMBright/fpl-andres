@@ -8,6 +8,7 @@ import pytest
 
 from fpl_andres.cli.capture_cohort_picks import (
     _capture_source,
+    _entry_ids,
     _parse_picks,
     _write,
     build_parser,
@@ -34,6 +35,22 @@ def _membership(path: Path, *, event: int = 1) -> None:
         pinned_at=DEADLINE + timedelta(days=5),
     )
     write_membership(membership, path)
+
+
+def test_a_manager_catalogued_twice_is_asked_once(tmp_path: Path) -> None:
+    """The catalogue is an append-only ledger, so a re-sweep can list a manager
+    again. Asking him twice put two copies of his squad into the portfolio,
+    which `reconcile` rightly refuses -- and that refusal cost the gameweek 2
+    capture entirely.
+    """
+    catalogue = tmp_path / "managers.jsonl"
+    catalogue.write_text(
+        "\n".join(json.dumps({"entryId": entry_id}) for entry_id in (7, 11, 7, 3, 11, 7)) + "\n",
+        encoding="utf-8",
+    )
+
+    # Order is kept so the capture walks the catalogue as it was written.
+    assert _entry_ids(catalogue) == [7, 11, 3]
 
 
 def test_fixed_membership_is_the_capture_source_and_revision(tmp_path: Path) -> None:

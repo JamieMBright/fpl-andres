@@ -147,11 +147,18 @@ async def _fetch(
 
 
 def _entry_ids(path: Path) -> list[int]:
-    return [
-        int(parse_json(line, source=f"{path}:{number}")["entryId"])
-        for number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1)
-        if line.strip()
-    ]
+    """The catalogued managers, each asked once.
+
+    The catalogue is append-only, so a re-sweep can list the same manager again.
+    Asking him twice puts two copies of one squad into the portfolio, which
+    `reconcile` refuses outright -- that is what cost the gameweek 2 capture.
+    """
+    seen: dict[int, None] = {}
+    for number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
+        if not line.strip():
+            continue
+        seen.setdefault(int(parse_json(line, source=f"{path}:{number}")["entryId"]))
+    return list(seen)
 
 
 def _cohort_revision() -> str:
