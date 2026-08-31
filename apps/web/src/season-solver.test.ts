@@ -446,18 +446,33 @@ describe("a committed Free Hit", () => {
   it(
     "applies the broad legal rental selected by chip planning and then restores",
     () => {
-      const start = { ...openingStart(), fromEvent: 2 };
-      const target = rebuildSquad(1, 1000, 1);
+      // The first gameweek the published season still plans for. Naming 2
+      // outright expired the moment the horizon moved past it.
+      const start = {
+        ...openingStart(),
+        fromEvent: SEASON_EVENTS[0] as number,
+      };
+      // Rebuilt against what this squad is actually worth. A flat 100.0m
+      // happened to be affordable for the gameweek this test used to name; it
+      // is not a budget the opening fifteen has at every gameweek.
+      const budget =
+        start.squad.reduce(
+          (total, player) => total + player.sellingPriceTenths,
+          0,
+        ) + start.bankTenths;
+      const target = rebuildSquad(SEASON_EVENTS[0] as number, budget, 1);
       expect(target).not.toBeNull();
       const targetIds = target?.squad.map((player) => player.id) ?? [];
       const solved = [
         ...solveSeason({
           ...start,
-          freeHitPlans: [{ event: 2, squadElementIds: targetIds }],
+          freeHitPlans: [
+            { event: SEASON_EVENTS[0] as number, squadElementIds: targetIds },
+          ],
         }),
       ];
-      const hit = solved.find((week) => week.event === 2);
-      const following = solved.find((week) => week.event === 3);
+      const hit = solved.find((week) => week.event === SEASON_EVENTS[0]);
+      const following = solved.find((week) => week.event === SEASON_EVENTS[1]);
       const startingIds = new Set(
         start.squad.map((player) => player.elementId),
       );
@@ -508,14 +523,14 @@ describe("a committed Free Hit", () => {
       const solved = [
         ...solveSeason({
           ...start,
-          fromEvent: 2,
+          fromEvent: SEASON_EVENTS[0] as number,
           availableFreeTransfers: 5,
-          freeHitAtEvent: 2,
+          freeHitAtEvent: SEASON_EVENTS[0] as number,
         }),
       ];
       const hit = solved.find((week) => week.chip === "Free Hit");
       expect(hit).toBeDefined();
-      const following = solved.find((week) => week.event === 3);
+      const following = solved.find((week) => week.event === SEASON_EVENTS[1]);
 
       expect(hit?.revertsTo?.map((player) => player.code).sort()).toEqual(
         start.squad

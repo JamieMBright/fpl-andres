@@ -29,6 +29,15 @@ import {
  * to the two it cannot.
  */
 
+// Free Hit and Wildcard are priced by rebuilding, which looks the week up in the
+// published season. Naming gameweek 2 outright worked only until the horizon
+// moved past it, at which point the rebuild had nothing to price and the chip
+// came back unplayed. These follow the artifact instead.
+const [PLANNED, NEXT_PLANNED] = SEASON_EVENTS as readonly number[] as [
+  number,
+  number,
+];
+
 function player(code: number): SolverPlayer {
   return {
     id: code,
@@ -265,8 +274,8 @@ describe("chipCallsFor", () => {
   it("solves the two rebuild chips instead of repeating the published week", () => {
     const calls = chipCallsFor(
       [
-        week(2, { bench: [1], captain: 7 }),
-        week(3, { bench: [1], captain: 7 }),
+        week(PLANNED, { bench: [1], captain: 7 }),
+        week(NEXT_PLANNED, { bench: [1], captain: 7 }),
       ],
       PUBLISHED,
     );
@@ -312,8 +321,8 @@ describe("chipCallsFor", () => {
   it("never advises a free hit below ten changes", () => {
     const calls = chipCallsFor(
       [
-        week(2, { bench: [1], captain: 7 }),
-        week(3, { bench: [1], captain: 7 }),
+        week(PLANNED, { bench: [1], captain: 7 }),
+        week(NEXT_PLANNED, { bench: [1], captain: 7 }),
       ],
       PUBLISHED,
     );
@@ -330,7 +339,7 @@ describe("chipCallsFor", () => {
   });
 
   it("measures Free Hit turnover before the ordinary transfer it replaces", () => {
-    const planned = week(2, { bench: [1], captain: 7 });
+    const planned = week(PLANNED, { bench: [1], captain: 7 });
     planned.transfersIn = [player(7)];
     planned.transfersOut = [player(999)];
 
