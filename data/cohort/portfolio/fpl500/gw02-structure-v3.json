@@ -1,0 +1,335 @@
+{
+  "schemaVersion": 3,
+  "event": 2,
+  "capturedAt": "2026-08-31T23:10:48.560675Z",
+  "basis": "ranked-500",
+  "cohortRevision": "sha256:2321eb3944af15b19abb231d001a651b45ef1e15a4f734e1560acfe93ad50615",
+  "attempted": 500,
+  "responded": 500,
+  "coverage": 1.0,
+  "keeperPairings": [
+    {
+      "starterElementId": 109,
+      "benchElementId": 496,
+      "count": 268,
+      "share": 0.53707
+    },
+    {
+      "starterElementId": 109,
+      "benchElementId": 529,
+      "count": 30,
+      "share": 0.06012
+    },
+    {
+      "starterElementId": 1,
+      "benchElementId": 109,
+      "count": 27,
+      "share": 0.05411
+    },
+    {
+      "starterElementId": 109,
+      "benchElementId": 412,
+      "count": 26,
+      "share": 0.0521
+    },
+    {
+      "starterElementId": 496,
+      "benchElementId": 497,
+      "count": 20,
+      "share": 0.04008
+    },
+    {
+      "starterElementId": 1,
+      "benchElementId": 564,
+      "count": 16,
+      "share": 0.03206
+    },
+    {
+      "starterElementId": 1,
+      "benchElementId": 496,
+      "count": 14,
+      "share": 0.02806
+    },
+    {
+      "starterElementId": 110,
+      "benchElementId": 496,
+      "count": 13,
+      "share": 0.02605
+    },
+    {
+      "starterElementId": 412,
+      "benchElementId": 496,
+      "count": 11,
+      "share": 0.02204
+    },
+    {
+      "starterElementId": 1,
+      "benchElementId": 110,
+      "count": 10,
+      "share": 0.02004
+    },
+    {
+      "starterElementId": 110,
+      "benchElementId": 529,
+      "count": 5,
+      "share": 0.01002
+    },
+    {
+      "starterElementId": 109,
+      "benchElementId": 111,
+      "count": 4,
+      "share": 0.00802
+    },
+    {
+      "starterElementId": 110,
+      "benchElementId": 412,
+      "count": 4,
+      "share": 0.00802
+    },
+    {
+      "starterElementId": 250,
+      "benchElementId": 496,
+      "count": 4,
+      "share": 0.00802
+    },
+    {
+      "starterElementId": 412,
+      "benchElementId": 497,
+      "count": 4,
+      "share": 0.00802
+    },
+    {
+      "starterElementId": 301,
+      "benchElementId": 496,
+      "count": 3,
+      "share": 0.00601
+    },
+    {
+      "starterElementId": 412,
+      "benchElementId": 564,
+      "count": 3,
+      "share": 0.00601
+    },
+    {
+      "starterElementId": 529,
+      "benchElementId": 564,
+      "count": 3,
+      "share": 0.00601
+    },
+    {
+      "starterElementId": 1,
+      "benchElementId": 57,
+      "count": 2,
+      "share": 0.00401
+    },
+    {
+      "starterElementId": 1,
+      "benchElementId": 111,
+      "count": 2,
+      "share": 0.00401
+    },
+    {
+      "starterElementId": 1,
+      "benchElementId": 301,
+      "count": 2,
+      "share": 0.00401
+    },
+    {
+      "starterElementId": 57,
+      "benchElementId": 412,
+      "count": 2,
+      "share": 0.00401
+    },
+    {
+      "starterElementId": 109,
+      "benchElementId": 110,
+      "count": 2,
+      "share": 0.00401
+    },
+    {
+      "starterElementId": 109,
+      "benchElementId": 252,
+      "count": 2,
+      "share": 0.00401
+    },
+    {
+      "starterElementId": 302,
+      "benchElementId": 496,
+      "count": 2,
+      "share": 0.00401
+    },
+    {
+      "starterElementId": 1,
+      "benchElementId": 59,
+      "count": 1,
+      "share": 0.002
+    },
+    {
+      "starterElementId": 1,
+      "benchElementId": 171,
+      "count": 1,
+      "share": 0.002
+    },
+    {
+      "starterElementId": 1,
+      "benchElementId": 251,
+      "count": 1,
+      "share": 0.002
+    },
+    {
+      "starterElementId": 1,
+      "benchElementId": 384,
+      "count": 1,
+      "share": 0.002
+    },
+    {
+      "starterElementId": 1,
+      "benchElementId": 412,
+      "count": 1,
+      "share": 0.002
+    },
+    {
+      "starterElementId": 1,
+      "benchElementId": 497,
+      "count": 1,
+      "share": 0.002
+    },
+    {
+      "starterElementId": 28,
+      "benchElementId": 57,
+      "count": 1,
+      "share": 0.002
+    },
+    {
+      "starterElementId": 57,
+      "benchElementId": 496,
+      "count": 1,
+      "share": 0.002
+    },
+    {
+      "starterElementId": 58,
+      "benchElementId": 496,
+      "count": 1,
+      "share": 0.002
+    },
+    {
+      "starterElementId": 82,
+      "benchElementId": 496,
+      "count": 1,
+      "share": 0.002
+    },
+    {
+      "starterElementId": 83,
+      "benchElementId": 109,
+      "count": 1,
+      "share": 0.002
+    },
+    {
+      "starterElementId": 109,
+      "benchElementId": 301,
+      "count": 1,
+      "share": 0.002
+    },
+    {
+      "starterElementId": 109,
+      "benchElementId": 497,
+      "count": 1,
+      "share": 0.002
+    },
+    {
+      "starterElementId": 111,
+      "benchElementId": 350,
+      "count": 1,
+      "share": 0.002
+    },
+    {
+      "starterElementId": 140,
+      "benchElementId": 412,
+      "count": 1,
+      "share": 0.002
+    },
+    {
+      "starterElementId": 140,
+      "benchElementId": 496,
+      "count": 1,
+      "share": 0.002
+    },
+    {
+      "starterElementId": 171,
+      "benchElementId": 496,
+      "count": 1,
+      "share": 0.002
+    },
+    {
+      "starterElementId": 467,
+      "benchElementId": 529,
+      "count": 1,
+      "share": 0.002
+    },
+    {
+      "starterElementId": 496,
+      "benchElementId": 529,
+      "count": 1,
+      "share": 0.002
+    },
+    {
+      "starterElementId": 496,
+      "benchElementId": 564,
+      "count": 1,
+      "share": 0.002
+    }
+  ],
+  "commonStartingXi": {
+    "method": "modal-formation-most-started",
+    "formation": [3, 4, 3],
+    "elementIds": [496, 8, 418, 10, 426, 427, 557, 368, 165, 346, 411]
+  },
+  "positionalSpend": {
+    "GKP": {
+      "mean": 92.9058,
+      "median": 90.0,
+      "p10": 90.0,
+      "p90": 105.0,
+      "minimum": 85,
+      "maximum": 115
+    },
+    "DEF": {
+      "mean": 254.4289,
+      "median": 247.0,
+      "p10": 236.0,
+      "p90": 285.0,
+      "minimum": 225,
+      "maximum": 301
+    },
+    "MID": {
+      "mean": 389.7395,
+      "median": 385.0,
+      "p10": 368.6,
+      "p90": 421.0,
+      "minimum": 315,
+      "maximum": 456
+    },
+    "FWD": {
+      "mean": 264.3467,
+      "median": 291.0,
+      "p10": 220.0,
+      "p90": 291.0,
+      "minimum": 181,
+      "maximum": 321
+    }
+  },
+  "popularitySquad": {
+    "method": "legal-aggregate-popularity",
+    "squad": [
+      109, 496, 8, 418, 10, 329, 334, 426, 368, 237, 557, 427, 165, 346, 379
+    ],
+    "starters": [496, 8, 418, 10, 426, 427, 165, 346, 557, 368, 379],
+    "bench": [109, 329, 334, 237],
+    "formation": [3, 4, 3],
+    "spentTenths": 967,
+    "xiSpentTenths": 767,
+    "bankTenths": 33,
+    "meanOwnership": 0.6163,
+    "meanStartedShare": 0.68264
+  }
+}
