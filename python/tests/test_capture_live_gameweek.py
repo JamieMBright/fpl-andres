@@ -47,6 +47,7 @@ def test_snapshot_preserves_the_complete_fpl_payload_and_hash() -> None:
         season="2026-27",
         event=1,
         captured_at=datetime(2026, 8, 26, 12, tzinfo=UTC),
+        round_complete=True,
     )
 
     assert snapshot["schemaVersion"] == capture_live_gameweek.SCHEMA_VERSION
@@ -57,7 +58,105 @@ def test_snapshot_preserves_the_complete_fpl_payload_and_hash() -> None:
     assert snapshot["elements"][0]["stats"]["total_points"] == 6
 
 
-def test_capture_refuses_an_unfinished_round_or_existing_output(
+def _fixtures(monkeypatch, rows) -> None:
+    monkeypatch.setattr(capture_live_gameweek, "_fetch_fixtures", lambda _event: rows)
+
+
+def _live(monkeypatch, raw: bytes) -> None:
+    monkeypatch.setattr(capture_live_gameweek, "_get_bytes", lambda _url: raw)
+
+
+def test_capture_writes_the_round_being_played_once_a_match_kicks_off(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    """A gameweek can run for four days; the site should not wait for day four."""
+    output = tmp_path / "gw02.json"
+    _fixtures(monkeypatch, [{"finished": False, "started": True}, {"finished": False}])
+    _live(monkeypatch, _raw_live())
+
+    assert capture_live_gameweek.capture(2, "2026-27", output) is True
+
+    snapshot = json.loads(output.read_text(encoding="utf-8"))
+    assert snapshot["roundComplete"] is False
+    assert snapshot["elements"][0]["stats"]["total_points"] == 6
+
+
+def test_capture_waits_for_the_first_kickoff(tmp_path: Path, monkeypatch) -> None:
+    """Before any match starts there is nothing measured to publish."""
+    output = tmp_path / "gw02.json"
+    _fixtures(monkeypatch, [{"finished": False, "started": False}])
+    _live(monkeypatch, _raw_live())
+
+    assert capture_live_gameweek.capture(2, "2026-27", output) is False
+    assert not output.exists()
+
+
+def test_capture_replaces_the_round_being_played_as_matches_land(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    output = tmp_path / "gw02.json"
+    _fixtures(monkeypatch, [{"finished": False, "started": True}])
+    _live(monkeypatch, _raw_live())
+    assert capture_live_gameweek.capture(2, "2026-27", output) is True
+
+    moved = _raw_live().replace(b'"total_points":6', b'"total_points":9')
+    _live(monkeypatch, moved)
+
+    assert capture_live_gameweek.capture(2, "2026-27", output) is True
+    snapshot = json.loads(output.read_text(encoding="utf-8"))
+    assert snapshot["elements"][0]["stats"]["total_points"] == 9
+    assert snapshot["roundComplete"] is False
+
+
+def test_capture_leaves_the_snapshot_alone_when_the_round_has_not_moved(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    """Two-hourly polling must not commit an identical round every two hours."""
+    output = tmp_path / "gw02.json"
+    _fixtures(monkeypatch, [{"finished": False, "started": True}])
+    _live(monkeypatch, _raw_live())
+    assert capture_live_gameweek.capture(2, "2026-27", output) is True
+    before = output.read_text(encoding="utf-8")
+
+    assert capture_live_gameweek.capture(2, "2026-27", output) is False
+    assert output.read_text(encoding="utf-8") == before
+
+
+def test_capture_freezes_the_round_once_every_match_is_confirmed(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    output = tmp_path / "gw02.json"
+    _fixtures(monkeypatch, [{"finished": False, "started": True}])
+    _live(monkeypatch, _raw_live())
+    assert capture_live_gameweek.capture(2, "2026-27", output) is True
+
+    settled = _raw_live().replace(b'"bonus":3', b'"bonus":2')
+    _fixtures(monkeypatch, [{"finished": True, "started": True}])
+    _live(monkeypatch, settled)
+
+    assert capture_live_gameweek.capture(2, "2026-27", output) is True
+    assert json.loads(output.read_text(encoding="utf-8"))["roundComplete"] is True
+
+
+def test_capture_never_rewrites_a_settled_snapshot(tmp_path: Path, monkeypatch) -> None:
+    """The settled archive is the immutable evidence every projection rests on."""
+    output = tmp_path / "gw02.json"
+    _fixtures(monkeypatch, [{"finished": True, "started": True}])
+    _live(monkeypatch, _raw_live())
+    assert capture_live_gameweek.capture(2, "2026-27", output) is True
+    before = output.read_text(encoding="utf-8")
+
+    _live(monkeypatch, _raw_live().replace(b'"total_points":6', b'"total_points":99'))
+
+    assert capture_live_gameweek.capture(2, "2026-27", output) is False
+    assert output.read_text(encoding="utf-8") == before
+
+
+def test_capture_refuses_an_unstarted_round_or_an_unreadable_output(
     tmp_path: Path,
     monkeypatch,
 ) -> None:
@@ -72,6 +171,8 @@ def test_capture_refuses_an_unfinished_round_or_existing_output(
     assert capture_live_gameweek.capture(1, "2026-27", output) is False
     assert not output.exists()
 
+    # Bytes that do not parse cannot be shown to be replaceable, so they are
+    # left where they are rather than overwritten on a guess.
     output.write_text("immutable bytes", encoding="utf-8")
     monkeypatch.setattr(
         capture_live_gameweek,
