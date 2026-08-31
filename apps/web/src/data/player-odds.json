@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "season": "2026-27",
-  "fetchedAt": "2026-08-31T17:17:08.182002+00:00",
+  "fetchedAt": "2026-08-31T21:54:18.183473+00:00",
   "source": "the-odds-api",
   "markets": [
     "player_goal_scorer_anytime",
@@ -28,39 +28,12 @@
     "spentThisRun": 0
   },
   "coverage": {
-    "fixturesListed": 21,
+    "fixturesListed": 20,
     "fixturesVisitedThisRun": 0,
     "fixturesWithQuotes": 0
   },
   "nameMappingGaps": [],
   "fixtures": [
-    {
-      "event_id": "2c49e9d1ef855f62962b915e773f906d",
-      "home_team": "Aston Villa",
-      "away_team": "Arsenal",
-      "home_short": "AVL",
-      "away_short": "ARS",
-      "status": "unvisited",
-      "books": 0,
-      "outcomes": 0,
-      "offered_markets": [],
-      "missing_markets": [
-        "player_goal_scorer_anytime",
-        "player_first_goal_scorer",
-        "player_last_goal_scorer",
-        "player_assists",
-        "player_to_receive_card",
-        "player_to_receive_red_card",
-        "player_shots",
-        "player_shots_on_target"
-      ],
-      "player_rows_parsed": 0,
-      "player_rows_matched": 0,
-      "unmatched_names": [],
-      "error": null,
-      "kickoff": "2026-08-31T19:00:00+00:00",
-      "visited_at": null
-    },
     {
       "event_id": "625c096fabb6047cbeb082dab9affce4",
       "home_team": "Ipswich Town",
