@@ -240,12 +240,18 @@ describe("chipCallsFor", () => {
   });
 
   it("triples the captain in his biggest week", () => {
+    // Free Hit and Wildcard are priced by rebuilding against the real player
+    // artifact, so their gain moves every time that artifact is republished.
+    // One of them outscoring this fixture's captain would take gameweek 2 and
+    // leave the captain unplayed, which says nothing about the tie-break under
+    // test. Spending them keeps the question to the one chip.
     const calls = chipCallsFor(
       [
         week(2, { bench: [1, 1, 1, 1], captain: 7 }),
         week(3, { bench: [1, 1, 1, 1], captain: 8 }),
       ],
       PUBLISHED,
+      ["Free Hit:first", "Wildcard:first", "Bench Boost:first"],
     );
 
     // Both weeks score the captain at 6; the first solved week wins the tie.
@@ -504,13 +510,16 @@ describe("chipCallsFor", () => {
   });
 
   it("still solves the chips he has left", () => {
+    // The two rebuild chips are spent alongside the Bench Boost he has played,
+    // for the same reason as above: their gain comes from the real artifact and
+    // would otherwise decide gameweek 2 on data rather than on this fixture.
     const calls = chipCallsFor(
       [
         week(2, { bench: [1, 1, 1, 1], captain: 7 }),
         week(3, { bench: [4, 3, 2, 5], captain: 7 }),
       ],
       PUBLISHED,
-      ["Bench Boost:first"],
+      ["Bench Boost:first", "Free Hit:first", "Wildcard:first"],
     );
 
     expect(calls.map((call) => call.chip)).not.toContain("Bench Boost");
