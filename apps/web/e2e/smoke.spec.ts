@@ -338,7 +338,9 @@ test("FPL500 headlines and the legal popularity squad fit a phone", async ({
   await expect(page.locator(".fpl500-structure .ceefax-shirt")).toHaveCount(15);
   await expect(page.locator(".fpl500-player-tile")).toHaveCount(11);
   await expect(page.locator(".fpl500-popularity-bench button")).toHaveCount(4);
-  await expect(page.getByText("59 raw")).toBeVisible();
+  // The number belongs to whichever gameweek was captured last, so match the
+  // shape rather than the value: naming it pinned the page to gameweek one.
+  await expect(page.getByText(/\d+ raw/)).toBeVisible();
   await page.getByRole("tab", { name: "Pairings" }).click();
   await expect(
     page

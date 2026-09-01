@@ -88,6 +88,13 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITLEAKS_CONFIG: .gitleaks.toml
+          # The action's own default is 8.24.3, which ignores the top-level
+          # `[[allowlists]]` this config is built on and so reports both
+          # documented false positives as leaks. Measured on this repository:
+          # 8.24.3 reports two, 8.28.0 reports none, against the same config
+          # and the same history. `.gitleaks.toml` says it was verified on
+          # 8.28.0; this is what holds the tool to that.
+          GITLEAKS_VERSION: 8.28.0
 
       - name: Set up Node
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
