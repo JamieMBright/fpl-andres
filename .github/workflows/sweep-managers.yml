@@ -1,8 +1,16 @@
 name: Manager sweep
 
-# The register was swept to id 2,500,001 and stopped. FPL is past thirteen
-# million players, so more than four fifths of the ids have never been looked
-# at, and every manager who registered since is invisible to FPL500.
+# The register sweep is parked. It exists to find historic veterans across the
+# whole thirteen million ids, and that catalogue has served its purpose: the
+# FPL500 is chosen and pinned per gameweek, so extending the register every six
+# hours changes who is eligible for a cohort we have already settled on. It
+# stays wired and can be run by hand with `sweep: true` when the register is
+# worth extending again.
+#
+# What still runs on every schedule is the Overall-league harvest and the
+# ranking built from it, which is this season's live top ten thousand. That is
+# the half that has to keep up, and it is two hundred requests rather than
+# thirteen million.
 #
 # It cannot run in one go: eleven and a half million ids at the rate this
 # sweep holds itself to is the better part of a week, and a job here is capped
@@ -18,6 +26,10 @@ on:
     - cron: "17 */6 * * *"
   workflow_dispatch:
     inputs:
+      sweep:
+        description: Also extend the register (long)
+        type: boolean
+        default: false
       rate:
         description: Requests a second
         default: "25"
@@ -67,6 +79,7 @@ jobs:
 
       - name: Sweep
         id: sweep
+        if: ${{ inputs.sweep == true }}
         timeout-minutes: 330
         run: |
           set +e
@@ -88,10 +101,10 @@ jobs:
           fi
           exit "$status"
 
-      # The ranking is derived from the catalogue this run just extended, so
-      # leaving it to a hand-run makes it stale by construction: the sweep
-      # moved every six hours and FPL500 last moved whenever somebody
-      # remembered. Rebuilding here costs seconds and nothing can drift.
+      # The ranking is derived from the catalogue and from the Overall-league
+      # harvest above, so it runs whether or not the register moved: this
+      # season's top ten thousand changes every gameweek even when the
+      # catalogue does not.
       - name: Rank the catalogue the sweep just extended
         run: bash scripts/republish-fpl500.sh | tee -a "$GITHUB_STEP_SUMMARY"
 
