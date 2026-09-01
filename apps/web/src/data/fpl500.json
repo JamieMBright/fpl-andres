@@ -1,6 +1,6 @@
 {
   "schemaVersion": 3,
-  "generatedAt": "2026-09-01T05:24:38.621837Z",
+  "generatedAt": "2026-09-01T11:10:03.500890Z",
   "catalogueSize": 37432,
   "sweptTo": 10232001,
   "size": 500,
@@ -74,23 +74,28 @@
       "02": [
         {
           "elementId": 426,
-          "share": 0.39755
+          "share": 0.39755,
+          "points": 23
         },
         {
           "elementId": 411,
-          "share": 0.31781
+          "share": 0.31781,
+          "points": 13
         },
         {
           "elementId": 165,
-          "share": 0.0786
+          "share": 0.0786,
+          "points": 9
         },
         {
           "elementId": 154,
-          "share": 0.04069
+          "share": 0.04069,
+          "points": 7
         },
         {
           "elementId": 15,
-          "share": 0.04014
+          "share": 0.04014,
+          "points": 3
         }
       ]
     }
@@ -980,7 +985,8 @@
             "xiSpentTenths": 767,
             "bankTenths": 33,
             "meanOwnership": 0.6163,
-            "meanStartedShare": 0.68264
+            "meanStartedShare": 0.68264,
+            "rawGameweekPoints": 86
           }
         }
       }
@@ -1001,11 +1007,13 @@
       "02": [
         {
           "elementId": 426,
-          "share": 0.84168
+          "share": 0.84168,
+          "points": 23
         },
         {
           "elementId": 411,
-          "share": 0.14429
+          "share": 0.14429,
+          "points": 13
         }
       ]
     },
@@ -1758,7 +1766,7 @@
           "position": "DEF",
           "club": "BHA",
           "teamId": 5,
-          "priceTenths": 46,
+          "priceTenths": 47,
           "lastWeekPoints": 17,
           "pointsSinceFirstCapture": 17,
           "weightedContribution": 0.714
@@ -1902,7 +1910,7 @@
           "position": "GKP",
           "club": "CHE",
           "teamId": 6,
-          "priceTenths": 50,
+          "priceTenths": 49,
           "lastWeekPoints": 2,
           "pointsSinceFirstCapture": 2,
           "weightedContribution": 0.028
@@ -3504,7 +3512,10 @@
           "position": "MID",
           "club": "MUN",
           "teamId": 16,
-          "priceTenths": 120
+          "priceTenths": 120,
+          "lastWeekPoints": 23,
+          "pointsSinceFirstCapture": 25,
+          "weightedContribution": 21.52501
         },
         {
           "elementId": 165,
@@ -3517,7 +3528,10 @@
           "position": "FWD",
           "club": "CHE",
           "teamId": 6,
-          "priceTenths": 76
+          "priceTenths": 76,
+          "lastWeekPoints": 9,
+          "pointsSinceFirstCapture": 20,
+          "weightedContribution": 8.62128
         },
         {
           "elementId": 8,
@@ -3530,7 +3544,10 @@
           "position": "DEF",
           "club": "ARS",
           "teamId": 1,
-          "priceTenths": 56
+          "priceTenths": 56,
+          "lastWeekPoints": 11,
+          "pointsSinceFirstCapture": 20,
+          "weightedContribution": 9.76558
         },
         {
           "elementId": 427,
@@ -3543,7 +3560,10 @@
           "position": "MID",
           "club": "MUN",
           "teamId": 16,
-          "priceTenths": 80
+          "priceTenths": 80,
+          "lastWeekPoints": 11,
+          "pointsSinceFirstCapture": 13,
+          "weightedContribution": 9.45692
         },
         {
           "elementId": 346,
@@ -3556,7 +3576,10 @@
           "position": "FWD",
           "club": "LEE",
           "teamId": 13,
-          "priceTenths": 60
+          "priceTenths": 60,
+          "lastWeekPoints": 8,
+          "pointsSinceFirstCapture": 9,
+          "weightedContribution": 7.10224
         },
         {
           "elementId": 411,
@@ -3569,7 +3592,10 @@
           "position": "FWD",
           "club": "MCI",
           "teamId": 15,
-          "priceTenths": 155
+          "priceTenths": 155,
+          "lastWeekPoints": 13,
+          "pointsSinceFirstCapture": 15,
+          "weightedContribution": 8.07612
         },
         {
           "elementId": 418,
@@ -3582,7 +3608,10 @@
           "position": "DEF",
           "club": "MUN",
           "teamId": 16,
-          "priceTenths": 50
+          "priceTenths": 50,
+          "lastWeekPoints": 4,
+          "pointsSinceFirstCapture": 5,
+          "weightedContribution": 2.76552
         },
         {
           "elementId": 496,
@@ -3595,7 +3624,10 @@
           "position": "GKP",
           "club": "TOT",
           "teamId": 19,
-          "priceTenths": 45
+          "priceTenths": 45,
+          "lastWeekPoints": 1,
+          "pointsSinceFirstCapture": 3,
+          "weightedContribution": 0.68537
         },
         {
           "elementId": 557,
@@ -3608,7 +3640,10 @@
           "position": "MID",
           "club": "ARS",
           "teamId": 1,
-          "priceTenths": 65
+          "priceTenths": 65,
+          "lastWeekPoints": 0,
+          "pointsSinceFirstCapture": 6,
+          "weightedContribution": 0.0
         },
         {
           "elementId": 368,
@@ -3621,7 +3656,10 @@
           "position": "MID",
           "club": "LIV",
           "teamId": 14,
-          "priceTenths": 70
+          "priceTenths": 70,
+          "lastWeekPoints": 4,
+          "pointsSinceFirstCapture": 12,
+          "weightedContribution": 2.33268
         },
         {
           "elementId": 10,
@@ -3634,7 +3672,10 @@
           "position": "DEF",
           "club": "ARS",
           "teamId": 1,
-          "priceTenths": 55
+          "priceTenths": 55,
+          "lastWeekPoints": 7,
+          "pointsSinceFirstCapture": 18,
+          "weightedContribution": 2.76353
         },
         {
           "elementId": 379,
@@ -3647,7 +3688,10 @@
           "position": "FWD",
           "club": "LIV",
           "teamId": 14,
-          "priceTenths": 90
+          "priceTenths": 90,
+          "lastWeekPoints": 8,
+          "pointsSinceFirstCapture": 10,
+          "weightedContribution": 2.43688
         },
         {
           "elementId": 4,
@@ -3660,7 +3704,10 @@
           "position": "DEF",
           "club": "ARS",
           "teamId": 1,
-          "priceTenths": 80
+          "priceTenths": 80,
+          "lastWeekPoints": 8,
+          "pointsSinceFirstCapture": 13,
+          "weightedContribution": 1.92384
         },
         {
           "elementId": 237,
@@ -3673,7 +3720,10 @@
           "position": "MID",
           "club": "EVE",
           "teamId": 9,
-          "priceTenths": 60
+          "priceTenths": 60,
+          "lastWeekPoints": 4,
+          "pointsSinceFirstCapture": 13,
+          "weightedContribution": 1.37876
         },
         {
           "elementId": 423,
@@ -3686,7 +3736,10 @@
           "position": "DEF",
           "club": "MUN",
           "teamId": 16,
-          "priceTenths": 45
+          "priceTenths": 45,
+          "lastWeekPoints": 2,
+          "pointsSinceFirstCapture": 3,
+          "weightedContribution": 0.39278
         },
         {
           "elementId": 1,
@@ -3699,7 +3752,10 @@
           "position": "GKP",
           "club": "ARS",
           "teamId": 1,
-          "priceTenths": 60
+          "priceTenths": 60,
+          "lastWeekPoints": 6,
+          "pointsSinceFirstCapture": 12,
+          "weightedContribution": 0.94992
         },
         {
           "elementId": 366,
@@ -3712,7 +3768,10 @@
           "position": "MID",
           "club": "LIV",
           "teamId": 14,
-          "priceTenths": 75
+          "priceTenths": 75,
+          "lastWeekPoints": 4,
+          "pointsSinceFirstCapture": 6,
+          "weightedContribution": 0.58516
         },
         {
           "elementId": 397,
@@ -3725,7 +3784,10 @@
           "position": "MID",
           "club": "MCI",
           "teamId": 15,
-          "priceTenths": 85
+          "priceTenths": 85,
+          "lastWeekPoints": 5,
+          "pointsSinceFirstCapture": 7,
+          "weightedContribution": 0.72145
         },
         {
           "elementId": 154,
@@ -3738,7 +3800,10 @@
           "position": "MID",
           "club": "CHE",
           "teamId": 6,
-          "priceTenths": 96
+          "priceTenths": 96,
+          "lastWeekPoints": 7,
+          "pointsSinceFirstCapture": 20,
+          "weightedContribution": 0.93989
         },
         {
           "elementId": 565,
@@ -3751,7 +3816,10 @@
           "position": "MID",
           "club": "BRE",
           "teamId": 4,
-          "priceTenths": 56
+          "priceTenths": 56,
+          "lastWeekPoints": 4,
+          "pointsSinceFirstCapture": 18,
+          "weightedContribution": 0.68936
         },
         {
           "elementId": 173,
@@ -3764,7 +3832,10 @@
           "position": "DEF",
           "club": "COV",
           "teamId": 7,
-          "priceTenths": 40
+          "priceTenths": 40,
+          "lastWeekPoints": 8,
+          "pointsSinceFirstCapture": 11,
+          "weightedContribution": 1.25048
         },
         {
           "elementId": 542,
@@ -3777,7 +3848,10 @@
           "position": "MID",
           "club": "SUN",
           "teamId": 20,
-          "priceTenths": 59
+          "priceTenths": 59,
+          "lastWeekPoints": 3,
+          "pointsSinceFirstCapture": 5,
+          "weightedContribution": 0.4509
         },
         {
           "elementId": 334,
@@ -3790,7 +3864,10 @@
           "position": "DEF",
           "club": "LEE",
           "teamId": 13,
-          "priceTenths": 50
+          "priceTenths": 50,
+          "lastWeekPoints": 4,
+          "pointsSinceFirstCapture": 10,
+          "weightedContribution": 0.55312
         },
         {
           "elementId": 329,
@@ -3803,7 +3880,10 @@
           "position": "DEF",
           "club": "LEE",
           "teamId": 13,
-          "priceTenths": 45
+          "priceTenths": 45,
+          "lastWeekPoints": 1,
+          "pointsSinceFirstCapture": 7,
+          "weightedContribution": 0.21643
         },
         {
           "elementId": 412,
@@ -3816,7 +3896,10 @@
           "position": "GKP",
           "club": "MUN",
           "teamId": 16,
-          "priceTenths": 50
+          "priceTenths": 50,
+          "lastWeekPoints": 2,
+          "pointsSinceFirstCapture": 3,
+          "weightedContribution": 0.20842
         },
         {
           "elementId": 532,
@@ -3829,7 +3912,10 @@
           "position": "DEF",
           "club": "SUN",
           "teamId": 20,
-          "priceTenths": 50
+          "priceTenths": 50,
+          "lastWeekPoints": 8,
+          "pointsSinceFirstCapture": 8,
+          "weightedContribution": 1.6192
         },
         {
           "elementId": 387,
@@ -3842,7 +3928,10 @@
           "position": "DEF",
           "club": "MCI",
           "teamId": 15,
-          "priceTenths": 65
+          "priceTenths": 65,
+          "lastWeekPoints": 2,
+          "pointsSinceFirstCapture": 4,
+          "weightedContribution": 0.18036
         },
         {
           "elementId": 175,
@@ -3855,7 +3944,10 @@
           "position": "DEF",
           "club": "COV",
           "teamId": 7,
-          "priceTenths": 40
+          "priceTenths": 40,
+          "lastWeekPoints": 2,
+          "pointsSinceFirstCapture": 3,
+          "weightedContribution": 0.22044
         },
         {
           "elementId": 529,
@@ -3868,7 +3960,10 @@
           "position": "GKP",
           "club": "SUN",
           "teamId": 20,
-          "priceTenths": 50
+          "priceTenths": 50,
+          "lastWeekPoints": 6,
+          "pointsSinceFirstCapture": 7,
+          "weightedContribution": 0.48096
         },
         {
           "elementId": 110,
@@ -3881,7 +3976,10 @@
           "position": "GKP",
           "club": "COV",
           "teamId": 7,
-          "priceTenths": 45
+          "priceTenths": 45,
+          "lastWeekPoints": 2,
+          "pointsSinceFirstCapture": 3,
+          "weightedContribution": 0.13628
         },
         {
           "elementId": 534,
@@ -3894,7 +3992,10 @@
           "position": "DEF",
           "club": "SUN",
           "teamId": 20,
-          "priceTenths": 45
+          "priceTenths": 45,
+          "lastWeekPoints": 6,
+          "pointsSinceFirstCapture": 8,
+          "weightedContribution": 0.57714
         },
         {
           "elementId": 106,
@@ -3907,7 +4008,10 @@
           "position": "FWD",
           "club": "BRE",
           "teamId": 4,
-          "priceTenths": 80
+          "priceTenths": 80,
+          "lastWeekPoints": 2,
+          "pointsSinceFirstCapture": 2,
+          "weightedContribution": 0.14028
         },
         {
           "elementId": 87,
@@ -3920,7 +4024,10 @@
           "position": "DEF",
           "club": "BRE",
           "teamId": 4,
-          "priceTenths": 45
+          "priceTenths": 45,
+          "lastWeekPoints": 3,
+          "pointsSinceFirstCapture": 11,
+          "weightedContribution": 0.80562
         },
         {
           "elementId": 356,
@@ -3933,7 +4040,10 @@
           "position": "DEF",
           "club": "LIV",
           "teamId": 14,
-          "priceTenths": 65
+          "priceTenths": 65,
+          "lastWeekPoints": 1,
+          "pointsSinceFirstCapture": 3,
+          "weightedContribution": 0.05611
         },
         {
           "elementId": 391,
@@ -3946,7 +4056,10 @@
           "position": "DEF",
           "club": "MCI",
           "teamId": 15,
-          "priceTenths": 56
+          "priceTenths": 56,
+          "lastWeekPoints": 5,
+          "pointsSinceFirstCapture": 14,
+          "weightedContribution": 0.28055
         },
         {
           "elementId": 94,
@@ -3959,7 +4072,10 @@
           "position": "MID",
           "club": "BRE",
           "teamId": 4,
-          "priceTenths": 60
+          "priceTenths": 60,
+          "lastWeekPoints": 10,
+          "pointsSinceFirstCapture": 13,
+          "weightedContribution": 0.7014
         },
         {
           "elementId": 124,
@@ -3972,7 +4088,10 @@
           "position": "MID",
           "club": "BHA",
           "teamId": 5,
-          "priceTenths": 55
+          "priceTenths": 55,
+          "lastWeekPoints": 13,
+          "pointsSinceFirstCapture": 15,
+          "weightedContribution": 3.43889
         },
         {
           "elementId": 15,
@@ -3985,7 +4104,10 @@
           "position": "MID",
           "club": "ARS",
           "teamId": 1,
-          "priceTenths": 66
+          "priceTenths": 66,
+          "lastWeekPoints": 3,
+          "pointsSinceFirstCapture": 14,
+          "weightedContribution": 0.1443
         },
         {
           "elementId": 109,
@@ -3998,7 +4120,10 @@
           "position": "GKP",
           "club": "BHA",
           "teamId": 5,
-          "priceTenths": 45
+          "priceTenths": 45,
+          "lastWeekPoints": 0,
+          "pointsSinceFirstCapture": 6,
+          "weightedContribution": 0.0
         },
         {
           "elementId": 115,
@@ -4011,7 +4136,10 @@
           "position": "DEF",
           "club": "BHA",
           "teamId": 5,
-          "priceTenths": 46
+          "priceTenths": 47,
+          "lastWeekPoints": 0,
+          "pointsSinceFirstCapture": 17,
+          "weightedContribution": 0.0
         },
         {
           "elementId": 398,
@@ -4024,7 +4152,10 @@
           "position": "MID",
           "club": "MCI",
           "teamId": 15,
-          "priceTenths": 70
+          "priceTenths": 70,
+          "lastWeekPoints": 9,
+          "pointsSinceFirstCapture": 10,
+          "weightedContribution": 0.36072
         },
         {
           "elementId": 40,
@@ -4037,7 +4168,10 @@
           "position": "MID",
           "club": "CHE",
           "teamId": 6,
-          "priceTenths": 75
+          "priceTenths": 75,
+          "lastWeekPoints": 5,
+          "pointsSinceFirstCapture": 13,
+          "weightedContribution": 0.1603
         },
         {
           "elementId": 552,
@@ -4050,7 +4184,10 @@
           "position": "FWD",
           "club": "SUN",
           "teamId": 20,
-          "priceTenths": 60
+          "priceTenths": 60,
+          "lastWeekPoints": 2,
+          "pointsSinceFirstCapture": 4,
+          "weightedContribution": 0.10822
         },
         {
           "elementId": 229,
@@ -4063,7 +4200,10 @@
           "position": "DEF",
           "club": "EVE",
           "teamId": 9,
-          "priceTenths": 60
+          "priceTenths": 60,
+          "lastWeekPoints": 12,
+          "pointsSinceFirstCapture": 18,
+          "weightedContribution": 0.5772
         },
         {
           "elementId": 112,
@@ -4076,7 +4216,10 @@
           "position": "DEF",
           "club": "TOT",
           "teamId": 19,
-          "priceTenths": 50
+          "priceTenths": 50,
+          "lastWeekPoints": 1,
+          "pointsSinceFirstCapture": 2,
+          "weightedContribution": 0.03006
         },
         {
           "elementId": 236,
@@ -4089,7 +4232,10 @@
           "position": "MID",
           "club": "EVE",
           "teamId": 9,
-          "priceTenths": 65
+          "priceTenths": 65,
+          "lastWeekPoints": 2,
+          "pointsSinceFirstCapture": 13,
+          "weightedContribution": 0.05612
         },
         {
           "elementId": 481,
@@ -4102,7 +4248,10 @@
           "position": "MID",
           "club": "MCI",
           "teamId": 15,
-          "priceTenths": 64
+          "priceTenths": 64,
+          "lastWeekPoints": 3,
+          "pointsSinceFirstCapture": 5,
+          "weightedContribution": 0.05412
         },
         {
           "elementId": 480,
@@ -4115,7 +4264,10 @@
           "position": "MID",
           "club": "NFO",
           "teamId": 18,
-          "priceTenths": 79
+          "priceTenths": 79,
+          "lastWeekPoints": 13,
+          "pointsSinceFirstCapture": 15,
+          "weightedContribution": 0.36478
         },
         {
           "elementId": 57,
@@ -4128,7 +4280,10 @@
           "position": "GKP",
           "club": "BOU",
           "teamId": 3,
-          "priceTenths": 45
+          "priceTenths": 45,
+          "lastWeekPoints": 3,
+          "pointsSinceFirstCapture": 5,
+          "weightedContribution": 0.03606
         },
         {
           "elementId": 357,
@@ -4141,7 +4296,10 @@
           "position": "DEF",
           "club": "LIV",
           "teamId": 14,
-          "priceTenths": 55
+          "priceTenths": 55,
+          "lastWeekPoints": 1,
+          "pointsSinceFirstCapture": 1,
+          "weightedContribution": 0.01202
         },
         {
           "elementId": 11,
@@ -4154,7 +4312,10 @@
           "position": "DEF",
           "club": "ARS",
           "teamId": 1,
-          "priceTenths": 55
+          "priceTenths": 55,
+          "lastWeekPoints": 6,
+          "pointsSinceFirstCapture": 12,
+          "weightedContribution": 0.10824
         },
         {
           "elementId": 335,
@@ -4167,7 +4328,10 @@
           "position": "MID",
           "club": "LEE",
           "teamId": 13,
-          "priceTenths": 60
+          "priceTenths": 60,
+          "lastWeekPoints": 4,
+          "pointsSinceFirstCapture": 17,
+          "weightedContribution": 0.04008
         },
         {
           "elementId": 367,
@@ -4180,7 +4344,10 @@
           "position": "MID",
           "club": "LIV",
           "teamId": 14,
-          "priceTenths": 70
+          "priceTenths": 70,
+          "lastWeekPoints": 5,
+          "pointsSinceFirstCapture": 17,
+          "weightedContribution": 0.0401
         },
         {
           "elementId": 464,
@@ -4193,7 +4360,10 @@
           "position": "FWD",
           "club": "NEW",
           "teamId": 17,
-          "priceTenths": 61
+          "priceTenths": 61,
+          "lastWeekPoints": 8,
+          "pointsSinceFirstCapture": 12,
+          "weightedContribution": 0.06416
         },
         {
           "elementId": 68,
@@ -4206,7 +4376,10 @@
           "position": "MID",
           "club": "BOU",
           "teamId": 3,
-          "priceTenths": 60
+          "priceTenths": 60,
+          "lastWeekPoints": 1,
+          "pointsSinceFirstCapture": 11,
+          "weightedContribution": 0.00601
         },
         {
           "elementId": 127,
@@ -4219,7 +4392,10 @@
           "position": "MID",
           "club": "BHA",
           "teamId": 5,
-          "priceTenths": 50
+          "priceTenths": 50,
+          "lastWeekPoints": 5,
+          "pointsSinceFirstCapture": 11,
+          "weightedContribution": 0.8417
         },
         {
           "elementId": 152,
@@ -4232,7 +4408,10 @@
           "position": "DEF",
           "club": "CHE",
           "teamId": 6,
-          "priceTenths": 54
+          "priceTenths": 54,
+          "lastWeekPoints": 0,
+          "pointsSinceFirstCapture": 0,
+          "weightedContribution": 0.0
         },
         {
           "elementId": 182,
@@ -4245,7 +4424,10 @@
           "position": "DEF",
           "club": "COV",
           "teamId": 7,
-          "priceTenths": 40
+          "priceTenths": 40,
+          "lastWeekPoints": 1,
+          "pointsSinceFirstCapture": 2,
+          "weightedContribution": 0.00601
         },
         {
           "elementId": 200,
@@ -4258,7 +4440,10 @@
           "position": "DEF",
           "club": "CHE",
           "teamId": 6,
-          "priceTenths": 60
+          "priceTenths": 60,
+          "lastWeekPoints": 1,
+          "pointsSinceFirstCapture": 7,
+          "weightedContribution": 0.00802
         },
         {
           "elementId": 295,
@@ -4271,7 +4456,10 @@
           "position": "FWD",
           "club": "HUL",
           "teamId": 11,
-          "priceTenths": 55
+          "priceTenths": 55,
+          "lastWeekPoints": 1,
+          "pointsSinceFirstCapture": 6,
+          "weightedContribution": 0.02806
         },
         {
           "elementId": 428,
@@ -4284,7 +4472,10 @@
           "position": "MID",
           "club": "MUN",
           "teamId": 16,
-          "priceTenths": 80
+          "priceTenths": 80,
+          "lastWeekPoints": 9,
+          "pointsSinceFirstCapture": 11,
+          "weightedContribution": 0.05409
         },
         {
           "elementId": 502,
@@ -4297,7 +4488,10 @@
           "position": "DEF",
           "club": "TOT",
           "teamId": 19,
-          "priceTenths": 45
+          "priceTenths": 45,
+          "lastWeekPoints": 2,
+          "pointsSinceFirstCapture": 5,
+          "weightedContribution": 0.02404
         },
         {
           "elementId": 31,
@@ -4310,7 +4504,10 @@
           "position": "DEF",
           "club": "ARS",
           "teamId": 1,
-          "priceTenths": 44
+          "priceTenths": 44,
+          "lastWeekPoints": 1,
+          "pointsSinceFirstCapture": 1,
+          "weightedContribution": 0.02405
         },
         {
           "elementId": 123,
@@ -4323,7 +4520,10 @@
           "position": "MID",
           "club": "BHA",
           "teamId": 5,
-          "priceTenths": 60
+          "priceTenths": 60,
+          "lastWeekPoints": 0,
+          "pointsSinceFirstCapture": 16,
+          "weightedContribution": 0.0
         },
         {
           "elementId": 194,
@@ -4336,7 +4536,10 @@
           "position": "FWD",
           "club": "COV",
           "teamId": 7,
-          "priceTenths": 50
+          "priceTenths": 50,
+          "lastWeekPoints": 1,
+          "pointsSinceFirstCapture": 3,
+          "weightedContribution": 0.00401
         },
         {
           "elementId": 249,
@@ -4349,7 +4552,10 @@
           "position": "FWD",
           "club": "EVE",
           "teamId": 9,
-          "priceTenths": 55
+          "priceTenths": 55,
+          "lastWeekPoints": 2,
+          "pointsSinceFirstCapture": 10,
+          "weightedContribution": 0.01202
         },
         {
           "elementId": 250,
@@ -4362,7 +4568,10 @@
           "position": "GKP",
           "club": "FUL",
           "teamId": 10,
-          "priceTenths": 45
+          "priceTenths": 45,
+          "lastWeekPoints": 3,
+          "pointsSinceFirstCapture": 5,
+          "weightedContribution": 0.02406
         },
         {
           "elementId": 260,
@@ -4375,7 +4584,10 @@
           "position": "MID",
           "club": "LEE",
           "teamId": 13,
-          "priceTenths": 65
+          "priceTenths": 65,
+          "lastWeekPoints": 1,
+          "pointsSinceFirstCapture": 4,
+          "weightedContribution": 0.00401
         },
         {
           "elementId": 290,
@@ -4388,7 +4600,10 @@
           "position": "MID",
           "club": "HUL",
           "teamId": 11,
-          "priceTenths": 45
+          "priceTenths": 45,
+          "lastWeekPoints": 2,
+          "pointsSinceFirstCapture": 8,
+          "weightedContribution": 0.14028
         },
         {
           "elementId": 332,
@@ -4401,7 +4616,10 @@
           "position": "DEF",
           "club": "LEE",
           "teamId": 13,
-          "priceTenths": 45
+          "priceTenths": 45,
+          "lastWeekPoints": 2,
+          "pointsSinceFirstCapture": 12,
+          "weightedContribution": 0.00802
         },
         {
           "elementId": 362,
@@ -4414,7 +4632,10 @@
           "position": "DEF",
           "club": "LIV",
           "teamId": 14,
-          "priceTenths": 50
+          "priceTenths": 50,
+          "lastWeekPoints": 3,
+          "pointsSinceFirstCapture": 4,
+          "weightedContribution": 0.01203
         },
         {
           "elementId": 417,
@@ -4427,7 +4648,10 @@
           "position": "DEF",
           "club": "MUN",
           "teamId": 16,
-          "priceTenths": 50
+          "priceTenths": 50,
+          "lastWeekPoints": 2,
+          "pointsSinceFirstCapture": 3,
+          "weightedContribution": 0.00802
         },
         {
           "elementId": 469,
@@ -4440,7 +4664,10 @@
           "position": "DEF",
           "club": "NFO",
           "teamId": 18,
-          "priceTenths": 50
+          "priceTenths": 50,
+          "lastWeekPoints": 6,
+          "pointsSinceFirstCapture": 8,
+          "weightedContribution": 0.87774
         },
         {
           "elementId": 492,
@@ -4453,7 +4680,10 @@
           "position": "FWD",
           "club": "COV",
           "teamId": 7,
-          "priceTenths": 55
+          "priceTenths": 55,
+          "lastWeekPoints": 2,
+          "pointsSinceFirstCapture": 3,
+          "weightedContribution": 0.00802
         },
         {
           "elementId": 499,
@@ -4466,7 +4696,10 @@
           "position": "DEF",
           "club": "TOT",
           "teamId": 19,
-          "priceTenths": 55
+          "priceTenths": 55,
+          "lastWeekPoints": 1,
+          "pointsSinceFirstCapture": 1,
+          "weightedContribution": 0.00401
         },
         {
           "elementId": 527,
@@ -4479,7 +4712,10 @@
           "position": "FWD",
           "club": "TOT",
           "teamId": 19,
-          "priceTenths": 59
+          "priceTenths": 59,
+          "lastWeekPoints": 0,
+          "pointsSinceFirstCapture": 2,
+          "weightedContribution": 0.0
         },
         {
           "elementId": 566,
@@ -4492,7 +4728,10 @@
           "position": "DEF",
           "club": "BOU",
           "teamId": 3,
-          "priceTenths": 50
+          "priceTenths": 50,
+          "lastWeekPoints": 4,
+          "pointsSinceFirstCapture": 4,
+          "weightedContribution": 0.01604
         },
         {
           "elementId": 575,
@@ -4505,7 +4744,10 @@
           "position": "MID",
           "club": "COV",
           "teamId": 7,
-          "priceTenths": 50
+          "priceTenths": 50,
+          "lastWeekPoints": 3,
+          "pointsSinceFirstCapture": 4,
+          "weightedContribution": 0.01803
         },
         {
           "elementId": 26,
@@ -4518,7 +4760,10 @@
           "position": "FWD",
           "club": "ARS",
           "teamId": 1,
-          "priceTenths": 75
+          "priceTenths": 75,
+          "lastWeekPoints": 2,
+          "pointsSinceFirstCapture": 8,
+          "weightedContribution": 0.004
         },
         {
           "elementId": 41,
@@ -4531,7 +4776,10 @@
           "position": "MID",
           "club": "AVL",
           "teamId": 2,
-          "priceTenths": 60
+          "priceTenths": 60,
+          "lastWeekPoints": 2,
+          "pointsSinceFirstCapture": 4,
+          "weightedContribution": 0.004
         },
         {
           "elementId": 70,
@@ -4544,7 +4792,10 @@
           "position": "MID",
           "club": "BOU",
           "teamId": 3,
-          "priceTenths": 60
+          "priceTenths": 60,
+          "lastWeekPoints": 3,
+          "pointsSinceFirstCapture": 6,
+          "weightedContribution": 0.006
         },
         {
           "elementId": 95,
@@ -4557,7 +4808,10 @@
           "position": "MID",
           "club": "BRE",
           "teamId": 4,
-          "priceTenths": 65
+          "priceTenths": 65,
+          "lastWeekPoints": 1,
+          "pointsSinceFirstCapture": 4,
+          "weightedContribution": 0.00401
         },
         {
           "elementId": 140,
@@ -4570,7 +4824,10 @@
           "position": "GKP",
           "club": "CHE",
           "teamId": 6,
-          "priceTenths": 50
+          "priceTenths": 49,
+          "lastWeekPoints": 0,
+          "pointsSinceFirstCapture": 2,
+          "weightedContribution": 0.0
         },
         {
           "elementId": 142,
@@ -4583,7 +4840,10 @@
           "position": "DEF",
           "club": "CHE",
           "teamId": 6,
-          "priceTenths": 55
+          "priceTenths": 55,
+          "lastWeekPoints": 1,
+          "pointsSinceFirstCapture": 1,
+          "weightedContribution": 0.00401
         },
         {
           "elementId": 183,
@@ -4596,7 +4856,10 @@
           "position": "MID",
           "club": "COV",
           "teamId": 7,
-          "priceTenths": 50
+          "priceTenths": 50,
+          "lastWeekPoints": 3,
+          "pointsSinceFirstCapture": 4,
+          "weightedContribution": 0.006
         },
         {
           "elementId": 259,
@@ -4609,7 +4872,10 @@
           "position": "DEF",
           "club": "IPS",
           "teamId": 12,
-          "priceTenths": 40
+          "priceTenths": 40,
+          "lastWeekPoints": 2,
+          "pointsSinceFirstCapture": 4,
+          "weightedContribution": 0.42084
         },
         {
           "elementId": 261,
@@ -4622,7 +4888,10 @@
           "position": "MID",
           "club": "FUL",
           "teamId": 10,
-          "priceTenths": 55
+          "priceTenths": 55,
+          "lastWeekPoints": 2,
+          "pointsSinceFirstCapture": 4,
+          "weightedContribution": 0.00802
         },
         {
           "elementId": 304,
@@ -4635,7 +4904,10 @@
           "position": "DEF",
           "club": "IPS",
           "teamId": 12,
-          "priceTenths": 40
+          "priceTenths": 40,
+          "lastWeekPoints": 0,
+          "pointsSinceFirstCapture": 4,
+          "weightedContribution": 0.0
         },
         {
           "elementId": 330,
@@ -4648,7 +4920,10 @@
           "position": "DEF",
           "club": "LEE",
           "teamId": 13,
-          "priceTenths": 45
+          "priceTenths": 45,
+          "lastWeekPoints": 2,
+          "pointsSinceFirstCapture": 2,
+          "weightedContribution": 0.004
         },
         {
           "elementId": 338,
@@ -4661,7 +4936,10 @@
           "position": "MID",
           "club": "LEE",
           "teamId": 13,
-          "priceTenths": 55
+          "priceTenths": 55,
+          "lastWeekPoints": 2,
+          "pointsSinceFirstCapture": 7,
+          "weightedContribution": 0.004
         },
         {
           "elementId": 350,
@@ -4674,7 +4952,10 @@
           "position": "GKP",
           "club": "LIV",
           "teamId": 14,
-          "priceTenths": 55
+          "priceTenths": 55,
+          "lastWeekPoints": 0,
+          "pointsSinceFirstCapture": 2,
+          "weightedContribution": 0.0
         },
         {
           "elementId": 358,
@@ -4687,7 +4968,10 @@
           "position": "DEF",
           "club": "LIV",
           "teamId": 14,
-          "priceTenths": 55
+          "priceTenths": 55,
+          "lastWeekPoints": 1,
+          "pointsSinceFirstCapture": 1,
+          "weightedContribution": 0.002
         },
         {
           "elementId": 384,
@@ -4700,7 +4984,10 @@
           "position": "GKP",
           "club": "MCI",
           "teamId": 15,
-          "priceTenths": 55
+          "priceTenths": 55,
+          "lastWeekPoints": 0,
+          "pointsSinceFirstCapture": 3,
+          "weightedContribution": 0.0
         },
         {
           "elementId": 388,
@@ -4713,7 +5000,10 @@
           "position": "DEF",
           "club": "MCI",
           "teamId": 15,
-          "priceTenths": 60
+          "priceTenths": 60,
+          "lastWeekPoints": 2,
+          "pointsSinceFirstCapture": 12,
+          "weightedContribution": 0.004
         },
         {
           "elementId": 390,
@@ -4726,7 +5016,10 @@
           "position": "DEF",
           "club": "MCI",
           "teamId": 15,
-          "priceTenths": 55
+          "priceTenths": 55,
+          "lastWeekPoints": 2,
+          "pointsSinceFirstCapture": 4,
+          "weightedContribution": 0.004
         },
         {
           "elementId": 393,
@@ -4739,7 +5032,10 @@
           "position": "DEF",
           "club": "MCI",
           "teamId": 15,
-          "priceTenths": 55
+          "priceTenths": 55,
+          "lastWeekPoints": 2,
+          "pointsSinceFirstCapture": 4,
+          "weightedContribution": 0.004
         },
         {
           "elementId": 400,
@@ -4752,7 +5048,10 @@
           "position": "MID",
           "club": "MCI",
           "teamId": 15,
-          "priceTenths": 74
+          "priceTenths": 74,
+          "lastWeekPoints": 0,
+          "pointsSinceFirstCapture": 0,
+          "weightedContribution": 0.0
         },
         {
           "elementId": 452,
@@ -4765,7 +5064,10 @@
           "position": "MID",
           "club": "ARS",
           "teamId": 1,
-          "priceTenths": 69
+          "priceTenths": 69,
+          "lastWeekPoints": 1,
+          "pointsSinceFirstCapture": 1,
+          "weightedContribution": 0.002
         },
         {
           "elementId": 453,
@@ -4778,7 +5080,10 @@
           "position": "MID",
           "club": "NEW",
           "teamId": 17,
-          "priceTenths": 60
+          "priceTenths": 60,
+          "lastWeekPoints": 3,
+          "pointsSinceFirstCapture": 3,
+          "weightedContribution": 0.006
         },
         {
           "elementId": 539,
@@ -4791,7 +5096,10 @@
           "position": "DEF",
           "club": "SUN",
           "teamId": 20,
-          "priceTenths": 40
+          "priceTenths": 40,
+          "lastWeekPoints": 0,
+          "pointsSinceFirstCapture": 1,
+          "weightedContribution": 0.0
         },
         {
           "elementId": 569,
@@ -4804,7 +5112,10 @@
           "position": "FWD",
           "club": "FUL",
           "teamId": 10,
-          "priceTenths": 60
+          "priceTenths": 60,
+          "lastWeekPoints": 2,
+          "pointsSinceFirstCapture": 8,
+          "weightedContribution": 0.00802
         },
         {
           "elementId": 25,
@@ -4817,7 +5128,10 @@
           "position": "FWD",
           "club": "ARS",
           "teamId": 1,
-          "priceTenths": 74
+          "priceTenths": 74,
+          "lastWeekPoints": 0,
+          "pointsSinceFirstCapture": 0,
+          "weightedContribution": 0.0
         },
         {
           "elementId": 28,
@@ -4830,7 +5144,10 @@
           "position": "GKP",
           "club": "CHE",
           "teamId": 6,
-          "priceTenths": 50
+          "priceTenths": 50,
+          "lastWeekPoints": 2,
+          "pointsSinceFirstCapture": 2,
+          "weightedContribution": 0.004
         },
         {
           "elementId": 32,
@@ -4843,7 +5160,10 @@
           "position": "DEF",
           "club": "AVL",
           "teamId": 2,
-          "priceTenths": 45
+          "priceTenths": 45,
+          "lastWeekPoints": 2,
+          "pointsSinceFirstCapture": 1,
+          "weightedContribution": 0.004
         },
         {
           "elementId": 51,
@@ -4856,7 +5176,10 @@
           "position": "MID",
           "club": "AVL",
           "teamId": 2,
-          "priceTenths": 45
+          "priceTenths": 45,
+          "lastWeekPoints": 2,
+          "pointsSinceFirstCapture": 4,
+          "weightedContribution": 0.01604
         },
         {
           "elementId": 58,
@@ -4869,7 +5192,10 @@
           "position": "GKP",
           "club": "BOU",
           "teamId": 3,
-          "priceTenths": 40
+          "priceTenths": 40,
+          "lastWeekPoints": 0,
+          "pointsSinceFirstCapture": 0,
+          "weightedContribution": 0.0
         },
         {
           "elementId": 59,
@@ -4882,7 +5208,10 @@
           "position": "GKP",
           "club": "BOU",
           "teamId": 3,
-          "priceTenths": 40
+          "priceTenths": 40,
+          "lastWeekPoints": 0,
+          "pointsSinceFirstCapture": 0,
+          "weightedContribution": 0.0
         },
         {
           "elementId": 82,
@@ -4895,7 +5224,10 @@
           "position": "GKP",
           "club": "BRE",
           "teamId": 4,
-          "priceTenths": 50
+          "priceTenths": 50,
+          "lastWeekPoints": 2,
+          "pointsSinceFirstCapture": 9,
+          "weightedContribution": 0.004
         },
         {
           "elementId": 83,
@@ -4908,7 +5240,10 @@
           "position": "GKP",
           "club": "BRE",
           "teamId": 4,
-          "priceTenths": 45
+          "priceTenths": 45,
+          "lastWeekPoints": 0,
+          "pointsSinceFirstCapture": 0,
+          "weightedContribution": 0.0
         },
         {
           "elementId": 84,
@@ -4921,7 +5256,10 @@
           "position": "DEF",
           "club": "BRE",
           "teamId": 4,
-          "priceTenths": 55
+          "priceTenths": 55,
+          "lastWeekPoints": 3,
+          "pointsSinceFirstCapture": 9,
+          "weightedContribution": 0.006
         },
         {
           "elementId": 88,
@@ -4934,7 +5272,10 @@
           "position": "DEF",
           "club": "BRE",
           "teamId": 4,
-          "priceTenths": 46
+          "priceTenths": 46,
+          "lastWeekPoints": 2,
+          "pointsSinceFirstCapture": 15,
+          "weightedContribution": 0.01604
         },
         {
           "elementId": 111,
@@ -4947,7 +5288,10 @@
           "position": "GKP",
           "club": "BHA",
           "teamId": 5,
-          "priceTenths": 40
+          "priceTenths": 40,
+          "lastWeekPoints": 0,
+          "pointsSinceFirstCapture": 0,
+          "weightedContribution": 0.0
         },
         {
           "elementId": 113,
@@ -4960,7 +5304,10 @@
           "position": "DEF",
           "club": "BHA",
           "teamId": 5,
-          "priceTenths": 44
+          "priceTenths": 44,
+          "lastWeekPoints": 0,
+          "pointsSinceFirstCapture": 0,
+          "weightedContribution": 0.0
         },
         {
           "elementId": 125,
@@ -4973,7 +5320,10 @@
           "position": "FWD",
           "club": "BHA",
           "teamId": 5,
-          "priceTenths": 55
+          "priceTenths": 55,
+          "lastWeekPoints": 0,
+          "pointsSinceFirstCapture": 5,
+          "weightedContribution": 0.0
         },
         {
           "elementId": 130,
@@ -4986,7 +5336,10 @@
           "position": "DEF",
           "club": "BHA",
           "teamId": 5,
-          "priceTenths": 50
+          "priceTenths": 50,
+          "lastWeekPoints": 0,
+          "pointsSinceFirstCapture": 7,
+          "weightedContribution": 0.0
         },
         {
           "elementId": 149,
@@ -4999,7 +5352,10 @@
           "position": "DEF",
           "club": "CHE",
           "teamId": 6,
-          "priceTenths": 50
+          "priceTenths": 50,
+          "lastWeekPoints": 1,
+          "pointsSinceFirstCapture": 1,
+          "weightedContribution": 0.002
         },
         {
           "elementId": 155,
@@ -5012,7 +5368,10 @@
           "position": "MID",
           "club": "CHE",
           "teamId": 6,
-          "priceTenths": 69
+          "priceTenths": 69,
+          "lastWeekPoints": 0,
+          "pointsSinceFirstCapture": 1,
+          "weightedContribution": 0.0
         },
         {
           "elementId": 156,
@@ -5025,7 +5384,10 @@
           "position": "MID",
           "club": "CHE",
           "teamId": 6,
-          "priceTenths": 65
+          "priceTenths": 65,
+          "lastWeekPoints": 7,
+          "pointsSinceFirstCapture": 7,
+          "weightedContribution": 0.014
         },
         {
           "elementId": 171,
@@ -5038,7 +5400,10 @@
           "position": "GKP",
           "club": "COV",
           "teamId": 7,
-          "priceTenths": 40
+          "priceTenths": 40,
+          "lastWeekPoints": 0,
+          "pointsSinceFirstCapture": 0,
+          "weightedContribution": 0.0
         },
         {
           "elementId": 184,
@@ -5051,7 +5416,10 @@
           "position": "MID",
           "club": "COV",
           "teamId": 7,
-          "priceTenths": 50
+          "priceTenths": 50,
+          "lastWeekPoints": 2,
+          "pointsSinceFirstCapture": 4,
+          "weightedContribution": 0.004
         },
         {
           "elementId": 195,
@@ -5064,7 +5432,10 @@
           "position": "FWD",
           "club": "COV",
           "teamId": 7,
-          "priceTenths": 50
+          "priceTenths": 50,
+          "lastWeekPoints": 0,
+          "pointsSinceFirstCapture": 2,
+          "weightedContribution": 0.0
         },
         {
           "elementId": 203,
@@ -5077,7 +5448,10 @@
           "position": "DEF",
           "club": "CRY",
           "teamId": 8,
-          "priceTenths": 50
+          "priceTenths": 50,
+          "lastWeekPoints": 0,
+          "pointsSinceFirstCapture": 1,
+          "weightedContribution": 0.0
         },
         {
           "elementId": 204,
@@ -5090,7 +5464,10 @@
           "position": "DEF",
           "club": "CRY",
           "teamId": 8,
-          "priceTenths": 45
+          "priceTenths": 45,
+          "lastWeekPoints": 0,
+          "pointsSinceFirstCapture": 1,
+          "weightedContribution": 0.0
         },
         {
           "elementId": 208,
@@ -5103,7 +5480,10 @@
           "position": "MID",
           "club": "CRY",
           "teamId": 8,
-          "priceTenths": 64
+          "priceTenths": 64,
+          "lastWeekPoints": 0,
+          "pointsSinceFirstCapture": 0,
+          "weightedContribution": 0.0
         },
         {
           "elementId": 212,
@@ -5116,7 +5496,10 @@
           "position": "MID",
           "club": "CRY",
           "teamId": 8,
-          "priceTenths": 45
+          "priceTenths": 45,
+          "lastWeekPoints": 0,
+          "pointsSinceFirstCapture": 0,
+          "weightedContribution": 0.0
         },
         {
           "elementId": 233,
@@ -5129,7 +5512,10 @@
           "position": "DEF",
           "club": "EVE",
           "teamId": 9,
-          "priceTenths": 45
+          "priceTenths": 45,
+          "lastWeekPoints": 4,
+          "pointsSinceFirstCapture": 10,
+          "weightedContribution": 0.01604
         },
         {
           "elementId": 251,
@@ -5142,7 +5528,10 @@
           "position": "GKP",
           "club": "FUL",
           "teamId": 10,
-          "priceTenths": 40
+          "priceTenths": 40,
+          "lastWeekPoints": 0,
+          "pointsSinceFirstCapture": 0,
+          "weightedContribution": 0.0
         },
         {
           "elementId": 252,
@@ -5155,7 +5544,10 @@
           "position": "GKP",
           "club": "FUL",
           "teamId": 10,
-          "priceTenths": 40
+          "priceTenths": 40,
+          "lastWeekPoints": 0,
+          "pointsSinceFirstCapture": 0,
+          "weightedContribution": 0.0
         },
         {
           "elementId": 270,
@@ -5168,7 +5560,10 @@
           "position": "MID",
           "club": "FUL",
           "teamId": 10,
-          "priceTenths": 45
+          "priceTenths": 45,
+          "lastWeekPoints": 0,
+          "pointsSinceFirstCapture": 0,
+          "weightedContribution": 0.0
         },
         {
           "elementId": 272,
@@ -5181,7 +5576,10 @@
           "position": "FWD",
           "club": "FUL",
           "teamId": 10,
-          "priceTenths": 45
+          "priceTenths": 45,
+          "lastWeekPoints": 0,
+          "pointsSinceFirstCapture": 0,
+          "weightedContribution": 0.0
         },
         {
           "elementId": 282,
@@ -5194,7 +5592,10 @@
           "position": "DEF",
           "club": "HUL",
           "teamId": 11,
-          "priceTenths": 40
+          "priceTenths": 40,
+          "lastWeekPoints": 6,
+          "pointsSinceFirstCapture": 12,
+          "weightedContribution": 0.012
         },
         {
           "elementId": 289,
@@ -5207,7 +5608,10 @@
           "position": "MID",
           "club": "HUL",
           "teamId": 11,
-          "priceTenths": 45
+          "priceTenths": 45,
+          "lastWeekPoints": 0,
+          "pointsSinceFirstCapture": 2,
+          "weightedContribution": 0.0
         },
         {
           "elementId": 298,
@@ -5220,7 +5624,10 @@
           "position": "FWD",
           "club": "HUL",
           "teamId": 11,
-          "priceTenths": 45
+          "priceTenths": 45,
+          "lastWeekPoints": 0,
+          "pointsSinceFirstCapture": 0,
+          "weightedContribution": 0.0
         },
         {
           "elementId": 301,
@@ -5233,7 +5640,10 @@
           "position": "GKP",
           "club": "IPS",
           "teamId": 12,
-          "priceTenths": 40
+          "priceTenths": 40,
+          "lastWeekPoints": 0,
+          "pointsSinceFirstCapture": 0,
+          "weightedContribution": 0.0
         },
         {
           "elementId": 302,
@@ -5246,7 +5656,10 @@
           "position": "GKP",
           "club": "IPS",
           "teamId": 12,
-          "priceTenths": 40
+          "priceTenths": 40,
+          "lastWeekPoints": 0,
+          "pointsSinceFirstCapture": 0,
+          "weightedContribution": 0.0
         },
         {
           "elementId": 305,
@@ -5259,7 +5672,10 @@
           "position": "DEF",
           "club": "IPS",
           "teamId": 12,
-          "priceTenths": 40
+          "priceTenths": 40,
+          "lastWeekPoints": 6,
+          "pointsSinceFirstCapture": 8,
+          "weightedContribution": 1.14228
         },
         {
           "elementId": 306,
@@ -5272,7 +5688,10 @@
           "position": "DEF",
           "club": "IPS",
           "teamId": 12,
-          "priceTenths": 40
+          "priceTenths": 40,
+          "lastWeekPoints": -1,
+          "pointsSinceFirstCapture": 1,
+          "weightedContribution": -0.002
         },
         {
           "elementId": 321,
@@ -5285,7 +5704,10 @@
           "position": "FWD",
           "club": "IPS",
           "teamId": 12,
-          "priceTenths": 45
+          "priceTenths": 45,
+          "lastWeekPoints": 0,
+          "pointsSinceFirstCapture": 1,
+          "weightedContribution": 0.0
         },
         {
           "elementId": 349,
@@ -5298,7 +5720,10 @@
           "position": "FWD",
           "club": "LEE",
           "teamId": 13,
-          "priceTenths": 45
+          "priceTenths": 45,
+          "lastWeekPoints": 0,
+          "pointsSinceFirstCapture": 0,
+          "weightedContribution": 0.0
         },
         {
           "elementId": 365,
@@ -5311,7 +5736,10 @@
           "position": "DEF",
           "club": "LIV",
           "teamId": 14,
-          "priceTenths": 40
+          "priceTenths": 40,
+          "lastWeekPoints": 0,
+          "pointsSinceFirstCapture": 0,
+          "weightedContribution": 0.0
         },
         {
           "elementId": 445,
@@ -5324,7 +5752,10 @@
           "position": "DEF",
           "club": "NEW",
           "teamId": 17,
-          "priceTenths": 50
+          "priceTenths": 50,
+          "lastWeekPoints": 6,
+          "pointsSinceFirstCapture": 9,
+          "weightedContribution": 0.04812
         },
         {
           "elementId": 467,
@@ -5337,7 +5768,10 @@
           "position": "GKP",
           "club": "NFO",
           "teamId": 18,
-          "priceTenths": 50
+          "priceTenths": 50,
+          "lastWeekPoints": 1,
+          "pointsSinceFirstCapture": 3,
+          "weightedContribution": 0.002
         },
         {
           "elementId": 473,
@@ -5350,7 +5784,10 @@
           "position": "DEF",
           "club": "NFO",
           "teamId": 18,
-          "priceTenths": 45
+          "priceTenths": 45,
+          "lastWeekPoints": 0,
+          "pointsSinceFirstCapture": 5,
+          "weightedContribution": 0.0
         },
         {
           "elementId": 488,
@@ -5363,7 +5800,10 @@
           "position": "MID",
           "club": "NFO",
           "teamId": 18,
-          "priceTenths": 50
+          "priceTenths": 50,
+          "lastWeekPoints": 0,
+          "pointsSinceFirstCapture": 2,
+          "weightedContribution": 0.0
         },
         {
           "elementId": 491,
@@ -5376,7 +5816,10 @@
           "position": "FWD",
           "club": "NFO",
           "teamId": 18,
-          "priceTenths": 60
+          "priceTenths": 60,
+          "lastWeekPoints": 1,
+          "pointsSinceFirstCapture": 3,
+          "weightedContribution": 0.00401
         },
         {
           "elementId": 497,
@@ -5389,7 +5832,10 @@
           "position": "GKP",
           "club": "TOT",
           "teamId": 19,
-          "priceTenths": 40
+          "priceTenths": 40,
+          "lastWeekPoints": 0,
+          "pointsSinceFirstCapture": 0,
+          "weightedContribution": 0.0
         },
         {
           "elementId": 504,
@@ -5402,7 +5848,10 @@
           "position": "DEF",
           "club": "BHA",
           "teamId": 5,
-          "priceTenths": 50
+          "priceTenths": 50,
+          "lastWeekPoints": 0,
+          "pointsSinceFirstCapture": 6,
+          "weightedContribution": 0.0
         },
         {
           "elementId": 526,
@@ -5415,7 +5864,10 @@
           "position": "FWD",
           "club": "TOT",
           "teamId": 19,
-          "priceTenths": 60
+          "priceTenths": 59,
+          "lastWeekPoints": 1,
+          "pointsSinceFirstCapture": 1,
+          "weightedContribution": 0.002
         },
         {
           "elementId": 533,
@@ -5428,7 +5880,10 @@
           "position": "DEF",
           "club": "SUN",
           "teamId": 20,
-          "priceTenths": 55
+          "priceTenths": 55,
+          "lastWeekPoints": 9,
+          "pointsSinceFirstCapture": 9,
+          "weightedContribution": 0.018
         },
         {
           "elementId": 544,
@@ -5441,7 +5896,10 @@
           "position": "MID",
           "club": "SUN",
           "teamId": 20,
-          "priceTenths": 55
+          "priceTenths": 55,
+          "lastWeekPoints": 6,
+          "pointsSinceFirstCapture": 6,
+          "weightedContribution": 0.012
         },
         {
           "elementId": 564,
@@ -5454,7 +5912,10 @@
           "position": "GKP",
           "club": "IPS",
           "teamId": 12,
-          "priceTenths": 45
+          "priceTenths": 45,
+          "lastWeekPoints": 2,
+          "pointsSinceFirstCapture": 4,
+          "weightedContribution": 0.09218
         },
         {
           "elementId": 576,
@@ -5467,7 +5928,10 @@
           "position": "MID",
           "club": "HUL",
           "teamId": 11,
-          "priceTenths": 50
+          "priceTenths": 50,
+          "lastWeekPoints": 0,
+          "pointsSinceFirstCapture": 0,
+          "weightedContribution": 0.0
         },
         {
           "elementId": 586,
@@ -5480,7 +5944,10 @@
           "position": "DEF",
           "club": "HUL",
           "teamId": 11,
-          "priceTenths": 40
+          "priceTenths": 40,
+          "lastWeekPoints": 1,
+          "pointsSinceFirstCapture": 1,
+          "weightedContribution": 0.002
         },
         {
           "elementId": 613,
@@ -5493,7 +5960,10 @@
           "position": "MID",
           "club": "SUN",
           "teamId": 20,
-          "priceTenths": 45
+          "priceTenths": 45,
+          "lastWeekPoints": 0,
+          "pointsSinceFirstCapture": 0,
+          "weightedContribution": 0.0
         }
       ]
     }
