@@ -37,6 +37,14 @@ jobs:
         with:
           node-version: 20.20.2
 
+      # republish-plan.sh builds the canonical fifteen through the workspace,
+      # so pnpm has to exist before it runs.
+      - name: Install JavaScript dependencies
+        run: |
+          corepack enable
+          corepack prepare pnpm@9.15.9 --activate
+          pnpm install --frozen-lockfile
+
       - name: Set up Python
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
         with:
