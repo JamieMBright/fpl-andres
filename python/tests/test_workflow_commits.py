@@ -96,6 +96,10 @@ def test_a_workflow_that_commits_a_prettier_owned_file_formats_it(path: Path) ->
     through a loop variable, so the path it commits never appears beside
     `git add`. This catches "never runs prettier at all", which is the shape
     all three observed reds had, and does not claim to check the argument.
+
+    A workflow may format by calling a script rather than inline, so the
+    scripts it runs are read too. The question is whether prettier runs
+    anywhere on the path the workflow takes, not where the word appears.
     """
     text = path.read_text(encoding="utf-8")
     if not _pushes(text):
@@ -104,7 +108,12 @@ def test_a_workflow_that_commits_a_prettier_owned_file_formats_it(path: Path) ->
     if not owned:
         return
 
-    assert "prettier" in text, (
+    called = [REPO / script for script in sorted(set(re.findall(r"scripts/[\w./-]+\.sh", text)))]
+    formats = "prettier" in text or any(
+        script.exists() and "prettier" in script.read_text(encoding="utf-8") for script in called
+    )
+
+    assert formats, (
         f"{path.name} commits {owned}, which prettier owns, without running "
         "it -- the red lands on the next human push, not on this run"
     )
