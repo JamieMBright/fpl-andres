@@ -42,6 +42,7 @@ from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
+from itertools import combinations
 from statistics import median
 from typing import Literal
 
@@ -56,6 +57,7 @@ __all__ = [
     "Holding",
     "KeeperPairing",
     "ManagerPicks",
+    "OutfieldTrio",
     "Pick",
     "PopularitySquad",
     "Portfolio",
@@ -201,6 +203,24 @@ class KeeperPairing:
 
 
 @dataclass(frozen=True)
+class OutfieldTrio:
+    """Three outfield players held together, the most common combination FPL's
+    five-a-position squad rule allows within that position.
+
+    The keeper pair is unambiguous because a squad owns exactly two. A squad
+    owns five defenders and five midfielders, so a trio is one combination
+    among ten, chosen because it is the one held together most often. Where a
+    position holds fewer than three, no trio is published rather than one
+    invented from a pair.
+    """
+
+    position: int
+    element_ids: tuple[int, int, int]
+    count: int
+    share: float
+
+
+@dataclass(frozen=True)
 class PopularitySquad:
     squad: tuple[int, ...]
     starters: tuple[int, ...]
@@ -222,6 +242,7 @@ class PortfolioStructure:
     common_starting_xi: tuple[int, ...]
     formation: tuple[int, int, int]
     positional_spend: dict[int, DistributionSummary]
+    outfield_trios: tuple[OutfieldTrio, ...] = ()
     popularity_squad: PopularitySquad | None = None
 
     @property
@@ -358,13 +379,22 @@ def summarize_structure(
         raise CoverageTooLow("every captured squad was a Free Hit; no structure remains")
 
     pair_counts: dict[tuple[int, int], int] = {}
+    trio_counts: dict[tuple[int, tuple[int, int, int]], int] = {}
     formation_counts: dict[tuple[int, int, int], int] = {}
     owned_counts: dict[int, int] = {}
     started_counts: dict[int, int] = {}
     spend: dict[int, list[int]] = {position: [] for position in range(1, 5)}
     for row in rows:
-        for element_id in {pick.element_id for pick in row.picks}:
+        squad_ids = {pick.element_id for pick in row.picks}
+        for element_id in squad_ids:
             owned_counts[element_id] = owned_counts.get(element_id, 0) + 1
+        for position in (2, 3, 4):
+            held = sorted(
+                element_id for element_id in squad_ids if element_types.get(element_id) == position
+            )
+            for combo in combinations(held, 3):
+                key = (position, combo)
+                trio_counts[key] = trio_counts.get(key, 0) + 1
         keepers = [pick for pick in row.picks if element_types.get(pick.element_id) == 1]
         starters = [pick for pick in row.picks if pick.position <= 11]
         starting_keeper = next((pick for pick in keepers if pick.position <= 11), None)
@@ -416,6 +446,22 @@ def summarize_structure(
             pair_counts.items(), key=lambda row: (-row[1], row[0])
         )
     )
+    outfield_trios: list[OutfieldTrio] = []
+    for position in (2, 3, 4):
+        trio_candidates = sorted(
+            (
+                (count, combo)
+                for (candidate_position, combo), count in trio_counts.items()
+                if candidate_position == position
+            ),
+            key=lambda row: (-row[0], row[1]),
+        )
+        if not trio_candidates:
+            continue
+        count, combo = trio_candidates[0]
+        outfield_trios.append(
+            OutfieldTrio(position=position, element_ids=combo, count=count, share=count / total)
+        )
     popularity = _popularity_squad(
         pairings,
         owned_counts,
@@ -434,6 +480,7 @@ def summarize_structure(
         common_starting_xi=tuple(common),
         formation=formation,
         positional_spend={position: _summary(values) for position, values in spend.items()},
+        outfield_trios=tuple(outfield_trios),
         popularity_squad=popularity,
     )
 

@@ -147,6 +147,30 @@ const clubOrder = new Map(
   TEAM_KITS.map((team, index) => [team.shortName, index]),
 );
 
+/**
+ * FPL's own flag bounds a model or market rate that has not caught up with it.
+ * Doubtful is bounded by the published chance of playing; anything worse than
+ * doubtful is bounded near zero, because a squad number is not a start.
+ */
+function availabilityCap(
+  status: string | undefined,
+  chanceOfPlaying: number | null | undefined,
+): number | null {
+  if (!status || status === "a") return null;
+  if (status === "d") {
+    return typeof chanceOfPlaying === "number" ? chanceOfPlaying / 100 : 0.5;
+  }
+  return typeof chanceOfPlaying === "number" ? chanceOfPlaying / 100 : 0.03;
+}
+
+function cappedRate(player: SeasonInputPlayer, rate: number): number {
+  const cap = availabilityCap(
+    player.availabilityStatus,
+    player.chanceOfPlaying,
+  );
+  return cap === null ? rate : Math.min(rate, cap);
+}
+
 function toPlayer(
   player: SeasonInputPlayer,
   quotedIds: ReadonlySet<number>,
@@ -161,7 +185,7 @@ function toPlayer(
     ? manual.startProbability
     : blocker && player.position === "GKP"
       ? Math.min(player.startRate, 0.01)
-      : player.startRate;
+      : cappedRate(player, player.startRate);
   const evidence: ExpectedXiEvidence = manual
     ? "manual"
     : quoted || carried
@@ -337,12 +361,12 @@ function buildTeam(
       ? leftPrior.startProbability
       : manualStartingKeeper && left.position === "GKP"
         ? Math.min(left.startRate, 0.01)
-        : left.startRate;
+        : cappedRate(left, left.startRate);
     const rightRate = rightPrior
       ? rightPrior.startProbability
       : manualStartingKeeper && right.position === "GKP"
         ? Math.min(right.startRate, 0.01)
-        : right.startRate;
+        : cappedRate(right, right.startRate);
     return rightRate - leftRate || left.name.localeCompare(right.name);
   };
   const keepers = players

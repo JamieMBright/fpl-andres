@@ -49,7 +49,7 @@ def test_structure_correction_is_additive_and_names_what_it_supersedes(
 
     payload = json.loads(corrected.read_text(encoding="utf-8"))
     assert json.loads(original.read_text(encoding="utf-8")) == {"schemaVersion": 1}
-    assert payload["schemaVersion"] == 3
+    assert payload["schemaVersion"] == 4
     assert payload["supersedes"] == "gw01-structure-v2.json"
     assert payload["correctionReason"] == "adds-legal-popularity-squad"
     assert payload["popularitySquad"]["squad"] == list(range(1, 16))

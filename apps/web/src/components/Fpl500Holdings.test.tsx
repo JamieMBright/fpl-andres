@@ -61,4 +61,40 @@ describe("Fpl500Holdings", () => {
       "true",
     );
   });
+
+  it("shows the most-held outfield trio beside its position", () => {
+    render(
+      <Fpl500Holdings
+        event={1}
+        holdings={[
+          ...HOLDINGS,
+          {
+            elementId: 3,
+            name: "Back three anchor",
+            position: "DEF" as const,
+            club: "ARS",
+            ownedShare: 0.5,
+            startedShare: 0.4,
+            captainedShare: 0,
+            effectiveOwnership: 0.4,
+          },
+        ]}
+        outfieldTrios={[
+          {
+            position: "DEF",
+            elementIds: [3, 9_999_901, 9_999_902],
+            count: 210,
+            share: 0.42,
+          },
+        ]}
+      />,
+    );
+
+    fireEvent.click(screen.getByText("Defenders"));
+
+    expect(
+      screen.getByText("Back three anchor + Element 9999901 + Element 9999902"),
+    ).toBeVisible();
+    expect(screen.getByText("42% · 210 squads")).toBeVisible();
+  });
 });

@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import type { ChipPlay } from "./manager-profile";
+
 /**
  * Chips a manager has spent, and one he has committed to.
  *
@@ -61,6 +63,27 @@ export const NO_CHIPS: DeclaredChips = { spent: [], committed: null };
 
 export function halfForEvent(event: number): ChipHalf {
   return event <= 19 ? "first" : "second";
+}
+
+const CHIP_NAME_SET = new Set<string>(CHIPS);
+
+/**
+ * FPL's own record of which chips have been played this season, read straight
+ * off the entry history rather than asked for. A manager only has to correct
+ * this by hand for a chip FPL has not processed yet.
+ */
+export function chipsFromHistory(
+  chips: readonly ChipPlay[] | undefined,
+): SpentChip[] {
+  if (!chips) return [];
+  const seen = new Map<string, SpentChip>();
+  for (const play of chips) {
+    if (!CHIP_NAME_SET.has(play.name)) continue;
+    const chip = play.name as Chip;
+    const half = halfForEvent(play.event);
+    seen.set(`${chip}:${half}`, { chip, half });
+  }
+  return [...seen.values()];
 }
 
 function key(entryId: number): string {

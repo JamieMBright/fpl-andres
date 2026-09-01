@@ -316,3 +316,71 @@ def test_structure_treats_goalkeeper_pairs_as_reversible() -> None:
     assert structure.keeper_pairings[0].bench_element_id == 2
     assert structure.keeper_pairings[0].count == 2
     assert structure.keeper_pairings[0].share == pytest.approx(1.0)
+
+
+def test_the_outfield_trios_are_the_threes_held_together() -> None:
+    """A squad owns five defenders, so the trio is a combination within them.
+
+    The keeper pair is unambiguous because a squad owns exactly two. Outfield
+    it is not, and counting every three held together is what answers "which
+    core do the elite share". Forwards own exactly three, so the same rule
+    returns their block and nothing else.
+    """
+    element_types = {
+        **{element_id: 1 for element_id in (1, 2)},
+        **{element_id: 2 for element_id in range(3, 8)},
+        **{element_id: 3 for element_id in range(8, 13)},
+        **{element_id: 4 for element_id in range(13, 16)},
+    }
+    shared = (1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 2, 12, 14, 15)
+    captured = [
+        squad(1, list(shared), captain=8, vice=9),
+        squad(2, list(shared), captain=8, vice=9),
+    ]
+
+    structure = summarize_structure(
+        captured,
+        event=1,
+        attempted=2,
+        cohort_revision="sha256:pinned",
+        element_types=element_types,
+        team_ids={element_id: ((element_id - 1) % 8) + 1 for element_id in element_types},
+        prices={element_id: 50 for element_id in element_types},
+        minimum_coverage=1.0,
+    )
+
+    trios = {trio.position: trio for trio in structure.outfield_trios}
+    # Both squads hold the same fifteen, so every trio in them is unanimous.
+    assert sorted(trios) == [2, 3, 4]
+    for position in (2, 3, 4):
+        assert trios[position].count == 2
+        assert trios[position].share == pytest.approx(1.0)
+        assert len(trios[position].element_ids) == 3
+
+    # Three forwards owned means exactly one trio, which is the block itself.
+    assert trios[4].element_ids == (13, 14, 15)
+
+
+def test_a_trio_is_only_counted_where_three_are_held() -> None:
+    """Two forwards cannot make a trio, and inventing one would be a lie."""
+    element_types = {
+        **{element_id: 1 for element_id in (1, 2)},
+        **{element_id: 2 for element_id in range(3, 9)},
+        **{element_id: 3 for element_id in range(9, 14)},
+        **{element_id: 4 for element_id in (14, 15)},
+    }
+    sheet = (1, 3, 4, 5, 6, 7, 9, 10, 11, 12, 14, 2, 8, 13, 15)
+    captured = [squad(1, list(sheet), captain=9, vice=10)]
+
+    structure = summarize_structure(
+        captured,
+        event=1,
+        attempted=1,
+        cohort_revision="sha256:pinned",
+        element_types=element_types,
+        team_ids={element_id: ((element_id - 1) % 8) + 1 for element_id in element_types},
+        prices={element_id: 50 for element_id in element_types},
+        minimum_coverage=1.0,
+    )
+
+    assert {trio.position for trio in structure.outfield_trios} == {2, 3}

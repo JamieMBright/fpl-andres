@@ -31,6 +31,13 @@ export type KeeperPairing = {
   share: number;
 };
 
+export type OutfieldTrio = {
+  position: "DEF" | "MID" | "FWD";
+  elementIds: readonly number[];
+  count: number;
+  share: number;
+};
+
 const POSITIONS = [
   { code: "GKP", label: "Goalkeepers" },
   { code: "DEF", label: "Defenders" },
@@ -70,10 +77,12 @@ export function Fpl500Holdings({
   event,
   holdings,
   keeperPairings = [],
+  outfieldTrios = [],
 }: {
   event: number;
   holdings: readonly Fpl500Holding[];
   keeperPairings?: readonly KeeperPairing[] | undefined;
+  outfieldTrios?: readonly OutfieldTrio[] | undefined;
 }) {
   const [metric, setMetric] = useState<HoldingMetric>("ownership");
   const [selected, setSelected] = useState<DetailPlayer | null>(null);
@@ -251,6 +260,9 @@ export function Fpl500Holdings({
           );
           const visible = rows.filter((holding) => holding.ownedShare >= 0.01);
           const fringe = rows.filter((holding) => holding.ownedShare < 0.01);
+          const trio = outfieldTrios.find(
+            (entry) => entry.position === position.code,
+          );
           return (
             <details
               className="fpl500-position"
@@ -348,6 +360,18 @@ export function Fpl500Holdings({
                   )}
                 </div>
               )}
+              {trio ? (
+                <p className="fpl500-trio">
+                  <span>Held together: </span>
+                  <span>
+                    {trio.elementIds.map((id) => playerName(id)).join(" + ")}
+                  </span>
+                  <strong className="mono">
+                    {fineShare.format(trio.share)} ·{" "}
+                    {integer.format(trio.count)} squads
+                  </strong>
+                </p>
+              ) : null}
             </details>
           );
         })}

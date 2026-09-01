@@ -168,6 +168,27 @@ describe("expected XI reader", () => {
     });
   });
 
+  it("caps a doubtful starter's xStart at FPL's own published chance of playing", () => {
+    const arsenal = buildExpectedXi({ seasonInputs, playerOdds }).teams.find(
+      (team) => team.club === "ARS",
+    );
+    const keeper = arsenal?.starters.find((player) => player.id === 1);
+
+    // Model rate is 0.7; FPL says a doubtful 25% chance, and the lower one wins.
+    expect(keeper?.startProbability).toBeCloseTo(0.25, 5);
+  });
+
+  it("cannot show a high xStart for a player FPL has flagged as unavailable", () => {
+    const arsenal = buildExpectedXi({ seasonInputs, playerOdds }).teams.find(
+      (team) => team.club === "ARS",
+    );
+    const hidden = arsenal?.availabilityFlags.find(
+      (player) => player.name === "Hidden injury",
+    );
+
+    expect(hidden?.startProbability).toBeLessThanOrEqual(0.03);
+  });
+
   it("keeps flags visible below the seven reserves", () => {
     const arsenal = buildExpectedXi({ seasonInputs, playerOdds }).teams.find(
       (team) => team.club === "ARS",
@@ -281,7 +302,10 @@ describe("expected XI reader", () => {
       unmatchedNames: ["Mystery Player"],
       updatedAt: "2026-08-19T21:10:00Z",
     });
-    expect(arsenal?.averageStartProbability).toBeGreaterThan(0.6);
+    // The starting keeper is doubtful at a published 25% chance of playing,
+    // which caps his contribution to the average well below his raw rate.
+    expect(arsenal?.averageStartProbability).toBeGreaterThan(0.55);
+    expect(arsenal?.averageStartProbability).toBeLessThan(0.6);
   });
 
   it("lets a manual xStart prior correct a known starting goalkeeper", () => {

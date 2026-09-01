@@ -23,6 +23,12 @@ export type PortfolioStructure = {
     count: number;
     share: number;
   }[];
+  outfieldTrios?: {
+    position: "DEF" | "MID" | "FWD";
+    elementIds: number[];
+    count: number;
+    share: number;
+  }[];
   commonStartingXi: {
     method: string;
     formation: number[];

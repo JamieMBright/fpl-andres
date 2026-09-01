@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
   CHIPS,
   CHIP_NAMES,
+  chipsFromHistory,
   chipsRemaining,
   halfForEvent,
   readDeclaredChips,
@@ -10,6 +11,7 @@ import {
   type Chip,
   type DeclaredChips,
 } from "../state/declared-chips";
+import { entryHistorySchema } from "../state/manager-profile";
 
 /**
  * What the manager has already decided, which FPL does not publish.
@@ -34,12 +36,67 @@ export function DeclaredChipsForm({
   const [chips, setChips] = useState<DeclaredChips>(() =>
     readDeclaredChips(window.localStorage, entryId),
   );
+  // Which rows came off FPL's own record rather than a manual toggle, so the
+  // manager is only ever asked to correct what FPL has not processed yet.
+  const [inferredKeys, setInferredKeys] = useState<ReadonlySet<string>>(
+    new Set(),
+  );
 
   function commit(next: DeclaredChips) {
     const saved = saveDeclaredChips(window.localStorage, entryId, next);
     setChips(saved);
     onDeclared(saved);
   }
+
+  useEffect(() => {
+    const controller = new AbortController();
+    async function read() {
+      try {
+        const response = await fetch(
+          `/api/fpl/entry/${String(entryId)}/history`,
+          {
+            signal: controller.signal,
+          },
+        );
+        if (!response.ok) return;
+        const parsed = entryHistorySchema.safeParse(
+          await response.json().catch(() => null),
+        );
+        if (!parsed.success) return;
+        const inferred = chipsFromHistory(parsed.data.chips);
+        if (inferred.length === 0) return;
+        setInferredKeys(
+          new Set(inferred.map((entry) => `${entry.chip}:${entry.half}`)),
+        );
+        setChips((current) => {
+          const merged = [
+            ...new Map(
+              [...current.spent, ...inferred].map((entry) => [
+                `${entry.chip}:${entry.half}`,
+                entry,
+              ]),
+            ).values(),
+          ];
+          if (merged.length === current.spent.length) return current;
+          const saved = saveDeclaredChips(window.localStorage, entryId, {
+            ...current,
+            spent: merged,
+          });
+          onDeclared(saved);
+          return saved;
+        });
+      } catch {
+        // FPL unreachable: the manual toggles below are the fallback.
+      }
+    }
+    void read();
+    return () => {
+      controller.abort();
+    };
+    // onDeclared is a fresh closure every render in the caller; keying the
+    // fetch to it would re-read FPL on every unrelated re-render.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [entryId]);
 
   return (
     <form
@@ -51,7 +108,9 @@ export function DeclaredChipsForm({
     >
       <h3 id="declared-chips">Chip decisions FPL cannot see</h3>
       <p>
-        Mark chips already used and one you have committed to. The plan will not
+        Chips FPL has already processed are ticked from your own record below.
+        Toggle one by hand only for a chip played too recently for FPL to have
+        processed yet, and set one you have committed to. The plan will not
         recommend a chip twice or schedule around a decision you have made.
       </p>
 
@@ -61,13 +120,16 @@ export function DeclaredChipsForm({
           <div key={half}>
             <strong>{half === "first" ? "First half" : "Second half"}</strong>
             {CHIPS.map((chip) => {
+              const rowKey = `${chip}:${half}`;
               const checked = chips.spent.some(
                 (entry) => entry.chip === chip && entry.half === half,
               );
+              const inferred = inferredKeys.has(rowKey);
               return (
-                <label key={`${half}-${chip}`}>
+                <label className="chip-toggle" key={rowKey}>
                   <input
                     checked={checked}
+                    disabled={inferred}
                     onChange={(event) => {
                       commit({
                         ...chips,
@@ -81,7 +143,15 @@ export function DeclaredChipsForm({
                     }}
                     type="checkbox"
                   />
-                  {CHIP_NAMES[chip]}
+                  <span>
+                    {CHIP_NAMES[chip]}
+                    {inferred ? (
+                      <small className="chip-toggle-source">
+                        {" "}
+                        · from your record
+                      </small>
+                    ) : null}
+                  </span>
                 </label>
               );
             })}

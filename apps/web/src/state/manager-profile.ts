@@ -19,9 +19,20 @@ export const pastSeasonSchema = z
   })
   .loose();
 
+/** A chip FPL recorded as played this season, on the record rather than the manager's word. */
+export const chipPlaySchema = z
+  .object({
+    name: z.string(),
+    event: z.int().positive(),
+  })
+  .loose();
+
+export type ChipPlay = z.infer<typeof chipPlaySchema>;
+
 export const entryHistorySchema = z
   .object({
     past: z.array(pastSeasonSchema),
+    chips: z.array(chipPlaySchema).optional(),
   })
   .loose();
 

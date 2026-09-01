@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 import { InfoMarker } from "./InfoMarker";
+import { Fpl500ChipAdoption } from "./Fpl500ChipAdoption";
 import { Fpl500Holdings, type Fpl500Holding } from "./Fpl500Holdings";
 import { Fpl500Structure, type PortfolioStructure } from "./Fpl500Structure";
 import { BarChart, type Bar } from "./MethodChart";
@@ -310,6 +311,7 @@ function LatestCohortSummary() {
         caption={`Which chips they spent in ${gameweek}`}
         unit="managers"
       />
+      <Fpl500ChipAdoption series={data.exactFpl500Portfolio} />
       <p className="mono fpl500-note">
         {number.format(sample.responded)} of {number.format(sample.attempted)}{" "}
         histories · {fineShare.format(sample.coverage)} coverage.
@@ -453,6 +455,7 @@ function ExactFpl500Analysis() {
           event={latest.event}
           holdings={holdings}
           keeperPairings={structure?.keeperPairings}
+          outfieldTrios={structure?.outfieldTrios}
         />
       ) : null}
       {structure ? (

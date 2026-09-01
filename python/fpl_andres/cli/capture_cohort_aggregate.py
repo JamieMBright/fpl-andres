@@ -31,7 +31,7 @@ DEFAULT_MEMBERSHIP_DIR = Path("data/cohort/fpl500-membership")
 DEFAULT_PORTFOLIO_DIR = Path("data/cohort/portfolio/fpl500")
 DEFAULT_PLAYERS = Path("apps/web/public/fpl-global.json")
 SCHEMA_VERSION = 1
-STRUCTURE_SCHEMA_VERSION = 3
+STRUCTURE_SCHEMA_VERSION = 4
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -140,6 +140,15 @@ def write_structure(
             position_codes[position]: _summary_payload(summary)
             for position, summary in structure.positional_spend.items()
         },
+        "outfieldTrios": [
+            {
+                "position": position_codes[row.position],
+                "elementIds": list(row.element_ids),
+                "count": row.count,
+                "share": round(row.share, 5),
+            }
+            for row in structure.outfield_trios
+        ],
     }
     if structure.popularity_squad is not None:
         popularity = structure.popularity_squad

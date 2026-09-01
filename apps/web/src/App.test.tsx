@@ -325,9 +325,12 @@ describe("team analysis entry", () => {
   });
 
   it("explains a valid unavailable result without inventing state", async () => {
+    // A fresh Response per call: DeclaredChipsForm now fetches the entry
+    // history too, and a single shared Response object can only have its body
+    // read once before every other reader sees "body already used".
     vi.stubGlobal(
       "fetch",
-      vi.fn<typeof fetch>().mockResolvedValue(
+      vi.fn<typeof fetch>().mockImplementation(async () =>
         Response.json({
           status: "unavailable",
           reason: "no_processed_event",
@@ -355,10 +358,14 @@ describe("team analysis entry", () => {
   });
 
   it("rides out a single dropped connection without troubling the user", async () => {
+    // A fresh Response per call after the first: DeclaredChipsForm fetches
+    // the entry history too, and a shared Response body can only be read once.
     const fetchApi = vi
       .fn<typeof fetch>()
       .mockRejectedValueOnce(new TypeError("offline"))
-      .mockResolvedValue(Response.json({ status: "ready", state: readyState }));
+      .mockImplementation(async () =>
+        Response.json({ status: "ready", state: readyState }),
+      );
     vi.stubGlobal("fetch", fetchApi);
 
     renderApplication(`/plan?team=${String(readyState.entryId)}`);

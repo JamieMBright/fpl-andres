@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   CHIPS,
   NO_CHIPS,
+  chipsFromHistory,
   chipsRemaining,
   readDeclaredChips,
   saveDeclaredChips,
@@ -31,6 +32,32 @@ function store(): Storage {
 describe("declared chips", () => {
   it("knows nothing about a team that has said nothing", () => {
     expect(readDeclaredChips(store(), 1)).toEqual(NO_CHIPS);
+  });
+
+  it("infers a spent chip straight off FPL's own history record", () => {
+    expect(
+      chipsFromHistory([
+        { name: "wildcard", event: 5 },
+        { name: "bboost", event: 22 },
+      ]),
+    ).toEqual([
+      { chip: "wildcard", half: "first" },
+      { chip: "bboost", half: "second" },
+    ]);
+  });
+
+  it("ignores a chip name FPL has not published, and de-duplicates repeats", () => {
+    expect(
+      chipsFromHistory([
+        { name: "manager_of_the_month" as never, event: 3 },
+        { name: "freehit", event: 3 },
+        { name: "freehit", event: 3 },
+      ]),
+    ).toEqual([{ chip: "freehit", half: "first" }]);
+  });
+
+  it("infers nothing from an absent history record", () => {
+    expect(chipsFromHistory(undefined)).toEqual([]);
   });
 
   it("returns what was declared", () => {

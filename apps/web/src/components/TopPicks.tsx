@@ -3,9 +3,9 @@ import { useId, useState } from "react";
 import { money, oneDecimal } from "../format";
 import { kitForShortName } from "../kit/team-kits";
 import { DEFAULT_HORIZON, horizonPointsByCode } from "../state/horizon-points";
+import { planningEventAt } from "../state/season-deadlines";
 import {
   EVENT_INDEX,
-  SEASON_EVENTS,
   SEASON_PLAYERS,
   fixtureAtEvent,
   type EventFixture,
@@ -63,8 +63,6 @@ const ROUTE_LABELS: readonly (readonly [keyof EventRoutes, string])[] = [
 /** Below this a route is rounding, and eight rounding routes bury the two that matter. */
 const WORTH_NAMING = 0.05;
 
-const START_INDEX = EVENT_INDEX.get(SEASON_EVENTS[0] ?? -1) ?? null;
-
 interface Pick {
   label: string;
   player: SolverPlayer;
@@ -83,8 +81,9 @@ function picksFor(
   position: string,
   label: string,
   totals: ReadonlyMap<number, number>,
+  startIndex: number | null,
 ): Pick[] {
-  if (START_INDEX === null) return [];
+  if (startIndex === null) return [];
   return SEASON_PLAYERS.filter((player) => player.position === position)
     .flatMap((player) => {
       const points = totals.get(player.code);
@@ -107,7 +106,7 @@ function picksFor(
       const fixtures: EventFixture[] = [];
       if (index === 0) {
         for (let ahead = 0; ahead < DEFAULT_HORIZON; ahead += 1) {
-          const fixture = fixtureAtEvent(player, START_INDEX + ahead);
+          const fixture = fixtureAtEvent(player, startIndex + ahead);
           if (fixture) fixtures.push(fixture);
         }
       }
@@ -264,9 +263,13 @@ export function TopPicks() {
   const panelId = useId();
   const [selected, setSelected] = useState<DetailPlayer | null>(null);
   const [openCode, setOpenCode] = useState<number | null>(null);
-  const totals = horizonPointsByCode(DEFAULT_HORIZON);
+  // The current planning gameweek, not the first one the season ever published,
+  // or this stayed on GW1's fixtures for the whole season.
+  const currentEvent = planningEventAt();
+  const startIndex = EVENT_INDEX.get(currentEvent) ?? null;
+  const totals = horizonPointsByCode(DEFAULT_HORIZON, currentEvent);
   const columns = POSITIONS.map(({ code, label }) =>
-    picksFor(code, label, totals),
+    picksFor(code, label, totals, startIndex),
   ).filter((picks) => picks.length > 0);
   const picks = columns.flat();
   const shown = picks.find((pick) => pick.player.code === openCode) ?? null;

@@ -5748,6 +5748,21 @@ button.fpl500-holding-name {
   background: var(--surface-raised);
 }
 
+.fpl500-trio {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  margin: 10px 0 0;
+  padding: 7px 9px;
+  background: var(--surface-raised);
+  font-size: 13px;
+}
+
+.fpl500-trio span:first-child {
+  color: var(--ink-soft);
+}
+
 .fpl500-spend-fill {
   position: absolute;
   inset: 0;
@@ -5946,6 +5961,60 @@ button.fpl500-holding-name {
 
 .ridge-tick {
   text-anchor: middle;
+}
+
+.chip-adoption-chart {
+  margin: 18px 0 8px;
+}
+
+.chip-adoption-chart figcaption {
+  margin-bottom: 6px;
+  font-size: 12px;
+  color: var(--ink-soft);
+}
+
+.chip-adoption-grid {
+  stroke: var(--rule);
+  stroke-width: 1;
+  opacity: 0.35;
+}
+
+.chip-adoption-reset {
+  stroke: var(--ink-soft);
+  stroke-width: 1;
+  stroke-dasharray: 4 4;
+}
+
+.chip-adoption-line {
+  stroke-width: 2;
+}
+
+.chip-adoption-axis {
+  fill: var(--ink-soft);
+  font-family: var(--fa-body);
+  font-size: 10px;
+}
+
+.chip-adoption-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 12px;
+}
+
+.chip-adoption-legend li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.chip-adoption-swatch {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
 }
 
 /* What will be here after gameweek one, drawn as the real frame. */
@@ -8336,13 +8405,45 @@ button.fpl500-holding-name {
 }
 
 .declared-chips-spent label {
+  position: relative;
   display: flex;
-  min-height: 40px;
+  min-height: 44px;
   align-items: center;
-  gap: 8px;
   padding: 7px 10px;
   background: var(--paper-strong);
   cursor: pointer;
+}
+
+/* Covers the whole pill so a tap anywhere on the row toggles it, not just the
+   native checkbox's own small box. */
+.declared-chips-spent input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.declared-chips-spent input:checked + span {
+  font-weight: 700;
+}
+
+.declared-chips-spent input:checked + span::before {
+  content: "\2713 ";
+}
+
+.declared-chips-spent input:disabled + span {
+  color: var(--ink-soft);
+}
+
+.chip-toggle-source {
+  color: var(--ink-soft);
+  font-weight: 400;
+}
+
+.declared-chips-spent input:focus-visible + span {
+  outline: 3px solid var(--signal-blue);
+  outline-offset: 2px;
 }
 
 .declared-chips-commit {
