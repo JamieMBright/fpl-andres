@@ -4,6 +4,7 @@ import { buildExpectedXi } from "./expected-xi";
 
 const seasonInputs = {
   generatedAt: "2026-08-19T20:00:00Z",
+  events: [2, 3, 4],
   marketCarry: { players: { "4": [0, 0.5, 1.2, 0.4, 0, 0] } },
   evidence: { playerMarkets: { updatedAt: "2026-08-19T21:00:00Z" } },
   players: [

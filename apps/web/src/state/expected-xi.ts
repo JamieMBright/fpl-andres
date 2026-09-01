@@ -429,8 +429,13 @@ export function buildExpectedXi(inputs: ExpectedXiInputs): ExpectedXi {
           (clubOrder.get(right.club) ?? Number.MAX_SAFE_INTEGER) ||
         left.club.localeCompare(right.club),
     );
+  const event = inputs.seasonInputs.events?.[0];
+  if (event === undefined) {
+    // Defaulting this shipped a page headed on a gameweek nobody had planned.
+    throw new Error("season inputs published no gameweek to build an XI for");
+  }
   return {
-    event: inputs.seasonInputs.events?.[0] ?? 2,
+    event,
     generatedAt: inputs.seasonInputs.generatedAt,
     marketUpdatedAt:
       inputs.seasonInputs.evidence?.playerMarkets?.updatedAt ??
