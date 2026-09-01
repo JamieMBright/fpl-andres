@@ -3,14 +3,72 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 import { describe, expect, it, vi } from "vitest";
 
-import { Fpl500Playbook } from "./Fpl500Playbook";
+import { Fpl500Playbook, latestCapture } from "./Fpl500Playbook";
 import artifact from "../data/fpl500.json";
 import { fineShare, integer } from "../format";
 
-// The page reports the newest gameweek captured, so pinning one here would
+// The page shows the newest gameweek FPL has scored, so pinning one here would
 // date the test to the week it was written.
-const LATEST_EVENT = Math.max(...artifact.exactFpl500Portfolio.events);
+const LATEST_EVENT =
+  latestCapture(
+    artifact.exactFpl500Portfolio as Parameters<typeof latestCapture>[0],
+  )?.event ?? Math.max(...artifact.exactFpl500Portfolio.events);
 const NEXT_EVENT = LATEST_EVENT + 1;
+
+describe("latestCapture", () => {
+  const series = (
+    events: number[],
+    points: Record<string, number>,
+  ): Parameters<typeof latestCapture>[0] => ({
+    basis: "ranked-500",
+    label: "Exact FPL500",
+    events,
+    samples: {},
+    captains: {},
+    holdings: Object.fromEntries(
+      events.map((event) => {
+        const key = String(event).padStart(2, "0");
+        return [
+          key,
+          [
+            {
+              elementId: 1,
+              code: 1,
+              name: "P",
+              position: "MID",
+              club: "ARS",
+              teamId: 1,
+              priceTenths: 50,
+              ownedShare: 0.5,
+              startedShare: 0.5,
+              captainedShare: 0,
+              effectiveOwnership: 0.5,
+              lastWeekPoints: points[key] ?? 0,
+            },
+          ],
+        ];
+      }),
+    ),
+  });
+
+  it("shows the newest gameweek once FPL has scored it", () => {
+    expect(latestCapture(series([1, 2], { "01": 5, "02": 7 }))?.event).toBe(2);
+  });
+
+  it("holds back a round captured before its points are confirmed", () => {
+    // A round is captured the moment its deadline passes, hours before FPL
+    // confirms the points. Showing it then put a wall of zeros on the page.
+    expect(latestCapture(series([1, 2], { "01": 5, "02": 0 }))?.event).toBe(1);
+  });
+
+  it("still shows the opening round while nothing has been scored", () => {
+    expect(latestCapture(series([1], { "01": 0 }))?.event).toBe(1);
+  });
+
+  it("has nothing to show before the first capture", () => {
+    expect(latestCapture(series([], {}))).toBeNull();
+  });
+});
 
 /**
  * Two claims here are easy to lose to a redesign and neither is visible in a

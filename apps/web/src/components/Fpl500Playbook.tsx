@@ -237,18 +237,26 @@ function CaptainDistribution() {
 }
 
 /**
- * The most recent gameweek captured, and the key it is filed under.
+ * The gameweek this page describes: the newest one captured that FPL has also
+ * scored.
  *
- * Every section below used to read `["01"]` outright, so the page kept
- * describing the opening gameweek for the whole season however many had been
- * captured since.
+ * Reading `["01"]` outright kept the page on the opening gameweek all season.
+ * Reading the newest capture instead was worse for a day: a round is captured
+ * as soon as its deadline passes, hours before FPL confirms the points, and
+ * every holding in it reads zero until then. Showing the newest *scored*
+ * gameweek means the page is never a wall of zeros, and it still advances on
+ * its own the moment the points land.
  */
-function latestCapture(
+export function latestCapture(
   series: PortfolioSeries,
 ): { event: number; key: string } | null {
-  if (series.events.length === 0) return null;
-  const event = Math.max(...series.events);
-  return { event, key: String(event).padStart(2, "0") };
+  const keyed = [...series.events]
+    .sort((left, right) => right - left)
+    .map((event) => ({ event, key: String(event).padStart(2, "0") }));
+  const scored = keyed.find(({ key }) =>
+    (series.holdings?.[key] ?? []).some((holding) => holding.lastWeekPoints),
+  );
+  return scored ?? keyed[0] ?? null;
 }
 
 function LatestCohortSummary() {
@@ -423,13 +431,20 @@ function ExactFpl500Analysis() {
   const captured = series.events.length;
   const holdings = latest ? (series.holdings?.[latest.key] ?? []) : [];
   const structure = latest ? series.samples[latest.key]?.structure : undefined;
+  // A round captured at its deadline but not yet scored is held back rather
+  // than shown as zeros, so the page says where it went.
+  const newest = Math.max(0, ...series.events);
+  const awaiting = latest && newest > latest.event ? newest : null;
 
   return (
     <>
       <p>
         {captured === 0
           ? "No exact FPL500 gameweek has been captured yet."
-          : `${String(captured)} exact FPL500 ${captured === 1 ? "gameweek" : "gameweeks"} captured, through GW${String(latest?.event ?? 0)}.`}
+          : `${String(captured)} exact FPL500 ${captured === 1 ? "gameweek" : "gameweeks"} captured, showing GW${String(latest?.event ?? 0)}.`}
+        {awaiting === null
+          ? null
+          : ` GW${String(awaiting)} is captured and waiting on FPL to confirm its points.`}
       </p>
       <LatestCohortSummary />
       <CaptainDistribution />
