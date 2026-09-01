@@ -25,7 +25,9 @@ concurrency:
 jobs:
   publish:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    # The plan solve is the long part of the chain below, as it is in both odds
+    # jobs. Twenty minutes was enough when this only rewrote the inputs.
+    timeout-minutes: 90
     steps:
       - name: Check out repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
@@ -44,21 +46,24 @@ jobs:
       - name: Install engine
         run: python -m pip install -e .
 
-      - name: Regenerate season inputs with fresh market data
+      # Rewriting the inputs alone left the plan built on the previous ones:
+      # the site kept serving a plan from before the market moved, and the
+      # dependency-order check caught it as soon as the artifacts started
+      # carrying honest timestamps rather than both being dated to the first
+      # deadline. The whole derived chain is republished together, by the same
+      # script the odds jobs call for the same reason.
+      - name: Republish the derived planning chain
         run: |
           set -o pipefail
-          python -m fpl_andres.cli.publish_season_inputs | tee -a publish.log
-
-      - name: Format generated files
-        run: |
-          npx --yes prettier@3 --write apps/web/src/data/season-inputs.json
+          bash scripts/republish-plan.sh | tee -a publish.log
 
       - name: Commit updated solver input
         run: |
+          paths="apps/web/src/data/season-inputs.json apps/web/src/data/opening-squad.json apps/web/src/data/season-plan.json data/prospective"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add apps/web/src/data/season-inputs.json
-          if ! git diff --cached --quiet; then
+          git add $paths
+          if ! git diff --cached --quiet -- $paths; then
             git commit -m "chore: regenerate solver input with fresh market data"
             git pull --rebase --autostash
             git push

@@ -34,9 +34,10 @@ npx --yes prettier@3 --write \
   apps/web/src/data/opening-squad.json \
   apps/web/src/data/season-plan.json
 
-# The CLI selects the first unfinished event from the full deadline ledger.
-# Using `season-inputs.deadlines[0]` after GW1 paired GW2's deadline with the
-# default event 1 and rewrote a supposedly frozen historical manifest.
+# The CLI selects the first event whose deadline is still ahead, from the full
+# deadline ledger. Using `season-inputs.deadlines[0]` after GW1 paired GW2's
+# deadline with the default event 1 and rewrote a supposedly frozen historical
+# manifest.
 python -m fpl_andres.cli.freeze_prospective \
   --frozen-at "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
   --code-revision "${GITHUB_SHA:-$(git rev-parse HEAD)}"
