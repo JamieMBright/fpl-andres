@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "season": "2026-27",
-  "fetchedAt": "2026-08-31T21:54:18.183473+00:00",
+  "fetchedAt": "2026-09-01T14:17:46.111345+00:00",
   "source": "the-odds-api",
   "markets": [
     "player_goal_scorer_anytime",
@@ -17,19 +17,19 @@
   "quota": {
     "opening": {
       "cost": 0,
-      "used": 500,
-      "remaining": 0
+      "used": 12,
+      "remaining": 488
     },
     "closing": {
       "cost": 0,
-      "used": 500,
-      "remaining": 0
+      "used": 12,
+      "remaining": 488
     },
     "spentThisRun": 0
   },
   "coverage": {
     "fixturesListed": 20,
-    "fixturesVisitedThisRun": 0,
+    "fixturesVisitedThisRun": 20,
     "fixturesWithQuotes": 0
   },
   "nameMappingGaps": [],
@@ -40,26 +40,26 @@
       "away_team": "Liverpool",
       "home_short": "IPS",
       "away_short": "LIV",
-      "status": "unvisited",
+      "status": "no-bookmaker",
       "books": 0,
       "outcomes": 0,
       "offered_markets": [],
       "missing_markets": [
-        "player_goal_scorer_anytime",
-        "player_first_goal_scorer",
-        "player_last_goal_scorer",
         "player_assists",
-        "player_to_receive_card",
-        "player_to_receive_red_card",
+        "player_first_goal_scorer",
+        "player_goal_scorer_anytime",
+        "player_last_goal_scorer",
         "player_shots",
-        "player_shots_on_target"
+        "player_shots_on_target",
+        "player_to_receive_card",
+        "player_to_receive_red_card"
       ],
       "player_rows_parsed": 0,
       "player_rows_matched": 0,
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-09-04T19:00:00+00:00",
-      "visited_at": null
+      "visited_at": "2026-09-01T14:17:46.111345+00:00"
     },
     {
       "event_id": "686358c484cc44fe8e617674c335d531",
@@ -67,26 +67,26 @@
       "away_team": "Bournemouth",
       "home_short": "NEW",
       "away_short": "BOU",
-      "status": "unvisited",
+      "status": "no-bookmaker",
       "books": 0,
       "outcomes": 0,
       "offered_markets": [],
       "missing_markets": [
-        "player_goal_scorer_anytime",
-        "player_first_goal_scorer",
-        "player_last_goal_scorer",
         "player_assists",
-        "player_to_receive_card",
-        "player_to_receive_red_card",
+        "player_first_goal_scorer",
+        "player_goal_scorer_anytime",
+        "player_last_goal_scorer",
         "player_shots",
-        "player_shots_on_target"
+        "player_shots_on_target",
+        "player_to_receive_card",
+        "player_to_receive_red_card"
       ],
       "player_rows_parsed": 0,
       "player_rows_matched": 0,
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-09-05T11:30:00+00:00",
-      "visited_at": null
+      "visited_at": "2026-09-01T14:17:46.111345+00:00"
     },
     {
       "event_id": "29f81160baf6a97d6391d7172fad2425",
@@ -94,26 +94,26 @@
       "away_team": "Sunderland",
       "home_short": "BRE",
       "away_short": "SUN",
-      "status": "unvisited",
+      "status": "no-bookmaker",
       "books": 0,
       "outcomes": 0,
       "offered_markets": [],
       "missing_markets": [
-        "player_goal_scorer_anytime",
-        "player_first_goal_scorer",
-        "player_last_goal_scorer",
         "player_assists",
-        "player_to_receive_card",
-        "player_to_receive_red_card",
+        "player_first_goal_scorer",
+        "player_goal_scorer_anytime",
+        "player_last_goal_scorer",
         "player_shots",
-        "player_shots_on_target"
+        "player_shots_on_target",
+        "player_to_receive_card",
+        "player_to_receive_red_card"
       ],
       "player_rows_parsed": 0,
       "player_rows_matched": 0,
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-09-05T14:00:00+00:00",
-      "visited_at": null
+      "visited_at": "2026-09-01T14:17:46.111345+00:00"
     },
     {
       "event_id": "3b81531990da7ea3e461c43e8827672b",
@@ -121,26 +121,26 @@
       "away_team": "Leeds United",
       "home_short": "BHA",
       "away_short": "LEE",
-      "status": "unvisited",
+      "status": "no-bookmaker",
       "books": 0,
       "outcomes": 0,
       "offered_markets": [],
       "missing_markets": [
-        "player_goal_scorer_anytime",
-        "player_first_goal_scorer",
-        "player_last_goal_scorer",
         "player_assists",
-        "player_to_receive_card",
-        "player_to_receive_red_card",
+        "player_first_goal_scorer",
+        "player_goal_scorer_anytime",
+        "player_last_goal_scorer",
         "player_shots",
-        "player_shots_on_target"
+        "player_shots_on_target",
+        "player_to_receive_card",
+        "player_to_receive_red_card"
       ],
       "player_rows_parsed": 0,
       "player_rows_matched": 0,
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-09-05T14:00:00+00:00",
-      "visited_at": null
+      "visited_at": "2026-09-01T14:17:46.111345+00:00"
     },
     {
       "event_id": "3db5f919507eb8ab0c8c72bddaca8f08",
@@ -148,26 +148,26 @@
       "away_team": "Coventry City",
       "home_short": "MCI",
       "away_short": "COV",
-      "status": "unvisited",
+      "status": "no-bookmaker",
       "books": 0,
       "outcomes": 0,
       "offered_markets": [],
       "missing_markets": [
-        "player_goal_scorer_anytime",
-        "player_first_goal_scorer",
-        "player_last_goal_scorer",
         "player_assists",
-        "player_to_receive_card",
-        "player_to_receive_red_card",
+        "player_first_goal_scorer",
+        "player_goal_scorer_anytime",
+        "player_last_goal_scorer",
         "player_shots",
-        "player_shots_on_target"
+        "player_shots_on_target",
+        "player_to_receive_card",
+        "player_to_receive_red_card"
       ],
       "player_rows_parsed": 0,
       "player_rows_matched": 0,
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-09-05T14:00:00+00:00",
-      "visited_at": null
+      "visited_at": "2026-09-01T14:17:46.111345+00:00"
     },
     {
       "event_id": "8f68612bf47c3193e7fa2d8783e79373",
@@ -175,26 +175,26 @@
       "away_team": "Crystal Palace",
       "home_short": "FUL",
       "away_short": "CRY",
-      "status": "unvisited",
+      "status": "no-bookmaker",
       "books": 0,
       "outcomes": 0,
       "offered_markets": [],
       "missing_markets": [
-        "player_goal_scorer_anytime",
-        "player_first_goal_scorer",
-        "player_last_goal_scorer",
         "player_assists",
-        "player_to_receive_card",
-        "player_to_receive_red_card",
+        "player_first_goal_scorer",
+        "player_goal_scorer_anytime",
+        "player_last_goal_scorer",
         "player_shots",
-        "player_shots_on_target"
+        "player_shots_on_target",
+        "player_to_receive_card",
+        "player_to_receive_red_card"
       ],
       "player_rows_parsed": 0,
       "player_rows_matched": 0,
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-09-05T14:00:00+00:00",
-      "visited_at": null
+      "visited_at": "2026-09-01T14:17:46.111345+00:00"
     },
     {
       "event_id": "a6f2622727548c33369cc15c88b2aabd",
@@ -202,26 +202,26 @@
       "away_team": "Tottenham Hotspur",
       "home_short": "NFO",
       "away_short": "TOT",
-      "status": "unvisited",
+      "status": "no-bookmaker",
       "books": 0,
       "outcomes": 0,
       "offered_markets": [],
       "missing_markets": [
-        "player_goal_scorer_anytime",
-        "player_first_goal_scorer",
-        "player_last_goal_scorer",
         "player_assists",
-        "player_to_receive_card",
-        "player_to_receive_red_card",
+        "player_first_goal_scorer",
+        "player_goal_scorer_anytime",
+        "player_last_goal_scorer",
         "player_shots",
-        "player_shots_on_target"
+        "player_shots_on_target",
+        "player_to_receive_card",
+        "player_to_receive_red_card"
       ],
       "player_rows_parsed": 0,
       "player_rows_matched": 0,
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-09-05T14:00:00+00:00",
-      "visited_at": null
+      "visited_at": "2026-09-01T14:17:46.111345+00:00"
     },
     {
       "event_id": "21fd24ad6732df00774304a046d84fe9",
@@ -229,26 +229,26 @@
       "away_team": "Aston Villa",
       "home_short": "HUL",
       "away_short": "AVL",
-      "status": "unvisited",
+      "status": "no-bookmaker",
       "books": 0,
       "outcomes": 0,
       "offered_markets": [],
       "missing_markets": [
-        "player_goal_scorer_anytime",
-        "player_first_goal_scorer",
-        "player_last_goal_scorer",
         "player_assists",
-        "player_to_receive_card",
-        "player_to_receive_red_card",
+        "player_first_goal_scorer",
+        "player_goal_scorer_anytime",
+        "player_last_goal_scorer",
         "player_shots",
-        "player_shots_on_target"
+        "player_shots_on_target",
+        "player_to_receive_card",
+        "player_to_receive_red_card"
       ],
       "player_rows_parsed": 0,
       "player_rows_matched": 0,
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-09-05T16:30:00+00:00",
-      "visited_at": null
+      "visited_at": "2026-09-01T14:17:46.111345+00:00"
     },
     {
       "event_id": "8ea6c863f1852654399073b518b0a1f8",
@@ -256,26 +256,26 @@
       "away_team": "Manchester United",
       "home_short": "EVE",
       "away_short": "MUN",
-      "status": "unvisited",
+      "status": "no-bookmaker",
       "books": 0,
       "outcomes": 0,
       "offered_markets": [],
       "missing_markets": [
-        "player_goal_scorer_anytime",
-        "player_first_goal_scorer",
-        "player_last_goal_scorer",
         "player_assists",
-        "player_to_receive_card",
-        "player_to_receive_red_card",
+        "player_first_goal_scorer",
+        "player_goal_scorer_anytime",
+        "player_last_goal_scorer",
         "player_shots",
-        "player_shots_on_target"
+        "player_shots_on_target",
+        "player_to_receive_card",
+        "player_to_receive_red_card"
       ],
       "player_rows_parsed": 0,
       "player_rows_matched": 0,
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-09-06T13:00:00+00:00",
-      "visited_at": null
+      "visited_at": "2026-09-01T14:17:46.111345+00:00"
     },
     {
       "event_id": "78d4dfda8c2dc27bdc3ec26c2654f8fc",
@@ -283,26 +283,26 @@
       "away_team": "Chelsea",
       "home_short": "ARS",
       "away_short": "CHE",
-      "status": "unvisited",
+      "status": "no-bookmaker",
       "books": 0,
       "outcomes": 0,
       "offered_markets": [],
       "missing_markets": [
-        "player_goal_scorer_anytime",
-        "player_first_goal_scorer",
-        "player_last_goal_scorer",
         "player_assists",
-        "player_to_receive_card",
-        "player_to_receive_red_card",
+        "player_first_goal_scorer",
+        "player_goal_scorer_anytime",
+        "player_last_goal_scorer",
         "player_shots",
-        "player_shots_on_target"
+        "player_shots_on_target",
+        "player_to_receive_card",
+        "player_to_receive_red_card"
       ],
       "player_rows_parsed": 0,
       "player_rows_matched": 0,
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-09-06T15:30:00+00:00",
-      "visited_at": null
+      "visited_at": "2026-09-01T14:17:46.111345+00:00"
     },
     {
       "event_id": "d09677edcf1fb82ad75a8df58bb26eab",
@@ -310,26 +310,26 @@
       "away_team": "Nottingham Forest",
       "home_short": "AVL",
       "away_short": "NFO",
-      "status": "unvisited",
+      "status": "no-bookmaker",
       "books": 0,
       "outcomes": 0,
       "offered_markets": [],
       "missing_markets": [
-        "player_goal_scorer_anytime",
-        "player_first_goal_scorer",
-        "player_last_goal_scorer",
         "player_assists",
-        "player_to_receive_card",
-        "player_to_receive_red_card",
+        "player_first_goal_scorer",
+        "player_goal_scorer_anytime",
+        "player_last_goal_scorer",
         "player_shots",
-        "player_shots_on_target"
+        "player_shots_on_target",
+        "player_to_receive_card",
+        "player_to_receive_red_card"
       ],
       "player_rows_parsed": 0,
       "player_rows_matched": 0,
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-09-12T14:00:00+00:00",
-      "visited_at": null
+      "visited_at": "2026-09-01T14:17:46.111345+00:00"
     },
     {
       "event_id": "d856d4353db0b4cca2a49b96dfd19c92",
@@ -337,26 +337,26 @@
       "away_team": "Brentford",
       "home_short": "BOU",
       "away_short": "BRE",
-      "status": "unvisited",
+      "status": "no-bookmaker",
       "books": 0,
       "outcomes": 0,
       "offered_markets": [],
       "missing_markets": [
-        "player_goal_scorer_anytime",
-        "player_first_goal_scorer",
-        "player_last_goal_scorer",
         "player_assists",
-        "player_to_receive_card",
-        "player_to_receive_red_card",
+        "player_first_goal_scorer",
+        "player_goal_scorer_anytime",
+        "player_last_goal_scorer",
         "player_shots",
-        "player_shots_on_target"
+        "player_shots_on_target",
+        "player_to_receive_card",
+        "player_to_receive_red_card"
       ],
       "player_rows_parsed": 0,
       "player_rows_matched": 0,
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-09-12T14:00:00+00:00",
-      "visited_at": null
+      "visited_at": "2026-09-01T14:17:46.111345+00:00"
     },
     {
       "event_id": "5163190733dcaaea80474e43cbe20a51",
@@ -364,26 +364,26 @@
       "away_team": "Hull City",
       "home_short": "CHE",
       "away_short": "HUL",
-      "status": "unvisited",
+      "status": "no-bookmaker",
       "books": 0,
       "outcomes": 0,
       "offered_markets": [],
       "missing_markets": [
-        "player_goal_scorer_anytime",
-        "player_first_goal_scorer",
-        "player_last_goal_scorer",
         "player_assists",
-        "player_to_receive_card",
-        "player_to_receive_red_card",
+        "player_first_goal_scorer",
+        "player_goal_scorer_anytime",
+        "player_last_goal_scorer",
         "player_shots",
-        "player_shots_on_target"
+        "player_shots_on_target",
+        "player_to_receive_card",
+        "player_to_receive_red_card"
       ],
       "player_rows_parsed": 0,
       "player_rows_matched": 0,
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-09-12T14:00:00+00:00",
-      "visited_at": null
+      "visited_at": "2026-09-01T14:17:46.111345+00:00"
     },
     {
       "event_id": "14f6639178a943ac614c7b872bf6e4d6",
@@ -391,26 +391,26 @@
       "away_team": "Ipswich Town",
       "home_short": "CRY",
       "away_short": "IPS",
-      "status": "unvisited",
+      "status": "no-bookmaker",
       "books": 0,
       "outcomes": 0,
       "offered_markets": [],
       "missing_markets": [
-        "player_goal_scorer_anytime",
-        "player_first_goal_scorer",
-        "player_last_goal_scorer",
         "player_assists",
-        "player_to_receive_card",
-        "player_to_receive_red_card",
+        "player_first_goal_scorer",
+        "player_goal_scorer_anytime",
+        "player_last_goal_scorer",
         "player_shots",
-        "player_shots_on_target"
+        "player_shots_on_target",
+        "player_to_receive_card",
+        "player_to_receive_red_card"
       ],
       "player_rows_parsed": 0,
       "player_rows_matched": 0,
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-09-12T14:00:00+00:00",
-      "visited_at": null
+      "visited_at": "2026-09-01T14:17:46.111345+00:00"
     },
     {
       "event_id": "63da4075a4ae406575fd3086b839fe49",
@@ -418,26 +418,26 @@
       "away_team": "Fulham",
       "home_short": "LIV",
       "away_short": "FUL",
-      "status": "unvisited",
+      "status": "no-bookmaker",
       "books": 0,
       "outcomes": 0,
       "offered_markets": [],
       "missing_markets": [
-        "player_goal_scorer_anytime",
-        "player_first_goal_scorer",
-        "player_last_goal_scorer",
         "player_assists",
-        "player_to_receive_card",
-        "player_to_receive_red_card",
+        "player_first_goal_scorer",
+        "player_goal_scorer_anytime",
+        "player_last_goal_scorer",
         "player_shots",
-        "player_shots_on_target"
+        "player_shots_on_target",
+        "player_to_receive_card",
+        "player_to_receive_red_card"
       ],
       "player_rows_parsed": 0,
       "player_rows_matched": 0,
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-09-12T14:00:00+00:00",
-      "visited_at": null
+      "visited_at": "2026-09-01T14:17:46.111345+00:00"
     },
     {
       "event_id": "cbbc88759fe3e2f1677a0c6ee40955af",
@@ -445,26 +445,26 @@
       "away_team": "Everton",
       "home_short": "TOT",
       "away_short": "EVE",
-      "status": "unvisited",
+      "status": "no-bookmaker",
       "books": 0,
       "outcomes": 0,
       "offered_markets": [],
       "missing_markets": [
-        "player_goal_scorer_anytime",
-        "player_first_goal_scorer",
-        "player_last_goal_scorer",
         "player_assists",
-        "player_to_receive_card",
-        "player_to_receive_red_card",
+        "player_first_goal_scorer",
+        "player_goal_scorer_anytime",
+        "player_last_goal_scorer",
         "player_shots",
-        "player_shots_on_target"
+        "player_shots_on_target",
+        "player_to_receive_card",
+        "player_to_receive_red_card"
       ],
       "player_rows_parsed": 0,
       "player_rows_matched": 0,
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-09-12T16:30:00+00:00",
-      "visited_at": null
+      "visited_at": "2026-09-01T14:17:46.111345+00:00"
     },
     {
       "event_id": "082f74fe6a8bc5826555b76e9e114dab",
@@ -472,26 +472,26 @@
       "away_team": "Arsenal",
       "home_short": "SUN",
       "away_short": "ARS",
-      "status": "unvisited",
+      "status": "no-bookmaker",
       "books": 0,
       "outcomes": 0,
       "offered_markets": [],
       "missing_markets": [
-        "player_goal_scorer_anytime",
-        "player_first_goal_scorer",
-        "player_last_goal_scorer",
         "player_assists",
-        "player_to_receive_card",
-        "player_to_receive_red_card",
+        "player_first_goal_scorer",
+        "player_goal_scorer_anytime",
+        "player_last_goal_scorer",
         "player_shots",
-        "player_shots_on_target"
+        "player_shots_on_target",
+        "player_to_receive_card",
+        "player_to_receive_red_card"
       ],
       "player_rows_parsed": 0,
       "player_rows_matched": 0,
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-09-12T19:00:00+00:00",
-      "visited_at": null
+      "visited_at": "2026-09-01T14:17:46.111345+00:00"
     },
     {
       "event_id": "c97a93b915115f2b4659fb88262b71f8",
@@ -499,26 +499,26 @@
       "away_team": "Brighton and Hove Albion",
       "home_short": "COV",
       "away_short": "BHA",
-      "status": "unvisited",
+      "status": "no-bookmaker",
       "books": 0,
       "outcomes": 0,
       "offered_markets": [],
       "missing_markets": [
-        "player_goal_scorer_anytime",
-        "player_first_goal_scorer",
-        "player_last_goal_scorer",
         "player_assists",
-        "player_to_receive_card",
-        "player_to_receive_red_card",
+        "player_first_goal_scorer",
+        "player_goal_scorer_anytime",
+        "player_last_goal_scorer",
         "player_shots",
-        "player_shots_on_target"
+        "player_shots_on_target",
+        "player_to_receive_card",
+        "player_to_receive_red_card"
       ],
       "player_rows_parsed": 0,
       "player_rows_matched": 0,
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-09-13T13:00:00+00:00",
-      "visited_at": null
+      "visited_at": "2026-09-01T14:17:46.111345+00:00"
     },
     {
       "event_id": "e40d0fb44319f7bd0ebe1ffbc61fa661",
@@ -526,26 +526,26 @@
       "away_team": "Manchester City",
       "home_short": "MUN",
       "away_short": "MCI",
-      "status": "unvisited",
+      "status": "no-bookmaker",
       "books": 0,
       "outcomes": 0,
       "offered_markets": [],
       "missing_markets": [
-        "player_goal_scorer_anytime",
-        "player_first_goal_scorer",
-        "player_last_goal_scorer",
         "player_assists",
-        "player_to_receive_card",
-        "player_to_receive_red_card",
+        "player_first_goal_scorer",
+        "player_goal_scorer_anytime",
+        "player_last_goal_scorer",
         "player_shots",
-        "player_shots_on_target"
+        "player_shots_on_target",
+        "player_to_receive_card",
+        "player_to_receive_red_card"
       ],
       "player_rows_parsed": 0,
       "player_rows_matched": 0,
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-09-13T15:30:00+00:00",
-      "visited_at": null
+      "visited_at": "2026-09-01T14:17:46.111345+00:00"
     },
     {
       "event_id": "b7a2cad26d908a943a27340b4b607068",
@@ -553,26 +553,26 @@
       "away_team": "Newcastle United",
       "home_short": "LEE",
       "away_short": "NEW",
-      "status": "unvisited",
+      "status": "no-bookmaker",
       "books": 0,
       "outcomes": 0,
       "offered_markets": [],
       "missing_markets": [
-        "player_goal_scorer_anytime",
-        "player_first_goal_scorer",
-        "player_last_goal_scorer",
         "player_assists",
-        "player_to_receive_card",
-        "player_to_receive_red_card",
+        "player_first_goal_scorer",
+        "player_goal_scorer_anytime",
+        "player_last_goal_scorer",
         "player_shots",
-        "player_shots_on_target"
+        "player_shots_on_target",
+        "player_to_receive_card",
+        "player_to_receive_red_card"
       ],
       "player_rows_parsed": 0,
       "player_rows_matched": 0,
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-09-14T19:00:00+00:00",
-      "visited_at": null
+      "visited_at": "2026-09-01T14:17:46.111345+00:00"
     }
   ],
   "unmatched": [],
