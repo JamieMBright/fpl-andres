@@ -236,10 +236,27 @@ function CaptainDistribution() {
   );
 }
 
-function Gw1CohortSummary() {
-  const sample = data.exactFpl500Portfolio.samples["01"];
+/**
+ * The most recent gameweek captured, and the key it is filed under.
+ *
+ * Every section below used to read `["01"]` outright, so the page kept
+ * describing the opening gameweek for the whole season however many had been
+ * captured since.
+ */
+function latestCapture(
+  series: PortfolioSeries,
+): { event: number; key: string } | null {
+  if (series.events.length === 0) return null;
+  const event = Math.max(...series.events);
+  return { event, key: String(event).padStart(2, "0") };
+}
+
+function LatestCohortSummary() {
+  const latest = latestCapture(data.exactFpl500Portfolio);
+  const sample = latest ? data.exactFpl500Portfolio.samples[latest.key] : null;
   const aggregate = sample?.aggregate;
-  if (!aggregate) return null;
+  if (!latest || !sample || !aggregate) return null;
+  const gameweek = `GW${String(latest.event)}`;
   const chipBars: Bar[] = Object.entries(aggregate.chips).map(
     ([chip, count]) => ({
       label:
@@ -259,7 +276,7 @@ function Gw1CohortSummary() {
       className="fpl500-gw-summary"
       aria-labelledby="fpl500-gw-summary-title"
     >
-      <h3 id="fpl500-gw-summary-title">GW1, across 500 squads</h3>
+      <h3 id="fpl500-gw-summary-title">{gameweek}, across 500 squads</h3>
       <dl className="dossier-metrics">
         <div>
           <dt>Mean score</dt>
@@ -282,13 +299,13 @@ function Gw1CohortSummary() {
       </dl>
       <BarChart
         bars={chipBars}
-        caption="Which chips they spent in GW1"
+        caption={`Which chips they spent in ${gameweek}`}
         unit="managers"
       />
       <p className="mono fpl500-note">
         {number.format(sample.responded)} of {number.format(sample.attempted)}{" "}
-        histories · {fineShare.format(sample.coverage)} coverage. Transfers
-        start at GW2.
+        histories · {fineShare.format(sample.coverage)} coverage.
+        {latest.event === 1 ? " Transfers start at GW2." : null}
       </p>
     </section>
   );
@@ -396,6 +413,41 @@ function CurrentSeason() {
           Next
         </button>
       </div>
+    </>
+  );
+}
+
+function ExactFpl500Analysis() {
+  const series = data.exactFpl500Portfolio;
+  const latest = latestCapture(series);
+  const captured = series.events.length;
+  const holdings = latest ? (series.holdings?.[latest.key] ?? []) : [];
+  const structure = latest ? series.samples[latest.key]?.structure : undefined;
+
+  return (
+    <>
+      <p>
+        {captured === 0
+          ? "No exact FPL500 gameweek has been captured yet."
+          : `${String(captured)} exact FPL500 ${captured === 1 ? "gameweek" : "gameweeks"} captured, through GW${String(latest?.event ?? 0)}.`}
+      </p>
+      <LatestCohortSummary />
+      <CaptainDistribution />
+      {latest ? (
+        <Fpl500Holdings
+          event={latest.event}
+          holdings={holdings}
+          keeperPairings={structure?.keeperPairings}
+        />
+      ) : null}
+      {structure ? (
+        <Fpl500Structure holdings={holdings} structure={structure} />
+      ) : null}
+      <BenchUse holdings={holdings} />
+      <PlannedAnalysis
+        event={(latest?.event ?? 0) + 1}
+        only={["In and out", "Hits taken"]}
+      />
     </>
   );
 }
@@ -592,31 +644,7 @@ export function Fpl500Playbook() {
       </Fold>
 
       <Fold kind="analysis" open title="Analysing the FPL500">
-        <p>
-          {data.exactFpl500Portfolio.events.length === 0
-            ? "No exact FPL500 gameweek has been captured yet."
-            : `${data.exactFpl500Portfolio.events.length} exact FPL500 gameweek captured.`}
-        </p>
-        <Gw1CohortSummary />
-        <CaptainDistribution />
-        <Fpl500Holdings
-          event={1}
-          holdings={data.exactFpl500Portfolio.holdings?.["01"] ?? []}
-          keeperPairings={
-            data.exactFpl500Portfolio.samples["01"]?.structure?.keeperPairings
-          }
-        />
-        {data.exactFpl500Portfolio.samples["01"]?.structure ? (
-          <Fpl500Structure
-            holdings={data.exactFpl500Portfolio.holdings?.["01"] ?? []}
-            structure={data.exactFpl500Portfolio.samples["01"].structure}
-          />
-        ) : null}
-        <BenchUse holdings={data.exactFpl500Portfolio.holdings?.["01"] ?? []} />
-        <PlannedAnalysis
-          event={Math.max(0, ...data.exactFpl500Portfolio.events) + 1}
-          only={["In and out", "Hits taken"]}
-        />
+        <ExactFpl500Analysis />
         <div className="cohort-caveat">
           <h3>What none of it can tell you</h3>
           <p>

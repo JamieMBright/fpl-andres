@@ -7,6 +7,11 @@ import { Fpl500Playbook } from "./Fpl500Playbook";
 import artifact from "../data/fpl500.json";
 import { fineShare, integer } from "../format";
 
+// The page reports the newest gameweek captured, so pinning one here would
+// date the test to the week it was written.
+const LATEST_EVENT = Math.max(...artifact.exactFpl500Portfolio.events);
+const NEXT_EVENT = LATEST_EVENT + 1;
+
 /**
  * Two claims here are easy to lose to a redesign and neither is visible in a
  * screenshot: that the page never names who is in FPL500, and that it says how
@@ -100,10 +105,14 @@ describe("Fpl500Playbook", () => {
     );
     expect(screen.queryByText("Catalogue at deadline")).not.toBeInTheDocument();
     expect(screen.getByText("Exact FPL500")).toBeInTheDocument();
+    // Membership provenance and armband sample are both per gameweek captured,
+    // so these counts grow with the season rather than staying at one.
     expect(
-      screen.getByText(/post-deadline capture-era FPL500 membership/),
-    ).toBeInTheDocument();
-    expect(screen.getAllByText(/picks read/)).toHaveLength(1);
+      screen.getAllByText(/post-deadline capture-era FPL500 membership/),
+    ).toHaveLength(artifact.exactFpl500Portfolio.events.length);
+    expect(screen.getAllByText(/picks read/)).toHaveLength(
+      artifact.exactFpl500Portfolio.events.length,
+    );
   });
 
   it("shows what the armband returned once a week is fully scored", () => {
@@ -157,10 +166,16 @@ describe("Fpl500Playbook", () => {
   it("draws the frames the analysis will use, with their axes", () => {
     draw();
 
-    expect(screen.getAllByText(/awaiting gameweek 2/)).toHaveLength(2);
+    expect(
+      screen.getAllByText(
+        new RegExp(`awaiting gameweek ${String(NEXT_EVENT)}`),
+      ),
+    ).toHaveLength(2);
     expect(screen.getByText("In and out")).toBeInTheDocument();
     expect(screen.getByText("Hits taken")).toBeInTheDocument();
-    expect(screen.getByText("GW1, across 500 squads")).toBeInTheDocument();
+    expect(
+      screen.getByText(`GW${String(LATEST_EVENT)}, across 500 squads`),
+    ).toBeInTheDocument();
     expect(screen.getByText("Mean score")).toBeInTheDocument();
     expect(screen.getByText("Mean bench")).toBeInTheDocument();
     for (const position of [
