@@ -88,6 +88,38 @@ describe("buildPlayerPool", () => {
     expect(debutant?.perMillion).toBeNull();
   });
 
+  it("reads FPL's own live season and gameweek points", () => {
+    const pool = buildPlayerPool(
+      bootstrap({
+        elements: [
+          {
+            id: 1,
+            code: KNOWN_CODE,
+            web_name: "B.Fernandes",
+            element_type: 3,
+            team: 2,
+            now_cost: 100,
+            status: "a",
+            total_points: 23,
+            event_points: 9,
+          },
+        ],
+      }),
+    );
+    const bruno = pool.players.find((player) => player.code === KNOWN_CODE);
+
+    expect(bruno?.seasonPoints).toBe(23);
+    expect(bruno?.lastGameweekPoints).toBe(9);
+  });
+
+  it("defaults season points to zero and gameweek points to null before FPL publishes them", () => {
+    const pool = buildPlayerPool(bootstrap());
+    const bruno = pool.players.find((player) => player.code === KNOWN_CODE);
+
+    expect(bruno?.seasonPoints).toBe(0);
+    expect(bruno?.lastGameweekPoints).toBeNull();
+  });
+
   it("leaves managers out: a chip is not a footballer", () => {
     expect(
       buildPlayerPool(bootstrap()).players.some(

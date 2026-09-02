@@ -181,16 +181,16 @@ describe("player pool table render cost", () => {
     expect(container.querySelectorAll("tbody tr")).toHaveLength(200);
   });
 
-  it("sorts before slicing, which is what makes the cap defensible", () => {
-    // The 200 shown are the best 200 by whatever the reader chose, not an
-    // arbitrary 200. If slicing ever moved above the sort, the cap would start
+  it("sorts before slicing, which is what makes the row cap defensible", () => {
+    // The rows shown are the best N by whatever the reader chose, not an
+    // arbitrary N. If slicing ever moved above the sort, the cap would start
     // hiding the player somebody filtered for, and the argument for keeping it
     // would stop being true.
     const source = readFileSync(resolve(HERE, "PlayerPoolTable.tsx"), "utf8");
     expect(source.indexOf(".sort(")).toBeGreaterThan(-1);
     expect(source.indexOf(".sort(")).toBeLessThan(
-      source.indexOf(".slice(0, 200)"),
+      source.indexOf(".slice(0, rowLimit)"),
     );
-    expect(source).toContain("Showing the first 200 of");
+    expect(source).toContain("Showing the first {rowLimit} of");
   });
 });

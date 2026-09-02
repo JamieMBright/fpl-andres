@@ -34,6 +34,11 @@ const bootstrapSchema = z.object({
         now_cost: z.number().int().positive(),
         status: z.string().min(1),
         squad_number: z.number().int().positive().max(99).nullable().optional(),
+        // FPL's own live season record: what he has actually scored so far
+        // this season, and in the gameweek just gone. Both start at zero
+        // before a ball is kicked, which is a fact, not a missing one.
+        total_points: z.number().int().nonnegative().optional(),
+        event_points: z.number().int().optional(),
       })
       .loose(),
   ),
@@ -91,6 +96,10 @@ export interface PoolPlayer {
   record: PlayerProjection | null;
   /** Last season's points per match divided by this season's price. */
   perMillion: number | null;
+  /** What he has actually scored this season so far, live from FPL. */
+  seasonPoints: number;
+  /** His points in the gameweek just gone, or null before any have been played. */
+  lastGameweekPoints: number | null;
 }
 
 export interface PlayerPool {
@@ -144,6 +153,8 @@ export function buildPlayerPool(
         perMillion: record
           ? round(record.expectedPoints / (element.now_cost / 10))
           : null,
+        seasonPoints: element.total_points ?? 0,
+        lastGameweekPoints: element.event_points ?? null,
       },
     ];
   });

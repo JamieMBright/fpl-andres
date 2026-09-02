@@ -32,6 +32,8 @@ type SortKey =
   | "returned"
   | "ceiling"
   | "apps"
+  | "seasonPoints"
+  | "lastGameweekPoints"
   | "name"
   | "position"
   | "club";
@@ -63,6 +65,16 @@ const COLUMNS: Column[] = [
     key: "price",
     label: "Price",
     explains: "What FPL charges for him in 2026/27, today.",
+  },
+  {
+    key: "lastGameweekPoints",
+    label: "GW Pts",
+    explains: "What he actually scored in the gameweek FPL last confirmed.",
+  },
+  {
+    key: "seasonPoints",
+    label: "Total Pts",
+    explains: "What he has actually scored so far this season, live from FPL.",
   },
   {
     key: "points",
@@ -168,6 +180,8 @@ function sortValue(
   if (key === "returned") return player.record?.returnRate ?? -1;
   if (key === "ceiling") return player.record?.ceiling ?? -1;
   if (key === "apps") return player.record?.appearances ?? -1;
+  if (key === "seasonPoints") return player.seasonPoints;
+  if (key === "lastGameweekPoints") return player.lastGameweekPoints ?? -1;
   if (key === "run") {
     if (run.rating === null) return -Infinity;
     // A defender wants opponents who score little; an attacker wants opponents
@@ -187,6 +201,11 @@ function textValue(player: PoolPlayer, key: SortKey): string {
 
 const TEXT_KEYS = new Set<SortKey>(["name", "position", "club"]);
 
+/** How many rows to draw at once. "All" is every match still worth a ranking. */
+const ROW_LIMITS = [25, 50, 75, 100] as const;
+const SHOW_ALL = "all";
+type RowLimit = (typeof ROW_LIMITS)[number] | typeof SHOW_ALL;
+
 /**
  * Everyone in the 2026/27 game, priced now, measured on last season.
  *
@@ -204,6 +223,7 @@ export function PlayerPoolTable() {
   const [descending, setDescending] = useState(true);
   const [maxPrice, setMaxPrice] = useState(0);
   const [search, setSearch] = useState("");
+  const [rowLimit, setRowLimit] = useState<RowLimit>(25);
   const [selected, setSelected] = useState<PoolPlayer | null>(null);
   // Bumping this re-runs the load. A reader who is told to reload the page is
   // being asked to perform the retry by hand.
@@ -431,6 +451,26 @@ export function PlayerPoolTable() {
             ))}
           </select>
         </label>
+        <label>
+          Show
+          <select
+            onChange={(event) =>
+              setRowLimit(
+                event.target.value === SHOW_ALL
+                  ? SHOW_ALL
+                  : (Number(event.target.value) as RowLimit),
+              )
+            }
+            value={rowLimit}
+          >
+            {ROW_LIMITS.map((limit) => (
+              <option key={limit} value={limit}>
+                {limit}
+              </option>
+            ))}
+            <option value={SHOW_ALL}>All</option>
+          </select>
+        </label>
       </div>
 
       <p className="pool-count mono">
@@ -507,58 +547,64 @@ export function PlayerPoolTable() {
             </tr>
           </thead>
           <tbody>
-            {shown.slice(0, 200).map(({ player, run }) => (
-              <tr key={player.code}>
-                <th scope="row" translate="no">
-                  <button
-                    className="pool-open"
-                    onClick={() => setSelected(player)}
-                    type="button"
-                  >
-                    {player.name}
-                  </button>
-                  {player.available ? null : (
-                    <span className="pool-flag" title="Flagged by FPL">
-                      {" "}
-                      ⚑
-                    </span>
-                  )}
-                </th>
-                <td className="mono">{player.position}</td>
-                <td className="mono" translate="no">
-                  {player.club}
-                </td>
-                <td className="mono">{money(player.priceTenths)}</td>
-                <td className="mono">
-                  {player.record
-                    ? player.record.expectedPoints.toFixed(2)
-                    : "—"}
-                </td>
-                <td className="mono">
-                  {horizon.get(player.code)?.toFixed(1) ?? "—"}
-                </td>
-                <td className="mono">{player.perMillion?.toFixed(2) ?? "—"}</td>
-                <td className="mono">
-                  {player.record?.returnRate === null ||
-                  player.record?.returnRate === undefined
-                    ? "—"
-                    : `${Math.round(player.record.returnRate * 100)}%`}
-                </td>
-                <td className="mono">{player.record?.ceiling ?? "—"}</td>
-                <td className="mono">{player.record?.appearances ?? "—"}</td>
-                <td className="mono">
-                  <FixtureRunCell position={player.position} run={run} />
-                </td>
-              </tr>
-            ))}
+            {(rowLimit === SHOW_ALL ? shown : shown.slice(0, rowLimit)).map(
+              ({ player, run }) => (
+                <tr key={player.code}>
+                  <th scope="row" translate="no">
+                    <button
+                      className="pool-open"
+                      onClick={() => setSelected(player)}
+                      type="button"
+                    >
+                      {player.name}
+                    </button>
+                    {player.available ? null : (
+                      <span className="pool-flag" title="Flagged by FPL">
+                        {" "}
+                        ⚑
+                      </span>
+                    )}
+                  </th>
+                  <td className="mono">{player.position}</td>
+                  <td className="mono" translate="no">
+                    {player.club}
+                  </td>
+                  <td className="mono">{money(player.priceTenths)}</td>
+                  <td className="mono">{player.lastGameweekPoints ?? "—"}</td>
+                  <td className="mono">{player.seasonPoints}</td>
+                  <td className="mono">
+                    {player.record
+                      ? player.record.expectedPoints.toFixed(2)
+                      : "—"}
+                  </td>
+                  <td className="mono">
+                    {horizon.get(player.code)?.toFixed(1) ?? "—"}
+                  </td>
+                  <td className="mono">
+                    {player.perMillion?.toFixed(2) ?? "—"}
+                  </td>
+                  <td className="mono">
+                    {player.record?.returnRate === null ||
+                    player.record?.returnRate === undefined
+                      ? "—"
+                      : `${Math.round(player.record.returnRate * 100)}%`}
+                  </td>
+                  <td className="mono">{player.record?.ceiling ?? "—"}</td>
+                  <td className="mono">{player.record?.appearances ?? "—"}</td>
+                  <td className="mono">
+                    <FixtureRunCell position={player.position} run={run} />
+                  </td>
+                </tr>
+              ),
+            )}
           </tbody>
         </table>
       </div>
 
-      {shown.length > 200 ? (
+      {rowLimit !== SHOW_ALL && shown.length > rowLimit ? (
         <p className="pool-truncated">
-          Showing the first 200 of {shown.length}. Narrow the filters rather
-          than scrolling: nobody picks a squad from row 400.
+          Showing the first {rowLimit} of {shown.length}. Narrow the filters or
+          choose a bigger "Show" to see more.
         </p>
       ) : null}
 
