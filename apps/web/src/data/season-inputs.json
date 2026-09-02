@@ -1,6 +1,6 @@
 {
   "schemaVersion": 6,
-  "generatedAt": "2026-09-02T13:58:33.446964Z",
+  "generatedAt": "2026-09-02T14:52:24.675684Z",
   "recordSeason": "2026-27",
   "events": [
     3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23,
@@ -295,7 +295,7 @@
       }
     ],
     "sourceReference": "FPL rules page, Transfers section",
-    "dataAvailableAt": "2026-09-02T13:58:33.446964Z",
+    "dataAvailableAt": "2026-09-02T14:52:24.675684Z",
     "playableStartRate": 0.35,
     "transferMarginPoints": 0.5
   },
@@ -5479,7 +5479,7 @@
       },
       "squadNumber": null,
       "rated": false,
-      "depthRank": 9,
+      "depthRank": 10,
       "evidence": {
         "all": "rolePrior",
         "appearance": "marketParticipation",
@@ -6754,6 +6754,46 @@
       "evidence": { "all": "rolePrior", "appearance": "currentSeasonLineup" }
     },
     {
+      "id": 630,
+      "code": 245719,
+      "name": "Harwood-Bellis",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "AVL",
+      "teamId": 2,
+      "priceTenths": 45,
+      "availabilityStatus": "a",
+      "chanceOfPlaying": null,
+      "basePoints": 2.18,
+      "routes": {
+        "appearance": 1.292,
+        "attacking": 0.615,
+        "cleanSheet": 0.519,
+        "bonus": 0.08,
+        "conceding": -0.364,
+        "yellowCards": -0.063,
+        "ownGoals": -0.009,
+        "defensiveContribution": 0.11
+      },
+      "startRate": 0.662,
+      "startEvidence": {
+        "sourceStartRate": 0.662,
+        "finalStartRate": 0.662,
+        "observedAppearances": null,
+        "recentStarts": null,
+        "recentMatches": null,
+        "recentMinutes": null,
+        "appearanceSource": "historicalProjection",
+        "lineupAdjustment": 0.0,
+        "marketAdjustment": 0.0,
+        "availabilityAdjustment": 0.0
+      },
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 1,
+      "evidence": { "all": "rolePrior" }
+    },
+    {
       "id": 120,
       "code": 454490,
       "name": "Svoboda",
@@ -7756,7 +7796,7 @@
       },
       "squadNumber": null,
       "rated": false,
-      "depthRank": 9,
+      "depthRank": 10,
       "evidence": { "all": "rolePrior", "appearance": "currentSeasonLineup" }
     },
     {
@@ -7796,7 +7836,7 @@
       },
       "squadNumber": null,
       "rated": false,
-      "depthRank": 9,
+      "depthRank": 10,
       "evidence": { "all": "rolePrior", "appearance": "currentSeasonLineup" }
     },
     {
@@ -8198,6 +8238,46 @@
       "rated": false,
       "depthRank": 4,
       "evidence": { "all": "rolePrior", "appearance": "currentSeasonLineup" }
+    },
+    {
+      "id": 633,
+      "code": 605972,
+      "name": "Ahanor",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "CRY",
+      "teamId": 8,
+      "priceTenths": 45,
+      "availabilityStatus": "a",
+      "chanceOfPlaying": null,
+      "basePoints": 1.77,
+      "routes": {
+        "appearance": 1.274,
+        "attacking": 0.185,
+        "cleanSheet": 0.511,
+        "bonus": 0.079,
+        "conceding": -0.359,
+        "yellowCards": -0.077,
+        "ownGoals": -0.011,
+        "defensiveContribution": 0.168
+      },
+      "startRate": 0.653,
+      "startEvidence": {
+        "sourceStartRate": 0.653,
+        "finalStartRate": 0.653,
+        "observedAppearances": null,
+        "recentStarts": null,
+        "recentMatches": null,
+        "recentMinutes": null,
+        "appearanceSource": "historicalProjection",
+        "lineupAdjustment": 0.0,
+        "marketAdjustment": 0.0,
+        "availabilityAdjustment": 0.0
+      },
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 4,
+      "evidence": { "all": "rolePrior" }
     },
     {
       "id": 610,
@@ -10991,7 +11071,7 @@
       },
       "squadNumber": null,
       "rated": false,
-      "depthRank": 9,
+      "depthRank": 10,
       "evidence": { "all": "rolePrior", "appearance": "fplAvailability" }
     },
     {
@@ -11301,7 +11381,7 @@
       },
       "squadNumber": null,
       "rated": true,
-      "depthRank": 9,
+      "depthRank": 10,
       "evidence": { "appearance": "fplAvailability" }
     },
     {
@@ -14278,7 +14358,7 @@
       },
       "squadNumber": null,
       "rated": false,
-      "depthRank": 10,
+      "depthRank": 12,
       "evidence": {
         "all": "rolePrior",
         "appearance": "marketParticipation",
@@ -15011,6 +15091,45 @@
       "rated": false,
       "depthRank": 1,
       "evidence": { "all": "rolePrior", "appearance": "currentSeasonLineup" }
+    },
+    {
+      "id": 631,
+      "code": 638987,
+      "name": "Mbaye",
+      "position": "MID",
+      "positionId": 3,
+      "club": "AVL",
+      "teamId": 2,
+      "priceTenths": 60,
+      "availabilityStatus": "a",
+      "chanceOfPlaying": null,
+      "basePoints": 2.379,
+      "routes": {
+        "appearance": 1.329,
+        "attacking": 0.731,
+        "cleanSheet": 0.124,
+        "bonus": 0.136,
+        "yellowCards": -0.093,
+        "redCards": -0.018,
+        "defensiveContribution": 0.17
+      },
+      "startRate": 0.68,
+      "startEvidence": {
+        "sourceStartRate": 0.68,
+        "finalStartRate": 0.68,
+        "observedAppearances": null,
+        "recentStarts": null,
+        "recentMatches": null,
+        "recentMinutes": null,
+        "appearanceSource": "historicalProjection",
+        "lineupAdjustment": 0.0,
+        "marketAdjustment": 0.0,
+        "availabilityAdjustment": 0.0
+      },
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 1,
+      "evidence": { "all": "rolePrior" }
     },
     {
       "id": 186,
@@ -15915,7 +16034,7 @@
       },
       "squadNumber": null,
       "rated": true,
-      "depthRank": 8,
+      "depthRank": 9,
       "evidence": { "appearance": "currentSeasonLineup" }
     },
     {
@@ -16344,7 +16463,7 @@
       },
       "squadNumber": null,
       "rated": true,
-      "depthRank": 5,
+      "depthRank": 6,
       "evidence": { "appearance": "currentSeasonLineup" }
     },
     {
@@ -16924,7 +17043,7 @@
       },
       "squadNumber": null,
       "rated": false,
-      "depthRank": 14,
+      "depthRank": 15,
       "evidence": { "all": "rolePrior", "appearance": "currentSeasonLineup" }
     },
     {
@@ -16963,7 +17082,7 @@
       },
       "squadNumber": null,
       "rated": false,
-      "depthRank": 14,
+      "depthRank": 15,
       "evidence": { "all": "rolePrior", "appearance": "currentSeasonLineup" }
     },
     {
@@ -17002,7 +17121,7 @@
       },
       "squadNumber": null,
       "rated": false,
-      "depthRank": 8,
+      "depthRank": 9,
       "evidence": { "all": "rolePrior", "appearance": "currentSeasonLineup" }
     },
     {
@@ -17041,7 +17160,7 @@
       },
       "squadNumber": null,
       "rated": false,
-      "depthRank": 14,
+      "depthRank": 15,
       "evidence": { "all": "rolePrior", "appearance": "currentSeasonLineup" }
     },
     {
@@ -18055,8 +18174,86 @@
       },
       "squadNumber": null,
       "rated": false,
-      "depthRank": 10,
+      "depthRank": 12,
       "evidence": { "all": "rolePrior", "appearance": "currentSeasonLineup" }
+    },
+    {
+      "id": 635,
+      "code": 551050,
+      "name": "Larsson",
+      "position": "MID",
+      "positionId": 3,
+      "club": "FUL",
+      "teamId": 10,
+      "priceTenths": 50,
+      "availabilityStatus": "a",
+      "chanceOfPlaying": null,
+      "basePoints": 1.809,
+      "routes": {
+        "appearance": 1.288,
+        "attacking": 0.17,
+        "cleanSheet": 0.058,
+        "bonus": 0.2,
+        "yellowCards": -0.072,
+        "redCards": -0.014,
+        "defensiveContribution": 0.179
+      },
+      "startRate": 0.314,
+      "startEvidence": {
+        "sourceStartRate": 0.314,
+        "finalStartRate": 0.314,
+        "observedAppearances": null,
+        "recentStarts": null,
+        "recentMatches": null,
+        "recentMinutes": null,
+        "appearanceSource": "historicalProjection",
+        "lineupAdjustment": 0.0,
+        "marketAdjustment": 0.0,
+        "availabilityAdjustment": 0.0
+      },
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 7,
+      "evidence": { "all": "rolePrior" }
+    },
+    {
+      "id": 636,
+      "code": 500033,
+      "name": "\u00c1ngel",
+      "position": "MID",
+      "positionId": 3,
+      "club": "FUL",
+      "teamId": 10,
+      "priceTenths": 50,
+      "availabilityStatus": "a",
+      "chanceOfPlaying": null,
+      "basePoints": 1.809,
+      "routes": {
+        "appearance": 1.288,
+        "attacking": 0.17,
+        "cleanSheet": 0.058,
+        "bonus": 0.2,
+        "yellowCards": -0.072,
+        "redCards": -0.014,
+        "defensiveContribution": 0.179
+      },
+      "startRate": 0.314,
+      "startEvidence": {
+        "sourceStartRate": 0.314,
+        "finalStartRate": 0.314,
+        "observedAppearances": null,
+        "recentStarts": null,
+        "recentMatches": null,
+        "recentMinutes": null,
+        "appearanceSource": "historicalProjection",
+        "lineupAdjustment": 0.0,
+        "marketAdjustment": 0.0,
+        "availabilityAdjustment": 0.0
+      },
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 7,
+      "evidence": { "all": "rolePrior" }
     },
     {
       "id": 288,
@@ -19498,7 +19695,7 @@
       },
       "squadNumber": null,
       "rated": true,
-      "depthRank": 8,
+      "depthRank": 9,
       "evidence": { "appearance": "currentSeasonLineup" }
     },
     {
@@ -19537,7 +19734,7 @@
       },
       "squadNumber": null,
       "rated": true,
-      "depthRank": 3,
+      "depthRank": 4,
       "evidence": { "appearance": "currentSeasonLineup" }
     },
     {
@@ -20024,7 +20221,7 @@
       },
       "squadNumber": null,
       "rated": true,
-      "depthRank": 8,
+      "depthRank": 9,
       "evidence": { "appearance": "currentSeasonLineup" }
     },
     {
@@ -20242,7 +20439,7 @@
     {
       "id": 551,
       "code": 536661,
-      "name": "Angulo",
+      "name": "N.Angulo",
       "position": "MID",
       "positionId": 3,
       "club": "SUN",
@@ -20536,7 +20733,7 @@
       },
       "squadNumber": null,
       "rated": true,
-      "depthRank": 5,
+      "depthRank": 6,
       "evidence": { "appearance": "currentSeasonLineup" }
     },
     {
@@ -21063,7 +21260,7 @@
       },
       "squadNumber": null,
       "rated": true,
-      "depthRank": 8,
+      "depthRank": 9,
       "evidence": { "appearance": "fplAvailability" }
     },
     {
@@ -21094,7 +21291,7 @@
       },
       "squadNumber": null,
       "rated": false,
-      "depthRank": 8,
+      "depthRank": 9,
       "evidence": { "all": "rolePrior", "appearance": "fplAvailability" }
     },
     {
@@ -21125,7 +21322,7 @@
       },
       "squadNumber": null,
       "rated": false,
-      "depthRank": 3,
+      "depthRank": 4,
       "evidence": { "all": "rolePrior", "appearance": "fplAvailability" }
     },
     {
@@ -21156,7 +21353,7 @@
       },
       "squadNumber": null,
       "rated": true,
-      "depthRank": 5,
+      "depthRank": 6,
       "evidence": { "appearance": "fplAvailability" }
     },
     {
@@ -21501,99 +21698,6 @@
       "squadNumber": null,
       "rated": false,
       "depthRank": 12,
-      "evidence": { "all": "rolePrior", "appearance": "fplAvailability" }
-    },
-    {
-      "id": 266,
-      "code": 76357,
-      "name": "Cairney",
-      "position": "MID",
-      "positionId": 3,
-      "club": "FUL",
-      "teamId": 10,
-      "priceTenths": 50,
-      "availabilityStatus": "i",
-      "chanceOfPlaying": 0,
-      "basePoints": 0,
-      "routes": {},
-      "startRate": 0.0,
-      "startEvidence": {
-        "sourceStartRate": 0.0,
-        "finalStartRate": 0.0,
-        "observedAppearances": 2,
-        "recentStarts": 0,
-        "recentMatches": 2,
-        "recentMinutes": 0,
-        "appearanceSource": "fplAvailability",
-        "lineupAdjustment": 0.0,
-        "marketAdjustment": 0.0,
-        "availabilityAdjustment": -0.0
-      },
-      "squadNumber": null,
-      "rated": true,
-      "depthRank": 7,
-      "evidence": { "appearance": "fplAvailability" }
-    },
-    {
-      "id": 291,
-      "code": 465525,
-      "name": "Matazo",
-      "position": "MID",
-      "positionId": 3,
-      "club": "HUL",
-      "teamId": 11,
-      "priceTenths": 45,
-      "availabilityStatus": "i",
-      "chanceOfPlaying": 0,
-      "basePoints": 0,
-      "routes": {},
-      "startRate": 0.0,
-      "startEvidence": {
-        "sourceStartRate": 0.314,
-        "finalStartRate": 0.0,
-        "observedAppearances": 2,
-        "recentStarts": 0,
-        "recentMatches": 2,
-        "recentMinutes": 0,
-        "appearanceSource": "fplAvailability",
-        "lineupAdjustment": -0.279,
-        "marketAdjustment": -0.0,
-        "availabilityAdjustment": -0.035
-      },
-      "squadNumber": null,
-      "rated": false,
-      "depthRank": 12,
-      "evidence": { "all": "rolePrior", "appearance": "fplAvailability" }
-    },
-    {
-      "id": 293,
-      "code": 490161,
-      "name": "Kamara",
-      "position": "MID",
-      "positionId": 3,
-      "club": "HUL",
-      "teamId": 11,
-      "priceTenths": 50,
-      "availabilityStatus": "u",
-      "chanceOfPlaying": 0,
-      "basePoints": 0,
-      "routes": {},
-      "startRate": 0.0,
-      "startEvidence": {
-        "sourceStartRate": 0.68,
-        "finalStartRate": 0.0,
-        "observedAppearances": 2,
-        "recentStarts": 0,
-        "recentMatches": 2,
-        "recentMinutes": 0,
-        "appearanceSource": "fplAvailability",
-        "lineupAdjustment": -0.604,
-        "marketAdjustment": -0.0,
-        "availabilityAdjustment": -0.076
-      },
-      "squadNumber": null,
-      "rated": false,
-      "depthRank": 1,
       "evidence": { "all": "rolePrior", "appearance": "fplAvailability" }
     },
     {
@@ -22664,6 +22768,80 @@
       "evidence": { "appearance": "currentSeasonLineup" }
     },
     {
+      "id": 632,
+      "code": 626751,
+      "name": "Ansah",
+      "position": "FWD",
+      "positionId": 4,
+      "club": "HUL",
+      "teamId": 11,
+      "priceTenths": 50,
+      "availabilityStatus": "a",
+      "chanceOfPlaying": null,
+      "basePoints": 1.78,
+      "routes": {
+        "appearance": 1.163,
+        "attacking": 0.509,
+        "bonus": 0.165,
+        "yellowCards": -0.034,
+        "penaltiesMissed": -0.023
+      },
+      "startRate": 0.181,
+      "startEvidence": {
+        "sourceStartRate": 0.181,
+        "finalStartRate": 0.181,
+        "observedAppearances": null,
+        "recentStarts": null,
+        "recentMatches": null,
+        "recentMinutes": null,
+        "appearanceSource": "historicalProjection",
+        "lineupAdjustment": 0.0,
+        "marketAdjustment": 0.0,
+        "availabilityAdjustment": 0.0
+      },
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 2,
+      "evidence": { "all": "rolePrior" }
+    },
+    {
+      "id": 634,
+      "code": 613221,
+      "name": "Fernandez-Pardo",
+      "position": "FWD",
+      "positionId": 4,
+      "club": "NEW",
+      "teamId": 17,
+      "priceTenths": 60,
+      "availabilityStatus": "a",
+      "chanceOfPlaying": null,
+      "basePoints": 1.78,
+      "routes": {
+        "appearance": 1.163,
+        "attacking": 0.509,
+        "bonus": 0.165,
+        "yellowCards": -0.034,
+        "penaltiesMissed": -0.023
+      },
+      "startRate": 0.181,
+      "startEvidence": {
+        "sourceStartRate": 0.181,
+        "finalStartRate": 0.181,
+        "observedAppearances": null,
+        "recentStarts": null,
+        "recentMatches": null,
+        "recentMinutes": null,
+        "appearanceSource": "historicalProjection",
+        "lineupAdjustment": 0.0,
+        "marketAdjustment": 0.0,
+        "availabilityAdjustment": 0.0
+      },
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 2,
+      "evidence": { "all": "rolePrior" }
+    },
+    {
       "id": 526,
       "code": 154566,
       "name": "Solanke",
@@ -22831,7 +23009,7 @@
       },
       "squadNumber": null,
       "rated": false,
-      "depthRank": 4,
+      "depthRank": 5,
       "evidence": {
         "all": "rolePrior",
         "appearance": "marketParticipation",
@@ -22939,7 +23117,7 @@
       },
       "squadNumber": null,
       "rated": true,
-      "depthRank": 3,
+      "depthRank": 4,
       "evidence": { "appearance": "currentSeasonLineup" }
     },
     {
@@ -23825,20 +24003,20 @@
       "routes": {},
       "startRate": 0.0,
       "startEvidence": {
-        "sourceStartRate": 0.181,
+        "sourceStartRate": 0.206,
         "finalStartRate": 0.0,
         "observedAppearances": 2,
         "recentStarts": 0,
         "recentMatches": 2,
         "recentMinutes": 0,
         "appearanceSource": "fplAvailability",
-        "lineupAdjustment": -0.161,
+        "lineupAdjustment": -0.183,
         "marketAdjustment": 0.0,
-        "availabilityAdjustment": -0.02
+        "availabilityAdjustment": -0.023
       },
       "squadNumber": null,
       "rated": false,
-      "depthRank": 2,
+      "depthRank": 3,
       "evidence": { "all": "rolePrior", "appearance": "fplAvailability" }
     },
     {
@@ -23856,20 +24034,20 @@
       "routes": {},
       "startRate": 0.0,
       "startEvidence": {
-        "sourceStartRate": 0.181,
+        "sourceStartRate": 0.206,
         "finalStartRate": 0.0,
         "observedAppearances": 2,
         "recentStarts": 0,
         "recentMatches": 2,
         "recentMinutes": 0,
         "appearanceSource": "fplAvailability",
-        "lineupAdjustment": -0.161,
+        "lineupAdjustment": -0.183,
         "marketAdjustment": 0.0,
-        "availabilityAdjustment": -0.02
+        "availabilityAdjustment": -0.023
       },
       "squadNumber": null,
       "rated": false,
-      "depthRank": 2,
+      "depthRank": 3,
       "evidence": { "all": "rolePrior", "appearance": "fplAvailability" }
     },
     {
