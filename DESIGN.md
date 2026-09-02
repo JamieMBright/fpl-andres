@@ -341,6 +341,7 @@ so a review knows what it does not have to check by hand.
 | `Fpl500Teaser`            | Homepage summary of the latest exact cohort              | unit (`Fpl500Teaser.test.tsx`)       |
 | `Fpl500Structure`         | Legal popularity squad, kits and positional spend        | unit (`Fpl500Structure.test.tsx`)    |
 | `Fpl500ChipAdoption`      | Cumulative chip spend across the cohort, per half        | unit (via `Fpl500Playbook`)          |
+| `Fpl500TransferFlow`      | Net buying/selling sentiment, sliders for window/minimum | unit (via `Fpl500Playbook`)          |
 | `RankRidge`               | Five seasons of finishes over one shared axis            | unit (via `Fpl500Playbook`)          |
 | `PlannedAnalysis`         | The frames a gameweek will fill, drawn empty             | unit (via `Fpl500Playbook`)          |
 | `TopPicks`                | The best five-gameweek player in each position           | unit (`TopPicks.test.tsx`)           |

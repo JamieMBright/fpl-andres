@@ -1900,6 +1900,12 @@ h1[tabindex="-1"]:focus-visible {
   line-height: 1;
 }
 
+.fpl500-fold .dossier-metrics dd small {
+  color: var(--ink-soft);
+  font-size: 12px;
+  font-weight: 400;
+}
+
 .evidence-metadata {
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 20px 36px;
@@ -5142,24 +5148,35 @@ h1[tabindex="-1"]:focus-visible {
   margin: 18px 0 26px;
 }
 
-.fpl500-history {
+.fpl500-hook {
+  max-width: 62ch;
+  margin: 0 0 16px;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.fpl500-jump {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
   margin: 0 0 26px;
-  padding: 18px;
+}
+
+.fpl500-jump a {
+  padding: 6px 12px;
   border: 1px solid var(--rule);
   background: var(--paper-deep);
-}
-
-.fpl500-history h2 {
-  margin-top: 0;
-}
-
-.fpl500-history .dossier-metrics {
-  margin-bottom: 14px;
-}
-
-.fpl500-history dd small {
-  color: var(--ink-soft);
+  color: var(--ink);
+  font-family: var(--fa-mono);
   font-size: 12px;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+.fpl500-jump a:hover,
+.fpl500-jump a:focus-visible {
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
 .fpl500-source {
@@ -5761,6 +5778,76 @@ button.fpl500-holding-name {
 
 .fpl500-trio span:first-child {
   color: var(--ink-soft);
+}
+
+.fpl500-transfer-flow {
+  margin-top: 12px;
+}
+
+.fpl500-transfer-empty {
+  margin: 10px 0 0;
+}
+
+.fpl500-transfer-rows {
+  display: grid;
+  gap: 3px;
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.fpl500-transfer-row {
+  display: grid;
+  grid-template-columns: minmax(96px, 22%) 1fr auto;
+  align-items: center;
+  gap: 10px;
+}
+
+.fpl500-transfer-name {
+  overflow: hidden;
+  font-size: 13px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fpl500-transfer-track {
+  display: grid;
+  grid-template-columns: 1fr 2px 1fr;
+  align-items: center;
+  height: 16px;
+}
+
+.fpl500-transfer-out-side,
+.fpl500-transfer-in-side {
+  display: flex;
+  height: 100%;
+}
+
+.fpl500-transfer-out-side {
+  justify-content: flex-end;
+}
+
+.fpl500-transfer-zero {
+  height: 100%;
+  background: var(--rule);
+}
+
+.fpl500-transfer-bar {
+  height: 100%;
+}
+
+.fpl500-transfer-bar.is-out {
+  background: var(--danger);
+}
+
+.fpl500-transfer-bar.is-in {
+  background: var(--field-green);
+}
+
+.fpl500-transfer-net {
+  min-width: 3.5ch;
+  text-align: right;
+  font-size: 13px;
 }
 
 .fpl500-spend-fill {

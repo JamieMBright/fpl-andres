@@ -117,17 +117,37 @@ describe("Fpl500Playbook", () => {
   it("makes the selected cohort's previous-season record obvious", () => {
     draw();
 
-    const summary = screen.getByRole("region", {
-      name: "Previous-season record",
-    });
-    expect(within(summary).getByText("Previous-season record")).toBeVisible();
-    expect(within(summary).getByText("Top 1k finishes")).toBeVisible();
-    expect(within(summary).getByText("Top 10k finishes")).toBeVisible();
-    expect(within(summary).getByText("Top 100k finishes")).toBeVisible();
-    expect(within(summary).getByText(/Observed/)).toBeVisible();
+    // Inside the collapsed "What it is" fold, same as the coverage floor
+    // tooltip below: present in the DOM, not visible until opened.
+    const heading = screen.getByRole("heading", { name: "What it is" });
+    const fold = heading.closest("details");
+    expect(fold).not.toBeNull();
+    const summary = within(fold!);
+    expect(summary.getByText("Top 1k finishes")).toBeInTheDocument();
+    expect(summary.getByText("Top 10k finishes")).toBeInTheDocument();
+    expect(summary.getByText("Top 100k finishes")).toBeInTheDocument();
+    expect(summary.getByText(/Observed/)).toBeInTheDocument();
+    expect(summary.getByText(/FPL histories through/)).toBeInTheDocument();
+  });
+
+  it("leads with a so-what hook and a jump nav, not the scanning numbers", () => {
+    draw();
+
     expect(
-      within(summary).getByText(/FPL histories through/),
-    ).toBeInTheDocument();
+      screen.getByText(/finished inside the FPL top ten thousand/),
+    ).toBeVisible();
+    const nav = screen.getByRole("navigation", { name: "Jump to a section" });
+    for (const label of [
+      "Rank",
+      "Captaincy",
+      "Players",
+      "Chips",
+      "Value",
+      "Transfers",
+      "Squad",
+    ]) {
+      expect(within(nav).getByRole("link", { name: label })).toBeVisible();
+    }
   });
 
   it("says how far the register has been read", () => {
@@ -228,9 +248,11 @@ describe("Fpl500Playbook", () => {
       screen.getAllByText(
         new RegExp(`awaiting gameweek ${String(NEXT_EVENT)}`),
       ),
-    ).toHaveLength(2);
-    expect(screen.getByText("In and out")).toBeInTheDocument();
+    ).toHaveLength(1);
     expect(screen.getByText("Hits taken")).toBeInTheDocument();
+    expect(
+      screen.getByText("Who they are buying and selling"),
+    ).toBeInTheDocument();
     expect(
       screen.getByText(`GW${String(LATEST_EVENT)}, across 500 squads`),
     ).toBeInTheDocument();

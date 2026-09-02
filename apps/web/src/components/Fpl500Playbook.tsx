@@ -4,12 +4,14 @@ import { InfoMarker } from "./InfoMarker";
 import { Fpl500ChipAdoption } from "./Fpl500ChipAdoption";
 import { Fpl500Holdings, type Fpl500Holding } from "./Fpl500Holdings";
 import { Fpl500Structure, type PortfolioStructure } from "./Fpl500Structure";
+import { Fpl500TransferFlow } from "./Fpl500TransferFlow";
 import { BarChart, type Bar } from "./MethodChart";
 import { PlannedAnalysis } from "./PlannedAnalysis";
 import { RankRidge, type Ridge } from "./RankRidge";
 import fpl500 from "../data/fpl500.json";
 import { fineShare, integer, oneDecimal, share, timestamp } from "../format";
 import { PLAYERS_BY_ELEMENT_ID } from "../state/season-solver";
+import { pointsDistribution } from "../state/rank-distribution";
 import {
   FPL500_SCHEMA_VERSION,
   requireArtifactVersion,
@@ -95,17 +97,19 @@ function finishesAtOrAbove(rank: number): number {
 /** A fold, colour-coded like the strip above it. */
 function Fold({
   children,
+  id,
   kind,
   open,
   title,
 }: {
   children: React.ReactNode;
+  id?: string;
   kind: string;
   open?: boolean;
   title: string;
 }) {
   return (
-    <details className={`fpl500-fold is-${kind}`} open={open}>
+    <details className={`fpl500-fold is-${kind}`} id={id} open={open}>
       <summary>
         <h2>{title}</h2>
       </summary>
@@ -284,6 +288,7 @@ function LatestCohortSummary() {
     <section
       className="fpl500-gw-summary"
       aria-labelledby="fpl500-gw-summary-title"
+      id="fpl500-chips"
     >
       <h3 id="fpl500-gw-summary-title">{gameweek}, across 500 squads</h3>
       <dl className="dossier-metrics">
@@ -368,10 +373,21 @@ function CurrentSeason() {
     );
   }
 
+  const distribution = pointsDistribution(rows);
+  const distributionBars: Bar[] = distribution.map((bucket) => ({
+    label: bucket.label,
+    value: bucket.count,
+    shown: String(bucket.count),
+  }));
   const pages = Math.ceil(rows.length / PAGE);
   const shown = rows.slice(page * PAGE, page * PAGE + PAGE);
   return (
     <>
+      <BarChart
+        bars={distributionBars}
+        caption={`Points spread across the top ${number.format(rows.length)}`}
+        unit="managers"
+      />
       <div className="fpl500-scroll">
         <table className="squad-table">
           <caption className="visually-hidden">
@@ -462,10 +478,18 @@ function ExactFpl500Analysis() {
         <Fpl500Structure holdings={holdings} structure={structure} />
       ) : null}
       <BenchUse holdings={holdings} />
-      <PlannedAnalysis
-        event={(latest?.event ?? 0) + 1}
-        only={["In and out", "Hits taken"]}
-      />
+      <section
+        aria-labelledby="fpl500-transfer-flow-title"
+        id="fpl500-transfers"
+      >
+        <h3 id="fpl500-transfer-flow-title">Who they are buying and selling</h3>
+        <p>
+          Net movement in the cohort's own squads between one capture and the
+          next, not FPL's transfer counters.
+        </p>
+        <Fpl500TransferFlow series={series} />
+      </section>
+      <PlannedAnalysis event={(latest?.event ?? 0) + 1} only={["Hits taken"]} />
     </>
   );
 }
@@ -498,38 +522,63 @@ export function Fpl500Playbook() {
     { label: "Top 10k finishes", count: finishesAtOrAbove(10_000) },
     { label: "Top 100k finishes", count: finishesAtOrAbove(100_000) },
   ];
+  const top10kShare = finishes > 0 ? finishesAtOrAbove(10_000) / finishes : 0;
 
   return (
     <>
-      <dl className="dossier-metrics">
-        <div>
-          <dt>Ranked managers</dt>
-          <dd>{number.format(data.size)}</dd>
-        </div>
-        <div>
-          <dt>Qualified candidates</dt>
-          <dd>{number.format(data.catalogueSize)}</dd>
-        </div>
-        <div>
-          <dt>Entry IDs read</dt>
-          <dd>{data.sweptTo === null ? "—" : number.format(data.sweptTo)}</dd>
-        </div>
-        <div>
-          <dt>Field size</dt>
-          <dd>{number.format(data.latestSeasonEntries ?? 0)}</dd>
-        </div>
-      </dl>
+      <p className="fpl500-hook">
+        {number.format(data.size)} managers who have finished inside the FPL top
+        ten thousand at least twice since 2021 — {share.format(top10kShare)} of
+        their tracked seasons landed there. This is what they are doing right
+        now, not what they say they do.
+      </p>
 
-      <section
-        aria-labelledby="fpl500-previous-season-record"
-        className="fpl500-history"
-      >
-        <h2 id="fpl500-previous-season-record">Previous-season record</h2>
-        <p>
-          How the selected five hundred finished across the five most recent
-          completed seasons.
-        </p>
+      <nav aria-label="Jump to a section" className="fpl500-jump">
+        <a href="#fpl500-rank">Rank</a>
+        <a href="#cohort-armband-title">Captaincy</a>
+        <a href="#fpl500-holdings-title">Players</a>
+        <a href="#fpl500-chips">Chips</a>
+        <a href="#fpl500-spend-title">Value</a>
+        <a href="#fpl500-transfers">Transfers</a>
+        <a href="#fpl500-structure-title">Squad</a>
+      </nav>
+
+      <Fold kind="what" title="What it is">
+        <ul className="plan-promises">
+          <li>
+            Every FPL entry id is public, so the register is read, not guessed
+            at.
+          </li>
+          <li>
+            A manager is catalogued once they have finished inside the top ten
+            thousand at least twice since 2021.
+          </li>
+          <li>
+            The catalogue is ranked, and the first {number.format(data.size)}{" "}
+            are FPL500.
+          </li>
+          <li>
+            Coverage is not complete and is not claimed to be. Four fifths of
+            the register is still unread.
+          </li>
+        </ul>
         <dl className="dossier-metrics">
+          <div>
+            <dt>Ranked managers</dt>
+            <dd>{number.format(data.size)}</dd>
+          </div>
+          <div>
+            <dt>Qualified candidates</dt>
+            <dd>{number.format(data.catalogueSize)}</dd>
+          </div>
+          <div>
+            <dt>Entry IDs read</dt>
+            <dd>{data.sweptTo === null ? "—" : number.format(data.sweptTo)}</dd>
+          </div>
+          <div>
+            <dt>Field size</dt>
+            <dd>{number.format(data.latestSeasonEntries ?? 0)}</dd>
+          </div>
           <div>
             <dt>Seasons profiled</dt>
             <dd>{number.format(ridges.length)}</dd>
@@ -552,27 +601,6 @@ export function Fpl500Playbook() {
           Observed · FPL histories through{" "}
           {timestamp.format(new Date(data.generatedAt))}
         </p>
-      </section>
-
-      <Fold kind="what" title="What it is">
-        <ul className="plan-promises">
-          <li>
-            Every FPL entry id is public, so the register is read, not guessed
-            at.
-          </li>
-          <li>
-            A manager is catalogued once they have finished inside the top ten
-            thousand at least twice since 2021.
-          </li>
-          <li>
-            The catalogue is ranked, and the first {number.format(data.size)}{" "}
-            are FPL500.
-          </li>
-          <li>
-            Coverage is not complete and is not claimed to be. Four fifths of
-            the register is still unread.
-          </li>
-        </ul>
       </Fold>
 
       <Fold kind="how" title="How it is decided">
@@ -626,7 +654,7 @@ export function Fpl500Playbook() {
         </p>
       </Fold>
 
-      <Fold kind="who" title="Who is scoring this season">
+      <Fold id="fpl500-rank" kind="who" title="Who is scoring this season">
         <p>
           A different list, and a public one: the Overall standings as they
           stand. FPL500 trusts consistent experience; this is raw current form.
