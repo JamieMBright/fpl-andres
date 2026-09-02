@@ -340,24 +340,20 @@ def test_xstart_validation_shape() -> None:
     _require_keys(
         payload,
         {
-            "clubs",
-            "event",
-            "evidence",
-            "field",
+            "events",
             "generatedAt",
-            "modelVersion",
-            "population",
-            "reliability",
             "schemaVersion",
             "season",
-            "topEleven",
         },
         "xstart-validation",
     )
-    assert payload["field"] == "probabilitySixtyMinutesAsShipped"
-    assert payload["population"]["count"] == 486
-    assert len(payload["clubs"]) == 20
-    assert payload["evidence"]["level"] == "observed"
+    assert [event["event"] for event in payload["events"]] == [1, 2]
+    for event in payload["events"]:
+        assert event["field"] == "probabilitySixtyMinutesAsShipped"
+        assert event["population"]["count"] > 0
+        assert len(event["clubs"]) == 20
+        assert event["evidence"]["level"] == "observed"
+        assert "reliability" not in event
 
 
 def test_the_published_squad_is_legal() -> None:

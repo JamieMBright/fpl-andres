@@ -168,6 +168,26 @@ def test_the_gw1_correction_points_at_the_original_pre_deadline_tree() -> None:
     assert read_json_file(CORRECTION) == correction
 
 
+def test_the_gw2_correction_preserves_its_untouched_pre_deadline_freeze() -> None:
+    revision = "4baa4cdad3b1d0b1b7c8dc34f2554cd4462d5bc3"
+    canonical = read_json_file(ROOT / "data" / "prospective" / "gw2-2026-27.json")
+
+    correction = build_correction_manifest(canonical, manifest_revision=revision)
+
+    assert correction["season"] == "2026-27"
+    assert correction["event"] == 2
+    assert correction["canonicalManifestRevision"] == revision
+    assert correction["recordedCodeRevision"] == ("8c9d2ae9064d49e3dae7407045c876e38d7ff654")
+    assert correction["canonicalModelVersion"] == "8.7"
+    assert correction["canonicalDeadline"] == "2026-08-28T17:30:00+00:00"
+    assert correction["canonicalFrozenAt"] == "2026-08-26T11:32:31+00:00"
+    assert "supersedes" not in correction
+    assert "correctionReason" not in correction
+    assert (
+        read_json_file(ROOT / "data" / "prospective" / "gw2-2026-27-corrected.json") == correction
+    )
+
+
 def test_the_manifest_builder_hashes_the_files_it_was_given(tmp_path: Path) -> None:
     parameters = tmp_path / "docs" / "PARAMETERS.md"
     parameters.parent.mkdir(parents=True)

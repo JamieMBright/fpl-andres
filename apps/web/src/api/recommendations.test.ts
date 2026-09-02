@@ -145,9 +145,9 @@ describe("recommendation API deployment", () => {
     );
     expect(xstartBody).toMatchObject({
       shippedFieldValidation: {
-        event: 1,
+        event: 2,
         field: "probabilitySixtyMinutesAsShipped",
-        population: { count: 486, brier: 0.230679 },
+        population: { count: 594, brier: 0.188851 },
       },
     });
     expect(SOURCE).toContain("XSTART_VALIDATION_SCHEMA_VERSION");

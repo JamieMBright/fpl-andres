@@ -40,6 +40,16 @@ function evidenceIcon(player: ExpectedXiPlayer) {
   return <Activity aria-hidden="true" size={14} />;
 }
 
+function evidenceExplanation(player: ExpectedXiPlayer): string {
+  if (player.evidence === "manual")
+    return "A named human correction for this gameweek. It is never carried into another week.";
+  if (player.evidence === "market")
+    return "Named in a bookmaker player-props quote for this fixture.";
+  if (player.evidence === "prior")
+    return "A role prior where the player has too little measured history to trust.";
+  return "A measured start rate from recent minutes and lineups.";
+}
+
 function availabilityLabel(player: ExpectedXiPlayer): string {
   const labels: Record<string, string> = {
     d: "Doubtful",
@@ -90,17 +100,28 @@ function PlayerRow({ player }: { player: ExpectedXiPlayer }) {
           </small>
         </div>
       </details>
-      <span
-        className={`expected-xi-evidence expected-xi-evidence-${player.evidence}`}
-      >
-        {evidenceIcon(player)}
-        {evidenceLabel(player)}
+      <span className="expected-xi-evidence-wrap">
+        <span
+          className={`expected-xi-evidence expected-xi-evidence-${player.evidence}`}
+        >
+          {evidenceIcon(player)}
+          {evidenceLabel(player)}
+        </span>
+        <InfoMarker label={`${evidenceLabel(player)} evidence`}>
+          {evidenceExplanation(player)}
+        </InfoMarker>
       </span>
     </li>
   );
 }
 
-function TeamSection({ team }: { team: ExpectedXiTeam }) {
+function TeamSection({
+  team,
+  validationEvent,
+}: {
+  team: ExpectedXiTeam;
+  validationEvent: number | null;
+}) {
   const kit = kitsByShortName.get(team.club);
   return (
     <section
@@ -122,9 +143,11 @@ function TeamSection({ team }: { team: ExpectedXiTeam }) {
           </p>
           {team.validation ? (
             <p className="expected-xi-validation mono">
-              GW1 check · {team.validation.topElevenHits}/
-              {team.validation.actualStarters} starters
-              <InfoMarker label={`${team.club} GW1 xStart check`}>
+              GW{validationEvent ?? "—"} check · {team.validation.topElevenHits}
+              /{team.validation.actualStarters} starters
+              <InfoMarker
+                label={`${team.club} GW${validationEvent ?? "unknown"} xStart check`}
+              >
                 Frozen XI misses:{" "}
                 {team.validation.selected
                   .filter((row) => !row.started)
@@ -223,45 +246,6 @@ export default function ExpectedXiPage() {
         team news and role prior.
       </p>
 
-      <dl className="expected-xi-evidence-legend">
-        <div>
-          <dt>
-            <Activity aria-hidden="true" size={14} /> Model
-          </dt>
-          <dd>
-            A measured start rate: recent minutes and lineups, weighted toward
-            what he has actually done.
-          </dd>
-        </div>
-        <div>
-          <dt>
-            <LineChart aria-hidden="true" size={14} /> Market
-          </dt>
-          <dd>
-            Named in a bookmaker's player-props quote for this fixture, or
-            carried forward from one that has not been refreshed yet.
-          </dd>
-        </div>
-        <div>
-          <dt>
-            <CircleHelp aria-hidden="true" size={14} /> Prior
-          </dt>
-          <dd>
-            A role prior, not a measured record — used where the model has too
-            little of his own history to trust, most often a debutant.
-          </dd>
-        </div>
-        <div>
-          <dt>
-            <CircleHelp aria-hidden="true" size={14} /> Manual
-          </dt>
-          <dd>
-            A named human correction for this exact gameweek, such as confirmed
-            team news. Never carried over from an earlier gameweek.
-          </dd>
-        </div>
-      </dl>
-
       <fieldset className="xstart-event-choice">
         <legend>View</legend>
         <label>
@@ -342,7 +326,11 @@ export default function ExpectedXiPage() {
 
           <div className="expected-xi-teams">
             {xi.teams.map((team) => (
-              <TeamSection key={team.club} team={team} />
+              <TeamSection
+                key={team.club}
+                team={team}
+                validationEvent={xi.validation?.event ?? null}
+              />
             ))}
           </div>
         </>

@@ -332,7 +332,7 @@ so a review knows what it does not have to check by hand.
 | `ScatterReadout`          | The scatter as a ranked, pinnable table                                                                    | unit                                 |
 | `PinnedPlayers`           | Up to four players compared side by side                                                                   | unit                                 |
 | `ValidationReport`        | Backtest metrics against baselines                                                                         | unit (`ValidationReport.test.tsx`)   |
-| `XStartCalibration`       | 0-11 predicted-vs-actual XI score per club, ranked chart, hover popup, club filter, plus reliability bands | unit (`XStartCalibration.test.tsx`)  |
+| `XStartCalibration`       | Cumulative XI hits by club, selected-GW bars, concise evidence markers, club filter, settled-event history | unit (`XStartCalibration.test.tsx`)  |
 | `SeasonReplay`            | A completed season stepped through week by week                                                            | unit (`SeasonReplay.test.tsx`)       |
 | `CalibrationCharts`       | Ranked bars and season lines, drawn by hand                                                                | unit                                 |
 | `CohortPanel`             | The swept cohort and its coverage                                                                          | —                                    |

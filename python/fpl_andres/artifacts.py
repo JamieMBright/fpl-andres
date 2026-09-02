@@ -42,8 +42,8 @@ SEASON_PLAN_SCHEMA_VERSION: Final = 2
 #: Immutable event-1 scorecard against the pre-deadline projection.
 GW1_REVIEW_SCHEMA_VERSION: Final = 1
 
-#: Population, reliability and club xStart scoring for one settled event.
-XSTART_VALIDATION_SCHEMA_VERSION: Final = 2
+#: Population and club xStart scoring across settled prospective events.
+XSTART_VALIDATION_SCHEMA_VERSION: Final = 3
 
 #: FPL500 web artifact. Version 3 adds exact holdings joined to settled returns
 #: and aggregate-only manager evidence; no manager identity enters the browser.

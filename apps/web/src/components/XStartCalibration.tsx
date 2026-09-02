@@ -1,28 +1,14 @@
 import { useState } from "react";
 
+import { InfoMarker } from "./InfoMarker";
 import { clubMarker } from "../kit/club-markers";
 import { PLAYERS_BY_ELEMENT_ID } from "../state/season-solver";
-import { percent } from "../format";
 import {
   XSTART_VALIDATION,
+  latestXStartEvent,
   type XStartClubValidation,
+  type XStartValidationEvent,
 } from "../state/xstart-validation";
-
-/**
- * How many of the eleven you would have started actually started, out of
- * eleven, one bar per club.
- *
- * A Brier score and a reliability table are the right evidence for a model
- * card; they are the wrong thing to hand someone deciding whether to trust
- * this week's team sheet. A 0-11 count is the same evidence read the way a
- * manager already reads a scoreline.
- *
- * Only one gameweek is frozen and scored today, so this draws one bar per
- * club rather than a line across gameweeks. The shape is built to take more
- * gameweeks the moment a second one is scored, without a rewrite: each score
- * is already keyed by club, so a future multi-gameweek artifact only adds
- * another entry per club rather than changing what this reads.
- */
 
 function playerName(elementId: number): string {
   return (
@@ -30,80 +16,65 @@ function playerName(elementId: number): string {
   );
 }
 
-function actualEleven(club: XStartClubValidation): string[] {
-  const started = club.selected
-    .filter((row) => row.started)
+function ClubDetail({ club }: { club: XStartClubValidation }) {
+  const misses = club.selected
+    .filter((row) => !row.started)
     .map((row) => playerName(row.elementId));
-  const missed = club.missedStarters.map((row) => playerName(row.elementId));
-  return [...started, ...missed];
-}
-
-function predictedEleven(club: XStartClubValidation): string[] {
-  return club.selected.map((row) => playerName(row.elementId));
-}
-
-function ScorePopup({
-  club,
-  onClose,
-}: {
-  club: XStartClubValidation;
-  onClose: () => void;
-}) {
+  const omitted = club.missedStarters.map((row) => playerName(row.elementId));
   return (
-    <div
-      aria-label={`${club.club} xStart check`}
-      className="xstart-score-popup"
-      role="dialog"
-    >
-      <div className="xstart-score-popup-columns">
-        <button
-          className="xstart-score-popup-close"
-          onClick={onClose}
-          type="button"
-        >
-          Close
-        </button>
-        <h4 className="xstart-score-popup-title" translate="no">
-          {club.club} · {club.topElevenHits}/{club.actualStarters}
-        </h4>
-        <div>
-          <h5>Predicted XI</h5>
-          <ol className="mono">
-            {predictedEleven(club).map((name) => (
-              <li key={name}>{name}</li>
-            ))}
-          </ol>
-        </div>
-        <div>
-          <h5>Actual XI</h5>
-          <ol className="mono">
-            {actualEleven(club).map((name) => (
-              <li key={name}>{name}</li>
-            ))}
-          </ol>
-        </div>
-      </div>
-    </div>
+    <>
+      <span className="info-marker-line">
+        {club.count} predictions · {club.actualStarters} actual starters ·{" "}
+        {club.topElevenHits}/11 hits.
+      </span>
+      <span className="info-marker-line">
+        Predicted but missed: {misses.join(", ") || "none"}.
+      </span>
+      <span className="info-marker-line">
+        Starters left out: {omitted.join(", ") || "none"}.
+      </span>
+    </>
   );
+}
+
+function clubAt(event: XStartValidationEvent, club: string) {
+  return event.clubs.find((row) => row.club === club);
+}
+
+function cumulativeHits(club: string, throughEvent: number): number {
+  return XSTART_VALIDATION.events
+    .filter((event) => event.event <= throughEvent)
+    .reduce(
+      (total, event) => total + (clubAt(event, club)?.topElevenHits ?? 0),
+      0,
+    );
 }
 
 export function XStartCalibration() {
-  const validation = XSTART_VALIDATION;
+  const latest = latestXStartEvent(XSTART_VALIDATION);
+  const [selectedEvent, setSelectedEvent] = useState(latest.event);
   const [hiddenClubs, setHiddenClubs] = useState<ReadonlySet<string>>(
     new Set(),
   );
-  const [opened, setOpened] = useState<XStartClubValidation | null>(null);
-
-  const shown = validation.clubs.filter((club) => !hiddenClubs.has(club.club));
-  const cumulative = [...shown].sort(
-    (left, right) => right.topElevenHits - left.topElevenHits,
-  );
-  const perfect = 11;
-  const axisMax = Math.max(
-    perfect,
-    ...cumulative.map((club) => club.topElevenHits),
-  );
-  const clippedMax = Math.min(axisMax, perfect);
+  const selected =
+    XSTART_VALIDATION.events.find((event) => event.event === selectedEvent) ??
+    latest;
+  const clubs = latest.clubs.map((club) => club.club);
+  const shownClubs = clubs.filter((club) => !hiddenClubs.has(club));
+  const eventCount = XSTART_VALIDATION.events.length;
+  const cumulative = shownClubs
+    .map((club) => ({
+      club,
+      hits: cumulativeHits(club, selectedEvent),
+      detail: clubAt(selected, club),
+    }))
+    .sort(
+      (left, right) =>
+        right.hits - left.hits || left.club.localeCompare(right.club),
+    );
+  const lineX = (index: number) =>
+    44 + (eventCount === 1 ? 0 : (index * 552) / (eventCount - 1));
+  const lineY = (hits: number) => 224 - (hits / (11 * eventCount)) * 184;
 
   return (
     <section
@@ -111,49 +82,105 @@ export function XStartCalibration() {
       className="xstart-calibration"
     >
       <p className="eyebrow">
-        GW{validation.event} · model {validation.modelVersion}
+        GW1-GW{latest.event} · {eventCount} settled checks
       </p>
       <h2 id="xstart-calibration-title">How close was the predicted XI?</h2>
       <p>
-        Out of the eleven I would have started, how many actually started.
-        Eleven is a perfect week; anything scored under it is where the model or
-        the market missed.
+        One point when a predicted starter starts. Eleven per club per gameweek;
+        the line adds those hits across every settled check.
       </p>
 
       <fieldset className="xstart-club-filter">
         <legend>Filter by club</legend>
-        {validation.clubs.map((club) => (
-          <label key={club.club}>
+        {clubs.map((club) => (
+          <label key={club}>
             <input
-              checked={!hiddenClubs.has(club.club)}
+              checked={!hiddenClubs.has(club)}
               onChange={(event) => {
                 setHiddenClubs((current) => {
                   const next = new Set(current);
-                  if (event.target.checked) next.delete(club.club);
-                  else next.add(club.club);
+                  if (event.target.checked) next.delete(club);
+                  else next.add(club);
                   return next;
                 });
               }}
               type="checkbox"
             />
-            <span translate="no">{club.club}</span>
+            <span translate="no">{club}</span>
           </label>
         ))}
       </fieldset>
 
+      <figure className="xstart-cumulative-chart">
+        <figcaption>Cumulative XI hits by club</figcaption>
+        <svg
+          aria-label={`Cumulative xStart hits from GW1 to GW${latest.event}`}
+          role="img"
+          viewBox="0 0 640 260"
+        >
+          <line className="xstart-axis" x1="44" x2="596" y1="224" y2="224" />
+          <line className="xstart-axis" x1="44" x2="44" y1="40" y2="224" />
+          <text className="xstart-axis-label is-y" x="36" y="228">
+            0
+          </text>
+          <text className="xstart-axis-label is-y" x="36" y="44">
+            {11 * eventCount}
+          </text>
+          {XSTART_VALIDATION.events.map((event, index) => (
+            <text
+              className="xstart-axis-label"
+              key={event.event}
+              x={lineX(index)}
+              y="246"
+            >
+              GW{event.event}
+            </text>
+          ))}
+          {shownClubs.map((club) => {
+            const marker = clubMarker(club);
+            const points = XSTART_VALIDATION.events
+              .map(
+                (event, index) =>
+                  `${lineX(index)},${lineY(cumulativeHits(club, event.event))}`,
+              )
+              .join(" ");
+            return (
+              <polyline
+                className="xstart-cumulative-line"
+                data-club={club}
+                fill="none"
+                key={club}
+                points={points}
+                stroke={marker?.fill}
+                strokeDasharray={marker?.dash ?? undefined}
+              />
+            );
+          })}
+        </svg>
+      </figure>
+
+      <label className="xstart-gw-choice">
+        Gameweek
+        <select
+          onChange={(event) => setSelectedEvent(Number(event.target.value))}
+          value={selectedEvent}
+        >
+          {XSTART_VALIDATION.events.map((event) => (
+            <option key={event.event} value={event.event}>
+              GW{event.event}
+            </option>
+          ))}
+        </select>
+      </label>
+
+      <h3>GW{selected.event} hits</h3>
       <ol className="xstart-score-bars">
-        {shown.map((club) => {
-          const marker = clubMarker(club.club);
-          const pct = (club.topElevenHits / 11) * 100;
-          return (
-            <li key={club.club}>
-              <button
-                className="xstart-score-bar-open"
-                onClick={() => {
-                  setOpened(club);
-                }}
-                type="button"
-              >
+        {selected.clubs
+          .filter((club) => !hiddenClubs.has(club.club))
+          .map((club) => {
+            const marker = clubMarker(club.club);
+            return (
+              <li key={club.club}>
                 <span className="xstart-score-bar-label" translate="no">
                   {club.club}
                 </span>
@@ -161,7 +188,7 @@ export function XStartCalibration() {
                   <span
                     className="xstart-score-bar-fill"
                     style={{
-                      width: `${String(pct)}%`,
+                      width: `${String((club.topElevenHits / 11) * 100)}%`,
                       background: marker?.fill,
                       borderColor: marker?.stroke ?? undefined,
                     }}
@@ -170,95 +197,45 @@ export function XStartCalibration() {
                 <span className="mono xstart-score-bar-value">
                   {club.topElevenHits}/11
                 </span>
-              </button>
+                <InfoMarker
+                  label={`${club.club} GW${selected.event} xStart detail`}
+                >
+                  <ClubDetail club={club} />
+                </InfoMarker>
+              </li>
+            );
+          })}
+      </ol>
+
+      <h3>Cumulative, easiest to predict first</h3>
+      <ol className="xstart-rank-bars">
+        {cumulative.map(({ club, hits, detail }) => {
+          const marker = clubMarker(club);
+          return (
+            <li key={club}>
+              <span className="xstart-rank-label" translate="no">
+                {club}
+              </span>
+              <span className="xstart-rank-track">
+                <span
+                  className="xstart-rank-fill"
+                  style={{
+                    width: `${String((hits / (11 * eventCount)) * 100)}%`,
+                    background: marker?.fill,
+                    borderColor: marker?.stroke ?? undefined,
+                  }}
+                />
+              </span>
+              <span className="mono xstart-rank-value">{hits}</span>
+              {detail ? (
+                <InfoMarker label={`${club} cumulative xStart detail`}>
+                  <ClubDetail club={detail} />
+                </InfoMarker>
+              ) : null}
             </li>
           );
         })}
       </ol>
-
-      <h3>Ranked, easiest to predict first</h3>
-      <p>
-        The same scores, sorted. A perfect week for every club would put all
-        twenty at the dashed line.
-      </p>
-      <div className="xstart-rank-chart">
-        <ol className="xstart-rank-bars">
-          {cumulative.map((club) => {
-            const marker = clubMarker(club.club);
-            const pct = (club.topElevenHits / clippedMax) * 100;
-            return (
-              <li key={club.club}>
-                <span className="xstart-rank-label" translate="no">
-                  {club.club}
-                </span>
-                <span className="xstart-rank-track">
-                  <span
-                    className="xstart-rank-fill"
-                    style={{
-                      width: `${String(Math.min(100, pct))}%`,
-                      background: marker?.fill,
-                      borderColor: marker?.stroke ?? undefined,
-                    }}
-                  />
-                </span>
-                <span className="mono xstart-rank-value">
-                  {club.topElevenHits}
-                </span>
-              </li>
-            );
-          })}
-        </ol>
-        {axisMax > clippedMax ? (
-          <p className="mono xstart-rank-note">
-            Perfect ({perfect}) is off this axis; every bar here is clipped to
-            what clubs actually scored.
-          </p>
-        ) : (
-          <p className="mono xstart-rank-note">
-            The dashed line at {perfect} is a perfect week.
-          </p>
-        )}
-      </div>
-
-      <div className="xstart-reliability" role="list">
-        {validation.reliability.map((band) => (
-          <div
-            className="xstart-reliability-row"
-            key={band.label}
-            role="listitem"
-          >
-            <span className="mono">{band.label}</span>
-            <span className="xstart-reliability-track" aria-hidden="true">
-              <span
-                className="is-forecast"
-                style={{ width: `${String(band.meanForecast * 100)}%` }}
-              />
-              <span
-                className="is-actual"
-                style={{ width: `${String(band.actualStartRate * 100)}%` }}
-              />
-            </span>
-            <span className="mono">
-              {percent.format(band.meanForecast)} /{" "}
-              {percent.format(band.actualStartRate)}
-            </span>
-            <span className="mono">n={band.count}</span>
-          </div>
-        ))}
-      </div>
-      <p className="xstart-reliability-key">
-        <span className="is-forecast" aria-hidden="true" /> Forecast
-        <span className="is-actual" aria-hidden="true" /> Actual starts
-      </p>
-
-      {opened ? (
-        <ScorePopup
-          club={opened}
-          onClose={() => {
-            setOpened(null);
-          }}
-        />
-      ) : null}
     </section>
   );
 }

@@ -25,9 +25,8 @@ export interface XStartClubValidation extends XStartMetrics {
   missedStarters: readonly { elementId: number; probability: number }[];
 }
 
-export interface XStartValidation {
+export interface XStartValidationEvent {
   generatedAt: string;
-  season: string;
   event: number;
   modelVersion: string;
   field: "probabilitySixtyMinutesAsShipped";
@@ -44,12 +43,13 @@ export interface XStartValidation {
     actualStarters: number;
     recall: number | null;
   };
-  reliability: readonly (XStartMetrics & {
-    label: string;
-    lower: number;
-    upper: number;
-  })[];
   clubs: readonly XStartClubValidation[];
+}
+
+export interface XStartValidation {
+  generatedAt: string;
+  season: string;
+  events: readonly XStartValidationEvent[];
 }
 
 export function readXStartValidation(document: unknown): XStartValidation {
@@ -62,21 +62,36 @@ export function readXStartValidation(document: unknown): XStartValidation {
     throw new Error("xstart-validation.json was not an object");
   }
   const candidate = document as {
-    field?: unknown;
-    population?: { count?: unknown };
-    clubs?: unknown;
+    season?: unknown;
+    events?: unknown;
   };
   if (
-    candidate.field !== "probabilitySixtyMinutesAsShipped" ||
-    typeof candidate.population?.count !== "number" ||
-    !Array.isArray(candidate.clubs) ||
-    candidate.clubs.length !== 20
+    typeof candidate.season !== "string" ||
+    !Array.isArray(candidate.events)
   ) {
-    throw new Error(
-      "xstart-validation.json is missing its population and clubs",
-    );
+    throw new Error("xstart-validation.json is missing its event series");
+  }
+  for (const event of candidate.events as XStartValidationEvent[]) {
+    if (
+      event.field !== "probabilitySixtyMinutesAsShipped" ||
+      typeof event.population?.count !== "number" ||
+      !Array.isArray(event.clubs) ||
+      event.clubs.length !== 20
+    ) {
+      throw new Error("xstart-validation.json has an incomplete event");
+    }
   }
   return document as unknown as XStartValidation;
+}
+
+export function latestXStartEvent(
+  document: XStartValidation,
+): XStartValidationEvent {
+  const latest = [...document.events].sort(
+    (left, right) => right.event - left.event,
+  )[0];
+  if (!latest) throw new Error("xstart-validation.json has no settled events");
+  return latest;
 }
 
 export const XSTART_VALIDATION = readXStartValidation(validation);

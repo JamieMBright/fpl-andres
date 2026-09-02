@@ -37,33 +37,18 @@ def _metrics(rows: list[tuple[int, str, float, int]]) -> dict[str, int | float]:
     }
 
 
-def _reliability(rows: list[tuple[int, str, float, int]]) -> list[dict[str, Any]]:
-    bands: list[dict[str, Any]] = []
-    for index in range(10):
-        lower = index / 10
-        upper = (index + 1) / 10
-        selected = [
-            row for row in rows if lower <= row[2] < upper or (index == 9 and row[2] == upper)
-        ]
-        if not selected:
-            continue
-        bands.append(
-            {
-                "label": f"{lower:.1f}-{upper:.1f}",
-                "lower": lower,
-                "upper": upper,
-                **_metrics(selected),
-            }
-        )
-    return bands
-
-
 def evaluate_xstart(
     inputs: Mapping[str, Any],
     live_snapshot: Mapping[str, Any],
 ) -> dict[str, Any]:
-    if live_snapshot.get("event") != 1 or live_snapshot.get("roundComplete") is not True:
-        raise ValueError("xStart evaluation requires a settled gameweek 1 snapshot")
+    event = live_snapshot.get("event")
+    if not isinstance(event, int) or not 1 <= event <= 38:
+        raise ValueError("xStart evaluation requires a valid gameweek")
+    if live_snapshot.get("roundComplete") is not True:
+        raise ValueError("xStart evaluation requires a settled gameweek snapshot")
+    input_events = inputs.get("events")
+    if not isinstance(input_events, list) or input_events[0] != event:
+        raise ValueError("frozen xStart inputs must begin at the scored gameweek")
     players = inputs.get("players")
     elements = live_snapshot.get("elements")
     if not isinstance(players, list) or not isinstance(elements, list):
@@ -144,6 +129,5 @@ def evaluate_xstart(
             "actualStarters": total_actual,
             "recall": _round(total_hits / total_actual) if total_actual else None,
         },
-        "reliability": _reliability(rows),
         "clubs": clubs,
     }

@@ -88,10 +88,10 @@ jobs:
 
       - name: Commit new immutable evidence
         run: |
-          paths="data/live data/prospective/gw1-2026-27-corrected.json apps/web/src/data/gw1-review.json apps/web/src/data/xstart-validation.json"
+          paths="data/live data/prospective/gw*-2026-27-corrected.json apps/web/src/data/gw1-review.json apps/web/src/data/xstart-validation.json"
           npx --yes prettier@3 --write \
             "data/live/**/*.json" \
-            data/prospective/gw1-2026-27-corrected.json \
+            "data/prospective/gw*-2026-27-corrected.json" \
             apps/web/src/data/gw1-review.json \
             apps/web/src/data/xstart-validation.json
           git config user.name "github-actions[bot]"

@@ -4,6 +4,10 @@ import { describe, expect, it } from "vitest";
 import userEvent from "@testing-library/user-event";
 
 import { expectedXi } from "../state/expected-xi";
+import {
+  XSTART_VALIDATION,
+  latestXStartEvent,
+} from "../state/xstart-validation";
 import ExpectedXiPage from "./ExpectedXiPage";
 
 describe("Expected XI page", () => {
@@ -11,6 +15,7 @@ describe("Expected XI page", () => {
     // The page heads on whichever gameweek the published season opens with, so
     // naming one here dates the test to the week it was written.
     const { event } = expectedXi();
+    const validationEvent = latestXStartEvent(XSTART_VALIDATION).event;
 
     render(
       <MemoryRouter>
@@ -26,9 +31,13 @@ describe("Expected XI page", () => {
     ).toBeVisible();
     expect(screen.getAllByRole("link")).toHaveLength(20);
     expect(screen.getAllByRole("heading", { level: 2 })).toHaveLength(20);
-    expect(document.body).toHaveTextContent("GW1 check · 10/11 starters");
+    expect(document.body).toHaveTextContent(`GW${validationEvent} check`);
+    const leeds = expectedXi().teams.find((team) => team.club === "LEE");
+    expect(leeds?.validation).toBeDefined();
     await userEvent.click(
-      screen.getByRole("button", { name: "About LEE GW1 xStart check" }),
+      screen.getByRole("button", {
+        name: `About LEE GW${validationEvent} xStart check`,
+      }),
     );
     expect(screen.getByRole("tooltip")).toHaveTextContent("Okafor");
     expect(screen.getByRole("tooltip")).toHaveTextContent("Trafford");
@@ -49,6 +58,10 @@ describe("Expected XI page", () => {
     ).toHaveLength(
       players.filter((player) => player.evidence === "model").length,
     );
+    expect(
+      screen.getAllByRole("button", { name: /About .* evidence/ }),
+    ).toHaveLength(players.length);
+    expect(document.querySelector(".expected-xi-evidence-legend")).toBeNull();
     expect(document.body).toHaveTextContent("Likely XI");
     expect(document.body).toHaveTextContent("Next in");
     await userEvent.click(screen.getByLabelText("Performance"));

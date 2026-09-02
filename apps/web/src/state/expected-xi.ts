@@ -4,8 +4,9 @@ import manualPriorsData from "../data/xstart-manual-priors.json";
 import { TEAM_KITS } from "../kit/team-kits";
 import {
   XSTART_VALIDATION,
+  latestXStartEvent,
   type XStartClubValidation,
-  type XStartValidation,
+  type XStartValidationEvent,
 } from "./xstart-validation";
 
 type PositionCode = "GKP" | "DEF" | "MID" | "FWD";
@@ -135,7 +136,7 @@ export interface ExpectedXi {
   generatedAt: string;
   marketUpdatedAt: string | null;
   teams: ExpectedXiTeam[];
-  validation?: XStartValidation;
+  validation?: XStartValidationEvent;
 }
 
 interface ExpectedXiInputs {
@@ -484,12 +485,13 @@ export function expectedXi(): ExpectedXi {
     playerOdds: playerOddsData as PlayerOddsArtifact,
     manualPriors: manualPriorsData as ManualPriorArtifact,
   });
+  const latestValidation = latestXStartEvent(XSTART_VALIDATION);
   const validationByClub = new Map(
-    XSTART_VALIDATION.clubs.map((club) => [club.club, club]),
+    latestValidation.clubs.map((club) => [club.club, club]),
   );
   return {
     ...built,
-    validation: XSTART_VALIDATION,
+    validation: latestValidation,
     teams: built.teams.map((team) => {
       const validation = validationByClub.get(team.club);
       return validation ? { ...team, validation } : team;

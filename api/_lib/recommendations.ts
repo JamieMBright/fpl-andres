@@ -113,18 +113,20 @@ interface DeadlineArtifact {
 
 interface XStartValidationArtifact {
   schemaVersion: number;
-  event: number;
-  modelVersion: string;
-  field: string;
-  population: {
-    count: number;
-    brier: number;
-    logLoss: number;
-    meanForecast: number;
-    actualStartRate: number;
-  };
-  topEleven: { hits: number; actualStarters: number; recall: number | null };
-  clubs: unknown[];
+  events: {
+    event: number;
+    modelVersion: string;
+    field: string;
+    population: {
+      count: number;
+      brier: number;
+      logLoss: number;
+      meanForecast: number;
+      actualStartRate: number;
+    };
+    topEleven: { hits: number; actualStarters: number; recall: number | null };
+    clubs: unknown[];
+  }[];
 }
 
 const limiter = new RateLimiter(RECOMMENDATIONS_POLICY);
@@ -143,10 +145,13 @@ requireArtifactVersion(
   XSTART_VALIDATION,
   XSTART_VALIDATION_SCHEMA_VERSION,
 );
+const latestXStart = [...XSTART_VALIDATION.events].sort(
+  (left, right) => right.event - left.event,
+)[0];
 if (
-  XSTART_VALIDATION.field !== "probabilitySixtyMinutesAsShipped" ||
-  !Array.isArray(XSTART_VALIDATION.clubs) ||
-  XSTART_VALIDATION.clubs.length !== 20
+  latestXStart?.field !== "probabilitySixtyMinutesAsShipped" ||
+  !Array.isArray(latestXStart.clubs) ||
+  latestXStart.clubs.length !== 20
 ) {
   throw new Error("xstart-validation is missing its shipped field and clubs");
 }
@@ -263,7 +268,7 @@ function xstart() {
       INPUTS.evidence?.playerMarkets?.updatedAt ?? PLAYER_ODDS.fetchedAt,
     manualUpdatedAt: MANUAL_PRIORS.generatedAt,
     modelVersion: PLAN.modelVersion,
-    shippedFieldValidation: XSTART_VALIDATION,
+    shippedFieldValidation: latestXStart,
     teams: [...byClub].sort().map(([club, players]) => {
       const manualKeeper = MANUAL_PRIORS.players.find(
         (row) => row.club === club && row.startProbability >= 0.99,

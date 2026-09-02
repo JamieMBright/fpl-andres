@@ -44,8 +44,10 @@ def build_correction_manifest(
         r"[0-9a-f]{40}", artifact_revision
     ):
         raise ValueError("canonical manifest must name a forty-character artifact revision")
-    if canonical.get("season") != "2026-27" or canonical.get("event") != 1:
-        raise ValueError("the correction source must describe 2026-27 gameweek 1")
+    season = canonical.get("season")
+    event = canonical.get("event")
+    if not isinstance(season, str) or not isinstance(event, int) or not 1 <= event <= 38:
+        raise ValueError("the correction source must name a season and valid gameweek")
     if canonical.get("outcomesObserved") is not False:
         raise ValueError("the correction source must be prospective evidence")
     artifacts = canonical.get("artifacts")
@@ -57,15 +59,10 @@ def build_correction_manifest(
     ):
         raise ValueError("canonical artifact hashes must be SHA-256 digests")
 
-    return {
+    correction: dict[str, object] = {
         "schemaVersion": CORRECTION_SCHEMA_VERSION,
-        "season": "2026-27",
-        "event": 1,
-        "supersedes": "data/prospective/gw1-2026-27.json",
-        "correctionReason": (
-            "The original path was later rewritten with a post-deadline freeze and the "
-            "gameweek 2 deadline. This companion preserves the original pre-deadline record."
-        ),
+        "season": season,
+        "event": event,
         "canonicalManifestRevision": manifest_revision,
         "canonicalArtifactRevision": manifest_revision,
         "recordedCodeRevision": artifact_revision,
@@ -77,6 +74,18 @@ def build_correction_manifest(
         "parameters": canonical.get("parameters"),
         "artifacts": dict(artifacts),
     }
+    if season == "2026-27" and event == 1:
+        correction.update(
+            {
+                "supersedes": "data/prospective/gw1-2026-27.json",
+                "correctionReason": (
+                    "The original path was later rewritten with a post-deadline freeze and the "
+                    "gameweek 2 deadline. This companion preserves the original "
+                    "pre-deadline record."
+                ),
+            }
+        )
+    return correction
 
 
 def build_prospective_manifest(

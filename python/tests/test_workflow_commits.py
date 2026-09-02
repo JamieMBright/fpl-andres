@@ -361,6 +361,7 @@ def test_live_capture_builds_the_review_after_the_settled_snapshot() -> None:
     assert "set -o pipefail" in text[review_step:review]
     assert "fetch-depth: 0" in text
     assert text.count("apps/web/src/data/xstart-validation.json") >= 2
+    assert "data/prospective/gw*-2026-27-corrected.json" in text
 
 
 def test_deadlines_are_shipped_data_not_cohort_evidence() -> None:

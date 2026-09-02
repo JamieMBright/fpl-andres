@@ -13,12 +13,12 @@ ROOT = Path(__file__).resolve().parents[2]
 RECORDED_CODE_REVISION = "20d43acd502730f7281d196f0584bb8c610965a7"
 
 
-def _frozen_inputs() -> dict[str, object]:
+def _frozen_inputs(revision: str = RECORDED_CODE_REVISION) -> dict[str, object]:
     source = subprocess.run(
         [
             "git",
             "show",
-            f"{RECORDED_CODE_REVISION}:apps/web/src/data/season-inputs.json",
+            f"{revision}:apps/web/src/data/season-inputs.json",
         ],
         cwd=ROOT,
         check=True,
@@ -52,9 +52,7 @@ def test_frozen_shipped_xstart_matches_the_scoring_reference() -> None:
         "started": False,
     }
     assert leeds["missedStarters"] == [{"elementId": 385, "probability": 0.106}]
-    highest = next(band for band in result["reliability"] if band["label"] == "0.9-1.0")
-    assert highest["meanForecast"] == pytest.approx(0.922857, abs=0.000001)
-    assert highest["actualStartRate"] == pytest.approx(0.678571, abs=0.000001)
+    assert "reliability" not in result
 
 
 def test_top_eleven_scoring_refuses_an_incomplete_club_pool() -> None:
@@ -68,3 +66,13 @@ def test_top_eleven_scoring_refuses_an_incomplete_club_pool() -> None:
             inputs,
             read_json_file(ROOT / "data" / "live" / "2026-27" / "gw01.json"),
         )
+
+
+def test_xstart_accepts_a_settled_gameweek_two_snapshot() -> None:
+    result = evaluate_xstart(
+        _frozen_inputs("8c9d2ae9064d49e3dae7407045c876e38d7ff654"),
+        read_json_file(ROOT / "data" / "live" / "2026-27" / "gw02.json"),
+    )
+
+    assert result["population"]["count"] > 0
+    assert len(result["clubs"]) == 20
