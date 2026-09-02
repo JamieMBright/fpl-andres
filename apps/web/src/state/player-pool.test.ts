@@ -112,6 +112,28 @@ describe("buildPlayerPool", () => {
     expect(bruno?.lastGameweekPoints).toBe(9);
   });
 
+  it("keeps a legitimate negative FPL season score instead of rejecting the whole pool", () => {
+    const pool = buildPlayerPool(
+      bootstrap({
+        elements: [
+          {
+            id: 1,
+            code: KNOWN_CODE,
+            web_name: "B.Fernandes",
+            element_type: 3,
+            team: 2,
+            now_cost: 100,
+            status: "a",
+            total_points: -1,
+          },
+        ],
+      }),
+    );
+
+    expect(pool.players).toHaveLength(1);
+    expect(pool.players[0]?.seasonPoints).toBe(-1);
+  });
+
   it("defaults season points to zero and gameweek points to null before FPL publishes them", () => {
     const pool = buildPlayerPool(bootstrap());
     const bruno = pool.players.find((player) => player.code === KNOWN_CODE);

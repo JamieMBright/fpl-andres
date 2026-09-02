@@ -136,6 +136,16 @@ def test_the_bot_committing_workflows_are_covered_by_those_rules() -> None:
         assert name in pushing, f"{name} no longer looks like it pushes"
 
 
+def test_solver_input_publication_rebuilds_after_a_push_conflict() -> None:
+    """A rebase cannot merge independently regenerated planning artifacts."""
+    text = (WORKFLOWS / "publish-solver-input.yml").read_text(encoding="utf-8")
+
+    assert "for attempt in 1 2 3 4 5" in text
+    assert 'git reset --hard "origin/$GITHUB_REF_NAME"' in text
+    assert "rebuild" in text
+    assert "could not push the regenerated solver input after five attempts" in text
+
+
 @pytest.mark.parametrize(
     "name,source",
     (

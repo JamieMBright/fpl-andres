@@ -37,7 +37,9 @@ const bootstrapSchema = z.object({
         // FPL's own live season record: what he has actually scored so far
         // this season, and in the gameweek just gone. Both start at zero
         // before a ball is kicked, which is a fact, not a missing one.
-        total_points: z.number().int().nonnegative().optional(),
+        // FPL totals can be negative after deductions (for example a red card),
+        // so zero is not a valid source-contract floor here.
+        total_points: z.number().int().optional(),
         event_points: z.number().int().optional(),
         // Ownership and minutes, for filtering rather than ranking: a
         // differential pick and a nailed-on starter are different questions
