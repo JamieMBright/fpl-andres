@@ -62,6 +62,8 @@ export interface ScatterControlsProps {
   onChange: (next: Partial<ScatterView>) => void;
   onReset: () => void;
   plotted: number;
+  /** How many the minutes threshold alone is hiding right now. */
+  excludedByMinutes?: number;
   /** Why the two-sigma curve cannot be drawn, or null when it can. */
   frontierUnavailable?: string | null;
 }
@@ -72,6 +74,7 @@ export function ScatterControls({
   onChange,
   onReset,
   plotted,
+  excludedByMinutes = 0,
   frontierUnavailable = null,
 }: ScatterControlsProps) {
   const ids = useId();
@@ -356,7 +359,12 @@ export function ScatterControls({
             }
           />
           <p className="scatter-hint">
-            Below this a per-90 rate is a rumour. Five matches is the default.
+            {pool.vintage.state === "live_season"
+              ? `Scaled to ${String(pool.vintage.completedGameweeks)} gameweek${pool.vintage.completedGameweeks === 1 ? "" : "s"} played so far, not a fixed number.`
+              : "Below this a per-90 rate is a rumour. Five matches is the default."}
+            {excludedByMinutes > 0
+              ? ` Hiding ${String(excludedByMinutes)} below it right now.`
+              : null}
           </p>
         </div>
 

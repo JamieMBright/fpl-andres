@@ -360,6 +360,7 @@ function AnalysisBody({
 
       <div className="analysis-layout">
         <ScatterControls
+          excludedByMinutes={excluded.minutes}
           frontierUnavailable={overlays.frontier}
           pool={data.pool}
           view={view}
