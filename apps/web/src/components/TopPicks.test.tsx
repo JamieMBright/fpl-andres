@@ -1,9 +1,18 @@
 import { fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { beforeAll, describe, expect, it } from "vitest";
+import {
+  afterEach,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from "vitest";
 
 import { TopPicks } from "./TopPicks";
 import { DEFAULT_HORIZON, horizonPointsByCode } from "../state/horizon-points";
+import { forgetLastGoodPool } from "../state/player-pool";
 import { SEASON_PLAYERS } from "../state/season-solver";
 
 /**
@@ -47,6 +56,29 @@ describe("TopPicks", () => {
     HTMLDialogElement.prototype.close = function shut() {
       this.open = false;
     };
+  });
+
+  beforeEach(() => {
+    forgetLastGoodPool();
+    vi.stubGlobal(
+      "fetch",
+      vi.fn<typeof fetch>().mockImplementation((input) =>
+        Promise.resolve(
+          String(input).includes("fixtures")
+            ? Response.json([])
+            : Response.json({
+                events: [],
+                element_types: [],
+                teams: [],
+                elements: [],
+              }),
+        ),
+      ),
+    );
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
   });
 
   it("names three players per position in xPts5 per million order", () => {
@@ -116,11 +148,19 @@ describe("TopPicks", () => {
   it("shows only the breakdown for the card that was asked about", async () => {
     render(<TopPicks />);
     const triggers = screen.getAllByRole("button", { name: /xPts5$/ });
-    await userEvent.click(triggers[2]!);
+    const midfielder = best("MID");
+    const trigger = screen.getByRole("button", {
+      name: `${midfielder.name}, ${midfielder.points.toFixed(1)} xPts5`,
+    });
+    await userEvent.click(trigger);
 
     expect(triggers[0]).toHaveAttribute("aria-expanded", "false");
-    expect(triggers[2]).toHaveAttribute("aria-expanded", "true");
-    expect(screen.getByText(new RegExp(best("MID").name))).toBeInTheDocument();
+    expect(trigger).toHaveAttribute("aria-expanded", "true");
+    expect(
+      screen.getByText(new RegExp(midfielder.name), {
+        selector: ".top-pick-panel-head",
+      }),
+    ).toBeInTheDocument();
   });
 
   it("shows one column per gameweek in the horizon, with the venue in words", async () => {
@@ -142,6 +182,26 @@ describe("TopPicks", () => {
     );
   });
 
+  it("opens a five-fixture position panel from a runner's xPts", () => {
+    const runner = topThree("FWD")[1];
+    expect(runner).toBeDefined();
+    render(<TopPicks />);
+
+    const trigger = screen.getByRole("button", {
+      name: new RegExp(`^${runner!.name}, .* xPts5$`),
+    });
+    fireEvent.focus(trigger);
+
+    expect(trigger).toHaveAttribute("aria-expanded", "true");
+    const panel = document.getElementById(
+      trigger.getAttribute("aria-controls")!,
+    );
+    expect(panel).toHaveAttribute("data-position", "FWD");
+    expect(panel!.querySelectorAll(".top-pick-fixture")).toHaveLength(
+      DEFAULT_HORIZON,
+    );
+  });
+
   it("opens the player's own profile from the name", async () => {
     render(<TopPicks />);
     const { name } = best("MID");
@@ -149,6 +209,54 @@ describe("TopPicks", () => {
     await userEvent.click(screen.getByRole("button", { name }));
 
     expect(screen.getByRole("dialog")).toBeInTheDocument();
+  });
+
+  it("hydrates live points when a profile is opened from Top Picks", async () => {
+    const pick = topThree("MID")[0];
+    expect(pick).toBeDefined();
+    vi.stubGlobal(
+      "fetch",
+      vi.fn<typeof fetch>().mockImplementation((input) =>
+        Promise.resolve(
+          String(input).includes("fixtures")
+            ? Response.json([])
+            : Response.json({
+                events: [
+                  {
+                    id: 2,
+                    deadline_time: "2026-08-28T17:30:00Z",
+                    is_current: true,
+                  },
+                ],
+                element_types: [{ id: 3, singular_name_short: "MID" }],
+                teams: [{ id: 1, code: 3, short_name: "ARS", name: "Arsenal" }],
+                elements: [
+                  {
+                    id: 1,
+                    code: pick!.code,
+                    web_name: pick!.name,
+                    element_type: 3,
+                    team: 1,
+                    now_cost: 75,
+                    status: "a",
+                    total_points: 14,
+                    event_points: 6,
+                  },
+                ],
+              }),
+        ),
+      ),
+    );
+
+    render(<TopPicks />);
+    await userEvent.click(screen.getByRole("button", { name: pick!.name }));
+
+    const dialog = screen.getByRole("dialog");
+    expect(
+      await within(dialog).findByText("Points this season"),
+    ).toBeInTheDocument();
+    expect(within(dialog).getByText("14")).toBeInTheDocument();
+    expect(within(dialog).getByText("6")).toBeInTheDocument();
   });
 
   it("opens a runner's profile without opening a fixture panel", async () => {

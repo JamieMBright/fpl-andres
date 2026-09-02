@@ -1,9 +1,33 @@
 import { fireEvent, render, screen, within } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { percent } from "../format";
+import { forgetLastGoodPool } from "../state/player-pool";
 import { allProjections, projectionSeason } from "../state/squad-projection";
 import { PlayerDetail } from "./PlayerDetail";
+
+beforeEach(() => {
+  forgetLastGoodPool();
+  vi.stubGlobal(
+    "fetch",
+    vi.fn<typeof fetch>().mockImplementation((input) =>
+      Promise.resolve(
+        String(input).includes("fixtures")
+          ? Response.json([])
+          : Response.json({
+              events: [],
+              element_types: [],
+              teams: [],
+              elements: [],
+            }),
+      ),
+    ),
+  );
+});
+
+afterEach(() => {
+  vi.restoreAllMocks();
+});
 
 describe("PlayerDetail minutes bridge", () => {
   it("keeps true starts separate from reaching 60 minutes", () => {
@@ -89,7 +113,7 @@ describe("PlayerDetail season split", () => {
     ).not.toBeInTheDocument();
   });
 
-  it("says so when no live pool has supplied this season's points", () => {
+  it("says so when FPL has no live row for the player", async () => {
     showModalPolyfill();
 
     render(
@@ -106,7 +130,7 @@ describe("PlayerDetail season split", () => {
     );
 
     expect(
-      screen.getByText(/Nothing live tracked for this card yet/),
+      await screen.findByText(/FPL did not supply live points for this player/),
     ).toBeInTheDocument();
   });
 });

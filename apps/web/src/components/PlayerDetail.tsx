@@ -8,6 +8,10 @@ import { DEFAULT_HORIZON, horizonPoints } from "../state/horizon-points";
 import { kitForShortName } from "../kit/team-kits";
 import type { PeerMetric } from "../state/peer-distribution";
 import { peerMetric } from "../state/peer-distribution";
+import {
+  fetchLivePlayerPoints,
+  type LivePlayerPoints,
+} from "../state/player-pool";
 import type { Band } from "../state/stat-bands";
 import { bandFor } from "../state/stat-bands";
 import { projectionFor, projectionSeason } from "../state/squad-projection";
@@ -206,6 +210,10 @@ export function PlayerDetail({
 }) {
   const dialog = useRef<HTMLDialogElement>(null);
   const [peer, setPeer] = useState<PeerMetric | null>(null);
+  const [liveLookup, setLiveLookup] = useState<{
+    code: number;
+    points: LivePlayerPoints | null;
+  } | null>(null);
   // This season is the default: a summer signing has no prior-PL record but
   // may already have this season's points on the board, and a plan built for
   // right now should lead with that rather than a blank last-season tab.
@@ -219,10 +227,35 @@ export function PlayerDetail({
     if (element && !element.open) element.showModal();
   }, []);
 
+  useEffect(() => {
+    if (player.seasonPoints !== undefined) return;
+    let active = true;
+    fetchLivePlayerPoints(player.code).then(
+      (points) => {
+        if (active) setLiveLookup({ code: player.code, points });
+      },
+      () => {
+        if (active) setLiveLookup({ code: player.code, points: null });
+      },
+    );
+    return () => {
+      active = false;
+    };
+  }, [player.code, player.seasonPoints]);
+
   const record = projectionFor(player.code);
   const rows = rowsFor(player, record);
   const kit = kitForShortName(player.club);
   const defensive = player.position === "GKP" || player.position === "DEF";
+  const livePoints: LivePlayerPoints | null | undefined =
+    player.seasonPoints !== undefined
+      ? {
+          seasonPoints: player.seasonPoints,
+          lastGameweekPoints: player.lastGameweekPoints ?? null,
+        }
+      : liveLookup?.code === player.code
+        ? liveLookup.points
+        : undefined;
 
   return (
     // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/click-events-have-key-events -- The rule does not know `dialog` is interactive. Opened with `showModal`, it is dismissible from the keyboard with Escape and by the Close button below; this handler only adds click-outside for a mouse.
@@ -307,21 +340,25 @@ export function PlayerDetail({
         </fieldset>
 
         {tab === "thisSeason" ? (
-          player.seasonPoints === undefined ? (
+          livePoints === undefined ? (
+            <p className="player-detail-empty" role="status">
+              Reading this season&rsquo;s points from FPL…
+            </p>
+          ) : livePoints === null ? (
             <p className="player-detail-empty">
-              Nothing live tracked for this card yet. Open him from a page that
-              reads the current player pool to see this season's points here.
+              FPL did not supply live points for this player. Nothing has been
+              substituted for them.
             </p>
           ) : (
             <dl className="player-detail-stats player-detail-live">
               <div>
                 <dt>Points this season</dt>
-                <dd className="mono">{player.seasonPoints}</dd>
+                <dd className="mono">{livePoints.seasonPoints}</dd>
                 <p>What he has actually scored so far, live from FPL.</p>
               </div>
               <div>
                 <dt>Last gameweek</dt>
-                <dd className="mono">{player.lastGameweekPoints ?? "—"}</dd>
+                <dd className="mono">{livePoints.lastGameweekPoints ?? "—"}</dd>
                 <p>
                   His points in the gameweek FPL last confirmed, or a dash
                   before any have been played.

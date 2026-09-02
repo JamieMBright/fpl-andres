@@ -104,11 +104,9 @@ function picksFor(
     .slice(0, 3)
     .map(({ player, points }, index) => {
       const fixtures: EventFixture[] = [];
-      if (index === 0) {
-        for (let ahead = 0; ahead < DEFAULT_HORIZON; ahead += 1) {
-          const fixture = fixtureAtEvent(player, startIndex + ahead);
-          if (fixture) fixtures.push(fixture);
-        }
+      for (let ahead = 0; ahead < DEFAULT_HORIZON; ahead += 1) {
+        const fixture = fixtureAtEvent(player, startIndex + ahead);
+        if (fixture) fixtures.push(fixture);
       }
       return {
         label,
@@ -215,13 +213,27 @@ function TopPickColumn({
             <button
               aria-controls={panelId}
               aria-expanded={open}
+              aria-label={`${player.name}, ${oneDecimal.format(winner.points)} xPts5`}
               className="top-pick-points"
               onClick={() => onOpen(player.code)}
               onFocus={() => onOpen(player.code)}
               onKeyDown={(event) => {
                 if (event.key === "Escape") onOpen(null);
               }}
-              onMouseEnter={() => onOpen(player.code)}
+              onPointerCancel={() => onOpen(null)}
+              onPointerDown={(event) => {
+                if (event.pointerType === "touch") {
+                  event.preventDefault();
+                  onOpen(player.code);
+                }
+              }}
+              onPointerEnter={(event) => {
+                if (event.pointerType !== "touch") onOpen(player.code);
+              }}
+              onPointerUp={(event) => {
+                if (event.pointerType === "touch") onOpen(null);
+              }}
+              title="Show five-gameweek fixtures"
               type="button"
             >
               <b>{oneDecimal.format(winner.points)}</b>
@@ -248,10 +260,35 @@ function TopPickColumn({
             <span className="top-pick-runner-club" translate="no">
               {pick.player.club}
             </span>
-            <span className="top-pick-runner-points mono">
+            <button
+              aria-controls={panelId}
+              aria-expanded={openCode === pick.player.code}
+              aria-label={`${pick.player.name}, ${oneDecimal.format(pick.points)} xPts5`}
+              className="top-pick-runner-points mono"
+              onClick={() => onOpen(pick.player.code)}
+              onFocus={() => onOpen(pick.player.code)}
+              onKeyDown={(event) => {
+                if (event.key === "Escape") onOpen(null);
+              }}
+              onPointerCancel={() => onOpen(null)}
+              onPointerDown={(event) => {
+                if (event.pointerType === "touch") {
+                  event.preventDefault();
+                  onOpen(pick.player.code);
+                }
+              }}
+              onPointerEnter={(event) => {
+                if (event.pointerType !== "touch") onOpen(pick.player.code);
+              }}
+              onPointerUp={(event) => {
+                if (event.pointerType === "touch") onOpen(null);
+              }}
+              title="Show five-gameweek fixtures"
+              type="button"
+            >
               <b>{oneDecimal.format(pick.points)}</b>
               <span>xPts5</span>
-            </span>
+            </button>
           </li>
         ))}
       </ol>
@@ -278,7 +315,7 @@ export function TopPicks() {
     <section aria-labelledby="top-picks" className="top-picks">
       <h2 id="top-picks">Top players for the next five gameweeks</h2>
       <p>
-        The top three in every position by xPts5/£m. The leader gets the full
+        The top three in every position by xPts5/£m. Every xPts5 opens the full
         fixture breakdown; every name opens the player profile.
       </p>
       {picks.length === 0 ? (
@@ -307,7 +344,12 @@ export function TopPicks() {
               />
             ))}
           </ul>
-          <div className="top-pick-panel" hidden={shown === null} id={panelId}>
+          <div
+            className="top-pick-panel"
+            data-position={shown?.player.position}
+            hidden={shown === null}
+            id={panelId}
+          >
             {shown ? (
               <>
                 <p className="top-pick-panel-head">

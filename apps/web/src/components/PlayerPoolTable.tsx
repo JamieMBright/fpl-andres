@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { InfoMarker } from "./InfoMarker";
 import { PlayerDetail } from "./PlayerDetail";
@@ -20,6 +20,13 @@ import {
   type Horizon,
 } from "../state/horizon-points";
 import { retryingFetch } from "../state/retrying-fetch";
+import { projectionThroughGameweek } from "../state/projection-meta";
+import {
+  bandFor,
+  bandForPeers,
+  type Band,
+  type StatBandField,
+} from "../state/stat-bands";
 import { projectionSeason } from "../state/squad-projection";
 import { money as sharedMoney } from "../format";
 import {
@@ -349,6 +356,89 @@ function cellText(
   }
 }
 
+const PUBLISHED_BAND_FIELDS: Partial<
+  Record<SortKey, Parameters<typeof bandFor>[1]>
+> = {
+  apps: "appearances",
+  ceiling: "ceiling",
+  points: "expectedPoints",
+  returned: "returnRate",
+};
+
+function cellNumber(
+  player: PoolPlayer,
+  key: SortKey,
+  horizon: ReadonlyMap<number, number>,
+): number | null {
+  switch (key) {
+    case "lastGameweekPoints":
+      return player.lastGameweekPoints;
+    case "seasonPoints":
+      return player.seasonPoints;
+    case "points":
+      return player.record?.expectedPoints ?? null;
+    case "horizon":
+      return horizon.get(player.code) ?? null;
+    case "perMillion":
+      return player.perMillion;
+    case "returned":
+      return player.record?.returnRate ?? null;
+    case "ceiling":
+      return player.record?.ceiling ?? null;
+    case "apps":
+      return player.record?.appearances ?? null;
+    case "expectedGoals":
+      return player.expectedGoals;
+    case "expectedAssists":
+      return player.expectedAssists;
+    case "expectedGoalInvolvements":
+      return player.expectedGoalInvolvements;
+    case "expectedGoalsConceded":
+      return player.expectedGoalsConceded;
+    case "defensiveContribution":
+      return player.defensiveContribution;
+    case "transfersInEvent":
+      return player.transfersInEvent;
+    case "transfersOutEvent":
+      return player.transfersOutEvent;
+    case "priceChangeEvent":
+      return player.priceChangeEvent;
+    case "club":
+    case "name":
+    case "position":
+    case "price":
+    case "run":
+      return null;
+  }
+}
+
+function peerBandField(key: SortKey): StatBandField {
+  if (key === "expectedGoalsConceded") return "expectedGoalsConceded";
+  if (key === "transfersOutEvent") return "transfersOutEvent";
+  return "expectedPoints";
+}
+
+function cellBand(
+  player: PoolPlayer,
+  key: SortKey,
+  pool: PlayerPool,
+  horizon: ReadonlyMap<number, number>,
+): Band | null {
+  const value = cellNumber(player, key, horizon);
+  if (key === "priceChangeEvent") {
+    if (value === null || value === 0) return null;
+    return value > 0 ? "strong" : "poor";
+  }
+  const published = PUBLISHED_BAND_FIELDS[key];
+  if (published) return bandFor(player.position, published, value);
+  if (value === null) return null;
+  const peers = pool.players
+    .filter((candidate) => candidate.position === player.position)
+    .map((candidate) => cellNumber(candidate, key, horizon))
+    .filter((candidate): candidate is number => candidate !== null);
+  return bandForPeers(peerBandField(key), value, peers);
+}
+
 /** How many rows to draw at once. "All" is every match still worth a ranking. */
 const ROW_LIMITS = [25, 50, 75, 100] as const;
 const SHOW_ALL = "all";
@@ -382,6 +472,7 @@ export function PlayerPoolTable() {
     readHiddenColumns(window.localStorage, DEFAULT_HIDDEN_COLUMNS),
   );
   const [customizingColumns, setCustomizingColumns] = useState(false);
+  const tableRegionRef = useRef<HTMLDivElement>(null);
   // Bumping this re-runs the load. A reader who is told to reload the page is
   // being asked to perform the retry by hand.
   const [attempt, setAttempt] = useState(0);
@@ -417,6 +508,14 @@ export function PlayerPoolTable() {
     () => orderedColumns.filter((column) => !hiddenColumns.has(column.key)),
     [orderedColumns, hiddenColumns],
   );
+  const columnsChanged = useMemo(
+    () =>
+      columnOrder.length !== DEFAULT_COLUMN_ORDER.length ||
+      columnOrder.some((key, index) => key !== DEFAULT_COLUMN_ORDER[index]) ||
+      hiddenColumns.size !== DEFAULT_HIDDEN_COLUMNS.length ||
+      DEFAULT_HIDDEN_COLUMNS.some((key) => !hiddenColumns.has(key)),
+    [columnOrder, hiddenColumns],
+  );
 
   const toggleColumn = (key: SortKey) => {
     setHiddenColumns((current) => {
@@ -443,6 +542,34 @@ export function PlayerPoolTable() {
       return next;
     });
   };
+
+  const resetColumns = () => {
+    const hidden = new Set<SortKey>(DEFAULT_HIDDEN_COLUMNS);
+    setColumnOrder([...DEFAULT_COLUMN_ORDER]);
+    setHiddenColumns(hidden);
+    saveColumnOrder(window.localStorage, DEFAULT_COLUMN_ORDER);
+    saveHiddenColumns(window.localStorage, hidden);
+  };
+
+  useEffect(() => {
+    const region = tableRegionRef.current;
+    if (!region) return;
+    const updateScrollState = () => {
+      const scrollable = region.scrollWidth > region.clientWidth + 1;
+      const atEnd =
+        !scrollable ||
+        region.scrollLeft + region.clientWidth >= region.scrollWidth - 1;
+      region.dataset.scrollable = String(scrollable);
+      region.dataset.scrollEnd = String(atEnd);
+    };
+    updateScrollState();
+    region.addEventListener("scroll", updateScrollState, { passive: true });
+    window.addEventListener("resize", updateScrollState);
+    return () => {
+      region.removeEventListener("scroll", updateScrollState);
+      window.removeEventListener("resize", updateScrollState);
+    };
+  }, [pool, shownColumns]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -608,6 +735,7 @@ export function PlayerPoolTable() {
       <p className="pool-basis">
         2026/27 prices against {projectionSeason} returns. Sort by{" "}
         <strong>per £1m</strong> to see what a player costs per point today.
+        Fixture projections through GW{projectionThroughGameweek}.
         <InfoMarker label="where these numbers come from">
           Prices are the ones FPL has published for 2026/27. The points figure
           is what each player actually returned per match in {projectionSeason},
@@ -671,31 +799,41 @@ export function PlayerPoolTable() {
         </label>
         <label>
           Max ownership
-          <select
+          <input
+            aria-label="Max ownership"
+            autoComplete="off"
+            inputMode="decimal"
+            max={100}
+            min={0}
+            name="max-ownership"
             onChange={(event) => setMaxOwned(Number(event.target.value))}
+            step={0.5}
+            title="Enter 0 for any ownership"
+            type="number"
             value={maxOwned}
-          >
-            <option value={0}>Any</option>
-            {[1, 5, 10, 20, 30, 50].map((percent) => (
-              <option key={percent} value={percent}>
-                {percent}%
-              </option>
-            ))}
-          </select>
+          />
+          <span aria-hidden="true" className="pool-filter-any">
+            0 = Any
+          </span>
         </label>
         <label>
           Min minutes
-          <select
+          <input
+            aria-label="Min minutes"
+            autoComplete="off"
+            inputMode="numeric"
+            max={3420}
+            min={0}
+            name="min-minutes"
             onChange={(event) => setMinMinutes(Number(event.target.value))}
+            step={1}
+            title="Enter 0 for any minutes"
+            type="number"
             value={minMinutes}
-          >
-            <option value={0}>Any</option>
-            {[90, 270, 450, 630, 900].map((minutes) => (
-              <option key={minutes} value={minutes}>
-                {minutes}
-              </option>
-            ))}
-          </select>
+          />
+          <span aria-hidden="true" className="pool-filter-any">
+            0 = Any
+          </span>
         </label>
         <label>
           Show
@@ -718,11 +856,19 @@ export function PlayerPoolTable() {
           </select>
         </label>
         <button
+          aria-expanded={customizingColumns}
+          aria-label={customizingColumns ? "Done" : "Columns"}
           className="pool-customize-toggle"
+          data-columns-changed={columnsChanged}
           onClick={() => setCustomizingColumns((was) => !was)}
           type="button"
         >
           {customizingColumns ? "Done" : "Columns"}
+          {columnsChanged ? (
+            <span aria-hidden="true" className="pool-customize-status">
+              Changed
+            </span>
+          ) : null}
         </button>
         <button
           className="pool-csv-download"
@@ -755,6 +901,14 @@ export function PlayerPoolTable() {
             Show, hide and reorder columns. Changes are remembered on this
             device.
           </legend>
+          <button
+            className="pool-columns-reset"
+            disabled={!columnsChanged}
+            onClick={resetColumns}
+            type="button"
+          >
+            Reset columns
+          </button>
           <ol>
             {orderedColumns.map((column, index) => (
               <li key={column.key}>
@@ -823,10 +977,16 @@ export function PlayerPoolTable() {
       <div
         aria-label="Scrollable player list"
         className="squad-table-wrap pool-table-wrap"
+        data-scroll-end="true"
+        data-scrollable="false"
+        ref={tableRegionRef}
         role="region"
         // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- Keyboard users must be able to scroll this table horizontally.
         tabIndex={0}
       >
+        <span className="visually-hidden">
+          Scroll horizontally to read every shown column.
+        </span>
         <table aria-label="2026/27 players against last season's record">
           <thead>
             <tr>
@@ -886,7 +1046,16 @@ export function PlayerPoolTable() {
                       </th>
                     ) : (
                       <td
-                        className="mono"
+                        className={`mono${(() => {
+                          const band = cellBand(
+                            player,
+                            column.key,
+                            pool,
+                            horizon,
+                          );
+                          return band ? ` band-${band}` : "";
+                        })()}`}
+                        data-stat-key={column.key}
                         key={column.key}
                         translate={column.key === "club" ? "no" : undefined}
                       >
@@ -906,6 +1075,9 @@ export function PlayerPoolTable() {
             )}
           </tbody>
         </table>
+        <span aria-hidden="true" className="pool-scroll-hint">
+          More columns
+        </span>
       </div>
 
       {rowLimit !== SHOW_ALL && shown.length > rowLimit ? (

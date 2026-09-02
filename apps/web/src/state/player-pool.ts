@@ -258,6 +258,31 @@ export function forgetLastGoodPool(): void {
   lastGood.forget();
 }
 
+export interface LivePlayerPoints {
+  seasonPoints: number;
+  lastGameweekPoints: number | null;
+}
+
+function livePointsIn(pool: PlayerPool, code: number): LivePlayerPoints | null {
+  const player = pool.players.find((candidate) => candidate.code === code);
+  return player
+    ? {
+        seasonPoints: player.seasonPoints,
+        lastGameweekPoints: player.lastGameweekPoints,
+      }
+    : null;
+}
+
+/** Current FPL scoring for a projection-only card such as Top Picks. */
+export async function fetchLivePlayerPoints(
+  code: number,
+  fetchApi: typeof fetch = retryingFetch(),
+): Promise<LivePlayerPoints | null> {
+  const held = lastGood.recall();
+  if (held) return livePointsIn(held.value, code);
+  return livePointsIn(await fetchPlayerPool(fetchApi), code);
+}
+
 export async function fetchPlayerPool(
   fetchApi: typeof fetch = retryingFetch(),
   signal?: AbortSignal,

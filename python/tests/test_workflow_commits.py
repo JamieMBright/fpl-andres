@@ -146,6 +146,18 @@ def test_solver_input_publication_rebuilds_after_a_push_conflict() -> None:
     assert "could not push the regenerated solver input after five attempts" in text
 
 
+def test_model_validation_refires_only_when_a_new_gameweek_settles() -> None:
+    """Bot capture commits cannot activate another workflow's push filter."""
+    text = (WORKFLOWS / "validate-model.yml").read_text(encoding="utf-8")
+    header = text.split("jobs:", 1)[0]
+
+    assert "workflow_run:" in header
+    assert 'workflows: ["Capture settled gameweeks"]' in header
+    assert "github.event.workflow_run.conclusion == 'success'" in text
+    assert 'output_file.write(f"run={str(settled > published).lower()}\\n")' in text
+    assert "needs.refresh.outputs.run == 'true'" in text
+
+
 @pytest.mark.parametrize(
     "name,source",
     (
@@ -277,7 +289,7 @@ def test_model_republication_allows_the_measured_slow_runner_duration() -> None:
     text = (WORKFLOWS / "validate-model.yml").read_text(encoding="utf-8")
     republish = text.index("- name: Republish the projection the site reads")
     following_step = text.index("- name:", republish + 1)
-    job = text.index("jobs:")
+    job = text.index("  validate:\n")
     first_step = text.index("steps:", job)
 
     assert "timeout-minutes: 60" in text[republish:following_step]

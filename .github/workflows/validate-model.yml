@@ -39,6 +39,11 @@ on:
       # Keep the workflow in its own filter: touching this recovery note gives
       # an Actions outage a normal push path without needing dispatch scope.
       - .github/workflows/validate-model.yml
+  # Capture uses GITHUB_TOKEN to commit, so its bot push cannot activate the
+  # path filter above. The cheap refresh job below rejects daily no-op runs.
+  workflow_run:
+    workflows: ["Capture settled gameweeks"]
+    types: [completed]
   workflow_dispatch:
 
 permissions:
@@ -54,8 +59,51 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  refresh:
+    name: Check for settled projection evidence
+    if: >
+      github.event_name != 'workflow_run' ||
+      github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    outputs:
+      run: ${{ steps.decision.outputs.run }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+
+      - name: Compare settled and published gameweeks
+        id: decision
+        shell: bash
+        run: |
+          if [[ "$GITHUB_EVENT_NAME" != "workflow_run" ]]; then
+            echo "run=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          live = Path("data/live/2026-27")
+          settled = max(
+              (
+                  int(path.stem.removeprefix("gw"))
+                  for path in live.glob("gw*.json")
+                  if json.loads(path.read_text(encoding="utf-8")).get("roundComplete") is True
+              ),
+              default=0,
+          )
+          published = json.loads(
+              Path("apps/web/src/data/projections-meta.json").read_text(encoding="utf-8")
+          )["throughGameweek"]
+          with Path(os.environ["GITHUB_OUTPUT"]).open("a", encoding="utf-8") as output_file:
+              output_file.write(f"run={str(settled > published).lower()}\n")
+          PY
+
   validate:
     name: Backtest the projection
+    needs: refresh
+    if: needs.refresh.outputs.run == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 150
     environment: production

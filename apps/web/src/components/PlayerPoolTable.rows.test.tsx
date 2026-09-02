@@ -3,6 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { PlayerPoolTable } from "./PlayerPoolTable";
 import { forgetLastGoodPool } from "../state/player-pool";
+import { projectionThroughGameweek } from "../state/projection-meta";
 
 /**
  * Two things the players tab was missing: FPL's own live scoring, and a way
@@ -24,6 +25,8 @@ function bootstrap(rows: number) {
       status: "a",
       total_points: index,
       event_points: index % 12,
+      selected_by_percent: index === 0 ? "12.0" : "13.0",
+      minutes: index === 0 ? 88 : 87,
     })),
   };
 }
@@ -60,6 +63,13 @@ describe("player pool table live points and row limit", () => {
     expect(
       screen.getByRole("columnheader", { name: /Total Pts/ }),
     ).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        new RegExp(
+          `projections through GW${String(projectionThroughGameweek)}`,
+        ),
+      ),
+    ).toBeInTheDocument();
   });
 
   it("defaults to showing 25 rows and can be widened to all", async () => {
@@ -82,5 +92,30 @@ describe("player pool table live points and row limit", () => {
 
     expect(document.querySelectorAll("tbody tr")).toHaveLength(40);
     expect(screen.queryByText(/Showing the first/)).toBeNull();
+  });
+
+  it("accepts ownership and minute limits outside the old presets", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi
+        .fn<typeof fetch>()
+        .mockImplementation((input) => Promise.resolve(respond(input, 2))),
+    );
+
+    render(<PlayerPoolTable />);
+    await screen.findByText("Player 0");
+
+    const ownership = screen.getByLabelText("Max ownership");
+    const minutes = screen.getByLabelText("Min minutes");
+    expect(ownership).toHaveAttribute("type", "number");
+    expect(ownership).toHaveAttribute("step", "0.5");
+    expect(minutes).toHaveAttribute("type", "number");
+    expect(minutes).toHaveAttribute("step", "1");
+
+    fireEvent.change(ownership, { target: { value: "12.5" } });
+    fireEvent.change(minutes, { target: { value: "88" } });
+
+    expect(screen.getByText("Player 0")).toBeInTheDocument();
+    expect(screen.queryByText("Player 1")).toBeNull();
   });
 });

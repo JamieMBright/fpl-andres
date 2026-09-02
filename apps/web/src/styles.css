@@ -2644,6 +2644,7 @@ h1[tabindex="-1"]:focus-visible {
   font-size: 14px;
 }
 
+.pool-controls input[type="number"],
 .pool-controls input[type="search"] {
   border: 2px solid var(--rule);
   padding: 7px 9px;
@@ -2652,6 +2653,16 @@ h1[tabindex="-1"]:focus-visible {
   font-family: var(--fa-body);
   font-size: 14px;
   min-width: 12ch;
+}
+
+.pool-controls input[type="number"] {
+  width: 12ch;
+}
+
+.pool-filter-any {
+  color: var(--ink-soft);
+  font-size: 10px;
+  text-transform: none;
 }
 
 .pool-controls select:focus-visible,
@@ -2664,12 +2675,34 @@ h1[tabindex="-1"]:focus-visible {
 .pool-csv-download {
   align-self: flex-end;
   border: 2px solid var(--rule);
+  min-height: 44px;
   padding: 7px 12px;
   color: var(--ink);
   background: var(--paper);
   font-family: var(--fa-body);
   font-size: 13px;
   cursor: pointer;
+}
+
+.pool-customize-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.pool-customize-toggle[aria-expanded="true"],
+.pool-customize-toggle[data-columns-changed="true"] {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, var(--paper));
+}
+
+.pool-customize-status {
+  border-left: 1px solid currentColor;
+  padding-left: 7px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
 }
 
 .pool-customize-toggle:hover,
@@ -2688,6 +2721,22 @@ h1[tabindex="-1"]:focus-visible {
   padding: 0 6px;
   font-size: 12px;
   color: var(--ink-soft);
+}
+
+.pool-columns-reset {
+  min-height: 44px;
+  margin: 0 0 10px;
+  border: 1px solid var(--rule);
+  padding: 7px 10px;
+  color: var(--ink);
+  background: var(--paper);
+  font: inherit;
+  cursor: pointer;
+}
+
+.pool-columns-reset:disabled {
+  opacity: 0.45;
+  cursor: default;
 }
 
 .pool-column-customize ol {
@@ -2728,6 +2777,37 @@ h1[tabindex="-1"]:focus-visible {
 .pool-column-move button:disabled {
   opacity: 0.35;
   cursor: default;
+}
+
+.pool-table-wrap {
+  position: relative;
+}
+
+.pool-scroll-hint {
+  position: sticky;
+  right: 8px;
+  bottom: 8px;
+  float: right;
+  z-index: 3;
+  margin-top: -38px;
+  border: 1px solid var(--accent);
+  padding: 5px 8px;
+  color: var(--accent);
+  background: var(--paper);
+  box-shadow: -8px 0 12px var(--paper);
+  font-size: 11px;
+  font-weight: 700;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.pool-scroll-hint::after {
+  content: " \2192";
+}
+
+.pool-table-wrap[data-scrollable="true"][data-scroll-end="false"]
+  .pool-scroll-hint {
+  opacity: 1;
 }
 
 /* The header is the sort control: one click orders by it, a second turns the
@@ -7470,9 +7550,14 @@ button.fpl500-holding-name {
   align-items: baseline;
   grid-column: 3;
   grid-row: 1 / span 2;
+  border: 1px dotted var(--top-pick-accent);
+  padding: 3px;
+  color: var(--ink);
+  background: transparent;
   font-size: 11px;
   text-transform: none;
   white-space: nowrap;
+  cursor: pointer;
 }
 
 .top-pick-runner-points b,
@@ -7567,15 +7652,34 @@ button.fpl500-holding-name {
 }
 
 .top-pick-panel {
+  --top-pick-panel-accent: var(--accent);
+
   position: absolute;
   z-index: 5;
   top: calc(100% - 2px);
   right: 0;
   left: 0;
   padding: 10px 14px 14px;
-  border: 2px solid var(--ink);
+  border: 2px solid var(--top-pick-panel-accent);
+  border-top-width: 5px;
   background: var(--paper);
   text-align: left;
+}
+
+.top-pick-panel[data-position="GKP"] {
+  --top-pick-panel-accent: #ff00ff;
+}
+
+.top-pick-panel[data-position="DEF"] {
+  --top-pick-panel-accent: #00ffff;
+}
+
+.top-pick-panel[data-position="MID"] {
+  --top-pick-panel-accent: #00a13e;
+}
+
+.top-pick-panel[data-position="FWD"] {
+  --top-pick-panel-accent: #e5da15;
 }
 
 .top-pick-panel[hidden] {

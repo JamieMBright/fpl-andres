@@ -38,6 +38,22 @@ function bootstrap() {
   };
 }
 
+function bandBootstrap() {
+  const source = bootstrap();
+  return {
+    ...source,
+    elements: Array.from({ length: 10 }, (_, index) => ({
+      ...source.elements[0],
+      id: index + 1,
+      code: 910_000 + index,
+      web_name: `Band ${String(index)}`,
+      expected_goals: index.toFixed(2),
+      expected_goals_conceded: index.toFixed(2),
+      cost_change_event: index === 0 ? 1 : index === 9 ? -1 : 0,
+    })),
+  };
+}
+
 function respond(input: RequestInfo | URL): Response {
   return String(input).includes("fixtures")
     ? Response.json([])
@@ -101,6 +117,103 @@ describe("player pool table column customization", () => {
       .getAllByRole("columnheader")
       .map((header) => header.textContent);
     expect(headers.indexOf("Club")).toBeLessThan(headers.indexOf("Pos"));
+  });
+
+  it("marks a changed layout and can reset every column to its default", async () => {
+    render(<PlayerPoolTable />);
+    await screen.findByText("Player 0");
+
+    fireEvent.click(screen.getByRole("button", { name: "Columns" }));
+    fireEvent.click(screen.getByRole("checkbox", { name: "xG" }));
+
+    const done = screen.getByRole("button", { name: "Done" });
+    expect(done).toHaveAttribute("data-columns-changed", "true");
+    expect(screen.getByText("Changed")).toBeInTheDocument();
+    expect(
+      screen.getByRole("columnheader", { name: "xG" }),
+    ).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: "Reset columns" }));
+
+    expect(done).toHaveAttribute("data-columns-changed", "false");
+    expect(screen.queryByText("Changed")).toBeNull();
+    expect(screen.queryByRole("columnheader", { name: "xG" })).toBeNull();
+  });
+
+  it("signals more columns until the horizontal scroll reaches the end", async () => {
+    render(<PlayerPoolTable />);
+    await screen.findByText("Player 0");
+
+    const region = screen.getByRole("region", {
+      name: "Scrollable player list",
+    });
+    Object.defineProperties(region, {
+      clientWidth: { configurable: true, value: 300 },
+      scrollWidth: { configurable: true, value: 900 },
+      scrollLeft: { configurable: true, value: 0, writable: true },
+    });
+
+    fireEvent.scroll(region);
+    expect(region).toHaveAttribute("data-scrollable", "true");
+    expect(region).toHaveAttribute("data-scroll-end", "false");
+    expect(
+      screen.getByText("More columns", { selector: ".pool-scroll-hint" }),
+    ).toBeInTheDocument();
+
+    Object.defineProperty(region, "scrollLeft", {
+      configurable: true,
+      value: 600,
+    });
+    fireEvent.scroll(region);
+    expect(region).toHaveAttribute("data-scroll-end", "true");
+  });
+
+  it("bands numeric cells against positional peers and inverts bad figures", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi
+        .fn<typeof fetch>()
+        .mockImplementation((input) =>
+          Promise.resolve(
+            String(input).includes("fixtures")
+              ? Response.json([])
+              : Response.json(bandBootstrap()),
+          ),
+        ),
+    );
+
+    render(<PlayerPoolTable />);
+    await screen.findByText("Band 9");
+    fireEvent.click(screen.getByRole("button", { name: "Columns" }));
+    fireEvent.click(screen.getByRole("checkbox", { name: "xG" }));
+    fireEvent.click(screen.getByRole("checkbox", { name: "xGC" }));
+    fireEvent.click(screen.getByRole("checkbox", { name: "Price Δ" }));
+
+    const high = screen.getByRole("row", { name: /Band 9/ });
+    expect(high.querySelector('[data-stat-key="expectedGoals"]')).toHaveClass(
+      "band-strong",
+    );
+    expect(
+      high.querySelector('[data-stat-key="expectedGoalsConceded"]'),
+    ).toHaveClass("band-poor");
+    expect(
+      high.querySelector('[data-stat-key="priceChangeEvent"]'),
+    ).toHaveClass("band-poor");
+
+    const low = screen.getByRole("row", { name: /Band 0/ });
+    expect(low.querySelector('[data-stat-key="expectedGoals"]')).toHaveClass(
+      "band-poor",
+    );
+    expect(
+      low.querySelector('[data-stat-key="expectedGoalsConceded"]'),
+    ).toHaveClass("band-strong");
+    expect(low.querySelector('[data-stat-key="priceChangeEvent"]')).toHaveClass(
+      "band-strong",
+    );
+    expect(low.querySelector('[data-stat-key="run"]')).not.toHaveClass(
+      "band-poor",
+      "band-strong",
+    );
   });
 
   it("downloads a CSV with only the shown columns and formatted values", async () => {
