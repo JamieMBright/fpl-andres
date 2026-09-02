@@ -129,6 +129,7 @@ def test_pick_payload_retains_only_the_history_needed_for_aggregate_evidence() -
                 "event_transfers": 0,
                 "event_transfers_cost": 0,
                 "overall_rank": 123,
+                "total_points": 72,
             },
         },
     )
@@ -139,3 +140,30 @@ def test_pick_payload_retains_only_the_history_needed_for_aggregate_evidence() -
     assert row.history.points_on_bench == 14
     assert row.history.value_tenths == 1003
     assert row.history.bank_tenths == 7
+    assert row.history.overall_rank == 123
+    assert row.history.total_points == 72
+
+
+def test_pick_payload_tolerates_a_history_with_no_overall_rank_yet() -> None:
+    row = _parse_picks(
+        18,
+        1,
+        {
+            "active_chip": None,
+            "picks": [],
+            "entry_history": {
+                "event": 1,
+                "points": 40,
+                "points_on_bench": 3,
+                "value": 1000,
+                "bank": 0,
+                "event_transfers": 0,
+                "event_transfers_cost": 0,
+                "total_points": 40,
+            },
+        },
+    )
+
+    assert row.history is not None
+    assert row.history.overall_rank is None
+    assert row.history.total_points == 40

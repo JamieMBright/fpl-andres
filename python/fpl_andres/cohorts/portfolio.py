@@ -64,6 +64,7 @@ __all__ = [
     "PortfolioAggregate",
     "PortfolioBasis",
     "PortfolioStructure",
+    "SeasonStanding",
     "aggregate_manager_history",
     "reconcile",
     "summarize_structure",
@@ -145,6 +146,26 @@ class EntryHistory:
     bank_tenths: int
     event_transfers: int
     event_transfers_cost: int
+    # Cumulative season figures, not this gameweek's alone. FPL omits
+    # `overall_rank` for an entry it has not ranked yet, so it is the one
+    # optional field here; `total_points` is set the moment a history exists.
+    total_points: int | None = None
+    overall_rank: int | None = None
+
+
+@dataclass(frozen=True)
+class SeasonStanding:
+    """One entry's live season position, published with no entry id attached.
+
+    The point of the whole reconciler is that a manager's identity never
+    survives past this module. A bag of (rank, points) pairs says how the
+    cohort is doing this season without saying who; the pairs are sorted by
+    the caller before publishing, which discards even the order they were
+    read in.
+    """
+
+    overall_rank: int | None
+    total_points: int
 
 
 @dataclass(frozen=True)
@@ -171,6 +192,7 @@ class PortfolioAggregate:
     event_transfers: DistributionSummary
     transfer_cost: DistributionSummary
     transfers_available: bool
+    season_standing: tuple[SeasonStanding, ...] = ()
 
     @property
     def coverage(self) -> float:
@@ -614,6 +636,16 @@ def aggregate_manager_history(
     for row in rows:
         key = row.active_chip or "none"
         chips[key] = chips.get(key, 0) + 1
+    standing = tuple(
+        sorted(
+            (
+                SeasonStanding(overall_rank=history.overall_rank, total_points=history.total_points)
+                for history in histories
+                if history.total_points is not None
+            ),
+            key=lambda row: (-row.total_points, row.overall_rank or 0),
+        )
+    )
     return PortfolioAggregate(
         event=event,
         cohort_revision=cohort_revision,
@@ -627,4 +659,5 @@ def aggregate_manager_history(
         event_transfers=_summary([row.event_transfers for row in histories]),
         transfer_cost=_summary([row.event_transfers_cost for row in histories]),
         transfers_available=event > 1,
+        season_standing=standing,
     )

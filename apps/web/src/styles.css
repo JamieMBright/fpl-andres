@@ -5179,6 +5179,17 @@ h1[tabindex="-1"]:focus-visible {
   color: var(--accent);
 }
 
+.fpl500-season-standing-section {
+  margin: 0 0 26px;
+  padding: 18px;
+  border: 1px solid var(--rule);
+  background: var(--paper-deep);
+}
+
+.fpl500-season-standing-section h2 {
+  margin-top: 0;
+}
+
 .fpl500-source {
   margin: 0;
   color: var(--ink-soft);
@@ -5348,7 +5359,8 @@ h1[tabindex="-1"]:focus-visible {
 }
 
 .fpl500-holdings,
-.fpl500-gw-summary {
+.fpl500-gw-summary,
+.fpl500-chips {
   margin-top: 28px;
 }
 
@@ -6102,6 +6114,25 @@ button.fpl500-holding-name {
   width: 12px;
   height: 12px;
   border-radius: 2px;
+}
+
+.fpl500-season-standing {
+  margin-top: 12px;
+}
+
+.fpl500-season-standing-empty {
+  margin: 10px 0 0;
+}
+
+.fpl500-season-standing-line {
+  stroke: var(--accent);
+  stroke-width: 2;
+}
+
+.fpl500-season-standing-axis {
+  fill: var(--ink-soft);
+  font-family: var(--fa-body);
+  font-size: 10px;
 }
 
 /* What will be here after gameweek one, drawn as the real frame. */

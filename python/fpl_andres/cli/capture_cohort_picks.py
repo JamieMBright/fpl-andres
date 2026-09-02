@@ -109,6 +109,8 @@ def _parse_picks(entry_id: int, event: int, payload: dict[str, object]) -> Manag
     raw_history = payload.get("entry_history")
     history = None
     if isinstance(raw_history, dict):
+        total_points = raw_history.get("total_points")
+        overall_rank = raw_history.get("overall_rank")
         history = EntryHistory(
             points=int(raw_history["points"]),
             points_on_bench=int(raw_history["points_on_bench"]),
@@ -116,6 +118,8 @@ def _parse_picks(entry_id: int, event: int, payload: dict[str, object]) -> Manag
             bank_tenths=int(raw_history["bank"]),
             event_transfers=int(raw_history["event_transfers"]),
             event_transfers_cost=int(raw_history["event_transfers_cost"]),
+            total_points=int(total_points) if isinstance(total_points, int) else None,
+            overall_rank=int(overall_rank) if isinstance(overall_rank, int) else None,
         )
     return ManagerPicks(
         entry_id=entry_id,

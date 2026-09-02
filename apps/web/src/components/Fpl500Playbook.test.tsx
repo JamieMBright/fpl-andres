@@ -134,7 +134,7 @@ describe("Fpl500Playbook", () => {
     draw();
 
     expect(
-      screen.getByText(/finished inside the FPL top ten thousand/),
+      screen.getByText(/carefully selected group of managers/),
     ).toBeVisible();
     const nav = screen.getByRole("navigation", { name: "Jump to a section" });
     for (const label of [
@@ -167,7 +167,6 @@ describe("Fpl500Playbook", () => {
     for (const title of [
       "What it is",
       "How it is decided",
-      "Who is scoring this season",
       "When it updates",
     ]) {
       expect(screen.getByText(title)).toBeInTheDocument();

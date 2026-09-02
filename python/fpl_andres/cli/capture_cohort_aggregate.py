@@ -30,7 +30,7 @@ from fpl_andres.timeouts import client_timeout
 DEFAULT_MEMBERSHIP_DIR = Path("data/cohort/fpl500-membership")
 DEFAULT_PORTFOLIO_DIR = Path("data/cohort/portfolio/fpl500")
 DEFAULT_PLAYERS = Path("apps/web/public/fpl-global.json")
-SCHEMA_VERSION = 1
+SCHEMA_VERSION = 2
 STRUCTURE_SCHEMA_VERSION = 4
 
 
@@ -90,6 +90,13 @@ def write_aggregate(
                 "eventTransfers": _summary_payload(aggregate.event_transfers),
                 "transferCost": _summary_payload(aggregate.transfer_cost),
                 "transfersAvailable": aggregate.transfers_available,
+                "seasonStanding": [
+                    {
+                        "overallRank": row.overall_rank,
+                        "totalPoints": row.total_points,
+                    }
+                    for row in aggregate.season_standing
+                ],
             },
             indent=2,
         )

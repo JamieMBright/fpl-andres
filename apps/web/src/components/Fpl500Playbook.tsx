@@ -1,8 +1,7 @@
-import { useState } from "react";
-
 import { InfoMarker } from "./InfoMarker";
 import { Fpl500ChipAdoption } from "./Fpl500ChipAdoption";
 import { Fpl500Holdings, type Fpl500Holding } from "./Fpl500Holdings";
+import { Fpl500SeasonStanding } from "./Fpl500SeasonStanding";
 import { Fpl500Structure, type PortfolioStructure } from "./Fpl500Structure";
 import { Fpl500TransferFlow } from "./Fpl500TransferFlow";
 import { BarChart, type Bar } from "./MethodChart";
@@ -11,7 +10,6 @@ import { RankRidge, type Ridge } from "./RankRidge";
 import fpl500 from "../data/fpl500.json";
 import { fineShare, integer, oneDecimal, share, timestamp } from "../format";
 import { PLAYERS_BY_ELEMENT_ID } from "../state/season-solver";
-import { pointsDistribution } from "../state/rank-distribution";
 import {
   FPL500_SCHEMA_VERSION,
   requireArtifactVersion,
@@ -37,6 +35,7 @@ type PortfolioSample = {
     squadValueTenths: DistributionSummary;
     bankTenths: DistributionSummary;
     transfersAvailable: boolean;
+    seasonStanding?: { overallRank: number | null; totalPoints: number }[];
   };
   structure?: PortfolioStructure;
 };
@@ -80,7 +79,6 @@ type Fpl500 = {
 requireArtifactVersion("fpl500", fpl500, FPL500_SCHEMA_VERSION);
 const data = fpl500 as Fpl500;
 const number = integer;
-const PAGE = 20;
 
 function finishesAtOrAbove(rank: number): number {
   const bins = data.rankBins.findIndex((edge) => edge === rank);
@@ -285,44 +283,53 @@ function LatestCohortSummary() {
     }),
   );
   return (
-    <section
-      className="fpl500-gw-summary"
-      aria-labelledby="fpl500-gw-summary-title"
-      id="fpl500-chips"
-    >
-      <h3 id="fpl500-gw-summary-title">{gameweek}, across 500 squads</h3>
-      <dl className="dossier-metrics">
-        <div>
-          <dt>Mean score</dt>
-          <dd>{oneDecimal.format(aggregate.totalPoints.mean)}</dd>
-        </div>
-        <div>
-          <dt>Median score</dt>
-          <dd>{oneDecimal.format(aggregate.totalPoints.median)}</dd>
-        </div>
-        <div>
-          <dt>Mean bench</dt>
-          <dd>{oneDecimal.format(aggregate.benchPoints.mean)}</dd>
-        </div>
-        <div>
-          <dt>Score range</dt>
-          <dd>
-            {aggregate.totalPoints.minimum}–{aggregate.totalPoints.maximum}
-          </dd>
-        </div>
-      </dl>
-      <BarChart
-        bars={chipBars}
-        caption={`Which chips they spent in ${gameweek}`}
-        unit="managers"
-      />
-      <Fpl500ChipAdoption series={data.exactFpl500Portfolio} />
-      <p className="mono fpl500-note">
-        {number.format(sample.responded)} of {number.format(sample.attempted)}{" "}
-        histories · {fineShare.format(sample.coverage)} coverage.
-        {latest.event === 1 ? " Transfers start at GW2." : null}
-      </p>
-    </section>
+    <>
+      <section
+        className="fpl500-gw-summary"
+        aria-labelledby="fpl500-gw-summary-title"
+      >
+        <h3 id="fpl500-gw-summary-title">{gameweek}, across 500 squads</h3>
+        <dl className="dossier-metrics">
+          <div>
+            <dt>Mean score</dt>
+            <dd>{oneDecimal.format(aggregate.totalPoints.mean)}</dd>
+          </div>
+          <div>
+            <dt>Median score</dt>
+            <dd>{oneDecimal.format(aggregate.totalPoints.median)}</dd>
+          </div>
+          <div>
+            <dt>Mean bench</dt>
+            <dd>{oneDecimal.format(aggregate.benchPoints.mean)}</dd>
+          </div>
+          <div>
+            <dt>Score range</dt>
+            <dd>
+              {aggregate.totalPoints.minimum}–{aggregate.totalPoints.maximum}
+            </dd>
+          </div>
+        </dl>
+        <p className="mono fpl500-note">
+          {number.format(sample.responded)} of {number.format(sample.attempted)}{" "}
+          histories · {fineShare.format(sample.coverage)} coverage.
+          {latest.event === 1 ? " Transfers start at GW2." : null}
+        </p>
+      </section>
+
+      <section
+        aria-labelledby="fpl500-chips-title"
+        className="fpl500-chips"
+        id="fpl500-chips"
+      >
+        <h3 id="fpl500-chips-title">Chips</h3>
+        <BarChart
+          bars={chipBars}
+          caption={`Which chips they spent in ${gameweek}`}
+          unit="managers"
+        />
+        <Fpl500ChipAdoption series={data.exactFpl500Portfolio} />
+      </section>
+    </>
   );
 }
 
@@ -358,88 +365,6 @@ function BenchUse({ holdings }: { holdings: readonly Fpl500Holding[] }) {
         ))}
       </ul>
     </section>
-  );
-}
-
-function CurrentSeason() {
-  const [page, setPage] = useState(0);
-  const rows = data.thisSeason.managers;
-
-  if (rows.length === 0) {
-    return (
-      <p className="mono">
-        The Overall league has no standings until the first gameweek is scored.
-      </p>
-    );
-  }
-
-  const distribution = pointsDistribution(rows);
-  const distributionBars: Bar[] = distribution.map((bucket) => ({
-    label: bucket.label,
-    value: bucket.count,
-    shown: String(bucket.count),
-  }));
-  const pages = Math.ceil(rows.length / PAGE);
-  const shown = rows.slice(page * PAGE, page * PAGE + PAGE);
-  return (
-    <>
-      <BarChart
-        bars={distributionBars}
-        caption={`Points spread across the top ${number.format(rows.length)}`}
-        unit="managers"
-      />
-      <div className="fpl500-scroll">
-        <table className="squad-table">
-          <caption className="visually-hidden">
-            The top {rows.length} of the Overall league this season
-          </caption>
-          <thead>
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">Entry</th>
-              <th scope="col">Points</th>
-            </tr>
-          </thead>
-          <tbody>
-            {shown.map((row) => (
-              <tr key={row.entryId}>
-                <td className="mono">{row.rank}</td>
-                <td className="mono">
-                  <a
-                    href={`https://fantasy.premierleague.com/entry/${row.entryId}/history`}
-                    rel="noreferrer noopener"
-                    target="_blank"
-                  >
-                    {row.entryId}
-                  </a>
-                </td>
-                <td className="mono">{number.format(row.total)}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-      <div className="fpl500-pager">
-        <button
-          disabled={page === 0}
-          onClick={() => setPage((current) => current - 1)}
-          type="button"
-        >
-          Back
-        </button>
-        <span className="mono">
-          {page * PAGE + 1}–{Math.min(rows.length, page * PAGE + PAGE)} of{" "}
-          {rows.length}
-        </span>
-        <button
-          disabled={page + 1 >= pages}
-          onClick={() => setPage((current) => current + 1)}
-          type="button"
-        >
-          Next
-        </button>
-      </div>
-    </>
   );
 }
 
@@ -523,14 +448,20 @@ export function Fpl500Playbook() {
     { label: "Top 100k finishes", count: finishesAtOrAbove(100_000) },
   ];
   const top10kShare = finishes > 0 ? finishesAtOrAbove(10_000) / finishes : 0;
+  const latestExact = latestCapture(data.exactFpl500Portfolio);
+  const seasonStanding =
+    (latestExact
+      ? data.exactFpl500Portfolio.samples[latestExact.key]?.aggregate
+          ?.seasonStanding
+      : undefined) ?? [];
 
   return (
     <>
       <p className="fpl500-hook">
-        {number.format(data.size)} managers who have finished inside the FPL top
-        ten thousand at least twice since 2021 — {share.format(top10kShare)} of
-        their tracked seasons landed there. This is what they are doing right
-        now, not what they say they do.
+        FPL500 is a carefully selected group of managers we have statistically
+        determined are the five hundred worth following for the 26/27 season —
+        chosen by {share.format(top10kShare)} of their tracked seasons landing
+        inside the FPL top ten thousand, not by a leaderboard for a week.
       </p>
 
       <nav aria-label="Jump to a section" className="fpl500-jump">
@@ -542,6 +473,19 @@ export function Fpl500Playbook() {
         <a href="#fpl500-transfers">Transfers</a>
         <a href="#fpl500-structure-title">Squad</a>
       </nav>
+
+      <section
+        aria-labelledby="fpl500-rank-title"
+        className="fpl500-season-standing-section"
+        id="fpl500-rank"
+      >
+        <h2 id="fpl500-rank-title">This season, so far</h2>
+        <p>
+          All five hundred, equal by construction: none is more "top" than
+          another. Sort by whichever measure answers what you came here for.
+        </p>
+        <Fpl500SeasonStanding rows={seasonStanding} />
+      </section>
 
       <Fold kind="what" title="What it is">
         <ul className="plan-promises">
@@ -652,14 +596,6 @@ export function Fpl500Playbook() {
           tail past 100k is the same people having a bad year, which is why more
           than one season is weighed.
         </p>
-      </Fold>
-
-      <Fold id="fpl500-rank" kind="who" title="Who is scoring this season">
-        <p>
-          A different list, and a public one: the Overall standings as they
-          stand. FPL500 trusts consistent experience; this is raw current form.
-        </p>
-        <CurrentSeason />
       </Fold>
 
       <Fold kind="when" title="When it updates">
