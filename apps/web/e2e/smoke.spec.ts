@@ -249,13 +249,36 @@ test("the trust routes pass accessibility in all kits", async ({ page }) => {
     "/fpl500",
     "/privacy",
     "/thanks?from=contact",
+    "/analysis",
   ]) {
+    if (path === "/analysis") {
+      await page.route("**/api/fpl/**", async (route) => {
+        await route.fulfill({
+          status: 502,
+          contentType: "application/json",
+          body: JSON.stringify({
+            error: "FPL is unavailable in this deterministic browser run.",
+            reason: "unreachable",
+          }),
+        });
+      });
+    }
     await page.goto(path);
     await settle(page);
+    if (path === "/analysis") {
+      await expect(page.locator(".analysis-unavailable")).toContainText(
+        "This is the player list as it stood",
+      );
+      await expect(
+        page.getByRole("button", { name: "Try again" }).first(),
+      ).toBeVisible();
+      await expect(page.locator(".analysis-controls")).toBeVisible();
+    }
     for (const theme of ["dark", "light", "away"] as const) {
       await selectKit(page, theme);
       expect(await scan(), `${path} in the ${theme} kit`).toEqual([]);
     }
+    if (path === "/analysis") await page.unroute("**/api/fpl/**");
   }
 });
 

@@ -39,6 +39,21 @@ describe("readSeasonVintage", () => {
     expect(vintage.completedGameweeks).toBe(1);
   });
 
+  it("counts settled fallback events when the compact snapshot omits average score", () => {
+    const fallbackEvents = events(2).map(
+      ({ average_entry_score: _average, ...event }, index) => ({
+        ...event,
+        finished: index < 2,
+      }),
+    );
+
+    const vintage = readSeasonVintage(fallbackEvents, 180);
+
+    expect(vintage.state).toBe("live_season");
+    expect(vintage.season).toBe("2026-27");
+    expect(vintage.completedGameweeks).toBe(2);
+  });
+
   /*
    * The window this exists for. FPL wipes the season totals at the rollover but
    * marks no event finished until the first gameweek is scored, so for a few

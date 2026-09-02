@@ -7,8 +7,13 @@ function bootstrap() {
     events: [
       {
         id: 1,
-        finished: false,
+        finished: true,
         deadline_time: "2026-08-21T17:30:00Z",
+      },
+      {
+        id: 2,
+        finished: true,
+        deadline_time: "2026-08-28T17:30:00Z",
       },
     ],
     element_types: [
@@ -27,7 +32,7 @@ function bootstrap() {
         team: 1,
         now_cost: 50,
         status: "a",
-        minutes: 1800,
+        minutes: 180,
         total_points: 100,
         bonus: 10,
         selected_by_percent: "1.2",
@@ -51,6 +56,28 @@ function bootstrap() {
 beforeEach(() => forgetLastGoodAnalysis());
 
 describe("Analysis cold FPL fallback", () => {
+  it("plots a live player pool without a stale warning", async () => {
+    const fetchApi = vi
+      .fn<typeof fetch>()
+      .mockImplementation((input) =>
+        Promise.resolve(
+          String(input).includes("fixtures")
+            ? Response.json([{ event: 3, team_h: 1, team_a: 2 }])
+            : Response.json(bootstrap()),
+        ),
+      );
+
+    const live = await fetchAnalysisPool(fetchApi);
+
+    expect(live.pool.players).toHaveLength(1);
+    expect(live.pool.vintage.state).toBe("live_season");
+    expect(live.freshness.stale).toBe(false);
+    expect(fetchApi).not.toHaveBeenCalledWith(
+      "/fpl-global.json",
+      expect.anything(),
+    );
+  });
+
   it("plots the daily static snapshot when live FPL fails", async () => {
     const generatedAt = new Date(Date.now() - 3_600_000).toISOString();
     const fetchApi = vi.fn<typeof fetch>().mockImplementation((input) =>
@@ -72,6 +99,8 @@ describe("Analysis cold FPL fallback", () => {
     expect(fallback.fixtures).toHaveLength(1);
     expect(fallback.freshness.stale).toBe(true);
     expect(fallback.freshness.ageSeconds).toBeGreaterThanOrEqual(3_599);
+    expect(fallback.pool.vintage.state).toBe("live_season");
+    expect(fallback.pool.vintage.completedGameweeks).toBe(2);
   });
 
   it("refuses a malformed static snapshot", async () => {

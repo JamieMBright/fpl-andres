@@ -68,8 +68,12 @@ export function readSeasonVintage(
   // page counted the flag, so a gameweek that had finished on the pitch still
   // read as one fewer until the bonus landed. The average is nought before a
   // ball is kicked, which also keeps the wiped-column window out of the count.
-  const completedGameweeks = ordered.filter(
-    (event) => (event.average_entry_score ?? 0) > 0,
+  // The compact daily fallback omits the average but retains the authoritative
+  // settled flag, so that flag is the fallback rather than treated as zero.
+  const completedGameweeks = ordered.filter((event) =>
+    event.average_entry_score === undefined
+      ? event.finished === true
+      : (event.average_entry_score ?? 0) > 0,
   ).length;
 
   if (completedGameweeks > 0) {
