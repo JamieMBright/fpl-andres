@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "season": "2026-27",
-  "fetchedAt": "2026-09-01T21:44:21.434332+00:00",
+  "fetchedAt": "2026-09-02T00:57:55.963458+00:00",
   "source": "the-odds-api",
   "markets": [
     "player_goal_scorer_anytime",
@@ -17,19 +17,19 @@
   "quota": {
     "opening": {
       "cost": 0,
-      "used": 31,
-      "remaining": 469
+      "used": 45,
+      "remaining": 455
     },
     "closing": {
-      "cost": 5,
-      "used": 36,
-      "remaining": 464
+      "cost": 0,
+      "used": 45,
+      "remaining": 455
     },
-    "spentThisRun": 5
+    "spentThisRun": 0
   },
   "coverage": {
     "fixturesListed": 20,
-    "fixturesVisitedThisRun": 1,
+    "fixturesVisitedThisRun": 19,
     "fixturesWithQuotes": 1
   },
   "nameMappingGaps": [],
@@ -87,7 +87,7 @@
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-09-05T11:30:00+00:00",
-      "visited_at": "2026-09-01T14:17:46.111345+00:00"
+      "visited_at": "2026-09-02T00:57:55.963458+00:00"
     },
     {
       "event_id": "29f81160baf6a97d6391d7172fad2425",
@@ -114,7 +114,7 @@
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-09-05T14:00:00+00:00",
-      "visited_at": "2026-09-01T14:17:46.111345+00:00"
+      "visited_at": "2026-09-02T00:57:55.963458+00:00"
     },
     {
       "event_id": "3b81531990da7ea3e461c43e8827672b",
@@ -141,7 +141,7 @@
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-09-05T14:00:00+00:00",
-      "visited_at": "2026-09-01T14:17:46.111345+00:00"
+      "visited_at": "2026-09-02T00:57:55.963458+00:00"
     },
     {
       "event_id": "3db5f919507eb8ab0c8c72bddaca8f08",
@@ -168,7 +168,7 @@
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-09-05T14:00:00+00:00",
-      "visited_at": "2026-09-01T14:17:46.111345+00:00"
+      "visited_at": "2026-09-02T00:57:55.963458+00:00"
     },
     {
       "event_id": "8f68612bf47c3193e7fa2d8783e79373",
@@ -195,7 +195,7 @@
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-09-05T14:00:00+00:00",
-      "visited_at": "2026-09-01T14:17:46.111345+00:00"
+      "visited_at": "2026-09-02T00:57:55.963458+00:00"
     },
     {
       "event_id": "a6f2622727548c33369cc15c88b2aabd",
@@ -222,7 +222,7 @@
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-09-05T14:00:00+00:00",
-      "visited_at": "2026-09-01T14:17:46.111345+00:00"
+      "visited_at": "2026-09-02T00:57:55.963458+00:00"
     },
     {
       "event_id": "21fd24ad6732df00774304a046d84fe9",
@@ -249,7 +249,7 @@
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-09-05T16:30:00+00:00",
-      "visited_at": "2026-09-01T14:17:46.111345+00:00"
+      "visited_at": "2026-09-02T00:57:55.963458+00:00"
     },
     {
       "event_id": "8ea6c863f1852654399073b518b0a1f8",
@@ -276,7 +276,7 @@
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-09-06T13:00:00+00:00",
-      "visited_at": "2026-09-01T14:17:46.111345+00:00"
+      "visited_at": "2026-09-02T00:57:55.963458+00:00"
     },
     {
       "event_id": "78d4dfda8c2dc27bdc3ec26c2654f8fc",
@@ -303,7 +303,7 @@
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-09-06T15:30:00+00:00",
-      "visited_at": "2026-09-01T14:17:46.111345+00:00"
+      "visited_at": "2026-09-02T00:57:55.963458+00:00"
     },
     {
       "event_id": "d09677edcf1fb82ad75a8df58bb26eab",
@@ -330,7 +330,7 @@
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-09-12T14:00:00+00:00",
-      "visited_at": "2026-09-01T14:17:46.111345+00:00"
+      "visited_at": "2026-09-02T00:57:55.963458+00:00"
     },
     {
       "event_id": "d856d4353db0b4cca2a49b96dfd19c92",
@@ -357,7 +357,7 @@
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-09-12T14:00:00+00:00",
-      "visited_at": "2026-09-01T14:17:46.111345+00:00"
+      "visited_at": "2026-09-02T00:57:55.963458+00:00"
     },
     {
       "event_id": "5163190733dcaaea80474e43cbe20a51",
@@ -384,7 +384,7 @@
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-09-12T14:00:00+00:00",
-      "visited_at": "2026-09-01T14:17:46.111345+00:00"
+      "visited_at": "2026-09-02T00:57:55.963458+00:00"
     },
     {
       "event_id": "14f6639178a943ac614c7b872bf6e4d6",
@@ -411,7 +411,7 @@
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-09-12T14:00:00+00:00",
-      "visited_at": "2026-09-01T14:17:46.111345+00:00"
+      "visited_at": "2026-09-02T00:57:55.963458+00:00"
     },
     {
       "event_id": "63da4075a4ae406575fd3086b839fe49",
@@ -438,7 +438,7 @@
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-09-12T14:00:00+00:00",
-      "visited_at": "2026-09-01T14:17:46.111345+00:00"
+      "visited_at": "2026-09-02T00:57:55.963458+00:00"
     },
     {
       "event_id": "cbbc88759fe3e2f1677a0c6ee40955af",
@@ -465,7 +465,7 @@
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-09-12T16:30:00+00:00",
-      "visited_at": "2026-09-01T14:17:46.111345+00:00"
+      "visited_at": "2026-09-02T00:57:55.963458+00:00"
     },
     {
       "event_id": "082f74fe6a8bc5826555b76e9e114dab",
@@ -492,7 +492,7 @@
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-09-12T19:00:00+00:00",
-      "visited_at": "2026-09-01T14:17:46.111345+00:00"
+      "visited_at": "2026-09-02T00:57:55.963458+00:00"
     },
     {
       "event_id": "c97a93b915115f2b4659fb88262b71f8",
@@ -519,7 +519,7 @@
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-09-13T13:00:00+00:00",
-      "visited_at": "2026-09-01T14:17:46.111345+00:00"
+      "visited_at": "2026-09-02T00:57:55.963458+00:00"
     },
     {
       "event_id": "e40d0fb44319f7bd0ebe1ffbc61fa661",
@@ -546,7 +546,7 @@
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-09-13T15:30:00+00:00",
-      "visited_at": "2026-09-01T14:17:46.111345+00:00"
+      "visited_at": "2026-09-02T00:57:55.963458+00:00"
     },
     {
       "event_id": "b7a2cad26d908a943a27340b4b607068",
@@ -554,26 +554,26 @@
       "away_team": "Newcastle United",
       "home_short": "LEE",
       "away_short": "NEW",
-      "status": "no-bookmaker",
+      "status": "parse-error",
       "books": 0,
-      "outcomes": 0,
+      "outcomes": null,
       "offered_markets": [],
       "missing_markets": [
-        "player_assists",
-        "player_first_goal_scorer",
         "player_goal_scorer_anytime",
+        "player_first_goal_scorer",
         "player_last_goal_scorer",
-        "player_shots",
-        "player_shots_on_target",
+        "player_assists",
         "player_to_receive_card",
-        "player_to_receive_red_card"
+        "player_to_receive_red_card",
+        "player_shots",
+        "player_shots_on_target"
       ],
       "player_rows_parsed": 0,
       "player_rows_matched": 0,
       "unmatched_names": [],
-      "error": null,
+      "error": "HTTPStatusError",
       "kickoff": "2026-09-14T19:00:00+00:00",
-      "visited_at": "2026-09-01T14:17:46.111345+00:00"
+      "visited_at": "2026-09-02T00:57:55.963458+00:00"
     }
   ],
   "unmatched": [],
