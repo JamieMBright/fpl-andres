@@ -39,6 +39,22 @@ const bootstrapSchema = z.object({
         // before a ball is kicked, which is a fact, not a missing one.
         total_points: z.number().int().nonnegative().optional(),
         event_points: z.number().int().optional(),
+        // Ownership and minutes, for filtering rather than ranking: a
+        // differential pick and a nailed-on starter are different questions
+        // from "who returns the most points".
+        selected_by_percent: z.coerce.number().min(0).max(100).optional(),
+        minutes: z.number().int().min(0).optional(),
+        // FPL's own advanced-stat and market fields. Optional because a
+        // passthrough response is trusted for its shape, not fabricated when
+        // a field is absent: a dash on screen beats an invented zero.
+        expected_goals: z.coerce.number().min(0).optional(),
+        expected_assists: z.coerce.number().min(0).optional(),
+        expected_goal_involvements: z.coerce.number().min(0).optional(),
+        expected_goals_conceded: z.coerce.number().min(0).optional(),
+        defensive_contribution: z.number().int().min(0).optional(),
+        transfers_in_event: z.number().int().min(0).optional(),
+        transfers_out_event: z.number().int().min(0).optional(),
+        cost_change_event: z.number().int().optional(),
       })
       .loose(),
   ),
@@ -65,6 +81,7 @@ const bootstrapSchema = z.object({
       .object({
         id: z.number().int().min(1).max(38),
         deadline_time: z.string(),
+        is_current: z.boolean().optional(),
       })
       .loose(),
   ),
@@ -100,6 +117,22 @@ export interface PoolPlayer {
   seasonPoints: number;
   /** His points in the gameweek just gone, or null before any have been played. */
   lastGameweekPoints: number | null;
+  /** Expected goals, assists, goal involvements and goals conceded this season, live from FPL. Null before FPL publishes them. */
+  expectedGoals: number | null;
+  expectedAssists: number | null;
+  expectedGoalInvolvements: number | null;
+  expectedGoalsConceded: number | null;
+  /** Defensive-contribution points scored so far this season, null before FPL publishes it. */
+  defensiveContribution: number | null;
+  /** Transfers in/out FPL counted in the gameweek named by `PlayerPool.currentEvent`. */
+  transfersInEvent: number | null;
+  transfersOutEvent: number | null;
+  /** Price move, in tenths of a million, since the gameweek named by `PlayerPool.currentEvent` started. */
+  priceChangeEvent: number | null;
+  /** Share of managers who own him, live from FPL. Null before FPL publishes it. */
+  ownedPercent: number | null;
+  /** Minutes played so far this season, live from FPL. */
+  minutesPlayed: number | null;
 }
 
 export interface PlayerPool {
@@ -107,6 +140,8 @@ export interface PlayerPool {
   clubs: string[];
   positions: string[];
   firstDeadline: string | null;
+  /** The gameweek FPL calls current, for labelling transfer/price-change columns. Null if FPL names none. */
+  currentEvent: number | null;
   /** This season's club ids mapped to the code that survives a season change. */
   clubCodeByTeamId: Map<number, number>;
   fixtures: ScheduledFixture[];
@@ -155,6 +190,16 @@ export function buildPlayerPool(
           : null,
         seasonPoints: element.total_points ?? 0,
         lastGameweekPoints: element.event_points ?? null,
+        expectedGoals: element.expected_goals ?? null,
+        expectedAssists: element.expected_assists ?? null,
+        expectedGoalInvolvements: element.expected_goal_involvements ?? null,
+        expectedGoalsConceded: element.expected_goals_conceded ?? null,
+        defensiveContribution: element.defensive_contribution ?? null,
+        transfersInEvent: element.transfers_in_event ?? null,
+        transfersOutEvent: element.transfers_out_event ?? null,
+        priceChangeEvent: element.cost_change_event ?? null,
+        ownedPercent: element.selected_by_percent ?? null,
+        minutesPlayed: element.minutes ?? null,
       },
     ];
   });
@@ -174,6 +219,8 @@ export function buildPlayerPool(
     firstDeadline:
       [...bootstrap.events].sort((left, right) => left.id - right.id).at(0)
         ?.deadline_time ?? null,
+    currentEvent:
+      bootstrap.events.find((event) => event.is_current)?.id ?? null,
     clubCodeByTeamId: new Map(
       bootstrap.teams.map((team) => [team.id, team.code]),
     ),

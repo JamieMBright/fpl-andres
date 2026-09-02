@@ -120,6 +120,88 @@ describe("buildPlayerPool", () => {
     expect(bruno?.lastGameweekPoints).toBeNull();
   });
 
+  it("reads FPL's own advanced stats, transfers and price change for the current gameweek", () => {
+    const pool = buildPlayerPool(
+      bootstrap({
+        events: [
+          { id: 2, deadline_time: "2026-08-28T17:30:00Z", is_current: true },
+          { id: 1, deadline_time: "2026-08-21T17:30:00Z" },
+        ],
+        elements: [
+          {
+            id: 1,
+            code: KNOWN_CODE,
+            web_name: "B.Fernandes",
+            element_type: 3,
+            team: 2,
+            now_cost: 100,
+            status: "a",
+            expected_goals: "3.42",
+            expected_assists: "5.10",
+            expected_goal_involvements: "8.52",
+            expected_goals_conceded: "0.00",
+            defensive_contribution: 4,
+            transfers_in_event: 120_000,
+            transfers_out_event: 30_000,
+            cost_change_event: -1,
+          },
+        ],
+      }),
+    );
+    const bruno = pool.players.find((player) => player.code === KNOWN_CODE);
+
+    expect(bruno?.expectedGoals).toBe(3.42);
+    expect(bruno?.expectedAssists).toBe(5.1);
+    expect(bruno?.expectedGoalInvolvements).toBe(8.52);
+    expect(bruno?.expectedGoalsConceded).toBe(0);
+    expect(bruno?.defensiveContribution).toBe(4);
+    expect(bruno?.transfersInEvent).toBe(120_000);
+    expect(bruno?.transfersOutEvent).toBe(30_000);
+    expect(bruno?.priceChangeEvent).toBe(-1);
+    expect(pool.currentEvent).toBe(2);
+  });
+
+  it("reads FPL's own ownership share and minutes played", () => {
+    const pool = buildPlayerPool(
+      bootstrap({
+        elements: [
+          {
+            id: 1,
+            code: KNOWN_CODE,
+            web_name: "B.Fernandes",
+            element_type: 3,
+            team: 2,
+            now_cost: 100,
+            status: "a",
+            selected_by_percent: "42.3",
+            minutes: 630,
+          },
+        ],
+      }),
+    );
+    const bruno = pool.players.find((player) => player.code === KNOWN_CODE);
+
+    expect(bruno?.ownedPercent).toBe(42.3);
+    expect(bruno?.minutesPlayed).toBe(630);
+  });
+
+  it("defaults advanced stats and transfers to null before FPL publishes them, and names no current gameweek before FPL flags one", () => {
+    const pool = buildPlayerPool(bootstrap());
+    const bruno = pool.players.find((player) => player.code === KNOWN_CODE);
+
+    expect(bruno?.expectedGoals).toBeNull();
+    expect(bruno?.expectedAssists).toBeNull();
+    expect(bruno?.expectedGoalInvolvements).toBeNull();
+    expect(bruno?.expectedGoalsConceded).toBeNull();
+    expect(bruno?.defensiveContribution).toBeNull();
+    expect(bruno?.transfersInEvent).toBeNull();
+    expect(bruno?.transfersOutEvent).toBeNull();
+    expect(bruno?.priceChangeEvent).toBeNull();
+    expect(pool.currentEvent).toBeNull();
+    expect(bruno?.ownedPercent).toBeNull();
+    expect(bruno?.minutesPlayed).toBeNull();
+  });
+
   it("leaves managers out: a chip is not a footballer", () => {
     expect(
       buildPlayerPool(bootstrap()).players.some(

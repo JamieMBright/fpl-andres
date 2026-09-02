@@ -127,6 +127,7 @@ const DOM_TESTS = [
   "src/**/*.test.tsx",
   "src/state/manager-history-cache.test.ts",
   "src/state/manager-state-wiring.test.ts",
+  "src/state/player-pool-columns.test.ts",
   "src/state/scorecard.test.ts",
   "src/state/team-analysis.test.ts",
   "src/state/team-state-overrides*.test.ts",

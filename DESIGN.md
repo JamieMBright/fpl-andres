@@ -325,7 +325,7 @@ so a review knows what it does not have to check by hand.
 | `TeamStateCorrections`    | Manager overrides, parsing and conflict                                                                    | unit (`parse.test.ts`)               |
 | `TransferPlanPanel`       | What the plan will contain, and the deadline                                                               | unit (`format.test.ts`)              |
 | `OpeningSquad`            | The published opening fifteen                                                                              | —                                    |
-| `PlayerPoolTable`         | Sortable, filterable pool                                                                                  | unit (stale, render cost)            |
+| `PlayerPoolTable`         | Sortable, filterable pool with advanced-stat/transfer/price columns, show/hide/reorder, CSV export         | unit (stale, render cost, columns)   |
 | `PlayerScatter`           | Configurable two-axis scatter, drawn by hand                                                               | unit render cost, unit overlays      |
 | `ScatterControls`         | Axis, filter and reference-line pickers                                                                    | unit                                 |
 | `ScatterLegend`           | What shape, colour and disc size each mean                                                                 | —                                    |

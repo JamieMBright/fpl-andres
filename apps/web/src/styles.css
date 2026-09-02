@@ -2660,6 +2660,76 @@ h1[tabindex="-1"]:focus-visible {
   outline-offset: 2px;
 }
 
+.pool-customize-toggle,
+.pool-csv-download {
+  align-self: flex-end;
+  border: 2px solid var(--rule);
+  padding: 7px 12px;
+  color: var(--ink);
+  background: var(--paper);
+  font-family: var(--fa-body);
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.pool-customize-toggle:hover,
+.pool-csv-download:hover {
+  border-color: var(--signal-blue);
+  color: var(--signal-blue);
+}
+
+.pool-column-customize {
+  margin: 0 0 18px;
+  border: 2px solid var(--rule);
+  padding: 12px 14px;
+}
+
+.pool-column-customize legend {
+  padding: 0 6px;
+  font-size: 12px;
+  color: var(--ink-soft);
+}
+
+.pool-column-customize ol {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 6px 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pool-column-customize li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.pool-column-customize label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.pool-column-move {
+  display: flex;
+  gap: 2px;
+}
+
+.pool-column-move button {
+  border: 1px solid var(--rule);
+  padding: 1px 6px;
+  background: var(--paper);
+  cursor: pointer;
+}
+
+.pool-column-move button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
 /* The header is the sort control: one click orders by it, a second turns the
    order around. Titles carry what the column means. */
 .pool-sort {
