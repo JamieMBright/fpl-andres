@@ -18,10 +18,6 @@ import {
  * all — a name one manager dropped is not the cohort turning against him.
  */
 
-/** Rows past this are cut, sorted by how far each one is from zero, so the
- * chart never asks the browser to lay out hundreds of one-pixel bars. */
-const MAX_ROWS = 40;
-
 function magnitude(row: TransferFlowPlayer): number {
   return Math.max(row.transfersIn, row.transfersOut);
 }
@@ -34,7 +30,7 @@ export function Fpl500TransferFlow({
   const ids = useId();
   const transitions = transferFlowTransitionCount(series);
   const [gwWindow, setGwWindow] = useState(1);
-  const [minimum, setMinimum] = useState(2);
+  const [minimum, setMinimum] = useState(5);
 
   const clampedWindow = Math.max(
     1,
@@ -45,13 +41,10 @@ export function Fpl500TransferFlow({
     [series, clampedWindow],
   );
   const filtered = all.filter((row) => magnitude(row) >= minimum);
-  const shown = [...filtered]
-    .sort((left, right) => magnitude(right) - magnitude(left))
-    .slice(0, MAX_ROWS)
-    .sort(
-      (left, right) =>
-        right.net - left.net || left.name.localeCompare(right.name),
-    );
+  const shown = [...filtered].sort(
+    (left, right) =>
+      right.net - left.net || left.name.localeCompare(right.name),
+  );
   const extent = Math.max(1, ...filtered.map((row) => magnitude(row)));
 
   if (transitions === 0) {
@@ -64,29 +57,37 @@ export function Fpl500TransferFlow({
 
   return (
     <div className="fpl500-transfer-flow">
-      <div className="scatter-control-row">
-        <label htmlFor={`${ids}-window`}>
-          Gameweeks
-          <span className="scatter-value">
-            {clampedWindow === 1
-              ? "Last GW"
-              : `Last ${String(clampedWindow)} GWs`}
-          </span>
-        </label>
-        <input
-          id={`${ids}-window`}
-          max={transitions}
-          min={1}
-          onChange={(event) => setGwWindow(Number(event.target.value))}
-          step={1}
-          type="range"
-          value={clampedWindow}
-        />
-        <p className="scatter-hint">
-          One is the most recent gameweek alone; the maximum folds together
-          every transition captured so far.
-        </p>
-      </div>
+      {transitions === 1 ? (
+        <div className="scatter-control-row">
+          <p>
+            Gameweeks <span className="scatter-value">Last GW</span>
+          </p>
+        </div>
+      ) : (
+        <div className="scatter-control-row">
+          <label htmlFor={`${ids}-window`}>
+            Gameweeks
+            <span className="scatter-value">
+              {clampedWindow === 1
+                ? "Last GW"
+                : `Last ${String(clampedWindow)} GWs`}
+            </span>
+          </label>
+          <input
+            id={`${ids}-window`}
+            max={transitions}
+            min={1}
+            onChange={(event) => setGwWindow(Number(event.target.value))}
+            step={1}
+            type="range"
+            value={clampedWindow}
+          />
+          <p className="scatter-hint">
+            One is the most recent gameweek alone; the maximum folds together
+            every transition captured so far.
+          </p>
+        </div>
+      )}
 
       <div className="scatter-control-row">
         <label htmlFor={`${ids}-minimum`}>
@@ -113,7 +114,13 @@ export function Fpl500TransferFlow({
           Nothing cleared the minimum. Lower it, or widen the gameweek window.
         </p>
       ) : (
-        <>
+        <div
+          aria-label="Scrollable transfer flow"
+          className="squad-table-wrap fpl500-transfer-flow-scroll"
+          role="region"
+          // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- Keyboard users must be able to scroll the complete transfer list.
+          tabIndex={0}
+        >
           <ol className="fpl500-transfer-rows">
             {shown.map((row) => {
               const inPct = (row.transfersIn / extent) * 100;
@@ -150,13 +157,7 @@ export function Fpl500TransferFlow({
               );
             })}
           </ol>
-          {filtered.length > shown.length ? (
-            <p className="mono fpl500-note">
-              Showing the {String(shown.length)} biggest moves of{" "}
-              {String(filtered.length)} that cleared the minimum.
-            </p>
-          ) : null}
-        </>
+        </div>
       )}
     </div>
   );

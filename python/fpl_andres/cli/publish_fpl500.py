@@ -455,6 +455,35 @@ def _portfolio_captains(directory: Path | None = None) -> dict[str, list[dict[st
     return result
 
 
+def _merge_standing_sidecar(
+    aggregate: dict[str, object],
+    standing_path: Path,
+    *,
+    revision: object,
+    event: int,
+    basis: str,
+    supersedes: str,
+) -> None:
+    if not standing_path.exists():
+        return
+    standing = parse_json(
+        standing_path.read_text(encoding="utf-8"),
+        source=str(standing_path),
+    )
+    if not isinstance(standing, dict):
+        raise ValueError(f"portfolio standing must be an object: {standing_path}")
+    if standing.get("cohortRevision") != revision:
+        raise ValueError(f"portfolio standing revision mismatch: {standing_path}")
+    if standing.get("event") != event:
+        raise ValueError(f"portfolio standing event mismatch: {standing_path}")
+    if standing.get("basis") != basis:
+        raise ValueError(f"portfolio standing basis mismatch: {standing_path}")
+    if standing.get("supersedes") != supersedes:
+        raise ValueError(f"portfolio standing supersedes mismatch: {standing_path}")
+    if "seasonStanding" not in aggregate:
+        aggregate["seasonStanding"] = standing.get("seasonStanding")
+
+
 def _portfolio_series(
     directory: Path,
     *,
@@ -510,6 +539,14 @@ def _portfolio_series(
                     raise ValueError(f"portfolio aggregate must be an object: {aggregate_path}")
                 if aggregate.get("cohortRevision") != raw.get("cohortRevision"):
                     raise ValueError(f"portfolio aggregate revision mismatch: {aggregate_path}")
+                _merge_standing_sidecar(
+                    aggregate,
+                    directory / f"gw{stem}-standing.json",
+                    revision=raw.get("cohortRevision"),
+                    event=event,
+                    basis=basis,
+                    supersedes=aggregate_path.name,
+                )
                 sample["aggregate"] = aggregate
             structure_candidates = (
                 directory / f"gw{stem}-structure-v3.json",

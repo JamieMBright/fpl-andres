@@ -97,7 +97,7 @@ export function Fpl500Structure({
       className="fpl500-structure"
       aria-labelledby="fpl500-structure-title"
     >
-      <h3 id="fpl500-structure-title">
+      <h3 className="fpl500-section-band is-squad" id="fpl500-structure-title">
         {popularity ? "The FPL500 popularity squad" : "Most common XI"}
       </h3>
       <p className="mono">
@@ -230,7 +230,9 @@ export function Fpl500Structure({
 
       <div className="fpl500-structure-grid">
         <section aria-labelledby="fpl500-spend-title">
-          <h4 id="fpl500-spend-title">Average squad spend</h4>
+          <h4 className="fpl500-section-band is-value" id="fpl500-spend-title">
+            Average squad spend
+          </h4>
           <ul className="fpl500-spend">
             {positions.map((position) => {
               const spend = structure.positionalSpend[position];

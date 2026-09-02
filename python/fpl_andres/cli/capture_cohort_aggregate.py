@@ -32,6 +32,7 @@ DEFAULT_PORTFOLIO_DIR = Path("data/cohort/portfolio/fpl500")
 DEFAULT_PLAYERS = Path("apps/web/public/fpl-global.json")
 SCHEMA_VERSION = 2
 STRUCTURE_SCHEMA_VERSION = 4
+STANDING_SCHEMA_VERSION = 1
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -43,6 +44,9 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--structure-output", type=Path, default=None)
     parser.add_argument("--structure-supersedes", default=None)
     parser.add_argument("--structure-correction-reason", default=None)
+    parser.add_argument("--standing-output", type=Path, default=None)
+    parser.add_argument("--standing-supersedes", default=None)
+    parser.add_argument("--standing-correction-reason", default=None)
     parser.add_argument("--players", type=Path, default=DEFAULT_PLAYERS)
     parser.add_argument("--rate", type=cliargs.positive_float, default=25.0)
     parser.add_argument("--concurrency", type=cliargs.positive_int, default=8)
@@ -90,6 +94,48 @@ def write_aggregate(
                 "eventTransfers": _summary_payload(aggregate.event_transfers),
                 "transferCost": _summary_payload(aggregate.transfer_cost),
                 "transfersAvailable": aggregate.transfers_available,
+                "seasonStanding": [
+                    {
+                        "overallRank": row.overall_rank,
+                        "totalPoints": row.total_points,
+                    }
+                    for row in aggregate.season_standing
+                ],
+            },
+            indent=2,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+
+
+def write_standing(
+    aggregate: PortfolioAggregate,
+    output: Path,
+    *,
+    captured_at: datetime | None = None,
+    supersedes: str | None = None,
+    correction_reason: str | None = None,
+) -> None:
+    if output.exists():
+        raise FileExistsError(f"refusing to overwrite immutable standing {output}")
+    if supersedes is None or correction_reason is None:
+        raise ValueError("standing correction requires both supersedes and reason")
+    timestamp = captured_at or datetime.now(UTC)
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text(
+        json.dumps(
+            {
+                "schemaVersion": STANDING_SCHEMA_VERSION,
+                "event": aggregate.event,
+                "capturedAt": timestamp.isoformat().replace("+00:00", "Z"),
+                "basis": "ranked-500",
+                "cohortRevision": aggregate.cohort_revision,
+                "supersedes": supersedes,
+                "correctionReason": correction_reason,
+                "attempted": aggregate.attempted,
+                "responded": aggregate.responded,
+                "coverage": round(aggregate.coverage, 4),
                 "seasonStanding": [
                     {
                         "overallRank": row.overall_rank,
@@ -236,6 +282,22 @@ async def run(args: argparse.Namespace) -> int:
         cohort_revision=membership.membership_hash,
         minimum_coverage=args.minimum_coverage,
     )
+    if args.standing_output is not None:
+        if args.standing_output.exists():
+            print(f"{args.standing_output} already exists; immutable standing retained")
+            return 0
+        write_standing(
+            aggregate,
+            args.standing_output,
+            supersedes=args.standing_supersedes,
+            correction_reason=args.standing_correction_reason,
+        )
+        print(
+            f"wrote {args.standing_output} — "
+            f"{len(aggregate.season_standing)} anonymous standings, "
+            f"{aggregate.coverage:.1%} coverage"
+        )
+        return 0
     output = args.output or args.portfolio_dir / f"gw{event:02d}-aggregates.json"
     structure_output = args.structure_output or args.portfolio_dir / f"gw{event:02d}-structure.json"
     element_types, prices, team_ids = _player_metadata(args.players)

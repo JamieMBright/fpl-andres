@@ -3,12 +3,17 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from fpl_andres.cli.capture_cohort_aggregate import write_structure
+import pytest
+
+from fpl_andres.cli.capture_cohort_aggregate import write_standing, write_structure
 from fpl_andres.cohorts.portfolio import (
     DistributionSummary,
+    EntryHistory,
     KeeperPairing,
+    ManagerPicks,
     PopularitySquad,
     PortfolioStructure,
+    aggregate_manager_history,
 )
 
 
@@ -55,3 +60,87 @@ def test_structure_correction_is_additive_and_names_what_it_supersedes(
     assert payload["popularitySquad"]["squad"] == list(range(1, 16))
     assert payload["popularitySquad"]["bankTenths"] == 5
     assert "entryId" not in json.dumps(payload)
+
+
+def test_standing_correction_is_additive_anonymous_and_immutable(tmp_path: Path) -> None:
+    aggregate = aggregate_manager_history(
+        [
+            ManagerPicks(
+                entry_id=123,
+                event=1,
+                picks=(),
+                active_chip=None,
+                history=EntryHistory(
+                    points=50,
+                    points_on_bench=2,
+                    value_tenths=1000,
+                    bank_tenths=0,
+                    event_transfers=0,
+                    event_transfers_cost=0,
+                    total_points=50,
+                    overall_rank=1_000_000,
+                ),
+            )
+        ],
+        event=1,
+        attempted=1,
+        cohort_revision="sha256:pinned",
+        minimum_coverage=0.9,
+    )
+    output = tmp_path / "gw01-standing.json"
+
+    write_standing(
+        aggregate,
+        output,
+        supersedes="gw01-aggregates.json",
+        correction_reason="adds-season-standing",
+    )
+
+    payload = json.loads(output.read_text(encoding="utf-8"))
+    assert payload["schemaVersion"] == 1
+    assert payload["supersedes"] == "gw01-aggregates.json"
+    assert payload["correctionReason"] == "adds-season-standing"
+    assert payload["seasonStanding"] == [{"overallRank": 1_000_000, "totalPoints": 50}]
+    assert "capturedAt" in payload
+    assert "entryId" not in json.dumps(payload)
+    with pytest.raises(FileExistsError, match="refusing to overwrite"):
+        write_standing(
+            aggregate,
+            output,
+            supersedes="gw01-aggregates.json",
+            correction_reason="adds-season-standing",
+        )
+
+
+def test_standing_correction_requires_complete_provenance(tmp_path: Path) -> None:
+    aggregate = aggregate_manager_history(
+        [
+            ManagerPicks(
+                entry_id=123,
+                event=1,
+                picks=(),
+                active_chip=None,
+                history=EntryHistory(
+                    points=50,
+                    points_on_bench=2,
+                    value_tenths=1000,
+                    bank_tenths=0,
+                    event_transfers=0,
+                    event_transfers_cost=0,
+                    total_points=50,
+                    overall_rank=1_000_000,
+                ),
+            )
+        ],
+        event=1,
+        attempted=1,
+        cohort_revision="sha256:pinned",
+        minimum_coverage=0.9,
+    )
+
+    with pytest.raises(ValueError, match="requires both supersedes and reason"):
+        write_standing(
+            aggregate,
+            tmp_path / "gw01-standing.json",
+            supersedes="gw01-aggregates.json",
+        )

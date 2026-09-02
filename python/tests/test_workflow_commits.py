@@ -158,6 +158,16 @@ def test_model_validation_refires_only_when_a_new_gameweek_settles() -> None:
     assert "needs.refresh.outputs.run == 'true'" in text
 
 
+def test_portfolio_annotation_backfills_legacy_season_standings() -> None:
+    text = (WORKFLOWS / "annotate-portfolio.yml").read_text(encoding="utf-8")
+
+    assert "capture_cohort_aggregate" in text
+    assert '"$portfolio_dir/gw${event}-standing.json"' in text
+    assert '--standing-supersedes "gw${event}-aggregates.json"' in text
+    assert "adds-season-standing" in text
+    assert "scripts/republish-fpl500.sh" in text
+
+
 @pytest.mark.parametrize(
     "name,source",
     (

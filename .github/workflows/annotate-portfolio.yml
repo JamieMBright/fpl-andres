@@ -89,6 +89,24 @@ jobs:
               --portfolio-dir data/cohort/portfolio/fpl500 \
               | tee -a "$GITHUB_STEP_SUMMARY"
           fi
+          portfolio_dir="data/cohort/portfolio/fpl500"
+          for aggregate in "$portfolio_dir"/gw??-aggregates.json; do
+            [ -e "$aggregate" ] || continue
+            event="$(basename "$aggregate" | sed -E 's/^gw([0-9]{2})-aggregates\.json$/\1/')"
+            standing="$portfolio_dir/gw${event}-standing.json"
+            [ ! -e "$standing" ] || continue
+            if python -c 'import json,sys; raise SystemExit("seasonStanding" not in json.load(open(sys.argv[1], encoding="utf-8")))' "$aggregate"; then
+              continue
+            fi
+            python -m fpl_andres.cli.capture_cohort_aggregate \
+              --event "$((10#$event))" \
+              --membership "data/cohort/fpl500-membership/gw${event}.json" \
+              --portfolio-dir "$portfolio_dir" \
+              --standing-output "$portfolio_dir/gw${event}-standing.json" \
+              --standing-supersedes "gw${event}-aggregates.json" \
+              --standing-correction-reason "adds-season-standing" \
+              | tee -a "$GITHUB_STEP_SUMMARY"
+          done
           if [ -n "$(git status --porcelain --untracked-files=all -- data/cohort/portfolio)" ]; then
             echo "changed=true" >> "$GITHUB_OUTPUT"
           else

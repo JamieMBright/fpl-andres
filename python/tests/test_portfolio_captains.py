@@ -69,6 +69,45 @@ def _sidecar(directory: Path, event: int, points: dict[int, int]) -> None:
     )
 
 
+def _aggregate(directory: Path, event: int, *, revision: str | None = None) -> None:
+    (directory / f"gw{event:02d}-aggregates.json").write_text(
+        json.dumps(
+            {
+                "schemaVersion": 1,
+                "event": event,
+                "basis": "ranked-500",
+                "cohortRevision": revision,
+            }
+        ),
+        encoding="utf-8",
+    )
+
+
+def _standing(
+    directory: Path,
+    event: int,
+    *,
+    revision: str | None = None,
+) -> None:
+    (directory / f"gw{event:02d}-standing.json").write_text(
+        json.dumps(
+            {
+                "schemaVersion": 1,
+                "event": event,
+                "capturedAt": "2026-09-02T20:00:00Z",
+                "basis": "ranked-500",
+                "cohortRevision": revision,
+                "supersedes": f"gw{event:02d}-aggregates.json",
+                "correctionReason": "adds-season-standing",
+                "seasonStanding": [
+                    {"overallRank": 100_000, "totalPoints": 120},
+                ],
+            }
+        ),
+        encoding="utf-8",
+    )
+
+
 class TestPortfolioCaptains:
     def test_a_captain_carries_what_the_pick_scored(self, tmp_path: Path) -> None:
         _capture(tmp_path, 1, {11: 0.62, 22: 0.38})
@@ -174,3 +213,26 @@ class TestPortfolioCaptains:
         popularity = series["samples"]["01"]["structure"]["popularitySquad"]
 
         assert "rawGameweekPoints" not in popularity
+
+    def test_a_standing_sidecar_adds_to_an_immutable_legacy_aggregate(self, tmp_path: Path) -> None:
+        _capture(tmp_path, 1, {11: 0.62}, basis="ranked-500")
+        _aggregate(tmp_path, 1)
+        _standing(tmp_path, 1)
+
+        series = _portfolio_series(tmp_path, basis="ranked-500", label="Exact FPL500")
+
+        assert series["samples"]["01"]["aggregate"]["seasonStanding"] == [
+            {"overallRank": 100_000, "totalPoints": 120}
+        ]
+
+    def test_a_standing_sidecar_must_match_the_capture_revision(self, tmp_path: Path) -> None:
+        _capture(tmp_path, 1, {11: 0.62}, basis="ranked-500")
+        _aggregate(tmp_path, 1)
+        _standing(tmp_path, 1, revision="sha256:other")
+
+        try:
+            _portfolio_series(tmp_path, basis="ranked-500", label="Exact FPL500")
+        except ValueError as error:
+            assert "standing revision mismatch" in str(error)
+        else:
+            raise AssertionError("mismatched standing sidecar was accepted")

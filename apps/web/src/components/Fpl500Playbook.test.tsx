@@ -1,11 +1,11 @@
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { Fpl500Playbook, latestCapture } from "./Fpl500Playbook";
 import artifact from "../data/fpl500.json";
-import { fineShare, integer } from "../format";
+import { fineShare, integer, twoDecimal } from "../format";
 
 // The page shows the newest gameweek FPL has scored, so pinning one here would
 // date the test to the week it was written.
@@ -14,6 +14,10 @@ const LATEST_EVENT =
     artifact.exactFpl500Portfolio as Parameters<typeof latestCapture>[0],
   )?.event ?? Math.max(...artifact.exactFpl500Portfolio.events);
 const NEXT_EVENT = LATEST_EVENT + 1;
+
+afterEach(() => {
+  window.history.replaceState(null, "", "/");
+});
 
 describe("latestCapture", () => {
   const series = (
@@ -128,13 +132,18 @@ describe("Fpl500Playbook", () => {
     expect(summary.getByText("Top 100k finishes")).toBeInTheDocument();
     expect(summary.getByText(/Observed/)).toBeInTheDocument();
     expect(summary.getByText(/FPL histories through/)).toBeInTheDocument();
+    expect(
+      summary.getByText(
+        /top 500 managers in the world worth following for the 26\/27 season/i,
+      ),
+    ).toBeInTheDocument();
   });
 
   it("leads with a so-what hook and a jump nav, not the scanning numbers", () => {
     draw();
 
     expect(
-      screen.getByText(/carefully selected group of managers/),
+      screen.getByText(/Follow what proven managers do now/),
     ).toBeVisible();
     const nav = screen.getByRole("navigation", { name: "Jump to a section" });
     for (const label of [
@@ -148,6 +157,50 @@ describe("Fpl500Playbook", () => {
     ]) {
       expect(within(nav).getByRole("link", { name: label })).toBeVisible();
     }
+  });
+
+  it("pairs each jump link with its colored section heading", () => {
+    const { container } = draw();
+    const pairs = [
+      ["Rank", "rank"],
+      ["Captaincy", "captaincy"],
+      ["Players", "players"],
+      ["Chips", "chips"],
+      ["Value", "value"],
+      ["Transfers", "transfers"],
+      ["Squad", "squad"],
+    ] as const;
+
+    for (const [label, kind] of pairs) {
+      const link = screen.getByRole("link", { name: label });
+      expect(link).toHaveAttribute("data-kind", kind);
+      const target = container.querySelector(link.getAttribute("href")!);
+      expect(target).not.toBeNull();
+      const heading = target!.matches("h2, h3, h4")
+        ? target
+        : target!.querySelector("h2, h3, h4");
+      expect(heading).toHaveClass("fpl500-section-band", `is-${kind}`);
+    }
+  });
+
+  it("opens a closed fold when its descendant is targeted", () => {
+    draw();
+    const heading = screen.getByRole("heading", {
+      name: "Analysing the FPL500",
+    });
+    const fold = heading.closest("details");
+    expect(fold).not.toBeNull();
+    fold!.open = false;
+    const target = document.getElementById("fpl500-transfers");
+    expect(target).not.toBeNull();
+    const scrollIntoView = vi.fn();
+    target!.scrollIntoView = scrollIntoView;
+
+    window.history.replaceState(null, "", "#fpl500-transfers");
+    window.dispatchEvent(new HashChangeEvent("hashchange"));
+
+    expect(fold).toHaveAttribute("open");
+    expect(scrollIntoView).toHaveBeenCalledWith({ block: "start" });
   });
 
   it("says how far the register has been read", () => {
@@ -244,10 +297,8 @@ describe("Fpl500Playbook", () => {
     draw();
 
     expect(
-      screen.getAllByText(
-        new RegExp(`awaiting gameweek ${String(NEXT_EVENT)}`),
-      ),
-    ).toHaveLength(1);
+      screen.queryByText(new RegExp(`awaiting gameweek ${String(NEXT_EVENT)}`)),
+    ).not.toBeInTheDocument();
     expect(screen.getByText("Hits taken")).toBeInTheDocument();
     expect(
       screen.getByText("Who they are buying and selling"),
@@ -265,6 +316,39 @@ describe("Fpl500Playbook", () => {
     ]) {
       expect(screen.getByText(position)).toBeInTheDocument();
     }
+  });
+
+  it("shows real hit evidence once transfers are available", () => {
+    draw();
+    const key = String(LATEST_EVENT).padStart(2, "0");
+    const aggregate = Object.entries(
+      artifact.exactFpl500Portfolio.samples,
+    ).find(([eventKey]) => eventKey === key)?.[1].aggregate;
+    expect(aggregate?.transfersAvailable).toBe(true);
+    expect(aggregate?.eventTransfers).toBeDefined();
+    expect(aggregate?.transferCost).toBeDefined();
+
+    const heading = screen.getByRole("heading", { name: "Hits taken" });
+    const section = heading.closest("section");
+    expect(section).not.toBeNull();
+    expect(
+      within(section!).getByText(`GW${String(LATEST_EVENT)}`),
+    ).toBeVisible();
+    expect(within(section!).getByText("Mean transfers")).toBeVisible();
+    expect(
+      within(section!).getByText(
+        twoDecimal.format(aggregate!.eventTransfers.mean),
+      ),
+    ).toBeVisible();
+    expect(within(section!).getByText("Mean hit cost")).toBeVisible();
+    expect(
+      within(section!).getByText(
+        twoDecimal.format(aggregate!.transferCost.mean),
+      ),
+    ).toBeVisible();
+    expect(
+      within(section!).queryByText(/awaiting gameweek/i),
+    ).not.toBeInTheDocument();
   });
 
   it("puts the cohort headlines before the player catalogue", () => {

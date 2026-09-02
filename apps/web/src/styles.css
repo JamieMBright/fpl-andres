@@ -5340,9 +5340,12 @@ h1[tabindex="-1"]:focus-visible {
 }
 
 .fpl500-jump a {
+  --fpl500-jump-hue: var(--rule);
+  --fpl500-jump-ink: var(--fa-gk-black);
+
   padding: 6px 12px;
-  border: 1px solid var(--rule);
-  background: var(--paper-deep);
+  border: 2px solid var(--fpl500-jump-hue);
+  background: color-mix(in srgb, var(--fpl500-jump-hue) 22%, var(--paper-deep));
   color: var(--ink);
   font-family: var(--fa-mono);
   font-size: 12px;
@@ -5350,10 +5353,63 @@ h1[tabindex="-1"]:focus-visible {
   text-decoration: none;
 }
 
+.fpl500-jump a[data-kind="rank"],
+.fpl500-section-band.is-rank {
+  --fpl500-section-hue: var(--fa-gk-lime);
+}
+
+.fpl500-jump a[data-kind="captaincy"],
+.fpl500-section-band.is-captaincy {
+  --fpl500-section-hue: var(--fa-gk-hot);
+}
+
+.fpl500-jump a[data-kind="players"],
+.fpl500-section-band.is-players {
+  --fpl500-section-hue: var(--fa-gk-teal);
+}
+
+.fpl500-jump a[data-kind="chips"],
+.fpl500-section-band.is-chips {
+  --fpl500-section-hue: var(--fa-gk-purple);
+  --fpl500-section-ink: var(--fa-gk-white);
+}
+
+.fpl500-jump a[data-kind="value"],
+.fpl500-section-band.is-value {
+  --fpl500-section-hue: var(--fa-signal-green);
+}
+
+.fpl500-jump a[data-kind="transfers"],
+.fpl500-section-band.is-transfers {
+  --fpl500-section-hue: var(--amber);
+}
+
+.fpl500-jump a[data-kind="squad"],
+.fpl500-section-band.is-squad {
+  --fpl500-section-hue: var(--fa-gk-teal);
+}
+
+.fpl500-jump a[data-kind] {
+  --fpl500-jump-hue: var(--fpl500-section-hue);
+  --fpl500-jump-ink: var(--fpl500-section-ink, var(--fa-gk-black));
+}
+
 .fpl500-jump a:hover,
 .fpl500-jump a:focus-visible {
-  border-color: var(--accent);
-  color: var(--accent);
+  background: var(--fpl500-jump-hue);
+  color: var(--fpl500-jump-ink);
+}
+
+.fpl500-section-band {
+  --fpl500-section-hue: var(--rule);
+  --fpl500-section-ink: var(--fa-gk-black);
+
+  box-sizing: border-box;
+  width: 100%;
+  margin-top: 0;
+  padding: 7px 10px;
+  color: var(--fpl500-section-ink);
+  background: var(--fpl500-section-hue);
 }
 
 .fpl500-season-standing-section {
@@ -5977,10 +6033,17 @@ button.fpl500-holding-name {
   margin: 10px 0 0;
 }
 
+.fpl500-transfer-flow-scroll {
+  max-height: 420px;
+  margin-top: 14px;
+  padding: 4px 8px 8px;
+  overflow-y: auto;
+}
+
 .fpl500-transfer-rows {
   display: grid;
   gap: 3px;
-  margin: 14px 0 0;
+  margin: 0;
   padding: 0;
   list-style: none;
 }

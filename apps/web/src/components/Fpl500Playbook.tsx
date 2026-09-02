@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+
 import { InfoMarker } from "./InfoMarker";
 import { Fpl500ChipAdoption } from "./Fpl500ChipAdoption";
 import { Fpl500Holdings, type Fpl500Holding } from "./Fpl500Holdings";
@@ -8,7 +10,14 @@ import { BarChart, type Bar } from "./MethodChart";
 import { PlannedAnalysis } from "./PlannedAnalysis";
 import { RankRidge, type Ridge } from "./RankRidge";
 import fpl500 from "../data/fpl500.json";
-import { fineShare, integer, oneDecimal, share, timestamp } from "../format";
+import {
+  fineShare,
+  integer,
+  oneDecimal,
+  share,
+  timestamp,
+  twoDecimal,
+} from "../format";
 import { PLAYERS_BY_ELEMENT_ID } from "../state/season-solver";
 import {
   FPL500_SCHEMA_VERSION,
@@ -34,6 +43,8 @@ type PortfolioSample = {
     benchPoints: DistributionSummary;
     squadValueTenths: DistributionSummary;
     bankTenths: DistributionSummary;
+    eventTransfers?: DistributionSummary;
+    transferCost?: DistributionSummary;
     transfersAvailable: boolean;
     seasonStanding?: { overallRank: number | null; totalPoints: number }[];
   };
@@ -218,7 +229,10 @@ function CaptainSeries({
 function CaptainDistribution() {
   return (
     <section aria-labelledby="cohort-armband-title" className="cohort-armband">
-      <h3 id="cohort-armband-title">
+      <h3
+        className="fpl500-section-band is-captaincy"
+        id="cohort-armband-title"
+      >
         The armband, week by week
         <InfoMarker label="armband samples">
           Two populations, kept separate. The catalogue shows every manager
@@ -321,7 +335,9 @@ function LatestCohortSummary() {
         className="fpl500-chips"
         id="fpl500-chips"
       >
-        <h3 id="fpl500-chips-title">Chips</h3>
+        <h3 className="fpl500-section-band is-chips" id="fpl500-chips-title">
+          Chips
+        </h3>
         <BarChart
           bars={chipBars}
           caption={`Which chips they spent in ${gameweek}`}
@@ -373,7 +389,13 @@ function ExactFpl500Analysis() {
   const latest = latestCapture(series);
   const captured = series.events.length;
   const holdings = latest ? (series.holdings?.[latest.key] ?? []) : [];
-  const structure = latest ? series.samples[latest.key]?.structure : undefined;
+  const sample = latest ? series.samples[latest.key] : undefined;
+  const structure = sample?.structure;
+  const aggregate = sample?.aggregate;
+  const transferEvidence =
+    aggregate?.transfersAvailable === true &&
+    aggregate.eventTransfers !== undefined &&
+    aggregate.transferCost !== undefined;
   // A round captured at its deadline but not yet scored is held back rather
   // than shown as zeros, so the page says where it went.
   const newest = Math.max(0, ...series.events);
@@ -407,14 +429,49 @@ function ExactFpl500Analysis() {
         aria-labelledby="fpl500-transfer-flow-title"
         id="fpl500-transfers"
       >
-        <h3 id="fpl500-transfer-flow-title">Who they are buying and selling</h3>
+        <h3
+          className="fpl500-section-band is-transfers"
+          id="fpl500-transfer-flow-title"
+        >
+          Who they are buying and selling
+        </h3>
         <p>
           Net movement in the cohort's own squads between one capture and the
           next, not FPL's transfer counters.
         </p>
         <Fpl500TransferFlow series={series} />
       </section>
-      <PlannedAnalysis event={(latest?.event ?? 0) + 1} only={["Hits taken"]} />
+      {latest && sample && aggregate && transferEvidence ? (
+        <section className="fpl500-hits" aria-labelledby="fpl500-hits-title">
+          <h3 id="fpl500-hits-title">Hits taken</h3>
+          <p className="mono">GW{latest.event}</p>
+          <dl className="dossier-metrics">
+            <div>
+              <dt>Mean transfers</dt>
+              <dd>{twoDecimal.format(aggregate.eventTransfers!.mean)}</dd>
+            </div>
+            <div>
+              <dt>Mean hit cost</dt>
+              <dd>{twoDecimal.format(aggregate.transferCost!.mean)}</dd>
+            </div>
+            <div>
+              <dt>Maximum hit cost</dt>
+              <dd>{integer.format(aggregate.transferCost!.maximum)}</dd>
+            </div>
+          </dl>
+          <p className="mono fpl500-note">
+            {number.format(sample.responded)} of{" "}
+            {number.format(sample.attempted)} histories ·{" "}
+            {fineShare.format(sample.coverage)} coverage · captured{" "}
+            {timestamp.format(new Date(sample.capturedAt))}.
+          </p>
+        </section>
+      ) : (
+        <PlannedAnalysis
+          event={(latest?.event ?? 0) + 1}
+          only={["Hits taken"]}
+        />
+      )}
     </>
   );
 }
@@ -428,6 +485,21 @@ function ExactFpl500Analysis() {
  * which is also the more useful thing to look at.
  */
 export function Fpl500Playbook() {
+  useEffect(() => {
+    const revealHashTarget = () => {
+      const id = window.location.hash.slice(1);
+      if (!id) return;
+      const target = document.getElementById(id);
+      if (!target) return;
+      const fold = target.closest("details");
+      if (fold instanceof HTMLDetailsElement) fold.open = true;
+      target.scrollIntoView?.({ block: "start" });
+    };
+    revealHashTarget();
+    window.addEventListener("hashchange", revealHashTarget);
+    return () => window.removeEventListener("hashchange", revealHashTarget);
+  }, []);
+
   const seasons: Bar[] = Object.entries(data.seasonsCounted).map(
     ([held, managers]) => ({
       label: held,
@@ -458,20 +530,31 @@ export function Fpl500Playbook() {
   return (
     <>
       <p className="fpl500-hook">
-        FPL500 is a carefully selected group of managers we have statistically
-        determined are the five hundred worth following for the 26/27 season —
-        chosen by {share.format(top10kShare)} of their tracked seasons landing
-        inside the FPL top ten thousand, not by a leaderboard for a week.
+        Follow what proven managers do now, not whoever led for one week.
       </p>
 
       <nav aria-label="Jump to a section" className="fpl500-jump">
-        <a href="#fpl500-rank">Rank</a>
-        <a href="#cohort-armband-title">Captaincy</a>
-        <a href="#fpl500-holdings-title">Players</a>
-        <a href="#fpl500-chips">Chips</a>
-        <a href="#fpl500-spend-title">Value</a>
-        <a href="#fpl500-transfers">Transfers</a>
-        <a href="#fpl500-structure-title">Squad</a>
+        <a data-kind="rank" href="#fpl500-rank">
+          Rank
+        </a>
+        <a data-kind="captaincy" href="#cohort-armband-title">
+          Captaincy
+        </a>
+        <a data-kind="players" href="#fpl500-holdings-title">
+          Players
+        </a>
+        <a data-kind="chips" href="#fpl500-chips">
+          Chips
+        </a>
+        <a data-kind="value" href="#fpl500-spend-title">
+          Value
+        </a>
+        <a data-kind="transfers" href="#fpl500-transfers">
+          Transfers
+        </a>
+        <a data-kind="squad" href="#fpl500-structure-title">
+          Squad
+        </a>
       </nav>
 
       <section
@@ -479,7 +562,9 @@ export function Fpl500Playbook() {
         className="fpl500-season-standing-section"
         id="fpl500-rank"
       >
-        <h2 id="fpl500-rank-title">This season, so far</h2>
+        <h2 className="fpl500-section-band is-rank" id="fpl500-rank-title">
+          This season, so far
+        </h2>
         <p>
           All five hundred, equal by construction: none is more "top" than
           another. Sort by whichever measure answers what you came here for.
@@ -488,6 +573,13 @@ export function Fpl500Playbook() {
       </section>
 
       <Fold kind="what" title="What it is">
+        <p>
+          FPL500 is a carefully selected group of managers who we have
+          statistically determined are the top 500 managers in the world worth
+          following for the 26/27 season. Across the seasons held,{" "}
+          {share.format(top10kShare)} of their finishes landed inside the FPL
+          top ten thousand.
+        </p>
         <ul className="plan-promises">
           <li>
             Every FPL entry id is public, so the register is read, not guessed

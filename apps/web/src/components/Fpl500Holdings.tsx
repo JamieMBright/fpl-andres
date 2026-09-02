@@ -204,7 +204,7 @@ export function Fpl500Holdings({
       className="fpl500-holdings"
       aria-labelledby="fpl500-holdings-title"
     >
-      <h3 id="fpl500-holdings-title">
+      <h3 className="fpl500-section-band is-players" id="fpl500-holdings-title">
         Who they own, by position
         <InfoMarker label="FPL500 player measures">
           Ownership is the share of captured squads holding the player. Returns
