@@ -5384,6 +5384,11 @@ h1[tabindex="-1"]:focus-visible {
   --fpl500-section-hue: var(--amber);
 }
 
+:root[data-theme="light"] .fpl500-jump a[data-kind="transfers"],
+:root[data-theme="light"] .fpl500-section-band.is-transfers {
+  --fpl500-section-ink: var(--fa-gk-white);
+}
+
 .fpl500-jump a[data-kind="squad"],
 .fpl500-section-band.is-squad {
   --fpl500-section-hue: var(--fa-gk-teal);
