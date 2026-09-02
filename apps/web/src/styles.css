@@ -1319,6 +1319,33 @@ h1[tabindex="-1"]:focus-visible {
   color: var(--amber);
 }
 
+.expected-xi-evidence-legend {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 10px 20px;
+  margin: 0 0 22px;
+  padding: 14px;
+  border: 1px solid var(--rule);
+  background: var(--paper-deep);
+}
+
+.expected-xi-evidence-legend dt {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--fa-mono);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.expected-xi-evidence-legend dd {
+  margin: 3px 0 0;
+  color: var(--ink-soft);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
 .expected-xi-source {
   margin-top: 12px;
 }
@@ -6774,6 +6801,157 @@ button.fpl500-holding-name {
 
 .xstart-calibration .squad-table-wrap {
   margin-top: 12px;
+}
+
+.xstart-club-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  margin: 14px 0;
+  padding: 0;
+  border: 0;
+  max-height: 96px;
+  overflow-y: auto;
+}
+
+.xstart-club-filter legend {
+  width: 100%;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.xstart-club-filter label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+}
+
+.xstart-score-bars,
+.xstart-rank-bars {
+  display: grid;
+  gap: 3px;
+  margin: 14px 0;
+  padding: 0;
+  list-style: none;
+}
+
+.xstart-score-bar-open {
+  display: grid;
+  grid-template-columns: 44px 1fr 44px;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 4px 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  text-align: left;
+}
+
+.xstart-score-bar-open:hover .xstart-score-bar-fill,
+.xstart-score-bar-open:focus-visible .xstart-score-bar-fill {
+  filter: brightness(1.1);
+}
+
+.xstart-score-bar-label,
+.xstart-rank-label {
+  font-family: var(--fa-mono);
+  font-size: 12px;
+}
+
+.xstart-score-bar-track,
+.xstart-rank-track {
+  position: relative;
+  height: 14px;
+  background: color-mix(in srgb, var(--rule) 60%, transparent);
+}
+
+.xstart-score-bar-fill,
+.xstart-rank-fill {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  border-inline-end: 2px solid;
+}
+
+.xstart-score-bar-value,
+.xstart-rank-value {
+  font-size: 12px;
+  text-align: right;
+}
+
+.xstart-rank-bars li {
+  display: grid;
+  grid-template-columns: 44px 1fr 32px;
+  align-items: center;
+  gap: 8px;
+}
+
+.xstart-rank-chart {
+  position: relative;
+  margin: 8px 0 18px;
+}
+
+.xstart-rank-note {
+  margin: 8px 0 0;
+  color: var(--ink-soft);
+  font-size: 11px;
+}
+
+.xstart-score-popup {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: color-mix(in srgb, var(--ink) 55%, transparent);
+}
+
+.xstart-score-popup > .xstart-score-popup-close {
+  position: absolute;
+  inset-block-start: 16px;
+  inset-inline-end: max(16px, calc(50% - 220px));
+}
+
+.xstart-score-popup::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+}
+
+.xstart-score-popup h4,
+.xstart-score-popup h5 {
+  margin: 0 0 8px;
+}
+
+.xstart-score-popup-columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  max-width: 440px;
+  padding: 20px;
+  border: 1px solid var(--rule);
+  background: var(--paper-deep);
+}
+
+.xstart-score-popup-close {
+  grid-column: 1 / -1;
+  justify-self: end;
+}
+
+.xstart-score-popup-title {
+  grid-column: 1 / -1;
+}
+
+.xstart-score-popup-columns ol {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 13px;
 }
 
 @media (max-width: 620px) {

@@ -134,6 +134,7 @@ const playerOdds = {
 const manualPriors = {
   generatedAt: "2026-08-19T21:45:00Z",
   source: "manual-team-news",
+  event: 2,
   players: [
     {
       elementId: 385,
@@ -329,5 +330,22 @@ describe("expected XI reader", () => {
       label: "Manual",
       detail: "Known starting goalkeeper for GW1",
     });
+  });
+
+  it("ignores a manual prior written for a gameweek that has already passed", () => {
+    const staleManualPriors = { ...manualPriors, event: 1 };
+
+    const leeds = buildExpectedXi({
+      seasonInputs,
+      playerOdds,
+      manualPriors: staleManualPriors,
+    }).teams.find((team) => team.club === "LEE");
+
+    // seasonInputs' current gameweek is 2; a prior written for gameweek 1 must
+    // not silently keep overriding the model once that gameweek is over.
+    expect(leeds?.starters[0]?.name).not.toBe("Trafford");
+    expect(
+      leeds?.starters.every((player) => player.evidence !== "manual"),
+    ).toBe(true);
   });
 });

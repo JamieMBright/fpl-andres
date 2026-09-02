@@ -83,6 +83,8 @@ interface ManualPriorRow {
 interface ManualPriorArtifact {
   generatedAt: string;
   source: string;
+  /** The gameweek this was written for. A prior from an earlier gameweek is stale and must not silently apply to a later one. */
+  event: number;
   players: readonly ManualPriorRow[];
 }
 
@@ -441,23 +443,31 @@ function manualPriorsForClub(
 }
 
 export function buildExpectedXi(inputs: ExpectedXiInputs): ExpectedXi {
+  const event = inputs.seasonInputs.events?.[0];
+  if (event === undefined) {
+    // Defaulting this shipped a page headed on a gameweek nobody had planned.
+    throw new Error("season inputs published no gameweek to build an XI for");
+  }
+  // A manual prior is written for one named gameweek. Carrying it forward to a
+  // later one is how a pre-season "known starting keeper for GW1" note kept
+  // overriding live model and market evidence weeks after GW1 was played.
+  const { manualPriors, ...withoutManualPriors } = inputs;
+  const guardedInputs: ExpectedXiInputs =
+    manualPriors?.event === event
+      ? { ...withoutManualPriors, manualPriors }
+      : withoutManualPriors;
   const byClub = new Map<string, SeasonInputPlayer[]>();
   for (const player of inputs.seasonInputs.players) {
     byClub.set(player.club, [...(byClub.get(player.club) ?? []), player]);
   }
   const teams = [...byClub]
-    .map(([club, players]) => buildTeam(club, players, inputs))
+    .map(([club, players]) => buildTeam(club, players, guardedInputs))
     .sort(
       (left, right) =>
         (clubOrder.get(left.club) ?? Number.MAX_SAFE_INTEGER) -
           (clubOrder.get(right.club) ?? Number.MAX_SAFE_INTEGER) ||
         left.club.localeCompare(right.club),
     );
-  const event = inputs.seasonInputs.events?.[0];
-  if (event === undefined) {
-    // Defaulting this shipped a page headed on a gameweek nobody had planned.
-    throw new Error("season inputs published no gameweek to build an XI for");
-  }
   return {
     event,
     generatedAt: inputs.seasonInputs.generatedAt,

@@ -51,9 +51,9 @@ describe("Expected XI page", () => {
     );
     expect(document.body).toHaveTextContent("Likely XI");
     expect(document.body).toHaveTextContent("Next in");
-    await userEvent.click(screen.getByLabelText("GW1 score"));
+    await userEvent.click(screen.getByLabelText("Performance"));
     expect(
-      screen.getByRole("heading", { name: "xStart reliability" }),
+      screen.getByRole("heading", { name: "How close was the predicted XI?" }),
     ).toBeVisible();
     expect(
       screen.queryByRole("navigation", { name: "Expected XI clubs" }),

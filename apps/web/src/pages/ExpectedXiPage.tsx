@@ -223,8 +223,47 @@ export default function ExpectedXiPage() {
         team news and role prior.
       </p>
 
+      <dl className="expected-xi-evidence-legend">
+        <div>
+          <dt>
+            <Activity aria-hidden="true" size={14} /> Model
+          </dt>
+          <dd>
+            A measured start rate: recent minutes and lineups, weighted toward
+            what he has actually done.
+          </dd>
+        </div>
+        <div>
+          <dt>
+            <LineChart aria-hidden="true" size={14} /> Market
+          </dt>
+          <dd>
+            Named in a bookmaker's player-props quote for this fixture, or
+            carried forward from one that has not been refreshed yet.
+          </dd>
+        </div>
+        <div>
+          <dt>
+            <CircleHelp aria-hidden="true" size={14} /> Prior
+          </dt>
+          <dd>
+            A role prior, not a measured record — used where the model has too
+            little of his own history to trust, most often a debutant.
+          </dd>
+        </div>
+        <div>
+          <dt>
+            <CircleHelp aria-hidden="true" size={14} /> Manual
+          </dt>
+          <dd>
+            A named human correction for this exact gameweek, such as confirmed
+            team news. Never carried over from an earlier gameweek.
+          </dd>
+        </div>
+      </dl>
+
       <fieldset className="xstart-event-choice">
-        <legend>Gameweek view</legend>
+        <legend>View</legend>
         <label>
           <input
             checked={view === "current"}
@@ -232,7 +271,7 @@ export default function ExpectedXiPage() {
             onChange={() => setView("current")}
             type="radio"
           />
-          <span>GW{xi.event} forecast</span>
+          <span>Predictions</span>
         </label>
         <label>
           <input
@@ -241,7 +280,7 @@ export default function ExpectedXiPage() {
             onChange={() => setView("history")}
             type="radio"
           />
-          <span>GW1 score</span>
+          <span>Performance</span>
         </label>
       </fieldset>
 
