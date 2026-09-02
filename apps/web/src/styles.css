@@ -8019,6 +8019,54 @@ button.fpl500-holding-name {
   border-top: 1px solid var(--rule);
 }
 
+.player-detail-season-choice {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0 0 16px;
+  padding: 0;
+  border: 0;
+}
+
+.player-detail-season-choice legend {
+  width: 100%;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.player-detail-season-choice label {
+  position: relative;
+  cursor: pointer;
+}
+
+.player-detail-season-choice input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.player-detail-season-choice span {
+  display: flex;
+  min-height: 36px;
+  align-items: center;
+  padding: 0 12px;
+  border: 1px solid var(--rule);
+  background: var(--paper);
+}
+
+.player-detail-season-choice input:checked + span {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 16%, var(--paper));
+  font-weight: 700;
+}
+
+.player-detail-season-choice input:focus-visible + span {
+  outline: 3px solid var(--signal-blue);
+  outline-offset: 2px;
+}
+
 .player-detail-stats > div {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;

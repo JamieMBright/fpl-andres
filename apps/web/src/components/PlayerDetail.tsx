@@ -26,6 +26,10 @@ export interface DetailPlayer {
   availabilityStatus?: string;
   chanceOfPlaying?: number | null;
   squadNumber?: number | null;
+  /** What he has scored this season so far, live from FPL. Omitted where the caller has no live pool to read it from. */
+  seasonPoints?: number;
+  /** His points in the gameweek just gone, or null before any have been played. */
+  lastGameweekPoints?: number | null;
 }
 
 function money(valueTenths: number): string {
@@ -202,6 +206,10 @@ export function PlayerDetail({
 }) {
   const dialog = useRef<HTMLDialogElement>(null);
   const [peer, setPeer] = useState<PeerMetric | null>(null);
+  // This season is the default: a summer signing has no prior-PL record but
+  // may already have this season's points on the board, and a plan built for
+  // right now should lead with that rather than a blank last-season tab.
+  const [tab, setTab] = useState<"thisSeason" | "lastSeason">("thisSeason");
 
   // `showModal` rather than the `open` attribute: it is what gives the platform
   // dialog its focus trap, its Escape handling and its inert backdrop. Writing
@@ -272,7 +280,56 @@ export function PlayerDetail({
           </div>
         </header>
 
-        {rows.length === 0 ? (
+        <fieldset className="player-detail-season-choice">
+          <legend>Season</legend>
+          <label>
+            <input
+              checked={tab === "thisSeason"}
+              name="player-detail-season"
+              onChange={() => {
+                setTab("thisSeason");
+              }}
+              type="radio"
+            />
+            <span>This season</span>
+          </label>
+          <label>
+            <input
+              checked={tab === "lastSeason"}
+              name="player-detail-season"
+              onChange={() => {
+                setTab("lastSeason");
+              }}
+              type="radio"
+            />
+            <span>{projectionSeason}</span>
+          </label>
+        </fieldset>
+
+        {tab === "thisSeason" ? (
+          player.seasonPoints === undefined ? (
+            <p className="player-detail-empty">
+              Nothing live tracked for this card yet. Open him from a page that
+              reads the current player pool to see this season's points here.
+            </p>
+          ) : (
+            <dl className="player-detail-stats player-detail-live">
+              <div>
+                <dt>Points this season</dt>
+                <dd className="mono">{player.seasonPoints}</dd>
+                <p>What he has actually scored so far, live from FPL.</p>
+              </div>
+              <div>
+                <dt>Last gameweek</dt>
+                <dd className="mono">{player.lastGameweekPoints ?? "—"}</dd>
+                <p>
+                  His points in the gameweek FPL last confirmed, or a dash
+                  before any have been played.
+                </p>
+              </div>
+            </dl>
+          )
+        ) : rows.length === 0 ? (
           <p className="player-detail-empty">
             He has no Premier League record in the seasons I hold, so there is
             nothing here to show you. That is a gap in the evidence, not a
@@ -307,7 +364,7 @@ export function PlayerDetail({
           </dl>
         )}
 
-        {rows.length > 0 ? (
+        {tab === "lastSeason" && rows.length > 0 ? (
           <p className="player-detail-key">
             Figures are coloured against everyone else in his position:{" "}
             <span className="band-poor">below most</span>,{" "}
@@ -320,7 +377,7 @@ export function PlayerDetail({
           </p>
         ) : null}
 
-        {record ? (
+        {tab === "lastSeason" && record ? (
           <section className="player-detail-routes">
             <h3>Where the points come from</h3>
             <ul className="mono">
