@@ -130,7 +130,7 @@ describe("PlayerDetail season split", () => {
     );
 
     expect(
-      await screen.findByText(/FPL did not supply live points for this player/),
+      await screen.findByText(/FPL did not supply live stats for this player/),
     ).toBeInTheDocument();
   });
 });

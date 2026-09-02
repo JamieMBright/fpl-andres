@@ -441,6 +441,15 @@ const ROW_LIMITS = [25, 50, 75, 100] as const;
 const SHOW_ALL = "all";
 type RowLimit = (typeof ROW_LIMITS)[number] | typeof SHOW_ALL;
 
+function updateTableScrollState(region: HTMLDivElement): void {
+  const scrollable = region.scrollWidth > region.clientWidth + 1;
+  const atEnd =
+    !scrollable ||
+    region.scrollLeft + region.clientWidth >= region.scrollWidth - 1;
+  region.dataset.scrollable = String(scrollable);
+  region.dataset.scrollEnd = String(atEnd);
+}
+
 /**
  * Everyone in the 2026/27 game, priced now, measured on last season.
  *
@@ -551,19 +560,10 @@ export function PlayerPoolTable() {
   useEffect(() => {
     const region = tableRegionRef.current;
     if (!region) return;
-    const updateScrollState = () => {
-      const scrollable = region.scrollWidth > region.clientWidth + 1;
-      const atEnd =
-        !scrollable ||
-        region.scrollLeft + region.clientWidth >= region.scrollWidth - 1;
-      region.dataset.scrollable = String(scrollable);
-      region.dataset.scrollEnd = String(atEnd);
-    };
+    const updateScrollState = () => updateTableScrollState(region);
     updateScrollState();
-    region.addEventListener("scroll", updateScrollState, { passive: true });
     window.addEventListener("resize", updateScrollState);
     return () => {
-      region.removeEventListener("scroll", updateScrollState);
       window.removeEventListener("resize", updateScrollState);
     };
   }, [pool, shownColumns]);
@@ -980,6 +980,7 @@ export function PlayerPoolTable() {
         className="squad-table-wrap pool-table-wrap"
         data-scroll-end="true"
         data-scrollable="false"
+        onScroll={(event) => updateTableScrollState(event.currentTarget)}
         ref={tableRegionRef}
         role="region"
         // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- Keyboard users must be able to scroll this table horizontally.

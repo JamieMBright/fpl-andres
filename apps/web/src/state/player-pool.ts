@@ -8,7 +8,11 @@ import {
   LIVE,
   type Freshness,
 } from "./freshness";
-import type { ScheduledFixture } from "./fixture-run";
+import {
+  rateFixtureRun,
+  type FixtureRun,
+  type ScheduledFixture,
+} from "./fixture-run";
 import { fetchGlobalFplFallback } from "./global-fpl-fallback";
 import { retryingFetch } from "./retrying-fetch";
 import { projectionFor, type PlayerProjection } from "./squad-projection";
@@ -258,29 +262,55 @@ export function forgetLastGoodPool(): void {
   lastGood.forget();
 }
 
-export interface LivePlayerPoints {
+export interface LivePlayerDetail {
   seasonPoints: number;
   lastGameweekPoints: number | null;
+  expectedGoals: number | null;
+  expectedAssists: number | null;
+  expectedGoalInvolvements: number | null;
+  expectedGoalsConceded: number | null;
+  defensiveContribution: number | null;
+  minutesPlayed: number | null;
+  ownedPercent: number | null;
+  run: FixtureRun | undefined;
 }
 
-function livePointsIn(pool: PlayerPool, code: number): LivePlayerPoints | null {
+function liveDetailIn(pool: PlayerPool, code: number): LivePlayerDetail | null {
   const player = pool.players.find((candidate) => candidate.code === code);
   return player
     ? {
         seasonPoints: player.seasonPoints,
         lastGameweekPoints: player.lastGameweekPoints,
+        expectedGoals: player.expectedGoals,
+        expectedAssists: player.expectedAssists,
+        expectedGoalInvolvements: player.expectedGoalInvolvements,
+        expectedGoalsConceded: player.expectedGoalsConceded,
+        defensiveContribution: player.defensiveContribution,
+        minutesPlayed: player.minutesPlayed,
+        ownedPercent: player.ownedPercent,
+        run: rateFixtureRun(
+          pool.clubCodeByTeamId,
+          pool.fixtures.filter(
+            (fixture) =>
+              pool.currentEvent === null ||
+              (fixture.event !== null && fixture.event > pool.currentEvent),
+          ),
+          player.teamId,
+          player.position,
+          5,
+        ),
       }
     : null;
 }
 
-/** Current FPL scoring for a projection-only card such as Top Picks. */
-export async function fetchLivePlayerPoints(
+/** Current FPL evidence for a projection-only card such as Top Picks. */
+export async function fetchLivePlayerDetail(
   code: number,
   fetchApi: typeof fetch = retryingFetch(),
-): Promise<LivePlayerPoints | null> {
+): Promise<LivePlayerDetail | null> {
   const held = lastGood.recall();
-  if (held) return livePointsIn(held.value, code);
-  return livePointsIn(await fetchPlayerPool(fetchApi), code);
+  if (held) return liveDetailIn(held.value, code);
+  return liveDetailIn(await fetchPlayerPool(fetchApi), code);
 }
 
 export async function fetchPlayerPool(

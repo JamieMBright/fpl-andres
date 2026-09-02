@@ -9,8 +9,8 @@ import { kitForShortName } from "../kit/team-kits";
 import type { PeerMetric } from "../state/peer-distribution";
 import { peerMetric } from "../state/peer-distribution";
 import {
-  fetchLivePlayerPoints,
-  type LivePlayerPoints,
+  fetchLivePlayerDetail,
+  type LivePlayerDetail,
 } from "../state/player-pool";
 import type { Band } from "../state/stat-bands";
 import { bandFor } from "../state/stat-bands";
@@ -34,6 +34,13 @@ export interface DetailPlayer {
   seasonPoints?: number;
   /** His points in the gameweek just gone, or null before any have been played. */
   lastGameweekPoints?: number | null;
+  expectedGoals?: number | null;
+  expectedAssists?: number | null;
+  expectedGoalInvolvements?: number | null;
+  expectedGoalsConceded?: number | null;
+  defensiveContribution?: number | null;
+  minutesPlayed?: number | null;
+  ownedPercent?: number | null;
 }
 
 function money(valueTenths: number): string {
@@ -212,7 +219,7 @@ export function PlayerDetail({
   const [peer, setPeer] = useState<PeerMetric | null>(null);
   const [liveLookup, setLiveLookup] = useState<{
     code: number;
-    points: LivePlayerPoints | null;
+    detail: LivePlayerDetail | null;
   } | null>(null);
   // This season is the default: a summer signing has no prior-PL record but
   // may already have this season's points on the board, and a plan built for
@@ -228,34 +235,56 @@ export function PlayerDetail({
   }, []);
 
   useEffect(() => {
-    if (player.seasonPoints !== undefined) return;
+    if (player.seasonPoints !== undefined && run !== null) return;
     let active = true;
-    fetchLivePlayerPoints(player.code).then(
-      (points) => {
-        if (active) setLiveLookup({ code: player.code, points });
+    fetchLivePlayerDetail(player.code).then(
+      (detail) => {
+        if (active) setLiveLookup({ code: player.code, detail });
       },
       () => {
-        if (active) setLiveLookup({ code: player.code, points: null });
+        if (active) setLiveLookup({ code: player.code, detail: null });
       },
     );
     return () => {
       active = false;
     };
-  }, [player.code, player.seasonPoints]);
+  }, [player.code, player.seasonPoints, run]);
 
   const record = projectionFor(player.code);
   const rows = rowsFor(player, record);
   const kit = kitForShortName(player.club);
   const defensive = player.position === "GKP" || player.position === "DEF";
-  const livePoints: LivePlayerPoints | null | undefined =
+  const hydrated =
+    liveLookup?.code === player.code ? liveLookup.detail : undefined;
+  const liveDetail: LivePlayerDetail | null | undefined =
     player.seasonPoints !== undefined
       ? {
           seasonPoints: player.seasonPoints,
           lastGameweekPoints: player.lastGameweekPoints ?? null,
+          expectedGoals:
+            player.expectedGoals ?? hydrated?.expectedGoals ?? null,
+          expectedAssists:
+            player.expectedAssists ?? hydrated?.expectedAssists ?? null,
+          expectedGoalInvolvements:
+            player.expectedGoalInvolvements ??
+            hydrated?.expectedGoalInvolvements ??
+            null,
+          expectedGoalsConceded:
+            player.expectedGoalsConceded ??
+            hydrated?.expectedGoalsConceded ??
+            null,
+          defensiveContribution:
+            player.defensiveContribution ??
+            hydrated?.defensiveContribution ??
+            null,
+          minutesPlayed:
+            player.minutesPlayed ?? hydrated?.minutesPlayed ?? null,
+          ownedPercent: player.ownedPercent ?? hydrated?.ownedPercent ?? null,
+          run: run ?? hydrated?.run,
         }
-      : liveLookup?.code === player.code
-        ? liveLookup.points
-        : undefined;
+      : hydrated;
+  const fixtureRun = run ?? liveDetail?.run ?? null;
+  const xPts = horizonPoints(player.code, DEFAULT_HORIZON);
 
   return (
     // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/click-events-have-key-events -- The rule does not know `dialog` is interactive. Opened with `showModal`, it is dismissible from the keyboard with Escape and by the Close button below; this handler only adds click-outside for a mouse.
@@ -340,29 +369,90 @@ export function PlayerDetail({
         </fieldset>
 
         {tab === "thisSeason" ? (
-          livePoints === undefined ? (
+          liveDetail === undefined ? (
             <p className="player-detail-empty" role="status">
-              Reading this season&rsquo;s points from FPL…
+              Reading this season&rsquo;s stats from FPL…
             </p>
-          ) : livePoints === null ? (
+          ) : liveDetail === null ? (
             <p className="player-detail-empty">
-              FPL did not supply live points for this player. Nothing has been
+              FPL did not supply live stats for this player. Nothing has been
               substituted for them.
             </p>
           ) : (
             <dl className="player-detail-stats player-detail-live">
               <div>
                 <dt>Points this season</dt>
-                <dd className="mono">{livePoints.seasonPoints}</dd>
+                <dd className="mono">{liveDetail.seasonPoints}</dd>
                 <p>What he has actually scored so far, live from FPL.</p>
               </div>
               <div>
                 <dt>Last gameweek</dt>
-                <dd className="mono">{livePoints.lastGameweekPoints ?? "—"}</dd>
+                <dd className="mono">{liveDetail.lastGameweekPoints ?? "—"}</dd>
                 <p>
                   His points in the gameweek FPL last confirmed, or a dash
                   before any have been played.
                 </p>
+              </div>
+              <div>
+                <dt>xPts{DEFAULT_HORIZON}</dt>
+                <dd className="mono">{xPts?.toFixed(1) ?? "—"}</dd>
+                <p>Expected points over the next five gameweeks.</p>
+              </div>
+              <div>
+                <dt>Points per match</dt>
+                <dd className="mono">
+                  {record?.expectedPoints.toFixed(2) ?? "—"}
+                </dd>
+                <p>Expected points against an average opponent.</p>
+              </div>
+              <div>
+                <dt>xG</dt>
+                <dd className="mono">
+                  {liveDetail.expectedGoals?.toFixed(2) ?? "—"}
+                </dd>
+                <p>Expected goals so far this season, live from FPL.</p>
+              </div>
+              <div>
+                <dt>xA</dt>
+                <dd className="mono">
+                  {liveDetail.expectedAssists?.toFixed(2) ?? "—"}
+                </dd>
+                <p>Expected assists so far this season, live from FPL.</p>
+              </div>
+              <div>
+                <dt>xGI</dt>
+                <dd className="mono">
+                  {liveDetail.expectedGoalInvolvements?.toFixed(2) ?? "—"}
+                </dd>
+                <p>Expected goal involvements so far, live from FPL.</p>
+              </div>
+              <div>
+                <dt>xGC</dt>
+                <dd className="mono">
+                  {liveDetail.expectedGoalsConceded?.toFixed(2) ?? "—"}
+                </dd>
+                <p>Expected goals conceded while he played, live from FPL.</p>
+              </div>
+              <div>
+                <dt>DefCon</dt>
+                <dd className="mono">
+                  {liveDetail.defensiveContribution ?? "—"}
+                </dd>
+                <p>Defensive-contribution points this season.</p>
+              </div>
+              <div>
+                <dt>Minutes played</dt>
+                <dd className="mono">{liveDetail.minutesPlayed ?? "—"}</dd>
+                <p>Minutes recorded by FPL this season.</p>
+              </div>
+              <div>
+                <dt>Ownership</dt>
+                <dd className="mono">
+                  {liveDetail.ownedPercent === null
+                    ? "—"
+                    : `${liveDetail.ownedPercent.toFixed(1)}%`}
+                </dd>
+                <p>Share of FPL managers who own him now.</p>
               </div>
             </dl>
           )
@@ -454,7 +544,7 @@ export function PlayerDetail({
                 the projection above is already priced against.
               </p>
             </>
-          ) : run === null || run.rating === null ? (
+          ) : fixtureRun === null || fixtureRun.fixtures === 0 ? (
             <p>
               I have no rating for these fixtures, so nothing is shown rather
               than a guess.
@@ -462,21 +552,28 @@ export function PlayerDetail({
           ) : (
             <>
               <ol className="mono">
-                {run.opponents.map((opponent, index) => (
+                {fixtureRun.opponents.map((opponent, index) => (
                   <li key={`${opponent}-${index.toString()}`}>
                     {opponent || "—"}
                   </li>
                 ))}
               </ol>
-              <p>
-                Rated {run.rating.toFixed(2)} on what these opponents{" "}
-                {defensive ? "score" : "concede"} against an average side. One
-                is average
-                {run.rated < run.fixtures
-                  ? `; only ${run.rated.toString()} of ${run.fixtures.toString()} could be rated`
-                  : ""}
-                .
-              </p>
+              {fixtureRun.rating === null ? (
+                <p>
+                  The opponents are published. I cannot compare their strength
+                  on this view without substituting a different scale.
+                </p>
+              ) : (
+                <p>
+                  Rated {fixtureRun.rating.toFixed(2)} on what these opponents{" "}
+                  {defensive ? "score" : "concede"} against an average side. One
+                  is average
+                  {fixtureRun.rated < fixtureRun.fixtures
+                    ? `; only ${fixtureRun.rated.toString()} of ${fixtureRun.fixtures.toString()} could be rated`
+                    : ""}
+                  .
+                </p>
+              )}
             </>
           )}
         </section>

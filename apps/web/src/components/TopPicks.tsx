@@ -3,6 +3,7 @@ import { useId, useState } from "react";
 import { money, oneDecimal } from "../format";
 import { kitForShortName } from "../kit/team-kits";
 import { DEFAULT_HORIZON, horizonPointsByCode } from "../state/horizon-points";
+import type { FixtureRun } from "../state/fixture-run";
 import { planningEventAt } from "../state/season-deadlines";
 import {
   EVENT_INDEX,
@@ -116,6 +117,18 @@ function picksFor(
         rank: (index + 1) as 1 | 2 | 3,
       };
     });
+}
+
+function profileRun(fixtures: readonly EventFixture[]): FixtureRun {
+  return {
+    rating: null,
+    rated: 0,
+    fixtures: fixtures.length,
+    opponents: fixtures.map((fixture) =>
+      fixture.opponents.length === 0 ? "Blank" : fixture.opponents.join(" + "),
+    ),
+    matches: [],
+  };
 }
 
 function Opponent({ entry }: { entry: string }) {
@@ -310,6 +323,9 @@ export function TopPicks() {
   ).filter((picks) => picks.length > 0);
   const picks = columns.flat();
   const shown = picks.find((pick) => pick.player.code === openCode) ?? null;
+  const selectedPick = selected
+    ? (picks.find((pick) => pick.player.code === selected.code) ?? null)
+    : null;
 
   return (
     <section aria-labelledby="top-picks" className="top-picks">
@@ -367,7 +383,11 @@ export function TopPicks() {
         </div>
       )}
       {selected ? (
-        <PlayerDetail onClose={() => setSelected(null)} player={selected} />
+        <PlayerDetail
+          onClose={() => setSelected(null)}
+          player={selected}
+          run={selectedPick ? profileRun(selectedPick.fixtures) : null}
+        />
       ) : null}
     </section>
   );

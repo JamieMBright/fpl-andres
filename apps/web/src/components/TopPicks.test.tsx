@@ -65,7 +65,13 @@ describe("TopPicks", () => {
       vi.fn<typeof fetch>().mockImplementation((input) =>
         Promise.resolve(
           String(input).includes("fixtures")
-            ? Response.json([])
+            ? Response.json(
+                Array.from({ length: 5 }, (_, index) => ({
+                  event: index + 3,
+                  team_h: 1,
+                  team_a: 2,
+                })),
+              )
             : Response.json({
                 events: [],
                 element_types: [],
@@ -229,7 +235,15 @@ describe("TopPicks", () => {
                   },
                 ],
                 element_types: [{ id: 3, singular_name_short: "MID" }],
-                teams: [{ id: 1, code: 3, short_name: "ARS", name: "Arsenal" }],
+                teams: [
+                  { id: 1, code: 3, short_name: "ARS", name: "Arsenal" },
+                  {
+                    id: 2,
+                    code: 7,
+                    short_name: "AVL",
+                    name: "Aston Villa",
+                  },
+                ],
                 elements: [
                   {
                     id: 1,
@@ -241,6 +255,11 @@ describe("TopPicks", () => {
                     status: "a",
                     total_points: 14,
                     event_points: 6,
+                    expected_goals: "0.75",
+                    expected_assists: "1.00",
+                    expected_goal_involvements: "1.75",
+                    expected_goals_conceded: "2.25",
+                    defensive_contribution: 4,
                   },
                 ],
               }),
@@ -257,6 +276,15 @@ describe("TopPicks", () => {
     ).toBeInTheDocument();
     expect(within(dialog).getByText("14")).toBeInTheDocument();
     expect(within(dialog).getByText("6")).toBeInTheDocument();
+    expect(within(dialog).getByText("xPts5")).toBeInTheDocument();
+    const xgi = within(dialog).getByText("xGI").closest("div");
+    expect(xgi).toHaveTextContent("1.75");
+    const run = within(dialog).getByRole("heading", {
+      name: "Next five",
+    }).parentElement;
+    expect(run).not.toBeNull();
+    expect(within(run!).queryByText(/no rating/i)).not.toBeInTheDocument();
+    expect(within(run!).getAllByRole("listitem")).toHaveLength(5);
   });
 
   it("opens a runner's profile without opening a fixture panel", async () => {
