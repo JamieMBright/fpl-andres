@@ -16,7 +16,7 @@
  * layout does not move as they arrive.
  */
 
-const HOST = "https://resources.premierleague.com";
+const HOST = "https://resources.premierleague.com/premierleague25";
 
 /** The only size the FPL front end itself requests. */
 const SIZE = "110x140";
@@ -25,7 +25,7 @@ export function getPlayerPhotoUrl(playerCode: number): string {
   if (!Number.isInteger(playerCode) || playerCode <= 0) {
     throw new Error(`${playerCode} is not a player code`);
   }
-  return `${HOST}/premierleague/photos/players/${SIZE}/p${playerCode}.png`;
+  return `${HOST}/photos/players/${SIZE}/${playerCode}.png`;
 }
 
 /**
