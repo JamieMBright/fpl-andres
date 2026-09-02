@@ -4,6 +4,8 @@ import validation from "../data/validation.json";
 import seasonInputs from "../data/season-inputs.json";
 import { captainEvidence } from "./captain-evidence";
 import { captaincyVerdict } from "./captaincy-verdict";
+import { MARKET_EXPECTATION_HOURS } from "./market-health";
+import { nextDeadlineAt } from "./season-deadlines";
 
 /**
  * Why the plan did what it did, in words, derived from the plan itself.
@@ -224,6 +226,22 @@ export function fixtureReason(week: PlanGameweek): string | null {
     );
   }
   return parts.join(" ");
+}
+
+/**
+ * A deadline is its own kind of uncertainty. The confidence band says how far
+ * a gameweek is from the calibrated horizon; this says whether the next
+ * deadline is still far enough away for lineup and market evidence to move.
+ */
+export function deadlineAdvice(
+  week: PlanGameweek,
+  now: Date = new Date(),
+): string | null {
+  const next = nextDeadlineAt(now);
+  if (!next || next.event !== week.event) return null;
+  const hoursUntil = (Date.parse(next.deadline) - now.getTime()) / 3_600_000;
+  if (hoursUntil <= MARKET_EXPECTATION_HOURS) return null;
+  return `The deadline is more than ${String(MARKET_EXPECTATION_HOURS)} hours away. If you do not need to act now, wait until closer to the deadline: team news and market evidence can still change this call.`;
 }
 
 /** What the week actually rests on, rather than a repeat of the band name. */

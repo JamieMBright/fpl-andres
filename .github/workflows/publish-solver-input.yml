@@ -5,6 +5,13 @@ name: Publish solver input
 # with latest fixture odds and player props.
 
 on:
+  # FPL is the club-assignment authority. Transfers can land between odds or
+  # live-capture runs, so rebuild once daily even when no upstream workflow has
+  # changed; the commit step remains a no-op when the derived artifacts match.
+  schedule:
+    - cron: "0 3 * * *"
+  push:
+    paths: [".github/workflows/publish-solver-input.yml"]
   # Auto-trigger when market data or live data updates
   workflow_run:
     workflows:

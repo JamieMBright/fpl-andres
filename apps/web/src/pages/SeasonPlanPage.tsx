@@ -69,6 +69,7 @@ import {
   captainLine,
   chipReason,
   confidenceReason,
+  deadlineAdvice,
   fixtureReason,
   moneyLines,
   moveLines,
@@ -91,7 +92,7 @@ import {
 const CHIP_TARGET = 20;
 
 /** Kept beside the list below; `plan-caveats.test.tsx` fails if they disagree. */
-const CAVEAT_COUNT = "Five";
+const CAVEAT_COUNT = "Six";
 
 /**
  * The plan's own rating for a player's tie that week.
@@ -424,6 +425,7 @@ function Move({ week }: { week: PlanGameweek }) {
 
 function Why({ week, chip }: { week: PlanGameweek; chip: ChipCall | null }) {
   const fixtures = fixtureReason(week);
+  const timing = deadlineAdvice(week);
 
   return (
     // Folded by default. Thirty-eight cards of open reasoning is a wall a
@@ -456,6 +458,13 @@ function Why({ week, chip }: { week: PlanGameweek; chip: ChipCall | null }) {
           <>
             <dt data-label="fixtures">Fixtures</dt>
             <dd>{fixtures}</dd>
+          </>
+        ) : null}
+
+        {timing ? (
+          <>
+            <dt data-label="timing">Timing</dt>
+            <dd>{timing}</dd>
           </>
         ) : null}
 
@@ -1571,6 +1580,19 @@ export default function SeasonPlanPage() {
                   That is not a failure of the plan, it is what a plan is for.
                   The weeks worth a chip and the runs worth holding through
                   survive; individual names do not.
+                </InfoMarker>
+              </li>
+              <li>
+                <strong>
+                  Club assignments are FPL&rsquo;s at refresh time.
+                </strong>{" "}
+                A player FPL has just moved can briefly be valued against his
+                previous club&rsquo;s fixtures.
+                <InfoMarker label="club assignment freshness">
+                  Clubs are read from FPL&rsquo;s own player feed, not a
+                  transfer rumour or an external news scrape. The planning
+                  inputs refresh daily, so a move enters the plan after FPL
+                  publishes it and that refresh has completed.
                 </InfoMarker>
               </li>
               <li>

@@ -4,11 +4,13 @@ import {
   chipReason,
   captainLine,
   confidenceReason,
+  deadlineAdvice,
   fixtureReason,
   isPremium,
   moneyLines,
   moveLines,
 } from "./plan-reasons";
+import { nextDeadlineAt } from "./season-deadlines";
 import type { PlanGameweek, PlanPlayer } from "./season-plan";
 
 function player(code: number, overrides: Partial<PlanPlayer> = {}): PlanPlayer {
@@ -218,5 +220,39 @@ describe("chipReason", () => {
         note: "the bench is worth 13.1",
       }),
     ).toBe("Bench Boost — the bench is worth 13.1.");
+  });
+});
+
+describe("deadlineAdvice", () => {
+  it("asks the reader to wait when the next deadline is more than 72 hours away", () => {
+    const next = nextDeadlineAt(new Date());
+    expect(next).not.toBeNull();
+    const now = new Date(Date.parse(next!.deadline) - 73 * 60 * 60 * 1000);
+
+    expect(
+      deadlineAdvice(
+        week({ event: next!.event, deadline: next!.deadline }),
+        now,
+      ),
+    ).toContain("wait until closer to the deadline");
+  });
+
+  it("stays silent at the 72-hour boundary and for another gameweek", () => {
+    const next = nextDeadlineAt(new Date());
+    expect(next).not.toBeNull();
+    const boundary = new Date(Date.parse(next!.deadline) - 72 * 60 * 60 * 1000);
+
+    expect(
+      deadlineAdvice(
+        week({ event: next!.event, deadline: next!.deadline }),
+        boundary,
+      ),
+    ).toBeNull();
+    expect(
+      deadlineAdvice(
+        week({ event: next!.event + 1, deadline: next!.deadline }),
+        new Date(Date.parse(next!.deadline) - 73 * 60 * 60 * 1000),
+      ),
+    ).toBeNull();
   });
 });
