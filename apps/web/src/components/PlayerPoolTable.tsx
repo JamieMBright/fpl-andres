@@ -21,12 +21,6 @@ import {
 } from "../state/horizon-points";
 import { retryingFetch } from "../state/retrying-fetch";
 import { projectionThroughGameweek } from "../state/projection-meta";
-import {
-  bandFor,
-  bandForPeers,
-  type Band,
-  type StatBandField,
-} from "../state/stat-bands";
 import { projectionSeason } from "../state/squad-projection";
 import { money as sharedMoney } from "../format";
 import {
@@ -356,15 +350,6 @@ function cellText(
   }
 }
 
-const PUBLISHED_BAND_FIELDS: Partial<
-  Record<SortKey, Parameters<typeof bandFor>[1]>
-> = {
-  apps: "appearances",
-  ceiling: "ceiling",
-  points: "expectedPoints",
-  returned: "returnRate",
-};
-
 function cellNumber(
   player: PoolPlayer,
   key: SortKey,
@@ -412,31 +397,43 @@ function cellNumber(
   }
 }
 
-function peerBandField(key: SortKey): StatBandField {
-  if (key === "expectedGoalsConceded") return "expectedGoalsConceded";
-  if (key === "transfersOutEvent") return "transfersOutEvent";
-  return "expectedPoints";
-}
+type CellHighlight = "best" | "worst";
+type CellHighlights = ReadonlyMap<SortKey, ReadonlyMap<number, CellHighlight>>;
 
-function cellBand(
-  player: PoolPlayer,
-  key: SortKey,
+const HIGHLIGHT_COUNT = 5;
+const LOWER_IS_BETTER = new Set<SortKey>([
+  "expectedGoalsConceded",
+  "transfersOutEvent",
+]);
+
+function cellHighlights(
   pool: PlayerPool,
   horizon: ReadonlyMap<number, number>,
-): Band | null {
-  const value = cellNumber(player, key, horizon);
-  if (key === "priceChangeEvent") {
-    if (value === null || value === 0) return null;
-    return value > 0 ? "strong" : "poor";
+): CellHighlights {
+  const result = new Map<SortKey, ReadonlyMap<number, CellHighlight>>();
+  for (const { key } of COLUMNS) {
+    const ranked = pool.players.flatMap((player) => {
+      const value = cellNumber(player, key, horizon);
+      return value === null ? [] : [{ code: player.code, value }];
+    });
+    if (
+      ranked.length < 2 ||
+      ranked.every((row) => row.value === ranked[0]?.value)
+    ) {
+      continue;
+    }
+    const direction = LOWER_IS_BETTER.has(key) ? 1 : -1;
+    ranked.sort(
+      (left, right) =>
+        direction * (left.value - right.value) || left.code - right.code,
+    );
+    const count = Math.min(HIGHLIGHT_COUNT, Math.floor(ranked.length / 2));
+    const highlights = new Map<number, CellHighlight>();
+    for (const row of ranked.slice(0, count)) highlights.set(row.code, "best");
+    for (const row of ranked.slice(-count)) highlights.set(row.code, "worst");
+    result.set(key, highlights);
   }
-  const published = PUBLISHED_BAND_FIELDS[key];
-  if (published) return bandFor(player.position, published, value);
-  if (value === null) return null;
-  const peers = pool.players
-    .filter((candidate) => candidate.position === player.position)
-    .map((candidate) => cellNumber(candidate, key, horizon))
-    .filter((candidate): candidate is number => candidate !== null);
-  return bandForPeers(peerBandField(key), value, peers);
+  return result;
 }
 
 /** How many rows to draw at once. "All" is every match still worth a ranking. */
@@ -598,6 +595,10 @@ export function PlayerPoolTable() {
   const horizon = useMemo(
     () => horizonPointsByCode(horizonWeeks),
     [horizonWeeks],
+  );
+  const highlights = useMemo(
+    () => (pool ? cellHighlights(pool, horizon) : new Map()),
+    [pool, horizon],
   );
   const available = useMemo(() => horizonsAvailable(), []);
 
@@ -1047,16 +1048,22 @@ export function PlayerPoolTable() {
                     ) : (
                       <td
                         className={`mono${(() => {
-                          const band = cellBand(
-                            player,
-                            column.key,
-                            pool,
-                            horizon,
-                          );
-                          return band ? ` band-${band}` : "";
+                          const highlight = highlights
+                            .get(column.key)
+                            ?.get(player.code);
+                          return highlight ? ` pool-stat-${highlight}` : "";
                         })()}`}
                         data-stat-key={column.key}
                         key={column.key}
+                        title={
+                          highlights.get(column.key)?.get(player.code) ===
+                          "best"
+                            ? "Top 5 in this column"
+                            : highlights.get(column.key)?.get(player.code) ===
+                                "worst"
+                              ? "Bottom 5 in this column"
+                              : undefined
+                        }
                         translate={column.key === "club" ? "no" : undefined}
                       >
                         {column.key === "run" ? (

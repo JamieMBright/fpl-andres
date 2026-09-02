@@ -42,14 +42,14 @@ function bandBootstrap() {
   const source = bootstrap();
   return {
     ...source,
-    elements: Array.from({ length: 10 }, (_, index) => ({
+    elements: Array.from({ length: 12 }, (_, index) => ({
       ...source.elements[0],
       id: index + 1,
       code: 910_000 + index,
       web_name: `Band ${String(index)}`,
       expected_goals: index.toFixed(2),
       expected_goals_conceded: index.toFixed(2),
-      cost_change_event: index === 0 ? 1 : index === 9 ? -1 : 0,
+      cost_change_event: index - 6,
     })),
   };
 }
@@ -168,7 +168,7 @@ describe("player pool table column customization", () => {
     expect(region).toHaveAttribute("data-scroll-end", "true");
   });
 
-  it("bands numeric cells against positional peers and inverts bad figures", async () => {
+  it("highlights only the five best and five worst cells in each statistic", async () => {
     vi.stubGlobal(
       "fetch",
       vi
@@ -183,36 +183,52 @@ describe("player pool table column customization", () => {
     );
 
     render(<PlayerPoolTable />);
-    await screen.findByText("Band 9");
+    await screen.findByText("Band 11");
     fireEvent.click(screen.getByRole("button", { name: "Columns" }));
     fireEvent.click(screen.getByRole("checkbox", { name: "xG" }));
     fireEvent.click(screen.getByRole("checkbox", { name: "xGC" }));
     fireEvent.click(screen.getByRole("checkbox", { name: "Price Δ" }));
 
-    const high = screen.getByRole("row", { name: /Band 9/ });
+    expect(
+      document.querySelectorAll(
+        '[data-stat-key="expectedGoals"].pool-stat-best',
+      ),
+    ).toHaveLength(5);
+    expect(
+      document.querySelectorAll(
+        '[data-stat-key="expectedGoals"].pool-stat-worst',
+      ),
+    ).toHaveLength(5);
+
+    const high = screen.getByRole("row", { name: /Band 11/ });
     expect(high.querySelector('[data-stat-key="expectedGoals"]')).toHaveClass(
-      "band-strong",
+      "pool-stat-best",
     );
     expect(
       high.querySelector('[data-stat-key="expectedGoalsConceded"]'),
-    ).toHaveClass("band-poor");
+    ).toHaveClass("pool-stat-worst");
     expect(
       high.querySelector('[data-stat-key="priceChangeEvent"]'),
-    ).toHaveClass("band-poor");
+    ).toHaveClass("pool-stat-best");
 
     const low = screen.getByRole("row", { name: /Band 0/ });
     expect(low.querySelector('[data-stat-key="expectedGoals"]')).toHaveClass(
-      "band-poor",
+      "pool-stat-worst",
     );
     expect(
       low.querySelector('[data-stat-key="expectedGoalsConceded"]'),
-    ).toHaveClass("band-strong");
+    ).toHaveClass("pool-stat-best");
     expect(low.querySelector('[data-stat-key="priceChangeEvent"]')).toHaveClass(
-      "band-strong",
+      "pool-stat-worst",
     );
+
+    const middle = screen.getByRole("row", { name: /Band 5/ });
+    expect(
+      middle.querySelector('[data-stat-key="expectedGoals"]'),
+    ).not.toHaveClass("pool-stat-best", "pool-stat-worst");
     expect(low.querySelector('[data-stat-key="run"]')).not.toHaveClass(
-      "band-poor",
-      "band-strong",
+      "pool-stat-best",
+      "pool-stat-worst",
     );
   });
 

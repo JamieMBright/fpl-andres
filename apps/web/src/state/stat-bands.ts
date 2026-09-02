@@ -27,16 +27,8 @@ interface Row {
   suspensionMultiplier: number;
 }
 
-export type StatBandField =
-  keyof Row | "expectedGoalsConceded" | "transfersOutEvent";
-
 /** Numbers where a bigger value is worse, so the bands run the other way. */
-const LOWER_IS_BETTER = new Set<StatBandField>([
-  "blankRate",
-  "expectedGoalsConceded",
-  "transfersOutEvent",
-  "yellowCards",
-]);
+const LOWER_IS_BETTER = new Set(["blankRate", "yellowCards"]);
 
 const ROWS = (projections as { players: Row[] }).players;
 
@@ -89,7 +81,7 @@ export function bandFor(
 }
 
 export function bandFromCuts(
-  field: StatBandField,
+  field: keyof Row,
   value: number,
   cuts: readonly [number, number, number],
 ): Band {
@@ -102,14 +94,4 @@ export function bandFromCuts(
   if (result === undefined)
     throw new Error(`invalid stat-band rank ${inverted}`);
   return result;
-}
-
-/** Position peers supplied by a live source rather than the published model. */
-export function bandForPeers(
-  field: StatBandField,
-  value: number | null,
-  peers: readonly number[],
-): Band | null {
-  if (value === null || peers.length < 8) return null;
-  return bandFromCuts(field, value, quartiles([...peers]));
 }

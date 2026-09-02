@@ -8089,6 +8089,16 @@ button.fpl500-holding-name {
   color: var(--field-green);
 }
 
+.pool-stat-best {
+  color: var(--field-green);
+  font-weight: 700;
+}
+
+.pool-stat-worst {
+  color: var(--amber);
+  font-weight: 700;
+}
+
 .player-detail-key {
   margin: 0 0 18px;
   color: var(--ink-soft);
