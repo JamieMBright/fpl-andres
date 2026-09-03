@@ -339,9 +339,9 @@ test("FPL500 headlines and the legal popularity squad fit a phone", async ({
 
   const teaser = page.locator(".fpl500-teaser");
   await expect(teaser).toContainText("Exact sample");
-  await expect(teaser).toContainText("Used a chip");
-  await expect(teaser).toContainText("Top owned");
-  await expect(teaser).toContainText("Top captain");
+  await expect(teaser).toContainText("Most transferred in");
+  await expect(teaser).toContainText("Most transferred out");
+  await expect(teaser).toContainText("Most captained");
   expect(
     await teaser.evaluate(
       (element, rankings) =>
