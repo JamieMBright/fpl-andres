@@ -161,11 +161,11 @@ jobs:
         # football-data.co.uk prices matches and nothing else. Everything that
         # prices a player needs a credential, and "the ingest only fetched one
         # source" is what it looks like when none are set. This reaches every
-        # source it can, names the ones it cannot, and says which secret
-        # unlocks each -- in the same run, so the answer is never a guess.
+        # source needed by this ingest and names the ones it cannot reach. The
+        # player catalogue's other provider is deliberately left to its weekly
+        # survey: this workflow can run after every two-hourly lineup capture.
         env:
           THE_ODDS_API_KEY: ${{ secrets.THE_ODDS_API_KEY }}
-          API_FOOTBALL_API_KEY: ${{ secrets.API_FOOTBALL_API_KEY }}
           BETFAIR_APP_KEY: ${{ secrets.BETFAIR_APP_KEY }}
           BETFAIR_SESSION_TOKEN: ${{ secrets.BETFAIR_SESSION_TOKEN }}
         run: |

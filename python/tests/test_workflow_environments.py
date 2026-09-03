@@ -74,6 +74,13 @@ def test_the_odds_workflows_are_covered_by_that_rule() -> None:
     assert "survey-player-props.yml" in named
 
 
+def test_high_frequency_odds_ingest_cannot_spend_api_football_quota() -> None:
+    """API-Football is only a catalogue source, not an odds-ingest input."""
+    text = (WORKFLOWS / "ingest-odds.yml").read_text(encoding="utf-8")
+
+    assert "API_FOOTBALL_API_KEY" not in text
+
+
 def test_the_ingest_tells_a_missing_key_apart_from_one_held_as_a_variable() -> None:
     """`secrets` and `vars` are separate namespaces and the UI puts them a tab
     apart, so "not set" is the wrong diagnosis half the time. The owner hit
