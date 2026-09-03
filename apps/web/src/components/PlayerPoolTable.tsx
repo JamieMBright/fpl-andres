@@ -856,44 +856,46 @@ export function PlayerPoolTable() {
             <option value={SHOW_ALL}>All</option>
           </select>
         </label>
-        <button
-          aria-expanded={customizingColumns}
-          aria-label={customizingColumns ? "Done" : "Columns"}
-          className="pool-customize-toggle"
-          data-columns-changed={columnsChanged}
-          onClick={() => setCustomizingColumns((was) => !was)}
-          type="button"
-        >
-          {customizingColumns ? "Done" : "Columns"}
-          {columnsChanged ? (
-            <span aria-hidden="true" className="pool-customize-status">
-              Changed
-            </span>
-          ) : null}
-        </button>
-        <button
-          className="pool-csv-download"
-          onClick={() => {
-            const header = shownColumns.map((column) => column.label);
-            const rows = shown.map(({ player, run }) =>
-              shownColumns.map((column) =>
-                cellText(player, column.key, run, horizon),
-              ),
-            );
-            const blob = new Blob([toCsv(header, rows)], {
-              type: "text/csv;charset=utf-8",
-            });
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement("a");
-            link.href = url;
-            link.download = "fpl-andres-players.csv";
-            link.click();
-            URL.revokeObjectURL(url);
-          }}
-          type="button"
-        >
-          Download CSV
-        </button>
+        <div className="pool-control-actions">
+          <button
+            aria-expanded={customizingColumns}
+            aria-label={customizingColumns ? "Done" : "Columns"}
+            className="pool-customize-toggle"
+            data-columns-changed={columnsChanged}
+            onClick={() => setCustomizingColumns((was) => !was)}
+            type="button"
+          >
+            {customizingColumns ? "Done" : "Columns"}
+            {columnsChanged ? (
+              <span aria-hidden="true" className="pool-customize-status">
+                Changed
+              </span>
+            ) : null}
+          </button>
+          <button
+            className="pool-csv-download"
+            onClick={() => {
+              const header = shownColumns.map((column) => column.label);
+              const rows = shown.map(({ player, run }) =>
+                shownColumns.map((column) =>
+                  cellText(player, column.key, run, horizon),
+                ),
+              );
+              const blob = new Blob([toCsv(header, rows)], {
+                type: "text/csv;charset=utf-8",
+              });
+              const url = URL.createObjectURL(blob);
+              const link = document.createElement("a");
+              link.href = url;
+              link.download = "fpl-andres-players.csv";
+              link.click();
+              URL.revokeObjectURL(url);
+            }}
+            type="button"
+          >
+            Download CSV
+          </button>
+        </div>
       </div>
 
       {customizingColumns ? (

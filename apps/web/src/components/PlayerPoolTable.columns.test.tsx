@@ -119,6 +119,17 @@ describe("player pool table column customization", () => {
     expect(headers.indexOf("Club")).toBeLessThan(headers.indexOf("Pos"));
   });
 
+  it("keeps the column and download actions on one aligned toolbar row", async () => {
+    render(<PlayerPoolTable />);
+    await screen.findByText("Player 0");
+
+    const columns = screen.getByRole("button", { name: "Columns" });
+    const download = screen.getByRole("button", { name: "Download CSV" });
+    const actions = columns.closest(".pool-control-actions");
+    expect(actions).not.toBeNull();
+    expect(actions).toContainElement(download);
+  });
+
   it("marks a changed layout and can reset every column to its default", async () => {
     render(<PlayerPoolTable />);
     await screen.findByText("Player 0");

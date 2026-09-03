@@ -2652,7 +2652,6 @@ h1[tabindex="-1"]:focus-visible {
 
 .pool-customize-toggle,
 .pool-csv-download {
-  align-self: flex-end;
   border: 2px solid var(--rule);
   min-height: 44px;
   padding: 7px 12px;
@@ -2661,6 +2660,13 @@ h1[tabindex="-1"]:focus-visible {
   font-family: var(--fa-body);
   font-size: 13px;
   cursor: pointer;
+}
+
+.pool-control-actions {
+  display: flex;
+  align-self: flex-end;
+  gap: 14px;
+  padding-bottom: 15px;
 }
 
 .pool-customize-toggle {
