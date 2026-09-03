@@ -40,6 +40,7 @@ import {
   removeTeamStateOverrides,
   saveTeamStateOverrides,
 } from "../state/team-state-overrides";
+import { SEASON_TRANSFER_RULES } from "../state/season-solver";
 
 interface TeamStateCorrectionsProps {
   state: PublicTeamState;
@@ -51,6 +52,11 @@ const AVAILABLE_CHIPS = [
   ["bench_boost", "Bench Boost"],
   ["triple_captain", "Triple Captain"],
 ] as const;
+
+const AVAILABLE_TRANSFER_OPTIONS = Array.from(
+  { length: SEASON_TRANSFER_RULES.maximumFreeTransfers + 1 },
+  (_, transfers) => transfers,
+);
 
 export function TeamStateCorrections({ state }: TeamStateCorrectionsProps) {
   const formId = useId();
@@ -332,46 +338,49 @@ export function TeamStateCorrections({ state }: TeamStateCorrectionsProps) {
                 id={freeTransfersId}
                 label="Available free transfers"
               >
-                <input
+                <select
                   aria-describedby={
                     error?.fieldId === freeTransfersId ? errorId : undefined
                   }
                   aria-invalid={error?.fieldId === freeTransfersId}
-                  autoComplete="off"
                   id={freeTransfersId}
-                  inputMode="numeric"
-                  min="0"
                   name="available-free-transfers"
                   onChange={(event) => {
                     setFreeTransfers(event.target.value);
                     setError(null);
                   }}
-                  placeholder="2…"
-                  step="1"
-                  type="number"
                   value={freeTransfers}
-                />
+                >
+                  <option value="">Not set</option>
+                  {AVAILABLE_TRANSFER_OPTIONS.map((transfers) => (
+                    <option key={transfers} value={transfers}>
+                      {transfers}
+                    </option>
+                  ))}
+                </select>
               </CorrectionField>
               <fieldset className="correction-chip-options" id={chipsId}>
                 <legend>Available chips</legend>
-                {AVAILABLE_CHIPS.map(([value, label]) => (
-                  <label className="chip-toggle" key={value}>
-                    <input
-                      checked={availableChips.has(value)}
-                      onChange={(event) => {
-                        setAvailableChips((current) => {
-                          const next = new Set(current);
-                          if (event.target.checked) next.add(value);
-                          else next.delete(value);
-                          return next;
-                        });
-                        setError(null);
-                      }}
-                      type="checkbox"
-                    />
-                    <span>{label}</span>
-                  </label>
-                ))}
+                <div className="correction-chip-grid">
+                  {AVAILABLE_CHIPS.map(([value, label]) => (
+                    <label className="chip-toggle" key={value}>
+                      <input
+                        checked={availableChips.has(value)}
+                        onChange={(event) => {
+                          setAvailableChips((current) => {
+                            const next = new Set(current);
+                            if (event.target.checked) next.add(value);
+                            else next.delete(value);
+                            return next;
+                          });
+                          setError(null);
+                        }}
+                        type="checkbox"
+                      />
+                      <span>{label}</span>
+                    </label>
+                  ))}
+                </div>
               </fieldset>
             </div>
           </fieldset>

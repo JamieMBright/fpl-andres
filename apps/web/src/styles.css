@@ -4160,7 +4160,8 @@ h1[tabindex="-1"]:focus-visible {
   font-weight: 700;
 }
 
-.correction-field input {
+.correction-field input,
+.correction-field select {
   width: 100%;
   min-height: 46px;
   padding: 10px 12px;
@@ -4172,34 +4173,39 @@ h1[tabindex="-1"]:focus-visible {
   font-size: 14px;
 }
 
-.correction-field input:focus-visible {
+.correction-field input:focus-visible,
+.correction-field select:focus-visible {
   outline: 3px solid var(--signal-blue);
   outline-offset: 2px;
 }
 
-.correction-field input[aria-invalid="true"] {
+.correction-field input[aria-invalid="true"],
+.correction-field select[aria-invalid="true"] {
   border-color: var(--danger);
   box-shadow: inset 4px 0 0 var(--danger);
 }
 
 .correction-chip-options {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1px;
   min-width: 0;
   margin: 0;
-  border: 1px solid var(--navy);
+  border: 0;
   padding: 0;
-  background: var(--navy);
 }
 
 .correction-chip-options > legend {
-  float: left;
-  width: 100%;
+  padding: 0;
   margin-bottom: 8px;
   color: var(--ink);
   font-size: 12px;
   font-weight: 700;
+}
+
+.correction-chip-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  border: 1px solid var(--navy);
+  background: var(--navy);
 }
 
 .correction-chip-options label {
