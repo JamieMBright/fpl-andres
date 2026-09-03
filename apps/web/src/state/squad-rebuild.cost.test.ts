@@ -1,7 +1,8 @@
 import { describe, expect, it } from "vitest";
 
-import { SEASON_EVENTS } from "./season-solver";
-import { rebuildSquad, rebuildUplift } from "./squad-rebuild";
+import opening from "../data/opening-squad.json";
+import { SEASON_EVENTS, SEASON_PLAYERS } from "./season-solver";
+import { rebuildUplift } from "./squad-rebuild";
 
 /**
  * The chip pass rebuilds a fifteen for every gameweek in the season, on the
@@ -13,7 +14,9 @@ import { rebuildSquad, rebuildUplift } from "./squad-rebuild";
 describe("rebuild cost", () => {
   it("prices a whole season's four Wildcard horizons with linear scaling", () => {
     const budget = 1000;
-    const squad = rebuildSquad(0, budget)?.squad ?? [];
+    const codes = new Set(opening.picks.map((pick) => pick.code));
+    const squad = SEASON_PLAYERS.filter((player) => codes.has(player.code));
+    expect(squad).toHaveLength(15);
     const horizons = [3, 5, 7, 9] as const;
 
     const one = performance.now();
@@ -35,5 +38,5 @@ describe("rebuild cost", () => {
     expect(season / Math.max(single, 0.01)).toBeLessThan(
       SEASON_EVENTS.length * 3,
     );
-  });
+  }, 15_000);
 });

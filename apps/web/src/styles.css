@@ -6411,15 +6411,52 @@ button.fpl500-holding-name {
   margin: 10px 0 0;
 }
 
-.fpl500-season-standing-line {
-  stroke: var(--accent);
-  stroke-width: 2;
+.fpl500-season-standing-axis-line {
+  stroke: var(--rule);
+  stroke-width: 1;
+}
+
+.fpl500-standing-bin {
+  fill: var(--accent);
+  stroke: var(--paper-deep);
+  stroke-width: 0.5;
 }
 
 .fpl500-season-standing-axis {
   fill: var(--ink-soft);
   font-family: var(--fa-body);
   font-size: 10px;
+}
+
+.fpl500-standing-bin-control {
+  display: grid;
+  gap: 6px;
+  max-width: 420px;
+  margin: 12px 0;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.fpl500-standing-bin-control > span {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.fpl500-standing-bin-control output {
+  color: var(--ink-soft);
+  font-family: var(--fa-mono);
+  font-weight: 400;
+}
+
+.fpl500-standing-bin-control input {
+  min-height: 44px;
+}
+
+.fpl500-standing-axis-title {
+  margin: 4px 0 0;
+  color: var(--ink-soft);
+  font-size: 11px;
 }
 
 /* What will be here after gameweek one, drawn as the real frame. */

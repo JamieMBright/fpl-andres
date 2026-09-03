@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
 import { Fpl500SeasonStanding } from "./Fpl500SeasonStanding";
@@ -49,5 +49,30 @@ describe("Fpl500SeasonStanding", () => {
     );
 
     expect(screen.getByText(/2 of the five hundred/)).toBeInTheDocument();
+  });
+
+  it("draws a histogram and lets the reader change the bin size", () => {
+    const { container } = render(
+      <Fpl500SeasonStanding
+        rows={Array.from({ length: 12 }, (_, index) => ({
+          overallRank: 100_000 + index * 100_000,
+          totalPoints: 100 + index,
+        }))}
+      />,
+    );
+
+    expect(container.querySelector(".fpl500-season-standing-line")).toBeNull();
+    expect(
+      container.querySelectorAll(".fpl500-standing-bin").length,
+    ).toBeGreaterThan(1);
+    const slider = screen.getByRole("slider", { name: "Bin size" });
+    const initialBars = container.querySelectorAll(
+      ".fpl500-standing-bin",
+    ).length;
+    fireEvent.change(slider, { target: { value: "10" } });
+    expect(
+      container.querySelectorAll(".fpl500-standing-bin").length,
+    ).toBeLessThan(initialBars);
+    expect(screen.getByText(/Managers per bin/)).toBeInTheDocument();
   });
 });
