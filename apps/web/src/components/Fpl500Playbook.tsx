@@ -27,8 +27,12 @@ import {
 // `points` arrives only once every fixture in the round has a confirmed score.
 // It is absent, never zero, while a week is still being played — a captain who
 // blanked and a captain who has not kicked off are different facts.
-type CaptainEntry = { elementId: number; share: number; points?: number };
-type PortfolioSample = {
+export type CaptainEntry = {
+  elementId: number;
+  share: number;
+  points?: number;
+};
+export type PortfolioSample = {
   capturedAt: string;
   attempted: number;
   responded: number;
@@ -50,7 +54,7 @@ type PortfolioSample = {
   };
   structure?: PortfolioStructure;
 };
-type DistributionSummary = {
+export type DistributionSummary = {
   mean: number;
   median: number;
   p10: number;
@@ -58,7 +62,7 @@ type DistributionSummary = {
   minimum: number;
   maximum: number;
 };
-type PortfolioSeries = {
+export type PortfolioSeries = {
   basis: "catalogue-at-deadline" | "ranked-500";
   label: string;
   events: number[];
@@ -67,7 +71,7 @@ type PortfolioSeries = {
   holdings?: Record<string, Fpl500Holding[]>;
 };
 
-type Fpl500 = {
+export type Fpl500 = {
   generatedAt: string;
   catalogueSize: number;
   sweptTo: number | null;
