@@ -28,7 +28,6 @@ import {
 import {
   correctionError,
   formatTenthsInput,
-  parseAvailableChips,
   parseOptionalInteger,
   parseOptionalTenths,
   parseTransfers,
@@ -45,6 +44,13 @@ import {
 interface TeamStateCorrectionsProps {
   state: PublicTeamState;
 }
+
+const AVAILABLE_CHIPS = [
+  ["wildcard", "Wildcard"],
+  ["free_hit", "Free Hit"],
+  ["bench_boost", "Bench Boost"],
+  ["triple_captain", "Triple Captain"],
+] as const;
 
 export function TeamStateCorrections({ state }: TeamStateCorrectionsProps) {
   const formId = useId();
@@ -72,8 +78,8 @@ export function TeamStateCorrections({ state }: TeamStateCorrectionsProps) {
       ? ""
       : String(existing.availableFreeTransfers),
   );
-  const [availableChips, setAvailableChips] = useState(
-    () => existing?.availableChips?.join(", ") ?? "",
+  const [availableChips, setAvailableChips] = useState<ReadonlySet<string>>(
+    () => new Set(existing?.availableChips ?? []),
   );
   const [transfers, setTransfers] = useState<TransferDraft[]>(() =>
     (existing?.queuedTransfers ?? []).map((transfer, index) => ({
@@ -162,7 +168,8 @@ export function TeamStateCorrections({ state }: TeamStateCorrectionsProps) {
           ),
           currentSquad: null,
           queuedTransfers: parseTransfers(transfers, formId),
-          availableChips: parseAvailableChips(availableChips, chipsId),
+          availableChips:
+            availableChips.size === 0 ? null : [...availableChips].sort(),
         },
         // What this form was editing. If another tab has written since, the
         // save is refused rather than overwriting a correction nobody knows
@@ -185,7 +192,7 @@ export function TeamStateCorrections({ state }: TeamStateCorrectionsProps) {
       removeTeamStateOverrides(localStorage, state.entryId, state.stateAsOf);
       setBank("");
       setFreeTransfers("");
-      setAvailableChips("");
+      setAvailableChips(new Set());
       setTransfers([]);
       nextTransferKey.current = 0;
       setSavedOverrides(null);
@@ -345,25 +352,27 @@ export function TeamStateCorrections({ state }: TeamStateCorrectionsProps) {
                   value={freeTransfers}
                 />
               </CorrectionField>
-              <CorrectionField id={chipsId} label="Available chips">
-                <input
-                  aria-describedby={
-                    error?.fieldId === chipsId ? errorId : undefined
-                  }
-                  aria-invalid={error?.fieldId === chipsId}
-                  autoComplete="off"
-                  id={chipsId}
-                  name="available-chips"
-                  onChange={(event) => {
-                    setAvailableChips(event.target.value);
-                    setError(null);
-                  }}
-                  placeholder="wildcard, bench_boost…"
-                  spellCheck={false}
-                  type="text"
-                  value={availableChips}
-                />
-              </CorrectionField>
+              <fieldset className="correction-chip-options" id={chipsId}>
+                <legend>Available chips</legend>
+                {AVAILABLE_CHIPS.map(([value, label]) => (
+                  <label className="chip-toggle" key={value}>
+                    <input
+                      checked={availableChips.has(value)}
+                      onChange={(event) => {
+                        setAvailableChips((current) => {
+                          const next = new Set(current);
+                          if (event.target.checked) next.add(value);
+                          else next.delete(value);
+                          return next;
+                        });
+                        setError(null);
+                      }}
+                      type="checkbox"
+                    />
+                    <span>{label}</span>
+                  </label>
+                ))}
+              </fieldset>
             </div>
           </fieldset>
 

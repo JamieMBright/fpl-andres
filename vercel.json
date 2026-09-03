@@ -11,6 +11,9 @@
     "api/fpl/*.ts": {
       "maxDuration": 15
     },
+    "api/fpl/event/**/*.ts": {
+      "maxDuration": 15
+    },
     "api/team/*.ts": {
       "maxDuration": 15
     },

@@ -12,6 +12,7 @@
 # either of them can only run once.
 set -euo pipefail
 
+python -m fpl_andres.cli.publish_deadlines
 python -m fpl_andres.cli.publish_season_inputs
 pnpm --filter @fpl-andres/web publish:canonical-opening
 
@@ -30,6 +31,8 @@ python -m fpl_andres.cli.publish_season_plan \
 # the caller's staged-diff check also stops a rewrite that is only formatting
 # from reaching `git commit` and failing it empty.
 npx --yes prettier@3 --write \
+  apps/web/public/fpl-global.json \
+  apps/web/src/data/deadlines.json \
   apps/web/src/data/season-inputs.json \
   apps/web/src/data/opening-squad.json \
   apps/web/src/data/season-plan.json

@@ -150,21 +150,6 @@ export function parseTransfers(
   }));
 }
 
-export function parseAvailableChips(
-  value: string,
-  fieldId: string,
-): string[] | null {
-  const chips = value
-    .split(",")
-    .map((chip) => chip.trim())
-    .filter(Boolean);
-  if (chips.length === 0) return null;
-  if (new Set(chips).size !== chips.length) {
-    throw new CorrectionInputError("List each available chip once.", fieldId);
-  }
-  return chips.sort();
-}
-
 export function correctionError(caught: unknown): CorrectionError {
   if (caught instanceof CorrectionInputError) {
     return caught.fieldId

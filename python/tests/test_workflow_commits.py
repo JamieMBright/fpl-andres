@@ -186,17 +186,20 @@ def test_live_odds_producers_republish_the_plan_the_browser_reads(name: str, sou
     assert "pnpm install --frozen-lockfile" in text
 
     chain = (REPO / "scripts" / "republish-plan.sh").read_text(encoding="utf-8")
+    deadlines = chain.index("python -m fpl_andres.cli.publish_deadlines")
     season_inputs = chain.index("python -m fpl_andres.cli.publish_season_inputs")
     canonical = chain.index(
         "pnpm --filter @fpl-andres/web publish:canonical-opening",
         season_inputs,
     )
     season_plan = chain.index("python -m fpl_andres.cli.publish_season_plan", canonical)
-    assert season_inputs < canonical < season_plan
+    assert deadlines < season_inputs < canonical < season_plan
     # Fixture and player odds move the whole season plan even when the opening
     # fifteen happens to stay unchanged.
     assert "canonical fifteen unchanged" not in chain
     for path in (
+        "apps/web/public/fpl-global.json",
+        "apps/web/src/data/deadlines.json",
         "apps/web/src/data/season-inputs.json",
         "apps/web/src/data/opening-squad.json",
         "apps/web/src/data/season-plan.json",

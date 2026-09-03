@@ -6,6 +6,7 @@ const PRIVATE_PREFIXES = [
   "fpl-andres:objective:v1:",
   "fpl-andres:team-state-overrides:v1:",
   "fpl-andres:public-team-state:v1:",
+  "fpl-andres:public-team-state:v2:",
   "fpl-andres:manager-history:v1:",
   "fpl-andres:scorecard:v1:",
 ] as const;

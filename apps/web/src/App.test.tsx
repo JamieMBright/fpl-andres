@@ -1,5 +1,5 @@
 ﻿import teamStateCases from "../../../packages/contracts/fixtures/public-team-state-cases.json";
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { createMemoryRouter, RouterProvider } from "react-router-dom";
 import { beforeEach, describe, expect, it, vi } from "vitest";
@@ -478,11 +478,17 @@ describe("team analysis entry", () => {
     });
 
     await user.click(screen.getByText("Correct Current State"));
+    const corrections = screen
+      .getByRole("heading", { name: "Manager Corrections" })
+      .closest<HTMLElement>(".correction-panel-body");
+    expect(corrections).not.toBeNull();
     await user.type(screen.getByLabelText("Current bank (£m)"), "1.2");
     await user.type(screen.getByLabelText("Available free transfers"), "2");
-    await user.type(
-      screen.getByLabelText("Available chips"),
-      "wildcard, bench_boost",
+    await user.click(
+      within(corrections!).getByRole("checkbox", { name: "Wildcard" }),
+    );
+    await user.click(
+      within(corrections!).getByRole("checkbox", { name: "Bench Boost" }),
     );
     await user.click(
       screen.getByRole("button", { name: "Add queued transfer" }),

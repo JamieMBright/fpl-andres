@@ -143,6 +143,8 @@ jobs:
           # time when the push is rejected -- see that script for why a rebase
           # cannot settle two independently regenerated artifacts.
           TRACKED="apps/web/src/data/player-odds.json \
+            apps/web/public/fpl-global.json \
+            apps/web/src/data/deadlines.json \
             apps/web/src/data/season-inputs.json \
             apps/web/src/data/opening-squad.json \
             apps/web/src/data/season-plan.json \

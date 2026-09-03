@@ -99,6 +99,22 @@ export async function fetchLiveGameweek(
   fetchApi: typeof fetch = retryingFetch(),
   signal?: AbortSignal,
 ): Promise<LiveGameweek> {
+  const fallback = async (failure: LiveGameweekError) => {
+    let response: Response;
+    try {
+      response = await dedupedFetch(
+        `/live/2026-27/gw${String(event).padStart(2, "0")}.json`,
+        { headers: { Accept: "application/json" }, signal: signal ?? null },
+        fetchApi,
+      );
+    } catch (error) {
+      if (error instanceof DOMException && error.name === "AbortError")
+        throw error;
+      throw failure;
+    }
+    if (!response.ok) throw failure;
+    return readLiveGameweek(event, await response.json());
+  };
   let response: Response;
   try {
     response = await dedupedFetch(
@@ -109,15 +125,19 @@ export async function fetchLiveGameweek(
   } catch (error) {
     if (error instanceof DOMException && error.name === "AbortError")
       throw error;
-    throw new LiveGameweekError(
-      "unreachable",
-      "the gameweek's scores could not be requested",
+    return fallback(
+      new LiveGameweekError(
+        "unreachable",
+        "the gameweek's scores could not be requested",
+      ),
     );
   }
   if (!response.ok) {
-    throw new LiveGameweekError(
-      "unreachable",
-      `FPL returned ${String(response.status)} for the gameweek's scores`,
+    return fallback(
+      new LiveGameweekError(
+        "unreachable",
+        `FPL returned ${String(response.status)} for the gameweek's scores`,
+      ),
     );
   }
   return readLiveGameweek(event, await response.json());

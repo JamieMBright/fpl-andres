@@ -4182,6 +4182,57 @@ h1[tabindex="-1"]:focus-visible {
   box-shadow: inset 4px 0 0 var(--danger);
 }
 
+.correction-chip-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  min-width: 0;
+  margin: 0;
+  border: 1px solid var(--navy);
+  padding: 0;
+  background: var(--navy);
+}
+
+.correction-chip-options > legend {
+  float: left;
+  width: 100%;
+  margin-bottom: 8px;
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.correction-chip-options label {
+  position: relative;
+  display: flex;
+  min-height: 44px;
+  align-items: center;
+  padding: 7px 10px;
+  background: var(--fa-surface-deep);
+  cursor: pointer;
+}
+
+.correction-chip-options input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+}
+
+.correction-chip-options input:checked + span {
+  color: var(--field-green);
+  font-weight: 700;
+}
+
+.correction-chip-options input:checked + span::before {
+  content: "\2713 ";
+}
+
+.correction-chip-options input:focus-visible + span {
+  outline: 3px solid var(--signal-blue);
+  outline-offset: 3px;
+}
+
 .correction-empty {
   margin: 0 0 16px;
   color: var(--ink-soft);

@@ -111,6 +111,13 @@ def test_the_proxy_catch_all_is_routed_explicitly() -> None:
     )
 
 
+def test_the_live_score_has_an_explicit_deep_route() -> None:
+    route = _ROOT / "api" / "fpl" / "event" / "[event]" / "live.ts"
+
+    assert route.is_file()
+    assert "api/fpl/event/**/*.ts" in _CONFIG["functions"]
+
+
 def test_the_budgets_reflect_what_each_route_does() -> None:
     """The team route fans out to three upstream calls including the 1.3 MB
     bootstrap; health does no I/O at all."""

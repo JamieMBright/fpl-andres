@@ -25,12 +25,13 @@ describe("clearing private browser data", () => {
       "fpl-andres:objective:v1:42": "{}",
       "fpl-andres:team-state-overrides:v1:42:deadline": "{}",
       "fpl-andres:public-team-state:v1:42": "{}",
+      "fpl-andres:public-team-state:v2:42": "{}",
       "fpl-andres:manager-history:v1:42": "{}",
       "fpl-andres:scorecard:v1:42": "[]",
       "fpl-andres:last-team": "42",
     });
 
-    expect(clearPrivateBrowserData(storage)).toBe(9);
+    expect(clearPrivateBrowserData(storage)).toBe(10);
     expect(storage.length).toBe(0);
   });
 

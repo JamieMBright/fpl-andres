@@ -181,7 +181,9 @@ jobs:
           # nothing is fatal to `git add`, and pre-season the live artifact is
           # legitimately absent.
           SOURCES="apps/web/src/data/fixture-odds.json data/odds"
-          DERIVED="apps/web/src/data/season-inputs.json \
+          DERIVED="apps/web/public/fpl-global.json \
+            apps/web/src/data/deadlines.json \
+            apps/web/src/data/season-inputs.json \
             apps/web/src/data/opening-squad.json \
             apps/web/src/data/season-plan.json \
             data/prospective/*.json"

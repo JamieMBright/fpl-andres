@@ -189,6 +189,7 @@ jobs:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
         run: |
+          python -m fpl_andres.cli.publish_deadlines
           python -m fpl_andres.cli.publish_projections \
             --season 2026-27 \
             --previous-season 2025-26 \
@@ -213,6 +214,8 @@ jobs:
             apps/web/src/data/validation.json \
             apps/web/src/data/model-history.json \
             apps/web/src/data/reconciliation.json \
+            apps/web/public/fpl-global.json \
+            apps/web/src/data/deadlines.json \
             apps/web/src/data/projections.json \
             apps/web/src/data/projections-meta.json \
             apps/web/src/data/season-inputs.json \
@@ -260,7 +263,7 @@ jobs:
 
       - name: Commit the refreshed artifact
         run: |
-          paths="apps/web/src/data/validation.json apps/web/src/data/model-history.json apps/web/src/data/reconciliation.json apps/web/src/data/projections.json apps/web/src/data/projections-meta.json apps/web/src/data/season-inputs.json apps/web/src/data/opening-squad.json apps/web/src/data/season-plan.json data/experiments/xstart-current-season.json data/experiments/recent-form-weight.json data/prospective/*.json docs/MODEL_CARDS.md"
+          paths="apps/web/src/data/validation.json apps/web/src/data/model-history.json apps/web/src/data/reconciliation.json apps/web/public/fpl-global.json apps/web/src/data/deadlines.json apps/web/src/data/projections.json apps/web/src/data/projections-meta.json apps/web/src/data/season-inputs.json apps/web/src/data/opening-squad.json apps/web/src/data/season-plan.json data/experiments/xstart-current-season.json data/experiments/recent-form-weight.json data/prospective/*.json docs/MODEL_CARDS.md"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           # Staged before the comparison. `git diff` does not look at untracked

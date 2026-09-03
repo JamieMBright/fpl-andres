@@ -160,6 +160,7 @@ export function LiveSquad({
   // simply not read.
   const [read, setRead] = useState<Read | null>(null);
   const [selected, setSelected] = useState<DetailPlayer | null>(null);
+  const [attempt, setAttempt] = useState(0);
   const current = read?.event === event ? read : null;
   const live = current?.week ?? null;
   const failed = current?.failed ?? null;
@@ -197,7 +198,7 @@ export function LiveSquad({
     return () => {
       abort.abort();
     };
-  }, [event]);
+  }, [event, attempt]);
 
   const ordered = [...picks].sort(
     (left, right) => left.squadPosition - right.squadPosition,
@@ -229,7 +230,17 @@ export function LiveSquad({
         // owns the alert role, and a reader mid-correction should not be
         // interrupted by a scoreboard that could not be read.
         <p className="live-squad-failed" role="status">
-          {failed}
+          {failed}{" "}
+          <button
+            className="pool-retry"
+            onClick={() => {
+              setRead(null);
+              setAttempt((currentAttempt) => currentAttempt + 1);
+            }}
+            type="button"
+          >
+            Try again
+          </button>
         </p>
       ) : null}
 

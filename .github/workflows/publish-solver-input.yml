@@ -74,7 +74,7 @@ jobs:
 
       - name: Commit updated solver input
         run: |
-          paths="apps/web/src/data/season-inputs.json apps/web/src/data/opening-squad.json apps/web/src/data/season-plan.json data/prospective"
+          paths="apps/web/public/fpl-global.json apps/web/src/data/deadlines.json apps/web/src/data/season-inputs.json apps/web/src/data/opening-squad.json apps/web/src/data/season-plan.json data/prospective"
           stage() {
             # shellcheck disable=SC2086
             git add $paths

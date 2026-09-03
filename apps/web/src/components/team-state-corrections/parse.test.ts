@@ -5,7 +5,6 @@ import {
   CorrectionInputError,
   correctionError,
   formatTenthsInput,
-  parseAvailableChips,
   parseOptionalInteger,
   parseOptionalTenths,
   parseRequiredInteger,
@@ -188,26 +187,6 @@ describe("parseTransfers", () => {
       expect(error.message).toContain("Transfer 2 player in");
       expect(error.fieldId).toBe("corrections-transfer-9-elementInId");
     }
-  });
-});
-
-describe("parseAvailableChips", () => {
-  it("splits, trims and sorts so the stored order does not depend on typing", () => {
-    expect(parseAvailableChips("wildcard, bboost ,3xc", "f")).toEqual([
-      "3xc",
-      "bboost",
-      "wildcard",
-    ]);
-  });
-
-  it("returns null for nothing but commas", () => {
-    expect(parseAvailableChips(" , , ", "f")).toBeNull();
-  });
-
-  it("refuses a repeated chip, which would claim two of one chip", () => {
-    expect(() => parseAvailableChips("wildcard,wildcard", "f")).toThrow(
-      /each available chip once/,
-    );
   });
 });
 

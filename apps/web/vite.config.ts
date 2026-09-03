@@ -1,9 +1,66 @@
 import react from "@vitejs/plugin-react";
+import { readFileSync, readdirSync } from "node:fs";
 import { availableParallelism } from "node:os";
+import { resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import { loadEnv } from "vite";
 import { defineConfig, type Plugin } from "vitest/config";
 
 type RouteHandler = (path: string, method: string) => Promise<Response>;
+
+const LIVE_ROOT = resolve(
+  fileURLToPath(new URL(".", import.meta.url)),
+  "../../data/live",
+);
+
+function liveSnapshots() {
+  return readdirSync(LIVE_ROOT, { withFileTypes: true }).flatMap((season) => {
+    if (!season.isDirectory()) return [];
+    const directory = resolve(LIVE_ROOT, season.name);
+    return readdirSync(directory)
+      .filter((name) => /^gw\d{2}\.json$/.test(name))
+      .flatMap((name) => {
+        const source = readFileSync(resolve(directory, name), "utf8");
+        const payload = JSON.parse(source) as { roundComplete?: unknown };
+        return payload.roundComplete === true
+          ? [{ fileName: `live/${season.name}/${name}`, source }]
+          : [];
+      });
+  });
+}
+
+function settledLiveBuild(): Plugin {
+  return {
+    name: "fpl-andres-settled-live-snapshots",
+    apply: "build",
+    buildStart() {
+      for (const snapshot of liveSnapshots()) {
+        this.emitFile({ type: "asset", ...snapshot });
+      }
+    },
+  };
+}
+
+function settledLiveDev(): Plugin {
+  return {
+    name: "fpl-andres-settled-live-dev",
+    apply: "serve",
+    configureServer(server) {
+      server.middlewares.use((request, response, next) => {
+        const path = new URL(request.url ?? "", "http://localhost").pathname;
+        const match = /^\/live\/(\d{4}-\d{2})\/(gw\d{2}\.json)$/.exec(path);
+        if (!match) return next();
+        const snapshot = liveSnapshots().find(
+          ({ fileName }) => fileName === `live/${match[1]}/${match[2]}`,
+        );
+        if (!snapshot) return next();
+        response.setHeader("Content-Type", "application/json; charset=utf-8");
+        response.setHeader("Cache-Control", "public, max-age=3600");
+        response.end(snapshot.source);
+      });
+    },
+  };
+}
 
 /**
  * Serve the deployed API routes from the dev server.
@@ -154,7 +211,12 @@ export default defineConfig(({ mode }) => {
     ),
   );
   return {
-    plugins: [react(), apiRoutes(contactEnv)],
+    plugins: [
+      react(),
+      settledLiveBuild(),
+      settledLiveDev(),
+      apiRoutes(contactEnv),
+    ],
     test: {
       maxWorkers: WORKERS,
       projects: [

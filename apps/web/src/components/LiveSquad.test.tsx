@@ -3,6 +3,7 @@ import { render, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { LiveSquad } from "./LiveSquad";
+import { fetchLiveGameweek } from "../state/live-gameweek";
 import { projectionFor } from "../state/squad-projection";
 
 // Bruno Fernandes, who is in the published artifact. The projection moves
@@ -206,6 +207,64 @@ describe("LiveSquad", () => {
 
     expect(await screen.findByRole("status")).toHaveTextContent(/404/);
     expect(screen.queryByText(/points on the field/i)).not.toBeInTheDocument();
+  });
+
+  it("reads a settled bundled score when the deployed proxy route is missing", async () => {
+    const fetchApi = vi.fn<typeof fetch>().mockImplementation((input) =>
+      Promise.resolve(
+        String(input) === "/live/2026-27/gw02.json"
+          ? Response.json({
+              elements: [{ id: 101, stats: { minutes: 90, total_points: 6 } }],
+            })
+          : new Response("", { status: 404 }),
+      ),
+    );
+
+    const live = await fetchLiveGameweek(2, fetchApi);
+
+    expect(live.players.get(101)?.totalPoints).toBe(6);
+    expect(fetchApi).toHaveBeenCalledWith(
+      "/live/2026-27/gw02.json",
+      expect.anything(),
+    );
+  });
+
+  it("still fails visibly when no settled bundled score exists", async () => {
+    const fetchApi = vi
+      .fn<typeof fetch>()
+      .mockResolvedValue(new Response("", { status: 404 }));
+
+    await expect(fetchLiveGameweek(3, fetchApi)).rejects.toMatchObject({
+      reason: "unreachable",
+      message: "FPL returned 404 for the gameweek's scores",
+    });
+  });
+
+  it("retries a score that failed before its settled fallback arrived", async () => {
+    let available = false;
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(() =>
+        Promise.resolve(
+          available
+            ? Response.json({
+                elements: [
+                  { id: 101, stats: { minutes: 90, total_points: 6 } },
+                ],
+              })
+            : new Response("", { status: 404 }),
+        ),
+      ),
+    );
+    render(<LiveSquad event={2} picks={squad()} />);
+
+    const retry = await screen.findByRole("button", { name: "Try again" });
+    available = true;
+    retry.click();
+
+    expect(await screen.findByText(/points on the field/i)).toHaveTextContent(
+      "6 points on the field",
+    );
   });
 
   it("does not show one gameweek's scores under another's heading", async () => {
