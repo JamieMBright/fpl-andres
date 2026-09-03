@@ -1,6 +1,6 @@
 {
   "schemaVersion": 6,
-  "generatedAt": "2026-09-03T15:37:40.188405Z",
+  "generatedAt": "2026-09-03T16:14:06.633248Z",
   "recordSeason": "2026-27",
   "events": [
     3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23,
@@ -538,7 +538,7 @@
       }
     ],
     "sourceReference": "FPL rules page, Transfers section",
-    "dataAvailableAt": "2026-09-03T15:37:40.188405Z",
+    "dataAvailableAt": "2026-09-03T16:14:06.633248Z",
     "playableStartRate": 0.35,
     "transferMarginPoints": 0.5
   },
@@ -21153,45 +21153,6 @@
       "evidence": { "all": "rolePrior" }
     },
     {
-      "id": 407,
-      "code": 575204,
-      "name": "Echeverri",
-      "position": "MID",
-      "positionId": 3,
-      "club": "MCI",
-      "teamId": 15,
-      "priceTenths": 49,
-      "availabilityStatus": "a",
-      "chanceOfPlaying": null,
-      "basePoints": 2.04,
-      "routes": {
-        "appearance": 1.283,
-        "attacking": 0.22,
-        "cleanSheet": 0.272,
-        "bonus": 0.107,
-        "yellowCards": -0.075,
-        "redCards": -0.006,
-        "defensiveContribution": 0.239
-      },
-      "startRate": 0.073,
-      "startEvidence": {
-        "sourceStartRate": 0.656,
-        "finalStartRate": 0.073,
-        "observedAppearances": 2,
-        "recentStarts": 0,
-        "recentMatches": 2,
-        "recentMinutes": 0,
-        "appearanceSource": "currentSeasonLineup",
-        "lineupAdjustment": -0.583,
-        "marketAdjustment": 0.0,
-        "availabilityAdjustment": 0.0
-      },
-      "squadNumber": null,
-      "rated": false,
-      "depthRank": 14,
-      "evidence": { "all": "rolePrior", "appearance": "currentSeasonLineup" }
-    },
-    {
       "id": 616,
       "code": 637238,
       "name": "Bouaddi",
@@ -23211,6 +23172,37 @@
       "rated": false,
       "depthRank": 11,
       "evidence": { "all": "rolePrior", "appearance": "fplAvailability" }
+    },
+    {
+      "id": 266,
+      "code": 76357,
+      "name": "Cairney",
+      "position": "MID",
+      "positionId": 3,
+      "club": "FUL",
+      "teamId": 10,
+      "priceTenths": 50,
+      "availabilityStatus": "i",
+      "chanceOfPlaying": 0,
+      "basePoints": 0,
+      "routes": {},
+      "startRate": 0.0,
+      "startEvidence": {
+        "sourceStartRate": 0.0,
+        "finalStartRate": 0.0,
+        "observedAppearances": 2,
+        "recentStarts": 0,
+        "recentMatches": 2,
+        "recentMinutes": 0,
+        "appearanceSource": "fplAvailability",
+        "lineupAdjustment": 0.0,
+        "marketAdjustment": 0.0,
+        "availabilityAdjustment": -0.0
+      },
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 7,
+      "evidence": { "appearance": "fplAvailability" }
     },
     {
       "id": 411,
