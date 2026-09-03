@@ -111,6 +111,7 @@ test("every function named in vercel.json is reachable", async ({
   const probes: Record<string, string> = {
     "api/health.ts": "/api/health",
     "api/fpl/*.ts": "/api/fpl/bootstrap-static",
+    "api/fpl/event/**/*.ts": "/api/fpl/event/2/live/",
     "api/team/*.ts": "/api/team/1",
     "api/analysis-request.ts": "/api/analysis-request",
     "api/contact.ts": "/api/contact",
