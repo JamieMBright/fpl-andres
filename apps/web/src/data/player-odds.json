@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "season": "2026-27",
-  "fetchedAt": "2026-09-03T13:52:48.097725+00:00",
+  "fetchedAt": "2026-09-03T16:13:19.096558+00:00",
   "source": "the-odds-api",
   "markets": [
     "player_goal_scorer_anytime",
@@ -17,13 +17,13 @@
   "quota": {
     "opening": {
       "cost": 0,
-      "used": 237,
-      "remaining": 263
+      "used": 244,
+      "remaining": 256
     },
     "closing": {
       "cost": 7,
-      "used": 244,
-      "remaining": 256
+      "used": 251,
+      "remaining": 249
     },
     "spentThisRun": 7
   },
@@ -41,8 +41,8 @@
       "home_short": "IPS",
       "away_short": "LIV",
       "status": "returned",
-      "books": 4,
-      "outcomes": 439,
+      "books": 3,
+      "outcomes": 396,
       "offered_markets": [
         "player_assists",
         "player_first_goal_scorer",
@@ -58,7 +58,7 @@
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-09-04T19:00:00+00:00",
-      "visited_at": "2026-09-03T13:52:48.097725+00:00"
+      "visited_at": "2026-09-03T16:13:19.096558+00:00"
     },
     {
       "event_id": "686358c484cc44fe8e617674c335d531",
@@ -337,7 +337,7 @@
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-09-12T14:00:00+00:00",
-      "visited_at": "2026-09-03T13:52:48.097725+00:00"
+      "visited_at": "2026-09-03T16:13:19.096558+00:00"
     },
     {
       "event_id": "d856d4353db0b4cca2a49b96dfd19c92",
@@ -364,7 +364,7 @@
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-09-12T14:00:00+00:00",
-      "visited_at": "2026-09-03T13:52:48.097725+00:00"
+      "visited_at": "2026-09-03T16:13:19.096558+00:00"
     },
     {
       "event_id": "5163190733dcaaea80474e43cbe20a51",
@@ -391,7 +391,7 @@
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-09-12T14:00:00+00:00",
-      "visited_at": "2026-09-03T13:52:48.097725+00:00"
+      "visited_at": "2026-09-03T16:13:19.096558+00:00"
     },
     {
       "event_id": "14f6639178a943ac614c7b872bf6e4d6",
@@ -418,7 +418,7 @@
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-09-12T14:00:00+00:00",
-      "visited_at": "2026-09-03T13:52:48.097725+00:00"
+      "visited_at": "2026-09-03T16:13:19.096558+00:00"
     },
     {
       "event_id": "63da4075a4ae406575fd3086b839fe49",
@@ -445,7 +445,7 @@
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-09-12T14:00:00+00:00",
-      "visited_at": "2026-09-03T13:52:48.097725+00:00"
+      "visited_at": "2026-09-03T16:13:19.096558+00:00"
     },
     {
       "event_id": "cbbc88759fe3e2f1677a0c6ee40955af",
@@ -472,7 +472,7 @@
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-09-12T16:30:00+00:00",
-      "visited_at": "2026-09-03T13:52:48.097725+00:00"
+      "visited_at": "2026-09-03T16:13:19.096558+00:00"
     },
     {
       "event_id": "082f74fe6a8bc5826555b76e9e114dab",
@@ -499,7 +499,7 @@
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-09-12T19:00:00+00:00",
-      "visited_at": "2026-09-03T13:52:48.097725+00:00"
+      "visited_at": "2026-09-03T16:13:19.096558+00:00"
     },
     {
       "event_id": "c97a93b915115f2b4659fb88262b71f8",
@@ -526,7 +526,7 @@
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-09-13T13:00:00+00:00",
-      "visited_at": "2026-09-03T13:52:48.097725+00:00"
+      "visited_at": "2026-09-03T16:13:19.096558+00:00"
     },
     {
       "event_id": "e40d0fb44319f7bd0ebe1ffbc61fa661",
@@ -553,7 +553,7 @@
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-09-13T15:30:00+00:00",
-      "visited_at": "2026-09-03T13:52:48.097725+00:00"
+      "visited_at": "2026-09-03T16:13:19.096558+00:00"
     },
     {
       "event_id": "b7a2cad26d908a943a27340b4b607068",
@@ -580,7 +580,7 @@
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-09-14T19:00:00+00:00",
-      "visited_at": "2026-09-03T13:52:48.097725+00:00"
+      "visited_at": "2026-09-03T16:13:19.096558+00:00"
     }
   ],
   "unmatched": [
@@ -6412,17 +6412,17 @@
       "home_team": "Ipswich Town",
       "away_team": "Liverpool",
       "club": "IPS",
-      "anytime_goal": 0.117647,
+      "anytime_goal": 0.095861,
       "first_goal": 0.058824,
       "last_goal": 0.058824,
       "anytime_assist": 0.1,
-      "any_card": 0.184246,
+      "any_card": 0.172414,
       "red_card": 0.012346,
       "shots": null,
       "shots_on_target": 0.446412,
       "books": 2,
       "kickoff": "2026-09-04T19:00:00+00:00",
-      "observed_at": "2026-09-03T13:52:48.097725+00:00"
+      "observed_at": "2026-09-03T16:13:19.096558+00:00"
     },
     {
       "element_id": 315,
@@ -6430,17 +6430,17 @@
       "home_team": "Ipswich Town",
       "away_team": "Liverpool",
       "club": "IPS",
-      "anytime_goal": 0.195076,
-      "first_goal": 0.071429,
+      "anytime_goal": 0.183333,
+      "first_goal": 0.085714,
       "last_goal": 0.1,
       "anytime_assist": 0.172414,
-      "any_card": 0.233333,
+      "any_card": 0.266667,
       "red_card": 0.02439,
       "shots": null,
       "shots_on_target": 0.987172,
-      "books": 4,
+      "books": 3,
       "kickoff": "2026-09-04T19:00:00+00:00",
-      "observed_at": "2026-09-03T13:52:48.097725+00:00"
+      "observed_at": "2026-09-03T16:13:19.096558+00:00"
     },
     {
       "element_id": 301,
@@ -6458,7 +6458,7 @@
       "shots_on_target": null,
       "books": 1,
       "kickoff": "2026-09-04T19:00:00+00:00",
-      "observed_at": "2026-09-03T13:52:48.097725+00:00"
+      "observed_at": "2026-09-03T16:13:19.096558+00:00"
     },
     {
       "element_id": 379,
@@ -6466,17 +6466,17 @@
       "home_team": "Ipswich Town",
       "away_team": "Liverpool",
       "club": "LIV",
-      "anytime_goal": 0.5,
-      "first_goal": 0.21055,
+      "anytime_goal": 0.471175,
+      "first_goal": 0.212766,
       "last_goal": 0.208333,
       "anytime_assist": 0.227273,
-      "any_card": 0.131661,
+      "any_card": 0.172414,
       "red_card": 0.014925,
       "shots": null,
       "shots_on_target": 1.483853,
-      "books": 4,
+      "books": 3,
       "kickoff": "2026-09-04T19:00:00+00:00",
-      "observed_at": "2026-09-03T13:52:48.097725+00:00"
+      "observed_at": "2026-09-03T16:13:19.096558+00:00"
     },
     {
       "element_id": 372,
@@ -6484,17 +6484,17 @@
       "home_team": "Ipswich Town",
       "away_team": "Liverpool",
       "club": "LIV",
-      "anytime_goal": 0.208333,
+      "anytime_goal": 0.191886,
       "first_goal": 0.090909,
       "last_goal": 0.090909,
       "anytime_assist": 0.227273,
-      "any_card": 0.253442,
+      "any_card": 0.294118,
       "red_card": 0.029412,
       "shots": null,
       "shots_on_target": 0.877624,
       "books": 2,
       "kickoff": "2026-09-04T19:00:00+00:00",
-      "observed_at": "2026-09-03T13:52:48.097725+00:00"
+      "observed_at": "2026-09-03T16:13:19.096558+00:00"
     },
     {
       "element_id": 350,
@@ -6512,7 +6512,7 @@
       "shots_on_target": null,
       "books": 1,
       "kickoff": "2026-09-04T19:00:00+00:00",
-      "observed_at": "2026-09-03T13:52:48.097725+00:00"
+      "observed_at": "2026-09-03T16:13:19.096558+00:00"
     },
     {
       "element_id": 310,
@@ -6520,17 +6520,17 @@
       "home_team": "Ipswich Town",
       "away_team": "Liverpool",
       "club": "IPS",
-      "anytime_goal": 0.076923,
+      "anytime_goal": 0.063462,
       "first_goal": 0.034483,
       "last_goal": 0.034483,
       "anytime_assist": 0.090909,
-      "any_card": 0.244484,
+      "any_card": 0.25641,
       "red_card": 0.02439,
       "shots": null,
       "shots_on_target": 0.289666,
       "books": 2,
       "kickoff": "2026-09-04T19:00:00+00:00",
-      "observed_at": "2026-09-03T13:52:48.097725+00:00"
+      "observed_at": "2026-09-03T16:13:19.096558+00:00"
     },
     {
       "element_id": 303,
@@ -6538,17 +6538,17 @@
       "home_team": "Ipswich Town",
       "away_team": "Liverpool",
       "club": "IPS",
-      "anytime_goal": 0.090909,
+      "anytime_goal": 0.075758,
       "first_goal": 0.038462,
       "last_goal": 0.038462,
       "anytime_assist": 0.083333,
-      "any_card": 0.275298,
+      "any_card": 0.3125,
       "red_card": 0.029412,
       "shots": null,
       "shots_on_target": 0.289666,
       "books": 2,
       "kickoff": "2026-09-04T19:00:00+00:00",
-      "observed_at": "2026-09-03T13:52:48.097725+00:00"
+      "observed_at": "2026-09-03T16:13:19.096558+00:00"
     },
     {
       "element_id": 300,
@@ -6566,7 +6566,7 @@
       "shots_on_target": null,
       "books": 1,
       "kickoff": "2026-09-04T19:00:00+00:00",
-      "observed_at": "2026-09-03T13:52:48.097725+00:00"
+      "observed_at": "2026-09-03T16:13:19.096558+00:00"
     },
     {
       "element_id": 320,
@@ -6574,17 +6574,17 @@
       "home_team": "Ipswich Town",
       "away_team": "Liverpool",
       "club": "IPS",
-      "anytime_goal": 0.25,
+      "anytime_goal": 0.231383,
       "first_goal": 0.105263,
       "last_goal": 0.105263,
       "anytime_assist": 0.1,
-      "any_card": 0.153774,
+      "any_card": 0.172414,
       "red_card": 0.014925,
       "shots": null,
       "shots_on_target": 1.076521,
       "books": 2,
       "kickoff": "2026-09-04T19:00:00+00:00",
-      "observed_at": "2026-09-03T13:52:48.097725+00:00"
+      "observed_at": "2026-09-03T16:13:19.096558+00:00"
     },
     {
       "element_id": 367,
@@ -6592,17 +6592,17 @@
       "home_team": "Ipswich Town",
       "away_team": "Liverpool",
       "club": "LIV",
-      "anytime_goal": 0.355429,
-      "first_goal": 0.142857,
+      "anytime_goal": 0.344844,
+      "first_goal": 0.154762,
       "last_goal": 0.166667,
       "anytime_assist": 0.230947,
-      "any_card": 0.159091,
+      "any_card": 0.166667,
       "red_card": 0.012346,
       "shots": null,
       "shots_on_target": 1.376736,
-      "books": 4,
+      "books": 3,
       "kickoff": "2026-09-04T19:00:00+00:00",
-      "observed_at": "2026-09-03T13:52:48.097725+00:00"
+      "observed_at": "2026-09-03T16:13:19.096558+00:00"
     },
     {
       "element_id": 562,
@@ -6610,17 +6610,17 @@
       "home_team": "Ipswich Town",
       "away_team": "Liverpool",
       "club": "IPS",
-      "anytime_goal": 0.238889,
-      "first_goal": 0.076923,
+      "anytime_goal": 0.229475,
+      "first_goal": 0.100962,
       "last_goal": 0.125,
       "anytime_assist": 0.166667,
-      "any_card": 0.187063,
+      "any_card": 0.181818,
       "red_card": 0.014925,
       "shots": null,
       "shots_on_target": 1.076521,
-      "books": 4,
+      "books": 3,
       "kickoff": "2026-09-04T19:00:00+00:00",
-      "observed_at": "2026-09-03T13:52:48.097725+00:00"
+      "observed_at": "2026-09-03T16:13:19.096558+00:00"
     },
     {
       "element_id": 304,
@@ -6628,17 +6628,17 @@
       "home_team": "Ipswich Town",
       "away_team": "Liverpool",
       "club": "IPS",
-      "anytime_goal": 0.062745,
-      "first_goal": 0.02439,
+      "anytime_goal": 0.058333,
+      "first_goal": 0.026084,
       "last_goal": 0.027778,
       "anytime_assist": 0.058824,
-      "any_card": 0.178125,
+      "any_card": 0.2,
       "red_card": 0.014925,
       "shots": null,
       "shots_on_target": 0.284431,
-      "books": 4,
+      "books": 3,
       "kickoff": "2026-09-04T19:00:00+00:00",
-      "observed_at": "2026-09-03T13:52:48.097725+00:00"
+      "observed_at": "2026-09-03T16:13:19.096558+00:00"
     },
     {
       "element_id": 308,
@@ -6646,17 +6646,17 @@
       "home_team": "Ipswich Town",
       "away_team": "Liverpool",
       "club": "IPS",
-      "anytime_goal": 0.066667,
+      "anytime_goal": 0.058333,
       "first_goal": 0.027778,
       "last_goal": 0.027778,
       "anytime_assist": 0.117647,
-      "any_card": 0.280392,
+      "any_card": 0.294118,
       "red_card": 0.029412,
       "shots": null,
       "shots_on_target": 0.406774,
       "books": 2,
       "kickoff": "2026-09-04T19:00:00+00:00",
-      "observed_at": "2026-09-03T13:52:48.097725+00:00"
+      "observed_at": "2026-09-03T16:13:19.096558+00:00"
     },
     {
       "element_id": 368,
@@ -6664,17 +6664,17 @@
       "home_team": "Ipswich Town",
       "away_team": "Liverpool",
       "club": "LIV",
-      "anytime_goal": 0.261538,
-      "first_goal": 0.105263,
+      "anytime_goal": 0.259784,
+      "first_goal": 0.108187,
       "last_goal": 0.111111,
       "anytime_assist": 0.25641,
-      "any_card": 0.198506,
+      "any_card": 0.208333,
       "red_card": 0.019608,
       "shots": null,
       "shots_on_target": 1.076521,
-      "books": 4,
+      "books": 3,
       "kickoff": "2026-09-04T19:00:00+00:00",
-      "observed_at": "2026-09-03T13:52:48.097725+00:00"
+      "observed_at": "2026-09-03T16:13:19.096558+00:00"
     },
     {
       "element_id": 316,
@@ -6682,17 +6682,17 @@
       "home_team": "Ipswich Town",
       "away_team": "Liverpool",
       "club": "IPS",
-      "anytime_goal": 0.254362,
-      "first_goal": 0.083333,
+      "anytime_goal": 0.243831,
+      "first_goal": 0.112121,
       "last_goal": 0.133333,
       "anytime_assist": 0.133333,
-      "any_card": 0.247253,
+      "any_card": 0.25641,
       "red_card": 0.02439,
       "shots": null,
       "shots_on_target": 1.09666,
-      "books": 4,
+      "books": 3,
       "kickoff": "2026-09-04T19:00:00+00:00",
-      "observed_at": "2026-09-03T13:52:48.097725+00:00"
+      "observed_at": "2026-09-03T16:13:19.096558+00:00"
     },
     {
       "element_id": 370,
@@ -6700,17 +6700,17 @@
       "home_team": "Ipswich Town",
       "away_team": "Liverpool",
       "club": "LIV",
-      "anytime_goal": 0.322581,
+      "anytime_goal": 0.330209,
       "first_goal": 0.142857,
       "last_goal": 0.142857,
       "anytime_assist": 0.25641,
-      "any_card": 0.20885,
+      "any_card": 0.25641,
       "red_card": 0.02439,
       "shots": null,
       "shots_on_target": 1.283835,
       "books": 2,
       "kickoff": "2026-09-04T19:00:00+00:00",
-      "observed_at": "2026-09-03T13:52:48.097725+00:00"
+      "observed_at": "2026-09-03T16:13:19.096558+00:00"
     },
     {
       "element_id": 366,
@@ -6718,17 +6718,17 @@
       "home_team": "Ipswich Town",
       "away_team": "Liverpool",
       "club": "LIV",
-      "anytime_goal": 0.294372,
-      "first_goal": 0.111111,
+      "anytime_goal": 0.281385,
+      "first_goal": 0.119298,
       "last_goal": 0.133333,
       "anytime_assist": 0.263158,
-      "any_card": 0.171053,
+      "any_card": 0.210526,
       "red_card": 0.019608,
       "shots": null,
       "shots_on_target": 1.09666,
-      "books": 4,
+      "books": 3,
       "kickoff": "2026-09-04T19:00:00+00:00",
-      "observed_at": "2026-09-03T13:52:48.097725+00:00"
+      "observed_at": "2026-09-03T16:13:19.096558+00:00"
     },
     {
       "element_id": 352,
@@ -6746,7 +6746,7 @@
       "shots_on_target": null,
       "books": 1,
       "kickoff": "2026-09-04T19:00:00+00:00",
-      "observed_at": "2026-09-03T13:52:48.097725+00:00"
+      "observed_at": "2026-09-03T16:13:19.096558+00:00"
     },
     {
       "element_id": 351,
@@ -6764,7 +6764,7 @@
       "shots_on_target": null,
       "books": 1,
       "kickoff": "2026-09-04T19:00:00+00:00",
-      "observed_at": "2026-09-03T13:52:48.097725+00:00"
+      "observed_at": "2026-09-03T16:13:19.096558+00:00"
     },
     {
       "element_id": 259,
@@ -6772,17 +6772,17 @@
       "home_team": "Ipswich Town",
       "away_team": "Liverpool",
       "club": "IPS",
-      "anytime_goal": 0.055728,
-      "first_goal": 0.019608,
+      "anytime_goal": 0.051316,
+      "first_goal": 0.019798,
       "last_goal": 0.021739,
       "anytime_assist": 0.047619,
-      "any_card": 0.239316,
+      "any_card": 0.25641,
       "red_card": 0.02439,
       "shots": null,
       "shots_on_target": 0.284431,
-      "books": 4,
+      "books": 3,
       "kickoff": "2026-09-04T19:00:00+00:00",
-      "observed_at": "2026-09-03T13:52:48.097725+00:00"
+      "observed_at": "2026-09-03T16:13:19.096558+00:00"
     },
     {
       "element_id": 313,
@@ -6790,17 +6790,17 @@
       "home_team": "Ipswich Town",
       "away_team": "Liverpool",
       "club": "IPS",
-      "anytime_goal": 0.266667,
+      "anytime_goal": 0.239716,
       "first_goal": 0.117647,
       "last_goal": 0.117647,
       "anytime_assist": 0.166667,
-      "any_card": 0.237962,
+      "any_card": 0.263158,
       "red_card": 0.02439,
       "shots": null,
       "shots_on_target": 1.076521,
       "books": 2,
       "kickoff": "2026-09-04T19:00:00+00:00",
-      "observed_at": "2026-09-03T13:52:48.097725+00:00"
+      "observed_at": "2026-09-03T16:13:19.096558+00:00"
     },
     {
       "element_id": 306,
@@ -6808,17 +6808,17 @@
       "home_team": "Ipswich Town",
       "away_team": "Liverpool",
       "club": "IPS",
-      "anytime_goal": 0.076923,
-      "first_goal": 0.029412,
+      "anytime_goal": 0.066239,
+      "first_goal": 0.028595,
       "last_goal": 0.029412,
       "anytime_assist": 0.076923,
-      "any_card": 0.223039,
+      "any_card": 0.25,
       "red_card": 0.02439,
       "shots": null,
       "shots_on_target": 0.299722,
-      "books": 4,
+      "books": 3,
       "kickoff": "2026-09-04T19:00:00+00:00",
-      "observed_at": "2026-09-03T13:52:48.097725+00:00"
+      "observed_at": "2026-09-03T16:13:19.096558+00:00"
     },
     {
       "element_id": 378,
@@ -6826,17 +6826,17 @@
       "home_team": "Ipswich Town",
       "away_team": "Liverpool",
       "club": "LIV",
-      "anytime_goal": 0.172414,
+      "anytime_goal": 0.153774,
       "first_goal": 0.083333,
       "last_goal": 0.083333,
       "anytime_assist": null,
-      "any_card": 0.247312,
+      "any_card": 0.333333,
       "red_card": 0.034483,
       "shots": null,
       "shots_on_target": null,
       "books": 2,
       "kickoff": "2026-09-04T19:00:00+00:00",
-      "observed_at": "2026-09-03T13:52:48.097725+00:00"
+      "observed_at": "2026-09-03T16:13:19.096558+00:00"
     },
     {
       "element_id": 357,
@@ -6844,17 +6844,17 @@
       "home_team": "Ipswich Town",
       "away_team": "Liverpool",
       "club": "LIV",
-      "anytime_goal": 0.118056,
-      "first_goal": 0.047619,
+      "anytime_goal": 0.110119,
+      "first_goal": 0.053221,
       "last_goal": 0.058824,
       "anytime_assist": 0.227273,
-      "any_card": 0.212862,
+      "any_card": 0.208333,
       "red_card": 0.019608,
       "shots": null,
       "shots_on_target": 0.877624,
-      "books": 4,
+      "books": 3,
       "kickoff": "2026-09-04T19:00:00+00:00",
-      "observed_at": "2026-09-03T13:52:48.097725+00:00"
+      "observed_at": "2026-09-03T16:13:19.096558+00:00"
     },
     {
       "element_id": 362,
@@ -6862,17 +6862,17 @@
       "home_team": "Ipswich Town",
       "away_team": "Liverpool",
       "club": "LIV",
-      "anytime_goal": 0.108187,
-      "first_goal": 0.047619,
+      "anytime_goal": 0.100251,
+      "first_goal": 0.045549,
       "last_goal": 0.047619,
       "anytime_assist": 0.105263,
-      "any_card": 0.219114,
+      "any_card": 0.25641,
       "red_card": 0.02439,
       "shots": null,
       "shots_on_target": 0.485696,
-      "books": 4,
+      "books": 3,
       "kickoff": "2026-09-04T19:00:00+00:00",
-      "observed_at": "2026-09-03T13:52:48.097725+00:00"
+      "observed_at": "2026-09-03T16:13:19.096558+00:00"
     },
     {
       "element_id": 323,
@@ -6880,7 +6880,7 @@
       "home_team": "Ipswich Town",
       "away_team": "Liverpool",
       "club": "IPS",
-      "anytime_goal": 0.153846,
+      "anytime_goal": 0.133741,
       "first_goal": 0.076923,
       "last_goal": 0.076923,
       "anytime_assist": 0.125,
@@ -6890,7 +6890,7 @@
       "shots_on_target": 0.864396,
       "books": 2,
       "kickoff": "2026-09-04T19:00:00+00:00",
-      "observed_at": "2026-09-03T13:52:48.097725+00:00"
+      "observed_at": "2026-09-03T16:13:19.096558+00:00"
     },
     {
       "element_id": 564,
@@ -6908,7 +6908,7 @@
       "shots_on_target": null,
       "books": 1,
       "kickoff": "2026-09-04T19:00:00+00:00",
-      "observed_at": "2026-09-03T13:52:48.097725+00:00"
+      "observed_at": "2026-09-03T16:13:19.096558+00:00"
     },
     {
       "element_id": 364,
@@ -6916,17 +6916,17 @@
       "home_team": "Ipswich Town",
       "away_team": "Liverpool",
       "club": "LIV",
-      "anytime_goal": 0.090909,
-      "first_goal": 0.038462,
-      "last_goal": 0.038462,
+      "anytime_goal": 0.093074,
+      "first_goal": 0.043478,
+      "last_goal": 0.043478,
       "anytime_assist": 0.208333,
-      "any_card": 0.215924,
+      "any_card": 0.25641,
       "red_card": 0.02439,
       "shots": null,
       "shots_on_target": 0.514737,
       "books": 2,
       "kickoff": "2026-09-04T19:00:00+00:00",
-      "observed_at": "2026-09-03T13:52:48.097725+00:00"
+      "observed_at": "2026-09-03T16:13:19.096558+00:00"
     },
     {
       "element_id": 305,
@@ -6934,17 +6934,17 @@
       "home_team": "Ipswich Town",
       "away_team": "Liverpool",
       "club": "IPS",
-      "anytime_goal": 0.064777,
-      "first_goal": 0.019608,
-      "last_goal": 0.034483,
+      "anytime_goal": 0.063462,
+      "first_goal": 0.022086,
+      "last_goal": 0.027778,
       "anytime_assist": 0.133333,
-      "any_card": 0.178125,
+      "any_card": 0.2,
       "red_card": 0.014925,
       "shots": null,
       "shots_on_target": 0.284431,
-      "books": 4,
+      "books": 3,
       "kickoff": "2026-09-04T19:00:00+00:00",
-      "observed_at": "2026-09-03T13:52:48.097725+00:00"
+      "observed_at": "2026-09-03T16:13:19.096558+00:00"
     },
     {
       "element_id": 381,
@@ -6952,17 +6952,17 @@
       "home_team": "Ipswich Town",
       "away_team": "Liverpool",
       "club": "LIV",
-      "anytime_goal": 0.344828,
+      "anytime_goal": 0.328664,
       "first_goal": 0.142857,
       "last_goal": 0.142857,
       "anytime_assist": 0.227273,
-      "any_card": 0.150452,
+      "any_card": 0.153846,
       "red_card": 0.012346,
       "shots": null,
       "shots_on_target": 1.376736,
       "books": 2,
       "kickoff": "2026-09-04T19:00:00+00:00",
-      "observed_at": "2026-09-03T13:52:48.097725+00:00"
+      "observed_at": "2026-09-03T16:13:19.096558+00:00"
     },
     {
       "element_id": 309,
@@ -6970,17 +6970,17 @@
       "home_team": "Ipswich Town",
       "away_team": "Liverpool",
       "club": "IPS",
-      "anytime_goal": 0.114379,
-      "first_goal": 0.047619,
+      "anytime_goal": 0.108824,
+      "first_goal": 0.053221,
       "last_goal": 0.058824,
       "anytime_assist": 0.117647,
-      "any_card": 0.233229,
+      "any_card": 0.277778,
       "red_card": 0.02439,
       "shots": null,
       "shots_on_target": 0.951756,
-      "books": 4,
+      "books": 3,
       "kickoff": "2026-09-04T19:00:00+00:00",
-      "observed_at": "2026-09-03T13:52:48.097725+00:00"
+      "observed_at": "2026-09-03T16:13:19.096558+00:00"
     },
     {
       "element_id": 358,
@@ -6988,17 +6988,17 @@
       "home_team": "Ipswich Town",
       "away_team": "Liverpool",
       "club": "LIV",
-      "anytime_goal": 0.10101,
-      "first_goal": 0.038462,
+      "anytime_goal": 0.09127,
+      "first_goal": 0.045547,
       "last_goal": 0.052632,
       "anytime_assist": 0.166667,
-      "any_card": 0.245215,
+      "any_card": 0.263158,
       "red_card": 0.02439,
       "shots": null,
       "shots_on_target": 0.461614,
-      "books": 4,
+      "books": 3,
       "kickoff": "2026-09-04T19:00:00+00:00",
-      "observed_at": "2026-09-03T13:52:48.097725+00:00"
+      "observed_at": "2026-09-03T16:13:19.096558+00:00"
     },
     {
       "element_id": 369,
@@ -7006,17 +7006,17 @@
       "home_team": "Ipswich Town",
       "away_team": "Liverpool",
       "club": "LIV",
-      "anytime_goal": 0.307692,
-      "first_goal": 0.117647,
+      "anytime_goal": 0.295139,
+      "first_goal": 0.122222,
       "last_goal": 0.133333,
       "anytime_assist": 0.227273,
-      "any_card": 0.150452,
+      "any_card": 0.153846,
       "red_card": 0.012346,
       "shots": null,
       "shots_on_target": 1.326722,
-      "books": 4,
+      "books": 3,
       "kickoff": "2026-09-04T19:00:00+00:00",
-      "observed_at": "2026-09-03T13:52:48.097725+00:00"
+      "observed_at": "2026-09-03T16:13:19.096558+00:00"
     },
     {
       "element_id": 579,
@@ -7024,17 +7024,17 @@
       "home_team": "Ipswich Town",
       "away_team": "Liverpool",
       "club": "LIV",
-      "anytime_goal": 0.153846,
+      "anytime_goal": 0.126923,
       "first_goal": 0.076923,
       "last_goal": 0.076923,
       "anytime_assist": 0.105263,
-      "any_card": 0.272894,
+      "any_card": 0.307692,
       "red_card": 0.029412,
       "shots": null,
       "shots_on_target": 0.449768,
       "books": 2,
       "kickoff": "2026-09-04T19:00:00+00:00",
-      "observed_at": "2026-09-03T13:52:48.097725+00:00"
+      "observed_at": "2026-09-03T16:13:19.096558+00:00"
     },
     {
       "element_id": 371,
@@ -7042,17 +7042,17 @@
       "home_team": "Ipswich Town",
       "away_team": "Liverpool",
       "club": "LIV",
-      "anytime_goal": 0.167832,
-      "first_goal": 0.066667,
+      "anytime_goal": 0.158477,
+      "first_goal": 0.075,
       "last_goal": 0.083333,
       "anytime_assist": 0.172414,
-      "any_card": 0.188912,
+      "any_card": 0.208333,
       "red_card": 0.019608,
       "shots": null,
       "shots_on_target": 0.826935,
-      "books": 4,
+      "books": 3,
       "kickoff": "2026-09-04T19:00:00+00:00",
-      "observed_at": "2026-09-03T13:52:48.097725+00:00"
+      "observed_at": "2026-09-03T16:13:19.096558+00:00"
     },
     {
       "element_id": 267,
@@ -7060,17 +7060,17 @@
       "home_team": "Ipswich Town",
       "away_team": "Liverpool",
       "club": "IPS",
-      "anytime_goal": 0.088462,
-      "first_goal": 0.034483,
+      "anytime_goal": 0.078462,
+      "first_goal": 0.036472,
       "last_goal": 0.034483,
       "anytime_assist": 0.117647,
-      "any_card": 0.370748,
+      "any_card": 0.408163,
       "red_card": 0.038462,
       "shots": null,
       "shots_on_target": 0.393615,
-      "books": 4,
+      "books": 3,
       "kickoff": "2026-09-04T19:00:00+00:00",
-      "observed_at": "2026-09-03T13:52:48.097725+00:00"
+      "observed_at": "2026-09-03T16:13:19.096558+00:00"
     },
     {
       "element_id": 321,
@@ -7078,17 +7078,17 @@
       "home_team": "Ipswich Town",
       "away_team": "Liverpool",
       "club": "IPS",
-      "anytime_goal": 0.2,
+      "anytime_goal": 0.167568,
       "first_goal": 0.090909,
       "last_goal": 0.090909,
       "anytime_assist": 0.153846,
-      "any_card": 0.208333,
+      "any_card": 0.238095,
       "red_card": 0.02439,
       "shots": null,
       "shots_on_target": 1.005716,
       "books": 2,
       "kickoff": "2026-09-04T19:00:00+00:00",
-      "observed_at": "2026-09-03T13:52:48.097725+00:00"
+      "observed_at": "2026-09-03T16:13:19.096558+00:00"
     },
     {
       "element_id": 375,
@@ -7096,17 +7096,17 @@
       "home_team": "Ipswich Town",
       "away_team": "Liverpool",
       "club": "LIV",
-      "anytime_goal": 0.222222,
+      "anytime_goal": 0.207265,
       "first_goal": 0.1,
       "last_goal": 0.1,
       "anytime_assist": 0.153846,
-      "any_card": 0.187166,
+      "any_card": 0.227273,
       "red_card": 0.019608,
       "shots": null,
       "shots_on_target": 0.877624,
       "books": 2,
       "kickoff": "2026-09-04T19:00:00+00:00",
-      "observed_at": "2026-09-03T13:52:48.097725+00:00"
+      "observed_at": "2026-09-03T16:13:19.096558+00:00"
     },
     {
       "element_id": 377,
@@ -7114,17 +7114,17 @@
       "home_team": "Ipswich Town",
       "away_team": "Liverpool",
       "club": "LIV",
-      "anytime_goal": 0.327957,
-      "first_goal": 0.133333,
+      "anytime_goal": 0.315136,
+      "first_goal": 0.138095,
       "last_goal": 0.142857,
       "anytime_assist": 0.227273,
-      "any_card": 0.167568,
+      "any_card": 0.2,
       "red_card": 0.014925,
       "shots": null,
       "shots_on_target": 1.326722,
-      "books": 4,
+      "books": 3,
       "kickoff": "2026-09-04T19:00:00+00:00",
-      "observed_at": "2026-09-03T13:52:48.097725+00:00"
+      "observed_at": "2026-09-03T16:13:19.096558+00:00"
     },
     {
       "element_id": 356,
@@ -7132,17 +7132,17 @@
       "home_team": "Ipswich Town",
       "away_team": "Liverpool",
       "club": "LIV",
-      "anytime_goal": 0.160256,
-      "first_goal": 0.066667,
+      "anytime_goal": 0.166667,
+      "first_goal": 0.075,
       "last_goal": 0.083333,
       "anytime_assist": 0.125,
-      "any_card": 0.157635,
+      "any_card": 0.172414,
       "red_card": 0.014925,
       "shots": null,
       "shots_on_target": 0.566953,
-      "books": 4,
+      "books": 2,
       "kickoff": "2026-09-04T19:00:00+00:00",
-      "observed_at": "2026-09-03T13:52:48.097725+00:00"
+      "observed_at": "2026-09-03T16:13:19.096558+00:00"
     },
     {
       "element_id": 374,
@@ -7150,17 +7150,17 @@
       "home_team": "Ipswich Town",
       "away_team": "Liverpool",
       "club": "LIV",
-      "anytime_goal": 0.083333,
+      "anytime_goal": 0.098485,
       "first_goal": 0.038462,
       "last_goal": 0.038462,
       "anytime_assist": 0.117647,
-      "any_card": 0.211207,
+      "any_card": 0.172414,
       "red_card": 0.014925,
       "shots": null,
       "shots_on_target": 0.485696,
       "books": 2,
       "kickoff": "2026-09-04T19:00:00+00:00",
-      "observed_at": "2026-09-03T13:52:48.097725+00:00"
+      "observed_at": "2026-09-03T16:13:19.096558+00:00"
     }
   ]
 }
