@@ -289,72 +289,72 @@ Components in `apps/web/src/components`. The column
 that matters is the last one: what a browser journey already proves about each,
 so a review knows what it does not have to check by hand.
 
-| Component                 | Responsibility                                                                                             | Asserted by                          |
-| ------------------------- | ---------------------------------------------------------------------------------------------------------- | ------------------------------------ |
-| `ApplicationFrame`        | Shell, skip link, kit toggle, offline banner                                                               | `smoke`                              |
-| `RouteHeading`            | The single `h1`, focused on navigation                                                                     | `smoke`, unit                        |
-| `LazyRoute`               | Suspense fallback that still carries an `h1`                                                               | `smoke` (axe `page-has-heading-one`) |
-| `ErrorBoundary`           | Last resort, keeps the shell rendering                                                                     | unit                                 |
-| `OfflineBanner`           | Says the connection dropped, not that data broke                                                           | unit                                 |
-| `MobilePlanCta`           | Phone action back to the Team ID form                                                                      | unit, `smoke`                        |
-| `AnalyticsConsentControl` | Explicit optional analytics setting                                                                        | unit                                 |
-| `AnalyticsRouteTracker`   | Sanitised, consented route page views                                                                      | unit                                 |
-| `InfoMarker`              | Technical detail on hover, hold or focus                                                                   | unit                                 |
-| `StatusStrip`             | Corpus freshness and pool size                                                                             | —                                    |
-| `AnalysisResult`          | Dispatches on the seven analysis states                                                                    | unit                                 |
-| `SnapshotDossier`         | Season state, manager record, provenance and corrections                                                   | —                                    |
-| `PitchView`               | Formation, chips, captaincy                                                                                | unit, unit render cost               |
-| `CeefaxShirt`             | Club kit as a teletext block graphic                                                                       | unit (palette)                       |
-| `PlayerAvatar`            | Lazy headshot, silhouette when there is none                                                               | —                                    |
-| `PlayerDetail`            | One player in full, with what each number means                                                            | —                                    |
-| `MethodFlow`              | The pipeline step by step, each step auditable                                                             | unit (static)                        |
-| `MethodChart`             | A method step's own numbers, drawn as bars                                                                 | unit (static)                        |
-| `PeerDistribution`        | One figure against players of the same price                                                               | unit (`peer-distribution`)           |
-| `PlanStep`                | One step of the plan, folded away until wanted                                                             | `smoke`                              |
-| `PeerChart`               | That peer group plotted, without leaving the card                                                          | unit (`peer-distribution`)           |
-| `SeasonFixtures`          | The run to the end of the season, spells marked                                                            | unit (`SeasonFixtures.test.ts`)      |
-| `FixtureBreakdown`        | Every fixture ahead, and last season's totals                                                              | unit (via `PinnedPlayers`)           |
-| `Countdown`               | Deadline clock in the masthead, warming as it nears                                                        | unit                                 |
-| `RangeSlider`             | One track, two thumbs, for a band                                                                          | —                                    |
-| `HighlightPicker`         | Typeahead for names and clubs, chosen as chips                                                             | —                                    |
-| `DeclaredTransferForm`    | A local planning override with a short diagnostic copy                                                     | unit (`declared-transfers.test.ts`)  |
-| `Scorecard`               | What was advised against what was actually done                                                            | unit (`scorecard.test.ts`)           |
-| `DeclaredSquadBuilder`    | Your pre-season fifteen, rule-checked and locked                                                           | unit (`declared-squad.test.ts`)      |
-| `DeclaredSquadNote`       | Which fifteen the plan started from, and a way back                                                        | unit (`declared-squad.test.ts`)      |
-| `ManagerHistory`          | Past seasons, including the empty case                                                                     | unit                                 |
-| `TeamStateCorrections`    | Manager overrides, parsing and conflict                                                                    | unit (`parse.test.ts`)               |
-| `TransferPlanPanel`       | What the plan will contain, and the deadline                                                               | unit (`format.test.ts`)              |
-| `OpeningSquad`            | The published opening fifteen                                                                              | —                                    |
-| `PlayerPoolTable`         | Sortable, filterable pool with advanced-stat/transfer/price columns, show/hide/reorder, CSV export         | unit (stale, render cost, columns)   |
-| `PlayerScatter`           | Configurable two-axis scatter, drawn by hand                                                               | unit render cost, unit overlays      |
-| `ScatterControls`         | Axis, filter and reference-line pickers                                                                    | unit                                 |
-| `ScatterLegend`           | What shape, colour and disc size each mean                                                                 | —                                    |
-| `ScatterReadout`          | The scatter as a ranked, pinnable table                                                                    | unit                                 |
-| `PinnedPlayers`           | Up to four players compared side by side                                                                   | unit                                 |
-| `ValidationReport`        | Backtest metrics against baselines                                                                         | unit (`ValidationReport.test.tsx`)   |
-| `XStartCalibration`       | Cumulative XI hits by club, selected-GW bars, concise evidence markers, club filter, settled-event history | unit (`XStartCalibration.test.tsx`)  |
-| `SeasonReplay`            | A completed season stepped through week by week                                                            | unit (`SeasonReplay.test.tsx`)       |
-| `CalibrationCharts`       | Ranked bars and season lines, drawn by hand                                                                | unit                                 |
-| `CohortPanel`             | The swept cohort and its coverage                                                                          | —                                    |
-| `Fpl500Playbook`          | The ranked five hundred, and the fund they are not                                                         | unit (`Fpl500Playbook.test.tsx`)     |
-| `Fpl500Holdings`          | Exact player ownership and returns, grouped by position                                                    | unit (via `Fpl500Playbook`)          |
-| `Fpl500Teaser`            | Homepage summary of the latest exact cohort                                                                | unit (`Fpl500Teaser.test.tsx`)       |
-| `Fpl500Structure`         | Legal popularity squad, kits and positional spend                                                          | unit (`Fpl500Structure.test.tsx`)    |
-| `Fpl500ChipAdoption`      | Cumulative chip spend across the cohort, per half                                                          | unit (via `Fpl500Playbook`)          |
-| `Fpl500TransferFlow`      | Net buying/selling sentiment, sliders for window/minimum                                                   | unit (via `Fpl500Playbook`)          |
-| `Fpl500SeasonStanding`    | All five hundred's live season, sortable by rank/points                                                    | unit (via `Fpl500Playbook`)          |
-| `RankRidge`               | Five seasons of finishes over one shared axis                                                              | unit (via `Fpl500Playbook`)          |
-| `PlannedAnalysis`         | The frames a gameweek will fill, drawn empty                                                               | unit (via `Fpl500Playbook`)          |
-| `TopPicks`                | The best five-gameweek player in each position                                                             | unit (`TopPicks.test.tsx`)           |
-| `RankMedal`               | Gold, silver and bronze rank marks                                                                         | unit (`TopPicks.test.tsx`)           |
-| `LiveSquad`               | The fifteen and what each of them actually did                                                             | unit (`LiveSquad.test.tsx`)          |
-| `Gw1ReviewPitch`          | Frozen xPts against the settled opening gameweek                                                           | unit (`Gw1ReviewPitch.test.tsx`)     |
-| `ScoreMarks`              | A gameweek drawn as balls, shields, medals, a star                                                         | unit (`ScoreMarks.test.tsx`)         |
-| `DeclaredChipsForm`       | Chips already spent, and one committed ahead                                                               | unit (`declared-chips.test.ts`)      |
-| `RankObjectiveForm`       | Which race is being run, asked before advising                                                             | unit (`rank-objective.test.ts`)      |
-| `MiniLeagueThreats`       | What your league holds that you do not                                                                     | unit (`mini-league.test.ts`)         |
-| `Methodology`             | How the projection is built                                                                                | —                                    |
-| `BielsaBucket`            | The mark                                                                                                   | —                                    |
+| Component                 | Responsibility                                                                                         | Asserted by                          |
+| ------------------------- | ------------------------------------------------------------------------------------------------------ | ------------------------------------ |
+| `ApplicationFrame`        | Shell, skip link, kit toggle, offline banner                                                           | `smoke`                              |
+| `RouteHeading`            | The single `h1`, focused on navigation                                                                 | `smoke`, unit                        |
+| `LazyRoute`               | Suspense fallback that still carries an `h1`                                                           | `smoke` (axe `page-has-heading-one`) |
+| `ErrorBoundary`           | Last resort, keeps the shell rendering                                                                 | unit                                 |
+| `OfflineBanner`           | Says the connection dropped, not that data broke                                                       | unit                                 |
+| `MobilePlanCta`           | Phone action back to the Team ID form                                                                  | unit, `smoke`                        |
+| `AnalyticsConsentControl` | Explicit optional analytics setting                                                                    | unit                                 |
+| `AnalyticsRouteTracker`   | Sanitised, consented route page views                                                                  | unit                                 |
+| `InfoMarker`              | Technical detail on hover, hold or focus                                                               | unit                                 |
+| `StatusStrip`             | Corpus freshness and pool size                                                                         | —                                    |
+| `AnalysisResult`          | Dispatches on the seven analysis states                                                                | unit                                 |
+| `SnapshotDossier`         | Season state, manager record, provenance and corrections                                               | —                                    |
+| `PitchView`               | Formation, chips, captaincy                                                                            | unit, unit render cost               |
+| `CeefaxShirt`             | Club kit as a teletext block graphic                                                                   | unit (palette)                       |
+| `PlayerAvatar`            | Lazy headshot, silhouette when there is none                                                           | —                                    |
+| `PlayerDetail`            | One player in full, with what each number means                                                        | —                                    |
+| `MethodFlow`              | The pipeline step by step, each step auditable                                                         | unit (static)                        |
+| `MethodChart`             | A method step's own numbers, drawn as bars                                                             | unit (static)                        |
+| `PeerDistribution`        | One figure against players of the same price                                                           | unit (`peer-distribution`)           |
+| `PlanStep`                | One step of the plan, folded away until wanted                                                         | `smoke`                              |
+| `PeerChart`               | That peer group plotted, without leaving the card                                                      | unit (`peer-distribution`)           |
+| `SeasonFixtures`          | The run to the end of the season, spells marked                                                        | unit (`SeasonFixtures.test.ts`)      |
+| `FixtureBreakdown`        | Every fixture ahead, and last season's totals                                                          | unit (via `PinnedPlayers`)           |
+| `Countdown`               | Deadline clock in the masthead, warming as it nears                                                    | unit                                 |
+| `RangeSlider`             | One track, two thumbs, for a band                                                                      | —                                    |
+| `HighlightPicker`         | Typeahead for names and clubs, chosen as chips                                                         | —                                    |
+| `DeclaredTransferForm`    | A local planning override with a short diagnostic copy                                                 | unit (`declared-transfers.test.ts`)  |
+| `Scorecard`               | What was advised against what was actually done                                                        | unit (`scorecard.test.ts`)           |
+| `DeclaredSquadBuilder`    | Your pre-season fifteen, rule-checked and locked                                                       | unit (`declared-squad.test.ts`)      |
+| `DeclaredSquadNote`       | Which fifteen the plan started from, and a way back                                                    | unit (`declared-squad.test.ts`)      |
+| `ManagerHistory`          | Past seasons, including the empty case                                                                 | unit                                 |
+| `TeamStateCorrections`    | Manager overrides, parsing and conflict                                                                | unit (`parse.test.ts`)               |
+| `TransferPlanPanel`       | What the plan will contain, and the deadline                                                           | unit (`format.test.ts`)              |
+| `OpeningSquad`            | The published opening fifteen                                                                          | —                                    |
+| `PlayerPoolTable`         | Sortable, filterable pool with advanced-stat/transfer/price columns, show/hide/reorder, CSV export     | unit (stale, render cost, columns)   |
+| `PlayerScatter`           | Configurable two-axis scatter, drawn by hand                                                           | unit render cost, unit overlays      |
+| `ScatterControls`         | Axis, filter and reference-line pickers                                                                | unit                                 |
+| `ScatterLegend`           | What shape, colour and disc size each mean                                                             | —                                    |
+| `ScatterReadout`          | The scatter as a ranked, pinnable table                                                                | unit                                 |
+| `PinnedPlayers`           | Up to four players compared side by side                                                               | unit                                 |
+| `ValidationReport`        | Backtest metrics against baselines                                                                     | unit (`ValidationReport.test.tsx`)   |
+| `XStartCalibration`       | Hoverable cumulative XI lines, period-selectable club bars, evidence markers, filters, settled history | unit (`XStartCalibration.test.tsx`)  |
+| `SeasonReplay`            | A completed season stepped through week by week                                                        | unit (`SeasonReplay.test.tsx`)       |
+| `CalibrationCharts`       | Ranked bars and season lines, drawn by hand                                                            | unit                                 |
+| `CohortPanel`             | The swept cohort and its coverage                                                                      | —                                    |
+| `Fpl500Playbook`          | The ranked five hundred, and the fund they are not                                                     | unit (`Fpl500Playbook.test.tsx`)     |
+| `Fpl500Holdings`          | Exact player ownership and returns, grouped by position                                                | unit (via `Fpl500Playbook`)          |
+| `Fpl500Teaser`            | Homepage summary of the latest exact cohort                                                            | unit (`Fpl500Teaser.test.tsx`)       |
+| `Fpl500Structure`         | Legal popularity squad, kits and positional spend                                                      | unit (`Fpl500Structure.test.tsx`)    |
+| `Fpl500ChipAdoption`      | Cumulative chip spend across the cohort, per half                                                      | unit (via `Fpl500Playbook`)          |
+| `Fpl500TransferFlow`      | Net buying/selling sentiment, sliders for window/minimum                                               | unit (via `Fpl500Playbook`)          |
+| `Fpl500SeasonStanding`    | All five hundred's live season, sortable by rank/points                                                | unit (via `Fpl500Playbook`)          |
+| `RankRidge`               | Five seasons of finishes over one shared axis                                                          | unit (via `Fpl500Playbook`)          |
+| `PlannedAnalysis`         | The frames a gameweek will fill, drawn empty                                                           | unit (via `Fpl500Playbook`)          |
+| `TopPicks`                | The best five-gameweek player in each position                                                         | unit (`TopPicks.test.tsx`)           |
+| `RankMedal`               | Gold, silver and bronze rank marks                                                                     | unit (`TopPicks.test.tsx`)           |
+| `LiveSquad`               | The fifteen and what each of them actually did                                                         | unit (`LiveSquad.test.tsx`)          |
+| `Gw1ReviewPitch`          | Frozen xPts against the settled opening gameweek                                                       | unit (`Gw1ReviewPitch.test.tsx`)     |
+| `ScoreMarks`              | A gameweek drawn as balls, shields, medals, a star                                                     | unit (`ScoreMarks.test.tsx`)         |
+| `DeclaredChipsForm`       | Chips already spent, and one committed ahead                                                           | unit (`declared-chips.test.ts`)      |
+| `RankObjectiveForm`       | Which race is being run, asked before advising                                                         | unit (`rank-objective.test.ts`)      |
+| `MiniLeagueThreats`       | What your league holds that you do not                                                                 | unit (`mini-league.test.ts`)         |
+| `Methodology`             | How the projection is built                                                                            | —                                    |
+| `BielsaBucket`            | The mark                                                                                               | —                                    |
 
 ## Accessibility checklist
 

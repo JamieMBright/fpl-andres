@@ -7016,8 +7016,7 @@ button.fpl500-holding-name {
   font-size: 12px;
 }
 
-.xstart-score-bars,
-.xstart-rank-bars {
+.xstart-score-bars {
   display: grid;
   gap: 3px;
   margin: 14px 0;
@@ -7033,38 +7032,27 @@ button.fpl500-holding-name {
   padding: 4px 0;
 }
 
-.xstart-score-bar-label,
-.xstart-rank-label {
+.xstart-score-bar-label {
   font-family: var(--fa-mono);
   font-size: 12px;
 }
 
-.xstart-score-bar-track,
-.xstart-rank-track {
+.xstart-score-bar-track {
   position: relative;
   height: 14px;
   background: color-mix(in srgb, var(--rule) 60%, transparent);
 }
 
-.xstart-score-bar-fill,
-.xstart-rank-fill {
+.xstart-score-bar-fill {
   position: absolute;
   inset-block: 0;
   inset-inline-start: 0;
   border-inline-end: 2px solid;
 }
 
-.xstart-score-bar-value,
-.xstart-rank-value {
+.xstart-score-bar-value {
   font-size: 12px;
   text-align: right;
-}
-
-.xstart-rank-bars li {
-  display: grid;
-  grid-template-columns: 44px minmax(0, 1fr) 32px 32px;
-  align-items: center;
-  gap: 8px;
 }
 
 .xstart-cumulative-chart {
@@ -7101,6 +7089,53 @@ button.fpl500-holding-name {
 .xstart-cumulative-line {
   stroke-width: 3;
   vector-effect: non-scaling-stroke;
+  transition:
+    opacity 120ms ease,
+    stroke-width 120ms ease;
+}
+
+.xstart-cumulative-chart[data-hovering="true"] .xstart-cumulative-line {
+  opacity: 0.2;
+}
+
+.xstart-cumulative-chart .xstart-cumulative-line.is-active {
+  stroke-width: 5;
+  opacity: 1;
+}
+
+.xstart-cumulative-hit-area {
+  stroke: transparent;
+  stroke-width: 16;
+  pointer-events: stroke;
+  cursor: crosshair;
+  vector-effect: non-scaling-stroke;
+}
+
+.xstart-line-hover-marker {
+  pointer-events: none;
+}
+
+.xstart-line-hover-marker line {
+  stroke: var(--ink-soft);
+  stroke-dasharray: 3 3;
+}
+
+.xstart-line-hover-marker circle {
+  fill: var(--paper-deep);
+  stroke: var(--ink);
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+}
+
+.xstart-line-tooltip {
+  width: fit-content;
+  margin: 8px 0 0;
+  border-left: 3px solid var(--accent);
+  padding: 4px 8px;
+  color: var(--ink);
+  background: var(--paper-deep);
+  font-family: var(--fa-mono);
+  font-size: 12px;
 }
 
 .xstart-gw-choice {
@@ -7109,6 +7144,12 @@ button.fpl500-holding-name {
   gap: 8px;
   margin: 8px 0 14px;
   font-weight: 700;
+}
+
+.xstart-performance-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 18px;
 }
 
 .xstart-gw-choice select {
