@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "season": "2026-27",
-  "fetchedAt": "2026-09-03T05:03:23.560648+00:00",
+  "fetchedAt": "2026-09-03T06:58:38.919427+00:00",
   "source": "the-odds-api",
   "markets": [
     "player_goal_scorer_anytime",
@@ -17,20 +17,20 @@
   "quota": {
     "opening": {
       "cost": 0,
-      "used": 188,
-      "remaining": 312
+      "used": 191,
+      "remaining": 309
     },
     "closing": {
       "cost": 3,
-      "used": 191,
-      "remaining": 309
+      "used": 194,
+      "remaining": 306
     },
     "spentThisRun": 3
   },
   "coverage": {
     "fixturesListed": 20,
     "fixturesVisitedThisRun": 1,
-    "fixturesWithQuotes": 8
+    "fixturesWithQuotes": 9
   },
   "nameMappingGaps": [],
   "fixtures": [
@@ -256,7 +256,7 @@
       "unmatched_names": ["Modou Cisse"],
       "error": null,
       "kickoff": "2026-09-05T16:30:00+00:00",
-      "visited_at": "2026-09-03T05:03:23.560648+00:00"
+      "visited_at": "2026-09-03T03:18:22.592403+00:00"
     },
     {
       "event_id": "8ea6c863f1852654399073b518b0a1f8",
@@ -264,26 +264,27 @@
       "away_team": "Manchester United",
       "home_short": "EVE",
       "away_short": "MUN",
-      "status": "no-bookmaker",
-      "books": 0,
-      "outcomes": 0,
-      "offered_markets": [],
-      "missing_markets": [
-        "player_assists",
+      "status": "returned",
+      "books": 3,
+      "outcomes": 224,
+      "offered_markets": [
         "player_first_goal_scorer",
         "player_goal_scorer_anytime",
-        "player_last_goal_scorer",
+        "player_last_goal_scorer"
+      ],
+      "missing_markets": [
+        "player_assists",
         "player_shots",
         "player_shots_on_target",
         "player_to_receive_card",
         "player_to_receive_red_card"
       ],
-      "player_rows_parsed": 0,
-      "player_rows_matched": 0,
-      "unmatched_names": [],
+      "player_rows_parsed": 37,
+      "player_rows_matched": 36,
+      "unmatched_names": ["Harvey Foster"],
       "error": null,
       "kickoff": "2026-09-06T13:00:00+00:00",
-      "visited_at": "2026-09-02T00:57:55.963458+00:00"
+      "visited_at": "2026-09-03T06:58:38.919427+00:00"
     },
     {
       "event_id": "78d4dfda8c2dc27bdc3ec26c2654f8fc",
@@ -584,6 +585,7 @@
     }
   ],
   "unmatched": [
+    "Harvey Foster",
     "Matthew O'Riley",
     "Miodrag Pivas",
     "Modou Cisse",
@@ -5124,7 +5126,7 @@
       "shots_on_target": null,
       "books": 3,
       "kickoff": "2026-09-05T16:30:00+00:00",
-      "observed_at": "2026-09-03T05:03:23.560648+00:00"
+      "observed_at": "2026-09-03T03:18:22.592403+00:00"
     },
     {
       "element_id": 52,
@@ -5142,7 +5144,7 @@
       "shots_on_target": null,
       "books": 3,
       "kickoff": "2026-09-05T16:30:00+00:00",
-      "observed_at": "2026-09-03T05:03:23.560648+00:00"
+      "observed_at": "2026-09-03T03:18:22.592403+00:00"
     },
     {
       "element_id": 47,
@@ -5160,7 +5162,7 @@
       "shots_on_target": null,
       "books": 3,
       "kickoff": "2026-09-05T16:30:00+00:00",
-      "observed_at": "2026-09-03T05:03:23.560648+00:00"
+      "observed_at": "2026-09-03T03:18:22.592403+00:00"
     },
     {
       "element_id": 296,
@@ -5178,7 +5180,7 @@
       "shots_on_target": null,
       "books": 3,
       "kickoff": "2026-09-05T16:30:00+00:00",
-      "observed_at": "2026-09-03T05:03:23.560648+00:00"
+      "observed_at": "2026-09-03T03:18:22.592403+00:00"
     },
     {
       "element_id": 576,
@@ -5196,7 +5198,7 @@
       "shots_on_target": null,
       "books": 3,
       "kickoff": "2026-09-05T16:30:00+00:00",
-      "observed_at": "2026-09-03T05:03:23.560648+00:00"
+      "observed_at": "2026-09-03T03:18:22.592403+00:00"
     },
     {
       "element_id": 41,
@@ -5214,7 +5216,7 @@
       "shots_on_target": null,
       "books": 3,
       "kickoff": "2026-09-05T16:30:00+00:00",
-      "observed_at": "2026-09-03T05:03:23.560648+00:00"
+      "observed_at": "2026-09-03T03:18:22.592403+00:00"
     },
     {
       "element_id": 51,
@@ -5232,7 +5234,7 @@
       "shots_on_target": null,
       "books": 3,
       "kickoff": "2026-09-05T16:30:00+00:00",
-      "observed_at": "2026-09-03T05:03:23.560648+00:00"
+      "observed_at": "2026-09-03T03:18:22.592403+00:00"
     },
     {
       "element_id": 36,
@@ -5250,7 +5252,7 @@
       "shots_on_target": null,
       "books": 3,
       "kickoff": "2026-09-05T16:30:00+00:00",
-      "observed_at": "2026-09-03T05:03:23.560648+00:00"
+      "observed_at": "2026-09-03T03:18:22.592403+00:00"
     },
     {
       "element_id": 574,
@@ -5268,7 +5270,7 @@
       "shots_on_target": null,
       "books": 1,
       "kickoff": "2026-09-05T16:30:00+00:00",
-      "observed_at": "2026-09-03T05:03:23.560648+00:00"
+      "observed_at": "2026-09-03T03:18:22.592403+00:00"
     },
     {
       "element_id": 340,
@@ -5286,7 +5288,7 @@
       "shots_on_target": null,
       "books": 3,
       "kickoff": "2026-09-05T16:30:00+00:00",
-      "observed_at": "2026-09-03T05:03:23.560648+00:00"
+      "observed_at": "2026-09-03T03:18:22.592403+00:00"
     },
     {
       "element_id": 277,
@@ -5295,8 +5297,8 @@
       "away_team": "Aston Villa",
       "club": "HUL",
       "anytime_goal": 0.058824,
-      "first_goal": 0.033934,
-      "last_goal": 0.043478,
+      "first_goal": 0.031426,
+      "last_goal": 0.038462,
       "anytime_assist": null,
       "any_card": null,
       "red_card": null,
@@ -5304,7 +5306,7 @@
       "shots_on_target": null,
       "books": 3,
       "kickoff": "2026-09-05T16:30:00+00:00",
-      "observed_at": "2026-09-03T05:03:23.560648+00:00"
+      "observed_at": "2026-09-03T03:18:22.592403+00:00"
     },
     {
       "element_id": 45,
@@ -5322,7 +5324,7 @@
       "shots_on_target": null,
       "books": 3,
       "kickoff": "2026-09-05T16:30:00+00:00",
-      "observed_at": "2026-09-03T05:03:23.560648+00:00"
+      "observed_at": "2026-09-03T03:18:22.592403+00:00"
     },
     {
       "element_id": 288,
@@ -5340,7 +5342,7 @@
       "shots_on_target": null,
       "books": 3,
       "kickoff": "2026-09-05T16:30:00+00:00",
-      "observed_at": "2026-09-03T05:03:23.560648+00:00"
+      "observed_at": "2026-09-03T03:18:22.592403+00:00"
     },
     {
       "element_id": 35,
@@ -5358,7 +5360,7 @@
       "shots_on_target": null,
       "books": 3,
       "kickoff": "2026-09-05T16:30:00+00:00",
-      "observed_at": "2026-09-03T05:03:23.560648+00:00"
+      "observed_at": "2026-09-03T03:18:22.592403+00:00"
     },
     {
       "element_id": 280,
@@ -5376,7 +5378,7 @@
       "shots_on_target": null,
       "books": 3,
       "kickoff": "2026-09-05T16:30:00+00:00",
-      "observed_at": "2026-09-03T05:03:23.560648+00:00"
+      "observed_at": "2026-09-03T03:18:22.592403+00:00"
     },
     {
       "element_id": 585,
@@ -5394,7 +5396,7 @@
       "shots_on_target": null,
       "books": 3,
       "kickoff": "2026-09-05T16:30:00+00:00",
-      "observed_at": "2026-09-03T05:03:23.560648+00:00"
+      "observed_at": "2026-09-03T03:18:22.592403+00:00"
     },
     {
       "element_id": 607,
@@ -5412,7 +5414,7 @@
       "shots_on_target": null,
       "books": 1,
       "kickoff": "2026-09-05T16:30:00+00:00",
-      "observed_at": "2026-09-03T05:03:23.560648+00:00"
+      "observed_at": "2026-09-03T03:18:22.592403+00:00"
     },
     {
       "element_id": 289,
@@ -5430,7 +5432,7 @@
       "shots_on_target": null,
       "books": 3,
       "kickoff": "2026-09-05T16:30:00+00:00",
-      "observed_at": "2026-09-03T05:03:23.560648+00:00"
+      "observed_at": "2026-09-03T03:18:22.592403+00:00"
     },
     {
       "element_id": 596,
@@ -5448,7 +5450,7 @@
       "shots_on_target": null,
       "books": 3,
       "kickoff": "2026-09-05T16:30:00+00:00",
-      "observed_at": "2026-09-03T05:03:23.560648+00:00"
+      "observed_at": "2026-09-03T03:18:22.592403+00:00"
     },
     {
       "element_id": 32,
@@ -5466,7 +5468,7 @@
       "shots_on_target": null,
       "books": 3,
       "kickoff": "2026-09-05T16:30:00+00:00",
-      "observed_at": "2026-09-03T05:03:23.560648+00:00"
+      "observed_at": "2026-09-03T03:18:22.592403+00:00"
     },
     {
       "element_id": 283,
@@ -5484,7 +5486,7 @@
       "shots_on_target": null,
       "books": 1,
       "kickoff": "2026-09-05T16:30:00+00:00",
-      "observed_at": "2026-09-03T05:03:23.560648+00:00"
+      "observed_at": "2026-09-03T03:18:22.592403+00:00"
     },
     {
       "element_id": null,
@@ -5502,7 +5504,7 @@
       "shots_on_target": null,
       "books": 3,
       "kickoff": "2026-09-05T16:30:00+00:00",
-      "observed_at": "2026-09-03T05:03:23.560648+00:00"
+      "observed_at": "2026-09-03T03:18:22.592403+00:00"
     },
     {
       "element_id": 286,
@@ -5520,7 +5522,7 @@
       "shots_on_target": null,
       "books": 3,
       "kickoff": "2026-09-05T16:30:00+00:00",
-      "observed_at": "2026-09-03T05:03:23.560648+00:00"
+      "observed_at": "2026-09-03T03:18:22.592403+00:00"
     },
     {
       "element_id": 586,
@@ -5538,7 +5540,7 @@
       "shots_on_target": null,
       "books": 3,
       "kickoff": "2026-09-05T16:30:00+00:00",
-      "observed_at": "2026-09-03T05:03:23.560648+00:00"
+      "observed_at": "2026-09-03T03:18:22.592403+00:00"
     },
     {
       "element_id": 295,
@@ -5556,7 +5558,7 @@
       "shots_on_target": null,
       "books": 3,
       "kickoff": "2026-09-05T16:30:00+00:00",
-      "observed_at": "2026-09-03T05:03:23.560648+00:00"
+      "observed_at": "2026-09-03T03:18:22.592403+00:00"
     },
     {
       "element_id": 34,
@@ -5574,7 +5576,7 @@
       "shots_on_target": null,
       "books": 3,
       "kickoff": "2026-09-05T16:30:00+00:00",
-      "observed_at": "2026-09-03T05:03:23.560648+00:00"
+      "observed_at": "2026-09-03T03:18:22.592403+00:00"
     },
     {
       "element_id": 290,
@@ -5592,7 +5594,7 @@
       "shots_on_target": null,
       "books": 3,
       "kickoff": "2026-09-05T16:30:00+00:00",
-      "observed_at": "2026-09-03T05:03:23.560648+00:00"
+      "observed_at": "2026-09-03T03:18:22.592403+00:00"
     },
     {
       "element_id": 46,
@@ -5601,8 +5603,8 @@
       "away_team": "Aston Villa",
       "club": "AVL",
       "anytime_goal": 0.222222,
-      "first_goal": 0.112121,
-      "last_goal": 0.133333,
+      "first_goal": 0.116883,
+      "last_goal": 0.142857,
       "anytime_assist": null,
       "any_card": null,
       "red_card": null,
@@ -5610,7 +5612,7 @@
       "shots_on_target": null,
       "books": 3,
       "kickoff": "2026-09-05T16:30:00+00:00",
-      "observed_at": "2026-09-03T05:03:23.560648+00:00"
+      "observed_at": "2026-09-03T03:18:22.592403+00:00"
     },
     {
       "element_id": 282,
@@ -5628,7 +5630,7 @@
       "shots_on_target": null,
       "books": 3,
       "kickoff": "2026-09-05T16:30:00+00:00",
-      "observed_at": "2026-09-03T05:03:23.560648+00:00"
+      "observed_at": "2026-09-03T03:18:22.592403+00:00"
     },
     {
       "element_id": 279,
@@ -5646,7 +5648,7 @@
       "shots_on_target": null,
       "books": 3,
       "kickoff": "2026-09-05T16:30:00+00:00",
-      "observed_at": "2026-09-03T05:03:23.560648+00:00"
+      "observed_at": "2026-09-03T03:18:22.592403+00:00"
     },
     {
       "element_id": 56,
@@ -5664,7 +5666,7 @@
       "shots_on_target": null,
       "books": 3,
       "kickoff": "2026-09-05T16:30:00+00:00",
-      "observed_at": "2026-09-03T05:03:23.560648+00:00"
+      "observed_at": "2026-09-03T03:18:22.592403+00:00"
     },
     {
       "element_id": 33,
@@ -5673,8 +5675,8 @@
       "away_team": "Aston Villa",
       "club": "AVL",
       "anytime_goal": 0.090909,
-      "first_goal": 0.04304,
-      "last_goal": 0.047619,
+      "first_goal": 0.045547,
+      "last_goal": 0.052632,
       "anytime_assist": null,
       "any_card": null,
       "red_card": null,
@@ -5682,7 +5684,7 @@
       "shots_on_target": null,
       "books": 3,
       "kickoff": "2026-09-05T16:30:00+00:00",
-      "observed_at": "2026-09-03T05:03:23.560648+00:00"
+      "observed_at": "2026-09-03T03:18:22.592403+00:00"
     },
     {
       "element_id": 37,
@@ -5700,7 +5702,673 @@
       "shots_on_target": null,
       "books": 3,
       "kickoff": "2026-09-05T16:30:00+00:00",
-      "observed_at": "2026-09-03T05:03:23.560648+00:00"
+      "observed_at": "2026-09-03T03:18:22.592403+00:00"
+    },
+    {
+      "element_id": 431,
+      "quoted_name": "Amad Diallo",
+      "home_team": "Everton",
+      "away_team": "Manchester United",
+      "club": "MUN",
+      "anytime_goal": 0.238095,
+      "first_goal": 0.108824,
+      "last_goal": 0.117647,
+      "anytime_assist": null,
+      "any_card": null,
+      "red_card": null,
+      "shots": null,
+      "shots_on_target": null,
+      "books": 3,
+      "kickoff": "2026-09-06T13:00:00+00:00",
+      "observed_at": "2026-09-03T06:58:38.919427+00:00"
+    },
+    {
+      "element_id": 162,
+      "quoted_name": "Andrey Santos",
+      "home_team": "Everton",
+      "away_team": "Manchester United",
+      "club": "MUN",
+      "anytime_goal": 0.153846,
+      "first_goal": 0.058824,
+      "last_goal": 0.058824,
+      "anytime_assist": null,
+      "any_card": null,
+      "red_card": null,
+      "shots": null,
+      "shots_on_target": null,
+      "books": 3,
+      "kickoff": "2026-09-06T13:00:00+00:00",
+      "observed_at": "2026-09-03T06:58:38.919427+00:00"
+    },
+    {
+      "element_id": 421,
+      "quoted_name": "Ayden Heaven",
+      "home_team": "Everton",
+      "away_team": "Manchester United",
+      "club": "MUN",
+      "anytime_goal": 0.083333,
+      "first_goal": 0.034483,
+      "last_goal": 0.034483,
+      "anytime_assist": null,
+      "any_card": null,
+      "red_card": null,
+      "shots": null,
+      "shots_on_target": null,
+      "books": 3,
+      "kickoff": "2026-09-06T13:00:00+00:00",
+      "observed_at": "2026-09-03T06:58:38.919427+00:00"
+    },
+    {
+      "element_id": 439,
+      "quoted_name": "Benjamin Sesko",
+      "home_team": "Everton",
+      "away_team": "Manchester United",
+      "club": "MUN",
+      "anytime_goal": 0.381679,
+      "first_goal": 0.16954,
+      "last_goal": 0.172414,
+      "anytime_assist": null,
+      "any_card": null,
+      "red_card": null,
+      "shots": null,
+      "shots_on_target": null,
+      "books": 3,
+      "kickoff": "2026-09-06T13:00:00+00:00",
+      "observed_at": "2026-09-03T06:58:38.919427+00:00"
+    },
+    {
+      "element_id": 209,
+      "quoted_name": "Brennan Johnson",
+      "home_team": "Everton",
+      "away_team": "Manchester United",
+      "club": "EVE",
+      "anytime_goal": 0.222222,
+      "first_goal": 0.10049,
+      "last_goal": 0.117647,
+      "anytime_assist": null,
+      "any_card": null,
+      "red_card": null,
+      "shots": null,
+      "shots_on_target": null,
+      "books": 3,
+      "kickoff": "2026-09-06T13:00:00+00:00",
+      "observed_at": "2026-09-03T06:58:38.919427+00:00"
+    },
+    {
+      "element_id": 426,
+      "quoted_name": "Bruno Fernandes",
+      "home_team": "Everton",
+      "away_team": "Manchester United",
+      "club": "MUN",
+      "anytime_goal": 0.25,
+      "first_goal": 0.121429,
+      "last_goal": 0.142857,
+      "anytime_assist": null,
+      "any_card": null,
+      "red_card": null,
+      "shots": null,
+      "shots_on_target": null,
+      "books": 3,
+      "kickoff": "2026-09-06T13:00:00+00:00",
+      "observed_at": "2026-09-03T06:58:38.919427+00:00"
+    },
+    {
+      "element_id": 427,
+      "quoted_name": "Bryan Mbeumo",
+      "home_team": "Everton",
+      "away_team": "Manchester United",
+      "club": "MUN",
+      "anytime_goal": 0.307692,
+      "first_goal": 0.139423,
+      "last_goal": 0.153846,
+      "anytime_assist": null,
+      "any_card": null,
+      "red_card": null,
+      "shots": null,
+      "shots_on_target": null,
+      "books": 3,
+      "kickoff": "2026-09-06T13:00:00+00:00",
+      "observed_at": "2026-09-03T06:58:38.919427+00:00"
+    },
+    {
+      "element_id": 243,
+      "quoted_name": "Carlos Alcaraz",
+      "home_team": "Everton",
+      "away_team": "Manchester United",
+      "club": "EVE",
+      "anytime_goal": 0.172414,
+      "first_goal": 0.075,
+      "last_goal": 0.083333,
+      "anytime_assist": null,
+      "any_card": null,
+      "red_card": null,
+      "shots": null,
+      "shots_on_target": null,
+      "books": 3,
+      "kickoff": "2026-09-06T13:00:00+00:00",
+      "observed_at": "2026-09-03T06:58:38.919427+00:00"
+    },
+    {
+      "element_id": 417,
+      "quoted_name": "Diogo Dalot",
+      "home_team": "Everton",
+      "away_team": "Manchester United",
+      "club": "MUN",
+      "anytime_goal": 0.090909,
+      "first_goal": 0.036472,
+      "last_goal": 0.034483,
+      "anytime_assist": null,
+      "any_card": null,
+      "red_card": null,
+      "shots": null,
+      "shots_on_target": null,
+      "books": 3,
+      "kickoff": "2026-09-06T13:00:00+00:00",
+      "observed_at": "2026-09-03T06:58:38.919427+00:00"
+    },
+    {
+      "element_id": 244,
+      "quoted_name": "Harrison Armstrong",
+      "home_team": "Everton",
+      "away_team": "Manchester United",
+      "club": "EVE",
+      "anytime_goal": 0.111111,
+      "first_goal": 0.055072,
+      "last_goal": 0.066667,
+      "anytime_assist": null,
+      "any_card": null,
+      "red_card": null,
+      "shots": null,
+      "shots_on_target": null,
+      "books": 3,
+      "kickoff": "2026-09-06T13:00:00+00:00",
+      "observed_at": "2026-09-03T06:58:38.919427+00:00"
+    },
+    {
+      "element_id": 418,
+      "quoted_name": "Harry Maguire",
+      "home_team": "Everton",
+      "away_team": "Manchester United",
+      "club": "MUN",
+      "anytime_goal": 0.090909,
+      "first_goal": 0.046653,
+      "last_goal": 0.058824,
+      "anytime_assist": null,
+      "any_card": null,
+      "red_card": null,
+      "shots": null,
+      "shots_on_target": null,
+      "books": 3,
+      "kickoff": "2026-09-06T13:00:00+00:00",
+      "observed_at": "2026-09-03T06:58:38.919427+00:00"
+    },
+    {
+      "element_id": null,
+      "quoted_name": "Harvey Foster",
+      "home_team": "Everton",
+      "away_team": "Manchester United",
+      "club": null,
+      "anytime_goal": 0.1,
+      "first_goal": 0.045547,
+      "last_goal": 0.052632,
+      "anytime_assist": null,
+      "any_card": null,
+      "red_card": null,
+      "shots": null,
+      "shots_on_target": null,
+      "books": 3,
+      "kickoff": "2026-09-06T13:00:00+00:00",
+      "observed_at": "2026-09-03T06:58:38.919427+00:00"
+    },
+    {
+      "element_id": 247,
+      "quoted_name": "Hayden Hackney",
+      "home_team": "Everton",
+      "away_team": "Manchester United",
+      "club": "EVE",
+      "anytime_goal": 0.090909,
+      "first_goal": 0.043557,
+      "last_goal": 0.052632,
+      "anytime_assist": null,
+      "any_card": null,
+      "red_card": null,
+      "shots": null,
+      "shots_on_target": null,
+      "books": 3,
+      "kickoff": "2026-09-06T13:00:00+00:00",
+      "observed_at": "2026-09-03T06:58:38.919427+00:00"
+    },
+    {
+      "element_id": 238,
+      "quoted_name": "Jack Grealish",
+      "home_team": "Everton",
+      "away_team": "Manchester United",
+      "club": "EVE",
+      "anytime_goal": 0.166667,
+      "first_goal": 0.083333,
+      "last_goal": 0.1,
+      "anytime_assist": null,
+      "any_card": null,
+      "red_card": null,
+      "shots": null,
+      "shots_on_target": null,
+      "books": 3,
+      "kickoff": "2026-09-06T13:00:00+00:00",
+      "observed_at": "2026-09-03T06:58:38.919427+00:00"
+    },
+    {
+      "element_id": 232,
+      "quoted_name": "Jake O'Brien",
+      "home_team": "Everton",
+      "away_team": "Manchester United",
+      "club": "EVE",
+      "anytime_goal": 0.090909,
+      "first_goal": 0.041051,
+      "last_goal": 0.047619,
+      "anytime_assist": null,
+      "any_card": null,
+      "red_card": null,
+      "shots": null,
+      "shots_on_target": null,
+      "books": 3,
+      "kickoff": "2026-09-06T13:00:00+00:00",
+      "observed_at": "2026-09-03T06:58:38.919427+00:00"
+    },
+    {
+      "element_id": 239,
+      "quoted_name": "James Garner",
+      "home_team": "Everton",
+      "away_team": "Manchester United",
+      "club": "EVE",
+      "anytime_goal": 0.125,
+      "first_goal": 0.059649,
+      "last_goal": 0.066667,
+      "anytime_assist": null,
+      "any_card": null,
+      "red_card": null,
+      "shots": null,
+      "shots_on_target": null,
+      "books": 3,
+      "kickoff": "2026-09-06T13:00:00+00:00",
+      "observed_at": "2026-09-03T06:58:38.919427+00:00"
+    },
+    {
+      "element_id": 229,
+      "quoted_name": "James Tarkowski",
+      "home_team": "Everton",
+      "away_team": "Manchester United",
+      "club": "EVE",
+      "anytime_goal": 0.071429,
+      "first_goal": 0.036445,
+      "last_goal": 0.043478,
+      "anytime_assist": null,
+      "any_card": null,
+      "red_card": null,
+      "shots": null,
+      "shots_on_target": null,
+      "books": 3,
+      "kickoff": "2026-09-06T13:00:00+00:00",
+      "observed_at": "2026-09-03T06:58:38.919427+00:00"
+    },
+    {
+      "element_id": 230,
+      "quoted_name": "Jarrad Branthwaite",
+      "home_team": "Everton",
+      "away_team": "Manchester United",
+      "club": "EVE",
+      "anytime_goal": 0.066667,
+      "first_goal": 0.033934,
+      "last_goal": 0.043478,
+      "anytime_assist": null,
+      "any_card": null,
+      "red_card": null,
+      "shots": null,
+      "shots_on_target": null,
+      "books": 3,
+      "kickoff": "2026-09-06T13:00:00+00:00",
+      "observed_at": "2026-09-03T06:58:38.919427+00:00"
+    },
+    {
+      "element_id": 440,
+      "quoted_name": "Joshua Zirkzee",
+      "home_team": "Everton",
+      "away_team": "Manchester United",
+      "club": "MUN",
+      "anytime_goal": 0.30303,
+      "first_goal": 0.133929,
+      "last_goal": 0.142857,
+      "anytime_assist": null,
+      "any_card": null,
+      "red_card": null,
+      "shots": null,
+      "shots_on_target": null,
+      "books": 3,
+      "kickoff": "2026-09-06T13:00:00+00:00",
+      "observed_at": "2026-09-03T06:58:38.919427+00:00"
+    },
+    {
+      "element_id": 236,
+      "quoted_name": "Kiernan Dewsbury-Hall",
+      "home_team": "Everton",
+      "away_team": "Manchester United",
+      "club": "EVE",
+      "anytime_goal": 0.222222,
+      "first_goal": 0.113095,
+      "last_goal": 0.142857,
+      "anytime_assist": null,
+      "any_card": null,
+      "red_card": null,
+      "shots": null,
+      "shots_on_target": null,
+      "books": 3,
+      "kickoff": "2026-09-06T13:00:00+00:00",
+      "observed_at": "2026-09-03T06:58:38.919427+00:00"
+    },
+    {
+      "element_id": 432,
+      "quoted_name": "Kobbie Mainoo",
+      "home_team": "Everton",
+      "away_team": "Manchester United",
+      "club": "MUN",
+      "anytime_goal": 0.117647,
+      "first_goal": 0.053221,
+      "last_goal": 0.058824,
+      "anytime_assist": null,
+      "any_card": null,
+      "red_card": null,
+      "shots": null,
+      "shots_on_target": null,
+      "books": 3,
+      "kickoff": "2026-09-06T13:00:00+00:00",
+      "observed_at": "2026-09-03T06:58:38.919427+00:00"
+    },
+    {
+      "element_id": 420,
+      "quoted_name": "Leny Yoro",
+      "home_team": "Everton",
+      "away_team": "Manchester United",
+      "club": "MUN",
+      "anytime_goal": 0.076923,
+      "first_goal": 0.031947,
+      "last_goal": 0.034483,
+      "anytime_assist": null,
+      "any_card": null,
+      "red_card": null,
+      "shots": null,
+      "shots_on_target": null,
+      "books": 3,
+      "kickoff": "2026-09-06T13:00:00+00:00",
+      "observed_at": "2026-09-03T06:58:38.919427+00:00"
+    },
+    {
+      "element_id": 419,
+      "quoted_name": "Lisandro Martinez",
+      "home_team": "Everton",
+      "away_team": "Manchester United",
+      "club": "MUN",
+      "anytime_goal": 0.076923,
+      "first_goal": 0.031947,
+      "last_goal": 0.034483,
+      "anytime_assist": null,
+      "any_card": null,
+      "red_card": null,
+      "shots": null,
+      "shots_on_target": null,
+      "books": 3,
+      "kickoff": "2026-09-06T13:00:00+00:00",
+      "observed_at": "2026-09-03T06:58:38.919427+00:00"
+    },
+    {
+      "element_id": 423,
+      "quoted_name": "Luke Shaw",
+      "home_team": "Everton",
+      "away_team": "Manchester United",
+      "club": "MUN",
+      "anytime_goal": 0.083333,
+      "first_goal": 0.034483,
+      "last_goal": 0.034483,
+      "anytime_assist": null,
+      "any_card": null,
+      "red_card": null,
+      "shots": null,
+      "shots_on_target": null,
+      "books": 3,
+      "kickoff": "2026-09-06T13:00:00+00:00",
+      "observed_at": "2026-09-03T06:58:38.919427+00:00"
+    },
+    {
+      "element_id": 429,
+      "quoted_name": "Marcus Rashford",
+      "home_team": "Everton",
+      "away_team": "Manchester United",
+      "club": "MUN",
+      "anytime_goal": 0.277778,
+      "first_goal": 0.130252,
+      "last_goal": 0.142857,
+      "anytime_assist": null,
+      "any_card": null,
+      "red_card": null,
+      "shots": null,
+      "shots_on_target": null,
+      "books": 3,
+      "kickoff": "2026-09-06T13:00:00+00:00",
+      "observed_at": "2026-09-03T06:58:38.919427+00:00"
+    },
+    {
+      "element_id": 430,
+      "quoted_name": "Mason Mount",
+      "home_team": "Everton",
+      "away_team": "Manchester United",
+      "club": "MUN",
+      "anytime_goal": 0.181818,
+      "first_goal": 0.083333,
+      "last_goal": 0.1,
+      "anytime_assist": null,
+      "any_card": null,
+      "red_card": null,
+      "shots": null,
+      "shots_on_target": null,
+      "books": 3,
+      "kickoff": "2026-09-06T13:00:00+00:00",
+      "observed_at": "2026-09-03T06:58:38.919427+00:00"
+    },
+    {
+      "element_id": 428,
+      "quoted_name": "Matheus Cunha",
+      "home_team": "Everton",
+      "away_team": "Manchester United",
+      "club": "MUN",
+      "anytime_goal": 0.307692,
+      "first_goal": 0.139423,
+      "last_goal": 0.153846,
+      "anytime_assist": null,
+      "any_card": null,
+      "red_card": null,
+      "shots": null,
+      "shots_on_target": null,
+      "books": 3,
+      "kickoff": "2026-09-06T13:00:00+00:00",
+      "observed_at": "2026-09-03T06:58:38.919427+00:00"
+    },
+    {
+      "element_id": 416,
+      "quoted_name": "Matthijs de Ligt",
+      "home_team": "Everton",
+      "away_team": "Manchester United",
+      "club": "MUN",
+      "anytime_goal": 0.083333,
+      "first_goal": 0.036472,
+      "last_goal": 0.038462,
+      "anytime_assist": null,
+      "any_card": null,
+      "red_card": null,
+      "shots": null,
+      "shots_on_target": null,
+      "books": 3,
+      "kickoff": "2026-09-06T13:00:00+00:00",
+      "observed_at": "2026-09-03T06:58:38.919427+00:00"
+    },
+    {
+      "element_id": 246,
+      "quoted_name": "Merlin Rohl",
+      "home_team": "Everton",
+      "away_team": "Manchester United",
+      "club": "EVE",
+      "anytime_goal": 0.111111,
+      "first_goal": 0.048055,
+      "last_goal": 0.052632,
+      "anytime_assist": null,
+      "any_card": null,
+      "red_card": null,
+      "shots": null,
+      "shots_on_target": null,
+      "books": 3,
+      "kickoff": "2026-09-06T13:00:00+00:00",
+      "observed_at": "2026-09-03T06:58:38.919427+00:00"
+    },
+    {
+      "element_id": 231,
+      "quoted_name": "Michael Keane",
+      "home_team": "Everton",
+      "away_team": "Manchester United",
+      "club": "EVE",
+      "anytime_goal": 0.111111,
+      "first_goal": 0.055072,
+      "last_goal": 0.066667,
+      "anytime_assist": null,
+      "any_card": null,
+      "red_card": null,
+      "shots": null,
+      "shots_on_target": null,
+      "books": 3,
+      "kickoff": "2026-09-06T13:00:00+00:00",
+      "observed_at": "2026-09-03T06:58:38.919427+00:00"
+    },
+    {
+      "element_id": 422,
+      "quoted_name": "Noussair Mazraoui",
+      "home_team": "Everton",
+      "away_team": "Manchester United",
+      "club": "MUN",
+      "anytime_goal": 0.066667,
+      "first_goal": 0.031947,
+      "last_goal": 0.034483,
+      "anytime_assist": null,
+      "any_card": null,
+      "red_card": null,
+      "shots": null,
+      "shots_on_target": null,
+      "books": 3,
+      "kickoff": "2026-09-06T13:00:00+00:00",
+      "observed_at": "2026-09-03T06:58:38.919427+00:00"
+    },
+    {
+      "element_id": 415,
+      "quoted_name": "Patrick Dorgu",
+      "home_team": "Everton",
+      "away_team": "Manchester United",
+      "club": "MUN",
+      "anytime_goal": 0.238095,
+      "first_goal": 0.108824,
+      "last_goal": 0.117647,
+      "anytime_assist": null,
+      "any_card": null,
+      "red_card": null,
+      "shots": null,
+      "shots_on_target": null,
+      "books": 3,
+      "kickoff": "2026-09-06T13:00:00+00:00",
+      "observed_at": "2026-09-03T06:58:38.919427+00:00"
+    },
+    {
+      "element_id": 435,
+      "quoted_name": "Shea Lacey",
+      "home_team": "Everton",
+      "away_team": "Manchester United",
+      "club": "MUN",
+      "anytime_goal": 0.230947,
+      "first_goal": 0.10101,
+      "last_goal": 0.111111,
+      "anytime_assist": null,
+      "any_card": null,
+      "red_card": null,
+      "shots": null,
+      "shots_on_target": null,
+      "books": 3,
+      "kickoff": "2026-09-06T13:00:00+00:00",
+      "observed_at": "2026-09-03T06:58:38.919427+00:00"
+    },
+    {
+      "element_id": 249,
+      "quoted_name": "Thierno Barry",
+      "home_team": "Everton",
+      "away_team": "Manchester United",
+      "club": "EVE",
+      "anytime_goal": 0.307692,
+      "first_goal": 0.139423,
+      "last_goal": 0.153846,
+      "anytime_assist": null,
+      "any_card": null,
+      "red_card": null,
+      "shots": null,
+      "shots_on_target": null,
+      "books": 3,
+      "kickoff": "2026-09-06T13:00:00+00:00",
+      "observed_at": "2026-09-03T06:58:38.919427+00:00"
+    },
+    {
+      "element_id": 245,
+      "quoted_name": "Tyler Dibling",
+      "home_team": "Everton",
+      "away_team": "Manchester United",
+      "club": "EVE",
+      "anytime_goal": 0.181818,
+      "first_goal": 0.075,
+      "last_goal": 0.083333,
+      "anytime_assist": null,
+      "any_card": null,
+      "red_card": null,
+      "shots": null,
+      "shots_on_target": null,
+      "books": 3,
+      "kickoff": "2026-09-06T13:00:00+00:00",
+      "observed_at": "2026-09-03T06:58:38.919427+00:00"
+    },
+    {
+      "element_id": 242,
+      "quoted_name": "Tyrique George",
+      "home_team": "Everton",
+      "away_team": "Manchester United",
+      "club": "EVE",
+      "anytime_goal": 0.222222,
+      "first_goal": 0.095455,
+      "last_goal": 0.1,
+      "anytime_assist": null,
+      "any_card": null,
+      "red_card": null,
+      "shots": null,
+      "shots_on_target": null,
+      "books": 3,
+      "kickoff": "2026-09-06T13:00:00+00:00",
+      "observed_at": "2026-09-03T06:58:38.919427+00:00"
+    },
+    {
+      "element_id": 233,
+      "quoted_name": "Vitaliy Mykolenko",
+      "home_team": "Everton",
+      "away_team": "Manchester United",
+      "club": "EVE",
+      "anytime_goal": 0.055556,
+      "first_goal": 0.026084,
+      "last_goal": 0.027778,
+      "anytime_assist": null,
+      "any_card": null,
+      "red_card": null,
+      "shots": null,
+      "shots_on_target": null,
+      "books": 3,
+      "kickoff": "2026-09-06T13:00:00+00:00",
+      "observed_at": "2026-09-03T06:58:38.919427+00:00"
     }
   ]
 }
