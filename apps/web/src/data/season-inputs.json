@@ -1,6 +1,6 @@
 {
   "schemaVersion": 6,
-  "generatedAt": "2026-09-03T13:26:30.348910Z",
+  "generatedAt": "2026-09-03T14:01:24.602828Z",
   "recordSeason": "2026-27",
   "events": [
     3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23,
@@ -62,8 +62,8 @@
     "fixtureMarkets": {
       "source": "football-data.co.uk",
       "level": "observed",
-      "updatedAt": "2026-09-03T12:09:22.477624+00:00",
-      "contentHash": "sha256:7fd0cce4ca493b5b7968fc46067802421c4946348d1fc3c9c06abce03dd0c879"
+      "updatedAt": "2026-09-03T13:26:26.989294+00:00",
+      "contentHash": "sha256:f20cfa65c87a088aa3e5b746b2302aea95df10196bbdd01804c1e442aa2b0962"
     },
     "understat": {
       "source": "understat",
@@ -538,7 +538,7 @@
       }
     ],
     "sourceReference": "FPL rules page, Transfers section",
-    "dataAvailableAt": "2026-09-03T13:26:30.348910Z",
+    "dataAvailableAt": "2026-09-03T14:01:24.602828Z",
     "playableStartRate": 0.35,
     "transferMarginPoints": 0.5
   },
@@ -1288,7 +1288,7 @@
   },
   "fixtureEvidence": {
     "source": "football-data.co.uk",
-    "updatedAt": "2026-09-03T12:09:22.477624+00:00",
+    "updatedAt": "2026-09-03T13:26:26.989294+00:00",
     "level": "observed",
     "byClub": {}
   },
@@ -14836,7 +14836,7 @@
       },
       "squadNumber": null,
       "rated": true,
-      "depthRank": 8,
+      "depthRank": 9,
       "evidence": {
         "appearance": "marketParticipation",
         "attacking": "marketAttack"
@@ -16252,7 +16252,7 @@
       },
       "squadNumber": null,
       "rated": false,
-      "depthRank": 8,
+      "depthRank": 9,
       "evidence": {
         "all": "rolePrior",
         "appearance": "marketParticipation",
@@ -16766,7 +16766,7 @@
       },
       "squadNumber": null,
       "rated": false,
-      "depthRank": 8,
+      "depthRank": 9,
       "evidence": {
         "all": "rolePrior",
         "appearance": "marketParticipation",
@@ -17068,7 +17068,7 @@
       },
       "squadNumber": null,
       "rated": false,
-      "depthRank": 14,
+      "depthRank": 15,
       "evidence": {
         "all": "rolePrior",
         "appearance": "marketParticipation",
@@ -17150,7 +17150,7 @@
       },
       "squadNumber": null,
       "rated": false,
-      "depthRank": 14,
+      "depthRank": 15,
       "evidence": {
         "all": "rolePrior",
         "appearance": "marketParticipation",
@@ -20723,6 +20723,45 @@
       "evidence": { "all": "rolePrior" }
     },
     {
+      "id": 652,
+      "code": 471551,
+      "name": "Azeez",
+      "position": "MID",
+      "positionId": 3,
+      "club": "BHA",
+      "teamId": 5,
+      "priceTenths": 55,
+      "availabilityStatus": "a",
+      "chanceOfPlaying": null,
+      "basePoints": 2.04,
+      "routes": {
+        "appearance": 1.283,
+        "attacking": 0.22,
+        "cleanSheet": 0.272,
+        "bonus": 0.107,
+        "yellowCards": -0.075,
+        "redCards": -0.006,
+        "defensiveContribution": 0.239
+      },
+      "startRate": 0.656,
+      "startEvidence": {
+        "sourceStartRate": 0.656,
+        "finalStartRate": 0.656,
+        "observedAppearances": null,
+        "recentStarts": null,
+        "recentMatches": null,
+        "recentMinutes": null,
+        "appearanceSource": "historicalProjection",
+        "lineupAdjustment": 0.0,
+        "marketAdjustment": 0.0,
+        "availabilityAdjustment": 0.0
+      },
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 4,
+      "evidence": { "all": "rolePrior" }
+    },
+    {
       "id": 189,
       "code": 684268,
       "name": "Shepherd",
@@ -22853,7 +22892,7 @@
       },
       "squadNumber": null,
       "rated": false,
-      "depthRank": 8,
+      "depthRank": 9,
       "evidence": { "all": "rolePrior", "appearance": "fplAvailability" }
     },
     {
@@ -22884,7 +22923,7 @@
       },
       "squadNumber": null,
       "rated": false,
-      "depthRank": 14,
+      "depthRank": 15,
       "evidence": { "all": "rolePrior", "appearance": "fplAvailability" }
     },
     {
@@ -22915,7 +22954,7 @@
       },
       "squadNumber": null,
       "rated": false,
-      "depthRank": 8,
+      "depthRank": 9,
       "evidence": { "all": "rolePrior", "appearance": "fplAvailability" }
     },
     {
@@ -22946,7 +22985,7 @@
       },
       "squadNumber": null,
       "rated": false,
-      "depthRank": 8,
+      "depthRank": 9,
       "evidence": { "all": "rolePrior", "appearance": "fplAvailability" }
     },
     {
@@ -23171,37 +23210,6 @@
       "rated": false,
       "depthRank": 11,
       "evidence": { "all": "rolePrior", "appearance": "fplAvailability" }
-    },
-    {
-      "id": 266,
-      "code": 76357,
-      "name": "Cairney",
-      "position": "MID",
-      "positionId": 3,
-      "club": "FUL",
-      "teamId": 10,
-      "priceTenths": 50,
-      "availabilityStatus": "i",
-      "chanceOfPlaying": 0,
-      "basePoints": 0,
-      "routes": {},
-      "startRate": 0.0,
-      "startEvidence": {
-        "sourceStartRate": 0.0,
-        "finalStartRate": 0.0,
-        "observedAppearances": 2,
-        "recentStarts": 0,
-        "recentMatches": 2,
-        "recentMinutes": 0,
-        "appearanceSource": "fplAvailability",
-        "lineupAdjustment": 0.0,
-        "marketAdjustment": 0.0,
-        "availabilityAdjustment": -0.0
-      },
-      "squadNumber": null,
-      "rated": true,
-      "depthRank": 7,
-      "evidence": { "appearance": "fplAvailability" }
     },
     {
       "id": 411,
@@ -24001,8 +24009,8 @@
       "club": "IPS",
       "teamId": 12,
       "priceTenths": 55,
-      "availabilityStatus": "d",
-      "chanceOfPlaying": 75,
+      "availabilityStatus": "a",
+      "chanceOfPlaying": 100,
       "basePoints": 3.008,
       "routes": {
         "appearance": 1.842,
