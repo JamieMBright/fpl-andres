@@ -7,5 +7,11 @@ export default function liveGameweekHandler(
   request: VercelRequest,
   response: VercelResponse,
 ): Promise<void> {
-  return fplProxyHandler(request, response);
+  const rawEvent = request.query.event;
+  const event = Array.isArray(rawEvent) ? rawEvent[0] : rawEvent;
+  return fplProxyHandler(
+    request,
+    response,
+    `/api/fpl/event/${event ?? "invalid"}/live/`,
+  );
 }

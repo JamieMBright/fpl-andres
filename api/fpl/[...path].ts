@@ -46,6 +46,7 @@ export function resetFplProxyState(): void {
 export default async function fplProxyHandler(
   request: VercelRequest,
   response: VercelResponse,
+  canonicalRequestUrl: string = request.url ?? "",
 ): Promise<void> {
   const startedAt = performance.now();
   const decision = limiter.check(clientAddress(request.headers));
@@ -68,7 +69,7 @@ export default async function fplProxyHandler(
   }
   try {
     const proxyResponse = await createFplProxyResponse(
-      normalizeVercelProxyUrl(request.url ?? ""),
+      normalizeVercelProxyUrl(canonicalRequestUrl),
       request.method ?? "GET",
       fetch,
       undefined,

@@ -49,4 +49,35 @@ describe("Vercel FPL handler", () => {
       "https://fantasy.premierleague.com/api/bootstrap-static/",
     );
   });
+
+  it("uses a canonical deep route instead of Vercel's injected event query", async () => {
+    const upstreamFetch = vi
+      .fn<typeof fetch>()
+      .mockResolvedValue(Response.json({ elements: [] }));
+    vi.stubGlobal("fetch", upstreamFetch);
+    const sent: { status?: number } = {};
+    const response = {
+      setHeader() {
+        return this;
+      },
+      status(status: number) {
+        sent.status = status;
+        return this;
+      },
+      send() {
+        return this;
+      },
+    } as unknown as VercelResponse;
+    const request = {
+      method: "GET",
+      url: "/api/fpl/event/2/live/?event=2",
+    } as VercelRequest;
+
+    await fplProxyHandler(request, response, "/api/fpl/event/2/live/");
+
+    expect(sent.status).toBe(200);
+    expect(String(upstreamFetch.mock.calls[0]?.[0])).toBe(
+      "https://fantasy.premierleague.com/api/event/2/live/",
+    );
+  });
 });
