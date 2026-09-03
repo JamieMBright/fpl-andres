@@ -15,6 +15,8 @@ name: Ingest Bookmaker Odds
 # links to a bookmaker.
 
 on:
+  push:
+    paths: [".github/workflows/ingest-odds.yml"]
   # Auto-trigger when live gameweek data is captured
   workflow_run:
     workflows: ["Capture settled gameweeks", "Capture live current gameweek"]
@@ -52,7 +54,7 @@ jobs:
     runs-on: ubuntu-latest
     # The API keys are scoped to this environment.
     environment: production
-    timeout-minutes: 45
+    timeout-minutes: 90
     permissions:
       # Needed to commit the refreshed artifact back to the branch.
       contents: write

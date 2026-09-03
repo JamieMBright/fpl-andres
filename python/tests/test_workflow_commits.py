@@ -220,6 +220,14 @@ def test_live_odds_producers_republish_the_plan_the_browser_reads(name: str, sou
         assert formatting < staging
 
 
+def test_fixture_odds_allows_its_conflict_rebuild_to_finish() -> None:
+    text = (WORKFLOWS / "ingest-odds.yml").read_text(encoding="utf-8")
+    header, jobs = text.split("jobs:", 1)
+
+    assert 'paths: [".github/workflows/ingest-odds.yml"]' in header
+    assert "timeout-minutes: 90" in jobs
+
+
 def test_prospective_freeze_uses_the_event_deadline_ledger() -> None:
     chain = (REPO / "scripts" / "republish-plan.sh").read_text(encoding="utf-8")
     validation = (WORKFLOWS / "validate-model.yml").read_text(encoding="utf-8")

@@ -124,7 +124,7 @@ def test_the_odds_ingest_runs_daily() -> None:
     assert str(schedule[0]["cron"]).split()[4] == "*"
 
 
-def test_a_paid_workflow_does_not_spend_the_allowance_on_every_push() -> None:
+def test_a_paid_workflow_does_not_spend_the_allowance_on_source_pushes() -> None:
     """A `push` trigger on a source path is an unbounded, uncounted spender.
 
     The monthly sum above counts crons. A workflow that also fires on pushes
@@ -134,15 +134,18 @@ def test_a_paid_workflow_does_not_spend_the_allowance_on_every_push() -> None:
     a season is gone in a week, and the failure arrives as a market that looks
     shut rather than as an error.
 
-    Free-tier workflows are therefore asked for by hand.
+    Free-tier workflows are therefore asked for by hand. A workflow may name
+    only its own file so a recovery edit can trigger the run it changes.
     """
     for name in ("ingest-player-odds.yml", "survey-player-props.yml", "ingest-odds.yml"):
         triggers = _triggers(name)
         assert "workflow_dispatch" in triggers, f"{name} must stay manually runnable"
-        assert "push" not in triggers, (
-            f"{name} spends its whole budget on every push outside the monthly "
-            "sum above. Trigger it by schedule or workflow_dispatch instead."
-        )
+        push = triggers.get("push")
+        if push is not None:
+            assert push == {"paths": [f".github/workflows/{name}"]}, (
+                f"{name} spends its whole budget on source pushes outside the monthly "
+                "sum above. A push trigger may name only the workflow file itself."
+            )
 
 
 def test_the_daily_odds_trigger_bails_before_the_provider_outside_deadline_week() -> None:
