@@ -220,11 +220,12 @@ def test_live_odds_producers_republish_the_plan_the_browser_reads(name: str, sou
         assert formatting < staging
 
 
-def test_fixture_odds_allows_its_conflict_rebuild_to_finish() -> None:
-    text = (WORKFLOWS / "ingest-odds.yml").read_text(encoding="utf-8")
+@pytest.mark.parametrize("name", ("ingest-odds.yml", "ingest-player-odds.yml"))
+def test_live_odds_allow_their_conflict_rebuild_to_finish(name: str) -> None:
+    text = (WORKFLOWS / name).read_text(encoding="utf-8")
     header, jobs = text.split("jobs:", 1)
 
-    assert 'paths: [".github/workflows/ingest-odds.yml"]' in header
+    assert f'paths: [".github/workflows/{name}"]' in header
     assert "timeout-minutes: 90" in jobs
 
 

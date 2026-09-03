@@ -33,6 +33,8 @@ name: Ingest Player Odds
 # probability and used as evidence about a footballer.
 
 on:
+  push:
+    paths: [".github/workflows/ingest-player-odds.yml"]
   # Auto-trigger when fixture odds are ingested
   workflow_run:
     workflows: ["Ingest Bookmaker Odds"]
@@ -41,8 +43,9 @@ on:
     # An hour before the earliest a deadline lands. Cron has no timezone, so
     # 09:00 UTC is 10:00 British Summer Time and 09:00 in winter.
     - cron: "0 9 * * *"
-  # Editing this workflow does not spend the shared free-tier key. Ask for a
-  # run with workflow_dispatch; source changes are deliberately not triggers.
+  # The self-path push above lets a recovery edit run the workflow it changes.
+  # Ordinary source changes are deliberately not triggers; explicit runs stay
+  # available through workflow_dispatch.
   workflow_dispatch:
     inputs:
       budget:
@@ -65,7 +68,7 @@ jobs:
     # job cannot see them and the fetch step exits on an empty key, which is
     # exactly how run 1 failed.
     environment: production
-    timeout-minutes: 45
+    timeout-minutes: 90
     steps:
       - name: Check out repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
