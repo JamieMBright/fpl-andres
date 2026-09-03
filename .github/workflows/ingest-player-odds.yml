@@ -71,7 +71,9 @@ jobs:
     # job cannot see them and the fetch step exits on an empty key, which is
     # exactly how run 1 failed.
     environment: production
-    timeout-minutes: 90
+    # Match fixture odds: both jobs run the same planner and may need all five
+    # conflict-safe rebuild attempts when artifact publishers overlap.
+    timeout-minutes: 180
     steps:
       - name: Check out repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1

@@ -57,7 +57,9 @@ jobs:
     runs-on: ubuntu-latest
     # The API keys are scoped to this environment.
     environment: production
-    timeout-minutes: 90
+    # Run 33704452839 exhausted 90 minutes after several artifact publishers
+    # moved main under this job's documented five-attempt rebuild loop.
+    timeout-minutes: 180
     permissions:
       # Needed to commit the refreshed artifact back to the branch.
       contents: write

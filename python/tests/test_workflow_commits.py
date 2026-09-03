@@ -232,16 +232,22 @@ def test_live_odds_producers_republish_the_plan_the_browser_reads(name: str, sou
 
 
 @pytest.mark.parametrize(
-    "name",
-    ("ingest-odds.yml", "ingest-player-odds.yml", "publish-solver-input.yml"),
+    ("name", "timeout_minutes"),
+    (
+        ("ingest-odds.yml", 180),
+        ("ingest-player-odds.yml", 180),
+        ("publish-solver-input.yml", 90),
+    ),
 )
-def test_plan_publishers_allow_their_conflict_rebuild_to_finish(name: str) -> None:
+def test_plan_publishers_allow_their_conflict_rebuild_to_finish(
+    name: str, timeout_minutes: int
+) -> None:
     text = (WORKFLOWS / name).read_text(encoding="utf-8")
     header, jobs = text.split("jobs:", 1)
     job_header = jobs.split("steps:", 1)[0]
 
     assert f'paths: [".github/workflows/{name}"]' in header
-    assert "timeout-minutes: 90" in job_header
+    assert f"timeout-minutes: {timeout_minutes}" in job_header
 
 
 def test_prospective_freeze_uses_the_event_deadline_ledger() -> None:
