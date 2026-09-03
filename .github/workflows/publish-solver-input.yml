@@ -31,6 +31,9 @@ concurrency:
 
 jobs:
   publish:
+    if: >
+      github.event_name != 'workflow_run' ||
+      github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     # The plan solve is the long part of the chain below, as it is in both odds
     # jobs. Twenty minutes was enough when this only rewrote the inputs.

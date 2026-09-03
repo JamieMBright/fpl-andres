@@ -63,6 +63,9 @@ concurrency:
 
 jobs:
   ingest:
+    if: >
+      github.event_name != 'workflow_run' ||
+      github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     # The API keys are scoped to this environment. Without the declaration the
     # job cannot see them and the fetch step exits on an empty key, which is

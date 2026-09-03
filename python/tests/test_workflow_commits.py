@@ -158,6 +158,17 @@ def test_model_validation_refires_only_when_a_new_gameweek_settles() -> None:
     assert "needs.refresh.outputs.run == 'true'" in text
 
 
+@pytest.mark.parametrize(
+    "name",
+    ("ingest-odds.yml", "ingest-player-odds.yml", "publish-solver-input.yml"),
+)
+def test_workflow_run_consumers_require_upstream_success(name: str) -> None:
+    text = (WORKFLOWS / name).read_text(encoding="utf-8")
+
+    assert "github.event_name != 'workflow_run'" in text
+    assert "github.event.workflow_run.conclusion == 'success'" in text
+
+
 def test_portfolio_annotation_backfills_legacy_season_standings() -> None:
     text = (WORKFLOWS / "annotate-portfolio.yml").read_text(encoding="utf-8")
 
