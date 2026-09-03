@@ -105,7 +105,9 @@ jobs:
     needs: refresh
     if: needs.refresh.outputs.run == 'true'
     runs-on: ubuntu-latest
-    timeout-minutes: 150
+    # Run 33697967857 reached 150 minutes after several artifact publishers
+    # moved main under its final conflict-safe planning rebuilds.
+    timeout-minutes: 240
     environment: production
     permissions:
       # The refreshed artifact and the appended history row are pushed back.

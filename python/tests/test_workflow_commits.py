@@ -330,7 +330,7 @@ def test_model_republication_allows_the_measured_slow_runner_duration() -> None:
     first_step = text.index("steps:", job)
 
     assert "timeout-minutes: 60" in text[republish:following_step]
-    assert "timeout-minutes: 150" in text[job:first_step]
+    assert "timeout-minutes: 240" in text[job:first_step]
 
 
 def test_fpl500_capture_republishes_the_prospective_event_ledger() -> None:
