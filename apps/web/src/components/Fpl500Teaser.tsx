@@ -4,10 +4,11 @@ import artifact from "../data/fpl500.json";
 import { fineShare, integer } from "../format";
 import { PLAYERS_BY_ELEMENT_ID } from "../state/season-solver";
 import { transferFlow } from "../state/transfer-flow";
-import { latestCapture } from "./Fpl500Playbook";
+import { latestCapture, type Fpl500 } from "./Fpl500Playbook";
 
 export function Fpl500Teaser() {
-  const series = artifact.exactFpl500Portfolio;
+  const data = artifact as Fpl500;
+  const series = data.exactFpl500Portfolio;
   const latest = latestCapture(series);
   if (!latest) return null;
   const sample = series.samples[latest.key];
@@ -19,7 +20,9 @@ export function Fpl500Teaser() {
   const bestRank = ranks.length > 0 ? Math.min(...ranks) : null;
   const meanRank =
     ranks.length > 0
-      ? Math.round(ranks.reduce((total, rank) => total + rank, 0) / ranks.length)
+      ? Math.round(
+          ranks.reduce((total, rank) => total + rank, 0) / ranks.length,
+        )
       : null;
   const movement = transferFlow(
     {
@@ -29,7 +32,8 @@ export function Fpl500Teaser() {
     1,
   );
   const mostTransferredIn = [...movement].sort(
-    (left, right) => right.transfersIn - left.transfersIn || right.net - left.net,
+    (left, right) =>
+      right.transfersIn - left.transfersIn || right.net - left.net,
   )[0];
   const mostTransferredOut = [...movement].sort(
     (left, right) =>
@@ -61,14 +65,18 @@ export function Fpl500Teaser() {
         <small>Most transferred in</small>
         <b>{transferredIn?.name ?? "—"}</b>
         <em>
-          {transferredIn ? `+${integer.format(transferredIn.transfersIn)}` : "—"}
+          {transferredIn
+            ? `+${integer.format(transferredIn.transfersIn)}`
+            : "—"}
         </em>
       </span>
       <span>
         <small>Most transferred out</small>
         <b>{transferredOut?.name ?? "—"}</b>
         <em>
-          {transferredOut ? `-${integer.format(transferredOut.transfersOut)}` : "—"}
+          {transferredOut
+            ? `-${integer.format(transferredOut.transfersOut)}`
+            : "—"}
         </em>
       </span>
       <span>

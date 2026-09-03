@@ -6,7 +6,7 @@ import artifact from "../data/fpl500.json";
 import { integer } from "../format";
 import { PLAYERS_BY_ELEMENT_ID } from "../state/season-solver";
 import { transferFlow } from "../state/transfer-flow";
-import { latestCapture } from "./Fpl500Playbook";
+import { latestCapture, type Fpl500 } from "./Fpl500Playbook";
 import { Fpl500Teaser } from "./Fpl500Teaser";
 
 describe("Fpl500Teaser", () => {
@@ -16,25 +16,31 @@ describe("Fpl500Teaser", () => {
         <Fpl500Teaser />
       </MemoryRouter>,
     );
-    const latest = latestCapture(artifact.exactFpl500Portfolio);
+    const data = artifact as Fpl500;
+    const series = data.exactFpl500Portfolio;
+    const latest = latestCapture(series);
     if (!latest) throw new Error("FPL500 teaser has no captured gameweeks");
-    const sample = artifact.exactFpl500Portfolio.samples[latest.key];
+    const sample = series.samples[latest.key];
+    if (!sample?.aggregate)
+      throw new Error("FPL500 teaser aggregate is missing");
     const aggregate = sample.aggregate;
     const standing = aggregate.seasonStanding?.flatMap((row) =>
       row.overallRank === null ? [] : [row.overallRank],
     );
     const bestRank = standing ? Math.min(...standing) : null;
     const meanRank = standing
-      ? Math.round(standing.reduce((total, rank) => total + rank, 0) / standing.length)
+      ? Math.round(
+          standing.reduce((total, rank) => total + rank, 0) / standing.length,
+        )
       : null;
-    const eventsThroughLatest = artifact.exactFpl500Portfolio.events.filter(
+    const eventsThroughLatest = series.events.filter(
       (event) => event <= latest.event,
     );
     const movement =
       eventsThroughLatest.length > 1
         ? transferFlow(
             {
-              ...artifact.exactFpl500Portfolio,
+              ...series,
               events: eventsThroughLatest,
             },
             1,
@@ -42,7 +48,9 @@ describe("Fpl500Teaser", () => {
         : [];
 
     expect(
-      screen.getByRole("link", { name: new RegExp(`FPL500 · GW${latest.event}`, "i") }),
+      screen.getByRole("link", {
+        name: new RegExp(`FPL500 · GW${latest.event}`, "i"),
+      }),
     ).toBeVisible();
     expect(screen.getByText(String(sample.responded))).toBeVisible();
     expect(
@@ -51,9 +59,11 @@ describe("Fpl500Teaser", () => {
     expect(
       screen.getByText("Mean overall rank").closest("span"),
     ).toHaveTextContent(integer.format(meanRank ?? 0));
-    const topCaptain = artifact.exactFpl500Portfolio.captains[latest.key][0];
+    const topCaptain = series.captains[latest.key]?.[0];
     if (!topCaptain) throw new Error("FPL500 captain headline is empty");
-    expect(screen.getByText("Most captained").closest("span")).toHaveTextContent(
+    expect(
+      screen.getByText("Most captained").closest("span"),
+    ).toHaveTextContent(
       PLAYERS_BY_ELEMENT_ID.get(topCaptain.elementId)?.name ?? "missing",
     );
     if (movement.length > 0) {
