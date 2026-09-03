@@ -52,10 +52,14 @@ const BUDGETS = [
   // replaced a column of repeated de-vigged prices with fitted values that
   // share fewer digits, and the artifact gzips 1.33 kB worse for it. The
   // uncompressed bundle got smaller.
+  //
+  // Measured 70.20 kB after the live player-market capture expanded the
+  // solver-used carry rows. No worker code changed; those rows are the current
+  // route evidence the solver must consume. Raised to the next whole kB.
   {
     match: /^season-solver\.worker-.*\.js$/,
     name: "solver worker",
-    gzipKb: 70,
+    gzipKb: 71,
   },
   // Measured 39.94 kB for the shared chunk, raised from 38 kB. Consolidating
   // the team view onto the plan moved several components into shared code
