@@ -1,6 +1,6 @@
 {
   "schemaVersion": 6,
-  "generatedAt": "2026-09-04T05:10:34.252540Z",
+  "generatedAt": "2026-09-04T05:52:12.258731Z",
   "recordSeason": "2026-27",
   "events": [
     3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23,
@@ -56,8 +56,8 @@
     "playerMarkets": {
       "source": "the-odds-api",
       "level": "observed",
-      "updatedAt": "2026-09-04T01:29:25.848207+00:00",
-      "contentHash": "sha256:62c34990bad5c9688de3484668baffd427b8372a80c869109078470f63861a8e"
+      "updatedAt": "2026-09-04T05:52:08.038543+00:00",
+      "contentHash": "sha256:2b2d5ac6a86e818ef708b32562803e4a9e81b7c987f1e5fc88f4e2b9bc82050e"
     },
     "fixtureMarkets": {
       "source": "football-data.co.uk",
@@ -395,7 +395,7 @@
       "369": [0.0, 0.498, 1.441457, 0.675, -0.072, -0.006],
       "371": [0.0, 0.502, 1.291548, 0.295, -0.086, -0.007],
       "372": [0.0, 0.506, 1.232255, 0.505, -0.094, -0.008],
-      "374": [0.0, 0.072, 1.075972, 0.508, -0.08, -0.007],
+      "374": [0.0, 0.072, 1.092633, 0.508, -0.08, -0.007],
       "375": [0.0, 0.072, 1.267647, 0.508, -0.08, -0.007],
       "377": [0.0, 0.517, 1.267647, 0.508, -0.08, -0.007],
       "378": [0.0, 0.072, 1.267647, 0.508, -0.08, -0.007],
@@ -538,7 +538,7 @@
       }
     ],
     "sourceReference": "FPL rules page, Transfers section",
-    "dataAvailableAt": "2026-09-04T05:10:34.252540Z",
+    "dataAvailableAt": "2026-09-04T05:52:12.258731Z",
     "playableStartRate": 0.35,
     "transferMarginPoints": 0.5
   },
@@ -5667,10 +5667,10 @@
       "priceTenths": 65,
       "availabilityStatus": "a",
       "chanceOfPlaying": null,
-      "basePoints": 2.772,
+      "basePoints": 2.778,
       "routes": {
         "appearance": 1.707,
-        "attacking": 0.712,
+        "attacking": 0.718,
         "cleanSheet": 0.492,
         "bonus": 0.09,
         "conceding": -0.618,
@@ -6666,6 +6666,53 @@
       }
     },
     {
+      "id": 308,
+      "code": 176420,
+      "name": "Furlong",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "IPS",
+      "teamId": 12,
+      "priceTenths": 40,
+      "availabilityStatus": "a",
+      "chanceOfPlaying": null,
+      "basePoints": 2.394,
+      "routes": {
+        "appearance": 1.721,
+        "attacking": 0.559,
+        "cleanSheet": 0.496,
+        "bonus": 0.09,
+        "conceding": -0.623,
+        "yellowCards": -0.178,
+        "ownGoals": -0.015,
+        "defensiveContribution": 0.375,
+        "redCards": -0.031
+      },
+      "startRate": 0.409,
+      "startEvidence": {
+        "sourceStartRate": 0.819,
+        "finalStartRate": 0.409,
+        "observedAppearances": 2,
+        "recentStarts": 0,
+        "recentMatches": 2,
+        "recentMinutes": 17,
+        "appearanceSource": "marketParticipation",
+        "lineupAdjustment": -0.728,
+        "marketAdjustment": 0.318,
+        "availabilityAdjustment": 0.0
+      },
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 1,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
+    },
+    {
       "id": 418,
       "code": 95658,
       "name": "Maguire",
@@ -6845,9 +6892,9 @@
       }
     },
     {
-      "id": 308,
-      "code": 176420,
-      "name": "Furlong",
+      "id": 304,
+      "code": 216616,
+      "name": "O'Shea",
       "position": "DEF",
       "positionId": 2,
       "club": "IPS",
@@ -6855,29 +6902,76 @@
       "priceTenths": 40,
       "availabilityStatus": "a",
       "chanceOfPlaying": null,
-      "basePoints": 2.369,
+      "basePoints": 2.364,
       "routes": {
         "appearance": 1.721,
-        "attacking": 0.534,
+        "attacking": 0.475,
         "cleanSheet": 0.496,
         "bonus": 0.09,
         "conceding": -0.623,
-        "yellowCards": -0.178,
+        "yellowCards": -0.139,
         "ownGoals": -0.015,
         "defensiveContribution": 0.375,
-        "redCards": -0.031
+        "redCards": -0.016
       },
-      "startRate": 0.409,
+      "startRate": 0.987,
       "startEvidence": {
         "sourceStartRate": 0.819,
-        "finalStartRate": 0.409,
+        "finalStartRate": 0.987,
         "observedAppearances": 2,
-        "recentStarts": 0,
+        "recentStarts": 2,
         "recentMatches": 2,
-        "recentMinutes": 17,
+        "recentMinutes": 180,
         "appearanceSource": "marketParticipation",
-        "lineupAdjustment": -0.728,
-        "marketAdjustment": 0.318,
+        "lineupAdjustment": 0.161,
+        "marketAdjustment": 0.007,
+        "availabilityAdjustment": 0.0
+      },
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 1,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
+    },
+    {
+      "id": 306,
+      "code": 449429,
+      "name": "Greaves",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "IPS",
+      "teamId": 12,
+      "priceTenths": 40,
+      "availabilityStatus": "a",
+      "chanceOfPlaying": null,
+      "basePoints": 2.363,
+      "routes": {
+        "appearance": 1.721,
+        "attacking": 0.504,
+        "cleanSheet": 0.496,
+        "bonus": 0.09,
+        "conceding": -0.623,
+        "yellowCards": -0.159,
+        "ownGoals": -0.015,
+        "defensiveContribution": 0.375,
+        "redCards": -0.026
+      },
+      "startRate": 0.987,
+      "startEvidence": {
+        "sourceStartRate": 0.819,
+        "finalStartRate": 0.987,
+        "observedAppearances": 2,
+        "recentStarts": 2,
+        "recentMatches": 2,
+        "recentMinutes": 180,
+        "appearanceSource": "marketParticipation",
+        "lineupAdjustment": 0.161,
+        "marketAdjustment": 0.007,
         "availabilityAdjustment": 0.0
       },
       "squadNumber": null,
@@ -6936,53 +7030,6 @@
       }
     },
     {
-      "id": 306,
-      "code": 449429,
-      "name": "Greaves",
-      "position": "DEF",
-      "positionId": 2,
-      "club": "IPS",
-      "teamId": 12,
-      "priceTenths": 40,
-      "availabilityStatus": "a",
-      "chanceOfPlaying": null,
-      "basePoints": 2.356,
-      "routes": {
-        "appearance": 1.721,
-        "attacking": 0.497,
-        "cleanSheet": 0.496,
-        "bonus": 0.09,
-        "conceding": -0.623,
-        "yellowCards": -0.159,
-        "ownGoals": -0.015,
-        "defensiveContribution": 0.375,
-        "redCards": -0.026
-      },
-      "startRate": 0.987,
-      "startEvidence": {
-        "sourceStartRate": 0.819,
-        "finalStartRate": 0.987,
-        "observedAppearances": 2,
-        "recentStarts": 2,
-        "recentMatches": 2,
-        "recentMinutes": 180,
-        "appearanceSource": "marketParticipation",
-        "lineupAdjustment": 0.161,
-        "marketAdjustment": 0.007,
-        "availabilityAdjustment": 0.0
-      },
-      "squadNumber": null,
-      "rated": false,
-      "depthRank": 1,
-      "evidence": {
-        "all": "rolePrior",
-        "appearance": "marketParticipation",
-        "attacking": "marketAttack",
-        "yellowCards": "marketCards",
-        "redCards": "marketCards"
-      }
-    },
-    {
       "id": 596,
       "code": 487992,
       "name": "Ruggeri",
@@ -7024,53 +7071,6 @@
         "all": "rolePrior",
         "appearance": "marketParticipation",
         "attacking": "marketAttack"
-      }
-    },
-    {
-      "id": 304,
-      "code": 216616,
-      "name": "O'Shea",
-      "position": "DEF",
-      "positionId": 2,
-      "club": "IPS",
-      "teamId": 12,
-      "priceTenths": 40,
-      "availabilityStatus": "a",
-      "chanceOfPlaying": null,
-      "basePoints": 2.352,
-      "routes": {
-        "appearance": 1.721,
-        "attacking": 0.463,
-        "cleanSheet": 0.496,
-        "bonus": 0.09,
-        "conceding": -0.623,
-        "yellowCards": -0.139,
-        "ownGoals": -0.015,
-        "defensiveContribution": 0.375,
-        "redCards": -0.016
-      },
-      "startRate": 0.987,
-      "startEvidence": {
-        "sourceStartRate": 0.819,
-        "finalStartRate": 0.987,
-        "observedAppearances": 2,
-        "recentStarts": 2,
-        "recentMatches": 2,
-        "recentMinutes": 180,
-        "appearanceSource": "marketParticipation",
-        "lineupAdjustment": 0.161,
-        "marketAdjustment": 0.007,
-        "availabilityAdjustment": 0.0
-      },
-      "squadNumber": null,
-      "rated": false,
-      "depthRank": 1,
-      "evidence": {
-        "all": "rolePrior",
-        "appearance": "marketParticipation",
-        "attacking": "marketAttack",
-        "yellowCards": "marketCards",
-        "redCards": "marketCards"
       }
     },
     {
@@ -7814,6 +7814,52 @@
       }
     },
     {
+      "id": 357,
+      "code": 216094,
+      "name": "Frimpong",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "LIV",
+      "teamId": 14,
+      "priceTenths": 55,
+      "availabilityStatus": "a",
+      "chanceOfPlaying": null,
+      "basePoints": 2.199,
+      "routes": {
+        "appearance": 1.661,
+        "attacking": 0.637,
+        "cleanSheet": 0.479,
+        "bonus": 0.087,
+        "conceding": -0.601,
+        "yellowCards": -0.183,
+        "ownGoals": -0.013,
+        "defensiveContribution": 0.153,
+        "redCards": -0.021
+      },
+      "startRate": 0.979,
+      "startEvidence": {
+        "sourceStartRate": 0.716,
+        "finalStartRate": 0.979,
+        "observedAppearances": 2,
+        "recentStarts": 2,
+        "recentMatches": 2,
+        "recentMinutes": 160,
+        "appearanceSource": "marketParticipation",
+        "lineupAdjustment": 0.252,
+        "marketAdjustment": 0.011,
+        "availabilityAdjustment": 0.0
+      },
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 2,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
+    },
+    {
       "id": 277,
       "code": 108416,
       "name": "Egan",
@@ -7855,52 +7901,6 @@
         "all": "rolePrior",
         "appearance": "marketParticipation",
         "attacking": "marketAttack"
-      }
-    },
-    {
-      "id": 357,
-      "code": 216094,
-      "name": "Frimpong",
-      "position": "DEF",
-      "positionId": 2,
-      "club": "LIV",
-      "teamId": 14,
-      "priceTenths": 55,
-      "availabilityStatus": "a",
-      "chanceOfPlaying": null,
-      "basePoints": 2.192,
-      "routes": {
-        "appearance": 1.661,
-        "attacking": 0.63,
-        "cleanSheet": 0.479,
-        "bonus": 0.087,
-        "conceding": -0.601,
-        "yellowCards": -0.183,
-        "ownGoals": -0.013,
-        "defensiveContribution": 0.153,
-        "redCards": -0.021
-      },
-      "startRate": 0.979,
-      "startEvidence": {
-        "sourceStartRate": 0.716,
-        "finalStartRate": 0.979,
-        "observedAppearances": 2,
-        "recentStarts": 2,
-        "recentMatches": 2,
-        "recentMinutes": 160,
-        "appearanceSource": "marketParticipation",
-        "lineupAdjustment": 0.252,
-        "marketAdjustment": 0.011,
-        "availabilityAdjustment": 0.0
-      },
-      "squadNumber": null,
-      "rated": true,
-      "depthRank": 2,
-      "evidence": {
-        "appearance": "marketParticipation",
-        "attacking": "marketAttack",
-        "yellowCards": "marketCards",
-        "redCards": "marketCards"
       }
     },
     {
@@ -8516,10 +8516,10 @@
       "priceTenths": 50,
       "availabilityStatus": "a",
       "chanceOfPlaying": null,
-      "basePoints": 2.056,
+      "basePoints": 2.071,
       "routes": {
         "appearance": 1.619,
-        "attacking": 0.489,
+        "attacking": 0.504,
         "cleanSheet": 0.467,
         "bonus": 0.084,
         "conceding": -0.586,
@@ -13237,10 +13237,10 @@
       "priceTenths": 71,
       "availabilityStatus": "a",
       "chanceOfPlaying": null,
-      "basePoints": 4.328,
+      "basePoints": 4.341,
       "routes": {
         "appearance": 1.85,
-        "attacking": 1.611,
+        "attacking": 1.624,
         "cleanSheet": 0.127,
         "bonus": 0.551,
         "yellowCards": -0.127,
@@ -13700,10 +13700,10 @@
       "priceTenths": 70,
       "availabilityStatus": "a",
       "chanceOfPlaying": null,
-      "basePoints": 3.755,
+      "basePoints": 3.762,
       "routes": {
         "appearance": 1.744,
-        "attacking": 1.31,
+        "attacking": 1.317,
         "cleanSheet": 0.12,
         "bonus": 0.271,
         "yellowCards": -0.149,
@@ -13860,6 +13860,50 @@
       }
     },
     {
+      "id": 369,
+      "code": 611922,
+      "name": "Ngumoha",
+      "position": "MID",
+      "positionId": 3,
+      "club": "LIV",
+      "teamId": 14,
+      "priceTenths": 59,
+      "availabilityStatus": "a",
+      "chanceOfPlaying": null,
+      "basePoints": 3.565,
+      "routes": {
+        "appearance": 2.091,
+        "attacking": 1.156,
+        "cleanSheet": 0.094,
+        "bonus": 0.236,
+        "yellowCards": -0.101,
+        "redCards": -0.017,
+        "defensiveContribution": 0.106
+      },
+      "startRate": 0.674,
+      "startEvidence": {
+        "sourceStartRate": 0.483,
+        "finalStartRate": 0.674,
+        "observedAppearances": 2,
+        "recentStarts": 1,
+        "recentMatches": 2,
+        "recentMinutes": 81,
+        "appearanceSource": "marketParticipation",
+        "lineupAdjustment": 0.015,
+        "marketAdjustment": 0.176,
+        "availabilityAdjustment": 0.0
+      },
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 7,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
+    },
+    {
       "id": 397,
       "code": 437730,
       "name": "Semenyo",
@@ -13899,50 +13943,6 @@
       "evidence": {
         "appearance": "marketParticipation",
         "attacking": "marketAttack"
-      }
-    },
-    {
-      "id": 369,
-      "code": 611922,
-      "name": "Ngumoha",
-      "position": "MID",
-      "positionId": 3,
-      "club": "LIV",
-      "teamId": 14,
-      "priceTenths": 59,
-      "availabilityStatus": "a",
-      "chanceOfPlaying": null,
-      "basePoints": 3.545,
-      "routes": {
-        "appearance": 2.091,
-        "attacking": 1.136,
-        "cleanSheet": 0.094,
-        "bonus": 0.236,
-        "yellowCards": -0.101,
-        "redCards": -0.017,
-        "defensiveContribution": 0.106
-      },
-      "startRate": 0.674,
-      "startEvidence": {
-        "sourceStartRate": 0.483,
-        "finalStartRate": 0.674,
-        "observedAppearances": 2,
-        "recentStarts": 1,
-        "recentMatches": 2,
-        "recentMinutes": 81,
-        "appearanceSource": "marketParticipation",
-        "lineupAdjustment": 0.015,
-        "marketAdjustment": 0.176,
-        "availabilityAdjustment": 0.0
-      },
-      "squadNumber": null,
-      "rated": true,
-      "depthRank": 7,
-      "evidence": {
-        "appearance": "marketParticipation",
-        "attacking": "marketAttack",
-        "yellowCards": "marketCards",
-        "redCards": "marketCards"
       }
     },
     {
@@ -14552,10 +14552,10 @@
       "priceTenths": 55,
       "availabilityStatus": "a",
       "chanceOfPlaying": null,
-      "basePoints": 3.286,
+      "basePoints": 3.297,
       "routes": {
         "appearance": 1.675,
-        "attacking": 1.327,
+        "attacking": 1.338,
         "cleanSheet": 0.115,
         "bonus": 0.141,
         "yellowCards": -0.132,
@@ -14627,6 +14627,51 @@
         "all": "rolePrior",
         "appearance": "marketParticipation",
         "attacking": "marketAttack"
+      }
+    },
+    {
+      "id": 313,
+      "code": 443261,
+      "name": "Clarke",
+      "position": "MID",
+      "positionId": 3,
+      "club": "IPS",
+      "teamId": 12,
+      "priceTenths": 55,
+      "availabilityStatus": "a",
+      "chanceOfPlaying": null,
+      "basePoints": 3.242,
+      "routes": {
+        "appearance": 1.675,
+        "attacking": 1.327,
+        "cleanSheet": 0.115,
+        "bonus": 0.141,
+        "yellowCards": -0.166,
+        "redCards": -0.032,
+        "defensiveContribution": 0.182
+      },
+      "startRate": 0.405,
+      "startEvidence": {
+        "sourceStartRate": 0.768,
+        "finalStartRate": 0.405,
+        "observedAppearances": 2,
+        "recentStarts": 0,
+        "recentMatches": 2,
+        "recentMinutes": 19,
+        "appearanceSource": "marketParticipation",
+        "lineupAdjustment": -0.683,
+        "marketAdjustment": 0.32,
+        "availabilityAdjustment": 0.0
+      },
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 1,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
       }
     },
     {
@@ -14711,51 +14756,6 @@
       "evidence": {
         "appearance": "marketParticipation",
         "attacking": "marketAttack"
-      }
-    },
-    {
-      "id": 313,
-      "code": 443261,
-      "name": "Clarke",
-      "position": "MID",
-      "positionId": 3,
-      "club": "IPS",
-      "teamId": 12,
-      "priceTenths": 55,
-      "availabilityStatus": "a",
-      "chanceOfPlaying": null,
-      "basePoints": 3.223,
-      "routes": {
-        "appearance": 1.675,
-        "attacking": 1.308,
-        "cleanSheet": 0.115,
-        "bonus": 0.141,
-        "yellowCards": -0.166,
-        "redCards": -0.032,
-        "defensiveContribution": 0.182
-      },
-      "startRate": 0.405,
-      "startEvidence": {
-        "sourceStartRate": 0.768,
-        "finalStartRate": 0.405,
-        "observedAppearances": 2,
-        "recentStarts": 0,
-        "recentMatches": 2,
-        "recentMinutes": 19,
-        "appearanceSource": "marketParticipation",
-        "lineupAdjustment": -0.683,
-        "marketAdjustment": 0.32,
-        "availabilityAdjustment": 0.0
-      },
-      "squadNumber": null,
-      "rated": false,
-      "depthRank": 1,
-      "evidence": {
-        "all": "rolePrior",
-        "appearance": "marketParticipation",
-        "attacking": "marketAttack",
-        "yellowCards": "marketCards",
-        "redCards": "marketCards"
       }
     },
     {
@@ -15139,6 +15139,50 @@
       }
     },
     {
+      "id": 366,
+      "code": 494595,
+      "name": "Wirtz",
+      "position": "MID",
+      "positionId": 3,
+      "club": "LIV",
+      "teamId": 14,
+      "priceTenths": 75,
+      "availabilityStatus": "a",
+      "chanceOfPlaying": null,
+      "basePoints": 3.156,
+      "routes": {
+        "appearance": 1.657,
+        "attacking": 1.37,
+        "cleanSheet": 0.114,
+        "bonus": 0.139,
+        "yellowCards": -0.19,
+        "redCards": -0.026,
+        "defensiveContribution": 0.092
+      },
+      "startRate": 0.979,
+      "startEvidence": {
+        "sourceStartRate": 0.711,
+        "finalStartRate": 0.979,
+        "observedAppearances": 2,
+        "recentStarts": 2,
+        "recentMatches": 2,
+        "recentMinutes": 152,
+        "appearanceSource": "marketParticipation",
+        "lineupAdjustment": 0.257,
+        "marketAdjustment": 0.011,
+        "availabilityAdjustment": 0.0
+      },
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 2,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
+    },
+    {
       "id": 584,
       "code": 196100,
       "name": "Hamer",
@@ -15179,50 +15223,6 @@
         "all": "rolePrior",
         "appearance": "marketParticipation",
         "attacking": "marketAttack"
-      }
-    },
-    {
-      "id": 366,
-      "code": 494595,
-      "name": "Wirtz",
-      "position": "MID",
-      "positionId": 3,
-      "club": "LIV",
-      "teamId": 14,
-      "priceTenths": 75,
-      "availabilityStatus": "a",
-      "chanceOfPlaying": null,
-      "basePoints": 3.152,
-      "routes": {
-        "appearance": 1.657,
-        "attacking": 1.366,
-        "cleanSheet": 0.114,
-        "bonus": 0.139,
-        "yellowCards": -0.19,
-        "redCards": -0.026,
-        "defensiveContribution": 0.092
-      },
-      "startRate": 0.979,
-      "startEvidence": {
-        "sourceStartRate": 0.711,
-        "finalStartRate": 0.979,
-        "observedAppearances": 2,
-        "recentStarts": 2,
-        "recentMatches": 2,
-        "recentMinutes": 152,
-        "appearanceSource": "marketParticipation",
-        "lineupAdjustment": 0.257,
-        "marketAdjustment": 0.011,
-        "availabilityAdjustment": 0.0
-      },
-      "squadNumber": null,
-      "rated": true,
-      "depthRank": 2,
-      "evidence": {
-        "appearance": "marketParticipation",
-        "attacking": "marketAttack",
-        "yellowCards": "marketCards",
-        "redCards": "marketCards"
       }
     },
     {
@@ -15532,10 +15532,10 @@
       "priceTenths": 55,
       "availabilityStatus": "a",
       "chanceOfPlaying": null,
-      "basePoints": 3.074,
+      "basePoints": 3.077,
       "routes": {
         "appearance": 1.675,
-        "attacking": 1.16,
+        "attacking": 1.163,
         "cleanSheet": 0.115,
         "bonus": 0.141,
         "yellowCards": -0.167,
@@ -15873,10 +15873,10 @@
       "priceTenths": 50,
       "availabilityStatus": "a",
       "chanceOfPlaying": null,
-      "basePoints": 2.935,
+      "basePoints": 2.939,
       "routes": {
         "appearance": 1.617,
-        "attacking": 1.069,
+        "attacking": 1.073,
         "cleanSheet": 0.112,
         "bonus": 0.135,
         "yellowCards": -0.106,
@@ -15957,10 +15957,10 @@
       "priceTenths": 55,
       "availabilityStatus": "a",
       "chanceOfPlaying": null,
-      "basePoints": 2.907,
+      "basePoints": 2.909,
       "routes": {
         "appearance": 1.87,
-        "attacking": 0.803,
+        "attacking": 0.805,
         "cleanSheet": 0.092,
         "bonus": 0.201,
         "yellowCards": -0.172,
@@ -16076,6 +16076,51 @@
       }
     },
     {
+      "id": 377,
+      "code": 551499,
+      "name": "Munoz",
+      "position": "MID",
+      "positionId": 3,
+      "club": "LIV",
+      "teamId": 14,
+      "priceTenths": 65,
+      "availabilityStatus": "a",
+      "chanceOfPlaying": null,
+      "basePoints": 2.872,
+      "routes": {
+        "appearance": 1.617,
+        "attacking": 1.028,
+        "cleanSheet": 0.112,
+        "bonus": 0.135,
+        "yellowCards": -0.125,
+        "redCards": -0.02,
+        "defensiveContribution": 0.125
+      },
+      "startRate": 0.686,
+      "startEvidence": {
+        "sourceStartRate": 0.652,
+        "finalStartRate": 0.686,
+        "observedAppearances": 2,
+        "recentStarts": 1,
+        "recentMatches": 2,
+        "recentMinutes": 117,
+        "appearanceSource": "marketParticipation",
+        "lineupAdjustment": -0.135,
+        "marketAdjustment": 0.169,
+        "availabilityAdjustment": 0.0
+      },
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 5,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
+    },
+    {
       "id": 457,
       "code": 114243,
       "name": "J.Murphy",
@@ -16163,51 +16208,6 @@
       }
     },
     {
-      "id": 377,
-      "code": 551499,
-      "name": "Munoz",
-      "position": "MID",
-      "positionId": 3,
-      "club": "LIV",
-      "teamId": 14,
-      "priceTenths": 65,
-      "availabilityStatus": "a",
-      "chanceOfPlaying": null,
-      "basePoints": 2.852,
-      "routes": {
-        "appearance": 1.617,
-        "attacking": 1.008,
-        "cleanSheet": 0.112,
-        "bonus": 0.135,
-        "yellowCards": -0.125,
-        "redCards": -0.02,
-        "defensiveContribution": 0.125
-      },
-      "startRate": 0.686,
-      "startEvidence": {
-        "sourceStartRate": 0.652,
-        "finalStartRate": 0.686,
-        "observedAppearances": 2,
-        "recentStarts": 1,
-        "recentMatches": 2,
-        "recentMinutes": 117,
-        "appearanceSource": "marketParticipation",
-        "lineupAdjustment": -0.135,
-        "marketAdjustment": 0.169,
-        "availabilityAdjustment": 0.0
-      },
-      "squadNumber": null,
-      "rated": false,
-      "depthRank": 5,
-      "evidence": {
-        "all": "rolePrior",
-        "appearance": "marketParticipation",
-        "attacking": "marketAttack",
-        "yellowCards": "marketCards",
-        "redCards": "marketCards"
-      }
-    },
-    {
       "id": 217,
       "code": 536694,
       "name": "M.Fran\u00e7a",
@@ -16248,6 +16248,50 @@
         "all": "rolePrior",
         "appearance": "marketParticipation",
         "attacking": "marketAttack"
+      }
+    },
+    {
+      "id": 371,
+      "code": 441266,
+      "name": "Gravenberch",
+      "position": "MID",
+      "positionId": 3,
+      "club": "LIV",
+      "teamId": 14,
+      "priceTenths": 60,
+      "availabilityStatus": "a",
+      "chanceOfPlaying": null,
+      "basePoints": 2.838,
+      "routes": {
+        "appearance": 1.919,
+        "attacking": 0.593,
+        "cleanSheet": 0.09,
+        "bonus": 0.211,
+        "yellowCards": -0.131,
+        "redCards": -0.025,
+        "defensiveContribution": 0.181
+      },
+      "startRate": 0.676,
+      "startEvidence": {
+        "sourceStartRate": 0.518,
+        "finalStartRate": 0.676,
+        "observedAppearances": 2,
+        "recentStarts": 1,
+        "recentMatches": 2,
+        "recentMinutes": 96,
+        "appearanceSource": "marketParticipation",
+        "lineupAdjustment": -0.016,
+        "marketAdjustment": 0.174,
+        "availabilityAdjustment": 0.0
+      },
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 6,
+      "evidence": {
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
       }
     },
     {
@@ -16605,50 +16649,6 @@
       "evidence": {
         "appearance": "marketParticipation",
         "attacking": "marketAttack"
-      }
-    },
-    {
-      "id": 371,
-      "code": 441266,
-      "name": "Gravenberch",
-      "position": "MID",
-      "positionId": 3,
-      "club": "LIV",
-      "teamId": 14,
-      "priceTenths": 60,
-      "availabilityStatus": "a",
-      "chanceOfPlaying": null,
-      "basePoints": 2.824,
-      "routes": {
-        "appearance": 1.919,
-        "attacking": 0.579,
-        "cleanSheet": 0.09,
-        "bonus": 0.211,
-        "yellowCards": -0.131,
-        "redCards": -0.025,
-        "defensiveContribution": 0.181
-      },
-      "startRate": 0.676,
-      "startEvidence": {
-        "sourceStartRate": 0.518,
-        "finalStartRate": 0.676,
-        "observedAppearances": 2,
-        "recentStarts": 1,
-        "recentMatches": 2,
-        "recentMinutes": 96,
-        "appearanceSource": "marketParticipation",
-        "lineupAdjustment": -0.016,
-        "marketAdjustment": 0.174,
-        "availabilityAdjustment": 0.0
-      },
-      "squadNumber": null,
-      "rated": true,
-      "depthRank": 6,
-      "evidence": {
-        "appearance": "marketParticipation",
-        "attacking": "marketAttack",
-        "yellowCards": "marketCards",
-        "redCards": "marketCards"
       }
     },
     {
@@ -18016,6 +18016,51 @@
       }
     },
     {
+      "id": 323,
+      "code": 461587,
+      "name": "McAteer",
+      "position": "MID",
+      "positionId": 3,
+      "club": "IPS",
+      "teamId": 12,
+      "priceTenths": 45,
+      "availabilityStatus": "a",
+      "chanceOfPlaying": null,
+      "basePoints": 2.651,
+      "routes": {
+        "appearance": 1.617,
+        "attacking": 0.831,
+        "cleanSheet": 0.112,
+        "bonus": 0.135,
+        "yellowCards": -0.139,
+        "redCards": -0.03,
+        "defensiveContribution": 0.125
+      },
+      "startRate": 0.397,
+      "startEvidence": {
+        "sourceStartRate": 0.652,
+        "finalStartRate": 0.397,
+        "observedAppearances": 2,
+        "recentStarts": 0,
+        "recentMatches": 2,
+        "recentMinutes": 31,
+        "appearanceSource": "marketParticipation",
+        "lineupAdjustment": -0.58,
+        "marketAdjustment": 0.325,
+        "availabilityAdjustment": 0.0
+      },
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 15,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
+    },
+    {
       "id": 52,
       "code": 653481,
       "name": "Alysson",
@@ -18096,51 +18141,6 @@
       "rated": true,
       "depthRank": 6,
       "evidence": {
-        "appearance": "marketParticipation",
-        "attacking": "marketAttack",
-        "yellowCards": "marketCards",
-        "redCards": "marketCards"
-      }
-    },
-    {
-      "id": 323,
-      "code": 461587,
-      "name": "McAteer",
-      "position": "MID",
-      "positionId": 3,
-      "club": "IPS",
-      "teamId": 12,
-      "priceTenths": 45,
-      "availabilityStatus": "a",
-      "chanceOfPlaying": null,
-      "basePoints": 2.637,
-      "routes": {
-        "appearance": 1.617,
-        "attacking": 0.817,
-        "cleanSheet": 0.112,
-        "bonus": 0.135,
-        "yellowCards": -0.139,
-        "redCards": -0.03,
-        "defensiveContribution": 0.125
-      },
-      "startRate": 0.397,
-      "startEvidence": {
-        "sourceStartRate": 0.652,
-        "finalStartRate": 0.397,
-        "observedAppearances": 2,
-        "recentStarts": 0,
-        "recentMatches": 2,
-        "recentMinutes": 31,
-        "appearanceSource": "marketParticipation",
-        "lineupAdjustment": -0.58,
-        "marketAdjustment": 0.325,
-        "availabilityAdjustment": 0.0
-      },
-      "squadNumber": null,
-      "rated": false,
-      "depthRank": 15,
-      "evidence": {
-        "all": "rolePrior",
         "appearance": "marketParticipation",
         "attacking": "marketAttack",
         "yellowCards": "marketCards",
@@ -18429,6 +18429,51 @@
       }
     },
     {
+      "id": 375,
+      "code": 591386,
+      "name": "Nyoni",
+      "position": "MID",
+      "positionId": 3,
+      "club": "LIV",
+      "teamId": 14,
+      "priceTenths": 50,
+      "availabilityStatus": "a",
+      "chanceOfPlaying": null,
+      "basePoints": 2.623,
+      "routes": {
+        "appearance": 1.617,
+        "attacking": 0.794,
+        "cleanSheet": 0.112,
+        "bonus": 0.135,
+        "yellowCards": -0.135,
+        "redCards": -0.025,
+        "defensiveContribution": 0.125
+      },
+      "startRate": 0.397,
+      "startEvidence": {
+        "sourceStartRate": 0.652,
+        "finalStartRate": 0.397,
+        "observedAppearances": 2,
+        "recentStarts": 0,
+        "recentMatches": 2,
+        "recentMinutes": 13,
+        "appearanceSource": "marketParticipation",
+        "lineupAdjustment": -0.58,
+        "marketAdjustment": 0.325,
+        "availabilityAdjustment": 0.0
+      },
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 12,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
+    },
+    {
       "id": 621,
       "code": 616288,
       "name": "McAidoo",
@@ -18512,51 +18557,6 @@
         "all": "rolePrior",
         "appearance": "marketParticipation",
         "attacking": "marketAttack"
-      }
-    },
-    {
-      "id": 375,
-      "code": 591386,
-      "name": "Nyoni",
-      "position": "MID",
-      "positionId": 3,
-      "club": "LIV",
-      "teamId": 14,
-      "priceTenths": 50,
-      "availabilityStatus": "a",
-      "chanceOfPlaying": null,
-      "basePoints": 2.609,
-      "routes": {
-        "appearance": 1.617,
-        "attacking": 0.78,
-        "cleanSheet": 0.112,
-        "bonus": 0.135,
-        "yellowCards": -0.135,
-        "redCards": -0.025,
-        "defensiveContribution": 0.125
-      },
-      "startRate": 0.397,
-      "startEvidence": {
-        "sourceStartRate": 0.652,
-        "finalStartRate": 0.397,
-        "observedAppearances": 2,
-        "recentStarts": 0,
-        "recentMatches": 2,
-        "recentMinutes": 13,
-        "appearanceSource": "marketParticipation",
-        "lineupAdjustment": -0.58,
-        "marketAdjustment": 0.325,
-        "availabilityAdjustment": 0.0
-      },
-      "squadNumber": null,
-      "rated": false,
-      "depthRank": 12,
-      "evidence": {
-        "all": "rolePrior",
-        "appearance": "marketParticipation",
-        "attacking": "marketAttack",
-        "yellowCards": "marketCards",
-        "redCards": "marketCards"
       }
     },
     {
@@ -19974,10 +19974,10 @@
       "priceTenths": 45,
       "availabilityStatus": "a",
       "chanceOfPlaying": null,
-      "basePoints": 2.405,
+      "basePoints": 2.42,
       "routes": {
         "appearance": 1.617,
-        "attacking": 0.639,
+        "attacking": 0.654,
         "cleanSheet": 0.112,
         "bonus": 0.135,
         "yellowCards": -0.182,
@@ -20518,6 +20518,51 @@
       }
     },
     {
+      "id": 374,
+      "code": 158983,
+      "name": "Endo",
+      "position": "MID",
+      "positionId": 3,
+      "club": "LIV",
+      "teamId": 14,
+      "priceTenths": 50,
+      "availabilityStatus": "a",
+      "chanceOfPlaying": 100,
+      "basePoints": 2.131,
+      "routes": {
+        "appearance": 1.394,
+        "attacking": 0.549,
+        "cleanSheet": 0.096,
+        "bonus": 0.117,
+        "yellowCards": -0.113,
+        "redCards": -0.02,
+        "defensiveContribution": 0.108
+      },
+      "startRate": 0.298,
+      "startEvidence": {
+        "sourceStartRate": 0.652,
+        "finalStartRate": 0.298,
+        "observedAppearances": 2,
+        "recentStarts": 0,
+        "recentMatches": 2,
+        "recentMinutes": 0,
+        "appearanceSource": "marketParticipation",
+        "lineupAdjustment": -0.58,
+        "marketAdjustment": 0.225,
+        "availabilityAdjustment": 0.0
+      },
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 12,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
+    },
+    {
       "id": 159,
       "code": 486672,
       "name": "Caicedo",
@@ -20555,51 +20600,6 @@
       "rated": true,
       "depthRank": 7,
       "evidence": {
-        "appearance": "marketParticipation",
-        "attacking": "marketAttack",
-        "yellowCards": "marketCards",
-        "redCards": "marketCards"
-      }
-    },
-    {
-      "id": 374,
-      "code": 158983,
-      "name": "Endo",
-      "position": "MID",
-      "positionId": 3,
-      "club": "LIV",
-      "teamId": 14,
-      "priceTenths": 50,
-      "availabilityStatus": "a",
-      "chanceOfPlaying": 100,
-      "basePoints": 2.093,
-      "routes": {
-        "appearance": 1.372,
-        "attacking": 0.538,
-        "cleanSheet": 0.095,
-        "bonus": 0.115,
-        "yellowCards": -0.113,
-        "redCards": -0.02,
-        "defensiveContribution": 0.106
-      },
-      "startRate": 0.288,
-      "startEvidence": {
-        "sourceStartRate": 0.652,
-        "finalStartRate": 0.288,
-        "observedAppearances": 2,
-        "recentStarts": 0,
-        "recentMatches": 2,
-        "recentMinutes": 0,
-        "appearanceSource": "marketParticipation",
-        "lineupAdjustment": -0.58,
-        "marketAdjustment": 0.216,
-        "availabilityAdjustment": 0.0
-      },
-      "squadNumber": null,
-      "rated": false,
-      "depthRank": 12,
-      "evidence": {
-        "all": "rolePrior",
         "appearance": "marketParticipation",
         "attacking": "marketAttack",
         "yellowCards": "marketCards",
@@ -23591,10 +23591,10 @@
       "priceTenths": 90,
       "availabilityStatus": "a",
       "chanceOfPlaying": null,
-      "basePoints": 3.354,
+      "basePoints": 3.375,
       "routes": {
         "appearance": 1.556,
-        "attacking": 1.572,
+        "attacking": 1.593,
         "bonus": 0.394,
         "yellowCards": -0.098,
         "ownGoals": -0.027,
@@ -23748,6 +23748,51 @@
       }
     },
     {
+      "id": 316,
+      "code": 543968,
+      "name": "Emersonn",
+      "position": "FWD",
+      "positionId": 4,
+      "club": "IPS",
+      "teamId": 12,
+      "priceTenths": 55,
+      "availabilityStatus": "a",
+      "chanceOfPlaying": 100,
+      "basePoints": 3.122,
+      "routes": {
+        "appearance": 1.842,
+        "attacking": 1.364,
+        "bonus": 0.203,
+        "yellowCards": -0.203,
+        "ownGoals": -0.029,
+        "penaltiesMissed": -0.029,
+        "redCards": -0.026
+      },
+      "startRate": 0.988,
+      "startEvidence": {
+        "sourceStartRate": 0.833,
+        "finalStartRate": 0.988,
+        "observedAppearances": 2,
+        "recentStarts": 2,
+        "recentMatches": 2,
+        "recentMinutes": 110,
+        "appearanceSource": "marketParticipation",
+        "lineupAdjustment": 0.148,
+        "marketAdjustment": 0.006,
+        "availabilityAdjustment": 0.0
+      },
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 1,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
+    },
+    {
       "id": 138,
       "code": 647850,
       "name": "Kostoulas",
@@ -23828,51 +23873,6 @@
         "all": "rolePrior",
         "appearance": "marketParticipation",
         "attacking": "marketAttack"
-      }
-    },
-    {
-      "id": 316,
-      "code": 543968,
-      "name": "Emersonn",
-      "position": "FWD",
-      "positionId": 4,
-      "club": "IPS",
-      "teamId": 12,
-      "priceTenths": 55,
-      "availabilityStatus": "a",
-      "chanceOfPlaying": 100,
-      "basePoints": 3.104,
-      "routes": {
-        "appearance": 1.842,
-        "attacking": 1.346,
-        "bonus": 0.203,
-        "yellowCards": -0.203,
-        "ownGoals": -0.029,
-        "penaltiesMissed": -0.029,
-        "redCards": -0.026
-      },
-      "startRate": 0.988,
-      "startEvidence": {
-        "sourceStartRate": 0.833,
-        "finalStartRate": 0.988,
-        "observedAppearances": 2,
-        "recentStarts": 2,
-        "recentMatches": 2,
-        "recentMinutes": 110,
-        "appearanceSource": "marketParticipation",
-        "lineupAdjustment": 0.148,
-        "marketAdjustment": 0.006,
-        "availabilityAdjustment": 0.0
-      },
-      "squadNumber": null,
-      "rated": false,
-      "depthRank": 1,
-      "evidence": {
-        "all": "rolePrior",
-        "appearance": "marketParticipation",
-        "attacking": "marketAttack",
-        "yellowCards": "marketCards",
-        "redCards": "marketCards"
       }
     },
     {
@@ -24544,10 +24544,10 @@
       "priceTenths": 50,
       "availabilityStatus": "a",
       "chanceOfPlaying": null,
-      "basePoints": 2.472,
+      "basePoints": 2.479,
       "routes": {
         "appearance": 1.486,
-        "attacking": 0.82,
+        "attacking": 0.827,
         "bonus": 0.311,
         "yellowCards": -0.081,
         "ownGoals": -0.024,
@@ -24630,10 +24630,10 @@
       "priceTenths": 45,
       "availabilityStatus": "a",
       "chanceOfPlaying": null,
-      "basePoints": 2.403,
+      "basePoints": 2.418,
       "routes": {
         "appearance": 1.486,
-        "attacking": 0.787,
+        "attacking": 0.802,
         "bonus": 0.311,
         "yellowCards": -0.107,
         "ownGoals": -0.024,
