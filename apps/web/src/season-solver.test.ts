@@ -9,6 +9,7 @@ import {
   bonusPointsAtEvent,
   defconPointsAtEvent,
   fixtureAtEvent,
+  isBuyEligibleAtEvent,
   lookaheadPointsFor,
   marketCarryWeight,
   marketValueAtEvent,
@@ -67,6 +68,21 @@ function season() {
 }
 
 describe("season inputs artifact", () => {
+  it("blocks buying a new club arrival through his first gameweek", () => {
+    const player = {
+      ...SEASON_PLAYERS[0]!,
+      recentClubChange: {
+        from: "EVE",
+        to: "MCI",
+        detectedAt: "2026-09-04T06:58:57Z",
+        avoidUntilEvent: 3,
+      },
+    };
+
+    expect(isBuyEligibleAtEvent(player, 3)).toBe(false);
+    expect(isBuyEligibleAtEvent(player, 4)).toBe(true);
+  });
+
   it("aligns every fixture-evidence row to its published event index", () => {
     for (const club of Object.keys(inputs.fixtureLadder)) {
       for (const [index, event] of inputs.events.entries()) {

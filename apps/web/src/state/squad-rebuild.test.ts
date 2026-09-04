@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   LINEUP_SHAPE,
   SEASON_EVENTS,
+  SEASON_PLAYERS,
   SQUAD_SHAPE_BY_CODE,
 } from "./season-solver";
 import { rebuildSquad, rebuildUplift } from "./squad-rebuild";
@@ -47,6 +48,21 @@ describe("rebuildSquad", () => {
 
   it("refuses a budget no legal fifteen fits inside", () => {
     expect(rebuildSquad(0, 100)).toBeNull();
+  });
+
+  it("does not buy a recent club arrival during his hold gameweek", () => {
+    const event = SEASON_EVENTS[0] as number;
+    const blocked = new Set(
+      SEASON_PLAYERS.filter(
+        (player) =>
+          player.recentClubChange !== undefined &&
+          event <= player.recentClubChange.avoidUntilEvent,
+      ).map((player) => player.id),
+    );
+    const rebuilt = rebuildSquad(0, BUDGET);
+
+    expect(blocked.size).toBeGreaterThan(0);
+    expect(rebuilt?.squad.some((player) => blocked.has(player.id))).toBe(false);
   });
 
   it("can field a legal eleven from what it bought", () => {

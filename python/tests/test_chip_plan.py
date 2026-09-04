@@ -20,6 +20,7 @@ import pytest
 
 from fpl_andres.cli.publish_season_plan import (
     Candidate,
+    _buy_price,
     _chip_plan,
     _ChipRun,
     _data_gaps,
@@ -29,6 +30,25 @@ from fpl_andres.cli.publish_season_plan import (
     _wildcard_horizon_cliff,
     _wildcard_turnover,
 )
+
+
+def test_a_recent_arrival_is_unaffordable_only_through_the_hold_event() -> None:
+    candidate = Candidate(
+        element_id=1,
+        code=440993,
+        name="Ndiaye",
+        position=3,
+        team_id=15,
+        club="MCI",
+        price_tenths=60,
+        record=3.8,
+        best_match=8.0,
+        squad_number=None,
+        avoid_until_event=3,
+    )
+
+    assert _buy_price(candidate, 3, 1000) == 1001
+    assert _buy_price(candidate, 4, 1000) == 60
 
 
 def _candidate(code: int, name: str, club: str = "ARS", position: int = 3) -> Candidate:

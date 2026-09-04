@@ -57,6 +57,7 @@ from fpl_andres.planning.season_plan import (
     plan_season,
 )
 from fpl_andres.positions import Position, is_captain_eligible
+from fpl_andres.recent_transfers import recent_transfer_holds
 from fpl_andres.rules import RulesSnapshot
 from fpl_andres.season_position import plannable_events
 from fpl_andres.simulation.squad import Candidate as SquadCandidate
@@ -75,6 +76,7 @@ FIXTURES = "https://fantasy.premierleague.com/api/fixtures/"
 USER_AGENT = "fpl-andres/0.5 (+https://github.com/JamieMBright/fpl-andres)"
 PROJECTIONS = Path("apps/web/src/data/projections.json")
 OPENING_SQUAD = Path("apps/web/src/data/opening-squad.json")
+SEASON_INPUTS = Path("apps/web/src/data/season-inputs.json")
 DEFAULT_OUTPUT = Path("apps/web/src/data/season-plan.json")
 
 POSITION_CODES = {position.value: position.code for position in Position}
@@ -101,6 +103,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--output", default=str(DEFAULT_OUTPUT))
     parser.add_argument("--projections", default=str(PROJECTIONS))
     parser.add_argument("--opening-squad", default=str(OPENING_SQUAD))
+    parser.add_argument("--season-inputs", default=str(SEASON_INPUTS))
     # 30 s was enough for a five-event window and is not enough for eight: the
     # third lexicographic stage timed out proving its tie-break optimum, which
     # fails the publish outright. This is an offline step, so it buys the time.
@@ -152,6 +155,13 @@ class Candidate:
     squad_number: int | None
     # What `record` is made of, so a fixture can be applied to each route.
     routes: Mapping[str, float] = field(default_factory=dict)
+    avoid_until_event: int | None = None
+
+
+def _buy_price(candidate: Candidate, event: int, budget_tenths: int) -> int:
+    if candidate.avoid_until_event is not None and event <= candidate.avoid_until_event:
+        return budget_tenths + 1
+    return candidate.price_tenths
 
 
 def _armband_value(mean: float, ceiling: float) -> float:
@@ -788,6 +798,7 @@ def _wildcard_squad_for_horizon(
         run.candidate_for[candidate.element_id]
         for candidate in run.pool
         if candidate.element_id in run.candidate_for
+        and (candidate.avoid_until_event is None or event > candidate.avoid_until_event)
     ]
     if len(shoppable) < sum(SQUAD_RULES.position_counts.values()):
         return None
@@ -1229,6 +1240,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     if not events:
         print("every gameweek deadline has passed; nothing to plan", file=sys.stderr)
         return 1
+    transfer_holds = recent_transfer_holds(Path(args.season_inputs))
 
     raw_fixtures = _get(FIXTURES)
     assert isinstance(raw_fixtures, list)
@@ -1268,6 +1280,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                 best_match=float(record.get("expectedCeiling") or record["expectedPoints"]),
                 routes=record.get("routes", {}),
                 squad_number=element.squad_number,
+                avoid_until_event=transfer_holds.get(element.code),
             )
         )
 
@@ -1352,7 +1365,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                     element_id=candidate.element_id,
                     team_id=candidate.team_id,
                     position_id=candidate.position,
-                    buy_price_tenths=candidate.price_tenths,
+                    buy_price_tenths=_buy_price(candidate, event, snapshot.budget_tenths),
                     sell_price_tenths=candidate.price_tenths,
                     expected_points=round(expected, 3),
                     expected_ceiling=round(max(expected, peak), 3),
@@ -1533,7 +1546,11 @@ def main(argv: Sequence[str] | None = None) -> int:
         }
         try:
             free_starters, free_bench = _free_hit_squad(
-                list(candidate_for.values()),
+                [
+                    candidate_for[candidate.element_id]
+                    for candidate in candidates
+                    if candidate.avoid_until_event is None or event > candidate.avoid_until_event
+                ],
                 points,
             )
         except ValueError:

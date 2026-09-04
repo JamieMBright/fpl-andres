@@ -99,6 +99,14 @@ The project follows Semantic Versioning once milestone tags begin.
 
 ### Fixed
 
+- Chip cards now keep the applied Free Hit or Wildcard call when the second
+  solve finds a larger Bench Boost or Triple Captain score in the same week.
+  The badge, temporary/permanent transfer label and displayed squad can no
+  longer describe different chips.
+- Model 8.17 holds players out of new recommendations through their first
+  gameweek after FPL changes their club assignment. The hold covers ordinary
+  transfers, Wildcards and Free Hits, preserves existing ownership, and
+  expires automatically after the gameweek.
 - Advisory captain and vice-captain choices are now restricted to midfielders
   and forwards across the offline optimizer, browser solver, chip valuation,
   season simulations and captaincy backtests. Observed FPL, rival and FPL500

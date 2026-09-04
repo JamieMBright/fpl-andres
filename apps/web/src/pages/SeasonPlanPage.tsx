@@ -1583,16 +1583,13 @@ export default function SeasonPlanPage() {
                 </InfoMarker>
               </li>
               <li>
-                <strong>
-                  Club assignments are FPL&rsquo;s at refresh time.
-                </strong>{" "}
-                A player FPL has just moved can briefly be valued against his
-                previous club&rsquo;s fixtures.
+                <strong>New club arrivals wait one gameweek.</strong> A player
+                FPL has just moved is not recommended immediately.
                 <InfoMarker label="club assignment freshness">
                   Clubs are read from FPL&rsquo;s own player feed, not a
                   transfer rumour or an external news scrape. The planning
-                  inputs refresh daily, so a move enters the plan after FPL
-                  publishes it and that refresh has completed.
+                  inputs compare each refresh with the previous assignment and
+                  hold a moved player out through the next gameweek.
                 </InfoMarker>
               </li>
               <li>

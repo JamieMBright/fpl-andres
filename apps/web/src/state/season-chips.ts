@@ -445,6 +445,7 @@ function pinned(
 function singleChipPerGameweek(
   calls: readonly ChipCall[],
   committed: { chip: string; event: number } | null,
+  preferAppliedRebuild = false,
 ): ChipCall[] {
   const byEvent = new Map<number, ChipCall[]>();
   for (const call of calls) {
@@ -458,7 +459,13 @@ function singleChipPerGameweek(
     const kept =
       clashes.find(
         (call) => committed?.event === event && committed.chip === call.chip,
-      ) ?? [...clashes].sort((left, right) => right.gain - left.gain)[0];
+      ) ??
+      (preferAppliedRebuild
+        ? clashes
+            .filter((call) => call.squadElementIds?.length === 15)
+            .sort((left, right) => right.gain - left.gain)[0]
+        : undefined) ??
+      [...clashes].sort((left, right) => right.gain - left.gain)[0];
     if (!kept) continue;
     for (const call of clashes) {
       if (call === kept) continue;
@@ -492,7 +499,7 @@ export function resolveChipClashes(
   calls: readonly ChipCall[],
   committed: { chip: string; event: number } | null = null,
 ): ChipCall[] {
-  return singleChipPerGameweek(calls, committed);
+  return singleChipPerGameweek(calls, committed, true);
 }
 
 export function plannedRebuilds(calls: readonly ChipCall[]): {

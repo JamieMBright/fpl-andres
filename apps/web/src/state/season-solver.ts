@@ -154,6 +154,12 @@ export interface SolverPlayer {
   rated?: boolean;
   /** 1 is his club's most expensive player in this position. */
   depthRank?: number;
+  recentClubChange?: {
+    from: string;
+    to: string;
+    detectedAt: string;
+    avoidUntilEvent: number;
+  };
 }
 
 interface FixtureLadder {
@@ -273,6 +279,16 @@ export function startRateAtEvent(
     eventIndex,
     anchorIndex,
     MARKET_CARRY.halfLifeGameweeks,
+  );
+}
+
+export function isBuyEligibleAtEvent(
+  player: SolverPlayer,
+  event: number,
+): boolean {
+  return (
+    player.recentClubChange === undefined ||
+    event > player.recentClubChange.avoidUntilEvent
   );
 }
 
@@ -719,7 +735,8 @@ export function* solveSeason(
       // a high per-appearance rate and almost no starts could win a transfer,
       // and the browser kept exactly the candidates Python drops.
       (player) =>
-        startRateAtEvent(player, index) >= PLAYABLE_START_RATE ||
+        (isBuyEligibleAtEvent(player, event) &&
+          startRateAtEvent(player, index) >= PLAYABLE_START_RATE) ||
         squad.some((held) => held.elementId === player.id),
     ).map((player) => ({
       elementId: player.id,

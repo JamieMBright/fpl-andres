@@ -204,6 +204,68 @@ def test_only_gameweeks_still_open_are_published(tmp_path: Path) -> None:
     ]
 
 
+def test_a_new_club_assignment_blocks_buying_for_the_next_gameweek(tmp_path: Path) -> None:
+    output = tmp_path / "season-inputs.json"
+    output.write_text(
+        json.dumps(
+            {
+                "generatedAt": "2026-08-27T12:00:00Z",
+                "players": [{"code": 1001, "club": "EVE"}],
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    changes = publish_season_inputs._recent_club_changes(
+        output,
+        [{"code": 1001, "club": "MCI"}],
+        first_event=3,
+        detected_at="2026-09-04T06:58:57Z",
+    )
+
+    assert changes == {
+        1001: {
+            "from": "EVE",
+            "to": "MCI",
+            "detectedAt": "2026-09-04T06:58:57Z",
+            "avoidUntilEvent": 3,
+        }
+    }
+
+
+def test_a_recent_club_change_survives_refreshes_until_its_gameweek_passes(
+    tmp_path: Path,
+) -> None:
+    output = tmp_path / "season-inputs.json"
+    evidence = {
+        "from": "EVE",
+        "to": "MCI",
+        "detectedAt": "2026-09-04T06:58:57Z",
+        "avoidUntilEvent": 3,
+    }
+    output.write_text(
+        json.dumps({"players": [{"code": 1001, "club": "MCI", "recentClubChange": evidence}]}),
+        encoding="utf-8",
+    )
+
+    current = [{"code": 1001, "club": "MCI"}]
+    assert publish_season_inputs._recent_club_changes(
+        output,
+        current,
+        first_event=3,
+        detected_at="2026-09-04T12:00:00Z",
+    ) == {1001: evidence}
+    assert (
+        publish_season_inputs._recent_club_changes(
+            output,
+            current,
+            first_event=4,
+            detected_at="2026-09-12T12:00:00Z",
+        )
+        == {}
+    )
+
+
 def test_a_gameweek_whose_deadline_has_passed_is_not_published(tmp_path: Path) -> None:
     """The horizon starts at the next gameweek a manager can act on.
 

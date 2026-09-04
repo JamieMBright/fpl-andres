@@ -29,6 +29,14 @@ from __future__ import annotations
 
 __all__ = ["MODEL_VERSION"]
 
+#: 8.17 holds a player out of new recommendations through his first gameweek
+#: after FPL changes his club assignment. The daily season-input publisher
+#: compares stable player codes with its previous artifact, preserves the old
+#: and new club plus detection time, and expires the hold automatically after
+#: that event. Existing owners may keep or sell him; ordinary transfers,
+#: Wildcards and Free Hits cannot buy him during the hold. Minor: projected
+#: points retain their meaning, but short-term candidate eligibility changes.
+#:
 #: 8.16 plans from the deadline instead of from FPL's `finished` flag. That
 #: flag is set only once the bonus for every match in a round is confirmed,
 #: hours after the last whistle and days after the deadline that locked the
@@ -451,4 +459,4 @@ __all__ = ["MODEL_VERSION"]
 #: projection and resampled, so a gap that does not clear zero is reported as
 #: not clearing zero. No projection changed; what changed is what may be
 #: claimed from it.
-MODEL_VERSION = "8.16"
+MODEL_VERSION = "8.17"

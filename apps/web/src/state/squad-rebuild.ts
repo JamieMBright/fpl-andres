@@ -2,9 +2,11 @@ import {
   EVENT_INDEX,
   LINEUP_SHAPE,
   PLAYABLE_START_RATE,
+  SEASON_EVENTS,
   SEASON_PLAYERS,
   SQUAD_SHAPE_BY_CODE,
   bestElevenPoints,
+  isBuyEligibleAtEvent,
   lookaheadPointsFor,
   startRateAtEvent,
   type SolverPlayer,
@@ -44,8 +46,11 @@ function horizonPoints(
 }
 
 function eligible(eventIndex: number, weeks: number): SolverPlayer[] {
+  const event = SEASON_EVENTS[eventIndex];
+  if (event === undefined) return [];
   return SEASON_PLAYERS.filter(
     (player) =>
+      isBuyEligibleAtEvent(player, event) &&
       startRateAtEvent(player, eventIndex) >= PLAYABLE_START_RATE &&
       horizonPoints(player, eventIndex, weeks) > 0,
   );

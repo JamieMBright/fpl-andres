@@ -474,6 +474,29 @@ describe("chipCallsFor", () => {
     expect(callOf(resolved, "Triple Captain").event).toBeNull();
   });
 
+  it("keeps an applied rebuild ahead of a repriced chip", () => {
+    const resolved = resolveChipClashes([
+      {
+        event: 3,
+        chip: "Wildcard",
+        half: "first",
+        gain: 5,
+        note: "rebuild",
+        squadElementIds: Array.from({ length: 15 }, (_, index) => index + 1),
+      },
+      {
+        event: 3,
+        chip: "Bench Boost",
+        half: "first",
+        gain: 12,
+        note: "bench",
+      },
+    ]);
+
+    expect(callOf(resolved, "Wildcard").event).toBe(3);
+    expect(callOf(resolved, "Bench Boost").event).toBeNull();
+  });
+
   it("keeps the halves apart", () => {
     const calls = chipCallsFor(
       [

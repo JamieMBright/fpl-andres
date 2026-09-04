@@ -259,6 +259,57 @@ def _current_lineups(path: Path) -> dict[int, list[CurrentLineupObservation]]:
     return observations
 
 
+def _recent_club_changes(
+    output_path: Path,
+    current_players: Sequence[Mapping[str, object]],
+    *,
+    first_event: int,
+    detected_at: str,
+) -> dict[int, dict[str, object]]:
+    if not output_path.exists():
+        return {}
+    previous = read_json_file(output_path)
+    rows = previous.get("players")
+    if not isinstance(rows, list):
+        raise ValueError(f"previous season inputs publish no players list: {output_path}")
+    previous_by_code = {
+        int(row["code"]): row
+        for row in rows
+        if isinstance(row, Mapping) and isinstance(row.get("code"), int)
+    }
+    changes: dict[int, dict[str, object]] = {}
+    for player in current_players:
+        code = player.get("code")
+        club = player.get("club")
+        if not isinstance(code, int) or not isinstance(club, str):
+            continue
+        prior = previous_by_code.get(code)
+        if prior is None:
+            continue
+        prior_club = prior.get("club")
+        if isinstance(prior_club, str) and prior_club != club:
+            changes[code] = {
+                "from": prior_club,
+                "to": club,
+                "detectedAt": detected_at,
+                "avoidUntilEvent": first_event,
+            }
+            continue
+        carried = prior.get("recentClubChange")
+        if not isinstance(carried, Mapping):
+            continue
+        avoid_until = carried.get("avoidUntilEvent")
+        if (
+            carried.get("to") == club
+            and isinstance(carried.get("from"), str)
+            and isinstance(carried.get("detectedAt"), str)
+            and isinstance(avoid_until, int)
+            and avoid_until >= first_event
+        ):
+            changes[code] = dict(carried)
+    return changes
+
+
 def _artifact_provenance(
     path: Path,
     *,
@@ -1780,6 +1831,18 @@ def main(argv: Sequence[str] | None = None) -> int:
     if absent:
         raise ValueError(f"opening squad players missing from the solver pool: {sorted(absent)}")
 
+    generated_at = _now().isoformat().replace("+00:00", "Z")
+    club_changes = _recent_club_changes(
+        Path(args.output),
+        trimmed,
+        first_event=ordered[0],
+        detected_at=generated_at,
+    )
+    for player in trimmed:
+        change = club_changes.get(int(str(player["code"])))
+        if change is not None:
+            player["recentClubChange"] = change
+
     bonus_overrides = _bonus_overrides(
         trimmed,
         ordered,
@@ -1805,8 +1868,6 @@ def main(argv: Sequence[str] | None = None) -> int:
     # Every event here still has its deadline ahead, so the moment of publishing
     # is genuinely before every prediction cutoff and the causality check holds
     # without dating the artifact forward.
-    generated_at = _now().isoformat().replace("+00:00", "Z")
-
     payload = {
         "schemaVersion": SCHEMA_VERSION,
         "generatedAt": generated_at,
