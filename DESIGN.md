@@ -332,7 +332,7 @@ so a review knows what it does not have to check by hand.
 | `ScatterReadout`          | The scatter as a ranked, pinnable table                                                            | unit                                 |
 | `PinnedPlayers`           | Up to four players compared side by side                                                           | unit                                 |
 | `ValidationReport`        | Backtest metrics against baselines                                                                 | unit (`ValidationReport.test.tsx`)   |
-| `XStartCalibration`       | Running-average XI lines, kit isolation, point popups, period-selectable bars, settled history     | unit, `smoke`                        |
+| `XStartCalibration`       | Running-average XI lines, kit isolation, point popups, rolling-five bars, settled history          | unit, `smoke`                        |
 | `SeasonReplay`            | A completed season stepped through week by week                                                    | unit (`SeasonReplay.test.tsx`)       |
 | `CalibrationCharts`       | Ranked bars and season lines, drawn by hand                                                        | unit                                 |
 | `CohortPanel`             | The swept cohort and its coverage                                                                  | —                                    |

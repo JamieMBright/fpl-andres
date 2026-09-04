@@ -7252,6 +7252,10 @@ button.fpl500-holding-name {
   background: var(--paper);
 }
 
+.xstart-gw-choice option:disabled {
+  color: color-mix(in srgb, var(--ink) 45%, transparent);
+}
+
 @media (max-width: 680px) {
   .expected-xi-validation-summary {
     grid-template-columns: 1fr;

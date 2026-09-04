@@ -2,6 +2,7 @@ import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
 
 import gw1Review from "../src/data/gw1-review.json" with { type: "json" };
+import xstartValidation from "../src/data/xstart-validation.json" with { type: "json" };
 
 /**
  * The whole browser suite, deliberately.
@@ -397,6 +398,14 @@ test("xStart performance kits and point popup work at desktop and phone widths",
       await page.goto("/expected-xi");
       await settle(page);
       await page.getByLabel("Performance").check();
+      const lastFiveOption = page.getByRole("option", {
+        name: "Last 5GW average",
+      });
+      if (xstartValidation.events.length < 5) {
+        await expect(lastFiveOption).toHaveAttribute("disabled", "");
+      } else {
+        await expect(lastFiveOption).not.toHaveAttribute("disabled", "");
+      }
 
       const kit = page.getByRole("button", { name: "ARS", exact: true });
       const kitBox = await kit.boundingBox();

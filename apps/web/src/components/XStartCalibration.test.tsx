@@ -3,6 +3,7 @@ import { describe, expect, it, vi } from "vitest";
 
 import { XStartCalibration } from "./XStartCalibration";
 import validation from "../data/xstart-validation.json";
+import { readXStartValidation } from "../state/xstart-validation";
 
 const latest = validation.events.at(-1)!;
 
@@ -94,8 +95,16 @@ describe("XStartCalibration", () => {
       ),
     ).toEqual([
       "Season average",
+      "Last 5GW average",
       ...validation.events.map((event) => `GW${event.event}`),
     ]);
+    const lastFiveOption = screen.getByRole("option", {
+      name: "Last 5GW average",
+    });
+    expect(lastFiveOption).toHaveProperty(
+      "disabled",
+      validation.events.length < 5,
+    );
     expect(period).toHaveValue("average");
     expect(
       screen.getAllByRole("list", { name: "xStart performance by club" }),
@@ -168,6 +177,47 @@ describe("XStartCalibration", () => {
       (row) => Number(row.getAttribute("data-score")),
     );
     expect(hardestValues).toEqual([...hardestValues].sort((a, b) => a - b));
+  });
+
+  it("automatically enables and calculates the latest five settled gameweeks", () => {
+    const parsed = readXStartValidation(validation);
+    const base = parsed.events[0]!;
+    const club = base.clubs[0]!.club;
+    const events = Array.from({ length: 6 }, (_, index) => ({
+      ...base,
+      event: index + 1,
+      clubs: base.clubs.map((row) =>
+        row.club === club ? { ...row, topElevenHits: index + 1 } : row,
+      ),
+    }));
+
+    render(<XStartCalibration validation={{ ...parsed, events }} />);
+    const lastFiveOption = screen.getByRole("option", {
+      name: "Last 5GW average",
+    });
+    expect(lastFiveOption).toBeEnabled();
+    fireEvent.change(
+      screen.getByRole("combobox", { name: "Performance period" }),
+      { target: { value: "last5" } },
+    );
+
+    expect(
+      screen.getByRole("heading", { name: "Last 5GW average hits" }),
+    ).toBeVisible();
+    const clubRow = screen
+      .getByText(club, { selector: ".xstart-score-bar-label" })
+      .closest("li");
+    expect(clubRow).not.toBeNull();
+    expect(within(clubRow!).getByText("4.0/11")).toBeVisible();
+    fireEvent.focus(
+      screen.getByRole("button", {
+        name: `About ${club} last 5GW average xStart detail`,
+      }),
+    );
+    const tooltip = screen.getByRole("tooltip");
+    expect(tooltip).toHaveTextContent("GW2 2/11");
+    expect(tooltip).toHaveTextContent("GW6 6/11");
+    expect(tooltip).not.toHaveTextContent("GW1 1/11");
   });
 
   it("shows a point-anchored running average and raw score on pointer or keyboard focus", () => {

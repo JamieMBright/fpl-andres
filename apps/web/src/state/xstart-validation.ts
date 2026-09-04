@@ -94,4 +94,24 @@ export function latestXStartEvent(
   return latest;
 }
 
+export function latestSettledWindow(
+  events: readonly XStartValidationEvent[],
+  size: number,
+): readonly XStartValidationEvent[] {
+  return events.length < size ? [] : events.slice(-size);
+}
+
+export function averageXStartHits(
+  events: readonly XStartValidationEvent[],
+  club: string,
+): number {
+  const scores = events.flatMap((event) => {
+    const row = event.clubs.find((entry) => entry.club === club);
+    return row ? [row.topElevenHits] : [];
+  });
+  return scores.length === 0
+    ? 0
+    : scores.reduce((total, score) => total + score, 0) / scores.length;
+}
+
 export const XSTART_VALIDATION = readXStartValidation(validation);

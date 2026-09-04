@@ -7,13 +7,18 @@ import { kitForShortName } from "../kit/team-kits";
 import { PLAYERS_BY_ELEMENT_ID } from "../state/season-solver";
 import {
   XSTART_VALIDATION,
+  averageXStartHits,
+  latestSettledWindow,
   latestXStartEvent,
   type XStartClubValidation,
+  type XStartValidation,
   type XStartValidationEvent,
 } from "../state/xstart-validation";
 
-type PerformancePeriod = "average" | number;
+type PerformancePeriod = "average" | "last5" | number;
 type PerformanceOrder = "club" | "easiest" | "hardest";
+
+const LAST_FIVE_GAMEWEEKS = 5;
 
 interface LineHover {
   club: string;
@@ -62,31 +67,33 @@ function clubAt(event: XStartValidationEvent, club: string) {
   return event.clubs.find((row) => row.club === club);
 }
 
-function averageHitsThrough(club: string, throughEvent: number): number {
-  const scores = XSTART_VALIDATION.events.flatMap((event) => {
-    const row = event.event <= throughEvent ? clubAt(event, club) : undefined;
-    return row ? [row.topElevenHits] : [];
-  });
-  return scores.length === 0
-    ? 0
-    : scores.reduce((total, score) => total + score, 0) / scores.length;
+function averageHitsThrough(
+  events: readonly XStartValidationEvent[],
+  club: string,
+  throughEvent: number,
+): number {
+  return averageXStartHits(
+    events.filter((event) => event.event <= throughEvent),
+    club,
+  );
 }
 
-function averageHits(club: string): number {
-  const latest = XSTART_VALIDATION.events.at(-1);
-  return latest ? averageHitsThrough(club, latest.event) : 0;
-}
-
-function ClubAverageDetail({ club }: { club: string }) {
-  const rows = XSTART_VALIDATION.events.flatMap((event) => {
+function ClubAverageDetail({
+  club,
+  events,
+}: {
+  club: string;
+  events: readonly XStartValidationEvent[];
+}) {
+  const rows = events.flatMap((event) => {
     const detail = clubAt(event, club);
     return detail ? [{ event: event.event, hits: detail.topElevenHits }] : [];
   });
   return (
     <>
       <span className="info-marker-line">
-        {averageHits(club).toFixed(1)}/11 average across {rows.length} settled
-        gameweeks.
+        {averageXStartHits(events, club).toFixed(1)}/11 average across{" "}
+        {rows.length} settled gameweeks.
       </span>
       <span className="info-marker-line">
         {rows.map((row) => `GW${row.event} ${row.hits}/11`).join(" · ")}
@@ -95,8 +102,12 @@ function ClubAverageDetail({ club }: { club: string }) {
   );
 }
 
-export function XStartCalibration() {
-  const latest = latestXStartEvent(XSTART_VALIDATION);
+export function XStartCalibration({
+  validation = XSTART_VALIDATION,
+}: {
+  readonly validation?: XStartValidation;
+}) {
+  const latest = latestXStartEvent(validation);
   const lineTooltipId = useId();
   const chartRef = useRef<HTMLElement>(null);
   const chartSvgRef = useRef<SVGSVGElement>(null);
@@ -109,21 +120,27 @@ export function XStartCalibration() {
     top: number;
   } | null>(null);
   const [selectedClub, setSelectedClub] = useState<string | null>(null);
+  const lastFiveEvents = latestSettledWindow(
+    validation.events,
+    LAST_FIVE_GAMEWEEKS,
+  );
+  const lastFiveReady = lastFiveEvents.length === LAST_FIVE_GAMEWEEKS;
   const selected =
     typeof period === "number"
-      ? (XSTART_VALIDATION.events.find((event) => event.event === period) ??
-        latest)
+      ? (validation.events.find((event) => event.event === period) ?? latest)
       : null;
   const clubs = latest.clubs.map((club) => club.club);
   const shownClubs = selectedClub === null ? clubs : [selectedClub];
-  const eventCount = XSTART_VALIDATION.events.length;
+  const eventCount = validation.events.length;
   const performanceRows = shownClubs
     .map((club) => ({
       club,
       score:
-        selected === null
-          ? averageHits(club)
-          : (clubAt(selected, club)?.topElevenHits ?? 0),
+        period === "last5"
+          ? averageXStartHits(lastFiveEvents, club)
+          : selected === null
+            ? averageXStartHits(validation.events, club)
+            : (clubAt(selected, club)?.topElevenHits ?? 0),
       detail: selected === null ? null : clubAt(selected, club),
     }))
     .sort((left, right) => {
@@ -134,14 +151,14 @@ export function XStartCalibration() {
       return left.club.localeCompare(right.club);
     });
   const linePoints = (club: string) =>
-    XSTART_VALIDATION.events
+    validation.events
       .map(
         (event, index) =>
-          `${lineX(index, eventCount)},${lineY(averageHitsThrough(club, event.event))}`,
+          `${lineX(index, eventCount)},${lineY(averageHitsThrough(validation.events, club, event.event))}`,
       )
       .join(" ");
   const showLinePoint = (club: string, eventIndex: number) => {
-    const event = XSTART_VALIDATION.events[eventIndex];
+    const event = validation.events[eventIndex];
     if (!event) return;
     const detail = clubAt(event, club);
     if (!detail) return;
@@ -150,7 +167,7 @@ export function XStartCalibration() {
       event: event.event,
       eventIndex,
       hits: detail.topElevenHits,
-      runningAverage: averageHitsThrough(club, event.event),
+      runningAverage: averageHitsThrough(validation.events, club, event.event),
     });
   };
   const showLinePointAtClientX = (
@@ -271,7 +288,7 @@ export function XStartCalibration() {
           <text className="xstart-axis-label is-y" x="36" y="44">
             11
           </text>
-          {XSTART_VALIDATION.events.map((event, index) => (
+          {validation.events.map((event, index) => (
             <text
               className="xstart-axis-label"
               key={event.event}
@@ -377,15 +394,19 @@ export function XStartCalibration() {
           <select
             onChange={(event) =>
               setPeriod(
-                event.target.value === "average"
-                  ? "average"
+                event.target.value === "average" ||
+                  event.target.value === "last5"
+                  ? event.target.value
                   : Number(event.target.value),
               )
             }
             value={period}
           >
             <option value="average">Season average</option>
-            {XSTART_VALIDATION.events.map((event) => (
+            <option disabled={!lastFiveReady} value="last5">
+              Last 5GW average
+            </option>
+            {validation.events.map((event) => (
               <option key={event.event} value={event.event}>
                 GW{event.event}
               </option>
@@ -408,7 +429,11 @@ export function XStartCalibration() {
       </div>
 
       <h3>
-        {selected === null ? "Season average hits" : `GW${selected.event} hits`}
+        {period === "last5"
+          ? "Last 5GW average hits"
+          : selected === null
+            ? "Season average hits"
+            : `GW${selected.event} hits`}
       </h3>
       <ol
         aria-label="xStart performance by club"
@@ -432,19 +457,26 @@ export function XStartCalibration() {
                 />
               </span>
               <span className="mono xstart-score-bar-value">
-                {selected === null ? score.toFixed(1) : score}/11
+                {typeof period === "number" ? score : score.toFixed(1)}/11
               </span>
               <InfoMarker
                 label={
-                  selected === null
-                    ? `${club} season average xStart detail`
-                    : `${club} GW${selected.event} xStart detail`
+                  period === "last5"
+                    ? `${club} last 5GW average xStart detail`
+                    : selected === null
+                      ? `${club} season average xStart detail`
+                      : `${club} GW${selected.event} xStart detail`
                 }
               >
                 {detail ? (
                   <ClubDetail club={detail} />
                 ) : (
-                  <ClubAverageDetail club={club} />
+                  <ClubAverageDetail
+                    club={club}
+                    events={
+                      period === "last5" ? lastFiveEvents : validation.events
+                    }
+                  />
                 )}
               </InfoMarker>
             </li>
