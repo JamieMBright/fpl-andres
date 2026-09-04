@@ -289,6 +289,38 @@ describe("team analysis entry", () => {
     expect(screen.getByText(/FPL is temporarily unreachable/i)).toBeVisible();
   });
 
+  it("shows no generic plan when the requested team cannot be reached", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi
+        .fn<typeof fetch>()
+        .mockImplementation(async () =>
+          Response.json(
+            { status: "degraded", reason: "fpl_unreachable" },
+            { status: 503 },
+          ),
+        ),
+    );
+
+    renderApplication("/plan?team=2822737");
+    await openPlanStep("Your manager and season");
+    expect(
+      await screen.findByRole(
+        "heading",
+        { name: "FPL Cannot Be Reached" },
+        {
+          timeout: SETTLE,
+        },
+      ),
+    ).toBeVisible();
+
+    await openPlanStep("Your plan");
+
+    expect(screen.getByText(/no plan is shown until/i)).toBeVisible();
+    expect(document.querySelectorAll(".plan-card")).toHaveLength(0);
+    expect(document.querySelectorAll(".plan-chip-half")).toHaveLength(0);
+  });
+
   it("keeps a validated snapshot visible while refresh is in flight", async () => {
     saveCachedPublicTeamState(localStorage, readyState.entryId, readyState);
     let release!: () => void;

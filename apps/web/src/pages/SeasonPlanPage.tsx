@@ -884,7 +884,10 @@ export default function SeasonPlanPage() {
     const base =
       team.status === "ready"
         ? team.start
-        : Number.isInteger(fromEvent) && fromEvent >= 1 && fromEvent <= 38
+        : teamId === null &&
+            Number.isInteger(fromEvent) &&
+            fromEvent >= 1 &&
+            fromEvent <= 38
           ? (() => {
               const opening = plan.gameweeks[0];
               return opening
@@ -908,7 +911,7 @@ export default function SeasonPlanPage() {
     return openingDecision
       ? { ...base, ...rebuild, ...freeHit, lockOpening: true }
       : { ...base, ...rebuild, ...freeHit };
-  }, [declaredChips, fromEvent, openingDecision, plan.gameweeks, team]);
+  }, [declaredChips, fromEvent, openingDecision, plan.gameweeks, team, teamId]);
 
   const spentChips = useMemo(
     () =>
@@ -1055,14 +1058,16 @@ export default function SeasonPlanPage() {
     teamId !== null &&
     team.status === "failed" &&
     team.reason === "no_processed_event";
+  const awaitingTeam = teamId !== null && team.status !== "ready";
   // Wildcard and Free Hit still belong to the published fifteen even once the
   // other two have been re-solved, and the panel says so rather than implying
   // all eight half-season copies are his.
-  const chipsAreYours =
-    !awaitingLockIn && (!solving || solve.status === "done");
+  const chipsAreYours = !awaitingTeam && (!solving || solve.status === "done");
   const gameweeks = solving
     ? solve.gameweeks.map(asPlanGameweek)
-    : plan.gameweeks;
+    : awaitingTeam
+      ? []
+      : plan.gameweeks;
   const chips = useMemo(() => {
     return chipCallsByEvent(chipCalls, gameweeks, committedChip);
   }, [chipCalls, gameweeks, committedChip]);
@@ -1286,7 +1291,7 @@ export default function SeasonPlanPage() {
 
       <PlanStep
         note={
-          awaitingLockIn
+          awaitingTeam
             ? "waiting on your fifteen"
             : `GW${String(gameweeks[0]?.event ?? 1)}–${String(gameweeks[gameweeks.length - 1]?.event ?? 38)}`
         }
@@ -1318,7 +1323,9 @@ export default function SeasonPlanPage() {
               A chip is only worth what your squad makes of it.{" "}
               {awaitingLockIn
                 ? "State your squad above and the chip weeks are solved from your bench and captain."
-                : "Solving yours now."}
+                : awaitingTeam
+                  ? "No chip plan is shown until your squad has been loaded."
+                  : "Solving yours now."}
             </p>
           )}
         </section>
@@ -1333,7 +1340,7 @@ export default function SeasonPlanPage() {
               Squad, eleven, captain and transfer, for every gameweek. Solved in
               your browser.
               <InfoMarker label="how this plan is built">
-                {awaitingLockIn
+                {awaitingTeam
                   ? `A plan is only worth reading if it starts from what you own. Lock a fifteen in at step one and all 38 gameweeks are solved from it here, in ${String(plan.windowsSolved)} overlapping windows from a pool of ${String(plan.poolSize)} players.`
                   : `A single optimal 38-gameweek solve does not return, so this is ${String(plan.windowsSolved)} overlapping windows chained together from a pool of ${String(plan.poolSize)} players. A good plan, not a proof. Your squad, bank and free transfers never leave this browser.`}
               </InfoMarker>
@@ -1341,18 +1348,18 @@ export default function SeasonPlanPage() {
             <ul className="plan-preamble-stats mono">
               <li>
                 <b>
-                  {awaitingLockIn
+                  {awaitingTeam
                     ? `GW${String(planningEvent)}–38`
                     : `GW${String(gameweeks[0]?.event)}–${String(gameweeks[gameweeks.length - 1]?.event)}`}
                 </b>{" "}
                 planned
               </li>
-              {solving || awaitingLockIn ? null : (
+              {solving || awaitingTeam ? null : (
                 <li>
                   <b>{plan.netExpectedPoints.toFixed(0)}</b> net points
                 </li>
               )}
-              {solving || awaitingLockIn ? null : (
+              {solving || awaitingTeam ? null : (
                 <li>
                   <b>{bands.get("firm") ?? 0}</b> firm ·{" "}
                   <b>{bands.get("projected") ?? 0}</b> projected ·{" "}
@@ -1365,7 +1372,7 @@ export default function SeasonPlanPage() {
                   </InfoMarker>
                 </li>
               )}
-              {awaitingLockIn ? <li>no squad locked in yet</li> : null}
+              {awaitingTeam ? <li>no owner squad loaded</li> : null}
             </ul>
           </div>
 
@@ -1389,10 +1396,11 @@ export default function SeasonPlanPage() {
             </p>
           ) : null}
 
-          {awaitingLockIn ? (
+          {awaitingTeam ? (
             <p className="plan-awaiting">
-              Lock a fifteen in at step one and all thirty-eight weeks are
-              re-solved from it. Until then this is not your plan.
+              {awaitingLockIn
+                ? "Lock a fifteen in at step one and all thirty-eight weeks are re-solved from it. Until then this is not your plan."
+                : "No plan is shown until your squad has been loaded from FPL. Retry in step one; recommendations shown before that would not be yours."}
             </p>
           ) : (
             <>
@@ -1602,12 +1610,11 @@ export default function SeasonPlanPage() {
                   <>
                     Points per pound, not doubt about the player.
                     <InfoMarker label="the missing premium">
-                      He is the most expensive player in the game at{" "}
-                      {money.format(absentPremium.priceTenths / 10)} and the
-                      plan never fields him. A squad has £100.0m for fifteen, so
-                      every extra million on one name is a million off the other
-                      fourteen. He has to out-score not just the striker who
-                      replaces him, but that striker plus the upgrades the
+                      At {money.format(absentPremium.priceTenths / 10)}, he is
+                      the most expensive player this plan never fields. A squad
+                      has £100.0m for fifteen, so one name is a million off the
+                      other fourteen. He has to out-score not just the player
+                      who replaces him, but that player plus the upgrades the
                       saving pays for everywhere else.
                     </InfoMarker>{" "}
                     Over four seasons nothing beat captaining the highest

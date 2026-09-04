@@ -141,6 +141,8 @@ describe("the caveats", () => {
   it("names whoever the plan actually leaves out", () => {
     expect(list).toContain("absentPremium");
     expect(list).not.toContain("Haaland");
+    expect(list).toContain("the most expensive player this plan never fields");
+    expect(list).not.toContain("the most expensive player in the game");
   });
 
   it("uses the red signal treatment", () => {
