@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "modelVersion": "8.16",
-  "generatedAt": "2026-09-04T06:58:59.679815Z",
+  "generatedAt": "2026-09-04T11:23:00.464404Z",
   "season": "2026-27",
   "recordSeason": "2026-27",
   "basis": "opening squad, fixture-adjusted projections, solved in overlapping windows and committed 36 gameweeks deep",
@@ -13,7 +13,7 @@
   "lastEvent": 38,
   "windowsSolved": 11,
   "poolSize": 85,
-  "netExpectedPoints": 1930.65,
+  "netExpectedPoints": 1930.28,
   "chips": [
     {
       "event": 7,
@@ -27,16 +27,16 @@
       "event": 9,
       "chip": "Wildcard",
       "half": "first",
-      "gain": 7.03,
-      "ceiling": 7.11,
-      "note": "Rebuilding in gameweek 9 is worth 7.0 over the season, because the weeks before it no longer have to leave a squad that still works afterwards; the legal fifteen changes 3 players between xPts3 and xPts5, which is under the 20 a chip wants, but an unplayed chip expires at nothing"
+      "gain": 6.66,
+      "ceiling": 7.1,
+      "note": "Rebuilding in gameweek 9 is worth 6.7 over the season, because the weeks before it no longer have to leave a squad that still works afterwards; the legal fifteen changes 2 players between xPts7 and xPts9, which is under the 20 a chip wants, but an unplayed chip expires at nothing"
     },
     {
       "event": null,
       "chip": "Free Hit",
       "half": "first",
       "gain": 0.0,
-      "ceiling": 3.84,
+      "ceiling": 3.83,
       "note": "The best temporary squad moves only 6 of the fifteen; a Free Hit needs 10 or more changes."
     },
     {
@@ -64,20 +64,20 @@
       "note": "The best temporary squad moves only 6 of the fifteen; a Free Hit needs 10 or more changes."
     },
     {
-      "event": 36,
-      "chip": "Wildcard",
-      "half": "second",
-      "gain": 7.03,
-      "ceiling": 3.2,
-      "note": "Rebuilding in gameweek 36 is worth 7.0 over the season, because the weeks before it no longer have to leave a squad that still works afterwards; the legal fifteen changes 0 players between xPts7 and xPts9, which is under the 20 a chip wants, but an unplayed chip expires at nothing"
-    },
-    {
       "event": 35,
       "chip": "Triple Captain",
       "half": "second",
       "gain": 6.52,
       "ceiling": 6.52,
       "note": "a third copy of Haaland: 6.5 if he returns his average, 6.5 on the sort of afternoon the chip is played for, which under the 20 points that makes a chip worth building around, but an unplayed chip expires at nothing"
+    },
+    {
+      "event": 36,
+      "chip": "Wildcard",
+      "half": "second",
+      "gain": 6.66,
+      "ceiling": 3.16,
+      "note": "Rebuilding in gameweek 36 is worth 6.7 over the season, because the weeks before it no longer have to leave a squad that still works afterwards; the legal fifteen changes 0 players between xPts7 and xPts9, which is under the 20 a chip wants, but an unplayed chip expires at nothing"
     }
   ],
   "dataGaps": {
@@ -97,6 +97,13 @@
       "name": "Leno",
       "position": "GKP",
       "club": "FUL",
+      "priceTenths": 45,
+      "squadNumber": null
+    },
+    "83299": {
+      "name": "Dunk",
+      "position": "DEF",
+      "club": "BHA",
       "priceTenths": 45,
       "squadNumber": null
     },
@@ -259,13 +266,6 @@
       "position": "MID",
       "club": "LEE",
       "priceTenths": 60,
-      "squadNumber": null
-    },
-    "467779": {
-      "name": "Wieffer",
-      "position": "DEF",
-      "club": "BHA",
-      "priceTenths": 50,
       "squadNumber": null
     },
     "475168": {
@@ -2922,18 +2922,18 @@
       "deadline": "2027-05-08T12:30:00Z",
       "confidence": "provisional",
       "starters": [
-        226597, 466075, 198869, 513418, 502500, 489639, 465730, 467779, 440993,
+        226597, 466075, 198869, 513418, 502500, 489639, 465730, 83299, 440993,
         437730, 223094
       ],
       "bench": [243298, 177815, 498016, 577285],
       "captain": 223094,
       "viceCaptain": 440993,
-      "transfersIn": [467779],
+      "transfersIn": [83299],
       "transfersOut": [220627],
       "opponents": {
-        "BHA": ["SUN (H)"],
         "ARS": ["LEE (A)"],
         "BRE": ["AVL (H)"],
+        "BHA": ["SUN (H)"],
         "MCI": ["LIV (H)"],
         "LIV": ["MCI (A)"],
         "SUN": ["BHA (A)"],
@@ -2941,9 +2941,9 @@
         "LEE": ["ARS (H)"]
       },
       "difficulty": {
-        "BHA": 2.0,
         "ARS": 3.5,
         "BRE": 2.7,
+        "BHA": 2.0,
         "MCI": 2.8,
         "LIV": 5.0,
         "SUN": 3.8,
@@ -2951,11 +2951,10 @@
         "LEE": 4.5
       },
       "squadElementIds": [
-        4, 8, 10, 51, 94, 106, 109, 115, 130, 237, 346, 367, 397, 411, 529
+        4, 8, 10, 51, 94, 106, 109, 115, 116, 237, 346, 367, 397, 411, 529
       ],
       "benchElementIds": [367, 346, 529, 51],
       "expected": {
-        "467779": 3.94,
         "226597": 4.43,
         "466075": 4.74,
         "198869": 4.15,
@@ -2967,12 +2966,12 @@
         "498016": 2.7,
         "577285": 1.92,
         "465730": 4.56,
+        "83299": 3.56,
         "177815": 2.95,
         "223094": 6.52,
         "513418": 4.33
       },
       "ceiling": {
-        "467779": 3.94,
         "226597": 4.43,
         "466075": 4.74,
         "198869": 4.15,
@@ -2984,6 +2983,7 @@
         "498016": 2.7,
         "577285": 1.92,
         "465730": 4.56,
+        "83299": 3.56,
         "177815": 2.95,
         "223094": 6.52,
         "513418": 4.33
@@ -2991,9 +2991,9 @@
       "freeTransfersBefore": 1,
       "paidTransfers": 0,
       "transferCostPoints": 0,
-      "projectedPoints": 56.86,
-      "netExpectedPoints": 56.86,
-      "bankAfterTenths": 0
+      "projectedPoints": 56.49,
+      "netExpectedPoints": 56.49,
+      "bankAfterTenths": 5
     },
     {
       "event": 36,
@@ -3011,7 +3011,7 @@
         487838
       ],
       "transfersOut": [
-        198869, 577285, 513418, 502500, 489639, 467779, 177815, 437730, 223094,
+        198869, 577285, 513418, 502500, 489639, 83299, 177815, 437730, 223094,
         498016
       ],
       "opponents": {

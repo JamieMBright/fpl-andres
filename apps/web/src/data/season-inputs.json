@@ -1,6 +1,6 @@
 {
   "schemaVersion": 6,
-  "generatedAt": "2026-09-04T06:58:57.052072Z",
+  "generatedAt": "2026-09-04T11:22:57.692387Z",
   "recordSeason": "2026-27",
   "events": [
     3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23,
@@ -234,7 +234,6 @@
       "125": [0.0, 0.475, 1.91506, 0.306, -0.028, 0.0],
       "127": [0.0, 0.971, 1.133871, 1.054, -0.101, -0.009],
       "129": [0.0, 0.476, 2.439773, 0.156, -0.065, -0.003],
-      "130": [0.0, 0.974, 1.175876, 0.481, -0.087, 0.0],
       "134": [0.0, 0.072, 1.267647, 0.508, -0.08, -0.007],
       "135": [0.0, 0.072, 1.267647, 0.508, -0.08, -0.007],
       "138": [0.0, 0.488, 1.277805, 0.982, -0.049, 0.0],
@@ -538,7 +537,7 @@
       }
     ],
     "sourceReference": "FPL rules page, Transfers section",
-    "dataAvailableAt": "2026-09-04T06:58:57.052072Z",
+    "dataAvailableAt": "2026-09-04T11:22:57.692387Z",
     "playableStartRate": 0.35,
     "transferMarginPoints": 0.5
   },
@@ -4788,49 +4787,6 @@
         "attacking": "marketAttack",
         "yellowCards": "marketCards",
         "redCards": "marketCards"
-      }
-    },
-    {
-      "id": 130,
-      "code": 467779,
-      "name": "Wieffer",
-      "position": "DEF",
-      "positionId": 2,
-      "club": "BHA",
-      "teamId": 5,
-      "priceTenths": 50,
-      "availabilityStatus": "a",
-      "chanceOfPlaying": null,
-      "basePoints": 3.437,
-      "routes": {
-        "appearance": 1.758,
-        "attacking": 0.593,
-        "cleanSheet": 1.008,
-        "bonus": 0.218,
-        "conceding": -0.347,
-        "yellowCards": -0.102,
-        "ownGoals": -0.013,
-        "defensiveContribution": 0.322
-      },
-      "startRate": 0.983,
-      "startEvidence": {
-        "sourceStartRate": 0.767,
-        "finalStartRate": 0.983,
-        "observedAppearances": 2,
-        "recentStarts": 2,
-        "recentMatches": 2,
-        "recentMinutes": 156,
-        "appearanceSource": "marketParticipation",
-        "lineupAdjustment": 0.207,
-        "marketAdjustment": 0.009,
-        "availabilityAdjustment": 0.0
-      },
-      "squadNumber": null,
-      "rated": true,
-      "depthRank": 1,
-      "evidence": {
-        "appearance": "marketParticipation",
-        "attacking": "marketAttack"
       }
     },
     {
@@ -11909,6 +11865,40 @@
       "rated": false,
       "depthRank": 6,
       "evidence": { "all": "rolePrior", "appearance": "fplAvailability" }
+    },
+    {
+      "id": 130,
+      "code": 467779,
+      "name": "Wieffer",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "BHA",
+      "teamId": 5,
+      "priceTenths": 50,
+      "availabilityStatus": "i",
+      "chanceOfPlaying": 0,
+      "basePoints": 0,
+      "routes": {},
+      "startRate": 0.0,
+      "startEvidence": {
+        "sourceStartRate": 0.767,
+        "finalStartRate": 0.0,
+        "observedAppearances": 2,
+        "recentStarts": 2,
+        "recentMatches": 2,
+        "recentMinutes": 156,
+        "appearanceSource": "fplAvailability",
+        "lineupAdjustment": 0.207,
+        "marketAdjustment": 0.009,
+        "availabilityAdjustment": -0.983
+      },
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1,
+      "evidence": {
+        "appearance": "fplAvailability",
+        "attacking": "marketAttack"
+      }
     },
     {
       "id": 143,
