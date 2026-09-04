@@ -1,7 +1,9 @@
-import { useId, useState } from "react";
+import { useId, useLayoutEffect, useRef, useState } from "react";
 
+import { CeefaxShirt } from "./CeefaxShirt";
 import { InfoMarker } from "./InfoMarker";
 import { clubMarker } from "../kit/club-markers";
+import { kitForShortName } from "../kit/team-kits";
 import { PLAYERS_BY_ELEMENT_ID } from "../state/season-solver";
 import {
   XSTART_VALIDATION,
@@ -18,6 +20,15 @@ interface LineHover {
   event: number;
   eventIndex: number;
   hits: number;
+  runningAverage: number;
+}
+
+function lineX(index: number, eventCount: number): number {
+  return 44 + (eventCount === 1 ? 0 : (index * 552) / (eventCount - 1));
+}
+
+function lineY(hits: number): number {
+  return 224 - (hits / 11) * 184;
 }
 
 function playerName(elementId: number): string {
@@ -51,23 +62,19 @@ function clubAt(event: XStartValidationEvent, club: string) {
   return event.clubs.find((row) => row.club === club);
 }
 
-function cumulativeHits(club: string, throughEvent: number): number {
-  return XSTART_VALIDATION.events
-    .filter((event) => event.event <= throughEvent)
-    .reduce(
-      (total, event) => total + (clubAt(event, club)?.topElevenHits ?? 0),
-      0,
-    );
-}
-
-function averageHits(club: string): number {
+function averageHitsThrough(club: string, throughEvent: number): number {
   const scores = XSTART_VALIDATION.events.flatMap((event) => {
-    const row = clubAt(event, club);
+    const row = event.event <= throughEvent ? clubAt(event, club) : undefined;
     return row ? [row.topElevenHits] : [];
   });
   return scores.length === 0
     ? 0
     : scores.reduce((total, score) => total + score, 0) / scores.length;
+}
+
+function averageHits(club: string): number {
+  const latest = XSTART_VALIDATION.events.at(-1);
+  return latest ? averageHitsThrough(club, latest.event) : 0;
 }
 
 function ClubAverageDetail({ club }: { club: string }) {
@@ -91,19 +98,24 @@ function ClubAverageDetail({ club }: { club: string }) {
 export function XStartCalibration() {
   const latest = latestXStartEvent(XSTART_VALIDATION);
   const lineTooltipId = useId();
+  const chartRef = useRef<HTMLElement>(null);
+  const chartSvgRef = useRef<SVGSVGElement>(null);
+  const lineTooltipRef = useRef<HTMLParagraphElement>(null);
   const [period, setPeriod] = useState<PerformancePeriod>("average");
   const [order, setOrder] = useState<PerformanceOrder>("club");
   const [lineHover, setLineHover] = useState<LineHover | null>(null);
-  const [hiddenClubs, setHiddenClubs] = useState<ReadonlySet<string>>(
-    new Set(),
-  );
+  const [lineTooltipPosition, setLineTooltipPosition] = useState<{
+    left: number;
+    top: number;
+  } | null>(null);
+  const [selectedClub, setSelectedClub] = useState<string | null>(null);
   const selected =
     typeof period === "number"
       ? (XSTART_VALIDATION.events.find((event) => event.event === period) ??
         latest)
       : null;
   const clubs = latest.clubs.map((club) => club.club);
-  const shownClubs = clubs.filter((club) => !hiddenClubs.has(club));
+  const shownClubs = selectedClub === null ? clubs : [selectedClub];
   const eventCount = XSTART_VALIDATION.events.length;
   const performanceRows = shownClubs
     .map((club) => ({
@@ -121,14 +133,11 @@ export function XStartCalibration() {
         return left.score - right.score || left.club.localeCompare(right.club);
       return left.club.localeCompare(right.club);
     });
-  const lineX = (index: number) =>
-    44 + (eventCount === 1 ? 0 : (index * 552) / (eventCount - 1));
-  const lineY = (hits: number) => 224 - (hits / (11 * eventCount)) * 184;
   const linePoints = (club: string) =>
     XSTART_VALIDATION.events
       .map(
         (event, index) =>
-          `${lineX(index)},${lineY(cumulativeHits(club, event.event))}`,
+          `${lineX(index, eventCount)},${lineY(averageHitsThrough(club, event.event))}`,
       )
       .join(" ");
   const showLinePoint = (club: string, eventIndex: number) => {
@@ -141,8 +150,67 @@ export function XStartCalibration() {
       event: event.event,
       eventIndex,
       hits: detail.topElevenHits,
+      runningAverage: averageHitsThrough(club, event.event),
     });
   };
+  const showLinePointAtClientX = (
+    club: string,
+    hitArea: SVGPolylineElement,
+    clientX: number,
+  ) => {
+    const svg = hitArea.ownerSVGElement;
+    if (!svg) return;
+    const box = svg.getBoundingClientRect();
+    if (box.width <= 0) return;
+    const svgX = ((clientX - box.left) / box.width) * 640;
+    const rawIndex =
+      eventCount === 1
+        ? 0
+        : Math.round(((svgX - 44) / (596 - 44)) * (eventCount - 1));
+    showLinePoint(club, Math.max(0, Math.min(eventCount - 1, rawIndex)));
+  };
+
+  useLayoutEffect(() => {
+    if (!lineHover) return;
+
+    const positionTooltip = () => {
+      const chart = chartRef.current;
+      const svg = chartSvgRef.current;
+      const tooltip = lineTooltipRef.current;
+      if (!chart || !svg || !tooltip) return;
+
+      const chartBox = chart.getBoundingClientRect();
+      const svgBox = svg.getBoundingClientRect();
+      const tooltipBox = tooltip.getBoundingClientRect();
+      const chartWidth = chartBox.width || svgBox.width;
+      const chartHeight = chartBox.height || svgBox.height;
+      const pointLeft =
+        svgBox.left -
+        chartBox.left +
+        (lineX(lineHover.eventIndex, eventCount) / 640) * svgBox.width;
+      const pointTop =
+        svgBox.top -
+        chartBox.top +
+        (lineY(lineHover.runningAverage) / 260) * svgBox.height;
+      const padding = 8;
+      const gap = 10;
+      const left = Math.max(
+        padding,
+        Math.min(pointLeft + gap, chartWidth - tooltipBox.width - padding),
+      );
+      const above = pointTop - tooltipBox.height - gap;
+      const preferredTop = above >= padding ? above : pointTop + gap;
+      const top = Math.max(
+        padding,
+        Math.min(preferredTop, chartHeight - tooltipBox.height - padding),
+      );
+      setLineTooltipPosition({ left, top });
+    };
+
+    positionTooltip();
+    window.addEventListener("resize", positionTooltip);
+    return () => window.removeEventListener("resize", positionTooltip);
+  }, [eventCount, lineHover]);
 
   return (
     <section
@@ -155,37 +223,43 @@ export function XStartCalibration() {
       <h2 id="xstart-calibration-title">How close was the predicted XI?</h2>
       <p>
         One point when a predicted starter starts. Eleven per club per gameweek;
-        the line adds those hits across every settled check.
+        the line tracks the season average through each settled check.
       </p>
 
       <fieldset className="xstart-club-filter">
         <legend>Filter by club</legend>
-        {clubs.map((club) => (
-          <label key={club}>
-            <input
-              checked={!hiddenClubs.has(club)}
-              onChange={(event) => {
-                setHiddenClubs((current) => {
-                  const next = new Set(current);
-                  if (event.target.checked) next.delete(club);
-                  else next.add(club);
-                  return next;
-                });
-              }}
-              type="checkbox"
-            />
-            <span translate="no">{club}</span>
-          </label>
-        ))}
+        <div className="xstart-club-filter-options">
+          {clubs.map((club) => {
+            const kit = kitForShortName(club);
+            return (
+              <button
+                aria-pressed={selectedClub === club}
+                key={club}
+                onClick={() => {
+                  setSelectedClub((current) =>
+                    current === club ? null : club,
+                  );
+                  setLineHover(null);
+                }}
+                type="button"
+              >
+                {kit ? <CeefaxShirt kit={kit} label={null} /> : null}
+                <span translate="no">{club}</span>
+              </button>
+            );
+          })}
+        </div>
       </fieldset>
 
       <figure
         className="xstart-cumulative-chart"
         data-hovering={lineHover !== null}
+        ref={chartRef}
       >
-        <figcaption>Cumulative XI hits by club</figcaption>
+        <figcaption>Running season-average XI hits by club</figcaption>
         <svg
-          aria-label={`Cumulative xStart hits from GW1 to GW${latest.event}`}
+          aria-label={`Season-to-date average xStart hits from GW1 to GW${latest.event}`}
+          ref={chartSvgRef}
           role="img"
           viewBox="0 0 640 260"
         >
@@ -195,13 +269,13 @@ export function XStartCalibration() {
             0
           </text>
           <text className="xstart-axis-label is-y" x="36" y="44">
-            {11 * eventCount}
+            11
           </text>
           {XSTART_VALIDATION.events.map((event, index) => (
             <text
               className="xstart-axis-label"
               key={event.event}
-              x={lineX(index)}
+              x={lineX(index, eventCount)}
               y="246"
             >
               GW{event.event}
@@ -226,52 +300,73 @@ export function XStartCalibration() {
               aria-describedby={
                 lineHover?.club === club ? lineTooltipId : undefined
               }
-              aria-label={`${club} cumulative xStart line`}
+              aria-label={`${club} season-to-date average xStart line`}
               className="xstart-cumulative-hit-area"
               data-club={club}
               fill="none"
               key={`hit-${club}`}
+              onBlur={() => setLineHover(null)}
+              onFocus={() => showLinePoint(club, eventCount - 1)}
+              onKeyDown={(event) => {
+                if (event.key === "Escape") setLineHover(null);
+              }}
+              onPointerCancel={() => setLineHover(null)}
+              onPointerDown={(pointerEvent) => {
+                showLinePointAtClientX(
+                  club,
+                  pointerEvent.currentTarget,
+                  pointerEvent.clientX,
+                );
+              }}
               onPointerLeave={() => setLineHover(null)}
               onPointerMove={(pointerEvent) => {
-                const svg = pointerEvent.currentTarget.ownerSVGElement;
-                if (!svg) return;
-                const box = svg.getBoundingClientRect();
-                if (box.width <= 0) return;
-                const svgX =
-                  ((pointerEvent.clientX - box.left) / box.width) * 640;
-                const rawIndex =
-                  eventCount === 1
-                    ? 0
-                    : Math.round(((svgX - 44) / (596 - 44)) * (eventCount - 1));
-                showLinePoint(
+                showLinePointAtClientX(
                   club,
-                  Math.max(0, Math.min(eventCount - 1, rawIndex)),
+                  pointerEvent.currentTarget,
+                  pointerEvent.clientX,
                 );
               }}
               points={linePoints(club)}
               role="img"
+              tabIndex={Number(0)}
             />
           ))}
           {lineHover ? (
             <g aria-hidden="true" className="xstart-line-hover-marker">
               <line
-                x1={lineX(lineHover.eventIndex)}
-                x2={lineX(lineHover.eventIndex)}
+                x1={lineX(lineHover.eventIndex, eventCount)}
+                x2={lineX(lineHover.eventIndex, eventCount)}
                 y1="40"
                 y2="224"
               />
               <circle
-                cx={lineX(lineHover.eventIndex)}
-                cy={lineY(cumulativeHits(lineHover.club, lineHover.event))}
+                cx={lineX(lineHover.eventIndex, eventCount)}
+                cy={lineY(lineHover.runningAverage)}
                 r="6"
               />
             </g>
           ) : null}
         </svg>
         {lineHover ? (
-          <p className="xstart-line-tooltip" id={lineTooltipId} role="tooltip">
+          <p
+            className="xstart-line-tooltip"
+            id={lineTooltipId}
+            ref={lineTooltipRef}
+            role="tooltip"
+            style={{
+              left: lineTooltipPosition?.left ?? 0,
+              top: lineTooltipPosition?.top ?? 0,
+              visibility: lineTooltipPosition ? "visible" : "hidden",
+            }}
+          >
             <strong translate="no">{lineHover.club}</strong> · GW
-            {lineHover.event} · {lineHover.hits}/11
+            {lineHover.event}
+            <span>
+              Season-to-date average {lineHover.runningAverage.toFixed(1)}/11
+            </span>
+            <span>
+              GW{lineHover.event} score {lineHover.hits}/11
+            </span>
           </p>
         ) : null}
       </figure>

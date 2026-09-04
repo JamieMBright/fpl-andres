@@ -7,8 +7,9 @@ import validation from "../data/xstart-validation.json";
 const latest = validation.events.at(-1)!;
 
 describe("XStartCalibration", () => {
-  it("draws one cumulative kit-coloured line per club", () => {
+  it("draws running season-average kit-coloured lines on a fixed 0-11 scale", () => {
     const { container } = render(<XStartCalibration />);
+    const club = latest.clubs[0]!.club;
 
     expect(
       screen.getByRole("heading", { name: "How close was the predicted XI?" }),
@@ -19,26 +20,65 @@ describe("XStartCalibration", () => {
     expect(
       screen.getByRole("combobox", { name: "Performance period" }),
     ).toHaveValue("average");
+    expect(
+      screen.getByRole("img", {
+        name: /season-to-date average xStart hits/i,
+      }),
+    ).toHaveTextContent("11");
+    expect(screen.queryByText(/cumulative/i)).not.toBeInTheDocument();
+
+    const points = container
+      .querySelector(`.xstart-cumulative-line[data-club="${club}"]`)
+      ?.getAttribute("points")
+      ?.split(" ")
+      .map((point) => Number(point.split(",")[1]));
+    expect(points).toHaveLength(validation.events.length);
+    const scores = validation.events.map(
+      (event) =>
+        event.clubs.find((entry) => entry.club === club)!.topElevenHits,
+    );
+    const runningAverage =
+      scores.slice(0, 2).reduce((total, score) => total + score, 0) / 2;
+    const seasonAverage =
+      scores.reduce((total, score) => total + score, 0) / scores.length;
+    expect(points?.[1]).toBeCloseTo(224 - (runningAverage / 11) * 184, 5);
+    expect(points?.at(-1)).toBeCloseTo(224 - (seasonAverage / 11) * 184, 5);
     expect(screen.queryByText("0.9-1.0")).not.toBeInTheDocument();
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
 
-  it("filters a club out of the line and combined bar view", () => {
+  it("uses single-select kit buttons to isolate and restore a club", () => {
     const { container } = render(<XStartCalibration />);
     const first = latest.clubs[0]!;
+    const firstKit = screen.getByRole("button", { name: first.club });
 
-    fireEvent.click(screen.getByRole("checkbox", { name: first.club }));
+    expect(firstKit).toHaveAttribute("aria-pressed", "false");
+    expect(firstKit.querySelector(".ceefax-shirt")).not.toBeNull();
+    fireEvent.click(firstKit);
 
+    expect(firstKit).toHaveAttribute("aria-pressed", "true");
+    expect(container.querySelectorAll(".xstart-cumulative-line")).toHaveLength(
+      1,
+    );
     expect(
-      container.querySelector(
-        `.xstart-cumulative-line[data-club="${first.club}"]`,
-      ),
-    ).toBeNull();
-    expect(
-      screen.queryByRole("button", {
+      screen.getByRole("button", {
         name: new RegExp(`^About ${first.club} .*xStart detail$`),
       }),
-    ).not.toBeInTheDocument();
+    ).toBeInTheDocument();
+    expect(
+      screen
+        .getAllByRole("listitem")
+        .filter((row) => row.matches(".xstart-performance-bars li")),
+    ).toHaveLength(1);
+
+    fireEvent.click(firstKit);
+    expect(firstKit).toHaveAttribute("aria-pressed", "false");
+    expect(container.querySelectorAll(".xstart-cumulative-line")).toHaveLength(
+      20,
+    );
+    expect(
+      container.querySelectorAll(".xstart-performance-bars li"),
+    ).toHaveLength(20);
   });
 
   it("combines season average and gameweeks in one bar view", () => {
@@ -130,7 +170,7 @@ describe("XStartCalibration", () => {
     expect(hardestValues).toEqual([...hardestValues].sort((a, b) => a - b));
   });
 
-  it("snaps line hover to the nearest gameweek and names the club score", () => {
+  it("shows a point-anchored running average and raw score on pointer or keyboard focus", () => {
     const { container } = render(<XStartCalibration />);
     const club = latest.clubs[0]!;
     const hitArea = container.querySelector(
@@ -156,7 +196,22 @@ describe("XStartCalibration", () => {
     const tooltip = screen.getByRole("tooltip");
     expect(tooltip).toHaveTextContent(club.club);
     expect(tooltip).toHaveTextContent(`GW${latest.event}`);
-    expect(tooltip).toHaveTextContent(`${club.topElevenHits}/11`);
+    expect(tooltip).toHaveTextContent(
+      `Season-to-date average ${(
+        validation.events.reduce(
+          (total, event) =>
+            total +
+            event.clubs.find((entry) => entry.club === club.club)!
+              .topElevenHits,
+          0,
+        ) / validation.events.length
+      ).toFixed(1)}/11`,
+    );
+    expect(tooltip).toHaveTextContent(
+      `GW${latest.event} score ${club.topElevenHits}/11`,
+    );
+    expect(tooltip).toHaveStyle({ left: "606px" });
+    expect(tooltip.closest(".xstart-cumulative-chart")).not.toBeNull();
     expect(
       container.querySelector(
         `.xstart-cumulative-line[data-club="${club.club}"]`,
@@ -168,5 +223,15 @@ describe("XStartCalibration", () => {
     const firstClub = first.clubs.find((entry) => entry.club === club.club)!;
     expect(tooltip).toHaveTextContent(`GW${first.event}`);
     expect(tooltip).toHaveTextContent(`${firstClub.topElevenHits}/11`);
+
+    fireEvent.pointerLeave(hitArea!);
+    expect(screen.queryByRole("tooltip")).not.toBeInTheDocument();
+    fireEvent.focus(hitArea!);
+    expect(screen.getByRole("tooltip")).toHaveTextContent(
+      `GW${latest.event} score ${club.topElevenHits}/11`,
+    );
+    expect(hitArea).toHaveAttribute("aria-describedby");
+    fireEvent.keyDown(hitArea!, { key: "Escape" });
+    expect(screen.queryByRole("tooltip")).not.toBeInTheDocument();
   });
 });

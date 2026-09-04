@@ -385,6 +385,70 @@ test("FPL500 headlines and the legal popularity squad fit a phone", async ({
   ).toBe(true);
 });
 
+test("xStart performance kits and point popup work at desktop and phone widths", async ({
+  page,
+}) => {
+  for (const viewport of [
+    { width: 1440, height: 900 },
+    { width: 390, height: 844 },
+  ]) {
+    await test.step(`${String(viewport.width)}x${String(viewport.height)}`, async () => {
+      await page.setViewportSize(viewport);
+      await page.goto("/expected-xi");
+      await settle(page);
+      await page.getByLabel("Performance").check();
+
+      const kit = page.getByRole("button", { name: "ARS", exact: true });
+      const kitBox = await kit.boundingBox();
+      expect(kitBox).not.toBeNull();
+      expect(kitBox!.width).toBeGreaterThanOrEqual(44);
+      expect(kitBox!.height).toBeGreaterThanOrEqual(44);
+      await kit.click();
+      await expect(kit).toHaveAttribute("aria-pressed", "true");
+      await expect(page.locator(".xstart-cumulative-line")).toHaveCount(1);
+      await expect(page.locator(".xstart-performance-bars li")).toHaveCount(1);
+
+      const chart = page.locator(".xstart-cumulative-chart");
+      const svg = chart.locator("svg");
+      const hitArea = chart.locator(".xstart-cumulative-hit-area");
+      const svgBox = await svg.boundingBox();
+      expect(svgBox).not.toBeNull();
+      await hitArea.dispatchEvent("pointermove", {
+        clientX: svgBox!.x + svgBox!.width - 2,
+        pointerType: "mouse",
+      });
+
+      const popup = page.getByRole("tooltip");
+      await expect(popup).toContainText("Season-to-date average");
+      await expect(popup).toContainText(/GW\d+ score \d+\/11/);
+      const chartBox = await chart.boundingBox();
+      const popupBox = await popup.boundingBox();
+      expect(chartBox).not.toBeNull();
+      expect(popupBox).not.toBeNull();
+      expect(popupBox!.x).toBeGreaterThanOrEqual(chartBox!.x);
+      expect(popupBox!.y).toBeGreaterThanOrEqual(chartBox!.y);
+      expect(popupBox!.x + popupBox!.width).toBeLessThanOrEqual(
+        chartBox!.x + chartBox!.width,
+      );
+      expect(popupBox!.y + popupBox!.height).toBeLessThanOrEqual(
+        chartBox!.y + chartBox!.height,
+      );
+      await hitArea.dispatchEvent("pointerout", { pointerType: "mouse" });
+      await expect(popup).toHaveCount(0);
+      await hitArea.focus();
+      await expect(popup).toContainText("Season-to-date average");
+      await expect(hitArea).toBeFocused();
+      await hitArea.press("Escape");
+      await expect(popup).toHaveCount(0);
+
+      await kit.click();
+      await expect(kit).toHaveAttribute("aria-pressed", "false");
+      await expect(page.locator(".xstart-cumulative-line")).toHaveCount(20);
+      await expect(page.locator(".xstart-performance-bars li")).toHaveCount(20);
+    });
+  }
+});
+
 test("top picks wrap once without shrinking their players", async ({
   page,
 }) => {

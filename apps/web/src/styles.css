@@ -7036,27 +7036,59 @@ button.fpl500-holding-name {
 }
 
 .xstart-club-filter {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px 10px;
   margin: 14px 0;
   padding: 0;
   border: 0;
-  max-height: 96px;
-  overflow-y: auto;
 }
 
 .xstart-club-filter legend {
-  width: 100%;
+  margin-bottom: 6px;
   font-size: 12px;
   font-weight: 700;
 }
 
-.xstart-club-filter label {
+.xstart-club-filter-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(52px, 1fr));
+  gap: 6px;
+}
+
+.xstart-club-filter-options button {
   display: flex;
+  min-width: 44px;
+  min-height: 68px;
+  flex-direction: column;
   align-items: center;
-  gap: 4px;
+  justify-content: center;
+  gap: 2px;
+  border: 1px solid var(--rule);
+  padding: 4px;
+  color: var(--ink-soft);
+  background: var(--paper-deep);
+  font-family: var(--fa-mono);
   font-size: 12px;
+  touch-action: manipulation;
+}
+
+.xstart-club-filter-options button:hover {
+  border-color: var(--ink-soft);
+  color: var(--ink);
+}
+
+.xstart-club-filter-options button[aria-pressed="true"] {
+  border-color: var(--accent);
+  color: var(--ink);
+  background: color-mix(in srgb, var(--accent) 14%, var(--paper-deep));
+}
+
+.xstart-club-filter-options button:focus-visible {
+  outline: 3px solid var(--signal-blue);
+  outline-offset: 2px;
+}
+
+.xstart-club-filter-options .ceefax-shirt {
+  width: 32px;
+  height: 28px;
 }
 
 .xstart-score-bars {
@@ -7099,6 +7131,7 @@ button.fpl500-holding-name {
 }
 
 .xstart-cumulative-chart {
+  position: relative;
   margin: 20px 0;
 }
 
@@ -7151,7 +7184,13 @@ button.fpl500-holding-name {
   stroke-width: 16;
   pointer-events: stroke;
   cursor: crosshair;
+  touch-action: manipulation;
   vector-effect: non-scaling-stroke;
+}
+
+.xstart-cumulative-hit-area:focus-visible {
+  outline: 3px solid var(--signal-blue);
+  outline-offset: 2px;
 }
 
 .xstart-line-hover-marker {
@@ -7171,14 +7210,24 @@ button.fpl500-holding-name {
 }
 
 .xstart-line-tooltip {
-  width: fit-content;
-  margin: 8px 0 0;
+  position: absolute;
+  z-index: 2;
+  width: max-content;
+  max-width: min(240px, calc(100% - 16px));
+  margin: 0;
   border-left: 3px solid var(--accent);
-  padding: 4px 8px;
+  padding: 6px 8px;
   color: var(--ink);
   background: var(--paper-deep);
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--ink) 18%, transparent);
   font-family: var(--fa-mono);
   font-size: 12px;
+  line-height: 1.35;
+  pointer-events: none;
+}
+
+.xstart-line-tooltip span {
+  display: block;
 }
 
 .xstart-gw-choice {
