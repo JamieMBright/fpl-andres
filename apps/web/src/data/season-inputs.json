@@ -1,6 +1,6 @@
 {
   "schemaVersion": 6,
-  "generatedAt": "2026-09-04T14:05:01.654350Z",
+  "generatedAt": "2026-09-04T14:38:06.014266Z",
   "recordSeason": "2026-27",
   "events": [
     3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23,
@@ -673,7 +673,7 @@
       }
     ],
     "sourceReference": "FPL rules page, Transfers section",
-    "dataAvailableAt": "2026-09-04T14:05:01.654350Z",
+    "dataAvailableAt": "2026-09-04T14:38:06.014266Z",
     "playableStartRate": 0.35,
     "transferMarginPoints": 0.5
   },
@@ -3004,12 +3004,6 @@
       "id": 385,
       "code": 432720,
       "name": "Trafford",
-      "recentClubChange": {
-        "from": "MCI",
-        "to": "LEE",
-        "detectedAt": "2026-09-04T13:36:23.525736Z",
-        "avoidUntilEvent": 3
-      },
       "position": "GKP",
       "positionId": 1,
       "club": "LEE",
@@ -3043,7 +3037,13 @@
       "squadNumber": null,
       "rated": true,
       "depthRank": 1,
-      "evidence": { "appearance": "currentSeasonLineup" }
+      "evidence": { "appearance": "currentSeasonLineup" },
+      "recentClubChange": {
+        "from": "MCI",
+        "to": "LEE",
+        "detectedAt": "2026-09-04T13:36:23.525736Z",
+        "avoidUntilEvent": 3
+      }
     },
     {
       "id": 198,
@@ -3696,12 +3696,6 @@
       "id": 28,
       "code": 98980,
       "name": "Martinez",
-      "recentClubChange": {
-        "from": "AVL",
-        "to": "CHE",
-        "detectedAt": "2026-09-04T13:36:23.525736Z",
-        "avoidUntilEvent": 3
-      },
       "position": "GKP",
       "positionId": 1,
       "club": "CHE",
@@ -3736,7 +3730,13 @@
       "squadNumber": null,
       "rated": true,
       "depthRank": 1,
-      "evidence": { "appearance": "currentSeasonLineup" }
+      "evidence": { "appearance": "currentSeasonLineup" },
+      "recentClubChange": {
+        "from": "AVL",
+        "to": "CHE",
+        "detectedAt": "2026-09-04T13:36:23.525736Z",
+        "avoidUntilEvent": 3
+      }
     },
     {
       "id": 29,
@@ -8530,12 +8530,6 @@
       "id": 201,
       "code": 247348,
       "name": "Mu\u00f1oz",
-      "recentClubChange": {
-        "from": "CRY",
-        "to": "NFO",
-        "detectedAt": "2026-09-04T13:36:23.525736Z",
-        "avoidUntilEvent": 3
-      },
       "position": "DEF",
       "positionId": 2,
       "club": "NFO",
@@ -8571,6 +8565,12 @@
       "evidence": {
         "appearance": "marketParticipation",
         "attacking": "marketAttack"
+      },
+      "recentClubChange": {
+        "from": "CRY",
+        "to": "NFO",
+        "detectedAt": "2026-09-04T13:36:23.525736Z",
+        "avoidUntilEvent": 3
       }
     },
     {
@@ -11673,12 +11673,6 @@
       "id": 153,
       "code": 220362,
       "name": "Disasi",
-      "recentClubChange": {
-        "from": "CHE",
-        "to": "CRY",
-        "detectedAt": "2026-09-04T13:36:23.525736Z",
-        "avoidUntilEvent": 3
-      },
       "position": "DEF",
       "positionId": 2,
       "club": "CRY",
@@ -11713,7 +11707,13 @@
       "squadNumber": null,
       "rated": true,
       "depthRank": 4,
-      "evidence": { "appearance": "currentSeasonLineup" }
+      "evidence": { "appearance": "currentSeasonLineup" },
+      "recentClubChange": {
+        "from": "CHE",
+        "to": "CRY",
+        "detectedAt": "2026-09-04T13:36:23.525736Z",
+        "avoidUntilEvent": 3
+      }
     },
     {
       "id": 253,
@@ -12219,12 +12219,6 @@
       "id": 501,
       "code": 135720,
       "name": "Danso",
-      "recentClubChange": {
-        "from": "TOT",
-        "to": "SUN",
-        "detectedAt": "2026-09-04T13:36:23.525736Z",
-        "avoidUntilEvent": 3
-      },
       "position": "DEF",
       "positionId": 2,
       "club": "SUN",
@@ -12250,7 +12244,13 @@
       "squadNumber": null,
       "rated": true,
       "depthRank": 2,
-      "evidence": { "appearance": "currentSeasonLineup" }
+      "evidence": { "appearance": "currentSeasonLineup" },
+      "recentClubChange": {
+        "from": "TOT",
+        "to": "SUN",
+        "detectedAt": "2026-09-04T13:36:23.525736Z",
+        "avoidUntilEvent": 3
+      }
     },
     {
       "id": 256,
@@ -12357,8 +12357,8 @@
       "club": "ARS",
       "teamId": 1,
       "priceTenths": 65,
-      "availabilityStatus": "i",
-      "chanceOfPlaying": 0,
+      "availabilityStatus": "d",
+      "chanceOfPlaying": 25,
       "basePoints": 0,
       "routes": {},
       "startRate": 0.0,
@@ -12369,15 +12369,15 @@
         "recentStarts": 0,
         "recentMatches": 2,
         "recentMinutes": 0,
-        "appearanceSource": "fplAvailability",
+        "appearanceSource": "currentSeasonLineup",
         "lineupAdjustment": 0.0,
         "marketAdjustment": 0.0,
-        "availabilityAdjustment": -0.0
+        "availabilityAdjustment": 0.0
       },
       "squadNumber": null,
       "rated": true,
       "depthRank": 2,
-      "evidence": { "appearance": "fplAvailability" }
+      "evidence": { "appearance": "currentSeasonLineup" }
     },
     {
       "id": 6,
@@ -13895,12 +13895,6 @@
       "id": 237,
       "code": 440993,
       "name": "Ndiaye",
-      "recentClubChange": {
-        "from": "EVE",
-        "to": "MCI",
-        "detectedAt": "2026-09-04T13:36:23.525736Z",
-        "avoidUntilEvent": 3
-      },
       "position": "MID",
       "positionId": 3,
       "club": "MCI",
@@ -13934,7 +13928,13 @@
       "squadNumber": null,
       "rated": true,
       "depthRank": 8,
-      "evidence": { "appearance": "currentSeasonLineup" }
+      "evidence": { "appearance": "currentSeasonLineup" },
+      "recentClubChange": {
+        "from": "EVE",
+        "to": "MCI",
+        "detectedAt": "2026-09-04T13:36:23.525736Z",
+        "avoidUntilEvent": 3
+      }
     },
     {
       "id": 335,
@@ -21967,12 +21967,6 @@
       "id": 155,
       "code": 448047,
       "name": "Enzo",
-      "recentClubChange": {
-        "from": "CHE",
-        "to": "MCI",
-        "detectedAt": "2026-09-04T13:36:23.525736Z",
-        "avoidUntilEvent": 3
-      },
       "position": "MID",
       "positionId": 3,
       "club": "MCI",
@@ -22006,7 +22000,13 @@
       "squadNumber": null,
       "rated": true,
       "depthRank": 5,
-      "evidence": { "appearance": "currentSeasonLineup" }
+      "evidence": { "appearance": "currentSeasonLineup" },
+      "recentClubChange": {
+        "from": "CHE",
+        "to": "MCI",
+        "detectedAt": "2026-09-04T13:36:23.525736Z",
+        "avoidUntilEvent": 3
+      }
     },
     {
       "id": 487,
@@ -22135,12 +22135,6 @@
       "id": 452,
       "code": 208706,
       "name": "Bruno G.",
-      "recentClubChange": {
-        "from": "NEW",
-        "to": "ARS",
-        "detectedAt": "2026-09-04T13:36:23.525736Z",
-        "avoidUntilEvent": 3
-      },
       "position": "MID",
       "positionId": 3,
       "club": "ARS",
@@ -22174,7 +22168,13 @@
       "squadNumber": null,
       "rated": true,
       "depthRank": 3,
-      "evidence": { "appearance": "currentSeasonLineup" }
+      "evidence": { "appearance": "currentSeasonLineup" },
+      "recentClubChange": {
+        "from": "NEW",
+        "to": "ARS",
+        "detectedAt": "2026-09-04T13:36:23.525736Z",
+        "avoidUntilEvent": 3
+      }
     },
     {
       "id": 160,
@@ -24516,12 +24516,6 @@
       "id": 492,
       "code": 210156,
       "name": "Awoniyi",
-      "recentClubChange": {
-        "from": "NFO",
-        "to": "COV",
-        "detectedAt": "2026-09-04T13:36:23.525736Z",
-        "avoidUntilEvent": 3
-      },
       "position": "FWD",
       "positionId": 4,
       "club": "COV",
@@ -24557,6 +24551,12 @@
       "evidence": {
         "appearance": "marketParticipation",
         "attacking": "marketAttack"
+      },
+      "recentClubChange": {
+        "from": "NFO",
+        "to": "COV",
+        "detectedAt": "2026-09-04T13:36:23.525736Z",
+        "avoidUntilEvent": 3
       }
     },
     {
@@ -25514,12 +25514,6 @@
       "id": 401,
       "code": 438234,
       "name": "Marmoush",
-      "recentClubChange": {
-        "from": "MCI",
-        "to": "TOT",
-        "detectedAt": "2026-09-04T13:36:23.525736Z",
-        "avoidUntilEvent": 3
-      },
       "position": "FWD",
       "positionId": 4,
       "club": "TOT",
@@ -25552,7 +25546,13 @@
       "squadNumber": null,
       "rated": true,
       "depthRank": 1,
-      "evidence": { "appearance": "currentSeasonLineup" }
+      "evidence": { "appearance": "currentSeasonLineup" },
+      "recentClubChange": {
+        "from": "MCI",
+        "to": "TOT",
+        "detectedAt": "2026-09-04T13:36:23.525736Z",
+        "avoidUntilEvent": 3
+      }
     },
     {
       "id": 194,
@@ -25870,12 +25870,6 @@
       "id": 167,
       "code": 463034,
       "name": "Delap",
-      "recentClubChange": {
-        "from": "CHE",
-        "to": "NFO",
-        "detectedAt": "2026-09-04T13:36:23.525736Z",
-        "avoidUntilEvent": 3
-      },
       "position": "FWD",
       "positionId": 4,
       "club": "NFO",
@@ -25908,7 +25902,13 @@
       "squadNumber": null,
       "rated": true,
       "depthRank": 3,
-      "evidence": { "appearance": "currentSeasonLineup" }
+      "evidence": { "appearance": "currentSeasonLineup" },
+      "recentClubChange": {
+        "from": "CHE",
+        "to": "NFO",
+        "detectedAt": "2026-09-04T13:36:23.525736Z",
+        "avoidUntilEvent": 3
+      }
     },
     {
       "id": 493,
@@ -26031,12 +26031,6 @@
       "id": 136,
       "code": 50175,
       "name": "Welbeck",
-      "recentClubChange": {
-        "from": "BHA",
-        "to": "CHE",
-        "detectedAt": "2026-09-04T13:36:23.525736Z",
-        "avoidUntilEvent": 3
-      },
       "position": "FWD",
       "positionId": 4,
       "club": "CHE",
@@ -26062,7 +26056,13 @@
       "squadNumber": null,
       "rated": true,
       "depthRank": 2,
-      "evidence": { "appearance": "currentSeasonLineup" }
+      "evidence": { "appearance": "currentSeasonLineup" },
+      "recentClubChange": {
+        "from": "BHA",
+        "to": "CHE",
+        "detectedAt": "2026-09-04T13:36:23.525736Z",
+        "avoidUntilEvent": 3
+      }
     },
     {
       "id": 440,
