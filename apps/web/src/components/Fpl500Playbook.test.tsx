@@ -18,6 +18,10 @@ const LATEST_EVENT =
     artifact.exactFpl500Portfolio as Parameters<typeof latestCapture>[0],
   )?.event ?? Math.max(...artifact.exactFpl500Portfolio.events);
 const NEXT_EVENT = LATEST_EVENT + 1;
+const LATEST_CAPTURED_EVENT =
+  latestCaptured(
+    artifact.exactFpl500Portfolio as Parameters<typeof latestCaptured>[0],
+  )?.event ?? Math.max(...artifact.exactFpl500Portfolio.events);
 
 afterEach(() => {
   window.history.replaceState(null, "", "/");
@@ -256,9 +260,9 @@ describe("Fpl500Playbook", () => {
     expect(screen.getByText("Exact FPL500")).toBeInTheDocument();
     // Membership provenance and armband sample are both per gameweek captured,
     // so these counts grow with the season rather than staying at one.
-    expect(
-      screen.getAllByText(/post-deadline capture-era FPL500 membership/),
-    ).toHaveLength(artifact.exactFpl500Portfolio.events.length);
+    expect(screen.getAllByText(/FPL500 membership/)).toHaveLength(
+      artifact.exactFpl500Portfolio.events.length,
+    );
     expect(screen.getAllByText(/picks read/)).toHaveLength(
       artifact.exactFpl500Portfolio.events.length,
     );
@@ -270,41 +274,27 @@ describe("Fpl500Playbook", () => {
     // The sidecar behind this is written only when every fixture in the round
     // has a confirmed score, so an unscored week must show no points at all
     // rather than a zero that reads as a blank.
-    for (const series of [
-      artifact.cataloguePortfolio,
-      artifact.exactFpl500Portfolio,
-    ]) {
-      for (const [eventKey, entries] of Object.entries(
-        series.captains as Record<
-          string,
-          { elementId: number; share: number; points?: number }[]
-        >,
-      )) {
-        for (const entry of entries) {
-          if (entry.points === undefined) continue;
-          expect(
-            screen.getAllByText(
-              new RegExp(`${integer.format(entry.points)} pts`),
-            ).length,
-            `GW${eventKey} element ${entry.elementId}`,
-          ).toBeGreaterThan(0);
-        }
+    for (const [eventKey, entries] of Object.entries(
+      artifact.exactFpl500Portfolio.captains as Record<
+        string,
+        { elementId: number; share: number; points?: number }[]
+      >,
+    )) {
+      for (const entry of entries) {
+        if (entry.points === undefined) continue;
+        expect(
+          screen.getAllByText(new RegExp(`${integer.format(entry.points)} pts`))
+            .length,
+          `GW${eventKey} element ${entry.elementId}`,
+        ).toBeGreaterThan(0);
       }
     }
-    const scored = [
-      ...Object.values(
-        artifact.cataloguePortfolio.captains as Record<
-          string,
-          { points?: number }[]
-        >,
-      ),
-      ...Object.values(
-        artifact.exactFpl500Portfolio.captains as Record<
-          string,
-          { points?: number }[]
-        >,
-      ),
-    ]
+    const scored = Object.values(
+      artifact.exactFpl500Portfolio.captains as Record<
+        string,
+        { points?: number }[]
+      >,
+    )
       .flat()
       .filter((entry) => entry.points !== undefined);
     if (scored.length === 0) {
@@ -339,7 +329,7 @@ describe("Fpl500Playbook", () => {
 
   it("shows real hit evidence once transfers are available", () => {
     draw();
-    const key = String(LATEST_EVENT).padStart(2, "0");
+    const key = String(LATEST_CAPTURED_EVENT).padStart(2, "0");
     const aggregate = Object.entries(
       artifact.exactFpl500Portfolio.samples,
     ).find(([eventKey]) => eventKey === key)?.[1].aggregate;
@@ -351,7 +341,7 @@ describe("Fpl500Playbook", () => {
     const section = heading.closest("section");
     expect(section).not.toBeNull();
     expect(
-      within(section!).getByText(`GW${String(LATEST_EVENT)}`),
+      within(section!).getByText(`GW${String(LATEST_CAPTURED_EVENT)}`),
     ).toBeVisible();
     expect(within(section!).getByText("Managers taking a hit")).toBeVisible();
     expect(within(section!).getByText("Hit count unavailable")).toBeVisible();

@@ -141,7 +141,9 @@ function CaptainSeries({
   series: PortfolioSeries;
 }) {
   const captains = series.captains;
-  const events = Object.keys(captains).sort((a, b) => Number(a) - Number(b));
+  const events = [...series.events]
+    .sort((a, b) => a - b)
+    .map((event) => String(event).padStart(2, "0"));
   if (events.length === 0) {
     return (
       <section
@@ -282,14 +284,22 @@ export function latestCaptured(
 }
 
 function LatestCohortSummary() {
-  const latest = latestCaptured(data.exactFpl500Portfolio);
+  const captured = latestCaptured(data.exactFpl500Portfolio);
   const settled = latestCapture(data.exactFpl500Portfolio);
-  const sample = latest ? data.exactFpl500Portfolio.samples[latest.key] : null;
-  const aggregate = sample?.aggregate;
-  if (!latest || !sample || !aggregate) return null;
-  const gameweek = `GW${String(latest.event)}`;
-  const scoresSettled = settled?.event === latest.event;
-  const chipBars: Bar[] = Object.entries(aggregate.chips).map(
+  const summary = settled ?? captured;
+  const summarySample = summary
+    ? data.exactFpl500Portfolio.samples[summary.key]
+    : null;
+  const capturedSample = captured
+    ? data.exactFpl500Portfolio.samples[captured.key]
+    : null;
+  const aggregate = summarySample?.aggregate;
+  const capturedAggregate = capturedSample?.aggregate;
+  if (!summary || !summarySample || !aggregate) return null;
+  const gameweek = `GW${String(summary.event)}`;
+  const capturedGameweek = captured ? `GW${String(captured.event)}` : gameweek;
+  const scoresSettled = settled?.event === summary.event;
+  const chipBars: Bar[] = Object.entries(capturedAggregate?.chips ?? {}).map(
     ([chip, count]) => ({
       label:
         chip === "none"
@@ -333,14 +343,15 @@ function LatestCohortSummary() {
           </dl>
         ) : (
           <p className="mono fpl500-note">
-            GW{latest.event} is live. Scores stay blank until FPL settles the
+            GW{summary.event} is live. Scores stay blank until FPL settles the
             round.
           </p>
         )}
         <p className="mono fpl500-note">
-          {number.format(sample.responded)} of {number.format(sample.attempted)}{" "}
-          histories · {fineShare.format(sample.coverage)} coverage.
-          {latest.event === 1 ? " Transfers start at GW2." : null}
+          {number.format(summarySample.responded)} of{" "}
+          {number.format(summarySample.attempted)} histories ·{" "}
+          {fineShare.format(summarySample.coverage)} coverage.
+          {summary.event === 1 ? " Transfers start at GW2." : null}
         </p>
       </section>
 
@@ -354,7 +365,7 @@ function LatestCohortSummary() {
         </h3>
         <BarChart
           bars={chipBars}
-          caption={`Which chips they spent in ${gameweek}`}
+          caption={`Which chips they spent in ${capturedGameweek}`}
           unit="managers"
         />
         <Fpl500ChipAdoption series={data.exactFpl500Portfolio} />
