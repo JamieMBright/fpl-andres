@@ -6,7 +6,7 @@ import artifact from "../data/fpl500.json";
 import { integer } from "../format";
 import { PLAYERS_BY_ELEMENT_ID } from "../state/season-solver";
 import { transferFlow } from "../state/transfer-flow";
-import { latestCapture, type Fpl500 } from "./Fpl500Playbook";
+import { latestCaptured, type Fpl500 } from "./Fpl500Playbook";
 import { Fpl500Teaser } from "./Fpl500Teaser";
 
 describe("Fpl500Teaser", () => {
@@ -18,7 +18,7 @@ describe("Fpl500Teaser", () => {
     );
     const data = artifact as Fpl500;
     const series = data.exactFpl500Portfolio;
-    const latest = latestCapture(series);
+    const latest = latestCaptured(series);
     if (!latest) throw new Error("FPL500 teaser has no captured gameweeks");
     const sample = series.samples[latest.key];
     if (!sample?.aggregate)
