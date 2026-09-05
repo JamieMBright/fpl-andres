@@ -49,10 +49,10 @@ describe("Fpl500TransferFlow", () => {
     expect(screen.getByText("One out")).toBeInTheDocument();
   });
 
-  it("labels a window of one as the last gameweek", () => {
+  it("labels a window of one with its actual gameweek", () => {
     render(<Fpl500TransferFlow series={SERIES} />);
 
-    expect(screen.getByText("Last GW")).toBeInTheDocument();
+    expect(screen.getByText("GW2")).toBeInTheDocument();
     expect(screen.queryByRole("slider", { name: /gameweeks/i })).toBeNull();
     expect(
       screen.getByRole("region", { name: "Scrollable transfer flow" }),

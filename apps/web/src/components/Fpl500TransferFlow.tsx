@@ -36,6 +36,15 @@ export function Fpl500TransferFlow({
     1,
     Math.min(gwWindow, Math.max(1, transitions)),
   );
+  const orderedEvents = [...series.events].sort((left, right) => left - right);
+  const latestEvent = orderedEvents.at(-1);
+  const firstWindowEvent = orderedEvents.at(-1 - clampedWindow);
+  const windowLabel =
+    latestEvent === undefined
+      ? "No gameweek"
+      : clampedWindow === 1 || firstWindowEvent === undefined
+        ? `GW${String(latestEvent)}`
+        : `GW${String(firstWindowEvent)}-GW${String(latestEvent)}`;
   const all = useMemo(
     () => transferFlow(series, clampedWindow),
     [series, clampedWindow],
@@ -62,7 +71,7 @@ export function Fpl500TransferFlow({
       {transitions === 1 ? (
         <div className="scatter-control-row">
           <p>
-            Gameweeks <span className="scatter-value">Last GW</span>
+            Gameweeks <span className="scatter-value">{windowLabel}</span>
           </p>
         </div>
       ) : (
@@ -71,8 +80,8 @@ export function Fpl500TransferFlow({
             Gameweeks
             <span className="scatter-value">
               {clampedWindow === 1
-                ? "Last GW"
-                : `Last ${String(clampedWindow)} GWs`}
+                ? windowLabel
+                : `${windowLabel} (${String(clampedWindow)} GWs)`}
             </span>
           </label>
           <input
