@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import subprocess
+from copy import deepcopy
 from pathlib import Path
 
 import pytest
@@ -76,3 +77,20 @@ def test_xstart_accepts_a_settled_gameweek_two_snapshot() -> None:
 
     assert result["population"]["count"] > 0
     assert len(result["clubs"]) == 20
+
+
+def test_xstart_partial_round_only_reports_clubs_that_have_played() -> None:
+    inputs = _frozen_inputs("8c9d2ae9064d49e3dae7407045c876e38d7ff654")
+    live = read_json_file(ROOT / "data" / "live" / "2026-27" / "gw02.json")
+    partial = deepcopy(live)
+    partial["roundComplete"] = False
+    arsenal_ids = {int(player["id"]) for player in inputs["players"] if player["club"] == "ARS"}
+    for row in partial["elements"]:
+        if row["id"] in arsenal_ids:
+            row["stats"]["starts"] = 0
+
+    result = evaluate_xstart(inputs, partial, allow_partial=True)
+
+    assert result["complete"] is False
+    assert len(result["clubs"]) == 19
+    assert all(row["club"] != "ARS" for row in result["clubs"])

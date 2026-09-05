@@ -28,6 +28,7 @@ export interface XStartClubValidation extends XStartMetrics {
 export interface XStartValidationEvent {
   generatedAt: string;
   event: number;
+  complete?: boolean;
   modelVersion: string;
   field: "probabilitySixtyMinutesAsShipped";
   evidence: {
@@ -76,7 +77,7 @@ export function readXStartValidation(document: unknown): XStartValidation {
       event.field !== "probabilitySixtyMinutesAsShipped" ||
       typeof event.population?.count !== "number" ||
       !Array.isArray(event.clubs) ||
-      event.clubs.length !== 20
+      event.clubs.length === 0
     ) {
       throw new Error("xstart-validation.json has an incomplete event");
     }

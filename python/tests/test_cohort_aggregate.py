@@ -16,15 +16,18 @@ from fpl_andres.cohorts.portfolio import (
 def _row(
     entry: int,
     *,
+    event: int = 1,
     points: int,
     bench: int,
     chip: str | None,
     total_points: int | None = None,
     overall_rank: int | None = None,
+    event_transfers: int = 0,
+    event_transfers_cost: int = 0,
 ) -> ManagerPicks:
     return ManagerPicks(
         entry_id=entry,
-        event=1,
+        event=event,
         picks=(),
         active_chip=chip,
         history=EntryHistory(
@@ -32,8 +35,8 @@ def _row(
             points_on_bench=bench,
             value_tenths=1000 + entry,
             bank_tenths=entry,
-            event_transfers=0,
-            event_transfers_cost=0,
+            event_transfers=event_transfers,
+            event_transfers_cost=event_transfers_cost,
             total_points=total_points,
             overall_rank=overall_rank,
         ),
@@ -78,6 +81,38 @@ def test_season_standing_is_the_cumulative_total_sorted_high_to_low() -> None:
     assert [row.total_points for row in aggregate.season_standing] == [340, 200, 90]
     assert aggregate.season_standing[0].overall_rank == 1_200
     assert aggregate.season_standing[2].overall_rank is None
+
+
+def test_aggregate_counts_managers_taking_a_hit() -> None:
+    aggregate = aggregate_manager_history(
+        [
+            _row(1, event=2, points=50, bench=2, chip=None),
+            _row(
+                2,
+                event=2,
+                points=70,
+                bench=8,
+                chip=None,
+                event_transfers=2,
+                event_transfers_cost=-4,
+            ),
+            _row(
+                3,
+                event=2,
+                points=90,
+                bench=14,
+                chip=None,
+                event_transfers=3,
+                event_transfers_cost=-8,
+            ),
+        ],
+        event=2,
+        attempted=3,
+        cohort_revision="sha256:pinned",
+        minimum_coverage=0.9,
+    )
+
+    assert aggregate.hits_taken == 2
 
 
 def test_season_standing_omits_an_entry_with_no_cumulative_total_at_all() -> None:

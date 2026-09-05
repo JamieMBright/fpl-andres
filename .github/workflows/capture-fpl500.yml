@@ -36,6 +36,10 @@ on:
   push:
     paths:
       - ".github/workflows/capture-fpl500.yml"
+  workflow_run:
+    workflows:
+      - "Capture live current gameweek"
+    types: [completed]
 
 permissions:
   contents: write
@@ -46,6 +50,9 @@ concurrency:
 
 jobs:
   capture:
+    if: >
+      github.event_name != 'workflow_run' ||
+      github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
@@ -84,6 +91,29 @@ jobs:
           # this workflow, so this cannot trigger itself again.
           if [ "$GITHUB_EVENT_NAME" = "push" ]; then
             echo "event=1" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if [ "$GITHUB_EVENT_NAME" = "workflow_run" ]; then
+            current_event=$(python -c "
+          import json, urllib.request
+          request = urllib.request.Request(
+              'https://fantasy.premierleague.com/api/bootstrap-static/',
+              headers={'User-Agent': 'fpl-andres/ci'},
+          )
+          with urllib.request.urlopen(request, timeout=15) as response:
+              bootstrap = json.loads(response.read().decode())
+          event = next(
+              (row['id'] for row in bootstrap.get('events', []) if row.get('is_current')),
+              None,
+          )
+          print(event or '')
+          ")
+            if [ -n "$current_event" ]; then
+              echo "event=$current_event" >> "$GITHUB_OUTPUT"
+            else
+              echo "No current gameweek after live capture; nothing to capture."
+              exit 0
+            fi
             exit 0
           fi
           # Six hours behind the deadline: long enough that every manager has

@@ -93,6 +93,7 @@ def write_aggregate(
                 "bankTenths": _summary_payload(aggregate.bank_tenths),
                 "eventTransfers": _summary_payload(aggregate.event_transfers),
                 "transferCost": _summary_payload(aggregate.transfer_cost),
+                "hitsTaken": aggregate.hits_taken,
                 "transfersAvailable": aggregate.transfers_available,
                 "seasonStanding": [
                     {

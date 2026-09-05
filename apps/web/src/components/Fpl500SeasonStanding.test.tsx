@@ -75,4 +75,22 @@ describe("Fpl500SeasonStanding", () => {
     ).toBeLessThan(initialBars);
     expect(screen.getByText(/Managers per bin/)).toBeInTheDocument();
   });
+
+  it("starts rank histograms at a bin size that can show the top 1k", () => {
+    render(
+      <Fpl500SeasonStanding
+        rows={[
+          { overallRank: 250, totalPoints: 100 },
+          { overallRank: 1_250, totalPoints: 90 },
+        ]}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole("radio", { name: "Overall rank" }));
+
+    expect(screen.getByRole("slider", { name: "Bin size" })).toHaveValue(
+      "1000",
+    );
+    expect(screen.getByText(/top 1k/i)).toBeInTheDocument();
+  });
 });

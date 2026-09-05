@@ -10,14 +10,7 @@ import { BarChart, type Bar } from "./MethodChart";
 import { PlannedAnalysis } from "./PlannedAnalysis";
 import { RankRidge, type Ridge } from "./RankRidge";
 import fpl500 from "../data/fpl500.json";
-import {
-  fineShare,
-  integer,
-  oneDecimal,
-  share,
-  timestamp,
-  twoDecimal,
-} from "../format";
+import { fineShare, integer, oneDecimal, share, timestamp } from "../format";
 import { PLAYERS_BY_ELEMENT_ID } from "../state/season-solver";
 import {
   FPL500_SCHEMA_VERSION,
@@ -49,6 +42,7 @@ export type PortfolioSample = {
     bankTenths: DistributionSummary;
     eventTransfers?: DistributionSummary;
     transferCost?: DistributionSummary;
+    hitsTaken?: number;
     transfersAvailable: boolean;
     seasonStanding?: { overallRank: number | null; totalPoints: number }[];
   };
@@ -280,12 +274,21 @@ export function latestCapture(
   return scored ?? keyed[0] ?? null;
 }
 
+export function latestCaptured(
+  series: PortfolioSeries,
+): { event: number; key: string } | null {
+  const event = Math.max(...series.events, 0);
+  return event === 0 ? null : { event, key: String(event).padStart(2, "0") };
+}
+
 function LatestCohortSummary() {
-  const latest = latestCapture(data.exactFpl500Portfolio);
+  const latest = latestCaptured(data.exactFpl500Portfolio);
+  const settled = latestCapture(data.exactFpl500Portfolio);
   const sample = latest ? data.exactFpl500Portfolio.samples[latest.key] : null;
   const aggregate = sample?.aggregate;
   if (!latest || !sample || !aggregate) return null;
   const gameweek = `GW${String(latest.event)}`;
+  const scoresSettled = settled?.event === latest.event;
   const chipBars: Bar[] = Object.entries(aggregate.chips).map(
     ([chip, count]) => ({
       label:
@@ -307,26 +310,33 @@ function LatestCohortSummary() {
         aria-labelledby="fpl500-gw-summary-title"
       >
         <h3 id="fpl500-gw-summary-title">{gameweek}, across 500 squads</h3>
-        <dl className="dossier-metrics">
-          <div>
-            <dt>Mean score</dt>
-            <dd>{oneDecimal.format(aggregate.totalPoints.mean)}</dd>
-          </div>
-          <div>
-            <dt>Median score</dt>
-            <dd>{oneDecimal.format(aggregate.totalPoints.median)}</dd>
-          </div>
-          <div>
-            <dt>Mean bench</dt>
-            <dd>{oneDecimal.format(aggregate.benchPoints.mean)}</dd>
-          </div>
-          <div>
-            <dt>Score range</dt>
-            <dd>
-              {aggregate.totalPoints.minimum}–{aggregate.totalPoints.maximum}
-            </dd>
-          </div>
-        </dl>
+        {scoresSettled ? (
+          <dl className="dossier-metrics">
+            <div>
+              <dt>Mean score</dt>
+              <dd>{oneDecimal.format(aggregate.totalPoints.mean)}</dd>
+            </div>
+            <div>
+              <dt>Median score</dt>
+              <dd>{oneDecimal.format(aggregate.totalPoints.median)}</dd>
+            </div>
+            <div>
+              <dt>Mean bench</dt>
+              <dd>{oneDecimal.format(aggregate.benchPoints.mean)}</dd>
+            </div>
+            <div>
+              <dt>Score range</dt>
+              <dd>
+                {aggregate.totalPoints.minimum}–{aggregate.totalPoints.maximum}
+              </dd>
+            </div>
+          </dl>
+        ) : (
+          <p className="mono fpl500-note">
+            GW{latest.event} is live. Scores stay blank until FPL settles the
+            round.
+          </p>
+        )}
         <p className="mono fpl500-note">
           {number.format(sample.responded)} of {number.format(sample.attempted)}{" "}
           histories · {fineShare.format(sample.coverage)} coverage.
@@ -390,7 +400,8 @@ function BenchUse({ holdings }: { holdings: readonly Fpl500Holding[] }) {
 
 function ExactFpl500Analysis() {
   const series = data.exactFpl500Portfolio;
-  const latest = latestCapture(series);
+  const latest = latestCaptured(series);
+  const settled = latestCapture(series);
   const captured = series.events.length;
   const holdings = latest ? (series.holdings?.[latest.key] ?? []) : [];
   const sample = latest ? series.samples[latest.key] : undefined;
@@ -403,7 +414,7 @@ function ExactFpl500Analysis() {
   // A round captured at its deadline but not yet scored is held back rather
   // than shown as zeros, so the page says where it went.
   const newest = Math.max(0, ...series.events);
-  const awaiting = latest && newest > latest.event ? newest : null;
+  const awaiting = settled && newest > settled.event ? newest : null;
 
   return (
     <>
@@ -451,16 +462,12 @@ function ExactFpl500Analysis() {
           <p className="mono">GW{latest.event}</p>
           <dl className="dossier-metrics">
             <div>
-              <dt>Mean transfers</dt>
-              <dd>{twoDecimal.format(aggregate.eventTransfers!.mean)}</dd>
-            </div>
-            <div>
-              <dt>Mean hit cost</dt>
-              <dd>{twoDecimal.format(aggregate.transferCost!.mean)}</dd>
-            </div>
-            <div>
-              <dt>Maximum hit cost</dt>
-              <dd>{integer.format(aggregate.transferCost!.maximum)}</dd>
+              <dt>Managers taking a hit</dt>
+              <dd>
+                {aggregate.hitsTaken === undefined
+                  ? "Hit count unavailable"
+                  : integer.format(aggregate.hitsTaken)}
+              </dd>
             </div>
           </dl>
           <p className="mono fpl500-note">
@@ -524,7 +531,7 @@ export function Fpl500Playbook() {
     { label: "Top 100k finishes", count: finishesAtOrAbove(100_000) },
   ];
   const top10kShare = finishes > 0 ? finishesAtOrAbove(10_000) / finishes : 0;
-  const latestExact = latestCapture(data.exactFpl500Portfolio);
+  const latestExact = latestCaptured(data.exactFpl500Portfolio);
   const seasonStanding =
     (latestExact
       ? data.exactFpl500Portfolio.samples[latestExact.key]?.aggregate

@@ -25,6 +25,11 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--correction", type=Path, default=None)
     parser.add_argument("--live", type=Path, default=None)
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
+    parser.add_argument(
+        "--allow-partial",
+        action="store_true",
+        help="publish clubs that have started in the current, unsettled gameweek",
+    )
     return parser
 
 
@@ -40,7 +45,12 @@ def _git_json(revision: str, path: str) -> Mapping[str, Any]:
     return payload
 
 
-def _score_pair(correction_path: Path, live_path: Path) -> dict[str, Any]:
+def _score_pair(
+    correction_path: Path,
+    live_path: Path,
+    *,
+    allow_partial: bool,
+) -> dict[str, Any]:
     correction = read_json_file(correction_path)
     live = read_json_file(live_path)
     if not isinstance(correction, Mapping) or not isinstance(live, Mapping):
@@ -63,11 +73,20 @@ def _score_pair(correction_path: Path, live_path: Path) -> dict[str, Any]:
             "liveCapturedAt": live.get("capturedAt"),
             "level": "observed",
         },
-        **evaluate_xstart(_git_json(revision, INPUTS_PATH), live),
+        **evaluate_xstart(
+            _git_json(revision, INPUTS_PATH),
+            live,
+            allow_partial=allow_partial,
+        ),
     }
 
 
-def _pairs(correction: Path | None, live: Path | None) -> list[tuple[Path, Path]]:
+def _pairs(
+    correction: Path | None,
+    live: Path | None,
+    *,
+    allow_partial: bool,
+) -> list[tuple[Path, Path]]:
     if (correction is None) != (live is None):
         raise ValueError("--correction and --live must be supplied together")
     if correction is not None and live is not None:
@@ -79,12 +98,14 @@ def _pairs(correction: Path | None, live: Path | None) -> list[tuple[Path, Path]
         if not isinstance(event, int):
             raise ValueError(f"correction does not name an event: {correction_path}")
         live_path = DEFAULT_LIVE_DIR / f"gw{event:02d}.json"
-        if live_path.exists() and read_json_file(live_path).get("roundComplete") is True:
+        if live_path.exists() and (
+            allow_partial or read_json_file(live_path).get("roundComplete") is True
+        ):
             result.append((correction_path, live_path))
     return result
 
 
-def _ensure_corrections() -> None:
+def _ensure_corrections(*, allow_partial: bool) -> None:
     for manifest in sorted(DEFAULT_CORRECTION_DIR.glob("gw*-2026-27.json")):
         correction = manifest.with_name(f"{manifest.stem}-corrected.json")
         if correction.exists():
@@ -95,7 +116,7 @@ def _ensure_corrections() -> None:
         if (
             live is None
             or not live.exists()
-            or read_json_file(live).get("roundComplete") is not True
+            or (not allow_partial and read_json_file(live).get("roundComplete") is not True)
         ):
             continue
         revision = subprocess.run(
@@ -117,11 +138,14 @@ def _ensure_corrections() -> None:
 def main(argv: Sequence[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
     if args.correction is None:
-        _ensure_corrections()
-    pairs = _pairs(args.correction, args.live)
+        _ensure_corrections(allow_partial=args.allow_partial)
+    pairs = _pairs(args.correction, args.live, allow_partial=args.allow_partial)
     if not pairs:
-        raise ValueError("no corrected xStart events have settled live outcomes")
-    events = [_score_pair(correction, live) for correction, live in pairs]
+        raise ValueError("no corrected xStart events have usable live outcomes")
+    events = [
+        _score_pair(correction, live, allow_partial=args.allow_partial)
+        for correction, live in pairs
+    ]
     seasons = {read_json_file(correction).get("season") for correction, _live in pairs}
     if len(seasons) != 1:
         raise ValueError("xStart validation events must belong to one season")

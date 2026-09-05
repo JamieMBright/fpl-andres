@@ -90,5 +90,29 @@ describe("Fpl500TransferFlow", () => {
       name: "Scrollable transfer flow",
     });
     expect(region.querySelectorAll(".fpl500-transfer-row")).toHaveLength(60);
+    expect(screen.getByLabelText(/minimum transfers/i)).toHaveAttribute(
+      "max",
+      "20",
+    );
+  });
+
+  it("raises the minimum-transfer ceiling when the captured move does", () => {
+    render(
+      <Fpl500TransferFlow
+        series={{
+          events: [1, 2],
+          samples: { "01": { counted: 100 }, "02": { counted: 100 } },
+          holdings: {
+            "01": [{ elementId: 1, ownedShare: 0, name: "Riser" }],
+            "02": [{ elementId: 1, ownedShare: 0.8, name: "Riser" }],
+          },
+        }}
+      />,
+    );
+
+    expect(screen.getByLabelText(/minimum transfers/i)).toHaveAttribute(
+      "max",
+      "80",
+    );
   });
 });

@@ -26,6 +26,30 @@ const HOLDINGS = [
   },
 ];
 
+const MANY_HOLDINGS = [
+  ...HOLDINGS,
+  ...Array.from({ length: 5 }, (_, index) => ({
+    elementId: index + 3,
+    name: `Midfielder ${String(index + 1)}`,
+    position: "MID" as const,
+    club: "ARS",
+    ownedShare: 0.5 - index / 100,
+    startedShare: 0.4,
+    captainedShare: 0,
+    effectiveOwnership: 0.4,
+  })),
+  {
+    elementId: 8,
+    name: "Sixth midfielder",
+    position: "MID" as const,
+    club: "ARS",
+    ownedShare: 0.4,
+    startedShare: 0.3,
+    captainedShare: 0,
+    effectiveOwnership: 0.3,
+  },
+];
+
 describe("Fpl500Holdings", () => {
   it("keeps goalkeeper pairings inside the goalkeeper tabs", () => {
     render(
@@ -67,9 +91,8 @@ describe("Fpl500Holdings", () => {
       <Fpl500Holdings
         event={1}
         holdings={[
-          ...HOLDINGS,
           {
-            elementId: 3,
+            elementId: 9,
             name: "Back three anchor",
             position: "DEF" as const,
             club: "ARS",
@@ -82,7 +105,7 @@ describe("Fpl500Holdings", () => {
         outfieldTrios={[
           {
             position: "DEF",
-            elementIds: [3, 9_999_901, 9_999_902],
+            elementIds: [9, 9_999_901, 9_999_902],
             count: 210,
             share: 0.42,
           },
@@ -96,5 +119,16 @@ describe("Fpl500Holdings", () => {
       screen.getByText("Back three anchor + Element 9999901 + Element 9999902"),
     ).toBeVisible();
     expect(screen.getByText("42% · 210 squads")).toBeVisible();
+  });
+
+  it("shows five players by default and lets the position expand", () => {
+    render(<Fpl500Holdings event={1} holdings={MANY_HOLDINGS} />);
+
+    fireEvent.click(screen.getByText("Midfielders"));
+
+    expect(screen.getByRole("button", { name: "Midfielder 1" })).toBeVisible();
+    expect(screen.queryByText("Sixth midfielder")).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: /show all 6/i }));
+    expect(screen.getByText("Sixth midfielder")).toBeVisible();
   });
 });

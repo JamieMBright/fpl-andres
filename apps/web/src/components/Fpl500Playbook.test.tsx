@@ -3,9 +3,13 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { Fpl500Playbook, latestCapture } from "./Fpl500Playbook";
+import {
+  Fpl500Playbook,
+  latestCapture,
+  latestCaptured,
+} from "./Fpl500Playbook";
 import artifact from "../data/fpl500.json";
-import { fineShare, integer, twoDecimal } from "../format";
+import { fineShare, integer } from "../format";
 
 // The page shows the newest gameweek FPL has scored, so pinning one here would
 // date the test to the week it was written.
@@ -71,6 +75,21 @@ describe("latestCapture", () => {
 
   it("has nothing to show before the first capture", () => {
     expect(latestCapture(series([], {}))).toBeNull();
+  });
+});
+
+describe("latestCaptured", () => {
+  it("returns the newest snapshot even while its scores are pending", () => {
+    const series = {
+      basis: "ranked-500" as const,
+      label: "Exact FPL500",
+      events: [1, 2, 3],
+      samples: {},
+      captains: {},
+      holdings: {},
+    };
+
+    expect(latestCaptured(series)).toEqual({ event: 3, key: "03" });
   });
 });
 
@@ -334,18 +353,8 @@ describe("Fpl500Playbook", () => {
     expect(
       within(section!).getByText(`GW${String(LATEST_EVENT)}`),
     ).toBeVisible();
-    expect(within(section!).getByText("Mean transfers")).toBeVisible();
-    expect(
-      within(section!).getByText(
-        twoDecimal.format(aggregate!.eventTransfers.mean),
-      ),
-    ).toBeVisible();
-    expect(within(section!).getByText("Mean hit cost")).toBeVisible();
-    expect(
-      within(section!).getByText(
-        twoDecimal.format(aggregate!.transferCost.mean),
-      ),
-    ).toBeVisible();
+    expect(within(section!).getByText("Managers taking a hit")).toBeVisible();
+    expect(within(section!).getByText("Hit count unavailable")).toBeVisible();
     expect(
       within(section!).queryByText(/awaiting gameweek/i),
     ).not.toBeInTheDocument();

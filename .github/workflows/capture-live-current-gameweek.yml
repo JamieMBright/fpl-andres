@@ -34,6 +34,8 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
@@ -108,17 +110,25 @@ jobs:
               --season 2026-27 2>&1 | tee -a capture.log
           fi
 
+      - name: Build partial xStart performance
+        if: steps.check.outputs.active == 'true'
+        run: |
+          set -o pipefail
+          python -m fpl_andres.cli.build_xstart_validation \
+            --allow-partial | tee -a capture.log
+
       - name: Format captured files
         if: steps.check.outputs.active == 'true'
         run: |
           npx --yes prettier@3 --write data/live/**/*.json
+          npx --yes prettier@3 --write apps/web/src/data/xstart-validation.json
 
       - name: Commit live lineup updates
         if: steps.check.outputs.active == 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/live
+          git add data/live apps/web/src/data/xstart-validation.json
           if ! git diff --cached --quiet; then
             git commit -m "chore: update live gameweek lineup snapshots"
             git pull --rebase --autostash

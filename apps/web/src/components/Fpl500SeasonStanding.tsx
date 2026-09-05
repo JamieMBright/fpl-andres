@@ -23,7 +23,7 @@ const PAD_RIGHT = 12;
 const PAD_TOP = 10;
 const PAD_BOTTOM = 22;
 const POINT_BIN_DEFAULT = 5;
-const RANK_BIN_DEFAULT = 500_000;
+const RANK_BIN_DEFAULT = 1_000;
 
 export function Fpl500SeasonStanding({
   rows,
@@ -91,13 +91,13 @@ export function Fpl500SeasonStanding({
         <input
           aria-label="Bin size"
           max={metric === "points" ? 20 : 2_000_000}
-          min={metric === "points" ? 1 : 100_000}
+          min={metric === "points" ? 1 : 1_000}
           onChange={(event) => {
             const value = Number(event.target.value);
             if (metric === "points") setPointsBinSize(value);
             else setRankBinSize(value);
           }}
-          step={metric === "points" ? 1 : 100_000}
+          step={metric === "points" ? 1 : 1_000}
           type="range"
           value={binSize}
         />
@@ -174,6 +174,9 @@ export function Fpl500SeasonStanding({
         </text>
       </svg>
       <p className="fpl500-standing-axis-title">Managers per bin</p>
+      {metric === "rank" ? (
+        <p className="mono fpl500-note">The first bin is the top 1k.</p>
+      ) : null}
       <p className="mono fpl500-note">
         {drawn} of the five hundred, all equal. Each bar is the number of
         managers inside that {metric === "points" ? "points" : "rank"} interval.

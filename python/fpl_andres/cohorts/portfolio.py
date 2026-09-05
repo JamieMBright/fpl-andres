@@ -191,6 +191,7 @@ class PortfolioAggregate:
     bank_tenths: DistributionSummary
     event_transfers: DistributionSummary
     transfer_cost: DistributionSummary
+    hits_taken: int
     transfers_available: bool
     season_standing: tuple[SeasonStanding, ...] = ()
 
@@ -658,6 +659,7 @@ def aggregate_manager_history(
         bank_tenths=_summary([row.bank_tenths for row in histories]),
         event_transfers=_summary([row.event_transfers for row in histories]),
         transfer_cost=_summary([row.event_transfers_cost for row in histories]),
+        hits_taken=sum(1 for row in histories if row.event_transfers_cost < 0),
         transfers_available=event > 1,
         season_standing=standing,
     )

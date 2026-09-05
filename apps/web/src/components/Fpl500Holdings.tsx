@@ -53,6 +53,7 @@ function metricValue(holding: Fpl500Holding, metric: HoldingMetric): number {
 
 function shownValue(holding: Fpl500Holding, metric: HoldingMetric): string {
   if (metric === "ownership") return fineShare.format(holding.ownedShare);
+  if (metric === "latest" && holding.lastWeekPoints === undefined) return "—";
   return `${integer.format(metricValue(holding, metric))} pts`;
 }
 
@@ -86,6 +87,9 @@ export function Fpl500Holdings({
 }) {
   const [metric, setMetric] = useState<HoldingMetric>("ownership");
   const [selected, setSelected] = useState<DetailPlayer | null>(null);
+  const [expandedPositions, setExpandedPositions] = useState<
+    ReadonlySet<string>
+  >(() => new Set());
   const [keeperView, setKeeperView] = useState<"players" | "pairings">(
     "players",
   );
@@ -259,6 +263,8 @@ export function Fpl500Holdings({
             ...rows.map((holding) => metricValue(holding, metric)),
           );
           const visible = rows.filter((holding) => holding.ownedShare >= 0.01);
+          const isExpanded = expandedPositions.has(position.code);
+          const displayed = isExpanded ? visible : visible.slice(0, 5);
           const fringe = rows.filter((holding) => holding.ownedShare < 0.01);
           const trio = outfieldTrios.find(
             (entry) => entry.position === position.code,
@@ -319,7 +325,7 @@ export function Fpl500Holdings({
                       position,
                       hero,
                       mostOwned,
-                      visible,
+                      displayed,
                       fringe,
                       maximum,
                     )}
@@ -354,7 +360,7 @@ export function Fpl500Holdings({
                     position,
                     hero,
                     mostOwned,
-                    visible,
+                    displayed,
                     fringe,
                     maximum,
                   )}
@@ -371,6 +377,26 @@ export function Fpl500Holdings({
                     {integer.format(trio.count)} squads
                   </strong>
                 </p>
+              ) : null}
+              {visible.length > 5 ? (
+                <button
+                  aria-expanded={isExpanded}
+                  className="fpl500-show-more"
+                  onClick={(event) => {
+                    event.preventDefault();
+                    setExpandedPositions((current) => {
+                      const next = new Set(current);
+                      if (next.has(position.code)) next.delete(position.code);
+                      else next.add(position.code);
+                      return next;
+                    });
+                  }}
+                  type="button"
+                >
+                  {isExpanded
+                    ? "Show top 5"
+                    : `Show all ${String(visible.length)}`}
+                </button>
               ) : null}
             </details>
           );

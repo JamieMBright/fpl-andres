@@ -40,7 +40,9 @@ export function Fpl500TransferFlow({
     () => transferFlow(series, clampedWindow),
     [series, clampedWindow],
   );
-  const filtered = all.filter((row) => magnitude(row) >= minimum);
+  const maximumMinimum = Math.max(20, ...all.map(magnitude));
+  const effectiveMinimum = Math.min(minimum, maximumMinimum);
+  const filtered = all.filter((row) => magnitude(row) >= effectiveMinimum);
   const shown = [...filtered].sort(
     (left, right) =>
       right.net - left.net || left.name.localeCompare(right.name),
@@ -92,11 +94,11 @@ export function Fpl500TransferFlow({
       <div className="scatter-control-row">
         <label htmlFor={`${ids}-minimum`}>
           Minimum transfers
-          <span className="scatter-value">{minimum}</span>
+          <span className="scatter-value">{effectiveMinimum}</span>
         </label>
         <input
           id={`${ids}-minimum`}
-          max={20}
+          max={maximumMinimum}
           min={0}
           onChange={(event) => setMinimum(Number(event.target.value))}
           step={1}

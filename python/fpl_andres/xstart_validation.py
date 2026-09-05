@@ -40,11 +40,14 @@ def _metrics(rows: list[tuple[int, str, float, int]]) -> dict[str, int | float]:
 def evaluate_xstart(
     inputs: Mapping[str, Any],
     live_snapshot: Mapping[str, Any],
+    *,
+    allow_partial: bool = False,
 ) -> dict[str, Any]:
     event = live_snapshot.get("event")
     if not isinstance(event, int) or not 1 <= event <= 38:
         raise ValueError("xStart evaluation requires a valid gameweek")
-    if live_snapshot.get("roundComplete") is not True:
+    complete = live_snapshot.get("roundComplete") is True
+    if not complete and not allow_partial:
         raise ValueError("xStart evaluation requires a settled gameweek snapshot")
     input_events = inputs.get("events")
     if not isinstance(input_events, list) or input_events[0] != event:
@@ -87,6 +90,8 @@ def evaluate_xstart(
     total_actual = 0
     for club in sorted({row[1] for row in rows}):
         club_rows = [row for row in rows if row[1] == club]
+        if not complete and sum(row[3] for row in club_rows) == 0:
+            continue
         if len(club_rows) < 11:
             raise ValueError(
                 f"club {club} has only {len(club_rows)} xStart candidates; "
@@ -122,6 +127,7 @@ def evaluate_xstart(
         )
 
     return {
+        "complete": complete,
         "field": "probabilitySixtyMinutesAsShipped",
         "population": _metrics(rows),
         "topEleven": {

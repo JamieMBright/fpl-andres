@@ -129,7 +129,13 @@ export function XStartCalibration({
     typeof period === "number"
       ? (validation.events.find((event) => event.event === period) ?? latest)
       : null;
-  const clubs = latest.clubs.map((club) => club.club);
+  const clubs = [
+    ...new Set(
+      validation.events.flatMap((event) =>
+        event.clubs.map((club) => club.club),
+      ),
+    ),
+  ];
   const shownClubs = selectedClub === null ? clubs : [selectedClub];
   const eventCount = validation.events.length;
   const performanceRows = shownClubs
@@ -143,6 +149,7 @@ export function XStartCalibration({
             : (clubAt(selected, club)?.topElevenHits ?? 0),
       detail: selected === null ? null : clubAt(selected, club),
     }))
+    .filter(({ detail }) => typeof period !== "number" || detail !== undefined)
     .sort((left, right) => {
       if (order === "easiest")
         return right.score - left.score || left.club.localeCompare(right.club);
@@ -235,7 +242,8 @@ export function XStartCalibration({
       className="xstart-calibration"
     >
       <p className="eyebrow">
-        GW1-GW{latest.event} · {eventCount} settled checks
+        GW1-GW{latest.event} · {eventCount} evaluated checks
+        {latest.complete === false ? " · current round is still live" : ""}
       </p>
       <h2 id="xstart-calibration-title">How close was the predicted XI?</h2>
       <p>
