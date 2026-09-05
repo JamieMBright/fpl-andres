@@ -159,10 +159,12 @@ export function XStartCalibration({
     });
   const linePoints = (club: string) =>
     validation.events
-      .map(
-        (event, index) =>
+      .flatMap((event, index) => {
+        if (!clubAt(event, club)) return [];
+        return [
           `${lineX(index, eventCount)},${lineY(averageHitsThrough(validation.events, club, event.event))}`,
-      )
+        ];
+      })
       .join(" ");
   const showLinePoint = (club: string, eventIndex: number) => {
     const event = validation.events[eventIndex];

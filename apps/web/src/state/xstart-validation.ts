@@ -99,7 +99,8 @@ export function latestSettledWindow(
   events: readonly XStartValidationEvent[],
   size: number,
 ): readonly XStartValidationEvent[] {
-  return events.length < size ? [] : events.slice(-size);
+  const settled = events.filter((event) => event.complete !== false);
+  return settled.length < size ? [] : settled.slice(-size);
 }
 
 export function averageXStartHits(

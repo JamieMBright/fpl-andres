@@ -109,13 +109,13 @@ describe("XStartCalibration", () => {
     expect(
       screen.getAllByRole("list", { name: "xStart performance by club" }),
     ).toHaveLength(1);
+    const seasonScores = validation.events.flatMap((event) => {
+      const row = event.clubs.find((entry) => entry.club === club.club);
+      return row ? [row.topElevenHits] : [];
+    });
     const seasonAverage =
-      validation.events.reduce(
-        (total, event) =>
-          total +
-          event.clubs.find((entry) => entry.club === club.club)!.topElevenHits,
-        0,
-      ) / validation.events.length;
+      seasonScores.reduce((total, score) => total + score, 0) /
+      seasonScores.length;
     const clubRow = screen
       .getByText(club.club, { selector: ".xstart-score-bar-label" })
       .closest("li");
@@ -140,6 +140,31 @@ describe("XStartCalibration", () => {
     expect(tooltip).toHaveTextContent(`${club.actualStarters} actual starters`);
     expect(tooltip).toHaveTextContent(`${club.topElevenHits}/11 hits`);
     expect(tooltip).toHaveTextContent("Starters left out");
+  });
+
+  it("does not draw an unplayed club at a partial gameweek", () => {
+    const partial = {
+      ...validation,
+      events: validation.events.map((event) =>
+        event.event === latest.event
+          ? {
+              ...event,
+              clubs: event.clubs.filter((club) => club.club !== "ARS"),
+            }
+          : event,
+      ),
+    };
+    const { container } = render(<XStartCalibration validation={partial} />);
+    const period = screen.getByRole("combobox", { name: "Performance period" });
+
+    fireEvent.change(period, { target: { value: String(latest.event) } });
+
+    expect(
+      container.querySelector(".xstart-performance-bars [data-score]"),
+    ).not.toBeNull();
+    expect(
+      screen.queryByText("ARS", { selector: ".xstart-score-bar-label" }),
+    ).not.toBeInTheDocument();
   });
 
   it("orders the combined bars by club, easiest or hardest", () => {
