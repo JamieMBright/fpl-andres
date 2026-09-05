@@ -19,6 +19,11 @@ on:
         required: false
         default: ""
         type: string
+  # A workflow change can immediately refresh the current live round. The
+  # generated data commits do not touch this file, so this cannot self-trigger.
+  push:
+    paths:
+      - ".github/workflows/capture-live-current-gameweek.yml"
 
 permissions:
   contents: write
