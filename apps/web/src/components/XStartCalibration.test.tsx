@@ -154,7 +154,9 @@ describe("XStartCalibration", () => {
           : event,
       ),
     };
-    const { container } = render(<XStartCalibration validation={partial} />);
+    const { container } = render(
+      <XStartCalibration validation={readXStartValidation(partial)} />,
+    );
     const period = screen.getByRole("combobox", { name: "Performance period" });
 
     fireEvent.change(period, { target: { value: String(latest.event) } });

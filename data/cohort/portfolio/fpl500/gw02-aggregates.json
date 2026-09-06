@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "event": 2,
   "capturedAt": "2026-08-31T23:10:48.560216Z",
   "basis": "ranked-500",
@@ -62,5 +62,6 @@
     "minimum": 0,
     "maximum": 8
   },
-  "transfersAvailable": true
+  "transfersAvailable": true,
+  "hitsTaken": 2
 }

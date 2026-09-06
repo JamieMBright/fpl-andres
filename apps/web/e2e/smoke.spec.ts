@@ -407,7 +407,9 @@ test("xStart performance kits and point popup work at desktop and phone widths",
         await expect(lastFiveOption).not.toHaveAttribute("disabled", "");
       }
 
-      const kit = page.getByRole("button", { name: "ARS", exact: true });
+      const latestClub =
+        xstartValidation.events.at(-1)?.clubs[0]?.club ?? "ARS";
+      const kit = page.getByRole("button", { name: latestClub, exact: true });
       const kitBox = await kit.boundingBox();
       expect(kitBox).not.toBeNull();
       expect(kitBox!.width).toBeGreaterThanOrEqual(44);
