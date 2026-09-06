@@ -107,6 +107,40 @@ jobs:
               --standing-correction-reason "adds-season-standing" \
               | tee -a "$GITHUB_STEP_SUMMARY"
           done
+          for aggregate in "$portfolio_dir"/gw??-aggregates.json; do
+            [ -e "$aggregate" ] || continue
+            event="$(basename "$aggregate" | sed -E 's/^gw([0-9]{2})-aggregates\.json$/\1/')"
+            if python -c 'import json,sys; raise SystemExit("hitsTaken" in json.load(open(sys.argv[1], encoding="utf-8")))' "$aggregate"; then
+              continue
+            fi
+            refreshed="$RUNNER_TEMP/gw${event}-aggregates-refresh.json"
+            refreshed_structure="$RUNNER_TEMP/gw${event}-structure-refresh.json"
+            rm -f "$refreshed" "$refreshed_structure"
+            python -m fpl_andres.cli.capture_cohort_aggregate \
+              --event "$((10#$event))" \
+              --membership "data/cohort/fpl500-membership/gw${event}.json" \
+              --portfolio-dir "$portfolio_dir" \
+              --output "$refreshed" \
+              --structure-output "$refreshed_structure" \
+              | tee -a "$GITHUB_STEP_SUMMARY"
+            python - "$aggregate" "$refreshed" <<'PY'
+          import json
+          import sys
+          from pathlib import Path
+
+          target = Path(sys.argv[1])
+          refreshed = Path(sys.argv[2])
+          aggregate = json.loads(target.read_text(encoding="utf-8"))
+          rebuilt = json.loads(refreshed.read_text(encoding="utf-8"))
+          if "hitsTaken" not in rebuilt:
+              raise SystemExit(f"refreshed aggregate missing hitsTaken: {refreshed}")
+          aggregate["hitsTaken"] = int(rebuilt["hitsTaken"])
+          if isinstance(aggregate.get("schemaVersion"), int) and aggregate["schemaVersion"] < 2:
+              aggregate["schemaVersion"] = 2
+          target.write_text(json.dumps(aggregate, indent=2) + "\n", encoding="utf-8")
+          print(f"backfilled hitsTaken in {target}")
+          PY
+          done
           if [ -n "$(git status --porcelain --untracked-files=all -- data/cohort/portfolio)" ]; then
             echo "changed=true" >> "$GITHUB_OUTPUT"
           else
