@@ -1,6 +1,6 @@
 {
   "schemaVersion": 3,
-  "generatedAt": "2026-09-06T11:01:34.638164Z",
+  "generatedAt": "2026-09-06T16:07:07.027964Z",
   "catalogueSize": 46344,
   "sweptTo": 10232001,
   "size": 500,
@@ -147,7 +147,7 @@
         "membershipSourceCommit": "7ee37f9ef2eb40502b94cba4e2bd0a10cd84b1ad",
         "membershipSize": 500,
         "aggregate": {
-          "schemaVersion": 1,
+          "schemaVersion": 2,
           "event": 1,
           "capturedAt": "2026-08-27T15:09:44.186174Z",
           "basis": "ranked-500",
@@ -208,6 +208,7 @@
             "maximum": 0
           },
           "transfersAvailable": false,
+          "hitsTaken": 0,
           "seasonStanding": [
             {
               "overallRank": 13482,
@@ -2618,7 +2619,7 @@
         "membershipSourceCommit": "3aefd14751ccd58cc2d4feaac0e0cda7ee750afa",
         "membershipSize": 500,
         "aggregate": {
-          "schemaVersion": 1,
+          "schemaVersion": 2,
           "event": 2,
           "capturedAt": "2026-08-31T23:10:48.560216Z",
           "basis": "ranked-500",
@@ -2682,6 +2683,7 @@
             "maximum": 8
           },
           "transfersAvailable": true,
+          "hitsTaken": 2,
           "seasonStanding": [
             {
               "overallRank": 114,
@@ -7100,7 +7102,8 @@
               "overallRank": 8699093,
               "totalPoints": 88
             }
-          ]
+          ],
+          "hitsTaken": 7
         },
         "structure": {
           "schemaVersion": 4,
