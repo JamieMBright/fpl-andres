@@ -40,7 +40,8 @@ describe("Expected XI page", () => {
       }),
     );
     expect(screen.getByRole("tooltip")).toHaveTextContent("Okafor");
-    expect(screen.getByRole("tooltip")).toHaveTextContent("Trafford");
+    expect(screen.getByRole("tooltip")).toHaveTextContent(/starters left out/i);
+    expect(screen.getByRole("tooltip")).toHaveTextContent("Frozen XI misses");
     expect(screen.getByRole("tooltip")).toHaveTextContent(
       "mean squared probability error",
     );

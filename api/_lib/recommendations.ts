@@ -117,6 +117,7 @@ interface XStartValidationArtifact {
     event: number;
     modelVersion: string;
     field: string;
+    complete?: boolean;
     population: {
       count: number;
       brier: number;
@@ -151,7 +152,8 @@ const latestXStart = [...XSTART_VALIDATION.events].sort(
 if (
   latestXStart?.field !== "probabilitySixtyMinutesAsShipped" ||
   !Array.isArray(latestXStart.clubs) ||
-  latestXStart.clubs.length !== 20
+  latestXStart.clubs.length === 0 ||
+  (latestXStart.complete !== false && latestXStart.clubs.length !== 20)
 ) {
   throw new Error("xstart-validation is missing its shipped field and clubs");
 }
