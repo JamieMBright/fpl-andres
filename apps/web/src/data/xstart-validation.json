@@ -1,6 +1,6 @@
 {
   "schemaVersion": 3,
-  "generatedAt": "2026-09-06T23:52:02.248591Z",
+  "generatedAt": "2026-09-07T12:27:03.899184Z",
   "season": "2026-27",
   "events": [
     {
@@ -3556,17 +3556,17 @@
       ]
     },
     {
-      "generatedAt": "2026-09-06T23:52:02.248591Z",
+      "generatedAt": "2026-09-07T12:27:03.899184Z",
       "event": 3,
       "modelVersion": "8.16",
       "evidence": {
         "frozenRevision": "aece812064f1484eef6bfba92bdda6c1e88ec191",
         "frozenAt": "2026-09-02T06:03:57+00:00",
-        "liveSourceHash": "sha256:d34c84aaf6d42c7eeae25f76c7006d3d105af931fb7d10366e8a3a93a2ffb3fd",
-        "liveCapturedAt": "2026-09-06T23:52:02.248591Z",
+        "liveSourceHash": "sha256:c33c2af4674b0a9d4276b412a441ebae8b87e01a3d093cd113446e7ef6a02482",
+        "liveCapturedAt": "2026-09-07T12:27:03.899184Z",
         "level": "observed"
       },
-      "complete": false,
+      "complete": true,
       "field": "probabilitySixtyMinutesAsShipped",
       "population": {
         "count": 601,
