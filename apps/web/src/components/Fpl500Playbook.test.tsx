@@ -9,7 +9,7 @@ import {
   latestCaptured,
 } from "./Fpl500Playbook";
 import artifact from "../data/fpl500.json";
-import { fineShare, integer } from "../format";
+import { fineShare, integer, oneDecimal } from "../format";
 
 // The page shows the newest gameweek FPL has scored, so pinning one here would
 // date the test to the week it was written.
@@ -329,22 +329,47 @@ describe("Fpl500Playbook", () => {
 
   it("shows real hit evidence once transfers are available", () => {
     draw();
-    const key = String(LATEST_CAPTURED_EVENT).padStart(2, "0");
-    const aggregate = Object.entries(
-      artifact.exactFpl500Portfolio.samples,
-    ).find(([eventKey]) => eventKey === key)?.[1].aggregate;
-    expect(aggregate?.transfersAvailable).toBe(true);
-    expect(aggregate?.eventTransfers).toBeDefined();
-    expect(aggregate?.transferCost).toBeDefined();
+    const samples = artifact.exactFpl500Portfolio.samples;
+    const hitWeeks = artifact.exactFpl500Portfolio.events
+      .map((event) => ({
+        event,
+        aggregate: samples[String(event).padStart(2, "0")]?.aggregate,
+      }))
+      .filter(
+        (
+          week,
+        ): week is {
+          event: number;
+          aggregate: NonNullable<typeof week.aggregate>;
+        } =>
+          week.aggregate?.transfersAvailable === true &&
+          week.aggregate.transferCost !== undefined &&
+          week.aggregate.hitsTaken !== undefined,
+      );
+    expect(hitWeeks.length).toBeGreaterThan(0);
 
     const heading = screen.getByRole("heading", { name: "Hits taken" });
     const section = heading.closest("section");
     expect(section).not.toBeNull();
     expect(
-      within(section!).getByText(`GW${String(LATEST_CAPTURED_EVENT)}`),
+      within(section!).getByText("Gameweek-by-gameweek hits taken"),
     ).toBeVisible();
-    expect(within(section!).getByText("Managers taking a hit")).toBeVisible();
-    expect(within(section!).getByText("Hit count unavailable")).toBeVisible();
+    for (const week of hitWeeks) {
+      const row = within(section!)
+        .getByText(`GW${String(week.event)}`)
+        .closest("li");
+      expect(row).not.toBeNull();
+      expect(
+        within(row!).getByText(
+          `${integer.format(week.aggregate.hitsTaken)} managers`,
+        ),
+      ).toBeVisible();
+      expect(
+        within(row!).getByText(
+          `${oneDecimal.format(week.aggregate.transferCost.mean)} pts mean`,
+        ),
+      ).toBeVisible();
+    }
     expect(
       within(section!).queryByText(/awaiting gameweek/i),
     ).not.toBeInTheDocument();
