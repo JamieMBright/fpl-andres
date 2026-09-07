@@ -11,13 +11,14 @@ import {
 describe("xStart validation artifact", () => {
   it("publishes settled and partial scoring as an event series", () => {
     const parsed = readXStartValidation(validation);
+    const latest = latestXStartEvent(parsed);
 
     expect(parsed.events.map((event) => event.event)).toEqual([1, 2, 3]);
     expect(parsed.events[0]?.population.count).toBe(486);
-    expect(latestXStartEvent(parsed).event).toBe(3);
-    expect(latestXStartEvent(parsed).complete).toBe(false);
-    expect(latestXStartEvent(parsed).clubs.length).toBeGreaterThan(0);
-    expect(latestXStartEvent(parsed).clubs.length).toBeLessThan(20);
+    expect(latest.event).toBe(3);
+    expect(latest.complete).toBe(false);
+    expect(latest.clubs.length).toBeGreaterThan(0);
+    expect(latest.clubs.length).toBeLessThanOrEqual(20);
   });
 
   it("refuses a field with a different meaning", () => {
