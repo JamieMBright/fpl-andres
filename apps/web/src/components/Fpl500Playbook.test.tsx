@@ -5,6 +5,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 
 import {
   Fpl500Playbook,
+  hitWeeks,
   latestCapture,
   latestCaptured,
 } from "./Fpl500Playbook";
@@ -325,27 +326,10 @@ describe("Fpl500Playbook", () => {
 
   it("shows real hit evidence once transfers are available", () => {
     draw();
-    const samples = artifact.exactFpl500Portfolio.samples;
-    const hitWeeks = artifact.exactFpl500Portfolio.events
-      .map((event) => {
-        const key = String(event).padStart(2, "0");
-        const sample = Object.entries(samples).find(
-          ([eventKey]) => eventKey === key,
-        )?.[1];
-        return { event, aggregate: sample?.aggregate };
-      })
-      .filter(
-        (
-          week,
-        ): week is {
-          event: number;
-          aggregate: NonNullable<typeof week.aggregate>;
-        } =>
-          week.aggregate?.transfersAvailable === true &&
-          week.aggregate.transferCost !== undefined &&
-          week.aggregate.hitsTaken !== undefined,
-      );
-    expect(hitWeeks.length).toBeGreaterThan(0);
+    const chartedWeeks = hitWeeks(
+      artifact.exactFpl500Portfolio as Parameters<typeof hitWeeks>[0],
+    ).filter((week) => week.hitsTaken !== null && week.meanCost !== null);
+    expect(chartedWeeks.length).toBeGreaterThan(0);
 
     const heading = screen.getByRole("heading", { name: "Hits taken" });
     const section = heading.closest("section");
@@ -353,19 +337,17 @@ describe("Fpl500Playbook", () => {
     expect(
       within(section!).getByText("Gameweek-by-gameweek hits taken"),
     ).toBeVisible();
-    for (const week of hitWeeks) {
+    for (const week of chartedWeeks) {
       const row = within(section!)
         .getByText(`GW${String(week.event)}`)
         .closest("li");
       expect(row).not.toBeNull();
       expect(
-        within(row!).getByText(
-          `${integer.format(week.aggregate.hitsTaken)} managers`,
-        ),
+        within(row!).getByText(`${integer.format(week.hitsTaken)} managers`),
       ).toBeVisible();
       expect(
         within(row!).getByText(
-          `${oneDecimal.format(week.aggregate.transferCost.mean)} pts mean`,
+          `${oneDecimal.format(week.meanCost)} pts mean`,
         ),
       ).toBeVisible();
     }

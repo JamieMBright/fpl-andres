@@ -409,13 +409,13 @@ function BenchUse({ holdings }: { holdings: readonly Fpl500Holding[] }) {
   );
 }
 
-type HitWeek = {
+export type HitWeek = {
   event: number;
   hitsTaken: number | null;
   meanCost: number | null;
 };
 
-function hitWeeks(series: PortfolioSeries): HitWeek[] {
+export function hitWeeks(series: PortfolioSeries): HitWeek[] {
   return [...series.events]
     .sort((left, right) => left - right)
     .flatMap((event) => {
