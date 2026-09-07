@@ -18,10 +18,6 @@ const LATEST_EVENT =
     artifact.exactFpl500Portfolio as Parameters<typeof latestCapture>[0],
   )?.event ?? Math.max(...artifact.exactFpl500Portfolio.events);
 const NEXT_EVENT = LATEST_EVENT + 1;
-const LATEST_CAPTURED_EVENT =
-  latestCaptured(
-    artifact.exactFpl500Portfolio as Parameters<typeof latestCaptured>[0],
-  )?.event ?? Math.max(...artifact.exactFpl500Portfolio.events);
 
 afterEach(() => {
   window.history.replaceState(null, "", "/");

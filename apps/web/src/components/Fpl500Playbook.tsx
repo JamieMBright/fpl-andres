@@ -509,7 +509,11 @@ function ExactFpl500Analysis() {
         </p>
         <Fpl500TransferFlow series={series} />
       </section>
-      {latest && sample && aggregate && transferEvidence && hitsByWeek.length > 0 ? (
+      {latest &&
+      sample &&
+      aggregate &&
+      transferEvidence &&
+      hitsByWeek.length > 0 ? (
         <section className="fpl500-hits" aria-labelledby="fpl500-hits-title">
           <h3 id="fpl500-hits-title">Hits taken</h3>
           <figure className="fpl500-hits-chart">
