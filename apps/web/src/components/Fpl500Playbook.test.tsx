@@ -327,10 +327,13 @@ describe("Fpl500Playbook", () => {
     draw();
     const samples = artifact.exactFpl500Portfolio.samples;
     const hitWeeks = artifact.exactFpl500Portfolio.events
-      .map((event) => ({
-        event,
-        aggregate: samples[String(event).padStart(2, "0")]?.aggregate,
-      }))
+      .map((event) => {
+        const key = String(event).padStart(2, "0");
+        const sample = Object.entries(samples).find(
+          ([eventKey]) => eventKey === key,
+        )?.[1];
+        return { event, aggregate: sample?.aggregate };
+      })
       .filter(
         (
           week,
