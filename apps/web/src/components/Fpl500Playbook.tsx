@@ -409,6 +409,39 @@ function BenchUse({ holdings }: { holdings: readonly Fpl500Holding[] }) {
   );
 }
 
+type HitWeek = {
+  event: number;
+  hitsTaken: number | null;
+  meanCost: number | null;
+};
+
+function hitWeeks(series: PortfolioSeries): HitWeek[] {
+  return [...series.events]
+    .sort((left, right) => left - right)
+    .flatMap((event) => {
+      const key = String(event).padStart(2, "0");
+      const aggregate = series.samples[key]?.aggregate;
+      if (!aggregate || aggregate.transferCost === undefined) {
+        return [];
+      }
+      if (aggregate.transfersAvailable !== true) {
+        return [{ event, hitsTaken: 0, meanCost: 0 }];
+      }
+      return [
+        {
+          event,
+          hitsTaken: aggregate.hitsTaken ?? null,
+          meanCost: aggregate.transferCost.mean,
+        },
+      ];
+    });
+}
+
+function barWidth(value: number | null, extent: number): string {
+  if (value === null || extent <= 0) return "0%";
+  return `${((value / extent) * 100).toFixed(1)}%`;
+}
+
 function ExactFpl500Analysis() {
   const series = data.exactFpl500Portfolio;
   const latest = latestCaptured(series);
@@ -422,6 +455,15 @@ function ExactFpl500Analysis() {
     aggregate?.transfersAvailable === true &&
     aggregate.eventTransfers !== undefined &&
     aggregate.transferCost !== undefined;
+  const hitsByWeek = hitWeeks(series);
+  const maxHitsTaken = Math.max(
+    ...hitsByWeek.map((week) => week.hitsTaken ?? 0),
+    0,
+  );
+  const maxMeanCost = Math.max(
+    ...hitsByWeek.map((week) => week.meanCost ?? 0),
+    0,
+  );
   // A round captured at its deadline but not yet scored is held back rather
   // than shown as zeros, so the page says where it went.
   const newest = Math.max(0, ...series.events);
@@ -467,20 +509,58 @@ function ExactFpl500Analysis() {
         </p>
         <Fpl500TransferFlow series={series} />
       </section>
-      {latest && sample && aggregate && transferEvidence ? (
+      {latest && sample && aggregate && transferEvidence && hitsByWeek.length > 0 ? (
         <section className="fpl500-hits" aria-labelledby="fpl500-hits-title">
           <h3 id="fpl500-hits-title">Hits taken</h3>
-          <p className="mono">GW{latest.event}</p>
-          <dl className="dossier-metrics">
-            <div>
-              <dt>Managers taking a hit</dt>
-              <dd>
-                {aggregate.hitsTaken === undefined
-                  ? "Hit count unavailable"
-                  : integer.format(aggregate.hitsTaken)}
-              </dd>
-            </div>
-          </dl>
+          <figure className="fpl500-hits-chart">
+            <figcaption>
+              Gameweek-by-gameweek hits taken
+              <span className="fpl500-hits-caption">
+                Managers taking a hit &amp; the mean cost in each captured week.
+              </span>
+            </figcaption>
+            <ol className="fpl500-hits-series">
+              {hitsByWeek.map((week) => (
+                <li className="fpl500-hits-row" key={week.event}>
+                  <p className="mono fpl500-hits-gw">GW{week.event}</p>
+                  <div className="fpl500-hits-metric">
+                    <span className="fpl500-hits-metric-label">
+                      Managers taking a hit
+                    </span>
+                    <span className="fpl500-hits-track" aria-hidden="true">
+                      <span
+                        className="fpl500-hits-bar is-managers"
+                        style={{
+                          width: barWidth(week.hitsTaken, maxHitsTaken),
+                        }}
+                      />
+                    </span>
+                    <span className="mono fpl500-hits-value">
+                      {week.hitsTaken === null
+                        ? "Unavailable"
+                        : `${integer.format(week.hitsTaken)} managers`}
+                    </span>
+                  </div>
+                  <div className="fpl500-hits-metric">
+                    <span className="fpl500-hits-metric-label">Mean cost</span>
+                    <span className="fpl500-hits-track" aria-hidden="true">
+                      <span
+                        className="fpl500-hits-bar is-cost"
+                        style={{
+                          width: barWidth(week.meanCost, maxMeanCost),
+                        }}
+                      />
+                    </span>
+                    <span className="mono fpl500-hits-value">
+                      {week.meanCost === null
+                        ? "Unavailable"
+                        : `${oneDecimal.format(week.meanCost)} pts mean`}
+                    </span>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </figure>
           <p className="mono fpl500-note">
             {number.format(sample.responded)} of{" "}
             {number.format(sample.attempted)} histories ·{" "}
