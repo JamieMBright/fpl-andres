@@ -421,17 +421,21 @@ export function hitWeeks(series: PortfolioSeries): HitWeek[] {
     .flatMap((event) => {
       const key = String(event).padStart(2, "0");
       const aggregate = series.samples[key]?.aggregate;
-      if (!aggregate || aggregate.transferCost === undefined) {
+      if (!aggregate) {
         return [];
-      }
-      if (aggregate.transfersAvailable !== true) {
-        return [{ event, hitsTaken: 0, meanCost: 0 }];
       }
       return [
         {
           event,
-          hitsTaken: aggregate.hitsTaken ?? null,
-          meanCost: aggregate.transferCost.mean,
+          hitsTaken:
+            aggregate.transfersAvailable === true
+              ? (aggregate.hitsTaken ?? null)
+              : null,
+          meanCost:
+            aggregate.transfersAvailable === true &&
+            aggregate.transferCost !== undefined
+              ? aggregate.transferCost.mean
+              : null,
         },
       ];
     });
@@ -440,6 +444,37 @@ export function hitWeeks(series: PortfolioSeries): HitWeek[] {
 function barWidth(value: number | null, extent: number): string {
   if (value === null || extent <= 0) return "0%";
   return `${((value / extent) * 100).toFixed(1)}%`;
+}
+
+function hitMetricLabel({
+  event,
+  maximum,
+  metric,
+  unit,
+  value,
+}: {
+  event: number;
+  maximum: number;
+  metric: string;
+  unit: string;
+  value: number | null;
+}): string {
+  if (value === null) {
+    return `GW${event} ${metric} unavailable.`;
+  }
+  const shown =
+    unit === "managers"
+      ? integer.format(value)
+      : `${oneDecimal.format(value)} ${unit}`;
+  const scale =
+    maximum > 0
+      ? ` Bar scaled against a maximum of ${
+          unit === "managers"
+            ? integer.format(maximum)
+            : `${oneDecimal.format(maximum)} ${unit}`
+        }.`
+      : "";
+  return `GW${event} ${metric}: ${shown}.${scale}`;
 }
 
 function ExactFpl500Analysis() {
@@ -451,10 +486,6 @@ function ExactFpl500Analysis() {
   const sample = latest ? series.samples[latest.key] : undefined;
   const structure = sample?.structure;
   const aggregate = sample?.aggregate;
-  const transferEvidence =
-    aggregate?.transfersAvailable === true &&
-    aggregate.eventTransfers !== undefined &&
-    aggregate.transferCost !== undefined;
   const hitsByWeek = hitWeeks(series);
   const maxHitsTaken = Math.max(
     ...hitsByWeek.map((week) => week.hitsTaken ?? 0),
@@ -509,11 +540,7 @@ function ExactFpl500Analysis() {
         </p>
         <Fpl500TransferFlow series={series} />
       </section>
-      {latest &&
-      sample &&
-      aggregate &&
-      transferEvidence &&
-      hitsByWeek.length > 0 ? (
+      {latest && sample && aggregate && hitsByWeek.length > 0 ? (
         <section className="fpl500-hits" aria-labelledby="fpl500-hits-title">
           <h3 id="fpl500-hits-title">Hits taken</h3>
           <figure className="fpl500-hits-chart">
@@ -531,8 +558,19 @@ function ExactFpl500Analysis() {
                     <span className="fpl500-hits-metric-label">
                       Managers taking a hit
                     </span>
-                    <span className="fpl500-hits-track" aria-hidden="true">
+                    <span
+                      aria-label={hitMetricLabel({
+                        event: week.event,
+                        maximum: maxHitsTaken,
+                        metric: "managers taking a hit",
+                        unit: "managers",
+                        value: week.hitsTaken,
+                      })}
+                      className="fpl500-hits-track"
+                      role="img"
+                    >
                       <span
+                        aria-hidden="true"
                         className="fpl500-hits-bar is-managers"
                         style={{
                           width: barWidth(week.hitsTaken, maxHitsTaken),
@@ -547,8 +585,19 @@ function ExactFpl500Analysis() {
                   </div>
                   <div className="fpl500-hits-metric">
                     <span className="fpl500-hits-metric-label">Mean cost</span>
-                    <span className="fpl500-hits-track" aria-hidden="true">
+                    <span
+                      aria-label={hitMetricLabel({
+                        event: week.event,
+                        maximum: maxMeanCost,
+                        metric: "mean hit cost",
+                        unit: "pts",
+                        value: week.meanCost,
+                      })}
+                      className="fpl500-hits-track"
+                      role="img"
+                    >
                       <span
+                        aria-hidden="true"
                         className="fpl500-hits-bar is-cost"
                         style={{
                           width: barWidth(week.meanCost, maxMeanCost),

@@ -326,9 +326,17 @@ describe("Fpl500Playbook", () => {
 
   it("shows real hit evidence once transfers are available", () => {
     draw();
-    const chartedWeeks = hitWeeks(
+    const chartWeeks = hitWeeks(
       artifact.exactFpl500Portfolio as Parameters<typeof hitWeeks>[0],
-    ).filter((week) => week.hitsTaken !== null && week.meanCost !== null);
+    );
+    const chartedWeeks = chartWeeks.filter(
+      (week): week is typeof week & { hitsTaken: number; meanCost: number } =>
+        week.hitsTaken !== null && week.meanCost !== null,
+    );
+    const unavailableWeeks = chartWeeks.filter(
+      (week) => week.hitsTaken === null || week.meanCost === null,
+    );
+    expect(chartWeeks.length).toBeGreaterThanOrEqual(chartedWeeks.length);
     expect(chartedWeeks.length).toBeGreaterThan(0);
 
     const heading = screen.getByRole("heading", { name: "Hits taken" });
@@ -346,10 +354,20 @@ describe("Fpl500Playbook", () => {
         within(row!).getByText(`${integer.format(week.hitsTaken)} managers`),
       ).toBeVisible();
       expect(
-        within(row!).getByText(
-          `${oneDecimal.format(week.meanCost)} pts mean`,
-        ),
+        within(row!).getByText(`${oneDecimal.format(week.meanCost)} pts mean`),
       ).toBeVisible();
+      expect(
+        within(row!).getByRole("img", {
+          name: new RegExp(`GW${String(week.event)} managers taking a hit:`),
+        }),
+      ).toBeVisible();
+    }
+    for (const week of unavailableWeeks) {
+      const row = within(section!)
+        .getByText(`GW${String(week.event)}`)
+        .closest("li");
+      expect(row).not.toBeNull();
+      expect(within(row!).getAllByText("Unavailable")).toHaveLength(2);
     }
     expect(
       within(section!).queryByText(/awaiting gameweek/i),
