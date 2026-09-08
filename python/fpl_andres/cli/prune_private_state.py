@@ -18,7 +18,11 @@ from typing import Any, Protocol
 
 from fpl_andres import cliargs
 from fpl_andres.jsonio import read_json_file
-from fpl_andres.persistence.supabase import SupabaseCredentials, SupabaseRestClient
+from fpl_andres.persistence.supabase import (
+    SupabaseCredentials,
+    SupabaseRestClient,
+    SupabaseWriteError,
+)
 
 DEFAULT_PLAN = Path("apps/web/src/data/season-plan.json")
 ANALYSIS_RETENTION = timedelta(days=30)
@@ -113,13 +117,25 @@ def prune_private_state(
             )
         )
 
-    counts = {label: client.count(table, filters=filters) for label, table, filters in operations}
+    counts: dict[str, int] = {}
+    active_operations: list[tuple[str, str, dict[str, str]]] = []
+    for label, table, filters in operations:
+        try:
+            counts[label] = client.count(table, filters=filters)
+        except SupabaseWriteError as error:
+            if table != "recommendation_snapshots" or "count failed with 404" not in str(error):
+                raise
+            print(
+                "recommendation_snapshots is not deployed; skipping its retention pass",
+            )
+            continue
+        active_operations.append((label, table, filters))
     oversized = {label: count for label, count in counts.items() if count > max_delete_rows}
     if oversized:
         detail = ", ".join(f"{label}: {count}" for label, count in oversized.items())
         raise RuntimeError(f"refusing retention run above {max_delete_rows} rows ({detail})")
 
-    for _, table, filters in operations:
+    for _, table, filters in active_operations:
         client.delete(table, filters=filters)
     return counts
 

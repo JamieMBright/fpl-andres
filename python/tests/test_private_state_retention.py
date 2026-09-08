@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import Any
 
 from fpl_andres.cli.prune_private_state import prune_private_state
+from fpl_andres.persistence.supabase import SupabaseWriteError
 
 
 class RecordingDeleteClient:
@@ -18,6 +19,13 @@ class RecordingDeleteClient:
 
     def delete(self, table: str, *, filters: dict[str, str]) -> None:
         self.deletes.append((table, filters))
+
+
+class MissingRecommendationSnapshotsClient(RecordingDeleteClient):
+    def count(self, table: str, *, filters: dict[str, str]) -> int:
+        if table == "recommendation_snapshots":
+            raise SupabaseWriteError("recommendation_snapshots count failed with 404")
+        return super().count(table, filters=filters)
 
 
 def plan(*deadlines: str) -> dict[str, Any]:
@@ -58,6 +66,18 @@ def test_recommendation_snapshots_expire_after_thirty_days() -> None:
         "recommendation_snapshots",
         {"recorded_at": "lt.2026-08-01T00:00:00Z"},
     ) in client.deletes
+
+
+def test_retention_survives_before_the_new_table_is_deployed() -> None:
+    client = MissingRecommendationSnapshotsClient()
+
+    prune_private_state(
+        client,
+        plan("2026-08-21T17:30:00Z"),
+        now=datetime(2026, 8, 31, tzinfo=UTC),
+    )
+
+    assert all(table != "recommendation_snapshots" for table, _ in client.deletes)
 
 
 def test_transfers_expire_seven_days_after_their_deadline() -> None:
