@@ -134,7 +134,7 @@ and never inspect application rows through an AI tool.
 Apply only tracked migrations that pass the local policy tests and Linux CI.
 The bootstrap is this list, pasted into the SQL Editor **in filename order**.
 
-The migrations are **not idempotent** — 20 `create table`, 34 `create index`,
+The migrations are **not idempotent** — 21 `create table`, 36 `create index`,
 12 `create trigger` and 6 `create function` statements are written without a
 guard — so a file cannot be safely re-run after a partial paste. If a paste
 failed part-way, run `supabase/rollback/down.sql` to return to empty before
@@ -158,6 +158,7 @@ re-applying. That is a teardown, not a repair: it drops everything.
 | 14  | `20260801200000_workflow_run_audit.sql`                       | no                             |
 | 15  | `20260802120000_snapshot_path_integrity.sql`                  | no                             |
 | 16  | `20260804120000_analysis_requests_and_declared_transfers.sql` | yes — applied 2026-08-04       |
+| 17  | `20260908120000_recommendation_snapshots.sql`                 | no                             |
 
 Rows 7–10 are marked for confirmation rather than guessed: their state was
 never recorded and cannot be inferred from the repository. Check the hosted
@@ -177,10 +178,11 @@ table that can reach the ceiling is `backtest_predictions`, because a sweep
 writes a row per player per gameweek per candidate; prune it by run, oldest
 first, if it ever does.
 
-Analysis requests, declared transfers, contact messages and reply addresses are
-personal data and are the exception. Request diagnostics are deleted after 30
-days. Declared-transfer copies are deleted seven days after the relevant
-deadline and never kept beyond 30 days. Contact content is never written to
+Analysis requests, recommendation snapshots, declared transfers, contact
+messages and reply addresses are personal data and are the exception. Request
+diagnostics and recommendation snapshots are deleted after 30 days.
+Declared-transfer copies are deleted seven days after the relevant deadline and
+never kept beyond 30 days. Contact content is never written to
 Supabase: it passes through Resend to the private project mailbox, whose copy is
 deleted within 30 days after the conversation closes. Resend retains its
 processor copy under its own service terms unless content storage has been

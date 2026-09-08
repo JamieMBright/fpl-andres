@@ -9,6 +9,7 @@ const PRIVATE_PREFIXES = [
   "fpl-andres:public-team-state:v2:",
   "fpl-andres:manager-history:v1:",
   "fpl-andres:scorecard:v1:",
+  "fpl-andres:recommendation-snapshot:v1:",
 ] as const;
 
 function isPrivateKey(key: string): boolean {

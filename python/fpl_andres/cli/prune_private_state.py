@@ -1,6 +1,7 @@
 """Delete manager request data once its short operational life ends.
 
-Analysis diagnostics live for at most thirty days. A declared transfer lives
+Analysis diagnostics and recommendation snapshots live for at most thirty days.
+A declared transfer lives
 until seven days after its published gameweek deadline, also capped at thirty
 days. Deadlines come from the committed season plan rather than from a guessed
 calendar or a timestamp supplied by the browser.
@@ -90,6 +91,11 @@ def prune_private_state(
             "analysis requests older than 30 days",
             "analysis_requests",
             {"requested_at": f"lt.{cutoff}"},
+        ),
+        (
+            "recommendation snapshots older than 30 days",
+            "recommendation_snapshots",
+            {"recorded_at": f"lt.{cutoff}"},
         ),
         (
             "declared transfers older than 30 days",

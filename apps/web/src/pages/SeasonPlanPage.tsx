@@ -1,5 +1,5 @@
 import { ArrowRight } from "lucide-react";
-import { lazy, Suspense, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 
 import { CeefaxShirt } from "../components/CeefaxShirt";
@@ -30,6 +30,13 @@ import type { SolvedGameweek } from "../state/season-solver";
 import { PLAYERS_BY_ELEMENT_ID, startFromCodes } from "../state/season-solver";
 import { encodeSquad } from "../state/squad-code";
 import { readScorecard, recordCall, settleCall } from "../state/scorecard";
+import {
+  compareRecommendationToActual,
+  recommendationSnapshotFromSolvedGameweek,
+  recordRecommendationSnapshot,
+  shouldRecordRecommendation,
+  useRecommendationSnapshot,
+} from "../state/recommendation-snapshots";
 import { useSeasonSolve } from "../state/use-season-solve";
 import type {
   TeamStartFailure,
@@ -75,13 +82,6 @@ import {
   moveLines,
 } from "../state/plan-reasons";
 
-const Gw1ReviewPitch = lazy(() =>
-  import("../components/Gw1ReviewPitch").then((module) => ({
-    default: module.Gw1ReviewPitch,
-  })),
-);
-const GW1_REVIEW_EVENT = 1;
-const GW1_REVIEW_ENTRY_ID = 2_822_737;
 import { useDocumentTitle } from "../state/use-document-title";
 import {
   fixtureEvidenceForClubs,
@@ -93,6 +93,10 @@ const CHIP_TARGET = 20;
 
 /** Kept beside the list below; `plan-caveats.test.tsx` fails if they disagree. */
 const CAVEAT_COUNT = "Six";
+
+function recommendationPlayerName(elementId: number): string {
+  return PLAYERS_BY_ELEMENT_ID.get(elementId)?.name ?? `#${String(elementId)}`;
+}
 
 /**
  * The plan's own rating for a player's tie that week.
@@ -841,6 +845,7 @@ export default function SeasonPlanPage() {
   }, [declaredAt, planningEvent, squadParam, setParams, teamId]);
   const teamPlan = useTeamPlan(teamParam, declaredAt, squadParam);
   const team = teamPlan.start;
+  const savedRecommendation = useRecommendationSnapshot(teamId);
 
   // Remembered once FPL has actually answered for it, so a mistyped number
   // never becomes the id this browser offers next time.
@@ -971,6 +976,67 @@ export default function SeasonPlanPage() {
   const plannedSolve = useSeasonSolve(plannedLive);
   const solve = plannedLive === null ? baselineSolve : plannedSolve;
   const solving = live !== null;
+
+  const freshRecommendation = useMemo(() => {
+    const next = solve.gameweeks[0];
+    const eligible = shouldRecordRecommendation({
+      teamStatus: team.status,
+      teamSource: team.status === "ready" ? team.source : undefined,
+      solveStatus: solve.status,
+      gameweek: next,
+      isGenericOpening: teamId === null,
+      isDeclaredOnly: team.status === "ready" && team.source === "declared",
+    });
+    if (!eligible || team.status !== "ready" || next === undefined) return null;
+    if (next.event !== team.event + 1) return null;
+    return recommendationSnapshotFromSolvedGameweek(
+      plan.season,
+      teamId ?? 0,
+      plan.modelVersion,
+      next,
+      new Date().toISOString(),
+      `season-plan:${plan.modelVersion}`,
+    );
+  }, [
+    plan.modelVersion,
+    plan.season,
+    solve.gameweeks,
+    solve.status,
+    team,
+    teamId,
+  ]);
+
+  const postedRecommendation = useRef<string | null>(null);
+  useEffect(() => {
+    if (!freshRecommendation) return;
+    const key = `${freshRecommendation.entryId}:${freshRecommendation.event}:${freshRecommendation.recordedAt}`;
+    if (postedRecommendation.current === key) return;
+    postedRecommendation.current = key;
+    void recordRecommendationSnapshot(freshRecommendation).catch(
+      () => undefined,
+    );
+  }, [freshRecommendation]);
+
+  const displayedRecommendation =
+    solve.status === "done" ? freshRecommendation : savedRecommendation;
+  const comparison = useMemo(() => {
+    if (
+      !savedRecommendation ||
+      !published ||
+      published.event !== savedRecommendation.event
+    ) {
+      return null;
+    }
+    const captain = published.picks.find((pick) => pick.isCaptain);
+    const viceCaptain = published.picks.find((pick) => pick.isViceCaptain);
+    if (!captain || !viceCaptain) return null;
+    return compareRecommendationToActual(
+      savedRecommendation,
+      published.picks.map((pick) => pick.elementId),
+      captain.elementId,
+      viceCaptain.elementId,
+    );
+  }, [published, savedRecommendation]);
 
   /*
    * The record of what was advised against what was done.
@@ -1221,19 +1287,84 @@ export default function SeasonPlanPage() {
           title="Last gameweek"
         >
           <Scorecard calls={scorecard} />
-          {published === null ? null : (
-            <>
-              {published.event === GW1_REVIEW_EVENT &&
-              teamId === GW1_REVIEW_ENTRY_ID ? (
-                <Suspense
-                  fallback={<p className="mono">Loading frozen review…</p>}
-                >
-                  <Gw1ReviewPitch />
-                </Suspense>
+          {displayedRecommendation ? (
+            <section
+              aria-labelledby="recommendation-memory-title"
+              className="plan-subsection"
+            >
+              <div className="dossier-heading dossier-heading-compact">
+                <div>
+                  <p className="eyebrow">Saved before the deadline</p>
+                  <h2 id="recommendation-memory-title">
+                    {comparison
+                      ? "What I said, and what you submitted"
+                      : "Your saved recommendation"}
+                  </h2>
+                </div>
+                <span className="mono">
+                  GW{String(displayedRecommendation.event)}
+                </span>
+              </div>
+              {comparison ? (
+                <>
+                  <p>
+                    {comparison.recommendedAndSubmitted.length} recommended
+                    players stayed in your fifteen.
+                  </p>
+                  <p>
+                    {comparison.recommendedButAbsent.length} recommended players
+                    were absent; {comparison.submittedButNotRecommended.length}{" "}
+                    submitted players were new.
+                  </p>
+                  <p>
+                    Captain:{" "}
+                    {comparison.captainDifferent ? "different" : "agreed"}.
+                    Vice-captain:{" "}
+                    {comparison.viceCaptainDifferent ? "different" : "agreed"}.
+                  </p>
+                  <p className="mono">
+                    Saved {timestamp.format(new Date(comparison.recordedAt))} ·
+                    model {comparison.modelVersion}
+                  </p>
+                  <p>
+                    Recommended absent:{" "}
+                    {comparison.recommendedButAbsent
+                      .map(recommendationPlayerName)
+                      .join(", ") || "none"}
+                    .
+                  </p>
+                  <p>
+                    Submitted only:{" "}
+                    {comparison.submittedButNotRecommended
+                      .map(recommendationPlayerName)
+                      .join(", ") || "none"}
+                    .
+                  </p>
+                </>
               ) : (
-                <LiveSquad event={published.event} picks={published.picks} />
+                <>
+                  <p>
+                    {displayedRecommendation.starters
+                      .map(recommendationPlayerName)
+                      .join(", ")}
+                    .
+                  </p>
+                  <p className="mono">
+                    Deadline{" "}
+                    {deadlineDay.format(
+                      new Date(displayedRecommendation.deadline),
+                    )}{" "}
+                    · model {displayedRecommendation.modelVersion} · recorded{" "}
+                    {timestamp.format(
+                      new Date(displayedRecommendation.recordedAt),
+                    )}
+                  </p>
+                </>
               )}
-            </>
+            </section>
+          ) : null}
+          {published === null ? null : (
+            <LiveSquad event={published.event} picks={published.picks} />
           )}
         </PlanStep>
       )}

@@ -42,7 +42,9 @@ const BUDGETS = [
   // squad pool carries every player in the game rather than a top-forty cut.
   // Budgeted apart from the other lazy chunks so absorbing a page does not
   // quietly raise the ceiling for everything else.
-  { match: /^SeasonPlanPage-.*\.js$/, name: "plan chunk", gzipKb: 58 },
+  // Measured 58.07 kB after adding display-only cross-device recommendation
+  // memory and its deadline comparison. Raised to the next whole kB.
+  { match: /^SeasonPlanPage-.*\.js$/, name: "plan chunk", gzipKb: 59 },
   // Measured 58.93 kB, raised from 54 kB. The worker carries the solver-used
   // market-carry table so a player's quoted fixture view fades back toward
   // history instead of staying fixed all season. Unused row-level provenance

@@ -103,9 +103,25 @@ def test_no_migration_grants_table_access_to_a_client_role() -> None:
         line.strip()
         for path in sorted(MIGRATIONS_DIR.glob("*.sql"))
         for line in path.read_text(encoding="utf-8").splitlines()
-        if _GRANT.match(line)
+        if _GRANT.match(line) and "recommendation_snapshots_latest" not in line
     ]
     assert grants == [], f"migrations grant table access: {grants}"
+
+
+def test_recommendation_snapshots_grant_only_exposes_the_safe_view() -> None:
+    migration = (
+        (MIGRATIONS_DIR / "20260908120000_recommendation_snapshots.sql")
+        .read_text(encoding="utf-8")
+        .lower()
+    )
+    assert "alter table public.recommendation_snapshots force row level security" in migration
+    assert (
+        "revoke all on table public.recommendation_snapshots from anon, authenticated" in migration
+    )
+    assert (
+        "grant select on public.recommendation_snapshots_latest to anon, authenticated" in migration
+    )
+    assert "create policy" not in migration
 
 
 def test_the_posture_is_documented_where_someone_would_look() -> None:

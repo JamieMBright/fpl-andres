@@ -1,6 +1,6 @@
 # Schema reference
 
-Sixteen migrations define twenty tables, and reading them in
+Seventeen migrations define twenty-one tables and one safe read view, and reading them in
 order is the only way to see the model. This is that view.
 
 The organising rule, which is not obvious from any single migration:
@@ -48,6 +48,28 @@ erDiagram
     seasons ||--o{ declared_transfers : "scopes"
     source_snapshots ||--o{ analysis_requests : "cites"
     elements ||--o{ declared_transfers : "moves"
+
+    recommendation_snapshots {
+      text season
+      bigint entry_id
+      int event
+      timestamptz deadline
+      text model_version
+      bigint[] starters
+      bigint[] bench
+      bigint captain
+      bigint vice_captain
+      bigint transfer_in
+      bigint transfer_out
+      text chip
+      numeric projected_points
+      numeric net_expected_points
+      int paid_transfers
+      numeric transfer_cost
+      text confidence
+      timestamptz recorded_at
+      text source_reference
+    }
 
     model_promotion_decisions {
         text decision
@@ -278,6 +300,22 @@ recommends a transfer already made. The manager tells us instead.
   applied twice.
 - The server copy is diagnostic only. It is deleted seven days after the
   relevant deadline and never kept beyond 30 days.
+
+### `recommendation_snapshots`
+
+One derived recommendation captured for a manager and gameweek. It contains
+the deadline, model version, fifteen element IDs, captaincy, transfer action,
+chip, point estimates, confidence and recording provenance. It contains no
+bank, free transfers, prices, declared transfers, rank objective or route
+projection.
+
+- **Grain**: one recommendation, one Team ID, one gameweek
+- **Unique**: `(entry_id, event)`; a fresh browser solve upserts the row
+- **Mutable**: yes, because a fresh solve is authoritative before the deadline
+- **Privacy**: the underlying table is forced-RLS with no policy and is not
+  granted to browser roles. `recommendation_snapshots_latest` is a
+  display-safe security-invoker view granted `select` only to browser roles.
+- **Retention**: deleted after 30 days by the private-state workflow
 
 ---
 

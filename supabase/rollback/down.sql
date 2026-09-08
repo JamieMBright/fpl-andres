@@ -28,6 +28,8 @@ drop table if exists public.backtest_runs;
 drop table if exists public.crowd_snapshots;
 drop table if exists public.declared_transfers;
 drop table if exists public.analysis_requests;
+drop view if exists public.recommendation_snapshots_latest;
+drop table if exists public.recommendation_snapshots;
 drop table if exists public.model_promotion_decisions;
 drop table if exists public.optimization_event_plans;
 drop table if exists public.optimization_runs;

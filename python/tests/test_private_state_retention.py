@@ -45,6 +45,21 @@ def test_diagnostics_expire_after_thirty_days() -> None:
     ) in client.deletes
 
 
+def test_recommendation_snapshots_expire_after_thirty_days() -> None:
+    client = RecordingDeleteClient()
+
+    prune_private_state(
+        client,
+        plan("2026-08-21T17:30:00Z"),
+        now=datetime(2026, 8, 31, tzinfo=UTC),
+    )
+
+    assert (
+        "recommendation_snapshots",
+        {"recorded_at": "lt.2026-08-01T00:00:00Z"},
+    ) in client.deletes
+
+
 def test_transfers_expire_seven_days_after_their_deadline() -> None:
     client = RecordingDeleteClient()
 

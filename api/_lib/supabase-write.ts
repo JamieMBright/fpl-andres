@@ -67,3 +67,56 @@ export async function insertRow(
     );
   }
 }
+
+export async function upsertRow(
+  table: string,
+  row: Record<string, unknown>,
+  conflictColumns: readonly string[],
+  credentials: SupabaseCredentials,
+  fetchApi: typeof fetch = fetch,
+): Promise<void> {
+  const response = await fetchApi(
+    `${credentials.url}/rest/v1/${encodeURIComponent(table)}?on_conflict=${encodeURIComponent(conflictColumns.join(","))}`,
+    {
+      method: "POST",
+      headers: {
+        apikey: credentials.secret,
+        Authorization: `Bearer ${credentials.secret}`,
+        "Content-Type": "application/json",
+        Prefer: "resolution=merge-duplicates,return=minimal",
+      },
+      body: JSON.stringify(row),
+    },
+  );
+  if (!response.ok) {
+    throw new Error(
+      `supabase upsert into ${table} returned ${response.status}`,
+    );
+  }
+}
+
+export async function readRows(
+  table: string,
+  query: URLSearchParams,
+  credentials: SupabaseCredentials,
+  fetchApi: typeof fetch = fetch,
+): Promise<unknown[]> {
+  const response = await fetchApi(
+    `${credentials.url}/rest/v1/${encodeURIComponent(table)}?${query.toString()}`,
+    {
+      method: "GET",
+      headers: {
+        apikey: credentials.secret,
+        Authorization: `Bearer ${credentials.secret}`,
+        Accept: "application/json",
+      },
+    },
+  );
+  if (!response.ok) {
+    throw new Error(`supabase read from ${table} returned ${response.status}`);
+  }
+  const body: unknown = await response.json();
+  if (!Array.isArray(body))
+    throw new Error(`supabase read from ${table} was not an array`);
+  return body;
+}
