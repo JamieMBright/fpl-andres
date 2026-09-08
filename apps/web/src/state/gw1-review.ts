@@ -47,6 +47,16 @@ export interface Gw1ReviewPick {
   actual: Gw1ReviewActual;
 }
 
+export interface Gw1ReviewRecommendation {
+  picks: readonly {
+    code: number;
+    name: string;
+    starter: boolean;
+  }[];
+  captain: number;
+  viceCaptain: number;
+}
+
 export interface Gw1Review {
   season: string;
   event: 1;
@@ -70,6 +80,7 @@ export interface Gw1Review {
     benchPoints: number;
     activeChip: string | null;
   };
+  recommendation: Gw1ReviewRecommendation;
   picks: readonly Gw1ReviewPick[];
 }
 
@@ -85,12 +96,15 @@ export function readGw1Review(document: unknown): Gw1Review {
   const candidate = document as {
     event?: unknown;
     picks?: unknown;
+    recommendation?: unknown;
     team?: { points?: unknown; benchPoints?: unknown };
   };
   if (
     candidate.event !== 1 ||
     !Array.isArray(candidate.picks) ||
     candidate.picks.length !== 15 ||
+    typeof candidate.recommendation !== "object" ||
+    candidate.recommendation === null ||
     typeof candidate.team?.points !== "number" ||
     typeof candidate.team.benchPoints !== "number"
   ) {

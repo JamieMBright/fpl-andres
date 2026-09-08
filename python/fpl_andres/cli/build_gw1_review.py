@@ -62,7 +62,11 @@ def _git_json(revision: str, path: str) -> Mapping[str, Any]:
 
 def write_once(path: Path, payload: Mapping[str, Any]) -> bool:
     if path.exists():
-        return False
+        existing = read_json_file(path)
+        # The first review predated the persisted recommendation. Add that
+        # missing provenance once; later runs remain immutable.
+        if "recommendation" in existing or "recommendation" not in payload:
+            return False
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
     return True
@@ -71,8 +75,10 @@ def write_once(path: Path, payload: Mapping[str, Any]) -> bool:
 def main(argv: Sequence[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
     if args.output.exists() and args.correction_output.exists():
-        print(f"kept {args.correction_output}; kept {args.output}")
-        return 0
+        existing = read_json_file(args.output)
+        if "recommendation" in existing:
+            print(f"kept {args.correction_output}; kept {args.output}")
+            return 0
     canonical = _git_json(args.manifest_revision, MANIFEST_PATH)
     correction = build_correction_manifest(
         canonical,
@@ -92,6 +98,27 @@ def main(argv: Sequence[str] | None = None) -> int:
     assert isinstance(deadline, str)
     assert isinstance(frozen_at, str)
     inputs = _git_json(recorded_revision, INPUTS_PATH)
+    opening = _git_json(recorded_revision, "apps/web/src/data/opening-squad.json")
+    season_plan = _git_json(recorded_revision, "apps/web/src/data/season-plan.json")
+    opening_picks = opening.get("picks")
+    gameweeks = season_plan.get("gameweeks")
+    first_week = gameweeks[0] if isinstance(gameweeks, list) and gameweeks else None
+    if not isinstance(opening_picks, list) or not isinstance(first_week, Mapping):
+        print("the recorded revision has no canonical opening recommendation", file=sys.stderr)
+        return 1
+    recommendation = {
+        "picks": [
+            {
+                "code": pick.get("code"),
+                "name": pick.get("name"),
+                "starter": pick.get("starter") is True,
+            }
+            for pick in opening_picks
+            if isinstance(pick, Mapping)
+        ],
+        "captain": first_week.get("captain"),
+        "viceCaptain": first_week.get("viceCaptain"),
+    }
     live = read_json_file(args.live)
     if not isinstance(live, Mapping):
         print(f"{args.live} was not a live snapshot object", file=sys.stderr)
@@ -110,6 +137,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         inputs,
         live,
         picks,
+        recommendation,
         entry_id=args.entry,
         generated_at=now,
         canonical_manifest_revision=args.manifest_revision,

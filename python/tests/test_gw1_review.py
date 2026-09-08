@@ -99,6 +99,14 @@ def test_review_keeps_raw_grades_and_observed_armbands() -> None:
         _frozen_inputs(),
         read_json_file(ROOT / "data" / "live" / "2026-27" / "gw01.json"),
         _picks(),
+        recommendation={
+            "picks": [
+                {"code": index, "name": f"Player {index}", "starter": index < 12}
+                for index in range(1, 16)
+            ],
+            "captain": 1,
+            "viceCaptain": 2,
+        },
         entry_id=2_822_737,
         generated_at=datetime(2026, 8, 26, 12, tzinfo=UTC),
         canonical_manifest_revision="916de48afecfa174c58d759c3de4a5262dad140c",
@@ -127,6 +135,40 @@ def test_review_keeps_raw_grades_and_observed_armbands() -> None:
     assert gabriel["isViceCaptain"] is True
     guehi = next(row for row in review["picks"] if row["elementId"] == 388)
     assert guehi["band"] == "haul"
+
+
+def test_review_preserves_the_pre_deadline_recommendation() -> None:
+    review = build_review_artifact(
+        _frozen_inputs(),
+        read_json_file(ROOT / "data" / "live" / "2026-27" / "gw01.json"),
+        _picks(),
+        recommendation={
+            "picks": [
+                {"code": index, "name": f"Player {index}", "starter": index < 12}
+                for index in range(1, 16)
+            ],
+            "captain": 472769,
+            "viceCaptain": 209036,
+        },
+        entry_id=2_822_737,
+        generated_at=datetime(2026, 8, 26, 12, tzinfo=UTC),
+        canonical_manifest_revision="916de48afecfa174c58d759c3de4a5262dad140c",
+        recorded_code_revision=RECORDED_CODE_REVISION,
+        canonical_model_version="8.6",
+        canonical_deadline="2026-08-21T17:30:00+00:00",
+        canonical_frozen_at="2026-08-21T09:44:27+00:00",
+        live_source_hash="sha256:" + "a" * 64,
+        picks_source_hash="sha256:" + "b" * 64,
+    )
+
+    assert review["recommendation"] == {
+        "picks": [
+            {"code": index, "name": f"Player {index}", "starter": index < 12}
+            for index in range(1, 16)
+        ],
+        "captain": 472769,
+        "viceCaptain": 209036,
+    }
 
 
 def test_review_artifacts_are_written_once(tmp_path: Path) -> None:

@@ -1,12 +1,7 @@
 import { useState } from "react";
 
-import { oneDecimal, twoDecimal } from "../format";
 import { kitForShortName } from "../kit/team-kits";
-import type {
-  Gw1Review,
-  Gw1ReviewBand,
-  Gw1ReviewPick,
-} from "../state/gw1-review";
+import type { Gw1Review, Gw1ReviewPick } from "../state/gw1-review";
 import { GW1_REVIEW } from "../state/gw1-review";
 import { CeefaxShirt } from "./CeefaxShirt";
 import { ScoreMarks, type ScoreLine } from "./ScoreMarks";
@@ -17,15 +12,7 @@ const POSITION_ROWS = [
   { code: "MID", label: "Midfielders" },
   { code: "FWD", label: "Forwards" },
 ] as const;
-
 const DEFENSIVE_BAR: Record<string, number> = { DEF: 10, MID: 12, FWD: 12 };
-
-const BAND_WORDS: Record<Gw1ReviewBand, string> = {
-  below: "below",
-  as_projected: "as projected",
-  above: "above",
-  haul: "haul",
-};
 
 function scoreLine(pick: Gw1ReviewPick): ScoreLine {
   const actual = pick.actual;
@@ -46,7 +33,7 @@ function scoreLine(pick: Gw1ReviewPick): ScoreLine {
     saves: actual.saves,
     yellowCards: actual.yellowCards,
     bonus: actual.bonus,
-    haul: pick.band === "haul",
+    haul: false,
   };
 }
 
@@ -63,12 +50,9 @@ function ReviewCard({
     : pick.isViceCaptain
       ? "vice-captain"
       : null;
-  const band = BAND_WORDS[pick.band];
   return (
     <button
-      aria-label={`${pick.identity.name}${role ? `, ${role}` : ""}, ${String(
-        pick.actualPoints,
-      )} actual points, ${oneDecimal.format(pick.frozenXpts)} expected points, ${band}`}
+      aria-label={`${pick.identity.name}${role ? `, ${role}` : ""}, ${String(pick.actualPoints)} actual points`}
       className="gw1-review-card"
       data-band={pick.band}
       onClick={() => onOpen(pick)}
@@ -89,10 +73,9 @@ function ReviewCard({
       </span>
       <span className="gw1-review-score mono">
         <b>{pick.actualPoints}</b>
-        <span>{oneDecimal.format(pick.frozenXpts)} xPts</span>
+        <span>actual points</span>
       </span>
       <ScoreMarks line={scoreLine(pick)} />
-      <span className="gw1-review-band mono">{band}</span>
     </button>
   );
 }
@@ -129,10 +112,7 @@ function ReviewDetail({ pick }: { readonly pick: Gw1ReviewPick }) {
           </div>
         ))}
       </dl>
-      <p>
-        {twoDecimal.format(pick.frozenXpts)} frozen xPts. The shipped start
-        field was P(60+): {Math.round(pick.startRateAsShipped * 100)}%.
-      </p>
+      <p>{pick.actualPoints} actual points in the submitted team.</p>
     </div>
   );
 }
@@ -145,6 +125,22 @@ export function Gw1ReviewPitch({
   const [selected, setSelected] = useState<Gw1ReviewPick | null>(null);
   const starters = review.picks.filter((pick) => pick.squadPosition <= 11);
   const bench = review.picks.filter((pick) => pick.squadPosition > 11);
+  const recommendationCodes = new Set(
+    review.recommendation.picks.map((pick) => pick.code),
+  );
+  const observedCodes = new Set(review.picks.map((pick) => pick.identity.code));
+  const kept = [...recommendationCodes].filter((code) =>
+    observedCodes.has(code),
+  );
+  const notSubmitted = review.recommendation.picks.filter(
+    (pick) => !observedCodes.has(pick.code),
+  );
+  const notRecommended = review.picks.filter(
+    (pick) => !recommendationCodes.has(pick.identity.code),
+  );
+  const recommendedCaptain = review.recommendation.picks.find(
+    (pick) => pick.code === review.recommendation.captain,
+  );
 
   return (
     <section aria-labelledby="gw1-review-title" className="gw1-review">
@@ -159,10 +155,33 @@ export function Gw1ReviewPitch({
         </p>
       </div>
       <p className="gw1-review-lede">
-        Raw player points against the exact xPts frozen before the deadline.
-        Raya&rsquo;s armband counts in the team total, not in his grade.
+        Your submitted GW1 team, compared with the recommendation saved before
+        the deadline. This record is historical and is not regenerated from
+        today&rsquo;s model.
       </p>
-
+      <div className="gw1-review-recommendation">
+        <p className="eyebrow">What Andres recommended then</p>
+        <p>
+          You kept {kept.length} of 15 recommended players. The saved captain
+          was {recommendedCaptain?.name ?? "unavailable"}.
+        </p>
+        {notSubmitted.length > 0 || notRecommended.length > 0 ? (
+          <dl>
+            <div>
+              <dt>Recommended, not submitted</dt>
+              <dd>{notSubmitted.map((pick) => pick.name).join(", ")}</dd>
+            </div>
+            <div>
+              <dt>Submitted, not recommended</dt>
+              <dd>
+                {notRecommended.map((pick) => pick.identity.name).join(", ")}
+              </dd>
+            </div>
+          </dl>
+        ) : (
+          <p>You submitted the recommended fifteen.</p>
+        )}
+      </div>
       <div className="gw1-review-pitch">
         {POSITION_ROWS.map(({ code, label }) => {
           const row = starters.filter(
@@ -180,7 +199,6 @@ export function Gw1ReviewPitch({
           );
         })}
       </div>
-
       <div className="gw1-review-bench">
         <p className="eyebrow">Bench, in order</p>
         <ul aria-label="Substitutes in order">
@@ -194,7 +212,6 @@ export function Gw1ReviewPitch({
           ))}
         </ul>
       </div>
-
       {selected ? (
         <section
           aria-labelledby="gw1-review-detail-title"
@@ -210,7 +227,6 @@ export function Gw1ReviewPitch({
           </button>
         </section>
       ) : null}
-
       <details className="gw1-review-table">
         <summary>Review as a table</summary>
         <div
@@ -225,8 +241,7 @@ export function Gw1ReviewPitch({
               <tr>
                 <th scope="col">Player</th>
                 <th scope="col">Actual</th>
-                <th scope="col">Frozen xPts</th>
-                <th scope="col">Grade</th>
+                <th scope="col">Recommendation</th>
               </tr>
             </thead>
             <tbody>
@@ -236,22 +251,23 @@ export function Gw1ReviewPitch({
                     {pick.identity.name}
                   </th>
                   <td className="mono">{pick.actualPoints}</td>
-                  <td className="mono">{twoDecimal.format(pick.frozenXpts)}</td>
-                  <td>{BAND_WORDS[pick.band]}</td>
+                  <td>
+                    {recommendationCodes.has(pick.identity.code)
+                      ? "recommended"
+                      : "different"}
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
       </details>
-
       <details className="gw1-review-source">
         <summary>Source trail</summary>
         <p>
-          Model {review.canonicalModelVersion}, frozen{" "}
-          {review.canonicalFrozenAt}. Settled FPL scores captured{" "}
-          {review.evidence.liveCapturedAt}. Both sources are immutable and
-          hashed in the review artifact.
+          Recommendation frozen {review.canonicalFrozenAt}. Settled FPL scores
+          captured {review.evidence.liveCapturedAt}. Both sources are immutable
+          and hashed in the review artifact.
         </p>
       </details>
     </section>

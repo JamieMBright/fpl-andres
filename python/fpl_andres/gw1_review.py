@@ -212,6 +212,7 @@ def build_review_artifact(
     inputs: Mapping[str, Any],
     live_snapshot: Mapping[str, Any],
     picks_payload: Mapping[str, Any],
+    recommendation: Mapping[str, Any],
     *,
     entry_id: int,
     generated_at: datetime,
@@ -234,6 +235,13 @@ def build_review_artifact(
         raise ValueError("review inputs must publish player and live element rows")
     if not isinstance(picks, list) or len(picks) != 15:
         raise ValueError("the observed team must publish exactly fifteen picks")
+    recommended_picks = recommendation.get("picks")
+    if not isinstance(recommended_picks, list) or len(recommended_picks) != 15:
+        raise ValueError("the recommendation must preserve exactly fifteen picks")
+    if not isinstance(recommendation.get("captain"), int) or not isinstance(
+        recommendation.get("viceCaptain"), int
+    ):
+        raise ValueError("the recommendation must preserve captaincy")
 
     players = {
         int(row["id"]): row
@@ -318,5 +326,6 @@ def build_review_artifact(
             "benchPoints": bench_points,
             "activeChip": picks_payload.get("active_chip"),
         },
+        "recommendation": dict(recommendation),
         "picks": rows,
     }

@@ -1,8 +1,8 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "season": "2026-27",
   "event": 1,
-  "generatedAt": "2026-08-26T17:07:06.196974Z",
+  "generatedAt": "2026-09-08T11:58:24.916661Z",
   "canonicalManifestRevision": "916de48afecfa174c58d759c3de4a5262dad140c",
   "recordedCodeRevision": "20d43acd502730f7281d196f0584bb8c610965a7",
   "canonicalModelVersion": "8.6",
@@ -13,7 +13,7 @@
     "liveSourceHash": "sha256:0974be7e805ad6b65b3345bee327fee541c4e445837b2871473ed9ba1d794d87",
     "liveCapturedAt": "2026-08-26T16:26:47.030564Z",
     "picksSourceHash": "sha256:487a463a566c02602bb552c77e5789425909790df340d7d81e92fff894edc0ba",
-    "picksObservedAt": "2026-08-26T17:07:06.196974Z",
+    "picksObservedAt": "2026-09-08T11:58:24.916661Z",
     "level": "observed"
   },
   "team": {
@@ -21,6 +21,87 @@
     "points": 56,
     "benchPoints": 13,
     "activeChip": null
+  },
+  "recommendation": {
+    "picks": [
+      {
+        "code": 154561,
+        "name": "Raya",
+        "starter": true
+      },
+      {
+        "code": 200720,
+        "name": "Kelleher",
+        "starter": false
+      },
+      {
+        "code": 226597,
+        "name": "Gabriel",
+        "starter": true
+      },
+      {
+        "code": 221466,
+        "name": "Senesi",
+        "starter": true
+      },
+      {
+        "code": 209036,
+        "name": "Gu\u00e9hi",
+        "starter": true
+      },
+      {
+        "code": 472769,
+        "name": "O'Reilly",
+        "starter": true
+      },
+      {
+        "code": 97032,
+        "name": "Virgil",
+        "starter": false
+      },
+      {
+        "code": 215379,
+        "name": "Anderson",
+        "starter": true
+      },
+      {
+        "code": 204480,
+        "name": "Rice",
+        "starter": true
+      },
+      {
+        "code": 446008,
+        "name": "Mbeumo",
+        "starter": true
+      },
+      {
+        "code": 424876,
+        "name": "Szoboszlai",
+        "starter": true
+      },
+      {
+        "code": 60307,
+        "name": "Gro\u00df",
+        "starter": false
+      },
+      {
+        "code": 502500,
+        "name": "Thiago",
+        "starter": true
+      },
+      {
+        "code": 475168,
+        "name": "Jo\u00e3o Pedro",
+        "starter": true
+      },
+      {
+        "code": 177815,
+        "name": "Calvert-Lewin",
+        "starter": false
+      }
+    ],
+    "captain": 472769,
+    "viceCaptain": 209036
   },
   "picks": [
     {

@@ -313,6 +313,7 @@ def test_gw1_review_shape() -> None:
             "evidence",
             "generatedAt",
             "picks",
+            "recommendation",
             "recordedCodeRevision",
             "schemaVersion",
             "season",
@@ -321,6 +322,9 @@ def test_gw1_review_shape() -> None:
         "gw1-review",
     )
     assert len(payload["picks"]) == 15
+    assert len(payload["recommendation"]["picks"]) == 15
+    assert payload["recommendation"]["captain"] == 472769
+    assert payload["recommendation"]["viceCaptain"] == 209036
     assert payload["team"]["points"] == 56
     assert payload["team"]["benchPoints"] == 13
     assert [row["identity"]["name"] for row in payload["picks"] if row["isCaptain"]] == ["Raya"]

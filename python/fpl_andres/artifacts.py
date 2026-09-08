@@ -40,7 +40,7 @@ OPENING_SQUAD_SCHEMA_VERSION: Final = 1
 SEASON_PLAN_SCHEMA_VERSION: Final = 2
 
 #: Immutable event-1 scorecard against the pre-deadline projection.
-GW1_REVIEW_SCHEMA_VERSION: Final = 1
+GW1_REVIEW_SCHEMA_VERSION: Final = 2
 
 #: Population and club xStart scoring across settled prospective events.
 XSTART_VALIDATION_SCHEMA_VERSION: Final = 3
