@@ -1,6 +1,6 @@
 {
   "schemaVersion": 6,
-  "generatedAt": "2026-09-09T07:46:23.363098Z",
+  "generatedAt": "2026-09-09T11:20:21.837071Z",
   "recordSeason": "2026-27",
   "events": [
     4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23,
@@ -188,7 +188,7 @@
       }
     ],
     "sourceReference": "FPL rules page, Transfers section",
-    "dataAvailableAt": "2026-09-09T07:46:23.363098Z",
+    "dataAvailableAt": "2026-09-09T11:20:21.837071Z",
     "playableStartRate": 0.35,
     "transferMarginPoints": 0.5
   },
@@ -14114,45 +14114,6 @@
       "evidence": { "appearance": "currentSeasonLineup" }
     },
     {
-      "id": 618,
-      "code": 119090,
-      "name": "Goretzka",
-      "position": "MID",
-      "positionId": 3,
-      "club": "AVL",
-      "teamId": 2,
-      "priceTenths": 60,
-      "availabilityStatus": "a",
-      "chanceOfPlaying": null,
-      "basePoints": 2.479,
-      "routes": {
-        "appearance": 1.41,
-        "attacking": 0.807,
-        "cleanSheet": 0.122,
-        "bonus": 0.163,
-        "yellowCards": -0.093,
-        "redCards": -0.008,
-        "defensiveContribution": 0.078
-      },
-      "startRate": 0.049,
-      "startEvidence": {
-        "sourceStartRate": 0.444,
-        "finalStartRate": 0.049,
-        "observedAppearances": 2,
-        "recentStarts": 0,
-        "recentMatches": 2,
-        "recentMinutes": 0,
-        "appearanceSource": "currentSeasonLineup",
-        "lineupAdjustment": -0.395,
-        "marketAdjustment": 0.0,
-        "availabilityAdjustment": 0.0
-      },
-      "squadNumber": null,
-      "rated": false,
-      "depthRank": 1,
-      "evidence": { "all": "rolePrior", "appearance": "currentSeasonLineup" }
-    },
-    {
       "id": 631,
       "code": 638987,
       "name": "Mbaye",
@@ -21041,6 +21002,37 @@
       "evidence": { "all": "rolePrior", "appearance": "fplAvailability" }
     },
     {
+      "id": 618,
+      "code": 119090,
+      "name": "Goretzka",
+      "position": "MID",
+      "positionId": 3,
+      "club": "AVL",
+      "teamId": 2,
+      "priceTenths": 60,
+      "availabilityStatus": "i",
+      "chanceOfPlaying": 0,
+      "basePoints": 0,
+      "routes": {},
+      "startRate": 0.0,
+      "startEvidence": {
+        "sourceStartRate": 0.444,
+        "finalStartRate": 0.0,
+        "observedAppearances": 2,
+        "recentStarts": 0,
+        "recentMatches": 2,
+        "recentMinutes": 0,
+        "appearanceSource": "fplAvailability",
+        "lineupAdjustment": -0.395,
+        "marketAdjustment": -0.0,
+        "availabilityAdjustment": -0.049
+      },
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 1,
+      "evidence": { "all": "rolePrior", "appearance": "fplAvailability" }
+    },
+    {
       "id": 77,
       "code": 489888,
       "name": "Adli",
@@ -22557,44 +22549,6 @@
       "evidence": { "appearance": "currentSeasonLineup" }
     },
     {
-      "id": 632,
-      "code": 626751,
-      "name": "Ansah",
-      "position": "FWD",
-      "positionId": 4,
-      "club": "HUL",
-      "teamId": 11,
-      "priceTenths": 50,
-      "availabilityStatus": "a",
-      "chanceOfPlaying": null,
-      "basePoints": 1.649,
-      "routes": {
-        "appearance": 1.115,
-        "attacking": 0.352,
-        "bonus": 0.218,
-        "yellowCards": -0.02,
-        "ownGoals": -0.008,
-        "penaltiesMissed": -0.008
-      },
-      "startRate": 0.026,
-      "startEvidence": {
-        "sourceStartRate": 0.13,
-        "finalStartRate": 0.026,
-        "observedAppearances": 1,
-        "recentStarts": 0,
-        "recentMatches": 1,
-        "recentMinutes": 0,
-        "appearanceSource": "currentSeasonLineup",
-        "lineupAdjustment": -0.104,
-        "marketAdjustment": 0.0,
-        "availabilityAdjustment": 0.0
-      },
-      "squadNumber": null,
-      "rated": false,
-      "depthRank": 2,
-      "evidence": { "all": "rolePrior", "appearance": "currentSeasonLineup" }
-    },
-    {
       "id": 637,
       "code": 631000,
       "name": "Vaz",
@@ -24025,6 +23979,37 @@
       "squadNumber": null,
       "rated": false,
       "depthRank": 4,
+      "evidence": { "all": "rolePrior", "appearance": "fplAvailability" }
+    },
+    {
+      "id": 632,
+      "code": 626751,
+      "name": "Ansah",
+      "position": "FWD",
+      "positionId": 4,
+      "club": "HUL",
+      "teamId": 11,
+      "priceTenths": 50,
+      "availabilityStatus": "i",
+      "chanceOfPlaying": 0,
+      "basePoints": 0,
+      "routes": {},
+      "startRate": 0.0,
+      "startEvidence": {
+        "sourceStartRate": 0.13,
+        "finalStartRate": 0.0,
+        "observedAppearances": 1,
+        "recentStarts": 0,
+        "recentMatches": 1,
+        "recentMinutes": 0,
+        "appearanceSource": "fplAvailability",
+        "lineupAdjustment": -0.104,
+        "marketAdjustment": 0.0,
+        "availabilityAdjustment": -0.026
+      },
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 2,
       "evidence": { "all": "rolePrior", "appearance": "fplAvailability" }
     },
     {
