@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-10T14:21:04.260134Z",
+  "generatedAt": "2026-09-10T15:00:44.131592Z",
   "bootstrap": {
     "elements": [
       {
@@ -639,7 +639,7 @@
         "minutes": 257,
         "total_points": 16,
         "bonus": 2,
-        "selected_by_percent": "7.6",
+        "selected_by_percent": "7.7",
         "expected_goals": "0.55",
         "expected_assists": "0.33",
         "expected_goal_involvements": "0.88",
@@ -2719,7 +2719,7 @@
         "minutes": 267,
         "total_points": 15,
         "bonus": 3,
-        "selected_by_percent": "3.9",
+        "selected_by_percent": "3.8",
         "expected_goals": "0.77",
         "expected_assists": "0.20",
         "expected_goal_involvements": "0.97",
@@ -4071,7 +4071,7 @@
         "minutes": 257,
         "total_points": 19,
         "bonus": 1,
-        "selected_by_percent": "29.7",
+        "selected_by_percent": "29.8",
         "expected_goals": "1.18",
         "expected_assists": "1.14",
         "expected_goal_involvements": "2.32",
@@ -5802,6 +5802,32 @@
         "recoveries": 0
       },
       {
+        "id": 655,
+        "code": 242893,
+        "web_name": "Gboho",
+        "element_type": 3,
+        "team": 7,
+        "now_cost": 55,
+        "status": "a",
+        "squad_number": null,
+        "minutes": 0,
+        "total_points": 0,
+        "bonus": 0,
+        "selected_by_percent": "0.0",
+        "expected_goals": "0.00",
+        "expected_assists": "0.00",
+        "expected_goal_involvements": "0.00",
+        "ict_index": "0.0",
+        "influence": "0.0",
+        "creativity": "0.0",
+        "threat": "0.0",
+        "defensive_contribution": 0,
+        "defensive_contribution_per_90": 0,
+        "clearances_blocks_interceptions": 0,
+        "tackles": 0,
+        "recoveries": 0
+      },
+      {
         "id": 42,
         "code": 485337,
         "web_name": "Guessand",
@@ -7503,7 +7529,7 @@
         "minutes": 249,
         "total_points": 4,
         "bonus": 0,
-        "selected_by_percent": "1.5",
+        "selected_by_percent": "1.4",
         "expected_goals": "0.21",
         "expected_assists": "0.16",
         "expected_goal_involvements": "0.37",
@@ -8725,7 +8751,7 @@
         "minutes": 270,
         "total_points": 8,
         "bonus": 0,
-        "selected_by_percent": "2.0",
+        "selected_by_percent": "1.9",
         "expected_goals": "0.54",
         "expected_assists": "0.07",
         "expected_goal_involvements": "0.61",
@@ -9401,7 +9427,7 @@
         "minutes": 270,
         "total_points": 7,
         "bonus": 0,
-        "selected_by_percent": "3.1",
+        "selected_by_percent": "3.0",
         "expected_goals": "0.07",
         "expected_assists": "0.18",
         "expected_goal_involvements": "0.25",
@@ -10675,7 +10701,7 @@
         "minutes": 252,
         "total_points": 10,
         "bonus": 2,
-        "selected_by_percent": "23.5",
+        "selected_by_percent": "23.4",
         "expected_goals": "1.61",
         "expected_assists": "0.08",
         "expected_goal_involvements": "1.69",
@@ -17232,22 +17258,22 @@
       {
         "id": 17,
         "finished": false,
-        "deadline_time": "2026-12-26T13:30:00Z"
+        "deadline_time": "2026-12-26T11:00:00Z"
       },
       {
         "id": 18,
         "finished": false,
-        "deadline_time": "2026-12-30T18:30:00Z"
+        "deadline_time": "2026-12-29T18:00:00Z"
       },
       {
         "id": 19,
         "finished": false,
-        "deadline_time": "2027-01-02T13:30:00Z"
+        "deadline_time": "2027-01-01T18:30:00Z"
       },
       {
         "id": 20,
         "finished": false,
-        "deadline_time": "2027-01-06T18:30:00Z"
+        "deadline_time": "2027-01-05T18:00:00Z"
       },
       {
         "id": 21,
@@ -18149,16 +18175,6 @@
     },
     {
       "event": 17,
-      "team_h": 7,
-      "team_a": 6
-    },
-    {
-      "event": 17,
-      "team_h": 8,
-      "team_a": 1
-    },
-    {
-      "event": 17,
       "team_h": 9,
       "team_a": 20
     },
@@ -18169,18 +18185,18 @@
     },
     {
       "event": 17,
-      "team_h": 11,
-      "team_a": 14
-    },
-    {
-      "event": 17,
       "team_h": 12,
       "team_a": 4
     },
     {
       "event": 17,
-      "team_h": 16,
-      "team_a": 18
+      "team_h": 19,
+      "team_a": 3
+    },
+    {
+      "event": 17,
+      "team_h": 11,
+      "team_a": 14
     },
     {
       "event": 17,
@@ -18189,32 +18205,17 @@
     },
     {
       "event": 17,
-      "team_h": 19,
-      "team_a": 3
-    },
-    {
-      "event": 18,
-      "team_h": 2,
-      "team_a": 14
-    },
-    {
-      "event": 18,
       "team_h": 7,
-      "team_a": 4
+      "team_a": 6
     },
     {
-      "event": 18,
+      "event": 17,
+      "team_h": 16,
+      "team_a": 18
+    },
+    {
+      "event": 17,
       "team_h": 8,
-      "team_a": 3
-    },
-    {
-      "event": 18,
-      "team_h": 9,
-      "team_a": 15
-    },
-    {
-      "event": 18,
-      "team_h": 10,
       "team_a": 1
     },
     {
@@ -18224,8 +18225,28 @@
     },
     {
       "event": 18,
-      "team_h": 12,
-      "team_a": 6
+      "team_h": 19,
+      "team_a": 5
+    },
+    {
+      "event": 18,
+      "team_h": 9,
+      "team_a": 15
+    },
+    {
+      "event": 18,
+      "team_h": 7,
+      "team_a": 4
+    },
+    {
+      "event": 18,
+      "team_h": 8,
+      "team_a": 3
+    },
+    {
+      "event": 18,
+      "team_h": 10,
+      "team_a": 1
     },
     {
       "event": 18,
@@ -18239,33 +18260,13 @@
     },
     {
       "event": 18,
-      "team_h": 19,
-      "team_a": 5
+      "team_h": 2,
+      "team_a": 14
     },
     {
-      "event": 19,
-      "team_h": 1,
-      "team_a": 12
-    },
-    {
-      "event": 19,
-      "team_h": 3,
-      "team_a": 2
-    },
-    {
-      "event": 19,
-      "team_h": 4,
-      "team_a": 8
-    },
-    {
-      "event": 19,
-      "team_h": 5,
-      "team_a": 16
-    },
-    {
-      "event": 19,
-      "team_h": 6,
-      "team_a": 17
+      "event": 18,
+      "team_h": 12,
+      "team_a": 6
     },
     {
       "event": 19,
@@ -18274,13 +18275,23 @@
     },
     {
       "event": 19,
-      "team_h": 14,
-      "team_a": 7
+      "team_h": 5,
+      "team_a": 16
     },
     {
       "event": 19,
-      "team_h": 15,
-      "team_a": 19
+      "team_h": 1,
+      "team_a": 12
+    },
+    {
+      "event": 19,
+      "team_h": 4,
+      "team_a": 8
+    },
+    {
+      "event": 19,
+      "team_h": 14,
+      "team_a": 7
     },
     {
       "event": 19,
@@ -18293,6 +18304,21 @@
       "team_a": 11
     },
     {
+      "event": 19,
+      "team_h": 3,
+      "team_a": 2
+    },
+    {
+      "event": 19,
+      "team_h": 6,
+      "team_a": 17
+    },
+    {
+      "event": 19,
+      "team_h": 15,
+      "team_a": 19
+    },
+    {
       "event": 20,
       "team_h": 1,
       "team_a": 4
@@ -18304,13 +18330,23 @@
     },
     {
       "event": 20,
-      "team_h": 8,
-      "team_a": 6
+      "team_h": 9,
+      "team_a": 2
     },
     {
       "event": 20,
-      "team_h": 9,
-      "team_a": 2
+      "team_h": 18,
+      "team_a": 11
+    },
+    {
+      "event": 20,
+      "team_h": 20,
+      "team_a": 14
+    },
+    {
+      "event": 20,
+      "team_h": 8,
+      "team_a": 6
     },
     {
       "event": 20,
@@ -18331,16 +18367,6 @@
       "event": 20,
       "team_h": 16,
       "team_a": 17
-    },
-    {
-      "event": 20,
-      "team_h": 18,
-      "team_a": 11
-    },
-    {
-      "event": 20,
-      "team_h": 20,
-      "team_a": 14
     },
     {
       "event": 21,
