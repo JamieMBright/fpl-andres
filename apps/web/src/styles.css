@@ -5644,6 +5644,100 @@ h1[tabindex="-1"]:focus-visible {
   margin-top: 28px;
 }
 
+.fpl500-hits {
+  margin-top: 28px;
+}
+
+.fpl500-hits-chart {
+  margin: 14px 0 12px;
+  padding: 14px 16px;
+  background: rgb(255 255 255 / 4%);
+  border-radius: 4px;
+}
+
+.fpl500-hits-chart figcaption {
+  margin: 0 0 12px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.fpl500-hits-caption {
+  display: block;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--ink-soft);
+}
+
+.fpl500-hits-series {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.fpl500-hits-row {
+  display: grid;
+  grid-template-columns: minmax(42px, max-content) minmax(0, 1fr) minmax(0, 1fr);
+  gap: 8px 12px;
+  align-items: start;
+}
+
+.fpl500-hits-gw {
+  margin: 0;
+  padding-top: 1px;
+  font-size: 11px;
+  color: var(--ink-soft);
+}
+
+.fpl500-hits-metric {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) max-content;
+  gap: 6px 8px;
+  align-items: center;
+  min-width: 0;
+}
+
+.fpl500-hits-metric-label {
+  grid-column: 1 / -1;
+  font-size: 12px;
+}
+
+.fpl500-hits-track {
+  display: block;
+  min-width: 40px;
+  height: 12px;
+  background: rgb(255 255 255 / 7%);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.fpl500-hits-bar {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+}
+
+.fpl500-hits-bar.is-managers {
+  background: var(--accent);
+}
+
+.fpl500-hits-bar.is-cost {
+  background: var(--signal-blue);
+}
+
+.fpl500-hits-value {
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+@media (max-width: 720px) {
+  .fpl500-hits-row {
+    grid-template-columns: 1fr;
+  }
+}
+
 .fpl500-metric-choice {
   display: flex;
   flex-wrap: wrap;
