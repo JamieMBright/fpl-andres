@@ -1,6 +1,6 @@
 {
   "schemaVersion": 6,
-  "generatedAt": "2026-09-10T12:43:51.886183Z",
+  "generatedAt": "2026-09-10T13:17:44.019737Z",
   "recordSeason": "2026-27",
   "events": [
     4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23,
@@ -265,7 +265,7 @@
       }
     ],
     "sourceReference": "FPL rules page, Transfers section",
-    "dataAvailableAt": "2026-09-10T12:43:51.886183Z",
+    "dataAvailableAt": "2026-09-10T13:17:44.019737Z",
     "playableStartRate": 0.35,
     "transferMarginPoints": 0.5
   },
@@ -16841,45 +16841,6 @@
       "evidence": { "all": "rolePrior", "appearance": "currentSeasonLineup" }
     },
     {
-      "id": 135,
-      "code": 700308,
-      "name": "Yohanna",
-      "position": "MID",
-      "positionId": 3,
-      "club": "BHA",
-      "teamId": 5,
-      "priceTenths": 49,
-      "availabilityStatus": "a",
-      "chanceOfPlaying": null,
-      "basePoints": 1.99,
-      "routes": {
-        "appearance": 1.275,
-        "attacking": 0.508,
-        "cleanSheet": 0.088,
-        "bonus": 0.107,
-        "yellowCards": -0.08,
-        "redCards": -0.007,
-        "defensiveContribution": 0.099
-      },
-      "startRate": 0.05,
-      "startEvidence": {
-        "sourceStartRate": 0.652,
-        "finalStartRate": 0.05,
-        "observedAppearances": 3,
-        "recentStarts": 0,
-        "recentMatches": 3,
-        "recentMinutes": 12,
-        "appearanceSource": "currentSeasonLineup",
-        "lineupAdjustment": -0.602,
-        "marketAdjustment": 0.0,
-        "availabilityAdjustment": 0.0
-      },
-      "squadNumber": null,
-      "rated": false,
-      "depthRank": 14,
-      "evidence": { "all": "rolePrior", "appearance": "currentSeasonLineup" }
-    },
-    {
       "id": 600,
       "code": 612855,
       "name": "Osman",
@@ -21665,6 +21626,37 @@
       "squadNumber": null,
       "rated": false,
       "depthRank": 9,
+      "evidence": { "all": "rolePrior", "appearance": "fplAvailability" }
+    },
+    {
+      "id": 135,
+      "code": 700308,
+      "name": "Yohanna",
+      "position": "MID",
+      "positionId": 3,
+      "club": "BHA",
+      "teamId": 5,
+      "priceTenths": 49,
+      "availabilityStatus": "i",
+      "chanceOfPlaying": 0,
+      "basePoints": 0,
+      "routes": {},
+      "startRate": 0.0,
+      "startEvidence": {
+        "sourceStartRate": 0.652,
+        "finalStartRate": 0.0,
+        "observedAppearances": 3,
+        "recentStarts": 0,
+        "recentMatches": 3,
+        "recentMinutes": 12,
+        "appearanceSource": "fplAvailability",
+        "lineupAdjustment": -0.602,
+        "marketAdjustment": 0.0,
+        "availabilityAdjustment": -0.05
+      },
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 14,
       "evidence": { "all": "rolePrior", "appearance": "fplAvailability" }
     },
     {
