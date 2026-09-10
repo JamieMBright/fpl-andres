@@ -141,10 +141,12 @@ export function TeamEntry({
   team,
   params,
   onChange,
+  onResubmit,
 }: {
   team: TeamStartStatus;
   params: URLSearchParams;
   onChange: (next: URLSearchParams, options?: { replace: boolean }) => void;
+  onResubmit?: () => void;
 }) {
   const [entered, setEntered] = useState(params.get("team") ?? "");
   const teamIdHistory = useMemo(
@@ -158,6 +160,10 @@ export function TeamEntry({
     const trimmed = entered.trim();
     if (trimmed) next.set("team", trimmed);
     else next.delete("team");
+    if (next.toString() === params.toString()) {
+      onResubmit?.();
+      return;
+    }
     onChange(next, { replace: true });
   };
 
@@ -1242,7 +1248,12 @@ export default function SeasonPlanPage() {
         step="01"
         title="Your manager and season"
       >
-        <TeamEntry team={team} params={params} onChange={setParams} />
+        <TeamEntry
+          team={team}
+          params={params}
+          onChange={setParams}
+          onResubmit={teamPlan.retry}
+        />
         {teamId === null ? null : (
           <>
             <DeclaredSquadNote entryId={teamId} />
