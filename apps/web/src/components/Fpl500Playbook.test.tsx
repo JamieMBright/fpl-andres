@@ -5,11 +5,12 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 
 import {
   Fpl500Playbook,
+  hitWeeks,
   latestCapture,
   latestCaptured,
 } from "./Fpl500Playbook";
 import artifact from "../data/fpl500.json";
-import { fineShare, integer } from "../format";
+import { fineShare, integer, oneDecimal } from "../format";
 
 // The page shows the newest gameweek FPL has scored, so pinning one here would
 // date the test to the week it was written.
@@ -18,10 +19,6 @@ const LATEST_EVENT =
     artifact.exactFpl500Portfolio as Parameters<typeof latestCapture>[0],
   )?.event ?? Math.max(...artifact.exactFpl500Portfolio.events);
 const NEXT_EVENT = LATEST_EVENT + 1;
-const LATEST_CAPTURED_EVENT =
-  latestCaptured(
-    artifact.exactFpl500Portfolio as Parameters<typeof latestCaptured>[0],
-  )?.event ?? Math.max(...artifact.exactFpl500Portfolio.events);
 
 afterEach(() => {
   window.history.replaceState(null, "", "/");
@@ -329,22 +326,49 @@ describe("Fpl500Playbook", () => {
 
   it("shows real hit evidence once transfers are available", () => {
     draw();
-    const key = String(LATEST_CAPTURED_EVENT).padStart(2, "0");
-    const aggregate = Object.entries(
-      artifact.exactFpl500Portfolio.samples,
-    ).find(([eventKey]) => eventKey === key)?.[1].aggregate;
-    expect(aggregate?.transfersAvailable).toBe(true);
-    expect(aggregate?.eventTransfers).toBeDefined();
-    expect(aggregate?.transferCost).toBeDefined();
+    const chartWeeks = hitWeeks(
+      artifact.exactFpl500Portfolio as Parameters<typeof hitWeeks>[0],
+    );
+    const chartedWeeks = chartWeeks.filter(
+      (week): week is typeof week & { hitsTaken: number; meanCost: number } =>
+        week.hitsTaken !== null && week.meanCost !== null,
+    );
+    const unavailableWeeks = chartWeeks.filter(
+      (week) => week.hitsTaken === null || week.meanCost === null,
+    );
+    expect(chartWeeks.length).toBeGreaterThanOrEqual(chartedWeeks.length);
+    expect(chartedWeeks.length).toBeGreaterThan(0);
 
     const heading = screen.getByRole("heading", { name: "Hits taken" });
     const section = heading.closest("section");
     expect(section).not.toBeNull();
     expect(
-      within(section!).getByText(`GW${String(LATEST_CAPTURED_EVENT)}`),
+      within(section!).getByText("Gameweek-by-gameweek hits taken"),
     ).toBeVisible();
-    expect(within(section!).getByText("Managers taking a hit")).toBeVisible();
-    expect(within(section!).getByText("Hit count unavailable")).toBeVisible();
+    for (const week of chartedWeeks) {
+      const row = within(section!)
+        .getByText(`GW${String(week.event)}`)
+        .closest("li");
+      expect(row).not.toBeNull();
+      expect(
+        within(row!).getByText(`${integer.format(week.hitsTaken)} managers`),
+      ).toBeVisible();
+      expect(
+        within(row!).getByText(`${oneDecimal.format(week.meanCost)} pts mean`),
+      ).toBeVisible();
+      expect(
+        within(row!).getByRole("img", {
+          name: new RegExp(`GW${String(week.event)} managers taking a hit:`),
+        }),
+      ).toBeVisible();
+    }
+    for (const week of unavailableWeeks) {
+      const row = within(section!)
+        .getByText(`GW${String(week.event)}`)
+        .closest("li");
+      expect(row).not.toBeNull();
+      expect(within(row!).getAllByText("Unavailable")).toHaveLength(2);
+    }
     expect(
       within(section!).queryByText(/awaiting gameweek/i),
     ).not.toBeInTheDocument();

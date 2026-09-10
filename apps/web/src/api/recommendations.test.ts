@@ -6,6 +6,7 @@ import { describe, expect, it } from "vitest";
 
 import DEADLINES from "../data/deadlines.json";
 import INPUTS from "../data/season-inputs.json";
+import xstartValidation from "../data/xstart-validation.json";
 import latestHandler from "../../../../api/recommendations/latest";
 import marketsHandler from "../../../../api/recommendations/markets";
 import metaHandler from "../../../../api/recommendations/meta";
@@ -143,12 +144,12 @@ describe("recommendation API deployment", () => {
         },
       } as unknown as VercelResponse,
     );
+    const latestShippedValidation = [...xstartValidation.events].sort(
+      (left, right) => right.event - left.event,
+    )[0];
+    expect(latestShippedValidation).toBeDefined();
     expect(xstartBody).toMatchObject({
-      shippedFieldValidation: {
-        event: 2,
-        field: "probabilitySixtyMinutesAsShipped",
-        population: { count: 594, brier: 0.188851 },
-      },
+      shippedFieldValidation: latestShippedValidation,
     });
     expect(SOURCE).toContain("XSTART_VALIDATION_SCHEMA_VERSION");
   });
