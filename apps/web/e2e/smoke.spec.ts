@@ -127,11 +127,14 @@ test("the observed GW1 team opens its immutable review", async ({ page }) => {
   await page.locator('[data-step="02"] > summary').click();
 
   await expect(
-    page.getByRole("heading", { name: "Gameweek 1, reviewed" }),
+    page.getByRole("heading", { name: "Gameweek 1, as it went" }),
   ).toBeVisible();
-  await expect(page.locator(".gw1-review-card")).toHaveCount(15);
+  await expect(page.getByText("56 points on the field")).toBeVisible();
   await expect(
-    page.getByRole("button", { name: /Raya, captain, 6 actual points/i }),
+    page.getByRole("button", { name: /Raya C 12 3\.2 projected/i }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: /Osula 4 0\.0 projected/i }),
   ).toBeVisible();
 });
 
