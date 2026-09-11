@@ -1,6 +1,6 @@
 {
   "schemaVersion": 6,
-  "generatedAt": "2026-09-11T12:22:50.194722Z",
+  "generatedAt": "2026-09-11T13:20:15.282201Z",
   "recordSeason": "2026-27",
   "events": [
     4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23,
@@ -294,7 +294,7 @@
       }
     ],
     "sourceReference": "FPL rules page, Transfers section",
-    "dataAvailableAt": "2026-09-11T12:22:50.194722Z",
+    "dataAvailableAt": "2026-09-11T13:20:15.282201Z",
     "playableStartRate": 0.35,
     "transferMarginPoints": 0.5
   },
@@ -7735,8 +7735,8 @@
       "club": "MUN",
       "teamId": 16,
       "priceTenths": 44,
-      "availabilityStatus": "a",
-      "chanceOfPlaying": null,
+      "availabilityStatus": "d",
+      "chanceOfPlaying": 75,
       "basePoints": 1.909,
       "routes": {
         "appearance": 1.63,
