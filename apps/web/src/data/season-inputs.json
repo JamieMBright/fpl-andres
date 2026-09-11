@@ -1,6 +1,6 @@
 {
   "schemaVersion": 6,
-  "generatedAt": "2026-09-11T15:29:14.950187Z",
+  "generatedAt": "2026-09-11T16:27:40.912028Z",
   "recordSeason": "2026-27",
   "events": [
     4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23,
@@ -61,8 +61,8 @@
     "fixtureMarkets": {
       "source": "football-data.co.uk",
       "level": "observed",
-      "updatedAt": "2026-09-11T14:29:51.162895+00:00",
-      "contentHash": "sha256:c5f23d5e16659603a5b8c0f1091d0df3c1d41e11414210ee9c82251f3fd8fdce"
+      "updatedAt": "2026-09-11T16:27:29.320747+00:00",
+      "contentHash": "sha256:15030afc133e7f3f142c8978562f4244d3781298728adc2d0a4979b17133ad98"
     },
     "understat": {
       "source": "understat",
@@ -193,6 +193,7 @@
       "47": [0.0, 0.973, 0.836139, 0.307, -0.09, -0.008],
       "51": [0.0, 0.973, 1.042621, 0.508, -0.08, -0.007],
       "52": [0.0, 0.05, 1.150066, 0.508, -0.08, -0.007],
+      "53": [0.0, 0.05, 1.204023, 0.508, -0.08, -0.007],
       "56": [0.0, 0.008, 1.523545, 0.444, -0.025, 0.0],
       "160": [0.0, 0.008, 1.650067, 0.325, -0.035, -0.003],
       "166": [0.0, 0.625, 1.629936, 0.352, -0.02, 0.0],
@@ -293,7 +294,7 @@
       }
     ],
     "sourceReference": "FPL rules page, Transfers section",
-    "dataAvailableAt": "2026-09-11T15:29:14.950187Z",
+    "dataAvailableAt": "2026-09-11T16:27:40.912028Z",
     "playableStartRate": 0.35,
     "transferMarginPoints": 0.5
   },
@@ -1041,7 +1042,7 @@
   },
   "fixtureEvidence": {
     "source": "football-data.co.uk",
-    "updatedAt": "2026-09-11T14:29:51.162895+00:00",
+    "updatedAt": "2026-09-11T16:27:29.320747+00:00",
     "level": "observed",
     "byClub": {
       "ARS": [
@@ -15862,6 +15863,49 @@
       "evidence": { "appearance": "currentSeasonLineup" }
     },
     {
+      "id": 53,
+      "code": 614071,
+      "name": "Manzambi",
+      "position": "MID",
+      "positionId": 3,
+      "club": "AVL",
+      "teamId": 2,
+      "priceTenths": 59,
+      "availabilityStatus": "d",
+      "chanceOfPlaying": 50,
+      "basePoints": 2.358,
+      "routes": {
+        "appearance": 1.536,
+        "attacking": 0.574,
+        "cleanSheet": 0.106,
+        "bonus": 0.128,
+        "yellowCards": -0.097,
+        "redCards": -0.008,
+        "defensiveContribution": 0.119
+      },
+      "startRate": 0.347,
+      "startEvidence": {
+        "sourceStartRate": 0.652,
+        "finalStartRate": 0.347,
+        "observedAppearances": 3,
+        "recentStarts": 0,
+        "recentMatches": 3,
+        "recentMinutes": 0,
+        "appearanceSource": "marketParticipation",
+        "lineupAdjustment": -0.602,
+        "marketAdjustment": 0.296,
+        "availabilityAdjustment": 0.0
+      },
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 3,
+      "evidence": {
+        "all": "rolePrior",
+        "appearance": "marketParticipation",
+        "attacking": "marketAttack"
+      }
+    },
+    {
       "id": 369,
       "code": 611922,
       "name": "Ngumoha",
@@ -21757,41 +21801,6 @@
       "rated": false,
       "depthRank": 9,
       "evidence": { "all": "rolePrior", "appearance": "fplAvailability" }
-    },
-    {
-      "id": 53,
-      "code": 614071,
-      "name": "Manzambi",
-      "position": "MID",
-      "positionId": 3,
-      "club": "AVL",
-      "teamId": 2,
-      "priceTenths": 59,
-      "availabilityStatus": "i",
-      "chanceOfPlaying": 0,
-      "basePoints": 0,
-      "routes": {},
-      "startRate": 0.0,
-      "startEvidence": {
-        "sourceStartRate": 0.652,
-        "finalStartRate": 0.0,
-        "observedAppearances": 3,
-        "recentStarts": 0,
-        "recentMatches": 3,
-        "recentMinutes": 0,
-        "appearanceSource": "fplAvailability",
-        "lineupAdjustment": -0.602,
-        "marketAdjustment": 0.296,
-        "availabilityAdjustment": -0.347
-      },
-      "squadNumber": null,
-      "rated": false,
-      "depthRank": 3,
-      "evidence": {
-        "all": "rolePrior",
-        "appearance": "fplAvailability",
-        "attacking": "marketAttack"
-      }
     },
     {
       "id": 54,
