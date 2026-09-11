@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "modelVersion": "8.17",
-  "generatedAt": "2026-09-10T22:21:32.519219Z",
+  "generatedAt": "2026-09-11T00:09:40.405096Z",
   "season": "2026-27",
   "recordSeason": "2026-27",
   "basis": "opening squad, fixture-adjusted projections, solved in overlapping windows and committed 35 gameweeks deep",
@@ -13,7 +13,7 @@
   "lastEvent": 38,
   "windowsSolved": 11,
   "poolSize": 84,
-  "netExpectedPoints": 1883.11,
+  "netExpectedPoints": 1884.29,
   "chips": [
     {
       "event": 7,
@@ -27,9 +27,9 @@
       "event": 6,
       "chip": "Wildcard",
       "half": "first",
-      "gain": 9.99,
+      "gain": 10.68,
       "ceiling": 4.44,
-      "note": "Rebuilding in gameweek 6 is worth 10.0 over the season, because the weeks before it no longer have to leave a squad that still works afterwards; the legal fifteen changes 1 players between xPts7 and xPts9, which is under the 20 a chip wants, but an unplayed chip expires at nothing"
+      "note": "Rebuilding in gameweek 6 is worth 10.7 over the season, because the weeks before it no longer have to leave a squad that still works afterwards; the legal fifteen changes 1 players between xPts7 and xPts9, which is under the 20 a chip wants, but an unplayed chip expires at nothing"
     },
     {
       "event": null,
@@ -37,7 +37,7 @@
       "half": "first",
       "gain": 0.0,
       "ceiling": 2.0,
-      "note": "The best temporary squad moves only 7 of the fifteen; a Free Hit needs 10 or more changes."
+      "note": "The best temporary squad moves only 6 of the fifteen; a Free Hit needs 10 or more changes."
     },
     {
       "event": 13,
@@ -51,15 +51,15 @@
       "event": 22,
       "chip": "Wildcard",
       "half": "second",
-      "gain": 9.99,
+      "gain": 10.68,
       "ceiling": 2.43,
-      "note": "Rebuilding in gameweek 22 is worth 10.0 over the season, because the weeks before it no longer have to leave a squad that still works afterwards; the legal fifteen changes 2 players between xPts7 and xPts9, which is under the 20 a chip wants, but an unplayed chip expires at nothing"
+      "note": "Rebuilding in gameweek 22 is worth 10.7 over the season, because the weeks before it no longer have to leave a squad that still works afterwards; the legal fifteen changes 3 players between xPts7 and xPts9, which is under the 20 a chip wants, but an unplayed chip expires at nothing"
     },
     {
       "event": 31,
       "chip": "Free Hit",
       "half": "second",
-      "gain": 1.41,
+      "gain": 1.9,
       "ceiling": 2.55,
       "note": "this week is 2.5 worse for the held squad than the weeks around it, the sharpest one-week drop of the second half, which under the 20 points that makes a chip worth building around, but an unplayed chip expires at nothing"
     },
@@ -98,13 +98,6 @@
       "position": "GKP",
       "club": "FUL",
       "priceTenths": 45,
-      "squadNumber": null
-    },
-    "84450": {
-      "name": "Xhaka",
-      "position": "MID",
-      "club": "SUN",
-      "priceTenths": 55,
       "squadNumber": null
     },
     "111234": {
@@ -177,13 +170,6 @@
       "priceTenths": 55,
       "squadNumber": null
     },
-    "216646": {
-      "name": "Wissa",
-      "position": "FWD",
-      "club": "NEW",
-      "priceTenths": 62,
-      "squadNumber": null
-    },
     "219924": {
       "name": "Diop",
       "position": "DEF",
@@ -230,14 +216,7 @@
       "name": "Palmer",
       "position": "MID",
       "club": "CHE",
-      "priceTenths": 96,
-      "squadNumber": null
-    },
-    "249231": {
-      "name": "Lewis-Potter",
-      "position": "MID",
-      "club": "BRE",
-      "priceTenths": 55,
+      "priceTenths": 97,
       "squadNumber": null
     },
     "424876": {
@@ -300,7 +279,7 @@
       "name": "Calafiori",
       "position": "DEF",
       "club": "ARS",
-      "priceTenths": 57,
+      "priceTenths": 58,
       "squadNumber": null
     },
     "466525": {
@@ -317,6 +296,13 @@
       "priceTenths": 77,
       "squadNumber": null
     },
+    "487676": {
+      "name": "Hume",
+      "position": "DEF",
+      "club": "SUN",
+      "priceTenths": 44,
+      "squadNumber": null
+    },
     "487838": {
       "name": "Hall",
       "position": "DEF",
@@ -331,13 +317,6 @@
       "priceTenths": 45,
       "squadNumber": null
     },
-    "498016": {
-      "name": "Roefs",
-      "position": "GKP",
-      "club": "SUN",
-      "priceTenths": 50,
-      "squadNumber": null
-    },
     "502500": {
       "name": "Thiago",
       "position": "FWD",
@@ -349,7 +328,7 @@
       "name": "Scott",
       "position": "MID",
       "club": "BOU",
-      "priceTenths": 60,
+      "priceTenths": 61,
       "squadNumber": null
     },
     "513418": {
@@ -366,11 +345,11 @@
       "priceTenths": 45,
       "squadNumber": null
     },
-    "586309": {
-      "name": "Barry",
+    "647850": {
+      "name": "Kostoulas",
       "position": "FWD",
-      "club": "EVE",
-      "priceTenths": 56,
+      "club": "BHA",
+      "priceTenths": 55,
       "squadNumber": null
     }
   },
@@ -525,7 +504,7 @@
       "transferCostPoints": 0,
       "projectedPoints": 55.49,
       "netExpectedPoints": 55.49,
-      "bankAfterTenths": 2
+      "bankAfterTenths": 3
     },
     {
       "event": 6,
@@ -535,16 +514,17 @@
         154561, 226597, 466075, 201658, 244851, 475168, 440993, 141746, 446008,
         465642, 487838
       ],
-      "bench": [465730, 489639, 586309, 177815],
+      "bench": [465730, 489639, 177815, 205533],
       "captain": 141746,
       "viceCaptain": 446008,
       "transfersIn": [
-        489639, 244851, 475168, 586309, 141746, 446008, 465642, 487838
+        489639, 244851, 475168, 205533, 141746, 446008, 465642, 487838
       ],
       "transfersOut": [
         200720, 513418, 502500, 219924, 220627, 466525, 437730, 223094
       ],
       "opponents": {
+        "CRY": ["NFO (H)"],
         "ARS": ["LEE (H)"],
         "NEW": ["COV (A)"],
         "BOU": ["CHE (A)"],
@@ -552,10 +532,10 @@
         "MUN": ["TOT (H)"],
         "MCI": ["LIV (A)"],
         "LEE": ["ARS (A)"],
-        "BHA": ["SUN (A)"],
-        "EVE": ["HUL (A)"]
+        "BHA": ["SUN (A)"]
       },
       "difficulty": {
+        "CRY": 2.9,
         "ARS": 2.1,
         "NEW": 2.0,
         "BOU": 3.2,
@@ -563,14 +543,14 @@
         "MUN": 2.5,
         "MCI": 4.0,
         "LEE": 5.0,
-        "BHA": 3.3,
-        "EVE": 2.0
+        "BHA": 3.3
       },
       "squadElementIds": [
-        1, 4, 8, 68, 109, 115, 154, 165, 237, 249, 346, 426, 427, 445, 449
+        1, 4, 8, 68, 109, 115, 154, 165, 224, 237, 346, 426, 427, 445, 449
       ],
-      "benchElementIds": [115, 109, 249, 346],
+      "benchElementIds": [115, 109, 346, 224],
       "expected": {
+        "205533": 1.69,
         "154561": 4.89,
         "487838": 3.61,
         "226597": 5.74,
@@ -583,11 +563,11 @@
         "177815": 2.53,
         "489639": 2.98,
         "465730": 3.27,
-        "586309": 2.62,
         "244851": 4.74,
         "465642": 3.46
       },
       "ceiling": {
+        "205533": 1.69,
         "154561": 4.89,
         "487838": 3.61,
         "226597": 5.74,
@@ -600,7 +580,6 @@
         "177815": 2.53,
         "489639": 2.98,
         "465730": 3.27,
-        "586309": 2.62,
         "244851": 4.74,
         "465642": 3.46
       },
@@ -609,7 +588,7 @@
       "transferCostPoints": 0,
       "projectedPoints": 57.5,
       "netExpectedPoints": 57.5,
-      "bankAfterTenths": 2,
+      "bankAfterTenths": 1,
       "chip": "Wildcard"
     },
     {
@@ -620,12 +599,13 @@
         154561, 226597, 466075, 513418, 465730, 244851, 177815, 141746, 446008,
         465642, 487838
       ],
-      "bench": [440993, 489639, 475168, 586309],
+      "bench": [440993, 489639, 475168, 205533],
       "captain": 513418,
       "viceCaptain": 141746,
       "transfersIn": [513418],
       "transfersOut": [201658],
       "opponents": {
+        "CRY": ["BHA (A)"],
         "ARS": ["NFO (A)"],
         "NEW": ["AVL (H)"],
         "CHE": ["EVE (A)"],
@@ -633,10 +613,10 @@
         "BHA": ["CRY (H)"],
         "MCI": ["IPS (H)"],
         "LEE": ["MUN (H)"],
-        "EVE": ["CHE (H)"],
         "BRE": ["LIV (H)"]
       },
       "difficulty": {
+        "CRY": 3.8,
         "ARS": 3.2,
         "NEW": 2.7,
         "CHE": 3.1,
@@ -644,14 +624,14 @@
         "BHA": 2.2,
         "MCI": 2.0,
         "LEE": 3.4,
-        "EVE": 2.9,
         "BRE": 2.8
       },
       "squadElementIds": [
-        1, 4, 8, 94, 109, 115, 154, 165, 237, 249, 346, 426, 427, 445, 449
+        1, 4, 8, 94, 109, 115, 154, 165, 224, 237, 346, 426, 427, 445, 449
       ],
-      "benchElementIds": [237, 109, 165, 249],
+      "benchElementIds": [237, 109, 165, 224],
       "expected": {
+        "205533": 1.51,
         "154561": 4.36,
         "487838": 3.87,
         "226597": 4.76,
@@ -663,12 +643,12 @@
         "440993": 3.8,
         "177815": 3.7,
         "465730": 4.42,
-        "586309": 2.76,
         "244851": 4.24,
         "465642": 3.8,
         "513418": 4.53
       },
       "ceiling": {
+        "205533": 1.51,
         "154561": 4.36,
         "487838": 3.87,
         "226597": 4.76,
@@ -680,7 +660,6 @@
         "440993": 3.8,
         "177815": 3.7,
         "465730": 4.42,
-        "586309": 2.76,
         "244851": 4.24,
         "465642": 3.8,
         "513418": 4.53
@@ -690,7 +669,7 @@
       "transferCostPoints": 0,
       "projectedPoints": 51.72,
       "netExpectedPoints": 51.72,
-      "bankAfterTenths": 2
+      "bankAfterTenths": 1
     },
     {
       "event": 8,
@@ -700,12 +679,13 @@
         154561, 226597, 466075, 513418, 244851, 475168, 440993, 141746, 446008,
         465642, 487838
       ],
-      "bench": [177815, 465730, 489639, 586309],
+      "bench": [177815, 465730, 489639, 205533],
       "captain": 141746,
       "viceCaptain": 446008,
       "transfersIn": [],
       "transfersOut": [],
       "opponents": {
+        "CRY": ["NEW (H)"],
         "ARS": ["EVE (H)"],
         "NEW": ["CRY (A)"],
         "CHE": ["TOT (H)"],
@@ -713,10 +693,10 @@
         "BHA": ["LIV (A)"],
         "MCI": ["AVL (A)"],
         "LEE": ["SUN (A)"],
-        "EVE": ["ARS (A)"],
         "BRE": ["HUL (A)"]
       },
       "difficulty": {
+        "CRY": 2.3,
         "ARS": 2.6,
         "NEW": 2.7,
         "CHE": 2.5,
@@ -724,14 +704,14 @@
         "BHA": 4.0,
         "MCI": 3.8,
         "LEE": 3.3,
-        "EVE": 5.0,
         "BRE": 2.0
       },
       "squadElementIds": [
-        1, 4, 8, 94, 109, 115, 154, 165, 237, 249, 346, 426, 427, 445, 449
+        1, 4, 8, 94, 109, 115, 154, 165, 224, 237, 346, 426, 427, 445, 449
       ],
-      "benchElementIds": [346, 115, 109, 249],
+      "benchElementIds": [346, 115, 109, 224],
       "expected": {
+        "205533": 1.71,
         "154561": 4.89,
         "487838": 3.72,
         "226597": 5.54,
@@ -743,12 +723,12 @@
         "440993": 3.98,
         "177815": 2.97,
         "465730": 2.9,
-        "586309": 2.09,
         "244851": 4.6,
         "465642": 3.51,
         "513418": 3.73
       },
       "ceiling": {
+        "205533": 1.71,
         "154561": 4.89,
         "487838": 3.72,
         "226597": 5.54,
@@ -760,7 +740,6 @@
         "440993": 3.98,
         "177815": 2.97,
         "465730": 2.9,
-        "586309": 2.09,
         "244851": 4.6,
         "465642": 3.51,
         "513418": 3.73
@@ -770,7 +749,7 @@
       "transferCostPoints": 0,
       "projectedPoints": 57.63,
       "netExpectedPoints": 57.63,
-      "bankAfterTenths": 2
+      "bankAfterTenths": 1
     },
     {
       "event": 9,
@@ -780,12 +759,13 @@
         154561, 466075, 201658, 513418, 440993, 177815, 223094, 141746, 446008,
         465642, 487838
       ],
-      "bench": [586309, 489639, 465730, 219924],
+      "bench": [489639, 465730, 219924, 205533],
       "captain": 223094,
       "viceCaptain": 440993,
       "transfersIn": [201658, 219924, 223094],
       "transfersOut": [226597, 244851, 475168],
       "opponents": {
+        "CRY": ["TOT (A)"],
         "ARS": ["LIV (A)"],
         "NEW": ["EVE (H)"],
         "IPS": ["HUL (A)"],
@@ -793,11 +773,11 @@
         "MUN": ["CHE (A)"],
         "BHA": ["MCI (A)"],
         "MCI": ["BHA (H)"],
-        "EVE": ["NEW (A)"],
         "LEE": ["BOU (A)"],
         "BRE": ["NFO (H)"]
       },
       "difficulty": {
+        "CRY": 2.6,
         "ARS": 4.0,
         "NEW": 2.6,
         "IPS": null,
@@ -805,15 +785,15 @@
         "MUN": 3.2,
         "BHA": 5.0,
         "MCI": 2.7,
-        "EVE": 3.4,
         "LEE": 3.8,
         "BRE": 2.9
       },
       "squadElementIds": [
-        1, 8, 68, 94, 109, 115, 237, 249, 259, 346, 411, 426, 427, 445, 449
+        1, 8, 68, 94, 109, 115, 224, 237, 259, 346, 411, 426, 427, 445, 449
       ],
-      "benchElementIds": [249, 109, 115, 259],
+      "benchElementIds": [109, 115, 259, 224],
       "expected": {
+        "205533": 1.69,
         "154561": 3.63,
         "487838": 3.99,
         "219924": 2.08,
@@ -824,13 +804,13 @@
         "489639": 2.51,
         "440993": 4.76,
         "465730": 2.45,
-        "586309": 2.52,
         "177815": 2.98,
         "223094": 5.69,
         "465642": 3.91,
         "513418": 4.29
       },
       "ceiling": {
+        "205533": 1.69,
         "154561": 3.63,
         "487838": 3.99,
         "219924": 2.08,
@@ -841,7 +821,6 @@
         "489639": 2.51,
         "440993": 4.76,
         "465730": 2.45,
-        "586309": 2.52,
         "177815": 2.98,
         "223094": 5.69,
         "465642": 3.91,
@@ -862,12 +841,13 @@
         466075, 201658, 513418, 489639, 465730, 440993, 177815, 223094, 141746,
         446008, 487838
       ],
-      "bench": [154561, 465642, 586309, 219924],
+      "bench": [154561, 465642, 219924, 205533],
       "captain": 141746,
       "viceCaptain": 446008,
       "transfersIn": [],
       "transfersOut": [],
       "opponents": {
+        "CRY": ["LIV (H)"],
         "ARS": ["HUL (H)"],
         "NEW": ["FUL (A)"],
         "IPS": ["BOU (H)"],
@@ -875,11 +855,11 @@
         "MUN": ["AVL (H)"],
         "BHA": ["BRE (H)"],
         "MCI": ["NFO (A)"],
-        "EVE": ["COV (H)"],
         "LEE": ["TOT (H)"],
         "BRE": ["BHA (A)"]
       },
       "difficulty": {
+        "CRY": 2.8,
         "ARS": 2.0,
         "NEW": 3.6,
         "IPS": null,
@@ -887,15 +867,15 @@
         "MUN": 2.7,
         "BHA": 2.5,
         "MCI": 3.2,
-        "EVE": 2.0,
         "LEE": 2.5,
         "BRE": 3.8
       },
       "squadElementIds": [
-        1, 8, 68, 94, 109, 115, 237, 249, 259, 346, 411, 426, 427, 445, 449
+        1, 8, 68, 94, 109, 115, 224, 237, 259, 346, 411, 426, 427, 445, 449
       ],
-      "benchElementIds": [1, 445, 249, 259],
+      "benchElementIds": [1, 445, 259, 224],
       "expected": {
+        "205533": 1.78,
         "154561": 3.23,
         "487838": 3.42,
         "219924": 2.08,
@@ -906,13 +886,13 @@
         "489639": 3.35,
         "440993": 4.0,
         "465730": 4.21,
-        "586309": 2.62,
         "177815": 3.93,
         "223094": 4.4,
         "465642": 3.16,
         "513418": 3.28
       },
       "ceiling": {
+        "205533": 1.78,
         "154561": 3.23,
         "487838": 3.42,
         "219924": 2.08,
@@ -923,7 +903,6 @@
         "489639": 3.35,
         "440993": 4.0,
         "465730": 4.21,
-        "586309": 2.62,
         "177815": 3.93,
         "223094": 4.4,
         "465642": 3.16,
@@ -944,12 +923,13 @@
         154561, 466075, 198869, 201658, 513418, 465730, 440993, 223094, 141746,
         446008, 487838
       ],
-      "bench": [210156, 489639, 586309, 219924],
+      "bench": [210156, 489639, 219924, 205533],
       "captain": 223094,
       "viceCaptain": 440993,
       "transfersIn": [198869, 210156],
       "transfersOut": [177815, 465642],
       "opponents": {
+        "CRY": ["COV (A)"],
         "ARS": ["NEW (A)"],
         "NEW": ["ARS (H)"],
         "IPS": ["TOT (A)"],
@@ -958,10 +938,10 @@
         "BHA": ["HUL (A)"],
         "MCI": ["FUL (H)"],
         "COV": ["CRY (H)"],
-        "EVE": ["BRE (A)"],
         "BRE": ["EVE (H)"]
       },
       "difficulty": {
+        "CRY": 2.0,
         "ARS": 3.4,
         "NEW": 4.5,
         "IPS": null,
@@ -970,14 +950,14 @@
         "BHA": 2.0,
         "MCI": 2.0,
         "COV": null,
-        "EVE": 3.8,
         "BRE": 2.6
       },
       "squadElementIds": [
-        1, 8, 10, 68, 94, 109, 115, 237, 249, 259, 411, 426, 427, 449, 492
+        1, 8, 10, 68, 94, 109, 115, 224, 237, 259, 411, 426, 427, 449, 492
       ],
-      "benchElementIds": [492, 109, 249, 259],
+      "benchElementIds": [492, 109, 259, 224],
       "expected": {
+        "205533": 1.79,
         "154561": 3.71,
         "487838": 3.39,
         "219924": 2.08,
@@ -990,11 +970,11 @@
         "440993": 4.99,
         "210156": 2.88,
         "465730": 3.38,
-        "586309": 2.36,
         "223094": 6.16,
         "513418": 4.22
       },
       "ceiling": {
+        "205533": 1.79,
         "154561": 3.71,
         "487838": 3.39,
         "219924": 2.08,
@@ -1007,7 +987,6 @@
         "440993": 4.99,
         "210156": 2.88,
         "465730": 3.38,
-        "586309": 2.36,
         "223094": 6.16,
         "513418": 4.22
       },
@@ -1026,12 +1005,13 @@
         154561, 466075, 198869, 201658, 513418, 465730, 440993, 223094, 141746,
         446008, 487838
       ],
-      "bench": [489639, 210156, 586309, 219924],
+      "bench": [489639, 210156, 219924, 205533],
       "captain": 141746,
       "viceCaptain": 446008,
       "transfersIn": [],
       "transfersOut": [],
       "opponents": {
+        "CRY": ["HUL (H)"],
         "ARS": ["MCI (H)"],
         "NEW": ["BHA (A)"],
         "IPS": ["AVL (H)"],
@@ -1040,10 +1020,10 @@
         "BHA": ["NEW (H)"],
         "MCI": ["ARS (A)"],
         "COV": ["LEE (A)"],
-        "EVE": ["LIV (H)"],
         "BRE": ["MUN (A)"]
       },
       "difficulty": {
+        "CRY": 2.0,
         "ARS": 4.1,
         "NEW": 3.8,
         "IPS": null,
@@ -1052,14 +1032,14 @@
         "BHA": 2.3,
         "MCI": 5.0,
         "COV": null,
-        "EVE": 2.8,
         "BRE": 4.2
       },
       "squadElementIds": [
-        1, 8, 10, 68, 94, 109, 115, 237, 249, 259, 411, 426, 427, 449, 492
+        1, 8, 10, 68, 94, 109, 115, 224, 237, 259, 411, 426, 427, 449, 492
       ],
-      "benchElementIds": [109, 492, 249, 259],
+      "benchElementIds": [109, 492, 259, 224],
       "expected": {
+        "205533": 1.79,
         "154561": 4.37,
         "487838": 3.35,
         "219924": 2.08,
@@ -1072,11 +1052,11 @@
         "440993": 3.35,
         "210156": 2.88,
         "465730": 4.34,
-        "586309": 2.84,
         "223094": 3.18,
         "513418": 3.37
       },
       "ceiling": {
+        "205533": 1.79,
         "154561": 4.37,
         "487838": 3.35,
         "219924": 2.08,
@@ -1089,7 +1069,6 @@
         "440993": 3.35,
         "210156": 2.88,
         "465730": 4.34,
-        "586309": 2.84,
         "223094": 3.18,
         "513418": 3.37
       },
@@ -1108,12 +1087,13 @@
         154561, 466075, 198869, 201658, 513418, 465730, 440993, 223094, 141746,
         446008, 487838
       ],
-      "bench": [210156, 489639, 586309, 219924],
+      "bench": [210156, 489639, 219924, 205533],
       "captain": 223094,
       "viceCaptain": 440993,
       "transfersIn": [],
       "transfersOut": [],
       "opponents": {
+        "CRY": ["CHE (A)"],
         "ARS": ["BRE (A)"],
         "NEW": ["MUN (H)"],
         "IPS": ["COV (A)"],
@@ -1122,10 +1102,10 @@
         "BHA": ["BOU (A)"],
         "MCI": ["LEE (H)"],
         "COV": ["IPS (H)"],
-        "EVE": ["AVL (A)"],
         "BRE": ["ARS (H)"]
       },
       "difficulty": {
+        "CRY": 3.2,
         "ARS": 3.8,
         "NEW": 3.4,
         "IPS": null,
@@ -1134,14 +1114,14 @@
         "BHA": 3.8,
         "MCI": 2.1,
         "COV": null,
-        "EVE": 3.8,
         "BRE": 4.5
       },
       "squadElementIds": [
-        1, 8, 10, 68, 94, 109, 115, 237, 249, 259, 411, 426, 427, 449, 492
+        1, 8, 10, 68, 94, 109, 115, 224, 237, 259, 411, 426, 427, 449, 492
       ],
-      "benchElementIds": [492, 109, 249, 259],
+      "benchElementIds": [492, 109, 259, 224],
       "expected": {
+        "205533": 1.62,
         "154561": 3.78,
         "487838": 3.63,
         "219924": 2.08,
@@ -1154,11 +1134,11 @@
         "440993": 5.27,
         "210156": 2.88,
         "465730": 3.0,
-        "586309": 2.37,
         "223094": 6.68,
         "513418": 3.37
       },
       "ceiling": {
+        "205533": 1.62,
         "154561": 3.78,
         "487838": 3.63,
         "219924": 2.08,
@@ -1171,7 +1151,6 @@
         "440993": 5.27,
         "210156": 2.88,
         "465730": 3.0,
-        "586309": 2.37,
         "223094": 6.68,
         "513418": 3.37
       },
@@ -1190,12 +1169,13 @@
         154561, 466075, 198869, 201658, 513418, 244851, 17761, 440993, 223094,
         446008, 487838
       ],
-      "bench": [177815, 465730, 489639, 210156],
+      "bench": [465730, 489639, 210156, 205533],
       "captain": 244851,
       "viceCaptain": 223094,
-      "transfersIn": [244851, 17761, 177815],
-      "transfersOut": [586309, 219924, 141746],
+      "transfersIn": [244851, 17761],
+      "transfersOut": [219924, 141746],
       "opponents": {
+        "CRY": ["AVL (A)"],
         "ARS": ["TOT (A)"],
         "NEW": ["SUN (H)"],
         "BOU": ["HUL (H)"],
@@ -1204,11 +1184,11 @@
         "COV": ["MUN (A)"],
         "BHA": ["NFO (A)"],
         "MCI": ["BRE (A)"],
-        "LEE": ["IPS (H)"],
         "CHE": ["LIV (H)"],
         "BRE": ["MCI (H)"]
       },
       "difficulty": {
+        "CRY": 3.8,
         "ARS": 2.6,
         "NEW": 2.0,
         "BOU": 2.0,
@@ -1217,15 +1197,15 @@
         "COV": null,
         "BHA": 3.2,
         "MCI": 3.8,
-        "LEE": 2.0,
         "CHE": 2.8,
         "BRE": 4.1
       },
       "squadElementIds": [
-        1, 8, 10, 68, 94, 109, 115, 154, 229, 237, 346, 411, 427, 449, 492
+        1, 8, 10, 68, 94, 109, 115, 154, 224, 229, 237, 411, 427, 449, 492
       ],
-      "benchElementIds": [346, 115, 109, 492],
+      "benchElementIds": [115, 109, 492, 224],
       "expected": {
+        "205533": 1.56,
         "154561": 4.49,
         "487838": 4.24,
         "201658": 3.51,
@@ -1236,13 +1216,13 @@
         "210156": 2.88,
         "489639": 2.97,
         "440993": 3.95,
-        "177815": 3.47,
         "465730": 3.3,
         "244851": 4.75,
         "223094": 4.37,
         "513418": 3.69
       },
       "ceiling": {
+        "205533": 1.56,
         "154561": 4.49,
         "487838": 4.24,
         "201658": 3.51,
@@ -1253,7 +1233,6 @@
         "210156": 2.88,
         "489639": 2.97,
         "440993": 3.95,
-        "177815": 3.47,
         "465730": 3.3,
         "244851": 4.75,
         "223094": 4.37,
@@ -1264,7 +1243,7 @@
       "transferCostPoints": 0,
       "projectedPoints": 51.85,
       "netExpectedPoints": 51.85,
-      "bankAfterTenths": 0
+      "bankAfterTenths": 3
     },
     {
       "event": 15,
@@ -1274,12 +1253,13 @@
         154561, 466075, 198869, 513418, 465730, 244851, 17761, 440993, 223094,
         446008, 487838
       ],
-      "bench": [489639, 177815, 210156, 201658],
+      "bench": [489639, 210156, 201658, 205533],
       "captain": 223094,
       "viceCaptain": 440993,
       "transfersIn": [],
       "transfersOut": [],
       "opponents": {
+        "CRY": ["MUN (H)"],
         "ARS": ["BOU (H)"],
         "NEW": ["IPS (A)"],
         "BOU": ["ARS (A)"],
@@ -1288,11 +1268,11 @@
         "COV": ["AVL (H)"],
         "BHA": ["EVE (H)"],
         "MCI": ["CHE (H)"],
-        "LEE": ["LIV (A)"],
         "CHE": ["MCI (A)"],
         "BRE": ["FUL (A)"]
       },
       "difficulty": {
+        "CRY": 3.4,
         "ARS": 2.8,
         "NEW": 2.0,
         "BOU": 5.0,
@@ -1301,15 +1281,15 @@
         "COV": null,
         "BHA": 2.6,
         "MCI": 2.9,
-        "LEE": 4.0,
         "CHE": 5.0,
         "BRE": 3.6
       },
       "squadElementIds": [
-        1, 8, 10, 68, 94, 109, 115, 154, 229, 237, 346, 411, 427, 449, 492
+        1, 8, 10, 68, 94, 109, 115, 154, 224, 229, 237, 411, 427, 449, 492
       ],
-      "benchElementIds": [109, 346, 492, 68],
+      "benchElementIds": [109, 492, 68, 224],
       "expected": {
+        "205533": 1.66,
         "154561": 4.82,
         "487838": 3.61,
         "201658": 2.86,
@@ -1320,13 +1300,13 @@
         "210156": 2.88,
         "489639": 3.51,
         "440993": 4.95,
-        "177815": 3.0,
         "465730": 4.19,
         "244851": 3.42,
         "223094": 6.21,
         "513418": 3.32
       },
       "ceiling": {
+        "205533": 1.66,
         "154561": 4.82,
         "487838": 3.61,
         "201658": 2.86,
@@ -1337,18 +1317,17 @@
         "210156": 2.88,
         "489639": 3.51,
         "440993": 4.95,
-        "177815": 3.0,
         "465730": 4.19,
         "244851": 3.42,
         "223094": 6.21,
         "513418": 3.32
       },
-      "freeTransfersBefore": 1,
+      "freeTransfersBefore": 2,
       "paidTransfers": 0,
       "transferCostPoints": 0,
       "projectedPoints": 55.64,
       "netExpectedPoints": 55.64,
-      "bankAfterTenths": 0
+      "bankAfterTenths": 3
     },
     {
       "event": 16,
@@ -1361,8 +1340,8 @@
       "bench": [465730, 446008, 210156, 489639],
       "captain": 244851,
       "viceCaptain": 513418,
-      "transfersIn": [220627],
-      "transfersOut": [487838],
+      "transfersIn": [220627, 177815],
+      "transfersOut": [205533, 487838],
       "opponents": {
         "ARS": ["MUN (H)"],
         "BOU": ["COV (H)"],
@@ -1425,12 +1404,12 @@
         "223094": 4.18,
         "513418": 4.42
       },
-      "freeTransfersBefore": 2,
+      "freeTransfersBefore": 3,
       "paidTransfers": 0,
       "transferCostPoints": 0,
       "projectedPoints": 51.82,
       "netExpectedPoints": 51.82,
-      "bankAfterTenths": 6
+      "bankAfterTenths": 4
     },
     {
       "event": 17,
@@ -1510,7 +1489,7 @@
       "transferCostPoints": 0,
       "projectedPoints": 54.81,
       "netExpectedPoints": 54.81,
-      "bankAfterTenths": 2
+      "bankAfterTenths": 1
     },
     {
       "event": 18,
@@ -1590,7 +1569,7 @@
       "transferCostPoints": 0,
       "projectedPoints": 53.19,
       "netExpectedPoints": 53.19,
-      "bankAfterTenths": 2
+      "bankAfterTenths": 1
     },
     {
       "event": 19,
@@ -1670,7 +1649,7 @@
       "transferCostPoints": 0,
       "projectedPoints": 52.47,
       "netExpectedPoints": 52.47,
-      "bankAfterTenths": 2
+      "bankAfterTenths": 1
     },
     {
       "event": 20,
@@ -1750,7 +1729,7 @@
       "transferCostPoints": 0,
       "projectedPoints": 55.65,
       "netExpectedPoints": 55.65,
-      "bankAfterTenths": 2
+      "bankAfterTenths": 1
     },
     {
       "event": 21,
@@ -1832,89 +1811,87 @@
       "transferCostPoints": 0,
       "projectedPoints": 52.53,
       "netExpectedPoints": 52.53,
-      "bankAfterTenths": 9
+      "bankAfterTenths": 8
     },
     {
       "event": 22,
       "deadline": "2027-01-23T13:30:00Z",
       "confidence": "provisional",
       "starters": [
-        154561, 226597, 466075, 201658, 244851, 17761, 440993, 220627, 177815,
+        154561, 226597, 466075, 201658, 244851, 475168, 440993, 220627, 177815,
         141746, 446008
       ],
-      "bench": [111234, 487838, 586309, 216646],
+      "bench": [487838, 489639, 465642, 205533],
       "captain": 141746,
       "viceCaptain": 446008,
-      "transfersIn": [
-        154561, 226597, 244851, 111234, 17761, 586309, 446008, 216646
-      ],
-      "transfersOut": [
-        200720, 513418, 489639, 219924, 437730, 223094, 465642, 210156
-      ],
+      "transfersIn": [154561, 226597, 244851, 475168, 205533, 446008],
+      "transfersOut": [200720, 513418, 219924, 437730, 223094, 210156],
       "opponents": {
+        "CRY": ["TOT (H)"],
         "ARS": ["NEW (H)"],
         "NEW": ["ARS (A)"],
-        "EVE": ["BRE (H)"],
         "BOU": ["NFO (A)"],
+        "CHE": ["LEE (A)"],
         "MUN": ["LIV (H)"],
         "LEE": ["CHE (H)"],
         "MCI": ["BHA (A)"],
-        "CHE": ["LEE (A)"]
+        "BHA": ["MCI (H)"]
       },
       "difficulty": {
+        "CRY": 2.5,
         "ARS": 2.3,
         "NEW": 5.0,
-        "EVE": 2.5,
         "BOU": 3.2,
+        "CHE": 3.5,
         "MUN": 2.8,
         "LEE": 2.9,
         "MCI": 3.8,
-        "CHE": 3.5
+        "BHA": 4.1
       },
       "squadElementIds": [
-        1, 4, 8, 68, 154, 226, 229, 237, 249, 332, 346, 426, 427, 449, 464
+        1, 4, 8, 68, 109, 154, 165, 224, 237, 332, 346, 426, 427, 445, 449
       ],
-      "benchElementIds": [226, 449, 249, 464],
+      "benchElementIds": [449, 109, 445, 224],
       "expected": {
+        "205533": 1.73,
         "154561": 4.89,
         "487838": 2.99,
-        "111234": 3.27,
         "226597": 5.62,
         "201658": 3.52,
-        "17761": 3.91,
+        "475168": 3.36,
         "466075": 6.15,
         "141746": 6.16,
         "446008": 5.48,
         "220627": 3.73,
         "440993": 3.85,
         "177815": 3.92,
-        "216646": 1.96,
-        "586309": 2.8,
-        "244851": 4.03
+        "489639": 2.92,
+        "244851": 4.03,
+        "465642": 2.65
       },
       "ceiling": {
+        "205533": 1.73,
         "154561": 4.89,
         "487838": 2.99,
-        "111234": 3.27,
         "226597": 5.62,
         "201658": 3.52,
-        "17761": 3.91,
+        "475168": 3.36,
         "466075": 6.15,
         "141746": 6.16,
         "446008": 5.48,
         "220627": 3.73,
         "440993": 3.85,
         "177815": 3.92,
-        "216646": 1.96,
-        "586309": 2.8,
-        "244851": 4.03
+        "489639": 2.92,
+        "244851": 4.03,
+        "465642": 2.65
       },
       "freeTransfersBefore": 1,
       "paidTransfers": 0,
       "transferCostPoints": 0,
-      "projectedPoints": 57.43,
-      "netExpectedPoints": 57.43,
-      "bankAfterTenths": 0,
+      "projectedPoints": 56.88,
+      "netExpectedPoints": 56.88,
+      "bankAfterTenths": 4,
       "chip": "Wildcard"
     },
     {
@@ -1922,236 +1899,240 @@
       "deadline": "2027-01-30T13:30:00Z",
       "confidence": "provisional",
       "starters": [
-        154561, 226597, 466075, 201658, 244851, 440993, 220627, 177815, 141746,
-        446008, 487838
+        154561, 226597, 466075, 201658, 244851, 475168, 440993, 141746, 446008,
+        465642, 487838
       ],
-      "bench": [17761, 216646, 111234, 586309],
+      "bench": [177815, 220627, 489639, 205533],
       "captain": 244851,
       "viceCaptain": 141746,
       "transfersIn": [],
       "transfersOut": [],
       "opponents": {
+        "CRY": ["HUL (A)"],
         "ARS": ["MCI (A)"],
-        "EVE": ["LIV (A)"],
         "NEW": ["BHA (H)"],
         "BOU": ["FUL (H)"],
+        "CHE": ["NFO (H)"],
         "MUN": ["BRE (A)"],
         "LEE": ["COV (A)"],
-        "MCI": ["ARS (H)"],
-        "CHE": ["NFO (H)"]
+        "BHA": ["NEW (A)"],
+        "MCI": ["ARS (H)"]
       },
       "difficulty": {
+        "CRY": 2.0,
         "ARS": 5.0,
-        "EVE": 4.0,
         "NEW": 2.7,
         "BOU": 2.0,
+        "CHE": 2.9,
         "MUN": 3.8,
         "LEE": 2.0,
-        "MCI": 4.5,
-        "CHE": 2.9
+        "BHA": 3.4,
+        "MCI": 4.5
       },
       "squadElementIds": [
-        1, 4, 8, 68, 154, 226, 229, 237, 249, 332, 346, 426, 427, 449, 464
+        1, 4, 8, 68, 109, 154, 165, 224, 237, 332, 346, 426, 427, 445, 449
       ],
-      "benchElementIds": [229, 464, 226, 249],
+      "benchElementIds": [346, 332, 109, 224],
       "expected": {
+        "205533": 1.79,
         "154561": 3.29,
-        "111234": 2.97,
         "487838": 3.94,
         "226597": 3.52,
         "201658": 4.17,
-        "17761": 3.25,
+        "475168": 3.73,
         "466075": 3.69,
         "141746": 4.45,
         "446008": 3.89,
         "220627": 3.42,
+        "489639": 2.69,
         "440993": 3.9,
         "177815": 3.47,
-        "216646": 3.03,
-        "586309": 2.35,
-        "244851": 4.46
+        "244851": 4.46,
+        "465642": 3.85
       },
       "ceiling": {
+        "205533": 1.79,
         "154561": 3.29,
-        "111234": 2.97,
         "487838": 3.94,
         "226597": 3.52,
         "201658": 4.17,
-        "17761": 3.25,
+        "475168": 3.73,
         "466075": 3.69,
         "141746": 4.45,
         "446008": 3.89,
         "220627": 3.42,
+        "489639": 2.69,
         "440993": 3.9,
         "177815": 3.47,
-        "216646": 3.03,
-        "586309": 2.35,
-        "244851": 4.46
+        "244851": 4.46,
+        "465642": 3.85
       },
       "freeTransfersBefore": 2,
       "paidTransfers": 0,
       "transferCostPoints": 0,
-      "projectedPoints": 46.65,
-      "netExpectedPoints": 46.65,
-      "bankAfterTenths": 0
+      "projectedPoints": 47.34,
+      "netExpectedPoints": 47.34,
+      "bankAfterTenths": 4
     },
     {
       "event": 24,
       "deadline": "2027-02-06T13:30:00Z",
       "confidence": "provisional",
       "starters": [
-        154561, 226597, 466075, 201658, 244851, 17761, 440993, 220627, 177815,
-        141746, 446008
+        154561, 226597, 466075, 201658, 244851, 440993, 220627, 177815, 141746,
+        446008, 487838
       ],
-      "bench": [487838, 111234, 586309, 216646],
+      "bench": [475168, 465642, 489639, 205533],
       "captain": 141746,
       "viceCaptain": 446008,
       "transfersIn": [],
       "transfersOut": [],
       "opponents": {
+        "CRY": ["COV (H)"],
         "ARS": ["LIV (H)"],
-        "EVE": ["NEW (H)"],
         "NEW": ["EVE (A)"],
         "BOU": ["LEE (A)"],
+        "CHE": ["MUN (A)"],
         "MUN": ["CHE (H)"],
         "LEE": ["BOU (H)"],
-        "MCI": ["FUL (A)"],
-        "CHE": ["MUN (A)"]
+        "BHA": ["HUL (H)"],
+        "MCI": ["FUL (A)"]
       },
       "difficulty": {
+        "CRY": 2.0,
         "ARS": 2.8,
-        "EVE": 2.3,
         "NEW": 3.1,
         "BOU": 3.5,
+        "CHE": 4.2,
         "MUN": 2.9,
         "LEE": 2.8,
-        "MCI": 3.6,
-        "CHE": 4.2
+        "BHA": 2.0,
+        "MCI": 3.6
       },
       "squadElementIds": [
-        1, 4, 8, 68, 154, 226, 229, 237, 249, 332, 346, 426, 427, 449, 464
+        1, 4, 8, 68, 109, 154, 165, 224, 237, 332, 346, 426, 427, 445, 449
       ],
-      "benchElementIds": [449, 226, 249, 464],
+      "benchElementIds": [165, 445, 109, 224],
       "expected": {
+        "205533": 1.79,
         "154561": 4.74,
-        "111234": 3.41,
         "487838": 3.51,
         "226597": 5.56,
         "201658": 3.52,
-        "17761": 4.05,
+        "475168": 3.35,
         "466075": 6.11,
         "141746": 5.91,
         "446008": 5.25,
         "220627": 3.76,
+        "489639": 2.85,
         "440993": 3.89,
         "177815": 4.07,
-        "216646": 2.41,
-        "586309": 2.74,
-        "244851": 4.02
+        "244851": 4.02,
+        "465642": 3.29
       },
       "ceiling": {
+        "205533": 1.79,
         "154561": 4.74,
-        "111234": 3.41,
         "487838": 3.51,
         "226597": 5.56,
         "201658": 3.52,
-        "17761": 4.05,
+        "475168": 3.35,
         "466075": 6.11,
         "141746": 5.91,
         "446008": 5.25,
         "220627": 3.76,
+        "489639": 2.85,
         "440993": 3.89,
         "177815": 4.07,
-        "216646": 2.41,
-        "586309": 2.74,
-        "244851": 4.02
+        "244851": 4.02,
+        "465642": 3.29
       },
       "freeTransfersBefore": 3,
       "paidTransfers": 0,
       "transferCostPoints": 0,
-      "projectedPoints": 56.78,
-      "netExpectedPoints": 56.78,
-      "bankAfterTenths": 0
+      "projectedPoints": 56.24,
+      "netExpectedPoints": 56.24,
+      "bankAfterTenths": 4
     },
     {
       "event": 25,
       "deadline": "2027-02-10T18:30:00Z",
       "confidence": "provisional",
       "starters": [
-        154561, 466075, 201658, 17761, 440993, 220627, 177815, 223094, 141746,
-        446008, 487838
+        154561, 226597, 466075, 201658, 244851, 475168, 440993, 141746, 446008,
+        465642, 487838
       ],
-      "bench": [586309, 465730, 489639, 577285],
+      "bench": [177815, 220627, 489639, 205533],
       "captain": 141746,
-      "viceCaptain": 223094,
-      "transfersIn": [577285, 489639, 465730, 223094],
-      "transfersOut": [226597, 244851, 111234, 216646],
+      "viceCaptain": 446008,
+      "transfersIn": [],
+      "transfersOut": [],
       "opponents": {
+        "CRY": ["BRE (H)"],
         "ARS": ["IPS (A)"],
         "NEW": ["CHE (H)"],
         "BOU": ["AVL (A)"],
-        "EVE": ["LEE (H)"],
+        "CHE": ["NEW (A)"],
         "MUN": ["BHA (H)"],
         "LEE": ["EVE (A)"],
         "BHA": ["MUN (A)"],
-        "MCI": ["TOT (A)"],
-        "AVL": ["BOU (H)"]
+        "MCI": ["TOT (A)"]
       },
       "difficulty": {
+        "CRY": 2.5,
         "ARS": 2.0,
         "NEW": 2.9,
         "BOU": 3.8,
-        "EVE": 2.1,
+        "CHE": 3.4,
         "MUN": 2.7,
         "LEE": 3.1,
         "BHA": 4.2,
-        "MCI": 2.6,
-        "AVL": 2.8
+        "MCI": 2.6
       },
       "squadElementIds": [
-        1, 8, 51, 68, 109, 115, 229, 237, 249, 332, 346, 411, 426, 427, 449
+        1, 4, 8, 68, 109, 154, 165, 224, 237, 332, 346, 426, 427, 445, 449
       ],
-      "benchElementIds": [249, 115, 109, 51],
+      "benchElementIds": [346, 332, 109, 224],
       "expected": {
+        "205533": 1.75,
         "154561": 3.23,
         "487838": 3.79,
+        "226597": 3.52,
         "201658": 3.53,
-        "17761": 4.08,
+        "475168": 3.73,
         "466075": 3.83,
         "141746": 5.49,
         "446008": 4.87,
         "220627": 3.17,
         "489639": 2.57,
         "440993": 4.35,
-        "577285": 2.27,
-        "465730": 2.81,
-        "586309": 2.88,
         "177815": 3.18,
-        "223094": 5.09
+        "244851": 4.46,
+        "465642": 3.72
       },
       "ceiling": {
+        "205533": 1.75,
         "154561": 3.23,
         "487838": 3.79,
+        "226597": 3.52,
         "201658": 3.53,
-        "17761": 4.08,
+        "475168": 3.73,
         "466075": 3.83,
         "141746": 5.49,
         "446008": 4.87,
         "220627": 3.17,
         "489639": 2.57,
         "440993": 4.35,
-        "577285": 2.27,
-        "465730": 2.81,
-        "586309": 2.88,
         "177815": 3.18,
-        "223094": 5.09
+        "244851": 4.46,
+        "465642": 3.72
       },
       "freeTransfersBefore": 4,
       "paidTransfers": 0,
       "transferCostPoints": 0,
-      "projectedPoints": 50.1,
-      "netExpectedPoints": 50.1,
-      "bankAfterTenths": 0
+      "projectedPoints": 50.02,
+      "netExpectedPoints": 50.02,
+      "bankAfterTenths": 4
     },
     {
       "event": 26,
@@ -2161,12 +2142,13 @@
         154561, 466075, 198869, 201658, 465730, 440993, 220627, 177815, 223094,
         141746, 446008
       ],
-      "bench": [489639, 487838, 586309, 577285],
+      "bench": [489639, 487838, 577285, 205533],
       "captain": 223094,
       "viceCaptain": 440993,
-      "transfersIn": [198869],
-      "transfersOut": [17761],
+      "transfersIn": [198869, 577285, 465730, 223094],
+      "transfersOut": [226597, 244851, 475168, 465642],
       "opponents": {
+        "CRY": ["BOU (A)"],
         "ARS": ["FUL (H)"],
         "NEW": ["MCI (A)"],
         "BOU": ["CRY (H)"],
@@ -2174,10 +2156,10 @@
         "LEE": ["AVL (H)"],
         "BHA": ["TOT (H)"],
         "MCI": ["NEW (H)"],
-        "AVL": ["LEE (A)"],
-        "EVE": ["SUN (A)"]
+        "AVL": ["LEE (A)"]
       },
       "difficulty": {
+        "CRY": 3.8,
         "ARS": 2.0,
         "NEW": 5.0,
         "BOU": 2.2,
@@ -2185,14 +2167,14 @@
         "LEE": 2.7,
         "BHA": 2.5,
         "MCI": 2.3,
-        "AVL": 3.5,
-        "EVE": 3.3
+        "AVL": 3.5
       },
       "squadElementIds": [
-        1, 8, 10, 51, 68, 109, 115, 237, 249, 332, 346, 411, 426, 427, 449
+        1, 8, 10, 51, 68, 109, 115, 224, 237, 332, 346, 411, 426, 427, 449
       ],
-      "benchElementIds": [109, 449, 249, 51],
+      "benchElementIds": [109, 449, 51, 224],
       "expected": {
+        "205533": 1.54,
         "154561": 4.89,
         "487838": 2.93,
         "201658": 4.22,
@@ -2205,11 +2187,11 @@
         "446008": 3.93,
         "577285": 1.93,
         "465730": 4.22,
-        "586309": 2.33,
         "177815": 3.84,
         "223094": 6.11
       },
       "ceiling": {
+        "205533": 1.54,
         "154561": 4.89,
         "487838": 2.93,
         "201658": 4.22,
@@ -2222,11 +2204,10 @@
         "446008": 3.93,
         "577285": 1.93,
         "465730": 4.22,
-        "586309": 2.33,
         "177815": 3.84,
         "223094": 6.11
       },
-      "freeTransfersBefore": 1,
+      "freeTransfersBefore": 5,
       "paidTransfers": 0,
       "transferCostPoints": 0,
       "projectedPoints": 58.0,
@@ -2241,12 +2222,13 @@
         154561, 466075, 198869, 201658, 465730, 440993, 223094, 141746, 446008,
         465642, 487838
       ],
-      "bench": [177815, 489639, 586309, 577285],
+      "bench": [177815, 489639, 577285, 205533],
       "captain": 141746,
       "viceCaptain": 223094,
       "transfersIn": [465642],
       "transfersOut": [220627],
       "opponents": {
+        "CRY": ["SUN (H)"],
         "ARS": ["MUN (A)"],
         "NEW": ["BRE (H)"],
         "BOU": ["COV (A)"],
@@ -2254,10 +2236,10 @@
         "BHA": ["IPS (A)"],
         "MCI": ["HUL (A)"],
         "AVL": ["CHE (H)"],
-        "EVE": ["NFO (H)"],
         "LEE": ["FUL (A)"]
       },
       "difficulty": {
+        "CRY": 2.0,
         "ARS": 4.2,
         "NEW": 2.5,
         "BOU": 2.0,
@@ -2265,14 +2247,14 @@
         "BHA": 2.0,
         "MCI": 2.0,
         "AVL": 2.9,
-        "EVE": 2.9,
         "LEE": 3.6
       },
       "squadElementIds": [
-        1, 8, 10, 51, 68, 109, 115, 237, 249, 346, 411, 426, 427, 445, 449
+        1, 8, 10, 51, 68, 109, 115, 224, 237, 346, 411, 426, 427, 445, 449
       ],
-      "benchElementIds": [346, 109, 249, 51],
+      "benchElementIds": [346, 109, 51, 224],
       "expected": {
+        "205533": 1.71,
         "154561": 3.45,
         "487838": 3.98,
         "201658": 3.51,
@@ -2284,12 +2266,12 @@
         "440993": 3.8,
         "577285": 2.22,
         "465730": 3.38,
-        "586309": 2.71,
         "177815": 2.94,
         "223094": 4.18,
         "465642": 3.93
       },
       "ceiling": {
+        "205533": 1.71,
         "154561": 3.45,
         "487838": 3.98,
         "201658": 3.51,
@@ -2301,12 +2283,11 @@
         "440993": 3.8,
         "577285": 2.22,
         "465730": 3.38,
-        "586309": 2.71,
         "177815": 2.94,
         "223094": 4.18,
         "465642": 3.93
       },
-      "freeTransfersBefore": 1,
+      "freeTransfersBefore": 2,
       "paidTransfers": 0,
       "transferCostPoints": 0,
       "projectedPoints": 46.08,
@@ -2321,12 +2302,13 @@
         154561, 466075, 198869, 201658, 465730, 440993, 177815, 223094, 141746,
         446008, 487838
       ],
-      "bench": [489639, 465642, 586309, 577285],
+      "bench": [489639, 465642, 577285, 205533],
       "captain": 223094,
       "viceCaptain": 440993,
       "transfersIn": [],
       "transfersOut": [],
       "opponents": {
+        "CRY": ["ARS (A)"],
         "ARS": ["CRY (H)"],
         "NEW": ["NFO (A)"],
         "BOU": ["TOT (H)"],
@@ -2334,10 +2316,10 @@
         "BHA": ["FUL (H)"],
         "MCI": ["EVE (H)"],
         "AVL": ["LIV (A)"],
-        "EVE": ["MCI (A)"],
         "LEE": ["HUL (H)"]
       },
       "difficulty": {
+        "CRY": 5.0,
         "ARS": 2.2,
         "NEW": 3.2,
         "BOU": 2.5,
@@ -2345,14 +2327,14 @@
         "BHA": 2.0,
         "MCI": 2.6,
         "AVL": 4.0,
-        "EVE": 5.0,
         "LEE": 2.0
       },
       "squadElementIds": [
-        1, 8, 10, 51, 68, 109, 115, 237, 249, 346, 411, 426, 427, 445, 449
+        1, 8, 10, 51, 68, 109, 115, 224, 237, 346, 411, 426, 427, 445, 449
       ],
-      "benchElementIds": [109, 445, 249, 51],
+      "benchElementIds": [109, 445, 51, 224],
       "expected": {
+        "205533": 1.37,
         "154561": 4.89,
         "487838": 3.54,
         "201658": 4.17,
@@ -2364,12 +2346,12 @@
         "440993": 4.79,
         "577285": 1.91,
         "465730": 4.56,
-        "586309": 2.14,
         "177815": 3.47,
         "223094": 5.73,
         "465642": 3.3
       },
       "ceiling": {
+        "205533": 1.37,
         "154561": 4.89,
         "487838": 3.54,
         "201658": 4.17,
@@ -2381,12 +2363,11 @@
         "440993": 4.79,
         "577285": 1.91,
         "465730": 4.56,
-        "586309": 2.14,
         "177815": 3.47,
         "223094": 5.73,
         "465642": 3.3
       },
-      "freeTransfersBefore": 1,
+      "freeTransfersBefore": 2,
       "paidTransfers": 0,
       "transferCostPoints": 0,
       "projectedPoints": 56.51,
@@ -2401,12 +2382,13 @@
         154561, 466075, 198869, 201658, 440993, 220627, 177815, 223094, 141746,
         446008, 487838
       ],
-      "bench": [465642, 489639, 586309, 577285],
+      "bench": [465642, 489639, 577285, 205533],
       "captain": 141746,
       "viceCaptain": 446008,
       "transfersIn": [220627],
       "transfersOut": [465730],
       "opponents": {
+        "CRY": ["FUL (H)"],
         "ARS": ["CHE (A)"],
         "NEW": ["BOU (A)"],
         "BOU": ["NEW (H)"],
@@ -2414,10 +2396,10 @@
         "LEE": ["BHA (H)"],
         "BHA": ["LEE (A)"],
         "MCI": ["COV (A)"],
-        "AVL": ["HUL (H)"],
-        "EVE": ["MUN (A)"]
+        "AVL": ["HUL (H)"]
       },
       "difficulty": {
+        "CRY": 2.0,
         "ARS": 3.2,
         "NEW": 3.8,
         "BOU": 2.3,
@@ -2425,14 +2407,14 @@
         "LEE": 2.7,
         "BHA": 3.5,
         "MCI": 2.0,
-        "AVL": 2.0,
-        "EVE": 4.2
+        "AVL": 2.0
       },
       "squadElementIds": [
-        1, 8, 10, 51, 68, 109, 237, 249, 332, 346, 411, 426, 427, 445, 449
+        1, 8, 10, 51, 68, 109, 224, 237, 332, 346, 411, 426, 427, 445, 449
       ],
-      "benchElementIds": [445, 109, 249, 51],
+      "benchElementIds": [445, 109, 51, 224],
       "expected": {
+        "205533": 1.72,
         "154561": 4.05,
         "487838": 3.3,
         "201658": 4.13,
@@ -2444,12 +2426,12 @@
         "440993": 3.8,
         "446008": 4.91,
         "577285": 1.99,
-        "586309": 2.36,
         "177815": 3.67,
         "223094": 4.18,
         "465642": 3.04
       },
       "ceiling": {
+        "205533": 1.72,
         "154561": 4.05,
         "487838": 3.3,
         "201658": 4.13,
@@ -2461,12 +2443,11 @@
         "440993": 3.8,
         "446008": 4.91,
         "577285": 1.99,
-        "586309": 2.36,
         "177815": 3.67,
         "223094": 4.18,
         "465642": 3.04
       },
-      "freeTransfersBefore": 2,
+      "freeTransfersBefore": 3,
       "paidTransfers": 0,
       "transferCostPoints": 0,
       "projectedPoints": 52.15,
@@ -2478,80 +2459,82 @@
       "deadline": "2027-03-20T13:30:00Z",
       "confidence": "provisional",
       "starters": [
-        154561, 466075, 198869, 201658, 249231, 513418, 440993, 223094, 141746,
+        154561, 466075, 198869, 201658, 513418, 502500, 440993, 223094, 141746,
         465642, 487838
       ],
-      "bench": [177815, 220627, 489639, 586309],
+      "bench": [220627, 489639, 577285, 205533],
       "captain": 223094,
       "viceCaptain": 440993,
-      "transfersIn": [249231, 513418],
-      "transfersOut": [577285, 446008],
+      "transfersIn": [513418, 502500],
+      "transfersOut": [177815, 446008],
       "opponents": {
+        "CRY": ["IPS (A)"],
         "ARS": ["SUN (H)"],
         "NEW": ["LEE (H)"],
         "BOU": ["BRE (A)"],
-        "MUN": ["MCI (A)"],
+        "BRE": ["BOU (H)"],
         "LEE": ["NEW (A)"],
         "BHA": ["COV (H)"],
         "MCI": ["MUN (H)"],
-        "BRE": ["BOU (H)"],
-        "EVE": ["TOT (H)"]
+        "MUN": ["MCI (A)"],
+        "AVL": ["NFO (A)"]
       },
       "difficulty": {
+        "CRY": 2.0,
         "ARS": 2.0,
         "NEW": 2.1,
         "BOU": 3.8,
-        "MUN": 5.0,
+        "BRE": 2.8,
         "LEE": 3.4,
         "BHA": 2.0,
         "MCI": 3.4,
-        "BRE": 2.8,
-        "EVE": 2.5
+        "MUN": 5.0,
+        "AVL": 3.2
       },
       "squadElementIds": [
-        1, 8, 10, 68, 86, 94, 109, 237, 249, 332, 346, 411, 426, 445, 449
+        1, 8, 10, 51, 68, 94, 106, 109, 224, 237, 332, 411, 426, 445, 449
       ],
-      "benchElementIds": [346, 332, 109, 249],
+      "benchElementIds": [332, 109, 51, 224],
       "expected": {
+        "205533": 1.79,
         "154561": 4.89,
         "487838": 4.14,
         "201658": 3.5,
         "466075": 6.13,
         "198869": 5.2,
-        "141746": 3.73,
+        "502500": 4.23,
         "220627": 3.0,
         "489639": 2.85,
         "440993": 4.69,
-        "249231": 3.68,
-        "586309": 2.77,
-        "177815": 3.33,
+        "141746": 3.73,
+        "577285": 1.93,
         "223094": 5.74,
         "465642": 4.13,
         "513418": 4.54
       },
       "ceiling": {
+        "205533": 1.79,
         "154561": 4.89,
         "487838": 4.14,
         "201658": 3.5,
         "466075": 6.13,
         "198869": 5.2,
-        "141746": 3.73,
+        "502500": 4.23,
         "220627": 3.0,
         "489639": 2.85,
         "440993": 4.69,
-        "249231": 3.68,
-        "586309": 2.77,
-        "177815": 3.33,
+        "141746": 3.73,
+        "577285": 1.93,
         "223094": 5.74,
         "465642": 4.13,
         "513418": 4.54
       },
-      "freeTransfersBefore": 2,
+      "freeTransfersBefore": 3,
       "paidTransfers": 0,
       "transferCostPoints": 0,
-      "projectedPoints": 56.1,
-      "netExpectedPoints": 56.1,
-      "bankAfterTenths": 12
+      "projectedPoints": 56.66,
+      "netExpectedPoints": 56.66,
+      "bankAfterTenths": 3
     },
     {
       "event": 31,
@@ -2565,11 +2548,11 @@
       "captain": 244851,
       "viceCaptain": 141746,
       "transfersIn": [
-        223340, 457569, 244851, 475168, 205533, 111234, 17761, 219924, 424876,
+        223340, 457569, 244851, 475168, 111234, 17761, 219924, 177815, 424876,
         167512
       ],
       "transfersOut": [
-        154561, 198869, 201658, 249231, 513418, 489639, 586309, 223094, 465642,
+        154561, 198869, 577285, 201658, 513418, 502500, 489639, 223094, 465642,
         487838
       ],
       "opponents": {
@@ -2636,17 +2619,17 @@
         "244851": 4.59,
         "167512": 1.07
       },
-      "freeTransfersBefore": 1,
+      "freeTransfersBefore": 2,
       "paidTransfers": 0,
       "transferCostPoints": 0,
       "projectedPoints": 47.55,
       "netExpectedPoints": 47.55,
-      "bankAfterTenths": 26,
+      "bankAfterTenths": 24,
       "chip": "Free Hit",
       "revertsAfter": true,
       "revertsTo": [
-        141746, 154561, 177815, 198869, 201658, 220627, 223094, 249231, 440993,
-        465642, 466075, 487838, 489639, 513418, 586309
+        141746, 154561, 198869, 201658, 205533, 220627, 223094, 440993, 465642,
+        466075, 487838, 489639, 502500, 513418, 577285
       ]
     },
     {
@@ -2654,70 +2637,72 @@
       "deadline": "2027-04-17T12:30:00Z",
       "confidence": "provisional",
       "starters": [
-        154561, 466075, 198869, 201658, 249231, 513418, 440993, 223094, 141746,
+        154561, 466075, 198869, 201658, 513418, 502500, 440993, 223094, 141746,
         465642, 487838
       ],
-      "bench": [489639, 177815, 220627, 586309],
+      "bench": [489639, 220627, 577285, 205533],
       "captain": 223094,
       "viceCaptain": 440993,
       "transfersIn": [],
       "transfersOut": [],
       "opponents": {
+        "CRY": ["MCI (A)"],
         "ARS": ["AVL (H)"],
         "NEW": ["TOT (H)"],
         "BOU": ["EVE (A)"],
-        "MUN": ["IPS (A)"],
+        "BRE": ["LEE (H)"],
         "LEE": ["BRE (A)"],
         "BHA": ["CHE (H)"],
         "MCI": ["CRY (H)"],
-        "BRE": ["LEE (H)"],
-        "EVE": ["BOU (H)"]
+        "MUN": ["IPS (A)"],
+        "AVL": ["ARS (A)"]
       },
       "difficulty": {
+        "CRY": 5.0,
         "ARS": 2.7,
         "NEW": 2.5,
         "BOU": 3.1,
-        "MUN": 2.0,
+        "BRE": 2.1,
         "LEE": 3.8,
         "BHA": 2.9,
         "MCI": 2.2,
-        "BRE": 2.1,
-        "EVE": 2.8
+        "MUN": 2.0,
+        "AVL": 5.0
       },
       "squadElementIds": [
-        1, 8, 10, 68, 86, 94, 109, 237, 249, 332, 346, 411, 426, 445, 449
+        1, 8, 10, 51, 68, 94, 106, 109, 224, 237, 332, 411, 426, 445, 449
       ],
-      "benchElementIds": [109, 346, 332, 249],
+      "benchElementIds": [109, 332, 51, 224],
       "expected": {
+        "205533": 1.39,
         "154561": 4.89,
         "487838": 3.99,
         "201658": 3.68,
         "466075": 6.12,
         "198869": 5.2,
-        "141746": 4.39,
+        "502500": 4.33,
         "220627": 2.95,
         "489639": 3.11,
         "440993": 5.07,
-        "249231": 3.79,
-        "586309": 2.84,
-        "177815": 3.02,
+        "141746": 4.39,
+        "577285": 1.72,
         "223094": 6.29,
         "465642": 3.94,
         "513418": 4.69
       },
       "ceiling": {
+        "205533": 1.39,
         "154561": 4.89,
         "487838": 3.99,
         "201658": 3.68,
         "466075": 6.12,
         "198869": 5.2,
-        "141746": 4.39,
+        "502500": 4.33,
         "220627": 2.95,
         "489639": 3.11,
         "440993": 5.07,
-        "249231": 3.79,
-        "586309": 2.84,
-        "177815": 3.02,
+        "141746": 4.39,
+        "577285": 1.72,
         "223094": 6.29,
         "465642": 3.94,
         "513418": 4.69
@@ -2725,9 +2710,9 @@
       "freeTransfersBefore": 1,
       "paidTransfers": 0,
       "transferCostPoints": 0,
-      "projectedPoints": 58.33,
-      "netExpectedPoints": 58.33,
-      "bankAfterTenths": 12
+      "projectedPoints": 58.87,
+      "netExpectedPoints": 58.87,
+      "bankAfterTenths": 3
     },
     {
       "event": 33,
@@ -2737,12 +2722,13 @@
         154561, 466075, 198869, 513418, 440993, 220627, 177815, 223094, 141746,
         446008, 487838
       ],
-      "bench": [465642, 489639, 586309, 577285],
+      "bench": [465642, 489639, 577285, 205533],
       "captain": 141746,
       "viceCaptain": 446008,
-      "transfersIn": [577285, 446008],
-      "transfersOut": [201658, 249231],
+      "transfersIn": [177815, 446008],
+      "transfersOut": [201658, 502500],
       "opponents": {
+        "CRY": ["MUN (A)"],
         "ARS": ["BOU (A)"],
         "NEW": ["IPS (H)"],
         "MUN": ["CRY (H)"],
@@ -2750,10 +2736,10 @@
         "BHA": ["EVE (A)"],
         "MCI": ["CHE (A)"],
         "AVL": ["COV (H)"],
-        "EVE": ["BHA (H)"],
         "BRE": ["FUL (H)"]
       },
       "difficulty": {
+        "CRY": 4.2,
         "ARS": 3.8,
         "NEW": 2.0,
         "MUN": 2.2,
@@ -2761,14 +2747,14 @@
         "BHA": 3.1,
         "MCI": 3.2,
         "AVL": 2.0,
-        "EVE": 2.7,
         "BRE": 2.0
       },
       "squadElementIds": [
-        1, 8, 10, 51, 94, 109, 237, 249, 332, 346, 411, 426, 427, 445, 449
+        1, 8, 10, 51, 94, 109, 224, 237, 332, 346, 411, 426, 427, 445, 449
       ],
-      "benchElementIds": [445, 109, 249, 51],
+      "benchElementIds": [445, 109, 51, 224],
       "expected": {
+        "205533": 1.56,
         "154561": 3.83,
         "487838": 3.61,
         "466075": 4.51,
@@ -2779,13 +2765,13 @@
         "440993": 4.13,
         "446008": 5.34,
         "577285": 1.99,
-        "586309": 2.64,
         "177815": 4.07,
         "223094": 4.7,
         "465642": 3.46,
         "513418": 4.48
       },
       "ceiling": {
+        "205533": 1.56,
         "154561": 3.83,
         "487838": 3.61,
         "466075": 4.51,
@@ -2796,7 +2782,6 @@
         "440993": 4.13,
         "446008": 5.34,
         "577285": 1.99,
-        "586309": 2.64,
         "177815": 4.07,
         "223094": 4.7,
         "465642": 3.46,
@@ -2817,12 +2802,13 @@
         154561, 466075, 198869, 465730, 440993, 220627, 177815, 223094, 141746,
         446008, 487838
       ],
-      "bench": [489639, 513418, 586309, 577285],
+      "bench": [489639, 513418, 577285, 205533],
       "captain": 223094,
       "viceCaptain": 440993,
       "transfersIn": [465730],
       "transfersOut": [465642],
       "opponents": {
+        "CRY": ["AVL (H)"],
         "ARS": ["TOT (H)"],
         "NEW": ["SUN (A)"],
         "MUN": ["COV (A)"],
@@ -2830,10 +2816,10 @@
         "BHA": ["NFO (H)"],
         "MCI": ["BRE (H)"],
         "AVL": ["CRY (A)"],
-        "EVE": ["FUL (A)"],
         "BRE": ["MCI (A)"]
       },
       "difficulty": {
+        "CRY": 2.7,
         "ARS": 2.5,
         "NEW": 3.3,
         "MUN": 2.0,
@@ -2841,14 +2827,14 @@
         "BHA": 2.9,
         "MCI": 2.5,
         "AVL": 2.7,
-        "EVE": 3.6,
         "BRE": 5.0
       },
       "squadElementIds": [
-        1, 8, 10, 51, 94, 109, 115, 237, 249, 332, 346, 411, 426, 427, 449
+        1, 8, 10, 51, 94, 109, 115, 224, 237, 332, 346, 411, 426, 427, 449
       ],
-      "benchElementIds": [109, 94, 249, 51],
+      "benchElementIds": [109, 94, 51, 224],
       "expected": {
+        "205533": 1.7,
         "154561": 4.89,
         "487838": 3.52,
         "466075": 6.18,
@@ -2860,12 +2846,12 @@
         "446008": 3.78,
         "577285": 1.97,
         "465730": 3.97,
-        "586309": 2.32,
         "177815": 3.47,
         "223094": 6.34,
         "513418": 2.95
       },
       "ceiling": {
+        "205533": 1.7,
         "154561": 4.89,
         "487838": 3.52,
         "466075": 6.18,
@@ -2877,7 +2863,6 @@
         "446008": 3.78,
         "577285": 1.97,
         "465730": 3.97,
-        "586309": 2.32,
         "177815": 3.47,
         "223094": 6.34,
         "513418": 2.95
@@ -2897,12 +2882,13 @@
         154561, 466075, 198869, 513418, 465730, 440993, 220627, 223094, 141746,
         446008, 487838
       ],
-      "bench": [489639, 177815, 586309, 577285],
+      "bench": [489639, 177815, 577285, 205533],
       "captain": 223094,
       "viceCaptain": 440993,
       "transfersIn": [],
       "transfersOut": [],
       "opponents": {
+        "CRY": ["NFO (A)"],
         "ARS": ["LEE (A)"],
         "NEW": ["COV (H)"],
         "MUN": ["BOU (A)"],
@@ -2910,10 +2896,10 @@
         "BHA": ["SUN (H)"],
         "MCI": ["LIV (H)"],
         "AVL": ["BRE (A)"],
-        "EVE": ["HUL (H)"],
         "BRE": ["AVL (H)"]
       },
       "difficulty": {
+        "CRY": 3.2,
         "ARS": 3.5,
         "NEW": 2.0,
         "MUN": 3.8,
@@ -2921,14 +2907,14 @@
         "BHA": 2.0,
         "MCI": 2.8,
         "AVL": 3.8,
-        "EVE": 2.0,
         "BRE": 2.7
       },
       "squadElementIds": [
-        1, 8, 10, 51, 94, 109, 115, 237, 249, 332, 346, 411, 426, 427, 449
+        1, 8, 10, 51, 94, 109, 115, 224, 237, 332, 346, 411, 426, 427, 449
       ],
-      "benchElementIds": [109, 346, 249, 51],
+      "benchElementIds": [109, 346, 51, 224],
       "expected": {
+        "205533": 1.56,
         "154561": 4.02,
         "487838": 3.61,
         "466075": 4.74,
@@ -2940,12 +2926,12 @@
         "446008": 3.83,
         "577285": 1.92,
         "465730": 4.56,
-        "586309": 2.62,
         "177815": 2.95,
         "223094": 6.52,
         "513418": 4.33
       },
       "ceiling": {
+        "205533": 1.56,
         "154561": 4.02,
         "487838": 3.61,
         "466075": 4.74,
@@ -2957,7 +2943,6 @@
         "446008": 3.83,
         "577285": 1.92,
         "465730": 4.56,
-        "586309": 2.62,
         "177815": 2.95,
         "223094": 6.52,
         "513418": 4.33
@@ -2974,43 +2959,45 @@
       "deadline": "2027-05-15T12:30:00Z",
       "confidence": "provisional",
       "starters": [
-        154561, 466075, 198869, 513418, 465730, 440993, 177815, 223094, 141746,
+        154561, 466075, 198869, 201658, 465730, 440993, 177815, 223094, 141746,
         446008, 487838
       ],
-      "bench": [489639, 220627, 586309, 577285],
+      "bench": [489639, 220627, 577285, 205533],
       "captain": 141746,
       "viceCaptain": 446008,
-      "transfersIn": [],
-      "transfersOut": [],
+      "transfersIn": [201658],
+      "transfersOut": [513418],
       "opponents": {
+        "CRY": ["BHA (H)"],
         "ARS": ["NFO (H)"],
         "NEW": ["AVL (A)"],
+        "BOU": ["SUN (A)"],
         "MUN": ["LEE (H)"],
         "LEE": ["MUN (A)"],
         "BHA": ["CRY (A)"],
         "MCI": ["IPS (A)"],
-        "AVL": ["NEW (H)"],
-        "EVE": ["CHE (A)"],
-        "BRE": ["LIV (A)"]
+        "AVL": ["NEW (H)"]
       },
       "difficulty": {
+        "CRY": 2.7,
         "ARS": 2.9,
         "NEW": 3.8,
+        "BOU": 3.3,
         "MUN": 2.1,
         "LEE": 4.2,
         "BHA": 2.7,
         "MCI": 2.0,
-        "AVL": 2.3,
-        "EVE": 3.2,
-        "BRE": 4.0
+        "AVL": 2.3
       },
       "squadElementIds": [
-        1, 8, 10, 51, 94, 109, 115, 237, 249, 332, 346, 411, 426, 427, 449
+        1, 8, 10, 51, 68, 109, 115, 224, 237, 332, 346, 411, 426, 427, 449
       ],
-      "benchElementIds": [109, 332, 249, 51],
+      "benchElementIds": [109, 332, 51, 224],
       "expected": {
+        "205533": 1.65,
         "154561": 4.89,
         "487838": 3.3,
+        "201658": 3.45,
         "466075": 6.11,
         "198869": 5.19,
         "141746": 6.32,
@@ -3020,14 +3007,14 @@
         "446008": 5.64,
         "577285": 2.22,
         "465730": 3.54,
-        "586309": 2.44,
         "177815": 3.03,
-        "223094": 4.18,
-        "513418": 3.35
+        "223094": 4.18
       },
       "ceiling": {
+        "205533": 1.65,
         "154561": 4.89,
         "487838": 3.3,
+        "201658": 3.45,
         "466075": 6.11,
         "198869": 5.19,
         "141746": 6.32,
@@ -3037,16 +3024,14 @@
         "446008": 5.64,
         "577285": 2.22,
         "465730": 3.54,
-        "586309": 2.44,
         "177815": 3.03,
-        "223094": 4.18,
-        "513418": 3.35
+        "223094": 4.18
       },
       "freeTransfersBefore": 2,
       "paidTransfers": 0,
       "transferCostPoints": 0,
-      "projectedPoints": 55.66,
-      "netExpectedPoints": 55.66,
+      "projectedPoints": 55.76,
+      "netExpectedPoints": 55.76,
       "bankAfterTenths": 5
     },
     {
@@ -3054,43 +3039,45 @@
       "deadline": "2027-05-23T12:30:00Z",
       "confidence": "provisional",
       "starters": [
-        154561, 466075, 198869, 465730, 440993, 220627, 177815, 223094, 141746,
+        154561, 466075, 198869, 201658, 465730, 440993, 220627, 223094, 141746,
         446008, 487838
       ],
-      "bench": [513418, 489639, 586309, 577285],
+      "bench": [177815, 489639, 577285, 205533],
       "captain": 223094,
       "viceCaptain": 141746,
       "transfersIn": [],
       "transfersOut": [],
       "opponents": {
+        "CRY": ["NEW (A)"],
         "ARS": ["EVE (A)"],
         "NEW": ["CRY (H)"],
+        "BOU": ["CHE (H)"],
         "MUN": ["TOT (A)"],
         "LEE": ["SUN (H)"],
         "BHA": ["LIV (H)"],
         "MCI": ["AVL (H)"],
-        "AVL": ["MCI (A)"],
-        "EVE": ["ARS (H)"],
-        "BRE": ["HUL (H)"]
+        "AVL": ["MCI (A)"]
       },
       "difficulty": {
+        "CRY": 3.4,
         "ARS": 3.1,
         "NEW": 2.2,
+        "BOU": 2.9,
         "MUN": 2.6,
         "LEE": 2.0,
         "BHA": 2.8,
         "MCI": 2.7,
-        "AVL": 5.0,
-        "EVE": 4.5,
-        "BRE": 2.0
+        "AVL": 5.0
       },
       "squadElementIds": [
-        1, 8, 10, 51, 94, 109, 115, 237, 249, 332, 346, 411, 426, 427, 449
+        1, 8, 10, 51, 68, 109, 115, 224, 237, 332, 346, 411, 426, 427, 449
       ],
-      "benchElementIds": [94, 109, 249, 51],
+      "benchElementIds": [346, 109, 51, 224],
       "expected": {
+        "205533": 1.68,
         "154561": 4.19,
         "487838": 4.13,
+        "201658": 4.15,
         "466075": 5.02,
         "198869": 4.36,
         "141746": 5.08,
@@ -3100,14 +3087,14 @@
         "446008": 4.48,
         "577285": 1.78,
         "465730": 3.98,
-        "586309": 2.27,
         "177815": 3.85,
-        "223094": 6.03,
-        "513418": 3.73
+        "223094": 6.03
       },
       "ceiling": {
+        "205533": 1.68,
         "154561": 4.19,
         "487838": 4.13,
+        "201658": 4.15,
         "466075": 5.02,
         "198869": 4.36,
         "141746": 5.08,
@@ -3117,16 +3104,14 @@
         "446008": 4.48,
         "577285": 1.78,
         "465730": 3.98,
-        "586309": 2.27,
         "177815": 3.85,
-        "223094": 6.03,
-        "513418": 3.73
+        "223094": 6.03
       },
-      "freeTransfersBefore": 3,
+      "freeTransfersBefore": 2,
       "paidTransfers": 0,
       "transferCostPoints": 0,
-      "projectedPoints": 56.38,
-      "netExpectedPoints": 56.38,
+      "projectedPoints": 56.67,
+      "netExpectedPoints": 56.67,
       "bankAfterTenths": 5
     },
     {
@@ -3134,80 +3119,80 @@
       "deadline": "2027-05-30T13:30:00Z",
       "confidence": "provisional",
       "starters": [
-        154561, 226597, 466075, 244851, 475168, 17761, 440993, 177815, 141746,
+        154561, 226597, 466075, 201658, 244851, 475168, 440993, 220627, 141746,
         446008, 487838
       ],
-      "bench": [586309, 489639, 465730, 577285],
+      "bench": [177815, 489639, 465730, 205533],
       "captain": 141746,
       "viceCaptain": 446008,
-      "transfersIn": [226597, 244851, 475168, 17761],
-      "transfersOut": [198869, 513418, 220627, 223094],
+      "transfersIn": [226597, 244851, 475168],
+      "transfersOut": [198869, 577285, 223094],
       "opponents": {
+        "CRY": ["LEE (H)"],
         "ARS": ["BHA (H)"],
         "NEW": ["HUL (A)"],
+        "BOU": ["LIV (A)"],
         "CHE": ["BRE (H)"],
-        "EVE": ["IPS (A)"],
         "MUN": ["FUL (H)"],
-        "BHA": ["ARS (A)"],
-        "MCI": ["SUN (A)"],
         "LEE": ["CRY (A)"],
-        "AVL": ["TOT (H)"]
+        "BHA": ["ARS (A)"],
+        "MCI": ["SUN (A)"]
       },
       "difficulty": {
+        "CRY": 2.1,
         "ARS": 2.7,
         "NEW": 2.0,
+        "BOU": 4.0,
         "CHE": 2.5,
-        "EVE": 2.0,
         "MUN": 2.0,
-        "BHA": 5.0,
-        "MCI": 3.3,
         "LEE": 2.7,
-        "AVL": 2.5
+        "BHA": 5.0,
+        "MCI": 3.3
       },
       "squadElementIds": [
-        1, 4, 8, 51, 109, 115, 154, 165, 229, 237, 249, 346, 426, 427, 449
+        1, 4, 8, 68, 109, 115, 154, 165, 224, 237, 332, 346, 426, 427, 449
       ],
-      "benchElementIds": [249, 109, 115, 51],
+      "benchElementIds": [346, 109, 115, 224],
       "expected": {
+        "205533": 1.8,
         "154561": 4.89,
         "487838": 3.61,
         "226597": 5.53,
+        "201658": 3.48,
         "475168": 3.89,
-        "17761": 3.57,
         "466075": 6.02,
         "141746": 5.9,
         "446008": 5.26,
+        "220627": 3.39,
         "489639": 2.56,
         "440993": 3.93,
         "177815": 3.12,
-        "577285": 2.23,
         "465730": 2.47,
-        "586309": 2.62,
         "244851": 4.66
       },
       "ceiling": {
+        "205533": 1.8,
         "154561": 4.89,
         "487838": 3.61,
         "226597": 5.53,
+        "201658": 3.48,
         "475168": 3.89,
-        "17761": 3.57,
         "466075": 6.02,
         "141746": 5.9,
         "446008": 5.26,
+        "220627": 3.39,
         "489639": 2.56,
         "440993": 3.93,
         "177815": 3.12,
-        "577285": 2.23,
         "465730": 2.47,
-        "586309": 2.62,
         "244851": 4.66
       },
-      "freeTransfersBefore": 4,
+      "freeTransfersBefore": 3,
       "paidTransfers": 0,
       "transferCostPoints": 0,
-      "projectedPoints": 56.29,
-      "netExpectedPoints": 56.29,
-      "bankAfterTenths": 7
+      "projectedPoints": 56.46,
+      "netExpectedPoints": 56.46,
+      "bankAfterTenths": 6
     }
   ]
 }
