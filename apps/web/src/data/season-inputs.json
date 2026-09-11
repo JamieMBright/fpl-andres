@@ -1,6 +1,6 @@
 {
   "schemaVersion": 6,
-  "generatedAt": "2026-09-11T21:25:16.190522Z",
+  "generatedAt": "2026-09-11T22:27:39.293966Z",
   "recordSeason": "2026-27",
   "events": [
     4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23,
@@ -294,7 +294,7 @@
       }
     ],
     "sourceReference": "FPL rules page, Transfers section",
-    "dataAvailableAt": "2026-09-11T21:25:16.190522Z",
+    "dataAvailableAt": "2026-09-11T22:27:39.293966Z",
     "playableStartRate": 0.35,
     "transferMarginPoints": 0.5
   },
@@ -20837,45 +20837,6 @@
       "evidence": { "appearance": "currentSeasonLineup" }
     },
     {
-      "id": 123,
-      "code": 532529,
-      "name": "Hinshelwood",
-      "position": "MID",
-      "positionId": 3,
-      "club": "BHA",
-      "teamId": 5,
-      "priceTenths": 60,
-      "availabilityStatus": "d",
-      "chanceOfPlaying": 50,
-      "basePoints": 1.08,
-      "routes": {
-        "appearance": 0.522,
-        "attacking": 0.294,
-        "cleanSheet": 0.086,
-        "bonus": 0.182,
-        "yellowCards": -0.031,
-        "redCards": -0.003,
-        "defensiveContribution": 0.03
-      },
-      "startRate": 0.328,
-      "startEvidence": {
-        "sourceStartRate": 0.267,
-        "finalStartRate": 0.328,
-        "observedAppearances": 3,
-        "recentStarts": 1,
-        "recentMatches": 3,
-        "recentMinutes": 63,
-        "appearanceSource": "currentSeasonLineup",
-        "lineupAdjustment": 0.061,
-        "marketAdjustment": 0.0,
-        "availabilityAdjustment": 0.0
-      },
-      "squadNumber": null,
-      "rated": true,
-      "depthRank": 1,
-      "evidence": { "appearance": "currentSeasonLineup" }
-    },
-    {
       "id": 16,
       "code": 248857,
       "name": "Madueke",
@@ -22068,6 +22029,37 @@
       "squadNumber": null,
       "rated": true,
       "depthRank": 2,
+      "evidence": { "appearance": "fplAvailability" }
+    },
+    {
+      "id": 123,
+      "code": 532529,
+      "name": "Hinshelwood",
+      "position": "MID",
+      "positionId": 3,
+      "club": "BHA",
+      "teamId": 5,
+      "priceTenths": 60,
+      "availabilityStatus": "i",
+      "chanceOfPlaying": 0,
+      "basePoints": 0,
+      "routes": {},
+      "startRate": 0.0,
+      "startEvidence": {
+        "sourceStartRate": 0.267,
+        "finalStartRate": 0.0,
+        "observedAppearances": 3,
+        "recentStarts": 1,
+        "recentMatches": 3,
+        "recentMinutes": 63,
+        "appearanceSource": "fplAvailability",
+        "lineupAdjustment": 0.061,
+        "marketAdjustment": 0.0,
+        "availabilityAdjustment": -0.328
+      },
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1,
       "evidence": { "appearance": "fplAvailability" }
     },
     {
