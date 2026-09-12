@@ -118,9 +118,9 @@ function callFor(
 /**
  * What a squad entering this gameweek is worth if it were all sold.
  *
- * Selling price is not list price, but the solved plan does not carry one per
- * player, so this uses list. It overstates a risen player's value by half his
- * rise, which is named in the chip note rather than hidden.
+ * `budgetBeforeTenths` is capped at FPL's published aggregate squad value when
+ * individual selling prices are still assumed. The fallback is only for older
+ * solved fixtures that predate that field.
  */
 function budgetAt(week: SolvedGameweek): number {
   if (week.budgetBeforeTenths > 0) return week.budgetBeforeTenths;
@@ -363,7 +363,7 @@ function rebuildCalls(
           note:
             `a ${String(freeHit.free.changes)}-change xPts1 rental in gameweek ${String(freeHit.week.event)} is worth ` +
             `${freeHit.free.gain.toFixed(1)} over the ${String(freeHit.freeHitHorizon)}-gameweek restored-squad replay after resetting to one free transfer; ` +
-            `current list prices set the budget, so correct selling prices in step one before committing`,
+            `the rebuild is capped at FPL's observed squad value; individual selling prices remain an assumption until reconciled`,
         }
       : {
           event: null,
@@ -388,7 +388,7 @@ function rebuildCalls(
             `rebuilding in gameweek ${String(wildcard.week.event)} moves ${String(wildcard.kept.changes)} of your fifteen ` +
             `and is worth ${wildcard.kept.gain.toFixed(1)} over the ${String(wildcard.wildcardHorizon)} gameweeks it opens; ` +
             `the legal squad changes ${String(wildcard.cliff.changes)} ${wildcard.cliff.changes === 1 ? "player" : "players"} between xPts${String(wildcard.cliff.from)} and xPts${String(wildcard.cliff.to)}, and the squad stays; ` +
-            `current list prices set the budget, so correct selling prices in step one before committing`,
+            `the rebuild is capped at FPL's observed squad value; individual selling prices remain an assumption until reconciled`,
         }
       : {
           event: null,

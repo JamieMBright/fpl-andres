@@ -18,6 +18,8 @@ function pick(
     multiplier,
     isCaptain: false,
     isViceCaptain: false,
+    purchasePriceTenths: null,
+    sellingPriceTenths: null,
     identity: {
       webName: `${positionCode}${squadPosition}`,
       positionCode,

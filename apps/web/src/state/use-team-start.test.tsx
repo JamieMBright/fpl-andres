@@ -75,6 +75,46 @@ function failedFetch(): typeof fetch {
   ) as unknown as typeof fetch;
 }
 
+function processedFetch(): typeof fetch {
+  const elementIds = legalSquad();
+  return vi.fn(async () =>
+    Response.json({
+      status: "ready",
+      state: {
+        entryId: 42,
+        event: 5,
+        bankTenths: 50,
+        squadValueTenths:
+          50 +
+          elementIds.reduce(
+            (total, elementId) =>
+              total + (PLAYERS_BY_ELEMENT_ID.get(elementId)?.priceTenths ?? 0),
+            0,
+          ),
+        eventTransfers: 0,
+        eventTransferCostPoints: 0,
+        totalTransfers: 0,
+        activeChip: null,
+        picks: elementIds.map((elementId, index) => ({
+          elementId,
+          squadPosition: index + 1,
+          multiplier: index < 11 ? 1 : 0,
+          isCaptain: index === 0,
+          isViceCaptain: index === 1,
+          purchasePriceTenths:
+            PLAYERS_BY_ELEMENT_ID.get(elementId)!.priceTenths,
+          sellingPriceTenths: PLAYERS_BY_ELEMENT_ID.get(elementId)!.priceTenths,
+          identity: null,
+        })),
+        stateAsOf: "2026-09-05T17:30:00.000Z",
+        dataAvailableAt: "2026-09-12T12:00:00.000Z",
+        evidenceLevel: "observed",
+        sourceHashes: [`sha256:${"1".repeat(64)}`],
+      },
+    }),
+  ) as unknown as typeof fetch;
+}
+
 describe("useTeamStart before the first deadline", () => {
   afterEach(() => {
     vi.useRealTimers();
@@ -167,6 +207,20 @@ describe("useTeamStart during an FPL outage", () => {
       "free_transfers",
       "selling_prices",
     ]);
+  });
+
+  it("uses observed public selling prices in the planner", async () => {
+    vi.stubGlobal("fetch", processedFetch());
+    const seen: { latest: TeamStartStatus } = { latest: { status: "idle" } };
+
+    render(<Probe onStatus={(status) => (seen.latest = status)} />);
+
+    await waitFor(() => expect(seen.latest.status).toBe("ready"));
+    if (seen.latest.status !== "ready") return;
+    expect(seen.latest.start.assumed).not.toContain("selling_prices");
+    expect(
+      seen.latest.start.squad.every((player) => player.sellingPriceTenths > 0),
+    ).toBe(true);
   });
 
   it("refreshes when connectivity returns", async () => {

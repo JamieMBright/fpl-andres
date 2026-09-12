@@ -15,7 +15,11 @@ describe("Expected XI page", () => {
     // The page heads on whichever gameweek the published season opens with, so
     // naming one here dates the test to the week it was written.
     const { event } = expectedXi();
-    const validationEvent = latestXStartEvent(XSTART_VALIDATION).event;
+    const validationEvent =
+      [...XSTART_VALIDATION.events]
+        .reverse()
+        .find((event) => event.complete !== false)?.event ??
+      latestXStartEvent(XSTART_VALIDATION).event;
 
     render(
       <MemoryRouter>

@@ -116,7 +116,7 @@ describe("recommendation snapshot boundary", () => {
   });
 
   it.each([
-    ["event", { event: 5 }],
+    ["event", { event: week.event === 1 ? 2 : 1 }],
     ["deadline", { deadline: "2026-09-13T12:30:00Z" }],
     ["model", { modelVersion: "old" }],
     ["player", { starters: [999_999, ...VALID_BODY.starters.slice(1)] }],

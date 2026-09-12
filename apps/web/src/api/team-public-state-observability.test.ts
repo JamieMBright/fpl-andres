@@ -228,7 +228,7 @@ describe("handler outcome line", () => {
   });
 
   it("names which upstream stage was slow", async () => {
-    // The browser makes one request and cannot see the three
+    // The browser makes one request and cannot see the upstream stages
     // behind it, so a slow entry fetch and a slow bootstrap fetch look
     // identical from the client. This is where they become distinguishable.
     const log = captured();
@@ -249,10 +249,12 @@ describe("handler outcome line", () => {
       "bootstrap",
       "entry",
       "picks",
+      "transfers",
     ]);
     for (const stage of ["bootstrap", "entry", "picks"]) {
       expect(stages?.[stage]).toBeGreaterThan(0);
     }
+    expect(stages?.transfers).toBe(0);
   });
 
   it("attributes nothing to a stage that never ran", async () => {

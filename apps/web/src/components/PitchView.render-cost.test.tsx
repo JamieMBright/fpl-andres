@@ -37,6 +37,8 @@ function pick(index: number): PublicTeamPick {
     multiplier: index === 0 ? 2 : index > 10 ? 0 : 1,
     isCaptain: index === 0,
     isViceCaptain: index === 1,
+    purchasePriceTenths: null,
+    sellingPriceTenths: null,
     identity: {
       webName: `Player ${index}`,
       positionCode: POSITIONS[index % POSITIONS.length] ?? "MID",

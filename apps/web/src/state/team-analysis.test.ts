@@ -114,7 +114,7 @@ describe("team analysis state machine", () => {
     const cached = loadCachedPublicTeamState(localStorage, ENTRY_ID);
     const fetchApi = vi
       .fn<typeof fetch>()
-      .mockResolvedValue(
+      .mockImplementation(async () =>
         Response.json(
           { status: "degraded", reason: "fpl_unreachable" },
           { status: 503 },
@@ -137,7 +137,7 @@ describe("team analysis state machine", () => {
     const degraded = await refreshTeamAnalysis(ENTRY_ID, null, {
       fetchApi: vi
         .fn<typeof fetch>()
-        .mockResolvedValue(
+        .mockImplementation(async () =>
           Response.json(
             { status: "degraded", reason: "fpl_source_failed" },
             { status: 503 },

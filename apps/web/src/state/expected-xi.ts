@@ -485,7 +485,11 @@ export function expectedXi(): ExpectedXi {
     playerOdds: playerOddsData as PlayerOddsArtifact,
     manualPriors: manualPriorsData as ManualPriorArtifact,
   });
-  const latestValidation = latestXStartEvent(XSTART_VALIDATION);
+  const latestValidation =
+    [...XSTART_VALIDATION.events]
+      .reverse()
+      .find((event) => event.complete !== false) ??
+    latestXStartEvent(XSTART_VALIDATION);
   const validationByClub = new Map(
     latestValidation.clubs.map((club) => [club.club, club]),
   );

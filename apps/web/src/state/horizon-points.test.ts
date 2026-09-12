@@ -7,7 +7,11 @@ import {
   horizonPointsByCode,
   horizonsAvailable,
 } from "./horizon-points";
-import { SEASON_EVENTS, SEASON_PLAYERS } from "./season-solver";
+import {
+  PLAYABLE_START_RATE,
+  SEASON_EVENTS,
+  SEASON_PLAYERS,
+} from "./season-solver";
 
 /**
  * A transfer is made for the run a player is about to have, not for Saturday.
@@ -56,6 +60,15 @@ describe("horizonPoints", () => {
     expect(horizonPoints(-1, 5)).toBeNull();
   });
 
+  it("does not rank a player below the playable start-rate floor", () => {
+    const fringe = SEASON_PLAYERS.find(
+      (player) => player.startRate < PLAYABLE_START_RATE,
+    );
+    expect(fringe).toBeDefined();
+    expect(horizonPoints(fringe!.code, DEFAULT_HORIZON)).toBeNull();
+    expect(horizonPointsByCode(DEFAULT_HORIZON).has(fringe!.code)).toBe(false);
+  });
+
   it("refuses a gameweek that is not in the season", () => {
     expect(horizonPoints(SOMEBODY, 5, 999)).toBeNull();
   });
@@ -72,7 +85,10 @@ describe("horizonPointsByCode", () => {
   });
 
   it("covers every player the season knows", () => {
-    expect(horizonPointsByCode(1).size).toBe(SEASON_PLAYERS.length);
+    const eligible = SEASON_PLAYERS.filter(
+      (player) => player.startRate >= PLAYABLE_START_RATE,
+    ).length;
+    expect(horizonPointsByCode(1).size).toBe(eligible);
   });
 
   it("gives nothing at all rather than a short season", () => {

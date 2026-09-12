@@ -38,6 +38,7 @@ function renderEntry(
   team: Parameters<typeof TeamEntry>[0]["team"],
   search = "",
   onChange = vi.fn(),
+  onResubmit = vi.fn(),
 ) {
   render(
     <MemoryRouter>
@@ -45,10 +46,11 @@ function renderEntry(
         team={team}
         params={new URLSearchParams(search)}
         onChange={onChange}
+        onResubmit={onResubmit}
       />
     </MemoryRouter>,
   );
-  return onChange;
+  return { onChange, onResubmit };
 }
 
 describe("the team ID form", () => {
@@ -80,7 +82,7 @@ describe("the team ID form", () => {
     // behaviour that a stray preventDefault or a type="button" would remove,
     // and nothing here would have noticed.
     const user = userEvent.setup();
-    const onChange = renderEntry({ status: "idle" });
+    const { onChange } = renderEntry({ status: "idle" });
 
     await user.type(screen.getByLabelText(/your team id/i), "212279{Enter}");
 
@@ -93,6 +95,19 @@ describe("the team ID form", () => {
     expect(
       screen.getByRole("button", { name: /plan my season/i }),
     ).toHaveAttribute("type", "submit");
+  });
+
+  it("retries when submitting the same Team ID already in the URL", async () => {
+    const user = userEvent.setup();
+    const { onChange, onResubmit } = renderEntry(
+      { status: "failed", reason: "unreachable" },
+      "team=212279",
+    );
+
+    await user.click(screen.getByRole("button", { name: /plan my season/i }));
+
+    expect(onChange).not.toHaveBeenCalled();
+    expect(onResubmit).toHaveBeenCalledTimes(1);
   });
 
   it("offers a way to reach the team builder it names", () => {

@@ -183,12 +183,23 @@ export function useTeamPlan(
           entryId,
           team.stateAsOf,
         );
-        const sellingPrices = new Map(
-          (corrections?.currentSquad ?? []).map((player) => [
-            player.elementId,
-            player.sellingPriceTenths,
-          ]),
+        const publicSellingPrices = new Map(
+          team.picks.flatMap((pick) =>
+            pick.sellingPriceTenths === null
+              ? []
+              : [[pick.elementId, pick.sellingPriceTenths] as const],
+          ),
         );
+        const sellingPrices =
+          corrections?.currentSquad === null ||
+          corrections?.currentSquad === undefined
+            ? publicSellingPrices
+            : new Map(
+                corrections.currentSquad.map((player) => [
+                  player.elementId,
+                  player.sellingPriceTenths,
+                ]),
+              );
         const assumed: SolveAssumption[] =
           corrections?.availableFreeTransfers === null ||
           corrections?.availableFreeTransfers === undefined
@@ -201,6 +212,7 @@ export function useTeamPlan(
           ),
           {
             bankTenths: corrections?.bankTenths ?? team.bankTenths,
+            teamValueTenths: team.squadValueTenths,
             availableFreeTransfers:
               corrections?.availableFreeTransfers ?? DEFAULT_FREE_TRANSFERS,
             fromEvent,
@@ -332,6 +344,7 @@ function startFromDeclaredSquad(
     bankTenths: opening
       ? SQUAD_BUDGET_TENTHS - validation.summary.spentTenths
       : 0,
+    ...(opening ? { teamValueTenths: SQUAD_BUDGET_TENTHS } : {}),
     // Gameweek one is squad selection, not a transfer window, and the solver
     // zeroes the allowance for the opener regardless.
     availableFreeTransfers: opening ? 0 : DEFAULT_FREE_TRANSFERS,

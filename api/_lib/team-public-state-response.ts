@@ -12,11 +12,16 @@ import {
   assembleTeamPublicState,
   TeamPublicStateContractError,
 } from "./team-public-state.js";
+import {
+  reconcileTeamSellingPrices,
+  type ResolvedTeamPrice,
+} from "./team-price.js";
 
 const MAX_PUBLIC_ID = 4_294_967_295;
 
 /**
- * The picks fetch is sequential, not parallel, so it needs its own budget.
+ * The picks fetch is sequential after entry/bootstrap, so it needs its own
+ * budget. Transfer evidence can run beside it once the event is known.
  *
  * The two opening fetches share a deadline correctly -- they run
  * concurrently, so neither consumes the other's wall clock. Picks is different:
@@ -97,8 +102,18 @@ const entrySummarySchema = z
   })
   .passthrough();
 
+const pricingRulesSchema = z
+  .object({
+    element_sell_at_purchase_price: z.boolean(),
+  })
+  .passthrough();
+
 const bootstrapSchema = z
   .object({
+    game_config: z
+      .object({ rules: pricingRulesSchema })
+      .passthrough()
+      .optional(),
     events: z.array(
       z
         .object({
@@ -116,6 +131,7 @@ const bootstrapSchema = z
           element_type: z.int().min(1).max(5),
           team: z.int().positive(),
           now_cost: z.int().positive(),
+          cost_change_start: z.int().optional(),
         })
         .passthrough(),
     ),
@@ -138,6 +154,23 @@ const bootstrapSchema = z
   })
   .passthrough();
 
+const picksPriceSchema = z
+  .object({
+    picks: z.array(z.object({ element: z.int().positive() }).passthrough()),
+  })
+  .passthrough();
+
+const transfersSchema = z.array(
+  z
+    .object({
+      element_in: z.int().positive(),
+      element_in_cost: z.int().positive(),
+      event: z.int().min(1).max(38),
+      time: z.iso.datetime(),
+    })
+    .passthrough(),
+);
+
 /**
  * One request's timing and outcome, filled in as the handler proceeds.
  *
@@ -149,7 +182,7 @@ interface RequestTrace {
   requestId: string;
   startedAt: number;
   upstreamMs: number;
-  // The browser makes one request, so it cannot see the three
+  // The browser makes one request, so it cannot see the four
   // upstream calls behind it and a slow entry fetch looks exactly like a slow
   // bootstrap fetch. Recorded per stage so the log can tell them apart after
   // the fact, which is the only place the distinction can be drawn without
@@ -158,7 +191,7 @@ interface RequestTrace {
   reason: string | null;
 }
 
-export type UpstreamStage = "entry" | "bootstrap" | "picks";
+export type UpstreamStage = "entry" | "bootstrap" | "picks" | "transfers";
 
 export async function createTeamPublicStateResponse(
   entryId: number,
@@ -170,7 +203,7 @@ export async function createTeamPublicStateResponse(
     requestId: newRequestId(),
     startedAt: now(),
     upstreamMs: 0,
-    stageMs: { entry: 0, bootstrap: 0, picks: 0 },
+    stageMs: { entry: 0, bootstrap: 0, picks: 0, transfers: 0 },
     reason: null,
   };
   const response = await buildTeamPublicStateResponse(
@@ -298,17 +331,38 @@ async function buildTeamPublicStateResponse(
     return degradedResponse("fpl_unreachable", trace);
   }
 
-  const picksOutcome = await fetchSource(
-    `/api/fpl/entry/${entryId}/event/${entry.current_event}/picks/`,
-    "picks",
-    fetchUpstream,
-    sleep,
-    random,
-    now,
-    now() + picksBudgetMs,
-    trace,
-    cache,
-  );
+  const picksDeadline = now() + picksBudgetMs;
+  const fetchPrices =
+    bootstrap.elements.every(
+      (element) => element.cost_change_start !== undefined,
+    ) &&
+    bootstrap.game_config?.rules.element_sell_at_purchase_price !== undefined;
+  const [picksOutcome, transfersOutcome] = await Promise.all([
+    fetchSource(
+      `/api/fpl/entry/${entryId}/event/${entry.current_event}/picks/`,
+      "picks",
+      fetchUpstream,
+      sleep,
+      random,
+      now,
+      picksDeadline,
+      trace,
+      cache,
+    ),
+    fetchPrices
+      ? fetchSource(
+          `/api/fpl/entry/${entryId}/transfers/`,
+          "transfers",
+          fetchUpstream,
+          sleep,
+          random,
+          now,
+          picksDeadline,
+          trace,
+          cache,
+        )
+      : Promise.resolve(null),
+  ]);
   if (picksOutcome.kind !== "ok") {
     return degradedResponse(
       picksOutcome.kind === "unreachable"
@@ -328,6 +382,53 @@ async function buildTeamPublicStateResponse(
   }
   if (!isSuccessful(picksSource)) {
     return degradedResponse("fpl_source_failed", trace);
+  }
+
+  let priceEvidence:
+    | {
+        prices: ReadonlyMap<number, ResolvedTeamPrice>;
+        bytes: Uint8Array;
+        fetchedAt: string;
+      }
+    | undefined;
+  if (
+    transfersOutcome?.kind === "ok" &&
+    isSuccessful(transfersOutcome.source)
+  ) {
+    try {
+      const pricePicks = parseSource(picksSource, picksPriceSchema);
+      const transfers = parseSource(transfersOutcome.source, transfersSchema);
+      const prices = reconcileTeamSellingPrices(
+        pricePicks.picks,
+        bootstrap.elements.map((element) => ({
+          id: element.id,
+          nowCost: element.now_cost,
+          costChangeStart: element.cost_change_start ?? null,
+        })),
+        transfers.map((transfer) => ({
+          elementIn: transfer.element_in,
+          elementInCost: Number(transfer.element_in_cost),
+          event: transfer.event,
+          time: transfer.time,
+        })),
+        Number(entry.last_deadline_bank),
+        Number(entry.last_deadline_value),
+        {
+          sellAtPurchasePrice:
+            bootstrap.game_config!.rules.element_sell_at_purchase_price,
+        },
+      );
+      if (prices !== null) {
+        priceEvidence = {
+          prices,
+          bytes: transfersOutcome.source.body,
+          fetchedAt: transfersOutcome.source.fetchedAt,
+        };
+      }
+    } catch {
+      // Price evidence is an optional refinement. The team remains readable,
+      // but its solver must keep naming selling prices as assumed.
+    }
   }
 
   try {
@@ -366,6 +467,7 @@ async function buildTeamPublicStateResponse(
       stateSourceFetchedAt: bootstrapSource.fetchedAt,
       stateAsOf: event.deadline_time,
       identities,
+      ...(priceEvidence ? { priceEvidence } : {}),
     });
     return jsonResponse({ status: "ready", state });
   } catch (error) {

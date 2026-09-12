@@ -7,6 +7,8 @@ import {
 } from "@fpl-andres/contracts";
 import { z } from "zod";
 
+import type { ResolvedTeamPrice } from "./team-price.js";
+
 const entrySchema = z
   .object({
     id: z.int().min(1).max(4_294_967_295),
@@ -67,6 +69,11 @@ interface AssembleTeamPublicStateInput {
   stateSourceFetchedAt: string;
   stateAsOf: string;
   identities?: ReadonlyMap<number, PlayerIdentity>;
+  priceEvidence?: {
+    prices: ReadonlyMap<number, ResolvedTeamPrice>;
+    bytes: Uint8Array;
+    fetchedAt: string;
+  };
 }
 
 export function assembleTeamPublicState({
@@ -78,12 +85,16 @@ export function assembleTeamPublicState({
   stateSourceFetchedAt,
   stateAsOf,
   identities,
+  priceEvidence,
 }: AssembleTeamPublicStateInput): PublicTeamState {
   const validatedStateAsOf = timestampSchema.parse(stateAsOf);
   const validatedEntryFetchedAt = timestampSchema.parse(entryFetchedAt);
   const validatedPicksFetchedAt = timestampSchema.parse(picksFetchedAt);
   const validatedStateSourceFetchedAt =
     timestampSchema.parse(stateSourceFetchedAt);
+  const validatedPriceEvidenceFetchedAt = priceEvidence
+    ? timestampSchema.parse(priceEvidence.fetchedAt)
+    : null;
   if (Date.parse(validatedEntryFetchedAt) < Date.parse(validatedStateAsOf)) {
     throw new TeamPublicStateContractError(
       "entry evidence cannot predate stateAsOf",
@@ -99,6 +110,14 @@ export function assembleTeamPublicState({
   ) {
     throw new TeamPublicStateContractError(
       "deadline evidence cannot predate stateAsOf",
+    );
+  }
+  if (
+    validatedPriceEvidenceFetchedAt !== null &&
+    Date.parse(validatedPriceEvidenceFetchedAt) < Date.parse(validatedStateAsOf)
+  ) {
+    throw new TeamPublicStateContractError(
+      "price evidence cannot predate stateAsOf",
     );
   }
   const entry = parseJsonBytes(entryBytes, entrySchema, "entry");
@@ -129,18 +148,24 @@ export function assembleTeamPublicState({
       multiplier: pick.multiplier,
       isCaptain: pick.is_captain,
       isViceCaptain: pick.is_vice_captain,
+      purchasePriceTenths:
+        priceEvidence?.prices.get(pick.element)?.purchasePriceTenths ?? null,
+      sellingPriceTenths:
+        priceEvidence?.prices.get(pick.element)?.sellingPriceTenths ?? null,
       identity: identities?.get(pick.element) ?? null,
     })),
     stateAsOf: validatedStateAsOf,
     dataAvailableAt: latestTimestamp(
       latestTimestamp(validatedEntryFetchedAt, validatedPicksFetchedAt),
       validatedStateSourceFetchedAt,
+      validatedPriceEvidenceFetchedAt,
     ),
     evidenceLevel: "observed",
     sourceHashes: [
       hashBytes(entryBytes),
       hashBytes(picksBytes),
       hashBytes(stateSourceBytes),
+      ...(priceEvidence ? [hashBytes(priceEvidence.bytes)] : []),
     ].sort(),
   });
 }
@@ -177,6 +202,13 @@ function hashBytes(bytes: Uint8Array): string {
   return `sha256:${createHash("sha256").update(bytes).digest("hex")}`;
 }
 
-function latestTimestamp(left: string, right: string): string {
-  return Date.parse(left) >= Date.parse(right) ? left : right;
+function latestTimestamp(...timestamps: (string | null)[]): string {
+  const present = timestamps.filter(
+    (timestamp): timestamp is string => timestamp !== null,
+  );
+  return present.reduce(
+    (latest, candidate) =>
+      Date.parse(candidate) > Date.parse(latest) ? candidate : latest,
+    present[0] ?? new Date(0).toISOString(),
+  );
 }

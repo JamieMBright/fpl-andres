@@ -109,6 +109,10 @@ function validateEndpointPath(path: string): EndpointKind {
     requireBoundedPathId(path, 1, MAX_PUBLIC_ID);
     return "none";
   }
+  if (/^entry\/[1-9]\d{0,9}\/transfers\/$/.test(path)) {
+    requireBoundedPathId(path, 1, MAX_PUBLIC_ID);
+    return "none";
+  }
   const picksMatch = /^entry\/([1-9]\d{0,9})\/event\/([1-9]\d?)\/picks\/$/.exec(
     path,
   );

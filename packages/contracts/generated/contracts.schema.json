@@ -253,6 +253,30 @@
         "isViceCaptain": {
           "type": "boolean"
         },
+        "purchasePriceTenths": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "exclusiveMinimum": 0,
+              "maximum": 9007199254740991
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sellingPriceTenths": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
         "identity": {
           "default": null,
           "anyOf": [
@@ -310,6 +334,8 @@
         "multiplier",
         "isCaptain",
         "isViceCaptain",
+        "purchasePriceTenths",
+        "sellingPriceTenths",
         "identity"
       ],
       "additionalProperties": false
@@ -400,6 +426,30 @@
                       "isViceCaptain": {
                         "type": "boolean"
                       },
+                      "purchasePriceTenths": {
+                        "anyOf": [
+                          {
+                            "type": "integer",
+                            "exclusiveMinimum": 0,
+                            "maximum": 9007199254740991
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "sellingPriceTenths": {
+                        "anyOf": [
+                          {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 9007199254740991
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
                       "identity": {
                         "default": null,
                         "anyOf": [
@@ -457,6 +507,8 @@
                       "multiplier",
                       "isCaptain",
                       "isViceCaptain",
+                      "purchasePriceTenths",
+                      "sellingPriceTenths",
                       "identity"
                     ],
                     "additionalProperties": false
@@ -656,6 +708,30 @@
               "isViceCaptain": {
                 "type": "boolean"
               },
+              "purchasePriceTenths": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "sellingPriceTenths": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
               "identity": {
                 "default": null,
                 "anyOf": [
@@ -713,6 +789,8 @@
               "multiplier",
               "isCaptain",
               "isViceCaptain",
+              "purchasePriceTenths",
+              "sellingPriceTenths",
               "identity"
             ],
             "additionalProperties": false

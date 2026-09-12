@@ -268,7 +268,7 @@ describe("XStartCalibration", () => {
       toJSON: () => ({}),
     });
 
-    fireEvent.pointerMove(hitArea!, { clientX: 500, pointerType: "mouse" });
+    fireEvent.pointerMove(hitArea!, { clientX: 630, pointerType: "mouse" });
 
     const tooltip = screen.getByRole("tooltip");
     expect(tooltip).toHaveTextContent(club.club);

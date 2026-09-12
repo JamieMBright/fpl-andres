@@ -141,10 +141,12 @@ export function TeamEntry({
   team,
   params,
   onChange,
+  onResubmit,
 }: {
   team: TeamStartStatus;
   params: URLSearchParams;
   onChange: (next: URLSearchParams, options?: { replace: boolean }) => void;
+  onResubmit?: () => void;
 }) {
   const [entered, setEntered] = useState(params.get("team") ?? "");
   const teamIdHistory = useMemo(
@@ -158,6 +160,10 @@ export function TeamEntry({
     const trimmed = entered.trim();
     if (trimmed) next.set("team", trimmed);
     else next.delete("team");
+    if (next.toString() === params.toString()) {
+      onResubmit?.();
+      return;
+    }
     onChange(next, { replace: true });
   };
 
@@ -1129,11 +1135,15 @@ export default function SeasonPlanPage() {
   // other two have been re-solved, and the panel says so rather than implying
   // all eight half-season copies are his.
   const chipsAreYours = !awaitingTeam && (!solving || solve.status === "done");
-  const gameweeks = solving
-    ? solve.gameweeks.map(asPlanGameweek)
-    : awaitingTeam
-      ? []
-      : plan.gameweeks;
+  const gameweeks = useMemo(
+    () =>
+      solving
+        ? solve.gameweeks.map(asPlanGameweek)
+        : awaitingTeam
+          ? []
+          : plan.gameweeks,
+    [awaitingTeam, plan.gameweeks, solving, solve.gameweeks],
+  );
   const chips = useMemo(() => {
     return chipCallsByEvent(chipCalls, gameweeks, committedChip);
   }, [chipCalls, gameweeks, committedChip]);
@@ -1242,7 +1252,12 @@ export default function SeasonPlanPage() {
         step="01"
         title="Your manager and season"
       >
-        <TeamEntry team={team} params={params} onChange={setParams} />
+        <TeamEntry
+          team={team}
+          params={params}
+          onChange={setParams}
+          onResubmit={teamPlan.retry}
+        />
         {teamId === null ? null : (
           <>
             <DeclaredSquadNote entryId={teamId} />

@@ -29,6 +29,12 @@ from __future__ import annotations
 
 __all__ = ["MODEL_VERSION"]
 
+#: 8.18 applies settled current-season lineup evidence to participation routes
+#: as well as start rate, and the browser excludes players below the playable
+#: start floor from horizon recommendations. Minor: the projected point target
+#: is unchanged, but fringe-player eligibility and minutes-dependent routes
+#: now follow the current season.
+#:
 #: 8.17 holds a player out of new recommendations through his first gameweek
 #: after FPL changes his club assignment. The daily season-input publisher
 #: compares stable player codes with its previous artifact, preserves the old
@@ -459,4 +465,4 @@ __all__ = ["MODEL_VERSION"]
 #: projection and resampled, so a gap that does not clear zero is reported as
 #: not clearing zero. No projection changed; what changed is what may be
 #: claimed from it.
-MODEL_VERSION = "8.17"
+MODEL_VERSION = "8.18"

@@ -17,6 +17,9 @@
     "api/team/*.ts": {
       "maxDuration": 15
     },
+    "api/recommendation-snapshot.ts": {
+      "maxDuration": 10
+    },
     "api/analysis-request.ts": {
       "maxDuration": 10
     },

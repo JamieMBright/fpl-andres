@@ -16,6 +16,7 @@ const MAX_PUBLIC_ID = 4_294_967_295;
 // genuinely dead endpoint still fails fast enough to say so.
 const MAX_ATTEMPTS = 3;
 const RETRY_BASE_MS = 250;
+const RETRYABLE_STATUSES = new Set([408, 425, 429, 500, 502, 503, 504]);
 
 const firstDeadline = FULL_SEASON_DEADLINES[0]?.deadline;
 const startYear = firstDeadline
@@ -176,7 +177,13 @@ export async function refreshTeamAnalysis(
         headers: { Accept: "application/json" },
         signal,
       });
-      break;
+      if (
+        !RETRYABLE_STATUSES.has(response.status) ||
+        attempt === MAX_ATTEMPTS - 1
+      ) {
+        break;
+      }
+      await response.body?.cancel();
     } catch (error) {
       // An abort is the caller changing their mind, not a failure to retry.
       if (error instanceof DOMException && error.name === "AbortError") {
@@ -188,7 +195,9 @@ export async function refreshTeamAnalysis(
           : { status: "error", reason: "network_error" };
       }
       await wait(RETRY_BASE_MS * 2 ** attempt);
+      continue;
     }
+    await wait(RETRY_BASE_MS * 2 ** attempt);
   }
   if (response === null) {
     return previous

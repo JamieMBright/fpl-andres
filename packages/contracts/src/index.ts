@@ -160,6 +160,14 @@ export const publicTeamPickSchema = z
     multiplier: z.int().min(0).max(3),
     isCaptain: z.boolean(),
     isViceCaptain: z.boolean(),
+    purchasePriceTenths: z.preprocess(
+      (value) => (value === undefined ? null : value),
+      z.int().positive().nullable(),
+    ),
+    sellingPriceTenths: z.preprocess(
+      (value) => (value === undefined ? null : value),
+      z.int().nonnegative().nullable(),
+    ),
     // All-or-nothing: a half-resolved player would be worse than an opaque id.
     identity: playerIdentitySchema.nullable().default(null),
   })
