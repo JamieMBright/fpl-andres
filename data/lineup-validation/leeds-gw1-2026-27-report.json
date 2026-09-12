@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-05T20:38:33.552750+00:00",
+  "generatedAt": "2026-09-12T20:50:44.415326+00:00",
   "season": "2026-27",
   "event": 1,
   "fixtureId": 6,
@@ -25,16 +25,16 @@
     "Justin",
     "Ampadu",
     "Calvert-Lewin",
-    "Muharemovi\u0107",
     "Bogle",
     "Stach",
     "Trafford",
+    "Muharemovi\u0107",
     "Okafor",
     "Bijol",
     "Aaronson",
-    "Elvedi"
+    "Wilson"
   ],
-  "overlap": 9,
+  "overlap": 10,
   "actual_names": [
     "Aaronson",
     "Ampadu",
@@ -49,128 +49,128 @@
     "Wilson"
   ],
   "actual_overlap": 10,
-  "model_actual_overlap": 9,
-  "brier_score": 0.08601237931034482,
+  "model_actual_overlap": 10,
+  "brier_score": 0.10131879310344827,
   "players": [
     {
       "elementId": 332,
       "name": "Justin",
-      "startProbability": 0.987
+      "startProbability": 0.755
     },
     {
       "elementId": 338,
       "name": "Ampadu",
-      "startProbability": 0.987
+      "startProbability": 0.755
     },
     {
       "elementId": 346,
       "name": "Calvert-Lewin",
-      "startProbability": 0.987
-    },
-    {
-      "elementId": 334,
-      "name": "Muharemovi\u0107",
-      "startProbability": 0.986
+      "startProbability": 0.755
     },
     {
       "elementId": 330,
       "name": "Bogle",
-      "startProbability": 0.982
+      "startProbability": 0.751
     },
     {
       "elementId": 335,
       "name": "Stach",
-      "startProbability": 0.981
+      "startProbability": 0.75
     },
     {
       "elementId": 385,
       "name": "Trafford",
-      "startProbability": 0.976
+      "startProbability": 0.747
+    },
+    {
+      "elementId": 334,
+      "name": "Muharemovi\u0107",
+      "startProbability": 0.744
     },
     {
       "elementId": 336,
       "name": "Okafor",
-      "startProbability": 0.649
+      "startProbability": 0.496
     },
     {
       "elementId": 327,
       "name": "Bijol",
-      "startProbability": 0.642
+      "startProbability": 0.491
     },
     {
       "elementId": 337,
       "name": "Aaronson",
-      "startProbability": 0.641
-    },
-    {
-      "elementId": 598,
-      "name": "Elvedi",
-      "startProbability": 0.361
+      "startProbability": 0.49
     },
     {
       "elementId": 260,
       "name": "Wilson",
-      "startProbability": 0.342
+      "startProbability": 0.261
+    },
+    {
+      "elementId": 598,
+      "name": "Elvedi",
+      "startProbability": 0.257
     },
     {
       "elementId": 345,
       "name": "Tanaka",
-      "startProbability": 0.327
+      "startProbability": 0.25
     },
     {
       "elementId": 331,
       "name": "Gudmundsson",
-      "startProbability": 0.317
-    },
-    {
-      "elementId": 641,
-      "name": "Bard",
-      "startProbability": 0.14
+      "startProbability": 0.243
     },
     {
       "elementId": 648,
       "name": "Bahoya",
-      "startProbability": 0.13
+      "startProbability": 0.044
     },
     {
-      "elementId": 603,
-      "name": "Lienou",
-      "startProbability": 0.054
+      "elementId": 641,
+      "name": "Bard",
+      "startProbability": 0.041
     },
     {
       "elementId": 604,
       "name": "Cresswell",
-      "startProbability": 0.05
+      "startProbability": 0.023
+    },
+    {
+      "elementId": 603,
+      "name": "Lienou",
+      "startProbability": 0.021
     },
     {
       "elementId": 629,
       "name": "Zetterer",
-      "startProbability": 0.03
+      "startProbability": 0.017
     },
     {
       "elementId": 625,
       "name": "Cairns",
-      "startProbability": 0.017
+      "startProbability": 0.012
     },
     {
       "elementId": 343,
       "name": "James",
-      "startProbability": 0.012
+      "startProbability": 0.009
     },
     {
       "elementId": 347,
       "name": "Nmecha",
-      "startProbability": 0.012
+      "startProbability": 0.009
     },
     {
       "elementId": 339,
       "name": "Longstaff",
-      "startProbability": 0.007
+      "startProbability": 0.005
     },
     {
       "elementId": 344,
       "name": "Gruev",
-      "startProbability": 0.002
+      "startProbability": 0.001
     },
     {
       "elementId": 326,
