@@ -1,0 +1,2069 @@
+{
+  "schemaVersion": 2,
+  "event": 4,
+  "capturedAt": "2026-09-12T14:54:46.323187Z",
+  "basis": "ranked-500",
+  "cohortRevision": "sha256:ad926ca3763031e5c1ec69b9810d9b8b418866792a6cd84cab2d1b94f298d2c9",
+  "attempted": 500,
+  "responded": 500,
+  "coverage": 1.0,
+  "chips": {
+    "3xc": 108,
+    "bboost": 2,
+    "freehit": 27,
+    "none": 252,
+    "wildcard": 111
+  },
+  "totalPoints": {
+    "mean": 0.0,
+    "median": 0.0,
+    "p10": 0.0,
+    "p90": 0.0,
+    "minimum": 0,
+    "maximum": 0
+  },
+  "benchPoints": {
+    "mean": 0.0,
+    "median": 0.0,
+    "p10": 0.0,
+    "p90": 0.0,
+    "minimum": 0,
+    "maximum": 0
+  },
+  "squadValueTenths": {
+    "mean": 1007.838,
+    "median": 1007.0,
+    "p10": 1002.0,
+    "p90": 1015.0,
+    "minimum": 997,
+    "maximum": 1020
+  },
+  "bankTenths": {
+    "mean": 8.386,
+    "median": 4.0,
+    "p10": 0.0,
+    "p90": 25.0,
+    "minimum": 0,
+    "maximum": 65
+  },
+  "eventTransfers": {
+    "mean": 1.034,
+    "median": 1.0,
+    "p10": 0.0,
+    "p90": 2.0,
+    "minimum": 0,
+    "maximum": 4
+  },
+  "transferCost": {
+    "mean": 0.144,
+    "median": 0.0,
+    "p10": 0.0,
+    "p90": 0.0,
+    "minimum": 0,
+    "maximum": 4
+  },
+  "hitsTaken": 0,
+  "transfersAvailable": true,
+  "seasonStanding": [
+    {
+      "overallRank": 123,
+      "totalPoints": 282
+    },
+    {
+      "overallRank": 149,
+      "totalPoints": 281
+    },
+    {
+      "overallRank": 194,
+      "totalPoints": 280
+    },
+    {
+      "overallRank": 996,
+      "totalPoints": 269
+    },
+    {
+      "overallRank": 1170,
+      "totalPoints": 268
+    },
+    {
+      "overallRank": 1539,
+      "totalPoints": 267
+    },
+    {
+      "overallRank": 1641,
+      "totalPoints": 266
+    },
+    {
+      "overallRank": 2269,
+      "totalPoints": 264
+    },
+    {
+      "overallRank": 2655,
+      "totalPoints": 263
+    },
+    {
+      "overallRank": 2655,
+      "totalPoints": 263
+    },
+    {
+      "overallRank": 2655,
+      "totalPoints": 263
+    },
+    {
+      "overallRank": 3085,
+      "totalPoints": 262
+    },
+    {
+      "overallRank": 3085,
+      "totalPoints": 262
+    },
+    {
+      "overallRank": 3085,
+      "totalPoints": 262
+    },
+    {
+      "overallRank": 3614,
+      "totalPoints": 261
+    },
+    {
+      "overallRank": 3959,
+      "totalPoints": 261
+    },
+    {
+      "overallRank": 3959,
+      "totalPoints": 261
+    },
+    {
+      "overallRank": 4074,
+      "totalPoints": 261
+    },
+    {
+      "overallRank": 4235,
+      "totalPoints": 260
+    },
+    {
+      "overallRank": 4235,
+      "totalPoints": 260
+    },
+    {
+      "overallRank": 4632,
+      "totalPoints": 260
+    },
+    {
+      "overallRank": 4981,
+      "totalPoints": 259
+    },
+    {
+      "overallRank": 4981,
+      "totalPoints": 259
+    },
+    {
+      "overallRank": 5403,
+      "totalPoints": 259
+    },
+    {
+      "overallRank": 5837,
+      "totalPoints": 258
+    },
+    {
+      "overallRank": 5837,
+      "totalPoints": 258
+    },
+    {
+      "overallRank": 5837,
+      "totalPoints": 258
+    },
+    {
+      "overallRank": 6330,
+      "totalPoints": 258
+    },
+    {
+      "overallRank": 6330,
+      "totalPoints": 258
+    },
+    {
+      "overallRank": 6330,
+      "totalPoints": 258
+    },
+    {
+      "overallRank": 6330,
+      "totalPoints": 258
+    },
+    {
+      "overallRank": 6554,
+      "totalPoints": 258
+    },
+    {
+      "overallRank": 6814,
+      "totalPoints": 257
+    },
+    {
+      "overallRank": 6814,
+      "totalPoints": 257
+    },
+    {
+      "overallRank": 6814,
+      "totalPoints": 257
+    },
+    {
+      "overallRank": 6814,
+      "totalPoints": 257
+    },
+    {
+      "overallRank": 6814,
+      "totalPoints": 257
+    },
+    {
+      "overallRank": 6814,
+      "totalPoints": 257
+    },
+    {
+      "overallRank": 6814,
+      "totalPoints": 257
+    },
+    {
+      "overallRank": 7749,
+      "totalPoints": 257
+    },
+    {
+      "overallRank": 8057,
+      "totalPoints": 257
+    },
+    {
+      "overallRank": 8085,
+      "totalPoints": 256
+    },
+    {
+      "overallRank": 8085,
+      "totalPoints": 256
+    },
+    {
+      "overallRank": 8085,
+      "totalPoints": 256
+    },
+    {
+      "overallRank": 8085,
+      "totalPoints": 256
+    },
+    {
+      "overallRank": 8085,
+      "totalPoints": 256
+    },
+    {
+      "overallRank": 9042,
+      "totalPoints": 256
+    },
+    {
+      "overallRank": 9042,
+      "totalPoints": 256
+    },
+    {
+      "overallRank": 9428,
+      "totalPoints": 255
+    },
+    {
+      "overallRank": 9428,
+      "totalPoints": 255
+    },
+    {
+      "overallRank": 9428,
+      "totalPoints": 255
+    },
+    {
+      "overallRank": 9428,
+      "totalPoints": 255
+    },
+    {
+      "overallRank": 9428,
+      "totalPoints": 255
+    },
+    {
+      "overallRank": 9428,
+      "totalPoints": 255
+    },
+    {
+      "overallRank": 9428,
+      "totalPoints": 255
+    },
+    {
+      "overallRank": 9428,
+      "totalPoints": 255
+    },
+    {
+      "overallRank": 9428,
+      "totalPoints": 255
+    },
+    {
+      "overallRank": 9428,
+      "totalPoints": 255
+    },
+    {
+      "overallRank": 10528,
+      "totalPoints": 255
+    },
+    {
+      "overallRank": 11012,
+      "totalPoints": 254
+    },
+    {
+      "overallRank": 11012,
+      "totalPoints": 254
+    },
+    {
+      "overallRank": 11012,
+      "totalPoints": 254
+    },
+    {
+      "overallRank": 11860,
+      "totalPoints": 254
+    },
+    {
+      "overallRank": 12816,
+      "totalPoints": 253
+    },
+    {
+      "overallRank": 12816,
+      "totalPoints": 253
+    },
+    {
+      "overallRank": 12816,
+      "totalPoints": 253
+    },
+    {
+      "overallRank": 12816,
+      "totalPoints": 253
+    },
+    {
+      "overallRank": 12816,
+      "totalPoints": 253
+    },
+    {
+      "overallRank": 15048,
+      "totalPoints": 252
+    },
+    {
+      "overallRank": 15048,
+      "totalPoints": 252
+    },
+    {
+      "overallRank": 15048,
+      "totalPoints": 252
+    },
+    {
+      "overallRank": 15048,
+      "totalPoints": 252
+    },
+    {
+      "overallRank": 15048,
+      "totalPoints": 252
+    },
+    {
+      "overallRank": 15048,
+      "totalPoints": 252
+    },
+    {
+      "overallRank": 15048,
+      "totalPoints": 252
+    },
+    {
+      "overallRank": 16323,
+      "totalPoints": 252
+    },
+    {
+      "overallRank": 16323,
+      "totalPoints": 252
+    },
+    {
+      "overallRank": 16864,
+      "totalPoints": 252
+    },
+    {
+      "overallRank": 16864,
+      "totalPoints": 252
+    },
+    {
+      "overallRank": 16864,
+      "totalPoints": 252
+    },
+    {
+      "overallRank": 17671,
+      "totalPoints": 251
+    },
+    {
+      "overallRank": 17671,
+      "totalPoints": 251
+    },
+    {
+      "overallRank": 17671,
+      "totalPoints": 251
+    },
+    {
+      "overallRank": 17671,
+      "totalPoints": 251
+    },
+    {
+      "overallRank": 17671,
+      "totalPoints": 251
+    },
+    {
+      "overallRank": 17671,
+      "totalPoints": 251
+    },
+    {
+      "overallRank": 17671,
+      "totalPoints": 251
+    },
+    {
+      "overallRank": 17671,
+      "totalPoints": 251
+    },
+    {
+      "overallRank": 17671,
+      "totalPoints": 251
+    },
+    {
+      "overallRank": 17671,
+      "totalPoints": 251
+    },
+    {
+      "overallRank": 17671,
+      "totalPoints": 251
+    },
+    {
+      "overallRank": 19089,
+      "totalPoints": 251
+    },
+    {
+      "overallRank": 19089,
+      "totalPoints": 251
+    },
+    {
+      "overallRank": 19736,
+      "totalPoints": 251
+    },
+    {
+      "overallRank": 19736,
+      "totalPoints": 251
+    },
+    {
+      "overallRank": 19736,
+      "totalPoints": 251
+    },
+    {
+      "overallRank": 20640,
+      "totalPoints": 250
+    },
+    {
+      "overallRank": 20640,
+      "totalPoints": 250
+    },
+    {
+      "overallRank": 20640,
+      "totalPoints": 250
+    },
+    {
+      "overallRank": 20640,
+      "totalPoints": 250
+    },
+    {
+      "overallRank": 20640,
+      "totalPoints": 250
+    },
+    {
+      "overallRank": 20640,
+      "totalPoints": 250
+    },
+    {
+      "overallRank": 20640,
+      "totalPoints": 250
+    },
+    {
+      "overallRank": 20640,
+      "totalPoints": 250
+    },
+    {
+      "overallRank": 20640,
+      "totalPoints": 250
+    },
+    {
+      "overallRank": 20640,
+      "totalPoints": 250
+    },
+    {
+      "overallRank": 20640,
+      "totalPoints": 250
+    },
+    {
+      "overallRank": 20640,
+      "totalPoints": 250
+    },
+    {
+      "overallRank": 20640,
+      "totalPoints": 250
+    },
+    {
+      "overallRank": 20640,
+      "totalPoints": 250
+    },
+    {
+      "overallRank": 22137,
+      "totalPoints": 250
+    },
+    {
+      "overallRank": 24034,
+      "totalPoints": 249
+    },
+    {
+      "overallRank": 24034,
+      "totalPoints": 249
+    },
+    {
+      "overallRank": 24034,
+      "totalPoints": 249
+    },
+    {
+      "overallRank": 24034,
+      "totalPoints": 249
+    },
+    {
+      "overallRank": 24034,
+      "totalPoints": 249
+    },
+    {
+      "overallRank": 25628,
+      "totalPoints": 249
+    },
+    {
+      "overallRank": 25628,
+      "totalPoints": 249
+    },
+    {
+      "overallRank": 25628,
+      "totalPoints": 249
+    },
+    {
+      "overallRank": 26540,
+      "totalPoints": 249
+    },
+    {
+      "overallRank": 26540,
+      "totalPoints": 249
+    },
+    {
+      "overallRank": 27935,
+      "totalPoints": 248
+    },
+    {
+      "overallRank": 27935,
+      "totalPoints": 248
+    },
+    {
+      "overallRank": 27935,
+      "totalPoints": 248
+    },
+    {
+      "overallRank": 27935,
+      "totalPoints": 248
+    },
+    {
+      "overallRank": 27935,
+      "totalPoints": 248
+    },
+    {
+      "overallRank": 27935,
+      "totalPoints": 248
+    },
+    {
+      "overallRank": 27935,
+      "totalPoints": 248
+    },
+    {
+      "overallRank": 27935,
+      "totalPoints": 248
+    },
+    {
+      "overallRank": 27935,
+      "totalPoints": 248
+    },
+    {
+      "overallRank": 30121,
+      "totalPoints": 248
+    },
+    {
+      "overallRank": 30121,
+      "totalPoints": 248
+    },
+    {
+      "overallRank": 30121,
+      "totalPoints": 248
+    },
+    {
+      "overallRank": 32032,
+      "totalPoints": 248
+    },
+    {
+      "overallRank": 32032,
+      "totalPoints": 248
+    },
+    {
+      "overallRank": 32032,
+      "totalPoints": 248
+    },
+    {
+      "overallRank": 33585,
+      "totalPoints": 248
+    },
+    {
+      "overallRank": 33710,
+      "totalPoints": 247
+    },
+    {
+      "overallRank": 33710,
+      "totalPoints": 247
+    },
+    {
+      "overallRank": 33710,
+      "totalPoints": 247
+    },
+    {
+      "overallRank": 36299,
+      "totalPoints": 247
+    },
+    {
+      "overallRank": 37468,
+      "totalPoints": 247
+    },
+    {
+      "overallRank": 37468,
+      "totalPoints": 247
+    },
+    {
+      "overallRank": 39324,
+      "totalPoints": 246
+    },
+    {
+      "overallRank": 39324,
+      "totalPoints": 246
+    },
+    {
+      "overallRank": 39324,
+      "totalPoints": 246
+    },
+    {
+      "overallRank": 41845,
+      "totalPoints": 246
+    },
+    {
+      "overallRank": 41845,
+      "totalPoints": 246
+    },
+    {
+      "overallRank": 43231,
+      "totalPoints": 246
+    },
+    {
+      "overallRank": 43231,
+      "totalPoints": 246
+    },
+    {
+      "overallRank": 45223,
+      "totalPoints": 245
+    },
+    {
+      "overallRank": 45223,
+      "totalPoints": 245
+    },
+    {
+      "overallRank": 45223,
+      "totalPoints": 245
+    },
+    {
+      "overallRank": 45223,
+      "totalPoints": 245
+    },
+    {
+      "overallRank": 48196,
+      "totalPoints": 245
+    },
+    {
+      "overallRank": 48196,
+      "totalPoints": 245
+    },
+    {
+      "overallRank": 48196,
+      "totalPoints": 245
+    },
+    {
+      "overallRank": 49821,
+      "totalPoints": 245
+    },
+    {
+      "overallRank": 49821,
+      "totalPoints": 245
+    },
+    {
+      "overallRank": 49821,
+      "totalPoints": 245
+    },
+    {
+      "overallRank": 49821,
+      "totalPoints": 245
+    },
+    {
+      "overallRank": 49821,
+      "totalPoints": 245
+    },
+    {
+      "overallRank": 49821,
+      "totalPoints": 245
+    },
+    {
+      "overallRank": 49821,
+      "totalPoints": 245
+    },
+    {
+      "overallRank": 52299,
+      "totalPoints": 244
+    },
+    {
+      "overallRank": 52299,
+      "totalPoints": 244
+    },
+    {
+      "overallRank": 52299,
+      "totalPoints": 244
+    },
+    {
+      "overallRank": 52299,
+      "totalPoints": 244
+    },
+    {
+      "overallRank": 55350,
+      "totalPoints": 244
+    },
+    {
+      "overallRank": 55350,
+      "totalPoints": 244
+    },
+    {
+      "overallRank": 55350,
+      "totalPoints": 244
+    },
+    {
+      "overallRank": 56976,
+      "totalPoints": 244
+    },
+    {
+      "overallRank": 59630,
+      "totalPoints": 243
+    },
+    {
+      "overallRank": 59630,
+      "totalPoints": 243
+    },
+    {
+      "overallRank": 59630,
+      "totalPoints": 243
+    },
+    {
+      "overallRank": 59630,
+      "totalPoints": 243
+    },
+    {
+      "overallRank": 59630,
+      "totalPoints": 243
+    },
+    {
+      "overallRank": 64713,
+      "totalPoints": 243
+    },
+    {
+      "overallRank": 67809,
+      "totalPoints": 242
+    },
+    {
+      "overallRank": 67809,
+      "totalPoints": 242
+    },
+    {
+      "overallRank": 67809,
+      "totalPoints": 242
+    },
+    {
+      "overallRank": 67809,
+      "totalPoints": 242
+    },
+    {
+      "overallRank": 67809,
+      "totalPoints": 242
+    },
+    {
+      "overallRank": 67809,
+      "totalPoints": 242
+    },
+    {
+      "overallRank": 71260,
+      "totalPoints": 242
+    },
+    {
+      "overallRank": 71260,
+      "totalPoints": 242
+    },
+    {
+      "overallRank": 73255,
+      "totalPoints": 242
+    },
+    {
+      "overallRank": 76675,
+      "totalPoints": 241
+    },
+    {
+      "overallRank": 76675,
+      "totalPoints": 241
+    },
+    {
+      "overallRank": 76675,
+      "totalPoints": 241
+    },
+    {
+      "overallRank": 76675,
+      "totalPoints": 241
+    },
+    {
+      "overallRank": 76675,
+      "totalPoints": 241
+    },
+    {
+      "overallRank": 76675,
+      "totalPoints": 241
+    },
+    {
+      "overallRank": 76675,
+      "totalPoints": 241
+    },
+    {
+      "overallRank": 82781,
+      "totalPoints": 241
+    },
+    {
+      "overallRank": 82781,
+      "totalPoints": 241
+    },
+    {
+      "overallRank": 82781,
+      "totalPoints": 241
+    },
+    {
+      "overallRank": 82781,
+      "totalPoints": 241
+    },
+    {
+      "overallRank": 86926,
+      "totalPoints": 240
+    },
+    {
+      "overallRank": 86926,
+      "totalPoints": 240
+    },
+    {
+      "overallRank": 86926,
+      "totalPoints": 240
+    },
+    {
+      "overallRank": 86926,
+      "totalPoints": 240
+    },
+    {
+      "overallRank": 86926,
+      "totalPoints": 240
+    },
+    {
+      "overallRank": 90850,
+      "totalPoints": 240
+    },
+    {
+      "overallRank": 93508,
+      "totalPoints": 240
+    },
+    {
+      "overallRank": 97993,
+      "totalPoints": 239
+    },
+    {
+      "overallRank": 97993,
+      "totalPoints": 239
+    },
+    {
+      "overallRank": 97993,
+      "totalPoints": 239
+    },
+    {
+      "overallRank": 97993,
+      "totalPoints": 239
+    },
+    {
+      "overallRank": 97993,
+      "totalPoints": 239
+    },
+    {
+      "overallRank": 97993,
+      "totalPoints": 239
+    },
+    {
+      "overallRank": 97993,
+      "totalPoints": 239
+    },
+    {
+      "overallRank": 97993,
+      "totalPoints": 239
+    },
+    {
+      "overallRank": 97993,
+      "totalPoints": 239
+    },
+    {
+      "overallRank": 102494,
+      "totalPoints": 239
+    },
+    {
+      "overallRank": 102494,
+      "totalPoints": 239
+    },
+    {
+      "overallRank": 105666,
+      "totalPoints": 239
+    },
+    {
+      "overallRank": 105666,
+      "totalPoints": 239
+    },
+    {
+      "overallRank": 110721,
+      "totalPoints": 238
+    },
+    {
+      "overallRank": 110721,
+      "totalPoints": 238
+    },
+    {
+      "overallRank": 110721,
+      "totalPoints": 238
+    },
+    {
+      "overallRank": 110721,
+      "totalPoints": 238
+    },
+    {
+      "overallRank": 110721,
+      "totalPoints": 238
+    },
+    {
+      "overallRank": 116139,
+      "totalPoints": 238
+    },
+    {
+      "overallRank": 116139,
+      "totalPoints": 238
+    },
+    {
+      "overallRank": 116139,
+      "totalPoints": 238
+    },
+    {
+      "overallRank": 116139,
+      "totalPoints": 238
+    },
+    {
+      "overallRank": 121594,
+      "totalPoints": 238
+    },
+    {
+      "overallRank": 121594,
+      "totalPoints": 238
+    },
+    {
+      "overallRank": 127088,
+      "totalPoints": 237
+    },
+    {
+      "overallRank": 127088,
+      "totalPoints": 237
+    },
+    {
+      "overallRank": 127088,
+      "totalPoints": 237
+    },
+    {
+      "overallRank": 127088,
+      "totalPoints": 237
+    },
+    {
+      "overallRank": 127088,
+      "totalPoints": 237
+    },
+    {
+      "overallRank": 127088,
+      "totalPoints": 237
+    },
+    {
+      "overallRank": 136462,
+      "totalPoints": 237
+    },
+    {
+      "overallRank": 136462,
+      "totalPoints": 237
+    },
+    {
+      "overallRank": 136462,
+      "totalPoints": 237
+    },
+    {
+      "overallRank": 136462,
+      "totalPoints": 237
+    },
+    {
+      "overallRank": 136462,
+      "totalPoints": 237
+    },
+    {
+      "overallRank": 141924,
+      "totalPoints": 237
+    },
+    {
+      "overallRank": 142520,
+      "totalPoints": 236
+    },
+    {
+      "overallRank": 142520,
+      "totalPoints": 236
+    },
+    {
+      "overallRank": 142520,
+      "totalPoints": 236
+    },
+    {
+      "overallRank": 142520,
+      "totalPoints": 236
+    },
+    {
+      "overallRank": 142520,
+      "totalPoints": 236
+    },
+    {
+      "overallRank": 142520,
+      "totalPoints": 236
+    },
+    {
+      "overallRank": 142520,
+      "totalPoints": 236
+    },
+    {
+      "overallRank": 142520,
+      "totalPoints": 236
+    },
+    {
+      "overallRank": 148429,
+      "totalPoints": 236
+    },
+    {
+      "overallRank": 152297,
+      "totalPoints": 236
+    },
+    {
+      "overallRank": 152297,
+      "totalPoints": 236
+    },
+    {
+      "overallRank": 159189,
+      "totalPoints": 235
+    },
+    {
+      "overallRank": 159189,
+      "totalPoints": 235
+    },
+    {
+      "overallRank": 159189,
+      "totalPoints": 235
+    },
+    {
+      "overallRank": 159189,
+      "totalPoints": 235
+    },
+    {
+      "overallRank": 159189,
+      "totalPoints": 235
+    },
+    {
+      "overallRank": 159189,
+      "totalPoints": 235
+    },
+    {
+      "overallRank": 159189,
+      "totalPoints": 235
+    },
+    {
+      "overallRank": 159189,
+      "totalPoints": 235
+    },
+    {
+      "overallRank": 159189,
+      "totalPoints": 235
+    },
+    {
+      "overallRank": 159189,
+      "totalPoints": 235
+    },
+    {
+      "overallRank": 159189,
+      "totalPoints": 235
+    },
+    {
+      "overallRank": 159189,
+      "totalPoints": 235
+    },
+    {
+      "overallRank": 159189,
+      "totalPoints": 235
+    },
+    {
+      "overallRank": 159189,
+      "totalPoints": 235
+    },
+    {
+      "overallRank": 172454,
+      "totalPoints": 235
+    },
+    {
+      "overallRank": 176546,
+      "totalPoints": 235
+    },
+    {
+      "overallRank": 176546,
+      "totalPoints": 235
+    },
+    {
+      "overallRank": 184021,
+      "totalPoints": 234
+    },
+    {
+      "overallRank": 184021,
+      "totalPoints": 234
+    },
+    {
+      "overallRank": 184021,
+      "totalPoints": 234
+    },
+    {
+      "overallRank": 184021,
+      "totalPoints": 234
+    },
+    {
+      "overallRank": 190870,
+      "totalPoints": 234
+    },
+    {
+      "overallRank": 195325,
+      "totalPoints": 234
+    },
+    {
+      "overallRank": 195325,
+      "totalPoints": 234
+    },
+    {
+      "overallRank": 195325,
+      "totalPoints": 234
+    },
+    {
+      "overallRank": 195325,
+      "totalPoints": 234
+    },
+    {
+      "overallRank": 203594,
+      "totalPoints": 233
+    },
+    {
+      "overallRank": 203594,
+      "totalPoints": 233
+    },
+    {
+      "overallRank": 203594,
+      "totalPoints": 233
+    },
+    {
+      "overallRank": 203594,
+      "totalPoints": 233
+    },
+    {
+      "overallRank": 203594,
+      "totalPoints": 233
+    },
+    {
+      "overallRank": 210622,
+      "totalPoints": 233
+    },
+    {
+      "overallRank": 215531,
+      "totalPoints": 233
+    },
+    {
+      "overallRank": 215531,
+      "totalPoints": 233
+    },
+    {
+      "overallRank": 224548,
+      "totalPoints": 232
+    },
+    {
+      "overallRank": 224548,
+      "totalPoints": 232
+    },
+    {
+      "overallRank": 224548,
+      "totalPoints": 232
+    },
+    {
+      "overallRank": 237215,
+      "totalPoints": 232
+    },
+    {
+      "overallRank": 237215,
+      "totalPoints": 232
+    },
+    {
+      "overallRank": 247168,
+      "totalPoints": 231
+    },
+    {
+      "overallRank": 247168,
+      "totalPoints": 231
+    },
+    {
+      "overallRank": 247168,
+      "totalPoints": 231
+    },
+    {
+      "overallRank": 247168,
+      "totalPoints": 231
+    },
+    {
+      "overallRank": 247168,
+      "totalPoints": 231
+    },
+    {
+      "overallRank": 247168,
+      "totalPoints": 231
+    },
+    {
+      "overallRank": 247168,
+      "totalPoints": 231
+    },
+    {
+      "overallRank": 254731,
+      "totalPoints": 231
+    },
+    {
+      "overallRank": 254731,
+      "totalPoints": 231
+    },
+    {
+      "overallRank": 260270,
+      "totalPoints": 231
+    },
+    {
+      "overallRank": 260270,
+      "totalPoints": 231
+    },
+    {
+      "overallRank": 271082,
+      "totalPoints": 230
+    },
+    {
+      "overallRank": 271082,
+      "totalPoints": 230
+    },
+    {
+      "overallRank": 271082,
+      "totalPoints": 230
+    },
+    {
+      "overallRank": 271082,
+      "totalPoints": 230
+    },
+    {
+      "overallRank": 271082,
+      "totalPoints": 230
+    },
+    {
+      "overallRank": 279713,
+      "totalPoints": 230
+    },
+    {
+      "overallRank": 279713,
+      "totalPoints": 230
+    },
+    {
+      "overallRank": 279713,
+      "totalPoints": 230
+    },
+    {
+      "overallRank": 279713,
+      "totalPoints": 230
+    },
+    {
+      "overallRank": 279713,
+      "totalPoints": 230
+    },
+    {
+      "overallRank": 279713,
+      "totalPoints": 230
+    },
+    {
+      "overallRank": 286975,
+      "totalPoints": 230
+    },
+    {
+      "overallRank": 298697,
+      "totalPoints": 229
+    },
+    {
+      "overallRank": 298697,
+      "totalPoints": 229
+    },
+    {
+      "overallRank": 298697,
+      "totalPoints": 229
+    },
+    {
+      "overallRank": 298697,
+      "totalPoints": 229
+    },
+    {
+      "overallRank": 307498,
+      "totalPoints": 229
+    },
+    {
+      "overallRank": 314091,
+      "totalPoints": 229
+    },
+    {
+      "overallRank": 314091,
+      "totalPoints": 229
+    },
+    {
+      "overallRank": 327244,
+      "totalPoints": 228
+    },
+    {
+      "overallRank": 327244,
+      "totalPoints": 228
+    },
+    {
+      "overallRank": 327244,
+      "totalPoints": 228
+    },
+    {
+      "overallRank": 327244,
+      "totalPoints": 228
+    },
+    {
+      "overallRank": 327244,
+      "totalPoints": 228
+    },
+    {
+      "overallRank": 336710,
+      "totalPoints": 228
+    },
+    {
+      "overallRank": 336710,
+      "totalPoints": 228
+    },
+    {
+      "overallRank": 343858,
+      "totalPoints": 228
+    },
+    {
+      "overallRank": 343858,
+      "totalPoints": 228
+    },
+    {
+      "overallRank": 357782,
+      "totalPoints": 227
+    },
+    {
+      "overallRank": 357782,
+      "totalPoints": 227
+    },
+    {
+      "overallRank": 357782,
+      "totalPoints": 227
+    },
+    {
+      "overallRank": 367654,
+      "totalPoints": 227
+    },
+    {
+      "overallRank": 375042,
+      "totalPoints": 227
+    },
+    {
+      "overallRank": 375042,
+      "totalPoints": 227
+    },
+    {
+      "overallRank": 375042,
+      "totalPoints": 227
+    },
+    {
+      "overallRank": 390143,
+      "totalPoints": 226
+    },
+    {
+      "overallRank": 390143,
+      "totalPoints": 226
+    },
+    {
+      "overallRank": 390143,
+      "totalPoints": 226
+    },
+    {
+      "overallRank": 390143,
+      "totalPoints": 226
+    },
+    {
+      "overallRank": 390143,
+      "totalPoints": 226
+    },
+    {
+      "overallRank": 390143,
+      "totalPoints": 226
+    },
+    {
+      "overallRank": 390143,
+      "totalPoints": 226
+    },
+    {
+      "overallRank": 390143,
+      "totalPoints": 226
+    },
+    {
+      "overallRank": 400939,
+      "totalPoints": 226
+    },
+    {
+      "overallRank": 408916,
+      "totalPoints": 226
+    },
+    {
+      "overallRank": 408916,
+      "totalPoints": 226
+    },
+    {
+      "overallRank": 423344,
+      "totalPoints": 226
+    },
+    {
+      "overallRank": 425184,
+      "totalPoints": 225
+    },
+    {
+      "overallRank": 425184,
+      "totalPoints": 225
+    },
+    {
+      "overallRank": 425184,
+      "totalPoints": 225
+    },
+    {
+      "overallRank": 436870,
+      "totalPoints": 225
+    },
+    {
+      "overallRank": 445492,
+      "totalPoints": 225
+    },
+    {
+      "overallRank": 445492,
+      "totalPoints": 225
+    },
+    {
+      "overallRank": 445492,
+      "totalPoints": 225
+    },
+    {
+      "overallRank": 445492,
+      "totalPoints": 225
+    },
+    {
+      "overallRank": 445492,
+      "totalPoints": 225
+    },
+    {
+      "overallRank": 463077,
+      "totalPoints": 224
+    },
+    {
+      "overallRank": 463077,
+      "totalPoints": 224
+    },
+    {
+      "overallRank": 463077,
+      "totalPoints": 224
+    },
+    {
+      "overallRank": 483751,
+      "totalPoints": 224
+    },
+    {
+      "overallRank": 483751,
+      "totalPoints": 224
+    },
+    {
+      "overallRank": 483751,
+      "totalPoints": 224
+    },
+    {
+      "overallRank": 483751,
+      "totalPoints": 224
+    },
+    {
+      "overallRank": 483751,
+      "totalPoints": 224
+    },
+    {
+      "overallRank": 502527,
+      "totalPoints": 223
+    },
+    {
+      "overallRank": 502527,
+      "totalPoints": 223
+    },
+    {
+      "overallRank": 502527,
+      "totalPoints": 223
+    },
+    {
+      "overallRank": 502527,
+      "totalPoints": 223
+    },
+    {
+      "overallRank": 514864,
+      "totalPoints": 223
+    },
+    {
+      "overallRank": 524614,
+      "totalPoints": 223
+    },
+    {
+      "overallRank": 524614,
+      "totalPoints": 223
+    },
+    {
+      "overallRank": 524614,
+      "totalPoints": 223
+    },
+    {
+      "overallRank": 524614,
+      "totalPoints": 223
+    },
+    {
+      "overallRank": 524614,
+      "totalPoints": 223
+    },
+    {
+      "overallRank": 544926,
+      "totalPoints": 222
+    },
+    {
+      "overallRank": 557903,
+      "totalPoints": 222
+    },
+    {
+      "overallRank": 557903,
+      "totalPoints": 222
+    },
+    {
+      "overallRank": 557903,
+      "totalPoints": 222
+    },
+    {
+      "overallRank": 568295,
+      "totalPoints": 222
+    },
+    {
+      "overallRank": 568295,
+      "totalPoints": 222
+    },
+    {
+      "overallRank": 568295,
+      "totalPoints": 222
+    },
+    {
+      "overallRank": 568295,
+      "totalPoints": 222
+    },
+    {
+      "overallRank": 590270,
+      "totalPoints": 221
+    },
+    {
+      "overallRank": 590270,
+      "totalPoints": 221
+    },
+    {
+      "overallRank": 590270,
+      "totalPoints": 221
+    },
+    {
+      "overallRank": 590270,
+      "totalPoints": 221
+    },
+    {
+      "overallRank": 590270,
+      "totalPoints": 221
+    },
+    {
+      "overallRank": 604155,
+      "totalPoints": 221
+    },
+    {
+      "overallRank": 604155,
+      "totalPoints": 221
+    },
+    {
+      "overallRank": 604155,
+      "totalPoints": 221
+    },
+    {
+      "overallRank": 615163,
+      "totalPoints": 221
+    },
+    {
+      "overallRank": 638377,
+      "totalPoints": 220
+    },
+    {
+      "overallRank": 638377,
+      "totalPoints": 220
+    },
+    {
+      "overallRank": 652902,
+      "totalPoints": 220
+    },
+    {
+      "overallRank": 652902,
+      "totalPoints": 220
+    },
+    {
+      "overallRank": 664410,
+      "totalPoints": 220
+    },
+    {
+      "overallRank": 664410,
+      "totalPoints": 220
+    },
+    {
+      "overallRank": 689559,
+      "totalPoints": 219
+    },
+    {
+      "overallRank": 689559,
+      "totalPoints": 219
+    },
+    {
+      "overallRank": 689559,
+      "totalPoints": 219
+    },
+    {
+      "overallRank": 717233,
+      "totalPoints": 219
+    },
+    {
+      "overallRank": 717233,
+      "totalPoints": 219
+    },
+    {
+      "overallRank": 717233,
+      "totalPoints": 219
+    },
+    {
+      "overallRank": 743639,
+      "totalPoints": 218
+    },
+    {
+      "overallRank": 743639,
+      "totalPoints": 218
+    },
+    {
+      "overallRank": 743639,
+      "totalPoints": 218
+    },
+    {
+      "overallRank": 743639,
+      "totalPoints": 218
+    },
+    {
+      "overallRank": 743639,
+      "totalPoints": 218
+    },
+    {
+      "overallRank": 743639,
+      "totalPoints": 218
+    },
+    {
+      "overallRank": 772855,
+      "totalPoints": 218
+    },
+    {
+      "overallRank": 801253,
+      "totalPoints": 217
+    },
+    {
+      "overallRank": 801253,
+      "totalPoints": 217
+    },
+    {
+      "overallRank": 817825,
+      "totalPoints": 217
+    },
+    {
+      "overallRank": 817825,
+      "totalPoints": 217
+    },
+    {
+      "overallRank": 831333,
+      "totalPoints": 217
+    },
+    {
+      "overallRank": 831333,
+      "totalPoints": 217
+    },
+    {
+      "overallRank": 831333,
+      "totalPoints": 217
+    },
+    {
+      "overallRank": 862642,
+      "totalPoints": 216
+    },
+    {
+      "overallRank": 862642,
+      "totalPoints": 216
+    },
+    {
+      "overallRank": 862642,
+      "totalPoints": 216
+    },
+    {
+      "overallRank": 862642,
+      "totalPoints": 216
+    },
+    {
+      "overallRank": 862642,
+      "totalPoints": 216
+    },
+    {
+      "overallRank": 880579,
+      "totalPoints": 216
+    },
+    {
+      "overallRank": 894775,
+      "totalPoints": 216
+    },
+    {
+      "overallRank": 894775,
+      "totalPoints": 216
+    },
+    {
+      "overallRank": 926902,
+      "totalPoints": 215
+    },
+    {
+      "overallRank": 926902,
+      "totalPoints": 215
+    },
+    {
+      "overallRank": 926902,
+      "totalPoints": 215
+    },
+    {
+      "overallRank": 945799,
+      "totalPoints": 215
+    },
+    {
+      "overallRank": 961038,
+      "totalPoints": 215
+    },
+    {
+      "overallRank": 961038,
+      "totalPoints": 215
+    },
+    {
+      "overallRank": 1029798,
+      "totalPoints": 214
+    },
+    {
+      "overallRank": 1029798,
+      "totalPoints": 214
+    },
+    {
+      "overallRank": 1065607,
+      "totalPoints": 213
+    },
+    {
+      "overallRank": 1065607,
+      "totalPoints": 213
+    },
+    {
+      "overallRank": 1086580,
+      "totalPoints": 213
+    },
+    {
+      "overallRank": 1140407,
+      "totalPoints": 212
+    },
+    {
+      "overallRank": 1140407,
+      "totalPoints": 212
+    },
+    {
+      "overallRank": 1140407,
+      "totalPoints": 212
+    },
+    {
+      "overallRank": 1140407,
+      "totalPoints": 212
+    },
+    {
+      "overallRank": 1179029,
+      "totalPoints": 212
+    },
+    {
+      "overallRank": 1179029,
+      "totalPoints": 212
+    },
+    {
+      "overallRank": 1179029,
+      "totalPoints": 212
+    },
+    {
+      "overallRank": 1218162,
+      "totalPoints": 211
+    },
+    {
+      "overallRank": 1258756,
+      "totalPoints": 211
+    },
+    {
+      "overallRank": 1322832,
+      "totalPoints": 210
+    },
+    {
+      "overallRank": 1384256,
+      "totalPoints": 209
+    },
+    {
+      "overallRank": 1408176,
+      "totalPoints": 209
+    },
+    {
+      "overallRank": 1427529,
+      "totalPoints": 209
+    },
+    {
+      "overallRank": 1427529,
+      "totalPoints": 209
+    },
+    {
+      "overallRank": 1427529,
+      "totalPoints": 209
+    },
+    {
+      "overallRank": 1472197,
+      "totalPoints": 208
+    },
+    {
+      "overallRank": 1472197,
+      "totalPoints": 208
+    },
+    {
+      "overallRank": 1472197,
+      "totalPoints": 208
+    },
+    {
+      "overallRank": 1516623,
+      "totalPoints": 208
+    },
+    {
+      "overallRank": 1516623,
+      "totalPoints": 208
+    },
+    {
+      "overallRank": 1516623,
+      "totalPoints": 208
+    },
+    {
+      "overallRank": 1563160,
+      "totalPoints": 207
+    },
+    {
+      "overallRank": 1563160,
+      "totalPoints": 207
+    },
+    {
+      "overallRank": 1609623,
+      "totalPoints": 207
+    },
+    {
+      "overallRank": 1609623,
+      "totalPoints": 207
+    },
+    {
+      "overallRank": 1658210,
+      "totalPoints": 206
+    },
+    {
+      "overallRank": 1658210,
+      "totalPoints": 206
+    },
+    {
+      "overallRank": 1756946,
+      "totalPoints": 205
+    },
+    {
+      "overallRank": 1756946,
+      "totalPoints": 205
+    },
+    {
+      "overallRank": 1783829,
+      "totalPoints": 205
+    },
+    {
+      "overallRank": 1857564,
+      "totalPoints": 204
+    },
+    {
+      "overallRank": 1907805,
+      "totalPoints": 204
+    },
+    {
+      "overallRank": 1961668,
+      "totalPoints": 203
+    },
+    {
+      "overallRank": 1961668,
+      "totalPoints": 203
+    },
+    {
+      "overallRank": 1990412,
+      "totalPoints": 203
+    },
+    {
+      "overallRank": 2178632,
+      "totalPoints": 201
+    },
+    {
+      "overallRank": 2178632,
+      "totalPoints": 201
+    },
+    {
+      "overallRank": 2232825,
+      "totalPoints": 201
+    },
+    {
+      "overallRank": 2346231,
+      "totalPoints": 200
+    },
+    {
+      "overallRank": 2393668,
+      "totalPoints": 200
+    },
+    {
+      "overallRank": 2406132,
+      "totalPoints": 199
+    },
+    {
+      "overallRank": 2406132,
+      "totalPoints": 199
+    },
+    {
+      "overallRank": 2437326,
+      "totalPoints": 199
+    },
+    {
+      "overallRank": 2462198,
+      "totalPoints": 199
+    },
+    {
+      "overallRank": 2523055,
+      "totalPoints": 198
+    },
+    {
+      "overallRank": 2554985,
+      "totalPoints": 198
+    },
+    {
+      "overallRank": 2554985,
+      "totalPoints": 198
+    },
+    {
+      "overallRank": 2628875,
+      "totalPoints": 198
+    },
+    {
+      "overallRank": 2674667,
+      "totalPoints": 197
+    },
+    {
+      "overallRank": 2749703,
+      "totalPoints": 197
+    },
+    {
+      "overallRank": 2946006,
+      "totalPoints": 195
+    },
+    {
+      "overallRank": 3198740,
+      "totalPoints": 193
+    },
+    {
+      "overallRank": 3265436,
+      "totalPoints": 192
+    },
+    {
+      "overallRank": 3427838,
+      "totalPoints": 191
+    },
+    {
+      "overallRank": 3557120,
+      "totalPoints": 190
+    },
+    {
+      "overallRank": 3557120,
+      "totalPoints": 190
+    },
+    {
+      "overallRank": 4628571,
+      "totalPoints": 182
+    },
+    {
+      "overallRank": 4628571,
+      "totalPoints": 182
+    },
+    {
+      "overallRank": 4697236,
+      "totalPoints": 181
+    },
+    {
+      "overallRank": 5207816,
+      "totalPoints": 177
+    },
+    {
+      "overallRank": 6793224,
+      "totalPoints": 163
+    },
+    {
+      "overallRank": 6890314,
+      "totalPoints": 162
+    }
+  ]
+}
