@@ -1,0 +1,523 @@
+{
+  "schemaVersion": 4,
+  "event": 4,
+  "capturedAt": "2026-09-12T14:54:46.325228Z",
+  "basis": "ranked-500",
+  "cohortRevision": "sha256:ad926ca3763031e5c1ec69b9810d9b8b418866792a6cd84cab2d1b94f298d2c9",
+  "attempted": 500,
+  "responded": 500,
+  "coverage": 1.0,
+  "keeperPairings": [
+    {
+      "starterElementId": 109,
+      "benchElementId": 496,
+      "count": 158,
+      "share": 0.33404
+    },
+    {
+      "starterElementId": 496,
+      "benchElementId": 497,
+      "count": 46,
+      "share": 0.09725
+    },
+    {
+      "starterElementId": 1,
+      "benchElementId": 497,
+      "count": 23,
+      "share": 0.04863
+    },
+    {
+      "starterElementId": 1,
+      "benchElementId": 623,
+      "count": 23,
+      "share": 0.04863
+    },
+    {
+      "starterElementId": 1,
+      "benchElementId": 109,
+      "count": 16,
+      "share": 0.03383
+    },
+    {
+      "starterElementId": 1,
+      "benchElementId": 564,
+      "count": 15,
+      "share": 0.03171
+    },
+    {
+      "starterElementId": 109,
+      "benchElementId": 412,
+      "count": 15,
+      "share": 0.03171
+    },
+    {
+      "starterElementId": 1,
+      "benchElementId": 251,
+      "count": 13,
+      "share": 0.02748
+    },
+    {
+      "starterElementId": 109,
+      "benchElementId": 623,
+      "count": 11,
+      "share": 0.02326
+    },
+    {
+      "starterElementId": 109,
+      "benchElementId": 111,
+      "count": 8,
+      "share": 0.01691
+    },
+    {
+      "starterElementId": 109,
+      "benchElementId": 301,
+      "count": 8,
+      "share": 0.01691
+    },
+    {
+      "starterElementId": 110,
+      "benchElementId": 496,
+      "count": 8,
+      "share": 0.01691
+    },
+    {
+      "starterElementId": 250,
+      "benchElementId": 496,
+      "count": 8,
+      "share": 0.01691
+    },
+    {
+      "starterElementId": 1,
+      "benchElementId": 629,
+      "count": 7,
+      "share": 0.0148
+    },
+    {
+      "starterElementId": 109,
+      "benchElementId": 497,
+      "count": 7,
+      "share": 0.0148
+    },
+    {
+      "starterElementId": 1,
+      "benchElementId": 301,
+      "count": 6,
+      "share": 0.01268
+    },
+    {
+      "starterElementId": 1,
+      "benchElementId": 496,
+      "count": 6,
+      "share": 0.01268
+    },
+    {
+      "starterElementId": 1,
+      "benchElementId": 110,
+      "count": 5,
+      "share": 0.01057
+    },
+    {
+      "starterElementId": 1,
+      "benchElementId": 111,
+      "count": 5,
+      "share": 0.01057
+    },
+    {
+      "starterElementId": 1,
+      "benchElementId": 171,
+      "count": 5,
+      "share": 0.01057
+    },
+    {
+      "starterElementId": 412,
+      "benchElementId": 496,
+      "count": 5,
+      "share": 0.01057
+    },
+    {
+      "starterElementId": 58,
+      "benchElementId": 496,
+      "count": 3,
+      "share": 0.00634
+    },
+    {
+      "starterElementId": 109,
+      "benchElementId": 251,
+      "count": 3,
+      "share": 0.00634
+    },
+    {
+      "starterElementId": 109,
+      "benchElementId": 529,
+      "count": 3,
+      "share": 0.00634
+    },
+    {
+      "starterElementId": 109,
+      "benchElementId": 572,
+      "count": 3,
+      "share": 0.00634
+    },
+    {
+      "starterElementId": 110,
+      "benchElementId": 412,
+      "count": 3,
+      "share": 0.00634
+    },
+    {
+      "starterElementId": 496,
+      "benchElementId": 623,
+      "count": 3,
+      "share": 0.00634
+    },
+    {
+      "starterElementId": 1,
+      "benchElementId": 273,
+      "count": 2,
+      "share": 0.00423
+    },
+    {
+      "starterElementId": 57,
+      "benchElementId": 412,
+      "count": 2,
+      "share": 0.00423
+    },
+    {
+      "starterElementId": 57,
+      "benchElementId": 496,
+      "count": 2,
+      "share": 0.00423
+    },
+    {
+      "starterElementId": 109,
+      "benchElementId": 110,
+      "count": 2,
+      "share": 0.00423
+    },
+    {
+      "starterElementId": 109,
+      "benchElementId": 171,
+      "count": 2,
+      "share": 0.00423
+    },
+    {
+      "starterElementId": 109,
+      "benchElementId": 302,
+      "count": 2,
+      "share": 0.00423
+    },
+    {
+      "starterElementId": 111,
+      "benchElementId": 496,
+      "count": 2,
+      "share": 0.00423
+    },
+    {
+      "starterElementId": 301,
+      "benchElementId": 496,
+      "count": 2,
+      "share": 0.00423
+    },
+    {
+      "starterElementId": 302,
+      "benchElementId": 496,
+      "count": 2,
+      "share": 0.00423
+    },
+    {
+      "starterElementId": 385,
+      "benchElementId": 497,
+      "count": 2,
+      "share": 0.00423
+    },
+    {
+      "starterElementId": 412,
+      "benchElementId": 497,
+      "count": 2,
+      "share": 0.00423
+    },
+    {
+      "starterElementId": 1,
+      "benchElementId": 58,
+      "count": 1,
+      "share": 0.00211
+    },
+    {
+      "starterElementId": 1,
+      "benchElementId": 59,
+      "count": 1,
+      "share": 0.00211
+    },
+    {
+      "starterElementId": 1,
+      "benchElementId": 252,
+      "count": 1,
+      "share": 0.00211
+    },
+    {
+      "starterElementId": 1,
+      "benchElementId": 302,
+      "count": 1,
+      "share": 0.00211
+    },
+    {
+      "starterElementId": 1,
+      "benchElementId": 355,
+      "count": 1,
+      "share": 0.00211
+    },
+    {
+      "starterElementId": 28,
+      "benchElementId": 57,
+      "count": 1,
+      "share": 0.00211
+    },
+    {
+      "starterElementId": 28,
+      "benchElementId": 109,
+      "count": 1,
+      "share": 0.00211
+    },
+    {
+      "starterElementId": 28,
+      "benchElementId": 250,
+      "count": 1,
+      "share": 0.00211
+    },
+    {
+      "starterElementId": 28,
+      "benchElementId": 301,
+      "count": 1,
+      "share": 0.00211
+    },
+    {
+      "starterElementId": 28,
+      "benchElementId": 497,
+      "count": 1,
+      "share": 0.00211
+    },
+    {
+      "starterElementId": 28,
+      "benchElementId": 623,
+      "count": 1,
+      "share": 0.00211
+    },
+    {
+      "starterElementId": 58,
+      "benchElementId": 109,
+      "count": 1,
+      "share": 0.00211
+    },
+    {
+      "starterElementId": 82,
+      "benchElementId": 496,
+      "count": 1,
+      "share": 0.00211
+    },
+    {
+      "starterElementId": 82,
+      "benchElementId": 497,
+      "count": 1,
+      "share": 0.00211
+    },
+    {
+      "starterElementId": 109,
+      "benchElementId": 252,
+      "count": 1,
+      "share": 0.00211
+    },
+    {
+      "starterElementId": 110,
+      "benchElementId": 384,
+      "count": 1,
+      "share": 0.00211
+    },
+    {
+      "starterElementId": 110,
+      "benchElementId": 385,
+      "count": 1,
+      "share": 0.00211
+    },
+    {
+      "starterElementId": 110,
+      "benchElementId": 529,
+      "count": 1,
+      "share": 0.00211
+    },
+    {
+      "starterElementId": 110,
+      "benchElementId": 623,
+      "count": 1,
+      "share": 0.00211
+    },
+    {
+      "starterElementId": 111,
+      "benchElementId": 350,
+      "count": 1,
+      "share": 0.00211
+    },
+    {
+      "starterElementId": 111,
+      "benchElementId": 567,
+      "count": 1,
+      "share": 0.00211
+    },
+    {
+      "starterElementId": 140,
+      "benchElementId": 496,
+      "count": 1,
+      "share": 0.00211
+    },
+    {
+      "starterElementId": 171,
+      "benchElementId": 496,
+      "count": 1,
+      "share": 0.00211
+    },
+    {
+      "starterElementId": 251,
+      "benchElementId": 496,
+      "count": 1,
+      "share": 0.00211
+    },
+    {
+      "starterElementId": 251,
+      "benchElementId": 567,
+      "count": 1,
+      "share": 0.00211
+    },
+    {
+      "starterElementId": 302,
+      "benchElementId": 572,
+      "count": 1,
+      "share": 0.00211
+    },
+    {
+      "starterElementId": 384,
+      "benchElementId": 496,
+      "count": 1,
+      "share": 0.00211
+    },
+    {
+      "starterElementId": 385,
+      "benchElementId": 623,
+      "count": 1,
+      "share": 0.00211
+    },
+    {
+      "starterElementId": 385,
+      "benchElementId": 629,
+      "count": 1,
+      "share": 0.00211
+    },
+    {
+      "starterElementId": 467,
+      "benchElementId": 496,
+      "count": 1,
+      "share": 0.00211
+    },
+    {
+      "starterElementId": 496,
+      "benchElementId": 567,
+      "count": 1,
+      "share": 0.00211
+    },
+    {
+      "starterElementId": 496,
+      "benchElementId": 625,
+      "count": 1,
+      "share": 0.00211
+    },
+    {
+      "starterElementId": 496,
+      "benchElementId": 629,
+      "count": 1,
+      "share": 0.00211
+    },
+    {
+      "starterElementId": 497,
+      "benchElementId": 567,
+      "count": 1,
+      "share": 0.00211
+    },
+    {
+      "starterElementId": 497,
+      "benchElementId": 572,
+      "count": 1,
+      "share": 0.00211
+    }
+  ],
+  "commonStartingXi": {
+    "method": "modal-formation-most-started",
+    "formation": [3, 4, 3],
+    "elementIds": [109, 8, 31, 115, 154, 368, 40, 124, 165, 411, 346]
+  },
+  "positionalSpend": {
+    "GKP": {
+      "mean": 92.5243,
+      "median": 90.0,
+      "p10": 85.0,
+      "p90": 100.0,
+      "minimum": 85,
+      "maximum": 105
+    },
+    "DEF": {
+      "mean": 250.3298,
+      "median": 246.0,
+      "p10": 236.0,
+      "p90": 272.0,
+      "minimum": 227,
+      "maximum": 303
+    },
+    "MID": {
+      "mean": 377.6744,
+      "median": 375.0,
+      "p10": 353.0,
+      "p90": 419.0,
+      "minimum": 316,
+      "maximum": 458
+    },
+    "FWD": {
+      "mean": 278.7844,
+      "median": 292.0,
+      "p10": 228.0,
+      "p90": 306.0,
+      "minimum": 192,
+      "maximum": 323
+    }
+  },
+  "outfieldTrios": [
+    {
+      "position": "DEF",
+      "elementIds": [8, 31, 115],
+      "count": 115,
+      "share": 0.24313
+    },
+    {
+      "position": "MID",
+      "elementIds": [40, 154, 368],
+      "count": 185,
+      "share": 0.39112
+    },
+    {
+      "position": "FWD",
+      "elementIds": [165, 346, 411],
+      "count": 147,
+      "share": 0.31078
+    }
+  ],
+  "popularitySquad": {
+    "method": "legal-aggregate-popularity",
+    "squad": [
+      109, 496, 8, 31, 115, 87, 173, 154, 368, 40, 124, 427, 165, 346, 411
+    ],
+    "starters": [109, 8, 31, 115, 154, 368, 165, 411, 40, 124, 346],
+    "bench": [496, 87, 173, 427],
+    "formation": [3, 4, 3],
+    "spentTenths": 996,
+    "xiSpentTenths": 787,
+    "bankTenths": 4,
+    "meanOwnership": 0.56702,
+    "meanStartedShare": 0.64617
+  }
+}
