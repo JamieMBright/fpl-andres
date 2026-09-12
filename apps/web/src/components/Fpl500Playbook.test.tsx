@@ -402,9 +402,11 @@ describe("Fpl500Playbook", () => {
     }
     const user = userEvent.setup();
     draw();
-    const first = artifact.exactFpl500Portfolio.holdings["01"].find(
-      (holding) => holding.ownedShare >= 0.01,
-    );
+    const latestHoldings =
+      Object.entries(artifact.exactFpl500Portfolio.holdings).find(
+        ([key]) => Number(key) === LATEST_EVENT,
+      )?.[1] ?? [];
+    const first = latestHoldings.find((holding) => holding.ownedShare >= 0.01);
     expect(first).toBeDefined();
 
     const name = first?.name ?? `Element ${String(first?.elementId)}`;
