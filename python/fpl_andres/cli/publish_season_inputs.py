@@ -1141,9 +1141,7 @@ def _apply_current_lineup(
     if before > 0.0:
         participation_ratio = draft.start_rate / before
         draft.expected_minutes *= participation_ratio
-        draft.routes = {
-            key: value * participation_ratio for key, value in draft.routes.items()
-        }
+        draft.routes = {key: value * participation_ratio for key, value in draft.routes.items()}
     draft.model_record = {
         **draft.model_record,
         "appearances": len(observations),
