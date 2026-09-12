@@ -25,6 +25,10 @@ describe("FPL proxy path grammar", () => {
       "https://fantasy.premierleague.com/api/entry/123/event/5/picks/",
     ],
     [
+      "/api/fpl/entry/123/transfers/",
+      "https://fantasy.premierleague.com/api/entry/123/transfers/",
+    ],
+    [
       "/api/fpl/event/5/live/",
       "https://fantasy.premierleague.com/api/event/5/live/",
     ],

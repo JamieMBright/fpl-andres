@@ -9,13 +9,14 @@ from __future__ import annotations
 
 import json
 import math
-from datetime import UTC, datetime
+from datetime import UTC, date, datetime
 from pathlib import Path
 from typing import Any
 from unittest.mock import patch
 
 import pytest
 
+from fpl_andres.bootstrap import BootstrapElement
 from fpl_andres.cli import publish_season_inputs
 from fpl_andres.cli.publish_season_inputs import (
     CurrentLineupObservation,
@@ -23,6 +24,7 @@ from fpl_andres.cli.publish_season_inputs import (
     _apply_current_lineup,
     _initial_player_draft,
 )
+from fpl_andres.models.market_routes import MarketAttack
 
 BOOTSTRAP: dict[str, Any] = {
     "teams": [
@@ -415,8 +417,40 @@ def test_current_lineup_updates_a_cold_start_role_prior_separately() -> None:
 
     assert starter.start_rate > prior.start_rate
     assert benched.start_rate < prior.start_rate
+    assert starter.expected_minutes > prior.expected_minutes
+    assert benched.expected_minutes < prior.expected_minutes
+    assert starter.routes["appearance"] > prior.routes["appearance"]
+    assert benched.routes["appearance"] < prior.routes["appearance"]
     assert starter.lineup_adjustment == pytest.approx(starter.start_rate - prior.start_rate)
     assert starter.evidence["appearance"] == "currentSeasonLineup"
+
+
+def test_current_lineup_remains_authoritative_over_attack_market_participation() -> None:
+    draft = _initial_player_draft(
+        BootstrapElement.model_validate(_element()),
+        PROJECTIONS["players"][0],
+        None,
+    )
+    assert draft is not None
+    assert _apply_current_lineup(
+        draft,
+        [CurrentLineupObservation(started=False, minutes=0)],
+        weight=4.0,
+        prior_strength=4.0,
+    )
+    settled_start_rate = draft.start_rate
+
+    _, inferred = publish_season_inputs._apply_attack_market(
+        draft,
+        (MarketAttack(goals=1.2, assists=0.4), date(2026, 8, 22)),
+        [1.0],
+        {date(2026, 8, 22): 0},
+        0.35,
+        participation_already_inferred=True,
+    )
+
+    assert inferred is False
+    assert draft.start_rate == settled_start_rate
 
     def test_market_usage_is_published_without_copying_quotes_into_solver_inputs(
         self, tmp_path: Path

@@ -26,6 +26,7 @@ describe("resolveFplUpstreamUrl", () => {
     ["/api/fpl/fixtures/?event=7", `${ORIGIN}fixtures/?event=7`],
     ["/api/fpl/entry/12345/", `${ORIGIN}entry/12345/`],
     ["/api/fpl/entry/12345/history/", `${ORIGIN}entry/12345/history/`],
+    ["/api/fpl/entry/12345/transfers/", `${ORIGIN}entry/12345/transfers/`],
     [
       "/api/fpl/entry/12345/event/7/picks/",
       `${ORIGIN}entry/12345/event/7/picks/`,

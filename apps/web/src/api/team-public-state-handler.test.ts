@@ -40,29 +40,32 @@ function bootstrapDocument() {
   };
 }
 
-function entryResponse(currentEvent: number | null = 5): Response {
-  return jsonResponse(entryDocument(currentEvent));
+function entryResponse(
+  currentEvent: number | null = 5,
+  value = 1004,
+): Response {
+  return jsonResponse(entryDocument(currentEvent, value));
 }
 
-function entryDocument(currentEvent: number | null = 5) {
+function entryDocument(currentEvent: number | null = 5, value = 1004) {
   return {
     id: 123,
     name: "Public XI",
     started_event: 1,
     current_event: currentEvent,
     last_deadline_bank: currentEvent === null ? null : 17,
-    last_deadline_value: currentEvent === null ? null : 1004,
+    last_deadline_value: currentEvent === null ? null : value,
     last_deadline_total_transfers: 4,
   };
 }
 
-function picksResponse(): Response {
+function picksResponse(value = 1004): Response {
   return jsonResponse({
     active_chip: null,
     entry_history: {
       event: 5,
       bank: 17,
-      value: 1004,
+      value,
       event_transfers: 1,
       event_transfers_cost: 0,
     },
@@ -74,6 +77,19 @@ function picksResponse(): Response {
       is_vice_captain: index === 1,
     })),
   });
+}
+
+function pricedBootstrapResponse(): Response {
+  const document = {
+    ...bootstrapDocument(),
+    game_config: { rules: { element_sell_at_purchase_price: false } },
+  };
+  document.elements = document.elements.map((element, index) => ({
+    ...element,
+    now_cost: index === 0 ? 50 : element.now_cost,
+    cost_change_start: index === 0 ? 10 : 0,
+  }));
+  return jsonResponse(document);
 }
 
 function jsonResponse(payload: unknown, status = 200): Response {
@@ -147,6 +163,57 @@ describe("public team state response", () => {
       code: 900_000,
     });
     expect(body.state.picks.every((pick) => pick.identity !== null)).toBe(true);
+  });
+
+  it("carries reconciled purchase and selling prices from public evidence", async () => {
+    const fetchUpstream = vi
+      .fn<typeof fetch>()
+      .mockImplementation(async (input) => {
+        const url = String(input);
+        if (url.endsWith("/bootstrap-static/"))
+          return pricedBootstrapResponse();
+        if (url.endsWith("/entry/123/")) return entryResponse(5, 796);
+        if (url.endsWith("/entry/123/event/5/picks/"))
+          return picksResponse(796);
+        if (url.endsWith("/entry/123/transfers/")) {
+          return jsonResponse([
+            {
+              element_in: 101,
+              element_in_cost: 38,
+              element_out: 999,
+              element_out_cost: 40,
+              event: 3,
+              time: "2026-08-30T12:00:00Z",
+            },
+          ]);
+        }
+        throw new Error(`unexpected URL: ${url}`);
+      });
+
+    const response = await createTeamPublicStateResponse(123, "GET", {
+      fetchUpstream,
+      now: () => Date.parse(fetchedAt),
+    });
+    const body = (await response.json()) as {
+      state: {
+        picks: {
+          elementId: number;
+          purchasePriceTenths: number | null;
+          sellingPriceTenths: number | null;
+        }[];
+      };
+    };
+
+    expect(response.status).toBe(200);
+    expect(body.state.picks[0]).toMatchObject({
+      elementId: 101,
+      purchasePriceTenths: 38,
+      sellingPriceTenths: 44,
+    });
+    expect(body.state.picks[1]).toMatchObject({
+      purchasePriceTenths: 46,
+      sellingPriceTenths: 46,
+    });
   });
 
   it("leaves a pick opaque when the bootstrap cannot resolve it", async () => {

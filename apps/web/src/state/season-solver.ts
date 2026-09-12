@@ -440,6 +440,8 @@ export interface SolveStart {
   /** Element ids currently held, and what they would sell for. */
   squad: { elementId: number; sellingPriceTenths: number }[];
   bankTenths: number;
+  /** FPL's published bank plus true selling value for the current squad. */
+  teamValueTenths?: number;
   availableFreeTransfers: number;
   /** First gameweek to plan. Everything from here to 38 is solved. */
   fromEvent: number;
@@ -861,12 +863,18 @@ export function* solveSeason(
       netExpectedPoints:
         Math.round((gameweekPoints - solved.transferCostPoints) * 100) / 100,
       bankAfterTenths: solved.bankAfterTenths,
-      budgetBeforeTenths:
-        bank +
-        input.currentSquad.reduce(
-          (total, player) => total + player.sellingPriceTenths,
-          0,
-        ),
+      budgetBeforeTenths: (() => {
+        const listedBudget =
+          bank +
+          input.currentSquad.reduce(
+            (total, player) => total + player.sellingPriceTenths,
+            0,
+          );
+        return start.assumed.includes("selling_prices") &&
+          start.teamValueTenths !== undefined
+          ? Math.min(listedBudget, start.teamValueTenths)
+          : listedBudget;
+      })(),
       freeTransfersBefore: freeBefore,
       ...(isFreeHit
         ? {
@@ -934,6 +942,7 @@ export function startFromCodes(
   codes: readonly number[],
   options: {
     bankTenths: number;
+    teamValueTenths?: number;
     availableFreeTransfers: number;
     fromEvent: number;
   },
@@ -975,6 +984,7 @@ export function startFromElementIds(
   elementIds: readonly number[],
   options: {
     bankTenths: number;
+    teamValueTenths?: number;
     availableFreeTransfers: number;
     fromEvent: number;
     sellingPrices?: ReadonlyMap<number, number>;

@@ -101,6 +101,8 @@ class PublicTeamPick(BaseModel):
     multiplier: Annotated[int, Field(ge=0, le=3)]
     is_captain: bool
     is_vice_captain: bool
+    purchase_price_tenths: NonNegativeInt | None = None
+    selling_price_tenths: NonNegativeInt | None = None
 
     @model_validator(mode="after")
     def validate_roles(self) -> PublicTeamPick:

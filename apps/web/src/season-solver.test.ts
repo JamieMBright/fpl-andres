@@ -178,6 +178,24 @@ describe("season inputs artifact", () => {
 });
 
 describe("solveSeason", () => {
+  it("caps assumed selling prices at the published squad value", () => {
+    const base = openingStart();
+    const start = {
+      ...base,
+      squad: base.squad.map((held) => ({
+        ...held,
+        sellingPriceTenths: held.sellingPriceTenths + 5,
+      })),
+      teamValueTenths: 1_000,
+      assumed: ["selling_prices" as const],
+    };
+
+    const first = solveSeason(start).next().value;
+
+    expect(first).toBeDefined();
+    expect(first?.budgetBeforeTenths).toBe(1_000);
+  });
+
   it(
     "uses the free transfer on a ruled-out incumbent",
     () => {

@@ -1135,11 +1135,15 @@ export default function SeasonPlanPage() {
   // other two have been re-solved, and the panel says so rather than implying
   // all eight half-season copies are his.
   const chipsAreYours = !awaitingTeam && (!solving || solve.status === "done");
-  const gameweeks = solving
-    ? solve.gameweeks.map(asPlanGameweek)
-    : awaitingTeam
-      ? []
-      : plan.gameweeks;
+  const gameweeks = useMemo(
+    () =>
+      solving
+        ? solve.gameweeks.map(asPlanGameweek)
+        : awaitingTeam
+          ? []
+          : plan.gameweeks,
+    [awaitingTeam, plan.gameweeks, solving, solve.gameweeks],
+  );
   const chips = useMemo(() => {
     return chipCallsByEvent(chipCalls, gameweeks, committedChip);
   }, [chipCalls, gameweeks, committedChip]);

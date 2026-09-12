@@ -13,7 +13,13 @@ import {
 import { TopPicks } from "./TopPicks";
 import { DEFAULT_HORIZON, horizonPointsByCode } from "../state/horizon-points";
 import { forgetLastGoodPool } from "../state/player-pool";
-import { SEASON_PLAYERS } from "../state/season-solver";
+import { planningEventAt } from "../state/season-deadlines";
+import {
+  EVENT_INDEX,
+  PLAYABLE_START_RATE,
+  SEASON_PLAYERS,
+  startRateAtEvent,
+} from "../state/season-solver";
 
 /**
  * The claim on the card is "best five-gameweek value at this position". These
@@ -28,8 +34,14 @@ function best(position: string): { name: string; points: number } {
 function topThree(
   position: string,
 ): { code: number; name: string; points: number; value: number }[] {
-  const totals = horizonPointsByCode(DEFAULT_HORIZON);
-  return SEASON_PLAYERS.filter((player) => player.position === position)
+  const currentEvent = planningEventAt();
+  const startIndex = EVENT_INDEX.get(currentEvent) ?? -1;
+  const totals = horizonPointsByCode(DEFAULT_HORIZON, currentEvent);
+  return SEASON_PLAYERS.filter(
+    (player) =>
+      player.position === position &&
+      startRateAtEvent(player, startIndex) >= PLAYABLE_START_RATE,
+  )
     .flatMap((player) => {
       const points = totals.get(player.code);
       return points === undefined

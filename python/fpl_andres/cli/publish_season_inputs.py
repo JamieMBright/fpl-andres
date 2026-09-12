@@ -1138,6 +1138,12 @@ def _apply_current_lineup(
         raise ValueError("current-lineup posterior has no evidence")
     draft.start_rate = (before * prior_strength + weight * starts) / denominator
     draft.lineup_adjustment = draft.start_rate - before
+    if before > 0.0:
+        participation_ratio = draft.start_rate / before
+        draft.expected_minutes *= participation_ratio
+        draft.routes = {
+            key: value * participation_ratio for key, value in draft.routes.items()
+        }
     draft.model_record = {
         **draft.model_record,
         "appearances": len(observations),
@@ -1207,6 +1213,8 @@ def _apply_attack_market(
     multipliers: Sequence[float],
     slots: Mapping[date, int],
     weight: float,
+    *,
+    participation_already_inferred: bool = False,
 ) -> tuple[bool, bool]:
     blend = _market_attack_blend(
         priced,
@@ -1221,12 +1229,16 @@ def _apply_attack_market(
     recorded_minutes = draft.expected_minutes
     recorded_goals = draft.expected_goals
     recorded_assists = draft.expected_assists
-    participation = infer_participation(
-        recorded_minutes=recorded_minutes,
-        recorded_start_probability=draft.start_rate,
-        recorded_events=blend.recorded_events,
-        market_events=blend.market_events,
-        weight=weight,
+    participation = (
+        None
+        if participation_already_inferred
+        else infer_participation(
+            recorded_minutes=recorded_minutes,
+            recorded_start_probability=draft.start_rate,
+            recorded_events=blend.recorded_events,
+            market_events=blend.market_events,
+            weight=weight,
+        )
     )
     ratio = 1.0
     inferred = participation is not None and recorded_minutes > 0.0
@@ -1651,7 +1663,7 @@ def _build_player_rows(
         draft = _initial_player_draft(element, records.get(element.code), prior)
         if draft is None:
             continue
-        _apply_current_lineup(
+        lineup_applied = _apply_current_lineup(
             draft,
             current_lineups.get(element.id, ()),
             weight=current_lineup_weight,
@@ -1672,6 +1684,7 @@ def _build_player_rows(
             attack_multipliers,
             slots,
             weight,
+            participation_already_inferred=lineup_applied,
         )
         shot, shot_participation = _apply_shot_market(
             draft,
@@ -1679,7 +1692,7 @@ def _build_player_rows(
             attack_multipliers,
             slots,
             weight,
-            participation_already_inferred=attack_participation,
+            participation_already_inferred=lineup_applied or attack_participation,
         )
         reach.attacking += int(attacked)
         reach.shots += int(shot)

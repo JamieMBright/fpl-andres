@@ -1,8 +1,10 @@
 import {
   EVENT_INDEX,
+  PLAYABLE_START_RATE,
   SEASON_EVENTS,
   SEASON_PLAYERS,
   pointsAtEvent,
+  startRateAtEvent,
 } from "./season-solver";
 
 /**
@@ -56,6 +58,7 @@ export function horizonPoints(
 
   const player = SEASON_PLAYERS.find((entry) => entry.code === code);
   if (!player) return null;
+  if (startRateAtEvent(player, index) < PLAYABLE_START_RATE) return null;
 
   let total = 0;
   for (let ahead = 0; ahead < weeks; ahead += 1) {
@@ -76,6 +79,7 @@ export function horizonPointsByCode(
     return totals;
 
   for (const player of SEASON_PLAYERS) {
+    if (startRateAtEvent(player, index) < PLAYABLE_START_RATE) continue;
     let total = 0;
     for (let ahead = 0; ahead < weeks; ahead += 1) {
       total += pointsAtEvent(player, index + ahead);

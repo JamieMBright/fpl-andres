@@ -24,6 +24,8 @@ function pick(squadPosition: number, over: Partial<PublicTeamPick> = {}) {
     multiplier: squadPosition <= 11 ? 1 : 0,
     isCaptain: false,
     isViceCaptain: false,
+    purchasePriceTenths: null,
+    sellingPriceTenths: null,
     identity: {
       webName: `Player ${String(squadPosition)}`,
       positionCode: squadPosition === 1 ? "GKP" : "MID",

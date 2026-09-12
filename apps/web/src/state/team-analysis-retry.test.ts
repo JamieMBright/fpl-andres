@@ -37,6 +37,32 @@ describe("a flaky connection costs a retry, not the answer", () => {
     expect(result.status).toBe("unavailable");
   });
 
+  it("retries a transient degraded response and then succeeds", async () => {
+    const fetchApi = vi
+      .fn<typeof fetch>()
+      .mockResolvedValueOnce(
+        Response.json(
+          { status: "degraded", reason: "fpl_unreachable" },
+          { status: 503 },
+        ),
+      )
+      .mockResolvedValueOnce(
+        Response.json({ status: "unavailable", reason: "no_processed_event" }),
+      );
+
+    const result = await refreshTeamAnalysis(ENTRY, null, {
+      fetchApi,
+      storage: storage(),
+      wait: noWait,
+    });
+
+    expect(fetchApi).toHaveBeenCalledTimes(2);
+    expect(result).toEqual({
+      status: "unavailable",
+      reason: "no_processed_event",
+    });
+  });
+
   it("gives up after a bounded number of attempts", async () => {
     const fetchApi = vi
       .fn<typeof fetch>()
