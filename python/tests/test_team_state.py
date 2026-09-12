@@ -82,8 +82,8 @@ def test_public_state_preserves_deadline_evidence_without_private_guesses() -> N
 
     public_fields = state.model_dump()
     assert "available_free_transfers" not in public_fields
-    assert "purchase_price_tenths" not in public_fields["picks"][0]
-    assert "selling_price_tenths" not in public_fields["picks"][0]
+    assert public_fields["picks"][0]["purchase_price_tenths"] is None
+    assert public_fields["picks"][0]["selling_price_tenths"] is None
 
 
 def test_public_state_rejects_entry_and_picks_disagreement() -> None:
