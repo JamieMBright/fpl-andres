@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "season": "2026-27",
-  "fetchedAt": "2026-09-13T16:46:15.671671+00:00",
+  "fetchedAt": "2026-09-13T17:40:40.587751+00:00",
   "source": "the-odds-api",
   "markets": [
     "player_goal_scorer_anytime",
@@ -28,18 +28,18 @@
     "spentThisRun": 0
   },
   "coverage": {
-    "fixturesListed": 22,
+    "fixturesListed": 21,
     "fixturesVisitedThisRun": 1,
     "fixturesWithQuotes": 0
   },
   "nameMappingGaps": [],
   "fixtures": [
     {
-      "event_id": "e40d0fb44319f7bd0ebe1ffbc61fa661",
-      "home_team": "Manchester United",
-      "away_team": "Manchester City",
-      "home_short": "MUN",
-      "away_short": "MCI",
+      "event_id": "b7a2cad26d908a943a27340b4b607068",
+      "home_team": "Leeds United",
+      "away_team": "Newcastle United",
+      "home_short": "LEE",
+      "away_short": "NEW",
       "status": "parse-error",
       "books": 0,
       "outcomes": null,
@@ -58,35 +58,8 @@
       "player_rows_matched": 0,
       "unmatched_names": [],
       "error": "HTTPStatusError",
-      "kickoff": "2026-09-13T15:30:00+00:00",
-      "visited_at": "2026-09-13T16:46:15.671671+00:00"
-    },
-    {
-      "event_id": "b7a2cad26d908a943a27340b4b607068",
-      "home_team": "Leeds United",
-      "away_team": "Newcastle United",
-      "home_short": "LEE",
-      "away_short": "NEW",
-      "status": "no-bookmaker",
-      "books": 0,
-      "outcomes": 0,
-      "offered_markets": [],
-      "missing_markets": [
-        "player_assists",
-        "player_first_goal_scorer",
-        "player_goal_scorer_anytime",
-        "player_last_goal_scorer",
-        "player_shots",
-        "player_shots_on_target",
-        "player_to_receive_card",
-        "player_to_receive_red_card"
-      ],
-      "player_rows_parsed": 0,
-      "player_rows_matched": 0,
-      "unmatched_names": [],
-      "error": null,
       "kickoff": "2026-09-14T19:00:00+00:00",
-      "visited_at": "2026-09-08T13:28:43.294710+00:00"
+      "visited_at": "2026-09-13T17:40:40.587751+00:00"
     },
     {
       "event_id": "82d8b6a005d78bac0b1508abc17a7d39",
