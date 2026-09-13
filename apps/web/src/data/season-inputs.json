@@ -1,6 +1,6 @@
 {
   "schemaVersion": 6,
-  "generatedAt": "2026-09-13T14:25:12.111465Z",
+  "generatedAt": "2026-09-13T15:03:05.485588Z",
   "recordSeason": "2026-27",
   "events": [
     5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24,
@@ -60,8 +60,8 @@
     "fixtureMarkets": {
       "source": "football-data.co.uk",
       "level": "observed",
-      "updatedAt": "2026-09-13T12:20:37.538018+00:00",
-      "contentHash": "sha256:9f075a7fbfeb6e0601e84a0f48f699df07bf41fdb64935b23fb5782718c961bb"
+      "updatedAt": "2026-09-13T14:25:05.306615+00:00",
+      "contentHash": "sha256:e1785dc6d3987d10ebc78dcca097b9f81b81572e4deb3b6287dc7aed3d0a9819"
     },
     "understat": {
       "source": "understat",
@@ -187,7 +187,7 @@
       }
     ],
     "sourceReference": "FPL rules page, Transfers section",
-    "dataAvailableAt": "2026-09-13T14:25:12.111465Z",
+    "dataAvailableAt": "2026-09-13T15:03:05.485588Z",
     "playableStartRate": 0.35,
     "transferMarginPoints": 0.5
   },
@@ -934,7 +934,7 @@
   },
   "fixtureEvidence": {
     "source": "football-data.co.uk",
-    "updatedAt": "2026-09-13T12:20:37.538018+00:00",
+    "updatedAt": "2026-09-13T14:25:05.306615+00:00",
     "level": "observed",
     "byClub": {}
   },
@@ -21740,44 +21740,6 @@
       "evidence": { "appearance": "currentSeasonLineup" }
     },
     {
-      "id": 492,
-      "code": 210156,
-      "name": "Awoniyi",
-      "position": "FWD",
-      "positionId": 4,
-      "club": "COV",
-      "teamId": 7,
-      "priceTenths": 55,
-      "availabilityStatus": "a",
-      "chanceOfPlaying": null,
-      "basePoints": 3.307,
-      "routes": {
-        "appearance": 1.622,
-        "attacking": 1.546,
-        "bonus": 0.25,
-        "yellowCards": -0.061,
-        "ownGoals": -0.025,
-        "penaltiesMissed": -0.025
-      },
-      "startRate": 0.496,
-      "startEvidence": {
-        "sourceStartRate": 0.432,
-        "finalStartRate": 0.496,
-        "observedAppearances": 4,
-        "recentStarts": 2,
-        "recentMatches": 4,
-        "recentMinutes": 180,
-        "appearanceSource": "currentSeasonLineup",
-        "lineupAdjustment": 0.064,
-        "marketAdjustment": 0.0,
-        "availabilityAdjustment": 0.0
-      },
-      "squadNumber": null,
-      "rated": true,
-      "depthRank": 1,
-      "evidence": { "appearance": "currentSeasonLineup" }
-    },
-    {
       "id": 79,
       "code": 444102,
       "name": "Evanilson",
@@ -23653,6 +23615,37 @@
       "rated": false,
       "depthRank": 7,
       "evidence": { "all": "rolePrior", "appearance": "fplAvailability" }
+    },
+    {
+      "id": 492,
+      "code": 210156,
+      "name": "Awoniyi",
+      "position": "FWD",
+      "positionId": 4,
+      "club": "COV",
+      "teamId": 7,
+      "priceTenths": 55,
+      "availabilityStatus": "s",
+      "chanceOfPlaying": 0,
+      "basePoints": 0,
+      "routes": {},
+      "startRate": 0.0,
+      "startEvidence": {
+        "sourceStartRate": 0.432,
+        "finalStartRate": 0.0,
+        "observedAppearances": 4,
+        "recentStarts": 2,
+        "recentMatches": 4,
+        "recentMinutes": 180,
+        "appearanceSource": "fplAvailability",
+        "lineupAdjustment": 0.064,
+        "marketAdjustment": 0.0,
+        "availabilityAdjustment": -0.496
+      },
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1,
+      "evidence": { "appearance": "fplAvailability" }
     },
     {
       "id": 223,
