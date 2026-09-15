@@ -133,4 +133,101 @@ describe("PlayerDetail season split", () => {
       await screen.findByText(/FPL did not supply live stats for this player/),
     ).toBeInTheDocument();
   });
+
+  it("shows the full latest per-gameweek row from FPL", async () => {
+    showModalPolyfill();
+    vi.stubGlobal(
+      "fetch",
+      vi.fn<typeof fetch>().mockImplementation((input) => {
+        const url = String(input);
+        if (url.includes("fixtures")) return Promise.resolve(Response.json([]));
+        if (url.includes("element-summary")) {
+          return Promise.resolve(
+            Response.json({
+              history: [
+                {
+                  event: null,
+                  round: 3,
+                  fixture: 25,
+                  kickoff_time: "2026-09-05T14:00:00Z",
+                  minutes: 84,
+                  total_points: 2,
+                  goals_scored: 0,
+                  assists: 0,
+                  clean_sheets: 1,
+                  goals_conceded: 0,
+                  own_goals: 0,
+                  penalties_saved: 0,
+                  penalties_missed: 0,
+                  yellow_cards: 0,
+                  red_cards: 0,
+                  saves: 0,
+                  bonus: 0,
+                  bps: 10,
+                  influence: "1.2",
+                  creativity: "17.5",
+                  threat: "20.0",
+                  ict_index: "3.9",
+                  starts: 1,
+                  expected_goals: "0.24",
+                  expected_assists: "0.44",
+                  expected_goal_involvements: "0.68",
+                  expected_goals_conceded: "0.22",
+                  defensive_contribution: 2,
+                },
+              ],
+            }),
+          );
+        }
+        return Promise.resolve(
+          Response.json({
+            events: [{ id: 4, deadline_time: "2026-09-12T12:30:00Z" }],
+            element_types: [{ id: 4, singular_name_short: "FWD" }],
+            teams: [
+              { id: 2, code: 14, short_name: "AVL", name: "Aston Villa" },
+            ],
+            elements: [
+              {
+                id: 166,
+                code: 999_997,
+                web_name: "N.Jackson",
+                element_type: 4,
+                team: 2,
+                now_cost: 65,
+                status: "a",
+                total_points: 10,
+                event_points: 2,
+              },
+            ],
+          }),
+        );
+      }),
+    );
+
+    render(
+      <PlayerDetail
+        onClose={() => undefined}
+        player={{
+          code: 999_997,
+          name: "N.Jackson",
+          position: "FWD",
+          club: "AVL",
+          priceTenths: 65,
+        }}
+      />,
+    );
+
+    const dialog = screen.getByRole("dialog");
+    expect(
+      await within(dialog).findByRole("heading", { name: "Recent gameweeks" }),
+    ).toBeInTheDocument();
+    expect(within(dialog).getByText("GW3")).toBeInTheDocument();
+    expect(within(dialog).getByText("84")).toBeInTheDocument();
+    expect(within(dialog).getByText("0.24")).toBeInTheDocument();
+    expect(
+      within(within(dialog).getByRole("row", { name: /GW3/ })).getAllByText(
+        "2",
+      ),
+    ).toHaveLength(2);
+  });
 });

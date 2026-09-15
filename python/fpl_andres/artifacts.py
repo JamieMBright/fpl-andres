@@ -23,10 +23,13 @@ from typing import Final
 #: with the four events it bundled, so a card price has something to price.
 PROJECTIONS_SCHEMA_VERSION: Final = 2
 
-#: Browser season-solver inputs. Version 6 removes copied per-player quote
+#: Browser season-solver inputs. Version 7 adds settled current-season scoring
+#: routes to the lineup evidence.
+#:
+#: Version 6 removes copied per-player quote
 #: disclosure; the authoritative player-odds artifact owns it, while this
 #: artifact retains only fields the solver consumes and aggregate reach counts.
-SEASON_INPUTS_SCHEMA_VERSION: Final = 6
+SEASON_INPUTS_SCHEMA_VERSION: Final = 7
 
 #: The header of the projections artifact, published separately so a component
 #: needing only the season label does not pull the whole player list.

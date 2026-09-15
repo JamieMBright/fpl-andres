@@ -40,8 +40,18 @@ from fpl_andres.backtesting.fixtures import (
 )
 from fpl_andres.backtesting.scoring import (
     ASSIST_POINTS,
+    CLEAN_SHEET_POINTS,
+    CONCEDED_PER_POINT,
+    CONCEDED_POINTS,
+    DEFCON_POINTS,
+    DEFCON_THRESHOLD,
     GOAL_POINTS,
+    LONG_PLAY_POINTS,
+    OWN_GOAL_POINTS,
+    PENALTY_MISS_POINTS,
     RED_CARD_POINTS,
+    SAVES_PER_POINT,
+    SHORT_PLAY_POINTS,
     YELLOW_CARD_POINTS,
 )
 from fpl_andres.bootstrap import BootstrapElement, parse_elements
@@ -55,7 +65,9 @@ from fpl_andres.models.fixture_odds import (
 from fpl_andres.models.market_evidence import (
     BonusCandidate,
     bonus_expectations,
-    infer_participation,
+)
+from fpl_andres.models.market_evidence import (
+    infer_participation as infer_market_participation,
 )
 from fpl_andres.models.market_routes import (
     MarketAttack,
@@ -230,7 +242,56 @@ def _understat_shots(path: Path) -> dict[int, float]:
     return shots
 
 
-def _current_lineups(path: Path) -> dict[int, list[CurrentLineupObservation]]:
+def _live_route_points(
+    stats: Mapping[str, object], position: int, source: Path
+) -> dict[str, float]:
+    def integer(name: str) -> int:
+        value = stats.get(name)
+        if not isinstance(value, int) or isinstance(value, bool) or value < 0:
+            raise ValueError(f"live route stat {name} is not a non-negative integer: {source}")
+        return value
+
+    minutes = integer("minutes")
+    goals = integer("goals_scored")
+    assists = integer("assists")
+    clean_sheets = integer("clean_sheets")
+    goals_conceded = integer("goals_conceded")
+    own_goals = integer("own_goals")
+    penalties_missed = integer("penalties_missed")
+    yellow_cards = integer("yellow_cards")
+    red_cards = integer("red_cards")
+    saves = integer("saves")
+    bonus = integer("bonus")
+    defensive_actions = integer("defensive_contribution")
+    played = minutes > 0
+    sixty = minutes >= 60
+    threshold = DEFCON_THRESHOLD.get(position)
+
+    return {
+        "appearance": float(LONG_PLAY_POINTS if sixty else SHORT_PLAY_POINTS if played else 0),
+        "attacking": float(goals * GOAL_POINTS.get(position, 0) + assists * ASSIST_POINTS),
+        "cleanSheet": float(clean_sheets * CLEAN_SHEET_POINTS.get(position, 0) if sixty else 0),
+        "bonus": float(bonus),
+        "saves": float(saves // SAVES_PER_POINT),
+        "conceding": float(
+            (goals_conceded // CONCEDED_PER_POINT) * CONCEDED_POINTS.get(position, 0)
+        ),
+        "yellowCards": float(yellow_cards * YELLOW_CARD_POINTS),
+        "redCards": float(red_cards * RED_CARD_POINTS),
+        "ownGoals": float(own_goals * OWN_GOAL_POINTS),
+        "penaltiesMissed": float(penalties_missed * PENALTY_MISS_POINTS),
+        "defensiveContribution": float(
+            DEFCON_POINTS.get(position, 0)
+            if threshold is not None and defensive_actions >= threshold
+            else 0
+        ),
+    }
+
+
+def _current_lineups(
+    path: Path,
+    position_by_id: Mapping[int, int] | None = None,
+) -> dict[int, list[CurrentLineupObservation]]:
     observations: dict[int, list[CurrentLineupObservation]] = {}
     paths = sorted(path.glob("gw*.json")) if path.is_dir() else [path]
     for snapshot_path in paths:
@@ -251,8 +312,17 @@ def _current_lineups(path: Path) -> dict[int, list[CurrentLineupObservation]]:
                 raise ValueError(f"live lineup stats are not integers: {snapshot_path}")
             if minutes > 0 or starts > 0:
                 has_data = True
+            position = position_by_id.get(int(row["id"])) if position_by_id else None
             observations.setdefault(int(row["id"]), []).append(
-                CurrentLineupObservation(started=starts > 0, minutes=minutes)
+                CurrentLineupObservation(
+                    started=starts > 0,
+                    minutes=minutes,
+                    routes=(
+                        _live_route_points(stats, position, snapshot_path)
+                        if position is not None
+                        else None
+                    ),
+                )
             )
         if not has_data and not snapshot.get("roundComplete", False):
             observations.clear()
@@ -1112,6 +1182,7 @@ class PlayerDraft:
 class CurrentLineupObservation:
     started: bool
     minutes: int
+    routes: Mapping[str, float] | None = None
 
 
 def _apply_current_lineup(
@@ -1138,10 +1209,21 @@ def _apply_current_lineup(
         raise ValueError("current-lineup posterior has no evidence")
     draft.start_rate = (before * prior_strength + weight * starts) / denominator
     draft.lineup_adjustment = draft.start_rate - before
-    if before > 0.0:
-        participation_ratio = draft.start_rate / before
-        draft.expected_minutes *= participation_ratio
-        draft.routes = {key: value * participation_ratio for key, value in draft.routes.items()}
+    played = [observation for observation in observations if observation.minutes > 0]
+    route_observations = [observation for observation in played if observation.routes is not None]
+    if route_observations:
+        route_denominator = prior_strength + weight * len(route_observations)
+        if route_denominator <= 0:
+            raise ValueError("current-season route posterior has no evidence")
+        for route in ROUTE_KEYS:
+            current = sum(
+                observation.routes.get(route, 0.0)
+                for observation in route_observations
+                if observation.routes is not None
+            ) / len(route_observations)
+            prior = draft.routes.get(route, 0.0)
+            draft.routes[route] = (prior * prior_strength + weight * current) / route_denominator
+        draft.evidence["all"] = "currentSeasonRoutes"
     draft.model_record = {
         **draft.model_record,
         "appearances": len(observations),
@@ -1212,7 +1294,7 @@ def _apply_attack_market(
     slots: Mapping[date, int],
     weight: float,
     *,
-    participation_already_inferred: bool = False,
+    infer_participation: bool = True,
 ) -> tuple[bool, bool]:
     blend = _market_attack_blend(
         priced,
@@ -1228,15 +1310,15 @@ def _apply_attack_market(
     recorded_goals = draft.expected_goals
     recorded_assists = draft.expected_assists
     participation = (
-        None
-        if participation_already_inferred
-        else infer_participation(
+        infer_market_participation(
             recorded_minutes=recorded_minutes,
             recorded_start_probability=draft.start_rate,
             recorded_events=blend.recorded_events,
             market_events=blend.market_events,
             weight=weight,
         )
+        if infer_participation
+        else None
     )
     ratio = 1.0
     inferred = participation is not None and recorded_minutes > 0.0
@@ -1285,7 +1367,7 @@ def _apply_shot_market(
         and draft.expected_minutes > 0.0
     ):
         recorded_minutes = draft.expected_minutes
-        participation = infer_participation(
+        participation = infer_market_participation(
             recorded_minutes=recorded_minutes,
             recorded_start_probability=draft.start_rate,
             recorded_events=draft.expected_shots,
@@ -1682,7 +1764,7 @@ def _build_player_rows(
             attack_multipliers,
             slots,
             weight,
-            participation_already_inferred=lineup_applied,
+            infer_participation=not lineup_applied,
         )
         shot, shot_participation = _apply_shot_market(
             draft,
@@ -1804,7 +1886,10 @@ def main(argv: Sequence[str] | None = None) -> int:
     quoted_cards = _quoted_cards(player_odds_path)
     quoted_shots = _quoted_shots(player_odds_path)
     squads = _quoted_squads(player_odds_path)
-    current_lineups = _current_lineups(args.live)
+    current_lineups = _current_lineups(
+        args.live,
+        {element.id: element.element_type for element in elements},
+    )
     players, player_reach, market_carry = _build_player_rows(
         elements,
         depth=depth,
@@ -1950,6 +2035,11 @@ def main(argv: Sequence[str] | None = None) -> int:
                 "level": "observed",
                 "sources": ["immutable-live-gameweek"],
                 "reasons": ["settled-starting-lineup"],
+            },
+            "currentSeasonRoutes": {
+                "level": "observed",
+                "sources": ["immutable-live-gameweek", "fpl-scoring-rules"],
+                "reasons": ["settled-match-performance"],
             },
         },
         # How much of the market actually reached this run. Printed to stderr

@@ -93,6 +93,44 @@ const bootstrapSchema = z.object({
   ),
 });
 
+const historyRowSchema = z
+  .object({
+    event: z.number().int().min(1).max(38).nullable().optional(),
+    round: z.number().int().min(1).max(38).optional(),
+    fixture: z.number().int().positive(),
+    kickoff_time: z.string().nullable().optional(),
+    minutes: z.number().int().min(0),
+    total_points: z.number().int(),
+    goals_scored: z.number().int().min(0),
+    assists: z.number().int().min(0),
+    clean_sheets: z.number().int().min(0),
+    goals_conceded: z.number().int().min(0),
+    own_goals: z.number().int().min(0),
+    penalties_saved: z.number().int().min(0),
+    penalties_missed: z.number().int().min(0),
+    yellow_cards: z.number().int().min(0),
+    red_cards: z.number().int().min(0),
+    saves: z.number().int().min(0),
+    bonus: z.number().int().min(0),
+    bps: z.number().int(),
+    influence: z.coerce.number().min(0).optional(),
+    creativity: z.coerce.number().min(0).optional(),
+    threat: z.coerce.number().min(0).optional(),
+    ict_index: z.coerce.number().min(0).optional(),
+    starts: z.number().int().min(0).optional(),
+    expected_goals: z.coerce.number().min(0).optional(),
+    expected_assists: z.coerce.number().min(0).optional(),
+    expected_goal_involvements: z.coerce.number().min(0).optional(),
+    expected_goals_conceded: z.coerce.number().min(0).optional(),
+    defensive_contribution: z.number().int().min(0).optional(),
+  })
+  .loose()
+  .refine((row) => row.event !== undefined || row.round !== undefined, {
+    message: "history row publishes neither event nor round",
+  });
+
+const elementSummarySchema = z.object({ history: z.array(historyRowSchema) });
+
 const fixtureSchema = z.array(
   z
     .object({
@@ -273,6 +311,37 @@ export interface LivePlayerDetail {
   minutesPlayed: number | null;
   ownedPercent: number | null;
   run: FixtureRun | undefined;
+  history: LivePlayerHistory[] | null;
+}
+
+export interface LivePlayerHistory {
+  event: number;
+  fixture: number;
+  kickoffTime: string | null;
+  minutes: number;
+  totalPoints: number;
+  goals: number;
+  assists: number;
+  cleanSheets: number;
+  goalsConceded: number;
+  ownGoals: number;
+  penaltiesSaved: number;
+  penaltiesMissed: number;
+  yellowCards: number;
+  redCards: number;
+  saves: number;
+  bonus: number;
+  bps: number;
+  influence: number | null;
+  creativity: number | null;
+  threat: number | null;
+  ictIndex: number | null;
+  starts: number | null;
+  expectedGoals: number | null;
+  expectedAssists: number | null;
+  expectedGoalInvolvements: number | null;
+  expectedGoalsConceded: number | null;
+  defensiveContribution: number | null;
 }
 
 function liveDetailIn(pool: PlayerPool, code: number): LivePlayerDetail | null {
@@ -299,8 +368,60 @@ function liveDetailIn(pool: PlayerPool, code: number): LivePlayerDetail | null {
           player.position,
           5,
         ),
+        history: null,
       }
     : null;
+}
+
+function historyFrom(payload: unknown): LivePlayerHistory[] {
+  return elementSummarySchema.parse(payload).history.map((row) => {
+    const event = row.event ?? row.round;
+    if (event === undefined) {
+      throw new TypeError("history row publishes no gameweek");
+    }
+    return {
+      event,
+      fixture: row.fixture,
+      kickoffTime: row.kickoff_time ?? null,
+      minutes: row.minutes,
+      totalPoints: row.total_points,
+      goals: row.goals_scored,
+      assists: row.assists,
+      cleanSheets: row.clean_sheets,
+      goalsConceded: row.goals_conceded,
+      ownGoals: row.own_goals,
+      penaltiesSaved: row.penalties_saved,
+      penaltiesMissed: row.penalties_missed,
+      yellowCards: row.yellow_cards,
+      redCards: row.red_cards,
+      saves: row.saves,
+      bonus: row.bonus,
+      bps: row.bps,
+      influence: row.influence ?? null,
+      creativity: row.creativity ?? null,
+      threat: row.threat ?? null,
+      ictIndex: row.ict_index ?? null,
+      starts: row.starts ?? null,
+      expectedGoals: row.expected_goals ?? null,
+      expectedAssists: row.expected_assists ?? null,
+      expectedGoalInvolvements: row.expected_goal_involvements ?? null,
+      expectedGoalsConceded: row.expected_goals_conceded ?? null,
+      defensiveContribution: row.defensive_contribution ?? null,
+    };
+  });
+}
+
+async function fetchPlayerHistory(
+  elementId: number,
+  fetchApi: typeof fetch,
+): Promise<LivePlayerHistory[] | null> {
+  const response = await dedupedFetch(
+    `/api/fpl/element-summary/${String(elementId)}`,
+    { headers: { Accept: "application/json" } },
+    fetchApi,
+  );
+  if (!response.ok) return null;
+  return historyFrom(await response.json());
 }
 
 /** Current FPL evidence for a projection-only card such as Top Picks. */
@@ -309,8 +430,19 @@ export async function fetchLivePlayerDetail(
   fetchApi: typeof fetch = retryingFetch(),
 ): Promise<LivePlayerDetail | null> {
   const held = lastGood.recall();
-  if (held) return liveDetailIn(held.value, code);
-  return liveDetailIn(await fetchPlayerPool(fetchApi), code);
+  const pool = held?.value ?? (await fetchPlayerPool(fetchApi));
+  const detail = liveDetailIn(pool, code);
+  if (detail === null) return null;
+  const player = pool.players.find((candidate) => candidate.code === code);
+  if (!player) return detail;
+  try {
+    return {
+      ...detail,
+      history: await fetchPlayerHistory(player.elementId, fetchApi),
+    };
+  } catch {
+    return detail;
+  }
 }
 
 export async function fetchPlayerPool(

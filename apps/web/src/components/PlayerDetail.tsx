@@ -53,6 +53,14 @@ function percent(value: number | null | undefined): string {
     : `${Math.round(value * 100)}%`;
 }
 
+function historyInteger(value: number | null): string {
+  return value === null ? "—" : String(value);
+}
+
+function historyDecimal(value: number | null): string {
+  return value === null ? "—" : value.toFixed(2);
+}
+
 interface Row {
   term: string;
   value: string;
@@ -235,7 +243,6 @@ export function PlayerDetail({
   }, []);
 
   useEffect(() => {
-    if (player.seasonPoints !== undefined && run !== null) return;
     let active = true;
     fetchLivePlayerDetail(player.code).then(
       (detail) => {
@@ -281,6 +288,7 @@ export function PlayerDetail({
             player.minutesPlayed ?? hydrated?.minutesPlayed ?? null,
           ownedPercent: player.ownedPercent ?? hydrated?.ownedPercent ?? null,
           run: run ?? hydrated?.run,
+          history: hydrated?.history ?? null,
         }
       : hydrated;
   const fixtureRun = run ?? liveDetail?.run ?? null;
@@ -490,6 +498,92 @@ export function PlayerDetail({
             })}
           </dl>
         )}
+
+        {tab === "thisSeason" && liveDetail?.history?.length ? (
+          <section className="player-detail-history">
+            <h3>Recent gameweeks</h3>
+            <p>
+              FPL&rsquo;s per-gameweek record, newest first. DefCon is the raw
+              defensive-action count; FPL awards its points only when the
+              player&rsquo;s positional threshold is reached.
+            </p>
+            <div
+              aria-label="Scrollable recent gameweek stats"
+              className="player-detail-history-wrap squad-table-wrap"
+              role="region"
+              // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- Keyboard users need to scroll the complete history table.
+              tabIndex={0}
+            >
+              <table>
+                <thead>
+                  <tr>
+                    <th scope="col">GW</th>
+                    <th scope="col">Min</th>
+                    <th scope="col">Starts</th>
+                    <th scope="col">Pts</th>
+                    <th scope="col">G</th>
+                    <th scope="col">A</th>
+                    <th scope="col">CS</th>
+                    <th scope="col">GC</th>
+                    <th scope="col">Saves</th>
+                    <th scope="col">PS</th>
+                    <th scope="col">Bonus</th>
+                    <th scope="col">Y</th>
+                    <th scope="col">R</th>
+                    <th scope="col">OG</th>
+                    <th scope="col">PM</th>
+                    <th scope="col">xG</th>
+                    <th scope="col">xA</th>
+                    <th scope="col">xGI</th>
+                    <th scope="col">xGC</th>
+                    <th scope="col">DefCon</th>
+                    <th scope="col">BPS</th>
+                    <th scope="col">Influence</th>
+                    <th scope="col">Creativity</th>
+                    <th scope="col">Threat</th>
+                    <th scope="col">ICT</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {[...liveDetail.history]
+                    .sort((left, right) => right.event - left.event)
+                    .slice(0, 4)
+                    .map((history) => (
+                      <tr key={history.event}>
+                        <th scope="row">GW{history.event}</th>
+                        <td>{historyInteger(history.minutes)}</td>
+                        <td>{historyInteger(history.starts)}</td>
+                        <td>{historyInteger(history.totalPoints)}</td>
+                        <td>{historyInteger(history.goals)}</td>
+                        <td>{historyInteger(history.assists)}</td>
+                        <td>{historyInteger(history.cleanSheets)}</td>
+                        <td>{historyInteger(history.goalsConceded)}</td>
+                        <td>{historyInteger(history.saves)}</td>
+                        <td>{historyInteger(history.penaltiesSaved)}</td>
+                        <td>{historyInteger(history.bonus)}</td>
+                        <td>{historyInteger(history.yellowCards)}</td>
+                        <td>{historyInteger(history.redCards)}</td>
+                        <td>{historyInteger(history.ownGoals)}</td>
+                        <td>{historyInteger(history.penaltiesMissed)}</td>
+                        <td>{historyDecimal(history.expectedGoals)}</td>
+                        <td>{historyDecimal(history.expectedAssists)}</td>
+                        <td>
+                          {historyDecimal(history.expectedGoalInvolvements)}
+                        </td>
+                        <td>{historyDecimal(history.expectedGoalsConceded)}</td>
+                        <td>{historyInteger(history.defensiveContribution)}</td>
+                        <td>{historyInteger(history.bps)}</td>
+                        <td>{historyDecimal(history.influence)}</td>
+                        <td>{historyDecimal(history.creativity)}</td>
+                        <td>{historyDecimal(history.threat)}</td>
+                        <td>{historyDecimal(history.ictIndex)}</td>
+                      </tr>
+                    ))}
+                </tbody>
+              </table>
+            </div>
+          </section>
+        ) : null}
 
         {tab === "lastSeason" && rows.length > 0 ? (
           <p className="player-detail-key">

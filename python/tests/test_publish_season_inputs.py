@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import json
 import math
-from datetime import UTC, date, datetime
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 from unittest.mock import patch
@@ -21,6 +21,7 @@ from fpl_andres.cli import publish_season_inputs
 from fpl_andres.cli.publish_season_inputs import (
     CurrentLineupObservation,
     DepthRolePrior,
+    _apply_attack_market,
     _apply_current_lineup,
     _initial_player_draft,
 )
@@ -417,15 +418,124 @@ def test_current_lineup_updates_a_cold_start_role_prior_separately() -> None:
 
     assert starter.start_rate > prior.start_rate
     assert benched.start_rate < prior.start_rate
-    assert starter.expected_minutes > prior.expected_minutes
-    assert benched.expected_minutes < prior.expected_minutes
-    assert starter.routes["appearance"] > prior.routes["appearance"]
-    assert benched.routes["appearance"] < prior.routes["appearance"]
     assert starter.lineup_adjustment == pytest.approx(starter.start_rate - prior.start_rate)
     assert starter.evidence["appearance"] == "currentSeasonLineup"
 
 
-def test_current_lineup_remains_authoritative_over_attack_market_participation() -> None:
+def test_current_lineup_blends_played_routes_for_a_cold_start() -> None:
+    prior = DepthRolePrior(
+        base_points=1.5,
+        start_rate=0.3,
+        expected_minutes=30.0,
+        expected_goals=0.1,
+        expected_assists=0.1,
+        expected_shots=None,
+        expected_bps=None,
+        bps_deviation=None,
+        routes={"appearance": 1.0, "attacking": 0.5},
+    )
+    draft = _initial_player_draft(_element(element_type=4), None, prior)
+    assert draft is not None
+
+    _apply_current_lineup(
+        draft,
+        [
+            CurrentLineupObservation(
+                started=True,
+                minutes=90,
+                routes={"appearance": 2.0, "attacking": 4.0},
+            ),
+            CurrentLineupObservation(
+                started=True,
+                minutes=70,
+                routes={"appearance": 2.0, "attacking": 0.0},
+            ),
+        ],
+        weight=4.0,
+        prior_strength=1.0,
+    )
+
+    # Two played matches carry eight units against one prior unit.
+    assert draft.routes["attacking"] == pytest.approx((0.5 + 4.0 * 2.0) / 9.0)
+    assert draft.routes["appearance"] == pytest.approx(1.0)
+    assert draft.evidence["all"] == "currentSeasonRoutes"
+
+
+def test_current_lineup_route_blend_ignores_zero_minute_rows() -> None:
+    prior = DepthRolePrior(
+        base_points=1.5,
+        start_rate=0.3,
+        expected_minutes=30.0,
+        expected_goals=0.1,
+        expected_assists=0.1,
+        expected_shots=None,
+        expected_bps=None,
+        bps_deviation=None,
+        routes={"appearance": 1.0, "attacking": 0.5},
+    )
+    draft = _initial_player_draft(_element(element_type=4), None, prior)
+    assert draft is not None
+
+    _apply_current_lineup(
+        draft,
+        [
+            CurrentLineupObservation(
+                started=False,
+                minutes=0,
+                routes={"appearance": 0.0, "attacking": 9.0},
+            )
+        ],
+        weight=4.0,
+        prior_strength=1.0,
+    )
+
+    assert draft.routes == {"appearance": 1.0, "attacking": 0.5}
+    assert draft.evidence["all"] == "rolePrior"
+
+
+def test_current_lineup_reads_scoring_routes_from_live_snapshot(tmp_path: Path) -> None:
+    snapshot = tmp_path / "gw01.json"
+    snapshot.write_text(
+        json.dumps(
+            {
+                "roundComplete": True,
+                "elements": [
+                    {
+                        "id": 11,
+                        "stats": {
+                            "starts": 1,
+                            "minutes": 90,
+                            "goals_scored": 1,
+                            "assists": 1,
+                            "clean_sheets": 0,
+                            "goals_conceded": 0,
+                            "own_goals": 0,
+                            "penalties_saved": 0,
+                            "penalties_missed": 0,
+                            "yellow_cards": 1,
+                            "red_cards": 0,
+                            "saves": 0,
+                            "bonus": 2,
+                            "defensive_contribution": 12,
+                        },
+                    }
+                ],
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    observations = publish_season_inputs._current_lineups(snapshot, {11: 4})
+    routes = observations[11][0].routes
+    assert routes is not None
+    assert routes["appearance"] == 2.0
+    assert routes["attacking"] == 7.0
+    assert routes["bonus"] == 2.0
+    assert routes["yellowCards"] == -1.0
+    assert routes["defensiveContribution"] == 2.0
+
+
+def test_market_attack_does_not_override_direct_current_lineup_evidence() -> None:
     draft = _initial_player_draft(
         BootstrapElement.model_validate(_element()),
         PROJECTIONS["players"][0],
@@ -434,23 +544,30 @@ def test_current_lineup_remains_authoritative_over_attack_market_participation()
     assert draft is not None
     assert _apply_current_lineup(
         draft,
-        [CurrentLineupObservation(started=False, minutes=0)],
+        [
+            CurrentLineupObservation(started=True, minutes=90),
+            CurrentLineupObservation(started=True, minutes=90),
+        ],
         weight=4.0,
-        prior_strength=4.0,
+        prior_strength=1.0,
     )
-    settled_start_rate = draft.start_rate
+    direct_start_rate = draft.start_rate
+    recorded_attack = draft.routes["attacking"]
 
-    _, inferred = publish_season_inputs._apply_attack_market(
+    attacked, inferred = _apply_attack_market(
         draft,
-        (MarketAttack(goals=1.2, assists=0.4), date(2026, 8, 22)),
+        (MarketAttack(goals=0.01, assists=None), PINNED_NOW.date()),
         [1.0],
-        {date(2026, 8, 22): 0},
+        {PINNED_NOW.date(): 0},
         0.35,
-        participation_already_inferred=True,
+        infer_participation=False,
     )
 
+    assert attacked is True
     assert inferred is False
-    assert draft.start_rate == settled_start_rate
+    assert draft.routes["attacking"] != recorded_attack
+    assert draft.start_rate == direct_start_rate
+    assert draft.evidence["appearance"] == "currentSeasonLineup"
 
     def test_market_usage_is_published_without_copying_quotes_into_solver_inputs(
         self, tmp_path: Path
@@ -1118,6 +1235,8 @@ def test_the_opening_squad_survives_the_trim(tmp_path: Path) -> None:
     opening = tmp_path / "opening-squad.json"
     opening.write_text(json.dumps({"picks": [{"code": 1002}]}), encoding="utf-8")
     output = tmp_path / "season-inputs.json"
+    live = tmp_path / "live"
+    live.mkdir()
 
     def fake_get(url: str) -> Any:
         return bootstrap if "bootstrap" in url else FIXTURES
@@ -1136,6 +1255,8 @@ def test_the_opening_squad_survives_the_trim(tmp_path: Path) -> None:
                     str(projections),
                     "--opening-squad",
                     str(opening),
+                    "--live",
+                    str(live),
                 ]
             )
             == 0

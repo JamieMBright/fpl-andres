@@ -8,6 +8,11 @@ The project follows Semantic Versioning once milestone tags begin.
 
 ### Added
 
+- Model 8.19 folds settled current-season scoring routes into browser solver
+  inputs, so after a player has played the historical role prior yields to the
+  observed campaign. Player profiles now show the complete latest four
+  gameweek rows from FPL, including minutes, points, scoring actions and
+  advanced stats.
 - Model 8.12 weights each settled current-season starting lineup as four
   carried appearances. On the held-out 2024/25 and 2025/26 GW2 samples it
   improved paired Brier by 0.0497, with a 95% lower bound of 0.0348 and all
@@ -99,6 +104,14 @@ The project follows Semantic Versioning once milestone tags begin.
 
 ### Fixed
 
+- Model 8.18 carries mature prior-season BPS variation into thin early-season
+  bonus ranking and keeps direct current-lineup evidence ahead of participation
+  inferred from scorer markets. Before a GW4 Wildcard, correcting those two
+  inputs changes the GW3 Groß-to-Xhaka call to Senesi-to-Calafiori: the best
+  legal all-position one-week move gains 1.52 points at current list prices.
+- A supplied Team ID no longer falls through to the generic published squad
+  when FPL cannot be reached. Chip calls and gameweek cards stay hidden until
+  that manager's verified or locally declared fifteen is available.
 - Chip cards now keep the applied Free Hit or Wildcard call when the second
   solve finds a larger Bench Boost or Triple Captain score in the same week.
   The badge, temporary/permanent transfer label and displayed squad can no

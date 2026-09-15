@@ -5644,100 +5644,6 @@ h1[tabindex="-1"]:focus-visible {
   margin-top: 28px;
 }
 
-.fpl500-hits {
-  margin-top: 28px;
-}
-
-.fpl500-hits-chart {
-  margin: 14px 0 12px;
-  padding: 14px 16px;
-  background: rgb(255 255 255 / 4%);
-  border-radius: 4px;
-}
-
-.fpl500-hits-chart figcaption {
-  margin: 0 0 12px;
-  font-weight: 600;
-  line-height: 1.4;
-}
-
-.fpl500-hits-caption {
-  display: block;
-  font-size: 12px;
-  font-weight: 400;
-  color: var(--ink-soft);
-}
-
-.fpl500-hits-series {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.fpl500-hits-row {
-  display: grid;
-  grid-template-columns: minmax(42px, max-content) minmax(0, 1fr) minmax(0, 1fr);
-  gap: 8px 12px;
-  align-items: start;
-}
-
-.fpl500-hits-gw {
-  margin: 0;
-  padding-top: 1px;
-  font-size: 11px;
-  color: var(--ink-soft);
-}
-
-.fpl500-hits-metric {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) max-content;
-  gap: 6px 8px;
-  align-items: center;
-  min-width: 0;
-}
-
-.fpl500-hits-metric-label {
-  grid-column: 1 / -1;
-  font-size: 12px;
-}
-
-.fpl500-hits-track {
-  display: block;
-  min-width: 40px;
-  height: 12px;
-  background: rgb(255 255 255 / 7%);
-  border-radius: 999px;
-  overflow: hidden;
-}
-
-.fpl500-hits-bar {
-  display: block;
-  height: 100%;
-  border-radius: 999px;
-}
-
-.fpl500-hits-bar.is-managers {
-  background: var(--accent);
-}
-
-.fpl500-hits-bar.is-cost {
-  background: var(--signal-blue);
-}
-
-.fpl500-hits-value {
-  font-size: 12px;
-  white-space: nowrap;
-}
-
-@media (max-width: 720px) {
-  .fpl500-hits-row {
-    grid-template-columns: 1fr;
-  }
-}
-
 .fpl500-metric-choice {
   display: flex;
   flex-wrap: wrap;
@@ -8692,6 +8598,64 @@ button.fpl500-holding-name {
   color: var(--ink-soft);
   font-size: 12px;
   line-height: 1.45;
+}
+
+.player-detail-history {
+  margin: 24px 0 18px;
+}
+
+.player-detail-history h3 {
+  margin: 0 0 6px;
+  font-size: 16px;
+}
+
+.player-detail-history > p {
+  margin: 0 0 10px;
+  color: var(--ink-soft);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.player-detail-history-wrap {
+  max-width: 100%;
+  overflow-x: auto;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+}
+
+.player-detail-history table {
+  min-width: 1180px;
+  border-collapse: collapse;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.player-detail-history th,
+.player-detail-history td {
+  padding: 7px 8px;
+  border-bottom: 1px solid var(--rule);
+  text-align: right;
+}
+
+.player-detail-history thead th {
+  color: var(--ink-soft);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.player-detail-history tbody th {
+  position: sticky;
+  left: 0;
+  color: var(--ink);
+  background: var(--paper);
+  text-align: left;
+}
+
+.player-detail-history tbody tr:last-child th,
+.player-detail-history tbody tr:last-child td {
+  border-bottom: 0;
 }
 
 /* A figure you can open. Underlined because a number that does something has to
