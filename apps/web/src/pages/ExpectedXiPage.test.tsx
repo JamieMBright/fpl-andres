@@ -8,6 +8,7 @@ import {
   XSTART_VALIDATION,
   latestXStartEvent,
 } from "../state/xstart-validation";
+import { PLAYERS_BY_ELEMENT_ID } from "../state/season-solver";
 import ExpectedXiPage from "./ExpectedXiPage";
 
 describe("Expected XI page", () => {
@@ -38,12 +39,16 @@ describe("Expected XI page", () => {
     expect(document.body).toHaveTextContent(`GW${validationEvent} check`);
     const leeds = expectedXi().teams.find((team) => team.club === "LEE");
     expect(leeds?.validation).toBeDefined();
+    const frozenMiss = leeds?.validation?.selected.find((row) => !row.started);
+    expect(frozenMiss).toBeDefined();
+    const frozenMissName = PLAYERS_BY_ELEMENT_ID.get(frozenMiss!.elementId)?.name;
+    expect(frozenMissName).toBeDefined();
     await userEvent.click(
       screen.getByRole("button", {
         name: `About LEE GW${validationEvent} xStart check`,
       }),
     );
-    expect(screen.getByRole("tooltip")).toHaveTextContent("Okafor");
+    expect(screen.getByRole("tooltip")).toHaveTextContent(frozenMissName!);
     expect(screen.getByRole("tooltip")).toHaveTextContent(/starters left out/i);
     expect(screen.getByRole("tooltip")).toHaveTextContent("Frozen XI misses");
     expect(screen.getByRole("tooltip")).toHaveTextContent(

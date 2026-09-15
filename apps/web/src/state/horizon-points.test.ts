@@ -8,9 +8,11 @@ import {
   horizonsAvailable,
 } from "./horizon-points";
 import {
+  EVENT_INDEX,
   PLAYABLE_START_RATE,
   SEASON_EVENTS,
   SEASON_PLAYERS,
+  startRateAtEvent,
 } from "./season-solver";
 
 /**
@@ -19,7 +21,14 @@ import {
  * plain sum of the horizon, and it refuses rather than shortening near the end.
  */
 
-const SOMEBODY = SEASON_PLAYERS[0]?.code ?? 0;
+const firstEventIndex = EVENT_INDEX.get(SEASON_EVENTS[0] ?? 1) ?? 0;
+const lastEventIndex = EVENT_INDEX.get(SEASON_EVENTS.at(-1) ?? 1) ?? 0;
+const SOMEBODY =
+  SEASON_PLAYERS.find(
+    (player) =>
+      startRateAtEvent(player, firstEventIndex) >= PLAYABLE_START_RATE &&
+      startRateAtEvent(player, lastEventIndex) >= PLAYABLE_START_RATE,
+  )?.code ?? 0;
 
 describe("horizonPoints", () => {
   it("adds up more gameweeks as the horizon lengthens", () => {
