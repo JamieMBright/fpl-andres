@@ -41,7 +41,9 @@ describe("Expected XI page", () => {
     expect(leeds?.validation).toBeDefined();
     const frozenMiss = leeds?.validation?.selected.find((row) => !row.started);
     expect(frozenMiss).toBeDefined();
-    const frozenMissName = PLAYERS_BY_ELEMENT_ID.get(frozenMiss!.elementId)?.name;
+    const frozenMissName = PLAYERS_BY_ELEMENT_ID.get(
+      frozenMiss!.elementId,
+    )?.name;
     expect(frozenMissName).toBeDefined();
     await userEvent.click(
       screen.getByRole("button", {
