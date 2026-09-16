@@ -1,6 +1,6 @@
 {
   "schemaVersion": 7,
-  "generatedAt": "2026-09-16T08:12:19.466682Z",
+  "generatedAt": "2026-09-16T11:29:45.009089Z",
   "recordSeason": "2026-27",
   "events": [
     5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24,
@@ -60,8 +60,8 @@
     "fixtureMarkets": {
       "source": "football-data.co.uk",
       "level": "observed",
-      "updatedAt": "2026-09-16T04:54:28.328522+00:00",
-      "contentHash": "sha256:f3eb57019ee69ab625db25bca79f21d27d909542de8f3d07ab2620c9157747ce"
+      "updatedAt": "2026-09-16T11:29:31.713297+00:00",
+      "contentHash": "sha256:36bfd3f260cb88d4076eee99a067ec8145ad71d886b54a7e7e1a61fa341e0a13"
     },
     "understat": {
       "source": "understat",
@@ -192,7 +192,7 @@
       }
     ],
     "sourceReference": "FPL rules page, Transfers section",
-    "dataAvailableAt": "2026-09-16T08:12:19.466682Z",
+    "dataAvailableAt": "2026-09-16T11:29:45.009089Z",
     "playableStartRate": 0.35,
     "transferMarginPoints": 0.5
   },
@@ -939,7 +939,7 @@
   },
   "fixtureEvidence": {
     "source": "football-data.co.uk",
-    "updatedAt": "2026-09-16T04:54:28.328522+00:00",
+    "updatedAt": "2026-09-16T11:29:31.713297+00:00",
     "level": "observed",
     "byClub": {}
   },
