@@ -1,6 +1,6 @@
 {
   "schemaVersion": 7,
-  "generatedAt": "2026-09-16T15:29:21.485181Z",
+  "generatedAt": "2026-09-16T16:52:37.597403Z",
   "recordSeason": "2026-27",
   "events": [
     5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24,
@@ -60,8 +60,8 @@
     "fixtureMarkets": {
       "source": "football-data.co.uk",
       "level": "observed",
-      "updatedAt": "2026-09-16T13:33:34.179300+00:00",
-      "contentHash": "sha256:16cf41e0839d2ba3d546cf5ea34c5782f166fb7195f033348ea37bbbe0a8c3a4"
+      "updatedAt": "2026-09-16T16:52:26.655134+00:00",
+      "contentHash": "sha256:32c1cbb189c716f27fdafd79ad7aef067f6c2f55dffecca8c43fe9b34aa38fa6"
     },
     "understat": {
       "source": "understat",
@@ -192,7 +192,7 @@
       }
     ],
     "sourceReference": "FPL rules page, Transfers section",
-    "dataAvailableAt": "2026-09-16T15:29:21.485181Z",
+    "dataAvailableAt": "2026-09-16T16:52:37.597403Z",
     "playableStartRate": 0.35,
     "transferMarginPoints": 0.5
   },
@@ -939,7 +939,7 @@
   },
   "fixtureEvidence": {
     "source": "football-data.co.uk",
-    "updatedAt": "2026-09-16T13:33:34.179300+00:00",
+    "updatedAt": "2026-09-16T16:52:26.655134+00:00",
     "level": "observed",
     "byClub": {}
   },
@@ -22279,8 +22279,8 @@
       "club": "CRY",
       "teamId": 8,
       "priceTenths": 62,
-      "availabilityStatus": "i",
-      "chanceOfPlaying": 0,
+      "availabilityStatus": "d",
+      "chanceOfPlaying": 50,
       "basePoints": 0,
       "routes": {},
       "startRate": 0.0,
@@ -22291,15 +22291,15 @@
         "recentStarts": 0,
         "recentMatches": 4,
         "recentMinutes": 0,
-        "appearanceSource": "fplAvailability",
+        "appearanceSource": "currentSeasonLineup",
         "lineupAdjustment": 0.0,
         "marketAdjustment": 0.0,
-        "availabilityAdjustment": -0.0
+        "availabilityAdjustment": 0.0
       },
       "squadNumber": null,
       "rated": true,
       "depthRank": 1,
-      "evidence": { "appearance": "fplAvailability" }
+      "evidence": { "appearance": "currentSeasonLineup" }
     },
     {
       "id": 215,
