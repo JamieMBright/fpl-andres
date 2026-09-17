@@ -1,6 +1,6 @@
 {
   "schemaVersion": 7,
-  "generatedAt": "2026-09-17T08:18:48.206912Z",
+  "generatedAt": "2026-09-17T11:57:32.574448Z",
   "recordSeason": "2026-27",
   "events": [
     5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24,
@@ -192,7 +192,7 @@
       }
     ],
     "sourceReference": "FPL rules page, Transfers section",
-    "dataAvailableAt": "2026-09-17T08:18:48.206912Z",
+    "dataAvailableAt": "2026-09-17T11:57:32.574448Z",
     "playableStartRate": 0.35,
     "transferMarginPoints": 0.5
   },
@@ -10258,7 +10258,7 @@
       "teamId": 7,
       "priceTenths": 40,
       "availabilityStatus": "d",
-      "chanceOfPlaying": 50,
+      "chanceOfPlaying": 25,
       "basePoints": 0.362,
       "routes": {
         "appearance": 0.563,
@@ -16473,8 +16473,8 @@
       "club": "EVE",
       "teamId": 9,
       "priceTenths": 50,
-      "availabilityStatus": "a",
-      "chanceOfPlaying": null,
+      "availabilityStatus": "d",
+      "chanceOfPlaying": 75,
       "basePoints": 0.959,
       "routes": {
         "appearance": 0.546,
