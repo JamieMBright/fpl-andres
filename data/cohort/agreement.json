@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-18T16:23:32.686175Z",
+  "generatedAt": "2026-09-18T20:36:17.134628Z",
   "portfolioBasis": "ranked-500",
   "splitThreshold": 0.5,
-  "capturedWeeks": 4,
+  "capturedWeeks": 5,
   "contestedWeeks": 0,
   "weeks": [
     {
@@ -79,6 +79,31 @@
         {
           "elementId": 379,
           "share": 0.01268
+        }
+      ]
+    },
+    {
+      "event": 5,
+      "counted": 483,
+      "modalCaptain": 411,
+      "unanimity": 0.86749,
+      "isSplit": false,
+      "topCaptains": [
+        {
+          "elementId": 411,
+          "share": 0.86749
+        },
+        {
+          "elementId": 426,
+          "share": 0.05797
+        },
+        {
+          "elementId": 480,
+          "share": 0.0559
+        },
+        {
+          "elementId": 154,
+          "share": 0.01242
         }
       ]
     }
