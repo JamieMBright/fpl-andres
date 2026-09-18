@@ -1,6 +1,6 @@
 {
   "schemaVersion": 7,
-  "generatedAt": "2026-09-18T07:52:45.985026Z",
+  "generatedAt": "2026-09-18T11:11:18.649716Z",
   "recordSeason": "2026-27",
   "events": [
     5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24,
@@ -192,7 +192,7 @@
       }
     ],
     "sourceReference": "FPL rules page, Transfers section",
-    "dataAvailableAt": "2026-09-18T07:52:45.985026Z",
+    "dataAvailableAt": "2026-09-18T11:11:18.649716Z",
     "playableStartRate": 0.35,
     "transferMarginPoints": 0.5
   },
@@ -4214,8 +4214,8 @@
       "club": "ARS",
       "teamId": 1,
       "priceTenths": 53,
-      "availabilityStatus": "d",
-      "chanceOfPlaying": 50,
+      "availabilityStatus": "a",
+      "chanceOfPlaying": 100,
       "basePoints": 2.767,
       "routes": {
         "appearance": 0.937,
@@ -6317,8 +6317,8 @@
       "club": "ARS",
       "teamId": 1,
       "priceTenths": 55,
-      "availabilityStatus": "d",
-      "chanceOfPlaying": 75,
+      "availabilityStatus": "a",
+      "chanceOfPlaying": 100,
       "basePoints": 1.353,
       "routes": {
         "appearance": 0.47,
@@ -10586,8 +10586,8 @@
       "club": "CHE",
       "teamId": 6,
       "priceTenths": 54,
-      "availabilityStatus": "a",
-      "chanceOfPlaying": null,
+      "availabilityStatus": "d",
+      "chanceOfPlaying": 75,
       "basePoints": 0.294,
       "routes": {
         "appearance": 0.505,
@@ -13038,47 +13038,6 @@
       "squadNumber": null,
       "rated": false,
       "depthRank": 15,
-      "evidence": { "all": "rolePrior", "appearance": "currentSeasonLineup" }
-    },
-    {
-      "id": 652,
-      "code": 471551,
-      "name": "Azeez",
-      "position": "MID",
-      "positionId": 3,
-      "club": "BHA",
-      "teamId": 5,
-      "priceTenths": 55,
-      "availabilityStatus": "d",
-      "chanceOfPlaying": 75,
-      "basePoints": 2.0,
-      "routes": {
-        "appearance": 1.453,
-        "attacking": 0.428,
-        "cleanSheet": 0.112,
-        "bonus": 0.112,
-        "yellowCards": -0.142,
-        "redCards": -0.006,
-        "ownGoals": -0.002,
-        "penaltiesMissed": -0.002,
-        "defensiveContribution": 0.047
-      },
-      "startRate": 0.057,
-      "startEvidence": {
-        "sourceStartRate": 0.509,
-        "finalStartRate": 0.057,
-        "observedAppearances": 2,
-        "recentStarts": 0,
-        "recentMatches": 2,
-        "recentMinutes": 0,
-        "appearanceSource": "currentSeasonLineup",
-        "lineupAdjustment": -0.452,
-        "marketAdjustment": 0.0,
-        "availabilityAdjustment": 0.0
-      },
-      "squadNumber": null,
-      "rated": false,
-      "depthRank": 5,
       "evidence": { "all": "rolePrior", "appearance": "currentSeasonLineup" }
     },
     {
@@ -22189,6 +22148,37 @@
       "squadNumber": null,
       "rated": false,
       "depthRank": 9,
+      "evidence": { "all": "rolePrior", "appearance": "fplAvailability" }
+    },
+    {
+      "id": 652,
+      "code": 471551,
+      "name": "Azeez",
+      "position": "MID",
+      "positionId": 3,
+      "club": "BHA",
+      "teamId": 5,
+      "priceTenths": 55,
+      "availabilityStatus": "i",
+      "chanceOfPlaying": 0,
+      "basePoints": 0,
+      "routes": {},
+      "startRate": 0.0,
+      "startEvidence": {
+        "sourceStartRate": 0.509,
+        "finalStartRate": 0.0,
+        "observedAppearances": 2,
+        "recentStarts": 0,
+        "recentMatches": 2,
+        "recentMinutes": 0,
+        "appearanceSource": "fplAvailability",
+        "lineupAdjustment": -0.452,
+        "marketAdjustment": -0.0,
+        "availabilityAdjustment": -0.057
+      },
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 5,
       "evidence": { "all": "rolePrior", "appearance": "fplAvailability" }
     },
     {
