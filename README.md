@@ -140,26 +140,26 @@ guard — so a file cannot be safely re-run after a partial paste. If a paste
 failed part-way, run `supabase/rollback/down.sql` to return to empty before
 re-applying. That is a teardown, not a repair: it drops everything.
 
-| #   | Migration                                                     | Applied                        |
-| --- | ------------------------------------------------------------- | ------------------------------ |
-| 1   | `20260729180000_foundation.sql`                               | yes                            |
-| 2   | `20260729183000_evidence_snapshots.sql`                       | yes                            |
-| 3   | `20260730120000_projection_artifacts.sql`                     | yes                            |
-| 4   | `20260731120000_optimization_artifacts.sql`                   | yes                            |
-| 5   | `20260731130000_foreign_key_indexes.sql`                      | yes                            |
-| 6   | `20260801120000_history_corpus.sql`                           | yes — corpus loaded 2026-07-30 |
-| 7   | `20260801130000_defensive_components.sql`                     | **owner to confirm**           |
-| 8   | `20260801140000_fixture_grain_and_event_range.sql`            | **owner to confirm**           |
-| 9   | `20260801150000_backtest_artifacts.sql`                       | **owner to confirm**           |
-| 10  | `20260801160000_crowd_snapshots.sql`                          | **owner to confirm**           |
-| 11  | `20260801170000_access_path_indexes.sql`                      | no                             |
-| 12  | `20260801180000_backtest_corpus_fingerprint.sql`              | no                             |
-| 13  | `20260801190000_promotion_lineage.sql`                        | no                             |
-| 14  | `20260801200000_workflow_run_audit.sql`                       | no                             |
-| 15  | `20260802120000_snapshot_path_integrity.sql`                  | no                             |
-| 16  | `20260804120000_analysis_requests_and_declared_transfers.sql` | yes — applied 2026-08-04       |
-| 17  | `20260908120000_recommendation_snapshots.sql`                 | no                             |
-| 18  | `20260918203016_public_team_snapshots.sql`                    | no                             |
+| #   | Migration                                                     | Applied                          |
+| --- | ------------------------------------------------------------- | -------------------------------- |
+| 1   | `20260729180000_foundation.sql`                               | yes                              |
+| 2   | `20260729183000_evidence_snapshots.sql`                       | yes                              |
+| 3   | `20260730120000_projection_artifacts.sql`                     | yes                              |
+| 4   | `20260731120000_optimization_artifacts.sql`                   | yes                              |
+| 5   | `20260731130000_foreign_key_indexes.sql`                      | yes                              |
+| 6   | `20260801120000_history_corpus.sql`                           | yes — corpus loaded 2026-07-30   |
+| 7   | `20260801130000_defensive_components.sql`                     | **owner to confirm**             |
+| 8   | `20260801140000_fixture_grain_and_event_range.sql`            | **owner to confirm**             |
+| 9   | `20260801150000_backtest_artifacts.sql`                       | **owner to confirm**             |
+| 10  | `20260801160000_crowd_snapshots.sql`                          | **owner to confirm**             |
+| 11  | `20260801170000_access_path_indexes.sql`                      | no                               |
+| 12  | `20260801180000_backtest_corpus_fingerprint.sql`              | no                               |
+| 13  | `20260801190000_promotion_lineage.sql`                        | no                               |
+| 14  | `20260801200000_workflow_run_audit.sql`                       | no                               |
+| 15  | `20260802120000_snapshot_path_integrity.sql`                  | no                               |
+| 16  | `20260804120000_analysis_requests_and_declared_transfers.sql` | yes — applied 2026-08-04         |
+| 17  | `20260908120000_recommendation_snapshots.sql`                 | no                               |
+| 18  | `20260918203016_public_team_snapshots.sql`                    | yes — owner confirmed 2026-09-18 |
 
 Rows 7–10 are marked for confirmation rather than guessed: their state was
 never recorded and cannot be inferred from the repository. Check the hosted
@@ -184,9 +184,10 @@ messages and reply addresses are personal data and are the exception. Request
 diagnostics, recommendation snapshots and public team snapshots are deleted after 30 days.
 Public team snapshots retain original source timestamps, are service-role-only,
 and are never eligible for planning beyond the next deadline. The cache stores
-only validated FPL state, never manager corrections. Migration 18 must pass CI
-and be applied through the ordered SQL Editor process before durable caching
-is active; a missing cache table does not block a live team import.
+only validated FPL state, never manager corrections. Migration 18 passed Linux CI
+and was confirmed applied by the owner on 2026-09-18. Production cache use still
+requires a deployed handler with server credentials and an eligible successful
+import; applying the migration alone does not verify that integration.
 Declared-transfer copies are deleted seven days after the relevant deadline and
 never kept beyond 30 days. Contact content is never written to
 Supabase: it passes through Resend to the private project mailbox, whose copy is
