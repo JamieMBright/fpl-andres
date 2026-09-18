@@ -273,8 +273,8 @@ export function useTeamPlan(
 
 function startFromPublicState(team: PublicTeamState): TeamStartStatus {
   const fromEvent = team.event + 1;
-  let declared: readonly DeclaredTransfer[] = [];
-  let corrections: ReturnType<typeof loadTeamStateOverrides> = null;
+  let declared: readonly DeclaredTransfer[];
+  let corrections: ReturnType<typeof loadTeamStateOverrides>;
   try {
     declared = readDeclaredTransfers(
       window.localStorage,
