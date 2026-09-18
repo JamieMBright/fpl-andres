@@ -103,7 +103,13 @@ def test_no_migration_grants_table_access_to_a_client_role() -> None:
         line.strip()
         for path in sorted(MIGRATIONS_DIR.glob("*.sql"))
         for line in path.read_text(encoding="utf-8").splitlines()
-        if _GRANT.match(line) and "recommendation_snapshots_latest" not in line
+        if _GRANT.match(line)
+        and "recommendation_snapshots_latest" not in line
+        and line.strip().lower()
+        != (
+            "grant select, insert, update, delete on table "
+            "public.public_team_snapshots to service_role;"
+        )
     ]
     assert grants == [], f"migrations grant table access: {grants}"
 

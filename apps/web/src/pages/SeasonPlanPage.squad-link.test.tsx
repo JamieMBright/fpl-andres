@@ -1,5 +1,5 @@
 import { render, screen, waitFor } from "@testing-library/react";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { createMemoryRouter, RouterProvider } from "react-router-dom";
 
 import { routes } from "../App";
@@ -57,6 +57,8 @@ function renderPlan(entry: string) {
 }
 
 beforeEach(() => {
+  vi.useFakeTimers({ toFake: ["Date"] });
+  vi.setSystemTime(new Date("2026-08-20T12:00:00Z"));
   localStorage.clear();
   vi.stubGlobal(
     "fetch",
@@ -67,6 +69,8 @@ beforeEach(() => {
       ),
   );
 });
+
+afterEach(() => vi.useRealTimers());
 
 describe("the declared squad in a link", () => {
   it("puts a squad from the address bar back into a browser that lost it", async () => {

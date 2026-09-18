@@ -165,6 +165,41 @@ describe("team analysis state machine", () => {
     });
   });
 
+  it("labels a server snapshot as cached without changing its evidence time", async () => {
+    const result = await refreshTeamAnalysis(ENTRY_ID, null, {
+      fetchApi: vi.fn(async () =>
+        Response.json(
+          { status: "ready", state: readyState },
+          {
+            headers: { "X-FPL-Stale": "1", "X-FPL-Cache": "hit" },
+          },
+        ),
+      ),
+      storage: localStorage,
+    });
+    expect(result).toEqual({
+      status: "stale",
+      state: readyState,
+      reason: "cached_snapshot",
+    });
+  });
+
+  it("preserves FPL refusal diagnostics from the team endpoint", async () => {
+    const result = await refreshTeamAnalysis(ENTRY_ID, null, {
+      fetchApi: vi.fn(async () =>
+        Response.json(
+          { status: "degraded", reason: "fpl_unreachable" },
+          {
+            status: 503,
+            headers: { "X-FPL-Failure": "refused" },
+          },
+        ),
+      ),
+      storage: localStorage,
+    });
+    expect(result).toEqual({ status: "degraded", reason: "fpl_refused" });
+  });
+
   it("returns error for malformed JSON and removes invalid cached bytes", async () => {
     const key = teamPublicStateStorageKey(ENTRY_ID);
     localStorage.setItem(key, JSON.stringify({ entryId: ENTRY_ID }));

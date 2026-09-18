@@ -38,6 +38,15 @@ def probe_script() -> str:
 
 
 class TestTheProbeMatchesWhatTheApiActuallyReturns:
+    def test_repeated_upstream_failures_have_their_own_incident(self) -> None:
+        source = CANARY.read_text(encoding="utf-8")
+        assert "Record upstream degradation" in source
+        assert "listJobsForWorkflowRun" in source
+        assert "streak >= 3" in source
+        assert '"FPL imports are repeatedly failing"' in source
+        assert '"Cache-Control: no-cache"' in source
+        assert "X-FPL-Cache: fallback" in source
+
     def test_the_degraded_envelope_is_still_served_with_503(self) -> None:
         # The whole bug rests on this. If the API ever serves degraded with a
         # 200, the probe's ordering stops mattering and this test should be the

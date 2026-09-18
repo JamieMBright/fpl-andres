@@ -2,6 +2,7 @@ import { act, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { saveDeclaredSquad } from "./declared-squad";
+import { saveCachedPublicTeamState } from "./team-analysis";
 import {
   PLAYERS_BY_ELEMENT_ID,
   SEASON_EVENTS,
@@ -123,6 +124,8 @@ describe("useTeamStart before the first deadline", () => {
   });
 
   it("plans from the fifteen the manager declared, as if played in gameweek 1", async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    vi.setSystemTime(new Date("2026-08-20T12:00:00Z"));
     vi.stubGlobal("fetch", preSeasonFetch());
     const event = currentPlanningEvent();
     saveDeclaredSquad(window.localStorage, 42, event, legalSquad());
@@ -175,8 +178,40 @@ describe("useTeamStart before the first deadline", () => {
 
 describe("useTeamStart during an FPL outage", () => {
   afterEach(() => {
+    vi.restoreAllMocks();
+    vi.useRealTimers();
     window.localStorage.clear();
     vi.unstubAllGlobals();
+  });
+
+  it("can plan a live team when browser storage is blocked", async () => {
+    vi.spyOn(window, "localStorage", "get").mockImplementation(() => {
+      throw new Error("Storage blocked");
+    });
+    vi.stubGlobal("fetch", processedFetch());
+    const seen: { latest: TeamStartStatus } = { latest: { status: "idle" } };
+    render(<Probe onStatus={(status) => (seen.latest = status)} />);
+    await waitFor(() => expect(seen.latest.status).toBe("ready"));
+  });
+
+  it("starts from a verified snapshot while the refresh is still pending", async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    vi.setSystemTime(new Date("2026-09-12T12:00:00Z"));
+    const response = await processedFetch()("/api/team/42");
+    const body = await response.json();
+    saveCachedPublicTeamState(window.localStorage, 42, body.state);
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(() => new Promise<Response>(() => {})),
+    );
+    const seen: { latest: TeamStartStatus } = { latest: { status: "idle" } };
+
+    render(<Probe onStatus={(status) => (seen.latest = status)} />);
+
+    expect(seen.latest.status).toBe("ready");
+    if (seen.latest.status !== "ready") return;
+    expect(seen.latest.source).toBe("published");
+    expect(seen.latest.start.bankTenths).toBe(50);
   });
 
   it("finds the first gameweek whose deadline has not passed", () => {
@@ -192,7 +227,15 @@ describe("useTeamStart during an FPL outage", () => {
     vi.setSystemTime(new Date("2026-08-22T12:00:00Z"));
     vi.stubGlobal("fetch", failedFetch());
     const event = currentPlanningEvent(new Date());
-    saveDeclaredSquad(window.localStorage, 42, event, legalSquad());
+    saveDeclaredSquad(
+      window.localStorage,
+      42,
+      event,
+      legalSquad(),
+      PLAYERS_BY_ELEMENT_ID,
+      () => new Date(),
+      { bankTenths: 23, availableFreeTransfers: 3 },
+    );
     const seen: { latest: TeamStartStatus } = { latest: { status: "idle" } };
 
     render(<Probe onStatus={(status) => (seen.latest = status)} />);
@@ -202,11 +245,9 @@ describe("useTeamStart during an FPL outage", () => {
     expect(seen.latest.source).toBe("declared");
     expect(seen.latest.event).toBe(event);
     expect(seen.latest.start.fromEvent).toBe(event);
-    expect(seen.latest.start.assumed).toEqual([
-      "bank",
-      "free_transfers",
-      "selling_prices",
-    ]);
+    expect(seen.latest.start.bankTenths).toBe(23);
+    expect(seen.latest.start.availableFreeTransfers).toBe(3);
+    expect(seen.latest.start.assumed).toEqual(["selling_prices"]);
   });
 
   it("uses observed public selling prices in the planner", async () => {

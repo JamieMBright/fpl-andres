@@ -1,14 +1,25 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 
 import { CeefaxShirt } from "./CeefaxShirt";
 import { InfoMarker } from "./InfoMarker";
+import { CorrectionField } from "./team-state-corrections/fields";
+import {
+  CorrectionInputError,
+  correctionError,
+  formatTenthsInput,
+  parseOptionalInteger,
+  parseOptionalTenths,
+  type CorrectionError,
+} from "./team-state-corrections/parse";
 import type { AnalysisData } from "../state/analysis-pool";
 import { money } from "../format";
 import { fold } from "../state/fold";
 import { kitForShortName } from "../kit/team-kits";
 import {
   forgetDeclaredSquad,
+  declaredSquadPlanningValues,
+  declaredSquadSeason,
   LAST_TEAM_KEY,
   readDeclaredSquad,
   saveDeclaredSquad,
@@ -17,7 +28,10 @@ import {
   type RosterPlayer,
   type SquadValidation,
 } from "../state/declared-squad";
-import { PLAYERS_BY_ELEMENT_ID } from "../state/season-solver";
+import {
+  PLAYERS_BY_ELEMENT_ID,
+  SEASON_TRANSFER_RULES,
+} from "../state/season-solver";
 
 /**
  * Build the fifteen you are actually starting the season with.
@@ -163,7 +177,7 @@ function SquadMarket({
 }: {
   players: readonly SquadPlayer[];
   picked: ReadonlySet<number>;
-  remainingTenths: number;
+  remainingTenths: number | null;
   onAdd: (player: SquadPlayer) => void;
 }) {
   const [position, setPosition] = useState("ALL");
@@ -288,8 +302,10 @@ function SquadMarket({
       />
 
       <p className="squad-market-count mono">
-        Showing {Math.min(shownCount, shown.length)} of {shown.length} ·{" "}
-        {pounds(remainingTenths)} left
+        Showing {Math.min(shownCount, shown.length)} of {shown.length}
+        {remainingTenths === null ? null : (
+          <> · {pounds(remainingTenths)} left</>
+        )}
       </p>
 
       <div
@@ -340,7 +356,8 @@ function SquadMarket({
         <ol className="squad-market-list">
           {shown.slice(0, shownCount).map((player) => {
             const already = picked.has(player.id);
-            const tooDear = player.priceTenths > remainingTenths;
+            const tooDear =
+              remainingTenths !== null && player.priceTenths > remainingTenths;
             const perMillion =
               player.points === undefined
                 ? null
@@ -430,16 +447,32 @@ function declaredSquadAnnouncement(
   return `Squad has ${String(validation.problems.length)} problem${validation.problems.length === 1 ? "" : "s"}.`;
 }
 
-export function DeclaredSquadBuilder({
-  entryId,
-  event,
-  onDeclared,
-}: {
+interface DeclaredSquadBuilderProps {
   entryId: number;
   event: number;
   onDeclared?: () => void;
-}) {
+}
+
+export function DeclaredSquadBuilder(props: DeclaredSquadBuilderProps) {
+  return (
+    <DeclaredSquadEditor
+      key={`${String(props.entryId)}:${declaredSquadSeason()}:${String(props.event)}`}
+      {...props}
+    />
+  );
+}
+
+function DeclaredSquadEditor({
+  entryId,
+  event,
+  onDeclared,
+}: DeclaredSquadBuilderProps) {
   const [pool, setPool] = useState<AnalysisData | null>(null);
+  const formId = useId();
+  const bankId = `${formId}-bank`;
+  const freeTransfersId = `${formId}-free-transfers`;
+  const errorId = `${formId}-error`;
+  const errorRef = useRef<HTMLParagraphElement>(null);
 
   // The live FPL list, not the planning pool. The planner carries 144 players
   // it holds a record for; the game has around 570, and a manager declaring the
@@ -474,6 +507,7 @@ export function DeclaredSquadBuilder({
     if (live.length === 0) {
       return [...PLAYERS_BY_ELEMENT_ID.values()].map((player) => ({
         id: player.id,
+        code: player.code,
         name: player.name,
         position: player.position,
         club: player.club,
@@ -487,6 +521,7 @@ export function DeclaredSquadBuilder({
       const rated = PLAYERS_BY_ELEMENT_ID.get(player.elementId);
       return {
         id: player.elementId,
+        code: player.code,
         name: player.name,
         position: player.position,
         club: player.club,
@@ -505,17 +540,52 @@ export function DeclaredSquadBuilder({
     [players],
   );
 
-  const stored = useMemo(
-    () => readDeclaredSquad(window.localStorage, entryId, event),
-    [entryId, event],
-  );
+  const [stored, setStored] = useState(() => {
+    try {
+      return readDeclaredSquad(window.localStorage, entryId, event);
+    } catch {
+      return null;
+    }
+  });
   const [picks, setPicks] = useState<string[]>(() =>
     stored
       ? stored.elementIds.map(String)
       : Array.from({ length: 15 }, () => ""),
   );
-  const [saved, setSaved] = useState(stored !== null);
-  const [saveError, setSaveError] = useState<string | null>(null);
+  const compatible =
+    stored !== null &&
+    declaredSquadPlanningValues(stored, event, roster) !== null;
+  const [saved, setSaved] = useState(compatible);
+  const [bank, setBank] = useState(
+    compatible && stored.bankTenths !== undefined
+      ? formatTenthsInput(stored.bankTenths)
+      : "",
+  );
+  const [freeTransfers, setFreeTransfers] = useState(
+    compatible && stored.availableFreeTransfers !== undefined
+      ? String(stored.availableFreeTransfers)
+      : "",
+  );
+  const [sellingPrices, setSellingPrices] = useState<Record<number, string>>(
+    () =>
+      compatible
+        ? Object.fromEntries(
+            (stored.sellingPrices ?? []).map((price) => [
+              price.elementId,
+              formatTenthsInput(price.sellingPriceTenths),
+            ]),
+          )
+        : {},
+  );
+  const [saveError, setSaveError] = useState<CorrectionError | null>(null);
+
+  useEffect(() => {
+    if (saveError)
+      (saveError.fieldId
+        ? document.getElementById(saveError.fieldId)
+        : errorRef.current
+      )?.focus();
+  }, [saveError]);
 
   const chosen = picks
     .map((pick) => Number(pick))
@@ -539,23 +609,77 @@ export function DeclaredSquadBuilder({
       return next;
     });
     setSaved(false);
+    setSaveError(null);
+    const previous = Number(picks[index]);
+    setSellingPrices((current) => {
+      const next = { ...current };
+      delete next[previous];
+      return next;
+    });
   };
 
   const lockIn = () => {
     if (!validation?.valid) return;
     try {
-      saveDeclaredSquad(
+      const finances =
+        event === 1
+          ? {}
+          : (() => {
+              const bankTenths = parseOptionalTenths(
+                bank,
+                "Current bank",
+                bankId,
+              );
+              if (bankTenths === null)
+                throw new CorrectionInputError(
+                  "Current bank is required.",
+                  bankId,
+                );
+              const availableFreeTransfers = parseOptionalInteger(
+                freeTransfers,
+                "Available free transfers",
+                freeTransfersId,
+              );
+              if (availableFreeTransfers === null)
+                throw new CorrectionInputError(
+                  "Available free transfers are required.",
+                  freeTransfersId,
+                );
+              const prices = chosen.flatMap((elementId) => {
+                const player = roster.get(elementId)!;
+                const fieldId = `${formId}-sell-${String(elementId)}`;
+                const price = parseOptionalTenths(
+                  sellingPrices[elementId] ?? "",
+                  `Selling price for ${player.name}`,
+                  fieldId,
+                );
+                if (price === null) return [];
+                if (price <= 0 || price > player.priceTenths)
+                  throw new CorrectionInputError(
+                    `Selling price for ${player.name} must be above zero and no more than ${pounds(player.priceTenths)}.`,
+                    fieldId,
+                  );
+                return [{ elementId, sellingPriceTenths: price }];
+              });
+              return {
+                bankTenths,
+                availableFreeTransfers,
+                sellingPrices: prices,
+              };
+            })();
+      const declaration = saveDeclaredSquad(
         window.localStorage,
         entryId,
         event,
         chosen,
         roster,
         () => new Date(),
-        { enforceOpeningBudget: event === 1 },
+        finances,
       );
       // Remembered so the plan page knows whose season to solve without the
       // team id having to be carried in every link.
       window.localStorage.setItem(LAST_TEAM_KEY, String(entryId));
+      setStored(declaration);
       setSaved(true);
       setSaveError(null);
       // The season below is solved from this fifteen, so it has to be told.
@@ -563,11 +687,8 @@ export function DeclaredSquadBuilder({
     } catch (error) {
       // Storage can be full or blocked, and a rejected save must say so rather
       // than leaving a button that looks like it did nothing.
-      setSaveError(
-        error instanceof Error
-          ? error.message
-          : "The squad could not be saved.",
-      );
+      setSaved(false);
+      setSaveError(correctionError(error));
     }
   };
 
@@ -584,21 +705,35 @@ export function DeclaredSquadBuilder({
   };
 
   const clear = () => {
-    forgetDeclaredSquad(window.localStorage, entryId, event);
-    setPicks(Array.from({ length: 15 }, () => ""));
-    setSaved(false);
-    onDeclared?.();
+    try {
+      forgetDeclaredSquad(window.localStorage, entryId, event);
+      setStored(null);
+      setPicks(Array.from({ length: 15 }, () => ""));
+      setBank("");
+      setFreeTransfers("");
+      setSellingPrices({});
+      setSaved(false);
+      setSaveError(null);
+      onDeclared?.();
+    } catch (error) {
+      setSaveError(correctionError(error));
+    }
   };
 
   return (
     <section className="declared-squad" aria-labelledby="declared-squad-title">
       <div className="dossier-heading dossier-heading-compact">
         <div>
-          <p className="eyebrow">Your claim, not FPL&rsquo;s record</p>
+          <p className="eyebrow">Manager provided</p>
           <h2 id="declared-squad-title">Build your gameweek {event} fifteen</h2>
         </div>
         <span className="mono">
-          {pounds(spentTenths)} of {pounds(SQUAD_BUDGET_TENTHS)}
+          {pounds(spentTenths)}
+          {event === 1 ? (
+            <> of {pounds(SQUAD_BUDGET_TENTHS)}</>
+          ) : (
+            " squad value"
+          )}
         </span>
       </div>
 
@@ -608,16 +743,27 @@ export function DeclaredSquadBuilder({
         <InfoMarker label="why you have to name it">
           {event === 1
             ? "FPL keeps every squad private until the first deadline, so there is nothing public to read yet."
-            : "FPL has not processed picks for this entry, so only you can state the current fifteen."}
+            : "I cannot read your current fifteen from FPL. Your declaration stays separate from its last published team."}
         </InfoMarker>
       </p>
+      <p className="record-caveat">
+        Season {declaredSquadSeason()} · Gameweek {event}
+      </p>
+      {stored && !compatible ? (
+        <p className="record-caveat">
+          Confirm your current squad and balances for this gameweek before I
+          plan from them.
+        </p>
+      ) : null}
 
       <div className="squad-builder">
         <SquadMarket
           onAdd={addPlayer}
           picked={new Set(chosen)}
           players={players}
-          remainingTenths={SQUAD_BUDGET_TENTHS - spentTenths}
+          remainingTenths={
+            event === 1 ? SQUAD_BUDGET_TENTHS - spentTenths : null
+          }
         />
 
         <div className="squad-pitch">
@@ -643,28 +789,149 @@ export function DeclaredSquadBuilder({
         </div>
       </div>
 
-      <div className="declared-squad-actions">
-        <button
-          className="primary-command"
-          disabled={validation?.valid !== true}
-          onClick={lockIn}
-          type="button"
-        >
-          Lock this in for gameweek {event}
-        </button>
-        <button className="secondary-command" onClick={clear} type="button">
-          Clear
-        </button>
-      </div>
+      <form
+        className="correction-form"
+        noValidate
+        onSubmit={(submit) => {
+          submit.preventDefault();
+          lockIn();
+        }}
+      >
+        {event === 1 ? null : (
+          <fieldset>
+            <legend>Current balances</legend>
+            <div className="correction-field-grid">
+              <CorrectionField id={bankId} label="Current bank (£m)">
+                <input
+                  id={bankId}
+                  name="declared-bank"
+                  type="number"
+                  inputMode="decimal"
+                  min="0"
+                  step="0.1"
+                  autoComplete="off"
+                  value={bank}
+                  aria-invalid={saveError?.fieldId === bankId}
+                  aria-describedby={
+                    saveError?.fieldId === bankId ? errorId : undefined
+                  }
+                  onChange={(changed) => {
+                    setBank(changed.target.value);
+                    setSaved(false);
+                    setSaveError(null);
+                  }}
+                />
+              </CorrectionField>
+              <CorrectionField
+                id={freeTransfersId}
+                label="Available free transfers"
+              >
+                <select
+                  id={freeTransfersId}
+                  name="declared-free-transfers"
+                  autoComplete="off"
+                  value={freeTransfers}
+                  aria-invalid={saveError?.fieldId === freeTransfersId}
+                  aria-describedby={
+                    saveError?.fieldId === freeTransfersId ? errorId : undefined
+                  }
+                  onChange={(changed) => {
+                    setFreeTransfers(changed.target.value);
+                    setSaved(false);
+                    setSaveError(null);
+                  }}
+                >
+                  <option value="">Not provided</option>
+                  {Array.from(
+                    { length: SEASON_TRANSFER_RULES.maximumFreeTransfers + 1 },
+                    (_, count) => (
+                      <option key={count} value={count}>
+                        {count}
+                      </option>
+                    ),
+                  )}
+                </select>
+              </CorrectionField>
+            </div>
+            <p className="record-caveat">
+              Missing selling prices remain assumed at the listed price.
+            </p>
+            <details>
+              <summary>Actual selling prices (optional)</summary>
+              <div className="correction-field-grid">
+                {chosen.map((elementId) => {
+                  const player = roster.get(elementId);
+                  if (!player) return null;
+                  const fieldId = `${formId}-sell-${String(elementId)}`;
+                  return (
+                    <CorrectionField
+                      key={elementId}
+                      id={fieldId}
+                      label={`Selling price for ${player.name} (£m)`}
+                    >
+                      <input
+                        id={fieldId}
+                        name={`declared-sell-${String(elementId)}`}
+                        type="number"
+                        inputMode="decimal"
+                        min="0.1"
+                        max={player.priceTenths / 10}
+                        step="0.1"
+                        autoComplete="off"
+                        value={sellingPrices[elementId] ?? ""}
+                        aria-invalid={saveError?.fieldId === fieldId}
+                        aria-describedby={
+                          saveError?.fieldId === fieldId ? errorId : undefined
+                        }
+                        onChange={(changed) => {
+                          setSellingPrices((current) => ({
+                            ...current,
+                            [elementId]: changed.target.value,
+                          }));
+                          setSaved(false);
+                          setSaveError(null);
+                        }}
+                      />
+                    </CorrectionField>
+                  );
+                })}
+              </div>
+            </details>
+          </fieldset>
+        )}
+        <div className="declared-squad-actions">
+          <button
+            className="primary-command"
+            disabled={validation?.valid !== true}
+            type="submit"
+          >
+            Lock this in for gameweek {event}
+          </button>
+          <button className="secondary-command" onClick={clear} type="button">
+            Clear
+          </button>
+        </div>
+      </form>
 
       {saveError === null ? null : (
-        <p className="declared-squad-error" role="alert">
-          {saveError}
+        <p
+          className="declared-squad-error"
+          role="alert"
+          id={errorId}
+          ref={errorRef}
+          tabIndex={-1}
+        >
+          {saveError.message}
         </p>
       )}
 
       <p aria-live="polite" className="visually-hidden" role="status">
-        {declaredSquadAnnouncement(chosen.length, saved, validation, event)}
+        {declaredSquadAnnouncement(
+          chosen.length,
+          saved && compatible,
+          validation,
+          event,
+        )}
       </p>
       <div className="declared-squad-report">
         {validation === null ? (
@@ -684,7 +951,11 @@ export function DeclaredSquadBuilder({
               <div>
                 <dt>In the bank</dt>
                 <dd className="mono">
-                  {pounds(validation.summary.bankTenths)}
+                  {event === 1
+                    ? pounds(validation.summary.bankTenths)
+                    : bank.trim() === ""
+                      ? "Not provided"
+                      : `${bank}m (manager provided)`}
                 </dd>
               </div>
               <div>
@@ -703,7 +974,7 @@ export function DeclaredSquadBuilder({
               </div>
             </dl>
             <p>
-              {saved ? (
+              {saved && compatible ? (
                 <>
                   Locked in. Your{" "}
                   <Link to={`/plan?team=${String(entryId)}`}>

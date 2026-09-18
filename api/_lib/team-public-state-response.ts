@@ -1,4 +1,8 @@
-import { playerIdentitySchema } from "@fpl-andres/contracts";
+import {
+  playerIdentitySchema,
+  publicTeamResponseSchema,
+  type PublicTeamState,
+} from "@fpl-andres/contracts";
 import { z } from "zod";
 
 import { createFplProxyResponse, FPL_PROXY_BUDGET_MS } from "./fpl-proxy.js";
@@ -8,6 +12,11 @@ import {
   newRequestId,
 } from "./request-log.js";
 import { SourceCache, sourceTtlMs } from "./source-cache.js";
+import {
+  PublicTeamSnapshotStore,
+  publicTeamSnapshotExpiry,
+  type TeamSnapshotStore,
+} from "./public-team-snapshot-store.js";
 import {
   assembleTeamPublicState,
   TeamPublicStateContractError,
@@ -61,6 +70,8 @@ const MINIMUM_PICKS_MS = 1_500;
 type Sleep = (milliseconds: number) => Promise<void>;
 
 interface TeamPublicStateDependencies {
+  snapshots?: TeamSnapshotStore;
+  refresh?: boolean;
   fetchUpstream?: typeof fetch;
   sleep?: Sleep;
   random?: () => number;
@@ -77,7 +88,7 @@ interface FetchedSource {
 
 type FetchSourceOutcome =
   | { kind: "ok"; source: FetchedSource }
-  | { kind: "unreachable" }
+  | { kind: "unreachable"; diagnostic?: string }
   | { kind: "source_failed" };
 
 /**
@@ -179,6 +190,7 @@ const transfersSchema = z.array(
  * make the refusals harder to read than the work.
  */
 interface RequestTrace {
+  diagnostic?: string;
   requestId: string;
   startedAt: number;
   upstreamMs: number;
@@ -206,12 +218,13 @@ export async function createTeamPublicStateResponse(
     stageMs: { entry: 0, bootstrap: 0, picks: 0, transfers: 0 },
     reason: null,
   };
-  const response = await buildTeamPublicStateResponse(
+  const response = await resolveTeamPublicStateResponse(
     entryId,
     method,
     dependencies,
     trace,
   );
+  if (trace.diagnostic) response.headers.set("X-FPL-Failure", trace.diagnostic);
   logHandlerOutcome({
     requestId: trace.requestId,
     route: "/api/team/:id",
@@ -222,6 +235,74 @@ export async function createTeamPublicStateResponse(
     stageMs: trace.stageMs,
   });
   return response;
+}
+
+async function resolveTeamPublicStateResponse(
+  entryId: number,
+  method: string,
+  dependencies: TeamPublicStateDependencies,
+  trace: RequestTrace,
+): Promise<Response> {
+  if (
+    method !== "GET" ||
+    !Number.isInteger(entryId) ||
+    entryId < 1 ||
+    entryId > MAX_PUBLIC_ID
+  ) {
+    return buildTeamPublicStateResponse(entryId, method, dependencies, trace);
+  }
+  const now = dependencies.now ?? Date.now;
+  const snapshots = dependencies.snapshots ?? new PublicTeamSnapshotStore();
+  const saved = await snapshots.read(entryId).catch(() => null);
+  const eligible = () =>
+    saved?.entryId === entryId &&
+    publicTeamSnapshotExpiry(saved, now()) !== null;
+  if (
+    !dependencies.refresh &&
+    eligible() &&
+    saved &&
+    now() - Date.parse(saved.dataAvailableAt) < 60_000
+  ) {
+    return cachedResponse(saved, "hit");
+  }
+  const response = await buildTeamPublicStateResponse(
+    entryId,
+    method,
+    dependencies,
+    trace,
+  );
+  const envelope = publicTeamResponseSchema.safeParse(
+    await response.clone().json(),
+  );
+  if (envelope.success && envelope.data.status === "ready") {
+    await snapshots.write(envelope.data.state).catch(() => undefined);
+    response.headers.set("X-FPL-Cache", "live");
+  } else if (
+    envelope.success &&
+    envelope.data.status === "degraded" &&
+    envelope.data.reason !== "source_contract_failed" &&
+    eligible() &&
+    saved
+  ) {
+    const fallback = cachedResponse(saved, "fallback");
+    fallback.headers.set(
+      "X-FPL-Failure",
+      response.headers.get("X-FPL-Failure") ?? envelope.data.reason,
+    );
+    return fallback;
+  }
+  return response;
+}
+
+function cachedResponse(
+  state: PublicTeamState,
+  tier: "hit" | "fallback",
+): Response {
+  return jsonResponse({ status: "ready", state }, 200, {
+    "X-FPL-Cache": tier,
+    "X-FPL-Stale": "1",
+    "X-FPL-Captured-At": state.dataAvailableAt,
+  });
 }
 
 async function buildTeamPublicStateResponse(
@@ -248,8 +329,8 @@ async function buildTeamPublicStateResponse(
     );
   }
 
-  const deadline = now() + FPL_PROXY_BUDGET_MS;
   const handlerDeadline = trace.startedAt + HANDLER_BUDGET_MS;
+  const deadline = Math.min(now() + FPL_PROXY_BUDGET_MS, handlerDeadline);
   const [entryOutcome, bootstrapOutcome] = await Promise.all([
     fetchSource(
       `/api/fpl/entry/${entryId}/`,
@@ -552,6 +633,13 @@ async function fetchSource(
   const elapsed = now() - startedAt;
   trace.upstreamMs += elapsed;
   trace.stageMs[source] += elapsed;
+  if (outcome.kind === "unreachable" && outcome.diagnostic) {
+    trace.diagnostic = outcome.diagnostic;
+  } else if (outcome.kind === "ok" && outcome.source.status === 403) {
+    trace.diagnostic = "refused";
+  } else if (outcome.kind === "ok" && outcome.source.status === 429) {
+    trace.diagnostic = "rate_limited";
+  }
   logUpstreamOutcome({
     requestId: trace.requestId,
     route: "/api/team/:id",
@@ -593,7 +681,7 @@ async function readSource(
     if (reason === "unexpected_format" || reason === "oversize") {
       return { kind: "source_failed" };
     }
-    return { kind: "unreachable" };
+    return { kind: "unreachable", ...(reason ? { diagnostic: reason } : {}) };
   }
   return {
     kind: "ok",

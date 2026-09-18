@@ -1,4 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { publicTeamStateSchema } from "@fpl-andres/contracts";
+import teamCases from "../../../../packages/contracts/fixtures/public-team-state-cases.json";
 
 import { SourceCache } from "../../../../api/_lib/source-cache";
 import {
@@ -102,6 +104,43 @@ beforeEach(() => {
 });
 
 describe("upstream load", () => {
+  it("uses a recent durable snapshot without calling FPL", async () => {
+    const state = publicTeamStateSchema.parse({
+      ...teamCases.valid[0],
+      stateAsOf: "2026-09-18T17:30:00Z",
+      dataAvailableAt: "2026-09-18T18:00:00Z",
+    });
+    const fetchUpstream = vi.fn<typeof fetch>();
+    const response = await createTeamPublicStateResponse(123, "GET", {
+      now: () => Date.parse("2026-09-18T18:00:30Z"),
+      fetchUpstream,
+      snapshots: { read: async () => state, write: vi.fn() },
+    });
+    expect(response.status).toBe(200);
+    expect(response.headers.get("X-FPL-Cache")).toBe("hit");
+    expect(response.headers.get("X-FPL-Stale")).toBe("1");
+    expect(fetchUpstream).not.toHaveBeenCalled();
+    expect(await response.json()).toEqual({ status: "ready", state });
+  });
+
+  it("falls back to an eligible snapshot when FPL refuses the import", async () => {
+    const state = publicTeamStateSchema.parse({
+      ...teamCases.valid[0],
+      stateAsOf: "2026-09-18T17:30:00Z",
+      dataAvailableAt: "2026-09-18T18:00:00Z",
+    });
+    const response = await createTeamPublicStateResponse(123, "GET", {
+      now: () => Date.parse("2026-09-18T19:00:00Z"),
+      fetchUpstream: vi.fn(async () => new Response(null, { status: 403 })),
+      sleep: async () => {},
+      snapshots: { read: async () => state, write: vi.fn() },
+    });
+    expect(response.status).toBe(200);
+    expect(response.headers.get("X-FPL-Cache")).toBe("fallback");
+    expect(response.headers.get("Cache-Control")).toBe("private, no-store");
+    expect(await response.json()).toEqual({ status: "ready", state });
+  });
+
   it("pulls bootstrap once for two managers in the same minute", async () => {
     const clock = { at: Date.parse("2026-09-12T12:30:00.000Z") };
     const cache = new SourceCache<never>(() => clock.at) as never;

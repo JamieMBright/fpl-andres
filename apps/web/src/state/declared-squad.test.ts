@@ -1,6 +1,8 @@
 import { beforeEach, describe, expect, it } from "vitest";
+import { clearPrivateBrowserData } from "./private-browser-data";
 
 import {
+  declaredSquadPlanningValues,
   forgetDeclaredSquad,
   readDeclaredSquad,
   saveDeclaredSquad,
@@ -142,6 +144,110 @@ describe("declared squad", () => {
     expect(readDeclaredSquad(storage, 42, 2)).toBeNull();
   });
 
+  it("keeps manager finances and optional selling prices without public provenance", () => {
+    const ids = legalSquad();
+    const first = ids[0]!;
+    const squad = saveDeclaredSquad(
+      storage,
+      42,
+      5,
+      ids,
+      PLAYERS_BY_ELEMENT_ID,
+      undefined,
+      {
+        bankTenths: 17,
+        availableFreeTransfers: 3,
+        sellingPrices: [{ elementId: first, sellingPriceTenths: 35 }],
+      },
+    );
+    expect(readDeclaredSquad(storage, 42, 5)).toEqual(squad);
+    expect(squad).toMatchObject({
+      version: 2,
+      bankTenths: 17,
+      availableFreeTransfers: 3,
+      context: { season: "2026-27", rosterVersion: 1 },
+    });
+    expect(squad).not.toHaveProperty("stateAsOf");
+    expect(declaredSquadPlanningValues(squad, 5)).toEqual({
+      bankTenths: 17,
+      availableFreeTransfers: 3,
+      sellingPrices: new Map([[first, 35]]),
+    });
+    expect(declaredSquadPlanningValues(squad, 6)).toBeNull();
+    expect(
+      declaredSquadPlanningValues(
+        { ...squad, context: { ...squad.context!, season: "2025-26" } },
+        5,
+      ),
+    ).toBeNull();
+    const changedRoster = new Map(PLAYERS_BY_ELEMENT_ID);
+    changedRoster.set(first, { ...changedRoster.get(first)!, code: 999999 });
+    expect(declaredSquadPlanningValues(squad, 5, changedRoster)).toBeNull();
+  });
+
+  it("loads legacy declarations for completion without inventing finances or context", () => {
+    storage.setItem(
+      "fpl-andres:declared-squad:v1:42:5",
+      JSON.stringify({
+        entryId: 42,
+        event: 5,
+        elementIds: legalSquad(),
+        declaredAt: "2026-09-15T12:00:00Z",
+      }),
+    );
+    const stored = readDeclaredSquad(storage, 42, 5);
+    expect(stored).not.toBeNull();
+    expect(stored?.bankTenths).toBeUndefined();
+    expect(declaredSquadPlanningValues(stored!, 5)).toBeNull();
+  });
+
+  it("requires in-season finances and rejects invalid selling prices", () => {
+    const ids = legalSquad();
+    const save = (options: Parameters<typeof saveDeclaredSquad>[6]) =>
+      saveDeclaredSquad(
+        storage,
+        42,
+        5,
+        ids,
+        PLAYERS_BY_ELEMENT_ID,
+        undefined,
+        options,
+      );
+    expect(() => save({})).toThrow(/bank|free transfers/i);
+    expect(() => save({ bankTenths: -1, availableFreeTransfers: 2 })).toThrow();
+    expect(() => save({ bankTenths: 0, availableFreeTransfers: 99 })).toThrow();
+    expect(() =>
+      save({
+        bankTenths: 0,
+        availableFreeTransfers: 2,
+        sellingPrices: [{ elementId: 999999, sellingPriceTenths: 35 }],
+      }),
+    ).toThrow();
+    expect(() =>
+      save({
+        bankTenths: 0,
+        availableFreeTransfers: 2,
+        sellingPrices: [{ elementId: ids[0]!, sellingPriceTenths: 9999 }],
+      }),
+    ).toThrow();
+    expect(readDeclaredSquad(storage, 42, 5)).toBeNull();
+  });
+
+  it("does not apply the opening budget in season", () => {
+    const roster = new Map(
+      POOL.map((player) => [player.id, { ...player, priceTenths: 100 }]),
+    );
+    expect(() =>
+      saveDeclaredSquad(storage, 42, 1, legalSquad(), roster),
+    ).toThrow(/Over budget/);
+    expect(() =>
+      saveDeclaredSquad(storage, 42, 5, legalSquad(), roster, undefined, {
+        bankTenths: 0,
+        availableFreeTransfers: 0,
+      }),
+    ).not.toThrow();
+  });
+
   it("stores an accepted opening recommendation with the complete fifteen", () => {
     const squad = legalSquad();
 
@@ -200,6 +306,7 @@ describe("declared squad", () => {
       initialIds,
       PLAYERS_BY_ELEMENT_ID,
       () => new Date("2026-08-18T12:00:00Z"),
+      { bankTenths: SQUAD_BUDGET_TENTHS - spent, availableFreeTransfers: 0 },
     );
 
     const reloaded = readDeclaredSquad(storage, 42, event!);
@@ -244,5 +351,49 @@ describe("declared squad", () => {
     forgetDeclaredSquad(storage, 42, 1);
 
     expect(readDeclaredSquad(storage, 42, 1)).toBeNull();
+  });
+
+  it("deletes v2 finances with the existing privacy control", () => {
+    saveDeclaredSquad(
+      storage,
+      42,
+      5,
+      legalSquad(),
+      PLAYERS_BY_ELEMENT_ID,
+      undefined,
+      { bankTenths: 17, availableFreeTransfers: 3 },
+    );
+    clearPrivateBrowserData(storage);
+    expect(readDeclaredSquad(storage, 42, 5)).toBeNull();
+  });
+
+  it("refuses unknown payload versions without treating them as legacy", () => {
+    const squad = saveDeclaredSquad(storage, 42, 1, legalSquad());
+    storage.setItem(
+      "fpl-andres:declared-squad:v1:42:1",
+      JSON.stringify({ ...squad, version: 3 }),
+    );
+    expect(readDeclaredSquad(storage, 42, 1)).toBeNull();
+  });
+
+  it("requires reconfirmation after the published deadline context changes", () => {
+    const squad = saveDeclaredSquad(
+      storage,
+      42,
+      5,
+      legalSquad(),
+      PLAYERS_BY_ELEMENT_ID,
+      undefined,
+      { bankTenths: 0, availableFreeTransfers: 1 },
+    );
+    expect(
+      declaredSquadPlanningValues(
+        {
+          ...squad,
+          context: { ...squad.context!, deadline: "2026-09-17T12:00:00Z" },
+        },
+        5,
+      ),
+    ).toBeNull();
   });
 });

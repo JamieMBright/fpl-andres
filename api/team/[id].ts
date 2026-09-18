@@ -47,6 +47,7 @@ export default async function teamPublicStateHandler(
     const teamResponse = await createTeamPublicStateResponse(
       entryId,
       request.method ?? "GET",
+      { refresh: request.headers?.["cache-control"] === "no-cache" },
     );
 
     teamResponse.headers.forEach((value, key) => {

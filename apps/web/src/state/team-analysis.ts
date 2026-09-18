@@ -53,6 +53,9 @@ const cachedTeamStateSchema = z
   })
   .strict();
 
+type TeamDegradedReason =
+  PublicTeamDegradedReason | "fpl_refused" | "fpl_rate_limited";
+
 export type TeamAnalysisState =
   | { status: "idle" }
   | { status: "loading" }
@@ -61,9 +64,13 @@ export type TeamAnalysisState =
   | {
       status: "stale";
       state: PublicTeamState;
-      reason: PublicTeamDegradedReason | "network_error" | "invalid_response";
+      reason:
+        | TeamDegradedReason
+        | "network_error"
+        | "invalid_response"
+        | "cached_snapshot";
     }
-  | { status: "degraded"; reason: PublicTeamDegradedReason }
+  | { status: "degraded"; reason: TeamDegradedReason }
   | { status: "error"; reason: "network_error" | "invalid_response" }
   | {
       status: "unavailable";
@@ -77,7 +84,7 @@ export type TeamAnalysisAction =
 
 interface RefreshDependencies {
   fetchApi?: typeof fetch;
-  storage: Storage;
+  storage?: Storage | undefined;
   signal?: AbortSignal;
   /** Injected so tests do not wait out the real backoff. */
   wait?: (ms: number) => Promise<void>;
@@ -149,7 +156,7 @@ export function loadCachedPublicTeamState(
   }
 }
 
-function usableUntilNextDeadline(event: number, now: Date): boolean {
+export function usableUntilNextDeadline(event: number, now: Date): boolean {
   const next = deadlineAfterEvent(event);
   if (next === null) {
     return event === FULL_SEASON_DEADLINES.at(-1)?.event;
@@ -164,55 +171,121 @@ export async function refreshTeamAnalysis(
   dependencies: RefreshDependencies,
 ): Promise<TeamAnalysisState> {
   requireEntryId(entryId);
+  const controller = new AbortController();
+  const external = dependencies.signal;
+  const cancel = () => controller.abort(external?.reason);
+  if (external?.aborted) cancel();
+  else external?.addEventListener("abort", cancel, { once: true });
+  const timer = setTimeout(
+    () =>
+      controller.abort(new DOMException("Import timed out", "TimeoutError")),
+    20_000,
+  );
+  const signal = controller.signal;
+  let onAbort = () => {};
+  const aborted = new Promise<never>((_resolve, reject) => {
+    onAbort = () => reject(signal.reason);
+    if (signal.aborted) onAbort();
+    else signal.addEventListener("abort", onAbort, { once: true });
+  });
+  try {
+    return await Promise.race([
+      fetchTeamAnalysis(entryId, previous, { ...dependencies, signal }),
+      aborted,
+    ]);
+  } catch (error) {
+    if (external?.aborted) throw external.reason;
+    if (!signal.aborted) throw error;
+    return fallbackState(entryId, previous, "network_error");
+  } finally {
+    clearTimeout(timer);
+    external?.removeEventListener("abort", cancel);
+    signal.removeEventListener("abort", onAbort);
+  }
+}
+
+function fallbackState(
+  entryId: number,
+  previous: PublicTeamState | null,
+  reason: "network_error" | "invalid_response",
+): TeamAnalysisState {
+  return previous?.entryId === entryId &&
+    usableUntilNextDeadline(previous.event, new Date())
+    ? { status: "stale", state: previous, reason }
+    : { status: "error", reason };
+}
+
+async function fetchTeamAnalysis(
+  entryId: number,
+  previous: PublicTeamState | null,
+  dependencies: RefreshDependencies & { signal: AbortSignal },
+): Promise<TeamAnalysisState> {
   const fetchApi = dependencies.fetchApi ?? fetch;
+  const signal = dependencies.signal;
   const wait =
     dependencies.wait ??
-    ((ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms)));
-  const signal = dependencies.signal ?? new AbortController().signal;
+    ((ms: number) =>
+      new Promise<void>((resolve, reject) => {
+        signal.throwIfAborted();
+        const onAbort = () => {
+          clearTimeout(timer);
+          reject(signal.reason);
+        };
+        const timer = setTimeout(() => {
+          signal.removeEventListener("abort", onAbort);
+          resolve();
+        }, ms);
+        signal.addEventListener("abort", onAbort, { once: true });
+      }));
 
   let response: Response | null = null;
+  let envelope: PublicTeamResponse | undefined;
   for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt += 1) {
+    signal.throwIfAborted();
     try {
       response = await fetchApi(`/api/team/${entryId}`, {
         headers: { Accept: "application/json" },
         signal,
       });
+      const candidate = publicTeamResponseSchema.safeParse(
+        await response.json().catch(() => null),
+      );
+      signal.throwIfAborted();
+      if (candidate.success) {
+        envelope = candidate.data;
+        break;
+      }
       if (
         !RETRYABLE_STATUSES.has(response.status) ||
         attempt === MAX_ATTEMPTS - 1
       ) {
         break;
       }
-      await response.body?.cancel();
     } catch (error) {
+      signal.throwIfAborted();
       // An abort is the caller changing their mind, not a failure to retry.
       if (error instanceof DOMException && error.name === "AbortError") {
         throw error;
       }
       if (attempt === MAX_ATTEMPTS - 1) {
-        return previous
-          ? { status: "stale", state: previous, reason: "network_error" }
-          : { status: "error", reason: "network_error" };
+        return fallbackState(entryId, previous, "network_error");
       }
       await wait(RETRY_BASE_MS * 2 ** attempt);
       continue;
     }
-    await wait(RETRY_BASE_MS * 2 ** attempt);
+    const retryAfter = response?.headers.get("Retry-After");
+    const delay = retryAfter
+      ? /^\d+$/.test(retryAfter)
+        ? Number(retryAfter) * 1_000
+        : Math.max(0, Date.parse(retryAfter) - Date.now())
+      : RETRY_BASE_MS * 2 ** attempt;
+    await wait(Number.isFinite(delay) ? delay : 20_000);
   }
   if (response === null) {
-    return previous
-      ? { status: "stale", state: previous, reason: "network_error" }
-      : { status: "error", reason: "network_error" };
+    return fallbackState(entryId, previous, "network_error");
   }
 
-  let envelope: PublicTeamResponse;
-  try {
-    envelope = publicTeamResponseSchema.parse(await response.json());
-  } catch {
-    return previous
-      ? { status: "stale", state: previous, reason: "invalid_response" }
-      : { status: "error", reason: "invalid_response" };
-  }
+  if (!envelope) return fallbackState(entryId, previous, "invalid_response");
 
   if (envelope.status === "ready") {
     let state: PublicTeamState;
@@ -223,22 +296,43 @@ export async function refreshTeamAnalysis(
       }
       state = parsed;
     } catch {
-      return previous
-        ? { status: "stale", state: previous, reason: "invalid_response" }
-        : { status: "error", reason: "invalid_response" };
+      return fallbackState(entryId, previous, "invalid_response");
     }
     try {
-      saveCachedPublicTeamState(dependencies.storage, entryId, state);
+      if (dependencies.storage) {
+        saveCachedPublicTeamState(dependencies.storage, entryId, state);
+      }
     } catch {
       // Storage failure (quota, private mode, disabled) does not invalidate
       // the response. The current session still surfaces the fresh snapshot.
     }
+    if (response.headers.get("X-FPL-Stale") === "1") {
+      if (!usableUntilNextDeadline(state.event, new Date())) {
+        return { status: "degraded", reason: "fpl_source_failed" };
+      }
+      return {
+        status: "stale",
+        state,
+        reason:
+          upstreamReason(response) ??
+          (response.headers.get("X-FPL-Cache") === "hit"
+            ? "cached_snapshot"
+            : "fpl_unreachable"),
+      };
+    }
     return { status: "ready", state };
   }
   if (envelope.status === "degraded") {
-    return previous
-      ? { status: "stale", state: previous, reason: envelope.reason }
-      : { status: "degraded", reason: envelope.reason };
+    const reason =
+      envelope.reason === "fpl_unreachable" ||
+      envelope.reason === "fpl_source_failed"
+        ? (upstreamReason(response) ?? envelope.reason)
+        : envelope.reason;
+    return previous?.entryId === entryId &&
+      usableUntilNextDeadline(previous.event, new Date()) &&
+      envelope.reason !== "source_contract_failed"
+      ? { status: "stale", state: previous, reason }
+      : { status: "degraded", reason };
   }
   return envelope.reason === "picks_unavailable"
     ? {
@@ -247,6 +341,13 @@ export async function refreshTeamAnalysis(
         event: envelope.event,
       }
     : { status: "unavailable", reason: envelope.reason };
+}
+
+function upstreamReason(response: Response): TeamDegradedReason | null {
+  const reason = response.headers.get("X-FPL-Failure");
+  if (reason === "refused" || reason === "challenged") return "fpl_refused";
+  if (reason === "rate_limited") return "fpl_rate_limited";
+  return null;
 }
 
 function requireEntryId(entryId: number): void {

@@ -3,7 +3,10 @@ import { describe, expect, it, vi } from "vitest";
 
 import { XStartCalibration } from "./XStartCalibration";
 import validation from "../data/xstart-validation.json";
-import { readXStartValidation } from "../state/xstart-validation";
+import {
+  latestSettledWindow,
+  readXStartValidation,
+} from "../state/xstart-validation";
 
 const latest = validation.events.at(-1)!;
 
@@ -103,7 +106,8 @@ describe("XStartCalibration", () => {
     });
     expect(lastFiveOption).toHaveProperty(
       "disabled",
-      validation.events.length < 5,
+      latestSettledWindow(readXStartValidation(validation).events, 5).length <
+        5,
     );
     expect(period).toHaveValue("average");
     expect(

@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { refreshTeamAnalysis } from "./team-analysis";
 
@@ -17,6 +17,8 @@ function storage(): Storage {
 }
 
 const noWait = () => Promise.resolve();
+
+afterEach(() => vi.useRealTimers());
 
 describe("a flaky connection costs a retry, not the answer", () => {
   it("retries a dropped connection and then succeeds", async () => {
@@ -37,7 +39,7 @@ describe("a flaky connection costs a retry, not the answer", () => {
     expect(result.status).toBe("unavailable");
   });
 
-  it("retries a transient degraded response and then succeeds", async () => {
+  it("does not repeat an import after the server exhausted upstream retries", async () => {
     const fetchApi = vi
       .fn<typeof fetch>()
       .mockResolvedValueOnce(
@@ -56,11 +58,50 @@ describe("a flaky connection costs a retry, not the answer", () => {
       wait: noWait,
     });
 
-    expect(fetchApi).toHaveBeenCalledTimes(2);
+    expect(fetchApi).toHaveBeenCalledTimes(1);
     expect(result).toEqual({
-      status: "unavailable",
-      reason: "no_processed_event",
+      status: "degraded",
+      reason: "fpl_unreachable",
     });
+  });
+
+  it("bounds a stalled import to twenty seconds", async () => {
+    vi.useFakeTimers();
+    const settled = vi.fn();
+    const fetchApi = vi.fn<typeof fetch>(() => new Promise(() => {}));
+    void refreshTeamAnalysis(ENTRY, null, {
+      fetchApi,
+      storage: storage(),
+    }).then(settled);
+
+    await vi.advanceTimersByTimeAsync(20_000);
+
+    expect(settled).toHaveBeenCalledWith({
+      status: "error",
+      reason: "network_error",
+    });
+    expect(fetchApi.mock.calls[0]?.[1]?.signal?.aborted).toBe(true);
+    expect(vi.getTimerCount()).toBe(0);
+  });
+
+  it("cancels during backoff without starting another request", async () => {
+    vi.useFakeTimers();
+    const controller = new AbortController();
+    const fetchApi = vi.fn<typeof fetch>().mockRejectedValue(new TypeError());
+    const settled = vi.fn();
+    void refreshTeamAnalysis(ENTRY, null, {
+      fetchApi,
+      storage: storage(),
+      signal: controller.signal,
+    }).catch(settled);
+    await vi.advanceTimersByTimeAsync(1);
+
+    controller.abort();
+    await vi.advanceTimersByTimeAsync(1_000);
+
+    expect(settled).toHaveBeenCalledWith(expect.any(DOMException));
+    expect(fetchApi).toHaveBeenCalledTimes(1);
+    expect(vi.getTimerCount()).toBe(0);
   });
 
   it("gives up after a bounded number of attempts", async () => {

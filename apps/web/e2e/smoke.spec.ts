@@ -159,6 +159,49 @@ test("an unreachable source is reported, never invented", async ({ page }) => {
   ).toBeVisible();
 });
 
+for (const width of [390, 1440]) {
+  test(`FPL refusal keeps manual planning accessible at ${width}px`, async ({
+    page,
+  }, testInfo) => {
+    await page.setViewportSize({ width, height: 900 });
+    await page.clock.setFixedTime(new Date("2026-09-18T18:00:00Z"));
+    await page.route("**/api/**", async (route) => {
+      await route.fulfill({
+        status: 503,
+        contentType: "application/json",
+        headers: { "X-FPL-Failure": "refused" },
+        body: JSON.stringify({ status: "degraded", reason: "fpl_unreachable" }),
+      });
+    });
+    await page.goto(`/plan?team=${TEAM_ID}`);
+    await settle(page);
+    await page.locator('[data-step="01"] > summary').click();
+    await expect(
+      page.getByRole("heading", { name: "FPL Refused This Request" }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Build your gameweek 6 fifteen" }),
+    ).toBeVisible();
+    await page.getByLabel("Current bank (£m)").fill("2.3");
+    await page.getByLabel("Available free transfers").selectOption("3");
+    await expect(page.getByLabel("Current bank (£m)")).toHaveValue("2.3");
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth <= window.innerWidth,
+      ),
+    ).toBe(true);
+    const scan = await new AxeBuilder({ page })
+      .include(".outage-squad")
+      .withTags([...WCAG])
+      .analyze();
+    expect(scan.violations).toEqual([]);
+    await page.screenshot({
+      path: testInfo.outputPath("fpl-outage.png"),
+      fullPage: true,
+    });
+  });
+}
+
 test.describe.serial("plan palette accessibility", () => {
   for (const theme of ["dark", "light", "away"] as const) {
     test(`the busiest page passes an accessibility scan in the ${theme} kit`, async ({

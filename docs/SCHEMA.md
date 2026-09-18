@@ -1,6 +1,6 @@
 # Schema reference
 
-Seventeen migrations define twenty-one tables and one safe read view, and reading them in
+Eighteen migrations define twenty-two tables and one safe read view, and reading them in
 order is the only way to see the model. This is that view.
 
 The organising rule, which is not obvious from any single migration:
@@ -75,6 +75,16 @@ erDiagram
         text decision
         text corpus_fingerprint
     }
+
+    public_team_snapshots {
+      text season
+      bigint entry_id
+      int event
+      text context_hash
+      timestamptz captured_at
+      timestamptz expires_at
+      jsonb state
+    }
 ```
 
 Three shapes to notice. `source_snapshots` is the hub: nine tables cite it, and
@@ -83,6 +93,17 @@ that is what makes the mutable corpus auditable despite being mutable. The three
 output cannot become separated. And `model_promotion_decisions` stands alone,
 because a promotion is a judgement about two models rather than a row derived
 from evidence.
+
+## Public Team Cache
+
+`public_team_snapshots` holds contract-validated public FPL state keyed by
+`(season, entry_id, event)`. A context hash binds it to the shipped deadlines
+and player-ID mapping. Original observation timestamps and source hashes remain
+inside the snapshot; reading it never refreshes them. Only `service_role` has
+access, with forced RLS and no browser policy or view. There is no dependency
+on historical season ingestion. Snapshots expire at the next deadline and are
+deleted within the existing 30-day retention window. Manager declarations and
+corrections are never stored here.
 
 ## Naming
 

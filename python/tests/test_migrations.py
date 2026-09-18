@@ -59,6 +59,23 @@ def test_every_migration_only_touches_tables_that_already_exist() -> None:
     assert problems == []
 
 
+def test_public_team_cache_is_service_only_and_season_scoped() -> None:
+    sql = " ".join(
+        (MIGRATIONS_DIR / "20260918203016_public_team_snapshots.sql")
+        .read_text(encoding="utf-8")
+        .lower()
+        .split()
+    )
+    assert "primary key (season, entry_id, event)" in sql
+    assert "public.public_team_snapshots enable row level security" in sql
+    assert "public.public_team_snapshots force row level security" in sql
+    assert "from public, anon, authenticated" in sql
+    assert "to service_role" in sql
+    assert "create policy" not in sql
+    assert "expires_at <= captured_at + interval '30 days'" in sql
+    assert "references public.seasons" not in sql
+
+
 def test_foundation_table_is_explicitly_protected_by_rls() -> None:
     sql = FOUNDATION_MIGRATION.read_text(encoding="utf-8").lower()
 

@@ -134,7 +134,7 @@ and never inspect application rows through an AI tool.
 Apply only tracked migrations that pass the local policy tests and Linux CI.
 The bootstrap is this list, pasted into the SQL Editor **in filename order**.
 
-The migrations are **not idempotent** — 21 `create table`, 36 `create index`,
+The migrations are **not idempotent** — 22 `create table`, 37 `create index`,
 12 `create trigger` and 6 `create function` statements are written without a
 guard — so a file cannot be safely re-run after a partial paste. If a paste
 failed part-way, run `supabase/rollback/down.sql` to return to empty before
@@ -159,6 +159,7 @@ re-applying. That is a teardown, not a repair: it drops everything.
 | 15  | `20260802120000_snapshot_path_integrity.sql`                  | no                             |
 | 16  | `20260804120000_analysis_requests_and_declared_transfers.sql` | yes — applied 2026-08-04       |
 | 17  | `20260908120000_recommendation_snapshots.sql`                 | no                             |
+| 18  | `20260918203016_public_team_snapshots.sql`                    | no                             |
 
 Rows 7–10 are marked for confirmation rather than guessed: their state was
 never recorded and cannot be inferred from the repository. Check the hosted
@@ -178,9 +179,14 @@ table that can reach the ceiling is `backtest_predictions`, because a sweep
 writes a row per player per gameweek per candidate; prune it by run, oldest
 first, if it ever does.
 
-Analysis requests, recommendation snapshots, declared transfers, contact
+Analysis requests, recommendation snapshots, public team snapshots, declared transfers, contact
 messages and reply addresses are personal data and are the exception. Request
-diagnostics and recommendation snapshots are deleted after 30 days.
+diagnostics, recommendation snapshots and public team snapshots are deleted after 30 days.
+Public team snapshots retain original source timestamps, are service-role-only,
+and are never eligible for planning beyond the next deadline. The cache stores
+only validated FPL state, never manager corrections. Migration 18 must pass CI
+and be applied through the ordered SQL Editor process before durable caching
+is active; a missing cache table does not block a live team import.
 Declared-transfer copies are deleted seven days after the relevant deadline and
 never kept beyond 30 days. Contact content is never written to
 Supabase: it passes through Resend to the private project mailbox, whose copy is
@@ -198,6 +204,12 @@ unexpectedly large deletion batch; `/privacy` exposes the local-data controls.
   identifiers.
 - `canary.yml` probes the deployed site on a schedule. A red canary means the
   deployment, not the model.
+- Team imports reuse an eligible server snapshot for up to 60 seconds, then
+  try FPL and retain the snapshot only as a labelled outage fallback. Responses
+  remain `private, no-store`; `X-FPL-Cache` distinguishes `live`, `hit` and
+  `fallback`, and `X-FPL-Stale` marks retained evidence. A `Cache-Control:
+no-cache` request bypasses short reuse but not the outage fallback. Browser
+  imports have a 20-second total budget, including retries and body reads.
 - The odds ingest and the player-market survey run on GitHub runners only,
   because the owner's network blocks every price host. Player rows retain
   per-fixture observation times, and capped runs rotate uncovered fixtures

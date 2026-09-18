@@ -68,6 +68,19 @@ def test_recommendation_snapshots_expire_after_thirty_days() -> None:
     ) in client.deletes
 
 
+def test_public_team_snapshots_expire_after_thirty_days() -> None:
+    client = RecordingDeleteClient()
+    prune_private_state(
+        client,
+        plan("2026-08-21T17:30:00Z"),
+        now=datetime(2026, 8, 31, tzinfo=UTC),
+    )
+    assert (
+        "public_team_snapshots",
+        {"captured_at": "lt.2026-08-01T00:00:00Z"},
+    ) in client.deletes
+
+
 def test_retention_survives_before_the_new_table_is_deployed() -> None:
     client = MissingRecommendationSnapshotsClient()
 

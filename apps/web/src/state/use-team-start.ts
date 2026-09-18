@@ -1,9 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import type { PublicTeamState } from "@fpl-andres/contracts";
 
 import type { SolveAssumption, SolveStart } from "./season-solver";
 import { PLAYERS_BY_ELEMENT_ID, startFromElementIds } from "./season-solver";
-import { planningEventAt } from "./season-deadlines";
+import { deadlineAfterEvent, planningEventAt } from "./season-deadlines";
 import {
+  declaredSquadPlanningValues,
   readDeclaredSquad,
   saveDeclaredSquad,
   SQUAD_BUDGET_TENTHS,
@@ -20,6 +22,7 @@ import { loadTeamStateOverrides } from "./team-state-overrides";
 import {
   initialTeamAnalysisState,
   loadCachedPublicTeamState,
+  usableUntilNextDeadline,
   type TeamAnalysisState,
 } from "./team-analysis";
 
@@ -113,144 +116,86 @@ export function useTeamPlan(
     entryId >= 1 &&
     entryId <= 4_294_967_295;
 
-  const [fetched, setFetched] = useState<TeamStartStatus | null>(null);
-  const [resolved, setResolved] = useState<TeamAnalysisState | null>(null);
+  const [resolved, setResolved] = useState<{
+    entryId: number;
+    attempt: number;
+    result: TeamAnalysisState;
+  } | null>(null);
   const [attempt, setAttempt] = useState(0);
   const lastRequestedAt = useRef(0);
 
   // Read outside the effect: a cached snapshot is shown while the refresh runs,
   // and setting that from inside the effect is a cascading render. Keyed on the
   // team alone — once a refresh lands its result supersedes this.
-  const cached = useMemo(
-    () =>
-      usable && entryId !== null
-        ? loadCachedPublicTeamState(window.localStorage, entryId)
-        : null,
-    [entryId, usable],
-  );
+  const cached = useMemo(() => {
+    void attempt;
+    if (!usable || entryId === null) return null;
+    try {
+      return loadCachedPublicTeamState(window.localStorage, entryId);
+    } catch {
+      return null;
+    }
+  }, [entryId, usable, attempt]);
+
+  const prior = resolved?.entryId === entryId ? resolved.result : null;
+  const previous =
+    prior &&
+    (prior.status === "ready" || prior.status === "stale") &&
+    usableUntilNextDeadline(prior.state.event, new Date())
+      ? prior.state
+      : cached && usableUntilNextDeadline(cached.event, new Date())
+        ? cached
+        : null;
+  const previousRef = useRef(previous);
+  useEffect(() => {
+    previousRef.current = previous;
+  }, [previous]);
 
   useEffect(() => {
     if (!usable || entryId === null) return;
 
     const controller = new AbortController();
     lastRequestedAt.current = Date.now();
-    let settled = false;
-    refreshTeamAnalysis(entryId, cached, {
-      storage: window.localStorage,
+    refreshTeamAnalysis(entryId, previousRef.current, {
+      storage: browserStorage(),
       signal: controller.signal,
     })
       .then((result) => {
         if (controller.signal.aborted) return;
-        settled = true;
-        setResolved(result);
-        if (result.status !== "ready" && result.status !== "stale") {
-          const declaredStart = startFromDeclaredSquad(
-            entryId,
-            currentPlanningEvent(),
-            squadCode,
-          );
-          if (declaredStart) {
-            setFetched(declaredStart);
-            return;
-          }
-          setFetched({
-            status: "failed",
-            reason:
-              result.status === "unavailable" &&
-              result.reason === "no_processed_event"
-                ? "no_processed_event"
-                : "unreachable",
-          });
-          return;
-        }
-        const team = result.state;
-        // His picks are the gameweek just gone, so the plan starts at the next.
-        const fromEvent = team.event + 1;
-        // Anything he has told us about that FPL has not published yet. Read
-        // from his own browser, so it can only ever be his claim about his own
-        // squad — a Team ID is public, and a server copy could be forged.
-        const declared = readDeclaredTransfers(
-          window.localStorage,
-          entryId,
-          fromEvent,
-        );
-        // What FPL cannot publish and only the manager knows: how many free
-        // transfers he is holding, what he paid for his squad, and how much is
-        // really in the bank after a move FPL has not processed. The form that
-        // collects these was writing to storage nobody read.
-        const corrections = loadTeamStateOverrides(
-          window.localStorage,
-          entryId,
-          team.stateAsOf,
-        );
-        const publicSellingPrices = new Map(
-          team.picks.flatMap((pick) =>
-            pick.sellingPriceTenths === null
-              ? []
-              : [[pick.elementId, pick.sellingPriceTenths] as const],
-          ),
-        );
-        const sellingPrices =
-          corrections?.currentSquad === null ||
-          corrections?.currentSquad === undefined
-            ? publicSellingPrices
-            : new Map(
-                corrections.currentSquad.map((player) => [
-                  player.elementId,
-                  player.sellingPriceTenths,
-                ]),
-              );
-        const assumed: SolveAssumption[] =
-          corrections?.availableFreeTransfers === null ||
-          corrections?.availableFreeTransfers === undefined
-            ? ["free_transfers"]
-            : [];
-        const start = startFromElementIds(
-          squadAfterDeclared(
-            team.picks.map((pick) => pick.elementId),
-            declared,
-          ),
-          {
-            bankTenths: corrections?.bankTenths ?? team.bankTenths,
-            teamValueTenths: team.squadValueTenths,
-            availableFreeTransfers:
-              corrections?.availableFreeTransfers ?? DEFAULT_FREE_TRANSFERS,
-            fromEvent,
-            sellingPrices,
-            assumed,
-          },
-        );
-        setFetched(
-          start
-            ? {
-                status: "ready",
-                start,
-                event: fromEvent,
-                declared,
-                source: "published",
-              }
-            : { status: "failed", reason: "squad_not_recognised" },
-        );
+        setResolved({ entryId, attempt, result });
       })
-      .catch((error: unknown) => {
-        if (error instanceof DOMException && error.name === "AbortError")
-          return;
-        settled = true;
-        // The snapshot has to hear about this too, or the page sits on
-        // "loading" forever while the solver has already given up.
-        setResolved({ status: "error", reason: "network_error" });
-        setFetched({ status: "failed", reason: "unreachable" });
+      .catch(() => {
+        if (controller.signal.aborted) return;
+        const saved = previousRef.current;
+        setResolved({
+          entryId,
+          attempt,
+          result:
+            saved && usableUntilNextDeadline(saved.event, new Date())
+              ? { status: "stale", state: saved, reason: "network_error" }
+              : { status: "error", reason: "network_error" },
+        });
       });
 
     return () => {
       controller.abort();
-      // A new team id must not show the previous one's answer.
-      if (!settled) {
-        setFetched(null);
-        setResolved(null);
-      }
     };
   }, [entryId, usable, declaredAt, attempt, cached, squadCode]);
+
+  const snapshotEvent = previous?.event;
+  useEffect(() => {
+    if (snapshotEvent === undefined) return;
+    const deadline = deadlineAfterEvent(snapshotEvent);
+    if (!deadline) return;
+    const timer = window.setTimeout(
+      () => setAttempt((value) => value + 1),
+      Math.min(
+        2_147_483_647,
+        Math.max(0, Date.parse(deadline.deadline) - Date.now()),
+      ),
+    );
+    return () => window.clearTimeout(timer);
+  }, [snapshotEvent, attempt]);
 
   useEffect(() => {
     if (!usable) return;
@@ -264,27 +209,55 @@ export function useTeamPlan(
       }
     };
     window.addEventListener("online", refresh);
+    window.addEventListener("storage", refresh);
     document.addEventListener("visibilitychange", onVisible);
     return () => {
       window.removeEventListener("online", refresh);
+      window.removeEventListener("storage", refresh);
       document.removeEventListener("visibilitychange", onVisible);
     };
   }, [usable]);
 
-  const start: TeamStartStatus =
-    raw === null
-      ? { status: "idle" }
-      : !usable
-        ? { status: "failed", reason: "not_a_team_id" }
-        : (fetched ?? { status: "loading" });
+  const analysis = useMemo<TeamAnalysisState>(
+    () =>
+      raw === null || !usable
+        ? initialTeamAnalysisState
+        : resolved?.entryId === entryId && resolved.attempt === attempt
+          ? resolved.result
+          : previous
+            ? { status: "refreshing", state: previous }
+            : { status: "loading" },
+    [raw, usable, resolved, entryId, attempt, previous],
+  );
 
-  const analysis: TeamAnalysisState =
-    raw === null || !usable
-      ? initialTeamAnalysisState
-      : (resolved ??
-        (cached
-          ? { status: "refreshing", state: cached }
-          : { status: "loading" }));
+  const start = useMemo<TeamStartStatus>(() => {
+    void declaredAt;
+    if (raw === null) return { status: "idle" };
+    if (!usable || entryId === null)
+      return { status: "failed", reason: "not_a_team_id" };
+    if (
+      analysis.status === "ready" ||
+      analysis.status === "stale" ||
+      analysis.status === "refreshing"
+    ) {
+      return startFromPublicState(analysis.state);
+    }
+    const declared = startFromDeclaredSquad(
+      entryId,
+      currentPlanningEvent(),
+      squadCode,
+    );
+    if (declared) return declared;
+    if (analysis.status === "loading") return { status: "loading" };
+    return {
+      status: "failed",
+      reason:
+        analysis.status === "unavailable" &&
+        analysis.reason === "no_processed_event"
+          ? "no_processed_event"
+          : "unreachable",
+    };
+  }, [raw, usable, entryId, analysis, declaredAt, squadCode]);
 
   return {
     start,
@@ -293,11 +266,71 @@ export function useTeamPlan(
       // Clearing first is what makes the click visible. Without it the previous
       // failure stayed on screen for the whole request, so a retry that failed
       // the same way changed nothing a reader could see.
-      setResolved(null);
-      setFetched(null);
       setAttempt((previous) => previous + 1);
     },
   };
+}
+
+function startFromPublicState(team: PublicTeamState): TeamStartStatus {
+  const fromEvent = team.event + 1;
+  let declared: readonly DeclaredTransfer[] = [];
+  let corrections: ReturnType<typeof loadTeamStateOverrides> = null;
+  try {
+    declared = readDeclaredTransfers(
+      window.localStorage,
+      team.entryId,
+      fromEvent,
+    );
+    corrections = loadTeamStateOverrides(
+      window.localStorage,
+      team.entryId,
+      team.stateAsOf,
+    );
+  } catch {
+    declared = [];
+    corrections = null;
+  }
+  const publicSellingPrices = new Map(
+    team.picks.flatMap((pick) =>
+      pick.sellingPriceTenths === null
+        ? []
+        : [[pick.elementId, pick.sellingPriceTenths] as const],
+    ),
+  );
+  const sellingPrices = corrections?.currentSquad
+    ? new Map(
+        corrections.currentSquad.map((player) => [
+          player.elementId,
+          player.sellingPriceTenths,
+        ]),
+      )
+    : publicSellingPrices;
+  const assumed: SolveAssumption[] =
+    corrections?.availableFreeTransfers == null ? ["free_transfers"] : [];
+  const start = startFromElementIds(
+    squadAfterDeclared(
+      team.picks.map((pick) => pick.elementId),
+      declared,
+    ),
+    {
+      bankTenths: corrections?.bankTenths ?? team.bankTenths,
+      teamValueTenths: team.squadValueTenths,
+      availableFreeTransfers:
+        corrections?.availableFreeTransfers ?? DEFAULT_FREE_TRANSFERS,
+      fromEvent,
+      sellingPrices,
+      assumed,
+    },
+  );
+  return start
+    ? {
+        status: "ready",
+        start,
+        event: fromEvent,
+        declared,
+        source: "published",
+      }
+    : { status: "failed", reason: "squad_not_recognised" };
 }
 
 /** The squad alone, for callers with no use for the snapshot behind it. */
@@ -320,7 +353,8 @@ function startFromDeclaredSquad(
   event: number = PRE_SEASON_EVENT,
   squadCode: string | null = null,
 ): TeamStartStatus | null {
-  const stored = readDeclaredSquad(window.localStorage, entryId, event);
+  const storage = browserStorage();
+  const stored = storage ? readDeclaredSquad(storage, entryId, event) : null;
   const elementIds = stored?.elementIds ?? fromLink(entryId, event, squadCode);
   if (!elementIds) return null;
 
@@ -335,33 +369,30 @@ function startFromDeclaredSquad(
   }
 
   const opening = event === PRE_SEASON_EVENT;
+  const finances = stored
+    ? declaredSquadPlanningValues(stored, event, PLAYERS_BY_ELEMENT_ID)
+    : null;
+  if ((stored && !finances) || (!opening && !finances)) return null;
   const validation = validateDeclaredSquad(elementIds, PLAYERS_BY_ELEMENT_ID, {
     enforceOpeningBudget: opening,
   });
   if (!validation.valid) return null;
 
   const start = startFromElementIds(elementIds, {
-    bankTenths: opening
-      ? SQUAD_BUDGET_TENTHS - validation.summary.spentTenths
-      : 0,
+    bankTenths:
+      finances?.bankTenths ??
+      SQUAD_BUDGET_TENTHS - validation.summary.spentTenths,
     ...(opening ? { teamValueTenths: SQUAD_BUDGET_TENTHS } : {}),
-    // Gameweek one is squad selection, not a transfer window, and the solver
-    // zeroes the allowance for the opener regardless.
-    availableFreeTransfers: opening ? 0 : DEFAULT_FREE_TRANSFERS,
+    availableFreeTransfers: finances?.availableFreeTransfers ?? 0,
     fromEvent: event,
-    // He is buying at today's price this minute, so the list price IS his
-    // purchase price. Nothing is assumed here, unlike a published squad whose
-    // purchase prices FPL keeps private.
-    ...(opening
-      ? {
-          sellingPrices: new Map(
-            elementIds.map((elementId) => [
-              elementId,
-              PLAYERS_BY_ELEMENT_ID.get(elementId)?.priceTenths ?? 0,
-            ]),
-          ),
-        }
-      : { assumed: ["bank", "free_transfers"] as SolveAssumption[] }),
+    sellingPrices:
+      finances?.sellingPrices ??
+      new Map(
+        validation.summary.players.map((player) => [
+          player.id,
+          player.priceTenths,
+        ]),
+      ),
   });
   return start
     ? {
@@ -372,6 +403,14 @@ function startFromDeclaredSquad(
         source: "declared",
       }
     : null;
+}
+
+function browserStorage(): Storage | undefined {
+  try {
+    return window.localStorage;
+  } catch {
+    return undefined;
+  }
 }
 
 /**

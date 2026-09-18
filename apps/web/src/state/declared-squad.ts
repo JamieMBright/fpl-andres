@@ -1,6 +1,8 @@
 import { z } from "zod";
 
 import { PLAYERS_BY_ELEMENT_ID, type SolverPlayer } from "./season-solver";
+import { FULL_SEASON_DEADLINES } from "./season-deadlines";
+import inputs from "../data/season-inputs.json";
 
 /**
  * The fifteen a manager says he is starting the season with.
@@ -60,15 +62,66 @@ export function readTeamIdHistory(storage: Storage): number[] {
   }
   return [...ids];
 }
-export const SQUAD_SIZE = 15;
-export const MAX_PER_CLUB = 3;
-const SHAPE: Record<SolverPlayer["position"], number> = {
-  GKP: 2,
-  DEF: 5,
-  MID: 5,
-  FWD: 3,
-};
+const rules = z
+  .object({
+    squadSize: z.number().int().positive(),
+    clubLimit: z.number().int().positive(),
+    maximumFreeTransfers: z.number().int().nonnegative(),
+    positions: z.array(
+      z.object({
+        positionId: z.number().int(),
+        squadCount: z.number().int().positive(),
+      }),
+    ),
+  })
+  .parse(inputs.rules);
+export const SQUAD_SIZE = rules.squadSize;
+export const MAX_PER_CLUB = rules.clubLimit;
 const POSITION_ORDER: SolverPlayer["position"][] = ["GKP", "DEF", "MID", "FWD"];
+const SHAPE = Object.fromEntries(
+  POSITION_ORDER.map((position, index) => [
+    position,
+    z
+      .number()
+      .int()
+      .positive()
+      .parse(
+        rules.positions.find((row) => row.positionId === index + 1)?.squadCount,
+      ),
+  ]),
+) as Record<SolverPlayer["position"], number>;
+
+const contextSchema = z.object({
+  season: z.string().regex(/^\d{4}-\d{2}$/),
+  deadline: z.iso.datetime(),
+  rosterVersion: z.literal(1),
+  players: z
+    .array(
+      z.object({
+        elementId: z.number().int().positive(),
+        code: z.number().int().positive(),
+      }),
+    )
+    .length(SQUAD_SIZE),
+});
+
+const financesSchema = z.object({
+  bankTenths: z.number().int().nonnegative(),
+  availableFreeTransfers: z
+    .number()
+    .int()
+    .min(0)
+    .max(rules.maximumFreeTransfers),
+  sellingPrices: z
+    .array(
+      z.object({
+        elementId: z.number().int().positive(),
+        sellingPriceTenths: z.number().int().positive(),
+      }),
+    )
+    .max(SQUAD_SIZE)
+    .optional(),
+});
 
 const declaredSquadSchema = z.object({
   entryId: z.number().int().min(1).max(4_294_967_295),
@@ -76,6 +129,9 @@ const declaredSquadSchema = z.object({
   elementIds: z.array(z.number().int().positive()).length(SQUAD_SIZE),
   declaredAt: z.iso.datetime(),
   openingDecision: z.enum(["accepted", "held"]).optional(),
+  version: z.literal(2).optional(),
+  context: contextSchema.optional(),
+  ...financesSchema.partial().shape,
 });
 
 export type DeclaredSquad = z.infer<typeof declaredSquadSchema>;
@@ -100,8 +156,104 @@ interface SquadValidationOptions {
   enforceOpeningBudget?: boolean;
 }
 
-interface SaveDeclaredSquadOptions extends SquadValidationOptions {
+export interface SaveDeclaredSquadOptions extends SquadValidationOptions {
   openingDecision?: OpeningDecision;
+  bankTenths?: number;
+  availableFreeTransfers?: number;
+  sellingPrices?: { elementId: number; sellingPriceTenths: number }[];
+}
+
+export type DeclaredSquadContext = z.infer<typeof contextSchema>;
+export interface DeclaredSquadPlanningValues {
+  bankTenths: number;
+  availableFreeTransfers: number;
+  sellingPrices: ReadonlyMap<number, number>;
+}
+
+export function declaredSquadSeason(): string {
+  const opening = FULL_SEASON_DEADLINES.find((row) => row.event === 1);
+  const startYear = new Date(
+    z.iso.datetime().parse(opening?.deadline),
+  ).getUTCFullYear();
+  return `${String(startYear)}-${String(startYear + 1).slice(-2)}`;
+}
+
+function squadContext(
+  elementIds: readonly number[],
+  event: number,
+  roster: ReadonlyMap<number, RosterPlayer>,
+): DeclaredSquadContext {
+  return contextSchema.parse({
+    season: declaredSquadSeason(),
+    deadline: FULL_SEASON_DEADLINES.find((row) => row.event === event)
+      ?.deadline,
+    rosterVersion: 1,
+    players: elementIds.map((elementId) => ({
+      elementId,
+      code: roster.get(elementId)?.code,
+    })),
+  });
+}
+
+export function declaredSquadPlanningValues(
+  squad: DeclaredSquad,
+  event: number,
+  roster: ReadonlyMap<number, RosterPlayer> = PLAYERS_BY_ELEMENT_ID,
+): DeclaredSquadPlanningValues | null {
+  try {
+    const parsed = declaredSquadSchema.parse(squad);
+    if (parsed.version !== 2 || parsed.event !== event || !parsed.context)
+      return null;
+    const context = squadContext(parsed.elementIds, event, roster);
+    if (
+      parsed.context.season !== context.season ||
+      parsed.context.deadline !== context.deadline ||
+      parsed.context.players.some(
+        (player, index) =>
+          player.elementId !== context.players[index]?.elementId ||
+          player.code !== context.players[index]?.code,
+      )
+    )
+      return null;
+    const validation = validateDeclaredSquad(parsed.elementIds, roster, {
+      enforceOpeningBudget: event === 1,
+    });
+    if (!validation.valid) return null;
+    if (event === 1)
+      return {
+        bankTenths: validation.summary.bankTenths,
+        availableFreeTransfers: 0,
+        sellingPrices: new Map(
+          validation.summary.players.map((player) => [
+            player.id,
+            player.priceTenths,
+          ]),
+        ),
+      };
+    const finances = financesSchema.parse(parsed);
+    const sellingPrices = new Map(
+      (finances.sellingPrices ?? []).map((price) => [
+        price.elementId,
+        price.sellingPriceTenths,
+      ]),
+    );
+    if (
+      sellingPrices.size !== (finances.sellingPrices?.length ?? 0) ||
+      [...sellingPrices].some(
+        ([elementId, price]) =>
+          !parsed.elementIds.includes(elementId) ||
+          price > (roster.get(elementId)?.priceTenths ?? 0),
+      )
+    )
+      return null;
+    return {
+      bankTenths: finances.bankTenths,
+      availableFreeTransfers: finances.availableFreeTransfers,
+      sellingPrices,
+    };
+  } catch {
+    return null;
+  }
 }
 
 export function declaredSquadStorageKey(
@@ -125,6 +277,7 @@ export function declaredSquadStorageKey(
  */
 export interface RosterPlayer {
   id: number;
+  code?: number;
   name: string;
   position: string;
   club: string;
@@ -277,12 +430,11 @@ export function saveDeclaredSquad(
   now: () => Date = () => new Date(),
   options: SaveDeclaredSquadOptions = {},
 ): DeclaredSquad {
-  const { openingDecision, ...validationOptions } = options;
-  const validation = validateDeclaredSquad(
-    elementIds,
-    roster,
-    validationOptions,
-  );
+  const { openingDecision, bankTenths, availableFreeTransfers, sellingPrices } =
+    options;
+  const validation = validateDeclaredSquad(elementIds, roster, {
+    enforceOpeningBudget: event === 1,
+  });
   if (!validation.valid) {
     throw new TypeError(validation.problems.join(" "));
   }
@@ -291,8 +443,18 @@ export function saveDeclaredSquad(
     event,
     elementIds: [...elementIds],
     declaredAt: now().toISOString(),
+    version: 2,
+    context: squadContext(elementIds, event, roster),
+    ...(event === 1
+      ? {}
+      : { bankTenths, availableFreeTransfers, sellingPrices }),
     ...(openingDecision === undefined ? {} : { openingDecision }),
   });
+  if (declaredSquadPlanningValues(squad, event, roster) === null) {
+    throw new TypeError(
+      "Confirm current bank, free transfers and valid selling prices for this gameweek.",
+    );
+  }
   storage.setItem(
     declaredSquadStorageKey(entryId, event),
     JSON.stringify(squad),
@@ -314,10 +476,9 @@ export function readDeclaredSquad(
   event: number,
 ): DeclaredSquad | null {
   const key = declaredSquadStorageKey(entryId, event);
-  const serialized = storage.getItem(key);
-  if (serialized === null) return null;
-
   try {
+    const serialized = storage.getItem(key);
+    if (serialized === null) return null;
     const parsed = declaredSquadSchema.safeParse(JSON.parse(serialized));
     if (
       !parsed.success ||
@@ -331,7 +492,6 @@ export function readDeclaredSquad(
     }
     return parsed.data;
   } catch {
-    storage.removeItem(key);
     return null;
   }
 }

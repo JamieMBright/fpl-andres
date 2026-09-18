@@ -2,7 +2,7 @@
 import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { createMemoryRouter, RouterProvider } from "react-router-dom";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { routes } from "./App";
 import { saveCachedPublicTeamState } from "./state/team-analysis";
@@ -57,6 +57,7 @@ async function openPlanStep(name: string): Promise<void> {
 }
 
 describe("team analysis entry", () => {
+  afterEach(() => vi.useRealTimers());
   beforeEach(() => {
     localStorage.clear();
     class TestWorker {
@@ -357,6 +358,8 @@ describe("team analysis entry", () => {
   });
 
   it("explains a valid unavailable result without inventing state", async () => {
+    vi.useFakeTimers({ toFake: ["Date"] });
+    vi.setSystemTime(new Date("2026-08-20T12:00:00Z"));
     // A fresh Response per call: DeclaredChipsForm now fetches the entry
     // history too, and a single shared Response object can only have its body
     // read once before every other reader sees "body already used".
@@ -437,7 +440,7 @@ describe("team analysis entry", () => {
       "fetch",
       vi
         .fn<typeof fetch>()
-        .mockResolvedValue(
+        .mockImplementation(async () =>
           Response.json({ status: "ready", state: readyState }),
         ),
     );

@@ -23,6 +23,10 @@ name: Production canary
 # issue every twenty minutes. An alert that floods is an alert people mute.
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/canary.yml
   schedule:
     - cron: "*/20 * * * *"
   workflow_dispatch:
@@ -30,6 +34,7 @@ on:
 permissions:
   contents: read
   issues: write
+  actions: read
 
 concurrency:
   group: canary
@@ -54,6 +59,7 @@ jobs:
         run: |
           set +e
           failures=""
+          echo "upstream=healthy" >> "$GITHUB_OUTPUT"
 
           health=$(curl -sS -m 20 -w '\n%{http_code}' "$SITE/api/health")
           health_code=$(printf '%s' "$health" | tail -n1)
@@ -64,7 +70,7 @@ jobs:
             failures="${failures}- /api/health did not report ok: ${health_body}\n"
           fi
 
-          team=$(curl -sS -m 30 -w '\n%{http_code}' "$SITE/api/team/$CANARY_TEAM")
+          team=$(curl -sS -m 30 -D /tmp/team-headers -H "Cache-Control: no-cache" -w '\n%{http_code}' "$SITE/api/team/$CANARY_TEAM")
           team_code=$(printf '%s' "$team" | tail -n1)
           team_body=$(printf '%s' "$team" | sed '$d')
 
@@ -81,12 +87,17 @@ jobs:
             else
               # FPL being unreachable is worth knowing and is not this
               # deployment failing. Reported, not alarmed.
-              echo "note: /api/team is degraded upstream -- ${team_body}"
+              echo "note: /api/team is degraded upstream"
+              echo "upstream=degraded" >> "$GITHUB_OUTPUT"
             fi
           elif [ "$team_code" != "200" ]; then
             failures="${failures}- /api/team returned ${team_code}: ${team_body}\n"
           elif ! printf '%s' "$team_body" | grep -qE '"status":"(ready|unavailable)"'; then
             failures="${failures}- /api/team returned an unrecognised shape: ${team_body}\n"
+          fi
+
+          if grep -qi 'X-FPL-Cache: fallback' /tmp/team-headers; then
+            echo "upstream=degraded" >> "$GITHUB_OUTPUT"
           fi
 
           if [ -n "$failures" ]; then
@@ -99,6 +110,61 @@ jobs:
             exit 1
           fi
           echo "health ${health_code}, team ${team_code}"
+
+      - name: Record upstream degradation
+        if: steps.probe.outputs.upstream == 'degraded'
+        run: echo "FPL import required fallback or could not complete."
+
+      - name: Track repeated upstream failures
+        if: steps.probe.outcome == 'success'
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3
+        env:
+          UPSTREAM: ${{ steps.probe.outputs.upstream }}
+        with:
+          script: |
+            const title = "FPL imports are repeatedly failing";
+            const degraded = process.env.UPSTREAM === "degraded";
+            let streak = degraded ? 1 : 0;
+            if (degraded) {
+              const { data } = await github.rest.actions.listWorkflowRuns({
+                ...context.repo, workflow_id: "canary.yml", branch: "main",
+                status: "completed", per_page: 6,
+              });
+              for (const run of data.workflow_runs) {
+                if (run.id === context.runId) continue;
+                if (Date.now() - Date.parse(run.created_at) > 2 * 60 * 60 * 1000) break;
+                const jobs = await github.rest.actions.listJobsForWorkflowRun({
+                  ...context.repo, run_id: run.id,
+                });
+                const steps = jobs.data.jobs.find(job => job.name === "Probe production")?.steps ?? [];
+                const probe = steps.find(step => step.name === "Probe health and the team route");
+                if (probe?.conclusion !== "success") break;
+                const marker = steps.find(step => step.name === "Record upstream degradation");
+                if (marker?.conclusion !== "success") break;
+                streak += 1;
+                if (streak >= 3) break;
+              }
+            }
+            const issues = await github.rest.issues.listForRepo({
+              ...context.repo, state: "open", labels: "canary",
+            });
+            const incident = issues.data.find(issue => issue.title === title);
+            if (streak >= 3 && !incident) {
+              await github.rest.issues.create({
+                ...context.repo, title, labels: ["canary"],
+                body: "Three consecutive measured imports could not obtain fresh FPL evidence. Cached or manual planning may remain available.\n\n" +
+                  `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              });
+            } else if (!degraded && incident) {
+              await github.rest.issues.createComment({
+                ...context.repo, issue_number: incident.number,
+                body: "A live FPL import recovered without a cached fallback.",
+              });
+              await github.rest.issues.update({
+                ...context.repo, issue_number: incident.number, state: "closed",
+              });
+            }
+            core.info(`Measured upstream degradation streak: ${streak}`);
 
       - name: Open or update the incident issue
         if: failure()
@@ -125,13 +191,14 @@ jobs:
               labels: label,
             });
 
-            if (open.data.length > 0) {
+            const incident = open.data.find(issue => issue.title === title);
+            if (incident) {
               // Comment rather than open another. A new issue every twenty
               // minutes is how an alert becomes noise.
               await github.rest.issues.createComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                issue_number: open.data[0].number,
+                issue_number: incident.number,
                 body,
               });
               return;
@@ -159,6 +226,7 @@ jobs:
               labels: "canary",
             });
             for (const issue of open.data) {
+              if (issue.title !== "Production canary is failing") continue;
               await github.rest.issues.createComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,

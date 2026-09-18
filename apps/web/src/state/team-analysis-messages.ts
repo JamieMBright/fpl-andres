@@ -15,6 +15,12 @@ export function staleReason(
   reason: Extract<TeamAnalysisState, { status: "stale" }>["reason"],
 ): string {
   const reasons: Record<typeof reason, string> = {
+    cached_snapshot:
+      "Using the saved FPL snapshot and its original observation time.",
+    fpl_refused:
+      "FPL refused the refresh. The last verified state remains visible.",
+    fpl_rate_limited:
+      "FPL limited requests. The last verified state remains visible.",
     fpl_unreachable:
       "FPL is temporarily unreachable. The last verified state remains visible.",
     fpl_source_failed:
@@ -87,6 +93,14 @@ export function terminalStateMessage(
   }
 
   const failure = {
+    fpl_refused: {
+      heading: "FPL Refused This Request",
+      nextStep: "Retry later, or confirm your squad below to keep planning.",
+    },
+    fpl_rate_limited: {
+      heading: "FPL Is Limiting Requests",
+      nextStep: "Wait before retrying, or confirm your squad below.",
+    },
     fpl_unreachable: {
       heading: "FPL Cannot Be Reached",
       nextStep: "Wait a moment, then retry the analysis.",

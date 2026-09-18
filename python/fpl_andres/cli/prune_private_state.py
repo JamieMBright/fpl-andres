@@ -106,6 +106,11 @@ def prune_private_state(
             "declared_transfers",
             {"declared_at": f"lt.{cutoff}"},
         ),
+        (
+            "public team snapshots older than 30 days",
+            "public_team_snapshots",
+            {"captured_at": f"lt.{cutoff}"},
+        ),
     ]
     if retired:
         events = ",".join(str(event) for event in retired)
@@ -123,10 +128,13 @@ def prune_private_state(
         try:
             counts[label] = client.count(table, filters=filters)
         except SupabaseWriteError as error:
-            if table != "recommendation_snapshots" or "count failed with 404" not in str(error):
+            if table not in {
+                "recommendation_snapshots",
+                "public_team_snapshots",
+            } or "count failed with 404" not in str(error):
                 raise
             print(
-                "recommendation_snapshots is not deployed; skipping its retention pass",
+                f"{table} is not deployed; skipping its retention pass",
             )
             continue
         active_operations.append((label, table, filters))

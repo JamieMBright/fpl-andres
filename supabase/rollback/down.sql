@@ -23,6 +23,7 @@
 
 begin;
 
+drop table if exists public.public_team_snapshots;
 drop table if exists public.backtest_predictions;
 drop table if exists public.backtest_runs;
 drop table if exists public.crowd_snapshots;

@@ -1,6 +1,10 @@
 import { AlertTriangle, CheckCircle2, RefreshCw } from "lucide-react";
+import { lazy, Suspense } from "react";
 
-import { readDeclaredSquad } from "../state/declared-squad";
+import {
+  declaredSquadPlanningValues,
+  readDeclaredSquad,
+} from "../state/declared-squad";
 import { nextDeadlineAt } from "../state/season-deadlines";
 import type { TeamAnalysisState } from "../state/team-analysis";
 import {
@@ -8,11 +12,14 @@ import {
   terminalStateMessage,
 } from "../state/team-analysis-messages";
 import { currentPlanningEvent } from "../state/use-team-start";
-import { DeclaredSquadBuilder } from "./DeclaredSquadBuilder";
 import { ManagerHistory } from "./ManagerHistory";
 import { OpeningSquad } from "./OpeningSquad";
 import { SnapshotDossier } from "./SnapshotDossier";
 import { TransferPlanPanel } from "./TransferPlanPanel";
+
+const DeclaredSquadBuilder = lazy(async () => ({
+  default: (await import("./DeclaredSquadBuilder")).DeclaredSquadBuilder,
+}));
 
 /**
  * One switch over the analysis state, and the panel each case renders.
@@ -88,12 +95,24 @@ export function AnalysisResult({
 
   const message = terminalStateMessage(analysis);
   const currentEvent = currentPlanningEvent();
-  const canDeclare =
+  const preseason =
     analysis.status === "unavailable" &&
     analysis.reason === "no_processed_event";
-  // The season has not started, so there is nothing a retry could reach. A
-  // button that cannot work is worse than no button.
-  const retryable = !canDeclare;
+  const canDeclare =
+    Number.isInteger(entryId) &&
+    entryId > 0 &&
+    entryId <= 4_294_967_295 &&
+    (preseason ||
+      analysis.reason === "picks_unavailable" ||
+      [
+        "network_error",
+        "fpl_unreachable",
+        "fpl_refused",
+        "fpl_rate_limited",
+        "fpl_source_failed",
+        "rate_limited",
+      ].includes(analysis.reason));
+  const retryable = !preseason;
   return (
     <>
       <div
@@ -119,7 +138,7 @@ export function AnalysisResult({
           </button>
         ) : null}
       </section>
-      {canDeclare ? <ManagerHistory entryId={entryId} /> : null}
+      {preseason ? <ManagerHistory entryId={entryId} /> : null}
       {canDeclare ? (
         <>
           <section
@@ -129,22 +148,30 @@ export function AnalysisResult({
             <h2 className="visually-hidden" id="outage-squad-title">
               Continue without FPL
             </h2>
-            <DeclaredSquadBuilder
-              entryId={entryId}
-              event={currentEvent}
-              onDeclared={onDeclared}
-            />
-            <p className="plan-team-note">
-              <strong>Model opening plan, not your team.</strong> This is a
-              reference while no verified or manager-provided fifteen is
-              available.
-            </p>
-            <OpeningSquad {...(currentEvent === 1 ? { entryId } : {})} />
+            <Suspense fallback={<p role="status">Loading squad form...</p>}>
+              <DeclaredSquadBuilder
+                key={`${String(entryId)}:${String(currentEvent)}`}
+                entryId={entryId}
+                event={currentEvent}
+                onDeclared={onDeclared}
+              />
+            </Suspense>
+            {currentEvent === 1 ? (
+              <>
+                <p className="plan-team-note">
+                  <strong>Model opening plan, not your team.</strong> This is a
+                  reference while no verified or manager-provided fifteen is
+                  available.
+                </p>
+                <OpeningSquad entryId={entryId} />
+              </>
+            ) : null}
           </section>
           {/* Only while there is nothing to plan from. Once a fifteen is
               locked in the season below IS the transfer plan, and a panel
               saying "not yet" beside it contradicts the page. */}
-          {hasDeclaredSquad(entryId, currentEvent, declaredAt) ? null : (
+          {currentEvent !== 1 ||
+          hasDeclaredSquad(entryId, currentEvent, declaredAt) ? null : (
             <TransferPlanPanel
               firstDeadline={nextDeadlineAt()?.deadline ?? null}
             />
@@ -165,7 +192,12 @@ function hasDeclaredSquad(
   declaredAt: number,
 ): boolean {
   void declaredAt;
-  return readDeclaredSquad(window.localStorage, entryId, event) !== null;
+  try {
+    const squad = readDeclaredSquad(window.localStorage, entryId, event);
+    return squad !== null && declaredSquadPlanningValues(squad, event) !== null;
+  } catch {
+    return false;
+  }
 }
 
 function EvidenceBanner({

@@ -64,9 +64,9 @@ export default function PrivacyPage() {
         <section aria-labelledby="privacy-browser">
           <h2 id="privacy-browser">In this browser</h2>
           <p>
-            The declared squad, bank, free transfers, chip state, objective,
-            cached public team state, manager history and scorecard stay in this
-            browser. They are used to restore the plan on a later visit.
+            The declared squad, bank, free transfers, chip state, objective, a
+            local copy of public team state, manager history and scorecard stay
+            in this browser. They are used to restore the plan on a later visit.
           </p>
           <p>
             The selected kit is a separate appearance preference and is kept
@@ -81,6 +81,12 @@ export default function PrivacyPage() {
             gameweek and swap for operational diagnostics. The copy is
             write-only: it is never read back into the plan and cannot change a
             recommendation.
+          </p>
+          <p>
+            Validated public FPL team snapshots may also be kept on the server
+            to support planning during an FPL outage. They keep their original
+            observation time, expire for planning at the next deadline, and are
+            deleted after at most 30 days. Private corrections are not included.
           </p>
           <p>
             Request diagnostics are deleted after 30 days. A declared transfer

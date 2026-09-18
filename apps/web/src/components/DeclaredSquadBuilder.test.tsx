@@ -7,7 +7,7 @@ import { MemoryRouter } from "react-router-dom";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { DeclaredSquadBuilder } from "./DeclaredSquadBuilder";
-import { readDeclaredSquad } from "../state/declared-squad";
+import { readDeclaredSquad, saveDeclaredSquad } from "../state/declared-squad";
 import {
   PLAYERS_BY_ELEMENT_ID,
   type SolverPlayer,
@@ -40,7 +40,7 @@ const UNIQUELY_NAMED = new Set(
     .map(([name]) => name),
 );
 
-function legalSquad(): SolverPlayer[] {
+function legalSquad(expensive = false): SolverPlayer[] {
   const picked: SolverPlayer[] = [];
   const clubs = new Map<string, number>();
   const shape: [SolverPlayer["position"], number][] = [
@@ -53,7 +53,10 @@ function legalSquad(): SolverPlayer[] {
     const candidates = POOL.filter(
       (player) =>
         player.position === position && UNIQUELY_NAMED.has(player.name),
-    ).sort((left, right) => left.priceTenths - right.priceTenths);
+    ).sort(
+      (left, right) =>
+        (expensive ? -1 : 1) * (left.priceTenths - right.priceTenths),
+    );
     let taken = 0;
     for (const candidate of candidates) {
       if (taken === required) break;
@@ -108,6 +111,7 @@ describe("DeclaredSquadBuilder", () => {
   });
 
   afterEach(() => {
+    vi.restoreAllMocks();
     vi.unstubAllGlobals();
     window.localStorage.clear();
   });
@@ -119,6 +123,147 @@ describe("DeclaredSquadBuilder", () => {
   // loaded machine, so the number is a safety net rather than a budget: it must
   // never be the thing that decides whether this journey works.
   const JOURNEY_TIMEOUT = 120_000;
+
+  it("requires manager balances to complete a legacy in-season squad", async () => {
+    const user = userEvent.setup({ delay: null });
+    const squad = legalSquad();
+    localStorage.setItem(
+      "fpl-andres:declared-squad:v1:42:5",
+      JSON.stringify({
+        entryId: 42,
+        event: 5,
+        elementIds: squad.map((player) => player.id),
+        declaredAt: "2026-09-15T12:00:00Z",
+      }),
+    );
+    const onDeclared = vi.fn();
+    render(
+      <MemoryRouter>
+        <DeclaredSquadBuilder entryId={42} event={5} onDeclared={onDeclared} />
+      </MemoryRouter>,
+    );
+    expect(screen.getByText(/confirm.*gameweek.*before.*plan/i)).toBeVisible();
+    expect(screen.getByText("Manager provided")).toBeVisible();
+    expect(screen.getByText(/missing selling prices.*assumed/i)).toBeVisible();
+    const save = screen.getByRole("button", { name: /lock this in/i });
+    await user.click(save);
+    expect(screen.getByRole("alert")).toHaveTextContent(
+      /current bank.*required/i,
+    );
+    const bank = screen.getByRole("spinbutton", { name: "Current bank (£m)" });
+    expect(bank).toHaveFocus();
+    await user.type(bank, "1.7");
+    await user.click(save);
+    expect(screen.getByRole("alert")).toHaveTextContent(
+      /free transfers.*required/i,
+    );
+    await user.selectOptions(
+      screen.getByRole("combobox", { name: "Available free transfers" }),
+      "3",
+    );
+    await user.click(screen.getByText("Actual selling prices (optional)"));
+    await user.type(
+      screen.getByRole("spinbutton", {
+        name: `Selling price for ${squad[0]!.name} (£m)`,
+      }),
+      "3.5",
+    );
+    await user.click(save);
+    expect(onDeclared).toHaveBeenCalledOnce();
+    expect(readDeclaredSquad(localStorage, 42, 5)).toMatchObject({
+      version: 2,
+      bankTenths: 17,
+      availableFreeTransfers: 3,
+      sellingPrices: [{ elementId: squad[0]!.id, sellingPriceTenths: 35 }],
+    });
+    expect(screen.queryByText(/of £100/)).toBeNull();
+    expect(screen.getByText(/missing selling prices.*assumed/i)).toBeVisible();
+  });
+
+  it("keeps the in-season market usable above the opening budget", async () => {
+    const squad = legalSquad(true);
+    expect(
+      squad.reduce((sum, player) => sum + player.priceTenths, 0),
+    ).toBeGreaterThan(1000);
+    saveDeclaredSquad(
+      localStorage,
+      42,
+      5,
+      squad.map((player) => player.id),
+      PLAYERS_BY_ELEMENT_ID,
+      undefined,
+      {
+        bankTenths: 0,
+        availableFreeTransfers: 1,
+      },
+    );
+    render(
+      <MemoryRouter>
+        <DeclaredSquadBuilder entryId={42} event={5} />
+      </MemoryRouter>,
+    );
+    const selected = new Set(squad.map((player) => player.id));
+    const player = POOL.find(
+      (candidate) =>
+        !selected.has(candidate.id) && UNIQUELY_NAMED.has(candidate.name),
+    )!;
+    await userEvent.type(
+      screen.getByRole("searchbox", { name: /search/i }),
+      player.name,
+    );
+    expect(
+      screen.getByRole("button", { name: `Add ${player.name}` }),
+    ).toBeEnabled();
+  });
+
+  it("does not crash when local storage is blocked", () => {
+    vi.spyOn(Storage.prototype, "getItem").mockImplementation(() => {
+      throw new Error("blocked");
+    });
+    expect(() => renderBuilder()).not.toThrow();
+    expect(
+      screen.getByRole("heading", { name: /build.*fifteen/i }),
+    ).toBeVisible();
+  });
+
+  it("clears finance drafts when the team or gameweek changes", () => {
+    saveDeclaredSquad(
+      localStorage,
+      42,
+      5,
+      legalSquad().map((player) => player.id),
+      PLAYERS_BY_ELEMENT_ID,
+      undefined,
+      { bankTenths: 17, availableFreeTransfers: 3 },
+    );
+    const { rerender } = render(
+      <MemoryRouter>
+        <DeclaredSquadBuilder entryId={42} event={5} />
+      </MemoryRouter>,
+    );
+    expect(
+      screen.getByRole("spinbutton", { name: "Current bank (£m)" }),
+    ).toHaveValue(1.7);
+    rerender(
+      <MemoryRouter>
+        <DeclaredSquadBuilder entryId={43} event={5} />
+      </MemoryRouter>,
+    );
+    expect(
+      screen.getByRole("spinbutton", { name: "Current bank (£m)" }),
+    ).toHaveValue(null);
+    rerender(
+      <MemoryRouter>
+        <DeclaredSquadBuilder entryId={42} event={6} />
+      </MemoryRouter>,
+    );
+    expect(
+      screen.getByRole("spinbutton", { name: "Current bank (£m)" }),
+    ).toHaveValue(null);
+    expect(
+      screen.getByRole("button", { name: /lock this in/i }),
+    ).toBeDisabled();
+  });
 
   it("reveals the filtered player market forty rows at a time", async () => {
     renderBuilder();
@@ -166,7 +311,7 @@ describe("DeclaredSquadBuilder", () => {
     expect(STYLES).toContain("--squad-row-count: 5;");
     expect(STYLES).toContain("--squad-row-count: 3;");
     expect(STYLES).toContain(
-      "grid-template-columns: repeat(var(--squad-row-count), 84px);",
+      "grid-template-columns: repeat(var(--squad-row-count), minmax(0, 84px));",
     );
     expect(STYLES).not.toContain(".squad-pitch-row {\n  display: flex;");
   });
