@@ -1,6 +1,6 @@
 {
   "schemaVersion": 7,
-  "generatedAt": "2026-09-18T12:37:49.909101Z",
+  "generatedAt": "2026-09-18T13:21:25.255280Z",
   "recordSeason": "2026-27",
   "events": [
     5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24,
@@ -60,8 +60,8 @@
     "fixtureMarkets": {
       "source": "football-data.co.uk",
       "level": "observed",
-      "updatedAt": "2026-09-18T11:11:22.288263+00:00",
-      "contentHash": "sha256:29298bbc4fc319742199d38703abb13691e40e848cf66ec11ec736986ff5b963"
+      "updatedAt": "2026-09-18T12:37:46.356049+00:00",
+      "contentHash": "sha256:aae0ebdcc2e8feedb783d1aa4df55428f66f7c14d297c9886b12f3af66dd05a5"
     },
     "understat": {
       "source": "understat",
@@ -192,7 +192,7 @@
       }
     ],
     "sourceReference": "FPL rules page, Transfers section",
-    "dataAvailableAt": "2026-09-18T12:37:49.909101Z",
+    "dataAvailableAt": "2026-09-18T13:21:25.255280Z",
     "playableStartRate": 0.35,
     "transferMarginPoints": 0.5
   },
@@ -939,7 +939,7 @@
   },
   "fixtureEvidence": {
     "source": "football-data.co.uk",
-    "updatedAt": "2026-09-18T11:11:22.288263+00:00",
+    "updatedAt": "2026-09-18T12:37:46.356049+00:00",
     "level": "observed",
     "byClub": {}
   },
@@ -18057,47 +18057,6 @@
       }
     },
     {
-      "id": 246,
-      "code": 513466,
-      "name": "R\u00f6hl",
-      "position": "MID",
-      "positionId": 3,
-      "club": "EVE",
-      "teamId": 9,
-      "priceTenths": 49,
-      "availabilityStatus": "d",
-      "chanceOfPlaying": 75,
-      "basePoints": 0.722,
-      "routes": {
-        "appearance": 0.687,
-        "attacking": 0.024,
-        "cleanSheet": 0.112,
-        "bonus": 0.005,
-        "yellowCards": -0.111,
-        "defensiveContribution": 0.005
-      },
-      "startRate": 0.734,
-      "startEvidence": {
-        "sourceStartRate": 0.486,
-        "finalStartRate": 0.734,
-        "observedAppearances": 4,
-        "recentStarts": 3,
-        "recentMatches": 4,
-        "recentMinutes": 249,
-        "appearanceSource": "currentSeasonLineup",
-        "lineupAdjustment": 0.248,
-        "marketAdjustment": 0.0,
-        "availabilityAdjustment": 0.0
-      },
-      "squadNumber": null,
-      "rated": true,
-      "depthRank": 9,
-      "evidence": {
-        "all": "currentSeasonRoutes",
-        "appearance": "currentSeasonLineup"
-      }
-    },
-    {
       "id": 41,
       "code": 195546,
       "name": "Buend\u00eda",
@@ -22480,6 +22439,40 @@
       "rated": false,
       "depthRank": 9,
       "evidence": { "all": "rolePrior", "appearance": "fplAvailability" }
+    },
+    {
+      "id": 246,
+      "code": 513466,
+      "name": "R\u00f6hl",
+      "position": "MID",
+      "positionId": 3,
+      "club": "EVE",
+      "teamId": 9,
+      "priceTenths": 49,
+      "availabilityStatus": "i",
+      "chanceOfPlaying": 0,
+      "basePoints": 0,
+      "routes": {},
+      "startRate": 0.0,
+      "startEvidence": {
+        "sourceStartRate": 0.486,
+        "finalStartRate": 0.0,
+        "observedAppearances": 4,
+        "recentStarts": 3,
+        "recentMatches": 4,
+        "recentMinutes": 249,
+        "appearanceSource": "fplAvailability",
+        "lineupAdjustment": 0.248,
+        "marketAdjustment": 0.0,
+        "availabilityAdjustment": -0.734
+      },
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 9,
+      "evidence": {
+        "all": "currentSeasonRoutes",
+        "appearance": "fplAvailability"
+      }
     },
     {
       "id": 266,
