@@ -1,6 +1,6 @@
 {
   "schemaVersion": 3,
-  "generatedAt": "2026-09-19T12:29:07.677312Z",
+  "generatedAt": "2026-09-19T17:16:23.932093Z",
   "season": "2026-27",
   "events": [
     {
@@ -6722,31 +6722,113 @@
       ]
     },
     {
-      "generatedAt": "2026-09-19T12:29:07.677312Z",
+      "generatedAt": "2026-09-19T17:16:23.932093Z",
       "event": 5,
       "modelVersion": "8.19",
       "evidence": {
         "frozenRevision": "cc37c0ab4bd5d3f74a9b9154c61717af7419d70f",
         "frozenAt": "2026-09-15T14:56:52+00:00",
-        "liveSourceHash": "sha256:f08542ca49ef84e9d38d56ffa3bdbef28f7c4d80c31aee2ea2802a186ef12dcd",
-        "liveCapturedAt": "2026-09-19T12:29:07.677312Z",
+        "liveSourceHash": "sha256:a7fdb55b89b8db6eca5abe9e5a69ee3a34c24353ca0babf1ae27f014cf2aca33",
+        "liveCapturedAt": "2026-09-19T17:16:23.932093Z",
         "level": "observed"
       },
       "complete": false,
       "field": "probabilitySixtyMinutesAsShipped",
       "population": {
         "count": 614,
-        "brier": 0.274332,
-        "logLoss": 1.118347,
+        "brier": 0.20284,
+        "logLoss": 0.814714,
         "meanForecast": 0.350627,
-        "actualStartRate": 0.070033
+        "actualStartRate": 0.213355
       },
       "topEleven": {
-        "hits": 31,
-        "actualStarters": 43,
-        "recall": 0.72093
+        "hits": 100,
+        "actualStarters": 131,
+        "recall": 0.763359
       },
       "clubs": [
+        {
+          "club": "ARS",
+          "count": 29,
+          "brier": 0.153209,
+          "logLoss": 0.741296,
+          "meanForecast": 0.377345,
+          "actualStartRate": 0.37931,
+          "topElevenHits": 8,
+          "actualStarters": 11,
+          "topElevenRecall": 0.727273,
+          "selected": [
+            {
+              "elementId": 8,
+              "probability": 0.988,
+              "started": true
+            },
+            {
+              "elementId": 1,
+              "probability": 0.987,
+              "started": true
+            },
+            {
+              "elementId": 4,
+              "probability": 0.987,
+              "started": true
+            },
+            {
+              "elementId": 13,
+              "probability": 0.987,
+              "started": true
+            },
+            {
+              "elementId": 7,
+              "probability": 0.986,
+              "started": false
+            },
+            {
+              "elementId": 12,
+              "probability": 0.985,
+              "started": true
+            },
+            {
+              "elementId": 10,
+              "probability": 0.984,
+              "started": false
+            },
+            {
+              "elementId": 26,
+              "probability": 0.984,
+              "started": true
+            },
+            {
+              "elementId": 15,
+              "probability": 0.983,
+              "started": true
+            },
+            {
+              "elementId": 557,
+              "probability": 0.965,
+              "started": true
+            },
+            {
+              "elementId": 11,
+              "probability": 0.504,
+              "started": false
+            }
+          ],
+          "missedStarters": [
+            {
+              "elementId": 31,
+              "probability": 0.482
+            },
+            {
+              "elementId": 5,
+              "probability": 0.001
+            },
+            {
+              "elementId": 452,
+              "probability": 0.011
+            }
+          ]
+        },
         {
           "club": "AVL",
           "count": 34,
@@ -6830,6 +6912,84 @@
             {
               "elementId": 53,
               "probability": 0.023
+            }
+          ]
+        },
+        {
+          "club": "BHA",
+          "count": 37,
+          "brier": 0.099791,
+          "logLoss": 0.398021,
+          "meanForecast": 0.283459,
+          "actualStartRate": 0.297297,
+          "topElevenHits": 9,
+          "actualStarters": 11,
+          "topElevenRecall": 0.818182,
+          "selected": [
+            {
+              "elementId": 109,
+              "probability": 0.99,
+              "started": true
+            },
+            {
+              "elementId": 124,
+              "probability": 0.99,
+              "started": true
+            },
+            {
+              "elementId": 115,
+              "probability": 0.987,
+              "started": true
+            },
+            {
+              "elementId": 116,
+              "probability": 0.987,
+              "started": false
+            },
+            {
+              "elementId": 127,
+              "probability": 0.985,
+              "started": true
+            },
+            {
+              "elementId": 114,
+              "probability": 0.983,
+              "started": true
+            },
+            {
+              "elementId": 504,
+              "probability": 0.98,
+              "started": true
+            },
+            {
+              "elementId": 113,
+              "probability": 0.739,
+              "started": true
+            },
+            {
+              "elementId": 138,
+              "probability": 0.729,
+              "started": true
+            },
+            {
+              "elementId": 605,
+              "probability": 0.729,
+              "started": false
+            },
+            {
+              "elementId": 129,
+              "probability": 0.722,
+              "started": true
+            }
+          ],
+          "missedStarters": [
+            {
+              "elementId": 328,
+              "probability": 0.014
+            },
+            {
+              "elementId": 639,
+              "probability": 0.044
             }
           ]
         },
@@ -6994,6 +7154,482 @@
             {
               "elementId": 136,
               "probability": 0.015
+            }
+          ]
+        },
+        {
+          "club": "COV",
+          "count": 37,
+          "brier": 0.116388,
+          "logLoss": 0.4405,
+          "meanForecast": 0.289243,
+          "actualStartRate": 0.297297,
+          "topElevenHits": 8,
+          "actualStarters": 11,
+          "topElevenRecall": 0.727273,
+          "selected": [
+            {
+              "elementId": 173,
+              "probability": 0.99,
+              "started": true
+            },
+            {
+              "elementId": 175,
+              "probability": 0.99,
+              "started": false
+            },
+            {
+              "elementId": 176,
+              "probability": 0.99,
+              "started": true
+            },
+            {
+              "elementId": 182,
+              "probability": 0.99,
+              "started": false
+            },
+            {
+              "elementId": 110,
+              "probability": 0.98,
+              "started": true
+            },
+            {
+              "elementId": 184,
+              "probability": 0.965,
+              "started": true
+            },
+            {
+              "elementId": 186,
+              "probability": 0.752,
+              "started": true
+            },
+            {
+              "elementId": 104,
+              "probability": 0.729,
+              "started": true
+            },
+            {
+              "elementId": 183,
+              "probability": 0.729,
+              "started": true
+            },
+            {
+              "elementId": 575,
+              "probability": 0.494,
+              "started": true
+            },
+            {
+              "elementId": 190,
+              "probability": 0.49,
+              "started": false
+            }
+          ],
+          "missedStarters": [
+            {
+              "elementId": 656,
+              "probability": 0.167
+            },
+            {
+              "elementId": 91,
+              "probability": 0.476
+            },
+            {
+              "elementId": 194,
+              "probability": 0.244
+            }
+          ]
+        },
+        {
+          "club": "EVE",
+          "count": 24,
+          "brier": 0.131337,
+          "logLoss": 0.532996,
+          "meanForecast": 0.448,
+          "actualStartRate": 0.458333,
+          "topElevenHits": 9,
+          "actualStarters": 11,
+          "topElevenRecall": 0.818182,
+          "selected": [
+            {
+              "elementId": 226,
+              "probability": 0.99,
+              "started": true
+            },
+            {
+              "elementId": 229,
+              "probability": 0.99,
+              "started": true
+            },
+            {
+              "elementId": 233,
+              "probability": 0.99,
+              "started": true
+            },
+            {
+              "elementId": 236,
+              "probability": 0.99,
+              "started": true
+            },
+            {
+              "elementId": 249,
+              "probability": 0.984,
+              "started": true
+            },
+            {
+              "elementId": 230,
+              "probability": 0.981,
+              "started": true
+            },
+            {
+              "elementId": 242,
+              "probability": 0.98,
+              "started": false
+            },
+            {
+              "elementId": 244,
+              "probability": 0.98,
+              "started": true
+            },
+            {
+              "elementId": 246,
+              "probability": 0.752,
+              "started": false
+            },
+            {
+              "elementId": 239,
+              "probability": 0.739,
+              "started": true
+            },
+            {
+              "elementId": 649,
+              "probability": 0.522,
+              "started": true
+            }
+          ],
+          "missedStarters": [
+            {
+              "elementId": 209,
+              "probability": 0.482
+            },
+            {
+              "elementId": 238,
+              "probability": 0.005
+            }
+          ]
+        },
+        {
+          "club": "HUL",
+          "count": 37,
+          "brier": 0.109848,
+          "logLoss": 0.439415,
+          "meanForecast": 0.30427,
+          "actualStartRate": 0.297297,
+          "topElevenHits": 9,
+          "actualStarters": 11,
+          "topElevenRecall": 0.818182,
+          "selected": [
+            {
+              "elementId": 277,
+              "probability": 0.99,
+              "started": true
+            },
+            {
+              "elementId": 295,
+              "probability": 0.99,
+              "started": true
+            },
+            {
+              "elementId": 572,
+              "probability": 0.99,
+              "started": true
+            },
+            {
+              "elementId": 586,
+              "probability": 0.99,
+              "started": false
+            },
+            {
+              "elementId": 286,
+              "probability": 0.987,
+              "started": true
+            },
+            {
+              "elementId": 576,
+              "probability": 0.987,
+              "started": false
+            },
+            {
+              "elementId": 280,
+              "probability": 0.982,
+              "started": true
+            },
+            {
+              "elementId": 282,
+              "probability": 0.982,
+              "started": true
+            },
+            {
+              "elementId": 290,
+              "probability": 0.965,
+              "started": true
+            },
+            {
+              "elementId": 279,
+              "probability": 0.961,
+              "started": true
+            },
+            {
+              "elementId": 289,
+              "probability": 0.494,
+              "started": true
+            }
+          ],
+          "missedStarters": [
+            {
+              "elementId": 585,
+              "probability": 0.041
+            },
+            {
+              "elementId": 642,
+              "probability": 0.092
+            }
+          ]
+        },
+        {
+          "club": "IPS",
+          "count": 31,
+          "brier": 0.170754,
+          "logLoss": 0.644982,
+          "meanForecast": 0.363097,
+          "actualStartRate": 0.354839,
+          "topElevenHits": 8,
+          "actualStarters": 11,
+          "topElevenRecall": 0.727273,
+          "selected": [
+            {
+              "elementId": 315,
+              "probability": 0.99,
+              "started": true
+            },
+            {
+              "elementId": 316,
+              "probability": 0.99,
+              "started": true
+            },
+            {
+              "elementId": 591,
+              "probability": 0.99,
+              "started": true
+            },
+            {
+              "elementId": 267,
+              "probability": 0.986,
+              "started": true
+            },
+            {
+              "elementId": 259,
+              "probability": 0.985,
+              "started": true
+            },
+            {
+              "elementId": 564,
+              "probability": 0.98,
+              "started": false
+            },
+            {
+              "elementId": 304,
+              "probability": 0.961,
+              "started": true
+            },
+            {
+              "elementId": 305,
+              "probability": 0.961,
+              "started": true
+            },
+            {
+              "elementId": 306,
+              "probability": 0.961,
+              "started": false
+            },
+            {
+              "elementId": 562,
+              "probability": 0.729,
+              "started": false
+            },
+            {
+              "elementId": 619,
+              "probability": 0.646,
+              "started": true
+            }
+          ],
+          "missedStarters": [
+            {
+              "elementId": 300,
+              "probability": 0.009
+            },
+            {
+              "elementId": 592,
+              "probability": 0.02
+            },
+            {
+              "elementId": 313,
+              "probability": 0.259
+            }
+          ]
+        },
+        {
+          "club": "NEW",
+          "count": 28,
+          "brier": 0.113056,
+          "logLoss": 0.35092,
+          "meanForecast": 0.366393,
+          "actualStartRate": 0.392857,
+          "topElevenHits": 9,
+          "actualStarters": 11,
+          "topElevenRecall": 0.818182,
+          "selected": [
+            {
+              "elementId": 445,
+              "probability": 0.99,
+              "started": true
+            },
+            {
+              "elementId": 447,
+              "probability": 0.99,
+              "started": true
+            },
+            {
+              "elementId": 567,
+              "probability": 0.99,
+              "started": true
+            },
+            {
+              "elementId": 449,
+              "probability": 0.988,
+              "started": true
+            },
+            {
+              "elementId": 453,
+              "probability": 0.983,
+              "started": true
+            },
+            {
+              "elementId": 459,
+              "probability": 0.982,
+              "started": true
+            },
+            {
+              "elementId": 593,
+              "probability": 0.982,
+              "started": false
+            },
+            {
+              "elementId": 464,
+              "probability": 0.98,
+              "started": true
+            },
+            {
+              "elementId": 405,
+              "probability": 0.732,
+              "started": false
+            },
+            {
+              "elementId": 460,
+              "probability": 0.499,
+              "started": true
+            },
+            {
+              "elementId": 634,
+              "probability": 0.461,
+              "started": true
+            }
+          ],
+          "missedStarters": [
+            {
+              "elementId": 462,
+              "probability": 0.259
+            },
+            {
+              "elementId": 457,
+              "probability": 0.248
+            }
+          ]
+        },
+        {
+          "club": "NFO",
+          "count": 28,
+          "brier": 0.089898,
+          "logLoss": 0.308529,
+          "meanForecast": 0.374714,
+          "actualStartRate": 0.392857,
+          "topElevenHits": 9,
+          "actualStarters": 11,
+          "topElevenRecall": 0.818182,
+          "selected": [
+            {
+              "elementId": 467,
+              "probability": 0.99,
+              "started": true
+            },
+            {
+              "elementId": 469,
+              "probability": 0.989,
+              "started": true
+            },
+            {
+              "elementId": 480,
+              "probability": 0.988,
+              "started": true
+            },
+            {
+              "elementId": 473,
+              "probability": 0.982,
+              "started": false
+            },
+            {
+              "elementId": 472,
+              "probability": 0.981,
+              "started": true
+            },
+            {
+              "elementId": 486,
+              "probability": 0.981,
+              "started": true
+            },
+            {
+              "elementId": 483,
+              "probability": 0.98,
+              "started": true
+            },
+            {
+              "elementId": 474,
+              "probability": 0.751,
+              "started": true
+            },
+            {
+              "elementId": 558,
+              "probability": 0.729,
+              "started": true
+            },
+            {
+              "elementId": 491,
+              "probability": 0.519,
+              "started": false
+            },
+            {
+              "elementId": 167,
+              "probability": 0.479,
+              "started": true
+            }
+          ],
+          "missedStarters": [
+            {
+              "elementId": 581,
+              "probability": 0.276
+            },
+            {
+              "elementId": 201,
+              "probability": 0.471
             }
           ]
         },
