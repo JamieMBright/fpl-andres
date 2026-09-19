@@ -184,6 +184,31 @@ describe("team analysis state machine", () => {
     });
   });
 
+  it("rejects a ready snapshot once its planning window has passed", async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-09-19T12:00:00Z"));
+    const expired = {
+      ...readyState,
+      event: 2,
+      stateAsOf: "2026-08-28T17:30:00Z",
+      dataAvailableAt: "2026-08-28T18:00:00Z",
+    };
+
+    const result = await refreshTeamAnalysis(ENTRY_ID, null, {
+      fetchApi: vi.fn(async () =>
+        Response.json({ status: "ready", state: expired }),
+      ),
+      storage: localStorage,
+    });
+
+    expect(result).toEqual({
+      status: "degraded",
+      reason: "fpl_source_failed",
+    });
+    expect(localStorage.length).toBe(0);
+    vi.useRealTimers();
+  });
+
   it("preserves FPL refusal diagnostics from the team endpoint", async () => {
     const result = await refreshTeamAnalysis(ENTRY_ID, null, {
       fetchApi: vi.fn(async () =>

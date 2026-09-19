@@ -298,6 +298,9 @@ async function fetchTeamAnalysis(
     } catch {
       return fallbackState(entryId, previous, "invalid_response");
     }
+    if (!usableUntilNextDeadline(state.event, new Date())) {
+      return { status: "degraded", reason: "fpl_source_failed" };
+    }
     try {
       if (dependencies.storage) {
         saveCachedPublicTeamState(dependencies.storage, entryId, state);
