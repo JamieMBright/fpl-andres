@@ -1,6 +1,6 @@
 {
   "schemaVersion": 7,
-  "generatedAt": "2026-09-19T14:03:42.963480Z",
+  "generatedAt": "2026-09-19T15:49:59.969880Z",
   "recordSeason": "2026-27",
   "events": [
     6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
@@ -191,7 +191,7 @@
       }
     ],
     "sourceReference": "FPL rules page, Transfers section",
-    "dataAvailableAt": "2026-09-19T14:03:42.963480Z",
+    "dataAvailableAt": "2026-09-19T15:49:59.969880Z",
     "playableStartRate": 0.35,
     "transferMarginPoints": 0.5
   },
@@ -18816,47 +18816,6 @@
       }
     },
     {
-      "id": 315,
-      "code": 531442,
-      "name": "Fatawu",
-      "position": "MID",
-      "positionId": 3,
-      "club": "IPS",
-      "teamId": 12,
-      "priceTenths": 54,
-      "availabilityStatus": "a",
-      "chanceOfPlaying": null,
-      "basePoints": 0.627,
-      "routes": {
-        "appearance": 0.542,
-        "attacking": 0.201,
-        "cleanSheet": 0.004,
-        "bonus": 0.004,
-        "yellowCards": -0.128,
-        "defensiveContribution": 0.004
-      },
-      "startRate": 0.793,
-      "startEvidence": {
-        "sourceStartRate": 0.653,
-        "finalStartRate": 0.793,
-        "observedAppearances": 5,
-        "recentStarts": 4,
-        "recentMatches": 5,
-        "recentMinutes": 286,
-        "appearanceSource": "currentSeasonLineup",
-        "lineupAdjustment": 0.14,
-        "marketAdjustment": 0.0,
-        "availabilityAdjustment": 0.0
-      },
-      "squadNumber": null,
-      "rated": true,
-      "depthRank": 2,
-      "evidence": {
-        "all": "currentSeasonRoutes",
-        "appearance": "currentSeasonLineup"
-      }
-    },
-    {
       "id": 514,
       "code": 511499,
       "name": "Tel",
@@ -22525,6 +22484,40 @@
       "rated": true,
       "depthRank": 10,
       "evidence": { "appearance": "fplAvailability" }
+    },
+    {
+      "id": 287,
+      "code": 232905,
+      "name": "Millar",
+      "position": "MID",
+      "positionId": 3,
+      "club": "HUL",
+      "teamId": 11,
+      "priceTenths": 50,
+      "availabilityStatus": "u",
+      "chanceOfPlaying": 0,
+      "basePoints": 0,
+      "routes": {},
+      "startRate": 0.0,
+      "startEvidence": {
+        "sourceStartRate": 0.496,
+        "finalStartRate": 0.0,
+        "observedAppearances": 5,
+        "recentStarts": 0,
+        "recentMatches": 5,
+        "recentMinutes": 50,
+        "appearanceSource": "fplAvailability",
+        "lineupAdjustment": -0.472,
+        "marketAdjustment": 0.0,
+        "availabilityAdjustment": -0.024
+      },
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 3,
+      "evidence": {
+        "all": "currentSeasonRoutes",
+        "appearance": "fplAvailability"
+      }
     },
     {
       "id": 125,
