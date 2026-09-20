@@ -2,9 +2,9 @@
   "schemaVersion": 1,
   "season": "2026-27",
   "event": 5,
-  "capturedAt": "2026-09-20T00:08:40.077626Z",
+  "capturedAt": "2026-09-20T11:19:17.794384Z",
   "source": "https://fantasy.premierleague.com/api/event/5/live/",
-  "sourceHash": "sha256:af95170521d1d8ec2192562262de2b94a1bdfbc11ba676155808309d1d2eb4dd",
+  "sourceHash": "sha256:455636d43b248af1a18436f7050b6a67e72b232ef969a15cb57911565ecc53b3",
   "roundComplete": false,
   "elements": [
     {
@@ -5788,7 +5788,7 @@
         "red_cards": 0,
         "saves": 0,
         "bonus": 0,
-        "bps": 25,
+        "bps": 24,
         "influence": "0.0",
         "creativity": "0.0",
         "threat": "0.0",
@@ -6364,7 +6364,7 @@
         "red_cards": 0,
         "saves": 0,
         "bonus": 0,
-        "bps": 1,
+        "bps": 2,
         "influence": "0.0",
         "creativity": "0.0",
         "threat": "0.0",
@@ -14844,11 +14844,11 @@
         "own_goals": 0,
         "penalties_saved": 0,
         "penalties_missed": 0,
-        "yellow_cards": 0,
+        "yellow_cards": 1,
         "red_cards": 0,
         "saves": 0,
         "bonus": 0,
-        "bps": 8,
+        "bps": 5,
         "influence": "0.0",
         "creativity": "0.0",
         "threat": "0.0",
@@ -14862,7 +14862,7 @@
         "expected_assists": "0.02",
         "expected_goal_involvements": "0.38",
         "expected_goals_conceded": "1.44",
-        "total_points": 2,
+        "total_points": 1,
         "in_dreamteam": false,
         "played": true
       },
@@ -14874,6 +14874,12 @@
               "identifier": "minutes",
               "points": 2,
               "value": 90,
+              "points_modification": 0
+            },
+            {
+              "identifier": "yellow_cards",
+              "points": -1,
+              "value": 1,
               "points_modification": 0
             }
           ]
