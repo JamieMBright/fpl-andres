@@ -1,6 +1,6 @@
 {
   "schemaVersion": 7,
-  "generatedAt": "2026-09-20T21:42:59.139304Z",
+  "generatedAt": "2026-09-20T22:26:36.754501Z",
   "recordSeason": "2026-27",
   "events": [
     6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
@@ -191,7 +191,7 @@
       }
     ],
     "sourceReference": "FPL rules page, Transfers section",
-    "dataAvailableAt": "2026-09-20T21:42:59.139304Z",
+    "dataAvailableAt": "2026-09-20T22:26:36.754501Z",
     "playableStartRate": 0.35,
     "transferMarginPoints": 0.5
   },
@@ -5702,48 +5702,6 @@
       }
     },
     {
-      "id": 389,
-      "code": 465351,
-      "name": "Matheus N.",
-      "position": "DEF",
-      "positionId": 2,
-      "club": "MCI",
-      "teamId": 15,
-      "priceTenths": 59,
-      "availabilityStatus": "a",
-      "chanceOfPlaying": 100,
-      "basePoints": 1.448,
-      "routes": {
-        "appearance": 0.574,
-        "attacking": 0.009,
-        "cleanSheet": 0.441,
-        "bonus": 0.112,
-        "conceding": -0.112,
-        "yellowCards": -0.004,
-        "defensiveContribution": 0.428
-      },
-      "startRate": 0.397,
-      "startEvidence": {
-        "sourceStartRate": 0.332,
-        "finalStartRate": 0.397,
-        "observedAppearances": 5,
-        "recentStarts": 2,
-        "recentMatches": 5,
-        "recentMinutes": 213,
-        "appearanceSource": "currentSeasonLineup",
-        "lineupAdjustment": 0.065,
-        "marketAdjustment": 0.0,
-        "availabilityAdjustment": 0.0
-      },
-      "squadNumber": null,
-      "rated": true,
-      "depthRank": 3,
-      "evidence": {
-        "all": "currentSeasonRoutes",
-        "appearance": "currentSeasonLineup"
-      }
-    },
-    {
       "id": 504,
       "code": 610799,
       "name": "Vuskovic",
@@ -6078,6 +6036,48 @@
       "squadNumber": null,
       "rated": false,
       "depthRank": 1,
+      "evidence": {
+        "all": "currentSeasonRoutes",
+        "appearance": "currentSeasonLineup"
+      }
+    },
+    {
+      "id": 389,
+      "code": 465351,
+      "name": "Matheus N.",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "MCI",
+      "teamId": 15,
+      "priceTenths": 59,
+      "availabilityStatus": "a",
+      "chanceOfPlaying": 100,
+      "basePoints": 1.243,
+      "routes": {
+        "appearance": 0.574,
+        "attacking": 0.009,
+        "cleanSheet": 0.441,
+        "bonus": 0.112,
+        "conceding": -0.112,
+        "yellowCards": -0.004,
+        "defensiveContribution": 0.223
+      },
+      "startRate": 0.397,
+      "startEvidence": {
+        "sourceStartRate": 0.332,
+        "finalStartRate": 0.397,
+        "observedAppearances": 5,
+        "recentStarts": 2,
+        "recentMatches": 5,
+        "recentMinutes": 213,
+        "appearanceSource": "currentSeasonLineup",
+        "lineupAdjustment": 0.065,
+        "marketAdjustment": 0.0,
+        "availabilityAdjustment": 0.0
+      },
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 3,
       "evidence": {
         "all": "currentSeasonRoutes",
         "appearance": "currentSeasonLineup"
