@@ -1,7 +1,7 @@
 {
   "schemaVersion": 3,
-  "generatedAt": "2026-09-20T16:04:15.981490Z",
-  "catalogueSize": 61182,
+  "generatedAt": "2026-09-20T16:14:27.059411Z",
+  "catalogueSize": 62203,
   "sweptTo": 10232001,
   "size": 500,
   "listed": 0,
@@ -24935,10 +24935,10 @@
     "25": 0.799895,
     "50": 0.798862,
     "100": 0.79743,
-    "200": 0.79544,
-    "300": 0.79405,
-    "400": 0.792594,
-    "500": 0.791354
+    "200": 0.795476,
+    "300": 0.794077,
+    "400": 0.792617,
+    "500": 0.791377
   },
   "seasonsCounted": {
     "9": 2,
@@ -24947,525 +24947,525 @@
     "12": 31,
     "13": 48,
     "14": 42,
-    "15": 63,
+    "15": 62,
     "16": 54,
-    "17": 54,
+    "17": 55,
     "18": 42,
     "19": 56,
     "20": 75
   },
   "rankBins": [100, 1000, 5000, 10000, 50000, 100000, 500000],
   "rankHistogram": {
-    "2021/22": [4, 24, 73, 86, 131, 89, 91, 2],
-    "2022/23": [4, 16, 59, 61, 125, 85, 139, 11],
-    "2023/24": [3, 23, 68, 73, 119, 84, 124, 6],
-    "2024/25": [1, 13, 57, 46, 114, 74, 178, 17],
-    "2025/26": [2, 7, 51, 74, 112, 89, 161, 4]
+    "2021/22": [4, 24, 73, 86, 132, 89, 90, 2],
+    "2022/23": [4, 16, 59, 61, 125, 84, 140, 11],
+    "2023/24": [3, 23, 68, 73, 118, 85, 124, 6],
+    "2024/25": [1, 13, 58, 46, 114, 74, 178, 16],
+    "2025/26": [2, 7, 51, 73, 113, 90, 160, 4]
   },
   "thisSeason": {
-    "generatedAt": "2026-09-20T11:25:27.426023Z",
+    "generatedAt": "2026-09-20T16:07:39.455620Z",
     "rankCeiling": 10000,
     "size": 10000,
     "managers": [
       {
         "rank": 1,
         "entryId": 895045,
-        "total": 448
+        "total": 468
       },
       {
         "rank": 2,
-        "entryId": 6937378,
-        "total": 434
+        "entryId": 5151567,
+        "total": 455
       },
       {
         "rank": 3,
-        "entryId": 1785414,
-        "total": 433
+        "entryId": 3776181,
+        "total": 448
       },
       {
         "rank": 4,
-        "entryId": 793455,
-        "total": 429
+        "entryId": 7459981,
+        "total": 443
       },
       {
         "rank": 5,
-        "entryId": 52087,
-        "total": 427
+        "entryId": 3541755,
+        "total": 443
       },
       {
         "rank": 6,
-        "entryId": 872816,
-        "total": 426
+        "entryId": 1464306,
+        "total": 442
       },
       {
         "rank": 7,
-        "entryId": 1464306,
-        "total": 425
+        "entryId": 6937378,
+        "total": 442
       },
       {
         "rank": 8,
-        "entryId": 3783180,
-        "total": 425
+        "entryId": 2385620,
+        "total": 442
       },
       {
         "rank": 9,
-        "entryId": 5151567,
-        "total": 424
+        "entryId": 793455,
+        "total": 441
       },
       {
-        "rank": 10,
-        "entryId": 6313482,
-        "total": 422
+        "rank": 9,
+        "entryId": 1785414,
+        "total": 441
       },
       {
         "rank": 11,
-        "entryId": 7459981,
-        "total": 421
+        "entryId": 5038637,
+        "total": 441
       },
       {
         "rank": 12,
         "entryId": 1078505,
-        "total": 420
+        "total": 440
       },
       {
         "rank": 13,
-        "entryId": 2595563,
-        "total": 420
+        "entryId": 52087,
+        "total": 440
       },
       {
         "rank": 13,
-        "entryId": 7019795,
-        "total": 420
+        "entryId": 1068212,
+        "total": 440
       },
       {
         "rank": 15,
-        "entryId": 4014754,
-        "total": 418
+        "entryId": 1319396,
+        "total": 439
       },
       {
-        "rank": 16,
-        "entryId": 8817653,
-        "total": 418
+        "rank": 15,
+        "entryId": 2904506,
+        "total": 439
       },
       {
-        "rank": 17,
-        "entryId": 603353,
-        "total": 418
+        "rank": 15,
+        "entryId": 1308561,
+        "total": 439
       },
       {
         "rank": 18,
-        "entryId": 3776181,
-        "total": 417
+        "entryId": 5370114,
+        "total": 439
       },
       {
         "rank": 19,
-        "entryId": 28442,
-        "total": 416
+        "entryId": 3843343,
+        "total": 438
       },
       {
-        "rank": 20,
-        "entryId": 3900993,
-        "total": 415
+        "rank": 19,
+        "entryId": 6313482,
+        "total": 438
       },
       {
         "rank": 21,
-        "entryId": 7210036,
-        "total": 414
+        "entryId": 3783180,
+        "total": 437
       },
       {
         "rank": 22,
-        "entryId": 2743814,
-        "total": 414
+        "entryId": 4014754,
+        "total": 436
       },
       {
         "rank": 23,
-        "entryId": 1717192,
-        "total": 413
+        "entryId": 3921581,
+        "total": 436
       },
       {
-        "rank": 24,
-        "entryId": 1702571,
-        "total": 413
+        "rank": 23,
+        "entryId": 447911,
+        "total": 436
       },
       {
-        "rank": 24,
-        "entryId": 447521,
-        "total": 413
+        "rank": 25,
+        "entryId": 5202405,
+        "total": 435
       },
       {
         "rank": 26,
-        "entryId": 4566634,
-        "total": 412
+        "entryId": 799139,
+        "total": 435
       },
       {
         "rank": 27,
-        "entryId": 4089628,
-        "total": 412
+        "entryId": 8081241,
+        "total": 434
       },
       {
-        "rank": 28,
-        "entryId": 601933,
-        "total": 411
+        "rank": 27,
+        "entryId": 28442,
+        "total": 434
       },
       {
-        "rank": 28,
-        "entryId": 1951342,
-        "total": 411
-      },
-      {
-        "rank": 30,
-        "entryId": 29903,
-        "total": 411
+        "rank": 27,
+        "entryId": 2564490,
+        "total": 434
       },
       {
         "rank": 30,
-        "entryId": 8195689,
-        "total": 411
+        "entryId": 3550837,
+        "total": 433
       },
       {
         "rank": 30,
-        "entryId": 2904506,
-        "total": 411
+        "entryId": 391452,
+        "total": 433
       },
       {
-        "rank": 30,
-        "entryId": 3185586,
-        "total": 411
+        "rank": 32,
+        "entryId": 1819063,
+        "total": 433
+      },
+      {
+        "rank": 32,
+        "entryId": 143778,
+        "total": 433
       },
       {
         "rank": 34,
-        "entryId": 5110391,
-        "total": 410
+        "entryId": 5779146,
+        "total": 432
       },
       {
         "rank": 35,
-        "entryId": 55926,
-        "total": 410
+        "entryId": 4829085,
+        "total": 432
       },
       {
         "rank": 35,
-        "entryId": 6786124,
-        "total": 410
+        "entryId": 1006942,
+        "total": 432
       },
       {
-        "rank": 37,
-        "entryId": 799139,
-        "total": 410
-      },
-      {
-        "rank": 38,
-        "entryId": 6017029,
-        "total": 409
+        "rank": 35,
+        "entryId": 792185,
+        "total": 432
       },
       {
         "rank": 38,
-        "entryId": 1208746,
-        "total": 409
+        "entryId": 5071807,
+        "total": 432
+      },
+      {
+        "rank": 38,
+        "entryId": 447521,
+        "total": 432
       },
       {
         "rank": 40,
+        "entryId": 4182037,
+        "total": 432
+      },
+      {
+        "rank": 41,
+        "entryId": 611127,
+        "total": 431
+      },
+      {
+        "rank": 42,
         "entryId": 4690867,
-        "total": 409
+        "total": 431
       },
       {
-        "rank": 40,
-        "entryId": 4797699,
-        "total": 409
+        "rank": 42,
+        "entryId": 4872386,
+        "total": 431
       },
       {
-        "rank": 40,
-        "entryId": 2323793,
-        "total": 409
+        "rank": 42,
+        "entryId": 7546127,
+        "total": 431
       },
       {
-        "rank": 43,
-        "entryId": 126393,
-        "total": 409
+        "rank": 45,
+        "entryId": 8308352,
+        "total": 431
       },
       {
-        "rank": 43,
-        "entryId": 2385620,
-        "total": 409
+        "rank": 46,
+        "entryId": 786436,
+        "total": 430
       },
       {
-        "rank": 43,
-        "entryId": 3541755,
-        "total": 409
+        "rank": 46,
+        "entryId": 7646269,
+        "total": 430
       },
       {
-        "rank": 43,
-        "entryId": 1834383,
-        "total": 409
-      },
-      {
-        "rank": 47,
-        "entryId": 469614,
-        "total": 408
-      },
-      {
-        "rank": 47,
+        "rank": 48,
         "entryId": 5757280,
-        "total": 408
+        "total": 430
+      },
+      {
+        "rank": 49,
+        "entryId": 7019795,
+        "total": 430
       },
       {
         "rank": 49,
         "entryId": 5034269,
-        "total": 408
+        "total": 430
       },
       {
         "rank": 49,
-        "entryId": 463884,
-        "total": 408
+        "entryId": 5262114,
+        "total": 430
       },
       {
-        "rank": 49,
-        "entryId": 6090601,
-        "total": 408
-      },
-      {
-        "rank": 49,
-        "entryId": 2589585,
-        "total": 408
+        "rank": 52,
+        "entryId": 852413,
+        "total": 429
       },
       {
         "rank": 53,
-        "entryId": 11678,
-        "total": 407
+        "entryId": 872816,
+        "total": 429
       },
       {
         "rank": 53,
-        "entryId": 1308561,
-        "total": 407
+        "entryId": 3226196,
+        "total": 429
       },
       {
         "rank": 53,
-        "entryId": 447911,
-        "total": 407
+        "entryId": 1562156,
+        "total": 429
       },
       {
-        "rank": 56,
-        "entryId": 5202405,
-        "total": 407
+        "rank": 53,
+        "entryId": 923248,
+        "total": 429
       },
       {
-        "rank": 56,
-        "entryId": 5896300,
-        "total": 407
-      },
-      {
-        "rank": 56,
+        "rank": 57,
         "entryId": 6074776,
-        "total": 407
+        "total": 429
       },
       {
-        "rank": 56,
-        "entryId": 3843245,
-        "total": 407
+        "rank": 57,
+        "entryId": 521914,
+        "total": 429
       },
       {
-        "rank": 60,
-        "entryId": 8681950,
-        "total": 406
+        "rank": 59,
+        "entryId": 870831,
+        "total": 429
       },
       {
-        "rank": 61,
-        "entryId": 4221195,
-        "total": 406
+        "rank": 59,
+        "entryId": 4055622,
+        "total": 429
       },
       {
-        "rank": 62,
-        "entryId": 3921581,
-        "total": 406
-      },
-      {
-        "rank": 62,
-        "entryId": 4829085,
-        "total": 406
+        "rank": 59,
+        "entryId": 2743814,
+        "total": 429
       },
       {
         "rank": 62,
-        "entryId": 2283515,
-        "total": 406
+        "entryId": 3484452,
+        "total": 428
       },
       {
         "rank": 62,
-        "entryId": 611127,
-        "total": 406
+        "entryId": 26371,
+        "total": 428
       },
       {
         "rank": 62,
-        "entryId": 2558105,
-        "total": 406
+        "entryId": 1347927,
+        "total": 428
       },
       {
-        "rank": 62,
-        "entryId": 792185,
-        "total": 406
+        "rank": 65,
+        "entryId": 2485966,
+        "total": 428
       },
       {
-        "rank": 62,
-        "entryId": 2168776,
-        "total": 406
+        "rank": 65,
+        "entryId": 4797699,
+        "total": 428
       },
       {
-        "rank": 69,
-        "entryId": 112255,
-        "total": 406
+        "rank": 65,
+        "entryId": 2217787,
+        "total": 428
       },
       {
-        "rank": 69,
-        "entryId": 5071807,
-        "total": 406
+        "rank": 65,
+        "entryId": 6030660,
+        "total": 428
+      },
+      {
+        "rank": 65,
+        "entryId": 2595563,
+        "total": 428
+      },
+      {
+        "rank": 70,
+        "entryId": 289032,
+        "total": 428
       },
       {
         "rank": 71,
-        "entryId": 1378410,
-        "total": 406
+        "entryId": 258834,
+        "total": 427
       },
       {
         "rank": 71,
-        "entryId": 7490582,
-        "total": 406
+        "entryId": 4566634,
+        "total": 427
       },
       {
         "rank": 73,
-        "entryId": 1850318,
-        "total": 406
+        "entryId": 7245717,
+        "total": 427
       },
       {
-        "rank": 74,
-        "entryId": 1090464,
-        "total": 405
+        "rank": 73,
+        "entryId": 3011947,
+        "total": 427
       },
       {
-        "rank": 74,
-        "entryId": 6823714,
-        "total": 405
+        "rank": 75,
+        "entryId": 4932139,
+        "total": 427
       },
       {
-        "rank": 76,
-        "entryId": 895626,
-        "total": 405
+        "rank": 75,
+        "entryId": 1834657,
+        "total": 427
       },
       {
-        "rank": 77,
-        "entryId": 1636347,
-        "total": 405
+        "rank": 75,
+        "entryId": 6090601,
+        "total": 427
       },
       {
-        "rank": 78,
-        "entryId": 6030660,
-        "total": 405
+        "rank": 75,
+        "entryId": 689819,
+        "total": 427
       },
       {
-        "rank": 78,
-        "entryId": 5038637,
-        "total": 405
+        "rank": 75,
+        "entryId": 616927,
+        "total": 427
       },
       {
-        "rank": 78,
-        "entryId": 560893,
-        "total": 405
+        "rank": 75,
+        "entryId": 1087962,
+        "total": 427
       },
       {
-        "rank": 78,
-        "entryId": 1912189,
-        "total": 405
+        "rank": 81,
+        "entryId": 7490582,
+        "total": 427
       },
       {
-        "rank": 78,
-        "entryId": 7433161,
-        "total": 405
+        "rank": 81,
+        "entryId": 216685,
+        "total": 427
       },
       {
-        "rank": 78,
-        "entryId": 758606,
-        "total": 405
+        "rank": 81,
+        "entryId": 8592895,
+        "total": 427
       },
       {
-        "rank": 84,
-        "entryId": 5359755,
-        "total": 404
+        "rank": 81,
+        "entryId": 126393,
+        "total": 427
       },
       {
-        "rank": 84,
-        "entryId": 9353,
-        "total": 404
-      },
-      {
-        "rank": 86,
-        "entryId": 2617091,
-        "total": 404
+        "rank": 85,
+        "entryId": 6248616,
+        "total": 427
       },
       {
         "rank": 86,
-        "entryId": 7491201,
-        "total": 404
+        "entryId": 933350,
+        "total": 426
+      },
+      {
+        "rank": 86,
+        "entryId": 858191,
+        "total": 426
       },
       {
         "rank": 88,
-        "entryId": 103116,
-        "total": 404
+        "entryId": 3020006,
+        "total": 426
       },
       {
         "rank": 88,
-        "entryId": 1006942,
-        "total": 404
+        "entryId": 2611427,
+        "total": 426
       },
       {
         "rank": 88,
-        "entryId": 5090461,
-        "total": 404
+        "entryId": 508530,
+        "total": 426
       },
       {
-        "rank": 88,
-        "entryId": 2704797,
-        "total": 404
+        "rank": 91,
+        "entryId": 8817653,
+        "total": 426
       },
       {
-        "rank": 88,
-        "entryId": 4713363,
-        "total": 404
+        "rank": 91,
+        "entryId": 7575196,
+        "total": 426
       },
       {
-        "rank": 88,
-        "entryId": 1598882,
-        "total": 404
+        "rank": 93,
+        "entryId": 3809532,
+        "total": 426
       },
       {
-        "rank": 94,
-        "entryId": 8648249,
-        "total": 404
+        "rank": 93,
+        "entryId": 6568733,
+        "total": 426
       },
       {
-        "rank": 94,
-        "entryId": 432919,
-        "total": 404
+        "rank": 95,
+        "entryId": 1590353,
+        "total": 426
       },
       {
-        "rank": 94,
-        "entryId": 5262114,
-        "total": 404
+        "rank": 95,
+        "entryId": 5765556,
+        "total": 426
       },
       {
-        "rank": 94,
-        "entryId": 3754670,
-        "total": 404
+        "rank": 95,
+        "entryId": 1978787,
+        "total": 426
       },
       {
-        "rank": 94,
-        "entryId": 4884716,
-        "total": 404
+        "rank": 98,
+        "entryId": 974971,
+        "total": 425
       },
       {
-        "rank": 94,
-        "entryId": 5645822,
-        "total": 404
+        "rank": 99,
+        "entryId": 7526764,
+        "total": 425
       },
       {
-        "rank": 94,
-        "entryId": 5491742,
-        "total": 404
+        "rank": 99,
+        "entryId": 1717192,
+        "total": 425
       }
     ]
   }
