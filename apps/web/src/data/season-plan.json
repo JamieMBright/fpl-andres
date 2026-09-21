@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "modelVersion": "8.19",
-  "generatedAt": "2026-09-21T12:44:55.534269Z",
+  "generatedAt": "2026-09-21T13:30:12.766830Z",
   "season": "2026-27",
   "recordSeason": "2026-27",
   "basis": "opening squad, fixture-adjusted projections, solved in overlapping windows and committed 33 gameweeks deep",
@@ -28,7 +28,7 @@
       "chip": "Wildcard",
       "half": "first",
       "gain": 0.0,
-      "ceiling": 5.17,
+      "ceiling": 5.07,
       "note": "Re-planning the season around a rebuild here, with the weeks before it freed from having to stay viable afterwards, still scored no more than one transfer a week. Nothing in this projection breaks, so there is nothing for a Wildcard to repair."
     },
     {
@@ -36,7 +36,7 @@
       "chip": "Free Hit",
       "half": "first",
       "gain": 0.0,
-      "ceiling": 3.06,
+      "ceiling": 3.19,
       "note": "The best temporary squad moves only 9 of the fifteen; a Free Hit needs 10 or more changes."
     },
     {
@@ -52,7 +52,7 @@
       "chip": "Wildcard",
       "half": "second",
       "gain": 0.0,
-      "ceiling": 4.31,
+      "ceiling": 4.08,
       "note": "Re-planning the season around a rebuild here, with the weeks before it freed from having to stay viable afterwards, still scored no more than one transfer a week. Nothing in this projection breaks, so there is nothing for a Wildcard to repair."
     },
     {
@@ -76,7 +76,7 @@
       "chip": "Free Hit",
       "half": "second",
       "gain": 0.0,
-      "ceiling": 2.65,
+      "ceiling": 3.02,
       "note": "The best temporary squad moves only 6 of the fifteen; a Free Hit needs 10 or more changes."
     }
   ],
@@ -119,6 +119,13 @@
       "position": "GKP",
       "club": "ARS",
       "priceTenths": 61,
+      "squadNumber": null
+    },
+    "169432": {
+      "name": "McBurnie",
+      "position": "FWD",
+      "club": "HUL",
+      "priceTenths": 55,
       "squadNumber": null
     },
     "177815": {
@@ -205,11 +212,11 @@
       "priceTenths": 72,
       "squadNumber": null
     },
-    "244851": {
-      "name": "Palmer",
+    "243413": {
+      "name": "Slater",
       "position": "MID",
-      "club": "CHE",
-      "priceTenths": 97,
+      "club": "HUL",
+      "priceTenths": 45,
       "squadNumber": null
     },
     "424876": {
@@ -224,13 +231,6 @@
       "position": "MID",
       "club": "MCI",
       "priceTenths": 58,
-      "squadNumber": null
-    },
-    "444102": {
-      "name": "Evanilson",
-      "position": "FWD",
-      "club": "BOU",
-      "priceTenths": 60,
       "squadNumber": null
     },
     "446008": {
@@ -317,6 +317,13 @@
       "priceTenths": 61,
       "squadNumber": null
     },
+    "514254": {
+      "name": "Gomez",
+      "position": "MID",
+      "club": "BHA",
+      "priceTenths": 50,
+      "squadNumber": null
+    },
     "543968": {
       "name": "Emersonn",
       "position": "FWD",
@@ -336,6 +343,13 @@
       "position": "FWD",
       "club": "EVE",
       "priceTenths": 56,
+      "squadNumber": null
+    },
+    "610799": {
+      "name": "Vuskovic",
+      "position": "DEF",
+      "club": "BHA",
+      "priceTenths": 50,
       "squadNumber": null
     },
     "611695": {
