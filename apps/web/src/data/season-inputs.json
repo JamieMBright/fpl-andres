@@ -1,6 +1,6 @@
 {
   "schemaVersion": 7,
-  "generatedAt": "2026-09-20T22:26:36.754501Z",
+  "generatedAt": "2026-09-20T23:16:23.374419Z",
   "recordSeason": "2026-27",
   "events": [
     6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
@@ -59,8 +59,8 @@
     "fixtureMarkets": {
       "source": "football-data.co.uk",
       "level": "observed",
-      "updatedAt": "2026-09-20T19:23:45.767016+00:00",
-      "contentHash": "sha256:9b9952b842bc61b1884ceb9d49256536dcdb03a045e29b25edfa62893e027f28"
+      "updatedAt": "2026-09-20T22:26:39.830918+00:00",
+      "contentHash": "sha256:76e4170c92918ba888d5e0313402564f2609877fd192f415caf657657159aa55"
     },
     "understat": {
       "source": "understat",
@@ -191,7 +191,7 @@
       }
     ],
     "sourceReference": "FPL rules page, Transfers section",
-    "dataAvailableAt": "2026-09-20T22:26:36.754501Z",
+    "dataAvailableAt": "2026-09-20T23:16:23.374419Z",
     "playableStartRate": 0.35,
     "transferMarginPoints": 0.5
   },
@@ -936,7 +936,7 @@
   },
   "fixtureEvidence": {
     "source": "football-data.co.uk",
-    "updatedAt": "2026-09-20T19:23:45.767016+00:00",
+    "updatedAt": "2026-09-20T22:26:39.830918+00:00",
     "level": "observed",
     "byClub": {}
   },
@@ -1893,7 +1893,7 @@
       "positionId": 1,
       "club": "ARS",
       "teamId": 1,
-      "priceTenths": 60,
+      "priceTenths": 61,
       "availabilityStatus": "a",
       "chanceOfPlaying": null,
       "basePoints": 1.169,
@@ -9226,7 +9226,7 @@
       "positionId": 2,
       "club": "EVE",
       "teamId": 9,
-      "priceTenths": 49,
+      "priceTenths": 48,
       "availabilityStatus": "a",
       "chanceOfPlaying": null,
       "basePoints": 0.533,
@@ -9268,7 +9268,7 @@
       "positionId": 2,
       "club": "ARS",
       "teamId": 1,
-      "priceTenths": 53,
+      "priceTenths": 52,
       "availabilityStatus": "a",
       "chanceOfPlaying": null,
       "basePoints": 0.527,
@@ -9296,7 +9296,7 @@
       },
       "squadNumber": null,
       "rated": true,
-      "depthRank": 6,
+      "depthRank": 7,
       "evidence": {
         "all": "currentSeasonRoutes",
         "appearance": "currentSeasonLineup"
@@ -10113,7 +10113,7 @@
       "positionId": 2,
       "club": "FUL",
       "teamId": 10,
-      "priceTenths": 44,
+      "priceTenths": 43,
       "availabilityStatus": "a",
       "chanceOfPlaying": 100,
       "basePoints": 0.36,
@@ -10141,7 +10141,7 @@
       },
       "squadNumber": null,
       "rated": true,
-      "depthRank": 7,
+      "depthRank": 8,
       "evidence": {
         "all": "currentSeasonRoutes",
         "appearance": "currentSeasonLineup"
@@ -10385,7 +10385,7 @@
       },
       "squadNumber": null,
       "rated": true,
-      "depthRank": 4,
+      "depthRank": 3,
       "evidence": { "appearance": "currentSeasonLineup" }
     },
     {
@@ -10868,7 +10868,7 @@
       "positionId": 2,
       "club": "BOU",
       "teamId": 3,
-      "priceTenths": 50,
+      "priceTenths": 49,
       "availabilityStatus": "a",
       "chanceOfPlaying": null,
       "basePoints": 0.14,
@@ -10888,7 +10888,7 @@
       },
       "squadNumber": null,
       "rated": true,
-      "depthRank": 3,
+      "depthRank": 4,
       "evidence": { "appearance": "currentSeasonLineup" }
     },
     {
@@ -11124,7 +11124,7 @@
       },
       "squadNumber": null,
       "rated": true,
-      "depthRank": 5,
+      "depthRank": 4,
       "evidence": { "appearance": "fplAvailability" }
     },
     {
@@ -12148,7 +12148,7 @@
       "positionId": 2,
       "club": "NEW",
       "teamId": 17,
-      "priceTenths": 49,
+      "priceTenths": 48,
       "availabilityStatus": "i",
       "chanceOfPlaying": 0,
       "basePoints": 0,
@@ -12168,7 +12168,7 @@
       },
       "squadNumber": null,
       "rated": true,
-      "depthRank": 4,
+      "depthRank": 6,
       "evidence": { "appearance": "fplAvailability" }
     },
     {
@@ -13588,7 +13588,7 @@
       },
       "squadNumber": null,
       "rated": false,
-      "depthRank": 14,
+      "depthRank": 13,
       "evidence": { "all": "rolePrior", "appearance": "currentSeasonLineup" }
     },
     {
@@ -15102,7 +15102,7 @@
       },
       "squadNumber": null,
       "rated": false,
-      "depthRank": 10,
+      "depthRank": 9,
       "evidence": {
         "all": "currentSeasonRoutes",
         "appearance": "currentSeasonLineup"
@@ -16687,7 +16687,7 @@
       },
       "squadNumber": null,
       "rated": true,
-      "depthRank": 7,
+      "depthRank": 6,
       "evidence": {
         "all": "currentSeasonRoutes",
         "appearance": "currentSeasonLineup"
@@ -18406,7 +18406,7 @@
       },
       "squadNumber": null,
       "rated": true,
-      "depthRank": 7,
+      "depthRank": 6,
       "evidence": {
         "all": "currentSeasonRoutes",
         "appearance": "currentSeasonLineup"
@@ -19120,7 +19120,7 @@
       "positionId": 3,
       "club": "IPS",
       "teamId": 12,
-      "priceTenths": 49,
+      "priceTenths": 48,
       "availabilityStatus": "a",
       "chanceOfPlaying": 100,
       "basePoints": 0.53,
@@ -19147,7 +19147,7 @@
       },
       "squadNumber": null,
       "rated": true,
-      "depthRank": 9,
+      "depthRank": 13,
       "evidence": {
         "all": "currentSeasonRoutes",
         "appearance": "currentSeasonLineup"
@@ -19857,7 +19857,7 @@
       "positionId": 3,
       "club": "EVE",
       "teamId": 9,
-      "priceTenths": 55,
+      "priceTenths": 54,
       "availabilityStatus": "a",
       "chanceOfPlaying": 100,
       "basePoints": 0.473,
@@ -19884,7 +19884,7 @@
       },
       "squadNumber": null,
       "rated": false,
-      "depthRank": 5,
+      "depthRank": 6,
       "evidence": {
         "all": "currentSeasonRoutes",
         "appearance": "currentSeasonLineup"
@@ -20390,7 +20390,7 @@
       "positionId": 3,
       "club": "COV",
       "teamId": 7,
-      "priceTenths": 49,
+      "priceTenths": 48,
       "availabilityStatus": "a",
       "chanceOfPlaying": null,
       "basePoints": 0.435,
@@ -20417,7 +20417,7 @@
       },
       "squadNumber": null,
       "rated": false,
-      "depthRank": 6,
+      "depthRank": 9,
       "evidence": {
         "all": "currentSeasonRoutes",
         "appearance": "currentSeasonLineup"
@@ -21004,7 +21004,7 @@
       "positionId": 3,
       "club": "TOT",
       "teamId": 19,
-      "priceTenths": 58,
+      "priceTenths": 57,
       "availabilityStatus": "a",
       "chanceOfPlaying": null,
       "basePoints": 0.364,
@@ -21045,7 +21045,7 @@
       "positionId": 3,
       "club": "LEE",
       "teamId": 13,
-      "priceTenths": 54,
+      "priceTenths": 53,
       "availabilityStatus": "a",
       "chanceOfPlaying": null,
       "basePoints": 0.353,
@@ -21072,7 +21072,7 @@
       },
       "squadNumber": null,
       "rated": true,
-      "depthRank": 4,
+      "depthRank": 5,
       "evidence": {
         "all": "currentSeasonRoutes",
         "appearance": "currentSeasonLineup"
@@ -21495,7 +21495,7 @@
       "positionId": 3,
       "club": "CHE",
       "teamId": 6,
-      "priceTenths": 59,
+      "priceTenths": 58,
       "availabilityStatus": "a",
       "chanceOfPlaying": null,
       "basePoints": 0.2,
@@ -22435,7 +22435,7 @@
       },
       "squadNumber": null,
       "rated": false,
-      "depthRank": 10,
+      "depthRank": 9,
       "evidence": { "all": "rolePrior", "appearance": "fplAvailability" }
     },
     {
@@ -22965,7 +22965,7 @@
       "positionId": 4,
       "club": "BHA",
       "teamId": 5,
-      "priceTenths": 55,
+      "priceTenths": 56,
       "availabilityStatus": "a",
       "chanceOfPlaying": null,
       "basePoints": 1.214,
