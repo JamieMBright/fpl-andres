@@ -1,10 +1,16 @@
 import { describe, expect, it } from "vitest";
 
+import { WILDCARD_HORIZONS } from "./chip-rules";
 import {
+  bestElevenPoints,
+  EVENT_INDEX,
+  isBuyEligibleAtEvent,
   LINEUP_SHAPE,
+  PLAYABLE_START_RATE,
   SEASON_EVENTS,
   SEASON_PLAYERS,
   SQUAD_SHAPE_BY_CODE,
+  startRateAtEvent,
 } from "./season-solver";
 import { rebuildSquad, rebuildUplift } from "./squad-rebuild";
 
@@ -17,6 +23,40 @@ import { rebuildSquad, rebuildUplift } from "./squad-rebuild";
 const BUDGET = 1000;
 
 describe("rebuildSquad", () => {
+  it.each(WILDCARD_HORIZONS)(
+    "does not leave an affordable scoring upgrade unused over %i weeks from gameweek six",
+    (weeks) => {
+      const eventIndex = EVENT_INDEX.get(6)!;
+      const rebuilt = rebuildSquad(eventIndex, BUDGET, weeks)!;
+      const score = (squad: typeof rebuilt.squad) =>
+        Array.from({ length: weeks }, (_, ahead) =>
+          bestElevenPoints(squad, eventIndex + ahead),
+        ).reduce((total, points) => total + points, 0);
+      const current = score(rebuilt.squad);
+      for (const held of rebuilt.squad) {
+        const remaining = rebuilt.squad.filter(
+          (player) => player.id !== held.id,
+        );
+        for (const candidate of SEASON_PLAYERS) {
+          if (
+            candidate.position !== held.position ||
+            candidate.priceTenths > rebuilt.bankTenths + held.priceTenths ||
+            remaining.some((player) => player.id === candidate.id) ||
+            remaining.filter((player) => player.club === candidate.club)
+              .length >= 3 ||
+            !isBuyEligibleAtEvent(candidate, 6) ||
+            startRateAtEvent(candidate, eventIndex) < PLAYABLE_START_RATE
+          )
+            continue;
+          expect(
+            score([...remaining, candidate]),
+            `${held.name} -> ${candidate.name}; bank ${rebuilt.bankTenths}`,
+          ).toBeLessThanOrEqual(current + 1e-9);
+        }
+      }
+    },
+  );
+
   it("buys a legal fifteen inside the budget", () => {
     const rebuilt = rebuildSquad(0, BUDGET);
 

@@ -8,6 +8,7 @@ import {
   bestElevenPoints,
   isBuyEligibleAtEvent,
   lookaheadPointsFor,
+  pointsAtEvent,
   startRateAtEvent,
   type SolverPlayer,
 } from "./season-solver";
@@ -210,9 +211,9 @@ function reserveFor(frame: SquadFrame, table: Map<string, number[]>): number {
 /**
  * A fifteen bought from scratch at this gameweek.
  *
- * Scored on the lookahead, not on the week alone: a wildcard squad has to keep
- * working after the week it was bought, and picking for one Saturday is how a
- * rebuild becomes a liability three weeks later.
+ * Scored on the best legal eleven each week, matching the reported chip gain.
+ * A single fixed eleven over the lookahead misses players whose rotation into
+ * later lineups makes an affordable upgrade worthwhile.
  */
 export function rebuildSquad(
   eventIndex: number,
@@ -227,6 +228,22 @@ export function rebuildSquad(
     value.set(player.id, horizonPoints(player, eventIndex, weeks));
   }
   const scoreOf = (player: SolverPlayer) => value.get(player.id) ?? 0;
+  const eventValues = Array.from(
+    { length: weeks },
+    (_, ahead) =>
+      new Map(
+        pool.map((player) => [
+          player.id,
+          pointsAtEvent(player, eventIndex + ahead),
+        ]),
+      ),
+  );
+  const squadValue = (squad: readonly SolverPlayer[]) =>
+    eventValues.reduce(
+      (total, values) =>
+        total + lineupValue(squad, (player) => values.get(player.id) ?? 0),
+      0,
+    );
 
   // Points per pound orders the fill; raw points decides an upgrade later.
   const byValue = [...pool].sort(
@@ -250,7 +267,7 @@ export function rebuildSquad(
 
   for (let pass = 0; pass < IMPROVEMENT_PASSES; pass += 1) {
     let improved = false;
-    const currentValue = lineupValue(frame.players, scoreOf);
+    const currentValue = squadValue(frame.players);
     for (const held of frame.players) {
       const spare = budgetTenths - frame.spent + held.priceTenths;
       let best: SolverPlayer | null = null;
@@ -262,7 +279,7 @@ export function rebuildSquad(
         const fits = frame.fits(candidate);
         if (fits) {
           frame.add(candidate);
-          const candidateValue = lineupValue(frame.players, scoreOf);
+          const candidateValue = squadValue(frame.players);
           frame.remove(candidate);
           if (
             candidateValue > bestValue + 1e-9 ||
