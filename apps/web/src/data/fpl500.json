@@ -1,6 +1,6 @@
 {
   "schemaVersion": 3,
-  "generatedAt": "2026-10-10T12:38:47.143115Z",
+  "generatedAt": "2026-10-10T13:12:16.335426Z",
   "catalogueSize": 64504,
   "sweptTo": 10232001,
   "size": 500,
@@ -41,7 +41,7 @@
   "cataloguePortfolio": {
     "basis": "catalogue-at-deadline",
     "label": "Catalogue at deadline",
-    "events": [1, 2, 3, 4, 5],
+    "events": [1, 2, 3, 4, 5, 6],
     "samples": {
       "01": {
         "capturedAt": "2026-08-21T19:13:44.152497Z",
@@ -76,6 +76,13 @@
         "attempted": 57139,
         "responded": 57139,
         "counted": 54476,
+        "coverage": 1.0
+      },
+      "06": {
+        "capturedAt": "2026-10-10T13:10:53.421563Z",
+        "attempted": 64168,
+        "responded": 64167,
+        "counted": 62987,
         "coverage": 1.0
       }
     },
@@ -199,13 +206,35 @@
           "share": 0.0275,
           "points": 0
         }
+      ],
+      "06": [
+        {
+          "elementId": 411,
+          "share": 0.27911
+        },
+        {
+          "elementId": 12,
+          "share": 0.16605
+        },
+        {
+          "elementId": 154,
+          "share": 0.13279
+        },
+        {
+          "elementId": 426,
+          "share": 0.12531
+        },
+        {
+          "elementId": 165,
+          "share": 0.07706
+        }
       ]
     }
   },
   "exactFpl500Portfolio": {
     "basis": "ranked-500",
     "label": "Exact FPL500",
-    "events": [1, 2, 3, 4, 5],
+    "events": [1, 2, 3, 4, 5, 6],
     "samples": {
       "01": {
         "capturedAt": "2026-08-26T20:02:29.293562Z",
@@ -12807,6 +12836,2677 @@
             "rawGameweekPoints": 33
           }
         }
+      },
+      "06": {
+        "capturedAt": "2026-10-10T13:11:14.995560Z",
+        "attempted": 500,
+        "responded": 500,
+        "counted": 498,
+        "coverage": 1.0,
+        "membershipLabel": "pre-deadline FPL500 membership",
+        "membershipSourceTiming": "pre-deadline",
+        "membershipSourceGeneratedAt": "2026-10-10T05:58:00.673546Z",
+        "membershipSecondsFromDeadline": -14519,
+        "membershipSourceCommit": "8944ee4a0edca5494ccc9f89323ff5555d7f6fb8",
+        "membershipSize": 500,
+        "aggregate": {
+          "schemaVersion": 2,
+          "event": 6,
+          "capturedAt": "2026-10-10T13:11:41.057006Z",
+          "basis": "ranked-500",
+          "cohortRevision": "sha256:8bbc76ce704aa6565aacb25626106eed4c28bc3d90e9af79f699728b45b999c9",
+          "attempted": 500,
+          "responded": 500,
+          "coverage": 1.0,
+          "chips": {
+            "bboost": 1,
+            "freehit": 2,
+            "none": 394,
+            "wildcard": 103
+          },
+          "totalPoints": {
+            "mean": 0.0,
+            "median": 0.0,
+            "p10": 0.0,
+            "p90": 0.0,
+            "minimum": 0,
+            "maximum": 0
+          },
+          "benchPoints": {
+            "mean": 0.0,
+            "median": 0.0,
+            "p10": 0.0,
+            "p90": 0.0,
+            "minimum": 0,
+            "maximum": 0
+          },
+          "squadValueTenths": {
+            "mean": 1014.792,
+            "median": 1014.0,
+            "p10": 1006.0,
+            "p90": 1025.0,
+            "minimum": 990,
+            "maximum": 1034
+          },
+          "bankTenths": {
+            "mean": 7.704,
+            "median": 4.0,
+            "p10": 0.0,
+            "p90": 18.0,
+            "minimum": 0,
+            "maximum": 96
+          },
+          "eventTransfers": {
+            "mean": 0.452,
+            "median": 0.0,
+            "p10": 0.0,
+            "p90": 2.0,
+            "minimum": 0,
+            "maximum": 4
+          },
+          "transferCost": {
+            "mean": 0.016,
+            "median": 0.0,
+            "p10": 0.0,
+            "p90": 0.0,
+            "minimum": 0,
+            "maximum": 4
+          },
+          "hitsTaken": 0,
+          "transfersAvailable": true,
+          "seasonStanding": [
+            {
+              "overallRank": 442,
+              "totalPoints": 419
+            },
+            {
+              "overallRank": 952,
+              "totalPoints": 414
+            },
+            {
+              "overallRank": 1829,
+              "totalPoints": 410
+            },
+            {
+              "overallRank": 2460,
+              "totalPoints": 408
+            },
+            {
+              "overallRank": 2819,
+              "totalPoints": 407
+            },
+            {
+              "overallRank": 3112,
+              "totalPoints": 406
+            },
+            {
+              "overallRank": 3273,
+              "totalPoints": 406
+            },
+            {
+              "overallRank": 3273,
+              "totalPoints": 406
+            },
+            {
+              "overallRank": 4087,
+              "totalPoints": 404
+            },
+            {
+              "overallRank": 4610,
+              "totalPoints": 403
+            },
+            {
+              "overallRank": 4748,
+              "totalPoints": 403
+            },
+            {
+              "overallRank": 4748,
+              "totalPoints": 403
+            },
+            {
+              "overallRank": 4748,
+              "totalPoints": 403
+            },
+            {
+              "overallRank": 4748,
+              "totalPoints": 403
+            },
+            {
+              "overallRank": 4924,
+              "totalPoints": 403
+            },
+            {
+              "overallRank": 5136,
+              "totalPoints": 403
+            },
+            {
+              "overallRank": 5324,
+              "totalPoints": 402
+            },
+            {
+              "overallRank": 5324,
+              "totalPoints": 402
+            },
+            {
+              "overallRank": 5324,
+              "totalPoints": 402
+            },
+            {
+              "overallRank": 5507,
+              "totalPoints": 402
+            },
+            {
+              "overallRank": 5507,
+              "totalPoints": 402
+            },
+            {
+              "overallRank": 5507,
+              "totalPoints": 402
+            },
+            {
+              "overallRank": 6169,
+              "totalPoints": 401
+            },
+            {
+              "overallRank": 6169,
+              "totalPoints": 401
+            },
+            {
+              "overallRank": 6336,
+              "totalPoints": 401
+            },
+            {
+              "overallRank": 6787,
+              "totalPoints": 401
+            },
+            {
+              "overallRank": 6787,
+              "totalPoints": 401
+            },
+            {
+              "overallRank": 7027,
+              "totalPoints": 400
+            },
+            {
+              "overallRank": 7238,
+              "totalPoints": 400
+            },
+            {
+              "overallRank": 8060,
+              "totalPoints": 399
+            },
+            {
+              "overallRank": 8060,
+              "totalPoints": 399
+            },
+            {
+              "overallRank": 8156,
+              "totalPoints": 399
+            },
+            {
+              "overallRank": 8277,
+              "totalPoints": 399
+            },
+            {
+              "overallRank": 8277,
+              "totalPoints": 399
+            },
+            {
+              "overallRank": 9361,
+              "totalPoints": 398
+            },
+            {
+              "overallRank": 9361,
+              "totalPoints": 398
+            },
+            {
+              "overallRank": 9544,
+              "totalPoints": 398
+            },
+            {
+              "overallRank": 9544,
+              "totalPoints": 398
+            },
+            {
+              "overallRank": 11721,
+              "totalPoints": 397
+            },
+            {
+              "overallRank": 12144,
+              "totalPoints": 396
+            },
+            {
+              "overallRank": 12432,
+              "totalPoints": 396
+            },
+            {
+              "overallRank": 12432,
+              "totalPoints": 396
+            },
+            {
+              "overallRank": 12838,
+              "totalPoints": 396
+            },
+            {
+              "overallRank": 12838,
+              "totalPoints": 396
+            },
+            {
+              "overallRank": 13670,
+              "totalPoints": 396
+            },
+            {
+              "overallRank": 13745,
+              "totalPoints": 395
+            },
+            {
+              "overallRank": 14101,
+              "totalPoints": 395
+            },
+            {
+              "overallRank": 14101,
+              "totalPoints": 395
+            },
+            {
+              "overallRank": 14574,
+              "totalPoints": 395
+            },
+            {
+              "overallRank": 15643,
+              "totalPoints": 394
+            },
+            {
+              "overallRank": 15831,
+              "totalPoints": 394
+            },
+            {
+              "overallRank": 16542,
+              "totalPoints": 394
+            },
+            {
+              "overallRank": 17748,
+              "totalPoints": 393
+            },
+            {
+              "overallRank": 17943,
+              "totalPoints": 393
+            },
+            {
+              "overallRank": 18755,
+              "totalPoints": 393
+            },
+            {
+              "overallRank": 18755,
+              "totalPoints": 393
+            },
+            {
+              "overallRank": 18755,
+              "totalPoints": 393
+            },
+            {
+              "overallRank": 20107,
+              "totalPoints": 392
+            },
+            {
+              "overallRank": 20596,
+              "totalPoints": 392
+            },
+            {
+              "overallRank": 20596,
+              "totalPoints": 392
+            },
+            {
+              "overallRank": 21903,
+              "totalPoints": 392
+            },
+            {
+              "overallRank": 23307,
+              "totalPoints": 391
+            },
+            {
+              "overallRank": 23307,
+              "totalPoints": 391
+            },
+            {
+              "overallRank": 23307,
+              "totalPoints": 391
+            },
+            {
+              "overallRank": 24787,
+              "totalPoints": 391
+            },
+            {
+              "overallRank": 24787,
+              "totalPoints": 391
+            },
+            {
+              "overallRank": 24787,
+              "totalPoints": 391
+            },
+            {
+              "overallRank": 24787,
+              "totalPoints": 391
+            },
+            {
+              "overallRank": 25589,
+              "totalPoints": 390
+            },
+            {
+              "overallRank": 25589,
+              "totalPoints": 390
+            },
+            {
+              "overallRank": 25839,
+              "totalPoints": 390
+            },
+            {
+              "overallRank": 28553,
+              "totalPoints": 390
+            },
+            {
+              "overallRank": 28666,
+              "totalPoints": 389
+            },
+            {
+              "overallRank": 28666,
+              "totalPoints": 389
+            },
+            {
+              "overallRank": 31154,
+              "totalPoints": 389
+            },
+            {
+              "overallRank": 31154,
+              "totalPoints": 389
+            },
+            {
+              "overallRank": 31154,
+              "totalPoints": 389
+            },
+            {
+              "overallRank": 31154,
+              "totalPoints": 389
+            },
+            {
+              "overallRank": 32527,
+              "totalPoints": 388
+            },
+            {
+              "overallRank": 32527,
+              "totalPoints": 388
+            },
+            {
+              "overallRank": 32949,
+              "totalPoints": 388
+            },
+            {
+              "overallRank": 32949,
+              "totalPoints": 388
+            },
+            {
+              "overallRank": 33813,
+              "totalPoints": 388
+            },
+            {
+              "overallRank": 33813,
+              "totalPoints": 388
+            },
+            {
+              "overallRank": 33813,
+              "totalPoints": 388
+            },
+            {
+              "overallRank": 34908,
+              "totalPoints": 388
+            },
+            {
+              "overallRank": 34908,
+              "totalPoints": 388
+            },
+            {
+              "overallRank": 34908,
+              "totalPoints": 388
+            },
+            {
+              "overallRank": 36008,
+              "totalPoints": 387
+            },
+            {
+              "overallRank": 36008,
+              "totalPoints": 387
+            },
+            {
+              "overallRank": 36008,
+              "totalPoints": 387
+            },
+            {
+              "overallRank": 36339,
+              "totalPoints": 387
+            },
+            {
+              "overallRank": 36769,
+              "totalPoints": 387
+            },
+            {
+              "overallRank": 37710,
+              "totalPoints": 387
+            },
+            {
+              "overallRank": 38899,
+              "totalPoints": 387
+            },
+            {
+              "overallRank": 40163,
+              "totalPoints": 386
+            },
+            {
+              "overallRank": 40163,
+              "totalPoints": 386
+            },
+            {
+              "overallRank": 41008,
+              "totalPoints": 386
+            },
+            {
+              "overallRank": 42068,
+              "totalPoints": 386
+            },
+            {
+              "overallRank": 42068,
+              "totalPoints": 386
+            },
+            {
+              "overallRank": 45126,
+              "totalPoints": 385
+            },
+            {
+              "overallRank": 45126,
+              "totalPoints": 385
+            },
+            {
+              "overallRank": 45126,
+              "totalPoints": 385
+            },
+            {
+              "overallRank": 45677,
+              "totalPoints": 385
+            },
+            {
+              "overallRank": 45677,
+              "totalPoints": 385
+            },
+            {
+              "overallRank": 45677,
+              "totalPoints": 385
+            },
+            {
+              "overallRank": 46831,
+              "totalPoints": 385
+            },
+            {
+              "overallRank": 48273,
+              "totalPoints": 385
+            },
+            {
+              "overallRank": 49797,
+              "totalPoints": 384
+            },
+            {
+              "overallRank": 50195,
+              "totalPoints": 384
+            },
+            {
+              "overallRank": 50195,
+              "totalPoints": 384
+            },
+            {
+              "overallRank": 50748,
+              "totalPoints": 384
+            },
+            {
+              "overallRank": 50748,
+              "totalPoints": 384
+            },
+            {
+              "overallRank": 50748,
+              "totalPoints": 384
+            },
+            {
+              "overallRank": 51985,
+              "totalPoints": 384
+            },
+            {
+              "overallRank": 53553,
+              "totalPoints": 384
+            },
+            {
+              "overallRank": 54911,
+              "totalPoints": 384
+            },
+            {
+              "overallRank": 55221,
+              "totalPoints": 383
+            },
+            {
+              "overallRank": 56391,
+              "totalPoints": 383
+            },
+            {
+              "overallRank": 56391,
+              "totalPoints": 383
+            },
+            {
+              "overallRank": 56391,
+              "totalPoints": 383
+            },
+            {
+              "overallRank": 57702,
+              "totalPoints": 383
+            },
+            {
+              "overallRank": 59463,
+              "totalPoints": 383
+            },
+            {
+              "overallRank": 61238,
+              "totalPoints": 382
+            },
+            {
+              "overallRank": 61238,
+              "totalPoints": 382
+            },
+            {
+              "overallRank": 61751,
+              "totalPoints": 382
+            },
+            {
+              "overallRank": 62379,
+              "totalPoints": 382
+            },
+            {
+              "overallRank": 62379,
+              "totalPoints": 382
+            },
+            {
+              "overallRank": 65745,
+              "totalPoints": 382
+            },
+            {
+              "overallRank": 65745,
+              "totalPoints": 382
+            },
+            {
+              "overallRank": 65745,
+              "totalPoints": 382
+            },
+            {
+              "overallRank": 67663,
+              "totalPoints": 381
+            },
+            {
+              "overallRank": 67663,
+              "totalPoints": 381
+            },
+            {
+              "overallRank": 67663,
+              "totalPoints": 381
+            },
+            {
+              "overallRank": 67663,
+              "totalPoints": 381
+            },
+            {
+              "overallRank": 68202,
+              "totalPoints": 381
+            },
+            {
+              "overallRank": 68202,
+              "totalPoints": 381
+            },
+            {
+              "overallRank": 68876,
+              "totalPoints": 381
+            },
+            {
+              "overallRank": 70495,
+              "totalPoints": 381
+            },
+            {
+              "overallRank": 70495,
+              "totalPoints": 381
+            },
+            {
+              "overallRank": 72518,
+              "totalPoints": 381
+            },
+            {
+              "overallRank": 74331,
+              "totalPoints": 381
+            },
+            {
+              "overallRank": 74673,
+              "totalPoints": 380
+            },
+            {
+              "overallRank": 74673,
+              "totalPoints": 380
+            },
+            {
+              "overallRank": 75235,
+              "totalPoints": 380
+            },
+            {
+              "overallRank": 75235,
+              "totalPoints": 380
+            },
+            {
+              "overallRank": 75963,
+              "totalPoints": 380
+            },
+            {
+              "overallRank": 75963,
+              "totalPoints": 380
+            },
+            {
+              "overallRank": 83095,
+              "totalPoints": 379
+            },
+            {
+              "overallRank": 83095,
+              "totalPoints": 379
+            },
+            {
+              "overallRank": 83924,
+              "totalPoints": 379
+            },
+            {
+              "overallRank": 83924,
+              "totalPoints": 379
+            },
+            {
+              "overallRank": 85733,
+              "totalPoints": 379
+            },
+            {
+              "overallRank": 85733,
+              "totalPoints": 379
+            },
+            {
+              "overallRank": 90766,
+              "totalPoints": 378
+            },
+            {
+              "overallRank": 90766,
+              "totalPoints": 378
+            },
+            {
+              "overallRank": 91542,
+              "totalPoints": 378
+            },
+            {
+              "overallRank": 92417,
+              "totalPoints": 378
+            },
+            {
+              "overallRank": 94288,
+              "totalPoints": 378
+            },
+            {
+              "overallRank": 96900,
+              "totalPoints": 378
+            },
+            {
+              "overallRank": 96900,
+              "totalPoints": 378
+            },
+            {
+              "overallRank": 96900,
+              "totalPoints": 378
+            },
+            {
+              "overallRank": 96900,
+              "totalPoints": 378
+            },
+            {
+              "overallRank": 99750,
+              "totalPoints": 377
+            },
+            {
+              "overallRank": 100399,
+              "totalPoints": 377
+            },
+            {
+              "overallRank": 100399,
+              "totalPoints": 377
+            },
+            {
+              "overallRank": 101286,
+              "totalPoints": 377
+            },
+            {
+              "overallRank": 101286,
+              "totalPoints": 377
+            },
+            {
+              "overallRank": 103436,
+              "totalPoints": 377
+            },
+            {
+              "overallRank": 103436,
+              "totalPoints": 377
+            },
+            {
+              "overallRank": 106254,
+              "totalPoints": 377
+            },
+            {
+              "overallRank": 110140,
+              "totalPoints": 376
+            },
+            {
+              "overallRank": 110140,
+              "totalPoints": 376
+            },
+            {
+              "overallRank": 111150,
+              "totalPoints": 376
+            },
+            {
+              "overallRank": 111150,
+              "totalPoints": 376
+            },
+            {
+              "overallRank": 113378,
+              "totalPoints": 376
+            },
+            {
+              "overallRank": 113378,
+              "totalPoints": 376
+            },
+            {
+              "overallRank": 120699,
+              "totalPoints": 375
+            },
+            {
+              "overallRank": 121701,
+              "totalPoints": 375
+            },
+            {
+              "overallRank": 124040,
+              "totalPoints": 375
+            },
+            {
+              "overallRank": 124040,
+              "totalPoints": 375
+            },
+            {
+              "overallRank": 124040,
+              "totalPoints": 375
+            },
+            {
+              "overallRank": 127230,
+              "totalPoints": 375
+            },
+            {
+              "overallRank": 130901,
+              "totalPoints": 374
+            },
+            {
+              "overallRank": 130901,
+              "totalPoints": 374
+            },
+            {
+              "overallRank": 131765,
+              "totalPoints": 374
+            },
+            {
+              "overallRank": 131765,
+              "totalPoints": 374
+            },
+            {
+              "overallRank": 131765,
+              "totalPoints": 374
+            },
+            {
+              "overallRank": 132836,
+              "totalPoints": 374
+            },
+            {
+              "overallRank": 132836,
+              "totalPoints": 374
+            },
+            {
+              "overallRank": 132836,
+              "totalPoints": 374
+            },
+            {
+              "overallRank": 132836,
+              "totalPoints": 374
+            },
+            {
+              "overallRank": 135460,
+              "totalPoints": 374
+            },
+            {
+              "overallRank": 135460,
+              "totalPoints": 374
+            },
+            {
+              "overallRank": 135460,
+              "totalPoints": 374
+            },
+            {
+              "overallRank": 135460,
+              "totalPoints": 374
+            },
+            {
+              "overallRank": 138952,
+              "totalPoints": 374
+            },
+            {
+              "overallRank": 138952,
+              "totalPoints": 374
+            },
+            {
+              "overallRank": 144922,
+              "totalPoints": 373
+            },
+            {
+              "overallRank": 144922,
+              "totalPoints": 373
+            },
+            {
+              "overallRank": 147643,
+              "totalPoints": 373
+            },
+            {
+              "overallRank": 147643,
+              "totalPoints": 373
+            },
+            {
+              "overallRank": 151441,
+              "totalPoints": 373
+            },
+            {
+              "overallRank": 151441,
+              "totalPoints": 373
+            },
+            {
+              "overallRank": 154805,
+              "totalPoints": 373
+            },
+            {
+              "overallRank": 156512,
+              "totalPoints": 372
+            },
+            {
+              "overallRank": 156512,
+              "totalPoints": 372
+            },
+            {
+              "overallRank": 156512,
+              "totalPoints": 372
+            },
+            {
+              "overallRank": 157755,
+              "totalPoints": 372
+            },
+            {
+              "overallRank": 160674,
+              "totalPoints": 372
+            },
+            {
+              "overallRank": 164750,
+              "totalPoints": 372
+            },
+            {
+              "overallRank": 170372,
+              "totalPoints": 371
+            },
+            {
+              "overallRank": 170372,
+              "totalPoints": 371
+            },
+            {
+              "overallRank": 171748,
+              "totalPoints": 371
+            },
+            {
+              "overallRank": 174868,
+              "totalPoints": 371
+            },
+            {
+              "overallRank": 174868,
+              "totalPoints": 371
+            },
+            {
+              "overallRank": 174868,
+              "totalPoints": 371
+            },
+            {
+              "overallRank": 174868,
+              "totalPoints": 371
+            },
+            {
+              "overallRank": 174868,
+              "totalPoints": 371
+            },
+            {
+              "overallRank": 179300,
+              "totalPoints": 371
+            },
+            {
+              "overallRank": 179300,
+              "totalPoints": 371
+            },
+            {
+              "overallRank": 179300,
+              "totalPoints": 371
+            },
+            {
+              "overallRank": 185335,
+              "totalPoints": 370
+            },
+            {
+              "overallRank": 186730,
+              "totalPoints": 370
+            },
+            {
+              "overallRank": 186730,
+              "totalPoints": 370
+            },
+            {
+              "overallRank": 186730,
+              "totalPoints": 370
+            },
+            {
+              "overallRank": 186730,
+              "totalPoints": 370
+            },
+            {
+              "overallRank": 186730,
+              "totalPoints": 370
+            },
+            {
+              "overallRank": 189966,
+              "totalPoints": 370
+            },
+            {
+              "overallRank": 189966,
+              "totalPoints": 370
+            },
+            {
+              "overallRank": 194451,
+              "totalPoints": 370
+            },
+            {
+              "overallRank": 199782,
+              "totalPoints": 369
+            },
+            {
+              "overallRank": 199782,
+              "totalPoints": 369
+            },
+            {
+              "overallRank": 202273,
+              "totalPoints": 369
+            },
+            {
+              "overallRank": 205698,
+              "totalPoints": 369
+            },
+            {
+              "overallRank": 205698,
+              "totalPoints": 369
+            },
+            {
+              "overallRank": 205698,
+              "totalPoints": 369
+            },
+            {
+              "overallRank": 205698,
+              "totalPoints": 369
+            },
+            {
+              "overallRank": 210429,
+              "totalPoints": 369
+            },
+            {
+              "overallRank": 210429,
+              "totalPoints": 369
+            },
+            {
+              "overallRank": 216054,
+              "totalPoints": 368
+            },
+            {
+              "overallRank": 216054,
+              "totalPoints": 368
+            },
+            {
+              "overallRank": 216054,
+              "totalPoints": 368
+            },
+            {
+              "overallRank": 217222,
+              "totalPoints": 368
+            },
+            {
+              "overallRank": 218731,
+              "totalPoints": 368
+            },
+            {
+              "overallRank": 222204,
+              "totalPoints": 368
+            },
+            {
+              "overallRank": 227312,
+              "totalPoints": 368
+            },
+            {
+              "overallRank": 227312,
+              "totalPoints": 368
+            },
+            {
+              "overallRank": 227312,
+              "totalPoints": 368
+            },
+            {
+              "overallRank": 227312,
+              "totalPoints": 368
+            },
+            {
+              "overallRank": 227312,
+              "totalPoints": 368
+            },
+            {
+              "overallRank": 233351,
+              "totalPoints": 367
+            },
+            {
+              "overallRank": 233351,
+              "totalPoints": 367
+            },
+            {
+              "overallRank": 234548,
+              "totalPoints": 367
+            },
+            {
+              "overallRank": 236178,
+              "totalPoints": 367
+            },
+            {
+              "overallRank": 245368,
+              "totalPoints": 367
+            },
+            {
+              "overallRank": 254866,
+              "totalPoints": 366
+            },
+            {
+              "overallRank": 254866,
+              "totalPoints": 366
+            },
+            {
+              "overallRank": 254866,
+              "totalPoints": 366
+            },
+            {
+              "overallRank": 254866,
+              "totalPoints": 366
+            },
+            {
+              "overallRank": 258823,
+              "totalPoints": 366
+            },
+            {
+              "overallRank": 258823,
+              "totalPoints": 366
+            },
+            {
+              "overallRank": 271646,
+              "totalPoints": 365
+            },
+            {
+              "overallRank": 274644,
+              "totalPoints": 365
+            },
+            {
+              "overallRank": 278839,
+              "totalPoints": 365
+            },
+            {
+              "overallRank": 293732,
+              "totalPoints": 364
+            },
+            {
+              "overallRank": 306380,
+              "totalPoints": 364
+            },
+            {
+              "overallRank": 312560,
+              "totalPoints": 364
+            },
+            {
+              "overallRank": 314223,
+              "totalPoints": 363
+            },
+            {
+              "overallRank": 315748,
+              "totalPoints": 363
+            },
+            {
+              "overallRank": 317631,
+              "totalPoints": 363
+            },
+            {
+              "overallRank": 317631,
+              "totalPoints": 363
+            },
+            {
+              "overallRank": 322173,
+              "totalPoints": 363
+            },
+            {
+              "overallRank": 328985,
+              "totalPoints": 363
+            },
+            {
+              "overallRank": 340807,
+              "totalPoints": 362
+            },
+            {
+              "overallRank": 340807,
+              "totalPoints": 362
+            },
+            {
+              "overallRank": 340807,
+              "totalPoints": 362
+            },
+            {
+              "overallRank": 340807,
+              "totalPoints": 362
+            },
+            {
+              "overallRank": 340807,
+              "totalPoints": 362
+            },
+            {
+              "overallRank": 345786,
+              "totalPoints": 362
+            },
+            {
+              "overallRank": 345786,
+              "totalPoints": 362
+            },
+            {
+              "overallRank": 352905,
+              "totalPoints": 362
+            },
+            {
+              "overallRank": 370562,
+              "totalPoints": 361
+            },
+            {
+              "overallRank": 378166,
+              "totalPoints": 361
+            },
+            {
+              "overallRank": 378166,
+              "totalPoints": 361
+            },
+            {
+              "overallRank": 389263,
+              "totalPoints": 360
+            },
+            {
+              "overallRank": 389263,
+              "totalPoints": 360
+            },
+            {
+              "overallRank": 391320,
+              "totalPoints": 360
+            },
+            {
+              "overallRank": 391320,
+              "totalPoints": 360
+            },
+            {
+              "overallRank": 391320,
+              "totalPoints": 360
+            },
+            {
+              "overallRank": 396720,
+              "totalPoints": 360
+            },
+            {
+              "overallRank": 404629,
+              "totalPoints": 360
+            },
+            {
+              "overallRank": 404629,
+              "totalPoints": 360
+            },
+            {
+              "overallRank": 416300,
+              "totalPoints": 359
+            },
+            {
+              "overallRank": 416300,
+              "totalPoints": 359
+            },
+            {
+              "overallRank": 418403,
+              "totalPoints": 359
+            },
+            {
+              "overallRank": 418403,
+              "totalPoints": 359
+            },
+            {
+              "overallRank": 418403,
+              "totalPoints": 359
+            },
+            {
+              "overallRank": 424042,
+              "totalPoints": 359
+            },
+            {
+              "overallRank": 424042,
+              "totalPoints": 359
+            },
+            {
+              "overallRank": 432311,
+              "totalPoints": 359
+            },
+            {
+              "overallRank": 432311,
+              "totalPoints": 359
+            },
+            {
+              "overallRank": 442653,
+              "totalPoints": 358
+            },
+            {
+              "overallRank": 444600,
+              "totalPoints": 358
+            },
+            {
+              "overallRank": 446817,
+              "totalPoints": 358
+            },
+            {
+              "overallRank": 446817,
+              "totalPoints": 358
+            },
+            {
+              "overallRank": 446817,
+              "totalPoints": 358
+            },
+            {
+              "overallRank": 446817,
+              "totalPoints": 358
+            },
+            {
+              "overallRank": 446817,
+              "totalPoints": 358
+            },
+            {
+              "overallRank": 452631,
+              "totalPoints": 358
+            },
+            {
+              "overallRank": 472251,
+              "totalPoints": 357
+            },
+            {
+              "overallRank": 472251,
+              "totalPoints": 357
+            },
+            {
+              "overallRank": 474316,
+              "totalPoints": 357
+            },
+            {
+              "overallRank": 476605,
+              "totalPoints": 357
+            },
+            {
+              "overallRank": 476605,
+              "totalPoints": 357
+            },
+            {
+              "overallRank": 476605,
+              "totalPoints": 357
+            },
+            {
+              "overallRank": 482653,
+              "totalPoints": 357
+            },
+            {
+              "overallRank": 482653,
+              "totalPoints": 357
+            },
+            {
+              "overallRank": 482653,
+              "totalPoints": 357
+            },
+            {
+              "overallRank": 492083,
+              "totalPoints": 357
+            },
+            {
+              "overallRank": 492083,
+              "totalPoints": 357
+            },
+            {
+              "overallRank": 492083,
+              "totalPoints": 357
+            },
+            {
+              "overallRank": 503615,
+              "totalPoints": 356
+            },
+            {
+              "overallRank": 505752,
+              "totalPoints": 356
+            },
+            {
+              "overallRank": 508434,
+              "totalPoints": 356
+            },
+            {
+              "overallRank": 514591,
+              "totalPoints": 356
+            },
+            {
+              "overallRank": 514591,
+              "totalPoints": 356
+            },
+            {
+              "overallRank": 524359,
+              "totalPoints": 356
+            },
+            {
+              "overallRank": 524359,
+              "totalPoints": 356
+            },
+            {
+              "overallRank": 533632,
+              "totalPoints": 356
+            },
+            {
+              "overallRank": 536410,
+              "totalPoints": 355
+            },
+            {
+              "overallRank": 538638,
+              "totalPoints": 355
+            },
+            {
+              "overallRank": 541087,
+              "totalPoints": 355
+            },
+            {
+              "overallRank": 541087,
+              "totalPoints": 355
+            },
+            {
+              "overallRank": 547447,
+              "totalPoints": 355
+            },
+            {
+              "overallRank": 547447,
+              "totalPoints": 355
+            },
+            {
+              "overallRank": 547447,
+              "totalPoints": 355
+            },
+            {
+              "overallRank": 557474,
+              "totalPoints": 355
+            },
+            {
+              "overallRank": 557474,
+              "totalPoints": 355
+            },
+            {
+              "overallRank": 557474,
+              "totalPoints": 355
+            },
+            {
+              "overallRank": 572645,
+              "totalPoints": 354
+            },
+            {
+              "overallRank": 575189,
+              "totalPoints": 354
+            },
+            {
+              "overallRank": 581817,
+              "totalPoints": 354
+            },
+            {
+              "overallRank": 581817,
+              "totalPoints": 354
+            },
+            {
+              "overallRank": 592393,
+              "totalPoints": 354
+            },
+            {
+              "overallRank": 592393,
+              "totalPoints": 354
+            },
+            {
+              "overallRank": 610912,
+              "totalPoints": 353
+            },
+            {
+              "overallRank": 610912,
+              "totalPoints": 353
+            },
+            {
+              "overallRank": 610912,
+              "totalPoints": 353
+            },
+            {
+              "overallRank": 610912,
+              "totalPoints": 353
+            },
+            {
+              "overallRank": 617842,
+              "totalPoints": 353
+            },
+            {
+              "overallRank": 645415,
+              "totalPoints": 352
+            },
+            {
+              "overallRank": 648047,
+              "totalPoints": 352
+            },
+            {
+              "overallRank": 648047,
+              "totalPoints": 352
+            },
+            {
+              "overallRank": 655162,
+              "totalPoints": 352
+            },
+            {
+              "overallRank": 655162,
+              "totalPoints": 352
+            },
+            {
+              "overallRank": 655162,
+              "totalPoints": 352
+            },
+            {
+              "overallRank": 655162,
+              "totalPoints": 352
+            },
+            {
+              "overallRank": 666549,
+              "totalPoints": 352
+            },
+            {
+              "overallRank": 666549,
+              "totalPoints": 352
+            },
+            {
+              "overallRank": 683847,
+              "totalPoints": 351
+            },
+            {
+              "overallRank": 683847,
+              "totalPoints": 351
+            },
+            {
+              "overallRank": 683847,
+              "totalPoints": 351
+            },
+            {
+              "overallRank": 686560,
+              "totalPoints": 351
+            },
+            {
+              "overallRank": 686560,
+              "totalPoints": 351
+            },
+            {
+              "overallRank": 686560,
+              "totalPoints": 351
+            },
+            {
+              "overallRank": 693887,
+              "totalPoints": 351
+            },
+            {
+              "overallRank": 693887,
+              "totalPoints": 351
+            },
+            {
+              "overallRank": 706165,
+              "totalPoints": 351
+            },
+            {
+              "overallRank": 721881,
+              "totalPoints": 350
+            },
+            {
+              "overallRank": 735097,
+              "totalPoints": 350
+            },
+            {
+              "overallRank": 735097,
+              "totalPoints": 350
+            },
+            {
+              "overallRank": 746797,
+              "totalPoints": 350
+            },
+            {
+              "overallRank": 746797,
+              "totalPoints": 350
+            },
+            {
+              "overallRank": 746797,
+              "totalPoints": 350
+            },
+            {
+              "overallRank": 763309,
+              "totalPoints": 349
+            },
+            {
+              "overallRank": 769051,
+              "totalPoints": 349
+            },
+            {
+              "overallRank": 777011,
+              "totalPoints": 349
+            },
+            {
+              "overallRank": 789362,
+              "totalPoints": 349
+            },
+            {
+              "overallRank": 789362,
+              "totalPoints": 349
+            },
+            {
+              "overallRank": 809486,
+              "totalPoints": 348
+            },
+            {
+              "overallRank": 820524,
+              "totalPoints": 348
+            },
+            {
+              "overallRank": 820524,
+              "totalPoints": 348
+            },
+            {
+              "overallRank": 833980,
+              "totalPoints": 348
+            },
+            {
+              "overallRank": 833980,
+              "totalPoints": 348
+            },
+            {
+              "overallRank": 847396,
+              "totalPoints": 348
+            },
+            {
+              "overallRank": 855198,
+              "totalPoints": 347
+            },
+            {
+              "overallRank": 858299,
+              "totalPoints": 347
+            },
+            {
+              "overallRank": 858299,
+              "totalPoints": 347
+            },
+            {
+              "overallRank": 858299,
+              "totalPoints": 347
+            },
+            {
+              "overallRank": 858299,
+              "totalPoints": 347
+            },
+            {
+              "overallRank": 866712,
+              "totalPoints": 347
+            },
+            {
+              "overallRank": 866712,
+              "totalPoints": 347
+            },
+            {
+              "overallRank": 879943,
+              "totalPoints": 347
+            },
+            {
+              "overallRank": 879943,
+              "totalPoints": 347
+            },
+            {
+              "overallRank": 893476,
+              "totalPoints": 347
+            },
+            {
+              "overallRank": 901662,
+              "totalPoints": 346
+            },
+            {
+              "overallRank": 901662,
+              "totalPoints": 346
+            },
+            {
+              "overallRank": 901662,
+              "totalPoints": 346
+            },
+            {
+              "overallRank": 901662,
+              "totalPoints": 346
+            },
+            {
+              "overallRank": 913524,
+              "totalPoints": 346
+            },
+            {
+              "overallRank": 927363,
+              "totalPoints": 346
+            },
+            {
+              "overallRank": 927363,
+              "totalPoints": 346
+            },
+            {
+              "overallRank": 927363,
+              "totalPoints": 346
+            },
+            {
+              "overallRank": 946718,
+              "totalPoints": 345
+            },
+            {
+              "overallRank": 946718,
+              "totalPoints": 345
+            },
+            {
+              "overallRank": 953327,
+              "totalPoints": 345
+            },
+            {
+              "overallRank": 953327,
+              "totalPoints": 345
+            },
+            {
+              "overallRank": 953327,
+              "totalPoints": 345
+            },
+            {
+              "overallRank": 953327,
+              "totalPoints": 345
+            },
+            {
+              "overallRank": 953327,
+              "totalPoints": 345
+            },
+            {
+              "overallRank": 962007,
+              "totalPoints": 345
+            },
+            {
+              "overallRank": 962007,
+              "totalPoints": 345
+            },
+            {
+              "overallRank": 1003072,
+              "totalPoints": 344
+            },
+            {
+              "overallRank": 1012215,
+              "totalPoints": 344
+            },
+            {
+              "overallRank": 1051389,
+              "totalPoints": 343
+            },
+            {
+              "overallRank": 1064099,
+              "totalPoints": 343
+            },
+            {
+              "overallRank": 1079328,
+              "totalPoints": 343
+            },
+            {
+              "overallRank": 1162645,
+              "totalPoints": 341
+            },
+            {
+              "overallRank": 1172300,
+              "totalPoints": 341
+            },
+            {
+              "overallRank": 1187975,
+              "totalPoints": 341
+            },
+            {
+              "overallRank": 1187975,
+              "totalPoints": 341
+            },
+            {
+              "overallRank": 1187975,
+              "totalPoints": 341
+            },
+            {
+              "overallRank": 1218344,
+              "totalPoints": 340
+            },
+            {
+              "overallRank": 1228331,
+              "totalPoints": 340
+            },
+            {
+              "overallRank": 1228331,
+              "totalPoints": 340
+            },
+            {
+              "overallRank": 1228331,
+              "totalPoints": 340
+            },
+            {
+              "overallRank": 1244307,
+              "totalPoints": 340
+            },
+            {
+              "overallRank": 1276195,
+              "totalPoints": 339
+            },
+            {
+              "overallRank": 1276195,
+              "totalPoints": 339
+            },
+            {
+              "overallRank": 1276195,
+              "totalPoints": 339
+            },
+            {
+              "overallRank": 1286426,
+              "totalPoints": 339
+            },
+            {
+              "overallRank": 1286426,
+              "totalPoints": 339
+            },
+            {
+              "overallRank": 1286426,
+              "totalPoints": 339
+            },
+            {
+              "overallRank": 1286426,
+              "totalPoints": 339
+            },
+            {
+              "overallRank": 1332157,
+              "totalPoints": 338
+            },
+            {
+              "overallRank": 1335768,
+              "totalPoints": 338
+            },
+            {
+              "overallRank": 1346435,
+              "totalPoints": 338
+            },
+            {
+              "overallRank": 1346435,
+              "totalPoints": 338
+            },
+            {
+              "overallRank": 1363061,
+              "totalPoints": 338
+            },
+            {
+              "overallRank": 1363061,
+              "totalPoints": 338
+            },
+            {
+              "overallRank": 1363061,
+              "totalPoints": 338
+            },
+            {
+              "overallRank": 1396886,
+              "totalPoints": 337
+            },
+            {
+              "overallRank": 1396886,
+              "totalPoints": 337
+            },
+            {
+              "overallRank": 1396886,
+              "totalPoints": 337
+            },
+            {
+              "overallRank": 1396886,
+              "totalPoints": 337
+            },
+            {
+              "overallRank": 1425491,
+              "totalPoints": 337
+            },
+            {
+              "overallRank": 1443658,
+              "totalPoints": 337
+            },
+            {
+              "overallRank": 1456341,
+              "totalPoints": 336
+            },
+            {
+              "overallRank": 1456341,
+              "totalPoints": 336
+            },
+            {
+              "overallRank": 1488376,
+              "totalPoints": 336
+            },
+            {
+              "overallRank": 1506852,
+              "totalPoints": 336
+            },
+            {
+              "overallRank": 1534852,
+              "totalPoints": 335
+            },
+            {
+              "overallRank": 1534852,
+              "totalPoints": 335
+            },
+            {
+              "overallRank": 1552580,
+              "totalPoints": 335
+            },
+            {
+              "overallRank": 1618362,
+              "totalPoints": 334
+            },
+            {
+              "overallRank": 1637752,
+              "totalPoints": 334
+            },
+            {
+              "overallRank": 1646548,
+              "totalPoints": 333
+            },
+            {
+              "overallRank": 1667363,
+              "totalPoints": 333
+            },
+            {
+              "overallRank": 1685693,
+              "totalPoints": 333
+            },
+            {
+              "overallRank": 1720469,
+              "totalPoints": 332
+            },
+            {
+              "overallRank": 1720469,
+              "totalPoints": 332
+            },
+            {
+              "overallRank": 1724545,
+              "totalPoints": 332
+            },
+            {
+              "overallRank": 1724545,
+              "totalPoints": 332
+            },
+            {
+              "overallRank": 1735975,
+              "totalPoints": 332
+            },
+            {
+              "overallRank": 1754626,
+              "totalPoints": 332
+            },
+            {
+              "overallRank": 1774997,
+              "totalPoints": 332
+            },
+            {
+              "overallRank": 1790140,
+              "totalPoints": 331
+            },
+            {
+              "overallRank": 1861236,
+              "totalPoints": 330
+            },
+            {
+              "overallRank": 1877082,
+              "totalPoints": 330
+            },
+            {
+              "overallRank": 1877082,
+              "totalPoints": 330
+            },
+            {
+              "overallRank": 1896308,
+              "totalPoints": 330
+            },
+            {
+              "overallRank": 1896308,
+              "totalPoints": 330
+            },
+            {
+              "overallRank": 1949757,
+              "totalPoints": 329
+            },
+            {
+              "overallRank": 2071431,
+              "totalPoints": 328
+            },
+            {
+              "overallRank": 2082609,
+              "totalPoints": 327
+            },
+            {
+              "overallRank": 2086924,
+              "totalPoints": 327
+            },
+            {
+              "overallRank": 2086924,
+              "totalPoints": 327
+            },
+            {
+              "overallRank": 2099042,
+              "totalPoints": 327
+            },
+            {
+              "overallRank": 2099042,
+              "totalPoints": 327
+            },
+            {
+              "overallRank": 2119079,
+              "totalPoints": 327
+            },
+            {
+              "overallRank": 2159055,
+              "totalPoints": 326
+            },
+            {
+              "overallRank": 2434801,
+              "totalPoints": 323
+            },
+            {
+              "overallRank": 2434801,
+              "totalPoints": 323
+            },
+            {
+              "overallRank": 2598730,
+              "totalPoints": 321
+            },
+            {
+              "overallRank": 2660900,
+              "totalPoints": 320
+            },
+            {
+              "overallRank": 2939287,
+              "totalPoints": 317
+            },
+            {
+              "overallRank": 2986690,
+              "totalPoints": 316
+            },
+            {
+              "overallRank": 3114373,
+              "totalPoints": 315
+            },
+            {
+              "overallRank": 3168482,
+              "totalPoints": 314
+            },
+            {
+              "overallRank": 3203094,
+              "totalPoints": 314
+            },
+            {
+              "overallRank": 3348271,
+              "totalPoints": 312
+            },
+            {
+              "overallRank": 3383519,
+              "totalPoints": 312
+            },
+            {
+              "overallRank": 3453347,
+              "totalPoints": 311
+            },
+            {
+              "overallRank": 3728738,
+              "totalPoints": 308
+            },
+            {
+              "overallRank": 4516270,
+              "totalPoints": 300
+            },
+            {
+              "overallRank": 5103730,
+              "totalPoints": 293
+            },
+            {
+              "overallRank": 5340990,
+              "totalPoints": 291
+            },
+            {
+              "overallRank": 7605092,
+              "totalPoints": 261
+            },
+            {
+              "overallRank": 8612759,
+              "totalPoints": 240
+            }
+          ]
+        },
+        "structure": {
+          "schemaVersion": 4,
+          "event": 6,
+          "capturedAt": "2026-10-10T13:11:41.059185Z",
+          "basis": "ranked-500",
+          "cohortRevision": "sha256:8bbc76ce704aa6565aacb25626106eed4c28bc3d90e9af79f699728b45b999c9",
+          "attempted": 500,
+          "responded": 500,
+          "coverage": 1.0,
+          "keeperPairings": [
+            {
+              "starterElementId": 109,
+              "benchElementId": 496,
+              "count": 90,
+              "share": 0.18072
+            },
+            {
+              "starterElementId": 1,
+              "benchElementId": 623,
+              "count": 69,
+              "share": 0.13855
+            },
+            {
+              "starterElementId": 496,
+              "benchElementId": 497,
+              "count": 47,
+              "share": 0.09438
+            },
+            {
+              "starterElementId": 1,
+              "benchElementId": 497,
+              "count": 45,
+              "share": 0.09036
+            },
+            {
+              "starterElementId": 250,
+              "benchElementId": 496,
+              "count": 18,
+              "share": 0.03614
+            },
+            {
+              "starterElementId": 1,
+              "benchElementId": 251,
+              "count": 15,
+              "share": 0.03012
+            },
+            {
+              "starterElementId": 1,
+              "benchElementId": 301,
+              "count": 14,
+              "share": 0.02811
+            },
+            {
+              "starterElementId": 1,
+              "benchElementId": 109,
+              "count": 12,
+              "share": 0.0241
+            },
+            {
+              "starterElementId": 109,
+              "benchElementId": 623,
+              "count": 12,
+              "share": 0.0241
+            },
+            {
+              "starterElementId": 1,
+              "benchElementId": 496,
+              "count": 11,
+              "share": 0.02209
+            },
+            {
+              "starterElementId": 1,
+              "benchElementId": 564,
+              "count": 9,
+              "share": 0.01807
+            },
+            {
+              "starterElementId": 109,
+              "benchElementId": 111,
+              "count": 9,
+              "share": 0.01807
+            },
+            {
+              "starterElementId": 1,
+              "benchElementId": 629,
+              "count": 7,
+              "share": 0.01406
+            },
+            {
+              "starterElementId": 109,
+              "benchElementId": 497,
+              "count": 7,
+              "share": 0.01406
+            },
+            {
+              "starterElementId": 1,
+              "benchElementId": 273,
+              "count": 6,
+              "share": 0.01205
+            },
+            {
+              "starterElementId": 1,
+              "benchElementId": 302,
+              "count": 6,
+              "share": 0.01205
+            },
+            {
+              "starterElementId": 109,
+              "benchElementId": 301,
+              "count": 6,
+              "share": 0.01205
+            },
+            {
+              "starterElementId": 1,
+              "benchElementId": 111,
+              "count": 5,
+              "share": 0.01004
+            },
+            {
+              "starterElementId": 1,
+              "benchElementId": 58,
+              "count": 4,
+              "share": 0.00803
+            },
+            {
+              "starterElementId": 109,
+              "benchElementId": 251,
+              "count": 4,
+              "share": 0.00803
+            },
+            {
+              "starterElementId": 109,
+              "benchElementId": 412,
+              "count": 4,
+              "share": 0.00803
+            },
+            {
+              "starterElementId": 109,
+              "benchElementId": 572,
+              "count": 4,
+              "share": 0.00803
+            },
+            {
+              "starterElementId": 110,
+              "benchElementId": 496,
+              "count": 4,
+              "share": 0.00803
+            },
+            {
+              "starterElementId": 1,
+              "benchElementId": 171,
+              "count": 3,
+              "share": 0.00602
+            },
+            {
+              "starterElementId": 1,
+              "benchElementId": 250,
+              "count": 3,
+              "share": 0.00602
+            },
+            {
+              "starterElementId": 58,
+              "benchElementId": 496,
+              "count": 3,
+              "share": 0.00602
+            },
+            {
+              "starterElementId": 109,
+              "benchElementId": 110,
+              "count": 3,
+              "share": 0.00602
+            },
+            {
+              "starterElementId": 109,
+              "benchElementId": 250,
+              "count": 3,
+              "share": 0.00602
+            },
+            {
+              "starterElementId": 109,
+              "benchElementId": 302,
+              "count": 3,
+              "share": 0.00602
+            },
+            {
+              "starterElementId": 251,
+              "benchElementId": 496,
+              "count": 3,
+              "share": 0.00602
+            },
+            {
+              "starterElementId": 302,
+              "benchElementId": 496,
+              "count": 3,
+              "share": 0.00602
+            },
+            {
+              "starterElementId": 412,
+              "benchElementId": 496,
+              "count": 3,
+              "share": 0.00602
+            },
+            {
+              "starterElementId": 496,
+              "benchElementId": 623,
+              "count": 3,
+              "share": 0.00602
+            },
+            {
+              "starterElementId": 1,
+              "benchElementId": 110,
+              "count": 2,
+              "share": 0.00402
+            },
+            {
+              "starterElementId": 1,
+              "benchElementId": 661,
+              "count": 2,
+              "share": 0.00402
+            },
+            {
+              "starterElementId": 28,
+              "benchElementId": 497,
+              "count": 2,
+              "share": 0.00402
+            },
+            {
+              "starterElementId": 57,
+              "benchElementId": 496,
+              "count": 2,
+              "share": 0.00402
+            },
+            {
+              "starterElementId": 109,
+              "benchElementId": 171,
+              "count": 2,
+              "share": 0.00402
+            },
+            {
+              "starterElementId": 109,
+              "benchElementId": 467,
+              "count": 2,
+              "share": 0.00402
+            },
+            {
+              "starterElementId": 110,
+              "benchElementId": 412,
+              "count": 2,
+              "share": 0.00402
+            },
+            {
+              "starterElementId": 273,
+              "benchElementId": 572,
+              "count": 2,
+              "share": 0.00402
+            },
+            {
+              "starterElementId": 467,
+              "benchElementId": 496,
+              "count": 2,
+              "share": 0.00402
+            },
+            {
+              "starterElementId": 1,
+              "benchElementId": 59,
+              "count": 1,
+              "share": 0.00201
+            },
+            {
+              "starterElementId": 1,
+              "benchElementId": 252,
+              "count": 1,
+              "share": 0.00201
+            },
+            {
+              "starterElementId": 1,
+              "benchElementId": 354,
+              "count": 1,
+              "share": 0.00201
+            },
+            {
+              "starterElementId": 1,
+              "benchElementId": 355,
+              "count": 1,
+              "share": 0.00201
+            },
+            {
+              "starterElementId": 1,
+              "benchElementId": 667,
+              "count": 1,
+              "share": 0.00201
+            },
+            {
+              "starterElementId": 28,
+              "benchElementId": 57,
+              "count": 1,
+              "share": 0.00201
+            },
+            {
+              "starterElementId": 28,
+              "benchElementId": 109,
+              "count": 1,
+              "share": 0.00201
+            },
+            {
+              "starterElementId": 28,
+              "benchElementId": 250,
+              "count": 1,
+              "share": 0.00201
+            },
+            {
+              "starterElementId": 28,
+              "benchElementId": 301,
+              "count": 1,
+              "share": 0.00201
+            },
+            {
+              "starterElementId": 28,
+              "benchElementId": 623,
+              "count": 1,
+              "share": 0.00201
+            },
+            {
+              "starterElementId": 57,
+              "benchElementId": 82,
+              "count": 1,
+              "share": 0.00201
+            },
+            {
+              "starterElementId": 57,
+              "benchElementId": 109,
+              "count": 1,
+              "share": 0.00201
+            },
+            {
+              "starterElementId": 57,
+              "benchElementId": 623,
+              "count": 1,
+              "share": 0.00201
+            },
+            {
+              "starterElementId": 58,
+              "benchElementId": 109,
+              "count": 1,
+              "share": 0.00201
+            },
+            {
+              "starterElementId": 82,
+              "benchElementId": 497,
+              "count": 1,
+              "share": 0.00201
+            },
+            {
+              "starterElementId": 109,
+              "benchElementId": 252,
+              "count": 1,
+              "share": 0.00201
+            },
+            {
+              "starterElementId": 109,
+              "benchElementId": 273,
+              "count": 1,
+              "share": 0.00201
+            },
+            {
+              "starterElementId": 109,
+              "benchElementId": 385,
+              "count": 1,
+              "share": 0.00201
+            },
+            {
+              "starterElementId": 109,
+              "benchElementId": 667,
+              "count": 1,
+              "share": 0.00201
+            },
+            {
+              "starterElementId": 110,
+              "benchElementId": 384,
+              "count": 1,
+              "share": 0.00201
+            },
+            {
+              "starterElementId": 110,
+              "benchElementId": 529,
+              "count": 1,
+              "share": 0.00201
+            },
+            {
+              "starterElementId": 111,
+              "benchElementId": 350,
+              "count": 1,
+              "share": 0.00201
+            },
+            {
+              "starterElementId": 111,
+              "benchElementId": 496,
+              "count": 1,
+              "share": 0.00201
+            },
+            {
+              "starterElementId": 111,
+              "benchElementId": 567,
+              "count": 1,
+              "share": 0.00201
+            },
+            {
+              "starterElementId": 140,
+              "benchElementId": 496,
+              "count": 1,
+              "share": 0.00201
+            },
+            {
+              "starterElementId": 250,
+              "benchElementId": 384,
+              "count": 1,
+              "share": 0.00201
+            },
+            {
+              "starterElementId": 250,
+              "benchElementId": 497,
+              "count": 1,
+              "share": 0.00201
+            },
+            {
+              "starterElementId": 250,
+              "benchElementId": 572,
+              "count": 1,
+              "share": 0.00201
+            },
+            {
+              "starterElementId": 250,
+              "benchElementId": 661,
+              "count": 1,
+              "share": 0.00201
+            },
+            {
+              "starterElementId": 251,
+              "benchElementId": 467,
+              "count": 1,
+              "share": 0.00201
+            },
+            {
+              "starterElementId": 251,
+              "benchElementId": 572,
+              "count": 1,
+              "share": 0.00201
+            },
+            {
+              "starterElementId": 301,
+              "benchElementId": 496,
+              "count": 1,
+              "share": 0.00201
+            },
+            {
+              "starterElementId": 302,
+              "benchElementId": 572,
+              "count": 1,
+              "share": 0.00201
+            },
+            {
+              "starterElementId": 384,
+              "benchElementId": 555,
+              "count": 1,
+              "share": 0.00201
+            },
+            {
+              "starterElementId": 385,
+              "benchElementId": 497,
+              "count": 1,
+              "share": 0.00201
+            },
+            {
+              "starterElementId": 385,
+              "benchElementId": 629,
+              "count": 1,
+              "share": 0.00201
+            },
+            {
+              "starterElementId": 412,
+              "benchElementId": 497,
+              "count": 1,
+              "share": 0.00201
+            },
+            {
+              "starterElementId": 496,
+              "benchElementId": 567,
+              "count": 1,
+              "share": 0.00201
+            },
+            {
+              "starterElementId": 496,
+              "benchElementId": 572,
+              "count": 1,
+              "share": 0.00201
+            },
+            {
+              "starterElementId": 496,
+              "benchElementId": 625,
+              "count": 1,
+              "share": 0.00201
+            },
+            {
+              "starterElementId": 496,
+              "benchElementId": 667,
+              "count": 1,
+              "share": 0.00201
+            },
+            {
+              "starterElementId": 497,
+              "benchElementId": 567,
+              "count": 1,
+              "share": 0.00201
+            }
+          ],
+          "commonStartingXi": {
+            "method": "modal-formation-most-started",
+            "formation": [3, 4, 3],
+            "elementIds": [1, 8, 115, 31, 154, 124, 40, 12, 411, 165, 464]
+          },
+          "positionalSpend": {
+            "GKP": {
+              "mean": 94.2992,
+              "median": 91.0,
+              "p10": 85.0,
+              "p90": 101.0,
+              "minimum": 85,
+              "maximum": 106
+            },
+            "DEF": {
+              "mean": 252.5984,
+              "median": 250.5,
+              "p10": 240.0,
+              "p90": 266.0,
+              "minimum": 217,
+              "maximum": 307
+            },
+            "MID": {
+              "mean": 379.4076,
+              "median": 376.0,
+              "p10": 356.0,
+              "p90": 402.0,
+              "minimum": 325,
+              "maximum": 470
+            },
+            "FWD": {
+              "mean": 280.8032,
+              "median": 293.0,
+              "p10": 261.0,
+              "p90": 295.0,
+              "minimum": 174,
+              "maximum": 324
+            }
+          },
+          "outfieldTrios": [
+            {
+              "position": "DEF",
+              "elementIds": [8, 31, 115],
+              "count": 143,
+              "share": 0.28715
+            },
+            {
+              "position": "MID",
+              "elementIds": [40, 124, 154],
+              "count": 150,
+              "share": 0.3012
+            },
+            {
+              "position": "FWD",
+              "elementIds": [165, 411, 464],
+              "count": 109,
+              "share": 0.21888
+            }
+          ],
+          "popularitySquad": {
+            "method": "legal-aggregate-popularity",
+            "squad": [
+              109, 496, 8, 115, 31, 449, 305, 154, 124, 40, 94, 368, 411, 464,
+              165
+            ],
+            "starters": [109, 8, 115, 31, 154, 124, 411, 165, 40, 449, 368],
+            "bench": [496, 305, 94, 464],
+            "formation": [4, 4, 2],
+            "spentTenths": 998,
+            "xiSpentTenths": 789,
+            "bankTenths": 2,
+            "meanOwnership": 0.54752,
+            "meanStartedShare": 0.5962
+          }
+        }
       }
     },
     "captains": {
@@ -12888,6 +15588,28 @@
           "elementId": 154,
           "share": 0.01242,
           "points": 2
+        }
+      ],
+      "06": [
+        {
+          "elementId": 12,
+          "share": 0.3012
+        },
+        {
+          "elementId": 411,
+          "share": 0.26104
+        },
+        {
+          "elementId": 154,
+          "share": 0.22289
+        },
+        {
+          "elementId": 426,
+          "share": 0.15863
+        },
+        {
+          "elementId": 480,
+          "share": 0.02209
         }
       ]
     },
@@ -25412,6 +28134,2023 @@
           "lastWeekPoints": 0,
           "pointsSinceFirstCapture": 0,
           "weightedContribution": 0.0
+        }
+      ],
+      "06": [
+        {
+          "elementId": 411,
+          "ownedShare": 0.90763,
+          "startedShare": 0.90562,
+          "captainedShare": 0.26104,
+          "effectiveOwnership": 1.16667,
+          "code": 223094,
+          "name": "Haaland",
+          "position": "FWD",
+          "club": "MCI",
+          "teamId": 15,
+          "priceTenths": 156
+        },
+        {
+          "elementId": 154,
+          "ownedShare": 0.72892,
+          "startedShare": 0.72691,
+          "captainedShare": 0.22289,
+          "effectiveOwnership": 0.9498,
+          "code": 244851,
+          "name": "Palmer",
+          "position": "MID",
+          "club": "CHE",
+          "teamId": 6,
+          "priceTenths": 97
+        },
+        {
+          "elementId": 8,
+          "ownedShare": 0.87751,
+          "startedShare": 0.87751,
+          "captainedShare": 0.00201,
+          "effectiveOwnership": 0.87952,
+          "code": 466075,
+          "name": "Calafiori",
+          "position": "DEF",
+          "club": "ARS",
+          "teamId": 1,
+          "priceTenths": 59
+        },
+        {
+          "elementId": 12,
+          "ownedShare": 0.47992,
+          "startedShare": 0.47992,
+          "captainedShare": 0.3012,
+          "effectiveOwnership": 0.78112,
+          "code": 223340,
+          "name": "Saka",
+          "position": "MID",
+          "club": "ARS",
+          "teamId": 1,
+          "priceTenths": 96
+        },
+        {
+          "elementId": 124,
+          "ownedShare": 0.71285,
+          "startedShare": 0.68876,
+          "captainedShare": 0.00602,
+          "effectiveOwnership": 0.69478,
+          "code": 60307,
+          "name": "Gro\u00df",
+          "position": "MID",
+          "club": "BHA",
+          "teamId": 5,
+          "priceTenths": 59
+        },
+        {
+          "elementId": 40,
+          "ownedShare": 0.6747,
+          "startedShare": 0.6747,
+          "captainedShare": 0.00602,
+          "effectiveOwnership": 0.68072,
+          "code": 244850,
+          "name": "Rogers",
+          "position": "MID",
+          "club": "CHE",
+          "teamId": 6,
+          "priceTenths": 78
+        },
+        {
+          "elementId": 165,
+          "ownedShare": 0.79317,
+          "startedShare": 0.67871,
+          "captainedShare": 0.00201,
+          "effectiveOwnership": 0.68072,
+          "code": 475168,
+          "name": "Jo\u00e3o Pedro",
+          "position": "FWD",
+          "club": "CHE",
+          "teamId": 6,
+          "priceTenths": 77
+        },
+        {
+          "elementId": 115,
+          "ownedShare": 0.52811,
+          "startedShare": 0.50201,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.50201,
+          "code": 465730,
+          "name": "De Cuyper",
+          "position": "DEF",
+          "club": "BHA",
+          "teamId": 5,
+          "priceTenths": 50
+        },
+        {
+          "elementId": 1,
+          "ownedShare": 0.43775,
+          "startedShare": 0.43775,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.43775,
+          "code": 154561,
+          "name": "Raya",
+          "position": "GKP",
+          "club": "ARS",
+          "teamId": 1,
+          "priceTenths": 61
+        },
+        {
+          "elementId": 31,
+          "ownedShare": 0.67871,
+          "startedShare": 0.43775,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.43775,
+          "code": 199798,
+          "name": "Konsa",
+          "position": "DEF",
+          "club": "ARS",
+          "teamId": 1,
+          "priceTenths": 46
+        },
+        {
+          "elementId": 449,
+          "ownedShare": 0.43976,
+          "startedShare": 0.43173,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.43173,
+          "code": 487838,
+          "name": "Hall",
+          "position": "DEF",
+          "club": "NEW",
+          "teamId": 17,
+          "priceTenths": 53
+        },
+        {
+          "elementId": 480,
+          "ownedShare": 0.38554,
+          "startedShare": 0.38554,
+          "captainedShare": 0.02209,
+          "effectiveOwnership": 0.40763,
+          "code": 222531,
+          "name": "Gibbs-White",
+          "position": "MID",
+          "club": "NFO",
+          "teamId": 18,
+          "priceTenths": 80
+        },
+        {
+          "elementId": 426,
+          "ownedShare": 0.17671,
+          "startedShare": 0.17671,
+          "captainedShare": 0.15863,
+          "effectiveOwnership": 0.33534,
+          "code": 141746,
+          "name": "B.Fernandes",
+          "position": "MID",
+          "club": "MUN",
+          "teamId": 16,
+          "priceTenths": 119
+        },
+        {
+          "elementId": 368,
+          "ownedShare": 0.42972,
+          "startedShare": 0.33333,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.33333,
+          "code": 424876,
+          "name": "Szoboszlai",
+          "position": "MID",
+          "club": "LIV",
+          "teamId": 14,
+          "priceTenths": 69
+        },
+        {
+          "elementId": 464,
+          "ownedShare": 0.32932,
+          "startedShare": 0.32329,
+          "captainedShare": 0.00201,
+          "effectiveOwnership": 0.3253,
+          "code": 216646,
+          "name": "Wissa",
+          "position": "FWD",
+          "club": "NEW",
+          "teamId": 17,
+          "priceTenths": 62
+        },
+        {
+          "elementId": 109,
+          "ownedShare": 0.33735,
+          "startedShare": 0.30321,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.30321,
+          "code": 489639,
+          "name": "Verbruggen",
+          "position": "GKP",
+          "club": "BHA",
+          "teamId": 5,
+          "priceTenths": 45
+        },
+        {
+          "elementId": 249,
+          "ownedShare": 0.29719,
+          "startedShare": 0.28514,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.28514,
+          "code": 586309,
+          "name": "Barry",
+          "position": "FWD",
+          "club": "EVE",
+          "teamId": 9,
+          "priceTenths": 57
+        },
+        {
+          "elementId": 569,
+          "ownedShare": 0.23494,
+          "startedShare": 0.22088,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.22088,
+          "code": 551466,
+          "name": "Gonzalo",
+          "position": "FWD",
+          "club": "FUL",
+          "teamId": 10,
+          "priceTenths": 61
+        },
+        {
+          "elementId": 94,
+          "ownedShare": 0.22691,
+          "startedShare": 0.18072,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.18072,
+          "code": 513418,
+          "name": "Schade",
+          "position": "MID",
+          "club": "BRE",
+          "teamId": 4,
+          "priceTenths": 62
+        },
+        {
+          "elementId": 427,
+          "ownedShare": 0.14859,
+          "startedShare": 0.14859,
+          "captainedShare": 0.00602,
+          "effectiveOwnership": 0.15462,
+          "code": 446008,
+          "name": "Mbeumo",
+          "position": "MID",
+          "club": "MUN",
+          "teamId": 16,
+          "priceTenths": 79
+        },
+        {
+          "elementId": 496,
+          "ownedShare": 0.39357,
+          "startedShare": 0.13454,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.13454,
+          "code": 485055,
+          "name": "Kinsky",
+          "position": "GKP",
+          "club": "TOT",
+          "teamId": 19,
+          "priceTenths": 45
+        },
+        {
+          "elementId": 453,
+          "ownedShare": 0.13655,
+          "startedShare": 0.13052,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.13052,
+          "code": 201666,
+          "name": "Barnes",
+          "position": "MID",
+          "club": "NEW",
+          "teamId": 17,
+          "priceTenths": 61
+        },
+        {
+          "elementId": 4,
+          "ownedShare": 0.10241,
+          "startedShare": 0.10241,
+          "captainedShare": 0.00602,
+          "effectiveOwnership": 0.10843,
+          "code": 226597,
+          "name": "Gabriel",
+          "position": "DEF",
+          "club": "ARS",
+          "teamId": 1,
+          "priceTenths": 80
+        },
+        {
+          "elementId": 15,
+          "ownedShare": 0.10442,
+          "startedShare": 0.10442,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.10442,
+          "code": 184029,
+          "name": "\u00d8degaard",
+          "position": "MID",
+          "club": "ARS",
+          "teamId": 1,
+          "priceTenths": 68
+        },
+        {
+          "elementId": 268,
+          "ownedShare": 0.14056,
+          "startedShare": 0.09839,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.09839,
+          "code": 577725,
+          "name": "King",
+          "position": "MID",
+          "club": "FUL",
+          "teamId": 10,
+          "priceTenths": 56
+        },
+        {
+          "elementId": 418,
+          "ownedShare": 0.11245,
+          "startedShare": 0.08835,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.08835,
+          "code": 95658,
+          "name": "Maguire",
+          "position": "DEF",
+          "club": "MUN",
+          "teamId": 16,
+          "priceTenths": 48
+        },
+        {
+          "elementId": 229,
+          "ownedShare": 0.08032,
+          "startedShare": 0.08032,
+          "captainedShare": 0.00201,
+          "effectiveOwnership": 0.08233,
+          "code": 17761,
+          "name": "Tarkowski",
+          "position": "DEF",
+          "club": "EVE",
+          "teamId": 9,
+          "priceTenths": 62
+        },
+        {
+          "elementId": 305,
+          "ownedShare": 0.15462,
+          "startedShare": 0.07831,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.07831,
+          "code": 455084,
+          "name": "Davis",
+          "position": "DEF",
+          "club": "IPS",
+          "teamId": 12,
+          "priceTenths": 40
+        },
+        {
+          "elementId": 469,
+          "ownedShare": 0.09839,
+          "startedShare": 0.06426,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.06426,
+          "code": 215136,
+          "name": "N.Williams",
+          "position": "DEF",
+          "club": "NFO",
+          "teamId": 18,
+          "priceTenths": 50
+        },
+        {
+          "elementId": 504,
+          "ownedShare": 0.06827,
+          "startedShare": 0.06426,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.06426,
+          "code": 610799,
+          "name": "Vuskovic",
+          "position": "DEF",
+          "club": "BHA",
+          "teamId": 5,
+          "priceTenths": 50
+        },
+        {
+          "elementId": 391,
+          "ownedShare": 0.20482,
+          "startedShare": 0.05622,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.05622,
+          "code": 477424,
+          "name": "Gvardiol",
+          "position": "DEF",
+          "club": "MCI",
+          "teamId": 15,
+          "priceTenths": 57
+        },
+        {
+          "elementId": 201,
+          "ownedShare": 0.06225,
+          "startedShare": 0.0502,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.0502,
+          "code": 247348,
+          "name": "Mu\u00f1oz",
+          "position": "DEF",
+          "club": "NFO",
+          "teamId": 18,
+          "priceTenths": 54
+        },
+        {
+          "elementId": 445,
+          "ownedShare": 0.05622,
+          "startedShare": 0.0502,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.0502,
+          "code": 465642,
+          "name": "Thiaw",
+          "position": "DEF",
+          "club": "NEW",
+          "teamId": 17,
+          "priceTenths": 50
+        },
+        {
+          "elementId": 173,
+          "ownedShare": 0.23293,
+          "startedShare": 0.04819,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.04819,
+          "code": 461102,
+          "name": "Thomas",
+          "position": "DEF",
+          "club": "COV",
+          "teamId": 7,
+          "priceTenths": 40
+        },
+        {
+          "elementId": 250,
+          "ownedShare": 0.05823,
+          "startedShare": 0.04418,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.04418,
+          "code": 80201,
+          "name": "Leno",
+          "position": "GKP",
+          "club": "FUL",
+          "teamId": 10,
+          "priceTenths": 45
+        },
+        {
+          "elementId": 68,
+          "ownedShare": 0.06627,
+          "startedShare": 0.04217,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.04217,
+          "code": 201658,
+          "name": "Tavernier",
+          "position": "MID",
+          "club": "BOU",
+          "teamId": 3,
+          "priceTenths": 61
+        },
+        {
+          "elementId": 399,
+          "ownedShare": 0.05221,
+          "startedShare": 0.03815,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.03815,
+          "code": 466052,
+          "name": "Cherki",
+          "position": "MID",
+          "club": "MCI",
+          "teamId": 15,
+          "priceTenths": 78
+        },
+        {
+          "elementId": 236,
+          "ownedShare": 0.03815,
+          "startedShare": 0.03614,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.03614,
+          "code": 215413,
+          "name": "Dewsbury-Hall",
+          "position": "MID",
+          "club": "EVE",
+          "teamId": 9,
+          "priceTenths": 66
+        },
+        {
+          "elementId": 127,
+          "ownedShare": 0.06827,
+          "startedShare": 0.03213,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.03213,
+          "code": 514254,
+          "name": "Gomez",
+          "position": "MID",
+          "club": "BHA",
+          "teamId": 5,
+          "priceTenths": 50
+        },
+        {
+          "elementId": 346,
+          "ownedShare": 0.2751,
+          "startedShare": 0.03213,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.03213,
+          "code": 177815,
+          "name": "Calvert-Lewin",
+          "position": "FWD",
+          "club": "LEE",
+          "teamId": 13,
+          "priceTenths": 60
+        },
+        {
+          "elementId": 87,
+          "ownedShare": 0.08635,
+          "startedShare": 0.03012,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.03012,
+          "code": 191866,
+          "name": "Ajer",
+          "position": "DEF",
+          "club": "BRE",
+          "teamId": 4,
+          "priceTenths": 45
+        },
+        {
+          "elementId": 138,
+          "ownedShare": 0.03414,
+          "startedShare": 0.0261,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.0261,
+          "code": 647850,
+          "name": "Kostoulas",
+          "position": "FWD",
+          "club": "BHA",
+          "teamId": 5,
+          "priceTenths": 56
+        },
+        {
+          "elementId": 277,
+          "ownedShare": 0.1747,
+          "startedShare": 0.0241,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.0241,
+          "code": 108416,
+          "name": "Egan",
+          "position": "DEF",
+          "club": "HUL",
+          "teamId": 11,
+          "priceTenths": 41
+        },
+        {
+          "elementId": 304,
+          "ownedShare": 0.11044,
+          "startedShare": 0.02209,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.02209,
+          "code": 216616,
+          "name": "O'Shea",
+          "position": "DEF",
+          "club": "IPS",
+          "teamId": 12,
+          "priceTenths": 40
+        },
+        {
+          "elementId": 650,
+          "ownedShare": 0.03815,
+          "startedShare": 0.02008,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.02008,
+          "code": 442299,
+          "name": "Affengruber",
+          "position": "DEF",
+          "club": "FUL",
+          "teamId": 10,
+          "priceTenths": 45
+        },
+        {
+          "elementId": 572,
+          "ownedShare": 0.02008,
+          "startedShare": 0.01807,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.01807,
+          "code": 473284,
+          "name": "Tzolakis",
+          "position": "GKP",
+          "club": "HUL",
+          "teamId": 11,
+          "priceTenths": 47
+        },
+        {
+          "elementId": 106,
+          "ownedShare": 0.01606,
+          "startedShare": 0.01606,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.01606,
+          "code": 502500,
+          "name": "Thiago",
+          "position": "FWD",
+          "club": "BRE",
+          "teamId": 4,
+          "priceTenths": 78
+        },
+        {
+          "elementId": 366,
+          "ownedShare": 0.02008,
+          "startedShare": 0.01406,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.01406,
+          "code": 494595,
+          "name": "Wirtz",
+          "position": "MID",
+          "club": "LIV",
+          "teamId": 14,
+          "priceTenths": 73
+        },
+        {
+          "elementId": 423,
+          "ownedShare": 0.03012,
+          "startedShare": 0.01406,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.01406,
+          "code": 106760,
+          "name": "Shaw",
+          "position": "DEF",
+          "club": "MUN",
+          "teamId": 16,
+          "priceTenths": 43
+        },
+        {
+          "elementId": 542,
+          "ownedShare": 0.02008,
+          "startedShare": 0.01406,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.01406,
+          "code": 484420,
+          "name": "E.Le F\u00e9e",
+          "position": "MID",
+          "club": "SUN",
+          "teamId": 20,
+          "priceTenths": 57
+        },
+        {
+          "elementId": 28,
+          "ownedShare": 0.01406,
+          "startedShare": 0.01205,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.01205,
+          "code": 98980,
+          "name": "Martinez",
+          "position": "GKP",
+          "club": "CHE",
+          "teamId": 6,
+          "priceTenths": 50
+        },
+        {
+          "elementId": 230,
+          "ownedShare": 0.01205,
+          "startedShare": 0.01205,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.01205,
+          "code": 480455,
+          "name": "Branthwaite",
+          "position": "DEF",
+          "club": "EVE",
+          "teamId": 9,
+          "priceTenths": 55
+        },
+        {
+          "elementId": 412,
+          "ownedShare": 0.02008,
+          "startedShare": 0.01205,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.01205,
+          "code": 465247,
+          "name": "Lammens",
+          "position": "GKP",
+          "club": "MUN",
+          "teamId": 16,
+          "priceTenths": 49
+        },
+        {
+          "elementId": 254,
+          "ownedShare": 0.01205,
+          "startedShare": 0.01004,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.01004,
+          "code": 169528,
+          "name": "Robinson",
+          "position": "DEF",
+          "club": "FUL",
+          "teamId": 10,
+          "priceTenths": 45
+        },
+        {
+          "elementId": 379,
+          "ownedShare": 0.03012,
+          "startedShare": 0.00803,
+          "captainedShare": 0.00201,
+          "effectiveOwnership": 0.01004,
+          "code": 219168,
+          "name": "Isak",
+          "position": "FWD",
+          "club": "LIV",
+          "teamId": 14,
+          "priceTenths": 91
+        },
+        {
+          "elementId": 110,
+          "ownedShare": 0.0261,
+          "startedShare": 0.00803,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.00803,
+          "code": 472739,
+          "name": "Rushworth",
+          "position": "GKP",
+          "club": "COV",
+          "teamId": 7,
+          "priceTenths": 45
+        },
+        {
+          "elementId": 155,
+          "ownedShare": 0.01004,
+          "startedShare": 0.00803,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.00803,
+          "code": 448047,
+          "name": "Enzo",
+          "position": "MID",
+          "club": "MCI",
+          "teamId": 15,
+          "priceTenths": 69
+        },
+        {
+          "elementId": 233,
+          "ownedShare": 0.01807,
+          "startedShare": 0.00803,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.00803,
+          "code": 224967,
+          "name": "Mykolenko",
+          "position": "DEF",
+          "club": "EVE",
+          "teamId": 9,
+          "priceTenths": 46
+        },
+        {
+          "elementId": 397,
+          "ownedShare": 0.00803,
+          "startedShare": 0.00803,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.00803,
+          "code": 437730,
+          "name": "Semenyo",
+          "position": "MID",
+          "club": "MCI",
+          "teamId": 15,
+          "priceTenths": 84
+        },
+        {
+          "elementId": 565,
+          "ownedShare": 0.12249,
+          "startedShare": 0.00803,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.00803,
+          "code": 513545,
+          "name": "M.Sangar\u00e9",
+          "position": "MID",
+          "club": "BRE",
+          "teamId": 4,
+          "priceTenths": 56
+        },
+        {
+          "elementId": 588,
+          "ownedShare": 0.00803,
+          "startedShare": 0.00803,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.00803,
+          "code": 570794,
+          "name": "Khalaili",
+          "position": "DEF",
+          "club": "CRY",
+          "teamId": 8,
+          "priceTenths": 50
+        },
+        {
+          "elementId": 10,
+          "ownedShare": 0.01406,
+          "startedShare": 0.00602,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.00602,
+          "code": 198869,
+          "name": "White",
+          "position": "DEF",
+          "club": "ARS",
+          "teamId": 1,
+          "priceTenths": 54
+        },
+        {
+          "elementId": 237,
+          "ownedShare": 0.0241,
+          "startedShare": 0.00602,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.00602,
+          "code": 440993,
+          "name": "Ndiaye",
+          "position": "MID",
+          "club": "MCI",
+          "teamId": 15,
+          "priceTenths": 58
+        },
+        {
+          "elementId": 259,
+          "ownedShare": 0.05622,
+          "startedShare": 0.00602,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.00602,
+          "code": 219924,
+          "name": "Diop",
+          "position": "DEF",
+          "club": "IPS",
+          "teamId": 12,
+          "priceTenths": 40
+        },
+        {
+          "elementId": 282,
+          "ownedShare": 0.01205,
+          "startedShare": 0.00602,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.00602,
+          "code": 232351,
+          "name": "Giles",
+          "position": "DEF",
+          "club": "HUL",
+          "teamId": 11,
+          "priceTenths": 40
+        },
+        {
+          "elementId": 467,
+          "ownedShare": 0.01004,
+          "startedShare": 0.00602,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.00602,
+          "code": 85633,
+          "name": "Sels",
+          "position": "GKP",
+          "club": "NFO",
+          "teamId": 18,
+          "priceTenths": 50
+        },
+        {
+          "elementId": 567,
+          "ownedShare": 0.00602,
+          "startedShare": 0.00602,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.00602,
+          "code": 470551,
+          "name": "Horn\u00ed\u010dek",
+          "position": "GKP",
+          "club": "NEW",
+          "teamId": 17,
+          "priceTenths": 50
+        },
+        {
+          "elementId": 82,
+          "ownedShare": 0.00402,
+          "startedShare": 0.00402,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.00402,
+          "code": 200720,
+          "name": "Kelleher",
+          "position": "GKP",
+          "club": "BRE",
+          "teamId": 4,
+          "priceTenths": 50
+        },
+        {
+          "elementId": 167,
+          "ownedShare": 0.00602,
+          "startedShare": 0.00402,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.00402,
+          "code": 463034,
+          "name": "Delap",
+          "position": "FWD",
+          "club": "NFO",
+          "teamId": 18,
+          "priceTenths": 56
+        },
+        {
+          "elementId": 204,
+          "ownedShare": 0.00602,
+          "startedShare": 0.00402,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.00402,
+          "code": 244723,
+          "name": "Mitchell",
+          "position": "DEF",
+          "club": "CRY",
+          "teamId": 8,
+          "priceTenths": 45
+        },
+        {
+          "elementId": 261,
+          "ownedShare": 0.00402,
+          "startedShare": 0.00402,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.00402,
+          "code": 153133,
+          "name": "Iwobi",
+          "position": "MID",
+          "club": "FUL",
+          "teamId": 10,
+          "priceTenths": 54
+        },
+        {
+          "elementId": 286,
+          "ownedShare": 0.00602,
+          "startedShare": 0.00402,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.00402,
+          "code": 540324,
+          "name": "Belloumi",
+          "position": "MID",
+          "club": "HUL",
+          "teamId": 11,
+          "priceTenths": 51
+        },
+        {
+          "elementId": 367,
+          "ownedShare": 0.00402,
+          "startedShare": 0.00402,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.00402,
+          "code": 243298,
+          "name": "Gakpo",
+          "position": "MID",
+          "club": "LIV",
+          "teamId": 14,
+          "priceTenths": 72
+        },
+        {
+          "elementId": 385,
+          "ownedShare": 0.00602,
+          "startedShare": 0.00402,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.00402,
+          "code": 432720,
+          "name": "Trafford",
+          "position": "GKP",
+          "club": "LEE",
+          "teamId": 13,
+          "priceTenths": 50
+        },
+        {
+          "elementId": 472,
+          "ownedShare": 0.00402,
+          "startedShare": 0.00402,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.00402,
+          "code": 575476,
+          "name": "Murillo",
+          "position": "DEF",
+          "club": "NFO",
+          "teamId": 18,
+          "priceTenths": 55
+        },
+        {
+          "elementId": 593,
+          "ownedShare": 0.01205,
+          "startedShare": 0.00402,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.00402,
+          "code": 463726,
+          "name": "Dedi\u0107",
+          "position": "DEF",
+          "club": "NEW",
+          "teamId": 17,
+          "priceTenths": 45
+        },
+        {
+          "elementId": 41,
+          "ownedShare": 0.00201,
+          "startedShare": 0.00201,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.00201,
+          "code": 195546,
+          "name": "Buend\u00eda",
+          "position": "MID",
+          "club": "AVL",
+          "teamId": 2,
+          "priceTenths": 59
+        },
+        {
+          "elementId": 53,
+          "ownedShare": 0.00201,
+          "startedShare": 0.00201,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.00201,
+          "code": 614071,
+          "name": "Manzambi",
+          "position": "MID",
+          "club": "AVL",
+          "teamId": 2,
+          "priceTenths": 59
+        },
+        {
+          "elementId": 57,
+          "ownedShare": 0.01205,
+          "startedShare": 0.00201,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.00201,
+          "code": 457569,
+          "name": "Petrovi\u0107",
+          "position": "GKP",
+          "club": "BOU",
+          "teamId": 3,
+          "priceTenths": 45
+        },
+        {
+          "elementId": 59,
+          "ownedShare": 0.00201,
+          "startedShare": 0.00201,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.00201,
+          "code": 444172,
+          "name": "Dennis",
+          "position": "GKP",
+          "club": "BOU",
+          "teamId": 3,
+          "priceTenths": 40
+        },
+        {
+          "elementId": 112,
+          "ownedShare": 0.15663,
+          "startedShare": 0.00201,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.00201,
+          "code": 469142,
+          "name": "Van Hecke",
+          "position": "DEF",
+          "club": "TOT",
+          "teamId": 19,
+          "priceTenths": 49
+        },
+        {
+          "elementId": 142,
+          "ownedShare": 0.00402,
+          "startedShare": 0.00201,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.00201,
+          "code": 225796,
+          "name": "James",
+          "position": "DEF",
+          "club": "CHE",
+          "teamId": 6,
+          "priceTenths": 53
+        },
+        {
+          "elementId": 183,
+          "ownedShare": 0.00201,
+          "startedShare": 0.00201,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.00201,
+          "code": 480457,
+          "name": "Rudoni",
+          "position": "MID",
+          "club": "COV",
+          "teamId": 7,
+          "priceTenths": 49
+        },
+        {
+          "elementId": 200,
+          "ownedShare": 0.00201,
+          "startedShare": 0.00201,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.00201,
+          "code": 437499,
+          "name": "Lacroix",
+          "position": "DEF",
+          "club": "CHE",
+          "teamId": 6,
+          "priceTenths": 59
+        },
+        {
+          "elementId": 239,
+          "ownedShare": 0.00201,
+          "startedShare": 0.00201,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.00201,
+          "code": 232928,
+          "name": "Garner",
+          "position": "MID",
+          "club": "EVE",
+          "teamId": 9,
+          "priceTenths": 60
+        },
+        {
+          "elementId": 258,
+          "ownedShare": 0.00402,
+          "startedShare": 0.00201,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.00201,
+          "code": 166477,
+          "name": "Castagne",
+          "position": "DEF",
+          "club": "FUL",
+          "teamId": 10,
+          "priceTenths": 45
+        },
+        {
+          "elementId": 279,
+          "ownedShare": 0.01406,
+          "startedShare": 0.00201,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.00201,
+          "code": 146426,
+          "name": "Ajayi",
+          "position": "DEF",
+          "club": "HUL",
+          "teamId": 11,
+          "priceTenths": 42
+        },
+        {
+          "elementId": 295,
+          "ownedShare": 0.01205,
+          "startedShare": 0.00201,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.00201,
+          "code": 169432,
+          "name": "McBurnie",
+          "position": "FWD",
+          "club": "HUL",
+          "teamId": 11,
+          "priceTenths": 55
+        },
+        {
+          "elementId": 316,
+          "ownedShare": 0.00201,
+          "startedShare": 0.00201,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.00201,
+          "code": 543968,
+          "name": "Emersonn",
+          "position": "FWD",
+          "club": "IPS",
+          "teamId": 12,
+          "priceTenths": 56
+        },
+        {
+          "elementId": 334,
+          "ownedShare": 0.28313,
+          "startedShare": 0.00201,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.00201,
+          "code": 522047,
+          "name": "Muharemovi\u0107",
+          "position": "DEF",
+          "club": "LEE",
+          "teamId": 13,
+          "priceTenths": 50
+        },
+        {
+          "elementId": 350,
+          "ownedShare": 0.00201,
+          "startedShare": 0.00201,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.00201,
+          "code": 116535,
+          "name": "A.Becker",
+          "position": "GKP",
+          "club": "LIV",
+          "teamId": 14,
+          "priceTenths": 55
+        },
+        {
+          "elementId": 356,
+          "ownedShare": 0.00402,
+          "startedShare": 0.00201,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.00201,
+          "code": 97032,
+          "name": "Virgil",
+          "position": "DEF",
+          "club": "LIV",
+          "teamId": 14,
+          "priceTenths": 65
+        },
+        {
+          "elementId": 384,
+          "ownedShare": 0.00602,
+          "startedShare": 0.00201,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.00201,
+          "code": 204936,
+          "name": "Donnarumma",
+          "position": "GKP",
+          "club": "MCI",
+          "teamId": 15,
+          "priceTenths": 55
+        },
+        {
+          "elementId": 390,
+          "ownedShare": 0.00201,
+          "startedShare": 0.00201,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.00201,
+          "code": 171314,
+          "name": "R\u00faben",
+          "position": "DEF",
+          "club": "MCI",
+          "teamId": 15,
+          "priceTenths": 55
+        },
+        {
+          "elementId": 393,
+          "ownedShare": 0.00201,
+          "startedShare": 0.00201,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.00201,
+          "code": 578153,
+          "name": "Khusanov",
+          "position": "DEF",
+          "club": "MCI",
+          "teamId": 15,
+          "priceTenths": 54
+        },
+        {
+          "elementId": 400,
+          "ownedShare": 0.00201,
+          "startedShare": 0.00201,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.00201,
+          "code": 248875,
+          "name": "Doku",
+          "position": "MID",
+          "club": "MCI",
+          "teamId": 15,
+          "priceTenths": 74
+        },
+        {
+          "elementId": 452,
+          "ownedShare": 0.00201,
+          "startedShare": 0.00201,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.00201,
+          "code": 208706,
+          "name": "Bruno G.",
+          "position": "MID",
+          "club": "ARS",
+          "teamId": 1,
+          "priceTenths": 67
+        },
+        {
+          "elementId": 481,
+          "ownedShare": 0.00803,
+          "startedShare": 0.00201,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.00201,
+          "code": 215379,
+          "name": "Anderson",
+          "position": "MID",
+          "club": "MCI",
+          "teamId": 15,
+          "priceTenths": 63
+        },
+        {
+          "elementId": 499,
+          "ownedShare": 0.00201,
+          "startedShare": 0.00201,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.00201,
+          "code": 441164,
+          "name": "Pedro Porro",
+          "position": "DEF",
+          "club": "TOT",
+          "teamId": 19,
+          "priceTenths": 54
+        },
+        {
+          "elementId": 529,
+          "ownedShare": 0.00201,
+          "startedShare": 0.00201,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.00201,
+          "code": 498016,
+          "name": "Roefs",
+          "position": "GKP",
+          "club": "SUN",
+          "teamId": 20,
+          "priceTenths": 49
+        },
+        {
+          "elementId": 552,
+          "ownedShare": 0.00602,
+          "startedShare": 0.00201,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.00201,
+          "code": 441264,
+          "name": "Brobbey",
+          "position": "FWD",
+          "club": "SUN",
+          "teamId": 20,
+          "priceTenths": 57
+        },
+        {
+          "elementId": 557,
+          "ownedShare": 0.01606,
+          "startedShare": 0.00201,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.00201,
+          "code": 439509,
+          "name": "Tzolis",
+          "position": "MID",
+          "club": "ARS",
+          "teamId": 1,
+          "priceTenths": 63
+        },
+        {
+          "elementId": 566,
+          "ownedShare": 0.05422,
+          "startedShare": 0.00201,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.00201,
+          "code": 483067,
+          "name": "Silva",
+          "position": "DEF",
+          "club": "BOU",
+          "teamId": 3,
+          "priceTenths": 50
+        },
+        {
+          "elementId": 586,
+          "ownedShare": 0.05823,
+          "startedShare": 0.00201,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.00201,
+          "code": 606930,
+          "name": "Mendy",
+          "position": "DEF",
+          "club": "HUL",
+          "teamId": 11,
+          "priceTenths": 41
+        },
+        {
+          "elementId": 605,
+          "ownedShare": 0.02811,
+          "startedShare": 0.00201,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.00201,
+          "code": 611695,
+          "name": "Yalcouy\u00e9",
+          "position": "MID",
+          "club": "BHA",
+          "teamId": 5,
+          "priceTenths": 45
+        },
+        {
+          "elementId": 661,
+          "ownedShare": 0.00602,
+          "startedShare": 0.00201,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.00201,
+          "code": 235448,
+          "name": "Balcombe",
+          "position": "GKP",
+          "club": "BRE",
+          "teamId": 4,
+          "priceTenths": 40
+        },
+        {
+          "elementId": 25,
+          "ownedShare": 0.00201,
+          "startedShare": 0.0,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.0,
+          "code": 224117,
+          "name": "Gy\u00f6keres",
+          "position": "FWD",
+          "club": "ARS",
+          "teamId": 1,
+          "priceTenths": 71
+        },
+        {
+          "elementId": 51,
+          "ownedShare": 0.00201,
+          "startedShare": 0.0,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.0,
+          "code": 577285,
+          "name": "George Hemmings",
+          "position": "MID",
+          "club": "AVL",
+          "teamId": 2,
+          "priceTenths": 45
+        },
+        {
+          "elementId": 58,
+          "ownedShare": 0.01606,
+          "startedShare": 0.0,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.0,
+          "code": 40383,
+          "name": "Forster",
+          "position": "GKP",
+          "club": "BOU",
+          "teamId": 3,
+          "priceTenths": 40
+        },
+        {
+          "elementId": 86,
+          "ownedShare": 0.00201,
+          "startedShare": 0.0,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.0,
+          "code": 249231,
+          "name": "Lewis-Potter",
+          "position": "MID",
+          "club": "BRE",
+          "teamId": 4,
+          "priceTenths": 55
+        },
+        {
+          "elementId": 88,
+          "ownedShare": 0.00402,
+          "startedShare": 0.0,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.0,
+          "code": 607464,
+          "name": "Kayode",
+          "position": "DEF",
+          "club": "BRE",
+          "teamId": 4,
+          "priceTenths": 46
+        },
+        {
+          "elementId": 107,
+          "ownedShare": 0.00402,
+          "startedShare": 0.0,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.0,
+          "code": 593174,
+          "name": "Furo",
+          "position": "FWD",
+          "club": "BRE",
+          "teamId": 4,
+          "priceTenths": 45
+        },
+        {
+          "elementId": 111,
+          "ownedShare": 0.03414,
+          "startedShare": 0.0,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.0,
+          "code": 49262,
+          "name": "Steele",
+          "position": "GKP",
+          "club": "BHA",
+          "teamId": 5,
+          "priceTenths": 40
+        },
+        {
+          "elementId": 113,
+          "ownedShare": 0.00402,
+          "startedShare": 0.0,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.0,
+          "code": 231416,
+          "name": "F.Kad\u0131o\u011flu",
+          "position": "DEF",
+          "club": "BHA",
+          "teamId": 5,
+          "priceTenths": 44
+        },
+        {
+          "elementId": 123,
+          "ownedShare": 0.00402,
+          "startedShare": 0.0,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.0,
+          "code": 532529,
+          "name": "Hinshelwood",
+          "position": "MID",
+          "club": "BHA",
+          "teamId": 5,
+          "priceTenths": 59
+        },
+        {
+          "elementId": 140,
+          "ownedShare": 0.00201,
+          "startedShare": 0.0,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.0,
+          "code": 215059,
+          "name": "S\u00e1nchez",
+          "position": "GKP",
+          "club": "CHE",
+          "teamId": 6,
+          "priceTenths": 49
+        },
+        {
+          "elementId": 148,
+          "ownedShare": 0.00201,
+          "startedShare": 0.0,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.0,
+          "code": 551210,
+          "name": "Hato",
+          "position": "DEF",
+          "club": "CHE",
+          "teamId": 6,
+          "priceTenths": 45
+        },
+        {
+          "elementId": 171,
+          "ownedShare": 0.01004,
+          "startedShare": 0.0,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.0,
+          "code": 484389,
+          "name": "Dovin",
+          "position": "GKP",
+          "club": "COV",
+          "teamId": 7,
+          "priceTenths": 40
+        },
+        {
+          "elementId": 175,
+          "ownedShare": 0.02008,
+          "startedShare": 0.0,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.0,
+          "code": 451284,
+          "name": "van Ewijk",
+          "position": "DEF",
+          "club": "COV",
+          "teamId": 7,
+          "priceTenths": 40
+        },
+        {
+          "elementId": 212,
+          "ownedShare": 0.01205,
+          "startedShare": 0.0,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.0,
+          "code": 108413,
+          "name": "Hughes",
+          "position": "MID",
+          "club": "CRY",
+          "teamId": 8,
+          "priceTenths": 44
+        },
+        {
+          "elementId": 251,
+          "ownedShare": 0.04819,
+          "startedShare": 0.0,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.0,
+          "code": 86873,
+          "name": "Lecomte",
+          "position": "GKP",
+          "club": "FUL",
+          "teamId": 10,
+          "priceTenths": 40
+        },
+        {
+          "elementId": 252,
+          "ownedShare": 0.00402,
+          "startedShare": 0.0,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.0,
+          "code": 505079,
+          "name": "McNally",
+          "position": "GKP",
+          "club": "FUL",
+          "teamId": 10,
+          "priceTenths": 40
+        },
+        {
+          "elementId": 273,
+          "ownedShare": 0.01807,
+          "startedShare": 0.0,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.0,
+          "code": 167825,
+          "name": "Phillips",
+          "position": "GKP",
+          "club": "HUL",
+          "teamId": 11,
+          "priceTenths": 40
+        },
+        {
+          "elementId": 290,
+          "ownedShare": 0.11044,
+          "startedShare": 0.0,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.0,
+          "code": 243413,
+          "name": "Slater",
+          "position": "MID",
+          "club": "HUL",
+          "teamId": 11,
+          "priceTenths": 45
+        },
+        {
+          "elementId": 301,
+          "ownedShare": 0.04418,
+          "startedShare": 0.0,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.0,
+          "code": 112520,
+          "name": "Palmer",
+          "position": "GKP",
+          "club": "IPS",
+          "teamId": 12,
+          "priceTenths": 40
+        },
+        {
+          "elementId": 302,
+          "ownedShare": 0.0261,
+          "startedShare": 0.0,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.0,
+          "code": 50093,
+          "name": "Button",
+          "position": "GKP",
+          "club": "IPS",
+          "teamId": 12,
+          "priceTenths": 40
+        },
+        {
+          "elementId": 321,
+          "ownedShare": 0.03614,
+          "startedShare": 0.0,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.0,
+          "code": 557012,
+          "name": "Walle Egeli",
+          "position": "FWD",
+          "club": "IPS",
+          "teamId": 12,
+          "priceTenths": 45
+        },
+        {
+          "elementId": 323,
+          "ownedShare": 0.00201,
+          "startedShare": 0.0,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.0,
+          "code": 461587,
+          "name": "McAteer",
+          "position": "MID",
+          "club": "IPS",
+          "teamId": 12,
+          "priceTenths": 44
+        },
+        {
+          "elementId": 329,
+          "ownedShare": 0.00602,
+          "startedShare": 0.0,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.0,
+          "code": 214225,
+          "name": "Rodon",
+          "position": "DEF",
+          "club": "LEE",
+          "teamId": 13,
+          "priceTenths": 43
+        },
+        {
+          "elementId": 330,
+          "ownedShare": 0.01606,
+          "startedShare": 0.0,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.0,
+          "code": 226182,
+          "name": "Bogle",
+          "position": "DEF",
+          "club": "LEE",
+          "teamId": 13,
+          "priceTenths": 46
+        },
+        {
+          "elementId": 332,
+          "ownedShare": 0.02008,
+          "startedShare": 0.0,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.0,
+          "code": 220627,
+          "name": "Justin",
+          "position": "DEF",
+          "club": "LEE",
+          "teamId": 13,
+          "priceTenths": 45
+        },
+        {
+          "elementId": 335,
+          "ownedShare": 0.00201,
+          "startedShare": 0.0,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.0,
+          "code": 466525,
+          "name": "Stach",
+          "position": "MID",
+          "club": "LEE",
+          "teamId": 13,
+          "priceTenths": 60
+        },
+        {
+          "elementId": 349,
+          "ownedShare": 0.00201,
+          "startedShare": 0.0,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.0,
+          "code": 565297,
+          "name": "Mateo Joseph",
+          "position": "FWD",
+          "club": "LEE",
+          "teamId": 13,
+          "priceTenths": 45
+        },
+        {
+          "elementId": 354,
+          "ownedShare": 0.00201,
+          "startedShare": 0.0,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.0,
+          "code": 432987,
+          "name": "Jaros",
+          "position": "GKP",
+          "club": "LIV",
+          "teamId": 14,
+          "priceTenths": 40
+        },
+        {
+          "elementId": 355,
+          "ownedShare": 0.00201,
+          "startedShare": 0.0,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.0,
+          "code": 464353,
+          "name": "Davies",
+          "position": "GKP",
+          "club": "LIV",
+          "teamId": 14,
+          "priceTenths": 40
+        },
+        {
+          "elementId": 362,
+          "ownedShare": 0.00201,
+          "startedShare": 0.0,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.0,
+          "code": 606702,
+          "name": "Jacquet",
+          "position": "DEF",
+          "club": "LIV",
+          "teamId": 14,
+          "priceTenths": 50
+        },
+        {
+          "elementId": 387,
+          "ownedShare": 0.00402,
+          "startedShare": 0.0,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.0,
+          "code": 472769,
+          "name": "O'Reilly",
+          "position": "DEF",
+          "club": "MCI",
+          "teamId": 15,
+          "priceTenths": 63
+        },
+        {
+          "elementId": 388,
+          "ownedShare": 0.00201,
+          "startedShare": 0.0,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.0,
+          "code": 209036,
+          "name": "Gu\u00e9hi",
+          "position": "DEF",
+          "club": "MCI",
+          "teamId": 15,
+          "priceTenths": 60
+        },
+        {
+          "elementId": 460,
+          "ownedShare": 0.00201,
+          "startedShare": 0.0,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.0,
+          "code": 200089,
+          "name": "Willock",
+          "position": "MID",
+          "club": "NEW",
+          "teamId": 17,
+          "priceTenths": 50
+        },
+        {
+          "elementId": 466,
+          "ownedShare": 0.00201,
+          "startedShare": 0.0,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.0,
+          "code": 599303,
+          "name": "Neave",
+          "position": "FWD",
+          "club": "NEW",
+          "teamId": 17,
+          "priceTenths": 45
+        },
+        {
+          "elementId": 497,
+          "ownedShare": 0.21285,
+          "startedShare": 0.0,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.0,
+          "code": 67089,
+          "name": "Dubravka",
+          "position": "GKP",
+          "club": "TOT",
+          "teamId": 19,
+          "priceTenths": 40
+        },
+        {
+          "elementId": 502,
+          "ownedShare": 0.00602,
+          "startedShare": 0.0,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.0,
+          "code": 122798,
+          "name": "Robertson",
+          "position": "DEF",
+          "club": "TOT",
+          "teamId": 19,
+          "priceTenths": 44
+        },
+        {
+          "elementId": 524,
+          "ownedShare": 0.00602,
+          "startedShare": 0.0,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.0,
+          "code": 499726,
+          "name": "Olusesi",
+          "position": "MID",
+          "club": "TOT",
+          "teamId": 19,
+          "priceTenths": 44
+        },
+        {
+          "elementId": 532,
+          "ownedShare": 0.01406,
+          "startedShare": 0.0,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.0,
+          "code": 223827,
+          "name": "Ballard",
+          "position": "DEF",
+          "club": "SUN",
+          "teamId": 20,
+          "priceTenths": 49
+        },
+        {
+          "elementId": 533,
+          "ownedShare": 0.00402,
+          "startedShare": 0.0,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.0,
+          "code": 200834,
+          "name": "Mukiele",
+          "position": "DEF",
+          "club": "SUN",
+          "teamId": 20,
+          "priceTenths": 54
+        },
+        {
+          "elementId": 534,
+          "ownedShare": 0.01807,
+          "startedShare": 0.0,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.0,
+          "code": 487676,
+          "name": "Hume",
+          "position": "DEF",
+          "club": "SUN",
+          "teamId": 20,
+          "priceTenths": 43
+        },
+        {
+          "elementId": 555,
+          "ownedShare": 0.00201,
+          "startedShare": 0.0,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.0,
+          "code": 169593,
+          "name": "Matthews",
+          "position": "GKP",
+          "club": "CRY",
+          "teamId": 8,
+          "priceTenths": 40
+        },
+        {
+          "elementId": 564,
+          "ownedShare": 0.01807,
+          "startedShare": 0.0,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.0,
+          "code": 240514,
+          "name": "Scherpen",
+          "position": "GKP",
+          "club": "IPS",
+          "teamId": 12,
+          "priceTenths": 45
+        },
+        {
+          "elementId": 575,
+          "ownedShare": 0.00201,
+          "startedShare": 0.0,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.0,
+          "code": 661888,
+          "name": "Yirenkyi",
+          "position": "MID",
+          "club": "COV",
+          "teamId": 7,
+          "priceTenths": 48
+        },
+        {
+          "elementId": 613,
+          "ownedShare": 0.00201,
+          "startedShare": 0.0,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.0,
+          "code": 696104,
+          "name": "Ahoka",
+          "position": "MID",
+          "club": "SUN",
+          "teamId": 20,
+          "priceTenths": 45
+        },
+        {
+          "elementId": 623,
+          "ownedShare": 0.17269,
+          "startedShare": 0.0,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.0,
+          "code": 79602,
+          "name": "Bentley",
+          "position": "GKP",
+          "club": "COV",
+          "teamId": 7,
+          "priceTenths": 40
+        },
+        {
+          "elementId": 625,
+          "ownedShare": 0.00201,
+          "startedShare": 0.0,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.0,
+          "code": 97846,
+          "name": "Cairns",
+          "position": "GKP",
+          "club": "LEE",
+          "teamId": 13,
+          "priceTenths": 40
+        },
+        {
+          "elementId": 629,
+          "ownedShare": 0.01606,
+          "startedShare": 0.0,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.0,
+          "code": 155465,
+          "name": "Zetterer",
+          "position": "GKP",
+          "club": "LEE",
+          "teamId": 13,
+          "priceTenths": 40
+        },
+        {
+          "elementId": 651,
+          "ownedShare": 0.01004,
+          "startedShare": 0.0,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.0,
+          "code": 661313,
+          "name": "J.Angulo",
+          "position": "FWD",
+          "club": "SUN",
+          "teamId": 20,
+          "priceTenths": 45
+        },
+        {
+          "elementId": 667,
+          "ownedShare": 0.00602,
+          "startedShare": 0.0,
+          "captainedShare": 0.0,
+          "effectiveOwnership": 0.0,
+          "code": 481283,
+          "name": "Wright",
+          "position": "GKP",
+          "club": "AVL",
+          "teamId": 2,
+          "priceTenths": 40
         }
       ]
     }
