@@ -1,6 +1,6 @@
 {
   "schemaVersion": 7,
-  "generatedAt": "2026-10-21T12:47:38.067005Z",
+  "generatedAt": "2026-10-21T13:45:48.501721Z",
   "recordSeason": "2026-27",
   "events": [
     8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26,
@@ -189,7 +189,7 @@
       }
     ],
     "sourceReference": "FPL rules page, Transfers section",
-    "dataAvailableAt": "2026-10-21T12:47:38.067005Z",
+    "dataAvailableAt": "2026-10-21T13:45:48.501721Z",
     "playableStartRate": 0.35,
     "transferMarginPoints": 0.5
   },
@@ -4306,47 +4306,6 @@
         "all": "currentSeasonRoutes",
         "appearance": "currentSeasonLineup"
       }
-    },
-    {
-      "id": 38,
-      "code": 606798,
-      "name": "A.Garc\u00eda",
-      "position": "DEF",
-      "positionId": 2,
-      "club": "AVL",
-      "teamId": 2,
-      "priceTenths": 40,
-      "availabilityStatus": "a",
-      "chanceOfPlaying": null,
-      "basePoints": 1.949,
-      "routes": {
-        "appearance": 1.532,
-        "attacking": 0.181,
-        "cleanSheet": 0.581,
-        "bonus": 0.058,
-        "conceding": -0.453,
-        "yellowCards": -0.134,
-        "redCards": -0.01,
-        "ownGoals": -0.006,
-        "defensiveContribution": 0.2
-      },
-      "startRate": 0.027,
-      "startEvidence": {
-        "sourceStartRate": 0.795,
-        "finalStartRate": 0.027,
-        "observedAppearances": 7,
-        "recentStarts": 0,
-        "recentMatches": 7,
-        "recentMinutes": 0,
-        "appearanceSource": "currentSeasonLineup",
-        "lineupAdjustment": -0.768,
-        "marketAdjustment": 0.0,
-        "availabilityAdjustment": 0.0
-      },
-      "squadNumber": null,
-      "rated": false,
-      "depthRank": 10,
-      "evidence": { "all": "rolePrior", "appearance": "currentSeasonLineup" }
     },
     {
       "id": 606,
@@ -10748,6 +10707,37 @@
       "rated": true,
       "depthRank": 1,
       "evidence": { "appearance": "fplAvailability" }
+    },
+    {
+      "id": 38,
+      "code": 606798,
+      "name": "A.Garc\u00eda",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "AVL",
+      "teamId": 2,
+      "priceTenths": 40,
+      "availabilityStatus": "u",
+      "chanceOfPlaying": 0,
+      "basePoints": 0,
+      "routes": {},
+      "startRate": 0.0,
+      "startEvidence": {
+        "sourceStartRate": 0.795,
+        "finalStartRate": 0.0,
+        "observedAppearances": 7,
+        "recentStarts": 0,
+        "recentMatches": 7,
+        "recentMinutes": 0,
+        "appearanceSource": "fplAvailability",
+        "lineupAdjustment": -0.768,
+        "marketAdjustment": 0.0,
+        "availabilityAdjustment": -0.027
+      },
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 10,
+      "evidence": { "all": "rolePrior", "appearance": "fplAvailability" }
     },
     {
       "id": 39,
@@ -22191,8 +22181,8 @@
       "club": "BOU",
       "teamId": 3,
       "priceTenths": 73,
-      "availabilityStatus": "i",
-      "chanceOfPlaying": 0,
+      "availabilityStatus": "d",
+      "chanceOfPlaying": 50,
       "basePoints": 0,
       "routes": {},
       "startRate": 0.0,
@@ -22203,15 +22193,15 @@
         "recentStarts": 0,
         "recentMatches": 7,
         "recentMinutes": 0,
-        "appearanceSource": "fplAvailability",
+        "appearanceSource": "currentSeasonLineup",
         "lineupAdjustment": 0.0,
         "marketAdjustment": 0.0,
-        "availabilityAdjustment": -0.0
+        "availabilityAdjustment": 0.0
       },
       "squadNumber": null,
       "rated": true,
       "depthRank": 1,
-      "evidence": { "appearance": "fplAvailability" }
+      "evidence": { "appearance": "currentSeasonLineup" }
     },
     {
       "id": 98,
