@@ -1,14 +1,14 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-21T12:47:36.445050+00:00",
+  "generatedAt": "2026-10-23T22:04:44.553188+00:00",
   "basis": "2026-27",
   "budgetTenths": 1000,
-  "spentTenths": 980,
-  "expectedPoints": 60.58,
+  "spentTenths": 999,
+  "expectedPoints": 60.54,
   "consideredPlayers": 198,
-  "withoutRecord": 155,
-  "unavailable": 206,
-  "bitPart": 109,
+  "withoutRecord": 153,
+  "unavailable": 204,
+  "bitPart": 113,
   "startRateFloor": 0.35,
   "picks": [
     {
@@ -82,6 +82,20 @@
       "fixtures": 5
     },
     {
+      "code": 226597,
+      "name": "Gabriel",
+      "position": "DEF",
+      "club": "ARS",
+      "priceTenths": 79,
+      "record": 4.24,
+      "adjusted": 5.81,
+      "startRate": 0.91,
+      "starter": true,
+      "run": 1.37,
+      "ratedFixtures": 5,
+      "fixtures": 5
+    },
+    {
       "code": 226182,
       "name": "Bogle",
       "position": "DEF",
@@ -96,30 +110,16 @@
       "fixtures": 5
     },
     {
-      "code": 17761,
-      "name": "Tarkowski",
-      "position": "DEF",
-      "club": "EVE",
-      "priceTenths": 62,
-      "record": 4.45,
-      "adjusted": 5.58,
-      "startRate": 0.92,
-      "starter": true,
-      "run": 1.25,
-      "ratedFixtures": 5,
-      "fixtures": 5
-    },
-    {
-      "code": 223340,
-      "name": "Saka",
+      "code": 440993,
+      "name": "Ndiaye",
       "position": "MID",
-      "club": "ARS",
-      "priceTenths": 96,
-      "record": 4.47,
-      "adjusted": 5.09,
-      "startRate": 0.91,
+      "club": "MCI",
+      "priceTenths": 58,
+      "record": 3.37,
+      "adjusted": 4.59,
+      "startRate": 0.59,
       "starter": true,
-      "run": 1.14,
+      "run": 1.36,
       "ratedFixtures": 5,
       "fixtures": 5
     },
@@ -138,11 +138,25 @@
       "fixtures": 5
     },
     {
+      "code": 244851,
+      "name": "Palmer",
+      "position": "MID",
+      "club": "CHE",
+      "priceTenths": 98,
+      "record": 3.73,
+      "adjusted": 4.47,
+      "startRate": 0.92,
+      "starter": true,
+      "run": 1.2,
+      "ratedFixtures": 5,
+      "fixtures": 5
+    },
+    {
       "code": 446008,
       "name": "Mbeumo",
       "position": "MID",
       "club": "MUN",
-      "priceTenths": 78,
+      "priceTenths": 79,
       "record": 4.28,
       "adjusted": 4.37,
       "startRate": 0.91,
@@ -160,22 +174,8 @@
       "record": 2.92,
       "adjusted": 4.25,
       "startRate": 0.53,
-      "starter": true,
-      "run": 1.46,
-      "ratedFixtures": 5,
-      "fixtures": 5
-    },
-    {
-      "code": 466525,
-      "name": "Stach",
-      "position": "MID",
-      "club": "LEE",
-      "priceTenths": 60,
-      "record": 3.89,
-      "adjusted": 4.19,
-      "startRate": 0.91,
       "starter": false,
-      "run": 1.08,
+      "run": 1.46,
       "ratedFixtures": 5,
       "fixtures": 5
     },
@@ -194,20 +194,6 @@
       "fixtures": 5
     },
     {
-      "code": 177815,
-      "name": "Calvert-Lewin",
-      "position": "FWD",
-      "club": "LEE",
-      "priceTenths": 60,
-      "record": 3.57,
-      "adjusted": 4.09,
-      "startRate": 0.92,
-      "starter": false,
-      "run": 1.15,
-      "ratedFixtures": 5,
-      "fixtures": 5
-    },
-    {
       "code": 475168,
       "name": "Jo\u00e3o Pedro",
       "position": "FWD",
@@ -218,6 +204,20 @@
       "startRate": 0.79,
       "starter": false,
       "run": 1.16,
+      "ratedFixtures": 5,
+      "fixtures": 5
+    },
+    {
+      "code": 444102,
+      "name": "Evanilson",
+      "position": "FWD",
+      "club": "BOU",
+      "priceTenths": 61,
+      "record": 3.52,
+      "adjusted": 3.37,
+      "startRate": 0.92,
+      "starter": false,
+      "run": 0.96,
       "ratedFixtures": 5,
       "fixtures": 5
     }
