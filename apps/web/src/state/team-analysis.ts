@@ -253,7 +253,14 @@ async function fetchTeamAnalysis(
       signal.throwIfAborted();
       if (candidate.success) {
         envelope = candidate.data;
-        break;
+        if (
+          envelope.status !== "degraded" ||
+          !["fpl_unreachable", "fpl_source_failed"].includes(envelope.reason) ||
+          !RETRYABLE_STATUSES.has(response.status) ||
+          attempt === MAX_ATTEMPTS - 1
+        ) {
+          break;
+        }
       }
       if (
         !RETRYABLE_STATUSES.has(response.status) ||

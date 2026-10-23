@@ -654,9 +654,9 @@ function DeclaredSquadEditor({
                   fieldId,
                 );
                 if (price === null) return [];
-                if (price <= 0 || price > player.priceTenths)
+                if (price <= 0)
                   throw new CorrectionInputError(
-                    `Selling price for ${player.name} must be above zero and no more than ${pounds(player.priceTenths)}.`,
+                    `Selling price for ${player.name} must be above zero.`,
                     fieldId,
                   );
                 return [{ elementId, sellingPriceTenths: price }];
@@ -875,7 +875,6 @@ function DeclaredSquadEditor({
                         type="number"
                         inputMode="decimal"
                         min="0.1"
-                        max={player.priceTenths / 10}
                         step="0.1"
                         autoComplete="off"
                         value={sellingPrices[elementId] ?? ""}

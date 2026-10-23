@@ -227,10 +227,27 @@ describe("declared squad", () => {
       save({
         bankTenths: 0,
         availableFreeTransfers: 2,
-        sellingPrices: [{ elementId: ids[0]!, sellingPriceTenths: 9999 }],
+        sellingPrices: [{ elementId: ids[0]!, sellingPriceTenths: 0 }],
       }),
     ).toThrow();
     expect(readDeclaredSquad(storage, 42, 5)).toBeNull();
+  });
+
+  it("retains manager selling prices above the roster price", () => {
+    const ids = legalSquad();
+    const first = ids[0]!;
+    const roster = new Map(PLAYERS_BY_ELEMENT_ID);
+    roster.set(first, { ...roster.get(first)!, priceTenths: 155 });
+    saveDeclaredSquad(storage, 42, 5, ids, roster, undefined, {
+      bankTenths: 25,
+      availableFreeTransfers: 1,
+      sellingPrices: [{ elementId: first, sellingPriceTenths: 157 }],
+    });
+    const stored = readDeclaredSquad(storage, 42, 5);
+    expect(stored).not.toBeNull();
+    expect(
+      declaredSquadPlanningValues(stored!, 5, roster)?.sellingPrices,
+    ).toEqual(new Map([[first, 157]]));
   });
 
   it("does not apply the opening budget in season", () => {

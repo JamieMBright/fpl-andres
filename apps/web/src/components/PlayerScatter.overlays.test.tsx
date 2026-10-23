@@ -6,6 +6,7 @@ import type { AnalysisPlayer } from "../state/analysis-pool";
 import { selectPlotted } from "../state/scatter-select";
 import { DEFAULT_VIEW } from "../state/scatter-view";
 import { SEASON_PLAYERS } from "../state/season-solver";
+import { horizonPoints } from "../state/horizon-points";
 
 function pool(count: number): AnalysisPlayer[] {
   return Array.from({ length: count }, (_, index) => {
@@ -245,7 +246,8 @@ describe("scatter overlays", () => {
 describe("scatter tooltip evidence", () => {
   it("shows every active encoding and the five-gameweek projection", () => {
     const published = SEASON_PLAYERS.find(
-      (player) => player.position === "DEF",
+      (player) =>
+        player.position === "DEF" && horizonPoints(player.code, 5) !== null,
     );
     expect(published).toBeDefined();
     const [subject] = pool(1);

@@ -104,6 +104,13 @@ The project follows Semantic Versioning once milestone tags begin.
 
 ### Fixed
 
+- Model 8.20 retains the full player pool, including injured owned players that
+  fell below the position cutoff. Unavailable holdings remain sellable, with
+  zero projected points and no eligibility for new purchases. Static Wildcard
+  timing excludes splits that leave an unsupported one-gameweek segment.
+- Manual Plan selling prices no longer have a roster-price ceiling. Transient
+  failed team imports retry within the existing total request budget, and FPL
+  refusal guidance no longer describes an intermittent failure as permanent.
 - Model 8.18 carries mature prior-season BPS variation into thin early-season
   bonus ranking and keeps direct current-lineup evidence ahead of participation
   inferred from scorer markets. Before a GW4 Wildcard, correcting those two

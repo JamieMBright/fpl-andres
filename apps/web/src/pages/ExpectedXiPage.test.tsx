@@ -12,7 +12,7 @@ import { PLAYERS_BY_ELEMENT_ID } from "../state/season-solver";
 import ExpectedXiPage from "./ExpectedXiPage";
 
 describe("Expected XI page", () => {
-  it("opens on the next gameweek, explains the Leeds miss, and can revisit GW1", async () => {
+  it("opens on the next gameweek and explains a frozen XI miss", async () => {
     // The page heads on whichever gameweek the published season opens with, so
     // naming one here dates the test to the week it was written.
     const { event } = expectedXi();
@@ -37,9 +37,15 @@ describe("Expected XI page", () => {
     expect(screen.getAllByRole("link")).toHaveLength(20);
     expect(screen.getAllByRole("heading", { level: 2 })).toHaveLength(20);
     expect(document.body).toHaveTextContent(`GW${validationEvent} check`);
-    const leeds = expectedXi().teams.find((team) => team.club === "LEE");
-    expect(leeds?.validation).toBeDefined();
-    const frozenMiss = leeds?.validation?.selected.find((row) => !row.started);
+    const missedTeam = expectedXi().teams.find((team) =>
+      team.validation?.selected.some(
+        (row) => !row.started && PLAYERS_BY_ELEMENT_ID.has(row.elementId),
+      ),
+    );
+    expect(missedTeam?.validation).toBeDefined();
+    const frozenMiss = missedTeam?.validation?.selected.find(
+      (row) => !row.started && PLAYERS_BY_ELEMENT_ID.has(row.elementId),
+    );
     expect(frozenMiss).toBeDefined();
     const frozenMissName = PLAYERS_BY_ELEMENT_ID.get(
       frozenMiss!.elementId,
@@ -47,7 +53,7 @@ describe("Expected XI page", () => {
     expect(frozenMissName).toBeDefined();
     await userEvent.click(
       screen.getByRole("button", {
-        name: `About LEE GW${validationEvent} xStart check`,
+        name: `About ${missedTeam!.club} GW${validationEvent} xStart check`,
       }),
     );
     expect(screen.getByRole("tooltip")).toHaveTextContent(frozenMissName!);

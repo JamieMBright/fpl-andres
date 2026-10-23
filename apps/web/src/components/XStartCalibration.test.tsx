@@ -299,7 +299,7 @@ describe("XStartCalibration", () => {
       ),
     ).toHaveClass("is-active");
 
-    fireEvent.pointerMove(hitArea!, { clientX: 100, pointerType: "mouse" });
+    fireEvent.pointerMove(hitArea!, { clientX: 44, pointerType: "mouse" });
     const first = validation.events[0]!;
     const firstClub = first.clubs.find((entry) => entry.club === club.club)!;
     expect(tooltip).toHaveTextContent(`GW${first.event}`);

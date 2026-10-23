@@ -111,19 +111,6 @@ DEFAULT_OUTPUT = Path("apps/web/src/data/season-inputs.json")
 
 SCHEMA_VERSION = SEASON_INPUTS_SCHEMA_VERSION
 POSITION_CODES = {position.value: position.code for position in Position}
-# Everyone the projector can rate, not a top-forty cut per position.
-#
-# The trim was justified as "small enough to ship". Measured 2026-08-07 that is
-# not true: 144 players gzip to 3.67 kB and all 441 to 5.73 kB, so the whole
-# saving was about two kilobytes. What it cost was the ability to represent a
-# manager's own squad -- a declared fifteen containing anyone outside the cut
-# could not be solved at all, and the plan silently fell back to the generic
-# season. A pool that cannot express the user's team is the wrong pool.
-#
-# Players with no Premier League record still have no row, here or anywhere:
-# that is a limit of the evidence, not of this number.
-POOL_PER_POSITION = 250
-
 #: FPL's own bootstrap does not publish the hit, so it is cited rather than read.
 TRANSFER_COST_POINTS = 4
 
@@ -1919,9 +1906,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             (row for row in players if row[0] == position),
             key=lambda row: -row[1],
         )
-        chosen = ranked[:POOL_PER_POSITION]
-        chosen.extend(row for row in ranked[POOL_PER_POSITION:] if row[2]["code"] in required)
-        trimmed.extend(payload for _, _, payload in chosen)
+        trimmed.extend(payload for _, _, payload in ranked)
 
     absent = required - {int(str(payload["code"])) for payload in trimmed}
     if absent:
@@ -1976,7 +1961,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             "base projection per player, multiplied by the club's fixture "
             "multiplier for the gameweek; blanks are zero and doubles are summed"
         ),
-        "poolPerPosition": POOL_PER_POSITION,
+        "poolPerPosition": max(Counter(row["positionId"] for row in trimmed).values(), default=0),
         "evidence": {
             "historicalProjection": _artifact_provenance(
                 projections_path,

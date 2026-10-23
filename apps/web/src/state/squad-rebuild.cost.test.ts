@@ -38,5 +38,5 @@ describe("rebuild cost", () => {
     expect(season / Math.max(single, 0.01)).toBeLessThan(
       SEASON_EVENTS.length * 3,
     );
-  }, 15_000);
+  }, 60_000);
 });

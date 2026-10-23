@@ -24,9 +24,10 @@ const BUDGET = 1000;
 
 describe("rebuildSquad", () => {
   it.each(WILDCARD_HORIZONS)(
-    "does not leave an affordable scoring upgrade unused over %i weeks from gameweek six",
+    "does not leave an affordable scoring upgrade unused over %i weeks from the first published event",
     (weeks) => {
-      const eventIndex = EVENT_INDEX.get(6)!;
+      const event = SEASON_EVENTS[0] as number;
+      const eventIndex = EVENT_INDEX.get(event)!;
       const rebuilt = rebuildSquad(eventIndex, BUDGET, weeks)!;
       const score = (squad: typeof rebuilt.squad) =>
         Array.from({ length: weeks }, (_, ahead) =>
@@ -44,7 +45,7 @@ describe("rebuildSquad", () => {
             remaining.some((player) => player.id === candidate.id) ||
             remaining.filter((player) => player.club === candidate.club)
               .length >= 3 ||
-            !isBuyEligibleAtEvent(candidate, 6) ||
+            !isBuyEligibleAtEvent(candidate, event) ||
             startRateAtEvent(candidate, eventIndex) < PLAYABLE_START_RATE
           )
             continue;

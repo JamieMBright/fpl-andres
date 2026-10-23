@@ -1,6 +1,6 @@
 import { publicTeamStateSchema } from "@fpl-andres/contracts";
 import teamStateCases from "../../../../packages/contracts/fixtures/public-team-state-cases.json";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import {
   currentTeamCacheContext,
@@ -16,7 +16,12 @@ const ENTRY_ID = 123;
 const readyState = publicTeamStateSchema.parse(teamStateCases.valid[0]);
 
 describe("team analysis state machine", () => {
-  beforeEach(() => localStorage.clear());
+  beforeEach(() => {
+    localStorage.clear();
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    vi.setSystemTime(new Date(readyState.dataAvailableAt));
+  });
+  afterEach(() => vi.useRealTimers());
 
   it("moves idle to loading to ready and caches only validated state", async () => {
     const loading = reduceTeamAnalysis(initialTeamAnalysisState, {

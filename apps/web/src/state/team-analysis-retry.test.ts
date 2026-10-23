@@ -39,7 +39,7 @@ describe("a flaky connection costs a retry, not the answer", () => {
     expect(result.status).toBe("unavailable");
   });
 
-  it("does not repeat an import after the server exhausted upstream retries", async () => {
+  it("retries a transient degraded import within the total budget", async () => {
     const fetchApi = vi
       .fn<typeof fetch>()
       .mockResolvedValueOnce(
@@ -58,11 +58,50 @@ describe("a flaky connection costs a retry, not the answer", () => {
       wait: noWait,
     });
 
+    expect(fetchApi).toHaveBeenCalledTimes(2);
+    expect(result).toEqual({
+      status: "unavailable",
+      reason: "no_processed_event",
+    });
+  });
+
+  it("does not retry a source contract failure", async () => {
+    const fetchApi = vi
+      .fn<typeof fetch>()
+      .mockImplementation(async () =>
+        Response.json(
+          { status: "degraded", reason: "source_contract_failed" },
+          { status: 503 },
+        ),
+      );
+    const result = await refreshTeamAnalysis(ENTRY, null, {
+      fetchApi,
+      storage: storage(),
+      wait: noWait,
+    });
     expect(fetchApi).toHaveBeenCalledTimes(1);
     expect(result).toEqual({
       status: "degraded",
-      reason: "fpl_unreachable",
+      reason: "source_contract_failed",
     });
+  });
+
+  it("preserves the last diagnosis after bounded degraded retries", async () => {
+    const fetchApi = vi
+      .fn<typeof fetch>()
+      .mockImplementation(async () =>
+        Response.json(
+          { status: "degraded", reason: "fpl_unreachable" },
+          { status: 503 },
+        ),
+      );
+    const result = await refreshTeamAnalysis(ENTRY, null, {
+      fetchApi,
+      storage: storage(),
+      wait: noWait,
+    });
+    expect(fetchApi).toHaveBeenCalledTimes(3);
+    expect(result).toEqual({ status: "degraded", reason: "fpl_unreachable" });
   });
 
   it("bounds a stalled import to twenty seconds", async () => {

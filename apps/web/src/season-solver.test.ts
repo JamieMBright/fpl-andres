@@ -452,12 +452,12 @@ describe("a committed rebuild", () => {
       const solved = [
         ...solveSeason({
           ...openingStart(),
-          fromEvent: 6,
-          rebuildAtEvent: 6,
+          fromEvent: SEASON_EVENTS[0] as number,
+          rebuildAtEvent: SEASON_EVENTS[0] as number,
         }),
       ];
-      const wildcard = solved.find((week) => week.event === 6);
-      const following = solved.find((week) => week.event === 7);
+      const wildcard = solved.find((week) => week.event === SEASON_EVENTS[0]);
+      const following = solved.find((week) => week.event === SEASON_EVENTS[1]);
 
       expect(wildcard?.chip).toBe("Wildcard");
       expect(wildcard?.paidTransfers).toBe(0);
@@ -539,8 +539,8 @@ describe("a committed Free Hit", () => {
       const solved = [
         ...solveSeason({
           ...openingStart(),
-          fromEvent: 6,
-          freeHitAtEvent: 6,
+          fromEvent: SEASON_EVENTS[0] as number,
+          freeHitAtEvent: SEASON_EVENTS[0] as number,
         }),
       ];
       const hitIndex = solved.findIndex((week) => week.chip === "Free Hit");

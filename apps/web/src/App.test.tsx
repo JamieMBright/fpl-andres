@@ -60,6 +60,8 @@ describe("team analysis entry", () => {
   afterEach(() => vi.useRealTimers());
   beforeEach(() => {
     localStorage.clear();
+    vi.useFakeTimers({ toFake: ["Date"] });
+    vi.setSystemTime(new Date(readyState.dataAvailableAt));
     class TestWorker {
       onerror: ((event: ErrorEvent) => void) | null = null;
       onmessage: ((event: MessageEvent<unknown>) => void) | null = null;

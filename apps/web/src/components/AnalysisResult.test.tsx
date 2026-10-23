@@ -4,6 +4,7 @@ import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { TeamAnalysisState } from "../state/team-analysis";
+import { currentPlanningEvent } from "../state/use-team-start";
 
 import { AnalysisResult } from "./AnalysisResult";
 
@@ -43,7 +44,7 @@ describe("AnalysisResult", () => {
       );
       expect(
         await screen.findByRole("heading", {
-          name: "Build your gameweek 5 fifteen",
+          name: `Build your gameweek ${String(currentPlanningEvent())} fifteen`,
         }),
       ).toBeVisible();
       expect(

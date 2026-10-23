@@ -240,9 +240,7 @@ export function declaredSquadPlanningValues(
     if (
       sellingPrices.size !== (finances.sellingPrices?.length ?? 0) ||
       [...sellingPrices].some(
-        ([elementId, price]) =>
-          !parsed.elementIds.includes(elementId) ||
-          price > (roster.get(elementId)?.priceTenths ?? 0),
+        ([elementId]) => !parsed.elementIds.includes(elementId),
       )
     )
       return null;

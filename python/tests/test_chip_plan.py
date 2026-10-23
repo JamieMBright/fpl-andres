@@ -26,6 +26,7 @@ from fpl_andres.cli.publish_season_plan import (
     _data_gaps,
     _lineup_points_with_captain,
     _place_wildcards,
+    _season_with_wildcards,
     _validate_published_armbands,
     _wildcard_horizon_cliff,
     _wildcard_turnover,
@@ -49,6 +50,28 @@ def test_a_recent_arrival_is_unaffordable_only_through_the_hold_event() -> None:
 
     assert _buy_price(candidate, 3, 1000) == 1001
     assert _buy_price(candidate, 4, 1000) == 60
+
+
+@pytest.mark.parametrize("wildcard", [10, 11])
+def test_wildcard_search_rejects_single_week_segments_before_solving(
+    monkeypatch: pytest.MonkeyPatch, wildcard: int
+) -> None:
+    run = cast(
+        _ChipRun,
+        SimpleNamespace(
+            ordered_events=[9, 10, 11],
+            opening_squad=[1],
+            opening_bank_tenths=0,
+            opening_free_transfers=1,
+        ),
+    )
+
+    def unexpected_solve(*args: object) -> None:
+        pytest.fail("unsupported single-week segments must be rejected before solving")
+
+    monkeypatch.setattr("fpl_andres.cli.publish_season_plan._solve_segment", unexpected_solve)
+
+    assert _season_with_wildcards([wildcard], run) is None
 
 
 def _candidate(code: int, name: str, club: str = "ARS", position: int = 3) -> Candidate:

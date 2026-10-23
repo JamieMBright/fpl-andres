@@ -896,19 +896,20 @@ def _season_with_wildcards(
 ) -> tuple[dict[int, dict[str, Any]], float] | None:
     """The whole season split at each Wildcard, and what it is worth."""
     boundaries = sorted(wildcards)
+    starts = [run.ordered_events[0], *boundaries]
+    stops = [*boundaries, None]
+    segments = [
+        [event for event in run.ordered_events if event >= start and (stop is None or event < stop)]
+        for start, stop in zip(starts, stops, strict=True)
+    ]
+    if any(len(segment) == 1 for segment in segments):
+        return None
     weeks: dict[int, dict[str, Any]] = {}
     squad: Sequence[int] = run.opening_squad
     bank = run.opening_bank_tenths
     free_transfers = run.opening_free_transfers
 
-    starts = [run.ordered_events[0], *boundaries]
-    for index, start in enumerate(starts):
-        stop = boundaries[index] if index < len(boundaries) else None
-        segment = [
-            event
-            for event in run.ordered_events
-            if event >= start and (stop is None or event < stop)
-        ]
+    for segment, stop in zip(segments, stops, strict=True):
         solved = _solve_segment(segment, squad, bank, free_transfers, run)
         if not solved and len(segment) >= 2:
             return None
@@ -1254,9 +1255,11 @@ def main(argv: Sequence[str] | None = None) -> int:
         schedule.setdefault((int(event), home_id), []).append((away_id, True))
         schedule.setdefault((int(event), away_id), []).append((home_id, False))
 
+    opening = read_json_file(Path(args.opening_squad))
+    squad_codes = [int(pick["code"]) for pick in opening["picks"]]
     candidates: list[Candidate] = []
     for element in parse_elements(bootstrap["elements"], model=BootstrapElement):
-        if element.element_type not in POSITION_CODES or not element.is_available:
+        if element.element_type not in POSITION_CODES:
             continue
         record = record_by_code.get(element.code)
         if record is None:
@@ -1265,7 +1268,10 @@ def main(argv: Sequence[str] | None = None) -> int:
         # transferred in a fringe forward who has not started a match: his
         # per-match record looks fine because it is measured over the handful of
         # matches he did play.
-        if float(record["probabilityStart"]) < PLAYABLE_START_RATE:
+        buy_eligible = (
+            element.is_available and float(record["probabilityStart"]) >= PLAYABLE_START_RATE
+        )
+        if not buy_eligible and element.code not in squad_codes:
             continue
         candidates.append(
             Candidate(
@@ -1276,16 +1282,20 @@ def main(argv: Sequence[str] | None = None) -> int:
                 team_id=element.team,
                 club=str(clubs[element.team]["short_name"]),
                 price_tenths=element.now_cost,
-                record=float(record["expectedPoints"]),
-                best_match=float(record.get("expectedCeiling") or record["expectedPoints"]),
-                routes=record.get("routes", {}),
+                record=float(record["expectedPoints"]) if element.is_available else 0.0,
+                best_match=(
+                    float(record.get("expectedCeiling") or record["expectedPoints"])
+                    if element.is_available
+                    else 0.0
+                ),
+                routes=record.get("routes", {}) if element.is_available else {},
                 squad_number=element.squad_number,
-                avoid_until_event=transfer_holds.get(element.code),
+                avoid_until_event=(
+                    transfer_holds.get(element.code) if buy_eligible else max(events)
+                ),
             )
         )
 
-    opening = read_json_file(Path(args.opening_squad))
-    squad_codes = [int(pick["code"]) for pick in opening["picks"]]
     by_code = {candidate.code: candidate for candidate in candidates}
     missing = [code for code in squad_codes if code not in by_code]
     if missing:

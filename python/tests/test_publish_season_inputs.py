@@ -17,7 +17,7 @@ from unittest.mock import patch
 import pytest
 
 from fpl_andres.bootstrap import BootstrapElement
-from fpl_andres.cli import publish_season_inputs
+from fpl_andres.cli import publish_season_inputs, publish_season_plan
 from fpl_andres.cli.publish_season_inputs import (
     CurrentLineupObservation,
     DepthRolePrior,
@@ -129,6 +129,58 @@ def _element(**overrides: Any) -> dict[str, Any]:
     }
     base.update(overrides)
     return base
+
+
+def test_plan_retains_unavailable_owned_players_without_rebuying_them(tmp_path: Path) -> None:
+    rules_fixture = Path(__file__).parent / "fixtures" / "fpl" / "bootstrap_rules_2026_27.json"
+    bootstrap = json.loads(rules_fixture.read_text(encoding="utf-8"))["payload"]
+    bootstrap.update(
+        teams=BOOTSTRAP["teams"], events=BOOTSTRAP["events"], elements=[_element(status="u")]
+    )
+    projections = tmp_path / "projections.json"
+    projections.write_text(json.dumps(PROJECTIONS), encoding="utf-8")
+    opening = tmp_path / "opening.json"
+    opening.write_text(
+        json.dumps({"picks": [{"code": 1001}], "budgetTenths": 1000, "spentTenths": 100}),
+        encoding="utf-8",
+    )
+
+    class StopBeforeSolving(RuntimeError):
+        pass
+
+    def capture_plan(**kwargs: Any) -> None:
+        assert [player.element_id for player in kwargs["opening_squad"]] == [11]
+        assert len(kwargs["forecasts"]) == 2
+        for forecast in kwargs["forecasts"]:
+            assert forecast.expected_points == forecast.expected_ceiling == 0
+            assert forecast.sell_price_tenths == 100
+            assert forecast.buy_price_tenths == 1001
+        raise StopBeforeSolving
+
+    with (
+        patch.object(
+            publish_season_plan, "_get_bytes", return_value=json.dumps(bootstrap).encode()
+        ),
+        patch.object(publish_season_plan, "_get", return_value=FIXTURES),
+        patch.object(publish_season_plan, "_now", return_value=PINNED_NOW),
+        patch.object(publish_season_plan, "recent_transfer_holds", return_value={}),
+        patch.object(publish_season_plan, "plan_season", side_effect=capture_plan),
+        pytest.raises(StopBeforeSolving),
+    ):
+        publish_season_plan.main(
+            [
+                "--projections",
+                str(projections),
+                "--opening-squad",
+                str(opening),
+                "--weekly-free-transfers",
+                "1",
+                "--transfer-cost-points",
+                "4",
+                "--rules-reference",
+                "https://fantasy.premierleague.com/help/rules",
+            ]
+        )
 
 
 def _run(
@@ -1162,12 +1214,29 @@ def test_a_season_with_nothing_left_to_play_refuses(tmp_path: Path) -> None:
     assert code == 1
 
 
-def test_the_pool_is_trimmed_and_says_so(tmp_path: Path) -> None:
+def test_the_pool_reports_its_largest_position(tmp_path: Path) -> None:
     payload = _run(tmp_path, [_element()])
 
-    assert payload["poolPerPosition"] == publish_season_inputs.POOL_PER_POSITION
+    assert payload["poolPerPosition"] == 1
     assert payload["schemaVersion"] == publish_season_inputs.SCHEMA_VERSION
     assert payload["recordSeason"] == "2025-26"
+
+
+def test_all_owned_candidates_survive_beyond_250_including_injured_players(tmp_path: Path) -> None:
+    elements = [
+        _element(id=index + 1, code=1001 + index, status="i" if index == 250 else "a")
+        for index in range(251)
+    ]
+    records = [{**PROJECTIONS["players"][0], "code": element["code"]} for element in elements]
+    with patch.dict(PROJECTIONS, {"players": records}):
+        payload = _run(tmp_path, elements)
+
+    assert len(payload["players"]) == 251
+    assert payload["poolPerPosition"] == 251
+    injured = next(player for player in payload["players"] if player["id"] == 251)
+    assert injured["availabilityStatus"] == "i"
+    assert injured["startRate"] == 0.0
+    assert injured["basePoints"] == 0.0
 
 
 def test_every_input_publishes_timestamped_content_provenance(tmp_path: Path) -> None:
@@ -1194,7 +1263,7 @@ def test_every_input_publishes_timestamped_content_provenance(tmp_path: Path) ->
     assert evidence["fixtureMarkets"]["level"] == "observed"
 
 
-def test_the_opening_squad_survives_the_trim(tmp_path: Path) -> None:
+def test_the_opening_squad_remains_in_the_full_pool(tmp_path: Path) -> None:
     """The browser solve starts from the published squad, so a cheap bench
     enabler who would never make a top-forty-by-points cut still has to be in
     the pool. Leaving him out started the solve with fourteen men."""
@@ -1244,7 +1313,6 @@ def test_the_opening_squad_survives_the_trim(tmp_path: Path) -> None:
     with (
         patch.object(publish_season_inputs, "_get", fake_get),
         patch.object(publish_season_inputs, "_now", lambda: PINNED_NOW),
-        patch.object(publish_season_inputs, "POOL_PER_POSITION", 1),
     ):
         assert (
             publish_season_inputs.main(

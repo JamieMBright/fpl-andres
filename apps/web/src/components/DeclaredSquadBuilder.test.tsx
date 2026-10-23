@@ -162,11 +162,16 @@ describe("DeclaredSquadBuilder", () => {
       "3",
     );
     await user.click(screen.getByText("Actual selling prices (optional)"));
+    expect(
+      screen.getByRole("spinbutton", {
+        name: `Selling price for ${squad[0]!.name} (£m)`,
+      }),
+    ).not.toHaveAttribute("max");
     await user.type(
       screen.getByRole("spinbutton", {
         name: `Selling price for ${squad[0]!.name} (£m)`,
       }),
-      "3.5",
+      "15.7",
     );
     await user.click(save);
     expect(onDeclared).toHaveBeenCalledOnce();
@@ -174,7 +179,7 @@ describe("DeclaredSquadBuilder", () => {
       version: 2,
       bankTenths: 17,
       availableFreeTransfers: 3,
-      sellingPrices: [{ elementId: squad[0]!.id, sellingPriceTenths: 35 }],
+      sellingPrices: [{ elementId: squad[0]!.id, sellingPriceTenths: 157 }],
     });
     expect(screen.queryByText(/of £100/)).toBeNull();
     expect(screen.getByText(/missing selling prices.*assumed/i)).toBeVisible();

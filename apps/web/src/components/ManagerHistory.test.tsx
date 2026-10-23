@@ -167,7 +167,7 @@ describe("ManagerHistory", () => {
     render(<ManagerHistory entryId={999_999} fetchApi={globalThis.fetch} />);
 
     expect(
-      await screen.findByText(/Retrying will not change it/i),
+      await screen.findByText(/refused this request.*may be temporary/i),
     ).toBeVisible();
   });
 });

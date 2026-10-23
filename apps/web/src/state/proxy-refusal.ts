@@ -72,7 +72,7 @@ export function refusalRecourse(reason: ProxyRefusalReason): string {
       return "That is a limit, not a verdict: it should clear on its own, so this is worth trying again shortly.";
     case "refused":
     case "challenged":
-      return "Retrying will not change it. FPL is turning away the machine this page is served from, not you — the same request works from a browser.";
+      return "FPL refused this request from the deployment. This may be temporary; try again shortly or enter your squad manually.";
     case "upstream_down":
       return "FPL's own API is not serving right now. Nothing here can fix that; it comes back when they do.";
     case "oversize":
