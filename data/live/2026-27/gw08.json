@@ -2,9 +2,9 @@
   "schemaVersion": 1,
   "season": "2026-27",
   "event": 8,
-  "capturedAt": "2026-10-24T18:46:44.197114Z",
+  "capturedAt": "2026-10-24T22:27:43.070444Z",
   "source": "https://fantasy.premierleague.com/api/event/8/live/",
-  "sourceHash": "sha256:f347e5019d2a873fd0220b55e071110665fccc67982a1e0cf51ff8380b25ce1a",
+  "sourceHash": "sha256:5cf6014004b300d28908e089ac28ec8a50de85e5cf4bde9e27b227a4ca66c89a",
   "roundComplete": false,
   "elements": [
     {
@@ -32803,6 +32803,54 @@
       "explain": [
         {
           "fixture": 80,
+          "stats": [
+            {
+              "identifier": "minutes",
+              "points": 0,
+              "value": 0,
+              "points_modification": 0
+            }
+          ]
+        }
+      ],
+      "modified": false
+    },
+    {
+      "id": 669,
+      "stats": {
+        "minutes": 0,
+        "goals_scored": 0,
+        "assists": 0,
+        "clean_sheets": 0,
+        "goals_conceded": 0,
+        "own_goals": 0,
+        "penalties_saved": 0,
+        "penalties_missed": 0,
+        "yellow_cards": 0,
+        "red_cards": 0,
+        "saves": 0,
+        "bonus": 0,
+        "bps": 0,
+        "influence": "0.0",
+        "creativity": "0.0",
+        "threat": "0.0",
+        "ict_index": "0.0",
+        "clearances_blocks_interceptions": 0,
+        "recoveries": 0,
+        "tackles": 0,
+        "defensive_contribution": 0,
+        "starts": 0,
+        "expected_goals": "0.00",
+        "expected_assists": "0.00",
+        "expected_goal_involvements": "0.00",
+        "expected_goals_conceded": "0.00",
+        "total_points": 0,
+        "in_dreamteam": false,
+        "played": false
+      },
+      "explain": [
+        {
+          "fixture": 73,
           "stats": [
             {
               "identifier": "minutes",
