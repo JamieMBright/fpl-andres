@@ -223,12 +223,14 @@ def test_an_exact_count_uses_head_and_reads_content_range() -> None:
     recorder = Recorder(status=200, headers={"Content-Range": "0-24/357"})
 
     count = _client(recorder).count(
-        "analysis_requests",
-        filters={"requested_at": "lt.2026-07-01T00:00:00Z"},
+        "public_team_snapshots",
+        filters={"captured_at": "lt.2026-07-01T00:00:00Z"},
     )
 
     assert recorder.only.method == "HEAD"
     assert recorder.only.headers["Prefer"] == "count=exact"
+    assert recorder.only.url.params["select"] == "*"
+    assert recorder.only.url.params["captured_at"] == "lt.2026-07-01T00:00:00Z"
     assert count == 357
 
 

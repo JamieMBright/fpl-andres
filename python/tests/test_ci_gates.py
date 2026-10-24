@@ -45,6 +45,41 @@ def _triggers(workflow: dict[str, object]) -> object:
     return workflow.get("on", workflow.get(True))  # type: ignore[call-overload]
 
 
+class TestDependencySecurity:
+    def test_every_python_install_bootstraps_patched_tools_and_constraints(self) -> None:
+        installs = []
+        for path in sorted((REPO_ROOT / ".github" / "workflows").glob("*.yml")):
+            document = yaml.safe_load(path.read_text(encoding="utf-8"))
+            for job in document.get("jobs", {}).values():
+                for step in job.get("steps", []):
+                    run = str(step.get("run", ""))
+                    if "python -m pip install" not in run or "-e " not in run:
+                        continue
+                    installs.append(path.name)
+                    assert "python -m pip install --upgrade pip" in run, path.name
+                    assert "-c constraints-security.txt" in run, path.name
+                    assert run.index("--upgrade pip") < run.index("-e "), path.name
+        assert installs
+
+    def test_security_scans_cover_python_and_development_dependencies(self) -> None:
+        document = yaml.safe_load(
+            (REPO_ROOT / ".github" / "workflows" / "dependency-review.yml").read_text(
+                encoding="utf-8"
+            )
+        )
+        triggers = _triggers(document)
+        assert {"push", "pull_request", "schedule"} <= set(triggers)
+        commands = "\n".join(
+            str(step.get("run", ""))
+            for job in document["jobs"].values()
+            for step in job.get("steps", [])
+        )
+        assert "pnpm audit --audit-level" in commands
+        assert "pnpm audit --prod" not in commands
+        assert "python -m pip_audit" in commands
+        assert "python -m pip check" in commands
+
+
 class TestHistoricalArtifactGate:
     def test_validation_checkout_preserves_recorded_revisions(
         self, workflow: dict[str, object]

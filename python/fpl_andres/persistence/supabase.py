@@ -331,7 +331,7 @@ class SupabaseRestClient:
         response = self._send(
             lambda: self._client.head(
                 f"/{table}",
-                params={"select": "id", **dict(filters)},
+                params={"select": "*", **dict(filters)},
                 headers={"Prefer": "count=exact"},
             )
         )

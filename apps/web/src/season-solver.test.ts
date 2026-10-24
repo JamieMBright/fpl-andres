@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import openingSquad from "./data/opening-squad.json";
 import inputs from "./data/season-inputs.json";
@@ -198,27 +198,69 @@ describe("solveSeason", () => {
 
   it(
     "uses the free transfer on a ruled-out incumbent",
-    () => {
+    async () => {
       const start = openingStart();
-      const osula = SEASON_PLAYERS.find((player) => player.name === "Osula");
-      const forwardIndex = start.squad.findIndex(
-        ({ elementId }) =>
-          SEASON_PLAYERS.find((player) => player.id === elementId)?.position ===
-          "FWD",
-      );
-      expect(osula).toBeDefined();
-      expect(forwardIndex).toBeGreaterThanOrEqual(0);
-      start.squad[forwardIndex] = {
-        elementId: osula!.id,
-        sellingPriceTenths: osula!.priceTenths,
+      const heldIds = new Set(start.squad.map((held) => held.elementId));
+      const players = SEASON_PLAYERS.filter((player) =>
+        heldIds.has(player.id),
+      ).map((player) => ({
+        ...player,
+        priceTenths: 50,
+        basePoints: player.position === "FWD" ? 10 : 2,
+        routes: { appearance: 2, attacking: player.position === "FWD" ? 8 : 0 },
+        startRate: 1,
+        availabilityStatus: "a",
+        chanceOfPlaying: 100,
+        recentClubChange: undefined,
+      }));
+      const injured = players.find((player) => player.position === "FWD")!;
+      const replacement = {
+        ...injured,
+        id: Math.max(...SEASON_PLAYERS.map((player) => player.id)) + 1,
+        code: Math.max(...SEASON_PLAYERS.map((player) => player.code)) + 1,
+        basePoints: 5,
+        routes: { appearance: 2, attacking: 3 },
       };
-      const opener = solveSeason(start).next().value;
+      Object.assign(injured, {
+        basePoints: 0,
+        routes: { appearance: 0, attacking: 0 },
+        startRate: 0,
+        availabilityStatus: "i",
+        chanceOfPlaying: 0,
+      });
+      start.squad = start.squad.map((held) => ({
+        ...held,
+        sellingPriceTenths: 50,
+      }));
+      vi.resetModules();
+      vi.doMock("./data/season-inputs.json", () => ({
+        default: {
+          ...inputs,
+          events: [start.fromEvent],
+          players: [...players, replacement],
+          bonusOverrides: {},
+          marketCarry: { ...inputs.marketCarry, players: {} },
+          opponents: Object.fromEntries(
+            Object.keys(inputs.opponents).map((club) => [club, [["TEST (H)"]]]),
+          ),
+        },
+      }));
+      try {
+        const solver = await import("./state/season-solver");
+        const opener = solver.solveSeason(start).next().value;
 
-      expect(opener).toBeDefined();
-      expect(opener?.transfersOut).toContainEqual(
-        expect.objectContaining({ availabilityStatus: "i" }),
-      );
-      expect(opener?.paidTransfers).toBe(0);
+        expect(opener).toBeDefined();
+        expect(opener?.transfersOut).toContainEqual(
+          expect.objectContaining({ id: injured.id, availabilityStatus: "i" }),
+        );
+        expect(opener?.transfersIn).toContainEqual(
+          expect.objectContaining({ id: replacement.id }),
+        );
+        expect(opener?.paidTransfers).toBe(0);
+      } finally {
+        vi.doUnmock("./data/season-inputs.json");
+        vi.resetModules();
+      }
     },
     SOLVE_TIMEOUT,
   );

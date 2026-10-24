@@ -8,7 +8,7 @@
       "event": 1,
       "modelVersion": "8.6",
       "evidence": {
-        "frozenRevision": "20d43acd502730f7281d196f0584bb8c610965a7",
+        "frozenRevision": "916de48afecfa174c58d759c3de4a5262dad140c",
         "frozenAt": "2026-08-21T09:44:27+00:00",
         "liveSourceHash": "sha256:0974be7e805ad6b65b3345bee327fee541c4e445837b2871473ed9ba1d794d87",
         "liveCapturedAt": "2026-08-26T16:26:47.030564Z",
@@ -1796,7 +1796,7 @@
       "event": 2,
       "modelVersion": "8.7",
       "evidence": {
-        "frozenRevision": "8c9d2ae9064d49e3dae7407045c876e38d7ff654",
+        "frozenRevision": "4baa4cdad3b1d0b1b7c8dc34f2554cd4462d5bc3",
         "frozenAt": "2026-08-26T11:32:31+00:00",
         "liveSourceHash": "sha256:2bc0e5b3ca2035f0f0cce42a4c77d699d6c316bc290342cddf562b1a317f5715",
         "liveCapturedAt": "2026-09-01T13:29:35.304013Z",
@@ -3560,7 +3560,7 @@
       "event": 3,
       "modelVersion": "8.16",
       "evidence": {
-        "frozenRevision": "aece812064f1484eef6bfba92bdda6c1e88ec191",
+        "frozenRevision": "4ae7f8559559178f999ce7db4c8c03f07b0115ed",
         "frozenAt": "2026-09-02T06:03:57+00:00",
         "liveSourceHash": "sha256:c33c2af4674b0a9d4276b412a441ebae8b87e01a3d093cd113446e7ef6a02482",
         "liveCapturedAt": "2026-09-07T12:27:03.899184Z",
@@ -5143,7 +5143,7 @@
       "event": 4,
       "modelVersion": "8.17",
       "evidence": {
-        "frozenRevision": "40bfb38f316b70450f8b38a44b4f5fadbe424635",
+        "frozenRevision": "b1bc299d47887745c891c5a1d73b3cff56c10607",
         "frozenAt": "2026-09-07T15:29:52+00:00",
         "liveSourceHash": "sha256:a4ebf3dac44cb598e6f62a1dd5333e3d5ce7206303dbda62f513830ae7cfd095",
         "liveCapturedAt": "2026-09-15T11:40:57.340982Z",
@@ -6726,7 +6726,7 @@
       "event": 5,
       "modelVersion": "8.19",
       "evidence": {
-        "frozenRevision": "cc37c0ab4bd5d3f74a9b9154c61717af7419d70f",
+        "frozenRevision": "c358eb8097ce6f25d1cc02ea513903ea5b6d574b",
         "frozenAt": "2026-09-15T14:56:52+00:00",
         "liveSourceHash": "sha256:aeee6dd5b56567b04ef9b4e5b9828ee4d81e094803dc0e6553cd3b394178c6dd",
         "liveCapturedAt": "2026-09-21T12:43:48.782285Z",
@@ -8321,7 +8321,7 @@
       "event": 6,
       "modelVersion": "8.19",
       "evidence": {
-        "frozenRevision": "d89807159124f62ba63445ff663b14b28559ba85",
+        "frozenRevision": "bb49eec62c21b2f0a6db5f980d6dabe753285162",
         "frozenAt": "2026-09-21T14:49:34+00:00",
         "liveSourceHash": "sha256:0793d3cb442bb7dd3e1043d001e9801bbea5a3057bdf03c8b0f03dec8cea9661",
         "liveCapturedAt": "2026-10-13T15:55:46.246837Z",
@@ -8331,9 +8331,9 @@
       "field": "probabilitySixtyMinutesAsShipped",
       "population": {
         "count": 619,
-        "brier": 0.108268,
-        "logLoss": 0.420147,
-        "meanForecast": 0.344582,
+        "brier": 0.108218,
+        "logLoss": 0.420548,
+        "meanForecast": 0.342622,
         "actualStartRate": 0.353796
       },
       "topEleven": {
@@ -8345,9 +8345,9 @@
         {
           "club": "ARS",
           "count": 29,
-          "brier": 0.083884,
-          "logLoss": 0.383489,
-          "meanForecast": 0.377241,
+          "brier": 0.083862,
+          "logLoss": 0.382926,
+          "meanForecast": 0.37669,
           "actualStartRate": 0.37931,
           "topElevenHits": 10,
           "actualStarters": 11,
@@ -8419,9 +8419,9 @@
         {
           "club": "AVL",
           "count": 36,
-          "brier": 0.103252,
-          "logLoss": 0.27818,
-          "meanForecast": 0.272028,
+          "brier": 0.10326,
+          "logLoss": 0.277505,
+          "meanForecast": 0.271222,
           "actualStartRate": 0.305556,
           "topElevenHits": 8,
           "actualStarters": 11,
@@ -8490,7 +8490,7 @@
             },
             {
               "elementId": 53,
-              "probability": 0.232
+              "probability": 0.231
             },
             {
               "elementId": 54,
@@ -8501,9 +8501,9 @@
         {
           "club": "BHA",
           "count": 37,
-          "brier": 0.060866,
-          "logLoss": 0.17509,
-          "meanForecast": 0.291703,
+          "brier": 0.061528,
+          "logLoss": 0.17514,
+          "meanForecast": 0.289486,
           "actualStartRate": 0.297297,
           "topElevenHits": 9,
           "actualStarters": 11,
@@ -8572,16 +8572,16 @@
             },
             {
               "elementId": 639,
-              "probability": 0.354
+              "probability": 0.332
             }
           ]
         },
         {
           "club": "BOU",
           "count": 29,
-          "brier": 0.102081,
-          "logLoss": 0.473405,
-          "meanForecast": 0.357138,
+          "brier": 0.102039,
+          "logLoss": 0.472417,
+          "meanForecast": 0.356172,
           "actualStartRate": 0.37931,
           "topElevenHits": 9,
           "actualStarters": 11,
@@ -8657,9 +8657,9 @@
         {
           "club": "BRE",
           "count": 29,
-          "brier": 0.105388,
-          "logLoss": 0.321882,
-          "meanForecast": 0.359103,
+          "brier": 0.105256,
+          "logLoss": 0.320227,
+          "meanForecast": 0.357517,
           "actualStartRate": 0.37931,
           "topElevenHits": 9,
           "actualStarters": 11,
@@ -8735,9 +8735,9 @@
         {
           "club": "CHE",
           "count": 34,
-          "brier": 0.162307,
-          "logLoss": 0.77199,
-          "meanForecast": 0.323059,
+          "brier": 0.161823,
+          "logLoss": 0.769268,
+          "meanForecast": 0.320618,
           "actualStartRate": 0.323529,
           "topElevenHits": 7,
           "actualStarters": 11,
@@ -8821,9 +8821,9 @@
         {
           "club": "COV",
           "count": 37,
-          "brier": 0.080186,
-          "logLoss": 0.323741,
-          "meanForecast": 0.273378,
+          "brier": 0.080419,
+          "logLoss": 0.323117,
+          "meanForecast": 0.271838,
           "actualStartRate": 0.297297,
           "topElevenHits": 9,
           "actualStarters": 11,
@@ -8870,13 +8870,13 @@
               "started": true
             },
             {
-              "elementId": 575,
-              "probability": 0.6,
+              "elementId": 91,
+              "probability": 0.594,
               "started": true
             },
             {
-              "elementId": 91,
-              "probability": 0.594,
+              "elementId": 575,
+              "probability": 0.587,
               "started": true
             },
             {
@@ -8899,9 +8899,9 @@
         {
           "club": "CRY",
           "count": 35,
-          "brier": 0.067037,
-          "logLoss": 0.281734,
-          "meanForecast": 0.288914,
+          "brier": 0.06703,
+          "logLoss": 0.281102,
+          "meanForecast": 0.287086,
           "actualStartRate": 0.314286,
           "topElevenHits": 9,
           "actualStarters": 11,
@@ -8929,7 +8929,7 @@
             },
             {
               "elementId": 644,
-              "probability": 0.969,
+              "probability": 0.948,
               "started": true
             },
             {
@@ -8977,9 +8977,9 @@
         {
           "club": "EVE",
           "count": 23,
-          "brier": 0.157905,
-          "logLoss": 0.652266,
-          "meanForecast": 0.447435,
+          "brier": 0.1576,
+          "logLoss": 0.650558,
+          "meanForecast": 0.445913,
           "actualStartRate": 0.478261,
           "topElevenHits": 9,
           "actualStarters": 11,
@@ -9055,9 +9055,9 @@
         {
           "club": "FUL",
           "count": 27,
-          "brier": 0.179024,
-          "logLoss": 0.920689,
-          "meanForecast": 0.421926,
+          "brier": 0.178858,
+          "logLoss": 0.9179,
+          "meanForecast": 0.419222,
           "actualStartRate": 0.407407,
           "topElevenHits": 9,
           "actualStarters": 11,
@@ -9133,9 +9133,9 @@
         {
           "club": "HUL",
           "count": 37,
-          "brier": 0.086622,
-          "logLoss": 0.306818,
-          "meanForecast": 0.303405,
+          "brier": 0.087369,
+          "logLoss": 0.3222,
+          "meanForecast": 0.299811,
           "actualStartRate": 0.297297,
           "topElevenHits": 9,
           "actualStarters": 11,
@@ -9193,14 +9193,14 @@
             },
             {
               "elementId": 289,
-              "probability": 0.6,
+              "probability": 0.587,
               "started": true
             }
           ],
           "missedStarters": [
             {
               "elementId": 340,
-              "probability": 0.029
+              "probability": 0.015
             },
             {
               "elementId": 642,
@@ -9211,9 +9211,9 @@
         {
           "club": "IPS",
           "count": 30,
-          "brier": 0.1829,
-          "logLoss": 0.600796,
-          "meanForecast": 0.3464,
+          "brier": 0.181744,
+          "logLoss": 0.597387,
+          "meanForecast": 0.343967,
           "actualStartRate": 0.366667,
           "topElevenHits": 7,
           "actualStarters": 11,
@@ -9261,7 +9261,7 @@
             },
             {
               "elementId": 619,
-              "probability": 0.741,
+              "probability": 0.725,
               "started": false
             },
             {
@@ -9271,7 +9271,7 @@
             },
             {
               "elementId": 313,
-              "probability": 0.423,
+              "probability": 0.422,
               "started": false
             }
           ],
@@ -9286,7 +9286,7 @@
             },
             {
               "elementId": 318,
-              "probability": 0.042
+              "probability": 0.041
             },
             {
               "elementId": 571,
@@ -9297,9 +9297,9 @@
         {
           "club": "LEE",
           "count": 28,
-          "brier": 0.030171,
-          "logLoss": 0.107909,
-          "meanForecast": 0.374679,
+          "brier": 0.030096,
+          "logLoss": 0.10662,
+          "meanForecast": 0.373429,
           "actualStartRate": 0.392857,
           "topElevenHits": 11,
           "actualStarters": 11,
@@ -9366,9 +9366,9 @@
         {
           "club": "LIV",
           "count": 32,
-          "brier": 0.150635,
-          "logLoss": 0.605499,
-          "meanForecast": 0.355594,
+          "brier": 0.151433,
+          "logLoss": 0.624758,
+          "meanForecast": 0.353844,
           "actualStartRate": 0.34375,
           "topElevenHits": 8,
           "actualStarters": 11,
@@ -9437,7 +9437,7 @@
             },
             {
               "elementId": 381,
-              "probability": 0.029
+              "probability": 0.015
             },
             {
               "elementId": 371,
@@ -9448,9 +9448,9 @@
         {
           "club": "MCI",
           "count": 26,
-          "brier": 0.091011,
-          "logLoss": 0.346211,
-          "meanForecast": 0.422769,
+          "brier": 0.090805,
+          "logLoss": 0.342681,
+          "meanForecast": 0.419346,
           "actualStartRate": 0.423077,
           "topElevenHits": 9,
           "actualStarters": 11,
@@ -9526,9 +9526,9 @@
         {
           "club": "MUN",
           "count": 30,
-          "brier": 0.088947,
-          "logLoss": 0.36854,
-          "meanForecast": 0.370067,
+          "brier": 0.088865,
+          "logLoss": 0.366631,
+          "meanForecast": 0.3682,
           "actualStartRate": 0.333333,
           "topElevenHits": 9,
           "actualStarters": 10,
@@ -9600,9 +9600,9 @@
         {
           "club": "NEW",
           "count": 31,
-          "brier": 0.034673,
-          "logLoss": 0.117046,
-          "meanForecast": 0.325387,
+          "brier": 0.033528,
+          "logLoss": 0.110386,
+          "meanForecast": 0.319452,
           "actualStartRate": 0.354839,
           "topElevenHits": 10,
           "actualStarters": 11,
@@ -9660,7 +9660,7 @@
             },
             {
               "elementId": 462,
-              "probability": 0.409,
+              "probability": 0.396,
               "started": false
             }
           ],
@@ -9674,9 +9674,9 @@
         {
           "club": "NFO",
           "count": 28,
-          "brier": 0.055791,
-          "logLoss": 0.169418,
-          "meanForecast": 0.378,
+          "brier": 0.05579,
+          "logLoss": 0.169382,
+          "meanForecast": 0.377964,
           "actualStartRate": 0.392857,
           "topElevenHits": 10,
           "actualStarters": 11,
@@ -9748,9 +9748,9 @@
         {
           "club": "SUN",
           "count": 27,
-          "brier": 0.137347,
-          "logLoss": 0.682929,
-          "meanForecast": 0.412037,
+          "brier": 0.137287,
+          "logLoss": 0.68175,
+          "meanForecast": 0.410889,
           "actualStartRate": 0.407407,
           "topElevenHits": 9,
           "actualStarters": 11,
@@ -9826,9 +9826,9 @@
         {
           "club": "TOT",
           "count": 34,
-          "brier": 0.222509,
-          "logLoss": 0.670702,
-          "meanForecast": 0.3155,
+          "brier": 0.222454,
+          "logLoss": 0.669439,
+          "meanForecast": 0.314265,
           "actualStartRate": 0.323529,
           "topElevenHits": 5,
           "actualStarters": 11,

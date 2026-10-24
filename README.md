@@ -60,7 +60,8 @@ GitHub Actions -> Python projections + optimizer -> Supabase -> Resend
 
 ```powershell
 corepack pnpm install
-python -m pip install -e ".[dev]"
+python -m pip install --upgrade pip setuptools wheel -c constraints-security.txt
+python -m pip install -c constraints-security.txt -e ".[dev]"
 corepack pnpm dev          # the web app
 corepack pnpm fast         # the iteration loop, ~70s
 corepack pnpm check        # the full gate; run before pushing a milestone
@@ -73,7 +74,7 @@ cost more than the other seventy-three put together, and none of them is what
 breaks while you are moving markup around. `check` runs them, so does CI, and
 nothing reaches origin without them.
 
-Prerequisites: Node 20.19+, Python 3.12+, Docker Desktop for the local
+Prerequisites: Node 24.22.1 (24.x), pnpm 10.34.8 via Corepack, Python 3.12+, Docker Desktop for the local
 database. No global pnpm or Supabase install is needed.
 
 Conventions that bite:

@@ -11,6 +11,7 @@ from pathlib import Path
 
 import pytest
 
+from fpl_andres.cohorts.elite import EliteSettings, ManagerSeason, SweptManager, rank_elite
 from fpl_andres.jsonio import read_json_file
 
 ARTIFACT = Path(__file__).resolve().parents[2] / "data" / "cohort" / "fpl500.json"
@@ -63,15 +64,32 @@ def test_the_field_size_estimate_is_published_for_every_season_used(
         assert field[season] > 0
 
 
-def test_the_field_grew_over_time_which_is_why_percentile_is_used(
+def test_published_percentiles_and_scores_stay_in_their_population_bounds(
     fpl500: dict[str, object],
 ) -> None:
-    field = fpl500["estimatedEntriesBySeason"]
-    oldest = min(field)
-    newest = max(field)
-    # If this ever stops holding, ranking on raw rank would become defensible
-    # and the percentile machinery would be unnecessary complexity.
-    assert field[newest] > field[oldest] * 2
+    for manager in fpl500["managers"]:
+        assert 0 <= manager["score"] <= 1, manager
+        assert 0 <= manager["latestPercentile"] <= manager["bestPercentile"] <= 1, manager
+
+
+def test_equal_relative_finishes_score_equally_in_different_sized_fields() -> None:
+    managers = [
+        SweptManager(1, (ManagerSeason("2024/25", points=2000, rank=101),)),
+        SweptManager(2, (ManagerSeason("2025/26", points=2000, rank=1001),)),
+    ]
+    scores = rank_elite(
+        managers,
+        entries={"2024/25": 1001, "2025/26": 10001},
+        settings=EliteSettings(
+            decay_per_season=1,
+            pre_rules_change_weight=1,
+            shrinkage_weight=0,
+            minimum_seasons=1,
+        ),
+    )
+
+    assert len(scores) == 2
+    assert [row.score for row in scores] == pytest.approx([0.9, 0.9])
 
 
 def test_the_settings_that_produced_it_travel_with_it(

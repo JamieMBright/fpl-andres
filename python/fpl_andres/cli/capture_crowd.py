@@ -277,6 +277,9 @@ def _record_snapshot(client: SupabaseRestClient, snapshot: Any) -> str:
                 "fetched_at": snapshot.fetched_at.isoformat(),
                 "data_available_at": snapshot.data_available_at.isoformat(),
                 "content_hash": snapshot.content_hash,
+                "storage_path": (
+                    f"{snapshot.source}/{snapshot.content_hash.removeprefix('sha256:')}"
+                ),
                 "upstream_reference": snapshot.upstream_reference,
             }
         ],

@@ -98,6 +98,22 @@ Stated so a reporter can tell a design decision from an oversight:
   never enter browser code or responses. Submitted addresses and messages are
   not logged or stored in Supabase.
 
+## Dependency checks
+
+Pushes changing dependencies, pull requests and a daily scheduled job audit the
+complete JavaScript graph, including development tools, and separate Python
+development and optional scraping environments. Python jobs upgrade pip and
+build tools before installing with `constraints-security.txt`; these minimums
+exclude known vulnerable releases without adding unused packages to the app.
+The editable local project is excluded from the advisory lookup, not its dependencies.
+
+The Vercel development SDK still pins Undici 5, so a parent-scoped override
+selects the patched Undici 6 line. Remaining transitive overrides pin patched
+AJV, brace-expansion and source-map-js releases. They are checked by the full
+audit and repository gates. The accessibility plugin's peer allowance is
+limited to its existing ESLint 10 pairing and validated by the full lint run;
+peer checks remain enabled for every other dependency.
+
 ## Secret rotation
 
 Rotate `SUPABASE_SECRET_KEY`, the Resend API key and workflow tokens at the
@@ -123,7 +139,7 @@ it can — that the stated reason still holds.
 
 |           |                                                                  |
 | --------- | ---------------------------------------------------------------- |
-| Package   | `react-router` (via `react-router-dom` 7.18.2)                   |
+| Package   | `react-router` (via `react-router-dom` 7.18.4)                   |
 | Title     | RSC Mode CSRF Bypass Allows Action Execution Before 400 Response |
 | Severity  | High, CVSS 7.1                                                   |
 | Affected  | `>= 7.12.0, < 8.3.0`                                             |

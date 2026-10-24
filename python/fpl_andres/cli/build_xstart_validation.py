@@ -55,10 +55,10 @@ def _score_pair(
     live = read_json_file(live_path)
     if not isinstance(correction, Mapping) or not isinstance(live, Mapping):
         raise ValueError("xStart validation inputs must be JSON objects")
-    revision = correction.get("recordedCodeRevision")
+    revision = correction.get("canonicalArtifactRevision")
     model_version = correction.get("canonicalModelVersion")
     if not isinstance(revision, str) or not isinstance(model_version, str):
-        raise ValueError("the correction must name its recorded code and model revisions")
+        raise ValueError("the correction must name its frozen artifact and model revisions")
     captured_at = live.get("capturedAt")
     if not isinstance(captured_at, str):
         raise ValueError("the settled live snapshot must name its capture time")

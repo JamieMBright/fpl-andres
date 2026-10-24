@@ -3,9 +3,9 @@
   "version": "0.5.1",
   "private": true,
   "type": "module",
-  "packageManager": "pnpm@9.15.9",
+  "packageManager": "pnpm@10.34.8",
   "engines": {
-    "node": ">=20.19.0"
+    "node": "24.x"
   },
   "scripts": {
     "build": "corepack pnpm -r --if-present build",
@@ -28,7 +28,7 @@
   },
   "dependencies": {
     "@fpl-andres/contracts": "workspace:*",
-    "zod": "4.4.3"
+    "zod": "4.6.7"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
@@ -38,12 +38,27 @@
     "eslint-plugin-jsx-a11y": "6.10.2",
     "eslint-plugin-react-hooks": "7.1.1",
     "globals": "17.11.0",
-    "prettier": "3.9.6",
+    "prettier": "3.9.10",
     "supabase": "2.115.0",
     "typescript": "6.0.3",
     "typescript-eslint": "8.67.0"
   },
   "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ],
+    "peerDependencyRules": {
+      "allowedVersions": {
+        "eslint-plugin-jsx-a11y>eslint": "10"
+      }
+    },
+    "overrides": {
+      "@vercel/node>undici": "6.29.1",
+      "ajv@8": "8.18.0",
+      "brace-expansion@1": "1.1.21",
+      "brace-expansion@5": "5.0.12",
+      "source-map-js@1": "1.2.2"
+    },
     "auditConfig": {
       "ignoreGhsas": [
         "GHSA-qwww-vcr4-c8h2"

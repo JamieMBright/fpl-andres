@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 
 import pytest
 
@@ -124,6 +124,65 @@ def test_more_projected_goals_raise_expected_bps_by_the_official_weight() -> Non
     assert high.expected_bps - low.expected_bps == pytest.approx(0.4 * 12.0)
 
 
+def test_prior_appearances_prevent_two_current_scores_claiming_false_precision() -> None:
+    current = [_row(gameweek=1, bps=29), _row(gameweek=2, bps=31)]
+    prior = [
+        _row(gameweek=36, bps=10),
+        _row(gameweek=37, bps=20),
+        _row(gameweek=38, bps=30),
+    ]
+
+    thin = project_player_bps(
+        current,
+        position=3,
+        minutes=_minutes(),
+        rates=_rates(0.1),
+        breakdown=_breakdown(),
+    )
+    carried = project_player_bps(
+        current,
+        position=3,
+        minutes=_minutes(),
+        rates=_rates(0.1),
+        breakdown=_breakdown(),
+        prior_rows=prior,
+    )
+
+    assert thin is not None and carried is not None
+    assert thin.bps_deviation == pytest.approx(1.0)
+    assert carried.bps_deviation == pytest.approx(64.4**0.5)
+    assert carried.expected_bps == thin.expected_bps
+
+
+@pytest.mark.parametrize(
+    ("current", "prior", "spread"),
+    [
+        ([_row(bps=29), _row(bps=31)], [], 1.0),
+        ([_row(bps=29), _row(bps=31)], [_row(minutes=0, bps=1000)], 1.0),
+        (
+            [_row(bps=29), _row(bps=31)],
+            [_row(kickoff_time=AT + timedelta(days=1), bps=1000)],
+            1.0,
+        ),
+        ([_row(bps=29)], [_row(bps=10)], 9.5),
+    ],
+)
+def test_bonus_spread_uses_only_available_appearances(
+    current: list[ElementRow], prior: list[ElementRow], spread: float
+) -> None:
+    result = project_player_bps(
+        current,
+        position=3,
+        minutes=_minutes(),
+        rates=_rates(0.1),
+        breakdown=_breakdown(),
+        prior_rows=prior,
+    )
+
+    assert result is not None
+    assert result.bps_deviation == pytest.approx(spread)
+
+
 def test_no_appearances_produce_no_bps_claim() -> None:
     assert (
         project_player_bps(
@@ -132,6 +191,7 @@ def test_no_appearances_produce_no_bps_claim() -> None:
             minutes=_minutes(),
             rates=_rates(0.2),
             breakdown=_breakdown(),
+            prior_rows=[_row(bps=20)],
         )
         is None
     )

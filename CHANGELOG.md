@@ -8,6 +8,14 @@ The project follows Semantic Versioning once milestone tags begin.
 
 ### Added
 
+- Security checks now audit Python development and optional scraping installs,
+  plus the complete JavaScript graph, on dependency pushes and daily schedules.
+  Node 24, pnpm 10 and patched pip bootstrap all jobs; shared Python floors and
+  scoped JavaScript overrides exclude known vulnerable dependencies.
+- Model 8.21 carries only pre-cutoff BPS appearances into bonus uncertainty,
+  without changing the current-season mean. Crowd snapshot paths, composite-key
+  retention counts and frozen xStart artifact revisions now follow their source
+  contracts; FPL500 tests no longer assume a field-growth rate.
 - Model 8.19 folds settled current-season scoring routes into browser solver
   inputs, so after a player has played the historical role prior yields to the
   observed campaign. Player profiles now show the complete latest four

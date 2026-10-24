@@ -2,11 +2,34 @@
 
 from __future__ import annotations
 
+from datetime import UTC, datetime
+from types import SimpleNamespace
 from typing import Any
+from unittest.mock import Mock
 
-from fpl_andres.cli.capture_crowd import _current_event, _rows, season_from
+from fpl_andres.cli.capture_crowd import _current_event, _record_snapshot, _rows, season_from
 
 SNAPSHOT_ID = "00000000-0000-0000-0000-000000000001"
+
+
+def test_snapshot_storage_path_matches_its_source_and_content_hash() -> None:
+    client = Mock()
+    client.insert.return_value = [{"id": SNAPSHOT_ID}]
+    captured = datetime(2026, 10, 24, tzinfo=UTC)
+    snapshot = SimpleNamespace(
+        source="fpl",
+        fetched_at=captured,
+        data_available_at=captured,
+        content_hash=f"sha256:{'a' * 64}",
+        upstream_reference="https://fantasy.premierleague.com/api/bootstrap-static/",
+    )
+
+    assert _record_snapshot(client, snapshot) == SNAPSHOT_ID
+    table, rows = client.insert.call_args.args
+    assert table == "source_snapshots"
+    assert rows[0]["storage_path"] == f"fpl/{'a' * 64}"
+    assert rows[0]["content_hash"] == snapshot.content_hash
+    assert rows[0]["data_available_at"] == captured.isoformat()
 
 
 def bootstrap(

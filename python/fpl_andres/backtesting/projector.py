@@ -412,6 +412,7 @@ def project_next_match(
             minutes=minutes,
             rates=rates,
             breakdown=breakdown,
+            prior_rows=prior_rows,
         )
         shape = describe_shape(rows)
         expected = breakdown.total * ban.multiplier

@@ -7,6 +7,7 @@ from pathlib import Path
 
 import pytest
 
+from fpl_andres.cli.build_xstart_validation import _score_pair
 from fpl_andres.jsonio import read_json_file
 from fpl_andres.xstart_validation import evaluate_xstart
 
@@ -54,6 +55,22 @@ def test_frozen_shipped_xstart_matches_the_scoring_reference() -> None:
     }
     assert leeds["missedStarters"] == [{"elementId": 385, "probability": 0.106}]
     assert "reliability" not in result
+
+
+def test_publisher_scores_the_frozen_artifact_revision_not_the_code_parent() -> None:
+    correction = ROOT / "data" / "prospective" / "gw1-2026-27-corrected.json"
+    result = _score_pair(
+        correction,
+        ROOT / "data" / "live" / "2026-27" / "gw01.json",
+        allow_partial=False,
+    )
+
+    assert (
+        result["evidence"]["frozenRevision"]
+        == read_json_file(correction)["canonicalArtifactRevision"]
+    )
+    assert result["event"] == 1
+    assert result["population"]["count"] > 0
 
 
 def test_top_eleven_scoring_refuses_an_incomplete_club_pool() -> None:

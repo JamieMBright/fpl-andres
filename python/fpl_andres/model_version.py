@@ -29,6 +29,11 @@ from __future__ import annotations
 
 __all__ = ["MODEL_VERSION"]
 
+#: 8.21 completes carried prior-season BPS spread estimation and bounds every
+#: contributing appearance by the supplied projection evidence timestamps.
+#: Expected BPS retains its current-season mean; only the observed spread pools
+#: seasons, so a thin current record does not imply near-certain bonus placement.
+#:
 #: 8.19 blends settled current-season scoring routes into the browser inputs.
 #: Expected BPS remains responsive to the current campaign, but its deviation
 #: includes carried prior-season appearances; two similar BPS scores can no
@@ -468,4 +473,4 @@ __all__ = ["MODEL_VERSION"]
 #: projection and resampled, so a gap that does not clear zero is reported as
 #: not clearing zero. No projection changed; what changed is what may be
 #: claimed from it.
-MODEL_VERSION = "8.20"
+MODEL_VERSION = "8.21"

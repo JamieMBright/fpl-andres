@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import math
 from collections.abc import Sequence
+from dataclasses import replace
+from statistics import pstdev
 
 from fpl_andres.backtesting.corpus import ElementRow
 from fpl_andres.backtesting.scoring import (
@@ -54,6 +56,7 @@ def project_player_bps(
     minutes: MinutesProjection,
     rates: PlayerRateProjection,
     breakdown: PointsBreakdown,
+    prior_rows: Sequence[ElementRow] = (),
 ) -> BpsProjection | None:
     """Expected BPS for a neutral next match, with unavailable actions carried.
 
@@ -63,7 +66,8 @@ def project_player_bps(
     and similar -- survive as the player's mean historical residual rather than
     being silently set to zero.
     """
-    appearances = [row for row in rows if row.minutes > 0]
+    cutoff = min(minutes.data_available_at, rates.data_available_at)
+    appearances = [row for row in rows if row.minutes > 0 and row.kickoff_time <= cutoff]
     if not appearances:
         return None
     observations = [
@@ -121,7 +125,18 @@ def project_player_bps(
         red_cards=_points_to_events(breakdown.red_cards, RED_CARD_POINTS),
         own_goals=_points_to_events(breakdown.own_goals, OWN_GOAL_POINTS),
     )
-    return project_bps_from_history(observations, projected, position=position)
+    result = project_bps_from_history(observations, projected, position=position)
+    if result is None:
+        return None
+    uncertainty_rows = [
+        row for row in [*prior_rows, *appearances] if row.minutes > 0 and row.kickoff_time <= cutoff
+    ]
+    if len(uncertainty_rows) < 2:
+        return result
+    return replace(
+        result,
+        bps_deviation=pstdev(float(row.bps) for row in uncertainty_rows),
+    )
 
 
 def _component_rate(
