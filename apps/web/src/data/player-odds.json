@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "season": "2026-27",
-  "fetchedAt": "2026-10-21T18:59:24.327757+00:00",
+  "fetchedAt": "2026-10-24T12:20:33.991576+00:00",
   "source": "the-odds-api",
   "markets": [
     "player_goal_scorer_anytime",
@@ -34,33 +34,6 @@
   },
   "nameMappingGaps": [],
   "fixtures": [
-    {
-      "event_id": "d0202960708a442401d7fc7bd74a0183",
-      "home_team": "Ipswich Town",
-      "away_team": "Nottingham Forest",
-      "home_short": "IPS",
-      "away_short": "NFO",
-      "status": "unvisited",
-      "books": 0,
-      "outcomes": 0,
-      "offered_markets": [],
-      "missing_markets": [
-        "player_goal_scorer_anytime",
-        "player_first_goal_scorer",
-        "player_last_goal_scorer",
-        "player_assists",
-        "player_to_receive_card",
-        "player_to_receive_red_card",
-        "player_shots",
-        "player_shots_on_target"
-      ],
-      "player_rows_parsed": 0,
-      "player_rows_matched": 0,
-      "unmatched_names": [],
-      "error": null,
-      "kickoff": "2026-10-23T19:00:00+00:00",
-      "visited_at": null
-    },
     {
       "event_id": "aca5dd297dbee71f576f7641569fe578",
       "home_team": "Aston Villa",
@@ -572,6 +545,33 @@
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-11-02T20:00:00+00:00",
+      "visited_at": null
+    },
+    {
+      "event_id": "4c08b213ed416e8f41e038f42a42b962",
+      "home_team": "Liverpool",
+      "away_team": "Manchester United",
+      "home_short": "LIV",
+      "away_short": "MUN",
+      "status": "unvisited",
+      "books": 0,
+      "outcomes": 0,
+      "offered_markets": [],
+      "missing_markets": [
+        "player_goal_scorer_anytime",
+        "player_first_goal_scorer",
+        "player_last_goal_scorer",
+        "player_assists",
+        "player_to_receive_card",
+        "player_to_receive_red_card",
+        "player_shots",
+        "player_shots_on_target"
+      ],
+      "player_rows_parsed": 0,
+      "player_rows_matched": 0,
+      "unmatched_names": [],
+      "error": null,
+      "kickoff": "2026-11-22T16:30:00+00:00",
       "visited_at": null
     }
   ],
