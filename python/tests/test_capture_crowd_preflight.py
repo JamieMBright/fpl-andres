@@ -1,74 +1,72 @@
-"""The crowd capture has never once succeeded, and never said why.
-
-Three scheduled runs since the job was written, three failures, each in about
-twenty-five seconds. `crowd_snapshots.season` is a foreign key into `seasons`
-and `(season, element_id)` is one into `elements`. Both are filled by the
-historical ingest, which reads a published archive -- and an archive of a
-season only exists once that season has been played.
-
-So a job whose entire purpose is capturing *live* pre-deadline ownership
-depends on a corpus that cannot yet contain the season it is capturing. The
-read half works: `--dry-run` returns 570 elements for 2026-27 GW1. The write
-half hits the foreign key.
-
-The failure surfaced as an opaque PostgREST status because the check happened
-inside the database. It now happens here, before anything is written, and says
-what is wrong.
-"""
+"""Every crowd capture establishes its references, including newly listed players."""
 
 from __future__ import annotations
 
-from typing import Any
+import argparse
+from datetime import UTC, datetime
+from unittest.mock import AsyncMock, MagicMock, patch
 
-from fpl_andres.cli.capture_crowd import _unseeded
+import pytest
 
-
-class _Client:
-    """Records the read it was asked for and returns what it was told to."""
-
-    def __init__(self, rows: list[dict[str, Any]]) -> None:
-        self._rows = rows
-        self.calls: list[tuple[str, dict[str, Any]]] = []
-
-    def select(
-        self, table: str, *, columns: str = "*", filters: dict[str, str] | None = None
-    ) -> list[dict[str, Any]]:
-        self.calls.append((table, {"columns": columns, "filters": filters}))
-        return self._rows
+from fpl_andres.cli.capture_crowd import _capture
+from fpl_andres.contracts import FetchedPayload, SourceSnapshot
 
 
-class TestTheSeasonPreflight:
-    def test_a_seeded_season_passes_silently(self) -> None:
-        client = _Client([{"season": "2025-26"}])
+@pytest.mark.asyncio
+@pytest.mark.parametrize("season_exists", [False, True])
+async def test_capture_establishes_new_player_references_without_overwriting_existing_ones(
+    season_exists: bool,
+) -> None:
+    captured_at = datetime(2026, 10, 24, tzinfo=UTC)
+    fetched = FetchedPayload(
+        payload={
+            "teams": [{"id": 1, "code": 3, "name": "Arsenal", "short_name": "ARS"}],
+            "elements": [
+                {
+                    "id": element_id,
+                    "code": element_id,
+                    "team": 1,
+                    "element_type": 3,
+                    "now_cost": 50,
+                    "web_name": f"Player {element_id}",
+                    "selected_by_percent": "1.0",
+                }
+                for element_id in (1, 669)
+            ],
+            "total_players": 11_000_000,
+        },
+        snapshot=SourceSnapshot(
+            source="fpl",
+            fetched_at=captured_at,
+            data_available_at=captured_at,
+            content_hash=f"sha256:{'a' * 64}",
+            upstream_reference="https://fantasy.premierleague.com/api/bootstrap-static/",
+        ),
+        compressed_bytes=123,
+    )
+    database = MagicMock()
+    database.__enter__.return_value = database
+    database.select.return_value = [{"season": "2026-27"}] if season_exists else []
+    database.insert.return_value = [{"id": "00000000-0000-0000-0000-000000000001"}]
+    fpl = MagicMock()
+    fpl.fetch_bootstrap = AsyncMock(return_value=fetched)
 
-        assert _unseeded(client, "2025-26") is None  # type: ignore[arg-type]
+    with (
+        patch("fpl_andres.cli.capture_crowd.FplClient", return_value=fpl),
+        patch("fpl_andres.cli.capture_crowd.SupabaseCredentials.from_env"),
+        patch("fpl_andres.cli.capture_crowd.SupabaseRestClient", return_value=database),
+    ):
+        result = await _capture(argparse.Namespace(season="2026-27", event=8, dry_run=False))
 
-    def test_an_unseeded_season_is_refused_before_anything_is_written(self) -> None:
-        client = _Client([])
-
-        message = _unseeded(client, "2026-27")  # type: ignore[arg-type]
-
-        assert message is not None
-        assert "2026-27" in message
-
-    def test_the_message_names_the_constraint_rather_than_a_status_code(self) -> None:
-        # The whole point: "returned 409" sent somebody to the wrong place for
-        # three runs. The message has to name the foreign key and the fix.
-        message = _unseeded(_Client([]), "2026-27")  # type: ignore[arg-type]
-
-        assert message is not None
-        assert "foreign key" in message
-        assert "seasons" in message
-        assert "elements" in message
-        assert "Ingest the season first" in message
-
-    def test_it_asks_the_database_only_about_the_season_in_hand(self) -> None:
-        # A bare select on `seasons` would pull every row of a table this job
-        # has no business reading in bulk.
-        client = _Client([])
-        _unseeded(client, "2026-27")  # type: ignore[arg-type]
-
-        table, kwargs = client.calls[0]
-        assert table == "seasons"
-        assert kwargs["filters"] == {"season": "eq.2026-27"}
-        assert kwargs["columns"] == "season"
+    assert result == 0
+    writes = database.insert_ignoring_duplicates.call_args_list
+    assert [write.args[0] for write in writes] == [
+        "seasons",
+        "teams",
+        "elements",
+        "crowd_snapshots",
+    ]
+    assert [row["element_id"] for row in writes[2].args[1]] == [1, 669]
+    assert [row["element_id"] for row in writes[3].args[1]] == [1, 669]
+    assert writes[2].kwargs["on_conflict"] == "season,element_id"
+    database.upsert.assert_not_called()

@@ -151,8 +151,8 @@ re-applying. That is a teardown, not a repair: it drops everything.
 | 6   | `20260801120000_history_corpus.sql`                           | yes — corpus loaded 2026-07-30   |
 | 7   | `20260801130000_defensive_components.sql`                     | **owner to confirm**             |
 | 8   | `20260801140000_fixture_grain_and_event_range.sql`            | **owner to confirm**             |
-| 9   | `20260801150000_backtest_artifacts.sql`                       | **owner to confirm**             |
-| 10  | `20260801160000_crowd_snapshots.sql`                          | **owner to confirm**             |
+| 9   | `20260801150000_backtest_artifacts.sql`                       | yes — SQL Editor 2026-10-24      |
+| 10  | `20260801160000_crowd_snapshots.sql`                          | yes — SQL Editor 2026-10-24      |
 | 11  | `20260801170000_access_path_indexes.sql`                      | no                               |
 | 12  | `20260801180000_backtest_corpus_fingerprint.sql`              | no                               |
 | 13  | `20260801190000_promotion_lineage.sql`                        | no                               |
@@ -162,10 +162,10 @@ re-applying. That is a teardown, not a repair: it drops everything.
 | 17  | `20260908120000_recommendation_snapshots.sql`                 | no                               |
 | 18  | `20260918203016_public_team_snapshots.sql`                    | yes — owner confirmed 2026-09-18 |
 
-Rows 7–10 are marked for confirmation rather than guessed: their state was
+Rows 7–8 are marked for confirmation rather than guessed: their state was
 never recorded and cannot be inferred from the repository. Check the hosted
-project's `information_schema` for `crowd_snapshots`, `backtest_runs` and
-`element_gameweek_stats.clearances_blocks_interceptions`, then update this
+project's schema metadata for the defensive columns and per-fixture primary
+key, then update this
 table. `python/tests/test_migration_checklist.py` fails if a migration file
 exists that this table does not name.
 

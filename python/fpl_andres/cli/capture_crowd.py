@@ -143,23 +143,15 @@ async def _capture(args: argparse.Namespace) -> int:
 
     credentials = SupabaseCredentials.from_env(os.environ)
     with SupabaseRestClient(credentials) as supabase:
-        missing = _unseeded(supabase, season)
-        if missing is not None:
-            # The season is not in the corpus yet. Seed it from the bootstrap
-            # data that was already fetched, then proceed with the capture.
-            snapshot_id = _record_snapshot(
-                supabase, bootstrap.snapshot, compressed_bytes=bootstrap.compressed_bytes
-            )
-            _seed_live_season(
-                supabase,
-                bootstrap.payload,
-                season=season,
-                snapshot_id=snapshot_id,
-            )
-        else:
-            snapshot_id = _record_snapshot(
-                supabase, bootstrap.snapshot, compressed_bytes=bootstrap.compressed_bytes
-            )
+        snapshot_id = _record_snapshot(
+            supabase, bootstrap.snapshot, compressed_bytes=bootstrap.compressed_bytes
+        )
+        _seed_live_season(
+            supabase,
+            bootstrap.payload,
+            season=season,
+            snapshot_id=snapshot_id,
+        )
         rows = _rows(
             bootstrap.payload,
             season=season,
@@ -176,33 +168,6 @@ async def _capture(args: argparse.Namespace) -> int:
     return 0
 
 
-def _unseeded(client: SupabaseRestClient, season: str) -> str | None:
-    """Why the write is about to fail, said before anything is written.
-
-    `crowd_snapshots.season` references `seasons`, and `(season, element_id)`
-    references `elements`. Both are filled by the historical ingest, which
-    reads a published archive -- and an archive of a season only exists once
-    that season has been played.
-
-    So the live capture depends on a corpus that cannot yet contain the season
-    it is capturing. Every run of this job since it was written has failed on
-    that foreign key, and it failed as an opaque PostgREST status because the
-    check happened inside the database rather than here.
-
-    Checked before `source_snapshots` is written, because the old order left an
-    orphan snapshot row behind on every failed run.
-    """
-    rows = client.select("seasons", columns="season", filters={"season": f"eq.{season}"})
-    if rows:
-        return None
-    return (
-        f"{season} is not in the corpus, so the crowd capture has nothing to "
-        f"reference: crowd_snapshots.season is a foreign key into seasons, and "
-        f"(season, element_id) is one into elements. Ingest the season first. "
-        f"Refusing rather than writing a snapshot row that nothing can point at."
-    )
-
-
 def _seed_live_season(
     client: SupabaseRestClient,
     bootstrap: BootstrapPayload,
@@ -214,9 +179,9 @@ def _seed_live_season(
 
     The historical ingest fills these tables from the vaastav archive, which
     only covers completed seasons. The crowd capture needs them for the current
-    season too, so the first run that finds them absent seeds them from the
-    same bootstrap payload it already fetched. This is idempotent: upserts
-    replace nothing and the snapshot_id records what data was used.
+    season too, including players listed after its first capture. Every capture
+    inserts missing references from its bootstrap without replacing existing
+    prices or provenance; snapshot_id records the source of each new record.
     """
     client.insert_ignoring_duplicates("seasons", [{"season": season}], on_conflict="season")
 
@@ -241,7 +206,7 @@ def _seed_live_season(
         if team.get("id") and team.get("code")
     ]
     if teams:
-        client.upsert("teams", teams, on_conflict="season,team_id")
+        client.insert_ignoring_duplicates("teams", teams, on_conflict="season,team_id")
 
     raw_elements = bootstrap.get("elements") or []
     elements = []
@@ -269,7 +234,7 @@ def _seed_live_season(
             }
         )
     if elements:
-        client.upsert("elements", elements, on_conflict="season,element_id")
+        client.insert_ignoring_duplicates("elements", elements, on_conflict="season,element_id")
 
     print(
         f"seeded {season} live corpus: {len(teams)} teams, {len(elements)} elements",
