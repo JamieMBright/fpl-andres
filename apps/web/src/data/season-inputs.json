@@ -1,6 +1,6 @@
 {
   "schemaVersion": 7,
-  "generatedAt": "2026-10-24T21:53:10.951330Z",
+  "generatedAt": "2026-10-24T22:29:09.534854Z",
   "recordSeason": "2026-27",
   "events": [
     9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27,
@@ -56,8 +56,8 @@
     "fixtureMarkets": {
       "source": "football-data.co.uk",
       "level": "observed",
-      "updatedAt": "2026-10-24T18:18:41.200301+00:00",
-      "contentHash": "sha256:7edf10a3f5d89c494b083b89aaf93a07e56a257714a3f681c18bc74f19741c3d"
+      "updatedAt": "2026-10-24T22:28:58.254559+00:00",
+      "contentHash": "sha256:7520108064832d8e7576ddbaae974f77e8449e4350a24eec8b14a614f74fb2f5"
     },
     "understat": {
       "source": "understat",
@@ -188,7 +188,7 @@
       }
     ],
     "sourceReference": "FPL rules page, Transfers section",
-    "dataAvailableAt": "2026-10-24T21:53:10.951330Z",
+    "dataAvailableAt": "2026-10-24T22:29:09.534854Z",
     "playableStartRate": 0.35,
     "transferMarginPoints": 0.5
   },
@@ -818,7 +818,7 @@
   },
   "fixtureEvidence": {
     "source": "football-data.co.uk",
-    "updatedAt": "2026-10-24T18:18:41.200301+00:00",
+    "updatedAt": "2026-10-24T22:28:58.254559+00:00",
     "level": "observed",
     "byClub": {}
   },
@@ -2983,23 +2983,23 @@
       "chanceOfPlaying": null,
       "basePoints": 0.1,
       "routes": { "appearance": 0.1 },
-      "startRate": 0.048,
+      "startRate": 0.01,
       "startEvidence": {
         "sourceStartRate": 0.048,
-        "finalStartRate": 0.048,
-        "observedAppearances": null,
-        "recentStarts": null,
-        "recentMatches": null,
-        "recentMinutes": null,
-        "appearanceSource": "historicalProjection",
-        "lineupAdjustment": 0.0,
+        "finalStartRate": 0.01,
+        "observedAppearances": 1,
+        "recentStarts": 0,
+        "recentMatches": 1,
+        "recentMinutes": 0,
+        "appearanceSource": "currentSeasonLineup",
+        "lineupAdjustment": -0.038,
         "marketAdjustment": 0.0,
         "availabilityAdjustment": 0.0
       },
       "squadNumber": null,
       "rated": false,
       "depthRank": 5,
-      "evidence": { "all": "rolePrior" }
+      "evidence": { "all": "rolePrior", "appearance": "currentSeasonLineup" }
     },
     {
       "id": 623,
