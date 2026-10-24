@@ -1,15 +1,10 @@
 #!/usr/bin/env bash
 # Republish the derived planning chain from whatever inputs are on disk.
 #
-# Both odds jobs own a different source artifact and the same derived ones:
-# season inputs, the canonical fifteen, the static plan and the pre-deadline
-# freeze. They are triggered by the same push and run concurrently, so each can
-# find the branch moved under it when it goes to push. A rebase cannot settle
-# that -- there is no textual merge of two independently regenerated artifacts,
-# and `--autostash` just relocates the conflict. The only merge that yields a
-# coherent set is to take the base that arrived and rebuild on it, which is why
-# this chain is a script both jobs can call twice rather than a block of steps
-# either of them can only run once.
+# The dedicated publisher and model recovery share this chain. Their queued
+# job lock prevents competing planning writes; odds jobs publish only sources.
+# If another derived input moves underneath a solve, rebuild on the new base
+# rather than merging independently generated JSON.
 set -euo pipefail
 
 python -m fpl_andres.cli.publish_deadlines

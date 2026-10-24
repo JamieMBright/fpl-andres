@@ -189,13 +189,9 @@ jobs:
           # Stage only what this run actually produced. A pathspec matching
           # nothing is fatal to `git add`, and pre-season the live artifact is
           # legitimately absent.
-          SOURCES="apps/web/src/data/fixture-odds.json data/odds"
-          DERIVED="apps/web/public/fpl-global.json \
-            apps/web/src/data/deadlines.json \
-            apps/web/src/data/season-inputs.json \
-            apps/web/src/data/opening-squad.json \
-            apps/web/src/data/season-plan.json \
-            data/prospective/*.json"
+          SOURCES="apps/web/src/data/fixture-odds.json \
+            data/odds/2022-23.json data/odds/2023-24.json \
+            data/odds/2024-25.json data/odds/2025-26.json"
           stage() {
             for path in $SOURCES; do
               if [ -e "$path" ]; then
@@ -207,17 +203,6 @@ jobs:
                 echo "$path not written this run"
               fi
             done
-            # The derived chain only means anything once the live artifact
-            # exists, and regenerating it against an unchanged book would still
-            # rewrite `generatedAt` and commit noise every day.
-            if [ -e apps/web/src/data/fixture-odds.json ] &&
-              ! git diff --cached --quiet -- apps/web/src/data/fixture-odds.json; then
-              bash scripts/republish-plan.sh
-              # shellcheck disable=SC2086
-              git add $DERIVED
-            else
-              echo "live fixture odds did not move; season inputs stay unchanged"
-            fi
           }
 
           git config user.name "github-actions[bot]"
@@ -229,31 +214,30 @@ jobs:
           fi
           git commit -m "Refresh the bookmaker-implied goals distribution"
           for attempt in 1 2 3 4 5; do
-            # A plain rebase first: when nothing else moved this is a no-op and
-            # the push lands. When it does conflict, abort and rebuild instead —
-            # see scripts/republish-plan.sh for why a rebase cannot settle it.
+            # Rebase unrelated commits; restore only this provider's sources
+            # on a conflict. The downstream publisher owns the planning solve.
             git pull --rebase --autostash || git rebase --abort || true
             if git push; then
               exit 0
             fi
             echo "push rejected on attempt $attempt; rebuilding on the base that arrived"
-            # Keep what the provider was paid for, take the base that arrived,
-            # put the fetched prices back and rebuild the derived chain on top.
+            # Keep what the provider was paid for without restoring another
+            # publisher's archive over the newly fetched base.
             rm -rf "$RUNNER_TEMP/keep"
-            mkdir -p "$RUNNER_TEMP/keep/odds"
-            if [ -e apps/web/src/data/fixture-odds.json ]; then
-              cp apps/web/src/data/fixture-odds.json "$RUNNER_TEMP/keep/fixture-odds.json"
-            fi
-            if [ -d data/odds ]; then
-              cp -r data/odds/. "$RUNNER_TEMP/keep/odds/"
-            fi
+            for path in $SOURCES; do
+              if [ -e "$path" ]; then
+                mkdir -p "$RUNNER_TEMP/keep/$(dirname "$path")"
+                cp "$path" "$RUNNER_TEMP/keep/$path"
+              fi
+            done
             git fetch origin "$GITHUB_REF_NAME"
             git reset --hard "origin/$GITHUB_REF_NAME"
-            if [ -e "$RUNNER_TEMP/keep/fixture-odds.json" ]; then
-              cp "$RUNNER_TEMP/keep/fixture-odds.json" apps/web/src/data/fixture-odds.json
-            fi
-            mkdir -p data/odds
-            cp -r "$RUNNER_TEMP/keep/odds/." data/odds/
+            for path in $SOURCES; do
+              if [ -e "$RUNNER_TEMP/keep/$path" ]; then
+                mkdir -p "$(dirname "$path")"
+                cp "$RUNNER_TEMP/keep/$path" "$path"
+              fi
+            done
             stage
             if git diff --cached --quiet; then
               echo "the base that arrived already carries these prices"

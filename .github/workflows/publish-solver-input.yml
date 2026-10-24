@@ -15,6 +15,7 @@ on:
   # Auto-trigger when market data or live data updates
   workflow_run:
     workflows:
+      - "Model validation"
       - "Ingest Bookmaker Odds"
       - "Ingest Player Odds"
       - "Capture settled gameweeks"
@@ -35,12 +36,17 @@ jobs:
       github.event_name != 'workflow_run' ||
       github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
-    # The plan solve is the long part of the chain below, as it is in both odds
-    # jobs. Twenty minutes was enough when this only rewrote the inputs.
+    concurrency:
+      group: planning-artifacts-${{ github.ref }}
+      queue: max
+      cancel-in-progress: false
+    # The complete static-plan solve needs more than the old input-only limit.
     timeout-minutes: 90
     steps:
       - name: Check out repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.ref_name }}
 
       - name: Set up Node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
@@ -70,8 +76,7 @@ jobs:
       # the site kept serving a plan from before the market moved, and the
       # dependency-order check caught it as soon as the artifacts started
       # carrying honest timestamps rather than both being dated to the first
-      # deadline. The whole derived chain is republished together, by the same
-      # script the odds jobs call for the same reason.
+      # deadline. Keep the whole chain atomic, serialized with model publication.
       - name: Republish the derived planning chain
         run: |
           set -o pipefail

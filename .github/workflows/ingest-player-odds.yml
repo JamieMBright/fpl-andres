@@ -71,8 +71,7 @@ jobs:
     # job cannot see them and the fetch step exits on an empty key, which is
     # exactly how run 1 failed.
     environment: production
-    # Match fixture odds: both jobs run the same planner and may need all five
-    # conflict-safe rebuild attempts when artifact publishers overlap.
+    # Planning follows this source publication in Publish solver input.
     timeout-minutes: 180
     steps:
       - name: Check out repository
@@ -147,18 +146,8 @@ jobs:
             echo "no odds artifact this run; nothing to commit"
             exit 0
           fi
-          # `player-odds.json` is an input, not a shipped recommendation. The
-          # plan reads the complete chain, so commit all of it or none of it.
-          # The chain itself lives in a script because it has to run a second
-          # time when the push is rejected -- see that script for why a rebase
-          # cannot settle two independently regenerated artifacts.
-          TRACKED="apps/web/src/data/player-odds.json \
-            apps/web/public/fpl-global.json \
-            apps/web/src/data/deadlines.json \
-            apps/web/src/data/season-inputs.json \
-            apps/web/src/data/opening-squad.json \
-            apps/web/src/data/season-plan.json \
-            data/prospective/*.json"
+          # Publish solver input consumes this source after a successful run.
+          TRACKED="apps/web/src/data/player-odds.json"
           # Every book's price, kept for training. Committed even when the
           # published medians did not move: that a price held steady between
           # Tuesday and the deadline is itself the measurement.
@@ -172,15 +161,6 @@ jobs:
             if [ -d "$ARCHIVE" ]; then
               git add -A -- "$ARCHIVE"
             fi
-            # Regenerating the chain against unchanged quotes would still
-            # rewrite `generatedAt` and commit noise on every scheduled run.
-            if git diff --cached --quiet -- apps/web/src/data/player-odds.json; then
-              echo "quotes did not move; season inputs stay unchanged"
-              return 0
-            fi
-            bash scripts/republish-plan.sh
-            # shellcheck disable=SC2086
-            git add $TRACKED
           }
 
           git config user.name "github-actions[bot]"

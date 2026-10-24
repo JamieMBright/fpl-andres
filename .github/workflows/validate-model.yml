@@ -100,10 +100,10 @@ jobs:
           published = json.loads(
               Path("apps/web/src/data/projections-meta.json").read_text(encoding="utf-8")
           )["throughGameweek"]
-            published_version = json.loads(
+          published_version = json.loads(
               Path("apps/web/src/data/validation.json").read_text(encoding="utf-8")
-            )["modelVersion"]
-            needed = settled > published or MODEL_VERSION != published_version
+          )["modelVersion"]
+          needed = settled > published or MODEL_VERSION != published_version
           with Path(os.environ["GITHUB_OUTPUT"]).open("a", encoding="utf-8") as output_file:
               output_file.write(f"run={str(needed).lower()}\n")
           PY
@@ -113,6 +113,10 @@ jobs:
     needs: refresh
     if: needs.refresh.outputs.run == 'true'
     runs-on: ubuntu-latest
+    concurrency:
+      group: planning-artifacts-${{ github.ref }}
+      queue: max
+      cancel-in-progress: false
     # Run 33697967857 reached 150 minutes after several artifact publishers
     # moved main under its final conflict-safe planning rebuilds.
     timeout-minutes: 240

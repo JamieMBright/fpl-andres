@@ -14,14 +14,19 @@ asserted against the workflow text.
 
 from __future__ import annotations
 
+import json
 import os
 import re
 import shlex
 import shutil
 import subprocess
+import sys
 from pathlib import Path
 
 import pytest
+import yaml
+
+from fpl_andres.model_version import MODEL_VERSION
 
 WORKFLOWS = Path(__file__).resolve().parents[2] / ".github" / "workflows"
 REPO = Path(__file__).resolve().parents[2]
@@ -276,49 +281,93 @@ def test_portfolio_annotation_backfills_legacy_season_standings() -> None:
         ("ingest-odds.yml", "fixture-odds.json"),
     ),
 )
-def test_live_odds_producers_republish_the_plan_the_browser_reads(name: str, source: str) -> None:
+def test_live_odds_producers_publish_only_their_owned_sources(name: str, source: str) -> None:
     text = (WORKFLOWS / name).read_text(encoding="utf-8")
 
     assert source in text
-    # The chain is one script both odds jobs call, because each has to be able
-    # to run it a second time when its push is rejected and it rebuilds on the
-    # base that arrived. The ordering guarantee therefore lives with the script.
-    assert "scripts/republish-plan.sh" in text
+    assert "scripts/republish-plan.sh" not in text
     assert "pnpm install --frozen-lockfile" in text
-
-    chain = (REPO / "scripts" / "republish-plan.sh").read_text(encoding="utf-8")
-    deadlines = chain.index("python -m fpl_andres.cli.publish_deadlines")
-    season_inputs = chain.index("python -m fpl_andres.cli.publish_season_inputs")
-    canonical = chain.index(
-        "pnpm --filter @fpl-andres/web publish:canonical-opening",
-        season_inputs,
-    )
-    season_plan = chain.index("python -m fpl_andres.cli.publish_season_plan", canonical)
-    assert deadlines < season_inputs < canonical < season_plan
-    # Fixture and player odds move the whole season plan even when the opening
-    # fifteen happens to stay unchanged.
-    assert "canonical fifteen unchanged" not in chain
     for path in (
         "apps/web/public/fpl-global.json",
         "apps/web/src/data/deadlines.json",
         "apps/web/src/data/season-inputs.json",
         "apps/web/src/data/opening-squad.json",
         "apps/web/src/data/season-plan.json",
+        "data/prospective",
     ):
-        assert path in chain
-        assert path in text
+        assert path not in text
 
-    # Whatever else changed, the artifact this job fetched is formatted and
-    # staged, and the derived chain is republished before anything is staged.
     if name == "ingest-odds.yml":
-        # This workflow iterates the declared paths and formats/stages `$path`.
         assert 'prettier@3 --write "$path"' in text
         assert 'git add -A -- "$path"' in text
+        assert "cp -r data/odds/." not in text
+        assert 'SOURCES="apps/web/src/data/fixture-odds.json data/odds"' not in text
     else:
-        # The player workflow names its own artifact explicitly.
         formatting = text.index("prettier@3 --write apps/web/src/data/player-odds.json")
         staging = text.index("git add apps/web/src/data/player-odds.json", formatting)
         assert formatting < staging
+        assert 'git add -A -- "$ARCHIVE"' in text
+
+
+def test_planning_publishers_share_a_non_cancelling_job_queue() -> None:
+    for name, job in (
+        ("validate-model.yml", "validate"),
+        ("publish-solver-input.yml", "publish"),
+    ):
+        document = yaml.safe_load((WORKFLOWS / name).read_text(encoding="utf-8"))
+        assert document["jobs"][job]["concurrency"] == {
+            "group": "planning-artifacts-${{ github.ref }}",
+            "queue": "max",
+            "cancel-in-progress": False,
+        }
+
+
+def test_solver_publisher_consumes_successful_model_and_odds_runs_on_latest_main() -> None:
+    text = (WORKFLOWS / "publish-solver-input.yml").read_text(encoding="utf-8")
+    header = text.split("jobs:", 1)[0]
+    for name in ("Model validation", "Ingest Bookmaker Odds", "Ingest Player Odds"):
+        assert f'- "{name}"' in header
+    assert "github.event.workflow_run.conclusion == 'success'" in text
+    document = yaml.safe_load(text)
+    checkout = document["jobs"]["publish"]["steps"][0]
+    assert checkout["with"]["ref"] == "${{ github.ref_name }}"
+
+
+@pytest.mark.parametrize(
+    "settled,published,published_version,expected",
+    ((7, 7, "current", False), (8, 7, "current", True), (7, 7, "previous", True)),
+)
+def test_model_refresh_gate_executes_its_evidence_decision(
+    tmp_path: Path, settled: int, published: int, published_version: str, expected: bool
+) -> None:
+    document = yaml.safe_load((WORKFLOWS / "validate-model.yml").read_text(encoding="utf-8"))
+    script = document["jobs"]["refresh"]["steps"][1]["run"]
+    code = script.split("python - <<'PY'\n", 1)[1].rsplit("\nPY", 1)[0]
+    live = tmp_path / "data" / "live" / "2026-27"
+    live.mkdir(parents=True)
+    (live / f"gw{settled:02}.json").write_text(
+        json.dumps({"roundComplete": True}), encoding="utf-8"
+    )
+    artifacts = tmp_path / "apps" / "web" / "src" / "data"
+    artifacts.mkdir(parents=True)
+    (artifacts / "projections-meta.json").write_text(
+        json.dumps({"throughGameweek": published}), encoding="utf-8"
+    )
+    (artifacts / "validation.json").write_text(
+        json.dumps({"modelVersion": MODEL_VERSION if published_version == "current" else "0.0"}),
+        encoding="utf-8",
+    )
+    output = tmp_path / "output.txt"
+    result = subprocess.run(
+        [sys.executable, "-c", code],
+        cwd=tmp_path,
+        env={**os.environ, "PYTHONPATH": str(REPO / "python"), "GITHUB_OUTPUT": str(output)},
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert result.returncode == 0, result.stderr
+    assert output.read_text(encoding="utf-8") == f"run={str(expected).lower()}\n"
 
 
 @pytest.mark.parametrize(

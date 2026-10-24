@@ -8,6 +8,9 @@ The project follows Semantic Versioning once milestone tags begin.
 
 ### Added
 
+- Odds ingests publish only their own sources. Model and planning publication
+  share a queued lock, avoiding competing full-plan rebuilds. Executable tests
+  cover the model refresh decision, including its inline Python syntax.
 - Security checks now audit Python development and optional scraping installs,
   plus the complete JavaScript graph, on dependency pushes and daily schedules.
   Node 24, pnpm 10 and patched pip bootstrap all jobs; shared Python floors and
