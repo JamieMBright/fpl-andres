@@ -52,15 +52,9 @@ jobs:
         run: |
           paths="apps/web/src/data/deadlines.json apps/web/public/fpl-global.json"
           npx --yes prettier@3 --write $paths
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          # Staged before the comparison. `git diff` does not look at untracked
-          # files, so a run that creates the artifact would call it unchanged.
-          git add $paths
-          if git diff --cached --quiet -- $paths; then
-            echo "no deadline moved"
-            exit 0
-          fi
-          git commit -m "chore: refresh the FPL deadline list"
-          git pull --rebase --autostash
-          git push
+          rebuild() {
+            python -m fpl_andres.cli.publish_deadlines
+            npx --yes prettier@3 --write $paths
+          }
+          source scripts/publish-artifact.sh
+          publish_artifact "chore: refresh the FPL deadline list" rebuild $paths

@@ -27,7 +27,12 @@ from fpl_andres import cliargs
 from fpl_andres.adapters.fpl import FplClient
 from fpl_andres.adapters.payloads import BootstrapPayload
 from fpl_andres.bootstrap import CrowdElement, parse_elements
-from fpl_andres.persistence.supabase import SupabaseCredentials, SupabaseRestClient
+from fpl_andres.contracts import SourceSnapshot
+from fpl_andres.persistence.supabase import (
+    SupabaseCredentials,
+    SupabaseRestClient,
+    SupabaseWriteError,
+)
 
 __all__ = ["build_parser", "main"]
 
@@ -142,7 +147,9 @@ async def _capture(args: argparse.Namespace) -> int:
         if missing is not None:
             # The season is not in the corpus yet. Seed it from the bootstrap
             # data that was already fetched, then proceed with the capture.
-            snapshot_id = _record_snapshot(supabase, bootstrap.snapshot)
+            snapshot_id = _record_snapshot(
+                supabase, bootstrap.snapshot, compressed_bytes=bootstrap.compressed_bytes
+            )
             _seed_live_season(
                 supabase,
                 bootstrap.payload,
@@ -150,7 +157,9 @@ async def _capture(args: argparse.Namespace) -> int:
                 snapshot_id=snapshot_id,
             )
         else:
-            snapshot_id = _record_snapshot(supabase, bootstrap.snapshot)
+            snapshot_id = _record_snapshot(
+                supabase, bootstrap.snapshot, compressed_bytes=bootstrap.compressed_bytes
+            )
         rows = _rows(
             bootstrap.payload,
             season=season,
@@ -268,7 +277,11 @@ def _seed_live_season(
     )
 
 
-def _record_snapshot(client: SupabaseRestClient, snapshot: Any) -> str:
+def _record_snapshot(
+    client: SupabaseRestClient, snapshot: SourceSnapshot, *, compressed_bytes: int | None
+) -> str:
+    if compressed_bytes is None or compressed_bytes <= 0:
+        raise ValueError("source snapshot compressed size must be measured and positive")
     written = client.insert(
         "source_snapshots",
         [
@@ -280,12 +293,25 @@ def _record_snapshot(client: SupabaseRestClient, snapshot: Any) -> str:
                 "storage_path": (
                     f"{snapshot.source}/{snapshot.content_hash.removeprefix('sha256:')}"
                 ),
+                "compressed_bytes": compressed_bytes,
                 "upstream_reference": snapshot.upstream_reference,
             }
         ],
+        resolution="ignore-duplicates",
+        on_conflict="source,content_hash",
         returning=True,
     )
-    return str(written[0]["id"])
+    if written:
+        return str(written[0]["id"])
+    existing = client.select(
+        "source_snapshots",
+        columns="id",
+        filters={"source": f"eq.{snapshot.source}", "content_hash": f"eq.{snapshot.content_hash}"},
+        limit=1,
+    )
+    if not existing:
+        raise SupabaseWriteError("source snapshot was neither created nor retrievable")
+    return str(existing[0]["id"])
 
 
 def main(argv: Sequence[str] | None = None) -> int:

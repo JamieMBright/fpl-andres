@@ -14,7 +14,11 @@ asserted against the workflow text.
 
 from __future__ import annotations
 
+import os
 import re
+import shlex
+import shutil
+import subprocess
 from pathlib import Path
 
 import pytest
@@ -50,6 +54,16 @@ def _pushes(text: str) -> bool:
     return bool(_PUSH.search(text))
 
 
+def _implementation(path: Path) -> str:
+    text = path.read_text(encoding="utf-8")
+    called = re.findall(r"(?:bash|source)\s+(scripts/[\w./-]+\.sh)", text)
+    return (
+        text
+        + "\n"
+        + "\n".join((REPO / script).read_text(encoding="utf-8") for script in sorted(set(called)))
+    )
+
+
 @pytest.mark.parametrize("path", _workflows(), ids=lambda path: path.name)
 def test_a_workflow_that_commits_asks_the_index_whether_anything_changed(
     path: Path,
@@ -66,7 +80,7 @@ def test_a_workflow_that_commits_asks_the_index_whether_anything_changed(
     and `docs/PLAYER_MARKET_CATALOGUE.md` never landed once, which is also why
     nobody could answer which sources price which scoring route.
     """
-    text = path.read_text(encoding="utf-8")
+    text = _implementation(path)
     if not _pushes(text):
         return
 
@@ -79,7 +93,7 @@ def test_a_workflow_that_commits_asks_the_index_whether_anything_changed(
 
 @pytest.mark.parametrize("path", _workflows(), ids=lambda path: path.name)
 def test_a_workflow_that_pushes_rebases_onto_whatever_arrived_first(path: Path) -> None:
-    text = path.read_text(encoding="utf-8")
+    text = _implementation(path)
     if not _pushes(text):
         return
 
@@ -101,7 +115,7 @@ def test_a_workflow_that_commits_a_prettier_owned_file_formats_it(path: Path) ->
     scripts it runs are read too. The question is whether prettier runs
     anywhere on the path the workflow takes, not where the word appears.
     """
-    text = path.read_text(encoding="utf-8")
+    text = _implementation(path)
     if not _pushes(text):
         return
     owned = sorted(set(_PRETTIER_OWNED.findall(text)))
@@ -121,7 +135,7 @@ def test_a_workflow_that_commits_a_prettier_owned_file_formats_it(path: Path) ->
 
 def test_the_bot_committing_workflows_are_covered_by_those_rules() -> None:
     """Guards the guards: a renamed step must not empty the set silently."""
-    pushing = {path.name for path in _workflows() if _pushes(path.read_text(encoding="utf-8"))}
+    pushing = {path.name for path in _workflows() if _pushes(_implementation(path))}
 
     for name in (
         "calibrate-points-to-rank.yml",
@@ -146,7 +160,7 @@ def test_solver_input_publication_rebuilds_after_a_push_conflict() -> None:
     assert "could not push the regenerated solver input after five attempts" in text
 
 
-def test_model_validation_refires_only_when_a_new_gameweek_settles() -> None:
+def test_model_validation_refires_without_cancelling_an_active_source_run() -> None:
     """Bot capture commits cannot activate another workflow's push filter."""
     text = (WORKFLOWS / "validate-model.yml").read_text(encoding="utf-8")
     header = text.split("jobs:", 1)[0]
@@ -154,8 +168,84 @@ def test_model_validation_refires_only_when_a_new_gameweek_settles() -> None:
     assert "workflow_run:" in header
     assert 'workflows: ["Capture settled gameweeks"]' in header
     assert "github.event.workflow_run.conclusion == 'success'" in text
-    assert 'output_file.write(f"run={str(settled > published).lower()}\\n")' in text
+    assert "cancel-in-progress: ${{ github.event_name != 'workflow_run' }}" in header
+    assert "settled > published or MODEL_VERSION != published_version" in text
     assert "needs.refresh.outputs.run == 'true'" in text
+
+
+@pytest.mark.parametrize(
+    "name,command",
+    (
+        ("publish-deadlines.yml", "fpl_andres.cli.publish_deadlines"),
+        ("validate-lineup-prior.yml", "fpl_andres.cli.validate_lineup_prior"),
+        ("score-cohort-agreement.yml", "fpl_andres.cli.publish_cohort_agreement"),
+    ),
+)
+def test_recovering_publishers_rebuild_on_the_new_base(name: str, command: str) -> None:
+    text = (WORKFLOWS / name).read_text(encoding="utf-8")
+    assert "source scripts/publish-artifact.sh" in text
+    assert "rebuild()" in text
+    assert command in text
+    assert "publish_artifact " in text
+    helper = (REPO / "scripts" / "publish-artifact.sh").read_text(encoding="utf-8")
+    assert "for attempt in 1 2 3 4 5" in helper
+    assert 'git reset --hard "origin/$GITHUB_REF_NAME"' in helper
+
+
+def test_a_conflicted_publication_rebuilds_instead_of_merging_generated_output(
+    tmp_path: Path,
+) -> None:
+    executable = shutil.which("git")
+    assert executable
+    bundled_bash = Path(executable).resolve().parents[1] / "bin" / "bash.exe"
+    bash = str(bundled_bash) if bundled_bash.exists() else shutil.which("bash")
+    if not bash:
+        pytest.skip("Bash is required for the publication race integration test")
+
+    def git(*arguments: str, cwd: Path = tmp_path) -> str:
+        return subprocess.run(
+            [executable, *arguments], cwd=cwd, check=True, capture_output=True, text=True
+        ).stdout
+
+    origin = tmp_path / "origin.git"
+    seed = tmp_path / "seed"
+    writer = tmp_path / "writer"
+    git("init", "--bare", "--initial-branch=main", str(origin))
+    git("clone", str(origin), str(seed))
+    for directory in (seed,):
+        git("config", "user.name", "Publication test", cwd=directory)
+        git("config", "user.email", "publication@example.invalid", cwd=directory)
+    (seed / "source.txt").write_text("old\n", encoding="utf-8")
+    (seed / "artifact.json").write_text("base\n", encoding="utf-8")
+    git("add", ".", cwd=seed)
+    git("commit", "-m", "base", cwd=seed)
+    git("push", "origin", "main", cwd=seed)
+    git("clone", str(origin), str(writer))
+    git("config", "user.name", "Publication test", cwd=writer)
+    git("config", "user.email", "publication@example.invalid", cwd=writer)
+    (seed / "source.txt").write_text("new\n", encoding="utf-8")
+    (seed / "artifact.json").write_text("competing\n", encoding="utf-8")
+    git("add", ".", cwd=seed)
+    git("commit", "-m", "concurrent publication", cwd=seed)
+    git("push", "origin", "main", cwd=seed)
+    helper = shlex.quote((REPO / "scripts" / "publish-artifact.sh").as_posix())
+    result = subprocess.run(
+        [
+            bash,
+            "-c",
+            f"source {helper}\n"
+            "rebuild() { cp source.txt artifact.json; }\n"
+            "rebuild\n"
+            'publish_artifact "regenerate" rebuild artifact.json',
+        ],
+        cwd=writer,
+        env={**os.environ, "GITHUB_REF_NAME": "main"},
+        capture_output=True,
+        text=True,
+    )
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert git("--git-dir", str(origin), "show", "main:artifact.json") == "new\n"
+    assert git("--git-dir", str(origin), "show", "main:source.txt") == "new\n"
 
 
 @pytest.mark.parametrize(

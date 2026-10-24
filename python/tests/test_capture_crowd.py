@@ -2,21 +2,25 @@
 
 from __future__ import annotations
 
+import gzip
 from datetime import UTC, datetime
-from types import SimpleNamespace
 from typing import Any
 from unittest.mock import Mock
 
+import httpx
+import pytest
+
+from fpl_andres.adapters.fpl import FplClient
 from fpl_andres.cli.capture_crowd import _current_event, _record_snapshot, _rows, season_from
+from fpl_andres.contracts import SourceSnapshot
 
 SNAPSHOT_ID = "00000000-0000-0000-0000-000000000001"
 
 
-def test_snapshot_storage_path_matches_its_source_and_content_hash() -> None:
-    client = Mock()
-    client.insert.return_value = [{"id": SNAPSHOT_ID}]
+@pytest.fixture
+def snapshot() -> SourceSnapshot:
     captured = datetime(2026, 10, 24, tzinfo=UTC)
-    snapshot = SimpleNamespace(
+    return SourceSnapshot(
         source="fpl",
         fetched_at=captured,
         data_available_at=captured,
@@ -24,12 +28,57 @@ def test_snapshot_storage_path_matches_its_source_and_content_hash() -> None:
         upstream_reference="https://fantasy.premierleague.com/api/bootstrap-static/",
     )
 
-    assert _record_snapshot(client, snapshot) == SNAPSHOT_ID
+
+def test_snapshot_storage_path_matches_its_source_and_content_hash(
+    snapshot: SourceSnapshot,
+) -> None:
+    client = Mock()
+    client.insert.return_value = [{"id": SNAPSHOT_ID}]
+
+    assert _record_snapshot(client, snapshot, compressed_bytes=123) == SNAPSHOT_ID
     table, rows = client.insert.call_args.args
     assert table == "source_snapshots"
     assert rows[0]["storage_path"] == f"fpl/{'a' * 64}"
     assert rows[0]["content_hash"] == snapshot.content_hash
-    assert rows[0]["data_available_at"] == captured.isoformat()
+    assert rows[0]["data_available_at"] == snapshot.data_available_at.isoformat()
+    assert rows[0]["compressed_bytes"] == 123
+    assert client.insert.call_args.kwargs["resolution"] == "ignore-duplicates"
+
+
+def test_an_identical_snapshot_reuses_its_immutable_provenance(snapshot: SourceSnapshot) -> None:
+    client = Mock()
+    client.insert.return_value = []
+    client.select.return_value = [{"id": SNAPSHOT_ID}]
+
+    assert _record_snapshot(client, snapshot, compressed_bytes=123) == SNAPSHOT_ID
+    assert client.select.call_args.kwargs["filters"] == {
+        "source": "eq.fpl",
+        "content_hash": f"eq.{snapshot.content_hash}",
+    }
+
+
+@pytest.mark.parametrize("compressed_bytes", [None, 0, -1])
+def test_an_unmeasured_snapshot_size_is_not_invented(
+    snapshot: SourceSnapshot, compressed_bytes: int | None
+) -> None:
+    with pytest.raises(ValueError, match="compressed"):
+        _record_snapshot(Mock(), snapshot, compressed_bytes=compressed_bytes)
+
+
+@pytest.mark.asyncio
+async def test_fpl_retains_the_compressed_size_of_the_original_bounded_response() -> None:
+    body = b'{ "elements": [], "events": [] }'
+    transport = httpx.MockTransport(
+        lambda request: httpx.Response(
+            200, content=body, headers={"content-type": "application/json"}
+        )
+    )
+    async with httpx.AsyncClient(transport=transport) as http:
+        result = await FplClient(
+            http=http, clock=lambda: datetime(2026, 10, 24, tzinfo=UTC)
+        ).fetch_bootstrap()
+
+    assert result.compressed_bytes == len(gzip.compress(body, mtime=0))
 
 
 def bootstrap(

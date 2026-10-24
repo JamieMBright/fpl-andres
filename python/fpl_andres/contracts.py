@@ -63,6 +63,7 @@ def parse_source_snapshot(input_value: object) -> SourceSnapshot:
 class FetchedPayload[PayloadT]:
     payload: PayloadT
     snapshot: SourceSnapshot
+    compressed_bytes: int | None = None
 
 
 EventId = Annotated[int, Field(ge=1, le=38)]

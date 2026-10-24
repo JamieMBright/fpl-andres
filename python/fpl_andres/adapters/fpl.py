@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+import gzip
 import hashlib
 import json
 import random as random_module
@@ -207,12 +208,13 @@ class FplClient:
         question -- ``rules.py``, ``bootstrap.py`` and the Pydantic models
         answer that, and they refuse rather than assume.
         """
-        payload, snapshot = await self._fetch_json(path, size_limit=size_limit)
+        payload, snapshot, compressed_bytes = await self._fetch_json(path, size_limit=size_limit)
         if not isinstance(payload, Mapping) or not all(isinstance(key, str) for key in payload):
             raise FplContractError("FPL response must be a JSON object")
         return FetchedPayload(
             payload=cast(PayloadT, dict(payload)),
             snapshot=snapshot,
+            compressed_bytes=compressed_bytes,
         )
 
     async def _fetch_json_array[ItemT: Mapping[str, Any]](
@@ -222,7 +224,7 @@ class FplClient:
         *,
         size_limit: int,
     ) -> FetchedPayload[list[ItemT]]:
-        payload, snapshot = await self._fetch_json(path, size_limit=size_limit)
+        payload, snapshot, compressed_bytes = await self._fetch_json(path, size_limit=size_limit)
         if not isinstance(payload, list) or not all(
             isinstance(item, Mapping) and all(isinstance(key, str) for key in item)
             for item in payload
@@ -231,6 +233,7 @@ class FplClient:
         return FetchedPayload(
             payload=[cast(ItemT, dict(item)) for item in payload],
             snapshot=snapshot,
+            compressed_bytes=compressed_bytes,
         )
 
     async def _fetch_json(
@@ -238,7 +241,7 @@ class FplClient:
         path: str,
         *,
         size_limit: int,
-    ) -> tuple[object, SourceSnapshot]:
+    ) -> tuple[object, SourceSnapshot, int]:
         upstream_reference = f"{FPL_API_BASE}{path}"
         response = await self._request_with_retries(upstream_reference)
         try:
@@ -277,7 +280,7 @@ class FplClient:
             content_hash=f"sha256:{hashlib.sha256(content).hexdigest()}",
             upstream_reference=upstream_reference,
         )
-        return payload, snapshot
+        return payload, snapshot, len(gzip.compress(content, mtime=0))
 
     async def _request_with_retries(self, upstream_reference: str) -> httpx.Response:
         if self._consecutive_failures >= CIRCUIT_BREAKER_THRESHOLD:

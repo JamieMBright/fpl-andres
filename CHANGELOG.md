@@ -16,6 +16,9 @@ The project follows Semantic Versioning once milestone tags begin.
   without changing the current-season mean. Crowd snapshot paths, composite-key
   retention counts and frozen xStart artifact revisions now follow their source
   contracts; FPL500 tests no longer assume a field-growth rate.
+- Artifact publishers rebuild after competing bot commits instead of merging
+  generated output. Crowd snapshots retain measured compressed sizes, and
+  capture refreshes cannot cancel or skip validation of a new model version.
 - Model 8.19 folds settled current-season scoring routes into browser solver
   inputs, so after a player has played the historical role prior yields to the
   observed campaign. Player profiles now show the complete latest four
