@@ -1,6 +1,6 @@
 {
   "schemaVersion": 7,
-  "generatedAt": "2026-10-25T19:24:38.397506Z",
+  "generatedAt": "2026-10-25T22:33:06.820069Z",
   "recordSeason": "2026-27",
   "events": [
     9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27,
@@ -188,7 +188,7 @@
       }
     ],
     "sourceReference": "FPL rules page, Transfers section",
-    "dataAvailableAt": "2026-10-25T19:24:38.397506Z",
+    "dataAvailableAt": "2026-10-25T22:33:06.820069Z",
     "playableStartRate": 0.35,
     "transferMarginPoints": 0.5
   },
@@ -2513,11 +2513,11 @@
       "priceTenths": 50,
       "availabilityStatus": "a",
       "chanceOfPlaying": null,
-      "basePoints": 0.442,
+      "basePoints": 0.426,
       "routes": {
         "appearance": 0.285,
         "cleanSheet": 0.138,
-        "bonus": 0.033,
+        "bonus": 0.017,
         "saves": 0.106,
         "conceding": -0.103,
         "yellowCards": -0.017
@@ -6806,6 +6806,48 @@
       }
     },
     {
+      "id": 593,
+      "code": 463726,
+      "name": "Dedi\u0107",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "NEW",
+      "teamId": 17,
+      "priceTenths": 45,
+      "availabilityStatus": "a",
+      "chanceOfPlaying": 100,
+      "basePoints": 0.686,
+      "routes": {
+        "appearance": 0.295,
+        "attacking": 0.166,
+        "cleanSheet": 0.22,
+        "bonus": 0.113,
+        "conceding": -0.111,
+        "yellowCards": -0.001,
+        "defensiveContribution": 0.004
+      },
+      "startRate": 0.612,
+      "startEvidence": {
+        "sourceStartRate": 0.194,
+        "finalStartRate": 0.612,
+        "observedAppearances": 8,
+        "recentStarts": 5,
+        "recentMatches": 8,
+        "recentMinutes": 448,
+        "appearanceSource": "currentSeasonLineup",
+        "lineupAdjustment": 0.418,
+        "marketAdjustment": 0.0,
+        "availabilityAdjustment": 0.0
+      },
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 7,
+      "evidence": {
+        "all": "currentSeasonRoutes",
+        "appearance": "currentSeasonLineup"
+      }
+    },
+    {
       "id": 112,
       "code": 469142,
       "name": "Van Hecke",
@@ -6890,42 +6932,42 @@
       }
     },
     {
-      "id": 593,
-      "code": 463726,
-      "name": "Dedi\u0107",
+      "id": 362,
+      "code": 606702,
+      "name": "Jacquet",
       "position": "DEF",
       "positionId": 2,
-      "club": "NEW",
-      "teamId": 17,
-      "priceTenths": 45,
+      "club": "LIV",
+      "teamId": 14,
+      "priceTenths": 51,
       "availabilityStatus": "a",
       "chanceOfPlaying": 100,
-      "basePoints": 0.659,
+      "basePoints": 0.663,
       "routes": {
-        "appearance": 0.295,
-        "attacking": 0.166,
-        "cleanSheet": 0.22,
-        "bonus": 0.086,
-        "conceding": -0.111,
-        "yellowCards": -0.001,
-        "defensiveContribution": 0.004
+        "appearance": 0.283,
+        "attacking": 0.009,
+        "cleanSheet": 0.27,
+        "bonus": 0.052,
+        "conceding": -0.052,
+        "yellowCards": -0.035,
+        "defensiveContribution": 0.136
       },
-      "startRate": 0.612,
+      "startRate": 0.991,
       "startEvidence": {
-        "sourceStartRate": 0.194,
-        "finalStartRate": 0.612,
+        "sourceStartRate": 0.707,
+        "finalStartRate": 0.991,
         "observedAppearances": 8,
-        "recentStarts": 5,
+        "recentStarts": 8,
         "recentMatches": 8,
-        "recentMinutes": 448,
+        "recentMinutes": 682,
         "appearanceSource": "currentSeasonLineup",
-        "lineupAdjustment": 0.418,
+        "lineupAdjustment": 0.284,
         "marketAdjustment": 0.0,
         "availabilityAdjustment": 0.0
       },
       "squadNumber": null,
       "rated": true,
-      "depthRank": 7,
+      "depthRank": 5,
       "evidence": {
         "all": "currentSeasonRoutes",
         "appearance": "currentSeasonLineup"
@@ -7004,48 +7046,6 @@
         "recentMinutes": 613,
         "appearanceSource": "currentSeasonLineup",
         "lineupAdjustment": 0.282,
-        "marketAdjustment": 0.0,
-        "availabilityAdjustment": 0.0
-      },
-      "squadNumber": null,
-      "rated": true,
-      "depthRank": 5,
-      "evidence": {
-        "all": "currentSeasonRoutes",
-        "appearance": "currentSeasonLineup"
-      }
-    },
-    {
-      "id": 362,
-      "code": 606702,
-      "name": "Jacquet",
-      "position": "DEF",
-      "positionId": 2,
-      "club": "LIV",
-      "teamId": 14,
-      "priceTenths": 51,
-      "availabilityStatus": "a",
-      "chanceOfPlaying": 100,
-      "basePoints": 0.633,
-      "routes": {
-        "appearance": 0.283,
-        "attacking": 0.009,
-        "cleanSheet": 0.27,
-        "bonus": 0.052,
-        "conceding": -0.052,
-        "yellowCards": -0.035,
-        "defensiveContribution": 0.106
-      },
-      "startRate": 0.991,
-      "startEvidence": {
-        "sourceStartRate": 0.707,
-        "finalStartRate": 0.991,
-        "observedAppearances": 8,
-        "recentStarts": 8,
-        "recentMatches": 8,
-        "recentMinutes": 682,
-        "appearanceSource": "currentSeasonLineup",
-        "lineupAdjustment": 0.284,
         "marketAdjustment": 0.0,
         "availabilityAdjustment": 0.0
       },
@@ -18473,6 +18473,47 @@
       }
     },
     {
+      "id": 576,
+      "code": 608227,
+      "name": "Stroud",
+      "position": "MID",
+      "positionId": 3,
+      "club": "HUL",
+      "teamId": 11,
+      "priceTenths": 49,
+      "availabilityStatus": "a",
+      "chanceOfPlaying": null,
+      "basePoints": 0.437,
+      "routes": {
+        "appearance": 0.266,
+        "attacking": 0.088,
+        "cleanSheet": 0.055,
+        "bonus": 0.002,
+        "yellowCards": -0.029,
+        "defensiveContribution": 0.055
+      },
+      "startRate": 0.61,
+      "startEvidence": {
+        "sourceStartRate": 0.132,
+        "finalStartRate": 0.61,
+        "observedAppearances": 8,
+        "recentStarts": 5,
+        "recentMatches": 8,
+        "recentMinutes": 365,
+        "appearanceSource": "currentSeasonLineup",
+        "lineupAdjustment": 0.478,
+        "marketAdjustment": 0.0,
+        "availabilityAdjustment": 0.0
+      },
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 10,
+      "evidence": {
+        "all": "currentSeasonRoutes",
+        "appearance": "currentSeasonLineup"
+      }
+    },
+    {
       "id": 486,
       "code": 432714,
       "name": "McAtee",
@@ -19340,6 +19381,46 @@
       }
     },
     {
+      "id": 240,
+      "code": 490094,
+      "name": "Iroegbunam",
+      "position": "MID",
+      "positionId": 3,
+      "club": "HUL",
+      "teamId": 11,
+      "priceTenths": 50,
+      "availabilityStatus": "a",
+      "chanceOfPlaying": 100,
+      "basePoints": 0.394,
+      "routes": {
+        "appearance": 0.223,
+        "attacking": 0.086,
+        "bonus": 0.057,
+        "yellowCards": -0.031,
+        "defensiveContribution": 0.059
+      },
+      "startRate": 0.123,
+      "startEvidence": {
+        "sourceStartRate": 0.058,
+        "finalStartRate": 0.123,
+        "observedAppearances": 8,
+        "recentStarts": 1,
+        "recentMatches": 8,
+        "recentMinutes": 211,
+        "appearanceSource": "currentSeasonLineup",
+        "lineupAdjustment": 0.065,
+        "marketAdjustment": 0.0,
+        "availabilityAdjustment": 0.0
+      },
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 3,
+      "evidence": {
+        "all": "currentSeasonRoutes",
+        "appearance": "currentSeasonLineup"
+      }
+    },
+    {
       "id": 313,
       "code": 443261,
       "name": "Clarke",
@@ -19457,47 +19538,6 @@
       "squadNumber": null,
       "rated": true,
       "depthRank": 3,
-      "evidence": {
-        "all": "currentSeasonRoutes",
-        "appearance": "currentSeasonLineup"
-      }
-    },
-    {
-      "id": 576,
-      "code": 608227,
-      "name": "Stroud",
-      "position": "MID",
-      "positionId": 3,
-      "club": "HUL",
-      "teamId": 11,
-      "priceTenths": 49,
-      "availabilityStatus": "a",
-      "chanceOfPlaying": null,
-      "basePoints": 0.384,
-      "routes": {
-        "appearance": 0.266,
-        "attacking": 0.088,
-        "cleanSheet": 0.055,
-        "bonus": 0.002,
-        "yellowCards": -0.029,
-        "defensiveContribution": 0.002
-      },
-      "startRate": 0.61,
-      "startEvidence": {
-        "sourceStartRate": 0.132,
-        "finalStartRate": 0.61,
-        "observedAppearances": 8,
-        "recentStarts": 5,
-        "recentMatches": 8,
-        "recentMinutes": 365,
-        "appearanceSource": "currentSeasonLineup",
-        "lineupAdjustment": 0.478,
-        "marketAdjustment": 0.0,
-        "availabilityAdjustment": 0.0
-      },
-      "squadNumber": null,
-      "rated": true,
-      "depthRank": 10,
       "evidence": {
         "all": "currentSeasonRoutes",
         "appearance": "currentSeasonLineup"
@@ -20073,46 +20113,6 @@
       "squadNumber": null,
       "rated": true,
       "depthRank": 1,
-      "evidence": {
-        "all": "currentSeasonRoutes",
-        "appearance": "currentSeasonLineup"
-      }
-    },
-    {
-      "id": 240,
-      "code": 490094,
-      "name": "Iroegbunam",
-      "position": "MID",
-      "positionId": 3,
-      "club": "HUL",
-      "teamId": 11,
-      "priceTenths": 50,
-      "availabilityStatus": "a",
-      "chanceOfPlaying": 100,
-      "basePoints": 0.34,
-      "routes": {
-        "appearance": 0.223,
-        "attacking": 0.086,
-        "bonus": 0.057,
-        "yellowCards": -0.031,
-        "defensiveContribution": 0.005
-      },
-      "startRate": 0.123,
-      "startEvidence": {
-        "sourceStartRate": 0.058,
-        "finalStartRate": 0.123,
-        "observedAppearances": 8,
-        "recentStarts": 1,
-        "recentMatches": 8,
-        "recentMinutes": 211,
-        "appearanceSource": "currentSeasonLineup",
-        "lineupAdjustment": 0.065,
-        "marketAdjustment": 0.0,
-        "availabilityAdjustment": 0.0
-      },
-      "squadNumber": null,
-      "rated": true,
-      "depthRank": 3,
       "evidence": {
         "all": "currentSeasonRoutes",
         "appearance": "currentSeasonLineup"
