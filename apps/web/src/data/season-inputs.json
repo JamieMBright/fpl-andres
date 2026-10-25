@@ -1,6 +1,6 @@
 {
   "schemaVersion": 7,
-  "generatedAt": "2026-10-25T16:13:42.268347Z",
+  "generatedAt": "2026-10-25T16:45:47.522407Z",
   "recordSeason": "2026-27",
   "events": [
     9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27,
@@ -50,14 +50,14 @@
     "playerMarkets": {
       "source": "the-odds-api",
       "level": "observed",
-      "updatedAt": "2026-10-25T13:39:56.631135+00:00",
-      "contentHash": "sha256:0967793815f9bab55ac93ea08ca0e421767f54baf1b16e192f7699e860581b74"
+      "updatedAt": "2026-10-25T16:15:09.783433+00:00",
+      "contentHash": "sha256:004752f943f5c00eed95340127c60e574d67181e3d41b325a6d4b740d137159a"
     },
     "fixtureMarkets": {
       "source": "football-data.co.uk",
       "level": "observed",
-      "updatedAt": "2026-10-25T13:13:37.317170+00:00",
-      "contentHash": "sha256:12f8d539599a53573c1dcf5b071964ce8d84afecf93b50039cff078d7d6248b1"
+      "updatedAt": "2026-10-25T16:13:46.887788+00:00",
+      "contentHash": "sha256:cc5b4bb64702b0736de71b2b2b247624f382c7f3bf504993121a4781b21240f1"
     },
     "understat": {
       "source": "understat",
@@ -188,7 +188,7 @@
       }
     ],
     "sourceReference": "FPL rules page, Transfers section",
-    "dataAvailableAt": "2026-10-25T16:13:42.268347Z",
+    "dataAvailableAt": "2026-10-25T16:45:47.522407Z",
     "playableStartRate": 0.35,
     "transferMarginPoints": 0.5
   },
@@ -818,7 +818,7 @@
   },
   "fixtureEvidence": {
     "source": "football-data.co.uk",
-    "updatedAt": "2026-10-25T13:13:37.317170+00:00",
+    "updatedAt": "2026-10-25T16:13:46.887788+00:00",
     "level": "observed",
     "byClub": {}
   },
@@ -16458,6 +16458,48 @@
       }
     },
     {
+      "id": 98,
+      "code": 204580,
+      "name": "Janelt",
+      "position": "MID",
+      "positionId": 3,
+      "club": "BRE",
+      "teamId": 4,
+      "priceTenths": 50,
+      "availabilityStatus": "a",
+      "chanceOfPlaying": 100,
+      "basePoints": 0.591,
+      "routes": {
+        "appearance": 0.276,
+        "attacking": 0.197,
+        "cleanSheet": 0.039,
+        "bonus": 0.059,
+        "yellowCards": -0.079,
+        "redCards": -0.059,
+        "defensiveContribution": 0.158
+      },
+      "startRate": 0.848,
+      "startEvidence": {
+        "sourceStartRate": 0.0,
+        "finalStartRate": 0.848,
+        "observedAppearances": 8,
+        "recentStarts": 7,
+        "recentMatches": 8,
+        "recentMinutes": 630,
+        "appearanceSource": "currentSeasonLineup",
+        "lineupAdjustment": 0.848,
+        "marketAdjustment": 0.0,
+        "availabilityAdjustment": 0.0
+      },
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 8,
+      "evidence": {
+        "all": "currentSeasonRoutes",
+        "appearance": "currentSeasonLineup"
+      }
+    },
+    {
       "id": 431,
       "code": 493250,
       "name": "Amad",
@@ -22308,40 +22350,6 @@
       "squadNumber": null,
       "rated": false,
       "depthRank": 10,
-      "evidence": {
-        "all": "currentSeasonRoutes",
-        "appearance": "fplAvailability"
-      }
-    },
-    {
-      "id": 98,
-      "code": 204580,
-      "name": "Janelt",
-      "position": "MID",
-      "positionId": 3,
-      "club": "BRE",
-      "teamId": 4,
-      "priceTenths": 50,
-      "availabilityStatus": "s",
-      "chanceOfPlaying": 0,
-      "basePoints": 0,
-      "routes": {},
-      "startRate": 0.0,
-      "startEvidence": {
-        "sourceStartRate": 0.0,
-        "finalStartRate": 0.0,
-        "observedAppearances": 8,
-        "recentStarts": 7,
-        "recentMatches": 8,
-        "recentMinutes": 630,
-        "appearanceSource": "fplAvailability",
-        "lineupAdjustment": 0.848,
-        "marketAdjustment": 0.0,
-        "availabilityAdjustment": -0.848
-      },
-      "squadNumber": null,
-      "rated": true,
-      "depthRank": 8,
       "evidence": {
         "all": "currentSeasonRoutes",
         "appearance": "fplAvailability"
