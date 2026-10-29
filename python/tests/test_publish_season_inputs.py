@@ -508,12 +508,50 @@ def test_current_lineup_blends_played_routes_for_a_cold_start() -> None:
     )
 
     # Two played matches carry eight units against one prior unit.
-    assert draft.routes["attacking"] == pytest.approx((0.5 + 4.0 * 2.0) / 9.0)
-    assert draft.routes["appearance"] == pytest.approx(1.0)
+    assert draft.routes["attacking"] == pytest.approx((0.5 + 4.0 * 4.0) / 9.0)
+    assert draft.routes["appearance"] == pytest.approx((1.0 + 4.0 * 4.0) / 9.0)
     assert draft.evidence["all"] == "currentSeasonRoutes"
 
 
-def test_current_lineup_route_blend_ignores_zero_minute_rows() -> None:
+@pytest.mark.parametrize(("matches", "appearances"), [(1, 1), (2, 2), (8, 8), (8, 4), (8, 0)])
+def test_current_lineup_preserves_per_fixture_route_average(matches: int, appearances: int) -> None:
+    participation = appearances / matches
+    prior = DepthRolePrior(
+        base_points=6.0 * participation,
+        start_rate=participation,
+        expected_minutes=90.0 * participation,
+        expected_goals=0.5 * participation,
+        expected_assists=0.5 * participation,
+        expected_shots=None,
+        expected_bps=None,
+        bps_deviation=None,
+        routes={"appearance": 2.0 * participation, "attacking": 4.0 * participation},
+    )
+    draft = _initial_player_draft(_element(element_type=4), None, prior)
+    assert draft is not None
+
+    _apply_current_lineup(
+        draft,
+        [
+            CurrentLineupObservation(
+                started=match < appearances,
+                minutes=90 if match < appearances else 0,
+                routes={
+                    "appearance": 2.0 if match < appearances else 0.0,
+                    "attacking": 4.0 if match < appearances else 0.0,
+                },
+            )
+            for match in range(matches)
+        ],
+        weight=4.0,
+        prior_strength=1.0,
+    )
+
+    assert draft.routes["appearance"] == pytest.approx(2.0 * participation)
+    assert draft.routes["attacking"] == pytest.approx(4.0 * participation)
+
+
+def test_current_lineup_route_blend_counts_zero_minute_rows() -> None:
     prior = DepthRolePrior(
         base_points=1.5,
         start_rate=0.3,
@@ -534,15 +572,16 @@ def test_current_lineup_route_blend_ignores_zero_minute_rows() -> None:
             CurrentLineupObservation(
                 started=False,
                 minutes=0,
-                routes={"appearance": 0.0, "attacking": 9.0},
+                routes={"appearance": 0.0, "attacking": 0.0},
             )
         ],
         weight=4.0,
         prior_strength=1.0,
     )
 
-    assert draft.routes == {"appearance": 1.0, "attacking": 0.5}
-    assert draft.evidence["all"] == "rolePrior"
+    assert draft.routes["appearance"] == pytest.approx(0.2)
+    assert draft.routes["attacking"] == pytest.approx(0.1)
+    assert draft.evidence["all"] == "currentSeasonRoutes"
 
 
 def test_current_lineup_reads_scoring_routes_from_live_snapshot(tmp_path: Path) -> None:

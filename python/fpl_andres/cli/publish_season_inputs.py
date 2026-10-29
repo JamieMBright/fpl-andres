@@ -1196,8 +1196,9 @@ def _apply_current_lineup(
         raise ValueError("current-lineup posterior has no evidence")
     draft.start_rate = (before * prior_strength + weight * starts) / denominator
     draft.lineup_adjustment = draft.start_rate - before
-    played = [observation for observation in observations if observation.minutes > 0]
-    route_observations = [observation for observation in played if observation.routes is not None]
+    route_observations = [
+        observation for observation in observations if observation.routes is not None
+    ]
     if route_observations:
         route_denominator = prior_strength + weight * len(route_observations)
         if route_denominator <= 0:
@@ -1207,7 +1208,7 @@ def _apply_current_lineup(
                 observation.routes.get(route, 0.0)
                 for observation in route_observations
                 if observation.routes is not None
-            ) / len(route_observations)
+            )
             prior = draft.routes.get(route, 0.0)
             draft.routes[route] = (prior * prior_strength + weight * current) / route_denominator
         draft.evidence["all"] = "currentSeasonRoutes"

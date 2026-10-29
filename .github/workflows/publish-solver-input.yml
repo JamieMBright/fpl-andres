@@ -3,6 +3,7 @@ name: Publish solver input
 # Regenerate season-inputs.json whenever market data updates.
 # Triggered by completed odds ingestions to ensure solver input is fresh
 # with latest fixture odds and player props.
+# Republish model 8.22 after correcting per-fixture lineup route weighting.
 
 on:
   # FPL is the club-assignment authority. Transfers can land between odds or

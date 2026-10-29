@@ -29,6 +29,9 @@ from __future__ import annotations
 
 __all__ = ["MODEL_VERSION"]
 
+#: 8.22 weights current-season scoring routes once per observed fixture,
+#: including non-appearances, rather than double-dividing played-match means.
+#:
 #: 8.21 completes carried prior-season BPS spread estimation and bounds every
 #: contributing appearance by the supplied projection evidence timestamps.
 #: Expected BPS retains its current-season mean; only the observed spread pools
@@ -473,4 +476,4 @@ __all__ = ["MODEL_VERSION"]
 #: projection and resampled, so a gap that does not clear zero is reported as
 #: not clearing zero. No projection changed; what changed is what may be
 #: claimed from it.
-MODEL_VERSION = "8.21"
+MODEL_VERSION = "8.22"
