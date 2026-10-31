@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "season": "2026-27",
-  "fetchedAt": "2026-10-31T18:34:34.309132+00:00",
+  "fetchedAt": "2026-10-31T23:23:36.221638+00:00",
   "source": "the-odds-api",
   "markets": [
     "player_goal_scorer_anytime",
@@ -28,66 +28,12 @@
     "spentThisRun": 0
   },
   "coverage": {
-    "fixturesListed": 15,
+    "fixturesListed": 13,
     "fixturesVisitedThisRun": 0,
     "fixturesWithQuotes": 0
   },
   "nameMappingGaps": [],
   "fixtures": [
-    {
-      "event_id": "01b17432a283eb27af86ae45602eb6dd",
-      "home_team": "Tottenham Hotspur",
-      "away_team": "Crystal Palace",
-      "home_short": "TOT",
-      "away_short": "CRY",
-      "status": "unvisited",
-      "books": 0,
-      "outcomes": 0,
-      "offered_markets": [],
-      "missing_markets": [
-        "player_goal_scorer_anytime",
-        "player_first_goal_scorer",
-        "player_last_goal_scorer",
-        "player_assists",
-        "player_to_receive_card",
-        "player_to_receive_red_card",
-        "player_shots",
-        "player_shots_on_target"
-      ],
-      "player_rows_parsed": 0,
-      "player_rows_matched": 0,
-      "unmatched_names": [],
-      "error": null,
-      "kickoff": "2026-10-31T17:30:00+00:00",
-      "visited_at": null
-    },
-    {
-      "event_id": "640c52a86289f35698261b41987dd71e",
-      "home_team": "Aston Villa",
-      "away_team": "Fulham",
-      "home_short": "AVL",
-      "away_short": "FUL",
-      "status": "unvisited",
-      "books": 0,
-      "outcomes": 0,
-      "offered_markets": [],
-      "missing_markets": [
-        "player_goal_scorer_anytime",
-        "player_first_goal_scorer",
-        "player_last_goal_scorer",
-        "player_assists",
-        "player_to_receive_card",
-        "player_to_receive_red_card",
-        "player_shots",
-        "player_shots_on_target"
-      ],
-      "player_rows_parsed": 0,
-      "player_rows_matched": 0,
-      "unmatched_names": [],
-      "error": null,
-      "kickoff": "2026-10-31T20:00:00+00:00",
-      "visited_at": null
-    },
     {
       "event_id": "6a3819cdbe2ba2fe5a3d8f9b4b459965",
       "home_team": "Liverpool",
