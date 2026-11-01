@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "modelVersion": "8.22",
-  "generatedAt": "2026-10-31T23:38:45.060171Z",
+  "generatedAt": "2026-11-01T05:58:50.582138Z",
   "season": "2026-27",
   "recordSeason": "2026-27",
   "basis": "opening squad, fixture-adjusted projections, solved in overlapping windows and committed 29 gameweeks deep",
@@ -15,6 +15,14 @@
   "poolSize": 89,
   "netExpectedPoints": 2111.25,
   "chips": [
+    {
+      "event": null,
+      "chip": "Wildcard",
+      "half": "first",
+      "gain": 0.0,
+      "ceiling": 3.96,
+      "note": "Re-planning the season around a rebuild here, with the weeks before it freed from having to stay viable afterwards, still scored no more than one transfer a week. Nothing in this projection breaks, so there is nothing for a Wildcard to repair."
+    },
     {
       "event": 12,
       "chip": "Bench Boost",
@@ -41,18 +49,10 @@
     },
     {
       "event": null,
-      "chip": "Wildcard",
-      "half": "first",
-      "gain": 0.0,
-      "ceiling": 4.03,
-      "note": "Re-planning the season around a rebuild here, with the weeks before it freed from having to stay viable afterwards, still scored no more than one transfer a week. Nothing in this projection breaks, so there is nothing for a Wildcard to repair."
-    },
-    {
-      "event": null,
       "chip": "Free Hit",
       "half": "second",
       "gain": 0.0,
-      "ceiling": 1.85,
+      "ceiling": 2.01,
       "note": "The best temporary squad moves only 6 of the fifteen; a Free Hit needs 10 or more changes."
     },
     {
@@ -68,7 +68,7 @@
       "chip": "Wildcard",
       "half": "second",
       "gain": 0.0,
-      "ceiling": 3.52,
+      "ceiling": 3.77,
       "note": "Re-planning the season around a rebuild here, with the weeks before it freed from having to stay viable afterwards, still scored no more than one transfer a week. Nothing in this projection breaks, so there is nothing for a Wildcard to repair."
     },
     {
@@ -86,6 +86,13 @@
     "clubsInLeague": 20
   },
   "players": {
+    "17761": {
+      "name": "Tarkowski",
+      "position": "DEF",
+      "club": "EVE",
+      "priceTenths": 62,
+      "squadNumber": null
+    },
     "60307": {
       "name": "Gro\u00df",
       "position": "MID",
@@ -146,7 +153,7 @@
       "name": "Tavernier",
       "position": "MID",
       "club": "BOU",
-      "priceTenths": 65,
+      "priceTenths": 66,
       "squadNumber": null
     },
     "201666": {
@@ -230,7 +237,7 @@
       "name": "Evanilson",
       "position": "FWD",
       "club": "BOU",
-      "priceTenths": 63,
+      "priceTenths": 64,
       "squadNumber": null
     },
     "446008": {
@@ -251,7 +258,7 @@
       "name": "De Cuyper",
       "position": "DEF",
       "club": "BHA",
-      "priceTenths": 53,
+      "priceTenths": 54,
       "squadNumber": null
     },
     "485055": {
@@ -1280,7 +1287,7 @@
       "transferCostPoints": 0,
       "projectedPoints": 75.17,
       "netExpectedPoints": 75.17,
-      "bankAfterTenths": 24
+      "bankAfterTenths": 23
     },
     {
       "event": 22,
@@ -1360,7 +1367,7 @@
       "transferCostPoints": 0,
       "projectedPoints": 68.52,
       "netExpectedPoints": 68.52,
-      "bankAfterTenths": 20
+      "bankAfterTenths": 19
     },
     {
       "event": 23,
@@ -1440,7 +1447,7 @@
       "transferCostPoints": 0,
       "projectedPoints": 69.28,
       "netExpectedPoints": 69.28,
-      "bankAfterTenths": 65
+      "bankAfterTenths": 64
     },
     {
       "event": 24,
@@ -1520,7 +1527,7 @@
       "transferCostPoints": 0,
       "projectedPoints": 72.33,
       "netExpectedPoints": 72.33,
-      "bankAfterTenths": 9
+      "bankAfterTenths": 10
     },
     {
       "event": 25,
@@ -1600,7 +1607,7 @@
       "transferCostPoints": 0,
       "projectedPoints": 71.82,
       "netExpectedPoints": 71.82,
-      "bankAfterTenths": 9
+      "bankAfterTenths": 10
     },
     {
       "event": 26,
@@ -1693,8 +1700,8 @@
         223094, 610799
       ],
       "bench": [184029, 80201, 444102, 243413],
-      "captain": 502500,
-      "viceCaptain": 514254,
+      "captain": 514254,
+      "viceCaptain": 502500,
       "transfersIn": [444102],
       "transfersOut": [230730],
       "opponents": {
@@ -1762,7 +1769,7 @@
       "transferCostPoints": 0,
       "projectedPoints": 70.24,
       "netExpectedPoints": 70.24,
-      "bankAfterTenths": 10
+      "bankAfterTenths": 9
     },
     {
       "event": 28,
@@ -1842,7 +1849,7 @@
       "transferCostPoints": 0,
       "projectedPoints": 78.99,
       "netExpectedPoints": 78.99,
-      "bankAfterTenths": 10
+      "bankAfterTenths": 9
     },
     {
       "event": 29,
@@ -1922,7 +1929,7 @@
       "transferCostPoints": 0,
       "projectedPoints": 67.95,
       "netExpectedPoints": 67.95,
-      "bankAfterTenths": 9
+      "bankAfterTenths": 8
     },
     {
       "event": 30,
@@ -2650,7 +2657,7 @@
       "transferCostPoints": 0,
       "projectedPoints": 63.32,
       "netExpectedPoints": 63.32,
-      "bankAfterTenths": 2
+      "bankAfterTenths": 3
     }
   ]
 }
