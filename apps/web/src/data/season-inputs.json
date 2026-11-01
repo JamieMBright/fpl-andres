@@ -1,6 +1,6 @@
 {
   "schemaVersion": 7,
-  "generatedAt": "2026-11-01T05:58:48.458463Z",
+  "generatedAt": "2026-11-01T06:23:46.869171Z",
   "recordSeason": "2026-27",
   "events": [
     10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28,
@@ -49,14 +49,14 @@
     "playerMarkets": {
       "source": "the-odds-api",
       "level": "observed",
-      "updatedAt": "2026-10-31T23:23:36.221638+00:00",
-      "contentHash": "sha256:ee4b92c1a760df88a3fa171ee45973358210534bfe31fb8218b7750d46e2a044"
+      "updatedAt": "2026-11-01T06:00:00.087664+00:00",
+      "contentHash": "sha256:f772069ea64837e9d3da4fee4f6f06be13e79f0e13c570c5d5ac6c6ffa354e64"
     },
     "fixtureMarkets": {
       "source": "football-data.co.uk",
       "level": "observed",
-      "updatedAt": "2026-10-31T23:22:35.320517+00:00",
-      "contentHash": "sha256:dd631916ae388c94ec71554556361279d1c5e8f0e4f3930dfcf947c71cb0e229"
+      "updatedAt": "2026-11-01T05:58:49.570747+00:00",
+      "contentHash": "sha256:a77ba679744f470b69540c5f822a8f402550c4ed36d274418e5becc346351ff1"
     },
     "understat": {
       "source": "understat",
@@ -114,11 +114,11 @@
   },
   "market": {
     "attackingRoutes": 0,
-    "playersQuoted": 0,
-    "cardRoutes": 0,
-    "playersQuotedForCards": 0,
+    "playersQuoted": 37,
+    "cardRoutes": 43,
+    "playersQuotedForCards": 43,
     "shotRoutes": 0,
-    "playersQuotedForShots": 0,
+    "playersQuotedForShots": 33,
     "startRatesCut": 0,
     "squadsNamed": 0,
     "fixtureRungs": 0,
@@ -135,9 +135,24 @@
       "shotsOnTarget": "availability; bps-when-paired"
     },
     "teamTotalReconciliation": {
-      "clubsAnchored": 0,
-      "medianExponent": null,
-      "clubs": []
+      "clubsAnchored": 2,
+      "medianExponent": 2.9576,
+      "clubs": [
+        {
+          "club": "ARS",
+          "playerEvents": 3.8088,
+          "teamEvents": 1.4604,
+          "exponent": 1.6513,
+          "quotedPlayers": 17
+        },
+        {
+          "club": "LIV",
+          "playerEvents": 7.5695,
+          "teamEvents": 1.2721,
+          "exponent": 2.9576,
+          "quotedPlayers": 20
+        }
+      ]
     }
   },
   "marketCarry": {
@@ -187,7 +202,7 @@
       }
     ],
     "sourceReference": "FPL rules page, Transfers section",
-    "dataAvailableAt": "2026-11-01T05:58:48.458463Z",
+    "dataAvailableAt": "2026-11-01T06:23:46.869171Z",
     "playableStartRate": 0.35,
     "transferMarginPoints": 0.5
   },
@@ -817,7 +832,7 @@
   },
   "fixtureEvidence": {
     "source": "football-data.co.uk",
-    "updatedAt": "2026-10-31T23:22:35.320517+00:00",
+    "updatedAt": "2026-11-01T05:58:49.570747+00:00",
     "level": "observed",
     "byClub": {}
   },
@@ -1486,46 +1501,6 @@
       }
     },
     {
-      "id": 1,
-      "code": 154561,
-      "name": "Raya",
-      "position": "GKP",
-      "positionId": 1,
-      "club": "ARS",
-      "teamId": 1,
-      "priceTenths": 62,
-      "availabilityStatus": "a",
-      "chanceOfPlaying": null,
-      "basePoints": 4.887,
-      "routes": {
-        "appearance": 1.779,
-        "cleanSheet": 2.211,
-        "bonus": 0.663,
-        "saves": 0.346,
-        "conceding": -0.112
-      },
-      "startRate": 0.89,
-      "startEvidence": {
-        "sourceStartRate": 0.92,
-        "finalStartRate": 0.89,
-        "observedAppearances": 9,
-        "recentStarts": 8,
-        "recentMatches": 9,
-        "recentMinutes": 720,
-        "appearanceSource": "currentSeasonLineup",
-        "lineupAdjustment": -0.03,
-        "marketAdjustment": 0.0,
-        "availabilityAdjustment": 0.0
-      },
-      "squadNumber": null,
-      "rated": true,
-      "depthRank": 1,
-      "evidence": {
-        "all": "currentSeasonRoutes",
-        "appearance": "currentSeasonLineup"
-      }
-    },
-    {
       "id": 385,
       "code": 432720,
       "name": "Trafford",
@@ -1563,6 +1538,50 @@
       "evidence": {
         "all": "currentSeasonRoutes",
         "appearance": "currentSeasonLineup"
+      }
+    },
+    {
+      "id": 1,
+      "code": 154561,
+      "name": "Raya",
+      "position": "GKP",
+      "positionId": 1,
+      "club": "ARS",
+      "teamId": 1,
+      "priceTenths": 62,
+      "availabilityStatus": "a",
+      "chanceOfPlaying": null,
+      "basePoints": 4.82,
+      "routes": {
+        "appearance": 1.779,
+        "cleanSheet": 2.211,
+        "bonus": 0.663,
+        "saves": 0.346,
+        "conceding": -0.112,
+        "yellowCards": -0.05,
+        "redCards": -0.017
+      },
+      "startRate": 0.89,
+      "startEvidence": {
+        "sourceStartRate": 0.92,
+        "finalStartRate": 0.89,
+        "observedAppearances": 9,
+        "recentStarts": 8,
+        "recentMatches": 9,
+        "recentMinutes": 720,
+        "appearanceSource": "currentSeasonLineup",
+        "lineupAdjustment": -0.03,
+        "marketAdjustment": 0.0,
+        "availabilityAdjustment": 0.0
+      },
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1,
+      "evidence": {
+        "all": "currentSeasonRoutes",
+        "appearance": "currentSeasonLineup",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
       }
     },
     {
@@ -1647,47 +1666,6 @@
       }
     },
     {
-      "id": 350,
-      "code": 116535,
-      "name": "A.Becker",
-      "position": "GKP",
-      "positionId": 1,
-      "club": "LIV",
-      "teamId": 14,
-      "priceTenths": 55,
-      "availabilityStatus": "a",
-      "chanceOfPlaying": null,
-      "basePoints": 3.998,
-      "routes": {
-        "appearance": 1.779,
-        "cleanSheet": 1.77,
-        "bonus": 0.553,
-        "saves": 0.336,
-        "conceding": -0.33,
-        "yellowCards": -0.11
-      },
-      "startRate": 0.89,
-      "startEvidence": {
-        "sourceStartRate": 0.916,
-        "finalStartRate": 0.89,
-        "observedAppearances": 9,
-        "recentStarts": 8,
-        "recentMatches": 9,
-        "recentMinutes": 720,
-        "appearanceSource": "currentSeasonLineup",
-        "lineupAdjustment": -0.026,
-        "marketAdjustment": 0.0,
-        "availabilityAdjustment": 0.0
-      },
-      "squadNumber": null,
-      "rated": true,
-      "depthRank": 1,
-      "evidence": {
-        "all": "currentSeasonRoutes",
-        "appearance": "currentSeasonLineup"
-      }
-    },
-    {
       "id": 250,
       "code": 80201,
       "name": "Leno",
@@ -1725,6 +1703,50 @@
       "evidence": {
         "all": "currentSeasonRoutes",
         "appearance": "currentSeasonLineup"
+      }
+    },
+    {
+      "id": 350,
+      "code": 116535,
+      "name": "A.Becker",
+      "position": "GKP",
+      "positionId": 1,
+      "club": "LIV",
+      "teamId": 14,
+      "priceTenths": 55,
+      "availabilityStatus": "a",
+      "chanceOfPlaying": null,
+      "basePoints": 3.992,
+      "routes": {
+        "appearance": 1.779,
+        "cleanSheet": 1.77,
+        "bonus": 0.553,
+        "saves": 0.336,
+        "conceding": -0.33,
+        "yellowCards": -0.099,
+        "redCards": -0.017
+      },
+      "startRate": 0.89,
+      "startEvidence": {
+        "sourceStartRate": 0.916,
+        "finalStartRate": 0.89,
+        "observedAppearances": 9,
+        "recentStarts": 8,
+        "recentMatches": 9,
+        "recentMinutes": 720,
+        "appearanceSource": "currentSeasonLineup",
+        "lineupAdjustment": -0.026,
+        "marketAdjustment": 0.0,
+        "availabilityAdjustment": 0.0
+      },
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 1,
+      "evidence": {
+        "all": "currentSeasonRoutes",
+        "appearance": "currentSeasonLineup",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
       }
     },
     {
@@ -2408,86 +2430,6 @@
       "squadNumber": null,
       "rated": false,
       "depthRank": 1,
-      "evidence": {
-        "all": "currentSeasonRoutes",
-        "appearance": "currentSeasonLineup"
-      }
-    },
-    {
-      "id": 2,
-      "code": 109745,
-      "name": "Arrizabalaga",
-      "position": "GKP",
-      "positionId": 1,
-      "club": "ARS",
-      "teamId": 1,
-      "priceTenths": 49,
-      "availabilityStatus": "a",
-      "chanceOfPlaying": null,
-      "basePoints": 0.013,
-      "routes": {
-        "appearance": 0.007,
-        "cleanSheet": 0.004,
-        "bonus": 0.001,
-        "saves": 0.003,
-        "conceding": -0.002
-      },
-      "startRate": 0.004,
-      "startEvidence": {
-        "sourceStartRate": 0.138,
-        "finalStartRate": 0.004,
-        "observedAppearances": 9,
-        "recentStarts": 0,
-        "recentMatches": 9,
-        "recentMinutes": 0,
-        "appearanceSource": "currentSeasonLineup",
-        "lineupAdjustment": -0.134,
-        "marketAdjustment": 0.0,
-        "availabilityAdjustment": 0.0
-      },
-      "squadNumber": null,
-      "rated": false,
-      "depthRank": 2,
-      "evidence": {
-        "all": "currentSeasonRoutes",
-        "appearance": "currentSeasonLineup"
-      }
-    },
-    {
-      "id": 3,
-      "code": 437495,
-      "name": "Meslier",
-      "position": "GKP",
-      "positionId": 1,
-      "club": "ARS",
-      "teamId": 1,
-      "priceTenths": 49,
-      "availabilityStatus": "a",
-      "chanceOfPlaying": null,
-      "basePoints": 0.013,
-      "routes": {
-        "appearance": 0.007,
-        "cleanSheet": 0.004,
-        "bonus": 0.001,
-        "saves": 0.003,
-        "conceding": -0.002
-      },
-      "startRate": 0.004,
-      "startEvidence": {
-        "sourceStartRate": 0.138,
-        "finalStartRate": 0.004,
-        "observedAppearances": 9,
-        "recentStarts": 0,
-        "recentMatches": 9,
-        "recentMinutes": 0,
-        "appearanceSource": "currentSeasonLineup",
-        "lineupAdjustment": -0.134,
-        "marketAdjustment": 0.0,
-        "availabilityAdjustment": 0.0
-      },
-      "squadNumber": null,
-      "rated": false,
-      "depthRank": 2,
       "evidence": {
         "all": "currentSeasonRoutes",
         "appearance": "currentSeasonLineup"
@@ -3284,74 +3226,6 @@
       "squadNumber": null,
       "rated": false,
       "depthRank": 4,
-      "evidence": {
-        "all": "currentSeasonRoutes",
-        "appearance": "currentSeasonLineup"
-      }
-    },
-    {
-      "id": 351,
-      "code": 449027,
-      "name": "Mamardashvili",
-      "position": "GKP",
-      "positionId": 1,
-      "club": "LIV",
-      "teamId": 14,
-      "priceTenths": 48,
-      "availabilityStatus": "a",
-      "chanceOfPlaying": null,
-      "basePoints": 0.002,
-      "routes": { "appearance": 0.002 },
-      "startRate": 0.001,
-      "startEvidence": {
-        "sourceStartRate": 0.046,
-        "finalStartRate": 0.001,
-        "observedAppearances": 9,
-        "recentStarts": 0,
-        "recentMatches": 9,
-        "recentMinutes": 0,
-        "appearanceSource": "currentSeasonLineup",
-        "lineupAdjustment": -0.045,
-        "marketAdjustment": 0.0,
-        "availabilityAdjustment": 0.0
-      },
-      "squadNumber": null,
-      "rated": true,
-      "depthRank": 2,
-      "evidence": {
-        "all": "currentSeasonRoutes",
-        "appearance": "currentSeasonLineup"
-      }
-    },
-    {
-      "id": 352,
-      "code": 155503,
-      "name": "Woodman",
-      "position": "GKP",
-      "positionId": 1,
-      "club": "LIV",
-      "teamId": 14,
-      "priceTenths": 40,
-      "availabilityStatus": "a",
-      "chanceOfPlaying": null,
-      "basePoints": 0.002,
-      "routes": { "appearance": 0.002 },
-      "startRate": 0.001,
-      "startEvidence": {
-        "sourceStartRate": 0.043,
-        "finalStartRate": 0.001,
-        "observedAppearances": 9,
-        "recentStarts": 0,
-        "recentMatches": 9,
-        "recentMinutes": 0,
-        "appearanceSource": "currentSeasonLineup",
-        "lineupAdjustment": -0.042,
-        "marketAdjustment": 0.0,
-        "availabilityAdjustment": 0.0
-      },
-      "squadNumber": null,
-      "rated": true,
-      "depthRank": 3,
       "evidence": {
         "all": "currentSeasonRoutes",
         "appearance": "currentSeasonLineup"
@@ -4174,6 +4048,174 @@
       }
     },
     {
+      "id": 2,
+      "code": 109745,
+      "name": "Arrizabalaga",
+      "position": "GKP",
+      "positionId": 1,
+      "club": "ARS",
+      "teamId": 1,
+      "priceTenths": 49,
+      "availabilityStatus": "a",
+      "chanceOfPlaying": null,
+      "basePoints": -0.05,
+      "routes": {
+        "appearance": 0.007,
+        "cleanSheet": 0.004,
+        "bonus": 0.001,
+        "saves": 0.003,
+        "conceding": -0.002,
+        "yellowCards": -0.046,
+        "redCards": -0.017
+      },
+      "startRate": 0.004,
+      "startEvidence": {
+        "sourceStartRate": 0.138,
+        "finalStartRate": 0.004,
+        "observedAppearances": 9,
+        "recentStarts": 0,
+        "recentMatches": 9,
+        "recentMinutes": 0,
+        "appearanceSource": "currentSeasonLineup",
+        "lineupAdjustment": -0.134,
+        "marketAdjustment": 0.0,
+        "availabilityAdjustment": 0.0
+      },
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 2,
+      "evidence": {
+        "all": "currentSeasonRoutes",
+        "appearance": "currentSeasonLineup",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
+    },
+    {
+      "id": 3,
+      "code": 437495,
+      "name": "Meslier",
+      "position": "GKP",
+      "positionId": 1,
+      "club": "ARS",
+      "teamId": 1,
+      "priceTenths": 49,
+      "availabilityStatus": "a",
+      "chanceOfPlaying": null,
+      "basePoints": -0.05,
+      "routes": {
+        "appearance": 0.007,
+        "cleanSheet": 0.004,
+        "bonus": 0.001,
+        "saves": 0.003,
+        "conceding": -0.002,
+        "yellowCards": -0.046,
+        "redCards": -0.017
+      },
+      "startRate": 0.004,
+      "startEvidence": {
+        "sourceStartRate": 0.138,
+        "finalStartRate": 0.004,
+        "observedAppearances": 9,
+        "recentStarts": 0,
+        "recentMatches": 9,
+        "recentMinutes": 0,
+        "appearanceSource": "currentSeasonLineup",
+        "lineupAdjustment": -0.134,
+        "marketAdjustment": 0.0,
+        "availabilityAdjustment": 0.0
+      },
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 2,
+      "evidence": {
+        "all": "currentSeasonRoutes",
+        "appearance": "currentSeasonLineup",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
+    },
+    {
+      "id": 351,
+      "code": 449027,
+      "name": "Mamardashvili",
+      "position": "GKP",
+      "positionId": 1,
+      "club": "LIV",
+      "teamId": 14,
+      "priceTenths": 48,
+      "availabilityStatus": "a",
+      "chanceOfPlaying": null,
+      "basePoints": -0.063,
+      "routes": {
+        "appearance": 0.002,
+        "yellowCards": -0.048,
+        "redCards": -0.017
+      },
+      "startRate": 0.001,
+      "startEvidence": {
+        "sourceStartRate": 0.046,
+        "finalStartRate": 0.001,
+        "observedAppearances": 9,
+        "recentStarts": 0,
+        "recentMatches": 9,
+        "recentMinutes": 0,
+        "appearanceSource": "currentSeasonLineup",
+        "lineupAdjustment": -0.045,
+        "marketAdjustment": 0.0,
+        "availabilityAdjustment": 0.0
+      },
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 2,
+      "evidence": {
+        "all": "currentSeasonRoutes",
+        "appearance": "currentSeasonLineup",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
+    },
+    {
+      "id": 352,
+      "code": 155503,
+      "name": "Woodman",
+      "position": "GKP",
+      "positionId": 1,
+      "club": "LIV",
+      "teamId": 14,
+      "priceTenths": 40,
+      "availabilityStatus": "a",
+      "chanceOfPlaying": null,
+      "basePoints": -0.063,
+      "routes": {
+        "appearance": 0.002,
+        "yellowCards": -0.048,
+        "redCards": -0.017
+      },
+      "startRate": 0.001,
+      "startEvidence": {
+        "sourceStartRate": 0.043,
+        "finalStartRate": 0.001,
+        "observedAppearances": 9,
+        "recentStarts": 0,
+        "recentMatches": 9,
+        "recentMinutes": 0,
+        "appearanceSource": "currentSeasonLineup",
+        "lineupAdjustment": -0.042,
+        "marketAdjustment": 0.0,
+        "availabilityAdjustment": 0.0
+      },
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 3,
+      "evidence": {
+        "all": "currentSeasonRoutes",
+        "appearance": "currentSeasonLineup",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
+    },
+    {
       "id": 115,
       "code": 465730,
       "name": "De Cuyper",
@@ -4310,14 +4352,15 @@
       "priceTenths": 80,
       "availabilityStatus": "a",
       "chanceOfPlaying": null,
-      "basePoints": 5.754,
+      "basePoints": 5.738,
       "routes": {
         "appearance": 1.776,
         "attacking": 0.67,
         "cleanSheet": 2.206,
         "bonus": 0.551,
         "conceding": -0.112,
-        "yellowCards": -0.222,
+        "yellowCards": -0.217,
+        "redCards": -0.021,
         "defensiveContribution": 0.885
       },
       "startRate": 0.89,
@@ -4338,7 +4381,9 @@
       "depthRank": 1,
       "evidence": {
         "all": "currentSeasonRoutes",
-        "appearance": "currentSeasonLineup"
+        "appearance": "currentSeasonLineup",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
       }
     },
     {
@@ -4468,48 +4513,6 @@
       }
     },
     {
-      "id": 8,
-      "code": 466075,
-      "name": "Calafiori",
-      "position": "DEF",
-      "positionId": 2,
-      "club": "ARS",
-      "teamId": 1,
-      "priceTenths": 59,
-      "availabilityStatus": "d",
-      "chanceOfPlaying": 75,
-      "basePoints": 4.945,
-      "routes": {
-        "appearance": 1.657,
-        "attacking": 1.315,
-        "cleanSheet": 1.754,
-        "bonus": 0.33,
-        "conceding": -0.112,
-        "yellowCards": -0.001,
-        "defensiveContribution": 0.002
-      },
-      "startRate": 0.773,
-      "startEvidence": {
-        "sourceStartRate": 0.586,
-        "finalStartRate": 0.773,
-        "observedAppearances": 9,
-        "recentStarts": 7,
-        "recentMatches": 9,
-        "recentMinutes": 609,
-        "appearanceSource": "currentSeasonLineup",
-        "lineupAdjustment": 0.187,
-        "marketAdjustment": 0.0,
-        "availabilityAdjustment": 0.0
-      },
-      "squadNumber": null,
-      "rated": true,
-      "depthRank": 3,
-      "evidence": {
-        "all": "currentSeasonRoutes",
-        "appearance": "currentSeasonLineup"
-      }
-    },
-    {
       "id": 391,
       "code": 477424,
       "name": "Gvardiol",
@@ -4549,6 +4552,51 @@
       "evidence": {
         "all": "currentSeasonRoutes",
         "appearance": "currentSeasonLineup"
+      }
+    },
+    {
+      "id": 8,
+      "code": 466075,
+      "name": "Calafiori",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "ARS",
+      "teamId": 1,
+      "priceTenths": 59,
+      "availabilityStatus": "d",
+      "chanceOfPlaying": 75,
+      "basePoints": 4.752,
+      "routes": {
+        "appearance": 1.657,
+        "attacking": 1.315,
+        "cleanSheet": 1.754,
+        "bonus": 0.33,
+        "conceding": -0.112,
+        "yellowCards": -0.164,
+        "redCards": -0.03,
+        "defensiveContribution": 0.002
+      },
+      "startRate": 0.773,
+      "startEvidence": {
+        "sourceStartRate": 0.586,
+        "finalStartRate": 0.773,
+        "observedAppearances": 9,
+        "recentStarts": 7,
+        "recentMatches": 9,
+        "recentMinutes": 609,
+        "appearanceSource": "currentSeasonLineup",
+        "lineupAdjustment": 0.187,
+        "marketAdjustment": 0.0,
+        "availabilityAdjustment": 0.0
+      },
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 3,
+      "evidence": {
+        "all": "currentSeasonRoutes",
+        "appearance": "currentSeasonLineup",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
       }
     },
     {
@@ -4604,14 +4652,15 @@
       "priceTenths": 54,
       "availabilityStatus": "a",
       "chanceOfPlaying": 100,
-      "basePoints": 4.631,
+      "basePoints": 4.499,
       "routes": {
         "appearance": 1.446,
         "attacking": 0.983,
         "cleanSheet": 1.763,
         "bonus": 0.441,
         "conceding": -0.004,
-        "yellowCards": -0.002,
+        "yellowCards": -0.115,
+        "redCards": -0.019,
         "defensiveContribution": 0.004
       },
       "startRate": 0.777,
@@ -4632,7 +4681,9 @@
       "depthRank": 5,
       "evidence": {
         "all": "currentSeasonRoutes",
-        "appearance": "currentSeasonLineup"
+        "appearance": "currentSeasonLineup",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
       }
     },
     {
@@ -4714,48 +4765,6 @@
       "squadNumber": null,
       "rated": true,
       "depthRank": 4,
-      "evidence": {
-        "all": "currentSeasonRoutes",
-        "appearance": "currentSeasonLineup"
-      }
-    },
-    {
-      "id": 31,
-      "code": 199798,
-      "name": "Konsa",
-      "position": "DEF",
-      "positionId": 2,
-      "club": "ARS",
-      "teamId": 1,
-      "priceTenths": 47,
-      "availabilityStatus": "a",
-      "chanceOfPlaying": 100,
-      "basePoints": 4.308,
-      "routes": {
-        "appearance": 1.448,
-        "attacking": 0.657,
-        "cleanSheet": 1.324,
-        "bonus": 0.552,
-        "conceding": -0.114,
-        "yellowCards": -0.002,
-        "defensiveContribution": 0.443
-      },
-      "startRate": 0.668,
-      "startEvidence": {
-        "sourceStartRate": 0.73,
-        "finalStartRate": 0.668,
-        "observedAppearances": 9,
-        "recentStarts": 6,
-        "recentMatches": 9,
-        "recentMinutes": 551,
-        "appearanceSource": "currentSeasonLineup",
-        "lineupAdjustment": -0.062,
-        "marketAdjustment": 0.0,
-        "availabilityAdjustment": 0.0
-      },
-      "squadNumber": null,
-      "rated": true,
-      "depthRank": 8,
       "evidence": {
         "all": "currentSeasonRoutes",
         "appearance": "currentSeasonLineup"
@@ -4856,14 +4865,15 @@
       "priceTenths": 64,
       "availabilityStatus": "a",
       "chanceOfPlaying": null,
-      "basePoints": 4.22,
+      "basePoints": 4.221,
       "routes": {
         "appearance": 1.777,
         "attacking": 0.012,
         "cleanSheet": 1.767,
         "bonus": 0.111,
         "conceding": -0.33,
-        "yellowCards": -0.222,
+        "yellowCards": -0.201,
+        "redCards": -0.02,
         "defensiveContribution": 1.105
       },
       "startRate": 0.89,
@@ -4884,7 +4894,9 @@
       "depthRank": 1,
       "evidence": {
         "all": "currentSeasonRoutes",
-        "appearance": "currentSeasonLineup"
+        "appearance": "currentSeasonLineup",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
       }
     },
     {
@@ -4940,14 +4952,15 @@
       "priceTenths": 51,
       "availabilityStatus": "a",
       "chanceOfPlaying": 100,
-      "basePoints": 4.194,
+      "basePoints": 4.202,
       "routes": {
         "appearance": 1.766,
         "attacking": 0.008,
         "cleanSheet": 1.759,
         "bonus": 0.33,
         "conceding": -0.329,
-        "yellowCards": -0.22,
+        "yellowCards": -0.189,
+        "redCards": -0.023,
         "defensiveContribution": 0.88
       },
       "startRate": 0.884,
@@ -4968,7 +4981,54 @@
       "depthRank": 5,
       "evidence": {
         "all": "currentSeasonRoutes",
-        "appearance": "currentSeasonLineup"
+        "appearance": "currentSeasonLineup",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
+    },
+    {
+      "id": 31,
+      "code": 199798,
+      "name": "Konsa",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "ARS",
+      "teamId": 1,
+      "priceTenths": 47,
+      "availabilityStatus": "a",
+      "chanceOfPlaying": 100,
+      "basePoints": 4.176,
+      "routes": {
+        "appearance": 1.448,
+        "attacking": 0.657,
+        "cleanSheet": 1.324,
+        "bonus": 0.552,
+        "conceding": -0.114,
+        "yellowCards": -0.114,
+        "redCards": -0.02,
+        "defensiveContribution": 0.443
+      },
+      "startRate": 0.668,
+      "startEvidence": {
+        "sourceStartRate": 0.73,
+        "finalStartRate": 0.668,
+        "observedAppearances": 9,
+        "recentStarts": 6,
+        "recentMatches": 9,
+        "recentMinutes": 551,
+        "appearanceSource": "currentSeasonLineup",
+        "lineupAdjustment": -0.062,
+        "marketAdjustment": 0.0,
+        "availabilityAdjustment": 0.0
+      },
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 8,
+      "evidence": {
+        "all": "currentSeasonRoutes",
+        "appearance": "currentSeasonLineup",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
       }
     },
     {
@@ -5350,48 +5410,6 @@
       }
     },
     {
-      "id": 579,
-      "code": 445087,
-      "name": "Araujo",
-      "position": "DEF",
-      "positionId": 2,
-      "club": "LIV",
-      "teamId": 14,
-      "priceTenths": 54,
-      "availabilityStatus": "a",
-      "chanceOfPlaying": null,
-      "basePoints": 3.643,
-      "routes": {
-        "appearance": 1.444,
-        "attacking": 0.005,
-        "cleanSheet": 1.751,
-        "bonus": 0.332,
-        "conceding": -0.111,
-        "yellowCards": -0.221,
-        "defensiveContribution": 0.443
-      },
-      "startRate": 0.663,
-      "startEvidence": {
-        "sourceStartRate": 0.518,
-        "finalStartRate": 0.663,
-        "observedAppearances": 9,
-        "recentStarts": 6,
-        "recentMatches": 9,
-        "recentMinutes": 493,
-        "appearanceSource": "currentSeasonLineup",
-        "lineupAdjustment": 0.145,
-        "marketAdjustment": 0.0,
-        "availabilityAdjustment": 0.0
-      },
-      "squadNumber": null,
-      "rated": true,
-      "depthRank": 2,
-      "evidence": {
-        "all": "currentSeasonRoutes",
-        "appearance": "currentSeasonLineup"
-      }
-    },
-    {
       "id": 88,
       "code": 607464,
       "name": "Kayode",
@@ -5431,6 +5449,51 @@
       "evidence": {
         "all": "currentSeasonRoutes",
         "appearance": "currentSeasonLineup"
+      }
+    },
+    {
+      "id": 579,
+      "code": 445087,
+      "name": "Araujo",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "LIV",
+      "teamId": 14,
+      "priceTenths": 54,
+      "availabilityStatus": "a",
+      "chanceOfPlaying": null,
+      "basePoints": 3.602,
+      "routes": {
+        "appearance": 1.444,
+        "attacking": 0.005,
+        "cleanSheet": 1.751,
+        "bonus": 0.332,
+        "conceding": -0.111,
+        "yellowCards": -0.235,
+        "redCards": -0.027,
+        "defensiveContribution": 0.443
+      },
+      "startRate": 0.663,
+      "startEvidence": {
+        "sourceStartRate": 0.518,
+        "finalStartRate": 0.663,
+        "observedAppearances": 9,
+        "recentStarts": 6,
+        "recentMatches": 9,
+        "recentMinutes": 493,
+        "appearanceSource": "currentSeasonLineup",
+        "lineupAdjustment": 0.145,
+        "marketAdjustment": 0.0,
+        "availabilityAdjustment": 0.0
+      },
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 2,
+      "evidence": {
+        "all": "currentSeasonRoutes",
+        "appearance": "currentSeasonLineup",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
       }
     },
     {
@@ -6484,48 +6547,6 @@
       }
     },
     {
-      "id": 358,
-      "code": 544877,
-      "name": "Kerkez",
-      "position": "DEF",
-      "positionId": 2,
-      "club": "LIV",
-      "teamId": 14,
-      "priceTenths": 53,
-      "availabilityStatus": "a",
-      "chanceOfPlaying": null,
-      "basePoints": 2.451,
-      "routes": {
-        "appearance": 1.668,
-        "attacking": 0.008,
-        "cleanSheet": 1.324,
-        "bonus": 0.002,
-        "conceding": -0.332,
-        "yellowCards": -0.222,
-        "defensiveContribution": 0.003
-      },
-      "startRate": 0.779,
-      "startEvidence": {
-        "sourceStartRate": 0.816,
-        "finalStartRate": 0.779,
-        "observedAppearances": 9,
-        "recentStarts": 7,
-        "recentMatches": 9,
-        "recentMinutes": 652,
-        "appearanceSource": "currentSeasonLineup",
-        "lineupAdjustment": -0.037,
-        "marketAdjustment": 0.0,
-        "availabilityAdjustment": 0.0
-      },
-      "squadNumber": null,
-      "rated": true,
-      "depthRank": 3,
-      "evidence": {
-        "all": "currentSeasonRoutes",
-        "appearance": "currentSeasonLineup"
-      }
-    },
-    {
       "id": 588,
       "code": 570794,
       "name": "Khalaili",
@@ -6607,6 +6628,51 @@
       "evidence": {
         "all": "currentSeasonRoutes",
         "appearance": "currentSeasonLineup"
+      }
+    },
+    {
+      "id": 358,
+      "code": 544877,
+      "name": "Kerkez",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "LIV",
+      "teamId": 14,
+      "priceTenths": 53,
+      "availabilityStatus": "a",
+      "chanceOfPlaying": null,
+      "basePoints": 2.416,
+      "routes": {
+        "appearance": 1.668,
+        "attacking": 0.008,
+        "cleanSheet": 1.324,
+        "bonus": 0.002,
+        "conceding": -0.332,
+        "yellowCards": -0.233,
+        "redCards": -0.024,
+        "defensiveContribution": 0.003
+      },
+      "startRate": 0.779,
+      "startEvidence": {
+        "sourceStartRate": 0.816,
+        "finalStartRate": 0.779,
+        "observedAppearances": 9,
+        "recentStarts": 7,
+        "recentMatches": 9,
+        "recentMinutes": 652,
+        "appearanceSource": "currentSeasonLineup",
+        "lineupAdjustment": -0.037,
+        "marketAdjustment": 0.0,
+        "availabilityAdjustment": 0.0
+      },
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 3,
+      "evidence": {
+        "all": "currentSeasonRoutes",
+        "appearance": "currentSeasonLineup",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
       }
     },
     {
@@ -7748,48 +7814,6 @@
       }
     },
     {
-      "id": 11,
-      "code": 500040,
-      "name": "Mosquera",
-      "position": "DEF",
-      "positionId": 2,
-      "club": "ARS",
-      "teamId": 1,
-      "priceTenths": 52,
-      "availabilityStatus": "a",
-      "chanceOfPlaying": 100,
-      "basePoints": 1.324,
-      "routes": {
-        "appearance": 0.445,
-        "attacking": 0.002,
-        "cleanSheet": 0.876,
-        "bonus": 0.001,
-        "conceding": -0.001,
-        "yellowCards": -0.001,
-        "defensiveContribution": 0.002
-      },
-      "startRate": 0.223,
-      "startEvidence": {
-        "sourceStartRate": 0.236,
-        "finalStartRate": 0.223,
-        "observedAppearances": 9,
-        "recentStarts": 2,
-        "recentMatches": 9,
-        "recentMinutes": 168,
-        "appearanceSource": "currentSeasonLineup",
-        "lineupAdjustment": -0.013,
-        "marketAdjustment": 0.0,
-        "availabilityAdjustment": 0.0
-      },
-      "squadNumber": null,
-      "rated": true,
-      "depthRank": 6,
-      "evidence": {
-        "all": "currentSeasonRoutes",
-        "appearance": "currentSeasonLineup"
-      }
-    },
-    {
       "id": 420,
       "code": 550864,
       "name": "Yoro",
@@ -8283,6 +8307,51 @@
       "evidence": {
         "all": "currentSeasonRoutes",
         "appearance": "currentSeasonLineup"
+      }
+    },
+    {
+      "id": 11,
+      "code": 500040,
+      "name": "Mosquera",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "ARS",
+      "teamId": 1,
+      "priceTenths": 52,
+      "availabilityStatus": "a",
+      "chanceOfPlaying": 100,
+      "basePoints": 0.978,
+      "routes": {
+        "appearance": 0.445,
+        "attacking": 0.002,
+        "cleanSheet": 0.876,
+        "bonus": 0.001,
+        "conceding": -0.001,
+        "yellowCards": -0.33,
+        "redCards": -0.017,
+        "defensiveContribution": 0.002
+      },
+      "startRate": 0.223,
+      "startEvidence": {
+        "sourceStartRate": 0.236,
+        "finalStartRate": 0.223,
+        "observedAppearances": 9,
+        "recentStarts": 2,
+        "recentMatches": 9,
+        "recentMinutes": 168,
+        "appearanceSource": "currentSeasonLineup",
+        "lineupAdjustment": -0.013,
+        "marketAdjustment": 0.0,
+        "availabilityAdjustment": 0.0
+      },
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 6,
+      "evidence": {
+        "all": "currentSeasonRoutes",
+        "appearance": "currentSeasonLineup",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
       }
     },
     {
@@ -8956,89 +9025,6 @@
       }
     },
     {
-      "id": 364,
-      "code": 214285,
-      "name": "Tsimikas",
-      "position": "DEF",
-      "positionId": 2,
-      "club": "LIV",
-      "teamId": 14,
-      "priceTenths": 49,
-      "availabilityStatus": "a",
-      "chanceOfPlaying": null,
-      "basePoints": 0.37,
-      "routes": {
-        "appearance": 0.354,
-        "attacking": 0.006,
-        "cleanSheet": 0.01,
-        "bonus": 0.002,
-        "conceding": -0.006,
-        "yellowCards": -0.003,
-        "defensiveContribution": 0.007
-      },
-      "startRate": 0.121,
-      "startEvidence": {
-        "sourceStartRate": 0.472,
-        "finalStartRate": 0.121,
-        "observedAppearances": 9,
-        "recentStarts": 1,
-        "recentMatches": 9,
-        "recentMinutes": 66,
-        "appearanceSource": "currentSeasonLineup",
-        "lineupAdjustment": -0.351,
-        "marketAdjustment": 0.0,
-        "availabilityAdjustment": 0.0
-      },
-      "squadNumber": null,
-      "rated": false,
-      "depthRank": 6,
-      "evidence": {
-        "all": "currentSeasonRoutes",
-        "appearance": "currentSeasonLineup"
-      }
-    },
-    {
-      "id": 5,
-      "code": 445122,
-      "name": "J.Timber",
-      "position": "DEF",
-      "positionId": 2,
-      "club": "ARS",
-      "teamId": 1,
-      "priceTenths": 65,
-      "availabilityStatus": "a",
-      "chanceOfPlaying": 100,
-      "basePoints": 0.349,
-      "routes": {
-        "appearance": 0.448,
-        "attacking": 0.007,
-        "bonus": 0.001,
-        "yellowCards": -0.001,
-        "defensiveContribution": 0.002,
-        "conceding": -0.108
-      },
-      "startRate": 0.108,
-      "startEvidence": {
-        "sourceStartRate": 0.0,
-        "finalStartRate": 0.108,
-        "observedAppearances": 9,
-        "recentStarts": 1,
-        "recentMatches": 9,
-        "recentMinutes": 155,
-        "appearanceSource": "currentSeasonLineup",
-        "lineupAdjustment": 0.108,
-        "marketAdjustment": 0.0,
-        "availabilityAdjustment": 0.0
-      },
-      "squadNumber": null,
-      "rated": true,
-      "depthRank": 2,
-      "evidence": {
-        "all": "currentSeasonRoutes",
-        "appearance": "currentSeasonLineup"
-      }
-    },
-    {
       "id": 256,
       "code": 167074,
       "name": "Tete",
@@ -9247,47 +9233,6 @@
       }
     },
     {
-      "id": 9,
-      "code": 448104,
-      "name": "Hincapie",
-      "position": "DEF",
-      "positionId": 2,
-      "club": "ARS",
-      "teamId": 1,
-      "priceTenths": 52,
-      "availabilityStatus": "a",
-      "chanceOfPlaying": 100,
-      "basePoints": 0.336,
-      "routes": {
-        "appearance": 0.333,
-        "attacking": 0.001,
-        "cleanSheet": 0.001,
-        "bonus": 0.001,
-        "conceding": -0.001,
-        "defensiveContribution": 0.001
-      },
-      "startRate": 0.001,
-      "startEvidence": {
-        "sourceStartRate": 0.046,
-        "finalStartRate": 0.001,
-        "observedAppearances": 9,
-        "recentStarts": 0,
-        "recentMatches": 9,
-        "recentMinutes": 40,
-        "appearanceSource": "currentSeasonLineup",
-        "lineupAdjustment": -0.045,
-        "marketAdjustment": 0.0,
-        "availabilityAdjustment": 0.0
-      },
-      "squadNumber": null,
-      "rated": true,
-      "depthRank": 6,
-      "evidence": {
-        "all": "currentSeasonRoutes",
-        "appearance": "currentSeasonLineup"
-      }
-    },
-    {
       "id": 670,
       "code": 616109,
       "name": "Subuloye",
@@ -9456,35 +9401,81 @@
       }
     },
     {
-      "id": 359,
-      "code": 171287,
-      "name": "Gomez",
+      "id": 5,
+      "code": 445122,
+      "name": "J.Timber",
       "position": "DEF",
       "positionId": 2,
-      "club": "LIV",
-      "teamId": 14,
-      "priceTenths": 49,
+      "club": "ARS",
+      "teamId": 1,
+      "priceTenths": 65,
       "availabilityStatus": "a",
       "chanceOfPlaying": 100,
-      "basePoints": 0.231,
+      "basePoints": 0.214,
       "routes": {
-        "appearance": 0.228,
+        "appearance": 0.448,
+        "attacking": 0.007,
+        "bonus": 0.001,
+        "yellowCards": -0.115,
+        "redCards": -0.021,
+        "defensiveContribution": 0.002,
+        "conceding": -0.108
+      },
+      "startRate": 0.108,
+      "startEvidence": {
+        "sourceStartRate": 0.0,
+        "finalStartRate": 0.108,
+        "observedAppearances": 9,
+        "recentStarts": 1,
+        "recentMatches": 9,
+        "recentMinutes": 155,
+        "appearanceSource": "currentSeasonLineup",
+        "lineupAdjustment": 0.108,
+        "marketAdjustment": 0.0,
+        "availabilityAdjustment": 0.0
+      },
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 2,
+      "evidence": {
+        "all": "currentSeasonRoutes",
+        "appearance": "currentSeasonLineup",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
+    },
+    {
+      "id": 9,
+      "code": 448104,
+      "name": "Hincapie",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "ARS",
+      "teamId": 1,
+      "priceTenths": 52,
+      "availabilityStatus": "a",
+      "chanceOfPlaying": 100,
+      "basePoints": 0.202,
+      "routes": {
+        "appearance": 0.333,
         "attacking": 0.001,
         "cleanSheet": 0.001,
         "bonus": 0.001,
         "conceding": -0.001,
+        "yellowCards": -0.112,
+        "redCards": -0.022,
         "defensiveContribution": 0.001
       },
       "startRate": 0.001,
       "startEvidence": {
-        "sourceStartRate": 0.044,
+        "sourceStartRate": 0.046,
         "finalStartRate": 0.001,
         "observedAppearances": 9,
         "recentStarts": 0,
         "recentMatches": 9,
-        "recentMinutes": 13,
+        "recentMinutes": 40,
         "appearanceSource": "currentSeasonLineup",
-        "lineupAdjustment": -0.043,
+        "lineupAdjustment": -0.045,
         "marketAdjustment": 0.0,
         "availabilityAdjustment": 0.0
       },
@@ -9493,7 +9484,9 @@
       "depthRank": 6,
       "evidence": {
         "all": "currentSeasonRoutes",
-        "appearance": "currentSeasonLineup"
+        "appearance": "currentSeasonLineup",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
       }
     },
     {
@@ -12800,6 +12793,96 @@
       }
     },
     {
+      "id": 364,
+      "code": 214285,
+      "name": "Tsimikas",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "LIV",
+      "teamId": 14,
+      "priceTenths": 49,
+      "availabilityStatus": "a",
+      "chanceOfPlaying": null,
+      "basePoints": -0.071,
+      "routes": {
+        "appearance": 0.354,
+        "attacking": 0.006,
+        "cleanSheet": 0.01,
+        "bonus": 0.002,
+        "conceding": -0.006,
+        "yellowCards": -0.419,
+        "redCards": -0.025,
+        "defensiveContribution": 0.007
+      },
+      "startRate": 0.121,
+      "startEvidence": {
+        "sourceStartRate": 0.472,
+        "finalStartRate": 0.121,
+        "observedAppearances": 9,
+        "recentStarts": 1,
+        "recentMatches": 9,
+        "recentMinutes": 66,
+        "appearanceSource": "currentSeasonLineup",
+        "lineupAdjustment": -0.351,
+        "marketAdjustment": 0.0,
+        "availabilityAdjustment": 0.0
+      },
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 6,
+      "evidence": {
+        "all": "currentSeasonRoutes",
+        "appearance": "currentSeasonLineup",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
+    },
+    {
+      "id": 359,
+      "code": 171287,
+      "name": "Gomez",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "LIV",
+      "teamId": 14,
+      "priceTenths": 49,
+      "availabilityStatus": "a",
+      "chanceOfPlaying": 100,
+      "basePoints": -0.144,
+      "routes": {
+        "appearance": 0.228,
+        "attacking": 0.001,
+        "cleanSheet": 0.001,
+        "bonus": 0.001,
+        "conceding": -0.001,
+        "yellowCards": -0.353,
+        "redCards": -0.022,
+        "defensiveContribution": 0.001
+      },
+      "startRate": 0.001,
+      "startEvidence": {
+        "sourceStartRate": 0.044,
+        "finalStartRate": 0.001,
+        "observedAppearances": 9,
+        "recentStarts": 0,
+        "recentMatches": 9,
+        "recentMinutes": 13,
+        "appearanceSource": "currentSeasonLineup",
+        "lineupAdjustment": -0.043,
+        "marketAdjustment": 0.0,
+        "availabilityAdjustment": 0.0
+      },
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 6,
+      "evidence": {
+        "all": "currentSeasonRoutes",
+        "appearance": "currentSeasonLineup",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
+    },
+    {
       "id": 124,
       "code": 60307,
       "name": "Gro\u00df",
@@ -13345,13 +13428,14 @@
       "priceTenths": 74,
       "availabilityStatus": "d",
       "chanceOfPlaying": 75,
-      "basePoints": 4.291,
+      "basePoints": 4.242,
       "routes": {
         "appearance": 1.766,
         "attacking": 1.316,
         "cleanSheet": 0.549,
         "bonus": 0.549,
-        "yellowCards": -0.111,
+        "yellowCards": -0.139,
+        "redCards": -0.021,
         "defensiveContribution": 0.222
       },
       "startRate": 0.884,
@@ -13372,7 +13456,9 @@
       "depthRank": 2,
       "evidence": {
         "all": "currentSeasonRoutes",
-        "appearance": "currentSeasonLineup"
+        "appearance": "currentSeasonLineup",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
       }
     },
     {
@@ -13622,47 +13708,6 @@
       }
     },
     {
-      "id": 15,
-      "code": 184029,
-      "name": "\u00d8degaard",
-      "position": "MID",
-      "positionId": 3,
-      "club": "ARS",
-      "teamId": 1,
-      "priceTenths": 67,
-      "availabilityStatus": "a",
-      "chanceOfPlaying": null,
-      "basePoints": 3.994,
-      "routes": {
-        "appearance": 1.778,
-        "attacking": 1.112,
-        "cleanSheet": 0.552,
-        "bonus": 0.662,
-        "yellowCards": -0.112,
-        "defensiveContribution": 0.002
-      },
-      "startRate": 0.89,
-      "startEvidence": {
-        "sourceStartRate": 0.916,
-        "finalStartRate": 0.89,
-        "observedAppearances": 9,
-        "recentStarts": 8,
-        "recentMatches": 9,
-        "recentMinutes": 646,
-        "appearanceSource": "currentSeasonLineup",
-        "lineupAdjustment": -0.026,
-        "marketAdjustment": 0.0,
-        "availabilityAdjustment": 0.0
-      },
-      "squadNumber": null,
-      "rated": true,
-      "depthRank": 3,
-      "evidence": {
-        "all": "currentSeasonRoutes",
-        "appearance": "currentSeasonLineup"
-      }
-    },
-    {
       "id": 268,
       "code": 577725,
       "name": "King",
@@ -13701,6 +13746,50 @@
       "evidence": {
         "all": "currentSeasonRoutes",
         "appearance": "currentSeasonLineup"
+      }
+    },
+    {
+      "id": 15,
+      "code": 184029,
+      "name": "\u00d8degaard",
+      "position": "MID",
+      "positionId": 3,
+      "club": "ARS",
+      "teamId": 1,
+      "priceTenths": 67,
+      "availabilityStatus": "a",
+      "chanceOfPlaying": null,
+      "basePoints": 3.947,
+      "routes": {
+        "appearance": 1.778,
+        "attacking": 1.112,
+        "cleanSheet": 0.552,
+        "bonus": 0.662,
+        "yellowCards": -0.14,
+        "redCards": -0.019,
+        "defensiveContribution": 0.002
+      },
+      "startRate": 0.89,
+      "startEvidence": {
+        "sourceStartRate": 0.916,
+        "finalStartRate": 0.89,
+        "observedAppearances": 9,
+        "recentStarts": 8,
+        "recentMatches": 9,
+        "recentMinutes": 646,
+        "appearanceSource": "currentSeasonLineup",
+        "lineupAdjustment": -0.026,
+        "marketAdjustment": 0.0,
+        "availabilityAdjustment": 0.0
+      },
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 3,
+      "evidence": {
+        "all": "currentSeasonRoutes",
+        "appearance": "currentSeasonLineup",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
       }
     },
     {
@@ -13822,47 +13911,6 @@
       "squadNumber": null,
       "rated": true,
       "depthRank": 1,
-      "evidence": {
-        "all": "currentSeasonRoutes",
-        "appearance": "currentSeasonLineup"
-      }
-    },
-    {
-      "id": 367,
-      "code": 243298,
-      "name": "Gakpo",
-      "position": "MID",
-      "positionId": 3,
-      "club": "LIV",
-      "teamId": 14,
-      "priceTenths": 71,
-      "availabilityStatus": "a",
-      "chanceOfPlaying": 100,
-      "basePoints": 3.863,
-      "routes": {
-        "appearance": 1.222,
-        "attacking": 1.542,
-        "cleanSheet": 0.33,
-        "bonus": 0.55,
-        "yellowCards": -0.002,
-        "defensiveContribution": 0.221
-      },
-      "startRate": 0.556,
-      "startEvidence": {
-        "sourceStartRate": 0.584,
-        "finalStartRate": 0.556,
-        "observedAppearances": 9,
-        "recentStarts": 5,
-        "recentMatches": 9,
-        "recentMinutes": 460,
-        "appearanceSource": "currentSeasonLineup",
-        "lineupAdjustment": -0.028,
-        "marketAdjustment": 0.0,
-        "availabilityAdjustment": 0.0
-      },
-      "squadNumber": null,
-      "rated": true,
-      "depthRank": 3,
       "evidence": {
         "all": "currentSeasonRoutes",
         "appearance": "currentSeasonLineup"
@@ -14035,6 +14083,50 @@
       }
     },
     {
+      "id": 367,
+      "code": 243298,
+      "name": "Gakpo",
+      "position": "MID",
+      "positionId": 3,
+      "club": "LIV",
+      "teamId": 14,
+      "priceTenths": 71,
+      "availabilityStatus": "a",
+      "chanceOfPlaying": 100,
+      "basePoints": 3.735,
+      "routes": {
+        "appearance": 1.222,
+        "attacking": 1.542,
+        "cleanSheet": 0.33,
+        "bonus": 0.55,
+        "yellowCards": -0.112,
+        "redCards": -0.018,
+        "defensiveContribution": 0.221
+      },
+      "startRate": 0.556,
+      "startEvidence": {
+        "sourceStartRate": 0.584,
+        "finalStartRate": 0.556,
+        "observedAppearances": 9,
+        "recentStarts": 5,
+        "recentMatches": 9,
+        "recentMinutes": 460,
+        "appearanceSource": "currentSeasonLineup",
+        "lineupAdjustment": -0.028,
+        "marketAdjustment": 0.0,
+        "availabilityAdjustment": 0.0
+      },
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 3,
+      "evidence": {
+        "all": "currentSeasonRoutes",
+        "appearance": "currentSeasonLineup",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
+    },
+    {
       "id": 335,
       "code": 466525,
       "name": "Stach",
@@ -14199,47 +14291,6 @@
       }
     },
     {
-      "id": 366,
-      "code": 494595,
-      "name": "Wirtz",
-      "position": "MID",
-      "positionId": 3,
-      "club": "LIV",
-      "teamId": 14,
-      "priceTenths": 72,
-      "availabilityStatus": "a",
-      "chanceOfPlaying": 100,
-      "basePoints": 3.442,
-      "routes": {
-        "appearance": 1.778,
-        "attacking": 1.33,
-        "cleanSheet": 0.442,
-        "bonus": 0.002,
-        "yellowCards": -0.111,
-        "defensiveContribution": 0.001
-      },
-      "startRate": 0.89,
-      "startEvidence": {
-        "sourceStartRate": 0.916,
-        "finalStartRate": 0.89,
-        "observedAppearances": 9,
-        "recentStarts": 8,
-        "recentMatches": 9,
-        "recentMinutes": 621,
-        "appearanceSource": "currentSeasonLineup",
-        "lineupAdjustment": -0.026,
-        "marketAdjustment": 0.0,
-        "availabilityAdjustment": 0.0
-      },
-      "squadNumber": null,
-      "rated": true,
-      "depthRank": 2,
-      "evidence": {
-        "all": "currentSeasonRoutes",
-        "appearance": "currentSeasonLineup"
-      }
-    },
-    {
       "id": 565,
       "code": 513545,
       "name": "M.Sangar\u00e9",
@@ -14278,6 +14329,50 @@
       "evidence": {
         "all": "currentSeasonRoutes",
         "appearance": "currentSeasonLineup"
+      }
+    },
+    {
+      "id": 366,
+      "code": 494595,
+      "name": "Wirtz",
+      "position": "MID",
+      "positionId": 3,
+      "club": "LIV",
+      "teamId": 14,
+      "priceTenths": 72,
+      "availabilityStatus": "a",
+      "chanceOfPlaying": 100,
+      "basePoints": 3.377,
+      "routes": {
+        "appearance": 1.778,
+        "attacking": 1.33,
+        "cleanSheet": 0.442,
+        "bonus": 0.002,
+        "yellowCards": -0.154,
+        "redCards": -0.022,
+        "defensiveContribution": 0.001
+      },
+      "startRate": 0.89,
+      "startEvidence": {
+        "sourceStartRate": 0.916,
+        "finalStartRate": 0.89,
+        "observedAppearances": 9,
+        "recentStarts": 8,
+        "recentMatches": 9,
+        "recentMinutes": 621,
+        "appearanceSource": "currentSeasonLineup",
+        "lineupAdjustment": -0.026,
+        "marketAdjustment": 0.0,
+        "availabilityAdjustment": 0.0
+      },
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 2,
+      "evidence": {
+        "all": "currentSeasonRoutes",
+        "appearance": "currentSeasonLineup",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
       }
     },
     {
@@ -14855,46 +14950,6 @@
       }
     },
     {
-      "id": 377,
-      "code": 551499,
-      "name": "Munoz",
-      "position": "MID",
-      "positionId": 3,
-      "club": "LIV",
-      "teamId": 14,
-      "priceTenths": 65,
-      "availabilityStatus": "d",
-      "chanceOfPlaying": 50,
-      "basePoints": 2.821,
-      "routes": {
-        "appearance": 1.196,
-        "attacking": 1.408,
-        "cleanSheet": 0.109,
-        "bonus": 0.217,
-        "yellowCards": -0.109
-      },
-      "startRate": 0.543,
-      "startEvidence": {
-        "sourceStartRate": 0.099,
-        "finalStartRate": 0.543,
-        "observedAppearances": 9,
-        "recentStarts": 5,
-        "recentMatches": 9,
-        "recentMinutes": 425,
-        "appearanceSource": "currentSeasonLineup",
-        "lineupAdjustment": 0.444,
-        "marketAdjustment": 0.0,
-        "availabilityAdjustment": 0.0
-      },
-      "squadNumber": null,
-      "rated": true,
-      "depthRank": 5,
-      "evidence": {
-        "all": "currentSeasonRoutes",
-        "appearance": "currentSeasonLineup"
-      }
-    },
-    {
       "id": 639,
       "code": 592984,
       "name": "Andr\u00e9s",
@@ -15052,48 +15107,6 @@
       "squadNumber": null,
       "rated": true,
       "depthRank": 10,
-      "evidence": {
-        "all": "currentSeasonRoutes",
-        "appearance": "currentSeasonLineup"
-      }
-    },
-    {
-      "id": 627,
-      "code": 482616,
-      "name": "Barcola",
-      "position": "MID",
-      "positionId": 3,
-      "club": "LIV",
-      "teamId": 14,
-      "priceTenths": 81,
-      "availabilityStatus": "a",
-      "chanceOfPlaying": null,
-      "basePoints": 2.738,
-      "routes": {
-        "appearance": 1.574,
-        "attacking": 0.862,
-        "cleanSheet": 0.427,
-        "bonus": 0.022,
-        "yellowCards": -0.146,
-        "ownGoals": -0.004,
-        "defensiveContribution": 0.003
-      },
-      "startRate": 0.721,
-      "startEvidence": {
-        "sourceStartRate": 0.923,
-        "finalStartRate": 0.721,
-        "observedAppearances": 7,
-        "recentStarts": 5,
-        "recentMatches": 7,
-        "recentMinutes": 421,
-        "appearanceSource": "currentSeasonLineup",
-        "lineupAdjustment": -0.202,
-        "marketAdjustment": 0.0,
-        "availabilityAdjustment": 0.0
-      },
-      "squadNumber": null,
-      "rated": false,
-      "depthRank": 1,
       "evidence": {
         "all": "currentSeasonRoutes",
         "appearance": "currentSeasonLineup"
@@ -15261,6 +15274,94 @@
       "evidence": {
         "all": "currentSeasonRoutes",
         "appearance": "currentSeasonLineup"
+      }
+    },
+    {
+      "id": 627,
+      "code": 482616,
+      "name": "Barcola",
+      "position": "MID",
+      "positionId": 3,
+      "club": "LIV",
+      "teamId": 14,
+      "priceTenths": 81,
+      "availabilityStatus": "a",
+      "chanceOfPlaying": null,
+      "basePoints": 2.617,
+      "routes": {
+        "appearance": 1.574,
+        "attacking": 0.862,
+        "cleanSheet": 0.427,
+        "bonus": 0.022,
+        "yellowCards": -0.245,
+        "redCards": -0.022,
+        "ownGoals": -0.004,
+        "defensiveContribution": 0.003
+      },
+      "startRate": 0.721,
+      "startEvidence": {
+        "sourceStartRate": 0.923,
+        "finalStartRate": 0.721,
+        "observedAppearances": 7,
+        "recentStarts": 5,
+        "recentMatches": 7,
+        "recentMinutes": 421,
+        "appearanceSource": "currentSeasonLineup",
+        "lineupAdjustment": -0.202,
+        "marketAdjustment": 0.0,
+        "availabilityAdjustment": 0.0
+      },
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 1,
+      "evidence": {
+        "all": "currentSeasonRoutes",
+        "appearance": "currentSeasonLineup",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
+    },
+    {
+      "id": 377,
+      "code": 551499,
+      "name": "Munoz",
+      "position": "MID",
+      "positionId": 3,
+      "club": "LIV",
+      "teamId": 14,
+      "priceTenths": 65,
+      "availabilityStatus": "d",
+      "chanceOfPlaying": 50,
+      "basePoints": 2.588,
+      "routes": {
+        "appearance": 1.196,
+        "attacking": 1.408,
+        "cleanSheet": 0.109,
+        "bonus": 0.217,
+        "yellowCards": -0.326,
+        "redCards": -0.016
+      },
+      "startRate": 0.543,
+      "startEvidence": {
+        "sourceStartRate": 0.099,
+        "finalStartRate": 0.543,
+        "observedAppearances": 9,
+        "recentStarts": 5,
+        "recentMatches": 9,
+        "recentMinutes": 425,
+        "appearanceSource": "currentSeasonLineup",
+        "lineupAdjustment": 0.444,
+        "marketAdjustment": 0.0,
+        "availabilityAdjustment": 0.0
+      },
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 5,
+      "evidence": {
+        "all": "currentSeasonRoutes",
+        "appearance": "currentSeasonLineup",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
       }
     },
     {
@@ -15970,13 +16071,14 @@
       "priceTenths": 67,
       "availabilityStatus": "d",
       "chanceOfPlaying": 50,
-      "basePoints": 2.27,
+      "basePoints": 2.279,
       "routes": {
         "appearance": 1.189,
         "attacking": 0.541,
         "cleanSheet": 0.324,
         "bonus": 0.108,
-        "yellowCards": -0.108,
+        "yellowCards": -0.084,
+        "redCards": -0.015,
         "defensiveContribution": 0.216
       },
       "startRate": 0.649,
@@ -15997,7 +16099,9 @@
       "depthRank": 4,
       "evidence": {
         "all": "currentSeasonRoutes",
-        "appearance": "currentSeasonLineup"
+        "appearance": "currentSeasonLineup",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
       }
     },
     {
@@ -16587,13 +16691,14 @@
       "priceTenths": 54,
       "availabilityStatus": "a",
       "chanceOfPlaying": null,
-      "basePoints": 1.908,
+      "basePoints": 1.852,
       "routes": {
         "appearance": 1.558,
         "attacking": 0.018,
         "cleanSheet": 0.33,
         "bonus": 0.002,
-        "yellowCards": -0.222,
+        "yellowCards": -0.25,
+        "redCards": -0.028,
         "defensiveContribution": 0.222
       },
       "startRate": 0.668,
@@ -16614,7 +16719,52 @@
       "depthRank": 9,
       "evidence": {
         "all": "currentSeasonRoutes",
-        "appearance": "currentSeasonLineup"
+        "appearance": "currentSeasonLineup",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
+    },
+    {
+      "id": 557,
+      "code": 439509,
+      "name": "Tzolis",
+      "position": "MID",
+      "positionId": 3,
+      "club": "ARS",
+      "teamId": 1,
+      "priceTenths": 61,
+      "availabilityStatus": "d",
+      "chanceOfPlaying": 75,
+      "basePoints": 1.848,
+      "routes": {
+        "appearance": 0.973,
+        "attacking": 0.649,
+        "cleanSheet": 0.216,
+        "bonus": 0.108,
+        "yellowCards": -0.082,
+        "redCards": -0.016
+      },
+      "startRate": 0.541,
+      "startEvidence": {
+        "sourceStartRate": 0.0,
+        "finalStartRate": 0.541,
+        "observedAppearances": 9,
+        "recentStarts": 5,
+        "recentMatches": 9,
+        "recentMinutes": 362,
+        "appearanceSource": "currentSeasonLineup",
+        "lineupAdjustment": 0.541,
+        "marketAdjustment": 0.0,
+        "availabilityAdjustment": 0.0
+      },
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 8,
+      "evidence": {
+        "all": "currentSeasonRoutes",
+        "appearance": "currentSeasonLineup",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
       }
     },
     {
@@ -16654,46 +16804,6 @@
       "squadNumber": null,
       "rated": true,
       "depthRank": 2,
-      "evidence": {
-        "all": "currentSeasonRoutes",
-        "appearance": "currentSeasonLineup"
-      }
-    },
-    {
-      "id": 557,
-      "code": 439509,
-      "name": "Tzolis",
-      "position": "MID",
-      "positionId": 3,
-      "club": "ARS",
-      "teamId": 1,
-      "priceTenths": 61,
-      "availabilityStatus": "d",
-      "chanceOfPlaying": 75,
-      "basePoints": 1.73,
-      "routes": {
-        "appearance": 0.973,
-        "attacking": 0.649,
-        "cleanSheet": 0.216,
-        "bonus": 0.108,
-        "yellowCards": -0.216
-      },
-      "startRate": 0.541,
-      "startEvidence": {
-        "sourceStartRate": 0.0,
-        "finalStartRate": 0.541,
-        "observedAppearances": 9,
-        "recentStarts": 5,
-        "recentMatches": 9,
-        "recentMinutes": 362,
-        "appearanceSource": "currentSeasonLineup",
-        "lineupAdjustment": 0.541,
-        "marketAdjustment": 0.0,
-        "availabilityAdjustment": 0.0
-      },
-      "squadNumber": null,
-      "rated": true,
-      "depthRank": 8,
       "evidence": {
         "all": "currentSeasonRoutes",
         "appearance": "currentSeasonLineup"
@@ -17108,47 +17218,6 @@
       }
     },
     {
-      "id": 7,
-      "code": 499169,
-      "name": "Lewis-Skelly",
-      "position": "MID",
-      "positionId": 3,
-      "club": "ARS",
-      "teamId": 1,
-      "priceTenths": 54,
-      "availabilityStatus": "a",
-      "chanceOfPlaying": null,
-      "basePoints": 1.451,
-      "routes": {
-        "appearance": 1.223,
-        "attacking": 0.006,
-        "cleanSheet": 0.33,
-        "bonus": 0.002,
-        "yellowCards": -0.111,
-        "defensiveContribution": 0.001
-      },
-      "startRate": 0.665,
-      "startEvidence": {
-        "sourceStartRate": 0.608,
-        "finalStartRate": 0.665,
-        "observedAppearances": 9,
-        "recentStarts": 6,
-        "recentMatches": 9,
-        "recentMinutes": 400,
-        "appearanceSource": "currentSeasonLineup",
-        "lineupAdjustment": 0.057,
-        "marketAdjustment": 0.0,
-        "availabilityAdjustment": 0.0
-      },
-      "squadNumber": null,
-      "rated": true,
-      "depthRank": 12,
-      "evidence": {
-        "all": "currentSeasonRoutes",
-        "appearance": "currentSeasonLineup"
-      }
-    },
-    {
       "id": 97,
       "code": 207283,
       "name": "Jensen",
@@ -17308,6 +17377,50 @@
       "evidence": {
         "all": "currentSeasonRoutes",
         "appearance": "currentSeasonLineup"
+      }
+    },
+    {
+      "id": 7,
+      "code": 499169,
+      "name": "Lewis-Skelly",
+      "position": "MID",
+      "positionId": 3,
+      "club": "ARS",
+      "teamId": 1,
+      "priceTenths": 54,
+      "availabilityStatus": "a",
+      "chanceOfPlaying": null,
+      "basePoints": 1.344,
+      "routes": {
+        "appearance": 1.223,
+        "attacking": 0.006,
+        "cleanSheet": 0.33,
+        "bonus": 0.002,
+        "yellowCards": -0.189,
+        "redCards": -0.029,
+        "defensiveContribution": 0.001
+      },
+      "startRate": 0.665,
+      "startEvidence": {
+        "sourceStartRate": 0.608,
+        "finalStartRate": 0.665,
+        "observedAppearances": 9,
+        "recentStarts": 6,
+        "recentMatches": 9,
+        "recentMinutes": 400,
+        "appearanceSource": "currentSeasonLineup",
+        "lineupAdjustment": 0.057,
+        "marketAdjustment": 0.0,
+        "availabilityAdjustment": 0.0
+      },
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 12,
+      "evidence": {
+        "all": "currentSeasonRoutes",
+        "appearance": "currentSeasonLineup",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
       }
     },
     {
@@ -17558,47 +17671,6 @@
       }
     },
     {
-      "id": 16,
-      "code": 248857,
-      "name": "Madueke",
-      "position": "MID",
-      "positionId": 3,
-      "club": "ARS",
-      "teamId": 1,
-      "priceTenths": 62,
-      "availabilityStatus": "d",
-      "chanceOfPlaying": 50,
-      "basePoints": 1.327,
-      "routes": {
-        "appearance": 0.776,
-        "attacking": 0.55,
-        "cleanSheet": 0.109,
-        "bonus": 0.001,
-        "yellowCards": -0.11,
-        "defensiveContribution": 0.001
-      },
-      "startRate": 0.222,
-      "startEvidence": {
-        "sourceStartRate": 0.225,
-        "finalStartRate": 0.222,
-        "observedAppearances": 9,
-        "recentStarts": 2,
-        "recentMatches": 9,
-        "recentMinutes": 248,
-        "appearanceSource": "currentSeasonLineup",
-        "lineupAdjustment": -0.003,
-        "marketAdjustment": 0.0,
-        "availabilityAdjustment": 0.0
-      },
-      "squadNumber": null,
-      "rated": true,
-      "depthRank": 6,
-      "evidence": {
-        "all": "currentSeasonRoutes",
-        "appearance": "currentSeasonLineup"
-      }
-    },
-    {
       "id": 52,
       "code": 653481,
       "name": "Alysson",
@@ -17639,6 +17711,94 @@
       }
     },
     {
+      "id": 16,
+      "code": 248857,
+      "name": "Madueke",
+      "position": "MID",
+      "positionId": 3,
+      "club": "ARS",
+      "teamId": 1,
+      "priceTenths": 62,
+      "availabilityStatus": "d",
+      "chanceOfPlaying": 50,
+      "basePoints": 1.324,
+      "routes": {
+        "appearance": 0.776,
+        "attacking": 0.55,
+        "cleanSheet": 0.109,
+        "bonus": 0.001,
+        "yellowCards": -0.098,
+        "redCards": -0.015,
+        "defensiveContribution": 0.001
+      },
+      "startRate": 0.222,
+      "startEvidence": {
+        "sourceStartRate": 0.225,
+        "finalStartRate": 0.222,
+        "observedAppearances": 9,
+        "recentStarts": 2,
+        "recentMatches": 9,
+        "recentMinutes": 248,
+        "appearanceSource": "currentSeasonLineup",
+        "lineupAdjustment": -0.003,
+        "marketAdjustment": 0.0,
+        "availabilityAdjustment": 0.0
+      },
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 6,
+      "evidence": {
+        "all": "currentSeasonRoutes",
+        "appearance": "currentSeasonLineup",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
+    },
+    {
+      "id": 371,
+      "code": 441266,
+      "name": "Gravenberch",
+      "position": "MID",
+      "positionId": 3,
+      "club": "LIV",
+      "teamId": 14,
+      "priceTenths": 58,
+      "availabilityStatus": "a",
+      "chanceOfPlaying": 100,
+      "basePoints": 1.312,
+      "routes": {
+        "appearance": 1.112,
+        "attacking": 0.331,
+        "cleanSheet": 0.11,
+        "bonus": 0.002,
+        "yellowCards": -0.122,
+        "redCards": -0.123,
+        "defensiveContribution": 0.002
+      },
+      "startRate": 0.444,
+      "startEvidence": {
+        "sourceStartRate": 0.431,
+        "finalStartRate": 0.444,
+        "observedAppearances": 9,
+        "recentStarts": 4,
+        "recentMatches": 9,
+        "recentMinutes": 341,
+        "appearanceSource": "currentSeasonLineup",
+        "lineupAdjustment": 0.013,
+        "marketAdjustment": 0.0,
+        "availabilityAdjustment": 0.0
+      },
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 6,
+      "evidence": {
+        "all": "currentSeasonRoutes",
+        "appearance": "currentSeasonLineup",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
+    },
+    {
       "id": 159,
       "code": 486672,
       "name": "Caicedo",
@@ -17674,48 +17834,6 @@
       "squadNumber": null,
       "rated": true,
       "depthRank": 7,
-      "evidence": {
-        "all": "currentSeasonRoutes",
-        "appearance": "currentSeasonLineup"
-      }
-    },
-    {
-      "id": 371,
-      "code": 441266,
-      "name": "Gravenberch",
-      "position": "MID",
-      "positionId": 3,
-      "club": "LIV",
-      "teamId": 14,
-      "priceTenths": 58,
-      "availabilityStatus": "a",
-      "chanceOfPlaying": 100,
-      "basePoints": 1.227,
-      "routes": {
-        "appearance": 1.112,
-        "attacking": 0.331,
-        "cleanSheet": 0.11,
-        "bonus": 0.002,
-        "yellowCards": -0.001,
-        "redCards": -0.329,
-        "defensiveContribution": 0.002
-      },
-      "startRate": 0.444,
-      "startEvidence": {
-        "sourceStartRate": 0.431,
-        "finalStartRate": 0.444,
-        "observedAppearances": 9,
-        "recentStarts": 4,
-        "recentMatches": 9,
-        "recentMinutes": 341,
-        "appearanceSource": "currentSeasonLineup",
-        "lineupAdjustment": 0.013,
-        "marketAdjustment": 0.0,
-        "availabilityAdjustment": 0.0
-      },
-      "squadNumber": null,
-      "rated": true,
-      "depthRank": 6,
       "evidence": {
         "all": "currentSeasonRoutes",
         "appearance": "currentSeasonLineup"
@@ -18165,47 +18283,6 @@
       }
     },
     {
-      "id": 17,
-      "code": 195384,
-      "name": "Merino",
-      "position": "MID",
-      "positionId": 3,
-      "club": "ARS",
-      "teamId": 1,
-      "priceTenths": 57,
-      "availabilityStatus": "a",
-      "chanceOfPlaying": null,
-      "basePoints": 1.018,
-      "routes": {
-        "appearance": 1.004,
-        "attacking": 0.012,
-        "cleanSheet": 0.109,
-        "bonus": 0.002,
-        "yellowCards": -0.11,
-        "defensiveContribution": 0.001
-      },
-      "startRate": 0.113,
-      "startEvidence": {
-        "sourceStartRate": 0.181,
-        "finalStartRate": 0.113,
-        "observedAppearances": 9,
-        "recentStarts": 1,
-        "recentMatches": 9,
-        "recentMinutes": 173,
-        "appearanceSource": "currentSeasonLineup",
-        "lineupAdjustment": -0.068,
-        "marketAdjustment": 0.0,
-        "availabilityAdjustment": 0.0
-      },
-      "squadNumber": null,
-      "rated": true,
-      "depthRank": 9,
-      "evidence": {
-        "all": "currentSeasonRoutes",
-        "appearance": "currentSeasonLineup"
-      }
-    },
-    {
       "id": 241,
       "code": 433154,
       "name": "McNeil",
@@ -18452,44 +18529,47 @@
       }
     },
     {
-      "id": 14,
-      "code": 232413,
-      "name": "Eze",
+      "id": 17,
+      "code": 195384,
+      "name": "Merino",
       "position": "MID",
       "positionId": 3,
       "club": "ARS",
       "teamId": 1,
-      "priceTenths": 62,
+      "priceTenths": 57,
       "availabilityStatus": "a",
       "chanceOfPlaying": null,
-      "basePoints": 0.903,
+      "basePoints": 0.926,
       "routes": {
-        "appearance": 0.78,
+        "appearance": 1.004,
         "attacking": 0.012,
         "cleanSheet": 0.109,
         "bonus": 0.002,
-        "yellowCards": -0.001,
+        "yellowCards": -0.175,
+        "redCards": -0.027,
         "defensiveContribution": 0.001
       },
-      "startRate": 0.221,
+      "startRate": 0.113,
       "startEvidence": {
-        "sourceStartRate": 0.183,
-        "finalStartRate": 0.221,
+        "sourceStartRate": 0.181,
+        "finalStartRate": 0.113,
         "observedAppearances": 9,
-        "recentStarts": 2,
+        "recentStarts": 1,
         "recentMatches": 9,
-        "recentMinutes": 209,
+        "recentMinutes": 173,
         "appearanceSource": "currentSeasonLineup",
-        "lineupAdjustment": 0.038,
+        "lineupAdjustment": -0.068,
         "marketAdjustment": 0.0,
         "availabilityAdjustment": 0.0
       },
       "squadNumber": null,
       "rated": true,
-      "depthRank": 6,
+      "depthRank": 9,
       "evidence": {
         "all": "currentSeasonRoutes",
-        "appearance": "currentSeasonLineup"
+        "appearance": "currentSeasonLineup",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
       }
     },
     {
@@ -18574,44 +18654,47 @@
       }
     },
     {
-      "id": 381,
-      "code": 514514,
-      "name": "Koumas",
+      "id": 14,
+      "code": 232413,
+      "name": "Eze",
       "position": "MID",
       "positionId": 3,
-      "club": "LIV",
-      "teamId": 14,
-      "priceTenths": 50,
+      "club": "ARS",
+      "teamId": 1,
+      "priceTenths": 62,
       "availabilityStatus": "a",
       "chanceOfPlaying": null,
-      "basePoints": 0.803,
+      "basePoints": 0.816,
       "routes": {
-        "appearance": 0.791,
-        "attacking": 0.006,
-        "cleanSheet": 0.006,
+        "appearance": 0.78,
+        "attacking": 0.012,
+        "cleanSheet": 0.109,
         "bonus": 0.002,
-        "yellowCards": -0.003,
+        "yellowCards": -0.073,
+        "redCards": -0.015,
         "defensiveContribution": 0.001
       },
-      "startRate": 0.125,
+      "startRate": 0.221,
       "startEvidence": {
-        "sourceStartRate": 0.608,
-        "finalStartRate": 0.125,
+        "sourceStartRate": 0.183,
+        "finalStartRate": 0.221,
         "observedAppearances": 9,
-        "recentStarts": 1,
+        "recentStarts": 2,
         "recentMatches": 9,
-        "recentMinutes": 120,
+        "recentMinutes": 209,
         "appearanceSource": "currentSeasonLineup",
-        "lineupAdjustment": -0.483,
+        "lineupAdjustment": 0.038,
         "marketAdjustment": 0.0,
         "availabilityAdjustment": 0.0
       },
       "squadNumber": null,
-      "rated": false,
-      "depthRank": 12,
+      "rated": true,
+      "depthRank": 6,
       "evidence": {
         "all": "currentSeasonRoutes",
-        "appearance": "currentSeasonLineup"
+        "appearance": "currentSeasonLineup",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
       }
     },
     {
@@ -18650,46 +18733,6 @@
       "squadNumber": null,
       "rated": false,
       "depthRank": 8,
-      "evidence": {
-        "all": "currentSeasonRoutes",
-        "appearance": "currentSeasonLineup"
-      }
-    },
-    {
-      "id": 369,
-      "code": 611922,
-      "name": "Ngumoha",
-      "position": "MID",
-      "positionId": 3,
-      "club": "LIV",
-      "teamId": 14,
-      "priceTenths": 57,
-      "availabilityStatus": "a",
-      "chanceOfPlaying": null,
-      "basePoints": 0.796,
-      "routes": {
-        "appearance": 0.783,
-        "attacking": 0.011,
-        "bonus": 0.002,
-        "yellowCards": -0.001,
-        "defensiveContribution": 0.001
-      },
-      "startRate": 0.112,
-      "startEvidence": {
-        "sourceStartRate": 0.142,
-        "finalStartRate": 0.112,
-        "observedAppearances": 9,
-        "recentStarts": 1,
-        "recentMatches": 9,
-        "recentMinutes": 165,
-        "appearanceSource": "currentSeasonLineup",
-        "lineupAdjustment": -0.03,
-        "marketAdjustment": 0.0,
-        "availabilityAdjustment": 0.0
-      },
-      "squadNumber": null,
-      "rated": true,
-      "depthRank": 7,
       "evidence": {
         "all": "currentSeasonRoutes",
         "appearance": "currentSeasonLineup"
@@ -18980,6 +19023,49 @@
       }
     },
     {
+      "id": 369,
+      "code": 611922,
+      "name": "Ngumoha",
+      "position": "MID",
+      "positionId": 3,
+      "club": "LIV",
+      "teamId": 14,
+      "priceTenths": 57,
+      "availabilityStatus": "a",
+      "chanceOfPlaying": null,
+      "basePoints": 0.696,
+      "routes": {
+        "appearance": 0.783,
+        "attacking": 0.011,
+        "bonus": 0.002,
+        "yellowCards": -0.084,
+        "redCards": -0.017,
+        "defensiveContribution": 0.001
+      },
+      "startRate": 0.112,
+      "startEvidence": {
+        "sourceStartRate": 0.142,
+        "finalStartRate": 0.112,
+        "observedAppearances": 9,
+        "recentStarts": 1,
+        "recentMatches": 9,
+        "recentMinutes": 165,
+        "appearanceSource": "currentSeasonLineup",
+        "lineupAdjustment": -0.03,
+        "marketAdjustment": 0.0,
+        "availabilityAdjustment": 0.0
+      },
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 7,
+      "evidence": {
+        "all": "currentSeasonRoutes",
+        "appearance": "currentSeasonLineup",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
+    },
+    {
       "id": 309,
       "code": 501390,
       "name": "N\u00fa\u00f1ez",
@@ -19062,47 +19148,6 @@
       }
     },
     {
-      "id": 375,
-      "code": 591386,
-      "name": "Nyoni",
-      "position": "MID",
-      "positionId": 3,
-      "club": "LIV",
-      "teamId": 14,
-      "priceTenths": 48,
-      "availabilityStatus": "a",
-      "chanceOfPlaying": null,
-      "basePoints": 0.694,
-      "routes": {
-        "appearance": 0.682,
-        "attacking": 0.006,
-        "cleanSheet": 0.006,
-        "bonus": 0.002,
-        "yellowCards": -0.003,
-        "defensiveContribution": 0.001
-      },
-      "startRate": 0.016,
-      "startEvidence": {
-        "sourceStartRate": 0.608,
-        "finalStartRate": 0.016,
-        "observedAppearances": 9,
-        "recentStarts": 0,
-        "recentMatches": 9,
-        "recentMinutes": 145,
-        "appearanceSource": "currentSeasonLineup",
-        "lineupAdjustment": -0.592,
-        "marketAdjustment": 0.0,
-        "availabilityAdjustment": 0.0
-      },
-      "squadNumber": null,
-      "rated": false,
-      "depthRank": 14,
-      "evidence": {
-        "all": "currentSeasonRoutes",
-        "appearance": "currentSeasonLineup"
-      }
-    },
-    {
       "id": 488,
       "code": 210462,
       "name": "I.Sangar\u00e9",
@@ -19137,46 +19182,6 @@
       "squadNumber": null,
       "rated": true,
       "depthRank": 9,
-      "evidence": {
-        "all": "currentSeasonRoutes",
-        "appearance": "currentSeasonLineup"
-      }
-    },
-    {
-      "id": 19,
-      "code": 481655,
-      "name": "Zubimendi",
-      "position": "MID",
-      "positionId": 3,
-      "club": "ARS",
-      "teamId": 1,
-      "priceTenths": 52,
-      "availabilityStatus": "a",
-      "chanceOfPlaying": 100,
-      "basePoints": 0.672,
-      "routes": {
-        "appearance": 0.667,
-        "attacking": 0.003,
-        "bonus": 0.002,
-        "yellowCards": -0.001,
-        "defensiveContribution": 0.001
-      },
-      "startRate": 0.001,
-      "startEvidence": {
-        "sourceStartRate": 0.047,
-        "finalStartRate": 0.001,
-        "observedAppearances": 9,
-        "recentStarts": 0,
-        "recentMatches": 9,
-        "recentMinutes": 99,
-        "appearanceSource": "currentSeasonLineup",
-        "lineupAdjustment": -0.046,
-        "marketAdjustment": 0.0,
-        "availabilityAdjustment": 0.0
-      },
-      "squadNumber": null,
-      "rated": true,
-      "depthRank": 15,
       "evidence": {
         "all": "currentSeasonRoutes",
         "appearance": "currentSeasonLineup"
@@ -19221,6 +19226,50 @@
       "evidence": {
         "all": "currentSeasonRoutes",
         "appearance": "currentSeasonLineup"
+      }
+    },
+    {
+      "id": 381,
+      "code": 514514,
+      "name": "Koumas",
+      "position": "MID",
+      "positionId": 3,
+      "club": "LIV",
+      "teamId": 14,
+      "priceTenths": 50,
+      "availabilityStatus": "a",
+      "chanceOfPlaying": null,
+      "basePoints": 0.652,
+      "routes": {
+        "appearance": 0.791,
+        "attacking": 0.006,
+        "cleanSheet": 0.006,
+        "bonus": 0.002,
+        "yellowCards": -0.135,
+        "redCards": -0.019,
+        "defensiveContribution": 0.001
+      },
+      "startRate": 0.125,
+      "startEvidence": {
+        "sourceStartRate": 0.608,
+        "finalStartRate": 0.125,
+        "observedAppearances": 9,
+        "recentStarts": 1,
+        "recentMatches": 9,
+        "recentMinutes": 120,
+        "appearanceSource": "currentSeasonLineup",
+        "lineupAdjustment": -0.483,
+        "marketAdjustment": 0.0,
+        "availabilityAdjustment": 0.0
+      },
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 12,
+      "evidence": {
+        "all": "currentSeasonRoutes",
+        "appearance": "currentSeasonLineup",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
       }
     },
     {
@@ -19566,6 +19615,93 @@
       "evidence": {
         "all": "currentSeasonRoutes",
         "appearance": "currentSeasonLineup"
+      }
+    },
+    {
+      "id": 19,
+      "code": 481655,
+      "name": "Zubimendi",
+      "position": "MID",
+      "positionId": 3,
+      "club": "ARS",
+      "teamId": 1,
+      "priceTenths": 52,
+      "availabilityStatus": "a",
+      "chanceOfPlaying": 100,
+      "basePoints": 0.528,
+      "routes": {
+        "appearance": 0.667,
+        "attacking": 0.003,
+        "bonus": 0.002,
+        "yellowCards": -0.122,
+        "redCards": -0.023,
+        "defensiveContribution": 0.001
+      },
+      "startRate": 0.001,
+      "startEvidence": {
+        "sourceStartRate": 0.047,
+        "finalStartRate": 0.001,
+        "observedAppearances": 9,
+        "recentStarts": 0,
+        "recentMatches": 9,
+        "recentMinutes": 99,
+        "appearanceSource": "currentSeasonLineup",
+        "lineupAdjustment": -0.046,
+        "marketAdjustment": 0.0,
+        "availabilityAdjustment": 0.0
+      },
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 15,
+      "evidence": {
+        "all": "currentSeasonRoutes",
+        "appearance": "currentSeasonLineup",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
+    },
+    {
+      "id": 375,
+      "code": 591386,
+      "name": "Nyoni",
+      "position": "MID",
+      "positionId": 3,
+      "club": "LIV",
+      "teamId": 14,
+      "priceTenths": 48,
+      "availabilityStatus": "a",
+      "chanceOfPlaying": null,
+      "basePoints": 0.514,
+      "routes": {
+        "appearance": 0.682,
+        "attacking": 0.006,
+        "cleanSheet": 0.006,
+        "bonus": 0.002,
+        "yellowCards": -0.16,
+        "redCards": -0.023,
+        "defensiveContribution": 0.001
+      },
+      "startRate": 0.016,
+      "startEvidence": {
+        "sourceStartRate": 0.608,
+        "finalStartRate": 0.016,
+        "observedAppearances": 9,
+        "recentStarts": 0,
+        "recentMatches": 9,
+        "recentMinutes": 145,
+        "appearanceSource": "currentSeasonLineup",
+        "lineupAdjustment": -0.592,
+        "marketAdjustment": 0.0,
+        "availabilityAdjustment": 0.0
+      },
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 14,
+      "evidence": {
+        "all": "currentSeasonRoutes",
+        "appearance": "currentSeasonLineup",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
       }
     },
     {
@@ -20796,40 +20932,6 @@
       }
     },
     {
-      "id": 370,
-      "code": 223541,
-      "name": "Chiesa",
-      "position": "MID",
-      "positionId": 3,
-      "club": "LIV",
-      "teamId": 14,
-      "priceTenths": 53,
-      "availabilityStatus": "a",
-      "chanceOfPlaying": 100,
-      "basePoints": 0.117,
-      "routes": { "appearance": 0.114, "attacking": 0.002, "bonus": 0.001 },
-      "startRate": 0.001,
-      "startEvidence": {
-        "sourceStartRate": 0.041,
-        "finalStartRate": 0.001,
-        "observedAppearances": 9,
-        "recentStarts": 0,
-        "recentMatches": 9,
-        "recentMinutes": 2,
-        "appearanceSource": "currentSeasonLineup",
-        "lineupAdjustment": -0.04,
-        "marketAdjustment": 0.0,
-        "availabilityAdjustment": 0.0
-      },
-      "squadNumber": null,
-      "rated": true,
-      "depthRank": 11,
-      "evidence": {
-        "all": "currentSeasonRoutes",
-        "appearance": "currentSeasonLineup"
-      }
-    },
-    {
       "id": 35,
       "code": 515597,
       "name": "Bogarde",
@@ -21835,88 +21937,6 @@
       "squadNumber": null,
       "rated": false,
       "depthRank": 13,
-      "evidence": {
-        "all": "currentSeasonRoutes",
-        "appearance": "currentSeasonLineup"
-      }
-    },
-    {
-      "id": 374,
-      "code": 158983,
-      "name": "Endo",
-      "position": "MID",
-      "positionId": 3,
-      "club": "LIV",
-      "teamId": 14,
-      "priceTenths": 48,
-      "availabilityStatus": "a",
-      "chanceOfPlaying": 100,
-      "basePoints": 0.046,
-      "routes": {
-        "appearance": 0.034,
-        "attacking": 0.006,
-        "cleanSheet": 0.006,
-        "bonus": 0.002,
-        "yellowCards": -0.003,
-        "defensiveContribution": 0.001
-      },
-      "startRate": 0.016,
-      "startEvidence": {
-        "sourceStartRate": 0.608,
-        "finalStartRate": 0.016,
-        "observedAppearances": 9,
-        "recentStarts": 0,
-        "recentMatches": 9,
-        "recentMinutes": 0,
-        "appearanceSource": "currentSeasonLineup",
-        "lineupAdjustment": -0.592,
-        "marketAdjustment": 0.0,
-        "availabilityAdjustment": 0.0
-      },
-      "squadNumber": null,
-      "rated": false,
-      "depthRank": 14,
-      "evidence": {
-        "all": "currentSeasonRoutes",
-        "appearance": "currentSeasonLineup"
-      }
-    },
-    {
-      "id": 378,
-      "code": 491501,
-      "name": "McConnell",
-      "position": "MID",
-      "positionId": 3,
-      "club": "LIV",
-      "teamId": 14,
-      "priceTenths": 44,
-      "availabilityStatus": "a",
-      "chanceOfPlaying": null,
-      "basePoints": 0.046,
-      "routes": {
-        "appearance": 0.034,
-        "attacking": 0.006,
-        "cleanSheet": 0.006,
-        "bonus": 0.002,
-        "yellowCards": -0.003,
-        "defensiveContribution": 0.001
-      },
-      "startRate": 0.016,
-      "startEvidence": {
-        "sourceStartRate": 0.608,
-        "finalStartRate": 0.016,
-        "observedAppearances": 9,
-        "recentStarts": 0,
-        "recentMatches": 9,
-        "recentMinutes": 0,
-        "appearanceSource": "currentSeasonLineup",
-        "lineupAdjustment": -0.592,
-        "marketAdjustment": 0.0,
-        "availabilityAdjustment": 0.0
-      },
-      "squadNumber": null,
-      "rated": false,
-      "depthRank": 16,
       "evidence": {
         "all": "currentSeasonRoutes",
         "appearance": "currentSeasonLineup"
@@ -24467,6 +24487,136 @@
       }
     },
     {
+      "id": 370,
+      "code": 223541,
+      "name": "Chiesa",
+      "position": "MID",
+      "positionId": 3,
+      "club": "LIV",
+      "teamId": 14,
+      "priceTenths": 53,
+      "availabilityStatus": "a",
+      "chanceOfPlaying": 100,
+      "basePoints": -0.244,
+      "routes": {
+        "appearance": 0.114,
+        "attacking": 0.002,
+        "bonus": 0.001,
+        "yellowCards": -0.341,
+        "redCards": -0.02
+      },
+      "startRate": 0.001,
+      "startEvidence": {
+        "sourceStartRate": 0.041,
+        "finalStartRate": 0.001,
+        "observedAppearances": 9,
+        "recentStarts": 0,
+        "recentMatches": 9,
+        "recentMinutes": 2,
+        "appearanceSource": "currentSeasonLineup",
+        "lineupAdjustment": -0.04,
+        "marketAdjustment": 0.0,
+        "availabilityAdjustment": 0.0
+      },
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 11,
+      "evidence": {
+        "all": "currentSeasonRoutes",
+        "appearance": "currentSeasonLineup",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
+    },
+    {
+      "id": 374,
+      "code": 158983,
+      "name": "Endo",
+      "position": "MID",
+      "positionId": 3,
+      "club": "LIV",
+      "teamId": 14,
+      "priceTenths": 48,
+      "availabilityStatus": "a",
+      "chanceOfPlaying": 100,
+      "basePoints": -0.349,
+      "routes": {
+        "appearance": 0.034,
+        "attacking": 0.006,
+        "cleanSheet": 0.006,
+        "bonus": 0.002,
+        "yellowCards": -0.377,
+        "redCards": -0.021,
+        "defensiveContribution": 0.001
+      },
+      "startRate": 0.016,
+      "startEvidence": {
+        "sourceStartRate": 0.608,
+        "finalStartRate": 0.016,
+        "observedAppearances": 9,
+        "recentStarts": 0,
+        "recentMatches": 9,
+        "recentMinutes": 0,
+        "appearanceSource": "currentSeasonLineup",
+        "lineupAdjustment": -0.592,
+        "marketAdjustment": 0.0,
+        "availabilityAdjustment": 0.0
+      },
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 14,
+      "evidence": {
+        "all": "currentSeasonRoutes",
+        "appearance": "currentSeasonLineup",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
+    },
+    {
+      "id": 378,
+      "code": 491501,
+      "name": "McConnell",
+      "position": "MID",
+      "positionId": 3,
+      "club": "LIV",
+      "teamId": 14,
+      "priceTenths": 44,
+      "availabilityStatus": "a",
+      "chanceOfPlaying": null,
+      "basePoints": -0.419,
+      "routes": {
+        "appearance": 0.034,
+        "attacking": 0.006,
+        "cleanSheet": 0.006,
+        "bonus": 0.002,
+        "yellowCards": -0.436,
+        "redCards": -0.032,
+        "defensiveContribution": 0.001
+      },
+      "startRate": 0.016,
+      "startEvidence": {
+        "sourceStartRate": 0.608,
+        "finalStartRate": 0.016,
+        "observedAppearances": 9,
+        "recentStarts": 0,
+        "recentMatches": 9,
+        "recentMinutes": 0,
+        "appearanceSource": "currentSeasonLineup",
+        "lineupAdjustment": -0.592,
+        "marketAdjustment": 0.0,
+        "availabilityAdjustment": 0.0
+      },
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 16,
+      "evidence": {
+        "all": "currentSeasonRoutes",
+        "appearance": "currentSeasonLineup",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
+      }
+    },
+    {
       "id": 411,
       "code": 223094,
       "name": "Haaland",
@@ -24555,12 +24705,13 @@
       "priceTenths": 92,
       "availabilityStatus": "a",
       "chanceOfPlaying": 100,
-      "basePoints": 5.61,
+      "basePoints": 5.574,
       "routes": {
         "appearance": 1.555,
         "attacking": 2.625,
         "bonus": 1.541,
-        "yellowCards": -0.111
+        "yellowCards": -0.13,
+        "redCards": -0.017
       },
       "startRate": 0.778,
       "startEvidence": {
@@ -24580,7 +24731,9 @@
       "depthRank": 1,
       "evidence": {
         "all": "currentSeasonRoutes",
-        "appearance": "currentSeasonLineup"
+        "appearance": "currentSeasonLineup",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
       }
     },
     {
@@ -24907,12 +25060,13 @@
       "priceTenths": 74,
       "availabilityStatus": "a",
       "chanceOfPlaying": 100,
-      "basePoints": 2.681,
+      "basePoints": 2.611,
       "routes": {
         "appearance": 1.668,
         "attacking": 0.9,
         "bonus": 0.224,
-        "yellowCards": -0.111
+        "yellowCards": -0.162,
+        "redCards": -0.019
       },
       "startRate": 0.778,
       "startEvidence": {
@@ -24932,7 +25086,9 @@
       "depthRank": 1,
       "evidence": {
         "all": "currentSeasonRoutes",
-        "appearance": "currentSeasonLineup"
+        "appearance": "currentSeasonLineup",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
       }
     },
     {
@@ -25598,45 +25754,6 @@
       }
     },
     {
-      "id": 25,
-      "code": 224117,
-      "name": "Gy\u00f6keres",
-      "position": "FWD",
-      "positionId": 4,
-      "club": "ARS",
-      "teamId": 1,
-      "priceTenths": 70,
-      "availabilityStatus": "a",
-      "chanceOfPlaying": null,
-      "basePoints": 1.02,
-      "routes": {
-        "appearance": 0.676,
-        "attacking": 0.341,
-        "bonus": 0.004,
-        "yellowCards": -0.001
-      },
-      "startRate": 0.113,
-      "startEvidence": {
-        "sourceStartRate": 0.184,
-        "finalStartRate": 0.113,
-        "observedAppearances": 9,
-        "recentStarts": 1,
-        "recentMatches": 9,
-        "recentMinutes": 147,
-        "appearanceSource": "currentSeasonLineup",
-        "lineupAdjustment": -0.071,
-        "marketAdjustment": 0.0,
-        "availabilityAdjustment": 0.0
-      },
-      "squadNumber": null,
-      "rated": true,
-      "depthRank": 2,
-      "evidence": {
-        "all": "currentSeasonRoutes",
-        "appearance": "currentSeasonLineup"
-      }
-    },
-    {
       "id": 634,
       "code": 613221,
       "name": "Fernandez-Pardo",
@@ -25751,6 +25868,48 @@
       "evidence": {
         "all": "currentSeasonRoutes",
         "appearance": "currentSeasonLineup"
+      }
+    },
+    {
+      "id": 25,
+      "code": 224117,
+      "name": "Gy\u00f6keres",
+      "position": "FWD",
+      "positionId": 4,
+      "club": "ARS",
+      "teamId": 1,
+      "priceTenths": 70,
+      "availabilityStatus": "a",
+      "chanceOfPlaying": null,
+      "basePoints": 0.894,
+      "routes": {
+        "appearance": 0.676,
+        "attacking": 0.341,
+        "bonus": 0.004,
+        "yellowCards": -0.111,
+        "redCards": -0.016
+      },
+      "startRate": 0.113,
+      "startEvidence": {
+        "sourceStartRate": 0.184,
+        "finalStartRate": 0.113,
+        "observedAppearances": 9,
+        "recentStarts": 1,
+        "recentMatches": 9,
+        "recentMinutes": 147,
+        "appearanceSource": "currentSeasonLineup",
+        "lineupAdjustment": -0.071,
+        "marketAdjustment": 0.0,
+        "availabilityAdjustment": 0.0
+      },
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 2,
+      "evidence": {
+        "all": "currentSeasonRoutes",
+        "appearance": "currentSeasonLineup",
+        "yellowCards": "marketCards",
+        "redCards": "marketCards"
       }
     },
     {
