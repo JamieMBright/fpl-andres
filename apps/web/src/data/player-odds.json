@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "season": "2026-27",
-  "fetchedAt": "2026-11-01T13:42:33.923947+00:00",
+  "fetchedAt": "2026-11-01T15:16:55.459622+00:00",
   "source": "the-odds-api",
   "markets": [
     "player_goal_scorer_anytime",
@@ -17,13 +17,13 @@
   "quota": {
     "opening": {
       "cost": 0,
-      "used": 42,
-      "remaining": 458
+      "used": 58,
+      "remaining": 442
     },
     "closing": {
       "cost": 6,
-      "used": 48,
-      "remaining": 452
+      "used": 64,
+      "remaining": 436
     },
     "spentThisRun": 6
   },
@@ -61,7 +61,7 @@
       ],
       "error": null,
       "kickoff": "2026-11-01T16:30:00+00:00",
-      "visited_at": "2026-11-01T13:42:33.923947+00:00"
+      "visited_at": "2026-11-01T15:16:55.459622+00:00"
     },
     {
       "event_id": "0f552d9c6990c69474f50ff2fb54e9a3",
@@ -113,7 +113,7 @@
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-11-06T20:00:00+00:00",
-      "visited_at": "2026-11-01T13:42:33.923947+00:00"
+      "visited_at": "2026-11-01T15:16:55.459622+00:00"
     },
     {
       "event_id": "5c87852253fd11eea5d34ad723356607",
@@ -140,7 +140,7 @@
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-11-07T12:30:00+00:00",
-      "visited_at": "2026-11-01T13:42:33.923947+00:00"
+      "visited_at": "2026-11-01T15:16:55.459622+00:00"
     },
     {
       "event_id": "842fcc5b9feb8c63054a661ad1fc8926",
@@ -167,7 +167,7 @@
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-11-07T15:00:00+00:00",
-      "visited_at": "2026-11-01T13:42:33.923947+00:00"
+      "visited_at": "2026-11-01T15:16:55.459622+00:00"
     },
     {
       "event_id": "3903e98a54db0f2cc23095407fe9dad8",
@@ -194,7 +194,7 @@
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-11-07T15:00:00+00:00",
-      "visited_at": "2026-11-01T13:42:33.923947+00:00"
+      "visited_at": "2026-11-01T15:16:55.459622+00:00"
     },
     {
       "event_id": "59c5f635cfe11613c07e9a5520ced5c1",
@@ -221,7 +221,7 @@
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-11-07T17:30:00+00:00",
-      "visited_at": "2026-11-01T13:42:33.923947+00:00"
+      "visited_at": "2026-11-01T15:16:55.459622+00:00"
     },
     {
       "event_id": "79ed3df594d7b352ef027128b1ba5d0a",
@@ -248,7 +248,7 @@
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-11-08T14:00:00+00:00",
-      "visited_at": "2026-11-01T13:42:33.923947+00:00"
+      "visited_at": "2026-11-01T15:16:55.459622+00:00"
     },
     {
       "event_id": "8e3ca98e29be84dd4a882ed05f50fa79",
@@ -275,7 +275,7 @@
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-11-08T14:00:00+00:00",
-      "visited_at": "2026-11-01T13:42:33.923947+00:00"
+      "visited_at": "2026-11-01T15:16:55.459622+00:00"
     },
     {
       "event_id": "3a4608abdf257d2a0024b944757d9dc9",
@@ -302,7 +302,7 @@
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-11-08T14:00:00+00:00",
-      "visited_at": "2026-11-01T13:42:33.923947+00:00"
+      "visited_at": "2026-11-01T15:16:55.459622+00:00"
     },
     {
       "event_id": "0cfbab01e152f81e34f9014e02c7eb79",
@@ -329,7 +329,7 @@
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-11-08T14:00:00+00:00",
-      "visited_at": "2026-11-01T13:42:33.923947+00:00"
+      "visited_at": "2026-11-01T15:16:55.459622+00:00"
     },
     {
       "event_id": "b0a4b5448a7e02d9ad1eaa817599fff0",
@@ -356,7 +356,7 @@
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-11-08T16:30:00+00:00",
-      "visited_at": "2026-11-01T13:42:33.923947+00:00"
+      "visited_at": "2026-11-01T15:16:55.459622+00:00"
     },
     {
       "event_id": "4c08b213ed416e8f41e038f42a42b962",
@@ -383,7 +383,7 @@
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-11-22T16:30:00+00:00",
-      "visited_at": "2026-11-01T13:42:33.923947+00:00"
+      "visited_at": "2026-11-01T15:16:55.459622+00:00"
     }
   ],
   "unmatched": [
@@ -1191,17 +1191,17 @@
       "home_team": "Liverpool",
       "away_team": "Arsenal",
       "club": "LIV",
-      "anytime_goal": 0.338068,
+      "anytime_goal": 0.335664,
       "first_goal": 0.153846,
       "last_goal": null,
       "anytime_assist": 0.125,
-      "any_card": 0.142857,
+      "any_card": 0.153846,
       "red_card": 0.012346,
       "shots": null,
       "shots_on_target": 1.376736,
       "books": 3,
       "kickoff": "2026-11-01T16:30:00+00:00",
-      "observed_at": "2026-11-01T13:42:33.923947+00:00"
+      "observed_at": "2026-11-01T15:16:55.459622+00:00"
     },
     {
       "element_id": 372,
@@ -1213,13 +1213,13 @@
       "first_goal": 0.066667,
       "last_goal": null,
       "anytime_assist": 0.142857,
-      "any_card": 0.294118,
+      "any_card": 0.285714,
       "red_card": 0.019608,
       "shots": null,
       "shots_on_target": 0.931869,
       "books": 3,
       "kickoff": "2026-11-01T16:30:00+00:00",
-      "observed_at": "2026-11-01T13:42:33.923947+00:00"
+      "observed_at": "2026-11-01T15:16:55.459622+00:00"
     },
     {
       "element_id": 350,
@@ -1237,7 +1237,7 @@
       "shots_on_target": null,
       "books": 1,
       "kickoff": "2026-11-01T16:30:00+00:00",
-      "observed_at": "2026-11-01T13:42:33.923947+00:00"
+      "observed_at": "2026-11-01T15:16:55.459622+00:00"
     },
     {
       "element_id": null,
@@ -1255,7 +1255,7 @@
       "shots_on_target": null,
       "books": 2,
       "kickoff": "2026-11-01T16:30:00+00:00",
-      "observed_at": "2026-11-01T13:42:33.923947+00:00"
+      "observed_at": "2026-11-01T15:16:55.459622+00:00"
     },
     {
       "element_id": 10,
@@ -1263,17 +1263,17 @@
       "home_team": "Liverpool",
       "away_team": "Arsenal",
       "club": "ARS",
-      "anytime_goal": 0.070455,
+      "anytime_goal": 0.07381,
       "first_goal": 0.038515,
       "last_goal": null,
       "anytime_assist": 0.153846,
-      "any_card": 0.2,
+      "any_card": 0.190909,
       "red_card": 0.014085,
       "shots": null,
       "shots_on_target": 0.313067,
       "books": 2,
       "kickoff": "2026-11-01T16:30:00+00:00",
-      "observed_at": "2026-11-01T13:42:33.923947+00:00"
+      "observed_at": "2026-11-01T15:16:55.459622+00:00"
     },
     {
       "element_id": 627,
@@ -1281,7 +1281,7 @@
       "home_team": "Liverpool",
       "away_team": "Arsenal",
       "club": "LIV",
-      "anytime_goal": 0.219114,
+      "anytime_goal": 0.220865,
       "first_goal": 0.111111,
       "last_goal": null,
       "anytime_assist": 0.208333,
@@ -1291,7 +1291,7 @@
       "shots_on_target": 1.139477,
       "books": 3,
       "kickoff": "2026-11-01T16:30:00+00:00",
-      "observed_at": "2026-11-01T13:42:33.923947+00:00"
+      "observed_at": "2026-11-01T15:16:55.459622+00:00"
     },
     {
       "element_id": null,
@@ -1303,13 +1303,13 @@
       "first_goal": 0.076923,
       "last_goal": null,
       "anytime_assist": 0.166667,
-      "any_card": 0.307692,
+      "any_card": 0.3125,
       "red_card": 0.021739,
       "shots": null,
       "shots_on_target": 0.920369,
       "books": 3,
       "kickoff": "2026-11-01T16:30:00+00:00",
-      "observed_at": "2026-11-01T13:42:33.923947+00:00"
+      "observed_at": "2026-11-01T15:16:55.459622+00:00"
     },
     {
       "element_id": 557,
@@ -1317,17 +1317,17 @@
       "home_team": "Liverpool",
       "away_team": "Arsenal",
       "club": "ARS",
-      "anytime_goal": 0.25,
+      "anytime_goal": 0.253205,
       "first_goal": 0.107955,
       "last_goal": null,
       "anytime_assist": 0.230947,
-      "any_card": 0.212862,
+      "any_card": 0.201288,
       "red_card": 0.014925,
       "shots": null,
       "shots_on_target": 1.209121,
       "books": 2,
       "kickoff": "2026-11-01T16:30:00+00:00",
-      "observed_at": "2026-11-01T13:42:33.923947+00:00"
+      "observed_at": "2026-11-01T15:16:55.459622+00:00"
     },
     {
       "element_id": 367,
@@ -1335,17 +1335,17 @@
       "home_team": "Liverpool",
       "away_team": "Arsenal",
       "club": "LIV",
-      "anytime_goal": 0.225926,
+      "anytime_goal": 0.227728,
       "first_goal": 0.105263,
       "last_goal": null,
       "anytime_assist": 0.210526,
-      "any_card": 0.185185,
+      "any_card": 0.172414,
       "red_card": 0.010989,
       "shots": null,
       "shots_on_target": 1.139477,
       "books": 3,
       "kickoff": "2026-11-01T16:30:00+00:00",
-      "observed_at": "2026-11-01T13:42:33.923947+00:00"
+      "observed_at": "2026-11-01T15:16:55.459622+00:00"
     },
     {
       "element_id": 11,
@@ -1353,17 +1353,17 @@
       "home_team": "Liverpool",
       "away_team": "Arsenal",
       "club": "ARS",
-      "anytime_goal": 0.533511,
+      "anytime_goal": 0.536716,
       "first_goal": 0.512291,
       "last_goal": null,
       "anytime_assist": 0.083333,
-      "any_card": 0.59505,
+      "any_card": 0.198039,
       "red_card": 0.014085,
       "shots": null,
       "shots_on_target": 0.284431,
       "books": 2,
       "kickoff": "2026-11-01T16:30:00+00:00",
-      "observed_at": "2026-11-01T13:42:33.923947+00:00"
+      "observed_at": "2026-11-01T15:16:55.459622+00:00"
     },
     {
       "element_id": 1,
@@ -1381,7 +1381,7 @@
       "shots_on_target": null,
       "books": 1,
       "kickoff": "2026-11-01T16:30:00+00:00",
-      "observed_at": "2026-11-01T13:42:33.923947+00:00"
+      "observed_at": "2026-11-01T15:16:55.459622+00:00"
     },
     {
       "element_id": 13,
@@ -1389,17 +1389,17 @@
       "home_team": "Liverpool",
       "away_team": "Arsenal",
       "club": "ARS",
-      "anytime_goal": 0.105978,
+      "anytime_goal": 0.110145,
       "first_goal": 0.052632,
       "last_goal": null,
       "anytime_assist": 0.172414,
-      "any_card": 0.196078,
+      "any_card": 0.181818,
       "red_card": 0.014085,
       "shots": null,
       "shots_on_target": 0.460638,
       "books": 3,
       "kickoff": "2026-11-01T16:30:00+00:00",
-      "observed_at": "2026-11-01T13:42:33.923947+00:00"
+      "observed_at": "2026-11-01T15:16:55.459622+00:00"
     },
     {
       "element_id": 368,
@@ -1407,17 +1407,17 @@
       "home_team": "Liverpool",
       "away_team": "Arsenal",
       "club": "LIV",
-      "anytime_goal": 0.181818,
+      "anytime_goal": 0.184746,
       "first_goal": null,
       "last_goal": null,
       "anytime_assist": 0.2,
-      "any_card": 0.219048,
+      "any_card": 0.206383,
       "red_card": 0.014085,
       "shots": null,
       "shots_on_target": 1.053299,
       "books": 2,
       "kickoff": "2026-11-01T16:30:00+00:00",
-      "observed_at": "2026-11-01T13:42:33.923947+00:00"
+      "observed_at": "2026-11-01T15:16:55.459622+00:00"
     },
     {
       "element_id": 14,
@@ -1425,17 +1425,17 @@
       "home_team": "Liverpool",
       "away_team": "Arsenal",
       "club": "ARS",
-      "anytime_goal": 0.214912,
+      "anytime_goal": 0.213978,
       "first_goal": 0.1,
       "last_goal": null,
       "anytime_assist": 0.208333,
-      "any_card": 0.133333,
+      "any_card": 0.117647,
       "red_card": 0.009901,
       "shots": null,
       "shots_on_target": 1.028377,
       "books": 3,
       "kickoff": "2026-11-01T16:30:00+00:00",
-      "observed_at": "2026-11-01T13:42:33.923947+00:00"
+      "observed_at": "2026-11-01T15:16:55.459622+00:00"
     },
     {
       "element_id": 31,
@@ -1444,16 +1444,16 @@
       "away_team": "Arsenal",
       "club": "ARS",
       "anytime_goal": 0.071795,
-      "first_goal": 0.022727,
+      "first_goal": 0.025,
       "last_goal": null,
       "anytime_assist": 0.066667,
-      "any_card": 0.196078,
+      "any_card": 0.166667,
       "red_card": 0.014085,
       "shots": null,
       "shots_on_target": 0.305475,
       "books": 3,
       "kickoff": "2026-11-01T16:30:00+00:00",
-      "observed_at": "2026-11-01T13:42:33.923947+00:00"
+      "observed_at": "2026-11-01T15:16:55.459622+00:00"
     },
     {
       "element_id": 370,
@@ -1465,13 +1465,13 @@
       "first_goal": 0.54505,
       "last_goal": null,
       "anytime_assist": null,
-      "any_card": 0.623255,
+      "any_card": 0.220798,
       "red_card": 0.017857,
       "shots": null,
       "shots_on_target": null,
       "books": 2,
       "kickoff": "2026-11-01T16:30:00+00:00",
-      "observed_at": "2026-11-01T13:42:33.923947+00:00"
+      "observed_at": "2026-11-01T15:16:55.459622+00:00"
     },
     {
       "element_id": 366,
@@ -1483,13 +1483,13 @@
       "first_goal": 0.083333,
       "last_goal": null,
       "anytime_assist": 0.210526,
-      "any_card": 0.196078,
+      "any_card": 0.181818,
       "red_card": 0.014085,
       "shots": null,
       "shots_on_target": 1.028377,
       "books": 3,
       "kickoff": "2026-11-01T16:30:00+00:00",
-      "observed_at": "2026-11-01T13:42:33.923947+00:00"
+      "observed_at": "2026-11-01T15:16:55.459622+00:00"
     },
     {
       "element_id": 352,
@@ -1507,7 +1507,7 @@
       "shots_on_target": null,
       "books": 1,
       "kickoff": "2026-11-01T16:30:00+00:00",
-      "observed_at": "2026-11-01T13:42:33.923947+00:00"
+      "observed_at": "2026-11-01T15:16:55.459622+00:00"
     },
     {
       "element_id": 351,
@@ -1525,7 +1525,7 @@
       "shots_on_target": null,
       "books": 1,
       "kickoff": "2026-11-01T16:30:00+00:00",
-      "observed_at": "2026-11-01T13:42:33.923947+00:00"
+      "observed_at": "2026-11-01T15:16:55.459622+00:00"
     },
     {
       "element_id": 3,
@@ -1543,7 +1543,7 @@
       "shots_on_target": null,
       "books": 1,
       "kickoff": "2026-11-01T16:30:00+00:00",
-      "observed_at": "2026-11-01T13:42:33.923947+00:00"
+      "observed_at": "2026-11-01T15:16:55.459622+00:00"
     },
     {
       "element_id": 378,
@@ -1555,13 +1555,13 @@
       "first_goal": 0.533511,
       "last_goal": null,
       "anytime_assist": null,
-      "any_card": 0.661716,
+      "any_card": 0.261006,
       "red_card": 0.02439,
       "shots": null,
       "shots_on_target": null,
       "books": 2,
       "kickoff": "2026-11-01T16:30:00+00:00",
-      "observed_at": "2026-11-01T13:42:33.923947+00:00"
+      "observed_at": "2026-11-01T15:16:55.459622+00:00"
     },
     {
       "element_id": 362,
@@ -1569,17 +1569,17 @@
       "home_team": "Liverpool",
       "away_team": "Arsenal",
       "club": "LIV",
-      "anytime_goal": 0.06036,
+      "anytime_goal": 0.062745,
       "first_goal": 0.026316,
       "last_goal": null,
       "anytime_assist": 0.066667,
-      "any_card": 0.238095,
+      "any_card": 0.230947,
       "red_card": 0.017857,
       "shots": null,
       "shots_on_target": 0.284431,
       "books": 3,
       "kickoff": "2026-11-01T16:30:00+00:00",
-      "observed_at": "2026-11-01T13:42:33.923947+00:00"
+      "observed_at": "2026-11-01T15:16:55.459622+00:00"
     },
     {
       "element_id": 359,
@@ -1591,13 +1591,13 @@
       "first_goal": 0.508938,
       "last_goal": null,
       "anytime_assist": null,
-      "any_card": 0.302823,
+      "any_card": 0.270468,
       "red_card": 0.019608,
       "shots": null,
       "shots_on_target": null,
       "books": 2,
       "kickoff": "2026-11-01T16:30:00+00:00",
-      "observed_at": "2026-11-01T13:42:33.923947+00:00"
+      "observed_at": "2026-11-01T15:16:55.459622+00:00"
     },
     {
       "element_id": 5,
@@ -1609,13 +1609,13 @@
       "first_goal": 0.033333,
       "last_goal": null,
       "anytime_assist": 0.111111,
-      "any_card": 0.238095,
+      "any_card": 0.25,
       "red_card": 0.017857,
       "shots": null,
       "shots_on_target": 0.408702,
       "books": 3,
       "kickoff": "2026-11-01T16:30:00+00:00",
-      "observed_at": "2026-11-01T13:42:33.923947+00:00"
+      "observed_at": "2026-11-01T15:16:55.459622+00:00"
     },
     {
       "element_id": 26,
@@ -1623,17 +1623,17 @@
       "home_team": "Liverpool",
       "away_team": "Arsenal",
       "club": "ARS",
-      "anytime_goal": 0.31339,
+      "anytime_goal": 0.322419,
       "first_goal": 0.142857,
       "last_goal": null,
       "anytime_assist": 0.166667,
-      "any_card": 0.232558,
+      "any_card": 0.208333,
       "red_card": 0.014085,
       "shots": null,
       "shots_on_target": 1.266315,
       "books": 3,
       "kickoff": "2026-11-01T16:30:00+00:00",
-      "observed_at": "2026-11-01T13:42:33.923947+00:00"
+      "observed_at": "2026-11-01T15:16:55.459622+00:00"
     },
     {
       "element_id": 2,
@@ -1651,7 +1651,7 @@
       "shots_on_target": null,
       "books": 1,
       "kickoff": "2026-11-01T16:30:00+00:00",
-      "observed_at": "2026-11-01T13:42:33.923947+00:00"
+      "observed_at": "2026-11-01T15:16:55.459622+00:00"
     },
     {
       "element_id": 364,
@@ -1659,17 +1659,17 @@
       "home_team": "Liverpool",
       "away_team": "Arsenal",
       "club": "LIV",
-      "anytime_goal": 0.536716,
-      "first_goal": 0.516789,
+      "anytime_goal": 0.075,
+      "first_goal": null,
       "last_goal": null,
       "anytime_assist": 0.172414,
-      "any_card": 0.642108,
+      "any_card": 0.251225,
       "red_card": 0.019608,
       "shots": null,
       "shots_on_target": 0.338322,
       "books": 2,
       "kickoff": "2026-11-01T16:30:00+00:00",
-      "observed_at": "2026-11-01T13:42:33.923947+00:00"
+      "observed_at": "2026-11-01T15:16:55.459622+00:00"
     },
     {
       "element_id": 381,
@@ -1677,17 +1677,17 @@
       "home_team": "Liverpool",
       "away_team": "Arsenal",
       "club": "LIV",
-      "anytime_goal": 0.253556,
+      "anytime_goal": 0.253846,
       "first_goal": 0.138889,
       "last_goal": null,
       "anytime_assist": 0.166667,
-      "any_card": 0.2,
+      "any_card": 0.186207,
       "red_card": 0.012346,
       "shots": null,
       "shots_on_target": 1.239272,
       "books": 2,
       "kickoff": "2026-11-01T16:30:00+00:00",
-      "observed_at": "2026-11-01T13:42:33.923947+00:00"
+      "observed_at": "2026-11-01T15:16:55.459622+00:00"
     },
     {
       "element_id": null,
@@ -1699,13 +1699,13 @@
       "first_goal": 0.508938,
       "last_goal": null,
       "anytime_assist": null,
-      "any_card": 0.566478,
+      "any_card": 0.162338,
       "red_card": 0.010989,
       "shots": null,
       "shots_on_target": null,
       "books": 2,
       "kickoff": "2026-11-01T16:30:00+00:00",
-      "observed_at": "2026-11-01T13:42:33.923947+00:00"
+      "observed_at": "2026-11-01T15:16:55.459622+00:00"
     },
     {
       "element_id": 4,
@@ -1713,17 +1713,17 @@
       "home_team": "Liverpool",
       "away_team": "Arsenal",
       "club": "ARS",
-      "anytime_goal": 0.092632,
+      "anytime_goal": 0.095556,
       "first_goal": 0.043478,
       "last_goal": null,
       "anytime_assist": 0.058824,
-      "any_card": 0.222222,
+      "any_card": 0.217391,
       "red_card": 0.015152,
       "shots": null,
       "shots_on_target": 0.375711,
       "books": 3,
       "kickoff": "2026-11-01T16:30:00+00:00",
-      "observed_at": "2026-11-01T13:42:33.923947+00:00"
+      "observed_at": "2026-11-01T15:16:55.459622+00:00"
     },
     {
       "element_id": 15,
@@ -1731,17 +1731,17 @@
       "home_team": "Liverpool",
       "away_team": "Arsenal",
       "club": "ARS",
-      "anytime_goal": 0.167568,
-      "first_goal": 0.076923,
+      "anytime_goal": 0.169956,
+      "first_goal": 0.083333,
       "last_goal": null,
       "anytime_assist": 0.217391,
-      "any_card": 0.142857,
+      "any_card": 0.153846,
       "red_card": 0.010989,
       "shots": null,
       "shots_on_target": 0.954774,
       "books": 3,
       "kickoff": "2026-11-01T16:30:00+00:00",
-      "observed_at": "2026-11-01T13:42:33.923947+00:00"
+      "observed_at": "2026-11-01T15:16:55.459622+00:00"
     },
     {
       "element_id": 19,
@@ -1749,17 +1749,17 @@
       "home_team": "Liverpool",
       "away_team": "Arsenal",
       "club": "ARS",
-      "anytime_goal": 0.126984,
+      "anytime_goal": 0.132479,
       "first_goal": null,
       "last_goal": null,
       "anytime_assist": 0.105263,
-      "any_card": 0.273466,
+      "any_card": 0.255682,
       "red_card": 0.019608,
       "shots": null,
       "shots_on_target": 0.428617,
       "books": 2,
       "kickoff": "2026-11-01T16:30:00+00:00",
-      "observed_at": "2026-11-01T13:42:33.923947+00:00"
+      "observed_at": "2026-11-01T15:16:55.459622+00:00"
     },
     {
       "element_id": 17,
@@ -1771,13 +1771,13 @@
       "first_goal": 0.108824,
       "last_goal": null,
       "anytime_assist": 0.172414,
-      "any_card": 0.311594,
+      "any_card": 0.303653,
       "red_card": 0.021739,
       "shots": null,
       "shots_on_target": 1.006701,
       "books": 2,
       "kickoff": "2026-11-01T16:30:00+00:00",
-      "observed_at": "2026-11-01T13:42:33.923947+00:00"
+      "observed_at": "2026-11-01T15:16:55.459622+00:00"
     },
     {
       "element_id": 358,
@@ -1789,13 +1789,13 @@
       "first_goal": 0.033333,
       "last_goal": null,
       "anytime_assist": 0.111111,
-      "any_card": 0.266667,
+      "any_card": 0.263158,
       "red_card": 0.017857,
       "shots": null,
       "shots_on_target": 0.299722,
       "books": 3,
       "kickoff": "2026-11-01T16:30:00+00:00",
-      "observed_at": "2026-11-01T13:42:33.923947+00:00"
+      "observed_at": "2026-11-01T15:16:55.459622+00:00"
     },
     {
       "element_id": 7,
@@ -1803,8 +1803,8 @@
       "home_team": "Liverpool",
       "away_team": "Arsenal",
       "club": "ARS",
-      "anytime_goal": 0.085965,
-      "first_goal": 0.038462,
+      "anytime_goal": 0.081871,
+      "first_goal": 0.033333,
       "last_goal": null,
       "anytime_assist": 0.125,
       "any_card": 0.277778,
@@ -1813,7 +1813,7 @@
       "shots_on_target": 0.391229,
       "books": 3,
       "kickoff": "2026-11-01T16:30:00+00:00",
-      "observed_at": "2026-11-01T13:42:33.923947+00:00"
+      "observed_at": "2026-11-01T15:16:55.459622+00:00"
     },
     {
       "element_id": 16,
@@ -1821,17 +1821,17 @@
       "home_team": "Liverpool",
       "away_team": "Arsenal",
       "club": "ARS",
-      "anytime_goal": 0.193598,
+      "anytime_goal": 0.197173,
       "first_goal": 0.090909,
       "last_goal": null,
       "anytime_assist": 0.210526,
-      "any_card": 0.125,
+      "any_card": 0.117647,
       "red_card": 0.009901,
       "shots": null,
       "shots_on_target": 1.139477,
       "books": 3,
       "kickoff": "2026-11-01T16:30:00+00:00",
-      "observed_at": "2026-11-01T13:42:33.923947+00:00"
+      "observed_at": "2026-11-01T15:16:55.459622+00:00"
     },
     {
       "element_id": 9,
@@ -1839,17 +1839,17 @@
       "home_team": "Liverpool",
       "away_team": "Arsenal",
       "club": "ARS",
-      "anytime_goal": 0.071795,
+      "anytime_goal": 0.075,
       "first_goal": 0.029741,
       "last_goal": null,
       "anytime_assist": 0.105263,
-      "any_card": 0.272059,
+      "any_card": 0.243213,
       "red_card": 0.019608,
       "shots": null,
       "shots_on_target": 0.313067,
       "books": 2,
       "kickoff": "2026-11-01T16:30:00+00:00",
-      "observed_at": "2026-11-01T13:42:33.923947+00:00"
+      "observed_at": "2026-11-01T15:16:55.459622+00:00"
     },
     {
       "element_id": 8,
@@ -1857,7 +1857,7 @@
       "home_team": "Liverpool",
       "away_team": "Arsenal",
       "club": "ARS",
-      "anytime_goal": 0.093478,
+      "anytime_goal": 0.088346,
       "first_goal": 0.038462,
       "last_goal": null,
       "anytime_assist": 0.133333,
@@ -1867,7 +1867,7 @@
       "shots_on_target": 0.533886,
       "books": 3,
       "kickoff": "2026-11-01T16:30:00+00:00",
-      "observed_at": "2026-11-01T13:42:33.923947+00:00"
+      "observed_at": "2026-11-01T15:16:55.459622+00:00"
     },
     {
       "element_id": 369,
@@ -1875,17 +1875,17 @@
       "home_team": "Liverpool",
       "away_team": "Arsenal",
       "club": "LIV",
-      "anytime_goal": 0.190476,
+      "anytime_goal": 0.196429,
       "first_goal": 0.1125,
       "last_goal": null,
       "anytime_assist": 0.217391,
-      "any_card": 0.166667,
+      "any_card": 0.161458,
       "red_card": 0.012346,
       "shots": null,
       "shots_on_target": 1.006701,
       "books": 2,
       "kickoff": "2026-11-01T16:30:00+00:00",
-      "observed_at": "2026-11-01T13:42:33.923947+00:00"
+      "observed_at": "2026-11-01T15:16:55.459622+00:00"
     },
     {
       "element_id": 579,
@@ -1893,8 +1893,8 @@
       "home_team": "Liverpool",
       "away_team": "Arsenal",
       "club": "LIV",
-      "anytime_goal": 0.080128,
-      "first_goal": 0.027778,
+      "anytime_goal": 0.067308,
+      "first_goal": 0.029412,
       "last_goal": null,
       "anytime_assist": 0.090909,
       "any_card": 0.3125,
@@ -1903,7 +1903,7 @@
       "shots_on_target": 0.477,
       "books": 3,
       "kickoff": "2026-11-01T16:30:00+00:00",
-      "observed_at": "2026-11-01T13:42:33.923947+00:00"
+      "observed_at": "2026-11-01T15:16:55.459622+00:00"
     },
     {
       "element_id": 371,
@@ -1912,16 +1912,16 @@
       "away_team": "Arsenal",
       "club": "LIV",
       "anytime_goal": 0.1,
-      "first_goal": 0.055556,
+      "first_goal": 0.052632,
       "last_goal": null,
       "anytime_assist": 0.090909,
-      "any_card": 0.230947,
+      "any_card": 0.2,
       "red_card": 0.014085,
       "shots": null,
       "shots_on_target": 0.485696,
       "books": 3,
       "kickoff": "2026-11-01T16:30:00+00:00",
-      "observed_at": "2026-11-01T13:42:33.923947+00:00"
+      "observed_at": "2026-11-01T15:16:55.459622+00:00"
     },
     {
       "element_id": 375,
@@ -1933,13 +1933,13 @@
       "first_goal": 0.069264,
       "last_goal": null,
       "anytime_assist": 0.111111,
-      "any_card": 0.241279,
+      "any_card": 0.209746,
       "red_card": 0.016393,
       "shots": null,
       "shots_on_target": 0.45813,
       "books": 2,
       "kickoff": "2026-11-01T16:30:00+00:00",
-      "observed_at": "2026-11-01T13:42:33.923947+00:00"
+      "observed_at": "2026-11-01T15:16:55.459622+00:00"
     },
     {
       "element_id": 377,
@@ -1951,13 +1951,13 @@
       "first_goal": 0.10101,
       "last_goal": null,
       "anytime_assist": 0.2,
-      "any_card": 0.59505,
+      "any_card": 0.178125,
       "red_card": 0.014085,
       "shots": null,
       "shots_on_target": 1.118471,
       "books": 2,
       "kickoff": "2026-11-01T16:30:00+00:00",
-      "observed_at": "2026-11-01T13:42:33.923947+00:00"
+      "observed_at": "2026-11-01T15:16:55.459622+00:00"
     },
     {
       "element_id": 25,
@@ -1965,17 +1965,17 @@
       "home_team": "Liverpool",
       "away_team": "Arsenal",
       "club": "ARS",
-      "anytime_goal": 0.315152,
+      "anytime_goal": 0.324173,
       "first_goal": 0.142857,
       "last_goal": null,
       "anytime_assist": 0.172414,
-      "any_card": 0.208333,
+      "any_card": 0.192308,
       "red_card": 0.012346,
       "shots": null,
       "shots_on_target": 1.209121,
       "books": 3,
       "kickoff": "2026-11-01T16:30:00+00:00",
-      "observed_at": "2026-11-01T13:42:33.923947+00:00"
+      "observed_at": "2026-11-01T15:16:55.459622+00:00"
     },
     {
       "element_id": 356,
@@ -1984,16 +1984,16 @@
       "away_team": "Arsenal",
       "club": "LIV",
       "anytime_goal": 0.077381,
-      "first_goal": 0.033333,
+      "first_goal": 0.03125,
       "last_goal": null,
       "anytime_assist": 0.052632,
-      "any_card": 0.2,
+      "any_card": 0.181818,
       "red_card": 0.014085,
       "shots": null,
       "shots_on_target": 0.393615,
       "books": 3,
       "kickoff": "2026-11-01T16:30:00+00:00",
-      "observed_at": "2026-11-01T13:42:33.923947+00:00"
+      "observed_at": "2026-11-01T15:16:55.459622+00:00"
     },
     {
       "element_id": 374,
@@ -2005,13 +2005,13 @@
       "first_goal": 0.508938,
       "last_goal": null,
       "anytime_assist": null,
-      "any_card": 0.293798,
+      "any_card": 0.221951,
       "red_card": 0.014085,
       "shots": null,
       "shots_on_target": null,
       "books": 2,
       "kickoff": "2026-11-01T16:30:00+00:00",
-      "observed_at": "2026-11-01T13:42:33.923947+00:00"
+      "observed_at": "2026-11-01T15:16:55.459622+00:00"
     }
   ]
 }
