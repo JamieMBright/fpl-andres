@@ -1,6 +1,6 @@
 {
   "schemaVersion": 7,
-  "generatedAt": "2026-11-02T00:06:04.857050Z",
+  "generatedAt": "2026-11-02T05:58:42.532782Z",
   "recordSeason": "2026-27",
   "events": [
     10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28,
@@ -202,7 +202,7 @@
       }
     ],
     "sourceReference": "FPL rules page, Transfers section",
-    "dataAvailableAt": "2026-11-02T00:06:04.857050Z",
+    "dataAvailableAt": "2026-11-02T05:58:42.532782Z",
     "playableStartRate": 0.35,
     "transferMarginPoints": 0.5
   },
@@ -4387,48 +4387,6 @@
       }
     },
     {
-      "id": 8,
-      "code": 466075,
-      "name": "Calafiori",
-      "position": "DEF",
-      "positionId": 2,
-      "club": "ARS",
-      "teamId": 1,
-      "priceTenths": 59,
-      "availabilityStatus": "a",
-      "chanceOfPlaying": 100,
-      "basePoints": 5.81,
-      "routes": {
-        "appearance": 1.873,
-        "attacking": 1.315,
-        "cleanSheet": 2.187,
-        "bonus": 0.33,
-        "conceding": -0.112,
-        "yellowCards": -0.001,
-        "defensiveContribution": 0.218
-      },
-      "startRate": 0.881,
-      "startEvidence": {
-        "sourceStartRate": 0.586,
-        "finalStartRate": 0.881,
-        "observedAppearances": 9,
-        "recentStarts": 8,
-        "recentMatches": 9,
-        "recentMinutes": 699,
-        "appearanceSource": "currentSeasonLineup",
-        "lineupAdjustment": 0.295,
-        "marketAdjustment": 0.0,
-        "availabilityAdjustment": 0.0
-      },
-      "squadNumber": null,
-      "rated": true,
-      "depthRank": 3,
-      "evidence": {
-        "all": "currentSeasonRoutes",
-        "appearance": "currentSeasonLineup"
-      }
-    },
-    {
       "id": 330,
       "code": 226182,
       "name": "Bogle",
@@ -4459,6 +4417,48 @@
         "recentMinutes": 720,
         "appearanceSource": "currentSeasonLineup",
         "lineupAdjustment": 0.079,
+        "marketAdjustment": 0.0,
+        "availabilityAdjustment": 0.0
+      },
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 3,
+      "evidence": {
+        "all": "currentSeasonRoutes",
+        "appearance": "currentSeasonLineup"
+      }
+    },
+    {
+      "id": 8,
+      "code": 466075,
+      "name": "Calafiori",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "ARS",
+      "teamId": 1,
+      "priceTenths": 59,
+      "availabilityStatus": "a",
+      "chanceOfPlaying": 100,
+      "basePoints": 5.594,
+      "routes": {
+        "appearance": 1.873,
+        "attacking": 1.315,
+        "cleanSheet": 2.187,
+        "bonus": 0.33,
+        "conceding": -0.112,
+        "yellowCards": -0.001,
+        "defensiveContribution": 0.002
+      },
+      "startRate": 0.881,
+      "startEvidence": {
+        "sourceStartRate": 0.586,
+        "finalStartRate": 0.881,
+        "observedAppearances": 9,
+        "recentStarts": 8,
+        "recentMatches": 9,
+        "recentMinutes": 699,
+        "appearanceSource": "currentSeasonLineup",
+        "lineupAdjustment": 0.295,
         "marketAdjustment": 0.0,
         "availabilityAdjustment": 0.0
       },
@@ -15920,7 +15920,7 @@
         "observedAppearances": 9,
         "recentStarts": 6,
         "recentMatches": 9,
-        "recentMinutes": 502,
+        "recentMinutes": 503,
         "appearanceSource": "currentSeasonLineup",
         "lineupAdjustment": 0.649,
         "marketAdjustment": 0.0,
@@ -18677,7 +18677,7 @@
         "observedAppearances": 9,
         "recentStarts": 1,
         "recentMatches": 9,
-        "recentMinutes": 203,
+        "recentMinutes": 202,
         "appearanceSource": "currentSeasonLineup",
         "lineupAdjustment": -0.475,
         "marketAdjustment": 0.0,
