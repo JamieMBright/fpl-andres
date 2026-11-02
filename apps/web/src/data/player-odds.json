@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "season": "2026-27",
-  "fetchedAt": "2026-11-02T05:59:53.097576+00:00",
+  "fetchedAt": "2026-11-02T15:47:19.766489+00:00",
   "source": "the-odds-api",
   "markets": [
     "player_goal_scorer_anytime",
@@ -17,19 +17,19 @@
   "quota": {
     "opening": {
       "cost": 0,
-      "used": 112,
-      "remaining": 388
+      "used": 128,
+      "remaining": 372
     },
     "closing": {
-      "cost": 6,
-      "used": 118,
-      "remaining": 382
+      "cost": 0,
+      "used": 128,
+      "remaining": 372
     },
-    "spentThisRun": 6
+    "spentThisRun": 0
   },
   "coverage": {
-    "fixturesListed": 12,
-    "fixturesVisitedThisRun": 12,
+    "fixturesListed": 21,
+    "fixturesVisitedThisRun": 17,
     "fixturesWithQuotes": 1
   },
   "nameMappingGaps": [],
@@ -84,7 +84,7 @@
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-11-06T20:00:00+00:00",
-      "visited_at": "2026-11-02T05:59:53.097576+00:00"
+      "visited_at": "2026-11-02T15:47:19.766489+00:00"
     },
     {
       "event_id": "5c87852253fd11eea5d34ad723356607",
@@ -111,7 +111,7 @@
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-11-07T12:30:00+00:00",
-      "visited_at": "2026-11-02T05:59:53.097576+00:00"
+      "visited_at": "2026-11-02T15:47:19.766489+00:00"
     },
     {
       "event_id": "842fcc5b9feb8c63054a661ad1fc8926",
@@ -138,7 +138,7 @@
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-11-07T15:00:00+00:00",
-      "visited_at": "2026-11-02T05:59:53.097576+00:00"
+      "visited_at": "2026-11-02T15:47:19.766489+00:00"
     },
     {
       "event_id": "3903e98a54db0f2cc23095407fe9dad8",
@@ -165,7 +165,7 @@
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-11-07T15:00:00+00:00",
-      "visited_at": "2026-11-02T05:59:53.097576+00:00"
+      "visited_at": "2026-11-02T15:47:19.766489+00:00"
     },
     {
       "event_id": "59c5f635cfe11613c07e9a5520ced5c1",
@@ -192,7 +192,7 @@
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-11-07T17:30:00+00:00",
-      "visited_at": "2026-11-02T05:59:53.097576+00:00"
+      "visited_at": "2026-11-02T15:47:19.766489+00:00"
     },
     {
       "event_id": "79ed3df594d7b352ef027128b1ba5d0a",
@@ -219,7 +219,7 @@
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-11-08T14:00:00+00:00",
-      "visited_at": "2026-11-02T05:59:53.097576+00:00"
+      "visited_at": "2026-11-02T15:47:19.766489+00:00"
     },
     {
       "event_id": "8e3ca98e29be84dd4a882ed05f50fa79",
@@ -246,7 +246,7 @@
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-11-08T14:00:00+00:00",
-      "visited_at": "2026-11-02T05:59:53.097576+00:00"
+      "visited_at": "2026-11-02T15:47:19.766489+00:00"
     },
     {
       "event_id": "3a4608abdf257d2a0024b944757d9dc9",
@@ -273,7 +273,7 @@
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-11-08T14:00:00+00:00",
-      "visited_at": "2026-11-02T05:59:53.097576+00:00"
+      "visited_at": "2026-11-02T15:47:19.766489+00:00"
     },
     {
       "event_id": "0cfbab01e152f81e34f9014e02c7eb79",
@@ -300,7 +300,7 @@
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-11-08T14:00:00+00:00",
-      "visited_at": "2026-11-02T05:59:53.097576+00:00"
+      "visited_at": "2026-11-02T15:47:19.766489+00:00"
     },
     {
       "event_id": "b0a4b5448a7e02d9ad1eaa817599fff0",
@@ -327,7 +327,223 @@
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-11-08T16:30:00+00:00",
-      "visited_at": "2026-11-02T05:59:53.097576+00:00"
+      "visited_at": "2026-11-02T15:47:19.766489+00:00"
+    },
+    {
+      "event_id": "6ef39b0fd8839f6e93a3de32523e9807",
+      "home_team": "Manchester City",
+      "away_team": "Fulham",
+      "home_short": "MCI",
+      "away_short": "FUL",
+      "status": "no-bookmaker",
+      "books": 0,
+      "outcomes": 0,
+      "offered_markets": [],
+      "missing_markets": [
+        "player_assists",
+        "player_first_goal_scorer",
+        "player_goal_scorer_anytime",
+        "player_last_goal_scorer",
+        "player_shots",
+        "player_shots_on_target",
+        "player_to_receive_card",
+        "player_to_receive_red_card"
+      ],
+      "player_rows_parsed": 0,
+      "player_rows_matched": 0,
+      "unmatched_names": [],
+      "error": null,
+      "kickoff": "2026-11-21T12:30:00+00:00",
+      "visited_at": "2026-11-02T15:47:19.766489+00:00"
+    },
+    {
+      "event_id": "b8d6ab6ecc8bb356c6335d3f417d0ecf",
+      "home_team": "Aston Villa",
+      "away_team": "Sunderland",
+      "home_short": "AVL",
+      "away_short": "SUN",
+      "status": "no-bookmaker",
+      "books": 0,
+      "outcomes": 0,
+      "offered_markets": [],
+      "missing_markets": [
+        "player_assists",
+        "player_first_goal_scorer",
+        "player_goal_scorer_anytime",
+        "player_last_goal_scorer",
+        "player_shots",
+        "player_shots_on_target",
+        "player_to_receive_card",
+        "player_to_receive_red_card"
+      ],
+      "player_rows_parsed": 0,
+      "player_rows_matched": 0,
+      "unmatched_names": [],
+      "error": null,
+      "kickoff": "2026-11-21T15:00:00+00:00",
+      "visited_at": "2026-11-02T15:47:19.766489+00:00"
+    },
+    {
+      "event_id": "cf68da11fa604c13fc9ef3219fad0314",
+      "home_team": "Bournemouth",
+      "away_team": "Nottingham Forest",
+      "home_short": "BOU",
+      "away_short": "NFO",
+      "status": "no-bookmaker",
+      "books": 0,
+      "outcomes": 0,
+      "offered_markets": [],
+      "missing_markets": [
+        "player_assists",
+        "player_first_goal_scorer",
+        "player_goal_scorer_anytime",
+        "player_last_goal_scorer",
+        "player_shots",
+        "player_shots_on_target",
+        "player_to_receive_card",
+        "player_to_receive_red_card"
+      ],
+      "player_rows_parsed": 0,
+      "player_rows_matched": 0,
+      "unmatched_names": [],
+      "error": null,
+      "kickoff": "2026-11-21T15:00:00+00:00",
+      "visited_at": "2026-11-02T15:47:19.766489+00:00"
+    },
+    {
+      "event_id": "ac6cf70520a83c0949b4003bde53c709",
+      "home_team": "Chelsea",
+      "away_team": "Leeds United",
+      "home_short": "CHE",
+      "away_short": "LEE",
+      "status": "no-bookmaker",
+      "books": 0,
+      "outcomes": 0,
+      "offered_markets": [],
+      "missing_markets": [
+        "player_assists",
+        "player_first_goal_scorer",
+        "player_goal_scorer_anytime",
+        "player_last_goal_scorer",
+        "player_shots",
+        "player_shots_on_target",
+        "player_to_receive_card",
+        "player_to_receive_red_card"
+      ],
+      "player_rows_parsed": 0,
+      "player_rows_matched": 0,
+      "unmatched_names": [],
+      "error": null,
+      "kickoff": "2026-11-21T15:00:00+00:00",
+      "visited_at": "2026-11-02T15:47:19.766489+00:00"
+    },
+    {
+      "event_id": "9f38413bdad666e2d2dfcc574dd12e66",
+      "home_team": "Coventry City",
+      "away_team": "Crystal Palace",
+      "home_short": "COV",
+      "away_short": "CRY",
+      "status": "no-bookmaker",
+      "books": 0,
+      "outcomes": 0,
+      "offered_markets": [],
+      "missing_markets": [
+        "player_assists",
+        "player_first_goal_scorer",
+        "player_goal_scorer_anytime",
+        "player_last_goal_scorer",
+        "player_shots",
+        "player_shots_on_target",
+        "player_to_receive_card",
+        "player_to_receive_red_card"
+      ],
+      "player_rows_parsed": 0,
+      "player_rows_matched": 0,
+      "unmatched_names": [],
+      "error": null,
+      "kickoff": "2026-11-21T15:00:00+00:00",
+      "visited_at": "2026-11-02T15:47:19.766489+00:00"
+    },
+    {
+      "event_id": "e67ee3a6f93bb90b8aefcf3dd204477c",
+      "home_team": "Tottenham Hotspur",
+      "away_team": "Ipswich Town",
+      "home_short": "TOT",
+      "away_short": "IPS",
+      "status": "no-bookmaker",
+      "books": 0,
+      "outcomes": 0,
+      "offered_markets": [],
+      "missing_markets": [
+        "player_assists",
+        "player_first_goal_scorer",
+        "player_goal_scorer_anytime",
+        "player_last_goal_scorer",
+        "player_shots",
+        "player_shots_on_target",
+        "player_to_receive_card",
+        "player_to_receive_red_card"
+      ],
+      "player_rows_parsed": 0,
+      "player_rows_matched": 0,
+      "unmatched_names": [],
+      "error": null,
+      "kickoff": "2026-11-21T15:00:00+00:00",
+      "visited_at": "2026-11-02T15:47:19.766489+00:00"
+    },
+    {
+      "event_id": "71bf9fe98c3e3be39cd1d059f8d71ae8",
+      "home_team": "Newcastle United",
+      "away_team": "Arsenal",
+      "home_short": "NEW",
+      "away_short": "ARS",
+      "status": "parse-error",
+      "books": 0,
+      "outcomes": null,
+      "offered_markets": [],
+      "missing_markets": [
+        "player_goal_scorer_anytime",
+        "player_first_goal_scorer",
+        "player_last_goal_scorer",
+        "player_assists",
+        "player_to_receive_card",
+        "player_to_receive_red_card",
+        "player_shots",
+        "player_shots_on_target"
+      ],
+      "player_rows_parsed": 0,
+      "player_rows_matched": 0,
+      "unmatched_names": [],
+      "error": "HTTPStatusError",
+      "kickoff": "2026-11-21T17:30:00+00:00",
+      "visited_at": "2026-11-02T15:47:19.766489+00:00"
+    },
+    {
+      "event_id": "230a356290e1a358e9dd2f7fa23de3b9",
+      "home_team": "Hull City",
+      "away_team": "Brighton and Hove Albion",
+      "home_short": "HUL",
+      "away_short": "BHA",
+      "status": "unvisited",
+      "books": 0,
+      "outcomes": 0,
+      "offered_markets": [],
+      "missing_markets": [
+        "player_goal_scorer_anytime",
+        "player_first_goal_scorer",
+        "player_last_goal_scorer",
+        "player_assists",
+        "player_to_receive_card",
+        "player_to_receive_red_card",
+        "player_shots",
+        "player_shots_on_target"
+      ],
+      "player_rows_parsed": 0,
+      "player_rows_matched": 0,
+      "unmatched_names": [],
+      "error": null,
+      "kickoff": "2026-11-22T14:00:00+00:00",
+      "visited_at": null
     },
     {
       "event_id": "4c08b213ed416e8f41e038f42a42b962",
@@ -355,6 +571,33 @@
       "error": null,
       "kickoff": "2026-11-22T16:30:00+00:00",
       "visited_at": "2026-11-02T05:59:53.097576+00:00"
+    },
+    {
+      "event_id": "aa77e2a08a1a003b0bbb62a5f8e8ae42",
+      "home_team": "Brentford",
+      "away_team": "Everton",
+      "home_short": "BRE",
+      "away_short": "EVE",
+      "status": "unvisited",
+      "books": 0,
+      "outcomes": 0,
+      "offered_markets": [],
+      "missing_markets": [
+        "player_goal_scorer_anytime",
+        "player_first_goal_scorer",
+        "player_last_goal_scorer",
+        "player_assists",
+        "player_to_receive_card",
+        "player_to_receive_red_card",
+        "player_shots",
+        "player_shots_on_target"
+      ],
+      "player_rows_parsed": 0,
+      "player_rows_matched": 0,
+      "unmatched_names": [],
+      "error": null,
+      "kickoff": "2026-11-23T20:00:00+00:00",
+      "visited_at": null
     }
   ],
   "unmatched": ["Matias Fernandez Pardo"],
