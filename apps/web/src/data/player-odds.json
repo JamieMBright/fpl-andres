@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "season": "2026-27",
-  "fetchedAt": "2026-11-02T19:23:49.657226+00:00",
+  "fetchedAt": "2026-11-02T23:31:57.117165+00:00",
   "source": "the-odds-api",
   "markets": [
     "player_goal_scorer_anytime",
@@ -17,48 +17,23 @@
   "quota": {
     "opening": {
       "cost": 0,
-      "used": 164,
-      "remaining": 336
+      "used": 174,
+      "remaining": 326
     },
     "closing": {
-      "cost": 6,
-      "used": 170,
-      "remaining": 330
+      "cost": 0,
+      "used": 174,
+      "remaining": 326
     },
-    "spentThisRun": 6
+    "spentThisRun": 0
   },
   "coverage": {
-    "fixturesListed": 21,
-    "fixturesVisitedThisRun": 21,
-    "fixturesWithQuotes": 1
+    "fixturesListed": 20,
+    "fixturesVisitedThisRun": 20,
+    "fixturesWithQuotes": 0
   },
   "nameMappingGaps": [],
   "fixtures": [
-    {
-      "event_id": "0f552d9c6990c69474f50ff2fb54e9a3",
-      "home_team": "Newcastle United",
-      "away_team": "Everton",
-      "home_short": "NEW",
-      "away_short": "EVE",
-      "status": "returned",
-      "books": 3,
-      "outcomes": 253,
-      "offered_markets": [
-        "player_assists",
-        "player_first_goal_scorer",
-        "player_goal_scorer_anytime",
-        "player_shots_on_target",
-        "player_to_receive_card",
-        "player_to_receive_red_card"
-      ],
-      "missing_markets": ["player_last_goal_scorer", "player_shots"],
-      "player_rows_parsed": 21,
-      "player_rows_matched": 21,
-      "unmatched_names": [],
-      "error": null,
-      "kickoff": "2026-11-02T20:00:00+00:00",
-      "visited_at": "2026-11-02T19:23:49.657226+00:00"
-    },
     {
       "event_id": "586bec023ee8ac2f0645d963bd2c9d25",
       "home_team": "Everton",
@@ -84,7 +59,7 @@
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-11-06T20:00:00+00:00",
-      "visited_at": "2026-11-02T19:23:49.657226+00:00"
+      "visited_at": "2026-11-02T23:31:57.117165+00:00"
     },
     {
       "event_id": "5c87852253fd11eea5d34ad723356607",
@@ -111,7 +86,7 @@
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-11-07T12:30:00+00:00",
-      "visited_at": "2026-11-02T19:23:49.657226+00:00"
+      "visited_at": "2026-11-02T23:31:57.117165+00:00"
     },
     {
       "event_id": "842fcc5b9feb8c63054a661ad1fc8926",
@@ -138,7 +113,7 @@
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-11-07T15:00:00+00:00",
-      "visited_at": "2026-11-02T19:23:49.657226+00:00"
+      "visited_at": "2026-11-02T23:31:57.117165+00:00"
     },
     {
       "event_id": "3903e98a54db0f2cc23095407fe9dad8",
@@ -165,7 +140,7 @@
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-11-07T15:00:00+00:00",
-      "visited_at": "2026-11-02T19:23:49.657226+00:00"
+      "visited_at": "2026-11-02T23:31:57.117165+00:00"
     },
     {
       "event_id": "59c5f635cfe11613c07e9a5520ced5c1",
@@ -192,7 +167,7 @@
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-11-07T17:30:00+00:00",
-      "visited_at": "2026-11-02T19:23:49.657226+00:00"
+      "visited_at": "2026-11-02T23:31:57.117165+00:00"
     },
     {
       "event_id": "79ed3df594d7b352ef027128b1ba5d0a",
@@ -219,7 +194,7 @@
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-11-08T14:00:00+00:00",
-      "visited_at": "2026-11-02T19:23:49.657226+00:00"
+      "visited_at": "2026-11-02T23:31:57.117165+00:00"
     },
     {
       "event_id": "8e3ca98e29be84dd4a882ed05f50fa79",
@@ -246,7 +221,7 @@
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-11-08T14:00:00+00:00",
-      "visited_at": "2026-11-02T19:23:49.657226+00:00"
+      "visited_at": "2026-11-02T23:31:57.117165+00:00"
     },
     {
       "event_id": "3a4608abdf257d2a0024b944757d9dc9",
@@ -273,7 +248,7 @@
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-11-08T14:00:00+00:00",
-      "visited_at": "2026-11-02T19:23:49.657226+00:00"
+      "visited_at": "2026-11-02T23:31:57.117165+00:00"
     },
     {
       "event_id": "0cfbab01e152f81e34f9014e02c7eb79",
@@ -300,7 +275,7 @@
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-11-08T14:00:00+00:00",
-      "visited_at": "2026-11-02T19:23:49.657226+00:00"
+      "visited_at": "2026-11-02T23:31:57.117165+00:00"
     },
     {
       "event_id": "b0a4b5448a7e02d9ad1eaa817599fff0",
@@ -327,7 +302,7 @@
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-11-08T16:30:00+00:00",
-      "visited_at": "2026-11-02T19:23:49.657226+00:00"
+      "visited_at": "2026-11-02T23:31:57.117165+00:00"
     },
     {
       "event_id": "6ef39b0fd8839f6e93a3de32523e9807",
@@ -354,7 +329,7 @@
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-11-21T12:30:00+00:00",
-      "visited_at": "2026-11-02T19:23:49.657226+00:00"
+      "visited_at": "2026-11-02T23:31:57.117165+00:00"
     },
     {
       "event_id": "b8d6ab6ecc8bb356c6335d3f417d0ecf",
@@ -381,7 +356,7 @@
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-11-21T15:00:00+00:00",
-      "visited_at": "2026-11-02T19:23:49.657226+00:00"
+      "visited_at": "2026-11-02T23:31:57.117165+00:00"
     },
     {
       "event_id": "cf68da11fa604c13fc9ef3219fad0314",
@@ -408,7 +383,7 @@
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-11-21T15:00:00+00:00",
-      "visited_at": "2026-11-02T19:23:49.657226+00:00"
+      "visited_at": "2026-11-02T23:31:57.117165+00:00"
     },
     {
       "event_id": "ac6cf70520a83c0949b4003bde53c709",
@@ -435,7 +410,7 @@
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-11-21T15:00:00+00:00",
-      "visited_at": "2026-11-02T19:23:49.657226+00:00"
+      "visited_at": "2026-11-02T23:31:57.117165+00:00"
     },
     {
       "event_id": "9f38413bdad666e2d2dfcc574dd12e66",
@@ -462,7 +437,7 @@
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-11-21T15:00:00+00:00",
-      "visited_at": "2026-11-02T19:23:49.657226+00:00"
+      "visited_at": "2026-11-02T23:31:57.117165+00:00"
     },
     {
       "event_id": "e67ee3a6f93bb90b8aefcf3dd204477c",
@@ -489,7 +464,7 @@
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-11-21T15:00:00+00:00",
-      "visited_at": "2026-11-02T19:23:49.657226+00:00"
+      "visited_at": "2026-11-02T23:31:57.117165+00:00"
     },
     {
       "event_id": "71bf9fe98c3e3be39cd1d059f8d71ae8",
@@ -516,7 +491,7 @@
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-11-21T17:30:00+00:00",
-      "visited_at": "2026-11-02T19:23:49.657226+00:00"
+      "visited_at": "2026-11-02T23:31:57.117165+00:00"
     },
     {
       "event_id": "230a356290e1a358e9dd2f7fa23de3b9",
@@ -543,7 +518,7 @@
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-11-22T14:00:00+00:00",
-      "visited_at": "2026-11-02T19:23:49.657226+00:00"
+      "visited_at": "2026-11-02T23:31:57.117165+00:00"
     },
     {
       "event_id": "4c08b213ed416e8f41e038f42a42b962",
@@ -570,7 +545,7 @@
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-11-22T16:30:00+00:00",
-      "visited_at": "2026-11-02T19:23:49.657226+00:00"
+      "visited_at": "2026-11-02T23:31:57.117165+00:00"
     },
     {
       "event_id": "aa77e2a08a1a003b0bbb62a5f8e8ae42",
@@ -597,388 +572,9 @@
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-11-23T20:00:00+00:00",
-      "visited_at": "2026-11-02T19:23:49.657226+00:00"
+      "visited_at": "2026-11-02T23:31:57.117165+00:00"
     }
   ],
   "unmatched": [],
-  "players": [
-    {
-      "element_id": 593,
-      "quoted_name": "Amar Dedic",
-      "home_team": "Newcastle United",
-      "away_team": "Everton",
-      "club": "NEW",
-      "anytime_goal": 0.067982,
-      "first_goal": 0.027778,
-      "last_goal": null,
-      "anytime_assist": 0.125,
-      "any_card": 0.25,
-      "red_card": 0.017857,
-      "shots": null,
-      "shots_on_target": 0.485696,
-      "books": 3,
-      "kickoff": "2026-11-02T20:00:00+00:00",
-      "observed_at": "2026-11-02T19:23:49.657226+00:00"
-    },
-    {
-      "element_id": 454,
-      "quoted_name": "Anthony Elanga",
-      "home_team": "Newcastle United",
-      "away_team": "Everton",
-      "club": "NEW",
-      "anytime_goal": 0.196119,
-      "first_goal": 0.090909,
-      "last_goal": null,
-      "anytime_assist": 0.208333,
-      "any_card": 0.111111,
-      "red_card": 0.009901,
-      "shots": null,
-      "shots_on_target": 1.053299,
-      "books": 3,
-      "kickoff": "2026-11-02T20:00:00+00:00",
-      "observed_at": "2026-11-02T19:23:49.657226+00:00"
-    },
-    {
-      "element_id": 448,
-      "quoted_name": "Dan Burn",
-      "home_team": "Newcastle United",
-      "away_team": "Everton",
-      "club": "NEW",
-      "anytime_goal": 0.07197,
-      "first_goal": 0.03125,
-      "last_goal": null,
-      "anytime_assist": 0.083333,
-      "any_card": 0.285714,
-      "red_card": 0.019608,
-      "shots": null,
-      "shots_on_target": 0.353248,
-      "books": 3,
-      "kickoff": "2026-11-02T20:00:00+00:00",
-      "observed_at": "2026-11-02T19:23:49.657226+00:00"
-    },
-    {
-      "element_id": 446,
-      "quoted_name": "Fabian Schar",
-      "home_team": "Newcastle United",
-      "away_team": "Everton",
-      "club": "NEW",
-      "anytime_goal": 0.085145,
-      "first_goal": 0.041667,
-      "last_goal": null,
-      "anytime_assist": 0.066667,
-      "any_card": 0.30303,
-      "red_card": 0.02439,
-      "shots": null,
-      "shots_on_target": 0.431668,
-      "books": 3,
-      "kickoff": "2026-11-02T20:00:00+00:00",
-      "observed_at": "2026-11-02T19:23:49.657226+00:00"
-    },
-    {
-      "element_id": 244,
-      "quoted_name": "Harrison Armstrong",
-      "home_team": "Newcastle United",
-      "away_team": "Everton",
-      "club": "EVE",
-      "anytime_goal": 0.091912,
-      "first_goal": 0.047619,
-      "last_goal": null,
-      "anytime_assist": 0.133333,
-      "any_card": 0.333333,
-      "red_card": 0.021739,
-      "shots": null,
-      "shots_on_target": 0.496685,
-      "books": 3,
-      "kickoff": "2026-11-02T20:00:00+00:00",
-      "observed_at": "2026-11-02T19:23:49.657226+00:00"
-    },
-    {
-      "element_id": 453,
-      "quoted_name": "Harvey Barnes",
-      "home_team": "Newcastle United",
-      "away_team": "Everton",
-      "club": "NEW",
-      "anytime_goal": 0.303481,
-      "first_goal": 0.142857,
-      "last_goal": null,
-      "anytime_assist": 0.210526,
-      "any_card": 0.125,
-      "red_card": 0.009901,
-      "shots": null,
-      "shots_on_target": 1.376736,
-      "books": 3,
-      "kickoff": "2026-11-02T20:00:00+00:00",
-      "observed_at": "2026-11-02T19:23:49.657226+00:00"
-    },
-    {
-      "element_id": 232,
-      "quoted_name": "Jake O'Brien",
-      "home_team": "Newcastle United",
-      "away_team": "Everton",
-      "club": "EVE",
-      "anytime_goal": 0.067194,
-      "first_goal": 0.02439,
-      "last_goal": null,
-      "anytime_assist": 0.1,
-      "any_card": 0.30303,
-      "red_card": 0.019608,
-      "shots": null,
-      "shots_on_target": 0.391229,
-      "books": 3,
-      "kickoff": "2026-11-02T20:00:00+00:00",
-      "observed_at": "2026-11-02T19:23:49.657226+00:00"
-    },
-    {
-      "element_id": 239,
-      "quoted_name": "James Garner",
-      "home_team": "Newcastle United",
-      "away_team": "Everton",
-      "club": "EVE",
-      "anytime_goal": 0.098824,
-      "first_goal": 0.047619,
-      "last_goal": null,
-      "anytime_assist": 0.172414,
-      "any_card": 0.298507,
-      "red_card": 0.021739,
-      "shots": null,
-      "shots_on_target": 0.566953,
-      "books": 3,
-      "kickoff": "2026-11-02T20:00:00+00:00",
-      "observed_at": "2026-11-02T19:23:49.657226+00:00"
-    },
-    {
-      "element_id": 229,
-      "quoted_name": "James Tarkowski",
-      "home_team": "Newcastle United",
-      "away_team": "Everton",
-      "club": "EVE",
-      "anytime_goal": 0.074866,
-      "first_goal": 0.038462,
-      "last_goal": null,
-      "anytime_assist": 0.076923,
-      "any_card": 0.322581,
-      "red_card": 0.021739,
-      "shots": null,
-      "shots_on_target": 0.460638,
-      "books": 3,
-      "kickoff": "2026-11-02T20:00:00+00:00",
-      "observed_at": "2026-11-02T19:23:49.657226+00:00"
-    },
-    {
-      "element_id": 230,
-      "quoted_name": "Jarrad Branthwaite",
-      "home_team": "Newcastle United",
-      "away_team": "Everton",
-      "club": "EVE",
-      "anytime_goal": 0.079412,
-      "first_goal": 0.032258,
-      "last_goal": null,
-      "anytime_assist": 0.083333,
-      "any_card": 0.238095,
-      "red_card": 0.016393,
-      "shots": null,
-      "shots_on_target": 0.449768,
-      "books": 3,
-      "kickoff": "2026-11-02T20:00:00+00:00",
-      "observed_at": "2026-11-02T19:23:49.657226+00:00"
-    },
-    {
-      "element_id": 458,
-      "quoted_name": "Joelinton",
-      "home_team": "Newcastle United",
-      "away_team": "Everton",
-      "club": "NEW",
-      "anytime_goal": 0.140555,
-      "first_goal": 0.066667,
-      "last_goal": null,
-      "anytime_assist": 0.172414,
-      "any_card": 0.444444,
-      "red_card": 0.02439,
-      "shots": null,
-      "shots_on_target": 0.686519,
-      "books": 3,
-      "kickoff": "2026-11-02T20:00:00+00:00",
-      "observed_at": "2026-11-02T19:23:49.657226+00:00"
-    },
-    {
-      "element_id": 226,
-      "quoted_name": "Jordan Pickford",
-      "home_team": "Newcastle United",
-      "away_team": "Everton",
-      "club": "EVE",
-      "anytime_goal": null,
-      "first_goal": null,
-      "last_goal": null,
-      "anytime_assist": null,
-      "any_card": 0.215909,
-      "red_card": 0.019608,
-      "shots": null,
-      "shots_on_target": null,
-      "books": 2,
-      "kickoff": "2026-11-02T20:00:00+00:00",
-      "observed_at": "2026-11-02T19:23:49.657226+00:00"
-    },
-    {
-      "element_id": 460,
-      "quoted_name": "Joseph Willock",
-      "home_team": "Newcastle United",
-      "away_team": "Everton",
-      "club": "NEW",
-      "anytime_goal": 0.196429,
-      "first_goal": 0.071429,
-      "last_goal": null,
-      "anytime_assist": 0.172414,
-      "any_card": 0.217391,
-      "red_card": 0.014085,
-      "shots": null,
-      "shots_on_target": 1.118471,
-      "books": 3,
-      "kickoff": "2026-11-02T20:00:00+00:00",
-      "observed_at": "2026-11-02T19:23:49.657226+00:00"
-    },
-    {
-      "element_id": 236,
-      "quoted_name": "Kiernan Dewsbury-Hall",
-      "home_team": "Newcastle United",
-      "away_team": "Everton",
-      "club": "EVE",
-      "anytime_goal": 0.218468,
-      "first_goal": 0.105263,
-      "last_goal": null,
-      "anytime_assist": 0.181818,
-      "any_card": 0.25,
-      "red_card": 0.016393,
-      "shots": null,
-      "shots_on_target": 0.954774,
-      "books": 3,
-      "kickoff": "2026-11-02T20:00:00+00:00",
-      "observed_at": "2026-11-02T19:23:49.657226+00:00"
-    },
-    {
-      "element_id": 449,
-      "quoted_name": "Lewis Hall",
-      "home_team": "Newcastle United",
-      "away_team": "Everton",
-      "club": "NEW",
-      "anytime_goal": 0.081197,
-      "first_goal": 0.043478,
-      "last_goal": null,
-      "anytime_assist": 0.181818,
-      "any_card": 0.266667,
-      "red_card": 0.017857,
-      "shots": null,
-      "shots_on_target": 0.408702,
-      "books": 3,
-      "kickoff": "2026-11-02T20:00:00+00:00",
-      "observed_at": "2026-11-02T19:23:49.657226+00:00"
-    },
-    {
-      "element_id": 567,
-      "quoted_name": "Lukas Hornicek",
-      "home_team": "Newcastle United",
-      "away_team": "Everton",
-      "club": "NEW",
-      "anytime_goal": null,
-      "first_goal": null,
-      "last_goal": null,
-      "anytime_assist": null,
-      "any_card": 0.196429,
-      "red_card": 0.017857,
-      "shots": null,
-      "shots_on_target": null,
-      "books": 2,
-      "kickoff": "2026-11-02T20:00:00+00:00",
-      "observed_at": "2026-11-02T19:23:49.657226+00:00"
-    },
-    {
-      "element_id": 246,
-      "quoted_name": "Merlin Rohl",
-      "home_team": "Newcastle United",
-      "away_team": "Everton",
-      "club": "EVE",
-      "anytime_goal": 0.092593,
-      "first_goal": 0.066667,
-      "last_goal": null,
-      "anytime_assist": 0.153846,
-      "any_card": 0.277778,
-      "red_card": 0.019608,
-      "shots": null,
-      "shots_on_target": 0.931869,
-      "books": 3,
-      "kickoff": "2026-11-02T20:00:00+00:00",
-      "observed_at": "2026-11-02T19:23:49.657226+00:00"
-    },
-    {
-      "element_id": 249,
-      "quoted_name": "Thierno Barry",
-      "home_team": "Newcastle United",
-      "away_team": "Everton",
-      "club": "EVE",
-      "anytime_goal": 0.336348,
-      "first_goal": 0.153846,
-      "last_goal": null,
-      "anytime_assist": 0.105263,
-      "any_card": 0.238095,
-      "red_card": 0.02439,
-      "shots": null,
-      "shots_on_target": 1.209121,
-      "books": 3,
-      "kickoff": "2026-11-02T20:00:00+00:00",
-      "observed_at": "2026-11-02T19:23:49.657226+00:00"
-    },
-    {
-      "element_id": 242,
-      "quoted_name": "Tyrique George",
-      "home_team": "Newcastle United",
-      "away_team": "Everton",
-      "club": "EVE",
-      "anytime_goal": 0.169366,
-      "first_goal": 0.076923,
-      "last_goal": null,
-      "anytime_assist": 0.153846,
-      "any_card": 0.277778,
-      "red_card": 0.019608,
-      "shots": null,
-      "shots_on_target": 1.053299,
-      "books": 3,
-      "kickoff": "2026-11-02T20:00:00+00:00",
-      "observed_at": "2026-11-02T19:23:49.657226+00:00"
-    },
-    {
-      "element_id": 233,
-      "quoted_name": "Vitaliy Mykolenko",
-      "home_team": "Newcastle United",
-      "away_team": "Everton",
-      "club": "EVE",
-      "anytime_goal": 0.051619,
-      "first_goal": 0.025,
-      "last_goal": null,
-      "anytime_assist": 0.111111,
-      "any_card": 0.222222,
-      "red_card": 0.014925,
-      "shots": null,
-      "shots_on_target": 0.284431,
-      "books": 3,
-      "kickoff": "2026-11-02T20:00:00+00:00",
-      "observed_at": "2026-11-02T19:23:49.657226+00:00"
-    },
-    {
-      "element_id": 465,
-      "quoted_name": "William Osula",
-      "home_team": "Newcastle United",
-      "away_team": "Everton",
-      "club": "NEW",
-      "anytime_goal": 0.342971,
-      "first_goal": 0.166667,
-      "last_goal": null,
-      "anytime_assist": 0.153846,
-      "any_card": 0.222222,
-      "red_card": 0.016393,
-      "shots": null,
-      "shots_on_target": 1.606169,
-      "books": 3,
-      "kickoff": "2026-11-02T20:00:00+00:00",
-      "observed_at": "2026-11-02T19:23:49.657226+00:00"
-    }
-  ]
+  "players": []
 }
