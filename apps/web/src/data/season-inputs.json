@@ -1,6 +1,6 @@
 {
   "schemaVersion": 7,
-  "generatedAt": "2026-11-05T10:12:36.178596Z",
+  "generatedAt": "2026-11-05T14:52:11.486978Z",
   "recordSeason": "2026-27",
   "events": [
     10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28,
@@ -567,7 +567,7 @@
       }
     ],
     "sourceReference": "FPL rules page, Transfers section",
-    "dataAvailableAt": "2026-11-05T10:12:36.178596Z",
+    "dataAvailableAt": "2026-11-05T14:52:11.486978Z",
     "playableStartRate": 0.35,
     "transferMarginPoints": 0.5
   },
@@ -9116,6 +9116,45 @@
       }
     },
     {
+      "id": 329,
+      "code": 214225,
+      "name": "Rodon",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "LEE",
+      "teamId": 13,
+      "priceTenths": 42,
+      "availabilityStatus": "a",
+      "chanceOfPlaying": 100,
+      "basePoints": 1.018,
+      "routes": {
+        "appearance": 0.324,
+        "attacking": 0.262,
+        "cleanSheet": 0.432
+      },
+      "startRate": 0.216,
+      "startEvidence": {
+        "sourceStartRate": 0.0,
+        "finalStartRate": 0.216,
+        "observedAppearances": 9,
+        "recentStarts": 2,
+        "recentMatches": 9,
+        "recentMinutes": 123,
+        "appearanceSource": "currentSeasonLineup",
+        "lineupAdjustment": 0.216,
+        "marketAdjustment": 0.0,
+        "availabilityAdjustment": 0.0
+      },
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 9,
+      "evidence": {
+        "all": "currentSeasonRoutes",
+        "appearance": "currentSeasonLineup",
+        "attacking": "marketAttack"
+      }
+    },
+    {
       "id": 498,
       "code": 221466,
       "name": "Senesi",
@@ -12417,41 +12456,6 @@
       "evidence": {
         "all": "currentSeasonRoutes",
         "appearance": "fplAvailability"
-      }
-    },
-    {
-      "id": 329,
-      "code": 214225,
-      "name": "Rodon",
-      "position": "DEF",
-      "positionId": 2,
-      "club": "LEE",
-      "teamId": 13,
-      "priceTenths": 42,
-      "availabilityStatus": "i",
-      "chanceOfPlaying": 0,
-      "basePoints": 0,
-      "routes": {},
-      "startRate": 0.0,
-      "startEvidence": {
-        "sourceStartRate": 0.0,
-        "finalStartRate": 0.0,
-        "observedAppearances": 9,
-        "recentStarts": 2,
-        "recentMatches": 9,
-        "recentMinutes": 123,
-        "appearanceSource": "fplAvailability",
-        "lineupAdjustment": 0.216,
-        "marketAdjustment": 0.0,
-        "availabilityAdjustment": -0.216
-      },
-      "squadNumber": null,
-      "rated": true,
-      "depthRank": 9,
-      "evidence": {
-        "all": "currentSeasonRoutes",
-        "appearance": "fplAvailability",
-        "attacking": "marketAttack"
       }
     },
     {
