@@ -50,6 +50,10 @@ GitHub Actions -> Python projections + optimizer -> Supabase -> Resend
 ```
 
 - `apps/web` — Vite, React, TypeScript. One route matters: `/plan`.
+- Complete planning and projection JSON is emitted as content-hashed static
+  assets, not embedded in JavaScript. The browser and solver worker verify the
+  build-pinned bytes and schema before using them; no players, gameweeks or
+  evidence fields are removed. A failed load offers a reload, never partial data.
 - `api` — same-origin Vercel functions. The browser never calls FPL directly.
 - `packages/contracts` — shared runtime schemas, generated and version-gated.
 - `packages/quick-solver` — bounded interactive next-deadline solver.

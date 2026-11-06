@@ -1,8 +1,17 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
+import { createHash } from "node:crypto";
+import { readFileSync, readdirSync } from "node:fs";
 
 import gw1Review from "../src/data/gw1-review.json" with { type: "json" };
 import xstartValidation from "../src/data/xstart-validation.json" with { type: "json" };
+import openingSquad from "../src/data/opening-squad.json" with { type: "json" };
+import {
+  SEASON_EVENTS,
+  solveSeason,
+  startFromCodes,
+  type SolvedGameweek,
+} from "../src/state/season-solver";
 
 /**
  * The whole browser suite, deliberately.
@@ -28,6 +37,98 @@ import xstartValidation from "../src/data/xstart-validation.json" with { type: "
 
 const TEAM_ID = "212279";
 const WCAG = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"];
+
+test("the browser downloads complete build-pinned player records", async ({
+  page,
+  request,
+}) => {
+  const paths = new Set<string>();
+  page.on("request", (request) => {
+    const path = new URL(request.url()).pathname;
+    if (path.startsWith("/artifacts/")) paths.add(path);
+  });
+  await page.goto("/plan");
+  await settle(page);
+  await page.goto("/players");
+  await settle(page);
+  await expect.poll(() => paths.size).toBe(2);
+  for (const name of ["season-inputs", "projections"]) {
+    const source = readFileSync(
+      new URL(`../src/data/${name}.json`, import.meta.url),
+    );
+    const digest = createHash("sha256").update(source).digest("hex");
+    const path = `/artifacts/${name}-${digest}.json`;
+    expect(paths.has(path)).toBe(true);
+    const response = await request.get(path);
+    expect(response.headers()["content-type"]).toContain("application/json");
+    expect(response.headers()["cache-control"]).toContain("immutable");
+    expect(await response.body()).toEqual(source);
+  }
+  expect((await request.get("/artifacts/missing.json")).status()).toBe(404);
+});
+
+test("a failed artifact download is visible and a reload recovers", async ({
+  page,
+}) => {
+  await page.route("**/artifacts/season-inputs-*.json", (route) =>
+    route.fulfill({ status: 404 }),
+  );
+  await page.goto("/");
+  await expect(
+    page.getByRole("heading", { name: "I couldn't load the player records." }),
+  ).toBeVisible();
+  await page.unroute("**/artifacts/season-inputs-*.json");
+  await page.getByRole("button", { name: "Reload records" }).click();
+  await expect(page.getByLabel("Your FPL team ID")).toBeVisible();
+});
+
+test("the worker matches every gameweek from the complete direct solver", async ({
+  page,
+}) => {
+  test.setTimeout(120_000);
+  const start = startFromCodes(
+    openingSquad.picks.map(({ code }) => code),
+    {
+      bankTenths: 0,
+      availableFreeTransfers: 1,
+      fromEvent: SEASON_EVENTS[0]!,
+    },
+  );
+  if (!start) throw new Error("The complete opening squad is required.");
+  const expected = [...solveSeason(start)];
+  expect(expected).toHaveLength(39 - start.fromEvent);
+  const workerPath =
+    process.env.FPL_ANDRES_TEST_PREVIEW === "1"
+      ? `/assets/${readdirSync(new URL("../dist/assets/", import.meta.url)).find((name) => /^season-solver\.worker-.*\.js$/.test(name))}`
+      : "/src/workers/season-solver.worker.ts";
+  await page.goto("/");
+  await settle(page);
+  const actual = await page.evaluate(
+    ({ start, workerPath }) =>
+      new Promise<SolvedGameweek[]>((resolve, reject) => {
+        const worker = new Worker(workerPath, { type: "module" });
+        const weeks: SolvedGameweek[] = [];
+        worker.onmessage = ({ data }) => {
+          if (data.type === "gameweek") weeks.push(data.week);
+          if (data.type === "failed") {
+            worker.terminate();
+            reject(new Error(data.reason));
+          }
+          if (data.type === "done") {
+            worker.terminate();
+            resolve(weeks);
+          }
+        };
+        worker.onerror = (error) => {
+          worker.terminate();
+          reject(new Error(error.message));
+        };
+        worker.postMessage(start);
+      }),
+    { start, workerPath },
+  );
+  expect(actual).toEqual(expected);
+});
 
 /** Waits for the lazy route chunk and whatever it then renders. */
 async function settle(page: Page): Promise<void> {
@@ -685,7 +786,9 @@ test("a mobile gesture over a player row scrolls the plan, not an inner list", a
   const pageBefore = await page.evaluate(() => window.scrollY);
   await page.mouse.wheel(0, 600);
 
-  expect(await page.evaluate(() => window.scrollY)).toBeGreaterThan(pageBefore);
+  await expect
+    .poll(() => page.evaluate(() => window.scrollY))
+    .toBeGreaterThan(pageBefore);
   expect(await market.evaluate((element) => element.scrollTop)).toBe(0);
 
   const wheelIntoView = async (selector: string) => {

@@ -1,6 +1,6 @@
 /// <reference lib="webworker" />
 
-import { solveSeason, type SolveStart } from "../state/season-solver";
+import type { SolveStart } from "../state/season-solver";
 
 /**
  * Runs the season solve off the main thread, posting each gameweek as it lands.
@@ -11,8 +11,9 @@ import { solveSeason, type SolveStart } from "../state/season-solver";
  * the first card be on screen while the last is still being thought about.
  */
 
-self.onmessage = (message: MessageEvent<SolveStart>) => {
+self.onmessage = async (message: MessageEvent<SolveStart>) => {
   try {
+    const { solveSeason } = await import("../state/season-solver");
     for (const week of solveSeason(message.data)) {
       self.postMessage({ type: "gameweek", week });
     }

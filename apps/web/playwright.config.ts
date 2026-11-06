@@ -1,5 +1,8 @@
 import { defineConfig, devices } from "@playwright/test";
 
+const PREVIEW = process.env.FPL_ANDRES_TEST_PREVIEW === "1";
+const PORT = PREVIEW ? 4174 : 4173;
+
 /**
  * A smoke suite, not a second test pyramid.
  *
@@ -28,13 +31,15 @@ export default defineConfig({
       ]
     : "list",
   use: {
-    baseURL: "http://127.0.0.1:4173",
+    baseURL: `http://127.0.0.1:${PORT}`,
     screenshot: "only-on-failure",
     trace: "retain-on-failure",
   },
   webServer: {
-    command: "corepack pnpm dev --host 127.0.0.1 --port 4173",
-    url: "http://127.0.0.1:4173",
+    command: PREVIEW
+      ? `corepack pnpm exec vite preview --host 127.0.0.1 --port ${PORT}`
+      : `corepack pnpm dev --host 127.0.0.1 --port ${PORT}`,
+    url: `http://127.0.0.1:${PORT}`,
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,
   },

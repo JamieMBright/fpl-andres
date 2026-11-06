@@ -4,7 +4,7 @@ import {
   type QuickSolverInput,
 } from "@fpl-andres/quick-solver";
 
-import inputs from "../data/season-inputs.json";
+import inputs from "../data/season-inputs.json" with { type: "json" };
 import {
   requireArtifactVersion,
   SEASON_INPUTS_SCHEMA_VERSION,

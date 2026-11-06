@@ -1,4 +1,5 @@
 import { gzipSync } from "node:zlib";
+import { createHash } from "node:crypto";
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 
@@ -109,6 +110,23 @@ for (const budget of BUDGETS) {
 
 console.log("Bundle sizes:");
 console.log(report.sort().join("\n"));
+
+console.log("\nComplete data payloads (separate from application code):");
+for (const name of ["season-inputs", "projections"]) {
+  const source = readFileSync(
+    join(import.meta.dirname, "..", "src", "data", `${name}.json`),
+  );
+  const digest = createHash("sha256").update(source).digest("hex");
+  const emitted = readFileSync(
+    join(DIST, "..", "artifacts", `${name}-${digest}.json`),
+  );
+  if (!emitted.equals(source)) {
+    throw new Error(`${name}.json was changed during asset emission.`);
+  }
+  console.log(
+    `  ${name}: ${(source.length / 1024).toFixed(2)} kB raw, ${(gzipSync(source).length / 1024).toFixed(2)} kB gzip; complete source verified`,
+  );
+}
 
 /*
  * Chunk names must stay legible.

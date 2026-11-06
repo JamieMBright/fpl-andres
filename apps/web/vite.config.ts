@@ -6,6 +6,8 @@ import { fileURLToPath } from "node:url";
 import { loadEnv } from "vite";
 import { defineConfig, type Plugin } from "vitest/config";
 
+import { artifactAssets } from "./scripts/artifact-assets";
+
 type RouteHandler = (path: string, method: string) => Promise<Response>;
 
 const LIVE_ROOT = resolve(
@@ -213,10 +215,25 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [
       react(),
+      ...(mode === "test" ? [] : [artifactAssets()]),
       settledLiveBuild(),
       settledLiveDev(),
       apiRoutes(contactEnv),
     ],
+    build: {
+      target: "es2022",
+      rollupOptions: {
+        output: {
+          manualChunks(id) {
+            if (id.includes("/react-router/")) return "router";
+          },
+        },
+      },
+    },
+    worker: {
+      format: "es",
+      plugins: () => [artifactAssets()],
+    },
     test: {
       maxWorkers: WORKERS,
       projects: [

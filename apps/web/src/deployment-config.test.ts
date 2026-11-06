@@ -39,6 +39,20 @@ function contentSecurityPolicy(): string {
 }
 
 describe("Vercel deployment policy", () => {
+  it("keeps missing artifact URLs out of the SPA and caches immutable data", () => {
+    const spa = vercelConfig.rewrites.find(
+      ({ destination }) => destination === "/index.html",
+    );
+    expect(spa?.source).toContain("api/|artifacts/");
+    const artifacts = vercelConfig.headers.find(
+      ({ source }) => source === "/artifacts/(.*)",
+    );
+    expect(artifacts?.headers).toContainEqual({
+      key: "Cache-Control",
+      value: "public, max-age=31536000, immutable",
+    });
+  });
+
   it("restricts executable content while allowing the configured font hosts", () => {
     const policy = contentSecurityPolicy();
 

@@ -109,7 +109,8 @@ The editable local project is excluded from the advisory lookup, not its depende
 
 The Vercel development SDK still pins Undici 5, so a parent-scoped override
 selects the patched Undici 6 line. Remaining transitive overrides pin patched
-AJV, brace-expansion and source-map-js releases. They are checked by the full
+Glob and Minimatch for the Vercel tracer and ESLint, plus AJV, brace-expansion and
+source-map-js releases. They are checked by the full
 audit and repository gates. The accessibility plugin's peer allowance is
 limited to its existing ESLint 10 pairing and validated by the full lint run;
 peer checks remain enabled for every other dependency.
@@ -135,37 +136,7 @@ not a justification.
 in `package.json` are the same set, that no review date has passed, and — where
 it can — that the stated reason still holds.
 
-### GHSA-qwww-vcr4-c8h2
-
-|           |                                                                  |
-| --------- | ---------------------------------------------------------------- |
-| Package   | `react-router` (via `react-router-dom` 7.18.4)                   |
-| Title     | RSC Mode CSRF Bypass Allows Action Execution Before 400 Response |
-| Severity  | High, CVSS 7.1                                                   |
-| Affected  | `>= 7.12.0, < 8.3.0`                                             |
-| Patched   | `8.3.0`                                                          |
-| Assessed  | 2026-08-01                                                       |
-| Review by | 2026-11-01                                                       |
-
-The advisory's own text is explicit: "This only affects your application if you
-are using the unstable RSC APIs." This app does not. It is a static
-single-page build served by Vite, routed by `createBrowserRouter` in
-`apps/web/src/main.tsx`, entirely in the browser. There is no React Server
-Components runtime, no server-side router, and no action executing on a server,
-so the code path the advisory describes does not exist in this deployment. The
-serverless functions under `api/` are plain handlers that do not import
-`react-router`.
-
-Upgrading means taking a major version to close a vulnerability in a code path
-this project does not execute. That is scheduled rather than refused: the
-review date is when it is reconsidered.
-
-**What would make this false.** Any one of these, and the suppression must be
-removed and the upgrade taken:
-
-- adopting the RSC APIs, or any `unstable_` router export
-- moving to a framework that runs the router on a server
-- introducing router `action` functions that execute anywhere but the browser
-
-The first and third are checked by the test. The second is a decision nobody
-makes by accident, but the review date is there to catch it if they do.
+No advisories are currently suppressed. On 2026-11-05, the
+[GHSA-qwww-vcr4-c8h2](https://github.com/advisories/GHSA-qwww-vcr4-c8h2)
+exception was removed: upstream lists React Router 7.18.2 as patched, and this
+project already uses 7.18.4.
