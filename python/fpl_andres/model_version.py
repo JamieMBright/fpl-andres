@@ -29,6 +29,10 @@ from __future__ import annotations
 
 __all__ = ["MODEL_VERSION"]
 
+#: 8.23 records lossless browser artifact delivery through build-pinned JSON
+#: assets. Full-horizon worker/direct-solver parity is unchanged; the release
+#: moves because the guarded solver import changed, not its recommendation math.
+#:
 #: 8.22 weights current-season scoring routes once per observed fixture,
 #: including non-appearances, rather than double-dividing played-match means.
 #:
@@ -476,4 +480,4 @@ __all__ = ["MODEL_VERSION"]
 #: projection and resampled, so a gap that does not clear zero is reported as
 #: not clearing zero. No projection changed; what changed is what may be
 #: claimed from it.
-MODEL_VERSION = "8.22"
+MODEL_VERSION = "8.23"
