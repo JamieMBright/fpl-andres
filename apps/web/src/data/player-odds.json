@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "season": "2026-27",
-  "fetchedAt": "2026-11-06T15:56:42.582338+00:00",
+  "fetchedAt": "2026-11-06T16:00:16.155932+00:00",
   "source": "the-odds-api",
   "markets": [
     "player_goal_scorer_anytime",
@@ -17,19 +17,19 @@
   "quota": {
     "opening": {
       "cost": 0,
-      "used": 413,
-      "remaining": 87
+      "used": 429,
+      "remaining": 71
     },
     "closing": {
-      "cost": 6,
-      "used": 419,
-      "remaining": 81
+      "cost": 0,
+      "used": 429,
+      "remaining": 71
     },
-    "spentThisRun": 6
+    "spentThisRun": 0
   },
   "coverage": {
     "fixturesListed": 20,
-    "fixturesVisitedThisRun": 11,
+    "fixturesVisitedThisRun": 1,
     "fixturesWithQuotes": 10
   },
   "nameMappingGaps": [],
@@ -317,26 +317,26 @@
       "away_team": "Fulham",
       "home_short": "MCI",
       "away_short": "FUL",
-      "status": "no-bookmaker",
+      "status": "parse-error",
       "books": 0,
-      "outcomes": 0,
+      "outcomes": null,
       "offered_markets": [],
       "missing_markets": [
-        "player_assists",
-        "player_first_goal_scorer",
         "player_goal_scorer_anytime",
+        "player_first_goal_scorer",
         "player_last_goal_scorer",
-        "player_shots",
-        "player_shots_on_target",
+        "player_assists",
         "player_to_receive_card",
-        "player_to_receive_red_card"
+        "player_to_receive_red_card",
+        "player_shots",
+        "player_shots_on_target"
       ],
       "player_rows_parsed": 0,
       "player_rows_matched": 0,
       "unmatched_names": [],
-      "error": null,
+      "error": "HTTPStatusError",
       "kickoff": "2026-11-21T12:30:00+00:00",
-      "visited_at": "2026-11-06T15:56:42.582338+00:00"
+      "visited_at": "2026-11-06T16:00:16.155932+00:00"
     },
     {
       "event_id": "b8d6ab6ecc8bb356c6335d3f417d0ecf",
