@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "season": "2026-27",
-  "fetchedAt": "2026-11-05T23:39:37.885229+00:00",
+  "fetchedAt": "2026-11-06T06:39:19.242141+00:00",
   "source": "the-odds-api",
   "markets": [
     "player_goal_scorer_anytime",
@@ -17,13 +17,13 @@
   "quota": {
     "opening": {
       "cost": 0,
-      "used": 365,
-      "remaining": 135
+      "used": 381,
+      "remaining": 119
     },
     "closing": {
       "cost": 6,
-      "used": 371,
-      "remaining": 129
+      "used": 387,
+      "remaining": 113
     },
     "spentThisRun": 6
   },
@@ -42,7 +42,7 @@
       "away_short": "COV",
       "status": "returned",
       "books": 4,
-      "outcomes": 526,
+      "outcomes": 527,
       "offered_markets": [
         "player_assists",
         "player_first_goal_scorer",
@@ -57,7 +57,7 @@
       "unmatched_names": ["Daniel Bentley"],
       "error": null,
       "kickoff": "2026-11-06T20:00:00+00:00",
-      "visited_at": "2026-11-05T23:39:37.885229+00:00"
+      "visited_at": "2026-11-06T06:39:19.242141+00:00"
     },
     {
       "event_id": "5c87852253fd11eea5d34ad723356607",
@@ -336,7 +336,7 @@
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-11-21T12:30:00+00:00",
-      "visited_at": "2026-11-05T23:39:37.885229+00:00"
+      "visited_at": "2026-11-06T06:39:19.242141+00:00"
     },
     {
       "event_id": "b8d6ab6ecc8bb356c6335d3f417d0ecf",
@@ -363,7 +363,7 @@
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-11-21T15:00:00+00:00",
-      "visited_at": "2026-11-05T23:39:37.885229+00:00"
+      "visited_at": "2026-11-06T06:39:19.242141+00:00"
     },
     {
       "event_id": "cf68da11fa604c13fc9ef3219fad0314",
@@ -390,7 +390,7 @@
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-11-21T15:00:00+00:00",
-      "visited_at": "2026-11-05T23:39:37.885229+00:00"
+      "visited_at": "2026-11-06T06:39:19.242141+00:00"
     },
     {
       "event_id": "ac6cf70520a83c0949b4003bde53c709",
@@ -417,7 +417,7 @@
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-11-21T15:00:00+00:00",
-      "visited_at": "2026-11-05T23:39:37.885229+00:00"
+      "visited_at": "2026-11-06T06:39:19.242141+00:00"
     },
     {
       "event_id": "9f38413bdad666e2d2dfcc574dd12e66",
@@ -444,7 +444,7 @@
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-11-21T15:00:00+00:00",
-      "visited_at": "2026-11-05T23:39:37.885229+00:00"
+      "visited_at": "2026-11-06T06:39:19.242141+00:00"
     },
     {
       "event_id": "e67ee3a6f93bb90b8aefcf3dd204477c",
@@ -471,7 +471,7 @@
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-11-21T15:00:00+00:00",
-      "visited_at": "2026-11-05T23:39:37.885229+00:00"
+      "visited_at": "2026-11-06T06:39:19.242141+00:00"
     },
     {
       "event_id": "71bf9fe98c3e3be39cd1d059f8d71ae8",
@@ -498,7 +498,7 @@
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-11-21T17:30:00+00:00",
-      "visited_at": "2026-11-05T23:39:37.885229+00:00"
+      "visited_at": "2026-11-06T06:39:19.242141+00:00"
     },
     {
       "event_id": "230a356290e1a358e9dd2f7fa23de3b9",
@@ -525,7 +525,7 @@
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-11-22T14:00:00+00:00",
-      "visited_at": "2026-11-05T23:39:37.885229+00:00"
+      "visited_at": "2026-11-06T06:39:19.242141+00:00"
     },
     {
       "event_id": "4c08b213ed416e8f41e038f42a42b962",
@@ -552,7 +552,7 @@
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-11-22T16:30:00+00:00",
-      "visited_at": "2026-11-05T23:39:37.885229+00:00"
+      "visited_at": "2026-11-06T06:39:19.242141+00:00"
     },
     {
       "event_id": "aa77e2a08a1a003b0bbb62a5f8e8ae42",
@@ -579,7 +579,7 @@
       "unmatched_names": [],
       "error": null,
       "kickoff": "2026-11-23T20:00:00+00:00",
-      "visited_at": "2026-11-05T23:39:37.885229+00:00"
+      "visited_at": "2026-11-06T06:39:19.242141+00:00"
     }
   ],
   "unmatched": [
@@ -7121,13 +7121,13 @@
       "first_goal": null,
       "last_goal": null,
       "anytime_assist": 0.172414,
-      "any_card": 0.578383,
+      "any_card": 0.189716,
       "red_card": 0.012346,
       "shots": null,
       "shots_on_target": 0.514737,
       "books": 2,
       "kickoff": "2026-11-06T20:00:00+00:00",
-      "observed_at": "2026-11-05T23:39:37.885229+00:00"
+      "observed_at": "2026-11-06T06:39:19.242141+00:00"
     },
     {
       "element_id": 172,
@@ -7145,7 +7145,7 @@
       "shots_on_target": null,
       "books": 1,
       "kickoff": "2026-11-06T20:00:00+00:00",
-      "observed_at": "2026-11-05T23:39:37.885229+00:00"
+      "observed_at": "2026-11-06T06:39:19.242141+00:00"
     },
     {
       "element_id": 173,
@@ -7163,7 +7163,7 @@
       "shots_on_target": 0.485696,
       "books": 4,
       "kickoff": "2026-11-06T20:00:00+00:00",
-      "observed_at": "2026-11-05T23:39:37.885229+00:00"
+      "observed_at": "2026-11-06T06:39:19.242141+00:00"
     },
     {
       "element_id": 654,
@@ -7175,13 +7175,13 @@
       "first_goal": 0.164332,
       "last_goal": null,
       "anytime_assist": 0.133333,
-      "any_card": 0.600313,
+      "any_card": 0.196172,
       "red_card": 0.014925,
       "shots": null,
       "shots_on_target": 1.483853,
       "books": 2,
       "kickoff": "2026-11-06T20:00:00+00:00",
-      "observed_at": "2026-11-05T23:39:37.885229+00:00"
+      "observed_at": "2026-11-06T06:39:19.242141+00:00"
     },
     {
       "element_id": 194,
@@ -7193,13 +7193,13 @@
       "first_goal": 0.080128,
       "last_goal": null,
       "anytime_assist": 0.133333,
-      "any_card": 0.210526,
+      "any_card": 0.166667,
       "red_card": 0.014925,
       "shots": null,
       "shots_on_target": 1.005716,
       "books": 4,
       "kickoff": "2026-11-06T20:00:00+00:00",
-      "observed_at": "2026-11-05T23:39:37.885229+00:00"
+      "observed_at": "2026-11-06T06:39:19.242141+00:00"
     },
     {
       "element_id": 209,
@@ -7207,17 +7207,17 @@
       "home_team": "Everton",
       "away_team": "Coventry City",
       "club": "EVE",
-      "anytime_goal": 0.285714,
+      "anytime_goal": 0.266667,
       "first_goal": 0.122222,
       "last_goal": null,
       "anytime_assist": 0.2,
-      "any_card": 0.222222,
+      "any_card": 0.210526,
       "red_card": 0.014925,
       "shots": null,
       "shots_on_target": 1.283835,
       "books": 4,
       "kickoff": "2026-11-06T20:00:00+00:00",
-      "observed_at": "2026-11-05T23:39:37.885229+00:00"
+      "observed_at": "2026-11-06T06:39:19.242141+00:00"
     },
     {
       "element_id": 575,
@@ -7229,13 +7229,13 @@
       "first_goal": 0.037868,
       "last_goal": null,
       "anytime_assist": 0.117647,
-      "any_card": 0.333333,
+      "any_card": 0.30303,
       "red_card": 0.021739,
       "shots": null,
       "shots_on_target": 0.485696,
       "books": 4,
       "kickoff": "2026-11-06T20:00:00+00:00",
-      "observed_at": "2026-11-05T23:39:37.885229+00:00"
+      "observed_at": "2026-11-06T06:39:19.242141+00:00"
     },
     {
       "element_id": 110,
@@ -7253,7 +7253,7 @@
       "shots_on_target": null,
       "books": 1,
       "kickoff": "2026-11-06T20:00:00+00:00",
-      "observed_at": "2026-11-05T23:39:37.885229+00:00"
+      "observed_at": "2026-11-06T06:39:19.242141+00:00"
     },
     {
       "element_id": 243,
@@ -7265,13 +7265,13 @@
       "first_goal": null,
       "last_goal": null,
       "anytime_assist": 0.227273,
-      "any_card": 0.680235,
+      "any_card": 0.307136,
       "red_card": 0.027778,
       "shots": null,
       "shots_on_target": 1.181827,
       "books": 2,
       "kickoff": "2026-11-06T20:00:00+00:00",
-      "observed_at": "2026-11-05T23:39:37.885229+00:00"
+      "observed_at": "2026-11-06T06:39:19.242141+00:00"
     },
     {
       "element_id": 21,
@@ -7279,17 +7279,17 @@
       "home_team": "Everton",
       "away_team": "Coventry City",
       "club": "EVE",
-      "anytime_goal": 0.142857,
+      "anytime_goal": 0.133333,
       "first_goal": null,
       "last_goal": null,
       "anytime_assist": 0.133333,
-      "any_card": 0.637907,
+      "any_card": 0.287785,
       "red_card": 0.019608,
       "shots": null,
       "shots_on_target": 0.566953,
       "books": 2,
       "kickoff": "2026-11-06T20:00:00+00:00",
-      "observed_at": "2026-11-05T23:39:37.885229+00:00"
+      "observed_at": "2026-11-06T06:39:19.242141+00:00"
     },
     {
       "element_id": null,
@@ -7307,7 +7307,7 @@
       "shots_on_target": null,
       "books": 1,
       "kickoff": "2026-11-06T20:00:00+00:00",
-      "observed_at": "2026-11-05T23:39:37.885229+00:00"
+      "observed_at": "2026-11-06T06:39:19.242141+00:00"
     },
     {
       "element_id": 195,
@@ -7325,7 +7325,7 @@
       "shots_on_target": 1.283835,
       "books": 2,
       "kickoff": "2026-11-06T20:00:00+00:00",
-      "observed_at": "2026-11-05T23:39:37.885229+00:00"
+      "observed_at": "2026-11-06T06:39:19.242141+00:00"
     },
     {
       "element_id": 186,
@@ -7337,13 +7337,13 @@
       "first_goal": null,
       "last_goal": null,
       "anytime_assist": 0.142857,
-      "any_card": 0.566478,
+      "any_card": 0.147186,
       "red_card": 0.010989,
       "shots": null,
       "shots_on_target": 0.993791,
       "books": 2,
       "kickoff": "2026-11-06T20:00:00+00:00",
-      "observed_at": "2026-11-05T23:39:37.885229+00:00"
+      "observed_at": "2026-11-06T06:39:19.242141+00:00"
     },
     {
       "element_id": 91,
@@ -7355,13 +7355,13 @@
       "first_goal": 0.023693,
       "last_goal": null,
       "anytime_assist": 0.066667,
-      "any_card": 0.181818,
+      "any_card": 0.15625,
       "red_card": 0.010989,
       "shots": null,
       "shots_on_target": 0.291053,
       "books": 4,
       "kickoff": "2026-11-06T20:00:00+00:00",
-      "observed_at": "2026-11-05T23:39:37.885229+00:00"
+      "observed_at": "2026-11-06T06:39:19.242141+00:00"
     },
     {
       "element_id": 584,
@@ -7373,13 +7373,13 @@
       "first_goal": null,
       "last_goal": null,
       "anytime_assist": 0.2,
-      "any_card": 0.661716,
+      "any_card": 0.307512,
       "red_card": 0.02439,
       "shots": null,
       "shots_on_target": 0.931869,
       "books": 2,
       "kickoff": "2026-11-06T20:00:00+00:00",
-      "observed_at": "2026-11-05T23:39:37.885229+00:00"
+      "observed_at": "2026-11-06T06:39:19.242141+00:00"
     },
     {
       "element_id": 244,
@@ -7397,7 +7397,7 @@
       "shots_on_target": 0.920369,
       "books": 4,
       "kickoff": "2026-11-06T20:00:00+00:00",
-      "observed_at": "2026-11-05T23:39:37.885229+00:00"
+      "observed_at": "2026-11-06T06:39:19.242141+00:00"
     },
     {
       "element_id": 247,
@@ -7409,13 +7409,13 @@
       "first_goal": 0.533511,
       "last_goal": null,
       "anytime_assist": 0.166667,
-      "any_card": 0.637907,
+      "any_card": 0.259136,
       "red_card": 0.019608,
       "shots": null,
       "shots_on_target": 1.053299,
       "books": 2,
       "kickoff": "2026-11-06T20:00:00+00:00",
-      "observed_at": "2026-11-05T23:39:37.885229+00:00"
+      "observed_at": "2026-11-06T06:39:19.242141+00:00"
     },
     {
       "element_id": 238,
@@ -7424,16 +7424,16 @@
       "away_team": "Coventry City",
       "club": "EVE",
       "anytime_goal": 0.285714,
-      "first_goal": 0.12462,
+      "first_goal": null,
       "last_goal": null,
       "anytime_assist": 0.25641,
-      "any_card": 0.614097,
+      "any_card": 0.240999,
       "red_card": 0.016393,
       "shots": null,
       "shots_on_target": 1.209121,
       "books": 2,
       "kickoff": "2026-11-06T20:00:00+00:00",
-      "observed_at": "2026-11-05T23:39:37.885229+00:00"
+      "observed_at": "2026-11-06T06:39:19.242141+00:00"
     },
     {
       "element_id": 183,
@@ -7445,13 +7445,13 @@
       "first_goal": 0.107955,
       "last_goal": null,
       "anytime_assist": 0.181818,
-      "any_card": 0.238095,
+      "any_card": 0.153846,
       "red_card": 0.014925,
       "shots": null,
       "shots_on_target": 1.058633,
       "books": 4,
       "kickoff": "2026-11-06T20:00:00+00:00",
-      "observed_at": "2026-11-05T23:39:37.885229+00:00"
+      "observed_at": "2026-11-06T06:39:19.242141+00:00"
     },
     {
       "element_id": 232,
@@ -7463,13 +7463,13 @@
       "first_goal": 0.524461,
       "last_goal": null,
       "anytime_assist": 0.111111,
-      "any_card": 0.623255,
+      "any_card": 0.232372,
       "red_card": 0.016393,
       "shots": null,
       "shots_on_target": 0.603725,
       "books": 2,
       "kickoff": "2026-11-06T20:00:00+00:00",
-      "observed_at": "2026-11-05T23:39:37.885229+00:00"
+      "observed_at": "2026-11-06T06:39:19.242141+00:00"
     },
     {
       "element_id": 239,
@@ -7477,17 +7477,17 @@
       "home_team": "Everton",
       "away_team": "Coventry City",
       "club": "EVE",
-      "anytime_goal": 0.166667,
+      "anytime_goal": 0.153846,
       "first_goal": 0.075,
       "last_goal": null,
       "anytime_assist": 0.208333,
-      "any_card": 0.347222,
+      "any_card": 0.322581,
       "red_card": 0.017857,
       "shots": null,
       "shots_on_target": 0.964201,
       "books": 4,
       "kickoff": "2026-11-06T20:00:00+00:00",
-      "observed_at": "2026-11-05T23:39:37.885229+00:00"
+      "observed_at": "2026-11-06T06:39:19.242141+00:00"
     },
     {
       "element_id": 229,
@@ -7499,13 +7499,13 @@
       "first_goal": 0.057143,
       "last_goal": null,
       "anytime_assist": 0.1,
-      "any_card": 0.25,
+      "any_card": 0.238095,
       "red_card": 0.017857,
       "shots": null,
       "shots_on_target": 0.514737,
       "books": 4,
       "kickoff": "2026-11-06T20:00:00+00:00",
-      "observed_at": "2026-11-05T23:39:37.885229+00:00"
+      "observed_at": "2026-11-06T06:39:19.242141+00:00"
     },
     {
       "element_id": 230,
@@ -7517,13 +7517,13 @@
       "first_goal": 0.069444,
       "last_goal": null,
       "anytime_assist": 0.090909,
-      "any_card": 0.266667,
+      "any_card": 0.243902,
       "red_card": 0.012346,
       "shots": null,
       "shots_on_target": 0.496685,
       "books": 4,
       "kickoff": "2026-11-06T20:00:00+00:00",
-      "observed_at": "2026-11-05T23:39:37.885229+00:00"
+      "observed_at": "2026-11-06T06:39:19.242141+00:00"
     },
     {
       "element_id": 176,
@@ -7535,13 +7535,13 @@
       "first_goal": 0.020673,
       "last_goal": null,
       "anytime_assist": 0.1,
-      "any_card": 0.25,
+      "any_card": 0.227273,
       "red_card": 0.012346,
       "shots": null,
       "shots_on_target": 0.284431,
       "books": 4,
       "kickoff": "2026-11-06T20:00:00+00:00",
-      "observed_at": "2026-11-05T23:39:37.885229+00:00"
+      "observed_at": "2026-11-06T06:39:19.242141+00:00"
     },
     {
       "element_id": 179,
@@ -7553,13 +7553,13 @@
       "first_goal": null,
       "last_goal": null,
       "anytime_assist": 0.083333,
-      "any_card": 0.637907,
+      "any_card": 0.269439,
       "red_card": 0.019608,
       "shots": null,
       "shots_on_target": 0.301108,
       "books": 2,
       "kickoff": "2026-11-06T20:00:00+00:00",
-      "observed_at": "2026-11-05T23:39:37.885229+00:00"
+      "observed_at": "2026-11-06T06:39:19.242141+00:00"
     },
     {
       "element_id": 226,
@@ -7577,7 +7577,7 @@
       "shots_on_target": null,
       "books": 1,
       "kickoff": "2026-11-06T20:00:00+00:00",
-      "observed_at": "2026-11-05T23:39:37.885229+00:00"
+      "observed_at": "2026-11-06T06:39:19.242141+00:00"
     },
     {
       "element_id": 177,
@@ -7589,13 +7589,13 @@
       "first_goal": null,
       "last_goal": null,
       "anytime_assist": 0.117647,
-      "any_card": 0.606161,
+      "any_card": 0.213152,
       "red_card": 0.016393,
       "shots": null,
       "shots_on_target": 0.468638,
       "books": 2,
       "kickoff": "2026-11-06T20:00:00+00:00",
-      "observed_at": "2026-11-05T23:39:37.885229+00:00"
+      "observed_at": "2026-11-06T06:39:19.242141+00:00"
     },
     {
       "element_id": 236,
@@ -7603,17 +7603,17 @@
       "home_team": "Everton",
       "away_team": "Coventry City",
       "club": "EVE",
-      "anytime_goal": 0.37037,
+      "anytime_goal": 0.333333,
       "first_goal": 0.148352,
       "last_goal": null,
       "anytime_assist": 0.25641,
-      "any_card": 0.238095,
+      "any_card": 0.217391,
       "red_card": 0.014085,
       "shots": null,
       "shots_on_target": 1.406249,
       "books": 4,
       "kickoff": "2026-11-06T20:00:00+00:00",
-      "observed_at": "2026-11-05T23:39:37.885229+00:00"
+      "observed_at": "2026-11-06T06:39:19.242141+00:00"
     },
     {
       "element_id": 190,
@@ -7625,13 +7625,13 @@
       "first_goal": null,
       "last_goal": null,
       "anytime_assist": 0.117647,
-      "any_card": 0.59505,
+      "any_card": 0.169444,
       "red_card": 0.014085,
       "shots": null,
       "shots_on_target": 0.877624,
       "books": 2,
       "kickoff": "2026-11-06T20:00:00+00:00",
-      "observed_at": "2026-11-05T23:39:37.885229+00:00"
+      "observed_at": "2026-11-06T06:39:19.242141+00:00"
     },
     {
       "element_id": 227,
@@ -7649,7 +7649,7 @@
       "shots_on_target": null,
       "books": 1,
       "kickoff": "2026-11-06T20:00:00+00:00",
-      "observed_at": "2026-11-05T23:39:37.885229+00:00"
+      "observed_at": "2026-11-06T06:39:19.242141+00:00"
     },
     {
       "element_id": 184,
@@ -7661,13 +7661,13 @@
       "first_goal": 0.04304,
       "last_goal": null,
       "anytime_assist": 0.105263,
-      "any_card": 0.210526,
+      "any_card": 0.2,
       "red_card": 0.014925,
       "shots": null,
       "shots_on_target": 0.353248,
       "books": 4,
       "kickoff": "2026-11-06T20:00:00+00:00",
-      "observed_at": "2026-11-05T23:39:37.885229+00:00"
+      "observed_at": "2026-11-06T06:39:19.242141+00:00"
     },
     {
       "element_id": 246,
@@ -7679,13 +7679,13 @@
       "first_goal": 0.085965,
       "last_goal": null,
       "anytime_assist": 0.2,
-      "any_card": 0.230947,
+      "any_card": 0.2,
       "red_card": 0.016393,
       "shots": null,
       "shots_on_target": 1.005716,
       "books": 4,
       "kickoff": "2026-11-06T20:00:00+00:00",
-      "observed_at": "2026-11-05T23:39:37.885229+00:00"
+      "observed_at": "2026-11-06T06:39:19.242141+00:00"
     },
     {
       "element_id": 231,
@@ -7697,13 +7697,13 @@
       "first_goal": 0.528383,
       "last_goal": null,
       "anytime_assist": 0.083333,
-      "any_card": 0.561716,
+      "any_card": 0.140196,
       "red_card": 0.010989,
       "shots": null,
       "shots_on_target": 0.641072,
       "books": 2,
       "kickoff": "2026-11-06T20:00:00+00:00",
-      "observed_at": "2026-11-05T23:39:37.885229+00:00"
+      "observed_at": "2026-11-06T06:39:19.242141+00:00"
     },
     {
       "element_id": 175,
@@ -7715,13 +7715,13 @@
       "first_goal": 0.015038,
       "last_goal": null,
       "anytime_assist": 0.133333,
-      "any_card": 0.222222,
+      "any_card": 0.188679,
       "red_card": 0.014085,
       "shots": null,
       "shots_on_target": 0.284431,
       "books": 4,
       "kickoff": "2026-11-06T20:00:00+00:00",
-      "observed_at": "2026-11-05T23:39:37.885229+00:00"
+      "observed_at": "2026-11-06T06:39:19.242141+00:00"
     },
     {
       "element_id": 104,
@@ -7733,13 +7733,13 @@
       "first_goal": null,
       "last_goal": null,
       "anytime_assist": 0.105263,
-      "any_card": 0.668661,
+      "any_card": 0.322865,
       "red_card": 0.02439,
       "shots": null,
       "shots_on_target": 0.425314,
       "books": 2,
       "kickoff": "2026-11-06T20:00:00+00:00",
-      "observed_at": "2026-11-05T23:39:37.885229+00:00"
+      "observed_at": "2026-11-06T06:39:19.242141+00:00"
     },
     {
       "element_id": 599,
@@ -7751,13 +7751,13 @@
       "first_goal": 0.25334,
       "last_goal": null,
       "anytime_assist": 0.117647,
-      "any_card": 0.581256,
+      "any_card": 0.208158,
       "red_card": 0.014085,
       "shots": null,
       "shots_on_target": 1.076521,
       "books": 2,
       "kickoff": "2026-11-06T20:00:00+00:00",
-      "observed_at": "2026-11-05T23:39:37.885229+00:00"
+      "observed_at": "2026-11-06T06:39:19.242141+00:00"
     },
     {
       "element_id": 656,
@@ -7769,13 +7769,13 @@
       "first_goal": 0.036445,
       "last_goal": null,
       "anytime_assist": 0.083333,
-      "any_card": 0.266667,
+      "any_card": 0.25,
       "red_card": 0.014925,
       "shots": null,
       "shots_on_target": 0.406774,
       "books": 4,
       "kickoff": "2026-11-06T20:00:00+00:00",
-      "observed_at": "2026-11-05T23:39:37.885229+00:00"
+      "observed_at": "2026-11-06T06:39:19.242141+00:00"
     },
     {
       "element_id": 492,
@@ -7783,17 +7783,17 @@
       "home_team": "Everton",
       "away_team": "Coventry City",
       "club": "COV",
-      "anytime_goal": 0.27619,
+      "anytime_goal": 0.266667,
       "first_goal": 0.105823,
       "last_goal": null,
       "anytime_assist": 0.117647,
-      "any_card": 0.181818,
+      "any_card": 0.166667,
       "red_card": 0.014085,
       "shots": null,
       "shots_on_target": 1.283835,
       "books": 4,
       "kickoff": "2026-11-06T20:00:00+00:00",
-      "observed_at": "2026-11-05T23:39:37.885229+00:00"
+      "observed_at": "2026-11-06T06:39:19.242141+00:00"
     },
     {
       "element_id": 185,
@@ -7805,13 +7805,13 @@
       "first_goal": 0.081169,
       "last_goal": null,
       "anytime_assist": 0.142857,
-      "any_card": 0.181818,
+      "any_card": 0.15625,
       "red_card": 0.010989,
       "shots": null,
       "shots_on_target": 0.586668,
       "books": 4,
       "kickoff": "2026-11-06T20:00:00+00:00",
-      "observed_at": "2026-11-05T23:39:37.885229+00:00"
+      "observed_at": "2026-11-06T06:39:19.242141+00:00"
     },
     {
       "element_id": 249,
@@ -7823,13 +7823,13 @@
       "first_goal": 0.222222,
       "last_goal": null,
       "anytime_assist": 0.142857,
-      "any_card": 0.294118,
+      "any_card": 0.181818,
       "red_card": 0.019608,
       "shots": null,
       "shots_on_target": 1.935597,
       "books": 4,
       "kickoff": "2026-11-06T20:00:00+00:00",
-      "observed_at": "2026-11-05T23:39:37.885229+00:00"
+      "observed_at": "2026-11-06T06:39:19.242141+00:00"
     },
     {
       "element_id": 228,
@@ -7847,7 +7847,7 @@
       "shots_on_target": null,
       "books": 1,
       "kickoff": "2026-11-06T20:00:00+00:00",
-      "observed_at": "2026-11-05T23:39:37.885229+00:00"
+      "observed_at": "2026-11-06T06:39:19.242141+00:00"
     },
     {
       "element_id": 245,
@@ -7859,13 +7859,13 @@
       "first_goal": null,
       "last_goal": null,
       "anytime_assist": 0.2,
-      "any_card": 0.62005,
+      "any_card": 0.217593,
       "red_card": 0.017857,
       "shots": null,
       "shots_on_target": 1.005716,
       "books": 2,
       "kickoff": "2026-11-06T20:00:00+00:00",
-      "observed_at": "2026-11-05T23:39:37.885229+00:00"
+      "observed_at": "2026-11-06T06:39:19.242141+00:00"
     },
     {
       "element_id": 242,
@@ -7873,17 +7873,17 @@
       "home_team": "Everton",
       "away_team": "Coventry City",
       "club": "EVE",
-      "anytime_goal": 0.294118,
+      "anytime_goal": 0.266667,
       "first_goal": 0.117647,
       "last_goal": null,
       "anytime_assist": 0.208333,
-      "any_card": 0.230947,
+      "any_card": 0.222222,
       "red_card": 0.016393,
       "shots": null,
       "shots_on_target": 1.720139,
       "books": 4,
       "kickoff": "2026-11-06T20:00:00+00:00",
-      "observed_at": "2026-11-05T23:39:37.885229+00:00"
+      "observed_at": "2026-11-06T06:39:19.242141+00:00"
     },
     {
       "element_id": 188,
@@ -7895,13 +7895,13 @@
       "first_goal": 0.066239,
       "last_goal": null,
       "anytime_assist": 0.153846,
-      "any_card": 0.25,
+      "any_card": 0.227273,
       "red_card": 0.014085,
       "shots": null,
       "shots_on_target": 0.877624,
       "books": 4,
       "kickoff": "2026-11-06T20:00:00+00:00",
-      "observed_at": "2026-11-05T23:39:37.885229+00:00"
+      "observed_at": "2026-11-06T06:39:19.242141+00:00"
     },
     {
       "element_id": 233,
@@ -7913,13 +7913,13 @@
       "first_goal": 0.033934,
       "last_goal": null,
       "anytime_assist": 0.133333,
-      "any_card": 0.222222,
+      "any_card": 0.2,
       "red_card": 0.012346,
       "shots": null,
       "shots_on_target": 0.494854,
       "books": 4,
       "kickoff": "2026-11-06T20:00:00+00:00",
-      "observed_at": "2026-11-05T23:39:37.885229+00:00"
+      "observed_at": "2026-11-06T06:39:19.242141+00:00"
     },
     {
       "element_id": 655,
@@ -7931,13 +7931,13 @@
       "first_goal": 0.088462,
       "last_goal": null,
       "anytime_assist": 0.153846,
-      "any_card": 0.181818,
+      "any_card": 0.166667,
       "red_card": 0.009901,
       "shots": null,
       "shots_on_target": 0.964201,
       "books": 4,
       "kickoff": "2026-11-06T20:00:00+00:00",
-      "observed_at": "2026-11-05T23:39:37.885229+00:00"
+      "observed_at": "2026-11-06T06:39:19.242141+00:00"
     }
   ]
 }
