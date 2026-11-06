@@ -1,6 +1,6 @@
 {
   "schemaVersion": 7,
-  "generatedAt": "2026-11-06T12:49:59.679588Z",
+  "generatedAt": "2026-11-06T14:29:58.421259Z",
   "recordSeason": "2026-27",
   "events": [
     10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28,
@@ -569,7 +569,7 @@
       }
     ],
     "sourceReference": "FPL rules page, Transfers section",
-    "dataAvailableAt": "2026-11-06T12:49:59.679588Z",
+    "dataAvailableAt": "2026-11-06T14:29:58.421259Z",
     "playableStartRate": 0.35,
     "transferMarginPoints": 0.5
   },
@@ -19709,6 +19709,46 @@
       }
     },
     {
+      "id": 415,
+      "code": 596777,
+      "name": "Dorgu",
+      "position": "MID",
+      "positionId": 3,
+      "club": "MUN",
+      "teamId": 16,
+      "priceTenths": 57,
+      "availabilityStatus": "d",
+      "chanceOfPlaying": 75,
+      "basePoints": 1.296,
+      "routes": {
+        "appearance": 0.649,
+        "attacking": 0.539,
+        "yellowCards": -0.108,
+        "defensiveContribution": 0.216
+      },
+      "startRate": 0.216,
+      "startEvidence": {
+        "sourceStartRate": 0.0,
+        "finalStartRate": 0.216,
+        "observedAppearances": 9,
+        "recentStarts": 2,
+        "recentMatches": 9,
+        "recentMinutes": 171,
+        "appearanceSource": "currentSeasonLineup",
+        "lineupAdjustment": 0.216,
+        "marketAdjustment": 0.0,
+        "availabilityAdjustment": 0.0
+      },
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 5,
+      "evidence": {
+        "all": "currentSeasonRoutes",
+        "appearance": "currentSeasonLineup",
+        "attacking": "marketAttack"
+      }
+    },
+    {
       "id": 601,
       "code": 611917,
       "name": "Williams-Barnett",
@@ -20733,46 +20773,6 @@
         "attacking": "marketAttack",
         "yellowCards": "marketCards",
         "redCards": "marketCards"
-      }
-    },
-    {
-      "id": 131,
-      "code": 535301,
-      "name": "Baleba",
-      "position": "MID",
-      "positionId": 3,
-      "club": "MUN",
-      "teamId": 16,
-      "priceTenths": 49,
-      "availabilityStatus": "d",
-      "chanceOfPlaying": 50,
-      "basePoints": 0.879,
-      "routes": {
-        "appearance": 0.659,
-        "attacking": 0.002,
-        "bonus": 0.001,
-        "yellowCards": -0.001,
-        "defensiveContribution": 0.218
-      },
-      "startRate": 0.327,
-      "startEvidence": {
-        "sourceStartRate": 0.106,
-        "finalStartRate": 0.327,
-        "observedAppearances": 9,
-        "recentStarts": 3,
-        "recentMatches": 9,
-        "recentMinutes": 232,
-        "appearanceSource": "currentSeasonLineup",
-        "lineupAdjustment": 0.221,
-        "marketAdjustment": 0.0,
-        "availabilityAdjustment": 0.0
-      },
-      "squadNumber": null,
-      "rated": true,
-      "depthRank": 12,
-      "evidence": {
-        "all": "currentSeasonRoutes",
-        "appearance": "currentSeasonLineup"
       }
     },
     {
@@ -24719,38 +24719,37 @@
       }
     },
     {
-      "id": 415,
-      "code": 596777,
-      "name": "Dorgu",
+      "id": 131,
+      "code": 535301,
+      "name": "Baleba",
       "position": "MID",
       "positionId": 3,
       "club": "MUN",
       "teamId": 16,
-      "priceTenths": 57,
+      "priceTenths": 49,
       "availabilityStatus": "i",
       "chanceOfPlaying": 0,
       "basePoints": 0,
       "routes": {},
       "startRate": 0.0,
       "startEvidence": {
-        "sourceStartRate": 0.0,
+        "sourceStartRate": 0.106,
         "finalStartRate": 0.0,
         "observedAppearances": 9,
-        "recentStarts": 2,
+        "recentStarts": 3,
         "recentMatches": 9,
-        "recentMinutes": 171,
+        "recentMinutes": 232,
         "appearanceSource": "fplAvailability",
-        "lineupAdjustment": 0.216,
+        "lineupAdjustment": 0.221,
         "marketAdjustment": 0.0,
-        "availabilityAdjustment": -0.216
+        "availabilityAdjustment": -0.327
       },
       "squadNumber": null,
       "rated": true,
-      "depthRank": 5,
+      "depthRank": 12,
       "evidence": {
         "all": "currentSeasonRoutes",
-        "appearance": "fplAvailability",
-        "attacking": "marketAttack"
+        "appearance": "fplAvailability"
       }
     },
     {
