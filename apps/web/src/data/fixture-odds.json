@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-11-09T09:45:39.450002+00:00",
+  "generatedAt": "2026-11-09T16:44:19.600909+00:00",
   "season": "2026-27",
   "source": "football-data.co.uk",
   "priceTiming": "pre-match",
@@ -8,7 +8,7 @@
   "provenance": [
     {
       "url": "https://www.football-data.co.uk/mmz4281/2627/E0.csv",
-      "contentHash": "sha256:c429b75f681dc7aaec5641a23320402409530b4b01a9f147bb7e386fe508159b"
+      "contentHash": "sha256:d598a5f681e1a9a4acf9dad9fb203b68da6f67e2d195678dbe99e95fbba14593"
     },
     {
       "url": "https://www.football-data.co.uk/fixtures.csv",
@@ -1004,6 +1004,116 @@
       "homeCleanSheet": 0.2553,
       "awayCleanSheet": 0.2068,
       "drawResidual": 0.0176,
+      "priceSource": "average"
+    },
+    {
+      "kickoff": "2026-11-06T20:00:00+00:00",
+      "home": "EVE",
+      "away": "COV",
+      "homeExpectedGoals": 1.909,
+      "awayExpectedGoals": 1.0022,
+      "homeCleanSheet": 0.3671,
+      "awayCleanSheet": 0.1482,
+      "drawResidual": 0.0141,
+      "priceSource": "average"
+    },
+    {
+      "kickoff": "2026-11-07T12:30:00+00:00",
+      "home": "LEE",
+      "away": "TOT",
+      "homeExpectedGoals": 1.2902,
+      "awayExpectedGoals": 1.3377,
+      "homeCleanSheet": 0.2625,
+      "awayCleanSheet": 0.2752,
+      "drawResidual": 0.0171,
+      "priceSource": "average"
+    },
+    {
+      "kickoff": "2026-11-07T15:00:00+00:00",
+      "home": "ARS",
+      "away": "HUL",
+      "homeExpectedGoals": 2.7587,
+      "awayExpectedGoals": 0.5055,
+      "homeCleanSheet": 0.6032,
+      "awayCleanSheet": 0.0634,
+      "drawResidual": 0.0024,
+      "priceSource": "average"
+    },
+    {
+      "kickoff": "2026-11-07T15:00:00+00:00",
+      "home": "FUL",
+      "away": "NEW",
+      "homeExpectedGoals": 1.7232,
+      "awayExpectedGoals": 1.2887,
+      "homeCleanSheet": 0.2756,
+      "awayCleanSheet": 0.1785,
+      "drawResidual": 0.0192,
+      "priceSource": "average"
+    },
+    {
+      "kickoff": "2026-11-07T17:30:00+00:00",
+      "home": "NFO",
+      "away": "MCI",
+      "homeExpectedGoals": 1.0868,
+      "awayExpectedGoals": 1.9694,
+      "homeCleanSheet": 0.1395,
+      "awayCleanSheet": 0.3373,
+      "drawResidual": 0.0171,
+      "priceSource": "average"
+    },
+    {
+      "kickoff": "2026-11-08T14:00:00+00:00",
+      "home": "BHA",
+      "away": "BRE",
+      "homeExpectedGoals": 1.8455,
+      "awayExpectedGoals": 1.2649,
+      "homeCleanSheet": 0.2823,
+      "awayCleanSheet": 0.1579,
+      "drawResidual": 0.0134,
+      "priceSource": "average"
+    },
+    {
+      "kickoff": "2026-11-08T14:00:00+00:00",
+      "home": "CRY",
+      "away": "LIV",
+      "homeExpectedGoals": 1.0479,
+      "awayExpectedGoals": 2.1258,
+      "homeCleanSheet": 0.1193,
+      "awayCleanSheet": 0.3507,
+      "drawResidual": 0.0125,
+      "priceSource": "average"
+    },
+    {
+      "kickoff": "2026-11-08T14:00:00+00:00",
+      "home": "IPS",
+      "away": "BOU",
+      "homeExpectedGoals": 1.175,
+      "awayExpectedGoals": 1.7664,
+      "homeCleanSheet": 0.171,
+      "awayCleanSheet": 0.3088,
+      "drawResidual": 0.0161,
+      "priceSource": "average"
+    },
+    {
+      "kickoff": "2026-11-08T14:00:00+00:00",
+      "home": "SUN",
+      "away": "CHE",
+      "homeExpectedGoals": 1.1208,
+      "awayExpectedGoals": 1.6713,
+      "homeCleanSheet": 0.188,
+      "awayCleanSheet": 0.326,
+      "drawResidual": 0.014,
+      "priceSource": "average"
+    },
+    {
+      "kickoff": "2026-11-08T16:30:00+00:00",
+      "home": "MUN",
+      "away": "AVL",
+      "homeExpectedGoals": 1.7423,
+      "awayExpectedGoals": 1.4046,
+      "homeCleanSheet": 0.2455,
+      "awayCleanSheet": 0.1751,
+      "drawResidual": 0.0178,
       "priceSource": "average"
     },
     {
