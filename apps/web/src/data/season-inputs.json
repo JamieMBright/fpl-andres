@@ -1,6 +1,6 @@
 {
   "schemaVersion": 7,
-  "generatedAt": "2026-11-09T17:40:11.538231Z",
+  "generatedAt": "2026-11-09T18:54:18.224637Z",
   "recordSeason": "2026-27",
   "events": [
     11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
@@ -54,8 +54,8 @@
     "fixtureMarkets": {
       "source": "football-data.co.uk",
       "level": "observed",
-      "updatedAt": "2026-11-09T16:44:19.600909+00:00",
-      "contentHash": "sha256:93079d058aaed9fd6b487ab933e3319cd8335069b8dd61a10a6c230217e273c9"
+      "updatedAt": "2026-11-09T18:52:48.282134+00:00",
+      "contentHash": "sha256:080c588e7c1ea7d7a3570ba66bad94bfdc81993e075ab35e587f9326aa304432"
     },
     "understat": {
       "source": "understat",
@@ -327,7 +327,7 @@
       }
     ],
     "sourceReference": "FPL rules page, Transfers section",
-    "dataAvailableAt": "2026-11-09T17:40:11.538231Z",
+    "dataAvailableAt": "2026-11-09T18:54:18.224637Z",
     "playableStartRate": 0.35,
     "transferMarginPoints": 0.5
   },
@@ -957,7 +957,7 @@
   },
   "fixtureEvidence": {
     "source": "football-data.co.uk",
-    "updatedAt": "2026-11-09T16:44:19.600909+00:00",
+    "updatedAt": "2026-11-09T18:52:48.282134+00:00",
     "level": "observed",
     "byClub": {}
   },
@@ -5043,8 +5043,8 @@
       "club": "LIV",
       "teamId": 14,
       "priceTenths": 64,
-      "availabilityStatus": "a",
-      "chanceOfPlaying": null,
+      "availabilityStatus": "d",
+      "chanceOfPlaying": 75,
       "basePoints": 4.285,
       "routes": {
         "appearance": 1.992,
@@ -7930,26 +7930,26 @@
       "priceTenths": 45,
       "availabilityStatus": "d",
       "chanceOfPlaying": 50,
-      "basePoints": 1.477,
+      "basePoints": 1.476,
       "routes": {
-        "appearance": 0.902,
-        "attacking": 0.007,
-        "cleanSheet": 0.458,
-        "bonus": 0.004,
-        "conceding": -0.114,
-        "yellowCards": -0.004,
-        "defensiveContribution": 0.224
+        "appearance": 0.909,
+        "attacking": 0.006,
+        "cleanSheet": 0.445,
+        "bonus": 0.001,
+        "conceding": -0.122,
+        "yellowCards": -0.003,
+        "defensiveContribution": 0.24
       },
-      "startRate": 0.344,
+      "startRate": 0.345,
       "startEvidence": {
-        "sourceStartRate": 0.726,
-        "finalStartRate": 0.344,
+        "sourceStartRate": 0.775,
+        "finalStartRate": 0.345,
         "observedAppearances": 9,
         "recentStarts": 3,
         "recentMatches": 9,
         "recentMinutes": 273,
         "appearanceSource": "currentSeasonLineup",
-        "lineupAdjustment": -0.382,
+        "lineupAdjustment": -0.43,
         "marketAdjustment": 0.0,
         "availabilityAdjustment": 0.0
       },
@@ -9239,28 +9239,28 @@
       "priceTenths": 45,
       "availabilityStatus": "a",
       "chanceOfPlaying": null,
-      "basePoints": 0.528,
+      "basePoints": 0.52,
       "routes": {
-        "appearance": 0.274,
-        "attacking": 0.051,
-        "cleanSheet": 0.189,
-        "bonus": 0.026,
-        "conceding": -0.043,
-        "yellowCards": -0.026,
-        "redCards": -0.001,
+        "appearance": 0.324,
+        "attacking": 0.047,
+        "cleanSheet": 0.093,
+        "bonus": 0.011,
+        "conceding": -0.103,
+        "yellowCards": -0.023,
+        "redCards": -0.002,
         "ownGoals": -0.001,
-        "defensiveContribution": 0.059
+        "defensiveContribution": 0.174
       },
-      "startRate": 0.145,
+      "startRate": 0.155,
       "startEvidence": {
-        "sourceStartRate": 0.726,
-        "finalStartRate": 0.145,
+        "sourceStartRate": 0.775,
+        "finalStartRate": 0.155,
         "observedAppearances": 1,
         "recentStarts": 0,
         "recentMatches": 1,
         "recentMinutes": 0,
         "appearanceSource": "currentSeasonLineup",
-        "lineupAdjustment": -0.581,
+        "lineupAdjustment": -0.62,
         "marketAdjustment": 0.0,
         "availabilityAdjustment": 0.0
       },
@@ -10410,26 +10410,26 @@
       "priceTenths": 45,
       "availabilityStatus": "a",
       "chanceOfPlaying": null,
-      "basePoints": 0.081,
+      "basePoints": 0.08,
       "routes": {
-        "appearance": 0.284,
-        "attacking": 0.008,
-        "cleanSheet": 0.029,
-        "bonus": 0.004,
-        "conceding": -0.249,
-        "yellowCards": -0.004,
-        "defensiveContribution": 0.009
+        "appearance": 0.292,
+        "attacking": 0.007,
+        "cleanSheet": 0.014,
+        "bonus": 0.002,
+        "conceding": -0.258,
+        "yellowCards": -0.003,
+        "defensiveContribution": 0.026
       },
-      "startRate": 0.143,
+      "startRate": 0.145,
       "startEvidence": {
-        "sourceStartRate": 0.726,
-        "finalStartRate": 0.143,
+        "sourceStartRate": 0.775,
+        "finalStartRate": 0.145,
         "observedAppearances": 8,
         "recentStarts": 1,
         "recentMatches": 8,
         "recentMinutes": 90,
         "appearanceSource": "currentSeasonLineup",
-        "lineupAdjustment": -0.583,
+        "lineupAdjustment": -0.63,
         "marketAdjustment": 0.0,
         "availabilityAdjustment": 0.0
       },
@@ -12276,16 +12276,16 @@
       "routes": {},
       "startRate": 0.0,
       "startEvidence": {
-        "sourceStartRate": 0.726,
+        "sourceStartRate": 0.775,
         "finalStartRate": 0.0,
         "observedAppearances": 10,
         "recentStarts": 0,
         "recentMatches": 10,
         "recentMinutes": 0,
         "appearanceSource": "fplAvailability",
-        "lineupAdjustment": -0.708,
+        "lineupAdjustment": -0.756,
         "marketAdjustment": -0.0,
-        "availabilityAdjustment": -0.018
+        "availabilityAdjustment": -0.019
       },
       "squadNumber": null,
       "rated": false,

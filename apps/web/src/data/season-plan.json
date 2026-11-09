@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "modelVersion": "8.23",
-  "generatedAt": "2026-11-09T17:40:14.175376Z",
+  "generatedAt": "2026-11-09T18:54:20.588728Z",
   "season": "2026-27",
   "recordSeason": "2026-27",
   "basis": "opening squad, fixture-adjusted projections, solved in overlapping windows and committed 28 gameweeks deep",
@@ -13,7 +13,7 @@
   "lastEvent": 38,
   "windowsSolved": 8,
   "poolSize": 92,
-  "netExpectedPoints": 2125.19,
+  "netExpectedPoints": 2124.94,
   "chips": [
     {
       "event": 11,
@@ -35,16 +35,16 @@
       "event": 13,
       "chip": "Free Hit",
       "half": "first",
-      "gain": 3.49,
-      "ceiling": 5.25,
-      "note": "this week is 5.3 worse for the held squad than the weeks around it, the sharpest one-week drop of the first half, which under the 20 points that makes a chip worth building around, but an unplayed chip expires at nothing"
+      "gain": 3.24,
+      "ceiling": 5.0,
+      "note": "this week is 5.0 worse for the held squad than the weeks around it, the sharpest one-week drop of the first half, which under the 20 points that makes a chip worth building around, but an unplayed chip expires at nothing"
     },
     {
       "event": 14,
       "chip": "Wildcard",
       "half": "first",
       "gain": 2.91,
-      "ceiling": 3.59,
+      "ceiling": 3.22,
       "note": "Rebuilding in gameweek 14 is worth 2.9 over the season, because the weeks before it no longer have to leave a squad that still works afterwards; the legal fifteen changes 3 players between xPts3 and xPts5, which is under the 20 a chip wants, but an unplayed chip expires at nothing"
     },
     {
@@ -68,7 +68,7 @@
       "chip": "Wildcard",
       "half": "second",
       "gain": 0.0,
-      "ceiling": 5.83,
+      "ceiling": 5.73,
       "note": "Every rebuild week offered for this half was worth less than carrying on with one transfer a week, so this copy of the chip is left unplayed."
     },
     {
@@ -91,13 +91,6 @@
       "position": "MID",
       "club": "BHA",
       "priceTenths": 63,
-      "squadNumber": null
-    },
-    "97032": {
-      "name": "Virgil",
-      "position": "DEF",
-      "club": "LIV",
-      "priceTenths": 64,
       "squadNumber": null
     },
     "108813": {
@@ -490,15 +483,15 @@
       "deadline": "2026-12-01T18:30:00Z",
       "confidence": "projected",
       "starters": [
-        154561, 465730, 610799, 469142, 244850, 60307, 219168, 226597, 97032,
+        154561, 465730, 610799, 469142, 244850, 60307, 219168, 226597, 445087,
         244851, 494595
       ],
       "bench": [108813, 243413, 463034, 230730],
       "captain": 244850,
       "viceCaptain": 60307,
       "transfersIn": [
-        244850, 469142, 244851, 463034, 230730, 243413, 108813, 97032, 494595,
-        219168
+        244850, 469142, 244851, 463034, 230730, 243413, 108813, 494595, 219168,
+        445087
       ],
       "transfersOut": [
         184029, 122806, 201658, 444102, 440993, 586309, 226182, 220627, 432720,
@@ -507,8 +500,8 @@
       "opponents": {
         "ARS": ["BRE (A)"],
         "COV": ["IPS (H)"],
-        "HUL": ["NFO (H)"],
         "LIV": ["SUN (H)"],
+        "HUL": ["NFO (H)"],
         "NFO": ["HUL (A)"],
         "CHE": ["CRY (H)"],
         "IPS": ["COV (A)"],
@@ -518,8 +511,8 @@
       "difficulty": {
         "ARS": 5.0,
         "COV": 1.6,
-        "HUL": 1.9,
         "LIV": 1.6,
+        "HUL": 1.9,
         "NFO": 3.4,
         "CHE": 1.0,
         "IPS": 2.4,
@@ -527,15 +520,15 @@
         "BHA": 4.1
       },
       "squadElementIds": [
-        1, 4, 40, 112, 115, 124, 154, 167, 194, 290, 300, 356, 366, 379, 504
+        1, 4, 40, 112, 115, 124, 154, 167, 194, 290, 300, 366, 379, 504, 579
       ],
       "benchElementIds": [300, 290, 167, 194],
       "expected": {
         "154561": 5.66,
         "230730": 2.52,
-        "243413": 2.22,
+        "445087": 5.58,
         "226597": 5.99,
-        "97032": 5.83,
+        "243413": 2.22,
         "463034": 2.31,
         "244850": 5.17,
         "108813": 1.39,
@@ -550,9 +543,9 @@
       "ceiling": {
         "154561": 8.49,
         "230730": 5.47,
-        "243413": 2.78,
+        "445087": 10.14,
         "226597": 8.17,
-        "97032": 10.84,
+        "243413": 2.78,
         "463034": 2.31,
         "244850": 8.96,
         "108813": 1.39,
@@ -567,9 +560,9 @@
       "freeTransfersBefore": 2,
       "paidTransfers": 0,
       "transferCostPoints": 0,
-      "projectedPoints": 66.09,
-      "netExpectedPoints": 66.09,
-      "bankAfterTenths": 34,
+      "projectedPoints": 65.84,
+      "netExpectedPoints": 65.84,
+      "bankAfterTenths": 43,
       "chip": "Free Hit",
       "revertsAfter": true,
       "revertsTo": [
