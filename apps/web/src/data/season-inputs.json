@@ -1,6 +1,6 @@
 {
   "schemaVersion": 7,
-  "generatedAt": "2026-11-10T10:41:09.034292Z",
+  "generatedAt": "2026-11-10T12:36:18.347601Z",
   "recordSeason": "2026-27",
   "events": [
     11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
@@ -327,7 +327,7 @@
       }
     ],
     "sourceReference": "FPL rules page, Transfers section",
-    "dataAvailableAt": "2026-11-10T10:41:09.034292Z",
+    "dataAvailableAt": "2026-11-10T12:36:18.347601Z",
     "playableStartRate": 0.35,
     "transferMarginPoints": 0.5
   },
@@ -25272,8 +25272,8 @@
       "club": "SUN",
       "teamId": 20,
       "priceTenths": 57,
-      "availabilityStatus": "a",
-      "chanceOfPlaying": 100,
+      "availabilityStatus": "d",
+      "chanceOfPlaying": 75,
       "basePoints": 3.183,
       "routes": {
         "appearance": 1.596,
@@ -25669,23 +25669,23 @@
       "priceTenths": 55,
       "availabilityStatus": "a",
       "chanceOfPlaying": null,
-      "basePoints": 1.785,
+      "basePoints": 1.799,
       "routes": {
-        "appearance": 1.022,
-        "attacking": 0.997,
-        "bonus": 0.01,
-        "yellowCards": -0.244
+        "appearance": 1.024,
+        "attacking": 1.006,
+        "bonus": 0.014,
+        "yellowCards": -0.245
       },
-      "startRate": 0.023,
+      "startRate": 0.025,
       "startEvidence": {
-        "sourceStartRate": 0.767,
-        "finalStartRate": 0.023,
+        "sourceStartRate": 0.835,
+        "finalStartRate": 0.025,
         "observedAppearances": 8,
         "recentStarts": 0,
         "recentMatches": 8,
         "recentMinutes": 170,
         "appearanceSource": "currentSeasonLineup",
-        "lineupAdjustment": -0.744,
+        "lineupAdjustment": -0.81,
         "marketAdjustment": 0.0,
         "availabilityAdjustment": 0.0
       },
@@ -26572,23 +26572,23 @@
       "priceTenths": 59,
       "availabilityStatus": "a",
       "chanceOfPlaying": null,
-      "basePoints": 0.168,
+      "basePoints": 0.18,
       "routes": {
-        "appearance": 0.237,
-        "attacking": 0.022,
-        "bonus": 0.008,
-        "yellowCards": -0.099
+        "appearance": 0.239,
+        "attacking": 0.03,
+        "bonus": 0.011,
+        "yellowCards": -0.1
       },
-      "startRate": 0.019,
+      "startRate": 0.02,
       "startEvidence": {
-        "sourceStartRate": 0.767,
-        "finalStartRate": 0.019,
+        "sourceStartRate": 0.835,
+        "finalStartRate": 0.02,
         "observedAppearances": 10,
         "recentStarts": 0,
         "recentMatches": 10,
         "recentMinutes": 23,
         "appearanceSource": "currentSeasonLineup",
-        "lineupAdjustment": -0.748,
+        "lineupAdjustment": -0.815,
         "marketAdjustment": 0.0,
         "availabilityAdjustment": 0.0
       },
