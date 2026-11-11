@@ -1,6 +1,6 @@
 {
   "schemaVersion": 7,
-  "generatedAt": "2026-11-11T10:10:52.693111Z",
+  "generatedAt": "2026-11-11T14:38:55.798068Z",
   "recordSeason": "2026-27",
   "events": [
     11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
@@ -327,7 +327,7 @@
       }
     ],
     "sourceReference": "FPL rules page, Transfers section",
-    "dataAvailableAt": "2026-11-11T10:10:52.693111Z",
+    "dataAvailableAt": "2026-11-11T14:38:55.798068Z",
     "playableStartRate": 0.35,
     "transferMarginPoints": 0.5
   },
@@ -25427,8 +25427,8 @@
       "club": "CRY",
       "teamId": 8,
       "priceTenths": 59,
-      "availabilityStatus": "a",
-      "chanceOfPlaying": 100,
+      "availabilityStatus": "d",
+      "chanceOfPlaying": 75,
       "basePoints": 2.289,
       "routes": {
         "appearance": 1.395,
@@ -26260,23 +26260,23 @@
       "priceTenths": 50,
       "availabilityStatus": "a",
       "chanceOfPlaying": 100,
-      "basePoints": 0.659,
+      "basePoints": 0.655,
       "routes": {
-        "appearance": 0.638,
-        "attacking": 0.017,
-        "bonus": 0.005,
+        "appearance": 0.632,
+        "attacking": 0.015,
+        "bonus": 0.009,
         "yellowCards": -0.001
       },
       "startRate": 0.004,
       "startEvidence": {
-        "sourceStartRate": 0.133,
+        "sourceStartRate": 0.121,
         "finalStartRate": 0.004,
         "observedAppearances": 8,
         "recentStarts": 0,
         "recentMatches": 8,
         "recentMinutes": 50,
         "appearanceSource": "currentSeasonLineup",
-        "lineupAdjustment": -0.129,
+        "lineupAdjustment": -0.117,
         "marketAdjustment": 0.0,
         "availabilityAdjustment": 0.0
       },
@@ -26299,23 +26299,23 @@
       "priceTenths": 60,
       "availabilityStatus": "a",
       "chanceOfPlaying": 100,
-      "basePoints": 0.628,
+      "basePoints": 0.624,
       "routes": {
-        "appearance": 0.611,
-        "attacking": 0.014,
-        "bonus": 0.004,
+        "appearance": 0.606,
+        "attacking": 0.012,
+        "bonus": 0.007,
         "yellowCards": -0.001
       },
       "startRate": 0.003,
       "startEvidence": {
-        "sourceStartRate": 0.133,
+        "sourceStartRate": 0.121,
         "finalStartRate": 0.003,
         "observedAppearances": 10,
         "recentStarts": 0,
         "recentMatches": 10,
         "recentMinutes": 58,
         "appearanceSource": "currentSeasonLineup",
-        "lineupAdjustment": -0.13,
+        "lineupAdjustment": -0.118,
         "marketAdjustment": 0.0,
         "availabilityAdjustment": 0.0
       },
@@ -27160,14 +27160,14 @@
       "routes": {},
       "startRate": 0.0,
       "startEvidence": {
-        "sourceStartRate": 0.133,
+        "sourceStartRate": 0.121,
         "finalStartRate": 0.0,
         "observedAppearances": 10,
         "recentStarts": 0,
         "recentMatches": 10,
         "recentMinutes": 0,
         "appearanceSource": "fplAvailability",
-        "lineupAdjustment": -0.13,
+        "lineupAdjustment": -0.118,
         "marketAdjustment": -0.0,
         "availabilityAdjustment": -0.003
       },
