@@ -1,6 +1,6 @@
 {
   "schemaVersion": 7,
-  "generatedAt": "2026-11-13T23:39:07.136293Z",
+  "generatedAt": "2026-11-14T00:56:56.380452Z",
   "recordSeason": "2026-27",
   "events": [
     11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
@@ -54,8 +54,8 @@
     "fixtureMarkets": {
       "source": "football-data.co.uk",
       "level": "observed",
-      "updatedAt": "2026-11-13T23:31:42.000382+00:00",
-      "contentHash": "sha256:df17fb33d5b66f0ead906c9edda3b7b413c77f5b281c18a90b79d239dd15d9fd"
+      "updatedAt": "2026-11-14T00:55:27.953297+00:00",
+      "contentHash": "sha256:b124801ef6b8b19830688882bf6d40fc1b720b3e3ff26800411bcbd2a2a21404"
     },
     "understat": {
       "source": "understat",
@@ -327,7 +327,7 @@
       }
     ],
     "sourceReference": "FPL rules page, Transfers section",
-    "dataAvailableAt": "2026-11-13T23:39:07.136293Z",
+    "dataAvailableAt": "2026-11-14T00:56:56.380452Z",
     "playableStartRate": 0.35,
     "transferMarginPoints": 0.5
   },
@@ -957,7 +957,7 @@
   },
   "fixtureEvidence": {
     "source": "football-data.co.uk",
-    "updatedAt": "2026-11-13T23:31:42.000382+00:00",
+    "updatedAt": "2026-11-14T00:55:27.953297+00:00",
     "level": "observed",
     "byClub": {}
   },
@@ -1940,7 +1940,7 @@
       "positionId": 1,
       "club": "SUN",
       "teamId": 20,
-      "priceTenths": 49,
+      "priceTenths": 48,
       "availabilityStatus": "a",
       "chanceOfPlaying": null,
       "basePoints": 3.301,
