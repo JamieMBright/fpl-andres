@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-11-07T22:13:23.347293+00:00",
+  "generatedAt": "2026-11-14T22:40:49.452017+00:00",
   "season": "2026-27",
   "event": 1,
   "fixtureId": 6,
@@ -25,11 +25,11 @@
     "Bogle",
     "Justin",
     "Ampadu",
+    "Calvert-Lewin",
     "Trafford",
     "Muharemovi\u0107",
-    "Calvert-Lewin",
-    "Gudmundsson",
     "Tanaka",
+    "Gudmundsson",
     "Elvedi",
     "Stach",
     "Okafor"
@@ -50,7 +50,7 @@
   ],
   "actual_overlap": 10,
   "model_actual_overlap": 7,
-  "brier_score": 0.14040432258064514,
+  "brier_score": 0.14040709677419355,
   "players": [
     {
       "elementId": 385,
@@ -73,19 +73,14 @@
       "startProbability": 0.998
     },
     {
+      "elementId": 346,
+      "name": "Calvert-Lewin",
+      "startProbability": 0.998
+    },
+    {
       "elementId": 334,
       "name": "Muharemovi\u0107",
       "startProbability": 0.993
-    },
-    {
-      "elementId": 346,
-      "name": "Calvert-Lewin",
-      "startProbability": 0.993
-    },
-    {
-      "elementId": 331,
-      "name": "Gudmundsson",
-      "startProbability": 0.799
     },
     {
       "elementId": 345,
@@ -93,34 +88,39 @@
       "startProbability": 0.799
     },
     {
+      "elementId": 331,
+      "name": "Gudmundsson",
+      "startProbability": 0.79
+    },
+    {
       "elementId": 598,
       "name": "Elvedi",
-      "startProbability": 0.697
+      "startProbability": 0.698
     },
     {
       "elementId": 335,
       "name": "Stach",
-      "startProbability": 0.691
+      "startProbability": 0.69
     },
     {
       "elementId": 336,
       "name": "Okafor",
-      "startProbability": 0.593
+      "startProbability": 0.598
     },
     {
       "elementId": 260,
       "name": "Wilson",
-      "startProbability": 0.302
+      "startProbability": 0.3
     },
     {
       "elementId": 327,
       "name": "Bijol",
-      "startProbability": 0.3
+      "startProbability": 0.299
     },
     {
       "elementId": 337,
       "name": "Aaronson",
-      "startProbability": 0.3
+      "startProbability": 0.299
     },
     {
       "elementId": 329,
@@ -128,39 +128,39 @@
       "startProbability": 0.197
     },
     {
+      "elementId": 339,
+      "name": "Longstaff",
+      "startProbability": 0.101
+    },
+    {
       "elementId": 343,
       "name": "James",
-      "startProbability": 0.102
+      "startProbability": 0.101
     },
     {
       "elementId": 347,
       "name": "Nmecha",
-      "startProbability": 0.099
-    },
-    {
-      "elementId": 339,
-      "name": "Longstaff",
-      "startProbability": 0.098
+      "startProbability": 0.101
     },
     {
       "elementId": 641,
       "name": "Bard",
-      "startProbability": 0.017
-    },
-    {
-      "elementId": 648,
-      "name": "Bahoya",
-      "startProbability": 0.015
+      "startProbability": 0.02
     },
     {
       "elementId": 603,
       "name": "Lienou",
-      "startProbability": 0.014
+      "startProbability": 0.016
+    },
+    {
+      "elementId": 648,
+      "name": "Bahoya",
+      "startProbability": 0.013
     },
     {
       "elementId": 604,
       "name": "Cresswell",
-      "startProbability": 0.012
+      "startProbability": 0.01
     },
     {
       "elementId": 625,
