@@ -1,6 +1,6 @@
 {
   "schemaVersion": 7,
-  "generatedAt": "2026-11-15T16:14:14.429993Z",
+  "generatedAt": "2026-11-15T21:02:32.654460Z",
   "recordSeason": "2026-27",
   "events": [
     11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
@@ -186,7 +186,7 @@
       }
     ],
     "sourceReference": "FPL rules page, Transfers section",
-    "dataAvailableAt": "2026-11-15T16:14:14.429993Z",
+    "dataAvailableAt": "2026-11-15T21:02:32.654460Z",
     "playableStartRate": 0.35,
     "transferMarginPoints": 0.5
   },
@@ -14543,8 +14543,8 @@
       "club": "NFO",
       "teamId": 18,
       "priceTenths": 50,
-      "availabilityStatus": "a",
-      "chanceOfPlaying": null,
+      "availabilityStatus": "d",
+      "chanceOfPlaying": 75,
       "basePoints": 3.086,
       "routes": {
         "appearance": 1.793,
