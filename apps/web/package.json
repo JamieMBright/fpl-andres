@@ -17,9 +17,9 @@
     "@fpl-andres/contracts": "workspace:*",
     "@fpl-andres/quick-solver": "workspace:*",
     "lucide-react": "1.33.0",
-    "react": "19.2.8",
-    "react-dom": "19.2.8",
-    "react-router-dom": "7.18.4",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "react-router-dom": "7.18.5",
     "zod": "4.6.7"
   },
   "devDependencies": {
@@ -28,8 +28,8 @@
     "@testing-library/jest-dom": "6.9.1",
     "@testing-library/react": "16.3.2",
     "@testing-library/user-event": "14.6.1",
-    "@types/react": "19.2.17",
-    "@types/react-dom": "19.2.3",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
     "@vitejs/plugin-react": "5.1.4",
     "jsdom": "27.4.0",
     "vite": "7.3.7",
