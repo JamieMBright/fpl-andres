@@ -1,6 +1,6 @@
 {
   "schemaVersion": 7,
-  "generatedAt": "2026-11-16T20:35:41.003574Z",
+  "generatedAt": "2026-11-17T04:29:09.903366Z",
   "recordSeason": "2026-27",
   "events": [
     11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
@@ -186,7 +186,7 @@
       }
     ],
     "sourceReference": "FPL rules page, Transfers section",
-    "dataAvailableAt": "2026-11-16T20:35:41.003574Z",
+    "dataAvailableAt": "2026-11-17T04:29:09.903366Z",
     "playableStartRate": 0.35,
     "transferMarginPoints": 0.5
   },
@@ -9458,7 +9458,7 @@
       "positionId": 2,
       "club": "CRY",
       "teamId": 8,
-      "priceTenths": 43,
+      "priceTenths": 42,
       "availabilityStatus": "a",
       "chanceOfPlaying": null,
       "basePoints": 0.336,
@@ -9486,7 +9486,7 @@
       },
       "squadNumber": null,
       "rated": false,
-      "depthRank": 10,
+      "depthRank": 12,
       "evidence": {
         "all": "currentSeasonRoutes",
         "appearance": "currentSeasonLineup"
@@ -16960,7 +16960,7 @@
       "positionId": 3,
       "club": "BOU",
       "teamId": 3,
-      "priceTenths": 50,
+      "priceTenths": 49,
       "availabilityStatus": "a",
       "chanceOfPlaying": null,
       "basePoints": 1.895,
@@ -16987,7 +16987,7 @@
       },
       "squadNumber": null,
       "rated": true,
-      "depthRank": 6,
+      "depthRank": 8,
       "evidence": {
         "all": "currentSeasonRoutes",
         "appearance": "currentSeasonLineup"
@@ -20206,7 +20206,7 @@
       },
       "squadNumber": null,
       "rated": true,
-      "depthRank": 9,
+      "depthRank": 8,
       "evidence": {
         "all": "currentSeasonRoutes",
         "appearance": "currentSeasonLineup"
@@ -22062,7 +22062,7 @@
       "positionId": 3,
       "club": "MUN",
       "teamId": 16,
-      "priceTenths": 49,
+      "priceTenths": 48,
       "availabilityStatus": "a",
       "chanceOfPlaying": null,
       "basePoints": 0.044,
@@ -22089,7 +22089,7 @@
       },
       "squadNumber": null,
       "rated": false,
-      "depthRank": 12,
+      "depthRank": 14,
       "evidence": {
         "all": "currentSeasonRoutes",
         "appearance": "currentSeasonLineup"
@@ -22586,7 +22586,7 @@
       },
       "squadNumber": null,
       "rated": false,
-      "depthRank": 9,
+      "depthRank": 8,
       "evidence": {
         "all": "currentSeasonRoutes",
         "appearance": "fplAvailability"
