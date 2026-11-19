@@ -1,6 +1,6 @@
 {
   "schemaVersion": 7,
-  "generatedAt": "2026-11-19T18:09:46.539604Z",
+  "generatedAt": "2026-11-19T19:00:29.469949Z",
   "recordSeason": "2026-27",
   "events": [
     11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
@@ -186,7 +186,7 @@
       }
     ],
     "sourceReference": "FPL rules page, Transfers section",
-    "dataAvailableAt": "2026-11-19T18:09:46.539604Z",
+    "dataAvailableAt": "2026-11-19T19:00:29.469949Z",
     "playableStartRate": 0.35,
     "transferMarginPoints": 0.5
   },
@@ -16798,8 +16798,8 @@
       "club": "COV",
       "teamId": 7,
       "priceTenths": 48,
-      "availabilityStatus": "a",
-      "chanceOfPlaying": null,
+      "availabilityStatus": "d",
+      "chanceOfPlaying": 75,
       "basePoints": 1.902,
       "routes": {
         "appearance": 1.694,
@@ -18599,8 +18599,8 @@
       "club": "COV",
       "teamId": 7,
       "priceTenths": 53,
-      "availabilityStatus": "a",
-      "chanceOfPlaying": 100,
+      "availabilityStatus": "d",
+      "chanceOfPlaying": 75,
       "basePoints": 0.997,
       "routes": {
         "appearance": 0.893,
