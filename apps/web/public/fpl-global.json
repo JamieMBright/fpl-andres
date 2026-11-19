@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-11-19T13:22:24.604984Z",
+  "generatedAt": "2026-11-19T15:57:58.266281Z",
   "bootstrap": {
     "elements": [
       {
@@ -3031,7 +3031,7 @@
         "minutes": 824,
         "total_points": 30,
         "bonus": 3,
-        "selected_by_percent": "7.8",
+        "selected_by_percent": "7.7",
         "expected_goals": "4.12",
         "expected_assists": "1.26",
         "expected_goal_involvements": "5.38",
@@ -3967,7 +3967,7 @@
         "minutes": 887,
         "total_points": 70,
         "bonus": 5,
-        "selected_by_percent": "9.9",
+        "selected_by_percent": "10.0",
         "expected_goals": "1.25",
         "expected_assists": "0.22",
         "expected_goal_involvements": "1.47",
@@ -4825,7 +4825,7 @@
         "minutes": 521,
         "total_points": 47,
         "bonus": 9,
-        "selected_by_percent": "31.0",
+        "selected_by_percent": "30.9",
         "expected_goals": "3.05",
         "expected_assists": "0.31",
         "expected_goal_involvements": "3.36",
@@ -10571,7 +10571,7 @@
         "minutes": 810,
         "total_points": 58,
         "bonus": 7,
-        "selected_by_percent": "11.2",
+        "selected_by_percent": "11.3",
         "expected_goals": "1.76",
         "expected_assists": "0.82",
         "expected_goal_involvements": "2.58",
@@ -10592,7 +10592,7 @@
         "element_type": 2,
         "team": 13,
         "now_cost": 45,
-        "status": "d",
+        "status": "a",
         "squad_number": null,
         "minutes": 631,
         "total_points": 28,
@@ -10696,7 +10696,7 @@
         "element_type": 3,
         "team": 13,
         "now_cost": 60,
-        "status": "d",
+        "status": "a",
         "squad_number": null,
         "minutes": 676,
         "total_points": 33,
@@ -12417,7 +12417,7 @@
         "minutes": 700,
         "total_points": 44,
         "bonus": 6,
-        "selected_by_percent": "21.9",
+        "selected_by_percent": "21.8",
         "expected_goals": "0.80",
         "expected_assists": "0.99",
         "expected_goal_involvements": "1.79",
@@ -13327,7 +13327,7 @@
         "minutes": 855,
         "total_points": 16,
         "bonus": 0,
-        "selected_by_percent": "5.0",
+        "selected_by_percent": "4.9",
         "expected_goals": "0.32",
         "expected_assists": "0.52",
         "expected_goal_involvements": "0.84",
@@ -15246,7 +15246,7 @@
         "element_type": 3,
         "team": 18,
         "now_cost": 57,
-        "status": "a",
+        "status": "i",
         "squad_number": null,
         "minutes": 45,
         "total_points": 4,
@@ -15615,7 +15615,7 @@
         "minutes": 900,
         "total_points": 57,
         "bonus": 6,
-        "selected_by_percent": "15.4",
+        "selected_by_percent": "15.5",
         "expected_goals": "1.70",
         "expected_assists": "0.72",
         "expected_goal_involvements": "2.42",
@@ -17092,7 +17092,7 @@
         "element_type": 3,
         "team": 20,
         "now_cost": 53,
-        "status": "d",
+        "status": "i",
         "squad_number": null,
         "minutes": 813,
         "total_points": 33,
@@ -17300,7 +17300,7 @@
         "element_type": 4,
         "team": 20,
         "now_cost": 57,
-        "status": "d",
+        "status": "i",
         "squad_number": null,
         "minutes": 619,
         "total_points": 32,
@@ -17720,7 +17720,7 @@
       {
         "id": 21,
         "finished": false,
-        "deadline_time": "2027-01-16T13:30:00Z"
+        "deadline_time": "2027-01-16T11:00:00Z"
       },
       {
         "id": 22,
@@ -17730,7 +17730,7 @@
       {
         "id": 23,
         "finished": false,
-        "deadline_time": "2027-01-30T13:30:00Z"
+        "deadline_time": "2027-01-30T11:00:00Z"
       },
       {
         "id": 24,
@@ -18812,28 +18812,13 @@
     },
     {
       "event": 21,
-      "team_h": 2,
-      "team_a": 16
-    },
-    {
-      "event": 21,
-      "team_h": 3,
-      "team_a": 12
-    },
-    {
-      "event": 21,
-      "team_h": 4,
-      "team_a": 5
+      "team_h": 7,
+      "team_a": 9
     },
     {
       "event": 21,
       "team_h": 6,
       "team_a": 20
-    },
-    {
-      "event": 21,
-      "team_h": 7,
-      "team_a": 9
     },
     {
       "event": 21,
@@ -18857,8 +18842,33 @@
     },
     {
       "event": 21,
+      "team_h": 2,
+      "team_a": 16
+    },
+    {
+      "event": 21,
+      "team_h": 3,
+      "team_a": 12
+    },
+    {
+      "event": 21,
       "team_h": 19,
       "team_a": 13
+    },
+    {
+      "event": 21,
+      "team_h": 4,
+      "team_a": 5
+    },
+    {
+      "event": 22,
+      "team_h": 10,
+      "team_a": 2
+    },
+    {
+      "event": 22,
+      "team_h": 12,
+      "team_a": 11
     },
     {
       "event": 22,
@@ -18882,26 +18892,6 @@
     },
     {
       "event": 22,
-      "team_h": 10,
-      "team_a": 2
-    },
-    {
-      "event": 22,
-      "team_h": 12,
-      "team_a": 11
-    },
-    {
-      "event": 22,
-      "team_h": 13,
-      "team_a": 6
-    },
-    {
-      "event": 22,
-      "team_h": 16,
-      "team_a": 14
-    },
-    {
-      "event": 22,
       "team_h": 18,
       "team_a": 3
     },
@@ -18911,24 +18901,39 @@
       "team_a": 7
     },
     {
+      "event": 22,
+      "team_h": 16,
+      "team_a": 14
+    },
+    {
+      "event": 22,
+      "team_h": 13,
+      "team_a": 6
+    },
+    {
+      "event": 23,
+      "team_h": 14,
+      "team_a": 9
+    },
+    {
       "event": 23,
       "team_h": 2,
       "team_a": 12
     },
     {
       "event": 23,
-      "team_h": 3,
-      "team_a": 10
-    },
-    {
-      "event": 23,
-      "team_h": 4,
-      "team_a": 16
+      "team_h": 17,
+      "team_a": 5
     },
     {
       "event": 23,
       "team_h": 6,
       "team_a": 18
+    },
+    {
+      "event": 23,
+      "team_h": 3,
+      "team_a": 10
     },
     {
       "event": 23,
@@ -18942,8 +18947,8 @@
     },
     {
       "event": 23,
-      "team_h": 14,
-      "team_a": 9
+      "team_h": 19,
+      "team_a": 20
     },
     {
       "event": 23,
@@ -18952,13 +18957,8 @@
     },
     {
       "event": 23,
-      "team_h": 17,
-      "team_a": 5
-    },
-    {
-      "event": 23,
-      "team_h": 19,
-      "team_a": 20
+      "team_h": 4,
+      "team_a": 16
     },
     {
       "event": 24,
