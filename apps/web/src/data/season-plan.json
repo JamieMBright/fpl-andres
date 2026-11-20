@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "modelVersion": "8.23",
-  "generatedAt": "2026-11-19T19:08:15.364779Z",
+  "generatedAt": "2026-11-20T01:46:57.666375Z",
   "season": "2026-27",
   "recordSeason": "2026-27",
   "basis": "opening squad, fixture-adjusted projections, solved in overlapping windows and committed 28 gameweeks deep",
@@ -45,7 +45,7 @@
       "half": "first",
       "gain": 2.91,
       "ceiling": 3.22,
-      "note": "Rebuilding in gameweek 14 is worth 2.9 over the season, because the weeks before it no longer have to leave a squad that still works afterwards; the legal fifteen changes 3 players between xPts3 and xPts5, which is under the 20 a chip wants, but an unplayed chip expires at nothing"
+      "note": "Rebuilding in gameweek 14 is worth 2.9 over the season, because the weeks before it no longer have to leave a squad that still works afterwards; the legal fifteen changes 4 players between xPts3 and xPts5, which is under the 20 a chip wants, but an unplayed chip expires at nothing"
     },
     {
       "event": 20,
@@ -307,7 +307,7 @@
       "name": "N.Jackson",
       "position": "FWD",
       "club": "AVL",
-      "priceTenths": 71,
+      "priceTenths": 72,
       "squadNumber": null
     },
     "586309": {
@@ -646,7 +646,7 @@
       "transferCostPoints": 0,
       "projectedPoints": 78.02,
       "netExpectedPoints": 78.02,
-      "bankAfterTenths": 37,
+      "bankAfterTenths": 36,
       "chip": "Wildcard"
     },
     {
@@ -725,7 +725,7 @@
       "transferCostPoints": 0,
       "projectedPoints": 74.07,
       "netExpectedPoints": 74.07,
-      "bankAfterTenths": 37
+      "bankAfterTenths": 36
     },
     {
       "event": 16,
@@ -1201,7 +1201,7 @@
       "transferCostPoints": 0,
       "projectedPoints": 74.87,
       "netExpectedPoints": 74.87,
-      "bankAfterTenths": 43
+      "bankAfterTenths": 42
     },
     {
       "event": 22,
@@ -1279,7 +1279,7 @@
       "transferCostPoints": 0,
       "projectedPoints": 77.44,
       "netExpectedPoints": 77.44,
-      "bankAfterTenths": 43
+      "bankAfterTenths": 42
     },
     {
       "event": 23,
@@ -1357,7 +1357,7 @@
       "transferCostPoints": 0,
       "projectedPoints": 73.28,
       "netExpectedPoints": 73.28,
-      "bankAfterTenths": 60
+      "bankAfterTenths": 59
     },
     {
       "event": 24,
@@ -1437,7 +1437,7 @@
       "transferCostPoints": 0,
       "projectedPoints": 75.54,
       "netExpectedPoints": 75.54,
-      "bankAfterTenths": 3
+      "bankAfterTenths": 2
     },
     {
       "event": 25,
@@ -1517,7 +1517,7 @@
       "transferCostPoints": 0,
       "projectedPoints": 73.27,
       "netExpectedPoints": 73.27,
-      "bankAfterTenths": 3
+      "bankAfterTenths": 2
     },
     {
       "event": 26,
@@ -1597,7 +1597,7 @@
       "transferCostPoints": 0,
       "projectedPoints": 84.23,
       "netExpectedPoints": 84.23,
-      "bankAfterTenths": 1
+      "bankAfterTenths": 0
     },
     {
       "event": 27,
@@ -1677,7 +1677,7 @@
       "transferCostPoints": 0,
       "projectedPoints": 75.19,
       "netExpectedPoints": 75.19,
-      "bankAfterTenths": 1
+      "bankAfterTenths": 0
     },
     {
       "event": 28,
@@ -2153,7 +2153,7 @@
       "transferCostPoints": 0,
       "projectedPoints": 71.54,
       "netExpectedPoints": 71.54,
-      "bankAfterTenths": 2
+      "bankAfterTenths": 1
     },
     {
       "event": 34,
@@ -2233,7 +2233,7 @@
       "transferCostPoints": 0,
       "projectedPoints": 78.65,
       "netExpectedPoints": 78.65,
-      "bankAfterTenths": 2
+      "bankAfterTenths": 1
     },
     {
       "event": 35,
@@ -2313,7 +2313,7 @@
       "transferCostPoints": 0,
       "projectedPoints": 79.93,
       "netExpectedPoints": 79.93,
-      "bankAfterTenths": 2
+      "bankAfterTenths": 1
     },
     {
       "event": 36,
@@ -2393,7 +2393,7 @@
       "transferCostPoints": 0,
       "projectedPoints": 79.31,
       "netExpectedPoints": 79.31,
-      "bankAfterTenths": 2
+      "bankAfterTenths": 1
     },
     {
       "event": 37,
@@ -2473,7 +2473,7 @@
       "transferCostPoints": 0,
       "projectedPoints": 78.71,
       "netExpectedPoints": 78.71,
-      "bankAfterTenths": 2
+      "bankAfterTenths": 1
     },
     {
       "event": 38,
@@ -2553,7 +2553,7 @@
       "transferCostPoints": 0,
       "projectedPoints": 60.7,
       "netExpectedPoints": 60.7,
-      "bankAfterTenths": 14
+      "bankAfterTenths": 13
     }
   ]
 }
