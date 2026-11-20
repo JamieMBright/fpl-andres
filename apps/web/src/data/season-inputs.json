@@ -1,6 +1,6 @@
 {
   "schemaVersion": 7,
-  "generatedAt": "2026-11-20T10:07:00.548103Z",
+  "generatedAt": "2026-11-20T10:49:52.282621Z",
   "recordSeason": "2026-27",
   "events": [
     11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
@@ -186,7 +186,7 @@
       }
     ],
     "sourceReference": "FPL rules page, Transfers section",
-    "dataAvailableAt": "2026-11-20T10:07:00.548103Z",
+    "dataAvailableAt": "2026-11-20T10:49:52.282621Z",
     "playableStartRate": 0.35,
     "transferMarginPoints": 0.5
   },
@@ -19080,45 +19080,6 @@
       }
     },
     {
-      "id": 19,
-      "code": 481655,
-      "name": "Zubimendi",
-      "position": "MID",
-      "positionId": 3,
-      "club": "ARS",
-      "teamId": 1,
-      "priceTenths": 52,
-      "availabilityStatus": "d",
-      "chanceOfPlaying": 75,
-      "basePoints": 0.702,
-      "routes": {
-        "appearance": 0.699,
-        "attacking": 0.001,
-        "bonus": 0.001,
-        "defensiveContribution": 0.001
-      },
-      "startRate": 0.001,
-      "startEvidence": {
-        "sourceStartRate": 0.038,
-        "finalStartRate": 0.001,
-        "observedAppearances": 10,
-        "recentStarts": 0,
-        "recentMatches": 10,
-        "recentMinutes": 100,
-        "appearanceSource": "currentSeasonLineup",
-        "lineupAdjustment": -0.037,
-        "marketAdjustment": 0.0,
-        "availabilityAdjustment": 0.0
-      },
-      "squadNumber": null,
-      "rated": true,
-      "depthRank": 15,
-      "evidence": {
-        "all": "currentSeasonRoutes",
-        "appearance": "currentSeasonLineup"
-      }
-    },
-    {
       "id": 72,
       "code": 496208,
       "name": "Gannon-Doak",
@@ -22209,6 +22170,40 @@
       "squadNumber": null,
       "rated": true,
       "depthRank": 5,
+      "evidence": {
+        "all": "currentSeasonRoutes",
+        "appearance": "fplAvailability"
+      }
+    },
+    {
+      "id": 19,
+      "code": 481655,
+      "name": "Zubimendi",
+      "position": "MID",
+      "positionId": 3,
+      "club": "ARS",
+      "teamId": 1,
+      "priceTenths": 52,
+      "availabilityStatus": "i",
+      "chanceOfPlaying": 0,
+      "basePoints": 0,
+      "routes": {},
+      "startRate": 0.0,
+      "startEvidence": {
+        "sourceStartRate": 0.038,
+        "finalStartRate": 0.0,
+        "observedAppearances": 10,
+        "recentStarts": 0,
+        "recentMatches": 10,
+        "recentMinutes": 100,
+        "appearanceSource": "fplAvailability",
+        "lineupAdjustment": -0.037,
+        "marketAdjustment": -0.0,
+        "availabilityAdjustment": -0.001
+      },
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 15,
       "evidence": {
         "all": "currentSeasonRoutes",
         "appearance": "fplAvailability"
