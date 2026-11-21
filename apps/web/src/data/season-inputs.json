@@ -1,6 +1,6 @@
 {
   "schemaVersion": 7,
-  "generatedAt": "2026-11-21T16:24:25.235535Z",
+  "generatedAt": "2026-11-21T16:44:06.612485Z",
   "recordSeason": "2026-27",
   "events": [
     12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30,
@@ -47,8 +47,8 @@
     "playerMarkets": {
       "source": "the-odds-api",
       "level": "observed",
-      "updatedAt": "2026-11-21T16:13:53.563445+00:00",
-      "contentHash": "sha256:4be117c970a3637bf7c7671c77d29ec43caad0225af42f65da6c7a9ab8fc0ffe"
+      "updatedAt": "2026-11-21T16:42:53.804643+00:00",
+      "contentHash": "sha256:21d94dbc8698ce9f7f3ffea795136b83c11a46ccc281e7e16b9aac320df2bb0d"
     },
     "fixtureMarkets": {
       "source": "football-data.co.uk",
@@ -185,7 +185,7 @@
       }
     ],
     "sourceReference": "FPL rules page, Transfers section",
-    "dataAvailableAt": "2026-11-21T16:24:25.235535Z",
+    "dataAvailableAt": "2026-11-21T16:44:06.612485Z",
     "playableStartRate": 0.35,
     "transferMarginPoints": 0.5
   },
@@ -14208,8 +14208,8 @@
       "club": "TOT",
       "teamId": 19,
       "priceTenths": 53,
-      "availabilityStatus": "a",
-      "chanceOfPlaying": 100,
+      "availabilityStatus": "d",
+      "chanceOfPlaying": 75,
       "basePoints": 3.396,
       "routes": {
         "appearance": 1.995,
@@ -17451,8 +17451,8 @@
       "club": "CHE",
       "teamId": 6,
       "priceTenths": 53,
-      "availabilityStatus": "a",
-      "chanceOfPlaying": 100,
+      "availabilityStatus": "d",
+      "chanceOfPlaying": 75,
       "basePoints": 1.407,
       "routes": {
         "appearance": 1.1,
@@ -25405,8 +25405,8 @@
       "club": "COV",
       "teamId": 7,
       "priceTenths": 54,
-      "availabilityStatus": "a",
-      "chanceOfPlaying": 100,
+      "availabilityStatus": "d",
+      "chanceOfPlaying": 75,
       "basePoints": 1.62,
       "routes": {
         "appearance": 1.202,
