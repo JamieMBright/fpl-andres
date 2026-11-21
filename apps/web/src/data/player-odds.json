@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "season": "2026-27",
-  "fetchedAt": "2026-11-21T09:46:37.166791+00:00",
+  "fetchedAt": "2026-11-21T14:53:03.918590+00:00",
   "source": "the-odds-api",
   "markets": [
     "player_goal_scorer_anytime",
@@ -28,18 +28,18 @@
     "spentThisRun": 0
   },
   "coverage": {
-    "fixturesListed": 20,
+    "fixturesListed": 19,
     "fixturesVisitedThisRun": 1,
     "fixturesWithQuotes": 0
   },
   "nameMappingGaps": [],
   "fixtures": [
     {
-      "event_id": "6ef39b0fd8839f6e93a3de32523e9807",
-      "home_team": "Manchester City",
-      "away_team": "Fulham",
-      "home_short": "MCI",
-      "away_short": "FUL",
+      "event_id": "b8d6ab6ecc8bb356c6335d3f417d0ecf",
+      "home_team": "Aston Villa",
+      "away_team": "Sunderland",
+      "home_short": "AVL",
+      "away_short": "SUN",
       "status": "parse-error",
       "books": 0,
       "outcomes": null,
@@ -58,35 +58,8 @@
       "player_rows_matched": 0,
       "unmatched_names": [],
       "error": "HTTPStatusError",
-      "kickoff": "2026-11-21T12:30:00+00:00",
-      "visited_at": "2026-11-21T09:46:37.166791+00:00"
-    },
-    {
-      "event_id": "b8d6ab6ecc8bb356c6335d3f417d0ecf",
-      "home_team": "Aston Villa",
-      "away_team": "Sunderland",
-      "home_short": "AVL",
-      "away_short": "SUN",
-      "status": "no-bookmaker",
-      "books": 0,
-      "outcomes": 0,
-      "offered_markets": [],
-      "missing_markets": [
-        "player_assists",
-        "player_first_goal_scorer",
-        "player_goal_scorer_anytime",
-        "player_last_goal_scorer",
-        "player_shots",
-        "player_shots_on_target",
-        "player_to_receive_card",
-        "player_to_receive_red_card"
-      ],
-      "player_rows_parsed": 0,
-      "player_rows_matched": 0,
-      "unmatched_names": [],
-      "error": null,
       "kickoff": "2026-11-21T15:00:00+00:00",
-      "visited_at": "2026-11-06T16:41:49.706559+00:00"
+      "visited_at": "2026-11-21T14:53:03.918590+00:00"
     },
     {
       "event_id": "cf68da11fa604c13fc9ef3219fad0314",
