@@ -20,7 +20,7 @@ dependencies = [
 # test without a scraper, and because this pulls a native TLS library that has
 # no business in the CI image.
 scrape = [
-    "soccerdata>=1.9,<2",
+    "soccerdata>=1.9,<2027",
 ]
 dev = [
     "hypothesis>=6.130,<7",
