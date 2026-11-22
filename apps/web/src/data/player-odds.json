@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "season": "2026-27",
-  "fetchedAt": "2026-11-22T14:49:19.278399+00:00",
+  "fetchedAt": "2026-11-22T16:17:06.790661+00:00",
   "source": "the-odds-api",
   "markets": [
     "player_goal_scorer_anytime",
@@ -28,18 +28,18 @@
     "spentThisRun": 0
   },
   "coverage": {
-    "fixturesListed": 22,
+    "fixturesListed": 21,
     "fixturesVisitedThisRun": 1,
     "fixturesWithQuotes": 0
   },
   "nameMappingGaps": [],
   "fixtures": [
     {
-      "event_id": "230a356290e1a358e9dd2f7fa23de3b9",
-      "home_team": "Hull City",
-      "away_team": "Brighton and Hove Albion",
-      "home_short": "HUL",
-      "away_short": "BHA",
+      "event_id": "4c08b213ed416e8f41e038f42a42b962",
+      "home_team": "Liverpool",
+      "away_team": "Manchester United",
+      "home_short": "LIV",
+      "away_short": "MUN",
       "status": "parse-error",
       "books": 0,
       "outcomes": null,
@@ -58,35 +58,8 @@
       "player_rows_matched": 0,
       "unmatched_names": [],
       "error": "HTTPStatusError",
-      "kickoff": "2026-11-22T14:00:00+00:00",
-      "visited_at": "2026-11-22T14:49:19.278399+00:00"
-    },
-    {
-      "event_id": "4c08b213ed416e8f41e038f42a42b962",
-      "home_team": "Liverpool",
-      "away_team": "Manchester United",
-      "home_short": "LIV",
-      "away_short": "MUN",
-      "status": "no-bookmaker",
-      "books": 0,
-      "outcomes": 0,
-      "offered_markets": [],
-      "missing_markets": [
-        "player_assists",
-        "player_first_goal_scorer",
-        "player_goal_scorer_anytime",
-        "player_last_goal_scorer",
-        "player_shots",
-        "player_shots_on_target",
-        "player_to_receive_card",
-        "player_to_receive_red_card"
-      ],
-      "player_rows_parsed": 0,
-      "player_rows_matched": 0,
-      "unmatched_names": [],
-      "error": null,
       "kickoff": "2026-11-22T16:30:00+00:00",
-      "visited_at": "2026-11-06T16:41:49.706559+00:00"
+      "visited_at": "2026-11-22T16:17:06.790661+00:00"
     },
     {
       "event_id": "aa77e2a08a1a003b0bbb62a5f8e8ae42",
