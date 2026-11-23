@@ -2,9 +2,9 @@
   "schemaVersion": 1,
   "season": "2026-27",
   "event": 11,
-  "capturedAt": "2026-11-23T02:42:25.707134Z",
+  "capturedAt": "2026-11-23T14:32:29.225952Z",
   "source": "https://fantasy.premierleague.com/api/event/11/live/",
-  "sourceHash": "sha256:20ca284467b5bd5c8c3a2911ffaed6498078c991ab50b4a95c1a71d1a2c337e5",
+  "sourceHash": "sha256:e712113b7b1cafd7746aa4415ce8ced1294c542f98cb725ee575faaa5dc7bf15",
   "roundComplete": false,
   "elements": [
     {
@@ -15056,9 +15056,9 @@
         "penalties_missed": 0,
         "yellow_cards": 0,
         "red_cards": 0,
-        "saves": 8,
+        "saves": 7,
         "bonus": 0,
-        "bps": 25,
+        "bps": 22,
         "influence": "0.0",
         "creativity": "0.0",
         "threat": "0.0",
@@ -15095,7 +15095,7 @@
             {
               "identifier": "saves",
               "points": 2,
-              "value": 8,
+              "value": 7,
               "points_modification": 0
             }
           ]
@@ -25018,7 +25018,7 @@
         "red_cards": 0,
         "saves": 0,
         "bonus": 0,
-        "bps": 34,
+        "bps": 33,
         "influence": "0.0",
         "creativity": "0.0",
         "threat": "0.0",
@@ -25077,7 +25077,7 @@
         "yellow_cards": 0,
         "red_cards": 0,
         "saves": 0,
-        "bonus": 3,
+        "bonus": 2,
         "bps": 44,
         "influence": "0.0",
         "creativity": "0.0",
@@ -25092,7 +25092,7 @@
         "expected_assists": "0.29",
         "expected_goal_involvements": "0.29",
         "expected_goals_conceded": "0.47",
-        "total_points": 12,
+        "total_points": 11,
         "in_dreamteam": true,
         "played": true
       },
@@ -25120,8 +25120,8 @@
             },
             {
               "identifier": "bonus",
-              "points": 3,
-              "value": 3,
+              "points": 2,
+              "value": 2,
               "points_modification": 0
             }
           ]
@@ -30279,8 +30279,8 @@
         "yellow_cards": 1,
         "red_cards": 0,
         "saves": 0,
-        "bonus": 2,
-        "bps": 43,
+        "bonus": 3,
+        "bps": 45,
         "influence": "0.0",
         "creativity": "0.0",
         "threat": "0.0",
@@ -30290,11 +30290,11 @@
         "tackles": 1,
         "defensive_contribution": 5,
         "starts": 1,
-        "expected_goals": "0.84",
+        "expected_goals": "0.81",
         "expected_assists": "0.02",
-        "expected_goal_involvements": "0.86",
+        "expected_goal_involvements": "0.83",
         "expected_goals_conceded": "0.34",
-        "total_points": 12,
+        "total_points": 13,
         "in_dreamteam": true,
         "played": true
       },
@@ -30334,8 +30334,8 @@
             },
             {
               "identifier": "bonus",
-              "points": 2,
-              "value": 2,
+              "points": 3,
+              "value": 3,
               "points_modification": 0
             }
           ]
