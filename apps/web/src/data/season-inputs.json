@@ -1,6 +1,6 @@
 {
   "schemaVersion": 7,
-  "generatedAt": "2026-11-24T13:11:41.303731Z",
+  "generatedAt": "2026-11-24T14:50:32.784051Z",
   "recordSeason": "2026-27",
   "events": [
     12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30,
@@ -185,7 +185,7 @@
       }
     ],
     "sourceReference": "FPL rules page, Transfers section",
-    "dataAvailableAt": "2026-11-24T13:11:41.303731Z",
+    "dataAvailableAt": "2026-11-24T14:50:32.784051Z",
     "playableStartRate": 0.35,
     "transferMarginPoints": 0.5
   },
@@ -8207,6 +8207,46 @@
       }
     },
     {
+      "id": 423,
+      "code": 106760,
+      "name": "Shaw",
+      "position": "DEF",
+      "positionId": 2,
+      "club": "MUN",
+      "teamId": 16,
+      "priceTenths": 42,
+      "availabilityStatus": "d",
+      "chanceOfPlaying": 75,
+      "basePoints": 1.067,
+      "routes": {
+        "appearance": 0.889,
+        "attacking": 0.267,
+        "conceding": -0.089,
+        "yellowCards": -0.178,
+        "defensiveContribution": 0.178
+      },
+      "startRate": 0.444,
+      "startEvidence": {
+        "sourceStartRate": 0.0,
+        "finalStartRate": 0.444,
+        "observedAppearances": 11,
+        "recentStarts": 5,
+        "recentMatches": 11,
+        "recentMinutes": 425,
+        "appearanceSource": "currentSeasonLineup",
+        "lineupAdjustment": 0.444,
+        "marketAdjustment": 0.0,
+        "availabilityAdjustment": 0.0
+      },
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 7,
+      "evidence": {
+        "all": "currentSeasonRoutes",
+        "appearance": "currentSeasonLineup"
+      }
+    },
+    {
       "id": 153,
       "code": 220362,
       "name": "Disasi",
@@ -12280,40 +12320,6 @@
       "squadNumber": null,
       "rated": true,
       "depthRank": 2,
-      "evidence": {
-        "all": "currentSeasonRoutes",
-        "appearance": "fplAvailability"
-      }
-    },
-    {
-      "id": 423,
-      "code": 106760,
-      "name": "Shaw",
-      "position": "DEF",
-      "positionId": 2,
-      "club": "MUN",
-      "teamId": 16,
-      "priceTenths": 42,
-      "availabilityStatus": "i",
-      "chanceOfPlaying": 0,
-      "basePoints": 0,
-      "routes": {},
-      "startRate": 0.0,
-      "startEvidence": {
-        "sourceStartRate": 0.0,
-        "finalStartRate": 0.0,
-        "observedAppearances": 11,
-        "recentStarts": 5,
-        "recentMatches": 11,
-        "recentMinutes": 425,
-        "appearanceSource": "fplAvailability",
-        "lineupAdjustment": 0.444,
-        "marketAdjustment": 0.0,
-        "availabilityAdjustment": -0.444
-      },
-      "squadNumber": null,
-      "rated": true,
-      "depthRank": 7,
       "evidence": {
         "all": "currentSeasonRoutes",
         "appearance": "fplAvailability"
