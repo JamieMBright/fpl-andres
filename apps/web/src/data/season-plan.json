@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "modelVersion": "8.23",
-  "generatedAt": "2026-11-23T21:09:11.233691Z",
+  "generatedAt": "2026-11-24T02:54:38.782183Z",
   "season": "2026-27",
   "recordSeason": "2026-27",
   "basis": "opening squad, fixture-adjusted projections, solved in overlapping windows and committed 27 gameweeks deep",
@@ -37,7 +37,7 @@
       "half": "first",
       "gain": 0.0,
       "ceiling": 5.3,
-      "note": "Re-planning the season around a rebuild here, with the weeks before it freed from having to stay viable afterwards, still scored no more than one transfer a week. Nothing in this projection breaks, so there is nothing for a Wildcard to repair."
+      "note": "No week in this half rebuilds 5 or more of the fifteen. A rebuild smaller than that is a transfer, and the free transfer makes it without spending the chip."
     },
     {
       "event": 18,
@@ -69,7 +69,7 @@
       "half": "second",
       "gain": 0.0,
       "ceiling": 6.63,
-      "note": "Re-planning the season around a rebuild here, with the weeks before it freed from having to stay viable afterwards, still scored no more than one transfer a week. Nothing in this projection breaks, so there is nothing for a Wildcard to repair."
+      "note": "No week in this half rebuilds 5 or more of the fifteen. A rebuild smaller than that is a transfer, and the free transfer makes it without spending the chip."
     },
     {
       "event": 33,
@@ -167,7 +167,7 @@
       "name": "Tavernier",
       "position": "MID",
       "club": "BOU",
-      "priceTenths": 67,
+      "priceTenths": 68,
       "squadNumber": null
     },
     "201666": {
@@ -336,13 +336,6 @@
       "position": "GKP",
       "club": "BHA",
       "priceTenths": 47,
-      "squadNumber": null
-    },
-    "494595": {
-      "name": "Wirtz",
-      "position": "MID",
-      "club": "LIV",
-      "priceTenths": 74,
       "squadNumber": null
     },
     "513418": {
@@ -1323,7 +1316,7 @@
       "transferCostPoints": 0,
       "projectedPoints": 72.19,
       "netExpectedPoints": 72.19,
-      "bankAfterTenths": 0
+      "bankAfterTenths": 1
     },
     {
       "event": 24,
@@ -1405,7 +1398,7 @@
       "transferCostPoints": 0,
       "projectedPoints": 74.59,
       "netExpectedPoints": 74.59,
-      "bankAfterTenths": 16
+      "bankAfterTenths": 17
     },
     {
       "event": 25,
@@ -1889,7 +1882,7 @@
       "transferCostPoints": 0,
       "projectedPoints": 80.5,
       "netExpectedPoints": 80.5,
-      "bankAfterTenths": 9
+      "bankAfterTenths": 10
     },
     {
       "event": 31,
@@ -2045,7 +2038,7 @@
       "transferCostPoints": 0,
       "projectedPoints": 77.73,
       "netExpectedPoints": 77.73,
-      "bankAfterTenths": 17
+      "bankAfterTenths": 18
     },
     {
       "event": 33,
@@ -2217,7 +2210,7 @@
       "transferCostPoints": 0,
       "projectedPoints": 76.54,
       "netExpectedPoints": 76.54,
-      "bankAfterTenths": 1
+      "bankAfterTenths": 2
     },
     {
       "event": 35,
