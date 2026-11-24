@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-11-23T20:18:10.428017+00:00",
+  "generatedAt": "2026-11-24T02:54:22.916642+00:00",
   "season": "2026-27",
   "source": "football-data.co.uk",
   "priceTiming": "pre-match",
@@ -8,7 +8,7 @@
   "provenance": [
     {
       "url": "https://www.football-data.co.uk/mmz4281/2627/E0.csv",
-      "contentHash": "sha256:d5da6601831a3c4e78a443d17771acf9cc264ada527a56f40832c23588bfffa5"
+      "contentHash": "sha256:21d2b96792bd0bc8a324123ae68eaf60b981c5a016c538d086e8d8a5cbedd95a"
     },
     {
       "url": "https://www.football-data.co.uk/fixtures.csv",
@@ -1213,6 +1213,17 @@
       "homeCleanSheet": 0.2806,
       "awayCleanSheet": 0.1252,
       "drawResidual": 0.0123,
+      "priceSource": "average"
+    },
+    {
+      "kickoff": "2026-11-23T20:00:00+00:00",
+      "home": "BRE",
+      "away": "EVE",
+      "homeExpectedGoals": 1.6254,
+      "awayExpectedGoals": 1.2507,
+      "homeCleanSheet": 0.2863,
+      "awayCleanSheet": 0.1968,
+      "drawResidual": 0.0208,
       "priceSource": "average"
     },
     {
