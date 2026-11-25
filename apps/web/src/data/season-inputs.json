@@ -1,6 +1,6 @@
 {
   "schemaVersion": 7,
-  "generatedAt": "2026-11-25T17:44:29.778748Z",
+  "generatedAt": "2026-11-25T18:42:31.643031Z",
   "recordSeason": "2026-27",
   "events": [
     12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30,
@@ -53,8 +53,8 @@
     "fixtureMarkets": {
       "source": "football-data.co.uk",
       "level": "observed",
-      "updatedAt": "2026-11-25T17:30:28.573792+00:00",
-      "contentHash": "sha256:c7bab243208911195628b532189118e0c58d413f9724c70a65d70d425deaca7c"
+      "updatedAt": "2026-11-25T18:40:56.652661+00:00",
+      "contentHash": "sha256:8cb0aed725eb2324115ae4faef58d5a695717eb27b581369b2b49e9eb0b5631a"
     },
     "understat": {
       "source": "understat",
@@ -185,7 +185,7 @@
       }
     ],
     "sourceReference": "FPL rules page, Transfers section",
-    "dataAvailableAt": "2026-11-25T17:44:29.778748Z",
+    "dataAvailableAt": "2026-11-25T18:42:31.643031Z",
     "playableStartRate": 0.35,
     "transferMarginPoints": 0.5
   },
@@ -815,7 +815,7 @@
   },
   "fixtureEvidence": {
     "source": "football-data.co.uk",
-    "updatedAt": "2026-11-25T17:30:28.573792+00:00",
+    "updatedAt": "2026-11-25T18:40:56.652661+00:00",
     "level": "observed",
     "byClub": {}
   },
@@ -20115,6 +20115,40 @@
       }
     },
     {
+      "id": 482,
+      "code": 209046,
+      "name": "Hudson-Odoi",
+      "position": "MID",
+      "positionId": 3,
+      "club": "NFO",
+      "teamId": 18,
+      "priceTenths": 57,
+      "availabilityStatus": "a",
+      "chanceOfPlaying": 100,
+      "basePoints": 0.356,
+      "routes": { "appearance": 0.356 },
+      "startRate": 0.0,
+      "startEvidence": {
+        "sourceStartRate": 0.0,
+        "finalStartRate": 0.0,
+        "observedAppearances": 11,
+        "recentStarts": 0,
+        "recentMatches": 11,
+        "recentMinutes": 45,
+        "appearanceSource": "currentSeasonLineup",
+        "lineupAdjustment": 0.0,
+        "marketAdjustment": 0.0,
+        "availabilityAdjustment": 0.0
+      },
+      "squadNumber": null,
+      "rated": true,
+      "depthRank": 2,
+      "evidence": {
+        "all": "currentSeasonRoutes",
+        "appearance": "currentSeasonLineup"
+      }
+    },
+    {
       "id": 323,
       "code": 461587,
       "name": "McAteer",
@@ -24105,40 +24139,6 @@
       "squadNumber": null,
       "rated": true,
       "depthRank": 7,
-      "evidence": {
-        "all": "currentSeasonRoutes",
-        "appearance": "fplAvailability"
-      }
-    },
-    {
-      "id": 482,
-      "code": 209046,
-      "name": "Hudson-Odoi",
-      "position": "MID",
-      "positionId": 3,
-      "club": "NFO",
-      "teamId": 18,
-      "priceTenths": 57,
-      "availabilityStatus": "i",
-      "chanceOfPlaying": 0,
-      "basePoints": 0,
-      "routes": {},
-      "startRate": 0.0,
-      "startEvidence": {
-        "sourceStartRate": 0.0,
-        "finalStartRate": 0.0,
-        "observedAppearances": 11,
-        "recentStarts": 0,
-        "recentMatches": 11,
-        "recentMinutes": 45,
-        "appearanceSource": "fplAvailability",
-        "lineupAdjustment": 0.0,
-        "marketAdjustment": 0.0,
-        "availabilityAdjustment": -0.0
-      },
-      "squadNumber": null,
-      "rated": true,
-      "depthRank": 2,
       "evidence": {
         "all": "currentSeasonRoutes",
         "appearance": "fplAvailability"
