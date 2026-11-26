@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "modelVersion": "8.23",
-  "generatedAt": "2026-11-26T04:19:54.255330Z",
+  "generatedAt": "2026-11-26T11:47:40.823990Z",
   "season": "2026-27",
   "recordSeason": "2026-27",
   "basis": "opening squad, fixture-adjusted projections, solved in overlapping windows and committed 27 gameweeks deep",
@@ -1975,10 +1975,10 @@
       "deadline": "2027-04-24T12:30:00Z",
       "confidence": "provisional",
       "starters": [
-        226597, 466075, 201658, 249231, 465730, 60307, 226182, 432720, 223094,
-        201666, 610799
+        226597, 466075, 201658, 249231, 465730, 60307, 226182, 223094, 201666,
+        485055, 610799
       ],
-      "bench": [485055, 444102, 184029, 177815],
+      "bench": [432720, 444102, 184029, 177815],
       "captain": 223094,
       "viceCaptain": 201666,
       "transfersIn": [485055],
@@ -2006,7 +2006,7 @@
       "squadElementIds": [
         4, 8, 15, 68, 79, 86, 115, 124, 330, 346, 385, 411, 453, 496, 504
       ],
-      "benchElementIds": [496, 79, 15, 346],
+      "benchElementIds": [385, 79, 15, 346],
       "expected": {
         "432720": 5.51,
         "226597": 5.79,
