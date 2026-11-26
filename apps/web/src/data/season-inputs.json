@@ -1,6 +1,6 @@
 {
   "schemaVersion": 7,
-  "generatedAt": "2026-11-26T18:57:28.675453Z",
+  "generatedAt": "2026-11-26T22:59:11.319463Z",
   "recordSeason": "2026-27",
   "events": [
     12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30,
@@ -185,7 +185,7 @@
       }
     ],
     "sourceReference": "FPL rules page, Transfers section",
-    "dataAvailableAt": "2026-11-26T18:57:28.675453Z",
+    "dataAvailableAt": "2026-11-26T22:59:11.319463Z",
     "playableStartRate": 0.35,
     "transferMarginPoints": 0.5
   },
@@ -9548,8 +9548,8 @@
       "club": "CRY",
       "teamId": 8,
       "priceTenths": 42,
-      "availabilityStatus": "d",
-      "chanceOfPlaying": 75,
+      "availabilityStatus": "a",
+      "chanceOfPlaying": 100,
       "basePoints": 0.309,
       "routes": {
         "appearance": 0.471,
@@ -10383,8 +10383,8 @@
       "club": "SUN",
       "teamId": 20,
       "priceTenths": 45,
-      "availabilityStatus": "a",
-      "chanceOfPlaying": 100,
+      "availabilityStatus": "d",
+      "chanceOfPlaying": 75,
       "basePoints": 0.046,
       "routes": {
         "appearance": 0.322,
@@ -14492,25 +14492,25 @@
       "priceTenths": 81,
       "availabilityStatus": "a",
       "chanceOfPlaying": null,
-      "basePoints": 3.324,
+      "basePoints": 3.333,
       "routes": {
-        "appearance": 1.884,
-        "attacking": 1.325,
-        "cleanSheet": 0.542,
-        "bonus": 0.009,
-        "yellowCards": -0.438,
-        "defensiveContribution": 0.002
+        "appearance": 1.883,
+        "attacking": 1.328,
+        "cleanSheet": 0.544,
+        "bonus": 0.011,
+        "yellowCards": -0.434,
+        "defensiveContribution": 0.001
       },
-      "startRate": 0.89,
+      "startRate": 0.888,
       "startEvidence": {
-        "sourceStartRate": 0.936,
-        "finalStartRate": 0.89,
+        "sourceStartRate": 0.859,
+        "finalStartRate": 0.888,
         "observedAppearances": 9,
         "recentStarts": 8,
         "recentMatches": 9,
         "recentMinutes": 650,
         "appearanceSource": "currentSeasonLineup",
-        "lineupAdjustment": -0.046,
+        "lineupAdjustment": 0.029,
         "marketAdjustment": 0.0,
         "availabilityAdjustment": 0.0
       },
@@ -17240,25 +17240,66 @@
       "priceTenths": 55,
       "availabilityStatus": "a",
       "chanceOfPlaying": null,
-      "basePoints": 1.594,
+      "basePoints": 1.604,
       "routes": {
         "appearance": 1.019,
-        "attacking": 0.352,
-        "cleanSheet": 0.002,
-        "bonus": 0.225,
-        "yellowCards": -0.006,
-        "defensiveContribution": 0.002
+        "attacking": 0.356,
+        "cleanSheet": 0.003,
+        "bonus": 0.227,
+        "yellowCards": -0.002,
+        "defensiveContribution": 0.001
       },
-      "startRate": 0.35,
+      "startRate": 0.348,
       "startEvidence": {
-        "sourceStartRate": 0.936,
-        "finalStartRate": 0.35,
+        "sourceStartRate": 0.859,
+        "finalStartRate": 0.348,
         "observedAppearances": 9,
         "recentStarts": 3,
         "recentMatches": 9,
         "recentMinutes": 316,
         "appearanceSource": "currentSeasonLineup",
-        "lineupAdjustment": -0.586,
+        "lineupAdjustment": -0.511,
+        "marketAdjustment": 0.0,
+        "availabilityAdjustment": 0.0
+      },
+      "squadNumber": null,
+      "rated": false,
+      "depthRank": 1,
+      "evidence": {
+        "all": "currentSeasonRoutes",
+        "appearance": "currentSeasonLineup"
+      }
+    },
+    {
+      "id": 655,
+      "code": 242893,
+      "name": "Gboho",
+      "position": "MID",
+      "positionId": 3,
+      "club": "COV",
+      "teamId": 7,
+      "priceTenths": 55,
+      "availabilityStatus": "a",
+      "chanceOfPlaying": null,
+      "basePoints": 1.555,
+      "routes": {
+        "appearance": 0.778,
+        "attacking": 0.641,
+        "cleanSheet": 0.004,
+        "bonus": 0.133,
+        "yellowCards": -0.002,
+        "defensiveContribution": 0.001
+      },
+      "startRate": 0.39,
+      "startEvidence": {
+        "sourceStartRate": 0.859,
+        "finalStartRate": 0.39,
+        "observedAppearances": 8,
+        "recentStarts": 3,
+        "recentMatches": 8,
+        "recentMinutes": 212,
+        "appearanceSource": "currentSeasonLineup",
+        "lineupAdjustment": -0.469,
         "marketAdjustment": 0.0,
         "availabilityAdjustment": 0.0
       },
@@ -17306,47 +17347,6 @@
       "squadNumber": null,
       "rated": true,
       "depthRank": 9,
-      "evidence": {
-        "all": "currentSeasonRoutes",
-        "appearance": "currentSeasonLineup"
-      }
-    },
-    {
-      "id": 655,
-      "code": 242893,
-      "name": "Gboho",
-      "position": "MID",
-      "positionId": 3,
-      "club": "COV",
-      "teamId": 7,
-      "priceTenths": 55,
-      "availabilityStatus": "a",
-      "chanceOfPlaying": null,
-      "basePoints": 1.544,
-      "routes": {
-        "appearance": 0.779,
-        "attacking": 0.637,
-        "cleanSheet": 0.002,
-        "bonus": 0.131,
-        "yellowCards": -0.007,
-        "defensiveContribution": 0.002
-      },
-      "startRate": 0.392,
-      "startEvidence": {
-        "sourceStartRate": 0.936,
-        "finalStartRate": 0.392,
-        "observedAppearances": 8,
-        "recentStarts": 3,
-        "recentMatches": 8,
-        "recentMinutes": 212,
-        "appearanceSource": "currentSeasonLineup",
-        "lineupAdjustment": -0.544,
-        "marketAdjustment": 0.0,
-        "availabilityAdjustment": 0.0
-      },
-      "squadNumber": null,
-      "rated": false,
-      "depthRank": 1,
       "evidence": {
         "all": "currentSeasonRoutes",
         "appearance": "currentSeasonLineup"
@@ -19189,8 +19189,8 @@
       "club": "BOU",
       "teamId": 3,
       "priceTenths": 73,
-      "availabilityStatus": "a",
-      "chanceOfPlaying": 100,
+      "availabilityStatus": "d",
+      "chanceOfPlaying": 75,
       "basePoints": 0.651,
       "routes": {
         "appearance": 0.373,
