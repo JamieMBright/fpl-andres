@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "modelVersion": "8.23",
-  "generatedAt": "2026-11-28T13:23:22.068905Z",
+  "generatedAt": "2026-11-28T15:45:27.444054Z",
   "season": "2026-27",
   "recordSeason": "2026-27",
   "basis": "opening squad, fixture-adjusted projections, solved in overlapping windows and committed 26 gameweeks deep",
@@ -20,7 +20,7 @@
       "chip": "Wildcard",
       "half": "first",
       "gain": 0.0,
-      "ceiling": 10.06,
+      "ceiling": 10.42,
       "note": "Re-planning the season around a rebuild here, with the weeks before it freed from having to stay viable afterwards, still scored no more than one transfer a week. Nothing in this projection breaks, so there is nothing for a Wildcard to repair."
     },
     {
@@ -28,8 +28,8 @@
       "chip": "Free Hit",
       "half": "first",
       "gain": 0.0,
-      "ceiling": 2.45,
-      "note": "The best temporary squad moves only 9 of the fifteen; a Free Hit needs 10 or more changes."
+      "ceiling": 2.5,
+      "note": "The gameweek 14 rental gains 3.9, but restoring the old squad and resetting to one free transfer leaves the affected run worth 0.5 less overall, so the Free Hit is unplayed."
     },
     {
       "event": 16,
@@ -60,15 +60,15 @@
       "chip": "Free Hit",
       "half": "second",
       "gain": 3.79,
-      "ceiling": 3.51,
-      "note": "this week is 3.5 worse for the held squad than the weeks around it, the sharpest one-week drop of the second half, which under the 20 points that makes a chip worth building around, but an unplayed chip expires at nothing"
+      "ceiling": 3.41,
+      "note": "this week is 3.4 worse for the held squad than the weeks around it, the sharpest one-week drop of the second half, which under the 20 points that makes a chip worth building around, but an unplayed chip expires at nothing"
     },
     {
       "event": null,
       "chip": "Wildcard",
       "half": "second",
       "gain": 0.0,
-      "ceiling": 8.92,
+      "ceiling": 9.19,
       "note": "Re-planning the season around a rebuild here, with the weeks before it freed from having to stay viable afterwards, still scored no more than one transfer a week. Nothing in this projection breaks, so there is nothing for a Wildcard to repair."
     },
     {
@@ -121,11 +121,18 @@
       "priceTenths": 55,
       "squadNumber": null
     },
-    "153133": {
-      "name": "Iwobi",
+    "122806": {
+      "name": "McGinn",
       "position": "MID",
-      "club": "FUL",
-      "priceTenths": 54,
+      "club": "AVL",
+      "priceTenths": 55,
+      "squadNumber": null
+    },
+    "141746": {
+      "name": "B.Fernandes",
+      "position": "MID",
+      "club": "MUN",
+      "priceTenths": 116,
       "squadNumber": null
     },
     "169432": {
@@ -184,11 +191,25 @@
       "priceTenths": 75,
       "squadNumber": null
     },
+    "215379": {
+      "name": "Anderson",
+      "position": "MID",
+      "club": "MCI",
+      "priceTenths": 62,
+      "squadNumber": null
+    },
     "219168": {
       "name": "Isak",
       "position": "FWD",
       "club": "LIV",
       "priceTenths": 94,
+      "squadNumber": null
+    },
+    "220627": {
+      "name": "Justin",
+      "position": "DEF",
+      "club": "LEE",
+      "priceTenths": 46,
       "squadNumber": null
     },
     "223094": {
@@ -282,6 +303,13 @@
       "priceTenths": 52,
       "squadNumber": null
     },
+    "473284": {
+      "name": "Tzolakis",
+      "position": "GKP",
+      "club": "HUL",
+      "priceTenths": 47,
+      "squadNumber": null
+    },
     "485055": {
       "name": "Kinsky",
       "position": "GKP",
@@ -329,6 +357,13 @@
       "position": "FWD",
       "club": "AVL",
       "priceTenths": 73,
+      "squadNumber": null
+    },
+    "532605": {
+      "name": "Andrey Santos",
+      "position": "MID",
+      "club": "MUN",
+      "priceTenths": 46,
       "squadNumber": null
     },
     "586309": {
