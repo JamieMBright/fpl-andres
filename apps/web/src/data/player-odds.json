@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "season": "2026-27",
-  "fetchedAt": "2026-11-28T16:58:01.342909+00:00",
+  "fetchedAt": "2026-11-28T17:28:06.031826+00:00",
   "source": "the-odds-api",
   "markets": [
     "player_goal_scorer_anytime",
@@ -28,18 +28,18 @@
     "spentThisRun": 0
   },
   "coverage": {
-    "fixturesListed": 18,
+    "fixturesListed": 17,
     "fixturesVisitedThisRun": 1,
     "fixturesWithQuotes": 0
   },
   "nameMappingGaps": [],
   "fixtures": [
     {
-      "event_id": "0bc17a3c7d8153e72b94688960cc603a",
-      "home_team": "Leeds United",
-      "away_team": "Coventry City",
-      "home_short": "LEE",
-      "away_short": "COV",
+      "event_id": "9d23f6ad21946dd258869ebc22236cf0",
+      "home_team": "Ipswich Town",
+      "away_team": "Aston Villa",
+      "home_short": "IPS",
+      "away_short": "AVL",
       "status": "parse-error",
       "books": 0,
       "outcomes": null,
@@ -58,35 +58,8 @@
       "player_rows_matched": 0,
       "unmatched_names": [],
       "error": "HTTPStatusError",
-      "kickoff": "2026-11-28T15:00:00+00:00",
-      "visited_at": "2026-11-28T16:58:01.342909+00:00"
-    },
-    {
-      "event_id": "9d23f6ad21946dd258869ebc22236cf0",
-      "home_team": "Ipswich Town",
-      "away_team": "Aston Villa",
-      "home_short": "IPS",
-      "away_short": "AVL",
-      "status": "unvisited",
-      "books": 0,
-      "outcomes": 0,
-      "offered_markets": [],
-      "missing_markets": [
-        "player_goal_scorer_anytime",
-        "player_first_goal_scorer",
-        "player_last_goal_scorer",
-        "player_assists",
-        "player_to_receive_card",
-        "player_to_receive_red_card",
-        "player_shots",
-        "player_shots_on_target"
-      ],
-      "player_rows_parsed": 0,
-      "player_rows_matched": 0,
-      "unmatched_names": [],
-      "error": null,
-      "kickoff": "2026-11-28T17:30:00+00:00",
-      "visited_at": null
+      "kickoff": "2026-11-28T17:35:00+00:00",
+      "visited_at": "2026-11-28T17:28:06.031826+00:00"
     },
     {
       "event_id": "f45e9062c2f755b977c98d496c22697b",
