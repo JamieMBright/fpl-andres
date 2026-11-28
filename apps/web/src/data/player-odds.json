@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "season": "2026-27",
-  "fetchedAt": "2026-11-27T19:29:51.616474+00:00",
+  "fetchedAt": "2026-11-28T02:42:34.511208+00:00",
   "source": "the-odds-api",
   "markets": [
     "player_goal_scorer_anytime",
@@ -28,18 +28,18 @@
     "spentThisRun": 0
   },
   "coverage": {
-    "fixturesListed": 20,
+    "fixturesListed": 19,
     "fixturesVisitedThisRun": 1,
     "fixturesWithQuotes": 0
   },
   "nameMappingGaps": [],
   "fixtures": [
     {
-      "event_id": "40d95e660c301c2d8a5a7a6317017b65",
-      "home_team": "Nottingham Forest",
-      "away_team": "Chelsea",
-      "home_short": "NFO",
-      "away_short": "CHE",
+      "event_id": "ab87184803a63f7b679f1d12b01c3271",
+      "home_team": "Manchester United",
+      "away_team": "Brentford",
+      "home_short": "MUN",
+      "away_short": "BRE",
       "status": "parse-error",
       "books": 0,
       "outcomes": null,
@@ -58,35 +58,8 @@
       "player_rows_matched": 0,
       "unmatched_names": [],
       "error": "HTTPStatusError",
-      "kickoff": "2026-11-27T20:00:00+00:00",
-      "visited_at": "2026-11-27T19:29:51.616474+00:00"
-    },
-    {
-      "event_id": "ab87184803a63f7b679f1d12b01c3271",
-      "home_team": "Manchester United",
-      "away_team": "Brentford",
-      "home_short": "MUN",
-      "away_short": "BRE",
-      "status": "unvisited",
-      "books": 0,
-      "outcomes": 0,
-      "offered_markets": [],
-      "missing_markets": [
-        "player_goal_scorer_anytime",
-        "player_first_goal_scorer",
-        "player_last_goal_scorer",
-        "player_assists",
-        "player_to_receive_card",
-        "player_to_receive_red_card",
-        "player_shots",
-        "player_shots_on_target"
-      ],
-      "player_rows_parsed": 0,
-      "player_rows_matched": 0,
-      "unmatched_names": [],
-      "error": null,
       "kickoff": "2026-11-28T15:00:00+00:00",
-      "visited_at": null
+      "visited_at": "2026-11-28T02:42:34.511208+00:00"
     },
     {
       "event_id": "0bc17a3c7d8153e72b94688960cc603a",
